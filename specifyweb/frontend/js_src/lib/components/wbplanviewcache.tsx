@@ -19,14 +19,12 @@ function commit_to_storage() :void {
 	if (typeof localStorage === "undefined")
 		return;
 
-	for (const [bucket_name, bucket_data] of Object.entries(buckets))
-		if (
+	Object.entries(buckets).filter(([_bucket_name, bucket_data])=>
 			bucket_data.type === 'local_storage' &&
 			Object.keys(bucket_data.records).length !== 0
-		) {
-			const full_bucket_name = cache_prefix + bucket_name;
-			localStorage.setItem(full_bucket_name, JSON.stringify(bucket_data));
-		}
+	).forEach(([bucket_name, bucket_data])=>
+		localStorage.setItem(cache_prefix + bucket_name, JSON.stringify(bucket_data))
+	)
 
 }
 
@@ -153,16 +151,16 @@ function trim_bucket(
 		usage_to_trim = 1;
 
 	const cache_keys = Object.keys(buckets[bucket_name].records);
-	const new_records :bucket_records = {};
-	for (const [cache_index, cache_usage] of Object.entries(cache_usages)) {
 
-		const cache_key = cache_keys[parseInt(cache_index)];
-
-		if (cache_usage >= usage_to_trim)
-			new_records[cache_key] = buckets[bucket_name].records[cache_key];
-
-	}
-	buckets[bucket_name].records = new_records;
+	buckets[bucket_name].records = Object.fromEntries(
+		Object.entries(cache_usages).map(([cache_index, cache_usage])=>
+			[cache_keys[parseInt(cache_index)], cache_usage]
+		).filter(([_cache_key, cache_usage])=>
+			cache_usage >= usage_to_trim
+		).map(([cache_key])=>
+			[cache_key,buckets[bucket_name].records[cache_key]]
+		)
+	)
 
 	return true;
 

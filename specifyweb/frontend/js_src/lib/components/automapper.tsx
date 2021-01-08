@@ -192,15 +192,16 @@ export default class automapper {
 				type: 'reset',
 			});
 
-			for (const [level, mappings_data] of queue_data)  // go though each level of the queue in order
-				for (const payload of mappings_data)
-					if (
-						mode !== 'shortcuts_and_table_synonyms' ||
-						level === '0' ||
-						typeof this.starting_path[parseInt(level) - 1] === 'undefined' ||
-						find_array_divergence_point(payload.path, this.starting_path.slice(0, parseInt(level))) !== -1
-					)
-						this.find_mappings(payload, mode);
+			queue_data.forEach(([level, mappings_data])=>  // go though each level of the queue in order
+				mappings_data.filter(payload=>
+					mode !== 'shortcuts_and_table_synonyms' ||
+					level === '0' ||
+					typeof this.starting_path[parseInt(level) - 1] === 'undefined' ||
+					find_array_divergence_point(payload.path, this.starting_path.slice(0, parseInt(level))) !== -1
+				).forEach(payload=>
+					this.find_mappings(payload, mode)
+				)
+			);
 
 		} while (queue_data.length !== 0);
 
@@ -262,14 +263,12 @@ export default class automapper {
 			)
 				return;
 
-			for (const shortcut_data of table_definition_data[this.scope]!) {
-
+			table_definition_data[this.scope]!.forEach(shortcut_data=>{
 				const comparisons = shortcut_data.headers;
 				const get_new_path_part = () =>
 					shortcut_data.mapping_path;
 				this.handle_definition_comparison(path, comparisons, get_new_path_part);
-
-			}
+			})
 		}
 		else if (mode === 'synonyms_and_matches') {
 
@@ -406,8 +405,7 @@ export default class automapper {
 
 			this.find_mappings_in_definitions(find_mappings_in_definitions_payload);
 
-			for (const rank_name of ranks) {
-
+			ranks.some(rank_name=>{
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = format_tree_rank(rank_name);
 
@@ -416,18 +414,17 @@ export default class automapper {
 				this.find_mappings_in_definitions(find_mappings_in_definitions_payload);
 
 				if (mode !== 'synonyms_and_matches')
-					continue;
+					return;
 
-				for (const [field_name, field_data] of fields) {
-
-					const friendly_name = field_data.friendly_name.toLowerCase();
-
+				fields.map(([field_name, field_data])=>[
+					field_data.friendly_name.toLowerCase(),
+					field_name,
+				]).forEach(([friendly_name, field_name])=>
 					this.get_unmapped_headers().some(([header_name, {
 						stripped_header_name,
 						final_header_name,
-					}]) => {
-
-						if (
+					}]) =>
+						(
 							(  // find cases like `Phylum` and remap them to `Phylum > Name`
 								friendly_name === 'name' &&
 								striped_rank_name === stripped_header_name
@@ -436,23 +433,19 @@ export default class automapper {
 								`${striped_rank_name} ${friendly_name}` === stripped_header_name ||
 								`${striped_rank_name} ${field_name}` === final_header_name
 							)
-						) {
+						) && // don't search for further mappings for this field if we can only map a single header to this field
+						this.make_mapping(
+							path,
+							push_rank_to_path ?
+								[final_rank_name, field_name] :
+								[field_name],
+							header_name,
+							table_name
+						)
+					)
+				);
+			});
 
-							let new_path_parts;
-							if (push_rank_to_path)
-								new_path_parts = [final_rank_name, field_name];
-							else
-								new_path_parts = [field_name];
-
-							// don't search for further mappings for this field if we can only map a single header to this field
-							return this.make_mapping(path, new_path_parts, header_name, table_name);
-						}
-
-					});
-
-				}
-
-			}
 			return;
 		}
 
@@ -472,7 +465,7 @@ export default class automapper {
 
 		this.find_mappings_in_definitions(find_mappings_in_definitions_payload);
 
-		for (const [field_name, field_data] of fields) {
+		fields.some(([field_name, field_data])=>{
 
 			// search in definitions
 			find_mappings_in_definitions_payload.field_name = field_name;
@@ -480,7 +473,7 @@ export default class automapper {
 
 			if (mode !== 'synonyms_and_matches') {
 				if (table_synonyms.length === 0)
-					continue;
+					return;
 				else {  // run though synonyms and matches if table has table_synonyms even if not in `synonyms_and_matches` mode
 					find_mappings_in_definitions_payload.mode = 'synonyms_and_matches';
 					this.find_mappings_in_definitions(find_mappings_in_definitions_payload);
@@ -548,13 +541,10 @@ export default class automapper {
 				),
 			);
 
-		}
+		});
 
 
-		const relationships = get_table_relationships(table_name, false);
-
-
-		for (const [relationship_key, relationship_data] of relationships) {
+		get_table_relationships(table_name, false).some(([relationship_key, relationship_data])=>{
 
 			const local_path = [...path, relationship_key];
 
@@ -564,7 +554,7 @@ export default class automapper {
 			const new_depth_level = local_path.length;
 
 			if (new_depth_level > automapper.depth)
-				continue;
+				return;
 
 			this.dispatch.find_mappings_queue({
 				type: 'initialize_level',
@@ -610,7 +600,7 @@ export default class automapper {
 					relationship_is_to_many(parent_relationship_type)
 				)
 			)
-				continue;
+				return;
 
 			this.dispatch.find_mappings_queue({
 				type: 'enqueue',
@@ -623,7 +613,7 @@ export default class automapper {
 				},
 			});
 
-		}
+		});
 
 	};
 

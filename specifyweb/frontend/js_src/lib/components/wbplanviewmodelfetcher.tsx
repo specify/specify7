@@ -134,7 +134,7 @@ export default () :Promise<data_model_fetcher_return> =>
 			)
 				return tables;
 
-			for (const field of table_data.fields) {
+			table_data.fields.some(field=>{
 
 				let field_name = field.name;
 				let friendly_name = field.getLocalizedName();
@@ -182,19 +182,19 @@ export default () :Promise<data_model_fetcher_return> =>
 
 					if (field_name === 'definition') {
 						has_relationship_with_definition = true;
-						continue;
+						return;
 					}
 
 					if (field_name === 'definitionitem') {
 						has_relationship_with_definition_item = true;
-						continue;
+						return;
 					}
 
 					if (
 						relationship.readOnly ||
 						fetching_parameters.tables_to_hide.indexOf(table_name) !== -1
 					)
-						continue;
+						return;
 
 					field_data.table_name = table_name;
 					field_data.type = relationship_type;
@@ -204,7 +204,7 @@ export default () :Promise<data_model_fetcher_return> =>
 
 				fields[field_name] = field_data;
 
-			}
+			});
 
 			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name =>
 				[field_name, fields[field_name]],

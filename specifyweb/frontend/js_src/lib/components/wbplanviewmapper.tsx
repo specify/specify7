@@ -176,10 +176,11 @@ export const mapping_path_is_complete = (mapping_path :mapping_path) =>
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicate_mappings(
 	lines :MappingLine[],
+	focused_line: number|false
 ) :MappingLine[] {
 
 	const array_of_mappings = get_array_of_mappings(lines, false, false);
-	const duplicate_mapping_indexes = find_duplicate_mappings(array_of_mappings, false);
+	const duplicate_mapping_indexes = find_duplicate_mappings(array_of_mappings, focused_line);
 
 	return lines.map((line, index) =>
 		duplicate_mapping_indexes.indexOf(index) === -1 ?
@@ -325,7 +326,6 @@ export function mutate_mapping_path({
 
 }
 
-//TODO: detect click outside of the CustomSelectElement and close it in that case
 //TODO: remember list scroll position and scroll down
 //TODO: scroll list down when adding new column / new static column
 
@@ -378,9 +378,9 @@ export default function (props :WBPlanViewMapperProps) {
 							handleOpen: props.handleOpen.bind(null, index),
 							handleClose: props.handleClose.bind(null, index),
 							get_mapped_fields: get_mapped_fields_bind,
-							open_path_element_index:
+							open_select_element:
 								typeof props.open_select_element !== 'undefined' && props.open_select_element.line === index ?
-									props.open_select_element.index :
+									props.open_select_element :
 									undefined,
 							show_hidden_fields: props.show_hidden_fields,
 							automapper_suggestions: props.automapper_suggestions,

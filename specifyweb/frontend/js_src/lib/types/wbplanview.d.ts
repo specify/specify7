@@ -13,7 +13,7 @@ interface specify_resource {
 	readonly save :() => void,
 }
 
-type falsy_upload_plan = upload_plan | false;
+type falsy_upload_plan = upload_plan_structure | false;
 
 interface upload_plan_template {
 	dataset_name :string,

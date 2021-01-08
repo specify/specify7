@@ -32,18 +32,15 @@ const upload_plan_processing_functions = (headers :string[]) :upload_plan_proces
 			key, {new_static_column: value},
 		],
 		toOne: ([key, value] :[key :string, value :upload_plan_uploadTable_toOne]) => [key, handle_uploadable(value, headers)],
-		toMany: ([key, original_mappings] :[key :string, value :object]) => {
-			let i = 1;
-			return [
-				key,
-				Object.fromEntries(Object.values(original_mappings).map(mapping =>
-					[
-						format_reference_item(i++),
-						handle_upload_table(mapping, headers),
-					],
-				)),
-			];
-		},
+		toMany: ([key, original_mappings] :[key :string, value :object]) => [
+			key,
+			Object.fromEntries(Object.values(original_mappings).map((mapping,index) =>
+				[
+					format_reference_item(index+1),
+					handle_upload_table(mapping, headers),
+				],
+			)),
+		],
 	}
 );
 

@@ -47,8 +47,7 @@ export function find_array_divergence_point<T>(
 	if (source_length === 0 || source_length < search_length)
 		return -1;
 
-	for (const [index, source_value] of Object.entries(source)) {
-
+	Object.entries(source).forEach(([index, source_value])=>{
 		const search_value = search[parseInt(index)];
 
 		if (typeof search_value === 'undefined')
@@ -56,8 +55,7 @@ export function find_array_divergence_point<T>(
 
 		if (source_value !== search_value)
 			return -1;
-
-	}
+	});
 
 	return search_length - 1;
 
@@ -89,17 +87,14 @@ export function deconstruct_mapping_path(
 /* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
 export function find_duplicate_mappings(
 	array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
-	has_headers :boolean = false,  // whether array of mappings contain mapping types and header names / static column values
+	focused_line: number|false,
 ) :duplicate_mappings {
 
-	const filtered_array_of_mappings = array_of_mappings.map(mapping_path => deconstruct_mapping_path(mapping_path, has_headers)[0]);
+	const filtered_array_of_mappings = array_of_mappings.map(mapping_path => deconstruct_mapping_path(mapping_path, false)[0]);
 	const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join(data_model_storage.path_join_symbol));
 
 	const duplicate_indexes :number[] = [];
-	let index = -1;
-	string_array_of_mappings.reduce((dictionary_of_mappings :string[], string_mapping_path :string) => {
-
-		index++;
+	string_array_of_mappings.reduce((dictionary_of_mappings :string[], string_mapping_path :string, index) => {
 
 		if (string_mapping_path === '')
 			return dictionary_of_mappings;
@@ -107,7 +102,11 @@ export function find_duplicate_mappings(
 		if (dictionary_of_mappings.indexOf(string_mapping_path) === -1)
 			dictionary_of_mappings.push(string_mapping_path);
 		else
-			duplicate_indexes.push(index);
+			duplicate_indexes.push(
+				focused_line && focused_line == index ?
+					dictionary_of_mappings.indexOf(string_mapping_path) :
+					index
+			)
 
 		return dictionary_of_mappings;
 

@@ -125,6 +125,7 @@ export function CustomSelectElement(
 			is_relationship: false,
 		},
 		is_open,
+		// autoscroll=false,
 		field_names,
 		handleChange,
 		handleOpen,
@@ -132,6 +133,8 @@ export function CustomSelectElement(
 		automapper_suggestions,
 	} :CustomSelectElementProps,
 ) {
+
+	// const list_of_options = React.useRef<HTMLElement>(null);
 
 	const option_is_clickable = custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list';
 
@@ -214,10 +217,24 @@ export function CustomSelectElement(
 		);
 
 	const custom_select_options = (first_row || groups) &&
-		<span className="custom_select_options">
+		<span className="custom_select_options"/* ref={list_of_options}*/>
 			{first_row}
 			{groups}
 		</span>;
+
+	// React.useEffect(()=>{
+	// 	if( // auto scroll down the option if
+	// 		is_open &&  // it is open
+	// 		option_is_clickable &&  // and it can be opened
+	// 		autoscroll &&  // and was told to open it
+	// 		list_of_options !== null &&  // and list of option exists
+	// 		list_of_options.current !== null &&  // and dom is rendered
+	// 		default_option.option_name!=='0' &&  // and list has a value
+	// 		list_of_options.current.scrollTop === 0 &&  // and the list is not already scrolled
+	// 		list_of_options.current.offsetHeight < selected_option.offsetTop + selected_option.offsetHeight  // and selected item is not visible
+	// 	)
+	// 		list_of_options.current.scrollTop = selected_option.offsetTop - selected_option.offsetHeight;
+	// });
 
 
 	return <span

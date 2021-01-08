@@ -179,7 +179,7 @@ function navigator_instance<RETURN_STRUCTURE>({
 export function get_mapping_line_data_from_mapping_path({
 	base_table_name,
 	mapping_path = ["0"],
-	open_path_element_index,
+	open_select_element,
 	iterate = true,
 	use_cached = false,
 	generate_last_relationship_data = true,
@@ -252,7 +252,10 @@ export function get_mapping_line_data_from_mapping_path({
 		navigator_instance_pre({table_name}) {
 
 			internal_state.is_open =
-				open_path_element_index === internal_state.mapping_path_position+1 ||
+				(
+					typeof open_select_element !== "undefined" &&
+					open_select_element.index === internal_state.mapping_path_position+1
+				) ||
 				['opened_list','suggestion_list'].indexOf(internal_state.custom_select_type) !== -1
 
 			internal_state.custom_select_subtype = 'simple';
@@ -315,43 +318,43 @@ export function get_mapping_line_data_from_mapping_path({
 		handle_tree_ranks({table_name}) {
 
 			internal_state.custom_select_subtype = 'tree';
-
 			const table_ranks = data_model_storage.ranks[table_name] as table_ranks;
-			for (const [rank_name, is_required] of Object.entries(table_ranks)) {
-				const formatted_rank_name = format_tree_rank(rank_name);
-				internal_state.result_fields[formatted_rank_name] = {
-					field_friendly_name: rank_name,
-					is_enabled: true,
-					is_required,
-					is_hidden: false,
-					is_relationship: true,
-					is_default: formatted_rank_name === internal_state.default_value,
-					table_name,
-				};
-			}
+
+			internal_state.result_fields = Object.fromEntries(
+				Object.entries(table_ranks).map(([rank_name, is_required])=>[
+					format_tree_rank(rank_name),
+					{
+						field_friendly_name: rank_name,
+						is_enabled: true,
+						is_required,
+						is_hidden: false,
+						is_relationship: true,
+						is_default: format_tree_rank(rank_name) === internal_state.default_value,
+						table_name,
+					}
+				])
+			);
 
 		},
 
-		handle_simple_fields({
+		handle_simple_fields: ({
 			table_name,
 			parent_table_name,
 			parent_relationship_type,
-		}) {
-
-			for (
-				const [
-					field_name, {
-						is_relationship,
-						type: relationship_type,
-						is_hidden,
-						is_required,
-						foreign_name,
-						friendly_name,
-						table_name: field_table_name
-					}
-				] of Object.entries(data_model_storage.tables[table_name].fields as data_model_fields_writable)) {
-
-				if (
+		}) =>
+			internal_state.result_fields = Object.fromEntries(
+				Object.entries(data_model_storage.tables[table_name].fields as data_model_fields_writable).filter((
+					[
+						field_name,
+						{
+							is_relationship,
+							type: relationship_type,
+							is_hidden,
+							foreign_name,
+							table_name: field_table_name
+						}
+					]
+				)=>
 					is_relationship &&
 					(  // skip circular relationships
 						field_table_name === parent_table_name &&
@@ -374,31 +377,32 @@ export function get_mapping_line_data_from_mapping_path({
 						!show_hidden_fields &&
 						is_hidden
 					)
-				)
-					continue;
-
-
-				const is_enabled =  // disable field
-					internal_state.mapped_fields.indexOf(field_name) === -1 ||  // if it is mapped
-					is_relationship;  // or is a relationship
-
-
-				const is_default = field_name === internal_state.default_value;
-
-				internal_state.result_fields[field_name] = {
-					field_friendly_name: friendly_name,
-					is_enabled,
-					is_required,
-					is_hidden,
-					is_default,
-					is_relationship,
-					table_name: field_table_name,
-				};
-
-
-			}
-
-		},
+				).map((
+					[
+						field_name,
+						{
+							is_relationship,
+							is_hidden,
+							is_required,
+							friendly_name,
+							table_name: field_table_name
+						}
+					]
+				)=>[
+					field_name,
+					{
+						field_friendly_name: friendly_name,
+						is_enabled:  // disable field
+							internal_state.mapped_fields.indexOf(field_name) === -1 ||  // if it is mapped
+							is_relationship,  // or is a relationship,
+						is_required,
+						is_hidden,
+						is_default: field_name === internal_state.default_value,
+						is_relationship,
+						table_name: field_table_name,
+					}
+				])
+			),
 
 		get_instance_data: ({table_name}) => {
 			const base_structure = {
@@ -415,6 +419,7 @@ export function get_mapping_line_data_from_mapping_path({
 					handleChange: handleChange.bind(null,internal_state.mapping_path_position+1),
 					handleClose: handleClose.bind(null,internal_state.mapping_path_position+1),
 					automapper_suggestions,
+					autoscroll: typeof open_select_element !== "undefined" && open_select_element.autoscroll,
 					is_open: true,
 				};
 			else

@@ -147,43 +147,41 @@ function MappingElement(
 			is_relationship: false,
 		}
 
-	if (!props.is_open)
-		return <CustomSelectElement
+
+	return props.is_open ?
+		<CustomSelectElement
+			{...props}
+			custom_select_option_groups={
+				Object.entries(field_groups).filter(([_group_name, group_fields])=>
+					group_fields.length !== 0
+				).map(([group_name, group_fields])=>({
+					select_group_label: props.custom_select_subtype==='tree' ?  // don't show group labels on tree ranks
+						undefined :
+						field_group_labels[group_name],
+					select_options_data: group_fields,
+				}))
+			}
+			default_option={default_option}
+			automapper_suggestions={
+				typeof props.automapper_suggestions !== "undefined" && props.automapper_suggestions.length>0 ?
+					<SuggestionBox
+						select_options_data={{
+							option_label:
+								<>{
+									props.automapper_suggestions.map(automapper_suggestion=>
+										<MappingPath mappings_line_data={automapper_suggestion} />
+									)
+								}</>
+						}}
+					/> :
+					undefined
+			}
+		/> :
+		<CustomSelectElement
 			default_option={default_option}
 			{...props}
 			field_names={field_names}
 		/>;
-
-	const table_fields = [];
-	for (const [group_name, group_fields] of Object.entries(field_groups))
-		if (group_fields.length !== 0)
-			table_fields.push({
-				select_group_name: group_name,
-				select_group_label: props.custom_select_subtype==='tree' ?  // don't show group labels on tree ranks
-					undefined :
-					field_group_labels[group_name],
-				select_options_data: group_fields,
-			});
-
-	return <CustomSelectElement
-		{...props}
-		custom_select_option_groups={table_fields}
-		default_option={default_option}
-		automapper_suggestions={
-			typeof props.automapper_suggestions !== "undefined" && props.automapper_suggestions.length>0 ?
-				<SuggestionBox
-					select_options_data={{
-						option_label:
-							<>{
-								props.automapper_suggestions.map(automapper_suggestion=>
-									<MappingPath mappings_line_data={automapper_suggestion} />
-								)
-							}</>
-					}}
-				/> :
-				undefined
-		}
-	/>;
 
 }
 

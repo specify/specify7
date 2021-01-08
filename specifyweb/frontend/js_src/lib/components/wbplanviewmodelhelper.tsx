@@ -139,11 +139,11 @@ export function show_required_missing_fields(
 
 	// handle -to-many references
 	if (value_is_reference_item(list_of_mapped_fields[0])) {
-		for (const mapped_field_name of list_of_mapped_fields) {
+		list_of_mapped_fields.forEach(mapped_field_name=>{
 			const local_path = [...path, mapped_field_name];
 			if (typeof mappings_tree[mapped_field_name] !== 'undefined' && typeof mappings_tree[mapped_field_name] !== 'string')
 				show_required_missing_fields(table_name, mappings_tree[mapped_field_name] as mappings_tree, previous_table_name, local_path, results);
-		}
+		});
 		return results;
 	}
 
@@ -171,7 +171,7 @@ export function show_required_missing_fields(
 	}
 
 	// handle regular fields and relationships
-	for (const [field_name, field_data] of Object.entries(table_data.fields)) {
+	Object.entries(table_data.fields).some(([field_name, field_data])=>{
 
 		const local_path = [...path, field_name];
 
@@ -202,7 +202,7 @@ export function show_required_missing_fields(
 						relationship_is_to_many(field_data.type)
 					)
 				)
-					continue;
+					return;
 
 			}
 
@@ -215,7 +215,7 @@ export function show_required_missing_fields(
 			results.push(local_path);
 
 
-	}
+	})
 
 	return results;
 

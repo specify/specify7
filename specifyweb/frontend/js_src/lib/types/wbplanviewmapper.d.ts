@@ -9,6 +9,10 @@ interface select_element_position {
 	readonly index: number,
 }
 
+interface open_select_element extends select_element_position {
+	readonly autoscroll: boolean,
+}
+
 interface select_element_onchange_position {
 	readonly line: number|'mapping_view',
 	readonly index: number,
@@ -30,7 +34,7 @@ interface WBPlanViewMapperBaseProps {
 	readonly mapping_view :mapping_path,
 	readonly validation_results :mapping_path[],
 	readonly lines :MappingLine[],
-	readonly open_select_element? : select_element_position,
+	readonly open_select_element? : open_select_element,
 	readonly focused_line? : number,
 	readonly automapper_suggestions? : MappingElementProps[][]
 }

@@ -20,7 +20,7 @@ interface readonly_navigator_callback_payload extends Readonly<navigator_callbac
 
 interface navigator_next_path_element {
 	readonly next_path_element_name :string,  // the name of the next path element
-	readonly next_path_element :data_model_relationship,  // if the next path element is not a field nor a relationship, {undefined}. Else, {object} the information about a field from data_model.tables
+	readonly next_path_element :data_model_field,  // if the next path element is not a field nor a relationship, {undefined}. Else, {object} the information about a field from data_model.tables
 	readonly next_real_path_element_name :string,  // If next_path_element_name is not a field nor a relationships, {string} current path element name. Else next_path_element_name
 }
 
@@ -59,7 +59,7 @@ interface navigator_instance_parameters<RETURN_STRUCTURE> {
 interface get_mapping_line_data_from_mapping_path_parameters {
 	readonly base_table_name: string,
 	readonly mapping_path? :mapping_path,  // the mapping path
-	readonly open_path_element_index? :number  // index of custom select element that should be open
+	readonly open_select_element? :open_select_element  // index of custom select element that should be open
 	readonly iterate? :boolean,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
 	readonly use_cached? :boolean,  // {bool} whether to use cache if exists
 	readonly generate_last_relationship_data? :boolean  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship

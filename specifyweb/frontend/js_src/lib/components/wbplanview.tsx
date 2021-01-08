@@ -162,12 +162,17 @@ function validate(state:MappingState):MappingState {
 
 }
 
-const mapping_state = (state:WBPlanViewStates):MappingState=>{
+function mapping_state(state:WBPlanViewStates):MappingState {
 	if(state.type !== 'MappingState')
 		throw new Error('Dispatching this action requires the state to be of type `MappingState`');
 	else
 		return state;
-};
+}
+
+const soft_resolve_non_mapping_state = (state:WBPlanViewStates):WBPlanViewStates|false =>
+	state.type !== 'MappingState' ?
+		state :
+		false
 
 const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 
@@ -334,6 +339,7 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		open_select_element: {
 			line: action.line,
 			index: action.index,
+			autoscroll: false,
 		},
 		automapper_suggestions_promise: get_automapper_suggestions({
 			lines: mapping_state(state).lines,
@@ -343,12 +349,13 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 			get_mapped_fields: get_mapped_fields.bind(null,mapping_state(state).lines),
 		})
 	}),
-	'CloseSelectElementAction': state=>({
-		...mapping_state(state),
-		open_select_element: undefined,
-		automapper_suggestions_promise: undefined,
-		automapper_suggestions: undefined,
-	}),
+	'CloseSelectElementAction': state=>
+		soft_resolve_non_mapping_state(state) || ({
+			...mapping_state(state),
+			open_select_element: undefined,
+			automapper_suggestions_promise: undefined,
+			automapper_suggestions: undefined,
+		}),
 	'ChangeSelectElementValueAction': (state,action)=> {
 		const new_mapping_path = mutate_mapping_path({
 			lines: mapping_state(state).lines,
@@ -366,14 +373,17 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 
 		return {
 			...mapping_state(state),
-			lines: deduplicate_mappings([
-				...mapping_state(state).lines.slice(0, action.line),
-				{
-					...mapping_state(state).lines[action.line],
-					mapping_path: new_mapping_path,
-				},
-				...mapping_state(state).lines.slice(action.line + 1),
-			]),
+			lines: deduplicate_mappings(
+				[
+					...mapping_state(state).lines.slice(0, action.line),
+					{
+						...mapping_state(state).lines[action.line],
+						mapping_path: new_mapping_path,
+					},
+					...mapping_state(state).lines.slice(action.line + 1),
+				],
+				typeof mapping_state(state).open_select_element !== "undefined" && mapping_state(state).open_select_element!.line
+			),
 			open_select_element: undefined,
 			automapper_suggestions_promise: undefined,
 			automapper_suggestions: undefined,
@@ -406,12 +416,13 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 
 				const templates :upload_plan_template[] = [];
 
-				for (const wbt of wbts) {
+				wbts.some((wbt:any)=>{
+
 					let upload_plan;
 					try {
 						upload_plan = JSON.parse(wbt.get('remarks') as string);
 					} catch (e) {
-						continue;
+						return;
 					}
 
 					if (
@@ -422,7 +433,7 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 							dataset_name: wbt.get('name') as string,
 							upload_plan: upload_plan,
 						});
-				}
+				});
 
 				state.dispatch_action!({
 					type: 'TemplatesLoadedAction',

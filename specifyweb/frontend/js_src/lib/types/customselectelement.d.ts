@@ -63,6 +63,7 @@ interface CustomSelectElementPropsBase {
 
 	readonly handleChange?: handleElementChange,
 	readonly handleClose?: ()=>void,
+	readonly autoscroll?: boolean,
 	readonly custom_select_option_groups?: CustomSelectElementOptionGroupProps[],
 	readonly automapper_suggestions?: react_element,
 }
@@ -77,6 +78,7 @@ interface CustomSelectElementPropsOpenBase extends CustomSelectElementPropsBase 
 	readonly is_open: true,
 	readonly handleChange?: handleElementChange
 	readonly handleClose?: ()=>void,
+	readonly autoscroll?: boolean,
 }
 
 interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase {
