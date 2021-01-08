@@ -7,9 +7,19 @@
 'use strict';
 
 import AutoMapperDefinitions from './automapperdefinitions';
-import data_model_storage from './wbplanviewdatamodel';
-import data_model_helper from './data_model_helper';
-import cache from './cache';
+import data_model_storage from './wbplanviewmodel';
+import {
+	value_is_tree_rank,
+	format_tree_rank,
+	value_is_reference_item,
+	get_table_non_relationship_fields,
+	get_name_from_tree_rank_name,
+	get_table_relationships,
+	relationship_is_to_many,
+	format_reference_item,
+	get_index_from_reference_item_name,
+} from './wbplanviewmodelhelper';
+import * as cache from './wbplanviewcache';
 import {find_array_divergence_point} from './wbplanviewhelper';
 import {generate_dispatch} from './statemanagement';
 
@@ -40,32 +50,32 @@ export default class automapper {
 
 	private dispatch :automapper_props_dispatch = {
 		results: generate_dispatch<automapper_results_actions>({
-			'add': ({header_name,mapping_path})=>{
+			'add': ({header_name, mapping_path}) => {
 				if (typeof this.results[header_name] === 'undefined')
 					this.results[header_name] = [];
 
-				if(mapping_path.length === 0)
+				if (mapping_path.length === 0)
 					throw new Error('Invalid mapping path suggested by automapper');
 
 				this.results[header_name].push(mapping_path);
-			}
+			},
 		}),
 		headers_to_map: generate_dispatch<automapper_headers_to_map_actions>({
-			'mapped': ({header_name})=>{
+			'mapped': ({header_name}) => {
 				if (!this.allow_multiple_mappings)
 					this.headers_to_map[header_name].is_mapped = true;
-			}
+			},
 		}),
 		searched_tables: generate_dispatch<automapper_searched_tables_actions>({
-			'add': ({table_name})=>{
+			'add': ({table_name}) => {
 				this.searched_tables.push(table_name);
 			},
-			'reset': ()=>{
+			'reset': () => {
 				this.searched_tables = [];
-			}
+			},
 		}),
 		find_mappings_queue: generate_dispatch<automapper_find_mappings_queue_actions>({
-			'reset': ({initial_value})=>{
+			'reset': ({initial_value}) => {
 				if (typeof initial_value === 'undefined')
 					this.find_mappings_queue = [];
 				else
@@ -73,13 +83,13 @@ export default class automapper {
 						initial_value,
 					]];
 			},
-			'initialize_level': ({level})=>{
+			'initialize_level': ({level}) => {
 				if (typeof this.find_mappings_queue[level] === 'undefined')
 					this.find_mappings_queue[level] = [];
 			},
-			'enqueue': ({level,value})=>{
+			'enqueue': ({level, value}) => {
 				this.find_mappings_queue[level].push(value);
-			}
+			},
 		}),
 	};
 
@@ -92,7 +102,7 @@ export default class automapper {
 		allow_multiple_mappings = false,
 		scope = 'automapper',
 		check_for_existing_mappings = false,
-		get_mapped_fields
+		get_mapped_fields,
 	} :automapper_constructor_parameters) {
 		// strip extra characters to increase mapping success
 		this.headers_to_map = Object.fromEntries(raw_headers.map(original_name => {
@@ -126,7 +136,7 @@ export default class automapper {
 	public map({
 		use_cache = true,
 		commit_to_cache = true,
-	} :automapper_map_parameters ={}) :automapper_results {
+	} :automapper_map_parameters = {}) :automapper_results {
 
 		if (Object.keys(this.headers_to_map).length === 0)
 			return {};
@@ -213,7 +223,7 @@ export default class automapper {
 					this.make_mapping(
 						path,
 						get_new_path_part().map(path_part => {
-							if (!data_model_helper.value_is_tree_rank(path_part))
+							if (!value_is_tree_rank(path_part))
 								path_part = path_part.toLowerCase();
 							return path_part;
 						}),
@@ -275,7 +285,7 @@ export default class automapper {
 			const comparisons = table_definition_data[field_name][this.scope]!.headers;
 			const get_new_path_part = () =>
 				is_tree_rank ?
-					[data_model_helper.format_tree_rank(field_name), 'name'] :
+					[format_tree_rank(field_name), 'name'] :
 					[field_name];
 			this.handle_definition_comparison(path, comparisons, get_new_path_part);
 		}
@@ -300,7 +310,7 @@ export default class automapper {
 		// filter out -to-many references from the path for matching
 		const filtered_path = path.reduce((filtered_path :mapping_path, path_part :string) => {
 
-			if (!data_model_helper.value_is_reference_item(path_part))
+			if (!value_is_reference_item(path_part))
 				filtered_path.push(path_part);
 
 			return filtered_path;
@@ -375,16 +385,16 @@ export default class automapper {
 
 		const table_data = data_model_storage.tables[table_name];
 		const ranks_data = data_model_storage.ranks[table_name];
-		const fields = data_model_helper.get_table_non_relationship_fields(table_name, false);
+		const fields = get_table_non_relationship_fields(table_name, false);
 		const table_friendly_name = table_data.table_friendly_name.toLowerCase();
 
 		if (typeof ranks_data !== 'undefined') {
 
 			let ranks = Object.keys(ranks_data);
-			const push_rank_to_path = path.length <= 0 || !data_model_helper.value_is_tree_rank(path[path.length - 1]);
+			const push_rank_to_path = path.length <= 0 || !value_is_tree_rank(path[path.length - 1]);
 
 			if (!push_rank_to_path)
-				ranks = [data_model_helper.get_name_from_tree_rank_name(path[path.length - 1])];
+				ranks = [get_name_from_tree_rank_name(path[path.length - 1])];
 
 			const find_mappings_in_definitions_payload = {
 				path,
@@ -399,7 +409,7 @@ export default class automapper {
 			for (const rank_name of ranks) {
 
 				const striped_rank_name = rank_name.toLowerCase();
-				const final_rank_name = data_model_helper.format_tree_rank(rank_name);
+				const final_rank_name = format_tree_rank(rank_name);
 
 				find_mappings_in_definitions_payload.field_name = striped_rank_name;
 
@@ -541,15 +551,15 @@ export default class automapper {
 		}
 
 
-		const relationships = data_model_helper.get_table_relationships(table_name, false);
+		const relationships = get_table_relationships(table_name, false);
 
 
 		for (const [relationship_key, relationship_data] of relationships) {
 
 			const local_path = [...path, relationship_key];
 
-			if (data_model_helper.relationship_is_to_many(relationship_data.type))
-				local_path.push(data_model_helper.format_reference_item(1));
+			if (relationship_is_to_many(relationship_data.type))
+				local_path.push(format_reference_item(1));
 
 			const new_depth_level = local_path.length;
 
@@ -564,7 +574,7 @@ export default class automapper {
 			const {foreign_name} = relationship_data;
 
 			let current_mapping_path_part = path[path.length - 1];
-			if (data_model_helper.value_is_reference_item(current_mapping_path_part) || data_model_helper.value_is_tree_rank(current_mapping_path_part))
+			if (value_is_reference_item(current_mapping_path_part) || value_is_tree_rank(current_mapping_path_part))
 				current_mapping_path_part = path[path.length - 2];
 
 			if (
@@ -596,8 +606,8 @@ export default class automapper {
 					)
 				) ||
 				(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-					data_model_helper.relationship_is_to_many(relationship_data.type) &&
-					data_model_helper.relationship_is_to_many(parent_relationship_type)
+					relationship_is_to_many(relationship_data.type) &&
+					relationship_is_to_many(parent_relationship_type)
 				)
 			)
 				continue;
@@ -651,8 +661,8 @@ export default class automapper {
 		if (to_many_reference_number !== false)
 			local_path = local_path.reverse().reduce((modified_local_path :mapping_path, local_path_part) => {
 
-				if (data_model_helper.value_is_reference_item(local_path_part) && to_many_reference_number !== false) {
-					local_path_part = data_model_helper.format_reference_item(to_many_reference_number);
+				if (value_is_reference_item(local_path_part) && to_many_reference_number !== false) {
+					local_path_part = format_reference_item(to_many_reference_number);
 					to_many_reference_number = false;
 				}
 
@@ -677,7 +687,7 @@ export default class automapper {
 				) ||
 				(
 					this.check_for_existing_mappings &&
-					typeof this.get_mapped_fields === "function" &&
+					typeof this.get_mapped_fields === 'function' &&
 					this.get_mapped_fields(local_path)
 				);
 
@@ -687,9 +697,9 @@ export default class automapper {
 			let index = local_path.length;
 			let path_was_modified = Object.entries(local_path).reverse().some(([local_path_index, local_path_part]) => {
 
-				path_was_modified = index > this.path_offset && data_model_helper.value_is_reference_item(local_path_part);
+				path_was_modified = index > this.path_offset && value_is_reference_item(local_path_part);
 				if (path_was_modified)
-					local_path[parseInt(local_path_index)] = data_model_helper.format_reference_item(data_model_helper.get_index_from_reference_item_name(local_path_part) + 1);
+					local_path[parseInt(local_path_index)] = format_reference_item(get_index_from_reference_item_name(local_path_part) + 1);
 
 				index--;
 
@@ -716,7 +726,7 @@ export default class automapper {
 		});
 
 
-		const path_contains_to_many_references = path.some(data_model_helper.value_is_reference_item);
+		const path_contains_to_many_references = path.some(value_is_reference_item);
 		return !path_contains_to_many_references && !this.allow_multiple_mappings;
 
 	};

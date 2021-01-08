@@ -6,46 +6,57 @@
 
 'use strict';
 
-import wbplanviewdatamodel from './data_model_storage';
-import data_model_helper from './data_model_helper';
+import data_model_storage from './wbplanviewmodel';
+import {
+	format_reference_item,
+	format_tree_rank,
+	get_name_from_tree_rank_name,
+	value_is_reference_item,
+	value_is_tree_rank,
+} from './wbplanviewmodelhelper';
 
 
-
-const upload_plan_processing_functions = (headers:string[]):upload_plan_processing_functions =>({
-	wbcols: ([key, value] :[key :string, value :string]) => [
-		key,
-		{
-			[
-				headers.indexOf(value) !== -1 ?
-					'existing_header' :
-					'new_column'
-			]: value,
-		}
-	],
-	static: ([key, value] :[key :string, value :string]) => [
-		key, {new_static_column: value}
-	],
-	toOne: ([key, value] :[key :string, value :upload_plan_uploadTable_toOne]) => [key, handle_uploadable(value, headers)],
-	toMany: ([key, original_mappings] :[key :string, value :object]) => {
-		let i = 1;
-		return [
+const upload_plan_processing_functions = (headers :string[]) :upload_plan_processing_functions => (
+	{
+		wbcols: ([key, value] :[key :string, value :string]) => [
 			key,
-			Object.fromEntries(Object.values(original_mappings).map(mapping =>
+			{
 				[
-					data_model_helper.format_reference_item(i++),
-					handle_upload_table(mapping, headers),
-				],
-			)),
-		];
-	},
-});
+					headers.indexOf(value) !== -1 ?
+						'existing_header' :
+						'new_column'
+					]: value,
+			},
+		],
+		static: ([key, value] :[key :string, value :string]) => [
+			key, {new_static_column: value},
+		],
+		toOne: ([key, value] :[key :string, value :upload_plan_uploadTable_toOne]) => [key, handle_uploadable(value, headers)],
+		toMany: ([key, original_mappings] :[key :string, value :object]) => {
+			let i = 1;
+			return [
+				key,
+				Object.fromEntries(Object.values(original_mappings).map(mapping =>
+					[
+						format_reference_item(i++),
+						handle_upload_table(mapping, headers),
+					],
+				)),
+			];
+		},
+	}
+);
 
 // TODO: make this function recognize multiple tree rank fields, once upload plan supports that
-const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers:string[]) =>
+const handle_tree_record = (upload_plan :upload_plan_treeRecord, headers :string[]) =>
 	Object.fromEntries(
-		Object.entries(((upload_plan).ranks)).map(([rank_name, /*rank_data*/]) =>
+		Object.entries((
+			(
+				upload_plan
+			).ranks
+		)).map(([rank_name /*rank_data*/]) =>
 			[
-				data_model_helper.format_tree_rank(rank_name),
+				format_tree_rank(rank_name),
 				Object.fromEntries(
 					[
 						upload_plan_processing_functions(headers).wbcols(
@@ -53,15 +64,15 @@ const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers:string[
 						),
 					],
 				),
-			]
-		)
+			],
+		),
 	);
 
 
-const handle_upload_table_table = (upload_plan: upload_plan_uploadTable_table, headers:string[]) =>
+const handle_upload_table_table = (upload_plan :upload_plan_uploadTable_table, headers :string[]) =>
 	Object.fromEntries(Object.entries(upload_plan).reduce(
 		// @ts-ignore
-		(results, [plan_node_name, plan_node_data]:[upload_plan_field_group_types,upload_plan_uploadTable_table_group<upload_plan_field_group_types>]) =>
+		(results, [plan_node_name, plan_node_data] :[upload_plan_field_group_types, upload_plan_uploadTable_table_group<upload_plan_field_group_types>]) =>
 			[
 				...results,
 				...Object.entries(plan_node_data).map(
@@ -71,14 +82,14 @@ const handle_upload_table_table = (upload_plan: upload_plan_uploadTable_table, h
 		[],
 	));
 
-const handle_upload_table = (upload_plan: upload_plan_uploadTable, headers:string[]) => {
+const handle_upload_table = (upload_plan :upload_plan_uploadTable, headers :string[]) => {
 	const [[table_name, table_data]] = Object.entries(upload_plan);
 	return {
-		[table_name]:handle_upload_table_table(table_data,headers)
+		[table_name]: handle_upload_table_table(table_data, headers),
 	};
-}
+};
 
-const handle_uploadable = (upload_plan :upload_plan_uploadable, headers: string[]) :mappings_tree =>
+const handle_uploadable = (upload_plan :upload_plan_uploadable, headers :string[]) :mappings_tree =>
 	'treeRecord' in upload_plan ?
 		handle_tree_record(upload_plan.treeRecord, headers) :
 		handle_upload_table_table(upload_plan.uploadTable, headers);
@@ -88,34 +99,33 @@ const handle_uploadable = (upload_plan :upload_plan_uploadable, headers: string[
 * Inverse of mappings_tree_to_upload_plan
 * */
 export function upload_plan_to_mappings_tree(
-	headers: string[],
+	headers :string[],
 	upload_plan :upload_plan_structure,  // upload plan
-):upload_plan_to_mappings_tree {
+) :upload_plan_to_mappings_tree {
 
 	if (typeof upload_plan.baseTableName === 'undefined')
 		throw new Error('Upload plan should contain `baseTableName` as a root node');
 
 	return {
 		base_table_name: upload_plan.baseTableName,
-		mappings_tree: handle_uploadable(upload_plan.uploadable, headers)
-	}
+		mappings_tree: handle_uploadable(upload_plan.uploadable, headers),
+	};
 }
 
 
-
 //TODO: make these functions type safe
-const handle_header = (data :string | object)=>
+const handle_header = (data :string | object) =>
 	typeof data === 'string' ?
 		data :
 		Object.values(data)[0];
 
 function mappings_tree_to_upload_plan_table(table_data :object, table_name :string, wrap_it = true) {
 
-	if (typeof wbplanviewdatamodel.ranks[table_name] !== 'undefined') {
+	if (typeof data_model_storage.ranks[table_name] !== 'undefined') {
 
 		const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
-			const new_tree_key = data_model_helper.get_name_from_tree_rank_name(tree_key);
+			const new_tree_key = get_name_from_tree_rank_name(tree_key);
 			let name = tree_rank_data.name;
 			return [new_tree_key, handle_header(name)];
 
@@ -137,7 +147,7 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 
 	table_plan = Object.entries(table_data).reduce((table_plan, [field_name, field_data]) => {
 
-		if (data_model_helper.value_is_reference_item(field_name)) {
+		if (value_is_reference_item(field_name)) {
 			if (!is_to_many) {
 				is_to_many = true;
 				//@ts-ignore
@@ -148,16 +158,16 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 			table_plan.push(mappings_tree_to_upload_plan_table(field_data, table_name, false));
 
 		}
-		else if (data_model_helper.value_is_tree_rank(field_name))
+		else if (value_is_tree_rank(field_name))
 			//@ts-ignore
 			table_plan = mappings_tree_to_upload_plan_table(table_data, table_name, false);
 
 		else if (
-			typeof wbplanviewdatamodel.tables[table_name].fields[field_name] !== 'undefined' &&
+			typeof data_model_storage.tables[table_name].fields[field_name] !== 'undefined' &&
 			typeof table_plan !== 'undefined'
 		) {
 
-			const field = wbplanviewdatamodel.tables[table_name].fields[field_name];
+			const field = data_model_storage.tables[table_name].fields[field_name];
 
 			if (field.is_relationship) {
 				const mapping_table = field.table_name;
@@ -192,7 +202,7 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 	if (Array.isArray(table_plan) || !wrap_it)
 		return table_plan;
 
-	if (data_model_helper.value_is_reference_item(Object.keys(table_data).shift()))
+	if (value_is_reference_item(Object.keys(table_data).shift()))
 		return table_plan;
 
 	return {uploadTable: table_plan};
@@ -204,7 +214,7 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 * Inverse of upload_plan_to_mappings_tree
 * */
 export const mappings_tree_to_upload_plan = (
-	base_table_name: string,
+	base_table_name :string,
 	mappings_tree :object,  // mappings tree that is going to be used
 ) :string /* Upload plan as a JSON string */ =>
 	JSON.stringify({

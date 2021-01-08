@@ -8,7 +8,7 @@ import schema from '../schema';
 import domain from '../domain';
 
 import {get_friendly_name} from './wbplanviewhelper';
-import cache from './cache';
+import * as cache from './wbplanviewcache';
 
 const fetching_parameters :fetching_parameters = {
 

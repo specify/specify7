@@ -6,7 +6,7 @@
 
 'use strict';
 
-import data_model_storage from './wbplanviewdatamodel.js';
+import data_model_storage from './wbplanviewmodel';
 
 /*
 * Get a friendly name from the field. (Converts Camel Case to human readable name and fixes some errors)

@@ -4,10 +4,10 @@ import React from 'react';
 import '../../css/wbplanview.css';
 import _ from 'underscore';
 import navigation from '../navigation';
-import {mappings_tree_to_upload_plan} from './upload_plan_converter';
-import cache from './cache';
+import {mappings_tree_to_upload_plan} from './wbplanviewconverter';
+import * as cache from './wbplanviewcache';
 import schema from '../schema';
-import fetch_data_model from './wbplanviewdatamodelfetcher';
+import fetch_data_model from './wbplanviewmodelfetcher';
 import WBPlanViewMapper, {
 	get_lines_from_upload_plan,
 	get_lines_from_headers,
@@ -20,8 +20,8 @@ import WBPlanViewMapper, {
 } from './wbplanviewmapper';
 import ErrorBoundary from './errorboundary';
 import {ModalDialog, LoadingScreen} from './modaldialog';
-import data_model_helper from './data_model_helper';
-import data_model_storage from './wbplanviewdatamodel';
+import {show_required_missing_fields} from './wbplanviewmodelhelper';
+import data_model_storage from './wbplanviewmodel';
 import {ListOfBaseTables} from './wbplanviewcomponents';
 import {generate_dispatch, generate_reducer} from './statemanagement';
 
@@ -150,7 +150,7 @@ function validate(state:MappingState):MappingState {
 		show_mapping_view:  // Show mapping view panel if there were validation errors
 			state.show_mapping_view ||
 			Object.values(state.validation_results).length !== 0,
-		validation_results: data_model_helper.show_required_missing_fields(
+		validation_results: show_required_missing_fields(
 			state.base_table_name,
 			get_mappings_tree(state.lines),
 		),
@@ -546,15 +546,15 @@ function WBPlanView(props :WBPlanViewProps) {
 
 export default function(props:publicWBPlanViewProps):react_element {
 
-	const [schema_loaded,setSchemaLoaded] = React.useState<boolean>(typeof wbplanviewdatamodel.tables !== "undefined");
+	const [schema_loaded,setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== "undefined");
 	const [upload_plan,setUploadPlan] = React.useState<falsy_upload_plan>();
 	const [headers,setHeaders] = React.useState<string[]>();
 
 	if(!schema_loaded)
 		schema_fetched_promise.then(schema=>{
-			wbplanviewdatamodel.tables = schema.tables;
-			wbplanviewdatamodel.list_of_base_tables = schema.list_of_base_tables;
-			wbplanviewdatamodel.ranks = schema.ranks;
+			data_model_storage.tables = schema.tables;
+			data_model_storage.list_of_base_tables = schema.list_of_base_tables;
+			data_model_storage.ranks = schema.ranks;
 			setSchemaLoaded(true);
 		});
 
