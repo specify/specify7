@@ -21,7 +21,7 @@ import WBPlanViewMapper, {
 import ErrorBoundary from './errorboundary';
 import {ModalDialog, LoadingScreen} from './modaldialog';
 import data_model_helper from './data_model_helper';
-import data_model_storage from './data_model_storage';
+import data_model_storage from './wbplanviewdatamodel';
 import {ListOfBaseTables} from './wbplanviewcomponents';
 import {generate_dispatch, generate_reducer} from './statemanagement';
 
@@ -546,15 +546,15 @@ function WBPlanView(props :WBPlanViewProps) {
 
 export default function(props:publicWBPlanViewProps):react_element {
 
-	const [schema_loaded,setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== "undefined");
+	const [schema_loaded,setSchemaLoaded] = React.useState<boolean>(typeof wbplanviewdatamodel.tables !== "undefined");
 	const [upload_plan,setUploadPlan] = React.useState<falsy_upload_plan>();
 	const [headers,setHeaders] = React.useState<string[]>();
 
 	if(!schema_loaded)
 		schema_fetched_promise.then(schema=>{
-			data_model_storage.tables = schema.tables;
-			data_model_storage.list_of_base_tables = schema.list_of_base_tables;
-			data_model_storage.ranks = schema.ranks;
+			wbplanviewdatamodel.tables = schema.tables;
+			wbplanviewdatamodel.list_of_base_tables = schema.list_of_base_tables;
+			wbplanviewdatamodel.ranks = schema.ranks;
 			setSchemaLoaded(true);
 		});
 

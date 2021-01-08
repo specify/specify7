@@ -6,8 +6,8 @@
 
 'use strict';
 
-const data_model_storage = require('./data_model_storage.tsx');
-const data_model_helper = require('./data_model_helper.tsx');
+import wbplanviewdatamodel from './data_model_storage';
+import data_model_helper from './data_model_helper';
 
 
 
@@ -43,9 +43,9 @@ const upload_plan_processing_functions = (headers:string[]):upload_plan_processi
 // TODO: make this function recognize multiple tree rank fields, once upload plan supports that
 const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers:string[]) =>
 	Object.fromEntries(
-		Object.entries(((upload_plan).ranks)).map(([rank_name, /*rank_data*/]) => [
+		Object.entries(((upload_plan).ranks)).map(([rank_name, /*rank_data*/]) =>
 			[
-				data_model_storage.tree_symbol + rank_name,
+				data_model_helper.format_tree_rank(rank_name),
 				Object.fromEntries(
 					[
 						upload_plan_processing_functions(headers).wbcols(
@@ -54,7 +54,7 @@ const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers:string[
 					],
 				),
 			]
-		])
+		)
 	);
 
 
@@ -111,7 +111,7 @@ const handle_header = (data :string | object)=>
 
 function mappings_tree_to_upload_plan_table(table_data :object, table_name :string, wrap_it = true) {
 
-	if (typeof data_model_storage.ranks[table_name] !== 'undefined') {
+	if (typeof wbplanviewdatamodel.ranks[table_name] !== 'undefined') {
 
 		const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
@@ -153,11 +153,11 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 			table_plan = mappings_tree_to_upload_plan_table(table_data, table_name, false);
 
 		else if (
-			typeof data_model_storage.tables[table_name].fields[field_name] !== 'undefined' &&
+			typeof wbplanviewdatamodel.tables[table_name].fields[field_name] !== 'undefined' &&
 			typeof table_plan !== 'undefined'
 		) {
 
-			const field = data_model_storage.tables[table_name].fields[field_name];
+			const field = wbplanviewdatamodel.tables[table_name].fields[field_name];
 
 			if (field.is_relationship) {
 				const mapping_table = field.table_name;

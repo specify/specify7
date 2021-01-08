@@ -25,7 +25,7 @@ interface MappingPathProps {
 	readonly mappings_line_data: MappingElementProps[],
 }
 
-interface html_generator_fields_data extends Dictionary<html_generator_field_data>{
+interface html_generator_fields_data extends Readonly<Record<string, html_generator_field_data>>{
 }
 
 interface MappingElementPropsOpen extends Omit<CustomSelectElementPropsOpenBase, 'default_value'|'automapper_suggestions'>  {

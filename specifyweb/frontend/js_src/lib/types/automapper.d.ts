@@ -27,7 +27,7 @@ interface automapper_map_parameters {
 	readonly commit_to_cache? :boolean,  // whether to commit result to cache for future references
 }
 
-interface automapper_results extends WritableDictionary<mapping_path[]> {
+interface automapper_results extends Record<string, mapping_path[]> {
 	/*
 	* Returns mappings result in format:
 	* If payload.allow_multiple_mappings:
@@ -59,7 +59,7 @@ interface headers_to_map {
 	readonly [original_header_name :string] :header_information  // a dictionary of headers that need to be mapped
 }
 
-interface auto_mapper_definition_comparisons extends Dictionary<string[] | RegExp[]> {  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
+interface auto_mapper_definition_comparisons extends Readonly<Record<string, string[] | RegExp[]>> {  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
 }
 
 interface find_mappings_in_definitions_parameters {

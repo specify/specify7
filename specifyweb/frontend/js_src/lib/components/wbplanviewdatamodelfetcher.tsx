@@ -7,7 +7,7 @@
 import schema from '../schema';
 import domain from '../domain';
 
-import helper from './helper';
+import {get_friendly_name} from './wbplanviewhelper';
 import cache from './cache';
 
 const fetching_parameters :fetching_parameters = {
@@ -140,7 +140,7 @@ export default () :Promise<data_model_fetcher_return> =>
 				let friendly_name = field.getLocalizedName();
 
 				if (typeof friendly_name === 'undefined')
-					friendly_name = helper.get_friendly_name(field_name);
+					friendly_name = get_friendly_name(field_name);
 
 				field_name = field_name.toLowerCase();
 

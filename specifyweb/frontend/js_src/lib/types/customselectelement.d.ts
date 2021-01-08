@@ -38,7 +38,7 @@ interface CustomSelectElementDefaultOptionProps {
 	readonly is_relationship? :boolean
 }
 
-interface CustomSelectElementOptions extends WritableDictionary<CustomSelectElementOptionProps> {}
+interface CustomSelectElementOptions extends Record<string, CustomSelectElementOptionProps> {}
 
 interface CustomSelectElementOptionGroupProps {
 	readonly select_group_label? :string,  // group label (shown to the user)

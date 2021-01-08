@@ -16,14 +16,14 @@ interface table_synonym_definition {
 }
 
 
-type table_synonyms = Dictionary<table_synonym_definition[]>
+type table_synonyms = Readonly<Record<string, table_synonym_definition[]>>
 
 
 // dont_match
-interface dont_match_instances extends Dictionary<automapper_scope[]> {
+interface dont_match_instances extends Readonly<Record<string, automapper_scope[]>> {
 }
 
-interface dont_match extends Dictionary<dont_match_instances>{
+interface dont_match extends Readonly<Record<string, dont_match_instances>> {
 }
 
 
@@ -38,7 +38,7 @@ interface shortcut_definition {
 
 type shortcut = Readonly<Partial<Record<automapper_scope, shortcut_definition[]>>>
 
-interface shortcuts extends Dictionary<shortcut>{
+interface shortcuts extends Readonly<Record<string, shortcut>> {
 }
 
 
@@ -53,10 +53,10 @@ interface synonym_headers {
 
 type field_synonym = Readonly<Partial<Record<automapper_scope,synonym_headers>>>
 
-interface synonym extends Dictionary<field_synonym>{
+interface synonym extends Readonly<Record<string, field_synonym>> {
 }
 
-interface synonyms extends Dictionary<synonym>{
+interface synonyms extends Readonly<Record<string, synonym> >{
 }
 
 

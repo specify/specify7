@@ -1,9 +1,9 @@
 type mappings_tree_header = Record<mapping_type,string>
 
-interface mappings_tree extends Dictionary<mappings_tree | string | mappings_tree_header>{
+interface mappings_tree extends Readonly<Record<string, mappings_tree | string | mappings_tree_header>>{
 }
 
-interface flat_tree extends Dictionary<flat_tree | string>{
+interface flat_tree extends Readonly<Record<string, flat_tree | string>>{
 }
 
 /*

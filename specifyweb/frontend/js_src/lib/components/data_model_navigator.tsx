@@ -1,8 +1,8 @@
 'use strict';
 
-const cache = require('./cache.tsx').default;
-const data_model_helper = require('./data_model_helper.tsx').default;
-const data_model_storage = require('./data_model_storage.tsx').default;
+import cache from './cache';
+import data_model_helper from './data_model_helper';
+import data_model_storage from './wbplanviewdatamodel';
 
 
 export default class data_model_navigator {
@@ -127,7 +127,7 @@ export default class data_model_navigator {
 		if (cache_name !== false)
 			json_payload = JSON.stringify(arguments[0]);
 
-		if (use_cache) {
+		if (use_cache && cache_name && json_payload) {
 			const cached_data = cache.get(cache_name, json_payload);
 			if (cached_data) {
 				callback_payload.data = cached_data;
@@ -172,7 +172,7 @@ export default class data_model_navigator {
 		callback_payload.data = data;
 		callbacks.commit_instance_data(callback_payload);
 
-		if (cache_name !== false)
+		if (cache_name !== false && json_payload)
 			cache.set(cache_name, json_payload, data, {
 				bucket_type: 'session_storage',
 			});

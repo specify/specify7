@@ -1,7 +1,7 @@
 'use strict';
 
 import tree_helpers from './tree_helpers';
-import helper from './helper';
+import {deconstruct_mapping_path, find_duplicate_mappings} from './wbplanviewhelper';
 import {MappingLine, MappingPath} from './wbplanviewcomponents';
 import data_model_helper from './data_model_helper';
 import data_model_navigator from './data_model_navigator';
@@ -98,7 +98,7 @@ export function get_lines_from_upload_plan(
 	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, upload_plan);
 	const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
 	array_of_mappings.forEach(full_mapping_path => {
-		const [mapping_path, mapping_type, header_name] = helper.deconstruct_mapping_path(full_mapping_path, true);
+		const [mapping_path, mapping_type, header_name] = deconstruct_mapping_path(full_mapping_path, true);
 		const header_index = headers.indexOf(header_name);
 		if (header_index !== -1)
 			lines[header_index] = {
@@ -166,7 +166,7 @@ export function deduplicate_mappings(
 ) :MappingLine[] {
 
 	const array_of_mappings = get_array_of_mappings(lines,false, false);
-	const duplicate_mapping_indexes = helper.find_duplicate_mappings(array_of_mappings, false);
+	const duplicate_mapping_indexes = find_duplicate_mappings(array_of_mappings, false);
 
 	return lines.map((line,index)=>
 		duplicate_mapping_indexes.indexOf(index) === -1 ?

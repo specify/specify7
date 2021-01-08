@@ -4,7 +4,7 @@
 
 'use strict';
 
-const data_model_storage = require('./data_model_storage.tsx').default;
+import data_model_storage from './wbplanviewdatamodel';
 
 export default class data_model_helper {
 

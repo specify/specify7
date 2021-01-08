@@ -13,7 +13,7 @@ interface bucket_record {
 	value :any  // the value that is stored in a particular cache record
 }
 
-interface bucket_records extends WritableDictionary<bucket_record> {  // a dictionary of cache records
+interface bucket_records extends Record<string, bucket_record> {  // a dictionary of cache records
 }
 
 interface bucket_data {
@@ -21,5 +21,5 @@ interface bucket_data {
 	type :bucket_type
 }
 
-interface buckets extends WritableDictionary<bucket_data> {  // a dictionary of buckets and their data
+interface buckets extends Record<string, bucket_data> {  // a dictionary of buckets and their data
 }

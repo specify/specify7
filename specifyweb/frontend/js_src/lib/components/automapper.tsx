@@ -7,10 +7,10 @@
 'use strict';
 
 import AutoMapperDefinitions from './automapperdefinitions';
-import data_model_storage from './data_model_storage';
+import data_model_storage from './wbplanviewdatamodel';
 import data_model_helper from './data_model_helper';
 import cache from './cache';
-import helper from './helper';
+import {find_array_divergence_point} from './wbplanviewhelper';
 import {generate_dispatch} from './statemanagement';
 
 export default class automapper {
@@ -188,7 +188,7 @@ export default class automapper {
 						mode !== 'shortcuts_and_table_synonyms' ||
 						level === '0' ||
 						typeof this.starting_path[parseInt(level) - 1] === 'undefined' ||
-						helper.find_array_divergence_point(payload.path, this.starting_path.slice(0, parseInt(level))) !== -1
+						find_array_divergence_point(payload.path, this.starting_path.slice(0, parseInt(level))) !== -1
 					)
 						this.find_mappings(payload, mode);
 
@@ -642,7 +642,7 @@ export default class automapper {
 			) ||
 			(  // if a starting path was given and proposed mapping is outside of the path
 				this.starting_path.length !== 0 &&
-				helper.find_array_divergence_point(local_path, this.starting_path.slice(0, local_path.length)) === -1
+				find_array_divergence_point(local_path, this.starting_path.slice(0, local_path.length)) === -1
 			)
 		)
 			return false;

@@ -489,7 +489,7 @@ function definitions_to_lowercase(definitions :auto_mapper_definitions_interface
 		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth),
 	);
 
-	return definitions;
+	return Object.freeze(definitions);
 
 }
 
