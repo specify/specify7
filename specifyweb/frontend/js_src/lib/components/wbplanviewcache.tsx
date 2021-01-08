@@ -90,7 +90,7 @@ export function set<T>(
 		bucket_type = 'local_storage',
 		overwrite = false,
 	} :set_parameters = {}
-) :T|false {
+) :T {
 
 	if (!event_listener_is_initialized)
 		initialize();
@@ -103,7 +103,7 @@ export function set<T>(
 	}
 
 	if (!overwrite && typeof buckets[bucket_name].records[cache_name] !== "undefined")
-		return false;
+		return cache_value;
 
 	buckets[bucket_name].records[cache_name] = {
 		value: cache_value,

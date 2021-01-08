@@ -44,11 +44,12 @@ export const MappingLine = ({
 	header_name,
 	is_focused,
 	handleFocus,
+	handleClearMapping
 } :MappingLineProps) =>
 	<div className={`wbplanview_mappings_line ${is_focused ? 'wbplanview_mappings_line_focused' : ''}`}
 		 onClick={handleFocus}>
 		<div className="wbplanview_mappings_line_controls">
-			<button className="wbplanview_mappings_line_delete" title="Clear mapping">
+			<button className="wbplanview_mappings_line_delete" title="Clear mapping" onClick={handleClearMapping}>
 				<img src="../../../static/img/discard.svg" alt="Clear mapping"/>
 			</button>
 		</div>
@@ -158,7 +159,9 @@ function MappingElement(
 		if (group_fields.length !== 0)
 			table_fields.push({
 				select_group_name: group_name,
-				select_group_label: field_group_labels[group_name],
+				select_group_label: props.custom_select_subtype==='tree' ?  // don't show group labels on tree ranks
+					undefined :
+					field_group_labels[group_name],
 				select_options_data: group_fields,
 			});
 
@@ -167,7 +170,7 @@ function MappingElement(
 		custom_select_option_groups={table_fields}
 		default_option={default_option}
 		automapper_suggestions={
-			props.automapper_suggestions &&
+			typeof props.automapper_suggestions !== "undefined" && props.automapper_suggestions.length>0 ?
 				<SuggestionBox
 					select_options_data={{
 						option_label:
@@ -177,7 +180,8 @@ function MappingElement(
 								)
 							}</>
 					}}
-				/>
+				/> :
+				undefined
 		}
 	/>;
 

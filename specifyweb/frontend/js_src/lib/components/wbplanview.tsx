@@ -110,12 +110,16 @@ function getInitialWBPlanViewState(props:OpenMappingScreenAction):WBPlanViewStat
 }
 
 const HeaderWrapper = (props :HeaderWrapperProps) =>
-	<>
+	<div className="wbplanview_event_listener" onClick={(event) =>
+		(event.target as HTMLElement).closest('.custom_select_closed_list') === null && props.handleClick ?
+			props.handleClick() :
+			undefined
+	}>
 		{props.header}
 		<div id="wbplanview_container" className={props.state_name}>
 			{props.children}
 		</div>
-	</>;
+	</div>;
 
 function go_back(props :partialWBPlanViewProps):LoadingState {
 	navigation.go(`/workbench/${props.wb.id}/`);
@@ -255,18 +259,22 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 	'ClearMappingLineAction': (state,action)=>({
 		...mapping_state(state),
 		lines: [
-			...mapping_state(state).lines.slice(0, action.line_index),
-			...mapping_state(state).lines.slice(action.line_index + 1),
+			...mapping_state(state).lines.slice(0, action.line),
+			{
+				...mapping_state(state).lines[action.line],
+				mapping_path: ["0"],
+			},
+			...mapping_state(state).lines.slice(action.line + 1),
 		],
 	}),
 	'FocusLineAction': (state,action)=> {
-		if (action.line_index > mapping_state(state).lines.length)
+		if (action.line >= mapping_state(state).lines.length)
 			throw new Error('Tried to focus a line that doesn\'t exist');
 
-		const focused_line_mapping_path = mapping_state(state).lines[action.line_index].mapping_path;
+		const focused_line_mapping_path = mapping_state(state).lines[action.line].mapping_path;
 		return {
 			...mapping_state(state),
-			focused_line: action.line_index,
+			focused_line: action.line,
 			mapping_view: mapping_path_is_complete(focused_line_mapping_path) ?
 				focused_line_mapping_path :
 				mapping_state(state).mapping_view,
@@ -365,12 +373,16 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 					mapping_path: new_mapping_path,
 				},
 				...mapping_state(state).lines.slice(action.line + 1),
-			])
+			]),
+			open_select_element: undefined,
+			automapper_suggestions_promise: undefined,
+			automapper_suggestions: undefined,
 		}
 	},
 	'AutomapperSuggestionsLoadedAction': (state,action)=>({
 		...mapping_state(state),
 		automapper_suggestions: action.automapper_suggestions,
+		automapper_suggestions_promise: undefined,
 	}),
 });
 
@@ -484,6 +496,7 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				})
 			);
 		const handleSave = () => state.dispatch({type: 'SavePlanAction',wb:state.props.wb, handleUnload:state.props.handleUnload, wbtemplatePromise:state.props.wbtemplatePromise, mappingIsTemplated:state.props.mappingIsTemplated})
+		const handleClose = () =>state.dispatch({type:'CloseSelectElementAction'})
 		return <HeaderWrapper
 			state_name={state.type}
 			header={
@@ -499,7 +512,9 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 					handleSave={handleSave}
 					mapping_is_templated={state.mapping_is_templated}
 				/>
-			}>
+			}
+			handleClick={handleClose}
+		>
 			<WBPlanViewMapper
 				mapping_is_templated={state.mapping_is_templated}
 				show_hidden_fields={state.show_hidden_fields}
@@ -510,15 +525,19 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				mapping_view={state.mapping_view}
 				validation_results={state.validation_results}
 				mapper_dispatch={state.dispatch}
+				open_select_element={state.open_select_element}
+				automapper_suggestions={state.automapper_suggestions}
+				focused_line={state.focused_line}
 				handleSave={handleSave}
-				handleFocus={(line_index:number)=>state.dispatch({type:'FocusLineAction', line_index:line_index})}
+				handleFocus={(line:number)=>state.dispatch({type:'FocusLineAction', line})}
 				handleMappingViewMap={()=>state.dispatch({type:'MappingViewMapAction'})}
 				handleAddNewHeader={()=>state.dispatch({type:'AddNewHeaderAction'})}
 				handleAddNewStaticHeader={()=>state.dispatch({type:'AddNewStaticHeaderAction'})}
 				handleToggleHiddenFields={()=>state.dispatch({type:'ToggleHiddenFieldsAction'})}
 				handleOpen={(line:number, index:number)=>state.dispatch({type:'OpenSelectElementAction', line, index})}
-				handleClose={(line:number, index:number)=>state.dispatch({type:'CloseSelectElementAction', line, index})}
+				handleClose={handleClose}
 				handleChange={(line:'mapping_view'|number, index:number, value:string)=>state.dispatch({type:'ChangeSelectElementValueAction', line, index, value})}
+				handleClearMapping={(line:number)=>state.dispatch({type:'ClearMappingLineAction', line})}
 			/>
 		</HeaderWrapper>;
 	}

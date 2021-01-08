@@ -19,6 +19,7 @@ interface MappingLineProps {
 	readonly header_name :string,
 	readonly is_focused :boolean,
 	readonly handleFocus : ()=>void,
+	readonly handleClearMapping: ()=>void,
 }
 
 interface MappingPathProps {

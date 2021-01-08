@@ -115,11 +115,11 @@ interface ValidationAction extends Action<'ValidationAction'> {
 }
 
 interface ClearMappingLineAction extends Action<'ClearMappingLineAction'> {
-	readonly line_index :number,
+	readonly line :number,
 }
 
 interface FocusLineAction extends Action<'FocusLineAction'> {
-	readonly line_index :number,
+	readonly line :number,
 }
 
 interface MappingViewMapAction extends Action<'MappingViewMapAction'>{
@@ -137,7 +137,7 @@ interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'>{
 interface OpenSelectElementAction extends Action<'OpenSelectElementAction'>, select_element_position {
 }
 
-interface CloseSelectElementAction extends Action<'CloseSelectElementAction'>, select_element_position {
+interface CloseSelectElementAction extends Action<'CloseSelectElementAction'> {
 }
 
 interface ChangeSelectElementValueAction extends Action<'ChangeSelectElementValueAction'>, select_element_onchange_position {
@@ -220,5 +220,6 @@ interface publicWBPlanViewProps extends partialWBPlanViewProps {
 interface HeaderWrapperProps {
 	readonly children :react_elements,
 	readonly header :react_element,
-	readonly state_name :WBPlanViewStates['type']
+	readonly state_name :WBPlanViewStates['type'],
+	readonly handleClick? : handleElementOpen,
 }

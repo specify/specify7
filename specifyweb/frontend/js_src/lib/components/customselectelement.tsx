@@ -103,6 +103,14 @@ const OptionGroup = ({
 		})}
 	</span>;
 
+const ShadowListOfOptions = React.memo(({field_names}:ShadowListOfOptionsProps)=>
+	<ul className="custom_select_element_shadow_list">{
+		field_names.map((field_name, index) =>
+			<li key={index}>{field_name}</li>
+		)
+	}</ul>
+);
+
 /* Generates a custom select element */
 export function CustomSelectElement(
 	{
@@ -117,6 +125,7 @@ export function CustomSelectElement(
 			is_relationship: false,
 		},
 		is_open,
+		field_names,
 		handleChange,
 		handleOpen,
 		handleClose,
@@ -136,6 +145,7 @@ export function CustomSelectElement(
 	let header;
 	let preview;
 	let first_row;
+	let options_shadow;
 	if (custom_select_type === 'opened_list')
 		header = select_label !== '' &&
 			<span className="custom_select_header">
@@ -172,7 +182,7 @@ export function CustomSelectElement(
 			{option_is_clickable && <span className="custom_select_input_dropdown">&#9660;</span>}
 		</span>;
 
-		first_row = is_open && custom_select_subtype !== 'tree' &&
+		first_row = is_open && custom_select_subtype !== 'tree' && default_option.option_name!=='0' &&
 			<Option
 				handleClick={
 					typeof handleClick === 'undefined' ?
@@ -182,14 +192,17 @@ export function CustomSelectElement(
 				is_default={default_option.option_label === '0'}
 			/>;
 
+		options_shadow = !is_open && option_is_clickable && field_names &&
+			<ShadowListOfOptions field_names={field_names} />
+
 	}
 
 	const groups = is_open && option_is_clickable &&
 		custom_select_option_groups!.filter(({select_options_data}) =>
 			Object.keys(select_options_data).length !== 0,
-		).map(select_group_data =>
+		).map((select_group_data,index) =>
 			<OptionGroup
-				key={select_group_data.select_group_label}
+				key={index}
 				handleClick={handleClick}
 				{...select_group_data}
 				select_group_label={
@@ -208,11 +221,12 @@ export function CustomSelectElement(
 
 
 	return <span
-		className="custom_select"
+		className={`custom_select custom_select_${custom_select_type}`}
 		title={custom_select_type!=='opened_list' ? select_label : undefined}>
 		{automapper_suggestions}
 		{header}
 		{preview}
+		{options_shadow}
 		{custom_select_options}
 	</span>;
 

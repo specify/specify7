@@ -8,7 +8,12 @@ import {
 } from './wbplanviewtreehelper';
 import {deconstruct_mapping_path, find_duplicate_mappings} from './wbplanviewhelper';
 import {MappingLine, MappingPath} from './wbplanviewcomponents';
-import {value_is_tree_rank, value_is_reference_item} from './wbplanviewmodelhelper';
+import {
+	value_is_tree_rank,
+	value_is_reference_item,
+	get_max_to_many_value,
+	format_reference_item,
+} from './wbplanviewmodelhelper';
 import {get_mapping_line_data_from_mapping_path} from './wbplanviewnavigator';
 import automapper from './automapper';
 import {upload_plan_to_mappings_tree} from './wbplanviewconverter';
@@ -44,6 +49,7 @@ function FormatValidationResults(props :FormatValidationResultsProps) {
 						generate_last_relationship_data: false,
 						custom_select_type: 'preview_list',
 						get_mapped_fields: props.get_mapped_fields,
+						//TODO: add handleChange here
 					})}
 				/>
 			</div>,
@@ -305,7 +311,12 @@ export function mutate_mapping_path({
 			lines[line].mapping_path
 	)];
 
-	if (value_is_tree_rank(value) || value_is_reference_item(value))
+	if(value==='add'){
+		const mapped_fields = Object.keys(get_mapped_fields(lines,mapping_path));
+		const max_to_many_value = get_max_to_many_value(mapped_fields);
+		mapping_path[index] = format_reference_item(max_to_many_value+1);
+	}
+	else if (value_is_reference_item(value) && value_is_tree_rank(value))
 		mapping_path[index] = value;
 	else
 		mapping_path = [...mapping_path.slice(0, index), value];
@@ -355,12 +366,13 @@ export default function (props :WBPlanViewMapperProps) {
 					mapping_type={type}
 					is_focused={index === props.focused_line}
 					handleFocus={props.handleFocus.bind(null, index)}
+					handleClearMapping={props.handleClearMapping.bind(null, index)}
 					line_data={
 						get_mapping_line_data_from_mapping_path({
 							base_table_name: props.base_table_name,
 							mapping_path: mapping_path,
 							use_cached: true,
-							generate_last_relationship_data: false,
+							generate_last_relationship_data: true,
 							custom_select_type: 'closed_list',
 							handleChange: props.handleChange.bind(null, index),
 							handleOpen: props.handleOpen.bind(null, index),
@@ -370,6 +382,7 @@ export default function (props :WBPlanViewMapperProps) {
 								typeof props.open_select_element !== 'undefined' && props.open_select_element.line === index ?
 									props.open_select_element.index :
 									undefined,
+							show_hidden_fields: props.show_hidden_fields,
 							automapper_suggestions: props.automapper_suggestions,
 						})
 					}

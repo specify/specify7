@@ -133,11 +133,6 @@ function navigator_instance<RETURN_STRUCTURE>({
 		}
 	}
 
-	// if(callbacks.should_custom_select_element_be_open(callback_payload)){
-	//
-	// }
-	callbacks.should_custom_select_element_be_open(callback_payload);
-
 	callbacks.navigator_instance_pre(callback_payload);
 
 	const parent_relationship_type =
@@ -194,6 +189,7 @@ export function get_mapping_line_data_from_mapping_path({
 	handleClose = ()=>{},
 	get_mapped_fields,
 	automapper_suggestions,
+	show_hidden_fields=true,
 } :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
 
 	use_cached=false;
@@ -253,12 +249,11 @@ export function get_mapping_line_data_from_mapping_path({
 
 		},
 
-		should_custom_select_element_be_open: () =>
-			internal_state.is_open =
-				open_path_element_index === internal_state.mapping_path_position ||
-				['opened_list','suggestion_list'].indexOf(internal_state.custom_select_type) !== -1,
-
 		navigator_instance_pre({table_name}) {
+
+			internal_state.is_open =
+				open_path_element_index === internal_state.mapping_path_position+1 ||
+				['opened_list','suggestion_list'].indexOf(internal_state.custom_select_type) !== -1
 
 			internal_state.custom_select_subtype = 'simple';
 
@@ -375,6 +370,9 @@ export function get_mapping_line_data_from_mapping_path({
 					(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
 						relationship_is_to_many(relationship_type) &&
 						relationship_is_to_many(parent_relationship_type)
+					) || (  // skip hidden fields when user decided to hide them
+						!show_hidden_fields &&
+						is_hidden
 					)
 				)
 					continue;
@@ -414,15 +412,15 @@ export function get_mapping_line_data_from_mapping_path({
 			if(internal_state.is_open === true)
 				return {
 					...base_structure,
-					handleChange: handleChange.bind(null,internal_state.mapping_path_position),
-					handleClose: handleClose.bind(null,internal_state.mapping_path_position),
+					handleChange: handleChange.bind(null,internal_state.mapping_path_position+1),
+					handleClose: handleClose.bind(null,internal_state.mapping_path_position+1),
 					automapper_suggestions,
 					is_open: true,
 				};
 			else
 				return {
 					...base_structure,
-					handleOpen: handleOpen.bind(null,internal_state.mapping_path_position),
+					handleOpen: handleOpen.bind(null,internal_state.mapping_path_position+1),
 					is_open: false,
 				};
 

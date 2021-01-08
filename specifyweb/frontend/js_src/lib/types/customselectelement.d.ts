@@ -46,6 +46,10 @@ interface CustomSelectElementOptionGroupProps {
 	readonly handleClick? :handleElementChange,
 }
 
+interface ShadowListOfOptionsProps {
+	readonly field_names: string[],
+}
+
 interface CustomSelectElementPropsBase {
 	readonly select_label? :string,  // the label to use for the element
 	readonly custom_select_type :custom_select_type,

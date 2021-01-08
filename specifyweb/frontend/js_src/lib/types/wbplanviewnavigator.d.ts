@@ -32,7 +32,6 @@ interface navigator_callbacks<RETURN_STRUCTURE> {
 	readonly get_final_data :navigator_callback_function<RETURN_STRUCTURE[]>,  // formats internal_payload and returns it. Would be used as a return value for the navigator
 	readonly get_instance_data :navigator_callback_function<RETURN_STRUCTURE>,  // commits callback_payload.data to internal_payload and returns committed data
 	readonly commit_instance_data :navigator_callback_function<void>,  // commits callback_payload.data to internal_payload and returns committed data
-	readonly should_custom_select_element_be_open :navigator_callback_function<boolean>  // called inside of navigator_instance to determine if current mapping_path part should result in an open custom select element
 	readonly navigator_instance_pre :navigator_callback_function<void>,  // called inside of navigator_instance before it calls callbacks for tree ranks / reference items / simple fields
 	readonly handle_to_many_children :navigator_callback_function<void>,  // handles to_many children
 	readonly handle_tree_ranks :navigator_callback_function<void>,  // handles tree ranks children
@@ -65,11 +64,12 @@ interface get_mapping_line_data_from_mapping_path_parameters {
 	readonly use_cached? :boolean,  // {bool} whether to use cache if exists
 	readonly generate_last_relationship_data? :boolean  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
 	readonly custom_select_type :custom_select_type,
+	readonly show_hidden_fields? :boolean,
 	readonly handleChange? : handleMappingLineChange
 	readonly handleOpen? : handleMappingLineOpen
 	readonly handleClose? : handleMappingLineOpen
 	readonly get_mapped_fields: get_mapped_fields_bind,
-	readonly automapper_suggestions?: MappingElementProps[][]
+	readonly automapper_suggestions?: MappingElementProps[][],
 }
 
 interface get_mapping_line_data_from_mapping_path_internal_state {

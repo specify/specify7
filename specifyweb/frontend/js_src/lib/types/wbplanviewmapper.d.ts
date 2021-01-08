@@ -44,8 +44,9 @@ interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
 	readonly handleAddNewStaticHeader: ()=>void,
 	readonly handleToggleHiddenFields: ()=>void,
 	readonly handleOpen: handleMappingOpen
-	readonly handleClose: handleMappingOpen
+	readonly handleClose: handleElementOpen
 	readonly handleChange: handleMappingChange,
+	readonly handleClearMapping: handleMappingLineOpen,
 }
 
 interface MappingsControlPanelProps {
@@ -88,11 +89,6 @@ type get_mapped_fields_bind = (
 
 type get_mappings_tree = (
 	lines: MappingLine[],
-	include_headers? :boolean, // whether the last tree nodes of each branch should be mapping type and header name
-	skip_empty? :boolean,  // whether to include incomplete tree nodes
-)=>mappings_tree;
-
-type get_mappings_tree_bind = (
 	include_headers? :boolean, // whether the last tree nodes of each branch should be mapping type and header name
 	skip_empty? :boolean,  // whether to include incomplete tree nodes
 )=>mappings_tree;
