@@ -35,7 +35,7 @@ interface MappingLineStaticHeaderProps extends MappingLineBaseProps {
 type MappingLineProps = MappingLineStaticHeaderProps | MappingLineNonStaticHeaderProps;
 
 interface MappingPathProps {
-	readonly mappings_line_data: MappingElementProps[],
+	readonly mapping_line_data: MappingElementProps[],
 }
 
 interface html_generator_fields_data extends Readonly<Record<string, html_generator_field_data>>{
@@ -43,7 +43,8 @@ interface html_generator_fields_data extends Readonly<Record<string, html_genera
 
 interface MappingElementPropsOpen extends Omit<CustomSelectElementPropsOpenBase, 'default_value'|'automapper_suggestions'>  {
 	readonly fields_data :html_generator_fields_data,
-	readonly automapper_suggestions?: MappingElementProps[][],
+	readonly automapper_suggestions?: automapper_suggestion[],
+	readonly handleAutomapperSuggestionSelection?: (suggestion:string)=>void,
 }
 
 interface MappingElementPropsClosed extends Omit<CustomSelectElementPropsClosed, 'default_value'|'field_names'> {

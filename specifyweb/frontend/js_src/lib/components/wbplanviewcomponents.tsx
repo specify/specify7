@@ -8,9 +8,10 @@
 
 import React from 'react';
 import {CustomSelectElement, SuggestionBox} from './customselectelement';
+import {named_component} from './wbplanview';
 
 /* Generates a list of tables */
-export const ListOfBaseTables = React.memo(({
+export const ListOfBaseTables = React.memo(named_component(({
 		list_of_tables,
 		handleChange,
 	} :ListOfBaseTablesProps) =>
@@ -32,13 +33,12 @@ export const ListOfBaseTables = React.memo(({
 					))
 				)
 			}
-			custom_select_type='opened_list'
+			custom_select_type='base_table_selection_list'
 			custom_select_subtype='simple'
-		/>,
-);
+		/>,'ListOfBaseTables'));
 
 /* Generates a mapping line */
-export const MappingLine = ({
+export const MappingLine = named_component(({
 	line_data,
 	mapping_type,
 	header_name,
@@ -47,37 +47,37 @@ export const MappingLine = ({
 	handleClearMapping,
 	handleStaticHeaderChange=()=>{}
 } :MappingLineProps) =>
-	<div className={`wbplanview_mappings_line ${is_focused ? 'wbplanview_mappings_line_focused' : ''}`}
+	<div className={`wbplanview_mapping_line ${is_focused ? 'wbplanview_mapping_line_focused' : ''}`}
 		 onClick={handleFocus}>
-		<div className="wbplanview_mappings_line_controls">
-			<button className="wbplanview_mappings_line_delete" title="Clear mapping" onClick={handleClearMapping}>
+		<div className="wbplanview_mapping_line_controls">
+			<button className="wbplanview_mapping_line_delete" title="Clear mapping" onClick={handleClearMapping}>
 				<img src="../../../static/img/discard.svg" alt="Clear mapping"/>
 			</button>
 		</div>
-		<div className="wbplanview_mappings_line_header">
+		<div className="wbplanview_mapping_line_header">
 			{
 				mapping_type === 'new_static_column' ?
 					<StaticHeader default_value={header_name} onChange={handleStaticHeaderChange}/> :
 					header_name
 			}
 		</div>
-		<div className="wbplanview_mappings_line_elements">
-			<MappingPath mappings_line_data={line_data}/>
+		<div className="wbplanview_mapping_line_elements">
+			<MappingPath mapping_line_data={line_data}/>
 		</div>
-	</div>;
+	</div>,'MappingLine');
 
 /* Generates a mapping path */
-export const MappingPath = ({
-	mappings_line_data,
+export const MappingPath = named_component(({
+	mapping_line_data,
 }:MappingPathProps) =>
 	<>
-		{mappings_line_data.map((mapping_details, index) =>
+		{mapping_line_data.map((mapping_details, index) =>
 			<React.Fragment key={index}>
 				<MappingElement {...mapping_details} />
-				{index+1 !== mappings_line_data.length && <MappingElementDivider />}
+				{index+1 !== mapping_line_data.length && MappingElementDivider}
 			</React.Fragment>,
 		)}
-	</>;
+	</>,'MappingPath');
 
 const field_group_labels :{[key :string] :string} = {
 	required_fields: 'Required Fields',
@@ -85,8 +85,7 @@ const field_group_labels :{[key :string] :string} = {
 	hidden_fields: 'Hidden Fields',
 };
 
-const MappingElementDivider = ()=>
-	<span className="wbplanview_mappings_line_divider">&#x2192;</span>
+const MappingElementDivider = <span className="wbplanview_mapping_line_divider">&#x2192;</span>;
 
 /* Generates a new mapping element */
 function MappingElement(
@@ -152,32 +151,42 @@ function MappingElement(
 			is_relationship: false,
 		}
 
-
 	return props.is_open ?
 		<CustomSelectElement
 			{...props}
 			custom_select_option_groups={
-				Object.entries(field_groups).filter(([_group_name, group_fields])=>
-					group_fields.length !== 0
-				).map(([group_name, group_fields])=>({
-					select_group_label: props.custom_select_subtype==='tree' ?  // don't show group labels on tree ranks
-						undefined :
-						field_group_labels[group_name],
-					select_options_data: group_fields,
-				}))
+				Object.fromEntries(
+					Object.entries(field_groups).filter(([_group_name, group_fields])=>
+						group_fields.length !== 0
+					).map(([group_name, group_fields])=>[
+						group_name,
+						{
+							select_group_label: props.custom_select_subtype==='tree' || props.custom_select_subtype==='to_many' || props.custom_select_type==='base_table_selection_list' ?  // don't show group labels on tree ranks
+								undefined :
+								field_group_labels[group_name],
+							select_options_data: group_fields,
+						}
+					])
+				)
 			}
 			default_option={default_option}
 			automapper_suggestions={
-				typeof props.automapper_suggestions !== "undefined" && props.automapper_suggestions.length>0 ?
+				typeof props.automapper_suggestions !== "undefined" &&
+				props.automapper_suggestions.length>0 &&
+				typeof props.handleAutomapperSuggestionSelection !== "undefined" ?
 					<SuggestionBox
-						select_options_data={{
-							option_label:
-								<>{
-									props.automapper_suggestions.map(automapper_suggestion=>
-										<MappingPath mappings_line_data={automapper_suggestion} />
-									)
-								}</>
-						}}
+						handleAutomapperSuggestionSelection={props.handleAutomapperSuggestionSelection}
+						select_options_data={
+							Object.fromEntries(
+								props.automapper_suggestions.map((automapper_suggestion, index)=>[
+									index+1,  // since "0" is reserved for `no value`, we need to start counting from 1
+									{
+										option_label:
+											<MappingPath mapping_line_data={automapper_suggestion.mapping_line_data}/>
+									}
+								])
+							)
+						}
 					/> :
 					undefined
 			}
@@ -191,8 +200,8 @@ function MappingElement(
 }
 
 /* Return a textarea with a given value for a new static header */
-const StaticHeader = ({
+const StaticHeader = named_component(({
 	default_value = '',
 	onChange: handleChange,
 }:StaticHeaderProps) =>
-	<textarea value={default_value} onChange={handleChange}/>;
+	<textarea value={default_value} onChange={handleChange}/>,'StaticHeader');
