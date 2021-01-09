@@ -8,9 +8,16 @@
 
 import React from 'react';
 import $ from 'jquery';
+import {named_component} from './wbplanview';
 
 
-export const ModalDialog = React.memo((props :ModalDialogProps) => {
+export const ModalDialog = React.memo(named_component(({
+	onCloseCallback,
+	properties,
+	onLoadCallback,
+	eventListenersEffect,
+	children
+} :ModalDialogProps) => {
 	const dialog_ref = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
@@ -23,8 +30,8 @@ export const ModalDialog = React.memo((props :ModalDialogProps) => {
 				return;
 			dialog.dialog('destroy');
 			window.removeEventListener('resize',resize);
-			if(typeof props.onCloseCallback === "function")
-				props.onCloseCallback();
+			if(typeof onCloseCallback === "function")
+				onCloseCallback();
 		}
 
 		const dialog = $(dialog_ref.current.children[0]).dialog({
@@ -36,32 +43,45 @@ export const ModalDialog = React.memo((props :ModalDialogProps) => {
 					text: 'Cancel', click: close_dialog,
 				},
 			],
-			...props.properties,
+			...properties,
 		});
-		if (typeof props.onLoadCallback !== 'undefined')
-			props.onLoadCallback(dialog);
+		if (typeof onLoadCallback !== 'undefined')
+			onLoadCallback(dialog);
 
 		const resize = ()=>dialog.dialog("option", "position", "center");
 
 		window.addEventListener('resize',resize);
 
-		return close_dialog;
+
+		// jQuery modifies DOM, which stops React's event listeners from firing
+		// if we need event listeners on elements inside the modal, we need to use use old school addEventListener
+
+		if(eventListenersEffect) {
+			const event_destroy_callback = eventListenersEffect(dialog[0])
+			return () => {
+				if(typeof event_destroy_callback === 'function')
+					event_destroy_callback();
+				close_dialog();
+			}
+		}
+		else
+			return close_dialog;
 	},[]);
 
 	return (
 		<div ref={dialog_ref}>
 			<div>
-				{props.children}
+				{children}
 			</div>
 		</div>
 	);
-});
+},'ModalDialog'));
 
 //Loading Screen
 const handleOnLoad = (dialog :JQuery<HTMLElement>) =>
 	$('.progress-bar', dialog).progressbar({value: false});
 
-export const LoadingScreen = () =>
+export const LoadingScreen = named_component(() =>
 	<ModalDialog
 		onLoadCallback={handleOnLoad}
 		properties={{
@@ -72,4 +92,4 @@ export const LoadingScreen = () =>
 		}}
 	>
 		<div className="progress-bar"/>
-	</ModalDialog>;
+	</ModalDialog>,'LoadingScreen');
