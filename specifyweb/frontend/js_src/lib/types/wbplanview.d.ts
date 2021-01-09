@@ -17,7 +17,7 @@ type falsy_upload_plan = upload_plan_structure | false;
 
 interface upload_plan_template {
 	dataset_name :string,
-	upload_plan :string
+	upload_plan :upload_plan_structure
 }
 
 
@@ -49,7 +49,7 @@ interface TemplateSelectionState extends State<'TemplateSelectionState'> {
 }
 
 interface MappingState extends State<'MappingState'>, WBPlanViewMapperBaseProps {
-	readonly automapper_suggestions_promise?:Promise<MappingElementProps[][]>,
+	readonly automapper_suggestions_promise?:Promise<automapper_suggestion[]>,
 }
 
 type WBPlanViewStates =
@@ -66,15 +66,17 @@ type WBPlanViewStatesWithParams = WBPlanViewStates & {
 
 //actions
 interface OpenBaseTableSelectionAction extends Action<'OpenBaseTableSelectionAction'> {
+	referrer?: WBPlanViewStates['type'],
 }
 
 interface SelectTableAction extends Action<'SelectTableAction'> {
 	readonly table_name :string,
-	readonly mappingIsTemplated: boolean,
+	readonly mapping_is_templated: boolean,
 	readonly headers: string[]
 }
 
 interface UseTemplateAction extends Action<'UseTemplateAction'> {
+	readonly dispatch :(action:WBPlanViewActions)=>void,
 }
 
 type BaseTableSelectionActions =
@@ -99,7 +101,7 @@ interface CancelMappingAction extends Action<'CancelMappingAction'>,partialWBPla
 type CommonActions = CancelMappingAction;
 
 interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
-	readonly mappingIsTemplated: boolean,
+	readonly mapping_is_templated: boolean,
 	readonly headers: string[],
 	readonly upload_plan: falsy_upload_plan,
 }
@@ -137,6 +139,9 @@ interface AddNewHeaderAction extends Action<'AddNewHeaderAction'>{
 interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'>{
 }
 
+interface AutoScrollFinishedAction extends Action<'AutoScrollFinishedAction'>{
+}
+
 interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'>{
 }
 
@@ -148,10 +153,15 @@ interface CloseSelectElementAction extends Action<'CloseSelectElementAction'> {
 
 interface ChangeSelectElementValueAction extends Action<'ChangeSelectElementValueAction'>, select_element_onchange_position {
 	readonly value: string,
+	readonly is_relationship: boolean,
 }
 
 interface AutomapperSuggestionsLoadedAction extends Action<'AutomapperSuggestionsLoadedAction'> {
-	readonly automapper_suggestions: MappingElementProps[][],
+	readonly automapper_suggestions: automapper_suggestion[],
+}
+
+interface AutomapperSuggestionSelectedAction extends Action<'AutomapperSuggestionSelectedAction'> {
+	readonly suggestion: string,
 }
 
 interface StaticHeaderChangeAction extends Action<'StaticHeaderChangeAction'> {
@@ -171,11 +181,13 @@ type MappingActions =
 	| MappingViewMapAction
 	| AddNewHeaderAction
 	| AddNewStaticHeaderAction
+	| AutoScrollFinishedAction
 	| ToggleHiddenFieldsAction
 	| OpenSelectElementAction
 	| CloseSelectElementAction
 	| ChangeSelectElementValueAction
 	| AutomapperSuggestionsLoadedAction
+	| AutomapperSuggestionSelectedAction
 	| StaticHeaderChangeAction;
 
 type WBPlanViewActions =
@@ -190,6 +202,7 @@ interface WBPlanViewHeaderBaseProps {
 	readonly title :string,
 	readonly state_type :WBPlanViewStates['type'],
 	readonly handleCancel :() => void,
+	readonly mapping_is_templated?: boolean,
 }
 
 interface WBPlanViewHeaderPropsMapping extends WBPlanViewHeaderBaseProps {
@@ -225,7 +238,7 @@ interface partialWBPlanViewProps {
 
 interface publicWBPlanViewProps extends partialWBPlanViewProps {
 	readonly wbtemplatePromise :jquery_promise<specify_resource>,
-	readonly mappingIsTemplated :boolean,
+	readonly mapping_is_templated :boolean,
 }
 
 //render wrappers

@@ -10,53 +10,72 @@ import React from 'react';
 import '../../css/wbplanview.css';
 import _ from 'underscore';
 import navigation from '../navigation';
-import {mappings_tree_to_upload_plan} from './wbplanviewconverter';
 import * as cache from './wbplanviewcache';
 import schema from '../schema';
 import fetch_data_model from './wbplanviewmodelfetcher';
 import WBPlanViewMapper, {
-	get_lines_from_upload_plan,
-	get_lines_from_headers,
-	mapping_path_is_complete,
-	get_mappings_tree,
-	mutate_mapping_path,
 	deduplicate_mappings,
 	get_automapper_suggestions,
-	get_mapped_fields,
+	get_lines_from_headers,
+	get_lines_from_upload_plan,
+	go_back,
+	mapping_path_is_complete,
+	mutate_mapping_path,
+	save_plan,
+	validate,
 } from './wbplanviewmapper';
 import ErrorBoundary from './errorboundary';
-import {ModalDialog, LoadingScreen} from './modaldialog';
-import {show_required_missing_fields} from './wbplanviewmodelhelper';
+import {LoadingScreen, ModalDialog} from './modaldialog';
 import data_model_storage from './wbplanviewmodel';
 import {ListOfBaseTables} from './wbplanviewcomponents';
 import {generate_dispatch, generate_reducer} from './statemanagement';
 
 let schema_fetched_promise = fetch_data_model();
 
-const WBPlanViewHeaderLeftMappingElements = (props :WBPlanViewHeaderPropsMapping) => <>
-	<button onClick={props.handleTableChange}>Change table</button>
-	<button onClick={props.handleToggleMappingView}>Toggle Mapping View</button>
-</>;
-const WBPlanViewHeaderRightMappingElements = (props :WBPlanViewHeaderPropsMapping) => <>
+export function named_component<T>(component_function:T, component_name:string):T {
+	// @ts-ignore
+	component_function.displayName = component_name;
+	return component_function;
+}
+
+const WBPlanViewHeaderLeftMappingElements = named_component(({
+	handleTableChange,
+	handleToggleMappingView
+} :WBPlanViewHeaderPropsMapping) => <>
+	<button onClick={handleTableChange}>Change table</button>
+	<button onClick={handleToggleMappingView}>Toggle Mapping View</button>
+</>,'WBPlanViewHeaderLeftMappingElements');
+
+const WBPlanViewHeaderRightMappingElements = named_component(({
+	mapping_is_templated,
+	handleToggleMappingIsTemplated,
+	handleClearMapping,
+	handleValidation,
+	handleSave,
+	handleCancel
+} :WBPlanViewHeaderPropsMapping) => <>
 	<label>
 		<input
 			type="checkbox"
-			checked={props.mapping_is_templated}
-			onChange={props.handleToggleMappingIsTemplated}
+			checked={mapping_is_templated}
+			onChange={handleToggleMappingIsTemplated}
 		/>
 		Use this mapping as a template
 	</label>
-	<button onClick={props.handleClearMapping}>Clear Mappings</button>
-	<button onClick={props.handleValidation}>Validate</button>
-	<button onClick={props.handleSave}>Save</button>
-	<button onClick={props.handleCancel}>Cancel</button>
-</>;
-const WBPlanViewHeaderRightNonMappingElements = (props :WBPlanViewHeaderPropsNonMapping) =>
+	<button onClick={handleClearMapping}>Clear Mappings</button>
+	<button onClick={handleValidation}>Validate</button>
+	<button onClick={handleSave}>Save</button>
+	<button onClick={handleCancel}>Cancel</button>
+</>,'WBPlanViewHeaderRightMappingElements');
+const WBPlanViewHeaderRightNonMappingElements = named_component(({
+	handleUseTemplate,
+	handleCancel
+} :WBPlanViewHeaderPropsNonMapping) =>
 	<>
-		<button onClick={props.handleUseTemplate}>Use template</button>
-		<button onClick={props.handleCancel}>Cancel</button>
-	</>;
-const WBPlanViewHeader = React.memo((props :WBPlanViewHeaderProps) => <div id="wbplanview_header">
+		<button onClick={handleUseTemplate}>Use template</button>
+		<button onClick={handleCancel}>Cancel</button>
+	</>,'WBPlanViewHeaderRightNonMappingElements');
+const WBPlanViewHeader = React.memo(named_component((props :WBPlanViewHeaderProps) => <div className="wbplanview_header">
 		<div>
 			<span>{props.title}</span>
 			{props.state_type === 'MappingState' && WBPlanViewHeaderLeftMappingElements(props)}
@@ -68,9 +87,10 @@ const WBPlanViewHeader = React.memo((props :WBPlanViewHeaderProps) => <div id="w
 					WBPlanViewHeaderRightNonMappingElements(props)
 			}
 		</div>
-	</div>,
+	</div>,'WBPlanViewHeader'),
 	(previous_props :WBPlanViewHeaderProps, new_props :WBPlanViewHeaderProps) =>
 		previous_props.title === new_props.title &&
+		previous_props.mapping_is_templated === new_props.mapping_is_templated &&
 		previous_props.state_type === new_props.state_type,
 );
 
@@ -115,58 +135,17 @@ function getInitialWBPlanViewState(props:OpenMappingScreenAction):WBPlanViewStat
 		};
 }
 
-const HeaderWrapper = (props :HeaderWrapperProps) =>
+const HeaderWrapper = named_component((props :HeaderWrapperProps) =>
 	<div className="wbplanview_event_listener" onClick={(event) =>
 		(event.target as HTMLElement).closest('.custom_select_closed_list') === null && props.handleClick ?
 			props.handleClick() :
 			undefined
 	}>
 		{props.header}
-		<div id="wbplanview_container" className={props.state_name}>
+		<div className={`wbplanview_container wbplanview_container_${props.state_name}`}>
 			{props.children}
 		</div>
-	</div>;
-
-function go_back(props :partialWBPlanViewProps):LoadingState {
-	return {
-		type: 'LoadingState',
-		loading_state: {
-			type: 'NavigateBackState',
-			wb: props.wb,
-		}
-	}
-}
-
-function save_plan(props :publicWBPlanViewProps, state:MappingState, ignore_validation = false) {
-	const validation_results_state = validate(state);
-	if (!ignore_validation && validation_results_state.validation_results.length !== 0)
-		return validation_results_state;
-
-	props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
-	props.wbtemplatePromise.done(wbtemplate =>
-		wbtemplate.set('remarks', mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree.bind(null,state.lines))),
-	);
-	props.wb.save();
-	return go_back(props);
-}
-
-/* Validates the current mapping and shows error messages if needed */
-function validate(state:MappingState):MappingState {
-
-	const validation_results = show_required_missing_fields(
-		state.base_table_name,
-		get_mappings_tree(state.lines),
-	);
-
-	return {
-		...state,
-		type: 'MappingState',
-		show_mapping_view:  // Show mapping view panel if there were validation errors
-			state.show_mapping_view ||
-			Object.values(validation_results).length !== 0,
-		validation_results
-	};
-}
+	</div>,'HeaderWrapper');
 
 function mapping_state(state:WBPlanViewStates):MappingState {
 	if(state.type !== 'MappingState')
@@ -192,12 +171,15 @@ const modify_line = (state:MappingState, line:number, mapping_line:Partial<Mappi
 const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 
 	//BaseTableSelectionState
-	'OpenBaseTableSelectionAction': ()=>({
-		type: 'BaseTableSelectionState'
-	}),
+	'OpenBaseTableSelectionAction': (state,action)=>
+		(!action.referrer || action.referrer===state.type) ?
+			({
+				type: 'BaseTableSelectionState'
+			}) :
+			state,
 	'SelectTableAction': (_state,action)=>({
 		type: 'MappingState',
-		mapping_is_templated: action.mappingIsTemplated,
+		mapping_is_templated: action.mapping_is_templated,
 		show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
 		show_mapping_view: cache.get('ui', 'show_mapping_view'),
 		base_table_name: action.table_name,
@@ -210,10 +192,11 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 			base_table_name:action.table_name,
 		}),
 	}),
-	'UseTemplateAction': ()=>({
+	'UseTemplateAction': (_state,action)=>({
 		type: 'LoadingState',
 		loading_state: {
 			type: 'LoadTemplateSelectionState',
+			dispatch_action: action.dispatch,
 		},
 	}),
 
@@ -245,7 +228,7 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		const new_state :MappingState = {
 			...state,
 			type: 'MappingState',
-			mapping_is_templated: action.mappingIsTemplated,
+			mapping_is_templated: action.mapping_is_templated,
 			show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
 			show_mapping_view: cache.get('ui', 'show_mapping_view'),
 			mapping_view: ["0"],
@@ -260,7 +243,7 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		return new_state;
 	},
 	'SavePlanAction': (state,action)=>
-		save_plan(action, mapping_state(state),typeof action.ignore_validation !== "undefined"),
+		save_plan(action, mapping_state(state),action.ignore_validation),
 	'ToggleMappingViewAction': state=>({
 		...mapping_state(state),
 		show_mapping_view: cache.set('ui', 'show_mapping_view', !mapping_state(state).show_mapping_view),
@@ -273,7 +256,10 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		validate(mapping_state(state)),
 	'ResetMappingsAction': state=>({
 			...mapping_state(state),
-			lines: [],
+			lines: mapping_state(state).lines.map(line=>({
+				...line,
+				mapping_path: ["0"],
+			})),
 			validation_results: [],
 	}),
 	'ClearMappingLineAction': (state,action)=>({
@@ -327,9 +313,10 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 				type: 'new_column',
 				mapping_path: ["0"],
 			}
-		]
+		],
+		autoscroll: true,
 	}),
-	'AddNewStaticHeaderAction': (state)=>({
+	'AddNewStaticHeaderAction': state=>({
 		...mapping_state(state),
 		lines: [
 			...mapping_state(state).lines,
@@ -338,7 +325,12 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 				type: 'new_static_column',
 				mapping_path: ["0"],
 			}
-		]
+		],
+		autoscroll: true,
+	}),
+	'AutoScrollFinishedAction': state=>({
+		...mapping_state(state),
+		autoscroll: false,
 	}),
 	'ToggleHiddenFieldsAction': state=>({
 		...mapping_state(state),
@@ -356,7 +348,6 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 			line: action.line,
 			index: action.index,
 			base_table_name: mapping_state(state).base_table_name,
-			get_mapped_fields: get_mapped_fields.bind(null,mapping_state(state).lines),
 		})
 	}),
 	'CloseSelectElementAction': state=>
@@ -373,6 +364,7 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 			line: action.line,
 			index: action.index,
 			value: action.value,
+			is_relationship: action.is_relationship,
 		});
 
 		if (action.line === 'mapping_view')
@@ -399,6 +391,18 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		automapper_suggestions: action.automapper_suggestions,
 		automapper_suggestions_promise: undefined,
 	}),
+	'AutomapperSuggestionSelectedAction': (state, {suggestion})=>({
+		...mapping_state(state),
+		lines: modify_line(mapping_state(state), mapping_state(state).open_select_element!.line, {
+			mapping_path: [
+				...mapping_state(state).lines[mapping_state(state).open_select_element!.line].mapping_path.slice(0,mapping_state(state).open_select_element!.index),
+				...mapping_state(state).automapper_suggestions![parseInt(suggestion)-1].mapping_path
+			]
+		}),
+		open_select_element: undefined,
+		automapper_suggestions_promise: undefined,
+		automapper_suggestions: undefined,
+	}),
 	'StaticHeaderChangeAction': (state,action)=>({
 		...mapping_state(state),
 		lines: modify_line(mapping_state(state), action.line,{
@@ -423,34 +427,20 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 				wbs.models.map((wb :any) =>
 					wb.rget('workbenchtemplate'),
 				),
-			).then((wbts :any) => {
-
-				const templates :upload_plan_template[] = [];
-
-				wbts.some((wbt:any)=>{
-
-					let upload_plan;
-					try {
-						upload_plan = JSON.parse(wbt.get('remarks') as string);
-					} catch (e) {
-						return;
-					}
-
-					if (
-						typeof upload_plan === 'object' &&
-						upload_plan !== null
-					)
-						templates.push({
-							dataset_name: wbt.get('name') as string,
-							upload_plan: upload_plan,
-						});
-				});
-
+			).then((wbts :any) =>
 				state.dispatch_action!({
 					type: 'TemplatesLoadedAction',
-					templates: templates,
-				});
-			}),
+					templates: wbts.map((wbt:any)=>[
+						upload_plan_string_to_object(wbt.get('remarks') as string),
+						wbt.get('name') as string
+					]).filter(([upload_plan]:[falsy_upload_plan])=>
+						upload_plan!==false
+					).map(([upload_plan, dataset_name]:[upload_plan_structure, string])=>({
+						dataset_name: dataset_name,
+						upload_plan: upload_plan,
+					})),
+				})
+			),
 		);
 	},
 	'NavigateBackState': state=>
@@ -474,12 +464,12 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				title='Select Base Table'
 				state_type={state.type}
 				handleCancel={() => state.dispatch({type: 'CancelMappingAction', wb:state.props.wb, removeUnloadProtect:state.props.removeUnloadProtect})}
-				handleUseTemplate={() => state.dispatch({type: 'UseTemplateAction'})}
+				handleUseTemplate={() => state.dispatch({type: 'UseTemplateAction', dispatch:state.dispatch })}
 			/>
 		}>
 		<ListOfBaseTables
 			list_of_tables={data_model_storage.list_of_base_tables}
-			handleChange={((table_name: string) => state.dispatch({type:'SelectTableAction', table_name, mappingIsTemplated:state.props.mappingIsTemplated, headers:state.props.headers}))}
+			handleChange={((table_name: string) => state.dispatch({type:'SelectTableAction', table_name, mapping_is_templated:state.props.mapping_is_templated, headers:state.props.headers}))}
 		/>
 	</HeaderWrapper>,
 	'TemplateSelectionState': (_,state) =>
@@ -487,39 +477,48 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 			properties={{title: 'Select Template'}}
 			onCloseCallback={()=>state.dispatch({
 				type:'OpenBaseTableSelectionAction',
+				referrer: state.type
 			})}
-		>{
+			eventListenersEffect={(dialog)=>{
+				// jQuery modifies DOM, which stops React's event listeners from firing
+				// if we need event listeners on elements inside the modal, we need to use use old school addEventListener
 
-			state.templates.map(template => (
-					{
-						...template,
-						upload_plan: upload_plan_string_to_object(template.upload_plan),
-					}
-				),
-			).filter(({upload_plan}) =>
-				upload_plan !== false,
-			).map(({dataset_name, upload_plan}) =>
-				<a
-					key={dataset_name}
-					href={`#${dataset_name}`}
-					onClick={() => state.dispatch({
+				const click_callback = (event:Event)=>{
+
+					if(!event.target)
+						return;
+					const target = event.target as HTMLElement;
+					const a = target.closest('a');
+					if(!a || !a.parentNode)
+						return;
+
+					const index = Array.prototype.indexOf.call(a.parentNode.childNodes, a);
+					const upload_plan = state.templates[index].upload_plan;
+					state.dispatch({
 						type: 'OpenMappingScreenAction',
 						upload_plan,
-						mappingIsTemplated: state.props.mappingIsTemplated,
+						mapping_is_templated: state.props.mapping_is_templated,
 						headers: state.props.headers
-					})}>{dataset_name}</a>,
-			)
+					});
+				}
 
+				dialog.addEventListener('click',click_callback);
+				return ()=>dialog.removeEventListener('click',click_callback);
+			}}
+		>{
+			state.templates.map(({dataset_name},index) =>
+				<a key={index}>{dataset_name}</a>,
+			)
 		}</ModalDialog>,
 	'MappingState': (_,state) =>{
 		if(typeof state.automapper_suggestions_promise !== "undefined")
-			state.automapper_suggestions_promise.then(mapping_element_props=>
+			state.automapper_suggestions_promise.then(automapper_suggestions=>
 				state.dispatch({
 					type: 'AutomapperSuggestionsLoadedAction',
-					automapper_suggestions: mapping_element_props,
+					automapper_suggestions: automapper_suggestions,
 				})
 			);
-		const handleSave = (ignore_validation:boolean) => state.dispatch({type: 'SavePlanAction',wb:state.props.wb, removeUnloadProtect:state.props.removeUnloadProtect, wbtemplatePromise:state.props.wbtemplatePromise, mappingIsTemplated:state.props.mappingIsTemplated, ignore_validation})
+		const handleSave = (ignore_validation:boolean) => state.dispatch({type: 'SavePlanAction',wb:state.props.wb, removeUnloadProtect:state.props.removeUnloadProtect, wbtemplatePromise:state.props.wbtemplatePromise, mapping_is_templated:state.mapping_is_templated, ignore_validation})
 		const handleClose = () =>state.dispatch({type:'CloseSelectElementAction'})
 		return <HeaderWrapper
 			state_name={state.type}
@@ -552,6 +551,7 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				open_select_element={state.open_select_element}
 				automapper_suggestions={state.automapper_suggestions}
 				focused_line={state.focused_line}
+				autoscroll={state.autoscroll}
 				handleSave={()=>handleSave(true)}
 				handleFocus={(line:number)=>state.dispatch({type:'FocusLineAction', line})}
 				handleMappingViewMap={()=>state.dispatch({type:'MappingViewMapAction'})}
@@ -560,11 +560,13 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				handleToggleHiddenFields={()=>state.dispatch({type:'ToggleHiddenFieldsAction'})}
 				handleAddNewColumn={()=>state.dispatch({type:'AddNewHeaderAction'})}
 				handleAddNewStaticColumn={()=>state.dispatch({type:'AddNewStaticHeaderAction'})}
+				handleAutoScrollFinish={()=>state.dispatch({type:'AutoScrollFinishedAction'})}
 				handleOpen={(line:number, index:number)=>state.dispatch({type:'OpenSelectElementAction', line, index})}
 				handleClose={handleClose}
-				handleChange={(line:'mapping_view'|number, index:number, value:string)=>state.dispatch({type:'ChangeSelectElementValueAction', line, index, value})}
+				handleChange={(line:'mapping_view'|number, index:number, value:string, is_relationship: boolean)=>state.dispatch({type:'ChangeSelectElementValueAction', line, index, value, is_relationship})}
 				handleClearMapping={(line:number)=>state.dispatch({type:'ClearMappingLineAction', line})}
 				handleStaticHeaderChange={(line:number, event:React.ChangeEvent<HTMLTextAreaElement>)=>state.dispatch({type:'StaticHeaderChangeAction', line, event})}
+				handleAutomapperSuggestionSelection={(suggestion:string)=>state.dispatch({type: 'AutomapperSuggestionSelectedAction', suggestion})}
 			/>
 		</HeaderWrapper>;
 	}
@@ -577,7 +579,7 @@ function WBPlanView(props :WBPlanViewProps) {
 		{
 			upload_plan: props.upload_plan,
 			headers:props.headers,
-			mappingIsTemplated:props.mappingIsTemplated
+			mapping_is_templated:props.mapping_is_templated
 		} as OpenMappingScreenAction,
 		getInitialWBPlanViewState
 	);
@@ -590,7 +592,7 @@ function WBPlanView(props :WBPlanViewProps) {
 
 }
 
-export default function(props:publicWBPlanViewProps):react_element {
+export default named_component((props:publicWBPlanViewProps):react_element=>{
 
 	const [schema_loaded,setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== "undefined");
 	const [upload_plan,setUploadPlan] = React.useState<falsy_upload_plan>();
@@ -635,4 +637,4 @@ export default function(props:publicWBPlanViewProps):react_element {
 			/>
 		}</ErrorBoundary>
 	</React.StrictMode>;
-}
+},'WBPlanViewWrapper');

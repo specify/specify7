@@ -25,6 +25,10 @@ interface MappingLine {
 	readonly is_focused? : boolean,
 }
 
+interface automapper_suggestion extends MappingPathProps {
+	mapping_path: mapping_path,
+}
+
 interface WBPlanViewMapperBaseProps {
 	readonly mapping_is_templated :boolean,
 	readonly show_hidden_fields :boolean,
@@ -36,7 +40,8 @@ interface WBPlanViewMapperBaseProps {
 	readonly lines :MappingLine[],
 	readonly open_select_element? : open_select_element,
 	readonly focused_line? : number,
-	readonly automapper_suggestions? : MappingElementProps[][]
+	readonly automapper_suggestions? : automapper_suggestion[],
+	readonly autoscroll?: boolean,
 }
 
 interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
@@ -49,11 +54,13 @@ interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
 	readonly handleToggleHiddenFields: ()=>void,
 	readonly handleAddNewColumn: ()=>void,
 	readonly handleAddNewStaticColumn: ()=>void,
+	readonly handleAutoScrollFinish: ()=>void,
 	readonly handleOpen: handleMappingOpen
 	readonly handleClose: handleElementOpen
 	readonly handleChange: handleMappingChange,
 	readonly handleClearMapping: handleMappingLineOpen,
 	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>)=>void,
+	readonly handleAutomapperSuggestionSelection: (suggestion:string)=>void,
 }
 
 interface MappingsControlPanelProps {
@@ -72,17 +79,19 @@ interface FormatValidationResultsProps {
 
 interface MappingViewProps {
 	readonly base_table_name : string,
+	readonly focused_line_exists: boolean,
 	readonly mapping_path: mapping_path,
 	readonly map_button_is_enabled:boolean,
 	readonly handleMapButtonClick: ()=>void
 	readonly handleMappingViewChange: handleMappingLineChange,
 	readonly get_mapped_fields: get_mapped_fields_bind,
-	readonly automapper_suggestions?:MappingElementProps[][],
+	readonly automapper_suggestions?:automapper_suggestion[],
 }
 
 interface mutate_mapping_path_parameters extends Omit<ChangeSelectElementValueAction,'type'> {
 	readonly lines: MappingLine[],
 	readonly mapping_view: mapping_path,
+	readonly is_relationship: boolean,
 }
 
 type get_mapped_fields = (
@@ -95,6 +104,10 @@ type get_mapped_fields_bind = (
 	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 	skip_empty? :boolean,  // whether to skip incomplete mappings
 )=>mappings_tree;
+
+type path_is_mapped_bind = (
+	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
+)=>boolean;
 
 type get_mappings_tree = (
 	lines: MappingLine[],
@@ -119,7 +132,6 @@ type get_lines_from_headers_params = get_lines_from_headers_with_automapper_para
 interface get_automapper_suggestions_parameters extends select_element_position {
 	readonly lines: MappingLine[],
 	readonly base_table_name: string,
-	readonly get_mapped_fields: get_mapped_fields_bind,
 }
 
 interface get_lines_from_upload_plan {
