@@ -1,3 +1,9 @@
+/*
+*
+* A react wrapper for jQuery's dialog. Also has a jQuery's dialog with a loading bar inside of it
+*
+* */
+
 'use strict';
 
 import React from 'react';

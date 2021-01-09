@@ -1,3 +1,9 @@
+/*
+*
+* Stores parsed data model and other useful objects for easy sharing between the components of wbplanview
+*
+* */
+
 'use strict';
 
 const data_model_storage:data_model_storage = {

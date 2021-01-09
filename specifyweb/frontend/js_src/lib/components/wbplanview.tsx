@@ -1,3 +1,9 @@
+/*
+*
+* Workbench plan mapper
+*
+* */
+
 'use strict';
 
 import React from 'react';

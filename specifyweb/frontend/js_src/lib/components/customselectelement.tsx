@@ -1,3 +1,9 @@
+/*
+*
+* Custom Select Element (picklist). Used by workbench mapper
+*
+* */
+
 'use strict';
 
 import icons from '../icons';

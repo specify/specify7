@@ -1,5 +1,9 @@
-// This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
-// Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
+/*
+*
+* This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
+* Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
+*
+* */
 
 //	Automapper does 2 passes though the schema whenever it is asked to map some headers
 //	This is needed in order to ensure priority mapping for some mapping paths

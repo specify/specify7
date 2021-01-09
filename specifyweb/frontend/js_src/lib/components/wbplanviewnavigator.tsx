@@ -1,3 +1,9 @@
+/*
+*
+* Helpful methods for navigating though schema across a certain mapping path. Helps define information needed to display wbplanview components
+*
+* */
+
 'use strict';
 
 import * as cache from './wbplanviewcache';

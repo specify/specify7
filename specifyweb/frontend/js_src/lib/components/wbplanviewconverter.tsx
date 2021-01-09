@@ -1,6 +1,6 @@
 /*
 *
-* Helper class for converting from upload plan to internal structure and vice versa
+* Helper class for converting from upload plan to mapping path (internal structure used in wbplanview) and vice versa
 *
 * */
 

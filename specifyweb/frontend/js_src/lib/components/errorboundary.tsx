@@ -1,3 +1,9 @@
+/*
+*
+* Error Boundary for React Components. Catches exceptions and provides a stack trace
+*
+* */
+
 'use strict';
 
 import React from 'react';

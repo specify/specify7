@@ -1,5 +1,7 @@
 /*
-* Helper methods for working with data model
+*
+* Helper methods for working with Specify data model as parsed by wbplanviewmodelfetcher
+*
 * */
 
 'use strict';

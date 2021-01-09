@@ -1,6 +1,6 @@
 /*
 *
-* Generate HTML for various control elements created during mapping process
+* Collection of common React components used in the wbplanview
 *
 * */
 

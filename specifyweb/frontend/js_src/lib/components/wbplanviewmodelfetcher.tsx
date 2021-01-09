@@ -1,5 +1,7 @@
 /*
-* Fetches data model with tree ranks
+*
+* Fetches Specify's data model with tree ranks, parses it and saves it to an object for and easier usage across wbplanview
+*
 * */
 
 'use strict';

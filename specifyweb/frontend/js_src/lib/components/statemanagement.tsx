@@ -1,6 +1,11 @@
-'use strict';
+/*
+*
+* Generator of type safe reducer and dispatches. Replaces the need for switch(){} statements
+* This code is based on https://github.com/maxxxxxdlp/typesafe_reducer
+*
+* */
 
-// This code is based on https://github.com/maxxxxxdlp/typesafe_reducer
+'use strict';
 
 function assertExhaustive(x :never) :never {
 	throw new Error('Non-exhaustive switch. Unhandled case:' + x);

@@ -1,3 +1,9 @@
+/*
+*
+* Caching module for workbench mapper
+*
+* */
+
 "use strict";
 
 let buckets :buckets = {};  // the data structure that would store all of the buckets

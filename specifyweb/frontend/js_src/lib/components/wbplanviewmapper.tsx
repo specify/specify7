@@ -1,3 +1,9 @@
+/*
+*
+* Contains WbPlanView logic for when the application is in the Mapping State (base table is selected and headers are loaded)
+*
+* */
+
 'use strict';
 
 import {
