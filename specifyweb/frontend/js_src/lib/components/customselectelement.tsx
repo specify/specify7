@@ -2,8 +2,9 @@
 
 import icons from '../icons';
 import React from 'react';
+import {named_component} from './wbplanview';
 
-const Icon = React.memo(({
+const Icon = React.memo(named_component(({
 	is_relationship = false,
 	is_default = false,
 	is_enabled = true,
@@ -37,10 +38,10 @@ const Icon = React.memo(({
 	>
 		{table_sub_name.toUpperCase()}
 	</span>;
-});
+},'Icon'));
 
 /* Generates a single option line */
-const Option = React.memo(({
+const Option = React.memo(named_component(({
 	option_label,
 	is_enabled = true,
 	is_relationship = false,
@@ -77,15 +78,16 @@ const Option = React.memo(({
 		{option_label !== '0' && <span className="custom_select_option_label">{option_label}</span>}
 		{is_relationship && <span className="custom_select_option_relationship">&#9654;</span>}
 	</span>;
-});
+},'Option'));
 
 /* Generates a group of options */
-const OptionGroup = ({
+const OptionGroup = named_component(({
+	select_group_name,
 	select_group_label,
 	select_options_data,
 	handleClick,
 } :CustomSelectElementOptionGroupProps) =>
-	<span className="custom_select_group">
+	<span className={`custom_select_group custom_select_group_${select_group_name}`}>
 		{
 			typeof select_group_label !== "undefined" &&
 			<span className="custom_select_group_label">{select_group_label}</span>
@@ -95,21 +97,20 @@ const OptionGroup = ({
 				key={option_name}
 				handleClick={
 					typeof handleClick !== "undefined" ?
-						handleClick.bind(null, option_name) :
+						handleClick.bind(null, option_name, typeof selection_option_data.is_relationship !== "undefined" && selection_option_data.is_relationship) :
 						undefined
 				}
 				{...selection_option_data}
 			/>;
 		})}
-	</span>;
+	</span>,'OptionGroup');
 
-const ShadowListOfOptions = React.memo(({field_names}:ShadowListOfOptionsProps)=>
+const ShadowListOfOptions = React.memo(named_component(({field_names}:ShadowListOfOptionsProps)=>
 	<ul className="custom_select_element_shadow_list">{
 		field_names.map((field_name, index) =>
 			<li key={index}>{field_name}</li>
 		)
-	}</ul>
-);
+	}</ul>,'ShadowListOfOptions'));
 
 /* Generates a custom select element */
 export function CustomSelectElement(
@@ -125,6 +126,7 @@ export function CustomSelectElement(
 			is_relationship: false,
 		},
 		is_open,
+		table_name,
 		// autoscroll=false,
 		field_names,
 		handleChange,
@@ -136,12 +138,12 @@ export function CustomSelectElement(
 
 	// const list_of_options = React.useRef<HTMLElement>(null);
 
-	const option_is_clickable = custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list';
+	const option_is_intractable = custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_line_list';
 
-	const handleClick = option_is_clickable && typeof handleChange !== "undefined" ?
-		(new_value :string) =>
+	const handleClick = option_is_intractable && typeof handleChange !== "undefined" ?
+		(new_value :string, is_relationship:boolean) =>
 			new_value !== default_option.option_name ?
-				handleChange(new_value) :
+				handleChange(new_value, is_relationship) :
 				undefined :
 		undefined;
 
@@ -149,22 +151,22 @@ export function CustomSelectElement(
 	let preview;
 	let first_row;
 	let options_shadow;
-	if (custom_select_type === 'opened_list')
+	if (custom_select_type === 'opened_list' || custom_select_type === 'base_table_selection_list')
 		header = select_label !== '' &&
 			<span className="custom_select_header">
 				<span className="custom_select_header_icon">
 					<Icon
 						is_default={true}
 						is_relationship={true}
-						table_name={default_option.table_name}
-						option_label={default_option.option_label}
+						table_name={table_name}
+						option_label={table_name}
 					/>
 				</span>
 				<span className="custom_select_table_label">
 					{select_label}
 				</span>
 			</span>;
-	else {
+	else if(custom_select_type !== 'suggestion_list'){
 
 		let default_icon = <Icon
 			is_default={true}
@@ -174,45 +176,45 @@ export function CustomSelectElement(
 		/>;
 
 		preview = <span className="custom_select_input" tabIndex={0} onClick={
-			option_is_clickable ?
+			option_is_intractable ?
 				is_open ?
 					handleClose :
 					handleOpen :
 				undefined
 		}>
 			<span className="custom_select_input_icon">{default_icon}</span>
-			<span className="custom_select_input_label">{default_option.option_label}</span>
-			{option_is_clickable && <span className="custom_select_input_dropdown">&#9660;</span>}
+			<span className="custom_select_input_label">{
+				default_option.option_label === '0' ?
+					undefined :
+					default_option.option_label
+			}</span>
+			{option_is_intractable && <span className="custom_select_input_dropdown">&#9660;</span>}
 		</span>;
 
-		first_row = is_open && custom_select_subtype !== 'tree' && default_option.option_name!=='0' &&
+		first_row = is_open && option_is_intractable && custom_select_subtype !== 'tree' && default_option.option_name!=='0' &&
 			<Option
 				handleClick={
 					typeof handleClick === 'undefined' ?
 						undefined :
-						handleClick.bind(null, '0')
+						handleClick.bind(null, '0', false)
 				}
 				is_default={default_option.option_label === '0'}
 			/>;
 
-		options_shadow = !is_open && option_is_clickable && field_names &&
+		options_shadow = !is_open && option_is_intractable && field_names &&
 			<ShadowListOfOptions field_names={field_names} />
 
 	}
 
-	const groups = is_open && option_is_clickable &&
-		custom_select_option_groups!.filter(({select_options_data}) =>
+	const groups = is_open && option_is_intractable &&
+		Object.entries(custom_select_option_groups!).filter(([_select_group_name,{select_options_data}]) =>
 			Object.keys(select_options_data).length !== 0,
-		).map((select_group_data,index) =>
+		).map(([select_group_name,select_group_data],index) =>
 			<OptionGroup
 				key={index}
 				handleClick={handleClick}
+				select_group_name={select_group_name}
 				{...select_group_data}
-				select_group_label={
-					custom_select_type === 'opened_list' ?
-						undefined :
-						select_group_data.select_group_label
-				}
 			/>,
 		);
 
@@ -239,7 +241,11 @@ export function CustomSelectElement(
 
 	return <span
 		className={`custom_select custom_select_${custom_select_type}`}
-		title={custom_select_type!=='opened_list' ? select_label : undefined}>
+		title={
+			custom_select_type==='opened_list' || custom_select_type === 'base_table_selection_list' ?
+				undefined :
+				select_label
+		}>
 		{automapper_suggestions}
 		{header}
 		{preview}
@@ -250,12 +256,17 @@ export function CustomSelectElement(
 }
 
 /* Generates a suggestion box */
-export const SuggestionBox = (
-	select_options_data :CustomSelectElementOptions,
-) =>
-	<span className="custom_select_suggestions">
-		<OptionGroup
-			select_group_label='Suggested mappings:'
-			select_options_data={select_options_data}
-		/>
-	</span>;
+export const SuggestionBox = named_component(({select_options_data, handleAutomapperSuggestionSelection, ...props}:SuggestionBoxProps) =>
+	<CustomSelectElement
+		custom_select_type='suggestion_list'
+		custom_select_subtype='simple'
+		custom_select_option_groups={{
+			'suggested_mappings': {
+				select_group_label: 'Suggested mappings:',
+				select_options_data
+			}
+		}}
+		is_open={true}
+		handleChange={handleAutomapperSuggestionSelection}
+		{...props}
+	/>,'SuggestionBox');
