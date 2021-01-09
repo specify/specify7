@@ -68,8 +68,9 @@ interface get_mapping_line_data_from_mapping_path_parameters {
 	readonly handleChange? : handleMappingLineChange
 	readonly handleOpen? : handleMappingLineOpen
 	readonly handleClose? : handleMappingLineOpen
+	readonly handleAutomapperSuggestionSelection?: (suggestion:string)=>void,
 	readonly get_mapped_fields: get_mapped_fields_bind,
-	readonly automapper_suggestions?: MappingElementProps[][],
+	readonly automapper_suggestions?: automapper_suggestion[],
 }
 
 interface get_mapping_line_data_from_mapping_path_internal_state {

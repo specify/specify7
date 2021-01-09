@@ -111,10 +111,8 @@ export function upload_plan_to_mappings_tree(
 
 
 //TODO: make these functions type safe
-const handle_header = (data :string | object) =>
-	typeof data === 'string' ?
-		data :
-		Object.values(data)[0];
+const handle_header = (data :object) =>
+	Object.keys(Object.values(data)[0])[0];
 
 function mappings_tree_to_upload_plan_table(table_data :object, table_name :string, wrap_it = true) {
 

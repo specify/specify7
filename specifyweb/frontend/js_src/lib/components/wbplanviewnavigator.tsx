@@ -195,6 +195,7 @@ export function get_mapping_line_data_from_mapping_path({
 	handleChange = ()=>{},
 	handleOpen = ()=>{},
 	handleClose = ()=>{},
+	handleAutomapperSuggestionSelection = (_suggestion:string)=>{},
 	get_mapped_fields,
 	automapper_suggestions,
 	show_hidden_fields=true,
@@ -264,7 +265,7 @@ export function get_mapping_line_data_from_mapping_path({
 					typeof open_select_element !== "undefined" &&
 					open_select_element.index === internal_state.mapping_path_position+1
 				) ||
-				['opened_list','suggestion_list'].indexOf(internal_state.custom_select_type) !== -1
+				['opened_list'].indexOf(internal_state.custom_select_type) !== -1
 
 			internal_state.custom_select_subtype = 'simple';
 
@@ -416,32 +417,27 @@ export function get_mapping_line_data_from_mapping_path({
 				])
 			),
 
-		get_instance_data: ({table_name}) => {
-			const base_structure = {
-				custom_select_type: internal_state.custom_select_type,
-				custom_select_subtype: internal_state.custom_select_subtype,
-				select_label: data_model_storage.tables[table_name].table_friendly_name,
-				fields_data: internal_state.result_fields,
-				table_name,
-			};
-
-			if(internal_state.is_open === true)
-				return {
-					...base_structure,
+		get_instance_data: ({table_name}) => ({
+			custom_select_type: internal_state.custom_select_type,
+			custom_select_subtype: internal_state.custom_select_subtype,
+			select_label: data_model_storage.tables[table_name].table_friendly_name,
+			fields_data: internal_state.result_fields,
+			table_name,
+			...(internal_state.is_open ?
+				{
+					is_open: true,
 					handleChange: handleChange.bind(null,internal_state.mapping_path_position+1),
 					handleClose: handleClose.bind(null,internal_state.mapping_path_position+1),
 					automapper_suggestions,
 					autoscroll: typeof open_select_element !== "undefined" && open_select_element.autoscroll,
-					is_open: true,
-				};
-			else
-				return {
-					...base_structure,
-					handleOpen: handleOpen.bind(null,internal_state.mapping_path_position+1),
+					handleAutomapperSuggestionSelection
+				} :
+				{
 					is_open: false,
-				};
-
-		},
+					handleOpen: handleOpen.bind(null,internal_state.mapping_path_position+1),
+				}
+			)
+		}),
 
 		commit_instance_data({data}) {
 			internal_state.mapping_line_data.push(data);

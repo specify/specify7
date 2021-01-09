@@ -23,6 +23,7 @@ export const generate_reducer = <
 		action :Action<Key2>
 	) =>
 		(obj != null && typeof obj[action['type']] === 'function') ?
+			// (()=>{console.log(state,action); return obj[action['type']](state,action as any)})() :
 			obj[action['type']](state,action as any) :
 			assertExhaustive(action['type'] as never);
 

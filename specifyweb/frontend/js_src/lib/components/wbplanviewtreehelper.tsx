@@ -125,16 +125,16 @@ export const mappings_tree_to_array_of_mappings = (
 	* */
 	Object.entries(mappings_tree).reduce((result :mapping_path[], [tree_node_name, tree_node]) => {
 
-		if (typeof tree_node !== 'object')
-			result.push([...path, tree_node_name, tree_node]);
-		else
-			result.push(
-				...mappings_tree_to_array_of_mappings(
-					tree_node,
-					[...path, tree_node_name],
-				),
-			);
+			if (typeof tree_node !== "object")
+				result.push([...path, tree_node_name, tree_node]);
+			else
+				result.push(
+					...mappings_tree_to_array_of_mappings(
+						tree_node,
+						[...path, tree_node_name]
+					)
+				);
 
-		return result;
+			return result;
 
 	}, []);

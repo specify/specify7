@@ -122,6 +122,11 @@ export const format_tree_rank = (
 ) :string /* a complete tree rank name */ =>
 	data_model_storage.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase();
 
+export const mapping_path_to_string = (
+	mapping_path: mapping_path,
+) =>
+	mapping_path.join(data_model_storage.path_join_symbol);
+
 
 /* Iterates over the mappings_tree to find required fields that are missing */
 export function show_required_missing_fields(

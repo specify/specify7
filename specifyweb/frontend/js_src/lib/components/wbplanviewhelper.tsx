@@ -62,18 +62,16 @@ export function find_array_divergence_point<T>(
 }
 
 /* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
-export function find_duplicate_mappings(
+export const find_duplicate_mappings = (
 	array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
 	focused_line: number|false,
-) :duplicate_mappings {
-
-	const string_array_of_mappings = array_of_mappings.map(mapping_path => mapping_path.join(data_model_storage.path_join_symbol));
+) :duplicate_mappings => {
 
 	const duplicate_indexes :number[] = [];
-	string_array_of_mappings.reduce((dictionary_of_mappings :string[], string_mapping_path :string, index) => {
 
-		if (string_mapping_path === '')
-			return dictionary_of_mappings;
+	array_of_mappings.reduce((dictionary_of_mappings :string[], mapping_path, index) => {
+
+		const string_mapping_path = mapping_path_to_string(mapping_path);
 
 		if (dictionary_of_mappings.indexOf(string_mapping_path) === -1)
 			dictionary_of_mappings.push(string_mapping_path);
