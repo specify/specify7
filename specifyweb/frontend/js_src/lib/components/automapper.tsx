@@ -17,7 +17,7 @@ import {
 	get_table_relationships,
 	relationship_is_to_many,
 	format_reference_item,
-	get_index_from_reference_item_name,
+	get_index_from_reference_item_name, mapping_path_to_string,
 } from './wbplanviewmodelhelper';
 import * as cache from './wbplanviewcache';
 import {find_array_divergence_point} from './wbplanviewhelper';
@@ -33,13 +33,13 @@ export default class automapper {
 	private readonly base_table :string = '';
 	private readonly starting_table :string = '';
 	private readonly starting_path :mapping_path = [];
-	private readonly get_mapped_fields? :get_mapped_fields_bind;
+	private readonly path_is_mapped? :path_is_mapped_bind;
+	private readonly headers_to_map :headers_to_map = {};
 
-	private headers_to_map :headers_to_map = {};
 	private searched_tables :string[] = [];
 	private find_mappings_queue :find_mappings_queue = [];
 
-	private static readonly regex_replace_whitespace :RegExp = /\s+/g;  // used to replace any white space characters with white space
+	private static readonly regex_replace_whitespace :RegExp = /\s+/g;  // used to replace any white space characters with space
 	private static readonly regex_remove_non_az :RegExp = /[^a-z\s]+/g;  // used to remove non letter characters
 	private static readonly depth :number = 6;  // how deep to go into the schema
 	private static readonly comparisons :{ [key in comparison_types] :any } = {  // the definitions for the comparison functions
@@ -102,7 +102,7 @@ export default class automapper {
 		allow_multiple_mappings = false,
 		scope = 'automapper',
 		check_for_existing_mappings = false,
-		get_mapped_fields,
+		path_is_mapped,
 	} :automapper_constructor_parameters) {
 		// strip extra characters to increase mapping success
 		this.headers_to_map = Object.fromEntries(raw_headers.map(original_name => {
@@ -128,7 +128,7 @@ export default class automapper {
 		this.base_table = base_table;
 		this.starting_table = starting_table;
 		this.starting_path = path;
-		this.get_mapped_fields = get_mapped_fields;
+		this.path_is_mapped = path_is_mapped;
 	};
 
 
@@ -174,8 +174,7 @@ export default class automapper {
 		mode :auto_mapper_mode,
 	) :void {
 
-		this.searched_tables = [];
-
+		this.dispatch.searched_tables({type: 'reset'});
 		this.dispatch.find_mappings_queue({
 			type: 'reset',
 			initial_value: mode === 'synonyms_and_matches' ?
@@ -323,15 +322,15 @@ export default class automapper {
 
 		}, []);
 
-		const filtered_path_string = filtered_path.join(data_model_storage.path_join_symbol);
-		const filtered_path_with_base_table_string = [
+		const filtered_path_string = mapping_path_to_string(filtered_path);
+		const filtered_path_with_base_table_string = mapping_path_to_string([
 			this.base_table,
 			...filtered_path,
-		].join(data_model_storage.path_join_symbol);
+		]);
 
 		return table_synonyms.reduce((table_synonyms :string[], table_synonym :table_synonym_definition) => {
 
-			const mapping_path_string = table_synonym.mapping_path_filter.join(data_model_storage.path_join_symbol);
+			const mapping_path_string = mapping_path_to_string(table_synonym.mapping_path_filter);
 
 			if (
 				filtered_path_string.endsWith(mapping_path_string) ||
@@ -457,11 +456,11 @@ export default class automapper {
 		}
 
 		const table_synonyms = this.find_table_synonyms(table_name, path, mode);
-		let table_names :string[];
-		if (table_synonyms.length === 0)
-			table_names = [table_name, table_friendly_name];
-		else
-			table_names = table_synonyms;
+		const table_names = [...new Set(
+			table_synonyms.length === 0 ?
+				[table_name, table_friendly_name] :
+				table_synonyms
+		)];
 
 		const find_mappings_in_definitions_payload = {
 			path,
@@ -490,11 +489,11 @@ export default class automapper {
 
 
 			const friendly_name = field_data.friendly_name.toLowerCase();
-			const field_names = [
+			const field_names = [...new Set([
 				...this.find_formatted_header_field_synonyms(table_name, field_name),
 				friendly_name,
 				field_name,
-			];
+			])];
 
 			let to_many_reference_number;
 			this.get_unmapped_headers().some(([header_name, {
@@ -516,11 +515,11 @@ export default class automapper {
 
 						field_names.some(field_synonym =>  // loop through field names and field synonyms
 
-							`${field_synonym} ${table_synonym}` === lowercase_header_name ||
+							`${field_synonym} ${table_synonym}` === stripped_header_name ||
 
 							stripped_header_name.startsWith(table_synonym) &&
 							(
-								`${table_synonym} ${field_synonym}` === lowercase_header_name ||
+								`${table_synonym} ${field_synonym}` === stripped_header_name ||
 								[  // try extracting -to-many reference number
 									new RegExp(`${table_synonym} (\\d+) ${field_synonym}`),
 									new RegExp(`${table_synonym} ${field_synonym} (\\d+)`),
@@ -654,59 +653,44 @@ export default class automapper {
 		)
 			return false;
 
-		// if precise -to-many index was found, insert it into the path
+		// if exact -to-many index was found, insert it into the path
+		let changes_made:string|boolean = false;
 		if (to_many_reference_number !== false)
-			local_path = local_path.reverse().reduce((modified_local_path :mapping_path, local_path_part) => {
+			local_path = local_path.reverse().map(local_path_part =>
+				value_is_reference_item(local_path_part) && changes_made!==false ?
+					changes_made = format_reference_item(to_many_reference_number) :
+					local_path_part
+			).reverse();
 
-				if (value_is_reference_item(local_path_part) && to_many_reference_number !== false) {
-					local_path_part = format_reference_item(to_many_reference_number);
-					to_many_reference_number = false;
-				}
-
-				modified_local_path.push(local_path_part);
-
-				return modified_local_path;
-
-			}, []).reverse();
-
-		// check if this path is already mapped
-		while (true) {
-
-			// go over mapped headers to see if this path was already mapped
-			let path_already_mapped =
-				(
+		// check if this path is already mapped and if it is, increment the reference number to make path unique
+		let can_make_mapping:boolean = true;
+		while(
+			!(can_make_mapping = true) ||
+			( // go over mapped headers to see if this path was already mapped
+				( // go over mappings proposed by automapper
 					!this.allow_multiple_mappings &&
 					Object.values(this.results).some(mapping_paths =>
 						mapping_paths.some(mapping_path =>
-							JSON.stringify(local_path) === JSON.stringify(mapping_path),
+							mapping_path_to_string(local_path) === mapping_path_to_string(mapping_path),
 						),
 					)
 				) ||
-				(
+				( // go over mappings that are already in the mappings tree
 					this.check_for_existing_mappings &&
-					typeof this.get_mapped_fields === 'function' &&
-					this.get_mapped_fields(local_path)
-				);
-
-			if (!path_already_mapped)
-				break;
-
-			let index = local_path.length;
-			let path_was_modified = Object.entries(local_path).reverse().some(([local_path_index, local_path_part]) => {
-
-				path_was_modified = index > this.path_offset && value_is_reference_item(local_path_part);
-				if (path_was_modified)
-					local_path[parseInt(local_path_index)] = format_reference_item(get_index_from_reference_item_name(local_path_part) + 1);
-
-				index--;
-
-				return path_was_modified;
-
-			});
-
-			if (!path_was_modified)
-				return false;
-		}
+					typeof this.path_is_mapped === 'function' &&
+					this.path_is_mapped(local_path)
+				)
+			) &&  // increment the last reference number in the mapping path if it has a reference number in it
+			(
+				Object.entries(local_path).reverse().some(([local_path_index, local_path_part],index) =>
+					local_path.length-index > this.path_offset && value_is_reference_item(local_path_part) &&
+					(local_path[parseInt(local_path_index)] = format_reference_item(get_index_from_reference_item_name(local_path_part) + 1))
+				) ||
+				(can_make_mapping=false)
+			)
+		){}
+		if(!can_make_mapping)
+			return false;
 
 
 		// remove header from the list of unmapped headers

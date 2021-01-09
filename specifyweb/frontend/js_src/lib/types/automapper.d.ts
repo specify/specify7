@@ -12,12 +12,12 @@ interface automapper_constructor_base_parameters {
 
 interface automapper_constructor_check_existing_parameters extends automapper_constructor_base_parameters {
 	readonly check_for_existing_mappings :true,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-	readonly get_mapped_fields: get_mapped_fields_bind,
+	readonly path_is_mapped: path_is_mapped_bind,
 }
 
 interface automapper_constructor_dont_check_existing_parameters extends automapper_constructor_base_parameters {
 	readonly check_for_existing_mappings :false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-	readonly get_mapped_fields?: get_mapped_fields_bind,
+	readonly path_is_mapped?: path_is_mapped_bind,
 }
 
 type automapper_constructor_parameters = automapper_constructor_check_existing_parameters | automapper_constructor_dont_check_existing_parameters
@@ -35,7 +35,7 @@ interface automapper_results extends Record<string, mapping_path[]> {
 	* 			header_name,
 	* 			[
 	* 				mapping_path,
-	* 				mapping_path_2,
+	* 				mapping_path_2,  // there would be more than one mapping_path in here if allow_multiple_mappings is set to true
 	* 				...
 	* 			]
 	* 		]
@@ -57,9 +57,6 @@ interface header_information {
 
 interface headers_to_map {
 	readonly [original_header_name :string] :header_information  // a dictionary of headers that need to be mapped
-}
-
-interface auto_mapper_definition_comparisons extends Readonly<Record<string, string[] | RegExp[]>> {  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
 }
 
 interface find_mappings_in_definitions_parameters {
