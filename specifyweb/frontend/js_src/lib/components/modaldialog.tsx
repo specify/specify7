@@ -59,6 +59,7 @@ export const LoadingScreen = () =>
 	<ModalDialog
 		onLoadCallback={handleOnLoad}
 		properties={{
+			modal: false,
 			title: 'Loading',
 			buttons: [],
 			close: undefined

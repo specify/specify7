@@ -30,7 +30,11 @@ interface LoadingStateBase <T extends string> extends State<T> {
 interface LoadTemplateSelectionState extends LoadingStateBase<'LoadTemplateSelectionState'>{
 }
 
-type LoadingStates = LoadTemplateSelectionState
+interface NavigateBackState extends State<'NavigateBackState'>{
+	readonly wb: specify_resource,
+}
+
+type LoadingStates = LoadTemplateSelectionState | NavigateBackState
 
 interface LoadingState extends State<'LoadingState'> {
 	readonly loading_state? :LoadingStates,
@@ -92,6 +96,8 @@ type TemplateSelectionActions =
 interface CancelMappingAction extends Action<'CancelMappingAction'>,partialWBPlanViewProps {
 }
 
+type CommonActions = CancelMappingAction;
+
 interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
 	readonly mappingIsTemplated: boolean,
 	readonly headers: string[],
@@ -148,6 +154,11 @@ interface AutomapperSuggestionsLoadedAction extends Action<'AutomapperSuggestion
 	readonly automapper_suggestions: MappingElementProps[][],
 }
 
+interface StaticHeaderChangeAction extends Action<'StaticHeaderChangeAction'> {
+	readonly line :number,
+	readonly event :React.ChangeEvent<HTMLTextAreaElement>,
+}
+
 type MappingActions =
 	OpenMappingScreenAction
 	| SavePlanAction
@@ -164,12 +175,13 @@ type MappingActions =
 	| OpenSelectElementAction
 	| CloseSelectElementAction
 	| ChangeSelectElementValueAction
-	| AutomapperSuggestionsLoadedAction;
+	| AutomapperSuggestionsLoadedAction
+	| StaticHeaderChangeAction;
 
 type WBPlanViewActions =
 	BaseTableSelectionActions
 	| TemplateSelectionActions
-	| CancelMappingAction
+	| CommonActions
 	| MappingActions;
 
 
@@ -208,7 +220,7 @@ interface WBPlanViewProps extends publicWBPlanViewProps {
 
 interface partialWBPlanViewProps {
 	readonly wb :specify_resource,
-	readonly handleUnload :() => void,
+	readonly removeUnloadProtect :() => void,
 }
 
 interface publicWBPlanViewProps extends partialWBPlanViewProps {

@@ -21,17 +21,17 @@ module.exports = Backbone.View.extend({
                 wb={this.wb}
                 wbtemplatePromise={this.wbtemplatePromise}
                 mappingIsTemplated={this.mappingIsTemplated}
-                handleUnload={this.handleUnload.bind(this)}
+                removeUnloadProtect={this.removeUnloadProtect.bind(this)}
             />
         </>, this.el);
         return this;
     },
-    handleUnload(){
+    removeUnloadProtect(){
         navigation.removeUnloadProtect(this);
     },
     remove(){
         ReactDOM.unmountComponentAtNode(this.el);
         Backbone.View.prototype.remove.call(this);
-        this.handleUnload();
+        this.removeUnloadProtect();
     }
 });

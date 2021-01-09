@@ -47,15 +47,20 @@ interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
 	readonly handleAddNewHeader: ()=>void,
 	readonly handleAddNewStaticHeader: ()=>void,
 	readonly handleToggleHiddenFields: ()=>void,
+	readonly handleAddNewColumn: ()=>void,
+	readonly handleAddNewStaticColumn: ()=>void,
 	readonly handleOpen: handleMappingOpen
 	readonly handleClose: handleElementOpen
 	readonly handleChange: handleMappingChange,
 	readonly handleClearMapping: handleMappingLineOpen,
+	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>)=>void,
 }
 
 interface MappingsControlPanelProps {
 	readonly show_hidden_fields: boolean,
-	readonly onChange: ()=>void,
+	readonly handleChange: ()=>void,
+	readonly handleAddNewColumn: ()=>void,
+	readonly handleAddNewStaticColumn: ()=>void,
 }
 
 interface FormatValidationResultsProps {

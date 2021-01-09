@@ -90,6 +90,12 @@ export function set<T>(
 	} :set_parameters = {}
 ) :T {
 
+	if(typeof bucket_name === "undefined")
+		throw new Error('Bucket name can not be undefined');
+
+	if(typeof cache_name === "undefined")
+		throw new Error('Cache record name can not be undefined');
+
 	if (!event_listener_is_initialized)
 		initialize();
 

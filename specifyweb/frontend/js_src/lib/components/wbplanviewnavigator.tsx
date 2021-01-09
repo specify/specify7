@@ -175,7 +175,9 @@ function navigator_instance<RETURN_STRUCTURE>({
 }
 
 
-/* Returns a mapping line data from mapping path */
+/*
+* Get data required to build a mapping line from a source mapping path and other options
+* */
 export function get_mapping_line_data_from_mapping_path({
 	base_table_name,
 	mapping_path = ["0"],
@@ -355,27 +357,31 @@ export function get_mapping_line_data_from_mapping_path({
 						}
 					]
 				)=>
-					is_relationship &&
-					(  // skip circular relationships
-						field_table_name === parent_table_name &&
-						(
+					(
+						!is_relationship ||
+						(  // skip circular relationships
+							field_table_name !== parent_table_name ||
 							(
-								typeof foreign_name !== 'undefined' &&
-								typeof parent_table_name !== 'undefined' &&
-								typeof data_model_storage.tables[parent_table_name].fields[foreign_name] !== 'undefined' &&
-								data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name === field_name
-							) ||
-							(
+								(
+									typeof foreign_name === 'undefined' ||
+									typeof parent_table_name === 'undefined' ||
+									typeof data_model_storage.tables[parent_table_name].fields[foreign_name] === 'undefined' ||
+									data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name !== field_name
+								) &&
 								data_model_storage.tables[table_name].fields[field_name].foreign_name === internal_state.current_mapping_path_part
 							)
 						)
-					) ||
-					(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-						relationship_is_to_many(relationship_type) &&
-						relationship_is_to_many(parent_relationship_type)
-					) || (  // skip hidden fields when user decided to hide them
-						!show_hidden_fields &&
-						is_hidden
+					) &&
+					(
+						(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
+							!relationship_is_to_many(relationship_type) ||
+							!relationship_is_to_many(parent_relationship_type)
+						) &&
+						(  // skip hidden fields when user decided to hide them
+							show_hidden_fields ||
+							!is_hidden ||
+							field_name === internal_state.default_value // show a default field, even if it is hidden
+						)
 					)
 				).map((
 					[

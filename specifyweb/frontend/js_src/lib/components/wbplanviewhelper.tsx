@@ -61,37 +61,13 @@ export function find_array_divergence_point<T>(
 
 }
 
-/* Extract mapping type and header name / static column value from a mapping path */
-export function deconstruct_mapping_path(
-	mapping_path :mapping_path,  // combined mapping path
-	has_header :boolean = false,  // whether a mapping_path has mapping type and header name / static column value in it
-	detect_unmapped :boolean = true,  // whether detect that a mapping path is incomplete
-) :deconstructed_mapping_path {
-
-	mapping_path = [...mapping_path];
-
-	let header = '';
-	let mapping_type = '';
-	if (has_header) {
-		header = mapping_path.pop() || '';
-		mapping_type = mapping_path.pop() || '';
-	}
-
-	if (detect_unmapped && mapping_path[mapping_path.length - 1] === '0')
-		mapping_path = [];
-
-	return [mapping_path, mapping_type as mapping_type, header];
-
-}
-
 /* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
 export function find_duplicate_mappings(
 	array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
 	focused_line: number|false,
 ) :duplicate_mappings {
 
-	const filtered_array_of_mappings = array_of_mappings.map(mapping_path => deconstruct_mapping_path(mapping_path, false)[0]);
-	const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join(data_model_storage.path_join_symbol));
+	const string_array_of_mappings = array_of_mappings.map(mapping_path => mapping_path.join(data_model_storage.path_join_symbol));
 
 	const duplicate_indexes :number[] = [];
 	string_array_of_mappings.reduce((dictionary_of_mappings :string[], string_mapping_path :string, index) => {

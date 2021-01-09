@@ -10,7 +10,7 @@ import data_model_storage from './wbplanviewmodel';
 import {
 	format_reference_item,
 	format_tree_rank,
-	get_name_from_tree_rank_name,
+	get_name_from_tree_rank_name, table_is_tree,
 	value_is_reference_item,
 	value_is_tree_rank,
 } from './wbplanviewmodelhelper';
@@ -118,7 +118,7 @@ const handle_header = (data :string | object) =>
 
 function mappings_tree_to_upload_plan_table(table_data :object, table_name :string, wrap_it = true) {
 
-	if (typeof data_model_storage.ranks[table_name] !== 'undefined') {
+	if (table_is_tree(table_name)) {
 
 		const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
@@ -199,7 +199,7 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 	if (Array.isArray(table_plan) || !wrap_it)
 		return table_plan;
 
-	if (value_is_reference_item(Object.keys(table_data).shift()))
+	if (value_is_reference_item(Object.keys(table_data)[0]))
 		return table_plan;
 
 	return {uploadTable: table_plan};

@@ -119,9 +119,8 @@ export default () :Promise<data_model_fetcher_return> =>
 			schema as unknown as schema
 		).models).reduce((tables, table_data) => {
 
-
 			// @ts-ignore
-			const table_name = table_data.longName.split('.').pop().toLowerCase();
+			const table_name = table_data.longName.split('.').slice(-1)[0].toLowerCase();
 			const table_friendly_name = table_data.getLocalizedName();
 
 			const fields :data_model_fields_writable = {};

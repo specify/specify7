@@ -44,7 +44,8 @@ export const MappingLine = ({
 	header_name,
 	is_focused,
 	handleFocus,
-	handleClearMapping
+	handleClearMapping,
+	handleStaticHeaderChange=()=>{}
 } :MappingLineProps) =>
 	<div className={`wbplanview_mappings_line ${is_focused ? 'wbplanview_mappings_line_focused' : ''}`}
 		 onClick={handleFocus}>
@@ -54,7 +55,11 @@ export const MappingLine = ({
 			</button>
 		</div>
 		<div className="wbplanview_mappings_line_header">
-			{mapping_type === 'new_static_column' && <StaticHeader default_value={header_name}/> || header_name}
+			{
+				mapping_type === 'new_static_column' ?
+					<StaticHeader default_value={header_name} onChange={handleStaticHeaderChange}/> :
+					header_name
+			}
 		</div>
 		<div className="wbplanview_mappings_line_elements">
 			<MappingPath mappings_line_data={line_data}/>
@@ -188,5 +193,6 @@ function MappingElement(
 /* Return a textarea with a given value for a new static header */
 const StaticHeader = ({
 	default_value = '',
-}) =>
-	<textarea value={default_value}/>;
+	onChange: handleChange,
+}:StaticHeaderProps) =>
+	<textarea value={default_value} onChange={handleChange}/>;

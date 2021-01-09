@@ -19,7 +19,7 @@ export function traverse_tree(
 	if (typeof node_mappings_tree === 'string')
 		return full_mappings_tree[target_key];
 	else {
-		target_key = Object.keys(node_mappings_tree).shift() as string;
+		target_key = Object.keys(node_mappings_tree)[0] as string;
 
 		if (typeof target_key === 'undefined' || target_key === '')
 			return full_mappings_tree;
@@ -30,7 +30,7 @@ export function traverse_tree(
 
 	return traverse_tree(full_mappings_tree[target_key] as mappings_tree, node_mappings_tree[target_key]);
 
-};
+}
 
 /* Merges objects recursively (by reference only, does not create a copy of the tree) */
 export const deep_merge_object = (
@@ -59,14 +59,14 @@ export function array_to_tree(
 	if (array.length === 0)
 		return {};
 
-	const node = array.shift();
+	const [node,...new_array] = array;
 
-	if (has_headers && array.length === 0)
+	if (has_headers && new_array.length === 0)
 		return node;
 
-	return {[node]: array_to_tree(array, has_headers)};
+	return {[node]: array_to_tree(new_array, has_headers)};
 
-};
+}
 
 /*
 * Converts array of arrays of strings into a complete tree
@@ -74,7 +74,6 @@ export function array_to_tree(
 * */
 export function array_of_mappings_to_mappings_tree(
 	array_of_mappings :mapping_path[],  // array of array of strings (a.k.a branches of the tree) that are going to be merged into a tree
-	include_headers :boolean,  // whether array_of_mappings includes mapping types and header names / static column values
 ) :mappings_tree  // Final tree
 /*
 * For example if array is:
@@ -94,12 +93,12 @@ export function array_of_mappings_to_mappings_tree(
 	const tree = {};
 
 	array_of_mappings.forEach(mapping_path =>
-		deep_merge_object(tree, array_to_tree(mapping_path, include_headers)),
+		deep_merge_object(tree, array_to_tree(mapping_path, false)),
 	);
 
 	return tree;
 
-};
+}
 
 
 /*

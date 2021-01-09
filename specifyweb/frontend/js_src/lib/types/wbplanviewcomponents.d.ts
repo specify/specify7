@@ -13,14 +13,26 @@ interface html_generator_field_data {
 	readonly table_name? :string,
 }
 
-interface MappingLineProps {
+interface MappingLineBaseProps {
 	readonly line_data :MappingElementProps[],
 	readonly mapping_type :mapping_type,
 	readonly header_name :string,
 	readonly is_focused :boolean,
 	readonly handleFocus : ()=>void,
 	readonly handleClearMapping: ()=>void,
+	readonly handleStaticHeaderChange?: (event:React.ChangeEvent<HTMLTextAreaElement>)=>void,
 }
+
+interface MappingLineNonStaticHeaderProps extends MappingLineBaseProps {
+	readonly mapping_type : Exclude<mapping_type,'new_static_column'>,
+}
+
+interface MappingLineStaticHeaderProps extends MappingLineBaseProps {
+	readonly mapping_type : 'new_static_column',
+	readonly handleStaticHeaderChange?: (event:React.ChangeEvent<HTMLTextAreaElement>)=>void,
+}
+
+type MappingLineProps = MappingLineStaticHeaderProps | MappingLineNonStaticHeaderProps;
 
 interface MappingPathProps {
 	readonly mappings_line_data: MappingElementProps[],
@@ -39,3 +51,8 @@ interface MappingElementPropsClosed extends Omit<CustomSelectElementPropsClosed,
 }
 
 type MappingElementProps = MappingElementPropsOpen | MappingElementPropsClosed;
+
+interface StaticHeaderProps {
+	default_value:string,
+	onChange: (event:React.ChangeEvent<HTMLTextAreaElement>)=>void
+}

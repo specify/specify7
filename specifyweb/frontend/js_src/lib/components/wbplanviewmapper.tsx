@@ -6,7 +6,7 @@ import {
 	traverse_tree,
 	array_to_tree,
 } from './wbplanviewtreehelper';
-import {deconstruct_mapping_path, find_duplicate_mappings} from './wbplanviewhelper';
+import {find_duplicate_mappings} from './wbplanviewhelper';
 import {MappingLine, MappingPath} from './wbplanviewcomponents';
 import {
 	value_is_tree_rank,
@@ -21,12 +21,12 @@ import React from 'react';
 
 const max_suggestions_count :number = 3;  // the maximum number of suggestions to show in the suggestions box
 
-const MappingsControlPanel = React.memo(({show_hidden_fields, onChange} :MappingsControlPanelProps) =>
+const MappingsControlPanel = React.memo(({show_hidden_fields, handleChange, handleAddNewColumn, handleAddNewStaticColumn} :MappingsControlPanelProps) =>
 	<div id="mappings_control_panel">
-		<button>Add new column</button>
-		<button>Add new static column</button>
+		<button onClick={handleAddNewColumn}>Add new column</button>
+		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
 		<label>
-			<input type="checkbox" checked={show_hidden_fields} onChange={onChange}/>
+			<input type="checkbox" checked={show_hidden_fields} onChange={handleChange}/>
 			Reveal hidden fields
 		</label>
 	</div>,
@@ -49,7 +49,6 @@ function FormatValidationResults(props :FormatValidationResultsProps) {
 						generate_last_relationship_data: false,
 						custom_select_type: 'preview_list',
 						get_mapped_fields: props.get_mapped_fields,
-						//TODO: add handleChange here
 					})}
 				/>
 			</div>,
@@ -111,7 +110,7 @@ export function get_lines_from_upload_plan(
 	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, upload_plan);
 	const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
 	array_of_mappings.forEach(full_mapping_path => {
-		const [mapping_path, mapping_type, header_name] = deconstruct_mapping_path(full_mapping_path, true);
+		const [mapping_path, mapping_type, header_name] = [full_mapping_path.slice(0,-2),full_mapping_path.slice(-2,-1)[0],full_mapping_path.slice(-1)[0]] as [mapping_path, mapping_type, string]
 		const header_index = headers.indexOf(header_name);
 		if (header_index !== -1)
 			lines[header_index] = {
@@ -128,40 +127,31 @@ export function get_lines_from_upload_plan(
 
 }
 
-/* todo: REMOVE THIS? */
 /* Returns array of mapping_paths */
 const get_array_of_mappings = (
-	lines :MappingLine[],
-	include_headers :boolean = false,  // whether each mapping path should also have mapping type and header name at the end
-	skip_empty :boolean = true,  // whether to skip incomplete mapping paths
+	lines :MappingLine[]
 ) :mapping_path[] /* array of mapping paths */ =>
 	lines.filter(({mapping_path}) =>
-		!skip_empty || mapping_path.length !== 0,
-	).map(({mapping_path, name, type}) =>
-		include_headers ?
-			[...mapping_path, type, name] :
-			[...mapping_path],
+		mapping_path_is_complete(mapping_path),
+	).map(({mapping_path}) =>
+		mapping_path,
 	);
 
 /* Returns a mappings tree */
 export const get_mappings_tree :get_mappings_tree = (
 	lines,
-	include_headers :boolean = false,
-	skip_empty :boolean = true,
 ) :mappings_tree /* mappings tree */ =>
 	array_of_mappings_to_mappings_tree(
-		get_array_of_mappings(lines, include_headers, skip_empty),
-		include_headers,
+		get_array_of_mappings(lines)
 	);
 
 /* Get a mappings tree branch given a particular starting mapping path */
 export const get_mapped_fields :get_mapped_fields = (
 	lines,
 	mapping_path_filter,
-	skip_empty = true,
 ) :mappings_tree => {
 	const mappings_tree = traverse_tree(
-		get_mappings_tree(lines, false, skip_empty),
+		get_mappings_tree(lines),
 		array_to_tree([...mapping_path_filter]),
 	);
 	if (typeof mappings_tree === 'undefined' || typeof mappings_tree === 'string' || mappings_tree === false)
@@ -179,7 +169,7 @@ export function deduplicate_mappings(
 	focused_line: number|false
 ) :MappingLine[] {
 
-	const array_of_mappings = get_array_of_mappings(lines, false, false);
+	const array_of_mappings = get_array_of_mappings(lines);
 	const duplicate_mapping_indexes = find_duplicate_mappings(array_of_mappings, focused_line);
 
 	return lines.map((line, index) =>
@@ -193,6 +183,8 @@ export function deduplicate_mappings(
 
 }
 
+
+//TODO: fix automapper suggestions not showing up
 /*
 * Show automapper suggestion on top of an opened `closed_list`
 * The automapper suggestions are shown only if the current box doesn't have a value selected
@@ -235,7 +227,9 @@ export const get_automapper_suggestions = ({
 			new automapper({
 				headers: [lines[line].name],
 				base_table: base_table_name,
-				starting_table: mapping_line_data[mapping_line_data.length - 1].table_name,
+				starting_table: mapping_line_data.length === 0 ?
+					base_table_name :
+					mapping_line_data[mapping_line_data.length - 1].table_name,
 				path: local_mapping_path,
 				path_offset,
 				allow_multiple_mappings: true,
@@ -276,7 +270,7 @@ const MappingView = React.memo((props :MappingViewProps) =>
 					base_table_name: props.base_table_name,
 					mapping_path: props.mapping_path,
 					use_cached: true,
-					generate_last_relationship_data: false,
+					generate_last_relationship_data: true,
 					custom_select_type: 'opened_list',
 					handleChange: props.handleMappingViewChange,
 					get_mapped_fields: props.get_mapped_fields,
@@ -313,11 +307,11 @@ export function mutate_mapping_path({
 	)];
 
 	if(value==='add'){
-		const mapped_fields = Object.keys(get_mapped_fields(lines,mapping_path));
+		const mapped_fields = Object.keys(get_mapped_fields(lines,mapping_path.slice(0,index)));
 		const max_to_many_value = get_max_to_many_value(mapped_fields);
 		mapping_path[index] = format_reference_item(max_to_many_value+1);
 	}
-	else if (value_is_reference_item(value) && value_is_tree_rank(value))
+	else if (value_is_reference_item(value) || value_is_tree_rank(value))
 		mapping_path[index] = value;
 	else
 		mapping_path = [...mapping_path.slice(0, index), value];
@@ -326,36 +320,36 @@ export function mutate_mapping_path({
 
 }
 
-//TODO: remember list scroll position and scroll down
 //TODO: scroll list down when adding new column / new static column
 
 export default function (props :WBPlanViewMapperProps) {
 	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
 
 	return <>
-		{props.show_mapping_view &&
-		<div id="mapping_view_parent">
-			<div id="mapping_view_container">
-				<FormatValidationResults
-					base_table_name={props.base_table_name}
-					validation_results={props.validation_results}
-					handleSave={props.handleSave}
-					get_mapped_fields={get_mapped_fields_bind}
-				/>
-				<MappingView
-					base_table_name={props.base_table_name}
-					mapping_path={props.mapping_view}
-					map_button_is_enabled={
-						mapping_path_is_complete(props.mapping_view) &&
-						typeof props.focused_line !== 'undefined'
-					}
-					handleMapButtonClick={props.handleMappingViewMap}
-					handleMappingViewChange={props.handleChange.bind(null, 'mapping_view')}
-					get_mapped_fields={get_mapped_fields_bind}
-					automapper_suggestions={props.automapper_suggestions}
-				/>
+		{
+			props.show_mapping_view &&
+			<div id="mapping_view_parent">
+				<div id="mapping_view_container">
+					<FormatValidationResults
+						base_table_name={props.base_table_name}
+						validation_results={props.validation_results}
+						handleSave={props.handleSave}
+						get_mapped_fields={get_mapped_fields_bind}
+					/>
+					<MappingView
+						base_table_name={props.base_table_name}
+						mapping_path={props.mapping_view}
+						map_button_is_enabled={
+							mapping_path_is_complete(props.mapping_view) &&
+							typeof props.focused_line !== 'undefined'
+						}
+						handleMapButtonClick={props.handleMappingViewMap}
+						handleMappingViewChange={props.handleChange.bind(null, 'mapping_view')}
+						get_mapped_fields={get_mapped_fields_bind}
+						automapper_suggestions={props.automapper_suggestions}
+					/>
+				</div>
 			</div>
-		</div>
 		}
 
 		<div id="list__mappings">{
@@ -367,6 +361,7 @@ export default function (props :WBPlanViewMapperProps) {
 					is_focused={index === props.focused_line}
 					handleFocus={props.handleFocus.bind(null, index)}
 					handleClearMapping={props.handleClearMapping.bind(null, index)}
+					handleStaticHeaderChange={props.handleStaticHeaderChange.bind(null, index)}
 					line_data={
 						get_mapping_line_data_from_mapping_path({
 							base_table_name: props.base_table_name,
@@ -392,7 +387,9 @@ export default function (props :WBPlanViewMapperProps) {
 
 		<MappingsControlPanel
 			show_hidden_fields={props.show_hidden_fields}
-			onChange={props.handleToggleHiddenFields}
+			handleChange={props.handleToggleHiddenFields}
+			handleAddNewColumn={props.handleAddNewColumn}
+			handleAddNewStaticColumn={props.handleAddNewStaticColumn}
 		/>
 	</>;
 

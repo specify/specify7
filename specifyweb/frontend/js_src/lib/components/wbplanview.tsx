@@ -122,10 +122,12 @@ const HeaderWrapper = (props :HeaderWrapperProps) =>
 	</div>;
 
 function go_back(props :partialWBPlanViewProps):LoadingState {
-	navigation.go(`/workbench/${props.wb.id}/`);
-	props.handleUnload();
 	return {
 		type: 'LoadingState',
+		loading_state: {
+			type: 'NavigateBackState',
+			wb: props.wb,
+		}
 	}
 }
 
@@ -145,21 +147,19 @@ function save_plan(props :publicWBPlanViewProps, state:MappingState, ignore_vali
 /* Validates the current mapping and shows error messages if needed */
 function validate(state:MappingState):MappingState {
 
-	if (state.type !== 'MappingState')
-		throw new Error('Validation can only be done from the Mapper State');
+	const validation_results = show_required_missing_fields(
+		state.base_table_name,
+		get_mappings_tree(state.lines),
+	);
 
 	return {
 		...state,
 		type: 'MappingState',
 		show_mapping_view:  // Show mapping view panel if there were validation errors
 			state.show_mapping_view ||
-			Object.values(state.validation_results).length !== 0,
-		validation_results: show_required_missing_fields(
-			state.base_table_name,
-			get_mappings_tree(state.lines),
-		),
+			Object.values(validation_results).length !== 0,
+		validation_results
 	};
-
 }
 
 function mapping_state(state:WBPlanViewStates):MappingState {
@@ -173,6 +173,15 @@ const soft_resolve_non_mapping_state = (state:WBPlanViewStates):WBPlanViewStates
 	state.type !== 'MappingState' ?
 		state :
 		false
+
+const modify_line = (state:MappingState, line:number, mapping_line:Partial<MappingLine>):MappingLine[]=>[
+	...state.lines.slice(0, line),
+	{
+		...state.lines[line],
+		...mapping_line
+	},
+	...state.lines.slice(line + 1),
+]
 
 const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 
@@ -263,14 +272,9 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 	}),
 	'ClearMappingLineAction': (state,action)=>({
 		...mapping_state(state),
-		lines: [
-			...mapping_state(state).lines.slice(0, action.line),
-			{
-				...mapping_state(state).lines[action.line],
-				mapping_path: ["0"],
-			},
-			...mapping_state(state).lines.slice(action.line + 1),
-		],
+		lines: modify_line(mapping_state(state),action.line,{
+			mapping_path: ["0"],
+		}),
 	}),
 	'FocusLineAction': (state,action)=> {
 		if (action.line >= mapping_state(state).lines.length)
@@ -374,14 +378,9 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		return {
 			...mapping_state(state),
 			lines: deduplicate_mappings(
-				[
-					...mapping_state(state).lines.slice(0, action.line),
-					{
-						...mapping_state(state).lines[action.line],
-						mapping_path: new_mapping_path,
-					},
-					...mapping_state(state).lines.slice(action.line + 1),
-				],
+				modify_line(mapping_state(state), action.line,{
+					mapping_path: new_mapping_path,
+				}),
 				typeof mapping_state(state).open_select_element !== "undefined" && mapping_state(state).open_select_element!.line
 			),
 			open_select_element: undefined,
@@ -393,6 +392,12 @@ const reducer = generate_reducer<WBPlanViewStates,WBPlanViewActions>({
 		...mapping_state(state),
 		automapper_suggestions: action.automapper_suggestions,
 		automapper_suggestions_promise: undefined,
+	}),
+	'StaticHeaderChangeAction': (state,action)=>({
+		...mapping_state(state),
+		lines: modify_line(mapping_state(state), action.line,{
+			name: action.event.target.value
+		}),
 	}),
 });
 
@@ -441,7 +446,9 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 				});
 			}),
 		);
-	}
+	},
+	'NavigateBackState': state=>
+		setTimeout(()=>navigation.go(`/workbench/${state.wb.id}/`),10),  // need to make the `Loading` dialog appear before the `Leave Page?` dialog
 });
 
 const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
@@ -460,7 +467,7 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 			<WBPlanViewHeader
 				title='Select Base Table'
 				state_type={state.type}
-				handleCancel={() => state.dispatch({type: 'CancelMappingAction', wb:state.props.wb, handleUnload:state.props.handleUnload})}
+				handleCancel={() => state.dispatch({type: 'CancelMappingAction', wb:state.props.wb, removeUnloadProtect:state.props.removeUnloadProtect})}
 				handleUseTemplate={() => state.dispatch({type: 'UseTemplateAction'})}
 			/>
 		}>
@@ -506,7 +513,7 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 					automapper_suggestions: mapping_element_props,
 				})
 			);
-		const handleSave = () => state.dispatch({type: 'SavePlanAction',wb:state.props.wb, handleUnload:state.props.handleUnload, wbtemplatePromise:state.props.wbtemplatePromise, mappingIsTemplated:state.props.mappingIsTemplated})
+		const handleSave = (ignore_validation:boolean) => state.dispatch({type: 'SavePlanAction',wb:state.props.wb, removeUnloadProtect:state.props.removeUnloadProtect, wbtemplatePromise:state.props.wbtemplatePromise, mappingIsTemplated:state.props.mappingIsTemplated, ignore_validation})
 		const handleClose = () =>state.dispatch({type:'CloseSelectElementAction'})
 		return <HeaderWrapper
 			state_name={state.type}
@@ -514,13 +521,13 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				<WBPlanViewHeader
 					title={data_model_storage.tables[state.base_table_name].table_friendly_name}
 					state_type={state.type}
-					handleCancel={() => state.dispatch({type: 'CancelMappingAction',wb:state.props.wb, handleUnload:state.props.handleUnload})}
+					handleCancel={() => state.dispatch({type: 'CancelMappingAction',wb:state.props.wb, removeUnloadProtect:state.props.removeUnloadProtect})}
 					handleTableChange={() => state.dispatch({type: 'OpenBaseTableSelectionAction'})}
 					handleToggleMappingView={() => state.dispatch({type: 'ToggleMappingViewAction'})}
 					handleToggleMappingIsTemplated={() => state.dispatch({type: 'ToggleMappingIsTemplatedAction'})}
 					handleClearMapping={() => state.dispatch({type: 'ResetMappingsAction'})}
 					handleValidation={() => state.dispatch({type: 'ValidationAction'})}
-					handleSave={handleSave}
+					handleSave={()=>handleSave(false)}
 					mapping_is_templated={state.mapping_is_templated}
 				/>
 			}
@@ -539,16 +546,19 @@ const state_reducer = generate_reducer<JSX.Element,WBPlanViewStatesWithParams>({
 				open_select_element={state.open_select_element}
 				automapper_suggestions={state.automapper_suggestions}
 				focused_line={state.focused_line}
-				handleSave={handleSave}
+				handleSave={()=>handleSave(true)}
 				handleFocus={(line:number)=>state.dispatch({type:'FocusLineAction', line})}
 				handleMappingViewMap={()=>state.dispatch({type:'MappingViewMapAction'})}
 				handleAddNewHeader={()=>state.dispatch({type:'AddNewHeaderAction'})}
 				handleAddNewStaticHeader={()=>state.dispatch({type:'AddNewStaticHeaderAction'})}
 				handleToggleHiddenFields={()=>state.dispatch({type:'ToggleHiddenFieldsAction'})}
+				handleAddNewColumn={()=>state.dispatch({type:'AddNewHeaderAction'})}
+				handleAddNewStaticColumn={()=>state.dispatch({type:'AddNewStaticHeaderAction'})}
 				handleOpen={(line:number, index:number)=>state.dispatch({type:'OpenSelectElementAction', line, index})}
 				handleClose={handleClose}
 				handleChange={(line:'mapping_view'|number, index:number, value:string)=>state.dispatch({type:'ChangeSelectElementValueAction', line, index, value})}
 				handleClearMapping={(line:number)=>state.dispatch({type:'ClearMappingLineAction', line})}
+				handleStaticHeaderChange={(line:number, event:React.ChangeEvent<HTMLTextAreaElement>)=>state.dispatch({type:'StaticHeaderChangeAction', line, event})}
 			/>
 		</HeaderWrapper>;
 	}

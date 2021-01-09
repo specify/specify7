@@ -148,7 +148,7 @@ export function show_required_missing_fields(
 	}
 
 	// handle trees
-	else if (typeof data_model_storage.ranks[table_name] !== 'undefined') {
+	else if (table_is_tree(table_name)) {
 
 		const keys = Object.keys(data_model_storage.ranks[table_name]);
 		const last_path_element = path.slice(-1)[0];

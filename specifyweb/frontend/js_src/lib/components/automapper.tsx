@@ -142,7 +142,14 @@ export default class automapper {
 			return {};
 
 
-		const cache_name = JSON.stringify(arguments[0]);
+		const cache_name = JSON.stringify([
+			this.headers_to_map,
+			this.base_table,
+			this.starting_table,
+			this.starting_path,
+			this.path_offset,
+			this.scope
+		]);
 
 		if (use_cache && commit_to_cache) {
 			const cached_data = cache.get('automapper', cache_name);
