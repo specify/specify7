@@ -1,5 +1,5 @@
 /* ROOT */
-#wbplanview {
+.wbplanview {
 	--b1: #fff;
 	--b2: #ddd;
 	--b3: #bbb;
@@ -9,6 +9,7 @@
 	--t3: #444;
 	--t4: #666;
 	--border: #ccc;
+	--menu_size: 119px;
 
 	--white_space: 0.5rem;
 	--text1: #000;
@@ -18,72 +19,82 @@
 	--accent: #f73;
 	--lines_to_display: 10;
 	--border_size: 1px;
-	/*--base_width: auto;*/
 
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	row-gap: 1rem;
-	height: calc(100vh - 150px); /* TODO: replace with a permanent solution */
+	height: calc(100vh - var(--menu_size) - 30px);
 }
 
 .wbplanview_event_listener {
 	display: contents;
 }
 
-/* TODO: replace IDs with classes? */
-
 /* HEADER */
-#wbplanview_header {
+.wbplanview_header {
 	display: flex;
 	justify-content: space-between;
 }
 
 /* CONTAINER */
-#wbplanview_container {
+.wbplanview_container {
 	flex: 1;
 	overflow: hidden;
 }
 
 /* BASE TABLE SELECTION STATE */
-#wbplanview_container.BaseTableSelectionState .custom_select {
+.wbplanview_container_BaseTableSelectionState .custom_select {
 	height: 100%;
 }
 
-#wbplanview_container.BaseTableSelectionState .custom_select_options {
+.wbplanview_container_BaseTableSelectionState .custom_select_options {
 	max-height: unset;
 	height: unset;
 }
 
 /* MAPPING STATE*/
-#wbplanview_container.MappingState {
+.wbplanview_container_MappingState {
 	display: flex;
 	flex-direction: column;
 	row-gap: 1rem;
 }
 
-/* TODO: review classes and IDs used in TSX files */
-
 /* MAPPING VIEW */
-#mapping_view_parent {
+.mapping_view_parent {
 	overflow-x: auto;
-	flex: none;
 }
-/**/
-#mapping_view_container {
+
+.mapping_view_container {
 	display: flex;
 	flex-wrap: nowrap;
 	height: calc(calc(4 * var(--white_space)) * calc(1 + var(--lines_to_display)));
 	column-gap: calc(4 * var(--white_space));
 	width: max-content;
 }
-/**/
-#mapping_view {
+
+.mapping_view {
 	display: flex;
 	flex-wrap: nowrap;
+	align-items: center;
 }
 
-#wbplanview_mapping_view_map_button {
+.mapping_view .custom_select {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.mapping_view .custom_select:last-of-type {
+	display: flex;
+	flex-direction: column;
+}
+
+.mapping_view .custom_select_options {
+	height: 100%;
+}
+
+.wbplanview_mapping_view_map_button {
 	font-size: calc(2 * var(--white_space));
 	display: flex;
 	flex-direction: column;
@@ -97,15 +108,16 @@
 
 
 /* MAPPING GENERAL */
-#list__mappings {
+.list__mappings {
 	flex: 1;
 	display: grid;
 	grid-template-columns: 2.2rem max-content auto;
 	grid-auto-rows: max-content;
 	overflow-x: hidden;
 }
-/**/
-#validation_results {
+
+/* VALIDATION RESULTS */
+.validation_results {
 	display: flex;
 	flex-direction: column;
 	row-gap: var(--white_space);
@@ -113,37 +125,36 @@
 	max-width: 30vw;
 }
 
+.validation_results .wbplanview_mapping_line_elements:not(:last-child) {
+	border-bottom: 1px solid var(--border);
+}
 
-/* MAPPINGS LINE */
-.wbplanview_mappings_line {
+.validation_results .custom_select {
+	margin-bottom: 0.4rem;
+}
+
+
+/* MAPPING LINE */
+.wbplanview_mapping_line {
 	display: contents;
 }
 
-.wbplanview_mappings_line > * {
+.wbplanview_mapping_line > * {
 	border-bottom: 1px solid var(--border);
 	padding: var(--white_space) 0;
 }
 
-.wbplanview_mappings_line > *:not(:first-child) {
+.wbplanview_mapping_line > *:not(:first-child) {
 	padding-left: 0.6rem;
 }
 
-.wbplanview_mappings_line_focused > .wbplanview_mappings_line_elements {
+.wbplanview_mapping_line_focused > .wbplanview_mapping_line_elements {
 	background: var(--b2);
 }
 
-/**/
-#validation_results .wbplanview_mappings_line_elements {
-	padding: 0;
-}
-/**/
-#validation_results .wbplanview_mappings_line_elements:not(:last-child) {
-	border-bottom: 1px solid var(--border);
-}
 
-
-/* MAPPINGS LINE CONTROLS */
-.wbplanview_mappings_line_controls button {
+/* MAPPING LINE CONTROLS */
+.wbplanview_mapping_line_controls button {
 	border: none;
 	background: var(--b2);
 	cursor: pointer;
@@ -152,30 +163,30 @@
 	width: 100%;
 }
 
-.wbplanview_mappings_line_controls button:hover {
+.wbplanview_mapping_line_controls button:hover {
 	background: var(--b3);
 }
 
-.wbplanview_mappings_line_controls button img {
+.wbplanview_mapping_line_controls button img {
 	width: calc(2 * var(--white_space));
 	height: calc(2 * var(--white_space));
 }
 
 
 /* MAPPINGS LINE ELEMENTS */
-.wbplanview_mappings_line_header {
+.wbplanview_mapping_line_header {
 	display: flex;
 	align-items: center;
 }
 
-.wbplanview_mappings_line_elements {
+.wbplanview_mapping_line_elements {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
 	row-gap: 0.6rem;
 }
 
-.wbplanview_mappings_line_divider {
+.wbplanview_mapping_line_divider {
 	font-size: calc(1.5 * var(--white_space));
 	text-align: center;
 	grid-area: next_arrow;
@@ -196,40 +207,13 @@
 	position: relative;
 }
 
-#mapping_view .custom_select {
-	height: 100%;
-	grid-template-areas:
-		"header"
-		"options";
-}
-
-#validation_results .custom_select {
-	height: unset;
-	margin-bottom: 0.4rem;
-}
-
-#mapping_view .custom_select:last-of-type {
-	display: flex;
-	flex-direction: column;
-}
-
-.custom_select[data-type="suggestion_list"] {
-	grid-template-columns: auto calc(4 * var(--white_space));
-}
-
-.custom_select[data-type="opened_list"]:after {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.custom_select_suggestions {
+.custom_select_suggestion_list {
 	position: absolute;
 	bottom: calc(4 * var(--white_space));
 }
 
 .custom_select_closed_list .custom_select_options,
-.custom_select_closed_list .custom_select_suggestions {
+.custom_select_closed_list .custom_select_suggestion_list {
 	box-shadow: 0 0 calc(0.5 * var(--white_space)) calc(0.5 * var(--white_space)) var(--border);
 }
 
@@ -237,7 +221,7 @@
 	clip-path: inset(0 calc(-1 * var(--white_space)) calc(-1 * var(--white_space)) calc(-1 * var(--white_space)));
 }
 
-.custom_select_closed_list .custom_select_suggestions {
+.custom_select_closed_list .custom_select_suggestion_list {
 	clip-path: inset(calc(-1 * var(--white_space)) calc(-1 * var(--white_space)) 0 calc(-1 * var(--white_space)));
 }
 
@@ -259,24 +243,23 @@
 	cursor: pointer;
 }
 
-.custom_select[data-type="preview_list"] .custom_select_input,
-.custom_select[data-type="suggestion_list"] .custom_select_input {
+.custom_select_preview_list .custom_select_input  {
 	cursor: initial;
+}
+
+.custom_select_suggestion_line_list .custom_select_input {
+	grid-template-columns: calc(var(--white_space) * 2) 1fr;
 }
 
 .custom_select_element_shadow_list {
 	list-style: none;
-	margin: calc(var(--white_space) * -2) calc(var(--white_space) * 6.6) 0 0;
+	margin: calc(var(--white_space) * -2) calc(var(--white_space) * 5.5) 0 0;
 	visibility: hidden;
 }
 
 .custom_select_element_shadow_list li {
 	line-height: 0;
 	padding: 0;
-}
-
-.custom_select_group[data-group="suggested_mappings"] .custom_select_option_label {
-	display: flex;
 }
 
 .custom_select_input,
@@ -288,22 +271,11 @@
 	min-height: calc(2 * var(--white_space));
 }
 
-.custom_select[data-type="preview_list"] .custom_select_input,
-.custom_select[data-type="suggestion_list"] .custom_select_input {
-	display: flex;
-}
-
 .custom_select_input:hover:after {
 	color: var(--text2);
 }
 
-.custom_select_options, .custom_select_suggestions {
-	border: var(--border_size) solid var(--accent);
-	background-color: var(--background1);
-	z-index: 2;
-	width: auto;
-	min-width: max-content;
-	cursor: pointer;
+.custom_select_options, .custom_select_suggestion_list {
 	height: -moz-fit-content;
 	height: fit-content;
 }
@@ -311,24 +283,16 @@
 .custom_select_options {
 	overflow-y: scroll;
 	max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
+	border: var(--border_size) solid var(--accent);
+	background-color: var(--background1);
+	z-index: 2;
+	width: auto;
+	min-width: max-content;
+	cursor: pointer;
 }
 
 .custom_select_options:not(:first-child){
 	border-top: 0;
-}
-
-.custom_select_open .custom_select_options,
-.custom_select[data-type="opened_list"] .custom_select_options {
-	visibility: visible;
-}
-
-.custom_select[data-type="opened_list"] .custom_select_options {
-	position: initial;
-	height: auto;
-}
-
-.custom_select[data-type="opened_list"]:last-of-type .custom_select_options {
-	height: 100%;
 }
 
 .custom_select_group {
@@ -337,25 +301,25 @@
 	flex-direction: column;
 }
 
-.custom_select_group[data-group="optional_fields"] {
+.custom_select_group_optional_fields {
 	--background1: #fff;
 	--background2: #fdb;
 	--accent: #f73;
 }
 
-.custom_select_group[data-group="required_fields"] {
+.custom_select_group_required_fields {
 	--background1: #dff;
 	--background2: #cff;
 	--accent: #3ef;
 }
 
-.custom_select_group[data-group="hidden_fields"] {
+.custom_select_group_hidden_fields {
 	--background1: #ccc;
 	--background2: #aaa;
 	--accent: #666;
 }
 
-.custom_select_group[data-group="suggested_mappings"] {
+.custom_select_group_suggested_mappings {
 	--background1: #dfd;
 	--background2: #bfc;
 	--accent: #9f9;
@@ -378,8 +342,14 @@
 	background-color: var(--background2);
 }
 
-.custom_select_suggestions .custom_select_option {
+.custom_select_suggestion_list .custom_select_option {
 	display: inline;
+	padding-left: var(--white_space);
+}
+
+.custom_select_suggestion_list .custom_select_option_label {
+	display: flex;
+	align-items: center;
 }
 
 .custom_select_option_disabled,
@@ -426,4 +396,8 @@
 	display: block;
 	background-size: contain;
 	background-repeat: no-repeat;
+}
+
+.custom_select_opened_list .custom_select_option_icon_table {
+	width: calc(2 * var(--white_space));
 }
