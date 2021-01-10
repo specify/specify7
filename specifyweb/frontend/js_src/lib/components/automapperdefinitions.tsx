@@ -108,7 +108,7 @@
 
 'use strict';
 
-const definitions :auto_mapper_definitions_interface = {
+const definitions: auto_mapper_definitions_interface = {
 	table_synonyms: {
 		Agent: [
 			{
@@ -482,9 +482,9 @@ const definitions :auto_mapper_definitions_interface = {
 
 
 /* Method that converts all table names and field names in definitions to lower case */
-function definitions_to_lowercase(definitions :auto_mapper_definitions_interface) :auto_mapper_definitions_interface {
+function definitions_to_lowercase(definitions: auto_mapper_definitions_interface): auto_mapper_definitions_interface {
 
-	const keys_to_lower_case = (object :object, levels :number = 1) :object => (
+	const keys_to_lower_case = (object: object, levels: number = 1): object => (
 		Object.fromEntries(
 			Object.entries(object).map(([key, value]) =>
 				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value],
@@ -492,7 +492,7 @@ function definitions_to_lowercase(definitions :auto_mapper_definitions_interface
 		)
 	);
 
-	const structure_depth :[structure_name :auto_mapper_definition_branches, depth :number][] = [
+	const structure_depth: [structure_name: auto_mapper_definition_branches, depth: number][] = [
 		['table_synonyms', 1],
 		['dont_match', 2],
 		['shortcuts', 1],

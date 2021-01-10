@@ -13,8 +13,8 @@ import { mapping_path_to_string } from './wbplanviewmodelhelper';
 * This method is only called if schema localization does not have a friendly name for this field
 * */
 export const get_friendly_name = (
-	original_name :string,  // Original field name
-) :string /* Human friendly field name */ => {
+	original_name: string,  // Original field name
+): string /* Human friendly field name */ => {
 	let name = original_name.replace(/[A-Z]/g, letter => ` ${letter}`);
 	name = name.trim();
 	name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -31,9 +31,9 @@ export const get_friendly_name = (
 
 /* Finds the point at which the source array begins to have values different from the ones in the search array */
 export function find_array_divergence_point<T>(
-	source :T[],  // the source array to use in the comparison
-	search :T[],  // the search array to use in the comparison
-) :divergence_point {
+	source: T[],  // the source array to use in the comparison
+	search: T[],  // the search array to use in the comparison
+): divergence_point {
 
 	if (source === null || search === null)
 		return -1;
@@ -66,13 +66,13 @@ export function find_array_divergence_point<T>(
 * same mapping, the indexes of the second and the third lines are returned)
 * */
 export const find_duplicate_mappings = (
-	array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
-	focused_line :number | false,
-) :duplicate_mappings => {
+	array_of_mappings: mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
+	focused_line: number | false,
+): duplicate_mappings => {
 
-	const duplicate_indexes :number[] = [];
+	const duplicate_indexes: number[] = [];
 
-	array_of_mappings.reduce((dictionary_of_mappings :string[], mapping_path, index) => {
+	array_of_mappings.reduce((dictionary_of_mappings: string[], mapping_path, index) => {
 
 		const string_mapping_path = mapping_path_to_string(mapping_path);
 

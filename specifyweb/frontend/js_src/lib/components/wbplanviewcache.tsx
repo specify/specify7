@@ -6,25 +6,25 @@
 
 'use strict';
 
-let buckets :buckets = {};  // the data structure that would store all the buckets
+let buckets: buckets = {};  // the data structure that would store all the buckets
 // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
-const cache_prefix :string = 'specify7_wbplanview_';
+const cache_prefix: string = 'specify7_wbplanview_';
 // start trimming a bucket if records in the bucket are over the `local_storage_bucket_soft_limit`
-const local_storage_bucket_soft_limit :number = 100;
+const local_storage_bucket_soft_limit: number = 100;
 // start trimming a bucket if records in a bucket are over the `local_storage_bucket_soft_limit`
-const session_storage_bucket_soft_limit :number = 100;
-const trim_aggressiveness :number = 0.5;  // between 0 and 1 - decides the minimum passing cache usage
+const session_storage_bucket_soft_limit: number = 100;
+const trim_aggressiveness: number = 0.5;  // between 0 and 1 - decides the minimum passing cache usage
 // indicates whether initialize() was run. If not, runs it on the next call to get() or set()
-let event_listener_is_initialized :boolean = false;
+let event_listener_is_initialized: boolean = false;
 
 /* Set's an event listener that runs commit_to_storage before a page unload */
-function initialize() :void {
+function initialize(): void {
 	window.onbeforeunload = commit_to_storage;
 	event_listener_is_initialized = true;
 }
 
 /* Commits persistent cache buckets to localStorage */
-function commit_to_storage() :void {
+function commit_to_storage(): void {
 
 	if (typeof localStorage === 'undefined')
 		return;
@@ -40,8 +40,8 @@ function commit_to_storage() :void {
 
 /* Tries to fetch a bucket from localStorage */
 function fetch_bucket(
-	bucket_name :string,  // the name of the bucket to fetch
-) :bucket_data | false
+	bucket_name: string,  // the name of the bucket to fetch
+): bucket_data | false
 /*
 * {boolean} False if bucket does not exist
 * {object} bucket content if bucket exists
@@ -61,9 +61,9 @@ function fetch_bucket(
 
 /* Get value of cache_name in the bucket_name */
 export function get(
-	bucket_name :string,  // the name of the bucket
-	cache_name :string,  // the name of the cache
-) :any
+	bucket_name: string,  // the name of the bucket
+	cache_name: string,  // the name of the cache
+): any
 /*
  * {boolean} False on error
  * {mixed} value stored under cache_name on success
@@ -93,14 +93,14 @@ export function get(
 
 /* Set's cache_value as cache value under cache_name in `bucket_name` */
 export function set<T>(
-	bucket_name :string,  // the name of the bucket
-	cache_name :string,  // the name of the cache
-	cache_value :T,  // the value of the cache record. Can be any object that can be converted to json
+	bucket_name: string,  // the name of the bucket
+	cache_name: string,  // the name of the cache
+	cache_value: T,  // the value of the cache record. Can be any object that can be converted to json
 	{
 		bucket_type = 'local_storage',
 		overwrite = false,
-	} :set_parameters = {},
-) :T {
+	}: set_parameters = {},
+): T {
 
 	if (typeof bucket_name === 'undefined')
 		throw new Error('Bucket name cannot be undefined');
@@ -138,8 +138,8 @@ export function set<T>(
 * This method is needed to prevent memory leaks and stay under browser memory limit - ~5 MB for Google Chrome ;(
 * */
 function trim_bucket(
-	bucket_name :string,  // the bucket to trim
-) :boolean {
+	bucket_name: string,  // the bucket to trim
+): boolean {
 
 	// don't trim cache if the amount records in this bucket is smaller than soft limits
 	if (
@@ -155,7 +155,7 @@ function trim_bucket(
 		return false;
 
 	const cache_usages = Object.values(buckets[bucket_name].records).map(({use_count}) => use_count);
-	const total_usage = cache_usages.reduce((total_usage :number, usage :any) =>
+	const total_usage = cache_usages.reduce((total_usage: number, usage: any) =>
 		total_usage + parseInt(usage),
 		0,
 	);

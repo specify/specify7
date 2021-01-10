@@ -14,7 +14,7 @@ import { named_component }                    from './wbplanview';
 export const ListOfBaseTables = React.memo(named_component(({
 	list_of_tables,
 	handleChange,
-} :ListOfBaseTablesProps) =>
+}: ListOfBaseTablesProps) =>
 	<MappingElement
 		is_open={true}
 		handleChange={handleChange}
@@ -47,9 +47,9 @@ export const MappingLine = named_component(({
 	handleClearMapping,
 	handleStaticHeaderChange = () => {
 	},
-} :MappingLineProps) =>
+}: MappingLineProps) =>
 	<div className={`wbplanview_mapping_line ${is_focused ? 'wbplanview_mapping_line_focused' : ''}`}
-		onClick={handleFocus}>
+		 onClick={handleFocus}>
 		<div className="wbplanview_mapping_line_controls">
 			<button className="wbplanview_mapping_line_delete" title="Clear mapping" onClick={handleClearMapping}>
 				<img src="../../../static/img/discard.svg" alt="Clear mapping" />
@@ -70,7 +70,7 @@ export const MappingLine = named_component(({
 /* Generates a mapping path */
 export const MappingPath = named_component(({
 	mapping_line_data,
-} :MappingPathProps) =>
+}: MappingPathProps) =>
 	<>
 		{mapping_line_data.map((mapping_details, index) =>
 			<React.Fragment key={index}>
@@ -80,7 +80,7 @@ export const MappingPath = named_component(({
 		)}
 	</>, 'MappingPath');
 
-const field_group_labels :{[key :string] :string} = {
+const field_group_labels: {[key: string]: string} = {
 	required_fields: 'Required Fields',
 	optional_fields: 'Optional Fields',
 	hidden_fields: 'Hidden Fields',
@@ -88,22 +88,22 @@ const field_group_labels :{[key :string] :string} = {
 
 const MappingElementDivider = <span className="wbplanview_mapping_line_divider">&#x2192;</span>;
 
-const get_field_group_name = (is_hidden :boolean, is_required :boolean) =>
+const get_field_group_name = (is_hidden: boolean, is_required: boolean) =>
 	is_hidden ? 'hidden_fields' :
 		is_required ? 'required_fields' : 'optional_fields';
 
 /* Generates a new mapping element */
 function MappingElement(
-	props :MappingElementProps,
+	props: MappingElementProps,
 ) {
 
 	const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
 		[field_group_label, {} as CustomSelectElementOptions],
 	));
 
-	let default_option :CustomSelectElementDefaultOptionProps | undefined;
+	let default_option: CustomSelectElementDefaultOptionProps | undefined;
 
-	const field_names :string[] = [];
+	const field_names: string[] = [];
 
 	Object.entries(props.fields_data).forEach(([
 		field_name,
@@ -143,7 +143,7 @@ function MappingElement(
 			field_names.push(field_friendly_name);
 	});
 
-	if (typeof default_option === "undefined")
+	if (typeof default_option === 'undefined')
 		default_option = {
 			option_name: '0',
 			option_label: '0',
@@ -206,5 +206,5 @@ function MappingElement(
 const StaticHeader = named_component(({
 	default_value = '',
 	onChange: handleChange,
-} :StaticHeaderProps) =>
+}: StaticHeaderProps) =>
 	<textarea value={default_value} onChange={handleChange} />, 'StaticHeader');

@@ -22,11 +22,11 @@ import data_model_storage from './wbplanviewmodel';
 
 
 function find_next_navigation_direction<RETURN_STRUCTURE>(
-	callbacks :navigator_callbacks<RETURN_STRUCTURE>,
-	callback_payload :readonly_navigator_callback_payload,
-	table_name :string,
-	parent_table_name :string,
-) :find_next_navigation_direction<RETURN_STRUCTURE> {
+	callbacks: navigator_callbacks<RETURN_STRUCTURE>,
+	callback_payload: readonly_navigator_callback_payload,
+	table_name: string,
+	parent_table_name: string,
+): find_next_navigation_direction<RETURN_STRUCTURE> {
 	const next_path_elements_data = callbacks.get_next_path_element(callback_payload);
 
 	if (typeof next_path_elements_data === 'undefined')
@@ -76,7 +76,7 @@ export function navigator<RETURN_STRUCTURE>({
 		cache_name,
 		base_table_name,
 	},
-} :navigator_parameters<RETURN_STRUCTURE>) :RETURN_STRUCTURE[] {
+}: navigator_parameters<RETURN_STRUCTURE>): RETURN_STRUCTURE[] {
 
 	let table_name = '';
 	let parent_table_name = '';
@@ -133,7 +133,7 @@ export function navigator<RETURN_STRUCTURE>({
 		next_real_path_element_name,
 	} = next_navigation_direction.payload;
 
-	let schema_navigator_results :RETURN_STRUCTURE[] = [];
+	let schema_navigator_results: RETURN_STRUCTURE[] = [];
 
 	if (next_table_name !== '')
 		schema_navigator_results = navigator(
@@ -159,12 +159,12 @@ export function navigator<RETURN_STRUCTURE>({
 }
 
 function get_navigation_children_types(
-	parent_table_name :string,
-	parent_table_relationship_name :string,
-	parent_path_element_name :string,
-	table_name :string,
+	parent_table_name: string,
+	parent_table_relationship_name: string,
+	parent_path_element_name: string,
+	table_name: string,
 ) {
-	const parent_relationship_type :relationship_type | undefined =
+	const parent_relationship_type: relationship_type | undefined =
 		(
 			typeof data_model_storage.tables[parent_table_name] === 'undefined' ||
 			typeof data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] === 'undefined'
@@ -185,10 +185,10 @@ function get_navigation_children_types(
 }
 
 function call_navigator_instance_callbacks<RETURN_STRUCTURE>(
-	children_are_to_many_elements :boolean,
-	children_are_ranks :boolean,
-	callbacks :navigator_callbacks<RETURN_STRUCTURE>,
-	callback_payload :readonly_navigator_callback_payload,
+	children_are_to_many_elements: boolean,
+	children_are_ranks: boolean,
+	callbacks: navigator_callbacks<RETURN_STRUCTURE>,
+	callback_payload: readonly_navigator_callback_payload,
 ) {
 	if (children_are_to_many_elements)
 		callbacks.handle_to_many_children(callback_payload);
@@ -208,7 +208,7 @@ function navigator_instance<RETURN_STRUCTURE>({
 	cache_name = false,
 	callbacks,
 	callback_payload,
-} :navigator_instance_parameters<RETURN_STRUCTURE>) :RETURN_STRUCTURE {
+}: navigator_instance_parameters<RETURN_STRUCTURE>): RETURN_STRUCTURE {
 
 
 	let json_payload;
@@ -278,17 +278,17 @@ export function get_mapping_line_data_from_mapping_path({
 	},
 	handleClose = () => {
 	},
-	handleAutomapperSuggestionSelection = (_suggestion :string) => {
+	handleAutomapperSuggestionSelection = (_suggestion: string) => {
 	},
 	get_mapped_fields,
 	automapper_suggestions,
 	show_hidden_fields = true,
-} :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
+}: get_mapping_line_data_from_mapping_path_parameters): MappingElementProps[] {
 
 	if (mapping_path.length === 0)
 		throw new Error('Mapping Path is invalid');
 
-	const internal_state :get_mapping_line_data_from_mapping_path_internal_state = {
+	const internal_state: get_mapping_line_data_from_mapping_path_internal_state = {
 		mapping_path_position: -1,
 		mapping_line_data: [],
 		custom_select_type,
@@ -306,12 +306,12 @@ export function get_mapping_line_data_from_mapping_path({
 		generate_last_relationship_data ||
 		internal_state.mapping_path_position + 1 !== mapping_path.length;
 
-	const is_field_visible = (show_hidden_fields :boolean, is_hidden :boolean, field_name :string) =>
+	const is_field_visible = (show_hidden_fields: boolean, is_hidden: boolean, field_name: string) =>
 		show_hidden_fields ||
 		!is_hidden ||
 		field_name === internal_state.default_value; // show a default field, even if it is hidden
 
-	const callbacks :navigator_callbacks<MappingElementProps> = {
+	const callbacks: navigator_callbacks<MappingElementProps> = {
 
 		iterate: () =>
 			first_iteration_requirement() && second_iteration_requirement(),

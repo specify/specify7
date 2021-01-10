@@ -12,7 +12,7 @@ import domain from '../domain';
 import { get_friendly_name } from './wbplanviewhelper';
 import * as cache            from './wbplanviewcache';
 
-const fetching_parameters :fetching_parameters = {
+const fetching_parameters: fetching_parameters = {
 
 	// all required fields are not hidden, except for these, which are made not required
 	required_fields_to_hide: [
@@ -64,8 +64,8 @@ const fetching_parameters :fetching_parameters = {
 
 /* Fetches ranks for a particular table */
 const fetch_ranks = (
-	table_name :string,  // Official table name (from the data model)
-) :Promise<table_ranks_inline> =>
+	table_name: string,  // Official table name (from the data model)
+): Promise<table_ranks_inline> =>
 	new Promise(resolve =>
 		(
 			domain as domain
@@ -97,20 +97,20 @@ const fetch_ranks = (
 		),
 	);
 
-const required_field_should_be_hidden = (field_name :string) =>
+const required_field_should_be_hidden = (field_name: string) =>
 	fetching_parameters.required_fields_to_hide.indexOf(field_name) !== -1;
 
-const field_should_be_made_optional = (table_name :string, field_name :string) =>
+const field_should_be_made_optional = (table_name: string, field_name: string) =>
 	typeof fetching_parameters.required_fields_to_be_made_optional[table_name] !== 'undefined' &&
 	fetching_parameters.required_fields_to_be_made_optional[table_name].includes(field_name);
 
 function handle_relationship_field(
-	field :schema_model_table_field,
-	field_data :data_model_field_writable,
-	field_name :string,
-	has_relationship_with_definition :() => void,
-	has_relationship_with_definition_item :() => void,
-) :undefined | true {
+	field: schema_model_table_field,
+	field_data: data_model_field_writable,
+	field_name: string,
+	has_relationship_with_definition: () => void,
+	has_relationship_with_definition_item: () => void,
+): undefined | true {
 	const relationship = field as schema_model_table_relationship;
 
 	let foreign_name = relationship.otherSideName;
@@ -144,7 +144,7 @@ function handle_relationship_field(
 }
 
 /* Fetches the data model */
-export default () :Promise<data_model_fetcher_return> =>
+export default (): Promise<data_model_fetcher_return> =>
 	new Promise(resolve => {
 
 		if (typeof localStorage !== 'undefined') {
@@ -160,8 +160,8 @@ export default () :Promise<data_model_fetcher_return> =>
 				} as data_model_fetcher_return);
 		}
 
-		const list_of_base_tables :data_model_list_of_tables_writable = {};
-		const fetch_ranks_queue :Promise<table_ranks_inline>[] = [];
+		const list_of_base_tables: data_model_list_of_tables_writable = {};
+		const fetch_ranks_queue: Promise<table_ranks_inline>[] = [];
 
 		const tables = Object.values((
 			schema as unknown as schema
@@ -171,7 +171,7 @@ export default () :Promise<data_model_fetcher_return> =>
 			const table_name = table_data.longName.split('.').slice(-1)[0].toLowerCase();
 			const table_friendly_name = table_data.getLocalizedName();
 
-			const fields :data_model_fields_writable = {};
+			const fields: data_model_fields_writable = {};
 			let has_relationship_with_definition = false;
 			let has_relationship_with_definition_item = false;
 
@@ -206,7 +206,7 @@ export default () :Promise<data_model_fetcher_return> =>
 					is_required = false;
 
 				//@ts-ignore
-				let field_data :data_model_field_writable = {
+				let field_data: data_model_field_writable = {
 					friendly_name,
 					is_hidden,
 					is_required,
@@ -263,7 +263,7 @@ export default () :Promise<data_model_fetcher_return> =>
 			(
 				Object.entries(table_data.fields).filter(([, {is_relationship}]) =>
 					is_relationship,
-				) as [field_name :string, relationship_data :data_model_relationship][]
+				) as [field_name: string, relationship_data: data_model_relationship][]
 			).filter(([, {table_name: relationship_table_name}]) =>
 				typeof tables[relationship_table_name] === 'undefined',
 			).forEach(([relationship_name]) => {
@@ -278,7 +278,7 @@ export default () :Promise<data_model_fetcher_return> =>
 
 		Promise.all(fetch_ranks_queue).then(resolved => {
 
-			const ranks :data_model_ranks = Object.fromEntries(resolved);
+			const ranks: data_model_ranks = Object.fromEntries(resolved);
 
 			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
 			resolved.forEach(([table_name]) => (

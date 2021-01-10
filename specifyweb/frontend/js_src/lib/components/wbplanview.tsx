@@ -33,7 +33,7 @@ import { generate_dispatch, generate_reducer } from './statemanagement';
 let schema_fetched_promise = fetch_data_model();
 
 // assignees names to components so that they easier to identify in the inspector and profiler
-export function named_component<T>(component_function :T, component_name :string) :T {
+export function named_component<T>(component_function: T, component_name: string): T {
 	// @ts-ignore
 	component_function.displayName = component_name;
 	return component_function;
@@ -42,7 +42,7 @@ export function named_component<T>(component_function :T, component_name :string
 const WBPlanViewHeaderLeftMappingElements = named_component(({
 	handleTableChange,
 	handleToggleMappingView,
-} :WBPlanViewHeaderPropsMapping) => <>
+}: WBPlanViewHeaderPropsMapping) => <>
 	<button onClick={handleTableChange}>Change table</button>
 	<button onClick={handleToggleMappingView}>Toggle Mapping View</button>
 </>, 'WBPlanViewHeaderLeftMappingElements');
@@ -54,7 +54,7 @@ const WBPlanViewHeaderRightMappingElements = named_component(({
 	handleValidation,
 	handleSave,
 	handleCancel,
-} :WBPlanViewHeaderPropsMapping) => <>
+}: WBPlanViewHeaderPropsMapping) => <>
 	<label>
 		<input
 			type="checkbox"
@@ -71,12 +71,12 @@ const WBPlanViewHeaderRightMappingElements = named_component(({
 const WBPlanViewHeaderRightNonMappingElements = named_component(({
 	handleUseTemplate,
 	handleCancel,
-} :WBPlanViewHeaderPropsNonMapping) =>
+}: WBPlanViewHeaderPropsNonMapping) =>
 	<>
 		<button onClick={handleUseTemplate}>Use template</button>
 		<button onClick={handleCancel}>Cancel</button>
 	</>, 'WBPlanViewHeaderRightNonMappingElements');
-const WBPlanViewHeader = React.memo(named_component((props :WBPlanViewHeaderProps) =>
+const WBPlanViewHeader = React.memo(named_component((props: WBPlanViewHeaderProps) =>
 		<div className="wbplanview_header">
 			<div>
 				<span>{props.title}</span>
@@ -90,13 +90,13 @@ const WBPlanViewHeader = React.memo(named_component((props :WBPlanViewHeaderProp
 				}
 			</div>
 		</div>, 'WBPlanViewHeader'),
-	(previous_props :WBPlanViewHeaderProps, new_props :WBPlanViewHeaderProps) =>
+	(previous_props: WBPlanViewHeaderProps, new_props: WBPlanViewHeaderProps) =>
 		previous_props.title === new_props.title &&
 		previous_props.mapping_is_templated === new_props.mapping_is_templated &&
 		previous_props.state_type === new_props.state_type,
 );
 
-function upload_plan_string_to_object(upload_plan_string :string) :falsy_upload_plan {
+function upload_plan_string_to_object(upload_plan_string: string): falsy_upload_plan {
 	let upload_plan;
 
 	try {
@@ -119,7 +119,7 @@ function upload_plan_string_to_object(upload_plan_string :string) :falsy_upload_
 		return upload_plan;
 }
 
-function getInitialWBPlanViewState(props :OpenMappingScreenAction) :WBPlanViewStates {
+function getInitialWBPlanViewState(props: OpenMappingScreenAction): WBPlanViewStates {
 	if (props.upload_plan === false) {
 		return {
 			type: 'LoadingState',
@@ -138,7 +138,7 @@ function getInitialWBPlanViewState(props :OpenMappingScreenAction) :WBPlanViewSt
 		};
 }
 
-const HeaderWrapper = named_component((props :HeaderWrapperProps) =>
+const HeaderWrapper = named_component((props: HeaderWrapperProps) =>
 	<div className="wbplanview_event_listener" onClick={(event) =>
 		(
 			event.target as HTMLElement
@@ -152,19 +152,19 @@ const HeaderWrapper = named_component((props :HeaderWrapperProps) =>
 		</div>
 	</div>, 'HeaderWrapper');
 
-function mapping_state(state :WBPlanViewStates) :MappingState {
+function mapping_state(state: WBPlanViewStates): MappingState {
 	if (state.type === 'MappingState')
 		return state;
 	else
 		throw new Error('Dispatching this action requires the state to be of type `MappingState`');
 }
 
-const soft_resolve_non_mapping_state = (state :WBPlanViewStates) :WBPlanViewStates | false =>
+const soft_resolve_non_mapping_state = (state: WBPlanViewStates): WBPlanViewStates | false =>
 	state.type === 'MappingState' ?
 		false :
 		state;
 
-const modify_line = (state :MappingState, line :number, mapping_line :Partial<MappingLine>) :MappingLine[] => [
+const modify_line = (state: MappingState, line: number, mapping_line: Partial<MappingLine>): MappingLine[] => [
 	...state.lines.slice(0, line),
 	{
 		...state.lines[line],
@@ -242,7 +242,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			action.headers,
 			action.upload_plan,
 		);
-		const new_state :MappingState = {
+		const new_state: MappingState = {
 			...state,
 			type: 'MappingState',
 			mapping_is_templated: action.mapping_is_templated,
@@ -475,18 +475,18 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 		});
 		wbs.fetch({limit: 5000}).done(() =>
 			Promise.all(
-				wbs.models.map((wb :any) =>
+				wbs.models.map((wb: any) =>
 					wb.rget('workbenchtemplate'),
 				),
-			).then((workbench_templates :any) =>
+			).then((workbench_templates: any) =>
 				state.dispatch_action!({
 					type: 'TemplatesLoadedAction',
-					templates: workbench_templates.map((wbt :any) => [
+					templates: workbench_templates.map((wbt: any) => [
 						upload_plan_string_to_object(wbt.get('remarks') as string),
 						wbt.get('name') as string,
-					]).filter(([upload_plan] :[falsy_upload_plan]) =>
+					]).filter(([upload_plan]: [falsy_upload_plan]) =>
 						upload_plan !== false,
-					).map(([upload_plan, dataset_name] :[upload_plan_structure, string]) => (
+					).map(([upload_plan, dataset_name]: [upload_plan_structure, string]) => (
 						{
 							dataset_name: dataset_name,
 							upload_plan: upload_plan,
@@ -527,7 +527,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 		<ListOfBaseTables
 			list_of_tables={data_model_storage.list_of_base_tables}
 			handleChange={(
-				(table_name :string) => state.dispatch({
+				(table_name: string) => state.dispatch({
 					type: 'SelectTableAction',
 					table_name,
 					mapping_is_templated: state.props.mapping_is_templated,
@@ -547,7 +547,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 				// jQuery modifies DOM, which stops React's event listeners from firing
 				// if we need event listeners on elements inside the modal, we need to use old school addEventListener
 
-				const click_callback = (event :Event) => {
+				const click_callback = (event: Event) => {
 
 					if (!event.target)
 						return;
@@ -582,7 +582,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					automapper_suggestions: automapper_suggestions,
 				}),
 			);
-		const handleSave = (ignore_validation :boolean) => state.dispatch({
+		const handleSave = (ignore_validation: boolean) => state.dispatch({
 			type: 'SavePlanAction',
 			wb: state.props.wb,
 			removeUnloadProtect: state.props.removeUnloadProtect,
@@ -629,24 +629,24 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 				autoscroll={state.autoscroll}
 				handleSave={() => handleSave(true)}
 				handleToggleHiddenFields={() => state.dispatch({type: 'ToggleHiddenFieldsAction'})}
-				handleFocus={(line :number) => state.dispatch({type: 'FocusLineAction', line})}
+				handleFocus={(line: number) => state.dispatch({type: 'FocusLineAction', line})}
 				handleMappingViewMap={() => state.dispatch({type: 'MappingViewMapAction'})}
 				handleAddNewHeader={() => state.dispatch({type: 'AddNewHeaderAction'})}
 				handleAddNewStaticHeader={() => state.dispatch({type: 'AddNewStaticHeaderAction'})}
 				handleAddNewColumn={() => state.dispatch({type: 'AddNewHeaderAction'})}
 				handleAddNewStaticColumn={() => state.dispatch({type: 'AddNewStaticHeaderAction'})}
 				handleAutoScrollFinish={() => state.dispatch({type: 'AutoScrollFinishedAction'})}
-				handleOpen={(line :number, index :number) => state.dispatch({
+				handleOpen={(line: number, index: number) => state.dispatch({
 					type: 'OpenSelectElementAction',
 					line,
 					index,
 				})}
 				handleClose={handleClose}
 				handleChange={(
-					line :'mapping_view' | number,
-					index :number,
-					value :string,
-					is_relationship :boolean,
+					line: 'mapping_view' | number,
+					index: number,
+					value: string,
+					is_relationship: boolean,
 				) => state.dispatch({
 					type: 'ChangeSelectElementValueAction',
 					line,
@@ -654,13 +654,13 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					value,
 					is_relationship,
 				})}
-				handleClearMapping={(line :number) => state.dispatch({type: 'ClearMappingLineAction', line})}
-				handleStaticHeaderChange={(line :number, event :React.ChangeEvent<HTMLTextAreaElement>) => state.dispatch({
+				handleClearMapping={(line: number) => state.dispatch({type: 'ClearMappingLineAction', line})}
+				handleStaticHeaderChange={(line: number, event: React.ChangeEvent<HTMLTextAreaElement>) => state.dispatch({
 					type: 'StaticHeaderChangeAction',
 					line,
 					event,
 				})}
-				handleAutomapperSuggestionSelection={(suggestion :string) => state.dispatch({
+				handleAutomapperSuggestionSelection={(suggestion: string) => state.dispatch({
 					type: 'AutomapperSuggestionSelectedAction',
 					suggestion,
 				})}
@@ -669,9 +669,9 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 	},
 });
 
-function WBPlanView(props :WBPlanViewProps) {
+function WBPlanView(props: WBPlanViewProps) {
 
-	const [state, dispatch] :[WBPlanViewStates, (action :WBPlanViewActions) => void] = React.useReducer(
+	const [state, dispatch]: [WBPlanViewStates, (action: WBPlanViewActions) => void] = React.useReducer(
 		reducer,
 		{
 			upload_plan: props.upload_plan,
@@ -689,7 +689,7 @@ function WBPlanView(props :WBPlanViewProps) {
 
 }
 
-export default named_component((props :publicWBPlanViewProps) :react_element => {
+export default named_component((props: publicWBPlanViewProps): react_element => {
 
 	const [schema_loaded, setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== 'undefined');
 	const [upload_plan, setUploadPlan] = React.useState<falsy_upload_plan>();
@@ -709,7 +709,7 @@ export default named_component((props :publicWBPlanViewProps) :react_element => 
 			wbtemplate.rget('workbenchtemplatemappingitems').done(mappings =>
 				setHeaders(
 					_.invoke(
-						mappings.sortBy((mapping :{get :(arg0 :string) => any;}) =>
+						mappings.sortBy((mapping: {get: (arg0: string) => any;}) =>
 							mapping.get('viewOrder'),
 						),
 						'get',

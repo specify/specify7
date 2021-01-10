@@ -10,11 +10,11 @@ import React           from 'react';
 import { ModalDialog } from './modaldialog';
 
 export default class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
-	state :ErrorBoundaryState = {
+	state: ErrorBoundaryState = {
 		has_error: false,
 	};
 
-	componentDidCatch(error :{toString :() => string}, errorInfo :{componentStack :string}) {
+	componentDidCatch(error: {toString: () => string}, errorInfo: {componentStack: string}) {
 		console.log(error, errorInfo);
 		this.setState({
 			has_error: true,

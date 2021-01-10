@@ -6,7 +6,7 @@
 
 'use strict';
 
-const data_model_storage :data_model_storage = {
+const data_model_storage: data_model_storage = {
 
 	// each this can be modified to a single symbol or several symbols
 	reference_symbol: '#',  // prefix for -to-many indexes (used behind the scenes & is shown to the user)

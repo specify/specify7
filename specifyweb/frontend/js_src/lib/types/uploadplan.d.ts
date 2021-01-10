@@ -18,27 +18,27 @@ type upload_plan_uploadTable_table_group<GROUP_NAME extends upload_plan_field_gr
 				upload_plan_uploadTable_toMany
 
 interface upload_plan_uploadTable_table {
-	wbcols :upload_plan_uploadTable_wbcols,
-	static :upload_plan_uploadTable_static,
-	toOne :upload_plan_uploadTable_toOne,
-	toMany :upload_plan_uploadTable_toMany,
+	wbcols: upload_plan_uploadTable_wbcols,
+	static: upload_plan_uploadTable_static,
+	toOne: upload_plan_uploadTable_toOne,
+	toMany: upload_plan_uploadTable_toMany,
 }
 
 interface upload_plan_uploadTable extends Record<string, upload_plan_uploadTable_table> {
 }
 
 interface upload_plan_treeRecord {
-	ranks :upload_plan_treeRecord_ranks,
+	ranks: upload_plan_treeRecord_ranks,
 }
 
 interface upload_plan_treeRecord_ranks extends Record<string, string> {
 }
 
 type upload_plan_uploadable =
-	{uploadTable :upload_plan_uploadTable_table} |
-	{treeRecord :upload_plan_treeRecord}
+	{uploadTable: upload_plan_uploadTable_table} |
+	{treeRecord: upload_plan_treeRecord}
 
 interface upload_plan_structure {
-	baseTableName :string,
-	uploadable :upload_plan_uploadable
+	baseTableName: string,
+	uploadable: upload_plan_uploadable
 }

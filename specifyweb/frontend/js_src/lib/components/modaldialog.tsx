@@ -17,7 +17,7 @@ export const ModalDialog = React.memo(named_component(({
 	onLoadCallback,
 	eventListenersEffect,
 	children,
-} :ModalDialogProps) => {
+}: ModalDialogProps) => {
 	const dialog_ref = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
@@ -78,7 +78,7 @@ export const ModalDialog = React.memo(named_component(({
 }, 'ModalDialog'));
 
 //Loading Screen
-const handleOnLoad = (dialog :JQuery<HTMLElement>) =>
+const handleOnLoad = (dialog: JQuery<HTMLElement>) =>
 	$('.progress-bar', dialog).progressbar({value: false});
 
 export const LoadingScreen = named_component(() =>

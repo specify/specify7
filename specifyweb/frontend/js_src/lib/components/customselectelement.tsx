@@ -16,7 +16,7 @@ const Icon = React.memo(named_component(({
 	is_enabled = true,
 	table_name = '',
 	option_label = '0',
-} :CustomSelectElementIconProps) => {
+}: CustomSelectElementIconProps) => {
 
 	const not_relationship = !is_relationship;
 
@@ -32,7 +32,7 @@ const Icon = React.memo(named_component(({
 	const table_icon_src = icons.getIcon(table_name);
 	if (table_icon_src !== '/images/unknown.png')
 		return <span className="custom_select_option_icon_table"
-					style={{backgroundImage: `url('${table_icon_src}')`}} />;
+					 style={{backgroundImage: `url('${table_icon_src}')`}} />;
 
 	const table_sub_name = table_name.substr(0, 2);
 	const color_hue = (
@@ -59,7 +59,7 @@ const Option = React.memo(named_component(({
 	is_default = false,
 	table_name = '',
 	handleClick,
-} :CustomSelectElementOptionProps) => {
+}: CustomSelectElementOptionProps) => {
 
 	const classes = ['custom_select_option'];
 
@@ -97,7 +97,7 @@ const OptionGroup = named_component(({
 	select_group_label,
 	select_options_data,
 	handleClick,
-} :CustomSelectElementOptionGroupProps) =>
+}: CustomSelectElementOptionGroupProps) =>
 	<span className={`custom_select_group custom_select_group_${select_group_name}`}>
 		{
 			typeof select_group_label !== 'undefined' &&
@@ -121,16 +121,16 @@ const OptionGroup = named_component(({
 		})}
 	</span>, 'OptionGroup');
 
-const ShadowListOfOptions = React.memo(named_component(({field_names} :ShadowListOfOptionsProps) =>
+const ShadowListOfOptions = React.memo(named_component(({field_names}: ShadowListOfOptionsProps) =>
 	<ul className="custom_select_element_shadow_list">{
 		field_names.map((field_name, index) =>
 			<li key={index}>{field_name}</li>,
 		)
 	}</ul>, 'ShadowListOfOptions'));
 
-const intractable_select_types :custom_select_type[] = ['preview_list', 'suggestion_line_list'];
-const select_types_with_headers :custom_select_type[] = ['opened_list', 'base_table_selection_list'];
-const select_types_with_first_row :custom_select_type[] = ['closed_list', 'preview_list', 'suggestion_line_list'];
+const intractable_select_types: custom_select_type[] = ['preview_list', 'suggestion_line_list'];
+const select_types_with_headers: custom_select_type[] = ['opened_list', 'base_table_selection_list'];
+const select_types_with_first_row: custom_select_type[] = ['closed_list', 'preview_list', 'suggestion_line_list'];
 
 /* Generates a custom select element */
 export function CustomSelectElement(
@@ -153,7 +153,7 @@ export function CustomSelectElement(
 		handleOpen,
 		handleClose,
 		automapper_suggestions,
-	} :CustomSelectElementProps,
+	}: CustomSelectElementProps,
 ) {
 
 	// const list_of_options = React.useRef<HTMLElement>(null);
@@ -161,7 +161,7 @@ export function CustomSelectElement(
 	const option_is_intractable = intractable_select_types.indexOf(custom_select_type) === -1;
 
 	const handleClick = option_is_intractable && typeof handleChange === 'function' ?
-		(new_value :string, is_relationship :boolean) =>
+		(new_value: string, is_relationship: boolean) =>
 			new_value === default_option.option_name ?
 				undefined :
 				handleChange(new_value, is_relationship) :
@@ -287,7 +287,7 @@ export const SuggestionBox = named_component(({
 	select_options_data,
 	handleAutomapperSuggestionSelection,
 	...props
-} :SuggestionBoxProps) =>
+}: SuggestionBoxProps) =>
 	<CustomSelectElement
 		custom_select_type='suggestion_list'
 		custom_select_subtype='simple'

@@ -8,9 +8,9 @@
 
 /* Returns cross-section of full_mappings_tree and node_mappings_tree */
 export function traverse_tree(
-	full_mappings_tree :mappings_tree,  // full tree with various branches
-	node_mappings_tree :mappings_tree | string,  // a tree several levels deep with only a single branch
-) :traversed_tree {
+	full_mappings_tree: mappings_tree,  // full tree with various branches
+	node_mappings_tree: mappings_tree | string,  // a tree several levels deep with only a single branch
+): traversed_tree {
 
 	if (typeof node_mappings_tree === 'undefined')
 		return full_mappings_tree;
@@ -34,9 +34,9 @@ export function traverse_tree(
 
 /* Merges objects recursively (by reference only, does not create a copy of the tree) */
 export const deep_merge_object = (
-	target :any,  // tree that is used as a basis
-	source :object,  // tree that is used as a source
-) :merged_tree =>
+	target: any,  // tree that is used as a basis
+	source: object,  // tree that is used as a source
+): merged_tree =>
 	typeof source === 'object' ?
 		Object.entries(source).reduce((target, [source_property, source_value]) => {
 
@@ -52,9 +52,9 @@ export const deep_merge_object = (
 
 /* Converts an array to tree */
 export function array_to_tree(
-	array :any[],  // array to be converted
-	has_headers :boolean = false,  // whether an array has headers in it
-) :flat_tree {
+	array: any[],  // array to be converted
+	has_headers: boolean = false,  // whether an array has headers in it
+): flat_tree {
 
 	if (array.length === 0)
 		return {};
@@ -73,8 +73,8 @@ export function array_to_tree(
 * The inverse of mappings_tree_to_array_of_mappings
 * */
 export function array_of_mappings_to_mappings_tree(
-	array_of_mappings :mapping_path[],  // array of strings (branches of the tree) that are going to be merged into a tree
-) :mappings_tree  // Final tree
+	array_of_mappings: mapping_path[],  // array of strings (branches of the tree) that are going to be merged into a tree
+): mappings_tree  // Final tree
 /*
 * For example if array is:
 * 	Accession, Accession Agents, #1, Agent, First Name
@@ -106,9 +106,9 @@ export function array_of_mappings_to_mappings_tree(
 * The inverse of array_of_mappings_to_mappings_tree
 * */
 export const mappings_tree_to_array_of_mappings = (
-	mappings_tree :mappings_tree,  // mappings tree
-	path :mapping_path = [],  // used in a recursion to store intermediate path
-) :mapping_path[] /* array of arrays of string */ =>
+	mappings_tree: mappings_tree,  // mappings tree
+	path: mapping_path = [],  // used in a recursion to store intermediate path
+): mapping_path[] /* array of arrays of string */ =>
 	/*
 	* For example, if mappings_tree is:
 	* 	Accession
@@ -123,7 +123,7 @@ export const mappings_tree_to_array_of_mappings = (
 	* 	Accession, Accession Agents, #1, Agent, Last Name
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
-	Object.entries(mappings_tree).reduce((result :mapping_path[], [tree_node_name, tree_node]) => {
+	Object.entries(mappings_tree).reduce((result: mapping_path[], [tree_node_name, tree_node]) => {
 
 		if (typeof tree_node === 'object')
 			result.push(

@@ -1,28 +1,28 @@
 type auto_mapper_mode = 'shortcuts_and_table_synonyms' | 'synonyms_and_matches'
 
 interface automapper_constructor_base_parameters {
-	readonly headers :list_of_headers,  // array of strings that represent headers
-	readonly base_table :string,  // base table name
+	readonly headers: list_of_headers,  // array of strings that represent headers
+	readonly base_table: string,  // base table name
 	// starting table name (if starting mapping_path provided, starting table would be different from base table)
-	readonly starting_table? :string,
-	readonly path? :mapping_path,  // starting mapping path
+	readonly starting_table?: string,
+	readonly path?: mapping_path,  // starting mapping path
 	// offset on a starting path. Used when the last element of mapping path is a reference index
 	// E.x, if #1 is taken, it would try to change the index to #2
-	readonly path_offset? :number,
-	readonly allow_multiple_mappings? :boolean,  // whether to allow multiple mappings
-	readonly scope? :automapper_scope,  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+	readonly path_offset?: number,
+	readonly allow_multiple_mappings?: boolean,  // whether to allow multiple mappings
+	readonly scope?: automapper_scope,  // scope to use for definitions. More info in json/auto_mapper_definitions.js
 }
 
 interface automapper_constructor_check_existing_parameters extends automapper_constructor_base_parameters {
 	// whether to check if the field is already mapped (outside automapper, in the mapping tree)
-	readonly check_for_existing_mappings :true,
-	readonly path_is_mapped :path_is_mapped_bind,
+	readonly check_for_existing_mappings: true,
+	readonly path_is_mapped: path_is_mapped_bind,
 }
 
 interface automapper_constructor_dont_check_existing_parameters extends automapper_constructor_base_parameters {
 	// whether to check if the field is already mapped (outside automapper, in the mapping tree)
-	readonly check_for_existing_mappings :false,
-	readonly path_is_mapped? :path_is_mapped_bind,
+	readonly check_for_existing_mappings: false,
+	readonly path_is_mapped?: path_is_mapped_bind,
 }
 
 type automapper_constructor_parameters =
@@ -30,8 +30,8 @@ type automapper_constructor_parameters =
 	| automapper_constructor_dont_check_existing_parameters
 
 interface automapper_map_parameters {
-	readonly use_cache? :boolean,  // whether to use cached values
-	readonly commit_to_cache? :boolean,  // whether to commit result to cache for future references
+	readonly use_cache?: boolean,  // whether to use cached values
+	readonly commit_to_cache?: boolean,  // whether to commit result to cache for future references
 }
 
 interface automapper_results extends Record<string, mapping_path[]> {
@@ -56,47 +56,47 @@ interface automapper_results extends Record<string, mapping_path[]> {
 }
 
 interface header_information {
-	is_mapped :boolean,
-	readonly lowercase_header_name :string,  // original_header_name.toLowerCase() and trimmed
-	readonly stripped_header_name :string,  // lowercase_header_name but without numbers and special characters (a-z only)
-	readonly final_header_name :string  // stripped_header_name but without any white space
+	is_mapped: boolean,
+	readonly lowercase_header_name: string,  // original_header_name.toLowerCase() and trimmed
+	readonly stripped_header_name: string,  // lowercase_header_name but without numbers and special characters (a-z only)
+	readonly final_header_name: string  // stripped_header_name but without any white space
 }
 
 interface headers_to_map {
-	readonly [original_header_name :string] :header_information  // a dictionary of headers that need to be mapped
+	readonly [original_header_name: string]: header_information  // a dictionary of headers that need to be mapped
 }
 
 interface find_mappings_in_definitions_parameters {
-	readonly path :mapping_path,  // current mapping path
-	readonly table_name :string,  // the table to search in
-	readonly field_name :string,  // the field to search in
-	readonly mode :auto_mapper_mode,
-	readonly is_tree_rank? :boolean,  // whether to format field_name as a tree rank name
+	readonly path: mapping_path,  // current mapping path
+	readonly table_name: string,  // the table to search in
+	readonly field_name: string,  // the field to search in
+	readonly mode: auto_mapper_mode,
+	readonly is_tree_rank?: boolean,  // whether to format field_name as a tree rank name
 }
 
 interface find_mappings_parameters {
-	readonly table_name :string,  // name of current table
-	readonly path :mapping_path,  // current mapping path
+	readonly table_name: string,  // name of current table
+	readonly path: mapping_path,  // current mapping path
 	// parent table name. Empty if current table is a base table. Used to prevent circular relationships
-	readonly parent_table_name? :string,
+	readonly parent_table_name?: string,
 	// relationship type between parent table and current table. Empty if current table is a base table
 	// Used to prevent mapping -to-many that are inside -to-many
 	// (only while upload plan doesn't support such relationships)
-	readonly parent_relationship_type? :undefined | relationship_type,
+	readonly parent_relationship_type?: undefined | relationship_type,
 }
 
 type find_mappings_queue = find_mappings_parameters[][];  // used to enforce higher priority for closer mappings
 
 
 interface automapper_results_add_action extends Action<'add'> {
-	header_name :string,
-	mapping_path :mapping_path,
+	header_name: string,
+	mapping_path: mapping_path,
 }
 
 type automapper_results_actions = automapper_results_add_action;
 
 interface automapper_headers_to_map_mapped extends Action<'mapped'> {
-	header_name :string
+	header_name: string
 }
 
 type automapper_headers_to_map_actions = automapper_headers_to_map_mapped;
@@ -105,22 +105,22 @@ interface automapper_searched_tables_reset extends Action<'reset'> {
 }
 
 interface automapper_searched_tables_add extends Action<'add'> {
-	table_name :string,
+	table_name: string,
 }
 
 type automapper_searched_tables_actions = automapper_searched_tables_add | automapper_searched_tables_reset;
 
 interface automapper_find_mappings_queue_enqueue extends Action<'enqueue'> {
-	value :find_mappings_parameters,
-	level :number,
+	value: find_mappings_parameters,
+	level: number,
 }
 
 interface automapper_find_mappings_queue_reset extends Action<'reset'> {
-	initial_value? :find_mappings_parameters
+	initial_value?: find_mappings_parameters
 }
 
 interface automapper_find_mappings_queue_initialize_level extends Action<'initialize_level'> {
-	level :number
+	level: number
 }
 
 type automapper_find_mappings_queue_actions =
@@ -129,8 +129,8 @@ type automapper_find_mappings_queue_actions =
 	| automapper_find_mappings_queue_enqueue;
 
 interface automapper_props_dispatch {
-	results :(action :automapper_results_actions) => void,
-	headers_to_map :(action :automapper_headers_to_map_actions) => void,
-	searched_tables :(action :automapper_searched_tables_actions) => void,
-	find_mappings_queue :(action :automapper_find_mappings_queue_actions) => void
+	results: (action: automapper_results_actions) => void,
+	headers_to_map: (action: automapper_headers_to_map_actions) => void,
+	searched_tables: (action: automapper_searched_tables_actions) => void,
+	find_mappings_queue: (action: automapper_find_mappings_queue_actions) => void
 }

@@ -27,14 +27,14 @@ import { mappings_tree_to_upload_plan, upload_plan_to_mappings_tree } from './wb
 import React                                                          from 'react';
 import { named_component }                                            from './wbplanview';
 
-const max_suggestions_count :number = 3;  // the maximum amount suggestions to show in the suggestions box
+const max_suggestions_count: number = 3;  // the maximum amount suggestions to show in the suggestions box
 
 const MappingsControlPanel = React.memo(named_component(({
 	show_hidden_fields,
 	handleChange,
 	handleAddNewColumn,
 	handleAddNewStaticColumn,
-} :MappingsControlPanelProps) =>
+}: MappingsControlPanelProps) =>
 	<div className="mappings_control_panel">
 		<button onClick={handleAddNewColumn}>Add new column</button>
 		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
@@ -48,7 +48,7 @@ const MappingsControlPanel = React.memo(named_component(({
 		</label>
 	</div>, 'MappingsControlPanel'));
 
-function FormatValidationResults(props :FormatValidationResultsProps) {
+function FormatValidationResults(props: FormatValidationResultsProps) {
 	if (props.validation_results.length === 0)
 		return null;
 
@@ -74,7 +74,7 @@ function FormatValidationResults(props :FormatValidationResultsProps) {
 	</div>;
 }
 
-export const go_back = (props :partialWBPlanViewProps) :LoadingState => (
+export const go_back = (props: partialWBPlanViewProps): LoadingState => (
 	{
 		type: 'LoadingState',
 		loading_state: {
@@ -84,7 +84,7 @@ export const go_back = (props :partialWBPlanViewProps) :LoadingState => (
 	}
 );
 
-export function save_plan(props :publicWBPlanViewProps, state :MappingState, ignore_validation = false) {
+export function save_plan(props: publicWBPlanViewProps, state: MappingState, ignore_validation = false) {
 	const validation_results_state = validate(state);
 	if (!ignore_validation && validation_results_state.validation_results.length !== 0)
 		return validation_results_state;
@@ -105,7 +105,7 @@ export function save_plan(props :publicWBPlanViewProps, state :MappingState, ign
 }
 
 /* Validates the current mapping and shows error messages if needed */
-export function validate(state :MappingState) :MappingState {
+export function validate(state: MappingState): MappingState {
 
 	const validation_results = show_required_missing_fields(
 		state.base_table_name,
@@ -126,9 +126,9 @@ export function get_lines_from_headers({
 	headers = [],
 	run_automapper,
 	base_table_name = '',
-} :get_lines_from_headers_params) :MappingLine[] {
+}: get_lines_from_headers_params): MappingLine[] {
 
-	const lines = headers.map((header_name) :MappingLine => (
+	const lines = headers.map((header_name): MappingLine => (
 		{
 			mapping_path: ['0'],
 			type: 'existing_header',
@@ -139,7 +139,7 @@ export function get_lines_from_headers({
 	if (!run_automapper || typeof base_table_name === 'undefined')
 		return lines;
 
-	const automapper_results :automapper_results = (
+	const automapper_results: automapper_results = (
 		new automapper({
 			headers: headers,
 			base_table: base_table_name,
@@ -164,9 +164,9 @@ export function get_lines_from_headers({
 }
 
 export function get_lines_from_upload_plan(
-	headers :list_of_headers = [],
-	upload_plan :upload_plan_structure,
-) :get_lines_from_upload_plan {
+	headers: list_of_headers = [],
+	upload_plan: upload_plan_structure,
+): get_lines_from_upload_plan {
 
 	const lines = get_lines_from_headers({
 		headers,
@@ -178,11 +178,11 @@ export function get_lines_from_upload_plan(
 		const [
 			mapping_path,
 			mapping_type,
-			header_name
+			header_name,
 		] = [
 			full_mapping_path.slice(0, -2),
 			full_mapping_path.slice(-2, -1)[0],
-			full_mapping_path.slice(-1)[0]
+			full_mapping_path.slice(-1)[0],
 		] as [
 			mapping_path,
 			mapping_type,
@@ -205,9 +205,9 @@ export function get_lines_from_upload_plan(
 }
 
 const get_array_of_mappings = (
-	lines :MappingLine[],
-	include_headers :boolean = false,
-) :mapping_path[] =>
+	lines: MappingLine[],
+	include_headers: boolean = false,
+): mapping_path[] =>
 	lines.filter(({mapping_path}) =>
 		mapping_path_is_complete(mapping_path),
 	).map(({mapping_path, type, name}) =>
@@ -216,19 +216,19 @@ const get_array_of_mappings = (
 			mapping_path,
 	);
 
-export const get_mappings_tree :get_mappings_tree = (
+export const get_mappings_tree: get_mappings_tree = (
 	lines,
-	include_headers :boolean = false,
-) :mappings_tree =>
+	include_headers: boolean = false,
+): mappings_tree =>
 	array_of_mappings_to_mappings_tree(
 		get_array_of_mappings(lines, include_headers),
 	);
 
 /* Get a mappings tree branch given a particular starting mapping path */
-export const get_mapped_fields :get_mapped_fields = (
+export const get_mapped_fields: get_mapped_fields = (
 	lines,
 	mapping_path_filter,
-) :mappings_tree => {
+): mappings_tree => {
 	const mappings_tree = traverse_tree(
 		get_mappings_tree(lines),
 		array_to_tree([...mapping_path_filter]),
@@ -239,18 +239,18 @@ export const get_mapped_fields :get_mapped_fields = (
 		return mappings_tree;
 };
 
-export const path_is_mapped = (lines :MappingLine[], mapping_path :mapping_path) =>
+export const path_is_mapped = (lines: MappingLine[], mapping_path: mapping_path) =>
 	Object.keys(get_mapped_fields(lines, mapping_path.slice(0, -1))).indexOf(mapping_path.slice(-1)[0]) !== -1;
 
 
-export const mapping_path_is_complete = (mapping_path :mapping_path) =>
+export const mapping_path_is_complete = (mapping_path: mapping_path) =>
 	mapping_path[mapping_path.length - 1] !== '0';
 
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicate_mappings(
-	lines :MappingLine[],
-	focused_line :number | false,
-) :MappingLine[] {
+	lines: MappingLine[],
+	focused_line: number | false,
+): MappingLine[] {
 
 	const array_of_mappings = get_array_of_mappings(lines);
 	const duplicate_mapping_indexes = find_duplicate_mappings(array_of_mappings, focused_line);
@@ -276,7 +276,7 @@ export const get_automapper_suggestions = ({
 	line,
 	index,
 	base_table_name,
-} :get_automapper_suggestions_parameters) :Promise<automapper_suggestion[]> =>
+}: get_automapper_suggestions_parameters): Promise<automapper_suggestion[]> =>
 	new Promise((resolve) => {
 
 		const local_mapping_path = [...lines[line].mapping_path];
@@ -347,7 +347,7 @@ export const get_automapper_suggestions = ({
 
 	});
 
-const MappingView = React.memo(named_component((props :MappingViewProps) =>
+const MappingView = React.memo(named_component((props: MappingViewProps) =>
 	<>
 		<div className="mapping_view">
 			<MappingPath
@@ -383,7 +383,7 @@ export function mutate_mapping_path({
 	index,
 	value,
 	is_relationship,
-} :mutate_mapping_path_parameters) :mapping_path {
+}: mutate_mapping_path_parameters): mapping_path {
 
 	let mapping_path = [...(
 		line === 'mapping_view' ?
@@ -410,7 +410,7 @@ export function mutate_mapping_path({
 
 }
 
-export default named_component((props :WBPlanViewMapperProps) => {
+export default named_component((props: WBPlanViewMapperProps) => {
 	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
 	const list_of_mappings = React.useRef<HTMLDivElement>(null);
 

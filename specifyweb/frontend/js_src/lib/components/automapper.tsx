@@ -21,41 +21,41 @@ import {
 	mapping_path_to_string,
 	is_circular_relationship,
 	is_too_many_inside_of_too_many,
-} from './wbplanviewmodelhelper';
+}                                      from './wbplanviewmodelhelper';
 import * as cache                      from './wbplanviewcache';
 import { find_array_divergence_point } from './wbplanviewhelper';
 import { generate_dispatch }           from './statemanagement';
 
 
 const match_base_rank_name = (  // find cases like `Phylum` and remap them to `Phylum > Name`
-	friendly_name:string,
-	striped_rank_name:string,
-	stripped_header_name:string
-)=>
+	friendly_name: string,
+	striped_rank_name: string,
+	stripped_header_name: string,
+) =>
 	friendly_name === 'name' &&
 	striped_rank_name === stripped_header_name;
 
 const match_rank_and_field_name = (  // find cases like `Kingdom Author`
-	stripped_header_name:string,
-	striped_rank_name:string,
-	friendly_name:string,
-	final_header_name:string,
-	field_name:string,
-)=>
+	stripped_header_name: string,
+	striped_rank_name: string,
+	friendly_name: string,
+	final_header_name: string,
+	field_name: string,
+) =>
 	stripped_header_name === `${striped_rank_name} ${friendly_name}` ||
 	final_header_name === `${striped_rank_name} ${field_name}`;
 
-const is_field_in_dont_match = (table_name:string, last_path_part: string, scope:automapper_scope)=>
+const is_field_in_dont_match = (table_name: string, last_path_part: string, scope: automapper_scope) =>
 	table_name !== '' &&
 	typeof AutoMapperDefinitions.dont_match[table_name] !== 'undefined' &&
 	typeof AutoMapperDefinitions.dont_match[table_name][last_path_part] !== 'undefined' &&
 	AutoMapperDefinitions.dont_match[table_name][last_path_part].indexOf(scope) !== -1;
 
 const mapping_path_is_in_proposed_mappings = (
-	allow_multiple_mappings:boolean,
+	allow_multiple_mappings: boolean,
 	results: automapper_results,
-	local_path: mapping_path
-)=>
+	local_path: mapping_path,
+) =>
 	!allow_multiple_mappings &&
 	Object.values(results).some(mapping_paths =>
 		mapping_paths.some(mapping_path =>
@@ -64,10 +64,10 @@ const mapping_path_is_in_proposed_mappings = (
 	);
 
 const mapping_path_is_the_mappings_tree = (
-	check_for_existing_mappings:boolean,
+	check_for_existing_mappings: boolean,
 	local_path: mapping_path,
 	path_is_mapped?: path_is_mapped_bind,
-)=>
+) =>
 	check_for_existing_mappings &&
 	typeof path_is_mapped === 'function' &&
 	path_is_mapped(local_path);
@@ -75,33 +75,33 @@ const mapping_path_is_the_mappings_tree = (
 
 export default class Automapper {
 
-	private readonly results :automapper_results = {};
-	private readonly scope :automapper_scope = 'automapper';
-	private readonly allow_multiple_mappings :boolean = false;
-	private readonly check_for_existing_mappings :boolean = false;
-	private readonly path_offset :number = 0;
-	private readonly base_table :string = '';
-	private readonly starting_table :string = '';
-	private readonly starting_path :mapping_path = [];
-	private readonly path_is_mapped? :path_is_mapped_bind;
-	private readonly headers_to_map :headers_to_map = {};
+	private readonly results: automapper_results = {};
+	private readonly scope: automapper_scope = 'automapper';
+	private readonly allow_multiple_mappings: boolean = false;
+	private readonly check_for_existing_mappings: boolean = false;
+	private readonly path_offset: number = 0;
+	private readonly base_table: string = '';
+	private readonly starting_table: string = '';
+	private readonly starting_path: mapping_path = [];
+	private readonly path_is_mapped?: path_is_mapped_bind;
+	private readonly headers_to_map: headers_to_map = {};
 
-	private searched_tables :string[] = [];
-	private find_mappings_queue :find_mappings_queue = [];
+	private searched_tables: string[] = [];
+	private find_mappings_queue: find_mappings_queue = [];
 
 	// used to replace any white space characters with space
-	private static readonly regex_replace_whitespace :RegExp = /\s+/g;
+	private static readonly regex_replace_whitespace: RegExp = /\s+/g;
 	// used to remove non letter characters
-	private static readonly regex_remove_non_az :RegExp = /[^a-z\s]+/g;
-	private static readonly depth :number = 6;  // how deep to go into the schema
+	private static readonly regex_remove_non_az: RegExp = /[^a-z\s]+/g;
+	private static readonly depth: number = 6;  // how deep to go into the schema
 	// the definitions for the comparison functions
-	private static readonly comparisons :{ [key in comparison_types] :any } = {
-		regex: (header :string, regex :RegExp) => header.match(regex),
-		string: (header :string, string :string) => header === string,
-		contains: (header :string, string :string) => header.indexOf(string) !== -1,
+	private static readonly comparisons: { [key in comparison_types]: any } = {
+		regex: (header: string, regex: RegExp) => header.match(regex),
+		string: (header: string, string: string) => header === string,
+		contains: (header: string, string: string) => header.indexOf(string) !== -1,
 	};
 
-	private dispatch :automapper_props_dispatch = {
+	private dispatch: automapper_props_dispatch = {
 		results: generate_dispatch<automapper_results_actions>({
 			'add': ({header_name, mapping_path}) => {
 				if (typeof this.results[header_name] === 'undefined')
@@ -156,7 +156,7 @@ export default class Automapper {
 		scope = 'automapper',
 		check_for_existing_mappings = false,
 		path_is_mapped,
-	} :automapper_constructor_parameters) {
+	}: automapper_constructor_parameters) {
 		// strip extra characters to increase mapping success
 		this.headers_to_map = Object.fromEntries(raw_headers.map(original_name => {
 
@@ -189,7 +189,7 @@ export default class Automapper {
 	public map({
 		use_cache = true,
 		commit_to_cache = true,
-	} :automapper_map_parameters = {}) :automapper_results {
+	}: automapper_map_parameters = {}): automapper_results {
 
 		if (Object.keys(this.headers_to_map).length === 0)
 			return {};
@@ -227,10 +227,10 @@ export default class Automapper {
 	* path are given higher priority
 	* */
 	private find_mappings_driver(
-		mode :auto_mapper_mode,
-	) :void {
+		mode: auto_mapper_mode,
+	): void {
 
-		const path_matches_starting_path = (path :mapping_path, level :string) =>
+		const path_matches_starting_path = (path: mapping_path, level: string) =>
 			typeof this.starting_path[parseInt(level) - 1] === 'undefined' ||
 			find_array_divergence_point(path, this.starting_path.slice(0, parseInt(level))) !== -1;
 
@@ -274,10 +274,10 @@ export default class Automapper {
 
 	/* Compares definitions to unmapped headers and makes a mapping if matched */
 	private handle_definition_comparison = (
-		path :mapping_path,  // initial mapping path
-		comparisons :options,
+		path: mapping_path,  // initial mapping path
+		comparisons: options,
 		// function that returns the next path part to use in a new mapping (on success)
-		get_new_path_part :() => mapping_path,
+		get_new_path_part: () => mapping_path,
 	) =>
 		this.get_unmapped_headers().forEach(([header_key, {lowercase_header_name}]) =>
 			Object.entries(Automapper.comparisons).filter(([comparison_key]) =>  // loop over defined comparisons
@@ -315,7 +315,7 @@ export default class Automapper {
 		field_name,
 		mode,
 		is_tree_rank = false,
-	} :find_mappings_in_definitions_parameters) :void {
+	}: find_mappings_in_definitions_parameters): void {
 
 		if (mode === 'shortcuts_and_table_synonyms' && field_name !== '')
 			return;
@@ -360,10 +360,10 @@ export default class Automapper {
 
 	/* Searches for `table_synonym` that matches the current table and the current mapping path */
 	private find_table_synonyms(
-		table_name :string,  // the table to search for
-		path :string[],  // current mapping path
-		mode :auto_mapper_mode,
-	) :string[] /* table synonyms */ {
+		table_name: string,  // the table to search for
+		path: string[],  // current mapping path
+		mode: auto_mapper_mode,
+	): string[] /* table synonyms */ {
 
 		const table_synonyms = AutoMapperDefinitions.table_synonyms[table_name];
 
@@ -374,7 +374,7 @@ export default class Automapper {
 			return [];
 
 		// filter out -to-many references from the path for matching
-		const filtered_path = path.reduce((filtered_path :mapping_path, path_part :string) => {
+		const filtered_path = path.reduce((filtered_path: mapping_path, path_part: string) => {
 
 			if (!value_is_reference_item(path_part))
 				filtered_path.push(path_part);
@@ -389,7 +389,7 @@ export default class Automapper {
 			...filtered_path,
 		]);
 
-		return table_synonyms.reduce((table_synonyms :string[], table_synonym :table_synonym_definition) => {
+		return table_synonyms.reduce((table_synonyms: string[], table_synonym: table_synonym_definition) => {
 
 			const mapping_path_string = mapping_path_to_string(table_synonym.mapping_path_filter);
 
@@ -406,18 +406,19 @@ export default class Automapper {
 	};
 
 	private readonly find_formatted_header_field_synonyms = (
-		table_name :string,  // the table to search in
-		field_name :string,  // the field to search in
-	) :string[] /* field synonyms */ =>
-			typeof AutoMapperDefinitions.synonyms[table_name] === 'undefined' ||
-			typeof AutoMapperDefinitions.synonyms[table_name][field_name] === 'undefined' ||
-			typeof AutoMapperDefinitions.synonyms[table_name][field_name][this.scope] === 'undefined' ||
-			typeof AutoMapperDefinitions.synonyms[table_name][field_name][this.scope]!
-				.headers.formatted_header_field_synonym === 'undefined' ?
+		table_name: string,  // the table to search in
+		field_name: string,  // the field to search in
+	): string[] /* field synonyms */ =>
+		typeof AutoMapperDefinitions.synonyms[table_name] === 'undefined' ||
+		typeof AutoMapperDefinitions.synonyms[table_name][field_name] === 'undefined' ||
+		typeof AutoMapperDefinitions.synonyms[table_name][field_name][this.scope] === 'undefined' ||
+		typeof
+			AutoMapperDefinitions.synonyms[table_name][field_name][this.scope]!.headers.formatted_header_field_synonym
+		=== 'undefined' ?
 			[] :
 			AutoMapperDefinitions.synonyms[table_name][field_name][this.scope]!.headers.formatted_header_field_synonym!;
 
-	private readonly table_was_iterated = (mode:auto_mapper_mode, new_depth_level:number, target_table_name:string )=>
+	private readonly table_was_iterated = (mode: auto_mapper_mode, new_depth_level: number, target_table_name: string) =>
 		mode === 'synonyms_and_matches' &&
 		(
 			this.searched_tables.indexOf(target_table_name) !== -1 ||
@@ -438,9 +439,9 @@ export default class Automapper {
 			path = [],
 			parent_table_name = '',
 			parent_relationship_type,
-		} :find_mappings_parameters,
-		mode :auto_mapper_mode,
-	) :void {
+		}: find_mappings_parameters,
+		mode: auto_mapper_mode,
+	): void {
 
 
 		if (mode === 'synonyms_and_matches') {
@@ -504,14 +505,14 @@ export default class Automapper {
 							match_base_rank_name(
 								friendly_name,
 								striped_rank_name,
-								stripped_header_name
+								stripped_header_name,
 							) ||
 							match_rank_and_field_name(
 								stripped_header_name,
 								striped_rank_name,
 								friendly_name,
 								final_header_name,
-								field_name
+								field_name,
 							)
 						) && // don't search for further mappings for this field if we can only map a single header to this field
 						this.make_mapping(
@@ -627,8 +628,8 @@ export default class Automapper {
 		get_table_relationships(table_name, false).some((
 			[
 				relationship_key,
-				relationship_data
-			]
+				relationship_data,
+			],
 		) => {
 
 			const local_path = [...path, relationship_key];
@@ -663,11 +664,11 @@ export default class Automapper {
 						foreign_name,
 						relationship_key,
 						current_mapping_path_part,
-						table_name
+						table_name,
 					})
 				) ||
 				// skip -to-many inside -to-many  // TODO: remove this once upload plan is ready
-				is_too_many_inside_of_too_many(relationship_data.type,parent_relationship_type)
+				is_too_many_inside_of_too_many(relationship_data.type, parent_relationship_type)
 			)
 				return;
 
@@ -692,21 +693,21 @@ export default class Automapper {
 	* */
 	private make_mapping(
 		// Mapping path from base table to this table. Should be an empty array if this is base table
-		path :ReadonlyArray<string>,
-		new_path_parts :mapping_path,  // Elements that should be pushed into `path`
-		header_name :string,  // The name of the header that should be mapped
-		table_name :string = '',  // Current table name (used to identify `don't map` conditions)
+		path: string[],
+		new_path_parts: mapping_path,  // Elements that should be pushed into `path`
+		header_name: string,  // The name of the header that should be mapped
+		table_name: string = '',  // Current table name (used to identify `don't map` conditions)
 		// if of type {int} -
 		// implants given to_many_reference_number into the mapping path into the first reference item starting from the right
 		// if of type {boolean} and is False -
 		// don't do anything
-		to_many_reference_number :number | false = false,
-	) :boolean /* false if we can map another mapping to this header.
+		to_many_reference_number: number | false = false,
+	): boolean /* false if we can map another mapping to this header.
 	Most of the time means that the mapping was not made
 	(Mapping fails if field is inside a -to-one relationship or direct child of base table and is already mapped).
 	Can also depend on this.allow_multiple_mappings */ {
 
-		let local_path :mapping_path = [...path, ...new_path_parts];
+		let local_path: mapping_path = [...path, ...new_path_parts];
 		const last_path_part = local_path[local_path.length - 1];
 
 		if (
@@ -720,27 +721,29 @@ export default class Automapper {
 			return false;
 
 		// if exact -to-many index was found, insert it into the path
-		let changes_made :string | boolean = false;
+		let changes_made: string | boolean = false;
 		if (to_many_reference_number !== false)
 			local_path = local_path.reverse().map(local_path_part =>
 				value_is_reference_item(local_path_part) && changes_made !== false ?
-					(changes_made = format_reference_item(to_many_reference_number)) :
+					(
+						changes_made = format_reference_item(to_many_reference_number)
+					) :
 					local_path_part,
 			).reverse();
 
 		// check if this path is already mapped and if it is, increment the reference number to make path unique
 		while (// go over mapped headers to see if this path was already mapped
 			// go over mappings proposed by automapper
-			mapping_path_is_in_proposed_mappings(this.allow_multiple_mappings, this.results, local_path) ||
-			// go over mappings that are already in the mappings tree
-			mapping_path_is_the_mappings_tree(this.check_for_existing_mappings, local_path, this.path_is_mapped)
-		){
-			if(// increment the last reference number in the mapping path if it has a reference number in it
+		mapping_path_is_in_proposed_mappings(this.allow_multiple_mappings, this.results, local_path) ||
+		// go over mappings that are already in the mappings tree
+		mapping_path_is_the_mappings_tree(this.check_for_existing_mappings, local_path, this.path_is_mapped)
+			) {
+			if (// increment the last reference number in the mapping path if it has a reference number in it
 				!Object.entries(local_path).reverse().some(([local_path_index, local_path_part], index) =>
 					local_path.length - index > this.path_offset && value_is_reference_item(local_path_part) &&
 					(
 						local_path[parseInt(local_path_index)] = format_reference_item(
-							get_index_from_reference_item_name(local_path_part) + 1
+							get_index_from_reference_item_name(local_path_part) + 1,
 						)
 					),
 				)
