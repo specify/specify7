@@ -139,6 +139,8 @@ function handle_relationship_field(
 	field_data.table_name = table_name;
 	field_data.type = relationship_type;
 	field_data.foreign_name = foreign_name;
+
+	return true;
 }
 
 /* Fetches the data model */
