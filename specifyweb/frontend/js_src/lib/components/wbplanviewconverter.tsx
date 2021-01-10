@@ -41,7 +41,7 @@ const upload_plan_processing_functions = (headers :string[]) :upload_plan_proces
 			Object.fromEntries(Object.values(original_mappings).map((mapping, index) =>
 				[
 					format_reference_item(index + 1),
-					handle_upload_table(mapping, headers),
+					handle_upload_table_table(mapping, headers),
 				],
 			)),
 		],
@@ -91,13 +91,6 @@ const handle_upload_table_table = (upload_plan :upload_plan_uploadTable_table, h
 			],
 		[],
 	));
-
-const handle_upload_table = (upload_plan :upload_plan_uploadTable, headers :string[]) => {
-	const [[table_name, table_data]] = Object.entries(upload_plan);
-	return {
-		[table_name]: handle_upload_table_table(table_data, headers),
-	};
-};
 
 const handle_uploadable = (upload_plan :upload_plan_uploadable, headers :string[]) :mappings_tree =>
 	'treeRecord' in upload_plan ?

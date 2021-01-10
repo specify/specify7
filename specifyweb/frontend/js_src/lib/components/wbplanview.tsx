@@ -6,8 +6,6 @@
 
 'use strict';
 
-//TODO: make `tsc` not return error messages for `.js` files
-
 import React                                   from 'react';
 import '../../css/wbplanview.css';
 import _                                       from 'underscore';
