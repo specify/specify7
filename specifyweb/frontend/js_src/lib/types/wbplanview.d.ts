@@ -116,6 +116,9 @@ interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
 interface ToggleMappingIsTemplatedAction extends Action<'ToggleMappingIsTemplatedAction'> {
 }
 
+interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'> {
+}
+
 interface ResetMappingsAction extends Action<'ResetMappingsAction'> {
 }
 
@@ -140,9 +143,6 @@ interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'> {
 }
 
 interface AutoScrollFinishedAction extends Action<'AutoScrollFinishedAction'> {
-}
-
-interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'> {
 }
 
 interface OpenSelectElementAction extends Action<'OpenSelectElementAction'>, select_element_position {
@@ -175,6 +175,7 @@ type MappingActions =
 	| SavePlanAction
 	| ToggleMappingViewAction
 	| ToggleMappingIsTemplatedAction
+	| ToggleHiddenFieldsAction
 	| ResetMappingsAction
 	| ValidationAction
 	| ClearMappingLineAction
@@ -183,7 +184,6 @@ type MappingActions =
 	| AddNewHeaderAction
 	| AddNewStaticHeaderAction
 	| AutoScrollFinishedAction
-	| ToggleHiddenFieldsAction
 	| OpenSelectElementAction
 	| CloseSelectElementAction
 	| ChangeSelectElementValueAction

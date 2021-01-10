@@ -6,7 +6,6 @@
 
 'use strict';
 
-//TODO: reformat code
 //TODO: make `tsc` not return error messages for `.js` files
 
 import React                                   from 'react';
@@ -35,6 +34,7 @@ import { generate_dispatch, generate_reducer } from './statemanagement';
 
 let schema_fetched_promise = fetch_data_model();
 
+// assignees names to components so that they easier to identify in the inspector and profiler
 export function named_component<T>(component_function :T, component_name :string) :T {
 	// @ts-ignore
 	component_function.displayName = component_name;
@@ -371,6 +371,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 		{
 			...mapping_state(state),
 			show_hidden_fields: cache.set('ui', 'show_hidden_fields', !mapping_state(state).show_hidden_fields),
+			reveal_hidden_fields_clicked: true,
 		}
 	),
 	'OpenSelectElementAction': (state, action) => (
@@ -629,11 +630,11 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 				focused_line={state.focused_line}
 				autoscroll={state.autoscroll}
 				handleSave={() => handleSave(true)}
+				handleToggleHiddenFields={() => state.dispatch({type: 'ToggleHiddenFieldsAction'})}
 				handleFocus={(line :number) => state.dispatch({type: 'FocusLineAction', line})}
 				handleMappingViewMap={() => state.dispatch({type: 'MappingViewMapAction'})}
 				handleAddNewHeader={() => state.dispatch({type: 'AddNewHeaderAction'})}
 				handleAddNewStaticHeader={() => state.dispatch({type: 'AddNewStaticHeaderAction'})}
-				handleToggleHiddenFields={() => state.dispatch({type: 'ToggleHiddenFieldsAction'})}
 				handleAddNewColumn={() => state.dispatch({type: 'AddNewHeaderAction'})}
 				handleAddNewStaticColumn={() => state.dispatch({type: 'AddNewStaticHeaderAction'})}
 				handleAutoScrollFinish={() => state.dispatch({type: 'AutoScrollFinishedAction'})}

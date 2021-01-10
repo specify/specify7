@@ -32,7 +32,7 @@ const Icon = React.memo(named_component(({
 	const table_icon_src = icons.getIcon(table_name);
 	if (table_icon_src !== '/images/unknown.png')
 		return <span className="custom_select_option_icon_table"
-					 style={{backgroundImage: `url('${table_icon_src}')`}} />;
+					style={{backgroundImage: `url('${table_icon_src}')`}} />;
 
 	const table_sub_name = table_name.substr(0, 2);
 	const color_hue = (

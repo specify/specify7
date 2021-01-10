@@ -185,7 +185,7 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 			const field = data_model_storage.tables[table_name].fields[field_name];
 
 			if (field.is_relationship)
-				handle_relationship_field(field,field_name, table_plan);
+				handle_relationship_field(field_data, field,field_name, table_plan);
 			else
 				table_plan[
 					Object.entries(field_data)[0][0] === 'new_static_column' ?
@@ -210,7 +210,7 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 
 }
 
-function handle_relationship_field(field:data_model_field_writable, field_name:string, table_plan:
+function handle_relationship_field(field_data:any, field:data_model_field_writable, field_name:string, table_plan:
 	{wbcols :upload_plan_node, static :upload_plan_node, toOne :upload_plan_node, toMany? :upload_plan_node | undefined}){
 	const mapping_table = field.table_name;
 	const is_to_one = field.type === 'one-to-one' || field.type === 'many-to-one';

@@ -39,7 +39,11 @@ const MappingsControlPanel = React.memo(named_component(({
 		<button onClick={handleAddNewColumn}>Add new column</button>
 		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
 		<label>
-			<input type="checkbox" checked={show_hidden_fields} onChange={handleChange} />
+			<input
+				type="checkbox"
+				checked={show_hidden_fields}
+				onChange={handleChange}
+			/>
 			Reveal hidden fields
 		</label>
 	</div>, 'MappingsControlPanel'));
@@ -387,7 +391,7 @@ export function mutate_mapping_path({
 			lines[line].mapping_path
 	)];
 
-	const is_simple = !value_is_reference_item(value) && value_is_tree_rank(value);
+	const is_simple = !value_is_reference_item(value) && !value_is_tree_rank(value);
 
 	if (value === 'add') {
 		const mapped_fields = Object.keys(get_mapped_fields(lines, mapping_path.slice(0, index)));
@@ -399,7 +403,7 @@ export function mutate_mapping_path({
 	else
 		mapping_path[index] = value;
 
-	if (is_simple && mapping_path.length - 1 === index || is_relationship)
+	if (!is_simple && mapping_path.length - 1 === index || is_relationship)
 		return [...mapping_path, '0'];
 
 	return mapping_path;
@@ -410,6 +414,7 @@ export default named_component((props :WBPlanViewMapperProps) => {
 	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
 	const list_of_mappings = React.useRef<HTMLDivElement>(null);
 
+	//scroll down the list of mappings when the `add_new_column` or `add_new_static_column` was clicked
 	React.useEffect(() => {
 		if (props.autoscroll && list_of_mappings.current) {
 			list_of_mappings.current.scrollTop = list_of_mappings.current.scrollHeight;

@@ -265,6 +265,7 @@ export const is_circular_relationship_forwards = ({
 }:is_circular_relationship_forwards_props)=>
 	typeof table_name !== "undefined" &&
 	typeof relationship_key !== "undefined" &&
+	typeof data_model_storage.tables[table_name].fields[relationship_key] !== "undefined" &&
 	data_model_storage.tables[table_name].fields[relationship_key].foreign_name === current_mapping_path_part;
 
 export const is_circular_relationship_backwards = ({

@@ -459,7 +459,7 @@ export function get_mapping_line_data_from_mapping_path({
 					) =>
 					(
 						!is_relationship ||
-						is_circular_relationship({  // skip circular relationships
+						!is_circular_relationship({  // skip circular relationships
 							target_table_name: field_table_name,
 							parent_table_name,
 							foreign_name,
@@ -471,7 +471,7 @@ export function get_mapping_line_data_from_mapping_path({
 					// skip -to-many inside -to-many  // TODO: remove this once upload plan is ready
 					!is_too_many_inside_of_too_many(relationship_type, parent_relationship_type) &&
 					// skip hidden fields when user decided to hide them
-					!is_field_visible(show_hidden_fields, is_hidden, field_name),
+					is_field_visible(show_hidden_fields, is_hidden, field_name),
 				).map((
 					[
 						field_name,

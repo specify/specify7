@@ -49,7 +49,7 @@ export const MappingLine = named_component(({
 	},
 } :MappingLineProps) =>
 	<div className={`wbplanview_mapping_line ${is_focused ? 'wbplanview_mapping_line_focused' : ''}`}
-		 onClick={handleFocus}>
+		onClick={handleFocus}>
 		<div className="wbplanview_mapping_line_controls">
 			<button className="wbplanview_mapping_line_delete" title="Clear mapping" onClick={handleClearMapping}>
 				<img src="../../../static/img/discard.svg" alt="Clear mapping" />
@@ -143,7 +143,7 @@ function MappingElement(
 			field_names.push(field_friendly_name);
 	});
 
-	if (!default_option)
+	if (typeof default_option === "undefined")
 		default_option = {
 			option_name: '0',
 			option_label: '0',
