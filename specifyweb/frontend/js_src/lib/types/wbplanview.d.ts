@@ -23,15 +23,15 @@ interface upload_plan_template {
 
 //states
 
-interface LoadingStateBase <T extends string> extends State<T> {
-	dispatch_action?:(action:WBPlanViewActions)=>void,
+interface LoadingStateBase<T extends string> extends State<T> {
+	dispatch_action? :(action :WBPlanViewActions) => void,
 }
 
-interface LoadTemplateSelectionState extends LoadingStateBase<'LoadTemplateSelectionState'>{
+interface LoadTemplateSelectionState extends LoadingStateBase<'LoadTemplateSelectionState'> {
 }
 
-interface NavigateBackState extends State<'NavigateBackState'>{
-	readonly wb: specify_resource,
+interface NavigateBackState extends State<'NavigateBackState'> {
+	readonly wb :specify_resource,
 }
 
 type LoadingStates = LoadTemplateSelectionState | NavigateBackState
@@ -49,7 +49,7 @@ interface TemplateSelectionState extends State<'TemplateSelectionState'> {
 }
 
 interface MappingState extends State<'MappingState'>, WBPlanViewMapperBaseProps {
-	readonly automapper_suggestions_promise?:Promise<automapper_suggestion[]>,
+	readonly automapper_suggestions_promise? :Promise<automapper_suggestion[]>,
 }
 
 type WBPlanViewStates =
@@ -59,24 +59,24 @@ type WBPlanViewStates =
 	| MappingState;
 
 type WBPlanViewStatesWithParams = WBPlanViewStates & {
-	readonly dispatch :(action:WBPlanViewActions)=>void,
+	readonly dispatch :(action :WBPlanViewActions) => void,
 	readonly props :WBPlanViewProps
 }
 
 
 //actions
 interface OpenBaseTableSelectionAction extends Action<'OpenBaseTableSelectionAction'> {
-	referrer?: WBPlanViewStates['type'],
+	referrer? :WBPlanViewStates['type'],
 }
 
 interface SelectTableAction extends Action<'SelectTableAction'> {
 	readonly table_name :string,
-	readonly mapping_is_templated: boolean,
-	readonly headers: string[]
+	readonly mapping_is_templated :boolean,
+	readonly headers :string[]
 }
 
 interface UseTemplateAction extends Action<'UseTemplateAction'> {
-	readonly dispatch :(action:WBPlanViewActions)=>void,
+	readonly dispatch :(action :WBPlanViewActions) => void,
 }
 
 type BaseTableSelectionActions =
@@ -95,19 +95,19 @@ type TemplateSelectionActions =
 	TemplatesLoadedAction
 	| CancelTemplateSelectionAction;
 
-interface CancelMappingAction extends Action<'CancelMappingAction'>,partialWBPlanViewProps {
+interface CancelMappingAction extends Action<'CancelMappingAction'>, partialWBPlanViewProps {
 }
 
 type CommonActions = CancelMappingAction;
 
 interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
-	readonly mapping_is_templated: boolean,
-	readonly headers: string[],
-	readonly upload_plan: falsy_upload_plan,
+	readonly mapping_is_templated :boolean,
+	readonly headers :string[],
+	readonly upload_plan :falsy_upload_plan,
 }
 
-interface SavePlanAction extends Action<'SavePlanAction'>, publicWBPlanViewProps{
-	readonly ignore_validation?:boolean
+interface SavePlanAction extends Action<'SavePlanAction'>, publicWBPlanViewProps {
+	readonly ignore_validation? :boolean
 }
 
 interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
@@ -130,19 +130,19 @@ interface FocusLineAction extends Action<'FocusLineAction'> {
 	readonly line :number,
 }
 
-interface MappingViewMapAction extends Action<'MappingViewMapAction'>{
+interface MappingViewMapAction extends Action<'MappingViewMapAction'> {
 }
 
-interface AddNewHeaderAction extends Action<'AddNewHeaderAction'>{
+interface AddNewHeaderAction extends Action<'AddNewHeaderAction'> {
 }
 
-interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'>{
+interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'> {
 }
 
-interface AutoScrollFinishedAction extends Action<'AutoScrollFinishedAction'>{
+interface AutoScrollFinishedAction extends Action<'AutoScrollFinishedAction'> {
 }
 
-interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'>{
+interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'> {
 }
 
 interface OpenSelectElementAction extends Action<'OpenSelectElementAction'>, select_element_position {
@@ -151,17 +151,18 @@ interface OpenSelectElementAction extends Action<'OpenSelectElementAction'>, sel
 interface CloseSelectElementAction extends Action<'CloseSelectElementAction'> {
 }
 
-interface ChangeSelectElementValueAction extends Action<'ChangeSelectElementValueAction'>, select_element_onchange_position {
-	readonly value: string,
-	readonly is_relationship: boolean,
+interface ChangeSelectElementValueAction extends Action<'ChangeSelectElementValueAction'>,
+	select_element_onchange_position {
+	readonly value :string,
+	readonly is_relationship :boolean,
 }
 
 interface AutomapperSuggestionsLoadedAction extends Action<'AutomapperSuggestionsLoadedAction'> {
-	readonly automapper_suggestions: automapper_suggestion[],
+	readonly automapper_suggestions :automapper_suggestion[],
 }
 
 interface AutomapperSuggestionSelectedAction extends Action<'AutomapperSuggestionSelectedAction'> {
-	readonly suggestion: string,
+	readonly suggestion :string,
 }
 
 interface StaticHeaderChangeAction extends Action<'StaticHeaderChangeAction'> {
@@ -202,7 +203,7 @@ interface WBPlanViewHeaderBaseProps {
 	readonly title :string,
 	readonly state_type :WBPlanViewStates['type'],
 	readonly handleCancel :() => void,
-	readonly mapping_is_templated?: boolean,
+	readonly mapping_is_templated? :boolean,
 }
 
 interface WBPlanViewHeaderPropsMapping extends WBPlanViewHeaderBaseProps {
@@ -227,8 +228,8 @@ type WBPlanViewHeaderProps =
 
 
 interface WBPlanViewProps extends publicWBPlanViewProps {
-	readonly upload_plan: falsy_upload_plan,
-	readonly headers: string[],
+	readonly upload_plan :falsy_upload_plan,
+	readonly headers :string[],
 }
 
 interface partialWBPlanViewProps {
@@ -246,5 +247,5 @@ interface HeaderWrapperProps {
 	readonly children :react_elements,
 	readonly header :react_element,
 	readonly state_name :WBPlanViewStates['type'],
-	readonly handleClick? : handleElementOpen,
+	readonly handleClick? :handleElementOpen,
 }

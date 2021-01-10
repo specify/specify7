@@ -1,3 +1,27 @@
+interface find_next_navigation_direction_base {
+	finished :boolean,
+}
+
+interface find_next_navigation_direction_finished<RETURN_STRUCTURE> extends find_next_navigation_direction_base {
+	finished :true,
+	final_data :RETURN_STRUCTURE[],
+}
+
+interface find_next_navigation_direction_not_finished extends find_next_navigation_direction_base {
+	finished :false,
+	payload :find_next_navigation_direction_not_finished_payload,
+}
+
+interface find_next_navigation_direction_not_finished_payload {
+	next_table_name :string,
+	next_parent_table_name :string,
+	next_real_path_element_name :string,
+	next_path_element_name :string,
+}
+
+type find_next_navigation_direction<RETURN_STRUCTURE> = find_next_navigation_direction_finished<RETURN_STRUCTURE> |
+	find_next_navigation_direction_not_finished;
+
 interface navigator_parameters<RETURN_STRUCTURE> {
 	readonly callbacks :navigator_callbacks<RETURN_STRUCTURE>,  // Callbacks can be modified depending on the need to make navigator very versatile
 	readonly recursive_payload? :navigator_recursive_payload  // {object|undefined} used internally to make navigator call itself multiple times
@@ -11,7 +35,7 @@ interface navigator_parameters<RETURN_STRUCTURE> {
 interface navigator_callback_payload {
 	table_name :string,
 	data? :any,
-	parent_relationship_type? :relationship_type | '',
+	parent_relationship_type? :relationship_type,
 	parent_table_name? :string,
 }
 
@@ -31,7 +55,7 @@ interface navigator_callbacks<RETURN_STRUCTURE> {
 	readonly get_next_path_element :navigator_callback_function<navigator_next_path_element | undefined>,  // should return undefined if there is no next path element
 	readonly get_final_data :navigator_callback_function<RETURN_STRUCTURE[]>,  // formats internal_payload and returns it. Would be used as a return value for the navigator
 	readonly get_instance_data :navigator_callback_function<RETURN_STRUCTURE>,  // commits callback_payload.data to internal_payload and returns committed data
-	readonly commit_instance_data :navigator_callback_function<void>,  // commits callback_payload.data to internal_payload and returns committed data
+	readonly commit_instance_data :navigator_callback_function<RETURN_STRUCTURE>,  // commits callback_payload.data to internal_payload and returns committed data
 	readonly navigator_instance_pre :navigator_callback_function<void>,  // called inside of navigator_instance before it calls callbacks for tree ranks / reference items / simple fields
 	readonly handle_to_many_children :navigator_callback_function<void>,  // handles to_many children
 	readonly handle_tree_ranks :navigator_callback_function<void>,  // handles tree ranks children
@@ -57,7 +81,7 @@ interface navigator_instance_parameters<RETURN_STRUCTURE> {
 }
 
 interface get_mapping_line_data_from_mapping_path_parameters {
-	readonly base_table_name: string,
+	readonly base_table_name :string,
 	readonly mapping_path? :mapping_path,  // the mapping path
 	readonly open_select_element? :open_select_element  // index of custom select element that should be open
 	readonly iterate? :boolean,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
@@ -65,23 +89,23 @@ interface get_mapping_line_data_from_mapping_path_parameters {
 	readonly generate_last_relationship_data? :boolean  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
 	readonly custom_select_type :custom_select_type,
 	readonly show_hidden_fields? :boolean,
-	readonly handleChange? : handleMappingLineChange
-	readonly handleOpen? : handleMappingLineOpen
-	readonly handleClose? : handleMappingLineOpen
-	readonly handleAutomapperSuggestionSelection?: (suggestion:string)=>void,
-	readonly get_mapped_fields: get_mapped_fields_bind,
-	readonly automapper_suggestions?: automapper_suggestion[],
+	readonly handleChange? :handleMappingLineChange
+	readonly handleOpen? :handleMappingLineOpen
+	readonly handleClose? :handleMappingLineOpen
+	readonly handleAutomapperSuggestionSelection? :(suggestion :string) => void,
+	readonly get_mapped_fields :get_mapped_fields_bind,
+	readonly automapper_suggestions? :automapper_suggestion[],
 }
 
 interface get_mapping_line_data_from_mapping_path_internal_state {
 	mapping_path_position :number,
 	mapping_line_data :MappingElementProps[],
-	custom_select_type:custom_select_type,
-	custom_select_subtype?:custom_select_subtype
-	is_open?:boolean,
-	next_mapping_path_element?:string,
-	default_value?:string,
+	custom_select_type :custom_select_type,
+	custom_select_subtype? :custom_select_subtype
+	is_open? :boolean,
+	next_mapping_path_element? :string,
+	default_value? :string,
 	current_mapping_path_part? :string,
-	result_fields: {[field_name:string]:html_generator_field_data}
-	mapped_fields: string[],
+	result_fields :{[field_name :string] :html_generator_field_data}
+	mapped_fields :string[],
 }

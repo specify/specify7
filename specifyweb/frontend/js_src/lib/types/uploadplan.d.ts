@@ -13,13 +13,9 @@ type upload_plan_field_group_types = 'wbcols' | 'static' | 'toOne' | 'toMany'
 
 type upload_plan_uploadTable_table_group<GROUP_NAME extends upload_plan_field_group_types> =
 	GROUP_NAME extends 'wbcols' ? upload_plan_uploadTable_wbcols :
-	GROUP_NAME extends 'static' ? upload_plan_uploadTable_static :
-	GROUP_NAME extends 'toOne' ? upload_plan_uploadTable_toOne :
-	upload_plan_uploadTable_toMany
-//
-// type upload_plan_uploadTable_table = {
-// 	[field_group_type in upload_plan_field_group_types]:upload_plan_uploadTable_table_group<field_group_type>
-// }
+		GROUP_NAME extends 'static' ? upload_plan_uploadTable_static :
+			GROUP_NAME extends 'toOne' ? upload_plan_uploadTable_toOne :
+				upload_plan_uploadTable_toMany
 
 interface upload_plan_uploadTable_table {
 	wbcols :upload_plan_uploadTable_wbcols,
@@ -28,7 +24,7 @@ interface upload_plan_uploadTable_table {
 	toMany :upload_plan_uploadTable_toMany,
 }
 
-interface upload_plan_uploadTable  extends Record<string, upload_plan_uploadTable_table> {
+interface upload_plan_uploadTable extends Record<string, upload_plan_uploadTable_table> {
 }
 
 interface upload_plan_treeRecord {

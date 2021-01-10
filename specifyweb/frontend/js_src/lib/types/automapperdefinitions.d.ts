@@ -51,12 +51,12 @@ interface synonym_headers {
 	readonly headers :synonym_options
 }
 
-type field_synonym = Readonly<Partial<Record<automapper_scope,synonym_headers>>>
+type field_synonym = Readonly<Partial<Record<automapper_scope, synonym_headers>>>
 
 interface synonym extends Readonly<Record<string, field_synonym>> {
 }
 
-interface synonyms extends Readonly<Record<string, synonym> >{
+interface synonyms extends Readonly<Record<string, synonym>> {
 }
 
 

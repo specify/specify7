@@ -6,8 +6,8 @@
 
 'use strict';
 
-import React from 'react';
-import {ModalDialog} from './modaldialog';
+import React           from 'react';
+import { ModalDialog } from './modaldialog';
 
 export default class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
 	state :ErrorBoundaryState = {
@@ -29,12 +29,12 @@ export default class ErrorBoundary extends React.Component<{}, ErrorBoundaryStat
 				title: 'Unexpected Error',
 				buttons: [
 					{
-						text: 'Reload', click: function () {
+						text: 'Reload', click: function() {
 							window.location.reload();
 						},
 					},
 					{
-						text: 'Previous Page', click: function () {
+						text: 'Previous Page', click: function() {
 							window.history.back();
 						},
 					}],
@@ -42,7 +42,7 @@ export default class ErrorBoundary extends React.Component<{}, ErrorBoundaryStat
 				<p>An unexpected error has occurred.</p>
 				<details style={{whiteSpace: 'pre-wrap'}}>
 					{this.state.error && this.state.error.toString()}
-					<br/>
+					<br />
 					{this.state.errorInfo.componentStack}
 				</details>
 			</ModalDialog>;

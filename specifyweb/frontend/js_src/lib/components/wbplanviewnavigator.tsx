@@ -1,15 +1,71 @@
 /*
 *
-* Helpful methods for navigating though schema across a certain mapping path. Helps define information needed to display wbplanview components
+* Helpful methods for navigating though schema across a certain mapping path.
+* Helps define information needed to display wbplanview components
 *
 * */
 
 'use strict';
 
-import * as cache from './wbplanviewcache';
-import {value_is_reference_item, value_is_tree_rank, relationship_is_to_many, table_is_tree, format_tree_rank,get_name_from_tree_rank_name,get_max_to_many_value,format_reference_item} from './wbplanviewmodelhelper';
+import * as cache         from './wbplanviewcache';
+import {
+	value_is_reference_item,
+	value_is_tree_rank,
+	relationship_is_to_many,
+	table_is_tree,
+	format_tree_rank,
+	get_name_from_tree_rank_name,
+	get_max_to_many_value,
+	format_reference_item, is_circular_relationship, is_too_many_inside_of_too_many,
+}                         from './wbplanviewmodelhelper';
 import data_model_storage from './wbplanviewmodel';
 
+
+function find_next_navigation_direction<RETURN_STRUCTURE>(
+	callbacks :navigator_callbacks<RETURN_STRUCTURE>,
+	callback_payload :readonly_navigator_callback_payload,
+	table_name :string,
+	parent_table_name :string,
+) :find_next_navigation_direction<RETURN_STRUCTURE> {
+	const next_path_elements_data = callbacks.get_next_path_element(callback_payload);
+
+	if (typeof next_path_elements_data === 'undefined')
+		return {
+			finished: true,
+			final_data: callbacks.get_final_data(callback_payload),
+		};
+
+	let {
+		next_path_element_name,
+		next_path_element,
+		next_real_path_element_name,
+	} = next_path_elements_data;
+
+	let next_table_name = '';
+	let next_parent_table_name = '';
+
+	if (
+		value_is_reference_item(next_path_element_name) ||
+		value_is_tree_rank(next_path_element_name)
+	) {
+		next_table_name = table_name;
+		next_parent_table_name = parent_table_name;
+	}
+	else if (typeof next_path_element !== 'undefined' && next_path_element.is_relationship) {
+		next_table_name = next_path_element.table_name;
+		next_parent_table_name = table_name;
+	}
+
+	return {
+		finished: false,
+		payload: {
+			next_table_name,
+			next_parent_table_name,
+			next_real_path_element_name,
+			next_path_element_name,
+		},
+	};
+}
 
 /* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
 export function navigator<RETURN_STRUCTURE>({
@@ -20,7 +76,7 @@ export function navigator<RETURN_STRUCTURE>({
 		cache_name,
 		base_table_name,
 	},
-} :navigator_parameters<RETURN_STRUCTURE>) :RETURN_STRUCTURE[] /* returns the value returned by callbacks.get_final_data(internal_state) */ {
+} :navigator_parameters<RETURN_STRUCTURE>) :RETURN_STRUCTURE[] {
 
 	let table_name = '';
 	let parent_table_name = '';
@@ -29,7 +85,7 @@ export function navigator<RETURN_STRUCTURE>({
 
 	if (typeof recursive_payload === 'undefined') {
 		if (typeof base_table_name === 'undefined')
-			throw new Error('Base table needs to be specified for navigator to be able to loop though schema');
+			throw new Error('Base table needs to be specified for a navigator to be able to loop though schema');
 		table_name = base_table_name;
 	}
 	else
@@ -60,57 +116,86 @@ export function navigator<RETURN_STRUCTURE>({
 		});
 
 
-	const next_path_elements_data = callbacks.get_next_path_element(callback_payload);
+	const next_navigation_direction = find_next_navigation_direction<RETURN_STRUCTURE>(
+		callbacks,
+		callback_payload,
+		table_name,
+		parent_table_name,
+	);
 
-	if (typeof next_path_elements_data === 'undefined')
-		return callbacks.get_final_data(callback_payload);
+	if (next_navigation_direction.finished)
+		return next_navigation_direction.final_data;
 
-	let {
+	const {
 		next_path_element_name,
-		next_path_element,
+		next_table_name,
+		next_parent_table_name,
 		next_real_path_element_name,
-	} = next_path_elements_data;
+	} = next_navigation_direction.payload;
 
-	let next_table_name = '';
-	let next_parent_table_name = '';
-
-	if (
-		value_is_reference_item(next_path_element_name) ||
-		value_is_tree_rank(next_path_element_name)
-	) {
-		next_table_name = table_name;
-		next_parent_table_name = parent_table_name;
-	}
-	else if (typeof next_path_element !== 'undefined' && next_path_element.is_relationship) {
-		next_table_name = next_path_element.table_name;
-		next_parent_table_name = table_name;
-	}
-
-
-	let schema_navigator_results:RETURN_STRUCTURE[] = [];
+	let schema_navigator_results :RETURN_STRUCTURE[] = [];
 
 	if (next_table_name !== '')
 		schema_navigator_results = navigator(
-				{
-					callbacks,
-					recursive_payload: {
-						table_name: next_table_name,
-						parent_table_name: next_parent_table_name,
-						parent_table_relationship_name: next_real_path_element_name,
-						parent_path_element_name: next_path_element_name,
-					},
-					config: {
-						use_cache,
-						cache_name,
-					},
+			{
+				callbacks,
+				recursive_payload: {
+					table_name: next_table_name,
+					parent_table_name: next_parent_table_name,
+					parent_table_relationship_name: next_real_path_element_name,
+					parent_path_element_name: next_path_element_name,
 				},
-			);
+				config: {
+					use_cache,
+					cache_name,
+				},
+			},
+		);
 
-	if (schema_navigator_results.length === 0)
-		return callbacks.get_final_data(callback_payload);
+	return schema_navigator_results.length === 0 ?
+		callbacks.get_final_data(callback_payload) :
+		schema_navigator_results;
+
+}
+
+function get_navigation_children_types(
+	parent_table_name :string,
+	parent_table_relationship_name :string,
+	parent_path_element_name :string,
+	table_name :string,
+) {
+	const parent_relationship_type :relationship_type | undefined =
+		(
+			typeof data_model_storage.tables[parent_table_name] === 'undefined' ||
+			typeof data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] === 'undefined'
+		) ? undefined :
+			(
+				data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] as data_model_relationship
+			).type;
+
+	return {
+		parent_relationship_type,
+		children_are_to_many_elements:
+			relationship_is_to_many(parent_relationship_type) &&
+			!value_is_reference_item(parent_path_element_name),
+		children_are_ranks:
+			table_is_tree(table_name) &&
+			!value_is_tree_rank(parent_path_element_name),
+	};
+}
+
+function call_navigator_instance_callbacks<RETURN_STRUCTURE>(
+	children_are_to_many_elements :boolean,
+	children_are_ranks :boolean,
+	callbacks :navigator_callbacks<RETURN_STRUCTURE>,
+	callback_payload :readonly_navigator_callback_payload,
+) {
+	if (children_are_to_many_elements)
+		callbacks.handle_to_many_children(callback_payload);
+	else if (children_are_ranks)
+		callbacks.handle_tree_ranks(callback_payload);
 	else
-		return schema_navigator_results;
-
+		callbacks.handle_simple_fields(callback_payload);
 }
 
 /* Called by navigator if callback.iterate returned true */
@@ -123,7 +208,7 @@ function navigator_instance<RETURN_STRUCTURE>({
 	cache_name = false,
 	callbacks,
 	callback_payload,
-} :navigator_instance_parameters<RETURN_STRUCTURE>) :any /* the value returned by callbacks.get_instance_data(callback_payload) */ {
+} :navigator_instance_parameters<RETURN_STRUCTURE>) :RETURN_STRUCTURE {
 
 
 	let json_payload;
@@ -139,32 +224,28 @@ function navigator_instance<RETURN_STRUCTURE>({
 		}
 	}
 
+	const {
+		parent_relationship_type,
+		children_are_to_many_elements,
+		children_are_ranks,
+	} = get_navigation_children_types(
+		parent_table_name,
+		parent_table_relationship_name,
+		parent_path_element_name,
+		table_name,
+	);
+
 	callbacks.navigator_instance_pre(callback_payload);
-
-	const parent_relationship_type =
-		(
-			typeof data_model_storage.tables[parent_table_name] !== 'undefined' &&
-			typeof data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] !== 'undefined'
-		) ? (
-			data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] as data_model_relationship
-		).type : '';
-	const children_are_to_many_elements =
-		relationship_is_to_many(parent_relationship_type) &&
-		!value_is_reference_item(parent_path_element_name);
-
-	const children_are_ranks =
-		table_is_tree(table_name) &&
-		!value_is_tree_rank(parent_path_element_name);
 
 	callback_payload.parent_relationship_type = parent_relationship_type;
 	callback_payload.parent_table_name = parent_table_name;
 
-	if (children_are_to_many_elements)
-		callbacks.handle_to_many_children(callback_payload);
-	else if (children_are_ranks)
-		callbacks.handle_tree_ranks(callback_payload);
-	else
-		callbacks.handle_simple_fields(callback_payload);
+	call_navigator_instance_callbacks(
+		children_are_to_many_elements,
+		children_are_ranks,
+		callbacks,
+		callback_payload,
+	);
 
 
 	const data = callbacks.get_instance_data(callback_payload);
@@ -186,24 +267,25 @@ function navigator_instance<RETURN_STRUCTURE>({
 * */
 export function get_mapping_line_data_from_mapping_path({
 	base_table_name,
-	mapping_path = ["0"],
+	mapping_path = ['0'],
 	open_select_element,
 	iterate = true,
-	use_cached = false,
 	generate_last_relationship_data = true,
 	custom_select_type,
-	handleChange = ()=>{},
-	handleOpen = ()=>{},
-	handleClose = ()=>{},
-	handleAutomapperSuggestionSelection = (_suggestion:string)=>{},
+	handleChange = () => {
+	},
+	handleOpen = () => {
+	},
+	handleClose = () => {
+	},
+	handleAutomapperSuggestionSelection = (_suggestion :string) => {
+	},
 	get_mapped_fields,
 	automapper_suggestions,
-	show_hidden_fields=true,
+	show_hidden_fields = true,
 } :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
 
-	use_cached=false;
-
-	if(mapping_path.length === 0)
+	if (mapping_path.length === 0)
 		throw new Error('Mapping Path is invalid');
 
 	const internal_state :get_mapping_line_data_from_mapping_path_internal_state = {
@@ -215,17 +297,24 @@ export function get_mapping_line_data_from_mapping_path({
 		is_open: false,
 	};
 
+	const first_iteration_requirement = () =>
+		iterate ||
+		mapping_path.length === 0 ||
+		internal_state.mapping_path_position + 1 === mapping_path.length;
+
+	const second_iteration_requirement = () =>
+		generate_last_relationship_data ||
+		internal_state.mapping_path_position + 1 !== mapping_path.length;
+
+	const is_field_visible = (show_hidden_fields :boolean, is_hidden :boolean, field_name :string) =>
+		show_hidden_fields ||
+		!is_hidden ||
+		field_name === internal_state.default_value; // show a default field, even if it is hidden
+
 	const callbacks :navigator_callbacks<MappingElementProps> = {
 
 		iterate: () =>
-			(
-				iterate ||
-				mapping_path.length === 0 ||
-				internal_state.mapping_path_position + 1 === mapping_path.length
-			) && (
-				generate_last_relationship_data ||
-				internal_state.mapping_path_position + 1 !== mapping_path.length
-			),
+			first_iteration_requirement() && second_iteration_requirement(),
 
 		get_next_path_element({table_name}) {
 
@@ -241,8 +330,10 @@ export function get_mapping_line_data_from_mapping_path({
 
 			const formatted_tree_rank_name = format_tree_rank(next_path_element_name);
 			const tree_rank_name = get_name_from_tree_rank_name(formatted_tree_rank_name);
-			if (table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined')
-				next_path_element_name = mapping_path[internal_state.mapping_path_position] = formatted_tree_rank_name;
+			if (table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined') {
+				next_path_element_name = formatted_tree_rank_name;
+				mapping_path[internal_state.mapping_path_position] = formatted_tree_rank_name;
+			}
 
 			let next_real_path_element_name;
 			if (value_is_tree_rank(next_path_element_name) || value_is_reference_item(next_path_element_name))
@@ -262,10 +353,10 @@ export function get_mapping_line_data_from_mapping_path({
 
 			internal_state.is_open =
 				(
-					typeof open_select_element !== "undefined" &&
-					open_select_element.index === internal_state.mapping_path_position+1
+					typeof open_select_element !== 'undefined' &&
+					open_select_element.index === internal_state.mapping_path_position + 1
 				) ||
-				['opened_list'].indexOf(internal_state.custom_select_type) !== -1
+				['opened_list'].indexOf(internal_state.custom_select_type) !== -1;
 
 			internal_state.custom_select_subtype = 'simple';
 
@@ -278,8 +369,10 @@ export function get_mapping_line_data_from_mapping_path({
 			else {
 				const formatted_tree_rank_name = format_tree_rank(internal_state.next_mapping_path_element);
 				const tree_rank_name = get_name_from_tree_rank_name(formatted_tree_rank_name);
-				if (table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined')
-					internal_state.next_mapping_path_element = mapping_path[internal_state.mapping_path_position] = formatted_tree_rank_name;
+				if (table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined') {
+					internal_state.next_mapping_path_element = formatted_tree_rank_name;
+					mapping_path[internal_state.mapping_path_position] = formatted_tree_rank_name;
+				}
 
 				internal_state.default_value = internal_state.next_mapping_path_element;
 
@@ -330,7 +423,7 @@ export function get_mapping_line_data_from_mapping_path({
 			const table_ranks = data_model_storage.ranks[table_name] as table_ranks;
 
 			internal_state.result_fields = Object.fromEntries(
-				Object.entries(table_ranks).map(([rank_name, is_required])=>[
+				Object.entries(table_ranks).map(([rank_name, is_required]) => [
 					format_tree_rank(rank_name),
 					{
 						field_friendly_name: rank_name,
@@ -340,8 +433,8 @@ export function get_mapping_line_data_from_mapping_path({
 						is_relationship: true,
 						is_default: format_tree_rank(rank_name) === internal_state.default_value,
 						table_name,
-					}
-				])
+					},
+				]),
 			);
 
 		},
@@ -350,7 +443,7 @@ export function get_mapping_line_data_from_mapping_path({
 			table_name,
 			parent_table_name,
 			parent_relationship_type,
-		}) =>
+		}) => (
 			internal_state.result_fields = Object.fromEntries(
 				Object.entries(data_model_storage.tables[table_name].fields as data_model_fields_writable).filter((
 					[
@@ -360,36 +453,25 @@ export function get_mapping_line_data_from_mapping_path({
 							type: relationship_type,
 							is_hidden,
 							foreign_name,
-							table_name: field_table_name
-						}
-					]
-				)=>
+							table_name: field_table_name,
+						},
+					],
+					) =>
 					(
 						!is_relationship ||
-						(  // skip circular relationships
-							field_table_name !== parent_table_name ||
-							(
-								(
-									typeof foreign_name === 'undefined' ||
-									typeof parent_table_name === 'undefined' ||
-									typeof data_model_storage.tables[parent_table_name].fields[foreign_name] === 'undefined' ||
-									data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name !== field_name
-								) &&
-								data_model_storage.tables[table_name].fields[field_name].foreign_name === internal_state.current_mapping_path_part
-							)
-						)
+						is_circular_relationship({  // skip circular relationships
+							target_table_name: field_table_name,
+							parent_table_name,
+							foreign_name,
+							relationship_key: field_name,
+							current_mapping_path_part: internal_state.current_mapping_path_part,
+							table_name: parent_table_name,
+						})
 					) &&
-					(
-						(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-							!relationship_is_to_many(relationship_type) ||
-							!relationship_is_to_many(parent_relationship_type)
-						) &&
-						(  // skip hidden fields when user decided to hide them
-							show_hidden_fields ||
-							!is_hidden ||
-							field_name === internal_state.default_value // show a default field, even if it is hidden
-						)
-					)
+					// skip -to-many inside -to-many  // TODO: remove this once upload plan is ready
+					!is_too_many_inside_of_too_many(relationship_type, parent_relationship_type) &&
+					// skip hidden fields when user decided to hide them
+					!is_field_visible(show_hidden_fields, is_hidden, field_name),
 				).map((
 					[
 						field_name,
@@ -398,10 +480,10 @@ export function get_mapping_line_data_from_mapping_path({
 							is_hidden,
 							is_required,
 							friendly_name,
-							table_name: field_table_name
-						}
-					]
-				)=>[
+							table_name: field_table_name,
+						},
+					],
+				) => [
 					field_name,
 					{
 						field_friendly_name: friendly_name,
@@ -413,31 +495,35 @@ export function get_mapping_line_data_from_mapping_path({
 						is_default: field_name === internal_state.default_value,
 						is_relationship,
 						table_name: field_table_name,
-					}
-				])
-			),
-
-		get_instance_data: ({table_name}) => ({
-			custom_select_type: internal_state.custom_select_type,
-			custom_select_subtype: internal_state.custom_select_subtype,
-			select_label: data_model_storage.tables[table_name].table_friendly_name,
-			fields_data: internal_state.result_fields,
-			table_name,
-			...(internal_state.is_open ?
-				{
-					is_open: true,
-					handleChange: handleChange.bind(null,internal_state.mapping_path_position+1),
-					handleClose: handleClose.bind(null,internal_state.mapping_path_position+1),
-					automapper_suggestions,
-					autoscroll: typeof open_select_element !== "undefined" && open_select_element.autoscroll,
-					handleAutomapperSuggestionSelection
-				} :
-				{
-					is_open: false,
-					handleOpen: handleOpen.bind(null,internal_state.mapping_path_position+1),
-				}
+					},
+				]),
 			)
-		}),
+		),
+
+		get_instance_data: ({table_name}) => (
+			{
+				custom_select_type: internal_state.custom_select_type,
+				custom_select_subtype: internal_state.custom_select_subtype,
+				select_label: data_model_storage.tables[table_name].table_friendly_name,
+				fields_data: internal_state.result_fields,
+				table_name,
+				...(
+					internal_state.is_open ?
+						{
+							is_open: true,
+							handleChange: handleChange.bind(null, internal_state.mapping_path_position + 1),
+							handleClose: handleClose.bind(null, internal_state.mapping_path_position + 1),
+							automapper_suggestions,
+							autoscroll: typeof open_select_element !== 'undefined' && open_select_element.autoscroll,
+							handleAutomapperSuggestionSelection,
+						} :
+						{
+							is_open: false,
+							handleOpen: handleOpen.bind(null, internal_state.mapping_path_position + 1),
+						}
+				),
+			}
+		),
 
 		commit_instance_data({data}) {
 			internal_state.mapping_line_data.push(data);
@@ -451,7 +537,7 @@ export function get_mapping_line_data_from_mapping_path({
 	return navigator<MappingElementProps>({
 		callbacks,
 		config: {
-			use_cache: use_cached,
+			use_cache: false,
 			cache_name: 'mapping_line_data',
 			base_table_name: base_table_name,
 		},

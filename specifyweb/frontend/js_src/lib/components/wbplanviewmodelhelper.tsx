@@ -1,6 +1,6 @@
 /*
 *
-* Helper methods for working with Specify data model as parsed by wbplanviewmodelfetcher
+* Helper methods for working with Specify data model as parsed by wbplanview model fetcher
 *
 * */
 
@@ -31,14 +31,22 @@ export const get_table_non_relationship_fields = (
 	table_name :string,  // the name of the table to fetch the fields for
 	filter__is_hidden :boolean | -1 = -1,  // whether field is hidden
 ) =>
-	get_table_fields(table_name, false, filter__is_hidden) as [relationship_name :string, relationship_data :data_model_non_relationship][];
+	get_table_fields(
+		table_name,
+		false,
+		filter__is_hidden
+	) as [relationship_name :string, relationship_data :data_model_non_relationship][];
 
 /* fetch relationships for a table */
 export const get_table_relationships = (
 	table_name :string,   // the name of the table to fetch relationships fields for,
 	filter__is_hidden :boolean | -1 = -1,  // whether field is hidden
 ) =>
-	get_table_fields(table_name, true, filter__is_hidden) as [relationship_name :string, relationship_data :data_model_relationship][];
+	get_table_fields(
+		table_name,
+		true,
+		filter__is_hidden
+	) as [relationship_name :string, relationship_data :data_model_relationship][];
 
 /* Returns whether a table has tree ranks */
 export const table_is_tree = (
@@ -123,7 +131,7 @@ export const format_tree_rank = (
 	data_model_storage.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase();
 
 export const mapping_path_to_string = (
-	mapping_path: mapping_path,
+	mapping_path :mapping_path,
 ) =>
 	mapping_path.join(data_model_storage.path_join_symbol);
 
@@ -131,10 +139,11 @@ export const mapping_path_to_string = (
 /* Iterates over the mappings_tree to find required fields that are missing */
 export function show_required_missing_fields(
 	table_name :string,  // Official name of the current base table (from data model)
-	mappings_tree? :mappings_tree,  // Result of running mappings.get_mappings_tree() - an object with information about currently mapped fields
-	previous_table_name :string = '',  // used internally in recursion. Previous table name
-	path :mapping_path = [],  // used internally in recursion. Current mapping path
-	results :string[][] = [],  // used internally in recursion. Saves results
+	// Result of running mappings.get_mappings_tree() - an object with information about now mapped fields
+	mappings_tree? :mappings_tree,
+	previous_table_name :string = '',  // used internally in a recursion. Previous table name
+	path :mapping_path = [],  // used internally in a recursion. Current mapping path
+	results :string[][] = [],  // used internally in a recursion. Save results
 ) :string[][] /* array of mapping paths (array) */ {
 
 	const table_data = data_model_storage.tables[table_name] as data_model_table;
@@ -146,10 +155,16 @@ export function show_required_missing_fields(
 
 	// handle -to-many references
 	if (value_is_reference_item(list_of_mapped_fields[0])) {
-		list_of_mapped_fields.forEach(mapped_field_name=>{
+		list_of_mapped_fields.forEach(mapped_field_name => {
 			const local_path = [...path, mapped_field_name];
 			if (typeof mappings_tree[mapped_field_name] !== 'undefined' && typeof mappings_tree[mapped_field_name] !== 'string')
-				show_required_missing_fields(table_name, mappings_tree[mapped_field_name] as mappings_tree, previous_table_name, local_path, results);
+				show_required_missing_fields(
+					table_name,
+					mappings_tree[mapped_field_name] as mappings_tree,
+					previous_table_name,
+					local_path,
+					results
+				);
 		});
 		return results;
 	}
@@ -168,7 +183,13 @@ export function show_required_missing_fields(
 				const local_path = [...path, complimented_rank_name];
 
 				if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-					show_required_missing_fields(table_name, mappings_tree[complimented_rank_name] as mappings_tree, previous_table_name, local_path, results);
+					show_required_missing_fields(
+						table_name,
+						mappings_tree[complimented_rank_name] as mappings_tree,
+						previous_table_name,
+						local_path,
+						results
+					);
 				else if (is_rank_required)
 					results.push(local_path);
 
@@ -178,7 +199,7 @@ export function show_required_missing_fields(
 	}
 
 	// handle regular fields and relationships
-	Object.entries(table_data.fields).some(([field_name, field_data])=>{
+	Object.entries(table_data.fields).some(([field_name, field_data]) => {
 
 		const local_path = [...path, field_name];
 
@@ -197,14 +218,15 @@ export function show_required_missing_fields(
 				)
 					previous_relationship_name = local_path.slice(-3)[0];
 
-				const parent_relationship_data = data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as data_model_relationship;
+				const parent_relationship_data =
+					data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as data_model_relationship;
 
 				if (
 					(  // disable circular relationships
 						field_data.foreign_name === previous_relationship_name &&
 						field_data.table_name === previous_table_name
 					) ||
-					(  // skip -to-many inside of -to-many
+					(  // skip -to-many inside -to-many
 						relationship_is_to_many(parent_relationship_data.type) &&
 						relationship_is_to_many(field_data.type)
 					)
@@ -214,7 +236,13 @@ export function show_required_missing_fields(
 			}
 
 			if (is_mapped)
-				show_required_missing_fields(field_data.table_name, mappings_tree[field_name] as mappings_tree, table_name, local_path, results);
+				show_required_missing_fields(
+					field_data.table_name,
+					mappings_tree[field_name] as mappings_tree,
+					table_name,
+					local_path,
+					results
+				);
 			else if (field_data.is_required)
 				results.push(local_path);
 		}
@@ -222,8 +250,49 @@ export function show_required_missing_fields(
 			results.push(local_path);
 
 
-	})
+	});
 
 	return results;
 
 }
+
+
+
+export const is_circular_relationship_forwards = ({
+	table_name,
+	relationship_key,
+	current_mapping_path_part,
+}:is_circular_relationship_forwards_props)=>
+	typeof table_name !== "undefined" &&
+	typeof relationship_key !== "undefined" &&
+	data_model_storage.tables[table_name].fields[relationship_key].foreign_name === current_mapping_path_part;
+
+export const is_circular_relationship_backwards = ({
+	foreign_name,
+	parent_table_name,
+	relationship_key,
+}:is_circular_relationship_backwards_props)=>
+	typeof foreign_name !== 'undefined' &&
+	typeof parent_table_name !== 'undefined' &&
+	typeof data_model_storage.tables[parent_table_name].fields[foreign_name] !== 'undefined' &&
+	data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name === relationship_key;
+
+export const is_circular_relationship = ({
+	target_table_name,
+	parent_table_name,
+	foreign_name,
+	relationship_key,
+	current_mapping_path_part,
+	table_name,
+}:is_circular_relationship_props)=>
+	target_table_name === parent_table_name &&
+	(
+		is_circular_relationship_backwards({parent_table_name,foreign_name,relationship_key}) ||
+		is_circular_relationship_forwards({table_name,relationship_key,current_mapping_path_part})
+	);
+
+export const is_too_many_inside_of_too_many = (type?:relationship_type, parent_type?:relationship_type)=>
+	typeof type !== "undefined" &&
+	typeof parent_type !== "undefined" &&
+	relationship_is_to_many(type) &&
+	relationship_is_to_many(parent_type);

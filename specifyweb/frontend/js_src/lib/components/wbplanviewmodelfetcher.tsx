@@ -1,6 +1,6 @@
 /*
 *
-* Fetches Specify's data model with tree ranks, parses it and saves it to an object for and easier usage across wbplanview
+* Fetches Specify data model with tree ranks, parses it and saves it to an object for and easier usage across wbplanview
 *
 * */
 
@@ -9,8 +9,8 @@
 import schema from '../schema';
 import domain from '../domain';
 
-import {get_friendly_name} from './wbplanviewhelper';
-import * as cache from './wbplanviewcache';
+import { get_friendly_name } from './wbplanviewhelper';
+import * as cache            from './wbplanviewcache';
 
 const fetching_parameters :fetching_parameters = {
 
@@ -97,6 +97,50 @@ const fetch_ranks = (
 		),
 	);
 
+const required_field_should_be_hidden = (field_name :string) =>
+	fetching_parameters.required_fields_to_hide.indexOf(field_name) !== -1;
+
+const field_should_be_made_optional = (table_name :string, field_name :string) =>
+	typeof fetching_parameters.required_fields_to_be_made_optional[table_name] !== 'undefined' &&
+	fetching_parameters.required_fields_to_be_made_optional[table_name].includes(field_name);
+
+function handle_relationship_field(
+	field :schema_model_table_field,
+	field_data :data_model_field_writable,
+	field_name :string,
+	has_relationship_with_definition :() => void,
+	has_relationship_with_definition_item :() => void,
+) :undefined | true {
+	const relationship = field as schema_model_table_relationship;
+
+	let foreign_name = relationship.otherSideName;
+	if (typeof foreign_name !== 'undefined')
+		foreign_name = foreign_name.toLowerCase();
+
+	const relationship_type = relationship.type;
+	const table_name = relationship.relatedModelName.toLowerCase();
+
+	if (field_name === 'definition') {
+		has_relationship_with_definition();
+		return;
+	}
+
+	if (field_name === 'definitionitem') {
+		has_relationship_with_definition_item();
+		return;
+	}
+
+	if (
+		relationship.readOnly ||
+		fetching_parameters.tables_to_hide.indexOf(table_name) !== -1
+	)
+		return;
+
+	field_data.table_name = table_name;
+	field_data.type = relationship_type;
+	field_data.foreign_name = foreign_name;
+}
+
 /* Fetches the data model */
 export default () :Promise<data_model_fetcher_return> =>
 	new Promise(resolve => {
@@ -135,7 +179,7 @@ export default () :Promise<data_model_fetcher_return> =>
 			)
 				return tables;
 
-			table_data.fields.some(field=>{
+			table_data.fields.some(field => {
 
 				let field_name = field.name;
 				let friendly_name = field.getLocalizedName();
@@ -149,17 +193,14 @@ export default () :Promise<data_model_fetcher_return> =>
 				let is_hidden = field.isHidden() === 1;
 
 				// required fields should not be hidden // unless they are present in this list
-				if (fetching_parameters.required_fields_to_hide.indexOf(field_name) !== -1) {
+				if (required_field_should_be_hidden(field_name)) {
 					is_required = false;
 					is_hidden = true;
 				}
 				else if (is_hidden && is_required)
 					is_hidden = false;
 
-				if (
-					typeof fetching_parameters.required_fields_to_be_made_optional[table_name] !== 'undefined' &&
-					fetching_parameters.required_fields_to_be_made_optional[table_name].includes(field_name)
-				)
+				if (field_should_be_made_optional(table_name, field_name))
 					is_required = false;
 
 				//@ts-ignore
@@ -170,38 +211,21 @@ export default () :Promise<data_model_fetcher_return> =>
 					is_relationship: field.isRelationship,
 				};
 
-				if (field_data.is_relationship) {
-
-					const relationship = field as schema_model_table_relationship;
-
-					let foreign_name = relationship.otherSideName;
-					if (typeof foreign_name !== 'undefined')
-						foreign_name = foreign_name.toLowerCase();
-
-					const relationship_type = relationship.type;
-					const table_name = relationship.relatedModelName.toLowerCase();
-
-					if (field_name === 'definition') {
-						has_relationship_with_definition = true;
-						return;
-					}
-
-					if (field_name === 'definitionitem') {
-						has_relationship_with_definition_item = true;
-						return;
-					}
-
-					if (
-						relationship.readOnly ||
-						fetching_parameters.tables_to_hide.indexOf(table_name) !== -1
+				if (
+					field_data.is_relationship &&
+					!handle_relationship_field(
+						field,
+						field_data,
+						field_name,
+						() => {
+							has_relationship_with_definition = true;
+						},
+						() => {
+							has_relationship_with_definition_item = true;
+						},
 					)
-						return;
-
-					field_data.table_name = table_name;
-					field_data.type = relationship_type;
-					field_data.foreign_name = foreign_name;
-
-				}
+				)
+					return;
 
 				fields[field_name] = field_data;
 
@@ -212,7 +236,11 @@ export default () :Promise<data_model_fetcher_return> =>
 			));
 
 
-			if (!fetching_parameters.table_keywords_to_exclude.some(table_keyword_to_exclude => table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
+			if (
+				!fetching_parameters.table_keywords_to_exclude.some(table_keyword_to_exclude =>
+					table_friendly_name.indexOf(table_keyword_to_exclude) !== -1,
+				)
+			)
 				list_of_base_tables[table_name] = table_friendly_name;
 
 			tables[table_name] = {
@@ -251,11 +279,11 @@ export default () :Promise<data_model_fetcher_return> =>
 			const ranks :data_model_ranks = Object.fromEntries(resolved);
 
 			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-			resolved.forEach(([table_name]) =>
+			resolved.forEach(([table_name]) => (
 				tables[table_name].fields = {
 					name: tables[table_name].fields['name'],
-				},
-			);
+				}
+			));
 
 			cache.set('data_model_fetcher', 'ranks', ranks);
 			resolve({

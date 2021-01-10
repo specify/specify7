@@ -13,8 +13,8 @@ interface schema_model_table_relationship extends schema_model_table_field {
 	readonly readOnly :boolean,
 }
 
-type specify_fetch = (filter:{filters: object})=>{
-	fetch:(filter:{limit:number})=>jquery_promise<domain_tree_definition_item>
+type specify_fetch = (filter :{filters :object}) => {
+	fetch :(filter :{limit :number}) => jquery_promise<domain_tree_definition_item>
 }
 
 interface schema_model_table_data {
@@ -26,12 +26,12 @@ interface schema_model_table_data {
 }
 
 interface schema_models<T> {
-	readonly [model_name:string]:T
+	readonly [model_name :string] :T
 }
 
 interface schema {
-	readonly models:schema_models<schema_model_table_data>;
-	readonly orgHierarchy: string[];
+	readonly models :schema_models<schema_model_table_data>;
+	readonly orgHierarchy :string[];
 }
 
 interface domain_tree_definition_item {

@@ -6,20 +6,20 @@
 
 'use strict';
 
-import {mapping_path_to_string} from './wbplanviewmodelhelper';
+import { mapping_path_to_string } from './wbplanviewmodelhelper';
 
 /*
-* Get a friendly name from the field. (Converts Camel Case to human readable name and fixes some errors)
+* Get a friendly name from the field. (Converts Camel Case to human-readable name and fixes some errors)
 * This method is only called if schema localization does not have a friendly name for this field
 * */
 export const get_friendly_name = (
-	name :string,  // Original field name
+	original_name :string,  // Original field name
 ) :string /* Human friendly field name */ => {
-	name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
+	let name = original_name.replace(/[A-Z]/g, letter => ` ${letter}`);
 	name = name.trim();
 	name = name.charAt(0).toUpperCase() + name.slice(1);
 
-	const regex = /([A-Z]) ([ A-Z])/g;
+	const regex = /(?<first>[A-Z]) (?<second>[ A-Z])/g;
 	const subst = `$1$2`;
 	name = name.replace(regex, subst);
 	name = name.replace(regex, subst);
@@ -47,7 +47,7 @@ export function find_array_divergence_point<T>(
 	if (source_length === 0 || source_length < search_length)
 		return -1;
 
-	Object.entries(source).forEach(([index, source_value])=>{
+	Object.entries(source).forEach(([index, source_value]) => {
 		const search_value = search[parseInt(index)];
 
 		if (typeof search_value === 'undefined')
@@ -61,10 +61,13 @@ export function find_array_divergence_point<T>(
 
 }
 
-/* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
+/*
+* Takes an array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the
+* same mapping, the indexes of the second and the third lines are returned)
+* */
 export const find_duplicate_mappings = (
 	array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
-	focused_line: number|false,
+	focused_line :number | false,
 ) :duplicate_mappings => {
 
 	const duplicate_indexes :number[] = [];
@@ -77,10 +80,10 @@ export const find_duplicate_mappings = (
 			dictionary_of_mappings.push(string_mapping_path);
 		else
 			duplicate_indexes.push(
-				focused_line && focused_line == index ?
+				focused_line && focused_line === index ?
 					dictionary_of_mappings.indexOf(string_mapping_path) :
-					index
-			)
+					index,
+			);
 
 		return dictionary_of_mappings;
 
@@ -88,4 +91,4 @@ export const find_duplicate_mappings = (
 
 	return duplicate_indexes;
 
-}
+};

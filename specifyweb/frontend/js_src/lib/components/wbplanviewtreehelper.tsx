@@ -59,7 +59,7 @@ export function array_to_tree(
 	if (array.length === 0)
 		return {};
 
-	const [node,...new_array] = array;
+	const [node, ...new_array] = array;
 
 	if (has_headers && new_array.length === 0)
 		return node;
@@ -73,7 +73,7 @@ export function array_to_tree(
 * The inverse of mappings_tree_to_array_of_mappings
 * */
 export function array_of_mappings_to_mappings_tree(
-	array_of_mappings :mapping_path[],  // array of array of strings (a.k.a branches of the tree) that are going to be merged into a tree
+	array_of_mappings :mapping_path[],  // array of strings (branches of the tree) that are going to be merged into a tree
 ) :mappings_tree  // Final tree
 /*
 * For example if array is:
@@ -107,7 +107,7 @@ export function array_of_mappings_to_mappings_tree(
 * */
 export const mappings_tree_to_array_of_mappings = (
 	mappings_tree :mappings_tree,  // mappings tree
-	path :mapping_path = [],  // used in recursion to store intermediate path
+	path :mapping_path = [],  // used in a recursion to store intermediate path
 ) :mapping_path[] /* array of arrays of string */ =>
 	/*
 	* For example, if mappings_tree is:
@@ -125,16 +125,16 @@ export const mappings_tree_to_array_of_mappings = (
 	* */
 	Object.entries(mappings_tree).reduce((result :mapping_path[], [tree_node_name, tree_node]) => {
 
-			if (typeof tree_node !== "object")
-				result.push([...path, tree_node_name, tree_node]);
-			else
-				result.push(
-					...mappings_tree_to_array_of_mappings(
-						tree_node,
-						[...path, tree_node_name]
-					)
-				);
+		if (typeof tree_node === 'object')
+			result.push(
+				...mappings_tree_to_array_of_mappings(
+					tree_node,
+					[...path, tree_node_name],
+				),
+			);
+		else
+			result.push([...path, tree_node_name, tree_node]);
 
-			return result;
+		return result;
 
 	}, []);

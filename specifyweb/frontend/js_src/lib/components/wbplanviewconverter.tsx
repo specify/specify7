@@ -13,7 +13,7 @@ import {
 	get_name_from_tree_rank_name, table_is_tree,
 	value_is_reference_item,
 	value_is_tree_rank,
-} from './wbplanviewmodelhelper';
+}                         from './wbplanviewmodelhelper';
 
 
 const upload_plan_processing_functions = (headers :string[]) :upload_plan_processing_functions => (
@@ -22,21 +22,25 @@ const upload_plan_processing_functions = (headers :string[]) :upload_plan_proces
 			key,
 			{
 				[
-					headers.indexOf(value) !== -1 ?
-						'existing_header' :
-						'new_column'
+					headers.indexOf(value) === -1 ?
+						'new_column' :
+						'existing_header'
 					]: value,
 			},
 		],
 		static: ([key, value] :[key :string, value :string]) => [
-			key, {new_static_column: value},
+			key,
+			{new_static_column: value},
 		],
-		toOne: ([key, value] :[key :string, value :upload_plan_uploadTable_toOne]) => [key, handle_uploadable(value, headers)],
+		toOne: ([key, value] :[key :string, value :upload_plan_uploadTable_toOne]) => [
+			key,
+			handle_uploadable(value, headers)
+		],
 		toMany: ([key, original_mappings] :[key :string, value :object]) => [
 			key,
-			Object.fromEntries(Object.values(original_mappings).map((mapping,index) =>
+			Object.fromEntries(Object.values(original_mappings).map((mapping, index) =>
 				[
-					format_reference_item(index+1),
+					format_reference_item(index + 1),
 					handle_upload_table(mapping, headers),
 				],
 			)),
@@ -69,7 +73,16 @@ const handle_tree_record = (upload_plan :upload_plan_treeRecord, headers :string
 const handle_upload_table_table = (upload_plan :upload_plan_uploadTable_table, headers :string[]) =>
 	Object.fromEntries(Object.entries(upload_plan).reduce(
 		// @ts-ignore
-		(results, [plan_node_name, plan_node_data] :[upload_plan_field_group_types, upload_plan_uploadTable_table_group<upload_plan_field_group_types>]) =>
+		(
+			results,
+			[
+				plan_node_name,
+				plan_node_data
+			] :[
+				upload_plan_field_group_types,
+				upload_plan_uploadTable_table_group<upload_plan_field_group_types>
+			]
+		) =>
 			[
 				...results,
 				...Object.entries(plan_node_data).map(
@@ -129,7 +142,12 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 		return {treeRecord: {ranks: final_tree}};
 	}
 
-	let table_plan :{wbcols :upload_plan_node, static :upload_plan_node, toOne :upload_plan_node, toMany? :upload_plan_node} = {
+	let table_plan :{
+		wbcols :upload_plan_node,
+		static :upload_plan_node,
+		toOne :upload_plan_node,
+		toMany? :upload_plan_node
+	} = {
 		wbcols: {},
 		static: {},
 		toOne: {},
@@ -140,7 +158,9 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 
 	let is_to_many = false;
 
-	table_plan = Object.entries(table_data).reduce((table_plan, [field_name, field_data]) => {
+	table_plan = Object.entries(table_data).reduce((original_table_plan, [field_name, field_data]) => {
+
+		let table_plan = original_table_plan;
 
 		if (value_is_reference_item(field_name)) {
 			if (!is_to_many) {
@@ -164,22 +184,8 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 
 			const field = data_model_storage.tables[table_name].fields[field_name];
 
-			if (field.is_relationship) {
-				const mapping_table = field.table_name;
-				const is_to_one = field.type === 'one-to-one' || field.type === 'many-to-one';
-
-				if (is_to_one && typeof table_plan.toOne[field_name] === 'undefined')  // @ts-ignore
-					table_plan.toOne[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table);
-
-				else {
-					if (typeof table_plan.toMany === 'undefined')
-						table_plan.toMany = {};
-
-					if (typeof table_plan.toMany[field_name] === 'undefined')  // @ts-ignore
-						table_plan.toMany[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table);
-				}
-
-			}
+			if (field.is_relationship)
+				handle_relationship_field(field,field_name, table_plan);
 			else
 				table_plan[
 					Object.entries(field_data)[0][0] === 'new_static_column' ?
@@ -204,13 +210,30 @@ function mappings_tree_to_upload_plan_table(table_data :object, table_name :stri
 
 }
 
+function handle_relationship_field(field:data_model_field_writable, field_name:string, table_plan:
+	{wbcols :upload_plan_node, static :upload_plan_node, toOne :upload_plan_node, toMany? :upload_plan_node | undefined}){
+	const mapping_table = field.table_name;
+	const is_to_one = field.type === 'one-to-one' || field.type === 'many-to-one';
+
+	if (is_to_one && typeof table_plan.toOne[field_name] === 'undefined')  // @ts-ignore
+		table_plan.toOne[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table);
+
+	else {
+		if (typeof table_plan.toMany === 'undefined')
+			table_plan.toMany = {};
+
+		if (typeof table_plan.toMany[field_name] === 'undefined')  // @ts-ignore
+			table_plan.toMany[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table);
+	}
+}
+
 /*
 * Converts mappings tree to upload plan
 * Inverse of upload_plan_to_mappings_tree
 * */
 export const mappings_tree_to_upload_plan = (
 	base_table_name :string,
-	mappings_tree :object,  // mappings tree that is going to be used
+	mappings_tree :object,  // mappings tree that will be used
 ) :string /* Upload plan as a JSON string */ =>
 	JSON.stringify({
 		baseTableName: base_table_name,

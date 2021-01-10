@@ -4,12 +4,14 @@
 type bucket_type = 'local_storage' | 'session_storage'
 
 interface set_parameters {
-	readonly bucket_type? :bucket_type,  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
+	// which storage type to use. If local_storage - use persistent storage
+	// If session_storage - data does not persist beyond the page reload
+	readonly bucket_type? :bucket_type,
 	readonly overwrite? :boolean,  // whether to overwrite the cache value if it is already present
 }
 
 interface bucket_record {
-	use_count :number,  // the number of times a particular cache value was used
+	use_count :number,  // the amount times a particular cache value was used
 	value :any  // the value that is stored in a particular cache record
 }
 

@@ -5,28 +5,28 @@ type mapping_type = Readonly<'existing_header' | 'new_column' | 'new_static_colu
 type relationship_type = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
 
 interface select_element_position {
-	readonly line: number,
-	readonly index: number,
+	readonly line :number,
+	readonly index :number,
 }
 
 interface open_select_element extends select_element_position {
-	readonly autoscroll: boolean,
+	readonly autoscroll :boolean,
 }
 
 interface select_element_onchange_position {
-	readonly line: number|'mapping_view',
-	readonly index: number,
+	readonly line :number | 'mapping_view',
+	readonly index :number,
 }
 
 interface MappingLine {
 	readonly type :mapping_type,
 	readonly name :string,
 	readonly mapping_path :mapping_path,
-	readonly is_focused? : boolean,
+	readonly is_focused? :boolean,
 }
 
 interface automapper_suggestion extends MappingPathProps {
-	mapping_path: mapping_path,
+	mapping_path :mapping_path,
 }
 
 interface WBPlanViewMapperBaseProps {
@@ -38,100 +38,102 @@ interface WBPlanViewMapperBaseProps {
 	readonly mapping_view :mapping_path,
 	readonly validation_results :mapping_path[],
 	readonly lines :MappingLine[],
-	readonly open_select_element? : open_select_element,
-	readonly focused_line? : number,
-	readonly automapper_suggestions? : automapper_suggestion[],
-	readonly autoscroll?: boolean,
+	readonly open_select_element? :open_select_element,
+	readonly focused_line? :number,
+	readonly automapper_suggestions? :automapper_suggestion[],
+	readonly autoscroll? :boolean,
 }
 
 interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
-	readonly mapper_dispatch: (action:MappingActions)=>void,
-	readonly handleSave: ()=>void,
-	readonly handleFocus: (line_index:number)=>void,
-	readonly handleMappingViewMap: ()=>void,
-	readonly handleAddNewHeader: ()=>void,
-	readonly handleAddNewStaticHeader: ()=>void,
-	readonly handleToggleHiddenFields: ()=>void,
-	readonly handleAddNewColumn: ()=>void,
-	readonly handleAddNewStaticColumn: ()=>void,
-	readonly handleAutoScrollFinish: ()=>void,
-	readonly handleOpen: handleMappingOpen
-	readonly handleClose: handleElementOpen
-	readonly handleChange: handleMappingChange,
-	readonly handleClearMapping: handleMappingLineOpen,
-	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>)=>void,
-	readonly handleAutomapperSuggestionSelection: (suggestion:string)=>void,
+	readonly mapper_dispatch :(action :MappingActions) => void,
+	readonly handleSave :() => void,
+	readonly handleFocus :(line_index :number) => void,
+	readonly handleMappingViewMap :() => void,
+	readonly handleAddNewHeader :() => void,
+	readonly handleAddNewStaticHeader :() => void,
+	readonly handleToggleHiddenFields :() => void,
+	readonly handleAddNewColumn :() => void,
+	readonly handleAddNewStaticColumn :() => void,
+	readonly handleAutoScrollFinish :() => void,
+	readonly handleOpen :handleMappingOpen
+	readonly handleClose :handleElementOpen
+	readonly handleChange :handleMappingChange,
+	readonly handleClearMapping :handleMappingLineOpen,
+	readonly handleStaticHeaderChange :(index :number, event :React.ChangeEvent<HTMLTextAreaElement>) => void,
+	readonly handleAutomapperSuggestionSelection :(suggestion :string) => void,
 }
 
 interface MappingsControlPanelProps {
-	readonly show_hidden_fields: boolean,
-	readonly handleChange: ()=>void,
-	readonly handleAddNewColumn: ()=>void,
-	readonly handleAddNewStaticColumn: ()=>void,
+	readonly show_hidden_fields :boolean,
+	readonly handleChange :() => void,
+	readonly handleAddNewColumn :() => void,
+	readonly handleAddNewStaticColumn :() => void,
 }
 
 interface FormatValidationResultsProps {
-	readonly base_table_name: string,
-	readonly validation_results: WBPlanViewMapperProps['validation_results'],
-	readonly handleSave: ()=>void
-	readonly get_mapped_fields: get_mapped_fields_bind,
+	readonly base_table_name :string,
+	readonly validation_results :WBPlanViewMapperProps['validation_results'],
+	readonly handleSave :() => void
+	readonly get_mapped_fields :get_mapped_fields_bind,
 }
 
 interface MappingViewProps {
-	readonly base_table_name : string,
-	readonly focused_line_exists: boolean,
-	readonly mapping_path: mapping_path,
-	readonly map_button_is_enabled:boolean,
-	readonly handleMapButtonClick: ()=>void
-	readonly handleMappingViewChange: handleMappingLineChange,
-	readonly get_mapped_fields: get_mapped_fields_bind,
-	readonly automapper_suggestions?:automapper_suggestion[],
+	readonly base_table_name :string,
+	readonly focused_line_exists :boolean,
+	readonly mapping_path :mapping_path,
+	readonly map_button_is_enabled :boolean,
+	readonly handleMapButtonClick :() => void
+	readonly handleMappingViewChange :handleMappingLineChange,
+	readonly get_mapped_fields :get_mapped_fields_bind,
+	readonly automapper_suggestions? :automapper_suggestion[],
 }
 
-interface mutate_mapping_path_parameters extends Omit<ChangeSelectElementValueAction,'type'> {
-	readonly lines: MappingLine[],
-	readonly mapping_view: mapping_path,
-	readonly is_relationship: boolean,
+interface mutate_mapping_path_parameters extends Omit<ChangeSelectElementValueAction, 'type'> {
+	readonly lines :MappingLine[],
+	readonly mapping_view :mapping_path,
+	readonly is_relationship :boolean,
 }
 
 type get_mapped_fields = (
-	lines: MappingLine[],
+	lines :MappingLine[],
 	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 	skip_empty? :boolean,  // whether to skip incomplete mappings
-)=>mappings_tree;
+) => mappings_tree;
 
 type get_mapped_fields_bind = (
 	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 	skip_empty? :boolean,  // whether to skip incomplete mappings
-)=>mappings_tree;
+) => mappings_tree;
 
 type path_is_mapped_bind = (
 	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
-)=>boolean;
+) => boolean;
 
 type get_mappings_tree = (
-	lines: MappingLine[],
+	lines :MappingLine[],
 	include_headers? :boolean, // whether the last tree nodes of each branch should be mapping type and header name
 	skip_empty? :boolean,  // whether to include incomplete tree nodes
-)=>mappings_tree;
+) => mappings_tree;
 
 interface get_lines_from_headers_with_automapper_params {
 	headers? :list_of_headers,
-	run_automapper:true,
-	base_table_name:string,
+	run_automapper :true,
+	base_table_name :string,
 }
 
 interface get_lines_from_headers_without_automapper_params {
 	headers? :list_of_headers,
-	run_automapper:false,
-	base_table_name?:string,
+	run_automapper :false,
+	base_table_name? :string,
 }
 
-type get_lines_from_headers_params = get_lines_from_headers_with_automapper_params | get_lines_from_headers_without_automapper_params;
+type get_lines_from_headers_params =
+	get_lines_from_headers_with_automapper_params
+	| get_lines_from_headers_without_automapper_params;
 
 interface get_automapper_suggestions_parameters extends select_element_position {
-	readonly lines: MappingLine[],
-	readonly base_table_name: string,
+	readonly lines :MappingLine[],
+	readonly base_table_name :string,
 }
 
 interface get_lines_from_upload_plan {

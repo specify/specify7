@@ -6,7 +6,7 @@
 * */
 
 //	Automapper does 2 passes though the schema whenever it is asked to map some headers
-//	This is needed in order to ensure priority mapping for some mapping paths
+//	This is needed to ensure priority mapping for some mapping paths
 //	In particular, `shortcuts` and `table_synonyms` are used on the first pass
 //	The second path goes over `synonyms` and also does string comparison (matching)
 //
@@ -15,12 +15,15 @@
 //		table_synonyms: {
 //			/*
 //			 * Table Synonyms are to be used when a table has a different name in a particular context
-//			 * Also, since automapper runs through each table only once, table synonyms can be used as a way bypass that limitation
-//			 * Besides that, even though `synonyms` and matches are normally checked in the second pass, if a table has Table Synonyms, it's `synonyms` and matches would also be checked in the first pass
+//			 * Also, since automapper runs through each table only once,
+//			 * 		table synonyms can be used as a way bypass that limitation
+//			 * Besides that, even though `synonyms` and matches are normally checked in the second pass, if a table has
+//			 * 		Table Synonyms, it's `synonyms` and matches would also be checked in the first pass
 //			 */
-//			<table_name> (case insensitive): [
+//			<table_name> (case-insensitive): [
 //				{
-//					mapping_path_filter: [<mapping_path>],  // mapping path needed to reach <table_name> with or without base table or current base table
+//					mapping_path_filter: [<mapping_path>],  // mapping path needed to reach <table_name> with or
+//															// 		without base table or current base table
 //					synonyms: [
 //						'<synonym>'
 //					]
@@ -29,29 +32,33 @@
 //		},
 //		dont_match: {
 //			/*
-//			 * Don't match list designates certain fields in particular tables as ineligible for automatic matching under certain scopes
+//			 * Don't match list designates certain fields in particular tables as ineligible for
+//			 * 		automatic matching under certain scopes
 //			 * This is helpful if certain fields are commonly matched when they should be
-//			 * Don't match list is of the highest priority and would cancel a mapping even if a shortcut or a synonym was used
+//			 * Don't match list is of the highest priority and would cancel a mapping even if a shortcut, or a synonym was used
 //			 */
-//			<table_name> (case insensitive): {
-//				<field_name> (case insensitive): [
+//			<table_name> (case-insensitive): {
+//				<field_name> (case-insensitive): [
 //					'<scope_name>'
 //				]
 //			}
 //		},
 //		shortcuts: {
 //			/*
-//			 * Shortcuts are to be used when successful header match should map to a certain mapping path rather than a field name
-//			 * Shortcuts have higher priority than synonyms and thus can also be used to map commonly confused fields before they are erroneously mapped elsewhere
-//			 * Shortcut is followed only if header matched the comparisons and there is a path to table_name from base_table_name
+//			 * Shortcuts are to be used when successful header match should map to a certain mapping path
+//			 * 		rather than a field name
+//			 * Shortcuts have higher priority than synonyms and thus can also be used to map commonly confused fields
+//			 * 		before they are erroneously mapped elsewhere
+//			 * Shortcut is followed only if header matched the comparisons and a path to table_name
+//			 * 		from base_table_name
 //			 */
-//			<table_name> (case insensitive): {
+//			<table_name> (case-insensitive): {
 //				<scope_name>: [
 //					{
 //						mapping_path: [<mapping_path>],  // mapping path to be appended to the current path when shortcut is followed
 //						headers: {
 //							<option_name>: {
-//								'<value>' (case insensitive)
+//								'<value>' (case-insensitive)
 //							}
 //						}
 //					}
@@ -59,17 +66,20 @@
 //			}
 //		},
 //		synonyms: {
-//			<table_name> (case insensitive): {
+//			<table_name> (case-insensitive): {
 //				/*
-//				 * Synonyms should be used when field_name of table_name should be mapped to a particular header, yet field label alone is not enough to guarantee a successful match
-//				 * Synonyms are helpful in situations where field name can be spelled in different ways, or may vary depending on the context
-//			 	 * Synonym is applied used only if header matched the comparisons and there is a path to table_name from base_table_name
+//				 * Synonyms should be used when field_name of table_name should be mapped to a particular header,
+//				 * 		yet field label alone is not enough to guarantee a successful match
+//				 * Synonyms are helpful in situations where field name can be spelled in different ways,
+//				 * 		or may vary depending on the context
+//			 	 * Synonym is applied used only if header matched the comparisons and a path to table_name
+//			 	 * 		from base_table_name
 //				 */
-//				<field_name> (case insensitive): {
+//				<field_name> (case-insensitive): {
 //					<scope_name>: {
 //						headers: {
 //							<option_name>: {
-//								'<value>' (case insensitive)
+//								'<value>' (case-insensitive)
 //							}
 //						},
 //					}
@@ -488,10 +498,10 @@ function definitions_to_lowercase(definitions :auto_mapper_definitions_interface
 		['shortcuts', 1],
 		['synonyms', 2],
 	];
-	structure_depth.forEach(([structure_name, depth]) =>
+	structure_depth.forEach(([structure_name, depth]) => (
 		//@ts-ignore
-		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth),
-	);
+		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth)
+	));
 
 	return Object.freeze(definitions);
 

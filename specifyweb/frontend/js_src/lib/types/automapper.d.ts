@@ -1,26 +1,33 @@
-type auto_mapper_mode = 'shortcuts_and_table_synonyms' | 'synonyms_and_matches'  // More info in json/auto_mapper_definitions.js
+type auto_mapper_mode = 'shortcuts_and_table_synonyms' | 'synonyms_and_matches'
 
 interface automapper_constructor_base_parameters {
 	readonly headers :list_of_headers,  // array of strings that represent headers
 	readonly base_table :string,  // base table name
-	readonly starting_table? :string,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
+	// starting table name (if starting mapping_path provided, starting table would be different from base table)
+	readonly starting_table? :string,
 	readonly path? :mapping_path,  // starting mapping path
-	readonly path_offset? :number,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
+	// offset on a starting path. Used when the last element of mapping path is a reference index
+	// E.x, if #1 is taken, it would try to change the index to #2
+	readonly path_offset? :number,
 	readonly allow_multiple_mappings? :boolean,  // whether to allow multiple mappings
 	readonly scope? :automapper_scope,  // scope to use for definitions. More info in json/auto_mapper_definitions.js
 }
 
 interface automapper_constructor_check_existing_parameters extends automapper_constructor_base_parameters {
-	readonly check_for_existing_mappings :true,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-	readonly path_is_mapped: path_is_mapped_bind,
+	// whether to check if the field is already mapped (outside automapper, in the mapping tree)
+	readonly check_for_existing_mappings :true,
+	readonly path_is_mapped :path_is_mapped_bind,
 }
 
 interface automapper_constructor_dont_check_existing_parameters extends automapper_constructor_base_parameters {
-	readonly check_for_existing_mappings :false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-	readonly path_is_mapped?: path_is_mapped_bind,
+	// whether to check if the field is already mapped (outside automapper, in the mapping tree)
+	readonly check_for_existing_mappings :false,
+	readonly path_is_mapped? :path_is_mapped_bind,
 }
 
-type automapper_constructor_parameters = automapper_constructor_check_existing_parameters | automapper_constructor_dont_check_existing_parameters
+type automapper_constructor_parameters =
+	automapper_constructor_check_existing_parameters
+	| automapper_constructor_dont_check_existing_parameters
 
 interface automapper_map_parameters {
 	readonly use_cache? :boolean,  // whether to use cached values
@@ -29,7 +36,7 @@ interface automapper_map_parameters {
 
 interface automapper_results extends Record<string, mapping_path[]> {
 	/*
-	* Returns mappings result in format:
+	* Returns mappings result in a format:
 	* If payload.allow_multiple_mappings:
 	* 		[
 	* 			header_name,
@@ -70,8 +77,12 @@ interface find_mappings_in_definitions_parameters {
 interface find_mappings_parameters {
 	readonly table_name :string,  // name of current table
 	readonly path :mapping_path,  // current mapping path
-	readonly parent_table_name? :string,  // parent table name. Empty if current table is a base table. Used to prevent circular relationships
-	readonly parent_relationship_type? :undefined | relationship_type,  // relationship type between parent table and current table. Empty if current table is a base table. Used to prevent mapping -to-many that are inside of -to-many (only while upload plan doesn't support such relationships)
+	// parent table name. Empty if current table is a base table. Used to prevent circular relationships
+	readonly parent_table_name? :string,
+	// relationship type between parent table and current table. Empty if current table is a base table
+	// Used to prevent mapping -to-many that are inside -to-many
+	// (only while upload plan doesn't support such relationships)
+	readonly parent_relationship_type? :undefined | relationship_type,
 }
 
 type find_mappings_queue = find_mappings_parameters[][];  // used to enforce higher priority for closer mappings
