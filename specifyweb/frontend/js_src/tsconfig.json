@@ -9,7 +9,7 @@
 		"isolatedModules": true,
 		"sourceMap": true,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"noEmit": true,
 		"esModuleInterop": true,
 		"lib": [
