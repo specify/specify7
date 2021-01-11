@@ -44,6 +44,7 @@
     "@types/node": "~14.14.10",
     "@types/papaparse": "~4.1.2",
     "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@types/underscore": "^1.10.24",
     "babel-loader": "~8.2.2",
     "babel-plugin-replace-ts-export-assignment": "~0.0.2",
