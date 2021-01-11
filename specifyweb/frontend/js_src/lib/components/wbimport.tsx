@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 
 import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
+
+import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
 const $ = require('jquery');
 const Q = require('q');
@@ -68,7 +69,9 @@ export default class WbImport extends Component<{}, WbImportState> {
 
 
     generateXLSPreview(file: File) {
-        loadXLS(file, true, (data) => this.update({type: 'GotPreviewAction', preview: data, file: file}));
+        const worker = new ImportXLSWorker();
+        worker.postMessage({file: file, previewSize: PREVIEW_SIZE});
+        worker.onmessage = ({data}) => this.update({type: 'GotPreviewAction', preview: data, file: file});
     }
 
     doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
@@ -85,13 +88,12 @@ export default class WbImport extends Component<{}, WbImportState> {
     }
 
     doImportXLS(file: File, name: string, hasHeader: boolean) {
-        const doIt = () =>
-            loadXLS(file, false, (data: string[][]) => {
-                const {rows, header} = extractHeader(data, hasHeader);
-                this.createDataset(name, header, rows);
-            });
-
-        setTimeout(doIt, 0);
+        const worker = new ImportXLSWorker();
+        worker.postMessage({file: file, previewSize: null});
+        worker.onmessage = ({data}) => {
+            const {rows, header} = extractHeader(data, hasHeader);
+            this.createDataset(name, header, rows);
+        };
     }
 
     createDataset(name: string, header: string[], data: string[][]) {
@@ -396,24 +398,6 @@ function extractHeader(data: string[][], headerInData: boolean): {rows: string[]
     const rows = headerInData ? data.slice(1) : data;
     return {rows: rows, header: header};
 }
-
-function loadXLS(file: File, forPreview: boolean, callback: (data: string[][]) => void) {
-    const reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-
-        const options: XLSX.ParsingOptions = forPreview ? {type: "binary", sheetRows: PREVIEW_SIZE} : {type: "binary"};
-	const workbook = XLSX.read(e.target?.result, options);
-
-	const first_sheet_name = workbook.SheetNames[0];
-	const first_workbook = workbook.Sheets[first_sheet_name];
-	const data: string[][] = XLSX.utils.sheet_to_json(first_workbook, {header: 1})
-            .map(row => Array.isArray(row) ? Array.from(row, v => v || "") : []);
-
-        callback(data);
-    }
-}
-
 
 function assertExhaustive(x: never): never {
     throw new Error("Non-exhaustive switch. Unhandled case:" + x);

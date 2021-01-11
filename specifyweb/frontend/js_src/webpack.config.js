@@ -23,7 +23,7 @@ module.exports = {
                 test: /\.html$/,
                 use: [{
                     loader: "underscore-template-loader",
-                    query: {
+                    options: {
                         engine: 'underscore',
                     }
                 }]
