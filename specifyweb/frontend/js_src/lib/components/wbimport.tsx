@@ -27,9 +27,20 @@ type PreviewCSVState = {type:'PreviewCSVState', preview: string[][], file: File,
 
 type PreviewXLSState = {type:'PreviewXLSState', preview: string[][], file: File, datasetName: string, hasHeader: boolean}
 
+type BadCSVState = {type: 'BadCSVState', file: File, encoding: string}
+
+type BadXLSState = {type: 'BadXLSState', file: File}
+
 type LoadingFileState = {type: 'LoadingFileState', file: File, datasetName: string}
 
-type WbImportState = FileTypeState | ChooseCSVFileState | ChooseXLSFileState | PreviewCSVState | PreviewXLSState | LoadingFileState;
+type WbImportState = FileTypeState |
+    ChooseCSVFileState |
+    ChooseXLSFileState |
+    PreviewCSVState |
+    PreviewXLSState |
+    BadCSVState |
+    BadXLSState |
+    LoadingFileState;
 
 
 
@@ -41,13 +52,22 @@ type FileSelectedAction = {type: 'FileSelectedAction', file: File}
 
 type GotPreviewAction = {type: 'GotPreviewAction', preview: string[][], file: File}
 
+type BadImportFileAction = {type: 'BadImportFileAction', file: File}
+
 type ToggleHeaderAction = {type: 'ToggleHeaderAction'}
 
 type SetDataSetNameAction  = {type: 'SetDataSetNameAction', value: string}
 
 type DoImportAction = {type: 'DoImportAction'}
 
-type Action = FileTypeAction | EncodingAction | FileSelectedAction | GotPreviewAction | ToggleHeaderAction | SetDataSetNameAction | DoImportAction;
+type Action = FileTypeAction |
+    EncodingAction |
+    FileSelectedAction |
+    GotPreviewAction |
+    BadImportFileAction |
+    ToggleHeaderAction |
+    SetDataSetNameAction |
+    DoImportAction;
 
 
 type HandleAction = (action: Action) => void;
@@ -63,7 +83,11 @@ export default class WbImport extends Component<{}, WbImportState> {
         Papa.parse(file, {
 	    encoding: encoding,
 	    preview: PREVIEW_SIZE,
-	    complete: ({data}) => this.update({type: 'GotPreviewAction', preview: data, file: file})
+	    complete: ({data}) => this.update(
+                data.length > 0
+                    ? {type: 'GotPreviewAction', preview: data, file: file}
+                    : {type: 'BadImportFileAction', file: file}
+            )
         });
     }
 
@@ -71,7 +95,11 @@ export default class WbImport extends Component<{}, WbImportState> {
     generateXLSPreview(file: File) {
         const worker = new ImportXLSWorker();
         worker.postMessage({file: file, previewSize: PREVIEW_SIZE});
-        worker.onmessage = ({data}) => this.update({type: 'GotPreviewAction', preview: data, file: file});
+        worker.onmessage = ({data}) => this.update(
+                data.length > 0
+                    ? {type: 'GotPreviewAction', preview: data, file: file}
+                    : {type: 'BadImportFileAction', file: file}
+        );
     }
 
     doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
@@ -171,11 +199,13 @@ export default class WbImport extends Component<{}, WbImportState> {
                 switch (this.state.type) {
                     case 'ChooseCSVFileState':
                     case 'PreviewCSVState':
+                    case 'BadCSVState':
                         this.generateCSVPreview(action.file, this.state.encoding);
                         break;
 
                     case 'ChooseXLSFileState':
                     case 'PreviewXLSState':
+                    case 'BadXLSState':
                         this.generateXLSPreview(action.file);
                         break;
                 }
@@ -185,6 +215,7 @@ export default class WbImport extends Component<{}, WbImportState> {
                 switch (this.state.type) {
                     case 'ChooseCSVFileState':
                     case 'PreviewCSVState':
+                    case 'BadCSVState':
                         setState({
                             type: 'PreviewCSVState',
                             preview: action.preview,
@@ -197,6 +228,7 @@ export default class WbImport extends Component<{}, WbImportState> {
 
                     case 'ChooseXLSFileState':
                     case 'PreviewXLSState':
+                    case 'BadXLSState':
                         setState({
                             type: 'PreviewXLSState',
                             preview: action.preview,
@@ -204,6 +236,22 @@ export default class WbImport extends Component<{}, WbImportState> {
                             datasetName: action.file.name.replace(/\.[^\.]*$/, ''),  // remove extentsion
                             hasHeader: true,
                         });
+                        break;
+                }
+                break;
+
+            case 'BadImportFileAction':
+                switch (this.state.type) {
+                    case 'ChooseCSVFileState':
+                    case 'PreviewCSVState':
+                    case 'BadCSVState':
+                        setState({type: 'BadCSVState', file: action.file, encoding: this.state.encoding});
+                        break;
+
+                    case 'ChooseXLSFileState':
+                    case 'PreviewXLSState':
+                    case 'BadXLSState':
+                        setState({type: 'BadXLSState', file: action.file});
                         break;
                 }
                 break;
@@ -283,6 +331,15 @@ export default class WbImport extends Component<{}, WbImportState> {
                     </>);
                 break;
 
+            case 'BadCSVState':
+                ui = (<>
+                    <SelectFileType fileType="csv" update={update} />
+                    <ChooseEncoding encoding={this.state.encoding} update={update} />
+                    <ChooseFile fileType="csv" update={update} />
+                    <p>The file {this.state.file.name} is corrupt or contains no data!</p>
+                    </>);
+                break;
+
             case 'PreviewXLSState':
                 ui = (<>
                     <SelectFileType fileType="xls" update={update} />
@@ -292,6 +349,14 @@ export default class WbImport extends Component<{}, WbImportState> {
                     <DoImportButton update={update} />
                     <h2>Preview Dataset</h2>
                     <Preview data={this.state.preview} hasHeader={this.state.hasHeader} />
+                    </>);
+                break;
+
+            case 'BadXLSState':
+                ui = (<>
+                    <SelectFileType fileType="xls" update={update} />
+                    <ChooseFile fileType="xls" update={update} />
+                    <p>The file {this.state.file.name} is corrupt or contains no data!</p>
                     </>);
                 break;
 
