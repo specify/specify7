@@ -1,8 +1,15 @@
 //Modal Dialog
-interface ModalDialogProps {
-	readonly onLoadCallback?: (dialog: JQuery<HTMLElement>) => void,
+
+interface ModalDialogBaseProps {
+	readonly children: react_elements,
+}
+
+interface ModalDialogContentProps extends ModalDialogBaseProps {
+	readonly onLoadCallback?: () => void | (() => void),
+}
+
+interface ModalDialogProps extends ModalDialogBaseProps {
+	readonly onLoadCallback?: (dialog: JQuery<HTMLElement>) => void|(()=>void),
 	readonly onCloseCallback?: () => void
-	readonly children?: react_elements
-	readonly properties?: {[key: string]: any},
-	readonly eventListenersEffect?: (dialog_ref: HTMLElement) => () => (void | (() => void))
+	readonly properties?: Readonly<Record<string,unknown>>,
 }

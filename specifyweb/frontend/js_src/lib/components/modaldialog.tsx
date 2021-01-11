@@ -7,79 +7,95 @@
 'use strict';
 
 import React               from 'react';
+import ReactDOM            from 'react-dom';
 import $                   from 'jquery';
-import { named_component } from './wbplanview';
+import { named_component } from './statemanagement';
 
+function ModalDialogContent({
+	children,
+	onLoadCallback,
+}: ModalDialogContentProps) {
+
+	onLoadCallback && React.useEffect(onLoadCallback, []);
+
+	return <>
+		{children}
+	</>;
+}
+
+function close_dialog($dialog: JQuery<HTMLElement>, resize: () => void, onCloseCallback?: () => void) {
+	if (!$dialog.is(':ui-dialog'))
+		return;
+	ReactDOM.unmountComponentAtNode($dialog[0]);
+	window.removeEventListener('resize', resize);
+	$dialog.dialog('destroy');
+	if (typeof onCloseCallback === 'function')
+		onCloseCallback();
+}
 
 export const ModalDialog = React.memo(named_component(({
 	onCloseCallback,
 	properties,
 	onLoadCallback,
-	eventListenersEffect,
 	children,
 }: ModalDialogProps) => {
+
 	const dialog_ref = React.useRef<HTMLDivElement>(null);
+	const [$dialog, setDialog] = React.useState<JQuery<HTMLElement> | undefined>();
 
 	React.useEffect(() => {
-
 		if (dialog_ref.current === null)
-			throw new Error('Modal Dialog Ref is null');
+			return;
 
-		function close_dialog() {
-			if (!dialog.is(':ui-dialog'))
-				return;
-			dialog.dialog('destroy');
-			window.removeEventListener('resize', resize);
-			if (typeof onCloseCallback === 'function')
-				onCloseCallback();
-		}
+		const dialog_element = $(dialog_ref.current.children[0] as HTMLElement);
+		const resize = () => dialog_element.dialog('option', 'position', 'center');
 
-		const dialog = $(dialog_ref.current.children[0]).dialog({
+		const close_dialog_bind = () => close_dialog(dialog_element, resize, onCloseCallback);
+
+		dialog_element.dialog({
 			modal: true,
 			width: 300,
-			close: close_dialog,
+			close: close_dialog_bind,
 			buttons: [
 				{
-					text: 'Cancel', click: close_dialog,
+					text: 'Cancel', click: close_dialog_bind,
 				},
 			],
 			...properties,
 		});
-		if (typeof onLoadCallback !== 'undefined')
-			onLoadCallback(dialog);
-
-		const resize = () => dialog.dialog('option', 'position', 'center');
-
 		window.addEventListener('resize', resize);
 
+		setDialog(dialog_element);
 
-		// jQuery modifies DOM, which stops React's event listeners from firing
-		// if we need event listeners on elements inside the modal, we need to use old school addEventListener
+		return close_dialog_bind;
 
-		if (eventListenersEffect) {
-			const event_destroy_callback = eventListenersEffect(dialog[0]);
-			return () => {
-				if (typeof event_destroy_callback === 'function')
-					event_destroy_callback();
-				close_dialog();
-			};
-		}
-		else
-			return close_dialog;
-	}, []);
+	}, [dialog_ref]);
 
-	return (
-		<div ref={dialog_ref}>
-			<div>
+	React.useEffect(() => {
+
+		if (typeof $dialog === 'undefined')
+			return;
+
+		ReactDOM.render(
+			<ModalDialogContent
+				onLoadCallback={onLoadCallback && onLoadCallback.bind(null, $dialog)}
+			>
 				{children}
-			</div>
-		</div>
-	);
+			</ModalDialogContent>,
+			$dialog[0]);
+
+	}, [$dialog, children]);
+
+	return <div ref={dialog_ref}>
+		<div />
+	</div>;
 }, 'ModalDialog'));
 
+
 //Loading Screen
-const handleOnLoad = (dialog: JQuery<HTMLElement>) =>
+function handleOnLoad(dialog: JQuery<HTMLElement>) {
 	$('.progress-bar', dialog).progressbar({value: false});
+}
 
 export const LoadingScreen = named_component(() =>
 	<ModalDialog
