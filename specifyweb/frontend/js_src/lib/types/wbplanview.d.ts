@@ -27,8 +27,7 @@ interface LoadingStateBase<T extends string> extends State<T> {
 	dispatch_action?: (action: WBPlanViewActions) => void,
 }
 
-interface LoadTemplateSelectionState extends LoadingStateBase<'LoadTemplateSelectionState'> {
-}
+type LoadTemplateSelectionState = LoadingStateBase<'LoadTemplateSelectionState'>
 
 interface NavigateBackState extends State<'NavigateBackState'> {
 	readonly wb: specify_resource,
@@ -41,8 +40,7 @@ interface LoadingState extends State<'LoadingState'> {
 	readonly dispatch_action?: WBPlanViewActions,
 }
 
-interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
-}
+type BaseTableSelectionState = State<'BaseTableSelectionState'>
 
 interface TemplateSelectionState extends State<'TemplateSelectionState'> {
 	readonly templates: upload_plan_template[],
@@ -84,8 +82,7 @@ type BaseTableSelectionActions =
 	| SelectTableAction
 	| UseTemplateAction;
 
-interface CancelTemplateSelectionAction extends Action<'CancelTemplateSelectionAction'> {
-}
+type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>
 
 interface TemplatesLoadedAction extends Action<'TemplatesLoadedAction'> {
 	readonly templates: upload_plan_template[],
@@ -95,7 +92,7 @@ type TemplateSelectionActions =
 	TemplatesLoadedAction
 	| CancelTemplateSelectionAction;
 
-interface CancelMappingAction extends Action<'CancelMappingAction'>, partialWBPlanViewProps {
+interface CancelMappingAction extends Action<'CancelMappingAction'>, publicWBPlanViewProps,partialWBPlanViewProps {
 }
 
 type CommonActions = CancelMappingAction;
@@ -106,24 +103,19 @@ interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
 	readonly upload_plan: falsy_upload_plan,
 }
 
-interface SavePlanAction extends Action<'SavePlanAction'>, publicWBPlanViewProps {
+interface SavePlanAction extends Action<'SavePlanAction'>, WBPlanViewWrapperProps,publicWBPlanViewProps {
 	readonly ignore_validation?: boolean
 }
 
-interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
-}
+type ToggleMappingViewAction = Action<'ToggleMappingViewAction'>
 
-interface ToggleMappingIsTemplatedAction extends Action<'ToggleMappingIsTemplatedAction'> {
-}
+type ToggleMappingIsTemplatedAction = Action<'ToggleMappingIsTemplatedAction'>
 
-interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'> {
-}
+type ToggleHiddenFieldsAction = Action<'ToggleHiddenFieldsAction'>
 
-interface ResetMappingsAction extends Action<'ResetMappingsAction'> {
-}
+type ResetMappingsAction = Action<'ResetMappingsAction'>
 
-interface ValidationAction extends Action<'ValidationAction'> {
-}
+type ValidationAction = Action<'ValidationAction'>
 
 interface ClearMappingLineAction extends Action<'ClearMappingLineAction'> {
 	readonly line: number,
@@ -133,23 +125,18 @@ interface FocusLineAction extends Action<'FocusLineAction'> {
 	readonly line: number,
 }
 
-interface MappingViewMapAction extends Action<'MappingViewMapAction'> {
-}
+type MappingViewMapAction = Action<'MappingViewMapAction'>
 
-interface AddNewHeaderAction extends Action<'AddNewHeaderAction'> {
-}
+type AddNewHeaderAction = Action<'AddNewHeaderAction'>
 
-interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'> {
-}
+type AddNewStaticHeaderAction = Action<'AddNewStaticHeaderAction'>
 
-interface AutoScrollFinishedAction extends Action<'AutoScrollFinishedAction'> {
-}
+type AutoScrollFinishedAction = Action<'AutoScrollFinishedAction'>
 
 interface OpenSelectElementAction extends Action<'OpenSelectElementAction'>, select_element_position {
 }
 
-interface CloseSelectElementAction extends Action<'CloseSelectElementAction'> {
-}
+type CloseSelectElementAction = Action<'CloseSelectElementAction'>
 
 interface ChangeSelectElementValueAction extends Action<'ChangeSelectElementValueAction'>,
 	select_element_onchange_position {
@@ -227,25 +214,33 @@ type WBPlanViewHeaderProps =
 	| WBPlanViewHeaderPropsMapping;
 
 
-interface WBPlanViewProps extends publicWBPlanViewProps {
+interface WBPlanViewProps extends WBPlanViewWrapperProps,publicWBPlanViewProps {
 	readonly upload_plan: falsy_upload_plan,
 	readonly headers: string[],
 }
 
 interface partialWBPlanViewProps {
-	readonly wb: specify_resource,
-	readonly removeUnloadProtect: () => void,
+	readonly remove_unload_protect: () => void,
 }
 
-interface publicWBPlanViewProps extends partialWBPlanViewProps {
-	readonly wbtemplatePromise: jquery_promise<specify_resource>,
-	readonly mapping_is_templated: boolean,
+interface WBPlanViewWrapperProps extends partialWBPlanViewProps,publicWBPlanViewProps {
+	wb_template_promise: jquery_promise<specify_resource>,
+	mapping_is_templated: boolean,
+}
+
+interface publicWBPlanViewProps {
+	wb: specify_resource,
+}
+
+interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps, publicWBPlanViewProps,ReactBackboneExtendBaseProps {
+	header: HTMLElement,
+	handle_resize: () => void,
 }
 
 //render wrappers
 interface HeaderWrapperProps {
 	readonly children: react_elements,
-	readonly header: react_element,
+	readonly header: JSX.Element,
 	readonly state_name: WBPlanViewStates['type'],
 	readonly handleClick?: handleElementOpen,
 }

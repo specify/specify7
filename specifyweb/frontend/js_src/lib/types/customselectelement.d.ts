@@ -68,7 +68,7 @@ interface CustomSelectElementIconProps {
 	readonly is_default?: boolean,  // whether the option is now selected
 	readonly table_name?: string,  // the name of the table this option represents
 	// the name of the option. Would be used as a label (visible to the user)
-	readonly option_label?: string | react_element,
+	readonly option_label?: string | JSX.Element,
 	// True if option can be selected. False if option cannot be selected because it was already selected
 	readonly is_enabled?: boolean,
 }
@@ -79,7 +79,7 @@ interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
 
 interface CustomSelectElementDefaultOptionProps {
 	readonly option_name: string
-	readonly option_label: string | react_element
+	readonly option_label: string | JSX.Element
 	readonly table_name?: string
 	readonly is_relationship?: boolean
 }
@@ -115,7 +115,7 @@ interface CustomSelectElementPropsBase {
 	readonly handleClose?: () => void,
 	readonly autoscroll?: boolean,
 	readonly custom_select_option_groups?: CustomSelectElementOptionGroups,
-	readonly automapper_suggestions?: react_element,
+	readonly automapper_suggestions?: JSX.Element,
 }
 
 interface CustomSelectElementPropsClosed extends CustomSelectElementPropsBase {
@@ -134,7 +134,7 @@ interface CustomSelectElementPropsOpenBase extends CustomSelectElementPropsBase 
 interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase {
 	// list of option group objects. See custom_select_element.get_select_group_html() for more info
 	readonly custom_select_option_groups: CustomSelectElementOptionGroups,
-	readonly automapper_suggestions?: react_element,
+	readonly automapper_suggestions?: JSX.Element,
 }
 
 type CustomSelectElementProps = CustomSelectElementPropsClosed | CustomSelectElementPropsOpen;

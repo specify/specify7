@@ -12,7 +12,7 @@ const schema = require('./schema.js');
 const app = require('./specifyapp.js');
 const WBName = require('./wbname.js');
 const navigation = require('./navigation.js');
-const WBUploadedView = require('./wbuploadedview.js');
+const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
 
@@ -30,6 +30,7 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-toggle-highlights': 'toggleHighlights',
+        'click .wb-show-upload-view':'displayUploadedView'
     },
     initialize({wb, data, initialStatus, plan}) {
         this.wb = wb;
@@ -161,6 +162,27 @@ const WBView = Backbone.View.extend({
 
         this.updateCellInfos();
     },
+    displayUploadedView(){
+
+        if (!this.uploaded)
+            return;
+
+        const upload_view = this.$el.find('.wb-upload-view')[0];
+
+        if (upload_view.children.length !== 0)
+            return;
+
+        upload_view.innerHTML = '<div></div>';
+        const container = upload_view.children[0];
+
+        new WBUploadedView({
+            wb: this.wb,
+            hot: this.hot,
+            uploadResults: this.uploadResults,
+            openStatus: this.openStatus.bind(this),
+            el: container,
+        }).render();
+    },
     updateCellInfos() {
         const cellCounts = {
             new_cells: this.wbutils.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
@@ -173,15 +195,6 @@ const WBView = Backbone.View.extend({
             const navigation_type = navigation_total_element.parentElement.getAttribute('data-navigation_type');
             navigation_total_element.innerText = cellCounts[navigation_type];
         });
-
-        if(this.uploaded)
-            new WBUploadedView({
-                wb: this.wb,
-                hot: this.hot,
-                uploadResults: this.uploadResults,
-                openStatus: this.openStatus.bind(this),
-                el: this.$el
-            }).render();
 
         this.hot.render();
     },

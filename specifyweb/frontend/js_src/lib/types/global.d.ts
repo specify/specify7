@@ -6,5 +6,4 @@ interface State<state_name extends string> {
 	type: state_name
 }
 
-type react_element = JSX.Element;
-type react_elements = react_element | react_element[] | string;
+type react_elements = JSX.Element | JSX.Element[] | string;
