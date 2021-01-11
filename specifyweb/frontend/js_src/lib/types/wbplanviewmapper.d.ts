@@ -86,6 +86,7 @@ interface MappingViewProps {
 	readonly handleMappingViewChange: handleMappingLineChange,
 	readonly get_mapped_fields: get_mapped_fields_bind,
 	readonly automapper_suggestions?: automapper_suggestion[],
+	readonly show_hidden_fields?: boolean,
 }
 
 interface mutate_mapping_path_parameters extends Omit<ChangeSelectElementValueAction, 'type'> {

@@ -7,7 +7,6 @@
 
 'use strict';
 
-import * as cache         from './wbplanviewcache';
 import {
 	value_is_reference_item,
 	value_is_tree_rank,
@@ -23,7 +22,7 @@ import data_model_storage from './wbplanviewmodel';
 
 function find_next_navigation_direction<RETURN_STRUCTURE>(
 	callbacks: navigator_callbacks<RETURN_STRUCTURE>,
-	callback_payload: readonly_navigator_callback_payload,
+	callback_payload: readonly_navigator_callback_payload<RETURN_STRUCTURE>,
 	table_name: string,
 	parent_table_name: string,
 ): find_next_navigation_direction<RETURN_STRUCTURE> {
@@ -35,7 +34,7 @@ function find_next_navigation_direction<RETURN_STRUCTURE>(
 			final_data: callbacks.get_final_data(callback_payload),
 		};
 
-	let {
+	const {
 		next_path_element_name,
 		next_path_element,
 		next_real_path_element_name,
@@ -72,8 +71,6 @@ export function navigator<RETURN_STRUCTURE>({
 	callbacks,
 	recursive_payload = undefined,
 	config: {
-		use_cache = false,
-		cache_name,
 		base_table_name,
 	},
 }: navigator_parameters<RETURN_STRUCTURE>): RETURN_STRUCTURE[] {
@@ -109,8 +106,6 @@ export function navigator<RETURN_STRUCTURE>({
 			parent_table_name,
 			parent_table_relationship_name,
 			parent_path_element_name,
-			use_cache,
-			cache_name,
 			callbacks,
 			callback_payload,
 		});
@@ -146,8 +141,6 @@ export function navigator<RETURN_STRUCTURE>({
 					parent_path_element_name: next_path_element_name,
 				},
 				config: {
-					use_cache,
-					cache_name,
 				},
 			},
 		);
@@ -188,7 +181,7 @@ function call_navigator_instance_callbacks<RETURN_STRUCTURE>(
 	children_are_to_many_elements: boolean,
 	children_are_ranks: boolean,
 	callbacks: navigator_callbacks<RETURN_STRUCTURE>,
-	callback_payload: readonly_navigator_callback_payload,
+	callback_payload: readonly_navigator_callback_payload<RETURN_STRUCTURE>,
 ) {
 	if (children_are_to_many_elements)
 		callbacks.handle_to_many_children(callback_payload);
@@ -204,25 +197,10 @@ function navigator_instance<RETURN_STRUCTURE>({
 	parent_table_name = '',
 	parent_table_relationship_name = '',
 	parent_path_element_name = '',
-	use_cache = false,
-	cache_name = false,
 	callbacks,
 	callback_payload,
 }: navigator_instance_parameters<RETURN_STRUCTURE>): RETURN_STRUCTURE {
 
-
-	let json_payload;
-
-	if (cache_name !== false)
-		json_payload = JSON.stringify(arguments[0]);
-
-	if (use_cache && cache_name && json_payload) {
-		const cached_data = cache.get(cache_name, json_payload);
-		if (cached_data) {
-			callback_payload.data = cached_data;
-			return callbacks.commit_instance_data(callback_payload);
-		}
-	}
 
 	const {
 		parent_relationship_type,
@@ -252,11 +230,6 @@ function navigator_instance<RETURN_STRUCTURE>({
 	callback_payload.data = data;
 	callbacks.commit_instance_data(callback_payload);
 
-	if (cache_name !== false && json_payload)
-		cache.set(cache_name, json_payload, data, {
-			bucket_type: 'session_storage',
-		});
-
 	return data;
 
 }
@@ -272,14 +245,10 @@ export function get_mapping_line_data_from_mapping_path({
 	iterate = true,
 	generate_last_relationship_data = true,
 	custom_select_type,
-	handleChange = () => {
-	},
-	handleOpen = () => {
-	},
-	handleClose = () => {
-	},
-	handleAutomapperSuggestionSelection = (_suggestion: string) => {
-	},
+	handleChange,
+	handleOpen,
+	handleClose,
+	handleAutomapperSuggestionSelection,
 	get_mapped_fields,
 	automapper_suggestions,
 	show_hidden_fields = true,
@@ -420,7 +389,7 @@ export function get_mapping_line_data_from_mapping_path({
 		handle_tree_ranks({table_name}) {
 
 			internal_state.custom_select_subtype = 'tree';
-			const table_ranks = data_model_storage.ranks[table_name] as table_ranks;
+			const table_ranks = data_model_storage.ranks[table_name] ;
 
 			internal_state.result_fields = Object.fromEntries(
 				Object.entries(table_ranks).map(([rank_name, is_required]) => [
@@ -445,7 +414,7 @@ export function get_mapping_line_data_from_mapping_path({
 			parent_relationship_type,
 		}) => (
 			internal_state.result_fields = Object.fromEntries(
-				Object.entries(data_model_storage.tables[table_name].fields as data_model_fields_writable).filter((
+				Object.entries(data_model_storage.tables[table_name].fields).filter((
 					[
 						field_name,
 						{
@@ -511,21 +480,23 @@ export function get_mapping_line_data_from_mapping_path({
 					internal_state.is_open ?
 						{
 							is_open: true,
-							handleChange: handleChange.bind(null, internal_state.mapping_path_position + 1),
-							handleClose: handleClose.bind(null, internal_state.mapping_path_position + 1),
+							handleChange: handleChange && handleChange.bind(null, internal_state.mapping_path_position + 1),
+							handleClose: handleClose && handleClose.bind(null, internal_state.mapping_path_position + 1),
 							automapper_suggestions,
 							autoscroll: typeof open_select_element !== 'undefined' && open_select_element.autoscroll,
 							handleAutomapperSuggestionSelection,
 						} :
 						{
 							is_open: false,
-							handleOpen: handleOpen.bind(null, internal_state.mapping_path_position + 1),
+							handleOpen: handleOpen && handleOpen.bind(null, internal_state.mapping_path_position + 1),
 						}
 				),
 			}
 		),
 
 		commit_instance_data({data}) {
+			if(typeof data === "undefined")
+				throw new Error('No data to commit to navigator\'s state');
 			internal_state.mapping_line_data.push(data);
 			return data;
 		},
@@ -537,8 +508,6 @@ export function get_mapping_line_data_from_mapping_path({
 	return navigator<MappingElementProps>({
 		callbacks,
 		config: {
-			use_cache: false,
-			cache_name: 'mapping_line_data',
 			base_table_name: base_table_name,
 		},
 	});

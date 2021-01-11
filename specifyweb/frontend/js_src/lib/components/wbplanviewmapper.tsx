@@ -27,7 +27,7 @@ import { mappings_tree_to_upload_plan, upload_plan_to_mappings_tree } from './wb
 import React                                                          from 'react';
 import { named_component }                                            from './wbplanview';
 
-const max_suggestions_count: number = 3;  // the maximum amount suggestions to show in the suggestions box
+const max_suggestions_count = 3;  // the maximum amount suggestions to show in the suggestions box
 
 const MappingsControlPanel = React.memo(named_component(({
 	show_hidden_fields,
@@ -84,7 +84,11 @@ export const go_back = (props: partialWBPlanViewProps): LoadingState => (
 	}
 );
 
-export function save_plan(props: publicWBPlanViewProps, state: MappingState, ignore_validation = false) {
+export function save_plan(
+	props: publicWBPlanViewProps,
+	state: MappingState,
+	ignore_validation = false,
+): LoadingState | MappingState {
 	const validation_results_state = validate(state);
 	if (!ignore_validation && validation_results_state.validation_results.length !== 0)
 		return validation_results_state;
@@ -97,7 +101,7 @@ export function save_plan(props: publicWBPlanViewProps, state: MappingState, ign
 		props.wb.save();  // Since the function has side effects, calling props.wb.save() second time causes an exception
 	}
 	catch (e) {
-
+		console.log('React called `save_plan()` function twice');
 	}
 
 	props.removeUnloadProtect();
@@ -206,7 +210,7 @@ export function get_lines_from_upload_plan(
 
 const get_array_of_mappings = (
 	lines: MappingLine[],
-	include_headers: boolean = false,
+	include_headers = false,
 ): mapping_path[] =>
 	lines.filter(({mapping_path}) =>
 		mapping_path_is_complete(mapping_path),
@@ -218,7 +222,7 @@ const get_array_of_mappings = (
 
 export const get_mappings_tree: get_mappings_tree = (
 	lines,
-	include_headers: boolean = false,
+	include_headers = false,
 ): mappings_tree =>
 	array_of_mappings_to_mappings_tree(
 		get_array_of_mappings(lines, include_headers),
@@ -239,11 +243,11 @@ export const get_mapped_fields: get_mapped_fields = (
 		return mappings_tree;
 };
 
-export const path_is_mapped = (lines: MappingLine[], mapping_path: mapping_path) =>
+export const path_is_mapped = (lines: MappingLine[], mapping_path: mapping_path): boolean =>
 	Object.keys(get_mapped_fields(lines, mapping_path.slice(0, -1))).indexOf(mapping_path.slice(-1)[0]) !== -1;
 
 
-export const mapping_path_is_complete = (mapping_path: mapping_path) =>
+export const mapping_path_is_complete = (mapping_path: mapping_path): boolean =>
 	mapping_path[mapping_path.length - 1] !== '0';
 
 /* Unmap headers that have a duplicate mapping path */
@@ -359,6 +363,7 @@ const MappingView = React.memo(named_component((props: MappingViewProps) =>
 					custom_select_type: 'opened_list',
 					handleChange: props.handleMappingViewChange,
 					get_mapped_fields: props.get_mapped_fields,
+					show_hidden_fields: props.show_hidden_fields,
 				})}
 			/>
 		</div>
@@ -437,6 +442,7 @@ export default named_component((props: WBPlanViewMapperProps) => {
 						base_table_name={props.base_table_name}
 						focused_line_exists={typeof props.focused_line !== 'undefined'}
 						mapping_path={props.mapping_view}
+						show_hidden_fields={props.show_hidden_fields}
 						map_button_is_enabled={
 							mapping_path_is_complete(props.mapping_view) &&
 							typeof props.focused_line !== 'undefined'

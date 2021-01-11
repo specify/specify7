@@ -84,8 +84,7 @@ interface CustomSelectElementDefaultOptionProps {
 	readonly is_relationship?: boolean
 }
 
-interface CustomSelectElementOptions extends Record<string, CustomSelectElementOptionProps> {
-}
+type CustomSelectElementOptions = Record<string, CustomSelectElementOptionProps>
 
 interface CustomSelectElementOptionGroupProps {
 	readonly select_group_name?: string,  // group's name (used for styling)
@@ -99,8 +98,7 @@ interface ShadowListOfOptionsProps {
 	readonly field_names: string[],
 }
 
-interface CustomSelectElementOptionGroups extends Record<string, CustomSelectElementOptionGroupProps> {
-}
+type CustomSelectElementOptionGroups = Record<string, CustomSelectElementOptionGroupProps>
 
 interface CustomSelectElementPropsBase {
 	readonly select_label?: string,  // the label to use for the element
@@ -122,7 +120,7 @@ interface CustomSelectElementPropsBase {
 
 interface CustomSelectElementPropsClosed extends CustomSelectElementPropsBase {
 	readonly is_open: false,
-	readonly handleOpen: handleElementOpen,
+	readonly handleOpen?: handleElementOpen,
 	readonly field_names: string[],
 }
 
