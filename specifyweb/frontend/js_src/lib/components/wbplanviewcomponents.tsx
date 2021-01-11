@@ -8,7 +8,7 @@
 
 import React                                  from 'react';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import { named_component }                    from './wbplanview';
+import { named_component }                    from './statemanagement';
 
 /* Generates a list of tables */
 export const ListOfBaseTables = React.memo(named_component(({

@@ -19,13 +19,14 @@ import {
 	value_is_tree_rank,
 	value_is_reference_item,
 	get_max_to_many_value,
-	format_reference_item, show_required_missing_fields,
+	format_reference_item,
+	show_required_missing_fields,
 }                                                                     from './wbplanviewmodelhelper';
 import { get_mapping_line_data_from_mapping_path }                    from './wbplanviewnavigator';
 import automapper                                                     from './automapper';
 import { mappings_tree_to_upload_plan, upload_plan_to_mappings_tree } from './wbplanviewconverter';
 import React                                                          from 'react';
-import { named_component }                                            from './wbplanview';
+import { named_component }                                            from './statemanagement';
 
 const max_suggestions_count = 3;  // the maximum amount suggestions to show in the suggestions box
 
@@ -60,7 +61,6 @@ function FormatValidationResults(props: FormatValidationResultsProps) {
 					mapping_line_data={get_mapping_line_data_from_mapping_path({
 						base_table_name: props.base_table_name,
 						mapping_path: field_path,
-						use_cached: true,
 						generate_last_relationship_data: false,
 						custom_select_type: 'preview_list',
 						get_mapped_fields: props.get_mapped_fields,
@@ -74,7 +74,7 @@ function FormatValidationResults(props: FormatValidationResultsProps) {
 	</div>;
 }
 
-export const go_back = (props: partialWBPlanViewProps): LoadingState => (
+export const go_back = (props: publicWBPlanViewProps): LoadingState => (
 	{
 		type: 'LoadingState',
 		loading_state: {
@@ -85,7 +85,7 @@ export const go_back = (props: partialWBPlanViewProps): LoadingState => (
 );
 
 export function save_plan(
-	props: publicWBPlanViewProps,
+	props: WBPlanViewWrapperProps,
 	state: MappingState,
 	ignore_validation = false,
 ): LoadingState | MappingState {
@@ -94,7 +94,7 @@ export function save_plan(
 		return validation_results_state;
 
 	props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
-	props.wbtemplatePromise.done(wbtemplate =>
+	props.wb_template_promise.done(wbtemplate =>
 		wbtemplate.set('remarks', mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true))),
 	);
 	try {  // react may call `save_plan` multiple times
@@ -104,7 +104,7 @@ export function save_plan(
 		console.log('React called `save_plan()` function twice');
 	}
 
-	props.removeUnloadProtect();
+	props.remove_unload_protect();
 	return go_back(props);
 }
 
@@ -342,7 +342,6 @@ export const get_automapper_suggestions = ({
 				mapping_line_data: get_mapping_line_data_from_mapping_path({
 					base_table_name,
 					mapping_path: automapper_result,
-					use_cached: true,
 					custom_select_type: 'suggestion_line_list',
 					get_mapped_fields: get_mapped_fields.bind(null, lines),
 				}).slice(base_mapping_path.length - path_offset),
@@ -358,7 +357,6 @@ const MappingView = React.memo(named_component((props: MappingViewProps) =>
 				mapping_line_data={get_mapping_line_data_from_mapping_path({
 					base_table_name: props.base_table_name,
 					mapping_path: props.mapping_path,
-					use_cached: true,
 					generate_last_relationship_data: true,
 					custom_select_type: 'opened_list',
 					handleChange: props.handleMappingViewChange,
@@ -470,7 +468,6 @@ export default named_component((props: WBPlanViewMapperProps) => {
 						get_mapping_line_data_from_mapping_path({
 							base_table_name: props.base_table_name,
 							mapping_path: mapping_path,
-							use_cached: true,
 							generate_last_relationship_data: true,
 							custom_select_type: 'closed_list',
 							handleChange: props.handleChange.bind(null, index),

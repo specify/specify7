@@ -6,13 +6,13 @@
 
 'use strict';
 
-import React                                   from 'react';
+import React                                                    from 'react';
 import '../../css/wbplanview.css';
-import _                                       from 'underscore';
-import navigation                              from '../navigation';
-import * as cache                              from './wbplanviewcache';
-import schema                                  from '../schema';
-import fetch_data_model                        from './wbplanviewmodelfetcher';
+import _                                                        from 'underscore';
+import navigation                                               from '../navigation';
+import * as cache                                               from './wbplanviewcache';
+import schema                                                   from '../schema';
+import fetch_data_model                                         from './wbplanviewmodelfetcher';
 import WBPlanViewMapper, {
 	deduplicate_mappings,
 	get_automapper_suggestions,
@@ -23,21 +23,15 @@ import WBPlanViewMapper, {
 	mutate_mapping_path,
 	save_plan,
 	validate,
-}                                              from './wbplanviewmapper';
-import ErrorBoundary                           from './errorboundary';
-import { LoadingScreen, ModalDialog }          from './modaldialog';
-import data_model_storage                      from './wbplanviewmodel';
-import { ListOfBaseTables }                    from './wbplanviewcomponents';
-import { generate_dispatch, generate_reducer } from './statemanagement';
+}                                                               from './wbplanviewmapper';
+import { LoadingScreen, ModalDialog }                           from './modaldialog';
+import data_model_storage                                       from './wbplanviewmodel';
+import { ListOfBaseTables }                                     from './wbplanviewcomponents';
+import { generate_dispatch, generate_reducer, named_component } from './statemanagement';
+import createBackboneView                                       from './reactbackboneextend';
 
-let schema_fetched_promise = fetch_data_model();
+const schema_fetched_promise = fetch_data_model();
 
-// assignees names to components so that they easier to identify in the inspector and profiler
-export function named_component<T>(component_function: T, component_name: string): T {
-	// @ts-ignore
-	component_function.displayName = component_name;
-	return component_function;
-}
 
 const WBPlanViewHeaderLeftMappingElements = named_component(({
 	handleTableChange,
@@ -314,7 +308,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 		if (
 			!mapping_path_is_complete(mapping_view_mapping_path) ||
 			typeof focused_line === 'undefined' ||
-			focused_line! >= mapping_state(state).lines.length
+			focused_line >= mapping_state(state).lines.length
 		)
 			return state;
 
@@ -493,7 +487,9 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 						}
 					)),
 				}),
-			),
+			).catch(error => {
+				throw error;
+			}),
 		);
 	},
 	'NavigateBackState': state =>  // need to make the `Loading` dialog appear before the `Leave Page?` dialog
@@ -505,7 +501,9 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 		if (typeof state.loading_state !== 'undefined')
 			Promise.resolve('').then(() =>
 				loading_state_dispatch(state.loading_state!),
-			);
+			).catch(error => {
+				throw error;
+			});
 		if (typeof state.dispatch_action !== 'undefined')
 			state.dispatch(state.dispatch_action);
 		return <LoadingScreen />;
@@ -519,7 +517,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 				handleCancel={() => state.dispatch({
 					type: 'CancelMappingAction',
 					wb: state.props.wb,
-					removeUnloadProtect: state.props.removeUnloadProtect,
+					remove_unload_protect: state.props.remove_unload_protect,
 				})}
 				handleUseTemplate={() => state.dispatch({type: 'UseTemplateAction', dispatch: state.dispatch})}
 			/>
@@ -543,35 +541,16 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 				type: 'OpenBaseTableSelectionAction',
 				referrer: state.type,
 			})}
-			eventListenersEffect={(dialog) => {
-				// jQuery modifies DOM, which stops React's event listeners from firing
-				// if we need event listeners on elements inside the modal, we need to use old school addEventListener
-
-				const click_callback = (event: Event) => {
-
-					if (!event.target)
-						return;
-					const target = event.target as HTMLElement;
-					const a = target.closest('a');
-					if (!a || !a.parentNode)
-						return;
-
-					const index = Array.prototype.indexOf.call(a.parentNode.childNodes, a);
-					const upload_plan = state.templates[index].upload_plan;
-					state.dispatch({
-						type: 'OpenMappingScreenAction',
-						upload_plan,
-						mapping_is_templated: state.props.mapping_is_templated,
-						headers: state.props.headers,
-					});
-				};
-
-				dialog.addEventListener('click', click_callback);
-				return () => dialog.removeEventListener('click', click_callback);
-			}}
 		>{
 			state.templates.map(({dataset_name}, index) =>
-				<a key={index}>{dataset_name}</a>,
+				<a key={index} onClick={() =>
+					state.dispatch({
+						type: 'OpenMappingScreenAction',
+						upload_plan: state.templates[index].upload_plan,
+						mapping_is_templated: state.props.mapping_is_templated,
+						headers: state.props.headers,
+					})
+				}>{dataset_name}</a>,
 			)
 		}</ModalDialog>,
 	'MappingState': (_, state) => {
@@ -581,12 +560,14 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					type: 'AutomapperSuggestionsLoadedAction',
 					automapper_suggestions: automapper_suggestions,
 				}),
-			);
+			).catch(error => {
+				throw error;
+			});
 		const handleSave = (ignore_validation: boolean) => state.dispatch({
 			type: 'SavePlanAction',
 			wb: state.props.wb,
-			removeUnloadProtect: state.props.removeUnloadProtect,
-			wbtemplatePromise: state.props.wbtemplatePromise,
+			remove_unload_protect: state.props.remove_unload_protect,
+			wb_template_promise: state.props.wb_template_promise,
 			mapping_is_templated: state.mapping_is_templated,
 			ignore_validation,
 		});
@@ -600,7 +581,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					handleCancel={() => state.dispatch({
 						type: 'CancelMappingAction',
 						wb: state.props.wb,
-						removeUnloadProtect: state.props.removeUnloadProtect,
+						remove_unload_protect: state.props.remove_unload_protect,
 					})}
 					handleTableChange={() => state.dispatch({type: 'OpenBaseTableSelectionAction'})}
 					handleToggleMappingView={() => state.dispatch({type: 'ToggleMappingViewAction'})}
@@ -671,7 +652,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 
 function WBPlanView(props: WBPlanViewProps) {
 
-	const [state, dispatch]: [WBPlanViewStates, (action: WBPlanViewActions) => void] = React.useReducer(
+	const [state, dispatch] = React.useReducer(
 		reducer,
 		{
 			upload_plan: props.upload_plan,
@@ -689,7 +670,7 @@ function WBPlanView(props: WBPlanViewProps) {
 
 }
 
-export default named_component((props: publicWBPlanViewProps): react_element => {
+function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 
 	const [schema_loaded, setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== 'undefined');
 	const [upload_plan, setUploadPlan] = React.useState<falsy_upload_plan>();
@@ -701,10 +682,12 @@ export default named_component((props: publicWBPlanViewProps): react_element => 
 			data_model_storage.list_of_base_tables = schema.list_of_base_tables;
 			data_model_storage.ranks = schema.ranks;
 			setSchemaLoaded(true);
+		}).catch(error => {
+			throw error;
 		});
 
 	if (typeof upload_plan === 'undefined')
-		props.wbtemplatePromise.done(wbtemplate => {
+		props.wb_template_promise.done(wbtemplate => {
 			setUploadPlan(upload_plan_string_to_object(wbtemplate.get('remarks')));
 			wbtemplate.rget('workbenchtemplatemappingitems').done(mappings =>
 				setHeaders(
@@ -719,20 +702,59 @@ export default named_component((props: publicWBPlanViewProps): react_element => 
 			);
 		});
 
-	const loading_finished =
+	if (
 		typeof upload_plan === 'undefined' ||
 		typeof headers === 'undefined' ||
-		!schema_loaded;
-
-	return <React.StrictMode>
-		<ErrorBoundary>{loading_finished
-		&&
-		<LoadingScreen /> ||
-		<WBPlanView
+		!schema_loaded
+	)
+		return <LoadingScreen />;
+	else
+		return <WBPlanView
 			{...props}
-			upload_plan={upload_plan!}
-			headers={headers!}
-		/>
-		}</ErrorBoundary>
-	</React.StrictMode>;
-}, 'WBPlanViewWrapper');
+			upload_plan={upload_plan}
+			headers={headers}
+		/>;
+}
+
+
+const handle_resize = (self: WBPlanViewBackboneProps) =>
+	self.el.style.setProperty('--menu_size', `${Math.ceil(self.header.clientHeight)}px`);
+
+const remove_unload_protect = (self: WBPlanViewBackboneProps) =>
+	navigation.removeUnloadProtect(self);
+
+export default createBackboneView<publicWBPlanViewProps, WBPlanViewBackboneProps, WBPlanViewWrapperProps>({
+	module_name: 'WBPlanView',
+	class_name: 'wb-plan-view',
+	initialize(self, {wb}) {
+		self.wb = wb;
+		self.wb_template_promise = self.wb.rget('workbenchtemplate') as jquery_promise<specify_resource>;
+		self.mapping_is_templated = self.wb.get('ownerPermissionLevel') === 1;
+		const header = document.getElementById('site-header');
+		if (header === null)
+			throw new Error(`Can't find site's header`);
+		self.header = header;
+		self.handle_resize = handle_resize.bind(null, self);
+	},
+	render_pre(self) {
+		navigation.addUnloadProtect(self, 'This mapping has not been saved.');
+		self.el.classList.add('wbplanview');
+	},
+	render_post(self) {
+		self.handle_resize();
+		window.addEventListener('resize', self.handle_resize);
+	},
+	remove(self) {
+		window.removeEventListener('resize', self.handle_resize);
+		remove_unload_protect(self);
+	},
+	Component: WBPlanViewWrapper,
+	get_component_props: (self) => (
+		{
+			wb: self.wb,
+			wb_template_promise: self.wb_template_promise,
+			remove_unload_protect: remove_unload_protect.bind(null, self),
+			mapping_is_templated: self.mapping_is_templated,
+		}
+	),
+});

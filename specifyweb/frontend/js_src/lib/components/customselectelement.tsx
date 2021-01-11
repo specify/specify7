@@ -8,7 +8,7 @@
 
 import icons               from '../icons';
 import React               from 'react';
-import { named_component } from './wbplanview';
+import { named_component } from './statemanagement';
 
 const Icon = React.memo(named_component(({
 	is_relationship = false,
@@ -31,8 +31,10 @@ const Icon = React.memo(named_component(({
 
 	const table_icon_src = icons.getIcon(table_name);
 	if (table_icon_src !== '/images/unknown.png')
-		return <span className="custom_select_option_icon_table"
-					 style={{backgroundImage: `url('${table_icon_src}')`}} />;
+		return <span
+			className="custom_select_option_icon_table"
+			style={{backgroundImage: `url('${table_icon_src}')`}}
+		/>;
 
 	const table_sub_name = table_name.substr(0, 2);
 	const color_hue = (
@@ -98,7 +100,7 @@ const OptionGroup = named_component(({
 	select_options_data,
 	handleClick,
 }: CustomSelectElementOptionGroupProps) =>
-	<span className={`custom_select_group custom_select_group_${select_group_name}`}>
+	<span className={`custom_select_group custom_select_group_${select_group_name || 'undefined'}`}>
 		{
 			typeof select_group_label !== 'undefined' &&
 			<span className="custom_select_group_label">{select_group_label}</span>
@@ -154,7 +156,7 @@ export function CustomSelectElement(
 		handleClose,
 		automapper_suggestions,
 	}: CustomSelectElementProps,
-) {
+):JSX.Element {
 
 	// const list_of_options = React.useRef<HTMLElement>(null);
 
@@ -187,7 +189,7 @@ export function CustomSelectElement(
 		</span>;
 	else if (select_types_with_first_row.includes(custom_select_type)) {
 
-		let default_icon = <Icon
+		const default_icon = <Icon
 			is_default={true}
 			is_relationship={default_option.is_relationship}
 			table_name={default_option.table_name}
@@ -231,7 +233,7 @@ export function CustomSelectElement(
 	}
 
 	const groups = is_open && option_is_intractable &&
-		Object.entries(custom_select_option_groups!).filter(([_select_group_name, {select_options_data}]) =>
+		Object.entries(custom_select_option_groups!).filter(([, {select_options_data}]) =>
 			Object.keys(select_options_data).length !== 0,
 		).map(([select_group_name, select_group_data], index) =>
 			<OptionGroup

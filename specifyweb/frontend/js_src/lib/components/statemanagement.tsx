@@ -8,9 +8,16 @@
 'use strict';
 
 function assertExhaustive(case_type: never): never {
-	throw new Error('Non-exhaustive switch. Unhandled case:' + case_type);
+	throw new Error(`Non-exhaustive switch. Unhandled case:${case_type as string}`);
 }
 
+
+// assignees names to components so that they easier to identify in the inspector and profiler
+export function named_component<T>(component_function: T, component_name: string): T {
+	// @ts-ignore
+	component_function.displayName = component_name;
+	return component_function;
+}
 
 export const generate_reducer = <STATE,
 	ACTION extends Action<string>>(

@@ -182,7 +182,7 @@ export default class Automapper {
 		this.starting_table = starting_table;
 		this.starting_path = path;
 		this.path_is_mapped = path_is_mapped;
-	};
+	}
 
 
 	/* Method that would be used by external classes to match headers to possible mappings */
@@ -220,7 +220,7 @@ export default class Automapper {
 
 		return this.results;
 
-	};
+	}
 
 	/*
 	* Makes sure that `find_mappings` runs over the schema in correct order since mappings with a shorter mapping
@@ -270,7 +270,7 @@ export default class Automapper {
 
 		} while (queue_data.length !== 0);
 
-	};
+	}
 
 	/* Compares definitions to unmapped headers and makes a mapping if matched */
 	private handle_definition_comparison = (
@@ -356,7 +356,7 @@ export default class Automapper {
 			this.handle_definition_comparison(path, comparisons, get_new_path_part);
 		}
 
-	};
+	}
 
 	/* Searches for `table_synonym` that matches the current table and the current mapping path */
 	private find_table_synonyms(
@@ -403,7 +403,7 @@ export default class Automapper {
 
 		}, []);
 
-	};
+	}
 
 	private readonly find_formatted_header_field_synonyms = (
 		table_name: string,  // the table to search in
@@ -685,7 +685,7 @@ export default class Automapper {
 
 		});
 
-	};
+	}
 
 	/*
 	* Used to check if the table's field is already mapped and if not, makes a new mapping
@@ -696,7 +696,7 @@ export default class Automapper {
 		path: string[],
 		new_path_parts: mapping_path,  // Elements that should be pushed into `path`
 		header_name: string,  // The name of the header that should be mapped
-		table_name: string = '',  // Current table name (used to identify `don't map` conditions)
+		table_name = '',  // Current table name (used to identify `don't map` conditions)
 		// if of type {int} -
 		// implants given to_many_reference_number into the mapping path into the first reference item starting from the right
 		// if of type {boolean} and is False -
@@ -769,5 +769,5 @@ export default class Automapper {
 		const path_contains_to_many_references = path.some(value_is_reference_item);
 		return !path_contains_to_many_references && !this.allow_multiple_mappings;
 
-	};
+	}
 }

@@ -206,7 +206,7 @@ export default (): Promise<data_model_fetcher_return> =>
 					is_required = false;
 
 				//@ts-ignore
-				let field_data: data_model_field_writable = {
+				const field_data: data_model_field_writable = {
 					friendly_name,
 					is_hidden,
 					is_required,
@@ -293,6 +293,8 @@ export default (): Promise<data_model_fetcher_return> =>
 				list_of_base_tables,
 				ranks,
 			});
+		}).catch(error=>{
+			throw error;
 		});
 
 	});
