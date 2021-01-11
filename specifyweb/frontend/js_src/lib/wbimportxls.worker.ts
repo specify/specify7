@@ -17,7 +17,15 @@ ctx.onmessage = function(e) {
     const first_workbook = workbook.Sheets[first_sheet_name];
     const sheet_data = XLSX.utils.sheet_to_json(first_workbook, {header: 1, blankrows: false});
 
-    const data: string[][] = sheet_data.map(row => Array.isArray(row) ? Array.from(row, v => v || "") : []);
+    const max_width = Math.max(...sheet_data.map(row => (row as string[]).length));
+
+    const data: string[][] = sheet_data.map(row => {
+        const unSparseRow = Array.from(row as string[], v => v || "");
+        if (unSparseRow.length < max_width) {
+            unSparseRow.push(... new Array(max_width - unSparseRow.length).fill(""));
+        }
+        return unSparseRow;
+    });
 
     ctx.postMessage(data);
 }
