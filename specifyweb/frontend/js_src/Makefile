@@ -2,10 +2,10 @@
 
 build:
 	npm install
-	node_modules/.bin/webpack
+	npx webpack
 clean:
 	rm -rf node_modules
 	rm -rf ../static/js
 
 watch:
-	node_modules/.bin/webpack -w --devtool eval --display-chunks --display-modules
+	npx webpack -w --mode development
