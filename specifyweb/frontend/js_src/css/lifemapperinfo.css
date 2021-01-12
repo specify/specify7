@@ -24,7 +24,7 @@
 	list-style: disc;
 }
 
-#lifemapper_leaflet_map {
+.lifemapper_leaflet_map {
 	height: 100%;
 }
 
