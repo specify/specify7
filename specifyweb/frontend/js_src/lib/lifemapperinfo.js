@@ -220,28 +220,22 @@ module.exports = Backbone.View.extend({
 			let info_section;
 			let error_messages;
 
-			function add_section(class_name, title, message){
-				details_window.innerHTML += `
-					<details open>
-						<summary>${title}</summary>
-						<span class="${class_name}">${message}</span>
-					</detailsi>
-				`;
+			function add_section(class_name, message) {
+				details_window.innerHTML += `<span class="${class_name}" style="border-bottom:10px">${message}</span>`;
 				return details_window.getElementsByClassName(class_name);
 			}
 
-			function add_message(is_error, message){
-				if(is_error) {
+			function add_message(is_error, message) {
+				if (is_error) {
 					if (typeof error_section === 'undefined')
-						error_section = add_section('error_details','Error',message);
+						error_section = add_section('error_details', message);
 					else
 						error_section.innerHTML += `<br>${message}`;
 				}
+				else if (typeof info_section === 'undefined')
+					info_section = add_section('info_section', message);
 				else
-					if (typeof info_section === 'undefined')
-						info_section = add_section('info_section','Details',message);
-					else
-						info_section.innerHTML += `<br>${message}`;
+					info_section.innerHTML += `<br>${message}`;
 			}
 
 			const similar_co_markers_promise = new Promise(resolve => {
@@ -274,9 +268,9 @@ module.exports = Backbone.View.extend({
 				);
 			});
 
-			$.get(typeof remote_occurrence_name === "undefined" ?
+			$.get(typeof remote_occurrence_name === 'undefined' ?
 				format_occurrence_map_request(local_occurrence_name) :
-				format_occurrence_map_request(remote_occurrence_name)
+				format_occurrence_map_request(remote_occurrence_name),
 			).done(response => {
 
 				dialog.dialog('option', 'width', 900);
@@ -286,12 +280,17 @@ module.exports = Backbone.View.extend({
 
 				let layers = [];
 				let error_message;
+				let info_message;
 
 				if (typeof response.errors !== 'undefined' && response.errors.length !== 0)
 					error_message = `The following errors were reported by Lifemapper:<br>${response.errors.join('<br>')}`;
 				else {
 
-					const {endpoint, mapName, layerName} = response.records[0].map;
+					const {
+						map: {endpoint, mapName, layerName},
+						metadata: {description},
+						statusModTime,
+					} = response.records[0];
 
 					const map_url = `${endpoint}/${mapName}?`;
 					const map_id = mapName.replace(/\D/g, '');
@@ -321,8 +320,15 @@ module.exports = Backbone.View.extend({
 							}
 						),
 					);
+
+					info_message = `
+						Projection Details:<br>
+						${description}<br>
+						Last Modified: ${statusModTime}	
+					`;
+
 				}
-				const [map, layer_group, details_container] = Leaflet.showCOMap(map_container, layers,'');
+				const [map, layer_group, details_container] = Leaflet.showCOMap(map_container, layers, '');
 				details_window = details_container;
 
 				similar_co_markers_promise.then(markers => {
@@ -330,20 +336,21 @@ module.exports = Backbone.View.extend({
 					resolve(map);
 				});
 
-				if(typeof error_message !== "undefined")
-					add_message(true,error_message);
+				if (typeof error_message !== 'undefined')
+					add_message(true, error_message);
 
-				add_message(false,`
+				add_message(false, `
 					Local occurrence name: ${
-						typeof local_occurrence_name === 'undefined' ?
-							'Not found' :
-							local_occurrence_name
-					}<br>
+					typeof local_occurrence_name === 'undefined' ?
+						'Not found' :
+						local_occurrence_name
+				}<br>
 					Remote occurrence name: ${
-						typeof remote_occurrence_name === 'undefined' ?
-							'Not found' :
-							remote_occurrence_name
-					}
+					typeof remote_occurrence_name === 'undefined' ?
+						'Not found' :
+						remote_occurrence_name
+				}<br><br>
+				${info_message}
 				`);
 
 			});

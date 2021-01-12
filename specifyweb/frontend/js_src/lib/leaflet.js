@@ -53,6 +53,8 @@ L.Control.Details = L.Control.extend({
 		details.setAttribute('open','open');
 		details.style.background = '#000c';
 		details.style.padding = '10px';
+		details.style.maxWidth = '50%';
+		details.style.minWidth = '92px';
 		details.innerHTML = `
 			<summary style="font-size:1rem">Details</summaryi>
 			<span></span>
@@ -308,6 +310,9 @@ const Leaflet = {
 		icon_class,
 	}) {
 
+		if(latitude1 === null || longitude1 === null)
+			return [];
+
 		const icon = new L.Icon.Default();
 		if (typeof icon_class !== 'undefined')
 			icon.options.className = icon_class;
@@ -319,10 +324,21 @@ const Leaflet = {
 
 		let vectors = [];
 
+		function is_valid_accuracy(latlongaccuracy){
+			try {
+				if(parseFloat(latlongaccuracy)<1 || latlongaccuracy === null)
+					return false;
+			}
+			catch(err){
+				return false;
+			}
+			return true;
+		}
+
 		if (latitude2 === null || longitude2 === null) {
 
 			// a point
-			if (latlongaccuracy === null || latlongaccuracy === '0')
+			if (!is_valid_accuracy(latlongaccuracy))
 				vectors.push(create_a_point(latitude1, longitude1));
 
 			// a circle
