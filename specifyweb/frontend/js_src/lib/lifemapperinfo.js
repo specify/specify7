@@ -9,38 +9,90 @@ const Leaflet = require('./leaflet.js');
 
 const lifemapperdatasourceicon = require('./templates/lifemapperdatasourceicon.html');
 const lifemapperissues = require('./templates/lifemapperissues.html');
-const lifemapperoccurencecount = require('./templates/lifemapperoccurencecount.html');
+const lifemapperoccurrencecount = require('./templates/lifemapperoccurrencecount.html');
+
+const test = false; // TODO: remove this
+const default_guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
+const default_occurrence_name = 'Phlox longifolia Nutt.';
+
+const test__get_guid = (guid) =>
+	(
+		test && true
+	) ? default_guid : guid;
+
+const test__occurrence_name = (occurrence_name) =>
+	(
+		test && true
+	) ? default_occurrence_name : occurrence_name;
+
 
 module.exports = Backbone.View.extend({
 	__name__: 'LifemapperInfo',
 	initialize() {
 		this.$el = arguments[0].el;
 		this.model = arguments[0].model;
+		this.showCOMap = this.showCOMap.bind(this);
 	},
+
+	get_scientific_name: (model, default_value = undefined) =>
+		new Promise(resolve => {
+			model.rget('determinations').done(({models: determinations}) =>
+				determinations.length === 0 ?
+					resolve(default_value) :
+					determinations[0].rget('preferredTaxon.fullname').done(scientific_name =>
+						resolve(
+							scientific_name === null ?
+								default_value :
+								scientific_name,
+						),
+					),
+			);
+		}),
 
 	render() {
 
-		// const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
-		const guid = this.model.get('guid');  // TODO: uncomment this
+		const guid = test__get_guid(this.model.get('guid'));
 
-		$.get(format_occurrence_data_request(guid)).done(response =>
-			Object.entries(response).filter(([key]) =>
-				typeof data_sources[key] !== 'undefined',
-			).map(([key, {count, records}]) => {
-				const data_source_info = data_sources[key];
+		if (typeof guid === 'undefined')
+			return;
 
-				let parsed_response;
+		const showCOMap = (occurrence_name) =>
+			this.showSourceIcon(undefined,
+				data_sources['Lifemapper Map'],
+				typeof test__occurrence_name(occurrence_name) === 'undefined' ?
+					false :
+					{
+						occurrence_name: test__occurrence_name(occurrence_name),
+						occurrence_view_link: '',
+					},
+			);
 
-				if (typeof records === 'undefined' || typeof records[0] === 'undefined')
-					parsed_response = false;
-				else
-					parsed_response = response_handlers[key](records[0]);
+		new Promise(occurrence_name_resolved =>
+			$.get(format_occurrence_data_request(guid)).done(response =>
+				Object.entries(response).filter(([key]) =>
+					typeof data_sources[key] !== 'undefined',
+				).map(([key, {count, records}]) => {
+					const data_source_info = data_sources[key];
 
-				this.showSourceIcon(data_source_info, parsed_response, count > 1);
-			}),
+					let parsed_response;
+
+					if (typeof records === 'undefined' || typeof records[0] === 'undefined')
+						parsed_response = false;
+					else
+						parsed_response = response_handlers[key](records[0]);
+
+					this.showSourceIcon(occurrence_name_resolved, data_source_info, parsed_response, count > 1);
+				}),
+			),
+		).then(occurrence_name =>
+			typeof occurrence_name === 'undefined' ?
+				this.get_scientific_name(this.model).then(scientific_name =>
+					showCOMap(scientific_name),
+				) :
+				showCOMap(occurrence_name),
 		);
 	},
-	showSourceIcon(data_source_info, response, has_multiple_records = false) {
+	showSourceIcon(occurrence_name_resolved, data_source_info, response, has_multiple_records = false) {
 
 		const {
 			source_name,
@@ -49,19 +101,12 @@ module.exports = Backbone.View.extend({
 
 		const {
 			list_of_issues = [],
-			occurrence_name = '',
+			occurrence_name = undefined,
 			occurrence_view_link = '',
 		} = response;
 
-		if (source_name === 'gbif' && occurrence_name !== '')
-			this.showSourceIcon(
-				data_sources['Lifemapper Map'],
-				{
-					// occurrence_name: 'Phlox longifolia Nutt.',
-					occurrence_name: occurrence_name,  // TODO: uncomment this
-					occurrence_view_link: '',
-				},
-			);
+		if (source_name === 'gbif')
+			occurrence_name_resolved(occurrence_name);
 
 		if (has_multiple_records)
 			list_of_issues.push('HAS_MULTIPLE_RECORDS');
@@ -71,22 +116,32 @@ module.exports = Backbone.View.extend({
 			source_label: source_label,
 		}));
 
-		if (response === false)
-			link.addClass('lifemapper_source_icon_not_found');
-		else {
 
+		function detach(link,handleClick) {
+			link.off('click', handleClick);
+			link.removeClass('lifemapper_source_icon_issues_detected');
+			link.addClass('lifemapper_source_icon_not_found');
+		}
+
+		if (response){
 			if (list_of_issues.length !== 0)
 				link.addClass('lifemapper_source_icon_issues_detected');
 
-			link.on('click', () => this.showSourceResponse(
+
+			const handleClick = () => this.showSourceResponse(
 				data_source_info,
 				{
 					list_of_issues,
 					occurrence_name,
 					occurrence_view_link,
 				},
-			));
+				detach.bind(null, link, handleClick),
+			);
+
+			link.on('click', handleClick);
 		}
+		else
+			link.addClass('lifemapper_source_icon_not_found');
 
 		this.$el.append(link).show();
 	},
@@ -100,6 +155,7 @@ module.exports = Backbone.View.extend({
 			occurrence_name,
 			occurrence_view_link,
 		},
+		detach_callback,
 	) {
 
 		const salted_source_name = `lifemapper_${source_name}`;
@@ -150,21 +206,29 @@ module.exports = Backbone.View.extend({
 		});
 
 		if (source_name === 'lifemapper')
-			// destructor = this.showCOMap(dialog, "Medinilla speciosa Blume",this.model);
-			destructor = this.showCOMap(dialog, occurrence_name);  // TODO: uncomment this
-		else if (occurrence_name !== '')
+			destructor = this.showCOMap(dialog, occurrence_name, this.model, detach_callback);
+		else if (typeof occurrence_name !== 'undefined')
 			this.showCOCount(dialog, source_name, occurrence_name);
 
 	},
-	showCOMap: (dialog, occurrence_name,model) =>
+	showCOMap: (dialog, occurrence_name, model, detach_callback) =>
 		new Promise(resolve => {
 
+			const failure = (message='No map was found for this occurrence')=>{
+				dialog.append(message);
+				detach_callback();
+				return resolve(undefined);
+			};
+
+			if (typeof occurrence_name === 'undefined')
+				return failure(`Can't find the scientific name for this record`);
+
 			const similar_co_markers_promise = new Promise(resolve => {
+
 				const similar_collection_objects = new schema.models.CollectionObject.LazyCollection({
 					filters: {
 						determinations__iscurrent: true,
-						// determinations__preferredtaxon__fullname: "Acipenser"
-						determinations__preferredtaxon__fullname: occurrence_name, // TODO: uncomment this
+						determinations__preferredtaxon__fullname: occurrence_name,
 					},
 				});
 				similar_collection_objects.fetch({
@@ -189,20 +253,18 @@ module.exports = Backbone.View.extend({
 
 			$.get(format_occurrence_map_request(occurrence_name)).done(response => {
 
-				if (response.count === 0) {
-					dialog.append('No map was found for this occurrence');
-					return;
-				}
+				if (response.count === 0)
+					return failure(`Can't find this occurrence in Lifemapper`);
+
+				if(typeof response.errors !== "undefined" && response.errors.length !== 0)
+					return failure(`The following errors were reported by Lifemapper:<br>${response.errors.join('<br>')}`);
 
 				dialog.dialog('option', 'width', 900);
 				dialog.dialog('option', 'height', 500);
 				dialog.append(`<div class="lifemapper_leaflet_map"></div>`);
 				const map_container = dialog.find('.lifemapper_leaflet_map')[0];
 
-				const {endpoint, mapName, layerName} = response.records[0].map;  //TODO: uncomment this
-				// const {endpoint} = response.records[0].map;
-				// const mapName = 'data_300456';
-				// const layerName = 'proj_717933';
+				const {endpoint, mapName, layerName} = response.records[0].map;
 
 				const map_url = `${endpoint}/${mapName}?`;
 				const map_id = mapName.replace(/\D/g, '');
@@ -247,7 +309,7 @@ module.exports = Backbone.View.extend({
 		$.get(format_occurrence_count_request(source_name, occurrence_name)).done(response => (
 			response.count === 0 ?
 				'' :
-				dialog.append(lifemapperoccurencecount(response))
+				dialog.append(lifemapperoccurrencecount(response))
 		)),
 });
 
