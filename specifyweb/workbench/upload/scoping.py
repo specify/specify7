@@ -35,6 +35,12 @@ def scoping_relationships(collection, table: Table) -> Dict[str, int]:
     except DoesNotExistError:
         pass
 
+    try:
+        table.get_relationship('institution')
+        extra_static['institution_id'] = collection.discipline.division.institution.id
+    except DoesNotExistError:
+        pass
+
     return extra_static
 
 def _make_one_to_one(fieldname: str) -> Callable[[ScopedUploadable, str], ScopedUploadable]:
