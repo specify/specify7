@@ -324,7 +324,7 @@ module.exports = Backbone.View.extend({
 					info_message = `
 						Projection Details:<br>
 						${description}<br>
-						Last Modified: ${statusModTime}	
+						Model Creation date: ${statusModTime}	
 					`;
 
 				}
@@ -340,7 +340,7 @@ module.exports = Backbone.View.extend({
 					add_message(true, error_message);
 
 				add_message(false, `
-					Local occurrence name: ${
+					Specify Species Name: ${
 					typeof local_occurrence_name === 'undefined' ?
 						'Not found' :
 						local_occurrence_name
