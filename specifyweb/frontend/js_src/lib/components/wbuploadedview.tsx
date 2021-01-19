@@ -48,18 +48,24 @@ const UploadedTableRow = named_component(({
 	{rows.map(({record_id, row_index, columns}, index) =>
 		<tr key={index}>
 			{
-				record_id !== -1 &&
+				record_id >= 0 &&
 				<td key='view_record'>
 					<a target="_blank" href={get_record_view_url(record_id)}>
 						{record_id}
 					</a>
 				</td>
 			}
-			{columns.map(({column_index, cell_value, row_index: cell_row_index, record_id},index) =>
+			{columns.map(({column_index, cell_value, row_index: cell_row_index, record_id, span_size}, index) =>
 				<td
 					key={index}
 					className="wb-upload-results-cell"
-					onClick={() => handleCellClicked(row_index === -1 ? cell_row_index || -1 : row_index, column_index)}
+					rowSpan={span_size}
+					onClick={() => handleCellClicked(
+						row_index < 0 ?
+							cell_row_index ?? -1 :
+							row_index,
+						column_index,
+					)}
 				>
 					{
 						typeof record_id === 'undefined' ?
@@ -93,8 +99,9 @@ const UploadedTableRows = named_component(({
 	column_names,
 	get_record_view_url,
 	onCellClicked: handleCellClicked,
+	tableIsTree,
 }: UploadedTableRowsProps) => <div className="wb-upload-results-rows-container">
-	<table className="wb-upload-results-rows">
+	<table className={`wb-upload-results-rows ${tableIsTree ? 'wb-upload-results-rows-tree' : ''}`}>
 		<UploadedTableRowsHeaderProps
 			column_names={
 				type === 'table' && column_names ?
@@ -102,7 +109,7 @@ const UploadedTableRows = named_component(({
 						...(
 							rows.length !== 0 &&
 							'record_id' in rows[0] &&
-							rows[0].record_id !== -1 ?
+							rows[0].record_id >= 0 ?
 								['View Record'] :
 								[]
 						),
@@ -133,6 +140,7 @@ const UploadedTableHeader = named_component(({
 	table_name,
 	label,
 	rows_count,
+	tableIsCollapsed,
 	onCreateRecordSet: handleCreateRecordSet,
 	onCreateDataSet: handleCreateDataSet,
 	onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
@@ -145,9 +153,14 @@ const UploadedTableHeader = named_component(({
 		handleToggleTableRecordsVisibility();
 	}}>
 		<div className="wb-upload-results-table-name">
+			{
+				tableIsCollapsed ?
+					'\u25BC' :
+					'\u25B2'
+			}
 			<img className="wb-upload-results-table-icon" src={table_icon} alt={table_name} />
 			<div className="wb-upload-results-table-label">{label}</div>
-			<div className="wb-upload-results-table-rows-count">{rows_count}</div>
+			<div className="wb-upload-results-table-rows-count">- {rows_count}</div>
 		</div>
 		<div className="wb-upload-results-controls">
 			<button onClick={handleCreateRecordSet}>Record Set</button>
@@ -173,12 +186,13 @@ const UploadedTable = named_component(({
 		onCreateRecordSet={handleCreateRecordSet}
 		onCreateDataSet={handleCreateDataSet}
 		onToggleTableRecordsVisibility={handleToggleTableRecordsVisibility}
+		tableIsCollapsed={tableIsCollapsed}
 		{...(
 			type === 'table' ?
 				{
 					table_icon: uploadedTable.table_icon,
 					label: uploadedTable.table_label,
-					rows_count: uploadedTable.rows.length,
+					rows_count: uploadedTable.rows_count || uploadedTable.rows.length,
 				} :
 				{
 					label: table_name,
@@ -193,6 +207,7 @@ const UploadedTable = named_component(({
 			<UploadedTableRows
 				type={type}
 				onCellClicked={handleCellClicked}
+				tableIsTree={typeof uploadedTable.rows_count !== 'undefined'}
 				{...(
 					type === 'table' ?
 						{
@@ -257,7 +272,11 @@ const reducer = generate_reducer<WBUploadedState, WBUploadedActions>({
 		}
 	),
 	'CellClickedAction': (state, {row_index, column_index}) => {
-		state.props.hot.selectCell(row_index, column_index);
+		if (
+			row_index >= 0 &&
+			column_index >= 0
+		)
+			state.props.hot.selectCell(row_index, column_index);
 		return state;
 	},
 
@@ -294,37 +313,39 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 			modal: false,
 		}}
 	>
-		<>
-			{
-				Object.keys(props.uploadedRows).length === 0 &&
-				Object.keys(props.uploadedPicklistItems).length === 0 &&
-				'No records were uploaded / all records were matched to database records'
-			}
-		</>
-		<UploadedRecords
-			type='table'
-			uploadedRecords={props.uploadedRows}
-			tableRecordsVisibilityState={state.tableRecordsVisibilityState}
-			onCreateRecordSet={(table_name: string) => dispatch({type: 'CreateRecordSetAction', table_name})}
-			onCreateDataSet={(table_name: string) => dispatch({type: 'CreateDataSetAction', table_name})}
-			onCellClicked={(row_index: number, column_index: number) =>
-				dispatch({type: 'CellClickedAction', row_index, column_index})
-			}
-			onToggleTableRecordsVisibility={(table_name: string) =>
-				dispatch({type: 'ToggleTableRecordsVisibilityAction', table_name})
-			}
-		/>
-		<UploadedRecords
-			type='picklist'
-			uploadedRecords={props.uploadedPicklistItems}
-			tableRecordsVisibilityState={state.picklistRecordsVisibilityState}
-			onCellClicked={(row_index: number, column_index: number) =>
-				dispatch({type: 'CellClickedAction', row_index, column_index})
-			}
-			onToggleTableRecordsVisibility={(table_name: string) =>
-				dispatch({type: 'ToggleTableRecordsVisibilityAction', table_name})
-			}
-		/>
+		<div className="wb-upload-results">
+			<>
+				{
+					Object.keys(props.uploadedRows).length === 0 &&
+					Object.keys(props.uploadedPicklistItems).length === 0 &&
+					'No records were uploaded / all records were matched to database records'
+				}
+			</>
+			<UploadedRecords
+				type='table'
+				uploadedRecords={props.uploadedRows}
+				tableRecordsVisibilityState={state.tableRecordsVisibilityState}
+				onCreateRecordSet={(table_name: string) => dispatch({type: 'CreateRecordSetAction', table_name})}
+				onCreateDataSet={(table_name: string) => dispatch({type: 'CreateDataSetAction', table_name})}
+				onCellClicked={(row_index: number, column_index: number) =>
+					dispatch({type: 'CellClickedAction', row_index, column_index})
+				}
+				onToggleTableRecordsVisibility={(table_name: string) =>
+					dispatch({type: 'ToggleTableRecordsVisibilityAction', table_name})
+				}
+			/>
+			<UploadedRecords
+				type='picklist'
+				uploadedRecords={props.uploadedPicklistItems}
+				tableRecordsVisibilityState={state.picklistRecordsVisibilityState}
+				onCellClicked={(row_index: number, column_index: number) =>
+					dispatch({type: 'CellClickedAction', row_index, column_index})
+				}
+				onToggleTableRecordsVisibility={(table_name: string) =>
+					dispatch({type: 'ToggleTableRecordsVisibilityAction', table_name})
+				}
+			/>
+		</div>
 	</ModalDialog>;
 }
 
@@ -381,8 +402,8 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 										unique_rank_ids.indexOf(rank_id) !== -1,
 									),
 								);
-								const column_names = unique_rank_ids.map(rank_id=>
-									Object.keys(ranks[table_name.toLowerCase()])[Object.values(ranks[table_name.toLowerCase()]).indexOf(rank_id)]
+								const column_names = unique_rank_ids.map(rank_id =>
+									Object.keys(ranks[table_name.toLowerCase()])[Object.values(ranks[table_name.toLowerCase()]).indexOf(rank_id)],
 								);
 
 								const rows_object: Record<number, uploadedTreeRank | undefined> = Object.fromEntries(rows);
@@ -455,9 +476,6 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 											},
 										};
 
-								//TODO: space out subtree root without base rank in a special way
-								//TODO: properly count amount updated tree records
-
 								const space_out_tree = (tree: spaced_out_tree, parent_rank_id = NaN): spaced_out_tree =>
 									Object.fromEntries(
 										Object.entries(tree).filter(([, node_data]) =>
@@ -479,44 +497,53 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 
 								const spaced_out_tree: spaced_out_tree = space_out_tree(tree);
 
-								const find_cell_index = (name:string, columns:uploadedColumn[]):number =>
-									columns.find(({cell_value}:uploadedColumn)=>cell_value===name)?.column_index || -1;
+
+								const find_cell_index = (name: string, columns: uploadedColumn[]): number =>
+									columns.find(({cell_value}: uploadedColumn) => cell_value === name)?.column_index || -1;
+
+								const empty_cell = (column_index: number): uploadedColumn => (
+									{
+										column_index: column_index,
+										cell_value: '',
+									}
+								);
 
 								const compile_rows = (spaced_out_tree: spaced_out_tree, parent_columns: uploadedColumn[] = []): uploadedRow[] =>
-									Object.entries(spaced_out_tree).map(([node_id, node_data],index) => {
+									Object.entries(spaced_out_tree).map((
+										[node_id, node_data],
+										index,
+									) => {
 
-										if(typeof node_data === 'undefined')
+										if (typeof node_data === 'undefined')
 											return [];
 
-										const columns:uploadedColumn[] = [
+										const columns: uploadedColumn[] = [
 											...(
 												index === 0 ?
 													parent_columns :
-													Array(parent_columns.length).fill(
-														{
-															column_index: -1,
-															cell_value: '',
-														}
-													)
+													Array<uploadedColumn>(parent_columns.length).fill(empty_cell(-1))
 											),
 											{
 												column_index: find_cell_index(
-													node_data.node_name||'',
-													node_data.columns || []
+													node_data.node_name || '',
+													node_data.columns || [],
 												),
 												row_index: node_data.row_index,
 												record_id: parseInt(node_id),
 												cell_value: node_data.node_name || '',
-											}
+											},
 										];
 
-										if(Object.keys(node_data.children).length===0)
+										if (Object.keys(node_data.children).length === 0)
 											return [
 												{
 													row_index: -1,
 													record_id: -1,
-													columns
-												}
+													columns: [
+														...columns,
+														...Array<uploadedColumn>(column_names.length - columns.length).fill(empty_cell(-2)),
+													],
+												},
 											];
 										else
 											return compile_rows(node_data.children, columns);
@@ -525,12 +552,38 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 
 								const final_rows: uploadedRow[] = compile_rows(spaced_out_tree);
 
+								function join_rows(final_rows: uploadedRow[]) {
+									if (final_rows.length === 0)
+										return [];
+									const span_size: number[] = Array<number>(final_rows[0].columns.length).fill(0);
+									return final_rows.reverse().map(row => (
+										{
+											...row,
+											columns: row.columns.reduce<uploadedColumn[]>((new_columns, column, index) => {
+												if (column.column_index === -1)
+													span_size[index]++;
+												else {
+													if (span_size[index] !== 0) {
+														column.span_size = span_size[index];
+														span_size[index] = 0;
+													}
+													new_columns.push(column);
+												}
+												return new_columns;
+											}, []),
+										}
+									)).reverse();
+								}
+
+								const joined_rows: uploadedRow[] = join_rows(final_rows);
+
 								resolve([
 									table_name,
 									{
 										...table_data,
-										rows: final_rows,
+										rows: joined_rows,
 										column_names,
+										rows_count: Object.keys(table_data.rows).length,
 									},
 								]);
 							});
@@ -644,9 +697,7 @@ const parseUploadResults = ({tables}: uploadResults, headers: string[]) =>
 								(
 									{
 										column_index,
-										cell_value: typeof columns[column_index] === 'undefined' ?
-											'' :
-											columns[column_index],
+										cell_value: columns[column_index] ?? '',
 									}
 								),
 							),
@@ -668,7 +719,10 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 		self.uploadedRows = parseUploadResults(props.uploadResults, props.hot.getColHeader() as string[]);
 		self.uploadedPicklistItems = props.uploadResults.picklists;
 		self.openStatus = props.openStatus;
+		self.removeCallback = props.removeCallback;
 	},
+	remove: (self) =>
+		self.removeCallback(),
 	Component: WBUploadedViewDataParser,
 	get_component_props: (self) => (
 		{

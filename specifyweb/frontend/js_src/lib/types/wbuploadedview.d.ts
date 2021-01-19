@@ -18,6 +18,7 @@ interface uploadedColumn {
 	readonly row_index?: number,
 	readonly record_id?: number,
 	readonly cell_value: string,
+	span_size?: number,
 }
 
 interface uploadedRow {
@@ -50,6 +51,7 @@ interface uploadedRowsTable {
 	readonly table_icon: string,
 	readonly get_record_view_url: (row_id: number) => string,
 	readonly rows: uploadedRow[],
+	readonly rows_count?: number,
 }
 
 type uploadedRows = Readonly<Record<string, uploadedRowsTable>>
@@ -67,6 +69,7 @@ interface WBUploadedViewConstructorProps {
 	hot: Handsontable,
 	readonly uploadResults: uploadResults,
 	openStatus: (state: string) => void,
+	removeCallback: ()=>void,
 }
 
 interface WBUploadedViewBaseProps {
@@ -175,6 +178,7 @@ interface UploadedTableRowsBaseProps {
 	readonly get_record_view_url?: (row_id: number) => string,
 	readonly type: UploadedRecordsTypes,
 	readonly onCellClicked: handleCellClicked,
+	readonly tableIsTree: boolean,
 }
 
 interface UploadedTableRowsTableProps extends UploadedTableRowsBaseProps {
