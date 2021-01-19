@@ -25,9 +25,7 @@ interface schema_model_table_data {
 	readonly LazyCollection: specify_fetch
 }
 
-interface schema_models<T> {
-	readonly [model_name: string]: T
-}
+type schema_models<T> = Readonly<Record<string,T>>;
 
 interface schema {
 	readonly models: schema_models<schema_model_table_data>;
@@ -37,9 +35,10 @@ interface schema {
 interface domain_tree_definition_item {
 	readonly get: (field_name: string) => number | string,
 	readonly rget: (field_name: string) => Promise<domain_tree_definition_item>,
+	readonly attributes: {name:string, rankid:number, parent:string}
 }
 
-type domain_request = Readonly<Record<string, any>>
+type domain_request = Readonly<Record<string, unknown>>
 
 type specify_request = (param: domain_request) => jquery_promise<void>;
 

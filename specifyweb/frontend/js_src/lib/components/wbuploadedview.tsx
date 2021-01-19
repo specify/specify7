@@ -6,14 +6,25 @@
 
 'use strict';
 
-import '../../css/wbuploaded.css';
-import React                                 from 'react';
 //@ts-ignore
 import Handsontable                          from 'handsontable';
+import '../../css/wbuploaded.css';
+import React                                 from 'react';
 import icons                                 from '../icons';
 import createBackboneView                    from './reactbackboneextend';
 import { ModalDialog }                       from './modaldialog';
 import { generate_reducer, named_component } from './statemanagement';
+import fetch_data_model                      from './wbplanviewmodelfetcher';
+import schema                                from '../schema';
+import domain                                from '../domain';
+
+console.log(domain);
+
+type data_model_rank = Readonly<Record<string, number>>;
+type data_model_ranks = Readonly<Record<string, data_model_rank>>;
+
+let ranks: data_model_ranks;
+const fetch_data_model_promise: Promise<data_model_fetcher_return> | undefined = fetch_data_model();
 
 const UploadedTableRowsHeaderProps = named_component(({
 	column_names,
@@ -36,19 +47,27 @@ const UploadedTableRow = named_component(({
 	<tbody>
 	{rows.map(({record_id, row_index, columns}, index) =>
 		<tr key={index}>
-			<td>
-				{/* eslint-disable-next-line react/jsx-no-target-blank */}
-				<a target="_blank" href={get_record_view_url(record_id)}>
-					{record_id}
-				</a>
-			</td>
-			{columns.map(({column_index, cell_value}) =>
+			{
+				record_id !== -1 &&
+				<td key='view_record'>
+					<a target="_blank" href={get_record_view_url(record_id)}>
+						{record_id}
+					</a>
+				</td>
+			}
+			{columns.map(({column_index, cell_value, row_index: cell_row_index, record_id},index) =>
 				<td
-					key={column_index}
+					key={index}
 					className="wb-upload-results-cell"
-					onClick={()=>handleCellClicked(row_index,column_index)}
+					onClick={() => handleCellClicked(row_index === -1 ? cell_row_index || -1 : row_index, column_index)}
 				>
-					{cell_value}
+					{
+						typeof record_id === 'undefined' ?
+							cell_value :
+							<a target="_blank" href={get_record_view_url(record_id)}>
+								{cell_value}
+							</a>
+					}
 				</td>,
 			)}
 		</tr>,
@@ -60,9 +79,10 @@ const UploadedPicklistRow = named_component(({
 	onCellClicked: handleCellClicked,
 }: UploadedTableRowPicklistProps) =>
 	<tbody>
-	{rows.map(({row_index, column_index, picklist_value:value}, index) =>
+	{rows.map(({row_index, column_index, picklist_value: value}, index) =>
 		<tr key={index}>
-			<td className="wb-upload-results-cell" onClick={()=>handleCellClicked(row_index,column_index)}>{value}</td>
+			<td className="wb-upload-results-cell"
+				onClick={() => handleCellClicked(row_index, column_index)}>{value}</td>
 		</tr>,
 	)}
 	</tbody>, 'UploadedPicklistRow');
@@ -78,7 +98,16 @@ const UploadedTableRows = named_component(({
 		<UploadedTableRowsHeaderProps
 			column_names={
 				type === 'table' && column_names ?
-					['View Record', ...column_names] :
+					[
+						...(
+							rows.length !== 0 &&
+							'record_id' in rows[0] &&
+							rows[0].record_id !== -1 ?
+								['View Record'] :
+								[]
+						),
+						...column_names,
+					] :
 					['Picklist value']
 			}
 		/>
@@ -160,22 +189,22 @@ const UploadedTable = named_component(({
 	{
 		tableIsCollapsed ?
 			undefined :
-				//@ts-ignore
-				<UploadedTableRows
-					type={type}
-					onCellClicked={handleCellClicked}
-					{...(
-						type === 'table' ?
-							{
-								rows: uploadedTable.rows,
-								column_names: uploadedTable.column_names,
-								get_record_view_url: uploadedTable.get_record_view_url
-							} :
-							{
-								rows: uploadedTable
-							}
-					)}
-				/>
+			//@ts-ignore
+			<UploadedTableRows
+				type={type}
+				onCellClicked={handleCellClicked}
+				{...(
+					type === 'table' ?
+						{
+							rows: uploadedTable.rows,
+							column_names: uploadedTable.column_names,
+							get_record_view_url: uploadedTable.get_record_view_url,
+						} :
+						{
+							rows: uploadedTable,
+						}
+				)}
+			/>
 	}
 </div>, 'UploadedTable');
 
@@ -227,10 +256,10 @@ const reducer = generate_reducer<WBUploadedState, WBUploadedActions>({
 			),
 		}
 	),
-	'CellClickedAction': (state, {row_index, column_index})=>{
+	'CellClickedAction': (state, {row_index, column_index}) => {
 		state.props.hot.selectCell(row_index, column_index);
 		return state;
-	}
+	},
 
 });
 
@@ -299,6 +328,289 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 	</ModalDialog>;
 }
 
+const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks) =>
+	new Promise<uploadedRowsTable>(resolve =>
+
+		Promise.all(
+			Object.entries(uploadedRows).map(([table_name, table_data]) =>
+				new Promise<[string, uploadedRowsTable]>(resolve => {
+
+						const rank_ids: number[] = [];
+
+						typeof ranks[table_name.toLowerCase()] === 'undefined' ?
+
+							resolve([table_name, table_data]) :
+
+							Promise.all(
+								table_data.rows.map(({record_id, ...row}) =>
+									new Promise<[number, uploadedTreeRank]>(resolve => {
+
+										let fetch_object: domain_tree_definition_items;
+
+										(
+											fetch_object = new (
+												schema as any
+											).models[table_name].LazyCollection(
+												{filters: {id: record_id}},
+											)
+										).fetch({limit: 1}).done(() =>
+											resolve(
+												[
+													record_id,
+													{
+														...row,
+														rank_id:
+															rank_ids.push(fetch_object.models[0].attributes.rankid) &&
+															fetch_object.models[0].attributes.rankid,
+														parent_id: parseInt((
+															/\d+/.exec(fetch_object.models[0].attributes.parent) || []
+														)[0]),
+														node_name: fetch_object.models[0].attributes.name,
+														children: [],
+													},
+												],
+											),
+										);
+									}),
+								),
+							).then(rows => {
+
+								const unique_rank_ids = [...new Set(rank_ids)].sort();
+								const filtered_ranks = Object.fromEntries(
+									Object.entries(ranks[table_name.toLowerCase()]).filter(([, rank_id]) =>
+										unique_rank_ids.indexOf(rank_id) !== -1,
+									),
+								);
+								const column_names = unique_rank_ids.map(rank_id=>
+									Object.keys(ranks[table_name.toLowerCase()])[Object.values(ranks[table_name.toLowerCase()]).indexOf(rank_id)]
+								);
+
+								const rows_object: Record<number, uploadedTreeRank | undefined> = Object.fromEntries(rows);
+
+								// find children for each rank
+								rows.forEach(([node_id, rank_data]) =>
+									!isNaN(rank_data.parent_id) &&
+									typeof rows_object[rank_data.parent_id] !== 'undefined' &&
+									rows_object[rank_data.parent_id]?.children.push(node_id),
+								);
+
+								const tree: Record<number, uploadedTreeRankProcessed | undefined> = {};
+
+								const get_min_node = () =>
+									rows.reduce((
+										[min_rank, min_node_id],
+										[node_id, rank_data],
+										) =>
+											(
+												typeof rows_object[node_id] !== 'undefined' &&
+												(
+													min_rank === -1 ||
+													rank_data.rank_id < min_rank
+												)
+											) ?
+												[rank_data.rank_id, node_id] :
+												[min_rank, min_node_id],
+										[-1, -1],
+									)[1];
+								let min_node_id: number;
+
+								function join_children(node_id: number): uploadedTreeRankProcessed | undefined {
+
+									if (typeof rows_object[node_id] === 'undefined')
+										return undefined;
+
+									const result = {
+										...rows_object[node_id],
+										children: Object.fromEntries(
+											(
+												rows_object[node_id]?.children || []
+											).map(child_id => [
+												child_id,
+												join_children(child_id),
+											]),
+										),
+									};
+
+									rows_object[node_id] = undefined;
+
+									//@ts-ignore
+									return result;
+								}
+
+								while ((
+									min_node_id = get_min_node()
+								) !== -1)
+									tree[min_node_id] = join_children(min_node_id);
+
+
+								type spaced_out_tree = Record<number, uploadedTreeRankSpacedOut | undefined>;
+								const space_out_node = (
+									uploadedTreeRank: uploadedTreeRankSpacedOut, levels: number,
+								): uploadedTreeRankSpacedOut =>
+									levels <= 1 ?
+										uploadedTreeRank :
+										{
+											children: {
+												0: space_out_node(uploadedTreeRank, levels - 1),
+											},
+										};
+
+								//TODO: space out subtree root without base rank in a special way
+								//TODO: properly count amount updated tree records
+
+								const space_out_tree = (tree: spaced_out_tree, parent_rank_id = NaN): spaced_out_tree =>
+									Object.fromEntries(
+										Object.entries(tree).filter(([, node_data]) =>
+											typeof node_data !== 'undefined',
+										).map(([node_id, node_data]) => [
+											parseInt(node_id),
+											{
+												...node_data,
+												...space_out_node(
+													{
+														children: space_out_tree(node_data!.children, node_data!.rank_id),
+													},
+													Object.values(filtered_ranks).indexOf(node_data!.rank_id || 0) -
+													Object.values(filtered_ranks).indexOf(parent_rank_id || 0),
+												),
+											},
+										]),
+									);
+
+								const spaced_out_tree: spaced_out_tree = space_out_tree(tree);
+
+								const find_cell_index = (name:string, columns:uploadedColumn[]):number =>
+									columns.find(({cell_value}:uploadedColumn)=>cell_value===name)?.column_index || -1;
+
+								const compile_rows = (spaced_out_tree: spaced_out_tree, parent_columns: uploadedColumn[] = []): uploadedRow[] =>
+									Object.entries(spaced_out_tree).map(([node_id, node_data],index) => {
+
+										if(typeof node_data === 'undefined')
+											return [];
+
+										const columns:uploadedColumn[] = [
+											...(
+												index === 0 ?
+													parent_columns :
+													Array(parent_columns.length).fill(
+														{
+															column_index: -1,
+															cell_value: '',
+														}
+													)
+											),
+											{
+												column_index: find_cell_index(
+													node_data.node_name||'',
+													node_data.columns || []
+												),
+												row_index: node_data.row_index,
+												record_id: parseInt(node_id),
+												cell_value: node_data.node_name || '',
+											}
+										];
+
+										if(Object.keys(node_data.children).length===0)
+											return [
+												{
+													row_index: -1,
+													record_id: -1,
+													columns
+												}
+											];
+										else
+											return compile_rows(node_data.children, columns);
+
+									}).flat();
+
+								const final_rows: uploadedRow[] = compile_rows(spaced_out_tree);
+
+								resolve([
+									table_name,
+									{
+										...table_data,
+										rows: final_rows,
+										column_names,
+									},
+								]);
+							});
+					},
+				),
+			),
+		).then(parsed_ranks =>
+			resolve(
+				Object.fromEntries(parsed_ranks),
+			),
+		),
+	);
+
+function WBUploadedViewDataParser(props: WBUploadedViewComponentProps) {
+
+	const [tree_ranks, setTreeRanks] = React.useState<data_model_ranks | undefined>(ranks);
+	const [uploadedRows, setUploadedRows] = React.useState<uploadedRows>(props.uploadedRows);
+
+	React.useEffect(() => { // parse upload structure for tree ranks
+		if (typeof tree_ranks === 'undefined')
+			return;
+
+		parseUploadedRanks(uploadedRows, tree_ranks).then(setUploadedRows);
+
+	}, [tree_ranks]);
+
+	React.useEffect(() => {  // fetch tree ranks if not fetched yet
+		if (typeof tree_ranks !== 'undefined' || typeof fetch_data_model_promise === 'undefined')
+			return;
+
+		fetch_data_model_promise.then(({ranks: fetched_ranks}) =>
+			Promise.all<[string, data_model_rank]>(
+				Object.keys(fetched_ranks).map(table_name =>
+					new Promise(resolve =>
+						(
+							domain as domain
+						).getTreeDef(table_name).done(tree_definition =>
+							tree_definition.rget('treedefitems').done(treeDefItems =>
+								treeDefItems.fetch({limit: 0}).done(() =>
+									resolve(
+										[
+											table_name,
+											Object.fromEntries(
+												Object.values(treeDefItems.models).map(
+													(
+														{
+															attributes: {
+																name: rank_name,
+																rankid: rank_id,
+															},
+														},
+													) =>
+														[rank_name, rank_id],
+												),
+											),
+										],
+									),
+								),
+							),
+						),
+					),
+				),
+			).then(fetched_ranks =>
+				setTreeRanks((
+					ranks = Object.fromEntries(fetched_ranks)
+				)),
+			),
+		).catch(() => {
+			throw new Error('Error occurred while fetching tree ranks');
+		});
+
+	}, [fetch_data_model_promise]);
+
+	return <WBUploadedView
+		{...props}
+		uploadedRows={uploadedRows}
+	/>;
+
+}
+
 let column_indexes: number[];
 const parseUploadResults = ({tables}: uploadResults, headers: string[]) =>
 	Object.fromEntries(
@@ -306,7 +618,9 @@ const parseUploadResults = ({tables}: uploadResults, headers: string[]) =>
 			[
 				table_name,
 				{
-					table_label: table_name,
+					table_label: (
+						schema as unknown as schema
+					).models[table_name].getLocalizedName(),
 					column_names: (
 						column_indexes = [ // save list of column indexes to `column_indexes`
 							...new Set(  // make the list unique
@@ -324,12 +638,12 @@ const parseUploadResults = ({tables}: uploadResults, headers: string[]) =>
 					get_record_view_url: (row_id: number) => `/specify/view/${table_name}/${row_id}/`,
 					rows: table_records.map(({record_id, row_index, columns}) => (
 						{
-							record_id: record_id,
-							row_index: row_index,
+							record_id,
+							row_index,
 							columns: column_indexes.map(column_index =>
 								(
 									{
-										column_index: column_index,
+										column_index,
 										cell_value: typeof columns[column_index] === 'undefined' ?
 											'' :
 											columns[column_index],
@@ -351,18 +665,17 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 	initialize(self, props) {
 		self.wb = props.wb;
 		self.hot = props.hot;
-		self.uploadResultsParsed = false;
 		self.uploadedRows = parseUploadResults(props.uploadResults, props.hot.getColHeader() as string[]);
 		self.uploadedPicklistItems = props.uploadResults.picklists;
 		self.openStatus = props.openStatus;
 	},
-	Component: WBUploadedView,
+	Component: WBUploadedViewDataParser,
 	get_component_props: (self) => (
 		{
 			uploadedRows: self.uploadedRows,
 			uploadedPicklistItems: self.uploadedPicklistItems,
 			handleClose: self.remove.bind(self),
-			hot: self.hot
+			hot: self.hot,
 		}
 	),
 });

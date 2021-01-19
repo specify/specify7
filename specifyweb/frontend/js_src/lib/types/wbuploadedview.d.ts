@@ -14,30 +14,50 @@ interface uploadResults {
 }
 
 interface uploadedColumn {
-	column_index: number,
-	cell_value: string,
+	readonly column_index: number,
+	readonly row_index?: number,
+	readonly record_id?: number,
+	readonly cell_value: string,
 }
 
 interface uploadedRow {
-	record_id: number,
-	row_index: number,
-	columns: uploadedColumn[],
+	readonly record_id: number,
+	readonly row_index: number,
+	readonly columns: uploadedColumn[],
 }
 
+interface uploadedTreeRank {
+	readonly parent_id: number,
+	readonly rank_id: number,
+	readonly node_name: string,
+	readonly children: number[]
+	readonly row_index: number,
+	readonly columns: uploadedColumn[],
+}
+
+interface uploadedTreeRankProcessed extends Omit<uploadedTreeRank, 'children'> {
+	readonly children: Readonly<Record<number, uploadedTreeRankProcessed>>
+}
+
+interface uploadedTreeRankSpacedOut extends Partial<Omit<uploadedTreeRank, 'children'>> {
+	readonly children: Readonly<Record<number, uploadedTreeRankSpacedOut|undefined>>,
+}
+
+
 interface uploadedRowsTable {
-	table_label: string,
-	column_names: string[],
-	table_icon: string,
-	get_record_view_url: (row_id: number) => string,
-	rows: uploadedRow[],
+	readonly table_label: string,
+	readonly column_names: string[],
+	readonly table_icon: string,
+	readonly get_record_view_url: (row_id: number) => string,
+	readonly rows: uploadedRow[],
 }
 
 type uploadedRows = Readonly<Record<string, uploadedRowsTable>>
 
 interface uploadedPicklistItem {
-	picklist_value: string,
-	row_index: number,
-	column_index: number,
+	readonly picklist_value: string,
+	readonly row_index: number,
+	readonly column_index: number,
 }
 
 type uploadedPicklistItems = Readonly<Record<string, uploadedPicklistItem[]>>;
@@ -61,11 +81,10 @@ interface WBUploadedViewComponentProps extends Readonly<WBUploadedViewBaseProps>
 
 interface WBUploadedViewBackboneProps extends WBUploadedViewConstructorProps,
 	WBUploadedViewBaseProps, ReactBackboneExtendBaseProps {
-	uploadResultsParsed: boolean,
 }
 
-type UploadedRecordsTypes = 'table'|'picklist'
-type handleCellClicked = (row_index:number, column_index: number)=>void;
+type UploadedRecordsTypes = 'table' | 'picklist'
+type handleCellClicked = (row_index: number, column_index: number) => void;
 
 interface UploadedRecordsBaseProps {
 	readonly onToggleTableRecordsVisibility: (table_name: string) => void,
@@ -92,7 +111,7 @@ type UploadedRecordsProps = UploadedRecordsTableProps | UploadedRecordsPicklistP
 
 
 interface UploadedTableBaseProps {
-	readonly uploadedTable: uploadedRowsTable|uploadedPicklistItems,
+	readonly uploadedTable: uploadedRowsTable | uploadedPicklistItems,
 	readonly table_name: string,
 	readonly tableIsCollapsed: boolean,
 	readonly onCreateRecordSet?: () => void,
@@ -114,7 +133,7 @@ interface UploadedTablePicklistProps extends UploadedTableBaseProps {
 	readonly uploadedTable: uploadedPicklistItems,
 }
 
-type UploadedTableProps = UploadedTableTableProps|UploadedTablePicklistProps
+type UploadedTableProps = UploadedTableTableProps | UploadedTablePicklistProps
 
 interface UploadedTableHeaderBaseProps {
 	readonly table_icon?: string,
@@ -148,24 +167,24 @@ interface UploadedTableHeaderPicklistProps extends UploadedTableHeaderBaseProps 
 	readonly type: UploadedRecordsTypes,
 }
 
-type UploadedTableHeaderProps = UploadedTableHeaderTableProps|UploadedTableHeaderPicklistProps;
+type UploadedTableHeaderProps = UploadedTableHeaderTableProps | UploadedTableHeaderPicklistProps;
 
 interface UploadedTableRowsBaseProps {
-	readonly rows: (uploadedRow|uploadedPicklistItem)[],
+	readonly rows: (uploadedRow | uploadedPicklistItem)[],
 	readonly column_names?: string[],
 	readonly get_record_view_url?: (row_id: number) => string,
 	readonly type: UploadedRecordsTypes,
 	readonly onCellClicked: handleCellClicked,
 }
 
-interface UploadedTableRowsTableProps extends UploadedTableRowsBaseProps{
+interface UploadedTableRowsTableProps extends UploadedTableRowsBaseProps {
 	readonly rows: uploadedRow[],
 	readonly column_names: string[],
 	readonly get_record_view_url: (row_id: number) => string,
 	readonly type: 'table',
 }
 
-interface UploadedTableRowsPicklistProps extends UploadedTableRowsBaseProps{
+interface UploadedTableRowsPicklistProps extends UploadedTableRowsBaseProps {
 	readonly rows: uploadedPicklistItem[],
 	readonly type: 'picklist',
 }
@@ -178,16 +197,16 @@ interface UploadedTableRowsHeaderProps {
 
 interface UploadedTableRowBaseProps {
 	readonly onCellClicked: handleCellClicked,
-	readonly rows: (uploadedRow|uploadedPicklistItem)[]
+	readonly rows: (uploadedRow | uploadedPicklistItem)[]
 	readonly get_record_view_url?: (row_id: number) => string,
 }
 
-interface UploadedTableRowTableProps extends UploadedTableRowBaseProps{
+interface UploadedTableRowTableProps extends UploadedTableRowBaseProps {
 	readonly rows: uploadedRow[]
 	readonly get_record_view_url: (row_id: number) => string,
 }
 
-interface UploadedTableRowPicklistProps extends UploadedTableRowBaseProps{
+interface UploadedTableRowPicklistProps extends UploadedTableRowBaseProps {
 	readonly rows: uploadedPicklistItem[]
 }
 
