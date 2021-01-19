@@ -296,16 +296,25 @@ export const get_automapper_suggestions = ({
 
 		const mapping_line_data = get_mapping_line_data_from_mapping_path({
 			base_table_name,
-			mapping_path: local_mapping_path,
+			mapping_path: mapping_path_is_complete(local_mapping_path) ?
+				local_mapping_path :
+				local_mapping_path.slice(0, local_mapping_path.length-1),
 			iterate: false,
 			custom_select_type: 'suggestion_list',
 			get_mapped_fields: get_mapped_fields.bind(null, lines),
 		});
 
+		// don't show suggestions if picklist has only one field / no fields
+		if(
+			mapping_line_data.length === 1 &&
+			Object.keys(mapping_line_data[0].fields_data).length < 2
+		)
+			return resolve([]);
+
 		const base_mapping_path = local_mapping_path.slice(0, -1);
 
 		let path_offset = 0;
-		if (value_is_tree_rank(base_mapping_path[base_mapping_path.length - 1])) {
+		if (mapping_line_data.length === 1 && mapping_line_data[0].custom_select_subtype === 'to_many') {
 			base_mapping_path.push('#1');
 			path_offset = 1;
 		}
@@ -406,7 +415,7 @@ export function mutate_mapping_path({
 	else
 		mapping_path[index] = value;
 
-	if (!is_simple && mapping_path.length - 1 === index || is_relationship)
+	if ((!is_simple || is_relationship) && mapping_path.length - 1 === index)
 		return [...mapping_path, '0'];
 
 	return mapping_path;

@@ -431,15 +431,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 		{
 			...mapping_state(state),
 			lines: modify_line(mapping_state(state), mapping_state(state).open_select_element!.line, {
-				mapping_path: [
-					...mapping_state(state).lines[
-						mapping_state(state).open_select_element!.line
-						].mapping_path.slice(
-						0,
-						mapping_state(state).open_select_element!.index,
-					),
-					...mapping_state(state).automapper_suggestions![parseInt(suggestion) - 1].mapping_path,
-				],
+				mapping_path: mapping_state(state).automapper_suggestions![parseInt(suggestion) - 1].mapping_path,
 			}),
 			open_select_element: undefined,
 			automapper_suggestions_promise: undefined,

@@ -254,9 +254,6 @@ export function get_mapping_line_data_from_mapping_path({
 	show_hidden_fields = true,
 }: get_mapping_line_data_from_mapping_path_parameters): MappingElementProps[] {
 
-	if (mapping_path.length === 0)
-		throw new Error('Mapping Path is invalid');
-
 	const internal_state: get_mapping_line_data_from_mapping_path_internal_state = {
 		mapping_path_position: -1,
 		mapping_line_data: [],

@@ -55,13 +55,13 @@ const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers: string
 			(
 				upload_plan
 			).ranks
-		)).map(([rank_name /*rank_data*/]) =>
+		)).map(([rank_name, rank_data]) =>
 			[
 				format_tree_rank(rank_name),
 				Object.fromEntries(
 					[
 						upload_plan_processing_functions(headers).wbcols(
-							['name', rank_name],
+							['name', rank_data],
 						),
 					],
 				),
@@ -127,7 +127,7 @@ function mappings_tree_to_upload_plan_table(table_data: object, table_name: stri
 		const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
 			const new_tree_key = get_name_from_tree_rank_name(tree_key);
-			let name = tree_rank_data.name;
+			const name = tree_rank_data.name;
 			return [new_tree_key, handle_header(name)];
 
 		}));
