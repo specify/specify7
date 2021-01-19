@@ -30,7 +30,8 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-toggle-highlights': 'toggleHighlights',
-        'click .wb-show-upload-view':'displayUploadedView'
+        'click .wb-show-upload-view':'displayUploadedView',
+        'click .wb-unupload':'unupload'
     },
     initialize({wb, data, initialStatus, plan}) {
         this.wb = wb;
@@ -46,6 +47,7 @@ const WBView = Backbone.View.extend({
             tables: {},
             picklists: {}
         };
+        this.uploadedView = undefined;
     },
     render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -175,13 +177,22 @@ const WBView = Backbone.View.extend({
         upload_view.innerHTML = '<div></div>';
         const container = upload_view.children[0];
 
-        new WBUploadedView({
+        this.uploadedView = new WBUploadedView({
             wb: this.wb,
             hot: this.hot,
             uploadResults: this.uploadResults,
             openStatus: this.openStatus.bind(this),
             el: container,
+            removeCallback: ()=>(this.uploadedView = undefined),
         }).render();
+    },
+    unupload(){
+        if(typeof this.uploadedView !== "undefined") {
+            this.uploadedView.remove();
+            this.uploadedView = undefined;
+        }
+        $.post(`/api/workbench/unupload/${this.wb.id}/`);
+        this.openStatus('upload');
     },
     updateCellInfos() {
         const cellCounts = {
