@@ -186,7 +186,6 @@ const UploadedTable = named_component(({
 		onCreateRecordSet={handleCreateRecordSet}
 		onCreateDataSet={handleCreateDataSet}
 		onToggleTableRecordsVisibility={handleToggleTableRecordsVisibility}
-		tableIsCollapsed={tableIsCollapsed}
 		{...(
 			type === 'table' ?
 				{
@@ -350,7 +349,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 }
 
 const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks) =>
-	new Promise<uploadedRowsTable>(resolve =>
+	new Promise<uploadedRows>(resolve =>
 
 		Promise.all(
 			Object.entries(uploadedRows).map(([table_name, table_data]) =>
