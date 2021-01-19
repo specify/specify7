@@ -3,12 +3,16 @@
 <% if (status) { %>
   <% const [operation, state, meta] = status;
   if(state === 'FAILURE'){ %>
-    Error occured during the <%= operation %> process.<br>
+    Error occurred during the <%= operation %> process.<br>
     <%- meta %>
   <% } else {
-    const {total, current} = meta; %>
+    const {total, current} = meta;
+    const title = operation[0].toUpperCase()+operation.slice(1) + (current === total ?
+  		'...' :
+		` (<b>${current}/${total}</b>)`
+	  ); %>
     <div style="width:100%">
-      <%=operation[0].toUpperCase()+operation.slice(1) %> (<b><%- current %>/<%- total %></b>)
+      <%= title %>
       <div class="wb-status-progress-bar"></div>
     </div>
   <% } %>
