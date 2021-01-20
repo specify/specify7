@@ -67,7 +67,9 @@ export const table_is_tree = (
 export const relationship_is_to_many = (
 	relationship_type?: RelationshipType | '',
 ): boolean /* whether relationship is a -to-many */ =>
-	(relationship_type ?? '').indexOf('-to-many') !== -1;
+	(
+		relationship_type ?? ''
+	).indexOf('-to-many') !== -1;
 
 /* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
 export const value_is_reference_item = (

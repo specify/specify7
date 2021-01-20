@@ -16,17 +16,17 @@ import {
 	get_name_from_tree_rank_name,
 	get_max_to_many_value,
 	format_reference_item, is_circular_relationship, is_too_many_inside_of_too_many,
-}                                                    from './wbplanviewmodelhelper';
-import data_model_storage                            from './wbplanviewmodel';
+}                                                      from './wbplanviewmodelhelper';
+import data_model_storage                              from './wbplanviewmodel';
 import {
 	AutomapperSuggestion,
 	GetMappedFieldsBind,
 	MappingPath,
 	OpenSelectElement,
 	RelationshipType,
-}                                                from './wbplanviewmapper';
-import { DataModelField, DataModelRelationship } from './wbplanviewmodelfetcher';
-import { CustomSelectSubtype, CustomSelectType } from './customselectelement';
+}                                                      from './wbplanviewmapper';
+import { DataModelField, DataModelRelationship }       from './wbplanviewmodelfetcher';
+import { CustomSelectSubtype, CustomSelectType }       from './customselectelement';
 import { HtmlGeneratorFieldData, MappingElementProps } from './wbplanviewcomponents';
 
 
@@ -241,9 +241,9 @@ function get_navigation_children_types(
 	table_name: string,
 ) {
 	const parent_relationship_type: RelationshipType | undefined =
-			(
-				data_model_storage.tables[parent_table_name]?.fields[parent_table_relationship_name] as DataModelRelationship
-			)?.type;
+		(
+			data_model_storage.tables[parent_table_name]?.fields[parent_table_relationship_name] as DataModelRelationship
+		)?.type;
 
 	return {
 		parent_relationship_type,
@@ -301,7 +301,7 @@ function navigator_instance<RETURN_STRUCTURE>({
 		table_name,
 	);
 
-	if(children_are_to_many_elements && children_are_ranks)
+	if (children_are_to_many_elements && children_are_ranks)
 		throw new Error('Unable to properly determine picklist type');
 
 	callbacks.navigator_instance_pre(callback_payload);

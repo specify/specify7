@@ -9,8 +9,8 @@
 import AutoMapperDefinitions, {
 	Options,
 	TableSynonym,
-} from './automapperdefinitions';
-import data_model_storage                                                    from './wbplanviewmodel';
+}                                      from './automapperdefinitions';
+import data_model_storage              from './wbplanviewmodel';
 import {
 	value_is_tree_rank,
 	format_tree_rank,
@@ -237,7 +237,7 @@ export default class Automapper {
 					this.find_mappings_queue = [] :
 					this.find_mappings_queue = [[
 						initial_value,
-					]]
+					]];
 			},
 			'initialize_level': ({level}) => {
 				this.find_mappings_queue[level] ??= [];

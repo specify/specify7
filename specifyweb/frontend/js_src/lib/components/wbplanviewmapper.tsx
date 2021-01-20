@@ -12,7 +12,7 @@ import {
 	array_of_mappings_to_mappings_tree,
 	traverse_tree,
 	array_to_tree, MappingsTree,
-} from './wbplanviewtreehelper';
+}                                                     from './wbplanviewtreehelper';
 import { find_duplicate_mappings }                    from './wbplanviewhelper';
 import { MappingLine, MappingPath, MappingPathProps } from './wbplanviewcomponents';
 import {
@@ -21,24 +21,24 @@ import {
 	get_max_to_many_value,
 	format_reference_item,
 	show_required_missing_fields,
-}                                                                     from './wbplanviewmodelhelper';
-import navigation                                                              from '../navigation';
-import { get_mapping_line_data_from_mapping_path } from './wbplanviewnavigator';
-import automapper, { AutoMapperResults }           from './automapper';
+}                                                     from './wbplanviewmodelhelper';
+import navigation                                     from '../navigation';
+import { get_mapping_line_data_from_mapping_path }    from './wbplanviewnavigator';
+import automapper, { AutoMapperResults }              from './automapper';
 import {
 	mappings_tree_to_upload_plan,
 	UploadPlan,
 	upload_plan_to_mappings_tree,
-}                                                  from './wbplanviewconverter';
-import React                                                          from 'react';
-import { named_component }                                                           from './statemanagement';
+}                                                     from './wbplanviewconverter';
+import React                                          from 'react';
+import { named_component }                            from './statemanagement';
 import {
 	ChangeSelectElementValueAction,
 	LoadingState, MappingActions,
 	MappingState,
 	PublicWBPlanViewProps,
 	WBPlanViewWrapperProps,
-} from './wbplanview';
+}                                                     from './wbplanview';
 
 
 export type AutomapperScope = Readonly<'automapper' | 'suggestion'>;
@@ -90,8 +90,6 @@ export type GetMappedFieldsBind = (
 export type PathIsMappedBind = (
 	mapping_path_filter: MappingPath,  // a mapping path that would be used as a filter
 ) => boolean;
-
-
 
 
 const max_suggestions_count = 3;  // the maximum amount suggestions to show in the suggestions box
@@ -150,7 +148,7 @@ function FormatValidationResults(props: {
 	</div>;
 }
 
-export const go_back = (props: PublicWBPlanViewProps):void =>
+export const go_back = (props: PublicWBPlanViewProps): void =>
 	navigation.go(`/workbench/${props.wb.id}/`);
 
 
@@ -184,7 +182,7 @@ export function save_plan(
 		console.log('React called `save_plan()` function twice');
 	}
 
-	if(state.changes_made)
+	if (state.changes_made)
 		props.remove_unload_protect();
 
 	go_back(props);
@@ -336,7 +334,7 @@ export function get_mapped_fields(
 	);
 	return typeof mappings_tree === 'object' ?
 		mappings_tree :
-		{}
+		{};
 }
 
 export const path_is_mapped = (lines: MappingLine[], mapping_path: MappingPath): boolean =>

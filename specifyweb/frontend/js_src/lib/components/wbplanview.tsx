@@ -474,7 +474,9 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 
 	//common
 	'CancelMappingAction': (state, action) =>
-		void(go_back(action)) || state,
+		void (
+			go_back(action)
+		) || state,
 
 	//MappingState
 	'OpenMappingScreenAction': (state, action) => {
@@ -916,27 +918,27 @@ function WBPlanView(props: WBPlanViewProps) {
 
 	const unloadProtectIsSet = React.useRef<boolean>(false);
 
-	React.useEffect(()=>{
+	React.useEffect(() => {
 		const changes_made = 'changes_made' in state ?
 			state.changes_made :
 			false;
 
-		if(state.type === 'LoadingState')
+		if (state.type === 'LoadingState')
 			return;
 
-		if(unloadProtectIsSet.current && !changes_made) {
+		if (unloadProtectIsSet.current && !changes_made) {
 			props.remove_unload_protect();
 			unloadProtectIsSet.current = false;
 		}
-		else if(!unloadProtectIsSet.current && changes_made) {
+		else if (!unloadProtectIsSet.current && changes_made) {
 			props.set_unload_protect();
 			unloadProtectIsSet.current = true;
 		}
 
-	},[
+	}, [
 		'changes_made' in state ?
 			state.changes_made :
-			false
+			false,
 	]);
 
 	return state_reducer(<i />, {
@@ -953,8 +955,8 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 	const [upload_plan, setUploadPlan] = React.useState<FalsyUploadPlan>();
 	const [headers, setHeaders] = React.useState<string[]>();
 
-	React.useEffect(()=>{
-		if(schema_loaded)
+	React.useEffect(() => {
+		if (schema_loaded)
 			return;
 
 		schema_fetched_promise.then(schema => {
@@ -966,10 +968,10 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 			throw error;
 		});
 
-	},[schema_loaded]);
+	}, [schema_loaded]);
 
-	React.useEffect(()=>{
-		if(typeof upload_plan !== 'undefined')
+	React.useEffect(() => {
+		if (typeof upload_plan !== 'undefined')
 			return;
 
 		props.wb_template_promise.done(wbtemplate => {
@@ -987,7 +989,7 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 			);
 		});
 
-	},[upload_plan]);
+	}, [upload_plan]);
 
 	if (
 		typeof upload_plan === 'undefined' ||

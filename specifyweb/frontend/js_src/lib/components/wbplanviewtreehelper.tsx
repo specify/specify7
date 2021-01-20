@@ -219,7 +219,7 @@ export const mappings_tree_to_array_of_mappings = (
 				),
 			);
 		else
-			result.push([...path, tree_node_name, tree_node ]);
+			result.push([...path, tree_node_name, tree_node]);
 
 		return result;
 

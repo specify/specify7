@@ -6,8 +6,8 @@
 
 'use strict';
 
-import React from 'react';
-import { ModalDialog }      from './modaldialog';
+import React           from 'react';
+import { ModalDialog } from './modaldialog';
 
 type ErrorBoundaryState =
 	{
@@ -23,7 +23,7 @@ export default class ErrorBoundary extends React.Component<{children: JSX.Elemen
 		has_error: false,
 	};
 
-	componentDidCatch(error: {toString: () => string}, errorInfo: {componentStack: string}):void {
+	componentDidCatch(error: {toString: () => string}, errorInfo: {componentStack: string}): void {
 		console.log(error, errorInfo);
 		this.setState({
 			has_error: true,
@@ -32,7 +32,7 @@ export default class ErrorBoundary extends React.Component<{children: JSX.Elemen
 		});
 	}
 
-	render():JSX.Element {
+	render(): JSX.Element {
 		if (this.state.has_error)
 			return <ModalDialog properties={{
 				title: 'Unexpected Error',

@@ -6,7 +6,7 @@
 
 'use strict';
 
-import data_model_storage            from './wbplanviewmodel';
+import data_model_storage         from './wbplanviewmodel';
 import {
 	format_reference_item,
 	format_tree_rank,
@@ -259,7 +259,7 @@ function mappings_tree_to_upload_plan_table(table_data: object, table_name?: str
 function handle_relationship_field(field_data: any, field: DataModelFieldWritable, field_name: string, table_plan:
 	{wbcols: UploadPlanNode, static: UploadPlanNode, toOne: UploadPlanNode, toMany?: UploadPlanNode | undefined}) {
 	const mapping_table = field.table_name;
-	if(typeof mapping_table === 'undefined')
+	if (typeof mapping_table === 'undefined')
 		throw new Error('Mapping Table is not defined');
 
 	const is_to_one = field.type === 'one-to-one' || field.type === 'many-to-one';

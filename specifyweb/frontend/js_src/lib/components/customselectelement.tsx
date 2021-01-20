@@ -338,7 +338,9 @@ export function CustomSelectElement(
 
 		first_row = show_first_row &&
 			<Option
-				handleClick={(handleClick || undefined)?.bind(null, '0', false)}
+				handleClick={(
+					handleClick || undefined
+				)?.bind(null, '0', false)}
 				is_default={default_option.option_label === '0'}
 			/>;
 

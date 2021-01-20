@@ -27,7 +27,7 @@ interface SchemaModelTableData {
 	readonly LazyCollection: SpecifyFetch
 }
 
-type SchemaModels<T> = Readonly<Record<string,T>>;
+type SchemaModels<T> = Readonly<Record<string, T>>;
 
 export interface Schema {
 	readonly models: SchemaModels<SchemaModelTableData>;
@@ -37,7 +37,7 @@ export interface Schema {
 interface DomainTreeDefinitionItem {
 	readonly get: (field_name: string) => number | string,
 	readonly rget: (field_name: string) => Promise<DomainTreeDefinitionItem>,
-	readonly attributes: {name:string, rankid:number, parent:string}
+	readonly attributes: {name: string, rankid: number, parent: string}
 }
 
 type DomainRequest = Readonly<Record<string, unknown>>
