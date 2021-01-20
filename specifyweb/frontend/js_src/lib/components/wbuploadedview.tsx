@@ -7,16 +7,16 @@
 'use strict';
 
 //@ts-ignore
-import Handsontable                                                                   from 'handsontable';
+import Handsontable                                                                from 'handsontable';
 import '../../css/wbuploaded.css';
-import React                                                                          from 'react';
-import icons                                                from '../icons';
-import createBackboneView, { ReactBackboneExtendBaseProps } from './reactbackboneextend';
-import { ModalDialog }                                      from './modaldialog';
-import { Action, generate_reducer, named_component, State } from './statemanagement';
-import fetch_data_model, { DataModelFetcherReturn }         from './wbplanviewmodelfetcher';
-import schema                                               from '../schema';
-import domain                                                                         from '../domain';
+import React                                                                       from 'react';
+import icons                                                                       from '../icons';
+import createBackboneView, { ReactBackboneExtendBaseProps }                        from './reactbackboneextend';
+import { ModalDialog }                                                             from './modaldialog';
+import { Action, generate_reducer, named_component, State }                        from './statemanagement';
+import fetch_data_model, { DataModelFetcherReturn }                                from './wbplanviewmodelfetcher';
+import schema                                                                      from '../schema';
+import domain                                                                      from '../domain';
 import { specify_resource }                                                        from './wbplanview';
 import { DomainTreeDefinitionItems, Domain as domain_type, Schema as schema_type } from './legacy_types';
 
