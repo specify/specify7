@@ -6,17 +6,63 @@
 
 'use strict';
 
-import data_model_storage from './wbplanviewmodel';
+import data_model_storage            from './wbplanviewmodel';
 import {
 	format_reference_item,
 	format_tree_rank,
 	get_name_from_tree_rank_name, table_is_tree,
 	value_is_reference_item,
 	value_is_tree_rank,
-}                         from './wbplanviewmodelhelper';
+}                                 from './wbplanviewmodelhelper';
+import { MappingsTree }           from './wbplanviewtreehelper';
+import { DataModelFieldWritable } from './wbplanviewmodelfetcher';
 
 
-const upload_plan_processing_functions = (headers: string[]): upload_plan_processing_functions => (
+type UploadPlanUploadTableWbcols = Record<string, string>
+
+type UploadPlanUploadTableStatic = Record<string, string | boolean | number>
+
+type UploadPlanUploadTableToOne = UploadPlanUploadable
+
+type UploadPlanUploadTableToMany = Omit<UploadPlanUploadTableTable, 'toMany'>
+
+type UploadPlanFieldGroupTypes = 'wbcols' | 'static' | 'toOne' | 'toMany'
+
+type UploadPlanUploadTableTableGroup<GROUP_NAME extends UploadPlanFieldGroupTypes> =
+	GROUP_NAME extends 'wbcols' ? UploadPlanUploadTableWbcols :
+		GROUP_NAME extends 'static' ? UploadPlanUploadTableStatic :
+			GROUP_NAME extends 'toOne' ? UploadPlanUploadTableToOne :
+				UploadPlanUploadTableToMany
+
+interface UploadPlanUploadTableTable {
+	wbcols: UploadPlanUploadTableWbcols,
+	static: UploadPlanUploadTableStatic,
+	toOne: UploadPlanUploadTableToOne,
+	toMany: UploadPlanUploadTableToMany,
+}
+
+interface UploadPlanTreeRecord {
+	ranks: UploadPlanTreeRecordRanks,
+}
+
+type UploadPlanTreeRecordRanks = Record<string, string>
+
+type UploadPlanUploadable =
+	{uploadTable: UploadPlanUploadTableTable} |
+	{treeRecord: UploadPlanTreeRecord}
+
+export interface UploadPlan {
+	baseTableName: string,
+	uploadable: UploadPlanUploadable
+}
+
+
+const upload_plan_processing_functions = (headers: string[]): {
+	wbcols: ([key, value]: [string, string]) => [key: string, value: object],
+	static: ([key, value]: [string, string]) => [key: string, value: object],
+	toOne: ([key, value]: [string, UploadPlanUploadTableToOne]) => [key: string, value: object],
+	toMany: ([key, value]: [string, object]) => [key: string, value: object],
+} => (
 	{
 		wbcols: ([key, value]: [key: string, value: string]) => [
 			key,
@@ -32,7 +78,7 @@ const upload_plan_processing_functions = (headers: string[]): upload_plan_proces
 			key,
 			{new_static_column: value},
 		],
-		toOne: ([key, value]: [key: string, value: upload_plan_uploadTable_toOne]) => [
+		toOne: ([key, value]: [key: string, value: UploadPlanUploadTableToOne]) => [
 			key,
 			handle_uploadable(value, headers),
 		],
@@ -49,7 +95,7 @@ const upload_plan_processing_functions = (headers: string[]): upload_plan_proces
 );
 
 // TODO: make this function recognize multiple tree rank fields, once upload plan supports that
-const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers: string[]) =>
+const handle_tree_record = (upload_plan: UploadPlanTreeRecord, headers: string[]) =>
 	Object.fromEntries(
 		Object.entries((
 			(
@@ -70,7 +116,7 @@ const handle_tree_record = (upload_plan: upload_plan_treeRecord, headers: string
 	);
 
 
-const handle_upload_table_table = (upload_plan: upload_plan_uploadTable_table, headers: string[]) =>
+const handle_upload_table_table = (upload_plan: UploadPlanUploadTableTable, headers: string[]) =>
 	Object.fromEntries(Object.entries(upload_plan).reduce(
 		// @ts-ignore
 		(
@@ -79,8 +125,8 @@ const handle_upload_table_table = (upload_plan: upload_plan_uploadTable_table, h
 				plan_node_name,
 				plan_node_data,
 			]: [
-				upload_plan_field_group_types,
-				upload_plan_uploadTable_table_group<upload_plan_field_group_types>
+				UploadPlanFieldGroupTypes,
+				UploadPlanUploadTableTableGroup<UploadPlanFieldGroupTypes>
 			],
 		) =>
 			[
@@ -92,7 +138,7 @@ const handle_upload_table_table = (upload_plan: upload_plan_uploadTable_table, h
 		[],
 	));
 
-const handle_uploadable = (upload_plan: upload_plan_uploadable, headers: string[]): mappings_tree =>
+const handle_uploadable = (upload_plan: UploadPlanUploadable, headers: string[]): MappingsTree =>
 	'treeRecord' in upload_plan ?
 		handle_tree_record(upload_plan.treeRecord, headers) :
 		handle_upload_table_table(upload_plan.uploadTable, headers);
@@ -103,8 +149,11 @@ const handle_uploadable = (upload_plan: upload_plan_uploadable, headers: string[
 * */
 export function upload_plan_to_mappings_tree(
 	headers: string[],
-	upload_plan: upload_plan_structure,  // upload plan
-): upload_plan_to_mappings_tree {
+	upload_plan: UploadPlan,  // upload plan
+): {
+	base_table_name: string,
+	mappings_tree: MappingsTree,
+} {
 
 	if (typeof upload_plan.baseTableName === 'undefined')
 		throw new Error('Upload plan should contain `baseTableName` as a root node');
@@ -117,10 +166,14 @@ export function upload_plan_to_mappings_tree(
 
 
 //TODO: make these functions type safe
+
+interface UploadPlanNode extends Record<string, string | boolean | UploadPlanNode> {
+}
+
 const handle_header = (data: object) =>
 	Object.keys(Object.values(data)[0])[0];
 
-function mappings_tree_to_upload_plan_table(table_data: object, table_name: string, wrap_it = true) {
+function mappings_tree_to_upload_plan_table(table_data: object, table_name?: string, wrap_it = true) {
 
 	if (table_is_tree(table_name)) {
 
@@ -136,10 +189,10 @@ function mappings_tree_to_upload_plan_table(table_data: object, table_name: stri
 	}
 
 	let table_plan: {
-		wbcols: upload_plan_node,
-		static: upload_plan_node,
-		toOne: upload_plan_node,
-		toMany?: upload_plan_node
+		wbcols: UploadPlanNode,
+		static: UploadPlanNode,
+		toOne: UploadPlanNode,
+		toMany?: UploadPlanNode
 	} = {
 		wbcols: {},
 		static: {},
@@ -171,11 +224,11 @@ function mappings_tree_to_upload_plan_table(table_data: object, table_name: stri
 			table_plan = mappings_tree_to_upload_plan_table(table_data, table_name, false);
 
 		else if (
-			typeof data_model_storage.tables[table_name].fields[field_name] !== 'undefined' &&
+			typeof data_model_storage.tables[table_name || '']?.fields[field_name] !== 'undefined' &&
 			typeof table_plan !== 'undefined'
 		) {
 
-			const field = data_model_storage.tables[table_name].fields[field_name];
+			const field = data_model_storage.tables[table_name || '']?.fields[field_name];
 
 			if (field.is_relationship)
 				handle_relationship_field(field_data, field, field_name, table_plan);
@@ -203,20 +256,20 @@ function mappings_tree_to_upload_plan_table(table_data: object, table_name: stri
 
 }
 
-function handle_relationship_field(field_data: any, field: data_model_field_writable, field_name: string, table_plan:
-	{wbcols: upload_plan_node, static: upload_plan_node, toOne: upload_plan_node, toMany?: upload_plan_node | undefined}) {
+function handle_relationship_field(field_data: any, field: DataModelFieldWritable, field_name: string, table_plan:
+	{wbcols: UploadPlanNode, static: UploadPlanNode, toOne: UploadPlanNode, toMany?: UploadPlanNode | undefined}) {
 	const mapping_table = field.table_name;
+	if(typeof mapping_table === 'undefined')
+		throw new Error('Mapping Table is not defined');
+
 	const is_to_one = field.type === 'one-to-one' || field.type === 'many-to-one';
 
-	if (is_to_one && typeof table_plan.toOne[field_name] === 'undefined')  // @ts-ignore
-		table_plan.toOne[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table);
+	if (is_to_one && typeof table_plan.toOne[field_name] === 'undefined')
+		table_plan.toOne[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table) as UploadPlanNode;
 
 	else {
-		if (typeof table_plan.toMany === 'undefined')
-			table_plan.toMany = {};
-
-		if (typeof table_plan.toMany[field_name] === 'undefined')  // @ts-ignore
-			table_plan.toMany[field_name] = mappings_tree_to_upload_plan_table(field_data, mapping_table);
+		table_plan.toMany ??= {};
+		table_plan.toMany[field_name] ??= mappings_tree_to_upload_plan_table(field_data, mapping_table) as UploadPlanNode;
 	}
 }
 

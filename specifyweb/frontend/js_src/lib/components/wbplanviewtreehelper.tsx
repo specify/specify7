@@ -6,11 +6,43 @@
 
 'use strict';
 
+
+import { MappingPath, MappingType } from './wbplanviewmapper';
+
+export interface MappingsTree extends Readonly<Record<string, MappingsTree | string | Record<MappingType, string>>> {
+}
+
+interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
+}
+
 /* Returns cross-section of full_mappings_tree and node_mappings_tree */
 export function traverse_tree(
-	full_mappings_tree: mappings_tree,  // full tree with various branches
-	node_mappings_tree: mappings_tree | string,  // a tree several levels deep with only a single branch
-): traversed_tree {
+	full_mappings_tree: MappingsTree,  // full tree with various branches
+	node_mappings_tree: MappingsTree | string,  // a tree several levels deep with only a single branch
+): string | MappingsTree | undefined | false /*
+* A cross-section of two trees
+* Example:
+* if full_mappings_tree is like this:
+* 	Accession
+* 		Accession Agents
+* 			#1
+* 				Agent
+* 					Agent Name
+* 			#2
+* 				Agent
+* 					Agent Type
+* 					Agent Name
+* 				Remarks
+* And node_mappings_tree is like this:
+* 	Accession
+* 		Accession Agents
+* 			#2
+* This function will return the following object:
+* 	Agent
+* 		Agent Type
+* 		Agent Name
+* 	Remarks
+* */ {
 
 	if (typeof node_mappings_tree === 'undefined')
 		return full_mappings_tree;
@@ -19,7 +51,7 @@ export function traverse_tree(
 	if (typeof node_mappings_tree === 'string')
 		return full_mappings_tree[target_key];
 	else {
-		target_key = Object.keys(node_mappings_tree)[0] as string;
+		target_key = Object.keys(node_mappings_tree)[0];
 
 		if (typeof target_key === 'undefined' || target_key === '')
 			return full_mappings_tree;
@@ -28,7 +60,7 @@ export function traverse_tree(
 	if (typeof full_mappings_tree[target_key] !== 'object')
 		return false;
 
-	return traverse_tree(full_mappings_tree[target_key] as mappings_tree, node_mappings_tree[target_key]);
+	return traverse_tree(full_mappings_tree[target_key] as MappingsTree, node_mappings_tree[target_key]);
 
 }
 
@@ -36,25 +68,79 @@ export function traverse_tree(
 export const deep_merge_object = (
 	target: any,  // tree that is used as a basis
 	source: object,  // tree that is used as a source
-): merged_tree =>
-	typeof source === 'object' ?
-		Object.entries(source).reduce((target, [source_property, source_value]) => {
+): Record<string, unknown> => /*
+* For example, if target is:
+* 	Accession
+* 		Accession Agents
+* 			#1
+* 				Agent
+* 				Remarks
+* And source is:
+* 	Accession
+* 		Accession Agents
+* 			#2
+* 				Agent
+* Resulting tree is:
+* 	Accession
+* 		Accession Agents
+* 			#1
+* 				Agent
+* 					Remarks
+* 			#2
+* 				Agent
+* */ typeof source === 'object' ?
+	Object.entries(source).reduce((target, [source_property, source_value]) => {
 
-			if (typeof target[source_property] === 'undefined')
-				target[source_property] = source_value;
-			else if (typeof target === 'object')
-				target[source_property] = deep_merge_object(target[source_property], source_value);
+		if (typeof target[source_property] === 'undefined')
+			target[source_property] = source_value;
+		else if (typeof target === 'object')
+			target[source_property] = deep_merge_object(target[source_property], source_value);
 
-			return target;
+		return target;
 
-		}, target) :
-		target;
+	}, target) :
+	target;
 
 /* Converts an array to tree */
 export function array_to_tree(
 	array: any[],  // array to be converted
-	has_headers: boolean = false,  // whether an array has headers in it
-): flat_tree {
+	has_headers = false,  // whether an array has headers in it
+): FlatTree /*
+* Example:
+* 	if
+* 		array is ['accession', 'accession agents', '#1, 'agent', 'first name']
+* 		has_headers is False
+* 	then result is {
+* 		'accession': {
+* 			'accession_agents': {
+* 				'#1': {
+* 					'agent': {
+* 						'first_name': {
+*
+* 						},
+* 					}
+* 				}
+* 			}
+* 		}
+* 	}
+*
+* 	if
+* 		array is ['accession', 'accession agents', '#1, 'agent', 'first name', 'existing_header', 'Agent 1 First Name']
+* 		has_headers is True
+* 	then result is {
+* 		'accession': {
+* 			'accession_agents': {
+* 				'#1': {
+* 					'agent': {
+* 						'first_name': {
+* 							'existing_header': 'Agent 1 First Name',
+* 						},
+* 					}
+* 				}
+* 			}
+* 		}
+* 	}
+* */ {
 
 	if (array.length === 0)
 		return {};
@@ -73,8 +159,8 @@ export function array_to_tree(
 * The inverse of mappings_tree_to_array_of_mappings
 * */
 export function array_of_mappings_to_mappings_tree(
-	array_of_mappings: mapping_path[],  // array of strings (branches of the tree) that are going to be merged into a tree
-): mappings_tree  // Final tree
+	array_of_mappings: MappingPath[],  // array of strings (branches of the tree) that are going to be merged into a tree
+): MappingsTree  // Final tree
 /*
 * For example if array is:
 * 	Accession, Accession Agents, #1, Agent, First Name
@@ -106,9 +192,9 @@ export function array_of_mappings_to_mappings_tree(
 * The inverse of array_of_mappings_to_mappings_tree
 * */
 export const mappings_tree_to_array_of_mappings = (
-	mappings_tree: mappings_tree,  // mappings tree
-	path: mapping_path = [],  // used in a recursion to store intermediate path
-): mapping_path[] /* array of arrays of string */ =>
+	mappings_tree: MappingsTree,  // mappings tree
+	path: MappingPath = [],  // used in a recursion to store intermediate path
+): MappingPath[] /* array of arrays of string */ =>
 	/*
 	* For example, if mappings_tree is:
 	* 	Accession
@@ -123,7 +209,7 @@ export const mappings_tree_to_array_of_mappings = (
 	* 	Accession, Accession Agents, #1, Agent, Last Name
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
-	Object.entries(mappings_tree).reduce((result: mapping_path[], [tree_node_name, tree_node]) => {
+	Object.entries(mappings_tree).reduce((result: MappingPath[], [tree_node_name, tree_node]) => {
 
 		if (typeof tree_node === 'object')
 			result.push(
@@ -133,7 +219,7 @@ export const mappings_tree_to_array_of_mappings = (
 				),
 			);
 		else
-			result.push([...path, tree_node_name, tree_node]);
+			result.push([...path, tree_node_name, tree_node ]);
 
 		return result;
 

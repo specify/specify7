@@ -6,15 +6,23 @@
 
 'use strict';
 
-import data_model_storage from './wbplanviewmodel';
+import data_model_storage                from './wbplanviewmodel';
+import {
+	DataModelField,
+	DataModelFields,
+	DataModelNonRelationship,
+	DataModelRelationship,
+}                                        from './wbplanviewmodelfetcher';
+import { MappingPath, RelationshipType } from './wbplanviewmapper';
+import { MappingsTree }                  from './wbplanviewtreehelper';
 
 /* fetch fields for a table */
 const get_table_fields = (
 	table_name: string,  // the name of the table to fetch the fields for
 	filter__is_relationship: boolean | -1 = -1,  // whether fields are relationships
 	filter__is_hidden: boolean | -1 = -1,  // whether field is hidden
-): [field_name: string, field_data: data_model_field][] =>
-	Object.entries(data_model_storage.tables[table_name].fields as data_model_fields).filter(([, {
+): [field_name: string, field_data: DataModelField][] =>
+	Object.entries(data_model_storage.tables[table_name].fields as DataModelFields).filter(([, {
 			is_relationship,
 			is_hidden,
 		}]) =>
@@ -35,7 +43,7 @@ export const get_table_non_relationship_fields = (
 		table_name,
 		false,
 		filter__is_hidden,
-	) as [relationship_name: string, relationship_data: data_model_non_relationship][];
+	) as [relationship_name: string, relationship_data: DataModelNonRelationship][];
 
 /* fetch relationships for a table */
 export const get_table_relationships = (
@@ -46,34 +54,32 @@ export const get_table_relationships = (
 		table_name,
 		true,
 		filter__is_hidden,
-	) as [relationship_name: string, relationship_data: data_model_relationship][];
+	) as [relationship_name: string, relationship_data: DataModelRelationship][];
 
 /* Returns whether a table has tree ranks */
 export const table_is_tree = (
-	table_name: string,
+	table_name?: string,
 ): boolean /* whether a table has tree ranks */ =>  // the name of the table to check
-	typeof data_model_storage.ranks[table_name] !== 'undefined';
+	typeof data_model_storage.ranks[table_name || ''] !== 'undefined';
+//typeof table_name !== 'undefined' && typeof data_model_storage.ranks[table_name] !== 'undefined';
 
 /* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many) */
 export const relationship_is_to_many = (
-	relationship_type?: relationship_type | '',
+	relationship_type?: RelationshipType | '',
 ): boolean /* whether relationship is a -to-many */ =>
-	typeof relationship_type !== 'undefined' &&
-	relationship_type.indexOf('-to-many') !== -1;
+	(relationship_type ?? '').indexOf('-to-many') !== -1;
 
 /* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
 export const value_is_reference_item = (
 	value?: string,  // the value to use
 ): boolean /* whether a value is a -to-many reference item */ =>
-	typeof value !== 'undefined' &&
-	value.substr(0, data_model_storage.reference_symbol.length) === data_model_storage.reference_symbol;
+	value?.substr(0, data_model_storage.reference_symbol.length) === data_model_storage.reference_symbol || false;
 
 /* Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
 export const value_is_tree_rank = (
 	value: string,  // the value to use
 ): boolean /* whether a value is a tree rank */ =>
-	typeof value !== 'undefined' &&
-	value.substr(0, data_model_storage.tree_symbol.length) === data_model_storage.tree_symbol;
+	value?.substr(0, data_model_storage.tree_symbol.length) === data_model_storage.tree_symbol || false;
 
 /*
 * Returns index from a complete reference item value (e.x #1 => 1)
@@ -119,7 +125,7 @@ export const get_max_to_many_value = (
 export const format_reference_item = (
 	index: number,  // the index to use
 ): string /* a complete reference item from an index */ =>
-	data_model_storage.reference_symbol + index;
+	`${data_model_storage.reference_symbol}${index}`;
 
 /*
 * Returns a complete tree rank name from a tree rank name (e.x Kingdom => $Kingdom)
@@ -128,10 +134,10 @@ export const format_reference_item = (
 export const format_tree_rank = (
 	rank_name: string,  // tree rank name to use
 ): string /* a complete tree rank name */ =>
-	data_model_storage.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase();
+	`${data_model_storage.tree_symbol}${rank_name[0].toUpperCase()}${rank_name.slice(1).toLowerCase()}`;
 
 export const mapping_path_to_string = (
-	mapping_path: mapping_path,
+	mapping_path: MappingPath,
 ) =>
 	mapping_path.join(data_model_storage.path_join_symbol);
 
@@ -140,13 +146,13 @@ export const mapping_path_to_string = (
 export function show_required_missing_fields(
 	table_name: string,  // Official name of the current base table (from data model)
 	// Result of running mappings.get_mappings_tree() - an object with information about now mapped fields
-	mappings_tree?: mappings_tree,
-	previous_table_name: string = '',  // used internally in a recursion. Previous table name
-	path: mapping_path = [],  // used internally in a recursion. Current mapping path
+	mappings_tree?: MappingsTree,
+	previous_table_name = '',  // used internally in a recursion. Previous table name
+	path: MappingPath = [],  // used internally in a recursion. Current mapping path
 	results: string[][] = [],  // used internally in a recursion. Save results
 ): string[][] /* array of mapping paths (array) */ {
 
-	const table_data = data_model_storage.tables[table_name] as data_model_table;
+	const table_data = data_model_storage.tables[table_name];
 
 	if (typeof mappings_tree === 'undefined')
 		return results;
@@ -157,10 +163,10 @@ export function show_required_missing_fields(
 	if (value_is_reference_item(list_of_mapped_fields[0])) {
 		list_of_mapped_fields.forEach(mapped_field_name => {
 			const local_path = [...path, mapped_field_name];
-			if (typeof mappings_tree[mapped_field_name] !== 'undefined' && typeof mappings_tree[mapped_field_name] !== 'string')
+			if (typeof mappings_tree[mapped_field_name] === 'object')
 				show_required_missing_fields(
 					table_name,
-					mappings_tree[mapped_field_name] as mappings_tree,
+					mappings_tree[mapped_field_name] as MappingsTree,
 					previous_table_name,
 					local_path,
 					results,
@@ -185,7 +191,7 @@ export function show_required_missing_fields(
 				if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
 					show_required_missing_fields(
 						table_name,
-						mappings_tree[complimented_rank_name] as mappings_tree,
+						mappings_tree[complimented_rank_name] as MappingsTree,
 						previous_table_name,
 						local_path,
 						results,
@@ -219,7 +225,7 @@ export function show_required_missing_fields(
 					previous_relationship_name = local_path.slice(-3)[0];
 
 				const parent_relationship_data =
-					data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as data_model_relationship;
+					data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as DataModelRelationship;
 
 				if (
 					(  // disable circular relationships
@@ -238,7 +244,7 @@ export function show_required_missing_fields(
 			if (is_mapped)
 				show_required_missing_fields(
 					field_data.table_name,
-					mappings_tree[field_name] as mappings_tree,
+					mappings_tree[field_name] as MappingsTree,
 					table_name,
 					local_path,
 					results,
@@ -261,21 +267,27 @@ export const is_circular_relationship_forwards = ({
 	table_name,
 	relationship_key,
 	current_mapping_path_part,
-}: is_circular_relationship_forwards_props) =>
-	typeof table_name !== 'undefined' &&
-	typeof relationship_key !== 'undefined' &&
-	typeof data_model_storage.tables[table_name].fields[relationship_key] !== 'undefined' &&
-	data_model_storage.tables[table_name].fields[relationship_key].foreign_name === current_mapping_path_part;
+}: {
+	table_name?: string,
+	relationship_key?: string,
+	current_mapping_path_part?: string,
+}) =>
+	data_model_storage.tables[table_name || '']?.
+		fields[relationship_key || '']?.
+		foreign_name === current_mapping_path_part || false;
 
 export const is_circular_relationship_backwards = ({
 	foreign_name,
 	parent_table_name,
 	relationship_key,
-}: is_circular_relationship_backwards_props) =>
-	typeof foreign_name !== 'undefined' &&
-	typeof parent_table_name !== 'undefined' &&
-	typeof data_model_storage.tables[parent_table_name].fields[foreign_name] !== 'undefined' &&
-	data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name === relationship_key;
+}: {
+	foreign_name?: string,
+	parent_table_name?: string,
+	relationship_key?: string,
+}) =>
+	data_model_storage.tables[parent_table_name || '']?.
+		fields[foreign_name || ''].
+		foreign_name === relationship_key || false;
 
 export const is_circular_relationship = ({
 	target_table_name,
@@ -284,15 +296,20 @@ export const is_circular_relationship = ({
 	relationship_key,
 	current_mapping_path_part,
 	table_name,
-}: is_circular_relationship_props) =>
+}: {
+	target_table_name?: string,
+	parent_table_name?: string,
+	foreign_name?: string,
+	relationship_key?: string,
+	current_mapping_path_part?: string,
+	table_name?: string,
+}) =>
 	target_table_name === parent_table_name &&
 	(
 		is_circular_relationship_backwards({parent_table_name, foreign_name, relationship_key}) ||
 		is_circular_relationship_forwards({table_name, relationship_key, current_mapping_path_part})
 	);
 
-export const is_too_many_inside_of_too_many = (type?: relationship_type, parent_type?: relationship_type) =>
-	typeof type !== 'undefined' &&
-	typeof parent_type !== 'undefined' &&
+export const is_too_many_inside_of_too_many = (type?: RelationshipType, parent_type?: RelationshipType) =>
 	relationship_is_to_many(type) &&
 	relationship_is_to_many(parent_type);

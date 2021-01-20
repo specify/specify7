@@ -10,6 +10,124 @@ import icons               from '../icons';
 import React               from 'react';
 import { named_component } from './statemanagement';
 
+
+export type CustomSelectType =
+	'opened_list' /*
+	* used in the mapping view
+	* list without an `input` box but with always opened list of options and a table name on top
+	* has onChange event */
+
+	| 'closed_list' /*
+	* used in mapping lines
+	* list with an `input` box and a list of options that can be opened
+	* has onOpen/onClose and onChange events */
+
+	| 'preview_list' /*
+	* used in the mapping validation results
+	* list with an `input` box but with no list of options
+	* has no events */
+
+	| 'suggestion_list' /*
+	* used to display a list of automapper suggestions
+	* like opened_list, but without a table name on top
+	* has onChange event: */
+
+	| 'suggestion_line_list' /*
+	* used inside `suggestion_list` to display a mapping path element for a single suggestion line
+	* list with an `input` box but with no list of options
+	* has no events: */
+
+	| 'base_table_selection_list' /*
+	* used for base table selection
+	* like opened_list, but without a header and option group labels
+	* has onChange event */;
+
+export type CustomSelectSubtype =
+	'simple'  // for fields and relationships
+	| 'to_many'  // for reference items
+	| 'tree'  // for tree ranks
+
+interface CustomSelectElementIconProps {
+	// whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
+	readonly is_relationship?: boolean,
+	readonly is_default?: boolean,  // whether the option is now selected
+	readonly table_name?: string,  // the name of the table this option represents
+	// the name of the option. Would be used as a label (visible to the user)
+	readonly option_label?: string | JSX.Element,
+	// True if option can be selected. False if option cannot be selected because it was already selected
+	readonly is_enabled?: boolean,
+}
+
+interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
+	readonly handleClick?: () => void,
+}
+
+export interface CustomSelectElementDefaultOptionProps {
+	readonly option_name: string
+	readonly option_label: string | JSX.Element
+	readonly table_name?: string
+	readonly is_relationship?: boolean
+}
+
+export type CustomSelectElementOptions = Record<string, CustomSelectElementOptionProps>
+
+interface CustomSelectElementOptionGroupProps {
+	readonly select_group_name?: string,  // group's name (used for styling)
+	readonly select_group_label?: string,  // group's label (shown to the user)
+	// list of options data. See custom_select_element.get_select_option_html() for the data structure
+	readonly select_options_data: CustomSelectElementOptions
+	readonly handleClick?: (
+		new_value: string,
+		is_relationship: boolean,
+	) => void,
+}
+
+type CustomSelectElementOptionGroups = Record<string, CustomSelectElementOptionGroupProps>
+
+interface CustomSelectElementPropsBase {
+	readonly select_label?: string,  // the label to use for the element
+	readonly custom_select_type: CustomSelectType,
+	readonly custom_select_subtype?: CustomSelectSubtype,
+	readonly default_option?: CustomSelectElementDefaultOptionProps,
+	readonly is_open: boolean,
+	readonly table_name?: string,
+
+	readonly handleOpen?: () => void,
+	readonly field_names?: string[],
+
+	readonly handleChange?: (
+		new_value: string,
+		is_relationship: boolean,
+	) => void,
+	readonly handleClose?: () => void,
+	readonly autoscroll?: boolean,
+	readonly custom_select_option_groups?: CustomSelectElementOptionGroups,
+	readonly automapper_suggestions?: JSX.Element,
+}
+
+export interface CustomSelectElementPropsClosed extends CustomSelectElementPropsBase {
+	readonly is_open: false,
+	readonly handleOpen?: () => void,
+	readonly field_names: string[],
+}
+
+export interface CustomSelectElementPropsOpenBase extends CustomSelectElementPropsBase {
+	readonly is_open: true,
+	readonly handleChange?: (
+		new_value: string,
+		is_relationship: boolean,
+	) => void
+	readonly handleClose?: () => void,
+	readonly autoscroll?: boolean,
+}
+
+interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase {
+	// list of option group objects. See custom_select_element.get_select_group_html() for more info
+	readonly custom_select_option_groups: CustomSelectElementOptionGroups,
+	readonly automapper_suggestions?: JSX.Element,
+}
+
+
 const Icon = React.memo(named_component(({
 	is_relationship = false,
 	is_default = false,
@@ -109,30 +227,30 @@ const OptionGroup = named_component(({
 			return <Option
 				key={option_name}
 				handleClick={
-					typeof handleClick === 'undefined' ?
-						undefined :
-						handleClick.bind(
-							null,
-							option_name,
-							typeof selection_option_data.is_relationship !== 'undefined' &&
-							selection_option_data.is_relationship,
-						)
+					handleClick?.bind(
+						null,
+						option_name,
+						typeof selection_option_data.is_relationship !== 'undefined' &&
+						selection_option_data.is_relationship,
+					)
 				}
 				{...selection_option_data}
 			/>;
 		})}
 	</span>, 'OptionGroup');
 
-const ShadowListOfOptions = React.memo(named_component(({field_names}: ShadowListOfOptionsProps) =>
+const ShadowListOfOptions = React.memo(named_component(({field_names}: {
+	readonly field_names: string[],
+}) =>
 	<ul className="custom_select_element_shadow_list">{
 		field_names.map((field_name, index) =>
 			<li key={index}>{field_name}</li>,
 		)
 	}</ul>, 'ShadowListOfOptions'));
 
-const intractable_select_types: custom_select_type[] = ['preview_list', 'suggestion_line_list'];
-const select_types_with_headers: custom_select_type[] = ['opened_list', 'base_table_selection_list'];
-const select_types_with_first_row: custom_select_type[] = ['closed_list', 'preview_list', 'suggestion_line_list'];
+const intractable_select_types: CustomSelectType[] = ['preview_list', 'suggestion_line_list'];
+const select_types_with_headers: CustomSelectType[] = ['opened_list', 'base_table_selection_list'];
+const select_types_with_first_row: CustomSelectType[] = ['closed_list', 'preview_list', 'suggestion_line_list'];
 
 /* Generates a custom select element */
 export function CustomSelectElement(
@@ -155,19 +273,18 @@ export function CustomSelectElement(
 		handleOpen,
 		handleClose,
 		automapper_suggestions,
-	}: CustomSelectElementProps,
-):JSX.Element {
+	}: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen,
+): JSX.Element {
 
 	// const list_of_options = React.useRef<HTMLElement>(null);
 
 	const option_is_intractable = intractable_select_types.indexOf(custom_select_type) === -1;
 
-	const handleClick = option_is_intractable && typeof handleChange === 'function' ?
-		(new_value: string, is_relationship: boolean) =>
-			new_value === default_option.option_name ?
-				undefined :
-				handleChange(new_value, is_relationship) :
-		undefined;
+	const handleClick = option_is_intractable &&
+		(
+			(new_value: string, is_relationship: boolean) =>
+				new_value !== default_option.option_name && handleChange?.(new_value, is_relationship)
+		);
 
 	let header;
 	let preview;
@@ -214,16 +331,14 @@ export function CustomSelectElement(
 
 		const show_first_row = is_open &&
 			option_is_intractable &&
-			custom_select_subtype !== 'tree' &&
-			default_option.option_name !== '0';
+			!(
+				custom_select_subtype === 'tree' ||
+				default_option.option_name === '0'
+			);
 
 		first_row = show_first_row &&
 			<Option
-				handleClick={
-					typeof handleClick === 'undefined' ?
-						undefined :
-						handleClick.bind(null, '0', false)
-				}
+				handleClick={(handleClick || undefined)?.bind(null, '0', false)}
 				is_default={default_option.option_label === '0'}
 			/>;
 
@@ -233,12 +348,12 @@ export function CustomSelectElement(
 	}
 
 	const groups = is_open && option_is_intractable &&
-		Object.entries(custom_select_option_groups!).filter(([, {select_options_data}]) =>
+		Object.entries(custom_select_option_groups || {}).filter(([, {select_options_data}]) =>
 			Object.keys(select_options_data).length !== 0,
 		).map(([select_group_name, select_group_data], index) =>
 			<OptionGroup
 				key={index}
-				handleClick={handleClick}
+				handleClick={handleClick || undefined}
 				select_group_name={select_group_name}
 				{...select_group_data}
 			/>,
@@ -289,7 +404,10 @@ export const SuggestionBox = named_component(({
 	select_options_data,
 	handleAutomapperSuggestionSelection,
 	...props
-}: SuggestionBoxProps) =>
+}: Partial<CustomSelectElementPropsOpen> & {
+	readonly select_options_data: CustomSelectElementOptions,
+	readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
+}) =>
 	<CustomSelectElement
 		custom_select_type='suggestion_list'
 		custom_select_subtype='simple'

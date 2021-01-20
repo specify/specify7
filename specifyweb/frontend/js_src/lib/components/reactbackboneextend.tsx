@@ -12,6 +12,11 @@ import React         from 'react';
 import ReactDOM      from 'react-dom';
 import ErrorBoundary from './errorboundary';
 
+export interface ReactBackboneExtendBaseProps {
+	el: HTMLElement,
+	remove: () => void,
+}
+
 export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS extends ReactBackboneExtendBaseProps, COMPONENT_PROPS>({
 	module_name,
 	class_name,
@@ -21,7 +26,16 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS extends ReactBackboneExtendBas
 	remove,
 	Component,
 	get_component_props,
-}: ReactBackboneExtendProps<CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>): Record<string, unknown> =>
+}: {
+	module_name: string,
+	class_name: string,
+	initialize: (self: BACKBONE_PROPS, view_props: CONSTRUCTOR_PROPS) => void,
+	render_pre?: (self: BACKBONE_PROPS) => void,
+	render_post?: (self: BACKBONE_PROPS) => void,
+	remove?: (self: BACKBONE_PROPS) => void,
+	Component: (props: COMPONENT_PROPS) => JSX.Element,
+	get_component_props: (self: BACKBONE_PROPS) => COMPONENT_PROPS
+}): Record<string, unknown> =>
 	Backbone.View.extend({
 		__name__: module_name,
 		className: class_name,

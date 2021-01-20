@@ -11,10 +11,16 @@ import ReactDOM            from 'react-dom';
 import $                   from 'jquery';
 import { named_component } from './statemanagement';
 
+interface ModalDialogBaseProps {
+	readonly children: JSX.Element | JSX.Element[] | string,
+}
+
 function ModalDialogContent({
 	children,
 	onLoadCallback,
-}: ModalDialogContentProps) {
+}: ModalDialogBaseProps & {
+	readonly onLoadCallback?: () => void | (() => void),
+}) {
 
 	onLoadCallback && React.useEffect(onLoadCallback, []);
 
@@ -29,8 +35,7 @@ function close_dialog($dialog: JQuery<HTMLElement>, resize: () => void, onCloseC
 	ReactDOM.unmountComponentAtNode($dialog[0]);
 	window.removeEventListener('resize', resize);
 	$dialog.dialog('destroy');
-	if (typeof onCloseCallback === 'function')
-		onCloseCallback();
+	onCloseCallback?.();
 }
 
 export const ModalDialog = React.memo(named_component(({
@@ -38,7 +43,11 @@ export const ModalDialog = React.memo(named_component(({
 	properties,
 	onLoadCallback,
 	children,
-}: ModalDialogProps) => {
+}: ModalDialogBaseProps & {
+	readonly onLoadCallback?: (dialog: JQuery<HTMLElement>) => void | (() => void),
+	readonly onCloseCallback?: () => void
+	readonly properties?: Readonly<Record<string, unknown>>,
+}) => {
 
 	const dialog_ref = React.useRef<HTMLDivElement>(null);
 	const [$dialog, setDialog] = React.useState<JQuery<HTMLElement> | undefined>();

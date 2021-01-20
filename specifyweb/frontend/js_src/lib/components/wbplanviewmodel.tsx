@@ -6,7 +6,16 @@
 
 'use strict';
 
-const data_model_storage: data_model_storage = {
+import { DataModelListOfTables, DataModelRanks, DataModelTables } from './wbplanviewmodelfetcher';
+
+const data_model_storage: {
+	reference_symbol: string;
+	tree_symbol: string;
+	path_join_symbol: string;
+	tables: DataModelTables;
+	list_of_base_tables: DataModelListOfTables;
+	ranks: DataModelRanks;
+} = {
 
 	// each this can be modified to a single symbol or several symbols
 	reference_symbol: '#',  // prefix for -to-many indexes (used behind the scenes & is shown to the user)

@@ -6,15 +6,68 @@
 
 'use strict';
 
-import React                                  from 'react';
-import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import { named_component }                    from './statemanagement';
+import React                                 from 'react';
+import {
+	CustomSelectElement, CustomSelectElementDefaultOptionProps, CustomSelectElementOptions,
+	CustomSelectElementPropsClosed,
+	CustomSelectElementPropsOpenBase,
+	SuggestionBox,
+}                                            from './customselectelement';
+import { named_component }                   from './statemanagement';
+import { AutomapperSuggestion, MappingType } from './wbplanviewmapper';
+import { DataModelListOfTables }             from './wbplanviewmodelfetcher';
+
+
+export interface HtmlGeneratorFieldData {
+	readonly field_friendly_name: string,
+	readonly is_enabled?: boolean,
+	readonly is_required?: boolean,
+	readonly is_hidden?: boolean,
+	readonly is_default?: boolean,
+	readonly is_relationship?: boolean,
+	readonly table_name?: string,
+}
+
+interface MappingLineBaseProps {
+	readonly line_data: MappingElementProps[],
+	readonly mapping_type: MappingType,
+	readonly header_name: string,
+	readonly is_focused: boolean,
+	readonly handleFocus: () => void,
+	readonly handleClearMapping: () => void,
+	readonly handleStaticHeaderChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+}
+
+export interface MappingPathProps {
+	readonly mapping_line_data: MappingElementProps[],
+}
+
+type HtmlGeneratorFieldsData = Readonly<Record<string, HtmlGeneratorFieldData>>
+
+export type MappingElementProps = (
+	Omit<CustomSelectElementPropsOpenBase, 'default_value' | 'automapper_suggestions'> & {
+	readonly fields_data: HtmlGeneratorFieldsData,
+	readonly automapper_suggestions?: AutomapperSuggestion[],
+	readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void,
+}
+	) | (
+	Omit<CustomSelectElementPropsClosed, 'default_value' | 'field_names'> & {
+	readonly fields_data: HtmlGeneratorFieldsData,
+}
+	);
+
 
 /* Generates a list of tables */
 export const ListOfBaseTables = React.memo(named_component(({
 	list_of_tables,
 	handleChange,
-}: ListOfBaseTablesProps) =>
+}: {
+	list_of_tables: DataModelListOfTables
+	handleChange: (
+		new_value: string,
+		is_relationship: boolean,
+	) => void,
+}) =>
 	<MappingElement
 		is_open={true}
 		handleChange={handleChange}
@@ -45,11 +98,19 @@ export const MappingLine = named_component(({
 	is_focused,
 	handleFocus,
 	handleClearMapping,
-	handleStaticHeaderChange = () => {
-	},
-}: MappingLineProps) =>
-	<div className={`wbplanview_mapping_line ${is_focused ? 'wbplanview_mapping_line_focused' : ''}`}
-		 onClick={handleFocus}>
+	handleStaticHeaderChange,
+}: MappingLineBaseProps & (
+	{
+		readonly mapping_type: Exclude<MappingType, 'new_static_column'>,
+	} | {
+	readonly mapping_type: 'new_static_column',
+	readonly handleStaticHeaderChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+}
+	)) =>
+	<div
+		className={`wbplanview_mapping_line ${is_focused ? 'wbplanview_mapping_line_focused' : ''}`}
+		onClick={handleFocus}
+	>
 		<div className="wbplanview_mapping_line_controls">
 			<button className="wbplanview_mapping_line_delete" title="Clear mapping" onClick={handleClearMapping}>
 				<img src="../../../static/img/discard.svg" alt="Clear mapping" />
@@ -101,7 +162,7 @@ function MappingElement(
 		[field_group_label, {} as CustomSelectElementOptions],
 	));
 
-	let default_option: CustomSelectElementDefaultOptionProps | undefined;
+	let default_option: CustomSelectElementDefaultOptionProps | undefined = undefined;
 
 	const field_names: string[] = [];
 
@@ -143,13 +204,12 @@ function MappingElement(
 			field_names.push(field_friendly_name);
 	});
 
-	if (typeof default_option === 'undefined')
-		default_option = {
-			option_name: '0',
-			option_label: '0',
-			table_name: '',
-			is_relationship: false,
-		};
+	default_option ??= {
+		option_name: '0',
+		option_label: '0',
+		table_name: '',
+		is_relationship: false,
+	};
 
 	return props.is_open ?
 		<CustomSelectElement
@@ -206,5 +266,8 @@ function MappingElement(
 const StaticHeader = named_component(({
 	default_value = '',
 	onChange: handleChange,
-}: StaticHeaderProps) =>
+}: {
+	default_value: string,
+	onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
+}) =>
 	<textarea value={default_value} onChange={handleChange} />, 'StaticHeader');

@@ -7,6 +7,7 @@
 'use strict';
 
 import { mapping_path_to_string } from './wbplanviewmodelhelper';
+import { MappingPath }            from './wbplanviewmapper';
 
 /*
 * Get a friendly name from the field. (Converts Camel Case to human-readable name and fixes some errors)
@@ -33,7 +34,23 @@ export const get_friendly_name = (
 export function find_array_divergence_point<T>(
 	source: T[],  // the source array to use in the comparison
 	search: T[],  // the search array to use in the comparison
-): divergence_point {
+): number /*
+* Returns 0 if search array is empty
+* Returns -1 if source array is empty or source array is smaller than the search array
+* Examples:
+* 	If:
+* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+* 		search is []
+* 	returns 0
+* 	If:
+* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+* 		search is ['Accession','Accession Agents',]
+* 	returns 2
+* 	If
+* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+* 		search is ['Accession','Accession Agents','#1']
+* 	returns 3
+* */ {
 
 	if (source === null || search === null)
 		return -1;
@@ -66,9 +83,29 @@ export function find_array_divergence_point<T>(
 * same mapping, the indexes of the second and the third lines are returned)
 * */
 export const find_duplicate_mappings = (
-	array_of_mappings: mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
+	array_of_mappings: MappingPath[],  // array of mappings as returned by mappings.get_array_of_mappings()
 	focused_line: number | false,
-): duplicate_mappings => {
+): number[] => /*
+* Array of duplicate indexes
+* Example:
+* 	if
+* 		array_of_mappings is [
+* 			['Accession','Accession Number','existing header,'Accession #;],
+* 			['Catalog Number','existing header','cat num'],
+* 			['Accession','Accession Number'],
+* 		]
+* 		has_headers is True
+* 	then return [2]
+* 	if
+* 		array_of_mappings is [
+* 			['Start Date'],
+* 			['End Date'],
+* 			['Start Date'],
+* 			['Start Date'],
+* 		]
+* 		has_headers is False
+* 	then return [2,3]
+* */ {
 
 	const duplicate_indexes: number[] = [];
 

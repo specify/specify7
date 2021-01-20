@@ -7,6 +7,22 @@
 
 'use strict';
 
+export interface Action<action_name extends string> {
+	type: action_name
+}
+
+export interface State<state_name extends string> {
+	type: state_name
+}
+
+type GenerateReducerDictionary<STATE, ACTION extends Action<string>> = {
+	[action_type in ACTION['type']]: (state: STATE, action: Extract<ACTION, Action<action_type>>) => STATE
+}
+
+type GenerateDispatchDictionary<ACTION extends Action<string>> = {
+	[action_type in ACTION['type']]: (action: Extract<ACTION, Action<action_type>>) => void
+}
+
 function assertExhaustive(case_type: never): never {
 	throw new Error(`Non-exhaustive switch. Unhandled case:${case_type as string}`);
 }
@@ -21,7 +37,7 @@ export function named_component<T>(component_function: T, component_name: string
 
 export const generate_reducer = <STATE,
 	ACTION extends Action<string>>(
-	obj: generate_reducer_dictionary<STATE, ACTION>,
+	obj: GenerateReducerDictionary<STATE, ACTION>,
 ): (state: STATE, key: ACTION) => STATE =>
 	<Key2 extends keyof typeof obj>(
 		state: STATE,
@@ -35,7 +51,7 @@ export const generate_reducer = <STATE,
 			assertExhaustive(action['type'] as never);
 
 export const generate_dispatch = <ACTION extends Action<string>>(
-	obj: generate_dispatch_dictionary<ACTION>,
+	obj: GenerateDispatchDictionary<ACTION>,
 ): (key: ACTION) => void =>
 	<Key2 extends keyof typeof obj>(
 		action: Action<Key2>,

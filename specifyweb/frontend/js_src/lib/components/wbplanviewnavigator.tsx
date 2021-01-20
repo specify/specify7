@@ -16,16 +16,87 @@ import {
 	get_name_from_tree_rank_name,
 	get_max_to_many_value,
 	format_reference_item, is_circular_relationship, is_too_many_inside_of_too_many,
-}                         from './wbplanviewmodelhelper';
-import data_model_storage from './wbplanviewmodel';
+}                                                    from './wbplanviewmodelhelper';
+import data_model_storage                            from './wbplanviewmodel';
+import {
+	AutomapperSuggestion,
+	GetMappedFieldsBind,
+	MappingPath,
+	OpenSelectElement,
+	RelationshipType,
+}                                                from './wbplanviewmapper';
+import { DataModelField, DataModelRelationship } from './wbplanviewmodelfetcher';
+import { CustomSelectSubtype, CustomSelectType } from './customselectelement';
+import { HtmlGeneratorFieldData, MappingElementProps } from './wbplanviewcomponents';
+
+
+interface FindNextNavigationDirectionBase {
+	finished: boolean,
+}
+
+type FindNextNavigationDirection<RETURN_STRUCTURE> = FindNextNavigationDirectionBase &
+	(
+		{
+			finished: true,
+			final_data: RETURN_STRUCTURE[],
+		} | {
+		finished: false,
+		payload: {
+			next_table_name: string,
+			next_parent_table_name: string,
+			next_real_path_element_name: string,
+			next_path_element_name: string,
+		},
+	}
+		)
+
+interface NavigationCallbackPayload<RETURN_TYPE> {
+	table_name: string,
+	data?: RETURN_TYPE,
+	parent_relationship_type?: RelationshipType,
+	parent_table_name?: string,
+}
+
+type NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_TYPE> = (
+	callback_payload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
+) => RETURN_TYPE;
+
+interface NavigationCallbacks<RETURN_STRUCTURE> {
+	// should return {boolean} specifying whether to run data_model.navigator_instance() for a particular mapping path part
+	readonly iterate: NavigatorCallbackFunction<RETURN_STRUCTURE, boolean>,
+	// should return undefined if next element does not exist
+	readonly get_next_path_element: NavigatorCallbackFunction<RETURN_STRUCTURE, {
+		readonly next_path_element_name: string,  // the name of the next path element
+		// if the next path element is not a field nor a relationship, {undefined}.
+		// Else, {object} the information about a field from data_model.tables
+		readonly next_path_element: DataModelField,
+		// If next_path_element_name is not a field nor a relationships, {string} current path element name.
+		// Else next_path_element_name
+		readonly next_real_path_element_name: string,
+	} | undefined>,
+	// formats internal_payload and returns it. Would be used as a return value for the navigator
+	readonly get_final_data: NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_STRUCTURE[]>,
+	// commits callback_payload.data to internal_payload and returns committed data
+	readonly get_instance_data: NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_STRUCTURE>,
+	// commits callback_payload.data to internal_payload and returns committed data
+	readonly commit_instance_data: NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_STRUCTURE>,
+	// called inside of navigator_instance before it calls callbacks for tree ranks / reference items / simple fields
+	readonly navigator_instance_pre: NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
+	// handles to_many children
+	readonly handle_to_many_children: NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
+	// handles tree ranks children
+	readonly handle_tree_ranks: NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
+	// handles fields and relationships
+	readonly handle_simple_fields: NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
+}
 
 
 function find_next_navigation_direction<RETURN_STRUCTURE>(
-	callbacks: navigator_callbacks<RETURN_STRUCTURE>,
-	callback_payload: readonly_navigator_callback_payload<RETURN_STRUCTURE>,
+	callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
+	callback_payload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
 	table_name: string,
 	parent_table_name: string,
-): find_next_navigation_direction<RETURN_STRUCTURE> {
+): FindNextNavigationDirection<RETURN_STRUCTURE> {
 	const next_path_elements_data = callbacks.get_next_path_element(callback_payload);
 
 	if (typeof next_path_elements_data === 'undefined')
@@ -73,7 +144,20 @@ export function navigator<RETURN_STRUCTURE>({
 	config: {
 		base_table_name,
 	},
-}: navigator_parameters<RETURN_STRUCTURE>): RETURN_STRUCTURE[] {
+}: {
+	// Callbacks can be modified depending on the need to make navigator versatile
+	readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
+	// {object|undefined} used internally to make navigator call itself multiple times
+	readonly recursive_payload?: {
+		readonly table_name: string,
+		readonly parent_table_name: string,
+		readonly parent_table_relationship_name: string,
+		readonly parent_path_element_name: string,
+	}
+	readonly config: {
+		readonly base_table_name?: string  // the name of the base table to use
+	}
+}): RETURN_STRUCTURE[] {
 
 	let table_name = '';
 	let parent_table_name = '';
@@ -140,8 +224,7 @@ export function navigator<RETURN_STRUCTURE>({
 					parent_table_relationship_name: next_real_path_element_name,
 					parent_path_element_name: next_path_element_name,
 				},
-				config: {
-				},
+				config: {},
 			},
 		);
 
@@ -157,14 +240,10 @@ function get_navigation_children_types(
 	parent_path_element_name: string,
 	table_name: string,
 ) {
-	const parent_relationship_type: relationship_type | undefined =
-		(
-			typeof data_model_storage.tables[parent_table_name] === 'undefined' ||
-			typeof data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] === 'undefined'
-		) ? undefined :
+	const parent_relationship_type: RelationshipType | undefined =
 			(
-				data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] as data_model_relationship
-			).type;
+				data_model_storage.tables[parent_table_name]?.fields[parent_table_relationship_name] as DataModelRelationship
+			)?.type;
 
 	return {
 		parent_relationship_type,
@@ -180,8 +259,8 @@ function get_navigation_children_types(
 function call_navigator_instance_callbacks<RETURN_STRUCTURE>(
 	children_are_to_many_elements: boolean,
 	children_are_ranks: boolean,
-	callbacks: navigator_callbacks<RETURN_STRUCTURE>,
-	callback_payload: readonly_navigator_callback_payload<RETURN_STRUCTURE>,
+	callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
+	callback_payload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
 ) {
 	if (children_are_to_many_elements)
 		callbacks.handle_to_many_children(callback_payload);
@@ -199,7 +278,16 @@ function navigator_instance<RETURN_STRUCTURE>({
 	parent_path_element_name = '',
 	callbacks,
 	callback_payload,
-}: navigator_instance_parameters<RETURN_STRUCTURE>): RETURN_STRUCTURE {
+}: {
+	readonly table_name: string,  // the name of the current table
+	readonly parent_table_name?: string,  // parent table name
+	// next_real_path_element_name as returned by callbacks.get_next_path_element
+	readonly parent_table_relationship_name?: string,
+	readonly parent_path_element_name?: string,  // next_path_element_name as returned by callbacks.get_next_path_element
+	readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>  // callbacks (described in the navigator)
+	// callbacks payload (described in the navigator)
+	readonly callback_payload: NavigationCallbackPayload<RETURN_STRUCTURE>
+}): RETURN_STRUCTURE {
 
 
 	const {
@@ -212,6 +300,9 @@ function navigator_instance<RETURN_STRUCTURE>({
 		parent_path_element_name,
 		table_name,
 	);
+
+	if(children_are_to_many_elements && children_are_ranks)
+		throw new Error('Unable to properly determine picklist type');
 
 	callbacks.navigator_instance_pre(callback_payload);
 
@@ -252,9 +343,45 @@ export function get_mapping_line_data_from_mapping_path({
 	get_mapped_fields,
 	automapper_suggestions,
 	show_hidden_fields = true,
-}: get_mapping_line_data_from_mapping_path_parameters): MappingElementProps[] {
+}: {
+	readonly base_table_name: string,
+	readonly mapping_path?: MappingPath,  // the mapping path
+	readonly open_select_element?: OpenSelectElement  // index of custom select element that should be open
+	// {bool} if False, returns data only for the last element of the mapping path only
+	// Else returns data for each mapping path part
+	readonly iterate?: boolean,
+	// {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
+	readonly generate_last_relationship_data?: boolean
+	readonly custom_select_type: CustomSelectType,
+	readonly show_hidden_fields?: boolean,
+	readonly handleChange?: (
+		index: number,
+		new_value: string,
+		is_relationship: boolean,
+	) => void,
+	readonly handleOpen?: (
+		index: number,
+	) => void
+	readonly handleClose?: (
+		index: number,
+	) => void
+	readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void,
+	readonly get_mapped_fields: GetMappedFieldsBind,
+	readonly automapper_suggestions?: AutomapperSuggestion[],
+}): MappingElementProps[] {
 
-	const internal_state: get_mapping_line_data_from_mapping_path_internal_state = {
+	const internal_state: {
+		mapping_path_position: number,
+		mapping_line_data: MappingElementProps[],
+		custom_select_type: CustomSelectType,
+		custom_select_subtype?: CustomSelectSubtype
+		is_open?: boolean,
+		next_mapping_path_element?: string,
+		default_value?: string,
+		current_mapping_path_part?: string,
+		result_fields: {[field_name: string]: HtmlGeneratorFieldData}
+		mapped_fields: string[],
+	} = {
 		mapping_path_position: -1,
 		mapping_line_data: [],
 		custom_select_type,
@@ -277,7 +404,7 @@ export function get_mapping_line_data_from_mapping_path({
 		!is_hidden ||
 		field_name === internal_state.default_value; // show a default field, even if it is hidden
 
-	const callbacks: navigator_callbacks<MappingElementProps> = {
+	const callbacks: NavigationCallbacks<MappingElementProps> = {
 
 		iterate: () =>
 			first_iteration_requirement() && second_iteration_requirement(),
@@ -319,8 +446,7 @@ export function get_mapping_line_data_from_mapping_path({
 
 			internal_state.is_open =
 				(
-					typeof open_select_element !== 'undefined' &&
-					open_select_element.index === internal_state.mapping_path_position + 1
+					open_select_element?.index === internal_state.mapping_path_position + 1
 				) ||
 				['opened_list'].indexOf(internal_state.custom_select_type) !== -1;
 
@@ -386,7 +512,7 @@ export function get_mapping_line_data_from_mapping_path({
 		handle_tree_ranks({table_name}) {
 
 			internal_state.custom_select_subtype = 'tree';
-			const table_ranks = data_model_storage.ranks[table_name] ;
+			const table_ranks = data_model_storage.ranks[table_name];
 
 			internal_state.result_fields = Object.fromEntries(
 				Object.entries(table_ranks).map(([rank_name, is_required]) => [
@@ -480,7 +606,7 @@ export function get_mapping_line_data_from_mapping_path({
 							handleChange: handleChange && handleChange.bind(null, internal_state.mapping_path_position + 1),
 							handleClose: handleClose && handleClose.bind(null, internal_state.mapping_path_position + 1),
 							automapper_suggestions,
-							autoscroll: typeof open_select_element !== 'undefined' && open_select_element.autoscroll,
+							autoscroll: open_select_element?.autoscroll || false,
 							handleAutomapperSuggestionSelection,
 						} :
 						{
@@ -492,7 +618,7 @@ export function get_mapping_line_data_from_mapping_path({
 		),
 
 		commit_instance_data({data}) {
-			if(typeof data === "undefined")
+			if (typeof data === 'undefined')
 				throw new Error('No data to commit to navigator\'s state');
 			internal_state.mapping_line_data.push(data);
 			return data;
