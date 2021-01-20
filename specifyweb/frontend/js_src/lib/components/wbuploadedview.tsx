@@ -7,28 +7,149 @@
 'use strict';
 
 //@ts-ignore
-import Handsontable                          from 'handsontable';
+import Handsontable                                                                   from 'handsontable';
 import '../../css/wbuploaded.css';
-import React                                 from 'react';
-import icons                                 from '../icons';
-import createBackboneView                    from './reactbackboneextend';
-import { ModalDialog }                       from './modaldialog';
-import { generate_reducer, named_component } from './statemanagement';
-import fetch_data_model                      from './wbplanviewmodelfetcher';
-import schema                                from '../schema';
-import domain                                from '../domain';
+import React                                                                          from 'react';
+import icons                                                from '../icons';
+import createBackboneView, { ReactBackboneExtendBaseProps } from './reactbackboneextend';
+import { ModalDialog }                                      from './modaldialog';
+import { Action, generate_reducer, named_component, State } from './statemanagement';
+import fetch_data_model, { DataModelFetcherReturn }         from './wbplanviewmodelfetcher';
+import schema                                               from '../schema';
+import domain                                                                         from '../domain';
+import { specify_resource }                                                        from './wbplanview';
+import { DomainTreeDefinitionItems, Domain as domain_type, Schema as schema_type } from './legacy_types';
 
-console.log(domain);
 
-type data_model_rank = Readonly<Record<string, number>>;
-type data_model_ranks = Readonly<Record<string, data_model_rank>>;
+interface UploadResults {
+	readonly tables: Readonly<Record<string, {
+		readonly record_id: number,
+		readonly row_index: number,
+		readonly columns: Readonly<Record<number, string>>
+	}[]>>,
+	readonly picklists: UploadedPicklistItems,
+}
 
-let ranks: data_model_ranks;
-const fetch_data_model_promise: Promise<data_model_fetcher_return> | undefined = fetch_data_model();
+interface UploadedColumn {
+	readonly column_index: number,
+	readonly row_index?: number,
+	readonly record_id?: number,
+	readonly cell_value: string,
+	span_size?: number,
+}
+
+interface UploadedRow {
+	readonly record_id: number,
+	readonly row_index: number,
+	readonly columns: UploadedColumn[],
+}
+
+interface UploadedTreeRank {
+	readonly parent_id: number,
+	readonly rank_id: number,
+	readonly node_name: string,
+	readonly children: number[]
+	readonly row_index: number,
+	readonly columns: UploadedColumn[],
+}
+
+interface UploadedTreeRankProcessed extends Omit<UploadedTreeRank, 'children'> {
+	readonly children: Readonly<Record<number, UploadedTreeRankProcessed>>
+}
+
+interface UploadedTreeRankSpacedOut extends Partial<Omit<UploadedTreeRank, 'children'>> {
+	readonly children: Readonly<Record<number, UploadedTreeRankSpacedOut | undefined>>,
+}
+
+
+interface UploadedRowsTable {
+	readonly table_label: string,
+	readonly column_names: string[],
+	readonly table_icon: string,
+	readonly get_record_view_url: (row_id: number) => string,
+	readonly rows: UploadedRow[],
+	readonly rows_count?: number,
+}
+
+type UploadedRows = Readonly<Record<string, UploadedRowsTable>>
+
+interface UploadedPicklistItem {
+	readonly picklist_value: string,
+	readonly row_index: number,
+	readonly column_index: number,
+}
+
+type UploadedPicklistItems = Readonly<Record<string, UploadedPicklistItem[]>>;
+
+interface WBUploadedViewConstructorProps {
+	wb: specify_resource,
+	hot: Handsontable,
+	readonly uploadResults: UploadResults,
+	openStatus: (state: string) => void,
+	removeCallback: () => void,
+}
+
+interface WBUploadedViewBaseProps {
+	uploadedRows: UploadedRows,
+	uploadedPicklistItems: UploadedPicklistItems,
+}
+
+interface WBUploadedViewComponentProps extends Readonly<WBUploadedViewBaseProps> {
+	readonly handleClose: () => void,
+	readonly hot: Handsontable,
+}
+
+type UploadedRecordsTypes = 'table' | 'picklist'
+type HandleCellClicked = (row_index: number, column_index: number) => void;
+
+interface UploadedTableRowBaseProps {
+	readonly onCellClicked: HandleCellClicked,
+	readonly get_record_view_url?: (row_id: number) => string,
+}
+
+type RecordsVisibilityState = Readonly<Record<string, boolean>>;
+
+interface WBUploadedState extends State<'WBUploadedState'> {
+	readonly tableRecordsVisibilityState: RecordsVisibilityState,
+	readonly picklistRecordsVisibilityState: RecordsVisibilityState,
+	readonly props: WBUploadedViewComponentProps,
+}
+
+interface CreateRecordSetAction extends Action<'CreateRecordSetAction'> {
+	readonly table_name: string,
+}
+
+interface CreateDataSetAction extends Action<'CreateDataSetAction'> {
+	readonly table_name: string,
+}
+
+interface ToggleTableRecordsVisibilityAction extends Action<'ToggleTableRecordsVisibilityAction'> {
+	readonly table_name: string,
+}
+
+interface CellClickedAction extends Action<'CellClickedAction'> {
+	readonly row_index: number,
+	readonly column_index: number,
+}
+
+type WBUploadedActions =
+	CreateRecordSetAction
+	| CreateDataSetAction
+	| ToggleTableRecordsVisibilityAction
+	| CellClickedAction;
+
+
+type DataModelRank = Readonly<Record<string, number>>;
+type DataModelRanks = Readonly<Record<string, DataModelRank>>;
+
+let ranks: DataModelRanks;
+const fetch_data_model_promise: Promise<DataModelFetcherReturn> | undefined = fetch_data_model();
 
 const UploadedTableRowsHeaderProps = named_component(({
 	column_names,
-}: UploadedTableRowsHeaderProps) => <thead>
+}: {
+	readonly column_names: string[],
+}) => <thead>
 <tr>
 	{
 		column_names.map(column_name =>
@@ -43,7 +164,10 @@ const UploadedTableRow = named_component(({
 	rows,
 	onCellClicked: handleCellClicked,
 	get_record_view_url,
-}: UploadedTableRowTableProps) =>
+}: UploadedTableRowBaseProps & {
+	readonly rows: UploadedRow[]
+	readonly get_record_view_url: (row_id: number) => string,
+}) =>
 	<tbody>
 	{rows.map(({record_id, row_index, columns}, index) =>
 		<tr key={index}>
@@ -83,7 +207,9 @@ const UploadedTableRow = named_component(({
 const UploadedPicklistRow = named_component(({
 	rows,
 	onCellClicked: handleCellClicked,
-}: UploadedTableRowPicklistProps) =>
+}: UploadedTableRowBaseProps & {
+	readonly rows: UploadedPicklistItem[]
+}) =>
 	<tbody>
 	{rows.map(({row_index, column_index, picklist_value: value}, index) =>
 		<tr key={index}>
@@ -100,7 +226,22 @@ const UploadedTableRows = named_component(({
 	get_record_view_url,
 	onCellClicked: handleCellClicked,
 	tableIsTree,
-}: UploadedTableRowsProps) => <div className="wb-upload-results-rows-container">
+}: {
+	readonly rows: (UploadedRow | UploadedPicklistItem)[],
+	readonly column_names?: string[],
+	readonly get_record_view_url?: (row_id: number) => string,
+	readonly type: UploadedRecordsTypes,
+	readonly onCellClicked: HandleCellClicked,
+	readonly tableIsTree: boolean,
+} & ({
+	readonly rows: UploadedRow[],
+	readonly column_names: string[],
+	readonly get_record_view_url: (row_id: number) => string,
+	readonly type: 'table',
+} | {
+	readonly rows: UploadedPicklistItem[],
+	readonly type: 'picklist',
+})) => <div className="wb-upload-results-rows-container">
 	<table className={`wb-upload-results-rows ${tableIsTree ? 'wb-upload-results-rows-tree' : ''}`}>
 		<UploadedTableRowsHeaderProps
 			column_names={
@@ -144,7 +285,33 @@ const UploadedTableHeader = named_component(({
 	onCreateRecordSet: handleCreateRecordSet,
 	onCreateDataSet: handleCreateDataSet,
 	onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
-}: UploadedTableHeaderProps) =>
+}: {
+	readonly table_icon?: string,
+	readonly table_name?: string,
+	readonly label: string,
+	readonly rows_count: number,
+	readonly tableIsCollapsed: boolean,
+	readonly onCreateRecordSet?: () => void,
+	readonly onCreateDataSet?: () => void,
+	readonly onToggleTableRecordsVisibility: () => void,
+	readonly type: UploadedRecordsTypes,
+} & ({
+	readonly table_icon: string,
+	readonly table_name: string,
+	readonly label: string,
+	readonly rows_count: number,
+	readonly tableIsCollapsed: boolean,
+	readonly onCreateRecordSet: () => void,
+	readonly onCreateDataSet: () => void,
+	readonly onToggleTableRecordsVisibility: () => void,
+	readonly type: UploadedRecordsTypes,
+} | {
+	readonly label: string,
+	readonly rows_count: number,
+	readonly tableIsCollapsed: boolean,
+	readonly onToggleTableRecordsVisibility: () => void,
+	readonly type: UploadedRecordsTypes,
+})) =>
 	<div className="wb-upload-results-header" onClick={(event) => {
 		if ((
 			event.target as HTMLElement
@@ -177,7 +344,22 @@ const UploadedTable = named_component(({
 	onCreateDataSet: handleCreateDataSet,
 	onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
 	onCellClicked: handleCellClicked,
-}: UploadedTableProps) => <div className='wb-upload-results-table'>
+}: {
+	readonly table_name: string,
+	readonly tableIsCollapsed: boolean,
+	readonly onToggleTableRecordsVisibility: () => void,
+	readonly onCellClicked: HandleCellClicked,
+	readonly onCreateRecordSet?: () => void,
+	readonly onCreateDataSet?: () => void,
+} & ({
+	readonly uploadedTable: UploadedRowsTable,
+	readonly onCreateRecordSet: () => void,
+	readonly onCreateDataSet: () => void,
+	readonly type: 'table',
+} | {
+	readonly type: 'picklist',
+	readonly uploadedTable: UploadedPicklistItems,
+})) => <div className='wb-upload-results-table'>
 	{/*@ts-ignore*/}
 	<UploadedTableHeader
 		type={type}
@@ -230,7 +412,21 @@ const UploadedRecords = named_component(({
 	onCreateDataSet: handleCreateDataSet,
 	onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
 	onCellClicked: handleCellClicked,
-}: UploadedRecordsProps) => <>{
+}: {
+	readonly onToggleTableRecordsVisibility: (table_name: string) => void,
+	readonly tableRecordsVisibilityState: RecordsVisibilityState,
+	readonly onCellClicked: HandleCellClicked,
+	readonly onCreateRecordSet?: (table_name: string) => void,
+	readonly onCreateDataSet?: (table_name: string) => void,
+} & ({
+	readonly uploadedRecords: UploadedRows,
+	readonly onCreateRecordSet: (table_name: string) => void,
+	readonly onCreateDataSet: (table_name: string) => void,
+	readonly type: 'table',
+} | {
+	readonly uploadedRecords: UploadedPicklistItems,
+	readonly type: 'picklist',
+})) => <>{
 	Object.entries(uploadedRecords).map(([table_name, table_data]) =>
 		//@ts-ignore
 		<UploadedTable
@@ -348,12 +544,12 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 	</ModalDialog>;
 }
 
-const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks) =>
-	new Promise<uploadedRows>(resolve =>
+const parseUploadedRanks = (uploadedRows: UploadedRows, ranks: DataModelRanks) =>
+	new Promise<UploadedRows>(resolve =>
 
 		Promise.all(
 			Object.entries(uploadedRows).map(([table_name, table_data]) =>
-				new Promise<[string, uploadedRowsTable]>(resolve => {
+				new Promise<[string, UploadedRowsTable]>(resolve => {
 
 						const rank_ids: number[] = [];
 
@@ -363,9 +559,9 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 
 							Promise.all(
 								table_data.rows.map(({record_id, ...row}) =>
-									new Promise<[number, uploadedTreeRank]>(resolve => {
+									new Promise<[number, UploadedTreeRank]>(resolve => {
 
-										let fetch_object: domain_tree_definition_items;
+										let fetch_object: DomainTreeDefinitionItems;
 
 										(
 											fetch_object = new (
@@ -405,16 +601,15 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 									Object.keys(ranks[table_name.toLowerCase()])[Object.values(ranks[table_name.toLowerCase()]).indexOf(rank_id)],
 								);
 
-								const rows_object: Record<number, uploadedTreeRank | undefined> = Object.fromEntries(rows);
+								const rows_object: Record<number, UploadedTreeRank | undefined> = Object.fromEntries(rows);
 
 								// find children for each rank
 								rows.forEach(([node_id, rank_data]) =>
 									!isNaN(rank_data.parent_id) &&
-									typeof rows_object[rank_data.parent_id] !== 'undefined' &&
 									rows_object[rank_data.parent_id]?.children.push(node_id),
 								);
 
-								const tree: Record<number, uploadedTreeRankProcessed | undefined> = {};
+								const tree: Record<number, UploadedTreeRankProcessed | undefined> = {};
 
 								const get_min_node = () =>
 									rows.reduce((
@@ -434,7 +629,7 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 									)[1];
 								let min_node_id: number;
 
-								function join_children(node_id: number): uploadedTreeRankProcessed | undefined {
+								function join_children(node_id: number): UploadedTreeRankProcessed | undefined {
 
 									if (typeof rows_object[node_id] === 'undefined')
 										return undefined;
@@ -463,10 +658,10 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 									tree[min_node_id] = join_children(min_node_id);
 
 
-								type spaced_out_tree = Record<number, uploadedTreeRankSpacedOut | undefined>;
+								type spaced_out_tree = Record<number, UploadedTreeRankSpacedOut | undefined>;
 								const space_out_node = (
-									uploadedTreeRank: uploadedTreeRankSpacedOut, levels: number,
-								): uploadedTreeRankSpacedOut =>
+									uploadedTreeRank: UploadedTreeRankSpacedOut, levels: number,
+								): UploadedTreeRankSpacedOut =>
 									levels <= 1 ?
 										uploadedTreeRank :
 										{
@@ -497,18 +692,18 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 								const spaced_out_tree: spaced_out_tree = space_out_tree(tree);
 
 
-								const find_cell_index = (name: string, columns: uploadedColumn[]): number =>
-									columns.find(({cell_value}: uploadedColumn) => cell_value === name)?.column_index || -1;
+								const find_cell_index = (name: string, columns: UploadedColumn[]): number =>
+									columns.find(({cell_value}: UploadedColumn) => cell_value === name)?.column_index || -1;
 
-								const empty_cell = (column_index: number): uploadedColumn => (
+								const empty_cell = (column_index: number): UploadedColumn => (
 									{
 										column_index: column_index,
 										cell_value: '',
 									}
 								);
 
-								const compile_rows = (spaced_out_tree: spaced_out_tree, parent_columns: uploadedColumn[] = []): uploadedRow[] =>
-									Object.entries(spaced_out_tree).map((
+								const compile_rows = (spaced_out_tree: spaced_out_tree, parent_columns: UploadedColumn[] = []): UploadedRow[] =>
+									Object.entries(spaced_out_tree).flatMap((
 										[node_id, node_data],
 										index,
 									) => {
@@ -516,11 +711,11 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 										if (typeof node_data === 'undefined')
 											return [];
 
-										const columns: uploadedColumn[] = [
+										const columns: UploadedColumn[] = [
 											...(
 												index === 0 ?
 													parent_columns :
-													Array<uploadedColumn>(parent_columns.length).fill(empty_cell(-1))
+													Array<UploadedColumn>(parent_columns.length).fill(empty_cell(-1))
 											),
 											{
 												column_index: find_cell_index(
@@ -540,25 +735,25 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 													record_id: -1,
 													columns: [
 														...columns,
-														...Array<uploadedColumn>(column_names.length - columns.length).fill(empty_cell(-2)),
+														...Array<UploadedColumn>(column_names.length - columns.length).fill(empty_cell(-2)),
 													],
 												},
 											];
 										else
 											return compile_rows(node_data.children, columns);
 
-									}).flat();
+									});
 
-								const final_rows: uploadedRow[] = compile_rows(spaced_out_tree);
+								const final_rows: UploadedRow[] = compile_rows(spaced_out_tree);
 
-								function join_rows(final_rows: uploadedRow[]) {
+								function join_rows(final_rows: UploadedRow[]) {
 									if (final_rows.length === 0)
 										return [];
 									const span_size: number[] = Array<number>(final_rows[0].columns.length).fill(0);
 									return final_rows.reverse().map(row => (
 										{
 											...row,
-											columns: row.columns.reduce<uploadedColumn[]>((new_columns, column, index) => {
+											columns: row.columns.reduce<UploadedColumn[]>((new_columns, column, index) => {
 												if (column.column_index === -1)
 													span_size[index]++;
 												else {
@@ -574,7 +769,7 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 									)).reverse();
 								}
 
-								const joined_rows: uploadedRow[] = join_rows(final_rows);
+								const joined_rows: UploadedRow[] = join_rows(final_rows);
 
 								resolve([
 									table_name,
@@ -598,8 +793,8 @@ const parseUploadedRanks = (uploadedRows: uploadedRows, ranks: data_model_ranks)
 
 function WBUploadedViewDataParser(props: WBUploadedViewComponentProps) {
 
-	const [tree_ranks, setTreeRanks] = React.useState<data_model_ranks | undefined>(ranks);
-	const [uploadedRows, setUploadedRows] = React.useState<uploadedRows>(props.uploadedRows);
+	const [tree_ranks, setTreeRanks] = React.useState<DataModelRanks | undefined>(ranks);
+	const [uploadedRows, setUploadedRows] = React.useState<UploadedRows>(props.uploadedRows);
 
 	React.useEffect(() => { // parse upload structure for tree ranks
 		if (typeof tree_ranks === 'undefined')
@@ -614,11 +809,11 @@ function WBUploadedViewDataParser(props: WBUploadedViewComponentProps) {
 			return;
 
 		fetch_data_model_promise.then(({ranks: fetched_ranks}) =>
-			Promise.all<[string, data_model_rank]>(
+			Promise.all<[string, DataModelRank]>(
 				Object.keys(fetched_ranks).map(table_name =>
 					new Promise(resolve =>
 						(
-							domain as domain
+							domain as domain_type
 						).getTreeDef(table_name).done(tree_definition =>
 							tree_definition.rget('treedefitems').done(treeDefItems =>
 								treeDefItems.fetch({limit: 0}).done(() =>
@@ -664,23 +859,23 @@ function WBUploadedViewDataParser(props: WBUploadedViewComponentProps) {
 }
 
 let column_indexes: number[];
-const parseUploadResults = ({tables}: uploadResults, headers: string[]) =>
+const parseUploadResults = ({tables}: UploadResults, headers: string[]) =>
 	Object.fromEntries(
 		Object.entries(tables).map(([table_name, table_records]) =>
 			[
 				table_name,
 				{
 					table_label: (
-						schema as unknown as schema
+						schema as unknown as schema_type
 					).models[table_name].getLocalizedName(),
 					column_names: (
 						column_indexes = [ // save list of column indexes to `column_indexes`
 							...new Set(  // make the list unique
-								table_records.map(({columns}) =>
+								table_records.flatMap(({columns}) =>
 									Object.keys(columns).map(column_index =>
 										parseInt(column_index),
 									),  // get column indexes
-								).flat(),
+								),
 							),
 						]
 					).map(column_index =>  // map column indexes to column headers
@@ -708,7 +903,7 @@ const parseUploadResults = ({tables}: uploadResults, headers: string[]) =>
 	);
 
 export default createBackboneView<WBUploadedViewConstructorProps,
-	WBUploadedViewBackboneProps,
+	WBUploadedViewConstructorProps & WBUploadedViewBaseProps & ReactBackboneExtendBaseProps,
 	WBUploadedViewComponentProps>({
 	module_name: 'WBUploadedView',
 	class_name: 'wb-uploaded',
