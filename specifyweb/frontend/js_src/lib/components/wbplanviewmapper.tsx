@@ -11,10 +11,10 @@ import {
 	mappings_tree_to_array_of_mappings,
 	array_of_mappings_to_mappings_tree,
 	traverse_tree,
-	array_to_tree,
-}                                                                     from './wbplanviewtreehelper';
-import { find_duplicate_mappings }                                    from './wbplanviewhelper';
-import { MappingLine, MappingPath }                                   from './wbplanviewcomponents';
+	array_to_tree, MappingsTree,
+} from './wbplanviewtreehelper';
+import { find_duplicate_mappings }                    from './wbplanviewhelper';
+import { MappingLine, MappingPath, MappingPathProps } from './wbplanviewcomponents';
 import {
 	value_is_tree_rank,
 	value_is_reference_item,
@@ -22,11 +22,77 @@ import {
 	format_reference_item,
 	show_required_missing_fields,
 }                                                                     from './wbplanviewmodelhelper';
-import { get_mapping_line_data_from_mapping_path }                    from './wbplanviewnavigator';
-import automapper                                                     from './automapper';
-import { mappings_tree_to_upload_plan, upload_plan_to_mappings_tree } from './wbplanviewconverter';
+import navigation                                                              from '../navigation';
+import { get_mapping_line_data_from_mapping_path } from './wbplanviewnavigator';
+import automapper, { AutoMapperResults }           from './automapper';
+import {
+	mappings_tree_to_upload_plan,
+	UploadPlan,
+	upload_plan_to_mappings_tree,
+}                                                  from './wbplanviewconverter';
 import React                                                          from 'react';
-import { named_component }                                            from './statemanagement';
+import { named_component }                                                           from './statemanagement';
+import {
+	ChangeSelectElementValueAction,
+	LoadingState, MappingActions,
+	MappingState,
+	PublicWBPlanViewProps,
+	WBPlanViewWrapperProps,
+} from './wbplanview';
+
+
+export type AutomapperScope = Readonly<'automapper' | 'suggestion'>;
+export type MappingPath = string[];
+export type ListOfHeaders = string[];
+export type MappingType = Readonly<'existing_header' | 'new_column' | 'new_static_column'>;
+export type RelationshipType = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
+
+export interface SelectElementPosition {
+	readonly line: number,
+	readonly index: number,
+}
+
+export interface OpenSelectElement extends SelectElementPosition {
+	readonly autoscroll: boolean,
+}
+
+interface MappingLine {
+	readonly type: MappingType,
+	readonly name: string,
+	readonly mapping_path: MappingPath,
+	readonly is_focused?: boolean,
+}
+
+export interface AutomapperSuggestion extends MappingPathProps {
+	mapping_path: MappingPath,
+}
+
+export interface WBPlanViewMapperBaseProps {
+	readonly mapping_is_templated: boolean,
+	readonly show_hidden_fields: boolean,
+	readonly show_mapping_view: boolean,
+	readonly base_table_name: string,
+	// the index that would be shown in the header name the next time the user presses `New Column`
+	readonly new_header_id: number,
+	readonly mapping_view: MappingPath,
+	readonly validation_results: MappingPath[],
+	readonly lines: MappingLine[],
+	readonly open_select_element?: OpenSelectElement,
+	readonly focused_line?: number,
+	readonly automapper_suggestions?: AutomapperSuggestion[],
+	readonly autoscroll?: boolean,
+}
+
+export type GetMappedFieldsBind = (
+	mapping_path_filter: MappingPath,  // a mapping path that would be used as a filter
+) => MappingsTree;
+
+export type PathIsMappedBind = (
+	mapping_path_filter: MappingPath,  // a mapping path that would be used as a filter
+) => boolean;
+
+
+
 
 const max_suggestions_count = 3;  // the maximum amount suggestions to show in the suggestions box
 
@@ -35,7 +101,12 @@ const MappingsControlPanel = React.memo(named_component(({
 	handleChange,
 	handleAddNewColumn,
 	handleAddNewStaticColumn,
-}: MappingsControlPanelProps) =>
+}: {
+	readonly show_hidden_fields: boolean,
+	readonly handleChange: () => void,
+	readonly handleAddNewColumn: () => void,
+	readonly handleAddNewStaticColumn: () => void,
+}) =>
 	<div className="mappings_control_panel">
 		<button onClick={handleAddNewColumn}>Add new column</button>
 		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
@@ -49,7 +120,12 @@ const MappingsControlPanel = React.memo(named_component(({
 		</label>
 	</div>, 'MappingsControlPanel'));
 
-function FormatValidationResults(props: FormatValidationResultsProps) {
+function FormatValidationResults(props: {
+	readonly base_table_name: string,
+	readonly validation_results: MappingPath[],
+	readonly handleSave: () => void
+	readonly get_mapped_fields: GetMappedFieldsBind,
+}) {
 	if (props.validation_results.length === 0)
 		return null;
 
@@ -74,15 +150,19 @@ function FormatValidationResults(props: FormatValidationResultsProps) {
 	</div>;
 }
 
-export const go_back = (props: publicWBPlanViewProps): LoadingState => (
-	{
-		type: 'LoadingState',
-		loading_state: {
-			type: 'NavigateBackState',
-			wb: props.wb,
-		},
-	}
-);
+export const go_back = (props: PublicWBPlanViewProps):void =>
+	navigation.go(`/workbench/${props.wb.id}/`);
+
+
+// export const go_back = ( props: PublicWBPlanViewProps): LoadingState => (
+// 	{
+// 		type: 'LoadingState',
+// 		loading_state: {
+// 			type: 'NavigateBackState',
+// 			wb: props.wb,
+// 		},
+// 	}
+// );
 
 export function save_plan(
 	props: WBPlanViewWrapperProps,
@@ -104,8 +184,11 @@ export function save_plan(
 		console.log('React called `save_plan()` function twice');
 	}
 
-	props.remove_unload_protect();
-	return go_back(props);
+	if(state.changes_made)
+		props.remove_unload_protect();
+
+	go_back(props);
+	return state;
 }
 
 /* Validates the current mapping and shows error messages if needed */
@@ -130,7 +213,18 @@ export function get_lines_from_headers({
 	headers = [],
 	run_automapper,
 	base_table_name = '',
-}: get_lines_from_headers_params): MappingLine[] {
+}: {
+	headers?: ListOfHeaders
+} & (
+	{
+		run_automapper: true,
+		base_table_name: string,
+	} |
+	{
+		run_automapper: false,
+		base_table_name?: string,
+	}
+	)): MappingLine[] {
 
 	const lines = headers.map((header_name): MappingLine => (
 		{
@@ -143,7 +237,7 @@ export function get_lines_from_headers({
 	if (!run_automapper || typeof base_table_name === 'undefined')
 		return lines;
 
-	const automapper_results: automapper_results = (
+	const automapper_results: AutoMapperResults = (
 		new automapper({
 			headers: headers,
 			base_table: base_table_name,
@@ -168,9 +262,12 @@ export function get_lines_from_headers({
 }
 
 export function get_lines_from_upload_plan(
-	headers: list_of_headers = [],
-	upload_plan: upload_plan_structure,
-): get_lines_from_upload_plan {
+	headers: ListOfHeaders = [],
+	upload_plan: UploadPlan,
+): {
+	readonly base_table_name: string,
+	readonly lines: MappingLine[],
+} {
 
 	const lines = get_lines_from_headers({
 		headers,
@@ -188,8 +285,8 @@ export function get_lines_from_upload_plan(
 			full_mapping_path.slice(-2, -1)[0],
 			full_mapping_path.slice(-1)[0],
 		] as [
-			mapping_path,
-			mapping_type,
+			MappingPath,
+			MappingType,
 			string
 		];
 		const header_index = headers.indexOf(header_name);
@@ -211,7 +308,7 @@ export function get_lines_from_upload_plan(
 const get_array_of_mappings = (
 	lines: MappingLine[],
 	include_headers = false,
-): mapping_path[] =>
+): MappingPath[] =>
 	lines.filter(({mapping_path}) =>
 		mapping_path_is_complete(mapping_path),
 	).map(({mapping_path, type, name}) =>
@@ -220,34 +317,33 @@ const get_array_of_mappings = (
 			mapping_path,
 	);
 
-export const get_mappings_tree: get_mappings_tree = (
-	lines,
+export const get_mappings_tree = (
+	lines: MappingLine[],
 	include_headers = false,
-): mappings_tree =>
+): MappingsTree =>
 	array_of_mappings_to_mappings_tree(
 		get_array_of_mappings(lines, include_headers),
 	);
 
 /* Get a mappings tree branch given a particular starting mapping path */
-export const get_mapped_fields: get_mapped_fields = (
-	lines,
-	mapping_path_filter,
-): mappings_tree => {
+export function get_mapped_fields(
+	lines: MappingLine[],
+	mapping_path_filter: MappingPath,  // a mapping path that would be used as a filter
+): MappingsTree {
 	const mappings_tree = traverse_tree(
 		get_mappings_tree(lines),
 		array_to_tree([...mapping_path_filter]),
 	);
-	if (typeof mappings_tree === 'undefined' || typeof mappings_tree === 'string' || mappings_tree === false)
-		return {};
-	else
-		return mappings_tree;
-};
+	return typeof mappings_tree === 'object' ?
+		mappings_tree :
+		{}
+}
 
-export const path_is_mapped = (lines: MappingLine[], mapping_path: mapping_path): boolean =>
+export const path_is_mapped = (lines: MappingLine[], mapping_path: MappingPath): boolean =>
 	Object.keys(get_mapped_fields(lines, mapping_path.slice(0, -1))).indexOf(mapping_path.slice(-1)[0]) !== -1;
 
 
-export const mapping_path_is_complete = (mapping_path: mapping_path): boolean =>
+export const mapping_path_is_complete = (mapping_path: MappingPath): boolean =>
 	mapping_path[mapping_path.length - 1] !== '0';
 
 /* Unmap headers that have a duplicate mapping path */
@@ -280,7 +376,10 @@ export const get_automapper_suggestions = ({
 	line,
 	index,
 	base_table_name,
-}: get_automapper_suggestions_parameters): Promise<automapper_suggestion[]> =>
+}: SelectElementPosition & {
+	readonly lines: MappingLine[],
+	readonly base_table_name: string,
+}): Promise<AutomapperSuggestion[]> =>
 	new Promise((resolve) => {
 
 		const local_mapping_path = [...lines[line].mapping_path];
@@ -298,14 +397,14 @@ export const get_automapper_suggestions = ({
 			base_table_name,
 			mapping_path: mapping_path_is_complete(local_mapping_path) ?
 				local_mapping_path :
-				local_mapping_path.slice(0, local_mapping_path.length-1),
+				local_mapping_path.slice(0, local_mapping_path.length - 1),
 			iterate: false,
 			custom_select_type: 'suggestion_list',
 			get_mapped_fields: get_mapped_fields.bind(null, lines),
 		});
 
 		// don't show suggestions if picklist has only one field / no fields
-		if(
+		if (
 			mapping_line_data.length === 1 &&
 			Object.keys(mapping_line_data[0].fields_data).length < 2
 		)
@@ -359,7 +458,21 @@ export const get_automapper_suggestions = ({
 
 	});
 
-const MappingView = React.memo(named_component((props: MappingViewProps) =>
+const MappingView = React.memo(named_component((props: {
+	readonly base_table_name: string,
+	readonly focused_line_exists: boolean,
+	readonly mapping_path: MappingPath,
+	readonly map_button_is_enabled: boolean,
+	readonly handleMapButtonClick: () => void
+	readonly handleMappingViewChange: (
+		index: number,
+		new_value: string,
+		is_relationship: boolean,
+	) => void,
+	readonly get_mapped_fields: GetMappedFieldsBind,
+	readonly automapper_suggestions?: AutomapperSuggestion[],
+	readonly show_hidden_fields?: boolean,
+}) =>
 	<>
 		<div className="mapping_view">
 			<MappingPath
@@ -395,7 +508,11 @@ export function mutate_mapping_path({
 	index,
 	value,
 	is_relationship,
-}: mutate_mapping_path_parameters): mapping_path {
+}: Omit<ChangeSelectElementValueAction, 'type'> & {
+	readonly lines: MappingLine[],
+	readonly mapping_view: MappingPath,
+	readonly is_relationship: boolean,
+}): MappingPath {
 
 	let mapping_path = [...(
 		line === 'mapping_view' ?
@@ -415,14 +532,43 @@ export function mutate_mapping_path({
 	else
 		mapping_path[index] = value;
 
-	if ((!is_simple || is_relationship) && mapping_path.length - 1 === index)
+	if ((
+		!is_simple || is_relationship
+	) && mapping_path.length - 1 === index)
 		return [...mapping_path, '0'];
 
 	return mapping_path;
 
 }
 
-export default named_component((props: WBPlanViewMapperProps) => {
+export default named_component((props: WBPlanViewMapperBaseProps & {
+	readonly mapper_dispatch: (action: MappingActions) => void,
+	readonly handleSave: () => void,
+	readonly handleFocus: (line_index: number) => void,
+	readonly handleMappingViewMap: () => void,
+	readonly handleAddNewHeader: () => void,
+	readonly handleAddNewStaticHeader: () => void,
+	readonly handleToggleHiddenFields: () => void,
+	readonly handleAddNewColumn: () => void,
+	readonly handleAddNewStaticColumn: () => void,
+	readonly handleAutoScrollFinish: () => void,
+	readonly handleOpen: (
+		line: |number,
+		index: number,
+	) => void;
+	readonly handleClose: () => void
+	readonly handleChange: (
+		line: 'mapping_view' | number,
+		index: number,
+		new_value: string,
+		is_relationship: boolean,
+	) => void,
+	readonly handleClearMapping: (
+		index: number,
+	) => void,
+	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+	readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
+}) => {
 	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
 	const list_of_mappings = React.useRef<HTMLDivElement>(null);
 
@@ -451,8 +597,8 @@ export default named_component((props: WBPlanViewMapperProps) => {
 						mapping_path={props.mapping_view}
 						show_hidden_fields={props.show_hidden_fields}
 						map_button_is_enabled={
-							mapping_path_is_complete(props.mapping_view) &&
-							typeof props.focused_line !== 'undefined'
+							typeof props.focused_line !== 'undefined' &&
+							mapping_path_is_complete(props.mapping_view)
 						}
 						handleMapButtonClick={props.handleMappingViewMap}
 						handleMappingViewChange={props.handleChange.bind(null, 'mapping_view')}
