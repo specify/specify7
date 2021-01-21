@@ -8,7 +8,7 @@ from decimal import Decimal
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
 from ..uploadable import Exclude
-from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo
+from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from ..upload import do_upload_csv
@@ -274,7 +274,7 @@ class UploadTests(UploadTestsBase):
 
         self.assertEqual(
             tree_record.bind(self.collection, row)._match(),
-            TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [state.id])
+            TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [(state.id, 'State', 'Florida')])
         )
 
         upload_result = tree_record.bind(self.collection, row).process_row()
@@ -285,9 +285,9 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        self.assertEqual(tree_record.bind(self.collection, row)._match(), ([], [uploaded.id]))
+        self.assertEqual(tree_record.bind(self.collection, row)._match(), ([], [(uploaded.id, 'County', 'Hendry Co.')]))
         upload_result = tree_record.bind(self.collection, row).process_row()
-        expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'])
+        expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'], treeInfo=TreeInfo('County', 'Hendry Co.'))
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 
 
