@@ -3,10 +3,15 @@ from hypothesis.strategies import text
 
 import json
 import unittest
+from jsonschema import validate, Draft7Validator # type: ignore
 
 from ..upload_result import *
+from ..upload_results_schema import schema
 
 class UploadResultsTests(unittest.TestCase):
+    def test_schema_valid(self) -> None:
+        Draft7Validator.check_schema(schema)
+
     @given(uploaded=infer)
     def testUploaded(self, uploaded: Uploaded):
         j = json.dumps(uploaded.to_json())
@@ -50,5 +55,8 @@ class UploadResultsTests(unittest.TestCase):
             toOne={k: UploadResult(v, {}, {}) for k, v in toOne.items()},
             toMany={k: [UploadResult(v, {}, {}) for v in vs] for k, vs in toMany.items()}
         )
-        j = json.dumps(uploadResult.to_json())
-        self.assertEqual(uploadResult, json_to_UploadResult(json.loads(j)))
+        d = uploadResult.to_json()
+        j = json.dumps(d)
+        e = json.loads(j)
+        validate([e], schema)
+        self.assertEqual(uploadResult, json_to_UploadResult(e))

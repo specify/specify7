@@ -189,19 +189,12 @@ schema = {
             'type': 'object',
             'desciption': 'Indicates that a value had to be added to a picklist in the course of uploading a record.',
             'properties': {
-                'PicklistAdditions': {
-                    'type': 'object',
-                    'properties': {
-                        'id': { 'type': 'integer', 'description': 'The new picklistitem id.' },
-                        'name': { 'type': 'string', 'description': 'The name of the picklist receiving the new item.' },
-                        'value': { 'type': 'string', 'description': 'The value of the new item.' },
-                        'caption': { 'type': 'string', 'description': 'The data set column that produced the new item.' }
-                    },
-                    'required': ['id', 'name', 'value', 'caption'],
-                    'additionalProperties': False
-                }
+                'id': { 'type': 'integer', 'description': 'The new picklistitem id.' },
+                'name': { 'type': 'string', 'description': 'The name of the picklist receiving the new item.' },
+                'value': { 'type': 'string', 'description': 'The value of the new item.' },
+                'caption': { 'type': 'string', 'description': 'The data set column that produced the new item.' }
             },
-            'required': ['PicklistAdditions'],
+            'required': ['id', 'name', 'value', 'caption'],
             'additionalProperties': False
         },
 
