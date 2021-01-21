@@ -5,7 +5,7 @@ For uploading tree records.
 from itertools import dropwhile
 
 import logging
-from typing import List, Dict, Any, NamedTuple, Optional
+from typing import List, Dict, Any, Tuple, NamedTuple, Optional
 
 from django.db import connection # type: ignore
 
@@ -13,7 +13,7 @@ from specifyweb.specify import models
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .uploadable import Row, FilterPack
-from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo
+from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo, TreeInfo
 from .parsing import parse_string
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class TreeDefItemWithValue(NamedTuple):
 
 class TreeMatchResult(NamedTuple):
     to_upload: List[TreeDefItemWithValue]
-    matched: List[int]
+    matched: List[Tuple[int, str, str]]
 
 class TreeRecord(NamedTuple):
     name: str
@@ -72,14 +72,16 @@ class BoundTreeRecord(NamedTuple):
 
     def _handle_row(self, must_match: bool) -> UploadResult:
         to_upload, matched = self._match()
-        info = ReportInfo(tableName=self.name, columns=list(self.ranks.values()))
+        info = ReportInfo(tableName=self.name, columns=list(self.ranks.values()), treeInfo=None)
         if not to_upload:
             if not matched:
                 return UploadResult(NullRecord(info), {}, {})
             elif len(matched) == 1:
-                return UploadResult(Matched(matched[0], info), {}, {})
+                id, rank, name = matched[0]
+                return UploadResult(Matched(id, info._replace(treeInfo=TreeInfo(rank, name))), {}, {})
             else:
-                return UploadResult(MatchedMultiple(matched, info), {}, {})
+                ids = [id for id, rank, name in matched]
+                return UploadResult(MatchedMultiple(ids, info), {}, {})
         elif must_match:
             return UploadResult(NoMatch(info), {}, {})
 
@@ -89,8 +91,8 @@ class BoundTreeRecord(NamedTuple):
             parent_id = None
             parent_result = {}
         else:
-            parent_id = matched[0]
-            parent_result = {'parent': UploadResult(Matched(parent_id, info), {}, {})}
+            parent_id, parent_rank, parent_name = matched[0]
+            parent_result = {'parent': UploadResult(Matched(parent_id, info._replace(treeInfo=TreeInfo(parent_rank, parent_name))), {}, {})}
 
         for treedefitem, value in reversed(to_upload):
             obj = model(
@@ -102,7 +104,9 @@ class BoundTreeRecord(NamedTuple):
             )
             obj.save(skip_tree_extras=True)
             parent_id = obj.id
-            result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
+            parent_rank = treedefitem.name
+            parent_name = obj.name
+            result = UploadResult(Uploaded(obj.id, info._replace(treeInfo=TreeInfo(parent_rank, parent_name)), []), parent_result, {})
             parent_result = {'parent': result}
 
         return result
@@ -158,7 +162,7 @@ class BoundTreeRecord(NamedTuple):
 
 
             sql = (
-                "select t0.{table}id \n"
+                "select t0.{table}id, d0.name, t0.name\n"
                 "from {table} t0\n"
                 "{parent_joins}\n"
                 "{definition_joins}\n"
@@ -172,7 +176,7 @@ class BoundTreeRecord(NamedTuple):
                 matchers="\n".join(matchers)
             )
             cursor.execute(sql, params)
-            result = list(r[0] for r in cursor.fetchall())
+            result = list(cursor.fetchall())
             if result:
                 return TreeMatchResult(to_upload, result)
             else:

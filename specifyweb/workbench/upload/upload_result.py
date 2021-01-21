@@ -2,16 +2,26 @@ from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
 
 from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation, NewPicklistItem
 
+class TreeInfo(NamedTuple):
+    rank: str
+    name: str
+
 class ReportInfo(NamedTuple):
     "Records the table and wb cols an upload result refers to."
     tableName: str
     columns: List[str]
+    treeInfo: Optional[TreeInfo]
 
     def to_json(self) -> Dict:
-        return self._asdict()
+        return {**self._asdict(), **{'treeInfo': self.treeInfo._asdict() if self.treeInfo else None}}
+
 
 def json_to_ReportInfo(json: Dict) -> ReportInfo:
-    return ReportInfo(**json)
+    return ReportInfo(
+        tableName=json['tableName'],
+        columns=json['columns'],
+        treeInfo=TreeInfo(**json['treeInfo']) if json['treeInfo'] else None
+    )
 
 class PicklistAddition(NamedTuple):
     name: str # Name of the picklist receiving the new item

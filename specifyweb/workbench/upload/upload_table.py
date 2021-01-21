@@ -162,7 +162,7 @@ class BoundUploadTable(NamedTuple):
 
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
-        info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
+        info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()), treeInfo=None)
 
         toOneResults = self._process_to_ones()
 
