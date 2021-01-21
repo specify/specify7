@@ -3,6 +3,7 @@ import json
 import logging
 from uuid import uuid4
 from typing import Sequence, Tuple
+from jsonschema import validate # type: ignore
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
@@ -14,6 +15,7 @@ from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
 from . import tasks
+from .upload.upload_results_schema import schema
 
 Workbench = getattr(models, 'Workbench')
 Workbenchrow = getattr(models, 'Workbenchrow')
@@ -256,6 +258,10 @@ def upload_results(request, wb_id: int) -> http.HttpResponse:
         json.loads(result) if result else None
         for result in wb.workbenchrows.order_by('rownumber').values_list('biogeomancerresults', flat=True)
     ]
+
+    if settings.DEBUG:
+        validate(results, schema)
+
     return http.HttpResponse(json.dumps(results), content_type='application/json')
 
 @login_maybe_required
