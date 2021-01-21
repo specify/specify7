@@ -20,7 +20,7 @@ def json_to_ReportInfo(json: Dict) -> ReportInfo:
     return ReportInfo(
         tableName=json['tableName'],
         columns=json['columns'],
-        treeInfo=TreeInfo(**json['treeInfo']) if json['treeInfo'] else None
+        treeInfo=TreeInfo(**json['treeInfo']) if 'treeInfo' in json and json['treeInfo'] else None
     )
 
 class PicklistAddition(NamedTuple):
