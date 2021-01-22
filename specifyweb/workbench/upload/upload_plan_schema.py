@@ -72,17 +72,31 @@ schema = {
         },
 
         'uploadable': {
-            'type': 'object',
             'description': 'The uploadable structure differentiates among types of uploadable data structures which can be either '
             'the base structure for uploading data or stand in a -to-one relationship to another uploadable structure. Currently only '
             'uploadTable or treeRecord.',
-            'patternProperties': {
-                '^uploadTable$': { '$ref': '#/definitions/uploadTable' },
-                '^oneToOneTable$': { '$ref': '#/definitions/uploadTable' },
-                '^mustMatchTable$': { '$ref': '#/definitions/uploadTable' },
-                '^treeRecord$': { '$ref': '#/definitions/treeRecord' },
-            },
-            'additionalProperties': False
+            'oneOf': [
+                { 'type': 'object',
+                  'properties': { 'uploadTable': { '$ref': '#/definitions/uploadTable' } },
+                  'required': [ 'uploadTable' ],
+                  'additionalProperties': False
+                },
+                { 'type': 'object',
+                  'properties': { 'oneToOneTable': { '$ref': '#/definitions/uploadTable' } },
+                  'required': [ 'oneToOneTable' ],
+                  'additionalProperties': False
+                },
+                { 'type': 'object',
+                  'properties': { 'mustMatchTable': { '$ref': '#/definitions/uploadTable' } },
+                  'required': [ 'mustMatchTable' ],
+                  'additionalProperties': False
+                },
+                { 'type': 'object',
+                  'properties': { 'treeRecord': { '$ref': '#/definitions/treeRecord' } },
+                  'required': [ 'treeRecord' ],
+                  'additionalProperties': False
+                },
+            ],
         },
 
         'wbcols': {
