@@ -123,11 +123,12 @@ def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: 
                     logger.debug("rolling back row")
                     raise Rollback()
                 logger.info(f"finished row {len(results)}")
-        fixup_trees()
 
         if no_commit:
             logger.info("rolling back main upload transaction due to no_commit")
             raise Rollback()
+        else:
+            fixup_trees()
 
     return results
 
