@@ -296,7 +296,7 @@ def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) 
         for record in records:
             fs, es = record.filter_on(toManyField)
             filters += fs
-            excludes += es
+            excludes += [e for e in es if e.filter]
 
     return FilterPack(filters, excludes)
 
