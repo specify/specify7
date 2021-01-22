@@ -60,15 +60,14 @@ class MustMatchTests(UploadTestsBase):
         ]
 
         starting_ce_count = get_table('Collectingevent').objects.count()
+        starting_co_count = get_table('Collectionobject').objects.count()
 
         results = do_upload(self.collection, data, plan)
         for r, expected in zip(results, [Matched, NoMatch, Matched, NoMatch]):
-            assert isinstance(r.record_result, Uploaded)
             self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)
 
-        for r, expected_count in zip(results, [1, 0, 1, 0]):
-            cos = get_table('Collectionobject').objects.filter(id=r.record_result.get_id())
-            self.assertEqual(expected_count, cos.count())
+        cos = get_table('Collectionobject').objects.count()
+        self.assertEqual(starting_co_count + 2, cos, "Two collection objects were created")
 
         self.assertEqual(starting_ce_count, get_table('Collectingevent').objects.count(),
                          "there are an equal number of collecting events before and after the upload")
@@ -89,7 +88,6 @@ class MustMatchTests(UploadTestsBase):
         results = do_upload(self.collection, data, plan)
         ces = set()
         for r, expected in zip(results, [Matched, NoMatch, NullRecord, Matched, NoMatch]):
-            assert isinstance(r.record_result, Uploaded)
             self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)
             if not r.contains_failure():
                 ce = get_table('Collectionobject').objects.get(id=r.record_result.get_id()).collectingevent_id

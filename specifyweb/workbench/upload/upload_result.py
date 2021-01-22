@@ -1,6 +1,9 @@
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
+from typing_extensions import Literal
 
 from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation, NewPicklistItem
+
+Failure = Literal["Failure"]
 
 class TreeInfo(NamedTuple):
     rank: str
@@ -40,11 +43,8 @@ class Uploaded(NamedTuple):
     info: ReportInfo
     picklistAdditions: List[PicklistAddition]
 
-    def get_id(self) -> Optional[int]:
+    def get_id(self) -> int:
         return self.id
-
-    def is_failure(self) -> bool:
-        return False
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
@@ -83,11 +83,8 @@ class Matched(NamedTuple):
     id: int
     info: ReportInfo
 
-    def get_id(self) -> Optional[int]:
+    def get_id(self) -> int:
         return self.id
-
-    def is_failure(self) -> bool:
-        return False
 
     def validation_info(self) -> RowValidation:
         return RowValidation([], [], [], [])
@@ -110,11 +107,8 @@ class MatchedMultiple(NamedTuple):
     ids: List[int]
     info: ReportInfo
 
-    def get_id(self) -> Optional[int]:
-        return self.ids[0]
-
-    def is_failure(self) -> bool:
-        return True
+    def get_id(self) -> Failure:
+        return "Failure"
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
@@ -144,11 +138,8 @@ def json_to_MatchedMultiple(json: Dict) -> MatchedMultiple:
 class NullRecord(NamedTuple):
     info: ReportInfo
 
-    def get_id(self) -> Optional[int]:
+    def get_id(self) -> None:
         return None
-
-    def is_failure(self) -> bool:
-        return False
 
     def validation_info(self) -> RowValidation:
         return RowValidation([], [], [], [])
@@ -164,11 +155,8 @@ class FailedBusinessRule(NamedTuple):
     message: str
     info: ReportInfo
 
-    def get_id(self) -> Optional[int]:
-        return None
-
-    def is_failure(self) -> bool:
-        return True
+    def get_id(self) -> Failure:
+        return "Failure"
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
@@ -195,11 +183,8 @@ def json_to_FailedBusinessRule(json: Dict) -> FailedBusinessRule:
 class NoMatch(NamedTuple):
     info: ReportInfo
 
-    def get_id(self) -> Optional[int]:
-        return None
-
-    def is_failure(self) -> bool:
-        return True
+    def get_id(self) -> Failure:
+        return "Failure"
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
@@ -223,11 +208,8 @@ def json_to_NoMatch(json: Dict) -> NoMatch:
 class ParseFailures(NamedTuple):
     failures: List[CellIssue]
 
-    def get_id(self) -> Optional[int]:
-        return None
-
-    def is_failure(self) -> bool:
-        return True
+    def get_id(self) -> Failure:
+        return "Failure"
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
@@ -244,7 +226,20 @@ def json_to_ParseFailures(json: Dict) -> ParseFailures:
     r = json['ParseFailures']
     return ParseFailures(failures=[CellIssue(*i) for i in r['failures']])
 
-RecordResult = Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
+class PropagatedFailure(NamedTuple):
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def validation_info(self) -> RowValidation:
+        return RowValidation([], [], [], [])
+
+    def to_json(self):
+        return { 'PropagatedFailure': {} }
+
+def json_to_PropagatedFailure(json: Dict) -> PropagatedFailure:
+    return PropagatedFailure()
+
+RecordResult = Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures, PropagatedFailure]
 
 
 class UploadResult(NamedTuple):
@@ -252,11 +247,11 @@ class UploadResult(NamedTuple):
     toOne: Dict[str, Any]
     toMany: Dict[str, List[Any]]
 
-    def get_id(self) -> Optional[int]:
+    def get_id(self) -> Union[int, None, Failure]:
         return self.record_result.get_id()
 
     def contains_failure(self) -> bool:
-        return ( self.record_result.is_failure()
+        return ( self.record_result.get_id() == "Failure"
                  or any(result.contains_failure() for result in self.toOne.values())
                  or any(result.contains_failure() for results in self.toMany.values() for result in results)
         )
@@ -314,5 +309,7 @@ def json_to_record_result(json: Dict) -> RecordResult:
             return json_to_FailedBusinessRule(json)
         elif record_type == "ParseFailures":
             return json_to_ParseFailures(json)
+        elif record_type == "PropagatedFailure":
+            return json_to_PropagatedFailure(json)
         assert False, f"record_result is unknown type: {record_type}"
     assert False, f"record_result contains no data: {json}"

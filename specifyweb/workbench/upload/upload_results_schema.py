@@ -46,7 +46,21 @@ schema = {
                 { '$ref': '#/definitions/MatchedMultiple' },
                 { '$ref': '#/definitions/Matched' },
                 { '$ref': '#/definitions/Uploaded' },
+                { '$ref': '#/definitions/PropagatedFailure' },
             ]
+        },
+
+        'PropagatedFailure': {
+            'type': 'object',
+            'desciption': 'Indicates failure due to a failure to upload a related record.',
+            'properties': {
+                'PropagatedFailure': {
+                    'type': 'object',
+                    'additionalProperties': False
+                }
+            },
+            'required': ['PropagatedFailure'],
+            'additionalProperties': False
         },
 
         'ParseFailures': {

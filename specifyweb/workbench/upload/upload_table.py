@@ -2,14 +2,14 @@
 from functools import reduce
 
 import logging
-from typing import List, Dict, Any, NamedTuple, Union
+from typing import List, Dict, Any, NamedTuple, Union, Optional
 
 from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
 from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable
-from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
+from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures, PropagatedFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -165,6 +165,12 @@ class BoundUploadTable(NamedTuple):
         info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()), treeInfo=None)
 
         toOneResults = self._process_to_ones()
+        toOneIds: Dict[str, Optional[int]] = {}
+        for field, result in toOneResults.items():
+            id = result.get_id()
+            if id == "Failure":
+                return UploadResult(PropagatedFailure(), toOneResults, {})
+            toOneIds[field] = id
 
         toManyFilters = _to_many_filters_and_excludes(self.toMany)
 
@@ -174,16 +180,16 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.upload.items()
         }
 
-        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+        attrs.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
 
         to_many_filters, to_many_excludes = toManyFilters
 
         if all(v is None for v in attrs.values()) and not to_many_filters:
             # nothing to upload
-            return UploadResult(NullRecord(info), {}, {})
+            return UploadResult(NullRecord(info), toOneResults, {})
 
         if not force_upload:
-            match = self._match(model, toOneResults, toManyFilters, info)
+            match = self._match(model, toOneIds, toManyFilters, info)
             if match:
                 return UploadResult(match, toOneResults, {})
 
@@ -195,14 +201,14 @@ class BoundUploadTable(NamedTuple):
             for fieldname, to_one_def in self.toOne.items()
         }
 
-    def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
+    def _match(self, model, toOneIds: Dict[str, Optional[int]], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
         filters = {
             fieldname_: value
             for parsedField in self.parsedFields
             for fieldname_, value in parsedField.filter_on.items()
         }
 
-        filters.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+        filters.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
 
         to_many_filters, to_many_excludes = toManyFilters
 
@@ -230,7 +236,15 @@ class BoundUploadTable(NamedTuple):
             for result in [toOneResults[fieldname].record_result]
             if isinstance(result, Matched) or isinstance(result, MatchedMultiple)
         })
-        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+
+        toOneIds: Dict[str, Optional[int]] = {}
+        for field, result in toOneResults.items():
+            id = result.get_id()
+            if id == "Failure":
+                return UploadResult(PropagatedFailure(), toOneResults, {})
+            toOneIds[field] = id
+
+        attrs.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
 
         try:
             uploaded = model.objects.create(**attrs, **self.scopingAttrs, **self.static)
