@@ -17,7 +17,6 @@ import {
 import { MappingsTree }           from './wbplanviewtreehelper';
 import { DataModelFieldWritable } from './wbplanviewmodelfetcher';
 
-
 type UploadPlanUploadTableWbcols = Record<string, string>
 
 type UploadPlanUploadTableStatic = Record<string, string | boolean | number>
@@ -55,6 +54,8 @@ export interface UploadPlan {
 	baseTableName: string,
 	uploadable: UploadPlanUploadable
 }
+
+export type FalsyUploadPlan = UploadPlan | false;
 
 
 const upload_plan_processing_functions = (headers: string[]): {
@@ -162,6 +163,29 @@ export function upload_plan_to_mappings_tree(
 		base_table_name: upload_plan.baseTableName,
 		mappings_tree: handle_uploadable(upload_plan.uploadable, headers),
 	};
+}
+
+export function upload_plan_string_to_object(upload_plan_string: string): FalsyUploadPlan {
+	let upload_plan;
+
+	try {
+		upload_plan = JSON.parse(upload_plan_string);
+	}
+	catch (exception) {
+
+		if (!(
+			exception instanceof SyntaxError
+		))//only catch JSON parse errors
+			throw exception;
+
+		upload_plan = false;
+
+	}
+
+	if (typeof upload_plan !== 'object' || upload_plan === null || typeof upload_plan['baseTableName'] === 'undefined')
+		return false;
+	else
+		return upload_plan;
 }
 
 

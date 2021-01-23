@@ -128,7 +128,7 @@ interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase 
 }
 
 
-const Icon = React.memo(named_component(({
+const Icon = named_component(({
 	is_relationship = false,
 	is_default = false,
 	is_enabled = true,
@@ -169,7 +169,7 @@ const Icon = React.memo(named_component(({
 	>
 		{table_sub_name.toUpperCase()}
 	</span>;
-}, 'Icon'));
+}, 'Icon');
 
 /* Generates a single option line */
 const Option = React.memo(named_component(({

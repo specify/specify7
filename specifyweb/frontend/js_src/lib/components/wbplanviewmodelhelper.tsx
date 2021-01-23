@@ -140,7 +140,7 @@ export const format_tree_rank = (
 
 export const mapping_path_to_string = (
 	mapping_path: MappingPath,
-) =>
+):string =>
 	mapping_path.join(data_model_storage.path_join_symbol);
 
 
@@ -273,7 +273,7 @@ export const is_circular_relationship_forwards = ({
 	table_name?: string,
 	relationship_key?: string,
 	current_mapping_path_part?: string,
-}) =>
+}):boolean =>
 	data_model_storage.tables[table_name || '']?.
 		fields[relationship_key || '']?.
 		foreign_name === current_mapping_path_part || false;
@@ -286,9 +286,9 @@ export const is_circular_relationship_backwards = ({
 	foreign_name?: string,
 	parent_table_name?: string,
 	relationship_key?: string,
-}) =>
+}):boolean =>
 	data_model_storage.tables[parent_table_name || '']?.
-		fields[foreign_name || ''].
+		fields[foreign_name || '']?.
 		foreign_name === relationship_key || false;
 
 export const is_circular_relationship = ({
@@ -305,13 +305,13 @@ export const is_circular_relationship = ({
 	relationship_key?: string,
 	current_mapping_path_part?: string,
 	table_name?: string,
-}) =>
+}):boolean =>
 	target_table_name === parent_table_name &&
 	(
 		is_circular_relationship_backwards({parent_table_name, foreign_name, relationship_key}) ||
 		is_circular_relationship_forwards({table_name, relationship_key, current_mapping_path_part})
 	);
 
-export const is_too_many_inside_of_too_many = (type?: RelationshipType, parent_type?: RelationshipType) =>
+export const is_too_many_inside_of_too_many = (type?: RelationshipType, parent_type?: RelationshipType):boolean =>
 	relationship_is_to_many(type) &&
 	relationship_is_to_many(parent_type);

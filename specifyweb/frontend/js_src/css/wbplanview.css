@@ -37,6 +37,11 @@
 	justify-content: space-between;
 }
 
+.wbplanview_header_BaseTableSelectionState > div {
+	display: flex;
+	column-gap: var(--white_space);
+}
+
 /* CONTAINER */
 .wbplanview_container {
 	flex: 1;

@@ -12,12 +12,12 @@ import React         from 'react';
 import ReactDOM      from 'react-dom';
 import ErrorBoundary from './errorboundary';
 
-export interface ReactBackboneExtendBaseProps {
+type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
 	el: HTMLElement,
 	remove: () => void,
-}
+} & BACKBONE_PROPS
 
-export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS extends ReactBackboneExtendBaseProps, COMPONENT_PROPS>({
+export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
 	module_name,
 	class_name,
 	initialize,
@@ -29,12 +29,12 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS extends ReactBackboneExtendBas
 }: {
 	module_name: string,
 	class_name: string,
-	initialize: (self: BACKBONE_PROPS, view_props: CONSTRUCTOR_PROPS) => void,
-	render_pre?: (self: BACKBONE_PROPS) => void,
-	render_post?: (self: BACKBONE_PROPS) => void,
-	remove?: (self: BACKBONE_PROPS) => void,
-	Component: (props: COMPONENT_PROPS) => JSX.Element,
-	get_component_props: (self: BACKBONE_PROPS) => COMPONENT_PROPS
+	initialize: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>, view_props: CONSTRUCTOR_PROPS) => void,
+	render_pre?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
+	render_post?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
+	remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
+	Component: (props: COMPONENT_PROPS) => (JSX.Element|null),
+	get_component_props: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => COMPONENT_PROPS
 }): Record<string, unknown> =>
 	Backbone.View.extend({
 		__name__: module_name,

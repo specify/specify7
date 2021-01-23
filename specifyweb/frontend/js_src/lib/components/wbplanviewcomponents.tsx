@@ -61,12 +61,14 @@ export type MappingElementProps = (
 export const ListOfBaseTables = React.memo(named_component(({
 	list_of_tables,
 	handleChange,
+	show_hidden_tables,
 }: {
 	list_of_tables: DataModelListOfTables
 	handleChange: (
 		new_value: string,
 		is_relationship: boolean,
 	) => void,
+	show_hidden_tables: boolean,
 }) =>
 	<MappingElement
 		is_open={true}
@@ -74,16 +76,24 @@ export const ListOfBaseTables = React.memo(named_component(({
 		select_label=''
 		fields_data={
 			Object.fromEntries(
-				Object.entries(list_of_tables).map(([table_name, table_label]) => (
-					[
-						table_name,
-						{
-							field_friendly_name: table_label,
+				(
+					show_hidden_tables ?
+						Object.entries(list_of_tables) :
+						Object.entries(list_of_tables).filter(([, {is_hidden}]) =>
+							!is_hidden,
+						)
+				).map(([table_name, {table_friendly_name, is_hidden}]) => (
+						[
 							table_name,
-							is_relationship: true,
-						},
-					]
-				)),
+							{
+								field_friendly_name: table_friendly_name,
+								table_name,
+								is_relationship: true,
+								is_hidden,
+							},
+						]
+					),
+				),
 			)
 		}
 		custom_select_type='base_table_selection_list'

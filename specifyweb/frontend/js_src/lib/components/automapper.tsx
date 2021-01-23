@@ -507,7 +507,7 @@ export default class Automapper {
 		table_name: string,  // the table to search in
 		field_name: string,  // the field to search in
 	): string[] /* field synonyms */ =>
-		AutoMapperDefinitions.synonyms[table_name][field_name][this.scope]?.headers.formatted_header_field_synonym || [];
+		AutoMapperDefinitions.synonyms[table_name]?.[field_name]?.[this.scope]?.headers.formatted_header_field_synonym || [];
 
 	private readonly table_was_iterated = (mode: AutoMapperNode, new_depth_level: number, target_table_name: string) =>
 		mode === 'synonyms_and_matches' &&
