@@ -43,10 +43,6 @@ const WBView = Backbone.View.extend({
         this.wbutils = {};
         this.wbuploadedview = {};
         this.uploaded = this.wb.get('srcfilepath') === "uploaded";
-        this.uploadResults = {
-            tables: {},
-            picklists: {}
-        };
         this.uploadedView = undefined;
     },
     render() {
@@ -180,8 +176,7 @@ const WBView = Backbone.View.extend({
         this.uploadedView = new WBUploadedView({
             wb: this.wb,
             hot: this.hot,
-            uploadResults: this.uploadResults,
-            openStatus: this.openStatus.bind(this),
+            plan: this.plan,
             el: container,
             removeCallback: ()=>(this.uploadedView = undefined),
         }).render();
@@ -254,29 +249,8 @@ const WBView = Backbone.View.extend({
                 this.wbutils.initCellInfo(row, col);
                 const cellInfo = this.wbutils.cellInfo[row*cols + col];
                 cellInfo.isNew = true;
-
-                if(this.uploaded)
-                    upload_result_data.columns[col] = this.data[row][col+1];
             });
-
-            if(this.uploaded){
-                if(typeof this.uploadResults.tables[table_name] === "undefined")
-                    this.uploadResults.tables[table_name] = [];
-                this.uploadResults.tables[table_name].push(upload_result_data);
-            }
         });
-
-        if(this.uploaded)
-            result.picklistAdditions.forEach(({name: picklist_name, value, column: column_name/*, id*/})=>{
-                if(typeof this.uploadResults.picklists[picklist_name] === "undefined")
-                    this.uploadResults.picklists[picklist_name] = [];
-                this.uploadResults.picklists[picklist_name].push({
-                    picklist_value: value,
-                    row_index: row,
-                    column_index: headerToCol[column_name],
-                    //column_name: column_name
-                });
-            });
 
     },
     defineCell(cols, row, col, prop) {
@@ -493,26 +467,31 @@ module.exports = function loadWorkbench(id) {
     Q.all([wb.fetch().fail(app.handleError), $.get(`/api/workbench/status/${id}/`), wb.rget('workbenchtemplate')])
         .spread((__, status, template) => {
             app.setTitle("WorkBench: " + wb.get('name'));
-            let plan = template.get('remarks');
-            plan = plan == null ? "" : plan.trim();
+            template.fetch({limit: 0}).done(()=> {
+                let plan = template.get('remarks');
+                plan = plan == null ? "" : plan.trim();
 
-            const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-                title: 'Loading',
-                modal: true,
-                open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-                close() {$(this).remove();}
+                const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+                    title: 'Loading',
+                    modal: true,
+                    open(evt, ui) {
+                        $('.ui-dialog-titlebar-close', ui.dialog).hide();
+                    },
+                    close() {
+                        $(this).remove();
+                    }
+                });
+                $('.progress-bar', dialog).progressbar({value: false});
+
+                Q($.get(`/api/workbench/rows/${id}/`)).done(data => {
+                    const view = new WBView({
+                        wb: wb,
+                        data: data,
+                        plan: plan,
+                        initialStatus: status
+                    }).on('refresh', () => loadWorkbench(id));
+                    app.setCurrentView(view);
+                });
             });
-            $('.progress-bar', dialog).progressbar({value: false});
-
-            Q($.get(`/api/workbench/rows/${id}/`)).done(data => {
-                const view = new WBView({
-                    wb: wb,
-                    data: data,
-                    plan: plan,
-                    initialStatus: status
-                }).on('refresh', () => loadWorkbench(id));
-                app.setCurrentView(view);
-            });
-
         });
 };

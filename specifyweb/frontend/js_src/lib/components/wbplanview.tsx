@@ -29,9 +29,9 @@ import { LoadingScreen, ModalDialog }                                          f
 import data_model_storage                                                      from './wbplanviewmodel';
 import { ListOfBaseTables }                                                    from './wbplanviewcomponents';
 import { Action, generate_dispatch, generate_reducer, named_component, State } from './statemanagement';
-import createBackboneView, { ReactBackboneExtendBaseProps }                    from './reactbackboneextend';
-import { JqueryPromise }                                                       from './legacy_types';
-import { UploadPlan }                                                          from './wbplanviewconverter';
+import createBackboneView                                                      from './reactbackboneextend';
+import { JqueryPromise }                                             from './legacy_types';
+import { FalsyUploadPlan, upload_plan_string_to_object, UploadPlan } from './wbplanviewconverter';
 
 
 // general definitions
@@ -41,15 +41,15 @@ interface MappingLine {
 	readonly mapping_path: MappingPath,
 }
 
-export interface specify_resource {
+export interface SpecifyResource {
 	readonly id: number;
-	readonly get: (query: string) => specify_resource | any,
-	readonly rget: (query: string) => JqueryPromise<specify_resource | any>,
+	readonly get: (query: string) => SpecifyResource | any,
+	readonly rget: (query: string) => JqueryPromise<SpecifyResource | any>,
 	readonly set: (query: string, value: any) => void,
 	readonly save: () => void,
 }
 
-type FalsyUploadPlan = UploadPlan | false;
+
 
 interface UploadPlanTemplate {
 	dataset_name: string,
@@ -66,7 +66,7 @@ interface LoadingStateBase<T extends string> extends State<T> {
 type LoadTemplateSelectionState = LoadingStateBase<'LoadTemplateSelectionState'>
 
 interface NavigateBackState extends State<'NavigateBackState'> {
-	readonly wb: specify_resource,
+	readonly wb: SpecifyResource,
 }
 
 type LoadingStates = LoadTemplateSelectionState | NavigateBackState
@@ -76,7 +76,9 @@ export interface LoadingState extends State<'LoadingState'> {
 	readonly dispatch_action?: WBPlanViewActions,
 }
 
-type BaseTableSelectionState = State<'BaseTableSelectionState'>
+interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
+	readonly show_hidden_tables: boolean,
+}
 
 interface TemplateSelectionState extends State<'TemplateSelectionState'> {
 	readonly templates: UploadPlanTemplate[],
@@ -110,6 +112,8 @@ interface SelectTableAction extends Action<'SelectTableAction'> {
 	readonly headers: string[]
 }
 
+type ToggleHiddenTablesAction = Action<'ToggleHiddenTablesAction'>
+
 interface UseTemplateAction extends Action<'UseTemplateAction'> {
 	readonly dispatch: (action: WBPlanViewActions) => void,
 }
@@ -117,6 +121,7 @@ interface UseTemplateAction extends Action<'UseTemplateAction'> {
 type BaseTableSelectionActions =
 	OpenBaseTableSelectionAction
 	| SelectTableAction
+	| ToggleHiddenTablesAction
 	| UseTemplateAction;
 
 type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>
@@ -243,6 +248,8 @@ interface WBPlanViewHeaderPropsMapping extends WBPlanViewHeaderBaseProps {
 interface WBPlanViewHeaderPropsNonMapping extends WBPlanViewHeaderBaseProps {
 	readonly state_type: 'BaseTableSelectionState',
 	readonly handleUseTemplate: () => void,
+	readonly onToggleHiddenTables: () => void
+	readonly show_hidden_tables: boolean,
 }
 
 type WBPlanViewHeaderProps =
@@ -261,16 +268,16 @@ interface PartialWBPlanViewProps {
 }
 
 export interface WBPlanViewWrapperProps extends PartialWBPlanViewProps, PublicWBPlanViewProps {
-	wb_template_promise: JqueryPromise<specify_resource>,
+	wb_template_promise: JqueryPromise<SpecifyResource>,
 	mapping_is_templated: boolean,
 	readonly set_unload_protect: () => void,
 }
 
 export interface PublicWBPlanViewProps {
-	wb: specify_resource,
+	wb: SpecifyResource,
 }
 
-interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps, PublicWBPlanViewProps, ReactBackboneExtendBaseProps {
+interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps, PublicWBPlanViewProps {
 	header: HTMLElement,
 	handle_resize: () => void,
 }
@@ -278,6 +285,15 @@ interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps, PublicWBPlanVi
 
 const schema_fetched_promise = fetch_data_model();
 
+
+const WBPlanViewHeaderLeftNonMappingElements = named_component(({
+		show_hidden_tables,
+		onToggleHiddenTables: handleToggleHiddenTables,
+	}: WBPlanViewHeaderPropsNonMapping) => <>
+		<input type='checkbox' checked={show_hidden_tables} onChange={handleToggleHiddenTables} />
+		Show advanced tables
+	</>,
+	'WBPlanViewHeaderLeftNonMappingElements');
 
 const WBPlanViewHeaderLeftMappingElements = named_component(({
 	handleTableChange,
@@ -316,48 +332,26 @@ const WBPlanViewHeaderRightNonMappingElements = named_component(({
 		<button onClick={handleUseTemplate}>Use template</button>
 		<button onClick={handleCancel}>Cancel</button>
 	</>, 'WBPlanViewHeaderRightNonMappingElements');
-const WBPlanViewHeader = React.memo(named_component((props: WBPlanViewHeaderProps) =>
-		<div className="wbplanview_header">
-			<div>
-				<span>{props.title}</span>
-				{props.state_type === 'MappingState' && WBPlanViewHeaderLeftMappingElements(props)}
-			</div>
-			<div>
-				{
-					props.state_type === 'MappingState' ?
-						WBPlanViewHeaderRightMappingElements(props) :
-						WBPlanViewHeaderRightNonMappingElements(props)
-				}
-			</div>
-		</div>, 'WBPlanViewHeader'),
-	(previous_props: WBPlanViewHeaderProps, new_props: WBPlanViewHeaderProps) =>
-		previous_props.title === new_props.title &&
-		previous_props.mapping_is_templated === new_props.mapping_is_templated &&
-		previous_props.state_type === new_props.state_type,
-);
+const WBPlanViewHeader = named_component((props: WBPlanViewHeaderProps) =>
+	<div className={`wbplanview_header wbplanview_header_${props.state_type}`}>
+		<div>
+			<span>{props.title}</span>
+			{
+				props.state_type === 'MappingState' ?
+					WBPlanViewHeaderLeftMappingElements(props) :
+					WBPlanViewHeaderLeftNonMappingElements(props)
+			}
+		</div>
+		<div>
+			{
+				props.state_type === 'MappingState' ?
+					WBPlanViewHeaderRightMappingElements(props) :
+					WBPlanViewHeaderRightNonMappingElements(props)
+			}
+		</div>
+	</div>, 'WBPlanViewHeader');
 
-function upload_plan_string_to_object(upload_plan_string: string): FalsyUploadPlan {
-	let upload_plan;
 
-	try {
-		upload_plan = JSON.parse(upload_plan_string);
-	}
-	catch (exception) {
-
-		if (!(
-			exception instanceof SyntaxError
-		))//only catch JSON parse errors
-			throw exception;
-
-		upload_plan = false;
-
-	}
-
-	if (typeof upload_plan !== 'object' || upload_plan === null || typeof upload_plan['baseTableName'] === 'undefined')
-		return false;
-	else
-		return upload_plan;
-}
 
 function getInitialWBPlanViewState(props: OpenMappingScreenAction): WBPlanViewStates {
 	if (props.upload_plan === false) {
@@ -428,6 +422,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			(
 				{
 					type: 'BaseTableSelectionState',
+					show_hidden_tables: cache.get('ui', 'show_hidden_tables'),
 				}
 			) :
 			state,
@@ -447,6 +442,16 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 				base_table_name: action.table_name,
 			}),
 			changes_made: false,
+		}
+	),
+	'ToggleHiddenTablesAction': (state) => (
+		{
+			...state,
+			show_hidden_tables: cache.set('ui', 'show_hidden_tables',
+				'show_hidden_tables' in state ?
+					!state.show_hidden_tables :
+					false,
+			),
 		}
 	),
 	'UseTemplateAction': (_state, action) => (
@@ -469,6 +474,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 	'CancelTemplateSelectionAction': () => (
 		{
 			type: 'BaseTableSelectionState',
+			show_hidden_tables: cache.get('ui', 'show_hidden_tables'),
 		}
 	),
 
@@ -773,11 +779,14 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					wb: state.props.wb,
 					remove_unload_protect: state.props.remove_unload_protect,
 				})}
+				show_hidden_tables={state.show_hidden_tables}
+				onToggleHiddenTables={() => state.dispatch({type: 'ToggleHiddenTablesAction'})}
 				handleUseTemplate={() => state.dispatch({type: 'UseTemplateAction', dispatch: state.dispatch})}
 			/>
 		}>
 		<ListOfBaseTables
 			list_of_tables={data_model_storage.list_of_base_tables}
+			show_hidden_tables={state.show_hidden_tables}
 			handleChange={(
 				(table_name: string) => state.dispatch({
 					type: 'SelectTableAction',
@@ -1006,9 +1015,6 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 }
 
 
-const handle_resize = (self: WBPlanViewBackboneProps) =>
-	self.el.style.setProperty('--menu_size', `${Math.ceil(self.header.clientHeight)}px`);
-
 const set_unload_protect = (self: WBPlanViewBackboneProps) =>
 	navigation.addUnloadProtect(self, 'This mapping has not been saved.');
 
@@ -1020,13 +1026,14 @@ export default createBackboneView<PublicWBPlanViewProps, WBPlanViewBackboneProps
 	class_name: 'wb-plan-view',
 	initialize(self, {wb}) {
 		self.wb = wb;
-		self.wb_template_promise = self.wb.rget('workbenchtemplate') as JqueryPromise<specify_resource>;
+		self.wb_template_promise = self.wb.rget('workbenchtemplate') as JqueryPromise<SpecifyResource>;
 		self.mapping_is_templated = self.wb.get('ownerPermissionLevel') === 1;
 		const header = document.getElementById('site-header');
 		if (header === null)
 			throw new Error(`Can't find site's header`);
 		self.header = header;
-		self.handle_resize = handle_resize.bind(null, self);
+		self.handle_resize = ()=>
+			self.el.style.setProperty('--menu_size', `${Math.ceil(self.header.clientHeight)}px`);
 	},
 	render_pre(self) {
 		self.el.classList.add('wbplanview');

@@ -77,7 +77,10 @@ interface DataModelRanksWritable {
 export type DataModelRanks = Readonly<DataModelRanksWritable>
 
 // a dictionary like table_name==>table_friendly_name
-export type DataModelListOfTablesWritable = Record<string, string>
+export type DataModelListOfTablesWritable = Record<string, {
+	table_friendly_name: string,
+	is_hidden: boolean,
+}>
 
 // a dictionary like table_name==>table_friendly_name
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>
@@ -93,7 +96,8 @@ const fetching_parameters: {
 	readonly required_fields_to_hide: string[],
 	readonly tables_to_hide: string[],
 	readonly table_keywords_to_exclude: string[],
-	readonly required_fields_to_be_made_optional: {[table_name: string]: string[]}
+	readonly required_fields_to_be_made_optional: Record<string, string[]>
+	readonly common_base_tables: string[]
 } = {
 
 	// all required fields are not hidden, except for these, which are made not required
@@ -142,11 +146,36 @@ const fetching_parameters: {
 		locality: ['srclatlongunit'],
 	},
 
+	common_base_tables: [
+		'accession',
+		'agent',
+		'borrow',
+		'collectingevent',
+		'collectionobject',
+		'conservevent',
+		'container',
+		'deaccession',
+		'determination',
+		'dnasequence',
+		'exchangein',
+		'exchangeout',
+		'geography',
+		'gift',
+		'loan',
+		'locality',
+		'permit',
+		'preparation',
+		'storage',
+		'taxon',
+		'treatmentevent',
+	],
+
 };
 
 /* Fetches ranks for a particular table */
 const fetch_ranks = (
 	table_name: string,  // Official table name (from the data model)
+	include_root_tree_rank = false
 ): Promise<TableRanksInline> =>
 	new Promise(resolve =>
 		(
@@ -161,7 +190,7 @@ const fetch_ranks = (
 
 								const rank_id = rank.get('id');
 
-								if (rank_id === 1)
+								if (rank_id === 1 && !include_root_tree_rank)
 									return table_ranks;
 
 								const rank_name = rank.get('name');
@@ -225,15 +254,16 @@ function handle_relationship_field(
 }
 
 /* Fetches the data model */
-export default (): Promise<DataModelFetcherReturn> =>
+export default (include_root_tree_rank=false): Promise<DataModelFetcherReturn> =>
 	new Promise(resolve => {
 
-		{
+		if(!include_root_tree_rank){
 			const tables = cache.get('data_model_fetcher', 'tables');
 			const list_of_base_tables = cache.get('data_model_fetcher', 'list_of_base_tables');
 			const ranks = cache.get('data_model_fetcher', 'ranks');
 
-			if (tables && list_of_base_tables && ranks)
+			//TODO: remove the last condition
+			if (tables && list_of_base_tables && ranks && typeof list_of_base_tables['accession'] !== 'string')
 				return resolve({
 					tables,
 					list_of_base_tables,
@@ -321,7 +351,10 @@ export default (): Promise<DataModelFetcherReturn> =>
 					table_friendly_name.indexOf(table_keyword_to_exclude) !== -1,
 				)
 			)
-				list_of_base_tables[table_name] = table_friendly_name;
+				list_of_base_tables[table_name] = {
+					table_friendly_name,
+					is_hidden: fetching_parameters.common_base_tables.indexOf(table_name) === -1
+				};
 
 			tables[table_name] = {
 				table_friendly_name,
@@ -329,7 +362,7 @@ export default (): Promise<DataModelFetcherReturn> =>
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
-				fetch_ranks_queue.push(fetch_ranks(table_name));
+				fetch_ranks_queue.push(fetch_ranks(table_name, include_root_tree_rank));
 
 			return tables;
 
@@ -365,7 +398,8 @@ export default (): Promise<DataModelFetcherReturn> =>
 				}
 			));
 
-			cache.set('data_model_fetcher', 'ranks', ranks);
+			if(!include_root_tree_rank)
+				cache.set('data_model_fetcher', 'ranks', ranks);
 			resolve({
 				tables: tables as DataModelTables,
 				list_of_base_tables,

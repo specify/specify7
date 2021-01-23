@@ -73,6 +73,10 @@ img.wb-upload-results-table-icon {
 	text-align: center;
 }
 
+.wb-upload-results-cell-matched {
+	background-color: #eef;
+}
+
 .wb-upload-results-rows a {
 	color: #00f;
 }
