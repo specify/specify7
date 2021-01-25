@@ -2,6 +2,7 @@
 import logging
 import math
 import re
+from decimal import Decimal
 
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union
 from dateparser import DateDataParser # type: ignore
@@ -75,14 +76,23 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
-    if field.type == "java.lang.Boolean":
-        return parse_boolean(fieldname, value)
-
     if is_latlong(table, field):
         return parse_latlong(field, value)
 
     if field.is_temporal():
         return parse_date(table, fieldname, value)
+
+    if field.type == "java.lang.Boolean":
+        return parse_boolean(fieldname, value)
+
+    if field.type == 'java.math.BigDecimal':
+        return parse_decimal(fieldname, value)
+
+    if field.type in ('java.lang.Float', 'java.lang.Double'):
+        return parse_float(fieldname, value)
+
+    if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
+        return parse_integer(fieldname, value)
 
     return filter_and_upload({fieldname: value})
 
@@ -93,6 +103,30 @@ def parse_boolean(fieldname: str, value: str) -> Union[ParseResult, ParseFailure
         result = False
     else:
         return ParseFailure(f"value {value} not resolvable to True or False")
+
+    return filter_and_upload({fieldname: result})
+
+def parse_decimal(fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+    try:
+        result = Decimal(value)
+    except Exception as e:
+        return ParseFailure(f"value {value} is not a valid decimal value")
+
+    return filter_and_upload({fieldname: result})
+
+def parse_float(fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+    try:
+        result = float(value)
+    except ValueError as e:
+        return ParseFailure(str(e))
+
+    return filter_and_upload({fieldname: result})
+
+def parse_integer(fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+    try:
+        result = int(value)
+    except ValueError as e:
+        return ParseFailure(str(e))
 
     return filter_and_upload({fieldname: result})
 

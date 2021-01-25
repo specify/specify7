@@ -153,6 +153,33 @@ class ParsingTests(UploadTestsBase):
         for result, expected in zip(results, [Uploaded, Uploaded, ParseFailures, ParseFailures, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
+    def test_numeric_types(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={
+                'catalognumber': 'catno',
+                'yesno1': 'bool',
+                'integer1': 'integer',
+                'number1': 'float',
+                'totalvalue': 'decimal'
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'catno': '1', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
+            {'catno': '2', 'bool': 'bogus', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
+            {'catno': '3', 'bool': 'true', 'integer': 'bogus', 'float': '24.5', 'decimal': '10.23'},
+            {'catno': '4', 'bool': 'true', 'integer': '10', 'float': '24.5bogus', 'decimal': '10.23'},
+            {'catno': '5', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23bogus'},
+            {'catno': '6', 'bool': 'true', 'integer': '10.5', 'float': '24.5', 'decimal': '10.23'},
+        ]
+        results = do_upload(self.collection, data, plan)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        for result in results[1:]:
+            self.assertIsInstance(result.record_result, ParseFailures)
+
     def test_required_field(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
