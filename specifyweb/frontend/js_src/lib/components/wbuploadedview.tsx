@@ -159,7 +159,7 @@ const UploadedTableRow = named_component(({
 						<CellLink get_record_view_url={get_record_view_url} record_id={record_id}>
 							{
 								typeof cell_value === 'undefined' ?
-									['Uploaded','Matched'][matched ? 1 : 0] :
+									'Uploaded' :
 									cell_value
 							}
 						</CellLink>

@@ -2,9 +2,9 @@ import Handsontable                                                             
 import { upload_plan_string_to_object, upload_plan_to_mappings_tree }           from './wbplanviewconverter';
 import { array_to_tree, deep_merge_object, mappings_tree_to_array_of_mappings } from './wbplanviewtreehelper';
 import { State }                                                                from './statemanagement';
-import schema                                                                   from '../schema';
+import schema                                                                   from './schema';
 import { Schema }                                                               from './legacy_types';
-import icons                                                                    from '../icons';
+import icons                                                                    from './icons';
 import { get_name_from_tree_rank_name }                                         from './wbplanviewmodelhelper';
 
 // Specify 7 Workbench Upload Results
@@ -126,7 +126,7 @@ interface UploadedTreeRankProcessed extends Omit<UploadedTreeRank, 'children'> {
 	readonly children: Readonly<Record<number, UploadedTreeRankProcessed>>
 }
 
-interface UploadedTreeRankSpacedOut extends Partial<Omit<UploadedTreeRank, 'children'>> {
+interface UploadedTreeRankSpacedOut extends Partial<Omit<UploadedTreeRank & {matched?:boolean}, 'children'>> {
 	readonly children: Readonly<Record<number, UploadedTreeRankSpacedOut | undefined>>,
 }
 

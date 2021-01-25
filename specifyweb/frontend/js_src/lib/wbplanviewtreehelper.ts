@@ -7,7 +7,7 @@
 'use strict';
 
 
-import { MappingPath, MappingType } from './wbplanviewmapper';
+import { MappingPath, MappingType } from './components/wbplanviewmapper';
 
 export interface MappingsTree extends Readonly<Record<string, MappingsTree | string | Record<MappingType, string>>> {
 }
