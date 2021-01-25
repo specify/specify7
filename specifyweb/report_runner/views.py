@@ -145,10 +145,10 @@ def template_report_for_query(query_id, name):
         ]
 
     template = loader.get_template('report_template.xml')
-    return template.render(Context({
+    return template.render({
         'name': name,
         'fields': field_els
-    }))
+    })
 
 
 def run_query(collection, user, query_json):
