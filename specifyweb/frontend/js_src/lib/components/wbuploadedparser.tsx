@@ -168,11 +168,12 @@ interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
 * Recursively traverses upload results to extract new rows, tree nodes and picklist additions
 * */
 function handleUploadResult(
-	uploadedPicklistItems:UploadedPicklistItems,
-	uploadedRows:Record<string,UploadedRowSorted[]>,
+	uploadedPicklistItems: UploadedPicklistItems,
+	uploadedRows: Record<string, UploadedRowSorted[]>,
 	headers: string[],
 	line: UploadResult,
-	row_index: number) {
+	row_index: number,
+) {
 	const uploadResult = line.UploadResult;
 
 	const upload_status = Object.keys(uploadResult.record_result)[0] as keyof RecordResult;
@@ -231,7 +232,7 @@ function handleUploadResult(
 			uploadedRows,
 			headers,
 			line,
-			row_index
+			row_index,
 		)),
 	);
 
@@ -241,7 +242,7 @@ function handleUploadResult(
 			uploadedRows,
 			headers,
 			parent_upload_result,
-			row_index
+			row_index,
 		);
 }
 
@@ -250,11 +251,11 @@ function handleUploadResult(
 * */
 function format_list_of_rows(
 	list_of_rows: UploadedRowSorted[],
-	data:string[][],
-	mapped_ranks: Record<string,string>,
+	data: string[][],
+	mapped_ranks: Record<string, string>,
 	headers: string[],
 	treeRanks: string[],
-){
+) {
 	const rows: [number, UploadedTreeRank][] = list_of_rows.filter(({tree_info}) =>
 		typeof tree_info !== 'undefined',
 	).map(({
@@ -286,14 +287,14 @@ function format_list_of_rows(
 			rank_name,
 		),
 	)];
-	const sorted_ranks_to_show = treeRanks.filter(rank_name=>
-		treeRanks.indexOf(rank_name) !== -1
-	)
+	const sorted_ranks_to_show = treeRanks.filter(rank_name =>
+		ranks_to_show.indexOf(rank_name) !== -1,
+	);
 
 	return [
 		rows,
 		rows_object,
-		sorted_ranks_to_show
+		sorted_ranks_to_show,
 	] as [[number, UploadedTreeRank][], typeof rows_object, typeof ranks_to_show];
 }
 
@@ -302,8 +303,8 @@ function format_list_of_rows(
 * */
 const get_min_node = (
 	rows: [number, UploadedTreeRank][],
-	treeRanks: Record<string,string[]>,
-	rows_object: Record<string,UploadedTreeRank|undefined>,
+	treeRanks: Record<string, string[]>,
+	rows_object: Record<string, UploadedTreeRank | undefined>,
 	table_name: string,
 ) =>
 	rows.reduce((
@@ -375,8 +376,8 @@ const space_out_tree = (
 * Turns a list of noes with children and parents into a tree
 * */
 function join_children(
-	rows_object: Record<string,UploadedTreeRank|undefined>,
-	node_id: number
+	rows_object: Record<string, UploadedTreeRank | undefined>,
+	node_id: number,
 ): UploadedTreeRankProcessed | undefined {
 	if (typeof rows_object[node_id] === 'undefined')
 		return undefined;
@@ -413,11 +414,11 @@ const empty_cell = (column_index: number): UploadedColumn => (
 * Turns a tree of new nodes back into rows that are readable by `wbuploadedview`
 * */
 const compile_rows = (
-	mapped_ranks: Record<string,string>,
+	mapped_ranks: Record<string, string>,
 	ranks_to_show: string[],
 	headers: string[],
 	spaced_out_tree: SpacedOutTree,
-	parent_columns: UploadedColumn[] = []
+	parent_columns: UploadedColumn[] = [],
 ): UploadedRow[] =>
 	Object.entries(spaced_out_tree).flatMap((
 		[node_id, node_data],
@@ -509,17 +510,17 @@ export function parseUploadResults(
 			...(
 				full_mapping_path.length === 4 ?
 					[base_table_name] :
-					[full_mapping_path.slice(-5,-4)[0]]
+					[full_mapping_path.slice(-5, -4)[0]]
 			),
 			get_name_from_tree_rank_name(full_mapping_path.slice(-4, -3)[0]),
 			full_mapping_path.slice(-1)[0],
 		], true),
 	).reduce(deep_merge_object, {}) as Record<string, Record<string, string>>;
 
-	const uploadedRows:Record<string,UploadedRowSorted[]> = {};
+	const uploadedRows: Record<string, UploadedRowSorted[]> = {};
 	const uploadedPicklistItems: UploadedPicklistItems = {};
 
-	uploadResults.forEach(handleUploadResult.bind(null,uploadedPicklistItems, uploadedRows, headers));
+	uploadResults.forEach(handleUploadResult.bind(null, uploadedPicklistItems, uploadedRows, headers));
 
 	const tree_tables: Record<string,
 		Omit<UploadedRowsTable,
@@ -536,7 +537,7 @@ export function parseUploadResults(
 				data,
 				mapped_ranks,
 				headers,
-				treeRanks[table_name]
+				treeRanks[table_name],
 			);
 
 			const tree: Record<number, UploadedTreeRankProcessed | undefined> = {};
@@ -553,7 +554,7 @@ export function parseUploadResults(
 				mapped_ranks,
 				ranks_to_show,
 				headers,
-				spaced_out_tree
+				spaced_out_tree,
 			);
 
 			const joined_rows: UploadedRow[] = join_rows(compiled_rows);
@@ -570,11 +571,15 @@ export function parseUploadResults(
 		}),
 	);
 
-	const normal_table_names = Object.keys((schema as unknown as Schema).models);
-	const lowercase_table_names = normal_table_names.map(table_name=>
-		table_name.toLowerCase()
+	const normal_table_names = Object.keys((
+		schema as unknown as Schema
+	).models);
+	const lowercase_table_names = normal_table_names.map(table_name =>
+		table_name.toLowerCase(),
 	);
-	const schema_models = Object.values((schema as unknown as Schema).models);
+	const schema_models = Object.values((
+		schema as unknown as Schema
+	).models);
 
 	let column_indexes: number[];
 	return [
