@@ -11,8 +11,8 @@ import '../../css/wbuploaded.css';
 import React                                                from 'react';
 import createBackboneView                                   from './reactbackboneextend';
 import { ModalDialog }                                      from './modaldialog';
-import { Action, generate_reducer, named_component, State } from './statemanagement';
-import fetch_data_model, { DataModelFetcherReturn }         from './wbplanviewmodelfetcher';
+import { Action, generate_reducer, named_component, State } from '../statemanagement';
+import fetch_data_model, { DataModelFetcherReturn }         from '../wbplanviewmodelfetcher';
 import { SpecifyResource }                                  from './wbplanview';
 import {
 	parseUploadResults, UploadedPicklistItem,
@@ -20,7 +20,7 @@ import {
 	UploadedRow,
 	UploadedRows, UploadedRowsTable,
 	UploadResults,
-}                                                           from './wbuploadedparser';
+}                                                           from '../wbuploadedparser';
 
 
 interface WBUploadedViewConstructorProps {

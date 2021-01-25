@@ -1,4 +1,4 @@
-import { RelationshipType } from './wbplanviewmapper';
+import { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
 	readonly name: string,

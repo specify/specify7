@@ -108,7 +108,7 @@
 
 'use strict';
 
-import { AutomapperScope, MappingPath } from './wbplanviewmapper';
+import { AutomapperScope, MappingPath } from './components/wbplanviewmapper';
 
 const definitions: AutoMapperDefinitions = {
 	table_synonyms: {

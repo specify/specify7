@@ -13,7 +13,7 @@ import {
 	DataModelNonRelationship,
 	DataModelRelationship,
 }                                        from './wbplanviewmodelfetcher';
-import { MappingPath, RelationshipType } from './wbplanviewmapper';
+import { MappingPath, RelationshipType } from './components/wbplanviewmapper';
 import { MappingsTree }                  from './wbplanviewtreehelper';
 
 /* fetch fields for a table */

@@ -8,7 +8,7 @@
 
 import icons               from '../icons';
 import React               from 'react';
-import { named_component } from './statemanagement';
+import { named_component } from '../statemanagement';
 
 
 export type CustomSelectType =

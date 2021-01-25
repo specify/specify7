@@ -24,10 +24,10 @@ import {
 	MappingPath,
 	OpenSelectElement,
 	RelationshipType,
-}                                                      from './wbplanviewmapper';
+}                                                      from './components/wbplanviewmapper';
 import { DataModelField, DataModelRelationship }       from './wbplanviewmodelfetcher';
-import { CustomSelectSubtype, CustomSelectType }       from './customselectelement';
-import { HtmlGeneratorFieldData, MappingElementProps } from './wbplanviewcomponents';
+import { CustomSelectSubtype, CustomSelectType }       from './components/customselectelement';
+import { HtmlGeneratorFieldData, MappingElementProps } from './components/wbplanviewcomponents';
 
 
 interface FindNextNavigationDirectionBase {

@@ -34,7 +34,7 @@ import {
 	MappingPath,
 	PathIsMappedBind,
 	RelationshipType,
-}                                      from './wbplanviewmapper';
+}                                      from './components/wbplanviewmapper';
 
 
 type AutoMapperNode = 'shortcuts_and_table_synonyms' | 'synonyms_and_matches'

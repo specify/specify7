@@ -7,7 +7,7 @@
 'use strict';
 
 import { mapping_path_to_string } from './wbplanviewmodelhelper';
-import { MappingPath }            from './wbplanviewmapper';
+import { MappingPath }            from './components/wbplanviewmapper';
 
 /*
 * Get a friendly name from the field. (Converts Camel Case to human-readable name and fixes some errors)

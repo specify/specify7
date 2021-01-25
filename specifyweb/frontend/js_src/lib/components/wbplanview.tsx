@@ -10,9 +10,9 @@ import React                                                                   f
 import '../../css/wbplanview.css';
 import _                                                                       from 'underscore';
 import navigation                                                              from '../navigation';
-import * as cache                                                              from './wbplanviewcache';
+import * as cache                                                              from '../wbplanviewcache';
 import schema                                                                  from '../schema';
-import fetch_data_model                                                        from './wbplanviewmodelfetcher';
+import fetch_data_model                                                        from '../wbplanviewmodelfetcher';
 import WBPlanViewMapper, {
 	AutomapperSuggestion,
 	deduplicate_mappings,
@@ -26,12 +26,12 @@ import WBPlanViewMapper, {
 	validate, WBPlanViewMapperBaseProps,
 }                                                                              from './wbplanviewmapper';
 import { LoadingScreen, ModalDialog }                                          from './modaldialog';
-import data_model_storage                                                      from './wbplanviewmodel';
+import data_model_storage                                                      from '../wbplanviewmodel';
 import { ListOfBaseTables }                                                    from './wbplanviewcomponents';
-import { Action, generate_dispatch, generate_reducer, named_component, State } from './statemanagement';
+import { Action, generate_dispatch, generate_reducer, named_component, State } from '../statemanagement';
 import createBackboneView                                                      from './reactbackboneextend';
-import { JqueryPromise }                                             from './legacy_types';
-import { FalsyUploadPlan, upload_plan_string_to_object, UploadPlan } from './wbplanviewconverter';
+import { JqueryPromise }                                             from '../legacy_types';
+import { FalsyUploadPlan, upload_plan_string_to_object, UploadPlan } from '../wbplanviewconverter';
 
 
 // general definitions

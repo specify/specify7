@@ -6,12 +6,12 @@
 
 'use strict';
 
-import schema from '../schema';
-import domain from '../domain';
+import schema from './schema';
+import domain from './domain';
 
 import { get_friendly_name } from './wbplanviewhelper';
 import * as cache            from './wbplanviewcache';
-import { RelationshipType }  from './wbplanviewmapper';
+import { RelationshipType }  from './components/wbplanviewmapper';
 import {
 	Domain as domain_type,
 	SchemaModelTableField,

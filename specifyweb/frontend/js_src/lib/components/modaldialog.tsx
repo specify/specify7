@@ -9,7 +9,7 @@
 import React               from 'react';
 import ReactDOM            from 'react-dom';
 import $                   from 'jquery';
-import { named_component } from './statemanagement';
+import { named_component } from '../statemanagement';
 
 interface ModalDialogBaseProps {
 	readonly children: JSX.Element | JSX.Element[] | string,

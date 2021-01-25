@@ -13,9 +13,9 @@ import {
 	CustomSelectElementPropsOpenBase,
 	SuggestionBox,
 }                                            from './customselectelement';
-import { named_component }                   from './statemanagement';
+import { named_component }                   from '../statemanagement';
 import { AutomapperSuggestion, MappingType } from './wbplanviewmapper';
-import { DataModelListOfTables }             from './wbplanviewmodelfetcher';
+import { DataModelListOfTables }             from '../wbplanviewmodelfetcher';
 
 
 export interface HtmlGeneratorFieldData {

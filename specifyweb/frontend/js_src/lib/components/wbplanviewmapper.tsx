@@ -12,8 +12,8 @@ import {
 	array_of_mappings_to_mappings_tree,
 	traverse_tree,
 	array_to_tree, MappingsTree,
-}                                                     from './wbplanviewtreehelper';
-import { find_duplicate_mappings }                    from './wbplanviewhelper';
+}                                                     from '../wbplanviewtreehelper';
+import { find_duplicate_mappings }                    from '../wbplanviewhelper';
 import { MappingLine, MappingPath, MappingPathProps } from './wbplanviewcomponents';
 import {
 	value_is_tree_rank,
@@ -21,17 +21,17 @@ import {
 	get_max_to_many_value,
 	format_reference_item,
 	show_required_missing_fields,
-}                                                     from './wbplanviewmodelhelper';
+}                                                     from '../wbplanviewmodelhelper';
 import navigation                                     from '../navigation';
-import { get_mapping_line_data_from_mapping_path }    from './wbplanviewnavigator';
-import automapper, { AutoMapperResults }              from './automapper';
+import { get_mapping_line_data_from_mapping_path }    from '../wbplanviewnavigator';
+import automapper, { AutoMapperResults }              from '../automapper';
 import {
 	mappings_tree_to_upload_plan,
 	UploadPlan,
 	upload_plan_to_mappings_tree,
-}                                                     from './wbplanviewconverter';
+}                                                     from '../wbplanviewconverter';
 import React                                          from 'react';
-import { named_component }                            from './statemanagement';
+import { named_component }                            from '../statemanagement';
 import {
 	ChangeSelectElementValueAction,
 	LoadingState, MappingActions,
