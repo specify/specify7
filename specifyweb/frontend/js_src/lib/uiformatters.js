@@ -75,6 +75,7 @@ const escapeRegExp = require('./escaperegexp.js');
             'numeric': NumericField,
             'alphanumeric': AlphaNumField,
             'anychar': AnyCharField,
+            'regex': RegexField,
             'separator': SeparatorField
         }[node.attr('type')])({
             size: parseInt(node.attr('size'), 10),
@@ -126,6 +127,13 @@ const escapeRegExp = require('./escaperegexp.js');
         __name__: "AnyCharField",
         valueRegexp: function() {
             return '.{' + this.size + '}';
+        }
+    });
+
+    var RegexField = Field.extend({
+        __name__: "AnyCharField",
+        valueRegexp: function() {
+            return this.value;
         }
     });
 
