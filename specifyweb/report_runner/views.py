@@ -98,7 +98,11 @@ def create(request):
 def create_report(user_id, discipline_id, query_id, mimetype, name):
     assert mimetype in ("jrxml/label", "jrxml/report")
     query = Spquery.objects.get(id=query_id)
-    spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)
+    try:
+        spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)
+    except Spappresourcedir.DoesNotExist:
+        spappdir = Spappresourcedir.objects.create(discipline_id=discipline_id)
+
     appresource = spappdir.sppersistedappresources.create(
         version=0,
         mimetype=mimetype,
