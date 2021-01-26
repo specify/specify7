@@ -334,7 +334,8 @@ const GlobalResourcesView = Backbone.View.extend({
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
             discipline: this.discipline.get('resource_uri')
-        });
+        }, {noBusinessRules: true});
+        directory.set('collection', null); // The collection gets set automatically by the 'newresource' event on the api.
         return Q(directory.save()).then(() => directory);
     }
 });
@@ -422,7 +423,8 @@ const DisciplineResourcesView = Backbone.View.extend({
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
             discipline: this.discipline.get('resource_uri')
-        });
+        }, {noBusinessRules: true});
+        directory.set('collection', null); // The collection gets set automatically by the 'newresource' event on the api.
         return Q(directory.save()).then(() => directory);
     }
 });
@@ -498,7 +500,7 @@ const CollectionResourcesView = Backbone.View.extend({
             ispersonal: false,
             discipline: this.discipline.get('resource_uri'),
             collection: this.collection.get('resource_uri')
-        });
+        }, {noBusinessRules: true});
         return Q(directory.save()).then(() => directory);
     }
 });
@@ -574,7 +576,7 @@ const UserTypeResourcesView = Backbone.View.extend({
             discipline: this.discipline.get('resource_uri'),
             collection: this.collection.get('resource_uri'),
             usertype: this.usertype.toLowerCase()
-        });
+        }, {noBusinessRules: true});
         return Q(directory.save()).then(() => directory);
     }
 });
@@ -652,7 +654,7 @@ const UserResourcesView = Backbone.View.extend({
             collection: this.collection.get('resource_uri'),
             usertype: this.user.get('usertype').toLowerCase(),
             specifyuser: this.user.get('resource_uri')
-        });
+        }, {noBusinessRules: true});
         return Q(directory.save()).then(() => directory);
     }
 });
