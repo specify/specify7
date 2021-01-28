@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import logging
 import csv
+from datetime import datetime, timezone
 import json
 from jsonschema import validate # type: ignore
 
@@ -15,6 +16,7 @@ from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 from .uploadable import ScopedUploadable, Row
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan
+from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -32,19 +34,20 @@ def savepoint():
     except Rollback:
         pass
 
-def unupload_wb(wb, progress: Optional[Progress]=None) -> None:
-    total = wb.workbenchrows.count()
+def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
+    total = len(ds.rowresults)
     current = 0
     with transaction.atomic():
-        for row in wb.workbenchrows.order_by('-rownumber'):
-            upload_result = json_to_UploadResult(json.loads(row.biogeomancerresults))
+        for row in reversed(ds.rowresults):
+            upload_result = json_to_UploadResult(row)
             if not upload_result.contains_failure():
                 unupload_record(upload_result)
 
             current += 1
             if progress is not None:
                 progress(current, total)
-
+        ds.uploadresult = None
+        ds.save()
 
 def unupload_record(upload_result: UploadResult) -> None:
     if isinstance(upload_result.record_result, Uploaded):
@@ -61,49 +64,35 @@ def unupload_record(upload_result: UploadResult) -> None:
     for record in upload_result.toOne.values():
         unupload_record(record)
 
-def do_upload_wb(collection, wb, no_commit: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
-    from ..views import load
+def do_upload_dataset(collection, ds: Spdataset, no_commit: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
+    assert ds.uploadresult is None or ds.uploadresult['success'] == False, "Already uploaded!"
+    ds.rowresults = None
+    ds.uploadresult = None
+    ds.save()
 
-    cursor = connection.cursor()
-    cursor.execute(
-        "update workbenchrow set bioGeomancerResults = null where workbenchid = %s",
-        (wb.id,)
-    )
-
-    logger.debug('loading rows')
-    tuples = load(wb.id)
-
-    captions = [
-        wbtmi.caption for wbtmi in
-        wb.workbenchtemplate.workbenchtemplatemappingitems.order_by('vieworder')
-    ]
-
-    logger.debug('row captions: %s', captions)
-
-    rows = [dict(zip(captions, t[1:])) for t in tuples]
-    upload_plan = get_wb_upload_plan(collection, wb)
+    rows = [dict(zip(ds.columns, row)) for row in ds.data]
+    upload_plan = get_ds_upload_plan(collection, ds)
 
     results = do_upload(collection, rows, upload_plan, no_commit, progress)
-
-    for t, r in zip(tuples, results):
-        cursor.execute(
-            "update workbenchrow set bioGeomancerResults = %s where workbenchrowid = %s",
-            (json.dumps(r.to_json()), t[0])
-        )
+    if not no_commit:
+        ds.uploadresult = {
+            'success': not any(r.contains_failure() for r in results),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+        }
+    ds.rowresults = [r.to_json() for r in results]
+    ds.save()
     return results
 
-def get_wb_upload_plan(collection, wb) -> ScopedUploadable:
-    plan_json = wb.workbenchtemplate.remarks
-    if plan_json is None or plan_json.strip() == "":
+def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
+    if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
     try:
-        plan = json.loads(plan_json)
-        validate(plan, schema)
+        validate(ds.uploadplan, schema)
     except ValueError:
         raise Exception("upload plan json is invalid")
 
-    return parse_plan(collection, plan).apply_scoping(collection)
+    return parse_plan(collection, ds.uploadplan).apply_scoping(collection)
 
 
 def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False, progress: Optional[Progress]=None) -> List[UploadResult]:

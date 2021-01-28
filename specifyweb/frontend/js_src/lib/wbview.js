@@ -10,7 +10,7 @@ const Papa = require('papaparse');
 
 const schema = require('./schema.js');
 const app = require('./specifyapp.js');
-const WBName = require('./wbname.js');
+const DataSetName = require('./dsname.js');
 const navigation = require('./navigation.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
@@ -33,38 +33,31 @@ const WBView = Backbone.View.extend({
         'click .wb-show-upload-view':'displayUploadedView',
         'click .wb-unupload':'unupload'
     },
-    initialize({wb, data, initialStatus, plan}) {
-        this.wb = wb;
-        this.data = data;
-        this.plan = plan;
-        this.initialStatus = initialStatus;
+    initialize({dataset}) {
+        this.dataset = dataset;
+        this.data = dataset.rows;
+        if (this.data.length < 1)
+            this.data.push(Array(this.dataset.columns.length).fill(null));
+
         this.highlightsOn = false;
         this.rowValidationRequests = {};
-        this.wbutils = {};
-        this.wbuploadedview = {};
-        this.uploaded = this.wb.get('srcfilepath') === "uploaded";
+
+        this.wbutils = new WBUtils({
+            wbview: this,
+            el: this.el
+        });
+
+        this.uploaded = this.dataset.uploadresult && this.dataset.uploadresult.success;
         this.uploadedView = undefined;
     },
     render() {
-        const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
-                  .then(mappings => _.sortBy(mappings.models, mapping => mapping.get('viewOrder')));
-
-        const colHeaders = mappingsPromise.then(mappings => _.invoke(mappings, 'get', 'caption'));
-        const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+1})));
-
         this.$el.append(template({
             is_uploaded: this.uploaded
         }));
-        new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
 
-        Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
+        new DataSetName({dataset: this.dataset, el: this.$('.wb-name')}).render();
 
-        if (this.initialStatus) this.openStatus();
-        return this;
-    },
-    setupHOT(colHeaders, columns) {
-        if (this.data.length < 1)
-            this.data.push(Array(columns.length + 1).fill(null));
+        if (this.dataset.uploaderstatus) this.openStatus();
 
         //initialize Handsontable
         const onChanged = this.spreadSheetChanged.bind(this);
@@ -72,9 +65,9 @@ const WBView = Backbone.View.extend({
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
-            cells: this.defineCell.bind(this, columns.length),
-            colHeaders: colHeaders,
-            columns: columns,
+            cells: this.defineCell.bind(this, this.dataset.columns.length),
+            colHeaders: this.dataset.columns,
+            columns: this.dataset.columns.map((c, i) => ({data: i})) ,
             minSpareRows: 0,
             comments: true,
             rowHeaders: true,
@@ -125,28 +118,28 @@ const WBView = Backbone.View.extend({
             },
             stretchH: 'all',
             readOnly: this.uploaded,
-            afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
+            afterCreateRow: (index, amount) => { this.onChanged(); },
             afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
             afterSelection: (r, c) => this.currentPos = [r,c],
             afterChange: (change, source) => source === 'loadData' || onChanged(change),
         });
 
-        this.wbutils = new WBUtils({
-            hot: this.hot,
-            wb: this.wb,
-            colHeaders: colHeaders,
-            el: this.$el
-        });
-
         $(window).resize(this.resize.bind(this));
 
-        this.getResults();
+        this.getValidationResults();
+        return this;
     },
-    getResults() {
-        Q($.get(`/api/workbench/results/${this.wb.id}/`))
+    getValidationResults() {
+        Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
             .done(results => this.parseResults(results));
     },
     parseResults(results) {
+        if (results == null) {
+            this.wbutils.cellInfo = [];
+            this.hot.render();
+            return;
+        }
+
         const cols = this.hot.countCols();
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
@@ -174,9 +167,8 @@ const WBView = Backbone.View.extend({
         const container = upload_view.children[0];
 
         this.uploadedView = new WBUploadedView({
-            wb: this.wb,
+            dataset: this.dataset,
             hot: this.hot,
-            plan: this.plan,
             el: container,
             removeCallback: ()=>(this.uploadedView = undefined),
         }).render();
@@ -186,8 +178,8 @@ const WBView = Backbone.View.extend({
             this.uploadedView.remove();
             this.uploadedView = undefined;
         }
-        $.post(`/api/workbench/unupload/${this.wb.id}/`);
-        this.openStatus('upload');
+        $.post(`/api/workbench/unupload/${this.dataset.id}/`);
+        this.openStatus('unupload');
     },
     updateCellInfos() {
         const cellCounts = {
@@ -274,33 +266,30 @@ const WBView = Backbone.View.extend({
         };
     },
     openPlan() {
-        navigation.go(`/workbench-plan/${this.wb.id}/`);
+        navigation.go(`/workbench-plan/${this.dataset.id}/`);
     },
     showPlan() {
-        this.wb.rget('workbenchtemplate').done(wbtemplate => {
-            $('<div>').append($('<textarea cols="120" rows="50">').text(wbtemplate.get('remarks'))).dialog({
-                title: "Upload plan",
-                width: 'auto',
-                modal: true,
-                close() { $(this).remove(); },
-                buttons: {
-                    Save() {
-                        wbtemplate.set('remarks', $('textarea', this).val());
-                        wbtemplate.save();
-                        $(this).dialog('close');
-                    } ,
-                    Close() { $(this).dialog('close'); }
-                }
-            });
+        const dataset = this.dataset;
+        const planJson = JSON.stringify(dataset.uploadplan, null, 4);
+        $('<div>').append($('<textarea cols="120" rows="50">').text(planJson)).dialog({
+            title: "Upload plan",
+            width: 'auto',
+            modal: true,
+            close() { $(this).remove(); },
+            buttons: {
+                Save() {
+                    dataset.uploadplan = JSON.parse($('textarea', this).val());
+                    $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
+                        type: "PUT",
+                        data: JSON.stringify({uploadplan: dataset.uploadplan}),
+                        dataType: "json",
+                        processData: false
+                    });
+                    $(this).dialog('close');
+                } ,
+                Close() { $(this).dialog('close'); }
+            }
         });
-    },
-    fixCreatedRows: function(index, amount) {
-        // Handsontable doesn't insert the correct number of elements in newly
-        // inserted rows. It inserts as many as there are columns, but there
-        // should be an extra one at the begining representing the wb row id.
-        for (let i = 0; i < amount; i++) {
-            this.data[i + index] = Array(this.hot.countCols() + 1).fill(null);
-        }
     },
     spreadSheetChanged(change) {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
@@ -308,11 +297,11 @@ const WBView = Backbone.View.extend({
         this.$('.wb-save').prop('disabled', false);
         navigation.addUnloadProtect(this, "The workbench has not been saved.");
 
-        if (this.plan && change) {
+        if (this.dataset.uploadplan && change) {
             change.forEach(([row]) => {
                 const rowData = this.hot.getDataAtRow(row);
                 const data = Object.fromEntries(rowData.map((value, i) => [this.hot.getColHeader(i), value]));
-                const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.wb.id}/`, data);
+                const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.dataset.id}/`, data);
                 req.done(result => this.gotRowValidationResult(row, req, result));
             });
         }
@@ -342,19 +331,17 @@ const WBView = Backbone.View.extend({
         var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
             title: 'Saving',
             modal: true,
-            open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-            close: function() {$(this).remove();}
+            open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+            close() {$(this).remove();}
         });
         $('.progress-bar', dialog).progressbar({value: false});
 
         //send data
-        return Q($.ajax('/api/workbench/rows/' + this.wb.id + '/', {
+        return Q($.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
             data: JSON.stringify(this.data),
             error: this.checkDeletedFail.bind(this),
             type: "PUT"
-        })).then(data => {
-            this.data = data;
-            this.hot.loadData(data);
+        })).then(() => {
             this.spreadSheetUpToDate();
         }).finally(() => dialog.dialog('close'));
     },
@@ -373,7 +360,7 @@ const WBView = Backbone.View.extend({
     upload(evt) {
         const mode = $(evt.currentTarget).is('.wb-upload') ? "upload" : "validate";
         const openPlan = () => this.openPlan();
-        if (!this.plan) {
+        if (!this.dataset.uploadplan) {
             $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
                 title: "No Plan is defined.",
                 modal: true,
@@ -383,7 +370,7 @@ const WBView = Backbone.View.extend({
                 }
             });
         } else {
-            $.post(`/api/workbench/${mode}/${this.wb.id}/`).fail(jqxhr => {
+            $.post(`/api/workbench/${mode}/${this.dataset.id}/`).fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
             }).done(() => {
                 this.openStatus(mode);
@@ -391,12 +378,11 @@ const WBView = Backbone.View.extend({
         }
     },
     openStatus(mode) {
-        new WBStatus({wb: this.wb, status: this.initialStatus}).render().on('done', () => {
-            if (mode === "upload") {
+        new WBStatus({dataset: this.dataset}).render().on('done', () => {
+            if (["upload", "unupload"].includes(mode)) {
                 this.trigger('refresh');
             } else {
-                this.initialStatus = null;
-                this.getResults();
+                this.getValidationResults();
             }
         });
     },
@@ -420,15 +406,7 @@ const WBView = Backbone.View.extend({
     delete: function() {
         let dialog;
         const doDelete = () => {
-            dialog.dialog('close');
-            dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-                modal: true,
-                title: "Deleting",
-                close: function() { $(this).remove(); },
-                open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); }
-            });
-            $('.progress-bar', dialog).progressbar({value: false});
-            this.wb.destroy().done(() => {
+            $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {type: "DELETE"}).done(() => {
                 this.$el.empty().append('<p>Dataset deleted.</p>');
                 dialog.dialog('close');
             }).fail(jqxhr => {
@@ -440,7 +418,7 @@ const WBView = Backbone.View.extend({
         dialog = $('<div>Really delete?</div>').dialog({
             modal: true,
             title: "Confirm delete",
-            close: function() { $(this).remove(); },
+            close() { $(this).remove(); },
             buttons: {
                 'Delete': doDelete,
                 'Cancel': function() { $(this).dialog('close'); }
@@ -450,9 +428,9 @@ const WBView = Backbone.View.extend({
     export: function() {
         const data = Papa.unparse({
             fields: this.hot.getColHeader(),
-            data: this.data.map(row => row.slice(1))
+            data: this.dataset.data
         });
-        const wbname = this.wb.get('name');
+        const wbname = this.dataset.name;
         const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
         const blob = new Blob([data], {type: 'text/csv;charset=utf-8;'});
         const a = document.createElement('a');
@@ -462,36 +440,23 @@ const WBView = Backbone.View.extend({
     },
 });
 
-module.exports = function loadWorkbench(id) {
-    const wb = new schema.models.Workbench.Resource({id: id});
-    Q.all([wb.fetch().fail(app.handleError), $.get(`/api/workbench/status/${id}/`), wb.rget('workbenchtemplate')])
-        .spread((__, status, template) => {
-            app.setTitle("WorkBench: " + wb.get('name'));
-            template.fetch({limit: 0}).done(()=> {
-                let plan = template.get('remarks');
-                plan = plan == null ? "" : plan.trim();
+module.exports = function loadDataset(id) {
+    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+        title: 'Loading',
+        modal: true,
+        open(evt, ui) {
+            $('.ui-dialog-titlebar-close', ui.dialog).hide();
+        },
+        close() {
+            $(this).remove();
+        }
+    });
+    $('.progress-bar', dialog).progressbar({value: false});
 
-                const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-                    title: 'Loading',
-                    modal: true,
-                    open(evt, ui) {
-                        $('.ui-dialog-titlebar-close', ui.dialog).hide();
-                    },
-                    close() {
-                        $(this).remove();
-                    }
-                });
-                $('.progress-bar', dialog).progressbar({value: false});
+    $.get(`/api/workbench/dataset/${id}/`).done(dataset => {
+        dialog.dialog('close');
 
-                Q($.get(`/api/workbench/rows/${id}/`)).done(data => {
-                    const view = new WBView({
-                        wb: wb,
-                        data: data,
-                        plan: plan,
-                        initialStatus: status
-                    }).on('refresh', () => loadWorkbench(id));
-                    app.setCurrentView(view);
-                });
-            });
-        });
+        const view = new WBView({dataset: dataset}).on('refresh', () => loadDataset(id));
+        app.setCurrentView(view);
+    });
 };

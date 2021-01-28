@@ -6,6 +6,7 @@
 * */
 
 'use strict';
+const $ = require('jquery');
 
 import {
 	mappings_tree_to_array_of_mappings,
@@ -149,7 +150,7 @@ function FormatValidationResults(props: {
 }
 
 export const go_back = (props: PublicWBPlanViewProps): void =>
-	navigation.go(`/workbench/${props.wb.id}/`);
+	navigation.go(`/workbench/${props.dataset.id}/`);
 
 
 // export const go_back = ( props: PublicWBPlanViewProps): LoadingState => (
@@ -163,30 +164,30 @@ export const go_back = (props: PublicWBPlanViewProps): void =>
 // );
 
 export function save_plan(
-	props: WBPlanViewWrapperProps,
-	state: MappingState,
-	ignore_validation = false,
+    props: WBPlanViewWrapperProps,
+    state: MappingState,
+    ignore_validation = false,
 ): LoadingState | MappingState {
-	const validation_results_state = validate(state);
-	if (!ignore_validation && validation_results_state.validation_results.length !== 0)
-		return validation_results_state;
+    const validation_results_state = validate(state);
+    if (!ignore_validation && validation_results_state.validation_results.length !== 0)
+	return validation_results_state;
 
-	props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
-	props.wb_template_promise.done(wbtemplate =>
-		wbtemplate.set('remarks', mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true))),
-	);
-	try {  // react may call `save_plan` multiple times
-		props.wb.save();  // Since the function has side effects, calling props.wb.save() second time causes an exception
-	}
-	catch (e) {
-		console.log('React called `save_plan()` function twice');
-	}
+    // props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
+    const uploadplan = mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true));
 
-	if (state.changes_made)
-		props.remove_unload_protect();
+    $.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
+        type: "PUT",
+        data: JSON.stringify({'uploadplan': uploadplan}),
+        dataType: "json",
+        processData: false
+    });
 
-	go_back(props);
-	return state;
+
+    if (state.changes_made)
+	props.remove_unload_protect();
+
+    go_back(props);
+    return state;
 }
 
 /* Validates the current mapping and shows error messages if needed */

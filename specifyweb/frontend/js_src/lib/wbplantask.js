@@ -8,10 +8,11 @@ module.exports =  function() {
     router.route('workbench-plan/:id/', 'workbench-plan', id => {
         require.ensure(['./components/wbplanview'], require => {
             const PlanView = require('./components/wbplanview').default;
-            const workbench = new schema.models.Workbench.Resource({id: id});
-            workbench.fetch().fail(app.handleError).done(() => {
-                app.setCurrentView(new PlanView({ wb: workbench }));
-            });
+            fetch(`/api/workbench/dataset/${id}/`)
+                .then(response => response.json())
+                .then(dataset => {
+                    app.setCurrentView(new PlanView({ dataset: dataset }));
+                });
         }, "workbench-plan");
     });
 };

@@ -1,5 +1,5 @@
 import Handsontable                                                             from 'handsontable';
-import { upload_plan_string_to_object, upload_plan_to_mappings_tree }           from './wbplanviewconverter';
+import { UploadPlan, upload_plan_to_mappings_tree }                             from './wbplanviewconverter';
 import { array_to_tree, deep_merge_object, mappings_tree_to_array_of_mappings } from './wbplanviewtreehelper';
 import { State }                                                                from './statemanagement';
 import schema                                                                   from './schema';
@@ -492,16 +492,16 @@ export function parseUploadResults(
 	uploadResults: UploadResults,
 	hot: Handsontable,
 	treeRanks: Record<string, string[]>,
-	plan: string,
+	plan: object|null,
 ): [UploadedRows, UploadedPicklistItems] {
 
 	const headers = hot.getColHeader() as string[];
 	const data = hot.getData() as string[][];
 
-	const upload_plan = upload_plan_string_to_object(plan);
-	if (upload_plan === false)
-		throw new Error('Upload plan is invalid');
-	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, upload_plan);
+	if (plan == null) {
+	    throw new Error('Upload plan is invalid');
+	}
+	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, plan as UploadPlan);
 	const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
 	const mapped_ranks_tree = array_of_mappings.filter(full_mapping_path =>
 		full_mapping_path.length >= 4 && full_mapping_path[full_mapping_path.length - 3] === 'name',

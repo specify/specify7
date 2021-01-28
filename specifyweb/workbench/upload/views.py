@@ -14,12 +14,11 @@ from django.shortcuts import render
 
 from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data
 from specifyweb.specify.views import login_maybe_required, apply_access_control
-from specifyweb.specify import models
 
-from .upload import do_upload_csv, validate_row as vr, get_wb_upload_plan
+from .upload import do_upload_csv, validate_row as vr, get_ds_upload_plan
 from .upload_plan_schema import schema, parse_plan
+from ..models import Spdataset
 
-Workbench = getattr(models, 'Workbench')
 
 logger = logging.getLogger(__name__)
 
@@ -51,19 +50,19 @@ def upload(request) -> Any:
 
 @login_maybe_required
 @apply_access_control
-def validate_row(request, wb_id: str) -> http.HttpResponse:
-    wb = get_object_or_404(Workbench, id=wb_id)
+def validate_row(request, ds_id: str) -> http.HttpResponse:
+    ds = get_object_or_404(Spdataset, id=ds_id)
     collection = request.specify_collection
-    upload_plan = get_wb_upload_plan(collection, wb)
+    upload_plan = get_ds_upload_plan(collection, ds)
 
     ValidationForm = type('ValidationForm', (forms.Form,), {
-        wbtmi.caption: forms.CharField(required=False)
-        for wbtmi in wb.workbenchtemplate.workbenchtemplatemappingitems.all()
+        column: forms.CharField(required=False)
+        for column in ds.columns
     })
 
     if request.method == "POST":
         result = vr(collection, upload_plan, request.POST)
-        return http.HttpResponse(json.dumps(result.validation_info().to_json(), indent=2), content_type='application/json')
+        return http.JsonResponse(result.validation_info().to_json())
 
     else:
         form = ValidationForm()

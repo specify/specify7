@@ -5,6 +5,7 @@ SQLAlchemy==1.2.11
 requests==2.2.1
 pycryptodome==3.9.7
 django-auth-ldap==1.2.15
+django-jsonfield-backport==1.0.2
 dateparser==0.7.4
 jsonschema==3.2.0
 typing-extensions==3.7.4.3

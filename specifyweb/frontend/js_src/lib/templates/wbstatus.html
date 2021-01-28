@@ -1,10 +1,11 @@
 <% if (status) { %>
-  <% const [operation, state, meta] = status;
-  if(state === 'FAILURE'){ %>
-    Error occurred during <%= operation %>:<br>
-    <%- meta %>
+  <% const {uploaderstatus, taskstatus, taskinfo} = status;
+  if(taskstatus === 'FAILURE'){ %>
+    Error occurred during <%= uploaderstatus.operation %>:<br>
+    <%- taskinfo %>
   <% } else {
-    const {total='unknown', current} = meta;
+     const {total='unknown', current} = taskinfo;
+     const operation = uploaderstatus.operation;
     const title = operation[0].toUpperCase()+operation.slice(1) + (current === total ?
   		'...' :
 		` (<b>${current}/${total}</b>)`

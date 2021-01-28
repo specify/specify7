@@ -8,11 +8,11 @@ from django.db import transaction
 
 from specifyweb.specify import models
 
-from specifyweb.workbench.upload.upload import do_upload_wb
+from specifyweb.workbench.upload.upload import do_upload_dataset
 from specifyweb.workbench.upload.upload_plan_schema import schema, parse_plan
+from specifyweb.workbench.models import Spdataset
 
 Collection = getattr(models, 'Collection')
-Workbench = getattr(models, 'Workbench')
 
 class NoCommit(Exception):
     pass
@@ -35,6 +35,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options) -> None:
         specify_collection = Collection.objects.get(id=options['collection_id'])
-        wb = Workbench.objects.get(id=options['dataset_id'])
-        result = do_upload_wb(specify_collection, wb, not options['commit'])
+        ds = Spdataset.objects.get(id=options['dataset_id'])
+        result = do_upload_dataset(specify_collection, ds, not options['commit'])
         self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))

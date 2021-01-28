@@ -13,7 +13,7 @@ import createBackboneView                                   from './reactbackbon
 import { ModalDialog }                                      from './modaldialog';
 import { Action, generate_reducer, named_component, State } from '../statemanagement';
 import fetch_data_model, { DataModelFetcherReturn }         from '../wbplanviewmodelfetcher';
-import { SpecifyResource }                                  from './wbplanview';
+import { Dataset }                                          from './wbplanview';
 import {
 	parseUploadResults, UploadedPicklistItem,
 	UploadedPicklistItems,
@@ -22,19 +22,16 @@ import {
 	UploadResults,
 }                                                           from '../wbuploadedparser';
 
-
 interface WBUploadedViewConstructorProps {
-	wb: SpecifyResource,
+	dataset: Dataset,
 	hot: Handsontable,
-	plan: string,
 	removeCallback: () => void,
 }
 
 interface WBUploadedViewDataParseProps {
 	readonly handleClose: () => void,
 	readonly hot: Handsontable,
-	readonly wb: SpecifyResource,
-	readonly plan: string,
+	readonly dataset: Dataset,
 }
 
 interface WBUploadedViewComponentProps {
@@ -524,7 +521,7 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 
 	React.useEffect(() =>  // fetch upload results
 			void (
-				fetch(`/api/workbench/upload_results/${props.wb.get('id')}/`).then(response =>
+				fetch(`/api/workbench/upload_results/${props.dataset.id}/`).then(response =>
 					response.json() as Promise<UploadResults>,
 				).then(setUploadResults)
 			),
@@ -553,7 +550,7 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 		if (typeof uploadResults === 'undefined' || typeof treeRanks === 'undefined')
 			return;
 
-		const [uploadedRows, uploadedPicklistItems] = parseUploadResults(uploadResults, props.hot, treeRanks, props.plan);
+		const [uploadedRows, uploadedPicklistItems] = parseUploadResults(uploadResults, props.hot, treeRanks, props.dataset.uploadplan);
 
 		setUploadedRows(uploadedRows);
 		setUploadedPicklistItems(uploadedPicklistItems);
@@ -579,11 +576,10 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 	WBUploadedViewDataParseProps>({
 	module_name: 'WBUploadedView',
 	class_name: 'wb-uploaded',
-	initialize(self, props) {
-		self.wb = props.wb;
-		self.hot = props.hot;
-		self.removeCallback = props.removeCallback;
-		self.plan = props.plan;
+	    initialize(self, {dataset, hot, removeCallback}) {
+		self.dataset = dataset;
+		self.hot = hot;
+		self.removeCallback = removeCallback;
 	},
 	remove: (self) =>
 		self.removeCallback(),
@@ -592,8 +588,7 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 		{
 			handleClose: self.remove.bind(self),
 			hot: self.hot,
-			wb: self.wb,
-			plan: self.plan,
+			dataset: self.dataset,
 		}
 	),
 });

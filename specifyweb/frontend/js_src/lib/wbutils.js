@@ -9,16 +9,16 @@ module.exports = Backbone.View.extend({
         'click .wb-replace-button': 'replaceCells',
         'click .wb-show-toolbelt': 'toggleToolbelt',
     },
-    initialize({hot, wb, colHeaders}) {
-        this.hot = hot;
+    initialize({wbview}) {
+        this.wbview = wbview;
         this.cellInfo = [];
         this.search_query = null;
-        this.wb = wb;
-        this.colHeaders = colHeaders;
     },
-    render() {},
+    render() {
+        return this;
+    },
     initCellInfo(row, col) {
-        const cols = this.hot.countCols();
+        const cols = this.wbview.hot.countCols();
         if(typeof this.cellInfo[row*cols + col] === "undefined") {
             this.cellInfo[row*cols + col] = {isNew: false, issues: [], matchesSearch: false};
         }
@@ -29,9 +29,9 @@ module.exports = Backbone.View.extend({
 		const button_parent = button.parentElement;
 		const type = button_parent.getAttribute('data-navigation_type');
 
-		const number_of_columns = this.hot.countCols();
+		const number_of_columns = this.wbview.hot.countCols();
 
-		const selected_cell = this.hot.getSelectedLast();
+		const selected_cell = this.wbview.hot.getSelectedLast();
 
 		let current_position = 0;
 		if (typeof selected_cell !== "undefined") {
@@ -69,7 +69,7 @@ module.exports = Backbone.View.extend({
 		if (found) {
 			const row = Math.floor(new_position / number_of_columns);
 			const col = new_position - row * number_of_columns;
-			this.hot.selectCell(row, col, row, col);
+			this.wbview.hot.selectCell(row, col, row, col);
 
 			const cell_relative_position = this.cellInfo.reduce((count, info, i) => count + (cellIsType(info) && i <= new_position ? 1 : 0), 0);
 			const current_position_element = button_parent.getElementsByClassName('wb-navigation_position')[0];
@@ -77,7 +77,7 @@ module.exports = Backbone.View.extend({
 		}
 	},
 	searchCells(e){
-		const cols = this.hot.countCols();
+		const cols = this.wbview.hot.countCols();
 		const button = e.target;
 		const container = button.parentElement;
 		const navigation_position_element = container.getElementsByClassName('wb-navigation_position')[0];
@@ -86,7 +86,7 @@ module.exports = Backbone.View.extend({
 		const navigation_button = container.getElementsByClassName('wb-cell_navigation');
 		const search_query = search_query_element.value;
 
-		const searchPlugin = this.hot.getPlugin('search');
+		const searchPlugin = this.wbview.hot.getPlugin('search');
 		const results = searchPlugin.query(search_query);
 		this.search_query = search_query;
 
@@ -97,7 +97,7 @@ module.exports = Backbone.View.extend({
 			this.initCellInfo(row, col);
 			this.cellInfo[row * cols + col].matchesSearch = true;
 		});
-		this.hot.render();
+		this.wbview.hot.render();
 
 		navigation_total_element.innerText = results.length;
 		navigation_position_element.innerText = 0;
@@ -107,7 +107,7 @@ module.exports = Backbone.View.extend({
 
 	},
 	replaceCells(e){
-		const cols = this.hot.countCols();
+		const cols = this.wbview.hot.countCols();
 		const button = e.target;
 		const container = button.parentElement;
 		const replacement_value_element = container.getElementsByClassName('wb-replace_value')[0];
@@ -118,12 +118,12 @@ module.exports = Backbone.View.extend({
 			if (info.matchesSearch) {
 				const row = Math.floor(i / cols);
 				const col = i - row * cols;
-				const cellValue = this.hot.getDataAtCell(row, col);
+				const cellValue = this.wbview.hot.getDataAtCell(row, col);
 				cellUpdates.push([row, col, cellValue.split(this.search_query).join(replacement_value)]);
 			}
 		});
 
-		this.hot.setDataAtCell(cellUpdates);
+		this.wbview.hot.setDataAtCell(cellUpdates);
 	},
 	toggleToolbelt(e){
 		const button = e.target;
@@ -136,7 +136,7 @@ module.exports = Backbone.View.extend({
 	},
 	fillDownCells({start_row, end_row, col}){
 
-		const first_cell = this.hot.getDataAtCell(start_row, col);
+		const first_cell = this.wbview.hot.getDataAtCell(start_row, col);
 
 		if (isNaN(first_cell))
 			return;
@@ -152,7 +152,7 @@ module.exports = Backbone.View.extend({
 				(numeric_part + i).toString().padStart(first_cell.length, '0')
 			]);
 
-		this.hot.setDataAtCell(changes);
+		this.wbview.hot.setDataAtCell(changes);
 
 	},
 });

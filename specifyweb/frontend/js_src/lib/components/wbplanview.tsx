@@ -41,6 +41,15 @@ interface MappingLine {
 	readonly mapping_path: MappingPath,
 }
 
+export type Dataset = {
+    id: number,
+    name: string,
+    columns: string[],
+    uploadplan: object|null,
+    uploaderstatus: object|null,
+    uploadresult: object|null,
+}
+
 export interface SpecifyResource {
 	readonly id: number;
 	readonly get: (query: string) => SpecifyResource | any,
@@ -48,8 +57,6 @@ export interface SpecifyResource {
 	readonly set: (query: string, value: any) => void,
 	readonly save: () => void,
 }
-
-
 
 interface UploadPlanTemplate {
 	dataset_name: string,
@@ -268,13 +275,12 @@ interface PartialWBPlanViewProps {
 }
 
 export interface WBPlanViewWrapperProps extends PartialWBPlanViewProps, PublicWBPlanViewProps {
-	wb_template_promise: JqueryPromise<SpecifyResource>,
 	mapping_is_templated: boolean,
 	readonly set_unload_protect: () => void,
 }
 
 export interface PublicWBPlanViewProps {
-	wb: SpecifyResource,
+	dataset: Dataset,
 }
 
 interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps, PublicWBPlanViewProps {
@@ -776,7 +782,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 				state_type={state.type}
 				handleCancel={() => state.dispatch({
 					type: 'CancelMappingAction',
-					wb: state.props.wb,
+					dataset: state.props.dataset,
 					remove_unload_protect: state.props.remove_unload_protect,
 				})}
 				show_hidden_tables={state.show_hidden_tables}
@@ -827,10 +833,9 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 		});
 		const handleSave = (ignore_validation: boolean) => state.dispatch({
 			type: 'SavePlanAction',
-			wb: state.props.wb,
+			dataset: state.props.dataset,
 			remove_unload_protect: state.props.remove_unload_protect,
 			set_unload_protect: state.props.set_unload_protect,
-			wb_template_promise: state.props.wb_template_promise,
 			mapping_is_templated: state.mapping_is_templated,
 			ignore_validation,
 		});
@@ -843,7 +848,7 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					state_type={state.type}
 					handleCancel={() => state.dispatch({
 						type: 'CancelMappingAction',
-						wb: state.props.wb,
+						dataset: state.props.dataset,
 						remove_unload_protect: state.props.remove_unload_protect,
 					})}
 					handleTableChange={() => state.dispatch({type: 'OpenBaseTableSelectionAction'})}
@@ -914,7 +919,6 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 });
 
 function WBPlanView(props: WBPlanViewProps) {
-
 	const [state, dispatch] = React.useReducer(
 		reducer,
 		{
@@ -960,58 +964,29 @@ function WBPlanView(props: WBPlanViewProps) {
 
 function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 
-	const [schema_loaded, setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== 'undefined');
-	const [upload_plan, setUploadPlan] = React.useState<FalsyUploadPlan>();
-	const [headers, setHeaders] = React.useState<string[]>();
+    const [schema_loaded, setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== 'undefined');
 
-	React.useEffect(() => {
-		if (schema_loaded)
-			return;
+    React.useEffect(() => {
+	if (schema_loaded)
+	    return;
 
-		schema_fetched_promise.then(schema => {
-			data_model_storage.tables = schema.tables;
-			data_model_storage.list_of_base_tables = schema.list_of_base_tables;
-			data_model_storage.ranks = schema.ranks;
-			setSchemaLoaded(true);
-		}).catch(error => {
-			throw error;
-		});
+	schema_fetched_promise.then(schema => {
+	    data_model_storage.tables = schema.tables;
+	    data_model_storage.list_of_base_tables = schema.list_of_base_tables;
+	    data_model_storage.ranks = schema.ranks;
+	    setSchemaLoaded(true);
+	}).catch(error => {
+	    throw error;
+	});
 
-	}, [schema_loaded]);
+    }, [schema_loaded]);
 
-	React.useEffect(() => {
-		if (typeof upload_plan !== 'undefined')
-			return;
-
-		props.wb_template_promise.done(wbtemplate => {
-			setUploadPlan(upload_plan_string_to_object(wbtemplate.get('remarks')));
-			wbtemplate.rget('workbenchtemplatemappingitems').done(mappings =>
-				setHeaders(
-					_.invoke(
-						mappings.sortBy((mapping: {get: (arg0: string) => any;}) =>
-							mapping.get('viewOrder'),
-						),
-						'get',
-						'caption',
-					),
-				),
-			);
-		});
-
-	}, [upload_plan]);
-
-	if (
-		typeof upload_plan === 'undefined' ||
-		typeof headers === 'undefined' ||
-		!schema_loaded
-	)
-		return <LoadingScreen />;
-	else
-		return <WBPlanView
-			{...props}
-			upload_plan={upload_plan}
-			headers={headers}
-		/>;
+    const upload_plan = props.dataset.uploadplan ? props.dataset.uploadplan as UploadPlan : false;
+    return (
+        schema_loaded ?
+            <WBPlanView {...props} upload_plan={upload_plan} headers={props.dataset.columns} />
+            : <LoadingScreen />
+    );
 }
 
 
@@ -1024,10 +999,9 @@ const remove_unload_protect = (self: WBPlanViewBackboneProps) =>
 export default createBackboneView<PublicWBPlanViewProps, WBPlanViewBackboneProps, WBPlanViewWrapperProps>({
 	module_name: 'WBPlanView',
 	class_name: 'wb-plan-view',
-	initialize(self, {wb}) {
-		self.wb = wb;
-		self.wb_template_promise = self.wb.rget('workbenchtemplate') as JqueryPromise<SpecifyResource>;
-		self.mapping_is_templated = self.wb.get('ownerPermissionLevel') === 1;
+	initialize(self, {dataset}) {
+		self.dataset = dataset;
+            	self.mapping_is_templated = false;
 		const header = document.getElementById('site-header');
 		if (header === null)
 			throw new Error(`Can't find site's header`);
@@ -1049,8 +1023,7 @@ export default createBackboneView<PublicWBPlanViewProps, WBPlanViewBackboneProps
 	Component: WBPlanViewWrapper,
 	get_component_props: (self) => (
 		{
-			wb: self.wb,
-			wb_template_promise: self.wb_template_promise,
+			dataset: self.dataset,
 			remove_unload_protect: remove_unload_protect.bind(null, self),
 			set_unload_protect: set_unload_protect.bind(null, self),
 			mapping_is_templated: self.mapping_is_templated,

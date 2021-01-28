@@ -11,20 +11,19 @@ const refreshTime = 2000;
 module.exports = Backbone.View.extend({
     __name__: "WBStatus",
     className: "wb-status",
-    initialize({wb, status}) {
-        this.wb = wb;
-        this.status = status;
+    initialize({dataset}) {
+        this.dataset = dataset;
         this.stopStatusRefresh = false;
     },
     render() {
         const stopRefresh = () => this.stopStatusRefresh = true;
 
-        this.$el.append(statusTemplate(this.status)).dialog({
+        this.$el.append(statusTemplate(this.dataset.uploaderstatus)).dialog({
             modal: true,
             title: "Workbench Status",
             open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close() { $(this).remove(); stopRefresh(); },
-            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/abort/${this.wb.id}/`); }}]
+            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/abort/${this.dataset.id}/`); }}]
         });
 
         if(this.status)
@@ -35,9 +34,9 @@ module.exports = Backbone.View.extend({
         return this;
     },
     refresh() {
-        $.get(`/api/workbench/status/${this.wb.id}/`).done(
+        $.get(`/api/workbench/status/${this.dataset.id}/`).done(
             status => {
-                this.status = status;
+                this.dataset.uploaderstatus = status;
 
                 if (this.stopStatusRefresh) {
                     return;
@@ -46,23 +45,25 @@ module.exports = Backbone.View.extend({
                 }
 
                 if (status == null) {
-                    this.trigger('done');
                     this.stopStatusRefresh = true;
                     this.$el.dialog('close');
+                    this.trigger('done');
                 } else {
                     this.$el.empty().append(statusTemplate({status: status}));
                     this.initializeProgressBar();
                 }
             });
     },
-    initializeProgressBar(){
-        const {total:max, current:value} = this.status[2];
+    initializeProgressBar() {
+        if (this.dataset.uploaderstatus.taskstatus !== "PROGRESS") return;
+
+        const {total, current} = this.dataset.uploaderstatus.taskinfo;
         const progress_bar = this.$el.find('.wb-status-progress-bar');
 
         if(progress_bar.length !== 0)
             progress_bar.progressbar({
-            value: value,
-            max: max
+            value: current,
+            max: total
         });
     }
 });
