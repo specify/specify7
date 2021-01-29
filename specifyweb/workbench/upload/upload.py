@@ -73,7 +73,7 @@ def unupload_record(upload_result: UploadResult) -> None:
     for record in upload_result.toOne.values():
         unupload_record(record)
 
-def do_upload_dataset(collection, ds: Spdataset, no_commit: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
+def do_upload_dataset(collection, ds: Spdataset, no_commit: bool, allow_partial: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
     assert ds.uploadresult is None or ds.uploadresult['success'] == False, "Already uploaded!"
     ds.rowresults = None
     ds.uploadresult = None
@@ -82,7 +82,7 @@ def do_upload_dataset(collection, ds: Spdataset, no_commit: bool, progress: Opti
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
     upload_plan = get_ds_upload_plan(collection, ds)
 
-    results = do_upload(collection, rows, upload_plan, no_commit, progress)
+    results = do_upload(collection, rows, upload_plan, no_commit, allow_partial, progress)
     if not no_commit:
         ds.uploadresult = {
             'success': not any(r.contains_failure() for r in results),
@@ -104,12 +104,12 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
     return parse_plan(collection, ds.uploadplan).apply_scoping(collection)
 
 
-def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False, progress: Optional[Progress]=None) -> List[UploadResult]:
+def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False, allow_partial: bool=True, progress: Optional[Progress]=None) -> List[UploadResult]:
     total = len(rows) if isinstance(rows, Sized) else None
     with savepoint("main upload"):
         results: List[UploadResult] = []
         for row in rows:
-            with savepoint("row upload") if no_commit else no_savepoint():
+            with savepoint("row upload") if allow_partial else no_savepoint():
                 bind_result = upload_plan.bind(collection, row)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)

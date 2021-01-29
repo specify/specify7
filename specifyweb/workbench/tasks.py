@@ -18,7 +18,7 @@ from .upload.upload import do_upload_dataset, unupload_dataset
 logger = get_task_logger(__name__)
 
 @app.task(base=LogErrorsTask, bind=True)
-def upload(self, collection_id: int, ds_id: int, no_commit: bool) -> None:
+def upload(self, collection_id: int, ds_id: int, no_commit: bool, allow_partial: bool) -> None:
 
     def progress(current: int, total: Optional[int]) -> None:
         if not self.request.called_directly:
@@ -38,7 +38,7 @@ def upload(self, collection_id: int, ds_id: int, no_commit: bool) -> None:
 
         assert ds.uploaderstatus['operation'] == ("validating" if no_commit else "uploading")
 
-        do_upload_dataset(collection, ds, no_commit, progress)
+        do_upload_dataset(collection, ds, no_commit, allow_partial, progress)
 
         ds.uploaderstatus = None
         ds.save()

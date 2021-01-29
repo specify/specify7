@@ -33,8 +33,15 @@ class Command(BaseCommand):
             help='Commit the changes to the database.'
         )
 
+        parser.add_argument(
+            '--allow-partial',
+            action='store_true',
+            dest='allow_partial',
+            default=False,
+            help='Allow partial uploads. Failing rows will be skipped.'
+        )
     def handle(self, *args, **options) -> None:
         specify_collection = Collection.objects.get(id=options['collection_id'])
         ds = Spdataset.objects.get(id=options['dataset_id'])
-        result = do_upload_dataset(specify_collection, ds, not options['commit'])
+        result = do_upload_dataset(specify_collection, ds, not options['commit'], options['allow_partial'])
         self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))
