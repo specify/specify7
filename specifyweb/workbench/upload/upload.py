@@ -24,15 +24,24 @@ Progress = Callable[[int, Optional[int]], None]
 logger = logging.getLogger(__name__)
 
 class Rollback(Exception):
-    pass
+    def __init__(self, reason: str):
+        self.reason = reason
 
 @contextmanager
-def savepoint():
+def savepoint(description: str):
     try:
         with transaction.atomic():
+            logger.info(f"entering save point: {repr(description)}")
             yield
-    except Rollback:
-        pass
+            logger.info(f"leaving save point: {repr(description)}")
+
+    except Rollback as r:
+        logger.info(f"rolling back save point: {repr(description)} due to: {repr(r.reason)}")
+
+
+@contextmanager
+def no_savepoint():
+    yield
 
 def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
     total = len(ds.rowresults)
@@ -97,25 +106,21 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
 
 def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False, progress: Optional[Progress]=None) -> List[UploadResult]:
     total = len(rows) if isinstance(rows, Sized) else None
-    with savepoint():
-        logger.info("started main upload transaction")
+    with savepoint("main upload"):
         results: List[UploadResult] = []
         for row in rows:
-            with savepoint():
-                logger.debug("started row transaction")
+            with savepoint("row upload") if no_commit else no_savepoint():
                 bind_result = upload_plan.bind(collection, row)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
                     progress(len(results), total)
                 if result.contains_failure():
-                    logger.debug("rolling back row")
-                    raise Rollback()
+                    raise Rollback("failed row")
                 logger.info(f"finished row {len(results)}")
 
         if no_commit:
-            logger.info("rolling back main upload transaction due to no_commit")
-            raise Rollback()
+            raise Rollback("no_commit option")
         else:
             fixup_trees()
 
@@ -127,10 +132,10 @@ def validate_row(collection, upload_plan: ScopedUploadable, row: Row) -> UploadR
     retries = 3
     while True:
         try:
-            with savepoint():
+            with savepoint("row validation"):
                 bind_result = upload_plan.bind(collection, row)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
-                raise Rollback()
+                raise Rollback("validating only")
             break
 
         except OperationalError as e:
