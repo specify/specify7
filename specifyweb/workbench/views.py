@@ -65,7 +65,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         if 'uploadplan' in attrs:
             if ds.uploaderstatus != None:
                 return http.HttpResponse('dataset in use by uploader', status=409)
-            if ds.uploadresult and ds.uploadresult.success:
+            if ds.was_uploaded():
                 return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
 
             ds.uploadplan = attrs['uploadplan']
@@ -107,7 +107,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
     if request.method == "PUT":
         if ds.uploaderstatus is not None:
             return http.HttpResponse('dataset in use by uploader.', status=409)
-        if ds.uploadresult and ds.uploadresult.success:
+        if ds.was_uploaded():
             return http.HttpResponse('dataset has been uploaded. changing data not allowed.', status=400)
 
         ds.data = json.load(request)
@@ -133,7 +133,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if ds.collection != request.specify_collection:
             return http.HttpResponse('dataset belongs to a different collection.', status=400)
-        if ds.uploadresult and ds.uploadresult.success:
+        if ds.was_uploaded():
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
         taskid = str(uuid4())
@@ -158,7 +158,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
         if ds.uploaderstatus is not None:
             return http.HttpResponse('dataset in use by uploader.', status=409)
-        if not (ds.uploadresult and ds.uploadresult.success):
+        if not ds.was_uploaded():
             return http.HttpResponse('dataset has not been uploaded.', status=400)
 
         taskid = str(uuid4())

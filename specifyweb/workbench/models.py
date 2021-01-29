@@ -20,3 +20,6 @@ class Spdataset(models.Model):
 
     class Meta:
         db_table = 'spdataset'
+
+    def was_uploaded(self) -> bool:
+        return self.uploadresult and self.uploadresult['success']

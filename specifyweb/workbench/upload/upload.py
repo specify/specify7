@@ -74,7 +74,7 @@ def unupload_record(upload_result: UploadResult) -> None:
         unupload_record(record)
 
 def do_upload_dataset(collection, ds: Spdataset, no_commit: bool, allow_partial: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
-    assert ds.uploadresult is None or ds.uploadresult['success'] == False, "Already uploaded!"
+    assert not ds.was_uploaded(), "Already uploaded!"
     ds.rowresults = None
     ds.uploadresult = None
     ds.save()
