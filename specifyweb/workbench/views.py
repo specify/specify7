@@ -7,6 +7,8 @@ from jsonschema import validate # type: ignore
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django import forms
+from django.shortcuts import render
 from django.db import connection, transaction
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -16,6 +18,7 @@ from specifyweb.specify.views import login_maybe_required, apply_access_control
 
 from . import tasks
 from . import models
+from .upload import upload as uploader
 from .upload.upload_results_schema import schema
 
 logger = logging.getLogger(__name__)
@@ -225,3 +228,25 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
         ds.save()
 
     return http.JsonResponse(async_result.id, safe=False)
+
+@login_maybe_required
+@apply_access_control
+@require_http_methods(["GET", "POST"])
+def validate_row(request, ds_id: str) -> http.HttpResponse:
+    ds = get_object_or_404(models.Spdataset, id=ds_id)
+    collection = request.specify_collection
+    upload_plan = uploader.get_ds_upload_plan(collection, ds)
+
+    ValidationForm = type('ValidationForm', (forms.Form,), {
+        column: forms.CharField(required=False)
+        for column in ds.columns
+    })
+
+    if request.method == "POST":
+        result = uploader.validate_row(collection, upload_plan, request.POST)
+        return http.JsonResponse(result.validation_info().to_json())
+
+    else:
+        form = ValidationForm()
+
+    return render(request, 'validate_row.html', {'form': form.as_p()})

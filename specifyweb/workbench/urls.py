@@ -1,7 +1,6 @@
 from django.conf.urls import url
 
 from . import views
-from .upload import views as upload_views
 
 urlpatterns = [
     url(r'^dataset/$', views.datasets),
@@ -15,7 +14,5 @@ urlpatterns = [
     url(r'^validation_results/(?P<ds_id>\d+)/', views.validation_results),
     url(r'^upload_results/(?P<ds_id>\d+)/', views.upload_results),
     url(r'^abort/(?P<ds_id>\d+)/', views.abort),
-
-    url(r'^upload_new/', upload_views.upload),
-    url(r'^validate_row/(?P<ds_id>\d+)/', upload_views.validate_row),
+    url(r'^validate_row/(?P<ds_id>\d+)/', views.validate_row),
 ]
