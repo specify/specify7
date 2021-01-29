@@ -39,8 +39,9 @@ def datasets(request):
         )
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
     else:
-        dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only('name')
-        return http.JsonResponse([{'id': ds.id, 'name': ds.name, 'uploadresult': ds.uploadresult} for ds in dss], safe=False)
+        attrs = ('name', 'uploadresult', 'uploaderstatus')
+        dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only(*attrs)
+        return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
 
 @login_maybe_required
 @apply_access_control
@@ -56,14 +57,20 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         return http.HttpResponseForbidden()
 
     if request.method == "PUT":
-        assert ds.uploaderstatus == None
         attrs = json.load(request)
-        for attr in ('name', 'uploadplan'):
-            if attr in attrs:
-                setattr(ds, attr, attrs[attr])
+
+        if 'name' in attrs:
+            ds.name = attrs['name']
 
         if 'uploadplan' in attrs:
+            if ds.uploaderstatus != None:
+                return http.HttpResponse('dataset in use by uploader', status=409)
+            if ds.uploadresult and ds.uploadresult.success:
+                return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
+
+            ds.uploadplan = attrs['uploadplan']
             ds.rowresults = None
+            ds.uploadresult = None
 
         ds.save()
         return http.HttpResponse(status=204)
@@ -98,8 +105,13 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         return http.HttpResponseForbidden()
 
     if request.method == "PUT":
-        assert ds.uploaderstatus == None
+        if ds.uploaderstatus is not None:
+            return http.HttpResponse('dataset in use by uploader.', status=409)
+        if ds.uploadresult and ds.uploadresult.success:
+            return http.HttpResponse('dataset has been uploaded. changing data not allowed.', status=400)
+
         ds.data = json.load(request)
+        ds.rowresults = None
         ds.uploadresult = None
         ds.save()
         return http.HttpResponse(status=204)
@@ -117,13 +129,42 @@ def upload(request, ds_id, no_commit: bool) -> http.HttpResponse:
 
     with transaction.atomic():
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
-        assert ds.uploaderstatus is None
-        assert ds.collection == request.specify_collection
+        if ds.uploaderstatus is not None:
+            return http.HttpResponse('dataset in use by uploader.', status=409)
+        if ds.collection != request.specify_collection:
+            return http.HttpResponse('dataset belongs to a different collection.', status=400)
+        if ds.uploadresult and ds.uploadresult.success:
+            return http.HttpResponse('dataset has already been uploaded.', status=400)
 
         taskid = str(uuid4())
         async_result = tasks.upload.apply_async([request.specify_collection.id, ds_id, no_commit], task_id=taskid)
         ds.uploaderstatus = {
             'operation': "validating" if no_commit else "uploading",
+            'taskid': taskid
+        }
+        ds.save()
+
+    return http.JsonResponse(async_result.id, safe=False)
+
+@login_maybe_required
+@apply_access_control
+@require_POST
+def unupload(request, ds_id: int) -> http.HttpResponse:
+    ds = get_object_or_404(models.Spdataset, id=ds_id)
+    if ds.specifyuser != request.specify_user:
+        return http.HttpResponseForbidden()
+
+    with transaction.atomic():
+        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+        if ds.uploaderstatus is not None:
+            return http.HttpResponse('dataset in use by uploader.', status=409)
+        if not (ds.uploadresult and ds.uploadresult.success):
+            return http.HttpResponse('dataset has not been uploaded.', status=400)
+
+        taskid = str(uuid4())
+        async_result = tasks.unupload.apply_async([ds.id], task_id=taskid)
+        ds.uploaderstatus = {
+            'operation': "unuploading",
             'taskid': taskid
         }
         ds.save()
@@ -152,6 +193,27 @@ def status(request, ds_id: int) -> http.HttpResponse:
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
     return http.JsonResponse(status)
+
+@login_maybe_required
+@apply_access_control
+@require_POST
+def abort(request, ds_id: int) -> http.HttpResponse:
+    ds = get_object_or_404(models.Spdataset, id=ds_id)
+    if ds.specifyuser != request.specify_user:
+        return http.HttpResponseForbidden()
+
+    if ds.uploaderstatus is None:
+        return http.HttpResponse('not running', content_type='text/plain')
+
+    task = {
+        'uploading': tasks.upload,
+        'validating': tasks.upload,
+        'unuploading': tasks.unupload,
+    }[ds.uploaderstatus['operation']]
+    result = task.AsyncResult(ds.uploaderstatus['taskid']).revoke(terminate=True)
+
+    models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
+    return http.HttpResponse('ok', content_type='text/plain')
 
 @login_maybe_required
 @apply_access_control
@@ -185,49 +247,6 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
         validate(results, schema)
 
     return http.JsonResponse(results, safe=False)
-
-@login_maybe_required
-@apply_access_control
-@require_POST
-def abort(request, ds_id: int) -> http.HttpResponse:
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
-
-    if ds.uploaderstatus is None:
-        return http.HttpResponse('not running', content_type='text/plain')
-
-    task = {
-        'uploading': tasks.upload,
-        'validating': tasks.upload,
-        'unuploading': tasks.unupload,
-    }[ds.uploaderstatus['operation']]
-    result = task.AsyncResult(ds.uploaderstatus['taskid']).revoke(terminate=True)
-
-    models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
-    return http.HttpResponse('ok', content_type='text/plain')
-
-@login_maybe_required
-@apply_access_control
-@require_POST
-def unupload(request, ds_id: int) -> http.HttpResponse:
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
-
-    with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
-        assert ds.uploaderstatus is None
-
-        taskid = str(uuid4())
-        async_result = tasks.unupload.apply_async([ds.id], task_id=taskid)
-        ds.uploaderstatus = {
-            'operation': "unuploading",
-            'taskid': taskid
-        }
-        ds.save()
-
-    return http.JsonResponse(async_result.id, safe=False)
 
 @login_maybe_required
 @apply_access_control
