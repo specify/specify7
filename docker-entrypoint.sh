@@ -6,6 +6,7 @@ if [ "$1" = 've/bin/gunicorn' ]; then
     rsync -a --delete specifyweb/frontend/static/ /volumes/static-files/frontend-static
     cd /opt/specify7
     echo "Applying Django migrations."
-    ve/bin/python manage.py migrate notifications workbench
+    ve/bin/python manage.py migrate notifications
+    ve/bin/python manage.py migrate workbench
 fi
 exec "$@"
