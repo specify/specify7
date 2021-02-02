@@ -6,7 +6,12 @@
   <% } else {
      const {total='unknown', current} = taskinfo;
      const operation = uploaderstatus.operation;
-    const title = operation[0].toUpperCase()+operation.slice(1) + (current === total ?
+    const title = operation[0].toUpperCase()+operation.slice(1) + (
+    	(
+    		current === total ||
+    		typeof current === 'undefined' ||
+    		typeof total === 'undefined'
+    	) ?
   		'...' :
 		` (<b>${current}/${total}</b>)`
 	  ); %>

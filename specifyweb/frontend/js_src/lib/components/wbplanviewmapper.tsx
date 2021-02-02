@@ -110,7 +110,7 @@ const MappingsControlPanel = React.memo(named_component(({
 		<button onClick={handleAddNewColumn}>Add new column</button>
 		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
 		<label>
-			<input
+			{' '}<input
 				type="checkbox"
 				checked={show_hidden_fields}
 				onChange={handleChange}

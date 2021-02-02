@@ -126,7 +126,7 @@ interface UploadedTreeRankProcessed extends Omit<UploadedTreeRank, 'children'> {
 	readonly children: Readonly<Record<number, UploadedTreeRankProcessed>>
 }
 
-interface UploadedTreeRankSpacedOut extends Partial<Omit<UploadedTreeRank & {matched?:boolean}, 'children'>> {
+interface UploadedTreeRankSpacedOut extends Partial<Omit<UploadedTreeRank & {matched?: boolean}, 'children'>> {
 	readonly children: Readonly<Record<number, UploadedTreeRankSpacedOut | undefined>>,
 }
 
@@ -492,16 +492,17 @@ export function parseUploadResults(
 	uploadResults: UploadResults,
 	hot: Handsontable,
 	treeRanks: Record<string, string[]>,
-	plan: object|null,
+	plan: UploadPlan | null,
+	getHeaderNameFromHTML: (header_name: string) => string,
 ): [UploadedRows, UploadedPicklistItems] {
 
-	const headers = hot.getColHeader() as string[];
+	const headers = (hot.getColHeader() as string[]).map(getHeaderNameFromHTML);
 	const data = hot.getData() as string[][];
 
-	if (plan == null) {
-	    throw new Error('Upload plan is invalid');
-	}
-	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, plan as UploadPlan);
+	if (plan === null)
+		throw new Error('Upload plan is invalid');
+
+	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, plan);
 	const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
 	const mapped_ranks_tree = array_of_mappings.filter(full_mapping_path =>
 		full_mapping_path.length >= 4 && full_mapping_path[full_mapping_path.length - 3] === 'name',

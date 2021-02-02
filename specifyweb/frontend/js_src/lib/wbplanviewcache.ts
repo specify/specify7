@@ -83,9 +83,9 @@ export function get(
 	cache_name: string,  // the name of the cache
 ): any
 /*
- * {boolean} False on error
- * {mixed} value stored under cache_name on success
- * */ {
+	* {boolean} False on error
+	* {mixed} value stored under cache_name on success
+	* */ {
 
 	if (!event_listener_is_initialized)
 		initialize();
@@ -140,7 +140,7 @@ export function set<T>(
 	};
 
 	if (!overwrite && typeof buckets[bucket_name].records[cache_name] !== 'undefined')
-		return cache_value;
+		return buckets[bucket_name].records[cache_name] as unknown as T;
 
 	buckets[bucket_name].records[cache_name] = {
 		value: cache_value,

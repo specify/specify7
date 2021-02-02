@@ -45,9 +45,9 @@ export type Dataset = {
 	id: number,
 	name: string,
 	columns: string[],
-	uploadplan: object | null,
-	uploaderstatus: object | null,
-	uploadresult: object | null,
+	uploadplan: UploadPlan | null,
+	uploaderstatus: Record<string,unknown> | null,
+	uploadresult: Record<string,unknown> | null,
 }
 
 export interface SpecifyResource {
@@ -295,10 +295,10 @@ const schema_fetched_promise = fetch_data_model();
 const WBPlanViewHeaderLeftNonMappingElements = named_component(({
 		show_hidden_tables,
 		onToggleHiddenTables: handleToggleHiddenTables,
-	}: WBPlanViewHeaderPropsNonMapping) => <>
+	}: WBPlanViewHeaderPropsNonMapping) => <label>
 		<input type='checkbox' checked={show_hidden_tables} onChange={handleToggleHiddenTables} />
 		Show advanced tables
-	</>,
+	</label>,
 	'WBPlanViewHeaderLeftNonMappingElements');
 
 const WBPlanViewHeaderLeftMappingElements = named_component(({
@@ -452,10 +452,15 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 	'ToggleHiddenTablesAction': (state) => (
 		{
 			...state,
-			show_hidden_tables: cache.set('ui', 'show_hidden_tables',
+			show_hidden_tables: cache.set(
+				'ui',
+				'show_hidden_tables',
 				'show_hidden_tables' in state ?
 					!state.show_hidden_tables :
 					false,
+				{
+					overwrite: true,
+				}
 			),
 		}
 	),
@@ -524,7 +529,13 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 	'ToggleMappingViewAction': state => (
 		{
 			...mapping_state(state),
-			show_mapping_view: cache.set('ui', 'show_mapping_view', !mapping_state(state).show_mapping_view),
+			show_mapping_view: cache.set(
+				'ui',
+				'show_mapping_view',
+				!mapping_state(state).show_mapping_view,
+				{
+					overwrite: true,
+				}),
 		}
 	),
 	'ToggleMappingIsTemplatedAction': state => (
@@ -633,7 +644,13 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 	'ToggleHiddenFieldsAction': state => (
 		{
 			...mapping_state(state),
-			show_hidden_fields: cache.set('ui', 'show_hidden_fields', !mapping_state(state).show_hidden_fields),
+			show_hidden_fields: cache.set(
+				'ui',
+				'show_hidden_fields',
+				!mapping_state(state).show_hidden_fields,
+				{
+					overwrite: true,
+				}),
 			reveal_hidden_fields_clicked: true,
 		}
 	),
@@ -977,7 +994,7 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 
 	}, [schema_loaded]);
 
-	const upload_plan = props.dataset.uploadplan ? props.dataset.uploadplan as UploadPlan : false;
+	const upload_plan = props.dataset.uploadplan ? props.dataset.uploadplan  : false;
 	return (
 		schema_loaded ?
 			<WBPlanView {...props} upload_plan={upload_plan} headers={props.dataset.columns} />
