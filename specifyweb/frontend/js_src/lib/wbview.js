@@ -83,7 +83,10 @@ const WBView = Backbone.View.extend({
             data: this.data,
             cells: this.defineCell.bind(this, this.dataset.columns.length),
             colHeaders: (col)=>
-                `<div class="wb-header-${col}">${this.dataset.columns[col]}</div>`,
+                `<div class="wb-header-${col}">
+                    <span class="wb-header-icon"></span>
+                    <span class="wb-header-name">${this.dataset.columns[col]}</span>
+                </div>`,
             columns: this.dataset.columns.map((c, i) => ({data: i})) ,
             minSpareRows: 0,
             comments: true,
@@ -184,13 +187,13 @@ const WBView = Backbone.View.extend({
 
             stylesContainer.innerHTML = `${
                 this.dataset.columns.map((columnName, index)=>
-                    `.wb-header-${index}${
+                    `.wb-header-${index} ${
                         columnName in mappedHeadersAndTables ?
-                            `:before {
-                                content: '';
+                            `.wb-header-icon {
+                                display: inline !important;
                                 background-image: url('${mappedHeadersAndTables[columnName]}')
                             }` :
-                            ` ${unmappedHeaderStyles} .wb-col-${index} ${unmappedCellStyles}`
+                            `${unmappedHeaderStyles} .wb-col-${index} ${unmappedCellStyles}`
                     }`
                 ).join('\n')
             }`;
@@ -268,7 +271,7 @@ const WBView = Backbone.View.extend({
         this.hot.render();
     },
     getHeaderNameFromHTML: (headerHTML)=>
-        /<div class="wb-header-\d+">(?<headerName>.*?)<\/div>/.exec(headerHTML)?.[1] || '',
+        /<span class="wb-header-name">(?<headerName>.*?)<\/span>/.exec(headerHTML)?.groups?.headerName || '',
     parseRowValidationResult(row, result) {
         const cols = this.hot.countCols();
         const headerToCol = {};

@@ -98,7 +98,8 @@
     display: flex;
     column-gap: 0.2rem;
 }
-.htCore .colHeader div:before {
+.htCore .colHeader .wb-header-icon {
+    display: none;
     width: 20px;
     height: 20px;
     background-size: contain;
