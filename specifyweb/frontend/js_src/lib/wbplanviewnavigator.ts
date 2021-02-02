@@ -366,7 +366,7 @@ export function get_mapping_line_data_from_mapping_path({
 		index: number,
 	) => void
 	readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void,
-	readonly get_mapped_fields: GetMappedFieldsBind,
+	readonly get_mapped_fields?: GetMappedFieldsBind,
 	readonly automapper_suggestions?: AutomapperSuggestion[],
 }): MappingElementProps[] {
 
@@ -472,7 +472,9 @@ export function get_mapping_line_data_from_mapping_path({
 
 			internal_state.current_mapping_path_part = mapping_path[internal_state.mapping_path_position];
 			internal_state.result_fields = {};
-			internal_state.mapped_fields = Object.keys(get_mapped_fields(local_mapping_path));
+			internal_state.mapped_fields = typeof get_mapped_fields === 'function' ?
+				Object.keys(get_mapped_fields(local_mapping_path)) :
+				[];
 		},
 
 		handle_to_many_children({table_name}) {

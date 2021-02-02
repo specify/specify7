@@ -12,7 +12,8 @@ import React                                                from 'react';
 import createBackboneView                                   from './reactbackboneextend';
 import { ModalDialog }                                      from './modaldialog';
 import { Action, generate_reducer, named_component, State } from '../statemanagement';
-import fetch_data_model, { DataModelFetcherReturn }         from '../wbplanviewmodelfetcher';
+import fetch_data_model                                     from '../wbplanviewmodelfetcher';
+import data_model_storage                                   from '../wbplanviewmodel';
 import { Dataset }                                          from './wbplanview';
 import {
 	parseUploadResults, UploadedPicklistItem,
@@ -82,7 +83,7 @@ type WBUploadedActions =
 
 
 let ranks: Record<string, string[]>;
-const fetch_data_model_promise: Promise<DataModelFetcherReturn> | undefined = fetch_data_model(true);
+const fetch_data_model_promise: Promise<void> = fetch_data_model();
 
 const UploadedTableRowsHeaderProps = named_component(({
 	column_names,
@@ -100,18 +101,18 @@ const UploadedTableRowsHeaderProps = named_component(({
 
 
 const CellLink = named_component(({
-	get_record_view_url,
-	record_id,
-	children
-}:{
-	get_record_view_url: (record_id:number)=>string,
-	record_id?: number,
-	children: JSX.Element|React.ReactText
-})=>typeof record_id === 'undefined' ?
+		get_record_view_url,
+		record_id,
+		children,
+	}: {
+		get_record_view_url: (record_id: number) => string,
+		record_id?: number,
+		children: JSX.Element | React.ReactText
+	}) => typeof record_id === 'undefined' ?
 	<>{children}</> :
 	<a target="_blank" href={get_record_view_url(record_id)}>
 		{children}
-	</a>, 'CellLink'
+	</a>, 'CellLink',
 );
 
 const UploadedTableRow = named_component(({
@@ -151,7 +152,7 @@ const UploadedTableRow = named_component(({
 								row_index,
 							column_index,
 						)}
-						title={`${['Uploaded','Matched'][matched ? 1 : 0]} record`}
+						title={`${['Uploaded', 'Matched'][matched ? 1 : 0]} record`}
 					>
 						<CellLink get_record_view_url={get_record_view_url} record_id={record_id}>
 							{
@@ -528,23 +529,22 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 		[],
 	);
 
-	React.useEffect(() => {  // fetch tree ranks
-		if (typeof treeRanks !== 'undefined' || typeof fetch_data_model_promise === 'undefined')
-			return;
-
-		fetch_data_model_promise.then(({ranks}) =>
-			setTreeRanks(
-				Object.fromEntries(
-					Object.entries(ranks).map(([table_name, table_ranks]) =>
-						[table_name, Object.keys(table_ranks)],
+	React.useEffect(() =>  // fetch tree ranks
+			void (
+				fetch_data_model_promise.then(() =>
+					setTreeRanks(
+						Object.fromEntries(
+							Object.entries(data_model_storage.ranks).map(([table_name, table_ranks]) =>
+								[table_name, [data_model_storage.root_ranks[table_name], ...Object.keys(table_ranks)]],
+							),
+						),
 					),
-				),
+				).catch(() => {
+					throw new Error('Failure fetching tree ranks');
+				})
 			),
-		).catch(() => {
-			throw new Error('Failure fetching tree ranks');
-		});
-
-	}, [fetch_data_model_promise]);
+		[]
+	);
 
 	React.useEffect(() => { // parse uploaded data
 		if (typeof uploadResults === 'undefined' || typeof treeRanks === 'undefined')
@@ -576,7 +576,7 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 	WBUploadedViewDataParseProps>({
 	module_name: 'WBUploadedView',
 	class_name: 'wb-uploaded',
-	    initialize(self, {dataset, hot, removeCallback}) {
+	initialize(self, {dataset, hot, removeCallback}) {
 		self.dataset = dataset;
 		self.hot = hot;
 		self.removeCallback = removeCallback;

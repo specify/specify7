@@ -15,6 +15,11 @@ const navigation = require('./navigation.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
+const {upload_plan_to_mappings_tree} = require('./wbplanviewconverter.ts');
+const {mappings_tree_to_array_of_mappings} = require('./wbplanviewtreehelper.ts');
+const {get_mapping_line_data_from_mapping_path} = require('./wbplanviewnavigator.ts');
+const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
+const icons = require('./icons.js');
 
 const template = require('./templates/wbview.html');
 
@@ -59,6 +64,17 @@ const WBView = Backbone.View.extend({
 
         if (this.dataset.uploaderstatus) this.openStatus();
 
+        if (!this.dataset.uploadplan) {
+            $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
+                title: "No Plan is defined.",
+                modal: true,
+                buttons: {
+                    'Create': this.openPlan.bind(this),
+                    'Cancel': function() { $(this).dialog('close'); }
+                }
+            });
+        }
+
         //initialize Handsontable
         const onChanged = this.spreadSheetChanged.bind(this);
 
@@ -66,7 +82,8 @@ const WBView = Backbone.View.extend({
             height: this.calcHeight(),
             data: this.data,
             cells: this.defineCell.bind(this, this.dataset.columns.length),
-            colHeaders: this.dataset.columns,
+            colHeaders: (col)=>
+                `<div class="wb-header-${col}">${this.dataset.columns[col]}</div>`,
             columns: this.dataset.columns.map((c, i) => ({data: i})) ,
             minSpareRows: 0,
             comments: true,
@@ -127,11 +144,65 @@ const WBView = Backbone.View.extend({
         $(window).resize(this.resize.bind(this));
 
         this.getValidationResults();
+
+        fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
+
         return this;
     },
     getValidationResults() {
         Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
             .done(results => this.parseResults(results));
+    },
+    identifyMappedHeaders(){
+
+        const stylesContainer = document.createElement('style');
+        const unmappedHeaderStyles = '{ color: #999; }';
+        const unmappedCellStyles = '{ color: #999; }';
+
+        if (this.dataset.uploadplan) {
+            const {
+                base_table_name,
+                mappings_tree: mappingsTree
+            } = upload_plan_to_mappings_tree(this.dataset.columns, this.dataset.uploadplan);
+            const arrayOfMappings = mappings_tree_to_array_of_mappings(mappingsTree);
+            const mappedHeadersAndTables = Object.fromEntries(
+                arrayOfMappings.map(mappingsPath =>
+                    [
+                        mappingsPath.slice(-1)[0],
+                        icons.getIcon(
+                            get_mapping_line_data_from_mapping_path({
+                                base_table_name,
+                                mapping_path: mappingsPath.slice(0, -3),
+                                iterate: false,
+                                custom_select_type: 'simple',
+                                show_hidden_fields: false,
+                            })[0]?.table_name || '',
+                        ),
+                    ],
+                ),
+            );
+
+            stylesContainer.innerHTML = `${
+                this.dataset.columns.map((columnName, index)=>
+                    `.wb-header-${index}${
+                        columnName in mappedHeadersAndTables ?
+                            `:before {
+                                content: '';
+                                background-image: url('${mappedHeadersAndTables[columnName]}')
+                            }` :
+                            ` ${unmappedHeaderStyles} .wb-col-${index} ${unmappedCellStyles}`
+                    }`
+                ).join('\n')
+            }`;
+
+            console.log(mappedHeadersAndTables);
+        }
+        else
+            stylesContainer.innerText =
+                `.handsontable th ${unmappedHeaderStyles} .handsontable td ${unmappedCellStyles}`;
+
+        this.$el.append(stylesContainer);
+
     },
     parseResults(results) {
         if (results == null) {
@@ -143,7 +214,7 @@ const WBView = Backbone.View.extend({
         const cols = this.hot.countCols();
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
-            headerToCol[this.hot.getColHeader(i)] = i;
+            headerToCol[this.getHeaderNameFromHTML(this.hot.getColHeader(i))] = i;
         }
 
         this.wbutils.cellInfo = [];
@@ -196,11 +267,13 @@ const WBView = Backbone.View.extend({
 
         this.hot.render();
     },
+    getHeaderNameFromHTML: (headerHTML)=>
+        /<div class="wb-header-\d+">(?<headerName>.*?)<\/div>/.exec(headerHTML)?.[1] || '',
     parseRowValidationResult(row, result) {
         const cols = this.hot.countCols();
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
-            headerToCol[this.hot.getColHeader(i)] = i;
+            headerToCol[this.getHeaderNameFromHTML(this.hot.getColHeader(i))] = i;
         }
 
         for (let i = 0; i < cols; i++) {
@@ -227,22 +300,14 @@ const WBView = Backbone.View.extend({
             add_error_message(cell_issue.column, cell_issue.issue);
         });
 
-        result.newRows.forEach(({id, columns, tableName: table_name}) => {
-
-            const upload_result_data = {
-                record_id: id,
-                row_index: row,
-                columns: {},
-            };
-
+        result.newRows.forEach(({columns}) =>
             columns.forEach(column_name => {
-
                 const col = headerToCol[column_name];
                 this.wbutils.initCellInfo(row, col);
                 const cellInfo = this.wbutils.cellInfo[row*cols + col];
                 cellInfo.isNew = true;
-            });
-        });
+            })
+        );
 
     },
     defineCell(cols, row, col, prop) {
@@ -260,6 +325,8 @@ const WBView = Backbone.View.extend({
 
                 if(cell_data && cell_data.issues.length)
                     td.classList.add('wb-invalid-cell');
+
+                td.classList.add(`wb-col-${col}`);
 
                 Handsontable.renderers.TextRenderer.apply(null, arguments);
             }
@@ -300,7 +367,9 @@ const WBView = Backbone.View.extend({
         if (this.dataset.uploadplan && change) {
             change.forEach(([row]) => {
                 const rowData = this.hot.getDataAtRow(row);
-                const data = Object.fromEntries(rowData.map((value, i) => [this.hot.getColHeader(i), value]));
+                const data = Object.fromEntries(rowData.map((value, i) =>
+                    [this.getHeaderNameFromHTML(this.hot.getColHeader(i)), value]
+                ));
                 const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.dataset.id}/`, data);
                 req.done(result => this.gotRowValidationResult(row, req, result));
             });
@@ -427,7 +496,7 @@ const WBView = Backbone.View.extend({
     },
     export: function() {
         const data = Papa.unparse({
-            fields: this.hot.getColHeader(),
+            fields: this.hot.getColHeader().map(this.getHeaderNameFromHTML),
             data: this.dataset.data
         });
         const wbname = this.dataset.name;

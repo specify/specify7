@@ -30,8 +30,8 @@ import data_model_storage                                                      f
 import { ListOfBaseTables }                                                    from './wbplanviewcomponents';
 import { Action, generate_dispatch, generate_reducer, named_component, State } from '../statemanagement';
 import createBackboneView                                                      from './reactbackboneextend';
-import { JqueryPromise }                                             from '../legacy_types';
-import { FalsyUploadPlan, upload_plan_string_to_object, UploadPlan } from '../wbplanviewconverter';
+import { JqueryPromise }                                                       from '../legacy_types';
+import { FalsyUploadPlan, upload_plan_string_to_object, UploadPlan }           from '../wbplanviewconverter';
 
 
 // general definitions
@@ -42,12 +42,12 @@ interface MappingLine {
 }
 
 export type Dataset = {
-    id: number,
-    name: string,
-    columns: string[],
-    uploadplan: object|null,
-    uploaderstatus: object|null,
-    uploadresult: object|null,
+	id: number,
+	name: string,
+	columns: string[],
+	uploadplan: object | null,
+	uploaderstatus: object | null,
+	uploadresult: object | null,
 }
 
 export interface SpecifyResource {
@@ -356,7 +356,6 @@ const WBPlanViewHeader = named_component((props: WBPlanViewHeaderProps) =>
 			}
 		</div>
 	</div>, 'WBPlanViewHeader');
-
 
 
 function getInitialWBPlanViewState(props: OpenMappingScreenAction): WBPlanViewStates {
@@ -964,29 +963,26 @@ function WBPlanView(props: WBPlanViewProps) {
 
 function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 
-    const [schema_loaded, setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== 'undefined');
+	const [schema_loaded, setSchemaLoaded] = React.useState<boolean>(typeof data_model_storage.tables !== 'undefined');
 
-    React.useEffect(() => {
-	if (schema_loaded)
-	    return;
+	React.useEffect(() => {
+		if (schema_loaded)
+			return;
 
-	schema_fetched_promise.then(schema => {
-	    data_model_storage.tables = schema.tables;
-	    data_model_storage.list_of_base_tables = schema.list_of_base_tables;
-	    data_model_storage.ranks = schema.ranks;
-	    setSchemaLoaded(true);
-	}).catch(error => {
-	    throw error;
-	});
+		schema_fetched_promise.then(() =>
+			setSchemaLoaded(true),
+		).catch(error => {
+			throw error;
+		});
 
-    }, [schema_loaded]);
+	}, [schema_loaded]);
 
-    const upload_plan = props.dataset.uploadplan ? props.dataset.uploadplan as UploadPlan : false;
-    return (
-        schema_loaded ?
-            <WBPlanView {...props} upload_plan={upload_plan} headers={props.dataset.columns} />
-            : <LoadingScreen />
-    );
+	const upload_plan = props.dataset.uploadplan ? props.dataset.uploadplan as UploadPlan : false;
+	return (
+		schema_loaded ?
+			<WBPlanView {...props} upload_plan={upload_plan} headers={props.dataset.columns} />
+			: <LoadingScreen />
+	);
 }
 
 
@@ -1001,12 +997,12 @@ export default createBackboneView<PublicWBPlanViewProps, WBPlanViewBackboneProps
 	class_name: 'wb-plan-view',
 	initialize(self, {dataset}) {
 		self.dataset = dataset;
-            	self.mapping_is_templated = false;
+		self.mapping_is_templated = false;
 		const header = document.getElementById('site-header');
 		if (header === null)
 			throw new Error(`Can't find site's header`);
 		self.header = header;
-		self.handle_resize = ()=>
+		self.handle_resize = () =>
 			self.el.style.setProperty('--menu_size', `${Math.ceil(self.header.clientHeight)}px`);
 	},
 	render_pre(self) {

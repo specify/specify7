@@ -92,3 +92,14 @@
     height: 400px;
     width: 600px;
 }
+
+/* allow for table icons in HOT table headers */
+.htCore .colHeader div {
+    display: flex;
+    column-gap: 0.2rem;
+}
+.htCore .colHeader div:before {
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+}

@@ -302,8 +302,8 @@ function handle_relationship_field(field_data: any, field: DataModelFieldWritabl
 * Inverse of upload_plan_to_mappings_tree
 * */
 export function mappings_tree_to_upload_plan(base_table_name: string, mappings_tree: object) {
-    return {
-	baseTableName: base_table_name,
-	uploadable: mappings_tree_to_upload_plan_table(mappings_tree, base_table_name),
-    };
-};
+	return {
+		baseTableName: base_table_name,
+		uploadable: mappings_tree_to_upload_plan_table(mappings_tree, base_table_name),
+	};
+}
