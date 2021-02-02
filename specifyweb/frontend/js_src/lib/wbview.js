@@ -38,7 +38,7 @@ const WBView = Backbone.View.extend({
         'click .wb-show-upload-view':'displayUploadedView',
         'click .wb-unupload':'unupload'
     },
-    initialize({dataset}) {
+    initialize({dataset, showStatusDialog}) {
         this.dataset = dataset;
         this.data = dataset.rows;
         if (this.data.length < 1)
@@ -54,6 +54,7 @@ const WBView = Backbone.View.extend({
 
         this.uploaded = this.dataset.uploadresult && this.dataset.uploadresult.success;
         this.uploadedView = undefined;
+        this.showStatusDialog = showStatusDialog;
     },
     render() {
         this.$el.append(template({
@@ -64,16 +65,15 @@ const WBView = Backbone.View.extend({
 
         if (this.dataset.uploaderstatus) this.openStatus();
 
-        if (!this.dataset.uploadplan) {
+        if (!this.dataset.uploadplan)
             $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
-                title: "No Plan is defined.",
+                title: "No Plan is defined",
                 modal: true,
                 buttons: {
                     'Create': this.openPlan.bind(this),
                     'Cancel': function() { $(this).dialog('close'); }
                 }
             });
-        }
 
         //initialize Handsontable
         const onChanged = this.spreadSheetChanged.bind(this);
@@ -268,6 +268,34 @@ const WBView = Backbone.View.extend({
             navigation_total_element.innerText = cellCounts[navigation_type];
         });
 
+        if(this.showStatusDialog){
+            $(`<div>
+                ${
+                    cellCounts.invalid_cells === 0 ?
+                        `Upload completed successfully.<br>
+                        You can open the 'View' menu to see a detailed breakdown of the upload results.` :
+                        `Upload failed with ${cellCounts.invalid_cells} invalid cells.<br>
+                        Please review the validation messages and repeat the upload process.`
+                }
+            </div>`).dialog({
+                title: cellCounts.invalid_cells === 0 ?
+                    'Upload completed successfully' :
+                    'Upload failed due to validation errors',
+                modal: true,
+                buttons: {
+                    'Close': function() { $(this).dialog('close'); },
+                    ...(
+                        cellCounts.invalid_cells === 0 ?
+                            {
+                                'View upload results': this.displayUploadedView.bind(this),
+                            } :
+                            {}
+                    )
+                }
+            });
+            this.showStatusDialog = false;
+        }
+
         this.hot.render();
     },
     getHeaderNameFromHTML: (headerHTML)=>
@@ -434,7 +462,7 @@ const WBView = Backbone.View.extend({
         const openPlan = () => this.openPlan();
         if (!this.dataset.uploadplan) {
             $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
-                title: "No Plan is defined.",
+                title: "No Plan is defined",
                 modal: true,
                 buttons: {
                     'Create': openPlan,
@@ -512,7 +540,7 @@ const WBView = Backbone.View.extend({
     },
 });
 
-module.exports = function loadDataset(id) {
+module.exports = function loadDataset(id, showStatusDialog = false) {
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
         title: 'Loading',
         modal: true,
@@ -528,7 +556,9 @@ module.exports = function loadDataset(id) {
     $.get(`/api/workbench/dataset/${id}/`).done(dataset => {
         dialog.dialog('close');
 
-        const view = new WBView({dataset: dataset}).on('refresh', () => loadDataset(id));
+        const view = new WBView({
+            dataset: dataset, showStatusDialog
+        }).on('refresh', () => loadDataset(id, true));
         app.setCurrentView(view);
     });
 };
