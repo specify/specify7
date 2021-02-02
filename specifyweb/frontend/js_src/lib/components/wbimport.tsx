@@ -477,9 +477,24 @@ function DoImportButton(props: {update: HandleAction}) {
 }
 
 function extractHeader(data: string[][], headerInData: boolean): {rows: string[][], header: string[]} {
-	const header = headerInData ? data[0] : data[0].map((_1, i) => 'Column ' + (
-		i + 1
-	));
+	const header = headerInData ?
+		data[0].map((header, index, headers) =>  // make headers unique
+			headers.indexOf(header) === index ?
+				header :
+				`${header} (${
+					headers.slice(0, index).reduce(
+						(numberOfOccurrences, headerOccurrence) =>
+							header === headerOccurrence ?
+								numberOfOccurrences + 1 :
+								numberOfOccurrences
+						,
+						0
+					) + 1
+				})`,
+		) :
+		data[0].map((_1, i) =>
+			`Column ${i+1}`
+		);
 	const rows = headerInData ? data.slice(1) : data;
 	return {rows: rows, header: header};
 }
