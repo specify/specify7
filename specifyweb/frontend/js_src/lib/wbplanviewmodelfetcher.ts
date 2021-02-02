@@ -18,7 +18,7 @@ import {
 	SchemaModelTableRelationship,
 	Schema as schema_type,
 }                            from './legacy_types';
-
+import data_model_storage    from './wbplanviewmodel';
 
 export type DataModelFieldWritable = DataModelNonRelationshipWritable | DataModelRelationshipWritable
 export type DataModelField = DataModelNonRelationship | DataModelRelationship
@@ -64,14 +64,10 @@ export interface DataModelTables {
 	readonly [table_name: string]: DataModelTable,
 }
 
-type TableRanksInline = [table_name: string, table_ranks: TableRanks];
-
-type TableRanksWritable = Record<string, boolean>  // whether rank is required
-
-type TableRanks = Readonly<TableRanksWritable>
+type TableRanksInline = [table_name: string, table_ranks: [string,boolean][]];
 
 interface DataModelRanksWritable {
-	[table_name: string]: TableRanks
+	[table_name: string]: Readonly<Record<string, boolean>>  // whether rank is required
 }
 
 export type DataModelRanks = Readonly<DataModelRanksWritable>
@@ -174,8 +170,7 @@ const fetching_parameters: {
 
 /* Fetches ranks for a particular table */
 const fetch_ranks = (
-	table_name: string,  // Official table name (from the data model)
-	include_root_tree_rank = false
+	table_name: string  // Official table name (from the data model)
 ): Promise<TableRanksInline> =>
 	new Promise(resolve =>
 		(
@@ -185,23 +180,10 @@ const fetch_ranks = (
 				treeDefItems =>
 					treeDefItems.fetch({limit: 0}).done(() =>
 						resolve([
-							table_name,
-							Object.values(treeDefItems.models).reduce((table_ranks, rank) => {
-
-								const rank_id = rank.get('id');
-
-								if (rank_id === 1 && !include_root_tree_rank)
-									return table_ranks;
-
-								const rank_name = rank.get('name');
-
-								// TODO: add complex logic for figuring out if rank is required or not
-								table_ranks[rank_name] = false;
-								// table_ranks[rank_name] = rank.get('isenforced');
-
-								return table_ranks;
-
-							}, {} as TableRanksWritable),
+							table_name,// TODO: add complex logic for figuring out if rank is required or not
+							Object.values(treeDefItems.models).map(( rank) =>
+								[rank.get('name') as string, false]
+							),
 						]),
 					),
 			),
@@ -213,6 +195,22 @@ const required_field_should_be_hidden = (field_name: string) =>
 
 const field_should_be_made_optional = (table_name: string, field_name: string) =>
 	fetching_parameters.required_fields_to_be_made_optional[table_name]?.includes(field_name) || false;
+
+const known_relationship_types:RelationshipType[] = ['one-to-one', 'one-to-many', 'many-to-one', 'many-to-many'];
+const alias_relationship_types:Record<string,RelationshipType> = {
+	'zero-to-one': 'one-to-one',
+};
+
+function handle_relationship_type(relationship_type:RelationshipType):RelationshipType {
+	if(known_relationship_types.indexOf(relationship_type) === -1){
+		if(relationship_type in alias_relationship_types)
+			return alias_relationship_types[relationship_type];
+		else
+			throw new Error('Unknown relationship type detected');
+	}
+	else
+		return relationship_type;
+}
 
 function handle_relationship_field(
 	field: SchemaModelTableField,
@@ -227,7 +225,7 @@ function handle_relationship_field(
 	if (typeof foreign_name !== 'undefined')
 		foreign_name = foreign_name.toLowerCase();
 
-	const relationship_type = relationship.type;
+	const relationship_type = handle_relationship_type(relationship.type);
 	const table_name = relationship.relatedModelName.toLowerCase();
 
 	if (field_name === 'definition') {
@@ -254,21 +252,26 @@ function handle_relationship_field(
 }
 
 /* Fetches the data model */
-export default (include_root_tree_rank=false): Promise<DataModelFetcherReturn> =>
+export default (): Promise<void> =>
 	new Promise(resolve => {
 
-		if(!include_root_tree_rank){
-			const tables = cache.get('data_model_fetcher', 'tables');
-			const list_of_base_tables = cache.get('data_model_fetcher', 'list_of_base_tables');
-			const ranks = cache.get('data_model_fetcher', 'ranks');
+		if (typeof data_model_storage.tables !== 'undefined')
+			return resolve();
 
-			//TODO: remove the last condition
-			if (tables && list_of_base_tables && ranks && typeof list_of_base_tables['accession'] !== 'string')
-				return resolve({
-					tables,
-					list_of_base_tables,
-					ranks,
-				} as DataModelFetcherReturn);
+		{
+
+			const tables: DataModelTables = cache.get('data_model_fetcher', 'tables');
+			const list_of_base_tables: DataModelListOfTables = cache.get('data_model_fetcher', 'list_of_base_tables');
+			const ranks: DataModelRanks = cache.get('data_model_fetcher', 'ranks');
+			const root_ranks: Record<string,string> = cache.get('data_model_fetcher', 'root_ranks');
+
+			if (tables && list_of_base_tables && ranks && root_ranks) {
+				data_model_storage.tables = tables;
+				data_model_storage.list_of_base_tables = list_of_base_tables;
+				data_model_storage.ranks = ranks;
+				data_model_storage.root_ranks = root_ranks;
+				return resolve();
+			}
 		}
 
 		const list_of_base_tables: DataModelListOfTablesWritable = {};
@@ -353,7 +356,7 @@ export default (include_root_tree_rank=false): Promise<DataModelFetcherReturn> =
 			)
 				list_of_base_tables[table_name] = {
 					table_friendly_name,
-					is_hidden: fetching_parameters.common_base_tables.indexOf(table_name) === -1
+					is_hidden: fetching_parameters.common_base_tables.indexOf(table_name) === -1,
 				};
 
 			tables[table_name] = {
@@ -362,7 +365,7 @@ export default (include_root_tree_rank=false): Promise<DataModelFetcherReturn> =
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
-				fetch_ranks_queue.push(fetch_ranks(table_name, include_root_tree_rank));
+				fetch_ranks_queue.push(fetch_ranks(table_name));
 
 			return tables;
 
@@ -383,13 +386,18 @@ export default (include_root_tree_rank=false): Promise<DataModelFetcherReturn> =
 		);
 
 
-		cache.set('data_model_fetcher', 'list_of_base_tables', list_of_base_tables);
-		cache.set('data_model_fetcher', 'tables', tables);
 
 
 		Promise.all(fetch_ranks_queue).then(resolved => {
 
-			const ranks: DataModelRanks = Object.fromEntries(resolved);
+			const root_ranks:Record<string,string> = Object.fromEntries(
+				resolved.map(([table_name ],index)=>
+					[table_name, resolved[index][1].shift()?.[0] || ''])
+			);
+
+			const ranks: DataModelRanks = Object.fromEntries(resolved.map(([table_name,table_ranks])=>
+				[table_name, Object.fromEntries(table_ranks)]
+			));
 
 			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
 			resolved.forEach(([table_name]) => (
@@ -398,13 +406,17 @@ export default (include_root_tree_rank=false): Promise<DataModelFetcherReturn> =
 				}
 			));
 
-			if(!include_root_tree_rank)
-				cache.set('data_model_fetcher', 'ranks', ranks);
-			resolve({
-				tables: tables as DataModelTables,
-				list_of_base_tables,
-				ranks,
-			});
+			cache.set('data_model_fetcher', 'ranks', ranks);
+			cache.set('data_model_fetcher', 'root_ranks', root_ranks);
+			cache.set('data_model_fetcher', 'list_of_base_tables', list_of_base_tables);
+			cache.set('data_model_fetcher', 'tables', tables);
+
+			data_model_storage.tables = tables as DataModelTables;
+			data_model_storage.list_of_base_tables = list_of_base_tables;
+			data_model_storage.ranks = ranks;
+			data_model_storage.root_ranks = root_ranks;
+
+			resolve();
 		}).catch(error => {
 			throw error;
 		});
