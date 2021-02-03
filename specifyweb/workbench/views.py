@@ -27,17 +27,29 @@ logger = logging.getLogger(__name__)
 @apply_access_control
 @require_http_methods(["GET", "POST"])
 @transaction.atomic
-def datasets(request):
+def datasets(request) -> http.HttpResponse:
     if request.method == "POST":
         data = json.load(request)
+
+        columns = data['columns']
+        rows = [[str(v) for v in r] for r in data['rows']]
+
+        if any(not isinstance(c, str) for c in columns) or len(set(columns)) != len(columns):
+            return http.HttpResponse(f"bad columns list: {columns}", status=400)
+
+        for i, row in enumerate(rows):
+            if len(row) != len(columns):
+                return http.HttpResponse(f"row {i+1} contains wrong number of cells: {row}", status=400)
+
         ds = models.Spdataset.objects.create(
             specifyuser=request.specify_user,
             collection=request.specify_collection,
             name=data['name'],
-            columns=data['columns'],
-            data=data['rows'],
+            columns=columns,
+            data=rows,
         )
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
+
     else:
         attrs = ('name', 'uploadresult', 'uploaderstatus')
         dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only(*attrs)
@@ -76,7 +88,8 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         return http.HttpResponse(status=204)
 
     if request.method == "DELETE":
-        assert ds.uploaderstatus == None
+        if ds.uploaderstatus != None:
+            return http.HttpResponse('dataset in use by uploader', status=409)
         ds.delete()
         return http.HttpResponse(status=204)
 
@@ -110,7 +123,13 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         if ds.was_uploaded():
             return http.HttpResponse('dataset has been uploaded. changing data not allowed.', status=400)
 
-        ds.data = json.load(request)
+        rows = [[str(v) for v in r] for r in json.load(request)]
+
+        for i, row in enumerate(rows):
+            if len(row) != len(ds.columns):
+                return http.HttpResponse(f"row {i+1} contains wrong number of cells: {row}", status=400)
+
+        ds.data = rows
         ds.rowresults = None
         ds.uploadresult = None
         ds.save()

@@ -16,12 +16,12 @@ ctx.onmessage = function(e) {
         }
         const fileData = new Uint8Array(loaded.target.result);
 
-        const options: XLSX.ParsingOptions = previewSize != null ? {type: "array", sheetRows: previewSize} : {type: "array"};
+        const options: XLSX.ParsingOptions = {type: "array", raw: true, sheetRows: previewSize != null ? previewSize : 0};
         const workbook = XLSX.read(fileData, options);
 
         const first_sheet_name = workbook.SheetNames[0];
         const first_workbook = workbook.Sheets[first_sheet_name];
-        const sheet_data = XLSX.utils.sheet_to_json(first_workbook, {header: 1, blankrows: false});
+        const sheet_data = XLSX.utils.sheet_to_json(first_workbook, {header: 1, blankrows: false, raw: false});
 
         const max_width = Math.max(...sheet_data.map(row => (row as string[]).length));
 
