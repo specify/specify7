@@ -5,11 +5,9 @@ import Papa from 'papaparse';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
 const $ = require('jquery');
-const Q = require('q');
 
 const navigation = require('../navigation.js');
-// const uniquifyWorkbenchName = require('../wbuniquifyname.js');
-// const userInfo = require('../userinfo.js');
+const uniquifyDataSetName = require('../wbuniquifyname.js');
 const encodings = require('../encodings.js');
 
 const PREVIEW_SIZE = 10;
@@ -125,18 +123,21 @@ export default class WbImport extends Component<{}, WbImportState> {
 	}
 
     createDataset(name: string, header: string[], data: string[][]) {
-        Q($.ajax('/api/workbench/dataset/', {
-            type: "POST",
-            data: JSON.stringify({
-                name: name,
-                columns: header,
-                rows: data
-            }),
-            contentType: "application/json",
-            processData: false
-        })).done(({id}: {id: number}) => {
-	    navigation.go(`/workbench/${id}/`);
-	});
+        uniquifyDataSetName(name)
+            .then((name: string) =>
+                $.ajax('/api/workbench/dataset/', {
+                    type: "POST",
+                    data: JSON.stringify({
+                        name: name,
+                        columns: header,
+                        rows: data
+                    }),
+                    contentType: "application/json",
+                    processData: false
+                }))
+            .done(({id}: {id: number}) => {
+	        navigation.go(`/workbench/${id}/`);
+	    });
     }
 
 
