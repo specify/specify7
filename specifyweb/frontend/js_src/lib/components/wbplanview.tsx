@@ -205,6 +205,10 @@ interface StaticHeaderChangeAction extends Action<'StaticHeaderChangeAction'> {
 	readonly event: React.ChangeEvent<HTMLTextAreaElement>,
 }
 
+interface ValidationResultClick extends Action<'ValidationResultClick'> {
+	readonly mapping_path: MappingPath,
+}
+
 export type MappingActions =
 	OpenMappingScreenAction
 	| SavePlanAction
@@ -224,7 +228,8 @@ export type MappingActions =
 	| ChangeSelectElementValueAction
 	| AutomapperSuggestionsLoadedAction
 	| AutomapperSuggestionSelectedAction
-	| StaticHeaderChangeAction;
+	| StaticHeaderChangeAction
+	| ValidationResultClick;
 
 type WBPlanViewActions =
 	BaseTableSelectionActions
@@ -736,6 +741,10 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			}),
 		}
 	),
+	'ValidationResultClick': (state, {mapping_path})=>({
+		...mapping_state(state),
+		mapping_view: mapping_path,
+	}),
 });
 
 const loading_state_dispatch = generate_dispatch<LoadingStates>({
@@ -929,6 +938,9 @@ const state_reducer = generate_reducer<JSX.Element, WBPlanViewStatesWithParams>(
 					type: 'AutomapperSuggestionSelectedAction',
 					suggestion,
 				})}
+				handleValidationResultClick={(mapping_path:MappingPath)=>
+					state.dispatch({type:'ValidationResultClick', mapping_path})
+				}
 			/>
 		</HeaderWrapper>;
 	},

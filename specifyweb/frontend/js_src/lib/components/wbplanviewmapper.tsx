@@ -111,10 +111,10 @@ const MappingsControlPanel = React.memo(named_component(({
 		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
 		<label>
 			{' '}<input
-				type="checkbox"
-				checked={show_hidden_fields}
-				onChange={handleChange}
-			/>
+			type="checkbox"
+			checked={show_hidden_fields}
+			onChange={handleChange}
+		/>
 			Reveal hidden fields
 		</label>
 	</div>, 'MappingsControlPanel'));
@@ -124,6 +124,7 @@ function FormatValidationResults(props: {
 	readonly validation_results: MappingPath[],
 	readonly handleSave: () => void
 	readonly get_mapped_fields: GetMappedFieldsBind,
+	readonly onValidationResultClick: (mapping_path: MappingPath) => void,
 }) {
 	if (props.validation_results.length === 0)
 		return null;
@@ -131,7 +132,11 @@ function FormatValidationResults(props: {
 	return <div className="validation_results">
 		<span>The following fields should be mapped before you can upload the dataset:</span>
 		{props.validation_results.map((field_path, index) =>
-			<div className="wbplanview_mapping_line_elements" key={index}>
+			<div
+				className="wbplanview_mapping_line_elements"
+				key={index}
+				onClick={props.onValidationResultClick.bind(null, field_path)}
+			>
 				<MappingPath
 					mapping_line_data={get_mapping_line_data_from_mapping_path({
 						base_table_name: props.base_table_name,
@@ -164,30 +169,30 @@ export const go_back = (props: PublicWBPlanViewProps): void =>
 // );
 
 export function save_plan(
-    props: WBPlanViewWrapperProps,
-    state: MappingState,
-    ignore_validation = false,
+	props: WBPlanViewWrapperProps,
+	state: MappingState,
+	ignore_validation = false,
 ): LoadingState | MappingState {
-    const validation_results_state = validate(state);
-    if (!ignore_validation && validation_results_state.validation_results.length !== 0)
-	return validation_results_state;
+	const validation_results_state = validate(state);
+	if (!ignore_validation && validation_results_state.validation_results.length !== 0)
+		return validation_results_state;
 
-    // props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
-    const uploadplan = mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true));
+	// props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
+	const uploadplan = mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true));
 
-    $.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
-        type: "PUT",
-        data: JSON.stringify({'uploadplan': uploadplan}),
-        dataType: "json",
-        processData: false
-    });
+	$.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
+		type: 'PUT',
+		data: JSON.stringify({'uploadplan': uploadplan}),
+		dataType: 'json',
+		processData: false,
+	});
 
 
-    if (state.changes_made)
-	props.remove_unload_protect();
+	if (state.changes_made)
+		props.remove_unload_protect();
 
-    go_back(props);
-    return state;
+	go_back(props);
+	return state;
 }
 
 /* Validates the current mapping and shows error messages if needed */
@@ -567,6 +572,7 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 	) => void,
 	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>) => void,
 	readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
+	readonly handleValidationResultClick: (mapping_path: MappingPath) => void,
 }) => {
 	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
 	const list_of_mappings = React.useRef<HTMLDivElement>(null);
@@ -589,6 +595,7 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 						validation_results={props.validation_results}
 						handleSave={props.handleSave}
 						get_mapped_fields={get_mapped_fields_bind}
+						onValidationResultClick={props.handleValidationResultClick}
 					/>
 					<MappingView
 						base_table_name={props.base_table_name}
