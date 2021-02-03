@@ -81,6 +81,7 @@ export default class WbImport extends Component<{}, WbImportState> {
 		Papa.parse(file, {
 			encoding: encoding,
 			preview: PREVIEW_SIZE,
+                        skipEmptyLines: true,
 			complete: ({data}) => this.update(
 				data.length > 0
 					? {type: 'GotPreviewAction', preview: data, file: file}
@@ -104,6 +105,7 @@ export default class WbImport extends Component<{}, WbImportState> {
 		const doIt = () =>
 			Papa.parse(file, {
 				encoding: encoding,
+                                skipEmptyLines: true,
 				complete: ({data}) => {
 					const {rows, header} = extractHeader(data, hasHeader);
 					this.createDataset(name, header, rows);

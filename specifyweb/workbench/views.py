@@ -2,7 +2,7 @@ import re
 import json
 import logging
 from uuid import uuid4
-from typing import Sequence, Tuple
+from typing import Sequence, Tuple, List
 from jsonschema import validate # type: ignore
 
 from django import http
@@ -23,6 +23,15 @@ from .upload.upload_results_schema import schema
 
 logger = logging.getLogger(__name__)
 
+def regularize_rows(columns: List[str], rows: List[List]) -> List[List[str]]:
+    width = len(columns)
+    return [
+        (row + ['']*width)[:width] # pad / trim row length to match columns
+        for row in [[str(v).strip() for v in r] for r in rows] # convert values to strings
+        if not all(v == '' for v in row) # skip empty rows
+    ]
+
+
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "POST"])
@@ -32,14 +41,13 @@ def datasets(request) -> http.HttpResponse:
         data = json.load(request)
 
         columns = data['columns']
-        rows = [[str(v) for v in r] for r in data['rows']]
+        if any(not isinstance(c, str) for c in columns):
+            return http.HttpResponse(f"all column headers must be strings: {columns}", status=400)
 
-        if any(not isinstance(c, str) for c in columns) or len(set(columns)) != len(columns):
-            return http.HttpResponse(f"bad columns list: {columns}", status=400)
+        if len(set(columns)) != len(columns):
+            return http.HttpResponse(f"all column headers must be unique: {columns}", status=400)
 
-        for i, row in enumerate(rows):
-            if len(row) != len(columns):
-                return http.HttpResponse(f"row {i+1} contains wrong number of cells: {row}", status=400)
+        rows = regularize_rows(columns, data['rows'])
 
         ds = models.Spdataset.objects.create(
             specifyuser=request.specify_user,
@@ -123,11 +131,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         if ds.was_uploaded():
             return http.HttpResponse('dataset has been uploaded. changing data not allowed.', status=400)
 
-        rows = [[str(v) for v in r] for r in json.load(request)]
-
-        for i, row in enumerate(rows):
-            if len(row) != len(ds.columns):
-                return http.HttpResponse(f"row {i+1} contains wrong number of cells: {row}", status=400)
+        rows = regularize_rows(ds.columns, json.load(request))
 
         ds.data = rows
         ds.rowresults = None
