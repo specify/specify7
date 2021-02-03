@@ -30,6 +30,19 @@
 //				}
 //			]
 //		},
+//		rank_synonyms: {
+//			/*
+//			 * Rank synonyms are used to when the same tree rank can have different name depending on the discipline
+//			 */
+//			<table_name> (case-insensitive): [
+//				{
+//					rank_name:  '<rank_name>',
+//					synonyms: [
+//						'<synonym>'
+//					]
+//				}
+//			]
+//		}
 //		dont_match: {
 //			/*
 //			 * Don't match list designates certain fields in particular tables as ineligible for
@@ -146,6 +159,70 @@ const definitions: AutoMapperDefinitions = {
 				mapping_path_filter: [],
 				synonyms: [
 					'collected',
+				],
+			},
+		],
+	},
+	rank_synonyms: {
+		Taxon: [
+			{
+				rank_name: 'Superdivision',
+				synonyms: [
+					'Superphylum',
+				],
+			},
+			{
+				rank_name: 'Division',
+				synonyms: [
+					'Phylum',
+				],
+			},
+			{
+				rank_name: 'Subdivision',
+				synonyms: [
+					'Subphylum',
+				],
+			},
+			{
+				rank_name: 'Infradivision',
+				synonyms: [
+					'Infraphylum',
+				],
+			},
+			{
+				rank_name: 'Microdivision',
+				synonyms: [
+					'Microphylum',
+				],
+			},
+			{
+				'rank_name': 'Superphylum',
+				'synonyms': [
+					'Superdivision',
+				],
+			},
+			{
+				'rank_name': 'Phylum',
+				'synonyms': [
+					'Division',
+				],
+			},
+			{
+				'rank_name': 'Subphylum',
+				'synonyms': [
+					'Subdivision',
+				],
+			},
+			{
+				'rank_name': 'Infraphylum',
+				'synonyms': [
+					'Infradivision',
+				],
+			},
+			{
+				'rank_name': 'Microphylum',
+				'synonyms': [
+					'Microdivision',
 				],
 			},
 		],
@@ -497,6 +574,10 @@ export interface TableSynonym {
 
 interface AutoMapperDefinitions {
 	table_synonyms: Record<string, TableSynonym[]>,
+	rank_synonyms: Record<string, {
+		rank_name: string,
+		synonyms: string[]
+	}[]>
 	dont_match: Record<string,
 		Record<string, AutomapperScope[]>>,
 	shortcuts: Record<string,
@@ -527,6 +608,7 @@ function definitions_to_lowercase(definitions: AutoMapperDefinitions): AutoMappe
 
 	const structure_depth: [structure_name: keyof typeof definitions, depth: number][] = [
 		['table_synonyms', 1],
+		['rank_synonyms', 1],
 		['dont_match', 2],
 		['shortcuts', 1],
 		['synonyms', 2],

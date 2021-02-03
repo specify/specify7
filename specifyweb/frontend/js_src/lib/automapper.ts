@@ -141,7 +141,9 @@ const match_rank_and_field_name = (  // find cases like `Kingdom Author`
 
 const is_field_in_dont_match = (table_name: string, last_path_part: string, scope: AutomapperScope) =>
 	table_name !== '' &&
-	AutoMapperDefinitions.dont_match[table_name]?.[last_path_part]?.indexOf(scope) !== -1;
+	(
+		AutoMapperDefinitions.dont_match[table_name]?.[last_path_part]?.indexOf(scope) ?? -1
+	) !== -1;
 
 const mapping_path_is_in_proposed_mappings = (
 	allow_multiple_mappings: boolean,
@@ -163,6 +165,13 @@ const mapping_path_is_the_mappings_tree = (
 	check_for_existing_mappings &&
 	typeof path_is_mapped === 'function' &&
 	path_is_mapped(local_path);
+
+const find_rank_synonyms = (table_name: string, target_rank_name: string): string[] =>
+	AutoMapperDefinitions.rank_synonyms[table_name]?.filter(({rank_name}) =>
+		target_rank_name === rank_name,
+	).map(({synonyms}) =>
+		synonyms,
+	).flat() ?? [];
 
 
 export default class Automapper {
@@ -576,46 +585,54 @@ export default class Automapper {
 			ranks.some(rank_name => {
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = format_tree_rank(rank_name);
-
-				find_mappings_in_definitions_payload.field_name = striped_rank_name;
-
-				this.find_mappings_in_definitions(find_mappings_in_definitions_payload);
-
-				if (mode !== 'synonyms_and_matches')
-					return;
-
-				fields.map(([field_name, field_data]) => [
-					field_data.friendly_name.toLowerCase(),
-					field_name,
-				]).forEach(([friendly_name, field_name]) =>
-					this.get_unmapped_headers().some(([header_name, {
-							stripped_header_name,
-							final_header_name,
-						}]) =>
-						(
-							match_base_rank_name(
-								friendly_name,
-								striped_rank_name,
-								stripped_header_name,
-							) ||
-							match_rank_and_field_name(
-								stripped_header_name,
-								striped_rank_name,
-								friendly_name,
-								final_header_name,
-								field_name,
-							)
-						) && // don't search for further mappings for this field if we can only map a single header to this field
-						this.make_mapping(
-							path,
-							push_rank_to_path ?
-								[final_rank_name, field_name] :
-								[field_name],
-							header_name,
-							table_name,
-						),
+				const rank_synonyms = [
+					striped_rank_name,
+					...find_rank_synonyms(table_name, rank_name).map(rank_synonym =>
+						rank_synonym.toLowerCase(),
 					),
-				);
+				];
+
+				rank_synonyms.map(striped_rank_name => {
+					find_mappings_in_definitions_payload.field_name = striped_rank_name;
+
+					this.find_mappings_in_definitions(find_mappings_in_definitions_payload);
+
+					if (mode !== 'synonyms_and_matches')
+						return;
+
+					fields.map(([field_name, field_data]) => [
+						field_data.friendly_name.toLowerCase(),
+						field_name,
+					]).forEach(([friendly_name, field_name]) =>
+						this.get_unmapped_headers().some(([header_name, {
+								stripped_header_name,
+								final_header_name,
+							}]) =>
+							(
+								match_base_rank_name(
+									friendly_name,
+									striped_rank_name,
+									stripped_header_name,
+								) ||
+								match_rank_and_field_name(
+									stripped_header_name,
+									striped_rank_name,
+									friendly_name,
+									final_header_name,
+									field_name,
+								)
+							) && // don't search for further mappings for this field if we can only map a single header to this field
+							this.make_mapping(
+								path,
+								push_rank_to_path ?
+									[final_rank_name, field_name] :
+									[field_name],
+								header_name,
+								table_name,
+							),
+						),
+					);
+				});
 			});
 
 			return;
