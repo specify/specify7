@@ -534,10 +534,10 @@ const WBView = Backbone.View.extend({
             }
         });
     },
-    export: function() {
+    export() {
         const data = Papa.unparse({
             fields: this.hot.getColHeader().map(this.getHeaderNameFromHTML),
-            data: this.dataset.data
+            data: this.dataset.rows
         });
         const wbname = this.dataset.name;
         const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
