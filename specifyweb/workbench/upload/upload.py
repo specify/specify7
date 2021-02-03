@@ -122,7 +122,7 @@ def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: 
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees()
+            fixup_trees(results)
 
     return results
 
@@ -146,8 +146,19 @@ def validate_row(collection, upload_plan: ScopedUploadable, row: Row) -> UploadR
 
     return result
 
-def fixup_trees():
-    for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage'):
+def fixup_trees(results: List[UploadResult]) -> None:
+    to_fix = [
+        tree
+        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage')
+        if any(changed_tree(tree, r) for r in results)
+    ]
+
+    for tree in to_fix:
         renumber_tree(tree)
         for treedef in getattr(models, (tree + 'treedef').capitalize()).objects.all():
             reset_fullnames(treedef)
+
+def changed_tree(tree: str, result: UploadResult) -> bool:
+    return (isinstance(result.record_result, Uploaded) and result.record_result.info.tableName.lower() == tree) \
+        or any(changed_tree(tree, toOne) for toOne in result.toOne.values()) \
+        or any(changed_tree(tree, r) for toMany in result.toMany.values() for r in toMany)
