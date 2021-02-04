@@ -76,7 +76,6 @@ const WBView = Backbone.View.extend({
             });
 
         //initialize Handsontable
-        const onChanged = this.spreadSheetChanged.bind(this);
 
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
@@ -138,10 +137,10 @@ const WBView = Backbone.View.extend({
             },
             stretchH: 'all',
             readOnly: this.uploaded,
-            afterCreateRow: (index, amount) => { this.onChanged(); },
-            afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
+            afterCreateRow: this.rowCreated.bind(this),
+            afterRemoveRow: this.rowRemoved.bind(this),
             afterSelection: (r, c) => this.currentPos = [r,c],
-            afterChange: (change, source) => source === 'loadData' || onChanged(change),
+            afterChange: this.afterChange.bind(this),
         });
 
         $(window).resize(this.resize.bind(this));
@@ -151,6 +150,26 @@ const WBView = Backbone.View.extend({
         fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
 
         return this;
+    },
+    afterChange(changes, source) {
+        if (source !== 'edit') return;
+        this.spreadSheetChanged();
+        this.startValidation(changes);
+    },
+    rowCreated(index, amount) {
+        const cols = this.hot.countCols();
+        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(new Array(amount*cols), this.wbutils.cellInfo.slice(index*cols));
+        this.hot.render();
+        this.spreadSheetChanged();
+    },
+    rowRemoved(index, amount) {
+        const cols = this.hot.countCols();
+        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(this.wbutils.cellInfo.slice((index+amount)*cols));
+        this.hot.render();
+        if (this.hot.countRows() === 0) {
+            this.hot.alter('insert_row', 0);
+        }
+        this.spreadSheetChanged();
     },
     getValidationResults() {
         Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
@@ -211,12 +230,6 @@ const WBView = Backbone.View.extend({
             this.wbutils.cellInfo = [];
             this.hot.render();
             return;
-        }
-
-        const cols = this.hot.countCols();
-        const headerToCol = {};
-        for (let i = 0; i < cols; i++) {
-            headerToCol[this.getHeaderNameFromHTML(this.hot.getColHeader(i))] = i;
         }
 
         this.wbutils.cellInfo = [];
@@ -403,9 +416,10 @@ const WBView = Backbone.View.extend({
         this.$('.wb-upload, .wb-match').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
         navigation.addUnloadProtect(this, "The workbench has not been saved.");
-
-        if (this.dataset.uploadplan && change) {
-            change.forEach(([row]) => {
+    },
+    startValidation(changes) {
+        if (this.dataset.uploadplan && changes) {
+            changes.forEach(([row]) => {
                 const rowData = this.hot.getDataAtRow(row);
                 const data = Object.fromEntries(rowData.map((value, i) =>
                     [this.getHeaderNameFromHTML(this.hot.getColHeader(i)), value]
