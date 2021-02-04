@@ -27,7 +27,7 @@ def regularize_rows(columns: List[str], rows: List[List]) -> List[List[str]]:
     width = len(columns)
     return [
         (row + ['']*width)[:width] # pad / trim row length to match columns
-        for row in [[str(v).strip() for v in r] for r in rows] # convert values to strings
+        for row in (['' if v is None else str(v).strip() for v in r] for r in rows) # convert values to strings
         if not all(v == '' for v in row) # skip empty rows
     ]
 
