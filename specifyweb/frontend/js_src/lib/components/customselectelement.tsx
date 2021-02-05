@@ -56,6 +56,7 @@ interface CustomSelectElementIconProps {
 	readonly option_label?: string | JSX.Element,
 	// True if option can be selected. False if option cannot be selected because it was already selected
 	readonly is_enabled?: boolean,
+	readonly is_preview?: boolean, // whether an icon is used inside of preview_row in closed_list
 }
 
 interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
@@ -130,7 +131,7 @@ interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase 
 
 const Icon = named_component(({
 	is_relationship = false,
-	is_default = false,
+	is_preview = false,
 	is_enabled = true,
 	table_name = '',
 	option_label = '0',
@@ -140,9 +141,7 @@ const Icon = named_component(({
 
 	if (option_label === '0')
 		return <span className="custom_select_option_icon_undefined">&#8416;</span>;
-	if (not_relationship && (
-		is_default || !is_enabled
-	))
+	if (not_relationship && (is_preview || !is_enabled))
 		return <span className="custom_select_option_icon_selected">&#10003;</span>;
 	else if (not_relationship || table_name === '')
 		return null;
@@ -201,7 +200,6 @@ const Option = React.memo(named_component(({
 			<Icon
 				option_label={option_label}
 				is_relationship={is_relationship}
-				is_default={is_default}
 				is_enabled={is_enabled}
 				table_name={table_name}
 			/>
@@ -227,12 +225,14 @@ const OptionGroup = named_component(({
 			return <Option
 				key={option_name}
 				handleClick={
-					handleClick?.bind(
-						null,
-						option_name,
-						typeof selection_option_data.is_relationship !== 'undefined' &&
-						selection_option_data.is_relationship,
-					)
+					selection_option_data.is_enabled ?
+						handleClick?.bind(
+							null,
+							option_name,
+							typeof selection_option_data.is_relationship !== 'undefined' &&
+							selection_option_data.is_relationship,
+						) :
+						undefined
 				}
 				{...selection_option_data}
 			/>;
@@ -242,11 +242,11 @@ const OptionGroup = named_component(({
 const ShadowListOfOptions = React.memo(named_component(({field_names}: {
 	readonly field_names: string[],
 }) =>
-	<ul className="custom_select_element_shadow_list">{
+	<span className="custom_select_element_shadow_list">{
 		field_names.map((field_name, index) =>
-			<li key={index}>{field_name}</li>,
+			<span key={index}>{field_name}</span>,
 		)
-	}</ul>, 'ShadowListOfOptions'));
+	}</span>, 'ShadowListOfOptions'));
 
 const intractable_select_types: CustomSelectType[] = ['preview_list', 'suggestion_line_list'];
 const select_types_with_headers: CustomSelectType[] = ['opened_list', 'base_table_selection_list'];
@@ -311,6 +311,7 @@ export function CustomSelectElement(
 			is_relationship={default_option.is_relationship}
 			table_name={default_option.table_name}
 			option_label={default_option.option_label}
+			is_preview={true}
 		/>;
 
 		preview = <span className="custom_select_input" tabIndex={0} onClick={
@@ -331,10 +332,8 @@ export function CustomSelectElement(
 
 		const show_first_row = is_open &&
 			option_is_intractable &&
-			!(
-				custom_select_subtype === 'tree' ||
-				default_option.option_name === '0'
-			);
+			custom_select_subtype === 'simple' &&
+			default_option.option_name !== '0';
 
 		first_row = show_first_row &&
 			<Option
