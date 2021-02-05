@@ -10,14 +10,13 @@
 	--t4: #666;
 	--border: #ccc;
 	--menu_size: 119px;
-
 	--white_space: 0.5rem;
 	--text1: #000;
 	--text2: #666;
 	--background1: #fff;
 	--background2: #fdb;
 	--accent: #f73;
-	--lines_to_display: 10;
+	--lines_to_display: 8;
 	--border_size: 1px;
 
 	width: 100%;
@@ -58,7 +57,7 @@
 	height: unset;
 }
 
-/* MAPPING STATE*/
+/* MAPPING STATE */
 .wbplanview_container_MappingState {
 	display: flex;
 	flex-direction: column;
@@ -109,6 +108,18 @@
 
 .wbplanview_mapping_view_map_button_arrow {
 	color: #4f2;
+}
+
+.mapping_view_resizer {
+	margin-bottom: calc(var(--white_space) * -1);
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+}
+
+.mapping_view_resizer > :not(:nth-child(2)) {
+	height: -moz-fit-content;
+	height: fit-content;
 }
 
 
@@ -248,7 +259,7 @@
 	cursor: pointer;
 }
 
-.custom_select_preview_list .custom_select_input  {
+.custom_select_preview_list .custom_select_input {
 	cursor: initial;
 }
 
@@ -257,12 +268,14 @@
 }
 
 .custom_select_element_shadow_list {
-	list-style: none;
-	margin: calc(var(--white_space) * -2) calc(var(--white_space) * 5.5) 0 0;
+	margin-top: calc(var(--white_space) * -2);
+	padding-right: calc(calc(var(--white_space) * 7) + 7px);
 	visibility: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
-.custom_select_element_shadow_list li {
+.custom_select_element_shadow_list span {
 	line-height: 0;
 	padding: 0;
 }
@@ -270,7 +283,7 @@
 .custom_select_input,
 .custom_select_option {
 	display: grid;
-	grid-template-columns: calc(var(--white_space) * 2) 1fr minmax(calc(var(--white_space) * 1.6), auto);
+	grid-template-columns: calc(var(--white_space) * 2) 1fr var(--white_space);
 	grid-column-gap: var(--white_space);
 	padding: var(--white_space);
 	min-height: calc(2 * var(--white_space));
@@ -296,8 +309,12 @@
 	cursor: pointer;
 }
 
-.custom_select_options:not(:first-child){
+.custom_select_options:not(:first-child) {
 	border-top: 0;
+}
+
+.custom_select_options::-webkit-scrollbar {
+	width: 5px !important;
 }
 
 .custom_select_group {
@@ -335,11 +352,6 @@
 	padding: calc(0.5 * var(--white_space));
 	color: var(--text2);
 	cursor: initial;
-}
-
-.custom_select_option {
-	padding: var(--white_space);
-	padding-left: calc(var(--white_space) * 2);
 }
 
 .custom_select_option:hover,
