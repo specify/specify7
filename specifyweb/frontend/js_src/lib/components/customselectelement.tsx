@@ -267,7 +267,6 @@ export function CustomSelectElement(
 		},
 		is_open,
 		table_name,
-		// autoscroll=false,
 		field_names,
 		handleChange,
 		handleOpen,
@@ -276,7 +275,7 @@ export function CustomSelectElement(
 	}: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen,
 ): JSX.Element {
 
-	// const list_of_options = React.useRef<HTMLElement>(null);
+	const list_of_options = React.useRef<HTMLElement>(null);
 
 	const option_is_intractable = intractable_select_types.indexOf(custom_select_type) === -1;
 
@@ -363,25 +362,35 @@ export function CustomSelectElement(
 	const custom_select_options = (
 			first_row || groups
 		) &&
-		<span className="custom_select_options"/* ref={list_of_options}*/>
+		<span className="custom_select_options" ref={list_of_options}>
 			{first_row}
 			{groups}
 		</span>;
 
-	// React.useEffect(()=>{
-	// 	if(// auto scroll down the option if
-	// 		is_open &&  // it is open
-	// 		option_is_clickable &&  // and it can be opened
-	// 		autoscroll &&  // and was told to open it
-	// 		list_of_options !== null &&  // and list of option exists
-	// 		list_of_options.current !== null &&  // and dom is rendered
-	// 		default_option.option_name!=='0' &&  // and list has a value
-	// 		list_of_options.current.scrollTop === 0 &&  // and the list is not already scrolled
-	// 		// and selected item is not visible
-	// 		list_of_options.current.offsetHeight < selected_option.offsetTop + selected_option.offsetHeight
-	// 	)
-	// 		list_of_options.current.scrollTop = selected_option.offsetTop - selected_option.offsetHeight;
-	// });
+	React.useEffect(()=>{
+
+		if(// auto scroll down the option if
+			is_open &&  // it is open
+			option_is_intractable &&  // and it can be opened
+			list_of_options !== null &&  // and list of options exists
+			list_of_options.current !== null &&  // and DOM is rendered
+			default_option.option_name!=='0' &&  // and list has a value
+			list_of_options.current.scrollTop === 0  // and the list is not already scrolled
+		){
+
+			const selected_option = list_of_options.current.getElementsByClassName(
+				'custom_select_option_selected'
+			)?.[0] as undefined|HTMLElement;
+
+			// scroll down only if selected item is not visible
+			if(
+				typeof selected_option !== 'undefined' &&
+				list_of_options.current.offsetHeight < selected_option.offsetTop + selected_option.offsetHeight
+			)
+				list_of_options.current.scrollTop = selected_option.offsetTop - selected_option.offsetHeight;
+
+		}
+	},[is_open, list_of_options]);
 
 
 	return <span
