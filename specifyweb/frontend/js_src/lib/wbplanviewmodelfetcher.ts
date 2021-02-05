@@ -251,6 +251,29 @@ function handle_relationship_field(
 	return true;
 }
 
+const data_model_fetcher_version = '0';
+const cache_bucket_name = 'data_model_fetcher';
+
+const cache_get = (cache_name:string)=>
+	cache.get(
+		cache_bucket_name,
+		cache_name,
+		{
+			version: data_model_fetcher_version
+		}
+	);
+
+const cache_set = <T,>(cache_name:string, cache_value:T)=>
+	cache.set(
+		cache_bucket_name,
+		cache_name,
+		cache_value,
+		{
+			version: data_model_fetcher_version,
+			overwrite: true,
+		}
+	);
+
 /* Fetches the data model */
 export default (): Promise<void> =>
 	new Promise(resolve => {
@@ -260,12 +283,17 @@ export default (): Promise<void> =>
 
 		{
 
-			const tables: DataModelTables = cache.get('data_model_fetcher', 'tables');
-			const list_of_base_tables: DataModelListOfTables = cache.get('data_model_fetcher', 'list_of_base_tables');
-			const ranks: DataModelRanks = cache.get('data_model_fetcher', 'ranks');
-			const root_ranks: Record<string,string> = cache.get('data_model_fetcher', 'root_ranks');
+			const tables: DataModelTables = cache_get('tables');
+			const list_of_base_tables: DataModelListOfTables = cache_get('list_of_base_tables');
+			const ranks: DataModelRanks = cache_get('ranks');
+			const root_ranks: Record<string,string> = cache_get('root_ranks');
 
-			if (tables && list_of_base_tables && ranks && root_ranks) {
+			if (
+				tables &&
+				list_of_base_tables &&
+				ranks &&
+				root_ranks
+			) {
 				data_model_storage.tables = tables;
 				data_model_storage.list_of_base_tables = list_of_base_tables;
 				data_model_storage.ranks = ranks;
@@ -344,10 +372,20 @@ export default (): Promise<void> =>
 
 			});
 
-			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name =>
-				[field_name, fields[field_name]],
-			));
-
+			const ordered_fields = Object.fromEntries(
+				Object.entries(fields).sort((
+					[,{is_relationship, friendly_name}],
+					[,{is_relationship: second_is_relationship,friendly_name:second_friendly_name}]
+				)=>
+					is_relationship===second_is_relationship ?
+						friendly_name.localeCompare(second_friendly_name) :
+						is_relationship ?
+							1 :
+							-1
+				).map(([field_name]) =>
+					[field_name, fields[field_name]],
+				)
+			);
 
 			if (
 				!fetching_parameters.table_keywords_to_exclude.some(table_keyword_to_exclude =>
@@ -406,15 +444,10 @@ export default (): Promise<void> =>
 				}
 			));
 
-			cache.set('data_model_fetcher', 'ranks', ranks);
-			cache.set('data_model_fetcher', 'root_ranks', root_ranks);
-			cache.set('data_model_fetcher', 'list_of_base_tables', list_of_base_tables);
-			cache.set('data_model_fetcher', 'tables', tables);
-
-			data_model_storage.tables = tables as DataModelTables;
-			data_model_storage.list_of_base_tables = list_of_base_tables;
-			data_model_storage.ranks = ranks;
-			data_model_storage.root_ranks = root_ranks;
+			data_model_storage.tables = cache_set('tables', tables) as DataModelTables;
+			data_model_storage.list_of_base_tables = cache_set('list_of_base_tables', list_of_base_tables);
+			data_model_storage.ranks = cache_set('ranks', ranks);
+			data_model_storage.root_ranks = cache_set('root_ranks', root_ranks);
 
 			resolve();
 		}).catch(error => {
