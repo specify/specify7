@@ -65,10 +65,10 @@ export function find_array_divergence_point<T>(
 		return -1;
 
 	Object.entries(source).forEach(([index, source_value]) => {
-		const search_value = search[parseInt(index)];
+		const search_value = search[~~index];
 
 		if (typeof search_value === 'undefined')
-			return parseInt(index);
+			return ~~index;
 
 		if (source_value !== search_value)
 			return -1;

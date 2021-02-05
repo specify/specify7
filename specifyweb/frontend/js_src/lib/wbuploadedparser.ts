@@ -354,7 +354,7 @@ const space_out_tree = (
 		Object.entries(tree).filter(([, node_data]) =>
 			typeof node_data !== 'undefined',
 		).map(([node_id, node_data]) => [
-			parseInt(node_id),
+			~~node_id,
 			{
 				...node_data,
 				...space_out_node(
@@ -439,7 +439,7 @@ const compile_rows = (
 					-3 :
 					headers.indexOf(mapped_ranks[node_data.rank_name!]),
 				row_index: node_data.row_index,
-				record_id: parseInt(node_id),
+				record_id: ~~node_id,
 				cell_value: node_data.node_name || undefined,
 				matched: node_data.matched,
 			},
@@ -600,7 +600,7 @@ export function parseUploadResults(
 										...new Set(  // make the list unique
 											table_records.flatMap(({columns}) =>
 												Object.keys(columns).map(column_index =>
-													parseInt(column_index),
+													~~column_index,
 												),  // get column indexes
 											),
 										),

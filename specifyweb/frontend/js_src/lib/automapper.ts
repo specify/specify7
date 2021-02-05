@@ -345,8 +345,8 @@ export default class Automapper {
 	): void {
 
 		const path_matches_starting_path = (path: MappingPath, level: string) =>
-			!this.starting_path[parseInt(level) - 1] ??
-			find_array_divergence_point(path, this.starting_path.slice(0, parseInt(level))) !== -1;
+			!this.starting_path[~~level - 1] ??
+			find_array_divergence_point(path, this.starting_path.slice(0, ~~level)) !== -1;
 
 		this.dispatch.searched_tables({type: 'reset'});
 		this.dispatch.find_mappings_queue({
@@ -713,7 +713,7 @@ export default class Automapper {
 									if (match === null || typeof match[1] === 'undefined')
 										return false;
 
-									to_many_reference_number = parseInt(match[1]);
+									to_many_reference_number = ~~match[1];
 									return true;
 
 								})
@@ -850,7 +850,7 @@ export default class Automapper {
 				!Object.entries(local_path).reverse().some(([local_path_index, local_path_part], index) =>
 					local_path.length - index > this.path_offset && value_is_reference_item(local_path_part) &&
 					(
-						local_path[parseInt(local_path_index)] = format_reference_item(
+						local_path[~~local_path_index] = format_reference_item(
 							get_index_from_reference_item_name(local_path_part) + 1,
 						)
 					),

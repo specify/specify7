@@ -90,7 +90,7 @@ export const value_is_tree_rank = (
 export const get_index_from_reference_item_name = (
 	value: string,  // the value to use
 ): number =>
-	parseInt(value.substr(data_model_storage.reference_symbol.length));
+	~~value.substr(data_model_storage.reference_symbol.length);
 
 /*
 * Returns tree rank name from a complete tree rank name (e.x $Kingdom => Kingdom)
