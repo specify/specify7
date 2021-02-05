@@ -98,8 +98,8 @@ const max_suggestions_count = 3;  // the maximum amount suggestions to show in t
 const MappingsControlPanel = React.memo(named_component(({
 	show_hidden_fields,
 	handleChange,
-	handleAddNewColumn,
-	handleAddNewStaticColumn,
+	// handleAddNewColumn,
+	// handleAddNewStaticColumn,
 }: {
 	readonly show_hidden_fields: boolean,
 	readonly handleChange: () => void,
@@ -109,6 +109,8 @@ const MappingsControlPanel = React.memo(named_component(({
 	<div className="mappings_control_panel">
 		<button onClick={handleAddNewColumn}>Add new column</button>
 		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
+		{/*<button onClick={handleAddNewColumn}>Add new column</button>*/}
+		{/*<button onClick={handleAddNewStaticColumn}>Add new static column</button>*/}
 		<label>
 			{' '}<input
 			type="checkbox"
