@@ -15,7 +15,11 @@ type BucketType =
 interface BucketData {
 	records: Record<string, {
 		use_count: number,  // the amount times a particular cache value was used
-		value: unknown  // the value that is stored in a particular cache record
+		value: unknown,  // the value that is stored in a particular cache record
+		// optional string identifying a version of a cache value
+		// when calling .get() with a version specified, it is compared to record's version
+		// if versions do not much, record is deleted
+		version?: string,
 	}>  // a dictionary of cache records
 	type: BucketType
 }
@@ -81,6 +85,15 @@ function fetch_bucket(
 export function get(
 	bucket_name: string,  // the name of the bucket
 	cache_name: string,  // the name of the cache
+	{
+		version,
+		default_value,
+		default_set_options,
+	}:{
+		version?: string,
+		default_value?: any,
+		default_set_options?: setOptions
+	}={}
 ): any
 /*
 	* {boolean} False on error
@@ -96,8 +109,24 @@ export function get(
 			!fetch_bucket(bucket_name)
 		) ||
 		typeof buckets[bucket_name].records[cache_name] === 'undefined'
-	)
+	){
+		if (typeof default_value === 'undefined')
+			return false;
+		else
+			set(bucket_name, cache_name, default_value, default_set_options);
+	}
+
+	// if cache version is specified, and it doesn't match, clear the record
+	if(
+		typeof version === 'string' &&
+		(
+			typeof buckets[bucket_name].records[cache_name].version === 'undefined' ||
+			buckets[bucket_name].records[cache_name].version !== version
+		)
+	) {
+		delete buckets[bucket_name].records[cache_name];
 		return false;
+	}
 
 	else {
 
@@ -109,6 +138,14 @@ export function get(
 
 }
 
+interface setOptions {
+	// which storage type to use. If local_storage - use persistent storage
+	// If session_storage - data does not persist beyond the page reload
+	readonly bucket_type?: BucketType,
+	readonly overwrite?: boolean,  // whether to overwrite the cache value if it is already present
+	readonly version?: string  // version of this record (used for invalidating older cache)
+}
+
 /* Set's cache_value as cache value under cache_name in `bucket_name` */
 export function set<T>(
 	bucket_name: string,  // the name of the bucket
@@ -117,12 +154,8 @@ export function set<T>(
 	{
 		bucket_type = 'local_storage',
 		overwrite = false,
-	}: {
-		// which storage type to use. If local_storage - use persistent storage
-		// If session_storage - data does not persist beyond the page reload
-		readonly bucket_type?: BucketType,
-		readonly overwrite?: boolean,  // whether to overwrite the cache value if it is already present
-	} = {},
+		version = undefined,
+	}:setOptions = {},
 ): T {
 
 	if (typeof bucket_name === 'undefined')
@@ -140,11 +173,18 @@ export function set<T>(
 	};
 
 	if (!overwrite && typeof buckets[bucket_name].records[cache_name] !== 'undefined')
-		return buckets[bucket_name].records[cache_name] as unknown as T;
+		return buckets[bucket_name].records[cache_name].value as T;
 
 	buckets[bucket_name].records[cache_name] = {
 		value: cache_value,
 		use_count: 0,
+		...(
+			typeof version === 'undefined' ?
+				{} :
+				{
+					version,
+				}
+		)
 	};
 
 	trim_bucket(bucket_name);
@@ -177,7 +217,7 @@ function trim_bucket(
 
 	const cache_usages = Object.values(buckets[bucket_name].records).map(({use_count}) => use_count);
 	const total_usage = cache_usages.reduce((total_usage: number, usage: any) =>
-		total_usage + parseInt(usage),
+		total_usage + ~~usage,
 		0,
 	);
 	const cache_items_count = cache_usages.length;
@@ -193,7 +233,7 @@ function trim_bucket(
 
 	buckets[bucket_name].records = Object.fromEntries(
 		Object.entries(cache_usages).map(([cache_index, cache_usage]) =>
-			[cache_keys[parseInt(cache_index)], cache_usage],
+			[cache_keys[~~cache_index], cache_usage],
 		).filter(([_cache_key, cache_usage]) =>
 			cache_usage >= usage_to_trim,
 		).map(([cache_key]) =>
