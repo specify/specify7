@@ -6,8 +6,8 @@
 * */
 
 'use strict';
-const $ = require('jquery');
 
+import $                                              from 'jquery';
 import {
 	mappings_tree_to_array_of_mappings,
 	array_of_mappings_to_mappings_tree,
@@ -82,6 +82,7 @@ export interface WBPlanViewMapperBaseProps {
 	readonly focused_line?: number,
 	readonly automapper_suggestions?: AutomapperSuggestion[],
 	readonly autoscroll?: boolean,
+	readonly mapping_view_lines_to_display: number,
 }
 
 export type GetMappedFieldsBind = (
@@ -98,6 +99,8 @@ const max_suggestions_count = 3;  // the maximum amount suggestions to show in t
 const MappingsControlPanel = React.memo(named_component(({
 	show_hidden_fields,
 	handleChange,
+	mapping_is_templated,
+	handleToggleMappingIsTemplated,
 	// handleAddNewColumn,
 	// handleAddNewStaticColumn,
 }: {
@@ -105,10 +108,18 @@ const MappingsControlPanel = React.memo(named_component(({
 	readonly handleChange: () => void,
 	readonly handleAddNewColumn: () => void,
 	readonly handleAddNewStaticColumn: () => void,
+	readonly mapping_is_templated: boolean,
+	readonly handleToggleMappingIsTemplated: () => void,
 }) =>
 	<div className="mappings_control_panel">
-		<button onClick={handleAddNewColumn}>Add new column</button>
-		<button onClick={handleAddNewStaticColumn}>Add new static column</button>
+		<label>
+			<input
+				type="checkbox"
+				checked={mapping_is_templated}
+				onChange={handleToggleMappingIsTemplated}
+			/>
+			Use this mapping as a template
+		</label>
 		{/*<button onClick={handleAddNewColumn}>Add new column</button>*/}
 		{/*<button onClick={handleAddNewStaticColumn}>Add new static column</button>*/}
 		<label>
@@ -182,12 +193,14 @@ export function save_plan(
 	// props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
 	const uploadplan = mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true));
 
-	$.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
-		type: 'PUT',
-		data: JSON.stringify({'uploadplan': uploadplan}),
-		dataType: 'json',
-		processData: false,
-	});
+	void (
+		$.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
+			type: 'PUT',
+			data: JSON.stringify({'uploadplan': uploadplan}),
+			dataType: 'json',
+			processData: false,
+		})
+	);
 
 
 	if (state.changes_made)
@@ -464,11 +477,11 @@ export const get_automapper_suggestions = ({
 
 	});
 
-const MappingView = React.memo(named_component((props: {
+function MappingView(props: {
 	readonly base_table_name: string,
 	readonly focused_line_exists: boolean,
 	readonly mapping_path: MappingPath,
-	readonly map_button_is_enabled: boolean,
+	map_button_is_enabled: boolean,
 	readonly handleMapButtonClick: () => void
 	readonly handleMappingViewChange: (
 		index: number,
@@ -478,26 +491,37 @@ const MappingView = React.memo(named_component((props: {
 	readonly get_mapped_fields: GetMappedFieldsBind,
 	readonly automapper_suggestions?: AutomapperSuggestion[],
 	readonly show_hidden_fields?: boolean,
-}) =>
-	<>
+}) {
+
+	const mapping_line_data = get_mapping_line_data_from_mapping_path({
+		base_table_name: props.base_table_name,
+		mapping_path: props.mapping_path,
+		generate_last_relationship_data: true,
+		custom_select_type: 'opened_list',
+		handleChange: props.handleMappingViewChange,
+		get_mapped_fields: props.get_mapped_fields,
+		show_hidden_fields: props.show_hidden_fields,
+	});
+	const map_button_is_enabled =
+		props.map_button_is_enabled && (
+			Object.entries(
+				mapping_line_data[mapping_line_data.length - 1]?.fields_data,
+			).filter(([, {is_default}]) =>
+				is_default,
+			)?.[0]?.[1].is_enabled ?? false
+		);
+
+	return <>
 		<div className="mapping_view">
 			<MappingPath
-				mapping_line_data={get_mapping_line_data_from_mapping_path({
-					base_table_name: props.base_table_name,
-					mapping_path: props.mapping_path,
-					generate_last_relationship_data: true,
-					custom_select_type: 'opened_list',
-					handleChange: props.handleMappingViewChange,
-					get_mapped_fields: props.get_mapped_fields,
-					show_hidden_fields: props.show_hidden_fields,
-				})}
+				mapping_line_data={mapping_line_data}
 			/>
 		</div>
 		<button
 			className="wbplanview_mapping_view_map_button"
-			disabled={!props.map_button_is_enabled}
+			disabled={!map_button_is_enabled}
 			onClick={
-				props.map_button_is_enabled && props.focused_line_exists ?
+				map_button_is_enabled && props.focused_line_exists ?
 					props.handleMapButtonClick :
 					undefined
 			}
@@ -505,7 +529,8 @@ const MappingView = React.memo(named_component((props: {
 			Map
 			<span className="wbplanview_mapping_view_map_button_arrow">&#8594;</span>
 		</button>
-	</>, 'MappingView'));
+	</>;
+}
 
 export function mutate_mapping_path({
 	lines,
@@ -549,6 +574,7 @@ export function mutate_mapping_path({
 
 export default named_component((props: WBPlanViewMapperBaseProps & {
 	readonly mapper_dispatch: (action: MappingActions) => void,
+	readonly handleChangeMappingViewHeight: (lines_to_display: number) => void,
 	readonly handleSave: () => void,
 	readonly handleFocus: (line_index: number) => void,
 	readonly handleMappingViewMap: () => void,
@@ -575,6 +601,8 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>) => void,
 	readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
 	readonly handleValidationResultClick: (mapping_path: MappingPath) => void,
+	readonly handleToggleMappingIsTemplated: () => void,
+	readonly handleToggleMappingView: () => void,
 }) => {
 	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
 	const list_of_mappings = React.useRef<HTMLDivElement>(null);
@@ -589,32 +617,67 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 
 	return <>
 		{
-			props.show_mapping_view &&
-			<div className="mapping_view_parent">
-				<div className="mapping_view_container">
-					<FormatValidationResults
-						base_table_name={props.base_table_name}
-						validation_results={props.validation_results}
-						handleSave={props.handleSave}
-						get_mapped_fields={get_mapped_fields_bind}
-						onValidationResultClick={props.handleValidationResultClick}
-					/>
-					<MappingView
-						base_table_name={props.base_table_name}
-						focused_line_exists={typeof props.focused_line !== 'undefined'}
-						mapping_path={props.mapping_view}
-						show_hidden_fields={props.show_hidden_fields}
-						map_button_is_enabled={
-							typeof props.focused_line !== 'undefined' &&
-							mapping_path_is_complete(props.mapping_view)
+			<>
+				{
+					props.show_mapping_view && <div className="mapping_view_parent">
+						<div
+							className="mapping_view_container"
+							style={{'--lines_to_display': props.mapping_view_lines_to_display} as React.CSSProperties}
+						>
+							<FormatValidationResults
+								base_table_name={props.base_table_name}
+								validation_results={props.validation_results}
+								handleSave={props.handleSave}
+								get_mapped_fields={get_mapped_fields_bind}
+								onValidationResultClick={props.handleValidationResultClick}
+							/>
+							<MappingView
+								base_table_name={props.base_table_name}
+								focused_line_exists={typeof props.focused_line !== 'undefined'}
+								mapping_path={props.mapping_view}
+								show_hidden_fields={props.show_hidden_fields}
+								map_button_is_enabled={
+									typeof props.focused_line !== 'undefined' &&
+									mapping_path_is_complete(props.mapping_view)
+								}
+								handleMapButtonClick={props.handleMappingViewMap}
+								handleMappingViewChange={props.handleChange.bind(null, 'mapping_view')}
+								get_mapped_fields={get_mapped_fields_bind}
+								automapper_suggestions={props.automapper_suggestions}
+							/>
+						</div>
+					</div>
+				}
+				<div className='mapping_view_resizer'>
+					<button
+						onClick={
+							props.mapping_view_lines_to_display > 5 ?
+								() =>
+									props.handleChangeMappingViewHeight(
+										props.mapping_view_lines_to_display - 1,
+									) :
+								undefined
 						}
-						handleMapButtonClick={props.handleMappingViewMap}
-						handleMappingViewChange={props.handleChange.bind(null, 'mapping_view')}
-						get_mapped_fields={get_mapped_fields_bind}
-						automapper_suggestions={props.automapper_suggestions}
-					/>
+						disabled={props.mapping_view_lines_to_display <= 5}
+					>&#9650;</button>
+					<button onClick={props.handleToggleMappingView}>{
+						props.show_mapping_view ?
+							'\u25EF' :
+							'\u2B24'
+					}</button>
+					<button
+						onClick={
+							props.mapping_view_lines_to_display < 12 ?
+								() =>
+									props.handleChangeMappingViewHeight(
+										props.mapping_view_lines_to_display + 1,
+									) :
+								undefined
+						}
+						disabled={props.mapping_view_lines_to_display >= 12}
+					>&#9660;</button>
 				</div>
-			</div>
+			</>
 		}
 
 		<div className="list__mappings" ref={list_of_mappings}>{
@@ -655,6 +718,8 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 			handleChange={props.handleToggleHiddenFields}
 			handleAddNewColumn={props.handleAddNewColumn}
 			handleAddNewStaticColumn={props.handleAddNewStaticColumn}
+			handleToggleMappingIsTemplated={props.handleToggleMappingIsTemplated}
+			mapping_is_templated={props.mapping_is_templated}
 		/>
 	</>;
 
