@@ -271,7 +271,7 @@ const WBView = Backbone.View.extend({
             const upload_failed = cellCounts.invalid_cells !== 0;
             const upload_succeeded = !upload_failed && this.uploaded;
 
-            $(`<div>
+            const dialog = $(`<div>
                 ${
                     upload_failed ?
                         `Upload failed with ${cellCounts.invalid_cells} invalid cells.<br>
@@ -290,11 +290,13 @@ const WBView = Backbone.View.extend({
                         'Unupload completed' ,
                 modal: true,
                 buttons: {
-                    'Close': function() { $(this).dialog('close'); },
+                    'Close': ()=>dialog.dialog('close'),
                     ...(
                         upload_succeeded ?
                             {
-                                'View upload results': this.displayUploadedView.bind(this),
+                                'View upload results': ()=>
+                                    this.displayUploadedView() ||
+                                    dialog.dialog('close'),
                             } :
                             {}
                     )

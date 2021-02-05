@@ -132,7 +132,7 @@ const UploadedTableRow = named_component(({
 				record_id >= 0 &&
 				<td key='view_record'>
 					<a target="_blank" href={get_record_view_url(record_id)}>
-						{record_id}
+						&#128065;  {/* a fancy eye emoji */}
 					</a>
 				</td>
 			}
@@ -216,7 +216,7 @@ const UploadedTableRows = named_component(({
 							rows.length !== 0 &&
 							'record_id' in rows[0] &&
 							rows[0].record_id >= 0 ?
-								['View Record'] :
+								[''] :
 								[]
 						),
 						...column_names,
