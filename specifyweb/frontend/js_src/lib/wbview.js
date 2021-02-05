@@ -103,33 +103,18 @@ const WBView = Backbone.View.extend({
                     'row_below': 'row_below',
                     'remove_row': 'remove_row',
                     'separator_1': '---------',
-                    'fill_down_with_increment': {
-                        name: 'Fill down with increment',
-                        disabled: function(){
-                            const selections = this.getSelected();
-
-                            return (
-                                    typeof selections === "undefined" ||
-                                    selections.every(selection=>
-                                        selection[0]===selection[2]
-                                    )
-                                );
-                        },
-                        callback: (_, selections) =>
-                            selections.map(selection=>{
-
-                                const start_column = selection.start.col;
-                                const end_column = selection.end.col;
-
-                                // if selection spans over several columns, run fill down for each individually
-                                for(let current_column=start_column; current_column<=end_column; current_column++)
-                                    this.fillDownCells({
-                                        start_row: selection.start.row,
-                                        end_row: selection.end.row,
-                                        col: current_column,
-                                    });
-                            }) && this.hot.deselectCell()
-                    },
+                    'fill_down': this.wbutils.fillCellsContextMenuItem(
+                        'Fill Down',
+                        this.wbutils.fillDown
+                    ),
+                    'fill_up': this.wbutils.fillCellsContextMenuItem(
+                        'Fill Up',
+                        this.wbutils.fillUp
+                    ),
+                    /*'fill_down_with_increment': this.utils.fillUpDownContextMenuItem(
+                        'Fill Down With Increment',
+                        this.wbutils.fillDownWithIncrement
+                    ),*/
                     'separator_2': '---------',
                     'undo': 'undo',
                     'redo': 'redo',

@@ -134,7 +134,31 @@ module.exports = Backbone.View.extend({
 		else
 			toolbelt.style.display = 'none';
 	},
-	fillDownCells({start_row, end_row, col}){
+	fillCells({start_row, end_row, col, value}){
+    	this.wbview.hot.setDataAtCell(
+			[...Array(end_row-start_row).keys()].map(index=>
+				[
+					start_row + index + 1,
+					col,
+					value,
+				]
+			)
+		);
+	},
+	fillDown(props){
+		this.fillCells({
+			...props,
+			value: this.wbview.hot.getDataAtCell(props.start_row, props.col)
+		});
+	},
+	fillUp(props){
+		this.fillCells({
+			...props,
+			start_row: props.start_row - 1,
+			value: this.wbview.hot.getDataAtCell(props.end_row, props.col)
+		});
+	},
+	/*fillDownWithIncrement({start_row, end_row, col}){
 
 		const first_cell = this.wbview.hot.getDataAtCell(start_row, col);
 
@@ -154,5 +178,24 @@ module.exports = Backbone.View.extend({
 
 		this.wbview.hot.setDataAtCell(changes);
 
-	},
+	},*/
+	fillCellsContextMenuItem(name, handler_function){
+    	return {
+			name: name,
+			disabled: ()=>
+				this.wbview.hot.getSelected()?.every(selection =>
+					selection[0] === selection[2]
+				) ?? false,
+			callback: (_, selections) =>
+				selections.forEach(selection=>
+					[...Array(selection.end.col+1-selection.start.col).keys()].forEach(index=>
+						handler_function.bind(this)({
+							start_row: selection.start.row,
+							end_row: selection.end.row,
+							col: selection.start.col+index,
+						})
+					)
+				) || this.wbview.hot.deselectCell()
+		}
+	}
 });
