@@ -39,8 +39,18 @@ json = dict(
                                 'Family': 'Family',
                                 'Genus': 'Genus',
                                 'Subgenus': 'Subgenus',
-                                'Species': 'Species',
-                                'Subspecies': 'Subspecies',
+                                'Species': dict(
+                                    treeNodeCols = {
+                                        'name': 'Species',
+                                        'author': 'Species Author',
+                                    },
+                                ),
+                                'Subspecies': dict(
+                                    treeNodeCols = {
+                                        'name': 'Subspecies',
+                                        'author': 'Subspecies Author',
+                                    },
+                                ),
                             }
                         )}
                     },
@@ -156,13 +166,13 @@ def with_scoping(collection) -> ScopedUploadTable:
                         'taxon': TreeRecord(
                             name = 'Taxon',
                             ranks = {
-                                'Class': 'Class',
-                                'Superfamily': 'Superfamily',
-                                'Family': 'Family',
-                                'Genus': 'Genus',
-                                'Subgenus': 'Subgenus',
-                                'Species': 'Species',
-                                'Subspecies': 'Subspecies',
+                                'Class': {'name': 'Class'},
+                                'Superfamily': {'name': 'Superfamily'},
+                                'Family': {'name': 'Family'},
+                                'Genus': {'name': 'Genus'},
+                                'Subgenus': {'name': 'Subgenus'},
+                                'Species': {'name': 'Species', 'author': 'Species Author'},
+                                'Subspecies': {'name': 'Subspecies', 'author': 'Subspecies Author'},
                             }
                         )
                     },
@@ -191,10 +201,10 @@ def with_scoping(collection) -> ScopedUploadTable:
                             'geography': TreeRecord(
                                 name = 'Geography',
                                 ranks = {
-                                    'Continent': 'Continent/Ocean' ,
-                                    'Country': 'Country',
-                                    'State': 'State/Prov/Pref',
-                                    'County': 'Region',
+                                    'Continent': {'name': 'Continent/Ocean'},
+                                    'Country': {'name': 'Country'},
+                                    'State': {'name': 'State/Prov/Pref'},
+                                    'County': {'name': 'Region'},
                                 }
                             ),
                         },

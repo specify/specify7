@@ -10,8 +10,9 @@ from specifyweb.specify.tree_extras import validate_tree_numbering
 from ..uploadable import Exclude
 from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
-from ..treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
+from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults, TreeMatchResult
 from ..upload import do_upload_csv
+from ..parsing import filter_and_upload
 
 from .base import UploadTestsBase, get_table
 
@@ -20,8 +21,8 @@ class UploadTests(UploadTestsBase):
 
     def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(
-'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date,Country,Date Collected,Start Date Collected,End Date Collected,Collection Method,Prep Type 1,Accession No.,Remarks,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Site
-59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,,
+'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
+5033,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,8 Sep 1973,8 Sep 1973,,,,8,0,0,Dry; shell,Dry,,,,,,1,"Caloosahatchee,Pinecrest Unit #4",U/Juv,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
@@ -30,8 +31,8 @@ class UploadTests(UploadTestsBase):
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([{
             'collectors__agent__agenttype': 1,
-            'collectors__agent__firstname': 'Colin',
-            'collectors__agent__lastname': 'Redfern',
+            'collectors__agent__firstname': 'M.',
+            'collectors__agent__lastname': 'Buffington',
             'collectors__agent__middleinitial': None,
             'collectors__agent__title': None,
             'collectors__agent__division_id': self.division.id,
@@ -184,7 +185,7 @@ class UploadTests(UploadTestsBase):
         det = get_table('Collectionobject').objects.get(catalognumber="000005081").determinations.get()
         self.assertEqual(det.determineddate, None)
 
-        self.assertEqual((det.taxon.name, det.taxon.definitionitem.name), ("evergladesensis", "Species"))
+        self.assertEqual((det.taxon.name, det.taxon.author, det.taxon.definitionitem.name), ("evergladesensis", "Petuch, 1991", "Species"))
         self.assertEqual((det.taxon.parent.name, det.taxon.parent.definitionitem.name), ("Strombus", "Genus"))
         self.assertEqual((det.taxon.parent.parent.name, det.taxon.parent.parent.definitionitem.name), ("Strombidae", "Family"))
         self.assertEqual((det.taxon.parent.parent.parent.name, det.taxon.parent.parent.parent.definitionitem.name), ("Stromboidea", "Superfamily"))
@@ -218,21 +219,23 @@ class UploadTests(UploadTestsBase):
         tree_record = TreeRecord(
             name = 'Geography',
             ranks = {
-                'Continent': 'Continent/Ocean',
-                'Country': 'Country',
-                'State': 'State/Prov/Pref',
-                'County': 'Region',
+                'Continent': {'name': 'Continent/Ocean'},
+                'Country': {'name': 'Country'},
+                'State': {'name': 'State/Prov/Pref'},
+                'County': {'name': 'Region'},
             }
         ).apply_scoping(self.collection)
         row = next(reader)
-        to_upload, matched = tree_record.bind(self.collection, row)._match()
+        bt = tree_record.bind(self.collection, row)
+        assert isinstance(bt, BoundTreeRecord)
+        to_upload, matched = bt._match()
 
         self.assertEqual(to_upload, [
-            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co."),
-            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="State"), "FLORIDA"),
-            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="Country"), "USA"),
-            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="Continent"), "North America"),
-            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="Planet"), "Uploaded"),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="State"), [filter_and_upload({'name': "FLORIDA"}, "State/Prov/Pref")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Country"), [filter_and_upload({'name': "USA"}, "Country")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Continent"), [filter_and_upload({'name': "North America"}, "Continent/Ocean")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Planet"), [filter_and_upload({'name': "Uploaded"}, "")]),
         ])
 
         self.assertEqual(matched, [])
@@ -272,12 +275,19 @@ class UploadTests(UploadTestsBase):
         #     parent=state,
         # )
 
+        bt = tree_record.bind(self.collection, row)
+        assert isinstance(bt, BoundTreeRecord)
         self.assertEqual(
-            tree_record.bind(self.collection, row)._match(),
-            TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [(state.id, 'State', 'Florida')])
+            bt._match(),
+            TreeMatchResult(
+                [TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")])],
+                [(state.id, 'State', 'Florida')]
+            )
         )
 
-        upload_result = tree_record.bind(self.collection, row).process_row()
+        bt = tree_record.bind(self.collection, row)
+        assert isinstance(bt, BoundTreeRecord)
+        upload_result = bt.process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
 
         uploaded = get_table('Geography').objects.get(id=upload_result.get_id())
@@ -285,8 +295,13 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        self.assertEqual(tree_record.bind(self.collection, row)._match(), ([], [(uploaded.id, 'County', 'Hendry Co.')]))
-        upload_result = tree_record.bind(self.collection, row).process_row()
+        bt = tree_record.bind(self.collection, row)
+        assert isinstance(bt, BoundTreeRecord)
+        self.assertEqual(bt._match(), ([], [(uploaded.id, 'County', 'Hendry Co.')]))
+
+        bt = tree_record.bind(self.collection, row)
+        assert isinstance(bt, BoundTreeRecord)
+        upload_result = bt.process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'], treeInfo=TreeInfo('County', 'Hendry Co.'))
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 

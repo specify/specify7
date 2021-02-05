@@ -106,4 +106,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     else:
         raise Exception('unexpected tree type: %s' % table)
 
-    return ScopedTreeRecord(**{**tr._asdict(), 'treedefid': treedefid})
+    return ScopedTreeRecord(
+        name=tr.name,
+        ranks=tr.ranks,
+        treedefid=treedefid,
+    )

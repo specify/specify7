@@ -17,7 +17,20 @@ schema = {
     'type': 'object',
     'properties': {
         'baseTableName': { 'type': 'string' },
-        'uploadable': { '$ref': '#/definitions/uploadable' },
+        'uploadable': {
+            'oneOf': [
+                { 'type': 'object',
+                  'properties': { 'uploadTable': { '$ref': '#/definitions/uploadTable' } },
+                  'required': [ 'uploadTable' ],
+                  'additionalProperties': False
+                },
+                { 'type': 'object',
+                  'properties': { 'treeRecord': { '$ref': '#/definitions/treeRecord' } },
+                  'required': [ 'treeRecord' ],
+                  'additionalProperties': False
+                },
+            ]
+        },
     },
     'required': [ 'baseTableName', 'uploadable' ],
     'additionalProperties': False,
@@ -60,7 +73,19 @@ schema = {
                 'ranks': {
                     'type': 'object',
                     'description': 'Maps the ranks of the tree to the headers of the source columns of input data.',
-                    'additionalProperties': { 'type': 'string' },
+                    'additionalProperties': {
+                        'oneOf': [
+                            { 'type': 'string' },
+                            {
+                                'type': 'object',
+                                'properties': {
+                                    'treeNodeCols': { '$ref': '#/definitions/treeNodeCols' },
+                                },
+                                'required': [ 'treeNodeCols' ],
+                                'additionalProperties': False
+                            }
+                        ]
+                    },
                     'examples': [
                         {'Continent': 'Continent/Ocean', 'Country': 'Country', 'State': 'State/Prov/Pref', 'County': 'Region'},
                         {"Class": "Class", "Superfamily": "Superfamily", "Family": "Family", "Genus": "Genus", "Subgenus": "Subgenus", "Species": "Species", "Subspecies": "Subspecies"}
@@ -106,6 +131,21 @@ schema = {
             'examples': [
                 {'catalognumber': 'Specimen #', 'catalogeddate': 'Recored Date', 'objectcondition': 'Condition'},
                 {'lastname': 'Collector 1 Last Name', 'firstname': 'Collector 1 First Name'},
+            ]
+        },
+
+        'treeNodeCols': {
+            'type': 'object',
+            'description': 'Maps the columns of the destination tree table to the headers of the source columns of input data.',
+            'required': ['name'],
+            'properties': {
+                'nodenumber': False,
+                'highestchildnodenumber': False,
+                'rankid': False,
+            },
+            'additionalProperties': { 'type': 'string' },
+            'examples': [
+                {'name': 'Species', 'author': 'Species Author'},
             ]
         },
 
@@ -166,9 +206,16 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
     )
 
 def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
+    ranks = {
+        rank: {'name': name_or_cols} if isinstance(name_or_cols, str) else name_or_cols['treeNodeCols']
+        for rank, name_or_cols in to_parse['ranks'].items()
+    }
+    for rank, cols in ranks.items():
+        assert 'name' in cols, to_parse
+
     return TreeRecord(
         name=table.django_name,
-        ranks=to_parse['ranks'],
+        ranks=ranks,
     )
 
 def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:

@@ -3,10 +3,11 @@ import csv
 from jsonschema import validate # type: ignore
 
 from .base import UploadTestsBase, get_table
-from ..upload_result import Uploaded, ParseFailures, CellIssue, FailedBusinessRule
+from ..upload_result import Uploaded, ParseFailures, ParseFailure, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable
+from ..treerecord import TreeRecord
 from .. import validation_schema
 
 class ParsingTests(UploadTestsBase):
@@ -227,7 +228,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([CellIssue(column='title', issue='value Hon. not in picklist AgentTitle')], result2.failures)
+        self.assertEqual([ParseFailure(message='value Hon. not in picklist AgentTitle', caption='title')], result2.failures)
 
 
     def test_parse_latlong(self) -> None:
@@ -286,7 +287,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([CellIssue(column='Start Date Collected', issue='bad date value: foobar'), CellIssue(column='ID Date', issue='bad date value: bad date')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='bad date value: foobar', caption='Start Date Collected'), ParseFailure(message='bad date value: bad date', caption='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -297,7 +298,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([CellIssue(column='Latitude1', issue="latitude absolute value must be less than 90 degrees: 128° 06.07' N"), CellIssue(column='Longitude1', issue="longitude absolute value must be less than 180 degrees: 191° 02.42' W")], failed_result.failures)
+        self.assertEqual([ParseFailure(message="latitude absolute value must be less than 90 degrees: 128° 06.07' N", caption='Latitude1'), ParseFailure(message="longitude absolute value must be less than 180 degrees: 191° 02.42' W", caption='Longitude1')], failed_result.failures)
 
     def test_agent_type(self) -> None:
         plan = UploadTable(
@@ -329,7 +330,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([CellIssue(column='agenttype', issue="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']")], result2.failures)
+        self.assertEqual([ParseFailure(message="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']", caption='agenttype')], result2.failures)
 
         result3 = results[3].record_result
         assert isinstance(result3, Uploaded)
@@ -338,3 +339,20 @@ class ParsingTests(UploadTestsBase):
         result4 = results[4].record_result
         assert isinstance(result4, Uploaded)
         self.assertEqual(3, get_table('agent').objects.get(id=result4.get_id()).agenttype)
+
+    def test_tree_cols_without_name(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name='Genus'),
+                Species=dict(name='Species', author='Species Author')
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
+            {'Genus': 'Eupatorium', 'Species': '', 'Species Author': 'L.'},
+        ]
+        results = do_upload(self.collection, data, plan)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', caption='Species Author')]))

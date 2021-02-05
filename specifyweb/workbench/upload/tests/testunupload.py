@@ -70,10 +70,10 @@ class UnUploadTests(UploadTestsBase):
         plan = TreeRecord(
             name = 'Geography',
             ranks = {
-                'Continent': 'Continent/Ocean',
-                'Country': 'Country',
-                'State': 'State/Prov/Pref',
-                'County': 'Co',
+                'Continent': {'name': 'Continent/Ocean'},
+                'Country': {'name': 'Country'},
+                'State': {'name': 'State/Prov/Pref'},
+                'County': {'name': 'Co'},
             }
         ).apply_scoping(self.collection)
 

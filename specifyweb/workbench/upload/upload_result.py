@@ -2,6 +2,7 @@ from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
 from typing_extensions import Literal
 
 from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation, NewPicklistItem
+from .parsing import ParseFailure
 
 Failure = Literal["Failure"]
 
@@ -206,14 +207,14 @@ def json_to_NoMatch(json: Dict) -> NoMatch:
     return NoMatch(info=json_to_ReportInfo(r['info']))
 
 class ParseFailures(NamedTuple):
-    failures: List[CellIssue]
+    failures: List[ParseFailure]
 
     def get_id(self) -> Failure:
         return "Failure"
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
-            cellIssues=self.failures,
+            cellIssues=[CellIssue(column=f.caption, issue=f.message) for f in self.failures],
             newRows=[],
             tableIssues=[],
             picklistAdditions=[],
@@ -224,7 +225,7 @@ class ParseFailures(NamedTuple):
 
 def json_to_ParseFailures(json: Dict) -> ParseFailures:
     r = json['ParseFailures']
-    return ParseFailures(failures=[CellIssue(*i) for i in r['failures']])
+    return ParseFailures(failures=[ParseFailure(*i) for i in r['failures']])
 
 class PropagatedFailure(NamedTuple):
     def get_id(self) -> Failure:
