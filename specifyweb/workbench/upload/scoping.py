@@ -66,10 +66,16 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTab
         def adjust_to_ones(u: ScopedUploadable, f: str) -> ScopedUploadable:
             return u
 
+    # not sure if this is the right place for this, but it will work for now.
+    if table.name == 'Agent' and 'agenttype' not in ut.wbcols and 'agenttype' not in ut.static:
+        static = {'agenttype': 1, **ut.static}
+    else:
+        static = ut.static
+
     return ScopedUploadTable(
         name=ut.name,
         wbcols=ut.wbcols,
-        static=ut.static,
+        static=static,
         toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
         toMany={f: [r.apply_scoping(collection) for r in rs] for f, rs in ut.toMany.items()},
         scopingAttrs=scoping_relationships(collection, table),
