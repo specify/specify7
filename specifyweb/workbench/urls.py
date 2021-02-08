@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from . import views
 
@@ -15,4 +15,8 @@ urlpatterns = [
     url(r'^upload_results/(?P<ds_id>\d+)/', views.upload_results),
     url(r'^abort/(?P<ds_id>\d+)/', views.abort),
     url(r'^validate_row/(?P<ds_id>\d+)/', views.validate_row),
+
+    url(r'^schemas/', include([
+        url(r'^uploadplan/$', views.upload_plan_schema),
+    ]))
 ]

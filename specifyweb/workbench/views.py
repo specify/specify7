@@ -19,7 +19,6 @@ from specifyweb.specify.views import login_maybe_required, apply_access_control
 from . import tasks
 from . import models
 from .upload import upload as uploader
-from .upload.upload_results_schema import schema
 
 logger = logging.getLogger(__name__)
 
@@ -267,6 +266,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
 
     results = ds.rowresults
     if settings.DEBUG:
+        from .upload.upload_results_schema import schema
         validate(results, schema)
 
     return http.JsonResponse(results, safe=False)
@@ -292,3 +292,8 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
         form = ValidationForm()
 
     return render(request, 'validate_row.html', {'form': form.as_p()})
+
+@require_GET
+def upload_plan_schema(request) -> http.HttpResponse:
+    from .upload.upload_plan_schema import schema
+    return http.JsonResponse(schema)
