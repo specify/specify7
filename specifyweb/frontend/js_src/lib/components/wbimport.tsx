@@ -80,11 +80,15 @@ export default class WbImport extends Component<{}, WbImportState> {
 			encoding: encoding,
 			preview: PREVIEW_SIZE,
                         skipEmptyLines: true,
-			complete: ({data}) => this.update(
+			complete: ({data}) => {
+                            const maxWidth = Math.max(...data.map(row => row.length));
+                            data.forEach(row => row.push(...new Array(maxWidth-row.length)));
+                            this.update(
 				data.length > 0
-					? {type: 'GotPreviewAction', preview: data, file: file}
-					: {type: 'BadImportFileAction', file: file},
-			),
+				    ? {type: 'GotPreviewAction', preview: data, file: file}
+				    : {type: 'BadImportFileAction', file: file},
+			    );
+                        },
 		});
 	}
 
