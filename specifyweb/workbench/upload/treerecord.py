@@ -189,7 +189,10 @@ class BoundTreeRecord(NamedTuple):
         while items_with_values_enforced:
             matchers = [
                 f"and d{i}.rankid = %s and "
-                + " and ".join([f"t{i}.{column} = %s" for r in tdiwpr.results for column, value in sorted(r.filter_on.items())])
+                + " and ".join([f"t{i}.{column} {'is' if value is None else '='} %s"
+                                for r in tdiwpr.results
+                                for column, value in sorted(r.filter_on.items())
+                ])
                 + "\n"
                 for i, tdiwpr in enumerate(items_with_values_enforced)
             ]
