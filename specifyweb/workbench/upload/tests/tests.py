@@ -238,7 +238,7 @@ class UploadTests(UploadTestsBase):
             TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Planet"), [filter_and_upload({'name': "Uploaded"}, "")]),
         ])
 
-        self.assertEqual(matched, [])
+        self.assertEqual(matched, None)
 
         planet = get_table('Geography').objects.create(
             name="Uploaded",
@@ -277,13 +277,15 @@ class UploadTests(UploadTestsBase):
 
         bt = tree_record.bind(self.collection, row)
         assert isinstance(bt, BoundTreeRecord)
+        to_upload, matched = bt._match()
         self.assertEqual(
-            bt._match(),
-            TreeMatchResult(
-                [TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")])],
-                [(state.id, 'State', 'Florida')]
-            )
+            to_upload,
+            [TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")])]
         )
+        assert matched is not None
+        self.assertEqual('State', matched['rank'])
+        self.assertEqual([(state.id, 'Florida')], matched['matches'])
+        self.assertEqual(['State/Prov/Pref', 'Country', 'Continent/Ocean'], matched['columns'])
 
         bt = tree_record.bind(self.collection, row)
         assert isinstance(bt, BoundTreeRecord)
@@ -297,12 +299,17 @@ class UploadTests(UploadTestsBase):
 
         bt = tree_record.bind(self.collection, row)
         assert isinstance(bt, BoundTreeRecord)
-        self.assertEqual(bt._match(), ([], [(uploaded.id, 'County', 'Hendry Co.')]))
+        to_upload, matched = bt._match()
+        self.assertEqual([], to_upload)
+        assert matched is not None
+        self.assertEqual([(uploaded.id, 'Hendry Co.')], matched['matches'])
+        self.assertEqual('County', matched['rank'])
+        self.assertEqual(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean'], matched['columns'])
 
         bt = tree_record.bind(self.collection, row)
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
-        expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'], treeInfo=TreeInfo('County', 'Hendry Co.'))
+        expected_info = ReportInfo(tableName='Geography', columns=['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean'], treeInfo=TreeInfo('County', 'Hendry Co.'))
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 
 

@@ -6,6 +6,7 @@ from itertools import dropwhile
 
 import logging
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union
+from typing_extensions import TypedDict
 
 from django.db import connection # type: ignore
 
@@ -17,15 +18,6 @@ from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMu
 from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
 
 logger = logging.getLogger(__name__)
-
-
-class TreeDefItemWithParseResults(NamedTuple):
-    treedefitem: Any
-    results: List[ParseResult]
-
-class TreeMatchResult(NamedTuple):
-    to_upload: List[TreeDefItemWithParseResults]
-    matched: List[Tuple[int, str, str]]
 
 
 class TreeRecord(NamedTuple):
@@ -78,6 +70,16 @@ class ScopedTreeRecord(NamedTuple):
             parsedFields=parsedFields,
         )
 
+class TreeDefItemWithParseResults(NamedTuple):
+    treedefitem: Any
+    results: List[ParseResult]
+
+NodeMatches = TypedDict('NodeMatches', {'rank': str, 'matches': List[Tuple[int, str]], 'columns': List[str]})
+
+class TreeMatchResult(NamedTuple):
+    to_upload: List[TreeDefItemWithParseResults]
+    matched: Optional[NodeMatches]
+
 class BoundTreeRecord(NamedTuple):
     name: str
     treedefid: int
@@ -100,20 +102,18 @@ class BoundTreeRecord(NamedTuple):
 
     def _handle_row(self, must_match: bool) -> UploadResult:
         to_upload, matched = self._match()
-        columns = [
-            pr.caption
-            for prs in self.parsedFields.values()
-            for pr in prs
-        ]
-        info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
         if not to_upload:
-            if not matched:
+            if matched is None:
+                columns = [pr.caption for prs in self.parsedFields.values() for pr in prs]
+                info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
                 return UploadResult(NullRecord(info), {}, {})
-            elif len(matched) == 1:
-                id, rank, name = matched[0]
-                return UploadResult(Matched(id, info._replace(treeInfo=TreeInfo(rank, name))), {}, {})
+            elif len(matched['matches']) == 1:
+                id, name = matched['matches'][0]
+                info = ReportInfo(tableName=self.name, columns=matched['columns'], treeInfo=TreeInfo(matched['rank'], name))
+                return UploadResult(Matched(id, info), {}, {})
             else:
-                ids = [id for id, rank, name in matched]
+                info = ReportInfo(tableName=self.name, columns=matched['columns'], treeInfo=TreeInfo(matched['rank'], ""))
+                ids = [id for id, name in matched['matches']]
                 return UploadResult(MatchedMultiple(ids, info), {}, {})
         elif must_match:
             return UploadResult(NoMatch(info), {}, {})
@@ -124,8 +124,10 @@ class BoundTreeRecord(NamedTuple):
             parent_id = None
             parent_result = {}
         else:
-            parent_id, parent_rank, parent_name = matched[0]
-            parent_result = {'parent': UploadResult(Matched(parent_id, info._replace(treeInfo=TreeInfo(parent_rank, parent_name))), {}, {})}
+            parent_rank = matched['rank']
+            parent_id, parent_name = matched['matches'][0]
+            info = ReportInfo(tableName=self.name, treeInfo=TreeInfo(parent_rank, parent_name), columns=matched['columns'])
+            parent_result = {'parent': UploadResult(Matched(parent_id, info), {}, {})}
 
         def to_db_col(field: str) -> str:
             field, col = model._meta.get_field(field).get_attname_column()
@@ -140,10 +142,12 @@ class BoundTreeRecord(NamedTuple):
                 **{to_db_col(c): v for r in tdiwpr.results for c, v in r.upload.items()}
             )
             obj.save(skip_tree_extras=True)
+            info = ReportInfo(tableName=self.name, columns=[pr.caption for pr in tdiwpr.results], treeInfo=TreeInfo(tdiwpr.treedefitem.name, obj.name))
+            result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
+
             parent_id = obj.id
             parent_rank = tdiwpr.treedefitem.name
             parent_name = obj.name
-            result = UploadResult(Uploaded(obj.id, info._replace(treeInfo=TreeInfo(parent_rank, parent_name)), []), parent_result, {})
             parent_result = {'parent': result}
 
         return result
@@ -169,7 +173,7 @@ class BoundTreeRecord(NamedTuple):
 
         if not items_with_presults:
             # no tree data for this row
-            return TreeMatchResult([], [])
+            return TreeMatchResult([], None)
 
         dummy: List[ParseResult] = [filter_and_upload({'name': "Uploaded"}, "")]
 
@@ -204,7 +208,7 @@ class BoundTreeRecord(NamedTuple):
             ]
 
             sql = (
-                "select t0.{table}id, d0.name, t0.name\n"
+                "select t0.{table}id, t0.name\n"
                 "from {table} t0\n"
                 "{parent_joins}\n"
                 "{definition_joins}\n"
@@ -220,9 +224,15 @@ class BoundTreeRecord(NamedTuple):
             cursor.execute(sql, params)
             result = list(cursor.fetchall())
             if result:
-                return TreeMatchResult(to_upload, result)
+                columns = [
+                    r.caption
+                    for tdiwpr in items_with_values_enforced
+                    if tdiwpr.results is not dummy
+                    for r in tdiwpr.results
+                ]
+                return TreeMatchResult(to_upload, {'matches': result, 'columns': columns, 'rank': items_with_values_enforced[0].treedefitem.name})
             else:
                 to_upload.append(items_with_values_enforced.pop(0))
 
-        return TreeMatchResult(to_upload, [])
+        return TreeMatchResult(to_upload, None)
 
