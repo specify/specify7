@@ -86,14 +86,15 @@ const WBView = Backbone.View.extend({
                     <span class="wb-header-icon"></span>
                     <span class="wb-header-name">${this.dataset.columns[col]}</span>
                 </div>`,
-            columns: this.dataset.columns.map((c, i) => ({data: i})) ,
             minSpareRows: 0,
             comments: true,
             rowHeaders: true,
             manualColumnResize: true,
+            manualColumnMove: true,
             outsideClickDeselects: false,
-            columnSorting: true,
-            sortIndicator: true,
+            // Column sorting is broken by custom headers
+            // columnSorting: true,
+            // sortIndicator: true,
             search: {
                 searchResultClass: 'wb-search-match-cell',
             },
@@ -280,7 +281,6 @@ const WBView = Backbone.View.extend({
                             `Upload completed successfully.<br>
                             You can open the 'View' menu to see a detailed breakdown of the upload results.` :
                             'Unupload completed successfully'
-                        
                 }
             </div>`).dialog({
                 title: upload_failed ?
@@ -313,7 +313,7 @@ const WBView = Backbone.View.extend({
         const cols = this.hot.countCols();
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
-            headerToCol[this.getHeaderNameFromHTML(this.hot.getColHeader(i))] = i;
+            headerToCol[this.getHeaderNameFromHTML(this.hot.getColHeader(this.hot.toVisualColumn(i)))] = i;
         }
 
         for (let i = 0; i < cols; i++) {
