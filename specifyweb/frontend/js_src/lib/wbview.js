@@ -90,7 +90,7 @@ const WBView = Backbone.View.extend({
             comments: true,
             rowHeaders: true,
             manualColumnResize: true,
-            manualColumnMove: true,
+            manualColumnMove: this.dataset.visualorder || true,
             outsideClickDeselects: false,
             // Column sorting is broken by custom headers
             // columnSorting: true,
@@ -123,6 +123,7 @@ const WBView = Backbone.View.extend({
             },
             stretchH: 'all',
             readOnly: this.uploaded,
+            afterColumnMove: this.columnMoved.bind(this),
             afterCreateRow: this.rowCreated.bind(this),
             afterRemoveRow: this.rowRemoved.bind(this),
             afterSelection: (r, c) => this.currentPos = [r,c],
@@ -156,6 +157,18 @@ const WBView = Backbone.View.extend({
             this.hot.alter('insert_row', 0);
         }
         this.spreadSheetChanged();
+    },
+    columnMoved(columns, target) {
+        const columnOrder = [];
+        for (let i = 0; i < this.hot.countCols(); i++) {
+            columnOrder.push(this.hot.toPhysicalColumn(i));
+        }
+        $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+            type: "PUT",
+            data: JSON.stringify({visualorder: columnOrder}),
+            dataType: "json",
+            processData: false
+        });
     },
     getValidationResults() {
         Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))

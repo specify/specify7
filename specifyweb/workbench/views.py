@@ -41,7 +41,7 @@ def datasets(request) -> http.HttpResponse:
         data = json.load(request)
 
         columns = data['columns']
-        if any(not isinstance(c, str) for c in columns):
+        if any(not isinstance(c, str) for c in columns) or not isinstance(columns, list):
             return http.HttpResponse(f"all column headers must be strings: {columns}", status=400)
 
         if len(set(columns)) != len(columns):
@@ -82,6 +82,10 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         if 'name' in attrs:
             ds.name = attrs['name']
 
+        if 'visualorder' in attrs:
+            ds.visualorder = attrs['visualorder']
+            assert ds.visualorder is None or (isinstance(ds.visualorder, list) and len(ds.visualorder) == len(ds.columns))
+
         if 'uploadplan' in attrs:
             plan = attrs['uploadplan']
             try:
@@ -118,6 +122,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             id=ds.id,
             name=ds.name,
             columns=ds.columns,
+            visualorder=ds.visualorder,
             rows=ds.data,
             uploadplan=ds.uploadplan,
             uploaderstatus=ds.uploaderstatus,

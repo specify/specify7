@@ -10,6 +10,7 @@ Specifyuser = getattr(spmodels, 'Specifyuser')
 class Spdataset(models.Model):
     name = models.CharField(max_length=256)
     columns = JSONField()
+    visualorder = JSONField(null=True)
     data = JSONField(default=list)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
