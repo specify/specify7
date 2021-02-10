@@ -1,6 +1,6 @@
 import logging
 
-from typing import Dict, Any, NamedTuple, List, Union
+from typing import Dict, Any, NamedTuple, List, Union, Set
 
 from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable
 from .upload_result import CellIssue, ParseFailures
@@ -17,6 +17,10 @@ class ToManyRecord(NamedTuple):
     def apply_scoping(self, collection) -> "ScopedToManyRecord":
         from .scoping import apply_scoping_to_tomanyrecord as apply_scoping
         return apply_scoping(self, collection)
+
+    def get_cols(self) -> Set[str]:
+        return set(self.wbcols.values()) \
+            | set(col for u in self.toOne.values() for col in u.get_cols())
 
     def to_json(self) -> Dict:
         result = dict(wbcols=self.wbcols, static=self.static, toOne=self.toOne)

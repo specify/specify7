@@ -1,10 +1,13 @@
-from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
+from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union, Set
 from typing_extensions import Protocol
 
 from .upload_result import UploadResult, ParseFailures
 
 class Uploadable(Protocol):
     def apply_scoping(self, collection) -> "ScopedUploadable":
+        ...
+
+    def get_cols(self) -> Set[str]:
         ...
 
     def to_json(self) -> Dict:

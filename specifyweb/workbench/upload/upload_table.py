@@ -2,7 +2,7 @@
 from functools import reduce
 
 import logging
-from typing import List, Dict, Any, NamedTuple, Union, Optional
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set
 
 from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
@@ -25,6 +25,11 @@ class UploadTable(NamedTuple):
     def apply_scoping(self, collection) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable as apply_scoping
         return apply_scoping(self, collection)
+
+    def get_cols(self) -> Set[str]:
+        return set(self.wbcols.values()) \
+            | set(col for u in self.toOne.values() for col in u.get_cols()) \
+            | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
 
     def _to_json(self) -> Dict:
         result = dict(wbcols=self.wbcols, static=self.static)

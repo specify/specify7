@@ -17,6 +17,6 @@ urlpatterns = [
     url(r'^validate_row/(?P<ds_id>\d+)/', views.validate_row),
 
     url(r'^schemas/', include([
-        url(r'^uploadplan/$', views.upload_plan_schema),
+        url(r'^uploadplan/$', views.up_schema),
     ]))
 ]

@@ -4,6 +4,7 @@ import logging
 from uuid import uuid4
 from typing import Sequence, Tuple, List
 from jsonschema import validate # type: ignore
+from jsonschema.exceptions import ValidationError # type: ignore
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
@@ -18,7 +19,7 @@ from specifyweb.specify.views import login_maybe_required, apply_access_control
 
 from . import tasks
 from . import models
-from .upload import upload as uploader
+from .upload import upload as uploader, upload_plan_schema
 
 logger = logging.getLogger(__name__)
 
@@ -82,12 +83,24 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             ds.name = attrs['name']
 
         if 'uploadplan' in attrs:
+            plan = attrs['uploadplan']
+            try:
+                validate(plan, upload_plan_schema.schema)
+            except ValidationError as e:
+                return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
+
             if ds.uploaderstatus != None:
                 return http.HttpResponse('dataset in use by uploader', status=409)
             if ds.was_uploaded():
                 return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
 
-            ds.uploadplan = attrs['uploadplan']
+            new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
+            if new_cols:
+                ds.columns += list(new_cols)
+                for row in ds.data:
+                    row += [""]*len(new_cols)
+
+            ds.uploadplan = plan
             ds.rowresults = None
             ds.uploadresult = None
 
@@ -294,6 +307,5 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     return render(request, 'validate_row.html', {'form': form.as_p()})
 
 @require_GET
-def upload_plan_schema(request) -> http.HttpResponse:
-    from .upload.upload_plan_schema import schema
-    return http.JsonResponse(schema)
+def up_schema(request) -> http.HttpResponse:
+    return http.JsonResponse(upload_plan_schema.schema)

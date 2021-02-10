@@ -5,7 +5,7 @@ For uploading tree records.
 from itertools import dropwhile
 
 import logging
-from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union
+from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 from typing_extensions import TypedDict
 
 from django.db import connection # type: ignore
@@ -27,6 +27,9 @@ class TreeRecord(NamedTuple):
     def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
+
+    def get_cols(self) -> Set[str]:
+        return set(col for r in self.ranks.values() for col in r.values())
 
     def to_json(self) -> Dict:
         result = {
