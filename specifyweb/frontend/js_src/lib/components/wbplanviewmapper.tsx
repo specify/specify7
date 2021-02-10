@@ -7,39 +7,43 @@
 
 'use strict';
 
-import $                                              from 'jquery';
+import $                                           from 'jquery';
 import {
 	mappings_tree_to_array_of_mappings,
 	array_of_mappings_to_mappings_tree,
 	traverse_tree,
 	array_to_tree, MappingsTree,
-}                                                     from '../wbplanviewtreehelper';
-import { find_duplicate_mappings }                    from '../wbplanviewhelper';
-import { MappingLine, MappingPath, MappingPathProps } from './wbplanviewcomponents';
+}                                                  from '../wbplanviewtreehelper';
+import { find_duplicate_mappings }                 from '../wbplanviewhelper';
+import {
+	MappingLine,
+	MappingPath,
+	MappingPathProps,
+}                                                  from './wbplanviewcomponents';
 import {
 	value_is_tree_rank,
 	value_is_reference_item,
 	get_max_to_many_value,
 	format_reference_item,
 	show_required_missing_fields,
-}                                                     from '../wbplanviewmodelhelper';
-import navigation                                     from '../navigation';
-import { get_mapping_line_data_from_mapping_path }    from '../wbplanviewnavigator';
-import automapper, { AutoMapperResults }              from '../automapper';
+}                                                  from '../wbplanviewmodelhelper';
+import navigation                                  from '../navigation';
+import { get_mapping_line_data_from_mapping_path } from '../wbplanviewnavigator';
+import automapper, { AutoMapperResults }           from '../automapper';
 import {
 	mappings_tree_to_upload_plan,
 	UploadPlan,
 	upload_plan_to_mappings_tree,
-}                                                     from '../wbplanviewconverter';
-import React                                          from 'react';
-import { named_component }                            from '../statemanagement';
+}                                                  from '../wbplanviewconverter';
+import React                                       from 'react';
+import { named_component }                         from '../statemanagement';
 import {
 	ChangeSelectElementValueAction,
 	LoadingState, MappingActions,
 	MappingState,
 	PublicWBPlanViewProps,
 	WBPlanViewWrapperProps,
-}                                                     from './wbplanview';
+} from './wbplanview';
 
 
 export type AutomapperScope = Readonly<'automapper' | 'suggestion'>;
@@ -73,7 +77,8 @@ export interface WBPlanViewMapperBaseProps {
 	readonly show_hidden_fields: boolean,
 	readonly show_mapping_view: boolean,
 	readonly base_table_name: string,
-	// the index that would be shown in the header name the next time the user presses `New Column`
+	// the index that would be shown in the header name the next time the user
+	// presses `New Column`
 	readonly new_header_id: number,
 	readonly mapping_view: MappingPath,
 	readonly validation_results: MappingPath[],
@@ -83,6 +88,7 @@ export interface WBPlanViewMapperBaseProps {
 	readonly automapper_suggestions?: AutomapperSuggestion[],
 	readonly autoscroll?: boolean,
 	readonly mapping_view_lines_to_display: number,
+	readonly mapping_view_resize_status: MappingViewResizeStatus,
 }
 
 export type GetMappedFieldsBind = (
@@ -94,9 +100,10 @@ export type PathIsMappedBind = (
 ) => boolean;
 
 
-const max_suggestions_count = 3;  // the maximum amount suggestions to show in the suggestions box
+// the maximum count of suggestions to show in the suggestions box
+const max_suggestions_count = 3;
 
-const MappingsControlPanel = React.memo(named_component(({
+const MappingsControlPanel = React.memo(named_component('MappingsControlPanel', ({
 	show_hidden_fields,
 	handleChange,
 	mapping_is_templated,
@@ -130,7 +137,7 @@ const MappingsControlPanel = React.memo(named_component(({
 		/>
 			Reveal hidden fields
 		</label>
-	</div>, 'MappingsControlPanel'));
+	</div>));
 
 function FormatValidationResults(props: {
 	readonly base_table_name: string,
@@ -292,7 +299,10 @@ export function get_lines_from_upload_plan(
 		headers,
 		run_automapper: false,
 	});
-	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, upload_plan);
+	const {
+		base_table_name,
+		mappings_tree,
+	} = upload_plan_to_mappings_tree(headers, upload_plan);
 	const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
 	array_of_mappings.forEach(full_mapping_path => {
 		const [
@@ -527,7 +537,8 @@ function MappingView(props: {
 			}
 		>
 			Map
-			<span className="wbplanview_mapping_view_map_button_arrow">&#8594;</span>
+			<span
+				className="wbplanview_mapping_view_map_button_arrow">&#8594;</span>
 		</button>
 	</>;
 }
@@ -572,45 +583,120 @@ export function mutate_mapping_path({
 
 }
 
-export default named_component((props: WBPlanViewMapperBaseProps & {
-	readonly mapper_dispatch: (action: MappingActions) => void,
-	readonly handleChangeMappingViewHeight: (lines_to_display: number) => void,
-	readonly handleSave: () => void,
-	readonly handleFocus: (line_index: number) => void,
-	readonly handleMappingViewMap: () => void,
-	readonly handleAddNewHeader: () => void,
-	readonly handleAddNewStaticHeader: () => void,
-	readonly handleToggleHiddenFields: () => void,
-	readonly handleAddNewColumn: () => void,
-	readonly handleAddNewStaticColumn: () => void,
-	readonly handleAutoScrollFinish: () => void,
-	readonly handleOpen: (
-		line: |number,
-		index: number,
-	) => void;
-	readonly handleClose: () => void
-	readonly handleChange: (
-		line: 'mapping_view' | number,
-		index: number,
-		new_value: string,
-		is_relationship: boolean,
-	) => void,
-	readonly handleClearMapping: (
-		index: number,
-	) => void,
-	readonly handleStaticHeaderChange: (index: number, event: React.ChangeEvent<HTMLTextAreaElement>) => void,
-	readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
-	readonly handleValidationResultClick: (mapping_path: MappingPath) => void,
-	readonly handleToggleMappingIsTemplated: () => void,
-	readonly handleToggleMappingView: () => void,
-}) => {
-	const get_mapped_fields_bind = get_mapped_fields.bind(null, props.lines);
-	const list_of_mappings = React.useRef<HTMLDivElement>(null);
+export const minMappingViewSize = 5;
+export const maxMappingViewSize = 12;
+export type MappingViewResizeStatus = false | 'begun' | 'in_progress';
 
-	//scroll down the list of mappings when the `add_new_column` or `add_new_static_column` was clicked
+function MappingViewDraggableLine({
+	onMappingViewDragStart: handleMappingViewDragStart,
+	onMappingViewDragEnd: handleMappingViewDragEnd,
+	mapping_view_resize_status,
+	mapping_view_lines_to_display,
+}: {
+	readonly mapping_view_lines_to_display: number,
+	readonly mapping_view_resize_status: MappingViewResizeStatus,
+	readonly onMappingViewDragStart: (
+		position: number,
+		height: number,
+	) => void,
+	readonly onMappingViewDragEnd: (
+		position: number,
+		height: number,
+	) => void,
+}) {
+
+	const lineRef = React.useRef<HTMLDivElement|null>(null);
+
+	return <div
+		ref={lineRef}
+		className={
+			`mapping_view_resizer ${
+				mapping_view_resize_status === false ?
+					'' :
+					'mapping_view_resizer_active'
+			}${
+				mapping_view_lines_to_display === minMappingViewSize ?
+					'mapping_view_resizer_top_limit' :
+					''
+			}${
+				mapping_view_lines_to_display === maxMappingViewSize ?
+					'mapping_view_resizer_bottom_limit' :
+					''
+			}`
+		}
+		onMouseDown={()=>handleMappingViewDragStart(
+			lineRef.current?.getBoundingClientRect().top || -1,
+			lineRef.current?.offsetHeight || -1
+		)}
+		onMouseUp={()=>handleMappingViewDragEnd(
+			lineRef.current?.getBoundingClientRect().top || -1,
+			lineRef.current?.offsetHeight || -1
+		)}
+	/>;
+}
+
+export default function WBPlanViewMapper(
+	props: WBPlanViewMapperBaseProps & {
+		readonly mapper_dispatch: (action: MappingActions) => void,
+		readonly handleSave: () => void,
+		readonly handleFocus: (line_index: number) => void,
+		readonly handleMappingViewMap: () => void,
+		readonly handleAddNewHeader: () => void,
+		readonly handleAddNewStaticHeader: () => void,
+		readonly handleToggleHiddenFields: () => void,
+		readonly handleAddNewColumn: () => void,
+		readonly handleAddNewStaticColumn: () => void,
+		readonly handleAutoScrollFinish: () => void,
+		readonly handleOpen: (
+			line: number,
+			index: number,
+		) => void;
+		readonly handleClose: () => void
+		readonly handleChange: (
+			line: 'mapping_view' | number,
+			index: number,
+			new_value: string,
+			is_relationship: boolean,
+		) => void,
+		readonly handleClearMapping: (
+			index: number,
+		) => void,
+		readonly handleStaticHeaderChange:
+			(
+				index: number,
+				event: React.ChangeEvent<HTMLTextAreaElement>,
+			) => void,
+		readonly handleAutomapperSuggestionSelection:
+			(suggestion: string) => void,
+		readonly handleValidationResultClick:
+			(mapping_path: MappingPath) => void,
+		readonly handleToggleMappingIsTemplated: () => void,
+		readonly handleToggleMappingView: () => void,
+		readonly handleChangeMappingViewHeight:
+			(lines_to_display: number) => void,
+		readonly handleMappingViewDragStart: (
+			position: number,
+			height: number
+		)=>void,
+		readonly handleMappingViewDragEnd: (
+			position: number,
+			height: number
+		)=>void,
+	}):JSX.Element {
+	const get_mapped_fields_bind = get_mapped_fields.bind(
+		null,
+		props.lines,
+	);
+	const list_of_mappings = React.useRef<HTMLDivElement>(
+		null,
+	);
+
+	// scroll down the list of mappings when the `add_new_column` or
+	// `add_new_static_column` was clicked
 	React.useEffect(() => {
 		if (props.autoscroll && list_of_mappings.current) {
-			list_of_mappings.current.scrollTop = list_of_mappings.current.scrollHeight;
+			list_of_mappings.current.scrollTop =
+				list_of_mappings.current.scrollHeight;
 			props.handleAutoScrollFinish();
 		}
 	});
@@ -619,7 +705,8 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 		{
 			<>
 				{
-					props.show_mapping_view && <div className="mapping_view_parent">
+					props.show_mapping_view &&
+					<div className="mapping_view_parent">
 						<div
 							className="mapping_view_container"
 							style={{'--lines_to_display': props.mapping_view_lines_to_display} as React.CSSProperties}
@@ -648,35 +735,20 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 						</div>
 					</div>
 				}
-				<div className='mapping_view_resizer'>
-					<button
-						onClick={
-							props.mapping_view_lines_to_display > 5 ?
-								() =>
-									props.handleChangeMappingViewHeight(
-										props.mapping_view_lines_to_display - 1,
-									) :
-								undefined
-						}
-						disabled={props.mapping_view_lines_to_display <= 5}
-					>&#9650;</button>
-					<button onClick={props.handleToggleMappingView}>{
-						props.show_mapping_view ?
-							'\u25EF' :
-							'\u2B24'
-					}</button>
-					<button
-						onClick={
-							props.mapping_view_lines_to_display < 12 ?
-								() =>
-									props.handleChangeMappingViewHeight(
-										props.mapping_view_lines_to_display + 1,
-									) :
-								undefined
-						}
-						disabled={props.mapping_view_lines_to_display >= 12}
-					>&#9660;</button>
-				</div>
+				<MappingViewDraggableLine
+					onMappingViewDragStart={
+						props.handleMappingViewDragStart
+					}
+					onMappingViewDragEnd={
+						props.handleMappingViewDragEnd
+					}
+					mapping_view_resize_status={
+						props.mapping_view_resize_status
+					}
+					mapping_view_lines_to_display={
+						props.mapping_view_lines_to_display
+					}
+				/>
 			</>
 		}
 
@@ -723,4 +795,4 @@ export default named_component((props: WBPlanViewMapperBaseProps & {
 		/>
 	</>;
 
-}, 'WBPlanViewMappingState');
+}
