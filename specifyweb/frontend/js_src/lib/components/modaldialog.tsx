@@ -1,6 +1,7 @@
 /*
 *
-* A React wrapper for jQuery's dialog. Also has a jQuery's dialog with a loading bar inside it
+* A React wrapper for jQuery's dialog. Also has a jQuery's dialog with
+* a loading bar inside it
 *
 * */
 
@@ -29,7 +30,11 @@ function ModalDialogContent({
 	</>;
 }
 
-function close_dialog($dialog: JQuery<HTMLElement>, resize: () => void, onCloseCallback?: () => void) {
+function close_dialog(
+	$dialog: JQuery<HTMLElement>,
+	resize: () => void,
+	onCloseCallback?: () => void,
+) {
 	if (!$dialog.is(':ui-dialog'))
 		return;
 	ReactDOM.unmountComponentAtNode($dialog[0]);
@@ -38,28 +43,42 @@ function close_dialog($dialog: JQuery<HTMLElement>, resize: () => void, onCloseC
 	onCloseCallback?.();
 }
 
-export const ModalDialog = React.memo(named_component(({
+export const ModalDialog = React.memo(named_component('ModalDialog', ({
 	onCloseCallback,
 	properties,
 	onLoadCallback,
 	children,
 }: ModalDialogBaseProps & {
-	readonly onLoadCallback?: (dialog: JQuery<HTMLElement>) => void | (() => void),
+	readonly onLoadCallback?: (dialog: JQuery<HTMLElement>) =>
+		void | (() => void),
 	readonly onCloseCallback?: () => void
 	readonly properties?: Readonly<Record<string, unknown>>,
 }) => {
 
 	const dialog_ref = React.useRef<HTMLDivElement>(null);
-	const [$dialog, setDialog] = React.useState<JQuery<HTMLElement> | undefined>();
+	const [$dialog, setDialog] = React.
+		useState<JQuery<HTMLElement> | undefined>();
 
 	React.useEffect(() => {
 		if (dialog_ref.current === null)
 			return;
 
-		const dialog_element = $(dialog_ref.current.children[0] as HTMLElement);
-		const resize = () => dialog_element.dialog('option', 'position', 'center');
+		const dialog_element = $(
+			dialog_ref.current.children[0] as HTMLElement
+		);
+		const resize = () =>
+			dialog_element.dialog(
+				'option',
+				'position',
+				'center'
+			);
 
-		const close_dialog_bind = () => close_dialog(dialog_element, resize, onCloseCallback);
+		const close_dialog_bind = () =>
+			close_dialog(
+				dialog_element,
+				resize,
+				onCloseCallback
+			);
 
 		dialog_element.dialog({
 			modal: true,
@@ -67,7 +86,7 @@ export const ModalDialog = React.memo(named_component(({
 			close: close_dialog_bind,
 			buttons: [
 				{
-					text: 'Cancel', click: close_dialog_bind,
+					text: 'Close', click: close_dialog_bind,
 				},
 			],
 			...properties,
@@ -87,7 +106,10 @@ export const ModalDialog = React.memo(named_component(({
 
 		ReactDOM.render(
 			<ModalDialogContent
-				onLoadCallback={onLoadCallback && onLoadCallback.bind(null, $dialog)}
+				onLoadCallback={
+					onLoadCallback &&
+					onLoadCallback.bind(null, $dialog)
+				}
 			>
 				{children}
 			</ModalDialogContent>,
@@ -98,16 +120,15 @@ export const ModalDialog = React.memo(named_component(({
 	return <div ref={dialog_ref}>
 		<div />
 	</div>;
-}, 'ModalDialog'));
+}));
 
 
 //Loading Screen
-function handleOnLoad(dialog: JQuery<HTMLElement>) {
-	$('.progress-bar', dialog).progressbar({value: false});
-}
+const handleOnLoad = (dialog: JQuery<HTMLElement>)=>
+	void($('.progress-bar', dialog).progressbar({value: false}));
 
-export const LoadingScreen = named_component(() =>
-	<ModalDialog
+export function LoadingScreen():JSX.Element {
+	return <ModalDialog
 		onLoadCallback={handleOnLoad}
 		properties={{
 			modal: false,
@@ -117,4 +138,5 @@ export const LoadingScreen = named_component(() =>
 		}}
 	>
 		<div className="progress-bar" />
-	</ModalDialog>, 'LoadingScreen');
+	</ModalDialog>
+}

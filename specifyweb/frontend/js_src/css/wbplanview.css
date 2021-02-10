@@ -112,14 +112,16 @@
 
 .mapping_view_resizer {
 	margin-bottom: calc(var(--white_space) * -1);
-	display: flex;
-	justify-content: center;
-	align-items: baseline;
+	height: var(--white_space);
+	cursor: pointer;
+	border: 1px solid var(--b2);
+	border-left: 0;
+	border-right: 0;
+	box-sizing: border-box;
 }
 
-.mapping_view_resizer > :not(:nth-child(2)) {
-	height: -moz-fit-content;
-	height: fit-content;
+.mapping_view_resizer:hover {
+	border-color: var(--b4);
 }
 
 

@@ -243,10 +243,10 @@ export default class Automapper {
 		find_mappings_queue: generate_dispatch<AutomapperFindMappingsQueueActions>({
 			'reset': ({initial_value}) => {
 				typeof initial_value === 'undefined' ?
-					this.find_mappings_queue = [] :
-					this.find_mappings_queue = [[
+					(this.find_mappings_queue = []) :
+					(this.find_mappings_queue = [[
 						initial_value,
-					]];
+					]]);
 			},
 			'initialize_level': ({level}) => {
 				this.find_mappings_queue[level] ??= [];

@@ -58,7 +58,7 @@ export type MappingElementProps = (
 
 
 /* Generates a list of tables */
-export const ListOfBaseTables = React.memo(named_component(({
+export const ListOfBaseTables = React.memo(named_component('ListOfBaseTables', ({
 	list_of_tables,
 	handleChange,
 	show_hidden_tables,
@@ -98,10 +98,10 @@ export const ListOfBaseTables = React.memo(named_component(({
 		}
 		custom_select_type='base_table_selection_list'
 		custom_select_subtype='simple'
-	/>, 'ListOfBaseTables'));
+	/>));
 
 /* Generates a mapping line */
-export const MappingLine = named_component(({
+export function MappingLine({
 	line_data,
 	mapping_type,
 	header_name,
@@ -116,8 +116,8 @@ export const MappingLine = named_component(({
 	readonly mapping_type: 'new_static_column',
 	readonly handleStaticHeaderChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
 }
-	)) =>
-	<div
+	)):JSX.Element {
+	return <div
 		className={`wbplanview_mapping_line ${is_focused ? 'wbplanview_mapping_line_focused' : ''}`}
 		onClick={handleFocus}
 	>
@@ -136,20 +136,22 @@ export const MappingLine = named_component(({
 		<div className="wbplanview_mapping_line_elements">
 			<MappingPath mapping_line_data={line_data} />
 		</div>
-	</div>, 'MappingLine');
+	</div>;
+}
 
 /* Generates a mapping path */
-export const MappingPath = named_component(({
+export function MappingPath({
 	mapping_line_data,
-}: MappingPathProps) =>
-	<>
+}: MappingPathProps):JSX.Element {
+	return <>
 		{mapping_line_data.map((mapping_details, index) =>
 			<React.Fragment key={index}>
 				<MappingElement {...mapping_details} />
 				{index + 1 !== mapping_line_data.length && MappingElementDivider}
 			</React.Fragment>,
 		)}
-	</>, 'MappingPath');
+	</>;
+}
 
 const field_group_labels: {[key: string]: string} = {
 	required_fields: 'Required Fields',
@@ -273,11 +275,15 @@ function MappingElement(
 }
 
 /* Return a textarea with a given value for a new static header */
-const StaticHeader = named_component(({
+function StaticHeader ({
 	default_value = '',
 	onChange: handleChange,
 }: {
 	default_value: string,
 	onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
-}) =>
-	<textarea value={default_value} onChange={handleChange} />, 'StaticHeader');
+}):JSX.Element {
+	return <textarea
+		value={default_value}
+		onChange={handleChange}
+	/>;
+}

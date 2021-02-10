@@ -129,13 +129,13 @@ interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase 
 }
 
 
-const Icon = named_component(({
+function Icon({
 	is_relationship = false,
 	is_preview = false,
 	is_enabled = true,
 	table_name = '',
 	option_label = '0',
-}: CustomSelectElementIconProps) => {
+}: CustomSelectElementIconProps){
 
 	const not_relationship = !is_relationship;
 
@@ -168,10 +168,10 @@ const Icon = named_component(({
 	>
 		{table_sub_name.toUpperCase()}
 	</span>;
-}, 'Icon');
+}
 
 /* Generates a single option line */
-const Option = React.memo(named_component(({
+const Option = React.memo(named_component('Option',({
 	option_label,
 	is_enabled = true,
 	is_relationship = false,
@@ -207,19 +207,21 @@ const Option = React.memo(named_component(({
 		{option_label !== '0' && <span className="custom_select_option_label">{option_label}</span>}
 		{is_relationship && <span className="custom_select_option_relationship">&#9654;</span>}
 	</span>;
-}, 'Option'));
+}));
 
 /* Generates a group of options */
-const OptionGroup = named_component(({
+function OptionGroup({
 	select_group_name,
 	select_group_label,
 	select_options_data,
 	handleClick,
-}: CustomSelectElementOptionGroupProps) =>
-	<span className={`custom_select_group custom_select_group_${select_group_name || 'undefined'}`}>
+}: CustomSelectElementOptionGroupProps) {
+	return <span
+		className={`custom_select_group custom_select_group_${select_group_name || 'undefined'}`}>
 		{
 			typeof select_group_label !== 'undefined' &&
-			<span className="custom_select_group_label">{select_group_label}</span>
+			<span
+				className="custom_select_group_label">{select_group_label}</span>
 		}
 		{Object.entries(select_options_data).map(([option_name, selection_option_data]) => {
 			return <Option
@@ -237,16 +239,17 @@ const OptionGroup = named_component(({
 				{...selection_option_data}
 			/>;
 		})}
-	</span>, 'OptionGroup');
+	</span>
+}
 
-const ShadowListOfOptions = React.memo(named_component(({field_names}: {
+const ShadowListOfOptions = React.memo(named_component('ShadowListOfOptions',({field_names}: {
 	readonly field_names: string[],
 }) =>
 	<span className="custom_select_element_shadow_list">{
 		field_names.map((field_name, index) =>
 			<span key={index}>{field_name}</span>,
 		)
-	}</span>, 'ShadowListOfOptions'));
+	}</span>));
 
 const intractable_select_types: CustomSelectType[] = ['preview_list', 'suggestion_line_list'];
 const select_types_with_headers: CustomSelectType[] = ['opened_list', 'base_table_selection_list'];
@@ -410,15 +413,15 @@ export function CustomSelectElement(
 }
 
 /* Generates a suggestion box */
-export const SuggestionBox = named_component(({
+export function SuggestionBox({
 	select_options_data,
 	handleAutomapperSuggestionSelection,
 	...props
 }: Partial<CustomSelectElementPropsOpen> & {
 	readonly select_options_data: CustomSelectElementOptions,
 	readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
-}) =>
-	<CustomSelectElement
+}):JSX.Element {
+	return <CustomSelectElement
 		custom_select_type='suggestion_list'
 		custom_select_subtype='simple'
 		custom_select_option_groups={{
@@ -430,4 +433,5 @@ export const SuggestionBox = named_component(({
 		is_open={true}
 		handleChange={handleAutomapperSuggestionSelection}
 		{...props}
-	/>, 'SuggestionBox');
+	/>
+}
