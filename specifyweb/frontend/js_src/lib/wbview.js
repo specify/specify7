@@ -40,6 +40,7 @@ const WBView = Backbone.View.extend({
     },
     initialize({dataset, showStatusDialog}) {
         this.dataset = dataset;
+        this.mappedHeaders = [];
         this.data = dataset.rows;
         if (this.data.length < 1)
             this.data.push(Array(this.dataset.columns.length).fill(null));
@@ -215,6 +216,8 @@ const WBView = Backbone.View.extend({
                     }`
                 ).join('\n')
             }`;
+
+            this.mappedHeaders = Object.keys(mappedHeadersAndTables);
 
         }
         else
@@ -418,8 +421,15 @@ const WBView = Backbone.View.extend({
         navigation.addUnloadProtect(this, "The workbench has not been saved.");
     },
     startValidation(changes) {
-        if (this.dataset.uploadplan && changes) {
-            changes.forEach(([row]) => {
+        if (
+            this.dataset.uploadplan &&
+            changes
+        ) {
+            changes.filter(([,column])=>  // ignore changes to unmapped columns
+                this.mappedHeaders.indexOf(
+                    this.dataset.columns[column]
+                ) !== -1
+            ).forEach(([row]) => {
                 const rowData = this.hot.getDataAtRow(row);
                 const data = Object.fromEntries(rowData.map((value, i) =>
                     [this.getHeaderNameFromHTML(this.hot.getColHeader(i)), value]
