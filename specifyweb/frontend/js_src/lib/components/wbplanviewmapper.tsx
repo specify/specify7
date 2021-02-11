@@ -41,7 +41,7 @@ import {
 	ChangeSelectElementValueAction,
 	LoadingState, MappingActions,
 	MappingState,
-	PublicWBPlanViewProps,
+	PublicWBPlanViewProps, RefMappingState,
 	WBPlanViewWrapperProps,
 } from './wbplanview';
 
@@ -87,8 +87,6 @@ export interface WBPlanViewMapperBaseProps {
 	readonly focused_line?: number,
 	readonly automapper_suggestions?: AutomapperSuggestion[],
 	readonly autoscroll?: boolean,
-	readonly mapping_view_lines_to_display: number,
-	readonly mapping_view_resize_status: MappingViewResizeStatus,
 }
 
 export type GetMappedFieldsBind = (
@@ -176,17 +174,6 @@ function FormatValidationResults(props: {
 
 export const go_back = (props: PublicWBPlanViewProps): void =>
 	navigation.go(`/workbench/${props.dataset.id}/`);
-
-
-// export const go_back = ( props: PublicWBPlanViewProps): LoadingState => (
-// 	{
-// 		type: 'LoadingState',
-// 		loading_state: {
-// 			type: 'NavigateBackState',
-// 			wb: props.wb,
-// 		},
-// 	}
-// );
 
 export function save_plan(
 	props: WBPlanViewWrapperProps,
@@ -583,61 +570,14 @@ export function mutate_mapping_path({
 
 }
 
-export const minMappingViewSize = 5;
-export const maxMappingViewSize = 12;
-export type MappingViewResizeStatus = false | 'begun' | 'in_progress';
+export const defaultMappingViewHeight = 300;
+export const minMappingViewHeight = 250;
 
-function MappingViewDraggableLine({
-	onMappingViewDragStart: handleMappingViewDragStart,
-	onMappingViewDragEnd: handleMappingViewDragEnd,
-	mapping_view_resize_status,
-	mapping_view_lines_to_display,
-}: {
-	readonly mapping_view_lines_to_display: number,
-	readonly mapping_view_resize_status: MappingViewResizeStatus,
-	readonly onMappingViewDragStart: (
-		position: number,
-		height: number,
-	) => void,
-	readonly onMappingViewDragEnd: (
-		position: number,
-		height: number,
-	) => void,
-}) {
-
-	const lineRef = React.useRef<HTMLDivElement|null>(null);
-
-	return <div
-		ref={lineRef}
-		className={
-			`mapping_view_resizer ${
-				mapping_view_resize_status === false ?
-					'' :
-					'mapping_view_resizer_active'
-			}${
-				mapping_view_lines_to_display === minMappingViewSize ?
-					'mapping_view_resizer_top_limit' :
-					''
-			}${
-				mapping_view_lines_to_display === maxMappingViewSize ?
-					'mapping_view_resizer_bottom_limit' :
-					''
-			}`
-		}
-		onMouseDown={()=>handleMappingViewDragStart(
-			lineRef.current?.getBoundingClientRect().top || -1,
-			lineRef.current?.offsetHeight || -1
-		)}
-		onMouseUp={()=>handleMappingViewDragEnd(
-			lineRef.current?.getBoundingClientRect().top || -1,
-			lineRef.current?.offsetHeight || -1
-		)}
-	/>;
-}
 
 export default function WBPlanViewMapper(
 	props: WBPlanViewMapperBaseProps & {
 		readonly mapper_dispatch: (action: MappingActions) => void,
+		readonly refObject: React.MutableRefObject<Partial<RefMappingState>>
 		readonly handleSave: () => void,
 		readonly handleFocus: (line_index: number) => void,
 		readonly handleMappingViewMap: () => void,
@@ -672,17 +612,8 @@ export default function WBPlanViewMapper(
 			(mapping_path: MappingPath) => void,
 		readonly handleToggleMappingIsTemplated: () => void,
 		readonly handleToggleMappingView: () => void,
-		readonly handleChangeMappingViewHeight:
-			(lines_to_display: number) => void,
-		readonly handleMappingViewDragStart: (
-			position: number,
-			height: number
-		)=>void,
-		readonly handleMappingViewDragEnd: (
-			position: number,
-			height: number
-		)=>void,
-	}):JSX.Element {
+		readonly handleMappingViewResize: (height: number) => void,
+	}): JSX.Element {
 	const get_mapped_fields_bind = get_mapped_fields.bind(
 		null,
 		props.lines,
@@ -699,57 +630,83 @@ export default function WBPlanViewMapper(
 				list_of_mappings.current.scrollHeight;
 			props.handleAutoScrollFinish();
 		}
-	});
+	},[props.autoscroll, list_of_mappings.current]);
+
+	const mappingViewParentRef = React.useRef<HTMLDivElement|null>(null);
+
+	// resize event listener for the mapping view
+	React.useEffect(() => {
+
+		if(
+			// @ts-ignore
+			typeof ResizeObserver === 'undefined' ||
+			mappingViewParentRef === null ||
+			!mappingViewParentRef.current
+		)
+			return;
+
+		const resizeObserer =
+			// @ts-ignore
+			new ResizeObserver(()=>
+				mappingViewParentRef.current &&
+				props.handleMappingViewResize(
+					mappingViewParentRef.current.clientHeight
+				)
+			);
+
+		resizeObserer.observe(mappingViewParentRef.current);
+
+		return () =>
+			resizeObserer.disconnect();
+	}, [mappingViewParentRef.current]);
 
 	return <>
 		{
-			<>
-				{
-					props.show_mapping_view &&
-					<div className="mapping_view_parent">
-						<div
-							className="mapping_view_container"
-							style={{'--lines_to_display': props.mapping_view_lines_to_display} as React.CSSProperties}
-						>
-							<FormatValidationResults
-								base_table_name={props.base_table_name}
-								validation_results={props.validation_results}
-								handleSave={props.handleSave}
-								get_mapped_fields={get_mapped_fields_bind}
-								onValidationResultClick={props.handleValidationResultClick}
-							/>
-							<MappingView
-								base_table_name={props.base_table_name}
-								focused_line_exists={typeof props.focused_line !== 'undefined'}
-								mapping_path={props.mapping_view}
-								show_hidden_fields={props.show_hidden_fields}
-								map_button_is_enabled={
-									typeof props.focused_line !== 'undefined' &&
-									mapping_path_is_complete(props.mapping_view)
-								}
-								handleMapButtonClick={props.handleMappingViewMap}
-								handleMappingViewChange={props.handleChange.bind(null, 'mapping_view')}
-								get_mapped_fields={get_mapped_fields_bind}
-								automapper_suggestions={props.automapper_suggestions}
-							/>
-						</div>
-					</div>
-				}
-				<MappingViewDraggableLine
-					onMappingViewDragStart={
-						props.handleMappingViewDragStart
-					}
-					onMappingViewDragEnd={
-						props.handleMappingViewDragEnd
-					}
-					mapping_view_resize_status={
-						props.mapping_view_resize_status
-					}
-					mapping_view_lines_to_display={
-						props.mapping_view_lines_to_display
-					}
-				/>
-			</>
+			props.show_mapping_view &&
+			<div
+				className="mapping_view_parent"
+				style={{
+					'minHeight': minMappingViewHeight,
+					'--original_height':
+						`${
+							props.refObject.current.mapping_view_height
+						}px`
+				} as React.CSSProperties}
+				ref={mappingViewParentRef}
+			>
+				<div
+					className="mapping_view_container"
+				>
+					<FormatValidationResults
+						base_table_name={props.base_table_name}
+						validation_results={props.validation_results}
+						handleSave={props.handleSave}
+						get_mapped_fields={get_mapped_fields_bind}
+						onValidationResultClick={
+							props.handleValidationResultClick
+						}
+					/>
+					<MappingView
+						base_table_name={props.base_table_name}
+						focused_line_exists={
+							typeof props.focused_line !== 'undefined'
+						}
+						mapping_path={props.mapping_view}
+						show_hidden_fields={props.show_hidden_fields}
+						map_button_is_enabled={
+							typeof props.focused_line !== 'undefined' &&
+							mapping_path_is_complete(props.mapping_view)
+						}
+						handleMapButtonClick={props.handleMappingViewMap}
+						handleMappingViewChange={props.handleChange.bind(
+							null,
+							'mapping_view'
+						)}
+						get_mapped_fields={get_mapped_fields_bind}
+						automapper_suggestions={props.automapper_suggestions}
+					/>
+				</div>
+			</div>
 		}
 
 		<div className="list__mappings" ref={list_of_mappings}>{

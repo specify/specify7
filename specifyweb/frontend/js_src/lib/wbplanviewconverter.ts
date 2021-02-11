@@ -456,13 +456,10 @@ const mappings_tree_to_upload_table = (
 			),
 		},
 	} :
-	{
-		uploadTable:
-			mappings_tree_to_upload_plan_table(
-				mappings_tree,
-				table_name,
-			) as unknown as UploadPlanUploadTableTable,
-	};
+	mappings_tree_to_upload_plan_table(
+		mappings_tree,
+		table_name,
+	) as UploadPlanUploadable;
 
 /*
 * Converts mappings tree to upload plan

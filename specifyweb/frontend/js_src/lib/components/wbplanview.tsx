@@ -26,8 +26,7 @@ import WBPlanViewMapper, {
 	save_plan,
 	SelectElementPosition,
 	validate,
-	WBPlanViewMapperBaseProps,
-	MappingViewResizeStatus, minMappingViewSize, maxMappingViewSize,
+	WBPlanViewMapperBaseProps, defaultMappingViewHeight, minMappingViewHeight,
 } from './wbplanviewmapper';
 import {
 	LoadingScreen,
@@ -116,7 +115,6 @@ export interface MappingState extends State<'MappingState'>,
 	readonly automapper_suggestions_promise?:
 		Promise<AutomapperSuggestion[]>,
 	readonly changes_made: boolean,
-	readonly mapping_view_resize_status: MappingViewResizeStatus
 }
 
 type WBPlanViewStates =
@@ -250,16 +248,6 @@ interface ValidationResultClickAction
 	readonly mapping_path: MappingPath,
 }
 
-interface ChangeMappingViewHeightAction
-	extends Action<'ChangeMappingViewHeightAction'> {
-	readonly lines_to_display: number,
-}
-
-interface ChangeMappingViewResizeAction
-	extends Action<'ChangeMappingViewResizeAction'> {
-	readonly mapping_view_resize_status: MappingViewResizeStatus,
-}
-
 export type MappingActions =
 	OpenMappingScreenAction
 	| SavePlanAction
@@ -281,8 +269,6 @@ export type MappingActions =
 	| AutomapperSuggestionSelectedAction
 	| StaticHeaderChangeAction
 	| ValidationResultClickAction
-	| ChangeMappingViewHeightAction
-	| ChangeMappingViewResizeAction;
 
 type WBPlanViewActions =
 	BaseTableSelectionActions
@@ -302,11 +288,13 @@ interface WBPlanViewHeaderBaseProps {
 interface WBPlanViewHeaderPropsMapping extends WBPlanViewHeaderBaseProps {
 	readonly state_type: 'MappingState',
 	readonly mapping_is_templated: boolean,
+	readonly show_mapping_view: boolean,
 	readonly handleTableChange: () => void,
 	readonly handleToggleMappingIsTemplated: () => void,
 	readonly handleClearMapping: () => void,
 	readonly handleValidation: () => void,
 	readonly handleSave: () => void,
+	readonly handleShowMappingView: () => void,
 }
 
 interface WBPlanViewHeaderPropsNonMapping extends WBPlanViewHeaderBaseProps {
@@ -377,8 +365,16 @@ function WBPlanViewHeaderRightMappingElements({
 	handleValidation,
 	handleSave,
 	handleCancel,
+	handleShowMappingView,
+	show_mapping_view,
 }: WBPlanViewHeaderPropsMapping): JSX.Element {
 	return <>
+		{
+			!show_mapping_view &&
+			<button
+				onClick={handleShowMappingView}
+			>Show mapping view</button>
+		}
 		<button onClick={handleClearMapping}>Clear Mappings</button>
 		<button onClick={handleValidation}>Check mappings</button>
 		<button onClick={handleSave}>Save</button>
@@ -529,12 +525,12 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 						default_value: true,
 					},
 				),
-			mapping_view_lines_to_display:
+			mapping_view_height:
 				cache.get(
 					'ui',
-					'mapping_view_lines_to_display',
+					'mapping_view_height',
 					{
-						default_value: 8,
+						default_value: defaultMappingViewHeight,
 					},
 				),
 			base_table_name: action.table_name,
@@ -632,12 +628,12 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					default_value: true,
 				},
 			),
-			mapping_view_lines_to_display:
+			mapping_view_height:
 				cache.get(
 					'ui',
-					'mapping_view_lines_to_display',
+					'mapping_view_height',
 					{
-						default_value: 8,
+						default_value: defaultMappingViewHeight,
 					},
 				),
 			mapping_view: ['0'],
@@ -928,30 +924,6 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			mapping_view: mapping_path,
 		}
 	),
-	'ChangeMappingViewHeightAction': ({
-		state,
-		action: {lines_to_display},
-	}) => (
-		{
-			...mapping_state(state),
-			show_mapping_view: true,
-			mapping_view_lines_to_display: cache.set(
-				'ui',
-				'mapping_view_lines_to_display',
-				lines_to_display,
-				{
-					overwrite: true,
-				},
-			),
-		}
-	),
-	'ChangeMappingViewResizeAction': ({
-		state,
-		action: {mapping_view_resize_status}
-	})=>({
-		...mapping_state(state),
-		mapping_view_resize_status
-	})
 });
 
 const loading_state_dispatch = generate_dispatch<LoadingStates>({
@@ -1072,6 +1044,20 @@ const state_reducer = generate_reducer<JSX.Element,
 			)
 		}</ModalDialog>,
 	'MappingState': ({action: state}) => {
+		const refObject = getRefMappingState(
+			state.refObject,
+			state,
+		);
+
+		if(typeof refObject.current.mapping_view_height === 'undefined')
+			refObject.current.mapping_view_height = cache.get(
+				'ui',
+				'mapping_view_height',
+				{
+					default_value: defaultMappingViewHeight,
+				}
+			);
+
 		const handleSave = (ignore_validation: boolean) =>
 			state.dispatch({
 					type: 'SavePlanAction',
@@ -1085,10 +1071,6 @@ const state_reducer = generate_reducer<JSX.Element,
 		const handleClose = () => state.dispatch({
 			type: 'CloseSelectElementAction',
 		});
-		const refObject = getRefMappingState(
-			state.refObject,
-			state,
-		);
 		return <HeaderWrapper
 			state_name={state.type}
 			header={
@@ -1099,6 +1081,8 @@ const state_reducer = generate_reducer<JSX.Element,
 							].table_friendly_name
 					}
 					state_type={state.type}
+					mapping_is_templated={state.mapping_is_templated}
+					show_mapping_view={state.show_mapping_view}
 					handleCancel={() => state.dispatch({
 						type: 'CancelMappingAction',
 						dataset: state.props.dataset,
@@ -1119,68 +1103,14 @@ const state_reducer = generate_reducer<JSX.Element,
 							type: 'ToggleMappingIsTemplatedAction',
 						})
 					}
-					mapping_is_templated={state.mapping_is_templated}
+					handleShowMappingView={() =>
+						state.dispatch({
+							type: 'ToggleMappingViewAction',
+						})
+					}
 				/>
 			}
 			handleClick={handleClose}
-			extraContainerProps={
-				state.mapping_view_resize_status === false ?
-					{} :
-					{
-						onMouseMove: (event:MouseEvent) => {
-							if (
-								refObject.current.mapping_view_resize_processed
-							)
-								return;
-
-							refObject.current.mapping_view_resize_processed =
-								false;
-
-							const rem_size = parseFloat(
-								getComputedStyle(
-									document.documentElement
-								).fontSize
-							);
-
-							const line_height = rem_size*2;
-
-							const {
-								mapping_view_draggable_line_position,
-							} = refObject.current;
-
-							if(
-								mapping_view_draggable_line_position -
-								line_height >
-								event.clientY &&
-								state.mapping_view_lines_to_display-1 >=
-								minMappingViewSize
-							)
-								state.dispatch({
-									type: 'ChangeMappingViewHeightAction',
-									lines_to_display:
-										state.mapping_view_lines_to_display-1,
-								});
-
-							if(
-								mapping_view_draggable_line_position +
-								line_height <
-								event.clientY &&
-								state.mapping_view_lines_to_display+1 <=
-								maxMappingViewSize
-							)
-								state.dispatch({
-									type: 'ChangeMappingViewHeightAction',
-									lines_to_display:
-										state.mapping_view_lines_to_display+1,
-								});
-
-							setTimeout(() => (
-								refObject.current.mapping_view_resize_processed =
-									true
-							), 100);
-						},
-					}
-			}
 		>
 			<WBPlanViewMapper
 				mapping_is_templated={state.mapping_is_templated}
@@ -1196,12 +1126,7 @@ const state_reducer = generate_reducer<JSX.Element,
 				automapper_suggestions={state.automapper_suggestions}
 				focused_line={state.focused_line}
 				autoscroll={state.autoscroll}
-				mapping_view_lines_to_display={
-					state.mapping_view_lines_to_display
-				}
-				mapping_view_resize_status={
-					state.mapping_view_resize_status
-				}
+				refObject={refObject}
 				handleSave={() => handleSave(true)}
 				handleToggleHiddenFields={() =>
 					state.dispatch({type: 'ToggleHiddenFieldsAction'})
@@ -1280,33 +1205,13 @@ const state_reducer = generate_reducer<JSX.Element,
 						type: 'ToggleMappingIsTemplatedAction',
 					})
 				}
-				handleChangeMappingViewHeight={(lines_to_display: number) =>
-					state.dispatch({
-						type: 'ChangeMappingViewHeightAction',
-						lines_to_display,
-					})
-				}
 				handleToggleMappingView={() =>
 					state.dispatch({type: 'ToggleMappingViewAction'})
 				}
-				handleMappingViewDragStart={(
-					position: number,
-					height: number,
-				) =>
+				handleMappingViewResize={(height) =>
 					state.refObjectDispatch({
-						type: 'RefMappingViewDragStartAction',
-						position,
-						height,
-					})
-				}
-				handleMappingViewDragEnd={(
-					position: number,
-					height,
-				) =>
-					state.refObjectDispatch({
-						type: 'RefMappingViewDragEndAction',
-						position,
-						height,
+						type: 'MappingViewResizeAction',
+						height
 					})
 				}
 			/>
@@ -1317,11 +1222,10 @@ const state_reducer = generate_reducer<JSX.Element,
 
 type RefUndefinedState = State<'RefUndefinedState'>;
 
-interface RefMappingState extends State<'RefMappingState'> {
-	mapping_view_resize_processed: boolean,
+export interface RefMappingState extends State<'RefMappingState'> {
 	unload_protect_is_set: boolean,
-	mapping_view_draggable_line_position: number,
-	mapping_view_draggable_line_height: number,
+	mapping_view_height: number,
+	mapping_view_height_change_timeout: NodeJS.Timeout
 }
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
@@ -1345,15 +1249,8 @@ type RefChangeStateAction = Action<'RefChangeStateAction'>;
 type RefSetUnloadProtectAction = Action<'RefSetUnloadProtectAction'>;
 type RefUnsetUnloadProtectAction = Action<'RefUnsetUnloadProtectAction'>;
 
-interface RefMappingViewDragStartAction
-	extends Action<'RefMappingViewDragStartAction'> {
-	position: number;
-	height: number;
-}
-
-interface RefMappingViewDragEndAction
-	extends Action<'RefMappingViewDragEndAction'> {
-	position: number;
+interface MappingViewResizeAction
+	extends Action<'MappingViewResizeAction'> {
 	height: number;
 }
 
@@ -1361,8 +1258,7 @@ type RefActions =
 	RefChangeStateAction
 	| RefSetUnloadProtectAction
 	| RefUnsetUnloadProtectAction
-	| RefMappingViewDragStartAction
-	| RefMappingViewDragEndAction;
+	| MappingViewResizeAction;
 
 type RefActionsWithPayload = RefActions & {
 	payload: {
@@ -1428,59 +1324,47 @@ const ref_object_dispatch = generate_dispatch<RefActionsWithPayload>({
 			state,
 		).current.unload_protect_is_set = false;
 	},
-	'RefMappingViewDragStartAction': ({
-		position,
-		height,
+	'MappingViewResizeAction': ({
+		height: initialHeight,
 		payload: {
 			refObject,
 			state,
-			stateDispatch,
+			stateDispatch
 		},
 	}) => {
-		const refMappingState = getRefMappingState(
+		const refMappingObject = getRefMappingState(
 			refObject,
 			state,
 		);
 
-		refMappingState.current.mapping_view_draggable_line_position =
-			position;
-		refMappingState.current.mapping_view_draggable_line_height =
-			height;
-		stateDispatch({
-			type: 'ChangeMappingViewResizeAction',
-			mapping_view_resize_status: 'begun',
-		});
-	},
-	'RefMappingViewDragEndAction': ({
-		position,
-		height,
-		payload: {
-			refObject,
-			state,
-			stateDispatch,
-		},
-	}) => {
-		const refMappingState = getRefMappingState(
-			refObject,
-			state,
-		);
+		if (refMappingObject.current.mapping_view_height_change_timeout)
+			clearTimeout(
+				refMappingObject.current.mapping_view_height_change_timeout,
+			);
 
-		refMappingState.current.mapping_view_draggable_line_position =
-			position;
-		refMappingState.current.mapping_view_draggable_line_height =
-			height;
-
-		if(mapping_state(state).mapping_view_resize_status === 'begun'){
+		let height = initialHeight;
+		if(initialHeight === minMappingViewHeight) {
+			height += 1;
 			stateDispatch({
 				type: 'ToggleMappingViewAction',
-			})
+			});
 		}
 
-		stateDispatch({
-			type: 'ChangeMappingViewResizeAction',
-			mapping_view_resize_status: false,
-		});
-	},
+		refMappingObject.current.mapping_view_height = height;
+		refMappingObject.current.mapping_view_height_change_timeout =
+			setTimeout(
+				() =>
+					cache.set(
+						'ui',
+						'mapping_view_height',
+						height,
+						{
+							overwrite: true,
+						},
+					),
+				150,
+			);
+	}
 });
 
 

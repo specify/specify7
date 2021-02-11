@@ -65,16 +65,19 @@
 }
 
 /* MAPPING VIEW */
-.mapping_view_parent {
-	overflow-x: auto;
-}
-
 .mapping_view_container {
 	display: flex;
 	flex-wrap: nowrap;
-	height: calc(calc(4 * var(--white_space)) * calc(1 + var(--lines_to_display)));
 	column-gap: calc(4 * var(--white_space));
+	height: 100%;
 	width: max-content;
+}
+
+.mapping_view_parent {
+	overflow-x: auto;
+	max-height: 50vh;
+	height: var(--original_height);
+	resize: vertical;
 }
 
 .mapping_view {
@@ -95,7 +98,7 @@
 }
 
 .mapping_view .custom_select_options {
-	height: 100%;
+	max-height: unset;
 }
 
 .wbplanview_mapping_view_map_button {
