@@ -170,6 +170,7 @@ interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
 function handleUploadResult(
 	uploadedPicklistItems: UploadedPicklistItems,
 	uploadedRows: Record<string, UploadedRowSorted[]>,
+	matchedRecordsNames: Record<string,Record<number,string>>,
 	headers: string[],
 	line: UploadResult,
 	row_index: number,
@@ -183,6 +184,7 @@ function handleUploadResult(
 
 	const {id, info: {tableName, columns, treeInfo}, ...rest} = uploadResult.record_result[upload_status];
 	const rank = treeInfo?.rank;
+	const orderedColumns = getOrderedHeaders(headers, columns);
 
 	if ('picklistAdditions' in rest) {
 		const picklistAdditions = rest.picklistAdditions;
@@ -209,14 +211,20 @@ function handleUploadResult(
 		);
 	const parent = parent_type && parent_base?.[parent_type];
 
+	if(upload_status === 'Matched'){
+		matchedRecordsNames[tableName]??={};
+		matchedRecordsNames[tableName][id] = treeInfo?.name || '';
+	}
+
 	uploadedRows[tableName] ??= [];
-	if (!rank || uploadedRows[tableName].every(({record_id}) =>  // don't upload same tree nodes multiple times
+	// don't upload same tree nodes multiple times
+	if (!rank || uploadedRows[tableName].every(({record_id}) =>
 		record_id !== id,
 	))
 		uploadedRows[tableName].push({
 			record_id: id,
 			row_index,
-			columns,
+			columns: orderedColumns,
 			tree_info: rank ?
 				{
 					rank_name: rank,
@@ -231,6 +239,7 @@ function handleUploadResult(
 		lines.forEach((line: UploadResult) => handleUploadResult(
 			uploadedPicklistItems,
 			uploadedRows,
+			matchedRecordsNames,
 			headers,
 			line,
 			row_index,
@@ -241,6 +250,7 @@ function handleUploadResult(
 		handleUploadResult(
 			uploadedPicklistItems,
 			uploadedRows,
+			matchedRecordsNames,
 			headers,
 			parent_upload_result,
 			row_index,
@@ -254,6 +264,7 @@ function format_list_of_rows(
 	list_of_rows: UploadedRowSorted[],
 	data: string[][],
 	mapped_ranks: Record<string, string>,
+	matchedRecordsNames: Record<number,string>,
 	headers: string[],
 	treeRanks: string[],
 ) {
@@ -267,12 +278,17 @@ function format_list_of_rows(
 				row.record_id,
 				{
 					...(
-						tree_info as {rank_name: string, parent_id: number | undefined, children: number[]}
+						tree_info as {
+							rank_name: string,
+							parent_id: number | undefined,
+							children: number[]
+						}
 					),
 					...row,
 					node_name: data[row.row_index][headers.indexOf(
 						mapped_ranks[tree_info!.rank_name],
-					)],
+					)] ||
+					matchedRecordsNames[row.record_id],
 				},
 			],
 	);
@@ -329,52 +345,9 @@ const get_min_node = (
 		[-1, -1],
 	)[1];
 
-/*
-* Introduces empty cells between values in a row
-* */
-const space_out_node = (
-	uploadedTreeRank: UploadedTreeRankSpacedOut, levels: number,
-): UploadedTreeRankSpacedOut =>
-	levels <= 1 ?
-		uploadedTreeRank :
-		{
-			children: {
-				0: space_out_node(uploadedTreeRank, levels - 1),
-			},
-		};
 
 /*
-* Walk though the tree and offsets starting position of rows that share common parents
-* */
-const space_out_tree = (
-	tree: SpacedOutTree,
-	ranks_to_show: string[],
-	parent_rank_name: string | undefined = undefined,
-): SpacedOutTree =>
-	Object.fromEntries(
-		Object.entries(tree).filter(([, node_data]) =>
-			typeof node_data !== 'undefined',
-		).map(([node_id, node_data]) => [
-			~~node_id,
-			{
-				...node_data,
-				...space_out_node(
-					{
-						children: space_out_tree(node_data!.children, ranks_to_show, node_data!.rank_name),
-					},
-					Object.values(ranks_to_show).indexOf(node_data!.rank_name || '') -
-					(
-						typeof parent_rank_name === 'undefined' ?
-							0 :
-							Object.values(ranks_to_show).indexOf(parent_rank_name || '')
-					),
-				),
-			},
-		]),
-	);
-
-/*
-* Turns a list of noes with children and parents into a tree
+* Turns a list of nodes with children and parents into a tree
 * */
 function join_children(
 	rows_object: Record<string, UploadedTreeRank | undefined>,
@@ -400,6 +373,59 @@ function join_children(
 	//@ts-ignore
 	return result;
 }
+
+/*
+* Introduces empty cells between values in a row
+* */
+const space_out_node = (
+	uploadedTreeRank: UploadedTreeRankSpacedOut, levels: number,
+): UploadedTreeRankSpacedOut =>
+	levels <= 0 ?
+		Object.values(uploadedTreeRank.children)[0]! :
+		levels === 1 ?
+			uploadedTreeRank :
+			{
+				children: {
+					0: space_out_node(uploadedTreeRank, levels - 1),
+				},
+			};
+
+/*
+* Walk though the tree and offsets starting position of rows that share
+* common parents
+* */
+const space_out_children = (
+	tree: SpacedOutTree,
+	ranks_to_show: string[],
+	parent_rank_name: string | undefined = undefined,
+): SpacedOutTree =>
+	Object.fromEntries(
+		Object.entries(tree).filter(([, node_data]) =>
+			typeof node_data !== 'undefined',
+		).map(([node_id, node_data]) => [
+			~~node_id,
+			space_out_node(
+				{
+					children: {
+						0: {
+							...node_data,
+							children: space_out_children(
+								node_data!.children,
+								ranks_to_show,
+								node_data!.rank_name
+							)
+						}
+					},
+				},
+				Object.values(ranks_to_show).indexOf(node_data!.rank_name || '') -
+				(
+					typeof parent_rank_name === 'undefined' ?
+						0 :
+						Object.values(ranks_to_show).indexOf(parent_rank_name || '')
+				)-1,
+			),
+		]),
+	);
 
 /*
 * Value to use for an empty cell
@@ -435,15 +461,17 @@ const compile_rows = (
 					parent_columns :
 					Array<UploadedColumn>(parent_columns.length).fill(empty_cell(-1))
 			),
-			{
-				column_index: headers.indexOf(mapped_ranks[node_data.rank_name!]) === -1 ?
-					-3 :
-					headers.indexOf(mapped_ranks[node_data.rank_name!]),
-				row_index: node_data.row_index,
-				record_id: ~~node_id,
-				cell_value: node_data.node_name || undefined,
-				matched: node_data.matched,
-			},
+			typeof node_data.rank_name === 'undefined' ?
+				empty_cell(-3) :
+				{
+					column_index: headers.indexOf(mapped_ranks[node_data.rank_name]) === -1 ?
+						-3 :
+						headers.indexOf(mapped_ranks[node_data.rank_name]),
+					row_index: node_data.row_index,
+					record_id: ~~node_id,
+					cell_value: node_data.node_name || undefined,
+					matched: node_data.matched,
+				},
 		];
 
 		if (Object.keys(node_data.children).length === 0)
@@ -453,7 +481,11 @@ const compile_rows = (
 					record_id: -1,
 					columns: [
 						...columns,
-						...Array<UploadedColumn>(ranks_to_show.length - columns.length).fill(empty_cell(-2)),
+						...Array<UploadedColumn>(
+							ranks_to_show.length - columns.length > 0 ?
+								ranks_to_show.length - columns.length :
+								0
+						).fill(empty_cell(-2)),
 					],
 				},
 			];
@@ -529,8 +561,16 @@ export function parseUploadResults(
 
 	const uploadedRows: Record<string, UploadedRowSorted[]> = {};
 	const uploadedPicklistItems: UploadedPicklistItems = {};
+	const matchedRecordsNames: Record<string,Record<number,string>> = {};
 
-	uploadResults.forEach(handleUploadResult.bind(null, uploadedPicklistItems, uploadedRows, headers));
+	uploadResults.forEach(
+		handleUploadResult.bind(
+			null,
+			uploadedPicklistItems,
+			uploadedRows,
+			matchedRecordsNames,
+			headers
+		));
 
 	const tree_tables: Record<string,
 		Omit<UploadedRowsTable,
@@ -546,6 +586,7 @@ export function parseUploadResults(
 				list_of_rows,
 				data,
 				mapped_ranks,
+				matchedRecordsNames[original_table_name],
 				headers,
 				treeRanks[table_name],
 			);
@@ -558,7 +599,7 @@ export function parseUploadResults(
 			) !== -1)
 				tree[min_node_id] = join_children(rows_object, min_node_id);
 
-			const spaced_out_tree: SpacedOutTree = space_out_tree(tree, ranks_to_show);
+			const spaced_out_tree: SpacedOutTree = space_out_children(tree, ranks_to_show);
 
 			const compiled_rows: UploadedRow[] = compile_rows(
 				mapped_ranks,
