@@ -489,6 +489,14 @@ function join_rows(final_rows: UploadedRow[]) {
 	)).reverse();
 }
 
+const getOrderedHeaders = (
+	headers:string[],
+	headersSubset:string[],
+)=>
+	headers.filter(header=>
+		headersSubset.indexOf(header) !== -1
+	);
+
 export function parseUploadResults(
 	uploadResults: UploadResults,
 	hot: Handsontable,
@@ -583,7 +591,7 @@ export function parseUploadResults(
 		schema as unknown as Schema
 	).models);
 
-	let column_indexes: number[];
+	let column_names: string[];
 	return [
 		Object.fromEntries(
 			Object.entries(uploadedRows).map(([table_name, table_records]) => [
@@ -597,30 +605,29 @@ export function parseUploadResults(
 							tree_tables[table_name] :
 							{
 								column_names: (
-									column_indexes = [ // save list of column indexes to `column_indexes`
-										...new Set(  // make the list unique
-											table_records.flatMap(({columns}) =>
-												Object.keys(columns).map(column_index =>
-													~~column_index,
-												),  // get column indexes
+									column_names = getOrderedHeaders(
+										headers,
+										[ // save list of column indexes to `column_indexes`
+											...new Set(  // make the list unique
+												table_records.flatMap(({columns}) =>
+													Object.values(columns)  // get column names
+												),
 											),
-										),
-									]
-								).map(column_index =>  // map column indexes to column headers
-									headers[column_index],
+										]
+									)
 								),
 								rows: table_records.map(({record_id, row_index, columns}) => (
 										{
 											record_id,
 											row_index,
-											columns: column_indexes.map(column_index =>
-												(
-													{
-														column_index,
-														cell_value: data[row_index][headers.indexOf(columns[column_index])] ?? '',
-													}
-												),
-											),
+											columns: column_names.filter(column_name=>
+												columns.indexOf(column_name) !== -1
+											).map(column_name=>
+												headers.indexOf(column_name)
+											).map(column_index => ({
+												column_index: column_index,
+												cell_value: data[row_index][column_index] ?? ''
+											})),
 										}
 									),
 								),
