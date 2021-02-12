@@ -74,6 +74,9 @@ interface CreateDataSetAction extends Action<'CreateDataSetAction'> {
 
 interface ToggleTableRecordsVisibilityAction extends Action<'ToggleTableRecordsVisibilityAction'> {
 	readonly table_name: string,
+	readonly destination:
+		'tableRecordsVisibilityState'
+		| 'picklistRecordsVisibilityState';
 }
 
 interface CellClickedAction extends Action<'CellClickedAction'> {
@@ -312,11 +315,14 @@ function UploadedTableHeader({
 					'\u25B2' :
 					'\u25BC'
 			}
-			<img
-				className="wb-upload-results-table-icon"
-				src={table_icon}
-				alt={table_name}
-			/>
+			{
+				table_icon &&
+				<img
+					className="wb-upload-results-table-icon"
+					src={table_icon}
+					alt={table_name}
+				/>
+			}
 			<div className="wb-upload-results-table-label">{label}</div>
 			<div
 				className="wb-upload-results-table-rows-count"
@@ -460,8 +466,11 @@ const reducer = generate_reducer<WBUploadedState, WBUploadedActions>({
 	'ToggleTableRecordsVisibilityAction': ({state, action}) => (
 		{
 			...state,
-			tableRecordsVisibilityState: Object.fromEntries(
-				Object.entries(state.tableRecordsVisibilityState).map(([table_name, is_collapsed]) => [
+			[action.destination]: Object.fromEntries(
+				Object.entries(state[action.destination]).map(([
+					table_name,
+					is_collapsed
+				]) => [
 					table_name,
 					is_collapsed !== (
 						table_name === action.table_name
@@ -542,6 +551,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 				onToggleTableRecordsVisibility={(table_name: string) =>
 					dispatch({
 						type: 'ToggleTableRecordsVisibilityAction',
+						destination: 'tableRecordsVisibilityState',
 						table_name,
 					})
 				}
@@ -560,6 +570,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 				onToggleTableRecordsVisibility={(table_name: string) =>
 					dispatch({
 						type: 'ToggleTableRecordsVisibilityAction',
+						destination: 'picklistRecordsVisibilityState',
 						table_name,
 					})
 				}

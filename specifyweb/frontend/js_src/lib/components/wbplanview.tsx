@@ -525,14 +525,6 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 						default_value: true,
 					},
 				),
-			mapping_view_height:
-				cache.get(
-					'ui',
-					'mapping_view_height',
-					{
-						default_value: defaultMappingViewHeight,
-					},
-				),
 			base_table_name: action.table_name,
 			new_header_id: 1,
 			mapping_view: ['0'],
@@ -543,7 +535,6 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 				base_table_name: action.table_name,
 			}),
 			changes_made: false,
-			mapping_view_resize_status: false,
 		}
 	),
 	'ToggleHiddenTablesAction': ({state}) => (
@@ -628,19 +619,10 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					default_value: true,
 				},
 			),
-			mapping_view_height:
-				cache.get(
-					'ui',
-					'mapping_view_height',
-					{
-						default_value: defaultMappingViewHeight,
-					},
-				),
 			mapping_view: ['0'],
 			validation_results: [],
 			new_header_id: 1,
 			changes_made: false,
-			mapping_view_resize_status: false,
 			base_table_name,
 			lines,
 		};

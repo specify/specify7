@@ -150,7 +150,7 @@ export interface UploadedPicklistItem {
 	readonly column_index: number,
 }
 
-export type UploadedPicklistItems = Readonly<Record<string, UploadedPicklistItem[]>>;
+export type UploadedPicklistItems = Record<string, UploadedPicklistItem[]>;
 
 
 interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
@@ -187,6 +187,7 @@ function handleUploadResult(
 	if ('picklistAdditions' in rest) {
 		const picklistAdditions = rest.picklistAdditions;
 		picklistAdditions.forEach(({id, name, value: picklist_value, caption}) => {
+			uploadedPicklistItems[name]??=[];
 			uploadedPicklistItems[name].push({
 				row_index,
 				id,
