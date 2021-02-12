@@ -380,7 +380,7 @@ function UploadedTable({
 					{
 						table_icon: uploadedTable.table_icon,
 						label: uploadedTable.table_label,
-						rows_count: uploadedTable.rows_count || uploadedTable.rows.length,
+						rows_count: uploadedTable.rows_count ?? uploadedTable.rows.length,
 					} :
 					{
 						label: table_name,

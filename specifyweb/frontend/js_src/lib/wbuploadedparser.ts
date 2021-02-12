@@ -421,8 +421,10 @@ const space_out_children = (
 				(
 					typeof parent_rank_name === 'undefined' ?
 						0 :
-						Object.values(ranks_to_show).indexOf(parent_rank_name || '')
-				)-1,
+						Object.values(ranks_to_show).indexOf(
+							parent_rank_name || ''
+						) + 1
+				),
 			),
 		]),
 	);
@@ -615,7 +617,9 @@ export function parseUploadResults(
 				{
 					rows: joined_rows,
 					column_names: ranks_to_show,
-					rows_count: Object.keys(list_of_rows).length,
+					rows_count: Object.entries(list_of_rows).filter(([,{matched}])=>
+						!matched
+					).length,
 				},
 			];
 
