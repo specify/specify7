@@ -371,7 +371,7 @@ const WBView = Backbone.View.extend({
         try {
             cell_data = this.wbutils.cellInfo[row*cols + col];
         } catch (e) {
-        };
+        }
 
         return {
             comment: cell_data && {value: cell_data.issues.join('<br>')},
@@ -590,8 +590,12 @@ module.exports = function loadDataset(id, showStatusDialog = false) {
         dialog.dialog('close');
 
         const view = new WBView({
-            dataset: dataset, showStatusDialog
-        }).on('refresh', () => loadDataset(id, true));
+            dataset,
+            showStatusDialog
+        }).on('refresh', () =>
+            loadDataset(id, true)
+        );
+        app.setTitle(dataset.name);
         app.setCurrentView(view);
     });
 };

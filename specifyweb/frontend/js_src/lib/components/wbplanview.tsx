@@ -1489,6 +1489,8 @@ export default createBackboneView<PublicWBPlanViewProps,
 	WBPlanViewWrapperProps>
 ({
 	module_name: 'WBPlanView',
+	title: (self)=>
+		self.dataset.name,
 	class_name: 'wb-plan-view',
 	initialize(
 		self,

@@ -647,6 +647,7 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 	WBUploadedViewConstructorProps,
 	WBUploadedViewDataParseProps>({
 	module_name: 'WBUploadedView',
+	title: 'Upload Results',
 	class_name: 'wb-uploaded',
 	initialize(self, {
 		dataset,
