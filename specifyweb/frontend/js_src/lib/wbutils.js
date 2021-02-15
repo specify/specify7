@@ -281,37 +281,125 @@ module.exports = Backbone.View.extend({
   },
   showGeoLocate() {
 
-    // don't allow to open more than one window)
+    // don't allow opening more than one window)
     if ($('#geolocate_window').length !== 0)
       return;
 
-    const selected_cell = this.hot.getSelectedLast() || [0, 0];
-    const [selected_row, selected_column] = selected_cell;
+    let $this = this;
 
-    const current_locality_columns = Leaflet.getLocalityColumnsFromSelectedCell(this.locality_columns, selected_column);
-    const geolocate_query_url = this.getGeoLocateQueryURL(current_locality_columns, selected_row, this.hot.getDataAtCell, this.hot.getDataAtRow);
+    const selected_regions = this.hot.getSelected() || [[0, 0, 0, 0]];
+    const selections = selected_regions.map(([start_row, column, end_row]) =>
+      start_row < end_row ?
+        [start_row, end_row, column] :
+        [end_row, start_row, column],
+    );
+    const selected_cells = selections.flatMap(([start_row, end_row, column]) =>
+      [...Array(end_row - start_row + 1)].map((_, index) =>
+        [start_row + index, column].join('_'),
+      ),
+    );
+    const unique_selected_cells = [...new Set(selected_cells)];
+    const final_selected_cells = unique_selected_cells.map((selected_cell) =>
+      selected_cell.split('_').map(index => parseInt(index)),
+    );
+
+    if (final_selected_cells.length === 0)
+      return;
+
+    let current_cell_index = 0;
+    let geolocate_query_url = false;
+    let current_locality_columns = [];
+
+    function update_geolocate_url() {
+
+      current_locality_columns =
+        Leaflet.getLocalityColumnsFromSelectedCell(
+          $this.locality_columns,
+          final_selected_cells[current_cell_index][1],
+        );
+
+      geolocate_query_url = $this.getGeoLocateQueryURL(
+        current_locality_columns,
+        final_selected_cells[current_cell_index][0],
+        $this.hot.getDataAtCell,
+        $this.hot.getDataAtRow,
+      );
+
+    }
+
+    update_geolocate_url();
 
     if (geolocate_query_url === false)
       return;
 
-    const dialog = $(`
-            <div id="geolocate_window">
-                <iframe
-                    style="
-                        width: 100%;
-                        height: 100%;
-                        border: none;"
-                    src="${geolocate_query_url}"></iframe>
-            </div>`,
-    ).dialog({
-      width: 980,
-      height: 700,
-      resizable: false,
+    const handleAfterDialogClose = () =>
+      window.removeEventListener('message', handle_geolocate_result, false);
+
+    const dialog = $(`<div />`, {id: 'geolocate_window'}).dialog({
+      width: 960,
+      height: final_selected_cells.length === 1 ?
+        680 :
+        740,
       title: 'GEOLocate',
       close: function() {
         $(this).remove();
+        handleAfterDialogClose();
       },
     });
+
+    const update_geolocate = () =>
+      dialog.html(`<iframe
+        style="
+            width: 100%;
+            height: 100%;
+            border: none;"
+        src="${geolocate_query_url}"></iframe>`);
+    update_geolocate();
+
+    const update_selected_row = () =>
+      $this.hot.selectRows(final_selected_cells[current_cell_index][0]);
+    update_selected_row();
+
+    function change_selected_cell(new_selected_cell) {
+
+      current_cell_index = new_selected_cell;
+
+      update_geolocate_url();
+
+      if (geolocate_query_url === false)
+        return;
+
+      update_geolocate();
+
+      update_selected_row();
+
+      update_buttons();
+    }
+
+    const update_buttons = () =>
+      dialog.dialog(
+        'option',
+        'buttons',
+        final_selected_cells.length > 1 ?
+          [
+            {
+              text: 'Previous',
+              click: () =>
+                change_selected_cell(current_cell_index - 1),
+              disabled: current_cell_index === 0,
+            },
+            {
+              text: 'Next',
+              click: () =>
+                change_selected_cell(current_cell_index + 1),
+              disabled:
+                final_selected_cells.length <=
+                current_cell_index + 1,
+            },
+          ] :
+          [],
+      );
+    update_buttons();
 
     const handle_geolocate_result = (event) => {
 
@@ -319,17 +407,23 @@ module.exports = Backbone.View.extend({
       if (data_columns.length !== 4 || event.data === '|||')
         return;
 
-      this.hot.setDataAtCell(
+      $this.hot.setDataAtCell(
         Object.entries(
           ['latitude1', 'longitude1', 'latlongaccuracy'],
         ).map(([index, column]) => {
           if (typeof current_locality_columns[column] !== 'undefined')
-            return [selected_row, current_locality_columns[column], data_columns[index]];
+            return [
+              final_selected_cells[current_cell_index][0],
+              current_locality_columns[column],
+              data_columns[index],
+            ];
         }).filter(record => typeof record !== 'undefined'),
       );
 
-      dialog.dialog('close');
-      window.removeEventListener('message', handle_geolocate_result, false);
+      if (final_selected_cells.length === 1) {
+        dialog.dialog('close');
+        handleAfterDialogClose();
+      }
     };
 
     window.addEventListener('message', handle_geolocate_result, false);
