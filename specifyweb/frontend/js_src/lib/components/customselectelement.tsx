@@ -123,7 +123,6 @@ export interface CustomSelectElementPropsOpenBase extends CustomSelectElementPro
 }
 
 interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase {
-	// list of option group objects. See custom_select_element.get_select_group_html() for more info
 	readonly custom_select_option_groups: CustomSelectElementOptionGroups,
 	readonly automapper_suggestions?: JSX.Element,
 }
@@ -170,7 +169,6 @@ function Icon({
 	</span>;
 }
 
-/* Generates a single option line */
 const Option = React.memo(named_component('Option',({
 	option_label,
 	is_enabled = true,
@@ -209,7 +207,6 @@ const Option = React.memo(named_component('Option',({
 	</span>;
 }));
 
-/* Generates a group of options */
 function OptionGroup({
 	select_group_name,
 	select_group_label,
@@ -227,14 +224,14 @@ function OptionGroup({
 			return <Option
 				key={option_name}
 				handleClick={
-					selection_option_data.is_enabled ?
+					selection_option_data.is_enabled === false ?
+						undefined :
 						handleClick?.bind(
 							null,
 							option_name,
 							typeof selection_option_data.is_relationship !== 'undefined' &&
 							selection_option_data.is_relationship,
-						) :
-						undefined
+						)
 				}
 				{...selection_option_data}
 			/>;
@@ -255,7 +252,6 @@ const intractable_select_types: CustomSelectType[] = ['preview_list', 'suggestio
 const select_types_with_headers: CustomSelectType[] = ['opened_list', 'base_table_selection_list'];
 const select_types_with_first_row: CustomSelectType[] = ['closed_list', 'preview_list', 'suggestion_line_list'];
 
-/* Generates a custom select element */
 export function CustomSelectElement(
 	{
 		custom_select_type,
@@ -412,7 +408,6 @@ export function CustomSelectElement(
 
 }
 
-/* Generates a suggestion box */
 export function SuggestionBox({
 	select_options_data,
 	handleAutomapperSuggestionSelection,
