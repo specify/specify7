@@ -26,7 +26,7 @@ class UploadTests(UploadTestsBase):
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
-        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
+        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id)
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([{
@@ -51,7 +51,7 @@ class UploadTests(UploadTestsBase):
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
-        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
+        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id)
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([
@@ -106,11 +106,13 @@ class UploadTests(UploadTestsBase):
 5091,Gastropoda,Muricoidea,Marginellidae,Prunum,,donovani,,"(Olsson, 1967)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,Date unk'n,,,,,2,0,0,Dry; shell,Dry,,,,,,1,,,,150,,,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,25/10/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
 5097,Gastropoda,Muricoidea,Marginellidae,Prunum,,onchidella,,"(Dall, 1890)",,,,,,,,,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Route 80, W of LaBelle",,North America,1972,1972,,,,10,0,0,Dry; shell,Dry,,,,,,1,,,,241,,Taken from spoil from 1972-1975.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,16/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         uploaded_catnos = []
         for r in upload_results:
             self.assertIsInstance(r.record_result, Uploaded)
             co = get_table('Collectionobject').objects.get(id=r.record_result.get_id())
+            self.assertEqual(self.agent, co.createdbyagent)
+            self.assertIsNotNone(co.timestampcreated)
             uploaded_catnos.append(co.catalognumber)
 
         # Check that collection objects were uploaded.
@@ -226,7 +228,7 @@ class UploadTests(UploadTestsBase):
             }
         ).apply_scoping(self.collection)
         row = next(reader)
-        bt = tree_record.bind(self.collection, row)
+        bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match()
 
@@ -275,7 +277,7 @@ class UploadTests(UploadTestsBase):
         #     parent=state,
         # )
 
-        bt = tree_record.bind(self.collection, row)
+        bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match()
         self.assertEqual(
@@ -287,7 +289,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual([(state.id, 'Florida')], matched['matches'])
         self.assertEqual(['State/Prov/Pref', 'Country', 'Continent/Ocean'], matched['columns'])
 
-        bt = tree_record.bind(self.collection, row)
+        bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
@@ -297,7 +299,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        bt = tree_record.bind(self.collection, row)
+        bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match()
         self.assertEqual([], to_upload)
@@ -306,7 +308,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual('County', matched['rank'])
         self.assertEqual(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean'], matched['columns'])
 
-        bt = tree_record.bind(self.collection, row)
+        bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean'], treeInfo=TreeInfo('County', 'Hendry Co.'))
@@ -321,7 +323,7 @@ class UploadTests(UploadTestsBase):
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, , ,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1368,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,tuberculosa,,"Libassi, 1859",,Emilio Garcia,,Emilio,,Garcia,Jan 2002,00/01/2002,,USA,LOUISIANA,off Louisiana coast,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,11,0,0,Dry; shell,Dry,,,"Subtidal 65-91 m, in coralline [sand]",65,91,0,,,,313,,Dredged.  Original label no. 23331.,JSG,MJP,22/01/2003,27° 59.14' N,,91° 38.83' W,,Point,D-4(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
         for result in upload_results:
@@ -361,7 +363,7 @@ class UploadTests(UploadTestsBase):
             get_table('collector').objects.count(),
         ]
 
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, allow_partial=False)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id, allow_partial=False)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
 

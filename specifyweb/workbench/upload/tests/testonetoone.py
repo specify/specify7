@@ -63,7 +63,7 @@ class OneToOneTests(UploadTestsBase):
             # dict(catno='4', sfn='2'), # This fails because the CE has multiple matches
         ]
 
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         ces = set()
         for r in results:
             assert isinstance(r.record_result, Uploaded), r
@@ -84,7 +84,7 @@ class OneToOneTests(UploadTestsBase):
             dict(catno='4', sfn='2'),
         ]
 
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         ces = set()
         for r, expected in zip(results, [Uploaded, Matched, Uploaded, Matched, Matched]):
             assert isinstance(r.record_result, Uploaded)
@@ -106,7 +106,7 @@ class OneToOneTests(UploadTestsBase):
 
         ce_count_before_upload = get_table('Collectingevent').objects.count()
 
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         ces = set()
         for r, expected in zip(results, [Uploaded, Uploaded, Uploaded, NullRecord, NullRecord]):
             assert isinstance(r.record_result, Uploaded)

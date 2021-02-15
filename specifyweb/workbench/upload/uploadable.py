@@ -19,7 +19,7 @@ class Uploadable(Protocol):
 Row = Dict[str, str]
 
 class ScopedUploadable(Protocol):
-    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundUploadable", ParseFailures]:
         ...
 
 Filter = Dict[str, Any]

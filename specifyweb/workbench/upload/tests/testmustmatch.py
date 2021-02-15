@@ -62,7 +62,7 @@ class MustMatchTests(UploadTestsBase):
         starting_ce_count = get_table('Collectingevent').objects.count()
         starting_co_count = get_table('Collectionobject').objects.count()
 
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r, expected in zip(results, [Matched, NoMatch, Matched, NoMatch]):
             self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)
 
@@ -85,7 +85,7 @@ class MustMatchTests(UploadTestsBase):
 
         ce_count_before_upload = get_table('Collectingevent').objects.count()
 
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         ces = set()
         for r, expected in zip(results, [Matched, NoMatch, NullRecord, Matched, NoMatch]):
             self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)

@@ -57,12 +57,12 @@ class ScopedUploadTable(NamedTuple):
     toMany: Dict[str, List[ScopedToManyRecord]]
     scopingAttrs: Dict[str, int]
 
-    def bind(self, collection, row: Row) -> Union["BoundUploadTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row)
+            result = uploadable.bind(collection, row, uploadingAgentId)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -72,7 +72,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundToManyRecord] = []
             for record in records:
-                result_ = record.bind(collection, row)
+                result_ = record.bind(collection, row, uploadingAgentId)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -90,6 +90,7 @@ class ScopedUploadTable(NamedTuple):
             parsedFields=parsedFields,
             toOne=toOne,
             toMany=toMany,
+            uploadingAgentId=uploadingAgentId,
         )
 
 class OneToOneTable(UploadTable):
@@ -101,8 +102,8 @@ class OneToOneTable(UploadTable):
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row)
+    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundOneToOneTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId)
         return b if isinstance(b, ParseFailures) else BoundOneToOneTable(*b)
 
 class MustMatchTable(UploadTable):
@@ -114,8 +115,8 @@ class MustMatchTable(UploadTable):
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row)
+    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundMustMatchTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTable(*b)
 
 
@@ -127,6 +128,7 @@ class BoundUploadTable(NamedTuple):
     toOne: Dict[str, BoundUploadable]
     toMany: Dict[str, List[BoundToManyRecord]]
     scopingAttrs: Dict[str, int]
+    uploadingAgentId: Optional[int]
 
     def is_one_to_one(self) -> bool:
         return False
@@ -198,7 +200,7 @@ class BoundUploadTable(NamedTuple):
             if match:
                 return UploadResult(match, toOneResults, {})
 
-        return self._do_upload(model, toOneResults, attrs, info)
+        return self._do_upload(model, toOneResults, info)
 
     def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
@@ -231,16 +233,21 @@ class BoundUploadTable(NamedTuple):
         else:
             return None
 
-    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], attrs: Dict[str, Any], info: ReportInfo) -> UploadResult:
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
+        attrs = {
+            fieldname_: value
+            for parsedField in self.parsedFields
+            for fieldname_, value in parsedField.upload.items()
+        }
 
         # replace any one-to-one records that matched with forced uploads
-        toOneResults.update({
+        toOneResults = {**toOneResults, **{
             fieldname: to_one_def.force_upload_row()
             for fieldname, to_one_def in self.toOne.items()
             if to_one_def.is_one_to_one()
             for result in [toOneResults[fieldname].record_result]
             if isinstance(result, Matched) or isinstance(result, MatchedMultiple)
-        })
+        }}
 
         toOneIds: Dict[str, Optional[int]] = {}
         for field, result in toOneResults.items():
@@ -249,16 +256,20 @@ class BoundUploadTable(NamedTuple):
                 return UploadResult(PropagatedFailure(), toOneResults, {})
             toOneIds[field] = id
 
-        attrs.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
-
         try:
-            uploaded = model.objects.create(**attrs, **self.scopingAttrs, **self.static)
+            uploaded = model.objects.create(**{
+                **({'createdbyagent_id': self.uploadingAgentId} if model.specify_model.get_field('createdbyagent') else {}),
+                **self.scopingAttrs,
+                **self.static,
+                **{ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() },
+                **attrs,
+            })
             picklist_additions = self._do_picklist_additions()
         except BusinessRuleException as e:
             return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
         toManyResults = {
-            fieldname: _upload_to_manys(model, uploaded.id, fieldname, records)
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, records)
             for fieldname, records in self.toMany.items()
         }
         return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
@@ -268,7 +279,7 @@ class BoundUploadTable(NamedTuple):
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
                 a = parsedField.add_to_picklist
-                pli = a.picklist.picklistitems.create(value=a.value, title=a.value)
+                pli = a.picklist.picklistitems.create(value=a.value, title=a.value, createdbyagent_id=self.uploadingAgentId)
                 added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.caption, value=a.value, id=pli.id))
         return added_picklist_items
 
@@ -289,7 +300,7 @@ class BoundMustMatchTable(BoundUploadTable):
             for fieldname, to_one_def in self.toOne.items()
         }
 
-    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], atrs: Dict[str, Any], info: ReportInfo) -> UploadResult:
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
 
 
@@ -306,7 +317,7 @@ def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) 
     return FilterPack(filters, excludes)
 
 
-def _upload_to_manys(parent_model, parent_id, parent_field, records) -> List[UploadResult]:
+def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], records) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
@@ -318,6 +329,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, records) -> List[Upl
             toOne=record.toOne,
             static={**record.static, fk_field: parent_id},
             toMany={},
+            uploadingAgentId=uploadingAgentId,
         ).force_upload_row()
         for record in records
     ]

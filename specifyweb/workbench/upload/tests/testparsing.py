@@ -89,7 +89,7 @@ class ParsingTests(UploadTestsBase):
             {'catno': '5', 'habitat': 'marsh'},
             {'catno': '6', 'habitat': 'lake'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
             validate(result.validation_info().to_json(), validation_schema.schema)
             self.assertIsInstance(result.record_result, Uploaded)
@@ -125,7 +125,7 @@ class ParsingTests(UploadTestsBase):
             {'catno': '4', 'habitat': 'Ocean'},
             {'catno': '5', 'habitat': 'Lagoon'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
             validate(result.validation_info().to_json(), validation_schema.schema)
 
@@ -150,7 +150,7 @@ class ParsingTests(UploadTestsBase):
             {'catno': 'bar'},
             {'catno': '567'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for result, expected in zip(results, [Uploaded, Uploaded, ParseFailures, ParseFailures, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
@@ -176,7 +176,7 @@ class ParsingTests(UploadTestsBase):
             {'catno': '5', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23bogus'},
             {'catno': '6', 'bool': 'true', 'integer': '10.5', 'float': '24.5', 'decimal': '10.23'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         for result in results[1:]:
             self.assertIsInstance(result.record_result, ParseFailures)
@@ -196,7 +196,7 @@ class ParsingTests(UploadTestsBase):
             {'catno': '', 'habitat': ''},
             {'catno': '5', 'habitat': 'Lagoon'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for result, expected in zip(results, [Uploaded, ParseFailures, ParseFailures, ParseFailures, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
@@ -216,7 +216,7 @@ class ParsingTests(UploadTestsBase):
             {'title': "Dr.", 'lastname': 'Zoidberg'},
             {'title': "Hon.", 'lastname': 'Juju'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         result0 = results[0].record_result
         assert isinstance(result0, Uploaded)
@@ -269,7 +269,7 @@ class ParsingTests(UploadTestsBase):
 1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, , ,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,foobar,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1368,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,tuberculosa,,"Libassi, 1859",,Emilio Garcia,,Emilio,,Garcia,Jan 2002,00/01/2002,,USA,LOUISIANA,off Louisiana coast,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,11,0,0,Dry; shell,Dry,,,"Subtidal 65-91 m, in coralline [sand]",65,91,0,,,,313,,Dredged.  Original label no. 23331.,JSG,MJP,22/01/2003,27° 59.14' N,,91° 38.83' W,,Point,D-4(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, ParseFailures)
         for result in upload_results:
@@ -283,7 +283,7 @@ class ParsingTests(UploadTestsBase):
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, ,bad date,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,foobar,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
@@ -294,7 +294,7 @@ class ParsingTests(UploadTestsBase):
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, ,,,USA,,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,128° 06.07' N,,191° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
@@ -318,7 +318,7 @@ class ParsingTests(UploadTestsBase):
             {'agenttype': "other", 'lastname': 'Juju'},
             {'agenttype': "group", 'lastname': 'Van Halen'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         result0 = results[0].record_result
         assert isinstance(result0, Uploaded)
@@ -352,7 +352,7 @@ class ParsingTests(UploadTestsBase):
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': '', 'Species Author': 'L.'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', caption='Species Author')]))

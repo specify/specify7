@@ -13,10 +13,7 @@ from specifyweb.workbench.upload.upload_plan_schema import schema, parse_plan
 from specifyweb.workbench.models import Spdataset
 
 Collection = getattr(models, 'Collection')
-
-class NoCommit(Exception):
-    pass
-
+Agent = getattr(models, 'Agent')
 
 class Command(BaseCommand):
     help = 'Upload a dataset to the database.'
@@ -24,6 +21,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser) -> None:
         parser.add_argument('collection_id', type=int)
         parser.add_argument('dataset_id', type=int)
+        parser.add_argument('agent_id', type=int)
 
         parser.add_argument(
             '--commit',
@@ -43,5 +41,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         specify_collection = Collection.objects.get(id=options['collection_id'])
         ds = Spdataset.objects.get(id=options['dataset_id'])
-        result = do_upload_dataset(specify_collection, ds, not options['commit'], options['allow_partial'])
+        agent = Agent.objects.get(id=options['agent_id'])
+        result = do_upload_dataset(specify_collection, agent.id, ds, not options['commit'], options['allow_partial'])
         self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))

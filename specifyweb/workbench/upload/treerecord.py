@@ -48,7 +48,7 @@ class ScopedTreeRecord(NamedTuple):
     ranks: Dict[str, Dict[str, str]]
     treedefid: int
 
-    def bind(self, collection, row: Row) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[ParseFailure] = []
         for rank, cols in self.ranks.items():
@@ -71,6 +71,7 @@ class ScopedTreeRecord(NamedTuple):
             name=self.name,
             treedefid=self.treedefid,
             parsedFields=parsedFields,
+            uploadingAgentId=uploadingAgentId,
         )
 
 class TreeDefItemWithParseResults(NamedTuple):
@@ -87,6 +88,7 @@ class BoundTreeRecord(NamedTuple):
     name: str
     treedefid: int
     parsedFields: Dict[str, List[ParseResult]]
+    uploadingAgentId: Optional[int]
 
     def is_one_to_one(self) -> bool:
         return False
@@ -138,11 +140,12 @@ class BoundTreeRecord(NamedTuple):
 
         for tdiwpr in reversed(to_upload):
             obj = model(
+                createdbyagent_id=self.uploadingAgentId,
                 definitionitem=tdiwpr.treedefitem,
                 rankid=tdiwpr.treedefitem.rankid,
                 definition_id=self.treedefid,
                 parent_id=parent_id,
-                **{to_db_col(c): v for r in tdiwpr.results for c, v in r.upload.items()}
+                **{to_db_col(c): v for r in tdiwpr.results for c, v in r.upload.items()},
             )
             obj.save(skip_tree_extras=True)
             info = ReportInfo(tableName=self.name, columns=[pr.caption for pr in tdiwpr.results], treeInfo=TreeInfo(tdiwpr.treedefitem.name, obj.name))

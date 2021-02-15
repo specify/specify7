@@ -177,7 +177,13 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
         taskid = str(uuid4())
-        async_result = tasks.upload.apply_async([request.specify_collection.id, ds_id, no_commit, allow_partial], task_id=taskid)
+        async_result = tasks.upload.apply_async([
+            request.specify_collection.id,
+            request.specify_user_agent.id,
+            ds_id,
+            no_commit,
+            allow_partial
+        ], task_id=taskid)
         ds.uploaderstatus = {
             'operation': "validating" if no_commit else "uploading",
             'taskid': taskid
@@ -303,7 +309,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     })
 
     if request.method == "POST":
-        result = uploader.validate_row(collection, upload_plan, request.POST)
+        result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, request.POST)
         return http.JsonResponse(result.validation_info().to_json())
 
     else:

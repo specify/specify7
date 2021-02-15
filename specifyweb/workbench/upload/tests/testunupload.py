@@ -55,7 +55,7 @@ class UnUploadTests(UploadTestsBase):
             {'catno': '5', 'habitat': 'marsh'},
             {'catno': '6', 'habitat': 'lake'},
         ]
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertEqual(3, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count(),
                          "There are now three items in the picklist.")
@@ -84,7 +84,7 @@ class UnUploadTests(UploadTestsBase):
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Johnson'},
         ]
 
-        results = do_upload(self.collection, data, plan)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertEqual({
             (0, "Uploaded"),

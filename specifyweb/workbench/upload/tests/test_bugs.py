@@ -139,6 +139,6 @@ class BugTests(UploadTestsBase):
 	}
 }
 '''))
-        upload_results = do_upload_csv(self.collection, reader, plan.apply_scoping(self.collection))
+        upload_results = do_upload_csv(self.collection, reader, plan.apply_scoping(self.collection), self.agent.id)
         rr = [r.record_result.__class__ for r in upload_results]
         self.assertEqual(expected, rr)
