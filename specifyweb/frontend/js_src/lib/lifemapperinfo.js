@@ -13,7 +13,7 @@ const lifemapperoccurrencecount = require('./templates/lifemapperoccurrencecount
 
 const test = false; // TODO: remove this
 const default_guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
-const default_occurrence_name = 'Phlox longifolia Nutt.';
+const default_occurrence_name = ['Phlox longifolia Nutt.', 'Phlox longifolia Nutt.'];
 
 const test__get_guid = (guid) =>
 	(
@@ -72,7 +72,9 @@ module.exports = Backbone.View.extend({
 
 		new Promise(occurrence_name_resolved =>
 			$.get(format_occurrence_data_request(guid)).done(response =>
-				Object.entries(response).filter(([key]) =>
+				Object.values(response.records || {}).map(record=>
+					Object.entries(record)[0]
+				).filter(([key]) =>
 					typeof data_sources[key] !== 'undefined',
 				).map(([key, {count, records}]) => {
 					const data_source_info = data_sources[key];
@@ -287,12 +289,14 @@ module.exports = Backbone.View.extend({
 				else {
 
 					const {
-						map: {endpoint, mapName, layerName},
-						metadata: {description},
-						statusModTime,
+						endpoint,
+						projection_name: layerName,
+						point_name: mapName,
+						// metadata: {description},
+						modtime,
 					} = response.records[0];
 
-					const map_url = `${endpoint}/${mapName}?`;
+					const map_url = `${endpoint}/`;
 					const map_id = mapName.replace(/\D/g, '');
 					const layer_id = layerName.replace(/\D/g, '');
 					layers = lifemapper_layer_variations.map(({
@@ -323,8 +327,8 @@ module.exports = Backbone.View.extend({
 
 					info_message = `
 						Projection Details:<br>
-						${description}<br>
-						Model Creation date: ${statusModTime}	
+						${/*description*/'Metadata is missing'}<br>
+						Model Creation date: ${modtime}	
 					`;
 
 				}
@@ -516,15 +520,15 @@ const format_occurrence_map_request = occurrence_scientific_name =>
 	`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}&layers=prj,occ,bmng`;
 
 const data_sources = {
-	'GBIF Records': {
+	'GBIF': {
 		source_name: 'gbif',
 		source_label: 'GBIF',
 	},
-	'iDigBio Records': {
+	'iDigBio': {
 		source_name: 'idigbio',
 		source_label: 'iDigBio',
 	},
-	'MorphoSource Records': {
+	'MorphoSource': {
 		source_name: 'morphosource',
 		source_label: 'MorphoSource',
 	},
@@ -535,21 +539,21 @@ const data_sources = {
 };
 
 const response_handlers = {
-	'GBIF Records': (occurrence) => (
+	'GBIF': (occurrence) => (
 		{
 			list_of_issues: occurrence.issues,
 			occurrence_name: occurrence.scientificName,
 			occurrence_view_link: `https://www.gbif.org/occurrence/${occurrence.key}`,
 		}
 	),
-	'iDigBio Records': (occurrence) => (
+	'iDigBio': (occurrence) => (
 		{
 			list_of_issues: occurrence.indexTerms.flags,
 			occurrence_name: '',
 			occurrence_view_link: `https://www.idigbio.org/portal/records/${occurrence['uuid']}`,
 		}
 	),
-	'MorphoSource Records': (occurrence) => (
+	'MorphoSource': (occurrence) => (
 		{
 			list_of_issues: [],
 			occurrence_name: '',
