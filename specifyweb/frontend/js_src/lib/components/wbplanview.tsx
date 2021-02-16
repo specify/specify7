@@ -115,6 +115,7 @@ export interface MappingState extends State<'MappingState'>,
 	readonly automapper_suggestions_promise?:
 		Promise<AutomapperSuggestion[]>,
 	readonly changes_made: boolean,
+	readonly mappings_are_validated: boolean,
 }
 
 type WBPlanViewStates =
@@ -289,6 +290,7 @@ interface WBPlanViewHeaderPropsMapping extends WBPlanViewHeaderBaseProps {
 	readonly state_type: 'MappingState',
 	readonly mapping_is_templated: boolean,
 	readonly show_mapping_view: boolean,
+	readonly mappings_are_validated: boolean,
 	readonly handleTableChange: () => void,
 	readonly handleToggleMappingIsTemplated: () => void,
 	readonly handleClearMapping: () => void,
@@ -367,6 +369,7 @@ function WBPlanViewHeaderRightMappingElements({
 	handleCancel,
 	handleShowMappingView,
 	show_mapping_view,
+	mappings_are_validated,
 }: WBPlanViewHeaderPropsMapping): JSX.Element {
 	return <>
 		{
@@ -376,7 +379,16 @@ function WBPlanViewHeaderRightMappingElements({
 			>Show mapping view</button>
 		}
 		<button onClick={handleClearMapping}>Clear Mappings</button>
-		<button onClick={handleValidation}>Check mappings</button>
+		<button onClick={handleValidation}>
+			Check mappings
+			{
+				mappings_are_validated &&
+				<i style={{
+					color: '#4f2',
+					fontSize: '12px'
+				}}>✓</i>
+			}
+		</button>
 		<button onClick={handleSave}>Save</button>
 		<button onClick={handleCancel}>Cancel</button>
 	</>;
@@ -400,15 +412,15 @@ function WBPlanViewHeader(props: WBPlanViewHeaderProps): JSX.Element {
 			<span>{props.title}</span>
 			{
 				props.state_type === 'MappingState' ?
-					WBPlanViewHeaderLeftMappingElements(props) :
-					WBPlanViewHeaderLeftNonMappingElements(props)
+					<WBPlanViewHeaderLeftMappingElements {...props} /> :
+					<WBPlanViewHeaderLeftNonMappingElements {...props} />
 			}
 		</div>
 		<div>
 			{
 				props.state_type === 'MappingState' ?
-					WBPlanViewHeaderRightMappingElements(props) :
-					WBPlanViewHeaderRightNonMappingElements(props)
+					<WBPlanViewHeaderRightMappingElements {...props} /> :
+					<WBPlanViewHeaderRightNonMappingElements {...props} />
 			}
 		</div>
 	</div>;
@@ -528,6 +540,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			base_table_name: action.table_name,
 			new_header_id: 1,
 			mapping_view: ['0'],
+			mappings_are_validated: false,
 			validation_results: [],
 			lines: get_lines_from_headers({
 				headers: action.headers,
@@ -619,6 +632,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					default_value: true,
 				},
 			),
+			mappings_are_validated: false,
 			mapping_view: ['0'],
 			validation_results: [],
 			new_header_id: 1,
@@ -669,6 +683,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 				}
 			)),
 			changes_made: true,
+			mappings_are_validated: false,
 			validation_results: [],
 		}
 	),
@@ -686,6 +701,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 				},
 			),
 			changes_made: true,
+			mappings_are_validated: false,
 		}
 	),
 	'FocusLineAction': ({
@@ -728,6 +744,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 				...mapping_state(state).lines.slice(focused_line + 1),
 			],
 			changes_made: true,
+			mappings_are_validated: false,
 		};
 	},
 	'AddNewHeaderAction': ({state}) => (
@@ -746,6 +763,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			],
 			autoscroll: true,
 			changes_made: true,
+			mappings_are_validated: false,
 		}
 	),
 	'AddNewStaticHeaderAction': ({state}) => (
@@ -761,6 +779,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			],
 			autoscroll: true,
 			changes_made: true,
+			mappings_are_validated: false,
 		}
 	),
 	'AutoScrollFinishedAction': ({state}) => (
@@ -851,6 +870,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			automapper_suggestions_promise: undefined,
 			automapper_suggestions: undefined,
 			changes_made: true,
+			mappings_are_validated: false,
 		};
 	},
 	'AutomapperSuggestionsLoadedAction': ({
@@ -880,6 +900,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			automapper_suggestions_promise: undefined,
 			automapper_suggestions: undefined,
 			changes_made: true,
+			mappings_are_validated: false,
 		}
 	),
 	'StaticHeaderChangeAction': ({
@@ -1063,6 +1084,7 @@ const state_reducer = generate_reducer<JSX.Element,
 							].table_friendly_name
 					}
 					state_type={state.type}
+					mappings_are_validated={state.mappings_are_validated}
 					mapping_is_templated={state.mapping_is_templated}
 					show_mapping_view={state.show_mapping_view}
 					handleCancel={() => state.dispatch({

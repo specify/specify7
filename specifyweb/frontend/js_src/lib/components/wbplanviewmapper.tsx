@@ -218,6 +218,7 @@ export function validate(state: MappingState): MappingState {
 		show_mapping_view:  // Show mapping view panel if there were validation errors
 			state.show_mapping_view ||
 			Object.values(validation_results).length !== 0,
+		mappings_are_validated: Object.values(validation_results).length === 0,
 		validation_results,
 	};
 }

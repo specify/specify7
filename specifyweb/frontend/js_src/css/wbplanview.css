@@ -16,6 +16,7 @@
 	--background1: #fff;
 	--background2: #fdb;
 	--accent: #f73;
+	--success: #4f2;
 	--lines_to_display: 8;
 	--border_size: 1px;
 
@@ -36,9 +37,14 @@
 	justify-content: space-between;
 }
 
-.wbplanview_header_BaseTableSelectionState > div {
+.wbplanview_header > div {
 	display: flex;
 	column-gap: var(--white_space);
+}
+
+.wbplanview_header i {
+	color: var(--success);
+	font-size: 12px;
 }
 
 /* CONTAINER */
@@ -110,7 +116,7 @@
 }
 
 .wbplanview_mapping_view_map_button_arrow {
-	color: #4f2;
+	color: var(--success);
 }
 
 .mapping_view_resizer {
@@ -391,7 +397,7 @@
 .custom_select_option_icon_selected {
 	display: flex;
 	justify-content: center;
-	color: #4f2;
+	color: var(--success);
 }
 
 .custom_select_option_icon_undefined {
