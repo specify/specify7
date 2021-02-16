@@ -100,7 +100,9 @@ interface AutoMapperSearchedTablesAdd extends Action<'add'> {
 	table_name: string,
 }
 
-type AutoMapperSearchedTablesActions = AutoMapperSearchedTablesAdd | AutoMapperSearchedTablesReset;
+type AutoMapperSearchedTablesActions =
+	AutoMapperSearchedTablesAdd
+	| AutoMapperSearchedTablesReset;
 
 interface AutomapperFindMappingsQueueEnqueue extends Action<'enqueue'> {
 	value: FindMappingsParameters,
@@ -202,6 +204,7 @@ export default class Automapper {
 	private static readonly regex_replace_whitespace: RegExp = /\s+/g;
 	// used to remove non letter characters
 	private static readonly regex_remove_non_az: RegExp = /[^a-z\s]+/g;
+	private static readonly regex_remove_escape_chars: RegExp = /\n/g;
 	private static readonly depth: number = 6;  // how deep to go into the schema
 	// the definitions for the comparison functions
 	private static readonly comparisons: { [key in keyof Options]: any } = {
@@ -243,10 +246,14 @@ export default class Automapper {
 		find_mappings_queue: generate_dispatch<AutomapperFindMappingsQueueActions>({
 			'reset': ({initial_value}) => {
 				typeof initial_value === 'undefined' ?
-					(this.find_mappings_queue = []) :
-					(this.find_mappings_queue = [[
-						initial_value,
-					]]);
+					(
+						this.find_mappings_queue = []
+					) :
+					(
+						this.find_mappings_queue = [[
+							initial_value,
+						]]
+					);
 			},
 			'initialize_level': ({level}) => {
 				this.find_mappings_queue[level] ??= [];
@@ -271,8 +278,14 @@ export default class Automapper {
 		// strip extra characters to increase mapping success
 		this.headers_to_map = Object.fromEntries(raw_headers.map(original_name => {
 
-			const lowercase_name = original_name.toLowerCase().replace(Automapper.regex_replace_whitespace, ' ').trim();
-			const stripped_name = lowercase_name.replace(Automapper.regex_remove_non_az, '');
+			const lowercase_name = original_name.toLowerCase().replace(
+				Automapper.regex_replace_whitespace, ' '
+			).replace(
+				Automapper.regex_remove_escape_chars, ''
+			).trim();
+			const stripped_name = lowercase_name.replace(
+				Automapper.regex_remove_non_az, ''
+			);
 			const final_name = stripped_name.split(' ').join('');
 
 			return [original_name, {
@@ -496,9 +509,14 @@ export default class Automapper {
 			...filtered_path,
 		]);
 
-		return table_synonyms.reduce((table_synonyms: string[], table_synonym: TableSynonym) => {
+		return table_synonyms.reduce((
+			table_synonyms: string[],
+			table_synonym: TableSynonym
+		) => {
 
-			const mapping_path_string = mapping_path_to_string(table_synonym.mapping_path_filter);
+			const mapping_path_string = mapping_path_to_string(
+				table_synonym.mapping_path_filter
+			);
 
 			if (
 				filtered_path_string.endsWith(mapping_path_string) ||

@@ -46,7 +46,12 @@ import {
 } from './wbplanview';
 
 
-export type AutomapperScope = Readonly<'automapper' | 'suggestion'>;
+/* Scope is used to differentiate between mapper definitions that should
+* be used by the automapper and suggestion boxes*/
+export type AutomapperScope = Readonly<
+	'automapper'  // used when selecting a base table
+	| 'suggestion'  // suggestion boxes - used when opening a picklist
+>;
 export type MappingPath = string[];
 export type ListOfHeaders = string[];
 export type MappingType = Readonly<'existing_header' | 'new_column' | 'new_static_column'>;

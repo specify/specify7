@@ -1,127 +1,164 @@
 /*
 *
-* This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
-* Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
+* This file contains information to help auto-map imported XLSX and CSV files
+* to the Specify 6 data model. Originally Based on
+* https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
 *
 * */
-
-//	Automapper does 2 passes though the schema whenever it is asked to map some headers
-//	This is needed to ensure priority mapping for some mapping paths
-//	In particular, `shortcuts` and `table_synonyms` are used on the first pass
-//	The second path goes over `synonyms` and also does string comparison (matching)
-//
-//
-//	SCHEMA: {
-//		table_synonyms: {
-//			/*
-//			 * Table Synonyms are to be used when a table has a different name in a particular context
-//			 * Also, since automapper runs through each table only once,
-//			 * 		table synonyms can be used as a way bypass that limitation
-//			 * Besides that, even though `synonyms` and matches are normally checked in the second pass, if a table has
-//			 * 		Table Synonyms, it's `synonyms` and matches would also be checked in the first pass
-//			 */
-//			<table_name> (case-insensitive): [
-//				{
-//					mapping_path_filter: [<mapping_path>],  // mapping path needed to reach <table_name> with or
-//															// 		without base table or current base table
-//					synonyms: [
-//						'<synonym>'
-//					]
-//				}
-//			]
-//		},
-//		rank_synonyms: {
-//			/*
-//			 * Rank synonyms are used to when the same tree rank can have different name depending on the discipline
-//			 */
-//			<table_name> (case-insensitive): [
-//				{
-//					rank_name:  '<rank_name>',
-//					synonyms: [
-//						'<synonym>'
-//					]
-//				}
-//			]
-//		}
-//		dont_match: {
-//			/*
-//			 * Don't match list designates certain fields in particular tables as ineligible for
-//			 * 		automatic matching under certain scopes
-//			 * This is helpful if certain fields are commonly matched when they should be
-//			 * Don't match list is of the highest priority and would cancel a mapping even if a shortcut, or a synonym was used
-//			 */
-//			<table_name> (case-insensitive): {
-//				<field_name> (case-insensitive): [
-//					'<scope_name>'
-//				]
-//			}
-//		},
-//		shortcuts: {
-//			/*
-//			 * Shortcuts are to be used when successful header match should map to a certain mapping path
-//			 * 		rather than a field name
-//			 * Shortcuts have higher priority than synonyms and thus can also be used to map commonly confused fields
-//			 * 		before they are erroneously mapped elsewhere
-//			 * Shortcut is followed only if header matched the comparisons and a path to table_name
-//			 * 		from base_table_name
-//			 */
-//			<table_name> (case-insensitive): {
-//				<scope_name>: [
-//					{
-//						mapping_path: [<mapping_path>],  // mapping path to be appended to the current path when shortcut is followed
-//						headers: {
-//							<option_name>: {
-//								'<value>' (case-insensitive)
-//							}
-//						}
-//					}
-//				]
-//			}
-//		},
-//		synonyms: {
-//			<table_name> (case-insensitive): {
-//				/*
-//				 * Synonyms should be used when field_name of table_name should be mapped to a particular header,
-//				 * 		yet field label alone is not enough to guarantee a successful match
-//				 * Synonyms are helpful in situations where field name can be spelled in different ways,
-//				 * 		or may vary depending on the context
-//			 	 * Synonym is applied used only if header matched the comparisons and a path to table_name
-//			 	 * 		from base_table_name
-//				 */
-//				<field_name> (case-insensitive): {
-//					<scope_name>: {
-//						headers: {
-//							<option_name>: {
-//								'<value>' (case-insensitive)
-//							}
-//						},
-//					}
-//				}
-//			}
-//		}
-//	}
-//
-// 	Available options:
-// 		regex - Regex string (header.match(regex))
-// 		string - Equals string (header===string)
-// 		contains - Contains string (header.indexOf(string)!==-1)
-//		formatted_header_field_synonym - Available only in the `synonym` definitions
-//										 Matches only if header is strictly one of the following forms:
-//											- <field_name_synonym> <table_name>
-//											- <table_name> <field_name_synonym>
-//											- <table_name> <index> <field_name_synonym>
-//											- <table_name> <field_name_synonym> <index>
-//										 Where <field_name_synonym> is the value provided in formatted_header_field_synonym
-//
-//	Available scopes:
-//		automapper - only used by automapper
-//		suggestion - only used by suggestion boxes
-//
-//
 
 'use strict';
 
 import { AutomapperScope, MappingPath } from './components/wbplanviewmapper';
+
+//	Automapper does 2 passes though the schema whenever it is asked to map
+//	some headers. This is needed to ensure priority mapping for some mapping
+//	paths. In particular, `shortcuts` and `table_synonyms` are used on the
+//	first pass. The second path goes over `synonyms` and also does string
+//	comparison (matching)
+
+export interface Options {
+	/*
+	* A structure for defining matching rules
+	* NOTE: All values must use lower case exclusively!
+	* */
+
+	// Regex match (header.match(regex))
+	readonly regex?: RegExp[],
+
+	// Exact string match (header===string)
+	readonly string?: string[],
+
+	// Substring match (header.indexOf(string)!==-1)
+	readonly contains?: string[],
+
+	// NOTE: formatted_header_field_synonym is also available as a matching
+	// rule, but only for `synonym` rules. See more later in this file
+
+}
+
+// main structure
+
+export interface TableSynonym {
+	// Mapping path needed to reach <table_name>. Can include any number
+	// of parents, up to base table
+	mapping_path_filter: MappingPath,
+	synonyms: string[]
+}
+
+interface AutoMapperDefinitions {
+
+	/*
+	* NOTE: all keys and values in the definitions should use lower case
+	* (since headers, table names and field names used by the mapper are
+	* all in lower case), unless it is explicitly specified that they are
+	* case-insensitive
+	* */
+
+	/*
+	* Table Synonyms are to be used when a table has a different
+	* 	name in a particular context
+	* Also, since automapper runs through each table only once,
+	* 	table synonyms can be used as a way bypass that limitation
+	* Besides that, even though `synonyms` and matches are normally
+	* 	checked in the second pass, if a table has
+	* 	Table Synonyms, it's `synonyms` and matches would also
+	* 	be checked in the first pass
+	*/
+	table_synonyms: Record<
+		string,  // table_name (case-insensitive)
+		TableSynonym[]  // described earlier in the file
+	>,
+
+	/*
+	* Rank synonyms are used to when the same tree rank can have
+	* different name depending on the discipline
+	*/
+	rank_synonyms: Record<
+		string,  // table_name (case-insensitive)
+		{
+			rank_name: string,
+			synonyms: string[]
+		}[]
+		>
+
+	/*
+	* Don't match list designates certain fields in particular
+	* 	tables as ineligible for automatic matching under
+	* 	certain scopes
+	* This is helpful if certain fields are commonly matched when
+	* 	they should be
+	* Don't match list is of the highest priority and would cancel
+	* 	a mapping even if a shortcut, or a synonym was used
+	*/
+	dont_match: Record<
+			string,  // table_name (case-insensitive)
+			Record<
+				string,  // field_name (case-insensitive)
+				AutomapperScope[]  // defined in wbplanviewmapper.tsx
+			>
+		>,
+
+	/*
+	* Shortcuts are to be used when successful header match should
+	* 	map to a certain mapping path rather than a field name
+	* Shortcuts have higher priority than synonyms and thus can
+	* 	also be used to map commonly confused fields before they
+	* 	are erroneously mapped elsewhere
+	* Shortcut is followed only if header matched the comparisons
+	* 	and a path to table_name from base_table_name
+	*/
+	shortcuts: Record<
+		string,  // table_name (case-insensitive)
+		Partial<
+			Record<
+				AutomapperScope,  // defined in wbplanviewmapper.tsx
+				{
+					// mapping path that is to be appended to the current path
+					// when shortcut is followed
+					readonly mapping_path: MappingPath,
+					readonly headers: Options  // described earlier in the file
+				}[]
+			>
+		>
+	>,
+
+	/*
+	* Synonyms should be used when field_name of table_name should be mapped
+	* 	to a particular header, yet field label alone is not enough to
+	* 	guarantee a successful match
+	* Synonyms are helpful in situations where field name can be spelled
+	* 	in different ways, or may vary depending on the context
+	* Synonym is used only if header matched the comparisons and
+	* 	and there exists a path from table_name to base_table_name
+	*/
+	synonyms: Record<
+		string,  // table_name (case-insensitive)
+		Record<
+			string,  // field_name (case-insensitive)
+			Partial<
+				Record<
+					AutomapperScope,  // defined in wbplanviewmapper.tsx
+					{
+						headers: Options &
+							{
+								// Additional matching rule - available
+								// only for `synonym` definitions
+								// Matches only if header is strictly
+								// in one of the following forms:
+								//  - <field_name_synonym> <table_name>
+								// 	- <table_name> <field_name_synonym>
+								// 	- <table_name> <index> <field_name_synonym>
+								// 	- <table_name> <field_name_synonym> <index>
+								// Where <field_name_synonym> is the value
+								// provided in formatted_header_field_synonym
+								formatted_header_field_synonym?: string[],
+							}
+					}
+				>
+			>
+		>
+	>,
+}
 
 const definitions: AutoMapperDefinitions = {
 	table_synonyms: {
@@ -559,54 +596,29 @@ const definitions: AutoMapperDefinitions = {
 	},
 };
 
-export interface Options {
-	readonly regex?: RegExp[],
-	readonly string?: string[],
-	readonly contains?: string[],
-}
-
-// main structure
-
-export interface TableSynonym {
-	mapping_path_filter: MappingPath,
-	synonyms: string[]
-}
-
-interface AutoMapperDefinitions {
-	table_synonyms: Record<string, TableSynonym[]>,
-	rank_synonyms: Record<string, {
-		rank_name: string,
-		synonyms: string[]
-	}[]>
-	dont_match: Record<string,
-		Record<string, AutomapperScope[]>>,
-	shortcuts: Record<string,
-		Partial<Record<AutomapperScope, {
-			readonly mapping_path: MappingPath,
-			readonly headers: Options
-		}[]>>>,
-	synonyms: Record<string,
-		Record<string,
-			Partial<Record<AutomapperScope,
-				{
-					headers: Options & {
-						formatted_header_field_synonym?: string[],
-					}
-				}>>>>,
-}
-
-/* Method that converts all table names and field names in definitions to lower case */
-function definitions_to_lowercase(definitions: AutoMapperDefinitions): AutoMapperDefinitions {
+/* Method that converts all table names and field names in definitions to
+* lower case */
+function definitions_to_lowercase(
+	definitions: AutoMapperDefinitions
+): AutoMapperDefinitions {
 
 	const keys_to_lower_case = (object: object, levels = 1): object => (
 		Object.fromEntries(
 			Object.entries(object).map(([key, value]) =>
-				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value],
+				[
+					key.toLowerCase(),
+					levels > 1 ?
+						keys_to_lower_case(value, levels - 1) :
+						value
+				],
 			),
 		)
 	);
 
-	const structure_depth: [structure_name: keyof typeof definitions, depth: number][] = [
+	// specify how deep to go into each branch when converting
+	const structure_depth: [
+		structure_name: keyof typeof definitions, depth: number
+	][] = [
 		['table_synonyms', 1],
 		['rank_synonyms', 1],
 		['dont_match', 2],
@@ -615,7 +627,10 @@ function definitions_to_lowercase(definitions: AutoMapperDefinitions): AutoMappe
 	];
 	structure_depth.forEach(([structure_name, depth]) => (
 		//@ts-ignore
-		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth)
+		definitions[structure_name] = keys_to_lower_case(
+			definitions[structure_name],
+			depth
+		)
 	));
 
 	return Object.freeze(definitions);
