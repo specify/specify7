@@ -182,6 +182,24 @@ const definitions: AutoMapperDefinitions = {
 					'cataloger',
 				],
 			},
+			{
+				mapping_path_filter: ['referencework', 'authors'],
+				synonyms: [
+					'author'
+				]
+			},
+			{
+				mapping_path_filter: ['geocoorddetails', 'georefdetby'],
+				synonyms: [
+					'geo ref by',
+				]
+			},
+			{
+				mapping_path_filter: ['preparations', 'preparedbyagent'],
+				synonyms: [
+					'prepared'
+				]
+			}
 		],
 		Determination: [
 			{
@@ -199,6 +217,22 @@ const definitions: AutoMapperDefinitions = {
 				],
 			},
 		],
+		CollectionObject: [
+			{
+				mapping_path_filter: ['collectionobject'],
+				synonyms: [
+					'co',
+				]
+			}
+		],
+		Locality: [
+			{
+				mapping_path_filter: ['locality'],
+				synonyms: [
+					'loc'
+				]
+			}
+		]
 	},
 	rank_synonyms: {
 		Taxon: [
@@ -326,6 +360,38 @@ const definitions: AutoMapperDefinitions = {
 					},
 				},
 			},
+			firstName: {
+				suggestion: {
+					headers: {
+						contains: [
+							'first',
+						]
+					}
+				},
+				automapper: {
+					headers: {
+						formatted_header_field_synonym: [
+							'first',
+						],
+					},
+				},
+			},
+			lastName: {
+				suggestion: {
+					headers: {
+						contains: [
+							'last',
+						]
+					}
+				},
+				automapper: {
+					headers: {
+						formatted_header_field_synonym: [
+							'last',
+						],
+					},
+				},
+			}
 		},
 		CollectingEvent: {
 			verbatimDate: {
@@ -454,9 +520,17 @@ const definitions: AutoMapperDefinitions = {
 					headers: {
 						string: [
 							'localitynum',
+							'locality',
 						],
 					},
 				},
+				suggestion: {
+					headers: {
+						contains: [
+							'location',
+						]
+					}
+				}
 			},
 			namedplace: {
 				automapper: {
@@ -495,6 +569,7 @@ const definitions: AutoMapperDefinitions = {
 				automapper: {
 					headers: {
 						contains: [
+							'catalog date',
 							'cataloged date',
 							'catalogued date',
 						],
@@ -509,10 +584,7 @@ const definitions: AutoMapperDefinitions = {
 					headers: {
 						regex: [
 							/specimen|cat(alog(ue)?)? ?(#|n(o|um(er)?)?)/,
-						],
-						contains: [
-							'bmsm no',
-						],
+						]
 					},
 				},
 				suggestion: {
@@ -526,6 +598,18 @@ const definitions: AutoMapperDefinitions = {
 					},
 				},
 			},
+			altcatalognumber: {
+				automapper: {
+					headers: {
+						regex: [
+							/(alt(ernative)?) (specimen|cat(alog(ue)?))? ?(#|n(o|um(er)?)?)/,
+						],
+						string: [
+							'altcatno'
+						]
+					}
+				}
+			}
 		},
 		Geography: {
 			state: {
@@ -560,7 +644,7 @@ const definitions: AutoMapperDefinitions = {
 					headers: {
 						formatted_header_field_synonym: [
 							'date',
-						],
+						]
 					},
 				},
 			},
