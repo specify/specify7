@@ -485,7 +485,11 @@ function DoImportButton(props: {update: HandleAction}) {
 
 function extractHeader(data: string[][], headerInData: boolean): {rows: string[][], header: string[]} {
 	const header = headerInData ?
-		data[0].map((header, index, headers) =>  // make headers unique
+		data[0].map(header=>
+			header ?
+				header :
+				'(no header)'
+		).map((header, index, headers) =>  // make headers unique
 			headers.indexOf(header) === index ?
 				header :
 				`${header} (${
