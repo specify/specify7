@@ -22,9 +22,8 @@ import {
 	AutomapperSuggestion,
 	GetMappedFieldsBind,
 	MappingPath,
-	OpenSelectElement,
-	RelationshipType,
-}                                                      from './components/wbplanviewmapper';
+	RelationshipType, SelectElementPosition,
+} from './components/wbplanviewmapper';
 import { DataModelField, DataModelRelationship }       from './wbplanviewmodelfetcher';
 import { CustomSelectSubtype, CustomSelectType }       from './components/customselectelement';
 import { HtmlGeneratorFieldData, MappingElementProps } from './components/wbplanviewcomponents';
@@ -346,7 +345,7 @@ export function get_mapping_line_data_from_mapping_path({
 }: {
 	readonly base_table_name: string,
 	readonly mapping_path?: MappingPath,  // the mapping path
-	readonly open_select_element?: OpenSelectElement  // index of custom select element that should be open
+	readonly open_select_element?: SelectElementPosition  // index of custom select element that should be open
 	// {bool} if False, returns data only for the last element of the mapping path only
 	// Else returns data for each mapping path part
 	readonly iterate?: boolean,
@@ -608,7 +607,6 @@ export function get_mapping_line_data_from_mapping_path({
 							handleChange: handleChange && handleChange.bind(null, internal_state.mapping_path_position + 1),
 							handleClose: handleClose && handleClose.bind(null, internal_state.mapping_path_position + 1),
 							automapper_suggestions,
-							autoscroll: open_select_element?.autoscroll || false,
 							handleAutomapperSuggestionSelection,
 						} :
 						{

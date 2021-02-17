@@ -38,6 +38,7 @@ import {
 import React                                       from 'react';
 import { named_component }                         from '../statemanagement';
 import {
+	AutoScrollTypes,
 	ChangeSelectElementValueAction,
 	LoadingState, MappingActions,
 	MappingState,
@@ -62,10 +63,6 @@ export interface SelectElementPosition {
 	readonly index: number,
 }
 
-export interface OpenSelectElement extends SelectElementPosition {
-	readonly autoscroll: boolean,
-}
-
 interface MappingLine {
 	readonly type: MappingType,
 	readonly name: string,
@@ -88,10 +85,9 @@ export interface WBPlanViewMapperBaseProps {
 	readonly mapping_view: MappingPath,
 	readonly validation_results: MappingPath[],
 	readonly lines: MappingLine[],
-	readonly open_select_element?: OpenSelectElement,
+	readonly open_select_element?: SelectElementPosition,
 	readonly focused_line?: number,
 	readonly automapper_suggestions?: AutomapperSuggestion[],
-	readonly autoscroll?: boolean,
 }
 
 export type GetMappedFieldsBind = (
@@ -592,7 +588,6 @@ export default function WBPlanViewMapper(
 		readonly handleToggleHiddenFields: () => void,
 		readonly handleAddNewColumn: () => void,
 		readonly handleAddNewStaticColumn: () => void,
-		readonly handleAutoScrollFinish: () => void,
 		readonly handleOpen: (
 			line: number,
 			index: number,
@@ -619,6 +614,10 @@ export default function WBPlanViewMapper(
 		readonly handleToggleMappingIsTemplated: () => void,
 		readonly handleToggleMappingView: () => void,
 		readonly handleMappingViewResize: (height: number) => void,
+		readonly handleAutoscrollStatusChange: (
+			autoscroll_type: AutoScrollTypes,
+			status: boolean,
+		)=>void,
 	}): JSX.Element {
 	const get_mapped_fields_bind = get_mapped_fields.bind(
 		null,
@@ -628,17 +627,51 @@ export default function WBPlanViewMapper(
 		null,
 	);
 
-	// scroll down the list of mappings when the `add_new_column` or
-	// `add_new_static_column` was clicked
-	React.useEffect(() => {
-		if (props.autoscroll && list_of_mappings.current) {
-			list_of_mappings.current.scrollTop =
-				list_of_mappings.current.scrollHeight;
-			props.handleAutoScrollFinish();
-		}
-	},[props.autoscroll, list_of_mappings.current]);
-
 	const mappingViewParentRef = React.useRef<HTMLDivElement|null>(null);
+
+	// scroll list_of_mappings/mapping_view/open picklist to correct position
+	React.useEffect(()=>{
+
+		if(
+			typeof props.refObject.current.autoscroll === 'undefined' ||
+			!list_of_mappings.current ||
+			!mappingViewParentRef.current
+		)
+			return;
+
+		(
+			Object.entries(
+				props.refObject.current.autoscroll
+			) as [AutoScrollTypes, boolean][]
+		).filter(([,autoscroll])=>
+			autoscroll
+		).map(([autoscroll_type])=> {
+			if(autoscroll_type === 'list_of_mappings'){
+
+				if(!list_of_mappings.current)
+					return;
+
+				list_of_mappings.current.scrollTop =
+					list_of_mappings.current.scrollHeight;
+			}
+
+			if(autoscroll_type === 'mapping_view'){
+
+				if(!mappingViewParentRef.current)
+					return;
+
+				if(props.validation_results.length !== 0)
+					mappingViewParentRef.current.scrollLeft = 0;
+
+			}
+
+			props.handleAutoscrollStatusChange(
+				autoscroll_type,
+				false
+			);
+
+		})
+	});
 
 	// resize event listener for the mapping view
 	React.useEffect(() => {
@@ -655,7 +688,8 @@ export default function WBPlanViewMapper(
 			// @ts-ignore
 			new ResizeObserver(()=>
 				mappingViewParentRef.current &&
-				props.handleMappingViewResize(
+				props.handleMappingViewResize.bind(
+					null,
 					mappingViewParentRef.current.clientHeight
 				)
 			);

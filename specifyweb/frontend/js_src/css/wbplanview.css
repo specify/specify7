@@ -105,6 +105,7 @@
 
 .mapping_view .custom_select_options {
 	max-height: unset;
+	height: 100%;
 }
 
 .wbplanview_mapping_view_map_button {

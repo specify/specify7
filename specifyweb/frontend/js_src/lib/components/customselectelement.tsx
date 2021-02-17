@@ -101,7 +101,6 @@ interface CustomSelectElementPropsBase {
 		is_relationship: boolean,
 	) => void,
 	readonly handleClose?: () => void,
-	readonly autoscroll?: boolean,
 	readonly custom_select_option_groups?: CustomSelectElementOptionGroups,
 	readonly automapper_suggestions?: JSX.Element,
 }
@@ -119,7 +118,6 @@ export interface CustomSelectElementPropsOpenBase extends CustomSelectElementPro
 		is_relationship: boolean,
 	) => void
 	readonly handleClose?: () => void,
-	readonly autoscroll?: boolean,
 }
 
 interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase {
@@ -274,7 +272,7 @@ export function CustomSelectElement(
 	}: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen,
 ): JSX.Element {
 
-	const list_of_options = React.useRef<HTMLElement>(null);
+	const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
 	const option_is_intractable = intractable_select_types.indexOf(custom_select_type) === -1;
 
@@ -361,7 +359,7 @@ export function CustomSelectElement(
 	const custom_select_options = (
 			first_row || groups
 		) &&
-		<span className="custom_select_options" ref={list_of_options}>
+		<span className="custom_select_options" ref={listOfOptionsRef}>
 			{first_row}
 			{groups}
 		</span>;
@@ -371,25 +369,28 @@ export function CustomSelectElement(
 		if(// auto scroll down the option if
 			is_open &&  // it is open
 			option_is_intractable &&  // and it can be opened
-			list_of_options !== null &&  // and list of options exists
-			list_of_options.current !== null &&  // and DOM is rendered
+			listOfOptionsRef.current !== null &&  // and DOM is rendered
 			default_option.option_name!=='0' &&  // and list has a value
-			list_of_options.current.scrollTop === 0  // and the list is not already scrolled
+			// and the list is not already scrolled
+			listOfOptionsRef.current.scrollTop === 0
 		){
 
-			const selected_option = list_of_options.current.getElementsByClassName(
-				'custom_select_option_selected'
-			)?.[0] as undefined|HTMLElement;
+			const selected_option =
+				listOfOptionsRef.current.getElementsByClassName(
+					'custom_select_option_selected'
+				)?.[0] as undefined|HTMLElement;
 
 			// scroll down only if selected item is not visible
 			if(
 				typeof selected_option !== 'undefined' &&
-				list_of_options.current.offsetHeight < selected_option.offsetTop + selected_option.offsetHeight
+				listOfOptionsRef.current.offsetHeight <
+				selected_option.offsetTop + selected_option.offsetHeight
 			)
-				list_of_options.current.scrollTop = selected_option.offsetTop - selected_option.offsetHeight;
+				listOfOptionsRef.current.scrollTop =
+					selected_option.offsetTop - selected_option.offsetHeight;
 
 		}
-	},[is_open, list_of_options]);
+	},[is_open, listOfOptionsRef]);
 
 
 	return <span

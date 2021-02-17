@@ -212,8 +212,6 @@ type AddNewHeaderAction = Action<'AddNewHeaderAction'>
 
 type AddNewStaticHeaderAction = Action<'AddNewStaticHeaderAction'>
 
-type AutoScrollFinishedAction = Action<'AutoScrollFinishedAction'>
-
 type OpenSelectElementAction =
 	Action<'OpenSelectElementAction'>
 	& SelectElementPosition
@@ -262,7 +260,6 @@ export type MappingActions =
 	| MappingViewMapAction
 	| AddNewHeaderAction
 	| AddNewStaticHeaderAction
-	| AutoScrollFinishedAction
 	| OpenSelectElementAction
 	| CloseSelectElementAction
 	| ChangeSelectElementValueAction
@@ -761,7 +758,6 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					mapping_path: ['0'],
 				},
 			],
-			autoscroll: true,
 			changes_made: true,
 			mappings_are_validated: false,
 		}
@@ -777,15 +773,8 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					mapping_path: ['0'],
 				},
 			],
-			autoscroll: true,
 			changes_made: true,
 			mappings_are_validated: false,
-		}
-	),
-	'AutoScrollFinishedAction': ({state}) => (
-		{
-			...mapping_state(state),
-			autoscroll: false,
 		}
 	),
 	'ToggleHiddenFieldsAction': ({state}) => (
@@ -810,7 +799,6 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			open_select_element: {
 				line: action.line,
 				index: action.index,
-				autoscroll: false,
 			},
 			automapper_suggestions_promise:
 				get_automapper_suggestions({
@@ -1098,9 +1086,16 @@ const state_reducer = generate_reducer<JSX.Element,
 					handleClearMapping={() => state.dispatch({
 						type: 'ResetMappingsAction',
 					})}
-					handleValidation={() => state.dispatch({
-						type: 'ValidationAction',
-					})}
+					handleValidation={() =>
+						void(state.dispatch({
+							type: 'ValidationAction',
+						})) ||
+						void(state.refObjectDispatch({
+							type: 'AutoscrollStatusChangeAction',
+							autoscroll_type: 'mapping_view',
+							status: true,
+						}))
+					}
 					handleSave={() => handleSave(false)}
 					handleToggleMappingIsTemplated={() =>
 						state.dispatch({
@@ -1129,7 +1124,6 @@ const state_reducer = generate_reducer<JSX.Element,
 				open_select_element={state.open_select_element}
 				automapper_suggestions={state.automapper_suggestions}
 				focused_line={state.focused_line}
-				autoscroll={state.autoscroll}
 				refObject={refObject}
 				handleSave={() => handleSave(true)}
 				handleToggleHiddenFields={() =>
@@ -1154,9 +1148,6 @@ const state_reducer = generate_reducer<JSX.Element,
 				}
 				handleAddNewStaticColumn={() =>
 					state.dispatch({type: 'AddNewStaticHeaderAction'})
-				}
-				handleAutoScrollFinish={() =>
-					state.dispatch({type: 'AutoScrollFinishedAction'})
 				}
 				handleOpen={(line: number, index: number) =>
 					state.dispatch({
@@ -1218,6 +1209,16 @@ const state_reducer = generate_reducer<JSX.Element,
 						height
 					})
 				}
+				handleAutoscrollStatusChange={((
+						autoscroll_type,
+						status
+					) =>
+						state.refObjectDispatch({
+							type: 'AutoscrollStatusChangeAction',
+							autoscroll_type,
+							status
+						})
+				)}
 			/>
 		</HeaderWrapper>;
 	},
@@ -1225,11 +1226,15 @@ const state_reducer = generate_reducer<JSX.Element,
 
 
 type RefUndefinedState = State<'RefUndefinedState'>;
+export type AutoScrollTypes =
+	'list_of_mappings'
+	| 'mapping_view';
 
 export interface RefMappingState extends State<'RefMappingState'> {
 	unload_protect_is_set: boolean,
 	mapping_view_height: number,
-	mapping_view_height_change_timeout: NodeJS.Timeout
+	mapping_view_height_change_timeout: NodeJS.Timeout,
+	autoscroll: Record<AutoScrollTypes,boolean>,
 }
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
@@ -1258,11 +1263,18 @@ interface MappingViewResizeAction
 	height: number;
 }
 
+interface AutoscrollStatusChangeAction
+	extends Action<'AutoscrollStatusChangeAction'> {
+	autoscroll_type: AutoScrollTypes,
+	status: boolean,
+}
+
 type RefActions =
 	RefChangeStateAction
 	| RefSetUnloadProtectAction
 	| RefUnsetUnloadProtectAction
-	| MappingViewResizeAction;
+	| MappingViewResizeAction
+	| AutoscrollStatusChangeAction;
 
 type RefActionsWithPayload = RefActions & {
 	payload: {
@@ -1273,20 +1285,23 @@ type RefActionsWithPayload = RefActions & {
 	}
 };
 
-const refWrongStateMessage = 'Tried to change the refObject while in a' +
-	' wrong state';
-
 function getRefMappingState(
 	refObject: React.MutableRefObject<RefStates>,
 	state: WBPlanViewStates,
 	quiet = false,
 ): React.MutableRefObject<RefMappingState> {
+
+	const refWrongStateMessage = 'Tried to change the refObject while in a' +
+		' wrong state';
+
 	if (state.type !== flippedRefStatesMapper[refObject.current.type])
 		if (quiet)
 			console.error(refWrongStateMessage);
 		else
 			throw Error(refWrongStateMessage);
+
 	return refObject as React.MutableRefObject<RefMappingState>;
+
 }
 
 const ref_object_dispatch = generate_dispatch<RefActionsWithPayload>({
@@ -1347,8 +1362,8 @@ const ref_object_dispatch = generate_dispatch<RefActionsWithPayload>({
 			);
 
 		let height = initialHeight;
-		if(initialHeight === minMappingViewHeight) {
-			height += 1;
+		if(initialHeight <= minMappingViewHeight) {
+			height = minMappingViewHeight+1;
 			stateDispatch({
 				type: 'ToggleMappingViewAction',
 			});
@@ -1368,7 +1383,26 @@ const ref_object_dispatch = generate_dispatch<RefActionsWithPayload>({
 					),
 				150,
 			);
-	}
+	},
+	'AutoscrollStatusChangeAction': ({
+		autoscroll_type,
+		status,
+		payload: {
+			refObject,
+			state,
+		},
+	}) => {
+		const refMappingObject = getRefMappingState(
+			refObject,
+			state,
+		);
+
+		refMappingObject.current.autoscroll ??= {
+			mapping_view: false,
+			list_of_mappings: false,
+		};
+		refMappingObject.current.autoscroll[autoscroll_type] = status;
+	},
 });
 
 
