@@ -436,7 +436,7 @@ const space_out_children = (
 * */
 const empty_cell = (column_index: number): UploadedColumn => (
 	{
-		column_index: column_index,
+		column_index,
 		cell_value: '',
 	}
 );
@@ -672,7 +672,7 @@ export function parseUploadResults(
 											).map(column_name=>
 												headers.indexOf(column_name)
 											).map(column_index => ({
-												column_index: column_index,
+												column_index,
 												cell_value: data[row_index][column_index] ?? ''
 											})),
 										}

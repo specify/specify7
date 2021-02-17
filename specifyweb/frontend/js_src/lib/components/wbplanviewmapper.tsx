@@ -254,7 +254,7 @@ export function get_lines_from_headers({
 
 	const automapper_results: AutoMapperResults = (
 		new automapper({
-			headers: headers,
+			headers,
 			base_table: base_table_name,
 			scope: 'automapper',
 			check_for_existing_mappings: false,
@@ -762,7 +762,7 @@ export default function WBPlanViewMapper(
 					line_data={
 						get_mapping_line_data_from_mapping_path({
 							base_table_name: props.base_table_name,
-							mapping_path: mapping_path,
+							mapping_path,
 							generate_last_relationship_data: true,
 							custom_select_type: 'closed_list',
 							handleChange: props.handleChange.bind(null, index),

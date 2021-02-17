@@ -6,7 +6,11 @@
 
 'use strict';
 
-import { DataModelListOfTables, DataModelRanks, DataModelTables } from './wbplanviewmodelfetcher';
+import {
+	DataModelListOfTables,
+	DataModelRanks,
+	DataModelTables
+} from './wbplanviewmodelfetcher';
 
 const data_model_storage: {
 	reference_symbol: string;
@@ -19,9 +23,12 @@ const data_model_storage: {
 } = {
 
 	// each one of this can be modified to a single symbol or several symbols
-	reference_symbol: '#',  // prefix for -to-many indexes (used behind the scenes & is shown to the user)
+
+	// prefix for -to-many indexes (used behind the scenes & is shown to the user)
+	reference_symbol: '#',
 	tree_symbol: '$',  // prefix for tree ranks (used behind the scenes)
-	// a symbol to used to join multiple mapping path elements together when need to represent mapping path as a string
+	// a symbol to used to join multiple mapping path elements together when
+	// need to represent mapping path as a string
 	path_join_symbol: '_',
 
 	tables: undefined!,  // parsed tables and their fields

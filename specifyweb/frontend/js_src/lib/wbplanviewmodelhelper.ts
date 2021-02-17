@@ -1,6 +1,7 @@
 /*
 *
-* Helper methods for working with Specify data model as parsed by wbplanview model fetcher
+* Helper methods for working with Specify data model as parsed by wbplanview
+* model fetcher
 *
 * */
 
@@ -19,18 +20,23 @@ import { MappingsTree }                  from './wbplanviewtreehelper';
 /* fetch fields for a table */
 const get_table_fields = (
 	table_name: string,  // the name of the table to fetch the fields for
-	filter__is_relationship: boolean | -1 = -1,  // whether fields are relationships
+	// whether fields are relationships
+	filter__is_relationship: boolean | -1 = -1,
 	filter__is_hidden: boolean | -1 = -1,  // whether field is hidden
 ): [field_name: string, field_data: DataModelField][] =>
-	Object.entries(data_model_storage.tables[table_name].fields as DataModelFields).filter(([, {
+	Object.entries(
+		data_model_storage.tables[table_name].fields as DataModelFields
+	).filter(([, {
 			is_relationship,
 			is_hidden,
 		}]) =>
 		(
-			filter__is_relationship === -1 || is_relationship === filter__is_relationship
+			filter__is_relationship === -1 ||
+			is_relationship === filter__is_relationship
 		) &&
 		(
-			filter__is_hidden === -1 || is_hidden === filter__is_hidden
+			filter__is_hidden === -1 ||
+			is_hidden === filter__is_hidden
 		),
 	);
 
@@ -43,11 +49,15 @@ export const get_table_non_relationship_fields = (
 		table_name,
 		false,
 		filter__is_hidden,
-	) as [relationship_name: string, relationship_data: DataModelNonRelationship][];
+	) as [
+		relationship_name: string,
+		relationship_data: DataModelNonRelationship
+	][];
 
 /* fetch relationships for a table */
 export const get_table_relationships = (
-	table_name: string,   // the name of the table to fetch relationships fields for,
+	// the name of the table to fetch relationships fields for
+	table_name: string,
 	filter__is_hidden: boolean | -1 = -1,  // whether field is hidden
 ) =>
 	get_table_fields(
@@ -59,11 +69,12 @@ export const get_table_relationships = (
 /* Returns whether a table has tree ranks */
 export const table_is_tree = (
 	table_name?: string,
-): boolean /* whether a table has tree ranks */ =>  // the name of the table to check
+): boolean /* whether a table has tree ranks */ =>
 	typeof data_model_storage.ranks[table_name || ''] !== 'undefined';
-//typeof table_name !== 'undefined' && typeof data_model_storage.ranks[table_name] !== 'undefined';
 
-/* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many) */
+/* Returns whether relationship is a -to-many
+*	(e.x. one-to-many or many-to-many)
+* */
 export const relationship_is_to_many = (
 	relationship_type?: RelationshipType | '',
 ): boolean /* whether relationship is a -to-many */ =>
@@ -75,13 +86,19 @@ export const relationship_is_to_many = (
 export const value_is_reference_item = (
 	value?: string,  // the value to use
 ): boolean /* whether a value is a -to-many reference item */ =>
-	value?.substr(0, data_model_storage.reference_symbol.length) === data_model_storage.reference_symbol || false;
+	value?.substr(
+		0,
+		data_model_storage.reference_symbol.length
+	) === data_model_storage.reference_symbol || false;
 
 /* Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
 export const value_is_tree_rank = (
 	value: string,  // the value to use
 ): boolean /* whether a value is a tree rank */ =>
-	value?.substr(0, data_model_storage.tree_symbol.length) === data_model_storage.tree_symbol || false;
+	value?.substr(
+		0,
+		data_model_storage.tree_symbol.length
+	) === data_model_storage.tree_symbol || false;
 
 /*
 * Returns index from a complete reference item value (e.x #1 => 1)
@@ -93,7 +110,8 @@ export const get_index_from_reference_item_name = (
 	~~value.substr(data_model_storage.reference_symbol.length);
 
 /*
-* Returns tree rank name from a complete tree rank name (e.x $Kingdom => Kingdom)
+* Returns tree rank name from a complete tree rank name
+* (e.x $Kingdom => Kingdom)
 * Opposite of format_tree_rank
 * */
 export const get_name_from_tree_rank_name = (
@@ -130,13 +148,20 @@ export const format_reference_item = (
 	`${data_model_storage.reference_symbol}${index}`;
 
 /*
-* Returns a complete tree rank name from a tree rank name (e.x Kingdom => $Kingdom)
+* Returns a complete tree rank name from a tree rank name
+* (e.x Kingdom => $Kingdom)
 * Opposite of get_name_from_tree_rank_name
 * */
 export const format_tree_rank = (
 	rank_name: string,  // tree rank name to use
 ): string /* a complete tree rank name */ =>
-	`${data_model_storage.tree_symbol}${rank_name[0].toUpperCase()}${rank_name.slice(1).toLowerCase()}`;
+	`${
+		data_model_storage.tree_symbol
+	}${
+		rank_name[0].toUpperCase()
+	}${
+		rank_name.slice(1).toLowerCase()
+	}`;
 
 export const mapping_path_to_string = (
 	mapping_path: MappingPath,
@@ -146,12 +171,17 @@ export const mapping_path_to_string = (
 
 /* Iterates over the mappings_tree to find required fields that are missing */
 export function show_required_missing_fields(
-	table_name: string,  // Official name of the current base table (from data model)
-	// Result of running mappings.get_mappings_tree() - an object with information about now mapped fields
+	// Official name of the current base table (from data model)
+	table_name: string,
+	// Result of running mappings.get_mappings_tree() - an object with
+	// information about now mapped fields
 	mappings_tree?: MappingsTree,
-	previous_table_name = '',  // used internally in a recursion. Previous table name
-	path: MappingPath = [],  // used internally in a recursion. Current mapping path
-	results: string[][] = [],  // used internally in a recursion. Save results
+	// used internally in a recursion. Previous table name
+	previous_table_name = '',
+	// used internally in a recursion. Current mapping path
+	path: MappingPath = [],
+	// used internally in a recursion. Save results
+	results: string[][] = [],
 ): string[][] /* array of mapping paths (array) */ {
 
 	const table_data = data_model_storage.tables[table_name];
@@ -186,8 +216,10 @@ export function show_required_missing_fields(
 
 		if (!last_path_element_is_a_rank)
 			return keys.reduce((results, rank_name) => {
-				const is_rank_required = data_model_storage.ranks[table_name][rank_name];
-				const complimented_rank_name = data_model_storage.tree_symbol + rank_name;
+				const is_rank_required =
+					data_model_storage.ranks[table_name][rank_name];
+				const complimented_rank_name =
+					data_model_storage.tree_symbol + rank_name;
 				const local_path = [...path, complimented_rank_name];
 
 				if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
@@ -207,7 +239,9 @@ export function show_required_missing_fields(
 	}
 
 	// handle regular fields and relationships
-	Object.entries(table_data.fields).some(([field_name, field_data]) => {
+	Object.entries(
+		table_data.fields
+	).some(([field_name, field_data]) => {
 
 		const local_path = [...path, field_name];
 
@@ -227,7 +261,8 @@ export function show_required_missing_fields(
 					previous_relationship_name = local_path.slice(-3)[0];
 
 				const parent_relationship_data =
-					data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as DataModelRelationship;
+					data_model_storage.tables[previous_table_name].fields[
+						previous_relationship_name] as DataModelRelationship;
 
 				if (
 					(  // disable circular relationships
@@ -308,10 +343,25 @@ export const is_circular_relationship = ({
 }):boolean =>
 	target_table_name === parent_table_name &&
 	(
-		is_circular_relationship_backwards({parent_table_name, foreign_name, relationship_key}) ||
-		is_circular_relationship_forwards({table_name, relationship_key, current_mapping_path_part})
+		is_circular_relationship_backwards(
+			{
+				parent_table_name,
+				foreign_name,
+				relationship_key
+			}
+		) ||
+		is_circular_relationship_forwards(
+			{
+				table_name,
+				relationship_key,
+				current_mapping_path_part
+			}
+		)
 	);
 
-export const is_too_many_inside_of_too_many = (type?: RelationshipType, parent_type?: RelationshipType):boolean =>
+export const is_too_many_inside_of_too_many = (
+	type?: RelationshipType,
+	parent_type?: RelationshipType
+):boolean =>
 	relationship_is_to_many(type) &&
 	relationship_is_to_many(parent_type);

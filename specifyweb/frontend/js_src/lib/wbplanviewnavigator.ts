@@ -15,18 +15,30 @@ import {
 	format_tree_rank,
 	get_name_from_tree_rank_name,
 	get_max_to_many_value,
-	format_reference_item, is_circular_relationship, is_too_many_inside_of_too_many,
+	format_reference_item,
+	is_circular_relationship,
+	is_too_many_inside_of_too_many,
 }                                                      from './wbplanviewmodelhelper';
 import data_model_storage                              from './wbplanviewmodel';
 import {
 	AutomapperSuggestion,
 	GetMappedFieldsBind,
 	MappingPath,
-	RelationshipType, SelectElementPosition,
+	RelationshipType,
+	SelectElementPosition,
 } from './components/wbplanviewmapper';
-import { DataModelField, DataModelRelationship }       from './wbplanviewmodelfetcher';
-import { CustomSelectSubtype, CustomSelectType }       from './components/customselectelement';
-import { HtmlGeneratorFieldData, MappingElementProps } from './components/wbplanviewcomponents';
+import {
+	DataModelField,
+	DataModelRelationship
+}       from './wbplanviewmodelfetcher';
+import {
+	CustomSelectSubtype,
+	CustomSelectType
+}       from './components/customselectelement';
+import {
+	HtmlGeneratorFieldData,
+	MappingElementProps
+} from './components/wbplanviewcomponents';
 
 
 interface FindNextNavigationDirectionBase {
@@ -631,7 +643,7 @@ export function get_mapping_line_data_from_mapping_path({
 	return navigator<MappingElementProps>({
 		callbacks,
 		config: {
-			base_table_name: base_table_name,
+			base_table_name,
 		},
 	});
 

@@ -347,7 +347,7 @@ export default class Automapper {
 		]);
 
 		if (use_cache && commit_to_cache) {
-			const cached_data = cache.get('automapper', cache_name);
+			const cached_data = cache.get<AutoMapperResults>('automapper', cache_name);
 			if (cached_data)
 				return cached_data;
 		}
@@ -431,7 +431,7 @@ export default class Automapper {
 				Object.values(
 					comparisons[comparison_key as keyof Options] as RegExp[] | string[]
 				).some(comparison_value =>
-					comparison_function(lowercase_header_name, comparison_value) &&
+					comparison_function?.(lowercase_header_name, comparison_value) &&
 					this.make_mapping(
 						path,
 						get_new_path_part().map(path_part =>
@@ -743,7 +743,7 @@ export default class Automapper {
 									new RegExp(`${table_synonym} ${field_synonym} (?<index>\\d+)`),
 								].some(regular_expression => {
 
-									const match = lowercase_header_name.match(regular_expression);
+									const match = regular_expression.exec(lowercase_header_name);
 
 									if (match === null || typeof match[1] === 'undefined')
 										return false;

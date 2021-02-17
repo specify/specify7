@@ -510,7 +510,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 				{
 					type: 'BaseTableSelectionState',
 					show_hidden_tables:
-						cache.get(
+						cache.get<boolean>(
 							'ui',
 							'show_hidden_tables',
 						),
@@ -522,12 +522,12 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			type: 'MappingState',
 			mapping_is_templated: action.mapping_is_templated,
 			show_hidden_fields:
-				cache.get(
+				cache.get<boolean>(
 					'ui',
 					'show_hidden_fields',
 				),
 			show_mapping_view:
-				cache.get(
+				cache.get<boolean>(
 					'ui',
 					'show_mapping_view',
 					{
@@ -582,7 +582,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 	'CancelTemplateSelectionAction': () => (
 		{
 			type: 'BaseTableSelectionState',
-			show_hidden_tables: cache.get(
+			show_hidden_tables: cache.get<boolean>(
 				'ui',
 				'show_hidden_tables',
 			),
@@ -618,11 +618,11 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 			type: 'MappingState',
 			mapping_is_templated: action.mapping_is_templated,
 			show_hidden_fields:
-				cache.get(
+				cache.get<boolean>(
 					'ui',
 					'show_hidden_fields',
 				),
-			show_mapping_view: cache.get(
+			show_mapping_view: cache.get<boolean>(
 				'ui',
 				'show_mapping_view',
 				{
@@ -948,8 +948,8 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
 						dataset_name,
 					]: [UploadPlan, string]) => (
 						{
-							dataset_name: dataset_name,
-							upload_plan: upload_plan,
+							dataset_name,
+							upload_plan,
 						}
 					)),
 				}),
@@ -1041,7 +1041,7 @@ const state_reducer = generate_reducer<JSX.Element,
 		);
 
 		if(typeof refObject.current.mapping_view_height === 'undefined')
-			refObject.current.mapping_view_height = cache.get(
+			refObject.current.mapping_view_height = cache.get<number>(
 				'ui',
 				'mapping_view_height',
 				{
@@ -1480,7 +1480,7 @@ function WBPlanView(props: WBPlanViewProps) {
 		state.automapper_suggestions_promise?.then(automapper_suggestions =>
 			dispatch({
 				type: 'AutomapperSuggestionsLoadedAction',
-				automapper_suggestions: automapper_suggestions,
+				automapper_suggestions,
 			}),
 		).catch(console.error);
 
@@ -1494,7 +1494,7 @@ function WBPlanView(props: WBPlanViewProps) {
 		...state,
 		props,
 		dispatch,
-		refObject: refObject,
+		refObject,
 		refObjectDispatch,
 	});
 

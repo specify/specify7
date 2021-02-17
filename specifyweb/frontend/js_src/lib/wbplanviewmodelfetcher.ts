@@ -105,7 +105,8 @@ const fetching_parameters: {
 	readonly common_base_tables: string[]
 } = {
 
-	// all required fields are not hidden, except for these, which are made not required
+	// all required fields are not hidden, except for these, which are made
+	// not required
 	required_fields_to_hide: [
 		'timestampcreated',
 		'timestampmodified',
@@ -282,8 +283,8 @@ function handle_relationship_field(
 const data_model_fetcher_version = '3';
 const cache_bucket_name = 'data_model_fetcher';
 
-const cache_get = (cache_name: string) =>
-	cache.get(
+const cache_get = <T>(cache_name: string) =>
+	cache.get<T>(
 		cache_bucket_name,
 		cache_name,
 		{
@@ -311,14 +312,16 @@ export default (): Promise<void> =>
 
 		{
 
-			const tables: DataModelTables =
-				cache_get('tables');
-			const list_of_base_tables: DataModelListOfTables =
-				cache_get('list_of_base_tables');
-			const ranks: DataModelRanks =
-				cache_get('ranks');
-			const root_ranks: Record<string, string> =
-				cache_get('root_ranks');
+			const tables =
+				cache_get<DataModelTables>('tables');
+			const list_of_base_tables =
+				cache_get<DataModelListOfTables>(
+					'list_of_base_tables'
+				);
+			const ranks =
+				cache_get<DataModelRanks>('ranks');
+			const root_ranks =
+				cache_get<Record<string, string>>('root_ranks');
 
 			if (
 				tables &&
@@ -512,16 +515,19 @@ export default (): Promise<void> =>
 			));
 
 			data_model_storage.tables =
-				cache_set('tables', tables) as DataModelTables;
+				cache_set<DataModelTables>('tables', tables);
 			data_model_storage.list_of_base_tables =
-				cache_set(
+				cache_set<DataModelListOfTables>(
 					'list_of_base_tables',
 					list_of_base_tables
 				);
 			data_model_storage.ranks =
-				cache_set('ranks', ranks);
+				cache_set<DataModelRanks>('ranks', ranks);
 			data_model_storage.root_ranks =
-				cache_set('root_ranks', root_ranks);
+				cache_set<Record<string, string>>(
+					'root_ranks',
+					root_ranks
+				);
 
 			resolve();
 		}).catch(error => {
