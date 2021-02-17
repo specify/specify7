@@ -85,7 +85,9 @@ const WBView = Backbone.View.extend({
             colHeaders: (col)=>
                 `<div class="wb-header-${col}">
                     <span class="wb-header-icon"></span>
-                    <span class="wb-header-name">${this.dataset.columns[col]}</span>
+                    <span class="wb-header-name columnSorting">
+                        ${this.dataset.columns[col]}
+                    </span>
                 </div>`,
             minSpareRows: 0,
             comments: true,
@@ -93,9 +95,8 @@ const WBView = Backbone.View.extend({
             manualColumnResize: true,
             manualColumnMove: this.dataset.visualorder || true,
             outsideClickDeselects: false,
-            // Column sorting is broken by custom headers
-            // columnSorting: true,
-            // sortIndicator: true,
+            columnSorting: true,
+            sortIndicator: true,
             search: {
                 searchResultClass: 'wb-search-match-cell',
             },
