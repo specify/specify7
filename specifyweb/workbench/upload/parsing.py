@@ -70,9 +70,15 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
     uiformatter = get_uiformatter(collection, tablename, fieldname)
     if uiformatter:
         try:
-            canonicalized = uiformatter.canonicalize(uiformatter.parse(value))
+            parsed = uiformatter.parse(value)
         except FormatMismatch as e:
             return ParseFailure(e.args[0], caption)
+
+        if uiformatter.needs_autonumber(parsed):
+            canonicalized = uiformatter.autonumber_now(collection, getattr(models, tablename.capitalize()), parsed)
+        else:
+            canonicalized = uiformatter.canonicalize(parsed)
+
         return filter_and_upload({fieldname: canonicalized}, caption)
 
     table = datamodel.get_table_strict(tablename)

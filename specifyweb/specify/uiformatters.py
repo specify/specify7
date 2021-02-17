@@ -106,13 +106,31 @@ class UIFormatter(NamedTuple):
             for field, val in zip(self.fields, vals)
         ]
 
+    def autonumber_now(self, collection, model, vals: Sequence[str], year: Optional[int]=None) -> str:
+        with_year = self.fillin_year(vals, year)
+        fieldname = self.field_name.lower()
+
+        filtered_objs = self._autonumber_queryset(collection, model, fieldname, with_year)
+
+        try:
+            biggest = filtered_objs[0]
+        except IndexError:
+            filled_vals = self.fill_vals_no_prior(with_year)
+        else:
+            filled_vals = self.fill_vals_after(getattr(biggest, fieldname))
+
+        return ''.join(filled_vals)
+
+    def _autonumber_queryset(self, collection, model, fieldname: str, with_year: List[str]):
+        group_filter = get_autonumber_group_filter(model, collection, self.format_name)
+        objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
+        return group_filter(objs).order_by('-' + fieldname)
+
     def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: Optional[int]=None):
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
-        group_filter = get_autonumber_group_filter(model, collection, self.format_name)
-        objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
-        filtered_objs = group_filter(objs).order_by('-' + fieldname)
+        filtered_objs = self._autonumber_queryset(collection, model, fieldname, with_year)
         # At this point the query for the autonumber is defined but not yet executed.
 
         # The actual lookup and setting of the autonumbering value
