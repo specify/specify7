@@ -286,7 +286,9 @@ const WBView = Backbone.View.extend({
 
         if(this.showStatusDialog){
 
-            const upload_failed = cellCounts.invalid_cells !== 0;
+            const upload_failed =
+                cellCounts.invalid_cells !== 0 ||
+                !this.dataset.uploadresult?.success;
             const upload_succeeded = !upload_failed && this.uploaded;
 
             const dialog = $(`<div>
@@ -394,6 +396,7 @@ const WBView = Backbone.View.extend({
     },
     showPlan() {
         const dataset = this.dataset;
+        const $this = this;
         const planJson = JSON.stringify(dataset.uploadplan, null, 4);
         $('<div>').append($('<textarea cols="120" rows="50">').text(planJson)).dialog({
             title: "Upload plan",
@@ -410,6 +413,7 @@ const WBView = Backbone.View.extend({
                         processData: false
                     });
                     $(this).dialog('close');
+                    $this.trigger('refresh')
                 } ,
                 Close() { $(this).dialog('close'); }
             }
