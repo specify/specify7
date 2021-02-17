@@ -255,6 +255,8 @@ function handleUploadResult(
 			parent_upload_result,
 			row_index,
 		);
+
+	return true;
 }
 
 /*
