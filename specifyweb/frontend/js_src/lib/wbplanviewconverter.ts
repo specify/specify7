@@ -362,7 +362,7 @@ function mappings_tree_to_upload_plan_table(
 }
 
 function handle_relationship_field(
-	field_data: any,
+	field_data: object,
 	field: DataModelFieldWritable,
 	field_name: string,
 	table_plan: {

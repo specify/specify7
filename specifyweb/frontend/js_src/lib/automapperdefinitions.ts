@@ -22,7 +22,7 @@ export interface Options {
 	* NOTE: All values must use lower case exclusively!
 	* */
 
-	// Regex match (header.match(regex))
+	// Regex match (header.match(regex) !== null)
 	readonly regex?: RegExp[],
 
 	// Exact string match (header===string)

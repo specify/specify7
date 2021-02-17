@@ -9,7 +9,10 @@
 
 import { MappingPath, MappingType } from './components/wbplanviewmapper';
 
-export interface MappingsTree extends Readonly<Record<string, MappingsTree | string | Record<MappingType, string>>> {
+export interface MappingsTree
+	extends Readonly<Record<string,
+		MappingsTree | string | Record<MappingType,
+		string>>> {
 }
 
 interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
@@ -18,7 +21,8 @@ interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
 /* Returns cross-section of full_mappings_tree and node_mappings_tree */
 export function traverse_tree(
 	full_mappings_tree: MappingsTree,  // full tree with various branches
-	node_mappings_tree: MappingsTree | string,  // a tree several levels deep with only a single branch
+	// a tree several levels deep with only a single branch
+	node_mappings_tree: MappingsTree | string,
 ): string | MappingsTree | undefined | false /*
 * A cross-section of two trees
 * Example:
@@ -64,7 +68,9 @@ export function traverse_tree(
 
 }
 
-/* Merges objects recursively (by reference only, does not create a copy of the tree) */
+/* Merges objects recursively
+*	(by reference only, does not create a copy of the tree)
+* */
 export const deep_merge_object = (
 	target: any,  // tree that is used as a basis
 	source: object,  // tree that is used as a source
@@ -94,7 +100,10 @@ export const deep_merge_object = (
 		if (typeof target[source_property] === 'undefined')
 			target[source_property] = source_value;
 		else if (typeof target === 'object')
-			target[source_property] = deep_merge_object(target[source_property], source_value);
+			target[source_property] = deep_merge_object(
+				target[source_property],
+				source_value
+			);
 
 		return target;
 
@@ -125,7 +134,10 @@ export function array_to_tree(
 * 	}
 *
 * 	if
-* 		array is ['accession', 'accession agents', '#1, 'agent', 'first name', 'existing_header', 'Agent 1 First Name']
+* 		array is [
+* 			'accession', 'accession agents', '#1, 'agent', 'first name',
+* 			'existing_header', 'Agent 1 First Name'
+* 		]
 * 		has_headers is True
 * 	then result is {
 * 		'accession': {
@@ -159,7 +171,9 @@ export function array_to_tree(
 * The inverse of mappings_tree_to_array_of_mappings
 * */
 export function array_of_mappings_to_mappings_tree(
-	array_of_mappings: MappingPath[],  // array of strings (branches of the tree) that are going to be merged into a tree
+	// array of strings (branches of the tree) that are going to be merged
+	// into a tree
+	array_of_mappings: MappingPath[],
 ): MappingsTree  // Final tree
 /*
 * For example if array is:
@@ -209,7 +223,9 @@ export const mappings_tree_to_array_of_mappings = (
 	* 	Accession, Accession Agents, #1, Agent, Last Name
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
-	Object.entries(mappings_tree).reduce((result: MappingPath[], [tree_node_name, tree_node]) => {
+	Object.entries(
+		mappings_tree
+	).reduce((result: MappingPath[], [tree_node_name, tree_node]) => {
 
 		if (typeof tree_node === 'object')
 			result.push(

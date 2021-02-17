@@ -207,8 +207,23 @@ export default class Automapper {
 	private static readonly regex_remove_escape_chars: RegExp = /\n/g;
 	private static readonly depth: number = 6;  // how deep to go into the schema
 	// the definitions for the comparison functions
-	private static readonly comparisons: { [key in keyof Options]: any } = {
-		regex: (header: string, regex: RegExp) => regex.exec(header),
+	private static readonly comparisons: {
+		[key in keyof Options]: (
+			(
+				(
+					header: string,
+					match:string
+				)=>boolean
+			)
+			| (
+				(
+					header: string,
+					match: RegExp
+				)=>boolean
+			)
+		)
+	} = {
+		regex: (header: string, regex: RegExp) => regex.exec(header) !== null,
 		string: (header: string, string: string) => header === string,
 		contains: (header: string, string: string) => header.indexOf(string) !== -1,
 	};
@@ -407,13 +422,15 @@ export default class Automapper {
 		get_new_path_part: () => MappingPath,
 	) =>
 		this.get_unmapped_headers().forEach(([header_key, {lowercase_header_name}]) =>
-			Object.entries(Automapper.comparisons).filter(([comparison_key]) =>  // loop over defined comparisons
+			Object.entries(
+				Automapper.comparisons
+			).filter(([comparison_key]) =>  // loop over defined comparisons
 				comparison_key in comparisons,
 			).some(([comparison_key, comparison_function]) =>
-				//@ts-ignore
 				// loop over each value of a comparison
-				Object.values(comparisons[comparison_key] as RegExp[] | string[]).some(comparison_value =>
-
+				Object.values(
+					comparisons[comparison_key as keyof Options] as RegExp[] | string[]
+				).some(comparison_value =>
 					comparison_function(lowercase_header_name, comparison_value) &&
 					this.make_mapping(
 						path,

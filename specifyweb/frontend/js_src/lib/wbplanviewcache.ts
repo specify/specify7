@@ -91,10 +91,10 @@ export function get(
 		default_set_options,
 	}:{
 		version?: string,
-		default_value?: any,
+		default_value?: unknown,
 		default_set_options?: setOptions
 	}={}
-): any
+): unknown
 /*
 	* {boolean} False on error
 	* {mixed} value stored under cache_name on success
@@ -216,7 +216,10 @@ function trim_bucket(
 		return false;
 
 	const cache_usages = Object.values(buckets[bucket_name].records).map(({use_count}) => use_count);
-	const total_usage = cache_usages.reduce((total_usage: number, usage: any) =>
+	const total_usage = cache_usages.reduce((
+		total_usage: number,
+		usage: number|string
+	) =>
 		total_usage + ~~usage,
 		0,
 	);
