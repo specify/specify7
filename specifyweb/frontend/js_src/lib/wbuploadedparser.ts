@@ -1,4 +1,3 @@
-import Handsontable                                                             from 'handsontable';
 import { UploadPlan, upload_plan_to_mappings_tree }                             from './wbplanviewconverter';
 import { array_to_tree, deep_merge_object, mappings_tree_to_array_of_mappings } from './wbplanviewtreehelper';
 import { State }                                                                from './statemanagement';
@@ -535,14 +534,11 @@ const getOrderedHeaders = (
 
 export function parseUploadResults(
 	uploadResults: UploadResults,
-	hot: Handsontable,
+	headers: string[],
+        data: string[][],
 	treeRanks: Record<string, string[]>,
 	plan: UploadPlan | null,
-	getHeaderNameFromHTML: (header_name: string) => string,
 ): [UploadedRows, UploadedPicklistItems] {
-
-	const headers = (hot.getColHeader() as string[]).map(getHeaderNameFromHTML);
-	const data = hot.getData() as string[][];
 
 	if (plan === null)
 		throw new Error('Upload plan is invalid');

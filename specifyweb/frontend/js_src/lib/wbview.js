@@ -259,7 +259,6 @@ const WBView = Backbone.View.extend({
             dataset: this.dataset,
             hot: this.hot,
             el: container,
-            getHeaderNameFromHTML: this.getHeaderNameFromHTML,
             removeCallback: ()=>(this.uploadedView = undefined),
         }).render();
     },
@@ -326,13 +325,11 @@ const WBView = Backbone.View.extend({
 
         this.hot.render();
     },
-    getHeaderNameFromHTML: (headerHTML)=>
-        /<span class="wb-header-name">(?<headerName>.*?)<\/span>/.exec(headerHTML)?.groups?.headerName || '',
     parseRowValidationResult(row, result) {
         const cols = this.hot.countCols();
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
-            headerToCol[this.getHeaderNameFromHTML(this.hot.getColHeader(this.hot.toVisualColumn(i)))] = i;
+            headerToCol[this.dataset.columns[i]] = i;
         }
 
         for (let i = 0; i < cols; i++) {
@@ -413,7 +410,7 @@ const WBView = Backbone.View.extend({
                         processData: false
                     });
                     $(this).dialog('close');
-                    $this.trigger('refresh')
+                    $this.trigger('refresh');
                 } ,
                 Close() { $(this).dialog('close'); }
             }
@@ -432,12 +429,12 @@ const WBView = Backbone.View.extend({
         ) {
             changes.filter(([,column])=>  // ignore changes to unmapped columns
                 this.mappedHeaders.indexOf(
-                    this.dataset.columns[column]
+                    this.dataset.columns[this.hot.toPhysicalColumn(column)]
                 ) !== -1
             ).forEach(([row]) => {
                 const rowData = this.hot.getDataAtRow(row);
                 const data = Object.fromEntries(rowData.map((value, i) =>
-                    [this.getHeaderNameFromHTML(this.hot.getColHeader(i)), value]
+                    [this.dataset.columns[this.hot.toPhysicalColumn(i)], value]
                 ));
                 const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.dataset.id}/`, data);
                 req.done(result => this.gotRowValidationResult(row, req, result));
@@ -564,10 +561,7 @@ const WBView = Backbone.View.extend({
         });
     },
     export() {
-        const data = Papa.unparse({
-            fields: this.hot.getColHeader().map(this.getHeaderNameFromHTML),
-            data: this.dataset.rows
-        });
+        const data = Papa.unparse({fields: this.dataset.columns, data: this.dataset.rows});
         const wbname = this.dataset.name;
         const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
         const blob = new Blob([data], {type: 'text/csv;charset=utf-8;'});

@@ -31,14 +31,12 @@ interface WBUploadedViewConstructorProps {
 	dataset: Dataset,
 	hot: Handsontable,
 	removeCallback: () => void,
-	getHeaderNameFromHTML: (header_name: string) => string,
 }
 
 interface WBUploadedViewDataParseProps {
 	readonly handleClose: () => void,
 	readonly hot: Handsontable,
 	readonly dataset: Dataset,
-	readonly getHeaderNameFromHTML: (header_name: string) => string,
 }
 
 interface WBUploadedViewComponentProps {
@@ -618,10 +616,10 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 
 		const [uploadedRows, uploadedPicklistItems] = parseUploadResults(
 			uploadResults,
-			props.hot,
+                        props.dataset.columns,
+                        props.dataset.rows,
 			treeRanks,
 			props.dataset.uploadplan,
-			props.getHeaderNameFromHTML,
 		);
 
 		setUploadedRows(uploadedRows);
@@ -653,12 +651,10 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 		dataset,
 		hot,
 		removeCallback,
-		getHeaderNameFromHTML,
 	}) {
 		self.dataset = dataset;
 		self.hot = hot;
 		self.removeCallback = removeCallback;
-		self.getHeaderNameFromHTML = getHeaderNameFromHTML;
 	},
 	remove: (self) =>
 		self.removeCallback(),
@@ -668,7 +664,6 @@ export default createBackboneView<WBUploadedViewConstructorProps,
 			handleClose: self.remove.bind(self),
 			hot: self.hot,
 			dataset: self.dataset,
-			getHeaderNameFromHTML: self.getHeaderNameFromHTML,
 		}
 	),
 });

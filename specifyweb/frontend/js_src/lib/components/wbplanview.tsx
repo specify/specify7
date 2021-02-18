@@ -60,6 +60,7 @@ export type Dataset = {
 	id: number,
 	name: string,
 	columns: string[],
+        rows: string[][],
 	uploadplan: UploadPlan | null,
 	uploaderstatus: Record<string, unknown> | null,
 	uploadresult: Record<string, unknown> | null,
