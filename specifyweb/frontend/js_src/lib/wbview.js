@@ -165,12 +165,15 @@ const WBView = Backbone.View.extend({
         for (let i = 0; i < this.hot.countCols(); i++) {
             columnOrder.push(this.hot.toPhysicalColumn(i));
         }
-        $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-            type: "PUT",
-            data: JSON.stringify({visualorder: columnOrder}),
-            dataType: "json",
-            processData: false
-        });
+        if (columnOrder.some((i,j) => i !== this.dataset.visualorder[j])) {
+            this.dataset.visualorder = columnOrder;
+            $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+                type: "PUT",
+                data: JSON.stringify({visualorder: columnOrder}),
+                dataType: "json",
+                processData: false
+            });
+        }
     },
     getValidationResults() {
         Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
