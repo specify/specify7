@@ -44,10 +44,13 @@ def no_savepoint():
     yield
 
 def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
-    total = len(ds.rowresults)
+    if ds.rowresults is None:
+        return
+    results = json.loads(ds.rowresults)
+    total = len(results)
     current = 0
     with transaction.atomic():
-        for row in reversed(ds.rowresults):
+        for row in reversed(results):
             upload_result = json_to_UploadResult(row)
             if not upload_result.contains_failure():
                 unupload_record(upload_result)
@@ -56,7 +59,7 @@ def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
             if progress is not None:
                 progress(current, total)
         ds.uploadresult = None
-        ds.save()
+        ds.save(update_fields=['uploadresult'])
 
 def unupload_record(upload_result: UploadResult) -> None:
     if isinstance(upload_result.record_result, Uploaded):
@@ -84,7 +87,7 @@ def do_upload_dataset(
     assert not ds.was_uploaded(), "Already uploaded!"
     ds.rowresults = None
     ds.uploadresult = None
-    ds.save()
+    ds.save(update_fields=['rowresults', 'uploadresult'])
 
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
     upload_plan = get_ds_upload_plan(collection, ds)
@@ -95,8 +98,8 @@ def do_upload_dataset(
             'success': not any(r.contains_failure() for r in results),
             'timestamp': datetime.now(timezone.utc).isoformat(),
         }
-    ds.rowresults = [r.to_json() for r in results]
-    ds.save()
+    ds.rowresults = json.dumps([r.to_json() for r in results])
+    ds.save(update_fields=['rowresults', 'uploadresult'])
     return results
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
@@ -104,11 +107,12 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
         raise Exception("no upload plan defined for dataset")
 
     try:
-        validate(ds.uploadplan, schema)
+        plan = json.loads(ds.uploadplan)
     except ValueError:
         raise Exception("upload plan json is invalid")
 
-    return parse_plan(collection, ds.uploadplan).apply_scoping(collection)
+    validate(plan, schema)
+    return parse_plan(collection, plan).apply_scoping(collection)
 
 
 def do_upload(

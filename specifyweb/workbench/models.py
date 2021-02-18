@@ -14,10 +14,10 @@ class Spdataset(models.Model):
     data = JSONField(default=list)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
-    uploadplan = JSONField(null=True)
+    uploadplan = models.TextField(null=True)
     uploaderstatus = JSONField(null=True)
     uploadresult = JSONField(null=True)
-    rowresults = JSONField(null=True)
+    rowresults = models.TextField(null=True)
 
     class Meta:
         db_table = 'spdataset'

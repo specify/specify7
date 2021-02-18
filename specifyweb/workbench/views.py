@@ -104,7 +104,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
                 for row in ds.data:
                     row += [""]*len(new_cols)
 
-            ds.uploadplan = plan
+            ds.uploadplan = json.dumps(plan)
             ds.rowresults = None
             ds.uploadresult = None
 
@@ -124,7 +124,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             columns=ds.columns,
             visualorder=ds.visualorder,
             rows=ds.data,
-            uploadplan=ds.uploadplan,
+            uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
             uploaderstatus=ds.uploaderstatus,
             uploadresult=ds.uploadresult,
         ), safe=False)
@@ -188,7 +188,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             'operation': "validating" if no_commit else "uploading",
             'taskid': taskid
         }
-        ds.save()
+        ds.save(update_fields=['uploaderstatus'])
 
     return http.JsonResponse(async_result.id, safe=False)
 
@@ -213,7 +213,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
             'operation': "unuploading",
             'taskid': taskid
         }
-        ds.save()
+        ds.save(update_fields=['uploaderstatus'])
 
     return http.JsonResponse(async_result.id, safe=False)
 
@@ -276,7 +276,7 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
 
     results = [
         json_to_UploadResult(result).validation_info().to_json()
-        for result in ds.rowresults
+        for result in json.loads(ds.rowresults)
     ]
     return http.JsonResponse(results, safe=False)
 
@@ -288,11 +288,14 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    results = ds.rowresults
+    if ds.rowresults is None:
+        return http.JsonResponse(None, safe=False)
+
+    results = json.loads(ds.rowresults)
+
     if settings.DEBUG:
         from .upload.upload_results_schema import schema
         validate(results, schema)
-
     return http.JsonResponse(results, safe=False)
 
 @login_maybe_required
