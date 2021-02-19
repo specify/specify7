@@ -1,5 +1,6 @@
 
 from django.db import models
+from django.utils import timezone
 from django_jsonfield_backport.models import JSONField # type: ignore
 
 from specifyweb.specify import models as spmodels
@@ -18,6 +19,10 @@ class Spdataset(models.Model):
     uploaderstatus = JSONField(null=True)
     uploadresult = JSONField(null=True)
     rowresults = models.TextField(null=True)
+    remarks = models.TextField(null=True)
+    importedfilename = models.TextField(null=True)
+    timestampcreated = models.DateTimeField(default=timezone.now)
+    timestampmodified = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'spdataset'
