@@ -286,45 +286,45 @@ const WBView = Backbone.View.extend({
             navigation_total_element.innerText = cellCounts[navigation_type];
         });
 
-        if(this.showStatusDialog){
+        // if(this.showStatusDialog){
 
-            const upload_failed =
-                cellCounts.invalid_cells !== 0 ||
-                !this.dataset.uploadresult?.success;
-            const upload_succeeded = !upload_failed && this.uploaded;
+        //     const upload_failed =
+        //         cellCounts.invalid_cells !== 0 ||
+        //         !this.dataset.uploadresult?.success;
+        //     const upload_succeeded = !upload_failed && this.uploaded;
 
-            const dialog = $(`<div>
-                ${
-                    upload_failed ?
-                        `Upload failed with ${cellCounts.invalid_cells} invalid cells.<br>
-                        Please review the validation messages and repeat the upload process.` :
-                        upload_succeeded ?
-                            `Upload completed successfully.<br>
-                            You can open the 'View' menu to see a detailed breakdown of the upload results.` :
-                            'Unupload completed successfully'
-                }
-            </div>`).dialog({
-                title: upload_failed ?
-                    'Upload failed due to validation errors' :
-                    upload_succeeded ?
-                        'Upload completed' :
-                        'Unupload completed' ,
-                modal: true,
-                buttons: {
-                    'Close': ()=>dialog.dialog('close'),
-                    ...(
-                        upload_succeeded ?
-                            {
-                                'View upload results': ()=>
-                                    this.displayUploadedView() ||
-                                    dialog.dialog('close'),
-                            } :
-                            {}
-                    )
-                }
-            });
-            this.showStatusDialog = false;
-        }
+        //     const dialog = $(`<div>
+        //         ${
+        //             upload_failed ?
+        //                 `Upload failed with ${cellCounts.invalid_cells} invalid cells.<br>
+        //                 Please review the validation messages and repeat the upload process.` :
+        //                 upload_succeeded ?
+        //                     `Upload completed successfully.<br>
+        //                     You can open the 'View' menu to see a detailed breakdown of the upload results.` :
+        //                     'Unupload completed successfully'
+        //         }
+        //     </div>`).dialog({
+        //         title: upload_failed ?
+        //             'Upload failed due to validation errors' :
+        //             upload_succeeded ?
+        //                 'Upload completed' :
+        //                 'Unupload completed' ,
+        //         modal: true,
+        //         buttons: {
+        //             'Close': ()=>dialog.dialog('close'),
+        //             ...(
+        //                 upload_succeeded ?
+        //                     {
+        //                         'View upload results': ()=>
+        //                             this.displayUploadedView() ||
+        //                             dialog.dialog('close'),
+        //                     } :
+        //                     {}
+        //             )
+        //         }
+        //     });
+        //     this.showStatusDialog = false;
+        // }
 
         this.hot.render();
     },
