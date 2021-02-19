@@ -55,11 +55,12 @@ def datasets(request) -> http.HttpResponse:
             name=data['name'],
             columns=columns,
             data=rows,
+            importedfilename=data['importedfilename'],
         )
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
 
     else:
-        attrs = ('name', 'uploadresult', 'uploaderstatus')
+        attrs = ('name', 'uploadresult', 'uploaderstatus', 'timestampcreated', 'timestampmodified')
         dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only(*attrs)
         return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
 
@@ -81,6 +82,9 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 
         if 'name' in attrs:
             ds.name = attrs['name']
+
+        if 'remarks' in attrs:
+            ds.remarks = attrs['remarks']
 
         if 'visualorder' in attrs:
             ds.visualorder = attrs['visualorder']
@@ -127,6 +131,10 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
             uploaderstatus=ds.uploaderstatus,
             uploadresult=ds.uploadresult,
+            remarks=ds.remarks,
+            importedfilename=ds.importedfilename,
+            timestampcreated=ds.timestampcreated,
+            timestampmodified=ds.timestampmodified,
         ), safe=False)
 
 @login_maybe_required

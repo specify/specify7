@@ -110,7 +110,7 @@ export default class WbImport extends Component<{}, WbImportState> {
                                 skipEmptyLines: true,
 				complete: ({data}) => {
 					const {rows, header} = extractHeader(data, hasHeader);
-					this.createDataset(name, header, rows);
+					this.createDataset(name, header, rows, file.name);
 				},
 			});
 
@@ -122,17 +122,18 @@ export default class WbImport extends Component<{}, WbImportState> {
 		worker.postMessage({file: file, previewSize: null});
 		worker.onmessage = ({data}) => {
 			const {rows, header} = extractHeader(data, hasHeader);
-			this.createDataset(name, header, rows);
+			this.createDataset(name, header, rows, file.name);
 		};
 	}
 
-    createDataset(name: string, header: string[], data: string[][]) {
+    createDataset(name: string, header: string[], data: string[][], filename: string) {
         uniquifyDataSetName(name)
             .then((name: string) =>
                 $.ajax('/api/workbench/dataset/', {
                     type: "POST",
                     data: JSON.stringify({
                         name: name,
+                        importedfilename: filename,
                         columns: header,
                         rows: data
                     }),
