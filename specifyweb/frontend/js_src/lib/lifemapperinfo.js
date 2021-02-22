@@ -206,12 +206,13 @@ module.exports = Backbone.View.extend({
 				list_of_issues: list_of_issues,
 				issueDefinitions: issueDefinitions,
 			});
-			buttons.push(
-				{
-					text: `View occurrence at ${source_label}`,
-					click: () => window.open(occurrence_view_link, '_blank'),
-				},
-			);
+			if(occurrence_view_link)
+				buttons.push(
+					{
+						text: `View occurrence at ${source_label}`,
+						click: () => window.open(occurrence_view_link, '_blank'),
+					},
+				);
 		}
 
 		let destructor;
