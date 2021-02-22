@@ -31,3 +31,7 @@
 .lifemapper_current_collection_object_marker {
 	filter: hue-rotate(135deg);
 }
+
+.details_container {
+	color: #fff;
+}

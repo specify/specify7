@@ -32,6 +32,8 @@ module.exports = Backbone.View.extend({
 		this.$el = arguments[0].el;
 		this.model = arguments[0].model;
 		this.showCOMap = this.showCOMap.bind(this);
+		this.local_scientific_name = '';
+		this.remote_scientific_name = '';
 	},
 
 	get_scientific_name: (model, default_value = undefined) =>
@@ -49,6 +51,18 @@ module.exports = Backbone.View.extend({
 			);
 		}),
 
+	fetch_scientific_name: function(){
+		return (
+			typeof this.local_scientific_name === 'undefined' &&
+			typeof this.remote_scientific_name === 'undefined'
+		) ?
+			false :
+			test__occurrence_name([
+				this.local_scientific_name,
+				this.remote_scientific_name
+			]);
+	},
+
 	render() {
 
 		const guid = test__get_guid(this.model.get('guid'));
@@ -56,24 +70,21 @@ module.exports = Backbone.View.extend({
 		if (typeof guid === 'undefined')
 			return;
 
-		const showCOMap = (occurrence_name) =>
+		const showCOMap = () =>
 			this.showSourceIcon(undefined,
 				data_sources['Lifemapper Map'],
-				(
-					typeof occurrence_name[0] === 'undefined' &&
-					typeof occurrence_name[1] === 'undefined'
-				) ?
-					false :
+				this.fetch_scientific_name() ?
 					{
-						occurrence_name: test__occurrence_name(occurrence_name),
+						occurrence_name: this.fetch_scientific_name(),
 						occurrence_view_link: '',
-					},
+					} :
+					false,
 			);
 
 		new Promise(occurrence_name_resolved =>
 			$.get(format_occurrence_data_request(guid)).done(response =>
-				Object.values(response.records || {}).map(record=>
-					Object.entries(record)[0]
+				Object.values(response.records || {}).map(({provider,...record})=>
+					[provider, record],
 				).filter(([key]) =>
 					typeof data_sources[key] !== 'undefined',
 				).map(([key, {count, records}]) => {
@@ -90,9 +101,14 @@ module.exports = Backbone.View.extend({
 				}),
 			),
 		).then(remote_occurrence_name =>
-			this.get_scientific_name(this.model).then(local_scientific_name =>
-				showCOMap([local_scientific_name, remote_occurrence_name]),
-			),
+			this.get_scientific_name(this.model).then(local_scientific_name => {
+
+				this.local_scientific_name = local_scientific_name;
+				this.remote_scientific_name = remote_occurrence_name;
+
+				showCOMap();
+
+			}),
 		);
 	},
 	showSourceIcon(occurrence_name_resolved = undefined, data_source_info, response, has_multiple_records = false) {
@@ -108,7 +124,11 @@ module.exports = Backbone.View.extend({
 			occurrence_view_link = '',
 		} = response;
 
-		if (source_name === 'gbif' && typeof occurrence_name_resolved !== 'undefined')
+		if (
+			source_name === 'gbif' &&
+			typeof occurrence_name_resolved !== 'undefined' &&
+			occurrence_name_resolved !== ''
+		)
 			occurrence_name_resolved(occurrence_name);
 
 		if (has_multiple_records)
@@ -209,8 +229,13 @@ module.exports = Backbone.View.extend({
 		});
 
 		if (source_name === 'lifemapper')
-			destructor = this.showCOMap(dialog, occurrence_name, this.model, detach_callback);
-		else if (typeof occurrence_name !== 'undefined')
+			destructor = this.showCOMap(
+				dialog,
+				occurrence_name,
+				this.model,
+				detach_callback
+			);
+		else if(typeof occurrence_name !== 'undefined' && occurrence_name !== '')
 			this.showCOCount(dialog, source_name, occurrence_name);
 
 	},
@@ -286,11 +311,11 @@ module.exports = Backbone.View.extend({
 
 				if (typeof response.errors !== 'undefined' && response.errors.length !== 0)
 					error_message = `The following errors were reported by Lifemapper:<br>${response.errors.join('<br>')}`;
-				else {
+				else if(response.records.length !== 0){
 
 					const {
 						endpoint,
-						projection_name: layerName,
+						projection_link,
 						point_name: mapName,
 						// metadata: {description},
 						modtime,
@@ -298,7 +323,9 @@ module.exports = Backbone.View.extend({
 
 					const map_url = `${endpoint}/`;
 					const map_id = mapName.replace(/\D/g, '');
-					const layer_id = layerName.replace(/\D/g, '');
+					const layer_id = /\/(?<layer_id>\d+)$/.exec(
+						projection_link
+					).groups['layer_id'];
 					layers = lifemapper_layer_variations.map(({
 							transparent,
 							name: layer_name_function,
@@ -310,7 +337,10 @@ module.exports = Backbone.View.extend({
 								tile_layer: {
 									map_url: map_url,
 									options: {
-										layers: layer_name_function(map_id, layer_id),
+										layers: layer_name_function(
+											map_id,
+											layer_id
+										),
 										service: 'wms',
 										version: '1.0',
 										height: '400',
@@ -332,6 +362,10 @@ module.exports = Backbone.View.extend({
 					`;
 
 				}
+				else
+					info_message =
+						'Projection map for this species was not found';
+
 				const [map, layer_group, details_container] = Leaflet.showCOMap(map_container, layers, '');
 				details_window = details_container;
 
@@ -344,12 +378,12 @@ module.exports = Backbone.View.extend({
 					add_message(true, error_message);
 
 				add_message(false, `
-					Specify Species Name: ${
+					<i>Specify Species Name</i>: ${
 					typeof local_occurrence_name === 'undefined' ?
 						'Not found' :
 						local_occurrence_name
 				}<br>
-					Remote occurrence name: ${
+					<i>Remote occurrence name</i>: ${
 					typeof remote_occurrence_name === 'undefined' ?
 						'Not found' :
 						remote_occurrence_name
@@ -360,12 +394,27 @@ module.exports = Backbone.View.extend({
 			});
 
 		}),
-	showCOCount: (dialog, source_name, occurrence_name) =>
-		$.get(format_occurrence_count_request(source_name, occurrence_name)).done(response => (
+	showCOCount: function(dialog, source_name, occurrence_name){
+
+		// const occurence_names = this.fetch_scientific_name();
+
+		// if(occurence_names === false)
+		// 	return;
+
+		$.get(
+			format_occurrence_count_request(
+				source_name,
+				occurrence_name
+				// occurence_names[
+				// 	(typeof occurence_names[1] !== 'undefined')|0
+				// ]
+			)
+		).done(response => (
 			response.count === 0 ?
 				'' :
 				dialog.append(lifemapperoccurrencecount(response))
-		)),
+		));
+	}
 });
 
 
@@ -517,7 +566,7 @@ const format_occurrence_data_request = (occurrence_guid) =>
 const format_occurrence_count_request = (data_aggregator_name, occurrence_scientific_name) =>
 	`http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`;
 const format_occurrence_map_request = occurrence_scientific_name =>
-	`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}&layers=prj,occ,bmng`;
+	`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}`;
 
 const data_sources = {
 	'GBIF': {
