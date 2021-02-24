@@ -5,6 +5,7 @@ import logging
 from typing import List, Dict, Any, NamedTuple, Union, Optional, Set
 
 from specifyweb.specify import models
+from specifyweb.specify.auditlog import auditlog
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
@@ -268,6 +269,8 @@ class BoundUploadTable(NamedTuple):
         except BusinessRuleException as e:
             return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
+        auditlog.insert(uploaded, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
+
         toManyResults = {
             fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, records)
             for fieldname, records in self.toMany.items()
@@ -280,6 +283,7 @@ class BoundUploadTable(NamedTuple):
             if parsedField.add_to_picklist is not None:
                 a = parsedField.add_to_picklist
                 pli = a.picklist.picklistitems.create(value=a.value, title=a.value, createdbyagent_id=self.uploadingAgentId)
+                auditlog.insert(pli, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
                 added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.caption, value=a.value, id=pli.id))
         return added_picklist_items
 

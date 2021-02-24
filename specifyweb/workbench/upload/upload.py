@@ -11,6 +11,7 @@ from django.db import connection, transaction
 from django.db.utils import OperationalError
 
 from specifyweb.specify import models
+from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
 from .uploadable import ScopedUploadable, Row
@@ -43,7 +44,7 @@ def savepoint(description: str):
 def no_savepoint():
     yield
 
-def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
+def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
     if ds.rowresults is None:
         return
     results = json.loads(ds.rowresults)
@@ -53,7 +54,7 @@ def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
         for row in reversed(results):
             upload_result = json_to_UploadResult(row)
             if not upload_result.contains_failure():
-                unupload_record(upload_result)
+                unupload_record(upload_result, agent)
 
             current += 1
             if progress is not None:
@@ -61,20 +62,24 @@ def unupload_dataset(ds: Spdataset, progress: Optional[Progress]=None) -> None:
         ds.uploadresult = None
         ds.save(update_fields=['uploadresult'])
 
-def unupload_record(upload_result: UploadResult) -> None:
+def unupload_record(upload_result: UploadResult, agent) -> None:
     if isinstance(upload_result.record_result, Uploaded):
         for toMany in upload_result.toMany.values():
             for record in toMany:
-                unupload_record(record)
+                unupload_record(record, agent)
 
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
-        model.objects.get(id=upload_result.get_id()).delete()
+        obj = model.objects.get(id=upload_result.get_id())
+        auditlog.remove(obj, agent, None)
+        obj.delete()
 
         for addition in upload_result.record_result.picklistAdditions:
-            getattr(models, 'Picklistitem').objects.get(id=addition.id).delete()
+            pli = getattr(models, 'Picklistitem').objects.get(id=addition.id)
+            auditlog.remove(pli, agent, None)
+            pli.delete()
 
     for record in upload_result.toOne.values():
-        unupload_record(record)
+        unupload_record(record, agent)
 
 def do_upload_dataset(
         collection,

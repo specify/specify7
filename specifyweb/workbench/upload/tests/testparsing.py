@@ -2,6 +2,8 @@ import io
 import csv
 from jsonschema import validate # type: ignore
 
+from specifyweb.specify import auditcodes
+
 from .base import UploadTestsBase, get_table
 from ..upload_result import Uploaded, ParseFailures, ParseFailure, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
@@ -89,6 +91,9 @@ class ParsingTests(UploadTestsBase):
             {'catno': '5', 'habitat': 'marsh'},
             {'catno': '6', 'habitat': 'lake'},
         ]
+
+        self.assertEqual(0, get_table('Spauditlog').objects.filter(tablenum=get_table('Picklistitem').specify_model.tableId).count(), "No picklistitems in audit log yet.")
+
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
             validate(result.validation_info().to_json(), validation_schema.schema)
@@ -109,6 +114,9 @@ class ParsingTests(UploadTestsBase):
             else:
                 self.assertEqual(['habitat'], [a.caption for a in r.picklistAdditions])
                 self.assertEqual([v], [get_table('Picklistitem').objects.get(id=a.id).value for a in r.picklistAdditions])
+                for a in r.picklistAdditions:
+                    self.assertEqual(1, get_table('Spauditlog').objects.filter(recordid=a.id, action=auditcodes.INSERT, tablenum=get_table('Picklistitem').specify_model.tableId).count(), "New picklistitem recorded in audit log.")
+
 
     def test_picklist_size_overflow(self) -> None:
         plan = UploadTable(

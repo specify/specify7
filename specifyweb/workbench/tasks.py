@@ -44,7 +44,7 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
         ds.save(update_fields=['uploaderstatus'])
 
 @app.task(base=LogErrorsTask, bind=True)
-def unupload(self, ds_id: int) -> None:
+def unupload(self, ds_id: int, agent_id: int) -> None:
 
     def progress(current: int, total: Optional[int]) -> None:
         if not self.request.called_directly:
@@ -52,6 +52,7 @@ def unupload(self, ds_id: int) -> None:
 
     with transaction.atomic():
         ds = Spdataset.objects.select_for_update().get(id=ds_id)
+        agent = getattr(models, 'Agent').objects.get(id=agent_id)
 
         if ds.uploaderstatus is None:
             logger.info("dataset is not assigned to an upload task")
@@ -63,7 +64,7 @@ def unupload(self, ds_id: int) -> None:
 
         assert ds.uploaderstatus['operation'] == "unuploading"
 
-        unupload_dataset(ds, progress)
+        unupload_dataset(ds, agent, progress)
 
         ds.uploaderstatus = None
         ds.save(update_fields=['uploaderstatus'])

@@ -6,6 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from specifyweb.specify.tree_extras import validate_tree_numbering
+from specifyweb.specify import auditcodes
 
 from ..uploadable import Exclude
 from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
@@ -124,6 +125,31 @@ class UploadTests(UploadTestsBase):
 
         cos = get_table('Collectionobject').objects.filter(catalognumber__in=expected_cats)
         self.assertEqual(cos.count(), len(expected_cats))
+
+        # Check that new collection objects are in the audit log.
+        for co in cos:
+            co_entries = get_table('Spauditlog').objects.filter(recordid=co.id, tablenum=get_table('Collectionobject').specify_model.tableId)
+            self.assertEqual(1, co_entries.count())
+            self.assertEqual(auditcodes.INSERT, co_entries[0].action)
+            self.assertEqual(self.agent.id, co_entries[0].createdbyagent_id)
+
+            ce_entries = get_table('Spauditlog').objects.filter(recordid=co.collectingevent.id, tablenum=get_table('Collectingevent').specify_model.tableId)
+            self.assertEqual(1, ce_entries.count())
+            self.assertEqual(auditcodes.INSERT, ce_entries[0].action)
+            self.assertEqual(self.agent.id, ce_entries[0].createdbyagent_id)
+
+            loc_entries = get_table('Spauditlog').objects.filter(recordid=co.collectingevent.locality.id, tablenum=get_table('Locality').specify_model.tableId)
+            self.assertEqual(1, loc_entries.count())
+            self.assertEqual(auditcodes.INSERT, loc_entries[0].action)
+            self.assertEqual(self.agent.id, loc_entries[0].createdbyagent_id)
+
+            geo = co.collectingevent.locality.geography
+            while geo is not None:
+                geo_entries = get_table('Spauditlog').objects.filter(recordid=geo.id, tablenum=get_table('Geography').specify_model.tableId)
+                self.assertEqual(1, geo_entries.count())
+                self.assertEqual(auditcodes.INSERT, geo_entries[0].action)
+                self.assertEqual(self.agent.id, geo_entries[0].createdbyagent_id)
+                geo = geo.parent
 
         # Check that only one copy of a given agent/collectingevent was uploaded.
         self.assertEqual(get_table('Agent').objects.filter(lastname="Garcia").count(), 1)
@@ -323,6 +349,9 @@ class UploadTests(UploadTestsBase):
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, , ,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1368,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,tuberculosa,,"Libassi, 1859",,Emilio Garcia,,Emilio,,Garcia,Jan 2002,00/01/2002,,USA,LOUISIANA,off Louisiana coast,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,11,0,0,Dry; shell,Dry,,,"Subtidal 65-91 m, in coralline [sand]",65,91,0,,,,313,,Dredged.  Original label no. 23331.,JSG,MJP,22/01/2003,27° 59.14' N,,91° 38.83' W,,Point,D-4(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
+        co_entries = get_table('Spauditlog').objects.filter(tablenum=get_table('Collectionobject').specify_model.tableId)
+        self.assertEqual(0, co_entries.count(), "No collection objects in audit log yet.")
+
         upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
@@ -330,6 +359,9 @@ class UploadTests(UploadTestsBase):
             if result is not failed_result:
                 self.assertIsInstance(result.record_result, Uploaded)
                 self.assertEqual(1, get_table('collectionobject').objects.filter(id=result.get_id()).count())
+
+        co_entries = get_table('Spauditlog').objects.filter(tablenum=get_table('Collectionobject').specify_model.tableId)
+        self.assertEqual(3, co_entries.count(), "Three collection objects added to audit log. Four rows in data set but one rolled back.")
 
         ce_result = failed_result.toOne['collectingevent']
         self.assertIsInstance(ce_result.record_result, Uploaded)

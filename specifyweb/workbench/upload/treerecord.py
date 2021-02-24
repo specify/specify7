@@ -11,6 +11,7 @@ from typing_extensions import TypedDict
 from django.db import connection # type: ignore
 
 from specifyweb.specify import models
+from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .uploadable import Row, FilterPack
@@ -148,6 +149,7 @@ class BoundTreeRecord(NamedTuple):
                 **{to_db_col(c): v for r in tdiwpr.results for c, v in r.upload.items()},
             )
             obj.save(skip_tree_extras=True)
+            auditlog.insert(obj, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
             info = ReportInfo(tableName=self.name, columns=[pr.caption for pr in tdiwpr.results], treeInfo=TreeInfo(tdiwpr.treedefitem.name, obj.name))
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
 

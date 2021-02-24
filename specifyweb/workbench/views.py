@@ -216,7 +216,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
             return http.HttpResponse('dataset has not been uploaded.', status=400)
 
         taskid = str(uuid4())
-        async_result = tasks.unupload.apply_async([ds.id], task_id=taskid)
+        async_result = tasks.unupload.apply_async([ds.id, request.specify_user_agent.id], task_id=taskid)
         ds.uploaderstatus = {
             'operation': "unuploading",
             'taskid': taskid
