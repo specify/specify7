@@ -114,6 +114,7 @@ class UploadTests(UploadTestsBase):
             co = get_table('Collectionobject').objects.get(id=r.record_result.get_id())
             self.assertEqual(self.agent, co.createdbyagent)
             self.assertIsNotNone(co.timestampcreated)
+            self.assertEqual(0, co.version)
             uploaded_catnos.append(co.catalognumber)
 
         # Check that collection objects were uploaded.
