@@ -739,8 +739,8 @@ export default class Automapper {
 							(
 								stripped_header_name === `${table_synonym} ${field_synonym}` ||
 								[  // try extracting -to-many reference number
-									new RegExp(`${table_synonym} (?<index>\\d+) ${field_synonym}`),
-									new RegExp(`${table_synonym} ${field_synonym} (?<index>\\d+)`),
+									new RegExp(`${table_synonym} (\\d+) ${field_synonym}`),
+									new RegExp(`${table_synonym} ${field_synonym} (\\d+)`),
 								].some(regular_expression => {
 
 									const match = regular_expression.exec(lowercase_header_name);
