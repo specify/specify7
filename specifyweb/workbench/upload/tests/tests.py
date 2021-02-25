@@ -11,14 +11,57 @@ from specifyweb.specify import auditcodes
 from ..uploadable import Exclude
 from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
+from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults, TreeMatchResult
-from ..upload import do_upload_csv
+from ..upload import do_upload, do_upload_csv
 from ..parsing import filter_and_upload
 
 from .base import UploadTestsBase, get_table
 
 
 class UploadTests(UploadTestsBase):
+
+    def test_ordernumber(self) -> None:
+        plan = UploadTable(
+            name='Referencework',
+            wbcols={'title': 'title'},
+            static={'referenceworktype': 0},
+            toOne={},
+            toMany={'authors': [
+                ToManyRecord(
+                    name='Author',
+                    wbcols={},
+                    static={},
+                    toOne={'agent': UploadTable(
+                        name='Agent',
+                        wbcols={'lastname': 'author1'},
+                        static={},
+                        toOne={},
+                        toMany={}
+                    )}),
+                ToManyRecord(
+                    name='Author',
+                    wbcols={},
+                    static={},
+                    toOne={'agent': UploadTable(
+                        name='Agent',
+                        wbcols={'lastname': 'author2'},
+                        static={},
+                        toOne={},
+                        toMany={}
+                    )}),
+            ]}
+        ).apply_scoping(self.collection)
+        data = [
+            {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'author2': "Mungophilius"},
+            {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'author2': "Philomungus"},
+            {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'author2': "Mungophilius"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
+        self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
+
 
     def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(

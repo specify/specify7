@@ -77,9 +77,15 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTab
         wbcols=ut.wbcols,
         static=static,
         toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
-        toMany={f: [r.apply_scoping(collection) for r in rs] for f, rs in ut.toMany.items()},
+        toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
         scopingAttrs=scoping_relationships(collection, table),
     )
+
+def set_order_number(i: int, tmr: ScopedToManyRecord) -> ScopedToManyRecord:
+    table = datamodel.get_table_strict(tmr.name)
+    if table.get_field('ordernumber'):
+        return tmr._replace(scopingAttrs={**tmr.scopingAttrs, 'ordernumber': i})
+    return tmr
 
 def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToManyRecord:
     table = datamodel.get_table_strict(tmr.name)
