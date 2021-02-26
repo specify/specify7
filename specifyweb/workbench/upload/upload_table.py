@@ -260,10 +260,10 @@ class BoundUploadTable(NamedTuple):
         try:
             uploaded = model.objects.create(**{
                 **({'createdbyagent_id': self.uploadingAgentId} if model.specify_model.get_field('createdbyagent') else {}),
+                **attrs,
                 **self.scopingAttrs,
                 **self.static,
                 **{ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() },
-                **attrs,
             })
             picklist_additions = self._do_picklist_additions()
         except BusinessRuleException as e:

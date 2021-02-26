@@ -62,6 +62,47 @@ class UploadTests(UploadTestsBase):
         self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
         self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
 
+    def test_no_override_ordernumber(self) -> None:
+        plan = UploadTable(
+            name='Referencework',
+            wbcols={'title': 'title'},
+            static={'referenceworktype': 0},
+            toOne={},
+            toMany={'authors': [
+                ToManyRecord(
+                    name='Author',
+                    wbcols={'ordernumber': 'on1'},
+                    static={},
+                    toOne={'agent': UploadTable(
+                        name='Agent',
+                        wbcols={'lastname': 'author1'},
+                        static={},
+                        toOne={},
+                        toMany={}
+                    )}),
+                ToManyRecord(
+                    name='Author',
+                    wbcols={'ordernumber': 'on2'},
+                    static={},
+                    toOne={'agent': UploadTable(
+                        name='Agent',
+                        wbcols={'lastname': 'author2'},
+                        static={},
+                        toOne={},
+                        toMany={}
+                    )}),
+            ]}
+        ).apply_scoping(self.collection)
+        data = [
+            {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'on1': '0', 'author2': "Mungophilius", 'on2': '1'},
+            {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'on1': '1', 'author2': "Philomungus", 'on2': '0'},
+            {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'on1': '0', 'author2': "Mungophilius", 'on2': '1'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
+        self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
+
 
     def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(
