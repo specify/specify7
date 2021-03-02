@@ -327,6 +327,11 @@
 
 .custom_select_options::-webkit-scrollbar {
 	width: 5px !important;
+	background: var(--b1);
+}
+
+.custom_select_options::-webkit-scrollbar-thumb {
+	background: var(--b3);
 }
 
 .custom_select_group {
