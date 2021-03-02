@@ -13,6 +13,7 @@ const lifemapperoccurrencecount = require('./templates/lifemapperoccurrencecount
 
 const test = false; // TODO: remove this
 const default_guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
+// const default_guid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
 const default_occurrence_name = ['Phlox longifolia Nutt.', 'Phlox longifolia Nutt.'];
 
 const test__get_guid = (guid) =>
@@ -432,11 +433,11 @@ const issueDefinitions = {
 		'CONTINENT_COUNTRY_MISMATCH': 'The interpreted continent and country do not match.',
 		'CONTINENT_DERIVED_FROM_COORDINATES': 'The interpreted continent is based on the coordinates, not the verbatim string information.',
 		'CONTINENT_INVALID': 'Uninterpretable continent values found.',
-		'COORDINATE_ACCURACY_INVALID': 'Deprecated. ',
+		'COORDINATE_ACCURACY_INVALID': 'Deprecated. ',
 		'COORDINATE_INVALID': 'Coordinate value is given in some form but GBIF is unable to interpret it.',
 		'COORDINATE_OUT_OF_RANGE': 'Coordinate has a latitude and/or longitude value beyond the maximum (or minimum) decimal value.',
 		'COORDINATE_PRECISION_INVALID': 'Indicates an invalid or very unlikely coordinatePrecision',
-		'COORDINATE_PRECISION_UNCERTAINTY_MISMATCH': 'Deprecated. ',
+		'COORDINATE_PRECISION_UNCERTAINTY_MISMATCH': 'Deprecated. ',
 		'COORDINATE_REPROJECTED': 'The original coordinate was successfully reprojected from a different geodetic datum to WGS84.',
 		'COORDINATE_REPROJECTION_FAILED': 'The given decimal latitude and longitude could not be reprojected to WGS84 based on the provided datum.',
 		'COORDINATE_REPROJECTION_SUSPICIOUS': 'Indicates successful coordinate reprojection according to provided datum, but which results in a datum shift larger than 0.1 decimal degrees.',
@@ -607,7 +608,10 @@ const response_handlers = {
 		{
 			list_of_issues: [],
 			occurrence_name: '',
-			occurrence_view_link: occurrence['specimen.url'],
+			occurrence_view_link:
+				`https://www.morphosource.org/biological_specimens/0000S${
+					occurrence['specimen.specimen_id']
+				}`
 		}
 	),
 };
