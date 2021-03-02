@@ -435,11 +435,9 @@ module.exports = Backbone.View.extend({
       return;
 
     Leaflet.showLeafletMap({
-      locality_points: Leaflet.getLocalitiesDataFromSpreadsheet(
-        this.locality_columns,
-        this.hot.getData(),
-      ),
-      marker_click_callback: (row_number) => {
+      locality_points,
+      marker_click_callback: (locality_point) => {
+        const row_number = locality_points[locality_point].row_number;
         const selected_column =
           typeof this.hot.getSelectedLast() === 'undefined' ?
             0 :

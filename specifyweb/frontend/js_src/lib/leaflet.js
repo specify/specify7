@@ -27,14 +27,16 @@ L.Control.FullScreen = L.Control.extend({
         img.src = '/static/img/full_screen.png';
         img.style.width = '50px';
 
+        this.img = img;
+
         return img;
     },
 
     onRemove: map => {
         L.DomEvent
-            .off(img, 'click', L.DomEvent.stopPropagation)
-            .off(img, 'click', L.DomEvent.preventDefault)
-            .off(img, 'click', ()=>toggleFullScreen(map));
+            .off(this.img, 'click', L.DomEvent.stopPropagation)
+            .off(this.img, 'click', L.DomEvent.preventDefault)
+            .off(this.img, 'click', ()=>toggleFullScreen(map));
     }
 });
 
@@ -222,14 +224,17 @@ const Leaflet = {
         const control_layers = L.control.layers(leaflet_tile_servers.base_maps, leaflet_tile_servers.overlays);
         control_layers.addTo(map);
 
-        let index = 1;
+        let index = 0;
         Leaflet.addMarkersToMap(
             map,
             control_layers,
             locality_points.map(point_data_dict =>
                 this.displayLocalityOnTheMap({
                     locality_data: point_data_dict,
-                    marker_click_callback: () => marker_click_callback(index++),
+                    marker_click_callback: marker_click_callback.bind(
+                        null,
+                        index++
+                    ),
                     map: map
                 })
             ).flat(),
