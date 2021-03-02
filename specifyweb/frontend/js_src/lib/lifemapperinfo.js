@@ -7,14 +7,21 @@ require('../css/lifemapperinfo.css');
 
 const Leaflet = require('./leaflet.js');
 
-const lifemapperdatasourceicon = require('./templates/lifemapperdatasourceicon.html');
+const lifemapperdatasourceicon = require(
+	'./templates/lifemapperdatasourceicon.html'
+);
 const lifemapperissues = require('./templates/lifemapperissues.html');
-const lifemapperoccurrencecount = require('./templates/lifemapperoccurrencecount.html');
+const lifemapperoccurrencecount = require(
+	'./templates/lifemapperoccurrencecount.html'
+);
 
 const test = false; // TODO: remove this
 const default_guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
 // const default_guid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
-const default_occurrence_name = ['Phlox longifolia Nutt.', 'Phlox longifolia Nutt.'];
+const default_occurrence_name = [
+	'Phlox longifolia Nutt.',
+	'Phlox longifolia Nutt.'
+];
 
 const test__get_guid = (guid) =>
 	(
@@ -83,8 +90,12 @@ module.exports = Backbone.View.extend({
 			);
 
 		new Promise(occurrence_name_resolved =>
-			$.get(format_occurrence_data_request(guid)).done(response =>
-				Object.values(response.records || {}).map(({provider,...record})=>
+			$.get(
+				format_occurrence_data_request(guid)
+			).done(response =>
+				Object.values(
+					response.records || {}
+				).map(({provider,...record})=>
 					[provider, record],
 				).filter(([key]) =>
 					typeof data_sources[key] !== 'undefined',
@@ -93,16 +104,26 @@ module.exports = Backbone.View.extend({
 
 					let parsed_response;
 
-					if (typeof records === 'undefined' || typeof records[0] === 'undefined')
+					if (
+						typeof records === 'undefined' ||
+						typeof records[0] === 'undefined'
+					)
 						parsed_response = false;
 					else
 						parsed_response = response_handlers[key](records[0]);
 
-					this.showSourceIcon(occurrence_name_resolved, data_source_info, parsed_response, count > 1);
+					this.showSourceIcon(
+						occurrence_name_resolved,
+						data_source_info,
+						parsed_response,
+						count > 1
+					);
 				}),
 			),
 		).then(remote_occurrence_name =>
-			this.get_scientific_name(this.model).then(local_scientific_name => {
+			this.get_scientific_name(
+				this.model
+			).then(local_scientific_name => {
 
 				this.local_scientific_name = local_scientific_name;
 				this.remote_scientific_name = remote_occurrence_name;
@@ -112,7 +133,12 @@ module.exports = Backbone.View.extend({
 			}),
 		);
 	},
-	showSourceIcon(occurrence_name_resolved = undefined, data_source_info, response, has_multiple_records = false) {
+	showSourceIcon(
+		occurrence_name_resolved = undefined,
+		data_source_info,
+		response,
+		has_multiple_records = false
+	) {
 
 		const {
 			source_name,
@@ -149,7 +175,9 @@ module.exports = Backbone.View.extend({
 
 		if (response) {
 			if (list_of_issues.length !== 0)
-				link.addClass('lifemapper_source_icon_issues_detected');
+				link.addClass(
+					'lifemapper_source_icon_issues_detected'
+				);
 
 
 			const handleClick = () => this.showSourceResponse(
@@ -165,7 +193,9 @@ module.exports = Backbone.View.extend({
 			link.on('click', handleClick);
 		}
 		else
-			link.addClass('lifemapper_source_icon_not_found');
+			link.addClass(
+				'lifemapper_source_icon_not_found'
+			);
 
 		this.$el.append(link).show();
 	},
@@ -211,13 +241,18 @@ module.exports = Backbone.View.extend({
 				buttons.push(
 					{
 						text: `View occurrence at ${source_label}`,
-						click: () => window.open(occurrence_view_link, '_blank'),
+						click: () =>
+							window.open(occurrence_view_link, '_blank'),
 					},
 				);
 		}
 
 		let destructor;
-		const dialog = $(`<div id="${salted_source_name}">${window_content}</div>`).dialog({
+		const dialog = $(`<div id="${
+			salted_source_name
+		}">${
+			window_content
+		}</div>`).dialog({
 			title: title,
 			close: function() {
 				if (typeof destructor !== 'undefined')
@@ -237,11 +272,19 @@ module.exports = Backbone.View.extend({
 				this.model,
 				detach_callback
 			);
-		else if(typeof occurrence_name !== 'undefined' && occurrence_name !== '')
+		else if(
+			typeof occurrence_name !== 'undefined' &&
+			occurrence_name !== ''
+		)
 			this.showCOCount(dialog, source_name, occurrence_name);
 
 	},
-	showCOMap: (dialog, [local_occurrence_name, remote_occurrence_name], model, detach_callback) =>
+	showCOMap: (
+		dialog,
+		[local_occurrence_name, remote_occurrence_name],
+		model,
+		detach_callback
+	) =>
 		new Promise(resolve => {
 
 			let details_window;
@@ -250,43 +293,59 @@ module.exports = Backbone.View.extend({
 			let error_messages;
 
 			function add_section(class_name, message) {
-				details_window.innerHTML += `<span class="${class_name}" style="border-bottom:10px">${message}</span>`;
+				details_window.innerHTML += `<span
+					class="${class_name}"
+					style="border-bottom:10px"
+				>${
+					message
+				}</span>`;
 				return details_window.getElementsByClassName(class_name);
 			}
 
 			function add_message(is_error, message) {
 				if (is_error) {
 					if (typeof error_section === 'undefined')
-						error_section = add_section('error_details', message);
+						error_section = add_section(
+							'error_details',
+							message
+						);
 					else
 						error_section.innerHTML += `<br>${message}`;
 				}
 				else if (typeof info_section === 'undefined')
-					info_section = add_section('info_section', message);
+					info_section = add_section(
+						'info_section',
+						message
+					);
 				else
 					info_section.innerHTML += `<br>${message}`;
 			}
 
 			const similar_co_markers_promise = new Promise(resolve => {
 
-				const similar_collection_objects = new schema.models.CollectionObject.LazyCollection({
-					filters: {
-						determinations__iscurrent: true,
-						determinations__preferredtaxon__fullname: typeof local_occurrence_name == 'undefined' ?
-							remote_occurrence_name :
-							local_occurrence_name,
-					},
-				});
+				const similar_collection_objects =
+					new schema.models.CollectionObject.LazyCollection({
+						filters: {
+							determinations__iscurrent: true,
+							determinations__preferredtaxon__fullname:
+								typeof local_occurrence_name == 'undefined' ?
+									remote_occurrence_name :
+									local_occurrence_name,
+						},
+					});
 				similar_collection_objects.fetch({
 					limit: 100,
 				}).done(() =>
 					Promise.all(
 						similar_collection_objects.map(collection_object =>
 							new Promise(resolve =>
-								collection_object.rget('collectingevent.locality').done(locality =>
+								collection_object.rget(
+									'collectingevent.locality'
+								).done(locality =>
 									Leaflet.getMarkersFromLocalityResource(
 										locality,
-										model.get('id') === collection_object.get('id') ?
+										model.get('id') ===
+											collection_object.get('id') ?
 											'lifemapper_current_collection_object_marker' :
 											undefined,
 									).then(resolve),
@@ -311,8 +370,13 @@ module.exports = Backbone.View.extend({
 				let error_message;
 				let info_message;
 
-				if (typeof response.errors !== 'undefined' && response.errors.length !== 0)
-					error_message = `The following errors were reported by Lifemapper:<br>${response.errors.join('<br>')}`;
+				if (
+					typeof response.errors !== 'undefined' &&
+					response.errors.length !== 0
+				)
+					error_message =
+						`The following errors were reported by Lifemapper:<br>
+						${response.errors.join('<br>')}`;
 				else if(response.records.length !== 0){
 
 					const {
@@ -368,11 +432,20 @@ module.exports = Backbone.View.extend({
 					info_message =
 						'Projection map for this species was not found';
 
-				const [map, layer_group, details_container] = Leaflet.showCOMap(map_container, layers, '');
+				const [
+					map,
+					layer_group,
+					details_container
+				] =Leaflet.showCOMap(map_container, layers, '');
 				details_window = details_container;
 
 				similar_co_markers_promise.then(markers => {
-					Leaflet.addMarkersToMap(map, layer_group, markers.flat(2), 'Local Occurrence Points');
+					Leaflet.addMarkersToMap(
+						map,
+						layer_group,
+						markers.flat(2),
+						'Local Occurrence Points'
+					);
 					resolve(map);
 				});
 
@@ -398,18 +471,10 @@ module.exports = Backbone.View.extend({
 		}),
 	showCOCount: function(dialog, source_name, occurrence_name){
 
-		// const occurence_names = this.fetch_scientific_name();
-
-		// if(occurence_names === false)
-		// 	return;
-
 		$.get(
 			format_occurrence_count_request(
 				source_name,
 				occurrence_name
-				// occurence_names[
-				// 	(typeof occurence_names[1] !== 'undefined')|0
-				// ]
 			)
 		).done(response => (
 			response.count === 0 ?
@@ -564,11 +629,22 @@ const issueDefinitions = {
 
 
 const format_occurrence_data_request = (occurrence_guid) =>
-	`http://notyeti-192.lifemapper.org/api/v1/occ/${occurrence_guid}?count_only=0`;
-const format_occurrence_count_request = (data_aggregator_name, occurrence_scientific_name) =>
-	`http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`;
+	`http://notyeti-192.lifemapper.org/api/v1/occ/${
+		occurrence_guid
+	}?count_only=0`;
+const format_occurrence_count_request = (
+	data_aggregator_name,
+	occurrence_scientific_name
+) =>
+	`http://notyeti-192.lifemapper.org/api/v1/name/${
+		data_aggregator_name
+	}/${
+		encodeURIComponent(occurrence_scientific_name)
+	}?count_only=1`;
 const format_occurrence_map_request = occurrence_scientific_name =>
-	`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}`;
+	`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${
+		encodeURIComponent(occurrence_scientific_name)
+	}`;
 
 const data_sources = {
 	'GBIF': {
@@ -593,15 +669,17 @@ const response_handlers = {
 	'GBIF': (occurrence) => (
 		{
 			list_of_issues: occurrence.issues,
-			occurrence_name: occurrence.scientificName,
-			occurrence_view_link: `https://www.gbif.org/occurrence/${occurrence.key}`,
+			occurrence_name: occurrence['scientificName'],
+			occurrence_view_link:
+				`https://www.gbif.org/occurrence/${occurrence.key}`,
 		}
 	),
 	'iDigBio': (occurrence) => (
 		{
-			list_of_issues: occurrence.indexTerms.flags,
+			list_of_issues: occurrence['indexTerms'].flags,
 			occurrence_name: '',
-			occurrence_view_link: `https://www.idigbio.org/portal/records/${occurrence['uuid']}`,
+			occurrence_view_link:
+				`https://www.idigbio.org/portal/records/${occurrence['uuid']}`,
 		}
 	),
 	'MorphoSource': (occurrence) => (
