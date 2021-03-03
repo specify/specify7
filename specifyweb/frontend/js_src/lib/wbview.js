@@ -455,7 +455,13 @@ const WBView = Backbone.View.extend({
         return true;
     },
     calcHeight: function() {
-        return $(window).height() - this.$el.offset().top - 50;
+
+        const offsetTop = this.$el.offset().top;
+
+        if(offsetTop === 0)
+            setTimeout(this.resize.bind(this), 20);
+
+        return $(window).height() - offsetTop - 55;
     },
     saveClicked: function() {
         this.save().done();
