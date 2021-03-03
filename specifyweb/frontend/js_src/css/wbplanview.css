@@ -236,8 +236,8 @@
 }
 
 .custom_select_suggestion_list {
-	position: absolute;
-	bottom: calc(4 * var(--white_space));
+	position: fixed;
+	height: auto;
 }
 
 .custom_select_closed_list .custom_select_options,
@@ -305,7 +305,7 @@
 	color: var(--text2);
 }
 
-.custom_select_options, .custom_select_suggestion_list {
+.custom_select_options {
 	height: -moz-fit-content;
 	height: fit-content;
 }

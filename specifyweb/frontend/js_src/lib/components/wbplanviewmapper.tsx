@@ -700,6 +700,68 @@ export default function WBPlanViewMapper(
 			resizeObserer.disconnect();
 	}, [mappingViewParentRef.current]);
 
+	// reposition suggestions box if it doesn't fit
+	function repositionSuggestionBox():void {
+
+		if(list_of_mappings.current === null)
+			return;
+
+		if(
+			typeof props.automapper_suggestions === 'undefined' ||
+			props.automapper_suggestions.length === 0
+		)
+			return;
+
+		const automapper_suggestions =
+			list_of_mappings.current.getElementsByClassName(
+				'custom_select_suggestion_list'
+			)[0] as HTMLElement | undefined;
+
+		if(!automapper_suggestions)
+			return;
+
+		const custom_select_element = automapper_suggestions.parentElement;
+
+		if(!custom_select_element)
+			return;
+
+		const automapper_suggestions_height = automapper_suggestions.clientHeight;
+
+		const list_of_mappings_position = list_of_mappings.current.offsetTop;
+		const current_scroll_top = list_of_mappings.current.scrollTop;
+		const picklist_position = custom_select_element.offsetTop;
+
+		// suggestions list fits on the screen. nothing to do
+		if(
+			picklist_position
+			- list_of_mappings_position
+			- automapper_suggestions_height >= 0
+		)
+			return;
+
+		const suggestions_list_position =
+			picklist_position - automapper_suggestions_height - current_scroll_top;
+
+		const scroll_position =
+			picklist_position - current_scroll_top - list_of_mappings_position;
+
+		// hide suggestions box once its parent picklist becomes hidden
+		automapper_suggestions.style.visibility = scroll_position > 0 ?
+			'visible' :
+			'hidden';
+
+		if(scroll_position > 0)
+			automapper_suggestions.style.top = `${
+				suggestions_list_position
+			}px`;
+
+	}
+
+	React.useEffect(
+		repositionSuggestionBox,
+		[props.automapper_suggestions, list_of_mappings]
+	);
+
 	return <>
 		{
 			props.show_mapping_view &&
@@ -749,7 +811,11 @@ export default function WBPlanViewMapper(
 			</div>
 		}
 
-		<div className="list__mappings" ref={list_of_mappings}>{
+		<div
+			className="list__mappings"
+			ref={list_of_mappings}
+			onScroll={repositionSuggestionBox}
+		>{
 			props.lines.map(({mapping_path, name, type}, index) =>
 				<MappingLine
 					key={index}
@@ -768,10 +834,12 @@ export default function WBPlanViewMapper(
 							handleChange: props.handleChange.bind(null, index),
 							handleOpen: props.handleOpen.bind(null, index),
 							handleClose: props.handleClose.bind(null, index),
-							handleAutomapperSuggestionSelection: props.handleAutomapperSuggestionSelection,
+							handleAutomapperSuggestionSelection:
+								props.handleAutomapperSuggestionSelection,
 							get_mapped_fields: get_mapped_fields_bind,
 							open_select_element:
-								typeof props.open_select_element !== 'undefined' && props.open_select_element.line === index ?
+								typeof props.open_select_element !== 'undefined' &&
+								props.open_select_element.line === index ?
 									props.open_select_element :
 									undefined,
 							show_hidden_fields: props.show_hidden_fields,

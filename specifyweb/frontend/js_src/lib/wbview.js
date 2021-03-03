@@ -509,8 +509,8 @@ const WBView = Backbone.View.extend({
                 title: "No Plan is defined",
                 modal: true,
                 buttons: {
+                    'Cancel': function() { $(this).dialog('close'); },
                     'Create': openPlan,
-                    'Cancel': function() { $(this).dialog('close'); }
                 }
             });
         } else {

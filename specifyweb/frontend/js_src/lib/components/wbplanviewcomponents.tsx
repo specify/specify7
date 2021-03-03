@@ -170,11 +170,16 @@ function MappingElement(
 	props: MappingElementProps,
 ) {
 
-	const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
-		[field_group_label, {} as CustomSelectElementOptions],
-	));
+	const field_groups = Object.fromEntries(
+		Object.keys(
+			field_group_labels
+		).map((field_group_label) =>
+			[field_group_label, {} as CustomSelectElementOptions],
+		)
+	);
 
-	let default_option: CustomSelectElementDefaultOptionProps | undefined = undefined;
+	let default_option:
+		CustomSelectElementDefaultOptionProps | undefined = undefined;
 
 	const field_names: string[] = [];
 
@@ -185,7 +190,8 @@ function MappingElement(
 			is_enabled = true,  // whether field is enabled (not mapped yet)
 			is_default = false,  // whether field is selected by default
 			table_name = '',  // table name for this option
-			is_relationship = false,  // whether this field is relationship, tree rank or reference item
+			// whether this field is relationship, tree rank or reference item
+			is_relationship = false,
 			is_required = false,  // whether this field is required
 			is_hidden = false,  // whether this field is hidden
 		},
@@ -250,7 +256,9 @@ function MappingElement(
 				props.automapper_suggestions.length > 0 &&
 				typeof props.handleAutomapperSuggestionSelection !== 'undefined' ?
 					<SuggestionBox
-						handleAutomapperSuggestionSelection={props.handleAutomapperSuggestionSelection}
+						handleAutomapperSuggestionSelection={
+							props.handleAutomapperSuggestionSelection
+						}
 						select_options_data={
 							Object.fromEntries(
 								props.automapper_suggestions.map((automapper_suggestion, index) => [
