@@ -235,9 +235,15 @@
 	position: relative;
 }
 
-.custom_select_suggestion_list {
+.custom_select_suggestion_list:not(.controlled) {
+	position: absolute;
+	bottom: calc(4 * var(--white_space));
+}
+
+.custom_select_suggestion_list.controlled {
 	position: fixed;
 	height: auto;
+	z-index: 10;
 }
 
 .custom_select_closed_list .custom_select_options,
@@ -305,7 +311,8 @@
 	color: var(--text2);
 }
 
-.custom_select_options {
+.custom_select_options,
+.custom_select_suggestion_list:not(.controlled) {
 	height: -moz-fit-content;
 	height: fit-content;
 }

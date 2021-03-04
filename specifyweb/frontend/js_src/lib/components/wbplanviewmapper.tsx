@@ -673,7 +673,7 @@ export default function WBPlanViewMapper(
 		})
 	});
 
-	// resize event listener for the mapping view
+	// `resize` event listener for the mapping view
 	React.useEffect(() => {
 
 		if(
@@ -703,13 +703,13 @@ export default function WBPlanViewMapper(
 	// reposition suggestions box if it doesn't fit
 	function repositionSuggestionBox():void {
 
-		if(list_of_mappings.current === null)
-			return;
-
 		if(
 			typeof props.automapper_suggestions === 'undefined' ||
 			props.automapper_suggestions.length === 0
 		)
+			return;
+
+		if(list_of_mappings.current === null)
 			return;
 
 		const automapper_suggestions =
@@ -739,6 +739,9 @@ export default function WBPlanViewMapper(
 		)
 			return;
 
+		if(!automapper_suggestions.classList.contains('controlled'))
+			automapper_suggestions.classList.add('controlled');
+
 		const suggestions_list_position =
 			picklist_position - automapper_suggestions_height - current_scroll_top;
 
@@ -761,6 +764,12 @@ export default function WBPlanViewMapper(
 		repositionSuggestionBox,
 		[props.automapper_suggestions, list_of_mappings]
 	);
+
+	React.useEffect(()=>{
+		window.addEventListener('resize', repositionSuggestionBox);
+		return ()=>
+			window.removeEventListener('resize', repositionSuggestionBox);
+	},[]);
 
 	return <>
 		{
