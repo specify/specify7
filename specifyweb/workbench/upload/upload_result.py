@@ -214,7 +214,7 @@ class ParseFailures(NamedTuple):
 
     def validation_info(self) -> RowValidation:
         return RowValidation(
-            cellIssues=[CellIssue(column=f.caption, issue=f.message) for f in self.failures],
+            cellIssues=[CellIssue(column=f.column, issue=f.message) for f in self.failures],
             newRows=[],
             tableIssues=[],
             picklistAdditions=[],

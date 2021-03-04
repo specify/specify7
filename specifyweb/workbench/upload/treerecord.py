@@ -17,25 +17,26 @@ from specifyweb.specify.tree_extras import parent_joins, definition_joins
 from .uploadable import Row, FilterPack
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, ReportInfo, TreeInfo
 from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
+from .column_options import ColumnOptions
 
 logger = logging.getLogger(__name__)
 
 
 class TreeRecord(NamedTuple):
     name: str
-    ranks: Dict[str, Dict[str, str]]
+    ranks: Dict[str, Dict[str, ColumnOptions]]
 
     def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
 
     def get_cols(self) -> Set[str]:
-        return set(col for r in self.ranks.values() for col in r.values())
+        return set(col.column for r in self.ranks.values() for col in r.values())
 
     def to_json(self) -> Dict:
         result = {
             'ranks': {
-                rank: cols['name'] if len(cols) == 1 else dict(treeNodeCols=cols)
+                rank: cols['name'].to_json() if len(cols) == 1 else dict(treeNodeCols={k: v.to_json() for k, v in cols.items()})
                 for rank, cols in self.ranks.items()
             },
         }
@@ -46,7 +47,7 @@ class TreeRecord(NamedTuple):
 
 class ScopedTreeRecord(NamedTuple):
     name: str
-    ranks: Dict[str, Dict[str, str]]
+    ranks: Dict[str, Dict[str, ColumnOptions]]
     treedefid: int
 
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundTreeRecord", ParseFailures]:
@@ -60,7 +61,7 @@ class ScopedTreeRecord(NamedTuple):
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
             if filters['name'] is None:
                 parseFails += [
-                    ParseFailure(f'this field must be empty if "{nameColumn}" is empty', result.caption)
+                    ParseFailure(f'this field must be empty if "{nameColumn.column}" is empty', result.column)
                     for result in presults
                     if any(v is not None for v in result.filter_on.values())
                 ]
@@ -110,7 +111,7 @@ class BoundTreeRecord(NamedTuple):
         to_upload, matched = self._match()
         if not to_upload:
             if matched is None:
-                columns = [pr.caption for prs in self.parsedFields.values() for pr in prs]
+                columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
                 info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
                 return UploadResult(NullRecord(info), {}, {})
             elif len(matched['matches']) == 1:
@@ -150,7 +151,7 @@ class BoundTreeRecord(NamedTuple):
             )
             obj.save(skip_tree_extras=True)
             auditlog.insert(obj, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
-            info = ReportInfo(tableName=self.name, columns=[pr.caption for pr in tdiwpr.results], treeInfo=TreeInfo(tdiwpr.treedefitem.name, obj.name))
+            info = ReportInfo(tableName=self.name, columns=[pr.column for pr in tdiwpr.results], treeInfo=TreeInfo(tdiwpr.treedefitem.name, obj.name))
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
 
             parent_id = obj.id
@@ -233,7 +234,7 @@ class BoundTreeRecord(NamedTuple):
             result = list(cursor.fetchall())
             if result:
                 columns = [
-                    r.caption
+                    r.column
                     for tdiwpr in items_with_values_enforced
                     if tdiwpr.results is not dummy
                     for r in tdiwpr.results

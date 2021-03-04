@@ -5,12 +5,13 @@ from typing import Dict, Any, NamedTuple, List, Union, Set, Optional
 from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable
 from .upload_result import CellIssue, ParseFailures
 from .parsing import parse_many, ParseResult
+from .column_options import ColumnOptions
 
 logger = logging.getLogger(__name__)
 
 class ToManyRecord(NamedTuple):
     name: str
-    wbcols: Dict[str, str]
+    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
 
@@ -19,11 +20,15 @@ class ToManyRecord(NamedTuple):
         return apply_scoping(self, collection)
 
     def get_cols(self) -> Set[str]:
-        return set(self.wbcols.values()) \
+        return set(cd.column for cd in self.wbcols.values()) \
             | set(col for u in self.toOne.values() for col in u.get_cols())
 
     def to_json(self) -> Dict:
-        result = dict(wbcols=self.wbcols, static=self.static, toOne=self.toOne)
+        result = dict(
+            wbcols={k: v.to_json() for k,v in self.wbcols.items()},
+            static=self.static,
+        )
+
         result['toOne'] = {
             key: uploadable.to_json()
             for key, uploadable in self.toOne.items()
@@ -33,7 +38,7 @@ class ToManyRecord(NamedTuple):
 
 class ScopedToManyRecord(NamedTuple):
     name: str
-    wbcols: Dict[str, str]
+    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, ScopedUploadable]
     scopingAttrs: Dict[str, int]
@@ -64,7 +69,7 @@ class ScopedToManyRecord(NamedTuple):
 
 class BoundToManyRecord(NamedTuple):
     name: str
-    wbcols: Dict[str, str]
+    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]

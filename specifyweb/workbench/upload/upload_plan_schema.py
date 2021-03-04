@@ -8,8 +8,10 @@ from .upload_table import UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord
 from .uploadable import Uploadable
+from .column_options import ColumnOptions
 
-schema = {
+
+schema: Dict = {
     'title': 'Specify 7 Workbench Upload Plan',
     'description': 'The workbench upload plan defines how to load columnar data into the Specify datamodel.',
     "$schema": "http://json-schema.org/schema#",
@@ -127,7 +129,7 @@ schema = {
         'wbcols': {
             'type': 'object',
             'description': 'Maps the columns of the destination table to the headers of the source columns of input data.',
-            'additionalProperties': { 'type': 'string' },
+            'additionalProperties': { 'oneOf': [ { 'type': 'string' }, { '$ref': '#/definitions/columnOptions' } ] },
             'examples': [
                 {'catalognumber': 'Specimen #', 'catalogeddate': 'Recored Date', 'objectcondition': 'Condition'},
                 {'lastname': 'Collector 1 Last Name', 'firstname': 'Collector 1 First Name'},
@@ -143,10 +145,37 @@ schema = {
                 'highestchildnodenumber': False,
                 'rankid': False,
             },
-            'additionalProperties': { 'type': 'string' },
+            'additionalProperties': { 'oneOf': [ { 'type': 'string' }, { '$ref': '#/definitions/columnOptions' } ] },
             'examples': [
                 {'name': 'Species', 'author': 'Species Author'},
             ]
+        },
+
+        'columnOptions': {
+            'type': 'object',
+            'properties': {
+                'column': { 'type': 'string', 'description': 'The column header of the source data.' },
+                'matchBehavior': {
+                    'type': 'string',
+                    'enum': ['ignoreWhenBlank', 'ignoreAlways', 'ignoreNever'],
+                    'default': 'ignoreNever',
+                    'description': '''When set to ignoreWhenBlank blank values in this column will not be considered for matching purposes.
+Blank values are ignored when matching even if a default values is provided. When set to ignoreAlways the value in
+this column will never be considered for matching purposes, only for uploading.'''
+                },
+                'nullAllowed': {
+                    'type': 'boolean',
+                    'default': True,
+                    'description': 'If set to false rows that would result in null values being uploaded for this column will be rejected.'
+                },
+                'default': {
+                    'type': ['string', 'null'],
+                    'default': None,
+                    'description': 'When set use this value for any cells that are empty in this column.'
+                }
+            },
+            'required': ['column'],
+            'additionalProperties': False
         },
 
         'toOne': {
@@ -193,7 +222,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 
     return UploadTable(
         name=table.django_name,
-        wbcols=to_parse['wbcols'],
+        wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
             key: parse_uploadable(collection, rel_table(key), to_one)
@@ -207,7 +236,8 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 
 def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
     ranks = {
-        rank: {'name': name_or_cols} if isinstance(name_or_cols, str) else name_or_cols['treeNodeCols']
+        rank: {'name': parse_column_options(name_or_cols)} if isinstance(name_or_cols, str)
+        else {k: parse_column_options(v) for k,v in name_or_cols['treeNodeCols'].items() }
         for rank, name_or_cols in to_parse['ranks'].items()
     }
     for rank, cols in ranks.items():
@@ -225,10 +255,26 @@ def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyReco
 
     return ToManyRecord(
         name=table.django_name,
-        wbcols=to_parse['wbcols'],
+        wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
             key: parse_uploadable(collection, rel_table(key), to_one)
             for key, to_one in to_parse['toOne'].items()
         },
     )
+
+def parse_column_options(to_parse: Union[str, Dict]) -> ColumnOptions:
+    if isinstance(to_parse, str):
+        return ColumnOptions(
+            column=to_parse,
+            matchBehavior="ignoreNever",
+            nullAllowed=True,
+            default=None,
+        )
+    else:
+        return ColumnOptions(
+            column=to_parse['column'],
+            matchBehavior=to_parse.get('matchBehavior', "ignoreNever"),
+            nullAllowed=to_parse.get('nullAllowed', True),
+            default=to_parse.get('default', None),
+        )

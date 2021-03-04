@@ -1,6 +1,7 @@
 from ..upload_table import UploadTable, ScopedUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord
+from ..upload_plan_schema import parse_column_options
 
 json = dict(
     baseTableName = 'Collectionobject',
@@ -137,7 +138,7 @@ def with_scoping(collection) -> ScopedUploadTable:
     return UploadTable(
         name = 'Collectionobject',
         wbcols = {
-            'catalognumber' : "BMSM No.",
+            'catalognumber' : parse_column_options("BMSM No."),
         },
         static = {},
         toMany = {
@@ -145,7 +146,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                 ToManyRecord(
                     name = 'Determination',
                     wbcols = {
-                        'determineddate': 'ID Date',
+                        'determineddate': parse_column_options('ID Date'),
                     },
                     static = {
                         'iscurrent': True,
@@ -154,10 +155,10 @@ def with_scoping(collection) -> ScopedUploadTable:
                         'determiner': UploadTable(
                             name = 'Agent',
                             wbcols = {
-                                'title': 'Determiner 1 Title',
-                                'firstname': 'Determiner 1 First Name',
-                                'middleinitial': 'Determiner 1 Middle Initial',
-                                'lastname': 'Determiner 1 Last Name',
+                                'title': parse_column_options('Determiner 1 Title'),
+                                'firstname': parse_column_options('Determiner 1 First Name'),
+                                'middleinitial': parse_column_options('Determiner 1 Middle Initial'),
+                                'lastname': parse_column_options('Determiner 1 Last Name'),
                             },
                             static = {'agenttype': 1},
                             toOne = {},
@@ -166,13 +167,13 @@ def with_scoping(collection) -> ScopedUploadTable:
                         'taxon': TreeRecord(
                             name = 'Taxon',
                             ranks = {
-                                'Class': {'name': 'Class'},
-                                'Superfamily': {'name': 'Superfamily'},
-                                'Family': {'name': 'Family'},
-                                'Genus': {'name': 'Genus'},
-                                'Subgenus': {'name': 'Subgenus'},
-                                'Species': {'name': 'Species', 'author': 'Species Author'},
-                                'Subspecies': {'name': 'Subspecies', 'author': 'Subspecies Author'},
+                                'Class': {'name': parse_column_options('Class')},
+                                'Superfamily': {'name': parse_column_options('Superfamily')},
+                                'Family': {'name': parse_column_options('Family')},
+                                'Genus': {'name': parse_column_options('Genus')},
+                                'Subgenus': {'name': parse_column_options('Subgenus')},
+                                'Species': {'name': parse_column_options('Species'), 'author': parse_column_options('Species Author')},
+                                'Subspecies': {'name': parse_column_options('Subspecies'), 'author': parse_column_options('Subspecies Author')},
                             }
                         )
                     },
@@ -183,28 +184,28 @@ def with_scoping(collection) -> ScopedUploadTable:
             'collectingevent': UploadTable(
                 name = 'Collectingevent',
                 wbcols = {
-                    'enddate' : 'End Date Collected',
-                    'startdate' : 'Start Date Collected',
-                    'stationfieldnumber' : 'Station No.',
+                    'enddate' : parse_column_options('End Date Collected'),
+                    'startdate' : parse_column_options('Start Date Collected'),
+                    'stationfieldnumber' : parse_column_options('Station No.'),
                 },
                 static = {},
                 toOne = {
                     'locality': UploadTable(
                         name = 'Locality',
                         wbcols = {
-                            'localityname': 'Site',
-                            'latitude1': 'Latitude1',
-                            'longitude1': 'Longitude1',
+                            'localityname': parse_column_options('Site'),
+                            'latitude1': parse_column_options('Latitude1'),
+                            'longitude1': parse_column_options('Longitude1'),
                         },
                         static = {'srclatlongunit': 0},
                         toOne = {
                             'geography': TreeRecord(
                                 name = 'Geography',
                                 ranks = {
-                                    'Continent': {'name': 'Continent/Ocean'},
-                                    'Country': {'name': 'Country'},
-                                    'State': {'name': 'State/Prov/Pref'},
-                                    'County': {'name': 'Region'},
+                                    'Continent': {'name': parse_column_options('Continent/Ocean')},
+                                    'Country': {'name': parse_column_options('Country')},
+                                    'State': {'name': parse_column_options('State/Prov/Pref')},
+                                    'County': {'name': parse_column_options('Region')},
                                 }
                             ),
                         },
@@ -221,10 +222,10 @@ def with_scoping(collection) -> ScopedUploadTable:
                                 'agent': UploadTable(
                                     name = 'Agent',
                                     wbcols = {
-                                        'title'          : 'Collector 1 Title',
-                                        'firstname'     : 'Collector 1 First Name',
-                                        'middleinitial' : 'Collector 1 Middle Initial',
-                                        'lastname'      : 'Collector 1 Last Name',
+                                        'title'          : parse_column_options('Collector 1 Title'),
+                                        'firstname'     : parse_column_options('Collector 1 First Name'),
+                                        'middleinitial' : parse_column_options('Collector 1 Middle Initial'),
+                                        'lastname'      : parse_column_options('Collector 1 Last Name'),
                                     },
                                     static = {'agenttype': 1},
                                     toOne = {},
@@ -240,10 +241,10 @@ def with_scoping(collection) -> ScopedUploadTable:
                                 'agent': UploadTable(
                                     name = 'Agent',
                                     wbcols = {
-                                        'title'          : 'Collector 2 Title',
-                                        'firstname'     : 'Collector 2 First Name',
-                                        'middleinitial' : 'Collector 2 Middle Initial',
-                                        'lastname'      : 'Collector 2 Last name',
+                                        'title'          : parse_column_options('Collector 2 Title'),
+                                        'firstname'     : parse_column_options('Collector 2 First Name'),
+                                        'middleinitial' : parse_column_options('Collector 2 Middle Initial'),
+                                        'lastname'      : parse_column_options('Collector 2 Last name'),
                                     },
                                     static = {'agenttype': 1},
                                     toOne = {},

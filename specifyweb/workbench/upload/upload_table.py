@@ -12,13 +12,14 @@ from .parsing import parse_many, ParseResult, ParseFailure
 from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures, PropagatedFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
+from .column_options import ColumnOptions
 
 logger = logging.getLogger(__name__)
 
 
 class UploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, str]
+    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
@@ -28,12 +29,15 @@ class UploadTable(NamedTuple):
         return apply_scoping(self, collection)
 
     def get_cols(self) -> Set[str]:
-        return set(self.wbcols.values()) \
+        return set(cd.column for cd in self.wbcols.values()) \
             | set(col for u in self.toOne.values() for col in u.get_cols()) \
             | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
 
     def _to_json(self) -> Dict:
-        result = dict(wbcols=self.wbcols, static=self.static)
+        result = dict(
+            wbcols={k: v.to_json() for k,v in self.wbcols.items()},
+            static=self.static
+        )
         result['toOne'] = {
             key: uploadable.to_json()
             for key, uploadable in self.toOne.items()
@@ -52,7 +56,7 @@ class UploadTable(NamedTuple):
 
 class ScopedUploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, str]
+    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, ScopedUploadable]
     toMany: Dict[str, List[ScopedToManyRecord]]
@@ -123,7 +127,7 @@ class ScopedMustMatchTable(ScopedUploadTable):
 
 class BoundUploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, str]
+    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]
@@ -170,7 +174,7 @@ class BoundUploadTable(NamedTuple):
 
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
-        info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()), treeInfo=None)
+        info = ReportInfo(tableName=self.name, columns=[cd.column for cd in self.wbcols.values()], treeInfo=None)
 
         toOneResults = self._process_to_ones()
         toOneIds: Dict[str, Optional[int]] = {}
@@ -284,7 +288,7 @@ class BoundUploadTable(NamedTuple):
                 a = parsedField.add_to_picklist
                 pli = a.picklist.picklistitems.create(value=a.value, title=a.value, createdbyagent_id=self.uploadingAgentId)
                 auditlog.insert(pli, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
-                added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.caption, value=a.value, id=pli.id))
+                added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.column, value=a.value, id=pli.id))
         return added_picklist_items
 
 class BoundOneToOneTable(BoundUploadTable):

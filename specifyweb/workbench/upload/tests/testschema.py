@@ -1,13 +1,19 @@
 from typing import Dict
 from jsonschema import validate, Draft7Validator, exceptions # type: ignore
 import json
+import unittest
+from hypothesis import given, infer, settings, HealthCheck
+from hypothesis.strategies import text
+from hypothesis_jsonschema import from_schema
 
-from ..upload_plan_schema import schema, parse_plan
+from ..upload_table import UploadTable
+from ..treerecord import TreeRecord
+from ..column_options import ColumnOptions
+from ..upload_plan_schema import schema, parse_plan, parse_column_options
 from .. import validation_schema
 
 from .base import UploadTestsBase
 from . import example_plan
-
 
 class SchemaTests(UploadTestsBase):
     maxDiff = None
@@ -59,3 +65,22 @@ class SchemaTests(UploadTestsBase):
             with self.assertRaises(exceptions.ValidationError, msg=f"should reject {field}"):
                 validate(with_field(field), schema)
 
+
+class OtherSchemaTests(unittest.TestCase):
+
+    @given(name=infer, wbcols=infer)
+    def test_validate_upload_table_to_json(self, name: str, wbcols: Dict[str, ColumnOptions]):
+        upload_table = UploadTable(name=name, wbcols=wbcols, static={}, toOne={}, toMany={})
+        validate(upload_table.unparse(), schema)
+
+    @given(column_opts=from_schema(schema['definitions']['columnOptions']))
+    def test_column_options_parse(self, column_opts: Dict):
+        validate(column_opts, schema['definitions']['columnOptions'])
+        parse_column_options(column_opts)
+
+    @given(column_opts=infer)
+    def test_column_options_to_json(self, column_opts: ColumnOptions):
+        j = column_opts.to_json()
+        if not isinstance(j, str):
+            validate(j, schema['definitions']['columnOptions'])
+        self.assertEqual(column_opts, parse_column_options(j))

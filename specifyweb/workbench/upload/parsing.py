@@ -4,7 +4,7 @@ import math
 import re
 from decimal import Decimal
 
-from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union
+from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
 from dateparser import DateDataParser # type: ignore
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,6 +13,8 @@ from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch
 
+from .column_options import ColumnOptions
+
 Row = Dict[str, str]
 Filter = Dict[str, Any]
 
@@ -20,50 +22,81 @@ logger = logging.getLogger(__name__)
 
 class PicklistAddition(NamedTuple):
     picklist: Any
-    caption: str
+    column: str
     value: str
 
 class ParseFailure(NamedTuple):
     message: str
-    caption: str
+    column: str
 
 class ParseResult(NamedTuple):
     filter_on: Filter
     upload: Dict[str, Any]
     add_to_picklist: Optional[PicklistAddition]
-    caption: str
+    column: str
 
-def filter_and_upload(f: Filter, caption: str) -> ParseResult:
-    return ParseResult(f, f, None, caption)
+def filter_and_upload(f: Filter, column: str) -> ParseResult:
+    return ParseResult(f, f, None, column)
 
-def parse_many(collection, tablename: str, mapping: Dict[str, str], row: Row) -> Tuple[List[ParseResult], List[ParseFailure]]:
+def parse_many(collection, tablename: str, mapping: Dict[str, ColumnOptions], row: Row) -> Tuple[List[ParseResult], List[ParseFailure]]:
     results = [
-        parse_value(collection, tablename, fieldname, row[caption], caption)
-        for fieldname, caption in mapping.items()
+        parse_value(collection, tablename, fieldname, row[colopts.column], colopts)
+        for fieldname, colopts in mapping.items()
     ]
     return (
         [r for r in results if isinstance(r, ParseResult)],
         [r for r in results if isinstance(r, ParseFailure)]
     )
 
-def parse_value(collection, tablename: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
-    value = value.strip()
+def parse_value(collection, tablename: str, fieldname: str, value_in: str, colopts: ColumnOptions) -> Union[ParseResult, ParseFailure]:
+
     schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
         container__name=tablename.lower(),
         name=fieldname.lower())
 
-    if value == "":
-        if schema_items and schema_items[0].isrequired:
-            return ParseFailure("field is required", caption)
-        return ParseResult({fieldname: None}, {}, None, caption)
+    picklistname = schema_items and schema_items[0].picklistname
+    required_by_schema = schema_items and schema_items[0].isrequired
+
+    result: Union[ParseResult, ParseFailure]
+    was_blank = value_in.strip() == ""
+    if was_blank:
+        if colopts.default is None:
+            if not colopts.nullAllowed:
+                result = ParseFailure("field is required by upload plan mapping", colopts.column)
+            elif required_by_schema:
+                result = ParseFailure("field is required by schema config", colopts.column)
+            else:
+                result = ParseResult({fieldname: None}, {}, None, colopts.column)
+        else:
+            result = _parse(collection, tablename, fieldname, picklistname, colopts.default, colopts.column)
+    else:
+        result = _parse(collection, tablename, fieldname, picklistname, value_in.strip(), colopts.column)
+
+    if isinstance(result, ParseFailure):
+        return result
+
+    if colopts.matchBehavior == "ignoreAlways":
+        return result._replace(filter_on={})
+
+    elif colopts.matchBehavior == "ignoreWhenBlank":
+        return result._replace(filter_on={}) if was_blank else result
+
+    elif colopts.matchBehavior == "ignoreNever":
+        return result
+
+    else:
+        assertNever(colopts.matchBehavior)
+
+
+def _parse(collection, tablename: str, fieldname: str, picklistname: Optional[str], value: str, column: str) -> Union[ParseResult, ParseFailure]:
 
     if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
-        return parse_agenttype(value, caption)
+        return parse_agenttype(value, column)
 
-    if schema_items and schema_items[0].picklistname:
-        result = parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value, caption)
+    if picklistname:
+        result = parse_with_picklist(collection, picklistname, fieldname, value, column)
         if result is not None:
             return result
 
@@ -72,84 +105,84 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
         try:
             parsed = uiformatter.parse(value)
         except FormatMismatch as e:
-            return ParseFailure(e.args[0], caption)
+            return ParseFailure(e.args[0], column)
 
         if uiformatter.needs_autonumber(parsed):
             canonicalized = uiformatter.autonumber_now(collection, getattr(models, tablename.capitalize()), parsed)
         else:
             canonicalized = uiformatter.canonicalize(parsed)
 
-        return filter_and_upload({fieldname: canonicalized}, caption)
+        return filter_and_upload({fieldname: canonicalized}, column)
 
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
     if is_latlong(table, field):
-        return parse_latlong(field, value, caption)
+        return parse_latlong(field, value, column)
 
     if field.is_temporal():
-        return parse_date(table, fieldname, value, caption)
+        return parse_date(table, fieldname, value, column)
 
     if field.type == "java.lang.Boolean":
-        return parse_boolean(fieldname, value, caption)
+        return parse_boolean(fieldname, value, column)
 
     if field.type == 'java.math.BigDecimal':
-        return parse_decimal(fieldname, value, caption)
+        return parse_decimal(fieldname, value, column)
 
     if field.type in ('java.lang.Float', 'java.lang.Double'):
-        return parse_float(fieldname, value, caption)
+        return parse_float(fieldname, value, column)
 
     if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
-        return parse_integer(fieldname, value, caption)
+        return parse_integer(fieldname, value, column)
 
-    return filter_and_upload({fieldname: value}, caption)
+    return filter_and_upload({fieldname: value}, column)
 
-def parse_boolean(fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
+def parse_boolean(fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     if value.lower() in ["yes", "true"]:
         result = True
     elif value.lower() in ["no", "false"]:
         result = False
     else:
-        return ParseFailure(f"value {value} not resolvable to True or False", caption)
+        return ParseFailure(f"value {value} not resolvable to True or False", column)
 
-    return filter_and_upload({fieldname: result}, caption)
+    return filter_and_upload({fieldname: result}, column)
 
-def parse_decimal(fieldname: str, value: str, caption) -> Union[ParseResult, ParseFailure]:
+def parse_decimal(fieldname: str, value: str, column) -> Union[ParseResult, ParseFailure]:
     try:
         result = Decimal(value)
     except Exception as e:
-        return ParseFailure(f"value {value} is not a valid decimal value", caption)
+        return ParseFailure(f"value {value} is not a valid decimal value", column)
 
-    return filter_and_upload({fieldname: result}, caption)
+    return filter_and_upload({fieldname: result}, column)
 
-def parse_float(fieldname: str, value: str, caption) -> Union[ParseResult, ParseFailure]:
+def parse_float(fieldname: str, value: str, column) -> Union[ParseResult, ParseFailure]:
     try:
         result = float(value)
     except ValueError as e:
-        return ParseFailure(str(e), caption)
+        return ParseFailure(str(e), column)
 
-    return filter_and_upload({fieldname: result}, caption)
+    return filter_and_upload({fieldname: result}, column)
 
-def parse_integer(fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
+def parse_integer(fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     try:
         result = int(value)
     except ValueError as e:
-        return ParseFailure(str(e), caption)
+        return ParseFailure(str(e), column)
 
-    return filter_and_upload({fieldname: result}, caption)
+    return filter_and_upload({fieldname: result}, column)
 
-def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure, None]:
+def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure, None]:
     picklist = getattr(models, 'Picklist').objects.get(name=picklist_name, collection=collection)
     if picklist.type == 0: # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)
-            return filter_and_upload({fieldname: item.value}, caption)
+            return filter_and_upload({fieldname: item.value}, column)
         except ObjectDoesNotExist:
             if picklist.readonly:
-                return ParseFailure("value {} not in picklist {}".format(value, picklist.name), caption)
+                return ParseFailure("value {} not in picklist {}".format(value, picklist.name), column)
             else:
-                return filter_and_upload({fieldname: value}, caption)._replace(
-                    add_to_picklist=PicklistAddition(picklist=picklist, caption=caption, value=value)
+                return filter_and_upload({fieldname: value}, column)._replace(
+                    add_to_picklist=PicklistAddition(picklist=picklist, column=column, value=value)
                 )
             return filter_and_upload({fieldname: value})
 
@@ -166,17 +199,17 @@ def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: s
     else:
         raise NotImplementedError("unknown picklist type {}".format(picklist.type))
 
-def parse_agenttype(value: str, caption: str) -> Union[ParseResult, ParseFailure]:
+def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]:
     agenttypes = ['Organization', 'Person', 'Other', 'Group']
 
     value = value.capitalize()
     try:
         agenttype = agenttypes.index(value)
     except ValueError:
-        return ParseFailure("bad agent type: {}. Expected one of {}".format(value, agenttypes), caption)
-    return filter_and_upload({'agenttype': agenttype}, caption)
+        return ParseFailure("bad agent type: {}. Expected one of {}".format(value, agenttypes), column)
+    return filter_and_upload({'agenttype': agenttype}, column)
 
-def parse_date(table: Table, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
+def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     precision_field = table.get_field(fieldname + 'precision')
     parsed = DateDataParser(
         settings={
@@ -187,24 +220,24 @@ def parse_date(table: Table, fieldname: str, value: str, caption: str) -> Union[
     ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
 
     if parsed['date_obj'] is None:
-        return ParseFailure("bad date value: {}".format(value), caption)
+        return ParseFailure("bad date value: {}".format(value), column)
 
     if precision_field is None:
         if parsed['period'] == 'day':
-            return filter_and_upload({fieldname: parsed['date_obj']}, caption)
+            return filter_and_upload({fieldname: parsed['date_obj']}, column)
         else:
-            return ParseFailure("bad date value: {}".format(value), caption)
+            return ParseFailure("bad date value: {}".format(value), column)
     else:
         prec = parsed['period']
         date = parsed['date_obj']
         if prec == 'day':
-            return filter_and_upload({fieldname: date, precision_field.name.lower(): 0}, caption)
+            return filter_and_upload({fieldname: date, precision_field.name.lower(): 0}, column)
         elif prec == 'month':
-            return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 1}, caption)
+            return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 1}, column)
         elif prec == 'year':
-            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2}, caption)
+            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2}, column)
         else:
-            return ParseFailure('expected date precision to be day month or year. got: {}'.format(prec), caption)
+            return ParseFailure('expected date precision to be day month or year. got: {}'.format(prec), column)
 
 
 def parse_string(value: str) -> Optional[str]:
@@ -217,25 +250,25 @@ def is_latlong(table, field) -> bool:
     return table.name == 'Locality' \
         and field.name in ('latitude1', 'longitude1', 'latitude2', 'longitude2')
 
-def parse_latlong(field, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
+def parse_latlong(field, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     parsed = parse_coord(value)
 
     if parsed is None:
-        return ParseFailure('bad latitude or longitude value: {}'.format(value), caption)
+        return ParseFailure('bad latitude or longitude value: {}'.format(value), column)
 
     coord, unit = parsed
     if field.name.startswith('lat') and abs(coord) >= 90:
-        return ParseFailure(f'latitude absolute value must be less than 90 degrees: {value}', caption)
+        return ParseFailure(f'latitude absolute value must be less than 90 degrees: {value}', column)
 
     if field.name.startswith('long') and abs(coord) >= 180:
-        return ParseFailure(f'longitude absolute value must be less than 180 degrees: {value}', caption)
+        return ParseFailure(f'longitude absolute value must be less than 180 degrees: {value}', column)
 
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
     return ParseResult(
         text_filter,
         {field.name: coord, 'originallatlongunit': unit, **text_filter},
         None,
-        caption
+        column
     )
 
 
@@ -284,3 +317,7 @@ LATLONG_PARSER_DEFS = [
         1
     ),
 ]
+
+
+def assertNever(x: NoReturn) -> NoReturn:
+    assert False, f"unhandled type {x}"

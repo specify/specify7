@@ -5,11 +5,13 @@ from jsonschema import validate # type: ignore
 from specifyweb.specify import auditcodes
 
 from .base import UploadTestsBase, get_table
-from ..upload_result import Uploaded, ParseFailures, ParseFailure, FailedBusinessRule
+from ..upload_result import Uploaded, Matched, ParseFailures, ParseFailure, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
+from ..column_options import ColumnOptions
+from ..upload_plan_schema import parse_column_options
 from .. import validation_schema
 
 class ParsingTests(UploadTestsBase):
@@ -78,7 +80,7 @@ class ParsingTests(UploadTestsBase):
     def test_nonreadonly_picklist(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
-            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
             static={},
             toOne={},
             toMany={}
@@ -121,7 +123,7 @@ class ParsingTests(UploadTestsBase):
     def test_picklist_size_overflow(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
-            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
             static={},
             toOne={},
             toMany={}
@@ -146,7 +148,7 @@ class ParsingTests(UploadTestsBase):
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
-            wbcols={'catalognumber': 'catno'},
+            wbcols={'catalognumber': parse_column_options('catno')},
             static={},
             toOne={},
             toMany={}
@@ -166,11 +168,11 @@ class ParsingTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={
-                'catalognumber': 'catno',
-                'yesno1': 'bool',
-                'integer1': 'integer',
-                'number1': 'float',
-                'totalvalue': 'decimal'
+                'catalognumber': parse_column_options('catno'),
+                'yesno1': parse_column_options('bool'),
+                'integer1': parse_column_options('integer'),
+                'number1': parse_column_options('float'),
+                'totalvalue': parse_column_options('decimal')
             },
             static={},
             toOne={},
@@ -192,7 +194,7 @@ class ParsingTests(UploadTestsBase):
     def test_required_field(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
-            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
             static={},
             toOne={},
             toMany={}
@@ -212,8 +214,8 @@ class ParsingTests(UploadTestsBase):
         plan = UploadTable(
             name='Agent',
             wbcols={
-                'title': 'title',
-                'lastname': 'lastname',
+                'title': parse_column_options('title'),
+                'lastname': parse_column_options('lastname'),
             },
             static={'agenttype': 1},
             toOne={},
@@ -236,7 +238,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(message='value Hon. not in picklist AgentTitle', caption='title')], result2.failures)
+        self.assertEqual([ParseFailure(message='value Hon. not in picklist AgentTitle', column='title')], result2.failures)
 
 
     def test_parse_latlong(self) -> None:
@@ -295,7 +297,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='bad date value: foobar', caption='Start Date Collected'), ParseFailure(message='bad date value: bad date', caption='ID Date')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='bad date value: foobar', column='Start Date Collected'), ParseFailure(message='bad date value: bad date', column='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -306,14 +308,14 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message="latitude absolute value must be less than 90 degrees: 128° 06.07' N", caption='Latitude1'), ParseFailure(message="longitude absolute value must be less than 180 degrees: 191° 02.42' W", caption='Longitude1')], failed_result.failures)
+        self.assertEqual([ParseFailure(message="latitude absolute value must be less than 90 degrees: 128° 06.07' N", column='Latitude1'), ParseFailure(message="longitude absolute value must be less than 180 degrees: 191° 02.42' W", column='Longitude1')], failed_result.failures)
 
     def test_agent_type(self) -> None:
         plan = UploadTable(
             name='Agent',
             wbcols={
-                'agenttype': 'agenttype',
-                'lastname': 'lastname',
+                'agenttype': parse_column_options('agenttype'),
+                'lastname': parse_column_options('lastname'),
             },
             static={},
             toOne={},
@@ -338,7 +340,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(message="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']", caption='agenttype')], result2.failures)
+        self.assertEqual([ParseFailure(message="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']", column='agenttype')], result2.failures)
 
         result3 = results[3].record_result
         assert isinstance(result3, Uploaded)
@@ -352,8 +354,8 @@ class ParsingTests(UploadTestsBase):
         plan = TreeRecord(
             name='Taxon',
             ranks=dict(
-                Genus=dict(name='Genus'),
-                Species=dict(name='Species', author='Species Author')
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
             )
         ).apply_scoping(self.collection)
         data  = [
@@ -363,4 +365,387 @@ class ParsingTests(UploadTestsBase):
         results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', caption='Species Author')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', column='Species Author')]))
+
+
+class MatchingBehaviorTests(UploadTestsBase):
+
+    def test_tree_cols_with_ignoreWhenBlank(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'),
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None))
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank author.")
+        self.assertEqual(results[0].get_id(), results[1].get_id(), "Second record matched the first specifically.")
+        self.assertIsInstance(results[2].record_result, Uploaded, "Third record doesn't match due to different author.")
+
+
+    def test_higher_tree_cols_with_ignoreWhenBlank(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'),
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None)),
+                Subspecies=dict(name=parse_column_options('Subspecies')),
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.', 'Subspecies': 'a'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': '', 'Subspecies': 'a'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus', 'Subspecies': 'a'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank author.")
+        self.assertEqual(results[0].get_id(), results[1].get_id(), "Second record matched the first specifically.")
+        self.assertIsInstance(results[2].record_result, Uploaded, "Third record doesn't match due to different author.")
+
+    def test_tree_cols_with_ignoreNever(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'),
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=True, default=None))
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded, "Second record doesn't match first due to blank author.")
+        self.assertIsInstance(results[2].record_result, Uploaded, "Third record doesn't match due to different author.")
+
+    def test_tree_cols_with_ignoreAlways(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'),
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreAlways", nullAllowed=True, default=None))
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite different author.")
+        self.assertEqual(results[0].get_id(), results[1].get_id(), "Second record matched the first specifically.")
+        self.assertIsInstance(results[2].record_result, Matched, "Third record matches despite different author.")
+        self.assertEqual(results[0].get_id(), results[2].get_id(), "Third record matched the first specifically.")
+
+    def test_wbcols_with_ignoreWhenBlank(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank value.")
+        self.assertEqual(results[0].get_id(), results[1].get_id(), "Second record matched the first specifically.")
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+    def test_wbcols_with_ignoreWhenBlank_and_default(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=True, default="John"),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+            {'lastname': 'Smith', 'firstname': ''},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite default value.")
+        self.assertEqual(results[0].get_id(), results[1].get_id(), "Second record matched the first specifically.")
+        self.assertIsInstance(results[2].record_result, Uploaded)
+        self.assertIsInstance(results[3].record_result, Uploaded)
+
+        for r, name in zip(results, "River Doe,River Doe,Stream Doe,John Smith".split(',')):
+            a = get_table('Agent').objects.get(id=r.record_result.get_id())
+            self.assertEqual(name, f"{a.firstname} {a.lastname}")
+
+    def test_wbcols_with_ignoreNever(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default=None),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded, "Second record doesn't match first due to blank value.")
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+    def test_wbcols_with_ignoreAlways(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreAlways", nullAllowed=True, default=None),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank value.")
+        self.assertEqual(results[0].get_id(), results[1].get_id(), "Second record matched the first specifically.")
+        self.assertIsInstance(results[2].record_result, Matched, "Third record matches first despit different value.")
+        self.assertEqual(results[0].get_id(), results[2].get_id(), "Third record matched the first specifically.")
+
+class DefaultTests(UploadTestsBase):
+    def test_wbcols_with_default(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default="John"),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+        for r, name in zip(results, "River John Stream".split()):
+            self.assertEqual(name, get_table('Agent').objects.get(id=r.record_result.get_id()).firstname)
+
+    def test_wbcols_with_default_matching(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default="John"),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'John'},
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertIsInstance(results[2].record_result, Matched)
+        self.assertEqual(results[0].get_id(), results[2].get_id(), "Third record matched the first specifically.")
+        self.assertIsInstance(results[3].record_result, Uploaded)
+
+        for r, name in zip(results, "John River John Stream".split()):
+            self.assertEqual(name, get_table('Agent').objects.get(id=r.record_result.get_id()).firstname)
+
+    def test_wbcols_with_default_and_null_disallowed(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default="John"),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+        for r, name in zip(results, "River John Stream".split()):
+            self.assertEqual(name, get_table('Agent').objects.get(id=r.record_result.get_id()).firstname)
+
+
+    def test_wbcols_with_default_blank(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default=""),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+        for r, name in zip(results, "River,,Stream".split(',')):
+            self.assertEqual(name, get_table('Agent').objects.get(id=r.record_result.get_id()).firstname)
+
+class NullAllowedTests(UploadTestsBase):
+
+    def test_wbcols_with_null_disallowed(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default=None),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+    def test_wbcols_with_null_disallowed_and_ignoreWhenBlank(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=False, default=None),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
+        self.assertIsInstance(results[2].record_result, Uploaded)
+
+    def test_wbcols_with_null_disallowed_and_ignoreAlways(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'lastname': parse_column_options('lastname'),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreAlways", nullAllowed=False, default=None),
+            },
+            static={},
+            toOne={},
+            toMany={}
+        ).apply_scoping(self.collection)
+        data = [
+            {'lastname': 'Doe', 'firstname': 'River'},
+            {'lastname': 'Doe', 'firstname': ''},
+            {'lastname': 'Doe', 'firstname': 'Stream'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
+        self.assertIsInstance(results[2].record_result, Matched)
+

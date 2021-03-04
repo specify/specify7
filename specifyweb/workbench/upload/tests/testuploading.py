@@ -15,6 +15,7 @@ from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults, TreeMatchResult
 from ..upload import do_upload, do_upload_csv
 from ..parsing import filter_and_upload
+from ..upload_plan_schema import parse_column_options
 
 from .base import UploadTestsBase, get_table
 
@@ -24,7 +25,7 @@ class UploadTests(UploadTestsBase):
     def test_ordernumber(self) -> None:
         plan = UploadTable(
             name='Referencework',
-            wbcols={'title': 'title'},
+            wbcols={'title': parse_column_options('title')},
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
@@ -34,7 +35,7 @@ class UploadTests(UploadTestsBase):
                     static={},
                     toOne={'agent': UploadTable(
                         name='Agent',
-                        wbcols={'lastname': 'author1'},
+                        wbcols={'lastname': parse_column_options('author1')},
                         static={},
                         toOne={},
                         toMany={}
@@ -45,7 +46,7 @@ class UploadTests(UploadTestsBase):
                     static={},
                     toOne={'agent': UploadTable(
                         name='Agent',
-                        wbcols={'lastname': 'author2'},
+                        wbcols={'lastname': parse_column_options('author2')},
                         static={},
                         toOne={},
                         toMany={}
@@ -65,28 +66,28 @@ class UploadTests(UploadTestsBase):
     def test_no_override_ordernumber(self) -> None:
         plan = UploadTable(
             name='Referencework',
-            wbcols={'title': 'title'},
+            wbcols={'title': parse_column_options('title')},
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
                 ToManyRecord(
                     name='Author',
-                    wbcols={'ordernumber': 'on1'},
+                    wbcols={'ordernumber': parse_column_options('on1')},
                     static={},
                     toOne={'agent': UploadTable(
                         name='Agent',
-                        wbcols={'lastname': 'author1'},
+                        wbcols={'lastname': parse_column_options('author1')},
                         static={},
                         toOne={},
                         toMany={}
                     )}),
                 ToManyRecord(
                     name='Author',
-                    wbcols={'ordernumber': 'on2'},
+                    wbcols={'ordernumber': parse_column_options('on2')},
                     static={},
                     toOne={'agent': UploadTable(
                         name='Agent',
-                        wbcols={'lastname': 'author2'},
+                        wbcols={'lastname': parse_column_options('author2')},
                         static={},
                         toOne={},
                         toMany={}
@@ -332,10 +333,10 @@ class UploadTests(UploadTestsBase):
         tree_record = TreeRecord(
             name = 'Geography',
             ranks = {
-                'Continent': {'name': 'Continent/Ocean'},
-                'Country': {'name': 'Country'},
-                'State': {'name': 'State/Prov/Pref'},
-                'County': {'name': 'Region'},
+                'Continent': {'name': parse_column_options('Continent/Ocean')},
+                'Country': {'name': parse_column_options('Country')},
+                'State': {'name': parse_column_options('State/Prov/Pref')},
+                'County': {'name': parse_column_options('Region')},
             }
         ).apply_scoping(self.collection)
         row = next(reader)

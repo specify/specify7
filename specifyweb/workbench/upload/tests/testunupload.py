@@ -5,6 +5,7 @@ from ..upload_result import Uploaded, ParseFailures, CellIssue, FailedBusinessRu
 from ..upload import do_upload, do_upload_csv, unupload_record
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
+from ..upload_plan_schema import parse_column_options
 
 
 class UnUploadTests(UploadTestsBase):
@@ -44,7 +45,7 @@ class UnUploadTests(UploadTestsBase):
 
         plan = UploadTable(
             name='Collectionobject',
-            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
             static={},
             toOne={},
             toMany={}
@@ -101,10 +102,10 @@ class UnUploadTests(UploadTestsBase):
         plan = TreeRecord(
             name = 'Geography',
             ranks = {
-                'Continent': {'name': 'Continent/Ocean'},
-                'Country': {'name': 'Country'},
-                'State': {'name': 'State/Prov/Pref'},
-                'County': {'name': 'Co'},
+                'Continent': {'name': parse_column_options('Continent/Ocean')},
+                'Country': {'name': parse_column_options('Country')},
+                'State': {'name': parse_column_options('State/Prov/Pref')},
+                'County': {'name': parse_column_options('Co')},
             }
         ).apply_scoping(self.collection)
 
