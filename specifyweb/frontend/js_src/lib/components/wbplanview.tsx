@@ -60,7 +60,7 @@ export type Dataset = {
 	id: number,
 	name: string,
 	columns: string[],
-        rows: string[][],
+	rows: string[][],
 	uploadplan: UploadPlan | null,
 	uploaderstatus: Record<string, unknown> | null,
 	uploadresult: Record<string, unknown> | null,
@@ -276,39 +276,6 @@ type WBPlanViewActions =
 	| MappingActions;
 
 
-//header
-interface WBPlanViewHeaderBaseProps {
-	readonly title: string,
-	readonly state_type: WBPlanViewStates['type'],
-	readonly handleCancel: () => void,
-	readonly mapping_is_templated?: boolean,
-}
-
-interface WBPlanViewHeaderPropsMapping extends WBPlanViewHeaderBaseProps {
-	readonly state_type: 'MappingState',
-	readonly mapping_is_templated: boolean,
-	readonly show_mapping_view: boolean,
-	readonly mappings_are_validated: boolean,
-	readonly handleTableChange: () => void,
-	readonly handleToggleMappingIsTemplated: () => void,
-	readonly handleClearMapping: () => void,
-	readonly handleValidation: () => void,
-	readonly handleSave: () => void,
-	readonly handleShowMappingView: () => void,
-}
-
-interface WBPlanViewHeaderPropsNonMapping extends WBPlanViewHeaderBaseProps {
-	readonly state_type: 'BaseTableSelectionState',
-	readonly handleUseTemplate: () => void,
-	readonly onToggleHiddenTables: () => void
-	readonly show_hidden_tables: boolean,
-}
-
-type WBPlanViewHeaderProps =
-	WBPlanViewHeaderPropsNonMapping
-	| WBPlanViewHeaderPropsMapping;
-
-
 interface WBPlanViewProps extends WBPlanViewWrapperProps,
 	PublicWBPlanViewProps {
 	readonly upload_plan: FalsyUploadPlan,
@@ -340,87 +307,25 @@ interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps,
 const schema_fetched_promise = fetch_data_model();
 
 
-function WBPlanViewHeaderLeftNonMappingElements({
-	show_hidden_tables,
-	onToggleHiddenTables: handleToggleHiddenTables,
-}: WBPlanViewHeaderPropsNonMapping): JSX.Element {
-	return <label>
-		<input
-			type='checkbox'
-			checked={show_hidden_tables}
-			onChange={handleToggleHiddenTables}
-		/>
-		Show advanced tables
-	</label>;
-}
-
-function WBPlanViewHeaderLeftMappingElements({
-	handleTableChange,
-}: WBPlanViewHeaderPropsMapping): JSX.Element {
-	return <button onClick={handleTableChange}>Change table</button>;
-}
-
-function WBPlanViewHeaderRightMappingElements({
-	handleClearMapping,
-	handleValidation,
-	handleSave,
-	handleCancel,
-	handleShowMappingView,
-	show_mapping_view,
-	mappings_are_validated,
-}: WBPlanViewHeaderPropsMapping): JSX.Element {
-	return <>
-		{
-			!show_mapping_view &&
-			<button
-				onClick={handleShowMappingView}
-			>Show mapping view</button>
-		}
-		<button onClick={handleClearMapping}>Clear Mappings</button>
-		<button onClick={handleValidation}>
-			Check mappings
-			{
-				mappings_are_validated &&
-				<i style={{
-					color: '#4f2',
-					fontSize: '12px'
-				}}>✓</i>
-			}
-		</button>
-		<button onClick={handleSave}>Save</button>
-		<button onClick={handleCancel}>Cancel</button>
-	</>;
-}
-
-function WBPlanViewHeaderRightNonMappingElements({
-	handleUseTemplate,
-	handleCancel,
-}: WBPlanViewHeaderPropsNonMapping): JSX.Element {
-	return <>
-		<button onClick={handleUseTemplate}>Use template</button>
-		<button onClick={handleCancel}>Cancel</button>
-	</>;
-}
-
-function WBPlanViewHeader(props: WBPlanViewHeaderProps): JSX.Element {
+function WBPlanViewHeader({
+	stateType,
+	title,
+	buttonsLeft,
+	buttonsRight
+}:{
+	stateType: WBPlanViewStates['type'],
+	title: string,
+	buttonsLeft: JSX.Element,
+	buttonsRight: JSX.Element
+}): JSX.Element {
 	return <div className={
-		`wbplanview_header wbplanview_header_${props.state_type}`
+		`wbplanview_header wbplanview_header_${stateType}`
 	}>
 		<div>
-			<span>{props.title}</span>
-			{
-				props.state_type === 'MappingState' ?
-					<WBPlanViewHeaderLeftMappingElements {...props} /> :
-					<WBPlanViewHeaderLeftNonMappingElements {...props} />
-			}
+			<span>{title}</span>
+			{buttonsLeft}
 		</div>
-		<div>
-			{
-				props.state_type === 'MappingState' ?
-					<WBPlanViewHeaderRightMappingElements {...props} /> :
-					<WBPlanViewHeaderRightNonMappingElements {...props} />
-			}
-		</div>
+		<div>{buttonsRight}</div>
 	</div>;
 }
 
@@ -987,20 +892,28 @@ const state_reducer = generate_reducer<JSX.Element,
 		header={
 			<WBPlanViewHeader
 				title='Select Base Table'
-				state_type={state.type}
-				handleCancel={() => state.dispatch({
-					type: 'CancelMappingAction',
-					dataset: state.props.dataset,
-					remove_unload_protect: state.props.remove_unload_protect,
-				})}
-				show_hidden_tables={state.show_hidden_tables}
-				onToggleHiddenTables={() => state.dispatch({
-					type: 'ToggleHiddenTablesAction',
-				})}
-				handleUseTemplate={() => state.dispatch({
-					type: 'UseTemplateAction',
-					dispatch: state.dispatch,
-				})}
+				stateType={state.type}
+				buttonsLeft={<label>
+					<input
+						type='checkbox'
+						checked={state.show_hidden_tables}
+						onChange={() => state.dispatch({
+							type: 'ToggleHiddenTablesAction',
+						})}
+					/>
+					Show advanced tables
+				</label>}
+				buttonsRight={<>
+					<button onClick={() => state.dispatch({
+						type: 'UseTemplateAction',
+						dispatch: state.dispatch,
+					})}>Use template</button>
+					<button onClick={() => state.dispatch({
+						type: 'CancelMappingAction',
+						dataset: state.props.dataset,
+						remove_unload_protect: state.props.remove_unload_protect,
+					})}>Cancel</button>
+				</>}
 			/>
 		}>
 		<ListOfBaseTables
@@ -1072,42 +985,56 @@ const state_reducer = generate_reducer<JSX.Element,
 							state.base_table_name
 							].table_friendly_name
 					}
-					state_type={state.type}
-					mappings_are_validated={state.mappings_are_validated}
-					mapping_is_templated={state.mapping_is_templated}
-					show_mapping_view={state.show_mapping_view}
-					handleCancel={() => state.dispatch({
-						type: 'CancelMappingAction',
-						dataset: state.props.dataset,
-						remove_unload_protect: state.props.remove_unload_protect,
-					})}
-					handleTableChange={() => state.dispatch({
-						type: 'OpenBaseTableSelectionAction',
-					})}
-					handleClearMapping={() => state.dispatch({
-						type: 'ResetMappingsAction',
-					})}
-					handleValidation={() =>
-						void(state.dispatch({
-							type: 'ValidationAction',
-						})) ||
-						void(state.refObjectDispatch({
-							type: 'AutoscrollStatusChangeAction',
-							autoscroll_type: 'mapping_view',
-							status: true,
-						}))
+					stateType={state.type}
+					buttonsLeft={
+						<button
+							onClick={() => state.dispatch({
+								type: 'OpenBaseTableSelectionAction',
+							})}
+						>Change table</button>
 					}
-					handleSave={() => handleSave(false)}
-					handleToggleMappingIsTemplated={() =>
-						state.dispatch({
-							type: 'ToggleMappingIsTemplatedAction',
-						})
-					}
-					handleShowMappingView={() =>
-						state.dispatch({
-							type: 'ToggleMappingViewAction',
-						})
-					}
+					buttonsRight={<>
+						{
+							!state.show_mapping_view &&
+							<button
+								onClick={() =>
+									state.dispatch({
+										type: 'ToggleMappingViewAction',
+									})
+								}
+							>Show mapping view</button>
+						}
+						<button onClick={() => state.dispatch({
+								type: 'ResetMappingsAction',
+							})}>Clear Mappings</button>
+						<button onClick={() =>
+							void(state.dispatch({
+								type: 'ValidationAction',
+							})) ||
+							void(state.refObjectDispatch({
+								type: 'AutoscrollStatusChangeAction',
+								autoscroll_type: 'mapping_view',
+								status: true,
+							}))
+						}>
+							Check mappings
+							{
+								state.mappings_are_validated &&
+								<i style={{
+									color: '#4f2',
+									fontSize: '12px'
+								}}>✓</i>
+							}
+						</button>
+						<button onClick={
+							() => handleSave(false)
+						}>Save</button>
+						<button onClick={() => state.dispatch({
+							type: 'CancelMappingAction',
+							dataset: state.props.dataset,
+							remove_unload_protect: state.props.remove_unload_protect,
+						})}>Cancel</button>
+					</>}
 				/>
 			}
 			handleClick={handleClose}
