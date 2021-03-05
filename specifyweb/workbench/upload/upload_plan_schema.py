@@ -6,7 +6,7 @@ from specifyweb.specify import models
 
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
-from .treerecord import TreeRecord
+from .treerecord import TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
 
@@ -123,6 +123,11 @@ schema: Dict = {
                   'required': [ 'treeRecord' ],
                   'additionalProperties': False
                 },
+                { 'type': 'object',
+                  'properties': { 'mustMatchTreeRecord': { '$ref': '#/definitions/treeRecord' } },
+                  'required': [ 'mustMatchTreeRecord' ],
+                  'additionalProperties': False
+                },
             ],
         },
 
@@ -209,6 +214,9 @@ def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
 
     if 'mustMatchTable' in to_parse:
         return MustMatchTable(*parse_upload_table(collection, table, to_parse['mustMatchTable']))
+
+    if 'mustMatchTreeRecord' in to_parse:
+        return MustMatchTreeRecord(*parse_tree_record(collection, table, to_parse['mustMatchTreeRecord']))
 
     if 'treeRecord' in to_parse:
         return parse_tree_record(collection, table, to_parse['treeRecord'])

@@ -76,6 +76,16 @@ class ScopedTreeRecord(NamedTuple):
             uploadingAgentId=uploadingAgentId,
         )
 
+class MustMatchTreeRecord(TreeRecord):
+    def apply_scoping(self, collection) -> "ScopedMustMatchTreeRecord":
+        s = super().apply_scoping(collection)
+        return ScopedMustMatchTreeRecord(*s)
+
+class ScopedMustMatchTreeRecord(ScopedTreeRecord):
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId)
+        return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
+
 class TreeDefItemWithParseResults(NamedTuple):
     treedefitem: Any
     results: List[ParseResult]
@@ -123,6 +133,8 @@ class BoundTreeRecord(NamedTuple):
                 ids = [id for id, name in matched['matches']]
                 return UploadResult(MatchedMultiple(ids, info), {}, {})
         elif must_match:
+            columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
+            info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
             return UploadResult(NoMatch(info), {}, {})
 
         model = getattr(models, self.name)
@@ -245,3 +257,12 @@ class BoundTreeRecord(NamedTuple):
 
         return TreeMatchResult(to_upload, None)
 
+class BoundMustMatchTreeRecord(BoundTreeRecord):
+    def must_match(self) -> bool:
+        return True
+
+    def force_upload_row(self) -> UploadResult:
+        raise Exception('trying to force upload of must-match table')
+
+    def process_row(self) -> UploadResult:
+        return self._handle_row(must_match=True)
