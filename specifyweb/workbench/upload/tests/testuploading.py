@@ -1,4 +1,4 @@
-
+from uuid import uuid4
 import io
 import csv
 from unittest import skip
@@ -9,7 +9,7 @@ from specifyweb.specify.tree_extras import validate_tree_numbering
 from specifyweb.specify import auditcodes
 
 from ..uploadable import Exclude
-from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
+from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults, TreeMatchResult
@@ -19,6 +19,256 @@ from ..upload_plan_schema import parse_column_options
 
 from .base import UploadTestsBase, get_table
 
+class OneToOneAttributeTests(UploadTestsBase):
+
+    def test_attachmentimageattribute(self) -> None:
+        plan = UploadTable(
+            name='Attachment',
+            wbcols={'guid': parse_column_options('guid')},
+            static={},
+            toMany={},
+            toOne={'attachmentimageattribute': UploadTable(
+                name='Attachmentimageattribute',
+                wbcols={'height': parse_column_options('height')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'guid': str(uuid4()), 'height': "100"},
+            {'guid': str(uuid4()), 'height': "100"},
+            {'guid': str(uuid4()), 'height': "100"},
+            {'guid': str(uuid4()), 'height': "200"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Uploaded)
+        aias = [get_table('Attachment').objects.get(id=r.get_id()).attachmentimageattribute_id for r in results]
+        self.assertEqual(len(aias), len(set(aias)), "The attachment image attributes are not shared.")
+
+    def test_collectingtripattribute(self) -> None:
+        plan = UploadTable(
+            name='Collectingtrip',
+            wbcols={'collectingtripname': parse_column_options('guid')},
+            static={},
+            toMany={},
+            toOne={'collectingtripattribute': UploadTable(
+                name='Collectingtripattribute',
+                wbcols={'integer1': parse_column_options('integer')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'guid': str(uuid4()), 'integer': "100"},
+            {'guid': str(uuid4()), 'integer': "100"},
+            {'guid': str(uuid4()), 'integer': "100"},
+            {'guid': str(uuid4()), 'integer': "200"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Uploaded)
+        ctas = [get_table('Collectingtrip').objects.get(id=r.get_id()).collectingtripattribute_id for r in results]
+        self.assertEqual(len(ctas), len(set(ctas)), "The collecting trip attributes are not shared.")
+
+    def test_preparationattribute(self) -> None:
+        plan = UploadTable(
+            name='Preparation',
+            wbcols={'guid': parse_column_options('guid')},
+            static={},
+            toMany={},
+            toOne={
+                'preptype': UploadTable(
+                    name='Preptype',
+                    wbcols={'name': parse_column_options('preptype')},
+                    static={},
+                    toOne={},
+                    toMany={}
+                ),
+                'preparationattribute': UploadTable(
+                    name='Preparationattribute',
+                    wbcols={'number1': parse_column_options('integer')},
+                    static={},
+                    toOne={},
+                    toMany={}
+                ),
+                'collectionobject': UploadTable(
+                    name='Collectionobject',
+                    wbcols={'catalognumber': parse_column_options('catno')},
+                    static={},
+                    toOne={},
+                    toMany={}
+                )
+            }
+        ).apply_scoping(self.collection)
+        data = [
+            {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
+            {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
+            {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
+            {'guid': str(uuid4()), 'integer': "200", 'catno': '1', 'preptype': 'tissue'},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Uploaded)
+        pas = [get_table('Preparation').objects.get(id=r.get_id()).preparationattribute_id for r in results]
+        self.assertEqual(len(pas), len(set(pas)), "The preparation attributes are not shared.")
+
+
+    def test_collectionobjectattribute(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': parse_column_options('catno')},
+            static={},
+            toMany={},
+            toOne={'collectionobjectattribute': UploadTable(
+                name='Collectionobjectattribute',
+                wbcols={'number1': parse_column_options('number')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'catno': "1", 'number': "100"},
+            {'catno': "2", 'number': "100"},
+            {'catno': "3", 'number': "100"},
+            {'catno': "4", 'number': "200"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Uploaded)
+        coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
+        self.assertEqual(len(coas), len(set(coas)), "The collection object attributes are not shared.")
+
+    def test_collectingeventattribute(self) -> None:
+        plan = UploadTable(
+            name='Collectingevent',
+            wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            static={},
+            toMany={},
+            toOne={'collectingeventattribute': UploadTable(
+                name='Collectingeventattribute',
+                wbcols={'number1': parse_column_options('number')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'sfn': "1", 'number': "100"},
+            {'sfn': "2", 'number': "100"},
+            {'sfn': "3", 'number': "100"},
+            {'sfn': "4", 'number': "200"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Uploaded)
+        ceas = [get_table('Collectingevent').objects.get(id=r.get_id()).collectingeventattribute_id for r in results]
+        self.assertEqual(len(ceas), len(set(ceas)), "The collecting event attributes are not shared.")
+
+    def test_null_ce_with_ambiguous_collectingeventattribute(self) -> None:
+        get_table('Collectingevent').objects.all().delete()
+
+        get_table('Collectingevent').objects.create(
+            discipline=self.discipline,
+            collectingeventattribute=get_table('Collectingeventattribute').objects.create(
+                discipline=self.discipline,
+                number1=100
+            )
+        )
+        get_table('Collectingevent').objects.create(
+            discipline=self.discipline,
+            collectingeventattribute=get_table('Collectingeventattribute').objects.create(
+                discipline=self.discipline,
+                number1=100
+            )
+        )
+
+        plan = UploadTable(
+            name='Collectingevent',
+            wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            static={},
+            toMany={},
+            toOne={'collectingeventattribute': UploadTable(
+                name='Collectingeventattribute',
+                wbcols={'number1': parse_column_options('number')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'sfn': "", 'number': "100"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, MatchedMultiple)
+
+    @skip("""
+    In theory we should be able to match the CE using the CEA but since the latter
+    is ambiguous we don't try currently.
+    """
+    )
+    def test_ambiguous_one_to_one_match(self) -> None:
+        get_table('Collectingevent').objects.all().delete()
+
+        for sfn, number in [("1", "100"), ("1", "200"), ("2", "100"), ("2", "200")]:
+            get_table('Collectingevent').objects.create(
+                stationfieldnumber=sfn,
+                discipline=self.discipline,
+                collectingeventattribute=get_table('Collectingeventattribute').objects.create(
+                    discipline=self.discipline,
+                    number1=number
+                )
+            )
+
+        plan = UploadTable(
+            name='Collectingevent',
+            wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            static={},
+            toMany={},
+            toOne={'collectingeventattribute': UploadTable(
+                name='Collectingeventattribute',
+                wbcols={'number1': parse_column_options('number')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'sfn': "1", 'number': "100"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Matched)
+
+
+    def test_null_record_with_ambiguous_one_to_one(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': parse_column_options('catno')},
+            static={},
+            toMany={},
+            toOne={'collectionobjectattribute': UploadTable(
+                name='Collectionobjectattribute',
+                wbcols={'number1': parse_column_options('number')},
+                static={},
+                toOne={},
+                toMany={}
+            )}
+        ).apply_scoping(self.collection)
+        data = [
+            {'catno': "1", 'number': "100"},
+            {'catno': "2", 'number': "100"},
+            {'catno': "", 'number': "100"},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Uploaded)
+        coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
+        self.assertEqual(len(coas), len(set(coas)), "The collection object attributes are not shared.")
 
 class UploadTests(UploadTestsBase):
 

@@ -177,12 +177,23 @@ class BoundUploadTable(NamedTuple):
         info = ReportInfo(tableName=self.name, columns=[cd.column for cd in self.wbcols.values()], treeInfo=None)
 
         toOneResults = self._process_to_ones()
-        toOneIds: Dict[str, Optional[int]] = {}
+
+        toOneIdsForMatching: Dict[str, Optional[int]] = {}
+        multipleOneToOneMatch = False
+
         for field, result in toOneResults.items():
+            if self.toOne[field].is_one_to_one() and isinstance(result.record_result, MatchedMultiple):
+                # If a one-to-one related object matched multiple
+                # records, we won't be able to use it for matching
+                # this object, but we need to remember that there was
+                # data here.
+                multipleOneToOneMatch = True
+                continue
+
             id = result.get_id()
             if id == "Failure":
                 return UploadResult(PropagatedFailure(), toOneResults, {})
-            toOneIds[field] = id
+            toOneIdsForMatching[field] = id
 
         toManyFilters = _to_many_filters_and_excludes(self.toMany)
 
@@ -192,16 +203,16 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.upload.items()
         }
 
-        attrs.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
+        attrs.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIdsForMatching.items() })
 
         to_many_filters, to_many_excludes = toManyFilters
 
-        if all(v is None for v in attrs.values()) and not to_many_filters:
+        if all(v is None for v in attrs.values()) and not to_many_filters and not multipleOneToOneMatch:
             # nothing to upload
             return UploadResult(NullRecord(info), toOneResults, {})
 
         if not force_upload:
-            match = self._match(model, toOneIds, toManyFilters, info)
+            match = self._match(model, toOneIdsForMatching, toManyFilters, info)
             if match:
                 return UploadResult(match, toOneResults, {})
 

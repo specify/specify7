@@ -43,28 +43,37 @@ def scoping_relationships(collection, table: Table) -> Dict[str, int]:
 
     return extra_static
 
-def _make_one_to_one(fieldname: str) -> Callable[[ScopedUploadable, str], ScopedUploadable]:
+AdjustToOnes = Callable[[ScopedUploadable, str], ScopedUploadable]
+
+def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     def adjust_to_ones(u: ScopedUploadable, f: str) -> ScopedUploadable:
-        if f == fieldname:
-            assert isinstance(u, ScopedUploadTable)
-            return ScopedOneToOneTable(*u)
+        if f == fieldname and isinstance(u, ScopedUploadTable):
+            return rest(ScopedOneToOneTable(*u), f)
         else:
-            return u
+            return rest(u, f)
     return adjust_to_ones
 
 
 def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 
+    adjust_to_ones: AdjustToOnes = lambda u, f: u
     if collection.isembeddedcollectingevent and table.name == 'CollectionObject':
-        adjust_to_ones = _make_one_to_one('collectingevent')
+        adjust_to_ones = _make_one_to_one('collectingevent', adjust_to_ones)
 
     elif collection.discipline.ispaleocontextembedded and table.name.lower() == collection.discipline.paleocontextchildtable.lower():
-        adjust_to_ones = _make_one_to_one('paleocontext')
+        adjust_to_ones = _make_one_to_one('paleocontext', adjust_to_ones)
 
-    else:
-        def adjust_to_ones(u: ScopedUploadable, f: str) -> ScopedUploadable:
-            return u
+    if table.name == 'CollectionObject':
+        adjust_to_ones = _make_one_to_one('collectionobjectattribute', adjust_to_ones)
+    if table.name == 'CollectingEvent':
+        adjust_to_ones = _make_one_to_one('collectingeventattribute', adjust_to_ones)
+    if table.name == 'Attachment':
+        adjust_to_ones = _make_one_to_one('attachmentimageattribute', adjust_to_ones)
+    if table.name == 'CollectingTrip':
+        adjust_to_ones = _make_one_to_one('collectingtripattribute', adjust_to_ones)
+    if table.name == 'Preparation':
+        adjust_to_ones = _make_one_to_one('preparationattribute', adjust_to_ones)
 
     # not sure if this is the right place for this, but it will work for now.
     if table.name == 'Agent' and 'agenttype' not in ut.wbcols and 'agenttype' not in ut.static:
