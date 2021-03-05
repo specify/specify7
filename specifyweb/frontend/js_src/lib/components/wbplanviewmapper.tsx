@@ -186,22 +186,29 @@ export function save_plan(
 		return validation_results_state;
 
 	// props.wb.set('ownerPermissionLevel', props.mapping_is_templated ? 1 : 0);
-	const uploadplan = mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree(state.lines, true));
-
-	void (
-		$.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
-			type: 'PUT',
-			data: JSON.stringify({'uploadplan': uploadplan}),
-			dataType: 'json',
-			processData: false,
-		})
+	const upload_plan = mappings_tree_to_upload_plan(
+		state.base_table_name,
+		get_mappings_tree(state.lines,true),
+		state.must_match_preferences
 	);
 
+	void($.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
+		type: 'PUT',
+		data: JSON.stringify({
+			'uploadplan':
+			upload_plan
+		}),
+		dataType: 'json',
+		processData: false,
+	}).done(()=>{
 
-	if (state.changes_made)
-		props.remove_unload_protect();
+		if (state.changes_made)
+			props.remove_unload_protect();
 
-	go_back(props);
+		go_back(props);
+
+	}));
+
 	return state;
 }
 
@@ -282,6 +289,7 @@ export function get_lines_from_upload_plan(
 ): {
 	readonly base_table_name: string,
 	readonly lines: MappingLine[],
+	readonly must_match_preferences: Record<string, boolean>
 } {
 
 	const lines = get_lines_from_headers({
@@ -291,6 +299,7 @@ export function get_lines_from_upload_plan(
 	const {
 		base_table_name,
 		mappings_tree,
+		must_match_preferences,
 	} = upload_plan_to_mappings_tree(headers, upload_plan);
 	const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
 	array_of_mappings.forEach(full_mapping_path => {
@@ -319,6 +328,7 @@ export function get_lines_from_upload_plan(
 	return {
 		base_table_name: base_table_name,
 		lines,
+		must_match_preferences,
 	};
 
 }

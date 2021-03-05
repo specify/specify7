@@ -189,8 +189,13 @@ const WBView = Backbone.View.extend({
             const {
                 base_table_name,
                 mappings_tree: mappingsTree
-            } = upload_plan_to_mappings_tree(this.dataset.columns, this.dataset.uploadplan);
-            const arrayOfMappings = mappings_tree_to_array_of_mappings(mappingsTree);
+            } = upload_plan_to_mappings_tree(
+                this.dataset.columns,
+                this.dataset.uploadplan
+            );
+            const arrayOfMappings = mappings_tree_to_array_of_mappings(
+                mappingsTree
+            );
             const mappedHeadersAndTables = Object.fromEntries(
                 arrayOfMappings.map(mappingsPath =>
                     [

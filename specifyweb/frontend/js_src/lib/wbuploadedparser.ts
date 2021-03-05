@@ -535,7 +535,7 @@ const getOrderedHeaders = (
 export function parseUploadResults(
 	uploadResults: UploadResults,
 	headers: string[],
-        data: string[][],
+	data: string[][],
 	treeRanks: Record<string, string[]>,
 	plan: UploadPlan | null,
 ): [UploadedRows, UploadedPicklistItems] {
@@ -543,7 +543,10 @@ export function parseUploadResults(
 	if (plan === null)
 		throw new Error('Upload plan is invalid');
 
-	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, plan);
+	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(
+		headers,
+		plan
+	);
 	const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
 	const mapped_ranks_tree = array_of_mappings.filter(full_mapping_path =>
 		full_mapping_path.length >= 4 && full_mapping_path[full_mapping_path.length - 3] === 'name',

@@ -126,7 +126,7 @@ interface CustomSelectElementPropsOpen extends CustomSelectElementPropsOpenBase 
 }
 
 
-function Icon({
+export function Icon({
 	is_relationship = false,
 	is_preview = false,
 	is_enabled = true,

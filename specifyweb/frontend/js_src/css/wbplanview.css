@@ -17,6 +17,7 @@
 	--background2: #fdb;
 	--accent: #f73;
 	--success: #4f2;
+	--error: #f24;
 	--lines_to_display: 8;
 	--border_size: 1px;
 
@@ -414,7 +415,7 @@
 }
 
 .custom_select_option_icon_undefined {
-	color: #f24;
+	color: var(--error);
 	margin-top: -0.1rem;
 	justify-content: center;
 	display: flex !important;
@@ -441,4 +442,15 @@
 
 .custom_select_opened_list .custom_select_option_icon_table {
 	width: calc(2 * var(--white_space));
+}
+
+.must_match_line {
+	column-gap: 0.5rem;
+	display: flex;
+	align-items: center;
+}
+
+.must_match_line span {
+	width: 1rem;
+	height: 1rem;
 }
