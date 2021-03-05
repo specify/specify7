@@ -59,7 +59,6 @@ class ScopedToManyRecord(NamedTuple):
 
         return BoundToManyRecord(
             name=self.name,
-            wbcols=self.wbcols,
             static=self.static,
             scopingAttrs=self.scopingAttrs,
             parsedFields=parsedFields,
@@ -69,7 +68,6 @@ class ScopedToManyRecord(NamedTuple):
 
 class BoundToManyRecord(NamedTuple):
     name: str
-    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]

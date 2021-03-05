@@ -89,7 +89,6 @@ class ScopedUploadTable(NamedTuple):
 
         return BoundUploadTable(
             name=self.name,
-            wbcols=self.wbcols,
             static=self.static,
             scopingAttrs=self.scopingAttrs,
             parsedFields=parsedFields,
@@ -127,7 +126,6 @@ class ScopedMustMatchTable(ScopedUploadTable):
 
 class BoundUploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]
@@ -174,7 +172,7 @@ class BoundUploadTable(NamedTuple):
 
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
-        info = ReportInfo(tableName=self.name, columns=[cd.column for cd in self.wbcols.values()], treeInfo=None)
+        info = ReportInfo(tableName=self.name, columns=[pr.column for pr in self.parsedFields], treeInfo=None)
 
         toOneResults = self._process_to_ones()
 
@@ -342,7 +340,6 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
     return [
         BoundUploadTable(
             name=record.name,
-            wbcols=record.wbcols,
             scopingAttrs=record.scopingAttrs,
             parsedFields=record.parsedFields,
             toOne=record.toOne,
