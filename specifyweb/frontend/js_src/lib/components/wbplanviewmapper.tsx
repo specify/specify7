@@ -12,7 +12,8 @@ import {
 	mappings_tree_to_array_of_mappings,
 	array_of_mappings_to_mappings_tree,
 	traverse_tree,
-	array_to_tree, MappingsTree,
+	array_to_tree,
+	MappingsTree,
 }                                                  from '../wbplanviewtreehelper';
 import { find_duplicate_mappings }                 from '../wbplanviewhelper';
 import {
@@ -28,21 +29,26 @@ import {
 	show_required_missing_fields,
 }                                                  from '../wbplanviewmodelhelper';
 import navigation                                  from '../navigation';
-import { get_mapping_line_data_from_mapping_path } from '../wbplanviewnavigator';
+import {
+	get_mapping_line_data_from_mapping_path
+} from '../wbplanviewnavigator';
 import automapper, { AutoMapperResults }           from '../automapper';
 import {
 	mappings_tree_to_upload_plan,
 	UploadPlan,
 	upload_plan_to_mappings_tree,
-}                                                  from '../wbplanviewconverter';
+	MatchBehaviours,
+} from '../wbplanviewconverter';
 import React                                       from 'react';
 import { named_component }                         from '../statemanagement';
 import {
 	AutoScrollTypes,
 	ChangeSelectElementValueAction,
-	LoadingState, MappingActions,
+	LoadingState,
+	MappingActions,
 	MappingState,
-	PublicWBPlanViewProps, RefMappingState,
+	PublicWBPlanViewProps,
+	RefMappingState,
 	WBPlanViewWrapperProps,
 } from './wbplanview';
 
@@ -55,18 +61,32 @@ export type AutomapperScope = Readonly<
 >;
 export type MappingPath = string[];
 export type ListOfHeaders = string[];
-export type MappingType = Readonly<'existing_header' | 'new_column' | 'new_static_column'>;
-export type RelationshipType = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
+export type MappingType = Readonly<
+	'existing_header'
+	| 'new_column'
+	| 'new_static_column'
+>;
+export type RelationshipType = Readonly<
+	'one-to-one'
+	| 'one-to-many'
+	| 'many-to-one'
+	| 'many-to-many'
+>;
 
 export interface SelectElementPosition {
 	readonly line: number,
 	readonly index: number,
 }
 
-interface MappingLine {
+export interface MappingLine {
 	readonly type: MappingType,
 	readonly name: string,
 	readonly mapping_path: MappingPath,
+	readonly options: {
+		match_behaviour: MatchBehaviours,
+		nullAllowed: boolean,
+		default: string|null,
+	}
 	readonly is_focused?: boolean,
 }
 
@@ -231,6 +251,12 @@ export function validate(state: MappingState): MappingState {
 	};
 }
 
+export const defaultLineOptions:MappingLine['options'] = {
+	match_behaviour: 'ignoreNever',
+	nullAllowed: false,
+	default: null,
+} as const;
+
 export function get_lines_from_headers({
 	headers = [],
 	run_automapper,
@@ -253,6 +279,7 @@ export function get_lines_from_headers({
 			mapping_path: ['0'],
 			type: 'existing_header',
 			name: header_name,
+			options: defaultLineOptions
 		}
 	));
 
@@ -278,6 +305,7 @@ export function get_lines_from_headers({
 				mapping_path: automapper_mapping_paths[0],
 				type: 'existing_header',
 				name: header_name,
+				options: defaultLineOptions,
 			};
 	});
 
@@ -381,7 +409,10 @@ export function deduplicate_mappings(
 ): MappingLine[] {
 
 	const array_of_mappings = get_array_of_mappings(lines);
-	const duplicate_mapping_indexes = find_duplicate_mappings(array_of_mappings, focused_line);
+	const duplicate_mapping_indexes = find_duplicate_mappings(
+		array_of_mappings,
+		focused_line
+	);
 
 	return lines.map((line, index) =>
 		duplicate_mapping_indexes.indexOf(index) === -1 ?

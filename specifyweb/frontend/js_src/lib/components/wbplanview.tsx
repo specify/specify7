@@ -21,7 +21,6 @@ import WBPlanViewMapper, {
 	go_back,
 	MappingPath,
 	mapping_path_is_complete,
-	MappingType,
 	mutate_mapping_path,
 	save_plan,
 	SelectElementPosition,
@@ -29,7 +28,9 @@ import WBPlanViewMapper, {
 	WBPlanViewMapperBaseProps,
 	defaultMappingViewHeight,
 	minMappingViewHeight,
-}                           from './wbplanviewmapper';
+	defaultLineOptions,
+	MappingLine,
+} from './wbplanviewmapper';
 import {
 	LoadingScreen,
 	ModalDialog,
@@ -56,12 +57,6 @@ import {
 
 
 // general definitions
-interface MappingLine {
-	readonly type: MappingType,
-	readonly name: string,
-	readonly mapping_path: MappingPath,
-}
-
 export type Dataset = {
 	id: number,
 	name: string,
@@ -672,6 +667,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					}`,
 					type: 'new_column',
 					mapping_path: ['0'],
+					options: defaultLineOptions,
 				},
 			],
 			changes_made: true,
@@ -687,6 +683,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 					name: '',
 					type: 'new_static_column',
 					mapping_path: ['0'],
+					options: defaultLineOptions,
 				},
 			],
 			changes_made: true,
@@ -842,20 +839,25 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
 		const array_of_mapping_paths = state.lines.map(line =>
 			line.mapping_path,
 		);
-		const array_of_mapping_line_data = array_of_mapping_paths.map(
+		const array_of_mapping_line_data = array_of_mapping_paths.flatMap(
 			mapping_path =>
 				get_mapping_line_data_from_mapping_path({
 					mapping_path,
 					base_table_name: state.base_table_name,
 					custom_select_type: 'opened_list',
-				}),
+				}).filter((mapping_element_data, index, list)=>
+					index !== 0 &&  // exclude base table
+					// exclude -to-many
+					mapping_element_data.custom_select_subtype !== 'to_many' &&
+					(  // exclude direct child of -to-many
+						typeof list[index-1] === 'undefined' ||
+						list[index-1].custom_select_subtype !== 'to_many'
+					)
+				)
 		);
-		const array_of_tables = array_of_mapping_line_data.flatMap(
-			mapping_line_data =>
-				mapping_line_data.map(
-					mapping_element_data =>
-						mapping_element_data.table_name!,
-				),
+		const array_of_tables = array_of_mapping_line_data.map(
+			mapping_element_data =>
+				mapping_element_data.table_name || '',
 		).filter(table_name=>
 			table_name
 		);

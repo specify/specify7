@@ -7,19 +7,35 @@
 
 'use strict';
 
-import data_model_storage         from './wbplanviewmodel';
+import data_model_storage                          from './wbplanviewmodel';
 import {
 	format_reference_item,
 	format_tree_rank,
 	get_name_from_tree_rank_name, table_is_tree,
 	value_is_reference_item,
 	value_is_tree_rank,
-}                                 from './wbplanviewmodelhelper';
-import { MappingsTree }           from './wbplanviewtreehelper';
-import { DataModelFieldWritable } from './wbplanviewmodelfetcher';
-import { MappingType }            from './components/wbplanviewmapper';
+}                                                  from './wbplanviewmodelhelper';
+import { MappingsTree }                            from './wbplanviewtreehelper';
+import { DataModelFieldWritable }                  from './wbplanviewmodelfetcher';
+import { MappingType }                             from './components/wbplanviewmapper';
+import { get_mapping_line_data_from_mapping_path } from './wbplanviewnavigator';
 
-type UploadPlanUploadTableWbcols = Record<string, string>
+export type MatchBehaviours = Readonly<
+	'ignoreWhenBlank'
+	| 'ignoreAlways'
+	| 'ignoreNever'
+>;
+
+type UploadPlanUploadTableWbcols = Record<
+	string,
+	string |
+	{
+		column: string,
+		matchBehaviour: MatchBehaviours,
+		nullAllowed: boolean,
+		default: string|null,
+	}
+>
 
 type UploadPlanUploadTableStatic =
 	Record<string, string | boolean | number>
@@ -79,9 +95,12 @@ export type FalsyUploadPlan = UploadPlan | false;
 
 const upload_plan_processing_functions = (
 	headers: string[],
-	must_match_preferences:Record<string,boolean>
+	must_match_preferences:Record<string,boolean>,
+	mapping_path: string[],
 ): {
-	wbcols: ([key, value]: [string, string]) => [key: string, value: object],
+	wbcols: (
+		[key, value]: [string, string|MatchBehaviours]
+	) => [key: string, value: object],
 	static: ([key, value]: [string, string]) => [key: string, value: object],
 	toOne: (
 		[key, value]: [string, UploadPlanUploadTableToOne],
@@ -89,7 +108,7 @@ const upload_plan_processing_functions = (
 	toMany: ([key, value]: [string, object]) => [key: string, value: object],
 } => (
 	{
-		wbcols: ([key, value]: [string, string]) => [
+		wbcols: ([key, value]) => [
 			key,
 			{
 				[
@@ -99,23 +118,23 @@ const upload_plan_processing_functions = (
 					]: value,
 			},
 		],
-		static: ([key, value]: [string, string]) => [
+		static: ([key, value]) => [
 			key,
 			{new_static_column: value},
 		],
 		toOne: (
-			[tableName, value]: [string, UploadPlanUploadTableToOne],
+			[tableName, value],
 		) => [
 			tableName,
 			handle_uploadable(
 				value,
 				headers,
 				must_match_preferences,
-				tableName
+				[...mapping_path, tableName],
 			),
 		],
-		toMany: ([key, mappings]: [string, object]) => [
-			key,
+		toMany: ([tableName, mappings]) => [
+			tableName,
 			Object.fromEntries(
 				Object.values(
 					mappings,
@@ -125,7 +144,8 @@ const upload_plan_processing_functions = (
 						handle_upload_table_table(
 							mapping,
 							headers,
-							must_match_preferences
+							must_match_preferences,
+							[...mapping_path, tableName],
 						),
 					],
 				),
@@ -142,7 +162,8 @@ const handle_tree_rank_fields = (
 		([field_name, header_name]) =>
 			upload_plan_processing_functions(
 				headers,
-				{}
+				{},
+				[]
 			).wbcols(
 				[field_name, header_name],
 			),
@@ -180,7 +201,8 @@ const handle_tree_record = (
 const handle_upload_table_table = (
 	upload_plan: UploadPlanUploadTableTable,
 	headers: string[],
-	must_match_preferences: Record<string,boolean>
+	must_match_preferences: Record<string,boolean>,
+	mapping_path:string[],
 ) =>
 	Object.fromEntries(Object.entries(upload_plan).reduce(
 		// @ts-ignore
@@ -199,7 +221,8 @@ const handle_upload_table_table = (
 				...Object.entries(plan_node_data).map(
 					upload_plan_processing_functions(
 						headers,
-						must_match_preferences
+						must_match_preferences,
+						mapping_path,
 					)[plan_node_name],
 				),
 			],
@@ -210,16 +233,24 @@ function handle_uploadable_types(
 	upload_plan: UploadPlanUploadtableTypes,
 	headers: string[],
 	must_match_preferences: Record<string, boolean>,
-	table_name: string,
+	mapping_path: string[],
 ){
 
-	if('mustMatchTable' in upload_plan)
-		must_match_preferences[table_name] = true;
+	if('mustMatchTable' in upload_plan){
+		const table_name = get_mapping_line_data_from_mapping_path({
+			base_table_name: mapping_path[0],
+			mapping_path: mapping_path.slice(1),
+			iterate: false,
+			custom_select_type: 'opened_list'
+		})[0].table_name;
+		must_match_preferences[table_name || mapping_path.slice(-1)[0]] = true;
+	}
 
 	return handle_upload_table_table(
 		Object.values(upload_plan)[0],
 		headers,
-		must_match_preferences
+		must_match_preferences,
+		mapping_path
 	)
 
 }
@@ -228,7 +259,7 @@ const handle_uploadable = (
 	upload_plan: UploadPlanUploadable,
 	headers: string[],
 	must_match_preferences: Record<string, boolean>,
-	table_name:string,
+	mapping_path:string[],
 ): MappingsTree =>
 	'treeRecord' in upload_plan ?
 		handle_tree_record(
@@ -239,7 +270,7 @@ const handle_uploadable = (
 			upload_plan,
 			headers,
 			must_match_preferences,
-			table_name
+			mapping_path
 		);
 
 /*
@@ -267,7 +298,7 @@ export function upload_plan_to_mappings_tree(
 			upload_plan.uploadable,
 			headers,
 			must_match_preferences,
-			upload_plan.baseTableName
+			[upload_plan.baseTableName]
 		),
 		must_match_preferences,
 	};
@@ -276,10 +307,10 @@ export function upload_plan_to_mappings_tree(
 export function upload_plan_string_to_object(
 	upload_plan_string: string,
 ): FalsyUploadPlan {
-	let upload_plan;
+	let upload_plan: FalsyUploadPlan;
 
 	try {
-		upload_plan = JSON.parse(upload_plan_string);
+		upload_plan = JSON.parse(upload_plan_string) as UploadPlan;
 	}
 	catch (exception) {
 
