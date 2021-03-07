@@ -10,9 +10,9 @@
 import { MappingPath, MappingType } from './components/wbplanviewmapper';
 
 export interface MappingsTree
-	extends Readonly<Record<string,
-		MappingsTree | string | Record<MappingType,
-		string>>> {
+  extends Readonly<Record<string,
+    MappingsTree | string | Record<MappingType,
+    string>>> {
 }
 
 interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
@@ -20,9 +20,9 @@ interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
 
 /* Returns cross-section of full_mappings_tree and node_mappings_tree */
 export function traverse_tree(
-	full_mappings_tree: MappingsTree,  // full tree with various branches
-	// a tree several levels deep with only a single branch
-	node_mappings_tree: MappingsTree | string,
+  full_mappings_tree: MappingsTree,  // full tree with various branches
+  // a tree several levels deep with only a single branch
+  node_mappings_tree: MappingsTree | string,
 ): string | MappingsTree | undefined | false /*
 * A cross-section of two trees
 * Example:
@@ -48,23 +48,26 @@ export function traverse_tree(
 * 	Remarks
 * */ {
 
-	if (typeof node_mappings_tree === 'undefined')
-		return full_mappings_tree;
+  if (typeof node_mappings_tree === 'undefined')
+    return full_mappings_tree;
 
-	let target_key = '';
-	if (typeof node_mappings_tree === 'string')
-		return full_mappings_tree[target_key];
-	else {
-		target_key = Object.keys(node_mappings_tree)[0];
+  let target_key = '';
+  if (typeof node_mappings_tree === 'string')
+    return full_mappings_tree[target_key];
+  else {
+    target_key = Object.keys(node_mappings_tree)[0];
 
-		if (typeof target_key === 'undefined' || target_key === '')
-			return full_mappings_tree;
-	}
+    if (typeof target_key === 'undefined' || target_key === '')
+      return full_mappings_tree;
+  }
 
-	if (typeof full_mappings_tree[target_key] !== 'object')
-		return false;
+  if (typeof full_mappings_tree[target_key] !== 'object')
+    return false;
 
-	return traverse_tree(full_mappings_tree[target_key] as MappingsTree, node_mappings_tree[target_key]);
+  return traverse_tree(
+    full_mappings_tree[target_key] as MappingsTree,
+    node_mappings_tree[target_key],
+  );
 
 }
 
@@ -72,8 +75,8 @@ export function traverse_tree(
 *	(by reference only, does not create a copy of the tree)
 * */
 export const deep_merge_object = (
-	target: any,  // tree that is used as a basis
-	source: object,  // tree that is used as a source
+  target: any,  // tree that is used as a basis
+  source: object,  // tree that is used as a source
 ): Record<string, unknown> => /*
 * For example, if target is:
 * 	Accession
@@ -95,25 +98,25 @@ export const deep_merge_object = (
 * 			#2
 * 				Agent
 * */ typeof source === 'object' ?
-	Object.entries(source).reduce((target, [source_property, source_value]) => {
+  Object.entries(source).reduce((target, [source_property, source_value]) => {
 
-		if (typeof target[source_property] === 'undefined')
-			target[source_property] = source_value;
-		else if (typeof target === 'object')
-			target[source_property] = deep_merge_object(
-				target[source_property],
-				source_value
-			);
+    if (typeof target[source_property] === 'undefined')
+      target[source_property] = source_value;
+    else if (typeof target === 'object')
+      target[source_property] = deep_merge_object(
+        target[source_property],
+        source_value,
+      );
 
-		return target;
+    return target;
 
-	}, target) :
-	target;
+  }, target) :
+  target;
 
 /* Converts an array to tree */
 export function array_to_tree(
-	array: any[],  // array to be converted
-	has_headers = false,  // whether an array has headers in it
+  array: any[],  // array to be converted
+  has_headers = false,  // whether an array has headers in it
 ): FlatTree /*
 * Example:
 * 	if
@@ -154,15 +157,15 @@ export function array_to_tree(
 * 	}
 * */ {
 
-	if (array.length === 0)
-		return {};
+  if (array.length === 0)
+    return {};
 
-	const [node, ...new_array] = array;
+  const [node, ...new_array] = array;
 
-	if (has_headers && new_array.length === 0)
-		return node;
+  if (has_headers && new_array.length === 0)
+    return node;
 
-	return {[node]: array_to_tree(new_array, has_headers)};
+  return {[node]: array_to_tree(new_array, has_headers)};
 
 }
 
@@ -171,9 +174,9 @@ export function array_to_tree(
 * The inverse of mappings_tree_to_array_of_mappings
 * */
 export function array_of_mappings_to_mappings_tree(
-	// array of strings (branches of the tree) that are going to be merged
-	// into a tree
-	array_of_mappings: MappingPath[],
+  // array of strings (branches of the tree) that are going to be merged
+  // into a tree
+  array_of_mappings: MappingPath[],
 ): MappingsTree  // Final tree
 /*
 * For example if array is:
@@ -190,13 +193,13 @@ export function array_of_mappings_to_mappings_tree(
 * 				Remarks
 * */ {
 
-	const tree = {};
+  const tree = {};
 
-	array_of_mappings.forEach(mapping_path =>
-		deep_merge_object(tree, array_to_tree(mapping_path, false)),
-	);
+  array_of_mappings.forEach(mapping_path =>
+    deep_merge_object(tree, array_to_tree(mapping_path, false)),
+  );
 
-	return tree;
+  return tree;
 
 }
 
@@ -206,37 +209,37 @@ export function array_of_mappings_to_mappings_tree(
 * The inverse of array_of_mappings_to_mappings_tree
 * */
 export const mappings_tree_to_array_of_mappings = (
-	mappings_tree: MappingsTree,  // mappings tree
-	path: MappingPath = [],  // used in a recursion to store intermediate path
+  mappings_tree: MappingsTree,  // mappings tree
+  path: MappingPath = [],  // used in a recursion to store intermediate path
 ): MappingPath[] /* array of arrays of string */ =>
-	/*
-	* For example, if mappings_tree is:
-	* 	Accession
-	* 		Accession Agents
-	* 			#1
-	* 				Agent
-	* 					First Name
-	* 					Last Name
-	* 				Remarks
-	* Result would be:
-	* 	Accession, Accession Agents, #1, Agent, First Name
-	* 	Accession, Accession Agents, #1, Agent, Last Name
-	* 	Accession, Accession Agents, #1, Remarks
-	* */
-	Object.entries(
-		mappings_tree
-	).reduce((result: MappingPath[], [tree_node_name, tree_node]) => {
+  /*
+  * For example, if mappings_tree is:
+  * 	Accession
+  * 		Accession Agents
+  * 			#1
+  * 				Agent
+  * 					First Name
+  * 					Last Name
+  * 				Remarks
+  * Result would be:
+  * 	Accession, Accession Agents, #1, Agent, First Name
+  * 	Accession, Accession Agents, #1, Agent, Last Name
+  * 	Accession, Accession Agents, #1, Remarks
+  * */
+  Object.entries(
+    mappings_tree,
+  ).reduce((result: MappingPath[], [tree_node_name, tree_node]) => {
 
-		if (typeof tree_node === 'object')
-			result.push(
-				...mappings_tree_to_array_of_mappings(
-					tree_node,
-					[...path, tree_node_name],
-				),
-			);
-		else
-			result.push([...path, tree_node_name, tree_node]);
+    if (typeof tree_node === 'object')
+      result.push(
+        ...mappings_tree_to_array_of_mappings(
+          tree_node,
+          [...path, tree_node_name],
+        ),
+      );
+    else
+      result.push([...path, tree_node_name, tree_node]);
 
-		return result;
+    return result;
 
-	}, []);
+  }, []);

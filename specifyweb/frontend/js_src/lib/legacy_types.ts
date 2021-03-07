@@ -50,7 +50,9 @@ export interface DomainTreeDefinitionItems {
 }
 
 interface DomainTreeDefinition {
-	readonly rget: (field_name: string) => JqueryPromise<DomainTreeDefinitionItems>,
+	readonly rget: (
+		field_name: string,
+	) => JqueryPromise<DomainTreeDefinitionItems>,
 }
 
 export interface JqueryPromise<T> {
@@ -58,5 +60,7 @@ export interface JqueryPromise<T> {
 }
 
 export interface Domain {
-	readonly getTreeDef: (table_name: string) => JqueryPromise<DomainTreeDefinition>,
+	readonly getTreeDef: (
+		table_name: string,
+	) => JqueryPromise<DomainTreeDefinition>,
 }

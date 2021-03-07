@@ -17,7 +17,7 @@ const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
 const {upload_plan_to_mappings_tree} = require('./wbplanviewconverter.ts');
 const {mappings_tree_to_array_of_mappings} = require('./wbplanviewtreehelper.ts');
-const {get_mapping_line_data_from_mapping_path} = require('./wbplanviewnavigator.ts');
+const {get_mapping_line_data} = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
 const icons = require('./icons.js');
 
@@ -201,7 +201,7 @@ const WBView = Backbone.View.extend({
                     [
                         mappingsPath.slice(-1)[0],
                         icons.getIcon(
-                            get_mapping_line_data_from_mapping_path({
+                            get_mapping_line_data({
                                 base_table_name,
                                 mapping_path: mappingsPath.slice(0, -3),
                                 iterate: false,
