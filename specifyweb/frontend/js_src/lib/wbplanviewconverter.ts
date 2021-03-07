@@ -1,6 +1,6 @@
 /*
 *
-* Helper class for converting from upload plan to mapping path
+* Helper class for converting from upload plan to mapping tree
 * (internal structure used in wbplanview) and vice versa
 *
 * */
@@ -70,15 +70,18 @@ type UploadPlanTreeRecordRanks = Record<string,
   treeNodeCols: Record<string, string>
 }>
 
-type UploadPlanUploadtableTypes = {
-  [key in 'uploadTable'
-    | 'oneToOneTable'
-    | 'mustMatchTable']: UploadPlanUploadTableTable
-};
+type UploadPlanUploadtableTypes =
+  {'uploadTable': UploadPlanUploadTableTable}
+  | {'oneToOneTable': UploadPlanUploadTableTable}
+  | {'mustMatchTable': UploadPlanUploadTableTable};
+
+type UploadPlanTreeTypes =
+  {'treeRecord': UploadPlanTreeRecord}
+  | {'mustMatchTreeRecord': UploadPlanTreeRecord};
 
 type UploadPlanUploadable =
   UploadPlanUploadtableTypes |
-  {treeRecord: UploadPlanTreeRecord}
+  UploadPlanTreeTypes
 
 export interface UploadPlan {
   baseTableName: string,
@@ -92,18 +95,13 @@ const upload_plan_processing_functions = (
   headers: string[],
   must_match_preferences: Record<string, boolean>,
   mapping_path: string[],
-): {
-  wbcols: (
-    [key, value]: [string, string | MatchBehaviours],
-  ) => [key: string, value: object],
-  static: ([key, value]: [string, string]) => [key: string, value: object],
-  toOne: (
-    [key, value]: [string, UploadPlanUploadTableToOne],
-  ) => [key: string, value: object],
-  toMany: ([key, value]: [string, object]) => [key: string, value: object],
-} => (
+): Readonly<Record<string, (
+  [key, value]: [string, any],
+) => [key: string, value: unknown]>> => (
   {
-    wbcols: ([key, value]) => [
+    wbcols: (
+      [key, value]: [string, string | MatchBehaviours],
+    ): [key: string, value: object] => [
       key,
       {
         [
@@ -113,13 +111,13 @@ const upload_plan_processing_functions = (
           ]: value,
       },
     ],
-    static: ([key, value]) => [
+    static: ([key, value]: [string, string]): [key: string, value: object] => [
       key,
       {new_static_column: value},
     ],
     toOne: (
-      [tableName, value],
-    ) => [
+      [tableName, value]: [string, UploadPlanUploadTableToOne],
+    ): [key: string, value: object] => [
       tableName,
       handle_uploadable(
         value,
@@ -128,7 +126,9 @@ const upload_plan_processing_functions = (
         [...mapping_path, tableName],
       ),
     ],
-    toMany: ([tableName, mappings]) => [
+    toMany: (
+      [tableName, mappings]: [string, object],
+    ): [key: string, value: object] => [
       tableName,
       Object.fromEntries(
         Object.values(
@@ -147,7 +147,7 @@ const upload_plan_processing_functions = (
       ),
     ],
   }
-);
+) as const;
 
 const handle_tree_rank_fields = (
   tree_rank_fields: Record<string, string>,
@@ -191,6 +191,30 @@ const handle_tree_record = (
         ],
     ),
   );
+
+function handle_tree_record_types(
+  upload_plan: UploadPlanTreeTypes,
+  headers: string[],
+  must_match_preferences: Record<string, boolean>,
+  mapping_path: string[],
+) {
+
+  if ('mustMatchTreeRecord' in upload_plan) {
+    const table_name = get_mapping_line_data({
+      base_table_name: mapping_path[0],
+      mapping_path: mapping_path.slice(1),
+      iterate: false,
+      custom_select_type: 'opened_list',
+    })[0].table_name;
+    must_match_preferences[table_name || mapping_path.slice(-1)[0]] = true;
+  }
+
+  return handle_tree_record(
+    Object.values(upload_plan)[0],
+    headers,
+  );
+
+}
 
 
 const handle_upload_table_table = (
@@ -256,10 +280,12 @@ const handle_uploadable = (
   must_match_preferences: Record<string, boolean>,
   mapping_path: string[],
 ): MappingsTree =>
-  'treeRecord' in upload_plan ?
-    handle_tree_record(
-      upload_plan.treeRecord,
+  'treeRecord' in upload_plan || 'mustMatchTreeRecord' in upload_plan ?
+    handle_tree_record_types(
+      upload_plan,
       headers,
+      must_match_preferences,
+      mapping_path,
     ) :
     handle_uploadable_types(
       upload_plan,
@@ -551,21 +577,28 @@ const mappings_tree_to_upload_table = (
   table_name: string,
   must_match_preferences: Record<string, boolean>,
   is_root = false,
-): UploadPlanUploadable => table_is_tree(table_name) ?
-  {
-    treeRecord: {
-      ranks: mappings_tree_to_upload_plan_tree(
-        mappings_tree,
-      ),
-    },
-  } :
-  mappings_tree_to_upload_plan_table(
-    mappings_tree,
-    table_name,
-    must_match_preferences,
-    true,
-    is_root,
-  ) as UploadPlanUploadable;
+): UploadPlanUploadable =>
+  table_is_tree(table_name) ?
+    {
+      [
+        (
+          table_name in must_match_preferences
+        ) ?
+          'mustMatchTreeRecord' :
+          'treeRecord'
+        ]: {
+        ranks: mappings_tree_to_upload_plan_tree(
+          mappings_tree,
+        ),
+      },
+    } as UploadPlanTreeTypes :
+    mappings_tree_to_upload_plan_table(
+      mappings_tree,
+      table_name,
+      must_match_preferences,
+      true,
+      is_root,
+    ) as UploadPlanUploadable;
 
 /*
 * Converts mappings tree to upload plan
