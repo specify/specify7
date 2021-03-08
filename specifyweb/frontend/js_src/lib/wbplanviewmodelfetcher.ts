@@ -90,13 +90,6 @@ export type DataModelListOfTablesWritable = Record<string, {
 // a dictionary like table_name==>table_friendly_name
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>
 
-export type DataModelFetcherReturn = {
-  readonly tables: DataModelTables,
-  readonly list_of_base_tables: DataModelListOfTables,
-  readonly ranks: DataModelRanks,
-}
-
-
 const fetching_parameters: {
   readonly required_fields_to_hide: string[],
   readonly tables_to_hide: string[],
@@ -129,6 +122,8 @@ const fetching_parameters: {
     'geographytreedef',
     'geologictimeperiodtreedef',
     'treedef',
+    'collectingeventattr',
+    'collectionobjectattr',
     ...schema.orgHierarchy.filter(table_name =>
       table_name !== 'collectionobject',
     ),

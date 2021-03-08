@@ -53,7 +53,6 @@ import {
 } from '../wbplanviewconverter';
 import { get_mapping_line_data } from '../wbplanviewnavigator';
 
-
 // general definitions
 export type Dataset = {
   id: number,
@@ -884,21 +883,54 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
           mapping_path,
           base_table_name: state.base_table_name,
           custom_select_type: 'opened_list',
-        }).filter((mapping_element_data, index, list) =>
-          index !== 0 &&  // exclude base table
-          // exclude -to-many
-          mapping_element_data.custom_select_subtype !== 'to_many' &&
-          (  // exclude direct child of -to-many
-            typeof list[index - 1] === 'undefined' ||
-            list[index - 1].custom_select_subtype !== 'to_many'
-          ),
-        ),
+        }).filter((mapping_element_data, index, list) => {
+          if(
+            index === 0 ||  // exclude base table
+            // exclude -to-many
+            mapping_element_data.custom_select_subtype === 'to_many'
+          )
+            return false;
+
+          if(typeof list[index - 1] === 'undefined'){
+
+            if(
+              state.base_table_name === 'collectionobject' &&
+              list[index].table_name === 'collectingevent'
+            )
+              return false;
+
+          }
+          else {
+
+            // exclude direct child of -to-many
+            if(list[index - 1].custom_select_subtype === 'to_many')
+              return false;
+
+            // exclude embedded collecting event
+            if(
+              schema.embeddedCollectingEvent === true &&
+              list[index - 1].table_name === 'collectionobject' &&
+              list[index].table_name === 'collectingevent'
+            )
+              return false;
+          }
+
+          return true;
+        }),
     );
+
     const array_of_tables = array_of_mapping_line_data.map(
       mapping_element_data =>
         mapping_element_data.table_name || '',
     ).filter(table_name =>
-      table_name,
+      table_name &&
+      typeof data_model_storage.tables[table_name] !== 'undefined' &&
+      !table_name.endsWith('attribute') &&
+      (
+        //exclude embedded paleo context
+        schema.embeddedPaleoContext === false ||
+        table_name !== 'paleocontext'
+      )
     );
     const distinct_list_of_tables = [...new Set(array_of_tables)];
     const must_match_preferences = {
@@ -1364,49 +1396,51 @@ const state_reducer = generate_reducer<JSX.Element,
                 'Done': handleMappingOptionsDialogClose,
               },
             }}
-          >
-            <table>
-              <thead>
-              <tr>
-                <th>Table Name</th>
-                <th>Must Match</th>
-              </tr>
-              </thead>
-              <tbody>{
-                Object.entries(
-                  state.must_match_preferences,
-                ).map(([table_name, must_match]) => <tr
-                  key={table_name}
-                >
-                  <td>
-                    <div className='must_match_line'>
-                      <Icon
-                        table_name={table_name}
-                        option_label={table_name}
-                        is_relationship={true}
-                      />
-                      {data_model_storage.tables[
-                        table_name
-                        ].table_friendly_name}
-                    </div>
-                  </td>
-                  <td>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={must_match}
-                        onChange={() => state.dispatch({
-                          type: 'MustMatchPrefChangeAction',
-                          table_name,
-                          must_match: !must_match,
-                        })}
-                      />
-                    </label>
-                  </td>
-                </tr>)
-              }</tbody>
-            </table>
-          </ModalDialog> :
+          >{
+            Object.keys(state.must_match_preferences).length === 0 ?
+              'Matching logic is unavailable for current mappings' :
+              <table>
+                <thead>
+                <tr>
+                  <th>Table Name</th>
+                  <th>Must Match</th>
+                </tr>
+                </thead>
+                <tbody>{
+                  Object.entries(
+                    state.must_match_preferences,
+                  ).map(([table_name, must_match]) => <tr
+                    key={table_name}
+                  >
+                    <td>
+                         <div className='must_match_line'>
+                         <Icon
+                         table_name={table_name}
+                         option_label={table_name}
+                         is_relationship={true}
+                         />
+                         {data_model_storage.tables[
+                         table_name
+                         ].table_friendly_name}
+                         </div>
+                         </td>
+                    <td>
+                         <label>
+                         <input
+                         type="checkbox"
+                         checked={must_match}
+                         onChange={() => state.dispatch({
+                         type: 'MustMatchPrefChangeAction',
+                         table_name,
+                         must_match: !must_match,
+                         })}
+                         />
+                         </label>
+                         </td>
+                  </tr>)
+                }</tbody>
+              </table>
+          }</ModalDialog> :
           null
       }
     </HeaderWrapper>;
