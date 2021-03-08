@@ -20,10 +20,11 @@ import {
   full_mapping_path_parser,
 } from '../wbplanviewhelper';
 import {
+  MappingElement,
   MappingLine,
   MappingPath,
-  MappingPathProps,
-}                                        from './wbplanviewcomponents';
+  MappingPathProps, StaticHeader,
+} from './wbplanviewcomponents';
 import {
   format_reference_item,
   get_max_to_many_value,
@@ -36,12 +37,12 @@ import { get_mapping_line_data }         from '../wbplanviewnavigator';
 import automapper, { AutoMapperResults } from '../automapper';
 import {
   mappings_tree_to_upload_plan,
-  MatchBehaviours,
+  MatchBehaviors,
   upload_plan_to_mappings_tree,
   UploadPlan,
 }                                        from '../wbplanviewconverter';
 import React                             from 'react';
-import { named_component }               from '../statemanagement';
+import { named_component }     from '../statemanagement';
 import {
   AutoScrollTypes,
   ChangeSelectElementValueAction,
@@ -51,7 +52,7 @@ import {
   PublicWBPlanViewProps,
   RefMappingState,
   WBPlanViewWrapperProps,
-}                                        from './wbplanview';
+}                              from './wbplanview';
 
 
 /* Scope is used to differentiate between mapper definitions that should
@@ -82,7 +83,7 @@ export interface MappingLine {
   readonly name: string,
   readonly mapping_path: MappingPath,
   readonly options: {
-    matchBehaviour: MatchBehaviours,
+    matchBehavior: MatchBehaviors,
     nullAllowed: boolean,
     default: string | null,
   }
@@ -269,7 +270,7 @@ export function validate(state: MappingState): MappingState {
 }
 
 export const defaultLineOptions: MappingLine['options'] = {
-  matchBehaviour: 'ignoreNever',
+  matchBehavior: 'ignoreNever',
   nullAllowed: false,
   default: null,
 } as const;
@@ -373,24 +374,37 @@ export function get_lines_from_upload_plan(
 
 }
 
-const get_array_of_mappings = (
+function get_array_of_mappings(
+  lines: MappingLine[],
+  include_headers:true
+):FullMappingPath[];
+function get_array_of_mappings(
+  lines: MappingLine[],
+  include_headers?:false
+):MappingPath[];
+function get_array_of_mappings(
   lines: MappingLine[],
   include_headers = false,
-): MappingPath[] =>
-  lines.filter(({mapping_path}) =>
+): (MappingPath|FullMappingPath)[] {
+  return lines.filter(({mapping_path}) =>
     mapping_path_is_complete(mapping_path),
-  ).map(({mapping_path, type, name}) =>
+  ).map(({mapping_path, type, name, options}) =>
     include_headers ?
-      [...mapping_path, type, name] :
+      [...mapping_path, type, name, options] :
       mapping_path,
   );
+}
 
 export const get_mappings_tree = (
   lines: MappingLine[],
   include_headers = false,
 ): MappingsTree =>
   array_of_mappings_to_mappings_tree(
-    get_array_of_mappings(lines, include_headers),
+    // overloading does not seem to work nicely with dynamic types
+    include_headers ?
+      get_array_of_mappings(lines, true) :
+      get_array_of_mappings(lines, false),
+    include_headers
   );
 
 /* Get a mappings tree branch given a particular starting mapping path */
@@ -685,6 +699,18 @@ export default function WBPlanViewMapper(
       autoscroll_type: AutoScrollTypes,
       status: boolean,
     ) => void,
+    readonly handleChangeMatchBehaviorAction: (
+      line: number,
+      match_behavior: MatchBehaviors
+    )=>void
+    readonly handleToggleAllowNullsAction: (
+      line: number,
+      allow_null: boolean,
+    )=>void,
+    readonly handleChangeDefaultValue: (
+      line: number,
+      default_value: string|null
+    )=>void
   }): JSX.Element {
   const get_mapped_fields_bind = get_mapped_fields.bind(
     null,
@@ -847,7 +873,7 @@ export default function WBPlanViewMapper(
           'minHeight': minMappingViewHeight,
           '--original_height':
             `${
-              props.refObject.current.mapping_view_height
+              props.refObject.current.mapping_view_height || ''
             }px`,
         } as React.CSSProperties}
         ref={mappingViewParentRef}
@@ -892,7 +918,7 @@ export default function WBPlanViewMapper(
       ref={list_of_mappings}
       onScroll={repositionSuggestionBox}
     >{
-      props.lines.map(({mapping_path, name, type}, index) =>
+      props.lines.map(({mapping_path, name, type, options}, index) =>
         <MappingLine
           key={index}
           header_name={name}
@@ -922,6 +948,110 @@ export default function WBPlanViewMapper(
                   undefined,
               show_hidden_fields: props.show_hidden_fields,
               automapper_suggestions: props.automapper_suggestions,
+              mapping_options_menu_generator: ()=>({
+                'matchBehavior': {
+                  field_friendly_name: <label>
+                    Match behavior:
+                    <MappingElement
+                      is_open={true}
+                      custom_select_type='mapping_option_line_list'
+                      handleChange={(match_behavior)=>
+                        props.handleChangeMatchBehaviorAction(
+                          index,
+                          match_behavior as MatchBehaviors,
+                        )
+                      }
+                      fields_data={{
+                        'ignoreWhenBlank': {
+                          field_friendly_name: 'Ignore when Blank',
+                          title: 'When set to "Ignore when Blank" blank ' +
+                            'values in this column will not be ' +
+                            'considered for matching purposes. Blank ' +
+                            'values are ignored when matching even if a ' +
+                            'default value is provided',
+                          is_enabled: true,
+                          is_required: false,
+                          is_hidden: false,
+                          is_default:
+                            options.matchBehavior === 'ignoreWhenBlank',
+                        },
+                        'ignoreAlways': {
+                          field_friendly_name: 'Always ignore',
+                          title: 'When set to ignoreAlways the value in ' +
+                            'this column will never be considered for ' +
+                            'matching purposes, only for uploading.',
+                          is_enabled: true,
+                          is_required: false,
+                          is_hidden: false,
+                          is_default:
+                            options.matchBehavior === 'ignoreAlways',
+                        },
+                        'ignoreNever': {
+                          field_friendly_name: 'Never ignore',
+                          title: 'This column would always be considered ' +
+                            'for matching purposes, regardless of it\'s ' +
+                            'value',
+                          is_enabled: true,
+                          is_required: false,
+                          is_hidden: false,
+                          is_default:
+                            options.matchBehavior === 'ignoreNever',
+                        }
+                      }}
+                    />
+                  </label>,
+                },
+                'nullAllowed': {
+                  field_friendly_name: <label>
+                    <input
+                      type='checkbox'
+                      checked={options.nullAllowed}
+                      onChange={(event)=>
+                        props.handleToggleAllowNullsAction(
+                          index,
+                          event.target.checked,
+                        )
+                      }
+                    />
+                    {' '}Allow Null values
+                  </label>
+                },
+                'default': {
+                  field_friendly_name: <>
+                    <label>
+                      <input
+                        type='checkbox'
+                        checked={options.default !== null}
+                        onChange={()=>
+                          props.handleChangeDefaultValue(
+                            index,
+                            options.default === null ?
+                              '' :
+                              null,
+                          )
+                        }
+                      />
+                      {' '}Use default value
+                    </label>
+                    {
+                      typeof options.default === 'string' &&
+                      <label><br />
+                        Default value:<br />
+                        <StaticHeader
+                          default_value={options.default || ''}
+                          onChange={(event)=>
+                            props.handleChangeDefaultValue(
+                              index,
+                              event.target.value
+                            )
+                          }
+                        />
+                      </label>
+                    }
+                  </>,
+                  title: 'This value would be used in place of empty cells'
+                }
+              })
             })
           }
         />,

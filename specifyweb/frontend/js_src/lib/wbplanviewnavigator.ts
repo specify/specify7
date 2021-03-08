@@ -387,6 +387,7 @@ export function get_mapping_line_data({
   get_mapped_fields,
   automapper_suggestions,
   show_hidden_fields = true,
+  mapping_options_menu_generator = undefined,
 }: {
   readonly base_table_name: string,
   readonly mapping_path?: MappingPath,  // the mapping path
@@ -415,6 +416,8 @@ export function get_mapping_line_data({
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void,
   readonly get_mapped_fields?: GetMappedFieldsBind,
   readonly automapper_suggestions?: AutomapperSuggestion[],
+  readonly mapping_options_menu_generator?: ()=>
+    Record<string,HtmlGeneratorFieldData>,
 }): MappingElementProps[] {
 
   const internal_state: {
@@ -426,8 +429,9 @@ export function get_mapping_line_data({
     next_mapping_path_element?: string,
     default_value?: string,
     current_mapping_path_part?: string,
-    result_fields: {[field_name: string]: HtmlGeneratorFieldData}
+    result_fields: Record<string,HtmlGeneratorFieldData>
     mapped_fields: string[],
+    generate_mapping_options_menu: boolean,
   } = {
     mapping_path_position: -1,
     mapping_line_data: [],
@@ -435,6 +439,7 @@ export function get_mapping_line_data({
     mapped_fields: [],
     result_fields: {},
     is_open: false,
+    generate_mapping_options_menu: false,
   };
 
   const first_iteration_requirement = () =>
@@ -455,6 +460,19 @@ export function get_mapping_line_data({
     !is_hidden ||
     // show a default field, even if it is hidden
     field_name === internal_state.default_value;
+
+  function field_is_default(
+    field_name: string,
+    default_value: string | undefined,
+    is_relationship: boolean,
+  ) {
+    const is_default = field_name === default_value;
+    if(is_default)
+      internal_state.generate_mapping_options_menu =
+        !is_relationship &&
+        typeof mapping_options_menu_generator !== 'undefined';
+    return is_default;
+  }
 
   const callbacks: NavigationCallbacks<MappingElementProps> = {
 
@@ -554,6 +572,8 @@ export function get_mapping_line_data({
       internal_state.mapped_fields = typeof get_mapped_fields === 'function' ?
         Object.keys(get_mapped_fields(local_mapping_path)) :
         [];
+
+      internal_state.generate_mapping_options_menu = false;
     },
 
     handle_to_many_children({table_name}) {
@@ -669,13 +689,17 @@ export function get_mapping_line_data({
           field_name,
           {
             field_friendly_name: friendly_name,
-            is_enabled:  // disable field
-            // if it is mapped
+            is_enabled:  // enable field
+            // if it is not mapped
               internal_state.mapped_fields.indexOf(field_name) === -1 ||
               is_relationship,  // or is a relationship,
             is_required,
             is_hidden,
-            is_default: field_name === internal_state.default_value,
+            is_default: field_is_default(
+              field_name,
+              internal_state.default_value,
+              is_relationship,
+            ),
             is_relationship,
             table_name: field_table_name,
           },
@@ -727,7 +751,47 @@ export function get_mapping_line_data({
     },
 
     get_final_data: () =>
-      internal_state.mapping_line_data,
+      internal_state.generate_mapping_options_menu ?
+        [
+          ...internal_state.mapping_line_data,
+          {
+            custom_select_type: 'mapping_options_list',
+            custom_select_subtype: 'simple',
+            fields_data: mapping_options_menu_generator!(),
+            default_option: {
+              option_name: 'mapping_options',
+              option_label: '⚙',
+              table_name: '',
+              is_relationship: false,
+            },
+            ...(
+              open_select_element?.index ===
+              internal_state.mapping_line_data.length ?
+                {
+                  is_open: true,
+                  handleChange: undefined,
+                  handleClose:
+                    handleClose &&
+                    handleClose.bind(
+                      null,
+                      internal_state.mapping_line_data.length,
+                    ),
+                  automapper_suggestions,
+                  handleAutomapperSuggestionSelection,
+                } :
+                {
+                  is_open: false,
+                  handleOpen:
+                    handleOpen &&
+                    handleOpen.bind(
+                      null,
+                      internal_state.mapping_line_data.length,
+                    ),
+                }
+            ),
+          },
+        ] :
+        internal_state.mapping_line_data,
   };
 
   return navigator<MappingElementProps>({

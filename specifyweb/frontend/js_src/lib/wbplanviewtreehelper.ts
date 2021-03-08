@@ -193,7 +193,8 @@ export function array_to_tree(
 export function array_of_mappings_to_mappings_tree(
   // array of strings (branches of the tree) that are going to be merged
   // into a tree
-  array_of_mappings: MappingPath[],
+  array_of_mappings: (MappingPath|FullMappingPath)[],
+  include_headers: boolean,
 ): MappingsTree  // Final tree
 /*
 * For example if array is:
@@ -213,7 +214,7 @@ export function array_of_mappings_to_mappings_tree(
   const tree = {};
 
   array_of_mappings.forEach(mapping_path =>
-    deep_merge_object(tree, array_to_tree(mapping_path, false)),
+    deep_merge_object(tree, array_to_tree(mapping_path, include_headers)),
   );
 
   return tree;

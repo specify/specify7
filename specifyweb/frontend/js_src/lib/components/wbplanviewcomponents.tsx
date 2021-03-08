@@ -16,12 +16,17 @@ import {
   SuggestionBox,
 }                                            from './customselectelement';
 import { named_component }                   from '../statemanagement';
-import { AutomapperSuggestion, MappingType } from './wbplanviewmapper';
+import {
+  AutomapperSuggestion,
+  MappingType,
+  SelectElementPosition,
+} from './wbplanviewmapper';
 import { DataModelListOfTables }             from '../wbplanviewmodelfetcher';
 
 
 export interface HtmlGeneratorFieldData {
-  readonly field_friendly_name: string,
+  readonly field_friendly_name: string|JSX.Element,
+  readonly title?: string,
   readonly is_enabled?: boolean,
   readonly is_required?: boolean,
   readonly is_hidden?: boolean,
@@ -49,15 +54,13 @@ export interface MappingPathProps {
 type HtmlGeneratorFieldsData = Readonly<Record<string, HtmlGeneratorFieldData>>
 
 export type MappingElementProps = (
-  Omit<CustomSelectElementPropsOpenBase,
-    'default_value'
-    | 'automapper_suggestions'> & {
+  Omit<CustomSelectElementPropsOpenBase, 'automapper_suggestions'> & {
   readonly fields_data: HtmlGeneratorFieldsData,
   readonly automapper_suggestions?: AutomapperSuggestion[],
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void,
 }
   ) | (
-  Omit<CustomSelectElementPropsClosed, 'default_value' | 'field_names'> & {
+  Omit<CustomSelectElementPropsClosed, 'field_names'> & {
   readonly fields_data: HtmlGeneratorFieldsData,
 }
   );
@@ -153,20 +156,29 @@ export function MappingLine({
       }
     </div>
     <div className="wbplanview_mapping_line_elements">
-      <MappingPath mapping_line_data={line_data} />
+      <MappingPath
+        mapping_line_data={line_data}
+      />
     </div>
   </div>;
 }
 
 /* Generates a mapping path */
-export function MappingPath({
-  mapping_line_data,
-}: MappingPathProps): JSX.Element {
+export function MappingPath(
+  {
+    mapping_line_data,
+  }: MappingPathProps & {open_select_element?: SelectElementPosition}
+): JSX.Element {
   return <>
     {mapping_line_data.map((mapping_details, index) =>
       <React.Fragment key={index}>
         <MappingElement {...mapping_details} />
-        {index + 1 !== mapping_line_data.length && MappingElementDivider}
+        {
+          index + 1 !== mapping_line_data.length &&
+          mapping_line_data[index+1
+            ]?.custom_select_type !== 'mapping_options_list' &&
+          MappingElementDivider
+        }
       </React.Fragment>,
     )}
   </>;
@@ -186,7 +198,7 @@ const get_field_group_name = (is_hidden: boolean, is_required: boolean) =>
     is_required ? 'required_fields' : 'optional_fields';
 
 /* Generates a new mapping element */
-function MappingElement(
+export function MappingElement(
   props: MappingElementProps,
 ) {
 
@@ -207,6 +219,7 @@ function MappingElement(
     field_name,
     {
       field_friendly_name,  // field label
+      title,
       is_enabled = true,  // whether field is enabled (not mapped yet)
       is_default = false,  // whether field is selected by default
       table_name = '',  // table name for this option
@@ -234,21 +247,24 @@ function MappingElement(
     if (props.is_open)
       field_groups[get_field_group_name(is_hidden, is_required)][field_name] = {
         option_label: field_friendly_name,
+        title,
         is_enabled,
         is_relationship,
         is_default,
         table_name,
       };
-    else
+    else if(typeof field_friendly_name === 'string')
       field_names.push(field_friendly_name);
   });
 
-  default_option ??= {
-    option_name: '0',
-    option_label: '0',
-    table_name: '',
-    is_relationship: false,
-  };
+  default_option ??= typeof props.default_option == 'undefined' ?
+    {
+      option_name: '0',
+      option_label: '0',
+      table_name: '',
+      is_relationship: false,
+    } :
+    props.default_option;
 
   return props.is_open ?
     <CustomSelectElement
@@ -264,7 +280,9 @@ function MappingElement(
               select_group_label:
                 props.custom_select_subtype === 'tree' ||
                 props.custom_select_subtype === 'to_many' ||
-                props.custom_select_type === 'base_table_selection_list' ?
+                props.custom_select_type === 'base_table_selection_list' ||
+                props.custom_select_type === 'mapping_options_list' ||
+                props.custom_select_type === 'mapping_option_line_list' ?
                   undefined :
                   field_group_labels[group_name],
               select_options_data: group_fields,
@@ -312,7 +330,7 @@ function MappingElement(
 }
 
 /* Return a textarea with a given value for a new static header */
-function StaticHeader({
+export function StaticHeader({
   default_value = '',
   onChange: handleChange,
 }: {

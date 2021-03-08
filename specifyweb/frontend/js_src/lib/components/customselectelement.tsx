@@ -40,7 +40,16 @@ export type CustomSelectType =
   | 'base_table_selection_list' /*
   * used for base table selection
   * like opened_list, but without a header and option group labels
-  * has onChange event */;
+  * has onChange event */
+
+  | 'mapping_options_list' /*
+  * used for configuring mapping options for a mapping line
+  * appears as a gear icon at the end of the mapping line */
+
+  | 'mapping_option_line_list' /*
+  * used inside of mapping_options_list
+  * exactly the same as base_table_selection_list
+  * it is named differently to avoid confusion */;
 
 export type CustomSelectSubtype =
   'simple'  // for fields and relationships
@@ -55,6 +64,8 @@ interface CustomSelectElementIconProps {
   readonly table_name?: string,  // the name of the table this option represents
   // the name of the option. Would be used as a label (visible to the user)
   readonly option_label?: string | JSX.Element,
+  // the value of the title HTML attribute
+  readonly title?: string,
   // True if option can be selected. False if option cannot be selected because
   // it was already selected
   readonly is_enabled?: boolean,
@@ -180,6 +191,7 @@ export function Icon({
 
 const Option = React.memo(named_component('Option', ({
   option_label,
+  title,
   is_enabled = true,
   is_relationship = false,
   is_default = false,
@@ -202,6 +214,7 @@ const Option = React.memo(named_component('Option', ({
     className={classes.join(' ')}
     tabIndex={0}
     onClick={handleClick}
+    title={title}
   >
     <span className="custom_select_option_icon">
       <Icon
@@ -268,18 +281,18 @@ const ShadowListOfOptions = React.memo(named_component(
     }</span>),
 );
 
-const intractable_select_types: Readonly<CustomSelectType[]> = [
+const non_intractable_select_types: Readonly<CustomSelectType[]> = [
   'preview_list',
   'suggestion_line_list',
 ] as const;
 const select_types_with_headers: Readonly<CustomSelectType[]> = [
   'opened_list',
-  'base_table_selection_list',
 ] as const;
 const select_types_with_first_row: Readonly<CustomSelectType[]> = [
   'closed_list',
   'preview_list',
   'suggestion_line_list',
+  'mapping_options_list',
 ] as const;
 
 export function CustomSelectElement(
@@ -306,7 +319,7 @@ export function CustomSelectElement(
 
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const option_is_intractable = intractable_select_types.indexOf(
+  const option_is_intractable = non_intractable_select_types.indexOf(
     custom_select_type,
   ) === -1;
 
@@ -358,12 +371,16 @@ export function CustomSelectElement(
           undefined :
           default_option.option_label
       }</span>
-      {option_is_intractable &&
-      <span className="custom_select_input_dropdown">&#9660;</span>}
+      {
+        option_is_intractable &&
+        custom_select_type !== 'mapping_options_list' &&
+        <span className="custom_select_input_dropdown">▼</span>
+      }
     </span>;
 
     const show_first_row = is_open &&
       option_is_intractable &&
+      custom_select_type !== 'mapping_options_list' &&
       custom_select_subtype === 'simple' &&
       default_option.option_name !== '0';
 
@@ -375,7 +392,11 @@ export function CustomSelectElement(
         is_default={default_option.option_label === '0'}
       />;
 
-    options_shadow = !is_open && option_is_intractable && field_names &&
+    options_shadow =
+      !is_open &&
+      option_is_intractable &&
+      field_names &&
+      custom_select_type !== 'mapping_options_list' &&
       <ShadowListOfOptions field_names={field_names} />;
 
   }

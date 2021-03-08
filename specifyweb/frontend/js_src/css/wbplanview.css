@@ -260,6 +260,14 @@
 	clip-path: inset(calc(-1 * var(--white_space)) calc(-1 * var(--white_space)) 0 calc(-1 * var(--white_space)));
 }
 
+.custom_select_mapping_options_list {
+	padding-left: var(--white_space);
+}
+
+.custom_select_mapping_option_line_list {
+	height: unset;
+}
+
 .custom_select_header,
 .custom_select_input {
 	grid-area: header;
@@ -284,6 +292,23 @@
 
 .custom_select_suggestion_line_list .custom_select_input {
 	grid-template-columns: calc(var(--white_space) * 2) 1fr;
+}
+
+.custom_select_mapping_options_list .custom_select_input,
+.custom_select_mapping_options_list .custom_select_option {
+	display: flex;
+	align-items: center;
+	padding: var(--white_space);
+}
+
+.custom_select_mapping_options_list .custom_select_input_icon,
+.custom_select_mapping_options_list .custom_select_option_icon {
+	display: none;
+}
+
+.custom_select_mapping_options_list .custom_select_input_label {
+	font-size: calc(var(--white_space) * 2.8);
+	margin-bottom: 3px;
 }
 
 .custom_select_element_shadow_list {

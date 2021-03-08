@@ -47,10 +47,10 @@ import { Icon }                  from './customselectelement';
 import createBackboneView        from './reactbackboneextend';
 import { JqueryPromise }         from '../legacy_types';
 import {
-  FalsyUploadPlan,
+  FalsyUploadPlan, MatchBehaviors,
   upload_plan_string_to_object,
   UploadPlan,
-}                                from '../wbplanviewconverter';
+} from '../wbplanviewconverter';
 import { get_mapping_line_data } from '../wbplanviewnavigator';
 
 
@@ -262,6 +262,24 @@ interface MustMatchPrefChangeAction
   readonly must_match: boolean,
 }
 
+interface ChangeMatchBehaviorAction
+  extends Action<'ChangeMatchBehaviorAction'> {
+  readonly line: number,
+  readonly match_behavior: MatchBehaviors,
+}
+
+interface ToggleAllowNullsAction
+  extends Action<'ToggleAllowNullsAction'>{
+  readonly line: number,
+  readonly allow_null: boolean,
+}
+
+interface ChangeDefaultValue
+  extends Action<'ChangeDefaultValue'> {
+  readonly line: number,
+  readonly default_value: string|null,
+}
+
 export type MappingActions =
   OpenMappingScreenAction
   | SavePlanAction
@@ -284,7 +302,10 @@ export type MappingActions =
   | ValidationResultClickAction
   | OpenMatchingLogicDialogAction
   | MustMatchPrefChangeAction
-  | CloseMatchingLogicDialogAction;
+  | CloseMatchingLogicDialogAction
+  | ChangeMatchBehaviorAction
+  | ToggleAllowNullsAction
+  | ChangeDefaultValue;
 
 type WBPlanViewActions =
   BaseTableSelectionActions
@@ -355,8 +376,14 @@ function HeaderWrapper(props: {
 }): JSX.Element {
   return <div className="wbplanview_event_listener" onClick={(event) =>
     (
-      event.target as HTMLElement
-    ).closest('.custom_select_closed_list') === null && props.handleClick ?
+      (event.target as HTMLElement).closest(
+        '.custom_select_closed_list'
+      ) === null &&
+      (event.target as HTMLElement).closest(
+        '.custom_select_mapping_options_list'
+      ) === null
+      && props.handleClick
+    ) ?
       props.handleClick() :
       undefined
   }>
@@ -721,13 +748,16 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
         index: action.index,
       },
       automapper_suggestions_promise:
-        get_automapper_suggestions({
-            lines: mapping_state(state).lines,
-            line: action.line,
-            index: action.index,
-            base_table_name: mapping_state(state).base_table_name,
-          },
-        ),
+        typeof mapping_state(state).lines[action.line].mapping_path[
+          action.index] === 'undefined'?
+          undefined:
+          get_automapper_suggestions({
+              lines: mapping_state(state).lines,
+              line: action.line,
+              index: action.index,
+              base_table_name: mapping_state(state).base_table_name,
+            },
+          ),
     }
   ),
   'CloseSelectElementAction': ({state}) =>
@@ -904,6 +934,57 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
       },
     }
   ),
+  'ChangeMatchBehaviorAction': ({
+    state,
+    action
+  })=>({
+    ...mapping_state(state),
+    lines: modify_line(
+      mapping_state(state),
+      action.line,
+      {
+        ...mapping_state(state).lines[action.line],
+        options: {
+          ...mapping_state(state).lines[action.line].options,
+          matchBehavior: action.match_behavior
+        }
+      }
+    )
+  }),
+  'ToggleAllowNullsAction': ({
+    state,
+    action
+  })=>({
+    ...mapping_state(state),
+    lines: modify_line(
+      mapping_state(state),
+      action.line,
+      {
+        ...mapping_state(state).lines[action.line],
+        options: {
+          ...mapping_state(state).lines[action.line].options,
+          nullAllowed: action.allow_null
+        }
+      }
+    )
+  }),
+  'ChangeDefaultValue': ({
+    state,
+    action
+  })=>({
+    ...mapping_state(state),
+    lines: modify_line(
+      mapping_state(state),
+      action.line,
+      {
+        ...mapping_state(state).lines[action.line],
+        options: {
+          ...mapping_state(state).lines[action.line].options,
+          default: action.default_value
+        }
+      }
+    )
+  }),
 });
 
 const loading_state_dispatch = generate_dispatch<LoadingStates>({
@@ -1240,16 +1321,38 @@ const state_reducer = generate_reducer<JSX.Element,
           })
         }
         handleAutoscrollStatusChange={(
-          (
+          autoscroll_type,
+          status,
+        ) =>
+          state.refObjectDispatch({
+            type: 'AutoscrollStatusChangeAction',
             autoscroll_type,
             status,
-          ) =>
-            state.refObjectDispatch({
-              type: 'AutoscrollStatusChangeAction',
-              autoscroll_type,
-              status,
-            })
-        )}
+          })}
+        handleChangeMatchBehaviorAction={(
+          line: number,
+          match_behavior: MatchBehaviors,
+        )=>state.dispatch({
+          type: 'ChangeMatchBehaviorAction',
+          line,
+          match_behavior: match_behavior
+        })}
+        handleToggleAllowNullsAction={(
+          line: number,
+          allow_null: boolean,
+        )=>state.dispatch({
+          type: 'ToggleAllowNullsAction',
+          line,
+          allow_null
+        })}
+        handleChangeDefaultValue={(
+          line: number,
+          default_value: string|null,
+        )=>state.dispatch({
+          type: 'ChangeDefaultValue',
+          line,
+          default_value
+        })}
       />
       {
         state.display_matching_options_dialog ?

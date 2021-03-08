@@ -18,17 +18,17 @@ import {
 }                                         from './wbplanviewmodelhelper';
 import { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 import { DataModelFieldWritable }          from './wbplanviewmodelfetcher';
-import { defaultLineOptions, MappingLine } from './components/wbplanviewmapper';
+import { defaultLineOptions } from './components/wbplanviewmapper';
 import { get_mapping_line_data }           from './wbplanviewnavigator';
 
-export type MatchBehaviours = Readonly<'ignoreWhenBlank'
+export type MatchBehaviors = Readonly<'ignoreWhenBlank'
   | 'ignoreAlways'
   | 'ignoreNever'>;
 
 type UploadPlanUploadTableField = string |
   {
     column: string,
-    matchBehaviour: MatchBehaviours,
+    matchBehavior: MatchBehaviors,
     nullAllowed: boolean,
     default: string | null,
   };
@@ -92,6 +92,21 @@ export interface UploadPlan {
 export type FalsyUploadPlan = UploadPlan | false;
 
 
+const excludeUnknownMatchingOptions = (
+  matching_options: Exclude<UploadPlanUploadTableField,string>,
+)=>Object.fromEntries(
+  Object.entries(defaultLineOptions).map(([option_name, default_value])=>
+    [
+      option_name,
+      option_name in matching_options ?
+        //@ts-ignore
+        matching_options[option_name] :
+        default_value
+    ]
+  )
+) as Exclude<UploadPlanUploadTableField,string>;
+
+
 const upload_plan_processing_functions = (
   headers: string[],
   must_match_preferences: Record<string, boolean>,
@@ -101,7 +116,7 @@ const upload_plan_processing_functions = (
 ) => [key: string, value: unknown]>> => (
   {
     wbcols: (
-      [key, value]: [string, string | Record<string,MappingLine['options']>],
+      [key, value]: [string, string | UploadPlanUploadTableField],
     ): [key: string, value: object] => [
       key,
       {
@@ -109,7 +124,7 @@ const upload_plan_processing_functions = (
           headers.indexOf(
             typeof value === 'string' ?
               value :
-              Object.keys(value)[0]
+              value.column
           ) === -1 ?
             'new_column' :
             'existing_header'
@@ -118,7 +133,7 @@ const upload_plan_processing_functions = (
               [value]: defaultLineOptions,
             } :
             {
-              [Object.keys(value)[0]]: Object.values(value)[0],
+              [value.column]: excludeUnknownMatchingOptions(value)
             },
       },
     ],
@@ -178,7 +193,7 @@ const handle_tree_rank_fields = (
               [header_name]: defaultLineOptions,
             } :
             {
-              [header_name.column]: header_name,
+              [header_name.column]: excludeUnknownMatchingOptions(header_name)
             },
         ],
       ),
@@ -559,6 +574,7 @@ export const extract_header_name_from_header_structure = (
   JSON.stringify(header_options) === JSON.stringify(defaultLineOptions) ?
     header_name :
     {
+      ...defaultLineOptions,
       column: header_name,
       ...header_options,
     },
