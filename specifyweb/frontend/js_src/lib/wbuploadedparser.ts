@@ -12,6 +12,7 @@ import schema                           from './schema';
 import { Schema }                       from './legacy_types';
 import icons                            from './icons';
 import { get_name_from_tree_rank_name } from './wbplanviewmodelhelper';
+import { full_mapping_path_parser }     from './wbplanviewhelper';
 
 // Specify 7 Workbench Upload Results
 // Records results of uploading a data set
@@ -603,17 +604,27 @@ export function parseUploadResults(
   const mapped_ranks_tree = array_of_mappings.filter(full_mapping_path =>
     full_mapping_path.length >= 4 &&
     full_mapping_path[full_mapping_path.length - 3] === 'name',
-  ).map(full_mapping_path =>
-    array_to_tree([
+  ).map(full_mapping_path => {
+
+    const [
+      mapping_path,
+      ,
+      header_name,
+    ] = full_mapping_path_parser(full_mapping_path);
+
+    return array_to_tree([
       ...(
-        full_mapping_path.length === 4 ?
+        mapping_path.length === 2 ?
           [base_table_name] :
-          [full_mapping_path.slice(-5, -4)[0]]
+          mapping_path.slice(-2, -1)
       ),
-      get_name_from_tree_rank_name(full_mapping_path.slice(-4, -3)[0]),
-      full_mapping_path.slice(-1)[0],
-    ], true),
-  ).reduce(deep_merge_object, {}) as Record<string, Record<string, string>>;
+      get_name_from_tree_rank_name(
+        mapping_path.slice(-1)[0],
+      ),
+      header_name,
+    ], true);
+
+  }).reduce(deep_merge_object, {}) as Record<string, Record<string, string>>;
 
   const uploadedRows: Record<string, UploadedRowSorted[]> = {};
   const uploadedPicklistItems: UploadedPicklistItems = {};

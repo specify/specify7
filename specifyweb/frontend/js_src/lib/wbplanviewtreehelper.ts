@@ -7,12 +7,27 @@
 'use strict';
 
 
-import { MappingPath, MappingType } from './components/wbplanviewmapper';
+import {
+  FullMappingPath,
+  MappingLine,
+  MappingPath,
+  MappingType,
+} from './components/wbplanviewmapper';
+
+export type MappingsTreeNode = Record<
+  MappingType,
+  Record<
+    string,
+    MappingLine['options']
+  >
+>;
 
 export interface MappingsTree
-  extends Readonly<Record<string,
-    MappingsTree | string | Record<MappingType,
-    string>>> {
+  extends Readonly<
+    Record<string,
+      MappingsTree | string | MappingsTreeNode
+    >
+  > {
 }
 
 interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
@@ -53,6 +68,7 @@ export function traverse_tree(
 
   let target_key = '';
   if (typeof node_mappings_tree === 'string')
+    //@ts-ignore
     return full_mappings_tree[target_key];
   else {
     target_key = Object.keys(node_mappings_tree)[0];
@@ -66,6 +82,7 @@ export function traverse_tree(
 
   return traverse_tree(
     full_mappings_tree[target_key] as MappingsTree,
+    //@ts-ignore
     node_mappings_tree[target_key],
   );
 
@@ -211,7 +228,7 @@ export function array_of_mappings_to_mappings_tree(
 export const mappings_tree_to_array_of_mappings = (
   mappings_tree: MappingsTree,  // mappings tree
   path: MappingPath = [],  // used in a recursion to store intermediate path
-): MappingPath[] /* array of arrays of string */ =>
+): FullMappingPath[] =>
   /*
   * For example, if mappings_tree is:
   * 	Accession
@@ -228,17 +245,24 @@ export const mappings_tree_to_array_of_mappings = (
   * */
   Object.entries(
     mappings_tree,
-  ).reduce((result: MappingPath[], [tree_node_name, tree_node]) => {
+  ).reduce((result: FullMappingPath[], [tree_node_name, tree_node]) => {
 
-    if (typeof tree_node === 'object')
+    if (
+      typeof tree_node === 'object' &&
+      typeof Object.values(tree_node)[0] === 'object'
+    )
       result.push(
         ...mappings_tree_to_array_of_mappings(
-          tree_node,
+          tree_node as MappingsTree,
           [...path, tree_node_name],
         ),
       );
     else
-      result.push([...path, tree_node_name, tree_node]);
+      result.push([
+        ...(path as [...string[], MappingType]),
+        tree_node_name,
+        tree_node as unknown as MappingLine['options']
+      ]);
 
     return result;
 

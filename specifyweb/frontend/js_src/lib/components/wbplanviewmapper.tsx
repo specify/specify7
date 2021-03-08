@@ -15,7 +15,10 @@ import {
   MappingsTree,
   traverse_tree,
 }                                        from '../wbplanviewtreehelper';
-import { find_duplicate_mappings }       from '../wbplanviewhelper';
+import {
+  find_duplicate_mappings,
+  full_mapping_path_parser,
+} from '../wbplanviewhelper';
 import {
   MappingLine,
   MappingPath,
@@ -57,6 +60,9 @@ export type AutomapperScope =
   Readonly<'automapper'  // used when selecting a base table
     | 'suggestion'>;  // suggestion boxes - used when opening a picklist
 export type MappingPath = string[];
+export type FullMappingPath = [
+  ...string[], MappingType, string, MappingLine['options']
+];
 export type ListOfHeaders = string[];
 export type MappingType = Readonly<'existing_header'
   | 'new_column'
@@ -76,7 +82,7 @@ export interface MappingLine {
   readonly name: string,
   readonly mapping_path: MappingPath,
   readonly options: {
-    match_behaviour: MatchBehaviours,
+    matchBehaviour: MatchBehaviours,
     nullAllowed: boolean,
     default: string | null,
   }
@@ -263,7 +269,7 @@ export function validate(state: MappingState): MappingState {
 }
 
 export const defaultLineOptions: MappingLine['options'] = {
-  match_behaviour: 'ignoreNever',
+  matchBehaviour: 'ignoreNever',
   nullAllowed: false,
   default: null,
 } as const;
@@ -340,27 +346,22 @@ export function get_lines_from_upload_plan(
     mappings_tree,
     must_match_preferences,
   } = upload_plan_to_mappings_tree(headers, upload_plan);
+
   const array_of_mappings = mappings_tree_to_array_of_mappings(mappings_tree);
   array_of_mappings.forEach(full_mapping_path => {
     const [
       mapping_path,
       mapping_type,
       header_name,
-    ] = [
-      full_mapping_path.slice(0, -2),
-      full_mapping_path.slice(-2, -1)[0],
-      full_mapping_path.slice(-1)[0],
-    ] as [
-      MappingPath,
-      MappingType,
-      string
-    ];
+      options
+    ] = full_mapping_path_parser(full_mapping_path);
     const header_index = headers.indexOf(header_name);
     if (header_index !== -1)
       lines[header_index] = {
         mapping_path,
         type: mapping_type,
         name: header_name,
+        options
       };
   });
 
@@ -750,7 +751,7 @@ export default function WBPlanViewMapper(
     )
       return;
 
-    const resizeObserer =
+    const resizeObserver =
       // @ts-ignore
       new ResizeObserver(() =>
         mappingViewParentRef.current &&
@@ -760,10 +761,10 @@ export default function WBPlanViewMapper(
         ),
       );
 
-    resizeObserer.observe(mappingViewParentRef.current);
+    resizeObserver.observe(mappingViewParentRef.current);
 
     return () =>
-      resizeObserer.disconnect();
+      resizeObserver.disconnect();
   }, [mappingViewParentRef.current]);
 
   // reposition suggestions box if it doesn't fit

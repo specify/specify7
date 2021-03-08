@@ -7,7 +7,7 @@
 
 'use strict';
 
-import data_model_storage         from './wbplanviewmodel';
+import data_model_storage                 from './wbplanviewmodel';
 import {
   format_reference_item,
   format_tree_rank,
@@ -15,29 +15,30 @@ import {
   table_is_tree,
   value_is_reference_item,
   value_is_tree_rank,
-}                                 from './wbplanviewmodelhelper';
-import { MappingsTree }           from './wbplanviewtreehelper';
-import { DataModelFieldWritable } from './wbplanviewmodelfetcher';
-import { MappingType }            from './components/wbplanviewmapper';
-import { get_mapping_line_data }  from './wbplanviewnavigator';
+}                                         from './wbplanviewmodelhelper';
+import { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
+import { DataModelFieldWritable }          from './wbplanviewmodelfetcher';
+import { defaultLineOptions, MappingLine } from './components/wbplanviewmapper';
+import { get_mapping_line_data }           from './wbplanviewnavigator';
 
 export type MatchBehaviours = Readonly<'ignoreWhenBlank'
   | 'ignoreAlways'
   | 'ignoreNever'>;
 
-type UploadPlanUploadTableWbcols = Record<string,
-  string |
+type UploadPlanUploadTableField = string |
   {
     column: string,
     matchBehaviour: MatchBehaviours,
     nullAllowed: boolean,
     default: string | null,
-  }>
+  };
+
+type UploadPlanUploadTableFields = Record<string,
+  UploadPlanUploadTableField>
 
 type UploadPlanUploadTableStatic =
   Record<string, string | boolean | number>
 
-type UploadPlanUploadTableToOne = UploadPlanUploadable
 
 type UploadPlanUploadTableToMany =
   Omit<UploadPlanUploadTableTable, 'toMany'>
@@ -49,15 +50,15 @@ type UploadPlanFieldGroupTypes =
   'toMany'
 
 type UploadPlanTableGroup<GROUP_NAME extends UploadPlanFieldGroupTypes> =
-  GROUP_NAME extends 'wbcols' ? UploadPlanUploadTableWbcols :
+  GROUP_NAME extends 'wbcols' ? UploadPlanUploadTableFields :
     GROUP_NAME extends 'static' ? UploadPlanUploadTableStatic :
-      GROUP_NAME extends 'toOne' ? UploadPlanUploadTableToOne :
+      GROUP_NAME extends 'toOne' ? UploadPlanUploadable :
         UploadPlanUploadTableToMany
 
 interface UploadPlanUploadTableTable {
-  wbcols: UploadPlanUploadTableWbcols,
+  wbcols: UploadPlanUploadTableFields,
   static: UploadPlanUploadTableStatic,
-  toOne: UploadPlanUploadTableToOne,
+  toOne: UploadPlanUploadable,
   toMany: UploadPlanUploadTableToMany,
 }
 
@@ -67,7 +68,7 @@ interface UploadPlanTreeRecord {
 
 type UploadPlanTreeRecordRanks = Record<string,
   string | {
-  treeNodeCols: Record<string, string>
+  treeNodeCols: UploadPlanUploadTableFields
 }>
 
 type UploadPlanUploadtableTypes =
@@ -100,15 +101,25 @@ const upload_plan_processing_functions = (
 ) => [key: string, value: unknown]>> => (
   {
     wbcols: (
-      [key, value]: [string, string | MatchBehaviours],
+      [key, value]: [string, string | Record<string,MappingLine['options']>],
     ): [key: string, value: object] => [
       key,
       {
         [
-          headers.indexOf(value) === -1 ?
+          headers.indexOf(
+            typeof value === 'string' ?
+              value :
+              Object.keys(value)[0]
+          ) === -1 ?
             'new_column' :
             'existing_header'
-          ]: value,
+          ]: typeof value === 'string' ?
+            {
+              [value]: defaultLineOptions,
+            } :
+            {
+              [Object.keys(value)[0]]: Object.values(value)[0],
+            },
       },
     ],
     static: ([key, value]: [string, string]): [key: string, value: object] => [
@@ -116,7 +127,7 @@ const upload_plan_processing_functions = (
       {new_static_column: value},
     ],
     toOne: (
-      [tableName, value]: [string, UploadPlanUploadTableToOne],
+      [tableName, value]: [string, UploadPlanUploadable],
     ): [key: string, value: object] => [
       tableName,
       handle_uploadable(
@@ -150,7 +161,7 @@ const upload_plan_processing_functions = (
 ) as const;
 
 const handle_tree_rank_fields = (
-  tree_rank_fields: Record<string, string>,
+  tree_rank_fields: UploadPlanUploadTableFields,
   headers: string[],
 ) => Object.fromEntries(
   Object.entries(tree_rank_fields).map(
@@ -160,7 +171,16 @@ const handle_tree_rank_fields = (
         {},
         [],
       ).wbcols(
-        [field_name, header_name],
+        [
+          field_name,
+          typeof header_name === 'string' ?
+            {
+              [header_name]: defaultLineOptions,
+            } :
+            {
+              [header_name.column]: header_name,
+            },
+        ],
       ),
   ),
 );
@@ -300,7 +320,7 @@ const handle_uploadable = (
 * */
 export function upload_plan_to_mappings_tree(
   headers: string[],
-  upload_plan: UploadPlan,  // upload plan
+  upload_plan: UploadPlan,
 ): {
   base_table_name: string,
   mappings_tree: MappingsTree,
@@ -451,6 +471,7 @@ function mappings_tree_to_upload_plan_table(
           must_match_preferences,
         );
       else
+        //@ts-ignore
         table_plan[
           Object.entries(
             field_data,
@@ -528,17 +549,24 @@ function handle_relationship_field(
 }
 
 
-const extract_header_name_from_header_structure = (
-  header_structure: Record<MappingType, string>,
-) => Object.keys(
+export const extract_header_name_from_header_structure = (
+  header_structure: MappingsTreeNode,
+): UploadPlanUploadTableField => Object.entries(
   Object.values(
     header_structure,
   )[0],
+).map(([header_name, header_options]) =>
+  JSON.stringify(header_options) === JSON.stringify(defaultLineOptions) ?
+    header_name :
+    {
+      column: header_name,
+      ...header_options,
+    },
 )[0];
 
 const rank_mapped_fields_to_tree_record_ranks = (
-  rank_mapped_fields: Record<string, Record<MappingType, string>>,
-): Record<string, string> => Object.fromEntries(
+  rank_mapped_fields: Record<string, MappingsTreeNode>,
+): UploadPlanUploadTableFields => Object.fromEntries(
   Object.entries(rank_mapped_fields).map(([
     field_name, header_mapping_structure,
   ]) => [
@@ -559,7 +587,7 @@ const mappings_tree_to_upload_plan_tree = (
     {
       treeNodeCols: rank_mapped_fields_to_tree_record_ranks(
         rank_mapped_fields as Record<string,
-          Record<MappingType, string>>,
+          MappingsTreeNode>,
       ),
     },
   ]),

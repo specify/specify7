@@ -6,8 +6,12 @@
 
 'use strict';
 
-import { mapping_path_to_string } from './wbplanviewmodelhelper';
-import { MappingPath }            from './components/wbplanviewmapper';
+import { mapping_path_to_string }       from './wbplanviewmodelhelper';
+import {
+  FullMappingPath, MappingLine,
+  MappingPath,
+  MappingType,
+} from './components/wbplanviewmapper';
 
 /*
 * Get a friendly name from the field. (Converts Camel Case to human-readable
@@ -150,3 +154,15 @@ export const find_duplicate_mappings = (
   return duplicate_indexes;
 
 };
+
+export const full_mapping_path_parser = (
+  full_mapping_path: FullMappingPath
+):[string[], MappingType, string, MappingLine['options']] => [
+  full_mapping_path.slice(0, -3),
+  ...full_mapping_path.slice(-3),
+] as [
+  MappingPath,
+  MappingType,
+  string,
+  MappingLine['options']
+];
