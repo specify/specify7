@@ -397,9 +397,26 @@ const Leaflet = {
 
 const leaflet_tile_servers = {
     base_maps: {
-        'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        'OpenStreetMap Standart': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }),
+        'OpenStreetMap Humanitarian': L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            subdomains: ['a','b'],
+        }),
+        'OpenStreetMap CyclOSM': L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+          options: {
+            maxZoom: 20,
+            attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: {attribution.OpenStreetMap}'
+          }
+        }),
+        'OpenStreetMap Transport': L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+          options: {
+            maxZoom: 20,
+            attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: {attribution.OpenStreetMap}'
+          }
         }),
         'ESRI: World_Street_Map': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community',
@@ -422,6 +439,75 @@ const leaflet_tile_servers = {
         'USGS USImagery': L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 20,
             attribution: 'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>'
+        }),
+        'NASAGIBS ModisTerraTrueColorCR': L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+          attribution:
+            'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
+            '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+          minZoom: 1,
+          maxZoom: 9,
+          format: 'jpg',
+          time: '',
+          tilematrixset: 'GoogleMapsCompatible_Level'
+        }),
+        'NASAGIBS ModisTerraBands367CR': L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+          attribution:
+            'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
+            '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+          minZoom: 1,
+          maxZoom: 9,
+          format: 'jpg',
+          time: '',
+          tilematrixset: 'GoogleMapsCompatible_Level'
+        }),
+        'NASAGIBS ViirsEarthAtNight2012': L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+          attribution:
+            'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
+            '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+          minZoom: 1,
+          maxZoom: 8,
+          format: 'jpg',
+          time: '',
+          tilematrixset: 'GoogleMapsCompatible_Level'
+        }),
+        'NASAGIBS ModisTerraLSTDay': L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Land_Surface_Temp_Day/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+          attribution:
+            'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
+            '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+          minZoom: 1,
+          maxZoom: 7,
+          opacity: 0.75,
+          format: 'png',
+          time: '',
+          tilematrixset: 'GoogleMapsCompatible_Level'
+        }),
+        'NASAGIBS ModisTerraAOD': L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Aerosol/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+          attribution:
+            'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
+            '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+          minZoom: 1,
+          maxZoom: 6,
+          opacity: 0.75,
+          format: 'png',
+          time: '',
+          tilematrixset: 'GoogleMapsCompatible_Level'
+        }),
+        'NASAGIBS ModisTerraChlorophyll': L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Chlorophyll_A/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+          attribution:
+            'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
+            '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+          minZoom: 1,
+          maxZoom: 7,
+          opacity: 0.75,
+          format: 'png',
+          time: '',
+          tilematrixset: 'GoogleMapsCompatible_Level'
         }),
     },
     overlays: {
