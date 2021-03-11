@@ -89,8 +89,6 @@ export interface UploadPlan {
   uploadable: UploadPlanUploadable
 }
 
-export type FalsyUploadPlan = UploadPlan | false;
-
 
 const excludeUnknownMatchingOptions = (
   matching_options: Exclude<UploadPlanUploadTableField,string>,
@@ -362,8 +360,8 @@ export function upload_plan_to_mappings_tree(
 
 export function upload_plan_string_to_object(
   upload_plan_string: string,
-): FalsyUploadPlan {
-  let upload_plan: FalsyUploadPlan;
+): UploadPlan | null {
+  let upload_plan;
 
   try {
     upload_plan = JSON.parse(upload_plan_string) as UploadPlan;
@@ -375,7 +373,7 @@ export function upload_plan_string_to_object(
     ))//only catch JSON parse errors
       throw exception;
 
-    upload_plan = false;
+    return null;
 
   }
 
@@ -384,7 +382,7 @@ export function upload_plan_string_to_object(
     upload_plan === null ||
     typeof upload_plan['baseTableName'] === 'undefined'
   )
-    return false;
+    return null;
   else
     return upload_plan;
 }

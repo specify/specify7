@@ -47,7 +47,7 @@ import { Icon }                  from './customselectelement';
 import createBackboneView        from './reactbackboneextend';
 import { JqueryPromise }         from '../legacy_types';
 import {
-  FalsyUploadPlan, MatchBehaviors,
+  MatchBehaviors,
   upload_plan_string_to_object,
   UploadPlan,
 } from '../wbplanviewconverter';
@@ -179,7 +179,7 @@ interface OpenMappingScreenAction
   extends Action<'OpenMappingScreenAction'> {
   readonly mapping_is_templated: boolean,
   readonly headers: string[],
-  readonly upload_plan: FalsyUploadPlan,
+  readonly upload_plan: UploadPlan | null,
 }
 
 interface SavePlanAction extends Action<'SavePlanAction'>,
@@ -315,7 +315,7 @@ type WBPlanViewActions =
 
 interface WBPlanViewProps extends WBPlanViewWrapperProps,
   PublicWBPlanViewProps {
-  readonly upload_plan: FalsyUploadPlan,
+  readonly upload_plan: UploadPlan | null,
   readonly headers: string[],
   readonly set_unload_protect: () => void,
 }
@@ -556,7 +556,7 @@ const reducer = generate_reducer<WBPlanViewStates, WBPlanViewActions>({
   'OpenMappingScreenAction': ({
     action,
   }) => {
-    if (action.upload_plan === false)
+    if (action.upload_plan == null)
       throw new Error('Upload plan is not defined');
 
     const {
@@ -1043,8 +1043,8 @@ const loading_state_dispatch = generate_dispatch<LoadingStates>({
               wbt.get('remarks') as string,
             ),
             wbt.get('name') as string,
-          ]).filter(([upload_plan]: [FalsyUploadPlan]) =>
-            upload_plan !== false,
+          ]).filter(([upload_plan]: [UploadPlan | null]) =>
+            upload_plan != null,
           ).map(([
             upload_plan,
             dataset_name,
@@ -1744,7 +1744,7 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
 
   const upload_plan = props.dataset.uploadplan ?
     props.dataset.uploadplan :
-    false;
+    null;
   return (
     schema_loaded ?
       <WBPlanView {...props} upload_plan={upload_plan}
