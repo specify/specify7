@@ -25,13 +25,14 @@ export type MatchBehaviors = Readonly<'ignoreWhenBlank'
   | 'ignoreAlways'
   | 'ignoreNever'>;
 
-type UploadPlanUploadTableField = string |
-  {
-    column: string,
+export type ColumnOptions = {
     matchBehavior: MatchBehaviors,
     nullAllowed: boolean,
     default: string | null,
-  };
+};
+
+
+type UploadPlanUploadTableField = string | { column: string } & ColumnOptions;
 
 type UploadPlanUploadTableFields = Record<string,
   UploadPlanUploadTableField>

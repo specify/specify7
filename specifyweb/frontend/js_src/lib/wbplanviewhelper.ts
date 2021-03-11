@@ -11,9 +11,8 @@ import {
   FullMappingPath,
   MappingPath,
   MappingType,
-  ColumnOptions,
 } from './components/wbplanviewmapper';
-
+import { ColumnOptions } from './wbplanviewconverter';
 /*
 * Get a friendly name from the field. (Converts Camel Case to human-readable
 * name and fixes some errors). This method is only called if schema

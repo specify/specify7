@@ -11,8 +11,8 @@ import {
   FullMappingPath,
   MappingPath,
   MappingType,
-  ColumnOptions,
 } from './components/wbplanviewmapper';
+import {  ColumnOptions } from './wbplanviewconverter';
 
 interface NestedRecord<T> extends Record<string, T | NestedRecord<T>> { }
 

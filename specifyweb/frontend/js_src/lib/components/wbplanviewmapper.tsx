@@ -37,6 +37,7 @@ import automapper, { AutoMapperResults } from '../automapper';
 import {
   mappings_tree_to_upload_plan,
   MatchBehaviors,
+  ColumnOptions,
   upload_plan_to_mappings_tree,
   UploadPlan,
 }                                        from '../wbplanviewconverter';
@@ -74,12 +75,6 @@ export interface SelectElementPosition {
   readonly line: number,
   readonly index: number,
 }
-
-export type ColumnOptions = {
-    matchBehavior: MatchBehaviors,
-    nullAllowed: boolean,
-    default: string | null,
-};
 
 export interface MappingLine {
   readonly type: MappingType,
