@@ -8,25 +8,25 @@
 'use strict';
 
 import {
-  format_reference_item,
-  format_tree_rank,
-  get_max_to_many_value,
-  get_name_from_tree_rank_name,
-  is_circular_relationship,
-  is_too_many_inside_of_too_many,
-  relationship_is_to_many,
-  table_is_tree,
-  value_is_reference_item,
-  value_is_tree_rank,
-}                         from './wbplanviewmodelhelper';
-import data_model_storage from './wbplanviewmodel';
+  formatReferenceItem,
+  formatTreeRank,
+  getMaxToManyValue,
+  getNameFromTreeRankName,
+  isCircularRelationship,
+  isTooManyInsideOfTooMany,
+  relationshipIsToMany,
+  tableIsTree,
+  valueIsReferenceItem,
+  valueIsTreeRank,
+}                       from './wbplanviewmodelhelper';
+import dataModelStorage from './wbplanviewmodel';
 import {
   AutomapperSuggestion,
   GetMappedFieldsBind,
   MappingPath,
   RelationshipType,
   SelectElementPosition,
-}                         from './components/wbplanviewmapper';
+}                       from './components/wbplanviewmapper';
 import {
   DataModelField,
   DataModelRelationship,
@@ -51,119 +51,119 @@ type FindNextNavigationDirection<RETURN_STRUCTURE> =
   (
     {
       finished: true,
-      final_data: RETURN_STRUCTURE[],
+      finalData: RETURN_STRUCTURE[],
     } | {
     finished: false,
     payload: {
-      next_table_name: string,
-      next_parent_table_name: string,
-      next_real_path_element_name: string,
-      next_path_element_name: string,
+      nextTableName: string,
+      nextParentTableName: string,
+      nextRealPathElementName: string,
+      nextPathElementName: string,
     },
   }
     )
 
 interface NavigationCallbackPayload<RETURN_TYPE> {
-  table_name: string,
+  tableName: string,
   data?: RETURN_TYPE,
-  parent_relationship_type?: RelationshipType,
-  parent_table_name?: string,
+  parentRelationshipType?: RelationshipType,
+  parentTableName?: string,
 }
 
 type NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_TYPE> = (
-  callback_payload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
+  callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
 ) => RETURN_TYPE;
 
 interface NavigationCallbacks<RETURN_STRUCTURE> {
   // should return {boolean} specifying whether to run
-  // data_model.navigator_instance() for a particular mapping path part
+  // dataModel.navigatorInstance() for a particular mapping path part
   readonly iterate: NavigatorCallbackFunction<RETURN_STRUCTURE, boolean>,
   // should return undefined if next element does not exist
-  readonly get_next_path_element: NavigatorCallbackFunction<RETURN_STRUCTURE, {
+  readonly getNextPathElement: NavigatorCallbackFunction<RETURN_STRUCTURE, {
     // the name of the next path element
-    readonly next_path_element_name: string,
+    readonly nextPathElementName: string,
     // if the next path element is not a field nor a relationship, {undefined}.
-    // Else, {object} the information about a field from data_model.tables
-    readonly next_path_element: DataModelField,
-    // If next_path_element_name is not a field nor a relationships, {string}
+    // Else, {object} the information about a field from dataModel.tables
+    readonly nextPathElement: DataModelField,
+    // If nextPathElementName is not a field nor a relationships, {string}
     // current path element name.
-    // Else next_path_element_name
-    readonly next_real_path_element_name: string,
+    // Else nextPathElementName
+    readonly nextRealPathElementName: string,
   } | undefined>,
-  // formats internal_payload and returns it. Would be used as a return
+  // formats internalPayload and returns it. Would be used as a return
   // value for the navigator
-  readonly get_final_data:
+  readonly getFinalData:
     NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_STRUCTURE[]>,
-  // commits callback_payload.data to internal_payload and returns
+  // commits callbackPayload.data to internalPayload and returns
   // committed data
-  readonly get_instance_data:
+  readonly getInstanceData:
     NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_STRUCTURE>,
-  // commits callback_payload.data to internal_payload and returns
+  // commits callbackPayload.data to internalPayload and returns
   // committed data
-  readonly commit_instance_data:
+  readonly commitInstanceData:
     NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_STRUCTURE>,
-  // called inside of navigator_instance before it calls callbacks for
+  // called inside of navigatorInstance before it calls callbacks for
   // tree ranks / reference items / simple fields
-  readonly navigator_instance_pre:
+  readonly navigatorInstancePre:
     NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
-  // handles to_many children
-  readonly handle_to_many_children:
+  // handles toMany children
+  readonly handleToManyChildren:
     NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
   // handles tree ranks children
-  readonly handle_tree_ranks:
+  readonly handleTreeRanks:
     NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
   // handles fields and relationships
-  readonly handle_simple_fields:
+  readonly handleSimpleFields:
     NavigatorCallbackFunction<RETURN_STRUCTURE, void>,
 }
 
 
-function find_next_navigation_direction<RETURN_STRUCTURE>(
+function findNextNavigationDirection<RETURN_STRUCTURE>(
   callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
-  callback_payload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
-  table_name: string,
-  parent_table_name: string,
+  callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
+  tableName: string,
+  parentTableName: string,
 ): FindNextNavigationDirection<RETURN_STRUCTURE> {
-  const next_path_elements_data =
-    callbacks.get_next_path_element(callback_payload);
+  const nextPathElementsData =
+    callbacks.getNextPathElement(callbackPayload);
 
-  if (typeof next_path_elements_data === 'undefined')
+  if (typeof nextPathElementsData === 'undefined')
     return {
       finished: true,
-      final_data: callbacks.get_final_data(callback_payload),
+      finalData: callbacks.getFinalData(callbackPayload),
     };
 
   const {
-    next_path_element_name,
-    next_path_element,
-    next_real_path_element_name,
-  } = next_path_elements_data;
+    nextPathElementName,
+    nextPathElement,
+    nextRealPathElementName,
+  } = nextPathElementsData;
 
-  let next_table_name = '';
-  let next_parent_table_name = '';
+  let nextTableName = '';
+  let nextParentTableName = '';
 
   if (
-    value_is_reference_item(next_path_element_name) ||
-    value_is_tree_rank(next_path_element_name)
+    valueIsReferenceItem(nextPathElementName) ||
+    valueIsTreeRank(nextPathElementName)
   ) {
-    next_table_name = table_name;
-    next_parent_table_name = parent_table_name;
+    nextTableName = tableName;
+    nextParentTableName = parentTableName;
   }
   else if (
-    typeof next_path_element !== 'undefined' &&
-    next_path_element.is_relationship
+    typeof nextPathElement !== 'undefined' &&
+    nextPathElement.isRelationship
   ) {
-    next_table_name = next_path_element.table_name;
-    next_parent_table_name = table_name;
+    nextTableName = nextPathElement.tableName;
+    nextParentTableName = tableName;
   }
 
   return {
     finished: false,
     payload: {
-      next_table_name,
-      next_parent_table_name,
-      next_real_path_element_name,
-      next_path_element_name,
+      nextTableName: nextTableName,
+      nextParentTableName: nextParentTableName,
+      nextRealPathElementName: nextRealPathElementName,
+      nextPathElementName: nextPathElementName,
     },
   };
 }
@@ -172,197 +172,197 @@ function find_next_navigation_direction<RETURN_STRUCTURE>(
 // calls certain callbacks while doing that
 export function navigator<RETURN_STRUCTURE>({
   callbacks,
-  recursive_payload = undefined,
+  recursivePayload = undefined,
   config: {
-    base_table_name,
+    baseTableName,
   },
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
   // {object|undefined} used internally to make navigator call itself
   // multiple times
-  readonly recursive_payload?: {
-    readonly table_name: string,
-    readonly parent_table_name: string,
-    readonly parent_table_relationship_name: string,
-    readonly parent_path_element_name: string,
+  readonly recursivePayload?: {
+    readonly tableName: string,
+    readonly parentTableName: string,
+    readonly parentTableRelationshipName: string,
+    readonly parentPathElementName: string,
   }
   readonly config: {
-    readonly base_table_name?: string  // the name of the base table to use
+    readonly baseTableName?: string  // the name of the base table to use
   }
 }): RETURN_STRUCTURE[] {
 
-  let table_name = '';
-  let parent_table_name = '';
-  let parent_table_relationship_name = '';
-  let parent_path_element_name = '';
+  let tableName = '';
+  let parentTableName = '';
+  let parentTableRelationshipName = '';
+  let parentPathElementName = '';
 
-  if (typeof recursive_payload === 'undefined') {
-    if (typeof base_table_name === 'undefined')
+  if (typeof recursivePayload === 'undefined') {
+    if (typeof baseTableName === 'undefined')
       throw new Error(
         'Base table needs to be specified for a navigator to be able' +
         ' to loop though schema',
       );
-    table_name = base_table_name;
+    tableName = baseTableName;
   }
   else
     (
       {
-        table_name,
-        parent_table_name,
-        parent_table_relationship_name,
-        parent_path_element_name,
-      } = recursive_payload
+        tableName: tableName,
+        parentTableName: parentTableName,
+        parentTableRelationshipName: parentTableRelationshipName,
+        parentPathElementName: parentPathElementName,
+      } = recursivePayload
     );
 
-  // an object that is shared between navigator, navigator_instance and
+  // an object that is shared between navigator, navigatorInstance and
   // some callbacks
-  const callback_payload = {
-    table_name,
+  const callbackPayload = {
+    tableName: tableName,
   };
 
 
-  if (callbacks.iterate(callback_payload))
-    navigator_instance<RETURN_STRUCTURE>({
-      table_name,
-      parent_table_name,
-      parent_table_relationship_name,
-      parent_path_element_name,
+  if (callbacks.iterate(callbackPayload))
+    navigatorInstance<RETURN_STRUCTURE>({
+      tableName: tableName,
+      parentTableName: parentTableName,
+      parentTableRelationshipName: parentTableRelationshipName,
+      parentPathElementName: parentPathElementName,
       callbacks,
-      callback_payload,
+      callbackPayload: callbackPayload,
     });
 
 
-  const next_navigation_direction =
-    find_next_navigation_direction<RETURN_STRUCTURE>(
+  const nextNavigationDirection =
+    findNextNavigationDirection<RETURN_STRUCTURE>(
       callbacks,
-      callback_payload,
-      table_name,
-      parent_table_name,
+      callbackPayload,
+      tableName,
+      parentTableName,
     );
 
-  if (next_navigation_direction.finished)
-    return next_navigation_direction.final_data;
+  if (nextNavigationDirection.finished)
+    return nextNavigationDirection.finalData;
 
   const {
-    next_path_element_name,
-    next_table_name,
-    next_parent_table_name,
-    next_real_path_element_name,
-  } = next_navigation_direction.payload;
+    nextPathElementName,
+    nextTableName,
+    nextParentTableName,
+    nextRealPathElementName,
+  } = nextNavigationDirection.payload;
 
-  let schema_navigator_results: RETURN_STRUCTURE[] = [];
+  let schemaNavigatorResults: RETURN_STRUCTURE[] = [];
 
-  if (next_table_name !== '')
-    schema_navigator_results = navigator(
+  if (nextTableName !== '')
+    schemaNavigatorResults = navigator(
       {
         callbacks,
-        recursive_payload: {
-          table_name: next_table_name,
-          parent_table_name: next_parent_table_name,
-          parent_table_relationship_name: next_real_path_element_name,
-          parent_path_element_name: next_path_element_name,
+        recursivePayload: {
+          tableName: nextTableName,
+          parentTableName: nextParentTableName,
+          parentTableRelationshipName: nextRealPathElementName,
+          parentPathElementName: nextPathElementName,
         },
         config: {},
       },
     );
 
-  return schema_navigator_results.length === 0 ?
-    callbacks.get_final_data(callback_payload) :
-    schema_navigator_results;
+  return schemaNavigatorResults.length === 0 ?
+    callbacks.getFinalData(callbackPayload) :
+    schemaNavigatorResults;
 
 }
 
-function get_navigation_children_types(
-  parent_table_name: string,
-  parent_table_relationship_name: string,
-  parent_path_element_name: string,
-  table_name: string,
+function getNavigationChildrenTypes(
+  parentTableName: string,
+  parentTableRelationshipName: string,
+  parentPathElementName: string,
+  tableName: string,
 ) {
-  const parent_relationship_type: RelationshipType | undefined =
+  const parentRelationshipType: RelationshipType | undefined =
     (
-      data_model_storage.tables[
-        parent_table_name]?.fields[
-        parent_table_relationship_name] as DataModelRelationship
+      dataModelStorage.tables[
+        parentTableName]?.fields[
+        parentTableRelationshipName] as DataModelRelationship
     )?.type;
 
   return {
-    parent_relationship_type,
-    children_are_to_many_elements:
-      relationship_is_to_many(parent_relationship_type) &&
-      !value_is_reference_item(parent_path_element_name),
-    children_are_ranks:
-      table_is_tree(table_name) &&
-      !value_is_tree_rank(parent_path_element_name),
+    parentRelationshipType: parentRelationshipType,
+    childrenAreToManyElements:
+      relationshipIsToMany(parentRelationshipType) &&
+      !valueIsReferenceItem(parentPathElementName),
+    childrenAreRanks:
+      tableIsTree(tableName) &&
+      !valueIsTreeRank(parentPathElementName),
   };
 }
 
-function call_navigator_instance_callbacks<RETURN_STRUCTURE>(
-  children_are_to_many_elements: boolean,
-  children_are_ranks: boolean,
+function callNavigatorInstanceCallbacks<RETURN_STRUCTURE>(
+  childrenAreToManyElements: boolean,
+  childrenAreRanks: boolean,
   callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
-  callback_payload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
+  callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
 ) {
-  if (children_are_to_many_elements)
-    callbacks.handle_to_many_children(callback_payload);
-  else if (children_are_ranks)
-    callbacks.handle_tree_ranks(callback_payload);
+  if (childrenAreToManyElements)
+    callbacks.handleToManyChildren(callbackPayload);
+  else if (childrenAreRanks)
+    callbacks.handleTreeRanks(callbackPayload);
   else
-    callbacks.handle_simple_fields(callback_payload);
+    callbacks.handleSimpleFields(callbackPayload);
 }
 
 /* Called by navigator if callback.iterate returned true */
-function navigator_instance<RETURN_STRUCTURE>({
-  table_name,
-  parent_table_name = '',
-  parent_table_relationship_name = '',
-  parent_path_element_name = '',
+function navigatorInstance<RETURN_STRUCTURE>({
+  tableName,
+  parentTableName = '',
+  parentTableRelationshipName = '',
+  parentPathElementName = '',
   callbacks,
-  callback_payload,
+  callbackPayload,
 }: {
-  readonly table_name: string,  // the name of the current table
-  readonly parent_table_name?: string,  // parent table name
-  // next_real_path_element_name as returned by callbacks.get_next_path_element
-  readonly parent_table_relationship_name?: string,
-  // next_path_element_name as returned by callbacks.get_next_path_element
-  readonly parent_path_element_name?: string,
+  readonly tableName: string,  // the name of the current table
+  readonly parentTableName?: string,  // parent table name
+  // nextRealPathElementName as returned by callbacks.getNextPathElement
+  readonly parentTableRelationshipName?: string,
+  // nextPathElementName as returned by callbacks.getNextPathElement
+  readonly parentPathElementName?: string,
   // callbacks (described in the navigator)
   readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>
   // callbacks payload (described in the navigator)
-  readonly callback_payload: NavigationCallbackPayload<RETURN_STRUCTURE>
+  readonly callbackPayload: NavigationCallbackPayload<RETURN_STRUCTURE>
 }): RETURN_STRUCTURE {
 
 
   const {
-    parent_relationship_type,
-    children_are_to_many_elements,
-    children_are_ranks,
-  } = get_navigation_children_types(
-    parent_table_name,
-    parent_table_relationship_name,
-    parent_path_element_name,
-    table_name,
+    parentRelationshipType,
+    childrenAreToManyElements,
+    childrenAreRanks,
+  } = getNavigationChildrenTypes(
+    parentTableName,
+    parentTableRelationshipName,
+    parentPathElementName,
+    tableName,
   );
 
-  if (children_are_to_many_elements && children_are_ranks)
+  if (childrenAreToManyElements && childrenAreRanks)
     throw new Error('Unable to properly determine picklist type');
 
-  callbacks.navigator_instance_pre(callback_payload);
+  callbacks.navigatorInstancePre(callbackPayload);
 
-  callback_payload.parent_relationship_type = parent_relationship_type;
-  callback_payload.parent_table_name = parent_table_name;
+  callbackPayload.parentRelationshipType = parentRelationshipType;
+  callbackPayload.parentTableName = parentTableName;
 
-  call_navigator_instance_callbacks(
-    children_are_to_many_elements,
-    children_are_ranks,
+  callNavigatorInstanceCallbacks(
+    childrenAreToManyElements,
+    childrenAreRanks,
     callbacks,
-    callback_payload,
+    callbackPayload,
   );
 
 
-  const data = callbacks.get_instance_data(callback_payload);
-  callback_payload.data = data;
-  callbacks.commit_instance_data(callback_payload);
+  const data = callbacks.getInstanceData(callbackPayload);
+  callbackPayload.data = data;
+  callbacks.commitInstanceData(callbackPayload);
 
   return data;
 
@@ -373,39 +373,39 @@ function navigator_instance<RETURN_STRUCTURE>({
 * Get data required to build a mapping line from a source mapping path
 * and other options
 * */
-export function get_mapping_line_data({
-  base_table_name,
-  mapping_path = ['0'],
-  open_select_element,
+export function getMappingLineData({
+  baseTableName,
+  mappingPath = ['0'],
+  openSelectElement,
   iterate = true,
-  generate_last_relationship_data = true,
-  custom_select_type,
+  generateLastRelationshipData = true,
+  customSelectType,
   handleChange,
   handleOpen,
   handleClose,
   handleAutomapperSuggestionSelection,
-  get_mapped_fields,
-  automapper_suggestions,
-  show_hidden_fields = true,
-  mapping_options_menu_generator = undefined,
+  getMappedFields,
+  automapperSuggestions,
+  showHiddenFields = true,
+  mappingOptionsMenuGenerator = undefined,
 }: {
-  readonly base_table_name: string,
-  readonly mapping_path?: MappingPath,  // the mapping path
+  readonly baseTableName: string,
+  readonly mappingPath?: MappingPath,  // the mapping path
   // index of custom select element that should be open
-  readonly open_select_element?: SelectElementPosition
+  readonly openSelectElement?: SelectElementPosition
   // {bool} if False, returns data only for the last element of the mapping
   // path only
   // Else returns data for each mapping path part
   readonly iterate?: boolean,
   // {bool} whether to generate data for the last element of the mapping
   // path if the last element is a relationship
-  readonly generate_last_relationship_data?: boolean
-  readonly custom_select_type: CustomSelectType,
-  readonly show_hidden_fields?: boolean,
+  readonly generateLastRelationshipData?: boolean
+  readonly customSelectType: CustomSelectType,
+  readonly showHiddenFields?: boolean,
   readonly handleChange?: (
     index: number,
-    new_value: string,
-    is_relationship: boolean,
+    newValue: string,
+    isRelationship: boolean,
   ) => void,
   readonly handleOpen?: (
     index: number,
@@ -414,390 +414,394 @@ export function get_mapping_line_data({
     index: number,
   ) => void
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void,
-  readonly get_mapped_fields?: GetMappedFieldsBind,
-  readonly automapper_suggestions?: AutomapperSuggestion[],
-  readonly mapping_options_menu_generator?: ()=>
+  readonly getMappedFields?: GetMappedFieldsBind,
+  readonly automapperSuggestions?: AutomapperSuggestion[],
+  readonly mappingOptionsMenuGenerator?: ()=>
     Record<string,HtmlGeneratorFieldData>,
 }): MappingElementProps[] {
 
-  const internal_state: {
-    mapping_path_position: number,
-    mapping_line_data: MappingElementProps[],
-    custom_select_type: CustomSelectType,
-    custom_select_subtype?: CustomSelectSubtype
-    is_open?: boolean,
-    next_mapping_path_element?: string,
-    default_value?: string,
-    current_mapping_path_part?: string,
-    result_fields: Record<string,HtmlGeneratorFieldData>
-    mapped_fields: string[],
-    generate_mapping_options_menu: boolean,
+  const internalState: {
+    mappingPathPosition: number,
+    mappingLineData: MappingElementProps[],
+    customSelectType: CustomSelectType,
+    customSelectSubtype?: CustomSelectSubtype
+    isOpen?: boolean,
+    nextMappingPathElement?: string,
+    defaultValue?: string,
+    currentMappingPathPart?: string,
+    resultFields: Record<string,HtmlGeneratorFieldData>
+    mappedFields: string[],
+    generateMappingOptionsMenu: boolean,
   } = {
-    mapping_path_position: -1,
-    mapping_line_data: [],
-    custom_select_type,
-    mapped_fields: [],
-    result_fields: {},
-    is_open: false,
-    generate_mapping_options_menu: false,
+    mappingPathPosition: -1,
+    mappingLineData: [],
+    customSelectType,
+    mappedFields: [],
+    resultFields: {},
+    isOpen: false,
+    generateMappingOptionsMenu: false,
   };
 
-  const first_iteration_requirement = () =>
+  const firstIterationRequirement = () =>
     iterate ||
-    mapping_path.length === 0 ||
-    internal_state.mapping_path_position + 1 === mapping_path.length;
+    mappingPath.length === 0 ||
+    internalState.mappingPathPosition + 1 === mappingPath.length;
 
-  const second_iteration_requirement = () =>
-    generate_last_relationship_data ||
-    internal_state.mapping_path_position + 1 !== mapping_path.length;
+  const secondIterationRequirement = () =>
+    generateLastRelationshipData ||
+    internalState.mappingPathPosition + 1 !== mappingPath.length;
 
-  const is_field_visible = (
-    show_hidden_fields: boolean,
-    is_hidden: boolean,
-    field_name: string,
+  const isFieldVisible = (
+    showHiddenFields: boolean,
+    isHidden: boolean,
+    fieldName: string,
   ) =>
-    show_hidden_fields ||
-    !is_hidden ||
+    showHiddenFields ||
+    !isHidden ||
     // show a default field, even if it is hidden
-    field_name === internal_state.default_value;
+    fieldName === internalState.defaultValue;
 
-  function field_is_default(
-    field_name: string,
-    default_value: string | undefined,
-    is_relationship: boolean,
+  function fieldIsDefault(
+    fieldName: string,
+    defaultValue: string | undefined,
+    isRelationship: boolean,
   ) {
-    const is_default = field_name === default_value;
-    if(is_default)
-      internal_state.generate_mapping_options_menu =
-        !is_relationship &&
-        typeof mapping_options_menu_generator !== 'undefined';
-    return is_default;
+    const isDefault = fieldName === defaultValue;
+    if(isDefault)
+      internalState.generateMappingOptionsMenu =
+        !isRelationship &&
+        typeof mappingOptionsMenuGenerator !== 'undefined';
+    return isDefault;
   }
 
   const callbacks: NavigationCallbacks<MappingElementProps> = {
 
     iterate: () =>
-      first_iteration_requirement() && second_iteration_requirement(),
+      firstIterationRequirement() && secondIterationRequirement(),
 
-    get_next_path_element({table_name}) {
+    getNextPathElement({tableName}) {
 
-      if (internal_state.mapping_path_position === -2)
-        internal_state.mapping_path_position = mapping_path.length - 1;
+      if (internalState.mappingPathPosition === -2)
+        internalState.mappingPathPosition = mappingPath.length - 1;
 
-      internal_state.mapping_path_position++;
+      internalState.mappingPathPosition++;
 
-      let next_path_element_name =
-        mapping_path[internal_state.mapping_path_position];
+      let nextPathElementName =
+        mappingPath[internalState.mappingPathPosition];
 
-      if (typeof next_path_element_name == 'undefined')
+      if (typeof nextPathElementName == 'undefined')
         return undefined;
 
-      const formatted_tree_rank_name = format_tree_rank(next_path_element_name);
-      const tree_rank_name =
-        get_name_from_tree_rank_name(formatted_tree_rank_name);
+      const formattedTreeRankName = formatTreeRank(nextPathElementName);
+      const treeRankName =
+        getNameFromTreeRankName(formattedTreeRankName);
       if (
-        table_is_tree(table_name) &&
-        typeof data_model_storage.ranks[table_name][tree_rank_name
+        tableIsTree(tableName) &&
+        typeof dataModelStorage.ranks[tableName][treeRankName
           ] !== 'undefined'
       ) {
-        next_path_element_name = formatted_tree_rank_name;
-        mapping_path[internal_state.mapping_path_position] =
-          formatted_tree_rank_name;
+        nextPathElementName = formattedTreeRankName;
+        mappingPath[internalState.mappingPathPosition] =
+          formattedTreeRankName;
       }
 
-      let next_real_path_element_name;
+      let nextRealPathElementName;
       if (
-        value_is_tree_rank(next_path_element_name) ||
-        value_is_reference_item(next_path_element_name)
+        valueIsTreeRank(nextPathElementName) ||
+        valueIsReferenceItem(nextPathElementName)
       )
-        next_real_path_element_name =
-          mapping_path[internal_state.mapping_path_position - 1];
+        nextRealPathElementName =
+          mappingPath[internalState.mappingPathPosition - 1];
       else
-        next_real_path_element_name = next_path_element_name;
+        nextRealPathElementName = nextPathElementName;
 
       return {
-        next_path_element_name,
-        next_path_element:
-          data_model_storage.tables[table_name].fields[next_path_element_name],
-        next_real_path_element_name,
+        nextPathElementName: nextPathElementName,
+        nextPathElement:
+          dataModelStorage.tables[tableName].fields[nextPathElementName],
+        nextRealPathElementName: nextRealPathElementName,
       };
 
     },
 
-    navigator_instance_pre({table_name}) {
+    navigatorInstancePre({tableName}) {
 
-      internal_state.is_open =
+      internalState.isOpen =
         (
-          open_select_element?.index ===
-          internal_state.mapping_path_position + 1
+          openSelectElement?.index ===
+          internalState.mappingPathPosition + 1
         ) ||
-        ['opened_list'].indexOf(internal_state.custom_select_type) !== -1;
+        [
+          'OPENED_LIST',
+          'BASE_TABLE_SELECTION_LIST',
+          'MAPPING_OPTION_LINE_LIST',
+        ].indexOf(internalState.customSelectType) !== -1;
 
-      internal_state.custom_select_subtype = 'simple';
+      internalState.customSelectSubtype = 'simple';
 
-      const local_mapping_path = mapping_path.slice(
+      const localMappingPath = mappingPath.slice(
         0,
-        internal_state.mapping_path_position + 1,
+        internalState.mappingPathPosition + 1,
       );
 
-      internal_state.next_mapping_path_element =
-        mapping_path[internal_state.mapping_path_position + 1];
+      internalState.nextMappingPathElement =
+        mappingPath[internalState.mappingPathPosition + 1];
 
-      if (typeof internal_state.next_mapping_path_element === 'undefined')
-        internal_state.default_value = '0';
+      if (typeof internalState.nextMappingPathElement === 'undefined')
+        internalState.defaultValue = '0';
       else {
-        const formatted_tree_rank_name = format_tree_rank(
-          internal_state.next_mapping_path_element,
+        const formattedTreeRankName = formatTreeRank(
+          internalState.nextMappingPathElement,
         );
-        const tree_rank_name = get_name_from_tree_rank_name(
-          formatted_tree_rank_name,
+        const treeRankName = getNameFromTreeRankName(
+          formattedTreeRankName,
         );
         if (
-          table_is_tree(table_name) &&
-          typeof data_model_storage.ranks[table_name][tree_rank_name
+          tableIsTree(tableName) &&
+          typeof dataModelStorage.ranks[tableName][treeRankName
             ] !== 'undefined'
         ) {
-          internal_state.next_mapping_path_element = formatted_tree_rank_name;
-          mapping_path[internal_state.mapping_path_position] =
-            formatted_tree_rank_name;
+          internalState.nextMappingPathElement = formattedTreeRankName;
+          mappingPath[internalState.mappingPathPosition] =
+            formattedTreeRankName;
         }
 
-        internal_state.default_value = internal_state.next_mapping_path_element;
+        internalState.defaultValue = internalState.nextMappingPathElement;
 
       }
 
-      internal_state.current_mapping_path_part =
-        mapping_path[internal_state.mapping_path_position];
-      internal_state.result_fields = {};
-      internal_state.mapped_fields = typeof get_mapped_fields === 'function' ?
-        Object.keys(get_mapped_fields(local_mapping_path)) :
+      internalState.currentMappingPathPart =
+        mappingPath[internalState.mappingPathPosition];
+      internalState.resultFields = {};
+      internalState.mappedFields = typeof getMappedFields === 'function' ?
+        Object.keys(getMappedFields(localMappingPath)) :
         [];
 
-      internal_state.generate_mapping_options_menu = false;
+      internalState.generateMappingOptionsMenu = false;
     },
 
-    handle_to_many_children({table_name}) {
+    handleToManyChildren({tableName}) {
 
-      internal_state.custom_select_subtype = 'to_many';
+      internalState.customSelectSubtype = 'toMany';
 
-      if (typeof internal_state.next_mapping_path_element !== 'undefined')
-        internal_state.mapped_fields.push(
-          internal_state.next_mapping_path_element,
+      if (typeof internalState.nextMappingPathElement !== 'undefined')
+        internalState.mappedFields.push(
+          internalState.nextMappingPathElement,
         );
 
-      const max_mapped_element_number =
-        get_max_to_many_value(internal_state.mapped_fields);
+      const maxMappedElementNumber =
+        getMaxToManyValue(internalState.mappedFields);
 
-      for (let i = 1; i <= max_mapped_element_number; i++) {
-        const mapped_object_name = format_reference_item(i);
+      for (let i = 1; i <= maxMappedElementNumber; i++) {
+        const mappedObjectName = formatReferenceItem(i);
 
-        internal_state.result_fields[mapped_object_name] = {
-          field_friendly_name: mapped_object_name,
-          is_enabled: true,
-          is_required: false,
-          is_hidden: false,
-          is_relationship: true,
-          is_default: mapped_object_name === internal_state.default_value,
-          table_name,
+        internalState.resultFields[mappedObjectName] = {
+          fieldFriendlyName: mappedObjectName,
+          isEnabled: true,
+          isRequired: false,
+          isHidden: false,
+          isRelationship: true,
+          isDefault: mappedObjectName === internalState.defaultValue,
+          tableName: tableName,
         };
       }
-      internal_state.result_fields.add = {
-        field_friendly_name: 'Add',
-        is_enabled: true,
-        is_required: false,
-        is_hidden: false,
-        is_relationship: true,
-        is_default: false,
-        table_name,
+      internalState.resultFields.add = {
+        fieldFriendlyName: 'Add',
+        isEnabled: true,
+        isRequired: false,
+        isHidden: false,
+        isRelationship: true,
+        isDefault: false,
+        tableName: tableName,
       };
 
     },
 
-    handle_tree_ranks({table_name}) {
+    handleTreeRanks({tableName}) {
 
-      internal_state.custom_select_subtype = 'tree';
-      const table_ranks = data_model_storage.ranks[table_name];
+      internalState.customSelectSubtype = 'tree';
+      const tableRanks = dataModelStorage.ranks[tableName];
 
-      internal_state.result_fields = Object.fromEntries(
-        Object.entries(table_ranks).map(([rank_name, is_required]) => [
-          format_tree_rank(rank_name),
+      internalState.resultFields = Object.fromEntries(
+        Object.entries(tableRanks).map(([rankName, isRequired]) => [
+          formatTreeRank(rankName),
           {
-            field_friendly_name: rank_name,
-            is_enabled: true,
-            is_required,
-            is_hidden: false,
-            is_relationship: true,
-            is_default:
-              format_tree_rank(rank_name) === internal_state.default_value,
-            table_name,
+            fieldFriendlyName: rankName,
+            isEnabled: true,
+            isRequired,
+            isHidden: false,
+            isRelationship: true,
+            isDefault:
+              formatTreeRank(rankName) === internalState.defaultValue,
+            tableName: tableName,
           },
         ]),
       );
 
     },
 
-    handle_simple_fields: ({
-      table_name,
-      parent_table_name,
-      parent_relationship_type,
+    handleSimpleFields: ({
+      tableName,
+      parentTableName,
+      parentRelationshipType,
     }) => (
-      internal_state.result_fields = Object.fromEntries(
-        Object.entries(data_model_storage.tables[table_name].fields).filter((
+      internalState.resultFields = Object.fromEntries(
+        Object.entries(dataModelStorage.tables[tableName].fields).filter((
           [
-            field_name,
+            fieldName,
             {
-              is_relationship,
-              type: relationship_type,
-              is_hidden,
-              foreign_name,
-              table_name: field_table_name,
+              isRelationship,
+              type: relationshipType,
+              isHidden,
+              foreignName,
+              tableName: fieldTableName,
             },
           ],
           ) =>
           (
-            !is_relationship ||
-            !is_circular_relationship({  // skip circular relationships
-              target_table_name: field_table_name,
-              parent_table_name,
-              foreign_name,
-              relationship_key: field_name,
-              current_mapping_path_part:
-              internal_state.current_mapping_path_part,
-              table_name: parent_table_name,
+            !isRelationship ||
+            !isCircularRelationship({  // skip circular relationships
+              targetTableName: fieldTableName,
+              parentTableName: parentTableName,
+              foreignName: foreignName,
+              relationshipKey: fieldName,
+              currentMappingPathPart:
+              internalState.currentMappingPathPart,
+              tableName: parentTableName,
             })
           ) &&
           // skip -to-many inside -to-many
           // TODO: remove this once upload plan is ready
-          !is_too_many_inside_of_too_many(
-            relationship_type,
-            parent_relationship_type,
+          !isTooManyInsideOfTooMany(
+            relationshipType,
+            parentRelationshipType,
           ) &&
           // skip hidden fields when user decided to hide them
-          is_field_visible(show_hidden_fields, is_hidden, field_name),
+          isFieldVisible(showHiddenFields, isHidden, fieldName),
         ).map((
           [
-            field_name,
+            fieldName,
             {
-              is_relationship,
-              is_hidden,
-              is_required,
-              friendly_name,
-              table_name: field_table_name,
+              isRelationship,
+              isHidden,
+              isRequired,
+              friendlyName,
+              tableName: fieldTableName,
             },
           ],
         ) => [
-          field_name,
+          fieldName,
           {
-            field_friendly_name: friendly_name,
-            is_enabled:  // enable field
+            fieldFriendlyName: friendlyName,
+            isEnabled:  // enable field
             // if it is not mapped
-              internal_state.mapped_fields.indexOf(field_name) === -1 ||
-              is_relationship,  // or is a relationship,
-            is_required,
-            is_hidden,
-            is_default: field_is_default(
-              field_name,
-              internal_state.default_value,
-              is_relationship,
+              internalState.mappedFields.indexOf(fieldName) === -1 ||
+              isRelationship,  // or is a relationship,
+            isRequired,
+            isHidden,
+            isDefault: fieldIsDefault(
+              fieldName,
+              internalState.defaultValue,
+              isRelationship,
             ),
-            is_relationship,
-            table_name: field_table_name,
+            isRelationship: isRelationship,
+            tableName: fieldTableName,
           },
         ]),
       )
     ),
 
-    get_instance_data: ({table_name}) => (
+    getInstanceData: ({tableName}) => (
       {
-        custom_select_type: internal_state.custom_select_type,
-        custom_select_subtype: internal_state.custom_select_subtype,
-        select_label: data_model_storage.tables[table_name].table_friendly_name,
-        fields_data: internal_state.result_fields,
-        table_name,
+        customSelectType: internalState.customSelectType,
+        customSelectSubtype: internalState.customSelectSubtype,
+        selectLabel: dataModelStorage.tables[tableName].tableFriendlyName,
+        fieldsData: internalState.resultFields,
+        tableName: tableName,
         ...(
-          internal_state.is_open ?
+          internalState.isOpen ?
             {
-              is_open: true,
+              isOpen: true,
               handleChange:
                 handleChange &&
                 handleChange.bind(
                   null,
-                  internal_state.mapping_path_position + 1,
+                  internalState.mappingPathPosition + 1,
                 ),
               handleClose:
                 handleClose &&
                 handleClose.bind(
                   null,
-                  internal_state.mapping_path_position + 1,
+                  internalState.mappingPathPosition + 1,
                 ),
-              automapper_suggestions,
+              automapperSuggestions: automapperSuggestions,
               handleAutomapperSuggestionSelection,
             } :
             {
-              is_open: false,
+              isOpen: false,
               handleOpen:
                 handleOpen &&
-                handleOpen.bind(null, internal_state.mapping_path_position + 1),
+                handleOpen.bind(null, internalState.mappingPathPosition + 1),
             }
         ),
       }
     ),
 
-    commit_instance_data({data}) {
+    commitInstanceData({data}) {
       if (typeof data === 'undefined')
         throw new Error('No data to commit to navigator\'s state');
-      internal_state.mapping_line_data.push(data);
+      internalState.mappingLineData.push(data);
       return data;
     },
 
-    get_final_data: () =>
-      internal_state.generate_mapping_options_menu ?
+    getFinalData: () =>
+      internalState.generateMappingOptionsMenu ?
         [
-          ...internal_state.mapping_line_data,
+          ...internalState.mappingLineData,
           {
-            custom_select_type: 'mapping_options_list',
-            custom_select_subtype: 'simple',
-            fields_data: mapping_options_menu_generator!(),
-            default_option: {
-              option_name: 'mapping_options',
-              option_label: '⚙',
-              table_name: '',
-              is_relationship: false,
+            customSelectType: 'MAPPING_OPTIONS_LIST',
+            customSelectSubtype: 'simple',
+            fieldsData: mappingOptionsMenuGenerator!(),
+            defaultOption: {
+              optionName: 'mappingOptions',
+              optionLabel: '⚙',
+              tableName: '',
+              isRelationship: false,
             },
             ...(
-              open_select_element?.index ===
-              internal_state.mapping_line_data.length ?
+              openSelectElement?.index ===
+              internalState.mappingLineData.length ?
                 {
-                  is_open: true,
+                  isOpen: true,
                   handleChange: undefined,
                   handleClose:
                     handleClose &&
                     handleClose.bind(
                       null,
-                      internal_state.mapping_line_data.length,
+                      internalState.mappingLineData.length,
                     ),
-                  automapper_suggestions,
+                  automapperSuggestions: automapperSuggestions,
                   handleAutomapperSuggestionSelection,
                 } :
                 {
-                  is_open: false,
+                  isOpen: false,
                   handleOpen:
                     handleOpen &&
                     handleOpen.bind(
                       null,
-                      internal_state.mapping_line_data.length,
+                      internalState.mappingLineData.length,
                     ),
                 }
             ),
           },
         ] :
-        internal_state.mapping_line_data,
+        internalState.mappingLineData,
   };
 
   return navigator<MappingElementProps>({
     callbacks,
     config: {
-      base_table_name,
+      baseTableName: baseTableName,
     },
   });
 

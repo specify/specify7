@@ -8,50 +8,50 @@
 
 'use strict';
 
-export interface Action<action_name extends string> {
-  type: action_name
+export interface Action<ACTION_NAME extends string> {
+  type: ACTION_NAME
 }
 
-export interface State<state_name extends string> {
-  type: state_name
+export interface State<STATE_NAME extends string> {
+  type: STATE_NAME
 }
 
 
 type GenerateReducerDictionary<STATE,
   ACTION extends Action<string>> = {
-  [action_type in ACTION['type']]:
+  [ACTION_TYPE in ACTION['type']]:
   (props: {
     state: STATE,
-    action: Extract<ACTION, Action<action_type>>
+    action: Extract<ACTION, Action<ACTION_TYPE>>
   }) => STATE
 }
 
 type GenerateDispatchDictionary<ACTION extends Action<string>> = {
-  [action_type in ACTION['type']]: (
-    action: Extract<ACTION, Action<action_type>>,
+  [ACTION_TYPE in ACTION['type']]: (
+    action: Extract<ACTION, Action<ACTION_TYPE>>,
   ) => void
 }
 
 function assertExhaustive(
-  case_type: never,
+  caseType: never,
 ): never {
   throw new Error(
-    `Non-exhaustive switch. Unhandled case:${case_type as string}`,
+    `Non-exhaustive switch. Unhandled case:${caseType as string}`,
   );
 }
 
 // assignees names to components so that they easier to identify in the
 // inspector and profiler
-export function named_component<T>(
-  component_name: string,
-  component_function: T,
+export function namedComponent<T>(
+  componentName: string,
+  componentFunction: T,
 ): T {
   // @ts-ignore
-  component_function.displayName = component_name;
-  return component_function;
+  componentFunction.displayName = componentName;
+  return componentFunction;
 }
 
-export const generate_reducer = <STATE,
+export const generateReducer = <STATE,
   ACTION extends Action<string>>(
   obj: GenerateReducerDictionary<STATE, ACTION>,
 ): (state: STATE, key: ACTION) => STATE =>
@@ -65,7 +65,7 @@ export const generate_reducer = <STATE,
       obj[action['type']]({state, action: action as any}) :
       assertExhaustive(action['type'] as never);
 
-export const generate_dispatch = <ACTION extends Action<string>>(
+export const generateDispatch = <ACTION extends Action<string>>(
   obj: GenerateDispatchDictionary<ACTION>,
 ): (key: ACTION) => void =>
   <Key2 extends keyof typeof obj>(

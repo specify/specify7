@@ -19,41 +19,41 @@ type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
 } & BACKBONE_PROPS
 
 export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
-  module_name,
+  moduleName,
   title,
-  class_name,
+  className,
   initialize,
-  render_pre,
-  render_post,
+  renderPre,
+  renderPost,
   remove,
   Component,
-  get_component_props,
+  getComponentProps,
 }: {
-  module_name: string,
+  moduleName: string,
   title: string | (
     (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => string
     ),
-  class_name: string,
+  className: string,
   initialize: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
-    view_props: CONSTRUCTOR_PROPS,
+    viewProps: CONSTRUCTOR_PROPS,
   ) => void,
-  render_pre?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
-  render_post?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
+  renderPre?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
+  renderPost?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   Component: (props: COMPONENT_PROPS) => (JSX.Element | null),
-  get_component_props: (
+  getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
   ) => COMPONENT_PROPS
 }): Record<string, unknown> =>
   Backbone.View.extend({
-    __name__: module_name,
-    className: class_name,
+    __name__: moduleName,
+    className: className,
     initialize(props: CONSTRUCTOR_PROPS) {
       initialize(this, props);
     },
     render() {
-      render_pre && render_pre(this);
+      renderPre && renderPre(this);
 
       if (typeof title === 'string')
         app.setTitle(title);
@@ -63,11 +63,11 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
       ReactDOM.render(<React.StrictMode>
         <ErrorBoundary>
           <Component
-            {...get_component_props(this)}
+            {...getComponentProps(this)}
           />
         </ErrorBoundary>
       </React.StrictMode>, this.el);
-      render_post && render_post(this);
+      renderPost && renderPost(this);
       return this;
     },
     remove() {

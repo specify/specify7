@@ -7,19 +7,19 @@
 
 'use strict';
 
-import data_model_storage                 from './wbplanviewmodel';
+import dataModelStorage from './wbplanviewmodel';
 import {
-  format_reference_item,
-  format_tree_rank,
-  get_name_from_tree_rank_name,
-  table_is_tree,
-  value_is_reference_item,
-  value_is_tree_rank,
-}                                         from './wbplanviewmodelhelper';
+  formatReferenceItem,
+  formatTreeRank,
+  getNameFromTreeRankName,
+  tableIsTree,
+  valueIsReferenceItem,
+  valueIsTreeRank,
+}                       from './wbplanviewmodelhelper';
 import { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 import { DataModelFieldWritable }          from './wbplanviewmodelfetcher';
 import { defaultLineOptions } from './components/wbplanviewmapper';
-import { get_mapping_line_data }           from './wbplanviewnavigator';
+import { getMappingLineData } from './wbplanviewnavigator';
 
 export type MatchBehaviors = 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever';
 
@@ -71,19 +71,24 @@ export interface UploadPlan {
   uploadable: Uploadable
 }
 
+const excludeUnknownMatchingOptions = (
+  matchingOptions: ColumnOptions,
+)=>Object.fromEntries(
+  Object.entries(defaultLineOptions).map(([optionName, defaultValue])=>
+    [
+      optionName,
+      optionName in matchingOptions ?
+        //@ts-ignore
+        matchingOptions[optionName] :
+        defaultValue
+    ]
+  )
+) as ColumnOptions;
 
-function excludeUnknownMatchingOptions(matching_options: R<any>): ColumnOptions {
-    return {
-        matchBehavior: 'matchBehavior' in matching_options ? matching_options['matchBehavior'] : defaultLineOptions['matchBehavior'],
-        nullAllowed: 'nullAllowed' in matching_options ? matching_options['nullAllowed'] : defaultLineOptions['nullAllowed'],
-        default: 'default' in matching_options ? matching_options['default'] : defaultLineOptions['default'],
-    }
-}
-
-const upload_plan_processing_functions = (
+const uploadPlanProcessingFunctions = (
   headers: string[],
-  must_match_preferences: R<boolean>,
-  mapping_path: string[],
+  mustMatchPreferences: R<boolean>,
+  mappingPath: string[],
 ): Readonly<R<(
   [key, value]: [string, any],
 ) => [key: string, value: unknown]>> => (
@@ -99,8 +104,8 @@ const upload_plan_processing_functions = (
               value :
               value.column
           ) === -1 ?
-            'new_column' :
-            'existing_header'
+            'newColumn' :
+            'existingHeader'
           ]: typeof value === 'string' ?
             {
               [value]: defaultLineOptions,
@@ -112,17 +117,17 @@ const upload_plan_processing_functions = (
     ],
     static: ([key, value]: [string, string]): [key: string, value: object] => [
       key,
-      {new_static_column: value},
+      {newStaticColumn: value},
     ],
     toOne: (
       [tableName, value]: [string, Uploadable],
     ): [key: string, value: object] => [
       tableName,
-      handle_uploadable(
+      handleUploadable(
         value,
         headers,
-        must_match_preferences,
-        [...mapping_path, tableName],
+        mustMatchPreferences,
+        [...mappingPath, tableName],
       ),
     ],
     toMany: (
@@ -134,12 +139,12 @@ const upload_plan_processing_functions = (
           mappings,
         ).map((mapping, index) =>
           [
-            format_reference_item(index + 1),
-            handle_upload_table_table(
+            formatReferenceItem(index + 1),
+            handleUploadTableTable(
               mapping,
               headers,
-              must_match_preferences,
-              [...mapping_path, tableName],
+              mustMatchPreferences,
+              [...mappingPath, tableName],
             ),
           ],
         ),
@@ -148,96 +153,83 @@ const upload_plan_processing_functions = (
   }
 ) as const;
 
-const handle_tree_rank_fields = (
-  tree_rank_fields: R<ColumnDef>,
+const handleTreeRankFields = (
+  treeRankFields: R<ColumnDef>,
   headers: string[],
 ) => Object.fromEntries(
-  Object.entries(tree_rank_fields).map(
-    ([field_name, header_name]) =>
-      upload_plan_processing_functions(
-        headers,
-        {},
-        [],
-      ).wbcols(
-        [
-          field_name,
-          typeof header_name === 'string' ?
-            {
-              [header_name]: defaultLineOptions,
-            } :
-            {
-              [header_name.column]: excludeUnknownMatchingOptions(header_name)
-            },
-        ],
-      ),
+  Object.entries(treeRankFields).map(
+    ([fieldName, headerName]) =>
+      uploadPlanProcessingFunctions(
+        headers, {}, [],
+      ).wbcols([fieldName, headerName]),
   ),
 );
 
-const handle_tree_record = (
-  upload_plan: TreeRecord,
+const handleTreeRecord = (
+  uploadPlan: TreeRecord,
   headers: string[],
 ) =>
   Object.fromEntries(
     Object.entries((
       (
-        upload_plan
+        uploadPlan
       ).ranks
     )).map(([
-        rank_name,
-        rank_data,
+        rankName,
+        rankData,
       ]) =>
         [
-          format_tree_rank(rank_name),
-          handle_tree_rank_fields(
-            typeof rank_data === 'string' ?
+          formatTreeRank(rankName),
+          handleTreeRankFields(
+            typeof rankData === 'string' ?
               {
-                name: rank_data,
+                name: rankData,
               } :
-              rank_data.treeNodeCols,
+              rankData.treeNodeCols,
             headers,
           ),
         ],
     ),
   );
 
-function handle_tree_record_types(
-  upload_plan: TreeRecordVariety,
+function handleTreeRecordTypes(
+  uploadPlan: TreeRecordVariety,
   headers: string[],
-  must_match_preferences: R<boolean>,
-  mapping_path: string[],
+  mustMatchPreferences: R<boolean>,
+  mappingPath: string[],
 ) {
 
-  if ('mustMatchTreeRecord' in upload_plan) {
-    const table_name = get_mapping_line_data({
-      base_table_name: mapping_path[0],
-      mapping_path: mapping_path.slice(1),
+  if ('mustMatchTreeRecord' in uploadPlan) {
+    const tableName = getMappingLineData({
+      baseTableName: mappingPath[0],
+      mappingPath: mappingPath.slice(1),
       iterate: false,
-      custom_select_type: 'opened_list',
-    })[0].table_name;
-    must_match_preferences[table_name || mapping_path.slice(-1)[0]] = true;
+      customSelectType: 'OPENED_LIST',
+    })[0].tableName;
+    mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
 
-  return handle_tree_record(
-    Object.values(upload_plan)[0],
+  return handleTreeRecord(
+    Object.values(uploadPlan)[0],
     headers,
   );
 
 }
 
 
-const handle_upload_table_table = (
-  upload_plan: UploadTable,
+const handleUploadTableTable = (
+  uploadPlan: UploadTable,
   headers: string[],
-  must_match_preferences: R<boolean>,
-  mapping_path: string[],
+  mustMatchPreferences: R<boolean>,
+  mappingPath: string[],
 ) =>
-  Object.fromEntries(Object.entries(upload_plan).reduce(
+  Object.fromEntries(Object.entries(uploadPlan).reduce(
     // @ts-ignore
     (
       results,
       [
-        plan_node_name,
-        plan_node_data,
+        planNodeName,
+        planNodeData,
       ]: [
         FieldGroupType,
         FieldGroup<FieldGroupType>
@@ -245,101 +237,101 @@ const handle_upload_table_table = (
     ) =>
       [
         ...results,
-        ...Object.entries(plan_node_data).map(
-          upload_plan_processing_functions(
+        ...Object.entries(planNodeData).map(
+          uploadPlanProcessingFunctions(
             headers,
-            must_match_preferences,
-            mapping_path,
-          )[plan_node_name],
+            mustMatchPreferences,
+            mappingPath,
+          )[planNodeName],
         ),
       ],
     [],
   ));
 
-function handle_uploadable_types(
-  upload_plan: UploadTableVariety,
+function handleUploadableTypes(
+  uploadPlan: UploadTableVariety,
   headers: string[],
-  must_match_preferences: R<boolean>,
-  mapping_path: string[],
+  mustMatchPreferences: R<boolean>,
+  mappingPath: string[],
 ) {
 
-  if ('mustMatchTable' in upload_plan) {
-    const table_name = get_mapping_line_data({
-      base_table_name: mapping_path[0],
-      mapping_path: mapping_path.slice(1),
+  if ('mustMatchTable' in uploadPlan) {
+    const tableName = getMappingLineData({
+      baseTableName: mappingPath[0],
+      mappingPath: mappingPath.slice(1),
       iterate: false,
-      custom_select_type: 'opened_list',
-    })[0].table_name;
-    must_match_preferences[table_name || mapping_path.slice(-1)[0]] = true;
+      customSelectType: 'OPENED_LIST',
+    })[0].tableName;
+    mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
 
-  return handle_upload_table_table(
-    Object.values(upload_plan)[0],
+  return handleUploadTableTable(
+    Object.values(uploadPlan)[0],
     headers,
-    must_match_preferences,
-    mapping_path,
+    mustMatchPreferences,
+    mappingPath,
   );
 
 }
 
-const handle_uploadable = (
-  upload_plan: Uploadable,
+const handleUploadable = (
+  uploadPlan: Uploadable,
   headers: string[],
-  must_match_preferences: R<boolean>,
-  mapping_path: string[],
+  mustMatchPreferences: R<boolean>,
+  mappingPath: string[],
 ): MappingsTree =>
-  'treeRecord' in upload_plan || 'mustMatchTreeRecord' in upload_plan ?
-    handle_tree_record_types(
-      upload_plan,
+  'treeRecord' in uploadPlan || 'mustMatchTreeRecord' in uploadPlan ?
+    handleTreeRecordTypes(
+      uploadPlan,
       headers,
-      must_match_preferences,
-      mapping_path,
+      mustMatchPreferences,
+      mappingPath,
     ) :
-    handle_uploadable_types(
-      upload_plan,
+    handleUploadableTypes(
+      uploadPlan,
       headers,
-      must_match_preferences,
-      mapping_path,
+      mustMatchPreferences,
+      mappingPath,
     );
 
 /*
 * Converts upload plan to mappings tree
-* Inverse of mappings_tree_to_upload_plan
+* Inverse of mappingsTreeToUploadPlan
 * */
-export function upload_plan_to_mappings_tree(
+export function uploadPlanToMappingsTree(
   headers: string[],
-  upload_plan: UploadPlan,
+  uploadPlan: UploadPlan,
 ): {
-  base_table_name: string,
-  mappings_tree: MappingsTree,
-  must_match_preferences: R<boolean>
+  baseTableName: string,
+  mappingsTree: MappingsTree,
+  mustMatchPreferences: R<boolean>
 } {
 
-  if (typeof upload_plan.baseTableName === 'undefined')
+  if (typeof uploadPlan.baseTableName === 'undefined')
     throw new Error('Upload plan should contain `baseTableName`'
       + ' as a root node');
 
-  const must_match_preferences: R<boolean> = {};
+  const mustMatchPreferences: R<boolean> = {};
 
   return {
-    base_table_name: upload_plan.baseTableName,
-    mappings_tree: handle_uploadable(
-      upload_plan.uploadable,
+    baseTableName: uploadPlan.baseTableName,
+    mappingsTree: handleUploadable(
+      uploadPlan.uploadable,
       headers,
-      must_match_preferences,
-      [upload_plan.baseTableName],
+      mustMatchPreferences,
+      [uploadPlan.baseTableName],
     ),
-    must_match_preferences,
+    mustMatchPreferences: mustMatchPreferences,
   };
 }
 
-export function upload_plan_string_to_object(
-  upload_plan_string: string,
+export function uploadPlanStringToObject(
+  uploadPlanString: string,
 ): UploadPlan | null {
-  let upload_plan;
+  let uploadPlan: UploadPlan | null;
 
   try {
-    upload_plan = JSON.parse(upload_plan_string) as UploadPlan;
+    uploadPlan = JSON.parse(uploadPlanString) as UploadPlan;
   }
   catch (exception) {
 
@@ -353,13 +345,13 @@ export function upload_plan_string_to_object(
   }
 
   if (
-    typeof upload_plan !== 'object' ||
-    upload_plan === null ||
-    typeof upload_plan['baseTableName'] === 'undefined'
+    typeof uploadPlan !== 'object' ||
+    uploadPlan === null ||
+    typeof uploadPlan['baseTableName'] === 'undefined'
   )
     return null;
   else
-    return upload_plan;
+    return uploadPlan;
 }
 
 
@@ -369,22 +361,22 @@ interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode> {
 }
 
-function mappings_tree_to_upload_plan_table(
-  table_data: object,
-  table_name: string | undefined,
-  must_match_preferences: R<boolean>,
-  wrap_it = true,
-  is_root = false,
+function mappingsTreeToUploadPlanTable(
+  tableData: object,
+  tableName: string | undefined,
+  mustMatchPreferences: R<boolean>,
+  wrapIt = true,
+  isRoot = false,
 ) {
 
-  if (typeof table_name !== 'undefined' && table_is_tree(table_name))
-    return mappings_tree_to_upload_table(
-      table_data as MappingsTree,
-      table_name,
-      must_match_preferences,
+  if (typeof tableName !== 'undefined' && tableIsTree(tableName))
+    return mappingsTreeToUploadTable(
+      tableData as MappingsTree,
+      tableName,
+      mustMatchPreferences,
     );
 
-  let table_plan: {
+  let tablePlan: {
     wbcols: UploadPlanNode,
     static: UploadPlanNode,
     toOne: UploadPlanNode,
@@ -395,242 +387,242 @@ function mappings_tree_to_upload_plan_table(
     toOne: {},
   };
 
-  if (wrap_it)
-    table_plan.toMany = {};
+  if (wrapIt)
+    tablePlan.toMany = {};
 
-  let is_to_many = false;
+  let isToMany = false;
 
-  table_plan = Object.entries(
-    table_data,
+  tablePlan = Object.entries(
+    tableData,
   ).reduce((
-    original_table_plan,
+    originalTablePlan,
     [
-      field_name,
-      field_data,
+      fieldName,
+      fieldData,
     ],
   ) => {
 
-    let table_plan = original_table_plan;
+    let tablePlan = originalTablePlan;
 
-    if (value_is_reference_item(field_name)) {
-      if (!is_to_many) {
-        is_to_many = true;
+    if (valueIsReferenceItem(fieldName)) {
+      if (!isToMany) {
+        isToMany = true;
         //@ts-ignore
-        table_plan = [];
+        tablePlan = [];
       }
 
       //@ts-ignore
-      table_plan.push(
-        mappings_tree_to_upload_plan_table(
-          field_data,
-          table_name,
-          must_match_preferences,
+      tablePlan.push(
+        mappingsTreeToUploadPlanTable(
+          fieldData,
+          tableName,
+          mustMatchPreferences,
           false,
         ),
       );
 
     }
-    else if (value_is_tree_rank(field_name))
+    else if (valueIsTreeRank(fieldName))
       //@ts-ignore
-      table_plan = mappings_tree_to_upload_plan_table(
-        table_data,
-        table_name,
-        must_match_preferences,
+      tablePlan = mappingsTreeToUploadPlanTable(
+        tableData,
+        tableName,
+        mustMatchPreferences,
         false,
       );
 
     else if (
-      typeof data_model_storage.tables[
-      table_name || ''
-        ]?.fields[field_name] !== 'undefined' &&
-      typeof table_plan !== 'undefined'
+      typeof dataModelStorage.tables[
+      tableName || ''
+        ]?.fields[fieldName] !== 'undefined' &&
+      typeof tablePlan !== 'undefined'
     ) {
 
-      const field = data_model_storage.tables[
-      table_name || ''
-        ]?.fields[field_name];
+      const field = dataModelStorage.tables[
+      tableName || ''
+        ]?.fields[fieldName];
 
-      if (field.is_relationship)
-        handle_relationship_field(
-          field_data,
+      if (field.isRelationship)
+        handleRelationshipField(
+          fieldData,
           field,
-          field_name,
-          table_plan,
-          must_match_preferences,
+          fieldName,
+          tablePlan,
+          mustMatchPreferences,
         );
       else
         //@ts-ignore
-        table_plan[
+        tablePlan[
           Object.entries(
-            field_data,
-          )[0][0] === 'new_static_column' ?
+            fieldData,
+          )[0][0] === 'newStaticColumn' ?
             'static' :
             'wbcols'
-          ][field_name] = extract_header_name_from_header_structure(
-          field_data,
+          ][fieldName] = extractHeaderNameFromHeaderStructure(
+          fieldData,
         );
     }
 
 
-    return table_plan;
+    return tablePlan;
 
-  }, table_plan);
+  }, tablePlan);
 
 
-  if (Array.isArray(table_plan) || !wrap_it)
-    return table_plan;
+  if (Array.isArray(tablePlan) || !wrapIt)
+    return tablePlan;
 
-  if (value_is_reference_item(Object.keys(table_data)[0]))
-    return table_plan;
+  if (valueIsReferenceItem(Object.keys(tableData)[0]))
+    return tablePlan;
 
   return {
     [
-      !is_root && must_match_preferences[table_name || ''] ?
+      !isRoot && mustMatchPreferences[tableName || ''] ?
         'mustMatchTable' :
         'uploadTable'
-      ]: table_plan,
+      ]: tablePlan,
   };
 
 }
 
-function handle_relationship_field(
-  field_data: object,
+function handleRelationshipField(
+  fieldData: object,
   field: DataModelFieldWritable,
-  field_name: string,
-  table_plan: {
+  fieldName: string,
+  tablePlan: {
     wbcols: UploadPlanNode,
     static: UploadPlanNode,
     toOne: UploadPlanNode,
     toMany?: UploadPlanNode | undefined
   },
-  must_match_preferences: R<boolean>,
+  mustMatchPreferences: R<boolean>,
 ) {
-  const mapping_table = field.table_name;
-  if (typeof mapping_table === 'undefined')
+  const mappingTable = field.tableName;
+  if (typeof mappingTable === 'undefined')
     throw new Error('Mapping Table is not defined');
 
-  const is_to_one =
+  const isToOne =
     field.type === 'one-to-one' ||
     field.type === 'many-to-one';
 
   if (
-    is_to_one &&
-    typeof table_plan.toOne[field_name] === 'undefined'
+    isToOne &&
+    typeof tablePlan.toOne[fieldName] === 'undefined'
   )
-    table_plan.toOne[field_name] =
-      mappings_tree_to_upload_plan_table(
-        field_data,
-        mapping_table,
-        must_match_preferences,
+    tablePlan.toOne[fieldName] =
+      mappingsTreeToUploadPlanTable(
+        fieldData,
+        mappingTable,
+        mustMatchPreferences,
       ) as UploadPlanNode;
 
   else {
-    table_plan.toMany ??= {};
-    table_plan.toMany[field_name] ??=
-      mappings_tree_to_upload_plan_table(
-        field_data,
-        mapping_table,
-        must_match_preferences,
+    tablePlan.toMany ??= {};
+    tablePlan.toMany[fieldName] ??=
+      mappingsTreeToUploadPlanTable(
+        fieldData,
+        mappingTable,
+        mustMatchPreferences,
         false,
       ) as UploadPlanNode;
   }
 }
 
 
-export const extract_header_name_from_header_structure = (
-  header_structure: MappingsTreeNode,
+export const extractHeaderNameFromHeaderStructure = (
+  headerStructure: MappingsTreeNode,
 ): ColumnDef => Object.entries(
   Object.values(
-    header_structure,
+    headerStructure,
   )[0],
-).map(([header_name, header_options]) =>
-  JSON.stringify(header_options) === JSON.stringify(defaultLineOptions) ?
-    header_name :
+).map(([headerName, headerOptions]) =>
+  JSON.stringify(headerOptions) === JSON.stringify(defaultLineOptions) ?
+    headerName :
     {
       ...defaultLineOptions,
-      column: header_name,
-      ...header_options,
+      column: headerName,
+      ...headerOptions,
     },
 )[0];
 
-const rank_mapped_fields_to_tree_record_ranks = (
-  rank_mapped_fields: R<MappingsTreeNode>,
+const rankMappedFieldsToTreeRecordRanks = (
+  rankMappedFields: R<MappingsTreeNode>,
 ): R<ColumnDef> => Object.fromEntries(
-  Object.entries(rank_mapped_fields).map(([
-    field_name, header_mapping_structure,
+  Object.entries(rankMappedFields).map(([
+    fieldName, headerMappingStructure,
   ]) => [
-    field_name,
-    extract_header_name_from_header_structure(
-      header_mapping_structure,
+    fieldName,
+    extractHeaderNameFromHeaderStructure(
+      headerMappingStructure,
     ),
   ]),
 );
 
-const mappings_tree_to_upload_plan_tree = (
-  mappings_tree: MappingsTree,
+const mappingsTreeToUploadPlanTree = (
+  mappingsTree: MappingsTree,
 ): R<string | {treeNodeCols: R<ColumnDef>}> => Object.fromEntries(
-  Object.entries(mappings_tree).map(([
-    full_rank_name, rank_mapped_fields,
+  Object.entries(mappingsTree).map(([
+    fullRankName, rankMappedFields,
   ]) => [
-    get_name_from_tree_rank_name(full_rank_name),
+    getNameFromTreeRankName(fullRankName),
     {
-      treeNodeCols: rank_mapped_fields_to_tree_record_ranks(
-        rank_mapped_fields as R<MappingsTreeNode>,
+      treeNodeCols: rankMappedFieldsToTreeRecordRanks(
+        rankMappedFields as R<MappingsTreeNode>,
       ),
     },
   ]),
 );
 
-/*const mappings_tree_to_upload_table_table = (
-  mappings_tree: MappingsTree,
-  table_name: string,
+/*const mappingsTreeToUploadTableTable = (
+  mappingsTree: MappingsTree,
+  tableName: string,
 ): UploadPlanUploadTableTable => (
   {}
 );*/
 
-const mappings_tree_to_upload_table = (
-  mappings_tree: MappingsTree,
-  table_name: string,
-  must_match_preferences: R<boolean>,
-  is_root = false,
+const mappingsTreeToUploadTable = (
+  mappingsTree: MappingsTree,
+  tableName: string,
+  mustMatchPreferences: R<boolean>,
+  isRoot = false,
 ): Uploadable =>
-  table_is_tree(table_name) ?
+  tableIsTree(tableName) ?
     {
       [
         (
-          table_name in must_match_preferences
+          tableName in mustMatchPreferences
         ) ?
           'mustMatchTreeRecord' :
           'treeRecord'
         ]: {
-        ranks: mappings_tree_to_upload_plan_tree(
-          mappings_tree,
+        ranks: mappingsTreeToUploadPlanTree(
+          mappingsTree,
         ),
       },
     } as TreeRecordVariety :
-    mappings_tree_to_upload_plan_table(
-      mappings_tree,
-      table_name,
-      must_match_preferences,
+    mappingsTreeToUploadPlanTable(
+      mappingsTree,
+      tableName,
+      mustMatchPreferences,
       true,
-      is_root,
+      isRoot,
     ) as Uploadable;
 
 /*
 * Converts mappings tree to upload plan
-* Inverse of upload_plan_to_mappings_tree
+* Inverse of uploadPlanToMappingsTree
 * */
-export const mappings_tree_to_upload_plan = (
-  base_table_name: string,
-  mappings_tree: MappingsTree,
-  must_match_preferences: R<boolean>,
+export const mappingsTreeToUploadPlan = (
+  baseTableName: string,
+  mappingsTree: MappingsTree,
+  mustMatchPreferences: R<boolean>,
 ): UploadPlan => (
   {
-    baseTableName: base_table_name,
-    uploadable: mappings_tree_to_upload_table(
-      mappings_tree,
-      base_table_name,
-      must_match_preferences,
+    baseTableName: baseTableName,
+    uploadable: mappingsTreeToUploadTable(
+      mappingsTree,
+      baseTableName,
+      mustMatchPreferences,
       true,
     ),
   }

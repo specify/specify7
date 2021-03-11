@@ -9,12 +9,12 @@
 
 // Determines how persistent bucket's storage would be
 type BucketType =
-  'local_storage'  // persistent across sessions
-  | 'session_storage'  // persistent only during a single session
+  'localStorage'  // persistent across sessions
+  | 'sessionStorage'  // persistent only during a single session
 
 interface BucketData {
   records: Record<string, {
-    use_count: number,  // the amount times a particular cache value was used
+    useCount: number,  // the amount times a particular cache value was used
     value: unknown,  // the value that is stored in a particular cache record
     // optional string identifying a version of a cache value
     // when calling .get() with a version specified, it is compared to
@@ -27,46 +27,46 @@ interface BucketData {
 
 // the data structure that would store all the buckets
 const buckets: Record<string, BucketData> = {};
-// the prefix that would be given to all bucket_names when they are committed
+// the prefix that would be given to all bucketNames when they are committed
 // to localStorage. Used to avoid collisions
-const cache_prefix = 'specify7_wbplanview_';
+const cachePrefix = 'specify7-wbplanview-';
 // start trimming a bucket if records in the bucket are over this limit
-const local_storage_bucket_soft_limit = 100;
+const localStorageBucketSoftLimit = 100;
 // start trimming a bucket if records in a bucket are over this limit
-const session_storage_bucket_soft_limit = 100;
+const sessionStorageBucketSoftLimit = 100;
 // between 0 and 1 - decides the minimum passing cache usage
-const trim_aggressiveness = 0.5;
+const trimAggressiveness = 0.5;
 // indicates whether initialize() was run. If not, runs it on the next call
 // to get() or set()
-let event_listener_is_initialized = false;
+let eventListenerIsInitialized = false;
 
-/* Set's an event listener that runs commit_to_storage before a page unload */
+/* Set's an event listener that runs commitToStorage before a page unload */
 function initialize(): void {
-  window.onbeforeunload = commit_to_storage;
-  event_listener_is_initialized = true;
+  window.onbeforeunload = commitToStorage;
+  eventListenerIsInitialized = true;
 }
 
 /* Commits persistent cache buckets to localStorage */
-function commit_to_storage(): void {
+function commitToStorage(): void {
 
   if (typeof localStorage === 'undefined')
     return;
 
-  Object.entries(buckets).filter(([_bucket_name, bucket_data]) =>
-    bucket_data.type === 'local_storage' &&
-    Object.keys(bucket_data.records).length !== 0,
-  ).forEach(([bucket_name, bucket_data]) =>
+  Object.entries(buckets).filter(([, bucketData]) =>
+    bucketData.type === 'localStorage' &&
+    Object.keys(bucketData.records).length !== 0,
+  ).forEach(([bucketName, bucketData]) =>
     localStorage.setItem(
-      cache_prefix + bucket_name,
-      JSON.stringify(bucket_data),
+      cachePrefix + bucketName,
+      JSON.stringify(bucketData),
     ),
   );
 
 }
 
 /* Tries to fetch a bucket from localStorage */
-function fetch_bucket(
-  bucket_name: string,  // the name of the bucket to fetch
+function fetchBucket(
+  bucketName: string,  // the name of the bucket to fetch
 ): BucketData | false
 /*
 * {boolean} False if bucket does not exist
@@ -76,68 +76,68 @@ function fetch_bucket(
   if (typeof localStorage === 'undefined')
     return false;
 
-  const full_bucket_name = cache_prefix + bucket_name;
+  const fullBucketName = cachePrefix + bucketName;
 
-  const local_storage_data = localStorage.getItem(full_bucket_name);
-  if (local_storage_data === null)
+  const localStorageData = localStorage.getItem(fullBucketName);
+  if (localStorageData === null)
     return false;
 
   return (
-    buckets[bucket_name] = JSON.parse(local_storage_data)
+    buckets[bucketName] = JSON.parse(localStorageData)
   );
 
 }
 
-/* Get value of cache_name in the bucket_name */
-export function get<T>(  // overload with default_value
-  bucket_name: string,  // the name of the bucket
-  cache_name: string,  // the name of the cache
+/* Get value of cacheName in the bucketName */
+export function get<T>(  // overload with defaultValue
+  bucketName: string,  // the name of the bucket
+  cacheName: string,  // the name of the cache
   props: {
     version?: string,
-    default_value: T,
-    default_set_options?: setOptions
+    defaultValue: T,
+    defaultSetOptions?: setOptions
   },
 ): T;
-export function get<T>(  // overload without default_value (returns T|false)
-  bucket_name: string,  // the name of the bucket
-  cache_name: string,  // the name of the cache
+export function get<T>(  // overload without defaultValue (returns T|false)
+  bucketName: string,  // the name of the bucket
+  cacheName: string,  // the name of the cache
   props?: {
     version?: string,
-    default_set_options?: setOptions
+    defaultSetOptions?: setOptions
   } | undefined,
 ): T | false
 export function get<T>(
-  bucket_name: string,  // the name of the bucket
-  cache_name: string,  // the name of the cache
+  bucketName: string,  // the name of the bucket
+  cacheName: string,  // the name of the cache
   {
     version,
-    default_value,
-    default_set_options,
+    defaultValue,
+    defaultSetOptions,
   }: {
     version?: string,
-    default_value?: T,
-    default_set_options?: setOptions
+    defaultValue?: T,
+    defaultSetOptions?: setOptions
   } = {},
 ): T | false
 /*
   * {boolean} False on error
-  * {mixed} value stored under cache_name on success
+  * {mixed} value stored under cacheName on success
   * */ {
 
-  if (!event_listener_is_initialized)
+  if (!eventListenerIsInitialized)
     initialize();
 
   if (
     (
-      typeof buckets[bucket_name] === 'undefined' &&
-      !fetch_bucket(bucket_name)
+      typeof buckets[bucketName] === 'undefined' &&
+      !fetchBucket(bucketName)
     ) ||
-    typeof buckets[bucket_name].records[cache_name] === 'undefined'
+    typeof buckets[bucketName].records[cacheName] === 'undefined'
   ) {
-    if (typeof default_value === 'undefined')
+    if (typeof defaultValue === 'undefined')
       return false;
     else
-      set(bucket_name, cache_name, default_value, default_set_options);
+      set(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
   // if cache version is specified, and it doesn't match, clear the record
@@ -145,71 +145,71 @@ export function get<T>(
     typeof version === 'string' &&
     (
       typeof buckets[
-        bucket_name].records[cache_name].version === 'undefined' ||
-      buckets[bucket_name].records[cache_name].version !== version
+        bucketName].records[cacheName].version === 'undefined' ||
+      buckets[bucketName].records[cacheName].version !== version
     )
   ) {
-    delete buckets[bucket_name].records[cache_name];
+    delete buckets[bucketName].records[cacheName];
     return false;
   }
 
   else {
 
-    buckets[bucket_name].records[cache_name].use_count++;
+    buckets[bucketName].records[cacheName].useCount++;
 
-    return buckets[bucket_name].records[cache_name].value as T;
+    return buckets[bucketName].records[cacheName].value as T;
 
   }
 
 }
 
 interface setOptions {
-  // which storage type to use. If local_storage - use persistent storage
-  // If session_storage - data does not persist beyond the page reload
-  readonly bucket_type?: BucketType,
+  // which storage type to use. If localStorage - use persistent storage
+  // If sessionStorage - data does not persist beyond the page reload
+  readonly bucketType?: BucketType,
   // whether to overwrite the cache value if it is already present
   readonly overwrite?: boolean,
   // version of this record (used for invalidating older cache)
   readonly version?: string
 }
 
-/* Set's cache_value as cache value under cache_name in `bucket_name` */
+/* Set's cacheValue as cache value under cacheName in `bucketName` */
 export function set<T>(
-  bucket_name: string,  // the name of the bucket
-  cache_name: string,  // the name of the cache
+  bucketName: string,  // the name of the bucket
+  cacheName: string,  // the name of the cache
   // the value of the cache record. Can be any object that can be
   // converted to json
-  cache_value: T,
+  cacheValue: T,
   {
-    bucket_type = 'local_storage',
+    bucketType = 'localStorage',
     overwrite = false,
     version = undefined,
   }: setOptions = {},
 ): T {
 
-  if (typeof bucket_name === 'undefined')
+  if (typeof bucketName === 'undefined')
     throw new Error('Bucket name cannot be undefined');
 
-  if (typeof cache_name === 'undefined')
+  if (typeof cacheName === 'undefined')
     throw new Error('Cache record name cannot be undefined');
 
-  if (!event_listener_is_initialized)
+  if (!eventListenerIsInitialized)
     initialize();
 
-  buckets[bucket_name] ??= {
-    type: bucket_type,
+  buckets[bucketName] ??= {
+    type: bucketType,
     records: {},
   };
 
   if (
     !overwrite &&
-    typeof buckets[bucket_name].records[cache_name] !== 'undefined'
+    typeof buckets[bucketName].records[cacheName] !== 'undefined'
   )
-    return buckets[bucket_name].records[cache_name].value as T;
+    return buckets[bucketName].records[cacheName].value as T;
 
-  buckets[bucket_name].records[cache_name] = {
-    value: cache_value,
-    use_count: 0,
+  buckets[bucketName].records[cacheName] = {
+    value: cacheValue,
+    useCount: 0,
     ...(
       typeof version === 'undefined' ?
         {} :
@@ -219,9 +219,9 @@ export function set<T>(
     ),
   };
 
-  trim_bucket(bucket_name);
+  trimBucket(bucketName);
 
-  return cache_value;
+  return cacheValue;
 
 }
 
@@ -231,58 +231,58 @@ export function set<T>(
 * This method is needed to prevent memory leaks and stay under browser memory
 * limit - ~5 MB for Google Chrome ;(
 * */
-function trim_bucket(
-  bucket_name: string,  // the bucket to trim
+function trimBucket(
+  bucketName: string,  // the bucket to trim
 ): boolean {
 
   // don't trim cache if the amount records in this bucket is smaller than
   // soft limits
   if (
     (
-      buckets[bucket_name].type === 'local_storage' &&
+      buckets[bucketName].type === 'localStorage' &&
       Object.keys(
-        buckets[bucket_name].records,
-      ).length < local_storage_bucket_soft_limit
+        buckets[bucketName].records,
+      ).length < localStorageBucketSoftLimit
     ) ||
     (
-      buckets[bucket_name].type === 'session_storage' &&
+      buckets[bucketName].type === 'sessionStorage' &&
       Object.keys(
-        buckets[bucket_name].records,
-      ).length < session_storage_bucket_soft_limit
+        buckets[bucketName].records,
+      ).length < sessionStorageBucketSoftLimit
     )
   )
     return false;
 
-  const cache_usages = Object.values(
-    buckets[bucket_name].records,
-  ).map(({use_count}) => use_count);
-  const total_usage = cache_usages.reduce((
-    total_usage: number,
+  const cacheUsages = Object.values(
+    buckets[bucketName].records,
+  ).map(({useCount}) => useCount);
+  const totalUsage = cacheUsages.reduce((
+    totalUsage: number,
     usage: number | string,
     ) =>
-    total_usage + ~~usage,
+    totalUsage + ~~usage,
     0,
   );
-  const cache_items_count = cache_usages.length;
-  const average_usage = total_usage / cache_items_count;
+  const cacheItemsCount = cacheUsages.length;
+  const averageUsage = totalUsage / cacheItemsCount;
 
-  // trim all caches with usage equal to or smaller than usage_to_trim
-  let usage_to_trim = Math.round(average_usage * trim_aggressiveness);
+  // trim all caches with usage equal to or smaller than usageToTrim
+  let usageToTrim = Math.round(averageUsage * trimAggressiveness);
 
-  if (usage_to_trim === 0)
-    usage_to_trim = 1;
+  if (usageToTrim === 0)
+    usageToTrim = 1;
 
-  const cache_keys = Object.keys(buckets[bucket_name].records);
+  const cacheKeys = Object.keys(buckets[bucketName].records);
 
-  buckets[bucket_name].records = Object.fromEntries(
+  buckets[bucketName].records = Object.fromEntries(
     Object.entries(
-      cache_usages,
-    ).map(([cache_index, cache_usage]) =>
-      [cache_keys[~~cache_index], cache_usage],
-    ).filter(([_cache_key, cache_usage]) =>
-      cache_usage >= usage_to_trim,
-    ).map(([cache_key]) =>
-      [cache_key, buckets[bucket_name].records[cache_key]],
+      cacheUsages,
+    ).map(([cacheIndex, cacheUsage]) =>
+      [cacheKeys[~~cacheIndex], cacheUsage],
+    ).filter(([, cacheUsage]) =>
+      cacheUsage >= usageToTrim,
+    ).map(([cacheKey]) =>
+      [cacheKey, buckets[bucketName].records[cacheKey]],
     ),
   );
 

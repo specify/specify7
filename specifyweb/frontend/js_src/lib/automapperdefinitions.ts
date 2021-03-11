@@ -12,7 +12,7 @@ import { AutomapperScope, MappingPath } from './components/wbplanviewmapper';
 
 //  Automapper does 2 passes though the schema whenever it is asked to map
 //  some headers. This is needed to ensure priority mapping for some mapping
-//  paths. In particular, `shortcuts` and `table_synonyms` are used on the
+//  paths. In particular, `shortcuts` and `tableSynonyms` are used on the
 //  first pass. The second path goes over `synonyms` and also does string
 //  comparison (matching)
 
@@ -31,7 +31,7 @@ export interface Options {
   // Substring match (header.indexOf(string)!==-1)
   readonly contains?: string[],
 
-  // NOTE: formatted_header_field_synonym is also available as a matching
+  // NOTE: formattedHeaderFieldSynonym is also available as a matching
   // rule, but only for `synonym` rules. See more later in this file
 
 }
@@ -39,9 +39,9 @@ export interface Options {
 // main structure
 
 export interface TableSynonym {
-  // Mapping path needed to reach <table_name>. Can include any number
+  // Mapping path needed to reach <tableName>. Can include any number
   // of parents, up to base table
-  mapping_path_filter: MappingPath,
+  mappingPathFilter: MappingPath,
   synonyms: string[]
 }
 
@@ -64,7 +64,7 @@ interface AutoMapperDefinitions {
   *   Table Synonyms, it's `synonyms` and matches would also
   *   be checked in the first pass
   */
-  table_synonyms: Record<string,  // table_name (case-insensitive)
+  tableSynonyms: Record<string,  // tableName (case-insensitive)
     TableSynonym[]  // described earlier in the file
     >,
 
@@ -72,9 +72,9 @@ interface AutoMapperDefinitions {
   * Rank synonyms are used to when the same tree rank can have
   * different name depending on the discipline
   */
-  rank_synonyms: Record<string,  // table_name (case-insensitive)
+  rankSynonyms: Record<string,  // tableName (case-insensitive)
     {
-      rank_name: string,
+      rankName: string,
       synonyms: string[]
     }[]>
 
@@ -87,8 +87,8 @@ interface AutoMapperDefinitions {
   * Don't match list is of the highest priority and would cancel
   *   a mapping even if a shortcut, or a synonym was used
   */
-  dont_match: Record<string,  // table_name (case-insensitive)
-    Record<string,  // field_name (case-insensitive)
+  dontMatch: Record<string,  // tableName (case-insensitive)
+    Record<string,  // fieldName (case-insensitive)
       AutomapperScope[]  // defined in wbplanviewmapper.tsx
       >>,
 
@@ -99,28 +99,28 @@ interface AutoMapperDefinitions {
   *   also be used to map commonly confused fields before they
   *   are erroneously mapped elsewhere
   * Shortcut is followed only if header matched the comparisons
-  *   and a path to table_name from base_table_name
+  *   and a path to tableName from baseTableName
   */
-  shortcuts: Record<string,  // table_name (case-insensitive)
+  shortcuts: Record<string,  // tableName (case-insensitive)
     Partial<Record<AutomapperScope,  // defined in wbplanviewmapper.tsx
       {
         // mapping path that is to be appended to the current path
         // when shortcut is followed
-        readonly mapping_path: MappingPath,
+        readonly mappingPath: MappingPath,
         readonly headers: Options  // described earlier in the file
       }[]>>>,
 
   /*
-  * Synonyms should be used when field_name of table_name should be mapped
+  * Synonyms should be used when fieldName of tableName should be mapped
   *   to a particular header, yet field label alone is not enough to
   *   guarantee a successful match
   * Synonyms are helpful in situations where field name can be spelled
   *   in different ways, or may vary depending on the context
   * Synonym is used only if header matched the comparisons and
-  *   and there exists a path from table_name to base_table_name
+  *   and there exists a path from tableName to baseTableName
   */
-  synonyms: Record<string,  // table_name (case-insensitive)
-    Record<string,  // field_name (case-insensitive)
+  synonyms: Record<string,  // tableName (case-insensitive)
+    Record<string,  // fieldName (case-insensitive)
       Partial<Record<AutomapperScope,  // defined in wbplanviewmapper.tsx
         {
           headers: Options &
@@ -129,53 +129,53 @@ interface AutoMapperDefinitions {
               // only for `synonym` definitions
               // Matches only if header is strictly
               // in one of the following forms:
-              //  - <field_name_synonym> <table_name>
-              //   - <table_name> <field_name_synonym>
-              //   - <table_name> <index> <field_name_synonym>
-              //   - <table_name> <field_name_synonym> <index>
-              // Where <field_name_synonym> is the value
-              // provided in formatted_header_field_synonym
-              formatted_header_field_synonym?: string[],
+              //  - <fieldNameSynonym> <tableName>
+              //   - <tableName> <fieldNameSynonym>
+              //   - <tableName> <index> <fieldNameSynonym>
+              //   - <tableName> <fieldNameSynonym> <index>
+              // Where <fieldNameSynonym> is the value
+              // provided in formattedHeaderFieldSynonym
+              formattedHeaderFieldSynonym?: string[],
             }
         }>>>>,
 }
 
 const definitions: AutoMapperDefinitions = {
-  table_synonyms: {
+  tableSynonyms: {
     Agent: [
       {
-        mapping_path_filter: ['determinations', 'determiner'],
+        mappingPathFilter: ['determinations', 'determiner'],
         synonyms: [
           'determiner',
           'who id',
         ],
       },
       {
-        mapping_path_filter: ['collectingevent', 'collectors', 'agent'],
+        mappingPathFilter: ['collectingevent', 'collectors', 'agent'],
         synonyms: [
           'collector',
         ],
       },
       {
-        mapping_path_filter: ['collectionobject', 'cataloger'],
+        mappingPathFilter: ['collectionobject', 'cataloger'],
         synonyms: [
           'cataloger',
         ],
       },
       {
-        mapping_path_filter: ['referencework', 'authors'],
+        mappingPathFilter: ['referencework', 'authors'],
         synonyms: [
           'author',
         ],
       },
       {
-        mapping_path_filter: ['geocoorddetails', 'georefdetby'],
+        mappingPathFilter: ['geocoorddetails', 'georefdetby'],
         synonyms: [
           'geo ref by',
         ],
       },
       {
-        mapping_path_filter: ['preparations', 'preparedbyagent'],
+        mappingPathFilter: ['preparations', 'preparedbyagent'],
         synonyms: [
           'prepared',
         ],
@@ -183,7 +183,7 @@ const definitions: AutoMapperDefinitions = {
     ],
     Determination: [
       {
-        mapping_path_filter: ['collectionobject', 'determinations'],
+        mappingPathFilter: ['collectionobject', 'determinations'],
         synonyms: [
           'id',
         ],
@@ -191,7 +191,7 @@ const definitions: AutoMapperDefinitions = {
     ],
     CollectingEvent: [
       {
-        mapping_path_filter: [],
+        mappingPathFilter: [],
         synonyms: [
           'collected',
         ],
@@ -199,7 +199,7 @@ const definitions: AutoMapperDefinitions = {
     ],
     CollectionObject: [
       {
-        mapping_path_filter: ['collectionobject'],
+        mappingPathFilter: ['collectionobject'],
         synonyms: [
           'co',
         ],
@@ -207,78 +207,78 @@ const definitions: AutoMapperDefinitions = {
     ],
     Locality: [
       {
-        mapping_path_filter: ['locality'],
+        mappingPathFilter: ['locality'],
         synonyms: [
           'loc',
         ],
       },
     ],
   },
-  rank_synonyms: {
+  rankSynonyms: {
     Taxon: [
       {
-        rank_name: 'Superdivision',
+        rankName: 'Superdivision',
         synonyms: [
           'Superphylum',
         ],
       },
       {
-        rank_name: 'Division',
+        rankName: 'Division',
         synonyms: [
           'Phylum',
         ],
       },
       {
-        rank_name: 'Subdivision',
+        rankName: 'Subdivision',
         synonyms: [
           'Subphylum',
         ],
       },
       {
-        rank_name: 'Infradivision',
+        rankName: 'Infradivision',
         synonyms: [
           'Infraphylum',
         ],
       },
       {
-        rank_name: 'Microdivision',
+        rankName: 'Microdivision',
         synonyms: [
           'Microphylum',
         ],
       },
       {
-        'rank_name': 'Superphylum',
-        'synonyms': [
+        rankName: 'Superphylum',
+        synonyms: [
           'Superdivision',
         ],
       },
       {
-        'rank_name': 'Phylum',
-        'synonyms': [
+        rankName: 'Phylum',
+        synonyms: [
           'Division',
         ],
       },
       {
-        'rank_name': 'Subphylum',
-        'synonyms': [
+        rankName: 'Subphylum',
+        synonyms: [
           'Subdivision',
         ],
       },
       {
-        'rank_name': 'Infraphylum',
-        'synonyms': [
+        rankName: 'Infraphylum',
+        synonyms: [
           'Infradivision',
         ],
       },
       {
-        'rank_name': 'Microphylum',
-        'synonyms': [
+        rankName: 'Microphylum',
+        synonyms: [
           'Microdivision',
         ],
       },
     ],
   },
-  dont_match: {
+  dontMatch: {
     Address: {
       country: ['automapper'],
       state: ['automapper'],
@@ -288,7 +288,7 @@ const definitions: AutoMapperDefinitions = {
     CollectionObject: {
       automapper: [
         {
-          mapping_path: ['cataloger', 'lastname'],
+          mappingPath: ['cataloger', 'lastname'],
           headers: {
             contains: [
               'cataloged by',
@@ -299,7 +299,7 @@ const definitions: AutoMapperDefinitions = {
       ],
       suggestion: [
         {
-          mapping_path: ['cataloger', 'lastname'],
+          mappingPath: ['cataloger', 'lastname'],
           headers: {
             contains: [
               'cataloged by',
@@ -312,7 +312,7 @@ const definitions: AutoMapperDefinitions = {
     Determination: {
       suggestion: [
         {
-          mapping_path: ['determiner', 'lastname'],
+          mappingPath: ['determiner', 'lastname'],
           headers: {
             contains: [
               'determiner',
@@ -334,7 +334,7 @@ const definitions: AutoMapperDefinitions = {
         },
         automapper: {
           headers: {
-            formatted_header_field_synonym: [
+            formattedHeaderFieldSynonym: [
               'middle',
             ],
           },
@@ -350,7 +350,7 @@ const definitions: AutoMapperDefinitions = {
         },
         automapper: {
           headers: {
-            formatted_header_field_synonym: [
+            formattedHeaderFieldSynonym: [
               'first',
             ],
           },
@@ -366,7 +366,7 @@ const definitions: AutoMapperDefinitions = {
         },
         automapper: {
           headers: {
-            formatted_header_field_synonym: [
+            formattedHeaderFieldSynonym: [
               'last',
             ],
           },
@@ -622,7 +622,7 @@ const definitions: AutoMapperDefinitions = {
         },
         automapper: {
           headers: {
-            formatted_header_field_synonym: [
+            formattedHeaderFieldSynonym: [
               'date',
             ],
           },
@@ -638,7 +638,7 @@ const definitions: AutoMapperDefinitions = {
         },
         automapper: {
           headers: {
-            formatted_header_field_synonym: [
+            formattedHeaderFieldSynonym: [
               'status',
             ],
           },
@@ -662,17 +662,17 @@ const definitions: AutoMapperDefinitions = {
 
 /* Method that converts all table names and field names in definitions to
 * lower case */
-function definitions_to_lowercase(
+function definitionsToLowercase(
   definitions: AutoMapperDefinitions,
 ): AutoMapperDefinitions {
 
-  const keys_to_lower_case = (object: object, levels = 1): object => (
+  const keysToLowerCase = (object: object, levels = 1): object => (
     Object.fromEntries(
       Object.entries(object).map(([key, value]) =>
         [
           key.toLowerCase(),
           levels > 1 ?
-            keys_to_lower_case(value, levels - 1) :
+            keysToLowerCase(value, levels - 1) :
             value,
         ],
       ),
@@ -680,19 +680,19 @@ function definitions_to_lowercase(
   );
 
   // specify how deep to go into each branch when converting
-  const structure_depth: [
-    structure_name: keyof typeof definitions, depth: number
+  const structureDepth: [
+    structureName: keyof typeof definitions, depth: number
   ][] = [
-    ['table_synonyms', 1],
-    ['rank_synonyms', 1],
-    ['dont_match', 2],
+    ['tableSynonyms', 1],
+    ['rankSynonyms', 1],
+    ['dontMatch', 2],
     ['shortcuts', 1],
     ['synonyms', 2],
   ];
-  structure_depth.forEach(([structure_name, depth]) => (
+  structureDepth.forEach(([structureName, depth]) => (
     //@ts-ignore
-    definitions[structure_name] = keys_to_lower_case(
-      definitions[structure_name],
+    definitions[structureName] = keysToLowerCase(
+      definitions[structureName],
       depth,
     )
   ));
@@ -701,4 +701,4 @@ function definitions_to_lowercase(
 
 }
 
-export default definitions_to_lowercase(definitions);
+export default definitionsToLowercase(definitions);

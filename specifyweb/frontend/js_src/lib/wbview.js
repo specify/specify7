@@ -15,9 +15,9 @@ const navigation = require('./navigation.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
-const {upload_plan_to_mappings_tree} = require('./wbplanviewconverter.ts');
-const {mappings_tree_to_array_of_mappings} = require('./wbplanviewtreehelper.ts');
-const {get_mapping_line_data} = require('./wbplanviewnavigator.ts');
+const {uploadPlanToMappingsTree} = require('./wbplanviewconverter.ts');
+const {mappingsTreeToArrayOfMappings} = require('./wbplanviewtreehelper.ts');
+const {getMappingLineData} = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
 const icons = require('./icons.js');
 
@@ -187,13 +187,13 @@ const WBView = Backbone.View.extend({
 
         if (this.dataset.uploadplan) {
             const {
-                base_table_name,
-                mappings_tree: mappingsTree
-            } = upload_plan_to_mappings_tree(
+                baseTableName,
+                mappingsTree: mappingsTree
+            } = uploadPlanToMappingsTree(
                 this.dataset.columns,
                 this.dataset.uploadplan
             );
-            const arrayOfMappings = mappings_tree_to_array_of_mappings(
+            const arrayOfMappings = mappingsTreeToArrayOfMappings(
                 mappingsTree
             );
             const mappedHeadersAndTables = Object.fromEntries(
@@ -201,13 +201,13 @@ const WBView = Backbone.View.extend({
                     [
                         mappingsPath.slice(-1)[0],
                         icons.getIcon(
-                            get_mapping_line_data({
-                                base_table_name,
-                                mapping_path: mappingsPath.slice(0, -3),
+                            getMappingLineData({
+                                baseTableName: baseTableName,
+                                mappingPath: mappingsPath.slice(0, -3),
                                 iterate: false,
-                                custom_select_type: 'simple',
-                                show_hidden_fields: false,
-                            })[0]?.table_name || '',
+                                customSelectType: 'simple',
+                                showHiddenFields: false,
+                            })[0]?.tableName || '',
                         ),
                     ],
                 ),

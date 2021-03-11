@@ -13,12 +13,12 @@ import createBackboneView                   from './reactbackboneextend';
 import { ModalDialog }                      from './modaldialog';
 import {
   Action,
-  generate_reducer,
+  generateReducer,
   State
-} from '../statemanagement';
-import fetch_data_model                     from '../wbplanviewmodelfetcher';
-import data_model_storage                   from '../wbplanviewmodel';
-import { Dataset }                          from './wbplanview';
+}                         from '../statemanagement';
+import fetchDataModel   from '../wbplanviewmodelfetcher';
+import dataModelStorage from '../wbplanviewmodel';
+import { Dataset }      from './wbplanview';
 import {
   parseUploadResults,
   UploadedPicklistItem,
@@ -49,11 +49,11 @@ interface WBUploadedViewComponentProps {
 }
 
 type UploadedRecordsTypes = 'table' | 'picklist'
-type HandleCellClicked = (row_index: number, column_index: number) => void;
+type HandleCellClicked = (rowIndex: number, columnIndex: number) => void;
 
 interface UploadedTableRowBaseProps {
   readonly onCellClicked: HandleCellClicked,
-  readonly get_record_view_url?: (row_id: number) => string,
+  readonly getRecordViewUrl?: (rowId: number) => string,
 }
 
 type RecordsVisibilityState = Readonly<Record<string, boolean>>;
@@ -65,24 +65,24 @@ interface WBUploadedState extends State<'WBUploadedState'> {
 }
 
 interface CreateRecordSetAction extends Action<'CreateRecordSetAction'> {
-  readonly table_name: string,
+  readonly tableName: string,
 }
 
 interface CreateDataSetAction extends Action<'CreateDataSetAction'> {
-  readonly table_name: string,
+  readonly tableName: string,
 }
 
 interface ToggleTableRecordsVisibilityAction
   extends Action<'ToggleTableRecordsVisibilityAction'> {
-  readonly table_name: string,
+  readonly tableName: string,
   readonly destination:
     'tableRecordsVisibilityState'
     | 'picklistRecordsVisibilityState';
 }
 
 interface CellClickedAction extends Action<'CellClickedAction'> {
-  readonly row_index: number,
-  readonly column_index: number,
+  readonly rowIndex: number,
+  readonly columnIndex: number,
 }
 
 type WBUploadedActions =
@@ -93,17 +93,17 @@ type WBUploadedActions =
 
 
 let ranks: Record<string, string[]>;
-const fetch_data_model_promise: Promise<void> = fetch_data_model();
+const fetchDataModelPromise: Promise<void> = fetchDataModel();
 
 function UploadedTableRowsHeaderProps({
-  column_names,
+  columnNames,
 }: {
-  readonly column_names: string[],
+  readonly columnNames: string[],
 }): JSX.Element {
   return <thead>
   <tr>{
-    column_names.map(column_name =>
-      <th key={column_name}>{column_name}</th>,
+    columnNames.map(columnName =>
+      <th key={columnName}>{columnName}</th>,
     )
   }</tr>
   </thead>;
@@ -111,17 +111,17 @@ function UploadedTableRowsHeaderProps({
 
 
 function CellLink({
-  get_record_view_url,
-  record_id,
+  getRecordViewUrl,
+  recordId,
   children,
 }: {
-  get_record_view_url: (record_id: number) => string,
-  record_id?: number,
+  getRecordViewUrl: (recordId:number)=>string,
+  recordId?: number,
   children: JSX.Element | React.ReactText
 }): JSX.Element {
-  return typeof record_id === 'undefined' ?
+  return typeof recordId === 'undefined' ?
     <>{children}</> :
-    <a target="_blank" href={get_record_view_url(record_id)}>
+    <a target="_blank" href={getRecordViewUrl(recordId)}>
       {children}
     </a>;
 }
@@ -129,28 +129,28 @@ function CellLink({
 function UploadedTableRow({
   rows,
   onCellClicked: handleCellClicked,
-  get_record_view_url,
+  getRecordViewUrl,
 }: UploadedTableRowBaseProps & {
   readonly rows: UploadedRow[]
-  readonly get_record_view_url: (row_id: number) => string,
+  readonly getRecordViewUrl: (rowId: number) => string,
 }): JSX.Element {
   return <tbody>
-  {rows.map(({record_id, row_index, columns}, index) =>
+  {rows.map(({recordId, rowIndex, columns}, index) =>
     <tr key={index}>
       {
-        record_id >= 0 &&
-        <td key='view_record'>
-          <a target="_blank" href={get_record_view_url(record_id)}>
+        recordId >= 0 &&
+        <td key='viewRecord'>
+          <a target="_blank" href={getRecordViewUrl(recordId)}>
             &#128065;  {/* a fancy eye emoji */}
           </a>
         </td>
       }
       {columns.map(({
-          column_index,
-          cell_value,
-          row_index: cell_row_index,
-          record_id,
-          span_size,
+          columnIndex,
+          cellValue,
+          rowIndex: cellRowIndex,
+          recordId,
+          spanSize,
           matched,
         }, index) =>
           <td
@@ -162,23 +162,23 @@ function UploadedTableRow({
                   ''
               }
               `}
-            rowSpan={span_size}
+            rowSpan={spanSize}
             onClick={() => handleCellClicked(
-              row_index < 0 ?
-                cell_row_index ?? -1 :
-                row_index,
-              column_index,
+              rowIndex < 0 ?
+                cellRowIndex ?? -1 :
+                rowIndex,
+              columnIndex,
             )}
             title={`${['Uploaded', 'Matched'][matched ? 1 : 0]} record`}
           >
             <CellLink
-              get_record_view_url={get_record_view_url}
-              record_id={record_id}
+              getRecordViewUrl={getRecordViewUrl}
+              recordId={recordId}
             >
               {
-                typeof cell_value === 'undefined' ?
+                typeof cellValue === 'undefined' ?
                   'Uploaded' :
-                  cell_value
+                  cellValue
               }
             </CellLink>
           </td>,
@@ -197,16 +197,16 @@ function UploadedPicklistRow({
   return <tbody>{
     rows.map((
       {
-        row_index,
-        column_index,
-        picklist_value: value,
+        rowIndex,
+        columnIndex,
+        picklistValue: value,
       },
       index,
       ) =>
         <tr key={index}>
           <td
             className="wb-upload-results-cell"
-            onClick={() => handleCellClicked(row_index, column_index)}
+            onClick={() => handleCellClicked(rowIndex, columnIndex)}
           >{value}</td>
         </tr>,
     )
@@ -216,21 +216,21 @@ function UploadedPicklistRow({
 function UploadedTableRows({
   type,
   rows,
-  column_names,
-  get_record_view_url,
+  columnNames,
+  getRecordViewUrl,
   onCellClicked: handleCellClicked,
   tableIsTree,
 }: {
   readonly rows: (UploadedRow | UploadedPicklistItem)[],
-  readonly column_names?: string[],
-  readonly get_record_view_url?: (row_id: number) => string,
+  readonly columnNames?: string[],
+  readonly getRecordViewUrl?: (rowId: number) => string,
   readonly type: UploadedRecordsTypes,
   readonly onCellClicked: HandleCellClicked,
   readonly tableIsTree: boolean,
 } & ({
   readonly rows: UploadedRow[],
-  readonly column_names: string[],
-  readonly get_record_view_url: (row_id: number) => string,
+  readonly columnNames: string[],
+  readonly getRecordViewUrl: (rowId: number) => string,
   readonly type: 'table',
 } | {
   readonly rows: UploadedPicklistItem[],
@@ -246,28 +246,28 @@ function UploadedTableRows({
         }`
       }>
       <UploadedTableRowsHeaderProps
-        column_names={
-          type === 'table' && column_names ?
+        columnNames={
+          type === 'table' && columnNames ?
             [
               ...(
                 rows.length !== 0 &&
-                'record_id' in rows[0] &&
-                rows[0].record_id >= 0 ?
+                'recordId' in rows[0] &&
+                rows[0].recordId >= 0 ?
                   [''] :
                   []
               ),
-              ...column_names,
+              ...columnNames,
             ] :
             ['Picklist value']
         }
       />
       {
-        type === 'table' && get_record_view_url ?
+        type === 'table' && getRecordViewUrl ?
           <UploadedTableRow
             //@ts-ignore
             rows={rows}
             onCellClicked={handleCellClicked}
-            get_record_view_url={get_record_view_url}
+            getRecordViewUrl={getRecordViewUrl}
           /> :
           <UploadedPicklistRow
             //@ts-ignore
@@ -280,29 +280,29 @@ function UploadedTableRows({
 }
 
 function UploadedTableHeader({
-  table_icon,
-  table_name,
+  tableIcon,
+  tableName,
   label,
-  rows_count,
+  rowsCount,
   tableIsCollapsed,
   onCreateRecordSet: handleCreateRecordSet,
   onCreateDataSet: handleCreateDataSet,
   onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
 }: {
-  readonly table_icon?: string,
-  readonly table_name?: string,
+  readonly tableIcon?: string,
+  readonly tableName?: string,
   readonly label: string,
-  readonly rows_count: number,
+  readonly rowsCount: number,
   readonly tableIsCollapsed: boolean,
   readonly onCreateRecordSet?: () => void,
   readonly onCreateDataSet?: () => void,
   readonly onToggleTableRecordsVisibility: () => void,
   readonly type: UploadedRecordsTypes,
 } & ({
-  readonly table_icon: string,
-  readonly table_name: string,
+  readonly tableIcon: string,
+  readonly tableName: string,
   readonly label: string,
-  readonly rows_count: number,
+  readonly rowsCount: number,
   readonly tableIsCollapsed: boolean,
   readonly onCreateRecordSet: () => void,
   readonly onCreateDataSet: () => void,
@@ -310,7 +310,7 @@ function UploadedTableHeader({
   readonly type: UploadedRecordsTypes,
 } | {
   readonly label: string,
-  readonly rows_count: number,
+  readonly rowsCount: number,
   readonly tableIsCollapsed: boolean,
   readonly onToggleTableRecordsVisibility: () => void,
   readonly type: UploadedRecordsTypes,
@@ -329,22 +329,22 @@ function UploadedTableHeader({
           '\u25BC'
       }
       {
-        table_icon &&
+        tableIcon &&
         <img
           className="wb-upload-results-table-icon"
-          src={table_icon}
-          alt={table_name}
+          src={tableIcon}
+          alt={tableName}
         />
       }
       <div className="wb-upload-results-table-label">{label}</div>
       <div
         className="wb-upload-results-table-rows-count"
-      >- {rows_count}</div>
+      >- {rowsCount}</div>
     </div>
     <div className="wb-upload-results-controls">
       {
         /* TODO: enable these buttons */
-        rows_count === -1 &&
+        rowsCount === -1 &&
         <>
           <button onClick={handleCreateRecordSet}>Record Set</button>
           <button onClick={handleCreateDataSet}>Data Set</button>
@@ -357,14 +357,14 @@ function UploadedTableHeader({
 function UploadedTable({
   uploadedTable,
   type,
-  table_name,
+  tableName,
   tableIsCollapsed,
   onCreateRecordSet: handleCreateRecordSet,
   onCreateDataSet: handleCreateDataSet,
   onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
   onCellClicked: handleCellClicked,
 }: {
-  readonly table_name: string,
+  readonly tableName: string,
   readonly tableIsCollapsed: boolean,
   readonly onToggleTableRecordsVisibility: () => void,
   readonly onCellClicked: HandleCellClicked,
@@ -383,7 +383,7 @@ function UploadedTable({
     {/*@ts-ignore*/}
     <UploadedTableHeader
       type={type}
-      table_name={table_name}
+      tableName={tableName}
       tableIsCollapsed={tableIsCollapsed}
       onCreateRecordSet={handleCreateRecordSet}
       onCreateDataSet={handleCreateDataSet}
@@ -391,13 +391,13 @@ function UploadedTable({
       {...(
         type === 'table' ?
           {
-            table_icon: uploadedTable.table_icon,
-            label: uploadedTable.table_label,
-            rows_count: uploadedTable.rows_count ?? uploadedTable.rows.length,
+            tableIcon: uploadedTable.tableIcon,
+            label: uploadedTable.tableLabel,
+            rowsCount: uploadedTable.rowsCount ?? uploadedTable.rows.length,
           } :
           {
-            label: table_name,
-            rows_count: Object.keys(uploadedTable).length,
+            label: tableName,
+            rowsCount: Object.keys(uploadedTable).length,
           }
       )}
     />
@@ -408,13 +408,13 @@ function UploadedTable({
         <UploadedTableRows
           type={type}
           onCellClicked={handleCellClicked}
-          tableIsTree={typeof uploadedTable.rows_count !== 'undefined'}
+          tableIsTree={typeof uploadedTable.rowsCount !== 'undefined'}
           {...(
             type === 'table' ?
               {
                 rows: uploadedTable.rows,
-                column_names: uploadedTable.column_names,
-                get_record_view_url: uploadedTable.get_record_view_url,
+                columnNames: uploadedTable.columnNames,
+                getRecordViewUrl: uploadedTable.getRecordViewUrl,
               } :
               {
                 rows: uploadedTable,
@@ -434,39 +434,39 @@ function UploadedRecords({
   onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
   onCellClicked: handleCellClicked,
 }: {
-  readonly onToggleTableRecordsVisibility: (table_name: string) => void,
+  readonly onToggleTableRecordsVisibility: (tableName: string) => void,
   readonly tableRecordsVisibilityState: RecordsVisibilityState,
   readonly onCellClicked: HandleCellClicked,
-  readonly onCreateRecordSet?: (table_name: string) => void,
-  readonly onCreateDataSet?: (table_name: string) => void,
+  readonly onCreateRecordSet?: (tableName: string) => void,
+  readonly onCreateDataSet?: (tableName: string) => void,
 } & ({
   readonly uploadedRecords: UploadedRows,
-  readonly onCreateRecordSet: (table_name: string) => void,
-  readonly onCreateDataSet: (table_name: string) => void,
+  readonly onCreateRecordSet: (tableName: string) => void,
+  readonly onCreateDataSet: (tableName: string) => void,
   readonly type: 'table',
 } | {
   readonly uploadedRecords: UploadedPicklistItems,
   readonly type: 'picklist',
 })): JSX.Element {
   return <>{
-    Object.entries(uploadedRecords).map(([table_name, table_data]) =>
+    Object.entries(uploadedRecords).map(([tableName, tableData]) =>
       //@ts-ignore
       <UploadedTable
-        uploadedTable={table_data}
-        table_name={table_name}
-        key={table_name}
+        uploadedTable={tableData}
+        tableName={tableName}
+        key={tableName}
         type={type}
-        tableIsCollapsed={tableRecordsVisibilityState[table_name]}
+        tableIsCollapsed={tableRecordsVisibilityState[tableName]}
         onCreateRecordSet={
           handleCreateRecordSet &&
-          handleCreateRecordSet.bind(null, table_name)
+          handleCreateRecordSet.bind(null, tableName)
         }
         onCreateDataSet={
           handleCreateDataSet &&
-          handleCreateDataSet.bind(null, table_name)
+          handleCreateDataSet.bind(null, tableName)
         }
         onToggleTableRecordsVisibility={
-          handleToggleTableRecordsVisibility.bind(null, table_name)
+          handleToggleTableRecordsVisibility.bind(null, tableName)
         }
         onCellClicked={handleCellClicked}
       />,
@@ -474,7 +474,7 @@ function UploadedRecords({
   }</>;
 }
 
-const reducer = generate_reducer<WBUploadedState, WBUploadedActions>({
+const reducer = generateReducer<WBUploadedState, WBUploadedActions>({
 
   'CreateRecordSetAction': ({state}) => {
     alert('TEST: Create record set');
@@ -489,33 +489,33 @@ const reducer = generate_reducer<WBUploadedState, WBUploadedActions>({
       ...state,
       [action.destination]: Object.fromEntries(
         Object.entries(state[action.destination]).map(([
-          table_name,
-          is_collapsed,
+          tableName,
+          isCollapsed,
         ]) => [
-          table_name,
-          is_collapsed !== (
-            table_name === action.table_name
+          tableName,
+          isCollapsed !== (
+            tableName === action.tableName
           ),
         ]),
       ),
     }
   ),
-  'CellClickedAction': ({state, action: {row_index, column_index}}) => {
+  'CellClickedAction': ({state, action: {rowIndex, columnIndex}}) => {
     if (
-      row_index >= 0 &&
-      column_index >= 0
+      rowIndex >= 0 &&
+      columnIndex >= 0
     )
-      state.props.hot.selectCell(row_index, column_index);
+      state.props.hot.selectCell(rowIndex, columnIndex);
     return state;
   },
 
 });
 
-const generate_initial_visibility_state = <T, >(
-  source_dictionary: Record<string, T>,
+const generateInitialVisibilityState = <T, >(
+  sourceDictionary: Record<string, T>,
 ) =>
-  Object.fromEntries(Object.keys(source_dictionary).map(key_name => [
-    key_name,
+  Object.fromEntries(Object.keys(sourceDictionary).map(keyName => [
+    keyName,
     true,
   ]));
 
@@ -525,9 +525,9 @@ const getInitialWBUploadedViewState = (
   {
     type: 'WBUploadedState',
     tableRecordsVisibilityState:
-      generate_initial_visibility_state(props.uploadedRows),
+      generateInitialVisibilityState(props.uploadedRows),
     picklistRecordsVisibilityState:
-      generate_initial_visibility_state(props.uploadedPicklistItems),
+      generateInitialVisibilityState(props.uploadedPicklistItems),
     props,
   }
 );
@@ -561,26 +561,26 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
         type='table'
         uploadedRecords={props.uploadedRows}
         tableRecordsVisibilityState={state.tableRecordsVisibilityState}
-        onCreateRecordSet={(table_name: string) => dispatch({
+        onCreateRecordSet={(tableName: string) => dispatch({
           type: 'CreateRecordSetAction',
-          table_name,
+          tableName,
         })}
-        onCreateDataSet={(table_name: string) => dispatch({
+        onCreateDataSet={(tableName: string) => dispatch({
           type: 'CreateDataSetAction',
-          table_name,
+          tableName,
         })}
-        onCellClicked={(row_index: number, column_index: number) =>
+        onCellClicked={(rowIndex: number, columnIndex: number) =>
           dispatch({
             type: 'CellClickedAction',
-            row_index,
-            column_index,
+            rowIndex,
+            columnIndex,
           })
         }
-        onToggleTableRecordsVisibility={(table_name: string) =>
+        onToggleTableRecordsVisibility={(tableName: string) =>
           dispatch({
             type: 'ToggleTableRecordsVisibilityAction',
             destination: 'tableRecordsVisibilityState',
-            table_name,
+            tableName,
           })
         }
       />
@@ -588,18 +588,18 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
         type='picklist'
         uploadedRecords={props.uploadedPicklistItems}
         tableRecordsVisibilityState={state.picklistRecordsVisibilityState}
-        onCellClicked={(row_index: number, column_index: number) =>
+        onCellClicked={(rowIndex: number, columnIndex: number) =>
           dispatch({
             type: 'CellClickedAction',
-            row_index,
-            column_index,
+            rowIndex,
+            columnIndex,
           })
         }
-        onToggleTableRecordsVisibility={(table_name: string) =>
+        onToggleTableRecordsVisibility={(tableName: string) =>
           dispatch({
             type: 'ToggleTableRecordsVisibilityAction',
             destination: 'picklistRecordsVisibilityState',
-            table_name,
+            tableName,
           })
         }
       />
@@ -631,16 +631,16 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 
   React.useEffect(() =>  // fetch tree ranks
       void (
-        fetch_data_model_promise.then(() =>
+        fetchDataModelPromise.then(() =>
           setTreeRanks(
             Object.fromEntries(
               Object.entries(
-                data_model_storage.ranks,
-              ).map(([table_name, table_ranks]) => [
-                  table_name,
+                dataModelStorage.ranks,
+              ).map(([tableName, tableRanks]) => [
+                  tableName,
                   [
-                    data_model_storage.root_ranks[table_name],
-                    ...Object.keys(table_ranks),
+                    dataModelStorage.rootRanks[tableName],
+                    ...Object.keys(tableRanks),
                   ],
                 ],
               ),
@@ -690,9 +690,9 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 export default createBackboneView<WBUploadedViewConstructorProps,
   WBUploadedViewConstructorProps,
   WBUploadedViewDataParseProps>({
-  module_name: 'WBUploadedView',
+  moduleName: 'WBUploadedView',
   title: 'Upload Results',
-  class_name: 'wb-uploaded',
+  className: 'wb-uploaded',
   initialize(self, {
     dataset,
     hot,
@@ -705,7 +705,7 @@ export default createBackboneView<WBUploadedViewConstructorProps,
   remove: (self) =>
     self.removeCallback(),
   Component: WBUploadedViewDataParser,
-  get_component_props: (self) => (
+  getComponentProps: (self) => (
     {
       handleClose: self.remove.bind(self),
       hot: self.hot,

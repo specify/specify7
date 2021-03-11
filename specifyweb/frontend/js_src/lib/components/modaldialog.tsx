@@ -9,8 +9,8 @@
 
 import React               from 'react';
 import ReactDOM            from 'react-dom';
-import $                   from 'jquery';
-import { named_component } from '../statemanagement';
+import $                  from 'jquery';
+import { namedComponent } from '../statemanagement';
 
 interface ModalDialogBaseProps {
   readonly children: JSX.Element | JSX.Element[] | string,
@@ -30,7 +30,7 @@ function ModalDialogContent({
   </>;
 }
 
-function close_dialog(
+function closeDialog(
   $dialog: JQuery<HTMLElement>,
   resize: () => void,
   onCloseCallback?: () => void,
@@ -43,7 +43,7 @@ function close_dialog(
   onCloseCallback?.();
 }
 
-export const ModalDialog = React.memo(named_component('ModalDialog', ({
+export const ModalDialog = React.memo(namedComponent('ModalDialog', ({
   onCloseCallback,
   properties,
   onLoadCallback,
@@ -55,49 +55,49 @@ export const ModalDialog = React.memo(named_component('ModalDialog', ({
   readonly properties?: Readonly<Record<string, unknown>>,
 }) => {
 
-  const dialog_ref = React.useRef<HTMLDivElement>(null);
+  const dialogRef = React.useRef<HTMLDivElement>(null);
   const [$dialog, setDialog] = React.
     useState<JQuery<HTMLElement> | undefined>();
 
   React.useEffect(() => {
-    if (dialog_ref.current === null)
+    if (dialogRef.current === null)
       return;
 
-    const dialog_element = $(
-      dialog_ref.current.children[0] as HTMLElement,
+    const dialogElement = $(
+      dialogRef.current.children[0] as HTMLElement,
     );
     const resize = () =>
-      dialog_element.dialog(
+      dialogElement.dialog(
         'option',
         'position',
         'center',
       );
 
-    const close_dialog_bind = () =>
-      close_dialog(
-        dialog_element,
+    const closeDialogBind = () =>
+      closeDialog(
+        dialogElement,
         resize,
         onCloseCallback,
       );
 
-    dialog_element.dialog({
+    dialogElement.dialog({
       modal: true,
       width: 300,
-      close: close_dialog_bind,
+      close: closeDialogBind,
       buttons: [
         {
-          text: 'Close', click: close_dialog_bind,
+          text: 'Close', click: closeDialogBind,
         },
       ],
       ...properties,
     });
     window.addEventListener('resize', resize);
 
-    setDialog(dialog_element);
+    setDialog(dialogElement);
 
-    return close_dialog_bind;
+    return closeDialogBind;
 
-  }, [dialog_ref]);
+  }, [dialogRef]);
 
   React.useEffect(() => {
 
@@ -117,7 +117,7 @@ export const ModalDialog = React.memo(named_component('ModalDialog', ({
 
   }, [$dialog, children]);
 
-  return <div ref={dialog_ref}>
+  return <div ref={dialogRef}>
     <div />
   </div>;
 }));

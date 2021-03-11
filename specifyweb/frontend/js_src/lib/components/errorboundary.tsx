@@ -12,9 +12,9 @@ import { ModalDialog } from './modaldialog';
 
 type ErrorBoundaryState =
   {
-    has_error: false,
+    hasError: false,
   } | {
-  has_error: true,
+  hasError: true,
   error: {toString: () => string},
   errorInfo: {componentStack: string}
 };
@@ -22,7 +22,7 @@ type ErrorBoundaryState =
 export default class ErrorBoundary
   extends React.Component<{children: JSX.Element}, ErrorBoundaryState> {
   state: ErrorBoundaryState = {
-    has_error: false,
+    hasError: false,
   };
 
   componentDidCatch(
@@ -31,14 +31,14 @@ export default class ErrorBoundary
   ): void {
     console.log(error, errorInfo);
     this.setState({
-      has_error: true,
+      hasError: true,
       error,
       errorInfo,
     });
   }
 
   render(): JSX.Element {
-    if (this.state.has_error)
+    if (this.state.hasError)
       return <ModalDialog properties={{
         title: 'Unexpected Error',
         buttons: [

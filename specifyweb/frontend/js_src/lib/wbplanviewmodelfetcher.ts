@@ -10,16 +10,16 @@
 import schema from './schema';
 import domain from './domain';
 
-import { get_friendly_name } from './wbplanviewhelper';
-import * as cache            from './wbplanviewcache';
+import { getFriendlyName } from './wbplanviewhelper';
+import * as cache          from './wbplanviewcache';
 import { RelationshipType }  from './components/wbplanviewmapper';
 import {
-  Domain as domain_type,
-  Schema as schema_type,
+  Domain as DomainType,
+  Schema as SchemaType,
   SchemaModelTableField,
   SchemaModelTableRelationship,
-}                            from './legacy_types';
-import data_model_storage    from './wbplanviewmodel';
+}                       from './legacytypes';
+import dataModelStorage from './wbplanviewmodel';
 
 export type DataModelFieldWritable =
   DataModelNonRelationshipWritable |
@@ -29,25 +29,25 @@ export type DataModelField =
   DataModelRelationship
 
 interface DataModelFieldWritablePrimer {
-  friendly_name: string,
-  is_hidden: boolean,
-  is_required: boolean,
-  table_name?: string,
+  friendlyName: string,
+  isHidden: boolean,
+  isRequired: boolean,
+  tableName?: string,
   type?: RelationshipType,
-  foreign_name?: string,
+  foreignName?: string,
 }
 
 export interface DataModelNonRelationshipWritable
   extends DataModelFieldWritablePrimer {
-  is_relationship: false,
+  isRelationship: false,
 }
 
 export interface DataModelRelationshipWritable
   extends DataModelFieldWritablePrimer {
-  is_relationship: true,
-  table_name: string,
+  isRelationship: true,
+  tableName: string,
   type: RelationshipType,
-  foreign_name: string,
+  foreignName: string,
 }
 
 export type DataModelNonRelationship =
@@ -60,7 +60,7 @@ export type DataModelFieldsWritable = Record<string, DataModelFieldWritable>
 export type DataModelFields = Readonly<DataModelFieldsWritable>
 
 export interface DataModelTableWritable {
-  table_friendly_name: string,
+  tableFriendlyName: string,
   fields: DataModelFieldsWritable,
 }
 
@@ -69,38 +69,38 @@ export type DataModelTable = Readonly<DataModelTableWritable>
 export type DataModelTablesWritable = Record<string, DataModelTableWritable>
 
 export interface DataModelTables {
-  readonly [table_name: string]: DataModelTable,
+  readonly [tableName: string]: DataModelTable,
 }
 
-type TableRanksInline = [table_name: string, table_ranks: [string, boolean][]];
+type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
 
 interface DataModelRanksWritable {
   // whether rank is required
-  [table_name: string]: Readonly<Record<string, boolean>>
+  [tableName: string]: Readonly<Record<string, boolean>>
 }
 
 export type DataModelRanks = Readonly<DataModelRanksWritable>
 
-// a dictionary like table_name==>table_friendly_name
+// a dictionary like tableName==>tableFriendlyName
 export type DataModelListOfTablesWritable = Record<string, {
-  table_friendly_name: string,
-  is_hidden: boolean,
+  tableFriendlyName: string,
+  isHidden: boolean,
 }>
 
-// a dictionary like table_name==>table_friendly_name
+// a dictionary like tableName==>tableFriendlyName
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>
 
-const fetching_parameters: {
-  readonly required_fields_to_hide: string[],
-  readonly tables_to_hide: string[],
-  readonly table_keywords_to_exclude: string[],
-  readonly required_fields_to_make_optional: Record<string, string[]>
-  readonly common_base_tables: string[]
+const fetchingParameters: {
+  readonly requiredFieldsToHide: Readonly<string[]>,
+  readonly tablesToHide: Readonly<string[]>,
+  readonly tableKeywordsToExclude: Readonly<string[]>,
+  readonly requiredFieldsToMakeOptional: Record<string, Readonly<string[]>>
+  readonly commonBaseTables: Readonly<string[]>
 } = {
 
   // all required fields are not hidden, except for these, which are made
   // not required
-  required_fields_to_hide: [
+  requiredFieldsToHide: [
     'timestampcreated',
     'timestampmodified',
     'createdbyagent',
@@ -116,7 +116,7 @@ const fetching_parameters: {
     'isloanable',
     'treedef',
   ],
-  tables_to_hide: [
+  tablesToHide: [
     'definition',
     'definitionitem',
     'geographytreedef',
@@ -124,13 +124,13 @@ const fetching_parameters: {
     'treedef',
     'collectingeventattr',
     'collectionobjectattr',
-    ...schema.orgHierarchy.filter(table_name =>
-      table_name !== 'collectionobject',
+    ...schema.orgHierarchy.filter(tableName =>
+      tableName !== 'collectionobject',
     ),
   ],
 
   // forbid setting any of the tables that have these keywords as base tables
-  table_keywords_to_exclude: [
+  tableKeywordsToExclude: [
     'Authorization',
     'Variant',
     'Attribute',
@@ -141,7 +141,7 @@ const fetching_parameters: {
     'Type',
   ],
 
-  required_fields_to_make_optional: {
+  requiredFieldsToMakeOptional: {
     agent: ['agenttype'],
     determination: ['iscurrent'],
     loadpreparation: ['isresolved'],
@@ -149,7 +149,7 @@ const fetching_parameters: {
   },
 
   //base tables that are available by default
-  common_base_tables: [
+  commonBaseTables: [
     'accession',
     'agent',
     'borrow',
@@ -173,23 +173,23 @@ const fetching_parameters: {
     'treatmentevent',
   ],
 
-};
+} as const;
 
 /* Fetches ranks for a particular table */
-const fetch_ranks = (
-  table_name: string,  // Official table name (from the data model)
+const fetchRanks = (
+  tableName: string,  // Official table name (from the data model)
 ): Promise<TableRanksInline> =>
   new Promise(resolve =>
     (
-      domain as domain_type
-    ).getTreeDef(table_name).done(tree_definition =>
-      tree_definition.rget('treedefitems').done(
+      domain as DomainType
+    ).getTreeDef(tableName).done(treeDefinition =>
+      treeDefinition.rget('treedefitems').done(
         treeDefItems =>
           treeDefItems.fetch({limit: 0}).done(() =>
             resolve([
               // TODO: add complex logic for figuring out if
               //  rank is required or not
-              table_name,
+              tableName,
               Object.values(treeDefItems.models).map(rank =>
                 [rank.get('name') as string, false],
               ),
@@ -199,101 +199,101 @@ const fetch_ranks = (
     ),
   );
 
-const required_field_should_be_hidden = (field_name: string) =>
-  fetching_parameters.required_fields_to_hide.indexOf(field_name) !== -1;
+const requiredFieldShouldBeHidden = (fieldName: string) =>
+  fetchingParameters.requiredFieldsToHide.indexOf(fieldName) !== -1;
 
-const field_should_be_made_optional = (
-  table_name: string,
-  field_name: string,
+const fieldShouldBeMadeOptional = (
+  tableName: string,
+  fieldName: string,
 ) =>
-  fetching_parameters.required_fields_to_make_optional[
-    table_name
+  fetchingParameters.requiredFieldsToMakeOptional[
+    tableName
     ]?.includes(
-    field_name,
+    fieldName,
   ) || false;
 
-const known_relationship_types: RelationshipType[] = [
+const knownRelationshipTypes: RelationshipType[] = [
   'one-to-one',
   'one-to-many',
   'many-to-one',
   'many-to-many',
 ];
-const alias_relationship_types: Record<string, RelationshipType> = {
+const aliasRelationshipTypes: Record<string, RelationshipType> = {
   'zero-to-one': 'one-to-one',
 };
 
-function handle_relationship_type(
-  relationship_type: RelationshipType,
+function handleRelationshipType(
+  relationshipType: RelationshipType,
 ): RelationshipType {
-  if (known_relationship_types.indexOf(relationship_type) === -1) {
-    if (relationship_type in alias_relationship_types)
-      return alias_relationship_types[relationship_type];
+  if (knownRelationshipTypes.indexOf(relationshipType) === -1) {
+    if (relationshipType in aliasRelationshipTypes)
+      return aliasRelationshipTypes[relationshipType];
     else
       throw new Error('Unknown relationship type detected');
   }
   else
-    return relationship_type;
+    return relationshipType;
 }
 
-function handle_relationship_field(
+function handleRelationshipField(
   field: SchemaModelTableField,
-  field_data: DataModelFieldWritable,
-  field_name: string,
-  has_relationship_with_definition: () => void,
-  has_relationship_with_definition_item: () => void,
+  fieldData: DataModelFieldWritable,
+  fieldName: string,
+  hasRelationshipWithDefinition: () => void,
+  hasRelationshipWithDefinitionItem: () => void,
 ): undefined | true {
   const relationship: SchemaModelTableRelationship =
     field as SchemaModelTableRelationship;
 
-  let foreign_name = relationship.otherSideName;
-  if (typeof foreign_name !== 'undefined')
-    foreign_name = foreign_name.toLowerCase();
+  let foreignName = relationship.otherSideName;
+  if (typeof foreignName !== 'undefined')
+    foreignName = foreignName.toLowerCase();
 
-  const relationship_type = handle_relationship_type(relationship.type);
-  const table_name = relationship.relatedModelName.toLowerCase();
+  const relationshipType = handleRelationshipType(relationship.type);
+  const tableName = relationship.relatedModelName.toLowerCase();
 
-  if (field_name === 'definition') {
-    has_relationship_with_definition();
+  if (fieldName === 'definition') {
+    hasRelationshipWithDefinition();
     return;
   }
 
-  if (field_name === 'definitionitem') {
-    has_relationship_with_definition_item();
+  if (fieldName === 'definitionitem') {
+    hasRelationshipWithDefinitionItem();
     return;
   }
 
   if (
     relationship.readOnly ||
-    fetching_parameters.tables_to_hide.indexOf(table_name) !== -1
+    fetchingParameters.tablesToHide.indexOf(tableName) !== -1
   )
     return;
 
-  field_data.table_name = table_name;
-  field_data.type = relationship_type;
-  field_data.foreign_name = foreign_name;
+  fieldData.tableName = tableName;
+  fieldData.type = relationshipType;
+  fieldData.foreignName = foreignName;
 
   return true;
 }
 
-const data_model_fetcher_version = '3';
-const cache_bucket_name = 'data_model_fetcher';
+const dataModelFetcherVersion = '3';
+const cacheBucketName = 'dataModelFetcher';
 
-const cache_get = <T>(cache_name: string) =>
+const cacheGet = <T>(cacheName: string) =>
   cache.get<T>(
-    cache_bucket_name,
-    cache_name,
+    cacheBucketName,
+    cacheName,
     {
-      version: data_model_fetcher_version,
+      version: dataModelFetcherVersion,
     },
   );
 
-const cache_set = <T, >(cache_name: string, cache_value: T) =>
+const cacheSet = <T, >(cacheName: string, cacheValue: T) =>
   cache.set(
-    cache_bucket_name,
-    cache_name,
-    cache_value,
+    cacheBucketName,
+    cacheName,
+    cacheValue,
     {
-      version: data_model_fetcher_version,
+      version: dataModelFetcherVersion,
       overwrite: true,
     },
   );
@@ -302,159 +302,159 @@ const cache_set = <T, >(cache_name: string, cache_value: T) =>
 export default (): Promise<void> =>
   new Promise(resolve => {
 
-    if (typeof data_model_storage.tables !== 'undefined')
+    if (typeof dataModelStorage.tables !== 'undefined')
       return resolve();
 
     {
 
       const tables =
-        cache_get<DataModelTables>('tables');
-      const list_of_base_tables =
-        cache_get<DataModelListOfTables>(
-          'list_of_base_tables',
+        cacheGet<DataModelTables>('tables');
+      const listOfBaseTables =
+        cacheGet<DataModelListOfTables>(
+          'listOfBaseTables',
         );
       const ranks =
-        cache_get<DataModelRanks>('ranks');
-      const root_ranks =
-        cache_get<Record<string, string>>('root_ranks');
+        cacheGet<DataModelRanks>('ranks');
+      const rootRanks =
+        cacheGet<Record<string, string>>('rootRanks');
 
       if (
         tables &&
-        list_of_base_tables &&
+        listOfBaseTables &&
         ranks &&
-        root_ranks
+        rootRanks
       ) {
-        data_model_storage.tables = tables;
-        data_model_storage.list_of_base_tables = list_of_base_tables;
-        data_model_storage.ranks = ranks;
-        data_model_storage.root_ranks = root_ranks;
+        dataModelStorage.tables = tables;
+        dataModelStorage.listOfBaseTables = listOfBaseTables;
+        dataModelStorage.ranks = ranks;
+        dataModelStorage.rootRanks = rootRanks;
         return resolve();
       }
     }
 
-    const list_of_base_tables: DataModelListOfTablesWritable = {};
-    const fetch_ranks_queue: Promise<TableRanksInline>[] = [];
+    const listOfBaseTables: DataModelListOfTablesWritable = {};
+    const fetchRanksQueue: Promise<TableRanksInline>[] = [];
 
     const tables = Object.values((
-      schema as unknown as schema_type
+      schema as unknown as SchemaType
     ).models).reduce((
       tables,
-      table_data,
+      tableData,
     ) => {
 
       // @ts-ignore
-      const table_name =
-        table_data.longName.split('.').slice(
+      const tableName =
+        tableData.longName.split('.').slice(
           -1)[0].toLowerCase();
-      const table_friendly_name = table_data.getLocalizedName();
+      const tableFriendlyName = tableData.getLocalizedName();
 
       const fields: DataModelFieldsWritable = {};
-      let has_relationship_with_definition = false;
-      let has_relationship_with_definition_item = false;
+      let hasRelationshipWithDefinition = false;
+      let hasRelationshipWithDefinitionItem = false;
 
       if (
-        table_data.system ||
-        fetching_parameters.tables_to_hide.indexOf(table_name) !== -1
+        tableData.system ||
+        fetchingParameters.tablesToHide.indexOf(tableName) !== -1
       )
         return tables;
 
-      table_data.fields.some(field => {
+      tableData.fields.some(field => {
 
-        let field_name = field.name;
-        const friendly_name =
-          field.getLocalizedName() ?? get_friendly_name(field_name);
+        let fieldName = field.name;
+        const friendlyName =
+          field.getLocalizedName() ?? getFriendlyName(fieldName);
 
-        field_name = field_name.toLowerCase();
+        fieldName = fieldName.toLowerCase();
 
-        let is_required = field.isRequired;
-        let is_hidden = field.isHidden() === 1;
+        let isRequired = field.isRequired;
+        let isHidden = field.isHidden() === 1;
 
         // required fields should not be hidden, unless they are present in
         // this list
-        if (required_field_should_be_hidden(field_name)) {
-          is_required = false;
-          is_hidden = true;
+        if (requiredFieldShouldBeHidden(fieldName)) {
+          isRequired = false;
+          isHidden = true;
         }
-        else if (is_hidden && is_required)
-          is_hidden = false;
+        else if (isHidden && isRequired)
+          isHidden = false;
 
-        if (field_should_be_made_optional(table_name, field_name))
-          is_required = false;
+        if (fieldShouldBeMadeOptional(tableName, fieldName))
+          isRequired = false;
 
         //@ts-ignore
-        const field_data: DataModelFieldWritable = {
-          friendly_name,
-          is_hidden,
-          is_required,
-          is_relationship: field.isRelationship,
+        const fieldData: DataModelFieldWritable = {
+          friendlyName: friendlyName,
+          isHidden: isHidden,
+          isRequired: isRequired,
+          isRelationship: field.isRelationship,
         };
 
         if (
-          field_data.is_relationship &&
-          !handle_relationship_field(
+          fieldData.isRelationship &&
+          !handleRelationshipField(
             field,
-            field_data,
-            field_name,
+            fieldData,
+            fieldName,
             () => {
-              has_relationship_with_definition = true;
+              hasRelationshipWithDefinition = true;
             },
             () => {
-              has_relationship_with_definition_item = true;
+              hasRelationshipWithDefinitionItem = true;
             },
           )
         )
           return;
 
-        fields[field_name] = field_data;
+        fields[fieldName] = fieldData;
 
       });
 
-      const ordered_fields = Object.fromEntries(
+      const orderedFields = Object.fromEntries(
         Object.entries(fields).sort((
           [, {
-            is_relationship,
-            friendly_name,
+            isRelationship,
+            friendlyName,
           }],
           [, {
-            is_relationship: second_is_relationship,
-            friendly_name: second_friendly_name,
+            isRelationship: secondIsRelationship,
+            friendlyName: secondFriendlyName,
           }],
           ) =>
-            is_relationship === second_is_relationship ?
-              friendly_name.localeCompare(second_friendly_name) :
-              is_relationship ?
+            isRelationship === secondIsRelationship ?
+              friendlyName.localeCompare(secondFriendlyName) :
+              isRelationship ?
                 1 :
                 -1,
-        ).map(([field_name]) =>
-          [field_name, fields[field_name]],
+        ).map(([fieldName]) =>
+          [fieldName, fields[fieldName]],
         ),
       );
 
       if (
-        !fetching_parameters.table_keywords_to_exclude.some(
-          table_keyword_to_exclude =>
-            table_friendly_name.indexOf(
-              table_keyword_to_exclude,
+        !fetchingParameters.tableKeywordsToExclude.some(
+          tableKeywordToExclude =>
+            tableFriendlyName.indexOf(
+              tableKeywordToExclude,
             ) !== -1,
         )
       )
-        list_of_base_tables[table_name] = {
-          table_friendly_name,
-          is_hidden: fetching_parameters.common_base_tables.indexOf(
-            table_name,
+        listOfBaseTables[tableName] = {
+          tableFriendlyName: tableFriendlyName,
+          isHidden: fetchingParameters.commonBaseTables.indexOf(
+            tableName,
           ) === -1,
         };
 
-      tables[table_name] = {
-        table_friendly_name,
-        fields: ordered_fields,
+      tables[tableName] = {
+        tableFriendlyName: tableFriendlyName,
+        fields: orderedFields,
       };
 
       if (
-        has_relationship_with_definition &&
-        has_relationship_with_definition_item
+        hasRelationshipWithDefinition &&
+        hasRelationshipWithDefinitionItem
       )
-        fetch_ranks_queue.push(fetch_ranks(table_name));
+        fetchRanksQueue.push(fetchRanks(tableName));
 
       return tables;
 
@@ -463,67 +463,67 @@ export default (): Promise<void> =>
 
     // remove relationships to system tables
     Object.entries(tables).forEach(([
-        table_name,
-        table_data,
+        tableName,
+        tableData,
       ]) =>
         (
           Object.entries(
-            table_data.fields,
-          ).filter(([, {is_relationship}]) =>
-            is_relationship,
+            tableData.fields,
+          ).filter(([, {isRelationship}]) =>
+            isRelationship,
           ) as [
-            field_name: string,
-            relationship_data: DataModelRelationship
+            fieldName: string,
+            relationshipData: DataModelRelationship
           ][]
         ).filter(([, {
-            table_name: relationship_table_name,
+            tableName: relationshipTableName,
           }]) =>
-          typeof tables[relationship_table_name] === 'undefined',
-        ).forEach(([relationship_name]) => {
-          delete tables[table_name].fields[relationship_name];
+          typeof tables[relationshipTableName] === 'undefined',
+        ).forEach(([relationshipName]) => {
+          delete tables[tableName].fields[relationshipName];
         }),
     );
 
 
-    Promise.all(fetch_ranks_queue).then(resolved => {
+    Promise.all(fetchRanksQueue).then(resolved => {
 
-      const root_ranks: Record<string, string> = Object.fromEntries(
-        resolved.map(([table_name], index) =>
-          [table_name, resolved[index][1].shift()?.[0] || '']),
+      const rootRanks: Record<string, string> = Object.fromEntries(
+        resolved.map(([tableName], index) =>
+          [tableName, resolved[index][1].shift()?.[0] || '']),
       );
 
       const ranks: DataModelRanks =
         Object.fromEntries(resolved.map(([
-            table_name,
-            table_ranks,
+            tableName,
+            tableRanks,
           ]) =>
-            [table_name, Object.fromEntries(table_ranks)],
+            [tableName, Object.fromEntries(tableRanks)],
         ));
 
       // remove relationships from tree table fields
-      resolved.forEach(([table_name]) => (
-        tables[table_name].fields = Object.fromEntries(
+      resolved.forEach(([tableName]) => (
+        tables[tableName].fields = Object.fromEntries(
           Object.entries(
-            tables[table_name].fields,
-          ).filter(([, {is_relationship}]) =>
-            !is_relationship,
+            tables[tableName].fields,
+          ).filter(([, {isRelationship}]) =>
+            !isRelationship,
           ),
         )
       ));
 
-      data_model_storage.tables =
-        cache_set<DataModelTables>('tables', tables);
-      data_model_storage.list_of_base_tables =
-        cache_set<DataModelListOfTables>(
-          'list_of_base_tables',
-          list_of_base_tables,
+      dataModelStorage.tables =
+        cacheSet<DataModelTables>('tables', tables);
+      dataModelStorage.listOfBaseTables =
+        cacheSet<DataModelListOfTables>(
+          'listOfBaseTables',
+          listOfBaseTables,
         );
-      data_model_storage.ranks =
-        cache_set<DataModelRanks>('ranks', ranks);
-      data_model_storage.root_ranks =
-        cache_set<Record<string, string>>(
-          'root_ranks',
-          root_ranks,
+      dataModelStorage.ranks =
+        cacheSet<DataModelRanks>('ranks', ranks);
+      dataModelStorage.rootRanks =
+        cacheSet<Record<string, string>>(
+          'rootRanks',
+          rootRanks,
         );
 
       resolve();

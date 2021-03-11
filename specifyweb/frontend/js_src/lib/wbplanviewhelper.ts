@@ -6,22 +6,24 @@
 
 'use strict';
 
-import { mapping_path_to_string }       from './wbplanviewmodelhelper';
+import { mappingPathToString } from './wbplanviewmodelhelper';
 import {
   FullMappingPath,
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
 import { ColumnOptions } from './wbplanviewconverter';
+
+
 /*
 * Get a friendly name from the field. (Converts Camel Case to human-readable
 * name and fixes some errors). This method is only called if schema
 * localization does not have a friendly name for this field
 * */
-export const get_friendly_name = (
-  original_name: string,  // Original field name
+export const getFriendlyName = (
+  originalName: string,  // Original field name
 ): string /* Human friendly field name */ => {
-  let name = original_name.replace(
+  let name = originalName.replace(
     /[A-Z]/g,
     letter => ` ${letter}`,
   );
@@ -42,7 +44,7 @@ export const get_friendly_name = (
   Finds the point at which the source array begins to have values
   different from the ones in the search array
 */
-export function find_array_divergence_point<T>(
+export function findArrayDivergencePoint<T>(
   source: T[],  // the source array to use in the comparison
   search: T[],  // the search array to use in the comparison
 ): number /*
@@ -66,34 +68,34 @@ export function find_array_divergence_point<T>(
   if (source === null || search === null)
     return -1;
 
-  const source_length = source.length;
-  const search_length = search.length;
+  const sourceLength = source.length;
+  const searchLength = search.length;
 
-  if (search_length === 0)
+  if (searchLength === 0)
     return 0;
 
-  if (source_length === 0 || source_length < search_length)
+  if (sourceLength === 0 || sourceLength < searchLength)
     return -1;
 
-  let return_value = undefined;
+  let returnValue = undefined;
 
-  Object.entries(source).some(([index, source_value]) => {
-    const search_value = search[~~index];
+  Object.entries(source).some(([index, sourceValue]) => {
+    const searchValue = search[~~index];
 
-    if (typeof search_value === 'undefined') {
-      return_value = ~~index;
+    if (typeof searchValue === 'undefined') {
+      returnValue = ~~index;
       return true;
     }
 
-    if (source_value !== search_value) {
-      return_value = -1;
+    if (sourceValue !== searchValue) {
+      returnValue = -1;
       return true;
     }
 
     return false;
   });
 
-  return return_value ?? search_length - 1;
+  return returnValue ?? searchLength - 1;
 
 }
 
@@ -102,64 +104,64 @@ export function find_array_divergence_point<T>(
 * duplicate headers (if three lines have the same mapping, the indexes of
 * the second and the third lines are returned)
 * */
-export const find_duplicate_mappings = (
-  // array of mappings as returned by mappings.get_array_of_mappings()
-  array_of_mappings: MappingPath[],
-  focused_line: number | false,
+export const findDuplicateMappings = (
+  // array of mappings as returned by mappings.getArrayOfMappings()
+  arrayOfMappings: MappingPath[],
+  focusedLine: number | false,
 ): number[] => /*
 * Array of duplicate indexes
 * Example:
 *   if
-*     array_of_mappings is [
+*     arrayOfMappings is [
 *       ['Accession','Accession Number','existing header,'Accession #;],
 *       ['Catalog Number','existing header','cat num'],
 *       ['Accession','Accession Number'],
 *     ]
-*     has_headers is True
+*     hasHeaders is True
 *   then return [2]
 *   if
-*     array_of_mappings is [
+*     arrayOfMappings is [
 *       ['Start Date'],
 *       ['End Date'],
 *       ['Start Date'],
 *       ['Start Date'],
 *     ]
-*     has_headers is False
+*     hasHeaders is False
 *   then return [2,3]
 * */ {
 
-  const duplicate_indexes: number[] = [];
+  const duplicateIndexes: number[] = [];
 
-  array_of_mappings.reduce((
-    dictionary_of_mappings: string[],
-    mapping_path,
+  arrayOfMappings.reduce((
+    dictionaryOfMappings: string[],
+    mappingPath,
     index,
   ) => {
 
-    const string_mapping_path = mapping_path_to_string(mapping_path);
+    const stringMappingPath = mappingPathToString(mappingPath);
 
-    if (dictionary_of_mappings.indexOf(string_mapping_path) === -1)
-      dictionary_of_mappings.push(string_mapping_path);
+    if (dictionaryOfMappings.indexOf(stringMappingPath) === -1)
+      dictionaryOfMappings.push(stringMappingPath);
     else
-      duplicate_indexes.push(
-        focused_line && focused_line === index ?
-          dictionary_of_mappings.indexOf(string_mapping_path) :
+      duplicateIndexes.push(
+        focusedLine && focusedLine === index ?
+          dictionaryOfMappings.indexOf(stringMappingPath) :
           index,
       );
 
-    return dictionary_of_mappings;
+    return dictionaryOfMappings;
 
   }, []);
 
-  return duplicate_indexes;
+  return duplicateIndexes;
 
 };
 
-export const full_mapping_path_parser = (
-  full_mapping_path: FullMappingPath
+export const fullMappingPathParser = (
+  fullMappingPath: FullMappingPath
 ):[string[], MappingType, string, ColumnOptions] => [
-  full_mapping_path.slice(0, -3),
-  ...full_mapping_path.slice(-3),
+  fullMappingPath.slice(0, -3),
+  ...fullMappingPath.slice(-3),
 ] as [
   MappingPath,
   MappingType,

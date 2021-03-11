@@ -7,70 +7,70 @@
 'use strict';
 
 import icons               from '../icons';
-import React               from 'react';
-import { named_component } from '../statemanagement';
+import React              from 'react';
+import { namedComponent } from '../statemanagement';
 
 
 export type CustomSelectType =
-  'opened_list' /*
+  'OPENED_LIST' /*
   * used in the mapping view
   * list without an `input` box but with always opened list of options
   * and a table name on top has onChange event */
 
-  | 'closed_list' /*
+  | 'CLOSED_LIST' /*
   * used in mapping lines
   * list with an `input` box and a list of options that can be opened
   * has onOpen/onClose and onChange events */
 
-  | 'preview_list' /*
+  | 'PREVIEW_LIST' /*
   * used in the mapping validation results
   * list with an `input` box but with no list of options
   * has no events */
 
-  | 'suggestion_list' /*
+  | 'SUGGESTION_LIST' /*
   * used to display a list of automapper suggestions
-  * like opened_list, but without a table name on top
+  * like OPENED_LIST, but without a table name on top
   * has onChange event: */
 
-  | 'suggestion_line_list' /*
-  * used inside `suggestion_list` to display a mapping path element for
+  | 'SUGGESTION_LINE_LIST' /*
+  * used inside `SUGGESTION_LIST` to display a mapping path element for
   * a single suggestion line list with an `input` box but with no list of
   * options has no events: */
 
-  | 'base_table_selection_list' /*
+  | 'BASE_TABLE_SELECTION_LIST' /*
   * used for base table selection
-  * like opened_list, but without a header and option group labels
+  * like OPENED_LIST, but without a header and option group labels
   * has onChange event */
 
-  | 'mapping_options_list' /*
+  | 'MAPPING_OPTIONS_LIST' /*
   * used for configuring mapping options for a mapping line
   * appears as a gear icon at the end of the mapping line */
 
-  | 'mapping_option_line_list' /*
-  * used inside of mapping_options_list
-  * exactly the same as base_table_selection_list
+  | 'MAPPING_OPTION_LINE_LIST' /*
+  * used inside of MAPPING_OPTIONS_LIST
+  * exactly the same as BASE_TABLE_SELECTION_LIST
   * it is named differently to avoid confusion */;
 
 export type CustomSelectSubtype =
   'simple'  // for fields and relationships
-  | 'to_many'  // for reference items
+  | 'toMany'  // for reference items
   | 'tree'  // for tree ranks
 
 interface CustomSelectElementIconProps {
   // whether the option is a relationship (False for fields, true for
   // relationships, tree ranks and reference items)
-  readonly is_relationship?: boolean,
-  readonly is_default?: boolean,  // whether the option is now selected
-  readonly table_name?: string,  // the name of the table this option represents
+  readonly isRelationship?: boolean,
+  readonly isDefault?: boolean,  // whether the option is now selected
+  readonly tableName?: string,  // the name of the table this option represents
   // the name of the option. Would be used as a label (visible to the user)
-  readonly option_label?: string | JSX.Element,
+  readonly optionLabel?: string | JSX.Element,
   // the value of the title HTML attribute
   readonly title?: string,
   // True if option can be selected. False if option cannot be selected because
   // it was already selected
-  readonly is_enabled?: boolean,
-  // whether an icon is used inside of preview_row in closed_list
-  readonly is_preview?: boolean,
+  readonly isEnabled?: boolean,
+  // whether an icon is used inside of preview_row in CLOSED_LIST
+  readonly isPreview?: boolean,
 }
 
 interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
@@ -78,24 +78,24 @@ interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
 }
 
 export interface CustomSelectElementDefaultOptionProps {
-  readonly option_name: string
-  readonly option_label: string | JSX.Element
-  readonly table_name?: string
-  readonly is_relationship?: boolean
+  readonly optionName: string
+  readonly optionLabel: string | JSX.Element
+  readonly tableName?: string
+  readonly isRelationship?: boolean
 }
 
 export type CustomSelectElementOptions =
   Record<string, CustomSelectElementOptionProps>
 
 interface CustomSelectElementOptionGroupProps {
-  readonly select_group_name?: string,  // group's name (used for styling)
-  readonly select_group_label?: string,  // group's label (shown to the user)
-  // list of options data. See custom_select_element.get_select_option_html()
+  readonly selectGroupName?: string,  // group's name (used for styling)
+  readonly selectGroupLabel?: string,  // group's label (shown to the user)
+  // list of options data. See customSelectElement.getSelectOptionHtml()
   // for the data structure
-  readonly select_options_data: CustomSelectElementOptions
+  readonly selectOptionsData: CustomSelectElementOptions
   readonly handleClick?: (
-    new_value: string,
-    is_relationship: boolean,
+    newValue: string,
+    isRelationship: boolean,
   ) => void,
 }
 
@@ -103,112 +103,110 @@ type CustomSelectElementOptionGroups =
   Record<string, CustomSelectElementOptionGroupProps>
 
 interface CustomSelectElementPropsBase {
-  readonly select_label?: string,  // the label to use for the element
-  readonly custom_select_type: CustomSelectType,
-  readonly custom_select_subtype?: CustomSelectSubtype,
-  readonly default_option?: CustomSelectElementDefaultOptionProps,
-  readonly is_open: boolean,
-  readonly table_name?: string,
+  readonly selectLabel?: string,  // the label to use for the element
+  readonly customSelectType: CustomSelectType,
+  readonly customSelectSubtype?: CustomSelectSubtype,
+  readonly defaultOption?: CustomSelectElementDefaultOptionProps,
+  readonly isOpen: boolean,
+  readonly tableName?: string,
 
   readonly handleOpen?: () => void,
-  readonly field_names?: string[],
+  readonly fieldNames?: string[],
 
   readonly handleChange?: (
-    new_value: string,
-    is_relationship: boolean,
+    newValue: string,
+    isRelationship: boolean,
   ) => void,
   readonly handleClose?: () => void,
-  readonly custom_select_option_groups?: CustomSelectElementOptionGroups,
-  readonly automapper_suggestions?: JSX.Element,
+  readonly customSelectOptionGroups?: CustomSelectElementOptionGroups,
+  readonly automapperSuggestions?: JSX.Element,
 }
 
 export interface CustomSelectElementPropsClosed
   extends CustomSelectElementPropsBase {
-  readonly is_open: false,
+  readonly isOpen: false,
   readonly handleOpen?: () => void,
-  readonly field_names: string[],
+  readonly fieldNames: string[],
 }
 
 export interface CustomSelectElementPropsOpenBase
   extends CustomSelectElementPropsBase {
-  readonly is_open: true,
+  readonly isOpen: true,
   readonly handleChange?: (
-    new_value: string,
-    is_relationship: boolean,
+    newValue: string,
+    isRelationship: boolean,
   ) => void
   readonly handleClose?: () => void,
 }
 
 interface CustomSelectElementPropsOpen
   extends CustomSelectElementPropsOpenBase {
-  readonly custom_select_option_groups: CustomSelectElementOptionGroups,
-  readonly automapper_suggestions?: JSX.Element,
+  readonly customSelectOptionGroups: CustomSelectElementOptionGroups,
+  readonly automapperSuggestions?: JSX.Element,
 }
 
 
 export function Icon({
-  is_relationship = false,
-  is_preview = false,
-  is_enabled = true,
-  table_name = '',
-  option_label = '0',
+  isRelationship = false,
+  isPreview = false,
+  isEnabled = true,
+  tableName = '',
+  optionLabel = '0',
 }: CustomSelectElementIconProps): JSX.Element | null {
 
-  const not_relationship = !is_relationship;
-
-  if (option_label === '0')
-    return <span className="custom_select_option_icon_undefined">&#8416;</span>;
-  if (not_relationship && (
-    is_preview || !is_enabled
+  if (optionLabel === '0')
+    return <span className="custom-select-option-icon-undefined">⃠</span>;
+  if (!isRelationship && (
+    isPreview || !isEnabled
   ))
-    return <span className="custom_select_option_icon_selected">&#10003;</span>;
-  else if (not_relationship || table_name === '')
+    return <span className="custom-select-option-icon-selected">✓</span>;
+  else if (!isRelationship || tableName === '')
     return null;
 
-  const table_icon_src = icons.getIcon(table_name);
-  if (table_icon_src !== '/images/unknown.png')
+  const tableIconSrc = icons.getIcon(tableName);
+  if (tableIconSrc !== '/images/unknown.png')
     return <span
-      className="custom_select_option_icon_table"
-      style={{backgroundImage: `url('${table_icon_src}')`}}
+      className="custom-select-option-icon-table"
+      style={{backgroundImage: `url('${tableIconSrc}')`}}
     />;
 
-  const table_sub_name = table_name.substr(0, 2);
-  const color_hue = (
+  const tableSubName = tableName.substr(0, 2);
+  const colorHue = (
     (
-      table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)
+      tableSubName[0].charCodeAt(0) + tableSubName[1].charCodeAt(0)
     ) - (
       'a'.charCodeAt(0) * 2
     )
   ) * 7.2;
-  const color = `hsl(${color_hue}, 70%, 50%)`;
+  const color = `hsl(${colorHue}, 70%, 50%)`;
   return <span
     style={{backgroundColor: color}}
-    className="custom_select_option_icon_table_undefined"
+    className="custom-select-option-icon-table-undefined"
   >
-    {table_sub_name.toUpperCase()}
+    {tableSubName.toUpperCase()}
   </span>;
 }
 
-const Option = React.memo(named_component('Option', ({
-  option_label,
+const Option = React.memo(namedComponent('Option', ({
+  optionLabel,
   title,
-  is_enabled = true,
-  is_relationship = false,
-  is_default = false,
-  table_name = '',
+  isEnabled = true,
+  isRelationship = false,
+  isDefault = false,
+  tableName = '',
   handleClick,
 }: CustomSelectElementOptionProps) => {
 
-  const classes = ['custom_select_option'];
+  const classes = ['custom-select-option'];
 
-  if (!is_enabled && !is_relationship)  // don't disable relationships
-    classes.push('custom_select_option_disabled');
+  if (!isEnabled && !isRelationship)  // don't disable relationships
+    classes.push('custom-select-option-disabled');
 
-  if (is_relationship)
-    classes.push('custom_select_option_relationship');
+  if (isRelationship)
+    classes.push('custom-select-option-relationship');
 
-  if (is_default)
-    classes.push('custom_select_option_selected');
+  if (isDefault)
+    classes.push('custom-select-option-selected');
 
   return <span
     className={classes.join(' ')}
@@ -216,277 +214,279 @@ const Option = React.memo(named_component('Option', ({
     onClick={handleClick}
     title={title}
   >
-    <span className="custom_select_option_icon">
+    <span className="custom-select-option-icon">
       <Icon
-        option_label={option_label}
-        is_relationship={is_relationship}
-        is_enabled={is_enabled}
-        table_name={table_name}
+        optionLabel={optionLabel}
+        isRelationship={isRelationship}
+        isEnabled={isEnabled}
+        tableName={tableName}
       />
     </span>
-    {option_label !== '0' &&
-    <span className="custom_select_option_label">{option_label}</span>}
-    {is_relationship &&
-    <span className="custom_select_option_relationship">&#9654;</span>}
+    {optionLabel !== '0' &&
+    <span className="custom-select-option-label">{optionLabel}</span>}
+    {isRelationship &&
+    <span className="custom-select-option-relationship">▶</span>}
   </span>;
 }));
 
 function OptionGroup({
-  select_group_name,
-  select_group_label,
-  select_options_data,
+  selectGroupName,
+  selectGroupLabel,
+  selectOptionsData,
   handleClick,
 }: CustomSelectElementOptionGroupProps) {
   return <span
     className={
-      `custom_select_group custom_select_group_${
-        select_group_name || 'undefined'
+      `custom-select-group custom-select-group-${
+        selectGroupName?.toLowerCase().replaceAll('_','-') || 'undefined'
       }`
     }>
     {
-      typeof select_group_label !== 'undefined' &&
+      typeof selectGroupLabel !== 'undefined' &&
       <span
-        className="custom_select_group_label">{select_group_label}</span>
+        className="custom-select-group-label">{selectGroupLabel}</span>
     }
     {Object.entries(
-      select_options_data,
-    ).map(([option_name, selection_option_data]) => {
+      selectOptionsData,
+    ).map(([optionName, selectionOptionData]) => {
       return <Option
-        key={option_name}
+        key={optionName}
         handleClick={
-          selection_option_data.is_enabled === false ?
+          selectionOptionData.isEnabled === false ?
             undefined :
             handleClick?.bind(
               null,
-              option_name,
-              typeof selection_option_data.is_relationship !== 'undefined' &&
-              selection_option_data.is_relationship,
+              optionName,
+              typeof selectionOptionData.isRelationship !== 'undefined' &&
+              selectionOptionData.isRelationship,
             )
         }
-        {...selection_option_data}
+        {...selectionOptionData}
       />;
     })}
   </span>;
 }
 
-const ShadowListOfOptions = React.memo(named_component(
+const ShadowListOfOptions = React.memo(namedComponent(
   'ShadowListOfOptions',
-  ({field_names}: {
-    readonly field_names: string[],
+  ({fieldNames: fieldNames}: {
+    readonly fieldNames: string[],
   }) =>
-    <span className="custom_select_element_shadow_list">{
-      field_names.map((field_name, index) =>
-        <span key={index}>{field_name}</span>,
+    <span className="custom-select-element-shadow-list">{
+      fieldNames.map((fieldName, index) =>
+        <span key={index}>{fieldName}</span>,
       )
     }</span>),
 );
 
-const non_intractable_select_types: Readonly<CustomSelectType[]> = [
-  'preview_list',
-  'suggestion_line_list',
+const NON_INTRACTABLE_SELECT_TYPES: Readonly<CustomSelectType[]> = [
+  'PREVIEW_LIST',
+  'SUGGESTION_LINE_LIST',
 ] as const;
-const select_types_with_headers: Readonly<CustomSelectType[]> = [
-  'opened_list',
+const SELECT_TYPES_WITH_HEADERS: Readonly<CustomSelectType[]> = [
+  'OPENED_LIST',
 ] as const;
-const select_types_with_first_row: Readonly<CustomSelectType[]> = [
-  'closed_list',
-  'preview_list',
-  'suggestion_line_list',
-  'mapping_options_list',
+const SELECT_TYPES_WITH_FIRST_ROW: Readonly<CustomSelectType[]> = [
+  'CLOSED_LIST',
+  'PREVIEW_LIST',
+  'SUGGESTION_LINE_LIST',
+  'MAPPING_OPTIONS_LIST',
 ] as const;
 
 export function CustomSelectElement(
   {
-    custom_select_type,
-    custom_select_subtype = 'simple',
-    custom_select_option_groups,
-    select_label = '',
-    default_option = {
-      option_name: '0',
-      option_label: '0',
-      table_name: '',
-      is_relationship: false,
+    customSelectType,
+    customSelectSubtype = 'simple',
+    customSelectOptionGroups,
+    selectLabel = '',
+    defaultOption = {
+      optionName: '0',
+      optionLabel: '0',
+      tableName: '',
+      isRelationship: false,
     },
-    is_open,
-    table_name,
-    field_names,
+    isOpen,
+    tableName,
+    fieldNames,
     handleChange,
     handleOpen,
     handleClose,
-    automapper_suggestions,
+    automapperSuggestions,
   }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen,
 ): JSX.Element {
 
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const option_is_intractable = non_intractable_select_types.indexOf(
-    custom_select_type,
+  const optionIsIntractable = NON_INTRACTABLE_SELECT_TYPES.indexOf(
+    customSelectType,
   ) === -1;
 
-  const handleClick = option_is_intractable &&
+  const handleClick = optionIsIntractable &&
     (
-      (new_value: string, is_relationship: boolean) =>
-        new_value !== default_option.option_name &&
-        handleChange?.(new_value, is_relationship)
+      (newValue: string, isRelationship: boolean) =>
+        newValue !== defaultOption.optionName &&
+        handleChange?.(newValue, isRelationship)
     );
 
   let header;
   let preview;
-  let first_row;
-  let options_shadow;
-  if (select_types_with_headers.includes(custom_select_type) && select_label)
-    header = <span className="custom_select_header">
-      <span className="custom_select_header_icon">
+  let firstRow;
+  let optionsShadow;
+  if (SELECT_TYPES_WITH_HEADERS.includes(customSelectType) && selectLabel)
+    header = <span className="custom-select-header">
+      <span>
         <Icon
-          is_default={true}
-          is_relationship={true}
-          table_name={table_name}
-          option_label={table_name}
+          isDefault={true}
+          isRelationship={true}
+          tableName={tableName}
+          optionLabel={tableName}
         />
       </span>
-      <span className="custom_select_table_label">
-        {select_label}
+      <span>
+        {selectLabel}
       </span>
     </span>;
-  else if (select_types_with_first_row.includes(custom_select_type)) {
+  else if (SELECT_TYPES_WITH_FIRST_ROW.includes(customSelectType)) {
 
-    const default_icon = <Icon
-      is_default={true}
-      is_relationship={default_option.is_relationship}
-      table_name={default_option.table_name}
-      option_label={default_option.option_label}
-      is_preview={true}
+    const defaultIcon = <Icon
+      isDefault={true}
+      isRelationship={defaultOption.isRelationship}
+      tableName={defaultOption.tableName}
+      optionLabel={defaultOption.optionLabel}
+      isPreview={true}
     />;
 
-    preview = <span className="custom_select_input" tabIndex={0} onClick={
-      option_is_intractable ?
-        is_open ?
+    preview = <span className="custom-select-input" tabIndex={0} onClick={
+      optionIsIntractable ?
+        isOpen ?
           handleClose :
           handleOpen :
         undefined
     }>
-      <span className="custom_select_input_icon">{default_icon}</span>
-      <span className="custom_select_input_label">{
-        default_option.option_label === '0' ?
+      <span className="custom-select-input-icon">{defaultIcon}</span>
+      <span className="custom-select-input-label">{
+        defaultOption.optionLabel === '0' ?
           undefined :
-          default_option.option_label
+          defaultOption.optionLabel
       }</span>
       {
-        option_is_intractable &&
-        custom_select_type !== 'mapping_options_list' &&
-        <span className="custom_select_input_dropdown">▼</span>
+        optionIsIntractable &&
+        customSelectType !== 'MAPPING_OPTIONS_LIST' &&
+        <span>▼</span>
       }
     </span>;
 
-    const show_first_row = is_open &&
-      option_is_intractable &&
-      custom_select_type !== 'mapping_options_list' &&
-      custom_select_subtype === 'simple' &&
-      default_option.option_name !== '0';
+    const showFirstRow = isOpen &&
+      optionIsIntractable &&
+      customSelectType !== 'MAPPING_OPTIONS_LIST' &&
+      customSelectSubtype === 'simple' &&
+      defaultOption.optionName !== '0';
 
-    first_row = show_first_row &&
+    firstRow = showFirstRow &&
       <Option
         handleClick={(
           handleClick || undefined
         )?.bind(null, '0', false)}
-        is_default={default_option.option_label === '0'}
+        isDefault={defaultOption.optionLabel === '0'}
       />;
 
-    options_shadow =
-      !is_open &&
-      option_is_intractable &&
-      field_names &&
-      custom_select_type !== 'mapping_options_list' &&
-      <ShadowListOfOptions field_names={field_names} />;
+    optionsShadow =
+      !isOpen &&
+      optionIsIntractable &&
+      fieldNames &&
+      customSelectType !== 'MAPPING_OPTIONS_LIST' &&
+      <ShadowListOfOptions fieldNames={fieldNames} />;
 
   }
 
-  const groups = is_open && option_is_intractable &&
+  const groups = isOpen && optionIsIntractable &&
     Object.entries(
-      custom_select_option_groups || {},
-    ).filter(([, {select_options_data}]) =>
-      Object.keys(select_options_data).length !== 0,
-    ).map(([select_group_name, select_group_data], index) =>
+      customSelectOptionGroups || {},
+    ).filter(([, {selectOptionsData}]) =>
+      Object.keys(selectOptionsData).length !== 0,
+    ).map(([selectGroupName, selectGroupData], index) =>
       <OptionGroup
         key={index}
         handleClick={handleClick || undefined}
-        select_group_name={select_group_name}
-        {...select_group_data}
+        selectGroupName={selectGroupName}
+        {...selectGroupData}
       />,
     );
 
-  const custom_select_options = (
-      first_row || groups
+  const customSelectOptions = (
+      firstRow || groups
     ) &&
-    <span className="custom_select_options" ref={listOfOptionsRef}>
-      {first_row}
+    <span className="custom-select-options" ref={listOfOptionsRef}>
+      {firstRow}
       {groups}
     </span>;
 
   React.useEffect(() => {
 
     if (// auto scroll down the option if
-      is_open &&  // it is open
-      option_is_intractable &&  // and it can be opened
+      isOpen &&  // it is open
+      optionIsIntractable &&  // and it can be opened
       listOfOptionsRef.current !== null &&  // and DOM is rendered
-      default_option.option_name !== '0' &&  // and list has a value
+      defaultOption.optionName !== '0' &&  // and list has a value
       // and the list is not already scrolled
       listOfOptionsRef.current.scrollTop === 0
     ) {
 
-      const selected_option =
+      const selectedOption =
         listOfOptionsRef.current.getElementsByClassName(
-          'custom_select_option_selected',
+          'custom-select-option-selected',
         )?.[0] as undefined | HTMLElement;
 
       // scroll down only if selected item is not visible
       if (
-        typeof selected_option !== 'undefined' &&
+        typeof selectedOption !== 'undefined' &&
         listOfOptionsRef.current.offsetHeight <
-        selected_option.offsetTop + selected_option.offsetHeight
+        selectedOption.offsetTop + selectedOption.offsetHeight
       )
         listOfOptionsRef.current.scrollTop =
-          selected_option.offsetTop - selected_option.offsetHeight;
+          selectedOption.offsetTop - selectedOption.offsetHeight;
 
     }
-  }, [is_open, listOfOptionsRef]);
+  }, [isOpen, listOfOptionsRef]);
 
 
   return <span
-    className={`custom_select custom_select_${custom_select_type}`}
+    className={`custom-select custom-select-${
+      customSelectType.toLowerCase().replaceAll('_','-')
+    }`}
     title={
-      custom_select_type === 'opened_list' ||
-      custom_select_type === 'base_table_selection_list' ?
+      customSelectType === 'OPENED_LIST' ||
+      customSelectType === 'BASE_TABLE_SELECTION_LIST' ?
         undefined :
-        select_label
+        selectLabel
     }>
-    {automapper_suggestions}
+    {automapperSuggestions}
     {header}
     {preview}
-    {options_shadow}
-    {custom_select_options}
+    {optionsShadow}
+    {customSelectOptions}
   </span>;
 
 }
 
 export function SuggestionBox({
-  select_options_data,
+  selectOptionsData,
   handleAutomapperSuggestionSelection,
   ...props
 }: Partial<CustomSelectElementPropsOpen> & {
-  readonly select_options_data: CustomSelectElementOptions,
+  readonly selectOptionsData: CustomSelectElementOptions,
   readonly handleAutomapperSuggestionSelection: (suggestion: string) => void,
 }): JSX.Element {
   return <CustomSelectElement
-    custom_select_type='suggestion_list'
-    custom_select_subtype='simple'
-    custom_select_option_groups={{
-      'suggested_mappings': {
-        select_group_label: 'Suggested mappings:',
-        select_options_data,
+    customSelectType='SUGGESTION_LIST'
+    customSelectSubtype='simple'
+    customSelectOptionGroups={{
+      'suggested-mappings': {
+        selectGroupLabel: 'Suggested mappings:',
+        selectOptionsData: selectOptionsData,
       },
     }}
-    is_open={true}
+    isOpen={true}
     handleChange={handleAutomapperSuggestionSelection}
     {...props}
   />;
