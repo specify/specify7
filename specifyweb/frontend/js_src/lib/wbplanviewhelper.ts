@@ -8,9 +8,10 @@
 
 import { mapping_path_to_string }       from './wbplanviewmodelhelper';
 import {
-  FullMappingPath, MappingLine,
+  FullMappingPath,
   MappingPath,
   MappingType,
+  ColumnOptions,
 } from './components/wbplanviewmapper';
 
 /*
@@ -157,12 +158,12 @@ export const find_duplicate_mappings = (
 
 export const full_mapping_path_parser = (
   full_mapping_path: FullMappingPath
-):[string[], MappingType, string, MappingLine['options']] => [
+):[string[], MappingType, string, ColumnOptions] => [
   full_mapping_path.slice(0, -3),
   ...full_mapping_path.slice(-3),
 ] as [
   MappingPath,
   MappingType,
   string,
-  MappingLine['options']
+  ColumnOptions
 ];

@@ -9,7 +9,6 @@
 
 import {
   FullMappingPath,
-  MappingLine,
   MappingPath,
   MappingType,
   ColumnOptions,
@@ -210,7 +209,7 @@ export const mappings_tree_to_array_of_mappings = (
       result.push([
         ...(path as [...string[], MappingType]),
         tree_node_name,
-        tree_node as unknown as MappingLine['options']
+        tree_node as unknown as ColumnOptions
       ]);
 
     return result;
