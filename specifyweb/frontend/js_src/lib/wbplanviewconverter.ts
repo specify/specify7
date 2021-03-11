@@ -21,9 +21,7 @@ import { DataModelFieldWritable }          from './wbplanviewmodelfetcher';
 import { defaultLineOptions } from './components/wbplanviewmapper';
 import { get_mapping_line_data }           from './wbplanviewnavigator';
 
-export type MatchBehaviors = Readonly<'ignoreWhenBlank'
-  | 'ignoreAlways'
-  | 'ignoreNever'>;
+export type MatchBehaviors = 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever';
 
 export type ColumnOptions = {
     matchBehavior: MatchBehaviors,
@@ -32,90 +30,66 @@ export type ColumnOptions = {
 };
 
 
-type UploadPlanUploadTableField = string | { column: string } & ColumnOptions;
+type ColumnDef = string | { column: string } & ColumnOptions;
 
-type UploadPlanUploadTableFields = Record<string,
-  UploadPlanUploadTableField>
+type R<T> = Record<string, T>;
 
-type UploadPlanUploadTableStatic =
-  Record<string, string | boolean | number>
+type ToMany = Omit<UploadTable, 'toMany'>
 
+type FieldGroupType = 'wbcols' | 'static' | 'toOne' | 'toMany'
 
-type UploadPlanUploadTableToMany =
-  Omit<UploadPlanUploadTableTable, 'toMany'>
+type FieldGroup<GROUP_NAME extends FieldGroupType> =
+  GROUP_NAME extends 'wbcols' ? R<ColumnDef> :
+    GROUP_NAME extends 'static' ? R<string | boolean | number> :
+      GROUP_NAME extends 'toOne' ? Uploadable :
+        ToMany
 
-type UploadPlanFieldGroupTypes =
-  'wbcols'
-  | 'static'
-  | 'toOne' |
-  'toMany'
-
-type UploadPlanTableGroup<GROUP_NAME extends UploadPlanFieldGroupTypes> =
-  GROUP_NAME extends 'wbcols' ? UploadPlanUploadTableFields :
-    GROUP_NAME extends 'static' ? UploadPlanUploadTableStatic :
-      GROUP_NAME extends 'toOne' ? UploadPlanUploadable :
-        UploadPlanUploadTableToMany
-
-interface UploadPlanUploadTableTable {
-  wbcols: UploadPlanUploadTableFields,
-  static: UploadPlanUploadTableStatic,
-  toOne: UploadPlanUploadable,
-  toMany: UploadPlanUploadTableToMany,
+interface UploadTable {
+  wbcols: R<ColumnDef>,
+  static: R<string | boolean | number>,
+  toOne: Uploadable,
+  toMany: ToMany,
 }
 
-interface UploadPlanTreeRecord {
-  ranks: UploadPlanTreeRecordRanks,
+interface TreeRecord {
+  ranks: R<string | {treeNodeCols: R<ColumnDef>}>
 }
 
-type UploadPlanTreeRecordRanks = Record<string,
-  string | {
-  treeNodeCols: UploadPlanUploadTableFields
-}>
+type UploadTableVariety =
+  {'uploadTable': UploadTable}
+  | {'oneToOneTable': UploadTable}
+  | {'mustMatchTable': UploadTable};
 
-type UploadPlanUploadtableTypes =
-  {'uploadTable': UploadPlanUploadTableTable}
-  | {'oneToOneTable': UploadPlanUploadTableTable}
-  | {'mustMatchTable': UploadPlanUploadTableTable};
+type TreeRecordVariety =
+  {'treeRecord': TreeRecord}
+  | {'mustMatchTreeRecord': TreeRecord};
 
-type UploadPlanTreeTypes =
-  {'treeRecord': UploadPlanTreeRecord}
-  | {'mustMatchTreeRecord': UploadPlanTreeRecord};
-
-type UploadPlanUploadable =
-  UploadPlanUploadtableTypes |
-  UploadPlanTreeTypes
+type Uploadable = UploadTableVariety | TreeRecordVariety;
 
 export interface UploadPlan {
   baseTableName: string,
-  uploadable: UploadPlanUploadable
+  uploadable: Uploadable
 }
 
 
-const excludeUnknownMatchingOptions = (
-  matching_options: Exclude<UploadPlanUploadTableField,string>,
-)=>Object.fromEntries(
-  Object.entries(defaultLineOptions).map(([option_name, default_value])=>
-    [
-      option_name,
-      option_name in matching_options ?
-        //@ts-ignore
-        matching_options[option_name] :
-        default_value
-    ]
-  )
-) as Exclude<UploadPlanUploadTableField,string>;
-
+function excludeUnknownMatchingOptions(matching_options: R<any>): ColumnOptions {
+    return {
+        matchBehavior: 'matchBehavior' in matching_options ? matching_options['matchBehavior'] : defaultLineOptions['matchBehavior'],
+        nullAllowed: 'nullAllowed' in matching_options ? matching_options['nullAllowed'] : defaultLineOptions['nullAllowed'],
+        default: 'default' in matching_options ? matching_options['default'] : defaultLineOptions['default'],
+    }
+}
 
 const upload_plan_processing_functions = (
   headers: string[],
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   mapping_path: string[],
-): Readonly<Record<string, (
+): Readonly<R<(
   [key, value]: [string, any],
 ) => [key: string, value: unknown]>> => (
   {
     wbcols: (
-      [key, value]: [string, string | UploadPlanUploadTableField],
+      [key, value]: [string, string | ColumnDef],
     ): [key: string, value: object] => [
       key,
       {
@@ -141,7 +115,7 @@ const upload_plan_processing_functions = (
       {new_static_column: value},
     ],
     toOne: (
-      [tableName, value]: [string, UploadPlanUploadable],
+      [tableName, value]: [string, Uploadable],
     ): [key: string, value: object] => [
       tableName,
       handle_uploadable(
@@ -175,7 +149,7 @@ const upload_plan_processing_functions = (
 ) as const;
 
 const handle_tree_rank_fields = (
-  tree_rank_fields: UploadPlanUploadTableFields,
+  tree_rank_fields: R<ColumnDef>,
   headers: string[],
 ) => Object.fromEntries(
   Object.entries(tree_rank_fields).map(
@@ -200,7 +174,7 @@ const handle_tree_rank_fields = (
 );
 
 const handle_tree_record = (
-  upload_plan: UploadPlanTreeRecord,
+  upload_plan: TreeRecord,
   headers: string[],
 ) =>
   Object.fromEntries(
@@ -227,9 +201,9 @@ const handle_tree_record = (
   );
 
 function handle_tree_record_types(
-  upload_plan: UploadPlanTreeTypes,
+  upload_plan: TreeRecordVariety,
   headers: string[],
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   mapping_path: string[],
 ) {
 
@@ -252,9 +226,9 @@ function handle_tree_record_types(
 
 
 const handle_upload_table_table = (
-  upload_plan: UploadPlanUploadTableTable,
+  upload_plan: UploadTable,
   headers: string[],
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   mapping_path: string[],
 ) =>
   Object.fromEntries(Object.entries(upload_plan).reduce(
@@ -265,8 +239,8 @@ const handle_upload_table_table = (
         plan_node_name,
         plan_node_data,
       ]: [
-        UploadPlanFieldGroupTypes,
-        UploadPlanTableGroup<UploadPlanFieldGroupTypes>
+        FieldGroupType,
+        FieldGroup<FieldGroupType>
       ],
     ) =>
       [
@@ -283,9 +257,9 @@ const handle_upload_table_table = (
   ));
 
 function handle_uploadable_types(
-  upload_plan: UploadPlanUploadtableTypes,
+  upload_plan: UploadTableVariety,
   headers: string[],
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   mapping_path: string[],
 ) {
 
@@ -309,9 +283,9 @@ function handle_uploadable_types(
 }
 
 const handle_uploadable = (
-  upload_plan: UploadPlanUploadable,
+  upload_plan: Uploadable,
   headers: string[],
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   mapping_path: string[],
 ): MappingsTree =>
   'treeRecord' in upload_plan || 'mustMatchTreeRecord' in upload_plan ?
@@ -338,14 +312,14 @@ export function upload_plan_to_mappings_tree(
 ): {
   base_table_name: string,
   mappings_tree: MappingsTree,
-  must_match_preferences: Record<string, boolean>
+  must_match_preferences: R<boolean>
 } {
 
   if (typeof upload_plan.baseTableName === 'undefined')
     throw new Error('Upload plan should contain `baseTableName`'
       + ' as a root node');
 
-  const must_match_preferences: Record<string, boolean> = {};
+  const must_match_preferences: R<boolean> = {};
 
   return {
     base_table_name: upload_plan.baseTableName,
@@ -392,13 +366,13 @@ export function upload_plan_string_to_object(
 //TODO: make these functions type safe
 
 interface UploadPlanNode
-  extends Record<string, string | boolean | UploadPlanNode> {
+  extends R<string | boolean | UploadPlanNode> {
 }
 
 function mappings_tree_to_upload_plan_table(
   table_data: object,
   table_name: string | undefined,
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   wrap_it = true,
   is_root = false,
 ) {
@@ -529,7 +503,7 @@ function handle_relationship_field(
     toOne: UploadPlanNode,
     toMany?: UploadPlanNode | undefined
   },
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
 ) {
   const mapping_table = field.table_name;
   if (typeof mapping_table === 'undefined')
@@ -565,7 +539,7 @@ function handle_relationship_field(
 
 export const extract_header_name_from_header_structure = (
   header_structure: MappingsTreeNode,
-): UploadPlanUploadTableField => Object.entries(
+): ColumnDef => Object.entries(
   Object.values(
     header_structure,
   )[0],
@@ -580,8 +554,8 @@ export const extract_header_name_from_header_structure = (
 )[0];
 
 const rank_mapped_fields_to_tree_record_ranks = (
-  rank_mapped_fields: Record<string, MappingsTreeNode>,
-): UploadPlanUploadTableFields => Object.fromEntries(
+  rank_mapped_fields: R<MappingsTreeNode>,
+): R<ColumnDef> => Object.fromEntries(
   Object.entries(rank_mapped_fields).map(([
     field_name, header_mapping_structure,
   ]) => [
@@ -594,15 +568,14 @@ const rank_mapped_fields_to_tree_record_ranks = (
 
 const mappings_tree_to_upload_plan_tree = (
   mappings_tree: MappingsTree,
-): UploadPlanTreeRecordRanks => Object.fromEntries(
+): R<string | {treeNodeCols: R<ColumnDef>}> => Object.fromEntries(
   Object.entries(mappings_tree).map(([
     full_rank_name, rank_mapped_fields,
   ]) => [
     get_name_from_tree_rank_name(full_rank_name),
     {
       treeNodeCols: rank_mapped_fields_to_tree_record_ranks(
-        rank_mapped_fields as Record<string,
-          MappingsTreeNode>,
+        rank_mapped_fields as R<MappingsTreeNode>,
       ),
     },
   ]),
@@ -618,9 +591,9 @@ const mappings_tree_to_upload_plan_tree = (
 const mappings_tree_to_upload_table = (
   mappings_tree: MappingsTree,
   table_name: string,
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
   is_root = false,
-): UploadPlanUploadable =>
+): Uploadable =>
   table_is_tree(table_name) ?
     {
       [
@@ -634,14 +607,14 @@ const mappings_tree_to_upload_table = (
           mappings_tree,
         ),
       },
-    } as UploadPlanTreeTypes :
+    } as TreeRecordVariety :
     mappings_tree_to_upload_plan_table(
       mappings_tree,
       table_name,
       must_match_preferences,
       true,
       is_root,
-    ) as UploadPlanUploadable;
+    ) as Uploadable;
 
 /*
 * Converts mappings tree to upload plan
@@ -650,7 +623,7 @@ const mappings_tree_to_upload_table = (
 export const mappings_tree_to_upload_plan = (
   base_table_name: string,
   mappings_tree: MappingsTree,
-  must_match_preferences: Record<string, boolean>,
+  must_match_preferences: R<boolean>,
 ): UploadPlan => (
   {
     baseTableName: base_table_name,
