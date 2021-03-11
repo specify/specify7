@@ -10,7 +10,6 @@
 import $                                 from 'jquery';
 import {
   array_of_mappings_to_mappings_tree,
-  array_to_tree,
   mappings_tree_to_array_of_mappings,
   MappingsTree,
   traverse_tree,
@@ -61,9 +60,7 @@ export type AutomapperScope =
   Readonly<'automapper'  // used when selecting a base table
     | 'suggestion'>;  // suggestion boxes - used when opening a picklist
 export type MappingPath = string[];
-export type FullMappingPath = [
-  ...string[], MappingType, string, MappingLine['options']
-];
+export type FullMappingPath = [...string[], MappingType, string, ColumnOptions];
 export type ListOfHeaders = string[];
 export type MappingType = Readonly<'existing_header'
   | 'new_column'
@@ -78,15 +75,17 @@ export interface SelectElementPosition {
   readonly index: number,
 }
 
+export type ColumnOptions = {
+    matchBehavior: MatchBehaviors,
+    nullAllowed: boolean,
+    default: string | null,
+};
+
 export interface MappingLine {
   readonly type: MappingType,
   readonly name: string,
   readonly mapping_path: MappingPath,
-  readonly options: {
-    matchBehavior: MatchBehaviors,
-    nullAllowed: boolean,
-    default: string | null,
-  }
+  readonly options: ColumnOptions,
   readonly is_focused?: boolean,
 }
 
@@ -413,10 +412,7 @@ export function get_mapped_fields(
   // a mapping path that would be used as a filter
   mapping_path_filter: MappingPath,
 ): MappingsTree {
-  const mappings_tree = traverse_tree(
-    get_mappings_tree(lines),
-    array_to_tree([...mapping_path_filter]),
-  );
+  const mappings_tree = traverse_tree(get_mappings_tree(lines), mapping_path_filter);
   return typeof mappings_tree === 'object' ?
     mappings_tree :
     {};

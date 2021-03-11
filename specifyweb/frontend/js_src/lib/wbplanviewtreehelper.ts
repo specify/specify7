@@ -12,81 +12,29 @@ import {
   MappingLine,
   MappingPath,
   MappingType,
+  ColumnOptions,
 } from './components/wbplanviewmapper';
 
-export type MappingsTreeNode = Record<
-  MappingType,
-  Record<
-    string,
-    MappingLine['options']
-  >
->;
+interface NestedRecord<T> extends Record<string, T | NestedRecord<T>> { }
 
-export interface MappingsTree
-  extends Readonly<
-    Record<string,
-      MappingsTree | string | MappingsTreeNode
-    >
-  > {
+export type MappingsTreeNode = Record<MappingType, Record<string, ColumnOptions>>
+
+export type MappingsTree = NestedRecord<MappingsTreeNode>
+
+export function traverse_tree(mappingsTree: MappingsTree, path: string[]): MappingsTree | undefined {
+    const step = path[0];
+    if (step == null) return mappingsTree;
+
+    const next = mappingsTree[step];
+    if (next == null) return undefined;
+    // next could be MappingsTreeNode here, in which case we should
+    // return undefined if path in not empty, but since MappingsTreeNode is a
+    // record type we can't discriminate it from NestedRecord<T> at
+    // runtime :(
+    return traverse_tree(next as MappingsTree, path.slice(1));
 }
 
-interface FlatTree extends Readonly<Record<string, FlatTree | string>> {
-}
-
-/* Returns cross-section of full_mappings_tree and node_mappings_tree */
-export function traverse_tree(
-  full_mappings_tree: MappingsTree,  // full tree with various branches
-  // a tree several levels deep with only a single branch
-  node_mappings_tree: MappingsTree | string,
-): string | MappingsTree | undefined | false /*
-* A cross-section of two trees
-* Example:
-* if full_mappings_tree is like this:
-* 	Accession
-* 		Accession Agents
-* 			#1
-* 				Agent
-* 					Agent Name
-* 			#2
-* 				Agent
-* 					Agent Type
-* 					Agent Name
-* 				Remarks
-* And node_mappings_tree is like this:
-* 	Accession
-* 		Accession Agents
-* 			#2
-* This function will return the following object:
-* 	Agent
-* 		Agent Type
-* 		Agent Name
-* 	Remarks
-* */ {
-
-  if (typeof node_mappings_tree === 'undefined')
-    return full_mappings_tree;
-
-  let target_key = '';
-  if (typeof node_mappings_tree === 'string')
-    //@ts-ignore
-    return full_mappings_tree[target_key];
-  else {
-    target_key = Object.keys(node_mappings_tree)[0];
-
-    if (typeof target_key === 'undefined' || target_key === '')
-      return full_mappings_tree;
-  }
-
-  if (typeof full_mappings_tree[target_key] !== 'object')
-    return false;
-
-  return traverse_tree(
-    full_mappings_tree[target_key] as MappingsTree,
-    //@ts-ignore
-    node_mappings_tree[target_key],
-  );
-
-}
+type FlatTree = NestedRecord<string>
 
 /* Merges objects recursively
 *	(by reference only, does not create a copy of the tree)
