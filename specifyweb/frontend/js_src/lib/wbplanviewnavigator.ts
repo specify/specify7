@@ -160,10 +160,10 @@ function findNextNavigationDirection<RETURN_STRUCTURE>(
   return {
     finished: false,
     payload: {
-      nextTableName: nextTableName,
-      nextParentTableName: nextParentTableName,
-      nextRealPathElementName: nextRealPathElementName,
-      nextPathElementName: nextPathElementName,
+      nextTableName,
+      nextParentTableName,
+      nextRealPathElementName,
+      nextPathElementName,
     },
   };
 }
@@ -208,28 +208,28 @@ export function navigator<RETURN_STRUCTURE>({
   else
     (
       {
-        tableName: tableName,
-        parentTableName: parentTableName,
-        parentTableRelationshipName: parentTableRelationshipName,
-        parentPathElementName: parentPathElementName,
+        tableName,
+        parentTableName,
+        parentTableRelationshipName,
+        parentPathElementName,
       } = recursivePayload
     );
 
   // an object that is shared between navigator, navigatorInstance and
   // some callbacks
   const callbackPayload = {
-    tableName: tableName,
+    tableName,
   };
 
 
   if (callbacks.iterate(callbackPayload))
     navigatorInstance<RETURN_STRUCTURE>({
-      tableName: tableName,
-      parentTableName: parentTableName,
-      parentTableRelationshipName: parentTableRelationshipName,
-      parentPathElementName: parentPathElementName,
+      tableName,
+      parentTableName,
+      parentTableRelationshipName,
+      parentPathElementName,
       callbacks,
-      callbackPayload: callbackPayload,
+      callbackPayload,
     });
 
 
@@ -287,7 +287,7 @@ function getNavigationChildrenTypes(
     )?.type;
 
   return {
-    parentRelationshipType: parentRelationshipType,
+    parentRelationshipType,
     childrenAreToManyElements:
       relationshipIsToMany(parentRelationshipType) &&
       !valueIsReferenceItem(parentPathElementName),
@@ -406,6 +406,8 @@ export function getMappingLineData({
     index: number,
     newValue: string,
     isRelationship: boolean,
+    currentTable: string,
+    newTable: string,
   ) => void,
   readonly handleOpen?: (
     index: number,
@@ -516,10 +518,10 @@ export function getMappingLineData({
         nextRealPathElementName = nextPathElementName;
 
       return {
-        nextPathElementName: nextPathElementName,
+        nextPathElementName,
         nextPathElement:
           dataModelStorage.tables[tableName].fields[nextPathElementName],
-        nextRealPathElementName: nextRealPathElementName,
+        nextRealPathElementName,
       };
 
     },
@@ -602,7 +604,7 @@ export function getMappingLineData({
           isHidden: false,
           isRelationship: true,
           isDefault: mappedObjectName === internalState.defaultValue,
-          tableName: tableName,
+          tableName,
         };
       }
       internalState.resultFields.add = {
@@ -612,7 +614,7 @@ export function getMappingLineData({
         isHidden: false,
         isRelationship: true,
         isDefault: false,
-        tableName: tableName,
+        tableName,
       };
 
     },
@@ -633,7 +635,7 @@ export function getMappingLineData({
             isRelationship: true,
             isDefault:
               formatTreeRank(rankName) === internalState.defaultValue,
-            tableName: tableName,
+            tableName,
           },
         ]),
       );
@@ -662,8 +664,8 @@ export function getMappingLineData({
             !isRelationship ||
             !isCircularRelationship({  // skip circular relationships
               targetTableName: fieldTableName,
-              parentTableName: parentTableName,
-              foreignName: foreignName,
+              parentTableName,
+              foreignName,
               relationshipKey: fieldName,
               currentMappingPathPart:
               internalState.currentMappingPathPart,
@@ -704,7 +706,7 @@ export function getMappingLineData({
               internalState.defaultValue,
               isRelationship,
             ),
-            isRelationship: isRelationship,
+            isRelationship,
             tableName: fieldTableName,
           },
         ]),
@@ -717,7 +719,7 @@ export function getMappingLineData({
         customSelectSubtype: internalState.customSelectSubtype,
         selectLabel: dataModelStorage.tables[tableName].tableFriendlyName,
         fieldsData: internalState.resultFields,
-        tableName: tableName,
+        tableName,
         ...(
           internalState.isOpen ?
             {
@@ -734,7 +736,7 @@ export function getMappingLineData({
                   null,
                   internalState.mappingPathPosition + 1,
                 ),
-              automapperSuggestions: automapperSuggestions,
+              automapperSuggestions,
               handleAutomapperSuggestionSelection,
             } :
             {
@@ -780,7 +782,7 @@ export function getMappingLineData({
                       null,
                       internalState.mappingLineData.length,
                     ),
-                  automapperSuggestions: automapperSuggestions,
+                  automapperSuggestions,
                   handleAutomapperSuggestionSelection,
                 } :
                 {
@@ -801,7 +803,7 @@ export function getMappingLineData({
   return navigator<MappingElementProps>({
     callbacks,
     config: {
-      baseTableName: baseTableName,
+      baseTableName,
     },
   });
 

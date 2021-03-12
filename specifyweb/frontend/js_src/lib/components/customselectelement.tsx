@@ -96,6 +96,7 @@ interface CustomSelectElementOptionGroupProps {
   readonly handleClick?: (
     newValue: string,
     isRelationship: boolean,
+    newTableName: string,
   ) => void,
 }
 
@@ -116,6 +117,8 @@ interface CustomSelectElementPropsBase {
   readonly handleChange?: (
     newValue: string,
     isRelationship: boolean,
+    currentTable: string,
+    newTable: string,
   ) => void,
   readonly handleClose?: () => void,
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups,
@@ -135,6 +138,8 @@ export interface CustomSelectElementPropsOpenBase
   readonly handleChange?: (
     newValue: string,
     isRelationship: boolean,
+    currentTable: string,
+    newTable: string,
   ) => void
   readonly handleClose?: () => void,
 }
@@ -259,6 +264,7 @@ function OptionGroup({
               optionName,
               typeof selectionOptionData.isRelationship !== 'undefined' &&
               selectionOptionData.isRelationship,
+              selectionOptionData.tableName || ''
             )
         }
         {...selectionOptionData}
@@ -323,9 +329,18 @@ export function CustomSelectElement(
 
   const handleClick = optionIsIntractable &&
     (
-      (newValue: string, isRelationship: boolean) =>
+      (
+        newValue: string,
+        isRelationship: boolean,
+        newTable: string,
+      ) =>
         newValue !== defaultOption.optionName &&
-        handleChange?.(newValue, isRelationship)
+        handleChange?.(
+          newValue,
+          isRelationship,
+          defaultOption.tableName || '',
+          newTable
+        )
     );
 
   let header;
@@ -386,7 +401,7 @@ export function CustomSelectElement(
       <Option
         handleClick={(
           handleClick || undefined
-        )?.bind(null, '0', false)}
+        )?.bind(null, '0', false, '0')}
         isDefault={defaultOption.optionLabel === '0'}
       />;
 
@@ -483,7 +498,7 @@ export function SuggestionBox({
     customSelectOptionGroups={{
       'suggested-mappings': {
         selectGroupLabel: 'Suggested mappings:',
-        selectOptionsData: selectOptionsData,
+        selectOptionsData,
       },
     }}
     isOpen={true}

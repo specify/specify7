@@ -226,6 +226,8 @@ export interface ChangeSelectElementValueAction
   readonly isRelationship: boolean,
   readonly line: number | 'mappingView',
   readonly index: number,
+  readonly currentTableName: string,
+  readonly newTableName: string,
 }
 
 interface AutomapperSuggestionsLoadedAction
@@ -574,8 +576,8 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     const newState: MappingState = {
       ...getDefaultMappingState(),
       mappingIsTemplated: action.mappingIsTemplated,
-      mustMatchPreferences: mustMatchPreferences,
-      baseTableName: baseTableName,
+      mustMatchPreferences,
+      baseTableName,
       lines,
     };
 
@@ -786,6 +788,8 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           index: action.index,
           value: action.value,
           isRelationship: action.isRelationship,
+          currentTableName: action.currentTableName,
+          newTableName: action.newTableName
         },
       );
 
@@ -949,7 +953,7 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     return {
       ...state,
       displayMatchingOptionsDialog: true,
-      mustMatchPreferences: mustMatchPreferences,
+      mustMatchPreferences,
     };
   },
   'CloseMatchingLogicDialogAction': ({state}) => (
@@ -1054,8 +1058,8 @@ const loadingStateDispatch = generateDispatch<LoadingStates>({
             datasetName,
           ]: [UploadPlan, string]) => (
             {
-              datasetName: datasetName,
-              uploadPlan: uploadPlan,
+              datasetName,
+              uploadPlan,
             }
           )),
         }),
@@ -1172,7 +1176,7 @@ const stateReducer = generateReducer<JSX.Element,
           removeUnloadProtect: state.props.removeUnloadProtect,
           setUnloadProtect: state.props.setUnloadProtect,
           mappingIsTemplated: state.mappingIsTemplated,
-          ignoreValidation: ignoreValidation,
+          ignoreValidation,
         },
       );
     const handleClose = () => state.dispatch({
@@ -1309,12 +1313,16 @@ const stateReducer = generateReducer<JSX.Element,
           index: number,
           value: string,
           isRelationship: boolean,
+          currentTableName: string,
+          newTableName: string,
         ) => state.dispatch({
           type: 'ChangeSelectElementValueAction',
           line,
           index,
           value,
           isRelationship,
+          currentTableName,
+          newTableName
         })}
         handleClearMapping={(line: number) =>
           state.dispatch({
@@ -1339,7 +1347,7 @@ const stateReducer = generateReducer<JSX.Element,
         handleValidationResultClick={(mappingPath: MappingPath) =>
           state.dispatch({
             type: 'ValidationResultClickAction',
-            mappingPath: mappingPath,
+            mappingPath,
           })
         }
         handleToggleMappingIsTemplated={() =>
@@ -1362,7 +1370,7 @@ const stateReducer = generateReducer<JSX.Element,
         ) =>
           state.refObjectDispatch({
             type: 'AutoscrollStatusChangeAction',
-            autoscrollType: autoscrollType,
+            autoscrollType,
             status,
           })}
         handleChangeMatchBehaviorAction={(
@@ -1371,7 +1379,7 @@ const stateReducer = generateReducer<JSX.Element,
         )=>state.dispatch({
           type: 'ChangeMatchBehaviorAction',
           line,
-          matchBehavior: matchBehavior
+          matchBehavior
         })}
         handleToggleAllowNullsAction={(
           line: number,
@@ -1379,7 +1387,7 @@ const stateReducer = generateReducer<JSX.Element,
         )=>state.dispatch({
           type: 'ToggleAllowNullsAction',
           line,
-          allowNull: allowNull
+          allowNull
         })}
         handleChangeDefaultValue={(
           line: number,
@@ -1387,7 +1395,7 @@ const stateReducer = generateReducer<JSX.Element,
         )=>state.dispatch({
           type: 'ChangeDefaultValue',
           line,
-          defaultValue: defaultValue
+          defaultValue
         })}
       />
       {
