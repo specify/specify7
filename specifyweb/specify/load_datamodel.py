@@ -144,6 +144,7 @@ class IdField(Field):
     name: str
     column: str
     type: str
+    required: bool = True
 
     def __repr__(self) -> str:
         return "<SpecifyIdField: %s>" % self.name
