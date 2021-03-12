@@ -3,9 +3,12 @@ from django.conf.urls import include, url
 from . import views
 from . import tree_views
 from . import master_key
+from . import schema
 
 urlpatterns = [
     # the main business data API
+    url(r'^specify_schema/openapi.json$', schema.openapi),
+    url(r'^specify_schema/(?P<model>\w+)/$', schema.view),
     url(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource),
     url(r'^specify/(?P<model>\w+)/$', views.collection),
     url(r'^specify_rows/(?P<model>\w+)/$', views.rows),
