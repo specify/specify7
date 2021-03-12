@@ -6,12 +6,12 @@
 
 'use strict';
 
-import React                     from 'react';
+import React                  from 'react';
 import '../../css/wbplanview.css';
-import navigation                from '../navigation';
-import * as cache                from '../wbplanviewcache';
-import schema         from '../schema';
-import fetchDataModel from '../wbplanviewmodelfetcher';
+import navigation             from '../navigation';
+import * as cache             from '../wbplanviewcache';
+import schema                 from '../schema';
+import fetchDataModel         from '../wbplanviewmodelfetcher';
 import WBPlanViewMapper, {
   AutomapperSuggestion,
   deduplicateMappings,
@@ -21,35 +21,35 @@ import WBPlanViewMapper, {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
   goBack,
-  mappingPathIsComplete,
   MappingLine,
   MappingPath,
+  mappingPathIsComplete,
   minMappingViewHeight,
   mutateMappingPath,
   savePlan,
   SelectElementPosition,
   validate,
   WBPlanViewMapperBaseProps,
-}                     from './wbplanviewmapper';
+}                             from './wbplanviewmapper';
 import {
   LoadingScreen,
   ModalDialog,
-}                           from './modaldialog';
-import dataModelStorage     from '../wbplanviewmodel';
-import { ListOfBaseTables } from './wbplanviewcomponents';
+}                             from './modaldialog';
+import dataModelStorage       from '../wbplanviewmodel';
+import { ListOfBaseTables }   from './wbplanviewcomponents';
 import {
   Action,
   generateDispatch,
   generateReducer,
   State,
-}                                from '../statemanagement';
-import { Icon }                  from './customselectelement';
-import createBackboneView        from './reactbackboneextend';
-import { JqueryPromise }         from '../legacytypes';
+}                             from '../statemanagement';
+import { Icon }               from './customselectelement';
+import createBackboneView     from './reactbackboneextend';
+import { JqueryPromise }      from '../legacytypes';
 import {
   MatchBehaviors,
-  uploadPlanStringToObject,
   UploadPlan,
+  uploadPlanStringToObject,
 }                             from '../wbplanviewconverter';
 import { getMappingLineData } from '../wbplanviewnavigator';
 
@@ -270,7 +270,7 @@ interface ChangeMatchBehaviorAction
 }
 
 interface ToggleAllowNullsAction
-  extends Action<'ToggleAllowNullsAction'>{
+  extends Action<'ToggleAllowNullsAction'> {
   readonly line: number,
   readonly allowNull: boolean,
 }
@@ -278,7 +278,7 @@ interface ToggleAllowNullsAction
 interface ChangeDefaultValue
   extends Action<'ChangeDefaultValue'> {
   readonly line: number,
-  readonly defaultValue: string|null,
+  readonly defaultValue: string | null,
 }
 
 export type MappingActions =
@@ -754,8 +754,8 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       },
       automapperSuggestionsPromise:
         typeof mappingState(state).lines[action.line].mappingPath[
-          action.index] === 'undefined'?
-          undefined:
+          action.index] === 'undefined' ?
+          undefined :
           getAutomapperSuggestions({
               lines: mappingState(state).lines,
               line: action.line,
@@ -789,7 +789,7 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           value: action.value,
           isRelationship: action.isRelationship,
           currentTableName: action.currentTableName,
-          newTableName: action.newTableName
+          newTableName: action.newTableName,
         },
       );
 
@@ -892,16 +892,16 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           baseTableName: state.baseTableName,
           customSelectType: 'OPENED_LIST',
         }).filter((mappingElementData, index, list) => {
-          if(
+          if (
             index === 0 ||  // exclude base table
             // exclude -to-many
             mappingElementData.customSelectSubtype === 'toMany'
           )
             return false;
 
-          if(typeof list[index - 1] === 'undefined'){
+          if (typeof list[index - 1] === 'undefined') {
 
-            if(
+            if (
               state.baseTableName === 'collectionobject' &&
               list[index].tableName === 'collectingevent'
             )
@@ -911,11 +911,11 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           else {
 
             // exclude direct child of -to-many
-            if(list[index - 1].customSelectSubtype === 'toMany')
+            if (list[index - 1].customSelectSubtype === 'toMany')
               return false;
 
             // exclude embedded collecting event
-            if(
+            if (
               schema.embeddedCollectingEvent === true &&
               list[index - 1].tableName === 'collectionobject' &&
               list[index].tableName === 'collectingevent'
@@ -938,7 +938,7 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         //exclude embedded paleo context
         schema.embeddedPaleoContext === false ||
         tableName !== 'paleocontext'
-      )
+      ),
     );
     const distinctListOfTables = [...new Set(arrayOfTables)];
     const mustMatchPreferences = {
@@ -976,55 +976,61 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   ),
   'ChangeMatchBehaviorAction': ({
     state,
-    action
-  })=>({
-    ...mappingState(state),
-    lines: modifyLine(
-      mappingState(state),
-      action.line,
-      {
-        ...mappingState(state).lines[action.line],
-        options: {
-          ...mappingState(state).lines[action.line].options,
-          matchBehavior: action.matchBehavior
-        }
-      }
-    )
-  }),
+    action,
+  }) => (
+    {
+      ...mappingState(state),
+      lines: modifyLine(
+        mappingState(state),
+        action.line,
+        {
+          ...mappingState(state).lines[action.line],
+          options: {
+            ...mappingState(state).lines[action.line].options,
+            matchBehavior: action.matchBehavior,
+          },
+        },
+      ),
+    }
+  ),
   'ToggleAllowNullsAction': ({
     state,
-    action
-  })=>({
-    ...mappingState(state),
-    lines: modifyLine(
-      mappingState(state),
-      action.line,
-      {
-        ...mappingState(state).lines[action.line],
-        options: {
-          ...mappingState(state).lines[action.line].options,
-          nullAllowed: action.allowNull
-        }
-      }
-    )
-  }),
+    action,
+  }) => (
+    {
+      ...mappingState(state),
+      lines: modifyLine(
+        mappingState(state),
+        action.line,
+        {
+          ...mappingState(state).lines[action.line],
+          options: {
+            ...mappingState(state).lines[action.line].options,
+            nullAllowed: action.allowNull,
+          },
+        },
+      ),
+    }
+  ),
   'ChangeDefaultValue': ({
     state,
-    action
-  })=>({
-    ...mappingState(state),
-    lines: modifyLine(
-      mappingState(state),
-      action.line,
-      {
-        ...mappingState(state).lines[action.line],
-        options: {
-          ...mappingState(state).lines[action.line].options,
-          default: action.defaultValue
-        }
-      }
-    )
-  }),
+    action,
+  }) => (
+    {
+      ...mappingState(state),
+      lines: modifyLine(
+        mappingState(state),
+        action.line,
+        {
+          ...mappingState(state).lines[action.line],
+          options: {
+            ...mappingState(state).lines[action.line].options,
+            default: action.defaultValue,
+          },
+        },
+      ),
+    }
+  ),
 });
 
 const loadingStateDispatch = generateDispatch<LoadingStates>({
@@ -1322,7 +1328,7 @@ const stateReducer = generateReducer<JSX.Element,
           value,
           isRelationship,
           currentTableName,
-          newTableName
+          newTableName,
         })}
         handleClearMapping={(line: number) =>
           state.dispatch({
@@ -1376,26 +1382,26 @@ const stateReducer = generateReducer<JSX.Element,
         handleChangeMatchBehaviorAction={(
           line: number,
           matchBehavior: MatchBehaviors,
-        )=>state.dispatch({
+        ) => state.dispatch({
           type: 'ChangeMatchBehaviorAction',
           line,
-          matchBehavior
+          matchBehavior,
         })}
         handleToggleAllowNullsAction={(
           line: number,
           allowNull: boolean,
-        )=>state.dispatch({
+        ) => state.dispatch({
           type: 'ToggleAllowNullsAction',
           line,
-          allowNull
+          allowNull,
         })}
         handleChangeDefaultValue={(
           line: number,
-          defaultValue: string|null,
-        )=>state.dispatch({
+          defaultValue: string | null,
+        ) => state.dispatch({
           type: 'ChangeDefaultValue',
           line,
-          defaultValue
+          defaultValue,
         })}
       />
       {

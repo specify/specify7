@@ -383,9 +383,9 @@ export default (): Promise<void> =>
 
         //@ts-ignore
         const fieldData: DataModelFieldWritable = {
-          friendlyName: friendlyName,
-          isHidden: isHidden,
-          isRequired: isRequired,
+          friendlyName,
+          isHidden,
+          isRequired,
           isRelationship: field.isRelationship,
         };
 
@@ -439,14 +439,14 @@ export default (): Promise<void> =>
         )
       )
         listOfBaseTables[tableName] = {
-          tableFriendlyName: tableFriendlyName,
+          tableFriendlyName,
           isHidden: fetchingParameters.commonBaseTables.indexOf(
             tableName,
           ) === -1,
         };
 
       tables[tableName] = {
-        tableFriendlyName: tableFriendlyName,
+        tableFriendlyName,
         fields: orderedFields,
       };
 

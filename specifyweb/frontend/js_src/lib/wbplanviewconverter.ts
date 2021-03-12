@@ -321,7 +321,7 @@ export function uploadPlanToMappingsTree(
       mustMatchPreferences,
       [uploadPlan.baseTableName],
     ),
-    mustMatchPreferences: mustMatchPreferences,
+    mustMatchPreferences,
   };
 }
 
@@ -618,7 +618,7 @@ export const mappingsTreeToUploadPlan = (
   mustMatchPreferences: R<boolean>,
 ): UploadPlan => (
   {
-    baseTableName: baseTableName,
+    baseTableName,
     uploadable: mappingsTreeToUploadTable(
       mappingsTree,
       baseTableName,

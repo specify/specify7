@@ -6,7 +6,7 @@
 
 'use strict';
 
-import icons               from '../icons';
+import icons              from '../icons';
 import React              from 'react';
 import { namedComponent } from '../statemanagement';
 
@@ -243,7 +243,7 @@ function OptionGroup({
   return <span
     className={
       `custom-select-group custom-select-group-${
-        selectGroupName?.toLowerCase().replaceAll('_','-') || 'undefined'
+        selectGroupName?.toLowerCase().replaceAll('_', '-') || 'undefined'
       }`
     }>
     {
@@ -264,7 +264,7 @@ function OptionGroup({
               optionName,
               typeof selectionOptionData.isRelationship !== 'undefined' &&
               selectionOptionData.isRelationship,
-              selectionOptionData.tableName || ''
+              selectionOptionData.tableName || '',
             )
         }
         {...selectionOptionData}
@@ -339,7 +339,7 @@ export function CustomSelectElement(
           newValue,
           isRelationship,
           defaultOption.tableName || '',
-          newTable
+          newTable,
         )
     );
 
@@ -467,7 +467,7 @@ export function CustomSelectElement(
 
   return <span
     className={`custom-select custom-select-${
-      customSelectType.toLowerCase().replaceAll('_','-')
+      customSelectType.toLowerCase().replaceAll('_', '-')
     }`}
     title={
       customSelectType === 'OPENED_LIST' ||

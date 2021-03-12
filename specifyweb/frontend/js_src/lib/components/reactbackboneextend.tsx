@@ -38,7 +38,8 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
     viewProps: CONSTRUCTOR_PROPS,
   ) => void,
-  renderPre?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
+  renderPre?: (
+    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   renderPost?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   Component: (props: COMPONENT_PROPS) => (JSX.Element | null),
@@ -48,7 +49,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
 }): Record<string, unknown> =>
   Backbone.View.extend({
     __name__: moduleName,
-    className: className,
+    className,
     initialize(props: CONSTRUCTOR_PROPS) {
       initialize(this, props);
     },

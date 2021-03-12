@@ -345,15 +345,15 @@ export const isCircularRelationship = ({
   (
     isCircularRelationshipBackwards(
       {
-        parentTableName: parentTableName,
-        foreignName: foreignName,
-        relationshipKey: relationshipKey,
+        parentTableName,
+        foreignName,
+        relationshipKey,
       },
     ) ||
     isCircularRelationshipForwards(
       {
-        tableName: tableName,
-        relationshipKey: relationshipKey,
+        tableName,
+        relationshipKey,
         currentMappingPathPart,
       },
     )

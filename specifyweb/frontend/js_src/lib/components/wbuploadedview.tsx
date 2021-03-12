@@ -6,19 +6,15 @@
 
 'use strict';
 
-import Handsontable                         from 'handsontable';
+import Handsontable                       from 'handsontable';
 import '../../css/wbuploaded.css';
-import React                                from 'react';
-import createBackboneView                   from './reactbackboneextend';
-import { ModalDialog }                      from './modaldialog';
-import {
-  Action,
-  generateReducer,
-  State
-}                         from '../statemanagement';
-import fetchDataModel   from '../wbplanviewmodelfetcher';
-import dataModelStorage from '../wbplanviewmodel';
-import { Dataset }      from './wbplanview';
+import React                              from 'react';
+import createBackboneView                 from './reactbackboneextend';
+import { ModalDialog }                    from './modaldialog';
+import { Action, generateReducer, State } from '../statemanagement';
+import fetchDataModel                     from '../wbplanviewmodelfetcher';
+import dataModelStorage                   from '../wbplanviewmodel';
+import { Dataset }                        from './wbplanview';
 import {
   parseUploadResults,
   UploadedPicklistItem,
@@ -27,7 +23,7 @@ import {
   UploadedRows,
   UploadedRowsTable,
   UploadResults,
-}                                           from '../wbuploadedparser';
+}                                         from '../wbuploadedparser';
 
 interface WBUploadedViewConstructorProps {
   dataset: Dataset,
@@ -115,7 +111,7 @@ function CellLink({
   recordId,
   children,
 }: {
-  getRecordViewUrl: (recordId:number)=>string,
+  getRecordViewUrl: (recordId: number) => string,
   recordId?: number,
   children: JSX.Element | React.ReactText
 }): JSX.Element {

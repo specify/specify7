@@ -6,7 +6,7 @@
 
 'use strict';
 
-import React                                 from 'react';
+import React                     from 'react';
 import {
   CustomSelectElement,
   CustomSelectElementDefaultOptionProps,
@@ -14,18 +14,18 @@ import {
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
   SuggestionBox,
-}                         from './customselectelement';
-import { namedComponent } from '../statemanagement';
+}                                from './customselectelement';
+import { namedComponent }        from '../statemanagement';
 import {
   AutomapperSuggestion,
   MappingType,
   SelectElementPosition,
-}                         from './wbplanviewmapper';
-import { DataModelListOfTables }             from '../wbplanviewmodelfetcher';
+}                                from './wbplanviewmapper';
+import { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 
 
 export interface HtmlGeneratorFieldData {
-  readonly fieldFriendlyName: string|JSX.Element,
+  readonly fieldFriendlyName: string | JSX.Element,
   readonly title?: string,
   readonly isEnabled?: boolean,
   readonly isRequired?: boolean,
@@ -98,9 +98,9 @@ export const ListOfBaseTables = React.memo(namedComponent(
                 tableName,
                 {
                   fieldFriendlyName: tableFriendlyName,
-                  tableName: tableName,
+                  tableName,
                   isRelationship: true,
-                  isHidden: isHidden,
+                  isHidden,
                 },
               ]
             ),
@@ -166,7 +166,7 @@ export function MappingLine({
 export function MappingPath(
   {
     mappingLineData,
-  }: MappingPathProps & {openSelectElement?: SelectElementPosition}
+  }: MappingPathProps & {openSelectElement?: SelectElementPosition},
 ): JSX.Element {
   return <>
     {mappingLineData.map((mappingDetails, index) =>
@@ -174,7 +174,7 @@ export function MappingPath(
         <MappingElement {...mappingDetails} />
         {
           index + 1 !== mappingLineData.length &&
-          mappingLineData[index+1
+          mappingLineData[index + 1
             ]?.customSelectType !== 'MAPPING_OPTIONS_LIST' &&
           MappingElementDivider
         }
@@ -223,7 +223,7 @@ export function MappingElement(
       isDefault = false,  // whether field is selected by default
       tableName = '',  // table name for this option
       // whether this field is relationship, tree rank or reference item
-      isRelationship: isRelationship = false,
+      isRelationship = false,
       isRequired = false,  // whether this field is required
       isHidden = false,  // whether this field is hidden
     },
@@ -238,8 +238,8 @@ export function MappingElement(
       defaultOption = {
         optionName: fieldName,
         optionLabel: fieldFriendlyName,
-        tableName: tableName,
-        isRelationship: isRelationship,
+        tableName,
+        isRelationship,
       };
     }
 
@@ -247,12 +247,12 @@ export function MappingElement(
       fieldGroups[getFieldGroupName(isHidden, isRequired)][fieldName] = {
         optionLabel: fieldFriendlyName,
         title,
-        isEnabled: isEnabled,
-        isRelationship: isRelationship,
-        isDefault: isDefault,
-        tableName: tableName,
+        isEnabled,
+        isRelationship,
+        isDefault,
+        tableName,
       };
-    else if(typeof fieldFriendlyName === 'string')
+    else if (typeof fieldFriendlyName === 'string')
       fieldNames.push(fieldFriendlyName);
   });
 

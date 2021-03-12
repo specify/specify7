@@ -226,9 +226,9 @@ function handleUploadResult(
     picklistAdditions.forEach(({id, name, value: picklistValue, caption}) => {
       uploadedPicklistItems[name] ??= [];
       uploadedPicklistItems[name].push({
-        rowIndex: rowIndex,
+        rowIndex,
         id,
-        picklistValue: picklistValue,
+        picklistValue,
         columnIndex: headers.indexOf(caption) || -1,
       });
     });
@@ -258,7 +258,7 @@ function handleUploadResult(
   ))
     uploadedRows[tableName].push({
       recordId: id,
-      rowIndex: rowIndex,
+      rowIndex,
       columns: orderedColumns,
       treeInfo: rank ?
         {
@@ -478,7 +478,7 @@ const spaceOutChildren = (
 * */
 const emptyCell = (columnIndex: number): UploadedColumn => (
   {
-    columnIndex: columnIndex,
+    columnIndex,
     cellValue: '',
   }
 );

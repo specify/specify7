@@ -10,8 +10,8 @@
 import AutoMapperDefinitions, {
   Options,
   TableSynonym,
-}                       from './automapperdefinitions';
-import dataModelStorage from './wbplanviewmodel';
+}                                   from './automapperdefinitions';
+import dataModelStorage             from './wbplanviewmodel';
 import {
   formatReferenceItem,
   formatTreeRank,
@@ -25,7 +25,7 @@ import {
   relationshipIsToMany,
   valueIsReferenceItem,
   valueIsTreeRank,
-}                       from './wbplanviewmodelhelper';
+}                                   from './wbplanviewmodelhelper';
 import * as cache                   from './wbplanviewcache';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import { Action, generateDispatch } from './statemanagement';
@@ -35,7 +35,7 @@ import {
   MappingPath,
   PathIsMappedBind,
   RelationshipType,
-}                                      from './components/wbplanviewmapper';
+}                                   from './components/wbplanviewmapper';
 
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches'
@@ -88,7 +88,8 @@ interface FindMappingsParameters {
   readonly parentTableName?: string,
   // relationship type between parent table and current table. Empty if
   // current table is a base table. Used to prevent mapping -to-many that are
-  // inside -to-many (only while upload plan doesn't support such relationships)
+  // inside -to-many (only while upload plan doesn't support such
+  // relationships)
   readonly parentRelationshipType?: undefined | RelationshipType,
 }
 
@@ -226,7 +227,8 @@ export default class Automapper {
   } = {
     regex: (header: string, regex: RegExp) => regex.exec(header) !== null,
     string: (header: string, string: string) => header === string,
-    contains: (header: string, string: string) => header.indexOf(string) !== -1,
+    contains: (header: string, string: string) =>
+      header.indexOf(string) !== -1,
   };
   private readonly results: AutoMapperResults = {};
   private readonly scope: AutomapperScope = 'automapper';
@@ -447,7 +449,8 @@ export default class Automapper {
 
   }
 
-  /* Compares definitions to unmapped headers and makes a mapping if matched */
+  /* Compares definitions to unmapped headers and makes a mapping if
+   * matched */
   private handleDefinitionComparison = (
     path: MappingPath,  // initial mapping path
     comparisons: Options,
@@ -491,7 +494,8 @@ export default class Automapper {
 
   /*
   * Goes over `shortcuts` and `synonyms` in AutomapperDefinitions.tsx and
-  * tries to find matches. Calls handleDefinitionComparison to make comparison
+  * tries to find matches. Calls handleDefinitionComparison to make
+  * comparison
   * */
   private findMappingsInDefinitions({
     path,
@@ -649,7 +653,7 @@ export default class Automapper {
 
       this.dispatch.searchedTables({
         type: 'add',
-        tableName: tableName,
+        tableName,
       });
     }
 
@@ -671,7 +675,7 @@ export default class Automapper {
 
       const findMappingsInDefinitionsPayload = {
         path,
-        tableName: tableName,
+        tableName,
         fieldName: '',
         mode,
         isTreeRank: true,
@@ -748,7 +752,7 @@ export default class Automapper {
 
     const findMappingsInDefinitionsPayload = {
       path,
-      tableName: tableName,
+      tableName,
       fieldName: '',
       mode,
     };
@@ -887,11 +891,11 @@ export default class Automapper {
           mode !== 'synonymsAndMatches' &&
           isCircularRelationship({  // skip circular relationships
             targetTableName: relationshipData.tableName,
-            parentTableName: parentTableName,
-            foreignName: foreignName,
-            relationshipKey: relationshipKey,
-            currentMappingPathPart: currentMappingPathPart,
-            tableName: tableName,
+            parentTableName,
+            foreignName,
+            relationshipKey,
+            currentMappingPathPart,
+            tableName,
           })
         ) ||
         // skip -to-many inside -to-many
@@ -1016,13 +1020,13 @@ export default class Automapper {
     // remove header from the list of unmapped headers
     this.dispatch.headersToMap({
       type: 'mapped',
-      headerName: headerName,
+      headerName,
     });
 
     // save result
     this.dispatch.results({
       type: 'add',
-      headerName: headerName,
+      headerName,
       mappingPath: localPath,
     });
 
