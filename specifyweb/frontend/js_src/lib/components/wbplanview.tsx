@@ -518,6 +518,7 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           false,
         {
           overwrite: true,
+          priorityCommit: true,
         },
       ),
     }
@@ -608,6 +609,7 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         !mappingState(state).showMappingView,
         {
           overwrite: true,
+          priorityCommit: true,
         }),
     }
   ),
@@ -738,6 +740,7 @@ const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         !mappingState(state).showHiddenFields,
         {
           overwrite: true,
+          priorityCommit: true,
         }),
       revealHiddenFieldsClicked: true,
     }
@@ -1620,6 +1623,7 @@ const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
             height,
             {
               overwrite: true,
+              priorityCommit: true,
             },
           ),
         150,

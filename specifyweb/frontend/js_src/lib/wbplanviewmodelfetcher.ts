@@ -295,6 +295,7 @@ const cacheSet = <T, >(cacheName: string, cacheValue: T) =>
     {
       version: dataModelFetcherVersion,
       overwrite: true,
+      priorityCommit: true,
     },
   );
 

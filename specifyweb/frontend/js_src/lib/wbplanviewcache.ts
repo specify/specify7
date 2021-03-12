@@ -55,13 +55,18 @@ function commitToStorage(): void {
   Object.entries(buckets).filter(([, bucketData]) =>
     bucketData.type === 'localStorage' &&
     Object.keys(bucketData.records).length !== 0,
-  ).forEach(([bucketName, bucketData]) =>
-    localStorage.setItem(
-      cachePrefix + bucketName,
-      JSON.stringify(bucketData),
-    ),
+  ).map(([bucketName]) =>
+    commitBucketToStorage(bucketName)
   );
 
+}
+
+/* Commits a single cache bucket to localStorage */
+function commitBucketToStorage(bucketName: string):void {
+  localStorage.setItem(
+    cachePrefix + bucketName,
+    JSON.stringify(buckets[bucketName]),
+  )
 }
 
 /* Tries to fetch a bucket from localStorage */
@@ -171,6 +176,8 @@ interface setOptions {
   readonly overwrite?: boolean,
   // version of this record (used for invalidating older cache)
   readonly version?: string
+  // whether to commit the value to localStorage as soon as it is changed
+  readonly priorityCommit?: boolean,
 }
 
 /* Set's cacheValue as cache value under cacheName in `bucketName` */
@@ -184,6 +191,7 @@ export function set<T>(
     bucketType = 'localStorage',
     overwrite = false,
     version = undefined,
+    priorityCommit = false,
   }: setOptions = {},
 ): T {
 
@@ -220,6 +228,9 @@ export function set<T>(
   };
 
   trimBucket(bucketName);
+
+  if(priorityCommit)
+    commitBucketToStorage(bucketName);
 
   return cacheValue;
 
