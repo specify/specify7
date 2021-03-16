@@ -1,6 +1,5 @@
 const $ = require('jquery');
 const Leaflet = require('./leaflet.js');
-const wb_upload_helper = require('./wb_upload/external_helper.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
 
@@ -8,7 +7,7 @@ module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
   className: 'wbs-utils',
   events: {
-    'click .wb-cell_navigation': 'navigateCells',
+    'click .wb-cell-navigation': 'navigateCells',
     'click .wb-search-button': 'searchCells',
     'click .wb-replace-button': 'replaceCells',
     'click .wb-show-toolbelt': 'toggleToolbelt',
@@ -16,12 +15,11 @@ module.exports = Backbone.View.extend({
   initialize({wbview, wb, hot, colHeaders}) {
     this.wbview = wbview;
     this.cellInfo = [];
-    this.search_query = null;
+    this.searchQuery = null;
     this.hot = hot;
     this.cellInfo = [];
-    this.search_query = null;
     this.wb = wb;
-    this.locality_columns = [];
+    this.localityColumns = [];
     this.colHeaders = colHeaders;
   },
   render() {
@@ -37,74 +35,74 @@ module.exports = Backbone.View.extend({
       };
     }
   },
-  navigateCells(e, match_current_cell = false) {
+  navigateCells(e, matchCurrentCell = false) {
     const button = e.target;
-    const direction = button.getAttribute('data-navigation_direction');
-    const button_parent = button.parentElement;
-    const type = button_parent.getAttribute('data-navigation_type');
+    const direction = button.getAttribute('data-navigation-direction');
+    const buttonParent = button.parentElement;
+    const type = buttonParent.getAttribute('data-navigation-type');
 
-    const number_of_columns = this.wbview.hot.countCols();
+    const numberOfColumns = this.wbview.hot.countCols();
 
-    const selected_cell = this.wbview.hot.getSelectedLast();
+    const selectedCell = this.wbview.hot.getSelectedLast();
 
-    let current_position = 0;
-    if (typeof selected_cell !== 'undefined') {
-      const [row, col] = selected_cell;
-      current_position = row * number_of_columns + col;
+    let currentPosition = 0;
+    if (typeof selectedCell !== 'undefined') {
+      const [row, col] = selectedCell;
+      currentPosition = row * numberOfColumns + col;
     }
 
     const cellIsType = (info) => {
       switch (type) {
-        case 'invalid_cells':
+        case 'invalid-cells':
           return info.issues.length > 0;
-        case 'new_cells':
+        case 'new-cells':
           return info.isNew;
-        case 'search_results':
+        case 'search-results':
           return info.matchesSearch;
         default:
           return false;
       }
     };
 
-    let new_position = current_position;
+    let newPosition = currentPosition;
     let found = false;
     for (;
-      new_position >= 0 && new_position < this.cellInfo.length;
-      new_position += direction === 'next' ? 1 : -1
+      newPosition >= 0 && newPosition < this.cellInfo.length;
+      newPosition += direction === 'next' ? 1 : -1
     ) {
-      if (new_position === current_position && !match_current_cell) continue;
+      if (newPosition === currentPosition && !matchCurrentCell) continue;
 
-      const info = this.cellInfo[new_position];
+      const info = this.cellInfo[newPosition];
       if (typeof info === 'undefined') continue;
       found = cellIsType(info);
       if (found) break;
     }
 
     if (found) {
-      const row = Math.floor(new_position / number_of_columns);
-      const col = new_position - row * number_of_columns;
+      const row = Math.floor(newPosition / numberOfColumns);
+      const col = newPosition - row * numberOfColumns;
       this.wbview.hot.selectCell(row, col, row, col);
 
-      const cell_relative_position = this.cellInfo.reduce((count, info, i) => count + (
-        cellIsType(info) && i <= new_position ? 1 : 0
+      const cellRelativePosition = this.cellInfo.reduce((count, info, i) => count + (
+        cellIsType(info) && i <= newPosition ? 1 : 0
       ), 0);
-      const current_position_element = button_parent.getElementsByClassName('wb-navigation_position')[0];
-      current_position_element.innerText = cell_relative_position;
+      const currentPositionElement = buttonParent.getElementsByClassName('wb-navigation-position')[0];
+      currentPositionElement.innerText = cellRelativePosition;
     }
   },
   searchCells(e) {
     const cols = this.wbview.hot.countCols();
     const button = e.target;
     const container = button.parentElement;
-    const navigation_position_element = container.getElementsByClassName('wb-navigation_position')[0];
-    const navigation_total_element = container.getElementsByClassName('wb-navigation_total')[0];
-    const search_query_element = container.getElementsByClassName('wb-search_query')[0];
-    const navigation_button = container.getElementsByClassName('wb-cell_navigation');
-    const search_query = search_query_element.value;
+    const navigationPositionElement = container.getElementsByClassName('wb-navigation-position')[0];
+    const navigationTotalElement = container.getElementsByClassName('wb-navigation-total')[0];
+    const searchQueryElement = container.getElementsByClassName('wb-searchQuery')[0];
+    const navigationButton = container.getElementsByClassName('wb-cell-navigation');
+    const searchQuery = searchQueryElement.value;
 
     const searchPlugin = this.wbview.hot.getPlugin('search');
-    const results = searchPlugin.query(search_query);
-    this.search_query = search_query;
+    const results = searchPlugin.query(searchQuery);
+    this.searchQuery = searchQuery;
 
     this.cellInfo.forEach(cellInfo => {
       cellInfo.matchesSearch = false;
@@ -115,19 +113,19 @@ module.exports = Backbone.View.extend({
     });
     this.wbview.hot.render();
 
-    navigation_total_element.innerText = results.length;
-    navigation_position_element.innerText = 0;
+    navigationTotalElement.innerText = results.length;
+    navigationPositionElement.innerText = 0;
 
-    if (!this.navigateCells({target: navigation_button[0]}, true))
-      this.navigateCells({target: navigation_button[1]}, true);
+    if (!this.navigateCells({target: navigationButton[0]}, true))
+      this.navigateCells({target: navigationButton[1]}, true);
 
   },
   replaceCells(e) {
     const cols = this.wbview.hot.countCols();
     const button = e.target;
     const container = button.parentElement;
-    const replacement_value_element = container.getElementsByClassName('wb-replace_value')[0];
-    const replacement_value = replacement_value_element.value;
+    const replacementValueElement = container.getElementsByClassName('wb-replace-value')[0];
+    const replacementValue = replacementValueElement.value;
 
     const cellUpdates = [];
     this.cellInfo.forEach((info, i) => {
@@ -135,7 +133,7 @@ module.exports = Backbone.View.extend({
         const row = Math.floor(i / cols);
         const col = i - row * cols;
         const cellValue = this.wbview.hot.getDataAtCell(row, col);
-        cellUpdates.push([row, col, cellValue.split(this.search_query).join(replacement_value)]);
+        cellUpdates.push([row, col, cellValue.split(this.searchQuery).join(replacementValue)]);
       }
     });
 
@@ -150,11 +148,11 @@ module.exports = Backbone.View.extend({
     else
       toolbelt.style.display = 'none';
   },
-  fillCells({start_row, end_row, col, value}) {
+  fillCells({startRow, endRow, col, value}) {
     this.wbview.hot.setDataAtCell(
-      [...Array(end_row - start_row).keys()].map(index =>
+      [...Array(endRow - startRow).keys()].map(index =>
         [
-          start_row + index + 1,
+          startRow + index + 1,
           col,
           value,
         ],
@@ -164,32 +162,32 @@ module.exports = Backbone.View.extend({
   fillDown(props) {
     this.fillCells({
       ...props,
-      value: this.wbview.hot.getDataAtCell(props.start_row, props.col),
+      value: this.wbview.hot.getDataAtCell(props.startRow, props.col),
     });
   },
   fillUp(props) {
     this.fillCells({
       ...props,
-      start_row: props.start_row - 1,
-      value: this.wbview.hot.getDataAtCell(props.end_row, props.col),
+      startRow: props.startRow - 1,
+      value: this.wbview.hot.getDataAtCell(props.endRow, props.col),
     });
   },
-  /*fillDownWithIncrement({start_row, end_row, col}){
-    const first_cell = this.wbview.hot.getDataAtCell(start_row, col);
-    if (isNaN(first_cell))
+  /*fillDownWithIncrement({startRow, endRow, col}){
+    const firstCell = this.wbview.hot.getDataAtCell(startRow, col);
+    if (isNaN(firstCell))
       return;
-    const numeric_part = parseInt(first_cell);
+    const numericPart = parseInt(firstCell);
     const changes = [];
-    const number_of_rows = end_row - start_row;
-    for (let i = 0; i <= number_of_rows; i++)
+    const numberOfRows = endRow - startRow;
+    for (let i = 0; i <= numberOfRows; i++)
       changes.push([
-        start_row + i,
+        startRow + i,
         col,
-        (numeric_part + i).toString().padStart(first_cell.length, '0')
+        (numericPart + i).toString().padStart(firstCell.length, '0')
       ]);
     this.wbview.hot.setDataAtCell(changes);
   },*/
-  fillCellsContextMenuItem(name, handler_function) {
+  fillCellsContextMenuItem(name, handlerFunction) {
     return {
       name: name,
       disabled: () =>
@@ -199,9 +197,9 @@ module.exports = Backbone.View.extend({
       callback: (_, selections) =>
         selections.forEach(selection =>
           [...Array(selection.end.col + 1 - selection.start.col).keys()].forEach(index =>
-            handler_function.bind(this)({
-              start_row: selection.start.row,
-              end_row: selection.end.row,
+            handlerFunction.bind(this)({
+              startRow: selection.start.row,
+              endRow: selection.end.row,
               col: selection.start.col + index,
             }),
           ),
@@ -211,133 +209,133 @@ module.exports = Backbone.View.extend({
   findLocalityColumns() {
     this.wb.rget('workbenchtemplate').done(wbtemplate => {
 
-      const upload_plan_string = wbtemplate.get('remarks');
-      const locality_columns = wb_upload_helper.find_locality_columns(upload_plan_string);
+      const uploadPlanString = wbtemplate.get('remarks');
+      const localityColumns = this.wbutils.findLocalityColumns(uploadPlanString);
 
-      this.locality_columns = locality_columns.map(locality_mapping =>
+      this.localityColumns = localityColumns.map(localityMapping =>
         Object.fromEntries(
-          Object.entries(locality_mapping).map(([column_name, header_name]) =>
-            [column_name, this.colHeaders.indexOf(header_name)],
+          Object.entries(localityMapping).map(([columnName, headerName]) =>
+            [columnName, this.colHeaders.indexOf(headerName)],
           ),
         ),
       );
 
-      if (this.locality_columns.length === 0)
-        ['wb-geolocate', 'wb-leafletmap', 'wb-convert-coordinates'].map(class_name =>
-          document.getElementsByClassName(class_name)[0].disabled = true,
+      if (this.localityColumns.length === 0)
+        ['wb-geolocate', 'wb-leafletmap', 'wb-convert-coordinates'].map(className =>
+          document.getElementsByClassName(className)[0].disabled = true,
         );
     });
   },
-  getGeoLocateQueryURL(current_locality_columns, selected_row, getDataAtCell, getDataAtRow) {
+  getGeoLocateQueryURL(currentLocalityColumns, selectedRow, getDataAtCell, getDataAtRow) {
 
-    if (current_locality_columns === false)
+    if (currentLocalityColumns === false)
       return;
 
-    let query_string;
+    let queryString;
 
     if (
-      typeof current_locality_columns.country !== 'undefined' &&
-      typeof current_locality_columns.state !== 'undefined'
+      typeof currentLocalityColumns.country !== 'undefined' &&
+      typeof currentLocalityColumns.state !== 'undefined'
     ) {
 
-      const data = Object.fromEntries(['country', 'state', 'county', 'localityname'].map(column_name =>
+      const data = Object.fromEntries(['country', 'state', 'county', 'localityname'].map(columnName =>
         [
-          column_name,
-          typeof current_locality_columns[column_name] === 'undefined' ?
+          columnName,
+          typeof currentLocalityColumns[columnName] === 'undefined' ?
             undefined :
-            encodeURIComponent(getDataAtCell(selected_row, current_locality_columns[column_name])),
+            encodeURIComponent(getDataAtCell(selectedRow, currentLocalityColumns[columnName])),
         ],
       ));
 
-      query_string = `country=${data.country}&state=${data.state}`;
+      queryString = `country=${data.country}&state=${data.state}`;
 
       if (typeof data.county !== 'undefined')
-        query_string += `&county=${data.county}`;
+        queryString += `&county=${data.county}`;
 
       if (typeof data.localityname !== 'undefined')
-        query_string += `&locality=${data.localityname}`;
+        queryString += `&locality=${data.localityname}`;
 
     }
     else {
 
-      const point_data_dict = Leaflet.getLocalityCoordinate(getDataAtRow(selected_row), current_locality_columns);
+      const pointDataDict = Leaflet.getLocalityCoordinate(getDataAtRow(selectedRow), currentLocalityColumns);
 
-      if (!point_data_dict)
+      if (!pointDataDict)
         return;
 
-      const {latitude1, longitude1, localityname = ''} = point_data_dict;
+      const {latitude1, longitude1, localityname = ''} = pointDataDict;
 
-      const point_data_list = [latitude1, longitude1];
+      const pointDataList = [latitude1, longitude1];
 
       if (localityname !== '')
-        point_data_list.push(localityname);
+        pointDataList.push(localityname);
 
-      query_string = `points=${point_data_list.join('|')}`;
+      queryString = `points=${pointDataList.join('|')}`;
 
     }
 
-    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${query_string}`;
+    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${queryString}`;
 
   },
   showGeoLocate() {
 
     // don't allow opening more than one window)
-    if ($('#geolocate_window').length !== 0)
+    if ($('#geolocate-window').length !== 0)
       return;
 
     let $this = this;
 
-    const selected_regions = this.hot.getSelected() || [[0, 0, 0, 0]];
-    const selections = selected_regions.map(([start_row, column, end_row]) =>
-      start_row < end_row ?
-        [start_row, end_row, column] :
-        [end_row, start_row, column],
+    const selectedRegions = this.hot.getSelected() || [[0, 0, 0, 0]];
+    const selections = selectedRegions.map(([startRow, column, endRow]) =>
+      startRow < endRow ?
+        [startRow, endRow, column] :
+        [endRow, startRow, column],
     );
-    const selected_cells = selections.flatMap(([start_row, end_row, column]) =>
-      [...Array(end_row - start_row + 1)].map((_, index) =>
-        [start_row + index, column].join('_'),
+    const selectedCells = selections.flatMap(([startRow, endRow, column]) =>
+      [...Array(endRow - startRow + 1)].map((_, index) =>
+        [startRow + index, column].join('_'),
       ),
     );
-    const unique_selected_cells = [...new Set(selected_cells)];
-    const final_selected_cells = unique_selected_cells.map((selected_cell) =>
-      selected_cell.split('_').map(index => parseInt(index)),
+    const uniqueSelectedCells = [...new Set(selectedCells)];
+    const finalSelectedCells = uniqueSelectedCells.map((selectedCell) =>
+      selectedCell.split('_').map(index => parseInt(index)),
     );
 
-    if (final_selected_cells.length === 0)
+    if (finalSelectedCells.length === 0)
       return;
 
-    let current_cell_index = 0;
-    let geolocate_query_url = false;
-    let current_locality_columns = [];
+    let currentCellIndex = 0;
+    let geolocateQueryUrl = false;
+    let currentLocalityColumns = [];
 
-    function update_geolocate_url() {
+    function updateGeolocateUrl() {
 
-      current_locality_columns =
+      currentLocalityColumns =
         Leaflet.getLocalityColumnsFromSelectedCell(
-          $this.locality_columns,
-          final_selected_cells[current_cell_index][1],
+          $this.localityColumns,
+          finalSelectedCells[currentCellIndex][1],
         );
 
-      geolocate_query_url = $this.getGeoLocateQueryURL(
-        current_locality_columns,
-        final_selected_cells[current_cell_index][0],
+      geolocateQueryUrl = $this.getGeoLocateQueryURL(
+        currentLocalityColumns,
+        finalSelectedCells[currentCellIndex][0],
         $this.hot.getDataAtCell,
         $this.hot.getDataAtRow,
       );
 
     }
 
-    update_geolocate_url();
+    updateGeolocateUrl();
 
-    if (geolocate_query_url === false)
+    if (geolocateQueryUrl === false)
       return;
 
     const handleAfterDialogClose = () =>
-      window.removeEventListener('message', handle_geolocate_result, false);
+      window.removeEventListener('message', handleGeolocateResult, false);
 
-    const dialog = $(`<div />`, {id: 'geolocate_window'}).dialog({
+    const dialog = $(`<div />`, {id: 'geolocate-window'}).dialog({
       width: 960,
-      height: final_selected_cells.length === 1 ?
+      height: finalSelectedCells.length === 1 ?
         680 :
         740,
       title: 'GEOLocate',
@@ -347,103 +345,103 @@ module.exports = Backbone.View.extend({
       },
     });
 
-    const update_geolocate = () =>
+    const updateGeolocate = () =>
       dialog.html(`<iframe
         style="
             width: 100%;
             height: 100%;
             border: none;"
-        src="${geolocate_query_url}"></iframe>`);
-    update_geolocate();
+        src="${geolocateQueryUrl}"></iframe>`);
+    updateGeolocate();
 
-    const update_selected_row = () =>
-      $this.hot.selectRows(final_selected_cells[current_cell_index][0]);
-    update_selected_row();
+    const updateSelectedRow = () =>
+      $this.hot.selectRows(finalSelectedCells[currentCellIndex][0]);
+    updateSelectedRow();
 
-    function change_selected_cell(new_selected_cell) {
+    function changeSelectedCell(newSelectedCell) {
 
-      current_cell_index = new_selected_cell;
+      currentCellIndex = newSelectedCell;
 
-      update_geolocate_url();
+      updateGeolocateUrl();
 
-      if (geolocate_query_url === false)
+      if (geolocateQueryUrl === false)
         return;
 
-      update_geolocate();
+      updateGeolocate();
 
-      update_selected_row();
+      updateSelectedRow();
 
-      update_buttons();
+      updateButtons();
     }
 
-    const update_buttons = () =>
+    const updateButtons = () =>
       dialog.dialog(
         'option',
         'buttons',
-        final_selected_cells.length > 1 ?
+        finalSelectedCells.length > 1 ?
           [
             {
               text: 'Previous',
               click: () =>
-                change_selected_cell(current_cell_index - 1),
-              disabled: current_cell_index === 0,
+                changeSelectedCell(currentCellIndex - 1),
+              disabled: currentCellIndex === 0,
             },
             {
               text: 'Next',
               click: () =>
-                change_selected_cell(current_cell_index + 1),
+                changeSelectedCell(currentCellIndex + 1),
               disabled:
-                final_selected_cells.length <=
-                current_cell_index + 1,
+                finalSelectedCells.length <=
+                currentCellIndex + 1,
             },
           ] :
           [],
       );
-    update_buttons();
+    updateButtons();
 
-    const handle_geolocate_result = (event) => {
+    const handleGeolocateResult = (event) => {
 
-      const data_columns = event.data.split('|');
-      if (data_columns.length !== 4 || event.data === '|||')
+      const dataColumns = event.data.split('|');
+      if (dataColumns.length !== 4 || event.data === '|||')
         return;
 
       $this.hot.setDataAtCell(
         Object.entries(
           ['latitude1', 'longitude1', 'latlongaccuracy'],
         ).map(([index, column]) => {
-          if (typeof current_locality_columns[column] !== 'undefined')
+          if (typeof currentLocalityColumns[column] !== 'undefined')
             return [
-              final_selected_cells[current_cell_index][0],
-              current_locality_columns[column],
-              data_columns[index],
+              finalSelectedCells[currentCellIndex][0],
+              currentLocalityColumns[column],
+              dataColumns[index],
             ];
         }).filter(record => typeof record !== 'undefined'),
       );
 
-      if (final_selected_cells.length === 1) {
+      if (finalSelectedCells.length === 1) {
         dialog.dialog('close');
         handleAfterDialogClose();
       }
     };
 
-    window.addEventListener('message', handle_geolocate_result, false);
+    window.addEventListener('message', handleGeolocateResult, false);
 
   },
   showLeafletMap() {
 
-    if ($('#leaflet_map').length !== 0)
+    if ($('#leaflet-map').length !== 0)
       return;
 
     Leaflet.showLeafletMap({
-      locality_points,
-      marker_click_callback: (locality_point) => {
-        const row_number = locality_points[locality_point].row_number;
-        const selected_column =
+      localityPoints,
+      markerClickCallback: (localityPoint) => {
+        const rowNumber = localityPoints[localityPoint].rowNumber;
+        const selectedColumn =
           typeof this.hot.getSelectedLast() === 'undefined' ?
             0 :
             this.hot.getSelectedLast()[1];
-        this.hot.selectCell(row_number, selected_column);  // select the first cell to scroll the view
-        this.hot.selectRows(row_number);  // select an entire row
+        this.hot.selectCell(rowNumber, selectedColumn);  // select the first cell to scroll the view
+        this.hot.selectRows(rowNumber);  // select an entire row
       },
     });
 
@@ -453,73 +451,73 @@ module.exports = Backbone.View.extend({
     if ($('.latlongformatoptions').length !== 0)
       return;
 
-    const column_handlers = {
+    const columnHandlers = {
       'latitude1': 'Lat',
       'longitude1': 'Long',
       'latitude2': 'Lat',
       'longitude2': 'Long',
     };
 
-    const columns_to_search_for = Object.keys(column_handlers);
+    const columnsToSearchFor = Object.keys(columnHandlers);
 
-    const coordinate_columns = this.locality_columns.reduce((coordinate_columns, column_indexes) =>
+    const coordinateColumns = this.localityColumns.reduce((coordinateColumns, columnIndexes) =>
         [
-          ...coordinate_columns,
-          ...Object.entries(column_indexes).filter(([column_name]) =>
-            columns_to_search_for.indexOf(column_name) !== -1,
+          ...coordinateColumns,
+          ...Object.entries(columnIndexes).filter(([columnName]) =>
+            columnsToSearchFor.indexOf(columnName) !== -1,
           ),
         ],
       [],
     );
 
-    if (coordinate_columns.length === 0)
+    if (coordinateColumns.length === 0)
       return;
 
     const options = [
       {
-        option_name: 'DD.DDDD (32.7619)',
-        conversion_function_name: 'toDegs',
-        show_cardinal_direction: false,
+        optionName: 'DD.DDDD (32.7619)',
+        conversionFunctionName: 'toDegs',
+        showCardinalDirection: false,
       },
       {
-        option_name: 'DD MMMM (32. 45.714)',
-        conversion_function_name: 'toDegsMins',
-        show_cardinal_direction: false,
+        optionName: 'DD MMMM (32. 45.714)',
+        conversionFunctionName: 'toDegsMins',
+        showCardinalDirection: false,
       },
       {
-        option_name: 'DD MM SS.SS (32 45 42.84)',
-        conversion_function_name: 'toDegsMinsSecs',
-        show_cardinal_direction: false,
+        optionName: 'DD MM SS.SS (32 45 42.84)',
+        conversionFunctionName: 'toDegsMinsSecs',
+        showCardinalDirection: false,
       },
       {
-        option_name: 'DD.DDDD N/S/E/W (32.7619 N)',
-        conversion_function_name: 'toDegs',
-        show_cardinal_direction: true,
+        optionName: 'DD.DDDD N/S/E/W (32.7619 N)',
+        conversionFunctionName: 'toDegs',
+        showCardinalDirection: true,
       },
       {
-        option_name: 'DD MM.MM N/S/E/W (32 45.714 N)',
-        conversion_function_name: 'toDegsMins',
-        show_cardinal_direction: true,
+        optionName: 'DD MM.MM N/S/E/W (32 45.714 N)',
+        conversionFunctionName: 'toDegsMins',
+        showCardinalDirection: true,
       },
       {
-        option_name: 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
-        conversion_function_name: 'toDegsMinsSecs',
-        show_cardinal_direction: true,
+        optionName: 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+        conversionFunctionName: 'toDegsMinsSecs',
+        showCardinalDirection: true,
       },
     ];
 
-    const close_dialog = () => {
-      dialog.off('change', handle_option_change);
+    const closeDialog = () => {
+      dialog.off('change', handleOptionChange);
       dialog.remove();
     };
 
     const dialog = $(
       `<ul class="latlongformatoptions">
-        ${Object.values(options).map(({option_name}, option_index) =>
+        ${Object.values(options).map(({optionName}, optionIndex) =>
         `<li>
             <label>
-              <input type="radio" name="latlongformat" value="${option_index}">
-              ${option_name}
+              <input type="radio" name="latlongformat" value="${optionIndex}">
+              ${optionName}
             </label>
           </li>`,
       ).join('')}
@@ -533,57 +531,57 @@ module.exports = Backbone.View.extend({
       </ul>`,
     ).dialog({
       title: 'Coordinate format converter',
-      close: close_dialog,
+      close: closeDialog,
       buttons: [
-        {text: 'Close', click: close_dialog},
+        {text: 'Close', click: closeDialog},
       ],
     });
 
-    const handle_option_change = () => {
+    const handleOptionChange = () => {
 
-      const include_symbols_checkbox = dialog.find('input[name="includesymbols"]');
-      const include_symbols = include_symbols_checkbox.is(':checked');
+      const includeSymbolsCheckbox = dialog.find('input[name="includesymbols"]');
+      const includeSymbols = includeSymbolsCheckbox.is(':checked');
 
-      const selected_option = dialog.find('input[type="radio"]:checked');
-      if (selected_option.length === 0)
+      const selectedOption = dialog.find('input[type="radio"]:checked');
+      if (selectedOption.length === 0)
         return;
 
-      const option_value = selected_option.attr('value');
-      if (typeof options[option_value] === 'undefined')
+      const optionValue = selectedOption.attr('value');
+      if (typeof options[optionValue] === 'undefined')
         return;
 
       const {
-        conversion_function_name,
-        show_cardinal_direction,
-      } = options[option_value];
-      const include_symbols_function = include_symbols ?
+        conversionFunctionName,
+        showCardinalDirection,
+      } = options[optionValue];
+      const includeSymbolsFunction = includeSymbols ?
         coordinate => coordinate :
         coordinate => coordinate.replace(/[^\w\s\-.]/gm, '');
-      const last_char = value => value[value.length - 1];
-      const remove_last_char = value => value.slice(0, -1);
-      const ends_with = (value, charset) => charset.indexOf(last_char(value)) !== -1;
-      const strip_cardinal_directions = final_value =>
-        show_cardinal_direction ?
-          final_value :
-          ends_with(final_value, 'SW') ?
-            '-' + remove_last_char(final_value) :
-            ends_with(final_value, 'NE') ?
-              remove_last_char(final_value) :
-              final_value;
+      const lastChar = value => value[value.length - 1];
+      const removeLastChar = value => value.slice(0, -1);
+      const endsWith = (value, charset) => charset.indexOf(lastChar(value)) !== -1;
+      const stripCardinalDirections = finalValue =>
+        showCardinalDirection ?
+          finalValue :
+          endsWith(finalValue, 'SW') ?
+            '-' + removeLastChar(finalValue) :
+            endsWith(finalValue, 'NE') ?
+              removeLastChar(finalValue) :
+              finalValue;
 
       this.hot.setDataAtCell(
-        coordinate_columns.map(([column_name, column_index]) =>
-          this.hot.getDataAtCol(column_index).map((cell_value, row_index) =>
-            [latlongutils[column_handlers[column_name]].parse(cell_value), row_index],
+        coordinateColumns.map(([columnName, columnIndex]) =>
+          this.hot.getDataAtCol(columnIndex).map((cellValue, rowIndex) =>
+            [latlongutils[columnHandlers[columnName]].parse(cellValue), rowIndex],
           ).filter(([coordinate]) =>
             coordinate !== null,
-          ).map(([coordinate, row_index]) =>
+          ).map(([coordinate, rowIndex]) =>
             [
-              row_index,
-              column_index,
-              include_symbols_function(
-                strip_cardinal_directions(
-                  coordinate[conversion_function_name]().format(),
+              rowIndex,
+              columnIndex,
+              includeSymbolsFunction(
+                stripCardinalDirections(
+                  coordinate[conversionFunctionName]().format(),
                 ),
               ).trim(),
             ],
@@ -592,14 +590,6 @@ module.exports = Backbone.View.extend({
       );
 
     };
-    dialog.on('change', handle_option_change);
+    dialog.on('change', handleOptionChange);
   },
 });
->>>>>>>
-9;
-f64e930;
-...
-Makes;
-leaflet;
-code;
-reusable;

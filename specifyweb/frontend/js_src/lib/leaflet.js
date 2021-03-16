@@ -150,7 +150,7 @@ const Leaflet = {
                 if (!locality_coordinate)
                     return;
 
-                locality_coordinate.row_number = index;
+                locality_coordinate.rowNumber = index;
                 locality_points.push(locality_coordinate);
             });
 
@@ -189,16 +189,16 @@ const Leaflet = {
     },
 
     showLeafletMap({
-        locality_points = [],
-        marker_click_callback = () => {
+        locality_points: localityPoints = [],
+        marker_click_callback: markerClickCallback = () => {
         },
-        leaflet_map_container
+        leafletMap_container
     }){
 
-        if (typeof leaflet_map_container === "undefined")
-            leaflet_map_container = $(`<div></div>`);
+        if (typeof leafletMap_container === "undefined")
+            leafletMap_container = $(`<div></div>`);
 
-        leaflet_map_container.dialog({
+        leafletMap_container.dialog({
             width: 900,
             height: 600,
             title: "Leaflet map",
@@ -211,12 +211,12 @@ const Leaflet = {
 
         let defaultCenter = [0, 0];
         let defaultZoom = 1;
-        if (locality_points.length > 0) {
-            defaultCenter = [locality_points[0].latitude1, locality_points[0].longitude1];
+        if (localityPoints.length > 0) {
+            defaultCenter = [localityPoints[0].latitude1, localityPoints[0].longitude1];
             defaultZoom = 5;
         }
 
-        const map = L.map(leaflet_map_container[0], {
+        const map = L.map(leafletMap_container[0], {
             layers: [
                 Object.values(leaflet_tile_servers.base_maps)[0],
             ],
@@ -228,10 +228,10 @@ const Leaflet = {
         Leaflet.addMarkersToMap(
             map,
             control_layers,
-            locality_points.map(point_data_dict =>
+            localityPoints.map(point_data_dict =>
                 this.displayLocalityOnTheMap({
                     locality_data: point_data_dict,
-                    marker_click_callback: marker_click_callback.bind(
+                    markerClickCallback: markerClickCallback.bind(
                         null,
                         index++
                     ),
@@ -380,7 +380,7 @@ const Leaflet = {
         const all_layers = Object.values(format_layers_dict(list_of_layers));
         const overlay_layers = format_layers_dict(list_of_layers.filter(({transparent}) => transparent));
 
-        const map = L.map('lifemapper_leaflet_map', {
+        const map = L.map('lifemapper_leaflet-map', {
             crs: L.CRS.EPSG4326,
             layers: all_layers,
         }).setView([0, 0], 1);

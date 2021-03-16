@@ -35,7 +35,7 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
 
-        'click .wb-cell_navigation': 'navigateCells',
+        'click .wb-cell-navigation': 'navigateCells',
         'click .wb-search-button': 'searchCells',
         'click .wb-replace-button': 'replaceCells',
         'click .wb-show-toolbelt': 'toggleToolbelt',
@@ -85,7 +85,6 @@ const WBView = Backbone.View.extend({
 
         //initialize Handsontable
         this.colHeaders = colHeaders;
-        this.find_locality_columns();
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
@@ -296,28 +295,28 @@ const WBView = Backbone.View.extend({
     },
     updateCellInfos() {
         const cellCounts = {
-            new_cells: this.wbutils.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
-            invalid_cells: this.wbutils.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
-            search_results: this.wbutils.cellInfo.reduce((count, info) => count + (info.matchesSearch ? 1 : 0), 0),
+            newCells: this.wbutils.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
+            invalidCells: this.wbutils.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
+            searchResults: this.wbutils.cellInfo.reduce((count, info) => count + (info.matchesSearch ? 1 : 0), 0),
         };
 
         //update navigation information
-        Object.values(document.getElementsByClassName('wb-navigation_total')).forEach(navigation_total_element => {
-            const navigation_type = navigation_total_element.parentElement.getAttribute('data-navigation_type');
-            navigation_total_element.innerText = cellCounts[navigation_type];
+        Object.values(document.getElementsByClassName('wb-navigation-total')).forEach(navigationTotal_element => {
+            const navigation_type = navigationTotal_element.parentElement.getAttribute('data-navigation-type');
+            navigationTotal_element.innerText = cellCounts[navigation_type];
         });
 
         // if(this.showStatusDialog){
 
         //     const upload_failed =
-        //         cellCounts.invalid_cells !== 0 ||
+        //         cellCounts.invalidCells !== 0 ||
         //         !this.dataset.uploadresult?.success;
         //     const upload_succeeded = !upload_failed && this.uploaded;
 
         //     const dialog = $(`<div>
         //         ${
         //             upload_failed ?
-        //                 `Upload failed with ${cellCounts.invalid_cells} invalid cells.<br>
+        //                 `Upload failed with ${cellCounts.invalidCells} invalid cells.<br>
         //                 Please review the validation messages and repeat the upload process.` :
         //                 upload_succeeded ?
         //                     `Upload completed successfully.<br>
