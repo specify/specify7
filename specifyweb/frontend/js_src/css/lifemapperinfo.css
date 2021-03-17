@@ -1,37 +1,37 @@
-.lifemapper_source_icon {
-	background: none;
-	border: none;
-	padding: 0.1rem;
-	border-radius: 100px;
-	cursor: pointer;
+.lifemapper-source-icon {
+  background: none;
+  border: none;
+  padding: 0.1rem;
+  border-radius: 100px;
+  cursor: pointer;
 }
 
-.lifemapper_source_icon_not_found {
-	opacity: 0.5;
-	cursor: initial;
-	outline: none;
+.lifemapper-source-icon-not-found {
+  opacity: 0.5;
+  cursor: initial;
+  outline: none;
 }
 
-.lifemapper_source_icon_issues_detected {
-	background: #f55;
+.lifemapper-source-icon-issues-detected {
+  background: #f55;
 }
 
-.lifemapper_source_icon img {
-	margin: 0;
+.lifemapper-source-icon img {
+  margin: 0;
 }
 
-.lifemapper_source_issues_list li {
-	list-style: disc;
+.lifemapper-source-issues-list li {
+  list-style: disc;
 }
 
-.lifemapper_leaflet_map {
-	height: 100%;
+.lifemapper-leaflet-map {
+  height: 100%;
 }
 
-.lifemapper_current_collection_object_marker {
-	filter: hue-rotate(135deg);
+.lifemapper-current-collection-object-marker {
+  filter: hue-rotate(135deg);
 }
 
-.details_container {
-	color: #fff;
+.details-container {
+  color: #fff;
 }
