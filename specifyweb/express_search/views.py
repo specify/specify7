@@ -96,6 +96,13 @@ class SearchForm(forms.Form):
 @require_GET
 @login_maybe_required
 def search(request):
+    """Performs an express search and returns the results.
+    Based on the GET parameters:
+    'q' = the query string (required)
+    'name' = restrict to the table 'name'
+    'limit' = number of results to return
+    'offest' = offset into results
+    """
     form = SearchForm(request.GET)
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
@@ -122,6 +129,7 @@ class RelatedSearchForm(SearchForm):
 @require_GET
 @login_maybe_required
 def related_search(request):
+    """Performs an express search "related query" and returns the results. """
     from . import related_searches
     form = RelatedSearchForm(request.GET)
     if not form.is_valid():
@@ -145,6 +153,7 @@ def related_search(request):
 @require_GET
 @login_maybe_required
 def querycbx_search(request, modelname):
+    """Executes a querycbx search for table <modelname>. """
     table = datamodel.get_table(modelname)
     model = getattr(models, table.name)
 

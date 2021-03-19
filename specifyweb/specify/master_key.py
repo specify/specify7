@@ -16,6 +16,7 @@ def make_master_key(userpass):
 @require_POST
 @login_required
 def master_key(request):
+    "Returns a master key for Specify 6 logins. Requires the user's 'password' as a POST parameter."
     password = request.POST['password']
     if request.specify_user.check_password(password):
         return HttpResponse(make_master_key(password), content_type='text/plain')

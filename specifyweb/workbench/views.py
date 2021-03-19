@@ -40,6 +40,7 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
 @require_http_methods(["GET", "POST"])
 @transaction.atomic
 def datasets(request) -> http.HttpResponse:
+    """RESTful list of user's WB datasets. POSTing will create a new dataset."""
     if request.method == "POST":
         data = json.load(request)
 
@@ -76,6 +77,7 @@ def datasets(request) -> http.HttpResponse:
 @require_http_methods(["GET", "PUT", "DELETE"])
 @transaction.atomic
 def dataset(request, ds_id: str) -> http.HttpResponse:
+    """RESTful endpoint for dataset <ds_id>. Supports GET PUT and DELETE."""
     try:
         ds = models.Spdataset.objects.get(id=ds_id)
     except ObjectDoesNotExist:
@@ -159,6 +161,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 @require_http_methods(["GET", "PUT"])
 @transaction.atomic
 def rows(request, ds_id: str) -> http.HttpResponse:
+    """Returns (GET) or sets (PUT) the row data for dataset <ds_id>."""
     try:
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
     except ObjectDoesNotExist:
@@ -189,6 +192,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
 @apply_access_control
 @require_POST
 def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
+    "Initiates an upload or validation of dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
@@ -225,6 +229,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
 @apply_access_control
 @require_POST
 def unupload(request, ds_id: int) -> http.HttpResponse:
+    "Initiates an unupload of dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
@@ -252,6 +257,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
 # @login_maybe_required
 @require_GET
 def status(request, ds_id: int) -> http.HttpResponse:
+    "Returns the uploader status for the dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     # if (wb.specifyuser != request.specify_user):
     #     return http.HttpResponseForbidden()
@@ -276,6 +282,7 @@ def status(request, ds_id: int) -> http.HttpResponse:
 @apply_access_control
 @require_POST
 def abort(request, ds_id: int) -> http.HttpResponse:
+    "Aborts any ongoing uploader operation for dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
@@ -297,6 +304,7 @@ def abort(request, ds_id: int) -> http.HttpResponse:
 @apply_access_control
 @require_GET
 def validation_results(request, ds_id: int) -> http.HttpResponse:
+    "Returns any validation results for the dataset <ds_id>."
     from .upload.upload_result import json_to_UploadResult
 
     ds = get_object_or_404(models.Spdataset, id=ds_id)
@@ -316,6 +324,7 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
 @apply_access_control
 @require_GET
 def upload_results(request, ds_id: int) -> http.HttpResponse:
+    "Returns the detailed upload/validation results if any for the dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
@@ -334,6 +343,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
 @apply_access_control
 @require_POST
 def validate_row(request, ds_id: str) -> http.HttpResponse:
+    "Validates a single row for dataset <ds_id>. The row data is passed as POST parameters."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     collection = request.specify_collection
     bt, upload_plan = uploader.get_ds_upload_plan(collection, ds)
@@ -349,6 +359,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
 
 @require_GET
 def up_schema(request) -> http.HttpResponse:
+    "Returns the upload plan schema."
     return http.JsonResponse(upload_plan_schema.schema)
 
 @login_maybe_required

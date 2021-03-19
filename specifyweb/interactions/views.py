@@ -13,6 +13,7 @@ from specifyweb.specify.api import toJson
 @login_maybe_required
 @require_GET
 def preps_available_rs(request, recordset_id):
+    "Returns a list of preparations that are loanable? based on the CO recordset <recordset_id>."
     cursor = connection.cursor()
     cursor.execute("""
     select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
@@ -37,6 +38,11 @@ def preps_available_rs(request, recordset_id):
 @require_POST
 @login_maybe_required
 def preps_available_ids(request):
+    """Returns a list of preparations that are loanable? based on
+    a list of collection object ids passed in the 'co_ids' POST
+    parameter as a JSON list.
+    """
+
     # make sure the field is actually a field in the collection object table
     try:
         id_fld = Collectionobject._meta.get_field(request.POST['id_fld'].lower()).db_column
@@ -168,6 +174,8 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 @login_maybe_required
 @transaction.atomic
 def loan_return_all_items(request):
+    """Causes all loan items to be marked returned based on various POST parameters.
+    """
     if 'returnedDate' in request.POST:
         returned_date = str(request.POST['returnedDate'])
     else:
@@ -204,6 +212,7 @@ def loan_return_all_items(request):
 @require_GET
 @login_maybe_required
 def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
+    "Returns available counts for preps."
     args = [prep_id];
     sql = """select p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) 
     from preparation p

@@ -37,6 +37,10 @@ def tree_mutation(mutation):
 @login_maybe_required
 @require_GET
 def tree_view(request, treedef, tree, parentid, sortfield):
+    """Returns a list of <tree> nodes with parent <parentid> restricted to
+    the tree defined by treedefid = <treedef>. The nodes are sorted
+    according to <sortfield>.
+    """
     tree_table = datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -71,6 +75,7 @@ def tree_view(request, treedef, tree, parentid, sortfield):
 @login_maybe_required
 @require_GET
 def tree_stats(request, treedef, tree, parentid):
+    "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
     tree_table = datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
     treedef_col = tree_table.name + "TreeDefID"
@@ -206,6 +211,7 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
 @login_maybe_required
 @require_GET
 def path(request, tree, id):
+    "Returns all nodes up to the root of <tree> starting from node <id>."
     id = int(id)
     tree_node = get_object_or_404(tree, id=id)
 
@@ -224,6 +230,11 @@ def get_tree_path(tree_node):
 @login_maybe_required
 @require_GET
 def predict_fullname(request, tree, parentid):
+    """Returns the predicted fullname for a <tree> node based on the name
+    field of the node and its <parentid>. Requires GET parameters
+    'treedefitemid' and 'name', to indicate the rank (treedefitem) and
+    name of the node, respectively.
+    """
     parent = get_object_or_404(tree, id=parentid)
     depth = parent.definition.treedefitems.count()
     reverse = parent.definition.fullnamedirection == -1
@@ -236,12 +247,17 @@ def predict_fullname(request, tree, parentid):
 
 @tree_mutation
 def merge(request, tree, id):
+    """Merges <tree> node <id> into the node with id indicated by the
+    'target' POST parameter."""
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.merge(node, target, request.specify_user_agent)
 
 @tree_mutation
 def move(request, tree, id):
+    """Reparents the <tree> node <id> to be a child of the node
+    indicated by the 'target' POST parameter.
+    """
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     old_parent = node.parent
@@ -258,17 +274,22 @@ def move(request, tree, id):
 
 @tree_mutation
 def synonymize(request, tree, id):
+    """Synonymizes the <tree> node <id> to be a synonym of the node
+    indicated by the 'target' POST parameter.
+    """
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.synonymize(node, target, request.specify_user_agent)
 
 @tree_mutation
 def unsynonymize(request, tree, id):
+    "Causes the <tree> node <id> to no longer be a synonym of another node."
     node = get_object_or_404(tree, id=id)
     tree_extras.unsynonymize(node, request.specify_user_agent)
 
 @tree_mutation
 def repair_tree(request, tree):
+    "Repairs the indicated <tree>."
     tree_model = datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)

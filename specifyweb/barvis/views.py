@@ -13,6 +13,7 @@ from django.db import connection
 @require_GET
 @login_maybe_required
 def taxon_bar(request):
+    "Returns the data for creating a taxon tiles visualization."
     cursor = connection.cursor()
     cursor.execute("""
     SELECT t.TaxonID,

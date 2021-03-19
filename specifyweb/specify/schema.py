@@ -10,6 +10,9 @@ from .datamodel import datamodel, Table, Field, Relationship, TableDoesNotExistE
 @login_maybe_required
 @require_GET
 def openapi(request) -> http.HttpResponse:
+    '''Returns a OpenAPI spec for the Specify API at "/api/specify/...".
+    This is a work in progress.
+    '''
     spec = {
         'openapi': '3.0',
         'info': {},
@@ -26,6 +29,9 @@ def openapi(request) -> http.HttpResponse:
 @login_maybe_required
 @require_GET
 def view(request, model: str) -> http.HttpResponse:
+    '''Returns a JSONSchema for the JSON representation of resources
+    of the given <model> type.
+    '''
     try:
         table = datamodel.get_table_strict(model)
     except TableDoesNotExistError:

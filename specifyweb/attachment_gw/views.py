@@ -28,6 +28,7 @@ def get_collection():
 @require_GET
 @cache_control(max_age=86400, private=True)
 def get_settings(request):
+    "Returns settings needed to access the asset server for this Specify instance."
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
 
@@ -41,6 +42,7 @@ def get_settings(request):
 @login_maybe_required
 @require_GET
 def get_token(request):
+    "Returns an asset server access token. Must be supplied 'filename' GET parameter."
     filename = request.GET['filename']
     token = generate_token(get_timestamp(), filename)
     return HttpResponse(token, content_type='text/plain')
@@ -48,6 +50,7 @@ def get_token(request):
 @login_maybe_required
 @require_GET
 def get_upload_params(request):
+    "Returns information for uploading a file with GET parameter 'filename' to the asset server."
     filename = request.GET['filename']
     attch_loc = make_attachment_filename(filename)
     data = {

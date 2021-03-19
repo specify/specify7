@@ -18,12 +18,16 @@ class ReportException(Exception):
 @require_GET
 @cache_control(max_age=86400, private=True)
 def get_status(request):
+    "Indicates whether a report runner server is available."
     resp = {'available': settings.REPORT_RUNNER_HOST != ''}
     return HttpResponse(toJson(resp), content_type="application/json")
 
 @require_POST
 @login_maybe_required
 def run(request):
+    """Executes the named 'report' using the given 'query' and 'parameters' as POST parameters.
+    Returns the result as a PDF.
+    """
     if settings.REPORT_RUNNER_HOST == '':
         raise ReportException("Report service is not configured.")
 
@@ -48,6 +52,7 @@ def run(request):
 @require_GET
 @login_maybe_required
 def get_reports(request):
+    "Returns a list of available reports and labels."
     reports = Spappresource.objects.filter(
         mimetype__startswith="jrxml",
         spappresourcedir__discipline=request.specify_collection.discipline) \
@@ -65,6 +70,7 @@ def get_reports(request):
 @require_GET
 @login_maybe_required
 def get_reports_by_tbl(request, tbl_id):
+    "Returns a list of availabel reports and labels for the given table <tbl_id>."
     reports = Spappresource.objects.filter(
         mimetype__startswith="jrxml",
         spappresourcedir__discipline=request.specify_collection.discipline) \
