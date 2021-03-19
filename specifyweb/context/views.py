@@ -1,7 +1,7 @@
 import re
 import json
 
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden, JsonResponse
 from django.utils.http import is_safe_url
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.cache import cache_control, never_cache
@@ -12,6 +12,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django import forms
 from django.db import connection, transaction
+from django.urls import URLPattern, URLResolver
 
 from specifyweb.specify.models import Collection, Spversion,Agent, Institution, Specifyuser, Spprincipal
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
@@ -23,6 +24,7 @@ from .viewsets import get_view
 from .schema_localization import get_schema_localization
 from .remote_prefs import get_remote_prefs
 
+urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
@@ -60,6 +62,8 @@ def set_users_collections(cursor, user, collectionids):
 @require_http_methods(['GET', 'PUT'])
 @never_cache
 def user_collection_access(request, userid):
+    """Returns (GET) or sets (PUT) the list of collections user <userid>
+    can log into. Requesting user must be an admin."""
     if not request.specify_user.is_admin():
         return HttpResponseForbidden()
     cursor = connection.cursor()
@@ -82,6 +86,7 @@ class CollectionChoiceField(forms.ChoiceField):
 @require_http_methods(['GET', 'POST'])
 @never_cache
 def choose_collection(request):
+    "The HTML page for choosing which collection to log into. Presented after the main auth page."
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = HttpResponseRedirect(
         redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
@@ -118,6 +123,9 @@ def choose_collection(request):
 @never_cache
 @ensure_csrf_cookie
 def api_login(request):
+    """An API endpoint for logging in. GET returns the currently logged in user/collection if any.
+    PUT logs into the request collection if possible.
+    """
     if request.method == 'PUT':
         data = json.load(request)
         if any(data[key] is None for key in 'username password collection'.split()):
@@ -242,6 +250,7 @@ datamodel_json = None
 @login_maybe_required
 @cache_control(max_age=86400, public=True)
 def datamodel(request):
+    "Returns a JSON representation of the Specify datamodel."
     from specifyweb.specify.models import datamodel
     global datamodel_json
     if datamodel_json is None:
@@ -288,11 +297,13 @@ def view(request):
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
+    "Return the 'remoteprefs' java properties file from the database."
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
 @require_GET
 @cache_control(max_age=86400, public=True)
 def system_info(request):
+    "Return various information about this Specify instance."
     spversion = Spversion.objects.get()
     collection = request.specify_collection
     discipline = collection.discipline if collection is not None else None
@@ -311,3 +322,16 @@ def system_info(request):
         isa_number=collection and collection.isanumber,
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
+
+
+def get_endpoints(patterns):
+    return {
+        str(p.pattern).strip('^$'): (p.callback.__doc__ or "").strip() if isinstance(p, URLPattern) else get_endpoints(p.url_patterns)
+        for p in patterns
+    }
+
+@require_GET
+@cache_control(max_age=86400, public=True)
+def api_endpoints(request):
+    "Returns a JSON description of all endpoints served."
+    return JsonResponse(get_endpoints(urlconf.urlpatterns))
