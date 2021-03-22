@@ -138,7 +138,7 @@ class Field(object):
         return "<SpecifyField: %s>" % self.name
 
     def is_temporal(self) -> bool:
-        return self.type in ('java.util.Date', 'java.util.Calendar')
+        return self.type in ('java.util.Date', 'java.util.Calendar', 'java.sql.Timestamp')
 
 class IdField(Field):
     name: str
