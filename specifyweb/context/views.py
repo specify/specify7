@@ -323,15 +323,47 @@ def system_info(request):
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 
+PATH_GROUP_RE = re.compile(r'\(\?P<([^>]+)>[^\)]*\)')
 
-def get_endpoints(patterns):
-    return {
-        str(p.pattern).strip('^$'): (p.callback.__doc__ or "").strip() if isinstance(p, URLPattern) else get_endpoints(p.url_patterns)
-        for p in patterns
-    }
+def parse_pattern(pattern):
+    p_str = str(pattern.pattern)
+    params = []
+    for match in PATH_GROUP_RE.finditer(p_str):
+        p_str = p_str.replace(match.group(0), "{%s}" % match.group(1), 1)
+        params.append(match.group(1))
+
+    return p_str.strip('^$'), params
+
+def get_endpoints(patterns, prefix="/", preparams=[]):
+    for p in patterns:
+        path, params = parse_pattern(p)
+        if isinstance(p, URLPattern):
+            yield (prefix + path, {
+                **({'description': p.callback.__doc__} if p.callback.__doc__ else {}),
+                'parameters': [
+                    {'name': param, 'in': 'path', 'required': True, 'schema': {'type': 'string'}}
+                    for param in preparams + params
+                ],
+                'get': {'responses': {'200': {'description': 'TBD'}}},
+            })
+        else:
+            yield from get_endpoints(p.url_patterns, prefix + path, preparams + params)
+
+    # return {
+    #     pattern_to_path(p): (p.callback.__doc__ or "").strip() if isinstance(p, URLPattern) else get_endpoints(p.url_patterns)
+    #     for p in patterns
+    # }
 
 @require_GET
 @cache_control(max_age=86400, public=True)
 def api_endpoints(request):
     "Returns a JSON description of all endpoints served."
-    return JsonResponse(get_endpoints(urlconf.urlpatterns))
+    spec = dict(
+        openapi="3.0.0",
+        info=dict(
+            title="Specify 7 API",
+            version="7.6",
+        ),
+        paths=dict(get_endpoints(urlconf.urlpatterns))
+    )
+    return JsonResponse(spec)
