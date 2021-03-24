@@ -504,13 +504,8 @@ function fixupImages(reportXML) {
         if ($(this).hasClass('java.net.URL')) return;
 
         var imageExpression = $(this).text();
-        if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
-        if (imageExpression.match(/^new\s*java\.net\.URL\s*\(\s*"http:\/\//)) return;
         var match = imageExpression.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/);
-        if (!match) {
-            badImageExpressions.push(imageExpression);
-            $(this).text(badImageUrl);
-        } else {
+        if (match) {
             filenames[match[1]] ? filenames[match[1]].push($(this)) : (filenames[match[1]] = [$(this)]);
         }
     });
