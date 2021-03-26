@@ -9,7 +9,7 @@ var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
-const LifemapperInfo = require('./components/lifemapperinfo');
+const LifemapperInfo = require('./components/lifemapperinfo').default;
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -89,13 +89,13 @@ module.exports =  Backbone.View.extend({
             nextUrl: self.next && self.next.viewUrl(),
             newUrl: self.newUrl
         }));
-        if (self.model.specifyModel.name === "CollectionObject") {
-            let lifemapperInfo = new LifemapperInfo({
+
+        if (self.model.specifyModel.name === "CollectionObject")
+            new LifemapperInfo({
                 model: self.model,
                 el: $('.lifemapper-info', self.header)
-            });
-            lifemapperInfo.render();
-        }
+            }).render();
+
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
         specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
             self.populateForm(form, self.model);

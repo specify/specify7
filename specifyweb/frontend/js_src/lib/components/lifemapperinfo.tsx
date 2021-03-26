@@ -836,10 +836,7 @@ interface ComponentProps extends Props {
   guid: string,
 }
 
-export default createBackboneView<Props,
-  Props,
-  ComponentProps>
-({
+export default createBackboneView<Props, Props, ComponentProps>({
   moduleName: 'LifemapperInfo',
   className: 'lifemapper-info',
   initialize(
