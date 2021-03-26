@@ -30,7 +30,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   getComponentProps,
 }: {
   moduleName: string,
-  title: string | (
+  title?: string | (
     (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => string
     ),
   className: string,
