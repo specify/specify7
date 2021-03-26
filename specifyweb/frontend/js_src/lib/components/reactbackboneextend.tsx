@@ -11,7 +11,7 @@ import Backbone      from '../backbone';
 import React         from 'react';
 import ReactDOM      from 'react-dom';
 import ErrorBoundary from './errorboundary';
-import app           from '../specifyapp.js';
+// import type app           from '../specifyapp.js';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
   el: HTMLElement,
@@ -56,10 +56,16 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     render() {
       renderPre && renderPre(this);
 
-      if (typeof title === 'string')
-        app.setTitle(title);
-      else if (typeof title === 'function')
-        app.setTitle(title(this));
+      if (typeof title !== 'undefined')
+        // @ts-ignore
+        require.ensure(['../specifyapp.js'], require => {
+            const app = require('../specifyapp.js');
+            if (typeof title === 'string')
+            app.setTitle(title);
+          else if (typeof title === 'function')
+            app.setTitle(title(this));
+        }, "specifyapp");
+
 
       ReactDOM.render(<React.StrictMode>
         <ErrorBoundary>
