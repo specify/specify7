@@ -2,7 +2,7 @@
 
 var $ = require('jquery');
 
-var Leaflet = require('./leaflet.js');
+var Leaflet = require('./leaflet.ts');
 var UIPlugin = require('./uiplugin.js');
 
 module.exports =  UIPlugin.extend({

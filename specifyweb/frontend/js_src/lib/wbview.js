@@ -35,15 +35,8 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
 
-        'click .wb-cell-navigation': 'navigateCells',
-        'click .wb-search-button': 'searchCells',
-        'click .wb-replace-button': 'replaceCells',
-        'click .wb-show-toolbelt': 'toggleToolbelt',
-        'click .wb-geolocate': 'showGeoLocate',
         'click .wb-show-upload-view':'displayUploadedView',
         'click .wb-unupload':'unupload',
-        'click .wb-leafletmap': 'showLeafletMap',
-        'click .wb-convert-coordinates': 'showCoordinateConversion'
     },
     initialize({dataset, showStatusDialog}) {
         this.dataset = dataset;
@@ -84,7 +77,6 @@ const WBView = Backbone.View.extend({
             });
 
         //initialize Handsontable
-        this.colHeaders = colHeaders;
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
@@ -137,12 +129,6 @@ const WBView = Backbone.View.extend({
             afterRemoveRow: this.rowRemoved.bind(this),
             afterSelection: (r, c) => this.currentPos = [r,c],
             afterChange: this.afterChange.bind(this),
-        });
-
-        this.wbutils = new WBUtils({
-            hot: this.hot,
-            wb: this.wb,
-            colHeaders: colHeaders
         });
 
         this.wbutils.findLocalityColumns();

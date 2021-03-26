@@ -1,5 +1,5 @@
 const $ = require('jquery');
-const Leaflet = require('./leaflet.js');
+const Leaflet = require('./leaflet.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
 
@@ -11,6 +11,9 @@ module.exports = Backbone.View.extend({
     'click .wb-search-button': 'searchCells',
     'click .wb-replace-button': 'replaceCells',
     'click .wb-show-toolbelt': 'toggleToolbelt',
+    'click .wb-geolocate': 'showGeoLocate',
+    'click .wb-leafletmap': 'showLeafletMap',
+    'click .wb-convert-coordinates': 'showCoordinateConversion'
   },
   initialize({wbview, wb, hot, colHeaders}) {
     this.wbview = wbview;
