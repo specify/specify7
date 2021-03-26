@@ -12,7 +12,7 @@ import {
   State
 } from '../statemanagement';
 import { ModalDialog }                    from './modaldialog';
-
+import ResourceView from '../resourceview';
 
 // TODO: remove this
 const IS_DEVELOPMENT = false;
@@ -836,7 +836,7 @@ interface ComponentProps extends Props {
   guid: string,
 }
 
-export default createBackboneView<Props, Props, ComponentProps>({
+const View = createBackboneView<Props, Props, ComponentProps>({
   moduleName: 'LifemapperInfo',
   className: 'lifemapper-info',
   initialize(
@@ -853,6 +853,17 @@ export default createBackboneView<Props, Props, ComponentProps>({
       self.model.get('guid')
   }),
 });
+
+export default function register() {
+    ResourceView.on('rendered', resourceView => {
+        if (resourceView.model.specifyModel.name === 'CollectionObject') {
+            new View({
+                model: resourceView.model,
+                el: $('<span class="lifemapper-info" style="display: none"></span>').appendTo(resourceView.header)
+            }).render();
+        }
+    });
+}
 
 
 const issueDefinitions:Readonly<

@@ -21,6 +21,7 @@ var tasks = [
     require('./wbimporttask.js'),
     require('./wbplantask.js'),
     require('./appresourcetask.js'),
+    require('./components/lifemapperinfo').default,
 ];
 
 
