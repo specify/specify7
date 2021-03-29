@@ -1,21 +1,17 @@
 'use strict';
 
 import React                              from 'react';
-import createBackboneView from './reactbackboneextend';
+import createBackboneView                 from './reactbackboneextend';
 import schema                             from '../schema';
 import '../../css/lifemapperinfo.css';
 import * as Leaflet                       from '../leaflet';
 import $                                  from 'jquery';
-import {
-  Action,
-  generateReducer,
-  State
-} from '../statemanagement';
+import { Action, generateReducer, State } from '../statemanagement';
 import { ModalDialog }                    from './modaldialog';
-import ResourceView from '../resourceview';
+import ResourceView                       from '../resourceview';
 
 // TODO: remove this
-const IS_DEVELOPMENT = false;
+const IS_DEVELOPMENT = true;
 const defaultGuid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
 // const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
 const defaultOccurrenceName:Readonly<[string,string]> = [
@@ -290,16 +286,13 @@ function Badge<IS_ENABLED extends boolean>({
   hasError: boolean,
 }){
   return <button
-    disabled={isEnabled}
-    onClick={isEnabled?
-      handleClick :
-      undefined
-    }
-    className={`lifemapper_source_icon ${
+    disabled={!isEnabled}
+    onClick={handleClick}
+    className={`lifemapper-source-icon ${
       isEnabled ?
-        'lifemapper-source-icon-not-found' :
-        ''
-    }${
+        '' :
+        'lifemapper-source-icon-not-found'
+    } ${
       hasError ?
         'lifemapper-source-icon-issues-detected' :
         ''
@@ -352,7 +345,7 @@ function Aggregator({
       ) &&
       <>
         Number of occurrences of similar taxa records:
-        <ul className="lifemapper_source_issues_list">
+        <ul className="lifemapper-source-issues-list">
           {data.occurrenceCount.map(({scientificName, count, url}, index) =>
             <li key={index}>
                 <a
@@ -531,7 +524,7 @@ function LifemapperInfo({
         occurrenceNames[0]
     });
 
-  });
+  },[state.type]);
 
   React.useEffect(()=> {
 
@@ -772,6 +765,15 @@ function LifemapperInfo({
           }
         />
       )}
+      <Badge
+        name={'lifemapper'}
+        isEnabled={true}
+        hasError={false}
+        onClick={()=>dispatch({
+          type: 'ToggleAggregatorVisibilityAction',
+          badgeName: 'lifemapper',
+        })}
+      />
       {Object.entries(state.badgeStatuses).filter(([,{isOpen}])=>
         isOpen
       ).map(([badgeName])=> ({
@@ -784,6 +786,10 @@ function LifemapperInfo({
             title: isAggregator ?
               `Record was indexed by ${sourceLabels[badgeName]}` :
               sourceLabels[badgeName],
+            close: ()=>dispatch({
+              type: 'ToggleAggregatorVisibilityAction',
+              badgeName
+            }),
             ...(
               isAggregator ?
                 state.aggregatorInfos[badgeName]?.occurrenceViewLink ?
@@ -791,9 +797,10 @@ function LifemapperInfo({
                     buttons: [
                       {
                         text: `Close`,
-                        click() {
-                          $(this).remove();
-                        },
+                        click: ()=>dispatch({
+                          type: 'ToggleAggregatorVisibilityAction',
+                          badgeName
+                        }),
                       },
                       {
                         text: `View occurrence at ${sourceLabels[badgeName]}`,
@@ -802,12 +809,13 @@ function LifemapperInfo({
                           '_blank'
                         ),
                       }
-                    ]
+                    ],
+                    width: 400,
                   } :
                   {} :
                 {
-                  width: '950px',
-                  height: '500px',
+                  width: 950,
+                  height: 500,
                 }
             )
           }}
@@ -845,6 +853,12 @@ const View = createBackboneView<Props, Props, ComponentProps>({
   ) {
     self.model = model;
   },
+  renderPre(self){
+    self.el.style.display = '';
+  },
+  remove(self){
+    self.el.style.display = 'none';
+  },
   Component: LifemapperInfo,
   getComponentProps: (self) => ({
     model: self.model,
@@ -855,14 +869,16 @@ const View = createBackboneView<Props, Props, ComponentProps>({
 });
 
 export default function register() {
-    ResourceView.on('rendered', resourceView => {
-        if (resourceView.model.specifyModel.name === 'CollectionObject') {
-            new View({
-                model: resourceView.model,
-                el: $('<span class="lifemapper-info" style="display: none"></span>').appendTo(resourceView.header)
-            }).render();
-        }
-    });
+  ResourceView.on('rendered', (resourceView: any) => {
+    if (resourceView.model.specifyModel.name === 'CollectionObject')
+      // @ts-ignore
+      new View({
+        model: resourceView.model,
+        el: $(
+          '<span class="lifemapper-info" style="display:none;"></span>'
+        ).appendTo(resourceView.header),
+      }).render();
+  });
 }
 
 

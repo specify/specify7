@@ -17,7 +17,7 @@ L.Icon.Default.mergeOptions({
 //create a "full screen" button
 // @ts-ignore
 L.Control.FullScreen = L.Control.extend({
-  onAdd: (map:L.Map) => {
+  onAdd: function(map:L.Map) {
     const img = L.DomUtil.create('img') as HTMLImageElement;
     img.style.cursor = 'pointer';
     img.classList.add('full-screen');
