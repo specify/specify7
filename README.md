@@ -91,7 +91,7 @@ as Specify 7 makes use of resource files. Specify 6 code is also
 executed by the server for Workbench validation and uploads.
 
 ```shell
-wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
 sh Specify_unix_64.sh -q -dir ./Specify6.8.0
 sudo ln -s $(pwd)/Specify6.8.0 /opt/Specify
 ```
@@ -100,7 +100,7 @@ sudo ln -s $(pwd)/Specify6.8.0 /opt/Specify
 Clone this repository.
 
 ```shell
-git clone git://github.com/specify/specify7.git
+git clone https://github.com/specify/specify7.git
 ```
 
 You will now have a specify7 directory containing the source
@@ -109,7 +109,7 @@ tree.
 
 ### Setting up Python Virtual Environment
 Using a Python
-[virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
+[virtual environment](https://docs.python-guide.org/dev/virtualenvs/)
 will avoid version conflicts with other Python libraries on your
 system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
@@ -280,7 +280,7 @@ proceed as follows:
 1. Clone or download a new copy of this repository in a directory next
    to your existing installation.
 
-    `git clone git://github.com/specify/specify7.git specify7-new-version`
+    `git clone https://github.com/specify/specify7.git specify7-new-version`
 
 2. Copy the settings from the existing to the new installation.
 
@@ -296,7 +296,7 @@ proceed as follows:
 
 6. [Build](#building) the new version of Specify 7.
 
-7. Testing it out with the [development server](#the-development-server).
+7. Test it out with the [development server](#the-development-server).
 
 8. Deploy the new version by updating your Apache config to replace
    the old installation paths with the new ones and restarting Apache.
