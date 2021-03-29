@@ -69,6 +69,7 @@ https://github.com/specify/specify7-docker
 Specify 7 requires Python 3.6. Ubuntu 18.04 LTS is recommended. For
 other distributions these instructions will have to be adapted.
 
+Ubuntu 18.04 LTS:
 ```shell
 sudo apt-get -y install --no-install-recommends \
     build-essential \
@@ -82,6 +83,23 @@ sudo apt-get -y install --no-install-recommends \
     python3-venv \
     python3.6 \
     python3.6-dev \
+    unzip
+```
+
+CentOS 7 / Red Hat 7:
+```shell
+yum install -y epel-release sudo wget
+yum install -y \
+    gcc make \
+    git \
+    openldap-devel \
+    mariadb-devel \
+    nodejs \
+    npm \
+    java-11-openjdk-headless \
+    python36-virtualenv \
+    python36 \
+    python36u-devel \
     unzip
 ```
 
@@ -236,8 +254,14 @@ following packages are needed:
 * Apache
 * mod-wsgi to connect Python to Apache
 
+Ubuntu:
 ```shell
 sudo apt-get install apache2 libapache2-mod-wsgi-py3
+```
+
+CentOS / Red Hat:
+```shell
+yum install httpd python3-mod_wsgi
 ```
 
 Warning: This will replace the Python 2.7 version of mod-wsgi that was
@@ -254,16 +278,28 @@ your system. There are comments showing what to change.
 Then remove the default Apache welcome page and make a link to your
 `local_specifyweb_apache.conf` file.
 
+Ubuntu:
 ```shell
 sudo rm /etc/apache2/sites-enabled/000-default.conf
 sudo ln -s `pwd`/specify7/local_specifyweb_apache.conf /etc/apache2/sites-enabled/
 ```
 
+CentOS / Red Hat:
+```shell
+sudo ln -s `pwd`/specify7/local_specifyweb_apache.conf /etc/httpd/conf.d/
+```
+
 ### Restarting Apache
 After changing Apache's config files restart the service.
 
+Ubuntu:
 ```shell
 sudo systemctl restart apache2.service
+```
+
+CentOS / Red Hat:
+```shell
+sudo systemctl restart httpd.service
 ```
 
 # Updating Specify 7
