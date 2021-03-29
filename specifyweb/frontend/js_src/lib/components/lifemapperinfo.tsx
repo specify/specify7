@@ -14,43 +14,43 @@ import ResourceView                       from '../resourceview';
 const IS_DEVELOPMENT = true;
 const defaultGuid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
 // const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
-const defaultOccurrenceName:Readonly<[string,string]> = [
+const defaultOccurrenceName: Readonly<[string, string]> = [
   'Phlox longifolia Nutt.',
   'Phlox longifolia Nutt.',
 ] as const;
 
 
 const fetchLocalScientificName = (
-  model:any,
+  model: any,
   defaultValue?: string,
-):Promise<string|undefined> =>
+): Promise<string | undefined> =>
   new Promise(resolve => {
     model.rget('determinations').done((
-      {models: determinations}:any
-    ) =>
-      determinations.length === 0 ?
-        resolve(defaultValue) :
-        determinations[0].rget(
-          'preferredTaxon.fullname'
-        ).done((scientificName:string) =>
-          resolve(
-            scientificName === null ?
-              defaultValue :
-              scientificName,
+      {models: determinations}: any,
+      ) =>
+        determinations.length === 0 ?
+          resolve(defaultValue) :
+          determinations[0].rget(
+            'preferredTaxon.fullname',
+          ).done((scientificName: string) =>
+            resolve(
+              scientificName === null ?
+                defaultValue :
+                scientificName,
+            ),
           ),
-        ),
     );
   });
 
 
-const formatOccurrenceDataRequest = (occurrenceGuid:string) =>
+const formatOccurrenceDataRequest = (occurrenceGuid: string) =>
   `http://notyeti-192.lifemapper.org/api/v1/occ/${
     occurrenceGuid
   }?count_only=0`;
 
 const formatOccurrenceCountRequest = (
-  dataAggregatorName:string,
-  occurrenceScientificName:string,
+  dataAggregatorName: string,
+  occurrenceScientificName: string,
 ) =>
   `http://notyeti-192.lifemapper.org/api/v1/name/${
     dataAggregatorName
@@ -59,30 +59,26 @@ const formatOccurrenceCountRequest = (
   }?count_only=1`;
 
 const formatOccurrenceMapRequest = (
-  occurrenceScientificName:string
+  occurrenceScientificName: string,
 ) =>
   `http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${
     encodeURIComponent(occurrenceScientificName)
   }`;
 
-const AGGREGATOR_NAMES:Readonly<string[]> = [
+const AGGREGATOR_NAMES: Readonly<string[]> = [
   'gbif',
   'idigbio',
-  'morphosource'
+  'morphosource',
 ] as const;
-const BADGE_NAMES:Readonly<string[]> = [
+const BADGE_NAMES: Readonly<string[]> = [
   ...AGGREGATOR_NAMES,
-  'lifemapper'
+  'lifemapper',
 ] as const;
 
 type AggregatorName = typeof AGGREGATOR_NAMES[number];
 type BadgeName = typeof BADGE_NAMES[number];
 
-const sourceLabels:Readonly<
-  Record<
-    BadgeName,string
-  >
-> = {
+const sourceLabels: Readonly<Record<BadgeName, string>> = {
   'gbif': 'GBIF',
   'idigbio': 'iDigBio',
   'morphosource': 'MorphoSource',
@@ -100,10 +96,8 @@ type FullAggregatorInfo = AggregatorInfo & {
   occurrenceCount?: OccurrenceCountRecord[],
 }
 
-const extractBadgeInfo:Record<
-  AggregatorName,
-  (occurrence:Record<string,any>)=>AggregatorInfo
-> = {
+const extractBadgeInfo: Record<AggregatorName,
+  (occurrence: Record<string, any>) => AggregatorInfo> = {
   'gbif': (occurrence) => (
     {
       listOfIssues: occurrence.issues,
@@ -134,12 +128,12 @@ const extractBadgeInfo:Record<
 
 const lifemapperLayerVariations = [
   {
-    name: (_:string, layerId:string) => `prj_${layerId}`,
+    name: (_: string, layerId: string) => `prj_${layerId}`,
     label: 'Projection',
     transparent: true,
   },
   {
-    name: (mapId:string) => `occ_${mapId}`,
+    name: (mapId: string) => `occ_${mapId}`,
     label: 'Occurrence Points',
     transparent: true,
   },
@@ -148,8 +142,8 @@ const lifemapperLayerVariations = [
 type LoadingState = State<'LoadingState'>;
 
 type MainState = State<'MainState'> & {
-  aggregatorInfos: Record<AggregatorName,FullAggregatorInfo|undefined>
-  badgeStatuses: Record<BadgeName,{
+  aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>
+  badgeStatuses: Record<BadgeName, {
     isOpen: boolean,
   }>,
   localOccurrenceName?: string,
@@ -162,13 +156,13 @@ type States =
   | MainState;
 
 type LoadedAction = Action<'LoadedAction'> & {
-  aggregatorInfos: Record<AggregatorName,FullAggregatorInfo|undefined>
+  aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>
 }
 
 type ToggleAggregatorVisibilityAction =
   Action<'ToggleAggregatorVisibilityAction'> & {
-    badgeName: BadgeName,
-  };
+  badgeName: BadgeName,
+};
 
 type OccurrenceCountRecord = {
   scientificName: string,
@@ -178,24 +172,24 @@ type OccurrenceCountRecord = {
 
 type OccurrenceCountLoadedAction =
   Action<'OccurrenceCountLoadedAction'> & {
-    aggregatorName: AggregatorName,
-    occurrenceCount: OccurrenceCountRecord[]
-  };
+  aggregatorName: AggregatorName,
+  occurrenceCount: OccurrenceCountRecord[]
+};
 
 type SetRemoteOccurrenceNameAction =
   Action<'SetRemoteOccurrenceNameAction'> & {
-    remoteOccurrenceName: string,
-  }
+  remoteOccurrenceName: string,
+}
 
 type SetLocalOccurrenceNameAction =
   Action<'SetLocalOccurrenceNameAction'> & {
-    localOccurrenceName: string,
-  }
+  localOccurrenceName: string,
+}
 
 interface LifemapperInfo {
   layers: any[],
   markers: any,
-  messages: Record<MessageTypes,string[]>,
+  messages: Record<MessageTypes, string[]>,
 }
 
 type MapLoadedAction = Action<'MapLoadedAction'> & LifemapperInfo;
@@ -208,68 +202,80 @@ type Actions =
   | SetRemoteOccurrenceNameAction
   | SetLocalOccurrenceNameAction;
 
-function mainState(state:States):MainState {
-  if(state.type !== 'MainState')
+function mainState(state: States): MainState {
+  if (state.type !== 'MainState')
     throw new Error('Wrong state');
   return state;
 }
 
-const reducer = generateReducer<States,Actions>({
-  'LoadedAction': ({action})=>({
-    type: 'MainState',
-    aggregatorInfos: action.aggregatorInfos,
-    badgeStatuses: Object.fromEntries(
-      BADGE_NAMES.map(badgeName=>[
-        badgeName,
-        {
-          isOpen: false,
-        }
-      ])
-    ),
-    localOccurrenceName: undefined,
-    remoteOccurrenceName: undefined,
-    lifemapperInfo: undefined
-  }),
-  'ToggleAggregatorVisibilityAction': ({action,state})=>({
-    ...mainState(state),
-    badgeStatuses: {
-      ...mainState(state).badgeStatuses,
-      [action.badgeName]: {
-        ...mainState(state).badgeStatuses[action.badgeName],
-        isOpen: !mainState(state).badgeStatuses[action.badgeName].isOpen
-      }
+const reducer = generateReducer<States, Actions>({
+  'LoadedAction': ({action}) => (
+    {
+      type: 'MainState',
+      aggregatorInfos: action.aggregatorInfos,
+      badgeStatuses: Object.fromEntries(
+        BADGE_NAMES.map(badgeName => [
+          badgeName,
+          {
+            isOpen: false,
+          },
+        ]),
+      ),
+      localOccurrenceName: undefined,
+      remoteOccurrenceName: undefined,
+      lifemapperInfo: undefined,
     }
-  }),
-  'OccurrenceCountLoadedAction': ({action,state})=>({
-    ...mainState(state),
-    aggregatorInfos: {
-      ...mainState(state).aggregatorInfos,
-      [action.aggregatorName]: {
-        ...(
-          mainState(
-            state
-          ).aggregatorInfos[action.aggregatorName] as FullAggregatorInfo
-        ),
-        occurrenceCount: action.occurrenceCount
-      }
+  ),
+  'ToggleAggregatorVisibilityAction': ({action, state}) => (
+    {
+      ...mainState(state),
+      badgeStatuses: {
+        ...mainState(state).badgeStatuses,
+        [action.badgeName]: {
+          ...mainState(state).badgeStatuses[action.badgeName],
+          isOpen: !mainState(state).badgeStatuses[action.badgeName].isOpen,
+        },
+      },
     }
-  }),
-  'MapLoadedAction': ({action: {type, ...lifemapperInfo}, state})=>({
-    ...mainState(state),
-    lifemapperInfo
-  }),
+  ),
+  'OccurrenceCountLoadedAction': ({action, state}) => (
+    {
+      ...mainState(state),
+      aggregatorInfos: {
+        ...mainState(state).aggregatorInfos,
+        [action.aggregatorName]: {
+          ...(
+            mainState(
+              state,
+            ).aggregatorInfos[action.aggregatorName] as FullAggregatorInfo
+          ),
+          occurrenceCount: action.occurrenceCount,
+        },
+      },
+    }
+  ),
+  'MapLoadedAction': ({action: {type, ...lifemapperInfo}, state}) => (
+    {
+      ...mainState(state),
+      lifemapperInfo,
+    }
+  ),
   'SetRemoteOccurrenceNameAction': (
-    {action: {remoteOccurrenceName}, state}
-  )=>({
-    ...mainState(state),
-    remoteOccurrenceName
-  }),
+    {action: {remoteOccurrenceName}, state},
+  ) => (
+    {
+      ...mainState(state),
+      remoteOccurrenceName,
+    }
+  ),
   'SetLocalOccurrenceNameAction': (
-    {action: {localOccurrenceName}, state}
-  )=>({
-    ...mainState(state),
-    localOccurrenceName
-  }),
+    {action: {localOccurrenceName}, state},
+  ) => (
+    {
+      ...mainState(state),
+      localOccurrenceName,
+    }
+  ),
 });
 
 function Badge<IS_ENABLED extends boolean>({
@@ -277,14 +283,14 @@ function Badge<IS_ENABLED extends boolean>({
   onClick: handleClick,
   isEnabled,
   hasError,
-}:{
+}: {
   name: AggregatorName,
   onClick: IS_ENABLED extends true ?
-    ()=>void :
+    () => void :
     undefined,
   isEnabled: IS_ENABLED
   hasError: boolean,
-}){
+}) {
   return <button
     disabled={!isEnabled}
     onClick={handleClick}
@@ -305,7 +311,7 @@ function Badge<IS_ENABLED extends boolean>({
 function Aggregator({
   name,
   data,
-}:{
+}: {
   name: AggregatorName,
   data: FullAggregatorInfo,
 }) {
@@ -322,25 +328,25 @@ function Aggregator({
             {[
               ...data.listOfIssues,
               ...(
-                data.count>1 ?
+                data.count > 1 ?
                   ['HAS_MULTIPLE_RECORDS'] :
                   []
-              )
+              ),
             ].map(issue =>
               <li key={issue}>{
                 // @ts-ignore
                 issueDefinitions[name]?.[issue] ||
                 issueDefinitions['common']?.[issue] ||
                 issue
-              }</li>
+              }</li>,
             )}
           </ul>
         </>
     }
-    <br/>
+    <br />
     {
       (
-        typeof data.occurrenceCount !== "undefined" &&
+        typeof data.occurrenceCount !== 'undefined' &&
         data.occurrenceCount.length !== 0
       ) &&
       <>
@@ -348,13 +354,13 @@ function Aggregator({
         <ul className="lifemapper-source-issues-list">
           {data.occurrenceCount.map(({scientificName, count, url}, index) =>
             <li key={index}>
-                <a
-                  target="_blank"
-                  href={url}
-                  rel="noreferrer nofollow"
-                >{scientificName} </a>
-                (reported {count} times)
-            </li>
+              <a
+                target="_blank"
+                href={url}
+                rel="noreferrer nofollow"
+              >{scientificName} </a>
+              (reported {count} times)
+            </li>,
           )}
         </ul>
       </>
@@ -365,19 +371,19 @@ function Aggregator({
 function LifemapperMap({
   badgeName,
   lifemapperInfo,
-}:{
+}: {
   badgeName: BadgeName
   lifemapperInfo: LifemapperInfo,
-}){
+}) {
 
-  const mapRef = React.useRef<HTMLDivElement|null>(null);
+  const mapRef = React.useRef<HTMLDivElement | null>(null);
 
-  if(badgeName !== 'lifemapper')
+  if (badgeName !== 'lifemapper')
     return null;
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
 
-    if(!mapRef.current)
+    if (!mapRef.current)
       return;
 
     const [
@@ -386,18 +392,20 @@ function LifemapperMap({
     ] = Leaflet.showCOMap(
       mapRef.current,
       lifemapperInfo.layers,
-      (Object.entries(
-        lifemapperInfo.messages
-      ) as ([MessageTypes, string[]][])).filter(([messages])=>
-        messages.length !== 0
-      ).map(([name, messages])=> `<span
+      (
+        Object.entries(
+          lifemapperInfo.messages,
+        ) as ([MessageTypes, string[]][])
+      ).filter(([messages]) =>
+        messages.length !== 0,
+      ).map(([name, messages]) => `<span
         class="lifemapper-message-section ${
-          lifemapperMessagesMeta[name].className
-        }"
+        lifemapperMessagesMeta[name].className
+      }"
       >
         <p>${lifemapperMessagesMeta[name].title}</p>
         ${messages.join('<br>')}
-      </span>`).join('')
+      </span>`).join(''),
     );
 
     Leaflet.addMarkersToMap(
@@ -408,7 +416,7 @@ function LifemapperMap({
     );
 
 
-    return ()=>{
+    return () => {
       //TODO: finish this
     };
 
@@ -423,17 +431,19 @@ function LifemapperMap({
 
 
 const extractEl = (
-  elements: [string|undefined, string|undefined],
-  preferredElement: 0|1
-):string=>(
-  typeof elements[preferredElement] === 'undefined'?
-  elements[(preferredElement+1)%elements.length] :
-  elements[preferredElement]
+  elements: [string | undefined, string | undefined],
+  preferredElement: 0 | 1,
+): string => (
+  typeof elements[preferredElement] === 'undefined' ?
+    elements[(
+      preferredElement + 1
+    ) % elements.length] :
+    elements[preferredElement]
 ) || '';
 
-type MessageTypes = 'errorDetails'|'infoSection';
+type MessageTypes = 'errorDetails' | 'infoSection';
 
-const lifemapperMessagesMeta:Record<MessageTypes,{
+const lifemapperMessagesMeta: Record<MessageTypes, {
   className: string,
   title: string,
 }> = {
@@ -444,74 +454,78 @@ const lifemapperMessagesMeta:Record<MessageTypes,{
   'infoSection': {
     className: 'info-section',
     title: 'Projection Details:',
-  }
+  },
 } as const;
 
 function LifemapperInfo({
   model,
-  guid
-}:{
+  guid,
+}: {
   model: any,
-  guid: string|undefined
-}){
+  guid: string | undefined
+}) {
 
   const [state, dispatch] = React.useReducer(
     reducer,
     {
-      type: 'LoadingState'
-    } as LoadingState
+      type: 'LoadingState',
+    } as LoadingState,
   );
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
 
-    if(typeof guid === 'undefined')
+    if (typeof guid === 'undefined')
       return;
 
     $.get(
-      formatOccurrenceDataRequest(guid)
-    ).done((response:{
-      records: {
-        provider: string,
-        count: number,
-        records: []|[Record<string,unknown>]
-      }[]
-    }) =>
-      dispatch({
-        type:'LoadedAction',
-        aggregatorInfos: Object.fromEntries(
-          (response.records || []).map((record) =>({
-           ...record,
-           provider: record.provider.toLowerCase()
-          })).filter((record) =>
-            typeof sourceLabels[record.provider] !== 'undefined',
-          ).map(({provider, records, count}) => [
-            provider,
-            typeof records[0] === 'undefined' ?
-              undefined :
+      formatOccurrenceDataRequest(guid),
+    ).done((response: {
+        records: {
+          provider: string,
+          count: number,
+          records: [] | [Record<string, unknown>]
+        }[]
+      }) =>
+        dispatch({
+          type: 'LoadedAction',
+          aggregatorInfos: Object.fromEntries(
+            (
+              response.records || []
+            ).map((record) => (
               {
-                ...extractBadgeInfo[provider](records[0]),
-                count,
-                occurrenceCount: undefined,
+                ...record,
+                provider: record.provider.toLowerCase(),
               }
-          ])
-        ),
-      })
+            )).filter((record) =>
+              typeof sourceLabels[record.provider] !== 'undefined',
+            ).map(({provider, records, count}) => [
+              provider,
+              typeof records[0] === 'undefined' ?
+                undefined :
+                {
+                  ...extractBadgeInfo[provider](records[0]),
+                  count,
+                  occurrenceCount: undefined,
+                },
+            ]),
+          ),
+        }),
     );
 
-  },[]);
+  }, []);
 
-  React.useEffect(()=> {
+  React.useEffect(() => {
     if (state.type !== 'MainState')
       return;
 
     const occurrenceNames = Object.values(
-      state.aggregatorInfos
+      state.aggregatorInfos,
     ).filter(aggregatorInfo =>
-      aggregatorInfo
+      aggregatorInfo,
     ).map(aggregatorInfo =>
-      aggregatorInfo!.occurrenceName
+      aggregatorInfo!.occurrenceName,
     ).filter(occurrenceName =>
-      occurrenceName !== ''
+      occurrenceName !== '',
     );
 
     if (occurrenceNames.length === 0)
@@ -521,231 +535,233 @@ function LifemapperInfo({
       type: 'SetRemoteOccurrenceNameAction',
       remoteOccurrenceName: IS_DEVELOPMENT ?
         defaultOccurrenceName[1] :
-        occurrenceNames[0]
+        occurrenceNames[0],
     });
 
-  },[state.type]);
+  }, [state.type]);
 
-  React.useEffect(()=> {
+  React.useEffect(() => {
 
-    if (
-      state.type !== 'MainState' ||
-      typeof state.remoteOccurrenceName === 'undefined'
-    )
-      return;
-
-    Object.entries(state.aggregatorInfos).filter(([name, data]) =>
-      data &&
-      data.occurrenceName !== '' &&
-      state.badgeStatuses[name]?.isOpen &&
-      typeof state.aggregatorInfos.occurrenceCount === "undefined"
-    ).forEach(([name]) => {
-      void $.get(formatOccurrenceCountRequest(
-        name,
-        state.remoteOccurrenceName!
-      )).done(response =>
-        dispatch({
-          type: 'OccurrenceCountLoadedAction',
-          aggregatorName: name,
-          occurrenceCount: response.records.map(({
-            scientificName,
-            occurrence_count,
-            occurrence_url,
-          }: any) => (
-            {
-              scientificName,
-              count: occurrence_count,
-              url: occurrence_url
-            }
-          )),
-        })
+      if (
+        state.type !== 'MainState' ||
+        typeof state.remoteOccurrenceName === 'undefined'
       )
-    });
+        return;
 
-  }, state.type === 'MainState' ?
+      Object.entries(state.aggregatorInfos).filter(([name, data]) =>
+        data &&
+        data.occurrenceName !== '' &&
+        state.badgeStatuses[name]?.isOpen &&
+        typeof state.aggregatorInfos.occurrenceCount === 'undefined',
+      ).forEach(([name]) => {
+        void $.get(formatOccurrenceCountRequest(
+          name,
+          state.remoteOccurrenceName!,
+        )).done(response =>
+          dispatch({
+            type: 'OccurrenceCountLoadedAction',
+            aggregatorName: name,
+            occurrenceCount: response.records.map(({
+              scientificName,
+              occurrence_count,
+              occurrence_url,
+            }: any) => (
+              {
+                scientificName,
+                count: occurrence_count,
+                url: occurrence_url,
+              }
+            )),
+          }),
+        );
+      });
+
+    }, state.type === 'MainState' ?
     [
       state.remoteOccurrenceName,
-      JSON.stringify(state.badgeStatuses)
+      JSON.stringify(state.badgeStatuses),
     ] :
     [
       undefined,
       undefined,
-    ]
+    ],
   );
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
 
-    if(
-      state.type !== 'MainState' ||
-      !state.badgeStatuses['lifemapper']?.isOpen ||
-      typeof state.remoteOccurrenceName === "undefined"
-    )
-      return;
+      if (
+        state.type !== 'MainState' ||
+        !state.badgeStatuses['lifemapper']?.isOpen ||
+        typeof state.remoteOccurrenceName === 'undefined'
+      )
+        return;
 
 
-    fetchLocalScientificName(model).then((localScientificName)=>{
-      const localOccurrenceName = IS_DEVELOPMENT ?
-        defaultOccurrenceName[0] :
-        localScientificName;
+      fetchLocalScientificName(model).then((localScientificName) => {
+        const localOccurrenceName = IS_DEVELOPMENT ?
+          defaultOccurrenceName[0] :
+          localScientificName;
 
-      const getOccurrenceName = (index:0|1)=>
-        extractEl([localOccurrenceName,state.remoteOccurrenceName],index);
+        const getOccurrenceName = (index: 0 | 1) =>
+          extractEl([localOccurrenceName, state.remoteOccurrenceName], index);
 
-      const similarCoMarkersPromise = new Promise(resolve => {
+        const similarCoMarkersPromise = new Promise(resolve => {
 
-        const similarCollectionObjects =
-          new (schema as any).models.CollectionObject.LazyCollection({
-            filters: {
-              determinations__iscurrent: true,
-              determinations__preferredtaxon__fullname:
-                getOccurrenceName(0),
-            },
-          });
+          const similarCollectionObjects =
+            new (
+              schema as any
+            ).models.CollectionObject.LazyCollection({
+              filters: {
+                determinations__iscurrent: true,
+                determinations__preferredtaxon__fullname:
+                  getOccurrenceName(0),
+              },
+            });
 
-        similarCollectionObjects.fetch({
-          limit: 100,
-        }).done(() =>
-          Promise.all(
-            similarCollectionObjects.map((collectionObject:any) =>
-              new Promise(resolve =>
-                collectionObject.rget(
-                  'collectingevent.locality',
-                ).done((locality:any) =>
-                  Leaflet.getMarkersFromLocalityResource(
-                    locality,
-                    model.get('id') ===
-                    collectionObject.get('id') ?
-                      'lifemapperCurrentCollectionObjectMarker' :
-                      undefined,
-                  ).then(resolve),
+          similarCollectionObjects.fetch({
+            limit: 100,
+          }).done(() =>
+            Promise.all(
+              similarCollectionObjects.map((collectionObject: any) =>
+                new Promise(resolve =>
+                  collectionObject.rget(
+                    'collectingevent.locality',
+                  ).done((locality: any) =>
+                    Leaflet.getMarkersFromLocalityResource(
+                      locality,
+                      model.get('id') ===
+                      collectionObject.get('id') ?
+                        'lifemapperCurrentCollectionObjectMarker' :
+                        undefined,
+                    ).then(resolve),
+                  ),
                 ),
               ),
-            ),
-          ).then(resolve),
-        );
-
-      });
-
-      const messages:Record<MessageTypes,string[]>={
-        'errorDetails': [],
-        'infoSection': [
-          `Specify Species Name: ${
-            typeof localOccurrenceName === 'undefined' ?
-              'Not found' :
-              localOccurrenceName
-          }`,
-          `Remote occurrence name: ${
-            typeof state.remoteOccurrenceName === 'undefined' ?
-              'Not found' :
-              state.remoteOccurrenceName
-          }`
-        ],
-      };
-
-      $.get(
-        formatOccurrenceMapRequest(
-          getOccurrenceName(1)
-        )
-      ).done(async (response:{
-        errors: string[],
-        records: []|[{
-          endpoint: string,
-          projection_link: string,
-          point_name: string,
-          modtime: string
-        }]
-      }) => {
-
-        let layers:any[] = [];
-
-        if (response.errors.length !== 0)
-          messages['errorDetails'].push(...response.errors);
-
-        else if(response.records.length === 0)
-          messages['errorDetails'].push(
-            'Projection map for this species was not found'
+            ).then(resolve),
           );
 
-        else {
+        });
 
-          const {
-            endpoint,
-            projection_link: projectionLink,
-            point_name: mapName,
-            modtime: modificationTime,
-          } = response.records[0];
+        const messages: Record<MessageTypes, string[]> = {
+          'errorDetails': [],
+          'infoSection': [
+            `Specify Species Name: ${
+              typeof localOccurrenceName === 'undefined' ?
+                'Not found' :
+                localOccurrenceName
+            }`,
+            `Remote occurrence name: ${
+              typeof state.remoteOccurrenceName === 'undefined' ?
+                'Not found' :
+                state.remoteOccurrenceName
+            }`,
+          ],
+        };
 
-          const mapUrl = `${endpoint}/`;
-          const mapId = mapName.replace(/\D/g, '');
-          const layerId = /\/(\d+)$/.exec(
-            projectionLink,
-          )![1];
-          layers = lifemapperLayerVariations.map(({
-              transparent,
-              name: layerNameFunction,
-              label: layerLabel,
-            }) => (
-              {
+        $.get(
+          formatOccurrenceMapRequest(
+            getOccurrenceName(1),
+          ),
+        ).done(async (response: {
+          errors: string[],
+          records: [] | [{
+            endpoint: string,
+            projection_link: string,
+            point_name: string,
+            modtime: string
+          }]
+        }) => {
+
+          let layers: any[] = [];
+
+          if (response.errors.length !== 0)
+            messages['errorDetails'].push(...response.errors);
+
+          else if (response.records.length === 0)
+            messages['errorDetails'].push(
+              'Projection map for this species was not found',
+            );
+
+          else {
+
+            const {
+              endpoint,
+              projection_link: projectionLink,
+              point_name: mapName,
+              modtime: modificationTime,
+            } = response.records[0];
+
+            const mapUrl = `${endpoint}/`;
+            const mapId = mapName.replace(/\D/g, '');
+            const layerId = /\/(\d+)$/.exec(
+              projectionLink,
+            )![1];
+            layers = lifemapperLayerVariations.map(({
                 transparent,
-                layerLabel,
-                tileLayer: {
-                  mapUrl,
-                  options: {
-                    layers: layerNameFunction(
-                      mapId,
-                      layerId,
-                    ),
-                    service: 'wms',
-                    version: '1.0',
-                    height: '400',
-                    format: 'image/png',
-                    request: 'getmap',
-                    srs: 'epsg:3857',
-                    width: '800',
-                    transparent: transparent,
+                name: layerNameFunction,
+                label: layerLabel,
+              }) => (
+                {
+                  transparent,
+                  layerLabel,
+                  tileLayer: {
+                    mapUrl,
+                    options: {
+                      layers: layerNameFunction(
+                        mapId,
+                        layerId,
+                      ),
+                      service: 'wms',
+                      version: '1.0',
+                      height: '400',
+                      format: 'image/png',
+                      request: 'getmap',
+                      srs: 'epsg:3857',
+                      width: '800',
+                      transparent: transparent,
+                    },
                   },
-                },
-              }
-            ),
-          );
+                }
+              ),
+            );
 
-          messages.errorDetails.push(
-            `Model Creation date: ${modificationTime}`
-          );
+            messages.errorDetails.push(
+              `Model Creation date: ${modificationTime}`,
+            );
 
-        }
+          }
 
-        dispatch({
-          type: 'MapLoadedAction',
-          markers: await similarCoMarkersPromise,
-          layers,
-          messages
+          dispatch({
+            type: 'MapLoadedAction',
+            markers: await similarCoMarkersPromise,
+            layers,
+            messages,
+          });
+
         });
 
       });
 
-    });
+      return;
 
-    return;
-
-  },
+    },
     state.type === 'MainState' ?
       [
         state.remoteOccurrenceName,
-        state.badgeStatuses['lifemapper']?.isOpen
+        state.badgeStatuses['lifemapper']?.isOpen,
       ] :
       [
         undefined,
         undefined,
-      ]
+      ],
   );
 
   return state.type === 'LoadingState' ?
     null :
     <>
-      {Object.entries(state.aggregatorInfos).map(([name,data])=>
+      {Object.entries(state.aggregatorInfos).map(([name, data]) =>
         <Badge
-          name={name }
+          name={name}
           key={name}
           isEnabled={typeof data !== 'undefined'}
           hasError={
@@ -758,37 +774,39 @@ function LifemapperInfo({
           onClick={
             typeof data === 'undefined' ?
               undefined :
-              ()=>dispatch({
+              () => dispatch({
                 type: 'ToggleAggregatorVisibilityAction',
                 badgeName: name,
               })
           }
-        />
+        />,
       )}
       <Badge
         name={'lifemapper'}
         isEnabled={true}
         hasError={false}
-        onClick={()=>dispatch({
+        onClick={() => dispatch({
           type: 'ToggleAggregatorVisibilityAction',
           badgeName: 'lifemapper',
         })}
       />
-      {Object.entries(state.badgeStatuses).filter(([,{isOpen}])=>
-        isOpen
-      ).map(([badgeName])=> ({
-        badgeName,
-        isAggregator:AGGREGATOR_NAMES.indexOf(badgeName) !== -1
-      })).map(({badgeName, isAggregator})=>
+      {Object.entries(state.badgeStatuses).filter(([, {isOpen}]) =>
+        isOpen,
+      ).map(([badgeName]) => (
+        {
+          badgeName,
+          isAggregator: AGGREGATOR_NAMES.indexOf(badgeName) !== -1,
+        }
+      )).map(({badgeName, isAggregator}) =>
         <ModalDialog
           key={badgeName}
           properties={{
             title: isAggregator ?
               `Record was indexed by ${sourceLabels[badgeName]}` :
               sourceLabels[badgeName],
-            close: ()=>dispatch({
+            close: () => dispatch({
               type: 'ToggleAggregatorVisibilityAction',
-              badgeName
+              badgeName,
             }),
             ...(
               isAggregator ?
@@ -797,18 +815,18 @@ function LifemapperInfo({
                     buttons: [
                       {
                         text: `Close`,
-                        click: ()=>dispatch({
+                        click: () => dispatch({
                           type: 'ToggleAggregatorVisibilityAction',
-                          badgeName
+                          badgeName,
                         }),
                       },
                       {
                         text: `View occurrence at ${sourceLabels[badgeName]}`,
                         click: () => window.open(
                           state.aggregatorInfos[badgeName]!.occurrenceViewLink,
-                          '_blank'
+                          '_blank',
                         ),
-                      }
+                      },
                     ],
                     width: 400,
                   } :
@@ -817,7 +835,7 @@ function LifemapperInfo({
                   width: 950,
                   height: 500,
                 }
-            )
+            ),
           }}
         >{
           isAggregator ?
@@ -825,13 +843,13 @@ function LifemapperInfo({
               name={badgeName}
               data={state.aggregatorInfos[badgeName]!}
             /> :
-            typeof state.lifemapperInfo === "undefined" ?
+            typeof state.lifemapperInfo === 'undefined' ?
               <p>Loading...</p> :
               <LifemapperMap
                 badgeName={badgeName}
                 lifemapperInfo={state.lifemapperInfo}
               />
-        }</ModalDialog>
+        }</ModalDialog>,
       )}
     </>;
 }
@@ -853,19 +871,21 @@ const View = createBackboneView<Props, Props, ComponentProps>({
   ) {
     self.model = model;
   },
-  renderPre(self){
+  renderPre(self) {
     self.el.style.display = '';
   },
-  remove(self){
+  remove(self) {
     self.el.style.display = 'none';
   },
   Component: LifemapperInfo,
-  getComponentProps: (self) => ({
-    model: self.model,
-    guid: IS_DEVELOPMENT?
-      defaultGuid:
-      self.model.get('guid')
-  }),
+  getComponentProps: (self) => (
+    {
+      model: self.model,
+      guid: IS_DEVELOPMENT ?
+        defaultGuid :
+        self.model.get('guid'),
+    }
+  ),
 });
 
 export default function register() {
@@ -875,19 +895,15 @@ export default function register() {
       new View({
         model: resourceView.model,
         el: $(
-          '<span class="lifemapper-info" style="display:none;"></span>'
+          '<span class="lifemapper-info" style="display:none;"></span>',
         ).appendTo(resourceView.header),
       }).render();
   });
 }
 
 
-const issueDefinitions:Readonly<
-  Record<
-    'common'|'gbif'|'idigbio',
-    Record<string,string>
-    >
-  > = {
+const issueDefinitions: Readonly<Record<'common' | 'gbif' | 'idigbio',
+  Record<string, string>>> = {
   'common': {
     'HAS_MULTIPLE_RECORDS': 'Occurrence Tentacle server found duplicate instances of this record',
   },
