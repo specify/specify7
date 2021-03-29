@@ -50,7 +50,7 @@ const WBView = Backbone.View.extend({
 
         this.wbutils = new WBUtils({
             wbview: this,
-            el: this.el
+            el: this.el,
         });
 
         this.uploaded = this.dataset.uploadresult && this.dataset.uploadresult.success;

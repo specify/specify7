@@ -196,13 +196,13 @@ export function getLocalityCoordinate(
 
 }
 
-const localityColumnsToSearchFor:LocalityField[] = [
+export const localityColumnsToSearchFor:Readonly<LocalityField[]> = [
   'localityname',
   'latitude1',
   'longitude1',
   'latlongtype',
   'latlongaccuracy',
-];
+] as const;
 
 // if there are multiple localities present in a row, check which
 // group this field belongs too
@@ -218,27 +218,28 @@ export const getLocalityColumnsFromSelectedCell = (
         localLocalityColumns
       ).indexOf(selectedColumn)] as LocalityField
     ) !== -1
-  )[0] || false;
+  )[0] || localityColumns[0] || false;
 
-// export const getLocalitiesDataFromSpreadsheet = (
-//   localityColumns:LocalityColumnIndexes[],
-//   spreadsheetData:string[][]
-// )=>
-//   localityColumns.reduce((localityPoints, columnIndexes) =>
-//     [
-//       ...localityPoints,
-//       ...spreadsheetData.map((row, index) =>
-//         [
-//           getLocalityCoordinate(row, columnIndexes, true),
-//           index
-//         ]
-//       ).filter(([localityCoordinate])=>
-//         localityCoordinate
-//       ).map(([localityCoordinate, index])=>({
-//         ...localityCoordinate,
-//         rowNumber: index,
-//       }))
-//     ], []);
+export function getLocalitiesDataFromSpreadsheet(
+  localityColumns:LocalityColumnIndexes[],
+  spreadsheetData:string[][]
+):(LocalityData & {rowNumber:number})[]{
+
+  const localities:(LocalityData & {rowNumber:number})[] = [];
+
+  for(const columnIndexes of localityColumns)
+    spreadsheetData.map((row, index) => {
+      const localityData = getLocalityCoordinate(row, columnIndexes, true);
+      if(!localityData)
+        return;
+      localities.push({
+        ...localityData,
+        rowNumber: index,
+      })
+    });
+
+  return localities;
+}
 
 export const getLocalityDataFromLocalityResource = (
   localityResource:any
