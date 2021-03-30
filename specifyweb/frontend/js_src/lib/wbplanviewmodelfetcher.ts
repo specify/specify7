@@ -92,10 +92,11 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>
 
 const fetchingParameters: {
   readonly requiredFieldsToHide: Readonly<string[]>,
-  readonly tablesToHide: Readonly<string[]>,
+  readonly tablesToRemove: Readonly<string[]>,
   readonly tableKeywordsToExclude: Readonly<string[]>,
   readonly requiredFieldsToMakeOptional: Record<string, Readonly<string[]>>
   readonly commonBaseTables: Readonly<string[]>
+  readonly fieldsToRemove: Record<string, Readonly<string[]>>
 } = {
 
   // all required fields are not hidden, except for these, which are made
@@ -116,7 +117,8 @@ const fetchingParameters: {
     'isloanable',
     'treedef',
   ],
-  tablesToHide: [
+
+  tablesToRemove: [
     'definition',
     'definitionitem',
     'geographytreedef',
@@ -172,6 +174,20 @@ const fetchingParameters: {
     'taxon',
     'treatmentevent',
   ],
+
+  fieldsToRemove: {
+    agent: ['catalogerof'],
+    collectionobject: ['currentDetermination'],
+    loan: [
+      'totalpreps',
+      'unresolvedpreps',
+      'unresolveditems',
+      'resolvedpreps',
+      'resolveditems',
+    ],
+    preptype: ['isonloan'],
+    token: ['preferredtaxonof'],
+  }
 
 } as const;
 
@@ -264,7 +280,7 @@ function handleRelationshipField(
 
   if (
     relationship.readOnly ||
-    fetchingParameters.tablesToHide.indexOf(tableName) !== -1
+    fetchingParameters.tablesToRemove.indexOf(tableName) !== -1
   )
     return;
 
@@ -275,7 +291,7 @@ function handleRelationshipField(
   return true;
 }
 
-const dataModelFetcherVersion = '3';
+const dataModelFetcherVersion = '4';
 const cacheBucketName = 'dataModelFetcher';
 
 const cacheGet = <T>(cacheName: string) =>
@@ -355,7 +371,7 @@ export default (): Promise<void> =>
 
       if (
         tableData.system ||
-        fetchingParameters.tablesToHide.indexOf(tableName) !== -1
+        fetchingParameters.tablesToRemove.indexOf(tableName) !== -1
       )
         return tables;
 
@@ -366,6 +382,16 @@ export default (): Promise<void> =>
           field.getLocalizedName() ?? getFriendlyName(fieldName);
 
         fieldName = fieldName.toLowerCase();
+
+        // remove frontend-only fields (from schemaextras.js)
+        if(
+          typeof fetchingParameters.fieldsToRemove[
+            tableName] !== "undefined" &&
+          fetchingParameters.fieldsToRemove[tableName].indexOf(
+            fieldName
+          ) !== -1
+        )
+          return;
 
         let isRequired = field.isRequired;
         let isHidden = field.isHidden() === 1;
