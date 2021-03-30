@@ -243,7 +243,11 @@ function OptionGroup({
   return <span
     className={
       `custom-select-group custom-select-group-${
-        selectGroupName?.toLowerCase().replaceAll('_', '-') || 'undefined'
+        selectGroupName?.replace(
+          /[A-Z]/g,
+          (letter) =>
+            `-${letter.toLowerCase()}`
+        ) || 'undefined'
       }`
     }>
     {
