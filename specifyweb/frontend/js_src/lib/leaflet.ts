@@ -176,8 +176,12 @@ export function getLocalityCoordinate(
             longitude2: formatCoordinateCurried('longitude2'),
             latlongtype: (
               cellIsValidCurried('latlongtype') &&
-              row[columnIndexes.latlongtype].toLowerCase() === 'line'
-            ) ? 'Line' : 'Rectangle'
+              (row[columnIndexes.latlongtype].toLowerCase() === 'line') ?
+                'line' :
+                row[columnIndexes.latlongtype].toLowerCase() === 'rectangle' ?
+                  'rectangle' :
+                  'point'
+            )
           } :
           {}
       ),
@@ -200,6 +204,8 @@ export const localityColumnsToSearchFor:Readonly<LocalityField[]> = [
   'localityname',
   'latitude1',
   'longitude1',
+  'latitude2',
+  'longitude2',
   'latlongtype',
   'latlongaccuracy',
 ] as const;
