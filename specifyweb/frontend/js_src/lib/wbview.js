@@ -291,13 +291,13 @@ const WBView = Backbone.View.extend({
         if (!this.uploaded)
             return;
 
-        const upload_view = this.$el.find('.wb-upload-view')[0];
+        const uploadView = this.$el.find('.wb-upload-view')[0];
 
-        if (upload_view.children.length !== 0)
+        if (uploadView.children.length !== 0)
             return;
 
-        upload_view.innerHTML = '<div></div>';
-        const container = upload_view.children[0];
+        uploadView.innerHTML = '<div></div>';
+        const container = uploadView.children[0];
 
         this.uploadedView = new WBUploadedView({
             dataset: this.dataset,
@@ -322,9 +322,11 @@ const WBView = Backbone.View.extend({
         };
 
         //update navigation information
-        Object.values(document.getElementsByClassName('wb-navigation-total')).forEach(navigationTotal_element => {
-            const navigation_type = navigationTotal_element.parentElement.getAttribute('data-navigation-type');
-            navigationTotal_element.innerText = cellCounts[navigation_type];
+        Object.values(
+          document.getElementsByClassName('wb-navigation-total')
+        ).forEach(navigationTotalElement => {
+            const navigationType = navigationTotalElement.parentElement.getAttribute('data-navigation-type');
+            navigationTotalElement.innerText = cellCounts[navigationType];
         });
 
         // if(this.showStatusDialog){
@@ -380,29 +382,31 @@ const WBView = Backbone.View.extend({
             delete this.wbutils.cellInfo[row*cols + i];
         }
 
-        const add_error_message = (column_name, issue) => {
-            const col = headerToCol[column_name];
+        const addErrorMessage = (columnName, issue) => {
+            const col = headerToCol[columnName];
             this.wbutils.initCellInfo(row, col);
             const cellInfo = this.wbutils.cellInfo[row*cols + col];
 
-            const ucfirst_issue = issue[0].toUpperCase() + issue.slice(1);
-            cellInfo.issues.push(ucfirst_issue);
+            const ucfirstIssue = issue[0].toUpperCase() + issue.slice(1);
+            cellInfo.issues.push(ucfirstIssue);
         };
 
         if(result === null)
             return;
 
-        result.tableIssues.forEach(table_issue => table_issue.columns.forEach(column_name => {
-            add_error_message(column_name, table_issue.issue);
-        }));
+        result.tableIssues.forEach(tableIssue =>
+            tableIssue.columns.forEach(columnName =>
+                addErrorMessage(columnName, tableIssue.issue)
+            )
+        );
 
-        result.cellIssues.forEach(cell_issue => {
-            add_error_message(cell_issue.column, cell_issue.issue);
-        });
+        result.cellIssues.forEach(cellIssue =>
+            addErrorMessage(cellIssue.column, cellIssue.issue)
+        );
 
         result.newRows.forEach(({columns}) =>
-            columns.forEach(column_name => {
-                const col = headerToCol[column_name];
+            columns.forEach(columnName => {
+                const col = headerToCol[columnName];
                 this.wbutils.initCellInfo(row, col);
                 const cellInfo = this.wbutils.cellInfo[row*cols + col];
                 cellInfo.isNew = true;
@@ -410,19 +414,19 @@ const WBView = Backbone.View.extend({
         );
     },
     defineCell(cols, row, col, prop) {
-        let cell_data;
+        let cellData;
         try {
-            cell_data = this.wbutils.cellInfo[row*cols + col];
+            cellData = this.wbutils.cellInfo[row*cols + col];
         } catch (e) {
         }
 
         return {
-            comment: cell_data && {value: cell_data.issues.join('<br>')},
+            comment: cellData && {value: cellData.issues.join('<br>')},
             renderer: function(instance, td, row, col, prop, value, cellProperties) {
-                if(cell_data && cell_data.isNew)
+                if(cellData && cellData.isNew)
                     td.classList.add('wb-no-match-cell');
 
-                if(cell_data && cell_data.issues.length)
+                if(cellData && cellData.issues.length)
                     td.classList.add('wb-invalid-cell');
 
                 td.classList.add(`wb-col-${col}`);
