@@ -260,9 +260,9 @@ const WBView = Backbone.View.extend({
             stylesContainer.innerHTML = `${
                 Object.entries(
                   this.dataset.columns
-                ).filter(([columnName])=>
+                ).filter(([,columnName])=>
                   !(columnName in mappedHeadersAndTables)
-                ).map(([,index])=>
+                ).map(([index])=>
                     `.wb-col-${index} ${unmappedCellStyles}`
                 ).join('\n')
             }`;
