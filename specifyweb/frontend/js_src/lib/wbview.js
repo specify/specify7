@@ -81,13 +81,28 @@ const WBView = Backbone.View.extend({
             height: this.calcHeight(),
             data: this.data,
             cells: this.defineCell.bind(this, this.dataset.columns.length),
-            colHeaders: (col)=>
-                `<div class="wb-header-${col}">
-                    <span class="wb-header-icon"></span>
-                    <span class="wb-header-name columnSorting">
-                        ${this.dataset.columns[col]}
-                    </span>
-                </div>`,
+            colHeaders: (col)=>`<div class="wb-header-${col} ${
+                this.dataset.columns[col] in this.mappedHeaders ?
+                    '' :
+                    'wb-header-unmapped'
+            }">
+                ${
+                    this.dataset.columns[col] in this.mappedHeaders ?
+                      `<img
+                          class="wb-header-icon"
+                          alt="${
+                              this.mappedHeaders[
+                                  this.dataset.columns[col]
+                              ].split('.')?.[1] || ''
+                          }"
+                          src="${this.mappedHeaders[this.dataset.columns[col]]}"
+                      >` :
+                      ''
+                    }
+                <span class="wb-header-name columnSorting">
+                    ${this.dataset.columns[col]}
+                </span>
+            </div>`,
             minSpareRows: 0,
             comments: true,
             rowHeaders: true,
@@ -183,7 +198,6 @@ const WBView = Backbone.View.extend({
     identifyMappedHeaders(){
 
         const stylesContainer = document.createElement('style');
-        const unmappedHeaderStyles = '{ color: #999; }';
         const unmappedCellStyles = '{ color: #999; }';
 
         if (this.dataset.uploadplan) {
@@ -214,25 +228,46 @@ const WBView = Backbone.View.extend({
                 ),
             );
 
+            this.mappedHeaders = mappedHeadersAndTables;
+
+            Object.values(
+                document.getElementsByClassName(
+                  'wtSpreader'
+                )[0]?.getElementsByClassName(
+                  'colHeader'
+                )
+            ).forEach(headerContainer=> {
+                const header = headerContainer.children[0];
+                let headerId =
+                  header?.className.match(/wb-header-(\d+)/)?.[1];
+
+                if(!headerId)
+                    return;
+
+                headerId = parseInt(headerId);
+
+                const img = document.createElement('img');
+                img.classList.add('wb-header-icon');
+                const src = this.mappedHeaders[headerId];
+                img.setAttribute('src', src);
+                img.setAttribute(
+                    'alt',
+                    src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
+                );
+
+            });
+
             stylesContainer.innerHTML = `${
-                this.dataset.columns.map((columnName, index)=>
-                    `.wb-header-${index} ${
-                        columnName in mappedHeadersAndTables ?
-                            `.wb-header-icon {
-                                display: inline !important;
-                                background-image: url('${mappedHeadersAndTables[columnName]}')
-                            }` :
-                            `${unmappedHeaderStyles} .wb-col-${index} ${unmappedCellStyles}`
-                    }`
+                Object.entries(
+                  this.dataset.columns
+                ).filter(([columnName])=>
+                  !(columnName in mappedHeadersAndTables)
+                ).map(([,index])=>
+                    `.wb-col-${index} ${unmappedCellStyles}`
                 ).join('\n')
             }`;
 
-            this.mappedHeaders = Object.keys(mappedHeadersAndTables);
-
         }
-        else
-            stylesContainer.innerText =
-                `.handsontable th ${unmappedHeaderStyles} .handsontable td ${unmappedCellStyles}`;
 
         this.$el.append(stylesContainer);
 
