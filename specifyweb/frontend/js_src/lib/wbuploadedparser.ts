@@ -109,7 +109,7 @@ type RecordResult = {
 
 interface UploadResult {
   UploadResult: {
-    recordResult: RecordResult,
+    record_result: RecordResult,
     // Maps the names of -to-one relationships of the table to upload
     // results for each
     toOne: {parent: UploadResult},
@@ -207,7 +207,7 @@ function handleUploadResult(
   const uploadResult = line.UploadResult;
 
   const uploadStatus =
-    Object.keys(uploadResult.recordResult)[0] as keyof RecordResult;
+    Object.keys(uploadResult.record_result)[0] as keyof RecordResult;
 
   // skip error statuses
   if (uploadStatus !== 'Uploaded' && uploadStatus !== 'Matched')
@@ -217,7 +217,7 @@ function handleUploadResult(
     id,
     info: {tableName, columns, treeInfo},
     ...rest
-  } = uploadResult.recordResult[uploadStatus];
+  } = uploadResult.record_result[uploadStatus];
   const rank = treeInfo?.rank;
   const orderedColumns = getOrderedHeaders(headers, columns);
 
@@ -235,7 +235,7 @@ function handleUploadResult(
   }
 
   const parentUploadResult = uploadResult.toOne.parent;
-  const parentBase = parentUploadResult?.UploadResult.recordResult;
+  const parentBase = parentUploadResult?.UploadResult.record_result;
   const parentType = parentBase &&
     (
       'Matched' in parentBase ?
