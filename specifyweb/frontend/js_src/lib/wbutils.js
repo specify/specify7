@@ -335,9 +335,10 @@ module.exports = Backbone.View.extend({
         'wb-geolocate',
         'wb-leafletmap',
         'wb-convert-coordinates',
-      ].map(className => (
-        document.getElementsByClassName(className)[0].disabled = true
-      ));
+      ].map(className =>
+        document.getElementsByClassName(className)[0] &&
+        (document.getElementsByClassName(className)[0].disabled = true)
+      );
   },
   getGeoLocateQueryURL(
     currentLocalityColumns,

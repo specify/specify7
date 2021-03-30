@@ -38,9 +38,9 @@ const WBView = Backbone.View.extend({
         'click .wb-show-upload-view':'displayUploadedView',
         'click .wb-unupload':'unupload',
     },
-    initialize({dataset, showStatusDialog}) {
+    initialize({dataset, refreshInitiatedBy}) {
         this.dataset = dataset;
-        this.mappedHeaders = [];
+        this.mappedHeaders = {};
         this.data = dataset.rows;
         if (this.data.length < 1)
             this.data.push(Array(this.dataset.columns.length).fill(null));
@@ -55,7 +55,7 @@ const WBView = Backbone.View.extend({
 
         this.uploaded = this.dataset.uploadresult && this.dataset.uploadresult.success;
         this.uploadedView = undefined;
-        this.showStatusDialog = showStatusDialog;
+        this.refreshInitiatedBy = refreshInitiatedBy;
     },
     render() {
         this.$el.append(template({
@@ -167,13 +167,18 @@ const WBView = Backbone.View.extend({
     },
     rowCreated(index, amount) {
         const cols = this.hot.countCols();
-        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(new Array(amount*cols), this.wbutils.cellInfo.slice(index*cols));
+        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(
+          new Array(amount*cols),
+          this.wbutils.cellInfo.slice(index*cols)
+        );
         this.hot.render();
         this.spreadSheetChanged();
     },
     rowRemoved(index, amount) {
         const cols = this.hot.countCols();
-        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(this.wbutils.cellInfo.slice((index+amount)*cols));
+        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(
+          this.wbutils.cellInfo.slice((index+amount)*cols)
+        );
         this.hot.render();
         if (this.hot.countRows() === 0) {
             this.hot.alter('insert_row', 0);
@@ -195,9 +200,9 @@ const WBView = Backbone.View.extend({
             });
         }
     },
-    getValidationResults() {
+    getValidationResults(showValidationSummary = false) {
         Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
-            .done(results => this.parseResults(results));
+            .done(results => this.parseResults(results, showValidationSummary));
     },
     identifyMappedHeaders(){
 
@@ -276,7 +281,7 @@ const WBView = Backbone.View.extend({
         this.$el.append(stylesContainer);
 
     },
-    parseResults(results) {
+    parseResults(results, showValidationSummary=false) {
         if (results == null) {
             this.wbutils.cellInfo = [];
             this.hot.render();
@@ -288,7 +293,7 @@ const WBView = Backbone.View.extend({
             this.parseRowValidationResult(row, result);
         });
 
-        this.updateCellInfos();
+        this.updateCellInfos(showValidationSummary);
     },
     displayUploadedView(){
 
@@ -318,7 +323,7 @@ const WBView = Backbone.View.extend({
         $.post(`/api/workbench/unupload/${this.dataset.id}/`);
         this.openStatus('unupload');
     },
-    updateCellInfos() {
+    updateCellInfos(showValidationSummary=false) {
         const cellCounts = {
             newCells: this.wbutils.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
             invalidCells: this.wbutils.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
@@ -333,45 +338,65 @@ const WBView = Backbone.View.extend({
             navigationTotalElement.innerText = cellCounts[navigationType];
         });
 
-        // if(this.showStatusDialog){
+        const refreshInitiatedBy = showValidationSummary ?
+            'validation' :
+            this.refreshInitiatedBy;
 
-        //     const upload_failed =
-        //         cellCounts.invalidCells !== 0 ||
-        //         !this.dataset.uploadresult?.success;
-        //     const upload_succeeded = !upload_failed && this.uploaded;
+        const messages = {
+            validation: cellCounts.invalidCells === 0 ?
+                {
+                    title: 'Validation successful',
+                    message: 'Validation completed successfully!'
+                } :
+                {
+                    title: 'Validation Failed',
+                    message: `Some issues were detected.<br>
+                    Please fix them before uploading the dataset.`
+                },
+            upload: cellCounts.invalidCells === 0 ?
+                {
+                    title: 'Upload completed',
+                    message: `You can open the 'View' menu to see a detailed
+                        breakdown of the upload results.`
+                } :
+                {
+                    title: 'Upload failed due to validation errors',
+                    message: `Upload failed with ${cellCounts.invalidCells}
+                        invalid cells.<br>
+                        Please review the validation messages and repeat
+                        the upload process.`
+                },
+            unupload: {
+                title: 'Unupload completed',
+                message: 'Unupload completed successfully'
+            }
+        };
 
-        //     const dialog = $(`<div>
-        //         ${
-        //             upload_failed ?
-        //                 `Upload failed with ${cellCounts.invalidCells} invalid cells.<br>
-        //                 Please review the validation messages and repeat the upload process.` :
-        //                 upload_succeeded ?
-        //                     `Upload completed successfully.<br>
-        //                     You can open the 'View' menu to see a detailed breakdown of the upload results.` :
-        //                     'Unupload completed successfully'
-        //         }
-        //     </div>`).dialog({
-        //         title: upload_failed ?
-        //             'Upload failed due to validation errors' :
-        //             upload_succeeded ?
-        //                 'Upload completed' :
-        //                 'Unupload completed' ,
-        //         modal: true,
-        //         buttons: {
-        //             'Close': ()=>dialog.dialog('close'),
-        //             ...(
-        //                 upload_succeeded ?
-        //                     {
-        //                         'View upload results': ()=>
-        //                             this.displayUploadedView() ||
-        //                             dialog.dialog('close'),
-        //                     } :
-        //                     {}
-        //             )
-        //         }
-        //     });
-        //     this.showStatusDialog = false;
-        // }
+        if(refreshInitiatedBy in messages){
+            const dialog = $(`<div>
+                ${messages[refreshInitiatedBy].message}
+            </div>`).dialog({
+                title: messages[refreshInitiatedBy].title ,
+                modal: true,
+                buttons: {
+                    Close(){ $(this).dialog('destroy'); },
+                    ...(
+                        (
+                            this.refreshInitiatedBy === 'upload' &&
+                            cellCounts.invalidCells === 0
+                        ) ?
+                            {
+                                'View upload results': ()=>
+                                    this.displayUploadedView() ||
+                                    dialog.dialog('close'),
+                            } :
+                            {}
+                    )
+                }
+            });
+
+            this.refreshInitiatedBy = undefined;
+        }
 
         this.hot.render();
     },
@@ -479,7 +504,7 @@ const WBView = Backbone.View.extend({
             changes
         ) {
             changes.filter(([,column])=>  // ignore changes to unmapped columns
-                this.mappedHeaders.indexOf(
+                Object.keys(this.mappedHeaders).indexOf(
                     this.dataset.columns[this.hot.toPhysicalColumn(column)]
                 ) !== -1
             ).forEach(([row]) => {
@@ -571,11 +596,10 @@ const WBView = Backbone.View.extend({
     },
     openStatus(mode) {
         new WBStatus({dataset: this.dataset}).render().on('done', () => {
-            if (["upload", "unupload"].includes(mode)) {
-                this.trigger('refresh');
-            } else {
-                this.getValidationResults();
-            }
+            if (["upload", "unupload"].includes(mode))
+                this.trigger('refresh', mode);
+            else
+                this.getValidationResults(true);
         });
     },
     showHighlights: function() {
@@ -637,7 +661,7 @@ const WBView = Backbone.View.extend({
     showCoordinateConversion: function(e){this.wbutils.showCoordinateConversion(e)},
 });
 
-module.exports = function loadDataset(id, showStatusDialog = false) {
+module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
         title: 'Loading',
         modal: true,
@@ -655,9 +679,9 @@ module.exports = function loadDataset(id, showStatusDialog = false) {
 
         const view = new WBView({
             dataset,
-            showStatusDialog
-        }).on('refresh', () =>
-            loadDataset(id, true)
+            refreshInitiatedBy
+        }).on('refresh', (mode) =>
+            loadDataset(id, mode)
         );
         app.setTitle(dataset.name);
         app.setCurrentView(view);

@@ -23,7 +23,12 @@ module.exports = Backbone.View.extend({
             title: "Workbench Status",
             open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close() { $(this).remove(); stopRefresh(); },
-            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/abort/${this.dataset.id}/`); }}]
+            buttons: [{
+                text: 'Abort',
+                click: () => {
+                    $.post(`/api/workbench/abort/${this.dataset.id}/`);
+                }
+            }]
         });
 
         if(this.status)
@@ -58,10 +63,10 @@ module.exports = Backbone.View.extend({
         if (this.dataset.uploaderstatus.taskstatus !== "PROGRESS") return;
 
         const {total, current} = this.dataset.uploaderstatus.taskinfo;
-        const progress_bar = this.$el.find('.wb-status-progress-bar');
+        const progressBar = this.$el.find('.wb-status-progress-bar');
 
-        if(progress_bar.length !== 0)
-            progress_bar.progressbar({
+        if(progressBar.length !== 0)
+            progressBar.progressbar({
             value: current,
             max: total
         });
