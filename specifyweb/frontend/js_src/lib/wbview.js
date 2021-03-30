@@ -157,7 +157,11 @@ const WBView = Backbone.View.extend({
         return this;
     },
     afterChange(changes, source) {
-        if (source !== 'edit') return;
+        if (
+          source !== 'edit' &&
+          source !== 'CopyPaste.paste'
+        )
+            return;
         this.spreadSheetChanged();
         this.startValidation(changes);
     },
