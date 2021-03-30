@@ -200,13 +200,13 @@ const WBView = Backbone.View.extend({
             const mappedHeadersAndTables = Object.fromEntries(
                 arrayOfMappings.map(mappingsPath =>
                     [
-                        mappingsPath.slice(-1)[0],
+                        mappingsPath.slice(-2)[0],
                         icons.getIcon(
                             getMappingLineData({
-                                baseTableName: baseTableName,
-                                mappingPath: mappingsPath.slice(0, -3),
+                                baseTableName,
+                                mappingPath: mappingsPath.slice(0, -4),
                                 iterate: false,
-                                customSelectType: 'simple',
+                                customSelectType: 'CLOSED_LIST',
                                 showHiddenFields: false,
                             })[0]?.tableName || '',
                         ),
