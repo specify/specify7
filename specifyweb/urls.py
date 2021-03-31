@@ -6,7 +6,7 @@ from .specify.views import support_login, images, properties
 from .context.views import choose_collection
 
 from .specify import urls as api_urls
-from .frontend import urls as frontend_urls
+from .frontend import urls as frontend_urls, doc_urls
 from .workbench import urls as wb_urls
 from .express_search import urls as es_urls
 from .context import urls as context_urls
@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^images/(?P<path>.+)$', images),
     url(r'^properties/(?P<name>.+).properties$', properties),
 
+    url(r'^documentation/', include(doc_urls)),
 
     # submodules
     url(r'^api/workbench/', include(wb_urls)),

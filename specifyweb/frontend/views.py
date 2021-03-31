@@ -1,6 +1,7 @@
 import os
 import logging
 
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse
@@ -20,3 +21,6 @@ def specify(request):
         'use_raven': settings.RAVEN_CONFIG is not None,
     })
     return HttpResponse(resp)
+
+def api(request):
+    return render(request, 'swagger-ui.html')
