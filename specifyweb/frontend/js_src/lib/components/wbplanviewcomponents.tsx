@@ -117,11 +117,14 @@ export function MappingLine({
   lineData,
   mappingType,
   headerName,
+  readonly,
   isFocused,
   handleFocus,
   handleClearMapping,
   handleStaticHeaderChange,
-}: MappingLineBaseProps & (
+}: MappingLineBaseProps & {
+    readonly: boolean,
+  } & (
   {
     readonly mappingType: Exclude<MappingType, 'newStaticColumn'>,
   } | {
@@ -142,7 +145,11 @@ export function MappingLine({
     onClick={handleFocus}
   >
     <div className="wbplanview-mapping-line-controls">
-      <button title="Clear mapping" onClick={handleClearMapping}>
+      <button
+        title="Clear mapping"
+        onClick={handleClearMapping}
+        disabled={readonly}
+      >
         <img src="../../../static/img/discard.svg" alt="Clear mapping" />
       </button>
     </div>
@@ -332,12 +339,15 @@ export function MappingElement(
 export function StaticHeader({
   defaultValue = '',
   onChange: handleChange,
+  disabled = false,
 }: {
   defaultValue: string,
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
+  disabled?: boolean,
 }): JSX.Element {
   return <textarea
     value={defaultValue}
     onChange={handleChange}
+    disabled={disabled}
   />;
 }

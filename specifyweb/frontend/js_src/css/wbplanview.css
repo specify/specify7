@@ -49,6 +49,11 @@
   font-size: 12px;
 }
 
+.wbplanview-readonly-badge {
+  color: var(--error);
+  font-weight: bold;
+}
+
 /* CONTAINER */
 .wbplanview-container {
   flex: 1;
@@ -187,13 +192,12 @@
 .wbplanview-mapping-line-controls button {
   border: none;
   background: var(--b2);
-  cursor: pointer;
   padding: 0.3rem;
   height: 100%;
   width: 100%;
 }
 
-.wbplanview-mapping-line-controls button:hover {
+.wbplanview-mapping-line-controls button:not([disabled]):hover {
   background: var(--b3);
 }
 
@@ -286,7 +290,8 @@
   cursor: pointer;
 }
 
-.custom-select-preview-list .custom-select-input {
+.custom-select-preview-list .custom-select-input,
+.wbplanview-readonly .custom-select-input {
   cursor: initial;
 }
 

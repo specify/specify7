@@ -61,7 +61,10 @@ export type Dataset = {
   rows: string[][],
   uploadplan: UploadPlan | null,
   uploaderstatus: Record<string, unknown> | null,
-  uploadresult: Record<string, unknown> | null,
+  uploadresult: {
+    success: boolean,
+    timestamp: string,
+  } | null,
 }
 
 export interface SpecifyResource {
@@ -320,6 +323,7 @@ interface WBPlanViewProps extends WBPlanViewWrapperProps,
   readonly uploadPlan: UploadPlan | null,
   readonly headers: string[],
   readonly setUnloadProtect: () => void,
+  readonly readonly: boolean,
 }
 
 interface PartialWBPlanViewProps {
@@ -354,8 +358,8 @@ function WBPlanViewHeader({
 }: {
   stateType: WBPlanViewStates['type'],
   title: string,
-  buttonsLeft: JSX.Element,
-  buttonsRight: JSX.Element
+  buttonsLeft: React.ReactNode,
+  buttonsRight: React.ReactNode
 }): JSX.Element {
   return <div className={
     `wbplanview-header wbplanview-header-${stateType}`
@@ -370,27 +374,36 @@ function WBPlanViewHeader({
 
 function HeaderWrapper(props: {
   readonly children: React.ReactNode,
+  readonly readonly: boolean,
   readonly header: JSX.Element,
   readonly stateName: WBPlanViewStates['type'],
   readonly handleClick?: () => void,
   readonly extraContainerProps?: Record<string, unknown>
 }): JSX.Element {
-  return <div className="wbplanview-event-listener" onClick={(event) =>
-    (
+  return <div
+    className={
+      `wbplanview-event-listener ${
+        props.readonly ?
+          'wbplanview-readonly' :
+          ''
+      }`
+    }
+    onClick={(event) =>
       (
-        event.target as HTMLElement
-      ).closest(
-        '.custom-select-closed-list',
-      ) === null &&
-      (
-        event.target as HTMLElement
-      ).closest(
-        '.custom-select-mapping-options-list',
-      ) === null
-      && props.handleClick
-    ) ?
-      props.handleClick() :
-      undefined
+        (
+          event.target as HTMLElement
+        ).closest(
+          '.custom-select-closed-list',
+        ) === null &&
+        (
+          event.target as HTMLElement
+        ).closest(
+          '.custom-select-mapping-options-list',
+        ) === null
+        && props.handleClick
+      ) ?
+        props.handleClick() :
+        undefined
   }>
     {props.header}
     <div
@@ -1102,6 +1115,7 @@ const stateReducer = generateReducer<JSX.Element,
     action: state,
   }) => <HeaderWrapper
     stateName={state.type}
+    readonly={state.props.readonly}
     header={
       <WBPlanViewHeader
         title='Select Base Table'
@@ -1197,6 +1211,7 @@ const stateReducer = generateReducer<JSX.Element,
 
     return <HeaderWrapper
       stateName={state.type}
+      readonly={state.props.readonly}
       header={
         <WBPlanViewHeader
           title={
@@ -1206,11 +1221,22 @@ const stateReducer = generateReducer<JSX.Element,
           }
           stateType={state.type}
           buttonsLeft={
-            <button
-              onClick={() => state.dispatch({
-                type: 'OpenBaseTableSelectionAction',
-              })}
-            >Change table</button>
+            state.props.readonly ?
+              <span
+                className='wbplanview-readonly-badge'
+                title={`
+                  You are viewing the mappings for an uploaded dataset.
+                  To edit the mappings, un-upload the dataset or create a new
+                  dataset
+                `}
+              >
+                (Read only mode)
+              </span> :
+              <button
+                onClick={() => state.dispatch({
+                  type: 'OpenBaseTableSelectionAction',
+                })}
+              >Change table</button>
           }
           buttonsRight={<>
             {
@@ -1229,43 +1255,51 @@ const stateReducer = generateReducer<JSX.Element,
               })}
             >Matching logic
             </button>
-            <button onClick={() => state.dispatch({
-              type: 'ResetMappingsAction',
-            })}>Clear Mappings
-            </button>
-            <button onClick={() =>
-              void (
-                state.dispatch({
-                  type: 'ValidationAction',
-                })
-              ) ||
-              void (
-                state.refObjectDispatch({
-                  type: 'AutoscrollStatusChangeAction',
-                  autoscrollType: 'mappingView',
-                  status: true,
-                })
-              )
-            }>
-              Check mappings
-              {
-                state.mappingsAreValidated &&
-                <i style={{
-                  color: '#4f2',
-                  fontSize: '12px',
-                }}>✓</i>
-              }
-            </button>
-            <button onClick={
-              () => handleSave(false)
-            }>Save
-            </button>
+            {
+              !state.props.readonly &&
+              <>
+                <button onClick={() => state.dispatch({
+                  type: 'ResetMappingsAction',
+                })}>Clear Mappings
+                </button>
+                <button onClick={() =>
+                  void (
+                    state.dispatch({
+                      type: 'ValidationAction',
+                    })
+                  ) ||
+                  void (
+                    state.refObjectDispatch({
+                      type: 'AutoscrollStatusChangeAction',
+                      autoscrollType: 'mappingView',
+                      status: true,
+                    })
+                  )
+                }>
+                  Check mappings
+                  {
+                    state.mappingsAreValidated &&
+                    <i style={{
+                      color: '#4f2',
+                      fontSize: '12px',
+                    }}>✓</i>
+                  }
+                </button>
+                <button onClick={
+                  () => handleSave(false)
+                }>Save
+                </button>
+              </>
+            }
             <button onClick={() => state.dispatch({
               type: 'CancelMappingAction',
               dataset: state.props.dataset,
               removeUnloadProtect: state.props.removeUnloadProtect,
-            })}>Cancel
-            </button>
+            })}>{
+              state.props.readonly ?
+                'Return back' :
+                'Cancel'
+            }</button>
           </>}
         />
       }
@@ -1285,6 +1319,7 @@ const stateReducer = generateReducer<JSX.Element,
         automapperSuggestions={state.automapperSuggestions}
         focusedLine={state.focusedLine}
         refObject={refObject}
+        readonly={state.props.readonly}
         handleSave={() => handleSave(true)}
         handleToggleHiddenFields={() =>
           state.dispatch({type: 'ToggleHiddenFieldsAction'})
@@ -1450,11 +1485,19 @@ const stateReducer = generateReducer<JSX.Element,
                         <input
                           type="checkbox"
                           checked={mustMatch}
-                          onChange={() => state.dispatch({
-                            type: 'MustMatchPrefChangeAction',
-                            tableName,
-                            mustMatch: !mustMatch,
-                          })}
+                          {...(
+                            state.props.readonly ?
+                              {
+                                disabled: true,
+                              } :
+                              {
+                                onChange: ()=>state.dispatch({
+                                  type: 'MustMatchPrefChangeAction',
+                                  tableName,
+                                  mustMatch: !mustMatch,
+                                })
+                              }
+                          )}
                         />
                       </label>
                     </td>
@@ -1769,8 +1812,17 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
     null;
   return (
     schemaLoaded ?
-      <WBPlanView {...props} uploadPlan={uploadPlan}
-        headers={props.dataset.columns} />
+      <WBPlanView
+        {...props}
+        uploadPlan={uploadPlan}
+        headers={props.dataset.columns}
+        readonly={
+          (
+            props.dataset.uploadresult &&
+            props.dataset.uploadresult.success
+          ) || false
+        }
+      />
       : <LoadingScreen />
   );
 }

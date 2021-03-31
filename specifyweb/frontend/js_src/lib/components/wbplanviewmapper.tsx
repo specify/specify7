@@ -122,6 +122,7 @@ const MappingsControlPanel = React.memo(namedComponent(
   'MappingsControlPanel',
   ({
     showHiddenFields,
+    readonly,
     handleChange,
     mappingIsTemplated,
     handleToggleMappingIsTemplated,
@@ -129,11 +130,12 @@ const MappingsControlPanel = React.memo(namedComponent(
     // handleAddNewStaticColumn,
   }: {
     readonly showHiddenFields: boolean,
-    readonly handleChange: () => void,
-    readonly handleAddNewColumn: () => void,
-    readonly handleAddNewStaticColumn: () => void,
+    readonly readonly: boolean,
+    readonly handleChange?: () => void,
+    readonly handleAddNewColumn?: () => void,
+    readonly handleAddNewStaticColumn?: () => void,
+    readonly handleToggleMappingIsTemplated?: () => void,
     readonly mappingIsTemplated: boolean,
-    readonly handleToggleMappingIsTemplated: () => void,
   }) =>
     <div>
       <label>
@@ -141,6 +143,7 @@ const MappingsControlPanel = React.memo(namedComponent(
           type="checkbox"
           checked={mappingIsTemplated}
           onChange={handleToggleMappingIsTemplated}
+          disabled={readonly}
         />
         Use this mapping as a template
       </label>
@@ -548,9 +551,10 @@ function MappingView(props: {
   readonly baseTableName: string,
   readonly focusedLineExists: boolean,
   readonly mappingPath: MappingPath,
-  mapButtonIsEnabled: boolean,
-  readonly handleMapButtonClick: () => void
-  readonly handleMappingViewChange: (
+  readonly mapButtonIsEnabled: boolean,
+  readonly readonly: boolean,
+  readonly handleMapButtonClick?: () => void
+  readonly handleMappingViewChange?: (
     index: number,
     newValue: string,
     isRelationship: boolean,
@@ -558,7 +562,6 @@ function MappingView(props: {
     newTable: string,
   ) => void,
   readonly getMappedFields: GetMappedFieldsBind,
-  readonly automapperSuggestions?: AutomapperSuggestion[],
   readonly showHiddenFields?: boolean,
 }) {
 
@@ -572,6 +575,7 @@ function MappingView(props: {
     showHiddenFields: props.showHiddenFields,
   });
   const mapButtonIsEnabled =
+    !props.readonly &&
     props.mapButtonIsEnabled && (
       Object.entries(
         mappingLineData[mappingLineData.length - 1]?.fieldsData,
@@ -667,6 +671,7 @@ export default function WBPlanViewMapper(
     readonly handleToggleHiddenFields: () => void,
     readonly handleAddNewColumn: () => void,
     readonly handleAddNewStaticColumn: () => void,
+    readonly readonly: boolean,
     readonly handleOpen: (
       line: number,
       index: number,
@@ -881,15 +886,18 @@ export default function WBPlanViewMapper(
         <div
           className="mapping-view-container"
         >
-          <FormatValidationResults
-            baseTableName={props.baseTableName}
-            validationResults={props.validationResults}
-            handleSave={props.handleSave}
-            getMappedFields={getMappedFieldsBind}
-            onValidationResultClick={
-              props.handleValidationResultClick
-            }
-          />
+          {
+            !props.readonly &&
+            <FormatValidationResults
+              baseTableName={props.baseTableName}
+              validationResults={props.validationResults}
+              handleSave={props.handleSave}
+              getMappedFields={getMappedFieldsBind}
+              onValidationResultClick={
+                props.handleValidationResultClick
+              }
+            />
+          }
           <MappingView
             baseTableName={props.baseTableName}
             focusedLineExists={
@@ -901,13 +909,17 @@ export default function WBPlanViewMapper(
               typeof props.focusedLine !== 'undefined' &&
               mappingPathIsComplete(props.mappingView)
             }
-            handleMapButtonClick={props.handleMappingViewMap}
-            handleMappingViewChange={props.handleChange.bind(
-              null,
-              'mappingView',
-            )}
+            readonly={props.readonly}
+            handleMapButtonClick={
+              !props.readonly && props.handleMappingViewMap || undefined
+            }
+            handleMappingViewChange={
+              !props.readonly && props.handleChange.bind(
+                null,
+                'mappingView',
+              ) || undefined
+            }
             getMappedFields={getMappedFieldsBind}
-            automapperSuggestions={props.automapperSuggestions}
           />
         </div>
       </div>
@@ -923,6 +935,7 @@ export default function WBPlanViewMapper(
           key={index}
           headerName={name}
           mappingType={type}
+          readonly={props.readonly}
           isFocused={index === props.focusedLine}
           handleFocus={props.handleFocus.bind(null, index)}
           handleClearMapping={props.handleClearMapping.bind(null, index)}
@@ -935,11 +948,16 @@ export default function WBPlanViewMapper(
               mappingPath,
               generateLastRelationshipData: true,
               customSelectType: 'CLOSED_LIST',
-              handleChange: props.handleChange.bind(null, index),
+              handleChange:
+                !props.readonly &&
+                props.handleChange.bind(null, index) ||
+                undefined,
               handleOpen: props.handleOpen.bind(null, index),
               handleClose: props.handleClose.bind(null, index),
               handleAutomapperSuggestionSelection:
-              props.handleAutomapperSuggestionSelection,
+                !props.readonly &&
+                props.handleAutomapperSuggestionSelection ||
+                undefined,
               getMappedFields: getMappedFieldsBind,
               openSelectElement:
                 typeof props.openSelectElement !== 'undefined' &&
@@ -947,7 +965,10 @@ export default function WBPlanViewMapper(
                   props.openSelectElement :
                   undefined,
               showHiddenFields: props.showHiddenFields,
-              automapperSuggestions: props.automapperSuggestions,
+              automapperSuggestions:
+                !props.readonly &&
+                props.automapperSuggestions ||
+                [],
               mappingOptionsMenuGenerator: () => (
                 {
                   'matchBehavior': {
@@ -956,11 +977,14 @@ export default function WBPlanViewMapper(
                       <MappingElement
                         isOpen={true}
                         customSelectType='MAPPING_OPTION_LINE_LIST'
-                        handleChange={(matchBehavior) =>
-                          props.handleChangeMatchBehaviorAction(
-                            index,
-                            matchBehavior as MatchBehaviors,
-                          )
+                        handleChange={
+                          !props.readonly && (
+                            (matchBehavior) =>
+                              props.handleChangeMatchBehaviorAction(
+                                index,
+                                matchBehavior as MatchBehaviors,
+                              )
+                          ) || undefined
                         }
                         fieldsData={{
                           'ignoreWhenBlank': {
@@ -1007,11 +1031,15 @@ export default function WBPlanViewMapper(
                       <input
                         type='checkbox'
                         checked={options.nullAllowed}
-                        onChange={(event) =>
-                          props.handleToggleAllowNullsAction(
-                            index,
-                            event.target.checked,
-                          )
+                        disabled={props.readonly}
+                        onChange={
+                          !props.readonly && (
+                            (event) =>
+                              props.handleToggleAllowNullsAction(
+                                index,
+                                event.target.checked,
+                              )
+                          ) || undefined
                         }
                       />
                       {' '}Allow Null values
@@ -1023,13 +1051,17 @@ export default function WBPlanViewMapper(
                         <input
                           type='checkbox'
                           checked={options.default !== null}
-                          onChange={() =>
-                            props.handleChangeDefaultValue(
-                              index,
-                              options.default === null ?
-                                '' :
-                                null,
-                            )
+                          disabled={props.readonly}
+                          onChange={
+                            !props.readonly && (
+                              () =>
+                                props.handleChangeDefaultValue(
+                                  index,
+                                  options.default === null ?
+                                    '' :
+                                    null,
+                                )
+                            ) || undefined
                           }
                         />
                         {' '}Use default value{options.default !== null && ':'}
@@ -1040,11 +1072,15 @@ export default function WBPlanViewMapper(
                           <br />
                           <StaticHeader
                             defaultValue={options.default || ''}
-                            onChange={(event) =>
-                              props.handleChangeDefaultValue(
-                                index,
-                                event.target.value,
-                              )
+                            disabled={props.readonly}
+                            onChange={
+                              !props.readonly && (
+                                (event) =>
+                                  props.handleChangeDefaultValue(
+                                    index,
+                                    event.target.value,
+                                  )
+                              ) || undefined
                             }
                           />
                         </>
@@ -1063,9 +1099,16 @@ export default function WBPlanViewMapper(
     <MappingsControlPanel
       showHiddenFields={props.showHiddenFields}
       handleChange={props.handleToggleHiddenFields}
-      handleAddNewColumn={props.handleAddNewColumn}
-      handleAddNewStaticColumn={props.handleAddNewStaticColumn}
-      handleToggleMappingIsTemplated={props.handleToggleMappingIsTemplated}
+      readonly={props.readonly}
+      handleAddNewColumn={
+        !props.readonly && props.handleAddNewColumn || undefined
+      }
+      handleAddNewStaticColumn={
+        !props.readonly && props.handleAddNewStaticColumn || undefined
+      }
+      handleToggleMappingIsTemplated={
+        !props.readonly && props.handleToggleMappingIsTemplated || undefined
+      }
       mappingIsTemplated={props.mappingIsTemplated}
     />
   </>;
