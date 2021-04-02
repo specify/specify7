@@ -336,26 +336,19 @@ def parse_pattern(pattern):
     return p_str.strip('^$'), params
 
 def create_tag(path):
-    path_parts = list(
-        filter(
-            lambda p: p,
-            os.path.dirname(path).split('/')
-        )
-    )
-
+    path_parts = [part for part in os.path.dirname(path).split('/') if part]
     return path_parts[0] if len(path_parts) > 0 else '/'
 
-get_tags = lambda endpoints: \
-    map(
-        lambda tag_name: dict(
+def get_tags(endpoints):
+    return [
+        dict(
             name=tag_name,
             description='TBD'
         ),
-        sorted(set(map(
-            lambda endpoint: endpoint['get']['tags'][0],
-            endpoints.values()
-        )))
-    )
+        sorted(set([
+            endpoint['get']['tags'][0] for endpoint in endpoints.values()
+        ]))
+    ]
 
 def get_endpoints(patterns, prefix="/", preparams=[]):
     for p in patterns:
