@@ -359,6 +359,10 @@
   cursor: pointer;
 }
 
+.wbplanview-readonly .custom-select-options {
+  cursor: initial;
+}
+
 .custom-select-options:not(:first-child) {
   border-top: 0;
 }
