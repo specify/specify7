@@ -124,6 +124,9 @@ const fetchingParameters: {
     'geographytreedef',
     'geologictimeperiodtreedef',
     'treedef',
+    'lithostrattreedefitem',
+    'storagetreedefitem',
+    'taxontreedefitem',
     'collectingeventattr',
     'collectionobjectattr',
     ...schema.orgHierarchy.filter(tableName =>
