@@ -112,7 +112,8 @@ interface UploadResult {
     record_result: RecordResult,
     // Maps the names of -to-one relationships of the table to upload
     // results for each
-    toOne: {parent: UploadResult},
+    // 'parent' exists for tree nodes only
+    toOne: Record<'parent' | string, UploadResult>,
     // Maps the names of -to-many relationships of the table to an
     // array of upload results for each
     toMany: Record<string, UploadResult[]>,
@@ -221,9 +222,13 @@ function handleUploadResult(
   const rank = treeInfo?.rank;
   const orderedColumns = getOrderedHeaders(headers, columns);
 
-  if ('picklistAdditions' in rest) {
-    const picklistAdditions = rest.picklistAdditions;
-    picklistAdditions.forEach(({id, name, value: picklistValue, caption}) => {
+  if ('picklistAdditions' in rest)
+    rest.picklistAdditions?.forEach(({
+      id,
+      name,
+      value: picklistValue,
+      caption
+    }) => {
       uploadedPicklistItems[name] ??= [];
       uploadedPicklistItems[name].push({
         rowIndex,
@@ -232,9 +237,12 @@ function handleUploadResult(
         columnIndex: headers.indexOf(caption) || -1,
       });
     });
-  }
 
-  const parentUploadResult = uploadResult.toOne.parent;
+  // 'parent' exists for tree ranks only
+  const {
+    parent: parentUploadResult = undefined,
+    ...toOneUploadResults
+  } = uploadResult.toOne;
   const parentBase = parentUploadResult?.UploadResult.record_result;
   const parentType = parentBase &&
     (
@@ -252,10 +260,14 @@ function handleUploadResult(
   }
 
   uploadedRows[tableName] ??= [];
-  // don't upload same tree nodes multiple times
-  if (!rank || uploadedRows[tableName].every(({recordId}) =>
-    recordId !== id,
-  ))
+  if (
+    // upload if not a tree node
+    !rank ||
+    // otherwise, make sure it is not present already
+    uploadedRows[tableName].every(({recordId}) =>
+      recordId !== id,
+    )
+  )
     uploadedRows[tableName].push({
       recordId: id,
       rowIndex,
@@ -270,7 +282,10 @@ function handleUploadResult(
       matched: uploadStatus === 'Matched',
     });
 
-  Object.values(uploadResult.toMany).forEach((lines: UploadResult[]) =>
+  [
+    ...Object.values(uploadResult.toMany),
+    Object.values(toOneUploadResults),
+  ].forEach((lines: UploadResult[]) =>
     lines.forEach((line: UploadResult) => handleUploadResult(
       uploadedPicklistItems,
       uploadedRows,
@@ -639,7 +654,8 @@ export function parseUploadResults(
       uploadedRows,
       matchedRecordsNames,
       headers,
-    ));
+    )
+  );
 
   const treeTables: Record<string,
     Omit<UploadedRowsTable,
@@ -743,16 +759,20 @@ export function parseUploadResults(
                     {
                       recordId,
                       rowIndex,
-                      columns: columnNames.filter(columnName =>
-                        columns.indexOf(columnName) !== -1,
-                      ).map(columnName =>
-                        headers.indexOf(columnName),
-                      ).map(columnIndex => (
-                        {
-                          columnIndex,
-                          cellValue: data[rowIndex][columnIndex] ?? '',
-                        }
-                      )),
+                      columns: columnNames.map(columnName=>({
+                        columnIndex: headers.indexOf(columnName),
+                        owsColumn: columns.indexOf(columnName) !== -1
+                      })).map(({columnIndex, owsColumn}) =>
+                        columnIndex === -1 || !owsColumn ?
+                          {
+                            columnIndex: -1,
+                            cellValue: '',
+                          } :
+                          {
+                            columnIndex,
+                            cellValue: data[rowIndex][columnIndex] ?? '',
+                          }
+                      ),
                     }
                   ),
                 ),

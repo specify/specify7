@@ -137,7 +137,7 @@ function UploadedTableRow({
         recordId >= 0 &&
         <td key='viewRecord'>
           <a target="_blank" href={getRecordViewUrl(recordId)}>
-            &#128065;  {/* a fancy eye emoji */}
+            👁
           </a>
         </td>
       }
