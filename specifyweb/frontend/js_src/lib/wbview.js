@@ -651,14 +651,6 @@ const WBView = Backbone.View.extend({
         a.setAttribute('download', filename);
         a.click();
     },
-
-    navigateCells: function(e){this.wbutils.navigateCells(e)},
-    searchCells: function(e){this.wbutils.searchCells(e)},
-    replaceCells: function(e){this.wbutils.replaceCells(e)},
-    toggleToolbelt: function(e){this.wbutils.toggleToolbelt(e)},
-    showGeoLocate: function(e){this.wbutils.showGeoLocate(e)},
-    showLeafletMap: function(e){this.wbutils.showLeafletMap(e)},
-    showCoordinateConversion: function(e){this.wbutils.showCoordinateConversion(e)},
 });
 
 module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {

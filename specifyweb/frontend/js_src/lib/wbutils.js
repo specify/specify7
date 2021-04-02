@@ -457,8 +457,8 @@ module.exports = Backbone.View.extend({
       geolocateQueryUrl = $this.getGeoLocateQueryURL(
         currentLocalityColumns,
         finalSelectedCells[currentCellIndex][0],
-        $this.wbview.hot.getDataAtCell,
-        $this.wbview.hot.getDataAtRow,
+        $this.wbview.hot.getDataAtCell.bind($this.wbview.hot),
+        $this.wbview.hot.getDataAtRow.bind($this.wbview.hot),
       );
 
     }

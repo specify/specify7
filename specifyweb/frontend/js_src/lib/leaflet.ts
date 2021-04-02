@@ -226,26 +226,21 @@ export const getLocalityColumnsFromSelectedCell = (
     ) !== -1
   )[0] || localityColumns[0] || false;
 
-export function getLocalitiesDataFromSpreadsheet(
+export const getLocalitiesDataFromSpreadsheet = (
   localityColumns:LocalityColumnIndexes[],
   spreadsheetData:string[][]
-):(LocalityData & {rowNumber:number})[]{
-
-  const localities:(LocalityData & {rowNumber:number})[] = [];
-
-  for(const columnIndexes of localityColumns)
-    spreadsheetData.map((row, index) => {
-      const localityData = getLocalityCoordinate(row, columnIndexes, true);
-      if(!localityData)
-        return;
-      localities.push({
-        ...localityData,
-        rowNumber: index,
-      })
-    });
-
-  return localities;
-}
+):(LocalityData & {rowNumber:number})[] =>
+  localityColumns.flatMap(columnIndexes=>
+    spreadsheetData.map((row, index) => ({
+      locality: getLocalityCoordinate(row, columnIndexes, true),
+      index
+    })).filter(({locality})=>
+      locality
+    ).map(({locality, index})=>({
+      ...(locality as LocalityData),
+      rowNumber: index,
+    }))
+  );
 
 export const getLocalityDataFromLocalityResource = (
   localityResource:any
