@@ -268,7 +268,7 @@ export function validate(state: MappingState): MappingState {
 
 export const defaultLineOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
-  nullAllowed: false,
+  nullAllowed: true,
   default: null,
 } as const;
 
