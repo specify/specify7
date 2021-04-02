@@ -11,7 +11,7 @@ import { ModalDialog }                    from './modaldialog';
 import ResourceView                       from '../resourceview';
 
 // TODO: remove this
-const IS_DEVELOPMENT = true;
+const IS_DEVELOPMENT = false;
 const defaultGuid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
 // const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
 const defaultOccurrenceName: Readonly<[string, string]> = [
