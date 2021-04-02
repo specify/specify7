@@ -1,5 +1,6 @@
 import re
 import json
+import os
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden, JsonResponse
 from django.utils.http import is_safe_url
@@ -334,36 +335,100 @@ def parse_pattern(pattern):
 
     return p_str.strip('^$'), params
 
+def create_tag(path):
+    path_parts = list(
+        filter(
+            lambda p: p,
+            os.path.dirname(path).split('/')
+        )
+    )
+
+    return path_parts[0] if len(path_parts) > 0 else '/'
+
+get_tags = lambda endpoints: \
+    map(
+        lambda tag_name: dict(
+            name=tag_name,
+            description='TBD'
+        ),
+        sorted(set(map(
+            lambda endpoint: endpoint['get']['tags'][0],
+            endpoints.values()
+        )))
+    )
+
 def get_endpoints(patterns, prefix="/", preparams=[]):
     for p in patterns:
         path, params = parse_pattern(p)
+        tag = create_tag(prefix+path)
         if isinstance(p, URLPattern):
             yield (prefix + path, {
-                **({'description': p.callback.__doc__} if p.callback.__doc__ else {}),
                 'parameters': [
-                    {'name': param, 'in': 'path', 'required': True, 'schema': {'type': 'string'}}
+                    {
+                        'name': param,
+                        'in': 'path',
+                        'required': True,
+                        'schema': {
+                            'type': 'string'
+                        }
+                    }
                     for param in preparams + params
                 ],
-                'get': {'responses': {'200': {'description': 'TBD'}}},
+                'get': {
+                    **({
+                            'summary': 'TBD',
+                            'description': p.callback.__doc__
+                       } if p.callback.__doc__ else { }),
+                    'tags': [tag],
+                    'responses': {
+                        '200': {
+                            'description': 'TBD'
+                        }
+                    }
+                },
             })
         else:
             yield from get_endpoints(p.url_patterns, prefix + path, preparams + params)
-
-    # return {
-    #     pattern_to_path(p): (p.callback.__doc__ or "").strip() if isinstance(p, URLPattern) else get_endpoints(p.url_patterns)
-    #     for p in patterns
-    # }
 
 @require_GET
 @cache_control(max_age=86400, public=True)
 def api_endpoints(request):
     "Returns a JSON description of all endpoints served."
+
+    endpoints = dict(get_endpoints(urlconf.urlpatterns))
+    tags = list(get_tags(endpoints))
+
     spec = dict(
         openapi="3.0.0",
         info=dict(
             title="Specify 7 API",
             version="7.6",
+            description="Description of all Specify 7 API endpoints",
+            license=dict(
+                name="GPL-2.0 License",
+                url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html",
+            ),
         ),
-        paths=dict(get_endpoints(urlconf.urlpatterns))
+        servers=[
+            dict(
+                url="/",
+                description="Current Specify 7 Instance"
+            ),
+            dict(
+                url="http://demo7.specifysoftware.org/",
+                description="Specify 7 Public Demo Instance"
+            ),
+            dict(
+                url='{url}',
+                variables=dict(
+                    url=dict(
+                        default="/"
+                    )
+                ),
+                description="Custom Specify 7 Server"
+            )
+        ],
+        tags=tags,
+        paths=endpoints
     )
     return JsonResponse(spec)
