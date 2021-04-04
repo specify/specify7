@@ -1,38 +1,47 @@
-"use strict";
+'use strict';
 
-var $ = require('jquery');
+const $ = require('jquery');
 
-var Leaflet = require('./leaflet.ts');
-var UIPlugin = require('./uiplugin.js');
+const LeafletUtils = require('./leafletutils.ts');
+const Leaflet = require('./leaflet.ts');
+const UIPlugin = require('./uiplugin.js');
 
-module.exports =  UIPlugin.extend({
-        __name__: "GoogleMapsPlugin",
-        events: {
-            'click': 'click'
+module.exports = UIPlugin.extend({
+  __name__: 'GoogleMapsPlugin',
+  events: {
+    'click': 'click',
+  },
+  render: function() {
+    this.$el.attr('value', 'Leaflet Map').prop('disabled', false);
+    return this;
+  },
+  click: function(evt) {
+    evt.preventDefault();
+
+    const lat = this.model.get('latitude1');
+    const long = this.model.get('longitude1');
+
+    if (lat == null || long == null)
+      return $(`<div title="No coordinates">
+        Locality must have coordinates to be mapped.
+      </div>`).dialog({
+        close: function() {
+          $(this).remove();
         },
-        render: function() {
-            this.$el.attr('value', 'Leaflet Map').prop('disabled', false);
-            return this;
-        },
-        click: function(evt) {
-            evt.preventDefault();
-
-            const lat = this.model.get('latitude1');
-            const long = this.model.get('longitude1');
-
-            if (lat == null || long == null)
-                return $('<div title="No coordinates"><p>Locality must have coordinates to be mapped.</p></div>')
-                    .dialog({
-                        close: function(){
-                            $(this).remove();
-                        }
-                    });
-
-            Leaflet.getLocalityDataFromLocalityResource(this.model).then(locality_data=>
-                Leaflet.showLeafletMap({
-                    locality_points:[locality_data]
-                })
-            );
+        buttons: {
+          'close': function(){
+            $(this).remove();
+          }
         }
-    }, { pluginsProvided: ['LocalityGoogleEarth'] });
+      });
+
+    LeafletUtils.getLocalityDataFromLocalityResource(
+      this.model
+    ).then(localityData =>
+      Leaflet.showLeafletMap({
+        localityPoints: [localityData],
+      }),
+    );
+  },
+}, {pluginsProvided: ['LocalityGoogleEarth']});
 
