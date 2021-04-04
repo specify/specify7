@@ -27,12 +27,12 @@
 	width: 100%;
 }
 
-.wbs-form .wb-toolbelt, .wbs-form .wb-controls {
+.wbs-form .wb-toolkit, .wbs-form .wb-controls {
 	display: flex;
 	justify-content: flex-end;
 }
 
-.wbs-form .wb-toolbelt {
+.wbs-form .wb-toolkit {
     margin-top: 0.5rem;
 }
 
@@ -75,7 +75,7 @@
     margin: 3px;
 }
 
-.wbs-form .wb-toolbelt input {
+.wbs-form .wb-toolkit input {
 	margin: 0;
 	vertical-align: baseline;
 }

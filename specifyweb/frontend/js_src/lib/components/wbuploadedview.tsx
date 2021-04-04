@@ -14,7 +14,7 @@ import { ModalDialog }                    from './modaldialog';
 import { Action, generateReducer, State } from '../statemanagement';
 import fetchDataModel                     from '../wbplanviewmodelfetcher';
 import dataModelStorage                   from '../wbplanviewmodel';
-import { Dataset }                        from './wbplanview';
+import { Dataset, R } from './wbplanview';
 import {
   parseUploadResults,
   UploadedPicklistItem,
@@ -52,7 +52,7 @@ interface UploadedTableRowBaseProps {
   readonly getRecordViewUrl?: (rowId: number) => string,
 }
 
-type RecordsVisibilityState = Readonly<Record<string, boolean>>;
+type RecordsVisibilityState = Readonly<R<boolean>>;
 
 interface WBUploadedState extends State<'WBUploadedState'> {
   readonly tableRecordsVisibilityState: RecordsVisibilityState,
@@ -88,7 +88,7 @@ type WBUploadedActions =
   | CellClickedAction;
 
 
-let ranks: Record<string, string[]>;
+let ranks: R<string[]>;
 const fetchDataModelPromise: Promise<void> = fetchDataModel();
 
 function UploadedTableRowsHeaderProps({
@@ -508,7 +508,7 @@ const reducer = generateReducer<WBUploadedState, WBUploadedActions>({
 });
 
 const generateInitialVisibilityState = <T, >(
-  sourceDictionary: Record<string, T>,
+  sourceDictionary: R<T>,
 ) =>
   Object.fromEntries(Object.keys(sourceDictionary).map(keyName => [
     keyName,
@@ -606,7 +606,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
 function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 
   const [treeRanks, setTreeRanks] =
-    React.useState<Record<string, string[]> | undefined>(ranks);
+    React.useState<R<string[]> | undefined>(ranks);
   const [uploadedRows, setUploadedRows] =
     React.useState<UploadedRows | undefined>(undefined);
   const [uploadedPicklistItems, setUploadedPicklistItems] =
@@ -679,7 +679,7 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
       uploadedPicklistItems={uploadedPicklistItems}
       hot={props.hot}
     /> :
-    null;
+    <></>;
 
 }
 

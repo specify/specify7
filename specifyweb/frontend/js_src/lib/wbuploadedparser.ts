@@ -1,23 +1,26 @@
-"use string";
+/*
+ * Workbench Upload Results Parser
+ * */
 
+'use string';
+
+import { R } from './components/wbplanview';
+import icons from './icons';
+import { Schema } from './legacytypes';
+import schema from './schema';
+import { State } from './statemanagement';
 import {
-  uploadPlanToMappingsTree,
   UploadPlan,
-}                                       from './wbplanviewconverter';
+  uploadPlanToMappingsTree,
+} from './uploadplantomappingstree';
+import { fullMappingPathParser } from './wbplanviewhelper';
+import { getNameFromTreeRankName } from './wbplanviewmodelhelper';
 import {
   arrayToTree,
   deepMergeObject,
   mappingsTreeToArrayOfMappings,
-}                                       from './wbplanviewtreehelper';
-import { State }                        from './statemanagement';
-import schema                           from './schema';
-import { Schema }                       from './legacytypes';
-import icons                       from './icons';
-import { getNameFromTreeRankName } from './wbplanviewmodelhelper';
-import { fullMappingPathParser }   from './wbplanviewhelper';
+} from './wbplanviewtreehelper';
 
-// Specify 7 Workbench Upload Results
-// Records results of uploading a data set
 
 // If an UploadResult involves a tree record, this metadata indicates
 // where in the tree the record resides
@@ -116,7 +119,7 @@ interface UploadResult {
     toOne: Record<'parent' | string, UploadResult>,
     // Maps the names of -to-many relationships of the table to an
     // array of upload results for each
-    toMany: Record<string, UploadResult[]>,
+    toMany: R<UploadResult[]>,
   }
 }
 
@@ -170,7 +173,7 @@ export interface UploadedRowsTable {
   readonly rowsCount?: number,
 }
 
-export type UploadedRows = Readonly<Record<string, UploadedRowsTable>>
+export type UploadedRows = Readonly<R<UploadedRowsTable>>
 
 export interface UploadedPicklistItem {
   readonly picklistValue: string,
@@ -179,7 +182,7 @@ export interface UploadedPicklistItem {
   readonly columnIndex: number,
 }
 
-export type UploadedPicklistItems = Record<string, UploadedPicklistItem[]>;
+export type UploadedPicklistItems = R<UploadedPicklistItem[]>;
 
 
 interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
@@ -199,8 +202,8 @@ interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
 * */
 function handleUploadResult(
   uploadedPicklistItems: UploadedPicklistItems,
-  uploadedRows: Record<string, UploadedRowSorted[]>,
-  matchedRecordsNames: Record<string, Record<number, string>>,
+  uploadedRows: R<UploadedRowSorted[]>,
+  matchedRecordsNames: R<Record<number, string>>,
   headers: string[],
   line: UploadResult,
   rowIndex: number,
@@ -227,7 +230,7 @@ function handleUploadResult(
       id,
       name,
       value: picklistValue,
-      caption
+      caption,
     }) => {
       uploadedPicklistItems[name] ??= [];
       uploadedPicklistItems[name].push({
@@ -315,7 +318,7 @@ function handleUploadResult(
 function formatListOfRows(
   listOfRows: UploadedRowSorted[],
   data: string[][],
-  mappedRanks: Record<string, string>,
+  mappedRanks: R<string>,
   matchedRecordsNames: Record<number, string>,
   headers: string[],
   treeRanks: string[],
@@ -377,8 +380,8 @@ function formatListOfRows(
 * */
 const getMinNode = (
   rows: [number, UploadedTreeRank][],
-  treeRanks: Record<string, string[]>,
-  rowsObject: Record<string, UploadedTreeRank | undefined>,
+  treeRanks: R<string[]>,
+  rowsObject: R<UploadedTreeRank | undefined>,
   tableName: string,
 ) =>
   rows.reduce((
@@ -409,7 +412,7 @@ const getMinNode = (
 * Turns a list of nodes with children and parents into a tree
 * */
 function joinChildren(
-  rowsObject: Record<string, UploadedTreeRank | undefined>,
+  rowsObject: R<UploadedTreeRank | undefined>,
   nodeId: number,
 ): UploadedTreeRankProcessed | undefined {
   if (typeof rowsObject[nodeId] === 'undefined')
@@ -502,7 +505,7 @@ const emptyCell = (columnIndex: number): UploadedColumn => (
 * Turns a tree of new nodes back into rows that are readable by `wbuploadedview`
 * */
 const compileRows = (
-  mappedRanks: Record<string, string>,
+  mappedRanks: R<string>,
   ranksToShow: string[],
   headers: string[],
   spacedOutTree: SpacedOutTree,
@@ -606,7 +609,7 @@ export function parseUploadResults(
   uploadResults: UploadResults,
   headers: string[],
   data: string[][],
-  treeRanks: Record<string, string[]>,
+  treeRanks: R<string[]>,
   plan: UploadPlan | null,
 ): [UploadedRows, UploadedPicklistItems] {
 
@@ -641,11 +644,11 @@ export function parseUploadResults(
       headerName,
     ], true);
 
-  }).reduce(deepMergeObject, {}) as Record<string, Record<string, string>>;
+  }).reduce(deepMergeObject, {}) as R<R<string>>;
 
-  const uploadedRows: Record<string, UploadedRowSorted[]> = {};
+  const uploadedRows: R<UploadedRowSorted[]> = {};
   const uploadedPicklistItems: UploadedPicklistItems = {};
-  const matchedRecordsNames: Record<string, Record<number, string>> = {};
+  const matchedRecordsNames: R<Record<number, string>> = {};
 
   uploadResults.forEach(
     handleUploadResult.bind(
@@ -654,14 +657,13 @@ export function parseUploadResults(
       uploadedRows,
       matchedRecordsNames,
       headers,
-    )
+    ),
   );
 
-  const treeTables: Record<string,
-    Omit<UploadedRowsTable,
-      'getRecordViewUrl'
-      | 'tableLabel'
-      | 'tableIcon'>> = Object.fromEntries(
+  const treeTables: R<Omit<UploadedRowsTable,
+    'getRecordViewUrl'
+    | 'tableLabel'
+    | 'tableIcon'>> = Object.fromEntries(
     Object.entries(uploadedRows).filter(([tableName]) =>
       typeof treeRanks[tableName.toLowerCase()] !== 'undefined',
     ).map(([originalTableName, listOfRows]) => {
@@ -759,10 +761,12 @@ export function parseUploadResults(
                     {
                       recordId,
                       rowIndex,
-                      columns: columnNames.map(columnName=>({
-                        columnIndex: headers.indexOf(columnName),
-                        owsColumn: columns.indexOf(columnName) !== -1
-                      })).map(({columnIndex, owsColumn}) =>
+                      columns: columnNames.map(columnName => (
+                        {
+                          columnIndex: headers.indexOf(columnName),
+                          owsColumn: columns.indexOf(columnName) !== -1,
+                        }
+                      )).map(({columnIndex, owsColumn}) =>
                         columnIndex === -1 || !owsColumn ?
                           {
                             columnIndex: -1,
@@ -771,7 +775,7 @@ export function parseUploadResults(
                           {
                             columnIndex,
                             cellValue: data[rowIndex][columnIndex] ?? '',
-                          }
+                          },
                       ),
                     }
                   ),

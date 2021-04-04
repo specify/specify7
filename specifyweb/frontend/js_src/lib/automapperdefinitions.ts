@@ -8,6 +8,7 @@
 
 'use strict';
 
+import { R } from './components/wbplanview';
 import { AutomapperScope, MappingPath } from './components/wbplanviewmapper';
 
 //  Automapper does 2 passes though the schema whenever it is asked to map
@@ -64,7 +65,7 @@ interface AutoMapperDefinitions {
   *   Table Synonyms, it's `synonyms` and matches would also
   *   be checked in the first pass
   */
-  tableSynonyms: Record<string,  // tableName (case-insensitive)
+  tableSynonyms: R< // tableName (case-insensitive)
     TableSynonym[]  // described earlier in the file
     >,
 
@@ -72,7 +73,7 @@ interface AutoMapperDefinitions {
   * Rank synonyms are used to when the same tree rank can have
   * different name depending on the discipline
   */
-  rankSynonyms: Record<string,  // tableName (case-insensitive)
+  rankSynonyms: R< // tableName (case-insensitive)
     {
       rankName: string,
       synonyms: string[]
@@ -87,8 +88,8 @@ interface AutoMapperDefinitions {
   * Don't match list is of the highest priority and would cancel
   *   a mapping even if a shortcut, or a synonym was used
   */
-  dontMatch: Record<string,  // tableName (case-insensitive)
-    Record<string,  // fieldName (case-insensitive)
+  dontMatch: R< // tableName (case-insensitive)
+    R< // fieldName (case-insensitive)
       AutomapperScope[]  // defined in wbplanviewmapper.tsx
       >>,
 
@@ -101,7 +102,7 @@ interface AutoMapperDefinitions {
   * Shortcut is followed only if header matched the comparisons
   *   and a path to tableName from baseTableName
   */
-  shortcuts: Record<string,  // tableName (case-insensitive)
+  shortcuts: R< // tableName (case-insensitive)
     Partial<Record<AutomapperScope,  // defined in wbplanviewmapper.tsx
       {
         // mapping path that is to be appended to the current path
@@ -119,8 +120,8 @@ interface AutoMapperDefinitions {
   * Synonym is used only if header matched the comparisons and
   *   and there exists a path from tableName to baseTableName
   */
-  synonyms: Record<string,  // tableName (case-insensitive)
-    Record<string,  // fieldName (case-insensitive)
+  synonyms: R< // tableName (case-insensitive)
+    R< // fieldName (case-insensitive)
       Partial<Record<AutomapperScope,  // defined in wbplanviewmapper.tsx
         {
           headers: Options &

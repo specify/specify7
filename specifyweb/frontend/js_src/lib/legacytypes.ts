@@ -1,3 +1,4 @@
+import { R } from './components/wbplanview';
 import { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
@@ -27,7 +28,7 @@ interface SchemaModelTableData {
   readonly LazyCollection: SpecifyFetch
 }
 
-type SchemaModels<T> = Readonly<Record<string, T>>;
+type SchemaModels<T> = Readonly<R<T>>;
 
 export interface Schema {
   readonly models: SchemaModels<SchemaModelTableData>;
@@ -40,11 +41,11 @@ interface DomainTreeDefinitionItem {
   readonly attributes: {name: string, rankid: number, parent: string}
 }
 
-type DomainRequest = Readonly<Record<string, unknown>>
+type DomainRequest = Readonly<R<unknown>>
 
 type SpecifyRequest = (param: DomainRequest) => JqueryPromise<void>;
 
-export interface DomainTreeDefinitionItems {
+interface DomainTreeDefinitionItems {
   readonly fetch: SpecifyRequest;
   readonly models: SchemaModels<DomainTreeDefinitionItem>
 }

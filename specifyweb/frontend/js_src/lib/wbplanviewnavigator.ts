@@ -7,6 +7,8 @@
 
 'use strict';
 
+import { R } from './components/wbplanview';
+import { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import {
   formatReferenceItem,
   formatTreeRank,
@@ -22,7 +24,6 @@ import {
 import dataModelStorage from './wbplanviewmodel';
 import {
   AutomapperSuggestion,
-  GetMappedFieldsBind,
   MappingPath,
   RelationshipType,
   SelectElementPosition,
@@ -419,7 +420,7 @@ export function getMappingLineData({
   readonly getMappedFields?: GetMappedFieldsBind,
   readonly automapperSuggestions?: AutomapperSuggestion[],
   readonly mappingOptionsMenuGenerator?: ()=>
-    Record<string,HtmlGeneratorFieldData>,
+    R<HtmlGeneratorFieldData>,
 }): MappingElementProps[] {
 
   const internalState: {
@@ -431,7 +432,7 @@ export function getMappingLineData({
     nextMappingPathElement?: string,
     defaultValue?: string,
     currentMappingPathPart?: string,
-    resultFields: Record<string,HtmlGeneratorFieldData>
+    resultFields: R<HtmlGeneratorFieldData>
     mappedFields: string[],
     generateMappingOptionsMenu: boolean,
   } = {

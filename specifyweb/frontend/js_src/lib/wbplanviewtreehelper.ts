@@ -7,30 +7,32 @@
 'use strict';
 
 
+import { R } from './components/wbplanview';
 import {
   FullMappingPath,
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
-import {  ColumnOptions } from './wbplanviewconverter';
+import { ColumnOptions } from './uploadplantomappingstree';
 
-interface NestedRecord<T> extends Record<string, T | NestedRecord<T>> { }
+interface NestedRecord<T> extends R<T | NestedRecord<T>> {
+}
 
-export type MappingsTreeNode = Record<MappingType, Record<string, ColumnOptions>>
+export type MappingsTreeNode = Record<MappingType, R<ColumnOptions>>
 
 export type MappingsTree = NestedRecord<MappingsTreeNode>
 
 export function traverseTree(mappingsTree: MappingsTree, path: string[]): MappingsTree | undefined {
-    const step = path[0];
-    if (step == null) return mappingsTree;
+  const step = path[0];
+  if (step == null) return mappingsTree;
 
-    const next = mappingsTree[step];
-    if (next == null) return undefined;
-    // next could be MappingsTreeNode here, in which case we should
-    // return undefined if path in not empty, but since MappingsTreeNode is a
-    // record type we can't discriminate it from NestedRecord<T> at
-    // runtime :(
-    return traverseTree(next as MappingsTree, path.slice(1));
+  const next = mappingsTree[step];
+  if (next == null) return undefined;
+  // next could be MappingsTreeNode here, in which case we should
+  // return undefined if path in not empty, but since MappingsTreeNode is a
+  // record type we can't discriminate it from NestedRecord<T> at
+  // runtime :(
+  return traverseTree(next as MappingsTree, path.slice(1));
 }
 
 type FlatTree = NestedRecord<string>
@@ -41,7 +43,7 @@ type FlatTree = NestedRecord<string>
 export const deepMergeObject = (
   target: any,  // tree that is used as a basis
   source: object,  // tree that is used as a source
-): Record<string, unknown> => /*
+): R<unknown> => /*
 * For example, if target is:
 * 	Accession
 * 		Accession Agents
@@ -140,7 +142,7 @@ export function arrayToTree(
 export function arrayOfMappingsToMappingsTree(
   // array of strings (branches of the tree) that are going to be merged
   // into a tree
-  arrayOfMappings: (MappingPath|FullMappingPath)[],
+  arrayOfMappings: (MappingPath | FullMappingPath)[],
   includeHeaders: boolean,
 ): MappingsTree  // Final tree
 /*
@@ -207,9 +209,11 @@ export const mappingsTreeToArrayOfMappings = (
       );
     else
       result.push([
-        ...(path as [...string[], MappingType]),
+        ...(
+          path as [...string[], MappingType]
+        ),
         treeNodeName,
-        treeNode as unknown as ColumnOptions
+        treeNode as unknown as ColumnOptions,
       ]);
 
     return result;

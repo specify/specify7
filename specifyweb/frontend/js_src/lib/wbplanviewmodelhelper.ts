@@ -7,15 +7,14 @@
 
 'use strict';
 
+import { MappingPath, RelationshipType } from './components/wbplanviewmapper';
 import dataModelStorage from './wbplanviewmodel';
 import {
   DataModelField,
-  DataModelFields,
   DataModelNonRelationship,
   DataModelRelationship,
-}                       from './wbplanviewmodelfetcher';
-import { MappingPath, RelationshipType } from './components/wbplanviewmapper';
-import { MappingsTree }                  from './wbplanviewtreehelper';
+} from './wbplanviewmodelfetcher';
+import { MappingsTree } from './wbplanviewtreehelper';
 
 /* fetch fields for a table */
 const getTableFields = (
@@ -25,7 +24,7 @@ const getTableFields = (
   filterIsHidden: boolean | -1 = -1,  // whether field is hidden
 ): [fieldName: string, fieldData: DataModelField][] =>
   Object.entries(
-    dataModelStorage.tables[tableName].fields as DataModelFields,
+    dataModelStorage.tables[tableName].fields ,
   ).filter(([, {
       isRelationship,
       isHidden,

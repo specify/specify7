@@ -7,10 +7,11 @@
 
 'use strict';
 
-import React              from 'react';
-import ReactDOM           from 'react-dom';
-import $                  from 'jquery';
+import $ from 'jquery';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { namedComponent } from '../statemanagement';
+import { R } from './wbplanview';
 
 interface ModalDialogBaseProps {
   readonly children: JSX.Element | JSX.Element[] | string,
@@ -52,7 +53,7 @@ export const ModalDialog = React.memo(namedComponent('ModalDialog', ({
   readonly onLoadCallback?: (dialog: JQuery<HTMLElement>) =>
     void | (() => void),
   readonly onCloseCallback?: () => void
-  readonly properties?: Readonly<Record<string, unknown>>,
+  readonly properties?: Readonly<R<unknown>>,
 }) => {
 
   const dialogRef = React.useRef<HTMLDivElement>(null);

@@ -6,7 +6,9 @@
 
 'use strict';
 
-import React                     from 'react';
+import React from 'react';
+import { namedComponent } from '../statemanagement';
+import { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import {
   CustomSelectElement,
   CustomSelectElementDefaultOptionProps,
@@ -14,14 +16,13 @@ import {
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
   SuggestionBox,
-}                                from './customselectelement';
-import { namedComponent }        from '../statemanagement';
+} from './customselectelement';
+import { R } from './wbplanview';
 import {
   AutomapperSuggestion,
   MappingType,
   SelectElementPosition,
-}                                from './wbplanviewmapper';
-import { DataModelListOfTables } from '../wbplanviewmodelfetcher';
+} from './wbplanviewmapper';
 
 
 export interface HtmlGeneratorFieldData {
@@ -51,7 +52,7 @@ export interface MappingPathProps {
   readonly mappingLineData: MappingElementProps[],
 }
 
-type HtmlGeneratorFieldsData = Readonly<Record<string, HtmlGeneratorFieldData>>
+type HtmlGeneratorFieldsData = Readonly<R<HtmlGeneratorFieldData>>
 
 export type MappingElementProps = (
   Omit<CustomSelectElementPropsOpenBase, 'automapperSuggestions'> & {
@@ -66,7 +67,6 @@ export type MappingElementProps = (
   );
 
 
-/* Generates a list of tables */
 export const ListOfBaseTables = React.memo(namedComponent(
   'ListOfBaseTables',
   ({
@@ -112,7 +112,6 @@ export const ListOfBaseTables = React.memo(namedComponent(
     />),
 );
 
-/* Generates a mapping line */
 export function MappingLine({
   lineData,
   mappingType,
@@ -123,8 +122,8 @@ export function MappingLine({
   handleClearMapping,
   handleStaticHeaderChange,
 }: MappingLineBaseProps & {
-    readonly: boolean,
-  } & (
+  readonly: boolean,
+} & (
   {
     readonly mappingType: Exclude<MappingType, 'newStaticColumn'>,
   } | {
@@ -162,15 +161,14 @@ export function MappingLine({
       }
     </div>
     <div className="wbplanview-mapping-line-elements">
-      <MappingPath
+      <MappingPathComponent
         mappingLineData={lineData}
       />
     </div>
   </div>;
 }
 
-/* Generates a mapping path */
-export function MappingPath(
+export function MappingPathComponent(
   {
     mappingLineData,
   }: MappingPathProps & {openSelectElement?: SelectElementPosition},
@@ -203,10 +201,9 @@ const getFieldGroupName = (isHidden: boolean, isRequired: boolean) =>
   isHidden ? 'hiddenFields' :
     isRequired ? 'requiredFields' : 'optionalFields';
 
-/* Generates a new mapping element */
 export function MappingElement(
   props: MappingElementProps,
-) {
+):JSX.Element {
 
   const fieldGroups = Object.fromEntries(
     Object.keys(
@@ -316,7 +313,7 @@ export function MappingElement(
                   index + 1,
                   {
                     optionLabel:
-                      <MappingPath mappingLineData={
+                      <MappingPathComponent mappingLineData={
                         automapperSuggestion.mappingLineData
                       } />,
                   },

@@ -8,12 +8,14 @@
 
 
 // Determines how persistent bucket's storage would be
+import { R } from './components/wbplanview';
+
 type BucketType =
   'localStorage'  // persistent across sessions
   | 'sessionStorage'  // persistent only during a single session
 
 interface BucketData {
-  records: Record<string, {
+  records: R<{
     useCount: number,  // the amount times a particular cache value was used
     value: unknown,  // the value that is stored in a particular cache record
     // optional string identifying a version of a cache value
@@ -26,7 +28,7 @@ interface BucketData {
 
 
 // the data structure that would store all the buckets
-const buckets: Record<string, BucketData> = {};
+const buckets: R<BucketData> = {};
 // the prefix that would be given to all bucketNames when they are committed
 // to localStorage. Used to avoid collisions
 const cachePrefix = 'specify7-wbplanview-';

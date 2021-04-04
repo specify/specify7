@@ -6,13 +6,13 @@
 
 'use strict';
 
+import { ColumnOptions } from './uploadplantomappingstree';
 import { mappingPathToString } from './wbplanviewmodelhelper';
 import {
   FullMappingPath,
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
-import { ColumnOptions } from './wbplanviewconverter';
 
 
 /*

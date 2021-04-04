@@ -6,9 +6,10 @@
 
 'use strict';
 
-import icons              from '../icons';
-import React              from 'react';
+import React from 'react';
+import icons from '../icons';
 import { namedComponent } from '../statemanagement';
+import { R } from './wbplanview';
 
 
 export type CustomSelectType =
@@ -84,8 +85,7 @@ export interface CustomSelectElementDefaultOptionProps {
   readonly isRelationship?: boolean
 }
 
-export type CustomSelectElementOptions =
-  Record<string, CustomSelectElementOptionProps>
+export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
 
 interface CustomSelectElementOptionGroupProps {
   readonly selectGroupName?: string,  // group's name (used for styling)
@@ -101,7 +101,7 @@ interface CustomSelectElementOptionGroupProps {
 }
 
 type CustomSelectElementOptionGroups =
-  Record<string, CustomSelectElementOptionGroupProps>
+  R<CustomSelectElementOptionGroupProps>
 
 interface CustomSelectElementPropsBase {
   readonly selectLabel?: string,  // the label to use for the element
@@ -246,7 +246,7 @@ function OptionGroup({
         selectGroupName?.replace(
           /[A-Z]/g,
           (letter) =>
-            `-${letter.toLowerCase()}`
+            `-${letter.toLowerCase()}`,
         ) || 'undefined'
       }`
     }>

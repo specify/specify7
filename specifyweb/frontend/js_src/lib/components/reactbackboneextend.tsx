@@ -7,11 +7,12 @@
 
 'use strict';
 
-import Backbone      from '../backbone';
-import React         from 'react';
-import ReactDOM      from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Backbone from '../backbone';
+import app from '../specifyapp.js';
 import ErrorBoundary from './errorboundary';
-import app           from '../specifyapp.js';
+import { R } from './wbplanview';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
   el: HTMLElement,
@@ -42,11 +43,11 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   renderPost?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
   remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
-  Component: (props: COMPONENT_PROPS) => (JSX.Element | null),
+  Component: (props: COMPONENT_PROPS) => JSX.Element,
   getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
   ) => COMPONENT_PROPS
-}): Record<string, unknown> =>
+}): R<unknown> =>
   Backbone.View.extend({
     __name__: moduleName,
     className,

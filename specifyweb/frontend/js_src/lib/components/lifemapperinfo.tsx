@@ -4,6 +4,7 @@ import $ from 'jquery';
 import React from 'react';
 import '../../css/lifemapperinfo.css';
 import * as Leaflet from '../leaflet';
+import { getLocalityDataFromLocalityResource } from '../leafletutils';
 import { reducer } from '../lifemapperinforeducer';
 import {
   extractBadgeInfo,
@@ -217,14 +218,18 @@ function LifemapperInfo({
                 new Promise(resolve =>
                   collectionObject.rget(
                     'collectingevent.locality',
-                  ).done((locality: any) =>
-                    Leaflet.getMarkersFromLocalityResource(
-                      locality,
-                      model.get('id') ===
-                      collectionObject.get('id') ?
-                        'lifemapperCurrentCollectionObjectMarker' :
-                        undefined,
-                    ).then(resolve),
+                  ).done((localityResource: any) =>
+                    getLocalityDataFromLocalityResource(
+                      localityResource,
+                    ).then(localityData=>
+                      Leaflet.displayLocalityOnTheMap({
+                        localityData,
+                        iconClass:
+                          model.get('id') === collectionObject.get('id') ?
+                            'lifemapperCurrentCollectionObjectMarker' :
+                            undefined
+                      }),
+                    ).then(resolve)
                   ),
                 ),
               ),

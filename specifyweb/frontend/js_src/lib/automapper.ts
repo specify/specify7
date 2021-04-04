@@ -11,6 +11,8 @@ import AutoMapperDefinitions, {
   Options,
   TableSynonym,
 }                                   from './automapperdefinitions';
+import { R } from './components/wbplanview';
+import { PathIsMappedBind } from './components/wbplanviewmappercomponents';
 import dataModelStorage             from './wbplanviewmodel';
 import {
   formatReferenceItem,
@@ -33,7 +35,6 @@ import {
   AutomapperScope,
   ListOfHeaders,
   MappingPath,
-  PathIsMappedBind,
   RelationshipType,
 }                                   from './components/wbplanviewmapper';
 
@@ -78,7 +79,7 @@ type AutoMapperConstructorParameters =
   AutoMapperConstructorCheckExistingParameters
   | AutoMapperConstructorDontCheckExistingParameters
 
-export type AutoMapperResults = Record<string, MappingPath[]>
+export type AutoMapperResults = R<MappingPath[]>
 
 interface FindMappingsParameters {
   readonly tableName: string,  // name of current table

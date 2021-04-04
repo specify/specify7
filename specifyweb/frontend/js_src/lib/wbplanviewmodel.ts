@@ -7,6 +7,7 @@
 
 'use strict';
 
+import { R } from './components/wbplanview';
 import {
   DataModelListOfTables,
   DataModelRanks,
@@ -20,7 +21,7 @@ const dataModelStorage: {
   tables: DataModelTables;
   listOfBaseTables: DataModelListOfTables;
   ranks: DataModelRanks;
-  rootRanks: Record<string, string>
+  rootRanks: R<string>
 } = {
 
   // each one of this can be modified to a single symbol or several symbols

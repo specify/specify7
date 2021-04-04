@@ -7,18 +7,19 @@
 
 'use strict';
 
-import schema from './schema';
+import { R } from './components/wbplanview';
+import { RelationshipType } from './components/wbplanviewmapper';
 import domain from './domain';
-
-import { getFriendlyName } from './wbplanviewhelper';
-import * as cache          from './wbplanviewcache';
-import { RelationshipType }  from './components/wbplanviewmapper';
 import {
   Domain as DomainType,
   Schema as SchemaType,
   SchemaModelTableField,
   SchemaModelTableRelationship,
-}                       from './legacytypes';
+} from './legacytypes';
+import schema from './schema';
+import * as cache from './wbplanviewcache';
+
+import { getFriendlyName } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 
 export type DataModelFieldWritable =
@@ -37,12 +38,12 @@ interface DataModelFieldWritablePrimer {
   foreignName?: string,
 }
 
-export interface DataModelNonRelationshipWritable
+interface DataModelNonRelationshipWritable
   extends DataModelFieldWritablePrimer {
   isRelationship: false,
 }
 
-export interface DataModelRelationshipWritable
+interface DataModelRelationshipWritable
   extends DataModelFieldWritablePrimer {
   isRelationship: true,
   tableName: string,
@@ -55,18 +56,18 @@ export type DataModelNonRelationship =
 
 export type DataModelRelationship = Readonly<DataModelRelationshipWritable>
 
-export type DataModelFieldsWritable = Record<string, DataModelFieldWritable>
+type DataModelFieldsWritable = R<DataModelFieldWritable>
 
 export type DataModelFields = Readonly<DataModelFieldsWritable>
 
-export interface DataModelTableWritable {
+interface DataModelTableWritable {
   tableFriendlyName: string,
   fields: DataModelFieldsWritable,
 }
 
-export type DataModelTable = Readonly<DataModelTableWritable>
+type DataModelTable = Readonly<DataModelTableWritable>
 
-export type DataModelTablesWritable = Record<string, DataModelTableWritable>
+type DataModelTablesWritable = R<DataModelTableWritable>
 
 export interface DataModelTables {
   readonly [tableName: string]: DataModelTable,
@@ -76,13 +77,13 @@ type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
 
 interface DataModelRanksWritable {
   // whether rank is required
-  [tableName: string]: Readonly<Record<string, boolean>>
+  [tableName: string]: Readonly<R<boolean>>
 }
 
 export type DataModelRanks = Readonly<DataModelRanksWritable>
 
 // a dictionary like tableName==>tableFriendlyName
-export type DataModelListOfTablesWritable = Record<string, {
+type DataModelListOfTablesWritable = R<{
   tableFriendlyName: string,
   isHidden: boolean,
 }>
@@ -94,9 +95,9 @@ const fetchingParameters: {
   readonly requiredFieldsToHide: Readonly<string[]>,
   readonly tablesToRemove: Readonly<string[]>,
   readonly tableKeywordsToExclude: Readonly<string[]>,
-  readonly requiredFieldsToMakeOptional: Record<string, Readonly<string[]>>
+  readonly requiredFieldsToMakeOptional: R<Readonly<string[]>>
   readonly commonBaseTables: Readonly<string[]>
-  readonly fieldsToRemove: Record<string, Readonly<string[]>>
+  readonly fieldsToRemove: R<Readonly<string[]>>
 } = {
 
   // all required fields are not hidden, except for these, which are made
@@ -190,7 +191,7 @@ const fetchingParameters: {
     ],
     preptype: ['isonloan'],
     token: ['preferredtaxonof'],
-  }
+  },
 
 } as const;
 
@@ -237,7 +238,7 @@ const knownRelationshipTypes: RelationshipType[] = [
   'many-to-one',
   'many-to-many',
 ];
-const aliasRelationshipTypes: Record<string, RelationshipType> = {
+const aliasRelationshipTypes: R<RelationshipType> = {
   'zero-to-one': 'one-to-one',
 };
 
@@ -336,7 +337,7 @@ export default (): Promise<void> =>
       const ranks =
         cacheGet<DataModelRanks>('ranks');
       const rootRanks =
-        cacheGet<Record<string, string>>('rootRanks');
+        cacheGet<R<string>>('rootRanks');
 
       if (
         tables &&
@@ -387,11 +388,11 @@ export default (): Promise<void> =>
         fieldName = fieldName.toLowerCase();
 
         // remove frontend-only fields (from schemaextras.js)
-        if(
+        if (
           typeof fetchingParameters.fieldsToRemove[
-            tableName] !== "undefined" &&
+            tableName] !== 'undefined' &&
           fetchingParameters.fieldsToRemove[tableName].indexOf(
-            fieldName
+            fieldName,
           ) !== -1
         )
           return;
@@ -517,7 +518,7 @@ export default (): Promise<void> =>
 
     Promise.all(fetchRanksQueue).then(resolved => {
 
-      const rootRanks: Record<string, string> = Object.fromEntries(
+      const rootRanks: R<string> = Object.fromEntries(
         resolved.map(([tableName], index) =>
           [tableName, resolved[index][1].shift()?.[0] || '']),
       );
@@ -551,7 +552,7 @@ export default (): Promise<void> =>
       dataModelStorage.ranks =
         cacheSet<DataModelRanks>('ranks', ranks);
       dataModelStorage.rootRanks =
-        cacheSet<Record<string, string>>(
+        cacheSet<R<string>>(
           'rootRanks',
           rootRanks,
         );
