@@ -7,7 +7,9 @@
 
 import { R } from './components/wbplanview';
 import latlongutils from './latlongutils';
-import { localityFieldsToGet } from './leafletconfig';
+import {
+  localityColumnsToSearchFor,
+} from './leafletconfig';
 
 interface BareLocalityData {
   latitude1: number,
@@ -35,7 +37,7 @@ export type LocalityData = BareLocalityData &
   NamedLocality &
   LocalityWithAccuracy;
 
-type LocalityField = keyof (
+export type LocalityField = keyof (
   BareLocalityData
   & ComplexLocalityCoordinate
   & NamedLocality
@@ -132,16 +134,6 @@ export function getLocalityCoordinate(
 
 }
 
-export const localityColumnsToSearchFor:Readonly<LocalityField[]> = [
-  'localityname',
-  'latitude1',
-  'longitude1',
-  'latitude2',
-  'longitude2',
-  'latlongtype',
-  'latlongaccuracy',
-] as const;
-
 // if there are multiple localities present in a row, check which
 // group this field belongs too
 export const getLocalityColumnsFromSelectedCell = (
@@ -179,7 +171,7 @@ export const getLocalityDataFromLocalityResource = (
 ):Promise<LocalityData>=>
   new Promise(resolve =>
     Promise.all(
-      localityFieldsToGet.map(fieldName =>
+      localityColumnsToSearchFor.map(fieldName =>
         new Promise(resolve =>
           localityResource.rget(fieldName).done((fieldValue:any) =>
             resolve([fieldName, fieldValue]),

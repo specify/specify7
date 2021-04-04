@@ -1,8 +1,9 @@
 const $ = require('jquery');
 const Leaflet = require('./leaflet.ts');
+const LeafletConfig = require('./leafletconfig.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
-const WbPlanViewConverter = require('./wbplanviewconverter.ts');
+const UploadPlanToMappingsTree = require('./uploadplantomappingstree.ts');
 const WbPlanViewTreeHelper = require('./wbplanviewtreehelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
@@ -15,7 +16,7 @@ module.exports = Backbone.View.extend({
     'click .wb-cell-navigation': 'navigateCells',
     'click .wb-search-button': 'searchCells',
     'click .wb-replace-button': 'replaceCells',
-    'click .wb-show-toolbelt': 'toggleToolbelt',
+    'click .wb-show-toolkit': 'toggleToolkit',
     'click .wb-geolocate': 'showGeoLocate',
     'click .wb-leafletmap': 'showLeafletMap',
     'click .wb-convert-coordinates': 'showCoordinateConversion'
@@ -158,14 +159,14 @@ module.exports = Backbone.View.extend({
 
     this.wbview.hot.setDataAtCell(cellUpdates);
   },
-  toggleToolbelt(e) {
+  toggleToolkit(e) {
     const button = e.target;
     const container = button.closest('.wb-header');
-    const toolbelt = container.getElementsByClassName('wb-toolbelt')[0];
-    if (toolbelt.style.display === 'none')
-      toolbelt.style.display = '';
+    const toolkit = container.getElementsByClassName('wb-toolkit')[0];
+    if (toolkit.style.display === 'none')
+      toolkit.style.display = '';
     else
-      toolbelt.style.display = 'none';
+      toolkit.style.display = 'none';
   },
   fillCells({startRow, endRow, col, value}) {
     this.wbview.hot.setDataAtCell(
@@ -232,7 +233,7 @@ module.exports = Backbone.View.extend({
     if(this.wbview.dataset.uploadplan === null)
       return;
 
-    const {mappingsTree} = WbPlanViewConverter.uploadPlanToMappingsTree(
+    const {mappingsTree} = UploadPlanToMappingsTree.uploadPlanToMappingsTree(
       this.wbview.dataset.columns,
       this.wbview.dataset.uploadplan,
     );
@@ -250,7 +251,7 @@ module.exports = Backbone.View.extend({
       arrayOfMappings.reduce((result, [mappingPath, _, headerName]) => {
 
       if (
-        Leaflet.localityColumnsToSearchFor.indexOf(
+        LeafletConfig.localityColumnsToSearchFor.indexOf(
           mappingPath[mappingPath.length - 1]
         ) !== -1
       )

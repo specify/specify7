@@ -6,6 +6,7 @@
 
 import L from 'leaflet';
 import { R } from './components/wbplanview';
+import { LocalityField } from './leafletutils';
 
 export const leafletTileServers: Record<'baseMaps' | 'overlays',
   R<L.TileLayer>> = {
@@ -176,7 +177,7 @@ export const coMapTileServers: {
   },
 ];
 
-export const localityFieldsToGet = [
+export const localityColumnsToSearchFor:Readonly<LocalityField[]> = [
   'localityname',
   'latitude1',
   'longitude1',
@@ -184,4 +185,4 @@ export const localityFieldsToGet = [
   'longitude2',
   'latlongtype',
   'latlongaccuracy',
-];
+] as const;
