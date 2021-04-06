@@ -30,7 +30,7 @@ import {
 
 
 /* Scope is used to differentiate between mapper definitions that should
-* be used by the automapper and suggestion boxes*/
+* be used by the automapper and suggestion boxes */
 export type AutomapperScope =
   'automapper'  // used when selecting a base table
   | 'suggestion';  // suggestion boxes - used when opening a picklist

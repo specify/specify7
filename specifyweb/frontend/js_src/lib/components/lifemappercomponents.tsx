@@ -149,7 +149,8 @@ export function LifemapperMap({
 
 
     return () => {
-      //TODO: finish this
+      map.off();
+      map.remove();
     };
 
   }, [mapRef]);
