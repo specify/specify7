@@ -239,7 +239,7 @@ const MAX_SUGGESTIONS_COUNT = 3;
 * The automapper suggestions are shown only if the current box doesn't have
 * a value selected
 * */
-export const getAutomapperSuggestions = ({
+export async function getAutomapperSuggestions({
   lines,
   line,
   index,
@@ -247,84 +247,81 @@ export const getAutomapperSuggestions = ({
 }: SelectElementPosition & {
   readonly lines: MappingLine[],
   readonly baseTableName: string,
-}): Promise<AutomapperSuggestion[]> =>
-  new Promise((resolve) => {
+}): Promise<AutomapperSuggestion[]> {
+  const localMappingPath = [...lines[line].mappingPath];
 
-    const localMappingPath = [...lines[line].mappingPath];
+  if (  // don't show suggestions
+    (  // if opened picklist has a value selected
+      localMappingPath.length - 1 !== index ||
+      mappingPathIsComplete(localMappingPath)
+    ) ||  // or if header is a new column / new static column
+    lines[line].type !== 'existingHeader'
+  )
+    return [];
 
-    if (  // don't show suggestions
-      (  // if opened picklist has a value selected
-        localMappingPath.length - 1 !== index ||
-        mappingPathIsComplete(localMappingPath)
-      ) ||  // or if header is a new column / new static column
-      lines[line].type !== 'existingHeader'
-    )
-      return resolve([]);
-
-    const mappingLineData = getMappingLineData({
-      baseTableName,
-      mappingPath: mappingPathIsComplete(localMappingPath) ?
-        localMappingPath :
-        localMappingPath.slice(0, localMappingPath.length - 1),
-      iterate: false,
-      customSelectType: 'SUGGESTION_LIST',
-      getMappedFields: getMappedFields.bind(null, lines),
-    });
-
-    // don't show suggestions if picklist has only one field / no fields
-    if (
-      mappingLineData.length === 1 &&
-      Object.keys(mappingLineData[0].fieldsData).length < 2
-    )
-      return resolve([]);
-
-    const baseMappingPath = localMappingPath.slice(0, -1);
-
-    let pathOffset = 0;
-    if (
-      mappingLineData.length === 1 &&
-      mappingLineData[0].customSelectSubtype === 'toMany'
-    ) {
-      baseMappingPath.push('#1');
-      pathOffset = 1;
-    }
-
-    const allAutomapperResults = Object.entries((
-      new automapper({
-        headers: [lines[line].name],
-        baseTable: baseTableName,
-        startingTable: mappingLineData.length === 0 ?
-          baseTableName :
-          mappingLineData[mappingLineData.length - 1].tableName,
-        path: baseMappingPath,
-        pathOffset,
-        allowMultipleMappings: true,
-        checkForExistingMappings: true,
-        scope: 'suggestion',
-        pathIsMapped: pathIsMapped.bind(null, lines),
-      })
-    ).map({
-      commitToCache: false,
-    }));
-
-    if (allAutomapperResults.length === 0)
-      return resolve([]);
-
-    let automapperResults = allAutomapperResults[0][1];
-
-    if (automapperResults.length > MAX_SUGGESTIONS_COUNT)
-      automapperResults = automapperResults.slice(0, 3);
-
-    resolve(automapperResults.map(automapperResult => (
-      {
-        mappingPath: automapperResult,
-        mappingLineData: getMappingLineData({
-          baseTableName,
-          mappingPath: automapperResult,
-          customSelectType: 'SUGGESTION_LINE_LIST',
-          getMappedFields: getMappedFields.bind(null, lines),
-        }).slice(baseMappingPath.length - pathOffset),
-      }
-    )));
-
+  const mappingLineData = getMappingLineData({
+    baseTableName,
+    mappingPath: mappingPathIsComplete(localMappingPath) ?
+      localMappingPath :
+      localMappingPath.slice(0, localMappingPath.length - 1),
+    iterate: false,
+    customSelectType: 'SUGGESTION_LIST',
+    getMappedFields: getMappedFields.bind(null, lines),
   });
+
+  // don't show suggestions if picklist has only one field / no fields
+  if (
+    mappingLineData.length === 1 &&
+    Object.keys(mappingLineData[0].fieldsData).length < 2
+  )
+    return [];
+
+  const baseMappingPath = localMappingPath.slice(0, -1);
+
+  let pathOffset = 0;
+  if (
+    mappingLineData.length === 1 &&
+    mappingLineData[0].customSelectSubtype === 'toMany'
+  ) {
+    baseMappingPath.push('#1');
+    pathOffset = 1;
+  }
+
+  const allAutomapperResults = Object.entries((
+    new automapper({
+      headers: [lines[line].name],
+      baseTable: baseTableName,
+      startingTable: mappingLineData.length === 0 ?
+        baseTableName :
+        mappingLineData[mappingLineData.length - 1].tableName,
+      path: baseMappingPath,
+      pathOffset,
+      allowMultipleMappings: true,
+      checkForExistingMappings: true,
+      scope: 'suggestion',
+      pathIsMapped: pathIsMapped.bind(null, lines),
+    })
+  ).map({
+    commitToCache: false,
+  }));
+
+  if (allAutomapperResults.length === 0)
+    return [];
+
+  let automapperResults = allAutomapperResults[0][1];
+
+  if (automapperResults.length > MAX_SUGGESTIONS_COUNT)
+    automapperResults = automapperResults.slice(0, 3);
+
+  return automapperResults.map(automapperResult => (
+    {
+      mappingPath: automapperResult,
+      mappingLineData: getMappingLineData({
+        baseTableName,
+        mappingPath: automapperResult,
+        customSelectType: 'SUGGESTION_LINE_LIST',
+        getMappedFields: getMappedFields.bind(null, lines),
+      }).slice(baseMappingPath.length - pathOffset),
+    }
+  ));
+}
