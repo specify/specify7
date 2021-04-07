@@ -340,14 +340,15 @@ def create_tag(path):
     return path_parts[0] if len(path_parts) > 0 else '/'
 
 def get_tags(endpoints):
+    tag_names = sorted(set([
+        endpoint['get']['tags'][0] for endpoint in endpoints.values()
+    ]))
+
     return [
         dict(
             name=tag_name,
             description='TBD'
-        ),
-        sorted(set([
-            endpoint['get']['tags'][0] for endpoint in endpoints.values()
-        ]))
+        ) for tag_name in tag_names
     ]
 
 def get_endpoints(patterns, prefix="/", preparams=[]):
