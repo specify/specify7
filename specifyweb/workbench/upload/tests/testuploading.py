@@ -4,20 +4,303 @@ import csv
 from unittest import skip
 from datetime import datetime
 from decimal import Decimal
+from jsonschema import validate # type: ignore
 
 from specifyweb.specify.tree_extras import validate_tree_numbering
 from specifyweb.specify import auditcodes
 
 from ..uploadable import Exclude
-from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, FailedBusinessRule, ReportInfo, TreeInfo
+from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, NoMatch, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..tomany import ToManyRecord
-from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults, TreeMatchResult
+from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
 from ..upload import do_upload, do_upload_csv
 from ..parsing import filter_and_upload
-from ..upload_plan_schema import parse_column_options
+from ..upload_plan_schema import schema, parse_plan, parse_column_options
 
 from .base import UploadTestsBase, get_table
+
+class TreeMatchingTests(UploadTestsBase):
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.earth = get_table('Geography').objects.create(
+            name="Earth",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="Planet"),
+            definition=self.geographytreedef,
+        )
+
+        self.na = get_table('Geography').objects.create(
+            name="North America",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="Continent"),
+            definition=self.geographytreedef,
+            parent=self.earth,
+        )
+
+        self.usa = get_table('Geography').objects.create(
+            name="USA",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="Country"),
+            definition=self.geographytreedef,
+            parent=self.na,
+        )
+
+        self.kansas = get_table('Geography').objects.create(
+            name="Kansas",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
+            definition=self.geographytreedef,
+            parent=self.usa,
+        )
+
+        self.mo = get_table('Geography').objects.create(
+            name="Missouri",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
+            definition=self.geographytreedef,
+            parent=self.usa,
+        )
+
+        self.ohio = get_table('Geography').objects.create(
+            name="Ohio",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
+            definition=self.geographytreedef,
+            parent=self.usa,
+        )
+
+        self.ill = get_table('Geography').objects.create(
+            name="Illinois",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
+            definition=self.geographytreedef,
+            parent=self.usa,
+        )
+
+        self.doug = get_table('Geography').objects.create(
+            name="Douglas",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
+            definition=self.geographytreedef,
+            parent=self.kansas,
+        )
+
+        self.greene = get_table('Geography').objects.create(
+            name="Greene",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
+            definition=self.geographytreedef,
+            parent=self.mo,
+        )
+
+        self.greeneoh = get_table('Geography').objects.create(
+            name="Greene",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
+            definition=self.geographytreedef,
+            parent=self.ohio,
+        )
+
+        self.sangomon = get_table('Geography').objects.create(
+            name="Sangamon",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
+            definition=self.geographytreedef,
+            parent=self.ill,
+        )
+
+        self.springmo = get_table('Geography').objects.create(
+            name="Springfield",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="City"),
+            definition=self.geographytreedef,
+            parent=self.greene,
+        )
+
+        self.springill = get_table('Geography').objects.create(
+            name="Springfield",
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="City"),
+            definition=self.geographytreedef,
+            parent=self.sangomon,
+        )
+
+    def test_enforced_state(self) -> None:
+        state = get_table('Geographytreedefitem').objects.get(name="State")
+        state.isenforced = True
+        state.save()
+
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'County': 'County',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'County': 'Johnson', 'City': 'Olathe'},
+            {'County': 'Johnson', 'City': 'Olathe'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched)
+        self.assertEqual(results[0].get_id(), results[1].get_id())
+        for r in results:
+            uploaded_state = get_table('Geography').objects.get(id=r.get_id()).parent.parent
+            self.assertEqual(state.id, uploaded_state.definitionitem.id)
+            self.assertEqual('Uploaded', uploaded_state.name)
+
+    def test_enforced_county(self) -> None:
+        state = get_table('Geographytreedefitem').objects.get(name="State")
+        co = get_table('Geographytreedefitem').objects.get(name="County")
+        co.isenforced = True
+        co.save()
+
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'State': 'State',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'State': 'Texas', 'City': 'Austin'},
+            {'State': 'Missouri', 'City': 'Columbia'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        for r in results:
+            uploaded_co = get_table('Geography').objects.get(id=r.get_id()).parent
+            self.assertEqual(co.id, uploaded_co.definitionitem.id)
+            self.assertEqual('Uploaded', uploaded_co.name)
+
+            uploaded_state = get_table('Geography').objects.get(id=r.get_id()).parent.parent
+            self.assertEqual(state.id, uploaded_state.definitionitem.id)
+
+
+    def test_match_skip_level(self) -> None:
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'State': 'State',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'State': 'Missouri', 'City': 'Springfield'},
+            {'State': 'Illinois', 'City': 'Springfield'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        for r in results:
+            self.assertIsInstance(r.record_result, Matched)
+        self.assertEqual(self.springmo.id, results[0].record_result.get_id())
+        self.assertEqual(self.springill.id, results[1].record_result.get_id())
+
+    def test_match_multiple(self) -> None:
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'City': 'Springfield'},
+            {'City': 'Springfield'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        for r in results:
+            assert isinstance(r.record_result, MatchedMultiple)
+            self.assertEqual(set([self.springmo.id, self.springill.id]), set(r.record_result.ids))
+
+    def test_match_higher(self) -> None:
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'State': 'State',
+                    'County': 'County',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'State': 'Missouri', 'County': 'Greene', 'City': 'Springfield'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        for r in results:
+            assert isinstance(r.record_result, Matched)
+            self.assertEqual(self.springmo.id, r.record_result.id)
+
+    def test_match_uploaded(self) -> None:
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'County': 'County',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'County': 'Johnson', 'City': 'Olathe'},
+            {'County': 'Johnson', 'City': 'Olathe'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Matched)
+        self.assertEqual(results[0].get_id(), results[1].get_id())
+        self.assertEqual(1, get_table('Geography').objects.filter(name='Uploaded').count())
+
+    def test_match_uploaded_just_enforced(self) -> None:
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'County': 'County',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'County': 'Johnson', 'City': 'Olathe'},
+            {'County': 'Shawnee', 'City': 'Topeka'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertEqual(1, get_table('Geography').objects.filter(name='Uploaded').count())
+
+    def test_upload_partial_match(self) -> None:
+        plan_json = dict(
+            baseTableName = 'Geography',
+            uploadable = { 'treeRecord': dict(
+                ranks = {
+                    'State': 'State',
+                    'County': 'County',
+                    'City': 'City',
+                }
+            )}
+        )
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'State': 'Missouri', 'County': 'Greene', 'City': 'Rogersville'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertEqual(self.greene.id, get_table('Geography').objects.get(id=results[0].get_id()).parent_id)
 
 class OneToOneAttributeTests(UploadTestsBase):
 
@@ -412,8 +695,7 @@ class UploadTests(UploadTestsBase):
 
         self.assertEqual(excludes, [])
 
-
-    def test_1(self) -> None:
+    def test_big(self) -> None:
         reader = csv.DictReader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
@@ -592,17 +874,17 @@ class UploadTests(UploadTestsBase):
         row = next(reader)
         bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
-        to_upload, matched = bt._match()
+        to_upload, matched = bt._match(bt._to_match())
 
         self.assertEqual(to_upload, [
-            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")]),
-            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="State"), [filter_and_upload({'name': "FLORIDA"}, "State/Prov/Pref")]),
-            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Country"), [filter_and_upload({'name': "USA"}, "Country")]),
+            # TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Planet"), [filter_and_upload({'name': "Uploaded"}, "")]),
             TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Continent"), [filter_and_upload({'name': "North America"}, "Continent/Ocean")]),
-            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Planet"), [filter_and_upload({'name': "Uploaded"}, "")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="Country"), [filter_and_upload({'name': "USA"}, "Country")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="State"), [filter_and_upload({'name': "FLORIDA"}, "State/Prov/Pref")]),
+            TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")]),
         ])
 
-        self.assertEqual(matched, None)
+        self.assertIsInstance(matched, NoMatch)
 
         planet = get_table('Geography').objects.create(
             name="Uploaded",
@@ -641,15 +923,14 @@ class UploadTests(UploadTestsBase):
 
         bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
-        to_upload, matched = bt._match()
+        to_upload, matched = bt._match(bt._to_match())
         self.assertEqual(
             to_upload,
             [TreeDefItemWithParseResults(get_table('Geographytreedefitem').objects.get(name="County"), [filter_and_upload({'name': "Hendry Co."}, "Region")])]
         )
-        assert matched is not None
-        self.assertEqual('State', matched['rank'])
-        self.assertEqual([(state.id, 'Florida')], matched['matches'])
-        self.assertEqual(['State/Prov/Pref', 'Country', 'Continent/Ocean'], matched['columns'])
+        assert isinstance(matched, Matched)
+        self.assertEqual(state.id, matched.id)
+        self.assertEqual(set(['State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
         bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
@@ -663,17 +944,16 @@ class UploadTests(UploadTestsBase):
 
         bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
-        to_upload, matched = bt._match()
+        to_upload, matched = bt._match(bt._to_match())
         self.assertEqual([], to_upload)
-        assert matched is not None
-        self.assertEqual([(uploaded.id, 'Hendry Co.')], matched['matches'])
-        self.assertEqual('County', matched['rank'])
-        self.assertEqual(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean'], matched['columns'])
+        assert isinstance(matched, Matched)
+        self.assertEqual(uploaded.id, matched.id)
+        self.assertEqual(set(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
         bt = tree_record.bind(self.collection, row, None)
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
-        expected_info = ReportInfo(tableName='Geography', columns=['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean'], treeInfo=TreeInfo('County', 'Hendry Co.'))
+        expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region',], treeInfo=TreeInfo('County', 'Hendry Co.'))
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 
 

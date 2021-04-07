@@ -10,7 +10,7 @@ from decimal import Decimal
 from ..uploadable import Exclude
 from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
-from ..treerecord import TreeRecord, TreeDefItemWithParseResults, TreeMatchResult
+from ..treerecord import TreeRecord, TreeDefItemWithParseResults
 from ..upload import do_upload_csv
 from ..upload_plan_schema import parse_plan
 

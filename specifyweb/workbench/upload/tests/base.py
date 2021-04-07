@@ -18,6 +18,7 @@ class UploadTestsBase(ApiTests):
         self.geographytreedef.treedefitems.create(name='Country', rankid=200)
         self.geographytreedef.treedefitems.create(name='State', rankid=300)
         self.geographytreedef.treedefitems.create(name='County', rankid=400)
+        self.geographytreedef.treedefitems.create(name='City', rankid=500)
 
 
         self.taxontreedef = get_table('Taxontreedef').objects.create(name="Test Taxonomy")
