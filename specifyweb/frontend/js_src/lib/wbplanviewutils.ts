@@ -187,7 +187,6 @@ export function mutateMappingPath({
   line,
   index,
   value,
-  isRelationship,
   currentTableName,
   newTableName,
 }: Omit<ChangeSelectElementValueAction, 'type'> & {
@@ -220,11 +219,6 @@ export function mutateMappingPath({
     mappingPath = [...mappingPath.slice(0, index), value];
   else
     mappingPath[index] = value;
-
-  if ((
-    changeMappingPath || isRelationship
-  ) && mappingPath.length - 1 === index)
-    return [...mappingPath, '0'];
 
   return mappingPath;
 
