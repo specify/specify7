@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-
 import Papa from 'papaparse';
+import React, { Component } from 'react';
 
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
@@ -453,12 +452,14 @@ function Preview(props: {data: string[][], hasHeader: boolean}) {
 	const headerCells = header.map((cell, i) => <th key={i}>{cell}</th>);
 	const dataRows = rows.map((row, i) => <tr key={i}>{row.map((cell, i) => <td key={i}>{cell}</td>)}</tr>);
 
-	return <table>
-		<thead>
-		<tr className="header">{headerCells}</tr>
-		</thead>
-		<tbody>{dataRows}</tbody>
-	</table>;
+	return <div className="preview-table-wrapper">
+		<table>
+			<thead>
+				<tr className="header">{headerCells}</tr>
+			</thead>
+			<tbody>{dataRows}</tbody>
+		</table>
+	</div>;
 }
 
 function ChooseName(props: {name: string, update: HandleAction}) {

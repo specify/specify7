@@ -4,6 +4,10 @@
     width: 100%
 }
 
+.workbench-import-view .preview-table-wrapper {
+    overflow: auto;
+}
+
 .workbench-import-view table {
     background-color: #fff;
 }
