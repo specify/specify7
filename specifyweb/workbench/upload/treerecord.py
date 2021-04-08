@@ -247,10 +247,6 @@ class BoundTreeRecord(NamedTuple):
             else:
                 to_upload = with_enforced
 
-        def to_db_col(field: str) -> str:
-            field, col = model._meta.get_field(field).get_attname_column()
-            return col
-
         for tdiwpr in to_upload:
             obj = model(
                 createdbyagent_id=self.uploadingAgentId,
@@ -258,7 +254,7 @@ class BoundTreeRecord(NamedTuple):
                 rankid=tdiwpr.treedefitem.rankid,
                 definition_id=self.treedefid,
                 parent_id=(parent and parent.id),
-                **{to_db_col(c): v for r in tdiwpr.results for c, v in r.upload.items()},
+                **{c: v for r in tdiwpr.results for c, v in r.upload.items()},
             )
             obj.save(skip_tree_extras=True)
             auditlog.insert(obj, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
