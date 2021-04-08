@@ -255,9 +255,13 @@ const WBView = Backbone.View.extend({
 
                 headerId = parseInt(headerId);
 
+                const src = this.mappedHeaders[headerId];
+
+                if(typeof src !== 'string')
+                    return;
+
                 const img = document.createElement('img');
                 img.classList.add('wb-header-icon');
-                const src = this.mappedHeaders[headerId];
                 img.setAttribute('src', src);
                 img.setAttribute(
                     'alt',
