@@ -15,7 +15,7 @@ from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .uploadable import Row, FilterPack
-from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, ReportInfo, TreeInfo
+from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, TreeInfo
 from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
 from .column_options import ColumnOptions
 
@@ -242,7 +242,11 @@ class BoundTreeRecord(NamedTuple):
                 # dummy values were added above the nodes we want to upload
                 # rerun the match in case those dummy values already exist
                 unmatched, new_match_result = self._match(with_enforced)
-                assert not isinstance(new_match_result, MatchedMultiple), "There are multiple 'Uploaded' placeholder values in the tree!"
+                if isinstance(new_match_result, MatchedMultiple):
+                    return UploadResult(
+                        FailedBusinessRule("There are multiple 'Uploaded' placeholder values in the tree!", new_match_result.info),
+                        {}, {}
+                    )
                 return self._upload(unmatched, new_match_result, False)
             else:
                 to_upload = with_enforced
