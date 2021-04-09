@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const Leaflet = require('./leaflet.ts');
+const LeafletUtils = require('./leafletutils.ts');
 const LeafletConfig = require('./leafletconfig.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
@@ -391,7 +392,7 @@ module.exports = Backbone.View.extend({
     }
     else {
 
-      const pointDataDict = Leaflet.getLocalityCoordinate(
+      const pointDataDict = LeafletUtils.getLocalityCoordinate(
         getDataAtRow(selectedRow),
         currentLocalityColumns
       );
@@ -453,7 +454,7 @@ module.exports = Backbone.View.extend({
     function updateGeolocateUrl() {
 
       currentLocalityColumns =
-        Leaflet.getLocalityColumnsFromSelectedCell(
+        LeafletUtils.getLocalityColumnsFromSelectedCell(
           $this.localityColumns,
           finalSelectedCells[currentCellIndex][1],
         );
@@ -576,7 +577,7 @@ module.exports = Backbone.View.extend({
     if ($('#leaflet-map').length !== 0)
       return;
 
-    const localityPoints = Leaflet.getLocalitiesDataFromSpreadsheet(
+    const localityPoints = LeafletUtils.getLocalitiesDataFromSpreadsheet(
       this.localityColumns,
       this.wbview.dataset.rows,
     );
