@@ -18,6 +18,7 @@ import {
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
 import { findDuplicateMappings } from './wbplanviewhelper';
+import dataModelStorage from './wbplanviewmodel';
 import {
   formatReferenceItem,
   getMaxToManyValue,
@@ -181,6 +182,13 @@ export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
   mappingPath[mappingPath.length - 1] !== '0';
 
 
+/*
+* The most important function in `wbplanview`
+* It decides how to modify the mapping path when a different picklist
+* item is selected.
+* It is also responsible for deciding when to spawn a new box to the right
+* of the current one
+* */
 export function mutateMappingPath({
   lines,
   mappingView,
@@ -197,17 +205,34 @@ export function mutateMappingPath({
   readonly newTableName: string,
 }): MappingPath {
 
+  // get mapping path from selected line or mapping view
   let mappingPath = [...(
     line === 'mappingView' ?
       mappingView :
       lines[line].mappingPath
   )];
 
-  const changeMappingPath =
-    !valueIsReferenceItem(value) &&
-    !valueIsTreeRank(value) &&
-    currentTableName !== newTableName;
+  // get relationship type from current picklist to the next one both for
+  // current value and next value
+  const currentRelationshipType =
+    dataModelStorage.tables[currentTableName]?.fields[
+      mappingPath[index+1] || ''
+    ]?.type || '';
+  const newRelationshipType =
+    dataModelStorage.tables[newTableName]?.fields[value]?.type || '';
 
+  // don't reset the boxes to the right of the current box if relationship
+  // type is the same (or non existent in both cases) and the new box is a
+  // -to-many index, a tree rank or a different relationship to the same table
+  const preserveMappingPathToRight =
+    currentRelationshipType === newRelationshipType && (
+      valueIsReferenceItem(value) ||
+      valueIsTreeRank(value) ||
+      currentTableName === newTableName
+    );
+
+  // when `Add` is selected in the list of -to-many indexes, replace it by
+  // creating a new -to-many index
   if (value === 'add') {
     const mappedFields = Object.keys(
       getMappedFields(lines, mappingPath.slice(0, index)),
@@ -215,10 +240,10 @@ export function mutateMappingPath({
     const maxToManyValue = getMaxToManyValue(mappedFields);
     mappingPath[index] = formatReferenceItem(maxToManyValue + 1);
   }
-  else if (changeMappingPath)
-    mappingPath = [...mappingPath.slice(0, index), value];
-  else
+  else if (preserveMappingPathToRight)
     mappingPath[index] = value;
+  else  // clear mapping path to the right of current box
+    mappingPath = [...mappingPath.slice(0, index), value];
 
   return mappingPath;
 
