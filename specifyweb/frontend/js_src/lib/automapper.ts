@@ -872,8 +872,6 @@ export default class Automapper {
         level: newDepthLevel,
       });
 
-      const {foreignName} = relationshipData;
-
       let currentMappingPathPart = path[path.length - 1];
       if (
         valueIsReferenceItem(currentMappingPathPart) ||
@@ -893,7 +891,7 @@ export default class Automapper {
           isCircularRelationship({  // skip circular relationships
             targetTableName: relationshipData.tableName,
             parentTableName,
-            foreignName,
+            foreignName: relationshipData.foreignName,
             relationshipKey,
             currentMappingPathPart,
             tableName,

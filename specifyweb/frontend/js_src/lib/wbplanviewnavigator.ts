@@ -670,7 +670,7 @@ export function getMappingLineData({
               relationshipKey: fieldName,
               currentMappingPathPart:
               internalState.currentMappingPathPart,
-              tableName: parentTableName,
+              tableName,
             })
           ) &&
           // skip -to-many inside -to-many

@@ -176,7 +176,7 @@ export function showRequiredMissingFields(
   // information about now mapped fields
   mappingsTree?: MappingsTree,
   // used internally in a recursion. Previous table name
-  previousTableName = '',
+  parentTableName = '',
   // used internally in a recursion. Current mapping path
   path: MappingPath = [],
   // used internally in a recursion. Save results
@@ -198,7 +198,7 @@ export function showRequiredMissingFields(
         showRequiredMissingFields(
           tableName,
           mappingsTree[mappedFieldName] as MappingsTree,
-          previousTableName,
+          parentTableName,
           localPath,
           results,
         );
@@ -225,7 +225,7 @@ export function showRequiredMissingFields(
           showRequiredMissingFields(
             tableName,
             mappingsTree[complimentedRankName] as MappingsTree,
-            previousTableName,
+            parentTableName,
             localPath,
             results,
           );
@@ -250,7 +250,7 @@ export function showRequiredMissingFields(
     if (fieldData.isRelationship) {
 
 
-      if (previousTableName !== '') {
+      if (parentTableName !== '') {
 
         let previousRelationshipName = localPath.slice(-2)[0];
         if (
@@ -260,14 +260,26 @@ export function showRequiredMissingFields(
           previousRelationshipName = localPath.slice(-3)[0];
 
         const parentRelationshipData =
-          dataModelStorage.tables[previousTableName].fields[
+          dataModelStorage.tables[parentTableName].fields[
             previousRelationshipName] as DataModelRelationship;
 
+        let currentMappingPathPart = localPath[path.length - 1];
         if (
-          (  // disable circular relationships
-            fieldData.foreignName === previousRelationshipName &&
-            fieldData.tableName === previousTableName
-          ) ||
+          valueIsReferenceItem(currentMappingPathPart) ||
+          valueIsTreeRank(currentMappingPathPart)
+        )
+          currentMappingPathPart = localPath[path.length - 2];
+
+        if (
+          // disable circular relationships
+          isCircularRelationship({
+            targetTableName: fieldData.tableName,
+            parentTableName,
+            foreignName: fieldData.foreignName,
+            relationshipKey: fieldName,
+            currentMappingPathPart,
+            tableName,
+          }) ||
           (  // skip -to-many inside -to-many
             relationshipIsToMany(parentRelationshipData.type) &&
             relationshipIsToMany(fieldData.type)
@@ -299,6 +311,19 @@ export function showRequiredMissingFields(
 }
 
 
+export const isCircularRelationshipBackwards = ({
+  parentTableName,
+  foreignName,
+  relationshipKey,
+}: {
+  parentTableName?: string,
+  foreignName?: string,
+  relationshipKey?: string,
+}): boolean =>
+  dataModelStorage.tables[parentTableName || '']?.
+    fields[foreignName || '']?.
+    foreignName === relationshipKey || false;
+
 export const isCircularRelationshipForwards = ({
   tableName,
   relationshipKey,
@@ -311,19 +336,6 @@ export const isCircularRelationshipForwards = ({
   dataModelStorage.tables[tableName || '']?.
     fields[relationshipKey || '']?.
     foreignName === currentMappingPathPart || false;
-
-export const isCircularRelationshipBackwards = ({
-  foreignName,
-  parentTableName,
-  relationshipKey,
-}: {
-  foreignName?: string,
-  parentTableName?: string,
-  relationshipKey?: string,
-}): boolean =>
-  dataModelStorage.tables[parentTableName || '']?.
-    fields[foreignName || '']?.
-    foreignName === relationshipKey || false;
 
 export const isCircularRelationship = ({
   targetTableName,

@@ -289,7 +289,7 @@ const ShadowListOfOptions = React.memo(namedComponent(
     }</span>),
 );
 
-const NON_INTRACTABLE_SELECT_TYPES: Readonly<CustomSelectType[]> = [
+const NON_INTERACTIVE_SELECT_TYPES: Readonly<CustomSelectType[]> = [
   'PREVIEW_LIST',
   'SUGGESTION_LINE_LIST',
 ] as const;
@@ -327,7 +327,7 @@ export function CustomSelectElement(
 
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable = NON_INTRACTABLE_SELECT_TYPES.indexOf(
+  const optionIsIntractable = NON_INTERACTIVE_SELECT_TYPES.indexOf(
     customSelectType,
   ) === -1;
 
