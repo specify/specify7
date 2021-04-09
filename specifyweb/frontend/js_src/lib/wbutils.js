@@ -60,11 +60,11 @@ module.exports = Backbone.View.extend({
 
     const cellIsType = (info) => {
       switch (type) {
-        case 'invalid-cells':
+        case 'invalidCells':
           return info.issues.length > 0;
-        case 'new-cells':
+        case 'newCells':
           return info.isNew;
-        case 'search-results':
+        case 'searchResults':
           return info.matchesSearch;
         default:
           return false;
@@ -73,17 +73,19 @@ module.exports = Backbone.View.extend({
 
     let newPosition = currentPosition;
     let found = false;
-    for (;
+    for(;
       newPosition >= 0 && newPosition < this.cellInfo.length;
       newPosition += direction === 'next' ? 1 : -1
     ) {
+
       if (newPosition === currentPosition && !matchCurrentCell)
         continue;
 
       const info = this.cellInfo[newPosition];
       if (typeof info === 'undefined') continue;
       found = cellIsType(info);
-      if (found) break;
+      if (found)
+        break;
     }
 
     if (found) {
