@@ -87,6 +87,9 @@
 }
 
 .mapping-view-parent {
+  --min-height: 250px;
+
+  min-height: var(--min-height);
   overflow-x: auto;
   max-height: 50vh;
   height: var(--original-height);
@@ -100,6 +103,16 @@
   right: 0;
   bottom: 0;
   font-size: calc(var(--white-space) * 2);
+  pointer-events: none;
+}
+
+.mapping-view-parent::before {
+  content: '_';
+  position: absolute;
+  right: 0;
+  top: calc(var(--min-height) - calc(var(--white-space) * 2.5));
+  font-size: calc(var(--white-space) * 2);
+  pointer-events: none;
 }
 
 .mapping-view {

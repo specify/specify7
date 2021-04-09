@@ -293,7 +293,7 @@ export default function WBPlanViewMapper(
       <div
         className="mapping-view-parent"
         style={{
-          'minHeight': minMappingViewHeight,
+          '--min-height': `${minMappingViewHeight}px`,
           '--original-height':
             `${
               props.refObject.current.mappingViewHeight || ''
