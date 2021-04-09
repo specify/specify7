@@ -205,10 +205,9 @@ export default function WBPlanViewMapper(
       // @ts-ignore
       new ResizeObserver(() =>
         mappingViewParentRef.current &&
-        props.handleMappingViewResize.bind(
-          null,
+        props.handleMappingViewResize(
           mappingViewParentRef.current.clientHeight,
-        ),
+        )
       );
 
     resizeObserver.observe(mappingViewParentRef.current);
