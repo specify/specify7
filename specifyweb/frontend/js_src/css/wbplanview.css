@@ -91,6 +91,15 @@
   max-height: 50vh;
   height: var(--original-height);
   resize: vertical;
+  position: relative;
+}
+
+.mapping-view-parent::after {
+  content: '⇲';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: calc(var(--white-space) * 2);
 }
 
 .mapping-view {
