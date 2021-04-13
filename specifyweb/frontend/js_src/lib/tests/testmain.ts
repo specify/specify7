@@ -2,7 +2,14 @@ import QUnit from 'qunit';
 import dataModelStorage from '../wbplanviewmodel';
 import dataModel from './fixtures/wbplanviewmodel.json';
 import testLatLongUtils from './testlatlongutils';
-
+import testMappingsTreeToUploadPlan from './testmappingstreetouploadplan.js';
+import testUploadPlanToMappingsTree from './testuploadplantomappingstree.js';
+import testWbPlanViewHelper from './testwbplanviewhelper';
+import testWbPlanViewLinesGetter from './testwbplanviewlinesgetter';
+import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
+import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
+import testWbPlanViewNavigator from './testwbplanviewnavigator';
+import testAutoMapper from './testautomapper';
 
 export function runTest<TEST_FUNCTION extends ((...args: any[]) => any)>(
   moduleName: string,
@@ -29,7 +36,14 @@ export function loadDataModel():void {
 
 function runTests() {
   testLatLongUtils();
-
+  testMappingsTreeToUploadPlan();
+  testUploadPlanToMappingsTree();
+  testWbPlanViewHelper();
+  testWbPlanViewLinesGetter();
+  testWbPlanViewModelHelper();
+  testWbPlanViewTreeHelper();
+  testWbPlanViewNavigator();
+  testAutoMapper();
 }
 
 runTests();
