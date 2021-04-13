@@ -48,7 +48,7 @@ interface DataModelRelationshipWritable
   isRelationship: true,
   tableName: string,
   type: RelationshipType,
-  foreignName: string,
+  foreignName?: string,
 }
 
 export type DataModelNonRelationship =
