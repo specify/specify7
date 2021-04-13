@@ -64,7 +64,7 @@ jobs:
 
       - name: Need these files to be present
         run: make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
- 
+
       - name: Verify MariaDB connection
         env:
           PORT: ${{ job.services.mariadb.ports[3306] }}
@@ -84,9 +84,6 @@ jobs:
 
       - name: Build frontend
         run: make frontend
-
-      - name: Run Typescript type checker
-        run: cd specifyweb/frontend/js_src && npm run check-types
 
       - name: Run JS test suite
         run: cd specifyweb/frontend/js_src && npm test
