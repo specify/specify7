@@ -75,7 +75,7 @@ interface AutoMapperConstructorDontCheckExistingParameters
   readonly pathIsMapped?: PathIsMappedBind,
 }
 
-type AutoMapperConstructorParameters =
+export type AutoMapperConstructorParameters =
   AutoMapperConstructorCheckExistingParameters
   | AutoMapperConstructorDontCheckExistingParameters
 
