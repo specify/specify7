@@ -1,0 +1,146 @@
+# A config file for pre-commit.com
+#
+# Install pre-commit.com: https://pre-commit.com/#install
+#
+# Then run the following line to set up a pre-commit hook:
+# pre-commit install
+#
+# And this to update hooks to the newest version:
+# pre-commit autoupdate
+#
+# Now, whenever you try to commit, hooks defined in this file would run
+# and check your files.  They would run only only on staged files that
+# had changes.
+#
+# You can manuall trigger the hooks like this:
+# pre-commit run
+#
+# You can tell it to check specific files:
+# pre-commit run --files *.ts
+#
+# Or give it all files:
+# pre-commit run --all-files
+#
+# Finnaly, you can disable some hooks by listing them in the `SKIP`
+# variable. Exapmle:
+# SKIP=flake8,black git commit -m "foo"
+
+default_language_version:
+  python: python3
+default_stages:
+  - commit
+  - merge-commit
+exclude: ^(lib|.idea)
+repos:
+ - repo: local
+   hooks:
+    - id: frontend-tests
+      name: TypeScript and QUnit
+      description: Run TypeScript typechecker and automatted tests on .ts files
+      entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
+      language: script
+      types_or: [javascript, jsx, ts, tsx]
+      pass_filenames: false
+
+ - repo: https://github.com/maxxxxxdlp/pre-commit
+   rev: v1.0.2
+   hooks:
+    - id: regex-blacklist
+      args:
+       - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
+
+# global hooks:
+ - repo: https://github.com/pre-commit/pre-commit-hooks
+   rev: v3.4.0
+   hooks:
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: check-yaml
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: check-docstring-first
+    - id: check-json
+    - id: check-merge-conflict
+    - id: check-symlinks
+    - id: detect-private-key
+    - id: mixed-line-ending
+    - id: requirements-txt-fixer
+
+ - repo: https://github.com/psf/black
+   rev: 20.8b1
+   hooks:
+    - id: black
+      args:
+       - --line-length=72
+
+ - repo: https://gitlab.com/pycqa/flake8
+   rev: 3.9.0
+   hooks:
+    - id: flake8
+      additional_dependencies: [flake8-bugbear]
+      args:
+       # these settting are needed to make flake8 compatable with black
+       - --max-line-length=88
+       - --select=C,E,F,W,B,B950
+       - --extend-ignore=E203,E501
+
+ - repo: https://github.com/PyCQA/pydocstyle
+   rev: 6.0.0
+   hooks:
+    - id: pydocstyle
+
+ - repo: https://github.com/pre-commit/mirrors-mypy
+   rev: v0.812
+   hooks:
+    - id: mypy
+      exclude: ^docs/
+
+ - repo: https://github.com/asottile/pyupgrade
+   rev: v2.12.0
+   hooks:
+    - id: pyupgrade
+
+ - repo: https://github.com/asottile/setup-cfg-fmt
+   rev: v1.17.0
+   hooks:
+    - id: setup-cfg-fmt
+
+ - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
+   rev: v1.1.1
+   hooks:
+    - id: dockerfile_lint
+
+ - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+   rev: v1.2.1
+   hooks:
+    - id: python-safety-dependencies-check
+
+ - repo: https://github.com/lovesegfault/beautysh
+   rev: 6.0.1
+   hooks:
+    - id: beautysh
+      args:
+       - --indent-size=2
+
+ - repo: https://github.com/jorisroovers/gitlint
+   rev: v0.15.0
+   hooks:
+    - id: gitlint
+
+ - repo: https://github.com/IamTheFij/docker-pre-commit
+   rev: v2.0.0
+   hooks:
+    - id: docker-compose-check
+
+ - repo: https://github.com/markdownlint/markdownlint
+   rev: v0.11.0
+   hooks:
+    - id: markdownlint
+      args:
+       - --git-recurse
+
+ - repo: https://github.com/sirosen/check-jsonschema
+   rev: 0.3.0
+   hooks:
+    - id: check-github-workflows
+    - id: check-github-actions
