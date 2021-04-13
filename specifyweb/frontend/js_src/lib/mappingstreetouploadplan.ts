@@ -291,7 +291,11 @@ export const mappingsTreeToUploadPlan = (
     uploadable: mappingsTreeToUploadTable(
       mappingsTree,
       baseTableName,
-      mustMatchPreferences,
+      Object.fromEntries(
+        Object.entries(mustMatchPreferences).filter(([_, mustMatch])=>
+          mustMatch
+        )
+      ),
       true,
     ),
   }
