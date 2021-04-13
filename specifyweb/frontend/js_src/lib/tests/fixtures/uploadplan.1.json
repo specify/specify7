@@ -1,0 +1,374 @@
+{
+  "headers": [
+    "BMSM No.",
+    "Class",
+    "Superfamily",
+    "Family",
+    "Genus",
+    "Subgenus",
+    "Species",
+    "Subspecies",
+    "Species Author",
+    "Subspecies Author",
+    "Who ID First Name",
+    "Determiner 1 Title",
+    "Determiner 1 First Name",
+    "Determiner 1 Middle Initial",
+    "Determiner 1 Last Name",
+    "ID Date Verbatim",
+    "ID Date",
+    "ID Status",
+    "Country",
+    "State/Prov/Pref",
+    "Region",
+    "Site",
+    "Sea Basin",
+    "Continent/Ocean",
+    "Date Collected",
+    "Start Date Collected",
+    "End Date Collected",
+    "Collection Method",
+    "Verbatim Collecting method",
+    "No. of Specimens",
+    "Live?",
+    "W/Operc",
+    "Lot Description",
+    "Prep Type 1",
+    "- Paired valves",
+    "for bivalves - Single valves",
+    "Habitat",
+    "Min Depth (M)",
+    "Max Depth (M)",
+    "Fossil?",
+    "Stratum",
+    "Sex / Age",
+    "Lot Status",
+    "Accession No.",
+    "Original Label",
+    "Remarks",
+    "Processed by",
+    "Cataloged by",
+    "DateCataloged",
+    "Latitude1",
+    "Latitude2",
+    "Longitude1",
+    "Longitude2",
+    "Lat Long Type",
+    "Station No.",
+    "Checked by",
+    "Label Printed",
+    "Not for publication on Web",
+    "Realm",
+    "Estimated",
+    "Collected Verbatim",
+    "Collector 1 Title",
+    "Collector 1 First Name",
+    "Collector 1 Middle Initial",
+    "Collector 1 Last Name",
+    "Collector 2 Title",
+    "Collector 2 First Name",
+    "Collector 2 Middle Initial",
+    "Collector 2 Last name",
+    "Collector 3 Title",
+    "Collector 3 First Name",
+    "Collector 3 Middle Initial",
+    "Collector 3 Last Name",
+    "Collector 4 Title",
+    "Collector 4 First Name",
+    "Collector 4 Middle Initial",
+    "Collector 4 Last Name"
+  ],
+  "uploadPlan": {
+    "baseTableName": "collectionobject",
+    "uploadable": {
+      "uploadTable": {
+        "wbcols": {
+          "catalognumber": {
+            "matchBehavior": "ignoreWhenBlank",
+            "nullAllowed": true,
+            "default": "qwerty",
+            "column": "BMSM No."
+          }
+        },
+        "static": {},
+        "toOne": {
+          "collectingevent": {
+            "mustMatchTable": {
+              "wbcols": {
+                "startdate": "Start Date Collected",
+                "enddate": "End Date Collected",
+                "method": "Collection Method",
+                "remarks": "Remarks"
+              },
+              "static": {},
+              "toOne": {
+                "locality": {
+                  "uploadTable": {
+                    "wbcols": {
+                      "minelevation": "Min Depth (M)",
+                      "maxelevation": "Max Depth (M)",
+                      "latitude1": "Latitude1",
+                      "latitude2": "Latitude2",
+                      "longitude1": "Longitude1",
+                      "longitude2": "Longitude2",
+                      "latlongtype": "Lat Long Type"
+                    },
+                    "static": {},
+                    "toOne": {
+                      "geography": {
+                        "mustMatchTreeRecord": {
+                          "ranks": {
+                            "Country": {
+                              "treeNodeCols": {
+                                "name": "Country"
+                              }
+                            },
+                            "State": {
+                              "treeNodeCols": {
+                                "name": "State/Prov/Pref"
+                              }
+                            },
+                            "Continent": {
+                              "treeNodeCols": {
+                                "name": "Continent/Ocean"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "toMany": {}
+                  }
+                }
+              },
+              "toMany": {
+                "collectors": [
+                  {
+                    "wbcols": {},
+                    "static": {},
+                    "toOne": {
+                      "agent": {
+                        "uploadTable": {
+                          "wbcols": {
+                            "title": "Collector 1 Title",
+                            "firstname": "Collector 1 First Name",
+                            "middleinitial": "Collector 1 Middle Initial",
+                            "lastname": "Collector 1 Last Name"
+                          },
+                          "static": {},
+                          "toOne": {},
+                          "toMany": {}
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "wbcols": {},
+                    "static": {},
+                    "toOne": {
+                      "agent": {
+                        "uploadTable": {
+                          "wbcols": {
+                            "title": "Collector 2 Title",
+                            "firstname": "Collector 2 First Name",
+                            "middleinitial": "Collector 2 Middle Initial",
+                            "lastname": "Collector 2 Last name"
+                          },
+                          "static": {},
+                          "toOne": {},
+                          "toMany": {}
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "wbcols": {},
+                    "static": {},
+                    "toOne": {
+                      "agent": {
+                        "uploadTable": {
+                          "wbcols": {
+                            "title": "Collector 3 Title",
+                            "firstname": "Collector 3 First Name",
+                            "middleinitial": "Collector 3 Middle Initial",
+                            "lastname": "Collector 3 Last Name"
+                          },
+                          "static": {},
+                          "toOne": {},
+                          "toMany": {}
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "wbcols": {},
+                    "static": {},
+                    "toOne": {
+                      "agent": {
+                        "uploadTable": {
+                          "wbcols": {
+                            "title": "Collector 4 Title",
+                            "firstname": "Collector 4 First Name",
+                            "middleinitial": "Collector 4 Middle Initial",
+                            "lastname": "Collector 4 Last Name"
+                          },
+                          "static": {},
+                          "toOne": {},
+                          "toMany": {}
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "cataloger": {
+            "uploadTable": {
+              "wbcols": {
+                "lastname": "Cataloged by"
+              },
+              "static": {},
+              "toOne": {},
+              "toMany": {
+                "collectors": [
+                  {
+                    "wbcols": {},
+                    "static": {},
+                    "toOne": {
+                      "collectingevent": {
+                        "mustMatchTable": {
+                          "wbcols": {
+                            "method": "Verbatim Collecting method"
+                          },
+                          "static": {},
+                          "toOne": {},
+                          "toMany": {}
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "accession": {
+            "mustMatchTable": {
+              "wbcols": {
+                "accessionnumber": "Accession No."
+              },
+              "static": {},
+              "toOne": {},
+              "toMany": {}
+            }
+          }
+        },
+        "toMany": {
+          "determinations": [
+            {
+              "wbcols": {
+                "determineddate": "ID Date",
+                "typestatusname": "ID Status"
+              },
+              "static": {},
+              "toOne": {
+                "taxon": {
+                  "mustMatchTreeRecord": {
+                    "ranks": {
+                      "Class": {
+                        "treeNodeCols": {
+                          "name": {
+                            "matchBehavior": "ignoreAlways",
+                            "nullAllowed": true,
+                            "default": null,
+                            "column": "Class"
+                          }
+                        }
+                      },
+                      "Family": {
+                        "treeNodeCols": {
+                          "name": "Family"
+                        }
+                      },
+                      "Genus": {
+                        "treeNodeCols": {
+                          "name": "Genus"
+                        }
+                      },
+                      "Subgenus": {
+                        "treeNodeCols": {
+                          "name": "Subgenus"
+                        }
+                      },
+                      "Species": {
+                        "treeNodeCols": {
+                          "name": "Species",
+                          "author": "Species Author"
+                        }
+                      },
+                      "Subspecies": {
+                        "treeNodeCols": {
+                          "name": "Subspecies",
+                          "author": "Subspecies Author"
+                        }
+                      }
+                    }
+                  }
+                },
+                "determiner": {
+                  "uploadTable": {
+                    "wbcols": {
+                      "firstname": "Who ID First Name",
+                      "title": "Determiner 1 Title",
+                      "middleinitial": "Determiner 1 Middle Initial",
+                      "lastname": "Determiner 1 Last Name"
+                    },
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {}
+                  }
+                }
+              }
+            },
+            {
+              "wbcols": {
+                "determineddate": "ID Date Verbatim"
+              },
+              "static": {},
+              "toOne": {
+                "determiner": {
+                  "uploadTable": {
+                    "wbcols": {
+                      "firstname": "Determiner 1 First Name"
+                    },
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {}
+                  }
+                }
+              }
+            }
+          ],
+          "preparations": [
+            {
+              "wbcols": {},
+              "static": {},
+              "toOne": {
+                "preptype": {
+                  "uploadTable": {
+                    "wbcols": {
+                      "name": "Prep Type 1"
+                    },
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {}
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
