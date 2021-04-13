@@ -239,7 +239,7 @@ const knownRelationshipTypes: RelationshipType[] = [
   'many-to-many',
 ];
 const aliasRelationshipTypes: R<RelationshipType> = {
-  'zero-to-one': 'one-to-one',
+  'zero-to-one': 'one-to-many',
 };
 
 function handleRelationshipType(
