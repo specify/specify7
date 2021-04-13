@@ -3,7 +3,7 @@
   "version": "7.1.0",
   "private": true,
   "description": "Specify software manages species and specimen data for biological research collections. As a database platform, it tracks specimen transactions, links images to specimen records and publishes data to the Internet.",
-  "homepage": "http://specifysoftware.org",
+  "homepage": "https://specifysoftware.org",
   "repository": {
     "type": "git",
     "url": "https://github.com/specify/specify7.git"
@@ -41,12 +41,13 @@
     "@babel/preset-typescript": "~7.12.7",
     "@types/jquery": "~3.5.4",
     "@types/jqueryui": "~1.11.28",
+    "@types/leaflet": "^1.7.0",
     "@types/node": "~14.14.10",
     "@types/papaparse": "~4.1.2",
+    "@types/qunit": "^2.11.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/underscore": "^1.10.24",
-    "@types/leaflet": "^1.7.0",
     "babel-loader": "~8.2.2",
     "babel-plugin-replace-ts-export-assignment": "~0.0.2",
     "css-loader": "~0.23.1",
@@ -73,7 +74,9 @@
     ]
   },
   "scripts": {
-    "test": "qunit lib/tests/testmain.js",
+    "buildTests": "tsc --build testTsconfig.json ",
+    "runTests": "qunit testBuild/tests/testmain.js",
+    "test": "npm run buildTests && npm run runTests",
     "check-types": "tsc"
   },
   "author": "KU Biodiversity Institute",
