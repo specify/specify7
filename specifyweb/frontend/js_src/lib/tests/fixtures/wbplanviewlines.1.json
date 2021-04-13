@@ -1,0 +1,1091 @@
+{
+  "baseTableName": "collectionobject",
+  "lines": [
+    {
+      "mappingPath": [
+        "catalognumber"
+      ],
+      "type": "existingHeader",
+      "name": "BMSM No.",
+      "options": {
+        "matchBehavior": "ignoreWhenBlank",
+        "nullAllowed": true,
+        "default": "qwerty"
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Class",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Class",
+      "options": {
+        "matchBehavior": "ignoreAlways",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Superfamily",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Family",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Family",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Genus",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Genus",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Subgenus",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Subgenus",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Species",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Species",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Subspecies",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Subspecies",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Species",
+        "author"
+      ],
+      "type": "existingHeader",
+      "name": "Species Author",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "taxon",
+        "$Subspecies",
+        "author"
+      ],
+      "type": "existingHeader",
+      "name": "Subspecies Author",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "determiner",
+        "firstname"
+      ],
+      "type": "existingHeader",
+      "name": "Who ID First Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "determiner",
+        "title"
+      ],
+      "type": "existingHeader",
+      "name": "Determiner 1 Title",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#2",
+        "determiner",
+        "firstname"
+      ],
+      "type": "existingHeader",
+      "name": "Determiner 1 First Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "determiner",
+        "middleinitial"
+      ],
+      "type": "existingHeader",
+      "name": "Determiner 1 Middle Initial",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "determiner",
+        "lastname"
+      ],
+      "type": "existingHeader",
+      "name": "Determiner 1 Last Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#2",
+        "determineddate"
+      ],
+      "type": "existingHeader",
+      "name": "ID Date Verbatim",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "determineddate"
+      ],
+      "type": "existingHeader",
+      "name": "ID Date",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "determinations",
+        "#1",
+        "typestatusname"
+      ],
+      "type": "existingHeader",
+      "name": "ID Status",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "geography",
+        "$Country",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Country",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "geography",
+        "$State",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "State/Prov/Pref",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Region",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Site",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Sea Basin",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "geography",
+        "$Continent",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Continent/Ocean",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Date Collected",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "startdate"
+      ],
+      "type": "existingHeader",
+      "name": "Start Date Collected",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "enddate"
+      ],
+      "type": "existingHeader",
+      "name": "End Date Collected",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "method"
+      ],
+      "type": "existingHeader",
+      "name": "Collection Method",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "cataloger",
+        "collectors",
+        "#1",
+        "collectingevent",
+        "method"
+      ],
+      "type": "existingHeader",
+      "name": "Verbatim Collecting method",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "No. of Specimens",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Live?",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "W/Operc",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Lot Description",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "preparations",
+        "#1",
+        "preptype",
+        "name"
+      ],
+      "type": "existingHeader",
+      "name": "Prep Type 1",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "- Paired valves",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "for bivalves - Single valves",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Habitat",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "minelevation"
+      ],
+      "type": "existingHeader",
+      "name": "Min Depth (M)",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "maxelevation"
+      ],
+      "type": "existingHeader",
+      "name": "Max Depth (M)",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Fossil?",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Stratum",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Sex / Age",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Lot Status",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "accession",
+        "accessionnumber"
+      ],
+      "type": "existingHeader",
+      "name": "Accession No.",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Original Label",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "remarks"
+      ],
+      "type": "existingHeader",
+      "name": "Remarks",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Processed by",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "cataloger",
+        "lastname"
+      ],
+      "type": "existingHeader",
+      "name": "Cataloged by",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "DateCataloged",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "latitude1"
+      ],
+      "type": "existingHeader",
+      "name": "Latitude1",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "latitude2"
+      ],
+      "type": "existingHeader",
+      "name": "Latitude2",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "longitude1"
+      ],
+      "type": "existingHeader",
+      "name": "Longitude1",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "longitude2"
+      ],
+      "type": "existingHeader",
+      "name": "Longitude2",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "locality",
+        "latlongtype"
+      ],
+      "type": "existingHeader",
+      "name": "Lat Long Type",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Station No.",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Checked by",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Label Printed",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Not for publication on Web",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Realm",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Estimated",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "0"
+      ],
+      "type": "existingHeader",
+      "name": "Collected Verbatim",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#1",
+        "agent",
+        "title"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 1 Title",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#1",
+        "agent",
+        "firstname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 1 First Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#1",
+        "agent",
+        "middleinitial"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 1 Middle Initial",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#1",
+        "agent",
+        "lastname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 1 Last Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#2",
+        "agent",
+        "title"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 2 Title",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#2",
+        "agent",
+        "firstname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 2 First Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#2",
+        "agent",
+        "middleinitial"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 2 Middle Initial",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#2",
+        "agent",
+        "lastname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 2 Last name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#3",
+        "agent",
+        "title"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 3 Title",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#3",
+        "agent",
+        "firstname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 3 First Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#3",
+        "agent",
+        "middleinitial"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 3 Middle Initial",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#3",
+        "agent",
+        "lastname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 3 Last Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#4",
+        "agent",
+        "title"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 4 Title",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#4",
+        "agent",
+        "firstname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 4 First Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#4",
+        "agent",
+        "middleinitial"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 4 Middle Initial",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    },
+    {
+      "mappingPath": [
+        "collectingevent",
+        "collectors",
+        "#4",
+        "agent",
+        "lastname"
+      ],
+      "type": "existingHeader",
+      "name": "Collector 4 Last Name",
+      "options": {
+        "matchBehavior": "ignoreNever",
+        "nullAllowed": true,
+        "default": null
+      }
+    }
+  ],
+  "mustMatchPreferences": {
+    "collectingevent": true,
+    "geography": true,
+    "accession": true,
+    "taxon": true
+  }
+}
