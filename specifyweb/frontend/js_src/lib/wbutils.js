@@ -33,7 +33,7 @@ module.exports = Backbone.View.extend({
     return this;
   },
   initCellInfo(row, col) {
-    const cols = this.wbview.hot.countCols();
+    const cols = this.wbview.dataset.columns.length;
     if (typeof this.cellInfo[row * cols + col] === 'undefined') {
       this.cellInfo[row * cols + col] = {
         isNew: false,
@@ -48,7 +48,7 @@ module.exports = Backbone.View.extend({
     const buttonParent = button.parentElement;
     const type = buttonParent.getAttribute('data-navigation-type');
 
-    const numberOfColumns = this.wbview.hot.countCols();
+    const numberOfColumns = this.wbview.dataset.columns.length;
 
     const selectedCell = this.wbview.hot.getSelectedLast();
 
@@ -105,7 +105,7 @@ module.exports = Backbone.View.extend({
     }
   },
   searchCells(e) {
-    const cols = this.wbview.hot.countCols();
+    const cols = this.wbview.dataset.columns.length;
     const button = e.target;
     const container = button.parentElement;
     const navigationPositionElement =
@@ -139,7 +139,7 @@ module.exports = Backbone.View.extend({
 
   },
   replaceCells(e) {
-    const cols = this.wbview.hot.countCols();
+    const cols = this.wbview.dataset.columns.length;
     const button = e.target;
     const container = button.parentElement;
     const replacementValueElement =

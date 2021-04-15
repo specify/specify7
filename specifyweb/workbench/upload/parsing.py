@@ -35,6 +35,10 @@ class ParseResult(NamedTuple):
     add_to_picklist: Optional[PicklistAddition]
     column: str
 
+    def match_key(self) -> str:
+        from .uploadable import filter_match_key
+        return filter_match_key(self.filter_on)
+
 def filter_and_upload(f: Filter, column: str) -> ParseResult:
     return ParseResult(f, f, None, column)
 

@@ -2,7 +2,7 @@ import re
 import json
 import logging
 from uuid import uuid4
-from typing import Sequence, Tuple, List
+from typing import Sequence, Tuple, List, Optional
 from jsonschema import validate # type: ignore
 from jsonschema.exceptions import ValidationError # type: ignore
 
@@ -23,14 +23,15 @@ from .upload import upload as uploader, upload_plan_schema
 
 logger = logging.getLogger(__name__)
 
-def regularize_rows(columns: List[str], rows: List[List]) -> List[List[str]]:
-    width = len(columns)
-    return [
-        (row + ['']*width)[:width] # pad / trim row length to match columns
-        for row in (['' if v is None else str(v).strip() for v in r] for r in rows) # convert values to strings
-        if not all(v == '' for v in row) # skip empty rows
-    ]
+def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
+    n = ncols + 1 # extra row info such as disambiguation in hidden col at end
 
+    def regularize(row: List) -> Optional[List]:
+        data = (row + ['']*n)[:n] # pad / trim row length to match columns
+        cleaned = ['' if v is None else str(v).strip() for v in data] # convert values to strings
+        return None if all(v == '' for v in cleaned) else cleaned # skip empty rows
+
+    return [r for r in map(regularize, rows) if r is not None]
 
 @login_maybe_required
 @apply_access_control
@@ -47,7 +48,7 @@ def datasets(request) -> http.HttpResponse:
         if len(set(columns)) != len(columns):
             return http.HttpResponse(f"all column headers must be unique: {columns}", status=400)
 
-        rows = regularize_rows(columns, data['rows'])
+        rows = regularize_rows(len(columns), data['rows'])
 
         ds = models.Spdataset.objects.create(
             specifyuser=request.specify_user,
@@ -104,9 +105,10 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 
             new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
             if new_cols:
+                ncols = len(ds.columns)
                 ds.columns += list(new_cols)
-                for row in ds.data:
-                    row += [""]*len(new_cols)
+                for i, row in enumerate(ds.data):
+                    ds.data[i] = row[:ncols] + [""]*len(new_cols) + row[ncols:]
 
             ds.uploadplan = json.dumps(plan)
             ds.rowresults = None
@@ -131,6 +133,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
             uploaderstatus=ds.uploaderstatus,
             uploadresult=ds.uploadresult,
+            rowresults=ds.rowresults and json.loads(ds.rowresults),
             remarks=ds.remarks,
             importedfilename=ds.importedfilename,
             timestampcreated=ds.timestampcreated,
@@ -156,7 +159,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         if ds.was_uploaded():
             return http.HttpResponse('dataset has been uploaded. changing data not allowed.', status=400)
 
-        rows = regularize_rows(ds.columns, json.load(request))
+        rows = regularize_rows(len(ds.columns), json.load(request))
 
         ds.data = rows
         ds.rowresults = None
@@ -308,25 +311,16 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
 
 @login_maybe_required
 @apply_access_control
-@require_http_methods(["GET", "POST"])
+@require_POST
 def validate_row(request, ds_id: str) -> http.HttpResponse:
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     collection = request.specify_collection
     upload_plan = uploader.get_ds_upload_plan(collection, ds)
-
-    ValidationForm = type('ValidationForm', (forms.Form,), {
-        column: forms.CharField(required=False)
-        for column in ds.columns
-    })
-
-    if request.method == "POST":
-        result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, request.POST)
-        return http.JsonResponse(result.validation_info().to_json())
-
-    else:
-        form = ValidationForm()
-
-    return render(request, 'validate_row.html', {'form': form.as_p()})
+    row = json.loads(request.body)
+    ncols = len(ds.columns)
+    da = uploader.get_disambiguation_from_row(ncols, row)
+    result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, dict(zip(ds.columns, row)), da)
+    return http.JsonResponse({'result': result.to_json(), 'validation': result.validation_info().to_json()})
 
 @require_GET
 def up_schema(request) -> http.HttpResponse:

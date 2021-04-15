@@ -149,9 +149,10 @@ schema = {
                     'type': 'object',
                     'properties': {
                         'ids': { 'type': 'array', 'description': 'List of ids of the matching database records.', 'items': { 'type': 'integer' } },
+                        'key': { 'type': 'string', 'description': 'Allows disambiguation to be applied to multiple records.' },
                         'info': { '$ref': '#/definitions/ReportInfo' }
                     },
-                    'required': ['ids', 'info'],
+                    'required': ['ids', 'key', 'info'],
                     'additionalProperties': False
                 }
             },

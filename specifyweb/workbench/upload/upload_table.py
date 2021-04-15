@@ -2,14 +2,14 @@
 from functools import reduce
 
 import logging
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, NoReturn
 
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
-from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable
+from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures, PropagatedFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 from .column_options import ColumnOptions
@@ -62,6 +62,28 @@ class ScopedUploadTable(NamedTuple):
     toMany: Dict[str, List[ScopedToManyRecord]]
     scopingAttrs: Dict[str, int]
 
+    def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
+        if disambiguation is None:
+            return self
+
+        id = disambiguation.disambiguate()
+        if id is not None:
+            return DisambiguatedTable(name=self.name, id=id)
+
+        return self._replace(
+            toOne={
+                fieldname: uploadable.disambiguate(disambiguation.disambiguate_to_one(fieldname))
+                for fieldname, uploadable in self.toOne.items()
+            },
+            toMany={
+                fieldname: [
+                    record.disambiguate(disambiguation.disambiguate_to_many(fieldname, i))
+                    for i, record in enumerate(records)
+                ]
+                for fieldname, records in self.toMany.items()
+            }
+        )
+
     def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
@@ -108,7 +130,7 @@ class OneToOneTable(UploadTable):
 class ScopedOneToOneTable(ScopedUploadTable):
     def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(collection, row, uploadingAgentId)
-        return b if isinstance(b, ParseFailures) else BoundOneToOneTable(*b)
+        return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
     def apply_scoping(self, collection) -> "ScopedMustMatchTable":
@@ -121,7 +143,7 @@ class MustMatchTable(UploadTable):
 class ScopedMustMatchTable(ScopedUploadTable):
     def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(collection, row, uploadingAgentId)
-        return b if isinstance(b, ParseFailures) else BoundMustMatchTable(*b)
+        return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
 class BoundUploadTable(NamedTuple):
@@ -241,7 +263,13 @@ class BoundUploadTable(NamedTuple):
 
         n_matched = matched_records.count()
         if n_matched > 1:
-            return MatchedMultiple(ids=[r.id for r in matched_records], info=info)
+            key = repr((
+                sorted(filters.items()),
+                toManyFilters.match_key(),
+                sorted(self.scopingAttrs.items()),
+                sorted(self.static.items())
+            ))
+            return MatchedMultiple(ids=[r.id for r in matched_records], key=key, info=info)
         elif n_matched == 1:
             return Matched(id=matched_records[0].id, info=info)
         else:
@@ -319,6 +347,34 @@ class BoundMustMatchTable(BoundUploadTable):
 
     def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
+
+class DisambiguatedTable(NamedTuple):
+    name: str
+    id: int
+
+    def disambiguate(self, *args) -> NoReturn:
+        raise Exception('already disambiguated')
+
+    def bind(self, *args) -> "DisambiguatedTable":
+        return self
+
+    def is_one_to_one(self) -> bool:
+        return False
+
+    def must_match(self) -> bool:
+        return True
+
+    def filter_on(self, path: str) -> FilterPack:
+        return FilterPack([{f'{path}__id': self.id}], [])
+
+    def match_row(self) -> UploadResult:
+        return UploadResult(Matched(id=self.id, info=ReportInfo(self.name, [], None)), {}, {})
+
+    def process_row(self) -> UploadResult:
+        return self.match_row()
+
+    def force_upload_row(self) -> NoReturn:
+        raise Exception('trying to force upload of disambiguated table')
 
 
 def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:

@@ -106,6 +106,7 @@ def json_to_Matched(json: Dict) -> Matched:
 
 class MatchedMultiple(NamedTuple):
     ids: List[int]
+    key: str
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -126,6 +127,7 @@ class MatchedMultiple(NamedTuple):
     def to_json(self):
         return { 'MatchedMultiple': dict(
             ids=self.ids,
+            key=self.key,
             info=self.info.to_json()
         )}
 
@@ -133,6 +135,7 @@ def json_to_MatchedMultiple(json: Dict) -> MatchedMultiple:
     matchedMultiple = json['MatchedMultiple']
     return MatchedMultiple(
         ids=matchedMultiple['ids'],
+        key=matchedMultiple.get('key', ''),
         info=json_to_ReportInfo(matchedMultiple['info'])
     )
 

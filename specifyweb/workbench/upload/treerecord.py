@@ -14,7 +14,7 @@ from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
-from .uploadable import Row, FilterPack
+from .uploadable import Row, FilterPack, Disambiguation as DA, ScopedUploadable
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, TreeInfo
 from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
 from .column_options import ColumnOptions
@@ -49,6 +49,14 @@ class ScopedTreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
     treedefid: int
+
+    def disambiguate(self, disambiguation: DA) -> "ScopedUploadable":
+        from .upload_table import DisambiguatedTable
+        if disambiguation is not None:
+            id = disambiguation.disambiguate()
+            if id is not None:
+                return DisambiguatedTable(name=self.name, id=id)
+        return self
 
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
@@ -89,6 +97,9 @@ class ScopedMustMatchTreeRecord(ScopedTreeRecord):
 class TreeDefItemWithParseResults(NamedTuple):
     treedefitem: Any
     results: List[ParseResult]
+
+    def match_key(self) -> str:
+        return repr((self.treedefitem.id, sorted(pr.match_key() for pr in self.results)))
 
 MatchResult = Union[NoMatch, Matched, MatchedMultiple]
 
@@ -181,7 +192,8 @@ class BoundTreeRecord(NamedTuple):
                 treeInfo=TreeInfo(to_match.treedefitem.name, "")
             )
             ids = [m.id for m in matches]
-            return tdiwprs, MatchedMultiple(ids, info)
+            key = repr(sorted(tdiwpr.match_key() for tdiwpr in tdiwprs))
+            return tdiwprs, MatchedMultiple(ids, key, info)
         else:
             assert n_matches == 0
             if parent is not None:

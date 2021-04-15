@@ -9,6 +9,7 @@ const Handsontable = require('handsontable');
 const Papa = require('papaparse');
 
 const schema = require('./schema.js');
+const api = require('./specifyapi.js');
 const app = require('./specifyapp.js');
 const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
@@ -21,7 +22,7 @@ const {extractDefaultValues} = require('./wbplanviewhelper.ts');
 const {getMappingLineData} = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
 const icons = require('./icons.js');
-
+const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
 
 const WBView = Backbone.View.extend({
@@ -43,8 +44,11 @@ const WBView = Backbone.View.extend({
         this.dataset = dataset;
         this.mappedHeaders = {};
         this.data = dataset.rows;
-        if (this.data.length < 1)
+        if (this.data.length < 1) {
             this.data.push(Array(this.dataset.columns.length).fill(null));
+        }
+
+        this.mappings = this.dataset.uploadplan && uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
 
         this.highlightsOn = false;
         this.rowValidationRequests = {};
@@ -57,6 +61,7 @@ const WBView = Backbone.View.extend({
         this.uploaded = this.dataset.uploadresult && this.dataset.uploadresult.success;
         this.uploadedView = undefined;
         this.refreshInitiatedBy = refreshInitiatedBy;
+        this.rowResults = this.dataset.rowresults || [];
     },
     render() {
         this.$el.append(template({
@@ -82,6 +87,7 @@ const WBView = Backbone.View.extend({
             height: this.calcHeight(),
             data: this.data,
             cells: this.defineCell.bind(this, this.dataset.columns.length),
+            columns: this.dataset.columns.map((__, i) => ({data: i})),
             colHeaders: (col)=>`<div class="wb-header-${col} ${
                 this.dataset.columns[col] in this.mappedHeaders ?
                     '' :
@@ -134,6 +140,11 @@ const WBView = Backbone.View.extend({
                         this.wbutils.fillDownWithIncrement
                     ),*/
                     'separator_2': '---------',
+                    'disambiguate': {
+                        name: "Disambiguate",
+                        disabled: () => !this.isAmbiguousCell(),
+                        callback: (__, selection) => this.disambiguateCell(selection),
+                    },
                     'undo': 'undo',
                     'redo': 'redo',
                 }
@@ -157,17 +168,108 @@ const WBView = Backbone.View.extend({
 
         return this;
     },
+    isAmbiguousCell() {
+        const [[row, col]] = this.hot.getSelected();
+        if (this.mappings) {
+            const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
+            const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).find(m => m[m.length - 2] == header).slice(0, -4);
+            const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
+            return getRecordResult(rowResult, mapping)?.MatchedMultiple != null;
+        }
+        return false;
+    },
+    clearDisambiguation(row) {
+        const ncols = this.dataset.columns.length;
+        const rn = this.hot.toPhysicalRow(row);
+        const hidden = this.data[rn][ncols];
+        const extra = hidden ? JSON.parse(hidden) : {};
+        extra.disambiguation = {};
+        this.data[rn][ncols] = JSON.stringify(extra);
+    },
+    setDisambiguation(row, mapping, id) {
+        const ncols = this.dataset.columns.length;
+        const rn = this.hot.toPhysicalRow(row);
+        const hidden = this.data[rn][ncols];
+        const extra = hidden ? JSON.parse(hidden) : {};
+        const da = extra.disambiguation || {};
+        da[mapping.join(' ')] = id;
+        extra.disambiguation = da;
+        this.data[rn][ncols] = JSON.stringify(extra);
+        this.spreadSheetChanged();
+    },
+    disambiguateCell([{start: {row, col}}]) {
+        if (this.mappings) {
+            const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
+            const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).find(m => m[m.length - 2] == header).slice(0, -4);
+            const tableName = getMappingLineData({
+                baseTableName: this.mappings.baseTableName,
+                mappingPath: mapping,
+                iterate: false,
+                customSelectType: 'CLOSED_LIST',
+                showHiddenFields: false,
+            })[0]?.tableName;
+            const model = schema.getModel(tableName);
+            const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
+            const matches = getRecordResult(rowResult, mapping).MatchedMultiple;
+            const doDA = selected => {
+                this.setDisambiguation(row, mapping, parseInt(selected, 10));
+                this.startValidateRow(row);
+            };
+            const doAll = selected => {
+                for (let i = 0; i < this.data.length; i++) {
+                    const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
+                    const key = getRecordResult(rowResult, mapping)?.MatchedMultiple?.key;
+                    if (key === matches.key) {
+                        this.setDisambiguation(i, mapping, parseInt(selected, 10));
+                        this.startValidateRow(i);
+                    }
+                }
+            };
+            const table = $('<table>');
+            matches.ids.forEach((id, i) => {
+                const resource = new model.Resource({id: id});
+                const tr = $(`<tr><td><input type="radio" class="da-option" name="disambiguate" value="${id}" id="da-option-${i}"></td></tr>`)
+                      .appendTo(table);
+                tr.append($('<td>').append($(`<a target="_blank">👁</a>`).attr('href', api.makeResourceViewUrl(model, id))));
+                const label = $(`<label for="da-option-${i}">`).text(id);
+                tr.append($('<td>').append(label));
+                formatObj(resource).done(formatted => label.text(formatted));
+            });
+
+            const applyToAll = $('<label>Use this selection for all matching disambiguous records </label>')
+                  .append('<input type="checkbox" class="da-use-for-all" value="yes">');
+            $('<div>').append(table).append(applyToAll).dialog({
+                title: "Disambiguate",
+                modal: true,
+                close() { $(this).remove(); },
+                buttons: [
+                    {text: 'Select', click() {
+                        const selected = $('input.da-option:checked', this).val();
+                        const useForAll = $('input.da-use-for-all:checked', this).val();
+                        if (selected != null) {
+                            (useForAll ? doAll : doDA)(selected);
+                            $(this).dialog('close');
+                        }
+                    }},
+                    {text: 'Cancel', click() { $(this).dialog('close'); } }
+                ]
+            });
+        }
+    },
     afterChange(changes, source) {
         if (
           source !== 'edit' &&
           source !== 'CopyPaste.paste'
         )
             return;
+
+        changes.forEach(([row]) => this.clearDisambiguation(row));
+
         this.spreadSheetChanged();
         this.startValidation(changes);
     },
     rowCreated(index, amount) {
-        const cols = this.hot.countCols();
+        const cols = this.dataset.columns.length;
         this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(
           new Array(amount*cols),
           this.wbutils.cellInfo.slice(index*cols)
@@ -176,7 +278,7 @@ const WBView = Backbone.View.extend({
         this.spreadSheetChanged();
     },
     rowRemoved(index, amount) {
-        const cols = this.hot.countCols();
+        const cols = this.dataset.columns.length;
         this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(
           this.wbutils.cellInfo.slice((index+amount)*cols)
         );
@@ -188,10 +290,10 @@ const WBView = Backbone.View.extend({
     },
     columnMoved(columns, target) {
         const columnOrder = [];
-        for (let i = 0; i < this.hot.countCols(); i++) {
+        for (let i = 0; i < this.dataset.columns.length; i++) {
             columnOrder.push(this.hot.toPhysicalColumn(i));
         }
-        if (columnOrder.some((i,j) => i !== this.dataset.visualorder[j])) {
+        if (this.dataset.visualorder == null || columnOrder.some((i,j) => i !== this.dataset.visualorder[j])) {
             this.dataset.visualorder = columnOrder;
             $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
                 type: "PUT",
@@ -205,29 +307,18 @@ const WBView = Backbone.View.extend({
         Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
             .done(results => this.parseResults(results, showValidationSummary));
     },
-    identifyMappedHeaders(){
-
+    identifyMappedHeaders() {
         const stylesContainer = document.createElement('style');
         const unmappedCellStyles = '{ color: #999; }';
 
-        if (this.dataset.uploadplan) {
-            const {
-                baseTableName,
-                mappingsTree: mappingsTree
-            } = uploadPlanToMappingsTree(
-                this.dataset.columns,
-                this.dataset.uploadplan
-            );
-            const arrayOfMappings = mappingsTreeToArrayOfMappings(
-                mappingsTree
-            );
+        if (this.mappings) {
             const mappedHeadersAndTables = Object.fromEntries(
-                arrayOfMappings.map(mappingsPath =>
+                mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).map(mappingsPath =>
                     [
                         mappingsPath.slice(-2)[0],
                         icons.getIcon(
                             getMappingLineData({
-                                baseTableName,
+                                baseTableName: this.mappings.baseTableName,
                                 mappingPath: mappingsPath.slice(0, -4),
                                 iterate: false,
                                 customSelectType: 'CLOSED_LIST',
@@ -422,7 +513,7 @@ const WBView = Backbone.View.extend({
         this.hot.render();
     },
     parseRowValidationResult(row, result) {
-        const cols = this.hot.countCols();
+        const cols = this.dataset.columns.length;
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
             headerToCol[this.dataset.columns[i]] = i;
@@ -513,7 +604,7 @@ const WBView = Backbone.View.extend({
             }
         });
     },
-    spreadSheetChanged(change) {
+    spreadSheetChanged() {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
         this.$('.wb-upload, .wb-match').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
@@ -528,19 +619,18 @@ const WBView = Backbone.View.extend({
                 Object.keys(this.mappedHeaders).indexOf(
                     this.dataset.columns[this.hot.toPhysicalColumn(column)]
                 ) !== -1
-            ).forEach(([row]) => {
-                const rowData = this.hot.getDataAtRow(row);
-                const data = Object.fromEntries(rowData.map((value, i) =>
-                    [this.dataset.columns[this.hot.toPhysicalColumn(i)], value]
-                ));
-                const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.dataset.id}/`, data);
-                req.done(result => this.gotRowValidationResult(row, req, result));
-            });
+            ).forEach(([row]) => this.startValidateRow(row));
         }
+    },
+    startValidateRow(row) {
+        const rowData = this.hot.getSourceDataAtRow(this.hot.toPhysicalRow(row));
+        const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData));
+        req.done(result => this.gotRowValidationResult(row, req, result));
     },
     gotRowValidationResult(row, req, result) {
         if (req === this.rowValidationRequests[row]) {
-            this.parseRowValidationResult(row, result);
+            this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
+            this.parseRowValidationResult(row, result.validation);
             this.updateCellInfos();
         }
     },
@@ -695,3 +785,17 @@ module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
         app.setCurrentView(view);
     });
 };
+
+function getRecordResult({UploadResult}, mapping) {
+    if (mapping.length === 0) {
+        return UploadResult.record_result;
+    } else if (mapping[1]?.startsWith('#')) {
+        const idx = parseInt(mapping[1].replace('#', ''), 10) - 1;
+        const toMany = UploadResult.toMany[mapping[0]];
+        const next = toMany && toMany[idx];
+        return next && getRecordResult(next, mapping.slice(2));
+    } else {
+        const next = UploadResult.toOne[mapping[0]];
+        return next && getRecordResult(next, mapping.slice(1));
+    }
+}

@@ -1,5 +1,5 @@
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union, Set
-from typing_extensions import Protocol
+from typing_extensions import Protocol, Literal
 
 from .upload_result import UploadResult, ParseFailures
 
@@ -18,21 +18,45 @@ class Uploadable(Protocol):
 
 Row = Dict[str, str]
 
+class DisambiguationInfo(Protocol):
+    def disambiguate(self) -> Optional[int]:
+        ...
+
+    def disambiguate_to_one(self, to_one: str) -> "Disambiguation":
+        ...
+
+    def disambiguate_to_many(self, to_many: str, record_index: int) -> "Disambiguation":
+        ...
+
+Disambiguation = Optional[DisambiguationInfo]
+
+
 class ScopedUploadable(Protocol):
+    def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
+        ...
+
     def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundUploadable", ParseFailures]:
         ...
 
 Filter = Dict[str, Any]
+
+def filter_match_key(f: Filter) -> str:
+    return repr(sorted(f.items()))
 
 class Exclude(NamedTuple):
     lookup: str
     table: str
     filter: Filter
 
+    def match_key(self) -> str:
+        return repr((self.lookup, self.table, filter_match_key(self.filter)))
 
 class FilterPack(NamedTuple):
     filters: List[Filter]
     excludes: List[Exclude]
+
+    def match_key(self) -> str:
+        return repr((sorted(filter_match_key(f) for f in self.filters), sorted(e.match_key() for e in self.excludes)))
 
 
 class BoundUploadable(Protocol):

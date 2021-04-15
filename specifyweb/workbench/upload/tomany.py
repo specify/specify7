@@ -2,7 +2,7 @@ import logging
 
 from typing import Dict, Any, NamedTuple, List, Union, Set, Optional
 
-from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable
+from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation
 from .upload_result import CellIssue, ParseFailures
 from .parsing import parse_many, ParseResult
 from .column_options import ColumnOptions
@@ -42,6 +42,16 @@ class ScopedToManyRecord(NamedTuple):
     static: Dict[str, Any]
     toOne: Dict[str, ScopedUploadable]
     scopingAttrs: Dict[str, int]
+
+    def disambiguate(self, disambiguation: Disambiguation) -> "ScopedToManyRecord":
+        if disambiguation is None:
+            return self
+        return self._replace(
+            toOne={
+                fieldname: uploadable.disambiguate(disambiguation.disambiguate_to_one(fieldname))
+                for fieldname, uploadable in self.toOne.items()
+            }
+        )
 
     def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundToManyRecord", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
