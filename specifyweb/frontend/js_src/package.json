@@ -39,6 +39,8 @@
     "@babel/preset-env": "~7.12.7",
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-typescript": "~7.12.7",
+    "@maxxxxxdlp/eslint-config": "^0.1.0",
+    "@maxxxxxdlp/stylelint-config": "^0.1.0",
     "@types/jquery": "~3.5.4",
     "@types/jqueryui": "~1.11.28",
     "@types/leaflet": "^1.7.0",
@@ -51,10 +53,13 @@
     "babel-loader": "~8.2.2",
     "babel-plugin-replace-ts-export-assignment": "~0.0.2",
     "css-loader": "~0.23.1",
+    "eslint": "^7.24.0",
     "file-loader": "~0.8.5",
     "loader-utils": "~0.2.12",
+    "prettier": "^2.2.1",
     "qunit": "^2.11.2",
     "style-loader": "~0.13.0",
+    "stylelint": "^13.12.0",
     "typescript": "~4.2.3",
     "underscore-template-loader": "~1.1.0",
     "url-loader": "~0.5.7",
@@ -74,7 +79,7 @@
     ]
   },
   "scripts": {
-    "buildTests": "tsc --build testTsconfig.json ",
+    "buildTests": "tsc --build tsconfig.tests.json ",
     "runTests": "qunit testBuild/tests/testmain.js",
     "test": "npm run buildTests && npm run runTests",
     "check-types": "tsc"

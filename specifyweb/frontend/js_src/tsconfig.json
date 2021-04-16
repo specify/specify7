@@ -1,9 +1,7 @@
 {
   /* File Inclusion */
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "bower_components", "testBuild"],
   "compilerOptions": {
     /* Basic Options */
     "isolatedModules": true,
