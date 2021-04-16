@@ -2,30 +2,32 @@ import { R } from './components/wbplanview';
 import { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
-  readonly name: string,
-  readonly getLocalizedName: () => string,
-  readonly isRequired: boolean,
-  readonly isHidden: () => number,
-  readonly isRelationship: boolean
+  readonly name: string;
+  readonly getLocalizedName: () => string;
+  readonly isRequired: boolean;
+  readonly isHidden: () => number;
+  readonly isRelationship: boolean;
 }
 
 export interface SchemaModelTableRelationship extends SchemaModelTableField {
-  readonly otherSideName: string,
-  readonly type: RelationshipType,
-  readonly relatedModelName: string,
-  readonly readOnly: boolean,
+  readonly otherSideName: string;
+  readonly type: RelationshipType;
+  readonly relatedModelName: string;
+  readonly readOnly: boolean;
 }
 
-type SpecifyFetch = (filter: {filters: object}) => {
-  fetch: (filter: {limit: number}) => JqueryPromise<DomainTreeDefinitionItem>
-}
+type SpecifyFetch = (filter: {
+  filters: object;
+}) => {
+  fetch: (filter: { limit: number }) => JqueryPromise<DomainTreeDefinitionItem>;
+};
 
 interface SchemaModelTableData {
-  readonly longName: string,
-  readonly getLocalizedName: () => string
-  readonly system: boolean,
-  readonly fields: SchemaModelTableField[]
-  readonly LazyCollection: SpecifyFetch
+  readonly longName: string;
+  readonly getLocalizedName: () => string;
+  readonly system: boolean;
+  readonly fields: SchemaModelTableField[];
+  readonly LazyCollection: SpecifyFetch;
 }
 
 type SchemaModels<T> = Readonly<R<T>>;
@@ -36,32 +38,32 @@ export interface Schema {
 }
 
 interface DomainTreeDefinitionItem {
-  readonly get: (fieldName: string) => number | string,
-  readonly rget: (fieldName: string) => Promise<DomainTreeDefinitionItem>,
-  readonly attributes: {name: string, rankid: number, parent: string}
+  readonly get: (fieldName: string) => number | string;
+  readonly rget: (fieldName: string) => Promise<DomainTreeDefinitionItem>;
+  readonly attributes: { name: string; rankid: number; parent: string };
 }
 
-type DomainRequest = Readonly<R<unknown>>
+type DomainRequest = Readonly<R<unknown>>;
 
 type SpecifyRequest = (param: DomainRequest) => JqueryPromise<void>;
 
 interface DomainTreeDefinitionItems {
   readonly fetch: SpecifyRequest;
-  readonly models: SchemaModels<DomainTreeDefinitionItem>
+  readonly models: SchemaModels<DomainTreeDefinitionItem>;
 }
 
 interface DomainTreeDefinition {
   readonly rget: (
-    fieldName: string,
-  ) => JqueryPromise<DomainTreeDefinitionItems>,
+    fieldName: string
+  ) => JqueryPromise<DomainTreeDefinitionItems>;
 }
 
 export interface JqueryPromise<T> {
-  readonly done: (callback: ((t: T) => void)) => void,
+  readonly done: (callback: (t: T) => void) => void;
 }
 
 export interface Domain {
   readonly getTreeDef: (
-    tableName: string,
-  ) => JqueryPromise<DomainTreeDefinition>,
+    tableName: string
+  ) => JqueryPromise<DomainTreeDefinition>;
 }

@@ -1,11 +1,11 @@
 /*
-* Imports Leaflet, adds new controls and reexports it
-* */
+ * Imports Leaflet, adds new controls and reexports it
+ * */
 
 'use strict';
 
-import L   from 'leaflet';
-import'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 /* This code is needed to properly load the images in the Leaflet CSS */
 // @ts-ignore
@@ -19,18 +19,14 @@ L.Icon.Default.mergeOptions({
 //create a "full screen" button
 // @ts-ignore
 L.Control.FullScreen = L.Control.extend({
-  onAdd: function(map:L.Map) {
+  onAdd: function (map: L.Map) {
     const img = L.DomUtil.create('img') as HTMLImageElement;
     img.style.cursor = 'pointer';
     img.classList.add('full-screen');
 
-    L.DomEvent.on(
-      img, 'click', L.DomEvent.stopPropagation,
-    ).on(
-      img, 'click', L.DomEvent.preventDefault,
-    ).on(
-      img, 'click', () => toggleFullScreen(map),
-    );
+    L.DomEvent.on(img, 'click', L.DomEvent.stopPropagation)
+      .on(img, 'click', L.DomEvent.preventDefault)
+      .on(img, 'click', () => toggleFullScreen(map));
 
     img.src = '/static/img/full_screen.png';
     img.style.width = '50px';
@@ -41,16 +37,16 @@ L.Control.FullScreen = L.Control.extend({
     return img;
   },
 
-  onRemove: () => {
-  },
+  onRemove: () => {},
 });
 
-function toggleFullScreen(map:L.Map) {
+function toggleFullScreen(map: L.Map) {
   // @ts-ignore
   const dialog = $(map._container.closest('.ui-dialog-content'));
-  const [width, height] = dialog[0].parentElement.style.top === '0px' ?
-    [900, 600] :
-    [window.innerWidth, window.innerHeight];
+  const [width, height] =
+    dialog[0].parentElement.style.top === '0px'
+      ? [900, 600]
+      : [window.innerWidth, window.innerHeight];
   dialog.dialog('option', 'width', width);
   dialog.dialog('option', 'height', height);
   map.invalidateSize();
@@ -74,8 +70,7 @@ L.Control.Details = L.Control.extend({
     return details;
   },
 
-  onRemove: () => {
-  },
+  onRemove: () => {},
 });
 
 export default L;

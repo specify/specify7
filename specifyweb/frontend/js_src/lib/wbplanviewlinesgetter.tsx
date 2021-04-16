@@ -9,57 +9,50 @@ import {
 import { fullMappingPathParser } from './wbplanviewhelper';
 import { mappingsTreeToArrayOfMappings } from './wbplanviewtreehelper';
 
-
 export const defaultLineOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
   nullAllowed: true,
   default: null,
 } as const;
 
-
 export function getLinesFromHeaders({
   headers = [],
   runAutomapper,
   baseTableName = '',
 }: {
-  headers?: ListOfHeaders
+  headers?: ListOfHeaders;
 } & (
-  {
-    runAutomapper: true,
-    baseTableName: string,
-  } |
-  {
-    runAutomapper: false,
-    baseTableName?: string,
-  }
-  )): MappingLine[] {
-
-  const lines = headers.map((headerName): MappingLine => (
-    {
+  | {
+      runAutomapper: true;
+      baseTableName: string;
+    }
+  | {
+      runAutomapper: false;
+      baseTableName?: string;
+    }
+)): MappingLine[] {
+  const lines = headers.map(
+    (headerName): MappingLine => ({
       mappingPath: ['0'],
       type: 'existingHeader',
       name: headerName,
       options: defaultLineOptions,
-    }
-  ));
-
-  if (!runAutomapper || typeof baseTableName === 'undefined')
-    return lines;
-
-  const automapperResults: AutoMapperResults = (
-    new automapper({
-      headers,
-      baseTable: baseTableName,
-      scope: 'automapper',
-      checkForExistingMappings: false,
     })
-  ).map();
+  );
 
-  return lines.map(line => {
-    const {name: headerName} = line;
+  if (!runAutomapper || typeof baseTableName === 'undefined') return lines;
+
+  const automapperResults: AutoMapperResults = new automapper({
+    headers,
+    baseTable: baseTableName,
+    scope: 'automapper',
+    checkForExistingMappings: false,
+  }).map();
+
+  return lines.map((line) => {
+    const { name: headerName } = line;
     const automapperMappingPaths = automapperResults[headerName];
-    if (typeof automapperMappingPaths === 'undefined')
-      return line;
+    if (typeof automapperMappingPaths === 'undefined') return line;
     else
       return {
         mappingPath: automapperMappingPaths[0],
@@ -68,18 +61,16 @@ export function getLinesFromHeaders({
         options: defaultLineOptions,
       };
   });
-
 }
 
 export function getLinesFromUploadPlan(
   headers: ListOfHeaders = [],
-  uploadPlan: UploadPlan,
+  uploadPlan: UploadPlan
 ): {
-  readonly baseTableName: string,
-  readonly lines: MappingLine[],
-  readonly mustMatchPreferences: R<boolean>
+  readonly baseTableName: string;
+  readonly lines: MappingLine[];
+  readonly mustMatchPreferences: R<boolean>;
 } {
-
   const lines = getLinesFromHeaders({
     headers,
     runAutomapper: false,
@@ -91,7 +82,7 @@ export function getLinesFromUploadPlan(
   } = uploadPlanToMappingsTree(headers, uploadPlan);
 
   const arrayOfMappings = mappingsTreeToArrayOfMappings(mappingsTree);
-  arrayOfMappings.forEach(fullMappingPath => {
+  arrayOfMappings.forEach((fullMappingPath) => {
     const [
       mappingPath,
       mappingType,
@@ -113,5 +104,4 @@ export function getLinesFromUploadPlan(
     lines,
     mustMatchPreferences,
   };
-
 }

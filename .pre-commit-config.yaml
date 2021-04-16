@@ -36,8 +36,7 @@ repos:
     hooks:
       - id: frontend-tests
         name: TypeScript and QUnit
-        description:
-          Run TypeScript typechecker and automatted tests on .ts files
+        description: Run TypeScript typechecker and automatted tests on .ts files
         entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
         language: script
         types_or: [javascript, jsx, ts, tsx]
@@ -47,7 +46,6 @@ repos:
     rev: v1.0.3
     hooks:
       - id: regex-blacklist
-        verbose: true
         args:
           - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
 
@@ -129,8 +127,8 @@ repos:
       - id: eslint
         files: \.(js|jsx|ts|tsx)?$
         additional_dependencies:
-          - '@typescript-eslint/eslint-plugin@^4.22.0'
-          - '@typescript-eslint/parser@^4.22.0'
+          - "@typescript-eslint/eslint-plugin@^4.22.0"
+          - "@typescript-eslint/parser@^4.22.0"
           - eslint-config-prettier@^8.2.0
           - eslint-plugin-prettier@^3.3.1
           - eslint-plugin-react@^7.23.2

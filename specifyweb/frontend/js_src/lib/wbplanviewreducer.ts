@@ -28,7 +28,8 @@ import {
 import dataModelStorage from './wbplanviewmodel';
 import { getMappingLineData } from './wbplanviewnavigator';
 import {
-  deduplicateMappings, getAutomapperSuggestions,
+  deduplicateMappings,
+  getAutomapperSuggestions,
   goBack,
   mappingPathIsComplete,
   mutateMappingPath,
@@ -36,11 +37,10 @@ import {
   validate,
 } from './wbplanviewutils';
 
-
 const modifyLine = (
   state: MappingState,
   line: number,
-  mappingLine: Partial<MappingLine>,
+  mappingLine: Partial<MappingLine>
 ): MappingLine[] => [
   ...state.lines.slice(0, line),
   {
@@ -50,160 +50,150 @@ const modifyLine = (
   ...state.lines.slice(line + 1),
 ];
 
-
 //actions
 interface OpenBaseTableSelectionAction
   extends Action<'OpenBaseTableSelectionAction'> {
-  referrer?: WBPlanViewStates['type'],
+  referrer?: WBPlanViewStates['type'];
 }
 
 interface SelectTableAction extends Action<'SelectTableAction'> {
-  readonly tableName: string,
-  readonly mappingIsTemplated: boolean,
-  readonly headers: string[]
+  readonly tableName: string;
+  readonly mappingIsTemplated: boolean;
+  readonly headers: string[];
 }
 
-type ToggleHiddenTablesAction = Action<'ToggleHiddenTablesAction'>
+type ToggleHiddenTablesAction = Action<'ToggleHiddenTablesAction'>;
 
 interface UseTemplateAction extends Action<'UseTemplateAction'> {
-  readonly dispatch: (action: WBPlanViewActions) => void,
+  readonly dispatch: (action: WBPlanViewActions) => void;
 }
 
 type BaseTableSelectionActions =
-  OpenBaseTableSelectionAction
+  | OpenBaseTableSelectionAction
   | SelectTableAction
   | ToggleHiddenTablesAction
   | UseTemplateAction;
 
-type CancelTemplateSelectionAction =
-  Action<'CancelTemplateSelectionAction'>
+type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
 
 interface TemplatesLoadedAction extends Action<'TemplatesLoadedAction'> {
   readonly templates: {
-    datasetName: string,
-    uploadPlan: UploadPlan
-  }[],
+    datasetName: string;
+    uploadPlan: UploadPlan;
+  }[];
 }
 
 type TemplateSelectionActions =
-  TemplatesLoadedAction
+  | TemplatesLoadedAction
   | CancelTemplateSelectionAction;
 
-type CancelMappingAction =
-  Action<'CancelMappingAction'>
-  & PublicWBPlanViewProps
-  & PartialWBPlanViewProps;
+type CancelMappingAction = Action<'CancelMappingAction'> &
+  PublicWBPlanViewProps &
+  PartialWBPlanViewProps;
 
 type CommonActions = CancelMappingAction;
 
 export interface OpenMappingScreenAction
   extends Action<'OpenMappingScreenAction'> {
-  readonly mappingIsTemplated: boolean,
-  readonly headers: string[],
-  readonly uploadPlan: UploadPlan | null,
+  readonly mappingIsTemplated: boolean;
+  readonly headers: string[];
+  readonly uploadPlan: UploadPlan | null;
 }
 
-interface SavePlanAction extends Action<'SavePlanAction'>,
-  WBPlanViewWrapperProps,
-  PublicWBPlanViewProps {
-  readonly ignoreValidation?: boolean
+interface SavePlanAction
+  extends Action<'SavePlanAction'>,
+    WBPlanViewWrapperProps,
+    PublicWBPlanViewProps {
+  readonly ignoreValidation?: boolean;
 }
 
-type ToggleMappingViewAction = Action<'ToggleMappingViewAction'>
+type ToggleMappingViewAction = Action<'ToggleMappingViewAction'>;
 
-type ToggleMappingIsTemplatedAction =
-  Action<'ToggleMappingIsTemplatedAction'>
+type ToggleMappingIsTemplatedAction = Action<'ToggleMappingIsTemplatedAction'>;
 
-type ToggleHiddenFieldsAction = Action<'ToggleHiddenFieldsAction'>
+type ToggleHiddenFieldsAction = Action<'ToggleHiddenFieldsAction'>;
 
-type ResetMappingsAction = Action<'ResetMappingsAction'>
+type ResetMappingsAction = Action<'ResetMappingsAction'>;
 
-type ValidationAction = Action<'ValidationAction'>
+type ValidationAction = Action<'ValidationAction'>;
 
-interface ClearMappingLineAction
-  extends Action<'ClearMappingLineAction'> {
-  readonly line: number,
+interface ClearMappingLineAction extends Action<'ClearMappingLineAction'> {
+  readonly line: number;
 }
 
 interface FocusLineAction extends Action<'FocusLineAction'> {
-  readonly line: number,
+  readonly line: number;
 }
 
-type MappingViewMapAction = Action<'MappingViewMapAction'>
+type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
-type AddNewHeaderAction = Action<'AddNewHeaderAction'>
+type AddNewHeaderAction = Action<'AddNewHeaderAction'>;
 
-type AddNewStaticHeaderAction = Action<'AddNewStaticHeaderAction'>
+type AddNewStaticHeaderAction = Action<'AddNewStaticHeaderAction'>;
 
-type OpenSelectElementAction =
-  Action<'OpenSelectElementAction'>
-  & SelectElementPosition
+type OpenSelectElementAction = Action<'OpenSelectElementAction'> &
+  SelectElementPosition;
 
-type CloseSelectElementAction = Action<'CloseSelectElementAction'>
+type CloseSelectElementAction = Action<'CloseSelectElementAction'>;
 
 export interface ChangeSelectElementValueAction
   extends Action<'ChangeSelectElementValueAction'> {
-  readonly value: string,
-  readonly isRelationship: boolean,
-  readonly line: number | 'mappingView',
-  readonly index: number,
-  readonly currentTableName: string,
-  readonly newTableName: string,
+  readonly value: string;
+  readonly isRelationship: boolean;
+  readonly line: number | 'mappingView';
+  readonly index: number;
+  readonly currentTableName: string;
+  readonly newTableName: string;
 }
 
 interface AutomapperSuggestionsLoadedAction
   extends Action<'AutomapperSuggestionsLoadedAction'> {
-  readonly automapperSuggestions: AutomapperSuggestion[],
+  readonly automapperSuggestions: AutomapperSuggestion[];
 }
 
 interface AutomapperSuggestionSelectedAction
   extends Action<'AutomapperSuggestionSelectedAction'> {
-  readonly suggestion: string,
+  readonly suggestion: string;
 }
 
-interface StaticHeaderChangeAction
-  extends Action<'StaticHeaderChangeAction'> {
-  readonly line: number,
-  readonly event: React.ChangeEvent<HTMLTextAreaElement>,
+interface StaticHeaderChangeAction extends Action<'StaticHeaderChangeAction'> {
+  readonly line: number;
+  readonly event: React.ChangeEvent<HTMLTextAreaElement>;
 }
 
 interface ValidationResultClickAction
   extends Action<'ValidationResultClickAction'> {
-  readonly mappingPath: MappingPath,
+  readonly mappingPath: MappingPath;
 }
 
-type OpenMatchingLogicDialogAction =
-  Action<'OpenMatchingLogicDialogAction'>;
+type OpenMatchingLogicDialogAction = Action<'OpenMatchingLogicDialogAction'>;
 
-type CloseMatchingLogicDialogAction =
-  Action<'CloseMatchingLogicDialogAction'>;
+type CloseMatchingLogicDialogAction = Action<'CloseMatchingLogicDialogAction'>;
 
 interface MustMatchPrefChangeAction
   extends Action<'MustMatchPrefChangeAction'> {
-  readonly tableName: string,
-  readonly mustMatch: boolean,
+  readonly tableName: string;
+  readonly mustMatch: boolean;
 }
 
 interface ChangeMatchBehaviorAction
   extends Action<'ChangeMatchBehaviorAction'> {
-  readonly line: number,
-  readonly matchBehavior: MatchBehaviors,
+  readonly line: number;
+  readonly matchBehavior: MatchBehaviors;
 }
 
-interface ToggleAllowNullsAction
-  extends Action<'ToggleAllowNullsAction'> {
-  readonly line: number,
-  readonly allowNull: boolean,
+interface ToggleAllowNullsAction extends Action<'ToggleAllowNullsAction'> {
+  readonly line: number;
+  readonly allowNull: boolean;
 }
 
-interface ChangeDefaultValue
-  extends Action<'ChangeDefaultValue'> {
-  readonly line: number,
-  readonly defaultValue: string | null,
+interface ChangeDefaultValue extends Action<'ChangeDefaultValue'> {
+  readonly line: number;
+  readonly defaultValue: string | null;
 }
 
 export type MappingActions =
-  OpenMappingScreenAction
+  | OpenMappingScreenAction
   | SavePlanAction
   | ToggleMappingViewAction
   | ToggleMappingIsTemplatedAction
@@ -230,112 +220,72 @@ export type MappingActions =
   | ChangeDefaultValue;
 
 export type WBPlanViewActions =
-  BaseTableSelectionActions
+  | BaseTableSelectionActions
   | TemplateSelectionActions
   | CommonActions
   | MappingActions;
 
-
 export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
-
   //BaseTableSelectionState
-  'OpenBaseTableSelectionAction': ({
-    state,
-    action,
-  }) =>
-    (
-      !action.referrer || action.referrer === state.type
-    ) ?
-      (
-        {
+  OpenBaseTableSelectionAction: ({ state, action }) =>
+    !action.referrer || action.referrer === state.type
+      ? {
           type: 'BaseTableSelectionState',
-          showHiddenTables:
-            cache.get<boolean>(
-              'ui',
-              'showHiddenTables',
-            ),
+          showHiddenTables: cache.get<boolean>('ui', 'showHiddenTables'),
         }
-      ) :
-      state,
-  'SelectTableAction': ({action}) => (
-    {
-      ...getDefaultMappingState(),
-      mappingIsTemplated: action.mappingIsTemplated,
+      : state,
+  SelectTableAction: ({ action }) => ({
+    ...getDefaultMappingState(),
+    mappingIsTemplated: action.mappingIsTemplated,
+    baseTableName: action.tableName,
+    lines: getLinesFromHeaders({
+      headers: action.headers,
+      runAutomapper: true,
       baseTableName: action.tableName,
-      lines: getLinesFromHeaders({
-        headers: action.headers,
-        runAutomapper: true,
-        baseTableName: action.tableName,
-      }),
-    }
-  ),
-  'ToggleHiddenTablesAction': ({state}) => (
-    {
-      ...state,
-      showHiddenTables: cache.set(
-        'ui',
-        'showHiddenTables',
-        'showHiddenTables' in state ?
-          !state.showHiddenTables :
-          false,
-        {
-          overwrite: true,
-          priorityCommit: true,
-        },
-      ),
-    }
-  ),
-  'UseTemplateAction': ({action}) => (
-    {
-      type: 'LoadingState',
-      loadingState: {
-        type: 'LoadTemplateSelectionState',
-        dispatchAction: action.dispatch,
-      },
-    }
-  ),
+    }),
+  }),
+  ToggleHiddenTablesAction: ({ state }) => ({
+    ...state,
+    showHiddenTables: cache.set(
+      'ui',
+      'showHiddenTables',
+      'showHiddenTables' in state ? !state.showHiddenTables : false,
+      {
+        overwrite: true,
+        priorityCommit: true,
+      }
+    ),
+  }),
+  UseTemplateAction: ({ action }) => ({
+    type: 'LoadingState',
+    loadingState: {
+      type: 'LoadTemplateSelectionState',
+      dispatchAction: action.dispatch,
+    },
+  }),
 
   //TemplateSelectionState
-  'TemplatesLoadedAction': ({action}) => (
-    {
-      type: 'TemplateSelectionState',
-      templates: action.templates,
-    }
-  ),
-  'CancelTemplateSelectionAction': () => (
-    {
-      type: 'BaseTableSelectionState',
-      showHiddenTables: cache.get<boolean>(
-        'ui',
-        'showHiddenTables',
-      ),
-    }
-  ),
+  TemplatesLoadedAction: ({ action }) => ({
+    type: 'TemplateSelectionState',
+    templates: action.templates,
+  }),
+  CancelTemplateSelectionAction: () => ({
+    type: 'BaseTableSelectionState',
+    showHiddenTables: cache.get<boolean>('ui', 'showHiddenTables'),
+  }),
 
   //common
-  'CancelMappingAction': ({
-    state,
-    action,
-  }) =>
-    void (
-      goBack(action)
-    ) || state,
+  CancelMappingAction: ({ state, action }) => void goBack(action) || state,
 
   //MappingState
-  'OpenMappingScreenAction': ({
-    action,
-  }) => {
-    if (!action.uploadPlan)
-      throw new Error('Upload plan is not defined');
+  OpenMappingScreenAction: ({ action }) => {
+    if (!action.uploadPlan) throw new Error('Upload plan is not defined');
 
     const {
       baseTableName,
       lines,
       mustMatchPreferences,
-    } = getLinesFromUploadPlan(
-      action.headers,
-      action.uploadPlan,
-    );
+    } = getLinesFromUploadPlan(action.headers, action.uploadPlan);
     const newState: MappingState = {
       ...getDefaultMappingState(),
       mappingIsTemplated: action.mappingIsTemplated,
@@ -344,98 +294,64 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       lines,
     };
 
-    if (
-      newState.lines.some(({mappingPath}) =>
-        mappingPath.length === 0,
-      )
-    )
+    if (newState.lines.some(({ mappingPath }) => mappingPath.length === 0))
       throw new Error('Mapping Path is invalid');
 
     return newState;
   },
-  'SavePlanAction': ({
-    state,
-    action,
-  }) =>
-    savePlan(
-      action,
-      mappingState(state),
-      action.ignoreValidation,
+  SavePlanAction: ({ state, action }) =>
+    savePlan(action, mappingState(state), action.ignoreValidation),
+  ToggleMappingViewAction: ({ state }) => ({
+    ...mappingState(state),
+    showMappingView: cache.set(
+      'ui',
+      'showMappingView',
+      !mappingState(state).showMappingView,
+      {
+        overwrite: true,
+        priorityCommit: true,
+      }
     ),
-  'ToggleMappingViewAction': ({state}) => (
-    {
-      ...mappingState(state),
-      showMappingView: cache.set(
-        'ui',
-        'showMappingView',
-        !mappingState(state).showMappingView,
-        {
-          overwrite: true,
-          priorityCommit: true,
-        }),
-    }
-  ),
-  'ToggleMappingIsTemplatedAction': ({state}) => (
-    {
-      ...mappingState(state),
-      mappingIsTemplated:
-        !mappingState(state).mappingIsTemplated,
-    }
-  ),
-  'ValidationAction': ({state}) =>
-    validate(mappingState(state)),
-  'ResetMappingsAction': ({state}) => (
-    {
-      ...mappingState(state),
-      lines: mappingState(state).lines.map(line => (
-        {
-          ...line,
-          mappingPath: ['0'],
-        }
-      )),
-      changesMade: true,
-      mappingsAreValidated: false,
-      validationResults: [],
-    }
-  ),
-  'ClearMappingLineAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      lines: modifyLine(
-        mappingState(state),
-        action.line,
-        {
-          mappingPath: ['0'],
-        },
-      ),
-      changesMade: true,
-      mappingsAreValidated: false,
-    }
-  ),
-  'FocusLineAction': ({
-    state,
-    action,
-  }) => {
+  }),
+  ToggleMappingIsTemplatedAction: ({ state }) => ({
+    ...mappingState(state),
+    mappingIsTemplated: !mappingState(state).mappingIsTemplated,
+  }),
+  ValidationAction: ({ state }) => validate(mappingState(state)),
+  ResetMappingsAction: ({ state }) => ({
+    ...mappingState(state),
+    lines: mappingState(state).lines.map((line) => ({
+      ...line,
+      mappingPath: ['0'],
+    })),
+    changesMade: true,
+    mappingsAreValidated: false,
+    validationResults: [],
+  }),
+  ClearMappingLineAction: ({ state, action }) => ({
+    ...mappingState(state),
+    lines: modifyLine(mappingState(state), action.line, {
+      mappingPath: ['0'],
+    }),
+    changesMade: true,
+    mappingsAreValidated: false,
+  }),
+  FocusLineAction: ({ state, action }) => {
     if (action.line >= mappingState(state).lines.length)
       throw new Error(`Tried to focus a line that doesn't exist`);
 
-    const focusedLineMappingPath =
-      mappingState(state).lines[action.line].mappingPath;
+    const focusedLineMappingPath = mappingState(state).lines[action.line]
+      .mappingPath;
     return {
       ...mappingState(state),
       focusedLine: action.line,
-      mappingView:
-        mappingPathIsComplete(focusedLineMappingPath) ?
-          focusedLineMappingPath :
-          mappingState(state).mappingView,
+      mappingView: mappingPathIsComplete(focusedLineMappingPath)
+        ? focusedLineMappingPath
+        : mappingState(state).mappingView,
     };
   },
-  'MappingViewMapAction': ({state}) => {
-    const mappingViewMappingPath =
-      mappingState(state).mappingView;
+  MappingViewMapAction: ({ state }) => {
+    const mappingViewMappingPath = mappingState(state).mappingView;
     const focusedLine = mappingState(state).focusedLine;
     if (
       !mappingPathIsComplete(mappingViewMappingPath) ||
@@ -458,105 +374,86 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       mappingsAreValidated: false,
     };
   },
-  'AddNewHeaderAction': ({state}) => (
-    {
-      ...mappingState(state),
-      newHeaderId: mappingState(state).newHeaderId + 1,
-      lines: [
-        ...mappingState(state).lines,
-        {
-          name: `New Header ${
-            mappingState(state).newHeaderId
-          }`,
-          type: 'newColumn',
-          mappingPath: ['0'],
-          options: defaultLineOptions,
-        },
-      ],
-      changesMade: true,
-      mappingsAreValidated: false,
-    }
-  ),
-  'AddNewStaticHeaderAction': ({state}) => (
-    {
-      ...mappingState(state),
-      lines: [
-        ...mappingState(state).lines,
-        {
-          name: '',
-          type: 'newStaticColumn',
-          mappingPath: ['0'],
-          options: defaultLineOptions,
-        },
-      ],
-      changesMade: true,
-      mappingsAreValidated: false,
-    }
-  ),
-  'ToggleHiddenFieldsAction': ({state}) => (
-    {
-      ...mappingState(state),
-      showHiddenFields: cache.set(
-        'ui',
-        'showHiddenFields',
-        !mappingState(state).showHiddenFields,
-        {
-          overwrite: true,
-          priorityCommit: true,
-        }),
-      revealHiddenFieldsClicked: true,
-    }
-  ),
-  'OpenSelectElementAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      openSelectElement: {
-        line: action.line,
-        index: action.index,
+  AddNewHeaderAction: ({ state }) => ({
+    ...mappingState(state),
+    newHeaderId: mappingState(state).newHeaderId + 1,
+    lines: [
+      ...mappingState(state).lines,
+      {
+        name: `New Header ${mappingState(state).newHeaderId}`,
+        type: 'newColumn',
+        mappingPath: ['0'],
+        options: defaultLineOptions,
       },
-      automapperSuggestionsPromise:
-        typeof mappingState(state).lines[action.line].mappingPath[
-          action.index] === 'undefined' ?
-          undefined :
-          getAutomapperSuggestions({
-              lines: mappingState(state).lines,
-              line: action.line,
-              index: action.index,
-              baseTableName: mappingState(state).baseTableName,
-            },
-          ),
-    }
-  ),
-  'CloseSelectElementAction': ({state}) =>
-    state.type === 'MappingState' ?
-      (
-        {
+    ],
+    changesMade: true,
+    mappingsAreValidated: false,
+  }),
+  AddNewStaticHeaderAction: ({ state }) => ({
+    ...mappingState(state),
+    lines: [
+      ...mappingState(state).lines,
+      {
+        name: '',
+        type: 'newStaticColumn',
+        mappingPath: ['0'],
+        options: defaultLineOptions,
+      },
+    ],
+    changesMade: true,
+    mappingsAreValidated: false,
+  }),
+  ToggleHiddenFieldsAction: ({ state }) => ({
+    ...mappingState(state),
+    showHiddenFields: cache.set(
+      'ui',
+      'showHiddenFields',
+      !mappingState(state).showHiddenFields,
+      {
+        overwrite: true,
+        priorityCommit: true,
+      }
+    ),
+    revealHiddenFieldsClicked: true,
+  }),
+  OpenSelectElementAction: ({ state, action }) => ({
+    ...mappingState(state),
+    openSelectElement: {
+      line: action.line,
+      index: action.index,
+    },
+    automapperSuggestionsPromise:
+      typeof mappingState(state).lines[action.line].mappingPath[
+        action.index
+      ] === 'undefined'
+        ? undefined
+        : getAutomapperSuggestions({
+            lines: mappingState(state).lines,
+            line: action.line,
+            index: action.index,
+            baseTableName: mappingState(state).baseTableName,
+          }),
+  }),
+  CloseSelectElementAction: ({ state }) =>
+    state.type === 'MappingState'
+      ? {
           ...mappingState(state),
           openSelectElement: undefined,
           automapperSuggestionsPromise: undefined,
           automapperSuggestions: undefined,
         }
-      ) :
-      state,
-  'ChangeSelectElementValueAction': ({
-    state,
-    action,
-  }) => {
-    const newMappingPath =
-      mutateMappingPath({
-          lines: mappingState(state).lines,
-          mappingView: mappingState(state).mappingView,
-          line: action.line,
-          index: action.index,
-          value: action.value,
-          isRelationship: action.isRelationship,
-          currentTableName: action.currentTableName,
-          newTableName: action.newTableName,
-        },
-      );
+      : state,
+  ChangeSelectElementValueAction: ({ state, action }) => {
+    const newMappingPath = mutateMappingPath({
+      lines: mappingState(state).lines,
+      mappingView: mappingState(state).mappingView,
+      line: action.line,
+      index: action.index,
+      value: action.value,
+      isRelationship: action.isRelationship,
+      currentTableName: action.currentTableName,
+      newTableName: action.newTableName,
+    });
 
     if (action.line === 'mappingView')
       return {
@@ -567,16 +464,10 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     return {
       ...mappingState(state),
       lines: deduplicateMappings(
-        modifyLine(
-          mappingState(state),
-          action.line,
-          {
-            mappingPath: newMappingPath,
-          },
-        ),
-        mappingState(
-          state,
-        ).openSelectElement?.line ?? false,
+        modifyLine(mappingState(state), action.line, {
+          mappingPath: newMappingPath,
+        }),
+        mappingState(state).openSelectElement?.line ?? false
       ),
       openSelectElement: undefined,
       automapperSuggestionsPromise: undefined,
@@ -585,132 +476,93 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       mappingsAreValidated: false,
     };
   },
-  'AutomapperSuggestionsLoadedAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      automapperSuggestions: action.automapperSuggestions,
-      automapperSuggestionsPromise: undefined,
-    }
-  ),
-  'AutomapperSuggestionSelectedAction': ({
-    state,
-    action: {suggestion},
-  }) => (
-    {
-      ...mappingState(state),
-      lines: modifyLine(
-        mappingState(state),
-        mappingState(state).openSelectElement!.line,
-        {
-          mappingPath: mappingState(
-            state,
-          ).automapperSuggestions![~~suggestion - 1].mappingPath,
-        },
-      ),
-      openSelectElement: undefined,
-      automapperSuggestionsPromise: undefined,
-      automapperSuggestions: undefined,
-      changesMade: true,
-      mappingsAreValidated: false,
-    }
-  ),
-  'StaticHeaderChangeAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      lines: modifyLine(
-        mappingState(state),
-        action.line,
-        {
-          name: action.event.target.value,
-        },
-      ),
-    }
-  ),
-  'ValidationResultClickAction': ({
-    state,
-    action: {mappingPath},
-  }) => (
-    {
-      ...mappingState(state),
-      mappingView: mappingPath,
-    }
-  ),
-  'OpenMatchingLogicDialogAction': ({
-    state: originalState,
-  }) => {
-
+  AutomapperSuggestionsLoadedAction: ({ state, action }) => ({
+    ...mappingState(state),
+    automapperSuggestions: action.automapperSuggestions,
+    automapperSuggestionsPromise: undefined,
+  }),
+  AutomapperSuggestionSelectedAction: ({ state, action: { suggestion } }) => ({
+    ...mappingState(state),
+    lines: modifyLine(
+      mappingState(state),
+      mappingState(state).openSelectElement!.line,
+      {
+        mappingPath: mappingState(state).automapperSuggestions![
+          ~~suggestion - 1
+        ].mappingPath,
+      }
+    ),
+    openSelectElement: undefined,
+    automapperSuggestionsPromise: undefined,
+    automapperSuggestions: undefined,
+    changesMade: true,
+    mappingsAreValidated: false,
+  }),
+  StaticHeaderChangeAction: ({ state, action }) => ({
+    ...mappingState(state),
+    lines: modifyLine(mappingState(state), action.line, {
+      name: action.event.target.value,
+    }),
+  }),
+  ValidationResultClickAction: ({ state, action: { mappingPath } }) => ({
+    ...mappingState(state),
+    mappingView: mappingPath,
+  }),
+  OpenMatchingLogicDialogAction: ({ state: originalState }) => {
     const state = mappingState(originalState);
 
-    const arrayOfMappingPaths = state.lines.map(line =>
-      line.mappingPath,
-    );
-    const arrayOfMappingLineData = arrayOfMappingPaths.flatMap(
-      mappingPath =>
-        getMappingLineData({
-          mappingPath,
-          baseTableName: state.baseTableName,
-          customSelectType: 'OPENED_LIST',
-        }).filter((mappingElementData, index, list) => {
+    const arrayOfMappingPaths = state.lines.map((line) => line.mappingPath);
+    const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
+      getMappingLineData({
+        mappingPath,
+        baseTableName: state.baseTableName,
+        customSelectType: 'OPENED_LIST',
+      }).filter((mappingElementData, index, list) => {
+        if (
+          index === 0 || // exclude base table
+          // exclude -to-many
+          mappingElementData.customSelectSubtype === 'toMany'
+        )
+          return false;
+
+        if (typeof list[index - 1] === 'undefined') {
           if (
-            index === 0 ||  // exclude base table
-            // exclude -to-many
-            mappingElementData.customSelectSubtype === 'toMany'
+            state.baseTableName === 'collectionobject' &&
+            list[index].tableName === 'collectingevent'
           )
             return false;
+        } else {
+          // exclude direct child of -to-many
+          if (list[index - 1].customSelectSubtype === 'toMany') return false;
 
-          if (typeof list[index - 1] === 'undefined') {
+          // exclude embedded collecting event
+          if (
+            schema.embeddedCollectingEvent === true &&
+            list[index - 1].tableName === 'collectionobject' &&
+            list[index].tableName === 'collectingevent'
+          )
+            return false;
+        }
 
-            if (
-              state.baseTableName === 'collectionobject' &&
-              list[index].tableName === 'collectingevent'
-            )
-              return false;
-
-          }
-          else {
-
-            // exclude direct child of -to-many
-            if (list[index - 1].customSelectSubtype === 'toMany')
-              return false;
-
-            // exclude embedded collecting event
-            if (
-              schema.embeddedCollectingEvent === true &&
-              list[index - 1].tableName === 'collectionobject' &&
-              list[index].tableName === 'collectingevent'
-            )
-              return false;
-          }
-
-          return true;
-        }),
+        return true;
+      })
     );
 
-    const arrayOfTables = arrayOfMappingLineData.map(
-      mappingElementData =>
-        mappingElementData.tableName || '',
-    ).filter(tableName =>
-      tableName &&
-      typeof dataModelStorage.tables[tableName] !== 'undefined' &&
-      !tableName.endsWith('attribute') &&
-      (
-        //exclude embedded paleo context
-        schema.embeddedPaleoContext === false ||
-        tableName !== 'paleocontext'
-      ),
-    );
+    const arrayOfTables = arrayOfMappingLineData
+      .map((mappingElementData) => mappingElementData.tableName || '')
+      .filter(
+        (tableName) =>
+          tableName &&
+          typeof dataModelStorage.tables[tableName] !== 'undefined' &&
+          !tableName.endsWith('attribute') &&
+          //exclude embedded paleo context
+          (schema.embeddedPaleoContext === false ||
+            tableName !== 'paleocontext')
+      );
     const distinctListOfTables = [...new Set(arrayOfTables)];
     const mustMatchPreferences = {
       ...Object.fromEntries(
-        distinctListOfTables.map(tableName =>
-          [tableName, false],
-        ),
+        distinctListOfTables.map((tableName) => [tableName, false])
       ),
       ...state.mustMatchPreferences,
     };
@@ -721,79 +573,45 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       mustMatchPreferences,
     };
   },
-  'CloseMatchingLogicDialogAction': ({state}) => (
-    {
-      ...mappingState(state),
-      displayMatchingOptionsDialog: false,
-    }
-  ),
-  'MustMatchPrefChangeAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      mustMatchPreferences: {
-        ...mappingState(state).mustMatchPreferences,
-        [action.tableName]: action.mustMatch,
+  CloseMatchingLogicDialogAction: ({ state }) => ({
+    ...mappingState(state),
+    displayMatchingOptionsDialog: false,
+  }),
+  MustMatchPrefChangeAction: ({ state, action }) => ({
+    ...mappingState(state),
+    mustMatchPreferences: {
+      ...mappingState(state).mustMatchPreferences,
+      [action.tableName]: action.mustMatch,
+    },
+  }),
+  ChangeMatchBehaviorAction: ({ state, action }) => ({
+    ...mappingState(state),
+    lines: modifyLine(mappingState(state), action.line, {
+      ...mappingState(state).lines[action.line],
+      options: {
+        ...mappingState(state).lines[action.line].options,
+        matchBehavior: action.matchBehavior,
       },
-    }
-  ),
-  'ChangeMatchBehaviorAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      lines: modifyLine(
-        mappingState(state),
-        action.line,
-        {
-          ...mappingState(state).lines[action.line],
-          options: {
-            ...mappingState(state).lines[action.line].options,
-            matchBehavior: action.matchBehavior,
-          },
-        },
-      ),
-    }
-  ),
-  'ToggleAllowNullsAction': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      lines: modifyLine(
-        mappingState(state),
-        action.line,
-        {
-          ...mappingState(state).lines[action.line],
-          options: {
-            ...mappingState(state).lines[action.line].options,
-            nullAllowed: action.allowNull,
-          },
-        },
-      ),
-    }
-  ),
-  'ChangeDefaultValue': ({
-    state,
-    action,
-  }) => (
-    {
-      ...mappingState(state),
-      lines: modifyLine(
-        mappingState(state),
-        action.line,
-        {
-          ...mappingState(state).lines[action.line],
-          options: {
-            ...mappingState(state).lines[action.line].options,
-            default: action.defaultValue,
-          },
-        },
-      ),
-    }
-  ),
+    }),
+  }),
+  ToggleAllowNullsAction: ({ state, action }) => ({
+    ...mappingState(state),
+    lines: modifyLine(mappingState(state), action.line, {
+      ...mappingState(state).lines[action.line],
+      options: {
+        ...mappingState(state).lines[action.line].options,
+        nullAllowed: action.allowNull,
+      },
+    }),
+  }),
+  ChangeDefaultValue: ({ state, action }) => ({
+    ...mappingState(state),
+    lines: modifyLine(mappingState(state), action.line, {
+      ...mappingState(state).lines[action.line],
+      options: {
+        ...mappingState(state).lines[action.line].options,
+        default: action.defaultValue,
+      },
+    }),
+  }),
 });

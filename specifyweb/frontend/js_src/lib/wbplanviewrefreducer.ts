@@ -7,15 +7,13 @@ import { WBPlanViewActions } from './wbplanviewreducer';
 import { WBPlanViewStates } from './components/wbplanviewstatereducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
-export type AutoScrollTypes =
-  'listOfMappings'
-  | 'mappingView';
+export type AutoScrollTypes = 'listOfMappings' | 'mappingView';
 
 export interface RefMappingState extends State<'RefMappingState'> {
-  unloadProtectIsSet: boolean,
-  mappingViewHeight: number,
-  mappingViewHeightChangeTimeout: NodeJS.Timeout,
-  autoscroll: Record<AutoScrollTypes, boolean>,
+  unloadProtectIsSet: boolean;
+  mappingViewHeight: number;
+  mappingViewHeightChangeTimeout: NodeJS.Timeout;
+  autoscroll: Record<AutoScrollTypes, boolean>;
 }
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
@@ -27,31 +25,28 @@ export const refInitialState: RefUndefinedState = {
 };
 
 export const refStatesMapper = {
-  'MappingState': 'RefMappingState',
+  MappingState: 'RefMappingState',
 } as const;
 const flippedRefStatesMapper = Object.fromEntries(
-  Object.entries(refStatesMapper).map(([k, v]) =>
-    [v, k],
-  ),
+  Object.entries(refStatesMapper).map(([k, v]) => [v, k])
 );
 
 type RefChangeStateAction = Action<'RefChangeStateAction'>;
 type RefSetUnloadProtectAction = Action<'RefSetUnloadProtectAction'>;
 type RefUnsetUnloadProtectAction = Action<'RefUnsetUnloadProtectAction'>;
 
-interface MappingViewResizeAction
-  extends Action<'MappingViewResizeAction'> {
+interface MappingViewResizeAction extends Action<'MappingViewResizeAction'> {
   height: number;
 }
 
 interface AutoscrollStatusChangeAction
   extends Action<'AutoscrollStatusChangeAction'> {
-  autoscrollType: AutoScrollTypes,
-  status: boolean,
+  autoscrollType: AutoScrollTypes;
+  status: boolean;
 }
 
 export type RefActions =
-  RefChangeStateAction
+  | RefChangeStateAction
   | RefSetUnloadProtectAction
   | RefUnsetUnloadProtectAction
   | MappingViewResizeAction
@@ -59,88 +54,52 @@ export type RefActions =
 
 type RefActionsWithPayload = RefActions & {
   payload: {
-    refObject: React.MutableRefObject<RefStates>,
-    state: WBPlanViewStates,
-    stateDispatch: (action: WBPlanViewActions) => void,
-    props: WBPlanViewProps,
-  }
+    refObject: React.MutableRefObject<RefStates>;
+    state: WBPlanViewStates;
+    stateDispatch: (action: WBPlanViewActions) => void;
+    props: WBPlanViewProps;
+  };
 };
 
 export function getRefMappingState(
   refObject: React.MutableRefObject<RefStates>,
   state: WBPlanViewStates,
-  quiet = false,
+  quiet = false
 ): React.MutableRefObject<RefMappingState> {
-
-  const refWrongStateMessage = 'Tried to change the refObject while' +
-    'in a wrong state';
+  const refWrongStateMessage =
+    'Tried to change the refObject while' + 'in a wrong state';
 
   if (state.type !== flippedRefStatesMapper[refObject.current.type])
-    if (quiet)
-      console.error(refWrongStateMessage);
-    else
-      throw Error(refWrongStateMessage);
+    if (quiet) console.error(refWrongStateMessage);
+    else throw Error(refWrongStateMessage);
 
   return refObject as React.MutableRefObject<RefMappingState>;
-
 }
 
 export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
-  'RefChangeStateAction': ({
-    payload: {
-      refObject,
-      state,
-    },
-  }) => {
+  RefChangeStateAction: ({ payload: { refObject, state } }) => {
     refObject.current = {
-      type: refStatesMapper[
-        state.type as keyof typeof refStatesMapper
-        ] ?? 'RefUndefinedState',
+      type:
+        refStatesMapper[state.type as keyof typeof refStatesMapper] ??
+        'RefUndefinedState',
     };
   },
-  'RefSetUnloadProtectAction': ({
-    payload: {
-      refObject,
-      props,
-      state,
-    },
-  }) => {
+  RefSetUnloadProtectAction: ({ payload: { refObject, props, state } }) => {
     props.removeUnloadProtect();
-    getRefMappingState(
-      refObject,
-      state,
-    ).current.unloadProtectIsSet = false;
+    getRefMappingState(refObject, state).current.unloadProtectIsSet = false;
   },
-  'RefUnsetUnloadProtectAction': ({
-    payload: {
-      refObject,
-      props,
-      state,
-    },
-  }) => {
+  RefUnsetUnloadProtectAction: ({ payload: { refObject, props, state } }) => {
     props.removeUnloadProtect();
-    getRefMappingState(
-      refObject,
-      state,
-    ).current.unloadProtectIsSet = false;
+    getRefMappingState(refObject, state).current.unloadProtectIsSet = false;
   },
-  'MappingViewResizeAction': ({
+  MappingViewResizeAction: ({
     height: initialHeight,
-    payload: {
-      refObject,
-      state,
-      stateDispatch,
-    },
+    payload: { refObject, state, stateDispatch },
   }) => {
-    const refMappingObject = getRefMappingState(
-      refObject,
-      state,
-    );
+    const refMappingObject = getRefMappingState(refObject, state);
 
     if (refMappingObject.current.mappingViewHeightChangeTimeout)
-      clearTimeout(
-        refMappingObject.current.mappingViewHeightChangeTimeout,
-      );
+      clearTimeout(refMappingObject.current.mappingViewHeightChangeTimeout);
 
     let height = initialHeight;
     if (initialHeight <= minMappingViewHeight) {
@@ -151,33 +110,21 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     }
 
     refMappingObject.current.mappingViewHeight = height;
-    refMappingObject.current.mappingViewHeightChangeTimeout =
-      setTimeout(
-        () =>
-          cache.set(
-            'ui',
-            'mappingViewHeight',
-            height,
-            {
-              overwrite: true,
-              priorityCommit: true,
-            },
-          ),
-        150,
-      );
+    refMappingObject.current.mappingViewHeightChangeTimeout = setTimeout(
+      () =>
+        cache.set('ui', 'mappingViewHeight', height, {
+          overwrite: true,
+          priorityCommit: true,
+        }),
+      150
+    );
   },
-  'AutoscrollStatusChangeAction': ({
+  AutoscrollStatusChangeAction: ({
     autoscrollType,
     status,
-    payload: {
-      refObject,
-      state,
-    },
+    payload: { refObject, state },
   }) => {
-    const refMappingObject = getRefMappingState(
-      refObject,
-      state,
-    );
+    const refMappingObject = getRefMappingState(refObject, state);
 
     refMappingObject.current.autoscroll ??= {
       mappingView: false,
