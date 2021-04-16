@@ -12,7 +12,7 @@
 # and check your files.  They would run only only on staged files that
 # had changes.
 #
-# You can manuall trigger the hooks like this:
+# You can manually trigger the hooks like this:
 # pre-commit run
 #
 # You can tell it to check specific files:
@@ -21,8 +21,8 @@
 # Or give it all files:
 # pre-commit run --all-files
 #
-# Finnaly, you can disable some hooks by listing them in the `SKIP`
-# variable. Exapmle:
+# Finally, you can disable some hooks by listing them in the `SKIP`
+# variable. Example:
 # SKIP=flake8,black git commit -m "foo"
 
 default_language_version:
@@ -32,115 +32,141 @@ default_stages:
   - merge-commit
 exclude: ^(lib|.idea)
 repos:
- - repo: local
-   hooks:
-    - id: frontend-tests
-      name: TypeScript and QUnit
-      description: Run TypeScript typechecker and automatted tests on .ts files
-      entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
-      language: script
-      types_or: [javascript, jsx, ts, tsx]
-      pass_filenames: false
+  - repo: local
+    hooks:
+      - id: frontend-tests
+        name: TypeScript and QUnit
+        description:
+          Run TypeScript typechecker and automatted tests on .ts files
+        entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
+        language: script
+        types_or: [javascript, jsx, ts, tsx]
+        pass_filenames: false
 
- - repo: https://github.com/maxxxxxdlp/pre-commit
-   rev: v1.0.2
-   hooks:
-    - id: regex-blacklist
-      args:
-       - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
+  - repo: https://github.com/maxxxxxdlp/pre-commit
+    rev: v1.0.3
+    hooks:
+      - id: regex-blacklist
+        verbose: true
+        args:
+          - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
 
-# global hooks:
- - repo: https://github.com/pre-commit/pre-commit-hooks
-   rev: v3.4.0
-   hooks:
-    - id: trailing-whitespace
-    - id: end-of-file-fixer
-    - id: check-yaml
-    - id: check-added-large-files
-    - id: check-case-conflict
-    - id: check-docstring-first
-    - id: check-json
-    - id: check-merge-conflict
-    - id: check-symlinks
-    - id: detect-private-key
-    - id: mixed-line-ending
-    - id: requirements-txt-fixer
+  # global hooks:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: detect-private-key
+      - id: mixed-line-ending
+      - id: requirements-txt-fixer
 
- - repo: https://github.com/psf/black
-   rev: 20.8b1
-   hooks:
-    - id: black
-      args:
-       - --line-length=72
+  - repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+        args:
+          - --line-length=72
 
- - repo: https://gitlab.com/pycqa/flake8
-   rev: 3.9.0
-   hooks:
-    - id: flake8
-      additional_dependencies: [flake8-bugbear]
-      args:
-       # these settting are needed to make flake8 compatable with black
-       - --max-line-length=88
-       - --select=C,E,F,W,B,B950
-       - --extend-ignore=E203,E501
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.0
+    hooks:
+      - id: flake8
+        additional_dependencies: [flake8-bugbear]
+        args:
+          # these settings are needed to make flake8 compatible with black
+          - --max-line-length=88
+          - --select=C,E,F,W,B,B950
+          - --extend-ignore=E203,E501
 
- - repo: https://github.com/PyCQA/pydocstyle
-   rev: 6.0.0
-   hooks:
-    - id: pydocstyle
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.0.0
+    hooks:
+      - id: pydocstyle
 
- - repo: https://github.com/pre-commit/mirrors-mypy
-   rev: v0.812
-   hooks:
-    - id: mypy
-      exclude: ^docs/
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.812
+    hooks:
+      - id: mypy
+        exclude: ^docs/
 
- - repo: https://github.com/asottile/pyupgrade
-   rev: v2.12.0
-   hooks:
-    - id: pyupgrade
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.12.0
+    hooks:
+      - id: pyupgrade
 
- - repo: https://github.com/asottile/setup-cfg-fmt
-   rev: v1.17.0
-   hooks:
-    - id: setup-cfg-fmt
+  - repo: https://github.com/asottile/setup-cfg-fmt
+    rev: v1.17.0
+    hooks:
+      - id: setup-cfg-fmt
 
- - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
-   rev: v1.1.1
-   hooks:
-    - id: dockerfile_lint
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.2.1
+    hooks:
+      - id: prettier
+        files: \.(js|jsx|ts|tsx|json|json5|yaml|css|scc|sass|html|less)?$
 
- - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-   rev: v1.2.1
-   hooks:
-    - id: python-safety-dependencies-check
+  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
+    rev: 0.0.2
+    hooks:
+      - id: stylelint
+        files: \.(css|scss|sass|js|jsx|ts|tsx)$
+        additional_dependencies:
+          - stylelint@^13.8.0
+          - stylelint-config-prettier@^8.0.2
+          - stylelint-config-standard@^20.0.0
 
- - repo: https://github.com/lovesegfault/beautysh
-   rev: 6.0.1
-   hooks:
-    - id: beautysh
-      args:
-       - --indent-size=2
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v7.24.0
+    hooks:
+      - id: eslint
+        files: \.(js|jsx|ts|tsx)?$
+        additional_dependencies:
+          - '@typescript-eslint/eslint-plugin@^4.22.0'
+          - '@typescript-eslint/parser@^4.22.0'
+          - eslint-config-prettier@^8.2.0
+          - eslint-plugin-prettier@^3.3.1
+          - eslint-plugin-react@^7.23.2
+          - eslint-plugin-unicorn@^29.0.0
+          - prettier-eslint@^12.0.0
 
- - repo: https://github.com/jorisroovers/gitlint
-   rev: v0.15.0
-   hooks:
-    - id: gitlint
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
+    rev: v1.1.1
+    hooks:
+      - id: dockerfile_lint
 
- - repo: https://github.com/IamTheFij/docker-pre-commit
-   rev: v2.0.0
-   hooks:
-    - id: docker-compose-check
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.2.1
+    hooks:
+      - id: python-safety-dependencies-check
 
- - repo: https://github.com/markdownlint/markdownlint
-   rev: v0.11.0
-   hooks:
-    - id: markdownlint
-      args:
-       - --git-recurse
+  - repo: https://github.com/lovesegfault/beautysh
+    rev: 6.0.1
+    hooks:
+      - id: beautysh
+        args:
+          - --indent-size=2
 
- - repo: https://github.com/sirosen/check-jsonschema
-   rev: 0.3.0
-   hooks:
-    - id: check-github-workflows
-    - id: check-github-actions
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.15.0
+    hooks:
+      - id: gitlint
+
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v2.0.0
+    hooks:
+      - id: docker-compose-check
+
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.11.0
+    hooks:
+      - id: markdownlint
+        args:
+          - --git-recurse
