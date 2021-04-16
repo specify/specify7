@@ -97,7 +97,6 @@ export default function (): void {
         ],
         {
           'Cataloged by': [['cataloger', 'lastname']],
-          'No. of Specimens': [['catalognumber']],
           'End Date Collected': [['collectingevent', 'enddate']],
           Remarks: [['collectingevent', 'remarks']],
           'Collection Method': [['collectingevent', 'method']],
