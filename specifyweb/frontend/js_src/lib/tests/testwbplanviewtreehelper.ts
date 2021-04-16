@@ -1,10 +1,8 @@
-import { MappingPath } from '../components/wbplanviewmapper';
+import type { MappingPath } from '../components/wbplanviewmapper';
 import * as WbPlanViewTreeHelper from '../wbplanviewtreehelper';
 import { loadDataModel, runTest } from './testmain';
 
-
-export default function(): void {
-
+export default function (): void {
   loadDataModel();
 
   runTest(
@@ -13,53 +11,41 @@ export default function(): void {
       [
         [
           {
-            'accession': {
-              'accessionagents': {
+            accession: {
+              accessionagents: {
                 '#1': {
-                  'agent': [
-                    'firstname',
-                  ],
+                  agent: ['firstname'],
                 },
               },
             },
-            'collector': [
-              'firstname',
-            ],
+            collector: ['firstname'],
           },
           {
-            'accession': {
-              'accessionagents': {
+            accession: {
+              accessionagents: {
                 '#2': {
-                  'agent': [
-                    'lastname',
-                  ],
+                  agent: ['lastname'],
                 },
               },
             },
           },
         ],
         {
-          'accession': {
-            'accessionagents': {
+          accession: {
+            accessionagents: {
               '#1': {
-                'agent': [
-                  'firstname',
-                ],
+                agent: ['firstname'],
               },
               '#2': {
-                'agent': [
-                  'lastname',
-                ],
+                agent: ['lastname'],
               },
             },
           },
-          'collector': [
-            'firstname',
-          ],
+          collector: ['firstname'],
         },
       ],
     ],
-    WbPlanViewTreeHelper.deepMergeObject,
+    WbPlanViewTreeHelper.deepMergeObject
   );
 
   runTest(
@@ -68,17 +54,17 @@ export default function(): void {
       [
         [['accession', 'accessionagents', '#1', 'agent']],
         {
-          'accession': {
-            'accessionagents': {
+          accession: {
+            accessionagents: {
               '#1': {
-                'agent': {},
+                agent: {},
               },
             },
           },
         },
       ],
     ],
-    WbPlanViewTreeHelper.arrayToTree,
+    WbPlanViewTreeHelper.arrayToTree
   );
 
   runTest(
@@ -94,17 +80,17 @@ export default function(): void {
           false,
         ],
         {
-          'accession': {
-            'accessionagents': {
+          accession: {
+            accessionagents: {
               '#1': {
-                'agent': {
-                  'firstname': {},
-                  'lastname': {},
+                agent: {
+                  firstname: {},
+                  lastname: {},
                 },
               },
               '#2': {
-                'agent': {
-                  'firstname': {},
+                agent: {
+                  firstname: {},
                 },
               },
             },
@@ -112,7 +98,6 @@ export default function(): void {
         },
       ],
     ],
-    WbPlanViewTreeHelper.arrayOfMappingsToMappingsTree,
+    WbPlanViewTreeHelper.arrayOfMappingsToMappingsTree
   );
-
 }

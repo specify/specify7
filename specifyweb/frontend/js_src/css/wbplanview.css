@@ -51,7 +51,7 @@
 
 .wbplanview-readonly-badge {
   color: var(--error);
-  font-weight: bold;
+  font-weight: 700;
 }
 
 /* CONTAINER */
@@ -163,7 +163,6 @@
   border-color: var(--b4);
 }
 
-
 /* MAPPING GENERAL */
 .mapping-line-list {
   flex: 1;
@@ -190,7 +189,6 @@
   margin-bottom: 0.4rem;
 }
 
-
 /* MAPPING LINE */
 .wbplanview-mapping-line {
   display: contents;
@@ -209,7 +207,6 @@
   background: var(--b2);
 }
 
-
 /* MAPPING LINE CONTROLS */
 .wbplanview-mapping-line-controls button {
   border: none;
@@ -227,7 +224,6 @@
   width: calc(2 * var(--white-space));
   height: calc(2 * var(--white-space));
 }
-
 
 /* MAPPINGS LINE ELEMENTS */
 .wbplanview-mapping-line-header {
@@ -248,14 +244,13 @@
   padding: 0 var(--white-space);
 }
 
-
 /* CUSTOM SELECT ELEMENT */
 .custom-select {
   color: var(--text1);
   display: grid;
   grid-template-areas:
-    "header"
-    "options";
+    'header'
+    'options';
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
   height: calc(4 * var(--white-space) + 2px);
@@ -275,15 +270,22 @@
 
 .custom-select-closed-list .custom-select-options,
 .custom-select-closed-list .custom-select-suggestion-list {
-  box-shadow: 0 0 calc(0.5 * var(--white-space)) calc(0.5 * var(--white-space)) var(--border);
+  box-shadow: 0 0 calc(0.5 * var(--white-space)) calc(0.5 * var(--white-space))
+    var(--border);
 }
 
 .custom-select-closed-list .custom-select-options {
-  clip-path: inset(0 calc(-1 * var(--white-space)) calc(-1 * var(--white-space)) calc(-1 * var(--white-space)));
+  clip-path: inset(
+    0 calc(-1 * var(--white-space)) calc(-1 * var(--white-space))
+      calc(-1 * var(--white-space))
+  );
 }
 
 .custom-select-closed-list .custom-select-suggestion-list {
-  clip-path: inset(calc(-1 * var(--white-space)) calc(-1 * var(--white-space)) 0 calc(-1 * var(--white-space)));
+  clip-path: inset(
+    calc(-1 * var(--white-space)) calc(-1 * var(--white-space)) 0
+      calc(-1 * var(--white-space))
+  );
 }
 
 .custom-select-mapping-options-list {
@@ -360,7 +362,7 @@
   min-height: calc(2 * var(--white-space));
 }
 
-.custom-select-input:hover:after {
+.custom-select-input:hover::after {
   color: var(--text2);
 }
 

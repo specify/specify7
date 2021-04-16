@@ -1,40 +1,38 @@
 import QUnit from 'qunit';
 import dataModelStorage from '../wbplanviewmodel';
 import dataModel from './fixtures/wbplanviewmodel.json';
+import testAutoMapper from './testautomapper';
 import testLatLongUtils from './testlatlongutils';
 import testMappingsTreeToUploadPlan from './testmappingstreetouploadplan.js';
 import testUploadPlanToMappingsTree from './testuploadplantomappingstree.js';
 import testWbPlanViewHelper from './testwbplanviewhelper';
 import testWbPlanViewLinesGetter from './testwbplanviewlinesgetter';
 import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
-import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
-import testAutoMapper from './testautomapper';
+import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
 
-export function runTest<TEST_FUNCTION extends ((...args: any[]) => any)>(
+export function runTest<ARGUMENTS_TYPE extends unknown[], RETURN_TYPE>(
   moduleName: string,
-  inputOutputSet: [Parameters<TEST_FUNCTION>, ReturnType<TEST_FUNCTION>][],
-  testFunction: TEST_FUNCTION,
+  inputOutputSet: Readonly<[ARGUMENTS_TYPE, RETURN_TYPE][]>,
+  testFunction: (...arguments_: ARGUMENTS_TYPE) => RETURN_TYPE
 ): void {
   QUnit.module(moduleName);
-  inputOutputSet.map(([input, output], index) => QUnit.test(
-    `#${index}`,
-    () => QUnit.assert.deepEqual(
-      output,
-      testFunction(...input),
-    ),
-  ));
+  inputOutputSet.map(([input, output], index) =>
+    QUnit.test(`#${index}`, () =>
+      QUnit.assert.deepEqual(output, testFunction(...input))
+    )
+  );
 }
 
-export function loadDataModel():void {
+export function loadDataModel(): void {
   if (typeof dataModelStorage.tables === 'undefined')
     Object.entries(dataModel).forEach(([key, value]) => {
-      // @ts-ignore
+      // @ts-expect-error Data model is loaded from a JSON file
       dataModelStorage[key] = value;
     });
 }
 
-function runTests() {
+function runTests(): void {
   testLatLongUtils();
   testMappingsTreeToUploadPlan();
   testUploadPlanToMappingsTree();

@@ -1,34 +1,27 @@
-import { FullMappingPath } from '../components/wbplanviewmapper';
+import type { FullMappingPath } from '../components/wbplanviewmapper';
 import * as WBPlanViewHelper from '../wbplanviewhelper';
 import { loadDataModel, runTest } from './testmain';
 
-export default function(): void {
-
+export default function (): void {
   loadDataModel();
 
   runTest(
-    'UploadPlanToMappingsTree.uploadPlanToMappingsTree', [
+    'UploadPlanToMappingsTree.uploadPlanToMappingsTree',
+    [
       [['collectionObject'], 'Collection Object'],
       [['taxonomy'], 'Taxonomy'],
       [['latLongPt'], 'Lat Long Pt'],
       [[''], ''],
-    ], WBPlanViewHelper.getFriendlyName,
+    ],
+    WBPlanViewHelper.getFriendlyName
   );
 
   runTest(
-    'WBPlanViewHelper.findArrayDivergencePoint', [
+    'WBPlanViewHelper.findArrayDivergencePoint',
+    [
+      [[['Accession', 'Accession Agents', '#1', 'Agent', 'First Name'], []], 0],
       [
-        [
-          ['Accession', 'Accession Agents', '#1', 'Agent', 'First Name'],
-          [],
-        ],
-        0,
-      ],
-      [
-        [
-          ['Accession', 'Accession Agents', '#1', 'Agent', 'First Name'],
-          [''],
-        ],
+        [['Accession', 'Accession Agents', '#1', 'Agent', 'First Name'], ['']],
         -1,
       ],
       [
@@ -52,11 +45,13 @@ export default function(): void {
         ],
         -1,
       ],
-    ], WBPlanViewHelper.findArrayDivergencePoint,
+    ],
+    WBPlanViewHelper.findArrayDivergencePoint
   );
 
   runTest(
-    'WBPlanViewHelper.findDuplicateMappings', [
+    'WBPlanViewHelper.findDuplicateMappings',
+    [
       [
         [
           [
@@ -90,11 +85,13 @@ export default function(): void {
         ],
         [0, 4],
       ],
-    ], WBPlanViewHelper.findDuplicateMappings,
+    ],
+    WBPlanViewHelper.findDuplicateMappings
   );
 
   runTest(
-    'WBPlanViewHelper.fullMappingPathParser', [
+    'WBPlanViewHelper.fullMappingPathParser',
+    [
       [
         [
           [
@@ -111,11 +108,7 @@ export default function(): void {
           ] as FullMappingPath,
         ],
         [
-          [
-            'collectionobject',
-            'collector',
-            'firstname',
-          ],
+          ['collectionobject', 'collector', 'firstname'],
           'existingHeader',
           'Collector Name',
           {
@@ -125,7 +118,7 @@ export default function(): void {
           },
         ],
       ],
-    ], WBPlanViewHelper.fullMappingPathParser,
+    ],
+    WBPlanViewHelper.fullMappingPathParser
   );
-
 }
