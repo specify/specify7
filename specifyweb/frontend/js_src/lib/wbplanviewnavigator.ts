@@ -3,12 +3,32 @@
  * Helpful methods for navigating though schema across a certain mapping path.
  * Helps define information needed to display wbplanview components
  *
- * */
+ *
+ */
 
 'use strict';
 
-import { R } from './components/wbplanview';
-import { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import type {
+  CustomSelectSubtype,
+  CustomSelectType,
+} from './components/customselectelement';
+import type { R } from './components/wbplanview';
+import type {
+  HtmlGeneratorFieldData,
+  MappingElementProps,
+} from './components/wbplanviewcomponents';
+import type {
+  AutomapperSuggestion,
+  MappingPath,
+  RelationshipType,
+  SelectElementPosition,
+} from './components/wbplanviewmapper';
+import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import dataModelStorage from './wbplanviewmodel';
+import type {
+  DataModelField,
+  DataModelRelationship,
+} from './wbplanviewmodelfetcher';
 import {
   formatReferenceItem,
   formatTreeRank,
@@ -21,25 +41,6 @@ import {
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
-import dataModelStorage from './wbplanviewmodel';
-import {
-  AutomapperSuggestion,
-  MappingPath,
-  RelationshipType,
-  SelectElementPosition,
-} from './components/wbplanviewmapper';
-import {
-  DataModelField,
-  DataModelRelationship,
-} from './wbplanviewmodelfetcher';
-import {
-  CustomSelectSubtype,
-  CustomSelectType,
-} from './components/customselectelement';
-import {
-  HtmlGeneratorFieldData,
-  MappingElementProps,
-} from './components/wbplanviewcomponents';
 
 interface FindNextNavigationDirectionBase {
   finished: boolean;
@@ -76,57 +77,72 @@ type NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_TYPE> = (
 ) => RETURN_TYPE;
 
 interface NavigationCallbacks<RETURN_STRUCTURE> {
-  // should return {boolean} specifying whether to run
-  // dataModel.navigatorInstance() for a particular mapping path part
+  /*
+   * Should return {boolean} specifying whether to run
+   * dataModel.navigatorInstance() for a particular mapping path part
+   */
   readonly iterate: NavigatorCallbackFunction<RETURN_STRUCTURE, boolean>;
-  // should return undefined if next element does not exist
+  // Should return undefined if next element does not exist
   readonly getNextPathElement: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     | {
-        // the name of the next path element
+        // The name of the next path element
         readonly nextPathElementName: string;
-        // if the next path element is not a field nor a relationship, {undefined}.
-        // Else, {object} the information about a field from dataModel.tables
+        /*
+         * If the next path element is not a field nor a relationship:
+         *   {undefined}.
+         * Else, {object} the information about a field from dataModel.tables
+         */
         readonly nextPathElement: DataModelField;
-        // If nextPathElementName is not a field nor a relationships, {string}
-        // current path element name.
-        // Else nextPathElementName
+        /*
+         * If nextPathElementName is not a field nor a relationships, {string}
+         * current path element name.
+         * Else nextPathElementName
+         */
         readonly nextRealPathElementName: string;
       }
     | undefined
   >;
-  // formats internalPayload and returns it. Would be used as a return
-  // value for the navigator
+  /*
+   * Formats internalPayload and returns it. Would be used as a return
+   * value for the navigator
+   */
   readonly getFinalData: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     RETURN_STRUCTURE[]
   >;
-  // commits callbackPayload.data to internalPayload and returns
-  // committed data
+  /*
+   * Commits callbackPayload.data to internalPayload and returns
+   * committed data
+   */
   readonly getInstanceData: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     RETURN_STRUCTURE
   >;
-  // commits callbackPayload.data to internalPayload and returns
-  // committed data
+  /*
+   * Commits callbackPayload.data to internalPayload and returns
+   * committed data
+   */
   readonly commitInstanceData: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     RETURN_STRUCTURE
   >;
-  // called inside of navigatorInstance before it calls callbacks for
-  // tree ranks / reference items / simple fields
+  /*
+   * Called inside of navigatorInstance before it calls callbacks for
+   * tree ranks / reference items / simple fields
+   */
   readonly navigatorInstancePre: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     void
   >;
-  // handles toMany children
+  // Handles toMany children
   readonly handleToManyChildren: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     void
   >;
-  // handles tree ranks children
+  // Handles tree ranks children
   readonly handleTreeRanks: NavigatorCallbackFunction<RETURN_STRUCTURE, void>;
-  // handles fields and relationships
+  // Handles fields and relationships
   readonly handleSimpleFields: NavigatorCallbackFunction<
     RETURN_STRUCTURE,
     void
@@ -181,8 +197,10 @@ function findNextNavigationDirection<RETURN_STRUCTURE>(
   };
 }
 
-// Navigates though the schema according to a specified mapping path and
-// calls certain callbacks while doing that
+/*
+ * Navigates though the schema according to a specified mapping path and
+ * calls certain callbacks while doing that
+ */
 export function navigator<RETURN_STRUCTURE>({
   callbacks,
   recursivePayload = undefined,
@@ -190,8 +208,10 @@ export function navigator<RETURN_STRUCTURE>({
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>;
-  // {object|undefined} used internally to make navigator call itself
-  // multiple times
+  /*
+   * {object|undefined} used internally to make navigator call itself
+   * multiple times
+   */
   readonly recursivePayload?: {
     readonly tableName: string;
     readonly parentTableName: string;
@@ -199,7 +219,8 @@ export function navigator<RETURN_STRUCTURE>({
     readonly parentPathElementName: string;
   };
   readonly config: {
-    readonly baseTableName?: string; // the name of the base table to use
+    // The name of the base table to use
+    readonly baseTableName?: string;
   };
 }): RETURN_STRUCTURE[] {
   let tableName = '';
@@ -222,8 +243,10 @@ export function navigator<RETURN_STRUCTURE>({
       parentPathElementName,
     } = recursivePayload);
 
-  // an object that is shared between navigator, navigatorInstance and
-  // some callbacks
+  /*
+   * An object that is shared between navigator, navigatorInstance and
+   * some callbacks
+   */
   const callbackPayload = {
     tableName,
   };
@@ -300,7 +323,7 @@ function callNavigatorInstanceCallbacks<RETURN_STRUCTURE>(
   childrenAreRanks: boolean,
   callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
   callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>
-) {
+): void {
   if (childrenAreToManyElements)
     callbacks.handleToManyChildren(callbackPayload);
   else if (childrenAreRanks) callbacks.handleTreeRanks(callbackPayload);
@@ -316,15 +339,17 @@ function navigatorInstance<RETURN_STRUCTURE>({
   callbacks,
   callbackPayload,
 }: {
-  readonly tableName: string; // the name of the current table
-  readonly parentTableName?: string; // parent table name
-  // nextRealPathElementName as returned by callbacks.getNextPathElement
+  // The name of the current table
+  readonly tableName: string;
+  // Parent table name
+  readonly parentTableName?: string;
+  // NextRealPathElementName as returned by callbacks.getNextPathElement
   readonly parentTableRelationshipName?: string;
-  // nextPathElementName as returned by callbacks.getNextPathElement
+  // NextPathElementName as returned by callbacks.getNextPathElement
   readonly parentPathElementName?: string;
-  // callbacks (described in the navigator)
+  // Callbacks (described in the navigator)
   readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>;
-  // callbacks payload (described in the navigator)
+  // Callbacks payload (described in the navigator)
   readonly callbackPayload: NavigationCallbackPayload<RETURN_STRUCTURE>;
 }): RETURN_STRUCTURE {
   const {
@@ -363,7 +388,8 @@ function navigatorInstance<RETURN_STRUCTURE>({
 /*
  * Get data required to build a mapping line from a source mapping path
  * and other options
- * */
+ *
+ */
 export function getMappingLineData({
   baseTableName,
   mappingPath = ['0'],
@@ -381,15 +407,20 @@ export function getMappingLineData({
   mappingOptionsMenuGenerator = undefined,
 }: {
   readonly baseTableName: string;
-  readonly mappingPath?: MappingPath; // the mapping path
-  // index of custom select element that should be open
+  // The mapping path
+  readonly mappingPath?: MappingPath;
+  // Index of custom select element that should be open
   readonly openSelectElement?: SelectElementPosition;
-  // {bool} if False, returns data only for the last element of the mapping
-  // path only
-  // Else returns data for each mapping path part
+  /*
+   * {bool} if False, returns data only for the last element of the mapping
+   * path only
+   * Else returns data for each mapping path part
+   */
   readonly iterate?: boolean;
-  // {bool} whether to generate data for the last element of the mapping
-  // path if the last element is a relationship
+  /*
+   * {bool} whether to generate data for the last element of the mapping
+   * path if the last element is a relationship
+   */
   readonly generateLastRelationshipData?: boolean;
   readonly customSelectType: CustomSelectType;
   readonly showHiddenFields?: boolean;
@@ -429,12 +460,12 @@ export function getMappingLineData({
     generateMappingOptionsMenu: false,
   };
 
-  const firstIterationRequirement = () =>
+  const firstIterationRequirement = (): boolean =>
     iterate ||
     mappingPath.length === 0 ||
     internalState.mappingPathPosition + 1 === mappingPath.length;
 
-  const secondIterationRequirement = () =>
+  const secondIterationRequirement = (): boolean =>
     generateLastRelationshipData ||
     internalState.mappingPathPosition + 1 !== mappingPath.length;
 
@@ -442,17 +473,17 @@ export function getMappingLineData({
     showHiddenFields: boolean,
     isHidden: boolean,
     fieldName: string
-  ) =>
+  ): boolean =>
     showHiddenFields ||
     !isHidden ||
-    // show a default field, even if it is hidden
+    // Show a default field, even if it is hidden
     fieldName === internalState.defaultValue;
 
   function fieldIsDefault(
     fieldName: string,
     defaultValue: string | undefined,
     isRelationship: boolean
-  ) {
+  ): boolean {
     const isDefault = fieldName === defaultValue;
     if (isDefault)
       internalState.generateMappingOptionsMenu =
@@ -467,7 +498,7 @@ export function getMappingLineData({
       if (internalState.mappingPathPosition === -2)
         internalState.mappingPathPosition = mappingPath.length - 1;
 
-      internalState.mappingPathPosition++;
+      internalState.mappingPathPosition += 1;
 
       let nextPathElementName = mappingPath[internalState.mappingPathPosition];
 
@@ -483,20 +514,15 @@ export function getMappingLineData({
         mappingPath[internalState.mappingPathPosition] = formattedTreeRankName;
       }
 
-      let nextRealPathElementName;
-      if (
-        valueIsTreeRank(nextPathElementName) ||
-        valueIsReferenceItem(nextPathElementName)
-      )
-        nextRealPathElementName =
-          mappingPath[internalState.mappingPathPosition - 1];
-      else nextRealPathElementName = nextPathElementName;
-
       return {
         nextPathElementName,
         nextPathElement:
           dataModelStorage.tables[tableName].fields[nextPathElementName],
-        nextRealPathElementName,
+        nextRealPathElementName:
+          valueIsTreeRank(nextPathElementName) ||
+          valueIsReferenceItem(nextPathElementName)
+            ? mappingPath[internalState.mappingPathPosition - 1]
+            : nextPathElementName,
       };
     },
 
@@ -507,7 +533,7 @@ export function getMappingLineData({
           'OPENED_LIST',
           'BASE_TABLE_SELECTION_LIST',
           'MAPPING_OPTION_LINE_LIST',
-        ].indexOf(internalState.customSelectType) !== -1;
+        ].includes(internalState.customSelectType);
 
       internalState.customSelectSubtype = 'simple';
 
@@ -560,8 +586,8 @@ export function getMappingLineData({
         internalState.mappedFields
       );
 
-      for (let i = 1; i <= maxMappedElementNumber; i++) {
-        const mappedObjectName = formatReferenceItem(i);
+      for (let index = 1; index <= maxMappedElementNumber; index++) {
+        const mappedObjectName = formatReferenceItem(index);
 
         internalState.resultFields[mappedObjectName] = {
           fieldFriendlyName: mappedObjectName,
@@ -624,7 +650,7 @@ export function getMappingLineData({
             ]) =>
               (!isRelationship ||
                 !isCircularRelationship({
-                  // skip circular relationships
+                  // Skip circular relationships
                   targetTableName: fieldTableName,
                   parentTableName,
                   foreignName,
@@ -632,13 +658,15 @@ export function getMappingLineData({
                   currentMappingPathPart: internalState.currentMappingPathPart,
                   tableName,
                 })) &&
-              // skip -to-many inside -to-many
-              // TODO: remove this once upload plan is ready
+              /*
+               * Skip -to-many inside -to-many
+               * TODO: remove this once upload plan is ready
+               */
               !isTooManyInsideOfTooMany(
                 relationshipType,
                 parentRelationshipType
               ) &&
-              // skip hidden fields when user decided to hide them
+              // Skip hidden fields when user decided to hide them
               isFieldVisible(showHiddenFields, isHidden, fieldName)
           )
           .map(
@@ -655,11 +683,12 @@ export function getMappingLineData({
               fieldName,
               {
                 fieldFriendlyName: friendlyName,
-                // enable field
+                // Enable field
                 isEnabled:
-                  // if it is not mapped
-                  internalState.mappedFields.indexOf(fieldName) === -1 ||
-                  isRelationship, // or is a relationship,
+                  // If it is not mapped
+                  !internalState.mappedFields.includes(fieldName) ||
+                  // Or is a relationship,
+                  isRelationship,
                 isRequired,
                 isHidden,
                 isDefault: fieldIsDefault(
@@ -685,10 +714,16 @@ export function getMappingLineData({
             isOpen: true,
             handleChange:
               handleChange &&
-              handleChange.bind(null, internalState.mappingPathPosition + 1),
+              handleChange.bind(
+                undefined,
+                internalState.mappingPathPosition + 1
+              ),
             handleClose:
               handleClose &&
-              handleClose.bind(null, internalState.mappingPathPosition + 1),
+              handleClose.bind(
+                undefined,
+                internalState.mappingPathPosition + 1
+              ),
             automapperSuggestions,
             handleAutomapperSuggestionSelection,
           }
@@ -696,7 +731,7 @@ export function getMappingLineData({
             isOpen: false,
             handleOpen:
               handleOpen &&
-              handleOpen.bind(null, internalState.mappingPathPosition + 1),
+              handleOpen.bind(undefined, internalState.mappingPathPosition + 1),
           }),
     }),
 
@@ -729,7 +764,7 @@ export function getMappingLineData({
                     handleClose:
                       handleClose &&
                       handleClose.bind(
-                        null,
+                        undefined,
                         internalState.mappingLineData.length
                       ),
                     automapperSuggestions,
@@ -740,7 +775,7 @@ export function getMappingLineData({
                     handleOpen:
                       handleOpen &&
                       handleOpen.bind(
-                        null,
+                        undefined,
                         internalState.mappingLineData.length
                       ),
                   }),

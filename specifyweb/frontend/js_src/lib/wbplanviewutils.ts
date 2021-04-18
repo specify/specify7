@@ -1,17 +1,17 @@
 import $ from 'jquery';
-import automapper from './automapper';
-import {
+import Automapper from './automapper';
+import type {
   PublicWBPlanViewProps,
   WBPlanViewWrapperProps,
 } from './components/wbplanview';
-import {
+import type {
   AutomapperSuggestion,
   FullMappingPath,
   MappingLine,
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import {
+import type {
   LoadingState,
   MappingState,
 } from './components/wbplanviewstatereducer';
@@ -27,10 +27,10 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
-import { ChangeSelectElementValueAction } from './wbplanviewreducer';
+import type { ChangeSelectElementValueAction } from './wbplanviewreducer';
+import type { MappingsTree } from './wbplanviewtreehelper';
 import {
   arrayOfMappingsToMappingsTree,
-  MappingsTree,
   traverseTree,
 } from './wbplanviewtreehelper';
 
@@ -43,13 +43,10 @@ export function savePlan(
   ignoreValidation = false
 ): LoadingState | MappingState {
   const validationResultsState = validate(state);
-  if (
-    !ignoreValidation &&
-    validationResultsState.validationResults.length !== 0
-  )
+  if (!ignoreValidation && validationResultsState.validationResults.length > 0)
     return validationResultsState;
 
-  // props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
+  // Props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
   const uploadPlan = mappingsTreeToUploadPlan(
     state.baseTableName,
     getMappingsTree(state.lines, true),
@@ -84,7 +81,7 @@ export function validate(state: MappingState): MappingState {
     type: 'MappingState',
     // Show mapping view panel if there were validation errors
     showMappingView:
-      state.showMappingView || Object.values(validationResults).length !== 0,
+      state.showMappingView || Object.values(validationResults).length > 0,
     mappingsAreValidated: Object.values(validationResults).length === 0,
     validationResults,
   };
@@ -102,12 +99,12 @@ export function deduplicateMappings(
   );
 
   return lines.map((line, index) =>
-    duplicateMappingIndexes.indexOf(index) === -1
-      ? line
-      : {
+    duplicateMappingIndexes.includes(index)
+      ? {
           ...line,
           mappingPath: line.mappingPath.slice(0, -1),
         }
+      : line
   );
 }
 
@@ -124,9 +121,7 @@ export function getArrayOfMappings(
   includeHeaders = false
 ): (MappingPath | FullMappingPath)[] {
   return lines
-    .filter(({ mappingPath: mappingPath }) =>
-      mappingPathIsComplete(mappingPath)
-    )
+    .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
     .map(({ mappingPath, type, name, options }) =>
       includeHeaders ? [...mappingPath, type, name, options] : mappingPath
     );
@@ -137,7 +132,7 @@ export const getMappingsTree = (
   includeHeaders = false
 ): MappingsTree =>
   arrayOfMappingsToMappingsTree(
-    // overloading does not seem to work nicely with dynamic types
+    // Overloading does not seem to work nicely with dynamic types
     includeHeaders
       ? getArrayOfMappings(lines, true)
       : getArrayOfMappings(lines, false),
@@ -147,7 +142,7 @@ export const getMappingsTree = (
 /* Get a mappings tree branch given a particular starting mapping path */
 export function getMappedFields(
   lines: MappingLine[],
-  // a mapping path that would be used as a filter
+  // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
 ): MappingsTree {
   const mappingsTree = traverseTree(getMappingsTree(lines), mappingPathFilter);
@@ -158,9 +153,9 @@ export const pathIsMapped = (
   lines: MappingLine[],
   mappingPath: MappingPath
 ): boolean =>
-  Object.keys(getMappedFields(lines, mappingPath.slice(0, -1))).indexOf(
+  Object.keys(getMappedFields(lines, mappingPath.slice(0, -1))).includes(
     mappingPath.slice(-1)[0]
-  ) !== -1;
+  );
 
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
   mappingPath[mappingPath.length - 1] !== '0';
@@ -171,7 +166,8 @@ export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
  * item is selected.
  * It is also responsible for deciding when to spawn a new box to the right
  * of the current one
- * */
+ *
+ */
 export function mutateMappingPath({
   lines,
   mappingView,
@@ -187,31 +183,37 @@ export function mutateMappingPath({
   readonly currentTableName: string;
   readonly newTableName: string;
 }): MappingPath {
-  // get mapping path from selected line or mapping view
+  // Get mapping path from selected line or mapping view
   let mappingPath = [
     ...(line === 'mappingView' ? mappingView : lines[line].mappingPath),
   ];
 
-  // get relationship type from current picklist to the next one both for
-  // current value and next value
+  /*
+   * Get relationship type from current picklist to the next one both for
+   * current value and next value
+   */
   const currentRelationshipType =
     dataModelStorage.tables[currentTableName]?.fields[
       mappingPath[index + 1] || ''
-    ]?.type || '';
+    ]?.type ?? '';
   const newRelationshipType =
-    dataModelStorage.tables[newTableName]?.fields[value]?.type || '';
+    dataModelStorage.tables[newTableName]?.fields[value]?.type ?? '';
 
-  // don't reset the boxes to the right of the current box if relationship
-  // type is the same (or non existent in both cases) and the new box is a
-  // -to-many index, a tree rank or a different relationship to the same table
+  /*
+   * Don't reset the boxes to the right of the current box if relationship
+   * type is the same (or non existent in both cases) and the new box is a
+   * -to-many index, a tree rank or a different relationship to the same table
+   */
   const preserveMappingPathToRight =
     currentRelationshipType === newRelationshipType &&
     (valueIsReferenceItem(value) ||
       valueIsTreeRank(value) ||
       currentTableName === newTableName);
 
-  // when `Add` is selected in the list of -to-many indexes, replace it by
-  // creating a new -to-many index
+  /*
+   * When `Add` is selected in the list of -to-many indexes, replace it by
+   * creating a new -to-many index
+   */
   if (value === 'add') {
     const mappedFields = Object.keys(
       getMappedFields(lines, mappingPath.slice(0, index))
@@ -219,20 +221,21 @@ export function mutateMappingPath({
     const maxToManyValue = getMaxToManyValue(mappedFields);
     mappingPath[index] = formatReferenceItem(maxToManyValue + 1);
   } else if (preserveMappingPathToRight) mappingPath[index] = value;
-  // clear mapping path to the right of current box
+  // Clear mapping path to the right of current box
   else mappingPath = [...mappingPath.slice(0, index), value];
 
   return mappingPath;
 }
 
-// the maximum count of suggestions to show in the suggestions box
+// The maximum count of suggestions to show in the suggestions box
 const MAX_SUGGESTIONS_COUNT = 3;
 
 /*
  * Show automapper suggestion on top of an opened `CLOSED_LIST`
  * The automapper suggestions are shown only if the current box doesn't have
  * a value selected
- * */
+ *
+ */
 export async function getAutomapperSuggestions({
   lines,
   line,
@@ -245,10 +248,13 @@ export async function getAutomapperSuggestions({
   const localMappingPath = [...lines[line].mappingPath];
 
   if (
-    // don't show suggestions
-    // if opened picklist has a value selected
+    /*
+     * Don't show suggestions
+     * if opened picklist has a value selected
+     */
     localMappingPath.length - 1 !== index ||
-    mappingPathIsComplete(localMappingPath) || // or if header is a new column / new static column
+    // Or if header is a new column / new static column
+    mappingPathIsComplete(localMappingPath) ||
     lines[line].type !== 'existingHeader'
   )
     return [];
@@ -257,13 +263,13 @@ export async function getAutomapperSuggestions({
     baseTableName,
     mappingPath: mappingPathIsComplete(localMappingPath)
       ? localMappingPath
-      : localMappingPath.slice(0, localMappingPath.length - 1),
+      : localMappingPath.slice(0, -1),
     iterate: false,
     customSelectType: 'SUGGESTION_LIST',
-    getMappedFields: getMappedFields.bind(null, lines),
+    getMappedFields: getMappedFields.bind(undefined, lines),
   });
 
-  // don't show suggestions if picklist has only one field / no fields
+  // Don't show suggestions if picklist has only one field / no fields
   if (
     mappingLineData.length === 1 &&
     Object.keys(mappingLineData[0].fieldsData).length < 2
@@ -282,7 +288,7 @@ export async function getAutomapperSuggestions({
   }
 
   const allAutomapperResults = Object.entries(
-    new automapper({
+    new Automapper({
       headers: [lines[line].name],
       baseTable: baseTableName,
       startingTable:
@@ -294,7 +300,7 @@ export async function getAutomapperSuggestions({
       allowMultipleMappings: true,
       checkForExistingMappings: true,
       scope: 'suggestion',
-      pathIsMapped: pathIsMapped.bind(null, lines),
+      pathIsMapped: pathIsMapped.bind(undefined, lines),
     }).map({
       commitToCache: false,
     })
@@ -313,7 +319,7 @@ export async function getAutomapperSuggestions({
       baseTableName,
       mappingPath: automapperResult,
       customSelectType: 'SUGGESTION_LINE_LIST',
-      getMappedFields: getMappedFields.bind(null, lines),
+      getMappedFields: getMappedFields.bind(undefined, lines),
     }).slice(baseMappingPath.length - pathOffset),
   }));
 }

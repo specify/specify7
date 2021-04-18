@@ -1,8 +1,8 @@
-import { R } from './components/wbplanview';
+import type { R } from './components/wbplanview';
 import { defaultLineOptions } from './wbplanviewlinesgetter';
 import { formatReferenceItem, formatTreeRank } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
-import { MappingsTree } from './wbplanviewtreehelper';
+import type { MappingsTree } from './wbplanviewtreehelper';
 
 export type MatchBehaviors = 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever';
 
@@ -53,21 +53,23 @@ export interface UploadPlan {
   uploadable: Uploadable;
 }
 
-const excludeUnknownMatchingOptions = (matchingOptions: ColumnOptions) =>
+const excludeUnknownMatchingOptions = (
+  matchingOptions: Readonly<ColumnOptions>
+) =>
   Object.fromEntries(
     Object.entries(defaultLineOptions).map(([optionName, defaultValue]) => [
       optionName,
       optionName in matchingOptions
-        ? //@ts-ignore
+        ? // @ts-expect-error
           matchingOptions[optionName]
         : defaultValue,
     ])
   ) as ColumnOptions;
 
 const uploadPlanProcessingFunctions = (
-  headers: string[],
+  headers: Readonly<string[]>,
   mustMatchPreferences: R<boolean>,
-  mappingPath: string[]
+  mappingPath: Readonly<string[]>
 ): Readonly<
   R<([key, value]: [string, any]) => [key: string, value: unknown]>
 > =>
@@ -78,10 +80,9 @@ const uploadPlanProcessingFunctions = (
     ] => [
       key,
       {
-        [headers.indexOf(typeof value === 'string' ? value : value.column) ===
-        -1
-          ? 'newColumn'
-          : 'existingHeader']:
+        [headers.includes(typeof value === 'string' ? value : value.column)
+          ? 'existingHeader'
+          : 'newColumn']:
           typeof value === 'string'
             ? {
                 [value]: defaultLineOptions,
@@ -124,7 +125,7 @@ const uploadPlanProcessingFunctions = (
 
 const handleTreeRankFields = (
   treeRankFields: R<ColumnDef>,
-  headers: string[]
+  headers: Readonly<string[]>
 ) =>
   Object.fromEntries(
     Object.entries(treeRankFields).map(([fieldName, headerName]) =>
@@ -135,7 +136,10 @@ const handleTreeRankFields = (
     )
   );
 
-const handleTreeRecord = (uploadPlan: TreeRecord, headers: string[]) =>
+const handleTreeRecord = (
+  uploadPlan: Readonly<TreeRecord>,
+  headers: Readonly<string[]>
+) =>
   Object.fromEntries(
     Object.entries(uploadPlan.ranks).map(([rankName, rankData]) => [
       formatTreeRank(rankName),
@@ -152,10 +156,10 @@ const handleTreeRecord = (uploadPlan: TreeRecord, headers: string[]) =>
 
 function handleTreeRecordTypes(
   uploadPlan: TreeRecordVariety,
-  headers: string[],
+  headers: Readonly<string[]>,
   mustMatchPreferences: R<boolean>,
   mappingPath: string[]
-) {
+): ReturnType<typeof handleTreeRecord> {
   if ('mustMatchTreeRecord' in uploadPlan) {
     const tableName = getMappingLineData({
       baseTableName: mappingPath[0],
@@ -171,13 +175,13 @@ function handleTreeRecordTypes(
 
 const handleUploadTableTable = (
   uploadPlan: UploadTable,
-  headers: string[],
+  headers: Readonly<string[]>,
   mustMatchPreferences: R<boolean>,
   mappingPath: string[]
 ) =>
   Object.fromEntries(
     Object.entries(uploadPlan).reduce(
-      // @ts-ignore
+      // @ts-expect-error
       (
         results,
         [planNodeName, planNodeData]: [
@@ -200,7 +204,7 @@ const handleUploadTableTable = (
 
 function handleUploadableTypes(
   uploadPlan: UploadTableVariety,
-  headers: string[],
+  headers: Readonly<string[]>,
   mustMatchPreferences: R<boolean>,
   mappingPath: string[]
 ) {
@@ -224,7 +228,7 @@ function handleUploadableTypes(
 
 const handleUploadable = (
   uploadPlan: Uploadable,
-  headers: string[],
+  headers: Readonly<string[]>,
   mustMatchPreferences: R<boolean>,
   mappingPath: string[]
 ): MappingsTree =>
@@ -245,9 +249,10 @@ const handleUploadable = (
 /*
  * Converts upload plan to mappings tree
  * Inverse of mappingsTreeToUploadPlan
- * */
+ *
+ */
 export function uploadPlanToMappingsTree(
-  headers: string[],
+  headers: Readonly<string[]>,
   uploadPlan: UploadPlan
 ): {
   baseTableName: string;
@@ -256,7 +261,7 @@ export function uploadPlanToMappingsTree(
 } {
   if (typeof uploadPlan.baseTableName === 'undefined')
     throw new Error(
-      'Upload plan should contain `baseTableName`' + ' as a root node'
+      'Upload plan should contain `baseTableName` as a root node'
     );
 
   const mustMatchPreferences: R<boolean> = {};
@@ -280,19 +285,17 @@ export function uploadPlanStringToObject(
 
   try {
     uploadPlan = JSON.parse(uploadPlanString) as UploadPlan;
-  } catch (exception) {
-    if (!(exception instanceof SyntaxError))
-      //only catch JSON parse errors
-      throw exception;
+  } catch (error: unknown) {
+    if (!(error instanceof SyntaxError))
+      // Only catch JSON parse errors
+      throw error;
 
     return null;
   }
 
-  if (
-    typeof uploadPlan !== 'object' ||
+  return typeof uploadPlan !== 'object' ||
     uploadPlan === null ||
-    typeof uploadPlan['baseTableName'] === 'undefined'
-  )
-    return null;
-  else return uploadPlan;
+    typeof uploadPlan.baseTableName === 'undefined'
+    ? null
+    : uploadPlan;
 }

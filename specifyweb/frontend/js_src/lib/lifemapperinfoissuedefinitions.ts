@@ -1,4 +1,4 @@
-import { R } from './components/wbplanview';
+import type { R } from './components/wbplanview';
 
 export const issueDefinitions: Readonly<
   Record<'common' | 'gbif' | 'idigbio', R<string>>

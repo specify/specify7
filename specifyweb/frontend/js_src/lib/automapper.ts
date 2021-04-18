@@ -3,16 +3,25 @@
  * Auto mapper than takes data model and header names and returns possible
  * mappings
  *
- * */
+ *
+ */
 
 'use strict';
 
-import AutoMapperDefinitions, {
-  Options,
-  TableSynonym,
-} from './automapperdefinitions';
-import { R } from './components/wbplanview';
-import { PathIsMappedBind } from './components/wbplanviewmappercomponents';
+import type { Options, TableSynonym } from './automapperdefinitions';
+import AutoMapperDefinitions from './automapperdefinitions';
+import type { R } from './components/wbplanview';
+import type {
+  AutomapperScope,
+  ListOfHeaders,
+  MappingPath,
+  RelationshipType,
+} from './components/wbplanviewmapper';
+import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
+import type { Action } from './statemanagement';
+import { generateDispatch } from './statemanagement';
+import * as cache from './wbplanviewcache';
+import { findArrayDivergencePoint } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
   formatReferenceItem,
@@ -28,48 +37,47 @@ import {
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
-import * as cache from './wbplanviewcache';
-import { findArrayDivergencePoint } from './wbplanviewhelper';
-import { Action, generateDispatch } from './statemanagement';
-import {
-  AutomapperScope,
-  ListOfHeaders,
-  MappingPath,
-  RelationshipType,
-} from './components/wbplanviewmapper';
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
 interface AutoMapperConstructorBaseParameters {
-  // array of strings that represent headers
-  readonly headers: ListOfHeaders;
-  readonly baseTable: string; // base table name
-  // starting table name (if starting mappingPath provided, starting table
-  // would be different from base table)
+  // Array of strings that represent headers
+  readonly headers: Readonly<ListOfHeaders>;
+  readonly baseTable: string; // Base table name
+  /*
+   * Starting table name (if starting mappingPath provided, starting table
+   * would be different from base table)
+   */
   readonly startingTable?: string;
-  readonly path?: MappingPath; // starting mapping path
-  // offset on a starting path. Used when the last element of mapping path is
-  // a reference index. E.x, if #1 is taken, it would try to change the index
-  // to #2
+  readonly path?: MappingPath; // Starting mapping path
+  /*
+   * Offset on a starting path. Used when the last element of mapping path is
+   * a reference index. E.x, if #1 is taken, it would try to change the index
+   * to #2
+   */
   readonly pathOffset?: number;
-  // whether to allow multiple mappings
+  // Whether to allow multiple mappings
   readonly allowMultipleMappings?: boolean;
-  // scope to use for definitions. More info in automapperdefinitions.ts
+  // Scope to use for definitions. More info in automapperdefinitions.ts
   readonly scope?: AutomapperScope;
 }
 
 interface AutoMapperConstructorCheckExistingParameters
   extends AutoMapperConstructorBaseParameters {
-  // whether to check if the field is already mapped (outside automapper,
-  // in the mapping tree)
+  /*
+   * Whether to check if the field is already mapped (outside automapper,
+   * in the mapping tree)
+   */
   readonly checkForExistingMappings: true;
   readonly pathIsMapped: PathIsMappedBind;
 }
 
 interface AutoMapperConstructorDontCheckExistingParameters
   extends AutoMapperConstructorBaseParameters {
-  // whether to check if the field is already mapped (outside automapper,
-  // in the mapping tree)
+  /*
+   * Whether to check if the field is already mapped (outside automapper,
+   * in the mapping tree)
+   */
   readonly checkForExistingMappings: false;
   readonly pathIsMapped?: PathIsMappedBind;
 }
@@ -81,15 +89,19 @@ export type AutoMapperConstructorParameters =
 export type AutoMapperResults = R<MappingPath[]>;
 
 interface FindMappingsParameters {
-  readonly tableName: string; // name of current table
-  readonly path: MappingPath; // current mapping path
-  // parent table name. Empty if current table is a base table. Used to
-  // prevent circular relationships
+  readonly tableName: string; // Name of current table
+  readonly path: MappingPath; // Current mapping path
+  /*
+   * Parent table name. Empty if current table is a base table. Used to
+   * prevent circular relationships
+   */
   readonly parentTableName?: string;
-  // relationship type between parent table and current table. Empty if
-  // current table is a base table. Used to prevent mapping -to-many that are
-  // inside -to-many (only while upload plan doesn't support such
-  // relationships)
+  /*
+   * Relationship type between parent table and current table. Empty if
+   * current table is a base table. Used to prevent mapping -to-many that are
+   * inside -to-many (only while upload plan doesn't support such
+   * relationships)
+   */
   readonly parentRelationshipType?: undefined | RelationshipType;
 }
 
@@ -135,7 +147,7 @@ type AutomapperFindMappingsQueueActions =
   | AutomapperFindMappingsQueueInitializeLevel
   | AutomapperFindMappingsQueueEnqueue;
 
-// find cases like `Phylum` and remap them to `Phylum > Name`
+// Find cases like `Phylum` and remap them to `Phylum > Name`
 const matchBaseRankName = (
   friendlyName: string,
   stripedRankName: string,
@@ -143,7 +155,7 @@ const matchBaseRankName = (
 ) => friendlyName === 'name' && stripedRankName === strippedHeaderName;
 
 const matchRankAndFieldName = (
-  // find cases like `Kingdom Author`
+  // Find cases like `Kingdom Author`
   strippedHeaderName: string,
   stripedRankName: string,
   friendlyName: string,
@@ -190,8 +202,7 @@ const findRankSynonyms = (
 ): string[] =>
   AutoMapperDefinitions.rankSynonyms[tableName]
     ?.filter(({ rankName }) => targetRankName === rankName)
-    .map(({ synonyms }) => synonyms)
-    .flat() ?? [];
+    .flatMap(({ synonyms }) => synonyms) ?? [];
 
 export default class Automapper {
   // Used to replace any white space characters with space
@@ -234,26 +245,30 @@ export default class Automapper {
 
   private readonly pathIsMapped?: PathIsMappedBind;
 
-  private readonly headersToMap: {
-    // A dictionary of headers that need to be mapped
-    readonly [originalHeaderName: string]: {
-      isMapped: boolean;
-      // OriginalHeaderName.toLowerCase() and trimmed
-      readonly lowercaseHeaderName: string;
-      // LowercaseHeaderName but without numbers and special characters
-      // (a-z only)
-      readonly strippedHeaderName: string;
-      // StrippedHeaderName but without any white space
-      readonly finalHeaderName: string;
-    };
-  } = {};
+  private readonly headersToMap: Readonly<
+    Record<
+      string,
+      {
+        isMapped: boolean;
+        // OriginalHeaderName.toLowerCase() and trimmed
+        readonly lowercaseHeaderName: string;
+        /*
+         * LowercaseHeaderName but without numbers and special characters
+         * (a-z only)
+         */
+        readonly strippedHeaderName: string;
+        // StrippedHeaderName but without any white space
+        readonly finalHeaderName: string;
+      }
+    >
+  > = {};
 
   private searchedTables: string[] = [];
 
   // Used to enforce higher priority for closer mappings
   private findMappingsQueue: FindMappingsParameters[][] = [];
 
-  private dispatch: {
+  private readonly dispatch: {
     results: (action: AutoMapperResultsActions) => void;
     headersToMap: (action: AutoMapperHeadersToMapActions) => void;
     searchedTables: (action: AutoMapperSearchedTablesActions) => void;
@@ -309,7 +324,7 @@ export default class Automapper {
     checkForExistingMappings = false,
     pathIsMapped,
   }: AutoMapperConstructorParameters) {
-    // strip extra characters to increase mapping success
+    // Strip extra characters to increase mapping success
     this.headersToMap = Object.fromEntries(
       rawHeaders.map((originalName) => {
         const lowercaseName = originalName
@@ -346,14 +361,16 @@ export default class Automapper {
     this.pathIsMapped = pathIsMapped;
   }
 
-  /* Method that would be used by external classes to match headers to
-  possible mappings */
+  /*
+   * Method that would be used by external classes to match headers to
+   * possible mappings
+   */
   public map({
     useCache = true,
     commitToCache = true,
   }: {
-    readonly useCache?: boolean; // whether to use cached values
-    // whether to commit result to cache for future references
+    readonly useCache?: boolean; // Whether to use cached values
+    // Whether to commit result to cache for future references
     readonly commitToCache?: boolean;
   } = {}): AutoMapperResults {
     if (Object.keys(this.headersToMap).length === 0) return {};
@@ -372,7 +389,7 @@ export default class Automapper {
       if (cachedData) return cachedData;
     }
 
-    // do 2 passes over the schema
+    // Do 2 passes over the schema
     this.findMappingsDriver('shortcutsAndTableSynonyms');
     this.findMappingsDriver('synonymsAndMatches');
 
@@ -384,12 +401,15 @@ export default class Automapper {
   /*
    * Makes sure that `findMappings` runs over the schema in correct order
    * since mappings with a shorter mapping path are given higher priority
-   * */
+   *
+   */
   private findMappingsDriver(mode: AutoMapperNode): void {
     const pathMatchesStartingPath = (path: MappingPath, level: string) =>
-      !this.startingPath[~~level - 1] ??
-      findArrayDivergencePoint(path, this.startingPath.slice(0, ~~level)) !==
-        -1;
+      !this.startingPath[Number(level) - 1] ??
+      findArrayDivergencePoint(
+        path,
+        this.startingPath.slice(0, Number(level))
+      ) !== -1;
 
     this.dispatch.searchedTables({ type: 'reset' });
     this.dispatch.findMappingsQueue({
@@ -415,7 +435,7 @@ export default class Automapper {
         type: 'reset',
       });
 
-      // go through each level of the queue in order
+      // Go through each level of the queue in order
       queueData.forEach(([level, mappingsData]) =>
         mappingsData
           .filter(
@@ -426,30 +446,32 @@ export default class Automapper {
           )
           .forEach((payload) => this.findMappings(payload, mode))
       );
-    } while (queueData.length !== 0);
+    } while (queueData.length > 0);
   }
 
-  /* Compares definitions to unmapped headers and makes a mapping if
-   * matched */
-  private handleDefinitionComparison = (
-    path: MappingPath, // initial mapping path
+  /*
+   * Compares definitions to unmapped headers and makes a mapping if
+   * matched
+   */
+  private readonly handleDefinitionComparison = (
+    path: MappingPath, // Initial mapping path
     comparisons: Options,
-    // function that returns the next path part to use in a new mapping
-    // (on success)
+    /*
+     * Function that returns the next path part to use in a new mapping
+     * (on success)
+     */
     getNewPathPart: () => MappingPath
   ) =>
     this.getUnmappedHeaders().forEach(([headerKey, { lowercaseHeaderName }]) =>
       Object.entries(Automapper.comparisons)
         .filter(
           (
-            [comparisonKey] // loop over defined comparisons
+            [comparisonKey] // Loop over defined comparisons
           ) => comparisonKey in comparisons
         )
         .some(([comparisonKey, comparisonFunction]) =>
-          // loop over each value of a comparison
-          Object.values(
-            comparisons[comparisonKey as keyof Options] as RegExp[] | string[]
-          ).some(
+          // Loop over each value of a comparison
+          Object.values(comparisons[comparisonKey as keyof Options]!).some(
             (comparisonValue) =>
               comparisonFunction?.(lowercaseHeaderName, comparisonValue) &&
               this.makeMapping(
@@ -463,15 +485,16 @@ export default class Automapper {
         )
     );
 
-  private getUnmappedHeaders = () =>
-    // loop over unmapped headers
+  private readonly getUnmappedHeaders = () =>
+    // Loop over unmapped headers
     Object.entries(this.headersToMap).filter(([, { isMapped }]) => !isMapped);
 
   /*
    * Goes over `shortcuts` and `synonyms` in AutomapperDefinitions.tsx and
    * tries to find matches. Calls handleDefinitionComparison to make
    * comparison
-   * */
+   *
+   */
   private findMappingsInDefinitions({
     path,
     tableName,
@@ -479,11 +502,11 @@ export default class Automapper {
     mode,
     isTreeRank = false,
   }: {
-    readonly path: MappingPath; // current mapping path
-    readonly tableName: string; // the table to search in
-    readonly fieldName: string; // the field to search in
+    readonly path: MappingPath; // Current mapping path
+    readonly tableName: string; // The table to search in
+    readonly fieldName: string; // The field to search in
     readonly mode: AutoMapperNode;
-    // whether to format fieldName as a tree rank name
+    // Whether to format fieldName as a tree rank name
     readonly isTreeRank?: boolean;
   }): void {
     if (mode === 'shortcutsAndTableSynonyms' && fieldName !== '') return;
@@ -509,13 +532,15 @@ export default class Automapper {
     }
   }
 
-  /* Searches for `tableSynonym` that matches the current table and the
-  current mapping path */
+  /*
+   * Searches for `tableSynonym` that matches the current table and the
+   * current mapping path
+   */
   private findTableSynonyms(
-    tableName: string, // the table to search for
-    path: string[], // current mapping path
+    tableName: string, // The table to search for
+    path: string[], // Current mapping path
     mode: AutoMapperNode
-  ): string[] /* table synonyms */ {
+  ): string[] /* Table synonyms */ {
     const tableSynonyms = AutoMapperDefinitions.tableSynonyms[tableName];
 
     if (
@@ -524,7 +549,7 @@ export default class Automapper {
     )
       return [];
 
-    // filter out -to-many references from the path for matching
+    // Filter out -to-many references from the path for matching
     const filteredPath = path.reduce(
       (filteredPath: MappingPath, pathPart: string) => {
         if (!valueIsReferenceItem(pathPart)) filteredPath.push(pathPart);
@@ -559,9 +584,9 @@ export default class Automapper {
   }
 
   private readonly findFormattedHeaderFieldSynonyms = (
-    tableName: string, // the table to search in
-    fieldName: string // the field to search in
-  ): string[] /* field synonyms */ =>
+    tableName: string, // The table to search in
+    fieldName: string // The field to search in
+  ): string[] /* Field synonyms */ =>
     AutoMapperDefinitions.synonyms[tableName]?.[fieldName]?.[this.scope]
       ?.headers.formattedHeaderFieldSynonym || [];
 
@@ -571,16 +596,17 @@ export default class Automapper {
     targetTableName: string
   ) =>
     mode === 'synonymsAndMatches' &&
-    (this.searchedTables.indexOf(targetTableName) !== -1 ||
+    (this.searchedTables.includes(targetTableName) ||
       this.findMappingsQueue[newDepthLevel]
         .map(({ tableName }) => tableName)
-        .some((tableName) => tableName === targetTableName));
+        .includes(targetTableName));
 
   /*
    * Used internally to loop though each field of a particular table and try
    * to match them to unmapped headers. This method iterates over the same
    * table only once if in `synonymsAndMatches` mode.
-   * */
+   *
+   */
   private findMappings(
     {
       tableName,
@@ -592,10 +618,12 @@ export default class Automapper {
   ): void {
     if (mode === 'synonymsAndMatches') {
       if (
-        // don't iterate over the same table again when in
-        // `synonymsAndMatches` mode
-        this.searchedTables.indexOf(tableName) !== -1 ||
-        path.length > Automapper.depth // don't go beyond the depth limit
+        /*
+         * Don't iterate over the same table again when in
+         * `synonymsAndMatches` mode
+         */
+        this.searchedTables.includes(tableName) ||
+        path.length > Automapper.depth // Don't go beyond the depth limit
       )
         return;
 
@@ -665,8 +693,10 @@ export default class Automapper {
                       finalHeaderName,
                       fieldName
                     )) &&
-                  // don't search for further mappings for this field if we can
-                  // only map a single header to this field
+                  /*
+                   * Don't search for further mappings for this field if we can
+                   * only map a single header to this field
+                   */
                   this.makeMapping(
                     path,
                     pushRankToPath ? [finalRankName, fieldName] : [fieldName],
@@ -700,15 +730,17 @@ export default class Automapper {
     this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);
 
     fields.some(([fieldName, fieldData]) => {
-      // search in definitions
+      // Search in definitions
       findMappingsInDefinitionsPayload.fieldName = fieldName;
       this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);
 
       if (mode !== 'synonymsAndMatches') {
         if (tableSynonyms.length === 0) return;
         else {
-          // run though synonyms and matches if table has `tableSynonyms`
-          // even if not in `synonymsAndMatches` mode
+          /*
+           * Run though synonyms and matches if table has `tableSynonyms`
+           * even if not in `synonymsAndMatches` mode
+           */
           findMappingsInDefinitionsPayload.mode = 'synonymsAndMatches';
           this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);
           findMappingsInDefinitionsPayload.mode = mode;
@@ -731,26 +763,25 @@ export default class Automapper {
           { lowercaseHeaderName, strippedHeaderName, finalHeaderName },
         ]) =>
           !(toManyReferenceNumber = false) &&
-          // compare each field's schema name and friendly schema name
-          // to headers
-          (fieldNames.some(
-            (fieldName) =>
-              [
-                lowercaseHeaderName,
-                strippedHeaderName,
-                finalHeaderName,
-              ].indexOf(fieldName) !== -1
+          /*
+           * Compare each field's schema name and friendly schema name
+           * to headers
+           */
+          (fieldNames.some((fieldName) =>
+            [lowercaseHeaderName, strippedHeaderName, finalHeaderName].includes(
+              fieldName
+            )
           ) ||
-            // loop through table names and table synonyms
+            // Loop through table names and table synonyms
             tableNames.some((tableSynonym) =>
-              // loop through field names and field synonyms
+              // Loop through field names and field synonyms
               fieldNames.some(
                 (fieldSynonym) =>
                   strippedHeaderName === `${fieldSynonym} ${tableSynonym}` ||
                   (strippedHeaderName.startsWith(tableSynonym) &&
                     (strippedHeaderName === `${tableSynonym} ${fieldSynonym}` ||
                       [
-                        // try extracting -to-many reference number
+                        // Try extracting -to-many reference number
                         new RegExp(`${tableSynonym} (\\d+) ${fieldSynonym}`),
                         new RegExp(`${tableSynonym} ${fieldSynonym} (\\d+)`),
                       ].some((regularExpression) => {
@@ -761,7 +792,7 @@ export default class Automapper {
                         if (match === null || typeof match[1] === 'undefined')
                           return false;
 
-                        toManyReferenceNumber = ~~match[1];
+                        toManyReferenceNumber = Number(match[1]);
                         return true;
                       })))
               )
@@ -800,7 +831,7 @@ export default class Automapper {
           currentMappingPathPart = path[path.length - 2];
 
         if (
-          // don't iterate over the same tables again
+          // Don't iterate over the same tables again
           this.tableWasIterated(
             mode,
             newDepthLevel,
@@ -808,7 +839,7 @@ export default class Automapper {
           ) ||
           (mode !== 'synonymsAndMatches' &&
             isCircularRelationship({
-              // skip circular relationships
+              // Skip circular relationships
               targetTableName: relationshipData.tableName,
               parentTableName,
               foreignName: relationshipData.foreignName,
@@ -816,8 +847,10 @@ export default class Automapper {
               currentMappingPathPart,
               tableName,
             })) ||
-          // skip -to-many inside -to-many
-          // TODO: remove this once upload plan is ready
+          /*
+           * Skip -to-many inside -to-many
+           * TODO: remove this once upload plan is ready
+           */
           isTooManyInsideOfTooMany(
             relationshipData.type,
             parentRelationshipType
@@ -843,22 +876,27 @@ export default class Automapper {
    * Used to check if the table's field is already mapped and if not,
    * makes a new mapping. Also, handles -to-many relationships by creating new
    * objects
-   * */
+   *
+   */
   private makeMapping(
-    // Mapping path from base table to this table. Should be an empty
-    // array if this is base table
+    /*
+     * Mapping path from base table to this table. Should be an empty
+     * array if this is base table
+     */
     path: string[],
     newPathParts: MappingPath, // Elements that should be pushed into `path`
     headerName: string, // The name of the header that should be mapped
     // Current table name (used to identify `don't map` conditions)
     tableName = '',
-    // if of type {int}:
-    //   implants given toManyReferenceNumber into the mapping path
-    //   into the first reference item starting from the right
-    // if of type {boolean} and is False:
-    //   don't do anything
+    /*
+     * If of type {int}:
+     *   implants given toManyReferenceNumber into the mapping path
+     *   into the first reference item starting from the right
+     * if of type {boolean} and is False:
+     *   don't do anything
+     */
     toManyReferenceNumber: number | false = false
-  ): boolean /* false if we can map another mapping to this header.
+  ): boolean /* False if we can map another mapping to this header.
   Most of the time means that the mapping was not made
   (Mapping fails if field is inside a -to-one relationship or direct child
   of base table and is already mapped).
@@ -867,11 +905,13 @@ export default class Automapper {
     const lastPathPart = localPath[localPath.length - 1];
 
     if (
-      // if this fields is designated as unmappable in the current source
+      // If this fields is designated as unmappable in the current source
       isFieldInDontMatch(tableName, lastPathPart, this.scope) ||
-      // if a starting path was given and proposed mapping is outside
-      // the path
-      (this.startingPath.length !== 0 &&
+      /*
+       * If a starting path was given and proposed mapping is outside
+       * the path
+       */
+      (this.startingPath.length > 0 &&
         findArrayDivergencePoint(
           localPath,
           this.startingPath.slice(0, localPath.length)
@@ -879,7 +919,7 @@ export default class Automapper {
     )
       return false;
 
-    // if exact -to-many index was found, insert it into the path
+    // If exact -to-many index was found, insert it into the path
     let changesMade: string | boolean = false;
     if (toManyReferenceNumber !== false)
       localPath = localPath
@@ -891,25 +931,31 @@ export default class Automapper {
         )
         .reverse();
 
-    // check if this path is already mapped and if it is, increment
-    // the reference number to make path unique
+    /*
+     * Check if this path is already mapped and if it is, increment
+     * the reference number to make path unique
+     */
     while (
-      // go over mapped headers to see if this path was already mapped
-      // go over mappings proposed by automapper
+      /*
+       * Go over mapped headers to see if this path was already mapped
+       * go over mappings proposed by automapper
+       */
       mappingPathIsInProposedMappings(
         this.allowMultipleMappings,
         this.results,
         localPath
       ) ||
-      // go over mappings that are already in the mappings tree
+      // Go over mappings that are already in the mappings tree
       mappingPathIsTheMappingsTree(
         this.checkForExistingMappings,
         localPath,
         this.pathIsMapped
       )
     ) {
-      // increment the last reference number in the mapping path if it
-      // has a reference number in it
+      /*
+       * Increment the last reference number in the mapping path if it
+       * has a reference number in it
+       */
       if (
         !Object.entries(localPath)
           .reverse()
@@ -917,7 +963,7 @@ export default class Automapper {
             ([localPathIndex, localPathPart], index) =>
               localPath.length - index > this.pathOffset &&
               valueIsReferenceItem(localPathPart) &&
-              (localPath[~~localPathIndex] = formatReferenceItem(
+              (localPath[Number(localPathIndex)] = formatReferenceItem(
                 getIndexFromReferenceItemName(localPathPart) + 1
               ))
           )
@@ -925,13 +971,13 @@ export default class Automapper {
         return false;
     }
 
-    // remove header from the list of unmapped headers
+    // Remove header from the list of unmapped headers
     this.dispatch.headersToMap({
       type: 'mapped',
       headerName,
     });
 
-    // save result
+    // Save result
     this.dispatch.results({
       type: 'add',
       headerName,

@@ -577,7 +577,7 @@ const definitions: AutoMapperDefinitions = {
  */
 function definitionsToLowercase(
   definitions: AutoMapperDefinitions
-): AutoMapperDefinitions {
+): Readonly<AutoMapperDefinitions> {
   const keysToLowerCase = (object: object, levels = 1): object =>
     Object.fromEntries(
       Object.entries(object).map(([key, value]) => [
@@ -593,9 +593,9 @@ function definitionsToLowercase(
   ][] = [
     ['tableSynonyms', 1],
     ['rankSynonyms', 1],
-    ['dontMatch', 2],
+    ['dontMatch', 1 + 1],
     ['shortcuts', 1],
-    ['synonyms', 2],
+    ['synonyms', 1 + 1],
   ];
   structureDepth.forEach(
     ([structureName, depth]) =>

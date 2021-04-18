@@ -1,11 +1,9 @@
-import automapper, { AutoMapperResults } from './automapper';
-import { R } from './components/wbplanview';
-import { ListOfHeaders, MappingLine } from './components/wbplanviewmapper';
-import {
-  ColumnOptions,
-  UploadPlan,
-  uploadPlanToMappingsTree,
-} from './uploadplantomappingstree';
+import type { AutoMapperResults } from './automapper';
+import Automapper from './automapper';
+import type { R } from './components/wbplanview';
+import type { ListOfHeaders, MappingLine } from './components/wbplanviewmapper';
+import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
+import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { fullMappingPathParser } from './wbplanviewhelper';
 import { mappingsTreeToArrayOfMappings } from './wbplanviewtreehelper';
 
@@ -20,7 +18,7 @@ export function getLinesFromHeaders({
   runAutomapper,
   baseTableName = '',
 }: {
-  headers?: ListOfHeaders;
+  headers?: Readonly<ListOfHeaders>;
 } & (
   | {
       runAutomapper: true;
@@ -42,7 +40,7 @@ export function getLinesFromHeaders({
 
   if (!runAutomapper || typeof baseTableName === 'undefined') return lines;
 
-  const automapperResults: AutoMapperResults = new automapper({
+  const automapperResults: AutoMapperResults = new Automapper({
     headers,
     baseTable: baseTableName,
     scope: 'automapper',
@@ -52,20 +50,20 @@ export function getLinesFromHeaders({
   return lines.map((line) => {
     const { name: headerName } = line;
     const automapperMappingPaths = automapperResults[headerName];
-    if (typeof automapperMappingPaths === 'undefined') return line;
-    else
-      return {
-        mappingPath: automapperMappingPaths[0],
-        type: 'existingHeader',
-        name: headerName,
-        options: defaultLineOptions,
-      };
+    return typeof automapperMappingPaths === 'undefined'
+      ? line
+      : {
+          mappingPath: automapperMappingPaths[0],
+          type: 'existingHeader',
+          name: headerName,
+          options: defaultLineOptions,
+        };
   });
 }
 
 export function getLinesFromUploadPlan(
-  headers: ListOfHeaders = [],
-  uploadPlan: UploadPlan
+  headers: Readonly<ListOfHeaders> = [],
+  uploadPlan: Readonly<UploadPlan>
 ): {
   readonly baseTableName: string;
   readonly lines: MappingLine[];

@@ -1,7 +1,7 @@
-import { R } from './components/wbplanview';
-import { OccurrenceCountRecord } from './lifemapperinforeducer';
+import type { R } from './components/wbplanview';
+import type { OccurrenceCountRecord } from './lifemapperinforeducer';
 
-export const fetchLocalScientificName = (
+export const fetchLocalScientificName = async (
   model: any,
   defaultValue?: string
 ): Promise<string | undefined> =>
@@ -74,13 +74,13 @@ export const extractBadgeInfo: Record<
 > = {
   gbif: (occurrence) => ({
     listOfIssues: occurrence.issues,
-    occurrenceName: occurrence['scientificName'],
+    occurrenceName: occurrence.scientificName,
     occurrenceViewLink: `https://www.gbif.org/occurrence/${occurrence.key}`,
   }),
   idigbio: (occurrence) => ({
-    listOfIssues: occurrence['indexTerms'].flags,
+    listOfIssues: occurrence.indexTerms.flags,
     occurrenceName: '',
-    occurrenceViewLink: `https://www.idigbio.org/portal/records/${occurrence['uuid']}`,
+    occurrenceViewLink: `https://www.idigbio.org/portal/records/${occurrence.uuid}`,
   }),
   morphosource: (occurrence) => ({
     listOfIssues: [],
@@ -91,21 +91,21 @@ export const extractBadgeInfo: Record<
 
 export const lifemapperLayerVariations = [
   {
-    name: (_: string, layerId: string) => `prj_${layerId}`,
+    name: (_: string, layerId: string): string => `prj_${layerId}`,
     label: 'Projection',
     transparent: true,
   },
   {
-    name: (mapId: string) => `occ_${mapId}`,
+    name: (mapId: string): string => `occ_${mapId}`,
     label: 'Occurrence Points',
     transparent: true,
   },
 ];
 
-export const extractEl = (
-  elements: [string | undefined, string | undefined],
+export const extractElement = (
+  elements: Readonly<[string | undefined, string | undefined]>,
   preferredElement: 0 | 1
 ): string =>
   (typeof elements[preferredElement] === 'undefined'
     ? elements[(preferredElement + 1) % elements.length]
-    : elements[preferredElement]) || '';
+    : elements[preferredElement]) ?? '';

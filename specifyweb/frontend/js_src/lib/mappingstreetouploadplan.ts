@@ -3,12 +3,13 @@
  * Helper class for converting from upload plan to mapping tree
  * (internal structure used in wbplanview) and vice versa
  *
- * */
+ *
+ */
 
 'use strict';
 
-import { R } from './components/wbplanview';
-import {
+import type { R } from './components/wbplanview';
+import type {
   ColumnDef,
   TreeRecordVariety,
   Uploadable,
@@ -16,16 +17,16 @@ import {
 } from './uploadplantomappingstree';
 import { defaultLineOptions } from './wbplanviewlinesgetter';
 import dataModelStorage from './wbplanviewmodel';
+import type { DataModelFieldWritable } from './wbplanviewmodelfetcher';
 import {
   getNameFromTreeRankName,
   tableIsTree,
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
-import { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
-import { DataModelFieldWritable } from './wbplanviewmodelfetcher';
+import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 
-//TODO: make these functions type safe
+// TODO: make these functions type safe
 
 interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode | ColumnDef> {}
@@ -66,11 +67,11 @@ function mappingsTreeToUploadPlanTable(
       if (valueIsReferenceItem(fieldName)) {
         if (!isToMany) {
           isToMany = true;
-          //@ts-ignore
+          // @ts-expect-error
           tablePlan = [];
         }
 
-        //@ts-ignore
+        // @ts-expect-error
         tablePlan.push(
           mappingsTreeToUploadPlanTable(
             fieldData,
@@ -80,7 +81,7 @@ function mappingsTreeToUploadPlanTable(
           )
         );
       } else if (valueIsTreeRank(fieldName))
-        //@ts-ignore
+        // @ts-expect-error
         tablePlan = mappingsTreeToUploadPlanTable(
           tableData,
           tableName,
@@ -138,7 +139,7 @@ function handleRelationshipField(
     toMany?: UploadPlanNode | undefined;
   },
   mustMatchPreferences: R<boolean>
-) {
+): void {
   const mappingTable = field.tableName;
   if (typeof mappingTable === 'undefined')
     throw new Error('Mapping Table is not defined');
@@ -202,15 +203,17 @@ const mappingsTreeToUploadPlanTree = (
     ])
   );
 
-/*const mappingsTreeToUploadTableTable = (
-  mappingsTree: MappingsTree,
-  tableName: string,
-): UploadPlanUploadTableTable => (
-  {}
-);*/
+/*
+ *Const mappingsTreeToUploadTableTable = (
+ *mappingsTree: MappingsTree,
+ *tableName: string,
+ *): UploadPlanUploadTableTable => (
+ *{}
+ *);
+ */
 
 const mappingsTreeToUploadTable = (
-  mappingsTree: MappingsTree,
+  mappingsTree: Readonly<MappingsTree>,
   tableName: string,
   mustMatchPreferences: R<boolean>,
   isRoot = false
@@ -234,10 +237,11 @@ const mappingsTreeToUploadTable = (
 /*
  * Converts mappings tree to upload plan
  * Inverse of uploadPlanToMappingsTree
- * */
+ *
+ */
 export const mappingsTreeToUploadPlan = (
   baseTableName: string,
-  mappingsTree: MappingsTree,
+  mappingsTree: Readonly<MappingsTree>,
   mustMatchPreferences: R<boolean>
 ): UploadPlan => ({
   baseTableName,

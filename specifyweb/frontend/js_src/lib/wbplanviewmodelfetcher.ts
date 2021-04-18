@@ -3,14 +3,15 @@
  * Fetches Specify data model with tree ranks, parses it and saves it to
  * an object for and easier usage across wbplanview
  *
- * */
+ *
+ */
 
 'use strict';
 
-import { R } from './components/wbplanview';
-import { RelationshipType } from './components/wbplanviewmapper';
+import type { R } from './components/wbplanview';
+import type { RelationshipType } from './components/wbplanviewmapper';
 import domain from './domain';
-import {
+import type {
   Domain as DomainType,
   Schema as SchemaType,
   SchemaModelTableField,
@@ -65,26 +66,21 @@ type DataModelTable = Readonly<DataModelTableWritable>;
 
 type DataModelTablesWritable = R<DataModelTableWritable>;
 
-export interface DataModelTables {
-  readonly [tableName: string]: DataModelTable;
-}
+export type DataModelTables = Readonly<Record<string, DataModelTable>>;
 
 type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
 
-interface DataModelRanksWritable {
-  // whether rank is required
-  [tableName: string]: Readonly<R<boolean>>;
-}
+type DataModelRanksWritable = Record<string, Readonly<R<boolean>>>;
 
 export type DataModelRanks = Readonly<DataModelRanksWritable>;
 
-// a dictionary like tableName==>tableFriendlyName
+// A dictionary like tableName==>tableFriendlyName
 type DataModelListOfTablesWritable = R<{
   tableFriendlyName: string;
   isHidden: boolean;
 }>;
 
-// a dictionary like tableName==>tableFriendlyName
+// A dictionary like tableName==>tableFriendlyName
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 
 const fetchingParameters: {
@@ -95,8 +91,10 @@ const fetchingParameters: {
   readonly commonBaseTables: Readonly<string[]>;
   readonly fieldsToRemove: R<Readonly<string[]>>;
 } = {
-  // all required fields are not hidden, except for these, which are made
-  // not required
+  /*
+   * All required fields are not hidden, except for these, which are made
+   * not required
+   */
   requiredFieldsToHide: [
     'timestampcreated',
     'timestampmodified',
@@ -130,7 +128,7 @@ const fetchingParameters: {
     ),
   ],
 
-  // forbid setting any of the tables that have these keywords as base tables
+  // Forbid setting any of the tables that have these keywords as base tables
   tableKeywordsToExclude: [
     'Authorization',
     'Variant',
@@ -149,7 +147,7 @@ const fetchingParameters: {
     locality: ['srclatlongunit'],
   },
 
-  //base tables that are available by default
+  // Base tables that are available by default
   commonBaseTables: [
     'accession',
     'agent',
@@ -190,16 +188,19 @@ const fetchingParameters: {
 } as const;
 
 /* Fetches ranks for a particular table */
-const fetchRanks = (
-  tableName: string // Official table name (from the data model)
+const fetchRanks = async (
+  // Official table name (from the data model)
+  tableName: string
 ): Promise<TableRanksInline> =>
   new Promise((resolve) =>
     (domain as DomainType).getTreeDef(tableName).done((treeDefinition) =>
       treeDefinition.rget('treedefitems').done((treeDefItems) =>
         treeDefItems.fetch({ limit: 0 }).done(() =>
           resolve([
-            // TODO: add complex logic for figuring out if
-            //  rank is required or not
+            /*
+             * TODO: add complex logic for figuring out if
+             *  rank is required or not
+             */
             tableName,
             Object.values(treeDefItems.models).map((rank) => [
               rank.get('name') as string,
@@ -211,20 +212,23 @@ const fetchRanks = (
     )
   );
 
-const requiredFieldShouldBeHidden = (fieldName: string) =>
-  fetchingParameters.requiredFieldsToHide.indexOf(fieldName) !== -1;
+const requiredFieldShouldBeHidden = (fieldName: string): boolean =>
+  fetchingParameters.requiredFieldsToHide.includes(fieldName);
 
-const fieldShouldBeMadeOptional = (tableName: string, fieldName: string) =>
+const fieldShouldBeMadeOptional = (
+  tableName: string,
+  fieldName: string
+): boolean =>
   fetchingParameters.requiredFieldsToMakeOptional[tableName]?.includes(
     fieldName
   ) || false;
 
-const knownRelationshipTypes: RelationshipType[] = [
+const knownRelationshipTypes: Set<string> = new Set([
   'one-to-one',
   'one-to-many',
   'many-to-one',
   'many-to-many',
-];
+]);
 const aliasRelationshipTypes: R<RelationshipType> = {
   'zero-to-one': 'one-to-many',
 };
@@ -232,11 +236,12 @@ const aliasRelationshipTypes: R<RelationshipType> = {
 function handleRelationshipType(
   relationshipType: RelationshipType
 ): RelationshipType {
-  if (knownRelationshipTypes.indexOf(relationshipType) === -1) {
+  if (knownRelationshipTypes.has(relationshipType)) return relationshipType;
+  else {
     if (relationshipType in aliasRelationshipTypes)
       return aliasRelationshipTypes[relationshipType];
     else throw new Error('Unknown relationship type detected');
-  } else return relationshipType;
+  }
 }
 
 function handleRelationshipField(
@@ -245,7 +250,7 @@ function handleRelationshipField(
   fieldName: string,
   hasRelationshipWithDefinition: () => void,
   hasRelationshipWithDefinitionItem: () => void
-): undefined | true {
+): boolean {
   const relationship: SchemaModelTableRelationship = field as SchemaModelTableRelationship;
 
   let foreignName = relationship.otherSideName;
@@ -257,19 +262,19 @@ function handleRelationshipField(
 
   if (fieldName === 'definition') {
     hasRelationshipWithDefinition();
-    return;
+    return false;
   }
 
   if (fieldName === 'definitionitem') {
     hasRelationshipWithDefinitionItem();
-    return;
+    return false;
   }
 
   if (
     relationship.readOnly ||
-    fetchingParameters.tablesToRemove.indexOf(tableName) !== -1
+    fetchingParameters.tablesToRemove.includes(tableName)
   )
-    return;
+    return false;
 
   fieldData.tableName = tableName;
   fieldData.type = relationshipType;
@@ -281,12 +286,12 @@ function handleRelationshipField(
 const dataModelFetcherVersion = '4';
 const cacheBucketName = 'dataModelFetcher';
 
-const cacheGet = <T>(cacheName: string) =>
+const cacheGet = <T>(cacheName: string): false | T =>
   cache.get<T>(cacheBucketName, cacheName, {
     version: dataModelFetcherVersion,
   });
 
-const cacheSet = <T>(cacheName: string, cacheValue: T) =>
+const cacheSet = <T>(cacheName: string, cacheValue: T): T =>
   cache.set(cacheBucketName, cacheName, cacheValue, {
     version: dataModelFetcherVersion,
     overwrite: true,
@@ -319,8 +324,7 @@ export default async function (): Promise<void> {
 
   const tables = Object.values(
     ((schema as unknown) as SchemaType).models
-  ).reduce((tables, tableData) => {
-    // @ts-ignore
+  ).reduce<DataModelTablesWritable>((tables, tableData) => {
     const tableName = tableData.longName.split('.').slice(-1)[0].toLowerCase();
     const tableFriendlyName = tableData.getLocalizedName();
 
@@ -330,29 +334,31 @@ export default async function (): Promise<void> {
 
     if (
       tableData.system ||
-      fetchingParameters.tablesToRemove.indexOf(tableName) !== -1
+      fetchingParameters.tablesToRemove.includes(tableName)
     )
       return tables;
 
-    tableData.fields.some((field) => {
+    tableData.fields.forEach((field) => {
       let fieldName = field.name;
       const friendlyName =
         field.getLocalizedName() ?? getFriendlyName(fieldName);
 
       fieldName = fieldName.toLowerCase();
 
-      // remove frontend-only fields (from schemaextras.js)
+      // Remove frontend-only fields (from schemaextras.js)
       if (
         typeof fetchingParameters.fieldsToRemove[tableName] !== 'undefined' &&
-        fetchingParameters.fieldsToRemove[tableName].indexOf(fieldName) !== -1
+        fetchingParameters.fieldsToRemove[tableName].includes(fieldName)
       )
         return;
 
       let isRequired = field.isRequired;
       let isHidden = field.isHidden() === 1;
 
-      // required fields should not be hidden, unless they are present in
-      // this list
+      /*
+       * Required fields should not be hidden, unless they are present in
+       * this list
+       */
       if (requiredFieldShouldBeHidden(fieldName)) {
         isRequired = false;
         isHidden = true;
@@ -360,7 +366,7 @@ export default async function (): Promise<void> {
 
       if (fieldShouldBeMadeOptional(tableName, fieldName)) isRequired = false;
 
-      //@ts-ignore
+      // @ts-expect-error
       const fieldData: DataModelFieldWritable = {
         friendlyName,
         isHidden,
@@ -410,14 +416,13 @@ export default async function (): Promise<void> {
     );
 
     if (
-      !fetchingParameters.tableKeywordsToExclude.some(
-        (tableKeywordToExclude) =>
-          tableFriendlyName.indexOf(tableKeywordToExclude) !== -1
+      !fetchingParameters.tableKeywordsToExclude.some((tableKeywordToExclude) =>
+        tableFriendlyName.includes(tableKeywordToExclude)
       )
     )
       listOfBaseTables[tableName] = {
         tableFriendlyName,
-        isHidden: fetchingParameters.commonBaseTables.indexOf(tableName) === -1,
+        isHidden: !fetchingParameters.commonBaseTables.includes(tableName),
       };
 
     tables[tableName] = {
@@ -429,9 +434,9 @@ export default async function (): Promise<void> {
       fetchRanksQueue.push(fetchRanks(tableName));
 
     return tables;
-  }, {} as DataModelTablesWritable);
+  }, {});
 
-  // remove relationships to system tables
+  // Remove relationships to system tables
   Object.entries(tables).forEach(([tableName, tableData]) =>
     (Object.entries(tableData.fields).filter(
       ([, { isRelationship }]) => isRelationship
@@ -450,7 +455,7 @@ export default async function (): Promise<void> {
       const rootRanks: R<string> = Object.fromEntries(
         resolved.map(([tableName], index) => [
           tableName,
-          resolved[index][1].shift()?.[0] || '',
+          resolved[index][1].shift()?.[0] ?? '',
         ])
       );
 
@@ -461,7 +466,7 @@ export default async function (): Promise<void> {
         ])
       );
 
-      // remove relationships from tree table fields
+      // Remove relationships from tree table fields
       resolved.forEach(
         ([tableName]) =>
           (tables[tableName].fields = Object.fromEntries(
@@ -482,6 +487,4 @@ export default async function (): Promise<void> {
     .catch((error) => {
       throw error;
     });
-
-  return;
 }

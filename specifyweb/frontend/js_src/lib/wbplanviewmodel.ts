@@ -3,12 +3,13 @@
  * Stores parsed data model and other useful objects for easy sharing
  * between the components of wbplanview
  *
- * */
+ *
+ */
 
 'use strict';
 
-import { R } from './components/wbplanview';
-import {
+import type { R } from './components/wbplanview';
+import type {
   DataModelListOfTables,
   DataModelRanks,
   DataModelTables,
@@ -23,19 +24,26 @@ const dataModelStorage: {
   ranks: DataModelRanks;
   rootRanks: R<string>;
 } = {
-  // each one of this can be modified to a single symbol or several symbols
+  // Each one of this can be modified to a single symbol or several symbols
 
-  // prefix for -to-many indexes (used behind the scenes & is shown to the user)
+  // Prefix for -to-many indexes (used behind the scenes & is shown to the user)
   referenceSymbol: '#',
-  treeSymbol: '$', // prefix for tree ranks (used behind the scenes)
-  // a symbol to used to join multiple mapping path elements together when
-  // need to represent mapping path as a string
+  // Prefix for tree ranks (used behind the scenes)
+  treeSymbol: '$',
+  /*
+   * A symbol to used to join multiple mapping path elements together when
+   * need to represent mapping path as a string
+   */
   pathJoinSymbol: '_',
 
-  tables: undefined!, // parsed tables and their fields
-  listOfBaseTables: undefined!, // tables that are available as base table
-  ranks: undefined!, // dict of defined ranks for tree tables
-  rootRanks: undefined!, // root rank for each tree table
+  // Parsed tables and their fields
+  tables: undefined!,
+  // Tables that are available as base table
+  listOfBaseTables: undefined!,
+  // Dict of defined ranks for tree tables
+  ranks: undefined!,
+  // Root rank for each tree table
+  rootRanks: undefined!,
 };
 
 export default dataModelStorage;

@@ -1,12 +1,14 @@
-import { MessageTypes } from './components/lifemapperinfo';
-import { mainState, States } from './components/lifemapperinfostate';
-import {
+import type { MessageTypes } from './components/lifemapperinfo';
+import type { States } from './components/lifemapperinfostate';
+import { mainState } from './components/lifemapperinfostate';
+import type {
   AggregatorName,
-  BADGE_NAMES,
   BadgeName,
   FullAggregatorInfo,
 } from './lifemapperinfoutills';
-import { Action, generateReducer } from './statemanagement';
+import { BADGE_NAMES } from './lifemapperinfoutills';
+import type { Action } from './statemanagement';
+import { generateReducer } from './statemanagement';
 
 type LoadedAction = Action<'LoadedAction'> & {
   aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;

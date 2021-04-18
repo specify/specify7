@@ -1,23 +1,26 @@
 /*
  * Utility functions for rendering a Leaflet map
- * */
+ *
+ */
 
 'use strict';
 
 import $ from 'jquery';
-import { R } from './components/wbplanview';
+import type { R } from './components/wbplanview';
 import { coMapTileServers, leafletTileServers } from './leafletconfig';
 import L from './leafletextend';
-import { LocalityData } from './leafletutils';
+import type { LocalityData } from './leafletutils';
+
+const DEFAULT_ZOOM = 5;
 
 export function showLeafletMap({
   localityPoints = [],
-  markerClickCallback = () => {},
+  markerClickCallback,
   leafletMapContainer,
 }: {
-  localityPoints: LocalityData[];
-  markerClickCallback: () => void;
-  leafletMapContainer: JQuery<HTMLDivElement> | undefined;
+  readonly localityPoints: LocalityData[];
+  readonly markerClickCallback?: () => void;
+  readonly leafletMapContainer: JQuery<HTMLDivElement> | undefined;
 }): L.Map {
   if (typeof leafletMapContainer === 'undefined')
     leafletMapContainer = $(`<div></div>`);
@@ -26,7 +29,7 @@ export function showLeafletMap({
     width: 900,
     height: 600,
     title: 'Leaflet map',
-    close: function () {
+    close() {
       map.remove();
       $(this).remove();
     },
@@ -36,7 +39,7 @@ export function showLeafletMap({
   let defaultZoom = 1;
   if (localityPoints.length > 0) {
     defaultCenter = [localityPoints[0].latitude1, localityPoints[0].longitude1];
-    defaultZoom = 5;
+    defaultZoom = DEFAULT_ZOOM;
   }
 
   const map = L.map(leafletMapContainer[0], {
@@ -52,15 +55,13 @@ export function showLeafletMap({
   addMarkersToMap(
     map,
     controlLayers,
-    localityPoints
-      .map((pointDataDict) =>
-        displayLocalityOnTheMap({
-          localityData: pointDataDict,
-          markerClickCallback: markerClickCallback.bind(null, index++),
-          map,
-        })
-      )
-      .flat(),
+    localityPoints.flatMap((pointDataDict) =>
+      displayLocalityOnTheMap({
+        localityData: pointDataDict,
+        markerClickCallback: markerClickCallback?.bind(undefined, index++),
+        map,
+      })
+    ),
     'Polygon boundaries',
     true
   );
@@ -70,10 +71,10 @@ export function showLeafletMap({
   return map;
 }
 
-function addFullScreenButton(map: L.Map) {
-  // @ts-ignore
-  L.control.fullScreen = (opts: any) => new L.Control.FullScreen(opts);
-  // @ts-ignore
+function addFullScreenButton(map: L.Map): void {
+  // @ts-expect-error
+  L.control.fullScreen = (options: any) => new L.Control.FullScreen(options);
+  // @ts-expect-error
   L.control.fullScreen({ position: 'topleft' }).addTo(map);
 }
 
@@ -81,10 +82,10 @@ function addDetailsButton(
   container: HTMLDivElement,
   map: L.Map,
   details: string
-) {
-  // @ts-ignore
-  L.control.details = (opts) => new L.Control.Details(opts);
-  // @ts-ignore
+): Element {
+  // @ts-expect-error
+  L.control.details = (options) => new L.Control.Details(options);
+  // @ts-expect-error
   L.control.details({ position: 'topleft' }).addTo(map);
   const detailsContainer = container.getElementsByClassName(
     'details-container'
@@ -99,7 +100,7 @@ export function addMarkersToMap(
   markers: any,
   layerName: string,
   enable = false
-) {
+): void {
   if (markers.length === 0) return;
 
   const layer = L.layerGroup(markers);
@@ -107,6 +108,23 @@ export function addMarkersToMap(
   layer.addTo(map);
 
   if (enable) map.addLayer(layer);
+}
+
+function isValidAccuracy(
+  latlongaccuracy: string | number | undefined
+): boolean {
+  try {
+    if (
+      typeof latlongaccuracy === 'undefined' ||
+      (typeof latlongaccuracy === 'number' && latlongaccuracy < 1) ||
+      (typeof latlongaccuracy === 'string' &&
+        Number.parseFloat(latlongaccuracy) < 1)
+    )
+      return false;
+  } catch {
+    return false;
+  }
+  return true;
 }
 
 export function displayLocalityOnTheMap({
@@ -123,10 +141,10 @@ export function displayLocalityOnTheMap({
   map,
   iconClass,
 }: {
-  localityData: LocalityData;
-  markerClickCallback?: string | (() => void);
-  map?: any;
-  iconClass?: string;
+  readonly localityData: LocalityData;
+  readonly markerClickCallback?: string | (() => void);
+  readonly map?: L.Map;
+  readonly iconClass?: string;
 }) {
   if (typeof latitude1 === 'undefined' || typeof 'longitude1' === undefined)
     return [];
@@ -134,29 +152,15 @@ export function displayLocalityOnTheMap({
   const icon = new L.Icon.Default();
   if (typeof iconClass !== 'undefined') icon.options.className = iconClass;
 
-  const createPoint = (latitude1: number, longitude1: number) =>
+  const createPoint = (latitude1: number, longitude1: number): L.Marker =>
     L.marker([latitude1, longitude1], {
-      icon: icon,
+      icon,
     });
 
   const vectors = [];
 
-  function isValidAccuracy(latlongaccuracy: string | number | undefined) {
-    try {
-      if (
-        typeof latlongaccuracy === 'undefined' ||
-        (typeof latlongaccuracy === 'number' && latlongaccuracy < 1) ||
-        (typeof latlongaccuracy === 'string' && parseFloat(latlongaccuracy) < 1)
-      )
-        return false;
-    } catch (err) {
-      return false;
-    }
-    return true;
-  }
-
   if (typeof latitude2 === 'undefined' || typeof longitude2 === 'undefined') {
-    // a circle
+    // A circle
     if (isValidAccuracy(latlongaccuracy))
       vectors.push(
         L.circle([latitude1, longitude1], {
@@ -164,12 +168,12 @@ export function displayLocalityOnTheMap({
         }),
         createPoint(latitude1, longitude1)
       );
-    // a point
+    // A point
     else vectors.push(createPoint(latitude1, longitude1));
   } else
     vectors.push(
       latlongtype?.toLowerCase() === 'line'
-        ? // a line
+        ? // A line
           new L.Polyline(
             [
               [latitude1, longitude1],
@@ -181,7 +185,7 @@ export function displayLocalityOnTheMap({
               smoothFactor: 1,
             }
           )
-        : // a polygon
+        : // A polygon
           L.polygon([
             [latitude1, longitude1],
             [latitude2, longitude1],
@@ -195,7 +199,7 @@ export function displayLocalityOnTheMap({
   const polygonBoundaries: typeof vectors = [];
 
   let isFirstVector = true;
-  vectors.map((vector) => {
+  vectors.forEach((vector) => {
     if (isFirstVector && typeof map !== 'undefined') {
       vector.addTo(map);
       isFirstVector = false;
@@ -218,7 +222,7 @@ export function displayLocalityOnTheMap({
 }
 
 export function showCOMap(
-  mapContainer: HTMLDivElement,
+  mapContainer: Readonly<HTMLDivElement>,
   listOfLayersRaw: {
     transparent: boolean;
     layerLabel: string;

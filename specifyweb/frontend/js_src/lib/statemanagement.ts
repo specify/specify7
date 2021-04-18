@@ -4,7 +4,8 @@
  * switch(){} statements
  * This code is based on https://github.com/maxxxxxdlp/typesafe_reducer
  *
- * */
+ *
+ */
 
 'use strict';
 
@@ -35,32 +36,34 @@ function assertExhaustive(caseType: never): never {
   );
 }
 
-// assignees names to components so that they easier to identify in the
-// inspector and profiler
+/*
+ * Assignees names to components so that they easier to identify in the
+ * inspector and profiler
+ */
 export function namedComponent<T>(
   componentName: string,
   componentFunction: T
 ): T {
-  // @ts-ignore
+  // @ts-expect-error
   componentFunction.displayName = componentName;
   return componentFunction;
 }
 
 export const generateReducer = <STATE, ACTION extends Action<string>>(
-  obj: GenerateReducerDictionary<STATE, ACTION>
-): ((state: STATE, key: ACTION) => STATE) => <Key2 extends keyof typeof obj>(
+  object: GenerateReducerDictionary<STATE, ACTION>
+): ((state: STATE, key: ACTION) => STATE) => <Key2 extends keyof typeof object>(
   state: STATE,
   action: Action<Key2>
 ) =>
-  obj != null && typeof obj[action['type']] === 'function'
-    ? obj[action['type']]({ state, action: action as any })
-    : assertExhaustive(action['type'] as never);
+  object != undefined && typeof object[action.type] === 'function'
+    ? object[action.type]({ state, action: action as any })
+    : assertExhaustive(action.type as never);
 
 export const generateDispatch = <ACTION extends Action<string>>(
-  obj: GenerateDispatchDictionary<ACTION>
-): ((key: ACTION) => void) => <Key2 extends keyof typeof obj>(
+  object: GenerateDispatchDictionary<ACTION>
+): ((key: ACTION) => void) => <Key2 extends keyof typeof object>(
   action: Action<Key2>
 ) =>
-  obj != null && typeof obj[action['type']] === 'function'
-    ? obj[action['type']](action as any)
-    : assertExhaustive(action['type'] as never);
+  object != undefined && typeof object[action.type] === 'function'
+    ? object[action.type](action as any)
+    : assertExhaustive(action.type as never);

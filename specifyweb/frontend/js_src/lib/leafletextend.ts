@@ -1,6 +1,6 @@
 /*
  * Imports Leaflet, adds new controls and reexports it
- * */
+ */
 
 'use strict';
 
@@ -8,7 +8,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 /* This code is needed to properly load the images in the Leaflet CSS */
-// @ts-ignore
+// @ts-expect-error
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -16,10 +16,10 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
-//create a "full screen" button
-// @ts-ignore
+/* Create a "full screen" button */
+// @ts-expect-error
 L.Control.FullScreen = L.Control.extend({
-  onAdd: function (map: L.Map) {
+  onAdd(map: Readonly<L.Map>) {
     const img = L.DomUtil.create('img') as HTMLImageElement;
     img.style.cursor = 'pointer';
     img.classList.add('full-screen');
@@ -31,7 +31,7 @@ L.Control.FullScreen = L.Control.extend({
     img.src = '/static/img/full_screen.png';
     img.style.width = '50px';
 
-    // @ts-ignore
+    // @ts-expect-error
     this.img = img;
 
     return img;
@@ -40,19 +40,22 @@ L.Control.FullScreen = L.Control.extend({
   onRemove: () => {},
 });
 
-function toggleFullScreen(map: L.Map) {
-  // @ts-ignore
+const DEFAULT_MAP_SIZE_X = 900;
+const DEFAULT_MAP_SIZE_Y = 600;
+
+function toggleFullScreen(map: Readonly<L.Map>): void {
+  // @ts-expect-error
   const dialog = $(map._container.closest('.ui-dialog-content'));
   const [width, height] =
     dialog[0].parentElement.style.top === '0px'
-      ? [900, 600]
+      ? [DEFAULT_MAP_SIZE_X, DEFAULT_MAP_SIZE_Y]
       : [window.innerWidth, window.innerHeight];
   dialog.dialog('option', 'width', width);
   dialog.dialog('option', 'height', height);
   map.invalidateSize();
 }
 
-// @ts-ignore
+// @ts-expect-error
 L.Control.Details = L.Control.extend({
   onAdd: () => {
     const details = L.DomUtil.create('details');

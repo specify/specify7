@@ -1,24 +1,27 @@
-import React from 'react';
-import {
+import type React from 'react';
+import type {
   PartialWBPlanViewProps,
   PublicWBPlanViewProps,
   WBPlanViewWrapperProps,
 } from './components/wbplanview';
-import {
+import type {
   AutomapperSuggestion,
   MappingLine,
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import {
-  getDefaultMappingState,
-  mappingState,
+import type {
   MappingState,
   WBPlanViewStates,
 } from './components/wbplanviewstatereducer';
+import {
+  getDefaultMappingState,
+  mappingState,
+} from './components/wbplanviewstatereducer';
 import schema from './schema';
-import { Action, generateReducer } from './statemanagement';
-import { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
+import type { Action } from './statemanagement';
+import { generateReducer } from './statemanagement';
+import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import * as cache from './wbplanviewcache';
 import {
   defaultLineOptions,
@@ -50,7 +53,7 @@ const modifyLine = (
   ...state.lines.slice(line + 1),
 ];
 
-//actions
+// Actions
 interface OpenBaseTableSelectionAction
   extends Action<'OpenBaseTableSelectionAction'> {
   referrer?: WBPlanViewStates['type'];
@@ -226,7 +229,7 @@ export type WBPlanViewActions =
   | MappingActions;
 
 export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
-  //BaseTableSelectionState
+  // BaseTableSelectionState
   OpenBaseTableSelectionAction: ({ state, action }) =>
     !action.referrer || action.referrer === state.type
       ? {
@@ -264,7 +267,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     },
   }),
 
-  //TemplateSelectionState
+  // TemplateSelectionState
   TemplatesLoadedAction: ({ action }) => ({
     type: 'TemplateSelectionState',
     templates: action.templates,
@@ -274,10 +277,13 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     showHiddenTables: cache.get<boolean>('ui', 'showHiddenTables'),
   }),
 
-  //common
-  CancelMappingAction: ({ state, action }) => void goBack(action) || state,
+  // Common
+  CancelMappingAction: ({ state, action }) => {
+    goBack(action);
+    return state;
+  },
 
-  //MappingState
+  // MappingState
   OpenMappingScreenAction: ({ action }) => {
     if (!action.uploadPlan) throw new Error('Upload plan is not defined');
 
@@ -488,7 +494,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       mappingState(state).openSelectElement!.line,
       {
         mappingPath: mappingState(state).automapperSuggestions![
-          ~~suggestion - 1
+          Number(suggestion) - 1
         ].mappingPath,
       }
     ),
@@ -519,8 +525,9 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         customSelectType: 'OPENED_LIST',
       }).filter((mappingElementData, index, list) => {
         if (
-          index === 0 || // exclude base table
-          // exclude -to-many
+          // Exclude base table
+          index === 0 ||
+          // Exclude -to-many
           mappingElementData.customSelectSubtype === 'toMany'
         )
           return false;
@@ -532,10 +539,10 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           )
             return false;
         } else {
-          // exclude direct child of -to-many
+          // Exclude direct child of -to-many
           if (list[index - 1].customSelectSubtype === 'toMany') return false;
 
-          // exclude embedded collecting event
+          // Exclude embedded collecting event
           if (
             schema.embeddedCollectingEvent === true &&
             list[index - 1].tableName === 'collectionobject' &&
@@ -549,13 +556,13 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     );
 
     const arrayOfTables = arrayOfMappingLineData
-      .map((mappingElementData) => mappingElementData.tableName || '')
+      .map((mappingElementData) => mappingElementData.tableName ?? '')
       .filter(
         (tableName) =>
           tableName &&
           typeof dataModelStorage.tables[tableName] !== 'undefined' &&
           !tableName.endsWith('attribute') &&
-          //exclude embedded paleo context
+          // Exclude embedded paleo context
           (schema.embeddedPaleoContext === false ||
             tableName !== 'paleocontext')
       );

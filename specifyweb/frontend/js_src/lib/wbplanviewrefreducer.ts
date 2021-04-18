@@ -1,10 +1,11 @@
-import React from 'react';
+import type React from 'react';
+import type { WBPlanViewProps } from './components/wbplanview';
 import { minMappingViewHeight } from './components/wbplanviewmappercomponents';
-import { Action, generateDispatch, State } from './statemanagement';
+import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
+import type { Action, State } from './statemanagement';
+import { generateDispatch } from './statemanagement';
 import * as cache from './wbplanviewcache';
-import { WBPlanViewProps } from './components/wbplanview';
-import { WBPlanViewActions } from './wbplanviewreducer';
-import { WBPlanViewStates } from './components/wbplanviewstatereducer';
+import type { WBPlanViewActions } from './wbplanviewreducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
 export type AutoScrollTypes = 'listOfMappings' | 'mappingView';
@@ -17,7 +18,7 @@ export interface RefMappingState extends State<'RefMappingState'> {
 }
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
-// make all properties optional, except for `type`
+// Make all properties optional, except for `type`
 export type RefStates = Partial<RefStatesBase> & State<RefStatesBase['type']>;
 
 export const refInitialState: RefUndefinedState = {
@@ -28,7 +29,7 @@ export const refStatesMapper = {
   MappingState: 'RefMappingState',
 } as const;
 const flippedRefStatesMapper = Object.fromEntries(
-  Object.entries(refStatesMapper).map(([k, v]) => [v, k])
+  Object.entries(refStatesMapper).map(([key, value]) => [value, key])
 );
 
 type RefChangeStateAction = Action<'RefChangeStateAction'>;
@@ -61,17 +62,19 @@ type RefActionsWithPayload = RefActions & {
   };
 };
 
+const MAPPING_VIEW_RESIZE_TIMEOUT = 150;
+
 export function getRefMappingState(
   refObject: React.MutableRefObject<RefStates>,
   state: WBPlanViewStates,
   quiet = false
 ): React.MutableRefObject<RefMappingState> {
   const refWrongStateMessage =
-    'Tried to change the refObject while' + 'in a wrong state';
+    'Tried to change the refObject while in a wrong state';
 
   if (state.type !== flippedRefStatesMapper[refObject.current.type])
     if (quiet) console.error(refWrongStateMessage);
-    else throw Error(refWrongStateMessage);
+    else throw new Error(refWrongStateMessage);
 
   return refObject as React.MutableRefObject<RefMappingState>;
 }
@@ -116,7 +119,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
           overwrite: true,
           priorityCommit: true,
         }),
-      150
+      MAPPING_VIEW_RESIZE_TIMEOUT
     );
   },
   AutoscrollStatusChangeAction: ({

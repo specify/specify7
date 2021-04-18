@@ -1,11 +1,12 @@
 /*
  * Utility functions for getting locality data from locality resource and
  * workbench dataset
- * */
+ *
+ */
 
 'use strict';
 
-import { R } from './components/wbplanview';
+import type { R } from './components/wbplanview';
 import latlongutils from './latlongutils';
 import { localityColumnsToSearchFor } from './leafletconfig';
 
@@ -43,7 +44,7 @@ export type LocalityField = keyof (BareLocalityData &
 type LocalityColumnIndexes = Record<LocalityField, number>;
 
 const cellIsValid = (
-  row: string[],
+  row: Readonly<string[]>,
   columnIndexes: R<number>,
   columnName: string
 ): boolean =>
@@ -52,13 +53,13 @@ const cellIsValid = (
   row[columnIndexes[columnName]] !== null;
 
 function formatCoordinate(
-  row: string[],
+  row: Readonly<string[]>,
   columnIndexes: R<number>,
   columnName: string
 ): number {
   if (row[columnIndexes[columnName]] === '0') return 0;
 
-  const coordinate = (latlongutils as any)
+  const coordinate = latlongutils
     .parse(row[columnIndexes[columnName]])
     .toDegs() as {
     _components: [number];
@@ -68,13 +69,13 @@ function formatCoordinate(
 }
 
 export function getLocalityCoordinate(
-  row: string[],
-  columnIndexes: R<number>,
+  row: Readonly<string[]>,
+  columnIndexes: Readonly<R<number>>,
   acceptPolygons = false
 ): LocalityData | false {
-  const cellIsValidCurried = (columnName: string) =>
+  const cellIsValidCurried = (columnName: string): boolean =>
     cellIsValid(row, columnIndexes, columnName);
-  const formatCoordinateCurried = (columnName: string) =>
+  const formatCoordinateCurried = (columnName: string): number =>
     formatCoordinate(row, columnIndexes, columnName);
 
   if (!cellIsValidCurried('latitude1') || !cellIsValidCurried('longitude1'))
@@ -105,34 +106,34 @@ export function getLocalityCoordinate(
         ? row[columnIndexes.localityname]
         : undefined,
       latlongaccuracy: cellIsValidCurried('latlongaccuracy')
-        ? parseInt(row[columnIndexes.latlongaccuracy])
+        ? Number.parseInt(row[columnIndexes.latlongaccuracy])
         : undefined,
     } as LocalityData;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
 
-// if there are multiple localities present in a row, check which
-// group this field belongs too
+/*
+ * If there are multiple localities present in a row, check which
+ * group this field belongs too
+ */
 export const getLocalityColumnsFromSelectedCell = (
-  localityColumns: LocalityColumnIndexes[],
+  localityColumns: Readonly<LocalityColumnIndexes[]>,
   selectedColumn: number
 ): LocalityColumnIndexes | false =>
-  localityColumns.filter(
-    (localLocalityColumns) =>
-      localityColumnsToSearchFor.indexOf(
-        Object.keys(localLocalityColumns)[
-          Object.values(localLocalityColumns).indexOf(selectedColumn)
-        ] as LocalityField
-      ) !== -1
-  )[0] ||
-  localityColumns[0] ||
-  false;
+  localityColumns.find((localLocalityColumns) =>
+    localityColumnsToSearchFor.includes(
+      Object.keys(localLocalityColumns)[
+        Object.values(localLocalityColumns).indexOf(selectedColumn)
+      ] as LocalityField
+    )
+  ) ??
+  (localityColumns[0] || false);
 
 export const getLocalitiesDataFromSpreadsheet = (
-  localityColumns: LocalityColumnIndexes[],
-  spreadsheetData: string[][]
+  localityColumns: Readonly<LocalityColumnIndexes[]>,
+  spreadsheetData: Readonly<string[][]>
 ): (LocalityData & { rowNumber: number })[] =>
   localityColumns.flatMap((columnIndexes) =>
     spreadsheetData
@@ -147,13 +148,13 @@ export const getLocalitiesDataFromSpreadsheet = (
       }))
   );
 
-export const getLocalityDataFromLocalityResource = (
+export const getLocalityDataFromLocalityResource = async (
   localityResource: any
 ): Promise<LocalityData> =>
-  new Promise((resolve) =>
+  new Promise(async (resolve) =>
     Promise.all(
       localityColumnsToSearchFor.map(
-        (fieldName) =>
+        async (fieldName) =>
           new Promise((resolve) =>
             localityResource
               .rget(fieldName)

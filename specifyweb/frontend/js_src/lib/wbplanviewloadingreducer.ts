@@ -1,13 +1,11 @@
+import type { SpecifyResource } from './components/wbplanview';
 import navigation from './navigation';
 import schema from './schema';
+import type { State } from './statemanagement';
 import { generateDispatch } from './statemanagement';
-import { SpecifyResource } from './components/wbplanview';
-import { State } from './statemanagement';
-import {
-  UploadPlan,
-  uploadPlanStringToObject,
-} from './uploadplantomappingstree';
-import { WBPlanViewActions } from './wbplanviewreducer';
+import type { UploadPlan } from './uploadplantomappingstree';
+import { uploadPlanStringToObject } from './uploadplantomappingstree';
+import type { WBPlanViewActions } from './wbplanviewreducer';
 
 interface LoadingStateBase<T extends string> extends State<T> {
   dispatchAction?: (action: WBPlanViewActions) => void;
@@ -29,7 +27,7 @@ export const loadingStateDispatch = generateDispatch<LoadingStates>({
     const wbs = new (schema as any).models.Workbench.LazyCollection({
       filters: { orderby: 'name', ownerpermissionlevel: 1 },
     });
-    wbs.fetch({ limit: 5000 }).done(() =>
+    wbs.fetch({ limit: 5000 }).done(async () =>
       Promise.all(wbs.models.map((wb: any) => wb.rget('workbenchtemplate')))
         .then((workbenchTemplates: any) =>
           state.dispatchAction!({
@@ -39,7 +37,9 @@ export const loadingStateDispatch = generateDispatch<LoadingStates>({
                 uploadPlanStringToObject(wbt.get('remarks') as string),
                 wbt.get('name') as string,
               ])
-              .filter(([uploadPlan]: [UploadPlan | null]) => uploadPlan != null)
+              .filter(
+                ([uploadPlan]: [UploadPlan | null]) => uploadPlan != undefined
+              )
               .map(([uploadPlan, datasetName]: [UploadPlan, string]) => ({
                 datasetName,
                 uploadPlan,
@@ -51,10 +51,10 @@ export const loadingStateDispatch = generateDispatch<LoadingStates>({
         })
     );
   },
-  NavigateBackState: (
-    state // need to make the `Loading`
-  ) =>
-    // dialog
-    // appear before the `Leave Page?` dialog
-    setTimeout(() => navigation.go(`/workbench/${state.wb.id}/`), 10),
+  NavigateBackState: (state): void =>
+    /*
+     * Need to make the `Loading` dialog
+     * appear before the `Leave Page?` dialog
+     */
+    void setTimeout(() => navigation.go(`/workbench/${state.wb.id}/`), 10),
 });

@@ -2,26 +2,29 @@
  *
  * Collection of various helper methods used during the mapping process
  *
- * */
+ *
+ */
 
 'use strict';
 
-import { ColumnOptions } from './uploadplantomappingstree';
-import { mappingPathToString } from './wbplanviewmodelhelper';
-import {
+import type {
   FullMappingPath,
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
+import type { ColumnOptions } from './uploadplantomappingstree';
+import { mappingPathToString } from './wbplanviewmodelhelper';
 
 /*
  * Get a friendly name from the field. (Converts Camel Case to human-readable
  * name and fixes some errors). This method is only called if schema
  * localization does not have a friendly name for this field
- * */
+ *
+ */
 export const getFriendlyName = (
-  originalName: string // Original field name
-): string /* Human friendly field name */ => {
+  // Original field name
+  originalName: string
+): string => {
   let name = originalName.replace(/[A-Z]/g, (letter) => ` ${letter}`);
   name = name.trim();
   name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -37,12 +40,14 @@ export const getFriendlyName = (
 };
 
 /*
-  Finds the point at which the source array begins to have values
-  different from the ones in the search array
-*/
+ *Finds the point at which the source array begins to have values
+ *different from the ones in the search array
+ */
 export function findArrayDivergencePoint<T>(
-  source: T[], // the source array to use in the comparison
-  search: T[] // the search array to use in the comparison
+  // The source array to use in the comparison
+  source: Readonly<T[]>,
+  // The search array to use in the comparison
+  search: Readonly<T[]>
 ): number /*
  * Returns 0 if search array is empty
  * Returns -1 if source array is empty / is smaller than the search array
@@ -72,10 +77,10 @@ export function findArrayDivergencePoint<T>(
   let returnValue = undefined;
 
   Object.entries(source).some(([index, sourceValue]) => {
-    const searchValue = search[~~index];
+    const searchValue = search[Number(index)];
 
     if (typeof searchValue === 'undefined') {
-      returnValue = ~~index;
+      returnValue = Number(index);
       return true;
     }
 
@@ -94,10 +99,11 @@ export function findArrayDivergencePoint<T>(
  * Takes an array of mappings with headers and returns the indexes of the
  * duplicate headers (if three lines have the same mapping, the indexes of
  * the second and the third lines are returned)
- * */
+ *
+ */
 export const findDuplicateMappings = (
-  // array of mappings as returned by mappings.getArrayOfMappings()
-  arrayOfMappings: MappingPath[],
+  // Array of mappings as returned by mappings.getArrayOfMappings()
+  arrayOfMappings: Readonly<MappingPath[]>,
   focusedLine: number | false
 ): number[] => /*
  * Array of duplicate indexes
@@ -126,14 +132,13 @@ export const findDuplicateMappings = (
     (dictionaryOfMappings: string[], mappingPath, index) => {
       const stringMappingPath = mappingPathToString(mappingPath);
 
-      if (dictionaryOfMappings.indexOf(stringMappingPath) === -1)
-        dictionaryOfMappings.push(stringMappingPath);
-      else
+      if (dictionaryOfMappings.includes(stringMappingPath))
         duplicateIndexes.push(
           focusedLine && focusedLine === index
             ? dictionaryOfMappings.indexOf(stringMappingPath)
             : index
         );
+      else dictionaryOfMappings.push(stringMappingPath);
 
       return dictionaryOfMappings;
     },
@@ -144,7 +149,7 @@ export const findDuplicateMappings = (
 };
 
 export const fullMappingPathParser = (
-  fullMappingPath: FullMappingPath
+  fullMappingPath: Readonly<FullMappingPath>
 ): [string[], MappingType, string, ColumnOptions] =>
   [fullMappingPath.slice(0, -3), ...fullMappingPath.slice(-3)] as [
     MappingPath,

@@ -9,13 +9,5 @@ module.exports = {
     node: true,
   },
   extends: ['@maxxxxxdlp/eslint-config'],
-  rules: {
-    '@typescript-eslint/no-magic-numbers': [
-      'error',
-      {
-        ignore: [0, 1, -1],
-      },
-    ],
-    '@typescript-eslint/no-unnecessary-condition': 'off',
-  },
+  rules: {},
 };

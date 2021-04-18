@@ -1,5 +1,5 @@
-import { R } from './components/wbplanview';
-import { RelationshipType } from './components/wbplanviewmapper';
+import type { R } from './components/wbplanview';
+import type { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
   readonly name: string;
@@ -17,9 +17,11 @@ export interface SchemaModelTableRelationship extends SchemaModelTableField {
 }
 
 type SpecifyFetch = (filter: {
-  filters: object;
+  readonly filters: object;
 }) => {
-  fetch: (filter: { limit: number }) => JqueryPromise<DomainTreeDefinitionItem>;
+  fetch: (filter: {
+    readonly limit: number;
+  }) => JqueryPromise<DomainTreeDefinitionItem>;
 };
 
 interface SchemaModelTableData {
@@ -45,7 +47,7 @@ interface DomainTreeDefinitionItem {
 
 type DomainRequest = Readonly<R<unknown>>;
 
-type SpecifyRequest = (param: DomainRequest) => JqueryPromise<void>;
+type SpecifyRequest = (parameter: DomainRequest) => JqueryPromise<void>;
 
 interface DomainTreeDefinitionItems {
   readonly fetch: SpecifyRequest;

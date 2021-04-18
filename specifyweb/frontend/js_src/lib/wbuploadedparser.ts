@@ -1,18 +1,17 @@
 /*
  * Workbench Upload Results Parser
- * */
+ *
+ */
 
 'use string';
 
-import { R } from './components/wbplanview';
+import type { R } from './components/wbplanview';
 import icons from './icons';
-import { Schema } from './legacytypes';
+import type { Schema } from './legacytypes';
 import schema from './schema';
-import { State } from './statemanagement';
-import {
-  UploadPlan,
-  uploadPlanToMappingsTree,
-} from './uploadplantomappingstree';
+import type { State } from './statemanagement';
+import type { UploadPlan } from './uploadplantomappingstree';
+import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { fullMappingPathParser } from './wbplanviewhelper';
 import { getNameFromTreeRankName } from './wbplanviewmodelhelper';
 import {
@@ -21,51 +20,70 @@ import {
   mappingsTreeToArrayOfMappings,
 } from './wbplanviewtreehelper';
 
-// If an UploadResult involves a tree record, this metadata indicates
-// where in the tree the record resides
+/*
+ * If an UploadResult involves a tree record, this metadata indicates
+ * where in the tree the record resides
+ */
 interface TreeInfo {
-  rank: string; // The tree rank a record relates to
-  name: string; // The name of the tree node a record relates to
+  // The tree rank a record relates to
+  rank: string;
+  // The name of the tree node a record relates to
+  name: string;
 }
 
-// Records metadata about an UploadResult indicating the tables, data set
-// columns, and any tree information involved
+/*
+ * Records metadata about an UploadResult indicating the tables, data set
+ * columns, and any tree information involved
+ */
 interface ReportInfo {
-  tableName: string; // The name of the table a record relates to
-  columns: string[]; // The columns from the data set a record relates to
+  // The name of the table a record relates to
+  tableName: string;
+  // The columns from the data set a record relates to
+  columns: string[];
   treeInfo: TreeInfo | null;
 }
 
-// Indicates that a value had to be added to a picklist during uploading
-// a record
+/*
+ * Indicates that a value had to be added to a picklist during uploading
+ * a record
+ */
 interface PicklistAddition {
-  id: number; // The new picklistitem id
-  name: string; // The name of the picklist receiving the new item
-  value: string; // The value of the new item
-  caption: string; // The data set column that produced the new item
+  // The new picklistitem id
+  id: number;
+  // The name of the picklist receiving the new item
+  name: string;
+  // The value of the new item
+  value: string;
+  // The data set column that produced the new item
+  caption: string;
 }
 
 // Indicates that a new row was added to the database
 interface Uploaded extends State<'Uploaded'> {
-  id: number; // The database id of the added row
+  // The database id of the added row
+  id: number;
   picklistAdditions: PicklistAddition[];
   info: ReportInfo;
 }
 
 // Indicates that an existing record in the database was matched
 interface Matched extends State<'Matched'> {
-  id: number; // The id of the matched database row
+  // The id of the matched database row
+  id: number;
   info: ReportInfo;
 }
 
 // Indicates failure due to finding multiple matches to existing records
 interface MatchedMultiple extends State<'MatchedMultiple'> {
-  ids: number[]; // List of ids of the matching database records
+  // List of ids of the matching database records
+  ids: number[];
   info: ReportInfo;
 }
 
-// Indicates that no record was uploaded because all relevant columns in
-// the data set are empty
+/*
+ * Indicates that no record was uploaded because all relevant columns in
+ * the data set are empty
+ */
 interface NullRecord extends State<'NullRecord'> {
   info: ReportInfo;
 }
@@ -77,14 +95,18 @@ interface FailedBusinessRule extends State<'FailedBusinessRule'> {
   info: ReportInfo;
 }
 
-// Indicates failure due to inability to find an expected existing
-// matching record
+/*
+ * Indicates failure due to inability to find an expected existing
+ * matching record
+ */
 interface NoMatch extends State<'NoMatch'> {
   info: ReportInfo;
 }
 
-// Indicates one or more values were invalid, preventing a record
-// from uploading
+/*
+ * Indicates one or more values were invalid, preventing a record
+ * from uploading
+ */
 interface ParseFailures extends State<'ParseFailures'> {
   failures: [string, string][][];
 }
@@ -113,12 +135,16 @@ type RecordResult = {
 interface UploadResult {
   UploadResult: {
     record_result: RecordResult;
-    // Maps the names of -to-one relationships of the table to upload
-    // results for each
-    // 'parent' exists for tree nodes only
+    /*
+     * Maps the names of -to-one relationships of the table to upload
+     * results for each
+     * 'parent' exists for tree nodes only
+     */
     toOne: Record<'parent' | string, UploadResult>;
-    // Maps the names of -to-many relationships of the table to an
-    // array of upload results for each
+    /*
+     * Maps the names of -to-many relationships of the table to an
+     * array of upload results for each
+     */
     toMany: R<UploadResult[]>;
   };
 }
@@ -198,7 +224,8 @@ interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
 /*
  * Recursively traverses upload results to extract new rows,
  * tree nodes and picklist additions
- * */
+ *
+ */
 function handleUploadResult(
   uploadedPicklistItems: UploadedPicklistItems,
   uploadedRows: R<UploadedRowSorted[]>,
@@ -213,7 +240,7 @@ function handleUploadResult(
     uploadResult.record_result
   )[0] as keyof RecordResult;
 
-  // skip error statuses
+  // Skip error statuses
   if (uploadStatus !== 'Uploaded' && uploadStatus !== 'Matched') return true;
 
   const {
@@ -254,14 +281,14 @@ function handleUploadResult(
 
   if (uploadStatus === 'Matched') {
     matchedRecordsNames[tableName] ??= {};
-    matchedRecordsNames[tableName][id] = treeInfo?.name || '';
+    matchedRecordsNames[tableName][id] = treeInfo?.name ?? '';
   }
 
   uploadedRows[tableName] ??= [];
   if (
-    // upload if not a tree node
+    // Upload if not a tree node
     !rank ||
-    // otherwise, make sure it is not present already
+    // Otherwise, make sure it is not present already
     uploadedRows[tableName].every(({ recordId }) => recordId !== id)
   )
     uploadedRows[tableName].push({
@@ -309,7 +336,8 @@ function handleUploadResult(
 
 /*
  * Formats list of rows for easier manipulation when reconstructing the tree
- * */
+ *
+ */
 function formatListOfRows(
   listOfRows: UploadedRowSorted[],
   data: string[][],
@@ -346,8 +374,8 @@ function formatListOfRows(
   );
 
   const ranksToShow = [...new Set(rows.map(([, { rankName }]) => rankName))];
-  const sortedRanksToShow = treeRanks.filter(
-    (rankName) => ranksToShow.indexOf(rankName) !== -1
+  const sortedRanksToShow = treeRanks.filter((rankName) =>
+    ranksToShow.includes(rankName)
   );
 
   return [rows, rowsObject, sortedRanksToShow] as [
@@ -359,13 +387,14 @@ function formatListOfRows(
 
 /*
  * Finds the highest level rank among the newly added rows
- * */
+ *
+ */
 const getMinNode = (
   rows: [number, UploadedTreeRank][],
   treeRanks: R<string[]>,
   rowsObject: R<UploadedTreeRank | undefined>,
   tableName: string
-) =>
+): number =>
   rows.reduce(
     ([minRank, minNodeId], [nodeId, rankData]) => {
       const rankIndex = treeRanks[tableName]?.indexOf(rankData.rankName || '');
@@ -381,7 +410,8 @@ const getMinNode = (
 
 /*
  * Turns a list of nodes with children and parents into a tree
- * */
+ *
+ */
 function joinChildren(
   rowsObject: R<UploadedTreeRank | undefined>,
   nodeId: number
@@ -391,7 +421,7 @@ function joinChildren(
   const result = {
     ...rowsObject[nodeId],
     children: Object.fromEntries(
-      (rowsObject[nodeId]?.children || []).map((childId) => [
+      (rowsObject[nodeId]?.children ?? []).map((childId) => [
         childId,
         joinChildren(rowsObject, childId),
       ])
@@ -400,13 +430,14 @@ function joinChildren(
 
   rowsObject[nodeId] = undefined;
 
-  //@ts-ignore
+  // @ts-expect-error
   return result;
 }
 
 /*
  * Introduces empty cells between values in a row
- * */
+ *
+ */
 const spaceOutNode = (
   uploadedTreeRank: UploadedTreeRankSpacedOut,
   levels: number
@@ -424,7 +455,8 @@ const spaceOutNode = (
 /*
  * Walk though the tree and offsets starting position of rows that share
  * common parents
- * */
+ *
+ */
 const spaceOutChildren = (
   tree: SpacedOutTree,
   ranksToShow: string[],
@@ -434,7 +466,7 @@ const spaceOutChildren = (
     Object.entries(tree)
       .filter(([, nodeData]) => typeof nodeData !== 'undefined')
       .map(([nodeId, nodeData]) => [
-        ~~nodeId,
+        Number(nodeId),
         spaceOutNode(
           {
             children: {
@@ -448,25 +480,28 @@ const spaceOutChildren = (
               },
             },
           },
-          Object.values(ranksToShow).indexOf(nodeData!.rankName || '') -
+          Object.values(ranksToShow).indexOf(nodeData!.rankName ?? '') -
             (typeof parentRankName === 'undefined'
               ? 0
-              : Object.values(ranksToShow).indexOf(parentRankName || '') + 1)
+              : Object.values(ranksToShow).indexOf(parentRankName ?? '') + 1)
         ),
       ])
   );
 
 /*
  * Value to use for an empty cell
- * */
+ *
+ */
 const emptyCell = (columnIndex: number): UploadedColumn => ({
   columnIndex,
   cellValue: '',
 });
 
 /*
- * Turns a tree of new nodes back into rows that are readable by `wbuploadedview`
- * */
+ * Turns a tree of new nodes back into rows that are readable by
+ * `wbuploadedview`
+ *
+ */
 const compileRows = (
   mappedRanks: R<string>,
   ranksToShow: string[],
@@ -480,59 +515,60 @@ const compileRows = (
     const columns: UploadedColumn[] = [
       ...(index === 0
         ? parentColumns
-        : Array<UploadedColumn>(parentColumns.length).fill(emptyCell(-1))),
+        : new Array<UploadedColumn>(parentColumns.length).fill(emptyCell(-1))),
       typeof nodeData.rankName === 'undefined'
         ? emptyCell(-3)
         : {
-            columnIndex:
-              headers.indexOf(mappedRanks[nodeData.rankName]) === -1
-                ? -3
-                : headers.indexOf(mappedRanks[nodeData.rankName]),
+            columnIndex: headers.includes(mappedRanks[nodeData.rankName])
+              ? headers.indexOf(mappedRanks[nodeData.rankName])
+              : 3,
             rowIndex: nodeData.rowIndex,
-            recordId: ~~nodeId,
-            cellValue: nodeData.nodeName || undefined,
+            recordId: Number(nodeId),
+            cellValue: nodeData.nodeName,
             matched: nodeData.matched,
           },
     ];
 
-    if (Object.keys(nodeData.children).length === 0)
-      return [
-        {
-          rowIndex: -1,
-          recordId: -1,
-          columns: [
-            ...columns,
-            ...Array<UploadedColumn>(
-              ranksToShow.length - columns.length > 0
-                ? ranksToShow.length - columns.length
-                : 0
-            ).fill(emptyCell(-2)),
-          ],
-        },
-      ];
-    else
-      return compileRows(
-        mappedRanks,
-        ranksToShow,
-        headers,
-        nodeData.children,
-        columns
-      );
+    return Object.keys(nodeData.children).length === 0
+      ? [
+          {
+            rowIndex: -1,
+            recordId: -1,
+            columns: [
+              ...columns,
+              ...new Array<UploadedColumn>(
+                ranksToShow.length - columns.length > 0
+                  ? ranksToShow.length - columns.length
+                  : 0
+              ).fill(emptyCell(-2)),
+            ],
+          },
+        ]
+      : compileRows(
+          mappedRanks,
+          ranksToShow,
+          headers,
+          nodeData.children,
+          columns
+        );
   });
 
 /*
  * Replaces empty cells with colspan
- * */
+ *
+ */
 function joinRows(finalRows: UploadedRow[]) {
   if (finalRows.length === 0) return [];
-  const spanSize: number[] = Array<number>(finalRows[0].columns.length).fill(1);
+  const spanSize: number[] = new Array<number>(
+    finalRows[0].columns.length
+  ).fill(1);
   return finalRows
     .reverse()
     .map((row) => ({
       ...row,
       columns: row.columns.reduce<UploadedColumn[]>(
         (newColumns, column, index) => {
-          if (column.columnIndex === -1) spanSize[index]++;
+          if (column.columnIndex === -1) spanSize[index] += 1;
           else {
             if (spanSize[index] !== 1) {
               column.spanSize = spanSize[index];
@@ -548,8 +584,10 @@ function joinRows(finalRows: UploadedRow[]) {
     .reverse();
 }
 
-const getOrderedHeaders = (headers: string[], headersSubset: string[]) =>
-  headers.filter((header) => headersSubset.indexOf(header) !== -1);
+const getOrderedHeaders = (
+  headers: string[],
+  headersSubset: string[]
+): string[] => headers.filter((header) => headersSubset.includes(header));
 
 export function parseUploadResults(
   uploadResults: UploadResults,
@@ -595,7 +633,7 @@ export function parseUploadResults(
 
   uploadResults.forEach(
     handleUploadResult.bind(
-      null,
+      undefined,
       uploadedPicklistItems,
       uploadedRows,
       matchedRecordsNames,
@@ -686,10 +724,12 @@ export function parseUploadResults(
             ? treeTables[tableName]
             : {
                 columnNames: (columnNames = getOrderedHeaders(headers, [
-                  // save list of column indexes to `columnIndexes`
-                  ...new Set( // make the list unique
+                  // Save list of column indexes to `columnIndexes`
+                  ...new Set(
+                    // Make the list unique
                     tableRecords.flatMap(
-                      ({ columns }) => Object.values(columns) // get column names
+                      // Get column names
+                      ({ columns }) => Object.values(columns)
                     )
                   ),
                 ])),
@@ -699,7 +739,7 @@ export function parseUploadResults(
                   columns: columnNames
                     .map((columnName) => ({
                       columnIndex: headers.indexOf(columnName),
-                      owsColumn: columns.indexOf(columnName) !== -1,
+                      owsColumn: columns.includes(columnName),
                     }))
                     .map(({ columnIndex, owsColumn }) =>
                       columnIndex === -1 || !owsColumn

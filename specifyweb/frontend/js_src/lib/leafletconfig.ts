@@ -1,12 +1,13 @@
 /*
  * TileServers and WMS servers that Leaflet should use
- * */
+ *
+ */
 
 'use strict';
 
 import L from 'leaflet';
-import { R } from './components/wbplanview';
-import { LocalityField } from './leafletutils';
+import type { R } from './components/wbplanview';
+import type { LocalityField } from './leafletutils';
 
 export const leafletTileServers: Record<
   'baseMaps' | 'overlays',
@@ -78,9 +79,9 @@ export const leafletTileServers: Record<
         ],
         minZoom: 2,
         maxZoom: 19,
-        //TODO: get an api key
-        // @ts-ignore
+        // @ts-expect-error
         apikey: 'choisirgeoportail',
+        // TODO: get an api key
         format: 'image/jpeg',
         style: 'normal',
       }
@@ -100,12 +101,12 @@ export const leafletTileServers: Record<
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
           '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [
-          [-85.0511287776, -179.999999975],
-          [85.0511287776, 179.999999975],
+          [-85.051_128_777_6, -179.999_999_975],
+          [85.051_128_777_6, 179.999_999_975],
         ],
         minZoom: 1,
         maxZoom: 9,
-        // @ts-ignore
+        // @ts-expect-error
         format: 'jpg',
         time: '',
         tilematrixset: 'GoogleMapsCompatible_Level',
@@ -118,12 +119,12 @@ export const leafletTileServers: Record<
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
           '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [
-          [-85.0511287776, -179.999999975],
-          [85.0511287776, 179.999999975],
+          [-85.051_128_777_6, -179.999_999_975],
+          [85.051_128_777_6, 179.999_999_975],
         ],
         minZoom: 1,
         maxZoom: 9,
-        // @ts-ignore
+        // @ts-expect-error
         format: 'jpg',
         time: '',
         tilematrixset: 'GoogleMapsCompatible_Level',
@@ -136,12 +137,12 @@ export const leafletTileServers: Record<
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
           '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [
-          [-85.0511287776, -179.999999975],
-          [85.0511287776, 179.999999975],
+          [-85.051_128_777_6, -179.999_999_975],
+          [85.051_128_777_6, 179.999_999_975],
         ],
         minZoom: 1,
         maxZoom: 8,
-        // @ts-ignore
+        // @ts-expect-error
         format: 'jpg',
         time: '',
         tilematrixset: 'GoogleMapsCompatible_Level',
@@ -154,13 +155,13 @@ export const leafletTileServers: Record<
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
           '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [
-          [-85.0511287776, -179.999999975],
-          [85.0511287776, 179.999999975],
+          [-85.051_128_777_6, -179.999_999_975],
+          [85.051_128_777_6, 179.999_999_975],
         ],
         minZoom: 1,
         maxZoom: 7,
         opacity: 0.75,
-        // @ts-ignore
+        // @ts-expect-error
         format: 'png',
         time: '',
         tilematrixset: 'GoogleMapsCompatible_Level',
@@ -173,13 +174,13 @@ export const leafletTileServers: Record<
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
           '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [
-          [-85.0511287776, -179.999999975],
-          [85.0511287776, 179.999999975],
+          [-85.051_128_777_6, -179.999_999_975],
+          [85.051_128_777_6, 179.999_999_975],
         ],
         minZoom: 1,
         maxZoom: 6,
         opacity: 0.75,
-        // @ts-ignore
+        // @ts-expect-error
         format: 'png',
         time: '',
         tilematrixset: 'GoogleMapsCompatible_Level',
@@ -192,13 +193,13 @@ export const leafletTileServers: Record<
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
           '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [
-          [-85.0511287776, -179.999999975],
-          [85.0511287776, 179.999999975],
+          [-85.051_128_777_6, -179.999_999_975],
+          [85.051_128_777_6, 179.999_999_975],
         ],
         minZoom: 1,
         maxZoom: 7,
         opacity: 0.75,
-        // @ts-ignore
+        // @ts-expect-error
         format: 'png',
         time: '',
         tilematrixset: 'GoogleMapsCompatible_Level',
