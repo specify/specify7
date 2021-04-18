@@ -1,13 +1,13 @@
 import React from 'react';
-import { Actions, LifemapperInfo } from '../lifemapperinforeducer';
-import {
-  AGGREGATOR_NAMES,
+import type { Actions, LifemapperInfo } from '../lifemapperinforeducer';
+import type {
   AggregatorName,
   BadgeName,
   FullAggregatorInfo,
-  sourceLabels,
 } from '../lifemapperinfoutills';
-import { generateReducer, State } from '../statemanagement';
+import { AGGREGATOR_NAMES, sourceLabels } from '../lifemapperinfoutills';
+import type { State } from '../statemanagement';
+import { generateReducer } from '../statemanagement';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
 
@@ -33,13 +33,13 @@ export function mainState(state: States): MainState {
   return state;
 }
 
-type StateWithParams = States & {
+type StateWithParameters = States & {
   params: {
     dispatch: (action: Actions) => void;
   };
 };
 
-export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
+export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   LoadingState: () => <></>,
   MainState: ({
     action: {
@@ -55,12 +55,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
           isEnabled={typeof data !== 'undefined'}
           hasError={
             typeof data !== 'undefined' &&
-            (data.listOfIssues.length !== 0 || data.count > 1)
+            (data.listOfIssues.length > 0 || data.count > 1)
           }
           onClick={
             typeof data === 'undefined'
               ? undefined
-              : () =>
+              : (): void =>
                   dispatch({
                     type: 'ToggleAggregatorVisibilityAction',
                     badgeName: name,
@@ -72,7 +72,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
         name={'lifemapper'}
         isEnabled={true}
         hasError={false}
-        onClick={() =>
+        onClick={(): void =>
           dispatch({
             type: 'ToggleAggregatorVisibilityAction',
             badgeName: 'lifemapper',
@@ -83,7 +83,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
         .filter(([, { isOpen }]) => isOpen)
         .map(([badgeName]) => ({
           badgeName,
-          isAggregator: AGGREGATOR_NAMES.indexOf(badgeName) !== -1,
+          isAggregator: AGGREGATOR_NAMES.includes(badgeName),
         }))
         .map(({ badgeName, isAggregator }) => (
           <ModalDialog
@@ -92,7 +92,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
               title: isAggregator
                 ? `Record was indexed by ${sourceLabels[badgeName]}`
                 : sourceLabels[badgeName],
-              close: () =>
+              close: (): void =>
                 dispatch({
                   type: 'ToggleAggregatorVisibilityAction',
                   badgeName,
@@ -103,7 +103,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
                       buttons: [
                         {
                           text: `Close`,
-                          click: () =>
+                          click: (): void =>
                             dispatch({
                               type: 'ToggleAggregatorVisibilityAction',
                               badgeName,
@@ -111,8 +111,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParams>({
                         },
                         {
                           text: `View occurrence at ${sourceLabels[badgeName]}`,
-                          click: () =>
-                            window.open(
+                          click: (): void =>
+                            void window.open(
                               state.aggregatorInfos[badgeName]!
                                 .occurrenceViewLink,
                               '_blank'

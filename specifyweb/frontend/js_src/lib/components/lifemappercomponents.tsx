@@ -1,14 +1,15 @@
 import React from 'react';
 import * as Leaflet from '../leaflet';
 import { issueDefinitions } from '../lifemapperinfoissuedefinitions';
-import { LifemapperInfo } from '../lifemapperinforeducer';
-import {
+import type { LifemapperInfo } from '../lifemapperinforeducer';
+import type {
   AggregatorName,
   BadgeName,
   FullAggregatorInfo,
-  sourceLabels,
 } from '../lifemapperinfoutills';
-import { lifemapperMessagesMeta, MessageTypes } from './lifemapperinfo';
+import { sourceLabels } from '../lifemapperinfoutills';
+import type { MessageTypes } from './lifemapperinfo';
+import { lifemapperMessagesMeta } from './lifemapperinfo';
 
 export function Badge<IS_ENABLED extends boolean>({
   name,
@@ -16,13 +17,14 @@ export function Badge<IS_ENABLED extends boolean>({
   isEnabled,
   hasError,
 }: {
-  name: AggregatorName;
-  onClick: IS_ENABLED extends true ? () => void : undefined;
-  isEnabled: IS_ENABLED;
-  hasError: boolean;
-}) {
+  readonly name: AggregatorName;
+  readonly onClick: IS_ENABLED extends true ? () => void : undefined;
+  readonly isEnabled: IS_ENABLED;
+  readonly hasError: boolean;
+}): JSX.Element {
   return (
     <button
+      type="button"
       disabled={!isEnabled}
       onClick={handleClick}
       className={`lifemapper-source-icon ${
@@ -38,9 +40,9 @@ export function Aggregator({
   name,
   data,
 }: {
-  name: AggregatorName;
-  data: FullAggregatorInfo;
-}) {
+  readonly name: AggregatorName;
+  readonly data: FullAggregatorInfo;
+}): JSX.Element {
   return (
     <>
       {data.listOfIssues.length === 0 ? (
@@ -58,9 +60,9 @@ export function Aggregator({
             ].map((issue) => (
               <li key={issue}>
                 {
-                  // @ts-ignore
+                  // @ts-expect-error
                   issueDefinitions[name]?.[issue] ||
-                    issueDefinitions['common']?.[issue] ||
+                    issueDefinitions.common?.[issue] ||
                     issue
                 }
               </li>
@@ -70,7 +72,7 @@ export function Aggregator({
       )}
       <br />
       {typeof data.occurrenceCount !== 'undefined' &&
-        data.occurrenceCount.length !== 0 && (
+        data.occurrenceCount.length > 0 && (
           <>
             Number of occurrences of similar taxa records:
             <ul className="lifemapper-source-issues-list">
@@ -95,21 +97,21 @@ export function LifemapperMap({
   badgeName,
   lifemapperInfo,
 }: {
-  badgeName: BadgeName;
-  lifemapperInfo: LifemapperInfo;
-}) {
+  readonly badgeName: BadgeName;
+  readonly lifemapperInfo: LifemapperInfo;
+}): JSX.Element | null {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
 
   if (badgeName !== 'lifemapper') return null;
 
   React.useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current) return undefined;
 
     const [map, layerGroup] = Leaflet.showCOMap(
       mapRef.current,
       lifemapperInfo.layers,
       (Object.entries(lifemapperInfo.messages) as [MessageTypes, string[]][])
-        .filter(([messages]) => messages.length !== 0)
+        .filter(([messages]) => messages.length > 0)
         .map(
           ([name, messages]) => `<span
         class="lifemapper-message-section ${

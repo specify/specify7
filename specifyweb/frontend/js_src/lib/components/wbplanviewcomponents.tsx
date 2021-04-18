@@ -2,23 +2,23 @@
  *
  * Collection of common React components used in the wbplanview
  *
- * */
+ *
+ */
 
 'use strict';
 
 import React from 'react';
 import { namedComponent } from '../statemanagement';
-import { DataModelListOfTables } from '../wbplanviewmodelfetcher';
-import {
-  CustomSelectElement,
+import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
+import type {
   CustomSelectElementDefaultOptionProps,
   CustomSelectElementOptions,
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
-  SuggestionBox,
 } from './customselectelement';
-import { R } from './wbplanview';
-import {
+import { CustomSelectElement, SuggestionBox } from './customselectelement';
+import type { R } from './wbplanview';
+import type {
   AutomapperSuggestion,
   MappingType,
   SelectElementPosition,
@@ -73,9 +73,12 @@ export const ListOfBaseTables = React.memo(
       handleChange,
       showHiddenTables,
     }: {
-      listOfTables: DataModelListOfTables;
-      handleChange: (newValue: string, isRelationship: boolean) => void;
-      showHiddenTables: boolean;
+      readonly listOfTables: DataModelListOfTables;
+      readonly handleChange: (
+        newValue: string,
+        isRelationship: boolean
+      ) => void;
+      readonly showHiddenTables: boolean;
     }) => (
       <MappingElement
         isOpen={true}
@@ -85,7 +88,7 @@ export const ListOfBaseTables = React.memo(
           (showHiddenTables
             ? Object.entries(listOfTables)
             : Object.entries(listOfTables).filter(
-                ([, { isHidden: isHidden }]) => !isHidden
+                ([, { isHidden }]) => !isHidden
               )
           ).map(([tableName, { tableFriendlyName, isHidden }]) => [
             tableName,
@@ -104,7 +107,7 @@ export const ListOfBaseTables = React.memo(
   )
 );
 
-export function MappingLine({
+export function MappingLineComponent({
   lineData,
   mappingType,
   headerName,
@@ -136,6 +139,7 @@ export function MappingLine({
     >
       <div className="wbplanview-mapping-line-controls">
         <button
+          type="button"
           title="Clear mapping"
           onClick={handleClearMapping}
           disabled={readonly}
@@ -163,7 +167,7 @@ export function MappingLine({
 export function MappingPathComponent({
   mappingLineData,
 }: MappingPathProps & {
-  openSelectElement?: SelectElementPosition;
+  readonly openSelectElement?: SelectElementPosition;
 }): JSX.Element {
   return (
     <>
@@ -180,7 +184,7 @@ export function MappingPathComponent({
   );
 }
 
-const fieldGroupLabels: { [key: string]: string } = {
+const fieldGroupLabels: Record<string, string> = {
   requiredFields: 'Required Fields',
   optionalFields: 'Optional Fields',
   hiddenFields: 'Hidden Fields',
@@ -211,21 +215,27 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
     ([
       fieldName,
       {
-        fieldFriendlyName, // field label
+        // Field label
+        fieldFriendlyName,
         title,
-        isEnabled = true, // whether field is enabled (not mapped yet)
-        isDefault = false, // whether field is selected by default
-        tableName = '', // table name for this option
-        // whether this field is relationship, tree rank or reference item
+        // Whether field is enabled (not mapped yet)
+        isEnabled = true,
+        // Whether field is selected by default
+        isDefault = false,
+        // Table name for this option
+        tableName = '',
+        // Whether this field is relationship, tree rank or reference item
         isRelationship = false,
-        isRequired = false, // whether this field is required
-        isHidden = false, // whether this field is hidden
+        // Whether this field is required
+        isRequired = false,
+        // Whether this field is hidden
+        isHidden = false,
       },
     ]) => {
       if (isDefault) {
         if (defaultOption)
           throw new Error(
-            'Multiple default options cannot be present in the' + ' same list'
+            'Multiple default options cannot be present in the same list'
           );
 
         defaultOption = {
@@ -265,11 +275,11 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
       {...props}
       customSelectOptionGroups={Object.fromEntries(
         Object.entries(fieldGroups)
-          .filter(([, groupFields]) => groupFields.length !== 0)
+          .filter(([, groupFields]) => groupFields.length > 0)
           .map(([groupName, groupFields]) => [
             groupName,
             {
-              // don't show group labels on some custom select types
+              // Don't show group labels on some custom select types
               selectGroupLabel:
                 props.customSelectSubtype === 'tree' ||
                 props.customSelectSubtype === 'toMany' ||
@@ -293,8 +303,10 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
             }
             selectOptionsData={Object.fromEntries(
               props.automapperSuggestions.map((automapperSuggestion, index) => [
-                // since "0" is reserved for `no value`, we need to
-                // start counting from 1
+                /*
+                 * Since "0" is reserved for `no value`, we need to
+                 * start counting from 1
+                 */
                 index + 1,
                 {
                   optionLabel: (
@@ -324,9 +336,9 @@ export function StaticHeader({
   onChange: handleChange,
   disabled = false,
 }: {
-  defaultValue: string;
-  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  disabled?: boolean;
+  readonly defaultValue: string;
+  readonly onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  readonly disabled?: boolean;
 }): JSX.Element {
   return (
     <textarea

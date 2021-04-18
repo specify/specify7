@@ -4,11 +4,11 @@ import dataModelStorage from '../wbplanviewmodel';
 import fetchDataModel from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import {
+import type {
   PublicWBPlanViewProps,
-  WBPlanView,
   WBPlanViewWrapperProps,
 } from './wbplanview';
+import { WBPlanView } from './wbplanview';
 
 const schemaFetchedPromise = fetchDataModel();
 
@@ -33,10 +33,7 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
       {...props}
       uploadPlan={uploadPlan}
       headers={props.dataset.columns}
-      readonly={
-        (props.dataset.uploadresult && props.dataset.uploadresult.success) ||
-        false
-      }
+      readonly={props.dataset.uploadresult?.success ?? false}
     />
   ) : (
     <LoadingScreen />
@@ -50,10 +47,10 @@ interface WBPlanViewBackboneProps
   handleResize: () => void;
 }
 
-const setUnloadProtect = (self: WBPlanViewBackboneProps) =>
+const setUnloadProtect = (self: WBPlanViewBackboneProps): void =>
   navigation.addUnloadProtect(self, 'This mapping has not been saved.');
 
-const removeUnloadProtect = (self: WBPlanViewBackboneProps) =>
+const removeUnloadProtect = (self: WBPlanViewBackboneProps): void =>
   navigation.removeUnloadProtect(self);
 
 export default createBackboneView<
@@ -70,7 +67,7 @@ export default createBackboneView<
     const header = document.getElementById('site-header');
     if (header === null) throw new Error(`Can't find site's header`);
     self.header = header;
-    self.handleResize = () =>
+    self.handleResize = (): void =>
       self.el.style.setProperty(
         '--menu-size',
         `${Math.ceil(self.header.clientHeight)}px`

@@ -3,7 +3,8 @@
  * Type-safe React wrapper for Backbone.View.extend
  * It's like a gate between Backbone Views and React components
  *
- * */
+ *
+ */
 
 'use strict';
 
@@ -12,7 +13,7 @@ import ReactDOM from 'react-dom';
 import Backbone from '../backbone';
 import app from '../specifyapp.js';
 import ErrorBoundary from './errorboundary';
-import { R } from './wbplanview';
+import type { R } from './wbplanview';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
   el: HTMLElement;
@@ -30,20 +31,26 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   Component,
   getComponentProps,
 }: {
-  moduleName: string;
-  title?:
+  readonly moduleName: string;
+  readonly title?:
     | string
     | ((self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => string);
-  className: string;
-  initialize: (
+  readonly className: string;
+  readonly initialize: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
     viewProps: CONSTRUCTOR_PROPS
   ) => void;
-  renderPre?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void;
-  renderPost?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void;
-  remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void;
-  Component: (props: COMPONENT_PROPS) => JSX.Element;
-  getComponentProps: (
+  readonly renderPre?: (
+    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
+  ) => void;
+  readonly renderPost?: (
+    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
+  ) => void;
+  readonly remove?: (
+    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
+  ) => void;
+  readonly Component: (props: COMPONENT_PROPS) => JSX.Element;
+  readonly getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => COMPONENT_PROPS;
 }): R<unknown> =>
@@ -54,7 +61,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
       initialize(this, props);
     },
     render() {
-      renderPre && renderPre(this);
+      renderPre?.(this);
 
       if (typeof title === 'string') app.setTitle(title);
       else if (typeof title === 'function') app.setTitle(title(this));
@@ -67,11 +74,11 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
         </React.StrictMode>,
         this.el
       );
-      renderPost && renderPost(this);
+      renderPost?.(this);
       return this;
     },
     remove() {
-      remove && remove(this);
+      remove?.(this);
       ReactDOM.unmountComponentAtNode(this.el);
       Backbone.View.prototype.remove.call(this);
     },

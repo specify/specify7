@@ -2,75 +2,93 @@
  *
  * Custom Select Element (picklist). Used by workbench mapper
  *
- * */
+ *
+ */
 
 'use strict';
 
 import React from 'react';
 import icons from '../icons';
 import { namedComponent } from '../statemanagement';
-import { R } from './wbplanview';
+import type { R } from './wbplanview';
 
 export type CustomSelectType =
   | 'OPENED_LIST'
   /*
-   * used in the mapping view
+   * Used in the mapping view
    * list without an `input` box but with always opened list of options
-   * and a table name on top has onChange event */
+   * and a table name on top has onChange event
+   */
   | 'CLOSED_LIST'
   /*
-   * used in mapping lines
+   * Used in mapping lines
    * list with an `input` box and a list of options that can be opened
-   * has onOpen/onClose and onChange events */
+   * has onOpen/onClose and onChange events
+   */
   | 'PREVIEW_LIST'
   /*
-   * used in the mapping validation results
+   * Used in the mapping validation results
    * list with an `input` box but with no list of options
-   * has no events */
+   * has no events
+   */
   | 'SUGGESTION_LIST'
   /*
-   * used to display a list of automapper suggestions
+   * Used to display a list of automapper suggestions
    * like OPENED_LIST, but without a table name on top
-   * has onChange event: */
+   * has onChange event:
+   */
   | 'SUGGESTION_LINE_LIST'
   /*
-   * used inside `SUGGESTION_LIST` to display a mapping path element for
+   * Used inside `SUGGESTION_LIST` to display a mapping path element for
    * a single suggestion line list with an `input` box but with no list of
-   * options has no events: */
+   * options has no events:
+   */
   | 'BASE_TABLE_SELECTION_LIST'
   /*
-   * used for base table selection
+   * Used for base table selection
    * like OPENED_LIST, but without a header and option group labels
-   * has onChange event */
+   * has onChange event
+   */
   | 'MAPPING_OPTIONS_LIST'
   /*
-   * used for configuring mapping options for a mapping line
-   * appears as a gear icon at the end of the mapping line */
+   * Used for configuring mapping options for a mapping line
+   * appears as a gear icon at the end of the mapping line
+   */
   | 'MAPPING_OPTION_LINE_LIST';
 /*
- * used inside of MAPPING_OPTIONS_LIST
+ * Used inside of MAPPING_OPTIONS_LIST
  * exactly the same as BASE_TABLE_SELECTION_LIST
- * it is named differently to avoid confusion */
+ * it is named differently to avoid confusion
+ */
 
 export type CustomSelectSubtype =
-  | 'simple' // for fields and relationships
-  | 'toMany' // for reference items
-  | 'tree'; // for tree ranks
+  // For fields and relationships
+  | 'simple'
+  // For reference items
+  | 'toMany'
+  // For tree ranks
+  | 'tree';
 
 interface CustomSelectElementIconProps {
-  // whether the option is a relationship (False for fields, true for
-  // relationships, tree ranks and reference items)
+  /*
+   * Whether the option is a relationship (False for fields, true for
+   * relationships, tree ranks and reference items)
+   */
   readonly isRelationship?: boolean;
-  readonly isDefault?: boolean; // whether the option is now selected
-  readonly tableName?: string; // the name of the table this option represents
-  // the name of the option. Would be used as a label (visible to the user)
+  // Whether the option is now selected
+  readonly isDefault?: boolean;
+  // The name of the table this option represents
+  readonly tableName?: string;
+  // The name of the option. Would be used as a label (visible to the user)
   readonly optionLabel?: string | JSX.Element;
-  // the value of the title HTML attribute
+  // The value of the title HTML attribute
   readonly title?: string;
-  // True if option can be selected. False if option cannot be selected because
-  // it was already selected
+  /*
+   * True if option can be selected. False if option cannot be selected because
+   * it was already selected
+   */
   readonly isEnabled?: boolean;
-  // whether an icon is used inside of preview_row in CLOSED_LIST
+  // Whether an icon is used inside of preview_row in CLOSED_LIST
   readonly isPreview?: boolean;
 }
 
@@ -88,10 +106,14 @@ export interface CustomSelectElementDefaultOptionProps {
 export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
 
 interface CustomSelectElementOptionGroupProps {
-  readonly selectGroupName?: string; // group's name (used for styling)
-  readonly selectGroupLabel?: string; // group's label (shown to the user)
-  // list of options data. See customSelectElement.getSelectOptionHtml()
-  // for the data structure
+  // Group's name (used for styling)
+  readonly selectGroupName?: string;
+  // Group's label (shown to the user)
+  readonly selectGroupLabel?: string;
+  /*
+   * List of options data. See customSelectElement.getSelectOptionHtml()
+   * for the data structure
+   */
   readonly selectOptionsData: CustomSelectElementOptions;
   readonly handleClick?: (
     newValue: string,
@@ -103,7 +125,8 @@ interface CustomSelectElementOptionGroupProps {
 type CustomSelectElementOptionGroups = R<CustomSelectElementOptionGroupProps>;
 
 interface CustomSelectElementPropsBase {
-  readonly selectLabel?: string; // the label to use for the element
+  // The label to use for the element
+  readonly selectLabel?: string;
   readonly customSelectType: CustomSelectType;
   readonly customSelectSubtype?: CustomSelectSubtype;
   readonly defaultOption?: CustomSelectElementDefaultOptionProps;
@@ -162,16 +185,16 @@ export function Icon({
     return <span className="custom-select-option-icon-selected">✓</span>;
   else if (!isRelationship || tableName === '') return null;
 
-  const tableIconSrc = icons.getIcon(tableName);
-  if (tableIconSrc !== '/images/unknown.png')
+  const tableIconSource = icons.getIcon(tableName);
+  if (tableIconSource !== '/images/unknown.png')
     return (
       <span
         className="custom-select-option-icon-table"
-        style={{ backgroundImage: `url('${tableIconSrc}')` }}
+        style={{ backgroundImage: `url('${tableIconSource}')` }}
       />
     );
 
-  const tableSubName = tableName.substr(0, 2);
+  const tableSubName = tableName.slice(0, 2);
   const colorHue =
     (tableSubName[0].charCodeAt(0) +
       tableSubName[1].charCodeAt(0) -
@@ -203,7 +226,7 @@ const Option = React.memo(
       const classes = ['custom-select-option'];
 
       if (!isEnabled && !isRelationship)
-        // don't disable relationships
+        // Don't disable relationships
         classes.push('custom-select-option-disabled');
 
       if (isRelationship) classes.push('custom-select-option-relationship');
@@ -242,14 +265,14 @@ function OptionGroup({
   selectGroupLabel,
   selectOptionsData,
   handleClick,
-}: CustomSelectElementOptionGroupProps) {
+}: CustomSelectElementOptionGroupProps): JSX.Element {
   return (
     <span
       className={`custom-select-group custom-select-group-${
         selectGroupName?.replace(
           /[A-Z]/g,
           (letter) => `-${letter.toLowerCase()}`
-        ) || 'undefined'
+        ) ?? 'undefined'
       }`}
     >
       {typeof selectGroupLabel !== 'undefined' && (
@@ -268,7 +291,7 @@ function OptionGroup({
                       optionName,
                       typeof selectionOptionData.isRelationship !==
                         'undefined' && selectionOptionData.isRelationship,
-                      selectionOptionData.tableName || ''
+                      selectionOptionData.tableName ?? ''
                     )
               }
               {...selectionOptionData}
@@ -283,7 +306,7 @@ function OptionGroup({
 const ShadowListOfOptions = React.memo(
   namedComponent(
     'ShadowListOfOptions',
-    ({ fieldNames: fieldNames }: { readonly fieldNames: string[] }) => (
+    ({ fieldNames }: { readonly fieldNames: Readonly<string[]> }) => (
       <span className="custom-select-element-shadow-list">
         {fieldNames.map((fieldName, index) => (
           <span key={index}>{fieldName}</span>
@@ -328,8 +351,9 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable =
-    NON_INTERACTIVE_SELECT_TYPES.indexOf(customSelectType) === -1;
+  const optionIsIntractable = !NON_INTERACTIVE_SELECT_TYPES.includes(
+    customSelectType
+  );
 
   const handleClick =
     optionIsIntractable &&
@@ -338,7 +362,7 @@ export function CustomSelectElement({
       handleChange?.(
         newValue,
         isRelationship,
-        defaultOption.tableName || '',
+        defaultOption.tableName ?? '',
         newTable
       ));
 
@@ -416,10 +440,9 @@ export function CustomSelectElement({
   const groups =
     isOpen &&
     optionIsIntractable &&
-    Object.entries(customSelectOptionGroups || {})
+    Object.entries(customSelectOptionGroups ?? {})
       .filter(
-        ([, { selectOptionsData }]) =>
-          Object.keys(selectOptionsData).length !== 0
+        ([, { selectOptionsData }]) => Object.keys(selectOptionsData).length > 0
       )
       .map(([selectGroupName, selectGroupData], index) => (
         <OptionGroup
@@ -439,19 +462,23 @@ export function CustomSelectElement({
 
   React.useEffect(() => {
     if (
-      // auto scroll down the option if
-      isOpen && // it is open
-      optionIsIntractable && // and it can be opened
-      listOfOptionsRef.current !== null && // and DOM is rendered
-      defaultOption.optionName !== '0' && // and list has a value
-      // and the list is not already scrolled
+      /* Auto scroll down the option if: */
+      // It is open
+      isOpen &&
+      // And it can be opened
+      optionIsIntractable &&
+      // And DOM is rendered
+      listOfOptionsRef.current !== null &&
+      // And list has a value
+      defaultOption.optionName !== '0' &&
+      // And the list is not already scrolled
       listOfOptionsRef.current.scrollTop === 0
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
         'custom-select-option-selected'
       )?.[0] as undefined | HTMLElement;
 
-      // scroll down only if selected item is not visible
+      // Scroll down only if selected item is not visible
       if (
         typeof selectedOption !== 'undefined' &&
         listOfOptionsRef.current.offsetHeight <

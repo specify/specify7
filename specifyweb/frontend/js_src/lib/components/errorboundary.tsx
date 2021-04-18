@@ -25,13 +25,13 @@ export default class ErrorBoundary extends React.Component<
   { children: JSX.Element | null },
   ErrorBoundaryState
 > {
-  state: ErrorBoundaryState = {
+  public state: ErrorBoundaryState = {
     hasError: false,
   };
 
-  componentDidCatch(
-    error: { toString: () => string },
-    errorInfo: { componentStack: string }
+  public componentDidCatch(
+    error: { readonly toString: () => string },
+    errorInfo: { readonly componentStack: string }
   ): void {
     console.error(error, errorInfo);
     this.setState({
@@ -41,7 +41,7 @@ export default class ErrorBoundary extends React.Component<
     });
   }
 
-  render(): JSX.Element | null {
+  public render(): JSX.Element | null {
     return this.state.hasError ? (
       <ModalDialog
         properties={{
@@ -49,13 +49,13 @@ export default class ErrorBoundary extends React.Component<
           buttons: [
             {
               text: 'Reload',
-              click() {
+              click(): void {
                 window.location.reload();
               },
             },
             {
               text: 'Previous Page',
-              click() {
+              click(): void {
                 window.history.back();
               },
             },
@@ -64,7 +64,7 @@ export default class ErrorBoundary extends React.Component<
       >
         <p>An unexpected error has occurred.</p>
         <details style={{ whiteSpace: 'pre-wrap' }}>
-          {this.state.error && this.state.error.toString()}
+          {this.state.error?.toString()}
           <br />
           {this.state.errorInfo.componentStack}
         </details>

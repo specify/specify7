@@ -1,6 +1,6 @@
 import React from 'react';
-import { R } from './wbplanview';
-import { WBPlanViewStates } from './wbplanviewstatereducer';
+import type { R } from './wbplanview';
+import type { WBPlanViewStates } from './wbplanviewstatereducer';
 
 export function WBPlanViewHeader({
   stateType,
@@ -8,10 +8,10 @@ export function WBPlanViewHeader({
   buttonsLeft,
   buttonsRight,
 }: {
-  stateType: WBPlanViewStates['type'];
-  title: string;
-  buttonsLeft: React.ReactNode;
-  buttonsRight: React.ReactNode;
+  readonly stateType: WBPlanViewStates['type'];
+  readonly title: string;
+  readonly buttonsLeft: React.ReactNode;
+  readonly buttonsRight: React.ReactNode;
 }): JSX.Element {
   return (
     <div className={`wbplanview-header wbplanview-header-${stateType}`}>
@@ -37,7 +37,7 @@ export function HeaderWrapper(props: {
       className={`wbplanview-event-listener ${
         props.readonly ? 'wbplanview-readonly' : ''
       }`}
-      onClick={(event) =>
+      onClick={(event): void =>
         (event.target as HTMLElement).closest('.custom-select-closed-list') ===
           null &&
         (event.target as HTMLElement).closest(

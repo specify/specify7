@@ -1,34 +1,31 @@
 import React from 'react';
-import { generateReducer, State } from '../statemanagement';
-import { MatchBehaviors, UploadPlan } from '../uploadplantomappingstree';
+import type { State } from '../statemanagement';
+import { generateReducer } from '../statemanagement';
+import type { MatchBehaviors, UploadPlan } from '../uploadplantomappingstree';
 import * as cache from '../wbplanviewcache';
-import {
-  loadingStateDispatch,
-  LoadingStates,
-} from '../wbplanviewloadingreducer';
+import type { LoadingStates } from '../wbplanviewloadingreducer';
+import { loadingStateDispatch } from '../wbplanviewloadingreducer';
 import dataModelStorage from '../wbplanviewmodel';
-import {
+import type {
   OpenMappingScreenAction,
   WBPlanViewActions,
 } from '../wbplanviewreducer';
-import {
-  getRefMappingState,
-  RefActions,
-  RefStates,
-} from '../wbplanviewrefreducer';
+import type { RefActions, RefStates } from '../wbplanviewrefreducer';
+import { getRefMappingState } from '../wbplanviewrefreducer';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import { R, WBPlanViewProps } from './wbplanview';
+import type { R, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import { HeaderWrapper, WBPlanViewHeader } from './wbplanviewheader';
-import WBPlanViewMapper, {
+import type {
   AutomapperSuggestion,
   MappingPath,
   WBPlanViewMapperBaseProps,
 } from './wbplanviewmapper';
+import WBPlanViewMapper from './wbplanviewmapper';
 import { defaultMappingViewHeight } from './wbplanviewmappercomponents';
 
-//states
+// States
 
 export interface LoadingState extends State<'LoadingState'> {
   readonly loadingState?: LoadingStates;
@@ -62,7 +59,7 @@ export type WBPlanViewStates =
   | TemplateSelectionState
   | MappingState;
 
-type WBPlanViewStatesWithParams = WBPlanViewStates & {
+type WBPlanViewStatesWithParameters = WBPlanViewStates & {
   readonly dispatch: (action: WBPlanViewActions) => void;
   readonly props: WBPlanViewProps;
   readonly refObject: React.MutableRefObject<RefStates>;
@@ -112,7 +109,7 @@ export const getDefaultMappingState = (): MappingState => ({
 
 export const stateReducer = generateReducer<
   JSX.Element,
-  WBPlanViewStatesWithParams
+  WBPlanViewStatesWithParameters
 >({
   LoadingState: ({ action: state }) => {
     if (typeof state.loadingState !== 'undefined')
@@ -138,7 +135,7 @@ export const stateReducer = generateReducer<
               <input
                 type="checkbox"
                 checked={state.showHiddenTables}
-                onChange={() =>
+                onChange={(): void =>
                   state.dispatch({
                     type: 'ToggleHiddenTablesAction',
                   })
@@ -150,7 +147,8 @@ export const stateReducer = generateReducer<
           buttonsRight={
             <>
               <button
-                onClick={() =>
+                type="button"
+                onClick={(): void =>
                   state.dispatch({
                     type: 'UseTemplateAction',
                     dispatch: state.dispatch,
@@ -160,7 +158,8 @@ export const stateReducer = generateReducer<
                 Use template
               </button>
               <button
-                onClick={() =>
+                type="button"
+                onClick={(): void =>
                   state.dispatch({
                     type: 'CancelMappingAction',
                     dataset: state.props.dataset,
@@ -178,7 +177,7 @@ export const stateReducer = generateReducer<
       <ListOfBaseTables
         listOfTables={dataModelStorage.listOfBaseTables}
         showHiddenTables={state.showHiddenTables}
-        handleChange={(tableName: string) =>
+        handleChange={(tableName: string): void =>
           state.dispatch({
             type: 'SelectTableAction',
             tableName,
@@ -192,7 +191,7 @@ export const stateReducer = generateReducer<
   TemplateSelectionState: ({ action: state }) => (
     <ModalDialog
       properties={{ title: 'Select Template' }}
-      onCloseCallback={() =>
+      onCloseCallback={(): void =>
         state.dispatch({
           type: 'OpenBaseTableSelectionAction',
           referrer: state.type,
@@ -202,7 +201,7 @@ export const stateReducer = generateReducer<
       {state.templates.map(({ datasetName }, index) => (
         <a
           key={index}
-          onClick={() =>
+          onClick={(): void =>
             state.dispatch({
               type: 'OpenMappingScreenAction',
               uploadPlan: state.templates[index].uploadPlan,
@@ -228,7 +227,7 @@ export const stateReducer = generateReducer<
         }
       );
 
-    const handleSave = (ignoreValidation: boolean) =>
+    const handleSave = (ignoreValidation: boolean): void =>
       state.dispatch({
         type: 'SavePlanAction',
         dataset: state.props.dataset,
@@ -237,11 +236,11 @@ export const stateReducer = generateReducer<
         mappingIsTemplated: state.mappingIsTemplated,
         ignoreValidation,
       });
-    const handleClose = () =>
+    const handleClose = (): void =>
       state.dispatch({
         type: 'CloseSelectElementAction',
       });
-    const handleMappingOptionsDialogClose = () =>
+    const handleMappingOptionsDialogClose = (): void =>
       state.dispatch({
         type: 'CloseMatchingLogicDialogAction',
       });
@@ -270,7 +269,8 @@ export const stateReducer = generateReducer<
                 </span>
               ) : (
                 <button
-                  onClick={() =>
+                  type="button"
+                  onClick={(): void =>
                     state.dispatch({
                       type: 'OpenBaseTableSelectionAction',
                     })
@@ -284,7 +284,8 @@ export const stateReducer = generateReducer<
               <>
                 {!state.showMappingView && (
                   <button
-                    onClick={() =>
+                    type="button"
+                    onClick={(): void =>
                       state.dispatch({
                         type: 'ToggleMappingViewAction',
                       })
@@ -294,7 +295,8 @@ export const stateReducer = generateReducer<
                   </button>
                 )}
                 <button
-                  onClick={() =>
+                  type="button"
+                  onClick={(): void =>
                     state.dispatch({
                       type: 'OpenMatchingLogicDialogAction',
                     })
@@ -305,7 +307,8 @@ export const stateReducer = generateReducer<
                 {!state.props.readonly && (
                   <>
                     <button
-                      onClick={() =>
+                      type="button"
+                      onClick={(): void =>
                         state.dispatch({
                           type: 'ResetMappingsAction',
                         })
@@ -314,16 +317,17 @@ export const stateReducer = generateReducer<
                       Clear Mappings
                     </button>
                     <button
-                      onClick={() =>
-                        void state.dispatch({
+                      type="button"
+                      onClick={(): void => {
+                        state.dispatch({
                           type: 'ValidationAction',
-                        }) ||
-                        void state.refObjectDispatch({
+                        });
+                        state.refObjectDispatch({
                           type: 'AutoscrollStatusChangeAction',
                           autoscrollType: 'mappingView',
                           status: true,
-                        })
-                      }
+                        });
+                      }}
                     >
                       Check mappings
                       {state.mappingsAreValidated && (
@@ -337,11 +341,17 @@ export const stateReducer = generateReducer<
                         </i>
                       )}
                     </button>
-                    <button onClick={() => handleSave(false)}>Save</button>
+                    <button
+                      type="button"
+                      onClick={(): void => handleSave(false)}
+                    >
+                      Save
+                    </button>
                   </>
                 )}
                 <button
-                  onClick={() =>
+                  type="button"
+                  onClick={(): void =>
                     state.dispatch({
                       type: 'CancelMappingAction',
                       dataset: state.props.dataset,
@@ -372,32 +382,32 @@ export const stateReducer = generateReducer<
           focusedLine={state.focusedLine}
           refObject={refObject}
           readonly={state.props.readonly}
-          handleSave={() => handleSave(true)}
-          handleToggleHiddenFields={() =>
+          handleSave={(): void => handleSave(true)}
+          handleToggleHiddenFields={(): void =>
             state.dispatch({ type: 'ToggleHiddenFieldsAction' })
           }
-          handleFocus={(line: number) =>
+          handleFocus={(line: number): void =>
             state.dispatch({
               type: 'FocusLineAction',
               line,
             })
           }
-          handleMappingViewMap={() =>
+          handleMappingViewMap={(): void =>
             state.dispatch({ type: 'MappingViewMapAction' })
           }
-          handleAddNewHeader={() =>
+          handleAddNewHeader={(): void =>
             state.dispatch({ type: 'AddNewHeaderAction' })
           }
-          handleAddNewStaticHeader={() =>
+          handleAddNewStaticHeader={(): void =>
             state.dispatch({ type: 'AddNewStaticHeaderAction' })
           }
-          handleAddNewColumn={() =>
+          handleAddNewColumn={(): void =>
             state.dispatch({ type: 'AddNewHeaderAction' })
           }
-          handleAddNewStaticColumn={() =>
+          handleAddNewStaticColumn={(): void =>
             state.dispatch({ type: 'AddNewStaticHeaderAction' })
           }
-          handleOpen={(line: number, index: number) =>
+          handleOpen={(line: number, index: number): void =>
             state.dispatch({
               type: 'OpenSelectElementAction',
               line,
@@ -412,7 +422,7 @@ export const stateReducer = generateReducer<
             isRelationship: boolean,
             currentTableName: string,
             newTableName: string
-          ) =>
+          ): void =>
             state.dispatch({
               type: 'ChangeSelectElementValueAction',
               line,
@@ -423,7 +433,7 @@ export const stateReducer = generateReducer<
               newTableName,
             })
           }
-          handleClearMapping={(line: number) =>
+          handleClearMapping={(line: number): void =>
             state.dispatch({
               type: 'ClearMappingLineAction',
               line,
@@ -432,40 +442,40 @@ export const stateReducer = generateReducer<
           handleStaticHeaderChange={(
             line: number,
             event: React.ChangeEvent<HTMLTextAreaElement>
-          ) =>
+          ): void =>
             state.dispatch({
               type: 'StaticHeaderChangeAction',
               line,
               event,
             })
           }
-          handleAutomapperSuggestionSelection={(suggestion: string) =>
+          handleAutomapperSuggestionSelection={(suggestion: string): void =>
             state.dispatch({
               type: 'AutomapperSuggestionSelectedAction',
               suggestion,
             })
           }
-          handleValidationResultClick={(mappingPath: MappingPath) =>
+          handleValidationResultClick={(mappingPath: MappingPath): void =>
             state.dispatch({
               type: 'ValidationResultClickAction',
               mappingPath,
             })
           }
-          handleToggleMappingIsTemplated={() =>
+          handleToggleMappingIsTemplated={(): void =>
             state.dispatch({
               type: 'ToggleMappingIsTemplatedAction',
             })
           }
-          handleToggleMappingView={() =>
+          handleToggleMappingView={(): void =>
             state.dispatch({ type: 'ToggleMappingViewAction' })
           }
-          handleMappingViewResize={(height) =>
+          handleMappingViewResize={(height): void =>
             state.refObjectDispatch({
               type: 'MappingViewResizeAction',
               height,
             })
           }
-          handleAutoscrollStatusChange={(autoscrollType, status) =>
+          handleAutoscrollStatusChange={(autoscrollType, status): void =>
             state.refObjectDispatch({
               type: 'AutoscrollStatusChangeAction',
               autoscrollType,
@@ -475,14 +485,17 @@ export const stateReducer = generateReducer<
           handleChangeMatchBehaviorAction={(
             line: number,
             matchBehavior: MatchBehaviors
-          ) =>
+          ): void =>
             state.dispatch({
               type: 'ChangeMatchBehaviorAction',
               line,
               matchBehavior,
             })
           }
-          handleToggleAllowNullsAction={(line: number, allowNull: boolean) =>
+          handleToggleAllowNullsAction={(
+            line: number,
+            allowNull: boolean
+          ): void =>
             state.dispatch({
               type: 'ToggleAllowNullsAction',
               line,
@@ -492,7 +505,7 @@ export const stateReducer = generateReducer<
           handleChangeDefaultValue={(
             line: number,
             defaultValue: string | null
-          ) =>
+          ): void =>
             state.dispatch({
               type: 'ChangeDefaultValue',
               line,
@@ -547,7 +560,7 @@ export const stateReducer = generateReducer<
                                     disabled: true,
                                   }
                                 : {
-                                    onChange: () =>
+                                    onChange: (): void =>
                                       state.dispatch({
                                         type: 'MustMatchPrefChangeAction',
                                         tableName,

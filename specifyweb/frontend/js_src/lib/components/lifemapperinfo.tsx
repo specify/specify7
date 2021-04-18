@@ -55,9 +55,9 @@ function LifemapperInfo({
   model,
   guid,
 }: {
-  model: any;
-  guid: string | undefined;
-}) {
+  readonly model: any;
+  readonly guid: string | undefined;
+}): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'LoadingState',
   } as LoadingState);
@@ -67,10 +67,10 @@ function LifemapperInfo({
 
     $.get(formatOccurrenceDataRequest(guid)).done(
       (response: {
-        records: {
-          provider: string;
-          count: number;
-          records: [] | [R<unknown>];
+        readonly records: {
+          readonly provider: string;
+          readonly count: number;
+          readonly records: [] | [R<unknown>];
         }[];
       }) =>
         dispatch({
@@ -143,12 +143,12 @@ function LifemapperInfo({
               occurrenceCount: response.records.map(
                 ({
                   scientificName,
-                  occurrence_count,
-                  occurrence_url,
+                  occurrence_count: count,
+                  occurrence_url: url,
                 }: any) => ({
                   scientificName,
-                  count: occurrence_count,
-                  url: occurrence_url,
+                  count,
+                  url,
                 })
               ),
             })
@@ -174,7 +174,7 @@ function LifemapperInfo({
           ? defaultOccurrenceName[0]
           : localScientificName;
 
-        const getOccurrenceName = (index: 0 | 1) =>
+        const getOccurrenceName = (index: 0 | 1): string =>
           extractElement(
             [localOccurrenceName, state.remoteOccurrenceName],
             index
@@ -238,15 +238,15 @@ function LifemapperInfo({
 
         $.get(formatOccurrenceMapRequest(getOccurrenceName(1))).done(
           async (response: {
-            errors: string[];
-            records:
+            readonly errors: string[];
+            readonly records:
               | []
               | [
                   {
-                    endpoint: string;
-                    projection_link: string;
-                    point_name: string;
-                    modtime: string;
+                    readonly endpoint: string;
+                    readonly projection_link: string;
+                    readonly point_name: string;
+                    readonly modtime: string;
                   }
                 ];
           }) => {
@@ -268,7 +268,7 @@ function LifemapperInfo({
 
               const mapUrl = `${endpoint}/`;
               const mapId = mapName.replace(/\D/g, '');
-              const layerId = /\/(\d+)$/.exec(projectionLink)![1];
+              const layerId = /\/\d+$/.exec(projectionLink)![1];
               layers = lifemapperLayerVariations.map(
                 ({
                   transparent,

@@ -2,18 +2,19 @@
  *
  * Workbench Upload Results UI
  *
- * */
+ *
+ */
 
 'use strict';
 
-import Handsontable from 'handsontable';
+import type Handsontable from 'handsontable';
 import React from 'react';
 import '../../css/wbuploaded.css';
-import { Action, generateReducer, State } from '../statemanagement';
+import type { Action, State } from '../statemanagement';
+import { generateReducer } from '../statemanagement';
 import dataModelStorage from '../wbplanviewmodel';
 import fetchDataModel from '../wbplanviewmodelfetcher';
-import {
-  parseUploadResults,
+import type {
   UploadedPicklistItem,
   UploadedPicklistItems,
   UploadedRow,
@@ -21,9 +22,10 @@ import {
   UploadedRowsTable,
   UploadResults,
 } from '../wbuploadedparser';
+import { parseUploadResults } from '../wbuploadedparser';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Dataset, R } from './wbplanview';
+import type { Dataset, R } from './wbplanview';
 
 interface WBUploadedViewConstructorProps {
   dataset: Dataset;
@@ -111,14 +113,14 @@ function CellLink({
   recordId,
   children,
 }: {
-  getRecordViewUrl: (recordId: number) => string;
-  recordId?: number;
-  children: JSX.Element | React.ReactText;
+  readonly getRecordViewUrl: (recordId: number) => string;
+  readonly recordId?: number;
+  readonly children: JSX.Element | React.ReactText;
 }): JSX.Element {
   return typeof recordId === 'undefined' ? (
     <>{children}</>
   ) : (
-    <a target="_blank" href={getRecordViewUrl(recordId)}>
+    <a target="_blank" href={getRecordViewUrl(recordId)} rel="noreferrer">
       {children}
     </a>
   );
@@ -138,7 +140,11 @@ function UploadedTableRow({
         <tr key={index}>
           {recordId >= 0 && (
             <td key="viewRecord">
-              <a target="_blank" href={getRecordViewUrl(recordId)}>
+              <a
+                target="_blank"
+                href={getRecordViewUrl(recordId)}
+                rel="noreferrer"
+              >
                 👁
               </a>
             </td>
@@ -162,7 +168,7 @@ function UploadedTableRow({
                 }
               `}
                 rowSpan={spanSize}
-                onClick={() =>
+                onClick={(): void =>
                   handleCellClicked(
                     rowIndex < 0 ? cellRowIndex ?? -1 : rowIndex,
                     columnIndex
@@ -197,7 +203,7 @@ function UploadedPicklistRow({
         <tr key={index}>
           <td
             className="wb-upload-results-cell"
-            onClick={() => handleCellClicked(rowIndex, columnIndex)}
+            onClick={(): void => handleCellClicked(rowIndex, columnIndex)}
           >
             {value}
           </td>
@@ -244,7 +250,7 @@ function UploadedTableRows({
           columnNames={
             type === 'table' && columnNames
               ? [
-                  ...(rows.length !== 0 &&
+                  ...(rows.length > 0 &&
                   'recordId' in rows[0] &&
                   rows[0].recordId >= 0
                     ? ['']
@@ -256,14 +262,14 @@ function UploadedTableRows({
         />
         {type === 'table' && getRecordViewUrl ? (
           <UploadedTableRow
-            //@ts-ignore
+            // @ts-expect-error
             rows={rows}
             onCellClicked={handleCellClicked}
             getRecordViewUrl={getRecordViewUrl}
           />
         ) : (
           <UploadedPicklistRow
-            //@ts-ignore
+            // @ts-expect-error
             rows={rows}
             onCellClicked={handleCellClicked}
           />
@@ -315,7 +321,7 @@ function UploadedTableHeader({
   return (
     <div
       className="wb-upload-results-header"
-      onClick={(event) => {
+      onClick={(event): void => {
         if ((event.target as HTMLElement).tagName === 'BUTTON') return;
         handleToggleTableRecordsVisibility();
       }}
@@ -337,8 +343,12 @@ function UploadedTableHeader({
           /* TODO: enable these buttons */
           rowsCount === -1 && (
             <>
-              <button onClick={handleCreateRecordSet}>Record Set</button>
-              <button onClick={handleCreateDataSet}>Data Set</button>
+              <button type="button" onClick={handleCreateRecordSet}>
+                Record Set
+              </button>
+              <button type="button" onClick={handleCreateDataSet}>
+                Data Set
+              </button>
             </>
           )
         }
@@ -377,7 +387,7 @@ function UploadedTable({
 )): JSX.Element {
   return (
     <div className="wb-upload-results-table">
-      {/*@ts-ignore*/}
+      {/* @ts-expect-error*/}
       <UploadedTableHeader
         type={type}
         tableName={tableName}
@@ -397,7 +407,7 @@ function UploadedTable({
             })}
       />
       {tableIsCollapsed ? undefined : (
-        //@ts-ignore
+        // @ts-expect-error
         <UploadedTableRows
           type={type}
           onCellClicked={handleCellClicked}
@@ -446,21 +456,17 @@ function UploadedRecords({
   return (
     <>
       {Object.entries(uploadedRecords).map(([tableName, tableData]) => (
-        //@ts-ignore
+        // @ts-expect-error
         <UploadedTable
           uploadedTable={tableData}
           tableName={tableName}
           key={tableName}
           type={type}
           tableIsCollapsed={tableRecordsVisibilityState[tableName]}
-          onCreateRecordSet={
-            handleCreateRecordSet && handleCreateRecordSet.bind(null, tableName)
-          }
-          onCreateDataSet={
-            handleCreateDataSet && handleCreateDataSet.bind(null, tableName)
-          }
+          onCreateRecordSet={handleCreateRecordSet?.bind(undefined, tableName)}
+          onCreateDataSet={handleCreateDataSet?.bind(undefined, tableName)}
           onToggleTableRecordsVisibility={handleToggleTableRecordsVisibility.bind(
-            null,
+            undefined,
             tableName
           )}
           onCellClicked={handleCellClicked}
@@ -515,7 +521,7 @@ const getInitialWBUploadedViewState = (
   props,
 });
 
-function WBUploadedView(props: WBUploadedViewComponentProps) {
+function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
     props,
@@ -532,36 +538,34 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
       }}
     >
       <div className="wb-upload-results">
-        <>
-          {Object.keys(props.uploadedRows).length === 0 &&
-            Object.keys(props.uploadedPicklistItems).length === 0 &&
-            'No records were uploaded / all records were matched to' +
-              'database records'}
-        </>
+        {Object.keys(props.uploadedRows).length === 0 &&
+          Object.keys(props.uploadedPicklistItems).length === 0 &&
+          'No records were uploaded / all records were matched to' +
+            'database records'}
         <UploadedRecords
           type="table"
           uploadedRecords={props.uploadedRows}
           tableRecordsVisibilityState={state.tableRecordsVisibilityState}
-          onCreateRecordSet={(tableName: string) =>
+          onCreateRecordSet={(tableName: string): void =>
             dispatch({
               type: 'CreateRecordSetAction',
               tableName,
             })
           }
-          onCreateDataSet={(tableName: string) =>
+          onCreateDataSet={(tableName: string): void =>
             dispatch({
               type: 'CreateDataSetAction',
               tableName,
             })
           }
-          onCellClicked={(rowIndex: number, columnIndex: number) =>
+          onCellClicked={(rowIndex: number, columnIndex: number): void =>
             dispatch({
               type: 'CellClickedAction',
               rowIndex,
               columnIndex,
             })
           }
-          onToggleTableRecordsVisibility={(tableName: string) =>
+          onToggleTableRecordsVisibility={(tableName: string): void =>
             dispatch({
               type: 'ToggleTableRecordsVisibilityAction',
               destination: 'tableRecordsVisibilityState',
@@ -573,14 +577,14 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
           type="picklist"
           uploadedRecords={props.uploadedPicklistItems}
           tableRecordsVisibilityState={state.picklistRecordsVisibilityState}
-          onCellClicked={(rowIndex: number, columnIndex: number) =>
+          onCellClicked={(rowIndex: number, columnIndex: number): void =>
             dispatch({
               type: 'CellClickedAction',
               rowIndex,
               columnIndex,
             })
           }
-          onToggleTableRecordsVisibility={(tableName: string) =>
+          onToggleTableRecordsVisibility={(tableName: string): void =>
             dispatch({
               type: 'ToggleTableRecordsVisibilityAction',
               destination: 'picklistRecordsVisibilityState',
@@ -593,7 +597,9 @@ function WBUploadedView(props: WBUploadedViewComponentProps) {
   );
 }
 
-function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
+function WBUploadedViewDataParser(
+  props: WBUploadedViewDataParseProps
+): JSX.Element {
   const [treeRanks, setTreeRanks] = React.useState<R<string[]> | undefined>(
     ranks
   );
@@ -609,16 +615,16 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
 
   React.useEffect(
     () =>
-      // fetch upload results
+      // Fetch upload results
       void fetch(`/api/workbench/upload_results/${props.dataset.id}/`)
-        .then((response) => response.json() as Promise<UploadResults>)
+        .then(async (response) => response.json() as Promise<UploadResults>)
         .then(setUploadResults),
     []
   );
 
   React.useEffect(
     () =>
-      // fetch tree ranks
+      // Fetch tree ranks
       void fetchDataModelPromise
         .then(() =>
           setTreeRanks(
@@ -642,7 +648,7 @@ function WBUploadedViewDataParser(props: WBUploadedViewDataParseProps) {
   );
 
   React.useEffect(() => {
-    // parse uploaded data
+    // Parse uploaded data
     if (
       typeof uploadResults === 'undefined' ||
       typeof treeRanks === 'undefined'

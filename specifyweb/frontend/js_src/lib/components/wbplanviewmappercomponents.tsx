@@ -1,17 +1,17 @@
 import React from 'react';
 import { namedComponent } from '../statemanagement';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { MappingsTree } from '../wbplanviewtreehelper';
+import type { MappingsTree } from '../wbplanviewtreehelper';
 import { MappingPathComponent } from './wbplanviewcomponents';
-import { MappingPath } from './wbplanviewmapper';
+import type { MappingPath } from './wbplanviewmapper';
 
 export type GetMappedFieldsBind = (
-  // a mapping path that would be used as a filter
+  // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
 ) => MappingsTree;
 
 export type PathIsMappedBind = (
-  // a mapping path that would be used as a filter
+  // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
 ) => boolean;
 
@@ -23,10 +23,10 @@ export const MappingsControlPanel = React.memo(
       readonly,
       handleChange,
       mappingIsTemplated,
+      /* HandleAddNewColumn, */
+      /* HandleAddNewStaticColumn, */
       handleToggleMappingIsTemplated,
-    }: // handleAddNewColumn,
-    // handleAddNewStaticColumn,
-    {
+    }: {
       readonly showHiddenFields: boolean;
       readonly readonly: boolean;
       readonly handleChange?: () => void;
@@ -45,8 +45,8 @@ export const MappingsControlPanel = React.memo(
           />
           Use this mapping as a template
         </label>
-        {/*<button onClick={handleAddNewColumn}>Add new column</button>*/}
-        {/*<button onClick={handleAddNewStaticColumn}>
+        {/* <button onClick={handleAddNewColumn}>Add new column</button>*/}
+        {/* <button onClick={handleAddNewStaticColumn}>
         Add new static column
       </button>*/}
         <label>
@@ -81,7 +81,7 @@ export function FormatValidationResults(props: {
         <div
           className="wbplanview-mapping-line-elements"
           key={index}
-          onClick={props.onValidationResultClick.bind(null, fieldPath)}
+          onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
         >
           <MappingPathComponent
             mappingLineData={getMappingLineData({
@@ -134,7 +134,7 @@ export function MappingView(props: {
     props.mapButtonIsEnabled &&
     (Object.entries(
       mappingLineData[mappingLineData.length - 1]?.fieldsData
-    ).filter(([, { isDefault: isDefault }]) => isDefault)?.[0]?.[1].isEnabled ??
+    ).find(([, { isDefault }]) => isDefault)?.[1].isEnabled ??
       false);
 
   return (

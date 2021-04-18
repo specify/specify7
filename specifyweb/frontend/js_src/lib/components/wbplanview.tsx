@@ -2,20 +2,21 @@
  *
  * Workbench plan mapper
  *
- * */
+ *
+ */
 
 'use strict';
 
 import React from 'react';
 import '../../css/wbplanview.css';
-import { JqueryPromise } from '../legacytypes';
-import { UploadPlan } from '../uploadplantomappingstree';
-import { OpenMappingScreenAction, reducer } from '../wbplanviewreducer';
+import type { JqueryPromise } from '../legacytypes';
+import type { UploadPlan } from '../uploadplantomappingstree';
+import type { OpenMappingScreenAction } from '../wbplanviewreducer';
+import { reducer } from '../wbplanviewreducer';
+import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import {
-  RefActions,
   refInitialState,
   refObjectDispatch,
-  RefStates,
   refStatesMapper,
 } from '../wbplanviewrefreducer';
 import {
@@ -23,7 +24,7 @@ import {
   stateReducer,
 } from './wbplanviewstatereducer';
 
-// general definitions
+// General definitions
 export type Dataset = {
   id: number;
   name: string;
@@ -84,7 +85,7 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
 
   // `refObject` is like `state`, but does not cause re-render on change
   const refObject = React.useRef<RefStates>(refInitialState);
-  const refObjectDispatchCurried = (action: RefActions) =>
+  const refObjectDispatchCurried = (action: RefActions): void =>
     refObjectDispatch({
       ...action,
       payload: {
@@ -95,17 +96,17 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
       },
     });
 
-  // reset refObject on state change
+  // Reset refObject on state change
   if (
     refObject.current.type !==
-    // @ts-ignore
+    // @ts-expect-error
     (refStatesMapper[state.type] ?? 'RefUndefinedState')
   )
     refObjectDispatchCurried({
       type: 'RefChangeStateAction',
     });
 
-  // set/unset unload protect
+  // Set/unset unload protect
   React.useEffect(() => {
     const changesMade = 'changesMade' in state ? state.changesMade : false;
 
@@ -125,7 +126,7 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
       });
   }, ['changesMade' in state ? state.changesMade : false]);
 
-  // wait for automapper suggestions to fetch
+  // Wait for automapper suggestions to fetch
   React.useEffect(() => {
     if (!('automapperSuggestionsPromise' in state)) return;
 

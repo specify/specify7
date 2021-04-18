@@ -3,21 +3,25 @@
  * Contains WbPlanView logic for when the application is in the Mapping State
  * (when base table is selected and headers are loaded)
  *
- * */
+ *
+ */
 
 'use strict';
 
 import React from 'react';
-import { ColumnOptions, MatchBehaviors } from '../uploadplantomappingstree';
+import type {
+  ColumnOptions,
+  MatchBehaviors,
+} from '../uploadplantomappingstree';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { MappingActions } from '../wbplanviewreducer';
-import { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
+import type { MappingActions } from '../wbplanviewreducer';
+import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
+import type { MappingPathProps } from './wbplanviewcomponents';
 import {
   MappingElement,
-  MappingLine,
-  MappingPathProps,
   StaticHeader,
+  MappingLineComponent,
 } from './wbplanviewcomponents';
 import {
   FormatValidationResults,
@@ -26,11 +30,15 @@ import {
   minMappingViewHeight,
 } from './wbplanviewmappercomponents';
 
-/* Scope is used to differentiate between mapper definitions that should
- * be used by the automapper and suggestion boxes */
+/*
+ * Scope is used to differentiate between mapper definitions that should
+ * be used by the automapper and suggestion boxes
+ */
 export type AutomapperScope =
-  | 'automapper' // used when selecting a base table
-  | 'suggestion'; // suggestion boxes - used when opening a picklist
+  // Used when selecting a base table
+  | 'automapper'
+  // Suggestion boxes - used when opening a picklist
+  | 'suggestion';
 export type MappingPath = string[];
 export type FullMappingPath = [...string[], MappingType, string, ColumnOptions];
 export type ListOfHeaders = string[];
@@ -63,8 +71,10 @@ export interface WBPlanViewMapperBaseProps {
   readonly showHiddenFields: boolean;
   readonly showMappingView: boolean;
   readonly baseTableName: string;
-  // the index that would be shown in the header name the next time the user
-  // presses `New Column`
+  /*
+   * The index that would be shown in the header name the next time the user
+   * presses `New Column`
+   */
   readonly newHeaderId: number;
   readonly mappingView: MappingPath;
   readonly validationResults: MappingPath[];
@@ -125,12 +135,12 @@ export default function WBPlanViewMapper(
     ) => void;
   }
 ): JSX.Element {
-  const getMappedFieldsBind = getMappedFields.bind(null, props.lines);
+  const getMappedFieldsBind = getMappedFields.bind(undefined, props.lines);
   const listOfMappings = React.useRef<HTMLDivElement>(null);
 
   const mappingViewParentRef = React.useRef<HTMLDivElement | null>(null);
 
-  // scroll listOfMappings/mappingView/open picklist to correct position
+  // Scroll listOfMappings/mappingView/open picklist to correct position
   React.useEffect(() => {
     if (
       typeof props.refObject.current.autoscroll === 'undefined' ||
@@ -144,7 +154,7 @@ export default function WBPlanViewMapper(
       boolean
     ][])
       .filter(([, autoscroll]) => autoscroll)
-      .map(([autoscrollType]) => {
+      .forEach(([autoscrollType]) => {
         if (autoscrollType === 'listOfMappings') {
           if (!listOfMappings.current) return;
 
@@ -155,7 +165,7 @@ export default function WBPlanViewMapper(
         if (autoscrollType === 'mappingView') {
           if (!mappingViewParentRef.current) return;
 
-          if (props.validationResults.length !== 0)
+          if (props.validationResults.length > 0)
             mappingViewParentRef.current.scrollLeft = 0;
         }
 
@@ -166,29 +176,24 @@ export default function WBPlanViewMapper(
   // `resize` event listener for the mapping view
   React.useEffect(() => {
     if (
-      // @ts-ignore
       typeof ResizeObserver === 'undefined' ||
       mappingViewParentRef === null ||
       !mappingViewParentRef.current
     )
-      return;
+      return undefined;
 
-    const resizeObserver =
-      // @ts-ignore
-      new ResizeObserver(
-        () =>
-          mappingViewParentRef.current &&
-          props.handleMappingViewResize(
-            mappingViewParentRef.current.clientHeight
-          )
-      );
+    const resizeObserver = new ResizeObserver(
+      () =>
+        mappingViewParentRef.current &&
+        props.handleMappingViewResize(mappingViewParentRef.current.clientHeight)
+    );
 
     resizeObserver.observe(mappingViewParentRef.current);
 
     return () => resizeObserver.disconnect();
   }, [mappingViewParentRef.current]);
 
-  // reposition suggestions box if it doesn't fit
+  // Reposition suggestions box if it doesn't fit
   function repositionSuggestionBox(): void {
     if (
       typeof props.automapperSuggestions === 'undefined' ||
@@ -214,7 +219,7 @@ export default function WBPlanViewMapper(
     const currentScrollTop = listOfMappings.current.scrollTop;
     const picklistPosition = customSelectElement.offsetTop;
 
-    // suggestions list fits on the screen. nothing to do
+    // Suggestions list fits on the screen. nothing to do
     if (
       picklistPosition - listOfMappingsPosition - automapperSuggestionsHeight >=
       0
@@ -230,7 +235,7 @@ export default function WBPlanViewMapper(
     const scrollPosition =
       picklistPosition - currentScrollTop - listOfMappingsPosition;
 
-    // hide suggestions box once its parent picklist becomes hidden
+    // Hide suggestions box once its parent picklist becomes hidden
     automapperSuggestions.style.visibility =
       scrollPosition > 0 ? 'visible' : 'hidden';
 
@@ -257,7 +262,7 @@ export default function WBPlanViewMapper(
             {
               '--min-height': `${minMappingViewHeight}px`,
               '--original-height': `${
-                props.refObject.current.mappingViewHeight || ''
+                props.refObject.current.mappingViewHeight ?? ''
               }px`,
             } as React.CSSProperties
           }
@@ -288,7 +293,7 @@ export default function WBPlanViewMapper(
               }
               handleMappingViewChange={
                 (!props.readonly &&
-                  props.handleChange.bind(null, 'mappingView')) ||
+                  props.handleChange.bind(undefined, 'mappingView')) ||
                 undefined
               }
               getMappedFields={getMappedFieldsBind}
@@ -303,16 +308,16 @@ export default function WBPlanViewMapper(
         onScroll={repositionSuggestionBox}
       >
         {props.lines.map(({ mappingPath, name, type, options }, index) => (
-          <MappingLine
+          <MappingLineComponent
             key={index}
             headerName={name}
             mappingType={type}
             readonly={props.readonly}
             isFocused={index === props.focusedLine}
-            handleFocus={props.handleFocus.bind(null, index)}
-            handleClearMapping={props.handleClearMapping.bind(null, index)}
+            handleFocus={props.handleFocus.bind(undefined, index)}
+            handleClearMapping={props.handleClearMapping.bind(undefined, index)}
             handleStaticHeaderChange={props.handleStaticHeaderChange.bind(
-              null,
+              undefined,
               index
             )}
             lineData={getMappingLineData({
@@ -321,10 +326,11 @@ export default function WBPlanViewMapper(
               generateLastRelationshipData: true,
               customSelectType: 'CLOSED_LIST',
               handleChange:
-                (!props.readonly && props.handleChange.bind(null, index)) ||
+                (!props.readonly &&
+                  props.handleChange.bind(undefined, index)) ||
                 undefined,
-              handleOpen: props.handleOpen.bind(null, index),
-              handleClose: props.handleClose.bind(null, index),
+              handleOpen: props.handleOpen.bind(undefined, index),
+              handleClose: props.handleClose.bind(undefined, index),
               handleAutomapperSuggestionSelection:
                 (!props.readonly &&
                   props.handleAutomapperSuggestionSelection) ||
@@ -348,7 +354,7 @@ export default function WBPlanViewMapper(
                         customSelectType="MAPPING_OPTION_LINE_LIST"
                         handleChange={
                           (!props.readonly &&
-                            ((matchBehavior) =>
+                            ((matchBehavior): void =>
                               props.handleChangeMatchBehaviorAction(
                                 index,
                                 matchBehavior as MatchBehaviors
@@ -406,7 +412,7 @@ export default function WBPlanViewMapper(
                         disabled={props.readonly}
                         onChange={
                           (!props.readonly &&
-                            ((event) =>
+                            ((event): void =>
                               props.handleToggleAllowNullsAction(
                                 index,
                                 event.target.checked
@@ -428,7 +434,7 @@ export default function WBPlanViewMapper(
                           disabled={props.readonly}
                           onChange={
                             (!props.readonly &&
-                              (() =>
+                              ((): void =>
                                 props.handleChangeDefaultValue(
                                   index,
                                   options.default === null ? '' : null
@@ -446,7 +452,7 @@ export default function WBPlanViewMapper(
                             disabled={props.readonly}
                             onChange={
                               (!props.readonly &&
-                                ((event) =>
+                                ((event): void =>
                                   props.handleChangeDefaultValue(
                                     index,
                                     event.target.value
