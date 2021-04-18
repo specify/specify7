@@ -275,7 +275,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
       {...props}
       customSelectOptionGroups={Object.fromEntries(
         Object.entries(fieldGroups)
-          .filter(([, groupFields]) => groupFields.length > 0)
+          .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
           .map(([groupName, groupFields]) => [
             groupName,
             {

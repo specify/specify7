@@ -20,7 +20,6 @@ export const MappingsControlPanel = React.memo(
     'MappingsControlPanel',
     ({
       showHiddenFields,
-      readonly,
       handleChange,
       mappingIsTemplated,
       /* HandleAddNewColumn, */
@@ -28,7 +27,6 @@ export const MappingsControlPanel = React.memo(
       handleToggleMappingIsTemplated,
     }: {
       readonly showHiddenFields: boolean;
-      readonly readonly: boolean;
       readonly handleChange?: () => void;
       readonly handleAddNewColumn?: () => void;
       readonly handleAddNewStaticColumn?: () => void;
@@ -41,7 +39,6 @@ export const MappingsControlPanel = React.memo(
             type="checkbox"
             checked={mappingIsTemplated}
             onChange={handleToggleMappingIsTemplated}
-            disabled={readonly}
           />
           Use this mapping as a template
         </label>

@@ -5,6 +5,7 @@
 'use strict';
 
 import L from 'leaflet';
+import $ from 'jquery';
 import 'leaflet/dist/leaflet.css';
 
 /* This code is needed to properly load the images in the Leaflet CSS */

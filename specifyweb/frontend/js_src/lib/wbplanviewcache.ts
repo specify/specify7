@@ -158,7 +158,7 @@ export function get<T>(
 
   // If cache version is specified, and it doesn't match, clear the record
   if (
-    typeof buckets[bucketName].records[cacheName].version === 'undefined' ||
+    typeof version !== 'undefined' &&
     buckets[bucketName].records[cacheName].version !== version
   ) {
     delete buckets[bucketName].records[cacheName];

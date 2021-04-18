@@ -475,7 +475,6 @@ export default function WBPlanViewMapper(
       <MappingsControlPanel
         showHiddenFields={props.showHiddenFields}
         handleChange={props.handleToggleHiddenFields}
-        readonly={props.readonly}
         handleAddNewColumn={
           (!props.readonly && props.handleAddNewColumn) || undefined
         }

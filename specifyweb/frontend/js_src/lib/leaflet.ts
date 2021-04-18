@@ -205,17 +205,16 @@ export function displayLocalityOnTheMap({
       isFirstVector = false;
     } else polygonBoundaries.push(vector);
 
-    if (typeof markerClickCallback === 'string')
-      vector.bindPopup(markerClickCallback);
-    else if (typeof localityname === 'string' && localityname.length > 0)
-      vector.bindPopup(localityname);
-    else if (typeof markerClickCallback === 'function')
+    const markerName =
+      typeof markerClickCallback === 'string'
+        ? markerClickCallback
+        : typeof localityname === 'string' && localityname.length > 0
+        ? localityname
+        : undefined;
+
+    if (typeof markerName !== 'undefined') vector.bindPopup(markerName);
+    if (typeof markerClickCallback === 'function')
       vector.on('click', markerClickCallback);
-    else if (
-      typeof markerClickCallback === 'undefined' &&
-      typeof localityname !== 'undefined'
-    )
-      vector.bindPopup(localityname);
   });
 
   return polygonBoundaries;

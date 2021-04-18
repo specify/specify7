@@ -321,6 +321,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   }),
   ToggleMappingIsTemplatedAction: ({ state }) => ({
     ...mappingState(state),
+    // TODO: test this in read-only mode
     mappingIsTemplated: !mappingState(state).mappingIsTemplated,
   }),
   ValidationAction: ({ state }) => validate(mappingState(state)),
