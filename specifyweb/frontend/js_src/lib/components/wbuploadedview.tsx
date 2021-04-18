@@ -25,7 +25,7 @@ import type {
 import { parseUploadResults } from '../wbuploadedparser';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { Dataset, R } from './wbplanview';
+import type { Dataset, IR, R } from './wbplanview';
 
 interface WBUploadedViewConstructorProps {
   dataset: Dataset;
@@ -54,7 +54,7 @@ interface UploadedTableRowBaseProps {
   readonly getRecordViewUrl?: (rowId: number) => string;
 }
 
-type RecordsVisibilityState = Readonly<R<boolean>>;
+type RecordsVisibilityState = IR<boolean>;
 
 interface WBUploadedState extends State<'WBUploadedState'> {
   readonly tableRecordsVisibilityState: RecordsVisibilityState;
@@ -89,7 +89,7 @@ type WBUploadedActions =
   | ToggleTableRecordsVisibilityAction
   | CellClickedAction;
 
-let ranks: R<string[]>;
+let ranks: IR<string[]>;
 const fetchDataModelPromise: Promise<void> = fetchDataModel();
 
 function UploadedTableRowsHeaderProps({
@@ -503,7 +503,7 @@ const reducer = generateReducer<WBUploadedState, WBUploadedActions>({
   },
 });
 
-const generateInitialVisibilityState = <T,>(sourceDictionary: R<T>) =>
+const generateInitialVisibilityState = <T,>(sourceDictionary: IR<T>) =>
   Object.fromEntries(
     Object.keys(sourceDictionary).map((keyName) => [keyName, true])
   );

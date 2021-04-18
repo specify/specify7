@@ -5,7 +5,7 @@
 
 'use string';
 
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import icons from './icons';
 import type { Schema } from './legacytypes';
 import schema from './schema';
@@ -145,7 +145,7 @@ interface UploadResult {
      * Maps the names of -to-many relationships of the table to an
      * array of upload results for each
      */
-    toMany: R<UploadResult[]>;
+    toMany: IR<UploadResult[]>;
   };
 }
 
@@ -198,7 +198,7 @@ export interface UploadedRowsTable {
   readonly rowsCount?: number;
 }
 
-export type UploadedRows = Readonly<R<UploadedRowsTable>>;
+export type UploadedRows = Readonly<IR<UploadedRowsTable>>;
 
 export interface UploadedPicklistItem {
   readonly picklistValue: string;
@@ -341,7 +341,7 @@ function handleUploadResult(
 function formatListOfRows(
   listOfRows: UploadedRowSorted[],
   data: string[][],
-  mappedRanks: R<string>,
+  mappedRanks: IR<string>,
   matchedRecordsNames: Record<number, string>,
   headers: string[],
   treeRanks: string[]
@@ -391,8 +391,8 @@ function formatListOfRows(
  */
 const getMinNode = (
   rows: [number, UploadedTreeRank][],
-  treeRanks: R<string[]>,
-  rowsObject: R<UploadedTreeRank | undefined>,
+  treeRanks: IR<string[]>,
+  rowsObject: IR<UploadedTreeRank | undefined>,
   tableName: string
 ): number =>
   rows.reduce(
@@ -503,7 +503,7 @@ const emptyCell = (columnIndex: number): UploadedColumn => ({
  *
  */
 const compileRows = (
-  mappedRanks: R<string>,
+  mappedRanks: IR<string>,
   ranksToShow: string[],
   headers: string[],
   spacedOutTree: SpacedOutTree,
@@ -593,7 +593,7 @@ export function parseUploadResults(
   uploadResults: UploadResults,
   headers: string[],
   data: string[][],
-  treeRanks: R<string[]>,
+  treeRanks: IR<string[]>,
   plan: UploadPlan | null
 ): [UploadedRows, UploadedPicklistItems] {
   if (plan === null) throw new Error('Upload plan is invalid');
@@ -625,11 +625,11 @@ export function parseUploadResults(
         true
       );
     })
-    .reduce(deepMergeObject, {}) as R<R<string>>;
+    .reduce(deepMergeObject, {}) as IR<IR<string>>;
 
-  const uploadedRows: R<UploadedRowSorted[]> = {};
+  const uploadedRows: IR<UploadedRowSorted[]> = {};
   const uploadedPicklistItems: UploadedPicklistItems = {};
-  const matchedRecordsNames: R<Record<number, string>> = {};
+  const matchedRecordsNames: IR<Record<number, string>> = {};
 
   uploadResults.forEach(
     handleUploadResult.bind(
@@ -641,7 +641,7 @@ export function parseUploadResults(
     )
   );
 
-  const treeTables: R<
+  const treeTables: IR<
     Omit<UploadedRowsTable, 'getRecordViewUrl' | 'tableLabel' | 'tableIcon'>
   > = Object.fromEntries(
     Object.entries(uploadedRows)

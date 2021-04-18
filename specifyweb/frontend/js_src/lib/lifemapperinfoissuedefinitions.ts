@@ -1,7 +1,7 @@
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 
 export const issueDefinitions: Readonly<
-  Record<'common' | 'gbif' | 'idigbio', R<string>>
+  Record<'common' | 'gbif' | 'idigbio', IR<string>>
 > = {
   common: {
     HAS_MULTIPLE_RECORDS:

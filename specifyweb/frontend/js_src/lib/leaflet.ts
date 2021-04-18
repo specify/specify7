@@ -6,7 +6,7 @@
 'use strict';
 
 import $ from 'jquery';
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import { coMapTileServers, leafletTileServers } from './leafletconfig';
 import L from './leafletextend';
 import type { LocalityData } from './leafletutils';
@@ -227,7 +227,7 @@ export function showCOMap(
     layerLabel: string;
     tileLayer: {
       mapUrl: string;
-      options: R<unknown>;
+      options: IR<unknown>;
     };
   }[],
   details: string | undefined = undefined

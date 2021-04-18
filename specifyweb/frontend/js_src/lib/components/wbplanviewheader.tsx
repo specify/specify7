@@ -1,5 +1,5 @@
 import React from 'react';
-import type { R } from './wbplanview';
+import type { IR } from './wbplanview';
 import type { WBPlanViewStates } from './wbplanviewstatereducer';
 
 export function WBPlanViewHeader({
@@ -30,7 +30,7 @@ export function HeaderWrapper(props: {
   readonly header: JSX.Element;
   readonly stateName: WBPlanViewStates['type'];
   readonly handleClick?: () => void;
-  readonly extraContainerProps?: R<unknown>;
+  readonly extraContainerProps?: IR<unknown>;
 }): JSX.Element {
   return (
     <div

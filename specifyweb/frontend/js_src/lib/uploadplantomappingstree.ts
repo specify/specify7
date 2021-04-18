@@ -1,4 +1,4 @@
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import { defaultLineOptions } from './wbplanviewlinesgetter';
 import { formatReferenceItem, formatTreeRank } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
@@ -19,22 +19,22 @@ type ToMany = Omit<UploadTable, 'toMany'>;
 type FieldGroupType = 'wbcols' | 'static' | 'toOne' | 'toMany';
 
 type FieldGroup<GROUP_NAME extends FieldGroupType> = GROUP_NAME extends 'wbcols'
-  ? R<ColumnDef>
+  ? IR<ColumnDef>
   : GROUP_NAME extends 'static'
-  ? R<string | boolean | number>
+  ? IR<string | boolean | number>
   : GROUP_NAME extends 'toOne'
   ? Uploadable
   : ToMany;
 
 interface UploadTable {
-  wbcols: R<ColumnDef>;
-  static: R<string | boolean | number>;
+  wbcols: IR<ColumnDef>;
+  static: IR<string | boolean | number>;
   toOne: Uploadable;
   toMany: ToMany;
 }
 
 interface TreeRecord {
-  ranks: R<string | { treeNodeCols: R<ColumnDef> }>;
+  ranks: IR<string | { treeNodeCols: IR<ColumnDef> }>;
 }
 
 type UploadTableVariety =
@@ -68,10 +68,10 @@ const excludeUnknownMatchingOptions = (
 
 const uploadPlanProcessingFunctions = (
   headers: Readonly<string[]>,
-  mustMatchPreferences: R<boolean>,
+  mustMatchPreferences: IR<boolean>,
   mappingPath: Readonly<string[]>
 ): Readonly<
-  R<([key, value]: [string, any]) => [key: string, value: unknown]>
+  IR<([key, value]: [string, any]) => [key: string, value: unknown]>
 > =>
   ({
     wbcols: ([key, value]: [string, string | ColumnDef]): [
@@ -124,7 +124,7 @@ const uploadPlanProcessingFunctions = (
   } as const);
 
 const handleTreeRankFields = (
-  treeRankFields: R<ColumnDef>,
+  treeRankFields: IR<ColumnDef>,
   headers: Readonly<string[]>
 ) =>
   Object.fromEntries(
@@ -176,7 +176,7 @@ function handleTreeRecordTypes(
 const handleUploadTableTable = (
   uploadPlan: UploadTable,
   headers: Readonly<string[]>,
-  mustMatchPreferences: R<boolean>,
+  mustMatchPreferences: IR<boolean>,
   mappingPath: string[]
 ) =>
   Object.fromEntries(
@@ -229,7 +229,7 @@ function handleUploadableTypes(
 const handleUploadable = (
   uploadPlan: Uploadable,
   headers: Readonly<string[]>,
-  mustMatchPreferences: R<boolean>,
+  mustMatchPreferences: IR<boolean>,
   mappingPath: string[]
 ): MappingsTree =>
   'treeRecord' in uploadPlan || 'mustMatchTreeRecord' in uploadPlan
@@ -257,14 +257,14 @@ export function uploadPlanToMappingsTree(
 ): {
   baseTableName: string;
   mappingsTree: MappingsTree;
-  mustMatchPreferences: R<boolean>;
+  mustMatchPreferences: IR<boolean>;
 } {
   if (typeof uploadPlan.baseTableName === 'undefined')
     throw new Error(
       'Upload plan should contain `baseTableName` as a root node'
     );
 
-  const mustMatchPreferences: R<boolean> = {};
+  const mustMatchPreferences: IR<boolean> = {};
 
   return {
     baseTableName: uploadPlan.baseTableName,

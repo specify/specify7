@@ -20,7 +20,7 @@ import ResourceView from '../resourceview';
 import schema from '../schema';
 import { stateReducer } from './lifemapperinfostate';
 import createBackboneView from './reactbackboneextend';
-import type { R } from './wbplanview';
+import type { IR } from './wbplanview';
 import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
@@ -70,7 +70,7 @@ function LifemapperInfo({
         readonly records: {
           readonly provider: string;
           readonly count: number;
-          readonly records: [] | [R<unknown>];
+          readonly records: [] | [IR<unknown>];
         }[];
       }) =>
         dispatch({

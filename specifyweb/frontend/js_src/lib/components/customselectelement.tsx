@@ -10,7 +10,7 @@
 import React from 'react';
 import icons from '../icons';
 import { namedComponent } from '../statemanagement';
-import type { R } from './wbplanview';
+import type { IR, R } from './wbplanview';
 
 export type CustomSelectType =
   | 'OPENED_LIST'
@@ -122,7 +122,7 @@ interface CustomSelectElementOptionGroupProps {
   ) => void;
 }
 
-type CustomSelectElementOptionGroups = R<CustomSelectElementOptionGroupProps>;
+type CustomSelectElementOptionGroups = IR<CustomSelectElementOptionGroupProps>;
 
 interface CustomSelectElementPropsBase {
   // The label to use for the element

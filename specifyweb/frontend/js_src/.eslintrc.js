@@ -9,5 +9,7 @@ module.exports = {
     node: true,
   },
   extends: ['@maxxxxxdlp/eslint-config'],
-  rules: {},
+  rules: {
+    '@typescript-eslint/no-empty-interface': 'off',
+  },
 };

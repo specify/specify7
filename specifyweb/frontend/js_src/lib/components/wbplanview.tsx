@@ -31,7 +31,7 @@ export type Dataset = {
   columns: string[];
   rows: string[][];
   uploadplan: UploadPlan | null;
-  uploaderstatus: R<unknown> | null;
+  uploaderstatus: IR<unknown> | null;
   uploadresult: {
     success: boolean;
     timestamp: string;
@@ -46,7 +46,10 @@ export interface SpecifyResource {
   readonly save: () => void;
 }
 
+// Record
 export type R<T> = Record<string, T>;
+// Immutable record
+export type IR<T> = Readonly<R<T>>;
 
 export interface WBPlanViewProps
   extends WBPlanViewWrapperProps,

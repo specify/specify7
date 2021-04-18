@@ -8,7 +8,7 @@
 
 'use strict';
 
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import domain from './domain';
 import type {
@@ -66,11 +66,11 @@ type DataModelTable = Readonly<DataModelTableWritable>;
 
 type DataModelTablesWritable = R<DataModelTableWritable>;
 
-export type DataModelTables = Readonly<Record<string, DataModelTable>>;
+export type DataModelTables = IR<DataModelTable>;
 
 type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
 
-type DataModelRanksWritable = Record<string, Readonly<R<boolean>>>;
+type DataModelRanksWritable = Record<string, R<boolean>>;
 
 export type DataModelRanks = Readonly<DataModelRanksWritable>;
 
@@ -80,16 +80,15 @@ type DataModelListOfTablesWritable = R<{
   isHidden: boolean;
 }>;
 
-// A dictionary like tableName==>tableFriendlyName
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 
 const fetchingParameters: {
   readonly requiredFieldsToHide: Readonly<string[]>;
   readonly tablesToRemove: Readonly<string[]>;
   readonly tableKeywordsToExclude: Readonly<string[]>;
-  readonly requiredFieldsToMakeOptional: R<Readonly<string[]>>;
+  readonly requiredFieldsToMakeOptional: IR<Readonly<string[]>>;
   readonly commonBaseTables: Readonly<string[]>;
-  readonly fieldsToRemove: R<Readonly<string[]>>;
+  readonly fieldsToRemove: IR<Readonly<string[]>>;
 } = {
   /*
    * All required fields are not hidden, except for these, which are made
@@ -229,7 +228,7 @@ const knownRelationshipTypes: Set<string> = new Set([
   'many-to-one',
   'many-to-many',
 ]);
-const aliasRelationshipTypes: R<RelationshipType> = {
+const aliasRelationshipTypes: IR<RelationshipType> = {
   'zero-to-one': 'one-to-many',
 };
 
@@ -452,7 +451,7 @@ export default async function (): Promise<void> {
 
   await Promise.all(fetchRanksQueue)
     .then((resolved) => {
-      const rootRanks: R<string> = Object.fromEntries(
+      const rootRanks: IR<string> = Object.fromEntries(
         resolved.map(([tableName], index) => [
           tableName,
           resolved[index][1].shift()?.[0] ?? '',
@@ -482,7 +481,7 @@ export default async function (): Promise<void> {
         listOfBaseTables
       );
       dataModelStorage.ranks = cacheSet<DataModelRanks>('ranks', ranks);
-      dataModelStorage.rootRanks = cacheSet<R<string>>('rootRanks', rootRanks);
+      dataModelStorage.rootRanks = cacheSet<IR<string>>('rootRanks', rootRanks);
     })
     .catch((error) => {
       throw error;

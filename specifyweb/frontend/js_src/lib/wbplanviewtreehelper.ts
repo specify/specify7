@@ -6,7 +6,7 @@
 
 'use strict';
 
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import type {
   FullMappingPath,
   MappingPath,
@@ -16,7 +16,7 @@ import type { ColumnOptions } from './uploadplantomappingstree';
 
 interface NestedRecord<T> extends R<T | NestedRecord<T>> {}
 
-export type MappingsTreeNode = Record<MappingType, R<ColumnOptions>>;
+export type MappingsTreeNode = Record<MappingType, IR<ColumnOptions>>;
 
 export type MappingsTree = NestedRecord<MappingsTreeNode>;
 
@@ -35,7 +35,8 @@ export function traverseTree(
    * record type we can't discriminate it from NestedRecord<T> at
    * runtime :(
    */
-  return traverseTree(next as MappingsTree, path.slice(1));
+  // @ts-expect-error
+  return traverseTree(next, path.slice(1));
 }
 
 type FlatTree = NestedRecord<string>;
@@ -50,7 +51,7 @@ export const deepMergeObject = (
   target: any,
   // Tree that is used as a source
   source: object
-): R<unknown> =>
+): IR<unknown> =>
   /*
    * For example, if target is:
    * 	Accession
@@ -220,7 +221,8 @@ export const mappingsTreeToArrayOfMappings = (
         result.push([
           ...(path as [...string[], MappingType]),
           treeNodeName,
-          (treeNode as unknown) as ColumnOptions,
+          // @ts-expect-error
+          treeNode as ColumnOptions,
         ]);
 
       return result;

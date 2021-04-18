@@ -8,7 +8,7 @@
 
 'use strict';
 
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import type {
   ColumnDef,
   TreeRecordVariety,
@@ -34,7 +34,7 @@ interface UploadPlanNode
 function mappingsTreeToUploadPlanTable(
   tableData: object,
   tableName: string | undefined,
-  mustMatchPreferences: R<boolean>,
+  mustMatchPreferences: IR<boolean>,
   wrapIt = true,
   isRoot = false
 ) {
@@ -138,7 +138,7 @@ function handleRelationshipField(
     toOne: UploadPlanNode;
     toMany?: UploadPlanNode | undefined;
   },
-  mustMatchPreferences: R<boolean>
+  mustMatchPreferences: IR<boolean>
 ): void {
   const mappingTable = field.tableName;
   if (typeof mappingTable === 'undefined')
@@ -178,8 +178,8 @@ export const extractHeaderNameFromHeaderStructure = (
   )[0];
 
 const rankMappedFieldsToTreeRecordRanks = (
-  rankMappedFields: R<MappingsTreeNode>
-): R<ColumnDef> =>
+  rankMappedFields: IR<MappingsTreeNode>
+): IR<ColumnDef> =>
   Object.fromEntries(
     Object.entries(
       rankMappedFields
@@ -191,13 +191,13 @@ const rankMappedFieldsToTreeRecordRanks = (
 
 const mappingsTreeToUploadPlanTree = (
   mappingsTree: MappingsTree
-): R<string | { treeNodeCols: R<ColumnDef> }> =>
+): IR<string | { treeNodeCols: IR<ColumnDef> }> =>
   Object.fromEntries(
     Object.entries(mappingsTree).map(([fullRankName, rankMappedFields]) => [
       getNameFromTreeRankName(fullRankName),
       {
         treeNodeCols: rankMappedFieldsToTreeRecordRanks(
-          rankMappedFields as R<MappingsTreeNode>
+          rankMappedFields as IR<MappingsTreeNode>
         ),
       },
     ])
@@ -215,7 +215,7 @@ const mappingsTreeToUploadPlanTree = (
 const mappingsTreeToUploadTable = (
   mappingsTree: Readonly<MappingsTree>,
   tableName: string,
-  mustMatchPreferences: R<boolean>,
+  mustMatchPreferences: IR<boolean>,
   isRoot = false
 ): Uploadable =>
   tableIsTree(tableName)
@@ -242,7 +242,7 @@ const mappingsTreeToUploadTable = (
 export const mappingsTreeToUploadPlan = (
   baseTableName: string,
   mappingsTree: Readonly<MappingsTree>,
-  mustMatchPreferences: R<boolean>
+  mustMatchPreferences: IR<boolean>
 ): UploadPlan => ({
   baseTableName,
   uploadable: mappingsTreeToUploadTable(

@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom';
 import Backbone from '../backbone';
 import app from '../specifyapp.js';
 import ErrorBoundary from './errorboundary';
-import type { R } from './wbplanview';
+import type { IR } from './wbplanview';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
   el: HTMLElement;
@@ -53,7 +53,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   readonly getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => COMPONENT_PROPS;
-}): R<unknown> =>
+}): IR<unknown> =>
   Backbone.View.extend({
     __name__: moduleName,
     className,

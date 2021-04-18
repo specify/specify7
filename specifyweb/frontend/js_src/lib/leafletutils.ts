@@ -6,7 +6,7 @@
 
 'use strict';
 
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import latlongutils from './latlongutils';
 import { localityColumnsToSearchFor } from './leafletconfig';
 
@@ -45,7 +45,7 @@ type LocalityColumnIndexes = Record<LocalityField, number>;
 
 const cellIsValid = (
   row: Readonly<string[]>,
-  columnIndexes: R<number>,
+  columnIndexes: IR<number>,
   columnName: string
 ): boolean =>
   typeof columnIndexes[columnName] !== 'undefined' &&
@@ -54,7 +54,7 @@ const cellIsValid = (
 
 function formatCoordinate(
   row: Readonly<string[]>,
-  columnIndexes: R<number>,
+  columnIndexes: IR<number>,
   columnName: string
 ): number {
   if (row[columnIndexes[columnName]] === '0') return 0;
@@ -70,7 +70,7 @@ function formatCoordinate(
 
 export function getLocalityCoordinate(
   row: Readonly<string[]>,
-  columnIndexes: Readonly<R<number>>,
+  columnIndexes: IR<number>,
   acceptPolygons = false
 ): LocalityData | false {
   const cellIsValidCurried = (columnName: string): boolean =>

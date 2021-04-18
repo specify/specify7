@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import type {
   AutomapperScope,
   MappingPath,
@@ -75,7 +75,7 @@ interface AutoMapperDefinitions {
    *   Table Synonyms, it's `synonyms` and matches would also
    *   be checked in the first pass
    */
-  tableSynonyms: R<
+  tableSynonyms: IR<
     /*
      * TableName (case-insensitive)
      * Described earlier in the file
@@ -87,7 +87,7 @@ interface AutoMapperDefinitions {
    * Rank synonyms are used to when the same tree rank can have
    * different name depending on the discipline
    */
-  rankSynonyms: R<
+  rankSynonyms: IR<
     // TableName (case-insensitive)
     {
       rankName: string;
@@ -104,9 +104,9 @@ interface AutoMapperDefinitions {
    * Don't match list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
-  dontMatch: R<
+  dontMatch: IR<
     // TableName (case-insensitive)
-    R<
+    IR<
       /*
        * FieldName (case-insensitive)
        * Defined in wbplanviewmapper.tsx
@@ -124,7 +124,7 @@ interface AutoMapperDefinitions {
    * Shortcut is followed only if header matched the comparisons
    *   and a path to tableName from baseTableName
    */
-  shortcuts: R<
+  shortcuts: IR<
     // TableName (case-insensitive)
     Partial<
       Record<
@@ -152,9 +152,9 @@ interface AutoMapperDefinitions {
    * Synonym is used only if header matched the comparisons and
    *   and there exists a path from tableName to baseTableName
    */
-  synonyms: R<
+  synonyms: IR<
     // TableName (case-insensitive)
-    R<
+    IR<
       // FieldName (case-insensitive)
       Partial<
         Record<

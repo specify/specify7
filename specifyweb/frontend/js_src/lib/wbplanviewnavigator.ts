@@ -12,7 +12,7 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -436,7 +436,7 @@ export function getMappingLineData({
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
   readonly getMappedFields?: GetMappedFieldsBind;
   readonly automapperSuggestions?: AutomapperSuggestion[];
-  readonly mappingOptionsMenuGenerator?: () => R<HtmlGeneratorFieldData>;
+  readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
 }): MappingElementProps[] {
   const internalState: {
     mappingPathPosition: number;

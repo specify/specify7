@@ -14,7 +14,7 @@ import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import type { R, WBPlanViewProps } from './wbplanview';
+import type { IR, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import { HeaderWrapper, WBPlanViewHeader } from './wbplanviewheader';
 import type {
@@ -50,7 +50,7 @@ export interface MappingState
   readonly changesMade: boolean;
   readonly mappingsAreValidated: boolean;
   readonly displayMatchingOptionsDialog: boolean;
-  readonly mustMatchPreferences: R<boolean>;
+  readonly mustMatchPreferences: IR<boolean>;
 }
 
 export type WBPlanViewStates =

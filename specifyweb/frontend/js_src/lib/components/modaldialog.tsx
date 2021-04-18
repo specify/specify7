@@ -12,7 +12,7 @@ import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { namedComponent } from '../statemanagement';
-import type { R } from './wbplanview';
+import type { IR } from './wbplanview';
 
 interface ModalDialogBaseProps {
   readonly children: JSX.Element | JSX.Element[] | string;
@@ -52,7 +52,7 @@ export const ModalDialog = React.memo(
     }: ModalDialogBaseProps & {
       readonly onLoadCallback?: (dialog: JQuery) => void | (() => void);
       readonly onCloseCallback?: () => void;
-      readonly properties?: Readonly<R<unknown>>;
+      readonly properties?: IR<unknown>;
     }) => {
       const dialogRef = React.useRef<HTMLDivElement>(null);
       const [$dialog, setDialog] = React.useState<JQuery | undefined>();

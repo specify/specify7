@@ -1,4 +1,4 @@
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import type { OccurrenceCountRecord } from './lifemapperinforeducer';
 
 export const fetchLocalScientificName = async (
@@ -70,7 +70,7 @@ export type FullAggregatorInfo = AggregatorInfo & {
 
 export const extractBadgeInfo: Record<
   AggregatorName,
-  (occurrence: R<any>) => AggregatorInfo
+  (occurrence: IR<any>) => AggregatorInfo
 > = {
   gbif: (occurrence) => ({
     listOfIssues: occurrence.issues,

@@ -1,6 +1,6 @@
 import type { AutoMapperResults } from './automapper';
 import Automapper from './automapper';
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import type { ListOfHeaders, MappingLine } from './components/wbplanviewmapper';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
@@ -67,7 +67,7 @@ export function getLinesFromUploadPlan(
 ): {
   readonly baseTableName: string;
   readonly lines: MappingLine[];
-  readonly mustMatchPreferences: R<boolean>;
+  readonly mustMatchPreferences: IR<boolean>;
 } {
   const lines = getLinesFromHeaders({
     headers,

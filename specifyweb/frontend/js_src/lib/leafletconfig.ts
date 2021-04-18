@@ -6,12 +6,12 @@
 'use strict';
 
 import L from 'leaflet';
-import type { R } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import type { LocalityField } from './leafletutils';
 
 export const leafletTileServers: Record<
   'baseMaps' | 'overlays',
-  R<L.TileLayer>
+  IR<L.TileLayer>
 > = {
   baseMaps: {
     'OpenStreetMap Standard': L.tileLayer(
@@ -235,7 +235,7 @@ export const leafletTileServers: Record<
       }
     ),
   },
-};
+} as const;
 
 export const coMapTileServers: {
   transparent: boolean;
