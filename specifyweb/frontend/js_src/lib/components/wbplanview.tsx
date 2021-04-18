@@ -1,8 +1,8 @@
 /*
-*
-* Workbench plan mapper
-*
-* */
+ *
+ * Workbench plan mapper
+ *
+ * */
 
 'use strict';
 
@@ -15,7 +15,8 @@ import {
   RefActions,
   refInitialState,
   refObjectDispatch,
-  RefStates, refStatesMapper,
+  RefStates,
+  refStatesMapper,
 } from '../wbplanviewrefreducer';
 import {
   getInitialWBPlanViewState,
@@ -24,54 +25,53 @@ import {
 
 // general definitions
 export type Dataset = {
-  id: number,
-  name: string,
-  columns: string[],
-  rows: string[][],
-  uploadplan: UploadPlan | null,
-  uploaderstatus: R<unknown> | null,
+  id: number;
+  name: string;
+  columns: string[];
+  rows: string[][];
+  uploadplan: UploadPlan | null;
+  uploaderstatus: R<unknown> | null;
   uploadresult: {
-    success: boolean,
-    timestamp: string,
-  } | null,
-}
+    success: boolean;
+    timestamp: string;
+  } | null;
+};
 
 export interface SpecifyResource {
   readonly id: number;
-  readonly get: (query: string) => SpecifyResource | any,
-  readonly rget: (query: string) =>
-    JqueryPromise<SpecifyResource | any>,
-  readonly set: (query: string, value: any) => void,
-  readonly save: () => void,
+  readonly get: (query: string) => SpecifyResource | any;
+  readonly rget: (query: string) => JqueryPromise<SpecifyResource | any>;
+  readonly set: (query: string, value: any) => void;
+  readonly save: () => void;
 }
 
 export type R<T> = Record<string, T>;
 
-
-export interface WBPlanViewProps extends WBPlanViewWrapperProps,
-  PublicWBPlanViewProps {
-  readonly uploadPlan: UploadPlan | null,
-  readonly headers: string[],
-  readonly setUnloadProtect: () => void,
-  readonly readonly: boolean,
+export interface WBPlanViewProps
+  extends WBPlanViewWrapperProps,
+    PublicWBPlanViewProps {
+  readonly uploadPlan: UploadPlan | null;
+  readonly headers: string[];
+  readonly setUnloadProtect: () => void;
+  readonly readonly: boolean;
 }
 
 export interface PartialWBPlanViewProps {
-  readonly removeUnloadProtect: () => void,
+  readonly removeUnloadProtect: () => void;
 }
 
-export interface WBPlanViewWrapperProps extends PartialWBPlanViewProps,
-  PublicWBPlanViewProps {
-  mappingIsTemplated: boolean,
-  readonly setUnloadProtect: () => void,
+export interface WBPlanViewWrapperProps
+  extends PartialWBPlanViewProps,
+    PublicWBPlanViewProps {
+  mappingIsTemplated: boolean;
+  readonly setUnloadProtect: () => void;
 }
 
 export interface PublicWBPlanViewProps {
-  dataset: Dataset,
+  dataset: Dataset;
 }
 
-export function WBPlanView(props: WBPlanViewProps):JSX.Element {
-
+export function WBPlanView(props: WBPlanViewProps): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
     {
@@ -79,7 +79,7 @@ export function WBPlanView(props: WBPlanViewProps):JSX.Element {
       headers: props.headers,
       mappingIsTemplated: props.mappingIsTemplated,
     } as OpenMappingScreenAction,
-    getInitialWBPlanViewState,
+    getInitialWBPlanViewState
   );
 
   // `refObject` is like `state`, but does not cause re-render on change
@@ -97,10 +97,9 @@ export function WBPlanView(props: WBPlanViewProps):JSX.Element {
 
   // reset refObject on state change
   if (
-    refObject.current.type !== (
-      // @ts-ignore
-      refStatesMapper[state.type] ?? 'RefUndefinedState'
-    )
+    refObject.current.type !==
+    // @ts-ignore
+    (refStatesMapper[state.type] ?? 'RefUndefinedState')
   )
     refObjectDispatchCurried({
       type: 'RefChangeStateAction',
@@ -108,9 +107,7 @@ export function WBPlanView(props: WBPlanViewProps):JSX.Element {
 
   // set/unset unload protect
   React.useEffect(() => {
-    const changesMade = 'changesMade' in state ?
-      state.changesMade :
-      false;
+    const changesMade = 'changesMade' in state ? state.changesMade : false;
 
     if (
       state.type === 'LoadingState' ||
@@ -126,32 +123,24 @@ export function WBPlanView(props: WBPlanViewProps):JSX.Element {
       refObjectDispatchCurried({
         type: 'RefSetUnloadProtectAction',
       });
-
-  }, [
-    'changesMade' in state ?
-      state.changesMade :
-      false,
-  ]);
+  }, ['changesMade' in state ? state.changesMade : false]);
 
   // wait for automapper suggestions to fetch
   React.useEffect(() => {
+    if (!('automapperSuggestionsPromise' in state)) return;
 
-    if (!(
-      'automapperSuggestionsPromise' in state
-    ))
-      return;
-
-    state.automapperSuggestionsPromise?.then(automapperSuggestions =>
-      dispatch({
-        type: 'AutomapperSuggestionsLoadedAction',
-        automapperSuggestions,
-      }),
-    ).catch(console.error);
-
+    state.automapperSuggestionsPromise
+      ?.then((automapperSuggestions) =>
+        dispatch({
+          type: 'AutomapperSuggestionsLoadedAction',
+          automapperSuggestions,
+        })
+      )
+      .catch(console.error);
   }, [
-    'automapperSuggestionsPromise' in state ?
-      state.automapperSuggestionsPromise :
-      undefined,
+    'automapperSuggestionsPromise' in state
+      ? state.automapperSuggestionsPromise
+      : undefined,
   ]);
 
   return stateReducer(<i />, {
@@ -161,5 +150,4 @@ export function WBPlanView(props: WBPlanViewProps):JSX.Element {
     refObject,
     refObjectDispatch: refObjectDispatchCurried,
   });
-
 }

@@ -10,86 +10,70 @@ import {
   WBPlanViewWrapperProps,
 } from './wbplanview';
 
-
 const schemaFetchedPromise = fetchDataModel();
 
-
 function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
-
-  const [schemaLoaded, setSchemaLoaded] =
-    React.useState<boolean>(
-      typeof dataModelStorage.tables !== 'undefined',
-    );
+  const [schemaLoaded, setSchemaLoaded] = React.useState<boolean>(
+    typeof dataModelStorage.tables !== 'undefined'
+  );
 
   React.useEffect(() => {
-    if (schemaLoaded)
-      return;
+    if (schemaLoaded) return;
 
-    schemaFetchedPromise.then(() =>
-      setSchemaLoaded(true),
-    ).catch(error => {
-      throw error;
-    });
-
+    schemaFetchedPromise
+      .then(() => setSchemaLoaded(true))
+      .catch((error) => {
+        throw error;
+      });
   }, [schemaLoaded]);
 
-  const uploadPlan = props.dataset.uploadplan ?
-    props.dataset.uploadplan :
-    null;
-  return (
-    schemaLoaded ?
-      <WBPlanView
-        {...props}
-        uploadPlan={uploadPlan}
-        headers={props.dataset.columns}
-        readonly={
-          (
-            props.dataset.uploadresult &&
-            props.dataset.uploadresult.success
-          ) || false
-        }
-      />
-      : <LoadingScreen />
+  const uploadPlan = props.dataset.uploadplan ? props.dataset.uploadplan : null;
+  return schemaLoaded ? (
+    <WBPlanView
+      {...props}
+      uploadPlan={uploadPlan}
+      headers={props.dataset.columns}
+      readonly={
+        (props.dataset.uploadresult && props.dataset.uploadresult.success) ||
+        false
+      }
+    />
+  ) : (
+    <LoadingScreen />
   );
 }
 
-interface WBPlanViewBackboneProps extends WBPlanViewWrapperProps,
-  PublicWBPlanViewProps {
-  header: HTMLElement,
-  handleResize: () => void,
+interface WBPlanViewBackboneProps
+  extends WBPlanViewWrapperProps,
+    PublicWBPlanViewProps {
+  header: HTMLElement;
+  handleResize: () => void;
 }
 
 const setUnloadProtect = (self: WBPlanViewBackboneProps) =>
-  navigation.addUnloadProtect(
-    self,
-    'This mapping has not been saved.',
-  );
+  navigation.addUnloadProtect(self, 'This mapping has not been saved.');
 
 const removeUnloadProtect = (self: WBPlanViewBackboneProps) =>
   navigation.removeUnloadProtect(self);
 
-export default createBackboneView<PublicWBPlanViewProps,
+export default createBackboneView<
+  PublicWBPlanViewProps,
   WBPlanViewBackboneProps,
-  WBPlanViewWrapperProps>
-({
+  WBPlanViewWrapperProps
+>({
   moduleName: 'WBPlanView',
-  title: (self) =>
-    self.dataset.name,
+  title: (self) => self.dataset.name,
   className: 'wb-plan-view',
-  initialize(
-    self,
-    {dataset},
-  ) {
+  initialize(self, { dataset }) {
     self.dataset = dataset;
     self.mappingIsTemplated = false;
     const header = document.getElementById('site-header');
-    if (header === null)
-      throw new Error(`Can't find site's header`);
+    if (header === null) throw new Error(`Can't find site's header`);
     self.header = header;
     self.handleResize = () =>
       self.el.style.setProperty(
         '--menu-size',
-        `${Math.ceil(self.header.clientHeight)}px`,
+        `${Math.ceil(self.header.clientHeight)}px`
       );
   },
   renderPre(self) {
@@ -104,14 +88,10 @@ export default createBackboneView<PublicWBPlanViewProps,
     removeUnloadProtect(self);
   },
   Component: WBPlanViewWrapper,
-  getComponentProps: self => (
-    {
-      dataset: self.dataset,
-      removeUnloadProtect:
-        removeUnloadProtect.bind(null, self),
-      setUnloadProtect:
-        setUnloadProtect.bind(null, self),
-      mappingIsTemplated: self.mappingIsTemplated,
-    }
-  ),
+  getComponentProps: (self) => ({
+    dataset: self.dataset,
+    removeUnloadProtect: removeUnloadProtect.bind(null, self),
+    setUnloadProtect: setUnloadProtect.bind(null, self),
+    mappingIsTemplated: self.mappingIsTemplated,
+  }),
 });

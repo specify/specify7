@@ -1,9 +1,9 @@
 /*
-*
-* Type-safe React wrapper for Backbone.View.extend
-* It's like a gate between Backbone Views and React components
-*
-* */
+ *
+ * Type-safe React wrapper for Backbone.View.extend
+ * It's like a gate between Backbone Views and React components
+ *
+ * */
 
 'use strict';
 
@@ -15,9 +15,9 @@ import ErrorBoundary from './errorboundary';
 import { R } from './wbplanview';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
-  el: HTMLElement,
-  remove: () => void,
-} & BACKBONE_PROPS
+  el: HTMLElement;
+  remove: () => void;
+} & BACKBONE_PROPS;
 
 export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   moduleName,
@@ -30,23 +30,22 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   Component,
   getComponentProps,
 }: {
-  moduleName: string,
-  title?: string | (
-    (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => string
-    ),
-  className: string,
+  moduleName: string;
+  title?:
+    | string
+    | ((self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => string);
+  className: string;
   initialize: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
-    viewProps: CONSTRUCTOR_PROPS,
-  ) => void,
-  renderPre?: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
-  renderPost?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
-  remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void,
-  Component: (props: COMPONENT_PROPS) => JSX.Element,
+    viewProps: CONSTRUCTOR_PROPS
+  ) => void;
+  renderPre?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void;
+  renderPost?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void;
+  remove?: (self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => void;
+  Component: (props: COMPONENT_PROPS) => JSX.Element;
   getComponentProps: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
-  ) => COMPONENT_PROPS
+    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
+  ) => COMPONENT_PROPS;
 }): R<unknown> =>
   Backbone.View.extend({
     __name__: moduleName,
@@ -57,18 +56,17 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     render() {
       renderPre && renderPre(this);
 
-      if (typeof title === 'string')
-        app.setTitle(title);
-      else if (typeof title === 'function')
-        app.setTitle(title(this));
+      if (typeof title === 'string') app.setTitle(title);
+      else if (typeof title === 'function') app.setTitle(title(this));
 
-      ReactDOM.render(<React.StrictMode>
-        <ErrorBoundary>
-          <Component
-            {...getComponentProps(this)}
-          />
-        </ErrorBoundary>
-      </React.StrictMode>, this.el);
+      ReactDOM.render(
+        <React.StrictMode>
+          <ErrorBoundary>
+            <Component {...getComponentProps(this)} />
+          </ErrorBoundary>
+        </React.StrictMode>,
+        this.el
+      );
       renderPost && renderPost(this);
       return this;
     },
