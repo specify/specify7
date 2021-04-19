@@ -5,8 +5,10 @@ const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
 const Q        = require('q');
-const Handsontable = require('handsontable');
+const Handsontable = require('handsontable').default;
 const Papa = require('papaparse');
+
+require('handsontable/dist/handsontable.full.css');
 
 const schema = require('./schema.js');
 const api = require('./specifyapi.js');
@@ -83,7 +85,7 @@ const WBView = Backbone.View.extend({
             });
 
         //initialize Handsontable
-        this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
+        setTimeout(()=>this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
             cells: this.defineCell.bind(this, this.dataset.columns.length),
@@ -149,6 +151,7 @@ const WBView = Backbone.View.extend({
                     'redo': 'redo',
                 }
             },
+            licenseKey: 'non-commercial-and-evaluation',
             stretchH: 'all',
             readOnly: this.uploaded,
             afterColumnMove: this.columnMoved.bind(this),
@@ -156,7 +159,7 @@ const WBView = Backbone.View.extend({
             afterRemoveRow: this.rowRemoved.bind(this),
             afterSelection: (r, c) => this.currentPos = [r,c],
             afterChange: this.afterChange.bind(this),
-        });
+        }),0);
 
         this.wbutils.findLocalityColumns();
 
