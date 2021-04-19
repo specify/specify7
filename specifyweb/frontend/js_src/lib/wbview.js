@@ -260,10 +260,7 @@ const WBView = Backbone.View.extend({
         }
     },
     afterChange(changes, source) {
-        if (
-          source !== 'edit' &&
-          source !== 'CopyPaste.paste'
-        )
+        if (!['edit', 'CopyPaste.paste', 'Autofill.fill'].includes(source))
             return;
 
         changes.forEach(([row]) => this.clearDisambiguation(row));
