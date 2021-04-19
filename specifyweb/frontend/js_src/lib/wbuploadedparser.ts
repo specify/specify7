@@ -607,7 +607,7 @@ export function parseUploadResults(
     .filter(
       (fullMappingPath) =>
         fullMappingPath.length >= 4 &&
-        fullMappingPath[fullMappingPath.length - 3] === 'name'
+        fullMappingPath[fullMappingPath.length - 4] === 'name'
     )
     .map((fullMappingPath) => {
       const [mappingPath, , headerName] = fullMappingPathParser(
@@ -651,7 +651,7 @@ export function parseUploadResults(
       )
       .map(([originalTableName, listOfRows]) => {
         const tableName = originalTableName.toLowerCase();
-        const mappedRanks = mappedRanksTree[tableName];
+        const mappedRanks = mappedRanksTree[tableName] ?? {};
 
         const [rows, rowsObject, ranksToShow] = formatListOfRows(
           listOfRows,
