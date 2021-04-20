@@ -280,6 +280,29 @@ const WBView = Backbone.View.extend({
                 ).join('\n')
             }`;
 
+            const defaultValues = Object.fromEntries(
+                  arrayOfMappings.map((fullMappingPath)=>
+                    fullMappingPath.slice(-2)
+                ).map(([headerName,columnOptions])=>
+                    [
+                      this.dataset.columns.indexOf(headerName),
+                        columnOptions.default === '' ?
+                          '(empty string)' :
+                          columnOptions.default
+                    ]
+                ).filter(([,defaultValue]) =>
+                    defaultValue !== null
+                )
+            );
+
+            this.hot.updateSettings({
+                columns: (index)=>
+                    typeof defaultValues[index] !== "undefined" ?
+                        { placeholder: defaultValues[index] } :
+                        {},
+            });
+
+
         }
 
         this.$el.append(stylesContainer);
@@ -428,7 +451,7 @@ const WBView = Backbone.View.extend({
             return;
 
         result.tableIssues.forEach(tableIssue =>
-            tableIssue.columns.forEach(columnName =>
+           (tableIssue.columns.length === 0 ? this.dataset.columns : tableIssue.columns).forEach(columnName =>
                 addErrorMessage(columnName, tableIssue.issue)
             )
         );
