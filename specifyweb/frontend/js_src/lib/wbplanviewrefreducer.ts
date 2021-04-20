@@ -109,6 +109,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
       height = minMappingViewHeight + 1;
       stateDispatch({
         type: 'ToggleMappingViewAction',
+        isVisible: false,
       });
     }
 

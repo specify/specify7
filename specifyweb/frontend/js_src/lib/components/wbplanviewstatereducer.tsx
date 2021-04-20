@@ -288,6 +288,7 @@ export const stateReducer = generateReducer<
                     onClick={(): void =>
                       state.dispatch({
                         type: 'ToggleMappingViewAction',
+                        isVisible: true,
                       })
                     }
                   >
@@ -465,9 +466,6 @@ export const stateReducer = generateReducer<
             state.dispatch({
               type: 'ToggleMappingIsTemplatedAction',
             })
-          }
-          handleToggleMappingView={(): void =>
-            state.dispatch({ type: 'ToggleMappingViewAction' })
           }
           handleMappingViewResize={(height): void =>
             state.refObjectDispatch({

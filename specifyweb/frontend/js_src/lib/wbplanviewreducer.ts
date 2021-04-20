@@ -110,7 +110,9 @@ interface SavePlanAction
   readonly ignoreValidation?: boolean;
 }
 
-type ToggleMappingViewAction = Action<'ToggleMappingViewAction'>;
+interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
+  readonly isVisible: boolean;
+}
 
 type ToggleMappingIsTemplatedAction = Action<'ToggleMappingIsTemplatedAction'>;
 
@@ -307,17 +309,12 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   },
   SavePlanAction: ({ state, action }) =>
     savePlan(action, mappingState(state), action.ignoreValidation),
-  ToggleMappingViewAction: ({ state }) => ({
+  ToggleMappingViewAction: ({ state, action }) => ({
     ...mappingState(state),
-    showMappingView: cache.set(
-      'ui',
-      'showMappingView',
-      !mappingState(state).showMappingView,
-      {
-        overwrite: true,
-        priorityCommit: true,
-      }
-    ),
+    showMappingView: cache.set('ui', 'showMappingView', action.isVisible, {
+      overwrite: true,
+      priorityCommit: true,
+    }),
   }),
   ToggleMappingIsTemplatedAction: ({ state }) => ({
     ...mappingState(state),

@@ -115,7 +115,6 @@ export default function WBPlanViewMapper(
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleToggleMappingIsTemplated: () => void;
-    readonly handleToggleMappingView: () => void;
     readonly handleMappingViewResize: (height: number) => void;
     readonly handleAutoscrollStatusChange: (
       autoscrollType: AutoScrollTypes,
