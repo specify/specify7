@@ -249,6 +249,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
           optionLabel: fieldFriendlyName,
           tableName,
           isRelationship,
+          isRequired,
         };
       }
 
@@ -273,6 +274,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
           optionLabel: '0',
           tableName: '',
           isRelationship: false,
+          isRequired: false,
         }
       : props.defaultOption;
 

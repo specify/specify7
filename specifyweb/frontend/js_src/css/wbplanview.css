@@ -425,6 +425,10 @@
   --accent: #3ef;
 }
 
+.custom-select-input-required {
+  background: #cff;
+}
+
 .custom-select-group-hidden-fields {
   --background1: #ccc;
   --background2: #aaa;

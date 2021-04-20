@@ -101,6 +101,7 @@ export interface CustomSelectElementDefaultOptionProps {
   readonly optionLabel: string | JSX.Element;
   readonly tableName?: string;
   readonly isRelationship?: boolean;
+  readonly isRequired?: boolean;
 }
 
 export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
@@ -344,6 +345,7 @@ export function CustomSelectElement({
     optionLabel: '0',
     tableName: '',
     isRelationship: false,
+    isRequired: false,
   },
   isOpen,
   tableName,
@@ -389,25 +391,25 @@ export function CustomSelectElement({
       </span>
     );
   else if (SELECT_TYPES_WITH_FIRST_ROW.includes(customSelectType)) {
-    const defaultIcon = (
-      <Icon
-        isDefault={true}
-        isRelationship={defaultOption.isRelationship}
-        tableName={defaultOption.tableName}
-        optionLabel={defaultOption.optionLabel}
-        isPreview={true}
-      />
-    );
-
     preview = (
       <span
-        className="custom-select-input"
+        className={`custom-select-input ${
+          defaultOption.isRequired ? 'custom-select-input-required' : ''
+        }`}
         tabIndex={0}
         onClick={
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined
         }
       >
-        <span className="custom-select-input-icon">{defaultIcon}</span>
+        <span className="custom-select-input-icon">
+          <Icon
+            isDefault={true}
+            isRelationship={defaultOption.isRelationship}
+            tableName={defaultOption.tableName}
+            optionLabel={defaultOption.optionLabel}
+            isPreview={true}
+          />
+        </span>
         <span
           className={`custom-select-input-label ${
             defaultOption.optionLabel === '0'
