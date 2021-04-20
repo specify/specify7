@@ -250,6 +250,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
           tableName,
           isRelationship,
           isRequired,
+          isHidden,
         };
       }
 
@@ -275,6 +276,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
           tableName: '',
           isRelationship: false,
           isRequired: false,
+          isHidden: false,
         }
       : props.defaultOption;
 

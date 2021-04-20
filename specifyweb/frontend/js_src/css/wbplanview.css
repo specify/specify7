@@ -439,6 +439,10 @@
   --accent: #666;
 }
 
+.custom-select-input-hidden {
+  background: #aaa;
+}
+
 .custom-select-group-suggested-mappings {
   --background1: #dfd;
   --background2: #bfc;

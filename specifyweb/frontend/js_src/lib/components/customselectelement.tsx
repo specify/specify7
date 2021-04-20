@@ -102,6 +102,7 @@ export interface CustomSelectElementDefaultOptionProps {
   readonly tableName?: string;
   readonly isRelationship?: boolean;
   readonly isRequired?: boolean;
+  readonly isHidden?: boolean;
 }
 
 export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
@@ -346,6 +347,7 @@ export function CustomSelectElement({
     tableName: '',
     isRelationship: false,
     isRequired: false,
+    isHidden: false,
   },
   isOpen,
   tableName,
@@ -395,7 +397,7 @@ export function CustomSelectElement({
       <span
         className={`custom-select-input ${
           defaultOption.isRequired ? 'custom-select-input-required' : ''
-        }`}
+        } ${defaultOption.isHidden ? 'custom-select-input-hidden' : ''}`}
         tabIndex={0}
         onClick={
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined
