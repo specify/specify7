@@ -340,6 +340,13 @@
   margin-bottom: 3px;
 }
 
+.wbplanview-mapping-line-header-unmapped,
+.custom-select-input-label-unmapped,
+.custom-select-option-label-unmapped {
+  color: var(--error);
+  font-weight: 800;
+}
+
 .custom-select-element-shadow-list {
   margin-top: calc(var(--white-space) * -2);
   padding-right: calc(calc(var(--white-space) * 7) + 7px);

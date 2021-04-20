@@ -248,9 +248,13 @@ const Option = React.memo(
               tableName={tableName}
             />
           </span>
-          {optionLabel !== '0' && (
-            <span className="custom-select-option-label">{optionLabel}</span>
-          )}
+          <span
+            className={`custom-select-option-label ${
+              optionLabel === '0' ? 'custom-select-option-label-unmapped' : ''
+            }`}
+          >
+            {optionLabel === '0' ? 'UNMAP' : optionLabel}
+          </span>
           {isRelationship && (
             <span className="custom-select-option-relationship">▶</span>
           )}
@@ -404,9 +408,15 @@ export function CustomSelectElement({
         }
       >
         <span className="custom-select-input-icon">{defaultIcon}</span>
-        <span className="custom-select-input-label">
+        <span
+          className={`custom-select-input-label ${
+            defaultOption.optionLabel === '0'
+              ? 'custom-select-input-label-unmapped'
+              : ''
+          }`}
+        >
           {defaultOption.optionLabel === '0'
-            ? undefined
+            ? 'NOT MAPPED'
             : defaultOption.optionLabel}
         </span>
         {optionIsIntractable && customSelectType !== 'MAPPING_OPTIONS_LIST' && (
@@ -426,6 +436,7 @@ export function CustomSelectElement({
       <Option
         handleClick={(handleClick || undefined)?.bind(null, '0', false, '0')}
         isDefault={defaultOption.optionLabel === '0'}
+        optionLabel="0"
       />
     );
 

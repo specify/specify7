@@ -147,7 +147,13 @@ export function MappingLineComponent({
           <img src="../../../static/img/discard.svg" alt="Clear mapping" />
         </button>
       </div>
-      <div className="wbplanview-mapping-line-header">
+      <div
+        className={`wbplanview-mapping-line-header ${
+          lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
+            ? ''
+            : 'wbplanview-mapping-line-header-unmapped'
+        }`}
+      >
         {mappingType === 'newStaticColumn' ? (
           <StaticHeader
             defaultValue={headerName}
