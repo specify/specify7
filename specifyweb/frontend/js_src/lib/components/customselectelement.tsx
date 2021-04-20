@@ -497,10 +497,18 @@ export function CustomSelectElement({
       if (
         typeof selectedOption !== 'undefined' &&
         listOfOptionsRef.current.offsetHeight <
-          selectedOption.offsetTop + selectedOption.offsetHeight
+          selectedOption.offsetTop -
+            listOfOptionsRef.current.offsetTop +
+            selectedOption.offsetHeight
       )
+        /*
+         * Scroll to the difference between position of the list and
+         * the position of the line minus half the height of a single line
+         */
         listOfOptionsRef.current.scrollTop =
-          selectedOption.offsetTop - selectedOption.offsetHeight;
+          selectedOption.offsetTop -
+          listOfOptionsRef.current.offsetTop -
+          selectedOption.offsetHeight / 2;
     }
   }, [isOpen, listOfOptionsRef]);
 
