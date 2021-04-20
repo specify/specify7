@@ -98,6 +98,13 @@ repos:
           - --select=C,E,F,W,B,B950
           - --extend-ignore=E203,E501
 
+  - repo: https://github.com/terrencepreilly/darglint
+    rev: v1.8.0
+    hooks:
+      - id: darglint
+        args:
+          - -v 2
+
   - repo: https://github.com/PyCQA/pydocstyle
     rev: 6.0.0
     hooks:
@@ -168,3 +175,9 @@ repos:
       - id: markdownlint
         args:
           - --git-recurse
+
+  - repo: https://github.com/maxxxxxdlp/mirrors-jscpd
+    rev: v3.3.25
+    hooks:
+      - id: jscpd
+        types: [text]
