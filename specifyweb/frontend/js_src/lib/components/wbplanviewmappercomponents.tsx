@@ -72,7 +72,8 @@ export function FormatValidationResults(props: {
   return (
     <div className="validation-results">
       <span>
-        The following fields should be mapped before you can upload the dataset:
+        The following required fields should be mapped before you can upload the
+        dataset:
       </span>
       {props.validationResults.map((fieldPath, index) => (
         <div
