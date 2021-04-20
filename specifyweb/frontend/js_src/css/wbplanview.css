@@ -340,6 +340,10 @@
   margin-bottom: 3px;
 }
 
+.custom-select-input-label, .custom-select-option-label {
+  line-height: calc(var(--white-space) * 2);
+}
+
 .wbplanview-mapping-line-header-unmapped,
 .custom-select-input-label-unmapped,
 .custom-select-option-label-unmapped {
