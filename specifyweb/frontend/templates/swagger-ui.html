@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js" charset="UTF-8"></script>
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css">
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <script
+      src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"
+      charset="UTF-8"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css"
+    />
+  </head>
 
-<body>
+  <body>
     <a href="/specify/">Back to Specify</a>
 
     <div id="swagger-ui"></div>
 
     <script>
-     SwaggerUIBundle({
-         url: "/context/api_endpoints.json",
-         dom_id: '#swagger-ui',
-     })
+      SwaggerUIBundle({
+        url: "/api/specify_schema/openapi.json",
+        dom_id: "#swagger-ui",
+      });
     </script>
-</body>
+  </body>
 </html>
