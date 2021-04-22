@@ -344,7 +344,14 @@ export const stateReducer = generateReducer<
                     </button>
                     <button
                       type="button"
-                      onClick={(): void => handleSave(false)}
+                      onClick={(): void => {
+                        handleSave(false);
+                        state.refObjectDispatch({
+                          type: 'AutoscrollStatusChangeAction',
+                          autoscrollType: 'mappingView',
+                          status: true,
+                        });
+                      }}
                     >
                       Save
                     </button>
