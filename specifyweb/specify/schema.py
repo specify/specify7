@@ -36,8 +36,8 @@ def base_schema() -> Dict:
                 "description": "Current Specify 7 Instance",
             },
             {
-                "url": "http://demo7.specifysoftware.org/",
-                "description": "Specify 7 Public Demo Instance"
+                "url": "https://sp7demofish.specifycloud.org/",
+                "description": "Specify 7 Public Demo Instance",
             },
             {
                 "url": "{url}",
@@ -47,9 +47,15 @@ def base_schema() -> Dict:
                     },
                 },
                 "description": "Custom Specify 7 Server",
-            }
+            },
         ],
     }
+
+
+record_version_description = (
+    "A version to work with (can be specified in "
+    + "Query string, Header or request object's 'version' key)"
+)
 
 
 @login_maybe_required
@@ -61,25 +67,91 @@ def openapi(request) -> http.HttpResponse:
     spec = {
         **base_schema(),
         "paths": {
-            "/api/specify/"
-            + table.django_name: table_to_endpoint(table)
+            endpoint_url: endpoint_description
             for table in datamodel.tables
+            for endpoint_url, endpoint_description in table_to_endpoint(
+                table
+            )
         },
         "components": {
             "parameters": {
                 "limit": {
                     "name": "limit",
                     "in": "query",
-                    "description": "Limit the number of results",
+                    "description": "Return at most 'limit' items",
                     "required": False,
-                    "schema": {"type": "number", "minimum": 1},
+                    "schema": {
+                        "type": "number",
+                        "minimum": 1,
+                        "default": 20,
+                    },
                 },
                 "offset": {
                     "name": "offset",
                     "in": "query",
                     "description": "Offset the returned records by n records",
                     "required": False,
-                    "schema": {"type": "number", "minimum": 1},
+                    "schema": {
+                        "type": "number",
+                        "minimum": 1,
+                        "default": 0,
+                    },
+                },
+                "domainfilter": {
+                    "name": "domainfilter",
+                    "in": "query",
+                    "description": "Use the logged_in_collection to limit request to relevant items",
+                    "required": False,
+                    "schema": {
+                        "type": "boolean",
+                        "default": False,
+                    },
+                },
+                "orderby": {
+                    "name": "orderby",
+                    "in": "query",
+                    "description": "The name of the field to order by",
+                    "required": False,
+                    "schema": {
+                        "type": "string",
+                    },
+                },
+                "collection_recordsetid": {
+                    "name": "recordsetid",
+                    "in": "query",
+                    "description": "Created resources would be added to a recordset with this ID",
+                    "required": False,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    },
+                },
+                "version_in_query": {
+                    "name": "version",
+                    "in": "query",
+                    "description": record_version_description,
+                    "required": False,
+                    "schema": {"type": "number", "minimum": 0},
+                },
+                "version_in_header": {
+                    "name": "HTTP_IF_MATCH",
+                    "in": "header",
+                    "description": record_version_description,
+                    "required": False,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    },
+                },
+                "record_recordsetid": {
+                    "name": "recordsetid",
+                    "in": "query",
+                    "description": "If provided, response would also contain a 'recordset_info' key.",
+                    "required": False,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    },
                 },
             },
             "schemas": {
@@ -87,16 +159,81 @@ def openapi(request) -> http.HttpResponse:
                     table.django_name: table_to_schema(table)
                     for table in datamodel.tables
                 },
-                "meta": {
+                "_collection_get": {
                     "type": "object",
                     "properties": {
                         "meta": {
                             "type": "object",
                             "properties": {
+                                "limit": {
+                                    "type": "number",
+                                },
                                 "offset": {
                                     "type": "number",
-                                }
+                                },
+                                "total_count": {
+                                    "type": "number",
+                                    "description": "Total Number of records from this table. The count depends on the value of 'domainfilter' query parameter",
+                                },
                             },
+                        }
+                    },
+                },
+                "_resource_get": {
+                    "type": "object",
+                    "properties": {
+                        "recordset_info": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "description": "null",
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "recordsetid": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                        },
+                                        "total_count": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                        },
+                                        "index": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                        },
+                                        "previous": {
+                                            "oneOf": [
+                                                {
+                                                    "type": "string",
+                                                    "description": "null",
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "description": "URL for fetching information about the previous record",
+                                                    "example": "/api/specify/collectionobject/249/",
+                                                    "minimum": 0,
+                                                },
+                                            ]
+                                        },
+                                        "next": {
+                                            "oneOf": [
+                                                {
+                                                    "type": "string",
+                                                    "description": "null",
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "description": "URL for fetching information about the next record",
+                                                    "example": "/api/specify/collectionobject/249/",
+                                                    "minimum": 0,
+                                                },
+                                            ]
+                                        },
+                                    },
+                                },
+                            ],
                         }
                     },
                 },
@@ -121,49 +258,216 @@ def view(request, model: str) -> http.HttpResponse:
 
 
 def table_to_endpoint(table: Table) -> Dict:
-    return {
-        "get": {
-            "tags": [table.django_name],
-            "summary": "Query and manipulate records from the "
-            + table.django_name
-            + " table",
-            "description": "TODO: description",
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/limit",
-                },
-                {"$ref": "#/components/parameters/offset"},
-            ],
-            "responses": {
-                "200": {
-                    "description": "Data fetched successfully",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/meta",
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "objects": {
-                                                "type": "array",
-                                                "items": {
-                                                    "$ref": "#/components/schemas/"
-                                                    + table.django_name
+    return [
+        [
+            "/api/specify/" + table.django_name,
+            {
+                "get": {
+                    "tags": [table.django_name],
+                    "summary": "Query multiple records from the "
+                    + table.django_name
+                    + " table",
+                    "description": "Query multiple records from the "
+                    + table.django_name
+                    + " table",
+                    "parameters": [
+                        {"$ref": "#/components/parameters/limit"},
+                        {"$ref": "#/components/parameters/offset"},
+                        {
+                            "$ref": "#/components/parameters/domainfilter"
+                        },
+                        {"$ref": "#/components/parameters/orderby"},
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Data fetched successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/_collection_get",
+                                            },
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "objects": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "$ref": "#/components/schemas/"
+                                                            + table.django_name
+                                                        },
+                                                    },
                                                 },
                                             },
-                                        },
+                                        ]
                                     },
-                                ]
+                                },
+                            },
+                        },
+                    },
+                },
+                "post": {
+                    "tags": [table.django_name],
+                    "summary": "Upload a single record to the "
+                    + table.django_name
+                    + " table",
+                    "description": "Upload a single record to the "
+                    + table.django_name
+                    + " table",
+                    "parameters": [
+                        {
+                            "$ref": "#/components/parameters/collection_recordsetid"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "description": "A JSON representation of an object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/"
+                                    + table.django_name
+                                }
                             }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "A newly created object",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/"
+                                        + table.django_name
+                                    },
+                                },
+                            },
                         }
                     },
-                }
+                },
             },
-        }
-    }
+        ],
+        [
+            "/api/specify/" + table.django_name + "/{id}",
+            {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/version_in_query"
+                    },
+                    {
+                        "$ref": "#/components/parameters/version_in_header"
+                    },
+                ],
+                "get": {
+                    "tags": [table.django_name],
+                    "summary": "Query and manipulate records from the "
+                    + table.django_name
+                    + " table",
+                    "description": "TODO: description",
+                    "parameters": [
+                        {
+                            "$ref": "#/components/parameters/record_recordsetid"
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Data fetched successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/_resource_get",
+                                            },
+                                            {
+                                                "$ref": "#/components/schemas/"
+                                                + table.django_name
+                                            },
+                                        ]
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
+                "put": {
+                    "tags": [table.django_name],
+                    "summary": "Update a single record from the "
+                    + table.django_name
+                    + " table",
+                    "description": "Update a single record from the "
+                    + table.django_name
+                    + " table",
+                    "requestBody": {
+                        "required": True,
+                        "description": "A JSON representation of an object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "anyOf": [
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "version": {
+                                                            "description": record_version_description,
+                                                            "type": "number",
+                                                            "minimum": 0,
+                                                        }
+                                                    },
+                                                }
+                                            ],
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/"
+                                            + table.django_name
+                                        },
+                                    ],
+                                }
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "A modified object",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/"
+                                        + table.django_name
+                                    },
+                                },
+                            },
+                        }
+                    },
+                },
+                "delete": {
+                    "tags": [table.django_name],
+                    "summary": "Delete a record from the "
+                    + table.django_name
+                    + " table",
+                    "description": "Delete a record from the "
+                    + table.django_name
+                    + " table",
+                    "response": {
+                        "204": {
+                            "description": "Empty response",
+                            "content": {
+                                "text/plain": {
+                                    "schema": {
+                                        "type": "string",
+                                        "maxLength": 0,
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+        ],
+    ]
 
 
 def table_to_schema(table: Table) -> Dict:
