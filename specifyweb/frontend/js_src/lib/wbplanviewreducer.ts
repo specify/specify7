@@ -317,6 +317,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     lines: mappingState(state).lines.map((line) => ({
       ...line,
       mappingPath: ['0'],
+      options: defaultLineOptions,
     })),
     changesMade: true,
     mappingsAreValidated: false,
@@ -326,6 +327,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     lines: modifyLine(mappingState(state), action.line, {
       mappingPath: ['0'],
+      options: defaultLineOptions,
     }),
     changesMade: true,
     mappingsAreValidated: false,
