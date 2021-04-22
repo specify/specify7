@@ -7,6 +7,7 @@
 
 'use strict';
 
+import type { IR } from './components/wbplanview';
 import type {
   FullMappingPath,
   MappingPath,
@@ -157,3 +158,36 @@ export const fullMappingPathParser = (
     string,
     ColumnOptions
   ];
+
+export const splitFullMappingPathComponents = (
+  fullMappingPath: Readonly<FullMappingPath>
+): {
+  mappingPath: MappingPath;
+  mappingType: MappingType;
+  headerName: string;
+  columnOptions: ColumnOptions;
+} => ({
+  mappingPath: fullMappingPath.slice(0, -3) as MappingPath,
+  mappingType: fullMappingPath[fullMappingPath.length - 3] as MappingType,
+  headerName: fullMappingPath[fullMappingPath.length - 2] as string,
+  columnOptions: fullMappingPath[fullMappingPath.length - 1] as ColumnOptions,
+});
+
+export const extractDefaultValues = (
+  arrayOfMappings: Readonly<Readonly<FullMappingPath>[]>,
+  visualizeEmptyString = false
+): IR<string> =>
+  Object.fromEntries(
+    arrayOfMappings
+      .map(splitFullMappingPathComponents)
+      .map(
+        ({ headerName, columnOptions }) =>
+          [
+            headerName,
+            columnOptions.default === '' && visualizeEmptyString
+              ? '(empty string)'
+              : columnOptions.default,
+          ] as [string, string]
+      )
+      .filter(([, defaultValue]) => defaultValue !== null)
+  );

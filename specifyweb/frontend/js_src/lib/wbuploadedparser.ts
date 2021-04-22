@@ -12,7 +12,10 @@ import schema from './schema';
 import type { State } from './statemanagement';
 import type { UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { fullMappingPathParser } from './wbplanviewhelper';
+import {
+  extractDefaultValues,
+  fullMappingPathParser,
+} from './wbplanviewhelper';
 import { getNameFromTreeRankName } from './wbplanviewmodelhelper';
 import {
   arrayToTree,
@@ -589,6 +592,15 @@ const getOrderedHeaders = (
   headersSubset: string[]
 ): string[] => headers.filter((header) => headersSubset.includes(header));
 
+const insertDefaultValue = (
+  defaultValues: IR<string>,
+  headerName: string,
+  value: string
+) =>
+  headerName in defaultValues && value === ''
+    ? defaultValues[headerName]
+    : value;
+
 export function parseUploadResults(
   uploadResults: UploadResults,
   headers: string[],
@@ -626,6 +638,8 @@ export function parseUploadResults(
       );
     })
     .reduce(deepMergeObject, {}) as IR<IR<string>>;
+
+  const defaultValues = extractDefaultValues(arrayOfMappings);
 
   const uploadedRows: IR<UploadedRowSorted[]> = {};
   const uploadedPicklistItems: UploadedPicklistItems = {};
@@ -738,18 +752,23 @@ export function parseUploadResults(
                   rowIndex,
                   columns: columnNames
                     .map((columnName) => ({
+                      columnName,
                       columnIndex: headers.indexOf(columnName),
-                      owsColumn: columns.includes(columnName),
+                      rowsColumn: columns.includes(columnName),
                     }))
-                    .map(({ columnIndex, owsColumn }) =>
-                      columnIndex === -1 || !owsColumn
+                    .map(({ columnName, columnIndex, rowsColumn }) =>
+                      columnIndex === -1 || !rowsColumn
                         ? {
                             columnIndex: -1,
                             cellValue: '',
                           }
                         : {
                             columnIndex,
-                            cellValue: data[rowIndex][columnIndex] ?? '',
+                            cellValue: insertDefaultValue(
+                              defaultValues,
+                              columnName,
+                              data[rowIndex][columnIndex] ?? ''
+                            ),
                           }
                     ),
                 })),

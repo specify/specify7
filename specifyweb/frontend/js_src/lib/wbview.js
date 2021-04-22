@@ -17,6 +17,7 @@ const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
 const {uploadPlanToMappingsTree} = require('./uploadplantomappingstree.ts');
 const {mappingsTreeToArrayOfMappings} = require('./wbplanviewtreehelper.ts');
+const {extractDefaultValues} = require('./wbplanviewhelper.ts');
 const {getMappingLineData} = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
 const icons = require('./icons.js');
@@ -281,18 +282,11 @@ const WBView = Backbone.View.extend({
             }`;
 
             const defaultValues = Object.fromEntries(
-                  arrayOfMappings.map((fullMappingPath)=>
-                    fullMappingPath.slice(-2)
-                ).map(([headerName,columnOptions])=>
-                    [
-                      this.dataset.columns.indexOf(headerName),
-                        columnOptions.default === '' ?
-                          '(empty string)' :
-                          columnOptions.default
-                    ]
-                ).filter(([,defaultValue]) =>
-                    defaultValue !== null
-                )
+              Object.entries(
+                extractDefaultValues(arrayOfMappings, true)
+              ).map(([headerName, defaultValue]) =>
+                [this.dataset.columns.indexOf(headerName), defaultValue]
+              )
             );
 
             this.hot.updateSettings({
