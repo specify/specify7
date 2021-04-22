@@ -399,14 +399,8 @@ export const stateReducer = generateReducer<
           handleAddNewHeader={(): void =>
             state.dispatch({ type: 'AddNewHeaderAction' })
           }
-          handleAddNewStaticHeader={(): void =>
-            state.dispatch({ type: 'AddNewStaticHeaderAction' })
-          }
           handleAddNewColumn={(): void =>
             state.dispatch({ type: 'AddNewHeaderAction' })
-          }
-          handleAddNewStaticColumn={(): void =>
-            state.dispatch({ type: 'AddNewStaticHeaderAction' })
           }
           handleOpen={(line: number, index: number): void =>
             state.dispatch({
@@ -438,16 +432,6 @@ export const stateReducer = generateReducer<
             state.dispatch({
               type: 'ClearMappingLineAction',
               line,
-            })
-          }
-          handleStaticHeaderChange={(
-            line: number,
-            event: React.ChangeEvent<HTMLTextAreaElement>
-          ): void =>
-            state.dispatch({
-              type: 'StaticHeaderChangeAction',
-              line,
-              event,
             })
           }
           handleAutomapperSuggestionSelection={(suggestion: string): void =>

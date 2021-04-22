@@ -37,14 +37,11 @@ export interface HtmlGeneratorFieldData {
 
 interface MappingLineBaseProps {
   readonly lineData: MappingElementProps[];
-  readonly mappingType: MappingType;
+  readonly mappingType: MappingType; // FIXME: remove this
   readonly headerName: string;
   readonly isFocused: boolean;
   readonly handleFocus: () => void;
   readonly handleClearMapping: () => void;
-  readonly handleStaticHeaderChange?: (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => void;
 }
 
 export interface MappingPathProps {
@@ -109,26 +106,16 @@ export const ListOfBaseTables = React.memo(
 
 export function MappingLineComponent({
   lineData,
-  mappingType,
   headerName,
   readonly,
   isFocused,
   handleFocus,
   handleClearMapping,
-  handleStaticHeaderChange,
 }: MappingLineBaseProps & {
   readonly: boolean;
-} & (
-    | {
-        readonly mappingType: Exclude<MappingType, 'newStaticColumn'>;
-      }
-    | {
-        readonly mappingType: 'newStaticColumn';
-        readonly handleStaticHeaderChange?: (
-          event: React.ChangeEvent<HTMLTextAreaElement>
-        ) => void;
-      }
-  )): JSX.Element {
+} & {
+  readonly mappingType: MappingType;
+}): JSX.Element {
   return (
     <div
       className={`wbplanview-mapping-line ${
@@ -154,14 +141,7 @@ export function MappingLineComponent({
             : 'wbplanview-mapping-line-header-unmapped'
         }`}
       >
-        {mappingType === 'newStaticColumn' ? (
-          <StaticHeader
-            defaultValue={headerName}
-            onChange={handleStaticHeaderChange}
-          />
-        ) : (
-          headerName
-        )}
+        {headerName}
       </div>
       <div className="wbplanview-mapping-line-elements">
         <MappingPathComponent mappingLineData={lineData} />

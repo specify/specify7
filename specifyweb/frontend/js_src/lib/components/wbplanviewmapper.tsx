@@ -18,11 +18,7 @@ import type { MappingActions } from '../wbplanviewreducer';
 import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import type { MappingPathProps } from './wbplanviewcomponents';
-import {
-  MappingElement,
-  StaticHeader,
-  MappingLineComponent,
-} from './wbplanviewcomponents';
+import { MappingElement, MappingLineComponent } from './wbplanviewcomponents';
 import {
   FormatValidationResults,
   MappingsControlPanel,
@@ -42,7 +38,8 @@ export type AutomapperScope =
 export type MappingPath = string[];
 export type FullMappingPath = [...string[], MappingType, string, ColumnOptions];
 export type ListOfHeaders = string[];
-export type MappingType = 'existingHeader' | 'newColumn' | 'newStaticColumn';
+// FIXME: remove the need for this
+export type MappingType = 'existingHeader' | 'newColumn';
 export type RelationshipType =
   | 'one-to-one'
   | 'one-to-many'
@@ -92,10 +89,8 @@ export default function WBPlanViewMapper(
     readonly handleFocus: (lineIndex: number) => void;
     readonly handleMappingViewMap: () => void;
     readonly handleAddNewHeader: () => void;
-    readonly handleAddNewStaticHeader: () => void;
     readonly handleToggleHiddenFields: () => void;
     readonly handleAddNewColumn: () => void;
-    readonly handleAddNewStaticColumn: () => void;
     readonly readonly: boolean;
     readonly handleOpen: (line: number, index: number) => void;
     readonly handleClose: () => void;
@@ -108,10 +103,6 @@ export default function WBPlanViewMapper(
       newTable: string
     ) => void;
     readonly handleClearMapping: (index: number) => void;
-    readonly handleStaticHeaderChange: (
-      index: number,
-      event: React.ChangeEvent<HTMLTextAreaElement>
-    ) => void;
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleToggleMappingIsTemplated: () => void;
@@ -315,10 +306,6 @@ export default function WBPlanViewMapper(
             isFocused={index === props.focusedLine}
             handleFocus={props.handleFocus.bind(undefined, index)}
             handleClearMapping={props.handleClearMapping.bind(undefined, index)}
-            handleStaticHeaderChange={props.handleStaticHeaderChange.bind(
-              undefined,
-              index
-            )}
             lineData={getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
@@ -446,9 +433,8 @@ export default function WBPlanViewMapper(
                       {typeof options.default === 'string' && (
                         <>
                           <br />
-                          <StaticHeader
-                            defaultValue={options.default || ''}
-                            disabled={props.readonly}
+                          <textarea
+                            value={options.default || ''}
                             onChange={
                               (!props.readonly &&
                                 ((event): void =>
@@ -458,6 +444,7 @@ export default function WBPlanViewMapper(
                                   ))) ||
                               undefined
                             }
+                            disabled={props.readonly}
                           />
                         </>
                       )}
@@ -476,9 +463,6 @@ export default function WBPlanViewMapper(
         handleChange={props.handleToggleHiddenFields}
         handleAddNewColumn={
           (!props.readonly && props.handleAddNewColumn) || undefined
-        }
-        handleAddNewStaticColumn={
-          (!props.readonly && props.handleAddNewStaticColumn) || undefined
         }
         handleToggleMappingIsTemplated={
           (!props.readonly && props.handleToggleMappingIsTemplated) || undefined

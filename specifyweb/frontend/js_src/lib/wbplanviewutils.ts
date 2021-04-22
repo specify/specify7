@@ -253,7 +253,7 @@ export async function getAutomapperSuggestions({
      * if opened picklist has a value selected
      */
     localMappingPath.length - 1 !== index ||
-    // Or if header is a new column / new static column
+    // Or if header is a new column
     mappingPathIsComplete(localMappingPath) ||
     lines[line].type !== 'existingHeader'
   )

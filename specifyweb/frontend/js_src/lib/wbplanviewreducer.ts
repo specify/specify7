@@ -1,4 +1,3 @@
-import type React from 'react';
 import type {
   PartialWBPlanViewProps,
   PublicWBPlanViewProps,
@@ -134,8 +133,6 @@ type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
 type AddNewHeaderAction = Action<'AddNewHeaderAction'>;
 
-type AddNewStaticHeaderAction = Action<'AddNewStaticHeaderAction'>;
-
 type OpenSelectElementAction = Action<'OpenSelectElementAction'> &
   SelectElementPosition;
 
@@ -159,11 +156,6 @@ interface AutomapperSuggestionsLoadedAction
 interface AutomapperSuggestionSelectedAction
   extends Action<'AutomapperSuggestionSelectedAction'> {
   readonly suggestion: string;
-}
-
-interface StaticHeaderChangeAction extends Action<'StaticHeaderChangeAction'> {
-  readonly line: number;
-  readonly event: React.ChangeEvent<HTMLTextAreaElement>;
 }
 
 interface ValidationResultClickAction
@@ -209,13 +201,11 @@ export type MappingActions =
   | FocusLineAction
   | MappingViewMapAction
   | AddNewHeaderAction
-  | AddNewStaticHeaderAction
   | OpenSelectElementAction
   | CloseSelectElementAction
   | ChangeSelectElementValueAction
   | AutomapperSuggestionsLoadedAction
   | AutomapperSuggestionSelectedAction
-  | StaticHeaderChangeAction
   | ValidationResultClickAction
   | OpenMatchingLogicDialogAction
   | MustMatchPrefChangeAction
@@ -393,20 +383,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     changesMade: true,
     mappingsAreValidated: false,
   }),
-  AddNewStaticHeaderAction: ({ state }) => ({
-    ...mappingState(state),
-    lines: [
-      ...mappingState(state).lines,
-      {
-        name: '',
-        type: 'newStaticColumn',
-        mappingPath: ['0'],
-        options: defaultLineOptions,
-      },
-    ],
-    changesMade: true,
-    mappingsAreValidated: false,
-  }),
   ToggleHiddenFieldsAction: ({ state }) => ({
     ...mappingState(state),
     showHiddenFields: cache.set(
@@ -501,12 +477,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     automapperSuggestions: undefined,
     changesMade: true,
     mappingsAreValidated: false,
-  }),
-  StaticHeaderChangeAction: ({ state, action }) => ({
-    ...mappingState(state),
-    lines: modifyLine(mappingState(state), action.line, {
-      name: action.event.target.value,
-    }),
   }),
   ValidationResultClickAction: ({ state, action: { mappingPath } }) => ({
     ...mappingState(state),

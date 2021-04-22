@@ -23,13 +23,11 @@ export const MappingsControlPanel = React.memo(
       handleChange,
       mappingIsTemplated,
       /* HandleAddNewColumn, */
-      /* HandleAddNewStaticColumn, */
       handleToggleMappingIsTemplated,
     }: {
       readonly showHiddenFields: boolean;
       readonly handleChange?: () => void;
       readonly handleAddNewColumn?: () => void;
-      readonly handleAddNewStaticColumn?: () => void;
       readonly handleToggleMappingIsTemplated?: () => void;
       readonly mappingIsTemplated: boolean;
     }) => (
@@ -43,9 +41,6 @@ export const MappingsControlPanel = React.memo(
           Use this mapping as a template
         </label>
         {/* <button onClick={handleAddNewColumn}>Add new column</button>*/}
-        {/* <button onClick={handleAddNewStaticColumn}>
-        Add new static column
-      </button>*/}
         <label>
           {' '}
           <input
