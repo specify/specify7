@@ -5,7 +5,7 @@
 
 'use strict';
 
-import L from 'leaflet';
+import L from './leafletextend';
 import type { IR } from './components/wbplanview';
 import type { LocalityField } from './leafletutils';
 

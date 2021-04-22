@@ -6,42 +6,43 @@ const LeafletUtils = require('./leafletutils.ts');
 const Leaflet = require('./leaflet.ts');
 const UIPlugin = require('./uiplugin.js');
 
-module.exports = UIPlugin.extend({
-  __name__: 'GoogleMapsPlugin',
-  events: {
-    'click': 'click',
-  },
-  render: function() {
-    this.$el.attr('value', 'Leaflet Map').prop('disabled', false);
-    return this;
-  },
-  click: function(evt) {
-    evt.preventDefault();
+module.exports = UIPlugin.extend(
+  {
+    __name__: 'GoogleMapsPlugin',
+    events: {
+      click: 'click',
+    },
+    render() {
+      this.$el.attr('value', 'Leaflet Map').prop('disabled', false);
+      return this;
+    },
+    click(event_) {
+      event_.preventDefault();
 
-    const lat = this.model.get('latitude1');
-    const long = this.model.get('longitude1');
+      const lat = this.model.get('latitude1');
+      const long = this.model.get('longitude1');
 
-    if (lat == null || long == null)
-      return $(`<div title="No coordinates">
+      if (lat == undefined || long == undefined)
+        return $(`<div title="No coordinates">
         Locality must have coordinates to be mapped.
       </div>`).dialog({
-        close: function() {
-          $(this).remove();
-        },
-        buttons: {
-          'close': function(){
+          close() {
             $(this).remove();
-          }
-        }
-      });
+          },
+          buttons: {
+            close() {
+              $(this).remove();
+            },
+          },
+        });
 
-    LeafletUtils.getLocalityDataFromLocalityResource(
-      this.model
-    ).then(localityData =>
-      Leaflet.showLeafletMap({
-        localityPoints: [localityData],
-      }),
-    );
+      LeafletUtils.getLocalityDataFromLocalityResource(this.model).then(
+        (localityData) =>
+          Leaflet.showLeafletMap({
+            localityPoints: [localityData],
+          })
+      );
+    },
   },
-}, {pluginsProvided: ['LocalityGoogleEarth']});
-
+  { pluginsProvided: ['LocalityGoogleEarth'] }
+);
