@@ -49,6 +49,15 @@ repos:
         args:
           - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
 
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.812
+    hooks:
+      - id: mypy
+        exclude: ^docs/
+        additional_dependencies:
+          - django-stubs==1.8.0
+          - celery==5.0.1
+
   #- repo: https://github.com/pre-commit/mirrors-eslint
   #  rev: v7.24.0
   #  hooks:
@@ -109,12 +118,6 @@ repos:
     rev: 6.0.0
     hooks:
       - id: pydocstyle
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.812
-    hooks:
-      - id: mypy
-        exclude: ^docs/
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.12.0
