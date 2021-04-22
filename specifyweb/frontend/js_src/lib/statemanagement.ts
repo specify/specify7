@@ -36,19 +36,6 @@ function assertExhaustive(caseType: never): never {
   );
 }
 
-/*
- * Assignees names to components so that they easier to identify in the
- * inspector and profiler
- */
-export function namedComponent<T>(
-  componentName: string,
-  componentFunction: T
-): T {
-  // @ts-expect-error
-  componentFunction.displayName = componentName;
-  return componentFunction;
-}
-
 export const generateReducer = <STATE, ACTION extends Action<string>>(
   object: GenerateReducerDictionary<STATE, ACTION>
 ): ((state: STATE, key: ACTION) => STATE) => <Key2 extends keyof typeof object>(

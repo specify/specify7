@@ -8,7 +8,6 @@
 'use strict';
 
 import React from 'react';
-import { namedComponent } from '../statemanagement';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import type {
   CustomSelectElementDefaultOptionProps,
@@ -62,47 +61,39 @@ export type MappingElementProps =
       readonly fieldsData: HtmlGeneratorFieldsData;
     });
 
-export const ListOfBaseTables = React.memo(
-  namedComponent(
-    'ListOfBaseTables',
-    ({
-      listOfTables,
-      handleChange,
-      showHiddenTables,
-    }: {
-      readonly listOfTables: DataModelListOfTables;
-      readonly handleChange: (
-        newValue: string,
-        isRelationship: boolean
-      ) => void;
-      readonly showHiddenTables: boolean;
-    }) => (
-      <MappingElement
-        isOpen={true}
-        handleChange={handleChange}
-        selectLabel=""
-        fieldsData={Object.fromEntries(
-          (showHiddenTables
-            ? Object.entries(listOfTables)
-            : Object.entries(listOfTables).filter(
-                ([, { isHidden }]) => !isHidden
-              )
-          ).map(([tableName, { tableFriendlyName, isHidden }]) => [
+export const ListOfBaseTables = React.memo(function ListOfBaseTables({
+  listOfTables,
+  handleChange,
+  showHiddenTables,
+}: {
+  readonly listOfTables: DataModelListOfTables;
+  readonly handleChange: (newValue: string, isRelationship: boolean) => void;
+  readonly showHiddenTables: boolean;
+}) {
+  return (
+    <MappingElement
+      isOpen={true}
+      handleChange={handleChange}
+      selectLabel=""
+      fieldsData={Object.fromEntries(
+        (showHiddenTables
+          ? Object.entries(listOfTables)
+          : Object.entries(listOfTables).filter(([, { isHidden }]) => !isHidden)
+        ).map(([tableName, { tableFriendlyName, isHidden }]) => [
+          tableName,
+          {
+            fieldFriendlyName: tableFriendlyName,
             tableName,
-            {
-              fieldFriendlyName: tableFriendlyName,
-              tableName,
-              isRelationship: true,
-              isHidden,
-            },
-          ])
-        )}
-        customSelectType="BASE_TABLE_SELECTION_LIST"
-        customSelectSubtype="simple"
-      />
-    )
-  )
-);
+            isRelationship: true,
+            isHidden,
+          },
+        ])
+      )}
+      customSelectType="BASE_TABLE_SELECTION_LIST"
+      customSelectSubtype="simple"
+    />
+  );
+});
 
 export function MappingLineComponent({
   lineData,

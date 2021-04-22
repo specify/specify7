@@ -1,5 +1,4 @@
 import React from 'react';
-import { namedComponent } from '../statemanagement';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import { MappingPathComponent } from './wbplanviewcomponents';
@@ -15,46 +14,42 @@ export type PathIsMappedBind = (
   mappingPathFilter: MappingPath
 ) => boolean;
 
-export const MappingsControlPanel = React.memo(
-  namedComponent(
-    // FIXME: remove namedComponents
-    'MappingsControlPanel',
-    ({
-      showHiddenFields,
-      handleToggleHiddenFields,
-      mappingIsTemplated,
-      handleAddNewHeader,
-      handleToggleMappingIsTemplated,
-    }: {
-      readonly showHiddenFields: boolean;
-      readonly handleToggleHiddenFields?: () => void;
-      readonly handleAddNewHeader?: () => void;
-      readonly handleToggleMappingIsTemplated?: () => void;
-      readonly mappingIsTemplated: boolean;
-    }) => (
-      <div>
-        <button onClick={handleAddNewHeader}>Add new column</button>
-        <label>
-          <input
-            type="checkbox"
-            checked={mappingIsTemplated}
-            onChange={handleToggleMappingIsTemplated}
-          />
-          Use this mapping as a template
-        </label>
-        <label>
-          {' '}
-          <input
-            type="checkbox"
-            checked={showHiddenFields}
-            onChange={handleToggleHiddenFields}
-          />
-          Reveal hidden fields
-        </label>
-      </div>
-    )
-  )
-);
+export const MappingsControlPanel = React.memo(function MappingsControlPanel({
+  showHiddenFields,
+  handleToggleHiddenFields,
+  mappingIsTemplated,
+  handleAddNewHeader,
+  handleToggleMappingIsTemplated,
+}: {
+  readonly showHiddenFields: boolean;
+  readonly handleToggleHiddenFields?: () => void;
+  readonly handleAddNewHeader?: () => void;
+  readonly handleToggleMappingIsTemplated?: () => void;
+  readonly mappingIsTemplated: boolean;
+}) {
+  return (
+    <div>
+      <button onClick={handleAddNewHeader}>Add new column</button>
+      <label>
+        <input
+          type="checkbox"
+          checked={mappingIsTemplated}
+          onChange={handleToggleMappingIsTemplated}
+        />
+        Use this mapping as a template
+      </label>
+      <label>
+        {' '}
+        <input
+          type="checkbox"
+          checked={showHiddenFields}
+          onChange={handleToggleHiddenFields}
+        />
+        Reveal hidden fields
+      </label>
+    </div>
+  );
+});
 
 export function FormatValidationResults(props: {
   readonly baseTableName: string;

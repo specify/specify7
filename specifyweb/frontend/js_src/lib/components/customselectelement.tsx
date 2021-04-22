@@ -9,7 +9,6 @@
 
 import React from 'react';
 import icons from '../icons';
-import { namedComponent } from '../statemanagement';
 import type { IR, R } from './wbplanview';
 
 export type CustomSelectType =
@@ -213,58 +212,53 @@ export function Icon({
   );
 }
 
-const Option = React.memo(
-  namedComponent(
-    'Option',
-    ({
-      optionLabel,
-      title,
-      isEnabled = true,
-      isRelationship = false,
-      isDefault = false,
-      tableName = '',
-      handleClick,
-    }: CustomSelectElementOptionProps) => {
-      const classes = ['custom-select-option'];
+const Option = React.memo(function Option({
+  optionLabel,
+  title,
+  isEnabled = true,
+  isRelationship = false,
+  isDefault = false,
+  tableName = '',
+  handleClick,
+}: CustomSelectElementOptionProps) {
+  const classes = ['custom-select-option'];
 
-      if (!isEnabled && !isRelationship)
-        // Don't disable relationships
-        classes.push('custom-select-option-disabled');
+  if (!isEnabled && !isRelationship)
+    // Don't disable relationships
+    classes.push('custom-select-option-disabled');
 
-      if (isRelationship) classes.push('custom-select-option-relationship');
+  if (isRelationship) classes.push('custom-select-option-relationship');
 
-      if (isDefault) classes.push('custom-select-option-selected');
+  if (isDefault) classes.push('custom-select-option-selected');
 
-      return (
-        <span
-          className={classes.join(' ')}
-          tabIndex={0}
-          onClick={handleClick}
-          title={title}
-        >
-          <span className="custom-select-option-icon">
-            <Icon
-              optionLabel={optionLabel}
-              isRelationship={isRelationship}
-              isEnabled={isEnabled}
-              tableName={tableName}
-            />
-          </span>
-          <span
-            className={`custom-select-option-label ${
-              optionLabel === '0' ? 'custom-select-option-label-unmapped' : ''
-            }`}
-          >
-            {optionLabel === '0' ? 'UNMAP' : optionLabel}
-          </span>
-          {isRelationship && (
-            <span className="custom-select-option-relationship">▶</span>
-          )}
-        </span>
-      );
-    }
-  )
-);
+  return (
+    <span
+      className={classes.join(' ')}
+      tabIndex={0}
+      onClick={handleClick}
+      title={title}
+    >
+      <span className="custom-select-option-icon">
+        <Icon
+          optionLabel={optionLabel}
+          isRelationship={isRelationship}
+          isEnabled={isEnabled}
+          tableName={tableName}
+        />
+      </span>
+      <span
+        className={`custom-select-option-label ${
+          optionLabel === '0' ? 'custom-select-option-label-unmapped' : ''
+        }`}
+      >
+        {optionLabel === '0' ? 'UNMAP' : optionLabel}
+      </span>
+      {isRelationship && (
+        <span className="custom-select-option-relationship">▶</span>
+      )}
+    </span>
+  );
+});
 
 function OptionGroup({
   selectGroupName,
@@ -309,18 +303,19 @@ function OptionGroup({
   );
 }
 
-const ShadowListOfOptions = React.memo(
-  namedComponent(
-    'ShadowListOfOptions',
-    ({ fieldNames }: { readonly fieldNames: Readonly<string[]> }) => (
-      <span className="custom-select-element-shadow-list">
-        {fieldNames.map((fieldName, index) => (
-          <span key={index}>{fieldName}</span>
-        ))}
-      </span>
-    )
-  )
-);
+const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
+  fieldNames,
+}: {
+  readonly fieldNames: Readonly<string[]>;
+}) {
+  return (
+    <span className="custom-select-element-shadow-list">
+      {fieldNames.map((fieldName, index) => (
+        <span key={index}>{fieldName}</span>
+      ))}
+    </span>
+  );
+});
 
 const NON_INTERACTIVE_SELECT_TYPES: Readonly<CustomSelectType[]> = [
   'PREVIEW_LIST',
