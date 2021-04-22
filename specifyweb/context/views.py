@@ -18,6 +18,7 @@ from django.urls import URLPattern, URLResolver
 from specifyweb.specify.models import Collection, Spversion,Agent, Institution, Specifyuser, Spprincipal
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.schema import base_schema
 from specifyweb.specify.specify_jar import specify_jar
 
 from .app_resource import get_app_resource
@@ -340,9 +341,9 @@ def create_tag(path):
     return path_parts[0] if len(path_parts) > 0 else '/'
 
 def get_tags(endpoints):
-    tag_names = sorted(set([
+    tag_names = sorted({
         endpoint['get']['tags'][0] for endpoint in endpoints.values()
-    ]))
+    })
 
     return [
         dict(
@@ -387,42 +388,17 @@ def get_endpoints(patterns, prefix="/", preparams=[]):
 @require_GET
 @cache_control(max_age=86400, public=True)
 def api_endpoints(request):
-    "Returns a JSON description of all endpoints served."
+    """Returns a JSON description of all endpoints served."""
 
     endpoints = dict(get_endpoints(urlconf.urlpatterns))
     tags = list(get_tags(endpoints))
 
-    spec = dict(
-        openapi="3.0.0",
-        info=dict(
-            title="Specify 7 API",
-            version="7.6",
-            description="Description of all Specify 7 API endpoints",
-            license=dict(
-                name="GPL-2.0 License",
-                url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html",
-            ),
-        ),
-        servers=[
-            dict(
-                url="/",
-                description="Current Specify 7 Instance"
-            ),
-            dict(
-                url="http://demo7.specifysoftware.org/",
-                description="Specify 7 Public Demo Instance"
-            ),
-            dict(
-                url='{url}',
-                variables=dict(
-                    url=dict(
-                        default="/"
-                    )
-                ),
-                description="Custom Specify 7 Server"
-            )
-        ],
-        tags=tags,
-        paths=endpoints
-    )
+    spec = {
+        **base_schema(),
+        **dict(
+            tags=tags,
+            paths=endpoints
+        )
+    }
+
     return JsonResponse(spec)
