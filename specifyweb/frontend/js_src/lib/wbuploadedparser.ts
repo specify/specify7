@@ -14,7 +14,7 @@ import type { UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import {
   extractDefaultValues,
-  fullMappingPathParser,
+  splitFullMappingPathComponents,
 } from './wbplanviewhelper';
 import { getNameFromTreeRankName } from './wbplanviewmodelhelper';
 import {
@@ -347,7 +347,8 @@ function formatListOfRows(
   mappedRanks: IR<string>,
   matchedRecordsNames: Record<number, string>,
   headers: string[],
-  treeRanks: string[]
+  treeRanks: string[],
+  defaultValues: IR<string>
 ) {
   const rows: [number, UploadedTreeRank][] = listOfRows
     .filter(({ treeInfo }) => typeof treeInfo !== 'undefined')
@@ -361,9 +362,11 @@ function formatListOfRows(
         }),
         ...row,
         nodeName:
-          data[row.rowIndex][
-            headers.indexOf(mappedRanks[treeInfo!.rankName])
-          ] || matchedRecordsNames[row.recordId],
+          insertDefaultValue(
+            defaultValues,
+            mappedRanks[treeInfo!.rankName],
+            data[row.rowIndex][headers.indexOf(mappedRanks[treeInfo!.rankName])]
+          ) || matchedRecordsNames[row.recordId],
       },
     ]);
   const rowsObject = Object.fromEntries(
@@ -616,27 +619,22 @@ export function parseUploadResults(
   );
   const arrayOfMappings = mappingsTreeToArrayOfMappings(mappingsTree);
   const mappedRanksTree = arrayOfMappings
+    .map(splitFullMappingPathComponents)
     .filter(
-      (fullMappingPath) =>
-        fullMappingPath.length >= 4 &&
-        fullMappingPath[fullMappingPath.length - 4] === 'name'
+      ({ mappingPath }) =>
+        mappingPath.length >= 2 &&
+        mappingPath[mappingPath.length - 1] === 'name'
     )
-    .map((fullMappingPath) => {
-      const [mappingPath, , headerName] = fullMappingPathParser(
-        fullMappingPath
-      );
-
-      return arrayToTree(
+    .map(({ mappingPath, headerName }) =>
+      arrayToTree(
         [
-          ...(mappingPath.length === 2
-            ? [baseTableName]
-            : mappingPath.slice(-2, -1)),
-          getNameFromTreeRankName(mappingPath.slice(-1)[0]),
+          mappingPath.length === 2 ? [baseTableName] : mappingPath.slice(-2)[0],
+          getNameFromTreeRankName(mappingPath.slice(-2)[0]),
           headerName,
         ],
         true
-      );
-    })
+      )
+    )
     .reduce(deepMergeObject, {}) as IR<IR<string>>;
 
   const defaultValues = extractDefaultValues(arrayOfMappings);
@@ -673,7 +671,8 @@ export function parseUploadResults(
           mappedRanks,
           matchedRecordsNames[originalTableName],
           headers,
-          treeRanks[tableName]
+          treeRanks[tableName],
+          defaultValues
         );
 
         const tree: Record<number, UploadedTreeRankProcessed | undefined> = {};
