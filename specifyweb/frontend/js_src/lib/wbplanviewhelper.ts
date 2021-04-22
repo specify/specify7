@@ -10,11 +10,18 @@
 import type { IR } from './components/wbplanview';
 import type {
   FullMappingPath,
+  MappingLine,
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
 import type { ColumnOptions } from './uploadplantomappingstree';
-import { mappingPathToString } from './wbplanviewmodelhelper';
+import dataModelStorage from './wbplanviewmodel';
+import {
+  mappingPathToString,
+  valueIsReferenceItem,
+  valueIsTreeRank,
+} from './wbplanviewmodelhelper';
+import { getMappingLineData } from './wbplanviewnavigator';
 
 /*
  * Get a friendly name from the field. (Converts Camel Case to human-readable
@@ -191,3 +198,50 @@ export const extractDefaultValues = (
       )
       .filter(([, defaultValue]) => defaultValue !== null)
   );
+
+export function generateMappingPathPreview(
+  baseTableName: string,
+  mappingPath: MappingPath
+): string {
+  const mappingLineData = getMappingLineData({
+    baseTableName,
+    mappingPath,
+    customSelectType: 'OPENED_LIST',
+    showHiddenFields: false,
+  })
+    .slice(-3)
+    .map(
+      ({ fieldsData }, index) =>
+        (Object.values(fieldsData).find(({ isDefault }) => isDefault)
+          ?.fieldFriendlyName as string) ??
+        mappingPath[mappingPath.length - 1 - index]
+    );
+
+  const [
+    fieldName,
+    possibleTableName,
+    tableName = dataModelStorage.tables[baseTableName].tableFriendlyName,
+  ] = mappingLineData.reverse();
+
+  if (mappingLineData.length === 1) return fieldName;
+
+  if (valueIsTreeRank(mappingPath.slice(-2)[0]))
+    return mappingPath.slice(-1)[0] === 'name'
+      ? possibleTableName
+      : `${possibleTableName} ${fieldName}`;
+  else if (valueIsReferenceItem(mappingPath.slice(-2)[0]))
+    return `${tableName} ${fieldName} ${possibleTableName}`;
+  else return `${possibleTableName} ${fieldName}`;
+}
+
+export const renameNewlyCreatedHeaders = (
+  baseTableName: string,
+  headers: Readonly<string[]>,
+  lines: MappingLine[]
+): MappingLine[] =>
+  lines.map(({ name, ...rest }) => ({
+    ...rest,
+    name: headers.includes(name)
+      ? name
+      : generateMappingPathPreview(baseTableName, rest.mappingPath),
+  }));

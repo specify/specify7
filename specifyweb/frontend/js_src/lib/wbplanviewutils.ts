@@ -17,7 +17,10 @@ import type {
 } from './components/wbplanviewstatereducer';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
-import { findDuplicateMappings } from './wbplanviewhelper';
+import {
+  findDuplicateMappings,
+  renameNewlyCreatedHeaders,
+} from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
   formatReferenceItem,
@@ -49,7 +52,14 @@ export function savePlan(
   // Props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
   const uploadPlan = mappingsTreeToUploadPlan(
     state.baseTableName,
-    getMappingsTree(state.lines, true),
+    getMappingsTree(
+      renameNewlyCreatedHeaders(
+        state.baseTableName,
+        props.dataset.columns,
+        state.lines
+      ),
+      true
+    ),
     state.mustMatchPreferences
   );
 
