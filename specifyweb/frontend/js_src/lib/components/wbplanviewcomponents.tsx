@@ -37,7 +37,7 @@ export interface HtmlGeneratorFieldData {
 
 interface MappingLineBaseProps {
   readonly lineData: MappingElementProps[];
-  readonly mappingType: MappingType; // FIXME: remove this
+  readonly mappingType: MappingType;
   readonly headerName: string;
   readonly isFocused: boolean;
   readonly handleFocus: () => void;
@@ -112,9 +112,7 @@ export function MappingLineComponent({
   handleFocus,
   handleClearMapping,
 }: MappingLineBaseProps & {
-  readonly: boolean;
-} & {
-  readonly mappingType: MappingType;
+  readonly readonly: boolean;
 }): JSX.Element {
   return (
     <div

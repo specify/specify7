@@ -80,9 +80,7 @@ const uploadPlanProcessingFunctions = (
     ] => [
       key,
       {
-        [headers.includes(typeof value === 'string' ? value : value.column)
-          ? 'existingHeader'
-          : 'newColumn']:
+        existingHeader:
           typeof value === 'string'
             ? {
                 [value]: defaultLineOptions,

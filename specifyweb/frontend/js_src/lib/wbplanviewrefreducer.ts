@@ -8,7 +8,11 @@ import * as cache from './wbplanviewcache';
 import type { WBPlanViewActions } from './wbplanviewreducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
-export type AutoScrollTypes = 'listOfMappings' | 'mappingView';
+export type AutoScrollTypes =
+  // Scroll down to the last line in the list of mappings
+  | 'listOfMappings'
+  // Scroll to the left in the mapping view
+  | 'mappingView';
 
 export interface RefMappingState extends State<'RefMappingState'> {
   unloadProtectIsSet: boolean;

@@ -38,8 +38,13 @@ export type AutomapperScope =
 export type MappingPath = string[];
 export type FullMappingPath = [...string[], MappingType, string, ColumnOptions];
 export type ListOfHeaders = string[];
-// FIXME: remove the need for this
-export type MappingType = 'existingHeader' | 'newColumn';
+/*
+ * MappingType remains here from the time when we had `NewHeader` and
+ *  `NewStaticHeader`. Also, it is not removed as it might be useful in the
+ *  future if we would want to add new mapping types
+ *
+ */
+export type MappingType = 'existingHeader';
 export type RelationshipType =
   | 'one-to-one'
   | 'one-to-many'
@@ -90,7 +95,6 @@ export default function WBPlanViewMapper(
     readonly handleMappingViewMap: () => void;
     readonly handleAddNewHeader: () => void;
     readonly handleToggleHiddenFields: () => void;
-    readonly handleAddNewColumn: () => void;
     readonly readonly: boolean;
     readonly handleOpen: (line: number, index: number) => void;
     readonly handleClose: () => void;
@@ -460,9 +464,14 @@ export default function WBPlanViewMapper(
 
       <MappingsControlPanel
         showHiddenFields={props.showHiddenFields}
-        handleChange={props.handleToggleHiddenFields}
-        handleAddNewColumn={
-          (!props.readonly && props.handleAddNewColumn) || undefined
+        handleToggleHiddenFields={props.handleToggleHiddenFields}
+        handleAddNewHeader={
+          props.readonly
+            ? undefined
+            : (): void => {
+                props.handleAddNewHeader();
+                props.handleAutoscrollStatusChange('listOfMappings', true);
+              }
         }
         handleToggleMappingIsTemplated={
           (!props.readonly && props.handleToggleMappingIsTemplated) || undefined

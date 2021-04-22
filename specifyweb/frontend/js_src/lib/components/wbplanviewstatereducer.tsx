@@ -399,9 +399,6 @@ export const stateReducer = generateReducer<
           handleAddNewHeader={(): void =>
             state.dispatch({ type: 'AddNewHeaderAction' })
           }
-          handleAddNewColumn={(): void =>
-            state.dispatch({ type: 'AddNewHeaderAction' })
-          }
           handleOpen={(line: number, index: number): void =>
             state.dispatch({
               type: 'OpenSelectElementAction',

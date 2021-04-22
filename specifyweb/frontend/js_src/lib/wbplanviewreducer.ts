@@ -375,7 +375,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       ...mappingState(state).lines,
       {
         name: `New Header ${mappingState(state).newHeaderId}`,
-        type: 'newColumn',
+        type: 'existingHeader',
         mappingPath: ['0'],
         options: defaultLineOptions,
       },

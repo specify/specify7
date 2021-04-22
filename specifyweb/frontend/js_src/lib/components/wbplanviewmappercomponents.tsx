@@ -17,21 +17,23 @@ export type PathIsMappedBind = (
 
 export const MappingsControlPanel = React.memo(
   namedComponent(
+    // FIXME: remove namedComponents
     'MappingsControlPanel',
     ({
       showHiddenFields,
-      handleChange,
+      handleToggleHiddenFields,
       mappingIsTemplated,
-      /* HandleAddNewColumn, */
+      handleAddNewHeader,
       handleToggleMappingIsTemplated,
     }: {
       readonly showHiddenFields: boolean;
-      readonly handleChange?: () => void;
-      readonly handleAddNewColumn?: () => void;
+      readonly handleToggleHiddenFields?: () => void;
+      readonly handleAddNewHeader?: () => void;
       readonly handleToggleMappingIsTemplated?: () => void;
       readonly mappingIsTemplated: boolean;
     }) => (
       <div>
+        <button onClick={handleAddNewHeader}>Add new column</button>
         <label>
           <input
             type="checkbox"
@@ -40,13 +42,12 @@ export const MappingsControlPanel = React.memo(
           />
           Use this mapping as a template
         </label>
-        {/* <button onClick={handleAddNewColumn}>Add new column</button>*/}
         <label>
           {' '}
           <input
             type="checkbox"
             checked={showHiddenFields}
-            onChange={handleChange}
+            onChange={handleToggleHiddenFields}
           />
           Reveal hidden fields
         </label>
