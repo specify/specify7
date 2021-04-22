@@ -22,5 +22,20 @@ def specify(request):
     })
     return HttpResponse(resp)
 
-def api(request):
-    return render(request, 'swagger-ui.html')
+def api_schema(request):
+    return render(
+        request,
+        'swagger-ui.html',
+        dict(
+            open_api_schema_endpoint='/api/specify_schema/openapi.json',
+        )
+    )
+
+def api_endpoints(request):
+    return render(
+        request,
+        'swagger-ui.html',
+        dict(
+            open_api_schema_endpoint='/context/api_endpoints.json',
+        )
+    )

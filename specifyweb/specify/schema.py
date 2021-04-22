@@ -3,6 +3,7 @@ from typing import Dict, List, Union
 from django.views.decorators.http import require_GET
 from django import http
 
+from django.conf import settings
 from .views import login_maybe_required
 from .datamodel import (
     datamodel,
@@ -18,7 +19,7 @@ def base_schema() -> Dict:
         "openapi": "3.0.0",
         "info": {
             "title": "Specify 7 API",
-            "version": "7.6",  # TODO: don't hardcore the version
+            "version": settings.VERSION,
             "description": "Description of all Specify 7 API endpoints",
             "license": {
                 "name": "GPS-2.0 Licence",
@@ -29,6 +30,25 @@ def base_schema() -> Dict:
             "description": "How to use specifyweb API as a generic webservice",
             "url": "https://github.com/specify/specify7/wiki/Api-Demo",
         },
+        "servers": [
+            {
+                "url": "/",
+                "description": "Current Specify 7 Instance",
+            },
+            {
+                "url": "http://demo7.specifysoftware.org/",
+                "description": "Specify 7 Public Demo Instance"
+            },
+            {
+                "url": "{url}",
+                "variables": {
+                    "url": {
+                        "default": "/",
+                    },
+                },
+                "description": "Custom Specify 7 Server",
+            }
+        ],
     }
 
 
@@ -103,8 +123,8 @@ def view(request, model: str) -> http.HttpResponse:
 def table_to_endpoint(table: Table) -> Dict:
     return {
         "get": {
-            "tags": ["table"],
-            "summary": "Get records from the "
+            "tags": [table.django_name],
+            "summary": "Query and manipulate records from the "
             + table.django_name
             + " table",
             "description": "TODO: description",
