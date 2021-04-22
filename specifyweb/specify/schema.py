@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from django.views.decorators.http import require_GET
 from django import http
@@ -257,9 +257,9 @@ def view(request, model: str) -> http.HttpResponse:
     return http.JsonResponse(table_to_schema(table))
 
 
-def table_to_endpoint(table: Table) -> Dict:
+def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
     return [
-        [
+        (
             "/api/specify/" + table.django_name,
             {
                 "get": {
@@ -347,8 +347,8 @@ def table_to_endpoint(table: Table) -> Dict:
                     },
                 },
             },
-        ],
-        [
+        ),
+        (
             "/api/specify/" + table.django_name + "/{id}",
             {
                 "parameters": [
@@ -466,7 +466,7 @@ def table_to_endpoint(table: Table) -> Dict:
                     },
                 },
             },
-        ],
+        ),
     ]
 
 
