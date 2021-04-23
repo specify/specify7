@@ -330,6 +330,10 @@ const SELECT_TYPES_WITH_FIRST_ROW: Readonly<CustomSelectType[]> = [
   'SUGGESTION_LINE_LIST',
   'MAPPING_OPTIONS_LIST',
 ] as const;
+const SELECT_TYPES_WITH_AUTOSCROLL: Readonly<CustomSelectType[]> = [
+  'CLOSED_LIST',
+  'OPENED_LIST',
+] as const;
 
 export function CustomSelectElement({
   customSelectType,
@@ -481,6 +485,8 @@ export function CustomSelectElement({
       listOfOptionsRef.current !== null &&
       // And list has a value
       defaultOption.optionName !== '0' &&
+      // And this type of picklist has autoscroll enabled
+      SELECT_TYPES_WITH_AUTOSCROLL.includes(customSelectType) &&
       // And the list is not already scrolled
       listOfOptionsRef.current.scrollTop === 0
     ) {
@@ -505,7 +511,7 @@ export function CustomSelectElement({
           listOfOptionsRef.current.offsetTop -
           selectedOption.offsetHeight / 2;
     }
-  }, [isOpen, listOfOptionsRef]);
+  }, [isOpen, listOfOptionsRef, Object.values(defaultOption).join('')]);
 
   return (
     <span
