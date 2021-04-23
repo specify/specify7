@@ -22,6 +22,7 @@ import type { Action } from './statemanagement';
 import { generateReducer } from './statemanagement';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import * as cache from './wbplanviewcache';
+import { uniquefyHeaders } from './wbplanviewhelper';
 import {
   defaultLineOptions,
   getLinesFromHeaders,
@@ -376,7 +377,13 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     lines: [
       ...mappingState(state).lines,
       {
-        name: `New Header ${mappingState(state).newHeaderId}`,
+        name: uniquefyHeaders(
+          [
+            ...mappingState(state).lines.map(({ name }) => name),
+            `New Header ${mappingState(state).newHeaderId}`,
+          ],
+          [mappingState(state).lines.length]
+        ).slice(-1)[0],
         type: 'existingHeader',
         mappingPath: ['0'],
         options: defaultLineOptions,

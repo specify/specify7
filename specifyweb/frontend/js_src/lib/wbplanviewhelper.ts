@@ -234,14 +234,55 @@ export function generateMappingPathPreview(
   else return `${possibleTableName} ${fieldName}`;
 }
 
-export const renameNewlyCreatedHeaders = (
+export function renameNewlyCreatedHeaders(
   baseTableName: string,
   headers: Readonly<string[]>,
   lines: MappingLine[]
-): MappingLine[] =>
-  lines.map(({ name, ...rest }) => ({
-    ...rest,
-    name: headers.includes(name)
-      ? name
-      : generateMappingPathPreview(baseTableName, rest.mappingPath),
+): MappingLine[] {
+  const generatedHeaderPreviews = Object.fromEntries(
+    lines
+      .map((line, index) => ({ line, index }))
+      .filter(({ line }) => !headers.includes(line.name))
+      .map(({ line, index }) => [
+        index,
+        generateMappingPathPreview(baseTableName, line.mappingPath),
+      ])
+  );
+
+  const newHeaders = lines.map(
+    ({ name }, index) => generatedHeaderPreviews[index] ?? name
+  );
+
+  const uniqueHeaders = uniquefyHeaders(
+    newHeaders,
+    Object.keys(generatedHeaderPreviews).map((index) => Number.parseInt(index))
+  );
+
+  return lines.map((line, index) => ({
+    ...line,
+    name: uniqueHeaders[index],
   }));
+}
+
+export const uniquefyHeaders = (
+  headers: Readonly<string[]>,
+  headersToUniquefy: Readonly<number[]> | false = false
+): string[] =>
+  headers
+    .map((header) => (header ? header : '(no header)'))
+    .map((header, index, headers) =>
+      headers.indexOf(header) === index ||
+      (Array.isArray(headersToUniquefy) && !headersToUniquefy.includes(index))
+        ? header
+        : `${header} (${
+            headers
+              .slice(0, index)
+              .reduce(
+                (numberOfOccurrences, headerOccurrence) =>
+                  header === headerOccurrence
+                    ? numberOfOccurrences + 1
+                    : numberOfOccurrences,
+                0
+              ) + 1
+          })`
+    );
