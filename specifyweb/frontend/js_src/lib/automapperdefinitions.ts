@@ -425,6 +425,11 @@ const definitions: AutoMapperDefinitions = {
             contains: ['latitude 1'],
           },
         },
+        suggestion: {
+          headers: {
+            contains: ['latitude'],
+          },
+        },
       },
       latitude2: {
         automapper: {
@@ -437,6 +442,11 @@ const definitions: AutoMapperDefinitions = {
         automapper: {
           headers: {
             contains: ['longitude 1'],
+          },
+        },
+        suggestion: {
+          headers: {
+            contains: ['longitude'],
           },
         },
       },
