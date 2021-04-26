@@ -170,6 +170,7 @@ module.exports = Backbone.View.extend({
       toolkit.style.display = '';
     else
       toolkit.style.display = 'none';
+    this.wbview.resize.bind(this.wbview)();
   },
   fillCells({startRow, endRow, col, value}) {
     this.wbview.hot.setDataAtCell(

@@ -549,13 +549,9 @@ const WBView = Backbone.View.extend({
         return true;
     },
     calcHeight: function() {
-
-        const offsetTop = this.$el.offset().top;
-
-        if(offsetTop === 0)
+        if(this.$el.offset().top === 0)
             setTimeout(this.resize.bind(this), 20);
-
-        return $(window).height() - offsetTop - 55;
+        return $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset().top;
     },
     saveClicked: function() {
         this.save().done();
