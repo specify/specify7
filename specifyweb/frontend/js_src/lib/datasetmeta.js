@@ -47,7 +47,12 @@ export default Backbone.View.extend({
           style="width: 100%"
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
-      </label>
+      </label><br><br>
+      <b>Dataset Metadata:</b><br>
+      Number of rows: <i>${this.dataset.rows.length}</i><br>
+      Date created: <i>${new Date(this.dataset.timestampcreated)}</i><br>
+      Date modified: <i>${new Date(this.dataset.timestampmodified)}</i><br>
+      Imported file name: <i>${this.dataset.importedfilename}</i><br>
     </div>`).dialog({
       title: 'Edit dataset metadata',
       modal: true,
