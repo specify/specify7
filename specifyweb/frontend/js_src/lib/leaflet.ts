@@ -20,10 +20,22 @@ export function showLeafletMap({
 }: {
   readonly localityPoints: LocalityData[];
   readonly markerClickCallback?: () => void;
-  readonly leafletMapContainer: JQuery<HTMLDivElement> | undefined;
-}): L.Map {
-  if (typeof leafletMapContainer === 'undefined')
-    leafletMapContainer = $(`<div></div>`);
+  readonly leafletMapContainer: string | JQuery<HTMLDivElement> | undefined;
+}): L.Map | undefined {
+  if (
+    typeof leafletMapContainer === 'string' &&
+    document.getElementById(leafletMapContainer) !== null
+  )
+    return;
+
+  if (typeof leafletMapContainer !== 'object')
+    leafletMapContainer = $(
+      `<div ${
+        typeof leafletMapContainer === 'undefined'
+          ? ''
+          : `id="${leafletMapContainer}"`
+      }></div>`
+    );
 
   leafletMapContainer.dialog({
     width: 900,

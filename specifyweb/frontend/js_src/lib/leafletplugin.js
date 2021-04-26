@@ -40,6 +40,7 @@ module.exports = UIPlugin.extend(
         (localityData) =>
           Leaflet.showLeafletMap({
             localityPoints: [localityData],
+            leafletMapContainer: 'leaflet-plugin'
           })
       );
     },
