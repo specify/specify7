@@ -264,6 +264,20 @@ export function renameNewlyCreatedHeaders(
   }));
 }
 
+const formatUniqueifiedHeader = (
+  headers: Readonly<string[]>,
+  header: string,
+  initialIndex: number
+): string =>
+  `${header} (${
+    initialIndex +
+    ([...Array.from({ length: 100 })]
+      .map((_, index) => index)
+      .find(
+        (index) => !headers.includes(`${header} (${initialIndex + index})`)
+      ) ?? Math.floor(Math.random() * 2 ** 11))
+  })`;
+
 export const uniquefyHeaders = (
   headers: Readonly<string[]>,
   headersToUniquefy: Readonly<number[]> | false = false
@@ -274,7 +288,9 @@ export const uniquefyHeaders = (
       headers.indexOf(header) === index ||
       (Array.isArray(headersToUniquefy) && !headersToUniquefy.includes(index))
         ? header
-        : `${header} (${
+        : formatUniqueifiedHeader(
+            headers,
+            header,
             headers
               .slice(0, index)
               .reduce(
@@ -284,5 +300,5 @@ export const uniquefyHeaders = (
                     : numberOfOccurrences,
                 0
               ) + 1
-          })`
+          )
     );
