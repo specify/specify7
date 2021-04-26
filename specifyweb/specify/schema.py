@@ -1,20 +1,26 @@
+"""API schema generation based on Specify data model."""
+
+from django import http
+from django.conf import settings
+from django.views.decorators.http import require_GET
 from typing import Dict, List, Tuple, Union
 
-from django.views.decorators.http import require_GET
-from django import http
-
-from django.conf import settings
-from .views import login_maybe_required
 from .datamodel import (
-    datamodel,
-    Table,
     Field,
     Relationship,
+    Table,
     TableDoesNotExistError,
+    datamodel,
 )
+from .views import login_maybe_required
 
 
 def base_schema() -> Dict:
+    """Return base schema object that is shared between both Swagger UI's.
+
+    returns:
+        base object to use for OpenAPI schema
+    """
     return {
         "openapi": "3.0.0",
         "info": {
@@ -61,8 +67,13 @@ record_version_description = (
 @login_maybe_required
 @require_GET
 def openapi(request) -> http.HttpResponse:
-    """Returns a OpenAPI spec for the Specify API at "/api/specify/...".
-    This is a work in progress.
+    """Return an OpenAPI spec for the Specify API at "/api/specify/...".
+
+    params:
+        request: the request object (unused)
+
+    returns:
+        OpenAPI spec for the main Specify endpoint
     """
     spec = {
         **base_schema(),
@@ -246,8 +257,15 @@ def openapi(request) -> http.HttpResponse:
 @login_maybe_required
 @require_GET
 def view(request, model: str) -> http.HttpResponse:
-    """Returns a JSONSchema for the JSON representation of resources
-    of the given <model> type.
+    """Get JSONSchema for a given model.
+
+    params
+        request: the request object (unused)
+        model: the name of the table to display
+
+    returns:
+        JSONSchema for the JSON representation of resources
+        of the given <model> type.
     """
     try:
         table = datamodel.get_table_strict(model)
@@ -258,6 +276,14 @@ def view(request, model: str) -> http.HttpResponse:
 
 
 def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
+    """Generate OpenAPI for several endpoints based on table.
+
+    params:
+        table: the table object
+
+    returns:
+        OpenAPI for several endpoints
+    """
     return [
         (
             "/api/specify/" + table.django_name,
@@ -471,6 +497,14 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
 
 
 def table_to_schema(table: Table) -> Dict:
+    """Generate the OpenAPI schema's schema object for a table.
+
+    params:
+        table: the table object
+
+    returns:
+        OpenAPI schema's schema object for a table
+    """
     return {
         "title": table.django_name,
         "type": "object",
@@ -483,6 +517,14 @@ def table_to_schema(table: Table) -> Dict:
 
 
 def field_to_schema(field: Field) -> Dict:
+    """Generate the OpenAPI schema's schema object for a field of a table.
+
+    params:
+        field: the field object
+
+    returns:
+        OpenAPI schema's schema object for a field of a table
+    """
     if field.is_relationship:
         assert isinstance(field, Relationship)
         if field.dependent:
@@ -550,4 +592,13 @@ def field_to_schema(field: Field) -> Dict:
 def required_to_schema(
     field: Field, ftype: str
 ) -> Union[str, List[str]]:
+    """Handle nulls in OpenAPI schema.
+
+    params:
+        filed: the field object
+        ftype: the data type of the field
+
+    returns:
+        field's data type or a list of data types
+    """
     return ftype if field.required else [ftype, "null"]
