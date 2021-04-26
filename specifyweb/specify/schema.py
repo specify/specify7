@@ -486,14 +486,28 @@ def field_to_schema(field: Field) -> Dict:
     if field.is_relationship:
         assert isinstance(field, Relationship)
         if field.dependent:
-            if field.type == "one-to-one":
+            if (
+                field.type == "one-to-one"
+                or field.type == "many-to-one"
+            ):
                 return {
-                    "ref$": f"#components/schemas/{field.relatedModelName.capitalize()}"
+                    "$ref": f"#components/schemas/{field.relatedModelName.capitalize()}"
                 }
             else:
-                return {}
+                return {
+                    "type": "array",
+                    "items": {
+                        "$ref": f"#components/schemas/{field.relatedModelName.capitalize()}"
+                    },
+                }
         else:
-            return {}
+            return {
+                "type": "string",
+                "description": "A URL for querying information about a related record",
+                "example": "/api/specify/"
+                + field.relatedModelName.lower()
+                + "/3/",
+            }
 
     elif field.type in ("text", "java.lang.String"):
         return {
