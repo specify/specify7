@@ -140,7 +140,7 @@ export const mappingPathToString = (
 
 /* Iterates over the mappingsTree to find required fields that are missing */
 export function showRequiredMissingFields(
-  // Official name of the current base table (from data model)
+  // Name of the current base table
   tableName: string,
   /*
    * Result of running mappings.getMappingsTree() - an object with
@@ -153,7 +153,7 @@ export function showRequiredMissingFields(
   path: MappingPath = [],
   // Used internally in a recursion. Save results
   results: string[][] = []
-): string[][] /* Array of mapping paths (array) */ {
+): MappingPath[] {
   const tableData = dataModelStorage.tables[tableName];
 
   if (typeof mappingsTree === 'undefined') return results;

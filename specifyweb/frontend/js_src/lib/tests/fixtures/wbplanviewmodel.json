@@ -18448,5 +18448,14 @@
     "lithostrat": "",
     "storage": "Site",
     "taxon": "Life"
+  },
+  "originalRelationships": {
+    "value": {
+      "zero-to-one": {
+        "locality": ["geocoorddetails", "localitydetails"]
+      }
+    },
+    "useCount": 4,
+    "version": "5"
   }
 }

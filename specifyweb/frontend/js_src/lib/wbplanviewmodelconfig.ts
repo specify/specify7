@@ -1,5 +1,20 @@
 import type { IR } from './components/wbplanview';
+import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
+
+export const dataModelFetcherVersion = '5';
+export const cacheBucketName = 'dataModelFetcher';
+
+export const knownRelationshipTypes: Set<string> = new Set([
+  'one-to-one',
+  'one-to-many',
+  'many-to-one',
+  'many-to-many',
+]);
+
+export const aliasRelationshipTypes: IR<RelationshipType> = {
+  'zero-to-one': 'one-to-many',
+};
 
 export const fetchingParameters: {
   readonly requiredFieldsToHide: Readonly<string[]>;

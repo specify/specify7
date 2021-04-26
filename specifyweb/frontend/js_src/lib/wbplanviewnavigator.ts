@@ -576,7 +576,7 @@ export function getMappingLineData({
       internalState.generateMappingOptionsMenu = false;
     },
 
-    handleToManyChildren({ tableName }) {
+    handleToManyChildren({ tableName, parentTableName }) {
       internalState.customSelectSubtype = 'toMany';
 
       if (typeof internalState.nextMappingPathElement !== 'undefined')
@@ -599,15 +599,26 @@ export function getMappingLineData({
           tableName,
         };
       }
-      internalState.resultFields.add = {
-        fieldFriendlyName: 'Add',
-        isEnabled: true,
-        isRequired: false,
-        isHidden: false,
-        isRelationship: true,
-        isDefault: false,
-        tableName,
-      };
+
+      /*
+       * Allow only a single -to-many reference number for `zero-to-one`
+       * relationships
+       */
+      if (
+        maxMappedElementNumber < 1 ||
+        !dataModelStorage.originalRelationships['zero-to-one']?.[
+          parentTableName ?? ''
+        ]?.includes(internalState.currentMappingPathPart ?? '')
+      )
+        internalState.resultFields.add = {
+          fieldFriendlyName: 'Add',
+          isEnabled: true,
+          isRequired: false,
+          isHidden: false,
+          isRelationship: true,
+          isDefault: false,
+          tableName,
+        };
     },
 
     handleTreeRanks({ tableName }) {

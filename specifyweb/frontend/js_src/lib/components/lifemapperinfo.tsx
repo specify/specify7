@@ -24,7 +24,7 @@ import type { IR } from './wbplanview';
 import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
-const IS_DEVELOPMENT = false;
+const IS_DEVELOPMENT = true;
 const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
 // Const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
 const defaultOccurrenceName: Readonly<[string, string]> = [

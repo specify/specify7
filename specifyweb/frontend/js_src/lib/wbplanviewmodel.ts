@@ -9,6 +9,7 @@
 'use strict';
 
 import type { IR } from './components/wbplanview';
+import type { OriginalRelationships } from './wbplanviewmodelfetcher';
 import type {
   DataModelListOfTables,
   DataModelRanks,
@@ -23,6 +24,7 @@ const dataModelStorage: {
   listOfBaseTables: DataModelListOfTables;
   ranks: DataModelRanks;
   rootRanks: IR<string>;
+  originalRelationships: OriginalRelationships;
 } = {
   // Each one of this can be modified to a single symbol or several symbols
 
@@ -44,6 +46,12 @@ const dataModelStorage: {
   ranks: undefined!,
   // Root rank for each tree table
   rootRanks: undefined!,
+  /*
+   * A dictionary of [original-relationship-type] > [table-name] > field-name[]
+   * records for relationships that had their relationship types changed
+   * using `aliasRelationshipTypes` dictionary
+   */
+  originalRelationships: undefined!,
 };
 
 export default dataModelStorage;

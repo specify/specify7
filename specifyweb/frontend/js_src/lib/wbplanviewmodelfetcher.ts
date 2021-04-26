@@ -22,7 +22,13 @@ import * as cache from './wbplanviewcache';
 
 import { getFriendlyName } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
-import { fetchingParameters } from './wbplanviewmodelconfig';
+import {
+  aliasRelationshipTypes,
+  cacheBucketName,
+  dataModelFetcherVersion,
+  fetchingParameters,
+  knownRelationshipTypes,
+} from './wbplanviewmodelconfig';
 
 export type DataModelFieldWritable =
   | DataModelNonRelationshipWritable
@@ -75,6 +81,9 @@ type DataModelRanksWritable = Record<string, R<boolean>>;
 
 export type DataModelRanks = Readonly<DataModelRanksWritable>;
 
+export type OriginalRelationships = IR<IR<Readonly<string[]>>>;
+type OriginalRelationshipsWritable = R<R<string[]>>;
+
 // A dictionary like tableName==>tableFriendlyName
 type DataModelListOfTablesWritable = R<{
   tableFriendlyName: string;
@@ -84,10 +93,7 @@ type DataModelListOfTablesWritable = R<{
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 
 /* Fetches ranks for a particular table */
-const fetchRanks = async (
-  // Official table name (from the data model)
-  tableName: string
-): Promise<TableRanksInline> =>
+const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
     (domain as DomainType).getTreeDef(tableName).done((treeDefinition) =>
       treeDefinition.rget('treedefitems').done((treeDefItems) =>
@@ -119,24 +125,22 @@ const fieldShouldBeMadeOptional = (
     fieldName
   ) || false;
 
-const knownRelationshipTypes: Set<string> = new Set([
-  'one-to-one',
-  'one-to-many',
-  'many-to-one',
-  'many-to-many',
-]);
-const aliasRelationshipTypes: IR<RelationshipType> = {
-  'zero-to-one': 'one-to-many',
-};
-
 function handleRelationshipType(
-  relationshipType: RelationshipType
+  relationshipType: RelationshipType,
+  currentTableName: string,
+  relationshipName: string,
+  originalRelationships: OriginalRelationshipsWritable
 ): RelationshipType {
   if (knownRelationshipTypes.has(relationshipType)) return relationshipType;
   else {
-    if (relationshipType in aliasRelationshipTypes)
+    if (relationshipType in aliasRelationshipTypes) {
+      originalRelationships[relationshipType] ??= {};
+      originalRelationships[relationshipType][currentTableName] ??= [];
+      originalRelationships[relationshipType][currentTableName].push(
+        relationshipName
+      );
       return aliasRelationshipTypes[relationshipType];
-    else throw new Error('Unknown relationship type detected');
+    } else throw new Error('Unknown relationship type detected');
   }
 }
 
@@ -144,6 +148,8 @@ function handleRelationshipField(
   field: SchemaModelTableField,
   fieldData: DataModelFieldWritable,
   fieldName: string,
+  currentTableName: string,
+  originalRelationships: OriginalRelationshipsWritable,
   hasRelationshipWithDefinition: () => void,
   hasRelationshipWithDefinitionItem: () => void
 ): boolean {
@@ -153,8 +159,13 @@ function handleRelationshipField(
   if (typeof foreignName !== 'undefined')
     foreignName = foreignName.toLowerCase();
 
-  const relationshipType = handleRelationshipType(relationship.type);
   const tableName = relationship.relatedModelName.toLowerCase();
+  const relationshipType = handleRelationshipType(
+    relationship.type,
+    currentTableName,
+    fieldName,
+    originalRelationships
+  );
 
   if (fieldName === 'definition') {
     hasRelationshipWithDefinition();
@@ -179,9 +190,6 @@ function handleRelationshipField(
   return true;
 }
 
-const dataModelFetcherVersion = '4';
-const cacheBucketName = 'dataModelFetcher';
-
 const cacheGet = <T>(cacheName: string): false | T =>
   cache.get<T>(cacheBucketName, cacheName, {
     version: dataModelFetcherVersion,
@@ -205,18 +213,29 @@ export default async function (): Promise<void> {
     );
     const ranks = cacheGet<DataModelRanks>('ranks');
     const rootRanks = cacheGet<R<string>>('rootRanks');
+    const originalRelationships = cacheGet<OriginalRelationships>(
+      'originalRelationships'
+    );
 
-    if (tables && listOfBaseTables && ranks && rootRanks) {
+    if (
+      tables &&
+      listOfBaseTables &&
+      ranks &&
+      rootRanks &&
+      originalRelationships
+    ) {
       dataModelStorage.tables = tables;
       dataModelStorage.listOfBaseTables = listOfBaseTables;
       dataModelStorage.ranks = ranks;
       dataModelStorage.rootRanks = rootRanks;
+      dataModelStorage.originalRelationships = originalRelationships;
       return;
     }
   }
 
   const listOfBaseTables: DataModelListOfTablesWritable = {};
   const fetchRanksQueue: Promise<TableRanksInline>[] = [];
+  const originalRelationships: OriginalRelationshipsWritable = {};
 
   const tables = Object.values(
     ((schema as unknown) as SchemaType).models
@@ -276,6 +295,8 @@ export default async function (): Promise<void> {
           field,
           fieldData,
           fieldName,
+          tableName,
+          originalRelationships,
           () => {
             hasRelationshipWithDefinition = true;
           },
@@ -379,6 +400,10 @@ export default async function (): Promise<void> {
       );
       dataModelStorage.ranks = cacheSet<DataModelRanks>('ranks', ranks);
       dataModelStorage.rootRanks = cacheSet<IR<string>>('rootRanks', rootRanks);
+      dataModelStorage.originalRelationships = cacheSet<OriginalRelationships>(
+        'originalRelationships',
+        originalRelationships
+      );
     })
     .catch((error) => {
       throw error;
