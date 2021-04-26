@@ -10,7 +10,7 @@ const Papa = require('papaparse');
 
 const schema = require('./schema.js');
 const app = require('./specifyapp.js');
-const DataSetName = require('./dsname.js');
+const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
@@ -63,7 +63,7 @@ const WBView = Backbone.View.extend({
             is_uploaded: this.uploaded
         }));
 
-        new DataSetName({dataset: this.dataset, el: this.$('.wb-name')}).render();
+        new DataSetMeta({dataset: this.dataset, el: this.$('.wb-name')}).render();
 
         if (this.dataset.uploaderstatus) this.openStatus();
 
@@ -696,7 +696,6 @@ module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
         }).on('refresh', (mode) =>
             loadDataset(id, mode)
         );
-        app.setTitle(dataset.name);
         app.setCurrentView(view);
     });
 };
