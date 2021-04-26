@@ -50,6 +50,7 @@ export default Backbone.View.extend({
       </label><br><br>
       <b>Dataset Metadata:</b><br>
       Number of rows: <i>${this.dataset.rows.length}</i><br>
+      Number of columns: <i>${this.dataset.rows[0].length}</i><br>
       Date created: <i>${new Date(this.dataset.timestampcreated)}</i><br>
       Date modified: <i>${new Date(this.dataset.timestampmodified)}</i><br>
       Imported file name: <i>${this.dataset.importedfilename}</i><br>
