@@ -363,12 +363,23 @@ def get_tags(endpoints):
         ) for tag_name in tag_names
     ]
 
+endpoints_to_exclude = [
+    '/api/specify/'
+]
+
 def get_endpoints(patterns, prefix="/", preparams=[]):
     for p in patterns:
         path, params = parse_pattern(p)
-        tag = create_tag(prefix+path)
+        complete_path = prefix + path
+
+        if [
+            True for filter in endpoints_to_exclude if complete_path.startswith(filter)
+        ]:
+            continue
+
+        tag = create_tag(complete_path)
         if isinstance(p, URLPattern):
-            yield (prefix + path, {
+            yield (complete_path, {
                 'parameters': [
                     {
                         'name': param,
