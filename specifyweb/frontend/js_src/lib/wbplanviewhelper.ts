@@ -15,7 +15,6 @@ import type {
   MappingType,
 } from './components/wbplanviewmapper';
 import type { ColumnOptions } from './uploadplantomappingstree';
-import dataModelStorage from './wbplanviewmodel';
 import {
   mappingPathToString,
   valueIsReferenceItem,
@@ -209,29 +208,30 @@ export function generateMappingPathPreview(
     customSelectType: 'OPENED_LIST',
     showHiddenFields: false,
   })
-    .slice(-3)
+    .map((mappingElementData, index) => ({
+      mappingElementData,
+      mappingPathPart: mappingPath[index],
+    }))
+    .slice(-2)
     .map(
-      ({ fieldsData }, index) =>
-        (Object.values(fieldsData).find(({ isDefault }) => isDefault)
-          ?.fieldFriendlyName as string) ??
-        mappingPath[mappingPath.length - 1 - index]
-    );
+      ({ mappingElementData, mappingPathPart }) =>
+        (Object.values(mappingElementData.fieldsData).find(
+          ({ isDefault }) => isDefault
+        )?.fieldFriendlyName as string) ?? mappingPathPart
+    )
+    .reverse();
 
-  const [
-    fieldName,
-    possibleTableName,
-    tableName = dataModelStorage.tables[baseTableName].tableFriendlyName,
-  ] = mappingLineData.reverse();
+  const [fieldName, possibleTableName] = mappingLineData;
 
   if (mappingLineData.length === 1) return fieldName;
 
-  if (valueIsTreeRank(mappingPath.slice(-2)[0]))
+  if (valueIsTreeRank(possibleTableName))
     return mappingPath.slice(-1)[0] === 'name'
       ? possibleTableName
       : `${possibleTableName} ${fieldName}`;
   else if (valueIsReferenceItem(mappingPath.slice(-2)[0]))
-    return `${tableName} ${fieldName} ${possibleTableName}`;
-  else return `${possibleTableName} ${fieldName}`;
+    return `${fieldName} ${possibleTableName}`;
+  else return `${fieldName}`;
 }
 
 export function renameNewlyCreatedHeaders(
