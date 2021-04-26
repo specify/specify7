@@ -30,6 +30,10 @@ export const fetchingParameters: {
     'treedef',
   ],
 
+  /*
+   * These tables and any relationships to these tables would be excluded
+   * from the WB mapper
+   */
   tablesToRemove: [
     'definition',
     'definitionitem',
@@ -46,7 +50,10 @@ export const fetchingParameters: {
     ),
   ],
 
-  // Forbid setting any of the tables that have these keywords as base tables
+  /*
+   * Remove the tables that have any of these keywords from the list of base
+   * tables
+   */
   tableKeywordsToExclude: [
     'Authorization',
     'Variant',
@@ -90,6 +97,7 @@ export const fetchingParameters: {
     'treatmentevent',
   ],
 
+  // Make these fields inaccessible in the WB's mapper
   fieldsToRemove: {
     agent: ['catalogerof'],
     collectionobject: ['currentDetermination'],
@@ -102,5 +110,6 @@ export const fetchingParameters: {
     ],
     preptype: ['isonloan'],
     token: ['preferredtaxonof'],
+    geography: ['fullname'],
   },
 } as const;
