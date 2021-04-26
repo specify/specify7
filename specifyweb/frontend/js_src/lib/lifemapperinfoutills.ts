@@ -26,9 +26,9 @@ export const formatOccurrenceCountRequest = (
   dataAggregatorName: string,
   occurrenceScientificName: string
 ): string =>
-  `http://notyeti-192.lifemapper.org/api/v1/name/${dataAggregatorName}/${encodeURIComponent(
+  `http://notyeti-192.lifemapper.org/api/v1/name/${encodeURIComponent(
     occurrenceScientificName
-  )}?count_only=1`;
+  )}?provider=${dataAggregatorName}&count_only=1`;
 
 export const formatOccurrenceMapRequest = (
   occurrenceScientificName: string
