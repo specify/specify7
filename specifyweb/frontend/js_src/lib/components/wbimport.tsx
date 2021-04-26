@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 import React, { Component } from 'react';
 
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
-import { uniquefyHeaders } from '../wbplanviewhelper';
+import { uniquifyHeaders } from '../wbplanviewhelper';
 
 const $ = require('jquery');
 
@@ -581,7 +581,7 @@ function extractHeader(
   headerInData: boolean
 ): { rows: string[][]; header: string[] } {
   const header = headerInData
-    ? uniquefyHeaders(data[0].map((header) => header.trim()))
+    ? uniquifyHeaders(data[0].map((header) => header.trim()))
     : data[0].map((_1, index) => `Column ${index + 1}`);
   const rows = headerInData ? data.slice(1) : data;
   return { rows, header };

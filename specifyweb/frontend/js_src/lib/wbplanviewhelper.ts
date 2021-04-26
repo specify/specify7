@@ -253,7 +253,7 @@ export function renameNewlyCreatedHeaders(
     ({ name }, index) => generatedHeaderPreviews[index] ?? name
   );
 
-  const uniqueHeaders = uniquefyHeaders(
+  const uniqueHeaders = uniquifyHeaders(
     newHeaders,
     Object.keys(generatedHeaderPreviews).map((index) => Number.parseInt(index))
   );
@@ -278,15 +278,15 @@ const formatUniqueifiedHeader = (
       ) ?? Math.floor(Math.random() * 2 ** 11))
   })`;
 
-export const uniquefyHeaders = (
+export const uniquifyHeaders = (
   headers: Readonly<string[]>,
-  headersToUniquefy: Readonly<number[]> | false = false
+  headersTouniquify: Readonly<number[]> | false = false
 ): string[] =>
   headers
     .map((header) => (header ? header : '(no header)'))
     .map((header, index, headers) =>
       headers.indexOf(header) === index ||
-      (Array.isArray(headersToUniquefy) && !headersToUniquefy.includes(index))
+      (Array.isArray(headersTouniquify) && !headersTouniquify.includes(index))
         ? header
         : formatUniqueifiedHeader(
             headers,
