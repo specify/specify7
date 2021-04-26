@@ -336,7 +336,18 @@ def parse_pattern(pattern):
 
     return p_str.strip('^$'), params
 
+# most tags are generated automatically based on the URL, but here are some
+# exceptions:
+tagMapper = {
+    '/api/specify_tree/': 'specify_tree',
+    '/api/workbench/': 'workbench',
+}
+
 def create_tag(path):
+    for tag_filter, tag_name in tagMapper.items():
+        if path.startswith(tag_filter):
+            return tag_name
+
     path_parts = [part for part in os.path.dirname(path).split('/') if part]
     return path_parts[0] if len(path_parts) > 0 else '/'
 
