@@ -21,7 +21,9 @@ module.exports =  Backbone.View.extend({
         this.listInput = options.listInput;
     },
     render: function() {
-        this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
+        this.formatter && this.$el.attr(
+            'title', 'Format: ' + (this.formatter.pattern() || this.formatter.value())
+        );
         const placeholder = this.formatStr || (this.formatter && this.formatter.pattern());
         console.log('placeholder', placeholder);
         placeholder && this.$el.attr('placeholder', placeholder);
@@ -107,7 +109,12 @@ module.exports =  Backbone.View.extend({
         if (this.formatter) {
             var formatterVals = this.formatter.parse(value);
             if (!formatterVals) {
-                throw [this, 'badformat', 'Required format: ' + this.formatter.value(), deferred];
+                throw [
+                    this,
+                    'badformat',
+                    'Required format: ' + (this.formatter.pattern() || this.formatter.value()),
+                    deferred
+                ];
                 return undefined;
             } else {
                 this.trigger('removesaveblocker', 'badformat');
