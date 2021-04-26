@@ -22,7 +22,7 @@ def base_schema() -> Dict:
             "version": settings.VERSION,
             "description": "Description of all Specify 7 API endpoints",
             "license": {
-                "name": "GPS-2.0 Licence",
+                "name": "GPL-2.0 Licence",
                 "url": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html",
             },
         },
