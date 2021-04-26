@@ -22,7 +22,9 @@ module.exports =  Backbone.View.extend({
     },
     render: function() {
         this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
-        this.formatStr && this.$el.attr('placeholder', this.formatStr);
+        const placeholder = this.formatStr || (this.formatter && this.formatter.pattern());
+        console.log('placeholder', placeholder);
+        placeholder && this.$el.attr('placeholder', placeholder);
         this.readOnly && this.$el.prop('readonly', true);
         return this;
     },
@@ -50,7 +52,7 @@ module.exports =  Backbone.View.extend({
         this.readOnly || this.trigger("changing");
     },
     validate: function(deferred) {
-        var value = this.$el.val().trim();        
+        var value = this.$el.val().trim();
         if (this.listInput) {
             return this.validateList(value, deferred);
         } else {
