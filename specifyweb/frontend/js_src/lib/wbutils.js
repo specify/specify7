@@ -113,7 +113,7 @@ module.exports = Backbone.View.extend({
     const navigationTotalElement =
       container.getElementsByClassName('wb-navigation-total')[0];
     const searchQueryElement =
-      container.getElementsByClassName('wb-searchQuery')[0];
+      container.getElementsByClassName('wb-search-query')[0];
     const navigationButton =
       container.getElementsByClassName('wb-cell-navigation');
     const searchQuery = searchQueryElement.value;
