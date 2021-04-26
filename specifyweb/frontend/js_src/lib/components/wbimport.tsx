@@ -97,7 +97,7 @@ export default class WbImport extends Component<{}, WbImportState> {
 
   generateCSVPreview(file: File, encoding: string) {
     Papa.parse(file, {
-      encoding: encoding,
+      encoding,
       preview: PREVIEW_SIZE,
       skipEmptyLines: true,
       complete: ({ data }) => {
@@ -105,8 +105,8 @@ export default class WbImport extends Component<{}, WbImportState> {
         data.forEach((row) => row.push(...new Array(maxWidth - row.length)));
         this.update(
           data.length > 0
-            ? { type: 'GotPreviewAction', preview: data, file: file }
-            : { type: 'BadImportFileAction', file: file }
+            ? { type: 'GotPreviewAction', preview: data, file }
+            : { type: 'BadImportFileAction', file }
         );
       },
     });
@@ -114,19 +114,19 @@ export default class WbImport extends Component<{}, WbImportState> {
 
   generateXLSPreview(file: File) {
     const worker = new ImportXLSWorker();
-    worker.postMessage({ file: file, previewSize: PREVIEW_SIZE });
+    worker.postMessage({ file, previewSize: PREVIEW_SIZE });
     worker.onmessage = ({ data }) =>
       this.update(
         data.length > 0
-          ? { type: 'GotPreviewAction', preview: data, file: file }
-          : { type: 'BadImportFileAction', file: file }
+          ? { type: 'GotPreviewAction', preview: data, file }
+          : { type: 'BadImportFileAction', file }
       );
   }
 
   doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
     const doIt = () =>
       Papa.parse(file, {
-        encoding: encoding,
+        encoding,
         skipEmptyLines: true,
         complete: ({ data }) => {
           const { rows, header } = extractHeader(data, hasHeader);
@@ -139,7 +139,7 @@ export default class WbImport extends Component<{}, WbImportState> {
 
   doImportXLS(file: File, name: string, hasHeader: boolean) {
     const worker = new ImportXLSWorker();
-    worker.postMessage({ file: file, previewSize: null });
+    worker.postMessage({ file, previewSize: null });
     worker.onmessage = ({ data }) => {
       const { rows, header } = extractHeader(data, hasHeader);
       this.createDataset(name, header, rows, file.name);
@@ -157,7 +157,7 @@ export default class WbImport extends Component<{}, WbImportState> {
         $.ajax('/api/workbench/dataset/', {
           type: 'POST',
           data: JSON.stringify({
-            name: name,
+            name,
             importedfilename: filename,
             columns: header,
             rows: data,
@@ -228,7 +228,7 @@ export default class WbImport extends Component<{}, WbImportState> {
               type: 'PreviewCSVState',
               preview: action.preview,
               file: action.file,
-              datasetName: action.file.name.replace(/\.[^\.]*$/, ''), // remove extentsion
+              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extentsion
               encoding: this.state.encoding,
               hasHeader: true,
             });
@@ -241,7 +241,7 @@ export default class WbImport extends Component<{}, WbImportState> {
               type: 'PreviewXLSState',
               preview: action.preview,
               file: action.file,
-              datasetName: action.file.name.replace(/\.[^\.]*$/, ''), // remove extentsion
+              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extentsion
               hasHeader: true,
             });
             break;
@@ -492,7 +492,7 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
     }
   }
 
-  const exts =
+  const extensions =
     props.fileType === 'csv'
       ? '.csv,.tsv,.txt'
       : props.fileType === 'xls'
@@ -504,7 +504,7 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
       Choose {props.fileType} file:{' '}
       <input
         type="file"
-        accept={exts}
+        accept={extensions}
         onChange={(event) => changed(event.target)}
       />
     </p>
@@ -516,11 +516,11 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
   const data = props.data;
   const { rows, header } = extractHeader(data, hasHeader);
 
-  const headerCells = header.map((cell, i) => <th key={i}>{cell}</th>);
-  const dataRows = rows.map((row, i) => (
-    <tr key={i}>
-      {row.map((cell, i) => (
-        <td key={i}>{cell}</td>
+  const headerCells = header.map((cell, index) => <th key={index}>{cell}</th>);
+  const dataRows = rows.map((row, index) => (
+    <tr key={index}>
+      {row.map((cell, index) => (
+        <td key={index}>{cell}</td>
       ))}
     </tr>
   ));
@@ -581,12 +581,12 @@ function extractHeader(
   headerInData: boolean
 ): { rows: string[][]; header: string[] } {
   const header = headerInData
-    ? uniquefyHeaders(data[0])
+    ? uniquefyHeaders(data[0].map((header) => header.trim()))
     : data[0].map((_1, index) => `Column ${index + 1}`);
   const rows = headerInData ? data.slice(1) : data;
   return { rows, header };
 }
 
 function assertExhaustive(x: never): never {
-  throw new Error('Non-exhaustive switch. Unhandled case:' + x);
+  throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
