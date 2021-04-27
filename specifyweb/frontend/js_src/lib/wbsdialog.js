@@ -34,11 +34,28 @@ module.exports =  Backbone.View.extend({
     dialogEntry(ds) {
         const img = $('<img>', { src: '/images/Workbench32x32.png' });
         const href = `/workbench/${ds.id}/`;
-        const link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(ds.name);
+        const state = ds.uploadresult === null ?
+            'un-uploaded' :
+            ds.uploadresult.success ?
+                'uploaded' : 'has-upload-error';
+        const styles = {
+            'un-uploaded': 'color: #00f',
+            'uploaded': 'font-weight: 100',
+            'has-upload-error': 'color: #f00'
+        };
+        const label = {
+            'un-uploaded': '',
+            'uploaded': ' [uploaded]',
+            'has-upload-error': ' [upload failed]',
+        };
+        const link = $('<a>', {
+            href: href,
+            class: "intercept-navigation",
+            style: styles[state],
+        }).text(ds.name + label[state]);
         return $('<tr>').append(
             $('<td>').append(img),
             $('<td>').append(link),
             $('<td class="item-count" style="display:none">'));
     },
 });
-
