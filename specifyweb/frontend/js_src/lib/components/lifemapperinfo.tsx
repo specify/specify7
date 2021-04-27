@@ -6,6 +6,7 @@ import '../../css/lifemapperinfo.css';
 import * as Leaflet from '../leaflet';
 import { getLocalityDataFromLocalityResource } from '../leafletutils';
 import { reducer } from '../lifemapperinforeducer';
+import type { LifemapperLayerTypes } from '../lifemapperinfoutills';
 import {
   extractBadgeInfo,
   extractElement,
@@ -24,7 +25,7 @@ import type { IR } from './wbplanview';
 import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
-const IS_DEVELOPMENT = true;
+const IS_DEVELOPMENT = false;
 const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
 // Const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
 const defaultOccurrenceName: Readonly<[string, string]> = [
@@ -240,48 +241,44 @@ function LifemapperInfo({
         $.get(formatOccurrenceMapRequest(getOccurrenceName(1))).done(
           async (response: {
             readonly errors: string[];
-            readonly records:
-              | []
-              | [
-                  {
-                    readonly endpoint: string;
-                    readonly projection_link: string;
-                    readonly point_name: string;
-                    readonly modtime: string;
-                  }
-                ];
+            readonly records: [
+              {
+                readonly records: {
+                  readonly endpoint: string;
+                  readonly modtime: string;
+                  readonly layer_name: string;
+                  readonly layer_type: LifemapperLayerTypes;
+                }[];
+              }
+            ];
           }) => {
             let layers: any[] = [];
 
             if (response.errors.length > 0)
               messages.errorDetails.push(...response.errors);
-            else if (response.records.length === 0)
+            else if (response.records[0]?.records.length === 0)
               messages.errorDetails.push(
                 'Projection map for this species was not found'
               );
             else {
-              const {
-                endpoint,
-                projection_link: projectionLink,
-                point_name: mapName,
-                modtime: modificationTime,
-              } = response.records[0];
-
-              const mapUrl = `${endpoint}/`;
-              const mapId = mapName.replace(/\D/g, '');
-              const layerId = /\/\d+$/.exec(projectionLink)![1];
-              layers = lifemapperLayerVariations.map(
-                ({
-                  transparent,
-                  name: layerNameFunction,
-                  label: layerLabel,
-                }) => ({
-                  transparent,
-                  layerLabel,
+              layers = response.records[0].records
+                .sort(
+                  (
+                    { layer_type: layerTypeLeft },
+                    { layer_type: layerTypeRight }
+                  ) =>
+                    layerTypeLeft === layerTypeRight
+                      ? 0
+                      : layerTypeLeft > layerTypeRight
+                      ? 1
+                      : -1
+                )
+                .map((record) => ({
+                  ...lifemapperLayerVariations[record.layer_type],
                   tileLayer: {
-                    mapUrl,
+                    mapUrl: record.endpoint,
                     options: {
-                      layers: layerNameFunction(mapId, layerId),
+                      layers: record.layer_name,
                       service: 'wms',
                       version: '1.0',
                       height: '400',
@@ -289,12 +286,12 @@ function LifemapperInfo({
                       request: 'getmap',
                       srs: 'epsg:3857',
                       width: '800',
-                      transparent,
+                      ...lifemapperLayerVariations[record.layer_type],
                     },
                   },
-                })
-              );
+                }));
 
+              const modificationTime = response.records[0].records[0].modtime;
               messages.errorDetails.push(
                 `Model Creation date: ${modificationTime}`
               );

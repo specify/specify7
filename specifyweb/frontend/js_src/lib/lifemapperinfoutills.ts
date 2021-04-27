@@ -33,7 +33,7 @@ export const formatOccurrenceCountRequest = (
 export const formatOccurrenceMapRequest = (
   occurrenceScientificName: string
 ): string =>
-  `http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(
+  `http://notyeti-192.lifemapper.org/api/v1/map/?provider=lm&scenariocode=worldclim-curr&namestr=${encodeURIComponent(
     occurrenceScientificName
   )}`;
 
@@ -89,18 +89,21 @@ export const extractBadgeInfo: Record<
   }),
 };
 
-export const lifemapperLayerVariations = [
-  {
-    name: (_: string, layerId: string): string => `prj_${layerId}`,
-    label: 'Projection',
+export type LifemapperLayerTypes = 'vector' | 'raster';
+
+export const lifemapperLayerVariations: Record<
+  LifemapperLayerTypes,
+  { readonly layerLabel: string; readonly transparent: boolean }
+> = {
+  raster: {
+    layerLabel: 'Projection',
     transparent: true,
   },
-  {
-    name: (mapId: string): string => `occ_${mapId}`,
-    label: 'Occurrence Points',
+  vector: {
+    layerLabel: 'Occurrence Points',
     transparent: true,
   },
-];
+};
 
 export const extractElement = (
   elements: Readonly<[string | undefined, string | undefined]>,
