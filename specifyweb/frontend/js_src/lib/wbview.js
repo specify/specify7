@@ -1,4 +1,5 @@
 'use strict';
+
 require('../css/workbench.css');
 
 const $ = require('jquery');
@@ -18,7 +19,12 @@ const NotFoundView = require('./notfoundview.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
+const {
+  getIndexFromReferenceItemName,
+  valueIsReferenceItem,
+} = require('./wbplanviewmodelhelper');
 const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree.ts');
+const { splitFullMappingPathComponents } = require('./wbplanviewhelper');
 const { mappingsTreeToArrayOfMappings } = require('./wbplanviewtreehelper.ts');
 const { extractDefaultValues } = require('./wbplanviewhelper.ts');
 const { getMappingLineData } = require('./wbplanviewnavigator.ts');
@@ -93,10 +99,21 @@ const WBView = Backbone.View.extend({
         },
       });
 
-    //initialize Handsontable
-    setTimeout(
-      () =>
-        (this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
+    this.initHot().then(() => {
+      this.getValidationResults();
+      fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
+    });
+
+    this.wbutils.findLocalityColumns();
+
+    $(window).resize(this.resize.bind(this));
+
+    return this;
+  },
+  initHot() {
+    return new Promise((resolve) =>
+      setTimeout(() => {
+        this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           height: this.calcHeight(),
           data: this.data,
           cells: this.defineCell.bind(this, this.dataset.columns.length),
@@ -106,23 +123,28 @@ const WBView = Backbone.View.extend({
               ? ''
               : 'wb-header-unmapped'
           }">
-                ${
-                  this.dataset.columns[col] in this.mappedHeaders
-                    ? `<img
-                          class="wb-header-icon"
-                          alt="${
-                            this.mappedHeaders[this.dataset.columns[col]].split(
-                              '.'
-                            )?.[1] || ''
-                          }"
-                          src="${this.mappedHeaders[this.dataset.columns[col]]}"
-                      >`
-                    : ''
-                }
-                <span class="wb-header-name columnSorting">
-                    ${this.dataset.columns[col]}
-                </span>
-            </div>`,
+            ${
+              this.dataset.columns[col] in this.mappedHeaders
+                ? `<img
+                    class="wb-header-icon"
+                    alt="${
+                      this.mappedHeaders[this.dataset.columns[col]].split(
+                        '.'
+                      )?.[1] || ''
+                    }"
+                    src="${this.mappedHeaders[this.dataset.columns[col]]}"
+                  >`
+                : ''
+            }
+            <span class="wb-header-name columnSorting">
+                ${this.dataset.columns[col]}
+            </span>
+          </div>`,
+          hiddenColumns: {
+            // hide the disambiguation column
+            columns: [this.dataset.columns.length],
+            indicators: false,
+          },
           minSpareRows: 0,
           comments: true,
           rowHeaders: true,
@@ -148,10 +170,6 @@ const WBView = Backbone.View.extend({
                 'Fill Up',
                 this.wbutils.fillUp
               ),
-              /*'fill_down_with_increment': this.utils.fillUpDownContextMenuItem(
-                        'Fill Down With Increment',
-                        this.wbutils.fillDownWithIncrement
-                    ),*/
               separator_2: '---------',
               disambiguate: {
                 name: 'Disambiguate',
@@ -169,29 +187,24 @@ const WBView = Backbone.View.extend({
           afterCreateRow: this.rowCreated.bind(this),
           afterRemoveRow: this.rowRemoved.bind(this),
           afterChange: this.afterChange.bind(this),
-        })),
-      0
+        });
+        resolve();
+      }, 0)
     );
-
-    this.wbutils.findLocalityColumns();
-
-    $(window).resize(this.resize.bind(this));
-
-    this.getValidationResults();
-
-    fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
-
-    return this;
   },
   isAmbiguousCell() {
     const [[row, col]] = this.hot.getSelected();
     if (this.mappings) {
-      const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree)
-        .find((m) => m[m.length - 2] == header)
-        .slice(0, -4);
+      const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
+      const mappingPath = mappingsTreeToArrayOfMappings(
+        this.mappings.mappingsTree
+      )
+        .map(splitFullMappingPathComponents)
+        .find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-      return getRecordResult(rowResult, mapping)?.MatchedMultiple != null;
+      return typeof rowResult === 'undefined'
+        ? false
+        : getRecordResult(rowResult, mappingPath)?.MatchedMultiple != null;
     }
     return false;
   },
@@ -302,7 +315,16 @@ const WBView = Backbone.View.extend({
     }
   },
   afterChange(changes, source) {
-    if (!['edit', 'CopyPaste.paste', 'Autofill.fill'].includes(source)) return;
+    if (
+      ![
+        'edit',
+        'CopyPaste.paste',
+        'Autofill.fill',
+        'UndoRedo.undo',
+        'UndoRedo.redo',
+      ].includes(source)
+    )
+      return;
 
     changes.forEach(([row]) => this.clearDisambiguation(row));
 
@@ -357,23 +379,24 @@ const WBView = Backbone.View.extend({
   identifyMappedHeaders() {
     const stylesContainer = document.createElement('style');
     const unmappedCellStyles = '{ color: #999; }';
+    const arrayOfMappings =
+      this.mappings &&
+      mappingsTreeToArrayOfMappings(this.mappings.mappingsTree);
 
     if (this.mappings) {
       const mappedHeadersAndTables = Object.fromEntries(
-        mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).map(
-          (mappingsPath) => [
-            mappingsPath.slice(-2)[0],
-            icons.getIcon(
-              getMappingLineData({
-                baseTableName: this.mappings.baseTableName,
-                mappingPath: mappingsPath.slice(0, -4),
-                iterate: false,
-                customSelectType: 'CLOSED_LIST',
-                showHiddenFields: false,
-              })[0]?.tableName || ''
-            ),
-          ]
-        )
+        arrayOfMappings.map((mappingsPath) => [
+          mappingsPath.slice(-2)[0],
+          icons.getIcon(
+            getMappingLineData({
+              baseTableName: this.mappings.baseTableName,
+              mappingPath: mappingsPath.slice(0, -4),
+              iterate: false,
+              customSelectType: 'CLOSED_LIST',
+              showHiddenFields: false,
+            })[0]?.tableName || ''
+          ),
+        ])
       );
 
       this.mappedHeaders = mappedHeadersAndTables;
@@ -410,7 +433,9 @@ const WBView = Backbone.View.extend({
 
       const defaultValues = Object.fromEntries(
         Object.entries(
-          extractDefaultValues(arrayOfMappings, true)
+          typeof arrayOfMappings === 'undefined'
+            ? {}
+            : extractDefaultValues(arrayOfMappings, true)
         ).map(([headerName, defaultValue]) => [
           this.dataset.columns.indexOf(headerName),
           defaultValue,
@@ -865,16 +890,16 @@ module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
     });
 };
 
-function getRecordResult({ UploadResult }, mapping) {
-  if (mapping.length === 0) {
+function getRecordResult({ UploadResult }, mappingPath) {
+  if (mappingPath.length <= 1) {
     return UploadResult.record_result;
-  } else if (mapping[1]?.startsWith('#')) {
-    const idx = parseInt(mapping[1].replace('#', ''), 10) - 1;
-    const toMany = UploadResult.toMany[mapping[0]];
+  } else if (valueIsReferenceItem(mappingPath[1])) {
+    const idx = getIndexFromReferenceItemName(mappingPath[1]);
+    const toMany = UploadResult.toMany[mappingPath[0]];
     const next = toMany && toMany[idx];
-    return next && getRecordResult(next, mapping.slice(2));
+    return next && getRecordResult(next, mappingPath.slice(2));
   } else {
-    const next = UploadResult.toOne[mapping[0]];
-    return next && getRecordResult(next, mapping.slice(1));
+    const next = UploadResult.toOne[mappingPath[0]];
+    return next && getRecordResult(next, mappingPath.slice(1));
   }
 }
