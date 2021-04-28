@@ -1,10 +1,9 @@
-"use strict";
-require ('../css/workbench.css');
+'use strict';
+require('../css/workbench.css');
 
-const $        = require('jquery');
-const _        = require('underscore');
+const $ = require('jquery');
 const Backbone = require('./backbone.js');
-const Q        = require('q');
+const Q = require('q');
 const Handsontable = require('handsontable').default;
 const Papa = require('papaparse');
 
@@ -18,784 +17,853 @@ const navigation = require('./navigation.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
-const {uploadPlanToMappingsTree} = require('./uploadplantomappingstree.ts');
-const {mappingsTreeToArrayOfMappings} = require('./wbplanviewtreehelper.ts');
-const {extractDefaultValues} = require('./wbplanviewhelper.ts');
-const {getMappingLineData} = require('./wbplanviewnavigator.ts');
+const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree.ts');
+const { mappingsTreeToArrayOfMappings } = require('./wbplanviewtreehelper.ts');
+const { extractDefaultValues } = require('./wbplanviewhelper.ts');
+const { getMappingLineData } = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
 const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
 
 const WBView = Backbone.View.extend({
-    __name__: "WbForm",
-    className: "wbs-form",
-    events: {
-        'click .wb-upload': 'upload',
-        'click .wb-validate': 'upload',
-        'click .wb-plan': 'openPlan',
-        'click .wb-show-plan': 'showPlan',
-        'click .wb-delete': 'delete',
-        'click .wb-save': 'saveClicked',
-        'click .wb-export': 'export',
+  __name__: 'WbForm',
+  className: 'wbs-form',
+  events: {
+    'click .wb-upload': 'upload',
+    'click .wb-validate': 'upload',
+    'click .wb-plan': 'openPlan',
+    'click .wb-show-plan': 'showPlan',
+    'click .wb-delete': 'delete',
+    'click .wb-save': 'saveClicked',
+    'click .wb-export': 'export',
 
-        'click .wb-show-upload-view':'displayUploadedView',
-        'click .wb-unupload':'unupload',
-    },
-    initialize({dataset, refreshInitiatedBy}) {
-        this.dataset = dataset;
-        this.mappedHeaders = {};
-        this.data = dataset.rows;
-        if (this.data.length < 1) {
-            this.data.push(Array(this.dataset.columns.length).fill(null));
-        }
+    'click .wb-show-upload-view': 'displayUploadedView',
+    'click .wb-unupload': 'unupload',
+  },
+  initialize({ dataset, refreshInitiatedBy }) {
+    this.dataset = dataset;
+    this.mappedHeaders = {};
+    this.data = dataset.rows;
+    if (this.data.length < 1) {
+      this.data.push(Array(this.dataset.columns.length).fill(null));
+    }
 
-        this.mappings = this.dataset.uploadplan && uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
+    this.mappings =
+      this.dataset.uploadplan &&
+      uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
 
-        this.highlightsOn = false;
-        this.rowValidationRequests = {};
+    this.highlightsOn = false;
+    this.rowValidationRequests = {};
 
-        this.wbutils = new WBUtils({
-            wbview: this,
-            el: this.el,
-        });
+    this.wbutils = new WBUtils({
+      wbview: this,
+      el: this.el,
+    });
 
-        this.uploaded = this.dataset.uploadresult && this.dataset.uploadresult.success;
-        this.uploadedView = undefined;
-        this.refreshInitiatedBy = refreshInitiatedBy;
-        this.rowResults = this.dataset.rowresults || [];
-    },
-    render() {
-        this.$el.append(template({
-            is_uploaded: this.uploaded
-        }));
+    this.uploaded =
+      this.dataset.uploadresult && this.dataset.uploadresult.success;
+    this.uploadedView = undefined;
+    this.refreshInitiatedBy = refreshInitiatedBy;
+    this.rowResults = this.dataset.rowresults || [];
+  },
+  render() {
+    this.$el.append(
+      template({
+        is_uploaded: this.uploaded,
+      })
+    );
 
-        new DataSetMeta({dataset: this.dataset, el: this.$('.wb-name')}).render();
+    new DataSetMeta({ dataset: this.dataset, el: this.$('.wb-name') }).render();
 
-        if (this.dataset.uploaderstatus) this.openStatus();
+    if (this.dataset.uploaderstatus) this.openStatus();
 
-        if (!this.dataset.uploadplan)
-            $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
-                title: "No Plan is defined",
-                modal: true,
-                buttons: {
-                    'Create': this.openPlan.bind(this),
-                    'Cancel': function() { $(this).dialog('close'); }
-                }
-            });
+    if (!this.dataset.uploadplan)
+      $(
+        '<div>No plan has been defined for this dataset. Create one now?</div>'
+      ).dialog({
+        title: 'No Plan is defined',
+        modal: true,
+        buttons: {
+          Create: this.openPlan.bind(this),
+          Cancel: function () {
+            $(this).dialog('close');
+          },
+        },
+      });
 
-        //initialize Handsontable
-        setTimeout(()=>this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
-            height: this.calcHeight(),
-            data: this.data,
-            cells: this.defineCell.bind(this, this.dataset.columns.length),
-            columns: this.dataset.columns.map((__, i) => ({data: i})),
-            colHeaders: (col)=>`<div class="wb-header-${col} ${
-                this.dataset.columns[col] in this.mappedHeaders ?
-                    '' :
-                    'wb-header-unmapped'
-            }">
+    //initialize Handsontable
+    setTimeout(
+      () =>
+        (this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
+          height: this.calcHeight(),
+          data: this.data,
+          cells: this.defineCell.bind(this, this.dataset.columns.length),
+          columns: this.dataset.columns.map((__, i) => ({ data: i })),
+          colHeaders: (col) => `<div class="wb-header-${col} ${
+            this.dataset.columns[col] in this.mappedHeaders
+              ? ''
+              : 'wb-header-unmapped'
+          }">
                 ${
-                    this.dataset.columns[col] in this.mappedHeaders ?
-                      `<img
+                  this.dataset.columns[col] in this.mappedHeaders
+                    ? `<img
                           class="wb-header-icon"
                           alt="${
-                              this.mappedHeaders[
-                                  this.dataset.columns[col]
-                              ].split('.')?.[1] || ''
+                            this.mappedHeaders[this.dataset.columns[col]].split(
+                              '.'
+                            )?.[1] || ''
                           }"
                           src="${this.mappedHeaders[this.dataset.columns[col]]}"
-                      >` :
-                      ''
-                    }
+                      >`
+                    : ''
+                }
                 <span class="wb-header-name columnSorting">
                     ${this.dataset.columns[col]}
                 </span>
             </div>`,
-            minSpareRows: 0,
-            comments: true,
-            rowHeaders: true,
-            manualColumnResize: true,
-            manualColumnMove: this.dataset.visualorder || true,
-            outsideClickDeselects: false,
-            columnSorting: true,
-            sortIndicator: true,
-            search: {
-                searchResultClass: 'wb-search-match-cell',
-            },
-            contextMenu: {
-                items: {
-                    'row_above': 'row_above',
-                    'row_below': 'row_below',
-                    'remove_row': 'remove_row',
-                    'separator_1': '---------',
-                    'fill_down': this.wbutils.fillCellsContextMenuItem(
-                        'Fill Down',
-                        this.wbutils.fillDown
-                    ),
-                    'fill_up': this.wbutils.fillCellsContextMenuItem(
-                        'Fill Up',
-                        this.wbutils.fillUp
-                    ),
-                    /*'fill_down_with_increment': this.utils.fillUpDownContextMenuItem(
+          minSpareRows: 0,
+          comments: true,
+          rowHeaders: true,
+          manualColumnResize: true,
+          manualColumnMove: this.dataset.visualorder || true,
+          outsideClickDeselects: false,
+          columnSorting: true,
+          sortIndicator: true,
+          search: {
+            searchResultClass: 'wb-search-match-cell',
+          },
+          contextMenu: {
+            items: {
+              row_above: 'row_above',
+              row_below: 'row_below',
+              remove_row: 'remove_row',
+              separator_1: '---------',
+              fill_down: this.wbutils.fillCellsContextMenuItem(
+                'Fill Down',
+                this.wbutils.fillDown
+              ),
+              fill_up: this.wbutils.fillCellsContextMenuItem(
+                'Fill Up',
+                this.wbutils.fillUp
+              ),
+              /*'fill_down_with_increment': this.utils.fillUpDownContextMenuItem(
                         'Fill Down With Increment',
                         this.wbutils.fillDownWithIncrement
                     ),*/
-                    'separator_2': '---------',
-                    'disambiguate': {
-                        name: "Disambiguate",
-                        disabled: () => !this.isAmbiguousCell(),
-                        callback: (__, selection) => this.disambiguateCell(selection),
-                    },
-                    'undo': 'undo',
-                    'redo': 'redo',
-                }
+              separator_2: '---------',
+              disambiguate: {
+                name: 'Disambiguate',
+                disabled: () => !this.isAmbiguousCell(),
+                callback: (__, selection) => this.disambiguateCell(selection),
+              },
+              undo: 'undo',
+              redo: 'redo',
             },
-            licenseKey: 'non-commercial-and-evaluation',
-            stretchH: 'all',
-            readOnly: this.uploaded,
-            afterColumnMove: this.columnMoved.bind(this),
-            afterCreateRow: this.rowCreated.bind(this),
-            afterRemoveRow: this.rowRemoved.bind(this),
-            afterSelection: (r, c) => this.currentPos = [r,c],
-            afterChange: this.afterChange.bind(this),
-        }),0);
+          },
+          licenseKey: 'non-commercial-and-evaluation',
+          stretchH: 'all',
+          readOnly: this.uploaded,
+          afterColumnMove: this.columnMoved.bind(this),
+          afterCreateRow: this.rowCreated.bind(this),
+          afterRemoveRow: this.rowRemoved.bind(this),
+          afterChange: this.afterChange.bind(this),
+        })),
+      0
+    );
 
-        this.wbutils.findLocalityColumns();
+    this.wbutils.findLocalityColumns();
 
-        $(window).resize(this.resize.bind(this));
+    $(window).resize(this.resize.bind(this));
 
-        this.getValidationResults();
+    this.getValidationResults();
 
-        fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
+    fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
 
-        return this;
+    return this;
+  },
+  isAmbiguousCell() {
+    const [[row, col]] = this.hot.getSelected();
+    if (this.mappings) {
+      const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
+      const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree)
+        .find((m) => m[m.length - 2] == header)
+        .slice(0, -4);
+      const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
+      return getRecordResult(rowResult, mapping)?.MatchedMultiple != null;
+    }
+    return false;
+  },
+  clearDisambiguation(row) {
+    const ncols = this.dataset.columns.length;
+    const rn = this.hot.toPhysicalRow(row);
+    const hidden = this.data[rn][ncols];
+    const extra = hidden ? JSON.parse(hidden) : {};
+    extra.disambiguation = {};
+    this.data[rn][ncols] = JSON.stringify(extra);
+  },
+  setDisambiguation(row, mapping, id) {
+    const ncols = this.dataset.columns.length;
+    const rn = this.hot.toPhysicalRow(row);
+    const hidden = this.data[rn][ncols];
+    const extra = hidden ? JSON.parse(hidden) : {};
+    const da = extra.disambiguation || {};
+    da[mapping.join(' ')] = id;
+    extra.disambiguation = da;
+    this.data[rn][ncols] = JSON.stringify(extra);
+    this.spreadSheetChanged();
+  },
+  disambiguateCell([
+    {
+      start: { row, col },
     },
-    isAmbiguousCell() {
-        const [[row, col]] = this.hot.getSelected();
-        if (this.mappings) {
-            const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-            const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).find(m => m[m.length - 2] == header).slice(0, -4);
-            const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-            return getRecordResult(rowResult, mapping)?.MatchedMultiple != null;
+  ]) {
+    if (this.mappings) {
+      const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
+      const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree)
+        .find((m) => m[m.length - 2] == header)
+        .slice(0, -4);
+      const tableName = getMappingLineData({
+        baseTableName: this.mappings.baseTableName,
+        mappingPath: mapping,
+        iterate: false,
+        customSelectType: 'CLOSED_LIST',
+        showHiddenFields: false,
+      })[0]?.tableName;
+      const model = schema.getModel(tableName);
+      const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
+      const matches = getRecordResult(rowResult, mapping).MatchedMultiple;
+      const doDA = (selected) => {
+        this.setDisambiguation(row, mapping, parseInt(selected, 10));
+        this.startValidateRow(row);
+      };
+      const doAll = (selected) => {
+        for (let i = 0; i < this.data.length; i++) {
+          const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
+          const key = getRecordResult(rowResult, mapping)?.MatchedMultiple?.key;
+          if (key === matches.key) {
+            this.setDisambiguation(i, mapping, parseInt(selected, 10));
+            this.startValidateRow(i);
+          }
         }
-        return false;
-    },
-    clearDisambiguation(row) {
-        const ncols = this.dataset.columns.length;
-        const rn = this.hot.toPhysicalRow(row);
-        const hidden = this.data[rn][ncols];
-        const extra = hidden ? JSON.parse(hidden) : {};
-        extra.disambiguation = {};
-        this.data[rn][ncols] = JSON.stringify(extra);
-    },
-    setDisambiguation(row, mapping, id) {
-        const ncols = this.dataset.columns.length;
-        const rn = this.hot.toPhysicalRow(row);
-        const hidden = this.data[rn][ncols];
-        const extra = hidden ? JSON.parse(hidden) : {};
-        const da = extra.disambiguation || {};
-        da[mapping.join(' ')] = id;
-        extra.disambiguation = da;
-        this.data[rn][ncols] = JSON.stringify(extra);
-        this.spreadSheetChanged();
-    },
-    disambiguateCell([{start: {row, col}}]) {
-        if (this.mappings) {
-            const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-            const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).find(m => m[m.length - 2] == header).slice(0, -4);
-            const tableName = getMappingLineData({
+      };
+      const table = $('<table>');
+      matches.ids.forEach((id, i) => {
+        const resource = new model.Resource({ id: id });
+        const tr = $(
+          `<tr><td><input type="radio" class="da-option" name="disambiguate" value="${id}" id="da-option-${i}"></td></tr>`
+        ).appendTo(table);
+        tr.append(
+          $('<td>').append(
+            $(`<a target="_blank">👁</a>`).attr(
+              'href',
+              api.makeResourceViewUrl(model, id)
+            )
+          )
+        );
+        const label = $(`<label for="da-option-${i}">`).text(id);
+        tr.append($('<td>').append(label));
+        formatObj(resource).done((formatted) => label.text(formatted));
+      });
+
+      const applyToAll = $(
+        '<label>Use this selection for all matching disambiguous records </label>'
+      ).append('<input type="checkbox" class="da-use-for-all" value="yes">');
+      $('<div>')
+        .append(table)
+        .append(applyToAll)
+        .dialog({
+          title: 'Disambiguate',
+          modal: true,
+          close() {
+            $(this).remove();
+          },
+          buttons: [
+            {
+              text: 'Select',
+              click() {
+                const selected = $('input.da-option:checked', this).val();
+                const useForAll = $('input.da-use-for-all:checked', this).val();
+                if (selected != null) {
+                  (useForAll ? doAll : doDA)(selected);
+                  $(this).dialog('close');
+                }
+              },
+            },
+            {
+              text: 'Cancel',
+              click() {
+                $(this).dialog('close');
+              },
+            },
+          ],
+        });
+    }
+  },
+  afterChange(changes, source) {
+    if (!['edit', 'CopyPaste.paste', 'Autofill.fill'].includes(source)) return;
+
+    changes.forEach(([row]) => this.clearDisambiguation(row));
+
+    this.spreadSheetChanged();
+    this.startValidation(changes);
+  },
+  rowCreated(index, amount) {
+    const cols = this.dataset.columns.length;
+    this.wbutils.cellInfo = this.wbutils.cellInfo
+      .slice(0, index * cols)
+      .concat(
+        new Array(amount * cols),
+        this.wbutils.cellInfo.slice(index * cols)
+      );
+    this.hot.render();
+    this.spreadSheetChanged();
+  },
+  rowRemoved(index, amount) {
+    const cols = this.dataset.columns.length;
+    this.wbutils.cellInfo = this.wbutils.cellInfo
+      .slice(0, index * cols)
+      .concat(this.wbutils.cellInfo.slice((index + amount) * cols));
+    this.hot.render();
+    if (this.hot.countRows() === 0) {
+      this.hot.alter('insert_row', 0);
+    }
+    this.spreadSheetChanged();
+  },
+  columnMoved() {
+    const columnOrder = [];
+    for (let i = 0; i < this.dataset.columns.length; i++) {
+      columnOrder.push(this.hot.toPhysicalColumn(i));
+    }
+    if (
+      this.dataset.visualorder == null ||
+      columnOrder.some((i, j) => i !== this.dataset.visualorder[j])
+    ) {
+      this.dataset.visualorder = columnOrder;
+      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+        type: 'PUT',
+        data: JSON.stringify({ visualorder: columnOrder }),
+        dataType: 'json',
+        processData: false,
+      });
+    }
+  },
+  getValidationResults(showValidationSummary = false) {
+    Q(
+      $.get(`/api/workbench/validation_results/${this.dataset.id}/`)
+    ).done((results) => this.parseResults(results, showValidationSummary));
+  },
+  identifyMappedHeaders() {
+    const stylesContainer = document.createElement('style');
+    const unmappedCellStyles = '{ color: #999; }';
+
+    if (this.mappings) {
+      const mappedHeadersAndTables = Object.fromEntries(
+        mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).map(
+          (mappingsPath) => [
+            mappingsPath.slice(-2)[0],
+            icons.getIcon(
+              getMappingLineData({
                 baseTableName: this.mappings.baseTableName,
-                mappingPath: mapping,
+                mappingPath: mappingsPath.slice(0, -4),
                 iterate: false,
                 customSelectType: 'CLOSED_LIST',
                 showHiddenFields: false,
-            })[0]?.tableName;
-            const model = schema.getModel(tableName);
-            const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-            const matches = getRecordResult(rowResult, mapping).MatchedMultiple;
-            const doDA = selected => {
-                this.setDisambiguation(row, mapping, parseInt(selected, 10));
-                this.startValidateRow(row);
-            };
-            const doAll = selected => {
-                for (let i = 0; i < this.data.length; i++) {
-                    const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
-                    const key = getRecordResult(rowResult, mapping)?.MatchedMultiple?.key;
-                    if (key === matches.key) {
-                        this.setDisambiguation(i, mapping, parseInt(selected, 10));
-                        this.startValidateRow(i);
-                    }
-                }
-            };
-            const table = $('<table>');
-            matches.ids.forEach((id, i) => {
-                const resource = new model.Resource({id: id});
-                const tr = $(`<tr><td><input type="radio" class="da-option" name="disambiguate" value="${id}" id="da-option-${i}"></td></tr>`)
-                      .appendTo(table);
-                tr.append($('<td>').append($(`<a target="_blank">👁</a>`).attr('href', api.makeResourceViewUrl(model, id))));
-                const label = $(`<label for="da-option-${i}">`).text(id);
-                tr.append($('<td>').append(label));
-                formatObj(resource).done(formatted => label.text(formatted));
-            });
+              })[0]?.tableName || ''
+            ),
+          ]
+        )
+      );
 
-            const applyToAll = $('<label>Use this selection for all matching disambiguous records </label>')
-                  .append('<input type="checkbox" class="da-use-for-all" value="yes">');
-            $('<div>').append(table).append(applyToAll).dialog({
-                title: "Disambiguate",
-                modal: true,
-                close() { $(this).remove(); },
-                buttons: [
-                    {text: 'Select', click() {
-                        const selected = $('input.da-option:checked', this).val();
-                        const useForAll = $('input.da-use-for-all:checked', this).val();
-                        if (selected != null) {
-                            (useForAll ? doAll : doDA)(selected);
-                            $(this).dialog('close');
-                        }
-                    }},
-                    {text: 'Cancel', click() { $(this).dialog('close'); } }
-                ]
-            });
-        }
-    },
-    afterChange(changes, source) {
-        if (!['edit', 'CopyPaste.paste', 'Autofill.fill'].includes(source))
-            return;
+      this.mappedHeaders = mappedHeadersAndTables;
 
-        changes.forEach(([row]) => this.clearDisambiguation(row));
+      Object.values(
+        document
+          .getElementsByClassName('wtSpreader')[0]
+          ?.getElementsByClassName('colHeader')
+      ).forEach((headerContainer) => {
+        const header = headerContainer.children[0];
+        let headerId = header?.className.match(/wb-header-(\d+)/)?.[1];
 
-        this.spreadSheetChanged();
-        this.startValidation(changes);
-    },
-    rowCreated(index, amount) {
-        const cols = this.dataset.columns.length;
-        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(
-          new Array(amount*cols),
-          this.wbutils.cellInfo.slice(index*cols)
+        if (!headerId) return;
+
+        headerId = parseInt(headerId);
+
+        const src = this.mappedHeaders[headerId];
+
+        if (typeof src !== 'string') return;
+
+        const img = document.createElement('img');
+        img.classList.add('wb-header-icon');
+        img.setAttribute('src', src);
+        img.setAttribute(
+          'alt',
+          src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
         );
-        this.hot.render();
-        this.spreadSheetChanged();
-    },
-    rowRemoved(index, amount) {
-        const cols = this.dataset.columns.length;
-        this.wbutils.cellInfo = this.wbutils.cellInfo.slice(0, index*cols).concat(
-          this.wbutils.cellInfo.slice((index+amount)*cols)
-        );
-        this.hot.render();
-        if (this.hot.countRows() === 0) {
-            this.hot.alter('insert_row', 0);
-        }
-        this.spreadSheetChanged();
-    },
-    columnMoved(columns, target) {
-        const columnOrder = [];
-        for (let i = 0; i < this.dataset.columns.length; i++) {
-            columnOrder.push(this.hot.toPhysicalColumn(i));
-        }
-        if (this.dataset.visualorder == null || columnOrder.some((i,j) => i !== this.dataset.visualorder[j])) {
-            this.dataset.visualorder = columnOrder;
-            $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-                type: "PUT",
-                data: JSON.stringify({visualorder: columnOrder}),
-                dataType: "json",
-                processData: false
-            });
-        }
-    },
-    getValidationResults(showValidationSummary = false) {
-        Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`))
-            .done(results => this.parseResults(results, showValidationSummary));
-    },
-    identifyMappedHeaders() {
-        const stylesContainer = document.createElement('style');
-        const unmappedCellStyles = '{ color: #999; }';
+      });
 
-        if (this.mappings) {
-            const mappedHeadersAndTables = Object.fromEntries(
-                mappingsTreeToArrayOfMappings(this.mappings.mappingsTree).map(mappingsPath =>
-                    [
-                        mappingsPath.slice(-2)[0],
-                        icons.getIcon(
-                            getMappingLineData({
-                                baseTableName: this.mappings.baseTableName,
-                                mappingPath: mappingsPath.slice(0, -4),
-                                iterate: false,
-                                customSelectType: 'CLOSED_LIST',
-                                showHiddenFields: false,
-                            })[0]?.tableName || '',
-                        ),
-                    ],
-                ),
-            );
+      stylesContainer.innerHTML = `${Object.entries(this.dataset.columns)
+        .filter(([, columnName]) => !(columnName in mappedHeadersAndTables))
+        .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
+        .join('\n')}`;
 
-            this.mappedHeaders = mappedHeadersAndTables;
+      const defaultValues = Object.fromEntries(
+        Object.entries(
+          extractDefaultValues(arrayOfMappings, true)
+        ).map(([headerName, defaultValue]) => [
+          this.dataset.columns.indexOf(headerName),
+          defaultValue,
+        ])
+      );
 
-            Object.values(
-                document.getElementsByClassName(
-                  'wtSpreader'
-                )[0]?.getElementsByClassName(
-                  'colHeader'
-                )
-            ).forEach(headerContainer=> {
-                const header = headerContainer.children[0];
-                let headerId =
-                  header?.className.match(/wb-header-(\d+)/)?.[1];
+      this.hot.updateSettings({
+        columns: (index) =>
+          typeof defaultValues[index] === 'undefined'
+            ? {}
+            : { placeholder: defaultValues[index] },
+      });
+    }
 
-                if(!headerId)
-                    return;
+    this.$el.append(stylesContainer);
+  },
+  parseResults(results, showValidationSummary = false) {
+    if (results == null) {
+      this.wbutils.cellInfo = [];
+      this.hot.render();
+      return;
+    }
 
-                headerId = parseInt(headerId);
+    this.wbutils.cellInfo = [];
+    results.forEach((result, row) => {
+      this.parseRowValidationResult(row, result);
+    });
 
-                const src = this.mappedHeaders[headerId];
+    this.updateCellInfos(showValidationSummary);
+  },
+  displayUploadedView() {
+    if (!this.uploaded) return;
 
-                if(typeof src !== 'string')
-                    return;
+    const uploadView = this.$el.find('.wb-upload-view')[0];
 
-                const img = document.createElement('img');
-                img.classList.add('wb-header-icon');
-                img.setAttribute('src', src);
-                img.setAttribute(
-                    'alt',
-                    src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
-                );
+    if (uploadView.children.length !== 0) return;
 
-            });
+    uploadView.innerHTML = '<div></div>';
+    const container = uploadView.children[0];
 
-            stylesContainer.innerHTML = `${
-                Object.entries(
-                  this.dataset.columns
-                ).filter(([,columnName])=>
-                  !(columnName in mappedHeadersAndTables)
-                ).map(([index])=>
-                    `.wb-col-${index} ${unmappedCellStyles}`
-                ).join('\n')
-            }`;
+    this.uploadedView = new WBUploadedView({
+      dataset: this.dataset,
+      hot: this.hot,
+      el: container,
+      removeCallback: () => (this.uploadedView = undefined),
+    }).render();
+  },
+  unupload() {
+    if (typeof this.uploadedView !== 'undefined') {
+      this.uploadedView.remove();
+      this.uploadedView = undefined;
+    }
+    $.post(`/api/workbench/unupload/${this.dataset.id}/`);
+    this.openStatus('unupload');
+  },
+  updateCellInfos(showValidationSummary = false) {
+    const cellCounts = {
+      newCells: this.wbutils.cellInfo.reduce(
+        (count, info) => count + (info.isNew ? 1 : 0),
+        0
+      ),
+      invalidCells: this.wbutils.cellInfo.reduce(
+        (count, info) => count + (info.issues.length ? 1 : 0),
+        0
+      ),
+      searchResults: this.wbutils.cellInfo.reduce(
+        (count, info) => count + (info.matchesSearch ? 1 : 0),
+        0
+      ),
+    };
 
-            const defaultValues = Object.fromEntries(
-              Object.entries(
-                extractDefaultValues(arrayOfMappings, true)
-              ).map(([headerName, defaultValue]) =>
-                [this.dataset.columns.indexOf(headerName), defaultValue]
-              )
-            );
+    //update navigation information
+    Object.values(
+      document.getElementsByClassName('wb-navigation-total')
+    ).forEach((navigationTotalElement) => {
+      const navigationType = navigationTotalElement.parentElement.getAttribute(
+        'data-navigation-type'
+      );
+      navigationTotalElement.innerText = cellCounts[navigationType];
+    });
 
-            this.hot.updateSettings({
-                columns: (index)=>
-                    typeof defaultValues[index] !== "undefined" ?
-                        { placeholder: defaultValues[index] } :
-                        {},
-            });
+    const refreshInitiatedBy = showValidationSummary
+      ? 'validation'
+      : this.refreshInitiatedBy;
 
-
-        }
-
-        this.$el.append(stylesContainer);
-
-    },
-    parseResults(results, showValidationSummary=false) {
-        if (results == null) {
-            this.wbutils.cellInfo = [];
-            this.hot.render();
-            return;
-        }
-
-        this.wbutils.cellInfo = [];
-        results.forEach((result, row) => {
-            this.parseRowValidationResult(row, result);
-        });
-
-        this.updateCellInfos(showValidationSummary);
-    },
-    displayUploadedView(){
-
-        if (!this.uploaded)
-            return;
-
-        const uploadView = this.$el.find('.wb-upload-view')[0];
-
-        if (uploadView.children.length !== 0)
-            return;
-
-        uploadView.innerHTML = '<div></div>';
-        const container = uploadView.children[0];
-
-        this.uploadedView = new WBUploadedView({
-            dataset: this.dataset,
-            hot: this.hot,
-            el: container,
-            removeCallback: ()=>(this.uploadedView = undefined),
-        }).render();
-    },
-    unupload(){
-        if(typeof this.uploadedView !== "undefined") {
-            this.uploadedView.remove();
-            this.uploadedView = undefined;
-        }
-        $.post(`/api/workbench/unupload/${this.dataset.id}/`);
-        this.openStatus('unupload');
-    },
-    updateCellInfos(showValidationSummary=false) {
-        const cellCounts = {
-            newCells: this.wbutils.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
-            invalidCells: this.wbutils.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
-            searchResults: this.wbutils.cellInfo.reduce((count, info) => count + (info.matchesSearch ? 1 : 0), 0),
-        };
-
-        //update navigation information
-        Object.values(
-          document.getElementsByClassName('wb-navigation-total')
-        ).forEach(navigationTotalElement => {
-            const navigationType = navigationTotalElement.parentElement.getAttribute('data-navigation-type');
-            navigationTotalElement.innerText = cellCounts[navigationType];
-        });
-
-        const refreshInitiatedBy = showValidationSummary ?
-            'validation' :
-            this.refreshInitiatedBy;
-
-        const messages = {
-            validation: cellCounts.invalidCells === 0 ?
-                {
-                    title: 'Validation successful',
-                    message: 'Validation completed successfully!'
-                } :
-                {
-                    title: 'Validation Failed',
-                    message: `Some issues were detected.<br>
-                    Please fix them before uploading the dataset.`
-                },
-            upload: cellCounts.invalidCells === 0 ?
-                {
-                    title: 'Upload completed',
-                    message: `You can open the 'View' menu to see a detailed
-                        breakdown of the upload results.`
-                } :
-                {
-                    title: 'Upload failed due to validation errors',
-                    message: `Upload failed with ${cellCounts.invalidCells}
+    const messages = {
+      validation:
+        cellCounts.invalidCells === 0
+          ? {
+              title: 'Validation successful',
+              message: 'Validation completed successfully!',
+            }
+          : {
+              title: 'Validation Failed',
+              message: `Some issues were detected.<br>
+                    Please fix them before uploading the dataset.`,
+            },
+      upload:
+        cellCounts.invalidCells === 0
+          ? {
+              title: 'Upload completed',
+              message: `You can open the 'View' menu to see a detailed
+                        breakdown of the upload results.`,
+            }
+          : {
+              title: 'Upload failed due to validation errors',
+              message: `Upload failed with ${cellCounts.invalidCells}
                         invalid cells.<br>
                         Please review the validation messages and repeat
-                        the upload process.`
-                },
-            unupload: {
-                title: 'Unupload completed',
-                message: 'Unupload completed successfully'
-            }
-        };
+                        the upload process.`,
+            },
+      unupload: {
+        title: 'Unupload completed',
+        message: 'Unupload completed successfully',
+      },
+    };
 
-        if(refreshInitiatedBy in messages){
-            const dialog = $(`<div>
+    if (refreshInitiatedBy in messages) {
+      const dialog = $(`<div>
                 ${messages[refreshInitiatedBy].message}
             </div>`).dialog({
-                title: messages[refreshInitiatedBy].title ,
-                modal: true,
-                buttons: {
-                    Close(){ $(this).dialog('destroy'); },
-                    ...(
-                        (
-                            this.refreshInitiatedBy === 'upload' &&
-                            cellCounts.invalidCells === 0
-                        ) ?
-                            {
-                                'View upload results': ()=>
-                                    this.displayUploadedView() ||
-                                    dialog.dialog('close'),
-                            } :
-                            {}
-                    )
-                }
+        title: messages[refreshInitiatedBy].title,
+        modal: true,
+        buttons: {
+          Close() {
+            $(this).dialog('destroy');
+          },
+          ...(this.refreshInitiatedBy === 'upload' &&
+          cellCounts.invalidCells === 0
+            ? {
+                'View upload results': () =>
+                  this.displayUploadedView() || dialog.dialog('close'),
+              }
+            : {}),
+        },
+      });
+
+      this.refreshInitiatedBy = undefined;
+    }
+
+    this.hot.render();
+  },
+  parseRowValidationResult(row, result) {
+    const cols = this.dataset.columns.length;
+    const headerToCol = {};
+    for (let i = 0; i < cols; i++) {
+      headerToCol[this.dataset.columns[i]] = i;
+    }
+
+    for (let i = 0; i < cols; i++) {
+      delete this.wbutils.cellInfo[row * cols + i];
+    }
+
+    const addErrorMessage = (columnName, issue) => {
+      const col = headerToCol[columnName];
+      this.wbutils.initCellInfo(row, col);
+      const cellInfo = this.wbutils.cellInfo[row * cols + col];
+
+      const ucfirstIssue = issue[0].toUpperCase() + issue.slice(1);
+      cellInfo.issues.push(ucfirstIssue);
+    };
+
+    if (result === null) return;
+
+    result.tableIssues.forEach((tableIssue) =>
+      (tableIssue.columns.length === 0
+        ? this.dataset.columns
+        : tableIssue.columns
+      ).forEach((columnName) => addErrorMessage(columnName, tableIssue.issue))
+    );
+
+    result.cellIssues.forEach((cellIssue) =>
+      addErrorMessage(cellIssue.column, cellIssue.issue)
+    );
+
+    result.newRows.forEach(({ columns }) =>
+      columns.forEach((columnName) => {
+        const col = headerToCol[columnName];
+        this.wbutils.initCellInfo(row, col);
+        const cellInfo = this.wbutils.cellInfo[row * cols + col];
+        cellInfo.isNew = true;
+      })
+    );
+  },
+  defineCell(cols, row, col, prop) {
+    let cellData;
+    try {
+      cellData = this.wbutils.cellInfo[row * cols + col];
+    } catch (e) {}
+
+    return {
+      comment: cellData && { value: cellData.issues.join('<br>') },
+      renderer: function (instance, td, row, col, prop, value, cellProperties) {
+        if (cellData && cellData.isNew) td.classList.add('wb-no-match-cell');
+
+        if (cellData && cellData.issues.length)
+          td.classList.add('wb-invalid-cell');
+
+        td.classList.add(`wb-col-${col}`);
+
+        Handsontable.renderers.TextRenderer.apply(null, arguments);
+      },
+    };
+  },
+  openPlan() {
+    navigation.go(`/workbench-plan/${this.dataset.id}/`);
+  },
+  showPlan() {
+    const dataset = this.dataset;
+    const $this = this;
+    const planJson = JSON.stringify(dataset.uploadplan, null, 4);
+    $('<div>')
+      .append($('<textarea cols="120" rows="50">').text(planJson))
+      .dialog({
+        title: 'Upload plan',
+        width: 'auto',
+        modal: true,
+        close() {
+          $(this).remove();
+        },
+        buttons: {
+          Save() {
+            dataset.uploadplan = JSON.parse($('textarea', this).val());
+            $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
+              type: 'PUT',
+              data: JSON.stringify({ uploadplan: dataset.uploadplan }),
+              dataType: 'json',
+              processData: false,
             });
+            $(this).dialog('close');
+            $this.trigger('refresh');
+          },
+          Close() {
+            $(this).dialog('close');
+          },
+        },
+      });
+  },
+  spreadSheetChanged() {
+    this.$('.wb-upload, .wb-validate').prop('disabled', true);
+    this.$('.wb-upload, .wb-match').prop('disabled', true);
+    this.$('.wb-save').prop('disabled', false);
+    navigation.addUnloadProtect(this, 'The workbench has not been saved.');
+  },
+  startValidation(changes) {
+    if (this.dataset.uploadplan && changes) {
+      changes
+        .filter(
+          (
+            [, column] // ignore changes to unmapped columns
+          ) =>
+            Object.keys(this.mappedHeaders).indexOf(
+              this.dataset.columns[this.hot.toPhysicalColumn(column)]
+            ) !== -1
+        )
+        .forEach(([row]) => this.startValidateRow(row));
+    }
+  },
+  startValidateRow(row) {
+    const rowData = this.hot.getSourceDataAtRow(this.hot.toPhysicalRow(row));
+    const req = (this.rowValidationRequests[row] = $.post(
+      `/api/workbench/validate_row/${this.dataset.id}/`,
+      JSON.stringify(rowData)
+    ));
+    req.done((result) => this.gotRowValidationResult(row, req, result));
+  },
+  gotRowValidationResult(row, req, result) {
+    if (req === this.rowValidationRequests[row]) {
+      this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
+      this.parseRowValidationResult(row, result.validation);
+      this.updateCellInfos();
+    }
+  },
+  resize: function () {
+    this.hot && this.hot.updateSettings({ height: this.calcHeight() });
+    return true;
+  },
+  calcHeight: function () {
+    if (this.$el.offset().top === 0) setTimeout(this.resize.bind(this), 20);
+    return (
+      $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset().top
+    );
+  },
+  saveClicked: function () {
+    this.save().done();
+  },
+  save: function () {
+    // clear validation
+    this.wbutils.cellInfo = [];
+    this.hot.render();
 
-            this.refreshInitiatedBy = undefined;
-        }
+    //show saving progress bar
+    var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+      title: 'Saving',
+      modal: true,
+      open(evt, ui) {
+        $('.ui-dialog-titlebar-close', ui.dialog).hide();
+      },
+      close() {
+        $(this).remove();
+      },
+    });
+    $('.progress-bar', dialog).progressbar({ value: false });
 
-        this.hot.render();
-    },
-    parseRowValidationResult(row, result) {
-        const cols = this.dataset.columns.length;
-        const headerToCol = {};
-        for (let i = 0; i < cols; i++) {
-            headerToCol[this.dataset.columns[i]] = i;
-        }
-
-        for (let i = 0; i < cols; i++) {
-            delete this.wbutils.cellInfo[row*cols + i];
-        }
-
-        const addErrorMessage = (columnName, issue) => {
-            const col = headerToCol[columnName];
-            this.wbutils.initCellInfo(row, col);
-            const cellInfo = this.wbutils.cellInfo[row*cols + col];
-
-            const ucfirstIssue = issue[0].toUpperCase() + issue.slice(1);
-            cellInfo.issues.push(ucfirstIssue);
-        };
-
-        if(result === null)
-            return;
-
-        result.tableIssues.forEach(tableIssue =>
-           (tableIssue.columns.length === 0 ? this.dataset.columns : tableIssue.columns).forEach(columnName =>
-                addErrorMessage(columnName, tableIssue.issue)
-            )
-        );
-
-        result.cellIssues.forEach(cellIssue =>
-            addErrorMessage(cellIssue.column, cellIssue.issue)
-        );
-
-        result.newRows.forEach(({columns}) =>
-            columns.forEach(columnName => {
-                const col = headerToCol[columnName];
-                this.wbutils.initCellInfo(row, col);
-                const cellInfo = this.wbutils.cellInfo[row*cols + col];
-                cellInfo.isNew = true;
-            })
-        );
-    },
-    defineCell(cols, row, col, prop) {
-        let cellData;
-        try {
-            cellData = this.wbutils.cellInfo[row*cols + col];
-        } catch (e) {
-        }
-
-        return {
-            comment: cellData && {value: cellData.issues.join('<br>')},
-            renderer: function(instance, td, row, col, prop, value, cellProperties) {
-                if(cellData && cellData.isNew)
-                    td.classList.add('wb-no-match-cell');
-
-                if(cellData && cellData.issues.length)
-                    td.classList.add('wb-invalid-cell');
-
-                td.classList.add(`wb-col-${col}`);
-
-                Handsontable.renderers.TextRenderer.apply(null, arguments);
-            }
-        };
-    },
-    openPlan() {
-        navigation.go(`/workbench-plan/${this.dataset.id}/`);
-    },
-    showPlan() {
-        const dataset = this.dataset;
-        const $this = this;
-        const planJson = JSON.stringify(dataset.uploadplan, null, 4);
-        $('<div>').append($('<textarea cols="120" rows="50">').text(planJson)).dialog({
-            title: "Upload plan",
-            width: 'auto',
-            modal: true,
-            close() { $(this).remove(); },
-            buttons: {
-                Save() {
-                    dataset.uploadplan = JSON.parse($('textarea', this).val());
-                    $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
-                        type: "PUT",
-                        data: JSON.stringify({uploadplan: dataset.uploadplan}),
-                        dataType: "json",
-                        processData: false
-                    });
-                    $(this).dialog('close');
-                    $this.trigger('refresh');
-                } ,
-                Close() { $(this).dialog('close'); }
-            }
+    //send data
+    return Q(
+      $.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
+        data: JSON.stringify(this.data),
+        error: this.checkDeletedFail.bind(this),
+        type: 'PUT',
+      })
+    )
+      .then(() => {
+        this.spreadSheetUpToDate();
+      })
+      .finally(() => dialog.dialog('close'));
+  },
+  checkDeletedFail(jqxhr) {
+    if (jqxhr.status === 404) {
+      this.$el.empty().append('Dataset was deleted by another session.');
+      jqxhr.errorHandled = true;
+    }
+  },
+  spreadSheetUpToDate: function () {
+    this.$('.wb-upload, .wb-validate').prop('disabled', false);
+    this.$('.wb-upload, .wb-match').prop('disabled', false);
+    this.$('.wb-save').prop('disabled', true);
+    navigation.removeUnloadProtect(this);
+  },
+  upload(evt) {
+    const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
+    const openPlan = () => this.openPlan();
+    if (this.dataset.uploadplan)
+      $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
+        .fail((jqxhr) => {
+          this.checkDeletedFail(jqxhr);
+        })
+        .done(() => {
+          this.openStatus(mode);
         });
-    },
-    spreadSheetChanged() {
-        this.$('.wb-upload, .wb-validate').prop('disabled', true);
-        this.$('.wb-upload, .wb-match').prop('disabled', true);
-        this.$('.wb-save').prop('disabled', false);
-        navigation.addUnloadProtect(this, "The workbench has not been saved.");
-    },
-    startValidation(changes) {
-        if (
-            this.dataset.uploadplan &&
-            changes
-        ) {
-            changes.filter(([,column])=>  // ignore changes to unmapped columns
-                Object.keys(this.mappedHeaders).indexOf(
-                    this.dataset.columns[this.hot.toPhysicalColumn(column)]
-                ) !== -1
-            ).forEach(([row]) => this.startValidateRow(row));
-        }
-    },
-    startValidateRow(row) {
-        const rowData = this.hot.getSourceDataAtRow(this.hot.toPhysicalRow(row));
-        const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData));
-        req.done(result => this.gotRowValidationResult(row, req, result));
-    },
-    gotRowValidationResult(row, req, result) {
-        if (req === this.rowValidationRequests[row]) {
-            this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
-            this.parseRowValidationResult(row, result.validation);
-            this.updateCellInfos();
-        }
-    },
-    resize: function() {
-        this.hot && this.hot.updateSettings({height: this.calcHeight()});
-        return true;
-    },
-    calcHeight: function() {
-        if(this.$el.offset().top === 0)
-            setTimeout(this.resize.bind(this), 20);
-        return $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset().top;
-    },
-    saveClicked: function() {
-        this.save().done();
-    },
-    save: function() {
-        // clear validation
-        this.wbutils.cellInfo = [];
-        this.hot.render();
-
-        //show saving progress bar
-        var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-            title: 'Saving',
-            modal: true,
-            open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-            close() {$(this).remove();}
+    else
+      $(
+        '<div>No plan has been defined for this dataset. Create one now?</div>'
+      ).dialog({
+        title: 'No Plan is defined',
+        modal: true,
+        buttons: {
+          Cancel: function () {
+            $(this).dialog('close');
+          },
+          Create: openPlan,
+        },
+      });
+  },
+  openStatus(mode) {
+    new WBStatus({ dataset: this.dataset }).render().on('done', () => {
+      if (['upload', 'unupload'].includes(mode)) this.trigger('refresh', mode);
+      else this.getValidationResults(true);
+    });
+  },
+  showHighlights: function () {
+    this.highlightsOn = true;
+    this.hot.render();
+  },
+  removeHighlights: function () {
+    this.highlightsOn = false;
+    this.hot.render();
+  },
+  toggleHighlights: function () {
+    if (this.highlightsOn) {
+      this.removeHighlights();
+      this.$('.wb-toggle-highlights').text('Show');
+    } else {
+      this.showHighlights();
+      this.$('.wb-toggle-highlights').text('Hide');
+    }
+  },
+  delete: function () {
+    let dialog;
+    const doDelete = () => {
+      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, { type: 'DELETE' })
+        .done(() => {
+          this.$el.empty().append('<p>Dataset deleted.</p>');
+          dialog.dialog('close');
+        })
+        .fail((jqxhr) => {
+          this.checkDeletedFail(jqxhr);
+          dialog.dialog('close');
         });
-        $('.progress-bar', dialog).progressbar({value: false});
+    };
 
-        //send data
-        return Q($.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
-            data: JSON.stringify(this.data),
-            error: this.checkDeletedFail.bind(this),
-            type: "PUT"
-        })).then(() => {
-            this.spreadSheetUpToDate();
-        }).finally(() => dialog.dialog('close'));
-    },
-    checkDeletedFail(jqxhr) {
-        if (jqxhr.status === 404) {
-            this.$el.empty().append('Dataset was deleted by another session.');
-            jqxhr.errorHandled = true;
-        }
-    },
-    spreadSheetUpToDate: function() {
-        this.$('.wb-upload, .wb-validate').prop('disabled', false);
-        this.$('.wb-upload, .wb-match').prop('disabled', false);
-        this.$('.wb-save').prop('disabled', true);
-        navigation.removeUnloadProtect(this);
-    },
-    upload(evt) {
-        const mode = $(evt.currentTarget).is('.wb-upload') ? "upload" : "validate";
-        const openPlan = () => this.openPlan();
-        if (!this.dataset.uploadplan) {
-            $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
-                title: "No Plan is defined",
-                modal: true,
-                buttons: {
-                    'Cancel': function() { $(this).dialog('close'); },
-                    'Create': openPlan,
-                }
-            });
-        } else {
-            $.post(`/api/workbench/${mode}/${this.dataset.id}/`).fail(jqxhr => {
-                this.checkDeletedFail(jqxhr);
-            }).done(() => {
-                this.openStatus(mode);
-            });
-        }
-    },
-    openStatus(mode) {
-        new WBStatus({dataset: this.dataset}).render().on('done', () => {
-            if (["upload", "unupload"].includes(mode))
-                this.trigger('refresh', mode);
-            else
-                this.getValidationResults(true);
-        });
-    },
-    showHighlights: function() {
-        this.highlightsOn = true;
-        this.hot.render();
-    },
-    removeHighlights: function() {
-        this.highlightsOn = false;
-        this.hot.render();
-    },
-    toggleHighlights: function() {
-        if (this.highlightsOn) {
-            this.removeHighlights();
-            this.$('.wb-toggle-highlights').text('Show');
-        } else {
-            this.showHighlights();
-            this.$('.wb-toggle-highlights').text('Hide');
-        }
-    },
-    delete: function() {
-        let dialog;
-        const doDelete = () => {
-            $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {type: "DELETE"}).done(() => {
-                this.$el.empty().append('<p>Dataset deleted.</p>');
-                dialog.dialog('close');
-            }).fail(jqxhr => {
-                this.checkDeletedFail(jqxhr);
-                dialog.dialog('close');
-            });
-        };
-
-        dialog = $('<div>Really delete?</div>').dialog({
-            modal: true,
-            title: "Confirm delete",
-            close() { $(this).remove(); },
-            buttons: {
-                'Delete': doDelete,
-                'Cancel': function() { $(this).dialog('close'); }
-            }
-        });
-    },
-    export() {
-        const data = Papa.unparse({fields: this.dataset.columns, data: this.dataset.rows});
-        const wbname = this.dataset.name;
-        const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
-        const blob = new Blob([data], {type: 'text/csv;charset=utf-8;'});
-        const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(blob);
-        a.setAttribute('download', filename);
-        a.click();
-    },
+    dialog = $('<div>Really delete?</div>').dialog({
+      modal: true,
+      title: 'Confirm delete',
+      close() {
+        $(this).remove();
+      },
+      buttons: {
+        Delete: doDelete,
+        Cancel: function () {
+          $(this).dialog('close');
+        },
+      },
+    });
+  },
+  export() {
+    const data = Papa.unparse({
+      fields: this.dataset.columns,
+      data: this.dataset.rows,
+    });
+    const wbname = this.dataset.name;
+    const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
+    const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = window.URL.createObjectURL(blob);
+    a.setAttribute('download', filename);
+    a.click();
+  },
 });
 
 module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
-    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-        title: 'Loading',
-        modal: true,
-        open(evt, ui) {
-            $('.ui-dialog-titlebar-close', ui.dialog).hide();
-        },
-        close() {
-            $(this).remove();
-        }
-    });
-    $('.progress-bar', dialog).progressbar({value: false});
+  const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+    title: 'Loading',
+    modal: true,
+    open(evt, ui) {
+      $('.ui-dialog-titlebar-close', ui.dialog).hide();
+    },
+    close() {
+      $(this).remove();
+    },
+  });
+  $('.progress-bar', dialog).progressbar({ value: false });
 
-    $.get(`/api/workbench/dataset/${id}/`).done(dataset => {
-        dialog.dialog('close');
+  $.get(`/api/workbench/dataset/${id}/`).done((dataset) => {
+    dialog.dialog('close');
 
-        const view = new WBView({
-            dataset,
-            refreshInitiatedBy
-        }).on('refresh', (mode) =>
-            loadDataset(id, mode)
-        );
-        app.setCurrentView(view);
-    });
+    const view = new WBView({
+      dataset,
+      refreshInitiatedBy,
+    }).on('refresh', (mode) => loadDataset(id, mode));
+    app.setCurrentView(view);
+  });
 };
 
-function getRecordResult({UploadResult}, mapping) {
-    if (mapping.length === 0) {
-        return UploadResult.record_result;
-    } else if (mapping[1]?.startsWith('#')) {
-        const idx = parseInt(mapping[1].replace('#', ''), 10) - 1;
-        const toMany = UploadResult.toMany[mapping[0]];
-        const next = toMany && toMany[idx];
-        return next && getRecordResult(next, mapping.slice(2));
-    } else {
-        const next = UploadResult.toOne[mapping[0]];
-        return next && getRecordResult(next, mapping.slice(1));
-    }
+function getRecordResult({ UploadResult }, mapping) {
+  if (mapping.length === 0) {
+    return UploadResult.record_result;
+  } else if (mapping[1]?.startsWith('#')) {
+    const idx = parseInt(mapping[1].replace('#', ''), 10) - 1;
+    const toMany = UploadResult.toMany[mapping[0]];
+    const next = toMany && toMany[idx];
+    return next && getRecordResult(next, mapping.slice(2));
+  } else {
+    const next = UploadResult.toOne[mapping[0]];
+    return next && getRecordResult(next, mapping.slice(1));
+  }
 }
