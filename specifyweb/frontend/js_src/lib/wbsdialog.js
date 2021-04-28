@@ -56,6 +56,9 @@ module.exports = Backbone.View.extend({
   },
   datasetToHTML(dataset) {
     const dateCreated = new Date(dataset.timestampcreated);
+    const dateUploaded = dataset.uploadresult?.success
+      ? new Date(dataset.uploadresult.timestamp)
+      : undefined;
 
     return `<tr>
       <td>
@@ -64,7 +67,9 @@ module.exports = Backbone.View.extend({
           ${dataset.name}
         </a>
       </td>
-      <td>[TODO]</td>  <!-- TODO: add date uploaded-->
+      <td title="${dateUploaded?.toLocaleString() ?? ''}">${
+      dateUploaded?.toDateString() ?? ''
+    }</td>
       <td
         title="${dateCreated.toLocaleString()}"
       >${dateCreated.toDateString()}</td>
