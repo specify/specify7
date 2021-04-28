@@ -1,26 +1,25 @@
-import re
 import json
 import logging
-from uuid import uuid4
-from typing import Sequence, Tuple, List, Optional
-from jsonschema import validate # type: ignore
-from jsonschema.exceptions import ValidationError # type: ignore
-
-from django import http
-from django.views.decorators.http import require_GET, require_POST, require_http_methods
-from django import forms
-from django.shortcuts import render
-from django.db import connection, transaction
+import re
+from django import forms, http
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection, transaction
+from django.shortcuts import render
+from django.views.decorators.http import require_GET, require_POST, \
+    require_http_methods
+from jsonschema import validate  # type: ignore
+from jsonschema.exceptions import ValidationError  # type: ignore
+from typing import List, Sequence, Tuple
+from uuid import uuid4
 
-from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data, uri_for_model
-from specifyweb.specify.views import login_maybe_required, apply_access_control, open_api_endpoints_schema
+from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
+    toJson, uri_for_model
+from specifyweb.specify.views import apply_access_control, login_maybe_required, \
+    open_api_endpoints_schema
 from specifyweb.specify import models as specify_models
-
-from . import tasks
-from . import models
 from ..notifications.models import Message
+from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
 
 logger = logging.getLogger(__name__)
@@ -35,6 +34,141 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
 
     return [r for r in map(regularize, rows) if r is not None]
 
+@open_api_endpoints_schema({
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "description": "Data Set ID",
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Data Set Name",
+                                    },
+                                    "uploadresult": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "example": "null"
+                                            },
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    # TODO: specify schema
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "uploaderstatus": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "example": "null"
+                                            },
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    # TODO: specify schema
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "timestampcreated": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "2021-04-28T13:16:07.774"
+                                    },
+                                    "timestampmodified": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "2021-04-28T13:50:41.710",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "A JSON representation of a new Data Set",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Data Set name",
+                            },
+                            "columns": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "A name of the column",
+                                },
+                                "description": "A unique array of strings",
+                            },
+                            "rows": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "Cell's value or null"
+                                    }
+                                },
+                                "description": "2D array of values",
+                            },
+                            "importedfilename": {
+                                "type": "string",
+                                "description": "The name of the original file",
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "description": "Data Set ID",
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description":
+                                        "Data Set name (may differ from the one " +
+                                        "in the request object as part of " +
+                                        "ensuring names are unique)"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "POST"])
@@ -73,13 +207,192 @@ def datasets(request) -> http.HttpResponse:
         return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
 
 @open_api_endpoints_schema({
-    "parameters": [
-        {
-            'name': 'dos',
+    "get": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "number",
+                            "description": "Data Set ID",
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Data Set name",
+                        },
+                        "columns": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "A name of the column",
+                            },
+                            "description": "A unique array of strings",
+                        },
+                        "visualorder": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "description": "null",
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        # TODO: finish this
+                                    },
+                                    "description": "The order to show columns in",
+                                }
+                            ]
+                        },
+                        "rows": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "Cell's value or null"
+                                }
+                            },
+                            "description": "2D array of values",
+                        },
+                        "uploadplan": {
+                            "type": "object",
+                            "properties": {
+                            },
+                            "description": "Upload Plan. Schema - https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
+                        },
+                        "uploadresult": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "example": "null"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        # TODO: specify schema
+                                    }
+                                }
+                            ]
+                        },
+                        "uploaderstatus": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "example": "null"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        # TODO: specify schema
+                                    }
+                                }
+                            ]
+                        },
+                        "importedfilename": {
+                            "type": "string",
+                            "description": "The name of the original file",
+                        },
+                        "remarks": {
+                            "type": "string",
+                        },
+                        "timestampcreated": {
+                            "type": "string",
+                            "format": "datetime",
+                            "example": "2021-04-28T13:16:07.774"
+                        },
+                        "timestampmodified": {
+                            "type": "string",
+                            "format": "datetime",
+                            "example": "2021-04-28T13:50:41.710",
+                        }
+                    }
+                }
+            }
         }
-    ],
-    "post": {},
-    "get": {}
+    },
+    'put': {
+        "requestBody": {
+            "required": True,
+            "description": "A JSON representation of a new Data Set",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Data Set name",
+                            },
+                            "remarks": {
+                                "type": "string",
+                            },
+                            "visualorder": {
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "description": "null",
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            # TODO: finish this
+                                        },
+                                        "description": "The order to show columns in",
+                                    }
+                                ]
+                            },
+                            "uploadplan": {
+                                "type": "object",
+                                "properties": {
+                                },
+                                "description": "Upload Plan. Schema - https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {
+                "description": "Empty response",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 0
+                        }
+                    }
+                }
+            },
+        }
+    },
+    "delete": {
+        "response": {
+            "204": {
+                "description": "Empty response",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 0
+                        }
+                    }
+                }
+            },
+            "409": {
+                "description": "Dataset in use by uploader",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "example": "dataset in use by uploader"
+                        }
+                    }
+                }
+            }
+        }
+    }
 })
 @login_maybe_required
 @apply_access_control
