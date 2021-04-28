@@ -107,6 +107,7 @@ RUN echo \
         "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
         "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
+        "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
