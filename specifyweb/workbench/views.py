@@ -15,7 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data, uri_for_model
-from specifyweb.specify.views import login_maybe_required, apply_access_control
+from specifyweb.specify.views import login_maybe_required, apply_access_control, open_api_endpoints_schema
 from specifyweb.specify import models as specify_models
 
 from . import tasks
@@ -72,6 +72,15 @@ def datasets(request) -> http.HttpResponse:
             dss = dss.filter(uploadplan__isnull=False)
         return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
 
+@open_api_endpoints_schema({
+    "parameters": [
+        {
+            'name': 'dos',
+        }
+    ],
+    "post": {},
+    "get": {}
+})
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT", "DELETE"])

@@ -35,6 +35,15 @@ def apply_access_control(view):
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
+def open_api_endpoints_schema(schema):
+    def decorator(view):
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            return view(*args, **kwargs)
+        setattr(wrapped, '__schema__', schema)
+        return wrapped
+    return decorator
+
 def api_view(dispatch_func):
     """Create a Django view function that handles exceptions arising
     in the api logic."""
