@@ -71,7 +71,7 @@ module.exports = Backbone.View.extend({
 
     return `<tr class="wb-ds-dialog-status-${state}">
       <td>
-        <a href="/workbench/${dataset.id}/">
+        <a href="/workbench/${dataset.id}/" class="intercept-navigation">
           <img src="/images/Workbench32x32.png" alt="">
           ${dataset.name}
         </a>
