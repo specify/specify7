@@ -1,22 +1,35 @@
 /* wbimport.css */
 
+.custom-file-picker button {
+  cursor: pointer;
+}
+
+.custom-file-picker input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
 .workbench-import-view {
-    width: 100%
+  width: 100%;
 }
 
 .workbench-import-view .preview-table-wrapper {
-    overflow: auto;
+  overflow: auto;
 }
 
 .workbench-import-view table {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .workbench-import-view table tr.header {
-    background-color: #aaa;
-    text-align: center;
+  background-color: #aaa;
+  text-align: center;
 }
 
 .workbench-import-view table td {
-    border: 1px solid #888;
+  border: 1px solid #888;
 }

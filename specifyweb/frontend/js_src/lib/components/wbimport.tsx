@@ -489,8 +489,12 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
   function changed(target: HTMLInputElement) {
     if (target.files && target.files[0]) {
       props.update({ type: 'FileSelectedAction', file: target.files[0] });
-    }
+      setFileName(target.files[0].name);
+      target.value = '';
+    } else setFileName(undefined);
   }
+
+  const [fileName, setFileName] = React.useState<string | undefined>(undefined);
 
   const extensions =
     props.fileType === 'csv'
@@ -501,12 +505,21 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
 
   return (
     <p>
-      Choose {props.fileType} file:{' '}
-      <input
-        type="file"
-        accept={extensions}
-        onChange={(event) => changed(event.target)}
-      />
+      <label className="custom-file-picker">
+        <a
+          tabIndex={0}
+          className={`ui-button ui-button-text-only ui=state-default`}
+        >
+          <span className="ui-button-text">Choose {props.fileType} file</span>
+        </a>
+        <br />
+        {fileName && <span>Chosen file: {fileName}</span>}
+        <input
+          type="file"
+          accept={extensions}
+          onChange={(event) => changed(event.target)}
+        />
+      </label>
     </p>
   );
 }
