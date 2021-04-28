@@ -508,7 +508,8 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
       <label className="custom-file-picker">
         <a
           tabIndex={0}
-          className={`ui-button ui-button-text-only ui=state-default`}
+          className={`ui-button ui-widget ui-state-default ui-corner-all
+            ui-button-text-only`}
         >
           <span className="ui-button-text">Choose {props.fileType} file</span>
         </a>
