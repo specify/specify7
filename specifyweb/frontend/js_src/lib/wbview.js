@@ -69,7 +69,7 @@ const WBView = Backbone.View.extend({
     });
 
     this.uploaded =
-      this.dataset.uploadresult && this.dataset.uploadresult.success;
+      this.dataset.uploadresult!==null && this.dataset.uploadresult.success;
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.rowResults = this.dataset.rowresults || [];
@@ -102,9 +102,8 @@ const WBView = Backbone.View.extend({
     this.initHot().then(() => {
       this.getValidationResults();
       fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
+      this.wbutils.findLocalityColumns();
     });
-
-    this.wbutils.findLocalityColumns();
 
     $(window).resize(this.resize.bind(this));
 

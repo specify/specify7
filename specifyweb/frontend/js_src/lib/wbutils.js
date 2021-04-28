@@ -312,14 +312,18 @@ module.exports = Backbone.View.extend({
       )
     );
 
-    Promise.resolve().then(() => {
-      if (this.localityColumns.length !== 0)
-        ['wb-geolocate', 'wb-leafletmap', 'wb-convert-coordinates'].map(
-          (className) =>
-            document.getElementsByClassName(className)[0] &&
-            (document.getElementsByClassName(className)[0].style.display = null)
-        );
-    });
+    [
+      ...new Set([
+        ...(this.localityColumns.length !== 0 && !this.wbview.uploaded
+          ? ['wb-geolocate', 'wb-leafletmap', 'wb-convert-coordinates']
+          : []),
+        ...(this.localityColumns.length === 0 ? [] : ['wb-leafletmap']),
+      ]),
+    ].map(
+      (className) =>
+        document.getElementsByClassName(className)[0] &&
+        (document.getElementsByClassName(className)[0].style.display = null)
+    );
   },
   getGeoLocateQueryURL(
     currentLocalityColumns,
