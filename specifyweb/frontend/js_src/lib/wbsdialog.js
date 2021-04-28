@@ -15,14 +15,13 @@ module.exports = Backbone.View.extend({
   render() {
     $(
       this.datasets.length === 0
-        ? `<p>No data sets present. Use the "Import" button to import data</p>`
+        ? `<p>No Data Sets present. Use the "Import" button to import data</p>`
         : `<table class="wb-ds-dialog-table">
         <thead>
           <tr>
             <th>Name</th>
-            <th>Upload</th>
-            <th>Date Created</th>
-            <th>Owner</th>
+            <th>Uploaded</th>
+            <th>Created</th>
           </tr>
         </thead>
         <tbody>
@@ -56,29 +55,19 @@ module.exports = Backbone.View.extend({
     return this;
   },
   datasetToHTML(dataset) {
-    const state =
-      dataset.uploadresult === null
-        ? 'un-uploaded'
-        : dataset.uploadresult.success
-        ? 'uploaded'
-        : 'has-upload-error';
+    const dateCreated = new Date(dataset.timestampcreated);
 
-    const uploadedStates = {
-      'un-uploaded': '',
-      uploaded: 'Success',
-      'has-upload-error': '',
-    };
-
-    return `<tr class="wb-ds-dialog-status-${state}">
+    return `<tr>
       <td>
         <a href="/workbench/${dataset.id}/" class="intercept-navigation">
           <img src="/images/Workbench32x32.png" alt="">
           ${dataset.name}
         </a>
       </td>
-      <td>${uploadedStates[state]}</td>
-      <td>${new Date(dataset.timestampcreated).toLocaleString()}</td>
-      <td>[TODO]</td>
+      <td>[TODO]</td>  <!-- TODO: add date uploaded-->
+      <td
+        title="${dateCreated.toLocaleString()}"
+      >${dateCreated.toDateString()}</td>
     </tr>`;
   },
 });

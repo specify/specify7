@@ -1,6 +1,5 @@
 .wb-ds-dialog-table th {
-  padding: 0;
-  padding-bottom: 2px;
+  padding: 0 0 2px;
   font-size: 0.8rem;
 }
 
@@ -14,9 +13,4 @@
 
 .wb-ds-dialog-table td {
   padding-top: 0.6rem;
-}
-
-.wb-ds-dialog-status-uploaded,
-.wb-ds-dialog-status-uploaded a:not(:hover) {
-  color: #090;
 }

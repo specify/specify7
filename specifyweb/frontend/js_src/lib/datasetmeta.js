@@ -18,7 +18,7 @@ export default Backbone.View.extend({
       this.dialog = null;
     }
 
-    this.$el.text('Dataset: ' + this.dataset.name).append(`
+    this.$el.text('Data Set: ' + this.dataset.name).append(`
       <span
         class="ui-icon ui-icon-pencil"
         title="Edit name"
@@ -48,11 +48,15 @@ export default Backbone.View.extend({
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
       </label><br><br>
-      <b>Dataset Metadata:</b><br>
+      <b>Data Set Metadata:</b><br>
       Number of rows: <i>${this.dataset.rows.length}</i><br>
       Number of columns: <i>${this.dataset.rows[0].length}</i><br>
-      Date created: <i>${new Date(this.dataset.timestampcreated)}</i><br>
-      Date modified: <i>${new Date(this.dataset.timestampmodified)}</i><br>
+      Date created: <i>${new Date(
+        this.dataset.timestampcreated
+      ).toLocaleString()}</i><br>
+      Date modified: <i>${new Date(
+        this.dataset.timestampmodified
+      ).toLocaleString()}</i><br>
       Imported file name: <i>${this.dataset.importedfilename}</i><br>
     </div>`).dialog({
       title: 'Edit dataset metadata',
