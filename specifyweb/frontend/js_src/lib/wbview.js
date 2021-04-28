@@ -201,7 +201,7 @@ const WBView = Backbone.View.extend({
         .map(splitFullMappingPathComponents)
         .find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-      return typeof rowResult === 'undefined'
+      return typeof rowResult === 'undefined' || typeof mappingPath === 'undefined'
         ? false
         : getRecordResult(rowResult, mappingPath)?.MatchedMultiple != null;
     }
