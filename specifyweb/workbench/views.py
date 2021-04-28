@@ -14,7 +14,7 @@ from django.db import connection, transaction
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
-from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data
+from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data, uri_for_model
 from specifyweb.specify.views import login_maybe_required, apply_access_control
 
 from . import tasks
@@ -57,6 +57,8 @@ def datasets(request) -> http.HttpResponse:
             columns=columns,
             data=rows,
             importedfilename=data['importedfilename'],
+            createdbyagent=request.specify_user_agent,
+            modifiedbyagent=request.specify_user_agent,
         )
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
 
@@ -138,6 +140,8 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             importedfilename=ds.importedfilename,
             timestampcreated=ds.timestampcreated,
             timestampmodified=ds.timestampmodified,
+            createdbyagent=uri_for_model('agent', ds.createdbyagent_id) if ds.createdbyagent_id is not None else None,
+            modifiedbyagent=uri_for_model('agent', ds.modifiedbyagent_id) if ds.modifiedbyagent_id is not None else None,
         ), safe=False)
 
 @login_maybe_required
@@ -164,6 +168,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         ds.data = rows
         ds.rowresults = None
         ds.uploadresult = None
+        ds.modifiedbyagent = request.specify_user_agent
         ds.save()
         return http.HttpResponse(status=204)
 

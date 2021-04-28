@@ -7,6 +7,7 @@ from specifyweb.specify import models as spmodels
 
 Collection = getattr(spmodels, 'Collection')
 Specifyuser = getattr(spmodels, 'Specifyuser')
+Agent = getattr(spmodels, 'Agent')
 
 class Spdataset(models.Model):
     name = models.CharField(max_length=256)
@@ -23,6 +24,8 @@ class Spdataset(models.Model):
     importedfilename = models.TextField(null=True)
     timestampcreated = models.DateTimeField(default=timezone.now)
     timestampmodified = models.DateTimeField(auto_now=True)
+    createdbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
+    modifiedbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
 
     class Meta:
         db_table = 'spdataset'
