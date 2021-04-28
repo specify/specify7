@@ -30,7 +30,8 @@
 .wbs-form .wb-toolkit,
 .wbs-form .wb-controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .wbs-form .wb-toolkit {
@@ -64,7 +65,7 @@
 
 .wbs-form .wb-header .wb-name {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .wbs-form .wb-header .wb-upload-controls {
@@ -101,7 +102,7 @@
 .wb-upload-details ul li {
   list-style-type: disc;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .wb-upload-details textarea {
