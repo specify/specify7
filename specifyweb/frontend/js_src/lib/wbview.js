@@ -14,6 +14,7 @@ const api = require('./specifyapi.js');
 const app = require('./specifyapp.js');
 const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
+const NotFoundView = require('./notfoundview.js');
 const WBUploadedView = require('./components/wbuploadedview').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
@@ -345,7 +346,7 @@ const WBView = Backbone.View.extend({
         data: JSON.stringify({ visualorder: columnOrder }),
         dataType: 'json',
         processData: false,
-      });
+      }).fail(this.checkDeletedFail.bind(this));
     }
   },
   getValidationResults(showValidationSummary = false) {
@@ -638,7 +639,7 @@ const WBView = Backbone.View.extend({
               data: JSON.stringify({ uploadplan: dataset.uploadplan }),
               dataType: 'json',
               processData: false,
-            });
+            }).fail(this.checkDeletedFail.bind(this));
             $(this).dialog('close');
             $this.trigger('refresh');
           },
@@ -843,15 +844,25 @@ module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
   });
   $('.progress-bar', dialog).progressbar({ value: false });
 
-  $.get(`/api/workbench/dataset/${id}/`).done((dataset) => {
-    dialog.dialog('close');
+  $.get(`/api/workbench/dataset/${id}/`)
+    .done((dataset) => {
+      dialog.dialog('close');
 
-    const view = new WBView({
-      dataset,
-      refreshInitiatedBy,
-    }).on('refresh', (mode) => loadDataset(id, mode));
-    app.setCurrentView(view);
-  });
+      const view = new WBView({
+        dataset,
+        refreshInitiatedBy,
+      }).on('refresh', (mode) => loadDataset(id, mode));
+      app.setCurrentView(view);
+    })
+    .fail((jqXHR) => {
+      if (jqXHR.status === 404) {
+        jqXHR.errorHandled = true;
+        app.setCurrentView(new NotFoundView());
+        app.setTitle('Page Not Found');
+        return '(not found)';
+      }
+      return jqXHR;
+    });
 };
 
 function getRecordResult({ UploadResult }, mapping) {
