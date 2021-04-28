@@ -1,7 +1,10 @@
 import $ from 'jquery';
-import uniquifyName from './wbuniquifyname.js';
+import uniquifyName from './wbuniquifyname';
 import Backbone from './backbone';
-import app from './specifyapp.js';
+import app from './specifyapp';
+import { format } from './dataobjformatters';
+import schema from './schema';
+import resourceApi from './resourceapi';
 
 export default Backbone.View.extend({
   __name__: 'DataSetNameView',
@@ -11,6 +14,9 @@ export default Backbone.View.extend({
   initialize({ dataset }) {
     this.dataset = dataset;
     this.dialog = null;
+    this.model = schema.getModel('agent');
+    this.createdByAgent = null;
+    this.modifiedByAgent = null;
   },
   render() {
     if (this.dialog !== null) {
@@ -26,8 +32,44 @@ export default Backbone.View.extend({
     app.setTitle(this.dataset.name);
     return this;
   },
+  fetchAgent(agentString) {
+    return new Promise((resolve) => {
+      if (agentString === null) resolve(null);
+      const agentId = resourceApi.idFromUrl(agentString);
+      const createdByAgentResource = new this.model.Resource({
+        id: agentId,
+      });
+      format(createdByAgentResource).done(resolve);
+    });
+  },
+  loadAgentInfo(createdByField, modifiedByField) {
+    if (this.createdByAgent !== null) {
+      this.showAgentInfo(createdByField, modifiedByField);
+      return;
+    }
+
+    const sameAgent =
+      this.dataset.createdbyagent === this.dataset.modifiedbyagent;
+    const createdByAgent = this.fetchAgent(this.dataset.createdbyagent);
+    const modifiedByAgent = sameAgent
+      ? Promise.resolve()
+      : this.fetchAgent(this.dataset.modifiedbyagent);
+
+    Promise.all([createdByAgent, modifiedByAgent]).then(
+      ([createdByAgent, modifiedByAgent]) => {
+        this.createdByAgent = createdByAgent;
+        this.modifiedByAgent = sameAgent ? createdByAgent : modifiedByAgent;
+        this.showAgentInfo(createdByField, modifiedByField);
+      }
+    );
+  },
+  showAgentInfo(createdByField, modifiedByField) {
+    createdByField.text(this.createdByAgent ?? 'null');
+    modifiedByField.text(this.modifiedByAgent ?? 'null');
+  },
   startEditing() {
     if (this.dialog !== null) return;
+
     this.dialog = $(`<div>
       <label>
         Dataset Name:<br>
@@ -57,6 +99,8 @@ export default Backbone.View.extend({
       Date modified: <i>${new Date(
         this.dataset.timestampmodified
       ).toLocaleString()}</i><br>
+      Created By: <i class="created-by-field">Loading...</i><br>
+      Modified By: <i class="modified-by-field"></i><br>
       Imported file name: <i>${this.dataset.importedfilename}</i><br>
     </div>`).dialog({
       title: 'Edit dataset metadata',
@@ -70,6 +114,11 @@ export default Backbone.View.extend({
         Save: this.setName.bind(this),
       },
     });
+
+    this.loadAgentInfo(
+      this.dialog.find('.created-by-field'),
+      this.dialog.find('.modified-by-field')
+    );
   },
   setName() {
     if (this.dialog === null) return;
