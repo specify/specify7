@@ -104,7 +104,7 @@ def openapi(request) -> http.HttpResponse:
                     "required": False,
                     "schema": {
                         "type": "number",
-                        "minimum": 1,
+                        "minimum": 0,
                         "default": 0,
                     },
                 },
