@@ -352,16 +352,24 @@ def create_tag(path):
     path_parts = [part for part in os.path.dirname(path).split('/') if part]
     return path_parts[0] if len(path_parts) > 0 else '/'
 
+def get_endpoint_tags(endpoint):
+
+    methods = [key for key in endpoint.keys() if key != 'parameters']
+
+    list = [endpoint[method]['tags'] for method in methods]
+    return [item for sublist in list for item in sublist]  # flatten the list
+
+
 def get_tags(endpoints):
-    tag_names = sorted({
-        endpoint['get']['tags'][0] for endpoint in endpoints.values()
-    })
+
+    tag_names = [get_endpoint_tags(endpoint) for endpoint in endpoints.values()]
+    flat_tag_names = [item for sublist in tag_names for item in sublist]
+    unique_tag_names = sorted(list(set(flat_tag_names)))
 
     return [
         dict(
             name=tag_name,
-            # description='TBD'
-        ) for tag_name in tag_names
+        ) for tag_name in unique_tag_names
     ]
 
 endpoints_to_exclude = [
@@ -436,7 +444,6 @@ def get_endpoints(patterns, prefix="/", preparams=[]):
                     'tags': [tag],
                     'responses': {
                         '200': {
-                            # 'description': 'TBD'
                         }
                     }
                 },
