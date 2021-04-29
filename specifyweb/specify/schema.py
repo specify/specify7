@@ -78,7 +78,7 @@ def openapi(request) -> http.HttpResponse:
     spec = {
         **base_schema(),
         "paths": {
-            endpoint_url: endpoint_description
+            endpoint_url.lower(): endpoint_description
             for table in datamodel.tables
             for endpoint_url, endpoint_description in table_to_endpoint(
                 table
@@ -512,7 +512,7 @@ def table_to_schema(table: Table) -> Dict:
             f.name.lower(): field_to_schema(f) for f in table.all_fields
         },
         "additionalProperties": False,
-        "required": [f.name for f in table.all_fields],
+        "required": [f.name.lower() for f in table.all_fields],
     }
 
 
