@@ -286,7 +286,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
     """
     return [
         (
-            "/api/specify/" + table.django_name,
+            "/api/specify/" + table.django_name + "/",
             {
                 "get": {
                     "tags": [table.django_name],
@@ -492,6 +492,140 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                     },
                 },
             },
+        ),
+        (
+            "/api/specify_rows/" + table.django_name + "/",
+            {
+                'get': {
+                    "tags": [table.django_name],
+                    "parameters": [
+                        {
+                            "name": "fields",
+                            "in": "query",
+                            "required": True,
+                            "schema": {
+                                "type": "string"
+                            },
+                            "example": "localityname,latitude1,longitude1",
+                            "description": "Comma separated list of fileds to fetch",
+                        },
+                        {
+                            "name": "limit",
+                            "in": "query",
+                            "required": False,
+                            "schema": {
+                                "type": "number",
+                            },
+                            "default": 0,
+                            "description": "Max number of rows to return. 0 - no limit",
+                        },
+                        {
+                            "name": "distinct",
+                            "in": "query",
+                            "required": False,
+                            "schema": {
+                                "type": "boolean"
+                            },
+                            "default": False,
+                            "description": "Whether results should be distinct",
+                        }
+                    ],
+                    "summary": "Get rows from the "
+                        + table.django_name
+                        + " table",
+                    "description": "Get rows from the "
+                               + table.django_name
+                               + " table",
+                    "responses": {
+                        "200": {
+                            "description": "Empty response",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {},
+                                        },
+                                        "description": "2D array of results",
+                                    }
+                                }
+                            }
+                        },
+                    }
+                },
+            }
+        ),
+        (
+            "/api/delete_blockers/" + table.django_name + "/{id}",
+            {
+                "get": {
+                    "tags": [table.django_name],
+                    "summary": "Returns a JSON list of fields that prevent " +
+                        "the record from getting deleted",
+                    "description": "Returns a JSON list of fields that " +
+                       "point to related resources which prevent the resource " +
+                       "of that model from being deleted.",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {
+                                "type": "number",
+                                "minimum": "0",
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Data fetched successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "string",
+                                        "items": {
+                                            "type": "string",
+                                        },
+                                        "example": [
+                                            "Collectingevent.locality"
+                                        ],
+                                        "description": "List of fields"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            "/api/specify_schema/" + table.django_name + "/",
+            {
+                "get": {
+                    "tags": [table.django_name],
+                    "summary": "Get OpenAPI schema for "
+                               + table.django_name
+                               + " table",
+                    "description": "Get OpenAPI schema for "
+                               + table.django_name
+                               + " table",
+                    "responses": {
+                        "200": {
+                            "description": "Data fetched successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {},
+                                        "description": "Open API Schema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         ),
     ]
 
