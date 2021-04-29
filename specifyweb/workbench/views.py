@@ -1,17 +1,16 @@
 import json
 import logging
-import re
-from django import forms, http
+from typing import List, Optional
+from uuid import uuid4
+
+from django import http
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import connection, transaction
-from django.shortcuts import render
+from django.db import transaction
 from django.views.decorators.http import require_GET, require_POST, \
     require_http_methods
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
-from typing import List, Optional, Sequence, Tuple
-from uuid import uuid4
 
 from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
     toJson, uri_for_model
@@ -970,10 +969,44 @@ def up_schema(request) -> http.HttpResponse:
     "Returns the upload plan schema."
     return http.JsonResponse(upload_plan_schema.schema)
 
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "User ID of the new owner",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "specifyuserid": {
+                                "type": "number",
+                                "description": "User ID of the new owner"
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "example": "ok",
+                        }
+                    }
+                }
+            },
+        }
+    },
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
 def transfer(request, ds_id: int) -> http.HttpResponse:
+    """Transfer dataset's ownership to a different user."""
     if 'specifyuserid' not in request.POST:
         return http.HttpResponseBadRequest("missing parameter: specifyuserid")
 
