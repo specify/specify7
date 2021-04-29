@@ -441,6 +441,7 @@ def get_endpoints(
             continue
 
         tag = create_tag(complete_path)
+
         if isinstance(p, URLPattern):
             endpoints_schema = {
                 'parameters': [
