@@ -69,7 +69,7 @@ const WBView = Backbone.View.extend({
     });
 
     this.uploaded =
-      this.dataset.uploadresult!==null && this.dataset.uploadresult.success;
+      this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.rowResults = this.dataset.rowresults || [];
@@ -201,7 +201,8 @@ const WBView = Backbone.View.extend({
         .map(splitFullMappingPathComponents)
         .find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-      return typeof rowResult === 'undefined' || typeof mappingPath === 'undefined'
+      return typeof rowResult === 'undefined' ||
+        typeof mappingPath === 'undefined'
         ? false
         : getRecordResult(rowResult, mappingPath)?.MatchedMultiple != null;
     }
@@ -353,6 +354,8 @@ const WBView = Backbone.View.extend({
     this.spreadSheetChanged();
   },
   columnMoved() {
+    if (!this.hot) return;
+
     const columnOrder = [];
     for (let i = 0; i < this.dataset.columns.length; i++) {
       columnOrder.push(this.hot.toPhysicalColumn(i));
