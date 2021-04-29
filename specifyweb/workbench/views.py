@@ -65,6 +65,8 @@ def datasets(request) -> http.HttpResponse:
     else:
         attrs = ('name', 'uploadresult', 'uploaderstatus', 'timestampcreated', 'timestampmodified')
         dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only(*attrs)
+        if 'with_plan' in request.GET:
+            dss = dss.filter(uploadplan__isnull=False)
         return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
 
 @login_maybe_required
