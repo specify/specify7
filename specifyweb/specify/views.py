@@ -35,7 +35,7 @@ def apply_access_control(view):
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
-def open_api_endpoints_schema(schema, components={}):
+def openapi(schema, components={}):
     def decorator(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
@@ -121,6 +121,41 @@ def properties(request, name):
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
 
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "New user's password",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "password": {
+                                "type": "string",
+                                "description": "New user's password",
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {
+                "description": "Empty response",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": "0",
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @require_POST
 def set_password(request, userid):
@@ -136,6 +171,41 @@ def set_password(request, userid):
     user.save()
     return http.HttpResponse('', status=204)
 
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Admin status",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "admin_status": {
+                            "password": {
+                                "type": "boolean",
+                                "description": "Admin status",
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {
+                "description": "Empty response",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "boolean",
+                            "description": "The value of 'admin_status'",
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @require_POST
 def set_admin_status(request, userid):

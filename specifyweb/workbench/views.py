@@ -16,7 +16,7 @@ from uuid import uuid4
 from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
     toJson, uri_for_model
 from specifyweb.specify.views import apply_access_control, login_maybe_required, \
-    open_api_endpoints_schema
+    openapi
 from specifyweb.specify import models as specify_models
 from ..notifications.models import Message
 from . import models, tasks
@@ -157,7 +157,7 @@ open_api_components = {
     }
 }
 
-@open_api_endpoints_schema({
+@openapi(schema={
     "get": {
         "responses": {
             "200": {
@@ -261,7 +261,7 @@ open_api_components = {
             }
         }
     }
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "POST"])
@@ -299,7 +299,7 @@ def datasets(request) -> http.HttpResponse:
             dss = dss.filter(uploadplan__isnull=False)
         return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
 
-@open_api_endpoints_schema({
+@openapi(schema={
     "get": {
         "responses": {
             "200": {
@@ -431,7 +431,7 @@ def datasets(request) -> http.HttpResponse:
             }
         }
     }
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT", "DELETE"])
@@ -516,7 +516,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         assert False, "Unexpect HTTP method"
 
 
-@open_api_endpoints_schema({
+@openapi(schema={
     "get": {
         "responses": {
             "200": {
@@ -579,7 +579,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT"])
@@ -613,7 +613,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         return http.JsonResponse(ds.data, safe=False)
 
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'post': {
         "responses": {
             "200": {
@@ -630,7 +630,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -669,7 +669,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
     return http.JsonResponse(async_result.id, safe=False)
 
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'post': {
         "responses": {
             "200": {
@@ -686,7 +686,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -718,7 +718,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
 
 
 # @login_maybe_required
-@open_api_endpoints_schema({
+@openapi(schema={
     'get': {
         "responses": {
             "200": {
@@ -733,7 +733,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @require_GET
 def status(request, ds_id: int) -> http.HttpResponse:
     "Returns the uploader status for the dataset <ds_id>."
@@ -758,7 +758,7 @@ def status(request, ds_id: int) -> http.HttpResponse:
     return http.JsonResponse(status)
 
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'post': {
         "responses": {
             "200": {
@@ -777,7 +777,7 @@ def status(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -800,7 +800,7 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
     return http.HttpResponse('ok', content_type='text/plain')
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'get': {
         "responses": {
             "200": {
@@ -818,7 +818,7 @@ def abort(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_GET
@@ -840,7 +840,7 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
     return http.JsonResponse(results, safe=False)
 
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'get': {
         "responses": {
             "200": {
@@ -858,7 +858,7 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_GET
@@ -878,7 +878,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
         validate(results, schema)
     return http.JsonResponse(results, safe=False)
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'post': {
         "requestBody": {
             "required": True,
@@ -916,7 +916,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -935,7 +935,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, dict(zip(ds.columns, row)), da)
     return http.JsonResponse({'result': result.to_json(), 'validation': result.validation_info().to_json()})
 
-@open_api_endpoints_schema({
+@openapi(schema={
     'get': {
         "responses": {
             "200": {
@@ -952,7 +952,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
             },
         }
     },
-}, open_api_components)
+}, components=open_api_components)
 @require_GET
 def up_schema(request) -> http.HttpResponse:
     "Returns the upload plan schema."

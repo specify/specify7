@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.conf import settings
 
+from specifyweb.specify.views import openapi
 from .encryption import encrypt
 
 
@@ -13,6 +14,39 @@ def make_master_key(userpass):
     return encrypt(masteruser + ',' + masterpass, userpass)
 
 
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "User's password",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "password": {
+                                "type": "string",
+                                "description": "User's password",
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Master key",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @require_POST
 @login_required
 def master_key(request):
