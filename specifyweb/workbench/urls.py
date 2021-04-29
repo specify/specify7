@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^upload_results/(?P<ds_id>\d+)/', views.upload_results),
     url(r'^abort/(?P<ds_id>\d+)/', views.abort),
     url(r'^validate_row/(?P<ds_id>\d+)/', views.validate_row),
+    url(r'^transfer/(?P<ds_id>\d+)/', views.transfer),
 
     url(r'^schemas/', include([
         url(r'^uploadplan/$', views.up_schema),

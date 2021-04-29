@@ -16,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data, uri_for_model
 from specifyweb.specify.views import login_maybe_required, apply_access_control
+from specifyweb.specify import models as specify_models
 
 from . import tasks
 from . import models
@@ -332,3 +333,24 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
 @require_GET
 def up_schema(request) -> http.HttpResponse:
     return http.JsonResponse(upload_plan_schema.schema)
+
+@login_maybe_required
+@apply_access_control
+@require_POST
+def transfer(request, ds_id: int) -> http.HttpResponse:
+    if 'specifyuserid' not in request.POST:
+        return http.HttpResponseBadRequest("missing parameter: specifyuserid")
+
+    ds = get_object_or_404(models.Spdataset, id=ds_id)
+    if ds.specifyuser != request.specify_user:
+        return http.HttpResponseForbidden()
+
+    Specifyuser = getattr(specify_models, 'Specifyuser')
+
+    try:
+        ds.specifyuser = Specifyuser.objects.get(id=request.POST['specifyuserid'])
+    except Specifyuser.DoesNotExist:
+        return http.HttpResponseBadRequest("the user does not exist")
+
+    ds.save()
+    return http.HttpResponse('ok')
