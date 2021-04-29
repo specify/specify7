@@ -140,7 +140,8 @@ open_api_components = {
             "type": "object",
             "properties": {
             },
-            "description": "Upload Plan. Schema - https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
+            "description": "Upload Plan. Schema - " +
+               "https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
         },
         "wb_validation_results": {
             "type": "object",
@@ -159,6 +160,17 @@ open_api_components = {
 
 @openapi(schema={
     "get": {
+        "parameters": [
+            {
+                "name": "with_plan",
+                "in": "query",
+                "required": False,
+                "schema": {
+                    "type": "boolean"
+                },
+                "description": "Whether to limit results to data sets with upload plans."
+            }
+        ],
         "responses": {
             "200": {
                 "description": "Data fetched successfully",
