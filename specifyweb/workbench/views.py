@@ -10,7 +10,7 @@ from django.views.decorators.http import require_GET, require_POST, \
     require_http_methods
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
-from typing import List, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple
 from uuid import uuid4
 
 from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
@@ -64,7 +64,14 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
                                             {
                                                 "type": "object",
                                                 "properties": {
-                                                    # TODO: specify schema
+                                                    "success": {
+                                                        "type": "boolean",
+                                                    },
+                                                    "timestamp": {
+                                                        "type": "string",
+                                                        "format": "datetime",
+                                                        "example": "2021-04-28T22:28:20.033117+00:00",
+                                                    }
                                                 }
                                             }
                                         ]
@@ -236,9 +243,9 @@ def datasets(request) -> http.HttpResponse:
                                     "description": "null",
                                 },
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        # TODO: finish this
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number",
                                     },
                                     "description": "The order to show columns in",
                                 }
@@ -270,7 +277,14 @@ def datasets(request) -> http.HttpResponse:
                                 {
                                     "type": "object",
                                     "properties": {
-                                        # TODO: specify schema
+                                        "success": {
+                                            "type": "boolean",
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "datetime",
+                                            "example": "2021-04-28T22:28:20.033117+00:00",
+                                        }
                                     }
                                 }
                             ]
@@ -334,9 +348,9 @@ def datasets(request) -> http.HttpResponse:
                                         "description": "null",
                                     },
                                     {
-                                        "type": "object",
-                                        "properties": {
-                                            # TODO: finish this
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number",
                                         },
                                         "description": "The order to show columns in",
                                     }
@@ -478,6 +492,65 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         assert False, "Unexpect HTTP method"
 
 
+@open_api_endpoints_schema({
+    "get": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Cell value"
+                        }
+                    },
+                    "description":
+                        "2d array of cells. NOTE: last column would contain " +
+                        "disambiguation results as a JSON object or be an " +
+                        "empty string"
+                }
+            }
+        }
+    },
+    'put': {
+        "requestBody": {
+            "required": True,
+            "description": "A JSON representation of a spreadsheet",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "Cell value"
+                            }
+                        },
+                        "description":
+                            "2d array of cells. NOTE: last column should contain " +
+                            "disambiguation results as a JSON object or be an " +
+                            "empty string"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {
+                "description": "Empty response",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 0
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT"])
@@ -510,6 +583,25 @@ def rows(request, ds_id: str) -> http.HttpResponse:
     else: # GET
         return http.JsonResponse(ds.data, safe=False)
 
+
+@open_api_endpoints_schema({
+    'post': {
+        "responses": {
+            "200": {
+                "description": "Returns a GUID (job ID)",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -547,6 +639,25 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
 
     return http.JsonResponse(async_result.id, safe=False)
 
+
+@open_api_endpoints_schema({
+    'post': {
+        "responses": {
+            "200": {
+                "description": "Returns a GUID (job ID)",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -576,7 +687,74 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
 
     return http.JsonResponse(async_result.id, safe=False)
 
+
 # @login_maybe_required
+@open_api_endpoints_schema({
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "example": "null",
+                                    "description": "Nothing to report"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current": {
+                                                    "type": "number",
+                                                    "example": 4,
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 20,
+                                                }
+                                            }
+                                        },
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [
+                                                "PROGRESS",
+                                            ]
+                                        },
+                                        "uploaderstatus": {
+                                            "type": "object",
+                                            "properties": {
+                                                "operation": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        'validating',
+                                                        'uploading',
+                                                        'unuploading'
+                                                    ]
+                                                },
+                                                "taskid": {
+                                                    "type": "string",
+                                                    "maxLength": 36,
+                                                    "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                                                }
+                                            }
+                                        },
+                                    },
+                                    "description": "Inspect the status of the " +
+                                        "upload / un-uploaded / validation process",
+                                }
+                            ],
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @require_GET
 def status(request, ds_id: int) -> http.HttpResponse:
     "Returns the uploader status for the dataset <ds_id>."
@@ -600,6 +778,27 @@ def status(request, ds_id: int) -> http.HttpResponse:
     }
     return http.JsonResponse(status)
 
+
+@open_api_endpoints_schema({
+    'post': {
+        "responses": {
+            "200": {
+                "description": "Returns either 'ok' or 'not running'",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ok",
+                                "not running"
+                            ]
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -622,6 +821,24 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
     return http.HttpResponse('ok', content_type='text/plain')
 
+@open_api_endpoints_schema({
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Returns validation results. Schema: " +
+                    "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/validation_schema.py",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {},
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_GET
@@ -642,6 +859,28 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
     ]
     return http.JsonResponse(results, safe=False)
 
+
+@open_api_endpoints_schema({
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Returns array of upload results (one for each line). Schema: " +
+                    "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_results_schema.py",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {},
+                            }
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_GET
@@ -661,6 +900,51 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
         validate(results, schema)
     return http.JsonResponse(results, safe=False)
 
+@open_api_endpoints_schema({
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "A row to validate",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Cell value"
+                        },
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Returns upload result and validation results for a single row.",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "results": {
+                                    "type": "object",
+                                    "properties": {},
+                                    "description": "Schema: " +
+                                        "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_results_schema.py",
+                                },
+                                "validation": {
+                                    "type": "object",
+                                    "properties": {},
+                                    "description": "Schema: " +
+                                        "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/validation_schema.py",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -679,6 +963,24 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, dict(zip(ds.columns, row)), da)
     return http.JsonResponse({'result': result.to_json(), 'validation': result.validation_info().to_json()})
 
+@open_api_endpoints_schema({
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Returns the upload plan schema, like defined here: " +
+                    "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_plan_schema.py",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {},
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
 @require_GET
 def up_schema(request) -> http.HttpResponse:
     "Returns the upload plan schema."
