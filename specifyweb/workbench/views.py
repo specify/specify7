@@ -34,6 +34,129 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
 
     return [r for r in map(regularize, rows) if r is not None]
 
+
+open_api_components = {
+    'schemas': {
+        'wb_uploadresult': {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "example": "null"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                        },
+                        "timestamp": {
+                            "type": "string",
+                            "format": "datetime",
+                            "example": "2021-04-28T22:28:20.033117+00:00",
+                        }
+                    }
+                }
+            ]
+        },
+        "wb_uploaderstatus": {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "example": "null",
+                    "description": "Nothing to report"
+                }, {
+                    "type": "object",
+                    "properties": {
+                        "taskinfo": {
+                            "type": "object",
+                            "properties": {
+                                "current": {
+                                    "type": "number",
+                                    "example": 4,
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "example": 20,
+                                }
+                            }
+                        },
+                        "taskstatus": {
+                            "type": "string",
+                            "enum": [
+                                "PROGRESS",
+                            ]
+                        },
+                        "uploaderstatus": {
+                            "type": "object",
+                            "properties": {
+                                "operation": {
+                                    "type": "string",
+                                    "enum": [
+                                        'validating',
+                                        'uploading',
+                                        'unuploading'
+                                    ]
+                                },
+                                "taskid": {
+                                    "type": "string",
+                                    "maxLength": 36,
+                                    "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                                }
+                            }
+                        },
+                    },
+                    "description": "Status of the " +
+                                   "upload / un-upload / validation process",
+                }
+            ]
+        },
+        "wb_rows": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "description": "Cell's value or null"
+                }
+            },
+            "description": "2D array of values",
+        },
+        "wb_visualorder": {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "null",
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                    },
+                    "description": "The order to show columns in",
+                }
+            ]
+        },
+        "wb_uploadplan": {
+            "type": "object",
+            "properties": {
+            },
+            "description": "Upload Plan. Schema - https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
+        },
+        "wb_validation_results": {
+            "type": "object",
+            "properties": {},
+            "description": "Schema: " +
+               "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/validation_schema.py",
+        },
+        "wb_upload_results": {
+            "type": "object",
+            "properties": {},
+            "description": "Schema: " +
+               "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_results_schema.py",
+        }
+    }
+}
+
 @open_api_endpoints_schema({
     "get": {
         "responses": {
@@ -56,39 +179,10 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
                                         "description": "Data Set Name",
                                     },
                                     "uploadresult": {
-                                        "oneOf": [
-                                            {
-                                                "type": "string",
-                                                "example": "null"
-                                            },
-                                            {
-                                                "type": "object",
-                                                "properties": {
-                                                    "success": {
-                                                        "type": "boolean",
-                                                    },
-                                                    "timestamp": {
-                                                        "type": "string",
-                                                        "format": "datetime",
-                                                        "example": "2021-04-28T22:28:20.033117+00:00",
-                                                    }
-                                                }
-                                            }
-                                        ]
+                                        "$ref": "#/components/schemas/wb_uploadresult"
                                     },
                                     "uploaderstatus": {
-                                        "oneOf": [
-                                            {
-                                                "type": "string",
-                                                "example": "null"
-                                            },
-                                            {
-                                                "type": "object",
-                                                "properties": {
-                                                    # TODO: specify schema
-                                                }
-                                            }
-                                        ]
+                                        "$ref": "#/components/schemas/wb_uploaderstatus",
                                     },
                                     "timestampcreated": {
                                         "type": "string",
@@ -130,15 +224,7 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
                                 "description": "A unique array of strings",
                             },
                             "rows": {
-                                "type": "array",
-                                "items": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string",
-                                        "description": "Cell's value or null"
-                                    }
-                                },
-                                "description": "2D array of values",
+                                "$ref": "#/components/schemas/wb_rows",
                             },
                             "importedfilename": {
                                 "type": "string",
@@ -175,7 +261,7 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
             }
         }
     }
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "POST"])
@@ -215,110 +301,63 @@ def datasets(request) -> http.HttpResponse:
 
 @open_api_endpoints_schema({
     "get": {
-        "content": {
-            "application/json": {
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "number",
-                            "description": "Data Set ID",
-                        },
-                        "name": {
-                            "type": "string",
-                            "description": "Data Set name",
-                        },
-                        "columns": {
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "description": "A name of the column",
-                            },
-                            "description": "A unique array of strings",
-                        },
-                        "visualorder": {
-                            "oneOf": [
-                                {
-                                    "type": "string",
-                                    "description": "null",
-                                },
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "number",
-                                    },
-                                    "description": "The order to show columns in",
-                                }
-                            ]
-                        },
-                        "rows": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string",
-                                    "description": "Cell's value or null"
-                                }
-                            },
-                            "description": "2D array of values",
-                        },
-                        "uploadplan": {
+        "responses": {
+            "200": {
+                "description": "Successful response",
+                "content": {
+                    "application/json": {
+                        "schema": {
                             "type": "object",
                             "properties": {
-                            },
-                            "description": "Upload Plan. Schema - https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
-                        },
-                        "uploadresult": {
-                            "oneOf": [
-                                {
-                                    "type": "string",
-                                    "example": "null"
+                                "id": {
+                                    "type": "number",
+                                    "description": "Data Set ID",
                                 },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                        },
-                                        "timestamp": {
-                                            "type": "string",
-                                            "format": "datetime",
-                                            "example": "2021-04-28T22:28:20.033117+00:00",
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "uploaderstatus": {
-                            "oneOf": [
-                                {
+                                "name": {
                                     "type": "string",
-                                    "example": "null"
+                                    "description": "Data Set name",
                                 },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        # TODO: specify schema
-                                    }
+                                "columns": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "A name of the column",
+                                    },
+                                    "description": "A unique array of strings",
+                                },
+                                "visualorder": {
+                                    "$ref": "#/components/schemas/wb_visualorder"
+                                },
+                                "rows": {
+                                    "$ref": "#/components/schemas/wb_rows"
+                                },
+                                "uploadplan": {
+                                    "$ref": "#/components/schemas/wb_uploadplan"
+                                },
+                                "uploadresult": {
+                                    "$ref": "#/components/schemas/wb_uploadresult"
+                                },
+                                "uploaderstatus": {
+                                    "$ref": "#/components/schemas/wb_uploaderstatus"
+                                },
+                                "importedfilename": {
+                                    "type": "string",
+                                    "description": "The name of the original file",
+                                },
+                                "remarks": {
+                                    "type": "string",
+                                },
+                                "timestampcreated": {
+                                    "type": "string",
+                                    "format": "datetime",
+                                    "example": "2021-04-28T13:16:07.774"
+                                },
+                                "timestampmodified": {
+                                    "type": "string",
+                                    "format": "datetime",
+                                    "example": "2021-04-28T13:50:41.710",
                                 }
-                            ]
-                        },
-                        "importedfilename": {
-                            "type": "string",
-                            "description": "The name of the original file",
-                        },
-                        "remarks": {
-                            "type": "string",
-                        },
-                        "timestampcreated": {
-                            "type": "string",
-                            "format": "datetime",
-                            "example": "2021-04-28T13:16:07.774"
-                        },
-                        "timestampmodified": {
-                            "type": "string",
-                            "format": "datetime",
-                            "example": "2021-04-28T13:50:41.710",
+                            }
                         }
                     }
                 }
@@ -342,25 +381,10 @@ def datasets(request) -> http.HttpResponse:
                                 "type": "string",
                             },
                             "visualorder": {
-                                "oneOf": [
-                                    {
-                                        "type": "string",
-                                        "description": "null",
-                                    },
-                                    {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "number",
-                                        },
-                                        "description": "The order to show columns in",
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/wb_visualorder"
                             },
                             "uploadplan": {
-                                "type": "object",
-                                "properties": {
-                                },
-                                "description": "Upload Plan. Schema - https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
+                                "$ref": "#/components/schemas/wb_uploadplan"
                             },
                         }
                     }
@@ -382,7 +406,7 @@ def datasets(request) -> http.HttpResponse:
         }
     },
     "delete": {
-        "response": {
+        "responses": {
             "204": {
                 "description": "Empty response",
                 "content": {
@@ -407,7 +431,7 @@ def datasets(request) -> http.HttpResponse:
             }
         }
     }
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT", "DELETE"])
@@ -494,21 +518,26 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 
 @open_api_endpoints_schema({
     "get": {
-        "content": {
-            "application/json": {
-                "schema": {
-                    "type": "array",
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "description": "Cell value"
+        "responses": {
+            "200": {
+                "description": "Successful response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "Cell value"
+                                }
+                            },
+                            "description":
+                                "2d array of cells. NOTE: last column would contain " +
+                                "disambiguation results as a JSON object or be an " +
+                                "empty string"
                         }
-                    },
-                    "description":
-                        "2d array of cells. NOTE: last column would contain " +
-                        "disambiguation results as a JSON object or be an " +
-                        "empty string"
+                    }
                 }
             }
         }
@@ -550,7 +579,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT"])
@@ -601,7 +630,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -657,7 +686,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -697,64 +726,14 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
                 "content": {
                     "text/plain": {
                         "schema": {
-                            "oneOf": [
-                                {
-                                    "type": "string",
-                                    "example": "null",
-                                    "description": "Nothing to report"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "taskinfo": {
-                                            "type": "object",
-                                            "properties": {
-                                                "current": {
-                                                    "type": "number",
-                                                    "example": 4,
-                                                },
-                                                "total": {
-                                                    "type": "number",
-                                                    "example": 20,
-                                                }
-                                            }
-                                        },
-                                        "taskstatus": {
-                                            "type": "string",
-                                            "enum": [
-                                                "PROGRESS",
-                                            ]
-                                        },
-                                        "uploaderstatus": {
-                                            "type": "object",
-                                            "properties": {
-                                                "operation": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        'validating',
-                                                        'uploading',
-                                                        'unuploading'
-                                                    ]
-                                                },
-                                                "taskid": {
-                                                    "type": "string",
-                                                    "maxLength": 36,
-                                                    "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
-                                                }
-                                            }
-                                        },
-                                    },
-                                    "description": "Inspect the status of the " +
-                                        "upload / un-uploaded / validation process",
-                                }
-                            ],
+                            "$ref": "#/components/schemas/wb_uploaderstatus",
                         }
                     }
                 }
             },
         }
     },
-})
+}, open_api_components)
 @require_GET
 def status(request, ds_id: int) -> http.HttpResponse:
     "Returns the uploader status for the dataset <ds_id>."
@@ -798,7 +777,7 @@ def status(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -825,20 +804,21 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     'get': {
         "responses": {
             "200": {
-                "description": "Returns validation results. Schema: " +
-                    "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/validation_schema.py",
+                "description": "Successful response",
                 "content": {
                     "text/plain": {
                         "schema": {
-                            "type": "object",
-                            "properties": {},
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/wb_validation_results"
+                            },
                         }
                     }
                 }
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_GET
@@ -864,15 +844,13 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
     'get': {
         "responses": {
             "200": {
-                "description": "Returns array of upload results (one for each line). Schema: " +
-                    "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_results_schema.py",
+                "description": "Successful operation",
                 "content": {
                     "text/plain": {
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "object",
-                                "properties": {},
+                                "$ref": "#/components/schemas/wb_upload_results",
                             }
                         }
                     }
@@ -880,7 +858,7 @@ def validation_results(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_GET
@@ -919,23 +897,17 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
         },
         "responses": {
             "200": {
-                "description": "Returns upload result and validation results for a single row.",
+                "description": "Returns upload results and validation results for a single row.",
                 "content": {
                     "text/plain": {
                         "schema": {
                             "type": "object",
                             "properties": {
                                 "results": {
-                                    "type": "object",
-                                    "properties": {},
-                                    "description": "Schema: " +
-                                        "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_results_schema.py",
+                                    "$ref": "#/components/schemas/wb_upload_results"
                                 },
                                 "validation": {
-                                    "type": "object",
-                                    "properties": {},
-                                    "description": "Schema: " +
-                                        "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/validation_schema.py",
+                                    "$ref": "#/components/schemas/wb_validation_results"
                                 }
                             }
                         }
@@ -944,7 +916,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
             },
         }
     },
-})
+}, open_api_components)
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -980,7 +952,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
             },
         }
     },
-})
+}, open_api_components)
 @require_GET
 def up_schema(request) -> http.HttpResponse:
     "Returns the upload plan schema."
