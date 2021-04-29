@@ -50,12 +50,17 @@ interface AutoscrollStatusChangeAction
   status: boolean;
 }
 
+interface TemplateSelectedAction extends Action<'TemplateSelectedAction'> {
+  id: number;
+}
+
 export type RefActions =
   | RefChangeStateAction
   | RefSetUnloadProtectAction
   | RefUnsetUnloadProtectAction
   | MappingViewResizeAction
-  | AutoscrollStatusChangeAction;
+  | AutoscrollStatusChangeAction
+  | TemplateSelectedAction;
 
 type RefActionsWithPayload = RefActions & {
   payload: {
@@ -140,4 +145,18 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     };
     refMappingObject.current.autoscroll[autoscrollType] = status;
   },
+  TemplateSelectedAction: async ({ id, payload: { props, stateDispatch } }) =>
+    fetch(`/api/workbench/dataset/${id}`)
+      .then(async (response) => response.json())
+      .then(({ uploadplan }) =>
+        stateDispatch({
+          type: 'OpenMappingScreenAction',
+          mappingIsTemplated: props.mappingIsTemplated,
+          uploadPlan: uploadplan,
+          headers: props.headers,
+        })
+      )
+      .catch((error) => {
+        throw error;
+      }),
 });

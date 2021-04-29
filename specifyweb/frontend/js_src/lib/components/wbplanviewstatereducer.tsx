@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from '../statemanagement';
 import { generateReducer } from '../statemanagement';
-import type { MatchBehaviors, UploadPlan } from '../uploadplantomappingstree';
+import type { MatchBehaviors } from '../uploadplantomappingstree';
 import * as cache from '../wbplanviewcache';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
@@ -14,6 +14,7 @@ import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
+import type { DatasetBrief } from './wbplanview';
 import type { IR, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import { HeaderWrapper, WBPlanViewHeader } from './wbplanviewheader';
@@ -37,10 +38,7 @@ interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
 }
 
 interface TemplateSelectionState extends State<'TemplateSelectionState'> {
-  readonly templates: {
-    datasetName: string;
-    uploadPlan: UploadPlan;
-  }[];
+  readonly templates: DatasetBrief[];
 }
 
 export interface MappingState
@@ -198,20 +196,20 @@ export const stateReducer = generateReducer<
         })
       }
     >
-      {state.templates.map(({ datasetName }, index) => (
-        <a
-          key={index}
-          onClick={(): void =>
-            state.dispatch({
-              type: 'OpenMappingScreenAction',
-              uploadPlan: state.templates[index].uploadPlan,
-              mappingIsTemplated: state.props.mappingIsTemplated,
-              headers: state.props.headers,
-            })
-          }
-        >
-          {datasetName}
-        </a>
+      {state.templates.map(({ name, id }, index) => (
+        <React.Fragment key={index}>
+          <a
+            onClick={(): void =>
+              state.refObjectDispatch({
+                type: 'TemplateSelectedAction',
+                id,
+              })
+            }
+          >
+            {name}
+          </a>
+          <br />
+        </React.Fragment>
       ))}
     </ModalDialog>
   ),

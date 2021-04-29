@@ -1,4 +1,5 @@
 import type {
+  DatasetBrief,
   PartialWBPlanViewProps,
   PublicWBPlanViewProps,
   WBPlanViewWrapperProps,
@@ -80,10 +81,7 @@ type BaseTableSelectionActions =
 type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
 
 interface TemplatesLoadedAction extends Action<'TemplatesLoadedAction'> {
-  readonly templates: {
-    datasetName: string;
-    uploadPlan: UploadPlan;
-  }[];
+  readonly templates: DatasetBrief[];
 }
 
 type TemplateSelectionActions =

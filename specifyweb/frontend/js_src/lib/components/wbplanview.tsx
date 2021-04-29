@@ -25,17 +25,20 @@ import {
 } from './wbplanviewstatereducer';
 
 // General definitions
-export type Dataset = {
+export type DatasetBrief = {
   id: number;
   name: string;
-  columns: string[];
-  rows: string[][];
-  uploadplan: UploadPlan | null;
   uploaderstatus: IR<unknown> | null;
   uploadresult: {
     success: boolean;
     timestamp: string;
   } | null;
+};
+
+export type Dataset = DatasetBrief & {
+  columns: string[];
+  rows: string[][];
+  uploadplan: UploadPlan | null;
 };
 
 export interface SpecifyResource {

@@ -473,10 +473,12 @@ export default function WBPlanViewMapper(
                 props.handleAutoscrollStatusChange('listOfMappings', true);
               }
         }
-        handleToggleMappingIsTemplated={
-          (!props.readonly && props.handleToggleMappingIsTemplated) || undefined
-        }
-        mappingIsTemplated={props.mappingIsTemplated}
+        /*
+         *HandleToggleMappingIsTemplated={
+         *(!props.readonly && props.handleToggleMappingIsTemplated) || undefined
+         *}
+         *mappingIsTemplated={props.mappingIsTemplated}
+         */
       />
     </>
   );

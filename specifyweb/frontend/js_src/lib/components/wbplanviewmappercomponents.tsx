@@ -17,27 +17,31 @@ export type PathIsMappedBind = (
 export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   showHiddenFields,
   handleToggleHiddenFields,
-  mappingIsTemplated,
   handleAddNewHeader,
-  handleToggleMappingIsTemplated,
-}: {
+}: /*
+ * MappingIsTemplated,
+ * handleToggleMappingIsTemplated,
+ */
+{
   readonly showHiddenFields: boolean;
   readonly handleToggleHiddenFields?: () => void;
   readonly handleAddNewHeader?: () => void;
-  readonly handleToggleMappingIsTemplated?: () => void;
-  readonly mappingIsTemplated: boolean;
+  /*
+   * Readonly handleToggleMappingIsTemplated?: () => void;
+   * readonly mappingIsTemplated: boolean;
+   */
 }) {
   return (
     <div>
       <button onClick={handleAddNewHeader}>Add new column</button>
-      <label>
+      {/* <label>
         <input
           type="checkbox"
           checked={mappingIsTemplated}
           onChange={handleToggleMappingIsTemplated}
         />
         Use this mapping as a template
-      </label>
+      </label>*/}
       <label>
         {' '}
         <input
