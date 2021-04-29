@@ -35,12 +35,15 @@ def apply_access_control(view):
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
-def open_api_endpoints_schema(schema):
+def open_api_endpoints_schema(schema, components={}):
     def decorator(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
             return view(*args, **kwargs)
-        setattr(wrapped, '__schema__', schema)
+        setattr(wrapped, '__schema__', {
+            'schema': schema,
+            'components': components
+        })
         return wrapped
     return decorator
 
