@@ -48,3 +48,13 @@ def api_endpoints(request):
             open_api_schema_endpoint="/context/api_endpoints.json",
         ),
     )
+
+@login_maybe_required
+def api_endpoints_all(request):
+    return render(
+        request,
+        "swagger-ui.html",
+        dict(
+            open_api_schema_endpoint="/context/api_endpoints_all.json",
+        ),
+    )
