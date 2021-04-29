@@ -153,7 +153,7 @@ export const stateReducer = generateReducer<
                   })
                 }
               >
-                Use template
+                Choose existing plan
               </button>
               <button
                 type="button"
@@ -188,7 +188,7 @@ export const stateReducer = generateReducer<
   ),
   TemplateSelectionState: ({ action: state }) => (
     <ModalDialog
-      properties={{ title: 'Select Template' }}
+      properties={{ title: 'Copy plan from existing data set' }}
       onCloseCallback={(): void =>
         state.dispatch({
           type: 'OpenBaseTableSelectionAction',
