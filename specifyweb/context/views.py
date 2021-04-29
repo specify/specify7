@@ -432,7 +432,13 @@ def merge_components(components, endpoint_components):
         } for subspace_name in set([*components.keys(), *endpoint_components.keys()])
     }
 
-def get_endpoints(patterns, merge_components, prefix="/", preparams=[]):
+def get_endpoints(
+    patterns,
+    all_endpoints,
+    merge_components,
+    prefix="/",
+    preparams=[]
+):
     for p in patterns:
         path, params = parse_pattern(p)
         complete_path = prefix + path
@@ -478,30 +484,38 @@ def get_endpoints(patterns, merge_components, prefix="/", preparams=[]):
                     p.callback.__schema__['schema']
                 )
                 yield complete_path, merged_schema
-            else:
+            elif all_endpoints:
                 yield complete_path, endpoints_schema
         else:
             yield from get_endpoints(
                 p.url_patterns,
+                all_endpoints,
                 merge_components,
                 prefix + path,
                 preparams + params
             )
 
-@require_GET
-@cache_control(max_age=86400, public=True)
-def api_endpoints(request):
-    """Returns a JSON description of all endpoints served."""
-    components = {}
+
+def generate_openapi_for_endpoints(all_endpoints=False):
+    """Returns a JSON description of endpoints.
+
+    Params:
+        all_endpoints: whether to include endpoints that don't have OpenAPI schema
+    """
+    components = { }
 
     def merge_components_local(endpoint_components):
         nonlocal components
         components = merge_components(components, endpoint_components)
 
-    endpoints = dict(get_endpoints(urlconf.urlpatterns, merge_components_local))
+    endpoints = dict(get_endpoints(
+        urlconf.urlpatterns,
+        all_endpoints,
+        merge_components_local
+    ))
     tags = list(get_tags(endpoints))
 
-    spec = {
+    return {
         **base_schema(),
         **dict(
             tags=tags,
@@ -510,4 +524,16 @@ def api_endpoints(request):
         'components': components,
     }
 
-    return JsonResponse(spec)
+
+@require_GET
+@cache_control(max_age=86400, public=True)
+def api_endpoints(request):
+    """Returns a JSON description of endpoints that have schema defined."""
+    return JsonResponse(generate_openapi_for_endpoints(False))
+
+
+@require_GET
+@cache_control(max_age=86400, public=True)
+def api_endpoints_all(request):
+    """Returns a JSON description of all endpoints."""
+    return JsonResponse(generate_openapi_for_endpoints(True))

@@ -26,7 +26,7 @@ def base_schema() -> Dict:
         "info": {
             "title": "Specify 7 API",
             "version": settings.VERSION,
-            "description": "Description of all Specify 7 API endpoints",
+            "description": "Specify 7 API Documentation",
             "license": {
                 "name": "GPL-2.0 Licence",
                 "url": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html",
