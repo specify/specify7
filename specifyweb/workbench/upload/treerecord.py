@@ -8,11 +8,12 @@ import logging
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 from typing_extensions import TypedDict
 
-from django.db import connection # type: ignore
+from django.db import connection, transaction, IntegrityError
 
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
+from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .uploadable import Row, FilterPack, Disambiguation as DA, ScopedUploadable
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, TreeInfo
@@ -264,17 +265,28 @@ class BoundTreeRecord(NamedTuple):
                 to_upload = with_enforced
 
         for tdiwpr in to_upload:
-            obj = model(
-                createdbyagent_id=self.uploadingAgentId,
-                definitionitem=tdiwpr.treedefitem,
-                rankid=tdiwpr.treedefitem.rankid,
-                definition_id=self.treedefid,
-                parent_id=(parent and parent.id),
-                **{c: v for r in tdiwpr.results for c, v in r.upload.items()},
+            attrs = {c: v for r in tdiwpr.results for c, v in r.upload.items()}
+            info = ReportInfo(
+                tableName=self.name,
+                columns=[pr.column for pr in tdiwpr.results],
+                treeInfo=TreeInfo(tdiwpr.treedefitem.name, attrs.get('name', ""))
             )
-            obj.save(skip_tree_extras=True)
+
+            with transaction.atomic():
+                try:
+                    obj = model(
+                        createdbyagent_id=self.uploadingAgentId,
+                        definitionitem=tdiwpr.treedefitem,
+                        rankid=tdiwpr.treedefitem.rankid,
+                        definition_id=self.treedefid,
+                        parent_id=(parent and parent.id),
+                        **attrs,
+                    )
+                    obj.save(skip_tree_extras=True)
+                except (BusinessRuleException, IntegrityError) as e:
+                    return UploadResult(FailedBusinessRule(str(e), info), parent_result, {})
+
             auditlog.insert(obj, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
-            info = ReportInfo(tableName=self.name, columns=[pr.column for pr in tdiwpr.results], treeInfo=TreeInfo(tdiwpr.treedefitem.name, obj.name))
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
 
             parent = obj

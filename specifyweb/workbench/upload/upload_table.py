@@ -3,6 +3,7 @@ from functools import reduce
 
 import logging
 from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, NoReturn
+from django.db import transaction, IntegrityError
 
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
@@ -298,17 +299,18 @@ class BoundUploadTable(NamedTuple):
                 return UploadResult(PropagatedFailure(), toOneResults, {})
             toOneIds[field] = id
 
-        try:
-            uploaded = model.objects.create(**{
-                **({'createdbyagent_id': self.uploadingAgentId} if model.specify_model.get_field('createdbyagent') else {}),
-                **attrs,
-                **self.scopingAttrs,
-                **self.static,
-                **{ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() },
-            })
-            picklist_additions = self._do_picklist_additions()
-        except BusinessRuleException as e:
-            return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
+        with transaction.atomic():
+            try:
+                uploaded = model.objects.create(**{
+                    **({'createdbyagent_id': self.uploadingAgentId} if model.specify_model.get_field('createdbyagent') else {}),
+                    **attrs,
+                    **self.scopingAttrs,
+                    **self.static,
+                    **{ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() },
+                })
+                picklist_additions = self._do_picklist_additions()
+            except (BusinessRuleException, IntegrityError) as e:
+                return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
         auditlog.insert(uploaded, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
 
