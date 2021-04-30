@@ -93,7 +93,7 @@ def openapi(request) -> http.HttpResponse:
         OpenAPI spec for the main Specify endpoint
     """
     spec = {
-        **base_schema("Specify 7 Operations API"),
+        **base_schema("Specify 7 Tables API"),
         "paths": {
             endpoint_url.lower(): endpoint_description
             for table in datamodel.tables
