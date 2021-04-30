@@ -29,32 +29,35 @@ def specify(request):
 
 
 @login_maybe_required
-def api_schema(request):
+def api_tables(request):
     return render(
         request,
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/api/specify_schema/openapi.json",
+            title="Specify 7 Tables API",
         ),
     )
 
 
 @login_maybe_required
-def api_endpoints(request):
+def api_operations(request):
     return render(
         request,
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/context/api_endpoints.json",
+            title="Specify 7 Operations API",
         ),
     )
 
 @login_maybe_required
-def api_endpoints_all(request):
+def api_operations_all(request):
     return render(
         request,
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/context/api_endpoints_all.json",
+            title="Specify 7 Operations API (all)",
         ),
     )
