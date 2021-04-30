@@ -13,6 +13,7 @@ require('handsontable/dist/handsontable.full.css');
 const schema = require('./schema.js');
 const api = require('./specifyapi.js');
 const app = require('./specifyapp.js');
+const userInfo = require('./userinfo.js');
 const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
 const NotFoundView = require('./notfoundview.js');
@@ -78,6 +79,7 @@ const WBView = Backbone.View.extend({
     this.$el.append(
       template({
         is_uploaded: this.uploaded,
+        is_manager: userInfo.usertype === "Manager"
       })
     );
 
