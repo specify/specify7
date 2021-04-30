@@ -1,4 +1,4 @@
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, Tuple
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -200,10 +200,12 @@ this column will never be considered for matching purposes, only for uploading.'
 }
 
 
-def parse_plan(collection, to_parse: Dict) -> Uploadable:
+def parse_plan_with_basetable(collection, to_parse: Dict) -> Tuple[Table, Uploadable]:
     base_table = datamodel.get_table_strict(to_parse['baseTableName'])
-    return parse_uploadable(collection, base_table, to_parse['uploadable'])
+    return base_table, parse_uploadable(collection, base_table, to_parse['uploadable'])
 
+def parse_plan(collection, to_parse: Dict) -> Uploadable:
+    return parse_plan_with_basetable(collection, to_parse)[1]
 
 def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
     if 'uploadTable' in to_parse:

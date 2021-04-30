@@ -329,7 +329,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
 def validate_row(request, ds_id: str) -> http.HttpResponse:
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     collection = request.specify_collection
-    upload_plan = uploader.get_ds_upload_plan(collection, ds)
+    bt, upload_plan = uploader.get_ds_upload_plan(collection, ds)
     row = json.loads(request.body)
     ncols = len(ds.columns)
     da = uploader.get_disambiguation_from_row(ncols, row)

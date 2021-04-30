@@ -5,18 +5,19 @@ from datetime import datetime, timezone
 import json
 from jsonschema import validate # type: ignore
 
-from typing import List, Dict, Union, Callable, Optional, Sized
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple
 
 from django.db import connection, transaction
 from django.db.utils import OperationalError
 
 from specifyweb.specify import models
+from specifyweb.specify.datamodel import Table, datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
 from .uploadable import ScopedUploadable, Row, Disambiguation
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
-from .upload_plan_schema import schema, parse_plan
+from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
 from ..models import Spdataset
 
@@ -52,6 +53,12 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
     total = len(results)
     current = 0
     with transaction.atomic():
+        if ds.uploadresult is not None:
+            rsid = ds.uploadresult.get('recordsetid', None)
+            if rsid is not None:
+                getattr(models, 'Recordset').objects.filter(id=rsid).delete()
+
+
         for row in reversed(results):
             upload_result = json_to_UploadResult(row)
             if not upload_result.contains_failure():
@@ -98,23 +105,42 @@ def do_upload_dataset(
     ncols = len(ds.columns)
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
-    upload_plan = get_ds_upload_plan(collection, ds)
+    base_table, upload_plan = get_ds_upload_plan(collection, ds)
 
     results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
+    success = not any(r.contains_failure() for r in results)
     if not no_commit:
+        rs = create_record_set(ds, base_table, results) if results and success else None
         ds.uploadresult = {
-            'success': not any(r.contains_failure() for r in results),
+            'success': success,
             'timestamp': datetime.now(timezone.utc).isoformat(),
+            'recordsetid': rs and rs.id,
         }
     ds.rowresults = json.dumps([r.to_json() for r in results])
     ds.save(update_fields=['rowresults', 'uploadresult'])
     return results
 
+def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
+    rs = getattr(models, 'Recordset').objects.create(
+        collectionmemberid=ds.collection.id,
+        dbtableid=table.tableId,
+        name=f'WB Upload of {ds.name}',
+        specifyuser=ds.specifyuser,
+        type=0,
+    )
+    Rsi = getattr(models, 'Recordsetitem')
+    Rsi.objects.bulk_create([
+        Rsi(order=i, recordid=r.get_id(), recordset=rs)
+        for i, r in enumerate(results)
+        if isinstance(r.record_result, Uploaded)
+    ])
+    return rs
+
 def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
     extra = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
 
-def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
+def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
     if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
@@ -124,7 +150,8 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> ScopedUploadable:
         raise Exception("upload plan json is invalid")
 
     validate(plan, schema)
-    return parse_plan(collection, plan).apply_scoping(collection)
+    base_table, plan = parse_plan_with_basetable(collection, plan)
+    return base_table, plan.apply_scoping(collection)
 
 
 def do_upload(
