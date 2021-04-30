@@ -186,6 +186,9 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
+    if request.specify_user.usertype != 'Manager' and not no_commit:
+        return http.HttpResponseForbidden("Only manager users may upload data sets.")
+
     with transaction.atomic():
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
         if ds.uploaderstatus is not None:
@@ -218,6 +221,9 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
+
+    if request.specify_user.usertype != 'Manager':
+        return http.HttpResponseForbidden("Only manager users may un-upload data sets.")
 
     with transaction.atomic():
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
