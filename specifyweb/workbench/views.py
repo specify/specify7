@@ -20,6 +20,7 @@ from specifyweb.specify import models as specify_models
 
 from . import tasks
 from . import models
+from ..notifications.models import Message
 from .upload import upload as uploader, upload_plan_schema
 
 logger = logging.getLogger(__name__)
@@ -357,6 +358,13 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
         ds.specifyuser = Specifyuser.objects.get(id=request.POST['specifyuserid'])
     except Specifyuser.DoesNotExist:
         return http.HttpResponseBadRequest("the user does not exist")
+
+    Message.objects.create(user=ds.specifyuser, content=json.dumps({
+        'type': 'dataset-ownership-transferred',
+        'previous-owner-name': request.specify_user.name,
+        'dataset-name': ds.name,
+        'dataset-id': ds_id,
+    }))
 
     ds.save()
     return http.HttpResponse('ok')

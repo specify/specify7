@@ -79,6 +79,13 @@ const renderMessage = {
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
+    'dataset-ownership-transferred': message =>
+        $(`<p>
+          <i>${message.get('previous-owner-name')}</i> transfered the ownership of the
+          <a href="/specify/workbench/${message.get('dataset-id')}/">
+            <i>"${message.get('dataset-name')}"</i>
+          </a> dataset to you.
+        </p>`),
     default: message => JSON.stringify(message.toJSON())
 };
 
