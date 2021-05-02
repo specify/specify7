@@ -79,7 +79,7 @@ const WBView = Backbone.View.extend({
     this.$el.append(
       template({
         is_uploaded: this.uploaded,
-        is_manager: userInfo.usertype === "Manager"
+        is_manager: userInfo.usertype === 'Manager',
       })
     );
 
@@ -718,7 +718,6 @@ const WBView = Backbone.View.extend({
     return true;
   },
   calcHeight: function () {
-    if (this.$el.offset().top === 0) setTimeout(this.resize.bind(this), 20);
     return (
       $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset().top
     );
