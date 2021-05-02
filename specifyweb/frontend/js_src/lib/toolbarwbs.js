@@ -1,18 +1,14 @@
-"use strict";
+'use strict';
 const $ = require('jquery');
 
-var schema      = require('./schema.js');
-var WbsDialog   = require('./wbsdialog.js');
-var userInfo    = require('./userinfo.js');
+var schema = require('./schema.js');
+var WbsDialog = require('./components/wbsdialog.tsx').default;
 
-module.exports =  {
-    task: 'workbenches',
-    title: 'WorkBench',
-    icon: '/static/img/workbench.png',
-    execute() {
-        $.get('/api/workbench/dataset/').done(dss => {
-            new WbsDialog({ datasets: dss, readOnly: userInfo.isReadOnly }).render();
-        });
-    }
+module.exports = {
+  task: 'workbenches',
+  title: 'WorkBench',
+  icon: '/static/img/workbench.png',
+  execute() {
+    new WbsDialog({ showTemplates: false }).render();
+  },
 };
-

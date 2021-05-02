@@ -1,5 +1,4 @@
 import type {
-  DatasetBrief,
   PartialWBPlanViewProps,
   PublicWBPlanViewProps,
   WBPlanViewWrapperProps,
@@ -80,13 +79,7 @@ type BaseTableSelectionActions =
 
 type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
 
-interface TemplatesLoadedAction extends Action<'TemplatesLoadedAction'> {
-  readonly templates: DatasetBrief[];
-}
-
-type TemplateSelectionActions =
-  | TemplatesLoadedAction
-  | CancelTemplateSelectionAction;
+type TemplateSelectionActions = CancelTemplateSelectionAction;
 
 type CancelMappingAction = Action<'CancelMappingAction'> &
   PublicWBPlanViewProps &
@@ -250,19 +243,11 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       }
     ),
   }),
-  UseTemplateAction: ({ action }) => ({
-    type: 'LoadingState',
-    loadingState: {
-      type: 'LoadTemplateSelectionState',
-      dispatchAction: action.dispatch,
-    },
+  UseTemplateAction: () => ({
+    type: 'TemplateSelectionState',
   }),
 
   // TemplateSelectionState
-  TemplatesLoadedAction: ({ action }) => ({
-    type: 'TemplateSelectionState',
-    templates: action.templates,
-  }),
   CancelTemplateSelectionAction: () => ({
     type: 'BaseTableSelectionState',
     showHiddenTables: cache.get<boolean>('ui', 'showHiddenTables'),

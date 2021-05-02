@@ -33,6 +33,8 @@ export type DatasetBrief = {
     success: boolean;
     timestamp: string;
   } | null;
+  timestampcreated: string;
+  timestampmodified: string;
 };
 
 export type Dataset = DatasetBrief & {

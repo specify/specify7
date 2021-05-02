@@ -14,7 +14,6 @@ import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import type { DatasetBrief } from './wbplanview';
 import type { IR, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import { HeaderWrapper, WBPlanViewHeader } from './wbplanviewheader';
@@ -25,6 +24,7 @@ import type {
 } from './wbplanviewmapper';
 import WBPlanViewMapper from './wbplanviewmapper';
 import { defaultMappingViewHeight } from './wbplanviewmappercomponents';
+import { WbsDialog } from './wbsdialog';
 
 // States
 
@@ -37,9 +37,7 @@ interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
   readonly showHiddenTables: boolean;
 }
 
-interface TemplateSelectionState extends State<'TemplateSelectionState'> {
-  readonly templates: DatasetBrief[];
-}
+type TemplateSelectionState = State<'TemplateSelectionState'>;
 
 export interface MappingState
   extends State<'MappingState'>,
@@ -187,31 +185,21 @@ export const stateReducer = generateReducer<
     </HeaderWrapper>
   ),
   TemplateSelectionState: ({ action: state }) => (
-    <ModalDialog
-      properties={{ title: 'Copy plan from existing data set' }}
-      onCloseCallback={(): void =>
+    <WbsDialog
+      showTemplates={true}
+      onClose={() =>
         state.dispatch({
           type: 'OpenBaseTableSelectionAction',
           referrer: state.type,
         })
       }
-    >
-      {state.templates.map(({ name, id }, index) => (
-        <React.Fragment key={index}>
-          <a
-            onClick={(): void =>
-              state.refObjectDispatch({
-                type: 'TemplateSelectedAction',
-                id,
-              })
-            }
-          >
-            {name}
-          </a>
-          <br />
-        </React.Fragment>
-      ))}
-    </ModalDialog>
+      onDataSetSelect={(id: number) =>
+        state.refObjectDispatch({
+          type: 'TemplateSelectedAction',
+          id,
+        })
+      }
+    />
   ),
   MappingState: ({ action: state }) => {
     const refObject = getRefMappingState(state.refObject, state);
