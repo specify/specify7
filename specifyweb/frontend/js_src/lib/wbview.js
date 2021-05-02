@@ -235,30 +235,33 @@ const WBView = Backbone.View.extend({
     },
   ]) {
     if (this.mappings) {
-      const header = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mapping = mappingsTreeToArrayOfMappings(this.mappings.mappingsTree)
-        .find((m) => m[m.length - 2] == header)
-        .slice(0, -4);
+      const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
+      const mappingPath = mappingsTreeToArrayOfMappings(
+        this.mappings.mappingsTree
+      )
+        .map(splitFullMappingPathComponents)
+        .find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const tableName = getMappingLineData({
         baseTableName: this.mappings.baseTableName,
-        mappingPath: mapping,
+        mappingPath,
         iterate: false,
         customSelectType: 'CLOSED_LIST',
         showHiddenFields: false,
       })[0]?.tableName;
       const model = schema.getModel(tableName);
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-      const matches = getRecordResult(rowResult, mapping).MatchedMultiple;
+      const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;
       const doDA = (selected) => {
-        this.setDisambiguation(row, mapping, parseInt(selected, 10));
+        this.setDisambiguation(row, mappingPath, parseInt(selected, 10));
         this.startValidateRow(row);
       };
       const doAll = (selected) => {
         for (let i = 0; i < this.data.length; i++) {
           const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
-          const key = getRecordResult(rowResult, mapping)?.MatchedMultiple?.key;
+          const key = getRecordResult(rowResult, mappingPath)?.MatchedMultiple
+            ?.key;
           if (key === matches.key) {
-            this.setDisambiguation(i, mapping, parseInt(selected, 10));
+            this.setDisambiguation(i, mappingPath, parseInt(selected, 10));
             this.startValidateRow(i);
           }
         }
