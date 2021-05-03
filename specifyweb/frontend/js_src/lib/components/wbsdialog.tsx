@@ -38,7 +38,7 @@ function Dialog({
           ...(canImport
             ? [
                 {
-                  text: 'Import',
+                  text: 'Import file',
                   click: (): void => navigation.go('/workbench-import/'),
                 },
               ]
