@@ -51,6 +51,10 @@ img.wb-upload-results-table-icon {
   box-sizing: border-box;
 }
 
+.wb-upload-results-rows-tree td {
+  text-align: center;
+}
+
 .wb-upload-results-rows {
   width: auto;
   min-width: 100%;
@@ -69,12 +73,12 @@ img.wb-upload-results-table-icon {
   text-align: center;
 }
 
-.wb-upload-results-rows-tree td {
-  text-align: center;
-}
-
 .wb-upload-results-cell-matched {
   background-color: #eef;
+}
+
+.wb-upload-results-undefined-cell {
+  background: #ddd;
 }
 
 .wb-upload-results-rows a {

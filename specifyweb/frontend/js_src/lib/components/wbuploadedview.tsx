@@ -165,7 +165,7 @@ function UploadedTableRow({
                 key={index}
                 className={`wb-upload-results-cell ${
                   matched ? 'wb-upload-results-cell-matched' : ''
-                }
+                } ${columnIndex < 0 ? 'wb-upload-results-undefined-cell' : ''}
               `}
                 rowSpan={spanSize}
                 onClick={(): void =>
@@ -174,7 +174,11 @@ function UploadedTableRow({
                     columnIndex
                   )
                 }
-                title={`${['Uploaded', 'Matched'][matched ? 1 : 0]} record`}
+                title={
+                  columnIndex < 0
+                    ? undefined
+                    : `${['Uploaded', 'Matched'][matched ? 1 : 0]} record`
+                }
               >
                 <CellLink
                   getRecordViewUrl={getRecordViewUrl}
