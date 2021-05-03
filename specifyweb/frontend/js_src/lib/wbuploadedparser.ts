@@ -627,7 +627,7 @@ export function parseUploadResults(
     .map(({ mappingPath, headerName }) =>
       arrayToTree(
         [
-          mappingPath.length === 2 ? [baseTableName] : mappingPath.slice(-2)[0],
+          mappingPath.length === 2 ? [baseTableName] : mappingPath.slice(-3)[0],
           getNameFromTreeRankName(mappingPath.slice(-2)[0]),
           headerName,
         ],
