@@ -77,59 +77,14 @@ def datasets(request) -> http.HttpResponse:
 @transaction.atomic
 def dataset(request, ds_id: str) -> http.HttpResponse:
     try:
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+        ds = models.Spdataset.objects.get(id=ds_id)
     except ObjectDoesNotExist:
         return http.HttpResponseNotFound()
 
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    if request.method == "PUT":
-        attrs = json.load(request)
-
-        if 'name' in attrs:
-            ds.name = attrs['name']
-
-        if 'remarks' in attrs:
-            ds.remarks = attrs['remarks']
-
-        if 'visualorder' in attrs:
-            ds.visualorder = attrs['visualorder']
-            assert ds.visualorder is None or (isinstance(ds.visualorder, list) and len(ds.visualorder) == len(ds.columns))
-
-        if 'uploadplan' in attrs:
-            plan = attrs['uploadplan']
-            try:
-                validate(plan, upload_plan_schema.schema)
-            except ValidationError as e:
-                return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
-
-            if ds.uploaderstatus != None:
-                return http.HttpResponse('dataset in use by uploader', status=409)
-            if ds.was_uploaded():
-                return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
-
-            new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
-            if new_cols:
-                ncols = len(ds.columns)
-                ds.columns += list(new_cols)
-                for i, row in enumerate(ds.data):
-                    ds.data[i] = row[:ncols] + [""]*len(new_cols) + row[ncols:]
-
-            ds.uploadplan = json.dumps(plan)
-            ds.rowresults = None
-            ds.uploadresult = None
-
-        ds.save()
-        return http.HttpResponse(status=204)
-
-    if request.method == "DELETE":
-        if ds.uploaderstatus != None:
-            return http.HttpResponse('dataset in use by uploader', status=409)
-        ds.delete()
-        return http.HttpResponse(status=204)
-
-    else: # GET
+    if request.method == "GET":
         return http.JsonResponse(dict(
             id=ds.id,
             name=ds.name,
@@ -146,7 +101,58 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             timestampmodified=ds.timestampmodified,
             createdbyagent=uri_for_model('agent', ds.createdbyagent_id) if ds.createdbyagent_id is not None else None,
             modifiedbyagent=uri_for_model('agent', ds.modifiedbyagent_id) if ds.modifiedbyagent_id is not None else None,
-        ), safe=False)
+        ))
+
+    with transaction.atomic():
+        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+
+        if request.method == "PUT":
+            attrs = json.load(request)
+
+            if 'name' in attrs:
+                ds.name = attrs['name']
+
+            if 'remarks' in attrs:
+                ds.remarks = attrs['remarks']
+
+            if 'visualorder' in attrs:
+                ds.visualorder = attrs['visualorder']
+                assert ds.visualorder is None or (isinstance(ds.visualorder, list) and len(ds.visualorder) == len(ds.columns))
+
+            if 'uploadplan' in attrs:
+                plan = attrs['uploadplan']
+                try:
+                    validate(plan, upload_plan_schema.schema)
+                except ValidationError as e:
+                    return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
+
+                if ds.uploaderstatus != None:
+                    return http.HttpResponse('dataset in use by uploader', status=409)
+                if ds.was_uploaded():
+                    return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
+
+                new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
+                if new_cols:
+                    ncols = len(ds.columns)
+                    ds.columns += list(new_cols)
+                    for i, row in enumerate(ds.data):
+                        ds.data[i] = row[:ncols] + [""]*len(new_cols) + row[ncols:]
+
+                ds.uploadplan = json.dumps(plan)
+                ds.rowresults = None
+                ds.uploadresult = None
+
+            ds.save()
+            return http.HttpResponse(status=204)
+
+        if request.method == "DELETE":
+            if ds.uploaderstatus != None:
+                return http.HttpResponse('dataset in use by uploader', status=409)
+            ds.delete()
+            return http.HttpResponse(status=204)
+
+        assert False, "Unexpect HTTP method"
+
 
 @login_maybe_required
 @apply_access_control
