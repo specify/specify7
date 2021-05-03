@@ -175,9 +175,13 @@ export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
 /*
  * The most important function in `wbplanview`
  * It decides how to modify the mapping path when a different picklist
- * item is selected.
+ *  item is selected.
  * It is also responsible for deciding when to spawn a new box to the right
- * of the current one
+ *  of the current one and whether to reset the mapping path to the right of
+ *  the selected box on value changes (e.x the mapping path is preserved
+ *  when the old value and the new value have the same relationship type and
+ *  are both either from the same table or are -to-many reference numbers
+ *  (#1) or are tree ranks ($Kingdom)).
  *
  */
 export function mutateMappingPath({
@@ -205,9 +209,8 @@ export function mutateMappingPath({
    * current value and next value
    */
   const currentRelationshipType =
-    dataModelStorage.tables[currentTableName]?.fields[
-      mappingPath[index + 1] || ''
-    ]?.type ?? '';
+    dataModelStorage.tables[currentTableName]?.fields[mappingPath[index] || '']
+      ?.type ?? '';
   const newRelationshipType =
     dataModelStorage.tables[newTableName]?.fields[value]?.type ?? '';
 

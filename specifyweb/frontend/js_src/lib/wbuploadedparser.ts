@@ -617,6 +617,8 @@ export function parseUploadResults(
     plan
   );
   const arrayOfMappings = mappingsTreeToArrayOfSplitMappings(mappingsTree);
+
+  // Group headers with common mapping path together
   const headerGroups = Object.values(
     arrayOfMappings
       .map((splitMappingPath) => ({
@@ -634,7 +636,30 @@ export function parseUploadResults(
         {}
       )
   );
-  console.log(headerGroups);
+
+  /*
+   * Order headers by the group they belong too while preserving the original
+   * order as much as possible
+   */
+  const headersOrderedByGroups = [].reduce<{
+    orderedHeaders: string[];
+    headers: string[];
+  }>(
+    ({ orderedHeaders, headers }, _) => {
+      const headerGroup = headerGroups.find((groupMembers) =>
+        groupMembers.includes(headers[0])
+      );
+      if (typeof headerGroup === 'undefined')
+        throw new Error('Unable to find the header group');
+      return {
+        orderedHeaders: [...orderedHeaders, ...headerGroup],
+        headers: headers.filter((header) => !headerGroup.includes(header)),
+      };
+    },
+    { orderedHeaders: [], headers }
+  );
+
+  console.log(headersOrderedByGroups);
 
   const mappedRanksTree = arrayOfMappings
     .filter(
