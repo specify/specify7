@@ -99,7 +99,7 @@ interface AutoMapperDefinitions {
    * Don't match list designates certain fields in particular
    *   tables as ineligible for automatic matching under
    *   certain scopes
-   * This is helpful if certain fields are commonly matched when
+   * This is helpful if some fields are commonly matched when
    *   they should be
    * Don't match list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
@@ -282,8 +282,13 @@ const definitions: AutoMapperDefinitions = {
   },
   dontMatch: {
     Address: {
+      // Some ranks were mapped to Address instead of Geography
       country: ['automapper'],
       state: ['automapper'],
+    },
+    Accession: {
+      // Too ambiguous
+      type: ['automapper'],
     },
   },
   shortcuts: {
