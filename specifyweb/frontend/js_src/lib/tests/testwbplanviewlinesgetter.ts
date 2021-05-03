@@ -34,9 +34,9 @@ export default function (): void {
         [
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'BMSM No.',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'BMSM No.',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -44,9 +44,9 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Class', 'name'],
-            type: 'existingHeader',
-            name: 'Class',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Class',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -54,9 +54,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Superfamily',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Superfamily',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -64,9 +64,9 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
-            type: 'existingHeader',
-            name: 'Family',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Family',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -74,9 +74,9 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Genus', 'name'],
-            type: 'existingHeader',
-            name: 'Genus',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Genus',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -84,9 +84,9 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Subgenus', 'name'],
-            type: 'existingHeader',
-            name: 'Subgenus',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Subgenus',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -94,9 +94,9 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
-            type: 'existingHeader',
-            name: 'Species',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Species',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -110,9 +110,9 @@ export default function (): void {
               '$Subspecies',
               'name',
             ],
-            type: 'existingHeader',
-            name: 'Subspecies',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Subspecies',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -126,9 +126,9 @@ export default function (): void {
               '$Species',
               'author',
             ],
-            type: 'existingHeader',
-            name: 'Species Author',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Species Author',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -142,9 +142,9 @@ export default function (): void {
               '$Subspecies',
               'author',
             ],
-            type: 'existingHeader',
-            name: 'Subspecies Author',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Subspecies Author',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -174,9 +174,9 @@ export default function (): void {
         [
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'BMSM No.',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'BMSM No.',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -184,9 +184,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Class',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Class',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -194,9 +194,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Superfamily',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Superfamily',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -204,9 +204,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Family',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Family',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -214,9 +214,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Genus',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Genus',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -224,9 +224,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Subgenus',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Subgenus',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -234,9 +234,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Species',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Species',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -244,9 +244,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Subspecies',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Subspecies',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -254,9 +254,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Species Author',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Species Author',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,
@@ -264,9 +264,9 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            type: 'existingHeader',
-            name: 'Subspecies Author',
-            options: {
+            mappingType: 'existingHeader',
+            headerName: 'Subspecies Author',
+            columnOptions: {
               matchBehavior: 'ignoreNever',
               nullAllowed: true,
               default: null,

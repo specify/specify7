@@ -155,24 +155,16 @@ export const findDuplicateMappings = (
   return duplicateIndexes;
 };
 
-export const fullMappingPathParser = (
-  fullMappingPath: Readonly<FullMappingPath>
-): [string[], MappingType, string, ColumnOptions] =>
-  [fullMappingPath.slice(0, -3), ...fullMappingPath.slice(-3)] as [
-    MappingPath,
-    MappingType,
-    string,
-    ColumnOptions
-  ];
-
-export const splitFullMappingPathComponents = (
-  fullMappingPath: Readonly<FullMappingPath>
-): {
+export type SplitMappingPath = {
   mappingPath: MappingPath;
   mappingType: MappingType;
   headerName: string;
   columnOptions: ColumnOptions;
-} => ({
+};
+
+export const splitFullMappingPathComponents = (
+  fullMappingPath: Readonly<FullMappingPath>
+): SplitMappingPath => ({
   mappingPath: fullMappingPath.slice(0, -3) as MappingPath,
   mappingType: fullMappingPath[fullMappingPath.length - 3] as MappingType,
   headerName: fullMappingPath[fullMappingPath.length - 2] as string,
@@ -180,12 +172,11 @@ export const splitFullMappingPathComponents = (
 });
 
 export const extractDefaultValues = (
-  arrayOfMappings: Readonly<Readonly<FullMappingPath>[]>,
+  arrayOfSplitMappings: Readonly<Readonly<SplitMappingPath>[]>,
   visualizeEmptyString = false
 ): IR<string> =>
   Object.fromEntries(
-    arrayOfMappings
-      .map(splitFullMappingPathComponents)
+    arrayOfSplitMappings
       .map(
         ({ headerName, columnOptions }) =>
           [
@@ -242,7 +233,7 @@ export function renameNewlyCreatedHeaders(
   const generatedHeaderPreviews = Object.fromEntries(
     lines
       .map((line, index) => ({ line, index }))
-      .filter(({ line }) => !headers.includes(line.name))
+      .filter(({ line }) => !headers.includes(line.headerName))
       .map(({ line, index }) => [
         index,
         generateMappingPathPreview(baseTableName, line.mappingPath),
@@ -250,7 +241,7 @@ export function renameNewlyCreatedHeaders(
   );
 
   const newHeaders = lines.map(
-    ({ name }, index) => generatedHeaderPreviews[index] ?? name
+    ({ headerName }, index) => generatedHeaderPreviews[index] ?? headerName
   );
 
   const uniqueHeaders = uniquifyHeaders(
@@ -260,7 +251,7 @@ export function renameNewlyCreatedHeaders(
 
   return lines.map((line, index) => ({
     ...line,
-    name: uniqueHeaders[index],
+    headerName: uniqueHeaders[index],
   }));
 }
 

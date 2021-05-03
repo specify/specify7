@@ -15,7 +15,7 @@ import type {
   Uploadable,
   UploadPlan,
 } from './uploadplantomappingstree';
-import { defaultLineOptions } from './wbplanviewlinesgetter';
+import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import dataModelStorage from './wbplanviewmodel';
 import type { DataModelFieldWritable } from './wbplanviewmodelfetcher';
 import {
@@ -168,10 +168,10 @@ export const extractHeaderNameFromHeaderStructure = (
 ): ColumnDef =>
   Object.entries(Object.values(headerStructure)[0]).map(
     ([headerName, headerOptions]) =>
-      JSON.stringify(headerOptions) === JSON.stringify(defaultLineOptions)
+      JSON.stringify(headerOptions) === JSON.stringify(defaultColumnOptions)
         ? headerName
         : {
-            ...defaultLineOptions,
+            ...defaultColumnOptions,
             column: headerName,
             ...headerOptions,
           }

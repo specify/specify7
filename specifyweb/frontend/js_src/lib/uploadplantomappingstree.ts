@@ -1,5 +1,5 @@
 import type { IR, R } from './components/wbplanview';
-import { defaultLineOptions } from './wbplanviewlinesgetter';
+import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import { formatReferenceItem, formatTreeRank } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
@@ -57,7 +57,7 @@ const excludeUnknownMatchingOptions = (
   matchingOptions: Readonly<ColumnOptions>
 ) =>
   Object.fromEntries(
-    Object.entries(defaultLineOptions).map(([optionName, defaultValue]) => [
+    Object.entries(defaultColumnOptions).map(([optionName, defaultValue]) => [
       optionName,
       optionName in matchingOptions
         ? // @ts-expect-error
@@ -83,7 +83,7 @@ const uploadPlanProcessingFunctions = (
         existingHeader:
           typeof value === 'string'
             ? {
-                [value]: defaultLineOptions,
+                [value]: defaultColumnOptions,
               }
             : {
                 [value.column]: excludeUnknownMatchingOptions(value),

@@ -24,7 +24,7 @@ import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import * as cache from './wbplanviewcache';
 import { uniquifyHeaders } from './wbplanviewhelper';
 import {
-  defaultLineOptions,
+  defaultColumnOptions,
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from './wbplanviewlinesgetter';
@@ -301,7 +301,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     lines: mappingState(state).lines.map((line) => ({
       ...line,
       mappingPath: ['0'],
-      options: defaultLineOptions,
+      columnOptions: defaultColumnOptions,
     })),
     changesMade: true,
     mappingsAreValidated: false,
@@ -311,7 +311,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     lines: modifyLine(mappingState(state), action.line, {
       mappingPath: ['0'],
-      options: defaultLineOptions,
+      columnOptions: defaultColumnOptions,
     }),
     changesMade: true,
     mappingsAreValidated: false,
@@ -360,16 +360,16 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     lines: [
       ...mappingState(state).lines,
       {
-        name: uniquifyHeaders(
+        headerName: uniquifyHeaders(
           [
-            ...mappingState(state).lines.map(({ name }) => name),
+            ...mappingState(state).lines.map(({ headerName }) => headerName),
             `New Header ${mappingState(state).newHeaderId}`,
           ],
           [mappingState(state).lines.length]
         ).slice(-1)[0],
-        type: 'existingHeader',
+        mappingType: 'existingHeader',
         mappingPath: ['0'],
-        options: defaultLineOptions,
+        columnOptions: defaultColumnOptions,
       },
     ],
     changesMade: true,
@@ -555,8 +555,8 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     lines: modifyLine(mappingState(state), action.line, {
       ...mappingState(state).lines[action.line],
-      options: {
-        ...mappingState(state).lines[action.line].options,
+      columnOptions: {
+        ...mappingState(state).lines[action.line].columnOptions,
         matchBehavior: action.matchBehavior,
       },
     }),
@@ -565,8 +565,8 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     lines: modifyLine(mappingState(state), action.line, {
       ...mappingState(state).lines[action.line],
-      options: {
-        ...mappingState(state).lines[action.line].options,
+      columnOptions: {
+        ...mappingState(state).lines[action.line].columnOptions,
         nullAllowed: action.allowNull,
       },
     }),
@@ -575,8 +575,8 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     lines: modifyLine(mappingState(state), action.line, {
       ...mappingState(state).lines[action.line],
-      options: {
-        ...mappingState(state).lines[action.line].options,
+      columnOptions: {
+        ...mappingState(state).lines[action.line].columnOptions,
         default: action.defaultValue,
       },
     }),

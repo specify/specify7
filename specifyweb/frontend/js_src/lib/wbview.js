@@ -24,9 +24,10 @@ const {
   getIndexFromReferenceItemName,
   valueIsReferenceItem,
 } = require('./wbplanviewmodelhelper');
+const {
+  mappingsTreeToArrayOfSplitMappings,
+} = require('./wbplanviewtreehelper.ts');
 const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree.ts');
-const { splitFullMappingPathComponents } = require('./wbplanviewhelper');
-const { mappingsTreeToArrayOfMappings } = require('./wbplanviewtreehelper.ts');
 const { extractDefaultValues } = require('./wbplanviewhelper.ts');
 const { getMappingLineData } = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
@@ -203,11 +204,9 @@ const WBView = Backbone.View.extend({
     const [[row, col]] = this.hot.getSelected();
     if (this.mappings) {
       const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mappingPath = mappingsTreeToArrayOfMappings(
+      const mappingPath = mappingsTreeToArrayOfSplitMappings(
         this.mappings.mappingsTree
-      )
-        .map(splitFullMappingPathComponents)
-        .find(({ headerName }) => headerName === targetHeader)?.mappingPath;
+      ).find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
       return typeof rowResult === 'undefined' ||
         typeof mappingPath === 'undefined'
@@ -242,11 +241,9 @@ const WBView = Backbone.View.extend({
   ]) {
     if (this.mappings) {
       const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mappingPath = mappingsTreeToArrayOfMappings(
+      const mappingPath = mappingsTreeToArrayOfSplitMappings(
         this.mappings.mappingsTree
-      )
-        .map(splitFullMappingPathComponents)
-        .find(({ headerName }) => headerName === targetHeader)?.mappingPath;
+      ).find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const tableName = getMappingLineData({
         baseTableName: this.mappings.baseTableName,
         mappingPath,
@@ -392,76 +389,76 @@ const WBView = Backbone.View.extend({
   identifyMappedHeaders() {
     const stylesContainer = document.createElement('style');
     const unmappedCellStyles = '{ color: #999; }';
+
+    if (!this.mappings) return;
     const arrayOfMappings =
       this.mappings &&
-      mappingsTreeToArrayOfMappings(this.mappings.mappingsTree);
+      mappingsTreeToArrayOfSplitMappings(this.mappings.mappingsTree);
 
-    if (this.mappings) {
-      const mappedHeadersAndTables = Object.fromEntries(
-        arrayOfMappings.map((mappingsPath) => [
-          mappingsPath.slice(-2)[0],
-          icons.getIcon(
-            getMappingLineData({
-              baseTableName: this.mappings.baseTableName,
-              mappingPath: mappingsPath.slice(0, -4),
-              iterate: false,
-              customSelectType: 'CLOSED_LIST',
-              showHiddenFields: false,
-            })[0]?.tableName || ''
-          ),
-        ])
+    const mappedHeadersAndTables = Object.fromEntries(
+      arrayOfMappings.map(({ mappingPath, headerName }) => [
+        headerName,
+        icons.getIcon(
+          getMappingLineData({
+            baseTableName: this.mappings.baseTableName,
+            mappingPath: mappingPath.slice(0, -1),
+            iterate: false,
+            customSelectType: 'CLOSED_LIST',
+            showHiddenFields: false,
+          })[0]?.tableName || ''
+        ),
+      ])
+    );
+
+    this.mappedHeaders = mappedHeadersAndTables;
+
+    Object.values(
+      document
+        .getElementsByClassName('wtSpreader')[0]
+        ?.getElementsByClassName('colHeader')
+    ).forEach((headerContainer) => {
+      const header = headerContainer.children[0];
+      let headerId = header?.className.match(/wb-header-(\d+)/)?.[1];
+
+      if (!headerId) return;
+
+      headerId = parseInt(headerId);
+
+      const src = this.mappedHeaders[headerId];
+
+      if (typeof src !== 'string') return;
+
+      const img = document.createElement('img');
+      img.classList.add('wb-header-icon');
+      img.setAttribute('src', src);
+      img.setAttribute(
+        'alt',
+        src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
       );
+    });
 
-      this.mappedHeaders = mappedHeadersAndTables;
+    stylesContainer.innerHTML = `${Object.entries(this.dataset.columns)
+      .filter(([, columnName]) => !(columnName in mappedHeadersAndTables))
+      .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
+      .join('\n')}`;
 
-      Object.values(
-        document
-          .getElementsByClassName('wtSpreader')[0]
-          ?.getElementsByClassName('colHeader')
-      ).forEach((headerContainer) => {
-        const header = headerContainer.children[0];
-        let headerId = header?.className.match(/wb-header-(\d+)/)?.[1];
+    const defaultValues = Object.fromEntries(
+      Object.entries(
+        typeof arrayOfMappings === 'undefined'
+          ? {}
+          : extractDefaultValues(arrayOfMappings, true)
+      ).map(([headerName, defaultValue]) => [
+        this.dataset.columns.indexOf(headerName),
+        defaultValue,
+      ])
+    );
 
-        if (!headerId) return;
-
-        headerId = parseInt(headerId);
-
-        const src = this.mappedHeaders[headerId];
-
-        if (typeof src !== 'string') return;
-
-        const img = document.createElement('img');
-        img.classList.add('wb-header-icon');
-        img.setAttribute('src', src);
-        img.setAttribute(
-          'alt',
-          src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
-        );
-      });
-
-      stylesContainer.innerHTML = `${Object.entries(this.dataset.columns)
-        .filter(([, columnName]) => !(columnName in mappedHeadersAndTables))
-        .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
-        .join('\n')}`;
-
-      const defaultValues = Object.fromEntries(
-        Object.entries(
-          typeof arrayOfMappings === 'undefined'
-            ? {}
-            : extractDefaultValues(arrayOfMappings, true)
-        ).map(([headerName, defaultValue]) => [
-          this.dataset.columns.indexOf(headerName),
-          defaultValue,
-        ])
-      );
-
-      this.hot.updateSettings({
-        columns: (index) =>
-          typeof defaultValues[index] === 'undefined'
-            ? {}
-            : { placeholder: defaultValues[index] },
-      });
-    }
+    this.hot.updateSettings({
+      columns: (index) =>
+        typeof defaultValues[index] === 'undefined'
+          ? {}
+          : { placeholder: defaultValues[index] },
+    });
 
     this.$el.append(stylesContainer);
   },

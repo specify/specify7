@@ -57,10 +57,10 @@ export interface SelectElementPosition {
 }
 
 export interface MappingLine {
-  readonly type: MappingType;
-  readonly name: string;
+  readonly mappingType: MappingType;
+  readonly headerName: string;
   readonly mappingPath: MappingPath;
-  readonly options: ColumnOptions;
+  readonly columnOptions: ColumnOptions;
   readonly isFocused?: boolean;
 }
 
@@ -301,165 +301,174 @@ export default function WBPlanViewMapper(
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
       >
-        {props.lines.map(({ mappingPath, name, type, options }, index) => (
-          <MappingLineComponent
-            key={index}
-            headerName={name}
-            mappingType={type}
-            readonly={props.readonly}
-            isFocused={index === props.focusedLine}
-            handleFocus={props.handleFocus.bind(undefined, index)}
-            handleClearMapping={props.handleClearMapping.bind(undefined, index)}
-            lineData={getMappingLineData({
-              baseTableName: props.baseTableName,
-              mappingPath,
-              generateLastRelationshipData: true,
-              customSelectType: 'CLOSED_LIST',
-              handleChange:
-                (!props.readonly &&
-                  props.handleChange.bind(undefined, index)) ||
+        {props.lines.map(
+          ({ mappingPath, headerName, mappingType, columnOptions }, index) => (
+            <MappingLineComponent
+              key={index}
+              headerName={headerName}
+              mappingType={mappingType}
+              readonly={props.readonly}
+              isFocused={index === props.focusedLine}
+              handleFocus={props.handleFocus.bind(undefined, index)}
+              handleClearMapping={props.handleClearMapping.bind(
                 undefined,
-              handleOpen: props.handleOpen.bind(undefined, index),
-              handleClose: props.handleClose.bind(undefined, index),
-              handleAutomapperSuggestionSelection:
-                (!props.readonly &&
-                  props.handleAutomapperSuggestionSelection) ||
-                undefined,
-              getMappedFields: getMappedFieldsBind,
-              openSelectElement:
-                typeof props.openSelectElement !== 'undefined' &&
-                props.openSelectElement.line === index
-                  ? props.openSelectElement
-                  : undefined,
-              showHiddenFields: props.showHiddenFields,
-              automapperSuggestions:
-                (!props.readonly && props.automapperSuggestions) || [],
-              mappingOptionsMenuGenerator: () => ({
-                matchBehavior: {
-                  fieldFriendlyName: (
-                    <label>
-                      Match behavior:
-                      <MappingElement
-                        isOpen={true}
-                        customSelectType="MAPPING_OPTION_LINE_LIST"
-                        handleChange={
-                          (!props.readonly &&
-                            ((matchBehavior): void =>
-                              props.handleChangeMatchBehaviorAction(
-                                index,
-                                matchBehavior as MatchBehaviors
-                              ))) ||
-                          undefined
-                        }
-                        fieldsData={{
-                          ignoreWhenBlank: {
-                            fieldFriendlyName: 'Ignore when Blank',
-                            title:
-                              'When set to "Ignore when Blank" blank ' +
-                              'values in this column will not be ' +
-                              'considered for matching purposes. Blank ' +
-                              'values are ignored when matching even if a ' +
-                              'default value is provided',
-                            isEnabled: true,
-                            isRequired: false,
-                            isHidden: false,
-                            isDefault:
-                              options.matchBehavior === 'ignoreWhenBlank',
-                          },
-                          ignoreAlways: {
-                            fieldFriendlyName: 'Always ignore',
-                            title:
-                              'When set to ignoreAlways the value in ' +
-                              'this column will never be considered for ' +
-                              'matching purposes, only for uploading.',
-                            isEnabled: true,
-                            isRequired: false,
-                            isHidden: false,
-                            isDefault: options.matchBehavior === 'ignoreAlways',
-                          },
-                          ignoreNever: {
-                            fieldFriendlyName: 'Never ignore',
-                            title:
-                              'This column would always be considered ' +
-                              "for matching purposes, regardless of it's " +
-                              'value',
-                            isEnabled: true,
-                            isRequired: false,
-                            isHidden: false,
-                            isDefault: options.matchBehavior === 'ignoreNever',
-                          },
-                        }}
-                      />
-                    </label>
-                  ),
-                },
-                nullAllowed: {
-                  fieldFriendlyName: (
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={options.nullAllowed}
-                        disabled={props.readonly}
-                        onChange={
-                          (!props.readonly &&
-                            ((event): void =>
-                              props.handleToggleAllowNullsAction(
-                                index,
-                                event.target.checked
-                              ))) ||
-                          undefined
-                        }
-                      />{' '}
-                      Allow Null values
-                    </label>
-                  ),
-                },
-                default: {
-                  fieldFriendlyName: (
-                    <>
+                index
+              )}
+              lineData={getMappingLineData({
+                baseTableName: props.baseTableName,
+                mappingPath,
+                generateLastRelationshipData: true,
+                customSelectType: 'CLOSED_LIST',
+                handleChange:
+                  (!props.readonly &&
+                    props.handleChange.bind(undefined, index)) ||
+                  undefined,
+                handleOpen: props.handleOpen.bind(undefined, index),
+                handleClose: props.handleClose.bind(undefined, index),
+                handleAutomapperSuggestionSelection:
+                  (!props.readonly &&
+                    props.handleAutomapperSuggestionSelection) ||
+                  undefined,
+                getMappedFields: getMappedFieldsBind,
+                openSelectElement:
+                  typeof props.openSelectElement !== 'undefined' &&
+                  props.openSelectElement.line === index
+                    ? props.openSelectElement
+                    : undefined,
+                showHiddenFields: props.showHiddenFields,
+                automapperSuggestions:
+                  (!props.readonly && props.automapperSuggestions) || [],
+                mappingOptionsMenuGenerator: () => ({
+                  matchBehavior: {
+                    fieldFriendlyName: (
+                      <label>
+                        Match behavior:
+                        <MappingElement
+                          isOpen={true}
+                          customSelectType="MAPPING_OPTION_LINE_LIST"
+                          handleChange={
+                            (!props.readonly &&
+                              ((matchBehavior): void =>
+                                props.handleChangeMatchBehaviorAction(
+                                  index,
+                                  matchBehavior as MatchBehaviors
+                                ))) ||
+                            undefined
+                          }
+                          fieldsData={{
+                            ignoreWhenBlank: {
+                              fieldFriendlyName: 'Ignore when Blank',
+                              title:
+                                'When set to "Ignore when Blank" blank ' +
+                                'values in this column will not be ' +
+                                'considered for matching purposes. Blank ' +
+                                'values are ignored when matching even if a ' +
+                                'default value is provided',
+                              isEnabled: true,
+                              isRequired: false,
+                              isHidden: false,
+                              isDefault:
+                                columnOptions.matchBehavior ===
+                                'ignoreWhenBlank',
+                            },
+                            ignoreAlways: {
+                              fieldFriendlyName: 'Always ignore',
+                              title:
+                                'When set to ignoreAlways the value in ' +
+                                'this column will never be considered for ' +
+                                'matching purposes, only for uploading.',
+                              isEnabled: true,
+                              isRequired: false,
+                              isHidden: false,
+                              isDefault:
+                                columnOptions.matchBehavior === 'ignoreAlways',
+                            },
+                            ignoreNever: {
+                              fieldFriendlyName: 'Never ignore',
+                              title:
+                                'This column would always be considered ' +
+                                "for matching purposes, regardless of it's " +
+                                'value',
+                              isEnabled: true,
+                              isRequired: false,
+                              isHidden: false,
+                              isDefault:
+                                columnOptions.matchBehavior === 'ignoreNever',
+                            },
+                          }}
+                        />
+                      </label>
+                    ),
+                  },
+                  nullAllowed: {
+                    fieldFriendlyName: (
                       <label>
                         <input
                           type="checkbox"
-                          checked={options.default !== null}
+                          checked={columnOptions.nullAllowed}
                           disabled={props.readonly}
                           onChange={
                             (!props.readonly &&
-                              ((): void =>
-                                props.handleChangeDefaultValue(
+                              ((event): void =>
+                                props.handleToggleAllowNullsAction(
                                   index,
-                                  options.default === null ? '' : null
+                                  event.target.checked
                                 ))) ||
                             undefined
                           }
                         />{' '}
-                        Use default value{options.default !== null && ':'}
+                        Allow Null values
                       </label>
-                      {typeof options.default === 'string' && (
-                        <>
-                          <br />
-                          <textarea
-                            value={options.default || ''}
+                    ),
+                  },
+                  default: {
+                    fieldFriendlyName: (
+                      <>
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={columnOptions.default !== null}
+                            disabled={props.readonly}
                             onChange={
                               (!props.readonly &&
-                                ((event): void =>
+                                ((): void =>
                                   props.handleChangeDefaultValue(
                                     index,
-                                    event.target.value
+                                    columnOptions.default === null ? '' : null
                                   ))) ||
                               undefined
                             }
-                            disabled={props.readonly}
-                          />
-                        </>
-                      )}
-                    </>
-                  ),
-                  title: 'This value would be used in place of empty cells',
-                },
-              }),
-            })}
-          />
-        ))}
+                          />{' '}
+                          Use default value
+                          {columnOptions.default !== null && ':'}
+                        </label>
+                        {typeof columnOptions.default === 'string' && (
+                          <>
+                            <br />
+                            <textarea
+                              value={columnOptions.default || ''}
+                              onChange={
+                                (!props.readonly &&
+                                  ((event): void =>
+                                    props.handleChangeDefaultValue(
+                                      index,
+                                      event.target.value
+                                    ))) ||
+                                undefined
+                              }
+                              disabled={props.readonly}
+                            />
+                          </>
+                        )}
+                      </>
+                    ),
+                    title: 'This value would be used in place of empty cells',
+                  },
+                }),
+              })}
+            />
+          )
+        )}
       </div>
 
       <MappingsControlPanel

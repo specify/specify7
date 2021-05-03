@@ -90,7 +90,7 @@ export default function (): void {
   );
 
   runTest(
-    'WBPlanViewHelper.fullMappingPathParser',
+    'WBPlanViewHelper.splitFullMappingPathComponents',
     [
       [
         [
@@ -107,18 +107,18 @@ export default function (): void {
             },
           ] as FullMappingPath,
         ],
-        [
-          ['collectionobject', 'collector', 'firstname'],
-          'existingHeader',
-          'Collector Name',
-          {
+        {
+          mappingPath: ['collectionobject', 'collector', 'firstname'],
+          mappingType: 'existingHeader',
+          headerName: 'Collector Name',
+          columnOptions: {
             matchBehavior: 'ignoreWhenBlank',
             nullAllowed: false,
             default: null,
           },
-        ],
+        },
       ],
     ],
-    WBPlanViewHelper.fullMappingPathParser
+    WBPlanViewHelper.splitFullMappingPathComponents
   );
 }

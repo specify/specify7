@@ -132,8 +132,10 @@ export function getArrayOfMappings(
 ): (MappingPath | FullMappingPath)[] {
   return lines
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
-    .map(({ mappingPath, type, name, options }) =>
-      includeHeaders ? [...mappingPath, type, name, options] : mappingPath
+    .map(({ mappingPath, mappingType, headerName, columnOptions }) =>
+      includeHeaders
+        ? [...mappingPath, mappingType, headerName, columnOptions]
+        : mappingPath
     );
 }
 
@@ -265,7 +267,7 @@ export async function getAutomapperSuggestions({
     localMappingPath.length - 1 !== index ||
     // Or if header is a new column
     mappingPathIsComplete(localMappingPath) ||
-    lines[line].type !== 'existingHeader'
+    lines[line].mappingType !== 'existingHeader'
   )
     return [];
 
@@ -299,7 +301,7 @@ export async function getAutomapperSuggestions({
 
   const allAutomapperResults = Object.entries(
     new Automapper({
-      headers: [lines[line].name],
+      headers: [lines[line].headerName],
       baseTable: baseTableName,
       startingTable:
         mappingLineData.length === 0

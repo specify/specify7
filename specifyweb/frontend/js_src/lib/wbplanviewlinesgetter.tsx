@@ -4,10 +4,9 @@ import type { IR } from './components/wbplanview';
 import type { ListOfHeaders, MappingLine } from './components/wbplanviewmapper';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { fullMappingPathParser } from './wbplanviewhelper';
-import { mappingsTreeToArrayOfMappings } from './wbplanviewtreehelper';
+import { mappingsTreeToArrayOfSplitMappings } from './wbplanviewtreehelper';
 
-export const defaultLineOptions: ColumnOptions = {
+export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
   nullAllowed: true,
   default: null,
@@ -32,9 +31,9 @@ export function getLinesFromHeaders({
   const lines = headers.map(
     (headerName): MappingLine => ({
       mappingPath: ['0'],
-      type: 'existingHeader',
-      name: headerName,
-      options: defaultLineOptions,
+      mappingType: 'existingHeader',
+      headerName,
+      columnOptions: defaultColumnOptions,
     })
   );
 
@@ -48,15 +47,15 @@ export function getLinesFromHeaders({
   }).map();
 
   return lines.map((line) => {
-    const { name: headerName } = line;
+    const { headerName } = line;
     const automapperMappingPaths = automapperResults[headerName];
     return typeof automapperMappingPaths === 'undefined'
       ? line
       : {
           mappingPath: automapperMappingPaths[0],
-          type: 'existingHeader',
-          name: headerName,
-          options: defaultLineOptions,
+          mappingType: 'existingHeader',
+          headerName,
+          columnOptions: defaultColumnOptions,
         };
   });
 }
@@ -69,33 +68,28 @@ export function getLinesFromUploadPlan(
   readonly lines: MappingLine[];
   readonly mustMatchPreferences: IR<boolean>;
 } {
-  const lines = getLinesFromHeaders({
-    headers,
-    runAutomapper: false,
-  });
   const {
     baseTableName,
     mappingsTree,
     mustMatchPreferences,
   } = uploadPlanToMappingsTree(headers, uploadPlan);
 
-  const arrayOfMappings = mappingsTreeToArrayOfMappings(mappingsTree);
-  arrayOfMappings.forEach((fullMappingPath) => {
-    const [
-      mappingPath,
-      mappingType,
-      headerName,
-      options,
-    ] = fullMappingPathParser(fullMappingPath);
-    const headerIndex = headers.indexOf(headerName);
-    if (headerIndex !== -1)
-      lines[headerIndex] = {
-        mappingPath,
-        type: mappingType,
-        name: headerName,
-        options,
-      };
-  });
+  const lines = mappingsTreeToArrayOfSplitMappings(mappingsTree)
+    .map((splitMappingPath) => ({
+      ...splitMappingPath,
+      headerIndex: headers.indexOf(splitMappingPath.headerName),
+    }))
+    .filter(({ headerName }) => headers.includes(headerName))
+    .reduce<MappingLine[]>(
+      (lines, { headerIndex, ...splitMappingPath }) => {
+        lines[headerIndex] = splitMappingPath;
+        return lines;
+      },
+      getLinesFromHeaders({
+        headers,
+        runAutomapper: false,
+      })
+    );
 
   return {
     baseTableName,

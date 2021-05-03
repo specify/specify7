@@ -8,7 +8,6 @@ const UploadPlanToMappingsTree = require('./uploadplantomappingstree.ts');
 const WbPlanViewTreeHelper = require('./wbplanviewtreehelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
-const WbPlanViewHelper = require('./wbplanviewhelper.ts');
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
@@ -225,22 +224,18 @@ module.exports = Backbone.View.extend({
       this.wbview.dataset.uploadplan
     );
 
-    const arrayOfMappings = WbPlanViewTreeHelper.mappingsTreeToArrayOfMappings(
+    const arrayOfMappings = WbPlanViewTreeHelper.mappingsTreeToArrayOfSplitMappings(
       mappingsTree
-    )
-      .map((fullMappingPath) =>
-        WbPlanViewHelper.fullMappingPathParser(fullMappingPath)
-      )
-      .filter(([_, mappingType]) => mappingType !== 'newStaticColumn');
+    );
 
     const filteredArrayOfMappings = arrayOfMappings.reduce(
-      (result, [mappingPath, _, headerName]) => {
+      (result, splitMappingPath) => {
         if (
           LeafletConfig.localityColumnsToSearchFor.indexOf(
-            mappingPath[mappingPath.length - 1]
+            splitMappingPath.mappingPath[splitMappingPath.mappingPath.length - 1]
           ) !== -1
         )
-          result.push([mappingPath, headerName]);
+          result.push(splitMappingPath);
 
         return result;
       },
@@ -249,7 +244,7 @@ module.exports = Backbone.View.extend({
 
     const localityObjects = {};
 
-    for (const [mappingPath, headerName] of filteredArrayOfMappings) {
+    for (const { mappingPath, headerName } of filteredArrayOfMappings) {
       const [baseMappingPath, columnName] = [
         mappingPath.slice(0, -1),
         mappingPath.slice(-1),
@@ -287,7 +282,7 @@ module.exports = Backbone.View.extend({
       });
     });
 
-    arrayOfMappings.map(([mappingPath, _, headerName]) =>
+    arrayOfMappings.map(({ mappingPath, headerName }) =>
       geographyMappingPathsToSearchFor.some(
         ([baseMappingsPathString, rankName, targetMappingPath]) => {
           if (

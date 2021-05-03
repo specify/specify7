@@ -13,6 +13,8 @@ import type {
   MappingType,
 } from './components/wbplanviewmapper';
 import type { ColumnOptions } from './uploadplantomappingstree';
+import type { SplitMappingPath } from './wbplanviewhelper';
+import { splitFullMappingPathComponents } from './wbplanviewhelper';
 
 interface NestedRecord<T> extends R<T | NestedRecord<T>> {}
 
@@ -185,7 +187,6 @@ export function arrayOfMappingsToMappingsTree(
  *
  */
 export const mappingsTreeToArrayOfMappings = (
-  // Mappings tree
   mappingsTree: MappingsTree,
   // Used in a recursion to store intermediate path
   path: MappingPath = []
@@ -228,4 +229,11 @@ export const mappingsTreeToArrayOfMappings = (
       return result;
     },
     []
+  );
+
+export const mappingsTreeToArrayOfSplitMappings = (
+  mappingsTree: MappingsTree
+): SplitMappingPath[] =>
+  mappingsTreeToArrayOfMappings(mappingsTree).map(
+    splitFullMappingPathComponents
   );

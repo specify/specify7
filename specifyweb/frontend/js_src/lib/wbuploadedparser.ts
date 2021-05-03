@@ -12,15 +12,15 @@ import schema from './schema';
 import type { State } from './statemanagement';
 import type { UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
+import { extractDefaultValues } from './wbplanviewhelper';
 import {
-  extractDefaultValues,
-  splitFullMappingPathComponents,
-} from './wbplanviewhelper';
-import { getNameFromTreeRankName } from './wbplanviewmodelhelper';
+  getNameFromTreeRankName,
+  mappingPathToString,
+} from './wbplanviewmodelhelper';
 import {
   arrayToTree,
   deepMergeObject,
-  mappingsTreeToArrayOfMappings,
+  mappingsTreeToArrayOfSplitMappings,
 } from './wbplanviewtreehelper';
 
 /*
@@ -616,9 +616,27 @@ export function parseUploadResults(
     headers,
     plan
   );
-  const arrayOfMappings = mappingsTreeToArrayOfMappings(mappingsTree);
+  const arrayOfMappings = mappingsTreeToArrayOfSplitMappings(mappingsTree);
+  const headerGroups = Object.values(
+    arrayOfMappings
+      .map((splitMappingPath) => ({
+        ...splitMappingPath,
+        groupName: mappingPathToString(
+          splitMappingPath.mappingPath.slice(0, -1)
+        ),
+      }))
+      .reduce<Record<string, string[]>>(
+        (headerGroups, { groupName, headerName }) => {
+          headerGroups[groupName] ??= [];
+          headerGroups[groupName].push(headerName);
+          return headerGroups;
+        },
+        {}
+      )
+  );
+  console.log(headerGroups);
+
   const mappedRanksTree = arrayOfMappings
-    .map(splitFullMappingPathComponents)
     .filter(
       ({ mappingPath }) =>
         mappingPath.length >= 2 &&
