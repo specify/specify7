@@ -534,6 +534,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
       properties={{
         title: 'View Upload Results',
         width: 600,
+        maxHeight: 600,
         modal: false,
       }}
     >
