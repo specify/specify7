@@ -668,7 +668,7 @@ export function parseUploadResults(
           listOfRows,
           data,
           mappedRanks,
-          matchedRecordsNames[originalTableName],
+          matchedRecordsNames[originalTableName] ?? {},
           headers,
           treeRanks[tableName],
           defaultValues
