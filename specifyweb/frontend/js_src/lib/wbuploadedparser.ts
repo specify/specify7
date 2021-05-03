@@ -236,7 +236,7 @@ function handleUploadResult(
   headers: string[],
   line: UploadResult,
   rowIndex: number
-) {
+): void {
   const uploadResult = line.UploadResult;
 
   const uploadStatus = Object.keys(
@@ -244,13 +244,20 @@ function handleUploadResult(
   )[0] as keyof RecordResult;
 
   // Skip error statuses
-  if (uploadStatus !== 'Uploaded' && uploadStatus !== 'Matched') return true;
+  if (uploadStatus !== 'Uploaded' && uploadStatus !== 'Matched') return;
 
   const {
     id,
     info: { tableName, columns, treeInfo },
     ...rest
   } = uploadResult.record_result[uploadStatus];
+
+  if (
+    // Make sure the record is not present already
+    uploadedRows[tableName]?.some(({ recordId }) => recordId === id)
+  )
+    return;
+
   const rank = treeInfo?.rank;
   const orderedColumns = getOrderedHeaders(headers, columns);
 
@@ -288,25 +295,19 @@ function handleUploadResult(
   }
 
   uploadedRows[tableName] ??= [];
-  if (
-    // Upload if not a tree node
-    !rank ||
-    // Otherwise, make sure it is not present already
-    uploadedRows[tableName].every(({ recordId }) => recordId !== id)
-  )
-    uploadedRows[tableName].push({
-      recordId: id,
-      rowIndex,
-      columns: orderedColumns,
-      treeInfo: rank
-        ? {
-            rankName: rank,
-            parentId: parent?.id,
-            children: [],
-          }
-        : undefined,
-      matched: uploadStatus === 'Matched',
-    });
+  uploadedRows[tableName].push({
+    recordId: id,
+    rowIndex,
+    columns: orderedColumns,
+    treeInfo: rank
+      ? {
+          rankName: rank,
+          parentId: parent?.id,
+          children: [],
+        }
+      : undefined,
+    matched: uploadStatus === 'Matched',
+  });
 
   [
     ...Object.values(uploadResult.toMany),
@@ -333,8 +334,6 @@ function handleUploadResult(
       parentUploadResult,
       rowIndex
     );
-
-  return true;
 }
 
 /*
