@@ -193,6 +193,9 @@ const WBView = Backbone.View.extend({
       }, 0)
     );
   },
+  remove() {
+    this.hot.destroy();
+  },
   isAmbiguousCell() {
     const [[row, col]] = this.hot.getSelected();
     if (this.mappings) {
