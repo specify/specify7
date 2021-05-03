@@ -115,6 +115,7 @@ def do_upload_dataset(
             'success': success,
             'timestamp': datetime.now(timezone.utc).isoformat(),
             'recordsetid': rs and rs.id,
+            'uploadingAgentId': uploading_agent_id,
         }
     ds.rowresults = json.dumps([r.to_json() for r in results])
     ds.save(update_fields=['rowresults', 'uploadresult'])
