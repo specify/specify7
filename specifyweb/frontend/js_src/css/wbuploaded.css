@@ -69,6 +69,10 @@ img.wb-upload-results-table-icon {
   border: 1px solid #fff;
 }
 
+td.wb-upload-results-record-link:not(:first-child) {
+  border-left: 4px solid #fff;
+}
+
 .wb-upload-results-rows td:first-child {
   text-align: center;
 }

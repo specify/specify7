@@ -42,6 +42,7 @@ const WBView = Backbone.View.extend({
     'click .wb-upload': 'upload',
     'click .wb-validate': 'upload',
     'click .wb-plan': 'openPlan',
+    // TODO: remove the Show Plan button
     'click .wb-show-plan': 'showPlan',
     'click .wb-delete': 'delete',
     'click .wb-save': 'saveClicked',

@@ -164,6 +164,10 @@ interface UploadedColumn {
 }
 
 export interface UploadedRow {
+  /*
+   * `recordId` is used only in WbUploadedParser. WbUploadedView uses
+   * groupBoundaries and columns[].recordId instead.
+   */
   readonly recordId: number;
   readonly rowIndex: number;
   readonly columns: UploadedColumn[];
@@ -199,6 +203,7 @@ export interface UploadedRowsTable {
   readonly getRecordViewUrl: (rowId: number) => string;
   readonly rows: UploadedRow[];
   readonly rowsCount?: number;
+  readonly groupBoundaries?: boolean[];
 }
 
 export type UploadedRows = Readonly<IR<UploadedRowsTable>>;
@@ -603,6 +608,115 @@ const insertDefaultValue = (
     ? defaultValues[headerName]
     : value;
 
+/*
+ * Order headers by the group they belong too while preserving the original
+ * order as much as possible
+ */
+function orderHeadersByGroups(
+  headers: string[],
+  headerGroups: string[][]
+): { orderedHeaders: string[]; orderedHeaderGroups: string[][] } {
+  const orderedHeaders: string[] = [];
+  let headersLeft = [...headers];
+  const orderedHeaderGroups: string[][] = [];
+  while (headersLeft.length > 0) {
+    const headerGroup = headerGroups.find((groupMembers) =>
+      groupMembers.includes(headersLeft[0])
+    );
+    // Skip unmapped headers
+    if (typeof headerGroup === 'undefined') headersLeft.shift();
+    else {
+      orderedHeaders.push(...headerGroup);
+      headersLeft = headersLeft.filter(
+        (header) => !headerGroup.includes(header)
+      );
+      orderedHeaderGroups.push(headerGroup);
+    }
+  }
+  return { orderedHeaders, orderedHeaderGroups };
+}
+
+function groupCommonFields(
+  isTreeTable: boolean,
+  headerGroups: string[][],
+  uploadedRowsTable: UploadedRowsTable
+): UploadedRowsTable {
+  if (isTreeTable) return uploadedRowsTable;
+
+  const filteredHeaderGroups = headerGroups.filter((headerMembers) =>
+    headerMembers.some((memberName) =>
+      uploadedRowsTable.columnNames.includes(memberName)
+    )
+  );
+  const groupBoundaries = filteredHeaderGroups
+    .map((headers) => headers.length)
+    .reduce<boolean[]>(
+      (array, length) => [
+        ...array,
+        ...[...new Array(length)].map((_, index) => index === 0),
+      ],
+      []
+    )
+    .flat();
+
+  if (filteredHeaderGroups.length <= 1)
+    return {
+      ...uploadedRowsTable,
+      groupBoundaries,
+    };
+
+  const groupedRows = uploadedRowsTable.rows.reduce<R<UploadedRow[]>>(
+    (groupedRows, row) => {
+      groupedRows[row.rowIndex] ??= [];
+      groupedRows[row.rowIndex].push(row);
+      return groupedRows;
+    },
+    {}
+  );
+
+  const mergedGroups: UploadedRowsTable['rows'] = Object.values(
+    groupedRows
+  ).map((rows) =>
+    rows.reduce<UploadedRow>(
+      (mergedRow, row, index) =>
+        index === 0
+          ? mergedRow
+          : {
+              ...mergedRow,
+              columns: mergedRow.columns.map((column, columnIndex) =>
+                column.columnIndex < 0
+                  ? {
+                      ...row.columns[columnIndex],
+                      recordId:
+                        typeof row.columns[columnIndex].columnIndex ===
+                          'undefined' ||
+                        row.columns[columnIndex].columnIndex < 0
+                          ? undefined
+                          : row.recordId,
+                    }
+                  : column
+              ),
+            },
+      {
+        ...rows[0],
+        columns: rows[0].columns.map((column) => ({
+          ...column,
+          recordId:
+            typeof column.columnIndex === 'undefined' || column.columnIndex < 0
+              ? undefined
+              : rows[0].recordId,
+        })),
+      }
+    )
+  );
+
+  return {
+    ...uploadedRowsTable,
+    rows: mergedGroups,
+    groupBoundaries,
+  };
+}
+
 export function parseUploadResults(
   uploadResults: UploadResults,
   headers: string[],
@@ -619,7 +733,7 @@ export function parseUploadResults(
   const arrayOfMappings = mappingsTreeToArrayOfSplitMappings(mappingsTree);
 
   // Group headers with common mapping path together
-  const headerGroups = Object.values(
+  const unorderedHeaderGroups = Object.values(
     arrayOfMappings
       .map((splitMappingPath) => ({
         ...splitMappingPath,
@@ -637,29 +751,10 @@ export function parseUploadResults(
       )
   );
 
-  /*
-   * Order headers by the group they belong too while preserving the original
-   * order as much as possible
-   */
-  const headersOrderedByGroups = [].reduce<{
-    orderedHeaders: string[];
-    headers: string[];
-  }>(
-    ({ orderedHeaders, headers }, _) => {
-      const headerGroup = headerGroups.find((groupMembers) =>
-        groupMembers.includes(headers[0])
-      );
-      if (typeof headerGroup === 'undefined')
-        throw new Error('Unable to find the header group');
-      return {
-        orderedHeaders: [...orderedHeaders, ...headerGroup],
-        headers: headers.filter((header) => !headerGroup.includes(header)),
-      };
-    },
-    { orderedHeaders: [], headers }
-  );
-
-  console.log(headersOrderedByGroups);
+  const {
+    orderedHeaders: headersOrderedByGroups,
+    orderedHeaderGroups: headerGroups,
+  } = orderHeadersByGroups(headers, unorderedHeaderGroups);
 
   const mappedRanksTree = arrayOfMappings
     .filter(
@@ -691,7 +786,7 @@ export function parseUploadResults(
       uploadedPicklistItems,
       uploadedRows,
       matchedRecordsNames,
-      headers
+      headersOrderedByGroups
     )
   );
 
@@ -764,7 +859,7 @@ export function parseUploadResults(
     Object.fromEntries(
       Object.entries(uploadedRows).map(([tableName, tableRecords]) => [
         tableName,
-        {
+        groupCommonFields(tableName in treeTables, headerGroups, {
           tableLabel: schemaModels[
             lowercaseTableNames.indexOf(tableName.toLowerCase())
           ].getLocalizedName(),
@@ -778,16 +873,19 @@ export function parseUploadResults(
           ...(tableName in treeTables
             ? treeTables[tableName]
             : {
-                columnNames: (columnNames = getOrderedHeaders(headers, [
-                  // Save list of column indexes to `columnIndexes`
-                  ...new Set(
-                    // Make the list unique
-                    tableRecords.flatMap(
-                      // Get column names
-                      ({ columns }) => Object.values(columns)
-                    )
-                  ),
-                ])),
+                columnNames: (columnNames = getOrderedHeaders(
+                  headersOrderedByGroups,
+                  [
+                    // Save list of column indexes to `columnIndexes`
+                    ...new Set(
+                      // Make the list unique
+                      tableRecords.flatMap(
+                        // Get column names
+                        ({ columns }) => Object.values(columns)
+                      )
+                    ),
+                  ]
+                )),
                 rows: tableRecords.map(({ recordId, rowIndex, columns }) => ({
                   recordId,
                   rowIndex,
@@ -814,7 +912,7 @@ export function parseUploadResults(
                     ),
                 })),
               }),
-        },
+        }),
       ])
     ),
     uploadedPicklistItems,

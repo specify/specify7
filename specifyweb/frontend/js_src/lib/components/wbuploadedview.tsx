@@ -100,8 +100,8 @@ function UploadedTableRowsHeaderProps({
   return (
     <thead>
       <tr>
-        {columnNames.map((columnName) => (
-          <th key={columnName}>{columnName}</th>
+        {columnNames.map((columnName, index) => (
+          <th key={index}>{columnName}</th>
         ))}
       </tr>
     </thead>
@@ -129,26 +129,17 @@ function CellLink({
 function UploadedTableRow({
   rows,
   onCellClicked: handleCellClicked,
+  groupBoundaries,
   getRecordViewUrl,
 }: UploadedTableRowBaseProps & {
   readonly rows: UploadedRow[];
+  readonly groupBoundaries: number[];
   readonly getRecordViewUrl: (rowId: number) => string;
 }): JSX.Element {
   return (
     <tbody>
-      {rows.map(({ recordId, rowIndex, columns }, index) => (
+      {rows.map(({ rowIndex, columns }, index) => (
         <tr key={index}>
-          {recordId >= 0 && (
-            <td key="viewRecord">
-              <a
-                target="_blank"
-                href={getRecordViewUrl(recordId)}
-                rel="noreferrer"
-              >
-                👁
-              </a>
-            </td>
-          )}
           {columns.map(
             (
               {
@@ -161,32 +152,49 @@ function UploadedTableRow({
               },
               index
             ) => (
-              <td
-                key={index}
-                className={`wb-upload-results-cell ${
-                  matched ? 'wb-upload-results-cell-matched' : ''
-                } ${columnIndex < 0 ? 'wb-upload-results-undefined-cell' : ''}
+              <React.Fragment key={index}>
+                {groupBoundaries[index] && (
+                  <td
+                    key="viewRecord"
+                    className="wb-upload-results-record-link"
+                  >
+                    {typeof recordId !== 'undefined' && recordId >= 0 && (
+                      <a
+                        target="_blank"
+                        href={getRecordViewUrl(recordId)}
+                        rel="noreferrer"
+                      >
+                        👁
+                      </a>
+                    )}
+                  </td>
+                )}
+                <td
+                  className={`wb-upload-results-cell ${
+                    matched ? 'wb-upload-results-cell-matched' : ''
+                  } ${columnIndex < 0 ? 'wb-upload-results-undefined-cell' : ''}
               `}
-                rowSpan={spanSize}
-                onClick={(): void =>
-                  handleCellClicked(
-                    rowIndex < 0 ? cellRowIndex ?? -1 : rowIndex,
-                    columnIndex
-                  )
-                }
-                title={
-                  columnIndex < 0
-                    ? undefined
-                    : `${['Uploaded', 'Matched'][matched ? 1 : 0]} record`
-                }
-              >
-                <CellLink
-                  getRecordViewUrl={getRecordViewUrl}
-                  recordId={recordId}
+                  rowSpan={spanSize}
+                  onClick={(): void =>
+                    handleCellClicked(
+                      rowIndex < 0 ? cellRowIndex ?? -1 : rowIndex,
+                      columnIndex
+                    )
+                  }
+                  title={
+                    columnIndex < 0
+                      ? undefined
+                      : `${['Uploaded', 'Matched'][matched ? 1 : 0]} record`
+                  }
                 >
-                  {typeof cellValue === 'undefined' ? 'Uploaded' : cellValue}
-                </CellLink>
-              </td>
+                  <CellLink
+                    getRecordViewUrl={getRecordViewUrl}
+                    recordId={recordId}
+                  >
+                    {typeof cellValue === 'undefined' ? 'Uploaded' : cellValue}
+                  </CellLink>
+                </td>
+              </React.Fragment>
             )
           )}
         </tr>
@@ -224,10 +232,12 @@ function UploadedTableRows({
   getRecordViewUrl,
   onCellClicked: handleCellClicked,
   tableIsTree,
+  groupBoundaries,
 }: {
   readonly rows: (UploadedRow | UploadedPicklistItem)[];
   readonly columnNames?: string[];
   readonly getRecordViewUrl?: (rowId: number) => string;
+  readonly groupBoundaries?: number[];
   readonly type: UploadedRecordsTypes;
   readonly onCellClicked: HandleCellClicked;
   readonly tableIsTree: boolean;
@@ -237,6 +247,7 @@ function UploadedTableRows({
       readonly columnNames: string[];
       readonly getRecordViewUrl: (rowId: number) => string;
       readonly type: 'table';
+      readonly groupBoundaries: number[];
     }
   | {
       readonly rows: UploadedPicklistItem[];
@@ -253,14 +264,15 @@ function UploadedTableRows({
         <UploadedTableRowsHeaderProps
           columnNames={
             type === 'table' && columnNames
-              ? [
-                  ...(rows.length > 0 &&
-                  'recordId' in rows[0] &&
-                  rows[0].recordId >= 0
-                    ? ['']
-                    : []),
-                  ...columnNames,
-                ]
+              ? typeof groupBoundaries === 'undefined'
+                ? columnNames
+                : [
+                    ...groupBoundaries.flatMap((isBoundary, index) =>
+                      !isBoundary
+                        ? [columnNames[index]]
+                        : ['', columnNames[index]]
+                    ),
+                  ]
               : ['Picklist value']
           }
         />
@@ -268,6 +280,7 @@ function UploadedTableRows({
           <UploadedTableRow
             // @ts-expect-error
             rows={rows}
+            groupBoundaries={groupBoundaries!}
             onCellClicked={handleCellClicked}
             getRecordViewUrl={getRecordViewUrl}
           />
@@ -421,6 +434,7 @@ function UploadedTable({
                 rows: uploadedTable.rows,
                 columnNames: uploadedTable.columnNames,
                 getRecordViewUrl: uploadedTable.getRecordViewUrl,
+                groupBoundaries: uploadedTable.groupBoundaries,
               }
             : {
                 rows: uploadedTable,
