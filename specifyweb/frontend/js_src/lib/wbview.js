@@ -74,6 +74,8 @@ const WBView = Backbone.View.extend({
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.rowResults = this.dataset.rowresults || [];
+
+    this.resize = this.resize.bind(this);
   },
   render() {
     this.$el.append(
@@ -107,7 +109,7 @@ const WBView = Backbone.View.extend({
       this.wbutils.findLocalityColumns();
     });
 
-    $(window).resize(this.resize.bind(this));
+    $(window).on('resize', this.resize);
 
     return this;
   },
@@ -195,6 +197,7 @@ const WBView = Backbone.View.extend({
   },
   remove() {
     this.hot.destroy();
+    $(window).off('resize', this.resize);
   },
   isAmbiguousCell() {
     const [[row, col]] = this.hot.getSelected();
