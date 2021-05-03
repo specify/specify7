@@ -466,13 +466,13 @@ const WBView = Backbone.View.extend({
     this.$el.append(stylesContainer);
   },
   parseResults(results, showValidationSummary = false) {
+    this.wbutils.cellInfo = [];
+
     if (results == null) {
-      this.wbutils.cellInfo = [];
       this.hot.render();
       return;
     }
 
-    this.wbutils.cellInfo = [];
     results.forEach((result, row) => {
       this.parseRowValidationResult(row, result);
     });
@@ -640,7 +640,10 @@ const WBView = Backbone.View.extend({
     } catch (e) {}
 
     return {
-      comment: cellData && { value: cellData.issues.join('<br>') },
+      comment: cellData && {
+        value: cellData.issues.join('<br>'),
+        readOnly: true,
+      },
       renderer: function (instance, td, row, col, prop, value, cellProperties) {
         if (cellData && cellData.isNew) td.classList.add('wb-no-match-cell');
 
