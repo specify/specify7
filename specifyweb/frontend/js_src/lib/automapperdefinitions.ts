@@ -116,6 +116,24 @@ interface AutoMapperDefinitions {
   >;
 
   /*
+   * Don't map headers the headers that match the selector in a given scope
+   * This is helpful if some fields are too ambiguous and thus should not be
+   *  automapper
+   * Don't map list is of the highest priority and would cancel
+   *   a mapping even if a shortcut, or a synonym was used
+   */
+  dontMap: Readonly<
+    Partial<
+      Record<
+        // Defined in wbplanviewmapper.tsx
+        AutomapperScope,
+        // Described earlier in the file
+        { readonly headers: Options }
+      >
+    >
+  >;
+
+  /*
    * Shortcuts are to be used when successful header match should
    *   map to a certain mapping path rather than a field name
    * Shortcuts have higher priority than synonyms and thus can
@@ -286,9 +304,12 @@ const definitions: AutoMapperDefinitions = {
       country: ['automapper'],
       state: ['automapper'],
     },
-    Accession: {
-      // Too ambiguous
-      type: ['automapper'],
+  },
+  dontMap: {
+    automapper: {
+      headers: {
+        regex: [/^type[^a-z]*$/],
+      },
     },
   },
   shortcuts: {
@@ -393,7 +414,7 @@ const definitions: AutoMapperDefinitions = {
         automapper: {
           headers: {
             regex: [
-              /^collect(?:ing)?\.??(?: ev(?:ent)?)?\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
+              /^coll(?:ect(?:ing)?)?\.??(?: ev(?:ent)?)?\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
             ],
           },
         },

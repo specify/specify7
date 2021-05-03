@@ -349,28 +349,56 @@ export default class Automapper {
   }: AutoMapperConstructorParameters) {
     // Strip extra characters to increase mapping success
     this.headersToMap = Object.fromEntries(
-      rawHeaders.map((originalName) => {
-        const lowercaseName = handleDuplicateHeader(
-          originalName
-            .toLowerCase()
-            .replace(Automapper.regexReplaceWhitespace, ' ')
-            .trim()
-        );
-        const strippedName = lowercaseName
-          .replace(Automapper.regexRemoveNonAz, '')
-          .trim();
-        const finalName = strippedName.split(' ').join('');
+      rawHeaders
+        .map((originalName) => {
+          const lowercaseName = handleDuplicateHeader(
+            originalName
+              .toLowerCase()
+              .replace(Automapper.regexReplaceWhitespace, ' ')
+              .trim()
+          );
+          const strippedName = lowercaseName
+            .replace(Automapper.regexRemoveNonAz, '')
+            .trim();
+          const finalName = strippedName.split(' ').join('');
 
-        return [
-          originalName,
-          {
-            isMapped: false,
-            lowercaseHeaderName: lowercaseName,
-            strippedHeaderName: strippedName,
-            finalHeaderName: finalName,
-          },
-        ];
-      })
+          return {
+            originalName,
+            headerData: {
+              isMapped: false,
+              lowercaseHeaderName: lowercaseName,
+              strippedHeaderName: strippedName,
+              finalHeaderName: finalName,
+            },
+          };
+        })
+        /*
+         * Remove headers that match the `dontMap` structure in
+         * AutoMapperDefinitions
+         */
+        .filter(({ headerData: { lowercaseHeaderName } }) =>
+          Object.entries(Automapper.comparisons)
+            .filter(
+              (
+                // Loop over defined comparisons
+                [comparisonKey]
+              ) =>
+                comparisonKey in
+                (AutoMapperDefinitions.dontMap[scope]?.headers || {})
+            )
+            .every(([comparisonKey, comparisonFunction]) =>
+              // Loop over each value of a comparison
+              Object.values(
+                AutoMapperDefinitions.dontMap[scope]?.headers[
+                  comparisonKey as keyof Options
+                ] ?? {}
+              ).every(
+                (comparisonValue) =>
+                  !comparisonFunction?.(lowercaseHeaderName, comparisonValue)
+              )
+            )
+        )
+        .map(({ originalName, headerData }) => [originalName, headerData])
     );
 
     this.results = {};
@@ -477,7 +505,8 @@ export default class Automapper {
    * matched
    */
   private readonly handleDefinitionComparison = (
-    path: MappingPath, // Initial mapping path
+    // Initial mapping path
+    path: MappingPath,
     comparisons: Options,
     /*
      * Function that returns the next path part to use in a new mapping
@@ -489,7 +518,8 @@ export default class Automapper {
       Object.entries(Automapper.comparisons)
         .filter(
           (
-            [comparisonKey] // Loop over defined comparisons
+            // Loop over defined comparisons
+            [comparisonKey]
           ) => comparisonKey in comparisons
         )
         .some(([comparisonKey, comparisonFunction]) =>
@@ -927,11 +957,12 @@ export default class Automapper {
     let localPath: MappingPath = [...path, ...newPathParts];
     const lastPathPart = localPath[localPath.length - 1];
 
+    // Don't map if:
     if (
       // If this fields is designated as unmappable in the current source
       isFieldInDontMatch(tableName, lastPathPart, this.scope) ||
       /*
-       * If a starting path was given and proposed mapping is outside
+       * Or if a starting path was given and proposed mapping is outside
        * the path
        */
       (this.startingPath.length > 0 &&
