@@ -18,4 +18,5 @@ from . import (
     workbench_rules,
     user_rules,
     picklist_rules,
+    accessionagent_rules,
 )
