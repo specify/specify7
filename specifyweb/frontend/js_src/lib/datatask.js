@@ -91,6 +91,13 @@ var querystring         = require('./querystring.js');
     // can optionally be in the context of some recordset
     function resourceView(modelName, id) {
         var model = schema.getModel(modelName);
+
+        if(typeof model === "undefined"){
+            app.setCurrentView(new NotFoundView());
+            app.setTitle('Page Not Found');
+            return;
+        }
+
         if (GUID_RE.test(id)) {
             viewResourceByGUID(model, id);
             return;
