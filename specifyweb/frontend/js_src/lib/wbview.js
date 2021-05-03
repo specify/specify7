@@ -162,28 +162,31 @@ const WBView = Backbone.View.extend({
             searchResultClass: 'wb-search-match-cell',
           },
           contextMenu: {
-            items: {
-              row_above: 'row_above',
-              row_below: 'row_below',
-              remove_row: 'remove_row',
-              separator_1: '---------',
-              fill_down: this.wbutils.fillCellsContextMenuItem(
-                'Fill Down',
-                this.wbutils.fillDown
-              ),
-              fill_up: this.wbutils.fillCellsContextMenuItem(
-                'Fill Up',
-                this.wbutils.fillUp
-              ),
-              separator_2: '---------',
-              disambiguate: {
-                name: 'Disambiguate',
-                disabled: () => !this.isAmbiguousCell(),
-                callback: (__, selection) => this.disambiguateCell(selection),
-              },
-              undo: 'undo',
-              redo: 'redo',
-            },
+            items: this.uploaded
+              ? {}
+              : {
+                  row_above: 'row_above',
+                  row_below: 'row_below',
+                  remove_row: 'remove_row',
+                  separator_1: '---------',
+                  fill_down: this.wbutils.fillCellsContextMenuItem(
+                    'Fill Down',
+                    this.wbutils.fillDown
+                  ),
+                  fill_up: this.wbutils.fillCellsContextMenuItem(
+                    'Fill Up',
+                    this.wbutils.fillUp
+                  ),
+                  separator_2: '---------',
+                  disambiguate: {
+                    name: 'Disambiguate',
+                    disabled: () => !this.isAmbiguousCell(),
+                    callback: (__, selection) =>
+                      this.disambiguateCell(selection),
+                  },
+                  undo: 'undo',
+                  redo: 'redo',
+                },
           },
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
