@@ -260,3 +260,8 @@ export const localityColumnsToSearchFor: Readonly<LocalityField[]> = [
   'latlongtype',
   'latlongaccuracy',
 ] as const;
+
+export const requiredLocalityColumns: Readonly<LocalityField[]> = [
+  'latitude1',
+  'longitude1',
+] as const;

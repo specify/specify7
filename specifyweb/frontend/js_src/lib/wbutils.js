@@ -301,16 +301,20 @@ module.exports = Backbone.View.extend({
       )
     );
 
-    this.localityColumns = Object.values(
-      localityObjects
-    ).map((localityMapping) =>
-      Object.fromEntries(
-        Object.entries(localityMapping).map(([columnName, headerName]) => [
-          columnName,
-          this.wbview.dataset.columns.indexOf(headerName),
-        ])
+    this.localityColumns = Object.values(localityObjects)
+      .map((localityMapping) =>
+        Object.fromEntries(
+          Object.entries(localityMapping).map(([columnName, headerName]) => [
+            columnName,
+            this.wbview.dataset.columns.indexOf(headerName),
+          ])
+        )
       )
-    );
+      .filter((localityColumns) =>
+        LeafletConfig.requiredLocalityColumns.every(
+          (requiredColumnName) => requiredColumnName in localityColumns
+        )
+      );
 
     [
       ...new Set([

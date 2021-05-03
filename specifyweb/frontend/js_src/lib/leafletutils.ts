@@ -8,7 +8,10 @@
 
 import type { IR } from './components/wbplanview';
 import latlongutils from './latlongutils';
-import { localityColumnsToSearchFor } from './leafletconfig';
+import {
+  localityColumnsToSearchFor,
+  requiredLocalityColumns,
+} from './leafletconfig';
 
 interface BareLocalityData {
   latitude1: number;
@@ -78,8 +81,7 @@ export function getLocalityCoordinate(
   const formatCoordinateCurried = (columnName: string): number =>
     formatCoordinate(row, columnIndexes, columnName);
 
-  if (!cellIsValidCurried('latitude1') || !cellIsValidCurried('longitude1'))
-    return false;
+  if (!requiredLocalityColumns.every(cellIsValidCurried)) return false;
 
   try {
     return {
