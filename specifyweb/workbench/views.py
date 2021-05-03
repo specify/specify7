@@ -333,6 +333,10 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     bt, upload_plan = uploader.get_ds_upload_plan(collection, ds)
     row = json.loads(request.body)
     ncols = len(ds.columns)
+    rows = regularize_rows(ncols, [row])
+    if not rows:
+        return http.JsonResponse(None, safe=False)
+    row = rows[0]
     da = uploader.get_disambiguation_from_row(ncols, row)
     result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, dict(zip(ds.columns, row)), da)
     return http.JsonResponse({'result': result.to_json(), 'validation': result.validation_info().to_json()})
