@@ -115,7 +115,8 @@ export default Backbone.View.extend({
       close: () => this.render(),
       buttons: {
         Cancel: () => this.render(),
-        Save: this.setName.bind(this, this.render),
+
+        Save: this.setName.bind(this, this.render.bind(this)),
         'Change owner': this.setName.bind(
           this,
           this.changeOwnerWindow.bind(this)
