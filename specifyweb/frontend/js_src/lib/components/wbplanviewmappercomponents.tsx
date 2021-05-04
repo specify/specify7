@@ -33,7 +33,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
 }) {
   return (
     <div>
-      <button onClick={handleAddNewHeader}>Add new column</button>
+      <button onClick={handleAddNewHeader}>Add New Column</button>
       {/* <label>
         <input
           type="checkbox"
@@ -49,7 +49,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
-        Reveal hidden fields
+        Reveal Hidden Fields
       </label>
     </div>
   );

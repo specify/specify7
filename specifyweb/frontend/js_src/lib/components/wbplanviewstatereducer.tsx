@@ -137,7 +137,7 @@ export const stateReducer = generateReducer<
                   })
                 }
               />
-              Show advanced tables
+              Show Advanced Tables
             </label>
           }
           buttonsRight={
@@ -151,7 +151,7 @@ export const stateReducer = generateReducer<
                   })
                 }
               >
-                Choose existing plan
+                Choose Existing Plan
               </button>
               <button
                 type="button"
@@ -251,7 +251,7 @@ export const stateReducer = generateReducer<
                   dataset
                 `}
                 >
-                  (Read only mode)
+                  (Read-Only Mode)
                 </span>
               ) : (
                 <button
@@ -262,7 +262,7 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  Change table
+                  Change Table
                 </button>
               )
             }
@@ -278,7 +278,7 @@ export const stateReducer = generateReducer<
                       })
                     }
                   >
-                    Show mapping view
+                    Show Mapping View
                   </button>
                 )}
                 <button
@@ -289,7 +289,7 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  Matching logic
+                  Matching Logic
                 </button>
                 {!state.props.readonly && (
                   <>
@@ -316,7 +316,7 @@ export const stateReducer = generateReducer<
                         });
                       }}
                     >
-                      Check mappings
+                      Check Mappings
                       {state.mappingsAreValidated && (
                         <i
                           style={{
@@ -376,7 +376,7 @@ export const stateReducer = generateReducer<
               <span>
                 This Data Set doesn&apos;t have any columns.
                 <br />
-                Press the &quot;Add new column&quot; button at the bottom of the
+                Press the &quot;Add New Column&quot; button at the bottom of the
                 screen to add new columns.
               </span>
             </ModalDialog>

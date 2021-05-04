@@ -567,7 +567,7 @@ const WBView = Backbone.View.extend({
             },
       unupload: {
         title: 'Unupload completed',
-        message: 'Unupload completed successfully',
+        message: 'Unupload completed successfully.',
       },
     };
 
@@ -738,7 +738,7 @@ const WBView = Backbone.View.extend({
   },
   calcHeight: function () {
     return (
-      $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset().top
+      $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset()?.top
     );
   },
   saveClicked: function () {

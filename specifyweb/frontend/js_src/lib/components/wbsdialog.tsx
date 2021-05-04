@@ -58,9 +58,9 @@ function Dialog({
         buttons: {
           ...(canImport
             ? {
-                'Import a file': (): void =>
+                'Import a File': (): void =>
                   navigation.go('/workbench-import/'),
-                'Create empty': createEmptyDataSet,
+                'Create Empty': createEmptyDataSet,
               }
             : {}),
           Cancel: handleClose,
