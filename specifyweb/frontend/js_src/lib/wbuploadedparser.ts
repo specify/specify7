@@ -135,7 +135,7 @@ type RecordResult = {
   >;
 };
 
-interface UploadResult {
+export interface UploadResult {
   UploadResult: {
     record_result: RecordResult;
     /*
@@ -151,8 +151,6 @@ interface UploadResult {
     toMany: IR<UploadResult[]>;
   };
 }
-
-export type UploadResults = UploadResult[];
 
 interface UploadedColumn {
   readonly columnIndex: number;
@@ -293,6 +291,9 @@ function handleUploadResult(
       ? 'Uploaded'
       : undefined);
   const parent = parentType && parentBase?.[parentType];
+
+  // Skip matched non-tree records
+  if (uploadStatus === 'Matched' && typeof rank === 'undefined') return;
 
   if (uploadStatus === 'Matched') {
     matchedRecordsNames[tableName] ??= {};
@@ -500,6 +501,10 @@ const spaceOutChildren = (
 
 /*
  * Value to use for an empty cell
+ * Negative column indexes have special meanings:
+ *  -1 for a cell without a value
+ *  -2 for empty cells to the right of the content when in tree view
+ *  -3 for empty cells to the left of the content when in tree view
  *
  */
 const emptyCell = (columnIndex: number): UploadedColumn => ({
@@ -648,22 +653,13 @@ function groupCommonFields(
       uploadedRowsTable.columnNames.includes(memberName)
     )
   );
-  const groupBoundaries = filteredHeaderGroups
-    .map((headers) => headers.length)
-    .reduce<boolean[]>(
-      (array, length) => [
-        ...array,
-        ...[...new Array(length)].map((_, index) => index === 0),
-      ],
-      []
-    )
-    .flat();
-
-  if (filteredHeaderGroups.length <= 1)
-    return {
-      ...uploadedRowsTable,
-      groupBoundaries,
-    };
+  const groupBoundaries = filteredHeaderGroups.reduce<boolean[]>(
+    (array, headers) => [
+      ...array,
+      ...[...new Array(headers.length)].map((_, index) => index === 0),
+    ],
+    []
+  );
 
   const groupedRows = uploadedRowsTable.rows.reduce<R<UploadedRow[]>>(
     (groupedRows, row) => {
@@ -718,7 +714,7 @@ function groupCommonFields(
 }
 
 export function parseUploadResults(
-  uploadResults: UploadResults,
+  uploadResults: UploadResult[],
   headers: string[],
   data: string[][],
   treeRanks: IR<string[]>,

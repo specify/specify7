@@ -83,6 +83,7 @@ const WBView = Backbone.View.extend({
     this.$el.append(
       template({
         is_uploaded: this.uploaded,
+        has_rowresults: this.dataset.rowresults !== null,
         is_manager: userInfo.usertype === 'Manager',
       })
     );
@@ -481,11 +482,11 @@ const WBView = Backbone.View.extend({
     this.updateCellInfos(showValidationSummary);
   },
   displayUploadedView() {
-    if (!this.uploaded) return;
+    if (!this.dataset.rowresults) return;
 
     const uploadView = this.$el.find('.wb-upload-view')[0];
 
-    if (uploadView.children.length !== 0) return;
+    if (typeof this.uploadedView !== 'undefined') return;
 
     uploadView.innerHTML = '<div></div>';
     const container = uploadView.children[0];
@@ -580,8 +581,10 @@ const WBView = Backbone.View.extend({
           ...(this.refreshInitiatedBy === 'upload' &&
           cellCounts.invalidCells === 0
             ? {
-                'View upload results': () =>
-                  this.displayUploadedView() || dialog.dialog('close'),
+                'View upload results': () => {
+                  this.displayUploadedView();
+                  dialog.dialog('close');
+                },
               }
             : {}),
         },
@@ -807,10 +810,9 @@ const WBView = Backbone.View.extend({
       });
   },
   openStatus(mode) {
-    new WBStatus({ dataset: this.dataset }).render().on('done', () => {
-      if (['upload', 'unupload'].includes(mode)) this.trigger('refresh', mode);
-      else this.getValidationResults(true);
-    });
+    new WBStatus({ dataset: this.dataset })
+      .render()
+      .on('done', () => this.trigger('refresh', mode));
   },
   showHighlights: function () {
     this.highlightsOn = true;

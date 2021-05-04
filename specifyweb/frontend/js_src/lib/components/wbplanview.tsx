@@ -19,6 +19,7 @@ import {
   refObjectDispatch,
   refStatesMapper,
 } from '../wbplanviewrefreducer';
+import type { UploadResult } from '../wbuploadedparser';
 import {
   getInitialWBPlanViewState,
   stateReducer,
@@ -28,19 +29,26 @@ import {
 export type DatasetBrief = {
   id: number;
   name: string;
-  uploaderstatus: IR<unknown> | null;
   uploadresult: {
     success: boolean;
     timestamp: string;
+    recordsetid: number;
   } | null;
+  uploaderstatus: IR<unknown> | null;
   timestampcreated: string;
   timestampmodified: string;
 };
 
 export type Dataset = DatasetBrief & {
   columns: string[];
+  createdbyagent: string;
+  importedfilename: string;
+  modifiedbyagent: string;
+  remarks: string | null;
+  rowresults: UploadResult[] | null;
   rows: string[][];
   uploadplan: UploadPlan | null;
+  visualorder: null | number[];
 };
 
 export interface SpecifyResource {

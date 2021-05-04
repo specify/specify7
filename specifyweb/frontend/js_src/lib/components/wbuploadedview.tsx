@@ -20,7 +20,6 @@ import type {
   UploadedRow,
   UploadedRows,
   UploadedRowsTable,
-  UploadResults,
 } from '../wbuploadedparser';
 import { parseUploadResults } from '../wbuploadedparser';
 import { ModalDialog } from './modaldialog';
@@ -44,6 +43,7 @@ interface WBUploadedViewComponentProps {
   readonly uploadedRows: UploadedRows;
   readonly uploadedPicklistItems: UploadedPicklistItems;
   readonly hot: Handsontable;
+  readonly isUploaded: boolean;
 }
 
 type UploadedRecordsTypes = 'table' | 'picklist';
@@ -52,6 +52,7 @@ type HandleCellClicked = (rowIndex: number, columnIndex: number) => void;
 interface UploadedTableRowBaseProps {
   readonly onCellClicked: HandleCellClicked;
   readonly getRecordViewUrl?: (rowId: number) => string;
+  readonly isUploaded: boolean;
 }
 
 type RecordsVisibilityState = IR<boolean>;
@@ -128,12 +129,13 @@ function CellLink({
 
 function UploadedTableRow({
   rows,
+  isUploaded,
   onCellClicked: handleCellClicked,
   groupBoundaries,
   getRecordViewUrl,
 }: UploadedTableRowBaseProps & {
   readonly rows: UploadedRow[];
-  readonly groupBoundaries: number[];
+  readonly groupBoundaries?: boolean[];
   readonly getRecordViewUrl: (rowId: number) => string;
 }): JSX.Element {
   return (
@@ -153,22 +155,25 @@ function UploadedTableRow({
               index
             ) => (
               <React.Fragment key={index}>
-                {groupBoundaries[index] && (
-                  <td
-                    key="viewRecord"
-                    className="wb-upload-results-record-link"
-                  >
-                    {typeof recordId !== 'undefined' && recordId >= 0 && (
-                      <a
-                        target="_blank"
-                        href={getRecordViewUrl(recordId)}
-                        rel="noreferrer"
-                      >
-                        👁
-                      </a>
-                    )}
-                  </td>
-                )}
+                {typeof groupBoundaries !== 'undefined' &&
+                  groupBoundaries[index] && (
+                    <td
+                      key="viewRecord"
+                      className="wb-upload-results-record-link"
+                    >
+                      {typeof recordId !== 'undefined' &&
+                        recordId >= 0 &&
+                        isUploaded && (
+                          <a
+                            target="_blank"
+                            href={getRecordViewUrl(recordId)}
+                            rel="noreferrer"
+                          >
+                            👁
+                          </a>
+                        )}
+                    </td>
+                  )}
                 <td
                   className={`wb-upload-results-cell ${
                     matched ? 'wb-upload-results-cell-matched' : ''
@@ -227,6 +232,7 @@ function UploadedPicklistRow({
 
 function UploadedTableRows({
   type,
+  isUploaded,
   rows,
   columnNames,
   getRecordViewUrl,
@@ -237,8 +243,9 @@ function UploadedTableRows({
   readonly rows: (UploadedRow | UploadedPicklistItem)[];
   readonly columnNames?: string[];
   readonly getRecordViewUrl?: (rowId: number) => string;
-  readonly groupBoundaries?: number[];
+  readonly groupBoundaries?: boolean[];
   readonly type: UploadedRecordsTypes;
+  readonly isUploaded: boolean;
   readonly onCellClicked: HandleCellClicked;
   readonly tableIsTree: boolean;
 } & (
@@ -247,13 +254,22 @@ function UploadedTableRows({
       readonly columnNames: string[];
       readonly getRecordViewUrl: (rowId: number) => string;
       readonly type: 'table';
-      readonly groupBoundaries: number[];
+      readonly groupBoundaries?: boolean[];
     }
   | {
       readonly rows: UploadedPicklistItem[];
       readonly type: 'picklist';
     }
 )): JSX.Element {
+  /*
+   * If there is only one group, and records haven't been uploaded yet,
+   * don't show group boundary
+   */
+  const modifiedGroupBoundaries: boolean[] | undefined =
+    !isUploaded && groupBoundaries?.filter((boundary) => boundary).length === 1
+      ? groupBoundaries.map(() => false)
+      : groupBoundaries;
+
   return (
     <div className="wb-upload-results-rows-container">
       <table
@@ -264,10 +280,10 @@ function UploadedTableRows({
         <UploadedTableRowsHeaderProps
           columnNames={
             type === 'table' && columnNames
-              ? typeof groupBoundaries === 'undefined'
+              ? typeof modifiedGroupBoundaries === 'undefined'
                 ? columnNames
                 : [
-                    ...groupBoundaries.flatMap((isBoundary, index) =>
+                    ...modifiedGroupBoundaries.flatMap((isBoundary, index) =>
                       !isBoundary
                         ? [columnNames[index]]
                         : ['', columnNames[index]]
@@ -280,7 +296,8 @@ function UploadedTableRows({
           <UploadedTableRow
             // @ts-expect-error
             rows={rows}
-            groupBoundaries={groupBoundaries!}
+            isUploaded={isUploaded}
+            groupBoundaries={modifiedGroupBoundaries}
             onCellClicked={handleCellClicked}
             getRecordViewUrl={getRecordViewUrl}
           />
@@ -288,6 +305,7 @@ function UploadedTableRows({
           <UploadedPicklistRow
             // @ts-expect-error
             rows={rows}
+            isUploaded={isUploaded}
             onCellClicked={handleCellClicked}
           />
         )}
@@ -377,6 +395,7 @@ function UploadedTableHeader({
 function UploadedTable({
   uploadedTable,
   type,
+  isUploaded,
   tableName,
   tableIsCollapsed,
   onCreateRecordSet: handleCreateRecordSet,
@@ -390,6 +409,7 @@ function UploadedTable({
   readonly onCellClicked: HandleCellClicked;
   readonly onCreateRecordSet?: () => void;
   readonly onCreateDataSet?: () => void;
+  readonly isUploaded: boolean;
 } & (
   | {
       readonly uploadedTable: UploadedRowsTable;
@@ -427,6 +447,7 @@ function UploadedTable({
         // @ts-expect-error
         <UploadedTableRows
           type={type}
+          isUploaded={isUploaded}
           onCellClicked={handleCellClicked}
           tableIsTree={typeof uploadedTable.rowsCount !== 'undefined'}
           {...(type === 'table'
@@ -449,6 +470,7 @@ function UploadedRecords({
   uploadedRecords,
   tableRecordsVisibilityState,
   type,
+  isUploaded,
   onCreateRecordSet: handleCreateRecordSet,
   onCreateDataSet: handleCreateDataSet,
   onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
@@ -459,6 +481,7 @@ function UploadedRecords({
   readonly onCellClicked: HandleCellClicked;
   readonly onCreateRecordSet?: (tableName: string) => void;
   readonly onCreateDataSet?: (tableName: string) => void;
+  readonly isUploaded: boolean;
 } & (
   | {
       readonly uploadedRecords: UploadedRows;
@@ -476,6 +499,7 @@ function UploadedRecords({
       {Object.entries(uploadedRecords).map(([tableName, tableData]) => (
         // @ts-expect-error
         <UploadedTable
+          isUploaded={isUploaded}
           uploadedTable={tableData}
           tableName={tableName}
           key={tableName}
@@ -550,7 +574,9 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
     <ModalDialog
       onCloseCallback={props.handleClose}
       properties={{
-        title: 'View Upload Results',
+        title: props.isUploaded
+          ? 'View Upload Results'
+          : 'View Potential Upload Results',
         width: 600,
         maxHeight: 600,
         modal: false,
@@ -559,10 +585,11 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
       <div className="wb-upload-results">
         {Object.keys(props.uploadedRows).length === 0 &&
           Object.keys(props.uploadedPicklistItems).length === 0 &&
-          'No records were uploaded / all records were matched to' +
+          'No records were uploaded / all records were matched to ' +
             'database records'}
         <UploadedRecords
           type="table"
+          isUploaded={props.isUploaded}
           uploadedRecords={props.uploadedRows}
           tableRecordsVisibilityState={state.tableRecordsVisibilityState}
           onCreateRecordSet={(tableName: string): void =>
@@ -594,6 +621,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
         />
         <UploadedRecords
           type="picklist"
+          isUploaded={props.isUploaded}
           uploadedRecords={props.uploadedPicklistItems}
           tableRecordsVisibilityState={state.picklistRecordsVisibilityState}
           onCellClicked={(rowIndex: number, columnIndex: number): void =>
@@ -628,19 +656,6 @@ function WBUploadedViewDataParser(
   const [uploadedPicklistItems, setUploadedPicklistItems] = React.useState<
     UploadedPicklistItems | undefined
   >(undefined);
-  const [uploadResults, setUploadResults] = React.useState<
-    UploadResults | undefined
-  >(undefined);
-
-  React.useEffect(
-    () =>
-      // Fetch upload results
-      void fetch(`/api/workbench/upload_results/${props.dataset.id}/`)
-        .then(async (response) => response.json() as Promise<UploadResults>)
-        .then(setUploadResults),
-    []
-  );
-
   React.useEffect(
     () =>
       // Fetch tree ranks
@@ -668,14 +683,11 @@ function WBUploadedViewDataParser(
 
   React.useEffect(() => {
     // Parse uploaded data
-    if (
-      typeof uploadResults === 'undefined' ||
-      typeof treeRanks === 'undefined'
-    )
+    if (props.dataset.rowresults === null || typeof treeRanks === 'undefined')
       return;
 
     const [uploadedRows, uploadedPicklistItems] = parseUploadResults(
-      uploadResults,
+      props.dataset.rowresults,
       props.dataset.columns,
       props.dataset.rows,
       treeRanks,
@@ -684,7 +696,7 @@ function WBUploadedViewDataParser(
 
     setUploadedRows(uploadedRows);
     setUploadedPicklistItems(uploadedPicklistItems);
-  }, [treeRanks, uploadResults]);
+  }, [treeRanks]);
 
   return typeof uploadedRows !== 'undefined' &&
     typeof uploadedPicklistItems !== 'undefined' ? (
@@ -693,6 +705,7 @@ function WBUploadedViewDataParser(
       uploadedRows={uploadedRows}
       uploadedPicklistItems={uploadedPicklistItems}
       hot={props.hot}
+      isUploaded={props.dataset.uploadresult?.success ?? false}
     />
   ) : (
     <></>
