@@ -52,8 +52,12 @@ function Dialog({
     >
       {datasets.length === 0 ? (
         <p>
-          No Data Sets present.
-          {canImport ? '' : 'Use the "Import" button to import data.'}
+          {showTemplates
+            ? 'There are no plans available, please continue to create an' +
+              ' upload plan.'
+            : `No Data Sets present. ${
+                canImport ? 'Use the "Import" button to import data.' : ''
+              }`}
         </p>
       ) : (
         <span className="table-list-dialog">
