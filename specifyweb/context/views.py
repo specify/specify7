@@ -508,7 +508,14 @@ def generate_openapi_for_endpoints(all_endpoints=False):
     tags = list(get_tags(endpoints))
 
     return {
-        **base_schema("Specify 7 Operations API"),
+        **base_schema(
+            "Specify 7 Operations API",
+            description="""<a href="/documentation/api/tables/">
+                Specify 7 APIs for database tables
+            </a><br><a href="/documentation/api/operations/all/">
+                Specify 7 APIs for system operations (all endpoints)
+            </a>"""
+        ),
         **dict(
             tags=tags,
             paths=endpoints

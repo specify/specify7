@@ -15,7 +15,7 @@ from .datamodel import (
 from .views import login_maybe_required
 
 
-def base_schema(title="Specify 7 API") -> Dict:
+def base_schema(title="Specify 7 API", description="") -> Dict:
     """Return base schema object that is shared between both Swagger UI's.
 
     returns:
@@ -26,7 +26,8 @@ def base_schema(title="Specify 7 API") -> Dict:
         "info": {
             "title": title,
             "version": settings.VERSION,
-            "description": """Specify 7 API Documentation<br>
+            "description": """Specify 7 API Documentation<br><br>
+              %s<br><br>
               ℹ️
               <a
                 href="https://www.leverege.com/blogpost/what-is-an-api"
@@ -43,7 +44,7 @@ def base_schema(title="Specify 7 API") -> Dict:
                 >a not-so-brief</a
               >
               introduction to APIs for non-programmers.
-              """,
+              """ % description,
             "license": {
                 "name": "GPL-2.0 Licence",
                 "url": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html",
@@ -94,6 +95,12 @@ def openapi(request) -> http.HttpResponse:
     """
     spec = {
         **base_schema("Specify 7 Tables API"),
+        **base_schema(
+            "Specify 7 Tables API",
+            description="""<a href="/documentation/api/operations/">
+                    Specify 7 APIs for system operations
+                </a>"""
+        ),
         "paths": {
             endpoint_url.lower(): endpoint_description
             for table in datamodel.tables
