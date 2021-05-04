@@ -166,7 +166,7 @@ export default class WbImport extends Component<{}, WbImportState> {
           processData: false,
         })
       )
-      .done(({ id }: { id: number }) => {
+      .done(({ id }: { readonly id: number }) => {
         navigation.go(`/workbench/${id}/`);
       });
   }

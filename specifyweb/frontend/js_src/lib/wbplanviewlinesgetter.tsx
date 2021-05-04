@@ -17,15 +17,15 @@ export function getLinesFromHeaders({
   runAutomapper,
   baseTableName = '',
 }: {
-  headers?: RA<string>;
+  readonly headers?: RA<string>;
 } & (
   | {
-      runAutomapper: true;
-      baseTableName: string;
+      readonly runAutomapper: true;
+      readonly baseTableName: string;
     }
   | {
-      runAutomapper: false;
-      baseTableName?: string;
+      readonly runAutomapper: false;
+      readonly baseTableName?: string;
     }
 )): RA<MappingLine> {
   const lines = headers.map(
@@ -62,7 +62,7 @@ export function getLinesFromHeaders({
 
 export function getLinesFromUploadPlan(
   headers: RA<string> = [],
-  uploadPlan: Readonly<UploadPlan>
+  uploadPlan: UploadPlan
 ): {
   readonly baseTableName: string;
   readonly lines: RA<MappingLine>;

@@ -91,10 +91,8 @@ export type AutoMapperConstructorParameters =
 export type AutoMapperResults = R<MappingPath[]>;
 
 interface FindMappingsParameters {
-  // Name of current table
   readonly tableName: string;
-  // Current mapping path
-  readonly path: MappingPath;
+  readonly mappingPath: MappingPath;
   /*
    * Parent table name. Empty if current table is a base table. Used to
    * prevent circular relationships
@@ -436,7 +434,8 @@ export default class Automapper {
     useCache = true,
     commitToCache = true,
   }: {
-    readonly useCache?: boolean; // Whether to use cached values
+    // Whether to use cached values
+    readonly useCache?: boolean;
     // Whether to commit result to cache for future references
     readonly commitToCache?: boolean;
   } = {}): AutoMapperResults {
@@ -485,12 +484,12 @@ export default class Automapper {
         mode === 'synonymsAndMatches'
           ? {
               tableName: this.startingTable,
-              path: this.startingPath,
+              mappingPath: this.startingPath,
               parentTableName: '',
             }
           : {
               tableName: this.baseTable,
-              path: [],
+              mappingPath: [],
               parentTableName: '',
             },
     });
@@ -509,7 +508,7 @@ export default class Automapper {
             (payload) =>
               mode !== 'shortcutsAndTableSynonyms' ||
               level === '0' ||
-              pathMatchesStartingPath(payload.path, level)
+              pathMatchesStartingPath(payload.mappingPath, level)
           )
           .forEach((payload) => this.findMappings(payload, mode))
       );
@@ -565,15 +564,15 @@ export default class Automapper {
    *
    */
   private findMappingsInDefinitions({
-    path,
+    mappingPath,
     tableName,
     fieldName,
     mode,
     isTreeRank = false,
   }: {
-    readonly path: MappingPath; // Current mapping path
-    readonly tableName: string; // The table to search in
-    readonly fieldName: string; // The field to search in
+    readonly mappingPath: MappingPath;
+    readonly tableName: string;
+    readonly fieldName: string;
     readonly mode: AutoMapperNode;
     // Whether to format fieldName as a tree rank name
     readonly isTreeRank?: boolean;
@@ -586,7 +585,11 @@ export default class Automapper {
       tableDefinitionData?.[this.scope]?.forEach((shortcutData) => {
         const comparisons = shortcutData.headers;
         const getNewPathPart = () => shortcutData.mappingPath;
-        this.handleDefinitionComparison(path, comparisons, getNewPathPart);
+        this.handleDefinitionComparison(
+          mappingPath,
+          comparisons,
+          getNewPathPart
+        );
       });
     } else if (mode === 'synonymsAndMatches') {
       const tableDefinitionData = AutoMapperDefinitions.synonyms[tableName];
@@ -597,7 +600,11 @@ export default class Automapper {
         isTreeRank ? [formatTreeRank(fieldName), 'name'] : [fieldName];
 
       if (comparisons)
-        this.handleDefinitionComparison(path, comparisons, getNewPathPart);
+        this.handleDefinitionComparison(
+          mappingPath,
+          comparisons,
+          getNewPathPart
+        );
     }
   }
 
@@ -679,7 +686,7 @@ export default class Automapper {
   private findMappings(
     {
       tableName,
-      path = [],
+      mappingPath = [],
       parentTableName = '',
       parentRelationshipType,
     }: FindMappingsParameters,
@@ -692,7 +699,8 @@ export default class Automapper {
          * `synonymsAndMatches` mode
          */
         this.searchedTables.includes(tableName) ||
-        path.length > Automapper.depth // Don't go beyond the depth limit
+        // Don't go beyond the depth limit
+        mappingPath.length > Automapper.depth
       )
         return;
 
@@ -710,13 +718,14 @@ export default class Automapper {
     if (typeof ranksData !== 'undefined') {
       let ranks = Object.keys(ranksData);
       const pushRankToPath =
-        path.length <= 0 || !valueIsTreeRank(path[path.length - 1]);
+        mappingPath.length <= 0 ||
+        !valueIsTreeRank(mappingPath[mappingPath.length - 1]);
 
       if (!pushRankToPath)
-        ranks = [getNameFromTreeRankName(path[path.length - 1])];
+        ranks = [getNameFromTreeRankName(mappingPath[mappingPath.length - 1])];
 
       const findMappingsInDefinitionsPayload = {
-        path,
+        mappingPath,
         tableName,
         fieldName: '',
         mode,
@@ -767,7 +776,7 @@ export default class Automapper {
                    * only map a single header to this field
                    */
                   this.makeMapping(
-                    path,
+                    mappingPath,
                     pushRankToPath ? [finalRankName, fieldName] : [fieldName],
                     headerName,
                     tableName
@@ -780,7 +789,7 @@ export default class Automapper {
       return;
     }
 
-    const tableSynonyms = this.findTableSynonyms(tableName, path, mode);
+    const tableSynonyms = this.findTableSynonyms(tableName, mappingPath, mode);
     const tableNames = [
       ...new Set(
         tableSynonyms.length === 0
@@ -790,7 +799,7 @@ export default class Automapper {
     ];
 
     const findMappingsInDefinitionsPayload = {
-      path,
+      mappingPath,
       tableName,
       fieldName: '',
       mode,
@@ -867,7 +876,7 @@ export default class Automapper {
               )
             )) &&
           this.makeMapping(
-            path,
+            mappingPath,
             [fieldName],
             headerName,
             tableName,
@@ -878,7 +887,7 @@ export default class Automapper {
 
     getTableRelationships(tableName, false).some(
       ([relationshipKey, relationshipData]) => {
-        const localPath = [...path, relationshipKey];
+        const localPath = [...mappingPath, relationshipKey];
 
         if (relationshipIsToMany(relationshipData.type))
           localPath.push(formatReferenceItem(1));
@@ -892,12 +901,12 @@ export default class Automapper {
           level: newDepthLevel,
         });
 
-        let currentMappingPathPart = path[path.length - 1];
+        let currentMappingPathPart = mappingPath[mappingPath.length - 1];
         if (
           valueIsReferenceItem(currentMappingPathPart) ||
           valueIsTreeRank(currentMappingPathPart)
         )
-          currentMappingPathPart = path[path.length - 2];
+          currentMappingPathPart = mappingPath[mappingPath.length - 2];
 
         if (
           // Don't iterate over the same tables again
@@ -932,7 +941,7 @@ export default class Automapper {
           level: newDepthLevel,
           value: {
             tableName: relationshipData.tableName,
-            path: localPath,
+            mappingPath: localPath,
             parentTableName: tableName,
             parentRelationshipType: relationshipData.type,
           },

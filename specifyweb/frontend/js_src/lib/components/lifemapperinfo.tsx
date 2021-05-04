@@ -325,7 +325,7 @@ interface Props {
 }
 
 interface ComponentProps extends Props {
-  guid: string;
+  readonly guid: string;
 }
 
 const View = createBackboneView<Props, Props, ComponentProps>({

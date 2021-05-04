@@ -29,9 +29,9 @@ import {
  */
 interface TreeInfo {
   // The tree rank a record relates to
-  rank: string;
+  readonly rank: string;
   // The name of the tree node a record relates to
-  name: string;
+  readonly name: string;
 }
 
 /*
@@ -40,10 +40,10 @@ interface TreeInfo {
  */
 interface ReportInfo {
   // The name of the table a record relates to
-  tableName: string;
+  readonly tableName: string;
   // The columns from the data set a record relates to
-  columns: RA<string>;
-  treeInfo: TreeInfo | null;
+  readonly columns: RA<string>;
+  readonly treeInfo: TreeInfo | null;
 }
 
 /*
@@ -52,13 +52,13 @@ interface ReportInfo {
  */
 interface PicklistAddition {
   // The new picklistitem id
-  id: number;
+  readonly id: number;
   // The name of the picklist receiving the new item
-  name: string;
+  readonly name: string;
   // The value of the new item
-  value: string;
+  readonly value: string;
   // The data set column that produced the new item
-  caption: string;
+  readonly caption: string;
 }
 
 // Indicates that a new row was added to the database
@@ -157,19 +157,19 @@ type RecordResult = {
 };
 
 export interface UploadResult {
-  UploadResult: {
-    record_result: RecordResult;
+  readonly UploadResult: {
+    readonly record_result: RecordResult;
     /*
      * Maps the names of -to-one relationships of the table to upload
      * results for each
      * 'parent' exists for tree nodes only
      */
-    toOne: RR<'parent' | string, UploadResult>;
+    readonly toOne: RR<'parent' | string, UploadResult>;
     /*
      * Maps the names of -to-many relationships of the table to an
      * array of upload results for each
      */
-    toMany: IR<RA<UploadResult>>;
+    readonly toMany: IR<RA<UploadResult>>;
   };
 }
 
@@ -235,15 +235,15 @@ export interface UploadedPicklistItem {
 export type UploadedPicklistItems = R<UploadedPicklistItem[]>;
 
 interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
-  columns: RA<string>;
-  treeInfo:
+  readonly columns: RA<string>;
+  readonly treeInfo:
     | {
-        rankName: string;
-        parentId: number | undefined;
-        children: RA<number>;
+        readonly rankName: string;
+        readonly parentId: number | undefined;
+        readonly children: RA<number>;
       }
     | undefined;
-  matched: boolean;
+  readonly matched: boolean;
 }
 
 /*

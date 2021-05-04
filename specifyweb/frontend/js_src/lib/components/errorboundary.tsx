@@ -13,16 +13,16 @@ import { ModalDialog } from './modaldialog';
 
 type ErrorBoundaryState =
   | {
-      hasError: false;
+      readonly hasError: false;
     }
   | {
-      hasError: true;
-      error: { toString: () => string };
-      errorInfo: { componentStack: string };
+      readonly hasError: true;
+      readonly error: { toString: () => string };
+      readonly errorInfo: { componentStack: string };
     };
 
 export default class ErrorBoundary extends React.Component<
-  { children: JSX.Element | null },
+  { readonly children: JSX.Element | null },
   ErrorBoundaryState
 > {
   public state: ErrorBoundaryState = {

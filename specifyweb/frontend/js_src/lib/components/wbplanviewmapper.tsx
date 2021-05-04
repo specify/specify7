@@ -38,7 +38,15 @@ export type AutomapperScope =
   | 'suggestion';
 export type MappingPath = RA<string>;
 export type MappingPathWritable = string[];
-export type FullMappingPath = [...string[], MappingType, string, ColumnOptions];
+export type FullMappingPath = Readonly<
+  [...MappingPath, MappingType, string, ColumnOptions]
+>;
+export type FullMappingPathWritable = [
+  ...MappingPathWritable,
+  MappingType,
+  string,
+  ColumnOptions
+];
 /*
  * MappingType remains here from the time when we had `NewHeader` and
  *  `NewStaticHeader`. Also, it is not removed as it might be useful in the
@@ -66,7 +74,7 @@ export interface MappingLine {
 }
 
 export interface AutomapperSuggestion extends MappingPathProps {
-  mappingPath: MappingPath;
+  readonly mappingPath: MappingPath;
 }
 
 export type WBPlanViewMapperBaseProps = {

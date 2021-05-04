@@ -136,9 +136,9 @@ export function get<T>(
     defaultValue,
     defaultSetOptions,
   }: {
-    version?: string;
-    defaultValue?: T;
-    defaultSetOptions?: SetOptions;
+    readonly version?: string;
+    readonly defaultValue?: T;
+    readonly defaultSetOptions?: SetOptions;
   } = {}
 ): T | false {
   /*

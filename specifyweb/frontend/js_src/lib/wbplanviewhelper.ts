@@ -156,14 +156,14 @@ export const findDuplicateMappings = (
 };
 
 export type SplitMappingPath = {
-  mappingPath: MappingPath;
-  mappingType: MappingType;
-  headerName: string;
-  columnOptions: ColumnOptions;
+  readonly mappingPath: MappingPath;
+  readonly mappingType: MappingType;
+  readonly headerName: string;
+  readonly columnOptions: ColumnOptions;
 };
 
 export const splitFullMappingPathComponents = (
-  fullMappingPath: Readonly<FullMappingPath>
+  fullMappingPath: FullMappingPath
 ): SplitMappingPath => ({
   mappingPath: fullMappingPath.slice(0, -3) as MappingPath,
   mappingType: fullMappingPath[fullMappingPath.length - 3] as MappingType,
@@ -172,7 +172,7 @@ export const splitFullMappingPathComponents = (
 });
 
 export const extractDefaultValues = (
-  arrayOfSplitMappings: Readonly<Readonly<SplitMappingPath>[]>,
+  arrayOfSplitMappings: RA<SplitMappingPath>,
   visualizeEmptyString = false
 ): IR<string> =>
   Object.fromEntries(

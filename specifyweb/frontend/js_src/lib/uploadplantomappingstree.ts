@@ -8,9 +8,9 @@ import type { MappingsTree } from './wbplanviewtreehelper';
 export type MatchBehaviors = 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever';
 
 export type ColumnOptions = {
-  matchBehavior: MatchBehaviors;
-  nullAllowed: boolean;
-  default: string | null;
+  readonly matchBehavior: MatchBehaviors;
+  readonly nullAllowed: boolean;
+  readonly default: string | null;
 };
 
 export type ColumnDef = string | ({ column: string } & ColumnOptions);
@@ -28,35 +28,33 @@ type FieldGroup<GROUP_NAME extends FieldGroupType> = GROUP_NAME extends 'wbcols'
   : ToMany;
 
 interface UploadTable {
-  wbcols: IR<ColumnDef>;
-  static: IR<string | boolean | number>;
-  toOne: Uploadable;
-  toMany: ToMany;
+  readonly wbcols: IR<ColumnDef>;
+  readonly static: IR<string | boolean | number>;
+  readonly toOne: Uploadable;
+  readonly toMany: ToMany;
 }
 
 interface TreeRecord {
-  ranks: IR<string | { treeNodeCols: IR<ColumnDef> }>;
+  readonly ranks: IR<string | { treeNodeCols: IR<ColumnDef> }>;
 }
 
 type UploadTableVariety =
-  | { uploadTable: UploadTable }
-  | { oneToOneTable: UploadTable }
-  | { mustMatchTable: UploadTable };
+  | { readonly uploadTable: UploadTable }
+  | { readonly oneToOneTable: UploadTable }
+  | { readonly mustMatchTable: UploadTable };
 
 export type TreeRecordVariety =
-  | { treeRecord: TreeRecord }
-  | { mustMatchTreeRecord: TreeRecord };
+  | { readonly treeRecord: TreeRecord }
+  | { readonly mustMatchTreeRecord: TreeRecord };
 
 export type Uploadable = UploadTableVariety | TreeRecordVariety;
 
 export interface UploadPlan {
-  baseTableName: string;
-  uploadable: Uploadable;
+  readonly baseTableName: string;
+  readonly uploadable: Uploadable;
 }
 
-const excludeUnknownMatchingOptions = (
-  matchingOptions: Readonly<ColumnOptions>
-) =>
+const excludeUnknownMatchingOptions = (matchingOptions: ColumnOptions) =>
   Object.fromEntries(
     Object.entries(defaultColumnOptions).map(([optionName, defaultValue]) => [
       optionName,
@@ -70,7 +68,7 @@ const excludeUnknownMatchingOptions = (
 const uploadPlanProcessingFunctions = (
   headers: RA<string>,
   mustMatchPreferences: IR<boolean>,
-  mappingPath: RA<string>
+  mappingPath: MappingPath
 ): IR<([key, value]: [string, any]) => [key: string, value: unknown]> =>
   ({
     wbcols: ([key, value]: [string, string | ColumnDef]): [
@@ -133,10 +131,7 @@ const handleTreeRankFields = (
     )
   );
 
-const handleTreeRecord = (
-  uploadPlan: Readonly<TreeRecord>,
-  headers: RA<string>
-) =>
+const handleTreeRecord = (uploadPlan: TreeRecord, headers: RA<string>) =>
   Object.fromEntries(
     Object.entries(uploadPlan.ranks).map(([rankName, rankData]) => [
       formatTreeRank(rankName),

@@ -52,8 +52,8 @@ export interface TableSynonym {
    * Mapping path needed to reach <tableName>. Can include any number
    * of parents, up to base table
    */
-  mappingPathFilter: MappingPath;
-  synonyms: RA<string>;
+  readonly mappingPathFilter: MappingPath;
+  readonly synonyms: RA<string>;
 }
 
 interface AutoMapperDefinitions {
@@ -75,7 +75,7 @@ interface AutoMapperDefinitions {
    *   Table Synonyms, it's `synonyms` and matches would also
    *   be checked in the first pass
    */
-  tableSynonyms: IR<
+  readonly tableSynonyms: IR<
     /*
      * TableName (case-insensitive)
      * Described earlier in the file
@@ -87,7 +87,7 @@ interface AutoMapperDefinitions {
    * Rank synonyms are used to when the same tree rank can have
    * different name depending on the discipline
    */
-  rankSynonyms: IR<
+  readonly rankSynonyms: IR<
     // TableName (case-insensitive)
     {
       rankName: string;
@@ -104,7 +104,7 @@ interface AutoMapperDefinitions {
    * Don't match list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
-  dontMatch: IR<
+  readonly dontMatch: IR<
     // TableName (case-insensitive)
     IR<
       /*
@@ -122,7 +122,7 @@ interface AutoMapperDefinitions {
    * Don't map list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
-  dontMap: Partial<
+  readonly dontMap: Partial<
     RR<
       // Defined in wbplanviewmapper.tsx
       AutomapperScope,
@@ -140,7 +140,7 @@ interface AutoMapperDefinitions {
    * Shortcut is followed only if header matched the comparisons
    *   and a path to tableName from baseTableName
    */
-  shortcuts: IR<
+  readonly shortcuts: IR<
     // TableName (case-insensitive)
     Partial<
       RR<
@@ -168,7 +168,7 @@ interface AutoMapperDefinitions {
    * Synonym is used only if header matched the comparisons and
    *   and there exists a path from tableName to baseTableName
    */
-  synonyms: IR<
+  readonly synonyms: IR<
     // TableName (case-insensitive)
     IR<
       // FieldName (case-insensitive)
@@ -611,7 +611,7 @@ const definitions: AutoMapperDefinitions = {
  */
 function definitionsToLowercase(
   definitions: AutoMapperDefinitions
-): Readonly<AutoMapperDefinitions> {
+): AutoMapperDefinitions {
   const keysToLowerCase = (object: object, levels = 1): object =>
     Object.fromEntries(
       Object.entries(object).map(([key, value]) => [

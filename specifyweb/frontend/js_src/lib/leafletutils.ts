@@ -14,22 +14,22 @@ import {
 } from './leafletconfig';
 
 interface BareLocalityData {
-  latitude1: number;
-  longitude1: number;
+  readonly latitude1: number;
+  readonly longitude1: number;
 }
 
 interface ComplexLocalityCoordinate {
-  latitude2: number;
-  longitude2: number;
-  latlongtype: 'point' | 'line' | 'rectangle';
+  readonly latitude2: number;
+  readonly longitude2: number;
+  readonly latlongtype: 'point' | 'line' | 'rectangle';
 }
 
 interface NamedLocality {
-  localityname?: string;
+  readonly localityname?: string;
 }
 
 interface LocalityWithAccuracy {
-  latlongaccuracy?: number;
+  readonly latlongaccuracy?: number;
 }
 
 export type LocalityData = BareLocalityData &
@@ -54,7 +54,7 @@ const cellIsValid = (
   row[columnIndexes[columnName]] !== null;
 
 function formatCoordinate(
-  row: Readonly<string[]>,
+  row: RA<string>,
   columnIndexes: IR<number>,
   columnName: string
 ): number {
@@ -119,7 +119,7 @@ export function getLocalityCoordinate(
  * group this field belongs too
  */
 export const getLocalityColumnsFromSelectedCell = (
-  localityColumns: Readonly<LocalityColumnIndexes[]>,
+  localityColumns: RA<LocalityColumnIndexes>,
   selectedColumn: number
 ): LocalityColumnIndexes | false =>
   localityColumns.find((localLocalityColumns) =>

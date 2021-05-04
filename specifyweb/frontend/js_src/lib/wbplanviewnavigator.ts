@@ -43,31 +43,26 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
 
-interface FindNextNavigationDirectionBase {
-  finished: boolean;
-}
-
-type FindNextNavigationDirection<
-  RETURN_STRUCTURE
-> = FindNextNavigationDirectionBase &
-  (
-    | {
-        finished: true;
-        finalData: RETURN_STRUCTURE[];
-      }
-    | {
-        finished: false;
-        payload: {
-          nextTableName: string;
-          nextParentTableName: string;
-          nextRealPathElementName: string;
-          nextPathElementName: string;
-        };
-      }
-  );
+type FindNextNavigationDirection<RETURN_STRUCTURE> = {
+  readonly finished: boolean;
+} & (
+  | {
+      readonly finished: true;
+      readonly finalData: RETURN_STRUCTURE[];
+    }
+  | {
+      readonly finished: false;
+      readonly payload: {
+        readonly nextTableName: string;
+        readonly nextParentTableName: string;
+        readonly nextRealPathElementName: string;
+        readonly nextPathElementName: string;
+      };
+    }
+);
 
 interface NavigationCallbackPayload<RETURN_TYPE> {
-  tableName: string;
+  readonly tableName: string;
   data?: RETURN_TYPE;
   parentRelationshipType?: RelationshipType;
   parentTableName?: string;
@@ -151,7 +146,7 @@ interface NavigationCallbacks<RETURN_STRUCTURE> {
 }
 
 function findNextNavigationDirection<RETURN_STRUCTURE>(
-  callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
+  callbacks: Readonly<NavigationCallbacks<RETURN_STRUCTURE>>,
   callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
   tableName: string,
   parentTableName: string

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import icons from '../icons';
-import type { IR, R, RA } from './wbplanview';
+import type { R, IR, RA } from './wbplanview';
 
 export type CustomSelectType =
   | 'OPENED_LIST'

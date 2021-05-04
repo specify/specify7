@@ -14,7 +14,7 @@ import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
 
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
-  inputOutputSet: Readonly<[ARGUMENTS_TYPE, RETURN_TYPE][]>,
+  inputOutputSet: RA<[ARGUMENTS_TYPE, RETURN_TYPE]>,
   testFunction: (...arguments_: ARGUMENTS_TYPE) => RETURN_TYPE
 ): void {
   QUnit.module(moduleName);
