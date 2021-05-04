@@ -6,12 +6,33 @@
 'use strict';
 
 import React from 'react';
+import $ from 'jquery';
 import '../../css/wbdsdialog.css';
 import navigation from '../navigation';
 import { ModalDialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { DatasetBrief } from './wbplanview';
 import userInfo from '../userinfo';
+import uniquifyDataSetName from '../wbuniquifyname';
+
+const createEmptyDataSet = async (): Promise<void> =>
+  $.ajax('/api/workbench/dataset/', {
+    type: 'POST',
+    data: JSON.stringify({
+      name: await uniquifyDataSetName(
+        `New Data Set ${new Date().toDateString()}`
+      ),
+      importedfilename: '',
+      columns: [],
+      rows: [],
+    }),
+    contentType: 'application/json',
+    processData: false,
+  })
+    .done(({ id }) => navigation.go(`/workbench-plan/${id}/`))
+    .fail((error) => {
+      throw error;
+    });
 
 function Dialog({
   datasets,
@@ -31,23 +52,19 @@ function Dialog({
     <ModalDialog
       onCloseCallback={handleClose}
       properties={{
-        title: showTemplates ? 'Copy plan from existing data set' : 'Data Sets',
+        title: showTemplates ? 'Copy plan from existing Data Det' : 'Data Sets',
         maxHeight: 600,
         width: 600,
-        buttons: [
+        buttons: {
           ...(canImport
-            ? [
-                {
-                  text: 'Import file',
-                  click: (): void => navigation.go('/workbench-import/'),
-                },
-              ]
-            : []),
-          {
-            text: 'Cancel',
-            click: handleClose,
-          },
-        ],
+            ? {
+                'Import a file': (): void =>
+                  navigation.go('/workbench-import/'),
+                'Create empty': createEmptyDataSet,
+              }
+            : {}),
+          Cancel: handleClose,
+        },
       }}
     >
       {datasets.length === 0 ? (

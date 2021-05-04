@@ -361,6 +361,26 @@ export const stateReducer = generateReducer<
         }
         handleClick={handleClose}
       >
+        {!refObject.current.hideEmptyDataSetDialogAction &&
+          state.props.headers.length === 0 && (
+            <ModalDialog
+              onCloseCallback={() =>
+                state.refObjectDispatch({
+                  type: 'RefHideEmptyDataSetDialogAction',
+                })
+              }
+              properties={{
+                title: 'Empty Data Set detected',
+              }}
+            >
+              <span>
+                This Data Set doesn&apos;t have any columns.
+                <br />
+                Press the &quot;Add new column&quot; button at the bottom of the
+                screen to add new columns.
+              </span>
+            </ModalDialog>
+          )}
         <WBPlanViewMapper
           mappingIsTemplated={state.mappingIsTemplated}
           showHiddenFields={state.showHiddenFields}
