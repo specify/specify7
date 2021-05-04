@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type { IR } from './components/wbplanview';
+import type { IR, RR } from './components/wbplanview';
 import type {
   AutomapperScope,
   MappingPath,
@@ -122,14 +122,12 @@ interface AutoMapperDefinitions {
    * Don't map list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
-  dontMap: Readonly<
-    Partial<
-      Record<
-        // Defined in wbplanviewmapper.tsx
-        AutomapperScope,
-        // Described earlier in the file
-        { readonly headers: Options }
-      >
+  dontMap: Partial<
+    RR<
+      // Defined in wbplanviewmapper.tsx
+      AutomapperScope,
+      // Described earlier in the file
+      { headers: Options }
     >
   >;
 
@@ -145,7 +143,7 @@ interface AutoMapperDefinitions {
   shortcuts: IR<
     // TableName (case-insensitive)
     Partial<
-      Record<
+      RR<
         // Defined in wbplanviewmapper.tsx
         AutomapperScope,
         {
@@ -153,9 +151,9 @@ interface AutoMapperDefinitions {
            * Mapping path that is to be appended to the current path
            * when shortcut is followed
            */
-          readonly mappingPath: MappingPath;
+          mappingPath: MappingPath;
           // Described earlier in the file
-          readonly headers: Options;
+          headers: Options;
         }[]
       >
     >
@@ -175,7 +173,7 @@ interface AutoMapperDefinitions {
     IR<
       // FieldName (case-insensitive)
       Partial<
-        Record<
+        RR<
           // Defined in wbplanviewmapper.tsx
           AutomapperScope,
           {

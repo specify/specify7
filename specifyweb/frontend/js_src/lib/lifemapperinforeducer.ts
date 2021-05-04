@@ -1,6 +1,7 @@
 import type { MessageTypes } from './components/lifemapperinfo';
 import type { States } from './components/lifemapperinfostate';
 import { mainState } from './components/lifemapperinfostate';
+import type { RR } from './components/wbplanview';
 import type {
   AggregatorName,
   BadgeName,
@@ -13,7 +14,7 @@ import { generateReducer } from 'typesafe-reducer';
 type LoadedAction = Action<
   'LoadedAction',
   {
-    aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;
+    aggregatorInfos: RR<AggregatorName, FullAggregatorInfo | undefined>;
   }
 >;
 
@@ -55,7 +56,7 @@ type SetLocalOccurrenceNameAction = Action<
 export type LifemapperInfo = {
   readonly layers: any[];
   readonly markers: any;
-  readonly messages: Record<MessageTypes, string[]>;
+  readonly messages: RR<MessageTypes, string[]>;
 };
 
 type MapLoadedAction = Action<'MapLoadedAction', LifemapperInfo>;

@@ -6,10 +6,10 @@
 'use strict';
 
 import L from './leafletextend';
-import type { IR } from './components/wbplanview';
+import type { IR, RR } from './components/wbplanview';
 import type { LocalityField } from './leafletutils';
 
-export const leafletTileServers: Record<
+export const leafletTileServers: RR<
   'baseMaps' | 'overlays',
   IR<L.TileLayer>
 > = {

@@ -62,7 +62,7 @@ export type DataModelRelationship = Readonly<DataModelRelationshipWritable>;
 
 type DataModelFieldsWritable = R<DataModelFieldWritable>;
 
-export type DataModelFields = Readonly<DataModelFieldsWritable>;
+// Export type DataModelFields = Readonly<DataModelFieldsWritable>;
 
 interface DataModelTableWritable {
   tableFriendlyName: string;
@@ -77,9 +77,9 @@ export type DataModelTables = IR<DataModelTable>;
 
 type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
 
-type DataModelRanksWritable = Record<string, R<boolean>>;
+// Type DataModelRanksWritable = R<R<boolean>>;
 
-export type DataModelRanks = Readonly<DataModelRanksWritable>;
+export type DataModelRanks = IR<IR<boolean>>;
 
 export type OriginalRelationships = IR<IR<Readonly<string[]>>>;
 type OriginalRelationshipsWritable = R<R<string[]>>;

@@ -1,8 +1,6 @@
-import type { IR } from './components/wbplanview';
+import type { IR, RR } from './components/wbplanview';
 
-export const issueDefinitions: Readonly<
-  Record<'common' | 'gbif' | 'idigbio', IR<string>>
-> = {
+export const issueDefinitions: RR<'common' | 'gbif' | 'idigbio', IR<string>> = {
   common: {
     HAS_MULTIPLE_RECORDS:
       'Occurrence Tentacle server found duplicate instances of this record',

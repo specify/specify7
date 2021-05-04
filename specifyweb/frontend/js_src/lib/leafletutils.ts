@@ -6,7 +6,7 @@
 
 'use strict';
 
-import type { IR } from './components/wbplanview';
+import type { IR, RR } from './components/wbplanview';
 import latlongutils from './latlongutils';
 import {
   localityColumnsToSearchFor,
@@ -32,10 +32,8 @@ interface LocalityWithAccuracy {
   latlongaccuracy?: number;
 }
 
-type AllOrNothing<T> = T | Record<keyof T, undefined>;
-
 export type LocalityData = BareLocalityData &
-  AllOrNothing<ComplexLocalityCoordinate> &
+  (ComplexLocalityCoordinate | RR<keyof ComplexLocalityCoordinate, undefined>) &
   NamedLocality &
   LocalityWithAccuracy;
 
@@ -44,7 +42,7 @@ export type LocalityField = keyof (BareLocalityData &
   NamedLocality &
   LocalityWithAccuracy);
 
-type LocalityColumnIndexes = Record<LocalityField, number>;
+type LocalityColumnIndexes = RR<LocalityField, number>;
 
 const cellIsValid = (
   row: Readonly<string[]>,

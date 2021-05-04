@@ -21,7 +21,7 @@ import ResourceView from '../resourceview';
 import schema from '../schema';
 import { stateReducer } from './lifemapperinfostate';
 import createBackboneView from './reactbackboneextend';
-import type { IR } from './wbplanview';
+import type { IR, RR } from './wbplanview';
 import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
@@ -35,7 +35,7 @@ const defaultOccurrenceName: Readonly<[string, string]> = [
 
 export type MessageTypes = 'errorDetails' | 'infoSection';
 
-export const lifemapperMessagesMeta: Record<
+export const lifemapperMessagesMeta: RR<
   MessageTypes,
   {
     className: string;

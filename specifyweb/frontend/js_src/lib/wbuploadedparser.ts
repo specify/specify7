@@ -5,7 +5,7 @@
 
 'use string';
 
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RR } from './components/wbplanview';
 import icons from './icons';
 import type { Schema } from './legacytypes';
 import schema from './schema';
@@ -164,7 +164,7 @@ export interface UploadResult {
      * results for each
      * 'parent' exists for tree nodes only
      */
-    toOne: Record<'parent' | string, UploadResult>;
+    toOne: RR<'parent' | string, UploadResult>;
     /*
      * Maps the names of -to-many relationships of the table to an
      * array of upload results for each
@@ -203,17 +203,15 @@ interface UploadedTreeRank {
 }
 
 interface UploadedTreeRankProcessed extends Omit<UploadedTreeRank, 'children'> {
-  readonly children: Readonly<Record<number, UploadedTreeRankProcessed>>;
+  readonly children: RR<number, UploadedTreeRankProcessed>;
 }
 
 interface UploadedTreeRankSpacedOut
   extends Partial<Omit<UploadedTreeRank & { matched?: boolean }, 'children'>> {
-  readonly children: Readonly<
-    Record<number, UploadedTreeRankSpacedOut | undefined>
-  >;
+  readonly children: RR<number, UploadedTreeRankSpacedOut | undefined>;
 }
 
-type SpacedOutTree = Record<number, UploadedTreeRankSpacedOut | undefined>;
+type SpacedOutTree = RR<number, UploadedTreeRankSpacedOut | undefined>;
 
 export interface UploadedRowsTable {
   readonly tableLabel: string;
@@ -758,14 +756,11 @@ export function parseUploadResults(
           splitMappingPath.mappingPath.slice(0, -1)
         ),
       }))
-      .reduce<Record<string, string[]>>(
-        (headerGroups, { groupName, headerName }) => {
-          headerGroups[groupName] ??= [];
-          headerGroups[groupName].push(headerName);
-          return headerGroups;
-        },
-        {}
-      )
+      .reduce<R<string[]>>((headerGroups, { groupName, headerName }) => {
+        headerGroups[groupName] ??= [];
+        headerGroups[groupName].push(headerName);
+        return headerGroups;
+      }, {})
   );
 
   const {

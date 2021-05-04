@@ -10,14 +10,15 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
+import type { RR } from './wbplanview';
 
 type LoadingState = State<'LoadingState'>;
 
 export type MainState = State<
   'MainState',
   {
-    aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;
-    badgeStatuses: Record<
+    aggregatorInfos: RR<AggregatorName, FullAggregatorInfo | undefined>;
+    badgeStatuses: RR<
       BadgeName,
       {
         isOpen: boolean;

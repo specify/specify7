@@ -1,4 +1,4 @@
-import type { IR } from './components/wbplanview';
+import type { IR, RR } from './components/wbplanview';
 import type { OccurrenceCountRecord } from './lifemapperinforeducer';
 
 export const fetchLocalScientificName = async (
@@ -50,7 +50,7 @@ export const BADGE_NAMES: Readonly<string[]> = [
 export type AggregatorName = typeof AGGREGATOR_NAMES[number];
 export type BadgeName = typeof BADGE_NAMES[number];
 
-export const sourceLabels: Readonly<Record<BadgeName, string>> = {
+export const sourceLabels: RR<BadgeName, string> = {
   gbif: 'GBIF',
   idigbio: 'iDigBio',
   morphosource: 'MorphoSource',
@@ -68,7 +68,7 @@ export type FullAggregatorInfo = AggregatorInfo & {
   occurrenceCount?: OccurrenceCountRecord[];
 };
 
-export const extractBadgeInfo: Record<
+export const extractBadgeInfo: RR<
   AggregatorName,
   (occurrence: IR<any>) => AggregatorInfo
 > = {
@@ -91,9 +91,9 @@ export const extractBadgeInfo: Record<
 
 export type LifemapperLayerTypes = 'vector' | 'raster';
 
-export const lifemapperLayerVariations: Record<
+export const lifemapperLayerVariations: RR<
   LifemapperLayerTypes,
-  { readonly layerLabel: string; readonly transparent: boolean }
+  { layerLabel: string; transparent: boolean }
 > = {
   raster: {
     layerLabel: 'Projection',

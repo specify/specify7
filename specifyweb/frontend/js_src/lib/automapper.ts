@@ -10,7 +10,7 @@
 
 import type { Options, TableSynonym } from './automapperdefinitions';
 import AutoMapperDefinitions from './automapperdefinitions';
-import type { R } from './components/wbplanview';
+import type { IR, R } from './components/wbplanview';
 import type {
   AutomapperScope,
   ListOfHeaders,
@@ -285,23 +285,18 @@ export default class Automapper {
 
   private readonly pathIsMapped?: PathIsMappedBind;
 
-  private readonly headersToMap: Readonly<
-    Record<
-      string,
-      {
-        isMapped: boolean;
-        // OriginalHeaderName.toLowerCase() and trimmed
-        readonly lowercaseHeaderName: string;
-        /*
-         * LowercaseHeaderName but without numbers and special characters
-         * (a-z only)
-         */
-        readonly strippedHeaderName: string;
-        // StrippedHeaderName but without any white space
-        readonly finalHeaderName: string;
-      }
-    >
-  > = {};
+  private readonly headersToMap: IR<{
+    isMapped: boolean;
+    // OriginalHeaderName.toLowerCase() and trimmed
+    readonly lowercaseHeaderName: string;
+    /*
+     * LowercaseHeaderName but without numbers and special characters
+     * (a-z only)
+     */
+    readonly strippedHeaderName: string;
+    // StrippedHeaderName but without any white space
+    readonly finalHeaderName: string;
+  }> = {};
 
   private searchedTables: string[] = [];
 
