@@ -15,17 +15,22 @@ const SetCollectionsView = Backbone.View.extend({
         this.allCollections = allCollections;
     },
     render() {
-        $('<select multiple style="width:100%">')
-            .append(
-                this.allCollections.map(
-                    collection => $('<option>').text(collection.get('collectionname'))
-                        .attr('value', collection.id)
-                        .prop('selected', this.collections.includes(collection.id))
-                ))
-            .appendTo(this.el);
-
+        $(`<span>
+          ${this.allCollections.map(collection=>`<label>
+            <input
+              type="checkbox"
+              value="${collection.id}"
+              ${this.collections.includes(collection.id) ? 'checked': ''}
+            >
+            ${collection.get('collectionname')}
+          </label>`).join('<br>')}
+        </span>`).appendTo(this.$el);
         const save = () => {
-            this.collections = (this.$('select').val() || []).map(v => parseInt(v, 10));
+            this.collections = Object.values(
+              this.el.querySelectorAll('input:checked')
+            ).map(input=>
+              parseInt(input.value)
+            );
             return Q($.ajax(`/context/user_collection_access/${this.user.id}/`, {
                 method: 'PUT',
                 data: JSON.stringify(this.collections),
