@@ -698,8 +698,12 @@ const WBView = Backbone.View.extend({
       });
   },
   spreadSheetChanged() {
-    this.$('.wb-upload, .wb-validate').prop('disabled', true);
-    this.$('.wb-upload, .wb-match').prop('disabled', true);
+    this.$('.wb-upload, .wb-validate')
+      .prop('disabled', true)
+      .prop(
+        'title',
+        'You should save your changes before Validating/Uploading'
+      );
     this.$('.wb-save').prop('disabled', false);
     navigation.addUnloadProtect(this, 'The workbench has not been saved.');
   },
@@ -782,8 +786,9 @@ const WBView = Backbone.View.extend({
     }
   },
   spreadSheetUpToDate: function () {
-    this.$('.wb-upload, .wb-validate').prop('disabled', false);
-    this.$('.wb-upload, .wb-match').prop('disabled', false);
+    this.$('.wb-upload, .wb-validate')
+      .prop('disabled', false)
+      .prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     navigation.removeUnloadProtect(this);
   },
