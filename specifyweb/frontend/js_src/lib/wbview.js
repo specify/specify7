@@ -155,7 +155,7 @@ const WBView = Backbone.View.extend({
           comments: true,
           rowHeaders: true,
           manualColumnResize: true,
-          manualColumnMove: this.dataset.visualorder || true,
+          manualColumnMove: this.dataset.visualorder ?? true,
           outsideClickDeselects: false,
           columnSorting: true,
           sortIndicator: true,
@@ -192,6 +192,7 @@ const WBView = Backbone.View.extend({
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
           readOnly: this.uploaded,
+          beforeColumnMove: this.beforeColumnMove.bind(this),
           afterColumnMove: this.columnMoved.bind(this),
           afterCreateRow: this.rowCreated.bind(this),
           afterRemoveRow: this.rowRemoved.bind(this),
@@ -366,8 +367,10 @@ const WBView = Backbone.View.extend({
     }
     this.spreadSheetChanged();
   },
-  columnMoved() {
-    if (!this.hot) return;
+  beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
+    typeof endPosition !== 'undefined',
+  columnMoved(_columnIndexes, _startPosition, endPosition) {
+    if (typeof endPosition === 'undefined' || !this.hot) return;
 
     const columnOrder = [];
     for (let i = 0; i < this.dataset.columns.length; i++) {
