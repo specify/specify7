@@ -7,8 +7,8 @@ import type {
   FullAggregatorInfo,
 } from './lifemapperinfoutills';
 import { BADGE_NAMES } from './lifemapperinfoutills';
-import type { Action } from './statemanagement';
-import { generateReducer } from './statemanagement';
+import type { Action } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 
 type LoadedAction = Action<'LoadedAction'> & {
   aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;

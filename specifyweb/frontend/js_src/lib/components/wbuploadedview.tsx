@@ -10,8 +10,8 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 import '../../css/wbuploaded.css';
-import type { Action, State } from '../statemanagement';
-import { generateReducer } from '../statemanagement';
+import type { Action, State } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 import dataModelStorage from '../wbplanviewmodel';
 import fetchDataModel from '../wbplanviewmodelfetcher';
 import type {

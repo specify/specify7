@@ -1,6 +1,6 @@
 import React from 'react';
-import type { State } from '../statemanagement';
-import { generateReducer } from '../statemanagement';
+import type { State } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 import type { MatchBehaviors } from '../uploadplantomappingstree';
 import * as cache from '../wbplanviewcache';
 import type { LoadingStates } from '../wbplanviewloadingreducer';

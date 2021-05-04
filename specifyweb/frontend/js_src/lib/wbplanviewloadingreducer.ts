@@ -1,7 +1,7 @@
 import type { SpecifyResource } from './components/wbplanview';
 import navigation from './navigation';
-import type { State } from './statemanagement';
-import { generateDispatch } from './statemanagement';
+import type { State } from 'typesafe-reducer';
+import { generateDispatch } from 'typesafe-reducer';
 
 /*
  *Import type { WBPlanViewActions } from './wbplanviewreducer';

@@ -2,8 +2,8 @@ import type React from 'react';
 import type { WBPlanViewProps } from './components/wbplanview';
 import { minMappingViewHeight } from './components/wbplanviewmappercomponents';
 import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
-import type { Action, State } from './statemanagement';
-import { generateDispatch } from './statemanagement';
+import type { Action, State } from 'typesafe-reducer';
+import { generateDispatch } from 'typesafe-reducer';
 import * as cache from './wbplanviewcache';
 import type { WBPlanViewActions } from './wbplanviewreducer';
 

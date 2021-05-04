@@ -6,8 +6,8 @@ import type {
   FullAggregatorInfo,
 } from '../lifemapperinfoutills';
 import { AGGREGATOR_NAMES, sourceLabels } from '../lifemapperinfoutills';
-import type { State } from '../statemanagement';
-import { generateReducer } from '../statemanagement';
+import type { State } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
 

@@ -18,8 +18,8 @@ import {
   mappingState,
 } from './components/wbplanviewstatereducer';
 import schema from './schema';
-import type { Action } from './statemanagement';
-import { generateReducer } from './statemanagement';
+import type { Action } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import * as cache from './wbplanviewcache';
 import { uniquifyHeaders } from './wbplanviewhelper';

@@ -9,7 +9,7 @@ import type { IR, R } from './components/wbplanview';
 import icons from './icons';
 import type { Schema } from './legacytypes';
 import schema from './schema';
-import type { State } from './statemanagement';
+import type { State } from 'typesafe-reducer';
 import type { UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { extractDefaultValues } from './wbplanviewhelper';

@@ -18,8 +18,8 @@ import type {
   RelationshipType,
 } from './components/wbplanviewmapper';
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
-import type { Action } from './statemanagement';
-import { generateDispatch } from './statemanagement';
+import type { Action } from 'typesafe-reducer';
+import { generateDispatch } from 'typesafe-reducer';
 import * as cache from './wbplanviewcache';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
