@@ -10,13 +10,19 @@ import { BADGE_NAMES } from './lifemapperinfoutills';
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-type LoadedAction = Action<'LoadedAction'> & {
-  aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;
-};
+type LoadedAction = Action<
+  'LoadedAction',
+  {
+    aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;
+  }
+>;
 
-type ToggleAggregatorVisibilityAction = Action<'ToggleAggregatorVisibilityAction'> & {
-  badgeName: BadgeName;
-};
+type ToggleAggregatorVisibilityAction = Action<
+  'ToggleAggregatorVisibilityAction',
+  {
+    badgeName: BadgeName;
+  }
+>;
 
 export type OccurrenceCountRecord = {
   scientificName: string;
@@ -24,26 +30,35 @@ export type OccurrenceCountRecord = {
   url: string;
 };
 
-type OccurrenceCountLoadedAction = Action<'OccurrenceCountLoadedAction'> & {
-  aggregatorName: AggregatorName;
-  occurrenceCount: OccurrenceCountRecord[];
+type OccurrenceCountLoadedAction = Action<
+  'OccurrenceCountLoadedAction',
+  {
+    aggregatorName: AggregatorName;
+    occurrenceCount: OccurrenceCountRecord[];
+  }
+>;
+
+type SetRemoteOccurrenceNameAction = Action<
+  'SetRemoteOccurrenceNameAction',
+  {
+    remoteOccurrenceName: string;
+  }
+>;
+
+type SetLocalOccurrenceNameAction = Action<
+  'SetLocalOccurrenceNameAction',
+  {
+    localOccurrenceName: string;
+  }
+>;
+
+export type LifemapperInfo = {
+  readonly layers: any[];
+  readonly markers: any;
+  readonly messages: Record<MessageTypes, string[]>;
 };
 
-type SetRemoteOccurrenceNameAction = Action<'SetRemoteOccurrenceNameAction'> & {
-  remoteOccurrenceName: string;
-};
-
-type SetLocalOccurrenceNameAction = Action<'SetLocalOccurrenceNameAction'> & {
-  localOccurrenceName: string;
-};
-
-export interface LifemapperInfo {
-  layers: any[];
-  markers: any;
-  messages: Record<MessageTypes, string[]>;
-}
-
-type MapLoadedAction = Action<'MapLoadedAction'> & LifemapperInfo;
+type MapLoadedAction = Action<'MapLoadedAction', LifemapperInfo>;
 
 export type Actions =
   | LoadedAction

@@ -28,26 +28,33 @@ import { WbsDialog } from './wbsdialog';
 
 // States
 
-export interface LoadingState extends State<'LoadingState'> {
-  readonly loadingState?: LoadingStates;
-  readonly dispatchAction?: WBPlanViewActions;
-}
+export type LoadingState = State<
+  'LoadingState',
+  {
+    loadingState?: LoadingStates;
+    dispatchAction?: WBPlanViewActions;
+  }
+>;
 
-interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
-  readonly showHiddenTables: boolean;
-}
+type BaseTableSelectionState = State<
+  'BaseTableSelectionState',
+  {
+    showHiddenTables: boolean;
+  }
+>;
 
 type TemplateSelectionState = State<'TemplateSelectionState'>;
 
-export interface MappingState
-  extends State<'MappingState'>,
-    WBPlanViewMapperBaseProps {
-  readonly automapperSuggestionsPromise?: Promise<AutomapperSuggestion[]>;
-  readonly changesMade: boolean;
-  readonly mappingsAreValidated: boolean;
-  readonly displayMatchingOptionsDialog: boolean;
-  readonly mustMatchPreferences: IR<boolean>;
-}
+export type MappingState = State<
+  'MappingState',
+  WBPlanViewMapperBaseProps & {
+    automapperSuggestionsPromise?: Promise<AutomapperSuggestion[]>;
+    changesMade: boolean;
+    mappingsAreValidated: boolean;
+    displayMatchingOptionsDialog: boolean;
+    mustMatchPreferences: IR<boolean>;
+  }
+>;
 
 export type WBPlanViewStates =
   | BaseTableSelectionState

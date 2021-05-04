@@ -51,10 +51,10 @@ export type RelationshipType =
   | 'many-to-one'
   | 'many-to-many';
 
-export interface SelectElementPosition {
+export type SelectElementPosition = {
   readonly line: number;
   readonly index: number;
-}
+};
 
 export interface MappingLine {
   readonly mappingType: MappingType;
@@ -68,7 +68,7 @@ export interface AutomapperSuggestion extends MappingPathProps {
   mappingPath: MappingPath;
 }
 
-export interface WBPlanViewMapperBaseProps {
+export type WBPlanViewMapperBaseProps = {
   readonly mappingIsTemplated: boolean;
   readonly showHiddenFields: boolean;
   readonly showMappingView: boolean;
@@ -84,7 +84,7 @@ export interface WBPlanViewMapperBaseProps {
   readonly openSelectElement?: SelectElementPosition;
   readonly focusedLine?: number;
   readonly automapperSuggestions?: AutomapperSuggestion[];
-}
+};
 
 export default function WBPlanViewMapper(
   props: WBPlanViewMapperBaseProps & {

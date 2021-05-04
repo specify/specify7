@@ -73,20 +73,19 @@ export interface WBPlanViewProps
   readonly readonly: boolean;
 }
 
-export interface PartialWBPlanViewProps {
+export type PartialWBPlanViewProps = {
   readonly removeUnloadProtect: () => void;
-}
+};
 
-export interface WBPlanViewWrapperProps
-  extends PartialWBPlanViewProps,
-    PublicWBPlanViewProps {
-  mappingIsTemplated: boolean;
-  readonly setUnloadProtect: () => void;
-}
+export type WBPlanViewWrapperProps = PartialWBPlanViewProps &
+  PublicWBPlanViewProps & {
+    mappingIsTemplated: boolean;
+    readonly setUnloadProtect: () => void;
+  };
 
-export interface PublicWBPlanViewProps {
+export type PublicWBPlanViewProps = {
   dataset: Dataset;
-}
+};
 
 export function WBPlanView(props: WBPlanViewProps): JSX.Element {
   const [state, dispatch] = React.useReducer(

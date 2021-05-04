@@ -57,32 +57,46 @@ interface UploadedTableRowBaseProps {
 
 type RecordsVisibilityState = IR<boolean>;
 
-interface WBUploadedState extends State<'WBUploadedState'> {
-  readonly tableRecordsVisibilityState: RecordsVisibilityState;
-  readonly picklistRecordsVisibilityState: RecordsVisibilityState;
-  readonly props: WBUploadedViewComponentProps;
-}
+type WBUploadedState = State<
+  'WBUploadedState',
+  {
+    tableRecordsVisibilityState: RecordsVisibilityState;
+    picklistRecordsVisibilityState: RecordsVisibilityState;
+    props: WBUploadedViewComponentProps;
+  }
+>;
 
-interface CreateRecordSetAction extends Action<'CreateRecordSetAction'> {
-  readonly tableName: string;
-}
+type CreateRecordSetAction = Action<
+  'CreateRecordSetAction',
+  {
+    tableName: string;
+  }
+>;
 
-interface CreateDataSetAction extends Action<'CreateDataSetAction'> {
-  readonly tableName: string;
-}
+type CreateDataSetAction = Action<
+  'CreateDataSetAction',
+  {
+    tableName: string;
+  }
+>;
 
-interface ToggleTableRecordsVisibilityAction
-  extends Action<'ToggleTableRecordsVisibilityAction'> {
-  readonly tableName: string;
-  readonly destination:
-    | 'tableRecordsVisibilityState'
-    | 'picklistRecordsVisibilityState';
-}
+type ToggleTableRecordsVisibilityAction = Action<
+  'ToggleTableRecordsVisibilityAction',
+  {
+    tableName: string;
+    destination:
+      | 'tableRecordsVisibilityState'
+      | 'picklistRecordsVisibilityState';
+  }
+>;
 
-interface CellClickedAction extends Action<'CellClickedAction'> {
-  readonly rowIndex: number;
-  readonly columnIndex: number;
-}
+type CellClickedAction = Action<
+  'CellClickedAction',
+  {
+    rowIndex: number;
+    columnIndex: number;
+  }
+>;
 
 type WBUploadedActions =
   | CreateRecordSetAction

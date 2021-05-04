@@ -105,42 +105,59 @@ interface FindMappingsParameters {
   readonly parentRelationshipType?: undefined | RelationshipType;
 }
 
-interface AutoMapperResultsAddAction extends Action<'add'> {
-  headerName: string;
-  mappingPath: MappingPath;
-}
+type AutoMapperResultsAddAction = Action<
+  'add',
+  {
+    headerName: string;
+    mappingPath: MappingPath;
+  }
+>;
 
 type AutoMapperResultsActions = AutoMapperResultsAddAction;
 
-interface AutoMapperHeadersToMapMapped extends Action<'mapped'> {
-  headerName: string;
-}
+type AutoMapperHeadersToMapMapped = Action<
+  'mapped',
+  {
+    headerName: string;
+  }
+>;
 
 type AutoMapperHeadersToMapActions = AutoMapperHeadersToMapMapped;
 
 type AutoMapperSearchedTablesReset = Action<'reset'>;
 
-interface AutoMapperSearchedTablesAdd extends Action<'add'> {
-  tableName: string;
-}
+type AutoMapperSearchedTablesAdd = Action<
+  'add',
+  {
+    tableName: string;
+  }
+>;
 
 type AutoMapperSearchedTablesActions =
   | AutoMapperSearchedTablesAdd
   | AutoMapperSearchedTablesReset;
 
-interface AutomapperFindMappingsQueueEnqueue extends Action<'enqueue'> {
-  value: FindMappingsParameters;
-  level: number;
-}
+type AutomapperFindMappingsQueueEnqueue = Action<
+  'enqueue',
+  {
+    value: FindMappingsParameters;
+    level: number;
+  }
+>;
 
-interface AutomapperFindMappingsQueueReset extends Action<'reset'> {
-  initialValue?: FindMappingsParameters;
-}
+type AutomapperFindMappingsQueueReset = Action<
+  'reset',
+  {
+    initialValue?: FindMappingsParameters;
+  }
+>;
 
-interface AutomapperFindMappingsQueueInitializeLevel
-  extends Action<'initializeLevel'> {
-  level: number;
-}
+type AutomapperFindMappingsQueueInitializeLevel = Action<
+  'initializeLevel',
+  {
+    level: number;
+  }
+>;
 
 type AutomapperFindMappingsQueueActions =
   | AutomapperFindMappingsQueueReset

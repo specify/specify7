@@ -11,9 +11,12 @@ import { generateDispatch } from 'typesafe-reducer';
  *}
  */
 
-interface NavigateBackState extends State<'NavigateBackState'> {
-  readonly wb: SpecifyResource;
-}
+type NavigateBackState = State<
+  'NavigateBackState',
+  {
+    readonly wb: SpecifyResource;
+  }
+>;
 
 export type LoadingStates = NavigateBackState;
 

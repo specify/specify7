@@ -54,22 +54,30 @@ const modifyLine = (
 ];
 
 // Actions
-interface OpenBaseTableSelectionAction
-  extends Action<'OpenBaseTableSelectionAction'> {
-  referrer?: WBPlanViewStates['type'];
-}
+type OpenBaseTableSelectionAction = Action<
+  'OpenBaseTableSelectionAction',
+  {
+    referrer?: WBPlanViewStates['type'];
+  }
+>;
 
-interface SelectTableAction extends Action<'SelectTableAction'> {
-  readonly tableName: string;
-  readonly mappingIsTemplated: boolean;
-  readonly headers: string[];
-}
+type SelectTableAction = Action<
+  'SelectTableAction',
+  {
+    tableName: string;
+    mappingIsTemplated: boolean;
+    headers: string[];
+  }
+>;
 
 type ToggleHiddenTablesAction = Action<'ToggleHiddenTablesAction'>;
 
-interface UseTemplateAction extends Action<'UseTemplateAction'> {
-  readonly dispatch: (action: WBPlanViewActions) => void;
-}
+type UseTemplateAction = Action<
+  'UseTemplateAction',
+  {
+    readonly dispatch: (action: WBPlanViewActions) => void;
+  }
+>;
 
 type BaseTableSelectionActions =
   | OpenBaseTableSelectionAction
@@ -81,29 +89,36 @@ type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
 
 type TemplateSelectionActions = CancelTemplateSelectionAction;
 
-type CancelMappingAction = Action<'CancelMappingAction'> &
-  PublicWBPlanViewProps &
-  PartialWBPlanViewProps;
+type CancelMappingAction = Action<
+  'CancelMappingAction',
+  PublicWBPlanViewProps & PartialWBPlanViewProps
+>;
 
 type CommonActions = CancelMappingAction;
 
-export interface OpenMappingScreenAction
-  extends Action<'OpenMappingScreenAction'> {
-  readonly mappingIsTemplated: boolean;
-  readonly headers: string[];
-  readonly uploadPlan: UploadPlan | null;
-}
+export type OpenMappingScreenAction = Action<
+  'OpenMappingScreenAction',
+  {
+    readonly mappingIsTemplated: boolean;
+    readonly headers: string[];
+    readonly uploadPlan: UploadPlan | null;
+  }
+>;
 
-interface SavePlanAction
-  extends Action<'SavePlanAction'>,
-    WBPlanViewWrapperProps,
-    PublicWBPlanViewProps {
-  readonly ignoreValidation?: boolean;
-}
+type SavePlanAction = Action<
+  'SavePlanAction',
+  WBPlanViewWrapperProps &
+    PublicWBPlanViewProps & {
+      ignoreValidation?: boolean;
+    }
+>;
 
-interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
-  readonly isVisible: boolean;
-}
+type ToggleMappingViewAction = Action<
+  'ToggleMappingViewAction',
+  {
+    isVisible: boolean;
+  }
+>;
 
 type ToggleMappingIsTemplatedAction = Action<'ToggleMappingIsTemplatedAction'>;
 
@@ -113,73 +128,99 @@ type ResetMappingsAction = Action<'ResetMappingsAction'>;
 
 type ValidationAction = Action<'ValidationAction'>;
 
-interface ClearMappingLineAction extends Action<'ClearMappingLineAction'> {
-  readonly line: number;
-}
+type ClearMappingLineAction = Action<
+  'ClearMappingLineAction',
+  {
+    line: number;
+  }
+>;
 
-interface FocusLineAction extends Action<'FocusLineAction'> {
-  readonly line: number;
-}
+type FocusLineAction = Action<
+  'FocusLineAction',
+  {
+    line: number;
+  }
+>;
 
 type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
 type AddNewHeaderAction = Action<'AddNewHeaderAction'>;
 
-type OpenSelectElementAction = Action<'OpenSelectElementAction'> &
-  SelectElementPosition;
+type OpenSelectElementAction = Action<
+  'OpenSelectElementAction',
+  SelectElementPosition
+>;
 
 type CloseSelectElementAction = Action<'CloseSelectElementAction'>;
 
-export interface ChangeSelectElementValueAction
-  extends Action<'ChangeSelectElementValueAction'> {
-  readonly value: string;
-  readonly isRelationship: boolean;
-  readonly line: number | 'mappingView';
-  readonly index: number;
-  readonly currentTableName: string;
-  readonly newTableName: string;
-}
+export type ChangeSelectElementValueAction = Action<
+  'ChangeSelectElementValueAction',
+  {
+    readonly value: string;
+    readonly isRelationship: boolean;
+    readonly line: number | 'mappingView';
+    readonly index: number;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+  }
+>;
 
-interface AutomapperSuggestionsLoadedAction
-  extends Action<'AutomapperSuggestionsLoadedAction'> {
-  readonly automapperSuggestions: AutomapperSuggestion[];
-}
+type AutomapperSuggestionsLoadedAction = Action<
+  'AutomapperSuggestionsLoadedAction',
+  {
+    automapperSuggestions: AutomapperSuggestion[];
+  }
+>;
 
-interface AutomapperSuggestionSelectedAction
-  extends Action<'AutomapperSuggestionSelectedAction'> {
-  readonly suggestion: string;
-}
+type AutomapperSuggestionSelectedAction = Action<
+  'AutomapperSuggestionSelectedAction',
+  {
+    suggestion: string;
+  }
+>;
 
-interface ValidationResultClickAction
-  extends Action<'ValidationResultClickAction'> {
-  readonly mappingPath: MappingPath;
-}
+type ValidationResultClickAction = Action<
+  'ValidationResultClickAction',
+  {
+    mappingPath: MappingPath;
+  }
+>;
 
 type OpenMatchingLogicDialogAction = Action<'OpenMatchingLogicDialogAction'>;
 
 type CloseMatchingLogicDialogAction = Action<'CloseMatchingLogicDialogAction'>;
 
-interface MustMatchPrefChangeAction
-  extends Action<'MustMatchPrefChangeAction'> {
-  readonly tableName: string;
-  readonly mustMatch: boolean;
-}
+type MustMatchPrefChangeAction = Action<
+  'MustMatchPrefChangeAction',
+  {
+    tableName: string;
+    mustMatch: boolean;
+  }
+>;
 
-interface ChangeMatchBehaviorAction
-  extends Action<'ChangeMatchBehaviorAction'> {
-  readonly line: number;
-  readonly matchBehavior: MatchBehaviors;
-}
+type ChangeMatchBehaviorAction = Action<
+  'ChangeMatchBehaviorAction',
+  {
+    line: number;
+    matchBehavior: MatchBehaviors;
+  }
+>;
 
-interface ToggleAllowNullsAction extends Action<'ToggleAllowNullsAction'> {
-  readonly line: number;
-  readonly allowNull: boolean;
-}
+type ToggleAllowNullsAction = Action<
+  'ToggleAllowNullsAction',
+  {
+    line: number;
+    allowNull: boolean;
+  }
+>;
 
-interface ChangeDefaultValue extends Action<'ChangeDefaultValue'> {
-  readonly line: number;
-  readonly defaultValue: string | null;
-}
+type ChangeDefaultValue = Action<
+  'ChangeDefaultValue',
+  {
+    line: number;
+    defaultValue: string | null;
+  }
+>;
 
 export type MappingActions =
   | OpenMappingScreenAction

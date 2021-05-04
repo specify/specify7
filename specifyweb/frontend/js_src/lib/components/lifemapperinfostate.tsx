@@ -13,18 +13,21 @@ import { ModalDialog } from './modaldialog';
 
 type LoadingState = State<'LoadingState'>;
 
-export type MainState = State<'MainState'> & {
-  aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;
-  badgeStatuses: Record<
-    BadgeName,
-    {
-      isOpen: boolean;
-    }
-  >;
-  localOccurrenceName?: string;
-  remoteOccurrenceName?: string;
-  lifemapperInfo?: LifemapperInfo;
-};
+export type MainState = State<
+  'MainState',
+  {
+    aggregatorInfos: Record<AggregatorName, FullAggregatorInfo | undefined>;
+    badgeStatuses: Record<
+      BadgeName,
+      {
+        isOpen: boolean;
+      }
+    >;
+    localOccurrenceName?: string;
+    remoteOccurrenceName?: string;
+    lifemapperInfo?: LifemapperInfo;
+  }
+>;
 
 export type States = LoadingState | MainState;
 

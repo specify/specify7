@@ -24,7 +24,7 @@ export interface RefMappingState extends State<'RefMappingState'> {
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
 // Make all properties optional, except for `type`
-export type RefStates = Partial<RefStatesBase> & State<RefStatesBase['type']>;
+export type RefStates = State<RefStatesBase['type']> & Partial<RefStatesBase>;
 
 export const refInitialState: RefUndefinedState = {
   type: 'RefUndefinedState',
@@ -42,19 +42,27 @@ type RefSetUnloadProtectAction = Action<'RefSetUnloadProtectAction'>;
 type RefUnsetUnloadProtectAction = Action<'RefUnsetUnloadProtectAction'>;
 type RefHideEmptyDataSetDialogAction = Action<'RefHideEmptyDataSetDialogAction'>;
 
-interface MappingViewResizeAction extends Action<'MappingViewResizeAction'> {
-  height: number;
-}
+type MappingViewResizeAction = Action<
+  'MappingViewResizeAction',
+  {
+    height: number;
+  }
+>;
 
-interface AutoscrollStatusChangeAction
-  extends Action<'AutoscrollStatusChangeAction'> {
-  autoscrollType: AutoScrollTypes;
-  status: boolean;
-}
+type AutoscrollStatusChangeAction = Action<
+  'AutoscrollStatusChangeAction',
+  {
+    autoscrollType: AutoScrollTypes;
+    status: boolean;
+  }
+>;
 
-interface TemplateSelectedAction extends Action<'TemplateSelectedAction'> {
-  id: number;
-}
+type TemplateSelectedAction = Action<
+  'TemplateSelectedAction',
+  {
+    id: number;
+  }
+>;
 
 export type RefActions =
   | RefChangeStateAction
