@@ -6,7 +6,7 @@
 'use strict';
 
 import L from './leafletextend';
-import type { IR, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './components/wbplanview';
 import type { LocalityField } from './leafletutils';
 
 export const leafletTileServers: RR<
@@ -251,7 +251,7 @@ export const coMapTileServers: {
   },
 ];
 
-export const localityColumnsToSearchFor: Readonly<LocalityField[]> = [
+export const localityColumnsToSearchFor: RA<LocalityField> = [
   'localityname',
   'latitude1',
   'longitude1',
@@ -261,7 +261,7 @@ export const localityColumnsToSearchFor: Readonly<LocalityField[]> = [
   'latlongaccuracy',
 ] as const;
 
-export const requiredLocalityColumns: Readonly<LocalityField[]> = [
+export const requiredLocalityColumns: RA<LocalityField> = [
   'latitude1',
   'longitude1',
 ] as const;

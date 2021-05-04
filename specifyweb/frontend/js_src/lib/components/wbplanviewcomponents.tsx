@@ -16,7 +16,7 @@ import type {
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import type { IR, R } from './wbplanview';
+import type { IR, R, RA } from './wbplanview';
 import type {
   AutomapperSuggestion,
   MappingType,
@@ -35,7 +35,7 @@ export interface HtmlGeneratorFieldData {
 }
 
 interface MappingLineBaseProps {
-  readonly lineData: MappingElementProps[];
+  readonly lineData: RA<MappingElementProps>;
   readonly mappingType: MappingType;
   readonly headerName: string;
   readonly isFocused: boolean;
@@ -44,7 +44,7 @@ interface MappingLineBaseProps {
 }
 
 export interface MappingPathProps {
-  readonly mappingLineData: MappingElementProps[];
+  readonly mappingLineData: RA<MappingElementProps>;
 }
 
 type HtmlGeneratorFieldsData = IR<HtmlGeneratorFieldData>;
@@ -52,7 +52,7 @@ type HtmlGeneratorFieldsData = IR<HtmlGeneratorFieldData>;
 export type MappingElementProps =
   | (Omit<CustomSelectElementPropsOpenBase, 'automapperSuggestions'> & {
       readonly fieldsData: HtmlGeneratorFieldsData;
-      readonly automapperSuggestions?: AutomapperSuggestion[];
+      readonly automapperSuggestions?: RA<AutomapperSuggestion>;
       readonly handleAutomapperSuggestionSelection?: (
         suggestion: string
       ) => void;

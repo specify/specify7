@@ -1,4 +1,5 @@
 import QUnit from 'qunit';
+import type { RA } from '../components/wbplanview';
 import dataModelStorage from '../wbplanviewmodel';
 import dataModel from './fixtures/wbplanviewmodel.json';
 import testAutoMapper from './testautomapper';
@@ -11,7 +12,7 @@ import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
 import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
 
-export function runTest<ARGUMENTS_TYPE extends unknown[], RETURN_TYPE>(
+export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
   inputOutputSet: Readonly<[ARGUMENTS_TYPE, RETURN_TYPE][]>,
   testFunction: (...arguments_: ARGUMENTS_TYPE) => RETURN_TYPE

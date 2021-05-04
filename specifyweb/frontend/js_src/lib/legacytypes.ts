@@ -1,4 +1,4 @@
-import type { IR } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
@@ -28,7 +28,7 @@ interface SchemaModelTableData {
   readonly longName: string;
   readonly getLocalizedName: () => string;
   readonly system: boolean;
-  readonly fields: SchemaModelTableField[];
+  readonly fields: RA<SchemaModelTableField>;
   readonly LazyCollection: SpecifyFetch;
 }
 
@@ -36,7 +36,7 @@ type SchemaModels<T> = IR<T>;
 
 export interface Schema {
   readonly models: SchemaModels<SchemaModelTableData>;
-  readonly orgHierarchy: string[];
+  readonly orgHierarchy: RA<string>;
 }
 
 interface DomainTreeDefinitionItem {

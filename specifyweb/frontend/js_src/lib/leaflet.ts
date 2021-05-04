@@ -6,7 +6,7 @@
 'use strict';
 
 import $ from 'jquery';
-import type { IR } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import { coMapTileServers, leafletTileServers } from './leafletconfig';
 import L from './leafletextend';
 import type { LocalityData } from './leafletutils';
@@ -18,7 +18,7 @@ export function showLeafletMap({
   markerClickCallback,
   leafletMapContainer,
 }: {
-  readonly localityPoints: LocalityData[];
+  readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: () => void;
   readonly leafletMapContainer: string | JQuery<HTMLDivElement> | undefined;
 }): L.Map | undefined {
@@ -232,16 +232,18 @@ export function displayLocalityOnTheMap({
   return polygonBoundaries;
 }
 
+export type LayerConfig = {
+  readonly transparent: boolean;
+  readonly layerLabel: string;
+  readonly tileLayer: {
+    readonly mapUrl: string;
+    readonly options: IR<unknown>;
+  };
+};
+
 export function showCOMap(
   mapContainer: Readonly<HTMLDivElement>,
-  listOfLayersRaw: {
-    transparent: boolean;
-    layerLabel: string;
-    tileLayer: {
-      mapUrl: string;
-      options: IR<unknown>;
-    };
-  }[],
+  listOfLayersRaw: RA<LayerConfig>,
   details: string | undefined = undefined
 ): [L.Map, L.Control.Layers, HTMLDivElement | undefined] {
   const listOfLayers: {

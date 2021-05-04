@@ -10,6 +10,7 @@ import type {
 import { sourceLabels } from '../lifemapperinfoutills';
 import type { MessageTypes } from './lifemapperinfo';
 import { lifemapperMessagesMeta } from './lifemapperinfo';
+import type { RA } from './wbplanview';
 
 export function Badge<IS_ENABLED extends boolean>({
   name,
@@ -110,7 +111,7 @@ export function LifemapperMap({
     const [map, layerGroup] = Leaflet.showCOMap(
       mapRef.current,
       lifemapperInfo.layers,
-      (Object.entries(lifemapperInfo.messages) as [MessageTypes, string[]][])
+      (Object.entries(lifemapperInfo.messages) as [MessageTypes, RA<string>][])
         .filter(([messages]) => messages.length > 0)
         .map(
           ([name, messages]) => `<span

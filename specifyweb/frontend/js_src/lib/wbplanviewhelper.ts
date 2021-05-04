@@ -7,7 +7,7 @@
 
 'use strict';
 
-import type { IR } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import type {
   FullMappingPath,
   MappingLine,
@@ -52,9 +52,9 @@ export const getFriendlyName = (
  */
 export function findArrayDivergencePoint<T>(
   // The source array to use in the comparison
-  source: Readonly<T[]>,
+  source: RA<T>,
   // The search array to use in the comparison
-  search: Readonly<T[]>
+  search: RA<T>
 ): number /*
  * Returns 0 if search array is empty
  * Returns -1 if source array is empty / is smaller than the search array
@@ -110,9 +110,9 @@ export function findArrayDivergencePoint<T>(
  */
 export const findDuplicateMappings = (
   // Array of mappings as returned by mappings.getArrayOfMappings()
-  arrayOfMappings: Readonly<MappingPath[]>,
+  arrayOfMappings: RA<MappingPath>,
   focusedLine: number | false
-): number[] => /*
+): RA<number> => /*
  * Array of duplicate indexes
  * Example:
  *   if
@@ -135,8 +135,8 @@ export const findDuplicateMappings = (
  * */ {
   const duplicateIndexes: number[] = [];
 
-  arrayOfMappings.reduce(
-    (dictionaryOfMappings: string[], mappingPath, index) => {
+  arrayOfMappings.reduce<string[]>(
+    (dictionaryOfMappings, mappingPath, index) => {
       const stringMappingPath = mappingPathToString(mappingPath);
 
       if (dictionaryOfMappings.includes(stringMappingPath))
@@ -227,9 +227,9 @@ export function generateMappingPathPreview(
 
 export function renameNewlyCreatedHeaders(
   baseTableName: string,
-  headers: Readonly<string[]>,
-  lines: MappingLine[]
-): MappingLine[] {
+  headers: RA<string>,
+  lines: RA<MappingLine>
+): RA<MappingLine> {
   const generatedHeaderPreviews = Object.fromEntries(
     lines
       .map((line, index) => ({ line, index }))
@@ -256,7 +256,7 @@ export function renameNewlyCreatedHeaders(
 }
 
 const formatUniqueifiedHeader = (
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   header: string,
   initialIndex: number
 ): string =>
@@ -270,14 +270,14 @@ const formatUniqueifiedHeader = (
   })`;
 
 export const uniquifyHeaders = (
-  headers: Readonly<string[]>,
-  headersTouniquify: Readonly<number[]> | false = false
-): string[] =>
+  headers: RA<string>,
+  headersToUniquify: RA<number> | false = false
+): RA<string> =>
   headers
     .map((header) => (header ? header : '(no header)'))
     .map((header, index, headers) =>
       headers.indexOf(header) === index ||
-      (Array.isArray(headersTouniquify) && !headersTouniquify.includes(index))
+      (Array.isArray(headersToUniquify) && !headersToUniquify.includes(index))
         ? header
         : formatUniqueifiedHeader(
             headers,

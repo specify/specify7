@@ -1,7 +1,7 @@
 import type { AutoMapperResults } from './automapper';
 import Automapper from './automapper';
-import type { IR } from './components/wbplanview';
-import type { ListOfHeaders, MappingLine } from './components/wbplanviewmapper';
+import type { IR, RA } from './components/wbplanview';
+import type { MappingLine } from './components/wbplanviewmapper';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { mappingsTreeToArrayOfSplitMappings } from './wbplanviewtreehelper';
@@ -17,7 +17,7 @@ export function getLinesFromHeaders({
   runAutomapper,
   baseTableName = '',
 }: {
-  headers?: Readonly<ListOfHeaders>;
+  headers?: RA<string>;
 } & (
   | {
       runAutomapper: true;
@@ -27,7 +27,7 @@ export function getLinesFromHeaders({
       runAutomapper: false;
       baseTableName?: string;
     }
-)): MappingLine[] {
+)): RA<MappingLine> {
   const lines = headers.map(
     (headerName): MappingLine => ({
       mappingPath: ['0'],
@@ -61,11 +61,11 @@ export function getLinesFromHeaders({
 }
 
 export function getLinesFromUploadPlan(
-  headers: Readonly<ListOfHeaders> = [],
+  headers: RA<string> = [],
   uploadPlan: Readonly<UploadPlan>
 ): {
   readonly baseTableName: string;
-  readonly lines: MappingLine[];
+  readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 } {
   const {
@@ -85,10 +85,12 @@ export function getLinesFromUploadPlan(
         lines[headerIndex] = splitMappingPath;
         return lines;
       },
-      getLinesFromHeaders({
-        headers,
-        runAutomapper: false,
-      })
+      [
+        ...getLinesFromHeaders({
+          headers,
+          runAutomapper: false,
+        }),
+      ]
     );
 
   return {

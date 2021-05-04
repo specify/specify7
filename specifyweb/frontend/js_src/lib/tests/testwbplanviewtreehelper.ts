@@ -1,3 +1,4 @@
+import type { RA } from '../components/wbplanview';
 import type { MappingPath } from '../components/wbplanviewmapper';
 import * as WbPlanViewTreeHelper from '../wbplanviewtreehelper';
 import { loadDataModel, runTest } from './testmain';
@@ -76,7 +77,7 @@ export default function (): void {
             ['accession', 'accessionagents', '#1', 'agent', 'firstname'],
             ['accession', 'accessionagents', '#1', 'agent', 'lastname'],
             ['accession', 'accessionagents', '#2', 'agent', 'firstname'],
-          ] as MappingPath[],
+          ] as RA<MappingPath>,
           false,
         ],
         {

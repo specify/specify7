@@ -1,4 +1,5 @@
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
+import type { MappingPath } from './components/wbplanviewmapper';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import { formatReferenceItem, formatTreeRank } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
@@ -67,12 +68,10 @@ const excludeUnknownMatchingOptions = (
   ) as ColumnOptions;
 
 const uploadPlanProcessingFunctions = (
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   mustMatchPreferences: IR<boolean>,
-  mappingPath: Readonly<string[]>
-): Readonly<
-  IR<([key, value]: [string, any]) => [key: string, value: unknown]>
-> =>
+  mappingPath: RA<string>
+): IR<([key, value]: [string, any]) => [key: string, value: unknown]> =>
   ({
     wbcols: ([key, value]: [string, string | ColumnDef]): [
       key: string,
@@ -123,7 +122,7 @@ const uploadPlanProcessingFunctions = (
 
 const handleTreeRankFields = (
   treeRankFields: IR<ColumnDef>,
-  headers: Readonly<string[]>
+  headers: RA<string>
 ) =>
   Object.fromEntries(
     Object.entries(treeRankFields).map(([fieldName, headerName]) =>
@@ -136,7 +135,7 @@ const handleTreeRankFields = (
 
 const handleTreeRecord = (
   uploadPlan: Readonly<TreeRecord>,
-  headers: Readonly<string[]>
+  headers: RA<string>
 ) =>
   Object.fromEntries(
     Object.entries(uploadPlan.ranks).map(([rankName, rankData]) => [
@@ -154,9 +153,9 @@ const handleTreeRecord = (
 
 function handleTreeRecordTypes(
   uploadPlan: TreeRecordVariety,
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   mustMatchPreferences: R<boolean>,
-  mappingPath: string[]
+  mappingPath: MappingPath
 ): ReturnType<typeof handleTreeRecord> {
   if ('mustMatchTreeRecord' in uploadPlan) {
     const tableName = getMappingLineData({
@@ -173,9 +172,9 @@ function handleTreeRecordTypes(
 
 const handleUploadTableTable = (
   uploadPlan: UploadTable,
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   mustMatchPreferences: IR<boolean>,
-  mappingPath: string[]
+  mappingPath: MappingPath
 ) =>
   Object.fromEntries(
     Object.entries(uploadPlan).reduce(
@@ -202,9 +201,9 @@ const handleUploadTableTable = (
 
 function handleUploadableTypes(
   uploadPlan: UploadTableVariety,
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   mustMatchPreferences: R<boolean>,
-  mappingPath: string[]
+  mappingPath: MappingPath
 ) {
   if ('mustMatchTable' in uploadPlan) {
     const tableName = getMappingLineData({
@@ -226,9 +225,9 @@ function handleUploadableTypes(
 
 const handleUploadable = (
   uploadPlan: Uploadable,
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   mustMatchPreferences: IR<boolean>,
-  mappingPath: string[]
+  mappingPath: MappingPath
 ): MappingsTree =>
   'treeRecord' in uploadPlan || 'mustMatchTreeRecord' in uploadPlan
     ? handleTreeRecordTypes(
@@ -250,7 +249,7 @@ const handleUploadable = (
  *
  */
 export function uploadPlanToMappingsTree(
-  headers: Readonly<string[]>,
+  headers: RA<string>,
   uploadPlan: UploadPlan
 ): {
   baseTableName: string;

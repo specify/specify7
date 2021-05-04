@@ -9,7 +9,7 @@
 
 import React from 'react';
 import icons from '../icons';
-import type { IR, R } from './wbplanview';
+import type { IR, R, RA } from './wbplanview';
 
 export type CustomSelectType =
   | 'OPENED_LIST'
@@ -135,7 +135,7 @@ interface CustomSelectElementPropsBase {
   readonly tableName?: string;
 
   readonly handleOpen?: () => void;
-  readonly fieldNames?: string[];
+  readonly fieldNames?: RA<string>;
 
   readonly handleChange?: (
     newValue: string,
@@ -152,7 +152,7 @@ export interface CustomSelectElementPropsClosed
   extends CustomSelectElementPropsBase {
   readonly isOpen: false;
   readonly handleOpen?: () => void;
-  readonly fieldNames: string[];
+  readonly fieldNames: RA<string>;
 }
 
 export interface CustomSelectElementPropsOpenBase
@@ -306,7 +306,7 @@ function OptionGroup({
 const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
   fieldNames,
 }: {
-  readonly fieldNames: Readonly<string[]>;
+  readonly fieldNames: RA<string>;
 }) {
   return (
     <span className="custom-select-element-shadow-list">
@@ -317,20 +317,20 @@ const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
   );
 });
 
-const NON_INTERACTIVE_SELECT_TYPES: Readonly<CustomSelectType[]> = [
+const NON_INTERACTIVE_SELECT_TYPES: RA<CustomSelectType> = [
   'PREVIEW_LIST',
   'SUGGESTION_LINE_LIST',
 ] as const;
-const SELECT_TYPES_WITH_HEADERS: Readonly<CustomSelectType[]> = [
+const SELECT_TYPES_WITH_HEADERS: RA<CustomSelectType> = [
   'OPENED_LIST',
 ] as const;
-const SELECT_TYPES_WITH_FIRST_ROW: Readonly<CustomSelectType[]> = [
+const SELECT_TYPES_WITH_FIRST_ROW: RA<CustomSelectType> = [
   'CLOSED_LIST',
   'PREVIEW_LIST',
   'SUGGESTION_LINE_LIST',
   'MAPPING_OPTIONS_LIST',
 ] as const;
-const SELECT_TYPES_WITH_AUTOSCROLL: Readonly<CustomSelectType[]> = [
+const SELECT_TYPES_WITH_AUTOSCROLL: RA<CustomSelectType> = [
   'CLOSED_LIST',
   'OPENED_LIST',
 ] as const;

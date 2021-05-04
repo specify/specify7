@@ -6,7 +6,7 @@
 
 'use strict';
 
-import type { IR, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './components/wbplanview';
 import latlongutils from './latlongutils';
 import {
   localityColumnsToSearchFor,
@@ -45,7 +45,7 @@ export type LocalityField = keyof (BareLocalityData &
 type LocalityColumnIndexes = RR<LocalityField, number>;
 
 const cellIsValid = (
-  row: Readonly<string[]>,
+  row: RA<string>,
   columnIndexes: IR<number>,
   columnName: string
 ): boolean =>
@@ -70,7 +70,7 @@ function formatCoordinate(
 }
 
 export function getLocalityCoordinate(
-  row: Readonly<string[]>,
+  row: RA<string>,
   columnIndexes: IR<number>,
   acceptPolygons = false
 ): LocalityData | false {
@@ -132,8 +132,8 @@ export const getLocalityColumnsFromSelectedCell = (
   (localityColumns[0] || false);
 
 export const getLocalitiesDataFromSpreadsheet = (
-  localityColumns: Readonly<LocalityColumnIndexes[]>,
-  spreadsheetData: Readonly<string[][]>
+  localityColumns: RA<LocalityColumnIndexes>,
+  spreadsheetData: RA<RA<string>>
 ): (LocalityData & { rowNumber: number })[] =>
   localityColumns.flatMap((columnIndexes) =>
     spreadsheetData

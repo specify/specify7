@@ -11,7 +11,7 @@ import '../../css/wbdsdialog.css';
 import navigation from '../navigation';
 import { ModalDialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { DatasetBrief } from './wbplanview';
+import type { DatasetBrief, RA } from './wbplanview';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
 
@@ -40,7 +40,7 @@ function Dialog({
   onDataSetSelect: handleDataSetSelect,
   onClose: handleClose,
 }: {
-  readonly datasets: DatasetBrief[];
+  readonly datasets: RA<DatasetBrief>;
   readonly showTemplates: boolean;
   readonly onDataSetSelect?: (id: number) => void;
   readonly onClose: () => void;
@@ -136,7 +136,7 @@ export function WbsDialog({
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
 }: ComponentProps) {
-  const [datasets, setDatasets] = React.useState<undefined | DatasetBrief[]>(
+  const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(
     undefined
   );
 

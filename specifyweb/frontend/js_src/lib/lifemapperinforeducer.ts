@@ -1,7 +1,8 @@
 import type { MessageTypes } from './components/lifemapperinfo';
 import type { States } from './components/lifemapperinfostate';
 import { mainState } from './components/lifemapperinfostate';
-import type { RR } from './components/wbplanview';
+import type { RA, RR } from './components/wbplanview';
+import type { LayerConfig } from './leaflet';
 import type {
   AggregatorName,
   BadgeName,
@@ -35,7 +36,7 @@ type OccurrenceCountLoadedAction = Action<
   'OccurrenceCountLoadedAction',
   {
     aggregatorName: AggregatorName;
-    occurrenceCount: OccurrenceCountRecord[];
+    occurrenceCount: RA<OccurrenceCountRecord>;
   }
 >;
 
@@ -54,9 +55,9 @@ type SetLocalOccurrenceNameAction = Action<
 >;
 
 export type LifemapperInfo = {
-  readonly layers: any[];
+  readonly layers: RA<LayerConfig>;
   readonly markers: any;
-  readonly messages: RR<MessageTypes, string[]>;
+  readonly messages: RR<MessageTypes, RA<string>>;
 };
 
 type MapLoadedAction = Action<'MapLoadedAction', LifemapperInfo>;

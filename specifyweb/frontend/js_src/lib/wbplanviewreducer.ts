@@ -1,6 +1,7 @@
 import type {
   PartialWBPlanViewProps,
   PublicWBPlanViewProps,
+  RA,
   WBPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
@@ -44,7 +45,7 @@ const modifyLine = (
   state: MappingState,
   line: number,
   mappingLine: Partial<MappingLine>
-): MappingLine[] => [
+): RA<MappingLine> => [
   ...state.lines.slice(0, line),
   {
     ...state.lines[line],
@@ -66,7 +67,7 @@ type SelectTableAction = Action<
   {
     tableName: string;
     mappingIsTemplated: boolean;
-    headers: string[];
+    headers: RA<string>;
   }
 >;
 
@@ -100,7 +101,7 @@ export type OpenMappingScreenAction = Action<
   'OpenMappingScreenAction',
   {
     readonly mappingIsTemplated: boolean;
-    readonly headers: string[];
+    readonly headers: RA<string>;
     readonly uploadPlan: UploadPlan | null;
   }
 >;
@@ -168,7 +169,7 @@ export type ChangeSelectElementValueAction = Action<
 type AutomapperSuggestionsLoadedAction = Action<
   'AutomapperSuggestionsLoadedAction',
   {
-    automapperSuggestions: AutomapperSuggestion[];
+    automapperSuggestions: RA<AutomapperSuggestion>;
   }
 >;
 

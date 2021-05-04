@@ -1,4 +1,4 @@
-import type { IR } from '../components/wbplanview';
+import type { IR, RA } from '../components/wbplanview';
 import type { MappingLine } from '../components/wbplanviewmapper';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';
@@ -288,7 +288,7 @@ export default function (): void {
         ],
         wbPlanViewLines1 as {
           readonly baseTableName: string;
-          readonly lines: MappingLine[];
+          readonly lines: RA<MappingLine>;
           readonly mustMatchPreferences: IR<boolean>;
         },
       ],

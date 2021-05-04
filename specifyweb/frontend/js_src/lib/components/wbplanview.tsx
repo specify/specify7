@@ -40,15 +40,15 @@ export type DatasetBrief = {
 };
 
 export type Dataset = DatasetBrief & {
-  columns: string[];
+  columns: RA<string>;
   createdbyagent: string;
   importedfilename: string;
   modifiedbyagent: string;
   remarks: string | null;
-  rowresults: UploadResult[] | null;
-  rows: string[][];
+  rowresults: RA<UploadResult> | null;
+  rows: RA<RA<string>>;
   uploadplan: UploadPlan | null;
-  visualorder: null | number[];
+  visualorder: null | RA<number>;
 };
 
 export interface SpecifyResource {
@@ -72,7 +72,7 @@ export interface WBPlanViewProps
   extends WBPlanViewWrapperProps,
     PublicWBPlanViewProps {
   readonly uploadPlan: UploadPlan | null;
-  readonly headers: string[];
+  readonly headers: RA<string>;
   readonly setUnloadProtect: () => void;
   readonly readonly: boolean;
 }

@@ -17,6 +17,7 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingActions } from '../wbplanviewreducer';
 import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
+import type { RA } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingElement, MappingLineComponent } from './wbplanviewcomponents';
 import {
@@ -35,9 +36,9 @@ export type AutomapperScope =
   | 'automapper'
   // Suggestion boxes - used when opening a picklist
   | 'suggestion';
-export type MappingPath = string[];
+export type MappingPath = RA<string>;
+export type MappingPathWritable = string[];
 export type FullMappingPath = [...string[], MappingType, string, ColumnOptions];
-export type ListOfHeaders = string[];
 /*
  * MappingType remains here from the time when we had `NewHeader` and
  *  `NewStaticHeader`. Also, it is not removed as it might be useful in the
@@ -80,10 +81,10 @@ export type WBPlanViewMapperBaseProps = {
   readonly newHeaderId: number;
   readonly mappingView: MappingPath;
   readonly validationResults: MappingPath[];
-  readonly lines: MappingLine[];
+  readonly lines: RA<MappingLine>;
   readonly openSelectElement?: SelectElementPosition;
   readonly focusedLine?: number;
-  readonly automapperSuggestions?: AutomapperSuggestion[];
+  readonly automapperSuggestions?: RA<AutomapperSuggestion>;
 };
 
 export default function WBPlanViewMapper(

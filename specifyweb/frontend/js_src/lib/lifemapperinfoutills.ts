@@ -1,4 +1,4 @@
-import type { IR, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './components/wbplanview';
 import type { OccurrenceCountRecord } from './lifemapperinforeducer';
 
 export const fetchLocalScientificName = async (
@@ -37,12 +37,12 @@ export const formatOccurrenceMapRequest = (
     occurrenceScientificName
   )}`;
 
-export const AGGREGATOR_NAMES: Readonly<string[]> = [
+export const AGGREGATOR_NAMES: RA<string> = [
   'gbif',
   'idigbio',
   'morphosource',
 ] as const;
-export const BADGE_NAMES: Readonly<string[]> = [
+export const BADGE_NAMES: RA<string> = [
   ...AGGREGATOR_NAMES,
   'lifemapper',
 ] as const;
@@ -58,14 +58,14 @@ export const sourceLabels: RR<BadgeName, string> = {
 } as const;
 
 type AggregatorInfo = {
-  listOfIssues: string[];
+  listOfIssues: RA<string>;
   occurrenceName: string;
   occurrenceViewLink: string;
 };
 
 export type FullAggregatorInfo = AggregatorInfo & {
   count: number;
-  occurrenceCount?: OccurrenceCountRecord[];
+  occurrenceCount?: RA<OccurrenceCountRecord>;
 };
 
 export const extractBadgeInfo: RR<

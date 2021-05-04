@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type { IR, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './components/wbplanview';
 import type {
   AutomapperScope,
   MappingPath,
@@ -31,13 +31,13 @@ export interface Options {
    */
 
   // Regex match (header.match(regex) !== null)
-  readonly regex?: RegExp[];
+  readonly regex?: RA<RegExp>;
 
   // Exact string match (header===string)
-  readonly string?: string[];
+  readonly string?: RA<string>;
 
   // Substring match (header.indexOf(string)!==-1)
-  readonly contains?: string[];
+  readonly contains?: RA<string>;
 
   /*
    * NOTE: formattedHeaderFieldSynonym is also available as a matching
@@ -53,7 +53,7 @@ export interface TableSynonym {
    * of parents, up to base table
    */
   mappingPathFilter: MappingPath;
-  synonyms: string[];
+  synonyms: RA<string>;
 }
 
 interface AutoMapperDefinitions {
@@ -80,7 +80,7 @@ interface AutoMapperDefinitions {
      * TableName (case-insensitive)
      * Described earlier in the file
      */
-    TableSynonym[]
+    RA<TableSynonym>
   >;
 
   /*
@@ -91,7 +91,7 @@ interface AutoMapperDefinitions {
     // TableName (case-insensitive)
     {
       rankName: string;
-      synonyms: string[];
+      synonyms: RA<string>;
     }[]
   >;
 
@@ -111,7 +111,7 @@ interface AutoMapperDefinitions {
        * FieldName (case-insensitive)
        * Defined in wbplanviewmapper.tsx
        */
-      AutomapperScope[]
+      RA<AutomapperScope>
     >
   >;
 
@@ -190,7 +190,7 @@ interface AutoMapperDefinitions {
                * Where <fieldNameSynonym> is the value
                * provided in formattedHeaderFieldSynonym
                */
-              formattedHeaderFieldSynonym?: string[];
+              formattedHeaderFieldSynonym?: RA<string>;
             };
           }
         >

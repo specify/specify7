@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Automapper from './automapper';
 import type {
   PublicWBPlanViewProps,
+  RA,
   WBPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
@@ -99,9 +100,9 @@ export function validate(state: MappingState): MappingState {
 
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicateMappings(
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   focusedLine: number | false
-): MappingLine[] {
+): RA<MappingLine> {
   const arrayOfMappings = getArrayOfMappings(lines);
   const duplicateMappingIndexes = findDuplicateMappings(
     arrayOfMappings,
@@ -119,17 +120,17 @@ export function deduplicateMappings(
 }
 
 export function getArrayOfMappings(
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   includeHeaders: true
-): FullMappingPath[];
+): RA<FullMappingPath>;
 export function getArrayOfMappings(
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   includeHeaders?: false
-): MappingPath[];
+): RA<MappingPath>;
 export function getArrayOfMappings(
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   includeHeaders = false
-): (MappingPath | FullMappingPath)[] {
+): RA<MappingPath | FullMappingPath> {
   return lines
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
     .map(({ mappingPath, mappingType, headerName, columnOptions }) =>
@@ -140,7 +141,7 @@ export function getArrayOfMappings(
 }
 
 export const getMappingsTree = (
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   includeHeaders = false
 ): MappingsTree =>
   arrayOfMappingsToMappingsTree(
@@ -153,7 +154,7 @@ export const getMappingsTree = (
 
 /* Get a mappings tree branch given a particular starting mapping path */
 export function getMappedFields(
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
 ): MappingsTree {
@@ -162,7 +163,7 @@ export function getMappedFields(
 }
 
 export const pathIsMapped = (
-  lines: MappingLine[],
+  lines: RA<MappingLine>,
   mappingPath: MappingPath
 ): boolean =>
   Object.keys(getMappedFields(lines, mappingPath.slice(0, -1))).includes(
@@ -193,7 +194,7 @@ export function mutateMappingPath({
   currentTableName,
   newTableName,
 }: Omit<ChangeSelectElementValueAction, 'type'> & {
-  readonly lines: MappingLine[];
+  readonly lines: RA<MappingLine>;
   readonly mappingView: MappingPath;
   readonly isRelationship: boolean;
   readonly currentTableName: string;
@@ -257,9 +258,9 @@ export async function getAutomapperSuggestions({
   index,
   baseTableName,
 }: SelectElementPosition & {
-  readonly lines: MappingLine[];
+  readonly lines: RA<MappingLine>;
   readonly baseTableName: string;
-}): Promise<AutomapperSuggestion[]> {
+}): Promise<RA<AutomapperSuggestion>> {
   const localMappingPath = [...lines[line].mappingPath];
 
   if (

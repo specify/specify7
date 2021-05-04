@@ -1,4 +1,4 @@
-import type { IR } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 
@@ -17,12 +17,12 @@ export const aliasRelationshipTypes: IR<RelationshipType> = {
 };
 
 export const fetchingParameters: {
-  readonly requiredFieldsToHide: Readonly<string[]>;
-  readonly tablesToRemove: Readonly<string[]>;
-  readonly tableKeywordsToExclude: Readonly<string[]>;
-  readonly requiredFieldsToMakeOptional: IR<Readonly<string[]>>;
-  readonly commonBaseTables: Readonly<string[]>;
-  readonly fieldsToRemove: IR<Readonly<string[]>>;
+  readonly requiredFieldsToHide: RA<string>;
+  readonly tablesToRemove: RA<string>;
+  readonly tableKeywordsToExclude: RA<string>;
+  readonly requiredFieldsToMakeOptional: IR<RA<string>>;
+  readonly commonBaseTables: RA<string>;
+  readonly fieldsToRemove: IR<RA<string>>;
 } = {
   /*
    * All required fields are not hidden, except for these, which are made

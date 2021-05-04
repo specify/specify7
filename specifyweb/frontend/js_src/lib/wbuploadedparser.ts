@@ -5,7 +5,7 @@
 
 'use string';
 
-import type { IR, R, RR } from './components/wbplanview';
+import type { IR, R, RA, RR } from './components/wbplanview';
 import icons from './icons';
 import type { Schema } from './legacytypes';
 import schema from './schema';
@@ -42,7 +42,7 @@ interface ReportInfo {
   // The name of the table a record relates to
   tableName: string;
   // The columns from the data set a record relates to
-  columns: string[];
+  columns: RA<string>;
   treeInfo: TreeInfo | null;
 }
 
@@ -67,7 +67,7 @@ type Uploaded = State<
   {
     // The database id of the added row
     id: number;
-    picklistAdditions: PicklistAddition[];
+    picklistAdditions: RA<PicklistAddition>;
     info: ReportInfo;
   }
 >;
@@ -87,7 +87,7 @@ type MatchedMultiple = State<
   'MatchedMultiple',
   {
     // List of ids of the matching database records
-    ids: number[];
+    ids: RA<number>;
     info: ReportInfo;
   }
 >;
@@ -169,7 +169,7 @@ export interface UploadResult {
      * Maps the names of -to-many relationships of the table to an
      * array of upload results for each
      */
-    toMany: IR<UploadResult[]>;
+    toMany: IR<RA<UploadResult>>;
   };
 }
 
@@ -189,7 +189,7 @@ export interface UploadedRow {
    */
   readonly recordId: number;
   readonly rowIndex: number;
-  readonly columns: UploadedColumn[];
+  readonly columns: RA<UploadedColumn>;
 }
 
 interface UploadedTreeRank {
@@ -199,7 +199,7 @@ interface UploadedTreeRank {
   readonly rankName: string;
   readonly children: number[];
   readonly rowIndex: number;
-  readonly columns: string[];
+  readonly columns: RA<string>;
 }
 
 interface UploadedTreeRankProcessed extends Omit<UploadedTreeRank, 'children'> {
@@ -215,12 +215,12 @@ type SpacedOutTree = RR<number, UploadedTreeRankSpacedOut | undefined>;
 
 export interface UploadedRowsTable {
   readonly tableLabel: string;
-  readonly columnNames: string[];
+  readonly columnNames: RA<string>;
   readonly tableIcon: string;
   readonly getRecordViewUrl: (rowId: number) => string;
-  readonly rows: UploadedRow[];
+  readonly rows: RA<UploadedRow>;
   readonly rowsCount?: number;
-  readonly groupBoundaries?: boolean[];
+  readonly groupBoundaries?: RA<boolean>;
 }
 
 export type UploadedRows = Readonly<IR<UploadedRowsTable>>;
@@ -235,12 +235,12 @@ export interface UploadedPicklistItem {
 export type UploadedPicklistItems = R<UploadedPicklistItem[]>;
 
 interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
-  columns: string[];
+  columns: RA<string>;
   treeInfo:
     | {
         rankName: string;
         parentId: number | undefined;
-        children: number[];
+        children: RA<number>;
       }
     | undefined;
   matched: boolean;
@@ -255,7 +255,7 @@ function handleUploadResult(
   uploadedPicklistItems: UploadedPicklistItems,
   uploadedRows: R<UploadedRowSorted[]>,
   matchedRecordsNames: R<Record<number, string>>,
-  headers: string[],
+  headers: RA<string>,
   line: UploadResult,
   rowIndex: number
 ): void {
@@ -337,7 +337,7 @@ function handleUploadResult(
   [
     ...Object.values(uploadResult.toMany),
     Object.values(toOneUploadResults),
-  ].forEach((lines: UploadResult[]) =>
+  ].forEach((lines) =>
     lines.forEach((line: UploadResult) =>
       handleUploadResult(
         uploadedPicklistItems,
@@ -366,15 +366,15 @@ function handleUploadResult(
  *
  */
 function formatListOfRows(
-  listOfRows: UploadedRowSorted[],
-  data: string[][],
+  listOfRows: RA<UploadedRowSorted>,
+  data: RA<RA<string>>,
   mappedRanks: IR<string>,
   matchedRecordsNames: Record<number, string>,
-  headers: string[],
-  treeRanks: string[],
+  headers: RA<string>,
+  treeRanks: RA<string>,
   defaultValues: IR<string>
 ) {
-  const rows: [number, UploadedTreeRank][] = listOfRows
+  const rows: RA<[number, UploadedTreeRank]> = listOfRows
     .filter(({ treeInfo }) => typeof treeInfo !== 'undefined')
     .map(({ treeInfo, ...row }) => [
       row.recordId,
@@ -421,7 +421,7 @@ function formatListOfRows(
  */
 const getMinNode = (
   rows: [number, UploadedTreeRank][],
-  treeRanks: IR<string[]>,
+  treeRanks: IR<RA<string>>,
   rowsObject: IR<UploadedTreeRank | undefined>,
   tableName: string
 ): number =>
@@ -489,7 +489,7 @@ const spaceOutNode = (
  */
 const spaceOutChildren = (
   tree: SpacedOutTree,
-  ranksToShow: string[],
+  ranksToShow: RA<string>,
   parentRankName: string | undefined = undefined
 ): SpacedOutTree =>
   Object.fromEntries(
@@ -538,15 +538,15 @@ const emptyCell = (columnIndex: number): UploadedColumn => ({
  */
 const compileRows = (
   mappedRanks: IR<string>,
-  ranksToShow: string[],
-  headers: string[],
+  ranksToShow: RA<string>,
+  headers: RA<string>,
   spacedOutTree: SpacedOutTree,
-  parentColumns: UploadedColumn[] = []
+  parentColumns: RA<UploadedColumn> = []
 ): UploadedRow[] =>
   Object.entries(spacedOutTree).flatMap(([nodeId, nodeData], index) => {
     if (typeof nodeData === 'undefined') return [];
 
-    const columns: UploadedColumn[] = [
+    const columns: RA<UploadedColumn> = [
       ...(index === 0
         ? parentColumns
         : new Array<UploadedColumn>(parentColumns.length).fill(emptyCell(-1))),
@@ -619,8 +619,8 @@ function joinRows(finalRows: UploadedRow[]) {
 }
 
 const getOrderedHeaders = (
-  headers: string[],
-  headersSubset: string[]
+  headers: RA<string>,
+  headersSubset: RA<string>
 ): string[] => headers.filter((header) => headersSubset.includes(header));
 
 const insertDefaultValue = (
@@ -637,12 +637,12 @@ const insertDefaultValue = (
  * order as much as possible
  */
 function orderHeadersByGroups(
-  headers: string[],
-  headerGroups: string[][]
-): { orderedHeaders: string[]; orderedHeaderGroups: string[][] } {
+  headers: RA<string>,
+  headerGroups: RA<string>[]
+): { orderedHeaders: RA<string>; orderedHeaderGroups: RA<RA<string>> } {
   const orderedHeaders: string[] = [];
   let headersLeft = [...headers];
-  const orderedHeaderGroups: string[][] = [];
+  const orderedHeaderGroups: RA<string>[] = [];
   while (headersLeft.length > 0) {
     const headerGroup = headerGroups.find((groupMembers) =>
       groupMembers.includes(headersLeft[0])
@@ -662,7 +662,7 @@ function orderHeadersByGroups(
 
 function groupCommonFields(
   isTreeTable: boolean,
-  headerGroups: string[][],
+  headerGroups: RA<RA<string>>,
   uploadedRowsTable: UploadedRowsTable
 ): UploadedRowsTable {
   if (isTreeTable) return uploadedRowsTable;
@@ -672,7 +672,7 @@ function groupCommonFields(
       uploadedRowsTable.columnNames.includes(memberName)
     )
   );
-  const groupBoundaries = filteredHeaderGroups.reduce<boolean[]>(
+  const groupBoundaries = filteredHeaderGroups.reduce<RA<boolean>>(
     (array, headers) => [
       ...array,
       ...[...new Array(headers.length)].map((_, index) => index === 0),
@@ -733,10 +733,10 @@ function groupCommonFields(
 }
 
 export function parseUploadResults(
-  uploadResults: UploadResult[],
-  headers: string[],
-  data: string[][],
-  treeRanks: IR<string[]>,
+  uploadResults: RA<UploadResult>,
+  headers: RA<string>,
+  data: RA<RA<string>>,
+  treeRanks: IR<RA<string>>,
   plan: UploadPlan | null
 ): [UploadedRows, UploadedPicklistItems] {
   if (plan === null) throw new Error('Upload plan is invalid');
@@ -845,7 +845,7 @@ export function parseUploadResults(
           spacedOutTree
         );
 
-        const joinedRows: UploadedRow[] = joinRows(compiledRows);
+        const joinedRows: RA<UploadedRow> = joinRows(compiledRows);
 
         return [
           originalTableName,

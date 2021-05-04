@@ -24,7 +24,7 @@ import type {
 import { parseUploadResults } from '../wbuploadedparser';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { Dataset, IR, R } from './wbplanview';
+import type { Dataset, IR, RA } from './wbplanview';
 
 interface WBUploadedViewConstructorProps {
   dataset: Dataset;
@@ -104,13 +104,13 @@ type WBUploadedActions =
   | ToggleTableRecordsVisibilityAction
   | CellClickedAction;
 
-let ranks: IR<string[]>;
+let ranks: IR<RA<string>>;
 const fetchDataModelPromise: Promise<void> = fetchDataModel();
 
 function UploadedTableRowsHeaderProps({
   columnNames,
 }: {
-  readonly columnNames: string[];
+  readonly columnNames: RA<string>;
 }): JSX.Element {
   return (
     <thead>
@@ -148,8 +148,8 @@ function UploadedTableRow({
   groupBoundaries,
   getRecordViewUrl,
 }: UploadedTableRowBaseProps & {
-  readonly rows: UploadedRow[];
-  readonly groupBoundaries?: boolean[];
+  readonly rows: RA<UploadedRow>;
+  readonly groupBoundaries?: RA<boolean>;
   readonly getRecordViewUrl: (rowId: number) => string;
 }): JSX.Element {
   return (
@@ -226,7 +226,7 @@ function UploadedPicklistRow({
   rows,
   onCellClicked: handleCellClicked,
 }: UploadedTableRowBaseProps & {
-  readonly rows: UploadedPicklistItem[];
+  readonly rows: RA<UploadedPicklistItem>;
 }): JSX.Element {
   return (
     <tbody>
@@ -255,23 +255,23 @@ function UploadedTableRows({
   groupBoundaries,
 }: {
   readonly rows: (UploadedRow | UploadedPicklistItem)[];
-  readonly columnNames?: string[];
+  readonly columnNames?: RA<string>;
   readonly getRecordViewUrl?: (rowId: number) => string;
-  readonly groupBoundaries?: boolean[];
+  readonly groupBoundaries?: RA<boolean>;
   readonly type: UploadedRecordsTypes;
   readonly isUploaded: boolean;
   readonly onCellClicked: HandleCellClicked;
   readonly tableIsTree: boolean;
 } & (
   | {
-      readonly rows: UploadedRow[];
-      readonly columnNames: string[];
+      readonly rows: RA<UploadedRow>;
+      readonly columnNames: RA<string>;
       readonly getRecordViewUrl: (rowId: number) => string;
       readonly type: 'table';
-      readonly groupBoundaries?: boolean[];
+      readonly groupBoundaries?: RA<boolean>;
     }
   | {
-      readonly rows: UploadedPicklistItem[];
+      readonly rows: RA<UploadedPicklistItem>;
       readonly type: 'picklist';
     }
 )): JSX.Element {
@@ -279,7 +279,7 @@ function UploadedTableRows({
    * If there is only one group, and records haven't been uploaded yet,
    * don't show group boundary
    */
-  const modifiedGroupBoundaries: boolean[] | undefined =
+  const modifiedGroupBoundaries: RA<boolean> | undefined =
     !isUploaded && groupBoundaries?.filter((boundary) => boundary).length === 1
       ? groupBoundaries.map(() => false)
       : groupBoundaries;
@@ -661,7 +661,7 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
 function WBUploadedViewDataParser(
   props: WBUploadedViewDataParseProps
 ): JSX.Element {
-  const [treeRanks, setTreeRanks] = React.useState<R<string[]> | undefined>(
+  const [treeRanks, setTreeRanks] = React.useState<IR<RA<string>> | undefined>(
     ranks
   );
   const [uploadedRows, setUploadedRows] = React.useState<

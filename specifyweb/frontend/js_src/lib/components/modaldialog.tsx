@@ -11,10 +11,10 @@
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import type { IR } from './wbplanview';
+import type { IR, RA } from './wbplanview';
 
 interface ModalDialogBaseProps {
-  readonly children: JSX.Element | JSX.Element[] | string;
+  readonly children: JSX.Element | RA<JSX.Element> | string;
 }
 
 function ModalDialogContent({

@@ -8,6 +8,7 @@
 
 'use strict';
 
+import type { RA } from './components/wbplanview';
 import type {
   MappingPath,
   RelationshipType,
@@ -102,7 +103,7 @@ export const getNameFromTreeRankName = (value: string): string =>
 /* Returns the max index in the list of reference item values */
 export const getMaxToManyValue = (
   // List of reference item values
-  values: string[]
+  values: RA<string>
 ): number /* Max index. Returns 0 if there aren't any */ =>
   values.reduce((max, value) => {
     // Skip `add` values and other possible NaN cases
@@ -152,7 +153,7 @@ export function showRequiredMissingFields(
   // Used internally in a recursion. Current mapping path
   path: MappingPath = [],
   // Used internally in a recursion. Save results
-  results: string[][] = []
+  results: MappingPath[] = []
 ): MappingPath[] {
   const tableData = dataModelStorage.tables[tableName];
 

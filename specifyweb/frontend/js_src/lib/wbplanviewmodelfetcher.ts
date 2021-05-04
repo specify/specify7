@@ -8,7 +8,7 @@
 
 'use strict';
 
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import domain from './domain';
 import type {
@@ -81,7 +81,7 @@ type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
 
 export type DataModelRanks = IR<IR<boolean>>;
 
-export type OriginalRelationships = IR<IR<Readonly<string[]>>>;
+export type OriginalRelationships = IR<IR<RA<string>>>;
 type OriginalRelationshipsWritable = R<R<string[]>>;
 
 // A dictionary like tableName==>tableFriendlyName

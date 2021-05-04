@@ -12,7 +12,7 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -20,6 +20,7 @@ import type {
 import type {
   AutomapperSuggestion,
   MappingPath,
+  MappingPathWritable,
   RelationshipType,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
@@ -392,7 +393,7 @@ function navigatorInstance<RETURN_STRUCTURE>({
  */
 export function getMappingLineData({
   baseTableName,
-  mappingPath = ['0'],
+  mappingPath: readonlyMappingPath = ['0'],
   openSelectElement,
   iterate = true,
   generateLastRelationshipData = true,
@@ -435,7 +436,7 @@ export function getMappingLineData({
   readonly handleClose?: (index: number) => void;
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
   readonly getMappedFields?: GetMappedFieldsBind;
-  readonly automapperSuggestions?: AutomapperSuggestion[];
+  readonly automapperSuggestions?: RA<AutomapperSuggestion>;
   readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
 }): MappingElementProps[] {
   const internalState: {
@@ -459,6 +460,8 @@ export function getMappingLineData({
     isOpen: false,
     generateMappingOptionsMenu: false,
   };
+
+  const mappingPath: MappingPathWritable = [...readonlyMappingPath];
 
   const firstIterationRequirement = (): boolean =>
     iterate ||

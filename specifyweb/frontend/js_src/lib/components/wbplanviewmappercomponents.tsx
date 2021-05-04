@@ -1,6 +1,7 @@
 import React from 'react';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
+import type { RA } from './wbplanview';
 import { MappingPathComponent } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
 
@@ -57,7 +58,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
 
 export function FormatValidationResults(props: {
   readonly baseTableName: string;
-  readonly validationResults: MappingPath[];
+  readonly validationResults: RA<MappingPath>;
   readonly handleSave: () => void;
   readonly getMappedFields: GetMappedFieldsBind;
   readonly onValidationResultClick: (mappingPath: MappingPath) => void;

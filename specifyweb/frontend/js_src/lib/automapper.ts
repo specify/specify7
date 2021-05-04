@@ -10,11 +10,11 @@
 
 import type { Options, TableSynonym } from './automapperdefinitions';
 import AutoMapperDefinitions from './automapperdefinitions';
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
 import type {
   AutomapperScope,
-  ListOfHeaders,
   MappingPath,
+  MappingPathWritable,
   RelationshipType,
 } from './components/wbplanviewmapper';
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
@@ -42,14 +42,16 @@ type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
 interface AutoMapperConstructorBaseParameters {
   // Array of strings that represent headers
-  readonly headers: Readonly<ListOfHeaders>;
-  readonly baseTable: string; // Base table name
+  readonly headers: RA<string>;
+  // Base table name
+  readonly baseTable: string;
   /*
    * Starting table name (if starting mappingPath provided, starting table
    * would be different from base table)
    */
   readonly startingTable?: string;
-  readonly path?: MappingPath; // Starting mapping path
+  // Starting mapping path
+  readonly path?: MappingPath;
   /*
    * Offset on a starting path. Used when the last element of mapping path is
    * a reference index. E.x, if #1 is taken, it would try to change the index
@@ -89,8 +91,10 @@ export type AutoMapperConstructorParameters =
 export type AutoMapperResults = R<MappingPath[]>;
 
 interface FindMappingsParameters {
-  readonly tableName: string; // Name of current table
-  readonly path: MappingPath; // Current mapping path
+  // Name of current table
+  readonly tableName: string;
+  // Current mapping path
+  readonly path: MappingPath;
   /*
    * Parent table name. Empty if current table is a base table. Used to
    * prevent circular relationships
@@ -216,7 +220,7 @@ const mappingPathIsTheMappingsTree = (
 const findRankSynonyms = (
   tableName: string,
   targetRankName: string
-): string[] =>
+): RA<string> =>
   AutoMapperDefinitions.rankSynonyms[tableName]
     ?.filter(({ rankName }) => targetRankName === rankName)
     .flatMap(({ synonyms }) => synonyms) ?? [];
@@ -602,10 +606,10 @@ export default class Automapper {
    * current mapping path
    */
   private findTableSynonyms(
-    tableName: string, // The table to search for
-    path: string[], // Current mapping path
+    tableName: string,
+    mappingPath: MappingPath,
     mode: AutoMapperNode
-  ): string[] /* Table synonyms */ {
+  ): RA<string> {
     const tableSynonyms = AutoMapperDefinitions.tableSynonyms[tableName];
 
     if (
@@ -615,8 +619,8 @@ export default class Automapper {
       return [];
 
     // Filter out -to-many references from the path for matching
-    const filteredPath = path.reduce(
-      (filteredPath: MappingPath, pathPart: string) => {
+    const filteredPath = mappingPath.reduce<MappingPathWritable>(
+      (filteredPath, pathPart) => {
         if (!valueIsReferenceItem(pathPart)) filteredPath.push(pathPart);
 
         return filteredPath;
@@ -630,8 +634,8 @@ export default class Automapper {
       ...filteredPath,
     ]);
 
-    return tableSynonyms.reduce(
-      (tableSynonyms: string[], tableSynonym: TableSynonym) => {
+    return tableSynonyms.reduce<string[]>(
+      (tableSynonyms, tableSynonym: TableSynonym) => {
         const mappingPathString = mappingPathToString(
           tableSynonym.mappingPathFilter
         );
@@ -649,9 +653,9 @@ export default class Automapper {
   }
 
   private readonly findFormattedHeaderFieldSynonyms = (
-    tableName: string, // The table to search in
-    fieldName: string // The field to search in
-  ): string[] /* Field synonyms */ =>
+    tableName: string,
+    fieldName: string
+  ): RA<string> =>
     AutoMapperDefinitions.synonyms[tableName]?.[fieldName]?.[this.scope]
       ?.headers.formattedHeaderFieldSynonym || [];
 
@@ -948,9 +952,11 @@ export default class Automapper {
      * Mapping path from base table to this table. Should be an empty
      * array if this is base table
      */
-    path: string[],
-    newPathParts: MappingPath, // Elements that should be pushed into `path`
-    headerName: string, // The name of the header that should be mapped
+    mappingPath: MappingPath,
+    // Elements that should be pushed into `path`
+    newPathParts: MappingPath,
+    // The name of the header that should be mapped
+    headerName: string,
     // Current table name (used to identify `don't map` conditions)
     tableName = '',
     /*
@@ -966,7 +972,7 @@ export default class Automapper {
   (Mapping fails if field is inside a -to-one relationship or direct child
   of base table and is already mapped).
   Can also depend on this.allowMultipleMappings */ {
-    let localPath: MappingPath = [...path, ...newPathParts];
+    let localPath: MappingPathWritable = [...mappingPath, ...newPathParts];
     const lastPathPart = localPath[localPath.length - 1];
 
     // Don't map if:
@@ -1050,7 +1056,7 @@ export default class Automapper {
       mappingPath: localPath,
     });
 
-    const pathContainsToManyReferences = path.some(valueIsReferenceItem);
+    const pathContainsToManyReferences = mappingPath.some(valueIsReferenceItem);
     return !pathContainsToManyReferences && !this.allowMultipleMappings;
   }
 }

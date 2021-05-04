@@ -598,7 +598,7 @@ function extractHeader(
     ? uniquifyHeaders(data[0].map((header) => header.trim()))
     : data[0].map((_1, index) => `Column ${index + 1}`);
   const rows = headerInData ? data.slice(1) : data;
-  return { rows, header };
+  return { rows, header: [...header] };
 }
 
 function assertExhaustive(x: never): never {

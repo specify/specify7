@@ -6,7 +6,7 @@
 
 'use strict';
 
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
 import type {
   FullMappingPath,
   MappingPath,
@@ -24,7 +24,7 @@ export type MappingsTree = NestedRecord<MappingsTreeNode>;
 
 export function traverseTree(
   mappingsTree: MappingsTree,
-  path: string[]
+  path: RA<string>
 ): MappingsTree | undefined {
   const step = path[0];
   if (typeof step === 'undefined') return mappingsTree;
@@ -92,7 +92,7 @@ export const deepMergeObject = (
 /* Converts an array to tree */
 export function arrayToTree(
   // Array to be converted
-  array: any[],
+  array: RA<any>,
   // Whether an array has headers in it
   hasHeaders = false
 ): FlatTree /*
@@ -153,7 +153,7 @@ export function arrayOfMappingsToMappingsTree(
    * Array of strings (branches of the tree) that are going to be merged
    * into a tree
    */
-  arrayOfMappings: (MappingPath | FullMappingPath)[],
+  arrayOfMappings: RA<MappingPath | FullMappingPath>,
   includeHeaders: boolean
 ): MappingsTree {
   // Final tree
@@ -190,7 +190,7 @@ export const mappingsTreeToArrayOfMappings = (
   mappingsTree: MappingsTree,
   // Used in a recursion to store intermediate path
   path: MappingPath = []
-): FullMappingPath[] =>
+): RA<FullMappingPath> =>
   /*
    * For example, if mappingsTree is:
    * 	Accession
@@ -206,8 +206,8 @@ export const mappingsTreeToArrayOfMappings = (
    * 	Accession, Accession Agents, #1, Remarks
    *
    */
-  Object.entries(mappingsTree).reduce(
-    (result: FullMappingPath[], [treeNodeName, treeNode]) => {
+  Object.entries(mappingsTree).reduce<FullMappingPath[]>(
+    (result, [treeNodeName, treeNode]) => {
       if (
         typeof treeNode === 'object' &&
         typeof Object.values(treeNode)[0] === 'object'
@@ -233,7 +233,7 @@ export const mappingsTreeToArrayOfMappings = (
 
 export const mappingsTreeToArrayOfSplitMappings = (
   mappingsTree: MappingsTree
-): SplitMappingPath[] =>
+): RA<SplitMappingPath> =>
   mappingsTreeToArrayOfMappings(mappingsTree).map(
     splitFullMappingPathComponents
   );

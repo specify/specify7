@@ -21,7 +21,7 @@ import ResourceView from '../resourceview';
 import schema from '../schema';
 import { stateReducer } from './lifemapperinfostate';
 import createBackboneView from './reactbackboneextend';
-import type { IR, RR } from './wbplanview';
+import type { IR, RA, RR } from './wbplanview';
 import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
@@ -106,7 +106,7 @@ function LifemapperInfo({
     const occurrenceNames = Object.values(state.aggregatorInfos)
       .filter((aggregatorInfo) => aggregatorInfo)
       .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
-      .filter((occurrenceName) => occurrenceName) as string[];
+      .filter((occurrenceName) => occurrenceName) as RA<string>;
 
     if (occurrenceNames.length === 0) return;
 
@@ -222,7 +222,7 @@ function LifemapperInfo({
             );
         });
 
-        const messages: Record<MessageTypes, string[]> = {
+        const messages: RR<MessageTypes, string[]> = {
           errorDetails: [],
           infoSection: [
             `Specify Species Name: ${
@@ -252,7 +252,7 @@ function LifemapperInfo({
               }
             ];
           }) => {
-            let layers: any[] = [];
+            let layers: RA<any> = [];
 
             if (response.errors.length > 0)
               messages.errorDetails.push(...response.errors);

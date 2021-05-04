@@ -14,7 +14,7 @@ import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import type { IR, WBPlanViewProps } from './wbplanview';
+import type { IR, RA, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import { HeaderWrapper, WBPlanViewHeader } from './wbplanviewheader';
 import type {
@@ -48,7 +48,7 @@ type TemplateSelectionState = State<'TemplateSelectionState'>;
 export type MappingState = State<
   'MappingState',
   WBPlanViewMapperBaseProps & {
-    automapperSuggestionsPromise?: Promise<AutomapperSuggestion[]>;
+    automapperSuggestionsPromise?: Promise<RA<AutomapperSuggestion>>;
     changesMade: boolean;
     mappingsAreValidated: boolean;
     displayMatchingOptionsDialog: boolean;
