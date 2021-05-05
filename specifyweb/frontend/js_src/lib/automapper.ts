@@ -394,11 +394,11 @@ export default class Automapper {
           Object.entries(Automapper.comparisons)
             .filter(
               (
-                // Loop over defined comparisons
+                // Loop over defined comparisons only
                 [comparisonKey]
               ) =>
                 comparisonKey in
-                (AutoMapperDefinitions.dontMap[scope]?.headers || {})
+                (AutoMapperDefinitions.dontMap[scope]?.headers ?? {})
             )
             .every(([comparisonKey, comparisonFunction]) =>
               // Loop over each value of a comparison

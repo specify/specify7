@@ -575,8 +575,8 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
         title: props.isUploaded
           ? 'View Upload Results'
           : 'View Potential Upload Results',
+        height: 600,
         width: 600,
-        maxHeight: 600,
         modal: false,
       }}
     >

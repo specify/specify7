@@ -53,7 +53,6 @@ function Dialog({
       onCloseCallback={handleClose}
       properties={{
         title: showTemplates ? 'Copy plan from existing Data Det' : 'Data Sets',
-        maxHeight: 600,
         width: 600,
         buttons: {
           ...(canImport
