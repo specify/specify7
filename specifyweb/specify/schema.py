@@ -93,7 +93,11 @@ def openapi(request) -> http.HttpResponse:
     returns:
         OpenAPI spec for the main Specify endpoint
     """
-    spec = {
+    return http.JsonResponse(generate_openapi_for_tables())
+
+
+def generate_openapi_for_tables():
+    return {
         **base_schema("Specify 7 Tables API"),
         **base_schema(
             "Specify 7 Tables API",
@@ -275,7 +279,6 @@ def openapi(request) -> http.HttpResponse:
             },
         },
     }
-    return http.JsonResponse(spec)
 
 
 @login_maybe_required
@@ -501,7 +504,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                     "description": "Delete a record from the "
                     + table.django_name
                     + " table",
-                    "response": {
+                    "responses": {
                         "204": {
                             "description": "Empty response",
                             "content": {
@@ -539,8 +542,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "required": False,
                             "schema": {
                                 "type": "number",
+                                "default": 0,
                             },
-                            "default": 0,
                             "description": "Max number of rows to return. 0 - no limit",
                         },
                         {
@@ -548,9 +551,9 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "in": "query",
                             "required": False,
                             "schema": {
-                                "type": "boolean"
+                                "type": "boolean",
+                                "default": False,
                             },
-                            "default": False,
                             "description": "Whether results should be distinct",
                         }
                     ],
@@ -597,7 +600,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "required": True,
                             "schema": {
                                 "type": "number",
-                                "minimum": "0",
+                                "minimum": 0,
                             }
                         }
                     ],
@@ -711,7 +714,7 @@ def field_to_schema(field: Field) -> Dict:
 
     elif field.type in ("text", "java.lang.String"):
         return {
-            "type": required_to_schema(field, "string"),
+            **required_to_schema(field, "string"),
             "maxLength": getattr(field, "length", 0),
         }
 
@@ -723,25 +726,25 @@ def field_to_schema(field: Field) -> Dict:
         "java.lang.Float",
         "java.lang.Double",
     ):
-        return {"type": required_to_schema(field, "number")}
+        return required_to_schema(field, "number")
 
     elif field.type in ("java.util.Calendar", "java.util.Date"):
         return {
-            "type": required_to_schema(field, "string"),
+            **required_to_schema(field, "string"),
             "format": "date",
         }
 
     elif field.type == "java.sql.Timestamp":
         return {
-            "type": required_to_schema(field, "string"),
+            **required_to_schema(field, "string"),
             "format": "date-time",
         }
 
     elif field.type == "java.math.BigDecimal":
-        return {"type": required_to_schema(field, "string")}
+        return required_to_schema(field, "string")
 
     elif field.type == "java.lang.Boolean":
-        return {"type": required_to_schema(field, "boolean")}
+        return required_to_schema(field, "boolean")
 
     else:
         raise Exception(f"unexpected field type: {field.type}")
@@ -759,4 +762,4 @@ def required_to_schema(
     returns:
         field's data type or a list of data types
     """
-    return ftype if field.required else [ftype, "null"]
+    return {"type": ftype} if field.required else {"type": ftype, "nullable": True}
