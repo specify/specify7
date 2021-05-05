@@ -23,7 +23,7 @@ from specifyweb.specify.models import Agent, Collection, Institution, \
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_localization
@@ -125,6 +125,76 @@ def choose_collection(request):
     context = {'form': form, 'next': redirect_to}
     return TemplateResponse(request, 'choose_collection.html', context)
 
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Template of info needed to login. Includes list of available collections.",
+                "content": {"application/json": {"schema": { "$ref": "#/components/schemas/context_login_resp" }}},
+            }
+        }
+    },
+    'put': {
+        "requestBody": {
+            "required": True,
+            "description": "Login information",
+            "content": {"application/json": {"schema": { "$ref": "#/components/schemas/context_login_req" }}}
+        },
+        "responses": {
+            "204": {"description": "Login succeeded"},
+            "403": {"description": "Login was invalid"}
+        }
+    },
+}, components={
+    'schemas': {
+        'context_login_resp': {
+            'type': 'object',
+            'description': 'Login API. The username, password, and collection properties '
+            'are always null in GET responses. The collections property provides the ids '
+            'of collections for loging in to.',
+            'properties': {
+                'collections': {
+                    'type': 'object',
+                    'description': 'Map of collection names to collection ids',
+                    'additionalProperties': {'type': 'integer'}
+                },
+                'username': {'type': 'string', 'nullable': True},
+                'password': {'type': 'string', 'nullable': True},
+                'collection': {'type': 'integer', 'nullable': True},
+            },
+            'required': ['username', 'password', 'collection', 'collections'],
+            'additionalProperties': False,
+            "example": {
+                "collections": {
+                    "KUFishvoucher": 4,
+                    "KUFishtissue": 32768,
+                    "KUFishTeaching": 65536
+                },
+                "username": None,
+                "password": None,
+                "collection": None
+            }
+        },
+        'context_login_req': {
+            'type': 'object',
+            'description': 'Use an id value from the collections '
+            'property in GET respons to select the collection to log in to. '
+            'PUT with any of the required properties '
+            'set to null logs out. ',
+            'properties': {
+                'username': {'type': 'string', 'nullable': True},
+                'password': {'type': 'string', 'nullable': True},
+                'collection': {'type': 'integer', 'nullable': True},
+            },
+            'required': ['username', 'password', 'collection'],
+            "example": {
+                "username": "joe",
+                "password": "paSswOrd",
+                "collection": 4
+            }
+        }
+    }
+})
 @require_http_methods(['GET', 'PUT'])
 @never_cache
 @ensure_csrf_cookie
