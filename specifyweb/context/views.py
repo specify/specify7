@@ -1,6 +1,4 @@
 import json
-from jsonschema import validate  # type: ignore
-from jsonschema.exceptions import ValidationError  # type: ignore
 import os
 import re
 from django import forms
@@ -28,7 +26,6 @@ from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_localization
 from .viewsets import get_view
-from .openapi_schema import schema as openapi_schema
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
@@ -580,7 +577,7 @@ def generate_openapi_for_endpoints(all_endpoints=False):
     ))
     tags = list(get_tags(endpoints))
 
-    api = {
+    return {
         **base_schema(
             "Specify 7 Operations API",
             description="""<a href="/documentation/api/tables/">
@@ -595,8 +592,6 @@ def generate_openapi_for_endpoints(all_endpoints=False):
         ),
         'components': components,
     }
-    validate(instance=api, schema=openapi_schema)
-    return api
 
 
 @require_GET
