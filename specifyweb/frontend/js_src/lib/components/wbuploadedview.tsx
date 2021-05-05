@@ -145,17 +145,28 @@ function UploadedTableRow({
   rows,
   isUploaded,
   onCellClicked: handleCellClicked,
-  groupBoundaries,
   getRecordViewUrl,
 }: UploadedTableRowBaseProps & {
   readonly rows: RA<UploadedRow>;
-  readonly groupBoundaries?: RA<boolean>;
   readonly getRecordViewUrl: (rowId: number) => string;
 }): JSX.Element {
   return (
     <tbody>
-      {rows.map(({ rowIndex, columns }, index) => (
+      {rows.map(({ recordId, rowIndex, columns }, index) => (
         <tr key={index}>
+          {isUploaded && (
+            <td key="viewRecord" className="wb-upload-results-record-link">
+              {typeof recordId !== 'undefined' && recordId >= 0 && (
+                <a
+                  target="_blank"
+                  href={getRecordViewUrl(recordId)}
+                  rel="noreferrer"
+                >
+                  👁
+                </a>
+              )}
+            </td>
+          )}
           {columns.map(
             (
               {
@@ -169,25 +180,6 @@ function UploadedTableRow({
               index
             ) => (
               <React.Fragment key={index}>
-                {typeof groupBoundaries !== 'undefined' &&
-                  groupBoundaries[index] && (
-                    <td
-                      key="viewRecord"
-                      className="wb-upload-results-record-link"
-                    >
-                      {typeof recordId !== 'undefined' &&
-                        recordId >= 0 &&
-                        isUploaded && (
-                          <a
-                            target="_blank"
-                            href={getRecordViewUrl(recordId)}
-                            rel="noreferrer"
-                          >
-                            👁
-                          </a>
-                        )}
-                    </td>
-                  )}
                 <td
                   className={`wb-upload-results-cell ${
                     matched ? 'wb-upload-results-cell-matched' : ''
@@ -206,12 +198,20 @@ function UploadedTableRow({
                       : `${['Uploaded', 'Matched'][matched ? 1 : 0]} record`
                   }
                 >
-                  <CellLink
-                    getRecordViewUrl={getRecordViewUrl}
-                    recordId={recordId}
-                  >
-                    {typeof cellValue === 'undefined' ? 'Uploaded' : cellValue}
-                  </CellLink>
+                  {isUploaded ? (
+                    <CellLink
+                      getRecordViewUrl={getRecordViewUrl}
+                      recordId={recordId}
+                    >
+                      {typeof cellValue === 'undefined'
+                        ? 'Uploaded'
+                        : cellValue}
+                    </CellLink>
+                  ) : typeof cellValue === 'undefined' ? (
+                    'Uploaded'
+                  ) : (
+                    cellValue
+                  )}
                 </td>
               </React.Fragment>
             )
@@ -252,12 +252,10 @@ function UploadedTableRows({
   getRecordViewUrl,
   onCellClicked: handleCellClicked,
   tableIsTree,
-  groupBoundaries,
 }: {
   readonly rows: (UploadedRow | UploadedPicklistItem)[];
   readonly columnNames?: RA<string>;
   readonly getRecordViewUrl?: (rowId: number) => string;
-  readonly groupBoundaries?: RA<boolean>;
   readonly type: UploadedRecordsTypes;
   readonly isUploaded: boolean;
   readonly onCellClicked: HandleCellClicked;
@@ -268,21 +266,17 @@ function UploadedTableRows({
       readonly columnNames: RA<string>;
       readonly getRecordViewUrl: (rowId: number) => string;
       readonly type: 'table';
-      readonly groupBoundaries?: RA<boolean>;
     }
   | {
       readonly rows: RA<UploadedPicklistItem>;
       readonly type: 'picklist';
     }
 )): JSX.Element {
-  /*
-   * If there is only one group, and records haven't been uploaded yet,
-   * don't show group boundary
-   */
-  const modifiedGroupBoundaries: RA<boolean> | undefined =
-    !isUploaded && groupBoundaries?.filter((boundary) => boundary).length === 1
-      ? groupBoundaries.map(() => false)
-      : groupBoundaries;
+  const showViewLinks =
+    rows.length > 0 &&
+    'recordId' in rows[0] &&
+    rows[0].recordId >= 0 &&
+    isUploaded;
 
   return (
     <div className="wb-upload-results-rows-container">
@@ -294,15 +288,7 @@ function UploadedTableRows({
         <UploadedTableRowsHeaderProps
           columnNames={
             type === 'table' && columnNames
-              ? typeof modifiedGroupBoundaries === 'undefined'
-                ? columnNames
-                : [
-                    ...modifiedGroupBoundaries.flatMap((isBoundary, index) =>
-                      !isBoundary
-                        ? [columnNames[index]]
-                        : ['', columnNames[index]]
-                    ),
-                  ]
+              ? [...(showViewLinks ? [''] : []), ...columnNames]
               : ['Picklist value']
           }
         />
@@ -310,8 +296,7 @@ function UploadedTableRows({
           <UploadedTableRow
             // @ts-expect-error
             rows={rows}
-            isUploaded={isUploaded}
-            groupBoundaries={modifiedGroupBoundaries}
+            isUploaded={showViewLinks}
             onCellClicked={handleCellClicked}
             getRecordViewUrl={getRecordViewUrl}
           />
@@ -469,7 +454,6 @@ function UploadedTable({
                 rows: uploadedTable.rows,
                 columnNames: uploadedTable.columnNames,
                 getRecordViewUrl: uploadedTable.getRecordViewUrl,
-                groupBoundaries: uploadedTable.groupBoundaries,
               }
             : {
                 rows: uploadedTable,

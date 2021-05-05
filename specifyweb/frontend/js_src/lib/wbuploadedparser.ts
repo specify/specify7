@@ -12,7 +12,10 @@ import schema from './schema';
 import type { State } from 'typesafe-reducer';
 import type { UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { extractDefaultValues } from './wbplanviewhelper';
+import {
+  extractDefaultValues,
+  generateMappingPathPreview,
+} from './wbplanviewhelper';
 import {
   getNameFromTreeRankName,
   mappingPathToString,
@@ -183,10 +186,6 @@ interface UploadedColumn {
 }
 
 export interface UploadedRow {
-  /*
-   * `recordId` is used only in WbUploadedParser. WbUploadedView uses
-   * groupBoundaries and columns[].recordId instead.
-   */
   readonly recordId: number;
   readonly rowIndex: number;
   readonly columns: RA<UploadedColumn>;
@@ -220,7 +219,6 @@ export interface UploadedRowsTable {
   readonly getRecordViewUrl: (rowId: number) => string;
   readonly rows: RA<UploadedRow>;
   readonly rowsCount?: number;
-  readonly groupBoundaries?: RA<boolean>;
 }
 
 export type UploadedRows = Readonly<IR<UploadedRowsTable>>;
@@ -251,14 +249,21 @@ interface UploadedRowSorted extends Omit<UploadedRow, 'columns'> {
  * tree nodes and picklist additions
  *
  */
-function handleUploadResult(
-  uploadedPicklistItems: UploadedPicklistItems,
-  uploadedRows: R<UploadedRowSorted[]>,
-  matchedRecordsNames: R<Record<number, string>>,
-  headers: RA<string>,
-  line: UploadResult,
-  rowIndex: number
-): void {
+function handleUploadResult({
+  uploadedPicklistItems,
+  uploadedRows,
+  matchedRecordsNames,
+  headers,
+  line,
+  rowIndex,
+}: {
+  uploadedPicklistItems: UploadedPicklistItems;
+  uploadedRows: R<UploadedRowSorted[]>;
+  matchedRecordsNames: R<Record<number, string>>;
+  headers: RA<string>;
+  line: UploadResult;
+  rowIndex: number;
+}): void {
   const uploadResult = line.UploadResult;
 
   const uploadStatus = Object.keys(
@@ -281,7 +286,7 @@ function handleUploadResult(
     return;
 
   const rank = treeInfo?.rank;
-  const orderedColumns = getOrderedHeaders(headers, columns);
+  const orderedColumns = formatHeaders(headers, columns);
 
   if ('picklistAdditions' in rest)
     rest.picklistAdditions?.forEach(
@@ -339,26 +344,26 @@ function handleUploadResult(
     Object.values(toOneUploadResults),
   ].forEach((lines) =>
     lines.forEach((line: UploadResult) =>
-      handleUploadResult(
+      handleUploadResult({
         uploadedPicklistItems,
         uploadedRows,
         matchedRecordsNames,
         headers,
         line,
-        rowIndex
-      )
+        rowIndex,
+      })
     )
   );
 
   if (typeof parentUploadResult !== 'undefined')
-    handleUploadResult(
+    handleUploadResult({
       uploadedPicklistItems,
       uploadedRows,
       matchedRecordsNames,
       headers,
-      parentUploadResult,
-      rowIndex
-    );
+      line: parentUploadResult,
+      rowIndex,
+    });
 }
 
 /*
@@ -618,7 +623,7 @@ function joinRows(finalRows: UploadedRow[]) {
     .reverse();
 }
 
-const getOrderedHeaders = (
+const formatHeaders = (
   headers: RA<string>,
   headersSubset: RA<string>
 ): string[] => headers.filter((header) => headersSubset.includes(header));
@@ -661,74 +666,71 @@ function orderHeadersByGroups(
 }
 
 function groupCommonFields(
+  headerToField: IR<[string, string]>,
   isTreeTable: boolean,
   headerGroups: RA<RA<string>>,
   uploadedRowsTable: UploadedRowsTable
 ): UploadedRowsTable {
-  if (isTreeTable) return uploadedRowsTable;
+  if (isTreeTable || uploadedRowsTable.rows.length === 0)
+    return uploadedRowsTable;
 
   const filteredHeaderGroups = headerGroups.filter((headerMembers) =>
     headerMembers.some((memberName) =>
       uploadedRowsTable.columnNames.includes(memberName)
     )
   );
-  const groupBoundaries = filteredHeaderGroups.reduce<RA<boolean>>(
-    (array, headers) => [
-      ...array,
-      ...[...new Array(headers.length)].map((_, index) => index === 0),
-    ],
-    []
-  );
 
-  const groupedRows = uploadedRowsTable.rows.reduce<R<UploadedRow[]>>(
-    (groupedRows, row) => {
-      groupedRows[row.rowIndex] ??= [];
-      groupedRows[row.rowIndex].push(row);
-      return groupedRows;
-    },
-    {}
-  );
+  if (filteredHeaderGroups.length === 0) return uploadedRowsTable;
 
-  const mergedGroups: UploadedRowsTable['rows'] = Object.values(
-    groupedRows
-  ).map((rows) =>
-    rows.reduce<UploadedRow>(
-      (mergedRow, row, index) =>
-        index === 0
-          ? mergedRow
-          : {
-              ...mergedRow,
-              columns: mergedRow.columns.map((column, columnIndex) =>
-                column.columnIndex < 0
-                  ? {
-                      ...row.columns[columnIndex],
-                      recordId:
-                        typeof row.columns[columnIndex].columnIndex ===
-                          'undefined' ||
-                        row.columns[columnIndex].columnIndex < 0
-                          ? undefined
-                          : row.recordId,
-                    }
-                  : column
-              ),
-            },
-      {
-        ...rows[0],
-        columns: rows[0].columns.map((column) => ({
-          ...column,
-          recordId:
-            typeof column.columnIndex === 'undefined' || column.columnIndex < 0
-              ? undefined
-              : rows[0].recordId,
-        })),
-      }
-    )
+  const columnNames = Object.fromEntries(
+    filteredHeaderGroups.flat().map((headerName) => headerToField[headerName])
   );
+  const columnDatabaseNames = Object.keys(columnNames);
+
+  const modifiedRows = uploadedRowsTable.rows.map(({ columns, ...rest }) => {
+    const headerGroup = filteredHeaderGroups.find((headerGroup) =>
+      headerGroup.includes(
+        uploadedRowsTable.columnNames[
+          columns
+            .map((column, index) => ({
+              column,
+              index,
+            }))
+            .find(({ column: { columnIndex } }) => columnIndex >= 0)?.index ??
+            -1
+        ]
+      )
+    );
+
+    if (typeof headerGroup === 'undefined')
+      throw new Error('Unable to find the header group');
+
+    const groupColumns = headerGroup.map(
+      (headerName) => columns[uploadedRowsTable.columnNames.indexOf(headerName)]
+    );
+
+    const groupFields = headerGroup.map(
+      (headerName) => headerToField[headerName][0]
+    );
+
+    const newColumns = columnDatabaseNames.map((columnName) =>
+      groupFields.includes(columnName)
+        ? groupColumns[groupFields.indexOf(columnName)]
+        : emptyCell(-1)
+    );
+
+    return {
+      ...rest,
+      columns: newColumns,
+    };
+  });
+
+  // UploadedRowsTable.rows
 
   return {
     ...uploadedRowsTable,
-    rows: mergedGroups,
-    groupBoundaries,
+    rows: modifiedRows,
+    columnNames: Object.values(columnNames),
   };
 }
 
@@ -763,6 +765,22 @@ export function parseUploadResults(
       }, {})
   );
 
+  const allHeaders = unorderedHeaderGroups.flat();
+
+  const headerToField = Object.fromEntries(
+    arrayOfMappings
+      .filter(({ headerName }) => allHeaders.includes(headerName))
+      .sort(({ headerName: headerNameLeft }, { headerName: headerNameRight }) =>
+        allHeaders.indexOf(headerNameLeft) > allHeaders.indexOf(headerNameRight)
+          ? 1
+          : -1
+      )
+      .map(({ headerName, mappingPath }) => [
+        headerName,
+        generateMappingPathPreview(baseTableName, mappingPath),
+      ])
+  );
+
   const {
     orderedHeaders: headersOrderedByGroups,
     orderedHeaderGroups: headerGroups,
@@ -792,14 +810,15 @@ export function parseUploadResults(
   const uploadedPicklistItems: UploadedPicklistItems = {};
   const matchedRecordsNames: IR<Record<number, string>> = {};
 
-  uploadResults.forEach(
-    handleUploadResult.bind(
-      undefined,
+  uploadResults.forEach((line, rowIndex) =>
+    handleUploadResult({
       uploadedPicklistItems,
       uploadedRows,
       matchedRecordsNames,
-      headersOrderedByGroups
-    )
+      headers: headersOrderedByGroups,
+      line,
+      rowIndex,
+    })
   );
 
   const treeTables: IR<
@@ -871,60 +890,65 @@ export function parseUploadResults(
     Object.fromEntries(
       Object.entries(uploadedRows).map(([tableName, tableRecords]) => [
         tableName,
-        groupCommonFields(tableName in treeTables, headerGroups, {
-          tableLabel: schemaModels[
-            lowercaseTableNames.indexOf(tableName.toLowerCase())
-          ].getLocalizedName(),
-          tableIcon: icons.getIcon(
-            normalTableNames[
+        groupCommonFields(
+          headerToField,
+          tableName in treeTables,
+          headerGroups,
+          {
+            tableLabel: schemaModels[
               lowercaseTableNames.indexOf(tableName.toLowerCase())
-            ]
-          ),
-          getRecordViewUrl: (recordId: number) =>
-            `/specify/view/${tableName}/${recordId}/`,
-          ...(tableName in treeTables
-            ? treeTables[tableName]
-            : {
-                columnNames: (columnNames = getOrderedHeaders(
-                  headersOrderedByGroups,
-                  [
-                    // Save list of column indexes to `columnIndexes`
-                    ...new Set(
-                      // Make the list unique
-                      tableRecords.flatMap(
-                        // Get column names
-                        ({ columns }) => Object.values(columns)
-                      )
-                    ),
-                  ]
-                )),
-                rows: tableRecords.map(({ recordId, rowIndex, columns }) => ({
-                  recordId,
-                  rowIndex,
-                  columns: columnNames
-                    .map((columnName) => ({
-                      columnName,
-                      columnIndex: headers.indexOf(columnName),
-                      rowsColumn: columns.includes(columnName),
-                    }))
-                    .map(({ columnName, columnIndex, rowsColumn }) =>
-                      columnIndex === -1 || !rowsColumn
-                        ? {
-                            columnIndex: -1,
-                            cellValue: '',
-                          }
-                        : {
-                            columnIndex,
-                            cellValue: insertDefaultValue(
-                              defaultValues,
-                              columnName,
-                              data[rowIndex][columnIndex] ?? ''
-                            ),
-                          }
-                    ),
-                })),
-              }),
-        }),
+            ].getLocalizedName(),
+            tableIcon: icons.getIcon(
+              normalTableNames[
+                lowercaseTableNames.indexOf(tableName.toLowerCase())
+              ]
+            ),
+            getRecordViewUrl: (recordId: number) =>
+              `/specify/view/${tableName}/${recordId}/`,
+            ...(tableName in treeTables
+              ? treeTables[tableName]
+              : {
+                  columnNames: (columnNames = formatHeaders(
+                    headersOrderedByGroups,
+                    [
+                      // Save list of column indexes to `columnIndexes`
+                      ...new Set(
+                        // Make the list unique
+                        tableRecords.flatMap(
+                          // Get column names
+                          ({ columns }) => Object.values(columns)
+                        )
+                      ),
+                    ]
+                  )),
+                  rows: tableRecords.map(({ recordId, rowIndex, columns }) => ({
+                    recordId,
+                    rowIndex,
+                    columns: columnNames
+                      .map((columnName) => ({
+                        columnName,
+                        columnIndex: headers.indexOf(columnName),
+                        rowsColumn: columns.includes(columnName),
+                      }))
+                      .map(({ columnName, columnIndex, rowsColumn }) =>
+                        columnIndex === -1 || !rowsColumn
+                          ? {
+                              columnIndex: -1,
+                              cellValue: '',
+                            }
+                          : {
+                              columnIndex,
+                              cellValue: insertDefaultValue(
+                                defaultValues,
+                                columnName,
+                                data[rowIndex][columnIndex] ?? ''
+                              ),
+                            }
+                      ),
+                  })),
+                }),
+          }
+        ),
       ])
     ),
     uploadedPicklistItems,

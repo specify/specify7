@@ -192,7 +192,7 @@ export const extractDefaultValues = (
 export function generateMappingPathPreview(
   baseTableName: string,
   mappingPath: MappingPath
-): string {
+): [string, string] {
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,
@@ -212,17 +212,21 @@ export function generateMappingPathPreview(
     )
     .reverse();
 
+  const databaseFieldName = mappingPath.slice(-1)[0];
   const [fieldName, possibleTableName] = mappingLineData;
 
-  if (mappingLineData.length === 1) return fieldName;
+  if (mappingLineData.length === 1) return [databaseFieldName, fieldName];
 
   if (valueIsTreeRank(possibleTableName))
-    return mappingPath.slice(-1)[0] === 'name'
-      ? possibleTableName
-      : `${possibleTableName} ${fieldName}`;
+    return [
+      databaseFieldName,
+      databaseFieldName === 'name'
+        ? possibleTableName
+        : `${possibleTableName} ${fieldName}`,
+    ];
   else if (valueIsReferenceItem(mappingPath.slice(-2)[0]))
-    return `${fieldName} ${possibleTableName}`;
-  else return `${fieldName}`;
+    return [databaseFieldName, `${fieldName} ${possibleTableName}`];
+  else return [databaseFieldName, `${fieldName}`];
 }
 
 export function renameNewlyCreatedHeaders(
@@ -236,7 +240,7 @@ export function renameNewlyCreatedHeaders(
       .filter(({ line }) => !headers.includes(line.headerName))
       .map(({ line, index }) => [
         index,
-        generateMappingPathPreview(baseTableName, line.mappingPath),
+        generateMappingPathPreview(baseTableName, line.mappingPath)[1],
       ])
   );
 
@@ -262,11 +266,11 @@ const formatUniqueifiedHeader = (
 ): string =>
   `${header} (${
     initialIndex +
-    ([...Array.from({ length: 100 })]
+    ([...Array.from({ length: 2 ** 10 })]
       .map((_, index) => index)
       .find(
         (index) => !headers.includes(`${header} (${initialIndex + index})`)
-      ) ?? Math.floor(Math.random() * 2 ** 11))
+      ) ?? 2 ** 10 + Math.floor(Math.random() * 2 ** 11))
   })`;
 
 export const uniquifyHeaders = (
