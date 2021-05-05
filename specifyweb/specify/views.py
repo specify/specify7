@@ -148,7 +148,7 @@ def properties(request, name):
                     "text/plain": {
                         "schema": {
                             "type": "string",
-                            "maxLength": "0",
+                            "maxLength": 0,
                         }
                     }
                 }
@@ -174,30 +174,13 @@ def set_password(request, userid):
 
 @openapi(schema={
     'post': {
-        "requestBody": {
-            "required": True,
-            "description": "Admin status",
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "type": "object",
-                        "admin_status": {
-                            "password": {
-                                "type": "boolean",
-                                "description": "Admin status",
-                            },
-                        }
-                    }
-                }
-            }
-        },
         "responses": {
-            "204": {
-                "description": "Empty response",
+            "200": {
+                "description": "Result",
                 "content": {
                     "text/plain": {
                         "schema": {
-                            "type": "boolean",
+                            "type": "string",
                             "description": "The value of 'admin_status'",
                         }
                     }
