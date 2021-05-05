@@ -119,6 +119,7 @@ export function MappingView(props: {
     baseTableName: props.baseTableName,
     mappingPath: props.mappingPath,
     generateLastRelationshipData: true,
+    iterate: true,
     customSelectType: 'OPENED_LIST',
     handleChange: props.handleMappingViewChange,
     getMappedFields: props.getMappedFields,

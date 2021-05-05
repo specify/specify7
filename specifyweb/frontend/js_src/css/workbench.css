@@ -53,16 +53,18 @@
   align-content: center;
   justify-content: center;
   padding: 0;
-  height: 100%;
 }
+
 .htCore .colHeader {
   display: contents;
 }
+
 .htCore .colHeader div {
   display: flex;
   column-gap: 0.2rem;
   align-items: center;
 }
+
 .htCore .colHeader .wb-header-icon {
   width: 20px;
   height: 20px;
