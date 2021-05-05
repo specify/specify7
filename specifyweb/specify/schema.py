@@ -78,7 +78,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
 
 record_version_description = (
     "A version to work with (can be specified in "
-    + "Query string, Header or request object's 'version' key)"
+    "Query string, Header or request object's 'version' key)"
 )
 
 
@@ -313,16 +313,12 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
     """
     return [
         (
-            "/api/specify/" + table.django_name + "/",
+            f"/api/specify/{table.django_name}/",
             {
                 "get": {
                     "tags": [table.django_name],
-                    "summary": "Query multiple records from the "
-                    + table.django_name
-                    + " table",
-                    "description": "Query multiple records from the "
-                    + table.django_name
-                    + " table",
+                    "summary": f"Query multiple records from the {table.django_name} table",
+                    "description": f"Query multiple records from the {table.django_name} table",
                     "parameters": [
                         {"$ref": "#/components/parameters/limit"},
                         {"$ref": "#/components/parameters/offset"},
@@ -347,8 +343,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                                     "objects": {
                                                         "type": "array",
                                                         "items": {
-                                                            "$ref": "#/components/schemas/"
-                                                            + table.django_name
+                                                            "$ref": f"#/components/schemas/{table.django_name}"
                                                         },
                                                     },
                                                 },
@@ -362,12 +357,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                 },
                 "post": {
                     "tags": [table.django_name],
-                    "summary": "Upload a single record to the "
-                    + table.django_name
-                    + " table",
-                    "description": "Upload a single record to the "
-                    + table.django_name
-                    + " table",
+                    "summary": f"Upload a single record to the {table.django_name} table",
+                    "description": f"Upload a single record to the {table.django_name} table",
                     "parameters": [
                         {
                             "$ref": "#/components/parameters/collection_recordsetid"
@@ -379,8 +370,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/"
-                                    + table.django_name
+                                    "$ref": f"#/components/schemas/{table.django_name}"
                                 }
                             }
                         },
@@ -391,8 +381,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "$ref": "#/components/schemas/"
-                                        + table.django_name
+                                        "$ref": f"#/components/schemas/{table.django_name}"
                                     },
                                 },
                             },
@@ -402,7 +391,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             },
         ),
         (
-            "/api/specify/" + table.django_name + "/{id}",
+            f"/api/specify/{table.django_name}/{{id}}",
             {
                 "parameters": [
                     {
@@ -414,9 +403,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                 ],
                 "get": {
                     "tags": [table.django_name],
-                    "summary": "Query and manipulate records from the "
-                    + table.django_name
-                    + " table",
+                    "summary": f"Query and manipulate records from the {table.django_name} table",
                     "description": "TODO: description",
                     "parameters": [
                         {
@@ -434,8 +421,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                                 "$ref": "#/components/schemas/_resource_get",
                                             },
                                             {
-                                                "$ref": "#/components/schemas/"
-                                                + table.django_name
+                                                "$ref": f"#/components/schemas/{table.django_name}"
                                             },
                                         ]
                                     }
@@ -446,12 +432,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                 },
                 "put": {
                     "tags": [table.django_name],
-                    "summary": "Update a single record from the "
-                    + table.django_name
-                    + " table",
-                    "description": "Update a single record from the "
-                    + table.django_name
-                    + " table",
+                    "summary": f"Update a single record from the {table.django_name} table",
+                    "description": f"Update a single record from the {table.django_name} table",
                     "requestBody": {
                         "required": True,
                         "description": "A JSON representation of an object",
@@ -474,8 +456,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                             ],
                                         },
                                         {
-                                            "$ref": "#/components/schemas/"
-                                            + table.django_name
+                                            "$ref": f"#/components/schemas/{table.django_name}"
                                         },
                                     ],
                                 }
@@ -488,8 +469,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "$ref": "#/components/schemas/"
-                                        + table.django_name
+                                        "$ref": f"#/components/schemas/{table.django_name}"
                                     },
                                 },
                             },
@@ -498,12 +478,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                 },
                 "delete": {
                     "tags": [table.django_name],
-                    "summary": "Delete a record from the "
-                    + table.django_name
-                    + " table",
-                    "description": "Delete a record from the "
-                    + table.django_name
-                    + " table",
+                    "summary": f"Delete a record from the {table.django_name} table",
+                    "description": f"Delete a record from the {table.django_name} table",
                     "responses": {
                         "204": {
                             "description": "Empty response",
@@ -521,7 +497,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             },
         ),
         (
-            "/api/specify_rows/" + table.django_name + "/",
+            f"/api/specify_rows/{table.django_name}/",
             {
                 'get': {
                     "tags": [table.django_name],
@@ -557,12 +533,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "description": "Whether results should be distinct",
                         }
                     ],
-                    "summary": "Get rows from the "
-                        + table.django_name
-                        + " table",
-                    "description": "Get rows from the "
-                               + table.django_name
-                               + " table",
+                    "summary": f"Get rows from the {table.django_name} table",
+                    "description": f"Get rows from the {table.django_name} table",
                     "responses": {
                         "200": {
                             "description": "Empty response",
@@ -584,7 +556,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             }
         ),
         (
-            "/api/delete_blockers/" + table.django_name + "/{id}",
+            f"/api/delete_blockers/{table.django_name}/{{id}}",
             {
                 "get": {
                     "tags": [table.django_name],
@@ -627,16 +599,12 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             }
         ),
         (
-            "/api/specify_schema/" + table.django_name + "/",
+            f"/api/specify_schema/{table.django_name}/",
             {
                 "get": {
                     "tags": [table.django_name],
-                    "summary": "Get OpenAPI schema for "
-                               + table.django_name
-                               + " table",
-                    "description": "Get OpenAPI schema for "
-                               + table.django_name
-                               + " table",
+                    "summary": f"Get OpenAPI schema for {table.django_name} table",
+                    "description": f"Get OpenAPI schema for {table.django_name} table",
                     "responses": {
                         "200": {
                             "description": "Data fetched successfully",
@@ -707,9 +675,7 @@ def field_to_schema(field: Field) -> Dict:
             return {
                 "type": "string",
                 "description": "A URL for querying information about a related record",
-                "example": "/api/specify/"
-                + field.relatedModelName.lower()
-                + "/3/",
+                "example": f"/api/specify/{field.relatedModelName.lower()}/3/",
             }
 
     elif field.type in ("text", "java.lang.String"):
