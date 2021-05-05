@@ -327,6 +327,7 @@ export default function WBPlanViewMapper(
                 baseTableName: props.baseTableName,
                 mappingPath,
                 generateLastRelationshipData: true,
+                iterate: true,
                 customSelectType: 'CLOSED_LIST',
                 handleChange:
                   (!props.readonly &&

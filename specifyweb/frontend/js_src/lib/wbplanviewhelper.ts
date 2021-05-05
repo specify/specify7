@@ -197,7 +197,7 @@ export function generateMappingPathPreview(
     baseTableName,
     mappingPath,
     customSelectType: 'OPENED_LIST',
-    showHiddenFields: false,
+    iterate: true,
   })
     .map((mappingElementData, index) => ({
       mappingElementData,

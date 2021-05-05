@@ -253,9 +253,6 @@ const WBView = Backbone.View.extend({
       const tableName = getMappingLineData({
         baseTableName: this.mappings.baseTableName,
         mappingPath,
-        iterate: false,
-        customSelectType: 'CLOSED_LIST',
-        showHiddenFields: false,
       })[0]?.tableName;
       const model = schema.getModel(tableName);
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
@@ -410,9 +407,6 @@ const WBView = Backbone.View.extend({
           getMappingLineData({
             baseTableName: this.mappings.baseTableName,
             mappingPath: mappingPath.slice(0, -1),
-            iterate: false,
-            customSelectType: 'CLOSED_LIST',
-            showHiddenFields: false,
           })[0]?.tableName || ''
         ),
       ])

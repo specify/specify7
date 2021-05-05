@@ -156,8 +156,6 @@ function handleTreeRecordTypes(
     const tableName = getMappingLineData({
       baseTableName: mappingPath[0],
       mappingPath: mappingPath.slice(1),
-      iterate: false,
-      customSelectType: 'OPENED_LIST',
     })[0].tableName;
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
@@ -204,8 +202,6 @@ function handleUploadableTypes(
     const tableName = getMappingLineData({
       baseTableName: mappingPath[0],
       mappingPath: mappingPath.slice(1),
-      iterate: false,
-      customSelectType: 'OPENED_LIST',
     })[0].tableName;
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }

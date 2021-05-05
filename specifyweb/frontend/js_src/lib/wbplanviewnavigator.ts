@@ -390,16 +390,16 @@ export function getMappingLineData({
   baseTableName,
   mappingPath: readonlyMappingPath = ['0'],
   openSelectElement,
-  iterate = true,
+  iterate = false,
   generateLastRelationshipData = true,
-  customSelectType,
+  customSelectType = 'CLOSED_LIST',
   handleChange,
   handleOpen,
   handleClose,
   handleAutomapperSuggestionSelection,
   getMappedFields,
   automapperSuggestions,
-  showHiddenFields = true,
+  showHiddenFields = false,
   mappingOptionsMenuGenerator = undefined,
 }: {
   readonly baseTableName: string;
@@ -409,7 +409,7 @@ export function getMappingLineData({
   readonly openSelectElement?: SelectElementPosition;
   /*
    * {bool} if False, returns data only for the last element of the mapping
-   * path only
+   * path
    * Else returns data for each mapping path part
    */
   readonly iterate?: boolean;
@@ -418,7 +418,7 @@ export function getMappingLineData({
    * path if the last element is a relationship
    */
   readonly generateLastRelationshipData?: boolean;
-  readonly customSelectType: CustomSelectType;
+  readonly customSelectType?: CustomSelectType;
   readonly showHiddenFields?: boolean;
   readonly handleChange?: (
     index: number,

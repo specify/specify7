@@ -15,6 +15,7 @@ export default function (): void {
             generateLastRelationshipData: true,
             customSelectType: 'OPENED_LIST',
             showHiddenFields: false,
+            iterate: true,
           },
         ],
         JSON.stringify([

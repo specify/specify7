@@ -524,6 +524,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       getMappingLineData({
         mappingPath,
         baseTableName: state.baseTableName,
+        iterate: true,
         customSelectType: 'OPENED_LIST',
       }).filter((mappingElementData, index, list) => {
         if (

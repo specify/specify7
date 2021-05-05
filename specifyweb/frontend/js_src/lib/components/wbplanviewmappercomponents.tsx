@@ -81,6 +81,7 @@ export function FormatValidationResults(props: {
             mappingLineData={getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath: fieldPath,
+              iterate: true,
               generateLastRelationshipData: false,
               customSelectType: 'PREVIEW_LIST',
               getMappedFields: props.getMappedFields,
