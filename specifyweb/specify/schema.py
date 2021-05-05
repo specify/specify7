@@ -716,16 +716,5 @@ def field_to_schema(field: Field) -> Dict:
         raise Exception(f"unexpected field type: {field.type}")
 
 
-def required_to_schema(
-    field: Field, ftype: str
-) -> Union[str, List[str]]:
-    """Handle nulls in OpenAPI schema.
-
-    params:
-        filed: the field object
-        ftype: the data type of the field
-
-    returns:
-        field's data type or a list of data types
-    """
+def required_to_schema(field: Field, ftype: str) -> Dict:
     return {"type": ftype} if field.required else {"type": ftype, "nullable": True}
