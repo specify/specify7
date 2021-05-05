@@ -990,10 +990,12 @@ def up_schema(request) -> http.HttpResponse:
         },
         "responses": {
             "200": {
+                "description": "Dataset transfer succeeded.",
                 "content": {
                     "text/plain": {
                         "schema": {
                             "type": "string",
+                            "description": "Dataset transfer succeeded.",
                             "example": "ok",
                         }
                     }
