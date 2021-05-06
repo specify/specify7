@@ -152,7 +152,7 @@ const WBView = Backbone.View.extend({
             columns: [this.dataset.columns.length],
             indicators: false,
           },
-          minSpareRows: 0,
+          minSpareRows: 1,
           comments: true,
           rowHeaders: true,
           manualColumnResize: true,
@@ -344,6 +344,8 @@ const WBView = Backbone.View.extend({
     this.startValidation(changes);
   },
   rowCreated(index, amount) {
+    if (!this.hot) return;
+
     const cols = this.dataset.columns.length;
     this.wbutils.cellInfo = this.wbutils.cellInfo
       .slice(0, index * cols)
@@ -355,6 +357,8 @@ const WBView = Backbone.View.extend({
     this.spreadSheetChanged();
   },
   rowRemoved(index, amount) {
+    if (!this.hot) return;
+
     const cols = this.dataset.columns.length;
     this.wbutils.cellInfo = this.wbutils.cellInfo
       .slice(0, index * cols)
