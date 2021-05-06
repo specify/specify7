@@ -61,7 +61,7 @@ export function getLinesFromHeaders({
 }
 
 export function getLinesFromUploadPlan(
-  headers: RA<string> = [],
+  originalHeaders: RA<string> = [],
   uploadPlan: UploadPlan
 ): {
   readonly baseTableName: string;
@@ -72,9 +72,15 @@ export function getLinesFromUploadPlan(
     baseTableName,
     mappingsTree,
     mustMatchPreferences,
-  } = uploadPlanToMappingsTree(headers, uploadPlan);
+  } = uploadPlanToMappingsTree(originalHeaders, uploadPlan);
 
-  const lines = mappingsTreeToArrayOfSplitMappings(mappingsTree)
+  const mappingLines = mappingsTreeToArrayOfSplitMappings(mappingsTree);
+
+  let headers = originalHeaders;
+  if (headers.length === 0)
+    headers = mappingLines.map(({ headerName }) => headerName);
+
+  const lines = mappingLines
     .map((splitMappingPath) => ({
       ...splitMappingPath,
       headerIndex: headers.indexOf(splitMappingPath.headerName),
