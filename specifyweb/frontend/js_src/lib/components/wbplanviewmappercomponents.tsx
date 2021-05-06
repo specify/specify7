@@ -19,6 +19,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   showHiddenFields,
   handleToggleHiddenFields,
   handleAddNewHeader,
+  readonly,
 }: /*
  * MappingIsTemplated,
  * handleToggleMappingIsTemplated,
@@ -27,6 +28,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   readonly showHiddenFields: boolean;
   readonly handleToggleHiddenFields?: () => void;
   readonly handleAddNewHeader?: () => void;
+  readonly readonly: boolean;
   /*
    * Readonly handleToggleMappingIsTemplated?: () => void;
    * readonly mappingIsTemplated: boolean;
@@ -34,7 +36,9 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
 }) {
   return (
     <div>
-      <button onClick={handleAddNewHeader}>Add New Column</button>
+      {!readonly && (
+        <button onClick={handleAddNewHeader}>Add New Column</button>
+      )}
       {/* <label>
         <input
           type="checkbox"

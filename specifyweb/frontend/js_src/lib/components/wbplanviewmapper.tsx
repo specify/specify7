@@ -492,6 +492,7 @@ export default function WBPlanViewMapper(
                 props.handleAutoscrollStatusChange('listOfMappings', true);
               }
         }
+        readonly={props.readonly}
         /*
          *HandleToggleMappingIsTemplated={
          *(!props.readonly && props.handleToggleMappingIsTemplated) || undefined
