@@ -252,7 +252,7 @@ const WBView = Backbone.View.extend({
       ).find(({ headerName }) => headerName === targetHeader)?.mappingPath;
       const tableName = getMappingLineData({
         baseTableName: this.mappings.baseTableName,
-        mappingPath,
+        mappingPath: mappingPath.slice(0, -1),
       })[0]?.tableName;
       const model = schema.getModel(tableName);
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
@@ -916,7 +916,7 @@ function getRecordResult({ UploadResult }, mappingPath) {
   } else if (valueIsReferenceItem(mappingPath[1])) {
     const idx = getIndexFromReferenceItemName(mappingPath[1]);
     const toMany = UploadResult.toMany[mappingPath[0]];
-    const next = toMany && toMany[idx];
+    const next = toMany && toMany[idx-1];
     return next && getRecordResult(next, mappingPath.slice(2));
   } else {
     const next = UploadResult.toOne[mappingPath[0]];
