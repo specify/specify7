@@ -5,16 +5,18 @@
     <%- taskinfo %>
   <% } else {
      const {total='unknown', current} = taskinfo;
-     const operation = uploaderstatus.operation;
-    const title = operation[0].toUpperCase()+operation.slice(1) + (
-    	(
+     const operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
+     const title = (
+      (
     		current === total ||
     		typeof current === 'undefined' ||
     		typeof total === 'undefined'
     	) ?
-  		'...' :
-		` (<b>${current}/${total}</b>)`
-	  ); %>
+  		 operation === "Uploading" ?
+  		  'Updating trees...' :
+  		  `${operation}...` :
+		   `${operation} (<b>${current}/${total}</b>)`
+     ); %>
     <div style="width:100%">
       <%= title %>
       <div class="wb-status-progress-bar"></div>
