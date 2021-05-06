@@ -9,7 +9,7 @@ export function WBPlanViewHeader({
   buttonsRight,
 }: {
   readonly stateType: WBPlanViewStates['type'];
-  readonly title: string;
+  readonly title: string | JSX.Element;
   readonly buttonsLeft: React.ReactNode;
   readonly buttonsRight: React.ReactNode;
 }): JSX.Element {

@@ -45,7 +45,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
           checked={mappingIsTemplated}
           onChange={handleToggleMappingIsTemplated}
         />
-        Use this mapping as a template
+        {' '}Use this mapping as a template
       </label>*/}
       <label>
         {' '}
@@ -53,7 +53,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
           type="checkbox"
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
-        />
+        />{' '}
         Reveal Hidden Fields
       </label>
     </div>

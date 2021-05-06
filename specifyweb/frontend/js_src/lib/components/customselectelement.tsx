@@ -254,7 +254,7 @@ const Option = React.memo(function Option({
         {optionLabel === '0' ? 'UNMAP' : optionLabel}
       </span>
       {isRelationship && (
-        <span className="custom-select-option-relationship">▶</span>
+        <span className="custom-select-option-relationship-icon">▶</span>
       )}
     </span>
   );

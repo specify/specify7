@@ -42,11 +42,7 @@
 .wbplanview-header > div {
   display: flex;
   column-gap: var(--white-space);
-}
-
-.wbplanview-header i {
-  color: var(--success);
-  font-size: 12px;
+  align-items: center;
 }
 
 .wbplanview-readonly-badge {
@@ -61,13 +57,19 @@
 }
 
 /* BASE TABLE SELECTION STATE */
-.wbplanview-container-BaseTableSelectionState .custom-select {
-  height: 100%;
+.custom-select-base-table-selection-list {
+  height: 100% !important;
 }
 
-.wbplanview-container-BaseTableSelectionState .custom-select-options {
+.custom-select-base-table-selection-list .custom-select-options {
   max-height: unset;
   height: unset;
+  border: none;
+}
+
+.custom-select-base-table-selection-list
+  .custom-select-option-relationship-icon {
+  display: none;
 }
 
 /* MAPPING STATE */
@@ -340,7 +342,8 @@
   margin-bottom: 3px;
 }
 
-.custom-select-input-label, .custom-select-option-label {
+.custom-select-input-label,
+.custom-select-option-label {
   line-height: calc(var(--white-space) * 2);
 }
 

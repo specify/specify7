@@ -143,7 +143,7 @@ export const stateReducer = generateReducer<
                     type: 'ToggleHiddenTablesAction',
                   })
                 }
-              />
+              />{' '}
               Show Advanced Tables
             </label>
           }
@@ -245,7 +245,15 @@ export const stateReducer = generateReducer<
         header={
           <WBPlanViewHeader
             title={
-              dataModelStorage.tables[state.baseTableName].tableFriendlyName
+              <>
+                Base table:{' '}
+                <b>
+                  {
+                    dataModelStorage.tables[state.baseTableName]
+                      .tableFriendlyName
+                  }
+                </b>
+              </>
             }
             stateType={state.type}
             buttonsLeft={
@@ -323,7 +331,7 @@ export const stateReducer = generateReducer<
                         });
                       }}
                     >
-                      Check Mappings
+                      Validate Mappings
                       {state.mappingsAreValidated && (
                         <i
                           style={{
