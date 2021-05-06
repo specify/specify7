@@ -23,6 +23,7 @@ const WBUtils = require('./wbutils.js');
 const {
   getIndexFromReferenceItemName,
   valueIsReferenceItem,
+  valueIsTreeRank
 } = require('./wbplanviewmodelhelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
@@ -235,7 +236,7 @@ const WBView = Backbone.View.extend({
     const hidden = this.data[rn][ncols];
     const extra = hidden ? JSON.parse(hidden) : {};
     const da = extra.disambiguation || {};
-    da[mapping.join(' ')] = id;
+    da[mapping.slice(0, -1).join(' ')] = id;
     extra.disambiguation = da;
     this.data[rn][ncols] = JSON.stringify(extra);
     this.spreadSheetChanged();
@@ -911,7 +912,7 @@ module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
 };
 
 function getRecordResult({ UploadResult }, mappingPath) {
-  if (mappingPath.length <= 1) {
+  if (mappingPath.length <= 1 || valueIsTreeRank(mappingPath[0])) {
     return UploadResult.record_result;
   } else if (valueIsReferenceItem(mappingPath[1])) {
     const idx = getIndexFromReferenceItemName(mappingPath[1]);
