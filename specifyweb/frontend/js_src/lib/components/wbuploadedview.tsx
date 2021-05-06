@@ -162,7 +162,7 @@ function UploadedTableRow({
                   href={getRecordViewUrl(recordId)}
                   rel="noreferrer"
                 >
-                  👁
+                  ℹ️
                 </a>
               )}
             </td>
