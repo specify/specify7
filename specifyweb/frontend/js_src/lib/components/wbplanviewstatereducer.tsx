@@ -283,19 +283,17 @@ export const stateReducer = generateReducer<
             }
             buttonsRight={
               <>
-                {!state.showMappingView && (
-                  <button
-                    type="button"
-                    onClick={(): void =>
-                      state.dispatch({
-                        type: 'ToggleMappingViewAction',
-                        isVisible: true,
-                      })
-                    }
-                  >
-                    Show Mapping View
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(): void =>
+                    state.dispatch({
+                      type: 'ToggleMappingViewAction',
+                      isVisible: !state.showMappingView,
+                    })
+                  }
+                >
+                  {state.showMappingView ? 'Hide' : 'Show'} Mapping View
+                </button>
                 <button
                   type="button"
                   onClick={(): void =>

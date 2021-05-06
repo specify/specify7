@@ -115,23 +115,11 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     props.removeUnloadProtect();
     getRefMappingState(refObject, state).current.unloadProtectIsSet = false;
   },
-  MappingViewResizeAction: ({
-    height: initialHeight,
-    payload: { refObject, state, stateDispatch },
-  }) => {
+  MappingViewResizeAction: ({ height, payload: { refObject, state } }) => {
     const refMappingObject = getRefMappingState(refObject, state);
 
     if (refMappingObject.current.mappingViewHeightChangeTimeout)
       clearTimeout(refMappingObject.current.mappingViewHeightChangeTimeout);
-
-    let height = initialHeight;
-    if (initialHeight <= minMappingViewHeight) {
-      height = minMappingViewHeight + 1;
-      stateDispatch({
-        type: 'ToggleMappingViewAction',
-        isVisible: false,
-      });
-    }
 
     refMappingObject.current.mappingViewHeight = height;
     refMappingObject.current.mappingViewHeightChangeTimeout = setTimeout(

@@ -108,15 +108,6 @@
   pointer-events: none;
 }
 
-.mapping-view-parent::before {
-  content: '_';
-  position: absolute;
-  right: 0;
-  top: calc(var(--min-height) - calc(var(--white-space) * 2.5));
-  font-size: calc(var(--white-space) * 2);
-  pointer-events: none;
-}
-
 .mapping-view {
   display: flex;
   flex-wrap: nowrap;
