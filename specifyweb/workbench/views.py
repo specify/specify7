@@ -31,7 +31,7 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
     def regularize(row: List) -> Optional[List]:
         data = (row + ['']*n)[:n] # pad / trim row length to match columns
         cleaned = ['' if v is None else str(v).strip() for v in data] # convert values to strings
-        return None if all(v == '' for v in cleaned) else cleaned # skip empty rows
+        return None if all(v == '' for v in cleaned[0:ncols]) else cleaned # skip empty rows
 
     return [r for r in map(regularize, rows) if r is not None]
 
