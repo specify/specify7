@@ -343,7 +343,7 @@ const WBView = Backbone.View.extend({
     this.spreadSheetChanged();
     this.startValidation(changes);
   },
-  rowCreated(index, amount) {
+  rowCreated(index, amount, source) {
     if (!this.hot) return;
 
     const cols = this.dataset.columns.length;
@@ -354,9 +354,10 @@ const WBView = Backbone.View.extend({
         this.wbutils.cellInfo.slice(index * cols)
       );
     this.hot.render();
-    this.spreadSheetChanged();
+
+    if (source !== 'auto') this.spreadSheetChanged();
   },
-  rowRemoved(index, amount) {
+  rowRemoved(index, amount, source) {
     if (!this.hot) return;
 
     const cols = this.dataset.columns.length;
@@ -367,7 +368,8 @@ const WBView = Backbone.View.extend({
     if (this.hot.countRows() === 0) {
       this.hot.alter('insert_row', 0);
     }
-    this.spreadSheetChanged();
+
+    if (source !== 'auto') this.spreadSheetChanged();
   },
   beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
     typeof endPosition !== 'undefined',
