@@ -183,7 +183,11 @@ function UploadedTableRow({
                 <td
                   className={`wb-upload-results-cell ${
                     matched ? 'wb-upload-results-cell-matched' : ''
-                  } ${columnIndex < 0 ? 'wb-upload-results-undefined-cell' : ''}
+                  } ${
+                    columnIndex < 0 || cellValue === ''
+                      ? 'wb-upload-results-undefined-cell'
+                      : ''
+                  }
               `}
                   rowSpan={spanSize}
                   onClick={(): void =>
