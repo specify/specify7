@@ -340,7 +340,19 @@ const WBView = Backbone.View.extend({
     changes.forEach(([row]) => this.clearDisambiguation(row));
 
     this.spreadSheetChanged();
-    this.startValidation(changes);
+
+    if (this.dataset.uploadplan && changes) {
+      changes
+        .filter(
+          (
+            [, column] // ignore changes to unmapped columns
+          ) =>
+            Object.keys(this.mappedHeaders).indexOf(
+              this.dataset.columns[this.hot.toPhysicalColumn(column)]
+            ) !== -1
+        )
+        .forEach(([row]) => this.startValidateRow(row));
+    }
   },
   rowCreated(index, amount, source) {
     if (!this.hot) return;
@@ -391,11 +403,6 @@ const WBView = Backbone.View.extend({
         processData: false,
       }).fail(this.checkDeletedFail.bind(this));
     }
-  },
-  getValidationResults(showValidationSummary = false) {
-    Q(
-      $.get(`/api/workbench/validation_results/${this.dataset.id}/`)
-    ).done((results) => this.parseResults(results, showValidationSummary));
   },
   identifyMappedHeaders() {
     const stylesContainer = document.createElement('style');
@@ -469,20 +476,6 @@ const WBView = Backbone.View.extend({
     });
 
     this.$el.append(stylesContainer);
-  },
-  parseResults(results, showValidationSummary = false) {
-    this.wbutils.cellInfo = [];
-
-    if (results == null) {
-      this.hot.render();
-      return;
-    }
-
-    results.forEach((result, row) => {
-      this.parseRowValidationResult(row, result);
-    });
-
-    this.updateCellInfos(showValidationSummary);
   },
   displayUploadedView() {
     if (!this.dataset.rowresults) return;
@@ -598,6 +591,48 @@ const WBView = Backbone.View.extend({
 
     this.hot.render();
   },
+  startValidateRow(row) {
+    const pumpValidation = () => {
+      if (this.liveValidationStack.length === 0) {
+        this.liveValidationActive = false;
+        return;
+      }
+      this.liveValidationActive = true;
+      const row = this.liveValidationStack.pop();
+      const rowData = this.hot.getSourceDataAtRow(row);
+      $.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData))
+       .done((result) => this.gotRowValidationResult(this.hot.toVisualRow(row), result))
+       .always(pumpValidation);
+    };
+
+    this.liveValidationStack.push(this.hot.toPhysicalRow(row));
+    if (!this.liveValidationActive) {
+      pumpValidation();
+    }
+  },
+  gotRowValidationResult(row, result) {
+    this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
+    this.parseRowValidationResult(row, result.validation);
+    this.updateCellInfos();
+  },
+  getValidationResults(showValidationSummary = false) {
+    Q(
+      $.get(`/api/workbench/validation_results/${this.dataset.id}/`)
+    ).done((results) =>  {
+      this.wbutils.cellInfo = [];
+
+      if (results == null) {
+        this.hot.render();
+        return;
+      }
+
+      results.forEach((result, row) => {
+        this.parseRowValidationResult(row, result);
+      });
+
+      this.updateCellInfos(showValidationSummary);
+    });
+  },
   parseRowValidationResult(row, result) {
     const cols = this.dataset.columns.length;
     const headerToCol = {};
@@ -706,44 +741,6 @@ const WBView = Backbone.View.extend({
       );
     this.$('.wb-save').prop('disabled', false);
     navigation.addUnloadProtect(this, 'The workbench has not been saved.');
-  },
-  startValidation(changes) {
-    if (this.dataset.uploadplan && changes) {
-      changes
-        .filter(
-          (
-            [, column] // ignore changes to unmapped columns
-          ) =>
-            Object.keys(this.mappedHeaders).indexOf(
-              this.dataset.columns[this.hot.toPhysicalColumn(column)]
-            ) !== -1
-        )
-        .forEach(([row]) => this.startValidateRow(row));
-    }
-  },
-  startValidateRow(row) {
-    const pumpValidation = () => {
-      if (this.liveValidationStack.length === 0) {
-        this.liveValidationActive = false;
-        return;
-      }
-      this.liveValidationActive = true;
-      const row = this.liveValidationStack.pop();
-      const rowData = this.hot.getSourceDataAtRow(row);
-      $.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData))
-       .done((result) => this.gotRowValidationResult(this.hot.toVisualRow(row), result))
-       .always(pumpValidation);
-    };
-
-    this.liveValidationStack.push(this.hot.toPhysicalRow(row));
-    if (!this.liveValidationActive) {
-      pumpValidation();
-    }
-  },
-  gotRowValidationResult(row, result) {
-    this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
-    this.parseRowValidationResult(row, result.validation);
-    this.updateCellInfos();
   },
   resize: function () {
     this.hot && this.hot.updateSettings({ height: this.calcHeight() });
