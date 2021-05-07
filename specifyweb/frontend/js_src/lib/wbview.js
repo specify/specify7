@@ -281,7 +281,7 @@ const WBView = Backbone.View.extend({
         ).appendTo(table);
         tr.append(
           $('<td>').append(
-            $(`<a target="_blank">👁</a>`).attr(
+            $(`<a target="_blank">ℹ️</a>`).attr(
               'href',
               api.makeResourceViewUrl(model, id)
             )
