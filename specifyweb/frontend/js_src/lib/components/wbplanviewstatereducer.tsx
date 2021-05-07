@@ -319,6 +319,11 @@ export const stateReducer = generateReducer<
                     </button>
                     <button
                       type="button"
+                      className={`validation-indicator ${
+                        state.mappingsAreValidated
+                          ? 'validation-indicator-success'
+                          : ''
+                      }`}
                       onClick={(): void => {
                         state.dispatch({
                           type: 'ValidationAction',
@@ -331,16 +336,6 @@ export const stateReducer = generateReducer<
                       }}
                     >
                       Validate Mappings
-                      {state.mappingsAreValidated && (
-                        <i
-                          style={{
-                            color: '#4f2',
-                            fontSize: '12px',
-                          }}
-                        >
-                          ✓
-                        </i>
-                      )}
                     </button>
                     <button
                       type="button"

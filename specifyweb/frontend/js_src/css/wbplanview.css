@@ -50,6 +50,28 @@
   font-weight: 700;
 }
 
+.validation-indicator-success {
+  position: relative;
+}
+
+.validation-indicator-success:after {
+  background: #0f0;
+  content: 'Validated!';
+  position: absolute;
+  left: 0;
+  right: 0;
+  animation: validated-success ease-in-out 0.2s;
+}
+
+@keyframes validated-success {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* CONTAINER */
 .wbplanview-container {
   flex: 1;
@@ -73,8 +95,7 @@
   border: none;
 }
 
-.custom-select-base-table-selection-list
-  .custom-select-option-relationship-icon {
+.custom-select-base-table-selection-list .custom-select-option-relationship-icon {
   display: none;
 }
 
