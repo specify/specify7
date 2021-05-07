@@ -1,6 +1,5 @@
 import type React from 'react';
 import type { WBPlanViewProps } from './components/wbplanview';
-import { minMappingViewHeight } from './components/wbplanviewmappercomponents';
 import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';

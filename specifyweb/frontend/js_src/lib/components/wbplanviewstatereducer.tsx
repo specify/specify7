@@ -16,7 +16,7 @@ import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import type { IR, RA, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
-import { HeaderWrapper, WBPlanViewHeader } from './wbplanviewheader';
+import { Layout, WBPlanViewHeader } from './wbplanviewheader';
 import type {
   AutomapperSuggestion,
   MappingPath,
@@ -126,27 +126,14 @@ export const stateReducer = generateReducer<
     return <LoadingScreen />;
   },
   BaseTableSelectionState: ({ action: state }) => (
-    <HeaderWrapper
+    <Layout
       stateName={state.type}
       readonly={state.props.readonly}
       header={
         <WBPlanViewHeader
           title="Select Base Table"
           stateType={state.type}
-          buttonsLeft={
-            <label>
-              <input
-                type="checkbox"
-                checked={state.showHiddenTables}
-                onChange={(): void =>
-                  state.dispatch({
-                    type: 'ToggleHiddenTablesAction',
-                  })
-                }
-              />{' '}
-              Show Advanced Tables
-            </label>
-          }
+          buttonsLeft={undefined}
           buttonsRight={
             <>
               <button
@@ -176,6 +163,20 @@ export const stateReducer = generateReducer<
           }
         />
       }
+      footer={
+        <label>
+          <input
+            type="checkbox"
+            checked={state.showHiddenTables}
+            onChange={(): void =>
+              state.dispatch({
+                type: 'ToggleHiddenTablesAction',
+              })
+            }
+          />{' '}
+          Show Advanced Tables
+        </label>
+      }
     >
       <ListOfBaseTables
         listOfTables={dataModelStorage.listOfBaseTables}
@@ -189,7 +190,7 @@ export const stateReducer = generateReducer<
           })
         }
       />
-    </HeaderWrapper>
+    </Layout>
   ),
   TemplateSelectionState: ({ action: state }) => (
     <WbsDialog
@@ -239,7 +240,7 @@ export const stateReducer = generateReducer<
       });
 
     return (
-      <HeaderWrapper
+      <Layout
         stateName={state.type}
         readonly={state.props.readonly}
         header={
@@ -583,7 +584,7 @@ export const stateReducer = generateReducer<
             )}
           </ModalDialog>
         ) : null}
-      </HeaderWrapper>
+      </Layout>
     );
   },
 });

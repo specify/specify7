@@ -24,10 +24,11 @@ export function WBPlanViewHeader({
   );
 }
 
-export function HeaderWrapper(props: {
+export function Layout(props: {
   readonly children: React.ReactNode;
   readonly readonly: boolean;
   readonly header: JSX.Element;
+  readonly footer?: JSX.Element;
   readonly stateName: WBPlanViewStates['type'];
   readonly handleClick?: () => void;
   readonly extraContainerProps?: IR<unknown>;
@@ -55,6 +56,7 @@ export function HeaderWrapper(props: {
       >
         {props.children}
       </div>
+      {props.footer}
     </div>
   );
 }

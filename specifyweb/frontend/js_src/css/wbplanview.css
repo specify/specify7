@@ -57,8 +57,14 @@
 }
 
 /* BASE TABLE SELECTION STATE */
+.wbplanview-container-BaseTableSelectionState {
+  display: flex;
+  flex-direction: column;
+  row-gap: calc(var(--white-space) * 2);
+}
+
 .custom-select-base-table-selection-list {
-  height: 100% !important;
+  flex: 1;
 }
 
 .custom-select-base-table-selection-list .custom-select-options {
