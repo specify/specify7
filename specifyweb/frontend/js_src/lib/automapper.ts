@@ -171,7 +171,7 @@ const matchBaseRankName = (
   friendlyName: string,
   stripedRankName: string,
   strippedHeaderName: string
-) => friendlyName === 'name' && stripedRankName === strippedHeaderName;
+): boolean => friendlyName === 'name' && stripedRankName === strippedHeaderName;
 
 const matchRankAndFieldName = (
   // Find cases like `Kingdom Author`
@@ -180,7 +180,7 @@ const matchRankAndFieldName = (
   friendlyName: string,
   finalHeaderName: string,
   fieldName: string
-) =>
+): boolean =>
   strippedHeaderName === `${stripedRankName} ${friendlyName}` ||
   finalHeaderName === `${stripedRankName} ${fieldName}`;
 
@@ -188,7 +188,7 @@ const isFieldInDontMatch = (
   tableName: string,
   lastPathPart: string,
   scope: AutomapperScope
-) =>
+): boolean =>
   tableName !== '' &&
   (AutoMapperDefinitions.dontMatch[tableName]?.[lastPathPart]?.indexOf(scope) ??
     -1) !== -1;
@@ -196,15 +196,20 @@ const isFieldInDontMatch = (
 const mappingPathIsInProposedMappings = (
   allowMultipleMappings: boolean,
   results: AutoMapperResults,
-  localPath: MappingPath
-) =>
-  !allowMultipleMappings &&
-  Object.values(results).some((mappingPaths) =>
-    mappingPaths.some(
-      (mappingPath) =>
-        mappingPathToString(localPath) === mappingPathToString(mappingPath)
-    )
-  );
+  localPath: MappingPath,
+  headerName: string
+): boolean =>
+  results[headerName]?.some(
+    (mappingPath) =>
+      mappingPathToString(mappingPath) === mappingPathToString(localPath)
+  ) ||
+  (!allowMultipleMappings &&
+    Object.values(results).some((mappingPaths) =>
+      mappingPaths.some(
+        (mappingPath) =>
+          mappingPathToString(localPath) === mappingPathToString(mappingPath)
+      )
+    ));
 
 const mappingPathIsTheMappingsTree = (
   checkForExistingMappings: boolean,
@@ -1018,15 +1023,16 @@ export default class Automapper {
      */
     while (
       /*
-       * Go over mapped headers to see if this path was already mapped
-       * go over mappings proposed by automapper
+       * Go over mapped headers to see if this path was already mapped.
+       * Go over mappings proposed by automapper:
        */
       mappingPathIsInProposedMappings(
         this.allowMultipleMappings,
         this.results,
-        localPath
+        localPath,
+        headerName
       ) ||
-      // Go over mappings that are already in the mappings tree
+      // Go over mappings that are already in the mappings tree:
       mappingPathIsTheMappingsTree(
         this.checkForExistingMappings,
         localPath,
