@@ -120,7 +120,7 @@ export function MappingLineComponent({
           onClick={handleClearMapping}
           disabled={readonly}
         >
-          <img src="../../../static/img/discard.svg" alt="Clear mapping" />
+          ⌦
         </button>
       </div>
       <div

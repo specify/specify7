@@ -219,11 +219,6 @@
   background: var(--b3);
 }
 
-.wbplanview-mapping-line-controls button img {
-  width: calc(2 * var(--white-space));
-  height: calc(2 * var(--white-space));
-}
-
 /* MAPPINGS LINE ELEMENTS */
 .wbplanview-mapping-line-header {
   display: flex;
