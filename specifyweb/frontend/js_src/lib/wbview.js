@@ -64,7 +64,6 @@ const WBView = Backbone.View.extend({
       this.dataset.uploadplan &&
       uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
 
-    this.highlightsOn = false;
     this.liveValidationStack = [];
     this.liveValidationActive = false;
 
@@ -831,23 +830,6 @@ const WBView = Backbone.View.extend({
     new WBStatus({ dataset: this.dataset })
       .render()
       .on('done', () => this.trigger('refresh', mode));
-  },
-  showHighlights: function () {
-    this.highlightsOn = true;
-    this.hot.render();
-  },
-  removeHighlights: function () {
-    this.highlightsOn = false;
-    this.hot.render();
-  },
-  toggleHighlights: function () {
-    if (this.highlightsOn) {
-      this.removeHighlights();
-      this.$('.wb-toggle-highlights').text('Show');
-    } else {
-      this.showHighlights();
-      this.$('.wb-toggle-highlights').text('Hide');
-    }
   },
   delete: function () {
     let dialog;
