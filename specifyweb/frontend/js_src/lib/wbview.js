@@ -65,7 +65,8 @@ const WBView = Backbone.View.extend({
       uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
 
     this.highlightsOn = false;
-    this.rowValidationRequests = {};
+    this.liveValidationStack = [];
+    this.liveValidationActive = false;
 
     this.wbutils = new WBUtils({
       wbview: this,
@@ -722,19 +723,28 @@ const WBView = Backbone.View.extend({
     }
   },
   startValidateRow(row) {
-    const rowData = this.hot.getSourceDataAtRow(this.hot.toPhysicalRow(row));
-    const req = (this.rowValidationRequests[row] = $.post(
-      `/api/workbench/validate_row/${this.dataset.id}/`,
-      JSON.stringify(rowData)
-    ));
-    req.done((result) => this.gotRowValidationResult(row, req, result));
-  },
-  gotRowValidationResult(row, req, result) {
-    if (req === this.rowValidationRequests[row]) {
-      this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
-      this.parseRowValidationResult(row, result.validation);
-      this.updateCellInfos();
+    const pumpValidation = () => {
+      if (this.liveValidationStack.length === 0) {
+        this.liveValidationActive = false;
+        return;
+      }
+      this.liveValidationActive = true;
+      const row = this.liveValidationStack.pop();
+      const rowData = this.hot.getSourceDataAtRow(row);
+      $.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData))
+       .done((result) => this.gotRowValidationResult(this.hot.toVisualRow(row), result))
+       .always(pumpValidation);
+    };
+
+    this.liveValidationStack.push(this.hot.toPhysicalRow(row));
+    if (!this.liveValidationActive) {
+      pumpValidation();
     }
+  },
+  gotRowValidationResult(row, result) {
+    this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
+    this.parseRowValidationResult(row, result.validation);
+    this.updateCellInfos();
   },
   resize: function () {
     this.hot && this.hot.updateSettings({ height: this.calcHeight() });
