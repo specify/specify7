@@ -265,8 +265,7 @@ const WBView = Backbone.View.extend({
       const doAll = (selected) => {
         for (let i = 0; i < this.data.length; i++) {
           const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
-          const key = getRecordResult(rowResult, mappingPath)?.MatchedMultiple
-            ?.key;
+          const key = rowResult && getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
           if (key === matches.key) {
             this.setDisambiguation(i, mappingPath, parseInt(selected, 10));
             this.startValidateRow(i);
