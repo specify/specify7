@@ -388,9 +388,14 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       startDate: {
+        automapper: {
+          headers: {
+            string: ['date'],
+          },
+        },
         suggestion: {
           headers: {
-            contains: ['date', 'start', 'collected'],
+            contains: ['start', 'collected'],
           },
         },
       },
