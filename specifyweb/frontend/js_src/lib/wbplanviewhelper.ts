@@ -209,22 +209,21 @@ export function generateMappingPathPreview(
         (Object.values(mappingElementData.fieldsData).find(
           ({ isDefault }) => isDefault
         )?.fieldFriendlyName as string) ?? mappingPathPart
-    )
-    .reverse();
+    );
 
-  const databaseFieldName = mappingPath.slice(-1)[0];
-  const [fieldName, possibleTableName] = mappingLineData;
+  const [possibleDataBaseTableName, databaseFieldName] = mappingPath.slice(-2);
+  const [possibleTableName, fieldName] = mappingLineData.slice(-2);
 
   if (mappingLineData.length === 1) return [databaseFieldName, fieldName];
 
-  if (valueIsTreeRank(possibleTableName))
+  if (valueIsTreeRank(possibleDataBaseTableName))
     return [
       databaseFieldName,
       databaseFieldName === 'name'
         ? possibleTableName
         : `${possibleTableName} ${fieldName}`,
     ];
-  else if (valueIsReferenceItem(mappingPath.slice(-2)[0]))
+  else if (valueIsReferenceItem(possibleDataBaseTableName))
     return [databaseFieldName, `${fieldName} ${possibleTableName}`];
   else return [databaseFieldName, `${fieldName}`];
 }
