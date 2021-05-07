@@ -50,14 +50,10 @@ class ScopedTreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
     treedefid: int
+    disambiguation: Dict[str, int]
 
-    def disambiguate(self, disambiguation: DA) -> "ScopedUploadable":
-        from .upload_table import DisambiguatedTable
-        if disambiguation is not None:
-            id = disambiguation.disambiguate()
-            if id is not None:
-                return DisambiguatedTable(name=self.name, id=id)
-        return self
+    def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
+        return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
@@ -81,6 +77,7 @@ class ScopedTreeRecord(NamedTuple):
         return BoundTreeRecord(
             name=self.name,
             treedefid=self.treedefid,
+            disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             uploadingAgentId=uploadingAgentId,
         )
@@ -109,6 +106,7 @@ class BoundTreeRecord(NamedTuple):
     treedefid: int
     parsedFields: Dict[str, List[ParseResult]]
     uploadingAgentId: Optional[int]
+    disambiguation: Dict[str, int]
 
     def get_treedef(self):
         model = getattr(models, self.name)
@@ -167,9 +165,14 @@ class BoundTreeRecord(NamedTuple):
 
         parent = None
         matched_cols: List[str] = []
+        tried_to_match: List[TreeDefItemWithParseResults] = []
         while True:
             to_match = tdiwprs[0]
-            matches = self._find_matching_descendent(parent, to_match)
+            tried_to_match.append(to_match)
+            da = self.disambiguation.get(to_match.treedefitem.name, None)
+            matches = self._find_matching_descendent(parent, to_match) if da is None else \
+                model.objects.filter(id=da)
+
             if matches.count() != 1:
                 # matching failed at to_match level
                 break
@@ -193,7 +196,7 @@ class BoundTreeRecord(NamedTuple):
                 treeInfo=TreeInfo(to_match.treedefitem.name, "")
             )
             ids = [m.id for m in matches]
-            key = repr(sorted(tdiwpr.match_key() for tdiwpr in tdiwprs))
+            key = repr(sorted(tdiwpr.match_key() for tdiwpr in tried_to_match))
             return tdiwprs, MatchedMultiple(ids, key, info)
         else:
             assert n_matches == 0

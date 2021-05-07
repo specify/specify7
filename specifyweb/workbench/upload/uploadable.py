@@ -22,6 +22,9 @@ class DisambiguationInfo(Protocol):
     def disambiguate(self) -> Optional[int]:
         ...
 
+    def disambiguate_tree(self) -> Dict[str, int]:
+        ...
+
     def disambiguate_to_one(self, to_one: str) -> "Disambiguation":
         ...
 

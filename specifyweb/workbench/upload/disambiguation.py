@@ -11,6 +11,13 @@ class DisambiguationInfo:
     def disambiguate(self) -> Optional[int]:
         return self.disambiguations[()] if () in self.disambiguations else None
 
+    def disambiguate_tree(self) -> Dict[str, int]:
+        return {
+            path[0][1:]: id
+            for path, id in self.disambiguations.items()
+            if path != () and path[0].startswith('$')
+        }
+
     def disambiguate_to_one(self, to_one: str) -> Disambiguation:
         result: Dict[Tuple, int] = {
             path[1:]: id

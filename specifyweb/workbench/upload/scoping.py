@@ -131,4 +131,5 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         name=tr.name,
         ranks=tr.ranks,
         treedefid=treedefid,
+        disambiguation={},
     )
