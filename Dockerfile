@@ -1,30 +1,23 @@
-
 FROM ubuntu:18.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
-RUN apt-get update && apt-get -y install --no-install-recommends \
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends \
         python3.6 \
         libldap-2.4-2 \
         libmariadbclient18 \
-        && apt-get clean && rm -rf /var/lib/apt/lists/*
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g 999 specify && \
-        useradd -r -u 999 -g specify specify
+RUN groupadd -g 999 specify \
+ && useradd -r -u 999 -g specify specify
 
-RUN mkdir -p /home/specify && chown specify.specify /home/specify
-RUN mkdir -p /opt/specify7 && chown specify.specify /opt/specify7
+RUN mkdir -p /home/specify \
+ && chown specify.specify /home/specify
+RUN mkdir -p /opt/specify7 \
+ && chown specify.specify /opt/specify7
 
-
-#####################################################################
-
-FROM common AS build-common
-
-RUN apt-get update && apt-get -y install --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        curl \
-        git
 
 #####################################################################
 
@@ -32,7 +25,8 @@ FROM build-common AS build-frontend
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
 
-RUN apt-get update && apt-get -y install --no-install-recommends nodejs
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends nodejs
 
 USER specify
 
@@ -44,9 +38,14 @@ RUN make
 
 #####################################################################
 
-FROM build-common AS build-backend
+FROM common AS build-backend
 
-RUN apt-get -y install --no-install-recommends \
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
         libldap2-dev \
         libmariadbclient-dev \
         libsasl2-dev \
@@ -57,7 +56,8 @@ USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+RUN python3.6 -m venv ve \
+ && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn redis
 
 COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
@@ -80,11 +80,14 @@ RUN date > specifyweb/frontend/static/build_date.txt
 
 FROM common AS run
 
-RUN apt-get update && apt-get -y install --no-install-recommends \
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends \
         rsync \
-        && apt-get clean && rm -rf /var/lib/apt/lists/*
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /volumes/static-files/depository && chown -R specify.specify /volumes/static-files
+RUN mkdir -p /volumes/static-files/depository \
+ && chown -R specify.specify /volumes/static-files
 
 USER specify
 COPY --from=build-backend /opt/specify7 /opt/specify7
