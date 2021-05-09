@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Leaflet from '../leaflet';
+import type L from 'leaflet';
 import { issueDefinitions } from '../lifemapperinfoissuedefinitions';
 import type { LifemapperInfo } from '../lifemapperinforeducer';
 import type {
@@ -108,7 +109,13 @@ export function LifemapperMap({
   React.useEffect(() => {
     if (!mapRef.current) return undefined;
 
-    const [map, layerGroup] = Leaflet.showCOMap(
+    let destructorCalled = false;
+    function destructor(map: L.Map): void {
+      map.off();
+      map.remove();
+    }
+    let leafletMap: L.Map | undefined;
+    Leaflet.showCOMap(
       mapRef.current,
       lifemapperInfo.layers,
       (Object.entries(lifemapperInfo.messages) as [MessageTypes, RA<string>][])
@@ -124,18 +131,25 @@ export function LifemapperMap({
       </span>`
         )
         .join('')
-    );
-
-    Leaflet.addMarkersToMap(
-      map,
-      layerGroup,
-      lifemapperInfo.markers.flat(2),
-      'Local Occurrence Points'
-    );
+    )
+      .then(([map, layerGroup]) => {
+        Leaflet.addMarkersToMap(
+          map,
+          layerGroup,
+          lifemapperInfo.markers.flat(2),
+          'Local Occurrence Points'
+        );
+        if (destructorCalled) destructor(map);
+        else leafletMap = map;
+      })
+      .catch((error) => {
+        throw error;
+      });
 
     return () => {
-      map.off();
-      map.remove();
+      if (typeof leafletMap === 'undefined') {
+        destructorCalled = true;
+      } else destructor(leafletMap);
     };
   }, [mapRef]);
 

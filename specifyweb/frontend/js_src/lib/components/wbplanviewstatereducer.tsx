@@ -335,7 +335,7 @@ export const stateReducer = generateReducer<
                         });
                       }}
                     >
-                      Validate Mappings
+                      Validate Mapping
                     </button>
                     <button
                       type="button"
@@ -578,7 +578,7 @@ export const stateReducer = generateReducer<
               </table>
             )}
           </ModalDialog>
-        ) : null}
+        ) : undefined}
       </Layout>
     );
   },

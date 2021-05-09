@@ -13,7 +13,7 @@ module.exports = UIPlugin.extend(
       click: 'click',
     },
     render() {
-      this.$el.attr('value', 'Leaflet Map').prop('disabled', false);
+      this.$el.attr('value', 'Show Map').prop('disabled', false);
       return this;
     },
     click(event_) {
@@ -40,7 +40,7 @@ module.exports = UIPlugin.extend(
         (localityData) =>
           Leaflet.showLeafletMap({
             localityPoints: [localityData],
-            leafletMapContainer: 'leaflet-plugin'
+            leafletMapContainer: 'leaflet-plugin',
           })
       );
     },

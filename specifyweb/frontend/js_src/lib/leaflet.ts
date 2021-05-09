@@ -13,7 +13,55 @@ import type { LocalityData } from './leafletutils';
 
 const DEFAULT_ZOOM = 5;
 
-export function showLeafletMap({
+// Try to fetch up-to-date tile servers. If fails, use the default tile servers
+let leafletMaps: typeof leafletTileServers | undefined;
+export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
+  typeof leafletMaps === 'undefined'
+    ? new Promise(
+        (resolve) =>
+          void fetch(
+            'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json'
+          )
+            .then(async (response) => response.json())
+            .then((response) =>
+              resolve(
+                (leafletMaps = Object.fromEntries(
+                  Object.entries(response).map(([layerGroup, layers]) => [
+                    layerGroup,
+                    Object.fromEntries(
+                      Object.entries(
+                        layers as Record<
+                          string,
+                          {
+                            readonly endpoint: string;
+                            readonly serverType: 'tileServer' | 'wms';
+                            readonly layerOptions: Record<string, unknown>;
+                          }
+                        >
+                      ).map(
+                        ([
+                          layerName,
+                          { endpoint, serverType, layerOptions },
+                        ]) => [
+                          layerName,
+                          (serverType === 'wms'
+                            ? L.tileLayer.wms
+                            : L.tileLayer)(endpoint, layerOptions),
+                        ]
+                      )
+                    ),
+                  ])
+                ) as typeof leafletTileServers)
+              )
+            )
+            .catch((error) => {
+              console.error(error);
+              resolve(leafletTileServers);
+            })
+      )
+    : Promise.resolve(leafletMaps);
+
+export async function showLeafletMap({
   localityPoints = [],
   markerClickCallback,
   leafletMapContainer,
@@ -21,12 +69,14 @@ export function showLeafletMap({
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: () => void;
   readonly leafletMapContainer: string | JQuery<HTMLDivElement> | undefined;
-}): L.Map | undefined {
+}): Promise<L.Map | undefined> {
+  const tileLayers = await getLeafletLayers();
+
   if (
     typeof leafletMapContainer === 'string' &&
     document.getElementById(leafletMapContainer) !== null
   )
-    return;
+    return undefined;
 
   if (typeof leafletMapContainer !== 'object')
     leafletMapContainer = $(
@@ -55,11 +105,11 @@ export function showLeafletMap({
   }
 
   const map = L.map(leafletMapContainer[0], {
-    layers: [Object.values(leafletTileServers.baseMaps)[0]],
+    layers: [Object.values(tileLayers.baseMaps)[0]],
   }).setView(defaultCenter, defaultZoom);
   const controlLayers = L.control.layers(
-    leafletTileServers.baseMaps,
-    leafletTileServers.overlays
+    tileLayers.baseMaps,
+    tileLayers.overlays
   );
   controlLayers.addTo(map);
 
@@ -241,11 +291,13 @@ export type LayerConfig = {
   };
 };
 
-export function showCOMap(
+export async function showCOMap(
   mapContainer: Readonly<HTMLDivElement>,
   listOfLayersRaw: RA<LayerConfig>,
   details: string | undefined = undefined
-): [L.Map, L.Control.Layers, HTMLDivElement | undefined] {
+): Promise<[L.Map, L.Control.Layers, HTMLDivElement | undefined]> {
+  const tileLayers = await getLeafletLayers();
+
   const listOfLayers: {
     transparent: boolean;
     layerLabel: string;
@@ -254,8 +306,7 @@ export function showCOMap(
     ...coMapTileServers.map(({ transparent, layerLabel }) => ({
       transparent,
       layerLabel,
-      tileLayer:
-        leafletTileServers[transparent ? 'overlays' : 'baseMaps'][layerLabel],
+      tileLayer: tileLayers[transparent ? 'overlays' : 'baseMaps'][layerLabel],
     })),
     ...listOfLayersRaw.map(
       ({ transparent, layerLabel, tileLayer: { mapUrl, options } }) => ({
