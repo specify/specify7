@@ -7,7 +7,11 @@
 
 import $ from 'jquery';
 import type { IR, RA } from './components/wbplanview';
-import { coMapTileServers, leafletTileServers } from './leafletconfig';
+import {
+  coMapTileServers,
+  leafletLayersEndpoint,
+  leafletTileServers,
+} from './leafletconfig';
 import L from './leafletextend';
 import type { LocalityData } from './leafletutils';
 
@@ -19,9 +23,7 @@ export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
   typeof leafletMaps === 'undefined'
     ? new Promise(
         (resolve) =>
-          void fetch(
-            'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json'
-          )
+          void fetch(leafletLayersEndpoint)
             .then(async (response) => response.json())
             .then((response) =>
               resolve(

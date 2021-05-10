@@ -9,6 +9,24 @@ import L from './leafletextend';
 import type { IR, RA, RR } from './components/wbplanview';
 import type { LocalityField } from './leafletutils';
 
+export const leafletLayersEndpoint =
+  'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json';
+
+/*
+ *
+ * These layers are only used when:
+ *  * Leaflet failed to fetch layers from:
+ *    leafletLayersEndpoint (defined above)
+ *  * User didn't define a resource file `leaflet-layers`
+ *
+ * On any updates to this file, you should also update thw one at
+ * leafletLayersEndpoint
+ *
+ * Documentation:
+ * https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers
+ *
+ *
+ */
 export const leafletTileServers: RR<
   'baseMaps' | 'overlays',
   IR<L.TileLayer>
@@ -69,7 +87,7 @@ export const leafletTileServers: RR<
       }
     ),
     'Live Satellite Map (NASAGIBS)': L.tileLayer(
-      'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
+      'https://gibs.earthdata.nasa.gov/wmts/epsg3031/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
       {
         attribution:
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
