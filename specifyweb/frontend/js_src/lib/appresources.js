@@ -308,19 +308,15 @@ const GlobalResourcesView = Backbone.View.extend({
         // there are multiple "global" directories
         // distinguished by the usertype field
         // i'm not going to bother separating them out for now
-        const globalDirs = directories
+        this.directories = directories
                   .filter(d => d.get('discipline') == null);
 
-        const dirURIs = globalDirs.map(d => d.get('resource_uri'));
-
-        // all new resources will be added to the common directory
-        // because, why not?
-        const commonDir = globalDirs.filter(d => d.get('usertype') === 'Common')[0];
+        const dirURIs = this.directories.map(d => d.get('resource_uri'));
 
         this.resourceList = new ResourceList({
             resources: resources.filter(r => dirURIs.includes(r.get('spappresourcedir'))),
             selectedResource: selectedResource,
-            getDirectory: () => Q(commonDir),
+            getDirectory: () => this.getDirectory(),
             ResourceModel: ResourceModel
         });
     },
@@ -333,13 +329,15 @@ const GlobalResourcesView = Backbone.View.extend({
         return this;
     },
     getDirectory() {
-        let directory = this.directories[0];
+        // all new resources will be added to the common directory
+        // because, why not?
+        let directory = this.directories.filter(d => d.get('usertype') === 'Common')[0];
         if (directory != null) return Q(directory);
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
-            discipline: this.discipline.get('resource_uri')
+            usertype: 'Common'
         }, {noBusinessRules: true});
-        directory.set('collection', null); // The collection gets set automatically by the 'newresource' event on the api.
+        directory.set({collection: null, discipline: null}); // The collection gets set automatically by the 'newresource' event on the api.
         return Q(directory.save()).then(() => directory);
     }
 });
