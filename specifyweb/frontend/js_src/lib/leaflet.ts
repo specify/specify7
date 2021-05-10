@@ -15,49 +15,51 @@ const DEFAULT_ZOOM = 5;
 
 // Try to fetch up-to-date tile servers. If fails, use the default tile servers
 let leafletMaps: typeof leafletTileServers | undefined;
+
+const parseLayersFromJson = (json: Record<string, any>) =>
+  Object.fromEntries(
+    Object.entries(json).map(([layerGroup, layers]) => [
+      layerGroup,
+      Object.fromEntries(
+        Object.entries(
+          layers as Record<
+            string,
+            {
+              readonly endpoint: string;
+              readonly serverType: 'tileServer' | 'wms';
+              readonly layerOptions: Record<string, unknown>;
+            }
+          >
+        ).map(([layerName, { endpoint, serverType, layerOptions }]) => [
+          layerName,
+          (serverType === 'wms' ? L.tileLayer.wms : L.tileLayer)(
+            endpoint,
+            layerOptions
+          ),
+        ])
+      ),
+    ])
+  ) as typeof leafletTileServers;
+
 export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
   typeof leafletMaps === 'undefined'
-    ? new Promise(
-        (resolve) =>
-          void fetch(
-            'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json'
-          )
-            .then(async (response) => response.json())
-            .then((response) =>
-              resolve(
-                (leafletMaps = Object.fromEntries(
-                  Object.entries(response).map(([layerGroup, layers]) => [
-                    layerGroup,
-                    Object.fromEntries(
-                      Object.entries(
-                        layers as Record<
-                          string,
-                          {
-                            readonly endpoint: string;
-                            readonly serverType: 'tileServer' | 'wms';
-                            readonly layerOptions: Record<string, unknown>;
-                          }
-                        >
-                      ).map(
-                        ([
-                          layerName,
-                          { endpoint, serverType, layerOptions },
-                        ]) => [
-                          layerName,
-                          (serverType === 'wms'
-                            ? L.tileLayer.wms
-                            : L.tileLayer)(endpoint, layerOptions),
-                        ]
-                      )
-                    ),
-                  ])
-                ) as typeof leafletTileServers)
-              )
+    ? new Promise(async (resolve) =>
+        fetch('http://localhost/context/app.resource?name=leaflet-layers')
+          .then(async (response) => response.json())
+          .then((data) => resolve((leafletMaps = parseLayersFromJson(data))))
+          .catch(async () =>
+            fetch(
+              'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json'
             )
-            .catch((error) => {
-              console.error(error);
-              resolve(leafletTileServers);
-            })
+              .then(async (response) => response.json())
+              .then((data) =>
+                resolve((leafletMaps = parseLayersFromJson(data)))
+              )
+              .catch((error) => {
+                console.error(error);
+                resolve(leafletTileServers);
+              })
+          )
       )
     : Promise.resolve(leafletMaps);
 
