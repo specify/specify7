@@ -7,6 +7,7 @@ const Backbone = require('./backbone.js');
 const _ = require('underscore');
 const ace = require('brace');
 require('brace/mode/xml');
+require('brace/mode/json');
 require('brace/mode/properties');
 
 const app = require('./specifyapp.js');
@@ -72,6 +73,9 @@ function modeForResource(appResource) {
     }
     if (appResource.get('mimetype') === 'jrxml/report') {
         return "ace/mode/xml";
+    }
+    if (appResource.get('mimetype') === 'application/json'){
+        return "ace/mode/json";
     }
     return null;
 }
