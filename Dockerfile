@@ -21,20 +21,18 @@ RUN mkdir -p /opt/specify7 \
 
 #####################################################################
 
-FROM build-common AS build-frontend
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
+FROM node:16.1.0-alpine3.11 AS build-frontend
 
-RUN apt-get update \
- && apt-get -y install --no-install-recommends nodejs
+LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
-USER specify
-
-COPY --chown=specify:specify specifyweb/frontend /home/specify/frontend
+USER node
 WORKDIR /home/specify/frontend/js_src
 
-RUN make
-
+COPY --chown=node:node specifyweb/frontend/js_src/package.json .
+RUN npm install
+COPY --chown=node:node specifyweb/frontend ..
+RUN npx webpack
 
 #####################################################################
 

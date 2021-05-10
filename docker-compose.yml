@@ -41,9 +41,8 @@ services:
     build:
       context: ./.
       target: build-frontend
-    command: make watch
+    command: npx webpack -w --mode development
     restart: unless-stopped
-    init: true
     volumes:
       - "webpack-output:/home/specify/frontend/static/js"
       - "./specifyweb/frontend/js_src/lib:/home/specify/frontend/js_src/lib:ro"
