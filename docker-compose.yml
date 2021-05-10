@@ -42,6 +42,7 @@ services:
       context: ./.
       target: build-frontend
     command: make watch
+    restart: unless-stopped
     init: true
     volumes:
       - "webpack-output:/home/specify/frontend/static/js"
@@ -74,7 +75,7 @@ services:
       - CELERY_RESULT_BACKEND=redis://redis/1
       - LOG_LEVEL=WARNING
       - SP7_DEBUG=true
-      
+
   redis:
     image: redis
 
@@ -113,4 +114,4 @@ volumes:
   database: # the data directory for maniadb
   specify6: # provides Specify 6 files to Specify 7 and the web server
   static-files: # provides Specify 7 static files to the web server
-  webpack-output: 
+  webpack-output:
