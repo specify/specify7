@@ -20,7 +20,7 @@ def make_master_key(userpass):
             "required": True,
             "description": "User's password",
             "content": {
-                "application/json": {
+                "application/x-www-form-urlencoded": {
                     "schema": {
                         "type": "object",
                         "properties": {
@@ -28,7 +28,9 @@ def make_master_key(userpass):
                                 "type": "string",
                                 "description": "User's password",
                             },
-                        }
+                        },
+                        "required": ['password'],
+                        'additionalProperties': False
                     }
                 }
             }
@@ -44,6 +46,7 @@ def make_master_key(userpass):
                     }
                 }
             },
+            "403": {"description": "Password was incorrect."}
         }
     },
 })
