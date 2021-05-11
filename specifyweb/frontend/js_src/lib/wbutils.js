@@ -88,24 +88,24 @@ module.exports = Backbone.View.extend({
         newPosition = this.cellInfo.length - 1 - newPosition;
     }
 
-    const resolveIndex =
+    const cellInfoSubset =
       direction === 'next'
-        ? (index) => index
-        : (index) => this.cellInfo.length - 1 - index;
+        ? this.cellInfo.slice(currentPosition + !matchCurrentCell)
+        : this.cellInfo.slice(0, currentPosition - matchCurrentCell);
 
     if (!found) {
       newPosition = (direction === 'next'
-        ? this.cellInfo
-        : [...this.cellInfo].reverse()
-      ).findIndex(
-        (cellInfo, index) =>
-          resolveIndex(index) >= currentPosition &&
-          (resolveIndex(index) !== currentPosition || matchCurrentCell) &&
-          typeof cellInfo !== 'undefined' &&
-          cellIsType(cellInfo)
-      );
+        ? cellInfoSubset
+        : cellInfoSubset.reverse()
+      ).findIndex((cellInfo) => cellIsType(cellInfo));
 
-      if (newPosition !== -1) found = true;
+      if (newPosition !== -1) {
+        found = true;
+        newPosition =
+          direction === 'next'
+            ? newPosition + currentPosition + !matchCurrentCell
+            : currentPosition - matchCurrentCell - 1 - newPosition;
+      }
     }
 
     if (found) {
