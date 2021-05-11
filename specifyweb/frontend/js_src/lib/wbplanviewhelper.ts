@@ -214,7 +214,8 @@ export function generateMappingPathPreview(
   const [possibleDataBaseTableName, databaseFieldName] = mappingPath.slice(-2);
   const [possibleTableName, fieldName] = mappingLineData.slice(-2);
 
-  if (mappingLineData.length === 1) return [databaseFieldName, fieldName];
+  if (mappingLineData.length === 1)
+    return [possibleDataBaseTableName, possibleTableName];
 
   if (valueIsTreeRank(possibleDataBaseTableName))
     return [
