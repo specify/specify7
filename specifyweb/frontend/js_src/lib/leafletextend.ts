@@ -23,6 +23,7 @@ L.Control.FullScreen = L.Control.extend({
   onAdd(map: Readonly<L.Map>) {
     const img = L.DomUtil.create('img') as HTMLImageElement;
     img.style.cursor = 'pointer';
+    img.style.background = '#fffa';
     img.classList.add('full-screen');
 
     L.DomEvent.on(img, 'click', L.DomEvent.stopPropagation)
