@@ -9,6 +9,7 @@
 
 import React from 'react';
 import icons from '../icons';
+import { upperToKebab } from '../wbplanviewhelper';
 import type { R, IR, RA } from './wbplanview';
 
 export type CustomSelectType =
@@ -515,9 +516,9 @@ export function CustomSelectElement({
 
   return (
     <span
-      className={`custom-select custom-select-${customSelectType
-        .toLowerCase()
-        .replaceAll('_', '-')}`}
+      className={`custom-select custom-select-${upperToKebab(
+        customSelectType
+      )}`}
       title={
         customSelectType === 'OPENED_LIST' ||
         customSelectType === 'BASE_TABLE_SELECTION_LIST'

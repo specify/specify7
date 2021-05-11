@@ -120,6 +120,9 @@ const WBView = Backbone.View.extend({
       this.resize();
     });
 
+    // Calling resize here minimizes layout shift
+    this.resize();
+
     $(window).on('resize', this.resize);
 
     return this;
@@ -532,7 +535,10 @@ const WBView = Backbone.View.extend({
     Object.values(
       this.el.getElementsByClassName('wb-navigation-total')
     ).forEach((navigationTotalElement) => {
-      const navigationType = navigationTotalElement.parentElement.getAttribute(
+      const navigationContainer = navigationTotalElement.closest(
+        '.wb-navigation-section'
+      );
+      const navigationType = navigationContainer.getAttribute(
         'data-navigation-type'
       );
       navigationTotalElement.innerText = cellCounts[navigationType];

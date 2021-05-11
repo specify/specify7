@@ -6,6 +6,7 @@ const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
 const UploadPlanToMappingsTree = require('./uploadplantomappingstree.ts');
 const WbPlanViewTreeHelper = require('./wbplanviewtreehelper.ts');
+const WbPlanViewHelper = require('./wbplanviewhelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
 
@@ -14,6 +15,7 @@ module.exports = Backbone.View.extend({
   className: 'wbs-utils',
   events: {
     'click .wb-cell-navigation': 'navigateCells',
+    'click .wb-navigation-text': 'toggleCellTypes',
     'click .wb-search-button': 'searchCells',
     'click .wb-replace-button': 'replaceCells',
     'click .wb-show-toolkit': 'toggleToolkit',
@@ -58,6 +60,7 @@ module.exports = Backbone.View.extend({
     }
 
     const cellIsType = (info) => {
+      if (typeof info !== 'object') return false;
       switch (type) {
         case 'invalidCells':
           return info.issues.length > 0;
@@ -72,17 +75,37 @@ module.exports = Backbone.View.extend({
 
     let newPosition = currentPosition;
     let found = false;
-    for (
-      ;
-      newPosition >= 0 && newPosition < this.cellInfo.length;
-      newPosition += direction === 'next' ? 1 : -1
-    ) {
-      if (newPosition === currentPosition && !matchCurrentCell) continue;
 
-      const info = this.cellInfo[newPosition];
-      if (typeof info === 'undefined') continue;
-      found = cellIsType(info);
-      if (found) break;
+    const overBound = currentPosition > this.cellInfo.length;
+    const underBound = currentPosition < this.cellInfo.findIndex((el) => el);
+    if (overBound || underBound) {
+      newPosition = (overBound
+        ? [...this.cellInfo].reverse()
+        : this.cellInfo
+      ).findIndex((cellInfo) => cellIsType(cellInfo));
+      found = newPosition !== -1;
+      if (found && overBound)
+        newPosition = this.cellInfo.length - 1 - newPosition;
+    }
+
+    const resolveIndex =
+      direction === 'next'
+        ? (index) => index
+        : (index) => this.cellInfo.length - 1 - index;
+
+    if (!found) {
+      newPosition = (direction === 'next'
+        ? this.cellInfo
+        : [...this.cellInfo].reverse()
+      ).findIndex(
+        (cellInfo, index) =>
+          resolveIndex(index) >= currentPosition &&
+          (resolveIndex(index) !== currentPosition || matchCurrentCell) &&
+          typeof cellInfo !== 'undefined' &&
+          cellIsType(cellInfo)
+      );
+
+      if (newPosition !== -1) found = true;
     }
 
     if (found) {
@@ -103,10 +126,21 @@ module.exports = Backbone.View.extend({
 
     return found;
   },
-  searchCells() {
+  toggleCellTypes(e) {
+    const button = e.target;
+    const buttonContainer = button.closest('.wb-navigation-section');
+    const buttonLabel = buttonContainer.getAttribute('data-navigation-type');
+    const cssClassName = `wb-hide-${WbPlanViewHelper.camelToKebab(
+      buttonLabel
+    )}`;
+    this.el.classList.toggle(cssClassName);
+  },
+  searchCells(e) {
     const cols = this.wbview.dataset.columns.length;
+    const button = e.target;
+    const buttonContainer = button.parentElement;
     const navigationContainer = this.el.getElementsByClassName(
-      'wb-upload-view'
+      'wb-navigation'
     )[0];
     const navigationPositionElement = navigationContainer.getElementsByClassName(
       'wb-navigation-position'
@@ -114,7 +148,7 @@ module.exports = Backbone.View.extend({
     const navigationTotalElement = navigationContainer.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const searchQueryElement = navigationContainer.getElementsByClassName(
+    const searchQueryElement = buttonContainer.getElementsByClassName(
       'wb-search-query'
     )[0];
     const navigationButton = navigationContainer.getElementsByClassName(
@@ -138,15 +172,14 @@ module.exports = Backbone.View.extend({
     navigationTotalElement.innerText = results.length;
     navigationPositionElement.innerText = 0;
 
-    if (!this.navigateCells({ target: navigationButton[0] }, true))
-      this.navigateCells({ target: navigationButton[1] }, true);
+    if (!this.navigateCells({ target: navigationButton[1] }, false))
+      this.navigateCells({ target: navigationButton[0] }, true);
   },
-  replaceCells() {
+  replaceCells(e) {
     const cols = this.wbview.dataset.columns.length;
-    const navigationContainer = this.el.getElementsByClassName(
-      'wb-upload-view'
-    )[0];
-    const replacementValueElement = navigationContainer.getElementsByClassName(
+    const button = e.target;
+    const buttonContainer = button.parentElement;
+    const replacementValueElement = buttonContainer.getElementsByClassName(
       'wb-replace-value'
     )[0];
     const replacementValue = replacementValueElement.value;

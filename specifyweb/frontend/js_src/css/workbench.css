@@ -19,10 +19,11 @@
   width: 100%;
 }
 
-.wbs-form .wb-controls,
-.wbs-form .wb-toolkit {
+.wb-controls,
+.wb-toolkit,
+.wb-navigation {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   flex-wrap: wrap;
   column-gap: 3px;
 }
@@ -37,7 +38,11 @@
   vertical-align: bottom;
 }
 
-.wbs-form .wb-toolkit input {
+.wb-search-replace {
+  display: contents;
+}
+
+.wb-search-replace input {
   margin: 0;
   vertical-align: baseline;
 }
@@ -92,7 +97,11 @@
   line-height: 20px;
 }
 
-/* HANDSONTABLE styles */
+/* CONTENT styles */
+.handsontable .htPlaceholder {
+  color: #66f;
+}
+
 .wbs-form .wb-header-unmapped {
   color: #999;
 }
@@ -102,18 +111,64 @@
   padding: 8px 5px;
 }
 
-.wbs-form .wb-invalid-cell {
-  background-color: #faa;
+.wbs-form .wb-no-match-cell,
+.wbs-form .wb-invalid-cell,
+.wbs-form .wb-search-match-cell,
+.wb-navigation-section {
+  background-color: var(--accent-color);
 }
 
-.wbs-form .wb-no-match-cell {
-  background-color: #aaf;
+.wbs-form:not(.wb-hide-new-cells) .wb-no-match-cell,
+.wb-navigation-section[data-navigation-type='newCells'] {
+  --accent-color: #aaf;
 }
 
-.wbs-form .wb-search-match-cell {
-  background-color: #afa;
+.wbs-form:not(.wb-hide-invalid-cells) .wb-invalid-cell,
+.wb-navigation-section[data-navigation-type='invalidCells'] {
+  --accent-color: #faa;
 }
 
-.handsontable .htPlaceholder {
-  color: #66f;
+.wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
+.wb-navigation-section[data-navigation-type='searchResults'] {
+  --accent-color: #afa;
+}
+
+.wb-navigation-section {
+  display: flex;
+}
+
+.wb-cell-navigation,
+.wb-navigation-text {
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.wb-cell-navigation {
+  border: 0;
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.wb-cell-navigation:hover,
+.wbs-form.wb-hide-new-cells
+  .wb-navigation-section[data-navigation-type='newCells']
+  .wb-navigation-text,
+.wbs-form.wb-hide-invalid-cells
+  .wb-navigation-section[data-navigation-type='invalidCells']
+  .wb-navigation-text,
+.wbs-form.wb-hide-search-results
+  .wb-navigation-section[data-navigation-type='searchResults']
+  .wb-navigation-text {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.wb-navigation-text {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  align-items: center;
+  padding: 0 3px;
+}
+
+.wb-navigation-position {
+  text-align: center;
 }

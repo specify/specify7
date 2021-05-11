@@ -5,19 +5,15 @@
       <button class="wb-show-plan">Show Plan</button>
       <button class="wb-plan">Plan</button>
       <% if(has_rowresults){ %>
-        <button class="wb-show-upload-view">Results</button>
-      <% } %> <%
-      if(is_uploaded){ %>
-        <% if(is_manager){ %>
-          <button class="wb-unupload">Un-Upload</button>
-        <% } %>
-      <% } else { %>
-        <button class="wb-save" disabled="disabled">Save</button>
-        <button class="wb-validate">Validation Off</button>
-        <% if(is_manager){ %>
-          <button class="wb-upload">Upload</button>
-        <% } %>
-      <% } %>
+      <button class="wb-show-upload-view">Results</button>
+      <% } %> <% if(is_uploaded){ %> <% if(is_manager){ %>
+      <button class="wb-unupload">Un-Upload</button>
+      <% } %> <% } else { %>
+      <button class="wb-save" disabled="disabled">Save</button>
+      <button class="wb-validate">Validation Off</button>
+      <% if(is_manager){ %>
+      <button class="wb-upload">Upload</button>
+      <% } %> <% } %>
       <button class="wb-show-toolkit">Tools</button>
     </div>
   </div>
@@ -31,13 +27,13 @@
       />
       <button class="wb-search-button">Search</button>
       <% if(!is_uploaded){ %>
-        <input
-          type="text"
-          class="wb-replace-value"
-          placeholder="Replacement value"
-          title="Replacement value"
-        />
-        <button class="wb-replace-button">Replace</button>
+      <input
+        type="text"
+        class="wb-replace-value"
+        placeholder="Replacement value"
+        title="Replacement value"
+      />
+      <button class="wb-replace-button">Replace</button>
       <% }%>
     </span>
     <button class="wb-convert-coordinates" style="display: none">
@@ -49,45 +45,51 @@
 </div>
 <div class="wb-spreadsheet"></div>
 <div class="wb-navigation">
-  <span data-navigation-type="searchResults">
+  <span class="wb-navigation-section" data-navigation-type="searchResults">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
-      &lt;&lt;
+      &lt;
     </button>
-    Search Results (
-    <span class="wb-navigation-position">0</span>
-    /
-    <span class="wb-navigation-total">0</span>
-    )
+    <span class="wb-navigation-text">
+      Search Results (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
+    </span>
     <button class="wb-cell-navigation" data-navigation-direction="next">
-      &gt;&gt;
+      &gt;
     </button>
   </span>
 
-  <span data-navigation-type="newCells" style="padding: 0 3px">
+  <span class="wb-navigation-section" data-navigation-type="newCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
-      &lt;&lt;
+      &lt;
     </button>
-    New Cells (
-    <span class="wb-navigation-position">0</span>
-    /
-    <span class="wb-navigation-total">0</span>
-    )
+    <span class="wb-navigation-text">
+      New Cells (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
+    </span>
     <button class="wb-cell-navigation" data-navigation-direction="next">
-      &gt;&gt;
+      &gt;
     </button>
   </span>
 
-  <span data-navigation-type="invalidCells">
+  <span class="wb-navigation-section" data-navigation-type="invalidCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
-      &lt;&lt;
+      &lt;
     </button>
-    Invalid Cells (
-    <span class="wb-navigation-position">0</span>
-    /
-    <span class="wb-navigation-total">0</span>
-    )
+    <span class="wb-navigation-text">
+      Invalid Cells (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
+    </span>
     <button class="wb-cell-navigation" data-navigation-direction="next">
-      &gt;&gt;
+      &gt;
     </button>
   </span>
 </div>

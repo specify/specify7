@@ -300,3 +300,9 @@ export const uniquifyHeaders = (
               ) + 1
           )
     );
+
+export const upperToKebab = (value: string): string =>
+  value.toLowerCase().replaceAll('_', '-');
+
+export const camelToKebab = (value: string): string =>
+  value.replaceAll(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
