@@ -41,7 +41,7 @@ const WBView = Backbone.View.extend({
   className: 'wbs-form',
   events: {
     'click .wb-upload': 'upload',
-    'click .wb-validate': 'upload',
+    'click .wb-validate': 'toggleLiveValidation',
     'click .wb-plan': 'openPlan',
     // TODO: remove the Show Plan button
     'click .wb-show-plan': 'showPlan',
@@ -64,6 +64,7 @@ const WBView = Backbone.View.extend({
       this.dataset.uploadplan &&
       uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
 
+    this.liveValidationEnabled = false;
     this.liveValidationStack = [];
     this.liveValidationActive = false;
 
@@ -76,7 +77,7 @@ const WBView = Backbone.View.extend({
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
-    this.rowResults = this.dataset.rowresults || [];
+    this.rowResults = this.dataset.rowresults ? this.dataset.rowresults.slice() : [];
 
     this.resize = this.resize.bind(this);
   },
@@ -591,8 +592,9 @@ const WBView = Backbone.View.extend({
 
     this.hot.render();
   },
-  startValidateRow(row) {
+  triggerLiveValidation() {
     const pumpValidation = () => {
+      this.updateValidationButton();
       if (this.liveValidationStack.length === 0) {
         this.liveValidationActive = false;
         return;
@@ -600,20 +602,55 @@ const WBView = Backbone.View.extend({
       this.liveValidationActive = true;
       const row = this.liveValidationStack.pop();
       const rowData = this.hot.getSourceDataAtRow(row);
-      $.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData))
-       .done((result) => this.gotRowValidationResult(this.hot.toVisualRow(row), result))
-       .always(pumpValidation);
+      Q($.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData)))
+        .then((result) => this.gotRowValidationResult(this.hot.toVisualRow(row), result))
+        .fin(pumpValidation);
     };
 
-    this.liveValidationStack.push(this.hot.toPhysicalRow(row));
     if (!this.liveValidationActive) {
       pumpValidation();
     }
   },
+  startValidateRow(row) {
+    if (this.liveValidationEnabled) {
+        this.liveValidationStack =
+            this.liveValidationStack.filter(r => r !== row).concat(this.hot.toPhysicalRow(row));
+        this.triggerLiveValidation();
+    } else if (this.wbutils.cellInfo.length > 0) {
+      this.wbutils.cellInfo = [];
+      this.updateCellInfos();
+    }
+  },
   gotRowValidationResult(row, result) {
-    this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
-    this.parseRowValidationResult(row, result.validation);
-    this.updateCellInfos();
+    if (this.liveValidationEnabled) {
+      this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
+      this.parseRowValidationResult(row, result.validation);
+      this.updateCellInfos();
+    }
+  },
+  toggleLiveValidation() {
+    this.liveValidationEnabled = !this.liveValidationEnabled;
+    if (this.liveValidationEnabled) {
+      this.wbutils.cellInfo = [];
+      this.updateCellInfos();
+      this.liveValidationStack = this.dataset.rows.map((__, i) => i).reverse();
+      this.updateValidationButton();
+      this.triggerLiveValidation();
+    } else {
+      this.liveValidationStack = [];
+      this.liveValidationActive = false;
+      this.updateValidationButton();
+      this.wbutils.cellInfo = [];
+      this.updateCellInfos();
+    }
+  },
+  updateValidationButton() {
+    if (this.liveValidationEnabled) {
+      const n = this.liveValidationStack.length;
+      this.$('.wb-validate').text('Validation On' + (n > 0 ? ` (${n})` : ''));
+    } else {
+      this.$('.wb-validate').text('Validation Off');
+    }
   },
   getValidationResults(showValidationSummary = false) {
     Q(
@@ -733,11 +770,11 @@ const WBView = Backbone.View.extend({
       });
   },
   spreadSheetChanged() {
-    this.$('.wb-upload, .wb-validate')
+    this.$('.wb-upload')
       .prop('disabled', true)
       .prop(
         'title',
-        'You should save your changes before Validating/Uploading'
+        'You should save your changes before Uploading'
       );
     this.$('.wb-save').prop('disabled', false);
     navigation.addUnloadProtect(this, 'The workbench has not been saved.');
@@ -792,7 +829,7 @@ const WBView = Backbone.View.extend({
     }
   },
   spreadSheetUpToDate: function () {
-    this.$('.wb-upload, .wb-validate')
+    this.$('.wb-upload')
       .prop('disabled', false)
       .prop('title', '');
     this.$('.wb-save').prop('disabled', true);
@@ -801,15 +838,38 @@ const WBView = Backbone.View.extend({
   upload(evt) {
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     const openPlan = () => this.openPlan();
-    if (this.dataset.uploadplan)
-      $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-        .fail((jqxhr) => {
-          this.checkDeletedFail(jqxhr);
-        })
-        .done(() => {
-          this.openStatus(mode);
-        });
-    else
+    if (this.dataset.uploadplan) {
+      const start = (mode) => {
+        $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
+         .fail((jqxhr) => {
+           this.checkDeletedFail(jqxhr);
+         })
+         .done(() => {
+           this.openStatus(mode);
+         });
+      };
+      $('<div>The upload process will transfer the data set data into the main '
+        + 'Specify tables. Performing a trial upload is recommended because '
+        + 'it can detect some issues that live validation cannot.</div>'
+      ).dialog({
+        title: 'Upload',
+        modal: true,
+        buttons: [
+          {
+            'text': "Upload",
+            'click': function() { start('upload'); }
+          },
+          {
+            'text': "Trial Upload",
+            'click': function() { start('validate'); }
+          },
+          {
+            'text': 'Cancel',
+            'click': function() { $(this).dialog('close'); }
+          }
+        ],
+      });
+    } else {
       $(
         '<div>No plan has been defined for this dataset. Create one now?</div>'
       ).dialog({
@@ -822,6 +882,7 @@ const WBView = Backbone.View.extend({
           Create: openPlan,
         },
       });
+    }
   },
   openStatus(mode) {
     new WBStatus({ dataset: this.dataset })
