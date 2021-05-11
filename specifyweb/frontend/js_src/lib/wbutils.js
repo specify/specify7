@@ -103,20 +103,21 @@ module.exports = Backbone.View.extend({
 
     return found;
   },
-  searchCells(e) {
+  searchCells() {
     const cols = this.wbview.dataset.columns.length;
-    const button = e.target;
-    const container = button.parentElement;
-    const navigationPositionElement = container.getElementsByClassName(
+    const navigationContainer = this.el.getElementsByClassName(
+      'wb-upload-view'
+    )[0];
+    const navigationPositionElement = navigationContainer.getElementsByClassName(
       'wb-navigation-position'
     )[0];
-    const navigationTotalElement = container.getElementsByClassName(
+    const navigationTotalElement = navigationContainer.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const searchQueryElement = container.getElementsByClassName(
+    const searchQueryElement = navigationContainer.getElementsByClassName(
       'wb-search-query'
     )[0];
-    const navigationButton = container.getElementsByClassName(
+    const navigationButton = navigationContainer.getElementsByClassName(
       'wb-cell-navigation'
     );
     const searchQuery = searchQueryElement.value;
@@ -140,11 +141,12 @@ module.exports = Backbone.View.extend({
     if (!this.navigateCells({ target: navigationButton[0] }, true))
       this.navigateCells({ target: navigationButton[1] }, true);
   },
-  replaceCells(e) {
+  replaceCells() {
     const cols = this.wbview.dataset.columns.length;
-    const button = e.target;
-    const container = button.parentElement;
-    const replacementValueElement = container.getElementsByClassName(
+    const navigationContainer = this.el.getElementsByClassName(
+      'wb-upload-view'
+    )[0];
+    const replacementValueElement = navigationContainer.getElementsByClassName(
       'wb-replace-value'
     )[0];
     const replacementValue = replacementValueElement.value;
@@ -165,10 +167,8 @@ module.exports = Backbone.View.extend({
 
     this.wbview.hot.setDataAtCell(cellUpdates);
   },
-  toggleToolkit(e) {
-    const button = e.target;
-    const container = button.closest('.wb-header');
-    const toolkit = container.getElementsByClassName('wb-toolkit')[0];
+  toggleToolkit() {
+    const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
     if (toolkit.style.display === 'none') toolkit.style.display = '';
     else toolkit.style.display = 'none';
     this.wbview.resize.bind(this.wbview)();
@@ -232,7 +232,9 @@ module.exports = Backbone.View.extend({
       (result, splitMappingPath) => {
         if (
           LeafletConfig.localityColumnsToSearchFor.indexOf(
-            splitMappingPath.mappingPath[splitMappingPath.mappingPath.length - 1]
+            splitMappingPath.mappingPath[
+              splitMappingPath.mappingPath.length - 1
+            ]
           ) !== -1
         )
           result.push(splitMappingPath);
@@ -320,8 +322,8 @@ module.exports = Backbone.View.extend({
       ]),
     ].map(
       (className) =>
-        document.getElementsByClassName(className)[0] &&
-        (document.getElementsByClassName(className)[0].style.display = null)
+        this.el.getElementsByClassName(className)[0] &&
+        (this.el.getElementsByClassName(className)[0].style.display = null)
     );
   },
   getGeoLocateQueryURL(

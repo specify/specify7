@@ -13,7 +13,7 @@ export default Backbone.View.extend({
   events: {
     'click .ui-icon': 'startEditing',
   },
-  initialize({ dataset }) {
+  initialize({ dataset, handleDelete, handleExport }) {
     this.dataset = dataset;
     this.dialog = null;
     this.model = schema.getModel('agent');
@@ -21,6 +21,8 @@ export default Backbone.View.extend({
     this.modifiedByAgent = null;
     this.changeOwnerDialog = null;
     this.listOfUsers = null;
+    this.handleDelete = handleDelete;
+    this.handleExport = handleExport;
   },
   render() {
     if (this.dialog !== null) {
@@ -105,7 +107,11 @@ export default Backbone.View.extend({
       ).toLocaleString()}</i><br>
       Created By: <i class="created-by-field">Loading...</i><br>
       Modified By: <i class="modified-by-field"></i><br>
-      Imported file name: <i>${this.dataset.importedfilename}</i><br>
+      Imported file name: <i>${this.dataset.importedfilename}</i><br><br>
+      <b>Actions:</b><br>
+      <button class="change-data-set-owner">Change Data Set owner</button><br>
+      <button class="export-data-set">Export Data Set</button><br>
+      <button class="delete-data-set">Delete Data Set</button>
     </div>`).dialog({
       title: 'Edit Data Set metadata',
       modal: true,
@@ -115,14 +121,15 @@ export default Backbone.View.extend({
       close: () => this.render(),
       buttons: {
         Cancel: () => this.render(),
-
         Save: this.setName.bind(this, this.render.bind(this)),
-        'Change owner': this.setName.bind(
-          this,
-          this.changeOwnerWindow.bind(this)
-        ),
       },
     });
+
+    this.dialog
+      .find('.change-data-set-owner')
+      .on('click', this.setName.bind(this, this.changeOwnerWindow.bind(this)));
+    this.dialog.find('.export-data-set').on('click', this.handleExport);
+    this.dialog.find('.delete-data-set').on('click', this.handleDelete);
 
     this.loadAgentInfo(
       this.dialog.find('.created-by-field'),

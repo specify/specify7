@@ -2,30 +2,26 @@
   <div class="wb-primary-row">
     <div class="wb-name"></div>
     <div class="wb-controls">
-      <button class="wb-convert-coordinates" style="display: none">
-        Convert Coordinates
-      </button>
-      <button class="wb-leafletmap" style="display: none">Show Map</button>
-      <button class="wb-geolocate" style="display: none">GeoLocate</button>
       <button class="wb-show-plan">Show Plan</button>
       <button class="wb-plan">Plan</button>
       <% if(has_rowresults){ %>
-      <button class="wb-show-upload-view">Results</button> <% } %> <%
-      if(is_uploaded){ %> <% if(is_manager){ %><button class="wb-unupload">
-        Un-Upload</button
-      ><% } %> <% } else { %>
-      <button class="wb-save" disabled="disabled">Save</button>
-      <button class="wb-validate">Validation Off</button>
-      <% if(is_manager){ %><button class="wb-upload">Upload</button><% } %> <% }
-      %>
-      <button class="wb-export">Export</button>
-      <button class="wb-delete">Delete</button>
-      <button class="wb-show-toolkit">Tool Kit</button>
-      <!-- <button class="wb-setting">Settings</button> -->
+        <button class="wb-show-upload-view">Results</button>
+      <% } %> <%
+      if(is_uploaded){ %>
+        <% if(is_manager){ %>
+          <button class="wb-unupload">Un-Upload</button>
+        <% } %>
+      <% } else { %>
+        <button class="wb-save" disabled="disabled">Save</button>
+        <button class="wb-validate">Validation Off</button>
+        <% if(is_manager){ %>
+          <button class="wb-upload">Upload</button>
+        <% } %>
+      <% } %>
+      <button class="wb-show-toolkit">Tools</button>
     </div>
   </div>
   <div class="wb-toolkit" style="display: none">
-    <br />
     <span class="wb-search-replace">
       <input
         type="text"
@@ -35,58 +31,64 @@
       />
       <button class="wb-search-button">Search</button>
       <% if(!is_uploaded){ %>
-      <input
-        type="text"
-        class="wb-replace-value"
-        placeholder="Replacement value"
-        title="Replacement value"
-      />
-      <button class="wb-replace-button">Replace</button>
+        <input
+          type="text"
+          class="wb-replace-value"
+          placeholder="Replacement value"
+          title="Replacement value"
+        />
+        <button class="wb-replace-button">Replace</button>
       <% }%>
-
-      <span data-navigation-type="searchResults">
-        <button class="wb-cell-navigation" data-navigation-direction="previous">
-          &lt;&lt;
-        </button>
-        Search Results (
-        <span class="wb-navigation-position">0</span>
-        /
-        <span class="wb-navigation-total">0</span>
-        )
-        <button class="wb-cell-navigation" data-navigation-direction="next">
-          &gt;&gt;
-        </button>
-      </span>
     </span>
-
-    <span data-navigation-type="newCells" style="padding: 0 3px">
-      <button class="wb-cell-navigation" data-navigation-direction="previous">
-        &lt;&lt;
-      </button>
-      New Cells (
-      <span class="wb-navigation-position">0</span>
-      /
-      <span class="wb-navigation-total">0</span>
-      )
-      <button class="wb-cell-navigation" data-navigation-direction="next">
-        &gt;&gt;
-      </button>
-    </span>
-
-    <span data-navigation-type="invalidCells">
-      <button class="wb-cell-navigation" data-navigation-direction="previous">
-        &lt;&lt;
-      </button>
-      Invalid Cells (
-      <span class="wb-navigation-position">0</span>
-      /
-      <span class="wb-navigation-total">0</span>
-      )
-      <button class="wb-cell-navigation" data-navigation-direction="next">
-        &gt;&gt;
-      </button>
-    </span>
+    <button class="wb-convert-coordinates" style="display: none">
+      Convert Coordinates
+    </button>
+    <button class="wb-leafletmap" style="display: none">Leaflet Map</button>
+    <button class="wb-geolocate" style="display: none">GeoLocate</button>
   </div>
 </div>
 <div class="wb-spreadsheet"></div>
+<div class="wb-navigation">
+  <span data-navigation-type="searchResults">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;&lt;
+    </button>
+    Search Results (
+    <span class="wb-navigation-position">0</span>
+    /
+    <span class="wb-navigation-total">0</span>
+    )
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;&gt;
+    </button>
+  </span>
+
+  <span data-navigation-type="newCells" style="padding: 0 3px">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;&lt;
+    </button>
+    New Cells (
+    <span class="wb-navigation-position">0</span>
+    /
+    <span class="wb-navigation-total">0</span>
+    )
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;&gt;
+    </button>
+  </span>
+
+  <span data-navigation-type="invalidCells">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;&lt;
+    </button>
+    Invalid Cells (
+    <span class="wb-navigation-position">0</span>
+    /
+    <span class="wb-navigation-total">0</span>
+    )
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;&gt;
+    </button>
+  </span>
+</div>
 <div class="wb-upload-view"></div>

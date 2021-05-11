@@ -45,9 +45,7 @@ const WBView = Backbone.View.extend({
     'click .wb-plan': 'openPlan',
     // TODO: remove the Show Plan button
     'click .wb-show-plan': 'showPlan',
-    'click .wb-delete': 'delete',
     'click .wb-save': 'saveClicked',
-    'click .wb-export': 'export',
 
     'click .wb-show-upload-view': 'displayUploadedView',
     'click .wb-unupload': 'unupload',
@@ -92,7 +90,12 @@ const WBView = Backbone.View.extend({
       })
     );
 
-    new DataSetMeta({ dataset: this.dataset, el: this.$('.wb-name') }).render();
+    new DataSetMeta({
+      dataset: this.dataset,
+      el: this.$('.wb-name'),
+      handleDelete: this.delete.bind(this),
+      handleExport: this.export.bind(this),
+    }).render();
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
@@ -114,6 +117,7 @@ const WBView = Backbone.View.extend({
       this.getValidationResults();
       fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
       this.wbutils.findLocalityColumns();
+      this.resize();
     });
 
     $(window).on('resize', this.resize);
@@ -124,7 +128,8 @@ const WBView = Backbone.View.extend({
     return new Promise((resolve) =>
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
-          height: this.calcHeight(),
+          // initial height gets overwritten on page's load
+          height: 500,
           data: this.data,
           cells: this.defineCell.bind(this, this.dataset.columns.length),
           columns: this.dataset.columns.map((__, i) => ({ data: i })),
@@ -433,7 +438,7 @@ const WBView = Backbone.View.extend({
     this.mappedHeaders = mappedHeadersAndTables;
 
     Object.values(
-      document
+      this.el
         .getElementsByClassName('wtSpreader')[0]
         ?.getElementsByClassName('colHeader')
     ).forEach((headerContainer) => {
@@ -525,7 +530,7 @@ const WBView = Backbone.View.extend({
 
     //update navigation information
     Object.values(
-      document.getElementsByClassName('wb-navigation-total')
+      this.el.getElementsByClassName('wb-navigation-total')
     ).forEach((navigationTotalElement) => {
       const navigationType = navigationTotalElement.parentElement.getAttribute(
         'data-navigation-type'
@@ -789,13 +794,13 @@ const WBView = Backbone.View.extend({
     navigation.addUnloadProtect(this, 'The workbench has not been saved.');
   },
   resize: function () {
-    this.hot && this.hot.updateSettings({ height: this.calcHeight() });
+    // Height of the page - content offset - bottom margin
+    this.el.style.height = `${$(window).height() - this.el.offsetTop - 15}px`;
+    if (!this.hot) return;
+    this.hot.updateSettings({
+      height: this.$el.find('.wb-spreadsheet').height(),
+    });
     return true;
-  },
-  calcHeight: function () {
-    return (
-      $(window).height() - 15 - this.$el.find('.wb-spreadsheet').offset()?.top
-    );
   },
   saveClicked: function () {
     this.save().done();
