@@ -23,7 +23,7 @@ const WBUtils = require('./wbutils.js');
 const {
   getIndexFromReferenceItemName,
   valueIsReferenceItem,
-  valueIsTreeRank
+  valueIsTreeRank,
 } = require('./wbplanviewmodelhelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
@@ -77,7 +77,9 @@ const WBView = Backbone.View.extend({
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
-    this.rowResults = this.dataset.rowresults ? this.dataset.rowresults.slice() : [];
+    this.rowResults = this.dataset.rowresults
+      ? this.dataset.rowresults.slice()
+      : [];
 
     this.resize = this.resize.bind(this);
   },
@@ -266,7 +268,9 @@ const WBView = Backbone.View.extend({
       const doAll = (selected) => {
         for (let i = 0; i < this.data.length; i++) {
           const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
-          const key = rowResult && getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
+          const key =
+            rowResult &&
+            getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
           if (key === matches.key) {
             this.setDisambiguation(i, mappingPath, parseInt(selected, 10));
             this.startValidateRow(i);
@@ -602,8 +606,15 @@ const WBView = Backbone.View.extend({
       this.liveValidationActive = true;
       const row = this.liveValidationStack.pop();
       const rowData = this.hot.getSourceDataAtRow(row);
-      Q($.post(`/api/workbench/validate_row/${this.dataset.id}/`, JSON.stringify(rowData)))
-        .then((result) => this.gotRowValidationResult(this.hot.toVisualRow(row), result))
+      Q(
+        $.post(
+          `/api/workbench/validate_row/${this.dataset.id}/`,
+          JSON.stringify(rowData)
+        )
+      )
+        .then((result) =>
+          this.gotRowValidationResult(this.hot.toVisualRow(row), result)
+        )
         .fin(pumpValidation);
     };
 
@@ -613,9 +624,10 @@ const WBView = Backbone.View.extend({
   },
   startValidateRow(row) {
     if (this.liveValidationEnabled) {
-        this.liveValidationStack =
-            this.liveValidationStack.filter(r => r !== row).concat(this.hot.toPhysicalRow(row));
-        this.triggerLiveValidation();
+      this.liveValidationStack = this.liveValidationStack
+        .filter((r) => r !== row)
+        .concat(this.hot.toPhysicalRow(row));
+      this.triggerLiveValidation();
     } else if (this.wbutils.cellInfo.length > 0) {
       this.wbutils.cellInfo = [];
       this.updateCellInfos();
@@ -653,22 +665,22 @@ const WBView = Backbone.View.extend({
     }
   },
   getValidationResults(showValidationSummary = false) {
-    Q(
-      $.get(`/api/workbench/validation_results/${this.dataset.id}/`)
-    ).done((results) =>  {
-      this.wbutils.cellInfo = [];
+    Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
+      (results) => {
+        this.wbutils.cellInfo = [];
 
-      if (results == null) {
-        this.hot.render();
-        return;
+        if (results == null) {
+          this.hot.render();
+          return;
+        }
+
+        results.forEach((result, row) => {
+          this.parseRowValidationResult(row, result);
+        });
+
+        this.updateCellInfos(showValidationSummary);
       }
-
-      results.forEach((result, row) => {
-        this.parseRowValidationResult(row, result);
-      });
-
-      this.updateCellInfos(showValidationSummary);
-    });
+    );
   },
   parseRowValidationResult(row, result) {
     const cols = this.dataset.columns.length;
@@ -772,10 +784,7 @@ const WBView = Backbone.View.extend({
   spreadSheetChanged() {
     this.$('.wb-upload')
       .prop('disabled', true)
-      .prop(
-        'title',
-        'You should save your changes before Uploading'
-      );
+      .prop('title', 'You should save your changes before Uploading');
     this.$('.wb-save').prop('disabled', false);
     navigation.addUnloadProtect(this, 'The workbench has not been saved.');
   },
@@ -829,9 +838,7 @@ const WBView = Backbone.View.extend({
     }
   },
   spreadSheetUpToDate: function () {
-    this.$('.wb-upload')
-      .prop('disabled', false)
-      .prop('title', '');
+    this.$('.wb-upload').prop('disabled', false).prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     navigation.removeUnloadProtect(this);
   },
@@ -841,32 +848,39 @@ const WBView = Backbone.View.extend({
     if (this.dataset.uploadplan) {
       const start = (mode) => {
         $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-         .fail((jqxhr) => {
-           this.checkDeletedFail(jqxhr);
-         })
-         .done(() => {
-           this.openStatus(mode);
-         });
+          .fail((jqxhr) => {
+            this.checkDeletedFail(jqxhr);
+          })
+          .done(() => {
+            this.openStatus(mode);
+          });
       };
-      $('<div>The upload process will transfer the data set data into the main '
-        + 'Specify tables. Performing a trial upload is recommended because '
-        + 'it can detect some issues that live validation cannot.</div>'
+      $(
+        '<div>The upload process will transfer the data set data into the main ' +
+          'Specify tables. Performing a trial upload is recommended because ' +
+          'it can detect some issues that live validation cannot.</div>'
       ).dialog({
         title: 'Upload',
         modal: true,
         buttons: [
           {
-            'text': "Upload",
-            'click': function() { start('upload'); }
+            text: 'Upload',
+            click: function () {
+              start('upload');
+            },
           },
           {
-            'text': "Trial Upload",
-            'click': function() { start('validate'); }
+            text: 'Trial Upload',
+            click: function () {
+              start('validate');
+            },
           },
           {
-            'text': 'Cancel',
-            'click': function() { $(this).dialog('close'); }
-          }
+            text: 'Cancel',
+            click: function () {
+              $(this).dialog('close');
+            },
+          },
         ],
       });
     } else {
@@ -972,7 +986,7 @@ function getRecordResult({ UploadResult }, mappingPath) {
   } else if (valueIsReferenceItem(mappingPath[1])) {
     const idx = getIndexFromReferenceItemName(mappingPath[1]);
     const toMany = UploadResult.toMany[mappingPath[0]];
-    const next = toMany && toMany[idx-1];
+    const next = toMany && toMany[idx - 1];
     return next && getRecordResult(next, mappingPath.slice(2));
   } else {
     const next = UploadResult.toOne[mappingPath[0]];
