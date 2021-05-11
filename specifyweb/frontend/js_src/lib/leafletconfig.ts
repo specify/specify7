@@ -101,7 +101,7 @@ export const leafletTileServers: RR<
         // @ts-expect-error
         format: 'jpg',
         time: '',
-        tilematrixset: 'GoogleMapsCompatible_Level',
+        tilematrixset: '250m',
       }
     ),
   },
