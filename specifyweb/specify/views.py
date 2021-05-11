@@ -128,7 +128,7 @@ def properties(request, name):
             "required": True,
             "description": "New user's password",
             "content": {
-                "application/json": {
+                "application/x-www-form-urlencoded": {
                     "schema": {
                         "type": "object",
                         "properties": {
@@ -136,23 +136,16 @@ def properties(request, name):
                                 "type": "string",
                                 "description": "New user's password",
                             },
-                        }
+                        },
+                        'required': ['password'],
+                        'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "204": {
-                "description": "Empty response",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "maxLength": 0,
-                        }
-                    }
-                }
-            },
+            "204": {"description": "Success",},
+            "403": {"description": "Logged in user is not an admin."}
         }
     },
 })
@@ -174,18 +167,29 @@ def set_password(request, userid):
 
 @openapi(schema={
     'post': {
-        "responses": {
-            "200": {
-                "description": "Result",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "description": "The value of 'admin_status'",
-                        }
+        "requestBody": {
+            "required": True,
+            "description": "Set or clear the admin status for a user.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "admin_status": {
+                                "type": "string",
+                                'enum': ['true', 'false'],
+                                "description": "Whether the user should be given admin status.",
+                            },
+                        },
+                        'required': ['admin_status'],
+                        'additionalProperties': False
                     }
                 }
-            },
+            }
+        },
+        "responses": {
+            "204": {"description": "Success",},
+            "403": {"description": "Logged in user is not an admin."}
         }
     },
 })
