@@ -165,9 +165,9 @@ open_api_components = {
                 "in": "query",
                 "required": False,
                 "schema": {
-                    "type": "boolean"
+                    "type": "string"
                 },
-                "description": "Whether to limit results to data sets with upload plans."
+                "description": "If parameter is present, limit results to data sets with upload plans."
             }
         ],
         "responses": {
@@ -205,7 +205,9 @@ open_api_components = {
                                         "format": "datetime",
                                         "example": "2021-04-28T13:50:41.710",
                                     }
-                                }
+                                },
+                                'required': ['id', 'name', 'uploadresult', 'uploaderstatus', 'timestampcreated', 'timestampmodified'],
+                                'additionalProperties': False
                             }
                         }
                     }
@@ -241,14 +243,16 @@ open_api_components = {
                                 "type": "string",
                                 "description": "The name of the original file",
                             }
-                        }
+                        },
+                        'required': ['name', 'columns', 'rows', 'importedfilename'],
+                        'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "200": {
-                "description": "Data fetched successfully",
+            "201": {
+                "description": "Data created successfully",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -264,8 +268,10 @@ open_api_components = {
                                         "Data Set name (may differ from the one " +
                                         "in the request object as part of " +
                                         "ensuring names are unique)"
-                                }
-                            }
+                                },
+                            },
+                            'required': ['name', 'id'],
+                            'additionalProperties': False
                         }
                     }
                 }
@@ -368,7 +374,10 @@ def datasets(request) -> http.HttpResponse:
                                     "format": "datetime",
                                     "example": "2021-04-28T13:50:41.710",
                                 }
-                            }
+                            },
+                            'required': ['id', 'name', 'columns', 'visualorder', 'rows', 'uploadplan', 'uploadresult',
+                                         'uploaderstatus', 'importedfilename', 'remarks', 'timestampcreated', 'timestampmodified'],
+                            'additionalProperties': False
                         }
                     }
                 }
@@ -378,7 +387,7 @@ def datasets(request) -> http.HttpResponse:
     'put': {
         "requestBody": {
             "required": True,
-            "description": "A JSON representation of a new Data Set",
+            "description": "A JSON representation of updates to the data set",
             "content": {
                 "application/json": {
                     "schema": {
@@ -397,49 +406,21 @@ def datasets(request) -> http.HttpResponse:
                             "uploadplan": {
                                 "$ref": "#/components/schemas/wb_uploadplan"
                             },
-                        }
+                        },
+                        'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "204": {
-                "description": "Empty response",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "maxLength": 0
-                        }
-                    }
-                }
-            },
+            "204": {"description": "Data set updated."},
+            "409": {"description": "Dataset in use by uploader."}
         }
     },
     "delete": {
         "responses": {
-            "204": {
-                "description": "Empty response",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "maxLength": 0
-                        }
-                    }
-                }
-            },
-            "409": {
-                "description": "Dataset in use by uploader",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "example": "dataset in use by uploader"
-                        }
-                    }
-                }
-            }
+            "204": {"description": "Data set deleted."},
+            "409": {"description": "Dataset in use by uploader"}
         }
     }
 }, components=open_api_components)
@@ -577,17 +558,8 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             }
         },
         "responses": {
-            "204": {
-                "description": "Empty response",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "maxLength": 0
-                        }
-                    }
-                }
-            },
+            "204": {"description": "Data set rows updated."},
+            "409": {"description": "Dataset in use by uploader"}
         }
     },
 }, components=open_api_components)
@@ -639,6 +611,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
                     }
                 }
             },
+            "409": {"description": "Dataset in use by uploader"}
         }
     },
 }, components=open_api_components)
@@ -695,6 +668,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
                     }
                 }
             },
+            "409": {"description": "Dataset in use by uploader"}
         }
     },
 }, components=open_api_components)
@@ -773,7 +747,8 @@ def status(request, ds_id: int) -> http.HttpResponse:
     'post': {
         "responses": {
             "200": {
-                "description": "Returns either 'ok' or 'not running'",
+                "description": "Returns either 'ok' if a task is aborted " +
+                " or 'not running' if no task exists.",
                 "content": {
                     "text/plain": {
                         "schema": {
@@ -920,7 +895,9 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
                                 "validation": {
                                     "$ref": "#/components/schemas/wb_validation_results"
                                 }
-                            }
+                            },
+                            'required': ['results', 'validation'],
+                            'additionalProperties': False
                         }
                     }
                 }
@@ -975,7 +952,7 @@ def up_schema(request) -> http.HttpResponse:
             "required": True,
             "description": "User ID of the new owner",
             "content": {
-                "application/json": {
+                "application/x-www-form-urlencoded": {
                     "schema": {
                         "type": "object",
                         "properties": {
@@ -983,24 +960,15 @@ def up_schema(request) -> http.HttpResponse:
                                 "type": "number",
                                 "description": "User ID of the new owner"
                             },
-                        }
+                        },
+                        'required': ['specifyuserid'],
+                        'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "200": {
-                "description": "Dataset transfer succeeded.",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "string",
-                            "description": "Dataset transfer succeeded.",
-                            "example": "ok",
-                        }
-                    }
-                }
-            },
+            "204": {"description": "Dataset transfer succeeded."},
         }
     },
 }, components=open_api_components)
@@ -1031,4 +999,4 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
     }))
 
     ds.save()
-    return http.HttpResponse('ok')
+    return http.HttpResponse(status=204)
