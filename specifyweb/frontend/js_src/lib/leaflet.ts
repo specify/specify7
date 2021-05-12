@@ -119,11 +119,10 @@ export async function showLeafletMap({
   addMarkersToMap(
     map,
     controlLayers,
-    localityPoints.flatMap((pointDataDict) =>
-      displayLocalityOnTheMap({
+    localityPoints.map((pointDataDict) =>
+      getMarkersFromLocalityData({
         localityData: pointDataDict,
         markerClickCallback: markerClickCallback?.bind(undefined, index++),
-        map,
       })
     ),
     'Polygon boundaries',
@@ -161,17 +160,26 @@ function addDetailsButton(
 export function addMarkersToMap(
   map: L.Map,
   controlLayers: any,
-  markers: any,
+  markers: RA<any>,
   layerName: string,
   enable = false
 ): void {
   if (markers.length === 0) return;
 
-  const layer = L.layerGroup(markers);
-  controlLayers.addOverlay(layer, layerName);
-  layer.addTo(map);
+  const cluster = L.markerClusterGroup();
+  const baseGroup = L.featureGroup.subGroup(cluster);
+  const boundaryGroup = L.featureGroup.subGroup(cluster);
+  cluster.addTo(map);
+  markers.forEach(([baseMarker, ...boundaryMarkers]) => {
+    baseGroup.addLayer(baseMarker);
+    (boundaryMarkers as any[]).map((boundaryMarker) =>
+      boundaryGroup.addLayer(boundaryMarker)
+    );
+  });
+  baseGroup.addTo(map);
+  if (enable) boundaryGroup.addTo(map);
 
-  if (enable) map.addLayer(layer);
+  controlLayers.addOverlay(boundaryGroup, layerName);
 }
 
 function isValidAccuracy(
@@ -191,7 +199,7 @@ function isValidAccuracy(
   return true;
 }
 
-export function displayLocalityOnTheMap({
+export function getMarkersFromLocalityData({
   localityData: {
     latitude1,
     longitude1,
@@ -202,12 +210,10 @@ export function displayLocalityOnTheMap({
     localityname = undefined,
   },
   markerClickCallback,
-  map,
   iconClass,
 }: {
   readonly localityData: LocalityData;
   readonly markerClickCallback?: string | (() => void);
-  readonly map?: L.Map;
   readonly iconClass?: string;
 }) {
   if (typeof latitude1 === 'undefined' || typeof 'longitude1' === undefined)
@@ -262,12 +268,8 @@ export function displayLocalityOnTheMap({
 
   const polygonBoundaries: typeof vectors = [];
 
-  let isFirstVector = true;
   vectors.forEach((vector) => {
-    if (isFirstVector && typeof map !== 'undefined') {
-      vector.addTo(map);
-      isFirstVector = false;
-    } else polygonBoundaries.push(vector);
+    polygonBoundaries.push(vector);
 
     const markerName =
       typeof markerClickCallback === 'string'

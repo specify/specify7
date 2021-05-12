@@ -136,7 +136,7 @@ export function LifemapperMap({
         Leaflet.addMarkersToMap(
           map,
           layerGroup,
-          lifemapperInfo.markers.flat(2),
+          lifemapperInfo.markers.flat(),
           'Local Occurrence Points'
         );
         if (destructorCalled) destructor(map);

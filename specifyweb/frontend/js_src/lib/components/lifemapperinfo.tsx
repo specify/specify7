@@ -194,7 +194,7 @@ function LifemapperInfo({
 
           similarCollectionObjects
             .fetch({
-              limit: 100,
+              limit: 350,
             })
             .done(async () =>
               Promise.all(
@@ -206,7 +206,7 @@ function LifemapperInfo({
                         .done(async (localityResource: any) =>
                           getLocalityDataFromLocalityResource(localityResource)
                             .then((localityData) =>
-                              Leaflet.displayLocalityOnTheMap({
+                              Leaflet.getMarkersFromLocalityData({
                                 localityData,
                                 iconClass:
                                   model.get('id') === collectionObject.get('id')

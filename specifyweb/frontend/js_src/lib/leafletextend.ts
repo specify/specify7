@@ -7,6 +7,12 @@
 import L from 'leaflet';
 import $ from 'jquery';
 import 'leaflet/dist/leaflet.css';
+// Marker Clustering
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/leaflet.markercluster.js';
+// Create sub-layers to selectively toggle markers in clusters
+import 'leaflet.featuregroup.subgroup';
 
 /* This code is needed to properly load the images in the Leaflet CSS */
 // @ts-expect-error
