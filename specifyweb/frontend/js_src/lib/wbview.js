@@ -269,12 +269,15 @@ const WBView = Backbone.View.extend({
       const model = schema.getModel(tableName);
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
       const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;
+      const resources = new model.LazyCollection({filters: {id__in: matches.ids.join(",")}});
+
       const doDA = (selected) => {
         this.setDisambiguation(row, mappingPath, parseInt(selected, 10));
         this.startValidateRow(row);
       };
       const doAll = (selected) => {
-        for (let i = 0; i < this.data.length; i++) {
+        // loop backwards so the live validation will go from top to bottom
+        for (let i = this.data.length-1; i >= 0 ; i--) {
           const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
           const key =
             rowResult &&
@@ -285,57 +288,83 @@ const WBView = Backbone.View.extend({
           }
         }
       };
-      const table = $('<table>');
-      matches.ids.forEach((id, i) => {
-        const resource = new model.Resource({ id: id });
-        const tr = $(
-          `<tr><td><input type="radio" class="da-option" name="disambiguate" value="${id}" id="da-option-${i}"></td></tr>`
-        ).appendTo(table);
-        tr.append(
-          $('<td>').append(
-            $(`<a target="_blank">ℹ️</a>`).attr(
-              'href',
-              api.makeResourceViewUrl(model, id)
-            )
-          )
-        );
-        const label = $(`<label for="da-option-${i}">`).text(id);
-        tr.append($('<td>').append(label));
-        formatObj(resource).done((formatted) => label.text(formatted));
-      });
 
-      const applyToAll = $(
-        '<label>Use this selection for all matching disambiguous records </label>'
-      ).append('<input type="checkbox" class="da-use-for-all" value="yes">');
-      $('<div>')
-        .append(table)
-        .append(applyToAll)
-        .dialog({
-          title: 'Disambiguate',
-          modal: true,
-          close() {
-            $(this).remove();
-          },
-          buttons: [
-            {
-              text: 'Select',
-              click() {
-                const selected = $('input.da-option:checked', this).val();
-                const useForAll = $('input.da-use-for-all:checked', this).val();
-                if (selected != null) {
-                  (useForAll ? doAll : doDA)(selected);
+      const table = $('<table>');
+      resources.fetch({limit: 0}).done(() => {
+        if (resources.length < 1) {
+          $(`<div>None of the matched records currently exist in the database.
+This can happen if all of the matching records were deleted since the validation process occurred,
+or if all of the matches were ambiguous with respect other records in this data set. In the latter case,
+you will need to add fields and values to the data set to resolve the ambiguity.</div>`
+          ).dialog({
+            title: 'Disambiguate',
+            modal: true,
+            close() {
+              $(this).remove();
+            },
+            buttons: [
+              {
+                text: 'Close',
+                click() {
                   $(this).dialog('close');
-                }
+                },
               },
-            },
-            {
-              text: 'Cancel',
-              click() {
-                $(this).dialog('close');
-              },
-            },
-          ],
+            ],
+          });
+          return;
+        }
+
+        resources.forEach((resource, i) => {
+          const tr = $(
+            `<tr><td><input type="radio" class="da-option" name="disambiguate" value="${resource.id}" id="da-option-${i}"></td></tr>`
+          ).appendTo(table);
+          tr.append(
+            $('<td>').append(
+              $(`<a target="_blank">ℹ️</a>`).attr(
+                'href',
+                resource.viewUrl()
+              )
+            )
+          );
+          const label = $(`<label for="da-option-${i}">`).text(resource.id);
+          tr.append($('<td>').append(label));
+          formatObj(resource).done((formatted) => label.text(formatted));
         });
+
+        const applyToAll = $(
+          '<label>Use this selection for all matching disambiguous records </label>'
+        ).append('<input type="checkbox" class="da-use-for-all" value="yes">');
+
+        $('<div>')
+          .append(table)
+          .append(applyToAll)
+          .dialog({
+            title: 'Disambiguate',
+            modal: true,
+            close() {
+              $(this).remove();
+            },
+            buttons: [
+              {
+                text: 'Select',
+                click() {
+                  const selected = $('input.da-option:checked', this).val();
+                  const useForAll = $('input.da-use-for-all:checked', this).val();
+                  if (selected != null) {
+                    (useForAll ? doAll : doDA)(selected);
+                    $(this).dialog('close');
+                  }
+                },
+              },
+              {
+                text: 'Cancel',
+                click() {
+                  $(this).dialog('close');
+                },
+              },
+            ],
+          });
+      });
     }
   },
   afterChange(changes, source) {
