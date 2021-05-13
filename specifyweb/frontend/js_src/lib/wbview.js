@@ -41,7 +41,7 @@ const WBView = Backbone.View.extend({
   className: 'wbs-form',
   events: {
     'click .wb-upload': 'upload',
-    'click .wb-validate': 'toggleLiveValidation',
+    'click .wb-validate': 'chooseValidationMode',
     'click .wb-plan': 'openPlan',
     // TODO: remove the Show Plan button
     'click .wb-show-plan': 'showPlan',
@@ -62,7 +62,7 @@ const WBView = Backbone.View.extend({
       this.dataset.uploadplan &&
       uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
 
-    this.liveValidationEnabled = false;
+    this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
     this.liveValidationStack = [];
     this.liveValidationActive = false;
 
@@ -114,17 +114,22 @@ const WBView = Backbone.View.extend({
       });
 
     this.initHot().then(() => {
-      this.getValidationResults();
+      this.dataset.rowresults && this.getValidationResults();
       fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
       this.wbutils.findLocalityColumns();
       this.resize();
     });
 
+    this.updateValidationButton();
+    if (this.validationMode === 'static') {
+      this.el.classList.remove('wb-hide-invalid-cells');
+      this.el.classList.add('wb-hide-new-cells');
+    }
+
     // Calling resize here minimizes layout shift
     this.resize();
 
     $(window).on('resize', this.resize);
-
     return this;
   },
   initHot() {
@@ -663,45 +668,102 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     }
   },
   startValidateRow(row) {
-    if (this.liveValidationEnabled) {
+    if (this.validationMode === 'live') {
       this.liveValidationStack = this.liveValidationStack
         .filter((r) => r !== row)
         .concat(this.hot.toPhysicalRow(row));
       this.triggerLiveValidation();
-    } else if (this.wbutils.cellInfo.length > 0) {
-      this.wbutils.cellInfo = [];
-      this.updateCellInfos();
     }
   },
   gotRowValidationResult(row, result) {
-    if (this.liveValidationEnabled) {
+    if (this.validationMode === 'live') {
       this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
       this.parseRowValidationResult(row, result.validation);
       this.updateCellInfos();
     }
   },
-  toggleLiveValidation() {
-    this.liveValidationEnabled = !this.liveValidationEnabled;
-    if (this.liveValidationEnabled) {
-      this.wbutils.cellInfo = [];
-      this.updateCellInfos();
-      this.liveValidationStack = this.dataset.rows.map((__, i) => i).reverse();
-      this.updateValidationButton();
-      this.triggerLiveValidation();
+  chooseValidationMode() {
+    const dl = $('<dl>');
+    if (this.dataset.uploadplan == null) {
+      dl.append('<dt>Live</dt>');
+      dl.append(`<dd>Rows are validated independently from one another and in response to changes.
+Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
+
+      dl.append('<dt>Static</dt>');
+      dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
+Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
     } else {
-      this.liveValidationStack = [];
-      this.liveValidationActive = false;
+      dl.append(`<dt><label><input type="radio" name="validation-mode" value="live" ${this.validationMode === 'live' ? "checked" : ""}> Live</label></dt>`);
+      dl.append('<dd>Rows are validated independently from one another and in response to changes.</dd>');
+
+      if (this.dataset.rowresults == null) {
+        dl.append('<dt>Static</dt>');
+        dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
+Only available after a trial upload is compeleted.</dd>`);
+      } else {
+        dl.append(`<dt><label><input type="radio" name="validation-mode" value="static" ${this.validationMode === 'static' ? "checked" : ""}> Static</label></dt>`);
+        dl.append('<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.</dd>');
+      }
+    }
+
+    dl.append(`<dt><label><input type="radio" name="validation-mode" value="off" ${this.validationMode === 'off' ? "checked" : ""}> Off</label></dt>`);
+    dl.append('<dd>Row validation highlighting is disabled.</dd>');
+
+    const dialog = $('<div>').append(dl).dialog({
+      title: 'Validation Mode',
+      width: 360,
+      modal: true,
+      close() {
+          $(this).remove();
+        },
+        buttons: {
+          Select() {
+            const choice = $('input:checked', this).val();
+            selected(choice);
+            $(this).dialog('close');
+          },
+          Cancel() {
+            $(this).dialog('close');
+          },
+        },
+    });
+    const selected = (choice) => {
+      if (!['live', 'static', 'off'].includes(choice)) {
+        return;
+      }
+      this.validationMode = choice;
+      switch(this.validationMode) {
+        case 'live':
+          this.liveValidationStack = this.dataset.rows.map((__, i) => i).reverse();
+          this.triggerLiveValidation();
+          this.el.classList.remove('wb-hide-new-cells', 'wb-hide-invalid-cells');
+          break;
+        case 'static':
+          this.getValidationResults();
+          this.el.classList.remove('wb-hide-invalid-cells');
+          this.el.classList.add('wb-hide-new-cells');
+        case 'off':
+          this.liveValidationStack = [];
+          this.liveValidationActive = false;
+          break;
+      }
       this.updateValidationButton();
       this.wbutils.cellInfo = [];
       this.updateCellInfos();
-    }
+    };
   },
   updateValidationButton() {
-    if (this.liveValidationEnabled) {
-      const n = this.liveValidationStack.length;
-      this.$('.wb-validate').text('Validation On' + (n > 0 ? ` (${n})` : ''));
-    } else {
-      this.$('.wb-validate').text('Validation Off');
+    switch(this.validationMode) {
+      case 'live':
+        const n = this.liveValidationStack.length;
+        this.$('.wb-validate').text('Validation: Live' + (n > 0 ? ` (${n})` : ''));
+        break;
+      case 'static':
+        this.$('.wb-validate').text('Validation: Static');
+        break;
+      case 'off':
+        this.$('.wb-validate').text('Validation: Off');
+        break;
     }
   },
   getValidationResults(showValidationSummary = false) {
@@ -710,6 +772,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         this.wbutils.cellInfo = [];
 
         if (results == null) {
+          this.validationMode = 'off';
+          this.updateValidationButton();
           this.hot.render();
           return;
         }
@@ -843,6 +907,11 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   save: function () {
     // clear validation
     this.wbutils.cellInfo = [];
+    this.dataset.rowresults = null;
+    if (this.validationMode === 'static') {
+      this.validationMode = 'off';
+      this.updateValidationButton();
+    }
     this.hot.render();
 
     //show saving progress bar
