@@ -29,8 +29,10 @@ module.exports = {
                     modal: true,
                     width: 'auto',
                     open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-                    buttons: [{text: 'Reload', click: function() { window.location.reload(); }},
-                              {text: 'Previous Page', click: function() { window.history.back(); }}]
+                    buttons: [
+                        {text: 'Previous Page', click: function() { window.history.back(); }},
+                        {text: 'Reload', click: function() { window.location.reload(); }},
+                    ]
                 });
             }
         })
