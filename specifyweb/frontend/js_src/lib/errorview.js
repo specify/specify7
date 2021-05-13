@@ -31,7 +31,7 @@ module.exports = {
                     open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
                     buttons: [
                         {text: 'Previous Page', click: function() { window.history.back(); }},
-                        {text: 'Reload', click: function() { window.location.reload(); }},
+                        {text: 'Reload Page', click: function() { window.location.reload(); }},
                     ]
                 });
             }
