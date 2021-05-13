@@ -115,7 +115,6 @@ export default function WBPlanViewMapper(
       currentTable: string,
       newTable: string
     ) => void;
-    readonly handleClearMapping: (index: number) => void;
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleToggleMappingIsTemplated: () => void;
@@ -316,13 +315,8 @@ export default function WBPlanViewMapper(
               key={index}
               headerName={headerName}
               mappingType={mappingType}
-              readonly={props.readonly}
               isFocused={index === props.focusedLine}
               handleFocus={props.handleFocus.bind(undefined, index)}
-              handleClearMapping={props.handleClearMapping.bind(
-                undefined,
-                index
-              )}
               lineData={getMappingLineData({
                 baseTableName: props.baseTableName,
                 mappingPath,

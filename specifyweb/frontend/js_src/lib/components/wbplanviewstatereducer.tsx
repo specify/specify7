@@ -447,12 +447,6 @@ export const stateReducer = generateReducer<
               newTableName,
             })
           }
-          handleClearMapping={(line: number): void =>
-            state.dispatch({
-              type: 'ClearMappingLineAction',
-              line,
-            })
-          }
           handleAutomapperSuggestionSelection={(suggestion: string): void =>
             state.dispatch({
               type: 'AutomapperSuggestionSelectedAction',

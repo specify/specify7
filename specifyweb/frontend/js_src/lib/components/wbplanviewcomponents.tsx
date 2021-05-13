@@ -40,7 +40,6 @@ interface MappingLineBaseProps {
   readonly headerName: string;
   readonly isFocused: boolean;
   readonly handleFocus: () => void;
-  readonly handleClearMapping: () => void;
 }
 
 export interface MappingPathProps {
@@ -98,13 +97,9 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
 export function MappingLineComponent({
   lineData,
   headerName,
-  readonly,
   isFocused,
   handleFocus,
-  handleClearMapping,
-}: MappingLineBaseProps & {
-  readonly readonly: boolean;
-}): JSX.Element {
+}: MappingLineBaseProps): JSX.Element {
   return (
     <div
       className={`wbplanview-mapping-line ${
@@ -113,16 +108,6 @@ export function MappingLineComponent({
       `}
       onClick={handleFocus}
     >
-      <div className="wbplanview-mapping-line-controls">
-        <button
-          type="button"
-          title="Clear mapping"
-          onClick={handleClearMapping}
-          disabled={readonly}
-        >
-          ⌦
-        </button>
-      </div>
       <div
         className={`wbplanview-mapping-line-header ${
           lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
