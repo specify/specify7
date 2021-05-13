@@ -482,6 +482,10 @@
   padding-left: var(--white-space);
 }
 
+.custom-select-mapping-option-line-list .custom-select-options {
+  overflow: visible;
+}
+
 .custom-select-suggestion-list .custom-select-option-label {
   display: flex;
   align-items: center;
