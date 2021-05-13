@@ -190,14 +190,16 @@ function handleRelationshipField(
   return true;
 }
 
+let cacheVersion = '';
+
 const cacheGet = <T>(cacheName: string): false | T =>
   cache.get<T>(cacheBucketName, cacheName, {
-    version: dataModelFetcherVersion,
+    version: cacheVersion,
   });
 
 const cacheSet = <T>(cacheName: string, cacheValue: T): T =>
   cache.set(cacheBucketName, cacheName, cacheValue, {
-    version: dataModelFetcherVersion,
+    version: cacheVersion,
     overwrite: true,
     priorityCommit: true,
   });
@@ -205,6 +207,13 @@ const cacheSet = <T>(cacheName: string, cacheValue: T): T =>
 /* Fetches the data model */
 export default async function (): Promise<void> {
   if (typeof dataModelStorage.tables !== 'undefined') return;
+
+  if (cacheVersion === '') {
+    const request = await fetch('/context/collection/');
+    const data = await request.json();
+    const currentCollection = data.current;
+    cacheVersion = `${dataModelFetcherVersion}_${currentCollection}`;
+  }
 
   {
     const tables = cacheGet<DataModelTables>('tables');
