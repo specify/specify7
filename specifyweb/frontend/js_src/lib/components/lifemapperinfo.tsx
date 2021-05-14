@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import React from 'react';
 import '../../css/lifemapperinfo.css';
+import type { MarkerGroups } from '../leaflet';
 import * as Leaflet from '../leaflet';
 import { getLocalityDataFromLocalityResource } from '../leafletutils';
 import { reducer } from '../lifemapperinforeducer';
@@ -182,45 +183,52 @@ function LifemapperInfo({
             index
           );
 
-        const similarCoMarkersPromise = new Promise((resolve) => {
-          const similarCollectionObjects = new (schema as any).models.CollectionObject.LazyCollection(
-            {
-              filters: {
-                determinations__iscurrent: true,
-                determinations__preferredtaxon__fullname: getOccurrenceName(0),
-              },
-            }
-          );
-
-          similarCollectionObjects
-            .fetch({
-              limit: 350,
-            })
-            .done(async () =>
-              Promise.all(
-                similarCollectionObjects.map(
-                  async (collectionObject: any) =>
-                    new Promise((resolve) =>
-                      collectionObject
-                        .rget('collectingevent.locality')
-                        .done(async (localityResource: any) =>
-                          getLocalityDataFromLocalityResource(localityResource)
-                            .then((localityData) =>
-                              Leaflet.getMarkersFromLocalityData({
-                                localityData,
-                                iconClass:
-                                  model.get('id') === collectionObject.get('id')
-                                    ? 'lifemapperCurrentCollectionObjectMarker'
-                                    : undefined,
-                              })
-                            )
-                            .then(resolve)
-                        )
-                    )
-                )
-              ).then(resolve)
+        const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
+          (resolve) => {
+            const similarCollectionObjects = new (schema as any).models.CollectionObject.LazyCollection(
+              {
+                filters: {
+                  determinations__iscurrent: true,
+                  determinations__preferredtaxon__fullname: getOccurrenceName(
+                    0
+                  ),
+                },
+              }
             );
-        });
+
+            similarCollectionObjects
+              .fetch({
+                limit: 350,
+              })
+              .done(async () =>
+                Promise.all<MarkerGroups>(
+                  similarCollectionObjects.map(
+                    async (collectionObject: any) =>
+                      new Promise<MarkerGroups>((resolve) =>
+                        collectionObject
+                          .rget('collectingevent.locality')
+                          .done(async (localityResource: any) =>
+                            getLocalityDataFromLocalityResource(
+                              localityResource
+                            )
+                              .then((localityData) =>
+                                Leaflet.getMarkersFromLocalityData({
+                                  localityData,
+                                  iconClass:
+                                    model.get('id') ===
+                                    collectionObject.get('id')
+                                      ? 'lifemapperCurrentCollectionObjectMarker'
+                                      : undefined,
+                                })
+                              )
+                              .then(resolve)
+                          )
+                      )
+                  )
+                ).then(resolve)
+              );
+          }
+        );
 
         const messages: RR<MessageTypes, string[]> = {
           errorDetails: [],

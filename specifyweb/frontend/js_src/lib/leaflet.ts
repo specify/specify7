@@ -124,9 +124,7 @@ export async function showLeafletMap({
         localityData: pointDataDict,
         markerClickCallback: markerClickCallback?.bind(undefined, index++),
       })
-    ),
-    'Polygon boundaries',
-    true
+    )
   );
 
   addFullScreenButton(map);
@@ -159,27 +157,43 @@ function addDetailsButton(
 
 export function addMarkersToMap(
   map: L.Map,
-  controlLayers: any,
-  markers: RA<any>,
-  layerName: string,
-  enable = false
+  controlLayers: L.Control.Layers,
+  markers: RA<MarkerGroups>,
+  layerName = ''
 ): void {
   if (markers.length === 0) return;
 
   const cluster = L.markerClusterGroup();
-  const baseGroup = L.featureGroup.subGroup(cluster);
-  const boundaryGroup = L.featureGroup.subGroup(cluster);
   cluster.addTo(map);
-  markers.forEach(([baseMarker, ...boundaryMarkers]) => {
-    baseGroup.addLayer(baseMarker);
-    (boundaryMarkers as any[]).map((boundaryMarker) =>
-      boundaryGroup.addLayer(boundaryMarker)
+  const markersGroup = L.featureGroup.subGroup(cluster);
+  const polygonsGroup = L.featureGroup.subGroup(cluster);
+  const polygonBoundaryGroup = L.featureGroup.subGroup(cluster);
+  const errorRadiusGroup = L.featureGroup.subGroup(cluster);
+
+  markers.forEach(({ markers, polygons, polygonBoundary, errorRadius }) => {
+    ([
+      [markers, markersGroup],
+      [polygons, polygonsGroup],
+      [polygonBoundary, polygonBoundaryGroup],
+      [errorRadius, errorRadiusGroup],
+    ] as RA<[RA<Marker>, L.FeatureGroup]>).forEach(([markers, markersGroup]) =>
+      markers.forEach((marker) => markersGroup.addLayer(marker))
     );
   });
-  baseGroup.addTo(map);
-  if (enable) boundaryGroup.addTo(map);
 
-  controlLayers.addOverlay(boundaryGroup, layerName);
+  markersGroup.addTo(map);
+  polygonsGroup.addTo(map);
+  polygonBoundaryGroup.addTo(map);
+  errorRadiusGroup.addTo(map);
+
+  if (layerName !== '') layerName += ' ';
+
+  controlLayers.addOverlay(polygonsGroup, `${layerName} Polygons`);
+  controlLayers.addOverlay(
+    polygonBoundaryGroup,
+    `${layerName} Polygon Boundaries`
+  );
+  controlLayers.addOverlay(errorRadiusGroup, `${layerName} Error Radius`);
 }
 
 function isValidAccuracy(
@@ -199,6 +213,24 @@ function isValidAccuracy(
   return true;
 }
 
+export type MarkerGroups = {
+  readonly markers: L.Marker[];
+  readonly polygons: (L.Polygon | L.Polyline)[];
+  readonly polygonBoundary: L.Marker[];
+  readonly errorRadius: L.Circle[];
+};
+type Marker = L.Marker | L.Polygon | L.Polyline | L.Circle;
+
+const createLine = (
+  coordinate1: [number, number],
+  coordinate2: [number, number]
+): L.Polyline =>
+  new L.Polyline([coordinate1, coordinate2], {
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1,
+  });
+
 export function getMarkersFromLocalityData({
   localityData: {
     latitude1,
@@ -215,9 +247,16 @@ export function getMarkersFromLocalityData({
   readonly localityData: LocalityData;
   readonly markerClickCallback?: string | (() => void);
   readonly iconClass?: string;
-}) {
+}): MarkerGroups {
+  const markers: MarkerGroups = {
+    markers: [],
+    polygons: [],
+    polygonBoundary: [],
+    errorRadius: [],
+  };
+
   if (typeof latitude1 === 'undefined' || typeof 'longitude1' === undefined)
-    return [];
+    return markers;
 
   const icon = new L.Icon.Default();
   if (typeof iconClass !== 'undefined') icon.options.className = iconClass;
@@ -227,63 +266,52 @@ export function getMarkersFromLocalityData({
       icon,
     });
 
-  const vectors = [];
-
   if (typeof latitude2 === 'undefined' || typeof longitude2 === 'undefined') {
     // A circle
     if (isValidAccuracy(latlongaccuracy))
-      vectors.push(
+      markers.errorRadius.push(
         L.circle([latitude1, longitude1], {
           radius: latlongaccuracy,
-        }),
-        createPoint(latitude1, longitude1)
+        })
       );
+
     // A point
-    else vectors.push(createPoint(latitude1, longitude1));
-  } else
-    vectors.push(
+    markers.markers.push(createPoint(latitude1, longitude1));
+  } else {
+    markers.polygons.push(
       latlongtype?.toLowerCase() === 'line'
         ? // A line
-          new L.Polyline(
-            [
-              [latitude1, longitude1],
-              [latitude2, longitude2],
-            ],
-            {
-              weight: 3,
-              opacity: 0.5,
-              smoothFactor: 1,
-            }
-          )
+          createLine([latitude1, longitude1], [latitude2, longitude2])
         : // A polygon
           L.polygon([
             [latitude1, longitude1],
             [latitude2, longitude1],
             [latitude2, longitude2],
             [latitude1, longitude2],
-          ]),
+          ])
+    );
+    markers.polygonBoundary.push(
       createPoint(latitude1, longitude1),
       createPoint(latitude2, longitude2)
     );
+  }
 
-  const polygonBoundaries: typeof vectors = [];
+  Object.values(markers)
+    .flat(2)
+    .forEach((vector) => {
+      const markerName =
+        typeof markerClickCallback === 'string'
+          ? markerClickCallback
+          : typeof localityname === 'string' && localityname.length > 0
+          ? localityname
+          : undefined;
 
-  vectors.forEach((vector) => {
-    polygonBoundaries.push(vector);
+      if (typeof markerName !== 'undefined') vector.bindPopup(markerName);
+      if (typeof markerClickCallback === 'function')
+        vector.on('click', markerClickCallback);
+    });
 
-    const markerName =
-      typeof markerClickCallback === 'string'
-        ? markerClickCallback
-        : typeof localityname === 'string' && localityname.length > 0
-        ? localityname
-        : undefined;
-
-    if (typeof markerName !== 'undefined') vector.bindPopup(markerName);
-    if (typeof markerClickCallback === 'function')
-      vector.on('click', markerClickCallback);
-  });
-
-  return polygonBoundaries;
+  return markers;
 }
 
 export type LayerConfig = {

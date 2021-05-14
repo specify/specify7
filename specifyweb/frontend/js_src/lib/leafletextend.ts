@@ -1,5 +1,5 @@
 /*
- * Imports Leaflet, adds new controls and reexports it
+ * Imports Leaflet, adds plugins along with new controls and reexports it
  */
 
 'use strict';

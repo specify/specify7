@@ -2,7 +2,7 @@ import type { MessageTypes } from './components/lifemapperinfo';
 import type { States } from './components/lifemapperinfostate';
 import { mainState } from './components/lifemapperinfostate';
 import type { RA, RR } from './components/wbplanview';
-import type { LayerConfig } from './leaflet';
+import type { LayerConfig, MarkerGroups } from './leaflet';
 import type {
   AggregatorName,
   BadgeName,
@@ -56,7 +56,7 @@ type SetLocalOccurrenceNameAction = Action<
 
 export type LifemapperInfo = {
   readonly layers: RA<LayerConfig>;
-  readonly markers: any;
+  readonly markers: RA<MarkerGroups>;
   readonly messages: RR<MessageTypes, RA<string>>;
 };
 
