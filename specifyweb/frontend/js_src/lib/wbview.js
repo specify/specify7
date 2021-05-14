@@ -387,7 +387,13 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     )
       return;
 
-    changes.forEach(([row]) => this.clearDisambiguation(row));
+    const cols = this.dataset.columns.length;
+    changes.forEach(([row, col]) => {
+      this.clearDisambiguation(row);
+      this.wbutils.initCellInfo(row, col);
+      this.wbutils.cellInfo[row * cols + col].isModified = true;
+      this.updateCellInfos();
+    });
 
     this.spreadSheetChanged();
 
@@ -566,6 +572,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         (count, info) => count + (info.matchesSearch ? 1 : 0),
         0
       ),
+      modifiedCells: this.wbutils.cellInfo.reduce(
+        (count, info) => count + (info.isModified ? 1 : 0),
+        0
+      ),
     };
 
     //update navigation information
@@ -681,7 +691,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   gotRowValidationResult(row, result) {
     if (this.validationMode === 'live') {
       this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
-      this.parseRowValidationResult(row, result.validation);
+      this.parseRowValidationResult(row, result.validation, true);
       this.updateCellInfos();
     }
   },
@@ -807,14 +817,14 @@ Only available after a trial upload is compeleted.</dd>`);
         }
 
         results.forEach((result, row) => {
-          this.parseRowValidationResult(row, result);
+          this.parseRowValidationResult(row, result, false);
         });
 
         this.updateCellInfos(showValidationSummary);
       }
     );
   },
-  parseRowValidationResult(row, result) {
+  parseRowValidationResult(row, result, isLive) {
     const cols = this.dataset.columns.length;
     const headerToCol = {};
     for (let i = 0; i < cols; i++) {
@@ -832,6 +842,11 @@ Only available after a trial upload is compeleted.</dd>`);
 
       const ucfirstIssue = issue[0].toUpperCase() + issue.slice(1);
       cellInfo.issues.push(ucfirstIssue);
+
+      // In CSS, modified cells have higher priority then invalid cells
+      // Here, we need to overwrite that manually when live validation
+      // detected some issues
+      if (isLive) cellInfo.isModified = false;
     };
 
     if (result === null) return;
@@ -869,6 +884,9 @@ Only available after a trial upload is compeleted.</dd>`);
       },
       renderer: function (instance, td, row, col, prop, value, cellProperties) {
         if (cellData && cellData.isNew) td.classList.add('wb-no-match-cell');
+
+        if (cellData && cellData.isModified)
+          td.classList.add('wb-modified-cell');
 
         if (cellData && cellData.issues.length)
           td.classList.add('wb-invalid-cell');
@@ -940,10 +958,10 @@ Only available after a trial upload is compeleted.</dd>`);
       this.validationMode = 'off';
       this.updateValidationButton();
     }
-    this.hot.render();
+    this.updateCellInfos();
 
     //show saving progress bar
-    var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
       title: 'Saving',
       modal: true,
       open(evt, ui) {

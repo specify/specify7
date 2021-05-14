@@ -38,6 +38,7 @@ module.exports = Backbone.View.extend({
     if (typeof this.cellInfo[row * cols + col] === 'undefined') {
       this.cellInfo[row * cols + col] = {
         isNew: false,
+        isModified: false,
         issues: [],
         matchesSearch: false,
       };
@@ -66,6 +67,8 @@ module.exports = Backbone.View.extend({
           return info.issues.length > 0;
         case 'newCells':
           return info.isNew;
+        case 'modifiedCells':
+          return info.isModified;
         case 'searchResults':
           return info.matchesSearch;
         default:

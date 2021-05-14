@@ -26,6 +26,7 @@
   justify-content: flex-end;
   flex-wrap: wrap;
   column-gap: 3px;
+  row-gap: 0.5rem;
 }
 
 .wbs-form .wb-name {
@@ -112,12 +113,15 @@
 }
 
 .wbs-form .wb-no-match-cell,
+.wbs-form .wb-modified-cell,
 .wbs-form .wb-invalid-cell,
 .wbs-form .wb-search-match-cell,
 .wb-navigation-section {
   background-color: var(--accent-color);
 }
 
+/* The order here determines the priority of the states
+ * From the lowest till the highest */
 .wbs-form:not(.wb-hide-new-cells) .wb-no-match-cell,
 .wb-navigation-section[data-navigation-type='newCells'] {
   --accent-color: #aaf;
@@ -126,6 +130,11 @@
 .wbs-form:not(.wb-hide-invalid-cells) .wb-invalid-cell,
 .wb-navigation-section[data-navigation-type='invalidCells'] {
   --accent-color: #faa;
+}
+
+.wbs-form:not(.wb-hide-modified-cells) .wb-modified-cell,
+.wb-navigation-section[data-navigation-type='modifiedCells'] {
+  --accent-color: #ffa;
 }
 
 .wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
@@ -145,7 +154,7 @@
 
 .wb-cell-navigation {
   border: 0;
-  padding: 0.3rem;
+  padding: 0.4rem;
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -155,6 +164,9 @@
   .wb-navigation-text,
 .wbs-form.wb-hide-invalid-cells
   .wb-navigation-section[data-navigation-type='invalidCells']
+  .wb-navigation-text,
+.wbs-form.wb-hide-modified-cells
+  .wb-navigation-section[data-navigation-type='modifiedCells']
   .wb-navigation-text,
 .wbs-form.wb-hide-search-results
   .wb-navigation-section[data-navigation-type='searchResults']
