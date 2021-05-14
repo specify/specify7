@@ -16,8 +16,8 @@ module.exports = Backbone.View.extend({
   events: {
     'click .wb-cell-navigation': 'navigateCells',
     'click .wb-navigation-text': 'toggleCellTypes',
-    'click .wb-search-button': 'searchCells',
-    'click .wb-replace-button': 'replaceCells',
+    'keydown .wb-search-query': 'searchCells',
+    'keydown .wb-replace-value': 'replaceCells',
     'click .wb-show-toolkit': 'toggleToolkit',
     'click .wb-geolocate': 'showGeoLocate',
     'click .wb-leafletmap': 'showLeafletMap',
@@ -139,6 +139,10 @@ module.exports = Backbone.View.extend({
     this.el.classList.toggle(cssClassName);
   },
   searchCells(e) {
+    if (e.key !== 'Enter') return;
+
+    this.el.classList.remove('wb-hide-search-results');
+
     const cols = this.wbview.dataset.columns.length;
     const button = e.target;
     const buttonContainer = button.parentElement;
@@ -157,11 +161,10 @@ module.exports = Backbone.View.extend({
     const navigationButton = navigationContainer.getElementsByClassName(
       'wb-cell-navigation'
     );
-    const searchQuery = searchQueryElement.value;
 
+    this.searchQuery = searchQueryElement.value;
     const searchPlugin = this.wbview.hot.getPlugin('search');
-    const results = searchPlugin.query(searchQuery);
-    this.searchQuery = searchQuery;
+    const results = searchPlugin.query(this.searchQuery);
 
     this.cellInfo.forEach((cellInfo) => {
       cellInfo.matchesSearch = false;
@@ -179,6 +182,8 @@ module.exports = Backbone.View.extend({
       this.navigateCells({ target: navigationButton[0] }, true);
   },
   replaceCells(e) {
+    if (e.key !== 'Enter') return;
+
     const cols = this.wbview.dataset.columns.length;
     const button = e.target;
     const buttonContainer = button.parentElement;

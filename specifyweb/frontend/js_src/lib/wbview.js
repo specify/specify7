@@ -392,9 +392,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       this.clearDisambiguation(row);
       this.wbutils.initCellInfo(row, col);
       this.wbutils.cellInfo[row * cols + col].isModified = true;
-      this.updateCellInfos();
     });
 
+    this.updateCellInfos();
     this.spreadSheetChanged();
 
     if (this.dataset.uploadplan && changes) {
