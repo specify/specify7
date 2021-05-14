@@ -6,7 +6,8 @@
 'use strict';
 
 import $ from 'jquery';
-import type { IR, RA } from './components/wbplanview';
+import type { LayersControlEventHandlerFn } from 'leaflet';
+import type { IR, RA, RR } from './components/wbplanview';
 import {
   coMapTileServers,
   leafletLayersEndpoint,
@@ -14,6 +15,8 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { LocalityData } from './leafletutils';
+import * as cache from './wbplanviewcache';
+import { capitalize } from './wbplanviewhelper';
 
 const DEFAULT_ZOOM = 5;
 
@@ -128,8 +131,24 @@ export async function showLeafletMap({
   );
 
   addFullScreenButton(map);
+  rememberSelectedLayers(map, tileLayers.baseMaps, '');
 
   return map;
+}
+
+function rememberSelectedLayers(
+  map: L.Map,
+  layers: IR<L.TileLayer>,
+  cacheSalt: string
+): void {
+  const cacheName = `currentLayer${cacheSalt}`;
+  const currentLayer = cache.get<string>('leaflet', cacheName);
+  if (currentLayer !== false && currentLayer in layers)
+    layers[currentLayer].addTo(map);
+
+  map.on('baselayerchange', ({ name }: { readonly name: string }) =>
+    cache.set<string>('leaflet', cacheName, name, { overwrite: true })
+  );
 }
 
 function addFullScreenButton(map: L.Map): void {
@@ -155,6 +174,22 @@ function addDetailsButton(
   return detailsContainer;
 }
 
+const markerLayerName = [
+  'marker',
+  'polygon',
+  'polygonBoundary',
+  'errorRadius',
+] as const;
+
+type MarkerLayerName = typeof markerLayerName[number];
+
+const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
+  marker: true,
+  polygon: true,
+  polygonBoundary: false,
+  errorRadius: false,
+};
+
 export function addMarkersToMap(
   map: L.Map,
   controlLayers: L.Control.Layers,
@@ -163,37 +198,69 @@ export function addMarkersToMap(
 ): void {
   if (markers.length === 0) return;
 
+  // Initialize layer groups
   const cluster = L.markerClusterGroup();
   cluster.addTo(map);
-  const markersGroup = L.featureGroup.subGroup(cluster);
-  const polygonsGroup = L.featureGroup.subGroup(cluster);
-  const polygonBoundaryGroup = L.featureGroup.subGroup(cluster);
-  const errorRadiusGroup = L.featureGroup.subGroup(cluster);
 
-  markers.forEach(({ markers, polygons, polygonBoundary, errorRadius }) => {
-    ([
-      [markers, markersGroup],
-      [polygons, polygonsGroup],
-      [polygonBoundary, polygonBoundaryGroup],
-      [errorRadius, errorRadiusGroup],
-    ] as RA<[RA<Marker>, L.FeatureGroup]>).forEach(([markers, markersGroup]) =>
-      markers.forEach((marker) => markersGroup.addLayer(marker))
-    );
+  const layerGroups = Object.fromEntries(
+    markerLayerName.map(
+      (groupName) =>
+        [groupName, L.featureGroup.subGroup(cluster)] as [
+          MarkerLayerName,
+          L.FeatureGroup
+        ]
+    )
+  ) as RR<MarkerLayerName, L.FeatureGroup>;
+
+  // Sort markers by layer groups
+  markers.forEach((markers) =>
+    Object.entries(markers).forEach(([markerGroupName, markers]) =>
+      (markers as Marker[]).forEach((marker) =>
+        layerGroups[markerGroupName as MarkerLayerName].addLayer(marker)
+      )
+    )
+  );
+
+  // Enable some layer groups
+  Object.entries(layerGroups).forEach(([markerGroupName, layer]) => {
+    if (
+      markerGroupName === 'marker' ||
+      cache.get('leaflet', `show${capitalize(markerGroupName)}`, {
+        defaultValue:
+          defaultMarkerGroupsState[markerGroupName as MarkerLayerName],
+      })
+    )
+      layer.addTo(map);
   });
 
-  markersGroup.addTo(map);
-  polygonsGroup.addTo(map);
-  polygonBoundaryGroup.addTo(map);
-  errorRadiusGroup.addTo(map);
+  // Remember user's preference for layer's visibility
+  const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
+    const layerName = Object.entries(layerGroups).find(
+      ([_, layerObject]) => layerObject === layer
+    )?.[0];
+    if (typeof layerName !== 'undefined')
+      cache.set(
+        'leaflet',
+        `show${capitalize(layerName)}`,
+        type === 'overlayadd',
+        {
+          overwrite: true,
+        }
+      );
+  };
+  map.on('overlayadd', handleOverlayEvent);
+  map.on('overlayremove', handleOverlayEvent);
 
-  if (layerName !== '') layerName += ' ';
-
-  controlLayers.addOverlay(polygonsGroup, `${layerName} Polygons`);
+  // Add layer groups' checkboxes to the layer control menu
+  controlLayers.addOverlay(layerGroups.polygon, `${layerName} Polygons`);
   controlLayers.addOverlay(
-    polygonBoundaryGroup,
+    layerGroups.polygonBoundary,
     `${layerName} Polygon Boundaries`
   );
-  controlLayers.addOverlay(errorRadiusGroup, `${layerName} Error Radius`);
+  controlLayers.addOverlay(
+    layerGroups.errorRadius,
+    `${layerName} Error Radius`
+  );
 }
 
 function isValidAccuracy(
@@ -214,8 +281,8 @@ function isValidAccuracy(
 }
 
 export type MarkerGroups = {
-  readonly markers: L.Marker[];
-  readonly polygons: (L.Polygon | L.Polyline)[];
+  readonly marker: L.Marker[];
+  readonly polygon: (L.Polygon | L.Polyline)[];
   readonly polygonBoundary: L.Marker[];
   readonly errorRadius: L.Circle[];
 };
@@ -249,8 +316,8 @@ export function getMarkersFromLocalityData({
   readonly iconClass?: string;
 }): MarkerGroups {
   const markers: MarkerGroups = {
-    markers: [],
-    polygons: [],
+    marker: [],
+    polygon: [],
     polygonBoundary: [],
     errorRadius: [],
   };
@@ -276,9 +343,9 @@ export function getMarkersFromLocalityData({
       );
 
     // A point
-    markers.markers.push(createPoint(latitude1, longitude1));
+    markers.marker.push(createPoint(latitude1, longitude1));
   } else {
-    markers.polygons.push(
+    markers.polygon.push(
       latlongtype?.toLowerCase() === 'line'
         ? // A line
           createLine([latitude1, longitude1], [latitude2, longitude2])

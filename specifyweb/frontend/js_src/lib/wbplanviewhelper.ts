@@ -34,7 +34,7 @@ export const getFriendlyName = (
 ): string => {
   let name = originalName.replace(/[A-Z]/g, (letter) => ` ${letter}`);
   name = name.trim();
-  name = name.charAt(0).toUpperCase() + name.slice(1);
+  name = capitalize(name);
 
   const regex = /(?<first>[A-Z]) (?<second>[ A-Z])/g;
   const subst = `$1$2`;
@@ -45,6 +45,9 @@ export const getFriendlyName = (
 
   return name;
 };
+
+export const capitalize = (string: string): string =>
+  string.charAt(0).toUpperCase() + string.slice(1);
 
 /*
  *Finds the point at which the source array begins to have values

@@ -13,6 +13,7 @@ import type {
   MappingPath,
   RelationshipType,
 } from './components/wbplanviewmapper';
+import { capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   DataModelField,
@@ -131,9 +132,7 @@ export const formatReferenceItem = (index: number): string =>
  *
  */
 export const formatTreeRank = (rankName: string): string =>
-  `${dataModelStorage.treeSymbol}${rankName[0].toUpperCase()}${rankName
-    .slice(1)
-    .toLowerCase()}`;
+  `${dataModelStorage.treeSymbol}${capitalize(rankName)}`;
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
   mappingPath.join(dataModelStorage.pathJoinSymbol);
