@@ -1002,6 +1002,10 @@ Only available after a trial upload is compeleted.</dd>`);
     const openPlan = () => this.openPlan();
     if (this.dataset.uploadplan) {
       const start = (mode) => {
+        this.liveValidationStack = [];
+        this.liveValidationActive = false;
+        this.validationMode = 'off';
+        this.updateValidationButton();
         $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
           .fail((jqxhr) => {
             this.checkDeletedFail(jqxhr);
