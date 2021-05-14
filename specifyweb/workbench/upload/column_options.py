@@ -14,3 +14,12 @@ class ColumnOptions(NamedTuple):
             return self.column
 
         return dict(self._asdict())
+
+class ExtendedColumnOptions(NamedTuple):
+    column: str
+    matchBehavior: MatchBehavior
+    nullAllowed: bool
+    default: Optional[str]
+    uiformatter: Any
+    schemaitem: Any
+    picklist: Any

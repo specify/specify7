@@ -5,7 +5,7 @@ from typing import Dict, Any, NamedTuple, List, Union, Set, Optional
 from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation
 from .upload_result import CellIssue, ParseFailures
 from .parsing import parse_many, ParseResult
-from .column_options import ColumnOptions
+from .column_options import ColumnOptions, ExtendedColumnOptions
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class ToManyRecord(NamedTuple):
 
 class ScopedToManyRecord(NamedTuple):
     name: str
-    wbcols: Dict[str, ColumnOptions]
+    wbcols: Dict[str, ExtendedColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, ScopedUploadable]
     scopingAttrs: Dict[str, int]

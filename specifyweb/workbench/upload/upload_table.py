@@ -13,7 +13,7 @@ from .parsing import parse_many, ParseResult, ParseFailure
 from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures, PropagatedFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
-from .column_options import ColumnOptions
+from .column_options import ColumnOptions, ExtendedColumnOptions
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class UploadTable(NamedTuple):
 
 class ScopedUploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, ColumnOptions]
+    wbcols: Dict[str, ExtendedColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, ScopedUploadable]
     toMany: Dict[str, List[ScopedToManyRecord]]

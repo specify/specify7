@@ -11,9 +11,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
-from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch
+from specifyweb.specify.uiformatters import FormatMismatch
 
-from .column_options import ColumnOptions
+from .column_options import ExtendedColumnOptions
 
 Row = Dict[str, str]
 Filter = Dict[str, Any]
@@ -42,7 +42,7 @@ class ParseResult(NamedTuple):
 def filter_and_upload(f: Filter, column: str) -> ParseResult:
     return ParseResult(f, f, None, column)
 
-def parse_many(collection, tablename: str, mapping: Dict[str, ColumnOptions], row: Row) -> Tuple[List[ParseResult], List[ParseFailure]]:
+def parse_many(collection, tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[ParseFailure]]:
     results = [
         parse_value(collection, tablename, fieldname, row[colopts.column], colopts)
         for fieldname, colopts in mapping.items()
@@ -52,16 +52,8 @@ def parse_many(collection, tablename: str, mapping: Dict[str, ColumnOptions], ro
         [r for r in results if isinstance(r, ParseFailure)]
     )
 
-def parse_value(collection, tablename: str, fieldname: str, value_in: str, colopts: ColumnOptions) -> Union[ParseResult, ParseFailure]:
-
-    schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
-        container__discipline=collection.discipline,
-        container__schematype=0,
-        container__name=tablename.lower(),
-        name=fieldname.lower())
-
-    picklistname = schema_items and schema_items[0].picklistname
-    required_by_schema = schema_items and schema_items[0].isrequired
+def parse_value(collection, tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, ParseFailure]:
+    required_by_schema = colopts.schemaitem and colopts.schemaitem.isrequired
 
     result: Union[ParseResult, ParseFailure]
     was_blank = value_in.strip() == ""
@@ -74,9 +66,9 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
             else:
                 result = ParseResult({fieldname: None}, {}, None, colopts.column)
         else:
-            result = _parse(collection, tablename, fieldname, picklistname, colopts.default, colopts.column)
+            result = _parse(collection, tablename, fieldname, colopts, colopts.default)
     else:
-        result = _parse(collection, tablename, fieldname, picklistname, value_in.strip(), colopts.column)
+        result = _parse(collection, tablename, fieldname, colopts, value_in.strip())
 
     if isinstance(result, ParseFailure):
         return result
@@ -94,52 +86,50 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
         assertNever(colopts.matchBehavior)
 
 
-def _parse(collection, tablename: str, fieldname: str, picklistname: Optional[str], value: str, column: str) -> Union[ParseResult, ParseFailure]:
-
+def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, ParseFailure]:
     if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
-        return parse_agenttype(value, column)
+        return parse_agenttype(value, colopts.column)
 
-    if picklistname:
-        result = parse_with_picklist(collection, picklistname, fieldname, value, column)
+    if colopts.picklist:
+        result = parse_with_picklist(collection, colopts.picklist, fieldname, value, colopts.column)
         if result is not None:
             return result
 
-    uiformatter = get_uiformatter(collection, tablename, fieldname)
-    if uiformatter:
+    if colopts.uiformatter:
         try:
-            parsed = uiformatter.parse(value)
+            parsed = colopts.uiformatter.parse(value)
         except FormatMismatch as e:
-            return ParseFailure(e.args[0], column)
+            return ParseFailure(e.args[0], colopts.column)
 
-        if uiformatter.needs_autonumber(parsed):
-            canonicalized = uiformatter.autonumber_now(collection, getattr(models, tablename.capitalize()), parsed)
+        if colopts.uiformatter.needs_autonumber(parsed):
+            canonicalized = colopts.uiformatter.autonumber_now(collection, getattr(models, tablename.capitalize()), parsed)
         else:
-            canonicalized = uiformatter.canonicalize(parsed)
+            canonicalized = colopts.uiformatter.canonicalize(parsed)
 
-        return filter_and_upload({fieldname: canonicalized}, column)
+        return filter_and_upload({fieldname: canonicalized}, colopts.column)
 
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
     if is_latlong(table, field):
-        return parse_latlong(field, value, column)
+        return parse_latlong(field, value, colopts.column)
 
     if field.is_temporal():
-        return parse_date(table, fieldname, value, column)
+        return parse_date(table, fieldname, value, colopts.column)
 
     if field.type == "java.lang.Boolean":
-        return parse_boolean(fieldname, value, column)
+        return parse_boolean(fieldname, value, colopts.column)
 
     if field.type == 'java.math.BigDecimal':
-        return parse_decimal(fieldname, value, column)
+        return parse_decimal(fieldname, value, colopts.column)
 
     if field.type in ('java.lang.Float', 'java.lang.Double'):
-        return parse_float(fieldname, value, column)
+        return parse_float(fieldname, value, colopts.column)
 
     if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
-        return parse_integer(fieldname, value, column)
+        return parse_integer(fieldname, value, colopts.column)
 
-    return filter_and_upload({fieldname: value}, column)
+    return filter_and_upload({fieldname: value}, colopts.column)
 
 def parse_boolean(fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     if value.lower() in ["yes", "true"]:
@@ -175,8 +165,7 @@ def parse_integer(fieldname: str, value: str, column: str) -> Union[ParseResult,
 
     return filter_and_upload({fieldname: result}, column)
 
-def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure, None]:
-    picklist = getattr(models, 'Picklist').objects.get(name=picklist_name, collection=collection)
+def parse_with_picklist(collection, picklist, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure, None]:
     if picklist.type == 0: # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)

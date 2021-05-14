@@ -2,11 +2,14 @@ from typing import Dict, Any, Union, Callable
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
+from specifyweb.specify import models
+from specifyweb.specify.uiformatters import get_uiformatter
 
 from .uploadable import Uploadable, ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord
+from .column_options import ColumnOptions, ExtendedColumnOptions
 
 def scoping_relationships(collection, table: Table) -> Dict[str, int]:
     extra_static: Dict[str, int] = {}
@@ -54,6 +57,25 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     return adjust_to_ones
 
 
+def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str) -> ExtendedColumnOptions:
+    schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
+        container__discipline=collection.discipline,
+        container__schematype=0,
+        container__name=tablename.lower(),
+        name=fieldname.lower())
+
+    schemaitem = schema_items and schema_items[0]
+    picklistname = schemaitem and schemaitem.picklistname
+    picklist = picklistname and getattr(models, 'Picklist').objects.get(name=picklistname, collection=collection)
+
+    return ExtendedColumnOptions(
+        schemaitem=schemaitem,
+        uiformatter=get_uiformatter(collection, tablename, fieldname),
+        picklist=picklist,
+        **colopts._asdict(),
+    )
+
+
 def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 
@@ -83,7 +105,7 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTab
 
     return ScopedUploadTable(
         name=ut.name,
-        wbcols=ut.wbcols,
+        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
         static=static,
         toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
         toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
@@ -100,7 +122,7 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
     table = datamodel.get_table_strict(tmr.name)
     return ScopedToManyRecord(
         name=tmr.name,
-        wbcols=tmr.wbcols,
+        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in tmr.wbcols.items()},
         static=tmr.static,
         toOne={f: u.apply_scoping(collection) for f, u in tmr.toOne.items()},
         scopingAttrs=scoping_relationships(collection, table),
@@ -129,7 +151,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     return ScopedTreeRecord(
         name=tr.name,
-        ranks=tr.ranks,
+        ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
         treedefid=treedefid,
         disambiguation={},
     )

@@ -18,7 +18,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from .uploadable import Row, FilterPack, Disambiguation as DA, ScopedUploadable
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, TreeInfo
 from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
-from .column_options import ColumnOptions
+from .column_options import ColumnOptions, ExtendedColumnOptions
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class TreeRecord(NamedTuple):
 
 class ScopedTreeRecord(NamedTuple):
     name: str
-    ranks: Dict[str, Dict[str, ColumnOptions]]
+    ranks: Dict[str, Dict[str, ExtendedColumnOptions]]
     treedefid: int
     disambiguation: Dict[str, int]
 
