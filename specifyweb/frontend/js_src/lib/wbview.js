@@ -589,6 +589,14 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         'data-navigation-type'
       );
       navigationTotalElement.innerText = cellCounts[navigationType];
+
+      if (cellCounts[navigationType] === 0) {
+        const currentPositionElement = navigationContainer.getElementsByClassName(
+          'wb-navigation-position'
+        )?.[0];
+        if (currentPositionElement !== 'undefined')
+          currentPositionElement.innerText = 0;
+      }
     });
 
     const refreshInitiatedBy = showValidationSummary
@@ -786,6 +794,7 @@ Only available after a trial upload is compeleted.</dd>`);
       this.updateValidationButton();
       this.wbutils.cellInfo = [];
       this.updateCellInfos();
+      this.hot.render();
     };
   },
   updateValidationButton() {
