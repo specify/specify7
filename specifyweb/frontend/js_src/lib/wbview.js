@@ -274,7 +274,9 @@ const WBView = Backbone.View.extend({
       const model = schema.getModel(tableName);
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
       const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;
-      const resources = new model.LazyCollection({filters: {id__in: matches.ids.join(",")}});
+      const resources = new model.LazyCollection({
+        filters: { id__in: matches.ids.join(',') },
+      });
 
       const doDA = (selected) => {
         this.setDisambiguation(row, mappingPath, parseInt(selected, 10));
@@ -282,7 +284,7 @@ const WBView = Backbone.View.extend({
       };
       const doAll = (selected) => {
         // loop backwards so the live validation will go from top to bottom
-        for (let i = this.data.length-1; i >= 0 ; i--) {
+        for (let i = this.data.length - 1; i >= 0; i--) {
           const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
           const key =
             rowResult &&
@@ -295,27 +297,28 @@ const WBView = Backbone.View.extend({
       };
 
       const table = $('<table>');
-      resources.fetch({limit: 0}).done(() => {
+      resources.fetch({ limit: 0 }).done(() => {
         if (resources.length < 1) {
           $(`<div>None of the matched records currently exist in the database.
 This can happen if all of the matching records were deleted since the validation process occurred,
 or if all of the matches were ambiguous with respect other records in this data set. In the latter case,
-you will need to add fields and values to the data set to resolve the ambiguity.</div>`
-          ).dialog({
-            title: 'Disambiguate',
-            modal: true,
-            close() {
-              $(this).remove();
-            },
-            buttons: [
-              {
-                text: 'Close',
-                click() {
-                  $(this).dialog('close');
-                },
+you will need to add fields and values to the data set to resolve the ambiguity.</div>`).dialog(
+            {
+              title: 'Disambiguate',
+              modal: true,
+              close() {
+                $(this).remove();
               },
-            ],
-          });
+              buttons: [
+                {
+                  text: 'Close',
+                  click() {
+                    $(this).dialog('close');
+                  },
+                },
+              ],
+            }
+          );
           return;
         }
 
@@ -325,10 +328,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           ).appendTo(table);
           tr.append(
             $('<td>').append(
-              $(`<a target="_blank">ℹ️</a>`).attr(
-                'href',
-                resource.viewUrl()
-              )
+              $(`<a target="_blank">ℹ️</a>`).attr('href', resource.viewUrl())
             )
           );
           const label = $(`<label for="da-option-${i}">`).text(resource.id);
@@ -354,7 +354,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
                 text: 'Select',
                 click() {
                   const selected = $('input.da-option:checked', this).val();
-                  const useForAll = $('input.da-use-for-all:checked', this).val();
+                  const useForAll = $(
+                    'input.da-use-for-all:checked',
+                    this
+                  ).val();
                   if (selected != null) {
                     (useForAll ? doAll : doDA)(selected);
                     $(this).dialog('close');
@@ -693,27 +696,45 @@ Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a
       dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
 Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
     } else {
-      dl.append(`<dt><label><input type="radio" name="validation-mode" value="live" ${this.validationMode === 'live' ? "checked" : ""}> Live</label></dt>`);
-      dl.append('<dd>Rows are validated independently from one another and in response to changes.</dd>');
+      dl.append(
+        `<dt><label><input type="radio" name="validation-mode" value="live" ${
+          this.validationMode === 'live' ? 'checked' : ''
+        }> Live</label></dt>`
+      );
+      dl.append(
+        '<dd>Rows are validated independently from one another and in response to changes.</dd>'
+      );
 
       if (this.dataset.rowresults == null) {
         dl.append('<dt>Static</dt>');
         dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
 Only available after a trial upload is compeleted.</dd>`);
       } else {
-        dl.append(`<dt><label><input type="radio" name="validation-mode" value="static" ${this.validationMode === 'static' ? "checked" : ""}> Static</label></dt>`);
-        dl.append('<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.</dd>');
+        dl.append(
+          `<dt><label><input type="radio" name="validation-mode" value="static" ${
+            this.validationMode === 'static' ? 'checked' : ''
+          }> Static</label></dt>`
+        );
+        dl.append(
+          '<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.</dd>'
+        );
       }
     }
 
-    dl.append(`<dt><label><input type="radio" name="validation-mode" value="off" ${this.validationMode === 'off' ? "checked" : ""}> Off</label></dt>`);
+    dl.append(
+      `<dt><label><input type="radio" name="validation-mode" value="off" ${
+        this.validationMode === 'off' ? 'checked' : ''
+      }> Off</label></dt>`
+    );
     dl.append('<dd>Row validation highlighting is disabled.</dd>');
 
-    const dialog = $('<div>').append(dl).dialog({
-      title: 'Validation Mode',
-      width: 360,
-      modal: true,
-      close() {
+    const dialog = $('<div>')
+      .append(dl)
+      .dialog({
+        title: 'Validation Mode',
+        width: 360,
+        modal: true,
+        close() {
           $(this).remove();
         },
         buttons: {
@@ -726,17 +747,22 @@ Only available after a trial upload is compeleted.</dd>`);
             $(this).dialog('close');
           },
         },
-    });
+      });
     const selected = (choice) => {
       if (!['live', 'static', 'off'].includes(choice)) {
         return;
       }
       this.validationMode = choice;
-      switch(this.validationMode) {
+      switch (this.validationMode) {
         case 'live':
-          this.liveValidationStack = this.dataset.rows.map((__, i) => i).reverse();
+          this.liveValidationStack = this.dataset.rows
+            .map((__, i) => i)
+            .reverse();
           this.triggerLiveValidation();
-          this.el.classList.remove('wb-hide-new-cells', 'wb-hide-invalid-cells');
+          this.el.classList.remove(
+            'wb-hide-new-cells',
+            'wb-hide-invalid-cells'
+          );
           break;
         case 'static':
           this.getValidationResults();
@@ -753,10 +779,12 @@ Only available after a trial upload is compeleted.</dd>`);
     };
   },
   updateValidationButton() {
-    switch(this.validationMode) {
+    switch (this.validationMode) {
       case 'live':
         const n = this.liveValidationStack.length;
-        this.$('.wb-validate').text('Validation: Live' + (n > 0 ? ` (${n})` : ''));
+        this.$('.wb-validate').text(
+          'Validation: Live' + (n > 0 ? ` (${n})` : '')
+        );
         break;
       case 'static':
         this.$('.wb-validate').text('Validation: Static');
