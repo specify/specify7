@@ -388,7 +388,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         headerName: uniquifyHeaders(
           [
             ...mappingState(state).lines.map(({ headerName }) => headerName),
-            `New Header ${mappingState(state).newHeaderId}`,
+            `New Column ${mappingState(state).newHeaderId}`,
           ],
           [mappingState(state).lines.length]
         ).slice(-1)[0],

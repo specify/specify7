@@ -16,7 +16,7 @@
   --background1: #fff;
   --background2: #fdb;
   --accent: #f73;
-  --success: #4f2;
+  --success: #2c0;
   --error: #f24;
   --lines-to-display: 8;
   --border-size: 1px;
@@ -170,6 +170,11 @@
   color: var(--success);
 }
 
+.wbplanview-mapping-view-map-button[disabled]
+  .wbplanview-mapping-view-map-button-arrow {
+  opacity: 0;
+}
+
 .mapping-view-resizer {
   margin-bottom: calc(var(--white-space) * -1);
   height: var(--white-space);
@@ -216,8 +221,8 @@
 }
 
 .wbplanview-mapping-line > * {
-  border-bottom: 1px solid var(--border);
-  padding: var(--white-space) 0;
+  border-top: 1px solid var(--border);
+  padding: calc(var(--white-space) * 0.8) 0;
 }
 
 .wbplanview-mapping-line > *:not(:first-child) {
@@ -315,6 +320,11 @@
 
 .custom-select-input {
   cursor: pointer;
+  border-color: var(--text1);
+}
+
+.wbplanview-mapping-line-header-unmapped {
+  border-color: var(--error);
 }
 
 .custom-select-preview-list .custom-select-input,
@@ -497,6 +507,7 @@
   display: flex;
   justify-content: center;
   color: var(--success);
+  font-weight: 800;
 }
 
 .custom-select-option-icon-undefined {

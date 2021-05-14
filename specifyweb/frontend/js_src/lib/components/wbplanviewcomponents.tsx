@@ -104,19 +104,15 @@ export function MappingLineComponent({
     <div
       className={`wbplanview-mapping-line ${
         isFocused ? 'wbplanview-mapping-line-focused' : ''
+      } ${
+        lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
+          ? ''
+          : 'wbplanview-mapping-line-header-unmapped'
       }
       `}
       onClick={handleFocus}
     >
-      <div
-        className={`wbplanview-mapping-line-header ${
-          lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
-            ? ''
-            : 'wbplanview-mapping-line-header-unmapped'
-        }`}
-      >
-        {headerName}
-      </div>
+      <div className="wbplanview-mapping-line-header">{headerName}</div>
       <div className="wbplanview-mapping-line-elements">
         <MappingPathComponent mappingLineData={lineData} />
       </div>

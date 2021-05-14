@@ -54,7 +54,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />{' '}
-        Reveal Hidden Fields
+        Reveal Hidden Form Fields
       </label>
     </div>
   );
