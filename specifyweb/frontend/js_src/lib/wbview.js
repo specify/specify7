@@ -32,6 +32,7 @@ const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree.ts');
 const { extractDefaultValues } = require('./wbplanviewhelper.ts');
 const { getMappingLineData } = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
+const { capitalize } = require('./wbplanviewhelper.ts');
 const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
@@ -726,7 +727,7 @@ Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a
       if (this.dataset.rowresults == null) {
         dl.append('<dt>Static</dt>');
         dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
-Only available after a trial upload is compeleted.</dd>`);
+Only available after a trial upload is completed.</dd>`);
       } else {
         dl.append(
           `<dt><label><input type="radio" name="validation-mode" value="static" ${
@@ -849,8 +850,7 @@ Only available after a trial upload is compeleted.</dd>`);
       this.wbutils.initCellInfo(row, col);
       const cellInfo = this.wbutils.cellInfo[row * cols + col];
 
-      const ucfirstIssue = issue[0].toUpperCase() + issue.slice(1);
-      cellInfo.issues.push(ucfirstIssue);
+      cellInfo.issues.push(capitalize(issue));
 
       // In CSS, modified cells have higher priority then invalid cells
       // Here, we need to overwrite that manually when live validation
