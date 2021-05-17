@@ -366,6 +366,17 @@ module.exports = Backbone.View.extend({
         this.el.getElementsByClassName(className)[0] &&
         (this.el.getElementsByClassName(className)[0].style.display = null)
     );
+
+    /* Hide the tools menu if it has no tools */
+    if (
+      Object.values(
+        this.el.getElementsByClassName('wb-toolkit')?.[0].children
+      ).every((button) => button.style.display === 'none')
+    ) {
+      this.el.getElementsByClassName('wb-toolkit')[0].style.display = 'none';
+      this.el.getElementsByClassName('wb-show-toolkit')[0].style.display =
+        'none';
+    }
   },
   getGeoLocateQueryURL(
     currentLocalityColumns,
