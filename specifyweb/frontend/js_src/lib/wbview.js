@@ -180,9 +180,7 @@ const WBView = Backbone.View.extend({
           sortIndicator: true,
           search: {
             searchResultClass: 'wb-search-match-cell',
-            // Search based on full match, instead of partial match
-            queryMethod: (queryString, value) =>
-              (queryString?.toString() ?? '') === (value?.toString() ?? ''),
+            queryMethod: this.wbutils.searchFunction.bind(this.wbutils),
           },
           contextMenu: {
             items: this.uploaded

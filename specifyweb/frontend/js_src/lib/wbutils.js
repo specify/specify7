@@ -9,6 +9,10 @@ const WbPlanViewTreeHelper = require('./wbplanviewtreehelper.ts');
 const WbPlanViewHelper = require('./wbplanviewhelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
+const {
+  default: WbAdvancedSearch,
+  getInitialSearchPreferences,
+} = require('./components/wbadvancedsearch.tsx');
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
@@ -18,6 +22,7 @@ module.exports = Backbone.View.extend({
     'click .wb-navigation-text': 'toggleCellTypes',
     'keydown .wb-search-query': 'searchCells',
     'keydown .wb-replace-value': 'replaceCells',
+    'click .wb-advanced-search': 'showAdvancedSearch',
     'click .wb-show-toolkit': 'toggleToolkit',
     'click .wb-geolocate': 'showGeoLocate',
     'click .wb-leafletmap': 'showLeafletMap',
@@ -29,6 +34,8 @@ module.exports = Backbone.View.extend({
     this.localityColumns = [];
     this.cellInfo = [];
     this.searchQuery = null;
+    this.searchPreferences = getInitialSearchPreferences();
+    this.advancedSearch = undefined;
   },
   render() {
     return this;
@@ -125,9 +132,9 @@ module.exports = Backbone.View.extend({
         'wb-navigation-position'
       )[0];
       currentPositionElement.innerText = cellRelativePosition;
-    }
 
-    return found;
+      return [row, col];
+    } else return false;
   },
   toggleCellTypes(e) {
     const button = e.target;
@@ -164,7 +171,8 @@ module.exports = Backbone.View.extend({
 
     this.searchQuery = searchQueryElement.value;
     const searchPlugin = this.wbview.hot.getPlugin('search');
-    const results = searchPlugin.query(this.searchQuery);
+    const results =
+      this.searchQuery === '' ? [] : searchPlugin.query(this.searchQuery);
 
     this.cellInfo.forEach((cellInfo) => {
       cellInfo.matchesSearch = false;
@@ -192,21 +200,74 @@ module.exports = Backbone.View.extend({
     )[0];
     const replacementValue = replacementValueElement.value;
 
-    const cellUpdates = [];
-    this.cellInfo.forEach((info, i) => {
-      if (info.matchesSearch) {
-        const row = Math.floor(i / cols);
-        const col = i - row * cols;
-        const cellValue = this.wbview.hot.getDataAtCell(row, col);
-        cellUpdates.push([
-          row,
-          col,
-          cellValue.split(this.searchQuery).join(replacementValue),
-        ]);
-      }
-    });
+    const getNewCellValue = this.searchPreferences.search.fullMatch
+      ? () => replacementValue
+      : (cellValue) => cellValue.split(this.searchQuery).join(replacementValue);
 
-    this.wbview.hot.setDataAtCell(cellUpdates);
+    if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
+      const cellUpdates = [];
+      this.cellInfo.forEach((info, i) => {
+        if (info.matchesSearch) {
+          const row = Math.floor(i / cols);
+          const col = i - row * cols;
+          const cellValue = this.wbview.hot.getDataAtCell(row, col);
+          cellUpdates.push([row, col, getNewCellValue(cellValue)]);
+        }
+      });
+
+      this.wbview.hot.setDataAtCell(cellUpdates);
+    } else {
+      const nextCell = this.navigateCells(
+        {
+          target: document.querySelector(
+            `.wb-navigation-section[data-navigation-type="searchResults"]
+            .wb-cell-navigation[data-navigation-direction="next"]`
+          ),
+        },
+        false
+      );
+
+      if (Array.isArray(nextCell))
+        this.wbview.hot.setDataAtCell(
+          ...nextCell,
+          getNewCellValue(this.wbview.hot.getDataAtCell(...nextCell))
+        );
+    }
+  },
+  showAdvancedSearch() {
+    if (typeof this.advancedSearch !== 'undefined') return;
+
+    this.advancedSearch = new WbAdvancedSearch({
+      initialSearchPreferences: this.searchPreferences,
+      onChange: (newSearchPreferences) => {
+        this.searchPreferences = newSearchPreferences;
+      },
+      onClose: () => {
+        this.advancedSearch = undefined;
+      },
+    }).render();
+  },
+  searchFunction(searchQuery, initialCellValue) {
+    let cellValue = initialCellValue;
+
+    if (cellValue === null) cellValue = '';
+
+    if (!this.searchPreferences.search.caseSensitive)
+      cellValue = cellValue.toLowerCase();
+
+    if (this.searchPreferences.search.useRegex)
+      return cellValue.match(
+        RegExp(
+          this.searchPreferences.search.fullMatch
+            ? `^${searchQuery}$`
+            : searchQuery,
+          this.searchPreferences.search.caseSensitive ? 'i' : ''
+        )
+      );
+
+    if (this.searchPreferences.search.fullMatch)
+      return cellValue === searchQuery;
+    else return cellValue.includes(searchQuery);
   },
   toggleToolkit() {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
