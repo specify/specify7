@@ -33,7 +33,7 @@ module.exports = Backbone.View.extend({
 
     this.localityColumns = [];
     this.cellInfo = [];
-    this.searchQuery = null;
+    this.searchQuery = '';
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
   },
@@ -180,8 +180,9 @@ module.exports = Backbone.View.extend({
     results.forEach(({ row, col }) => {
       this.initCellInfo(row, col);
       this.cellInfo[row * cols + col].matchesSearch = true;
+      const cell = this.wbview.hot.getCell(row, col);
+      this.wbview.updateCell(cell, this.cellInfo[row * cols + col]);
     });
-    this.wbview.hot.render();
 
     navigationTotalElement.innerText = results.length;
     navigationPositionElement.innerText = 0;

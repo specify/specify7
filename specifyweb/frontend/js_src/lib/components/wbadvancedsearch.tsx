@@ -21,6 +21,11 @@ export interface SearchPreferences {
     readonly caseSensitive: boolean;
     // Use Regex
     readonly useRegex: boolean;
+    /*
+     * Live Updated
+     * Whether to check newly changed cells for search query matches
+     */
+    readonly liveUpdate: boolean;
   };
   readonly replace: {
     readonly replaceMode: ReplaceMode;
@@ -34,12 +39,45 @@ export const getInitialSearchPreferences = (): SearchPreferences =>
         fullMatch: true,
         caseSensitive: true,
         useRegex: false,
+        liveUpdate: true,
       },
       replace: {
         replaceMode: 'replaceAll',
       },
     },
   });
+
+function Checkbox({
+  children: label,
+  property,
+  state,
+  setState,
+}: {
+  readonly children: string;
+  readonly property: keyof SearchPreferences['search'];
+  readonly state: SearchPreferences;
+  readonly setState: (state: SearchPreferences) => void;
+}) {
+  return (
+    <label>
+      <input
+        type="checkbox"
+        checked={state.search[property]}
+        onChange={(): void =>
+          setState({
+            ...state,
+            search: {
+              ...state.search,
+              [property]: !state.search[property],
+            },
+          })
+        }
+      />
+      {` ${label}`}
+      <br />
+    </label>
+  );
+}
 
 function WbAdvancedSearch({
   onClose: handleClose,
@@ -73,57 +111,18 @@ function WbAdvancedSearch({
     >
       <b>Search Options</b>
       <br />
-      <label>
-        <input
-          type="checkbox"
-          checked={state.search.fullMatch}
-          onChange={(): void =>
-            setState({
-              ...state,
-              search: {
-                ...state.search,
-                fullMatch: !state.search.fullMatch,
-              },
-            })
-          }
-        />{' '}
+      <Checkbox property="fullMatch" state={state} setState={setState}>
         Find entire cells only
-      </label>
-      <br />
-      <label>
-        <input
-          type="checkbox"
-          checked={state.search.caseSensitive}
-          onChange={(): void =>
-            setState({
-              ...state,
-              search: {
-                ...state.search,
-                caseSensitive: !state.search.caseSensitive,
-              },
-            })
-          }
-        />{' '}
+      </Checkbox>
+      <Checkbox property="caseSensitive" state={state} setState={setState}>
         Match case
-      </label>
-      <br />
-      <label>
-        <input
-          type="checkbox"
-          checked={state.search.useRegex}
-          onChange={(): void =>
-            setState({
-              ...state,
-              search: {
-                ...state.search,
-                useRegex: !state.search.useRegex,
-              },
-            })
-          }
-        />{' '}
-        Use Regex
-      </label>
-      <br />
+      </Checkbox>
+      <Checkbox property="useRegex" state={state} setState={setState}>
+        Use regex
+      </Checkbox>
+      <Checkbox property="liveUpdate" state={state} setState={setState}>
+        Live update
+      </Checkbox>
       <br />
 
       <b>Replace Options</b>

@@ -132,14 +132,14 @@
   --accent-color: #faa;
 }
 
-.wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
-.wb-navigation-section[data-navigation-type='searchResults'] {
-  --accent-color: #afa;
-}
-
 .wbs-form:not(.wb-hide-modified-cells) .wb-modified-cell,
 .wb-navigation-section[data-navigation-type='modifiedCells'] {
   --accent-color: #ffa;
+}
+
+.wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
+.wb-navigation-section[data-navigation-type='searchResults'] {
+  --accent-color: #afa;
 }
 
 .wb-navigation-section {

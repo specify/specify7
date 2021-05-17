@@ -179,7 +179,7 @@ const WBView = Backbone.View.extend({
           columnSorting: true,
           sortIndicator: true,
           search: {
-            searchResultClass: 'wb-search-match-cell',
+            searchResultClass: 'htSearch',
             queryMethod: this.wbutils.searchFunction.bind(this.wbutils),
           },
           contextMenu: {
@@ -266,6 +266,7 @@ const WBView = Backbone.View.extend({
       this.wbutils.cellInfo[row * cols + col].isModified = true;
     });
     this.updateCellInfos();
+    this.hot.render();
   },
   disambiguateCell([
     {
@@ -430,6 +431,19 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
     if (filteredChanges.length === 0) return;
 
+    let searchFunction;
+    if (
+      this.wbutils.searchPreferences.search.liveUpdate &&
+      this.wbutils.searchQuery !== ''
+    ) {
+      const searchPlugin = this.hot.getPlugin('search');
+      searchFunction = (row, col, cellInfo) =>
+        searchPlugin.queryMethod(
+          this.wbutils.searchQuery,
+          this.hot.getDataAtCell(row, col)
+        );
+    } else searchFunction = (_row, _col, cellInfo) => cellInfo.matchesSearch;
+
     const remappedChanges = filteredChanges.map(([row, ...rest]) => [
       this.hot.toPhysicalRow(row),
       ...rest,
@@ -438,24 +452,28 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     remappedChanges.forEach(([row, col]) => {
       this.clearDisambiguation(row);
       this.wbutils.initCellInfo(row, col);
-      this.wbutils.cellInfo[row * cols + col].isModified = true;
+      const cellInfo = this.wbutils.cellInfo[row * cols + col];
+      cellInfo.isModified = true;
+      cellInfo.matchesSearch = searchFunction(row, col, cellInfo);
+
+      const cell = this.hot.getCell(row, col);
+      this.updateCell(cell, cellInfo);
     });
 
-    this.updateCellInfos();
     this.spreadSheetChanged();
 
-    if (this.dataset.uploadplan && remappedChanges) {
-      remappedChanges
-        .filter(
-          (
-            [, column] // ignore changes to unmapped columns
-          ) =>
-            Object.keys(this.mappedHeaders).indexOf(
-              this.dataset.columns[this.hot.toPhysicalColumn(column)]
-            ) !== -1
-        )
-        .forEach(([row]) => this.startValidateRow(row));
-    }
+    if (this.dataset.uploadplan)
+      new Set(
+        remappedChanges
+          // Ignore changes to unmapped columns
+          .filter(
+            ([, column]) =>
+              Object.keys(this.mappedHeaders).indexOf(
+                this.dataset.columns[this.hot.toPhysicalColumn(column)]
+              ) !== -1
+          )
+          .map(([row]) => row)
+      ).forEach((row) => this.startValidateRow(row));
   },
   rowCreated(index, amount, source) {
     if (!this.hot) return;
@@ -650,6 +668,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       ? 'validation'
       : this.refreshInitiatedBy;
 
+    if (refreshInitiatedBy)
+      this.operationCompletedMessage(cellCounts, refreshInitiatedBy);
+  },
+  operationCompletedMessage(cellCounts, refreshInitiatedBy) {
     const messages = {
       validation:
         cellCounts.invalidCells === 0
@@ -706,8 +728,6 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
       this.refreshInitiatedBy = undefined;
     }
-
-    this.hot.render();
   },
   triggerLiveValidation() {
     const pumpValidation = () => {
@@ -842,6 +862,7 @@ Only available after a trial upload is completed.</dd>`);
       this.updateValidationButton();
       this.wbutils.cellInfo = [];
       this.updateCellInfos();
+      this.hot.render();
     };
   },
   updateValidationButton() {
@@ -876,6 +897,7 @@ Only available after a trial upload is completed.</dd>`);
         });
 
         this.updateCellInfos(showValidationSummary);
+        this.hot.render();
       }
     );
   },
@@ -924,28 +946,35 @@ Only available after a trial upload is completed.</dd>`);
       })
     );
   },
+  updateCell(cell, cellData) {
+    if (typeof cellData !== 'object') return;
+
+    if (cellData.isNew) cell.classList.add('wb-no-match-cell');
+    else cell.classList.remove('wb-no-match-cell');
+
+    if (cellData.isModified) cell.classList.add('wb-modified-cell');
+    else cell.classList.remove('wb-modified-cell');
+
+    if (cellData.issues.length) cell.classList.add('wb-invalid-cell');
+    else cell.classList.remove('wb-invalid-cell');
+
+    if (cellData.matchesSearch) cell.classList.add('wb-search-match-cell');
+    else cell.classList.remove('wb-search-match-cell');
+  },
   defineCell(cols, row, col, prop) {
     let cellData;
     try {
       cellData = this.wbutils.cellInfo[row * cols + col];
     } catch (e) {}
 
+    const that = this;
     return {
       comment: cellData && {
         value: cellData.issues.join('<br>'),
         readOnly: true,
       },
       renderer: function (instance, td, row, col, prop, value, cellProperties) {
-        if (cellData && cellData.isNew) td.classList.add('wb-no-match-cell');
-
-        if (cellData && cellData.isModified)
-          td.classList.add('wb-modified-cell');
-
-        if (cellData && cellData.issues.length)
-          td.classList.add('wb-invalid-cell');
-
-        td.classList.add(`wb-col-${col}`);
-
+        that.updateCell(td, cellData);
         Handsontable.renderers.TextRenderer.apply(null, arguments);
       },
     };
@@ -1012,6 +1041,7 @@ Only available after a trial upload is completed.</dd>`);
       this.updateValidationButton();
     }
     this.updateCellInfos();
+    this.hot.render();
 
     //show saving progress bar
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
