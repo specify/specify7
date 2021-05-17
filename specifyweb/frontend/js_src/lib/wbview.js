@@ -340,22 +340,23 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           formatObj(resource).done((formatted) => label.text(formatted));
         });
 
-        const applyToAll = $(
-          '<label>Use this selection for all matching disambiguous records </label>'
-        ).append('<input type="checkbox" class="da-use-for-all" value="yes">');
+        const applyToAll = $(`<label>
+          <input type="checkbox" class="da-use-for-all" value="yes">
+          Apply All
+        </label>`);
 
         $('<div>')
           .append(table)
           .append(applyToAll)
           .dialog({
-            title: 'Disambiguate',
+            title: 'Disambiguate Multiple Record Matches',
             modal: true,
             close() {
               $(this).remove();
             },
             buttons: [
               {
-                text: 'Select',
+                text: 'Apply',
                 click() {
                   const selected = $('input.da-option:checked', this).val();
                   const useForAll = $(

@@ -657,12 +657,12 @@ module.exports = Backbone.View.extend({
           <br>
           <label>
             <input type="checkbox" name="includesymbols">
-            Include Symbols
+            Include DMS Symbols
           </label>
         </li>
       </ul>`
     ).dialog({
-      title: 'Coordinate format converter',
+      title: 'Change Geocoordinate Formats',
       close: closeDialog,
       buttons: [{ text: 'Close', click: closeDialog }],
     });
