@@ -14,6 +14,8 @@ const {
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch.tsx');
 
+const LIVE_SEARCH_THROTTLE = 50;
+
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
   className: 'wbs-utils',
@@ -149,13 +151,13 @@ module.exports = Backbone.View.extend({
   searchCells(e) {
     if (e.key !== 'Enter' && e.key !== 'Live') {
       if (this.searchPreferences.search.liveUpdate) {
-        // Throttle live search down to once every 50ms
+        // Throttle live search down to once every few ms
         if (typeof this.queuedSearch !== 'undefined')
           clearTimeout(this.queuedSearch);
         this.queuedSearch = setTimeout(() => {
-          this.searchCells({target: e.target, key: 'Live'});
+          this.searchCells({ target: e.target, key: 'Live' });
           this.queuedSearch = undefined;
-        }, 50);
+        }, LIVE_SEARCH_THROTTLE);
       }
       return;
     }
@@ -187,9 +189,9 @@ module.exports = Backbone.View.extend({
       this.searchQuery === '' ? [] : searchPlugin.query(this.searchQuery);
 
     this.cellInfo.forEach((cellInfo, index) => {
-      if(cellInfo.matchesSearch === true){
+      if (cellInfo.matchesSearch === true) {
         const row = Math.floor(index / cols);
-        const col = index - row*cols;
+        const col = index - row * cols;
         cellInfo.matchesSearch = false;
         const cell = this.wbview.hot.getCell(row, col);
         this.wbview.updateCell(cell, this.cellInfo[row * cols + col]);
@@ -205,7 +207,10 @@ module.exports = Backbone.View.extend({
     navigationTotalElement.innerText = results.length;
     navigationPositionElement.innerText = 0;
 
-    if(e.key !== 'Live' && !this.navigateCells({ target: navigationButton[1] }, false))
+    if (
+      e.key !== 'Live' &&
+      !this.navigateCells({ target: navigationButton[1] }, false)
+    )
       this.navigateCells({ target: navigationButton[0] }, true);
   },
   replaceCells(e) {
@@ -666,7 +671,7 @@ module.exports = Backbone.View.extend({
     });
   },
   showCoordinateConversion() {
-    if ($('.latlongformatoptions').length !== 0) return;
+    if ($('.lat-long-format-options').length !== 0) return;
 
     const columnHandlers = {
       latitude1: 'Lat',
@@ -727,21 +732,31 @@ module.exports = Backbone.View.extend({
       dialog.remove();
     };
 
+    const dialogButtons = [
+      {
+        text: 'Undo',
+        click: this.wbview.hot.undo,
+        disabled: true,
+        class: 'undo-button',
+      },
+      { text: 'Close', click: closeDialog },
+    ];
+
     const dialog = $(
-      `<ul class="latlongformatoptions">
+      `<ul class="lat-long-format-options">
         ${Object.values(options)
           .map(
             ({ optionName }, optionIndex) =>
               `<li>
-            <label>
-              <input
-                type="radio"
-                name="latlongformat"
-                value="${optionIndex}"
-              >
-              ${optionName}
-            </label>
-          </li>`
+                <label>
+                  <input
+                    type="radio"
+                    name="latlongformat"
+                    value="${optionIndex}"
+                  >
+                  ${optionName}
+                </label>
+              </li>`
           )
           .join('')}
         <li>
@@ -755,10 +770,16 @@ module.exports = Backbone.View.extend({
     ).dialog({
       title: 'Change Geocoordinate Formats',
       close: closeDialog,
-      buttons: [{ text: 'Close', click: closeDialog }],
+      width: 350,
+      buttons: dialogButtons,
     });
 
     const handleOptionChange = () => {
+      if (dialogButtons[0].disabled) {
+        dialogButtons[0].disabled = false;
+        dialog.dialog('option', 'buttons', dialogButtons);
+      }
+
       const includeSymbolsCheckbox = dialog.find(
         'input[name="includesymbols"]'
       );
