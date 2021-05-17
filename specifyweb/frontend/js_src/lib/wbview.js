@@ -392,7 +392,14 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       return;
 
     const cols = this.dataset.columns.length;
-    changes.forEach(([row, col]) => {
+    const filteredChanges = changes.filter(([_row,_col,oldValue,newValue])=>
+      oldValue !== newValue && (oldValue !== null || newValue !== '')
+    );
+
+    if(filteredChanges.length === 0)
+      return;
+
+    filteredChanges.forEach(([row, col]) => {
       this.clearDisambiguation(row);
       this.wbutils.initCellInfo(row, col);
       this.wbutils.cellInfo[row * cols + col].isModified = true;
@@ -401,8 +408,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     this.updateCellInfos();
     this.spreadSheetChanged();
 
-    if (this.dataset.uploadplan && changes) {
-      changes
+    if (this.dataset.uploadplan && filteredChanges) {
+      filteredChanges
         .filter(
           (
             [, column] // ignore changes to unmapped columns
@@ -798,7 +805,6 @@ Only available after a trial upload is completed.</dd>`);
       this.updateValidationButton();
       this.wbutils.cellInfo = [];
       this.updateCellInfos();
-      this.hot.render();
     };
   },
   updateValidationButton() {
@@ -825,7 +831,6 @@ Only available after a trial upload is completed.</dd>`);
         if (results == null) {
           this.validationMode = 'off';
           this.updateValidationButton();
-          this.hot.render();
           return;
         }
 
