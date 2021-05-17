@@ -392,14 +392,19 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       return;
 
     const cols = this.dataset.columns.length;
-    const filteredChanges = changes.filter(([_row,_col,oldValue,newValue])=>
-      oldValue !== newValue && (oldValue !== null || newValue !== '')
+    const filteredChanges = changes.filter(
+      ([_row, _col, oldValue, newValue]) =>
+        oldValue !== newValue && (oldValue !== null || newValue !== '')
     );
 
-    if(filteredChanges.length === 0)
-      return;
+    if (filteredChanges.length === 0) return;
 
-    filteredChanges.forEach(([row, col]) => {
+    const remappedChanges = filteredChanges.map(([row, ...rest]) => [
+      this.hot.toPhysicalRow(row),
+      ...rest,
+    ]);
+
+    remappedChanges.forEach(([row, col]) => {
       this.clearDisambiguation(row);
       this.wbutils.initCellInfo(row, col);
       this.wbutils.cellInfo[row * cols + col].isModified = true;
@@ -408,8 +413,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     this.updateCellInfos();
     this.spreadSheetChanged();
 
-    if (this.dataset.uploadplan && filteredChanges) {
-      filteredChanges
+    if (this.dataset.uploadplan && remappedChanges) {
+      remappedChanges
         .filter(
           (
             [, column] // ignore changes to unmapped columns
