@@ -1,6 +1,9 @@
 <% if (status) { %>
   <% const {uploaderstatus, taskstatus, taskinfo} = status;
-  if(taskstatus === 'FAILURE'){ %>
+  if(taskstatus === 'PENDING') { %>
+    <p>Beginning the upload...</p>
+  <% }
+  else if(taskstatus === 'FAILURE'){ %>
     Error occurred during <%= uploaderstatus.operation %>:<br>
     <%- taskinfo %>
   <% } else {
