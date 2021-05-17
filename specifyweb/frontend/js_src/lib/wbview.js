@@ -828,6 +828,7 @@ Only available after a trial upload is completed.</dd>`);
             'wb-hide-new-cells',
             'wb-hide-invalid-cells'
           );
+          this.el.classList.add('wb-hide-modified-cells');
           break;
         case 'static':
           this.getValidationResults();
@@ -885,8 +886,12 @@ Only available after a trial upload is completed.</dd>`);
       headerToCol[this.dataset.columns[i]] = i;
     }
 
-    for (let i = 0; i < cols; i++) {
-      delete this.wbutils.cellInfo[row * cols + i];
+    for (let col = 0; col < cols; col++) {
+      const isModified =
+        isLive && this.wbutils.cellInfo[row * cols + col]?.isModified === true;
+      this.wbutils.cellInfo[row * cols + col] = undefined;
+      this.wbutils.initCellInfo(row, col);
+      this.wbutils.cellInfo[row * cols + col].isModified = isModified;
     }
 
     const addErrorMessage = (columnName, issue) => {
@@ -895,11 +900,6 @@ Only available after a trial upload is completed.</dd>`);
       const cellInfo = this.wbutils.cellInfo[row * cols + col];
 
       cellInfo.issues.push(capitalize(issue));
-
-      // In CSS, modified cells have higher priority then invalid cells
-      // Here, we need to overwrite that manually when live validation
-      // detected some issues
-      if (isLive) cellInfo.isModified = false;
     };
 
     if (result === null) return;
