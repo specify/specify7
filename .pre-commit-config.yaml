@@ -89,6 +89,11 @@ repos:
       - id: mixed-line-ending
       - id: requirements-txt-fixer
 
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.0.0
+    hooks:
+      - id: codespell
+
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
