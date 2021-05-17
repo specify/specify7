@@ -37,9 +37,9 @@ export const getFriendlyName = (
   name = capitalize(name);
 
   const regex = /(?<first>[A-Z]) (?<second>[ A-Z])/g;
-  const subst = `$1$2`;
-  name = name.replace(regex, subst);
-  name = name.replace(regex, subst);
+  const substitution = `$1$2`;
+  name = name.replace(regex, substitution);
+  name = name.replace(regex, substitution);
 
   name = name.replace('Dna', 'DNA');
 

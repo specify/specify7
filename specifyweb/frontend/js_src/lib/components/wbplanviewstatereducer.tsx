@@ -329,8 +329,8 @@ export const stateReducer = generateReducer<
                           type: 'ValidationAction',
                         });
                         state.refObjectDispatch({
-                          type: 'AutoscrollStatusChangeAction',
-                          autoscrollType: 'mappingView',
+                          type: 'AutoScrollStatusChangeAction',
+                          autoScrollType: 'mappingView',
                           status: true,
                         });
                       }}
@@ -342,8 +342,8 @@ export const stateReducer = generateReducer<
                       onClick={(): void => {
                         handleSave(false);
                         state.refObjectDispatch({
-                          type: 'AutoscrollStatusChangeAction',
-                          autoscrollType: 'mappingView',
+                          type: 'AutoScrollStatusChangeAction',
+                          autoScrollType: 'mappingView',
                           status: true,
                         });
                       }}
@@ -470,10 +470,10 @@ export const stateReducer = generateReducer<
               height,
             })
           }
-          handleAutoscrollStatusChange={(autoscrollType, status): void =>
+          handleAutoScrollStatusChange={(autoScrollType, status): void =>
             state.refObjectDispatch({
-              type: 'AutoscrollStatusChangeAction',
-              autoscrollType,
+              type: 'AutoScrollStatusChangeAction',
+              autoScrollType,
               status,
             })
           }

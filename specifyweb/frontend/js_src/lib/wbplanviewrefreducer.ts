@@ -17,7 +17,7 @@ export interface RefMappingState extends State<'RefMappingState'> {
   unloadProtectIsSet: boolean;
   mappingViewHeight: number;
   mappingViewHeightChangeTimeout: NodeJS.Timeout;
-  autoscroll: Record<AutoScrollTypes, boolean>;
+  autoScroll: Record<AutoScrollTypes, boolean>;
   hideEmptyDataSetDialogAction: boolean;
 }
 
@@ -48,10 +48,10 @@ type MappingViewResizeAction = Action<
   }
 >;
 
-type AutoscrollStatusChangeAction = Action<
-  'AutoscrollStatusChangeAction',
+type AutoScrollStatusChangeAction = Action<
+  'AutoScrollStatusChangeAction',
   {
-    autoscrollType: AutoScrollTypes;
+    autoScrollType: AutoScrollTypes;
     status: boolean;
   }
 >;
@@ -68,7 +68,7 @@ export type RefActions =
   | RefSetUnloadProtectAction
   | RefUnsetUnloadProtectAction
   | MappingViewResizeAction
-  | AutoscrollStatusChangeAction
+  | AutoScrollStatusChangeAction
   | TemplateSelectedAction
   | RefHideEmptyDataSetDialogAction;
 
@@ -130,18 +130,18 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
       MAPPING_VIEW_RESIZE_TIMEOUT
     );
   },
-  AutoscrollStatusChangeAction: ({
-    autoscrollType,
+  AutoScrollStatusChangeAction: ({
+    autoScrollType,
     status,
     payload: { refObject, state },
   }) => {
     const refMappingObject = getRefMappingState(refObject, state);
 
-    refMappingObject.current.autoscroll ??= {
+    refMappingObject.current.autoScroll ??= {
       mappingView: false,
       listOfMappings: false,
     };
-    refMappingObject.current.autoscroll[autoscrollType] = status;
+    refMappingObject.current.autoScroll[autoScrollType] = status;
   },
   TemplateSelectedAction: async ({ id, payload: { props, stateDispatch } }) =>
     fetch(`/api/workbench/dataset/${id}`)

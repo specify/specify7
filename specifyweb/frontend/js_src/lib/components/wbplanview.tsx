@@ -145,7 +145,7 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
       });
   }, ['changesMade' in state ? state.changesMade : false]);
 
-  // Wait for automapper suggestions to fetch
+  // Wait for AutoMapper suggestions to fetch
   React.useEffect(() => {
     if (!('automapperSuggestionsPromise' in state)) return;
 

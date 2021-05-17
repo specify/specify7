@@ -74,7 +74,7 @@ L.Control.Details = L.Control.extend({
     details.style.maxWidth = '50%';
     details.style.minWidth = '92px';
     details.innerHTML = `
-      <summary style="font-size:1rem">Details</summaryi>
+      <summary style="font-size:1rem">Details</summary>
       <span></span>
     `;
 

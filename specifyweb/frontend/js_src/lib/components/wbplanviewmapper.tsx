@@ -119,8 +119,8 @@ export default function WBPlanViewMapper(
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleToggleMappingIsTemplated: () => void;
     readonly handleMappingViewResize: (height: number) => void;
-    readonly handleAutoscrollStatusChange: (
-      autoscrollType: AutoScrollTypes,
+    readonly handleAutoScrollStatusChange: (
+      autoScrollType: AutoScrollTypes,
       status: boolean
     ) => void;
     readonly handleChangeMatchBehaviorAction: (
@@ -145,33 +145,33 @@ export default function WBPlanViewMapper(
   // Scroll listOfMappings/mappingView/open picklist to correct position
   React.useEffect(() => {
     if (
-      typeof props.refObject.current.autoscroll === 'undefined' ||
+      typeof props.refObject.current.autoScroll === 'undefined' ||
       !listOfMappings.current ||
       !mappingViewParentRef.current
     )
       return;
 
-    (Object.entries(props.refObject.current.autoscroll) as [
+    (Object.entries(props.refObject.current.autoScroll) as [
       AutoScrollTypes,
       boolean
     ][])
-      .filter(([, autoscroll]) => autoscroll)
-      .forEach(([autoscrollType]) => {
-        if (autoscrollType === 'listOfMappings') {
+      .filter(([, autoScroll]) => autoScroll)
+      .forEach(([autoScrollType]) => {
+        if (autoScrollType === 'listOfMappings') {
           if (!listOfMappings.current) return;
 
           listOfMappings.current.scrollTop =
             listOfMappings.current.scrollHeight;
         }
 
-        if (autoscrollType === 'mappingView') {
+        if (autoScrollType === 'mappingView') {
           if (!mappingViewParentRef.current) return;
 
           if (props.validationResults.length > 0)
             mappingViewParentRef.current.scrollLeft = 0;
         }
 
-        props.handleAutoscrollStatusChange(autoscrollType, false);
+        props.handleAutoScrollStatusChange(autoScrollType, false);
       });
   });
 
@@ -483,7 +483,7 @@ export default function WBPlanViewMapper(
             ? undefined
             : (): void => {
                 props.handleAddNewHeader();
-                props.handleAutoscrollStatusChange('listOfMappings', true);
+                props.handleAutoScrollStatusChange('listOfMappings', true);
               }
         }
         readonly={props.readonly}

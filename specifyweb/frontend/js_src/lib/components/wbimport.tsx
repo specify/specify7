@@ -228,7 +228,7 @@ export default class WbImport extends Component<{}, WbImportState> {
               type: 'PreviewCSVState',
               preview: action.preview,
               file: action.file,
-              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extentsion
+              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extension
               encoding: this.state.encoding,
               hasHeader: true,
             });
@@ -241,7 +241,7 @@ export default class WbImport extends Component<{}, WbImportState> {
               type: 'PreviewXLSState',
               preview: action.preview,
               file: action.file,
-              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extentsion
+              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extension
               hasHeader: true,
             });
             break;

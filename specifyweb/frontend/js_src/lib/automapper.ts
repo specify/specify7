@@ -67,7 +67,7 @@ interface AutoMapperConstructorBaseParameters {
 interface AutoMapperConstructorCheckExistingParameters
   extends AutoMapperConstructorBaseParameters {
   /*
-   * Whether to check if the field is already mapped (outside automapper,
+   * Whether to check if the field is already mapped (outside AutoMapper,
    * in the mapping tree)
    */
   readonly checkForExistingMappings: true;
@@ -77,7 +77,7 @@ interface AutoMapperConstructorCheckExistingParameters
 interface AutoMapperConstructorDontCheckExistingParameters
   extends AutoMapperConstructorBaseParameters {
   /*
-   * Whether to check if the field is already mapped (outside automapper,
+   * Whether to check if the field is already mapped (outside AutoMapper,
    * in the mapping tree)
    */
   readonly checkForExistingMappings: false;
@@ -246,7 +246,7 @@ function handleDuplicateHeader(header: string): string {
 
 export default class Automapper {
   // Used to replace any white space characters with space
-  private static readonly regexReplaceWhitespace: RegExp = /\s+/g;
+  private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
 
   // Used to remove non letter characters
   private static readonly regexRemoveNonAz: RegExp = /[^\sa-z]+/g;
@@ -373,7 +373,7 @@ export default class Automapper {
           const lowercaseName = handleDuplicateHeader(
             originalName
               .toLowerCase()
-              .replace(Automapper.regexReplaceWhitespace, ' ')
+              .replace(Automapper.regexReplaceWhiteSpace, ' ')
               .trim()
           );
           const strippedName = lowercaseName
@@ -991,7 +991,7 @@ export default class Automapper {
 
     // Don't map if:
     if (
-      // If this fields is designated as unmappable in the current source
+      // If this fields is designated as un-mappable in the current source
       isFieldInDontMatch(tableName, lastPathPart, this.scope) ||
       /*
        * Or if a starting path was given and proposed mapping is outside
@@ -1024,7 +1024,7 @@ export default class Automapper {
     while (
       /*
        * Go over mapped headers to see if this path was already mapped.
-       * Go over mappings proposed by automapper:
+       * Go over mappings proposed by AutoMapper:
        */
       mappingPathIsInProposedMappings(
         this.allowMultipleMappings,

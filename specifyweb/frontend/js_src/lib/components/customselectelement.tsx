@@ -33,7 +33,7 @@ export type CustomSelectType =
    */
   | 'SUGGESTION_LIST'
   /*
-   * Used to display a list of automapper suggestions
+   * Used to display a list of AutoMapper suggestions
    * like OPENED_LIST, but without a table name on top
    * has onChange event:
    */
@@ -486,7 +486,7 @@ export function CustomSelectElement({
       listOfOptionsRef.current !== null &&
       // And list has a value
       defaultOption.optionName !== '0' &&
-      // And this type of picklist has autoscroll enabled
+      // And this type of picklist has auto scroll enabled
       SELECT_TYPES_WITH_AUTOSCROLL.includes(customSelectType) &&
       // And the list is not already scrolled
       listOfOptionsRef.current.scrollTop === 0
