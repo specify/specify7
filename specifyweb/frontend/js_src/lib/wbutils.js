@@ -36,6 +36,7 @@ module.exports = Backbone.View.extend({
     this.searchQuery = '';
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
+    this.queuedSearch = undefined;
   },
   render() {
     return this;
@@ -146,7 +147,18 @@ module.exports = Backbone.View.extend({
     this.el.classList.toggle(cssClassName);
   },
   searchCells(e) {
-    if (e.key !== 'Enter') return;
+    if (e.key !== 'Enter' && e.key !== 'Live') {
+      if (this.searchPreferences.search.liveUpdate) {
+        // Throttle live search down to once every 50ms
+        if (typeof this.queuedSearch !== 'undefined')
+          clearTimeout(this.queuedSearch);
+        this.queuedSearch = setTimeout(() => {
+          this.searchCells({target: e.target, key: 'Live'});
+          this.queuedSearch = undefined;
+        }, 50);
+      }
+      return;
+    }
 
     this.el.classList.remove('wb-hide-search-results');
 
@@ -174,8 +186,14 @@ module.exports = Backbone.View.extend({
     const results =
       this.searchQuery === '' ? [] : searchPlugin.query(this.searchQuery);
 
-    this.cellInfo.forEach((cellInfo) => {
-      cellInfo.matchesSearch = false;
+    this.cellInfo.forEach((cellInfo, index) => {
+      if(cellInfo.matchesSearch === true){
+        const row = Math.floor(index / cols);
+        const col = index - row*cols;
+        cellInfo.matchesSearch = false;
+        const cell = this.wbview.hot.getCell(row, col);
+        this.wbview.updateCell(cell, this.cellInfo[row * cols + col]);
+      }
     });
     results.forEach(({ row, col }) => {
       this.initCellInfo(row, col);
@@ -187,7 +205,7 @@ module.exports = Backbone.View.extend({
     navigationTotalElement.innerText = results.length;
     navigationPositionElement.innerText = 0;
 
-    if (!this.navigateCells({ target: navigationButton[1] }, false))
+    if(e.key !== 'Live' && !this.navigateCells({ target: navigationButton[1] }, false))
       this.navigateCells({ target: navigationButton[0] }, true);
   },
   replaceCells(e) {
