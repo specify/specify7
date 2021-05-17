@@ -24,6 +24,7 @@ const {
   getIndexFromReferenceItemName,
   valueIsReferenceItem,
   valueIsTreeRank,
+  mappingPathToString,
 } = require('./wbplanviewmodelhelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
@@ -250,7 +251,7 @@ const WBView = Backbone.View.extend({
     extra.disambiguation = {};
     this.data[rn][ncols] = JSON.stringify(extra);
   },
-  setDisambiguation(row, mapping, id) {
+  setDisambiguation(row, mapping, id, affectedColumns) {
     const ncols = this.dataset.columns.length;
     const rn = this.hot.toPhysicalRow(row);
     const hidden = this.data[rn][ncols];
@@ -260,6 +261,13 @@ const WBView = Backbone.View.extend({
     extra.disambiguation = da;
     this.data[rn][ncols] = JSON.stringify(extra);
     this.spreadSheetChanged();
+
+    const cols = this.dataset.columns.length;
+    affectedColumns.forEach((col) => {
+      this.wbutils.initCellInfo(row, col);
+      this.wbutils.cellInfo[row * cols + col].isModified = true;
+    });
+    this.updateCellInfos();
   },
   disambiguateCell([
     {
@@ -268,9 +276,12 @@ const WBView = Backbone.View.extend({
   ]) {
     if (this.mappings) {
       const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mappingPath = mappingsTreeToArrayOfSplitMappings(
+      const arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
         this.mappings.mappingsTree
-      ).find(({ headerName }) => headerName === targetHeader)?.mappingPath;
+      );
+      const mappingPath = arrayOfMappings.find(
+        ({ headerName }) => headerName === targetHeader
+      )?.mappingPath;
       const tableName = getMappingLineData({
         baseTableName: this.mappings.baseTableName,
         mappingPath: mappingPath.slice(0, -1),
@@ -282,8 +293,24 @@ const WBView = Backbone.View.extend({
         filters: { id__in: matches.ids.join(',') },
       });
 
+      const affectedHeaders = arrayOfMappings
+        .filter(
+          ({ mappingPath: comparisonMappingPath }) =>
+            mappingPathToString(comparisonMappingPath.slice(0, -1)) ===
+            mappingPathToString(mappingPath.slice(0, -1))
+        )
+        .map(({ headerName }) => headerName);
+      const affectedColumns = affectedHeaders.map((headerName) =>
+        this.dataset.columns.indexOf(headerName)
+      );
+
       const doDA = (selected) => {
-        this.setDisambiguation(row, mappingPath, parseInt(selected, 10));
+        this.setDisambiguation(
+          row,
+          mappingPath,
+          parseInt(selected, 10),
+          affectedColumns
+        );
         this.startValidateRow(row);
       };
       const doAll = (selected) => {
@@ -294,7 +321,12 @@ const WBView = Backbone.View.extend({
             rowResult &&
             getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
           if (key === matches.key) {
-            this.setDisambiguation(i, mappingPath, parseInt(selected, 10));
+            this.setDisambiguation(
+              i,
+              mappingPath,
+              parseInt(selected, 10),
+              affectedColumns
+            );
             this.startValidateRow(i);
           }
         }
