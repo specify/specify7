@@ -90,17 +90,16 @@ function WbAdvancedSearch({
 
   handleChange(state);
 
+  cache.set('workbench', 'search-properties', state, {
+    overwrite: true,
+  });
+
   return (
     <ModalDialog
       onCloseCallback={handleClose}
       properties={{
         title: 'Configure Search & Replace',
-        close: (): void => {
-          cache.set('workbench', 'search-properties', state, {
-            overwrite: true,
-          });
-          handleClose();
-        },
+        close: handleClose,
         modal: false,
       }}
     >

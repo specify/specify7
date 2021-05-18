@@ -265,6 +265,12 @@ module.exports = Backbone.View.extend({
       initialSearchPreferences: this.searchPreferences,
       onChange: (newSearchPreferences) => {
         this.searchPreferences = newSearchPreferences;
+        if (this.searchPreferences.search.liveUpdate) {
+          this.searchCells({
+            target: this.el.getElementsByClassName('wb-search-query')[0],
+            key: 'Live',
+          });
+        }
       },
       onClose: () => {
         this.advancedSearch = undefined;
