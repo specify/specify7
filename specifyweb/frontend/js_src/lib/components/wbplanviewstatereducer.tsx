@@ -2,7 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 import type { MatchBehaviors } from '../uploadplantomappingstree';
-import * as cache from '../wbplanviewcache';
+import * as cache from '../cache';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
 import dataModelStorage from '../wbplanviewmodel';
@@ -95,8 +95,8 @@ export function mappingState(state: WBPlanViewStates): MappingState {
 export const getDefaultMappingState = (): MappingState => ({
   type: 'MappingState',
   mappingIsTemplated: false,
-  showHiddenFields: cache.get<boolean>('ui', 'showHiddenFields'),
-  showMappingView: cache.get<boolean>('ui', 'showMappingView', {
+  showHiddenFields: cache.get('wbplanview-ui', 'showHiddenFields'),
+  showMappingView: cache.get('wbplanview-ui', 'showMappingView', {
     defaultValue: true,
   }),
   baseTableName: '',
@@ -213,8 +213,8 @@ export const stateReducer = generateReducer<
     const refObject = getRefMappingState(state.refObject, state);
 
     if (typeof refObject.current.mappingViewHeight === 'undefined')
-      refObject.current.mappingViewHeight = cache.get<number>(
-        'ui',
+      refObject.current.mappingViewHeight = cache.get(
+        'wbplanview-ui',
         'mappingViewHeight',
         {
           defaultValue: defaultMappingViewHeight,

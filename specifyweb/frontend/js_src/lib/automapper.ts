@@ -20,7 +20,7 @@ import type {
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
 import type { Action } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
-import * as cache from './wbplanviewcache';
+import * as cache from './cache';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
@@ -456,7 +456,7 @@ export default class Automapper {
     ]);
 
     if (useCache && commitToCache) {
-      const cachedData = cache.get<AutoMapperResults>('automapper', cacheName);
+      const cachedData = cache.get('wbplanview-automapper', cacheName);
       if (cachedData) return cachedData;
     }
 
@@ -464,7 +464,8 @@ export default class Automapper {
     this.findMappingsDriver('shortcutsAndTableSynonyms');
     this.findMappingsDriver('synonymsAndMatches');
 
-    if (commitToCache) cache.set('automapper', cacheName, this.results);
+    if (commitToCache)
+      cache.set('wbplanview-automapper', cacheName, this.results);
 
     return this.results;
   }

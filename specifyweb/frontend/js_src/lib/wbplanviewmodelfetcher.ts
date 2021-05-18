@@ -18,13 +18,12 @@ import type {
   SchemaModelTableRelationship,
 } from './legacytypes';
 import schema from './schema';
-import * as cache from './wbplanviewcache';
+import * as cache from './cache';
 
 import { getFriendlyName } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
   aliasRelationshipTypes,
-  cacheBucketName,
   dataModelFetcherVersion,
   fetchingParameters,
   knownRelationshipTypes,
@@ -192,18 +191,6 @@ function handleRelationshipField(
 
 let cacheVersion = '';
 
-const cacheGet = <T>(cacheName: string): false | T =>
-  cache.get<T>(cacheBucketName, cacheName, {
-    version: cacheVersion,
-  });
-
-const cacheSet = <T>(cacheName: string, cacheValue: T): T =>
-  cache.set(cacheBucketName, cacheName, cacheValue, {
-    version: cacheVersion,
-    overwrite: true,
-    priorityCommit: true,
-  });
-
 /* Fetches the data model */
 export default async function (): Promise<void> {
   if (typeof dataModelStorage.tables !== 'undefined') return;
@@ -216,14 +203,24 @@ export default async function (): Promise<void> {
   }
 
   {
-    const tables = cacheGet<DataModelTables>('tables');
-    const listOfBaseTables = cacheGet<DataModelListOfTables>(
-      'listOfBaseTables'
+    const tables = cache.get('wbplanview-datamodel', 'tables', {
+      version: cacheVersion,
+    });
+    const listOfBaseTables = cache.get(
+      'wbplanview-datamodel',
+      'listOfBaseTables',
+      { version: cacheVersion }
     );
-    const ranks = cacheGet<DataModelRanks>('ranks');
-    const rootRanks = cacheGet<R<string>>('rootRanks');
-    const originalRelationships = cacheGet<OriginalRelationships>(
-      'originalRelationships'
+    const ranks = cache.get('wbplanview-datamodel', 'ranks', {
+      version: cacheVersion,
+    });
+    const rootRanks = cache.get('wbplanview-datamodel', 'rootRanks', {
+      version: cacheVersion,
+    });
+    const originalRelationships = cache.get(
+      'wbplanview-datamodel',
+      'originalRelationships',
+      { version: cacheVersion }
     );
 
     if (
@@ -402,16 +399,55 @@ export default async function (): Promise<void> {
           ))
       );
 
-      dataModelStorage.tables = cacheSet<DataModelTables>('tables', tables);
-      dataModelStorage.listOfBaseTables = cacheSet<DataModelListOfTables>(
-        'listOfBaseTables',
-        listOfBaseTables
+      dataModelStorage.tables = cache.set(
+        'wbplanview-datamodel',
+        'tables',
+        tables,
+        {
+          version: cacheVersion,
+          overwrite: true,
+          priorityCommit: true,
+        }
       );
-      dataModelStorage.ranks = cacheSet<DataModelRanks>('ranks', ranks);
-      dataModelStorage.rootRanks = cacheSet<IR<string>>('rootRanks', rootRanks);
-      dataModelStorage.originalRelationships = cacheSet<OriginalRelationships>(
+      dataModelStorage.listOfBaseTables = cache.set(
+        'wbplanview-datamodel',
+        'listOfBaseTables',
+        listOfBaseTables,
+        {
+          version: cacheVersion,
+          overwrite: true,
+          priorityCommit: true,
+        }
+      );
+      dataModelStorage.ranks = cache.set(
+        'wbplanview-datamodel',
+        'ranks',
+        ranks,
+        {
+          version: cacheVersion,
+          overwrite: true,
+          priorityCommit: true,
+        }
+      );
+      dataModelStorage.rootRanks = cache.set(
+        'wbplanview-datamodel',
+        'rootRanks',
+        rootRanks,
+        {
+          version: cacheVersion,
+          overwrite: true,
+          priorityCommit: true,
+        }
+      );
+      dataModelStorage.originalRelationships = cache.set(
+        'wbplanview-datamodel',
         'originalRelationships',
-        originalRelationships
+        originalRelationships,
+        {
+          version: cacheVersion,
+          overwrite: true,
+          priorityCommit: true,
+        }
       );
     })
     .catch((error) => {

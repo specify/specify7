@@ -7,9 +7,10 @@
 
 'use strict';
 
-// Determines how persistent bucket's storage would be
+import type { Cachedefinitions } from './cachedefinitions';
 import type { R } from './components/wbplanview';
 
+// Determines how persistent bucket's storage would be
 type BucketType =
   // Persistent across sessions
   | 'localStorage'
@@ -37,9 +38,9 @@ interface BucketData {
 const buckets: R<BucketData> = {};
 /*
  * The prefix that would be given to all bucketNames when they are committed
- * to localStorage. Used to avoid collisions
+ * to localStorage. It is used to avoid collisions
  */
-const cachePrefix = 'specify7-wbplanview-';
+const cachePrefix = 'specify7-';
 // Start trimming a bucket if records in the bucket are over this limit
 const localStorageBucketSoftLimit = 100;
 // Start trimming a bucket if records in a bucket are over this limit
@@ -100,9 +101,57 @@ function fetchBucket(
   return (buckets[bucketName] = JSON.parse(localStorageData));
 }
 
+/*
+ * Get value of cacheName in the bucketName
+ * Bucket names and cache names are defined in CacheDefinitions
+ */
+export const get: {
+  // Overload with a default value
+  <
+    BUCKET_NAME extends string & keyof Cachedefinitions,
+    CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+  >(
+    bucketName: BUCKET_NAME,
+    cacheName: CACHE_NAME,
+    props: {
+      readonly version?: string;
+      readonly defaultSetOptions?: SetOptions;
+      readonly defaultValue: Cachedefinitions[BUCKET_NAME][CACHE_NAME];
+    }
+  ): Cachedefinitions[BUCKET_NAME][CACHE_NAME];
+  // Overload without a default value (returns T|false)
+  <
+    BUCKET_NAME extends string & keyof Cachedefinitions,
+    CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+  >(
+    bucketName: BUCKET_NAME,
+    cacheName: CACHE_NAME,
+    props?: {
+      readonly version?: string;
+      readonly defaultSetOptions?: SetOptions;
+    }
+  ): Cachedefinitions[BUCKET_NAME][CACHE_NAME] | false;
+} = <
+  BUCKET_NAME extends string & keyof Cachedefinitions,
+  CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+>(
+  bucketName: BUCKET_NAME,
+  cacheName: CACHE_NAME,
+  props?: {
+    readonly version?: string;
+    readonly defaultSetOptions?: SetOptions;
+    readonly defaultValue?: Cachedefinitions[BUCKET_NAME][CACHE_NAME];
+  }
+) =>
+  genericGet<Cachedefinitions[BUCKET_NAME][CACHE_NAME]>(
+    bucketName,
+    cacheName,
+    props
+  );
+
 /* Get value of cacheName in the bucketName */
 // Overload with defaultValue
-export function get<T>(
+export function genericGet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
@@ -114,7 +163,7 @@ export function get<T>(
   }
 ): T;
 // Overload without defaultValue (returns T|false)
-export function get<T>(
+export function genericGet<T = never>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
@@ -126,19 +175,19 @@ export function get<T>(
       }
     | undefined
 ): T | false;
-export function get<T>(
+export function genericGet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
   cacheName: string,
   {
     version,
-    defaultValue,
     defaultSetOptions,
+    defaultValue,
   }: {
     readonly version?: string;
-    readonly defaultValue?: T;
     readonly defaultSetOptions?: SetOptions;
+    readonly defaultValue?: T;
   } = {}
 ): T | false {
   /*
@@ -184,8 +233,24 @@ interface SetOptions {
   readonly priorityCommit?: boolean;
 }
 
+export const set = <
+  BUCKET_NAME extends string & keyof Cachedefinitions,
+  CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+>(
+  bucketName: BUCKET_NAME,
+  cacheName: CACHE_NAME,
+  cacheValue: Cachedefinitions[BUCKET_NAME][CACHE_NAME],
+  setOptions?: SetOptions
+) =>
+  genericSet<Cachedefinitions[BUCKET_NAME][CACHE_NAME]>(
+    bucketName,
+    cacheName,
+    cacheValue,
+    setOptions
+  );
+
 /* Set's cacheValue as cache value under cacheName in `bucketName` */
-export function set<T>(
+export function genericSet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache

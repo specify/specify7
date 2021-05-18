@@ -22,7 +22,7 @@ import schema from './schema';
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
-import * as cache from './wbplanviewcache';
+import * as cache from './cache';
 import { uniquifyHeaders } from './wbplanviewhelper';
 import {
   defaultColumnOptions,
@@ -252,7 +252,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     !action.referrer || action.referrer === state.type
       ? {
           type: 'BaseTableSelectionState',
-          showHiddenTables: cache.get<boolean>('ui', 'showHiddenTables'),
+          showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables'),
         }
       : state,
   SelectTableAction: ({ action }) => ({
@@ -268,7 +268,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   ToggleHiddenTablesAction: ({ state }) => ({
     ...state,
     showHiddenTables: cache.set(
-      'ui',
+      'wbplanview-ui',
       'showHiddenTables',
       'showHiddenTables' in state ? !state.showHiddenTables : false,
       {
@@ -284,7 +284,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   // TemplateSelectionState
   CancelTemplateSelectionAction: () => ({
     type: 'BaseTableSelectionState',
-    showHiddenTables: cache.get<boolean>('ui', 'showHiddenTables'),
+    showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables'),
   }),
 
   // Common
@@ -319,10 +319,15 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     savePlan(action, mappingState(state), action.ignoreValidation),
   ToggleMappingViewAction: ({ state, action }) => ({
     ...mappingState(state),
-    showMappingView: cache.set('ui', 'showMappingView', action.isVisible, {
-      overwrite: true,
-      priorityCommit: true,
-    }),
+    showMappingView: cache.set(
+      'wbplanview-ui',
+      'showMappingView',
+      action.isVisible,
+      {
+        overwrite: true,
+        priorityCommit: true,
+      }
+    ),
   }),
   ToggleMappingIsTemplatedAction: ({ state }) => ({
     ...mappingState(state),
@@ -403,7 +408,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   ToggleHiddenFieldsAction: ({ state }) => ({
     ...mappingState(state),
     showHiddenFields: cache.set(
-      'ui',
+      'wbplanview-ui',
       'showHiddenFields',
       !mappingState(state).showHiddenFields,
       {

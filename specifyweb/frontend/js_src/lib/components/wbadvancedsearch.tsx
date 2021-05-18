@@ -1,7 +1,7 @@
 import React from 'react';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import * as cache from '../wbplanviewcache';
+import * as cache from '../cache';
 
 interface Props {
   initialSearchPreferences: SearchPreferences;
@@ -33,7 +33,7 @@ export interface SearchPreferences {
 }
 
 export const getInitialSearchPreferences = (): SearchPreferences =>
-  cache.get<SearchPreferences>('workbench', 'search-properties', {
+  cache.get('workbench', 'search-properties', {
     defaultValue: {
       search: {
         fullMatch: true,
@@ -96,14 +96,9 @@ function WbAdvancedSearch({
       properties={{
         title: 'Configure Search & Replace',
         close: (): void => {
-          cache.set<SearchPreferences>(
-            'workbench',
-            'search-properties',
-            state,
-            {
-              overwrite: true,
-            }
-          );
+          cache.set('workbench', 'search-properties', state, {
+            overwrite: true,
+          });
           handleClose();
         },
         modal: false,

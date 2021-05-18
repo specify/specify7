@@ -15,7 +15,7 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { LocalityData } from './leafletutils';
-import * as cache from './wbplanviewcache';
+import * as cache from './cache';
 import { capitalize } from './wbplanviewhelper';
 
 const DEFAULT_ZOOM = 5;
@@ -136,18 +136,20 @@ export async function showLeafletMap({
   return map;
 }
 
+export type LeafletCacheSalt = string & '';
+
 function rememberSelectedLayers(
   map: L.Map,
   layers: IR<L.TileLayer>,
-  cacheSalt: string
+  cacheSalt: LeafletCacheSalt
 ): void {
-  const cacheName = `currentLayer${cacheSalt}`;
-  const currentLayer = cache.get<string>('leaflet', cacheName);
+  const cacheName = `currentLayer${cacheSalt}` as const;
+  const currentLayer = cache.get('leaflet', cacheName);
   if (currentLayer !== false && currentLayer in layers)
     layers[currentLayer].addTo(map);
 
   map.on('baselayerchange', ({ name }: { readonly name: string }) =>
-    cache.set<string>('leaflet', cacheName, name, { overwrite: true })
+    cache.set('leaflet', cacheName, name, { overwrite: true })
   );
 }
 
@@ -181,7 +183,7 @@ const markerLayerName = [
   'errorRadius',
 ] as const;
 
-type MarkerLayerName = typeof markerLayerName[number];
+export type MarkerLayerName = typeof markerLayerName[number];
 
 const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
   marker: true,
@@ -225,10 +227,16 @@ export function addMarkersToMap(
   Object.entries(layerGroups).forEach(([markerGroupName, layer]) => {
     if (
       markerGroupName === 'marker' ||
-      cache.get('leaflet', `show${capitalize(markerGroupName)}`, {
-        defaultValue:
-          defaultMarkerGroupsState[markerGroupName as MarkerLayerName],
-      })
+      cache.get(
+        'leaflet',
+        `show${
+          capitalize(markerGroupName) as Capitalize<MarkerLayerName>
+        }` as const,
+        {
+          defaultValue:
+            defaultMarkerGroupsState[markerGroupName as MarkerLayerName],
+        }
+      )
     )
       layer.addTo(map);
   });
@@ -241,7 +249,7 @@ export function addMarkersToMap(
     if (typeof layerName !== 'undefined')
       cache.set(
         'leaflet',
-        `show${capitalize(layerName)}`,
+        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
         type === 'overlayadd',
         {
           overwrite: true,

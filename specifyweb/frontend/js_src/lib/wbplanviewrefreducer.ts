@@ -3,7 +3,7 @@ import type { WBPlanViewProps } from './components/wbplanview';
 import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
-import * as cache from './wbplanviewcache';
+import * as cache from './cache';
 import type { WBPlanViewActions } from './wbplanviewreducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
@@ -123,7 +123,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     refMappingObject.current.mappingViewHeight = height;
     refMappingObject.current.mappingViewHeightChangeTimeout = setTimeout(
       () =>
-        cache.set('ui', 'mappingViewHeight', height, {
+        cache.set('wbplanview-ui', 'mappingViewHeight', height, {
           overwrite: true,
           priorityCommit: true,
         }),
