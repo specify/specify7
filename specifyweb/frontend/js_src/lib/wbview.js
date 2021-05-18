@@ -60,9 +60,22 @@ const WBView = Backbone.View.extend({
       this.data.push(Array(this.dataset.columns.length).fill(null));
     }
 
-    this.mappings =
-      this.dataset.uploadplan &&
-      uploadPlanToMappingsTree(this.dataset.columns, this.dataset.uploadplan);
+    if (this.dataset.uploadplan) {
+      this.mappings = uploadPlanToMappingsTree(
+        this.dataset.columns,
+        this.dataset.uploadplan
+      );
+      this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
+        this.mappings.mappingsTree
+      );
+      this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
+        ({ mappingPath }) =>
+          getMappingLineData({
+            baseTableName: this.mappings.baseTableName,
+            mappingPath: mappingPath.slice(0, -1),
+          })
+      );
+    } else this.mappings = undefined;
 
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
     this.liveValidationStack = [];
@@ -230,9 +243,9 @@ const WBView = Backbone.View.extend({
     const [[row, col]] = this.hot.getSelected();
     if (this.mappings) {
       const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mappingPath = mappingsTreeToArrayOfSplitMappings(
-        this.mappings.mappingsTree
-      ).find(({ headerName }) => headerName === targetHeader)?.mappingPath;
+      const mappingPath = this.mappings.arrayOfMappings.find(
+        ({ headerName }) => headerName === targetHeader
+      )?.mappingPath;
       const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
       return typeof rowResult === 'undefined' ||
         typeof mappingPath === 'undefined'
@@ -275,10 +288,7 @@ const WBView = Backbone.View.extend({
   ]) {
     if (this.mappings) {
       const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
-        this.mappings.mappingsTree
-      );
-      const mappingPath = arrayOfMappings.find(
+      const mappingPath = this.mappings.arrayOfMappings.find(
         ({ headerName }) => headerName === targetHeader
       )?.mappingPath;
       const tableName = getMappingLineData({
@@ -292,7 +302,7 @@ const WBView = Backbone.View.extend({
         filters: { id__in: matches.ids.join(',') },
       });
 
-      const affectedHeaders = arrayOfMappings
+      const affectedHeaders = this.mappings.arrayOfMappings
         .filter(
           ({ mappingPath: comparisonMappingPath }) =>
             mappingPathToString(comparisonMappingPath.slice(0, -1)) ===
@@ -530,18 +540,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     const unmappedCellStyles = '{ color: #999; }';
 
     if (!this.mappings) return;
-    const arrayOfMappings =
-      this.mappings &&
-      mappingsTreeToArrayOfSplitMappings(this.mappings.mappingsTree);
 
     const mappedHeadersAndTables = Object.fromEntries(
-      arrayOfMappings.map(({ mappingPath, headerName }) => [
+      this.mappings.arrayOfMappings.map(({ headerName }, index) => [
         headerName,
         icons.getIcon(
-          getMappingLineData({
-            baseTableName: this.mappings.baseTableName,
-            mappingPath: mappingPath.slice(0, -1),
-          })[0]?.tableName || ''
+          this.mappings.mappingLinesData[index][0]?.tableName || ''
         ),
       ])
     );

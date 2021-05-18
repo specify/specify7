@@ -19,7 +19,7 @@ export const leafletLayersEndpoint =
  *    leafletLayersEndpoint (defined above)
  *  * User didn't define a resource file `leaflet-layers`
  *
- * On any updates to this file, you should also update thw one at
+ * On any updates to this file, you should also update the one at
  * leafletLayersEndpoint
  *
  * Documentation:
@@ -122,17 +122,16 @@ export const coMapTileServers: {
   },
 ];
 
-export const localityColumnsToSearchFor: RA<LocalityField> = [
-  'localityname',
+export const requiredLocalityColumns: RA<LocalityField> = [
   'latitude1',
   'longitude1',
+] as const;
+
+export const localityColumnsToSearchFor: RA<LocalityField> = [
+  'localityname',
+  ...requiredLocalityColumns,
   'latitude2',
   'longitude2',
   'latlongtype',
   'latlongaccuracy',
-] as const;
-
-export const requiredLocalityColumns: RA<LocalityField> = [
-  'latitude1',
-  'longitude1',
 ] as const;

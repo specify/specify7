@@ -4,8 +4,6 @@ const LeafletUtils = require('./leafletutils.ts');
 const LeafletConfig = require('./leafletconfig.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
-const UploadPlanToMappingsTree = require('./uploadplantomappingstree.ts');
-const WbPlanViewTreeHelper = require('./wbplanviewtreehelper.ts');
 const WbPlanViewHelper = require('./wbplanviewhelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
@@ -354,16 +352,7 @@ module.exports = Backbone.View.extend({
   findLocalityColumns() {
     if (this.wbview.dataset.uploadplan === null) return;
 
-    const { mappingsTree } = UploadPlanToMappingsTree.uploadPlanToMappingsTree(
-      this.wbview.dataset.columns,
-      this.wbview.dataset.uploadplan
-    );
-
-    const arrayOfMappings = WbPlanViewTreeHelper.mappingsTreeToArrayOfSplitMappings(
-      mappingsTree
-    );
-
-    const filteredArrayOfMappings = arrayOfMappings.reduce(
+    const filteredArrayOfMappings = this.wbview.mappings.arrayOfMappings.reduce(
       (result, splitMappingPath) => {
         if (
           LeafletConfig.localityColumnsToSearchFor.indexOf(
@@ -419,7 +408,7 @@ module.exports = Backbone.View.extend({
       });
     });
 
-    arrayOfMappings.map(({ mappingPath, headerName }) =>
+    this.wbview.mappings.arrayOfMappings.map(({ mappingPath, headerName }) =>
       geographyMappingPathsToSearchFor.some(
         ([baseMappingsPathString, rankName, targetMappingPath]) => {
           if (
