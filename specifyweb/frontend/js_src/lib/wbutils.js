@@ -271,13 +271,16 @@ module.exports = Backbone.View.extend({
       },
     }).render();
   },
-  searchFunction(searchQuery, initialCellValue) {
+  searchFunction(initialSearchQuery, initialCellValue) {
     let cellValue = initialCellValue;
+    let searchQuery = initialSearchQuery;
 
     if (cellValue === null) cellValue = '';
 
-    if (!this.searchPreferences.search.caseSensitive)
+    if (!this.searchPreferences.search.caseSensitive) {
       cellValue = cellValue.toLowerCase();
+      searchQuery = searchQuery.toLowerCase();
+    }
 
     if (this.searchPreferences.search.useRegex)
       return cellValue.match(
