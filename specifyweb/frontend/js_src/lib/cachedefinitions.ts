@@ -10,7 +10,7 @@ import type {
 } from './wbplanviewmodelfetcher';
 
 // The types of cached values are defined here
-export type Cachedefinitions = IR<IR<unknown>> & {
+export type CacheDefinitions = IR<IR<unknown>> & {
   readonly 'wbplanview-ui': {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
@@ -18,19 +18,30 @@ export type Cachedefinitions = IR<IR<unknown>> & {
     readonly mappingViewHeight: number;
   };
   readonly 'wbplanview-automapper': {
-    readonly [key in string]: AutoMapperResults;
+    readonly // Caches AutoMapper results
+    [key in string]: AutoMapperResults;
   };
   readonly leaflet: {
-    readonly [Property in `currentLayer${LeafletCacheSalt}`]: string;
+    readonly // Remembers the selected base layer
+    [Property in `currentLayer${LeafletCacheSalt}`]: string;
   } &
     {
-      readonly [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
+      readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
+      [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
     };
   readonly 'wbplanview-datamodel': {
+    // Data on the fields in the tables that are included in wbplanview
     readonly tables: DataModelTables;
+    // List of base tables to be shown on the base table selection screen
     readonly listOfBaseTables: DataModelListOfTables;
+    // List of tree ranks for each table
     readonly ranks: DataModelRanks;
+    // The name of the root rank for each table (Life, Storage, Earth, ...)
     readonly rootRanks: R<string>;
+    /*
+     * Preserves the original relationship type for a fields that had it's
+     * relationship type changed though aliasRelationshipTypes object.
+     */
     readonly originalRelationships: OriginalRelationships;
   };
   readonly workbench: {

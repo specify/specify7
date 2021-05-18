@@ -7,7 +7,7 @@
 
 'use strict';
 
-import type { Cachedefinitions } from './cachedefinitions';
+import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './components/wbplanview';
 
 // Determines how persistent bucket's storage would be
@@ -108,21 +108,21 @@ function fetchBucket(
 export const get: {
   // Overload with a default value
   <
-    BUCKET_NAME extends string & keyof Cachedefinitions,
-    CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+    BUCKET_NAME extends string & keyof CacheDefinitions,
+    CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
   >(
     bucketName: BUCKET_NAME,
     cacheName: CACHE_NAME,
     props: {
       readonly version?: string;
       readonly defaultSetOptions?: SetOptions;
-      readonly defaultValue: Cachedefinitions[BUCKET_NAME][CACHE_NAME];
+      readonly defaultValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME];
     }
-  ): Cachedefinitions[BUCKET_NAME][CACHE_NAME];
+  ): CacheDefinitions[BUCKET_NAME][CACHE_NAME];
   // Overload without a default value (returns T|false)
   <
-    BUCKET_NAME extends string & keyof Cachedefinitions,
-    CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+    BUCKET_NAME extends string & keyof CacheDefinitions,
+    CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
   >(
     bucketName: BUCKET_NAME,
     cacheName: CACHE_NAME,
@@ -130,20 +130,20 @@ export const get: {
       readonly version?: string;
       readonly defaultSetOptions?: SetOptions;
     }
-  ): Cachedefinitions[BUCKET_NAME][CACHE_NAME] | false;
+  ): CacheDefinitions[BUCKET_NAME][CACHE_NAME] | false;
 } = <
-  BUCKET_NAME extends string & keyof Cachedefinitions,
-  CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+  BUCKET_NAME extends string & keyof CacheDefinitions,
+  CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
 >(
   bucketName: BUCKET_NAME,
   cacheName: CACHE_NAME,
   props?: {
     readonly version?: string;
     readonly defaultSetOptions?: SetOptions;
-    readonly defaultValue?: Cachedefinitions[BUCKET_NAME][CACHE_NAME];
+    readonly defaultValue?: CacheDefinitions[BUCKET_NAME][CACHE_NAME];
   }
 ) =>
-  genericGet<Cachedefinitions[BUCKET_NAME][CACHE_NAME]>(
+  genericGet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(
     bucketName,
     cacheName,
     props
@@ -234,15 +234,15 @@ interface SetOptions {
 }
 
 export const set = <
-  BUCKET_NAME extends string & keyof Cachedefinitions,
-  CACHE_NAME extends string & keyof Cachedefinitions[BUCKET_NAME]
+  BUCKET_NAME extends string & keyof CacheDefinitions,
+  CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
 >(
   bucketName: BUCKET_NAME,
   cacheName: CACHE_NAME,
-  cacheValue: Cachedefinitions[BUCKET_NAME][CACHE_NAME],
+  cacheValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME],
   setOptions?: SetOptions
 ) =>
-  genericSet<Cachedefinitions[BUCKET_NAME][CACHE_NAME]>(
+  genericSet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(
     bucketName,
     cacheName,
     cacheValue,
