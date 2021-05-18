@@ -105,7 +105,10 @@ export async function showLeafletMap({
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
   if (localityPoints.length > 0) {
-    defaultCenter = [localityPoints[0].latitude1, localityPoints[0].longitude1];
+    defaultCenter = [
+      localityPoints[0]['locality.latitude1'].value,
+      localityPoints[0]['locality.longitude1'].value,
+    ];
     defaultZoom = DEFAULT_ZOOM;
   }
 
@@ -271,15 +274,12 @@ export function addMarkersToMap(
   );
 }
 
-function isValidAccuracy(
-  latlongaccuracy: string | number | undefined
-): boolean {
+export function isValidAccuracy(latlongaccuracy: string | undefined): boolean {
   try {
     if (
       typeof latlongaccuracy === 'undefined' ||
-      (typeof latlongaccuracy === 'number' && latlongaccuracy < 1) ||
-      (typeof latlongaccuracy === 'string' &&
-        Number.parseFloat(latlongaccuracy) < 1)
+      Number.isNaN(Number.parseFloat(latlongaccuracy)) ||
+      Number.parseFloat(latlongaccuracy) < 1
     )
       return false;
   } catch {
@@ -308,13 +308,14 @@ const createLine = (
 
 export function getMarkersFromLocalityData({
   localityData: {
-    latitude1,
-    longitude1,
-    latitude2 = undefined,
-    longitude2 = undefined,
-    latlongtype = undefined,
-    latlongaccuracy = undefined,
-    localityname = undefined,
+    'locality.latitude1': latitude1,
+    'locality.longitude1': longitude1,
+    'locality.latitude2': latitude2 = undefined,
+    'locality.longitude2': longitude2 = undefined,
+    'locality.latlongtype': latlongtype = undefined,
+    'locality.latlongaccuracy': latlongaccuracy = { headerName: '', value: '' },
+    rowNumber: _rowNumber,
+    ...rest
   },
   markerClickCallback,
   iconClass,
@@ -330,7 +331,7 @@ export function getMarkersFromLocalityData({
     errorRadius: [],
   };
 
-  if (typeof latitude1 === 'undefined' || typeof 'longitude1' === undefined)
+  if (typeof latitude1 === 'undefined' || typeof longitude1 === undefined)
     return markers;
 
   const icon = new L.Icon.Default();
@@ -343,47 +344,48 @@ export function getMarkersFromLocalityData({
 
   if (typeof latitude2 === 'undefined' || typeof longitude2 === 'undefined') {
     // A circle
-    if (isValidAccuracy(latlongaccuracy))
+    if (isValidAccuracy(latlongaccuracy.value))
       markers.errorRadius.push(
-        L.circle([latitude1, longitude1], {
-          radius: latlongaccuracy,
+        L.circle([latitude1.value, longitude1.value], {
+          radius: Number.parseFloat(latlongaccuracy.value),
         })
       );
 
     // A point
-    markers.marker.push(createPoint(latitude1, longitude1));
+    markers.marker.push(createPoint(latitude1.value, longitude1.value));
   } else {
     markers.polygon.push(
-      latlongtype?.toLowerCase() === 'line'
+      latlongtype?.value?.toLowerCase() === 'line'
         ? // A line
-          createLine([latitude1, longitude1], [latitude2, longitude2])
+          createLine(
+            [latitude1.value, longitude1.value],
+            [latitude2.value, longitude2.value]
+          )
         : // A polygon
           L.polygon([
-            [latitude1, longitude1],
-            [latitude2, longitude1],
-            [latitude2, longitude2],
-            [latitude1, longitude2],
+            [latitude1.value, longitude1.value],
+            [latitude2.value, longitude1.value],
+            [latitude2.value, longitude2.value],
+            [latitude1.value, longitude2.value],
           ])
     );
     markers.polygonBoundary.push(
-      createPoint(latitude1, longitude1),
-      createPoint(latitude2, longitude2)
+      createPoint(latitude1.value, longitude1.value),
+      createPoint(latitude2.value, longitude2.value)
     );
   }
 
   Object.values(markers)
     .flat(2)
     .forEach((vector) => {
-      const markerName =
-        typeof markerClickCallback === 'string'
-          ? markerClickCallback
-          : typeof localityname === 'string' && localityname.length > 0
-          ? localityname
-          : undefined;
-
-      if (typeof markerName !== 'undefined') vector.bindPopup(markerName);
       if (typeof markerClickCallback === 'function')
         vector.on('click', markerClickCallback);
+      vector.bindPopup(
+        Object.values(rest)
+          .filter((field) => field.value !== '')
+          .map((field) => `<b>${field.headerName}</b>: ${field.value}`)
+          .join('<br>')
+      );
     });
 
   return markers;

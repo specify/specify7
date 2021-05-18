@@ -8,110 +8,48 @@
 
 import type { IR, RA, RR } from './components/wbplanview';
 import latlongutils from './latlongutils';
-import {
-  localityColumnsToSearchFor,
-  requiredLocalityColumns,
-} from './leafletconfig';
+
+export type Field<T> = { readonly headerName: string; readonly value: T };
 
 interface BareLocalityData {
-  readonly latitude1: number;
-  readonly longitude1: number;
+  readonly 'locality.latitude1': Field<number>;
+  readonly 'locality.longitude1': Field<number>;
 }
 
 interface ComplexLocalityCoordinate {
-  readonly latitude2: number;
-  readonly longitude2: number;
-  readonly latlongtype: 'point' | 'line' | 'rectangle';
-}
-
-interface NamedLocality {
-  readonly localityname?: string;
+  readonly 'locality.latitude2': Field<number>;
+  readonly 'locality.longitude2': Field<number>;
+  readonly 'locality.latlongtype': Field<'point' | 'line' | 'rectangle'>;
 }
 
 interface LocalityWithAccuracy {
-  readonly latlongaccuracy?: number;
+  readonly 'locality.latlongaccuracy': Field<string>;
 }
 
 export type LocalityData = BareLocalityData &
   (ComplexLocalityCoordinate | RR<keyof ComplexLocalityCoordinate, undefined>) &
-  NamedLocality &
-  LocalityWithAccuracy;
+  LocalityWithAccuracy &
+  IR<Field<string | number>>;
 
 export type LocalityField = keyof (BareLocalityData &
   ComplexLocalityCoordinate &
-  NamedLocality &
   LocalityWithAccuracy);
 
-type LocalityColumnIndexes = RR<LocalityField, number>;
-
-const cellIsValid = (
+export const getField = (
   row: RA<string>,
-  columnIndexes: IR<number>,
-  columnName: string
-): boolean =>
-  typeof columnIndexes[columnName] !== 'undefined' &&
-  columnIndexes[columnName] !== -1 &&
-  row[columnIndexes[columnName]] !== null;
+  headers: RA<string>,
+  localityColumns: IR<string>,
+  fieldName: string
+): string => row[headers.indexOf(localityColumns[fieldName] ?? -1)] ?? '';
 
-function formatCoordinate(
-  row: RA<string>,
-  columnIndexes: IR<number>,
-  columnName: string
-): number {
-  if (row[columnIndexes[columnName]] === '0') return 0;
+export function formatCoordinate(coordinate: string): number {
+  if (coordinate === '' || coordinate === '0') return 0;
 
-  const coordinate = latlongutils
-    .parse(row[columnIndexes[columnName]])
-    .toDegs() as {
+  const parsedCoordinate = latlongutils.parse(coordinate).toDegs() as {
     _components: [number];
     _sign: 1 | -1;
   };
-  return coordinate._components[0] * coordinate._sign;
-}
-
-export function getLocalityCoordinate(
-  row: RA<string>,
-  columnIndexes: IR<number>,
-  acceptPolygons = false
-): LocalityData | false {
-  const cellIsValidCurried = (columnName: string): boolean =>
-    cellIsValid(row, columnIndexes, columnName);
-  const formatCoordinateCurried = (columnName: string): number =>
-    formatCoordinate(row, columnIndexes, columnName);
-
-  if (!requiredLocalityColumns.every(cellIsValidCurried)) return false;
-
-  try {
-    return {
-      latitude1: formatCoordinateCurried('latitude1'),
-      longitude1: formatCoordinateCurried('longitude1'),
-      ...(acceptPolygons &&
-      cellIsValidCurried('latitude2') &&
-      cellIsValidCurried('longitude2') &&
-      (!cellIsValidCurried('latlongtype') ||
-        row[columnIndexes.latlongtype].toLowerCase() !== 'point')
-        ? {
-            latitude2: formatCoordinateCurried('latitude2'),
-            longitude2: formatCoordinateCurried('longitude2'),
-            latlongtype:
-              cellIsValidCurried('latlongtype') &&
-              row[columnIndexes.latlongtype].toLowerCase() === 'line'
-                ? 'line'
-                : row[columnIndexes.latlongtype].toLowerCase() === 'rectangle'
-                ? 'rectangle'
-                : 'point',
-          }
-        : {}),
-      localityname: cellIsValidCurried('localityname')
-        ? row[columnIndexes.localityname]
-        : undefined,
-      latlongaccuracy: cellIsValidCurried('latlongaccuracy')
-        ? Number.parseInt(row[columnIndexes.latlongaccuracy])
-        : undefined,
-    } as LocalityData;
-  } catch {
-    return false;
-  }
+  return parsedCoordinate._components[0] * parsedCoordinate._sign;
 }
 
 /*
@@ -119,35 +57,14 @@ export function getLocalityCoordinate(
  * group this field belongs too
  */
 export const getLocalityColumnsFromSelectedCell = (
-  localityColumns: RA<LocalityColumnIndexes>,
-  selectedColumn: number
-): LocalityColumnIndexes | false =>
-  localityColumns.find((localLocalityColumns) =>
-    localityColumnsToSearchFor.includes(
-      Object.keys(localLocalityColumns)[
-        Object.values(localLocalityColumns).indexOf(selectedColumn)
-      ] as LocalityField
-    )
+  localityColumnGroups: RA<IR<string>>,
+  selectedHeader: string
+): IR<string> | false =>
+  localityColumnGroups.find((localityColumns) =>
+    Object.values(localityColumns).includes(selectedHeader)
   ) ??
-  localityColumns[0] ??
+  localityColumnGroups[0] ??
   false;
-
-export const getLocalitiesDataFromSpreadsheet = (
-  localityColumns: RA<LocalityColumnIndexes>,
-  spreadsheetData: RA<RA<string>>
-): (LocalityData & { rowNumber: number })[] =>
-  localityColumns.flatMap((columnIndexes) =>
-    spreadsheetData
-      .map((row, index) => ({
-        locality: getLocalityCoordinate(row, columnIndexes, true),
-        index,
-      }))
-      .filter(({ locality }) => locality)
-      .map(({ locality, index }) => ({
-        ...(locality as LocalityData),
-        rowNumber: index,
-      }))
-  );
 
 export const getLocalityDataFromLocalityResource = async (
   localityResource: any

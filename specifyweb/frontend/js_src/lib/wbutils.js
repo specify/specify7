@@ -1,12 +1,11 @@
 const $ = require('jquery');
 const Leaflet = require('./leaflet.ts');
 const LeafletUtils = require('./leafletutils.ts');
-const LeafletConfig = require('./leafletconfig.ts');
+const WbLocalityDataExtractor = require('./wblocalitydataextractor.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
 const WbPlanViewHelper = require('./wbplanviewhelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
-const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
 const {
   findLocalityColumnsInDataSet,
 } = require('./wblocalitydataextractor.ts');
@@ -355,106 +354,20 @@ module.exports = Backbone.View.extend({
   findLocalityColumns() {
     if (this.wbview.dataset.uploadplan === null) return;
 
-    console.log(
-      findLocalityColumnsInDataSet(
-        this.wbview.mappings.baseTableName,
-        this.wbview.mappings.arrayOfMappings
-      )
+    this.localityColumns = findLocalityColumnsInDataSet(
+      this.wbview.mappings.baseTableName,
+      this.wbview.mappings.arrayOfMappings
     );
 
-    const filteredArrayOfMappings = this.wbview.mappings.arrayOfMappings.reduce(
-      (result, splitMappingPath) => {
-        if (
-          LeafletConfig.localityColumnsToSearchFor.indexOf(
-            splitMappingPath.mappingPath[
-              splitMappingPath.mappingPath.length - 1
-            ]
-          ) !== -1
-        )
-          result.push(splitMappingPath);
-
-        return result;
-      },
-      []
-    );
-
-    const localityObjects = {};
-
-    for (const { mappingPath, headerName } of filteredArrayOfMappings) {
-      const [baseMappingPath, columnName] = [
-        mappingPath.slice(0, -1),
-        mappingPath.slice(-1),
-      ];
-      const baseMappingsPathString = baseMappingPath.join(
-        WbPlanViewModel.pathJoinSymbol
-      );
-
-      localityObjects[baseMappingsPathString] ??= {};
-
-      localityObjects[baseMappingsPathString][columnName] = headerName;
-    }
-
-    //finding geography tree mappings
-    const geographyMappingPathsToSearchFor = [];
-    const geographyRanksToSearchFor = ['country', 'state', 'county'];
-    Object.keys(localityObjects).map((baseMappingsPathString) => {
-      const baseMappingPath =
-        baseMappingsPathString === ''
-          ? []
-          : baseMappingsPathString.split(WbPlanViewModel.pathJoinSymbol);
-
-      const possibleGeographyMappingPath = [...baseMappingPath, 'geography'];
-
-      geographyRanksToSearchFor.map((rankName) => {
-        geographyMappingPathsToSearchFor.push([
-          baseMappingsPathString,
-          rankName,
-          [
-            ...possibleGeographyMappingPath,
-            WbPlanViewModelHelper.formatTreeRank(rankName),
-            'name',
-          ].join(WbPlanViewModel.pathJoinSymbol),
-        ]);
-      });
-    });
-
-    this.wbview.mappings.arrayOfMappings.map(({ mappingPath, headerName }) =>
-      geographyMappingPathsToSearchFor.some(
-        ([baseMappingsPathString, rankName, targetMappingPath]) => {
-          if (
-            mappingPath.join(WbPlanViewModel.pathJoinSymbol) ===
-            targetMappingPath
-          ) {
-            localityObjects[baseMappingsPathString][rankName] = headerName;
-            return true;
-          }
-        }
-      )
-    );
-
-    this.localityColumns = Object.values(localityObjects)
-      .map((localityMapping) =>
-        Object.fromEntries(
-          Object.entries(localityMapping).map(([columnName, headerName]) => [
-            columnName,
-            this.wbview.dataset.columns.indexOf(headerName),
-          ])
-        )
-      )
-      .filter((localityColumns) =>
-        LeafletConfig.requiredLocalityColumns.every(
-          (requiredColumnName) => requiredColumnName in localityColumns
-        )
-      );
-
-    [
-      ...new Set([
-        ...(this.localityColumns.length !== 0 && !this.wbview.uploaded
-          ? ['wb-geolocate', 'wb-leafletmap', 'wb-convert-coordinates']
-          : []),
-        ...(this.localityColumns.length === 0 ? [] : ['wb-leafletmap']),
-      ]),
-    ].map(
+    (this.localityColumns.length === 0
+      ? []
+      : [
+          'wb-leafletmap',
+          ...(this.wbview.uploaded
+            ? []
+            : ['wb-geolocate', 'wb-convert-coordinates']),
+        ]
+    ).map(
       (className) =>
         this.el.getElementsByClassName(className)[0] &&
         (this.el.getElementsByClassName(className)[0].style.display = null)
@@ -504,14 +417,19 @@ module.exports = Backbone.View.extend({
       if (typeof data.localityname !== 'undefined')
         queryString += `&locality=${data.localityname}`;
     } else {
-      const pointDataDict = LeafletUtils.getLocalityCoordinate(
+      const pointDataDict = WbLocalityDataExtractor.getLocalityCoordinate(
         getDataAtRow(selectedRow),
+        this.wbview.dataset.columns,
         currentLocalityColumns
       );
 
       if (!pointDataDict) return;
 
-      const { latitude1, longitude1, localityname = '' } = pointDataDict;
+      const {
+        'locality.latitude1': latitude1,
+        'locality.longitude1': longitude1,
+        'locality.localityname': localityname = '',
+      } = pointDataDict;
 
       const pointDataList = [latitude1, longitude1];
 
@@ -525,8 +443,6 @@ module.exports = Backbone.View.extend({
   showGeoLocate() {
     // don't allow opening more than one window)
     if ($('#geolocate-window').length !== 0) return;
-
-    let $this = this;
 
     const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
     const selections = selectedRegions.map(([startRow, column, endRow]) =>
@@ -552,17 +468,22 @@ module.exports = Backbone.View.extend({
     let geolocateQueryUrl = false;
     let currentLocalityColumns = [];
 
+    let that = this;
     function updateGeolocateUrl() {
       currentLocalityColumns = LeafletUtils.getLocalityColumnsFromSelectedCell(
-        $this.localityColumns,
-        finalSelectedCells[currentCellIndex][1]
+        that.localityColumns,
+        this.wbview.dataset.columns[
+          this.wbview.hot.toPhysicalColumn(
+            finalSelectedCells[currentCellIndex][1]
+          )
+        ]
       );
 
-      geolocateQueryUrl = $this.getGeoLocateQueryURL(
+      geolocateQueryUrl = that.getGeoLocateQueryURL(
         currentLocalityColumns,
         finalSelectedCells[currentCellIndex][0],
-        $this.wbview.hot.getDataAtCell.bind($this.wbview.hot),
-        $this.wbview.hot.getDataAtRow.bind($this.wbview.hot)
+        that.wbview.hot.getDataAtCell.bind(that.wbview.hot),
+        that.wbview.hot.getDataAtRow.bind(that.wbview.hot)
       );
     }
 
@@ -593,7 +514,7 @@ module.exports = Backbone.View.extend({
     updateGeolocate();
 
     const updateSelectedRow = () =>
-      $this.wbview.hot.selectRows(finalSelectedCells[currentCellIndex][0]);
+      that.wbview.hot.selectRows(finalSelectedCells[currentCellIndex][0]);
     updateSelectedRow();
 
     function changeSelectedCell(newSelectedCell) {
@@ -635,7 +556,7 @@ module.exports = Backbone.View.extend({
       const dataColumns = event.data.split('|');
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
-      $this.wbview.hot.setDataAtCell(
+      that.wbview.hot.setDataAtCell(
         ['latitude1', 'longitude1', 'latlongaccuracy']
           .map((column, index) => {
             if (typeof currentLocalityColumns[column] !== 'undefined')
@@ -659,15 +580,16 @@ module.exports = Backbone.View.extend({
   showLeafletMap() {
     if ($('#leaflet-map').length !== 0) return;
 
-    const localityPoints = LeafletUtils.getLocalitiesDataFromSpreadsheet(
+    const localityPoints = WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
       this.localityColumns,
-      this.wbview.dataset.rows
+      this.wbview.dataset.rows,
+      this.wbview.dataset.columns
     );
 
     Leaflet.showLeafletMap({
       localityPoints,
       markerClickCallback: (localityPoint) => {
-        const rowNumber = localityPoints[localityPoint].rowNumber;
+        const rowNumber = localityPoints[localityPoint].rowNumber.value;
         const selectedColumn =
           typeof this.wbview.hot.getSelectedLast() === 'undefined'
             ? 0
@@ -682,10 +604,10 @@ module.exports = Backbone.View.extend({
     if ($('.lat-long-format-options').length !== 0) return;
 
     const columnHandlers = {
-      latitude1: 'Lat',
-      longitude1: 'Long',
-      latitude2: 'Lat',
-      longitude2: 'Long',
+      'locality.latitude1': 'Lat',
+      'locality.longitude1': 'Long',
+      'locality.latitude2': 'Lat',
+      'locality.longitude2': 'Long',
     };
 
     const columnsToSearchFor = Object.keys(columnHandlers);

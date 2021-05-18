@@ -123,19 +123,19 @@ export const coMapTileServers: RA<{
   },
 ];
 
+// These fields should be present for locality to be mappable
 export const requiredLocalityColumns: RA<LocalityField> = [
-  'latitude1',
-  'longitude1',
+  'locality.latitude1',
+  'locality.longitude1',
 ] as const;
 
-export const localityColumnsToSearchFor: RA<LocalityField> = [
-  'localityname',
+export const mappingLocalityColumns: RA<LocalityField> = [
   ...requiredLocalityColumns,
-  'latitude2',
-  'longitude2',
-  'latlongtype',
-  'latlongaccuracy',
-] as const;
+  'locality.latitude2',
+  'locality.longitude2',
+  'locality.latlongtype',
+  'locality.latlongaccuracy',
+];
 
 /*
  * The fields to display next to a locality
@@ -162,6 +162,7 @@ export const localityPinFields: RA<LocalityPinFields> = [
       ['locality', 'latitude2'],
       ['locality', 'longitude2'],
       ['locality', 'latlongtype'],
+      ['locality', 'latlongaccuracy'],
       ['locality', 'minelevation'],
       ['locality', 'maxelevation'],
       ['locality', 'geography', '$Country', 'name'],
@@ -186,6 +187,15 @@ export const localityPinFields: RA<LocalityPinFields> = [
       ['collectionobject', 'determinations', '#1', 'determiner', 'title'],
       ['collectionobject', 'determinations', '#1', 'determiner', 'firstname'],
       ['collectionobject', 'determinations', '#1', 'determiner', 'lastname'],
+      ['collectionobject', 'determinations', '#1', 'taxon', '$Species', 'name'],
+      [
+        'collectionobject',
+        'determinations',
+        '#1',
+        'taxon',
+        '$Subspecies',
+        'name',
+      ],
     ],
   },
 ];

@@ -1,7 +1,14 @@
 import type { IR, R, RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
+import { isValidAccuracy } from './leaflet';
 import type { LocalityPinFields } from './leafletconfig';
-import { localityPinFields } from './leafletconfig';
+import {
+  localityPinFields,
+  mappingLocalityColumns,
+  requiredLocalityColumns,
+} from './leafletconfig';
+import type { Field, LocalityData } from './leafletutils';
+import { formatCoordinate, getField } from './leafletutils';
 import { findSubArray } from './wbplanviewhelper';
 import type { SplitMappingPath } from './wbplanviewhelper';
 import {
@@ -120,13 +127,24 @@ function groupLocalityColumns(
   }));
 }
 
+const filterInvalidLocalityColumnGroups = (
+  localityColumnGroups: RA<IR<string>>
+): RA<IR<string>> =>
+  localityColumnGroups.filter((localityColumnGroups) =>
+    requiredLocalityColumns.every(
+      (requiredLocalityColumn) => requiredLocalityColumn in localityColumnGroups
+    )
+  );
+
 const findLocalityColumns = (
   arrayOfMappings: RA<SplitMappingPath>
 ): RA<IR<string>> =>
-  groupLocalityColumns(
-    filterArrayOfMappings(
-      matchLocalityPinFields(arrayOfMappings),
-      arrayOfMappings
+  filterInvalidLocalityColumnGroups(
+    groupLocalityColumns(
+      filterArrayOfMappings(
+        matchLocalityPinFields(arrayOfMappings),
+        arrayOfMappings
+      )
     )
   );
 
@@ -135,3 +153,75 @@ export const findLocalityColumnsInDataSet = (
   arrayOfMappings: RA<SplitMappingPath>
 ): RA<IR<string>> =>
   findLocalityColumns(addBaseTableName(baseTableName, arrayOfMappings));
+
+export const getLocalitiesDataFromSpreadsheet = (
+  localityColumnGroups: RA<IR<string>>,
+  spreadsheetData: RA<RA<string>>,
+  headers: RA<string>
+): RA<LocalityData> =>
+  Object.values(localityColumnGroups).flatMap((localityColumns) =>
+    spreadsheetData
+      .map((row, index) => ({
+        locality: getLocalityCoordinate(row, headers, localityColumns, true),
+        index,
+      }))
+      .filter(({ locality }) => typeof locality !== 'boolean')
+      .map(
+        ({ locality, index }) =>
+          ({
+            ...locality,
+            rowNumber: { headerName: 'Row Number', value: index },
+          } as LocalityData)
+      )
+  );
+
+export function getLocalityCoordinate(
+  row: RA<string>,
+  headers: RA<string>,
+  localityColumns: IR<string>,
+  acceptPolygons = false
+): LocalityData | false {
+  const getFieldCurried = (fieldName: string): Field<string> => ({
+    headerName: localityColumns[fieldName],
+    value: getField(row, headers, localityColumns, fieldName),
+  });
+  const formatCoordinateCurried = (fieldName: string): Field<number> => ({
+    headerName: localityColumns[fieldName],
+    value: formatCoordinate(getFieldCurried(fieldName).value),
+  });
+
+  if (!requiredLocalityColumns.every(getFieldCurried)) return false;
+
+  return {
+    ...Object.fromEntries(
+      Object.keys(localityColumns)
+        .filter(
+          (columnName) =>
+            !(mappingLocalityColumns as RA<string>).includes(columnName)
+        )
+        .map((columnName) => [columnName, getFieldCurried(columnName)])
+    ),
+    'locality.latitude1': formatCoordinateCurried('locality.latitude1'),
+    'locality.longitude1': formatCoordinateCurried('locality.longitude1'),
+    ...(acceptPolygons &&
+    getFieldCurried('locality.latitude2') &&
+    getFieldCurried('locality.longitude2') &&
+    (getFieldCurried('locality.latlongtype').value === '' ||
+      getFieldCurried('locality.latlongtype').value.toLowerCase() !== 'point')
+      ? {
+          'locality.latitude2': formatCoordinateCurried('locality.latitude2'),
+          'locality.longitude2': formatCoordinateCurried('locality.longitude2'),
+          'locality.latlongtype': ['line', ''].includes(
+            getFieldCurried('locality.latlongtype').value.toLowerCase()
+          )
+            ? 'line'
+            : 'rectangle',
+        }
+      : {}),
+    'locality.latlongaccuracy': isValidAccuracy(
+      getFieldCurried('locality.latlongaccuracy').value
+    )
+      ? getFieldCurried('locality.latlongaccuracy')
+      : ['', ''],
+  } as LocalityData;
+}
