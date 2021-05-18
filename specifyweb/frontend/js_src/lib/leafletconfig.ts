@@ -5,6 +5,7 @@
 
 'use strict';
 
+import type { MappingPath } from './components/wbplanviewmapper';
 import L from './leafletextend';
 import type { IR, RA, RR } from './components/wbplanview';
 import type { LocalityField } from './leafletutils';
@@ -108,10 +109,10 @@ export const leafletTileServers: RR<
   overlays: {},
 } as const;
 
-export const coMapTileServers: {
-  transparent: boolean;
-  layerLabel: string;
-}[] = [
+export const coMapTileServers: RA<{
+  readonly transparent: boolean;
+  readonly layerLabel: string;
+}> = [
   {
     transparent: false,
     layerLabel: 'ESRI: WorldImagery',
@@ -135,3 +136,56 @@ export const localityColumnsToSearchFor: RA<LocalityField> = [
   'latlongtype',
   'latlongaccuracy',
 ] as const;
+
+/*
+ * The fields to display next to a locality
+ * `pathToRelationship` is a mappingPath that shows how to get from
+ * the table that contains the field to the locality table and vice versa.
+ * To-many relationships in `pathToRelationship` should be represented as '#1'
+ * `pathToFields` is an array of mappingPaths that shows a path to a field
+ * Both `pathToRelationship` and each `pathToFields` should begin with the
+ * same table name.
+ */
+
+export type LocalityPinFields = {
+  readonly pathToRelationship: MappingPath;
+  readonly pathsToFields: RA<MappingPath>;
+};
+
+export const localityPinFields: RA<LocalityPinFields> = [
+  {
+    pathToRelationship: ['locality'],
+    pathsToFields: [
+      ['locality', 'localityname'],
+      ['locality', 'latitude1'],
+      ['locality', 'longitude1'],
+      ['locality', 'latitude2'],
+      ['locality', 'longitude2'],
+      ['locality', 'latlongtype'],
+      ['locality', 'minelevation'],
+      ['locality', 'maxelevation'],
+      ['locality', 'geography', '$Country', 'name'],
+      ['locality', 'geography', '$State', 'name'],
+      ['locality', 'geography', '$County', 'name'],
+    ],
+  },
+  {
+    pathToRelationship: ['collectingevent', 'locality'],
+    pathsToFields: [['collectingevent', 'startdate']],
+  },
+  {
+    pathToRelationship: ['locality', 'collectingevents', '#1'],
+    pathsToFields: [['locality', 'collectingevents', '#1', 'startdate']],
+  },
+  {
+    pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],
+    pathsToFields: [
+      ['collectionobject', 'catalognumber'],
+      ['collectionobject', 'cataloger', 'lastname'],
+      ['collectionobject', 'cataloger', 'firstname'],
+      ['collectionobject', 'determinations', '#1', 'determiner', 'title'],
+      ['collectionobject', 'determinations', '#1', 'determiner', 'firstname'],
+      ['collectionobject', 'determinations', '#1', 'determiner', 'lastname'],
+    ],
+  },
+];

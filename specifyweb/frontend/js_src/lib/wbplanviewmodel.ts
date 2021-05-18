@@ -36,7 +36,7 @@ const dataModelStorage: {
    * A symbol to used to join multiple mapping path elements together when
    * need to represent mapping path as a string
    */
-  pathJoinSymbol: '_',
+  pathJoinSymbol: '.',
 
   // Parsed tables and their fields
   tables: undefined!,

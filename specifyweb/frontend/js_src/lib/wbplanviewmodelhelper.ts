@@ -137,6 +137,9 @@ export const formatTreeRank = (rankName: string): string =>
 export const mappingPathToString = (mappingPath: MappingPath): string =>
   mappingPath.join(dataModelStorage.pathJoinSymbol);
 
+export const splitJoinedMappingPath = (string: string): MappingPath =>
+  string.split(dataModelStorage.pathJoinSymbol);
+
 /* Iterates over the mappingsTree to find required fields that are missing */
 export function showRequiredMissingFields(
   // Name of the current base table

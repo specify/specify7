@@ -129,7 +129,8 @@ export const getLocalityColumnsFromSelectedCell = (
       ] as LocalityField
     )
   ) ??
-  (localityColumns[0] || false);
+  localityColumns[0] ??
+  false;
 
 export const getLocalitiesDataFromSpreadsheet = (
   localityColumns: RA<LocalityColumnIndexes>,

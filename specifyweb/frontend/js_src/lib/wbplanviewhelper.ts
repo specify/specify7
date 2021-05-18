@@ -105,6 +105,14 @@ export function findArrayDivergencePoint<T>(
   return returnValue ?? searchLength - 1;
 }
 
+// Find the index of subArray in array. On failure returns -1
+export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
+  array.findIndex((_, index) =>
+    mappingPathToString(array.slice(index)).startsWith(
+      mappingPathToString(subArray)
+    )
+  );
+
 /*
  * Takes an array of mappings with headers and returns the indexes of the
  * duplicate headers (if three lines have the same mapping, the indexes of

@@ -8,6 +8,9 @@ const WbPlanViewHelper = require('./wbplanviewhelper.ts');
 const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const WbPlanViewModelHelper = require('./wbplanviewmodelhelper.ts');
 const {
+  findLocalityColumnsInDataSet,
+} = require('./wblocalitydataextractor.ts');
+const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch.tsx');
@@ -351,6 +354,13 @@ module.exports = Backbone.View.extend({
   },
   findLocalityColumns() {
     if (this.wbview.dataset.uploadplan === null) return;
+
+    console.log(
+      findLocalityColumnsInDataSet(
+        this.wbview.mappings.baseTableName,
+        this.wbview.mappings.arrayOfMappings
+      )
+    );
 
     const filteredArrayOfMappings = this.wbview.mappings.arrayOfMappings.reduce(
       (result, splitMappingPath) => {
