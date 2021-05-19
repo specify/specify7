@@ -160,6 +160,7 @@ export const localityPinFields: RA<LocalityPinFields> = [
     pathsToFields: [
       ['collectionobject', 'catalognumber'],
       ['collectionobject', 'fieldnumber'],
+      ['collectionobject', 'determinations', '#1', 'taxon', '$Genus', 'name'],
       ['collectionobject', 'determinations', '#1', 'taxon', '$Species', 'name'],
       [
         'collectionobject',
@@ -190,6 +191,18 @@ export const localityPinFields: RA<LocalityPinFields> = [
         'collectionobjects',
         '#1',
         'fieldnumber',
+      ],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'determinations',
+        '#1',
+        'taxon',
+        '$Genus',
+        'name',
       ],
       [
         'locality',
