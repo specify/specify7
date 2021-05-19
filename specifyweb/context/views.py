@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from openapi_schema_to_json_schema import to_json_schema
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
@@ -150,7 +151,7 @@ def choose_collection(request):
             'type': 'object',
             'description': 'Login API. The username, password, and collection properties '
             'are always null in GET responses. The collections property provides the ids '
-            'of collections for loging in to.',
+            'of collections for logging in to.',
             'properties': {
                 'collections': {
                     'type': 'object',
@@ -177,7 +178,7 @@ def choose_collection(request):
         'context_login_req': {
             'type': 'object',
             'description': 'Use an id value from the collections '
-            'property in GET respons to select the collection to log in to. '
+            'property in GET response to select the collection to log in to. '
             'PUT with any of the required properties '
             'set to null logs out. ',
             'properties': {
@@ -343,6 +344,14 @@ def datamodel(request):
 def schema_localization(request):
     """Return the schema localization information for the logged in collection."""
     sl = get_schema_localization(request.specify_collection, 0)
+    return HttpResponse(sl, content_type='application/json')
+
+@require_GET
+@login_maybe_required
+@cache_control(max_age=86400, private=True)
+def wb_schema_localization(request):
+    """Return the WB schema localization information for the logged in collection."""
+    sl = get_schema_localization(request.specify_collection, 1)
     return HttpResponse(sl, content_type='application/json')
 
 @require_GET
@@ -558,7 +567,7 @@ def get_endpoints(
             )
 
 
-def generate_openapi_for_endpoints(all_endpoints=False):
+def generate_openapi_for_endpoints(use_json_schema=False, all_endpoints=False):
     """Returns a JSON description of endpoints.
 
     Params:
@@ -577,6 +586,19 @@ def generate_openapi_for_endpoints(all_endpoints=False):
     ))
     tags = list(get_tags(endpoints))
 
+    if use_json_schema:
+        components = {
+            subspace_name:{
+                component_name:to_json_schema(component_data)
+                for component_name, component_data in subspace_components.items()
+            }
+            for subspace_name, subspace_components in components.items()
+        }
+        endpoints = {
+            endpoint_name: endpoint_schema_to_json(endpoint_data)
+            for endpoint_name, endpoint_data in endpoints.items()
+        }
+
     return {
         **base_schema(
             _("Specify 7 Operations API"),
@@ -590,9 +612,87 @@ def generate_openapi_for_endpoints(all_endpoints=False):
         ),
         **dict(
             tags=tags,
-            paths=endpoints
-        ),
-        'components': components,
+            paths=endpoints,
+            components=components,
+        )
+    }
+
+
+def resolve_schema_references(open_api):
+    """Resolve the $ref objects in the OpenAPI schema.
+
+    Warning: this function uses a naїve string substitution approach, which
+    won't work for structures that have a circular reference wth themself.
+
+    Params:
+        open_api: OpenAPI Schema v3.0
+
+    Returns:
+        Resolved OpenAPI schema
+    """
+    open_api_string = json.dumps(open_api)
+    pattern = re.compile(r"{\"\$ref\": \"#\/components\/(\w+)\/(\w+)\"}")
+
+    for (component_group, component_name) in re.findall(pattern, open_api_string):
+        try:
+            component = open_api['components'][component_group][component_name]
+        except KeyError:
+            raise Error(
+                f"Unable to find the definition for the '{component_group}/"
+                f"{component_name}' OpenAPI component"
+            )
+
+        open_api_string = open_api_string.replace(
+            f'{"{"}"$ref": "#/components/{component_group}/'
+            f'{component_name}"{"}"}',
+            json.dumps(component)
+        )
+
+    return open_api_string
+
+
+def endpoint_schema_to_json(endpoint_schema):
+    """Convert the endpoint's OpenAPI schema to JSON Schema.
+
+    Params:
+        endpoint_schema: OpenAPI schema for an endpoint
+
+    Returns:
+        Endpoint's schema converted to JSON Schema
+    """
+    return {
+        key: {
+            **value,
+            **(
+                {
+                    "responses": {
+                        response_code: {
+                            **response_data,
+                            **(
+                                {
+                                    "content": {
+                                        content_type: {
+                                            "schema": to_json_schema(
+                                                content_schema['schema']
+                                            )
+                                        } for content_type, \
+                                              content_schema in
+                                        response_data['content'].items()
+                                    }
+                                }
+                                if 'content' in response_data
+                                else { }
+                            )
+                        }
+                        for response_code, \
+                            response_data in value['responses'].items()
+                    }
+                }
+                if 'responses' in value
+                else { }
+            )
+        } if type(value) == dict else value
+        for key, value in endpoint_schema.items()
     }
 
 
@@ -600,11 +700,27 @@ def generate_openapi_for_endpoints(all_endpoints=False):
 @cache_control(max_age=86400, public=True)
 def api_endpoints(request):
     """Returns a JSON description of endpoints that have schema defined."""
-    return JsonResponse(generate_openapi_for_endpoints(False))
+    return JsonResponse(generate_openapi_for_endpoints(
+        use_json_schema=False,
+        all_endpoints=False
+    ))
 
 
 @require_GET
 @cache_control(max_age=86400, public=True)
 def api_endpoints_all(request):
     """Returns a JSON description of all endpoints."""
-    return JsonResponse(generate_openapi_for_endpoints(True))
+    return JsonResponse(generate_openapi_for_endpoints(
+        use_json_schema=False,
+        all_endpoints=True
+    ))
+
+
+@require_GET
+@cache_control(max_age=86400, public=True)
+def json_endpoints(request):
+    """Returns a JSON description of endpoints that have schema defined."""
+    return JsonResponse(generate_openapi_for_endpoints(
+        use_json_schema=True,
+        all_endpoints=False
+    ))
