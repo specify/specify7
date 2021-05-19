@@ -48,6 +48,9 @@ const WBView = Backbone.View.extend({
     // TODO: remove the Show Plan button
     'click .wb-show-plan': 'showPlan',
     'click .wb-save': 'saveClicked',
+    'click .wb-delete-data-set': 'delete',
+    'click .wb-export-data-set': 'export',
+    'click .wb-change-data-set-owner': 'changeOwner',
 
     'click .wb-show-upload-view': 'displayUploadedView',
     'click .wb-unupload': 'unupload',
@@ -86,6 +89,11 @@ const WBView = Backbone.View.extend({
       el: this.el,
     });
 
+    this.datasetmeta = new DataSetMeta({
+      dataset: this.dataset,
+      el: this.el,
+    });
+
     this.uploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.uploadedView = undefined;
@@ -105,12 +113,7 @@ const WBView = Backbone.View.extend({
       })
     );
 
-    new DataSetMeta({
-      dataset: this.dataset,
-      el: this.$('.wb-name'),
-      handleDelete: this.delete.bind(this),
-      handleExport: this.export.bind(this),
-    }).render();
+    this.datasetmeta.render();
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
@@ -1189,6 +1192,9 @@ Only available after a trial upload is completed.</dd>`);
     a.href = window.URL.createObjectURL(blob);
     a.setAttribute('download', filename);
     a.click();
+  },
+  changeOwner() {
+    this.datasetmeta.changeOwnerWindow.call(this.datasetmeta);
   },
 });
 

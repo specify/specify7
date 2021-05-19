@@ -13,7 +13,7 @@ export default Backbone.View.extend({
   events: {
     'click .ui-icon': 'startEditing',
   },
-  initialize({ dataset, handleDelete, handleExport }) {
+  initialize({ dataset }) {
     this.dataset = dataset;
     this.dialog = null;
     this.model = schema.getModel('agent');
@@ -21,8 +21,6 @@ export default Backbone.View.extend({
     this.modifiedByAgent = null;
     this.changeOwnerDialog = null;
     this.listOfUsers = null;
-    this.handleDelete = handleDelete;
-    this.handleExport = handleExport;
   },
   render() {
     if (this.dialog !== null) {
@@ -30,7 +28,7 @@ export default Backbone.View.extend({
       this.dialog = null;
     }
 
-    this.$el.text('Data Set: ' + this.dataset.name).append(`
+    this.$el.find('.wb-name').text('Data Set: ' + this.dataset.name).append(`
       <span
         class="ui-icon ui-icon-pencil"
         title="Edit name"
@@ -108,10 +106,6 @@ export default Backbone.View.extend({
       Created By: <i class="created-by-field">Loading...</i><br>
       Modified By: <i class="modified-by-field"></i><br>
       Imported file name: <i>${this.dataset.importedfilename}</i><br><br>
-      <b>Actions:</b><br>
-      <button class="change-data-set-owner">Change Data Set owner</button><br>
-      <button class="export-data-set">Export Data Set</button><br>
-      <button class="delete-data-set">Delete Data Set</button>
     </div>`).dialog({
       title: 'Edit Data Set metadata',
       modal: true,

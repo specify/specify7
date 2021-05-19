@@ -21,12 +21,26 @@
 
 .wb-controls,
 .wb-toolkit,
+.wb-toolkit-left,
+.wb-toolkit-right,
 .wb-navigation {
   display: flex;
-  justify-content: flex-end;
   flex-wrap: wrap;
   column-gap: 3px;
   row-gap: 0.5rem;
+}
+
+.wb-controls,
+.wb-navigation {
+  justify-content: flex-end;
+}
+
+.wb-toolkit-left {
+  justify-content: flex-start;
+}
+
+.wb-toolkit {
+  justify-content: space-between;
 }
 
 .wbs-form .wb-name {

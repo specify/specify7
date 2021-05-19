@@ -18,11 +18,34 @@
     </div>
   </div>
   <div class="wb-toolkit" style="display: none">
-    <button class="wb-convert-coordinates" style="display: none">
-      Convert Coordinates
-    </button>
-    <button class="wb-leafletmap" style="display: none">Leaflet Map</button>
-    <button class="wb-geolocate" style="display: none">GeoLocate</button>
+    <div class="wb-toolkit-left">
+      <button class="wb-change-data-set-owner">Change owner</button>
+      <button class="wb-export-data-set">Export</button>
+      <button class="wb-delete-data-set">Delete</button>
+    </div>
+    <div class="wb-toolkit-right">
+      <button
+        class="wb-convert-coordinates"
+        disabled
+        title="This tool requires locality columns to be mapped"
+      >
+        Convert Coordinates
+      </button>
+      <button
+        class="wb-geolocate"
+        title="This tool requires locality columns to be mapped"
+        disabled
+      >
+        GeoLocate
+      </button>
+      <button
+        class="wb-leafletmap"
+        title="This tool requires locality columns to be mapped"
+        disabled
+      >
+        Leaflet Map
+      </button>
+    </div>
   </div>
 </div>
 <div class="wb-spreadsheet"></div>
