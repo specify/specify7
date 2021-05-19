@@ -79,6 +79,18 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
 def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 
+    adjust_to_ones = to_one_adjustments(collection, table)
+
+    return ScopedUploadTable(
+        name=ut.name,
+        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
+        static=static_adjustments(table, ut.wbcols, ut.static),
+        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
+        toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
+        scopingAttrs=scoping_relationships(collection, table),
+    )
+
+def to_one_adjustments(collection, table: Table) -> AdjustToOnes:
     adjust_to_ones: AdjustToOnes = lambda u, f: u
     if collection.isembeddedcollectingevent and table.name == 'CollectionObject':
         adjust_to_ones = _make_one_to_one('collectingevent', adjust_to_ones)
@@ -97,20 +109,17 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTab
     if table.name == 'Preparation':
         adjust_to_ones = _make_one_to_one('preparationattribute', adjust_to_ones)
 
-    # not sure if this is the right place for this, but it will work for now.
-    if table.name == 'Agent' and 'agenttype' not in ut.wbcols and 'agenttype' not in ut.static:
-        static = {'agenttype': 1, **ut.static}
-    else:
-        static = ut.static
+    return adjust_to_ones
 
-    return ScopedUploadTable(
-        name=ut.name,
-        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
-        static=static,
-        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
-        toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
-        scopingAttrs=scoping_relationships(collection, table),
-    )
+def static_adjustments(table: Table, wbcols: Dict[str, ColumnOptions], static: Dict[str, Any]) -> Dict[str, Any]:
+    # not sure if this is the right place for this, but it will work for now.
+    if table.name == 'Agent' and 'agenttype' not in wbcols and 'agenttype' not in static:
+        static = {'agenttype': 1, **static}
+    elif table.name == 'Determination' and 'iscurrent' not in wbcols and 'iscurrent' not in static:
+        static = {'iscurrent': True, **static}
+    else:
+        static = static
+    return static
 
 def set_order_number(i: int, tmr: ScopedToManyRecord) -> ScopedToManyRecord:
     table = datamodel.get_table_strict(tmr.name)
@@ -120,11 +129,14 @@ def set_order_number(i: int, tmr: ScopedToManyRecord) -> ScopedToManyRecord:
 
 def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToManyRecord:
     table = datamodel.get_table_strict(tmr.name)
+
+    adjust_to_ones = to_one_adjustments(collection, table)
+
     return ScopedToManyRecord(
         name=tmr.name,
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in tmr.wbcols.items()},
-        static=tmr.static,
-        toOne={f: u.apply_scoping(collection) for f, u in tmr.toOne.items()},
+        static=static_adjustments(table, tmr.wbcols, tmr.static),
+        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in tmr.toOne.items()},
         scopingAttrs=scoping_relationships(collection, table),
     )
 

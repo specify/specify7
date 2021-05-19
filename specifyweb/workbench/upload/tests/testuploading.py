@@ -555,6 +555,90 @@ class OneToOneAttributeTests(UploadTestsBase):
 
 class UploadTests(UploadTestsBase):
 
+    def test_determination_default_iscurrent(self) -> None:
+        plan_json = {
+            "baseTableName": "collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {
+                        "catalognumber": "Catno",
+                    },
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "determinations": [
+                            {
+                                "wbcols": {},
+                                "static": {},
+                                "toOne": {
+                                    "taxon": {
+                                        "treeRecord": {
+                                            "ranks": {
+                                                "Genus": {"treeNodeCols": {"name": "Genus"}},
+                                                "Species": {"treeNodeCols": {"name": "Species"}}}
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                    }
+                }
+            }
+        }
+
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'Catno': '1', 'Genus': 'Foo', 'Species': 'Bar'},
+            {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar'},
+            {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
+        self.assertTrue(all(d.iscurrent for d in dets), "created determinations have iscurrent = true by default")
+
+    def test_determination_override_iscurrent(self) -> None:
+        plan_json = {
+            "baseTableName": "collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {
+                        "catalognumber": "Catno",
+                    },
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "determinations": [
+                            {
+                                "wbcols": {'iscurrent': 'iscurrent'},
+                                "static": {},
+                                "toOne": {
+                                    "taxon": {
+                                        "treeRecord": {
+                                            "ranks": {
+                                                "Genus": {"treeNodeCols": {"name": "Genus"}},
+                                                "Species": {"treeNodeCols": {"name": "Species"}}}
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                    }
+                }
+            }
+        }
+
+        validate(plan_json, schema)
+        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        data = [
+            {'Catno': '1', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
+            {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
+            {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
+        ]
+        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
+        self.assertFalse(any(d.iscurrent for d in dets), "created determinations have iscurrent = false by override")
+
     def test_ordernumber(self) -> None:
         plan = UploadTable(
             name='Referencework',
