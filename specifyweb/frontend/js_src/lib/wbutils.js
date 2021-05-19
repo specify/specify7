@@ -358,29 +358,22 @@ module.exports = Backbone.View.extend({
       this.wbview.mappings.arrayOfMappings
     );
 
-    (this.localityColumns.length === 0
-      ? []
-      : [
-          'wb-leafletmap',
-          ...(this.wbview.uploaded
-            ? []
-            : ['wb-geolocate', 'wb-convert-coordinates']),
-        ]
-    ).map(
-      (className) =>
-        this.el.getElementsByClassName(className)[0] &&
-        (this.el.getElementsByClassName(className)[0].style.display = null)
-    );
+    const leafletButton = this.el.getElementsByClassName('wb-leafletmap')[0];
+    const geoLocaleButton = this.el.getElementsByClassName('wb-geolocate')[0];
+    const coordinateConvertorButton = this.el.getElementsByClassName(
+      'wb-convert-coordinates'
+    )[0];
 
-    /* Hide the tools menu if it has no tools */
-    if (
-      Object.values(
-        this.el.getElementsByClassName('wb-toolkit')?.[0].children
-      ).every((button) => button.style.display === 'none')
-    ) {
-      this.el.getElementsByClassName('wb-toolkit')[0].style.display = 'none';
-      this.el.getElementsByClassName('wb-show-toolkit')[0].style.display =
-        'none';
+    if (this.localityColumns.length !== 0) {
+      leafletButton.disabled = false;
+      if (this.wbview.uploaded) {
+        [geoLocaleButton, coordinateConvertorButton].map((button) =>
+          button.title('This tool does not work with uploaded Data Sets')
+        );
+      } else {
+        geoLocaleButton.disabled = false;
+        coordinateConvertorButton.disabled = false;
+      }
     }
   },
   getGeoLocateQueryURL(
