@@ -5,7 +5,7 @@ import React from 'react';
 import '../../css/lifemapperinfo.css';
 import type { MarkerGroups } from '../leaflet';
 import * as Leaflet from '../leaflet';
-import { getLocalityDataFromLocalityResource } from '../leafletutils';
+import type { LocalityData } from '../leafletutils';
 import { reducer } from '../lifemapperinforeducer';
 import type { LifemapperLayerTypes } from '../lifemapperinfoutills';
 import {
@@ -18,6 +18,7 @@ import {
   lifemapperLayerVariations,
   sourceLabels,
 } from '../lifemapperinfoutills';
+import { getLocalityDataFromLocalityResource } from '../localityrecorddataextractor';
 import ResourceView from '../resourceview';
 import schema from '../schema';
 import { stateReducer } from './lifemapperinfostate';
@@ -213,7 +214,7 @@ function LifemapperInfo({
                             )
                               .then((localityData) =>
                                 Leaflet.getMarkersFromLocalityData({
-                                  localityData,
+                                  localityData: localityData as LocalityData,
                                   iconClass:
                                     model.get('id') ===
                                     collectionObject.get('id')

@@ -2,7 +2,7 @@
 
 const $ = require('jquery');
 
-const LeafletUtils = require('./leafletutils.ts');
+const LocalityRecordDataExtractor = require('./localityrecorddataextractor.ts');
 const Leaflet = require('./leaflet.ts');
 const UIPlugin = require('./uiplugin.js');
 
@@ -36,12 +36,13 @@ module.exports = UIPlugin.extend(
           },
         });
 
-      LeafletUtils.getLocalityDataFromLocalityResource(this.model).then(
-        (localityData) =>
-          Leaflet.showLeafletMap({
-            localityPoints: [localityData],
-            leafletMapContainer: 'leaflet-plugin',
-          })
+      LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
+        this.model
+      ).then((localityData) =>
+        Leaflet.showLeafletMap({
+          localityPoints: [localityData],
+          leafletMapContainer: 'leaflet-plugin',
+        })
       );
     },
   },

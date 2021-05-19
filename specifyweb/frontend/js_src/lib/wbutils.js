@@ -1,6 +1,5 @@
 const $ = require('jquery');
 const Leaflet = require('./leaflet.ts');
-const LeafletUtils = require('./leafletutils.ts');
 const WbLocalityDataExtractor = require('./wblocalitydataextractor.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
@@ -470,7 +469,7 @@ module.exports = Backbone.View.extend({
 
     let that = this;
     function updateGeolocateUrl() {
-      currentLocalityColumns = LeafletUtils.getLocalityColumnsFromSelectedCell(
+      currentLocalityColumns = WbLocalityDataExtractor.getLocalityColumnsFromSelectedCell(
         that.localityColumns,
         this.wbview.dataset.columns[
           this.wbview.hot.toPhysicalColumn(

@@ -1,14 +1,9 @@
 import type { IR, R, RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
-import { isValidAccuracy } from './leaflet';
 import type { LocalityPinFields } from './leafletconfig';
-import {
-  localityPinFields,
-  mappingLocalityColumns,
-  requiredLocalityColumns,
-} from './leafletconfig';
+import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
-import { formatCoordinate, getField } from './leafletutils';
+import { formatCoordinate, getField, getLocalityData } from './leafletutils';
 import { findSubArray } from './wbplanviewhelper';
 import type { SplitMappingPath } from './wbplanviewhelper';
 import {
@@ -67,7 +62,7 @@ const matchLocalityPinFields = (
       ({ matchedPathsToRelationship }) => matchedPathsToRelationship.length > 0
     );
 
-type SplitMappingPathWithFieldName = SplitMappingPath & {
+export type SplitMappingPathWithFieldName = SplitMappingPath & {
   readonly fieldName: string;
 };
 
@@ -148,6 +143,20 @@ const findLocalityColumns = (
     )
   );
 
+/*
+ * If there are multiple localities present in a row, check which
+ * group this field belongs too
+ */
+export const getLocalityColumnsFromSelectedCell = (
+  localityColumnGroups: RA<IR<string>>,
+  selectedHeader: string
+): IR<string> | false =>
+  localityColumnGroups.find((localityColumns) =>
+    Object.values(localityColumns).includes(selectedHeader)
+  ) ??
+  localityColumnGroups[0] ??
+  false;
+
 export const findLocalityColumnsInDataSet = (
   baseTableName: string,
   arrayOfMappings: RA<SplitMappingPath>
@@ -162,7 +171,7 @@ export const getLocalitiesDataFromSpreadsheet = (
   Object.values(localityColumnGroups).flatMap((localityColumns) =>
     spreadsheetData
       .map((row, index) => ({
-        locality: getLocalityCoordinate(row, headers, localityColumns, true),
+        locality: getLocalityCoordinate(row, headers, localityColumns),
         index,
       }))
       .filter(({ locality }) => typeof locality !== 'boolean')
@@ -178,8 +187,7 @@ export const getLocalitiesDataFromSpreadsheet = (
 export function getLocalityCoordinate(
   row: RA<string>,
   headers: RA<string>,
-  localityColumns: IR<string>,
-  acceptPolygons = false
+  localityColumns: IR<string>
 ): LocalityData | false {
   const getFieldCurried = (fieldName: string): Field<string> => ({
     headerName: localityColumns[fieldName],
@@ -190,38 +198,9 @@ export function getLocalityCoordinate(
     value: formatCoordinate(getFieldCurried(fieldName).value),
   });
 
-  if (!requiredLocalityColumns.every(getFieldCurried)) return false;
-
-  return {
-    ...Object.fromEntries(
-      Object.keys(localityColumns)
-        .filter(
-          (columnName) =>
-            !(mappingLocalityColumns as RA<string>).includes(columnName)
-        )
-        .map((columnName) => [columnName, getFieldCurried(columnName)])
-    ),
-    'locality.latitude1': formatCoordinateCurried('locality.latitude1'),
-    'locality.longitude1': formatCoordinateCurried('locality.longitude1'),
-    ...(acceptPolygons &&
-    getFieldCurried('locality.latitude2') &&
-    getFieldCurried('locality.longitude2') &&
-    (getFieldCurried('locality.latlongtype').value === '' ||
-      getFieldCurried('locality.latlongtype').value.toLowerCase() !== 'point')
-      ? {
-          'locality.latitude2': formatCoordinateCurried('locality.latitude2'),
-          'locality.longitude2': formatCoordinateCurried('locality.longitude2'),
-          'locality.latlongtype': ['line', ''].includes(
-            getFieldCurried('locality.latlongtype').value.toLowerCase()
-          )
-            ? 'line'
-            : 'rectangle',
-        }
-      : {}),
-    'locality.latlongaccuracy': isValidAccuracy(
-      getFieldCurried('locality.latlongaccuracy').value
-    )
-      ? getFieldCurried('locality.latlongaccuracy')
-      : ['', ''],
-  } as LocalityData;
+  return getLocalityData(
+    localityColumns,
+    getFieldCurried,
+    formatCoordinateCurried
+  );
 }

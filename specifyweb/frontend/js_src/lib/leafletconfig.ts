@@ -138,7 +138,7 @@ export const mappingLocalityColumns: RA<LocalityField> = [
 ];
 
 /*
- * The fields to display next to a locality
+ * The fields to display in a Leaflet pin's pop-up box
  * `pathToRelationship` is a mappingPath that shows how to get from
  * the table that contains the field to the locality table and vice versa.
  * To-many relationships in `pathToRelationship` should be represented as '#1'
@@ -176,17 +176,46 @@ export const localityPinFields: RA<LocalityPinFields> = [
   },
   {
     pathToRelationship: ['locality', 'collectingevents', '#1'],
-    pathsToFields: [['locality', 'collectingevents', '#1', 'startdate']],
+    pathsToFields: [
+      ['locality', 'collectingevents', '#1', 'startdate'],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'catalognumber',
+      ],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'determinations',
+        '#1',
+        'taxon',
+        '$Species',
+        'name',
+      ],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'determinations',
+        '#1',
+        'taxon',
+        '$Subspecies',
+        'name',
+      ],
+    ],
   },
   {
     pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],
     pathsToFields: [
       ['collectionobject', 'catalognumber'],
-      ['collectionobject', 'cataloger', 'lastname'],
-      ['collectionobject', 'cataloger', 'firstname'],
-      ['collectionobject', 'determinations', '#1', 'determiner', 'title'],
-      ['collectionobject', 'determinations', '#1', 'determiner', 'firstname'],
-      ['collectionobject', 'determinations', '#1', 'determiner', 'lastname'],
       ['collectionobject', 'determinations', '#1', 'taxon', '$Species', 'name'],
       [
         'collectionobject',
