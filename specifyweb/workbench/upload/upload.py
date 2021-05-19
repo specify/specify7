@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import time
 import logging
 import csv
 from datetime import datetime, timezone
@@ -167,6 +168,7 @@ def do_upload(
 ) -> List[UploadResult]:
     total = len(rows) if isinstance(rows, Sized) else None
     with savepoint("main upload"):
+        tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
             da = disambiguations[i] if disambiguations else None
@@ -179,6 +181,9 @@ def do_upload(
                 if result.contains_failure():
                     raise Rollback("failed row")
                 logger.info(f"finished row {len(results)}")
+
+        toc = time.perf_counter()
+        logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")
 
         if no_commit:
             raise Rollback("no_commit option")
