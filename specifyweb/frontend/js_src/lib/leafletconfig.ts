@@ -145,6 +145,8 @@ export const mappingLocalityColumns: RA<LocalityField> = [
  * `pathToFields` is an array of mappingPaths that shows a path to a field
  * Both `pathToRelationship` and each `pathToFields` should begin with the
  * same table name.
+ * The order of fields in this array would determine the order in the pop-up
+ * window
  */
 
 export type LocalityPinFields = {
@@ -154,30 +156,24 @@ export type LocalityPinFields = {
 
 export const localityPinFields: RA<LocalityPinFields> = [
   {
-    pathToRelationship: ['locality'],
+    pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],
     pathsToFields: [
-      ['locality', 'localityname'],
-      ['locality', 'latitude1'],
-      ['locality', 'longitude1'],
-      ['locality', 'latitude2'],
-      ['locality', 'longitude2'],
-      ['locality', 'latlongtype'],
-      ['locality', 'latlongaccuracy'],
-      ['locality', 'minelevation'],
-      ['locality', 'maxelevation'],
-      ['locality', 'geography', '$Country', 'name'],
-      ['locality', 'geography', '$State', 'name'],
-      ['locality', 'geography', '$County', 'name'],
+      ['collectionobject', 'catalognumber'],
+      ['collectionobject', 'fieldnumber'],
+      ['collectionobject', 'determinations', '#1', 'taxon', '$Species', 'name'],
+      [
+        'collectionobject',
+        'determinations',
+        '#1',
+        'taxon',
+        '$Subspecies',
+        'name',
+      ],
     ],
-  },
-  {
-    pathToRelationship: ['collectingevent', 'locality'],
-    pathsToFields: [['collectingevent', 'startdate']],
   },
   {
     pathToRelationship: ['locality', 'collectingevents', '#1'],
     pathsToFields: [
-      ['locality', 'collectingevents', '#1', 'startdate'],
       [
         'locality',
         'collectingevents',
@@ -185,6 +181,15 @@ export const localityPinFields: RA<LocalityPinFields> = [
         'collectionobjects',
         '#1',
         'catalognumber',
+      ],
+      ['locality', 'collectingevents', '#1', 'stationfieldnumber'],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'fieldnumber',
       ],
       [
         'locality',
@@ -210,21 +215,29 @@ export const localityPinFields: RA<LocalityPinFields> = [
         '$Subspecies',
         'name',
       ],
+      ['locality', 'collectingevents', '#1', 'startdate'],
     ],
   },
   {
-    pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],
+    pathToRelationship: ['locality'],
     pathsToFields: [
-      ['collectionobject', 'catalognumber'],
-      ['collectionobject', 'determinations', '#1', 'taxon', '$Species', 'name'],
-      [
-        'collectionobject',
-        'determinations',
-        '#1',
-        'taxon',
-        '$Subspecies',
-        'name',
-      ],
+      ['locality', 'localityname'],
+      ['locality', 'latitude1'],
+      ['locality', 'longitude1'],
+      ['locality', 'latitude2'],
+      ['locality', 'longitude2'],
+      ['locality', 'latlongtype'],
+      ['locality', 'latlongaccuracy'],
+      ['locality', 'geography', '$Country', 'name'],
+      ['locality', 'geography', '$State', 'name'],
+      ['locality', 'geography', '$County', 'name'],
+    ],
+  },
+  {
+    pathToRelationship: ['collectingevent', 'locality'],
+    pathsToFields: [
+      ['collectingevent', 'startdate'],
+      ['collectingevent', 'stationfieldnumber'],
     ],
   },
 ];
