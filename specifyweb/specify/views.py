@@ -1,4 +1,6 @@
 import mimetypes
+import logging
+import json
 from functools import wraps
 
 from django.views.decorators.http import require_GET, require_POST
@@ -8,9 +10,14 @@ from django import http
 from django.db.models.deletion import Collector
 from django.db import router
 
+from openapi_core import create_spec
+from openapi_core.validation.request.validators import RequestValidator
+from openapi_core.contrib.django import DjangoOpenAPIRequest
+
 from .specify_jar import specify_jar
 from . import api, models
 
+logger = logging.getLogger(__name__)
 
 def login_maybe_required(view):
     @wraps(view)
@@ -35,10 +42,86 @@ def apply_access_control(view):
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
-def openapi(schema, components={}):
+def generate_openapi_spec(request, schema, components):
+    """Generate a tiny OpenAPI schema for an endpoint.
+
+    Params:
+        request: Django request object
+        schema: OpenAPI schema for an endpoint
+        components:
+            OpenAPI components referenced by endpoint's OpenAPI definition
+
+    Returns:
+        OpenAPI spec for an endpoint
+    """
+    return dict(
+        version='3.0.0',
+        info=dict(
+            title='',
+            version='',
+        ),
+        servers=[dict(
+            url='/'
+        )],
+        paths={
+            request.path: schema,
+        },
+        components=components
+    )
+
+def openapi(
+    schema,
+    components=None,
+    validate=True,
+    strict=False
+):
+    """Create a decorator for adding OpenAPI Schema
+
+    Adds OpenAPI schema to a view.
+    Validates the request/response objects.
+    Throws warnings/errors on invalid requests/responses.
+
+    Params:
+        schema: OpenAPI Schema object for an endpoint
+        components:
+            The definitions of the components that are referenced in the
+            endpoint's definition
+        validate: Whether to validate request/response objects on requests
+        strict:
+            If validate is True and validation encountered an error:
+                If strict is True: raise Error
+                if strict is False: log an Error
+    """
+    if components is None:
+        components = {}
+
     def decorator(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
+            if validate:
+                try:
+                    django_request = args[0]
+                    openapi_request = DjangoOpenAPIRequest(django_request)
+                    spec=generate_openapi_spec(
+                        django_request,
+                        schema,
+                        components
+                    )
+                    parsed_spec=create_spec(spec)
+                    validator = RequestValidator(parsed_spec)
+                    result = validator.validate(openapi_request)
+                    if strict:
+                        result.raise_for_errors()
+                    else:
+                        logger.error(json.dumps(
+                            result.errors,
+                            default=lambda x: str(x)
+                        ))
+                except Exception as error:
+                    if strict:
+                        raise error
+                    else:
+                        logger.error(str(error))
             return view(*args, **kwargs)
         setattr(wrapped, '__schema__', {
             'schema': schema,
@@ -117,7 +200,7 @@ def images(request, path):
 @require_GET
 @cache_control(max_age=24*60*60, public=True)
 def properties(request, name):
-    """Returns the <name>.properities file from the thickclient jar file."""
+    """Returns the <name>.properties file from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
 
