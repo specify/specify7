@@ -49,7 +49,8 @@ class TreeRecord(NamedTuple):
 class ScopedTreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ExtendedColumnOptions]]
-    treedefid: int
+    treedef: Any
+    treedefitems: List
     disambiguation: Dict[str, int]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
@@ -76,7 +77,8 @@ class ScopedTreeRecord(NamedTuple):
 
         return BoundTreeRecord(
             name=self.name,
-            treedefid=self.treedefid,
+            treedef=self.treedef,
+            treedefitems=self.treedefitems,
             disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             uploadingAgentId=uploadingAgentId,
@@ -103,16 +105,11 @@ MatchResult = Union[NoMatch, Matched, MatchedMultiple]
 
 class BoundTreeRecord(NamedTuple):
     name: str
-    treedefid: int
+    treedef: Any
+    treedefitems: List
     parsedFields: Dict[str, List[ParseResult]]
     uploadingAgentId: Optional[int]
     disambiguation: Dict[str, int]
-
-    def get_treedef(self):
-        model = getattr(models, self.name)
-        tablename = model._meta.db_table
-        treedefname = tablename.capitalize() + 'treedef'
-        return getattr(models, treedefname).objects.get(id=self.treedefid)
 
     def is_one_to_one(self) -> bool:
         return False
@@ -151,11 +148,9 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(match_result, {}, {})
 
     def _to_match(self) -> List[TreeDefItemWithParseResults]:
-        treedef = self.get_treedef()
-
         return [
             TreeDefItemWithParseResults(tdi, self.parsedFields[tdi.name])
-            for tdi in treedef.treedefitems.order_by('rankid')
+            for tdi in self.treedefitems
             if tdi.name in self.parsedFields and any(v is not None for r in self.parsedFields[tdi.name] for v in r.filter_on.values())
         ]
 
@@ -171,9 +166,9 @@ class BoundTreeRecord(NamedTuple):
             tried_to_match.append(to_match)
             da = self.disambiguation.get(to_match.treedefitem.name, None)
             matches = self._find_matching_descendent(parent, to_match) if da is None else \
-                model.objects.filter(id=da)
+                list(model.objects.filter(id=da)[:10])
 
-            if matches.count() != 1:
+            if len(matches) != 1:
                 # matching failed at to_match level
                 break
 
@@ -188,7 +183,7 @@ class BoundTreeRecord(NamedTuple):
             parent = matches[0]
 
         # only get here if matches.count() != 1
-        n_matches = matches.count()
+        n_matches = len(matches)
         if n_matches > 1:
             info = ReportInfo(
                 tableName=self.name,
@@ -207,26 +202,24 @@ class BoundTreeRecord(NamedTuple):
                 info = ReportInfo(tableName=self.name, columns=matched_cols + [r.column for r in to_match.results], treeInfo=None)
                 return tdiwprs, NoMatch(info) # no levels matched at all
 
-    def _find_matching_descendent(self, parent, to_match: TreeDefItemWithParseResults):
+    def _find_matching_descendent(self, parent, to_match: TreeDefItemWithParseResults) -> List:
         model = getattr(models, self.name)
-        treedef = self.get_treedef()
-        steps = treedef.treedefitems.filter(rankid__gt=parent.definitionitem.rankid, rankid__lte=to_match.treedefitem.rankid).count() \
+        steps = sum(1 for tdi in self.treedefitems if parent.definitionitem.rankid < tdi.rankid <= to_match.treedefitem.rankid) \
             if parent is not None else 1
 
         for d in range(steps):
-            matches = model.objects.filter(
+            matches = list(model.objects.select_related().filter(
                 definitionitem=to_match.treedefitem,
                 **{field: value for r in to_match.results for field, value in r.filter_on.items()},
                 **({'__'.join(["parent"]*(d+1)): parent} if parent is not None else {})
-            )
-            if matches.count() != 0:
+            )[:10])
+            if matches:
                 break
         return matches
 
     def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch], enforce_levels: bool=True) -> UploadResult:
         assert to_upload
         model = getattr(models, self.name)
-        treedef = self.get_treedef()
 
         if isinstance(matched, Matched):
             parent = model.objects.get(id=matched.id)
@@ -236,10 +229,12 @@ class BoundTreeRecord(NamedTuple):
             parent_result = {}
 
         if enforce_levels:
-            tdis = treedef.treedefitems.order_by('rankid').filter(
-                **({'rankid__gt': parent.definitionitem.rankid} if parent else {}),
-                **{'rankid__lte': to_upload[-1].treedefitem.rankid},
-            )
+            tdis = [
+                tdi
+                for tdi in self.treedefitems
+                if  tdi.rankid <= to_upload[-1].treedefitem.rankid
+                and (parent is None or tdi.rankid > parent.definitionitem.rankid)
+            ]
 
             to_upload_by_rankid = {
                 tdiwpr.treedefitem.rankid: tdiwpr
@@ -281,8 +276,8 @@ class BoundTreeRecord(NamedTuple):
                         createdbyagent_id=self.uploadingAgentId,
                         definitionitem=tdiwpr.treedefitem,
                         rankid=tdiwpr.treedefitem.rankid,
-                        definition_id=self.treedefid,
-                        parent_id=(parent and parent.id),
+                        definition=self.treedef,
+                        parent=parent,
                         **attrs,
                     )
                     obj.save(skip_tree_extras=True)

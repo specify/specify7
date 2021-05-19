@@ -144,19 +144,19 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     if table.name == 'Taxon':
-        treedefid = collection.discipline.taxontreedef_id
+        treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':
-        treedefid = collection.discipline.geographytreedef_id
+        treedef = collection.discipline.geographytreedef
 
     elif table.name == 'LithoStrat':
-        treedefid = collection.discipline.lithostrattreedef_id
+        treedef = collection.discipline.lithostrattreedef
 
     elif table.name == 'GeologicTimePeriod':
-        treedefid = collection.discipline.geologictimeperiodtreedef_id
+        treedef = collection.discipline.geologictimeperiodtreedef
 
     elif table.name == 'Storage':
-        treedefid = collection.discipline.division.institution.storagetreedef_id
+        treedef = collection.discipline.division.institution.storagetreedef
 
     else:
         raise Exception('unexpected tree type: %s' % table)
@@ -164,6 +164,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     return ScopedTreeRecord(
         name=tr.name,
         ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
-        treedefid=treedefid,
+        treedef=treedef,
+        treedefitems=list(treedef.treedefitems.order_by('rankid')),
         disambiguation={},
     )
