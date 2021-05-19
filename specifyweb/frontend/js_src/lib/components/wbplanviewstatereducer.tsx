@@ -371,7 +371,7 @@ export const stateReducer = generateReducer<
         handleClick={handleClose}
       >
         {!refObject.current.hideEmptyDataSetDialogAction &&
-          state.props.headers.length === 0 && (
+          state.lines.length === 0 && (
             <ModalDialog
               onCloseCallback={() =>
                 state.refObjectDispatch({
