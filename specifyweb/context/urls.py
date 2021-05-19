@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^user_collection_access/(?P<userid>\d+)/$', views.user_collection_access),
 
     url(r'^api_endpoints.json$', views.api_endpoints),
+    url(r'^json_endpoints.json$', views.json_endpoints),
     url(r'^api_endpoints_all.json$', views.api_endpoints_all),
     url(r'^user.json$', views.user),
     url(r'^system_info.json$', views.system_info),

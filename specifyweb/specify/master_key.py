@@ -42,6 +42,7 @@ def make_master_key(userpass):
                     "text/plain": {
                         "schema": {
                             "type": "string",
+                            "nullable": True,
                         }
                     }
                 }
