@@ -79,13 +79,7 @@ const WBView = Backbone.View.extend({
       this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
         this.mappings.mappingsTree
       );
-      this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
-        ({ mappingPath }) =>
-          getMappingLineData({
-            baseTableName: this.mappings.baseTableName,
-            mappingPath: mappingPath.slice(0, -1),
-          })
-      );
+      this.mappings.mappingLinesData = undefined;
     } else this.mappings = undefined;
 
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
@@ -151,8 +145,17 @@ const WBView = Backbone.View.extend({
 
     this.initHot().then(() => {
       this.dataset.rowresults && this.getValidationResults();
-      fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
-      this.wbutils.findLocalityColumns();
+      fetchDataModelPromise().then(() => {
+        this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
+          ({ mappingPath }) =>
+            getMappingLineData({
+              baseTableName: this.mappings.baseTableName,
+              mappingPath: mappingPath.slice(0, -1),
+            })
+        );
+        this.identifyMappedHeaders();
+        this.wbutils.findLocalityColumns();
+      });
       this.resize();
 
       const searchPlugin = this.hot.getPlugin('search');
