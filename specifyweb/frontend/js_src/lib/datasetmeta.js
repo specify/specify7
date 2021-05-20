@@ -76,7 +76,7 @@ export default Backbone.View.extend({
 
     this.dialog = $(`<div>
       <label>
-        Dataset Name:<br>
+        <b>Data Set Name:</b><br>
         <input
           type="text"
           style="
@@ -88,13 +88,13 @@ export default Backbone.View.extend({
         >
       </label><br>
       <label>
-        Remarks:<br>
+        <b>Remarks:</b><br>
         <textarea
           style="width: 100%"
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
       </label><br><br>
-      <b>Data Set Metadata:</b><br>
+      <b>Metadata:</b><br>
       Number of rows: <i>${this.dataset.rows.length}</i><br>
       Number of columns: <i>${this.dataset.rows[0].length}</i><br>
       Date created: <i>${new Date(
@@ -109,7 +109,7 @@ export default Backbone.View.extend({
         this.dataset.importedfilename || '(no file name)'
       }</i><br><br>
     </div>`).dialog({
-      title: 'Edit Data Set metadata',
+      title: 'Data Set Properties',
       modal: true,
       open(evt, ui) {
         $('.ui-dialog-titlebar-close', ui.dialog).hide();
