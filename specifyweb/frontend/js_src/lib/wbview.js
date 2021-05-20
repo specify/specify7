@@ -827,7 +827,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       title: 'Confirm delete',
       close: () => dialog.remove(),
       buttons: {
-        Delete() {
+        Delete: () => {
           $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
             type: 'DELETE',
           })
@@ -840,9 +840,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
               dialog.dialog('close');
             });
         },
-        Cancel: function () {
-          dialog.dialog('close');
-        },
+        Cancel: () => dialog.dialog('close'),
       },
     });
   },
