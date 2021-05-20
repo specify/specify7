@@ -1278,17 +1278,24 @@ Only available after a trial upload is completed.</dd>`);
     return this.cachedMetaDataArray;
   },
   getCellsMetaObject() {
-    if (this.hasMetaDataObjectChanges)
+    if (this.hasMetaDataObjectChanges) {
+      const getPosition = (cellMetaData, first) =>
+        (this.wbutils.searchPreferences.navigation.direction === 'rowByRow') ===
+        first
+          ? cellMetaData.visualRow
+          : cellMetaData.visualCol;
+
       this.cachedMetaData = this.getCellsMeta().reduce(
         (cachedMetaData, cellMetaData) => {
-          cachedMetaData[cellMetaData.visualRow] ??= {};
-          cachedMetaData[cellMetaData.visualRow][
-            cellMetaData.visualCol
+          cachedMetaData[getPosition(cellMetaData, true)] ??= {};
+          cachedMetaData[getPosition(cellMetaData, true)][
+            getPosition(cellMetaData, false)
           ] = cellMetaData;
           return cachedMetaData;
         },
-        {}
+        []
       );
+    }
     this.hasMetaDataObjectChanges = false;
     return this.cachedMetaData;
   },

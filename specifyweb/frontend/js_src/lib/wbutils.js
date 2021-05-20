@@ -85,22 +85,30 @@ module.exports = Backbone.View.extend({
     const orderIt =
       direction === 'next' ? (array) => array : (array) => [...array].reverse();
 
+    let matchedCell;
+    let cellIsTypeCount = 0;
+
+    const getPosition = (cellMetaData, first) =>
+      (this.searchPreferences.navigation.direction === 'rowByRow') === first
+        ? cellMetaData.visualRow
+        : cellMetaData.visualCol;
+
+    const getCurrentPosition = (first) =>
+      getPosition({ visualCol: currentCol, visualRow: currentRow }, first);
+
     const compareRows =
       direction === 'next'
-        ? (visualRow) => visualRow >= currentRow
-        : (visualRow) => visualRow <= currentRow;
+        ? (visualRow) => visualRow >= getCurrentPosition(true)
+        : (visualRow) => visualRow <= getCurrentPosition(true);
 
     const compareCols =
       direction === 'next'
         ? matchCurrentCell
-          ? (visualCol) => visualCol >= currentCol
-          : (visualCol) => visualCol > currentCol
+          ? (visualCol) => visualCol >= getCurrentPosition(false)
+          : (visualCol) => visualCol > getCurrentPosition(false)
         : matchCurrentCell
-        ? (visualCol) => visualCol <= currentCol
-        : (visualCol) => visualCol < currentCol;
-
-    let matchedCell;
-    let cellIsTypeCount = 0;
+        ? (visualCol) => visualCol <= getCurrentPosition(false)
+        : (visualCol) => visualCol < getCurrentPosition(false);
 
     orderIt(Object.entries(cellsMetaObject)).find(([, cells]) =>
       orderIt(Object.values(cells)).find((cell) => {
@@ -108,8 +116,9 @@ module.exports = Backbone.View.extend({
         cellIsTypeCount += cellTypeMatches;
         const foundIt =
           cellTypeMatches &&
-          compareRows(cell.visualRow) &&
-          (cell.visualRow !== currentRow || compareCols(cell.visualCol));
+          compareRows(getPosition(cell, true)) &&
+          (getPosition(cell, true) !== getCurrentPosition(true) ||
+            compareCols(getPosition(cell, false)));
         if (foundIt) matchedCell = cell;
         return foundIt;
       })
@@ -256,10 +265,20 @@ module.exports = Backbone.View.extend({
   showAdvancedSearch() {
     if (typeof this.advancedSearch !== 'undefined') return;
 
+    let initialNavigationDirection = this.searchPreferences.navigation
+      .direction;
     this.advancedSearch = new WbAdvancedSearch({
       initialSearchPreferences: this.searchPreferences,
       onChange: (newSearchPreferences) => {
         this.searchPreferences = newSearchPreferences;
+        if (
+          this.searchPreferences.navigation.direction !==
+          initialNavigationDirection
+        ) {
+          this.wbview.hasMetaDataObjectChanges = true;
+          initialNavigationDirection = this.searchPreferences.navigation
+            .direction;
+        }
         if (this.searchPreferences.search.liveUpdate) {
           this.searchCells(
             {

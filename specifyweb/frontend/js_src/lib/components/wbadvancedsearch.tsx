@@ -11,9 +11,13 @@ interface Props {
 
 type ComponentProps = Readonly<Props>;
 
+type NavigationDirection = 'columnByColumn' | 'rowByRow';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
 export interface SearchPreferences {
+  readonly navigation: {
+    readonly direction: NavigationDirection;
+  };
   readonly search: {
     // Find entire cells only
     readonly fullMatch: boolean;
@@ -32,9 +36,14 @@ export interface SearchPreferences {
   };
 }
 
+const CACHE_VERSION = '1';
+
 export const getInitialSearchPreferences = (): SearchPreferences =>
   cache.get('workbench', 'search-properties', {
     defaultValue: {
+      navigation: {
+        direction: 'columnByColumn',
+      },
       search: {
         fullMatch: true,
         caseSensitive: true,
@@ -45,6 +54,7 @@ export const getInitialSearchPreferences = (): SearchPreferences =>
         replaceMode: 'replaceAll',
       },
     },
+    version: CACHE_VERSION,
   });
 
 function Checkbox({
@@ -92,6 +102,7 @@ function WbAdvancedSearch({
 
   cache.set('workbench', 'search-properties', state, {
     overwrite: true,
+    version: CACHE_VERSION,
   });
 
   return (
@@ -103,6 +114,30 @@ function WbAdvancedSearch({
         modal: false,
       }}
     >
+      <b>Navigation Options</b>
+      <br />
+      <label>
+        Navigation direction
+        <br />
+        <select
+          onChange={({ target }): void =>
+            setState({
+              ...state,
+              navigation: {
+                ...state.navigation,
+                direction: target.value as NavigationDirection,
+              },
+            })
+          }
+          value={state.navigation.direction}
+        >
+          <option value="columnByColumn">Column by Column</option>
+          <option value="rowByRow">Row by Row</option>
+        </select>
+      </label>
+      <br />
+      <br />
+
       <b>Search Options</b>
       <br />
       <Checkbox property="fullMatch" state={state} setState={setState}>

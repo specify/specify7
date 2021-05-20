@@ -202,7 +202,7 @@ export function genericGet<T>(
     typeof buckets[bucketName].records[cacheName] === 'undefined'
   ) {
     if (typeof defaultValue === 'undefined') return false;
-    else set(bucketName, cacheName, defaultValue, defaultSetOptions);
+    set(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
   // If cache version is specified, and it doesn't match, clear the record
@@ -211,12 +211,15 @@ export function genericGet<T>(
     buckets[bucketName].records[cacheName].version !== version
   ) {
     delete buckets[bucketName].records[cacheName];
-    return false;
-  } else {
-    buckets[bucketName].records[cacheName].useCount++;
-
-    return buckets[bucketName].records[cacheName].value as T;
+    if (typeof defaultValue === 'undefined') return false;
+    set(bucketName, cacheName, defaultValue, {
+      ...defaultSetOptions,
+      overwrite: true,
+    });
   }
+
+  buckets[bucketName].records[cacheName].useCount++;
+  return buckets[bucketName].records[cacheName].value as T;
 }
 
 interface SetOptions {
