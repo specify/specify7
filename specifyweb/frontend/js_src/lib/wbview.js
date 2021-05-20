@@ -1073,6 +1073,7 @@ Only available after a trial upload is completed.</dd>`);
     result?.newRows.forEach(({ columns }) =>
       columns.forEach((columnName) => {
         const physicalCol = this.dataset.columns.indexOf(columnName);
+        if (physicalCol === -1) return;
         newRowMeta[physicalCol].isNew = true;
       })
     );
