@@ -11,7 +11,6 @@ const Papa = require('papaparse');
 require('handsontable/dist/handsontable.full.css');
 
 const schema = require('./schema.js');
-const api = require('./specifyapi.js');
 const app = require('./specifyapp.js');
 const userInfo = require('./userinfo.js');
 const DataSetMeta = require('./datasetmeta.js').default;
@@ -37,6 +36,13 @@ const { capitalize } = require('./wbplanviewhelper.ts');
 const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
+
+const getDefaultCellMeta = () => ({
+  isNew: false,
+  isModified: false,
+  isSearchResult: false,
+  issues: [],
+});
 
 const WBView = Backbone.View.extend({
   __name__: 'WbForm',
@@ -83,6 +89,14 @@ const WBView = Backbone.View.extend({
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
     this.liveValidationStack = [];
     this.liveValidationActive = false;
+    this.hasUnSavedChanges = false;
+
+    // These fields are primarily used for navigation, as the user may press the
+    // "next" button several times per second - no point in reCalculating the
+    // metaData for all the cells.
+    this.hasMetaDataChanges = true;
+    this.cachedMetaDataArray = undefined;
+    this.cachedMetaData = undefined;
 
     this.wbutils = new WBUtils({
       wbview: this,
@@ -93,6 +107,8 @@ const WBView = Backbone.View.extend({
       dataset: this.dataset,
       el: this.el,
     });
+    this.searchCell = undefined;
+    this.commentsPlugin = undefined;
 
     this.uploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
@@ -136,6 +152,19 @@ const WBView = Backbone.View.extend({
       fetchDataModelPromise().then(this.identifyMappedHeaders.bind(this));
       this.wbutils.findLocalityColumns();
       this.resize();
+
+      const searchPlugin = this.hot.getPlugin('search');
+      const queryMethod = searchPlugin.getQueryMethod();
+      this.searchCell = (visualRow, visualCol, value) =>
+        searchPlugin.callback(
+          this.hot,
+          visualRow,
+          visualCol,
+          value,
+          queryMethod(this.wbutils.searchQuery, value)
+        );
+
+      this.commentsPlugin = this.hot.getPlugin('comments');
     });
 
     this.updateValidationButton();
@@ -148,6 +177,10 @@ const WBView = Backbone.View.extend({
     this.resize();
 
     $(window).on('resize', this.resize);
+
+    this.hasMetaDataChanges = true;
+    this.hasMetaDataObjectChanges = true;
+
     return this;
   },
   initHot() {
@@ -157,8 +190,11 @@ const WBView = Backbone.View.extend({
           // initial height gets overwritten on page's load
           height: 500,
           data: this.data,
-          cells: this.defineCell.bind(this, this.dataset.columns.length),
-          columns: this.dataset.columns.map((__, i) => ({ data: i })),
+          columns: this.dataset.columns.map((__, i) => ({
+            data: i,
+            ...getDefaultCellMeta(),
+          })),
+          cells: this.cellRenderer.bind(this),
           colHeaders: (col) => `<div class="wb-header-${col} ${
             this.dataset.columns[col] in this.mappedHeaders
               ? ''
@@ -187,7 +223,10 @@ const WBView = Backbone.View.extend({
             indicators: false,
           },
           minSpareRows: 1,
-          comments: true,
+          comments: {
+            displayDelay: 100,
+          },
+          commentedCellClassName: 'htCommentCell wb-invalid-cell',
           rowHeaders: true,
           manualColumnResize: true,
           manualColumnMove: this.dataset.visualorder ?? true,
@@ -195,8 +234,16 @@ const WBView = Backbone.View.extend({
           columnSorting: true,
           sortIndicator: true,
           search: {
-            searchResultClass: 'htSearch',
+            searchResultClass: 'wb-search-match-cell',
             queryMethod: this.wbutils.searchFunction.bind(this.wbutils),
+            callback: (hot, visualRow, visualCol, data, testResult) => {
+              hot.setCellMeta(
+                visualRow,
+                visualCol,
+                'isSearchResult',
+                testResult
+              );
+            },
           },
           contextMenu: {
             items: this.uploaded
@@ -229,10 +276,12 @@ const WBView = Backbone.View.extend({
           stretchH: 'all',
           readOnly: this.uploaded,
           beforeColumnMove: this.beforeColumnMove.bind(this),
-          afterColumnMove: this.columnMoved.bind(this),
-          afterCreateRow: this.rowCreated.bind(this),
-          afterRemoveRow: this.rowRemoved.bind(this),
+          afterColumnMove: this.afterColumnMove.bind(this),
+          afterColumnSort: this.cellPositionChanged.bind(this),
+          afterCreateRow: this.rowCountChanged.bind(this),
+          afterRemoveRow: this.rowCountChanged.bind(this),
           afterChange: this.afterChange.bind(this),
+          afterSetCellMeta: this.afterSetCellMeta.bind(this),
         });
         resolve();
       }, 0)
@@ -242,189 +291,195 @@ const WBView = Backbone.View.extend({
     this.hot.destroy();
     $(window).off('resize', this.resize);
   },
-  isAmbiguousCell() {
-    const [[row, col]] = this.hot.getSelected();
-    if (this.mappings) {
-      const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mappingPath = this.mappings.arrayOfMappings.find(
-        ({ headerName }) => headerName === targetHeader
-      )?.mappingPath;
-      const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-      return typeof rowResult === 'undefined' ||
-        typeof mappingPath === 'undefined'
-        ? false
-        : getRecordResult(rowResult, mappingPath)?.MatchedMultiple != null;
-    }
-    return false;
+  cellRenderer() {
+    return { renderer: this.customRenderer.bind(this) };
   },
-  clearDisambiguation(row) {
-    const ncols = this.dataset.columns.length;
-    const rn = this.hot.toPhysicalRow(row);
-    const hidden = this.data[rn][ncols];
+  customRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.renderers.TextRenderer.apply(instance, arguments);
+    if (cellProperties.isModified)
+      this.afterSetCellMeta(td, undefined, 'isModified', true);
+    // if(cellProp)
+  },
+  isAmbiguousCell() {
+    if (!this.mappings) return false;
+
+    const [visualRow, visualCol] = this.wbutils.getSelectedLast();
+    const physicalRow = this.hot.toPhysicalRow(visualRow);
+    const physicalCol = this.hot.toPhysicalColumn(visualCol);
+    const targetHeader = this.dataset.columns[physicalCol];
+    const mappingPath = this.mappings.arrayOfMappings.find(
+      ({ headerName }) => headerName === targetHeader
+    )?.mappingPath;
+    const rowResult = this.rowResults[physicalRow];
+    return typeof rowResult === 'undefined' ||
+      typeof mappingPath === 'undefined'
+      ? false
+      : getRecordResult(rowResult, mappingPath)?.MatchedMultiple != null;
+  },
+  clearDisambiguation(physicalRow) {
+    const cols = this.dataset.columns.length;
+    const hidden = this.data[physicalRow][cols];
     const extra = hidden ? JSON.parse(hidden) : {};
     extra.disambiguation = {};
-    this.data[rn][ncols] = JSON.stringify(extra);
+    this.data[physicalRow][cols] = JSON.stringify(extra);
   },
-  setDisambiguation(row, mapping, id, affectedColumns) {
-    const ncols = this.dataset.columns.length;
-    const rn = this.hot.toPhysicalRow(row);
-    const hidden = this.data[rn][ncols];
+  setDisambiguation(physicalRow, mapping, id, affectedColumns) {
+    const cols = this.dataset.columns.length;
+    const hidden = this.data[physicalRow][cols];
     const extra = hidden ? JSON.parse(hidden) : {};
     const da = extra.disambiguation || {};
     da[mapping.slice(0, -1).join(' ')] = id;
     extra.disambiguation = da;
-    this.data[rn][ncols] = JSON.stringify(extra);
+    this.data[physicalRow][cols] = JSON.stringify(extra);
     this.spreadSheetChanged();
 
-    const cols = this.dataset.columns.length;
-    affectedColumns.forEach((col) => {
-      this.wbutils.initCellInfo(row, col);
-      this.wbutils.cellInfo[row * cols + col].isModified = true;
-    });
-    this.updateCellInfos();
-    this.hot.render();
+    const visualRow = this.hot.toVisualRow(physicalRow);
+    affectedColumns.forEach((visualCol) =>
+      this.hot.setCellMeta(visualRow, visualCol, 'isModified', true)
+    );
+    this.updateCellInfoStats();
   },
   disambiguateCell([
     {
-      start: { row, col },
+      start: { col: visualCol, row: visualRow },
     },
   ]) {
-    if (this.mappings) {
-      const targetHeader = this.dataset.columns[this.hot.toPhysicalColumn(col)];
-      const mappingPath = this.mappings.arrayOfMappings.find(
-        ({ headerName }) => headerName === targetHeader
-      )?.mappingPath;
-      const tableName = getMappingLineData({
-        baseTableName: this.mappings.baseTableName,
-        mappingPath: mappingPath.slice(0, -1),
-      })[0]?.tableName;
-      const model = schema.getModel(tableName);
-      const rowResult = this.rowResults[this.hot.toPhysicalRow(row)];
-      const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;
-      const resources = new model.LazyCollection({
-        filters: { id__in: matches.ids.join(',') },
-      });
+    if (!this.mappings) return;
 
-      const affectedHeaders = this.mappings.arrayOfMappings
-        .filter(
-          ({ mappingPath: comparisonMappingPath }) =>
-            mappingPathToString(comparisonMappingPath.slice(0, -1)) ===
-            mappingPathToString(mappingPath.slice(0, -1))
-        )
-        .map(({ headerName }) => headerName);
-      const affectedColumns = affectedHeaders.map((headerName) =>
-        this.dataset.columns.indexOf(headerName)
+    const physicalRow = this.hot.toPhysicalRow(visualRow);
+    const physicalCol = this.hot.toPhysicalColumn(visualCol);
+    const targetHeader = this.dataset.columns[physicalCol];
+
+    const mappingPath = this.mappings.arrayOfMappings.find(
+      ({ headerName }) => headerName === targetHeader
+    )?.mappingPath;
+    const tableName = getMappingLineData({
+      baseTableName: this.mappings.baseTableName,
+      mappingPath: mappingPath.slice(0, -1),
+    })[0]?.tableName;
+    const model = schema.getModel(tableName);
+    const rowResult = this.rowResults[physicalRow];
+    const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;
+    const resources = new model.LazyCollection({
+      filters: { id__in: matches.ids.join(',') },
+    });
+
+    const affectedHeaders = this.mappings.arrayOfMappings
+      .filter(
+        ({ mappingPath: comparisonMappingPath }) =>
+          mappingPathToString(comparisonMappingPath.slice(0, -1)) ===
+          mappingPathToString(mappingPath.slice(0, -1))
+      )
+      .map(({ headerName }) => headerName);
+    const affectedColumns = affectedHeaders.map((headerName) =>
+      this.dataset.columns.indexOf(headerName)
+    );
+
+    const doDA = (selected) => {
+      this.setDisambiguation(
+        physicalRow,
+        mappingPath,
+        parseInt(selected, 10),
+        affectedColumns
       );
-
-      const doDA = (selected) => {
-        this.setDisambiguation(
-          row,
-          mappingPath,
-          parseInt(selected, 10),
-          affectedColumns
-        );
-        this.startValidateRow(row);
-      };
-      const doAll = (selected) => {
-        // loop backwards so the live validation will go from top to bottom
-        for (let i = this.data.length - 1; i >= 0; i--) {
-          const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
-          const key =
-            rowResult &&
-            getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
-          if (key === matches.key) {
-            this.setDisambiguation(
-              i,
-              mappingPath,
-              parseInt(selected, 10),
-              affectedColumns
-            );
-            this.startValidateRow(i);
-          }
+      this.startValidateRow(physicalRow);
+    };
+    const doAll = (selected) => {
+      // loop backwards so the live validation will go from top to bottom
+      for (let i = this.data.length - 1; i >= 0; i--) {
+        const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
+        const key =
+          rowResult &&
+          getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
+        if (key === matches.key) {
+          this.setDisambiguation(
+            i,
+            mappingPath,
+            parseInt(selected, 10),
+            affectedColumns
+          );
+          this.startValidateRow(i);
         }
-      };
+      }
+    };
 
-      const table = $('<table>');
-      resources.fetch({ limit: 0 }).done(() => {
-        if (resources.length < 1) {
-          $(`<div>None of the matched records currently exist in the database.
+    const table = $('<table>');
+    resources.fetch({ limit: 0 }).done(() => {
+      if (resources.length < 1) {
+        $(`<div>None of the matched records currently exist in the database.
 This can happen if all of the matching records were deleted since the validation process occurred,
 or if all of the matches were ambiguous with respect other records in this data set. In the latter case,
 you will need to add fields and values to the data set to resolve the ambiguity.</div>`).dialog(
-            {
-              title: 'Disambiguate',
-              modal: true,
-              close() {
-                $(this).remove();
-              },
-              buttons: [
-                {
-                  text: 'Close',
-                  click() {
-                    $(this).dialog('close');
-                  },
-                },
-              ],
-            }
-          );
-          return;
-        }
-
-        resources.forEach((resource, i) => {
-          const tr = $(
-            `<tr><td><input type="radio" class="da-option" name="disambiguate" value="${resource.id}" id="da-option-${i}"></td></tr>`
-          ).appendTo(table);
-          tr.append(
-            $('<td>').append(
-              $(`<a target="_blank">ℹ️</a>`).attr('href', resource.viewUrl())
-            )
-          );
-          const label = $(`<label for="da-option-${i}">`).text(resource.id);
-          tr.append($('<td>').append(label));
-          formatObj(resource).done((formatted) => label.text(formatted));
-        });
-
-        const applyToAll = $(`<label>
-          <input type="checkbox" class="da-use-for-all" value="yes">
-          Apply All
-        </label>`);
-
-        $('<div>')
-          .append(table)
-          .append(applyToAll)
-          .dialog({
-            title: 'Disambiguate Multiple Record Matches',
+          {
+            title: 'Disambiguate',
             modal: true,
             close() {
               $(this).remove();
             },
             buttons: [
               {
-                text: 'Apply',
-                click() {
-                  const selected = $('input.da-option:checked', this).val();
-                  const useForAll = $(
-                    'input.da-use-for-all:checked',
-                    this
-                  ).val();
-                  if (selected != null) {
-                    (useForAll ? doAll : doDA)(selected);
-                    $(this).dialog('close');
-                  }
-                },
-              },
-              {
-                text: 'Cancel',
+                text: 'Close',
                 click() {
                   $(this).dialog('close');
                 },
               },
             ],
-          });
+          }
+        );
+        return;
+      }
+
+      resources.forEach((resource, i) => {
+        const tr = $(
+          `<tr><td><input type="radio" class="da-option" name="disambiguate" value="${resource.id}" id="da-option-${i}"></td></tr>`
+        ).appendTo(table);
+        tr.append(
+          $('<td>').append(
+            $(`<a target="_blank">ℹ️</a>`).attr('href', resource.viewUrl())
+          )
+        );
+        const label = $(`<label for="da-option-${i}">`).text(resource.id);
+        tr.append($('<td>').append(label));
+        formatObj(resource).done((formatted) => label.text(formatted));
       });
-    }
+
+      const applyToAll = $(`<label>
+          <input type="checkbox" class="da-use-for-all" value="yes">
+          Apply All
+        </label>`);
+
+      $('<div>')
+        .append(table)
+        .append(applyToAll)
+        .dialog({
+          title: 'Disambiguate Multiple Record Matches',
+          modal: true,
+          close() {
+            $(this).remove();
+          },
+          buttons: [
+            {
+              text: 'Apply',
+              click() {
+                const selected = $('input.da-option:checked', this).val();
+                const useForAll = $('input.da-use-for-all:checked', this).val();
+                if (selected != null) {
+                  (useForAll ? doAll : doDA)(selected);
+                  $(this).dialog('close');
+                }
+              },
+            },
+            {
+              text: 'Cancel',
+              click() {
+                $(this).dialog('close');
+              },
+            },
+          ],
+        });
+    });
   },
-  afterChange(changes, source) {
+  afterChange(unfilteredChanges, source) {
     if (
       ![
         'edit',
@@ -436,95 +491,66 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     )
       return;
 
-    const cols = this.dataset.columns.length;
-    const filteredChanges = changes.filter(
-      ([_row, _col, oldValue, newValue]) =>
-        oldValue !== newValue && (oldValue !== null || newValue !== '')
-    );
+    const changes = unfilteredChanges
+      .map(([visualRow, prop, oldValue, newValue]) => ({
+        visualRow: visualRow,
+        visualCol: this.hot.propToCol(prop),
+        physicalRow: this.hot.toPhysicalRow(visualRow),
+        physicalCol: this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
+        oldValue,
+        newValue,
+      }))
+      .filter(
+        ({ oldValue, newValue }) =>
+          oldValue !== newValue && (oldValue !== null || newValue !== '')
+      );
 
-    if (filteredChanges.length === 0) return;
+    if (changes.length === 0) return;
 
-    let searchFunction;
-    if (
-      this.wbutils.searchPreferences.search.liveUpdate &&
-      this.wbutils.searchQuery !== ''
-    ) {
-      const searchPlugin = this.hot.getPlugin('search');
-      searchFunction = (row, col, cellInfo) =>
-        searchPlugin.queryMethod(
-          this.wbutils.searchQuery,
-          this.hot.getDataAtCell(row, col)
-        );
-    } else searchFunction = (_row, _col, cellInfo) => cellInfo.matchesSearch;
-
-    const remappedChanges = filteredChanges.map(([row, ...rest]) => [
-      this.hot.toPhysicalRow(row),
-      ...rest,
-    ]);
-
-    remappedChanges.forEach(([row, col]) => {
-      this.clearDisambiguation(row);
-      this.wbutils.initCellInfo(row, col);
-      const cellInfo = this.wbutils.cellInfo[row * cols + col];
-      cellInfo.isModified = true;
-      cellInfo.matchesSearch = searchFunction(row, col, cellInfo);
-
-      const cell = this.hot.getCell(row, col);
-      this.updateCell(cell, cellInfo);
+    changes.forEach(({ visualRow, visualCol, physicalRow, newValue }) => {
+      this.clearDisambiguation(physicalRow);
+      this.hot.setCellMeta(visualRow, visualCol, 'isModified', true);
+      if (
+        this.wbutils.searchPreferences.search.liveUpdate &&
+        this.wbutils.searchQuery !== ''
+      )
+        this.searchCell(visualRow, visualCol, newValue);
     });
 
     this.spreadSheetChanged();
+    this.updateCellInfoStats();
 
     if (this.dataset.uploadplan)
       new Set(
-        remappedChanges
+        changes
           // Ignore changes to unmapped columns
           .filter(
-            ([, column]) =>
+            ({ physicalCol }) =>
               Object.keys(this.mappedHeaders).indexOf(
-                this.dataset.columns[this.hot.toPhysicalColumn(column)]
+                this.dataset.columns[physicalCol]
               ) !== -1
           )
-          .map(([row]) => row)
-      ).forEach((row) => this.startValidateRow(row));
+          .map(({ physicalRow }) => physicalRow)
+      ).forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
-  rowCreated(index, amount, source) {
-    if (!this.hot) return;
-
-    const cols = this.dataset.columns.length;
-    this.wbutils.cellInfo = this.wbutils.cellInfo
-      .slice(0, index * cols)
-      .concat(
-        new Array(amount * cols),
-        this.wbutils.cellInfo.slice(index * cols)
-      );
-    this.hot.render();
-
-    if (source !== 'auto') this.spreadSheetChanged();
+  rowCountChanged(index, amount, source) {
+    if (this.hot && source !== 'auto') this.spreadSheetChanged();
+    this.hasMetaDataChanges = true;
   },
-  rowRemoved(index, amount, source) {
-    if (!this.hot) return;
-
-    const cols = this.dataset.columns.length;
-    this.wbutils.cellInfo = this.wbutils.cellInfo
-      .slice(0, index * cols)
-      .concat(this.wbutils.cellInfo.slice((index + amount) * cols));
-    this.hot.render();
-    if (this.hot.countRows() === 0) {
-      this.hot.alter('insert_row', 0);
-    }
-
-    if (source !== 'auto') this.spreadSheetChanged();
+  cellPositionChanged() {
+    this.hasMetaDataObjectChanges = true;
   },
   beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
     typeof endPosition !== 'undefined',
-  columnMoved(_columnIndexes, _startPosition, endPosition) {
+  afterColumnMove(_columnIndexes, _startPosition, endPosition) {
     if (typeof endPosition === 'undefined' || !this.hot) return;
 
-    const columnOrder = [];
-    for (let i = 0; i < this.dataset.columns.length; i++) {
-      columnOrder.push(this.hot.toPhysicalColumn(i));
-    }
+    this.cellPositionChanged();
+
+    const columnOrder = this.dataset.columns.map((visualColumn) =>
+      this.hot.toPhysicalColumn(visualColumn)
+    );
+
     if (
       this.dataset.visualorder == null ||
       columnOrder.some((i, j) => i !== this.dataset.visualorder[j])
@@ -587,9 +613,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
     const defaultValues = Object.fromEntries(
       Object.entries(
-        typeof arrayOfMappings === 'undefined'
+        typeof this.mappings.arrayOfMappings === 'undefined'
           ? {}
-          : extractDefaultValues(arrayOfMappings, true)
+          : extractDefaultValues(this.mappings.arrayOfMappings, true)
       ).map(([headerName, defaultValue]) => [
         this.dataset.columns.indexOf(headerName),
         defaultValue,
@@ -630,21 +656,23 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     $.post(`/api/workbench/unupload/${this.dataset.id}/`);
     this.openStatus('unupload');
   },
-  updateCellInfos(showValidationSummary = false) {
+  updateCellInfoStats(showValidationSummary = false) {
+    const cellsMeta = this.getCellsMeta();
+
     const cellCounts = {
-      newCells: this.wbutils.cellInfo.reduce(
+      newCells: cellsMeta.reduce(
         (count, info) => count + (info.isNew ? 1 : 0),
         0
       ),
-      invalidCells: this.wbutils.cellInfo.reduce(
-        (count, info) => count + (info.issues.length ? 1 : 0),
+      invalidCells: cellsMeta.reduce(
+        (count, info) => count + (info.issues?.length ? 1 : 0),
         0
       ),
-      searchResults: this.wbutils.cellInfo.reduce(
-        (count, info) => count + (info.matchesSearch ? 1 : 0),
+      searchResults: cellsMeta.reduce(
+        (count, info) => count + (info.isSearchResult ? 1 : 0),
         0
       ),
-      modifiedCells: this.wbutils.cellInfo.reduce(
+      modifiedCells: cellsMeta.reduce(
         (count, info) => count + (info.isModified ? 1 : 0),
         0
       ),
@@ -744,17 +772,15 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         return;
       }
       this.liveValidationActive = true;
-      const row = this.liveValidationStack.pop();
-      const rowData = this.hot.getSourceDataAtRow(row);
+      const physicalRow = this.liveValidationStack.pop();
+      const rowData = this.hot.getSourceDataAtRow(physicalRow);
       Q(
         $.post(
           `/api/workbench/validate_row/${this.dataset.id}/`,
           JSON.stringify(rowData)
         )
       )
-        .then((result) =>
-          this.gotRowValidationResult(this.hot.toVisualRow(row), result)
-        )
+        .then((result) => this.gotRowValidationResult(physicalRow, result))
         .fin(pumpValidation);
     };
 
@@ -762,20 +788,20 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       pumpValidation();
     }
   },
-  startValidateRow(row) {
-    if (this.validationMode === 'live') {
-      this.liveValidationStack = this.liveValidationStack
-        .filter((r) => r !== row)
-        .concat(this.hot.toPhysicalRow(row));
-      this.triggerLiveValidation();
-    }
+  startValidateRow(physicalRow) {
+    if (this.validationMode !== 'live') return;
+    this.liveValidationStack = this.liveValidationStack
+      .filter((row) => row !== physicalRow)
+      .concat(physicalRow);
+    this.triggerLiveValidation();
   },
-  gotRowValidationResult(row, result) {
-    if (this.validationMode === 'live') {
-      this.rowResults[this.hot.toPhysicalRow(row)] = result.result;
-      this.parseRowValidationResult(row, result.validation, true);
-      this.updateCellInfos();
-    }
+  gotRowValidationResult(physicalRow, result) {
+    if (this.validationMode !== 'live') return;
+    this.rowResults[physicalRow] = result.result;
+    this.hot.batchRender(() =>
+      this.parseRowValidationResult(physicalRow, result.validation, true)
+    );
+    this.updateCellInfoStats();
   },
   chooseValidationMode() {
     const dl = $('<dl>');
@@ -820,7 +846,7 @@ Only available after a trial upload is completed.</dd>`);
     );
     dl.append('<dd>Row validation highlighting is disabled.</dd>');
 
-    const dialog = $('<div>')
+    $('<div>')
       .append(dl)
       .dialog({
         title: 'Validation Mode',
@@ -848,7 +874,7 @@ Only available after a trial upload is completed.</dd>`);
       switch (this.validationMode) {
         case 'live':
           this.liveValidationStack = this.dataset.rows
-            .map((__, i) => i)
+            .map((_, i) => i)
             .reverse();
           this.triggerLiveValidation();
           this.el.classList.remove(
@@ -866,11 +892,32 @@ Only available after a trial upload is completed.</dd>`);
           this.liveValidationActive = false;
           break;
       }
+
+      this.clearAllMetaData();
       this.updateValidationButton();
-      this.wbutils.cellInfo = [];
-      this.updateCellInfos();
-      this.hot.render();
     };
+  },
+  clearAllMetaData() {
+    const {
+      isSearchResult: _,
+      ...partialDefaultCellMeta
+    } = getDefaultCellMeta();
+    this.hot.batchRender(() =>
+      [...Array(this.hot.countRows())].forEach((_, visualRow) =>
+        Object.keys(this.dataset.columns).map((physicalCol) =>
+          this.hot.setCellMetaObject(
+            visualRow,
+            /*
+             * Despite the fact that setCellMetaObject expects a visualCol,
+             * it doesn't matter since we are looping though all the columns
+             * */
+            parseInt(physicalCol),
+            partialDefaultCellMeta
+          )
+        )
+      )
+    );
+    this.updateCellInfoStats();
   },
   updateValidationButton() {
     switch (this.validationMode) {
@@ -891,100 +938,134 @@ Only available after a trial upload is completed.</dd>`);
   getValidationResults(showValidationSummary = false) {
     Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
       (results) => {
-        this.wbutils.cellInfo = [];
-
         if (results == null) {
           this.validationMode = 'off';
           this.updateValidationButton();
           return;
         }
 
-        results.forEach((result, row) => {
-          this.parseRowValidationResult(row, result, false);
+        this.hot.batchRender(() => {
+          results.forEach((result, physicalRow) => {
+            this.parseRowValidationResult(physicalRow, result, false);
+          });
         });
 
-        this.updateCellInfos(showValidationSummary);
-        this.hot.render();
+        this.updateCellInfoStats(showValidationSummary);
       }
     );
   },
-  parseRowValidationResult(row, result, isLive) {
-    const cols = this.dataset.columns.length;
-    const headerToCol = {};
-    for (let i = 0; i < cols; i++) {
-      headerToCol[this.dataset.columns[i]] = i;
-    }
-
-    for (let col = 0; col < cols; col++) {
-      const isModified =
-        isLive && this.wbutils.cellInfo[row * cols + col]?.isModified === true;
-      this.wbutils.cellInfo[row * cols + col] = undefined;
-      this.wbutils.initCellInfo(row, col);
-      this.wbutils.cellInfo[row * cols + col].isModified = isModified;
-    }
+  parseRowValidationResult(physicalRow, result, isLive) {
+    const rowMeta = this.hot.getCellMetaAtRow(physicalRow).slice(0, -1);
+    const newRowMeta = rowMeta.map((cellMeta) => ({
+      ...getDefaultCellMeta(),
+      isModified: (isLive && cellMeta.isModified) ?? false,
+      isSearchResult: cellMeta.isSearchResult ?? false,
+    }));
 
     const addErrorMessage = (columnName, issue) => {
-      const col = headerToCol[columnName];
-      this.wbutils.initCellInfo(row, col);
-      const cellInfo = this.wbutils.cellInfo[row * cols + col];
-
-      cellInfo.issues.push(capitalize(issue));
+      const physicalCol = this.dataset.columns.indexOf(columnName);
+      newRowMeta[physicalCol].issues.push(capitalize(issue));
     };
 
-    if (result === null) return;
-
-    result.tableIssues.forEach((tableIssue) =>
+    result?.tableIssues.forEach((tableIssue) =>
       (tableIssue.columns.length === 0
         ? this.dataset.columns
         : tableIssue.columns
       ).forEach((columnName) => addErrorMessage(columnName, tableIssue.issue))
     );
 
-    result.cellIssues.forEach((cellIssue) =>
+    result?.cellIssues.forEach((cellIssue) =>
       addErrorMessage(cellIssue.column, cellIssue.issue)
     );
 
-    result.newRows.forEach(({ columns }) =>
+    result?.newRows.forEach(({ columns }) =>
       columns.forEach((columnName) => {
-        const col = headerToCol[columnName];
-        this.wbutils.initCellInfo(row, col);
-        const cellInfo = this.wbutils.cellInfo[row * cols + col];
-        cellInfo.isNew = true;
+        const physicalCol = this.dataset.columns.indexOf(columnName);
+        newRowMeta[physicalCol].isNew = true;
       })
     );
+
+    const visualRow = this.hot.toVisualRow(physicalRow);
+    newRowMeta.forEach((cellMeta, physicalCol) => {
+      const visualCol = this.hot.toVisualColumn(physicalCol);
+      this.hot.setCellMetaObject(visualRow, visualCol, cellMeta);
+    });
   },
-  updateCell(cell, cellData) {
-    if (typeof cellData !== 'object') return;
+  afterSetCellMeta(visualRow, visualCol, key, value) {
+    this.hasMetaDataChanges = true;
 
-    if (cellData.isNew) cell.classList.add('wb-no-match-cell');
-    else cell.classList.remove('wb-no-match-cell');
+    const cell =
+      typeof visualRow === 'object' && typeof visualCol === 'undefined'
+        ? visualRow
+        : this.hot.getCell(visualRow, visualCol);
 
-    if (cellData.isModified) cell.classList.add('wb-modified-cell');
-    else cell.classList.remove('wb-modified-cell');
+    /*
+     * This happens when this.hot.query tries to set cellMeta for the
+     * disambiguation column
+     * */
+    if (cell === null) return;
 
-    if (cellData.issues.length) cell.classList.add('wb-invalid-cell');
-    else cell.classList.remove('wb-invalid-cell');
-
-    if (cellData.matchesSearch) cell.classList.add('wb-search-match-cell');
-    else cell.classList.remove('wb-search-match-cell');
-  },
-  defineCell(cols, row, col, prop) {
-    let cellData;
-    try {
-      cellData = this.wbutils.cellInfo[row * cols + col];
-    } catch (e) {}
-
-    const that = this;
-    return {
-      comment: cellData && {
-        value: cellData.issues.join('<br>'),
-        readOnly: true,
+    const actions = {
+      isNew: () =>
+        cell.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
+      isModified: () =>
+        cell.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
+      isSearchResult: () =>
+        cell.classList[value === true ? 'add' : 'remove'](
+          'wb-search-match-cell'
+        ),
+      issues: () => {
+        cell.classList[value.length === 0 ? 'remove' : 'add'](
+          'wb-invalid-cell'
+        );
+        if (value.length === 0)
+          this.commentsPlugin.removeCommentAtCell(visualRow, visualCol);
+        else
+          this.commentsPlugin.setCommentAtCell(
+            visualRow,
+            visualCol,
+            value.join('<br>')
+          );
       },
-      renderer: function (instance, td, row, col, prop, value, cellProperties) {
-        that.updateCell(td, cellData);
-        Handsontable.renderers.TextRenderer.apply(null, arguments);
+      // Triggered by setCommentAtCell / removeCommentAtCell
+      comment: () => {
+        /* Ignore it */
       },
     };
+
+    if (!(key in actions)) {
+      console.warn(
+        `Unknown metaData ${key}=${value} is being set for ` +
+          `cell ${visualRow}x${visualCol}`
+      );
+      return;
+    }
+
+    actions[key]();
+    this.hasMetaDataChanges = true;
+  },
+  getCellsMeta() {
+    if (this.hasMetaDataChanges) {
+      this.wbutils.metaCellCountChanged = {};
+      this.hasMetaDataChanges = false;
+      this.cachedMetaDataArray = this.hot.getCellsMeta();
+    }
+    return this.cachedMetaDataArray;
+  },
+  getCellsMetaObject() {
+    if (this.hasMetaDataObjectChanges)
+      this.cachedMetaData = this.getCellsMeta().reduce(
+        (cachedMetaData, cellMetaData) => {
+          cachedMetaData[cellMetaData.visualRow] ??= {};
+          cachedMetaData[cellMetaData.visualRow][
+            cellMetaData.visualCol
+          ] = cellMetaData;
+          return cachedMetaData;
+        },
+        {}
+      );
+    this.hasMetaDataObjectChanges = false;
+    return this.cachedMetaData;
   },
   openPlan() {
     navigation.go(`/workbench-plan/${this.dataset.id}/`);
@@ -1021,6 +1102,9 @@ Only available after a trial upload is completed.</dd>`);
       });
   },
   spreadSheetChanged() {
+    if (this.hasUnSavedChanges) return;
+    this.hasUnSavedChanges = true;
+
     this.$('.wb-upload')
       .prop('disabled', true)
       .prop('title', 'You should save your changes before Uploading');
@@ -1041,14 +1125,12 @@ Only available after a trial upload is completed.</dd>`);
   },
   save: function () {
     // clear validation
-    this.wbutils.cellInfo = [];
+    this.clearAllMetaData();
     this.dataset.rowresults = null;
     if (this.validationMode === 'static') {
       this.validationMode = 'off';
       this.updateValidationButton();
     }
-    this.updateCellInfos();
-    this.hot.render();
 
     //show saving progress bar
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
@@ -1083,6 +1165,8 @@ Only available after a trial upload is completed.</dd>`);
     }
   },
   spreadSheetUpToDate: function () {
+    if (!this.hasUnSavedChanges) return;
+    this.hasUnSavedChanges = false;
     this.$('.wb-upload').prop('disabled', false).prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     navigation.removeUnloadProtect(this);
@@ -1153,29 +1237,26 @@ Only available after a trial upload is completed.</dd>`);
       .on('done', () => this.trigger('refresh', mode));
   },
   delete: function () {
-    let dialog;
-    const doDelete = () => {
-      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, { type: 'DELETE' })
-        .done(() => {
-          this.$el.empty().append('<p>Dataset deleted.</p>');
-          dialog.dialog('close');
-        })
-        .fail((jqxhr) => {
-          this.checkDeletedFail(jqxhr);
-          dialog.dialog('close');
-        });
-    };
-
-    dialog = $('<div>Really delete?</div>').dialog({
+    const dialog = $('<div>Really delete?</div>').dialog({
       modal: true,
       title: 'Confirm delete',
-      close() {
-        $(this).remove();
-      },
+      close: () => dialog.remove(),
       buttons: {
-        Delete: doDelete,
+        Delete() {
+          $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+            type: 'DELETE',
+          })
+            .done(() => {
+              this.$el.empty().append('<p>Dataset deleted.</p>');
+              dialog.dialog('close');
+            })
+            .fail((jqxhr) => {
+              this.checkDeletedFail(jqxhr);
+              dialog.dialog('close');
+            });
+        },
         Cancel: function () {
-          $(this).dialog('close');
+          dialog.dialog('close');
         },
       },
     });

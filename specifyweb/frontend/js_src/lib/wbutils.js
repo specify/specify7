@@ -33,7 +33,6 @@ module.exports = Backbone.View.extend({
     this.wbview = wbview;
 
     this.localityColumns = [];
-    this.cellInfo = [];
     this.searchQuery = '';
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
@@ -42,101 +41,113 @@ module.exports = Backbone.View.extend({
   render() {
     return this;
   },
-  initCellInfo(row, col) {
-    const cols = this.wbview.dataset.columns.length;
-    if (typeof this.cellInfo[row * cols + col] === 'undefined') {
-      this.cellInfo[row * cols + col] = {
-        isNew: false,
-        isModified: false,
-        issues: [],
-        matchesSearch: false,
-      };
-    }
+  getSelectedLast() {
+    let [currentRow, currentCol] = this.wbview.hot.getSelectedLast() ?? [0, 0];
+    /*
+     * this.wbview.getSelectedLast() returns -1 when column's header or row's
+     * number cell is selected
+     * */
+    if (currentRow < 0) currentRow = 0;
+    if (currentCol < 0) currentCol = 0;
+    return [currentRow, currentCol];
   },
   navigateCells(e, matchCurrentCell = false) {
     const button = e.target;
     const direction = button.getAttribute('data-navigation-direction');
     const buttonParent = button.parentElement;
     const type = buttonParent.getAttribute('data-navigation-type');
+    const currentPositionElement = buttonParent.getElementsByClassName(
+      'wb-navigation-position'
+    )[0];
+    const totalCountElement = buttonParent.getElementsByClassName(
+      'wb-navigation-total'
+    )[0];
+    const totalCount = parseInt(totalCountElement.innerText);
 
-    const numberOfColumns = this.wbview.dataset.columns.length;
+    const [currentRow, currentCol] = this.getSelectedLast();
 
-    const selectedCell = this.wbview.hot.getSelectedLast();
-
-    let currentPosition = 0;
-    if (typeof selectedCell !== 'undefined') {
-      const [row, col] = selectedCell;
-      currentPosition = row * numberOfColumns + col;
-    }
-
-    const cellIsType = (info) => {
-      if (typeof info !== 'object') return false;
+    function cellIsType(cell) {
       switch (type) {
         case 'invalidCells':
-          return info.issues.length > 0;
+          return Array.isArray(cell.issues) && cell.issues.length > 0;
         case 'newCells':
-          return info.isNew;
+          return cell.isNew === true;
         case 'modifiedCells':
-          return info.isModified;
+          return cell.isModified === true;
         case 'searchResults':
-          return info.matchesSearch;
+          return cell.isSearchResult === true;
         default:
           return false;
       }
-    };
-
-    let newPosition = currentPosition;
-    let found = false;
-
-    const overBound = currentPosition > this.cellInfo.length;
-    const underBound = currentPosition < this.cellInfo.findIndex((el) => el);
-    if (overBound || underBound) {
-      newPosition = (overBound
-        ? [...this.cellInfo].reverse()
-        : this.cellInfo
-      ).findIndex((cellInfo) => cellIsType(cellInfo));
-      found = newPosition !== -1;
-      if (found && overBound)
-        newPosition = this.cellInfo.length - 1 - newPosition;
     }
 
-    const cellInfoSubset =
+    const cellsMetaObject = this.wbview.getCellsMetaObject();
+
+    const boolMatchCurrentCell =
+      matchCurrentCell === 'ifIsSearchResult'
+        ? cellIsType(cellsMetaObject[currentRow][currentCol])
+        : matchCurrentCell;
+
+    const orderIt =
+      direction === 'next' ? (array) => array : (array) => [...array].reverse();
+
+    const compareRows =
       direction === 'next'
-        ? this.cellInfo.slice(currentPosition + !matchCurrentCell)
-        : this.cellInfo.slice(0, currentPosition - matchCurrentCell);
+        ? (visualRow) => visualRow >= currentRow
+        : (visualRow) => visualRow <= currentRow;
 
-    if (!found) {
-      newPosition = (direction === 'next'
-        ? cellInfoSubset
-        : cellInfoSubset.reverse()
-      ).findIndex((cellInfo) => cellIsType(cellInfo));
+    const compareCols =
+      direction === 'next'
+        ? boolMatchCurrentCell
+          ? (visualCol) => visualCol >= currentCol
+          : (visualCol) => visualCol > currentCol
+        : boolMatchCurrentCell
+        ? (visualCol) => visualCol <= currentCol
+        : (visualCol) => visualCol < currentCol;
 
-      if (newPosition !== -1) {
-        found = true;
-        newPosition =
-          direction === 'next'
-            ? newPosition + currentPosition + !matchCurrentCell
-            : currentPosition - matchCurrentCell - 1 - newPosition;
-      }
-    }
+    let matchedCell;
+    let cellIsTypeCount = 0;
 
-    if (found) {
-      const row = Math.floor(newPosition / numberOfColumns);
-      const col = newPosition - row * numberOfColumns;
-      this.wbview.hot.selectCell(row, col, row, col);
+    orderIt(Object.entries(cellsMetaObject)).find(([, cells]) =>
+      orderIt(Object.values(cells)).find((cell) => {
+        const cellTypeMatches = cellIsType(cell);
+        cellIsTypeCount += cellTypeMatches;
+        const foundIt =
+          cellTypeMatches &&
+          compareRows(cell.visualRow) &&
+          (cell.visualRow !== currentRow || compareCols(cell.visualCol));
+        if (foundIt) matchedCell = cell;
+        return foundIt;
+      })
+    );
 
-      const cellRelativePosition = this.cellInfo.reduce(
-        (count, info, i) =>
-          count + (cellIsType(info) && i <= newPosition ? 1 : 0),
-        0
-      );
-      const currentPositionElement = buttonParent.getElementsByClassName(
-        'wb-navigation-position'
-      )[0];
+    let cellRelativePosition;
+    if (typeof matchedCell === 'undefined') cellRelativePosition = 0;
+    else if (direction === 'next') cellRelativePosition = cellIsTypeCount;
+    else cellRelativePosition = totalCount - cellIsTypeCount + 1;
+
+    const boundaryCell = direction === 'next' ? totalCount : 1;
+
+    const initialCellRelativePosition = parseInt(
+      currentPositionElement.innerText || '0'
+    );
+    if (
+      cellRelativePosition !== 0 ||
+      initialCellRelativePosition !== boundaryCell ||
+      totalCount === 0
+    )
       currentPositionElement.innerText = cellRelativePosition;
 
-      return [row, col];
-    } else return false;
+    if (typeof matchedCell === 'undefined') return false;
+
+    this.wbview.hot.selectCell(
+      matchedCell.visualRow,
+      matchedCell.visualCol,
+      matchedCell.visualRow,
+      matchedCell.visualCol
+    );
+
+    return [matchedCell.visualRow, matchedCell.visualCol];
   },
   toggleCellTypes(e) {
     const button = e.target;
@@ -163,7 +174,6 @@ module.exports = Backbone.View.extend({
 
     this.el.classList.remove('wb-hide-search-results');
 
-    const cols = this.wbview.dataset.columns.length;
     const button = e.target;
     const buttonContainer = button.parentElement;
     const navigationContainer = this.el.getElementsByClassName(
@@ -182,33 +192,18 @@ module.exports = Backbone.View.extend({
       'wb-cell-navigation'
     );
 
-    this.searchQuery = searchQueryElement.value;
+    this.searchQuery = this.searchPreferences.search.useRegex
+      ? searchQueryElement.value
+      : searchQueryElement.value.trim();
     const searchPlugin = this.wbview.hot.getPlugin('search');
     const results =
       this.searchQuery === '' ? [] : searchPlugin.query(this.searchQuery);
 
-    this.cellInfo.forEach((cellInfo, index) => {
-      if (cellInfo.matchesSearch === true) {
-        const row = Math.floor(index / cols);
-        const col = index - row * cols;
-        cellInfo.matchesSearch = false;
-        const cell = this.wbview.hot.getCell(row, col);
-        this.wbview.updateCell(cell, this.cellInfo[row * cols + col]);
-      }
-    });
-    results.forEach(({ row, col }) => {
-      this.initCellInfo(row, col);
-      this.cellInfo[row * cols + col].matchesSearch = true;
-      const cell = this.wbview.hot.getCell(row, col);
-      this.wbview.updateCell(cell, this.cellInfo[row * cols + col]);
-    });
-
     navigationTotalElement.innerText = results.length;
-    navigationPositionElement.innerText = 0;
 
     if (
       e.key !== 'Live' &&
-      !this.navigateCells({ target: navigationButton[1] }, false)
+      !this.navigateCells({ target: navigationButton[1] }, 'ifIsSearchResult')
     )
       this.navigateCells({ target: navigationButton[0] }, true);
   },
@@ -227,19 +222,20 @@ module.exports = Backbone.View.extend({
       ? () => replacementValue
       : (cellValue) => cellValue.split(this.searchQuery).join(replacementValue);
 
-    if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
-      const cellUpdates = [];
-      this.cellInfo.forEach((info, i) => {
-        if (info.matchesSearch) {
-          const row = Math.floor(i / cols);
-          const col = i - row * cols;
-          const cellValue = this.wbview.hot.getDataAtCell(row, col);
-          cellUpdates.push([row, col, getNewCellValue(cellValue)]);
-        }
-      });
-
-      this.wbview.hot.setDataAtCell(cellUpdates);
-    } else {
+    if (this.searchPreferences.replace.replaceMode === 'replaceAll')
+      this.wbview.hot.setDataAtCell(
+        this.wbview
+          .getCellsMeta()
+          .filter((cell) => cell.isSearchResult)
+          .map(({ visualRow, visualCol }) => [
+            visualRow,
+            visualCol,
+            getNewCellValue(
+              this.wbview.hot.getDataAtCell(visualRow, visualCol)
+            ),
+          ])
+      );
+    else {
       const nextCell = this.navigateCells(
         {
           target: document.querySelector(
@@ -288,14 +284,20 @@ module.exports = Backbone.View.extend({
     }
 
     if (this.searchPreferences.search.useRegex)
-      return cellValue.match(
-        RegExp(
-          this.searchPreferences.search.fullMatch
-            ? `^${searchQuery}$`
-            : searchQuery,
-          this.searchPreferences.search.caseSensitive ? 'i' : ''
-        )
-      );
+      try {
+        return !!cellValue.match(
+          RegExp(
+            this.searchPreferences.search.fullMatch
+              ? `^${searchQuery}$`
+              : searchQuery,
+            this.searchPreferences.search.caseSensitive ? 'i' : ''
+          )
+        );
+      } catch (error) {
+        // Ignore exceptions on invalid regex
+        if (error instanceof SyntaxError) return;
+        else throw error;
+      }
 
     if (this.searchPreferences.search.fullMatch)
       return cellValue === searchQuery;
