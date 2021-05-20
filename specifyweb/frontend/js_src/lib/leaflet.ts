@@ -102,6 +102,8 @@ export async function showLeafletMap({
     },
   });
 
+  leafletMapContainer[0].style.overflow = 'hidden';
+
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
   if (localityPoints.length > 0) {
