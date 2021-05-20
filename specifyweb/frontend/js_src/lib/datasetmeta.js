@@ -105,7 +105,9 @@ export default Backbone.View.extend({
       ).toLocaleString()}</i><br>
       Created By: <i class="created-by-field">Loading...</i><br>
       Modified By: <i class="modified-by-field"></i><br>
-      Imported file name: <i>${this.dataset.importedfilename}</i><br><br>
+      Imported file name: <i>${
+        this.dataset.importedfilename || '(no file name)'
+      }</i><br><br>
     </div>`).dialog({
       title: 'Edit Data Set metadata',
       modal: true,
