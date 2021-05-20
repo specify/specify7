@@ -3,7 +3,6 @@ import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 
 export const dataModelFetcherVersion = '1';
-export const cacheBucketName = 'wbplanview-datamodel';
 
 export const knownRelationshipTypes: Set<string> = new Set([
   'one-to-one',
@@ -126,5 +125,6 @@ export const fetchingParameters: {
     preptype: ['isonloan'],
     token: ['preferredtaxonof'],
     geography: ['fullname'],
+    determination: ['preferredtaxon'],
   },
 } as const;
