@@ -61,6 +61,8 @@ const WBView = Backbone.View.extend({
     'click .wb-show-upload-view': 'displayUploadedView',
     'click .wb-unupload': 'unupload',
   },
+
+  // Constructors & Renderers
   initialize({ dataset, refreshInitiatedBy }) {
     this.dataset = dataset;
     this.mappedHeaders = {};
@@ -275,12 +277,12 @@ const WBView = Backbone.View.extend({
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
           readOnly: this.uploaded,
-          beforeColumnMove: this.beforeColumnMove.bind(this),
-          afterColumnMove: this.afterColumnMove.bind(this),
-          afterColumnSort: this.cellPositionChanged.bind(this),
+          afterChange: this.afterChange.bind(this),
           afterCreateRow: this.rowCountChanged.bind(this),
           afterRemoveRow: this.rowCountChanged.bind(this),
-          afterChange: this.afterChange.bind(this),
+          afterColumnSort: this.cellPositionChanged.bind(this),
+          beforeColumnMove: this.beforeColumnMove.bind(this),
+          afterColumnMove: this.afterColumnMove.bind(this),
           afterSetCellMeta: this.afterSetCellMeta.bind(this),
         });
         resolve();
@@ -291,6 +293,73 @@ const WBView = Backbone.View.extend({
     this.hot.destroy();
     $(window).off('resize', this.resize);
   },
+  identifyMappedHeaders() {
+    const stylesContainer = document.createElement('style');
+    const unmappedCellStyles = '{ color: #999; }';
+
+    if (!this.mappings) return;
+
+    const mappedHeadersAndTables = Object.fromEntries(
+      this.mappings.arrayOfMappings.map(({ headerName }, index) => [
+        headerName,
+        icons.getIcon(
+          this.mappings.mappingLinesData[index][0]?.tableName || ''
+        ),
+      ])
+    );
+
+    this.mappedHeaders = mappedHeadersAndTables;
+
+    Object.values(
+      this.el
+        .getElementsByClassName('wtSpreader')[0]
+        ?.getElementsByClassName('colHeader')
+    ).forEach((headerContainer) => {
+      const header = headerContainer.children[0];
+      let headerId = header?.className.match(/wb-header-(\d+)/)?.[1];
+
+      if (!headerId) return;
+
+      headerId = parseInt(headerId);
+
+      const src = this.mappedHeaders[headerId];
+
+      if (typeof src !== 'string') return;
+
+      const img = document.createElement('img');
+      img.classList.add('wb-header-icon');
+      img.setAttribute('src', src);
+      img.setAttribute(
+        'alt',
+        src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
+      );
+    });
+
+    stylesContainer.innerHTML = `${Object.entries(this.dataset.columns)
+      .filter(([, columnName]) => !(columnName in mappedHeadersAndTables))
+      .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
+      .join('\n')}`;
+
+    const defaultValues = Object.fromEntries(
+      Object.entries(
+        typeof this.mappings.arrayOfMappings === 'undefined'
+          ? {}
+          : extractDefaultValues(this.mappings.arrayOfMappings, true)
+      ).map(([headerName, defaultValue]) => [
+        this.dataset.columns.indexOf(headerName),
+        defaultValue,
+      ])
+    );
+
+    this.hot.updateSettings({
+      columns: (index) =>
+        typeof defaultValues[index] === 'undefined'
+          ? {}
+          : { placeholder: defaultValues[index] },
+    });
+
+    this.$el.append(stylesContainer);
+  },
   cellRenderer() {
     return { renderer: this.customRenderer.bind(this) };
   },
@@ -300,6 +369,148 @@ const WBView = Backbone.View.extend({
       this.afterSetCellMeta(td, undefined, 'isModified', true);
     // if(cellProp)
   },
+
+  // Hooks
+  afterChange(unfilteredChanges, source) {
+    if (
+      ![
+        'edit',
+        'CopyPaste.paste',
+        'Autofill.fill',
+        'UndoRedo.undo',
+        'UndoRedo.redo',
+      ].includes(source)
+    )
+      return;
+
+    const changes = unfilteredChanges
+      .map(([visualRow, prop, oldValue, newValue]) => ({
+        visualRow: visualRow,
+        visualCol: this.hot.propToCol(prop),
+        physicalRow: this.hot.toPhysicalRow(visualRow),
+        physicalCol: this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
+        oldValue,
+        newValue,
+      }))
+      .filter(
+        ({ oldValue, newValue }) =>
+          oldValue !== newValue && (oldValue !== null || newValue !== '')
+      );
+
+    if (changes.length === 0) return;
+
+    changes.forEach(({ visualRow, visualCol, physicalRow, newValue }) => {
+      this.clearDisambiguation(physicalRow);
+      this.hot.setCellMeta(visualRow, visualCol, 'isModified', true);
+      if (
+        this.wbutils.searchPreferences.search.liveUpdate &&
+        this.wbutils.searchQuery !== ''
+      )
+        this.searchCell(visualRow, visualCol, newValue);
+    });
+
+    this.spreadSheetChanged();
+    this.updateCellInfoStats();
+
+    if (this.dataset.uploadplan)
+      new Set(
+        changes
+          // Ignore changes to unmapped columns
+          .filter(
+            ({ physicalCol }) =>
+              Object.keys(this.mappedHeaders).indexOf(
+                this.dataset.columns[physicalCol]
+              ) !== -1
+          )
+          .map(({ physicalRow }) => physicalRow)
+      ).forEach((physicalRow) => this.startValidateRow(physicalRow));
+  },
+  rowCountChanged(index, amount, source) {
+    if (this.hot && source !== 'auto') this.spreadSheetChanged();
+    this.hasMetaDataChanges = true;
+  },
+  cellPositionChanged() {
+    this.hasMetaDataObjectChanges = true;
+  },
+  beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
+    typeof endPosition !== 'undefined',
+  afterColumnMove(_columnIndexes, _startPosition, endPosition) {
+    if (typeof endPosition === 'undefined' || !this.hot) return;
+
+    this.cellPositionChanged();
+
+    const columnOrder = this.dataset.columns.map((visualColumn) =>
+      this.hot.toPhysicalColumn(visualColumn)
+    );
+
+    if (
+      this.dataset.visualorder == null ||
+      columnOrder.some((i, j) => i !== this.dataset.visualorder[j])
+    ) {
+      this.dataset.visualorder = columnOrder;
+      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+        type: 'PUT',
+        data: JSON.stringify({ visualorder: columnOrder }),
+        dataType: 'json',
+        processData: false,
+      }).fail(this.checkDeletedFail.bind(this));
+    }
+  },
+  afterSetCellMeta(visualRow, visualCol, key, value) {
+    this.hasMetaDataChanges = true;
+
+    const cell =
+      typeof visualRow === 'object' && typeof visualCol === 'undefined'
+        ? visualRow
+        : this.hot.getCell(visualRow, visualCol);
+
+    /*
+     * This happens when this.hot.query tries to set cellMeta for the
+     * disambiguation column
+     * */
+    if (cell === null) return;
+
+    const actions = {
+      isNew: () =>
+        cell.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
+      isModified: () =>
+        cell.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
+      isSearchResult: () =>
+        cell.classList[value === true ? 'add' : 'remove'](
+          'wb-search-match-cell'
+        ),
+      issues: () => {
+        cell.classList[value.length === 0 ? 'remove' : 'add'](
+          'wb-invalid-cell'
+        );
+        if (value.length === 0)
+          this.commentsPlugin.removeCommentAtCell(visualRow, visualCol);
+        else
+          this.commentsPlugin.setCommentAtCell(
+            visualRow,
+            visualCol,
+            value.join('<br>')
+          );
+      },
+      // Triggered by setCommentAtCell / removeCommentAtCell
+      comment: () => {
+        /* Ignore it */
+      },
+    };
+
+    if (!(key in actions)) {
+      console.warn(
+        `Unknown metaData ${key}=${value} is being set for ` +
+          `cell ${visualRow}x${visualCol}`
+      );
+      return;
+    }
+
+    actions[key]();
+    this.hasMetaDataChanges = true;
+  },
+
+  // Disambiguation
   isAmbiguousCell() {
     if (!this.mappings) return false;
 
@@ -479,158 +690,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         });
     });
   },
-  afterChange(unfilteredChanges, source) {
-    if (
-      ![
-        'edit',
-        'CopyPaste.paste',
-        'Autofill.fill',
-        'UndoRedo.undo',
-        'UndoRedo.redo',
-      ].includes(source)
-    )
-      return;
 
-    const changes = unfilteredChanges
-      .map(([visualRow, prop, oldValue, newValue]) => ({
-        visualRow: visualRow,
-        visualCol: this.hot.propToCol(prop),
-        physicalRow: this.hot.toPhysicalRow(visualRow),
-        physicalCol: this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
-        oldValue,
-        newValue,
-      }))
-      .filter(
-        ({ oldValue, newValue }) =>
-          oldValue !== newValue && (oldValue !== null || newValue !== '')
-      );
-
-    if (changes.length === 0) return;
-
-    changes.forEach(({ visualRow, visualCol, physicalRow, newValue }) => {
-      this.clearDisambiguation(physicalRow);
-      this.hot.setCellMeta(visualRow, visualCol, 'isModified', true);
-      if (
-        this.wbutils.searchPreferences.search.liveUpdate &&
-        this.wbutils.searchQuery !== ''
-      )
-        this.searchCell(visualRow, visualCol, newValue);
-    });
-
-    this.spreadSheetChanged();
-    this.updateCellInfoStats();
-
-    if (this.dataset.uploadplan)
-      new Set(
-        changes
-          // Ignore changes to unmapped columns
-          .filter(
-            ({ physicalCol }) =>
-              Object.keys(this.mappedHeaders).indexOf(
-                this.dataset.columns[physicalCol]
-              ) !== -1
-          )
-          .map(({ physicalRow }) => physicalRow)
-      ).forEach((physicalRow) => this.startValidateRow(physicalRow));
-  },
-  rowCountChanged(index, amount, source) {
-    if (this.hot && source !== 'auto') this.spreadSheetChanged();
-    this.hasMetaDataChanges = true;
-  },
-  cellPositionChanged() {
-    this.hasMetaDataObjectChanges = true;
-  },
-  beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
-    typeof endPosition !== 'undefined',
-  afterColumnMove(_columnIndexes, _startPosition, endPosition) {
-    if (typeof endPosition === 'undefined' || !this.hot) return;
-
-    this.cellPositionChanged();
-
-    const columnOrder = this.dataset.columns.map((visualColumn) =>
-      this.hot.toPhysicalColumn(visualColumn)
-    );
-
-    if (
-      this.dataset.visualorder == null ||
-      columnOrder.some((i, j) => i !== this.dataset.visualorder[j])
-    ) {
-      this.dataset.visualorder = columnOrder;
-      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-        type: 'PUT',
-        data: JSON.stringify({ visualorder: columnOrder }),
-        dataType: 'json',
-        processData: false,
-      }).fail(this.checkDeletedFail.bind(this));
-    }
-  },
-  identifyMappedHeaders() {
-    const stylesContainer = document.createElement('style');
-    const unmappedCellStyles = '{ color: #999; }';
-
-    if (!this.mappings) return;
-
-    const mappedHeadersAndTables = Object.fromEntries(
-      this.mappings.arrayOfMappings.map(({ headerName }, index) => [
-        headerName,
-        icons.getIcon(
-          this.mappings.mappingLinesData[index][0]?.tableName || ''
-        ),
-      ])
-    );
-
-    this.mappedHeaders = mappedHeadersAndTables;
-
-    Object.values(
-      this.el
-        .getElementsByClassName('wtSpreader')[0]
-        ?.getElementsByClassName('colHeader')
-    ).forEach((headerContainer) => {
-      const header = headerContainer.children[0];
-      let headerId = header?.className.match(/wb-header-(\d+)/)?.[1];
-
-      if (!headerId) return;
-
-      headerId = parseInt(headerId);
-
-      const src = this.mappedHeaders[headerId];
-
-      if (typeof src !== 'string') return;
-
-      const img = document.createElement('img');
-      img.classList.add('wb-header-icon');
-      img.setAttribute('src', src);
-      img.setAttribute(
-        'alt',
-        src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
-      );
-    });
-
-    stylesContainer.innerHTML = `${Object.entries(this.dataset.columns)
-      .filter(([, columnName]) => !(columnName in mappedHeadersAndTables))
-      .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
-      .join('\n')}`;
-
-    const defaultValues = Object.fromEntries(
-      Object.entries(
-        typeof this.mappings.arrayOfMappings === 'undefined'
-          ? {}
-          : extractDefaultValues(this.mappings.arrayOfMappings, true)
-      ).map(([headerName, defaultValue]) => [
-        this.dataset.columns.indexOf(headerName),
-        defaultValue,
-      ])
-    );
-
-    this.hot.updateSettings({
-      columns: (index) =>
-        typeof defaultValues[index] === 'undefined'
-          ? {}
-          : { placeholder: defaultValues[index] },
-    });
-
-    this.$el.append(stylesContainer);
-  },
+  // Tools
   displayUploadedView() {
     if (!this.dataset.rowresults) return;
 
@@ -648,6 +709,45 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       removeCallback: () => (this.uploadedView = undefined),
     }).render();
   },
+  openPlan() {
+    navigation.go(`/workbench-plan/${this.dataset.id}/`);
+  },
+  showPlan() {
+    const dataset = this.dataset;
+    const $this = this;
+    const planJson = JSON.stringify(dataset.uploadplan, null, 4);
+    $('<div>')
+      .append($('<textarea cols="120" rows="50">').text(planJson))
+      .dialog({
+        title: 'Upload plan',
+        width: 'auto',
+        modal: true,
+        close() {
+          $(this).remove();
+        },
+        buttons: {
+          Save() {
+            dataset.uploadplan = JSON.parse($('textarea', this).val());
+            $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
+              type: 'PUT',
+              data: JSON.stringify({ uploadplan: dataset.uploadplan }),
+              dataType: 'json',
+              processData: false,
+            }).fail(this.checkDeletedFail.bind(this));
+            $(this).dialog('close');
+            $this.trigger('refresh');
+          },
+          Close() {
+            $(this).dialog('close');
+          },
+        },
+      });
+  },
+  changeOwner() {
+    this.datasetmeta.changeOwnerWindow.call(this.datasetmeta);
+  },
+
+  // Actions
   unupload() {
     if (typeof this.uploadedView !== 'undefined') {
       this.uploadedView.remove();
@@ -656,6 +756,390 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     $.post(`/api/workbench/unupload/${this.dataset.id}/`);
     this.openStatus('unupload');
   },
+  upload(evt) {
+    const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
+    const openPlan = () => this.openPlan();
+    if (this.dataset.uploadplan) {
+      const start = (mode) => {
+        this.liveValidationStack = [];
+        this.liveValidationActive = false;
+        this.validationMode = 'off';
+        this.updateValidationButton();
+        $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
+          .fail((jqxhr) => {
+            this.checkDeletedFail(jqxhr);
+          })
+          .done(() => {
+            this.openStatus(mode);
+          });
+      };
+      $(
+        '<div>The upload process will transfer the data set data into the main ' +
+          'Specify tables. Performing a trial upload is recommended because ' +
+          'it can detect some issues that live validation cannot.</div>'
+      ).dialog({
+        title: 'Upload',
+        modal: true,
+        buttons: [
+          {
+            text: 'Upload',
+            click: function () {
+              start('upload');
+            },
+          },
+          {
+            text: 'Trial Upload',
+            click: function () {
+              start('validate');
+            },
+          },
+          {
+            text: 'Cancel',
+            click: function () {
+              $(this).dialog('close');
+            },
+          },
+        ],
+      });
+    } else {
+      $(
+        '<div>No plan has been defined for this dataset. Create one now?</div>'
+      ).dialog({
+        title: 'No Plan is defined',
+        modal: true,
+        buttons: {
+          Cancel: function () {
+            $(this).dialog('close');
+          },
+          Create: openPlan,
+        },
+      });
+    }
+  },
+  openStatus(mode) {
+    new WBStatus({ dataset: this.dataset })
+      .render()
+      .on('done', () => this.trigger('refresh', mode));
+  },
+  delete: function () {
+    const dialog = $('<div>Really delete?</div>').dialog({
+      modal: true,
+      title: 'Confirm delete',
+      close: () => dialog.remove(),
+      buttons: {
+        Delete() {
+          $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+            type: 'DELETE',
+          })
+            .done(() => {
+              this.$el.empty().append('<p>Dataset deleted.</p>');
+              dialog.dialog('close');
+            })
+            .fail((jqxhr) => {
+              this.checkDeletedFail(jqxhr);
+              dialog.dialog('close');
+            });
+        },
+        Cancel: function () {
+          dialog.dialog('close');
+        },
+      },
+    });
+  },
+  export() {
+    const data = Papa.unparse({
+      fields: this.dataset.columns,
+      data: this.dataset.rows,
+    });
+    const wbname = this.dataset.name;
+    const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
+    const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = window.URL.createObjectURL(blob);
+    a.setAttribute('download', filename);
+    a.click();
+  },
+  saveClicked: function () {
+    this.save().done();
+  },
+  save: function () {
+    // clear validation
+    this.clearAllMetaData();
+    this.dataset.rowresults = null;
+    if (this.validationMode === 'static') {
+      this.validationMode = 'off';
+      this.updateValidationButton();
+    }
+
+    //show saving progress bar
+    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+      title: 'Saving',
+      modal: true,
+      open(evt, ui) {
+        $('.ui-dialog-titlebar-close', ui.dialog).hide();
+      },
+      close() {
+        $(this).remove();
+      },
+    });
+    $('.progress-bar', dialog).progressbar({ value: false });
+
+    //send data
+    return Q(
+      $.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
+        data: JSON.stringify(this.data),
+        error: this.checkDeletedFail.bind(this),
+        type: 'PUT',
+      })
+    )
+      .then(() => {
+        this.spreadSheetUpToDate();
+      })
+      .finally(() => dialog.dialog('close'));
+  },
+
+  // Validation
+  chooseValidationMode() {
+    const dl = $('<dl>');
+    if (this.dataset.uploadplan == null) {
+      dl.append('<dt>Live</dt>');
+      dl.append(`<dd>Rows are validated independently from one another and in response to changes.
+Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
+
+      dl.append('<dt>Static</dt>');
+      dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
+Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
+    } else {
+      dl.append(
+        `<dt><label><input type="radio" name="validation-mode" value="live" ${
+          this.validationMode === 'live' ? 'checked' : ''
+        }> Live</label></dt>`
+      );
+      dl.append(
+        '<dd>Rows are validated independently from one another and in response to changes.</dd>'
+      );
+
+      if (this.dataset.rowresults == null) {
+        dl.append('<dt>Static</dt>');
+        dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
+Only available after a trial upload is completed.</dd>`);
+      } else {
+        dl.append(
+          `<dt><label><input type="radio" name="validation-mode" value="static" ${
+            this.validationMode === 'static' ? 'checked' : ''
+          }> Static</label></dt>`
+        );
+        dl.append(
+          '<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.</dd>'
+        );
+      }
+    }
+
+    dl.append(
+      `<dt><label><input type="radio" name="validation-mode" value="off" ${
+        this.validationMode === 'off' ? 'checked' : ''
+      }> Off</label></dt>`
+    );
+    dl.append('<dd>Row validation highlighting is disabled.</dd>');
+
+    $('<div>')
+      .append(dl)
+      .dialog({
+        title: 'Validation Mode',
+        width: 360,
+        modal: true,
+        close() {
+          $(this).remove();
+        },
+        buttons: {
+          Select() {
+            const choice = $('input:checked', this).val();
+            selected(choice);
+            $(this).dialog('close');
+          },
+          Cancel() {
+            $(this).dialog('close');
+          },
+        },
+      });
+    const selected = (choice) => {
+      if (!['live', 'static', 'off'].includes(choice)) {
+        return;
+      }
+      this.validationMode = choice;
+      switch (this.validationMode) {
+        case 'live':
+          this.liveValidationStack = this.dataset.rows
+            .map((_, i) => i)
+            .reverse();
+          this.triggerLiveValidation();
+          this.el.classList.remove(
+            'wb-hide-new-cells',
+            'wb-hide-invalid-cells'
+          );
+          this.el.classList.add('wb-hide-modified-cells');
+          break;
+        case 'static':
+          this.getValidationResults();
+          this.el.classList.remove('wb-hide-invalid-cells');
+          this.el.classList.add('wb-hide-new-cells');
+        case 'off':
+          this.liveValidationStack = [];
+          this.liveValidationActive = false;
+          break;
+      }
+
+      this.clearAllMetaData();
+      this.updateValidationButton();
+    };
+  },
+  startValidateRow(physicalRow) {
+    if (this.validationMode !== 'live') return;
+    this.liveValidationStack = this.liveValidationStack
+      .filter((row) => row !== physicalRow)
+      .concat(physicalRow);
+    this.triggerLiveValidation();
+  },
+  triggerLiveValidation() {
+    const pumpValidation = () => {
+      this.updateValidationButton();
+      if (this.liveValidationStack.length === 0) {
+        this.liveValidationActive = false;
+        return;
+      }
+      this.liveValidationActive = true;
+      const physicalRow = this.liveValidationStack.pop();
+      const rowData = this.hot.getSourceDataAtRow(physicalRow);
+      Q(
+        $.post(
+          `/api/workbench/validate_row/${this.dataset.id}/`,
+          JSON.stringify(rowData)
+        )
+      )
+        .then((result) => this.gotRowValidationResult(physicalRow, result))
+        .fin(pumpValidation);
+    };
+
+    if (!this.liveValidationActive) {
+      pumpValidation();
+    }
+  },
+  updateValidationButton() {
+    switch (this.validationMode) {
+      case 'live':
+        const n = this.liveValidationStack.length;
+        this.$('.wb-validate').text(
+          'Validation: Live' + (n > 0 ? ` (${n})` : '')
+        );
+        break;
+      case 'static':
+        this.$('.wb-validate').text('Validation: Static');
+        break;
+      case 'off':
+        this.$('.wb-validate').text('Validation: Off');
+        break;
+    }
+  },
+  gotRowValidationResult(physicalRow, result) {
+    if (this.validationMode !== 'live') return;
+    this.rowResults[physicalRow] = result.result;
+    this.hot.batchRender(() =>
+      this.parseRowValidationResult(physicalRow, result.validation, true)
+    );
+    this.updateCellInfoStats();
+  },
+  parseRowValidationResult(physicalRow, result, isLive) {
+    const rowMeta = this.hot.getCellMetaAtRow(physicalRow).slice(0, -1);
+    const newRowMeta = rowMeta.map((cellMeta) => ({
+      ...getDefaultCellMeta(),
+      isModified: (isLive && cellMeta.isModified) ?? false,
+      isSearchResult: cellMeta.isSearchResult ?? false,
+    }));
+
+    const addErrorMessage = (columnName, issue) => {
+      const physicalCol = this.dataset.columns.indexOf(columnName);
+      newRowMeta[physicalCol].issues.push(capitalize(issue));
+    };
+
+    result?.tableIssues.forEach((tableIssue) =>
+      (tableIssue.columns.length === 0
+        ? this.dataset.columns
+        : tableIssue.columns
+      ).forEach((columnName) => addErrorMessage(columnName, tableIssue.issue))
+    );
+
+    result?.cellIssues.forEach((cellIssue) =>
+      addErrorMessage(cellIssue.column, cellIssue.issue)
+    );
+
+    result?.newRows.forEach(({ columns }) =>
+      columns.forEach((columnName) => {
+        const physicalCol = this.dataset.columns.indexOf(columnName);
+        newRowMeta[physicalCol].isNew = true;
+      })
+    );
+
+    const visualRow = this.hot.toVisualRow(physicalRow);
+    newRowMeta.forEach((cellMeta, physicalCol) => {
+      const visualCol = this.hot.toVisualColumn(physicalCol);
+      this.hot.setCellMetaObject(visualRow, visualCol, cellMeta);
+    });
+  },
+  getValidationResults(showValidationSummary = false) {
+    Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
+      (results) => {
+        if (results == null) {
+          this.validationMode = 'off';
+          this.updateValidationButton();
+          return;
+        }
+
+        this.hot.batchRender(() => {
+          results.forEach((result, physicalRow) => {
+            this.parseRowValidationResult(physicalRow, result, false);
+          });
+        });
+
+        this.updateCellInfoStats(showValidationSummary);
+      }
+    );
+  },
+
+  // Helpers
+  spreadSheetChanged() {
+    if (this.hasUnSavedChanges) return;
+    this.hasUnSavedChanges = true;
+
+    this.$('.wb-upload')
+      .prop('disabled', true)
+      .prop('title', 'You should save your changes before Uploading');
+    this.$('.wb-save').prop('disabled', false);
+    navigation.addUnloadProtect(this, 'The workbench has not been saved.');
+  },
+  checkDeletedFail(jqxhr) {
+    if (jqxhr.status === 404) {
+      this.$el.empty().append('Dataset was deleted by another session.');
+      jqxhr.errorHandled = true;
+    }
+  },
+  spreadSheetUpToDate: function () {
+    if (!this.hasUnSavedChanges) return;
+    this.hasUnSavedChanges = false;
+    this.$('.wb-upload').prop('disabled', false).prop('title', '');
+    this.$('.wb-save').prop('disabled', true);
+    navigation.removeUnloadProtect(this);
+  },
+  resize: function () {
+    // Height of the page - content offset - bottom margin
+    this.el.style.height = `${$(window).height() - this.el.offsetTop - 15}px`;
+    if (!this.hot) return;
+    this.hot.updateSettings({
+      height: this.$el.find('.wb-spreadsheet').height(),
+    });
+    return true;
+  },
+
+  // MetaData
   updateCellInfoStats(showValidationSummary = false) {
     const cellsMeta = this.getCellsMeta();
 
@@ -764,139 +1248,6 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       this.refreshInitiatedBy = undefined;
     }
   },
-  triggerLiveValidation() {
-    const pumpValidation = () => {
-      this.updateValidationButton();
-      if (this.liveValidationStack.length === 0) {
-        this.liveValidationActive = false;
-        return;
-      }
-      this.liveValidationActive = true;
-      const physicalRow = this.liveValidationStack.pop();
-      const rowData = this.hot.getSourceDataAtRow(physicalRow);
-      Q(
-        $.post(
-          `/api/workbench/validate_row/${this.dataset.id}/`,
-          JSON.stringify(rowData)
-        )
-      )
-        .then((result) => this.gotRowValidationResult(physicalRow, result))
-        .fin(pumpValidation);
-    };
-
-    if (!this.liveValidationActive) {
-      pumpValidation();
-    }
-  },
-  startValidateRow(physicalRow) {
-    if (this.validationMode !== 'live') return;
-    this.liveValidationStack = this.liveValidationStack
-      .filter((row) => row !== physicalRow)
-      .concat(physicalRow);
-    this.triggerLiveValidation();
-  },
-  gotRowValidationResult(physicalRow, result) {
-    if (this.validationMode !== 'live') return;
-    this.rowResults[physicalRow] = result.result;
-    this.hot.batchRender(() =>
-      this.parseRowValidationResult(physicalRow, result.validation, true)
-    );
-    this.updateCellInfoStats();
-  },
-  chooseValidationMode() {
-    const dl = $('<dl>');
-    if (this.dataset.uploadplan == null) {
-      dl.append('<dt>Live</dt>');
-      dl.append(`<dd>Rows are validated independently from one another and in response to changes.
-Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
-
-      dl.append('<dt>Static</dt>');
-      dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
-Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
-    } else {
-      dl.append(
-        `<dt><label><input type="radio" name="validation-mode" value="live" ${
-          this.validationMode === 'live' ? 'checked' : ''
-        }> Live</label></dt>`
-      );
-      dl.append(
-        '<dd>Rows are validated independently from one another and in response to changes.</dd>'
-      );
-
-      if (this.dataset.rowresults == null) {
-        dl.append('<dt>Static</dt>');
-        dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
-Only available after a trial upload is completed.</dd>`);
-      } else {
-        dl.append(
-          `<dt><label><input type="radio" name="validation-mode" value="static" ${
-            this.validationMode === 'static' ? 'checked' : ''
-          }> Static</label></dt>`
-        );
-        dl.append(
-          '<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.</dd>'
-        );
-      }
-    }
-
-    dl.append(
-      `<dt><label><input type="radio" name="validation-mode" value="off" ${
-        this.validationMode === 'off' ? 'checked' : ''
-      }> Off</label></dt>`
-    );
-    dl.append('<dd>Row validation highlighting is disabled.</dd>');
-
-    $('<div>')
-      .append(dl)
-      .dialog({
-        title: 'Validation Mode',
-        width: 360,
-        modal: true,
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          Select() {
-            const choice = $('input:checked', this).val();
-            selected(choice);
-            $(this).dialog('close');
-          },
-          Cancel() {
-            $(this).dialog('close');
-          },
-        },
-      });
-    const selected = (choice) => {
-      if (!['live', 'static', 'off'].includes(choice)) {
-        return;
-      }
-      this.validationMode = choice;
-      switch (this.validationMode) {
-        case 'live':
-          this.liveValidationStack = this.dataset.rows
-            .map((_, i) => i)
-            .reverse();
-          this.triggerLiveValidation();
-          this.el.classList.remove(
-            'wb-hide-new-cells',
-            'wb-hide-invalid-cells'
-          );
-          this.el.classList.add('wb-hide-modified-cells');
-          break;
-        case 'static':
-          this.getValidationResults();
-          this.el.classList.remove('wb-hide-invalid-cells');
-          this.el.classList.add('wb-hide-new-cells');
-        case 'off':
-          this.liveValidationStack = [];
-          this.liveValidationActive = false;
-          break;
-      }
-
-      this.clearAllMetaData();
-      this.updateValidationButton();
-    };
-  },
   clearAllMetaData() {
     const {
       isSearchResult: _,
@@ -918,131 +1269,6 @@ Only available after a trial upload is completed.</dd>`);
       )
     );
     this.updateCellInfoStats();
-  },
-  updateValidationButton() {
-    switch (this.validationMode) {
-      case 'live':
-        const n = this.liveValidationStack.length;
-        this.$('.wb-validate').text(
-          'Validation: Live' + (n > 0 ? ` (${n})` : '')
-        );
-        break;
-      case 'static':
-        this.$('.wb-validate').text('Validation: Static');
-        break;
-      case 'off':
-        this.$('.wb-validate').text('Validation: Off');
-        break;
-    }
-  },
-  getValidationResults(showValidationSummary = false) {
-    Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
-      (results) => {
-        if (results == null) {
-          this.validationMode = 'off';
-          this.updateValidationButton();
-          return;
-        }
-
-        this.hot.batchRender(() => {
-          results.forEach((result, physicalRow) => {
-            this.parseRowValidationResult(physicalRow, result, false);
-          });
-        });
-
-        this.updateCellInfoStats(showValidationSummary);
-      }
-    );
-  },
-  parseRowValidationResult(physicalRow, result, isLive) {
-    const rowMeta = this.hot.getCellMetaAtRow(physicalRow).slice(0, -1);
-    const newRowMeta = rowMeta.map((cellMeta) => ({
-      ...getDefaultCellMeta(),
-      isModified: (isLive && cellMeta.isModified) ?? false,
-      isSearchResult: cellMeta.isSearchResult ?? false,
-    }));
-
-    const addErrorMessage = (columnName, issue) => {
-      const physicalCol = this.dataset.columns.indexOf(columnName);
-      newRowMeta[physicalCol].issues.push(capitalize(issue));
-    };
-
-    result?.tableIssues.forEach((tableIssue) =>
-      (tableIssue.columns.length === 0
-        ? this.dataset.columns
-        : tableIssue.columns
-      ).forEach((columnName) => addErrorMessage(columnName, tableIssue.issue))
-    );
-
-    result?.cellIssues.forEach((cellIssue) =>
-      addErrorMessage(cellIssue.column, cellIssue.issue)
-    );
-
-    result?.newRows.forEach(({ columns }) =>
-      columns.forEach((columnName) => {
-        const physicalCol = this.dataset.columns.indexOf(columnName);
-        newRowMeta[physicalCol].isNew = true;
-      })
-    );
-
-    const visualRow = this.hot.toVisualRow(physicalRow);
-    newRowMeta.forEach((cellMeta, physicalCol) => {
-      const visualCol = this.hot.toVisualColumn(physicalCol);
-      this.hot.setCellMetaObject(visualRow, visualCol, cellMeta);
-    });
-  },
-  afterSetCellMeta(visualRow, visualCol, key, value) {
-    this.hasMetaDataChanges = true;
-
-    const cell =
-      typeof visualRow === 'object' && typeof visualCol === 'undefined'
-        ? visualRow
-        : this.hot.getCell(visualRow, visualCol);
-
-    /*
-     * This happens when this.hot.query tries to set cellMeta for the
-     * disambiguation column
-     * */
-    if (cell === null) return;
-
-    const actions = {
-      isNew: () =>
-        cell.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
-      isModified: () =>
-        cell.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
-      isSearchResult: () =>
-        cell.classList[value === true ? 'add' : 'remove'](
-          'wb-search-match-cell'
-        ),
-      issues: () => {
-        cell.classList[value.length === 0 ? 'remove' : 'add'](
-          'wb-invalid-cell'
-        );
-        if (value.length === 0)
-          this.commentsPlugin.removeCommentAtCell(visualRow, visualCol);
-        else
-          this.commentsPlugin.setCommentAtCell(
-            visualRow,
-            visualCol,
-            value.join('<br>')
-          );
-      },
-      // Triggered by setCommentAtCell / removeCommentAtCell
-      comment: () => {
-        /* Ignore it */
-      },
-    };
-
-    if (!(key in actions)) {
-      console.warn(
-        `Unknown metaData ${key}=${value} is being set for ` +
-          `cell ${visualRow}x${visualCol}`
-      );
-      return;
-    }
-
-    actions[key]();
-    this.hasMetaDataChanges = true;
   },
   getCellsMeta() {
     if (this.hasMetaDataChanges) {
@@ -1066,216 +1292,6 @@ Only available after a trial upload is completed.</dd>`);
       );
     this.hasMetaDataObjectChanges = false;
     return this.cachedMetaData;
-  },
-  openPlan() {
-    navigation.go(`/workbench-plan/${this.dataset.id}/`);
-  },
-  showPlan() {
-    const dataset = this.dataset;
-    const $this = this;
-    const planJson = JSON.stringify(dataset.uploadplan, null, 4);
-    $('<div>')
-      .append($('<textarea cols="120" rows="50">').text(planJson))
-      .dialog({
-        title: 'Upload plan',
-        width: 'auto',
-        modal: true,
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          Save() {
-            dataset.uploadplan = JSON.parse($('textarea', this).val());
-            $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
-              type: 'PUT',
-              data: JSON.stringify({ uploadplan: dataset.uploadplan }),
-              dataType: 'json',
-              processData: false,
-            }).fail(this.checkDeletedFail.bind(this));
-            $(this).dialog('close');
-            $this.trigger('refresh');
-          },
-          Close() {
-            $(this).dialog('close');
-          },
-        },
-      });
-  },
-  spreadSheetChanged() {
-    if (this.hasUnSavedChanges) return;
-    this.hasUnSavedChanges = true;
-
-    this.$('.wb-upload')
-      .prop('disabled', true)
-      .prop('title', 'You should save your changes before Uploading');
-    this.$('.wb-save').prop('disabled', false);
-    navigation.addUnloadProtect(this, 'The workbench has not been saved.');
-  },
-  resize: function () {
-    // Height of the page - content offset - bottom margin
-    this.el.style.height = `${$(window).height() - this.el.offsetTop - 15}px`;
-    if (!this.hot) return;
-    this.hot.updateSettings({
-      height: this.$el.find('.wb-spreadsheet').height(),
-    });
-    return true;
-  },
-  saveClicked: function () {
-    this.save().done();
-  },
-  save: function () {
-    // clear validation
-    this.clearAllMetaData();
-    this.dataset.rowresults = null;
-    if (this.validationMode === 'static') {
-      this.validationMode = 'off';
-      this.updateValidationButton();
-    }
-
-    //show saving progress bar
-    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-      title: 'Saving',
-      modal: true,
-      open(evt, ui) {
-        $('.ui-dialog-titlebar-close', ui.dialog).hide();
-      },
-      close() {
-        $(this).remove();
-      },
-    });
-    $('.progress-bar', dialog).progressbar({ value: false });
-
-    //send data
-    return Q(
-      $.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
-        data: JSON.stringify(this.data),
-        error: this.checkDeletedFail.bind(this),
-        type: 'PUT',
-      })
-    )
-      .then(() => {
-        this.spreadSheetUpToDate();
-      })
-      .finally(() => dialog.dialog('close'));
-  },
-  checkDeletedFail(jqxhr) {
-    if (jqxhr.status === 404) {
-      this.$el.empty().append('Dataset was deleted by another session.');
-      jqxhr.errorHandled = true;
-    }
-  },
-  spreadSheetUpToDate: function () {
-    if (!this.hasUnSavedChanges) return;
-    this.hasUnSavedChanges = false;
-    this.$('.wb-upload').prop('disabled', false).prop('title', '');
-    this.$('.wb-save').prop('disabled', true);
-    navigation.removeUnloadProtect(this);
-  },
-  upload(evt) {
-    const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
-    const openPlan = () => this.openPlan();
-    if (this.dataset.uploadplan) {
-      const start = (mode) => {
-        this.liveValidationStack = [];
-        this.liveValidationActive = false;
-        this.validationMode = 'off';
-        this.updateValidationButton();
-        $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-          .fail((jqxhr) => {
-            this.checkDeletedFail(jqxhr);
-          })
-          .done(() => {
-            this.openStatus(mode);
-          });
-      };
-      $(
-        '<div>The upload process will transfer the data set data into the main ' +
-          'Specify tables. Performing a trial upload is recommended because ' +
-          'it can detect some issues that live validation cannot.</div>'
-      ).dialog({
-        title: 'Upload',
-        modal: true,
-        buttons: [
-          {
-            text: 'Upload',
-            click: function () {
-              start('upload');
-            },
-          },
-          {
-            text: 'Trial Upload',
-            click: function () {
-              start('validate');
-            },
-          },
-          {
-            text: 'Cancel',
-            click: function () {
-              $(this).dialog('close');
-            },
-          },
-        ],
-      });
-    } else {
-      $(
-        '<div>No plan has been defined for this dataset. Create one now?</div>'
-      ).dialog({
-        title: 'No Plan is defined',
-        modal: true,
-        buttons: {
-          Cancel: function () {
-            $(this).dialog('close');
-          },
-          Create: openPlan,
-        },
-      });
-    }
-  },
-  openStatus(mode) {
-    new WBStatus({ dataset: this.dataset })
-      .render()
-      .on('done', () => this.trigger('refresh', mode));
-  },
-  delete: function () {
-    const dialog = $('<div>Really delete?</div>').dialog({
-      modal: true,
-      title: 'Confirm delete',
-      close: () => dialog.remove(),
-      buttons: {
-        Delete() {
-          $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-            type: 'DELETE',
-          })
-            .done(() => {
-              this.$el.empty().append('<p>Dataset deleted.</p>');
-              dialog.dialog('close');
-            })
-            .fail((jqxhr) => {
-              this.checkDeletedFail(jqxhr);
-              dialog.dialog('close');
-            });
-        },
-        Cancel: function () {
-          dialog.dialog('close');
-        },
-      },
-    });
-  },
-  export() {
-    const data = Papa.unparse({
-      fields: this.dataset.columns,
-      data: this.dataset.rows,
-    });
-    const wbname = this.dataset.name;
-    const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
-    const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-    const a = document.createElement('a');
-    a.href = window.URL.createObjectURL(blob);
-    a.setAttribute('download', filename);
-    a.click();
-  },
-  changeOwner() {
-    this.datasetmeta.changeOwnerWindow.call(this.datasetmeta);
   },
 });
 
