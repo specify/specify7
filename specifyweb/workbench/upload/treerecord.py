@@ -166,7 +166,7 @@ class BoundTreeRecord(NamedTuple):
             tried_to_match.append(to_match)
             da = self.disambiguation.get(to_match.treedefitem.name, None)
             matches = self._find_matching_descendent(parent, to_match) if da is None else \
-                list(model.objects.filter(id=da)[:10])
+                list(model.objects.filter(id=da).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
 
             if len(matches) != 1:
                 # matching failed at to_match level
@@ -177,8 +177,8 @@ class BoundTreeRecord(NamedTuple):
             if not tdiwprs:
                 # found a complete match
                 matched = matches[0]
-                info = ReportInfo(tableName=self.name, columns=matched_cols, treeInfo=TreeInfo(matched.definitionitem.name, matched.name))
-                return [], Matched(matched.id, info)
+                info = ReportInfo(tableName=self.name, columns=matched_cols, treeInfo=TreeInfo(matched['definitionitem__name'], matched['name']))
+                return [], Matched(matched['id'], info)
 
             parent = matches[0]
 
@@ -190,29 +190,29 @@ class BoundTreeRecord(NamedTuple):
                 columns=matched_cols + [r.column for r in to_match.results],
                 treeInfo=TreeInfo(to_match.treedefitem.name, "")
             )
-            ids = [m.id for m in matches]
+            ids = [m['id'] for m in matches]
             key = repr(sorted(tdiwpr.match_key() for tdiwpr in tried_to_match))
             return tdiwprs, MatchedMultiple(ids, key, info)
         else:
             assert n_matches == 0
             if parent is not None:
-                info = ReportInfo(tableName=self.name, columns=matched_cols, treeInfo=TreeInfo(parent.definitionitem.name, parent.name))
-                return tdiwprs, Matched(parent.id, info) # partial match
+                info = ReportInfo(tableName=self.name, columns=matched_cols, treeInfo=TreeInfo(parent['definitionitem__name'], parent['name']))
+                return tdiwprs, Matched(parent['id'], info) # partial match
             else:
                 info = ReportInfo(tableName=self.name, columns=matched_cols + [r.column for r in to_match.results], treeInfo=None)
                 return tdiwprs, NoMatch(info) # no levels matched at all
 
-    def _find_matching_descendent(self, parent, to_match: TreeDefItemWithParseResults) -> List:
+    def _find_matching_descendent(self, parent, to_match: TreeDefItemWithParseResults) -> List[Dict]:
         model = getattr(models, self.name)
-        steps = sum(1 for tdi in self.treedefitems if parent.definitionitem.rankid < tdi.rankid <= to_match.treedefitem.rankid) \
+        steps = sum(1 for tdi in self.treedefitems if parent['definitionitem__rankid'] < tdi.rankid <= to_match.treedefitem.rankid) \
             if parent is not None else 1
 
         for d in range(steps):
-            matches = list(model.objects.select_related().filter(
+            matches = list(model.objects.filter(
                 definitionitem=to_match.treedefitem,
                 **{field: value for r in to_match.results for field, value in r.filter_on.items()},
-                **({'__'.join(["parent"]*(d+1)): parent} if parent is not None else {})
-            )[:10])
+                **({'__'.join(["parent_id"]*(d+1)): parent['id']} if parent is not None else {})
+            ).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
             if matches:
                 break
         return matches
@@ -221,11 +221,12 @@ class BoundTreeRecord(NamedTuple):
         assert to_upload
         model = getattr(models, self.name)
 
+        parent_info: Optional[Dict]
         if isinstance(matched, Matched):
-            parent = model.objects.get(id=matched.id)
+            parent_info = model.objects.values('id', 'definitionitem__rankid').get(id=matched.id)
             parent_result = {'parent': UploadResult(matched, {}, {})}
         else:
-            parent = None
+            parent_info = None
             parent_result = {}
 
         if enforce_levels:
@@ -233,7 +234,7 @@ class BoundTreeRecord(NamedTuple):
                 tdi
                 for tdi in self.treedefitems
                 if  tdi.rankid <= to_upload[-1].treedefitem.rankid
-                and (parent is None or tdi.rankid > parent.definitionitem.rankid)
+                and (parent_info is None or tdi.rankid > parent_info['definitionitem__rankid'])
             ]
 
             to_upload_by_rankid = {
@@ -272,25 +273,30 @@ class BoundTreeRecord(NamedTuple):
 
             with transaction.atomic():
                 try:
-                    obj = model(
+                    obj = self._do_insert(
+                        model,
                         createdbyagent_id=self.uploadingAgentId,
                         definitionitem=tdiwpr.treedefitem,
                         rankid=tdiwpr.treedefitem.rankid,
                         definition=self.treedef,
-                        parent=parent,
+                        parent_id=parent_info and parent_info['id'],
                         **attrs,
                     )
-                    obj.save(skip_tree_extras=True)
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(FailedBusinessRule(str(e), info), parent_result, {})
 
-            auditlog.insert(obj, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
+            auditlog.insert(obj, self.uploadingAgentId, None)
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
 
-            parent = obj
+            parent_info = {'id': obj.id, 'definitionitem__rankid': obj.definitionitem.rankid}
             parent_result = {'parent': result}
 
         return result
+
+    def _do_insert(self, model, **kwargs):
+        obj = model(**kwargs)
+        obj.save(skip_tree_extras=True)
+        return obj
 
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()

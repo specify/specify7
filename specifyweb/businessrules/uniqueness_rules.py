@@ -11,29 +11,29 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
         def check_unique(instance):
             value = getattr(instance, unique_field)
             if value is None: return
-            conflicts = model.objects.filter(**{
+            conflicts = model.objects.only('id').filter(**{
                 unique_field: value})
             if instance.id is not None:
                 conflicts = conflicts.exclude(id=instance.id)
-            if conflicts.count() > 0:
+            if conflicts:
                 raise BusinessRuleException("%s must have unique %s" % (model.__name__, unique_field))
     else:
         @orm_signal_handler('pre_save', model_name)
         def check_unique(instance):
             try:
-                parent = getattr(instance, parent_field, None)
+                parent = getattr(instance, parent_field + '_id', None)
             except ObjectDoesNotExist:
                 parent = None
 
-            if  parent is None: return
+            if parent is None: return
             value = getattr(instance, unique_field)
             if value is None: return
-            conflicts = model.objects.filter(**{
-                    parent_field: parent,
+            conflicts = model.objects.only('id').filter(**{
+                    parent_field + '_id': parent,
                     unique_field: value})
             if instance.id is not None:
                 conflicts = conflicts.exclude(id=instance.id)
-            if conflicts.count() > 0:
+            if conflicts:
                 raise BusinessRuleException("%s must have unique %s in %s" % (model.__name__, unique_field, parent_field))
     return check_unique
 

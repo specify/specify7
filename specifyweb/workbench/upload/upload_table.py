@@ -256,13 +256,14 @@ class BoundUploadTable(NamedTuple):
 
         to_many_filters, to_many_excludes = toManyFilters
 
-        matched_records = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
-                                 to_many_excludes,
-                                 reduce(lambda q, f: q.filter(**f),
-                                        to_many_filters,
-                                        model.objects.filter(**filters, **self.scopingAttrs, **self.static)))
+        qs = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
+                    to_many_excludes,
+                    reduce(lambda q, f: q.filter(**f),
+                           to_many_filters,
+                           model.objects.filter(**filters, **self.scopingAttrs, **self.static)))
 
-        n_matched = matched_records.count()
+        ids = list(qs.values_list('id', flat=True)[:10])
+        n_matched = len(ids)
         if n_matched > 1:
             key = repr((
                 sorted(filters.items()),
@@ -270,9 +271,9 @@ class BoundUploadTable(NamedTuple):
                 sorted(self.scopingAttrs.items()),
                 sorted(self.static.items())
             ))
-            return MatchedMultiple(ids=[r.id for r in matched_records], key=key, info=info)
+            return MatchedMultiple(ids=ids, key=key, info=info)
         elif n_matched == 1:
-            return Matched(id=matched_records[0].id, info=info)
+            return Matched(id=ids[0], info=info)
         else:
             return None
 
@@ -301,7 +302,7 @@ class BoundUploadTable(NamedTuple):
 
         with transaction.atomic():
             try:
-                uploaded = model.objects.create(**{
+                uploaded = self._do_insert(model, **{
                     **({'createdbyagent_id': self.uploadingAgentId} if model.specify_model.get_field('createdbyagent') else {}),
                     **attrs,
                     **self.scopingAttrs,
@@ -312,7 +313,7 @@ class BoundUploadTable(NamedTuple):
             except (BusinessRuleException, IntegrityError) as e:
                 return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
-        auditlog.insert(uploaded, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
+        auditlog.insert(uploaded, self.uploadingAgentId, None)
 
         toManyResults = {
             fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, records)
@@ -320,13 +321,16 @@ class BoundUploadTable(NamedTuple):
         }
         return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
 
+    def _do_insert(self, model, **attrs) -> Any:
+        return model.objects.create(**attrs)
+
     def _do_picklist_additions(self) -> List[PicklistAddition]:
         added_picklist_items = []
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
                 a = parsedField.add_to_picklist
                 pli = a.picklist.picklistitems.create(value=a.value, title=a.value, createdbyagent_id=self.uploadingAgentId)
-                auditlog.insert(pli, self.uploadingAgentId and getattr(models, 'Agent').objects.get(id=self.uploadingAgentId), None)
+                auditlog.insert(pli, self.uploadingAgentId, None)
                 added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.column, value=a.value, id=pli.id))
         return added_picklist_items
 
