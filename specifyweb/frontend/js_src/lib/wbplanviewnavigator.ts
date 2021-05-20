@@ -219,6 +219,9 @@ export function navigator<RETURN_STRUCTURE>({
     readonly baseTableName?: string;
   };
 }): RETURN_STRUCTURE[] {
+  if (typeof dataModelStorage.tables === 'undefined')
+    throw new Error('WbPlanView Data Model is not initialized');
+
   let tableName = '';
   let parentTableName = '';
   let parentTableRelationshipName = '';
