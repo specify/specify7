@@ -51,7 +51,7 @@ module.exports = Backbone.View.extend({
     if (currentCol < 0) currentCol = 0;
     return [currentRow, currentCol];
   },
-  navigateCells(e, matchCurrentCell = false) {
+  navigateCells(e, matchCurrentCell = false, currentCell = undefined) {
     const button = e.target;
     const direction = button.getAttribute('data-navigation-direction');
     const buttonParent = button.parentElement;
@@ -64,7 +64,7 @@ module.exports = Backbone.View.extend({
     )[0];
     const totalCount = parseInt(totalCountElement.innerText);
 
-    const [currentRow, currentCol] = this.getSelectedLast();
+    const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
 
     function cellIsType(cell) {
       switch (type) {
@@ -201,11 +201,7 @@ module.exports = Backbone.View.extend({
 
     navigationTotalElement.innerText = results.length;
 
-    if (
-      e.key !== 'Live' &&
-      !this.navigateCells({ target: navigationButton[1] }, 'ifIsSearchResult')
-    )
-      this.navigateCells({ target: navigationButton[0] }, true);
+    this.navigateCells({ target: navigationButton[1] }, false, [0, 0]);
   },
   replaceCells(e) {
     if (e.key !== 'Enter') return;
