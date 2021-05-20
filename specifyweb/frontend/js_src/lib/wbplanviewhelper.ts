@@ -16,6 +16,7 @@ import type {
 } from './components/wbplanviewmapper';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import {
+  getIndexFromReferenceItemName,
   mappingPathToString,
   valueIsReferenceItem,
   valueIsTreeRank,
@@ -222,6 +223,15 @@ export function generateMappingPathPreview(
         )?.fieldFriendlyName as string) ?? mappingPathPart
     );
 
+  const toManyLocation = [...mappingPath]
+    .reverse()
+    .findIndex((mappingPathPart) => valueIsReferenceItem(mappingPathPart));
+  let toManyIndexString = '';
+  if (toManyLocation > 1) {
+    const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
+    const toManyIndexNumber = getIndexFromReferenceItemName(toManyIndex);
+    if (toManyIndexNumber > 1) toManyIndexString = ` ${toManyIndex}`;
+  }
   const [possibleDataBaseTableName, databaseFieldName] = mappingPath.slice(-2);
   const [possibleTableName, fieldName] = mappingLineData.slice(-2);
 
@@ -233,11 +243,11 @@ export function generateMappingPathPreview(
       databaseFieldName,
       databaseFieldName === 'name'
         ? possibleTableName
-        : `${possibleTableName} ${fieldName}`,
+        : `${possibleTableName} ${fieldName}${toManyIndexString}`,
     ];
   else if (valueIsReferenceItem(possibleDataBaseTableName))
     return [databaseFieldName, `${fieldName} ${possibleTableName}`];
-  else return [databaseFieldName, `${fieldName}`];
+  else return [databaseFieldName, `${fieldName}${toManyIndexString}`];
 }
 
 export function renameNewlyCreatedHeaders(
