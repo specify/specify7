@@ -51,6 +51,20 @@ module.exports = Backbone.View.extend({
     if (currentCol < 0) currentCol = 0;
     return [currentRow, currentCol];
   },
+  cellIsType(cell, type) {
+    switch (type) {
+      case 'invalidCells':
+        return Array.isArray(cell.issues) && cell.issues.length > 0;
+      case 'newCells':
+        return cell.isNew === true;
+      case 'modifiedCells':
+        return cell.isModified === true;
+      case 'searchResults':
+        return cell.isSearchResult === true;
+      default:
+        return false;
+    }
+  },
   navigateCells(e, matchCurrentCell = false, currentCell = undefined) {
     const button = e.target;
     const direction = button.getAttribute('data-navigation-direction');
@@ -66,27 +80,7 @@ module.exports = Backbone.View.extend({
 
     const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
 
-    function cellIsType(cell) {
-      switch (type) {
-        case 'invalidCells':
-          return Array.isArray(cell.issues) && cell.issues.length > 0;
-        case 'newCells':
-          return cell.isNew === true;
-        case 'modifiedCells':
-          return cell.isModified === true;
-        case 'searchResults':
-          return cell.isSearchResult === true;
-        default:
-          return false;
-      }
-    }
-
     const cellsMetaObject = this.wbview.getCellsMetaObject();
-
-    const boolMatchCurrentCell =
-      matchCurrentCell === 'ifIsSearchResult'
-        ? cellIsType(cellsMetaObject[currentRow][currentCol])
-        : matchCurrentCell;
 
     const orderIt =
       direction === 'next' ? (array) => array : (array) => [...array].reverse();
@@ -98,10 +92,10 @@ module.exports = Backbone.View.extend({
 
     const compareCols =
       direction === 'next'
-        ? boolMatchCurrentCell
+        ? matchCurrentCell
           ? (visualCol) => visualCol >= currentCol
           : (visualCol) => visualCol > currentCol
-        : boolMatchCurrentCell
+        : matchCurrentCell
         ? (visualCol) => visualCol <= currentCol
         : (visualCol) => visualCol < currentCol;
 
@@ -110,7 +104,7 @@ module.exports = Backbone.View.extend({
 
     orderIt(Object.entries(cellsMetaObject)).find(([, cells]) =>
       orderIt(Object.values(cells)).find((cell) => {
-        const cellTypeMatches = cellIsType(cell);
+        const cellTypeMatches = this.cellIsType(cell, type);
         cellIsTypeCount += cellTypeMatches;
         const foundIt =
           cellTypeMatches &&
@@ -140,12 +134,7 @@ module.exports = Backbone.View.extend({
 
     if (typeof matchedCell === 'undefined') return false;
 
-    this.wbview.hot.selectCell(
-      matchedCell.visualRow,
-      matchedCell.visualCol,
-      matchedCell.visualRow,
-      matchedCell.visualCol
-    );
+    this.wbview.hot.selectCell(matchedCell.visualRow, matchedCell.visualCol);
 
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
@@ -179,9 +168,6 @@ module.exports = Backbone.View.extend({
     const navigationContainer = this.el.getElementsByClassName(
       'wb-navigation'
     )[0];
-    const navigationPositionElement = navigationContainer.getElementsByClassName(
-      'wb-navigation-position'
-    )[0];
     const navigationTotalElement = navigationContainer.getElementsByClassName(
       'wb-navigation-total'
     )[0];
@@ -201,12 +187,16 @@ module.exports = Backbone.View.extend({
 
     navigationTotalElement.innerText = results.length;
 
-    this.navigateCells({ target: navigationButton[1] }, false, [0, 0]);
+    if (e.key === 'Enter')
+      this.navigateCells(
+        { target: navigationButton[1] },
+        e.key === 'Enter',
+        e.key === 'Enter' ? [0, 0] : undefined
+      );
   },
   replaceCells(e) {
     if (e.key !== 'Enter') return;
 
-    const cols = this.wbview.dataset.columns.length;
     const button = e.target;
     const buttonContainer = button.parentElement;
     const replacementValueElement = buttonContainer.getElementsByClassName(
@@ -232,21 +222,35 @@ module.exports = Backbone.View.extend({
           ])
       );
     else {
-      const nextCell = this.navigateCells(
-        {
-          target: document.querySelector(
-            `.wb-navigation-section[data-navigation-type="searchResults"]
+      const nextCellOfType = () =>
+        this.navigateCells(
+          {
+            target: document.querySelector(
+              `.wb-navigation-section[data-navigation-type="searchResults"]
             .wb-cell-navigation[data-navigation-direction="next"]`
-          ),
-        },
-        false
+            ),
+          },
+          false
+        );
+      const [currentRow, currentCol] = this.getSelectedLast();
+      let nextCell;
+      if (
+        this.cellIsType(
+          this.wbview.hot.getCellMeta(currentRow, currentCol),
+          'searchResults'
+        )
+      )
+        nextCell = [currentRow, currentCol];
+      else nextCell = nextCellOfType();
+
+      if (!Array.isArray(nextCell)) return;
+
+      this.wbview.hot.setDataAtCell(
+        ...nextCell,
+        getNewCellValue(this.wbview.hot.getDataAtCell(...nextCell))
       );
 
-      if (Array.isArray(nextCell))
-        this.wbview.hot.setDataAtCell(
-          ...nextCell,
-          getNewCellValue(this.wbview.hot.getDataAtCell(...nextCell))
-        );
+      nextCellOfType();
     }
   },
   showAdvancedSearch() {
@@ -257,10 +261,13 @@ module.exports = Backbone.View.extend({
       onChange: (newSearchPreferences) => {
         this.searchPreferences = newSearchPreferences;
         if (this.searchPreferences.search.liveUpdate) {
-          this.searchCells({
-            target: this.el.getElementsByClassName('wb-search-query')[0],
-            key: 'Live',
-          });
+          this.searchCells(
+            {
+              target: this.el.getElementsByClassName('wb-search-query')[0],
+              key: 'Live',
+            },
+            false
+          );
         }
       },
       onClose: () => {
