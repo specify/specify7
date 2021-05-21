@@ -166,13 +166,14 @@ export const findLocalityColumnsInDataSet = (
 export const getLocalitiesDataFromSpreadsheet = (
   localityColumnGroups: RA<IR<string>>,
   spreadsheetData: RA<RA<string>>,
-  headers: RA<string>
+  headers: RA<string>,
+  customRowNumbers: RA<number>
 ): RA<LocalityData> =>
   Object.values(localityColumnGroups).flatMap((localityColumns) =>
     spreadsheetData
       .map((row, index) => ({
         locality: getLocalityCoordinate(row, headers, localityColumns),
-        index,
+        index: customRowNumbers[index] ?? index,
       }))
       .filter(({ locality }) => typeof locality !== 'boolean')
       .map(

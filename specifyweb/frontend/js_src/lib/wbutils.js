@@ -596,10 +596,28 @@ module.exports = Backbone.View.extend({
   showLeafletMap() {
     if ($('#leaflet-map').length !== 0) return;
 
+    const selectedRegions = this.wbview.hot.getSelected();
+    let rows = this.wbview.dataset.rows;
+    let customRowNumbers = [];
+    if (
+      selectedRegions.every(
+        ([_startRow, startCol, _endRow, endCol]) =>
+          startCol === -1 ||
+          (startCol === 0 && endCol === this.wbview.dataset.columns.length - 1)
+      )
+    )
+      rows = selectedRegions.flatMap(([startRow, _startCol, endRow, _endCol]) =>
+        [...Array(endRow - startRow + 1)].map((_, index) => {
+          customRowNumbers.push(startRow + index);
+          return rows[startRow + index];
+        })
+      );
+
     const localityPoints = WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
       this.localityColumns,
-      this.wbview.dataset.rows,
-      this.wbview.dataset.columns
+      rows,
+      this.wbview.dataset.columns,
+      customRowNumbers
     );
 
     Leaflet.showLeafletMap({
