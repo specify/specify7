@@ -50,10 +50,11 @@ const WBView = Backbone.View.extend({
   className: 'wbs-form',
   events: {
     'click .wb-upload': 'upload',
-    'click .wb-validate': 'chooseValidationMode',
+    'click .wb-validate': 'upload',
+    'click .wb-data-check': 'toggleDataCheck',
     'click .wb-plan': 'openPlan',
-    // TODO: remove the Show Plan button
     'click .wb-show-plan': 'showPlan',
+    'click .wb-revert': 'revertChanges',
     'click .wb-save': 'saveClicked',
     'click .wb-delete-data-set': 'delete',
     'click .wb-export-data-set': 'export',
@@ -121,20 +122,27 @@ const WBView = Backbone.View.extend({
     this.$el.append(
       template({
         is_uploaded: this.uploaded,
-        has_rowresults: this.dataset.rowresults !== null,
         is_manager: userInfo.usertype === 'Manager',
       })
     );
 
     this.datasetmeta.render();
 
+    if (this.dataset.rowresults !== null) {
+      this.$('.wb-show-upload-view').prop('disabled', false);
+    } else {
+      this.$('.wb-show-upload-view')
+          .prop('disabled', true)
+          .prop('title', 'The data set must be validated or uploaded');
+    }
+
     if (this.dataset.uploaderstatus) this.openStatus();
 
-    if (!this.dataset.uploadplan)
+    if (!this.dataset.uploadplan) {
       $(
-        '<div>No plan has been defined for this dataset. Create one now?</div>'
+        '<div>No upload plan has been defined for this dataset. Create one now?</div>'
       ).dialog({
-        title: 'No Plan is defined',
+        title: 'No upload plan is defined',
         modal: true,
         buttons: {
           Create: this.openPlan.bind(this),
@@ -143,6 +151,7 @@ const WBView = Backbone.View.extend({
           },
         },
       });
+    }
 
     this.initHot().then(() => {
       fetchDataModelPromise().then(() => {
@@ -809,47 +818,17 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     const openPlan = () => this.openPlan();
     if (this.dataset.uploadplan) {
-      const start = (mode) => {
-        this.liveValidationStack = [];
-        this.liveValidationActive = false;
-        this.validationMode = 'off';
-        this.updateValidationButton();
-        $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-          .fail((jqxhr) => {
-            this.checkDeletedFail(jqxhr);
-          })
-          .done(() => {
-            this.openStatus(mode);
-          });
-      };
-      $(
-        '<div>The upload process will transfer the data set data into the main ' +
-          'Specify tables. Performing a trial upload is recommended because ' +
-          'it can detect some issues that live validation cannot.</div>'
-      ).dialog({
-        title: 'Upload',
-        modal: true,
-        buttons: [
-          {
-            text: 'Upload',
-            click: function () {
-              start('upload');
-            },
-          },
-          {
-            text: 'Trial Upload',
-            click: function () {
-              start('validate');
-            },
-          },
-          {
-            text: 'Cancel',
-            click: function () {
-              $(this).dialog('close');
-            },
-          },
-        ],
-      });
+      this.liveValidationStack = [];
+      this.liveValidationActive = false;
+      this.validationMode = 'off';
+      this.updateValidationButton();
+      $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
+       .fail((jqxhr) => {
+         this.checkDeletedFail(jqxhr);
+       })
+       .done(() => {
+         this.openStatus(mode);
+       });
     } else {
       $(
         '<div>No plan has been defined for this dataset. Create one now?</div>'
@@ -906,6 +885,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     a.setAttribute('download', filename);
     a.click();
   },
+  revertChanges() {
+    this.trigger('refresh');
+  },
   saveClicked: function () {
     this.save().done();
   },
@@ -946,99 +928,33 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   },
 
   // Validation
-  chooseValidationMode() {
-    const dl = $('<dl>');
-    if (this.dataset.uploadplan == null) {
-      dl.append('<dt>Live</dt>');
-      dl.append(`<dd>Rows are validated independently from one another and in response to changes.
-Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
+  toggleDataCheck() {
+    this.validationMode = this.validationMode === 'live' ? 'off' : 'live';
 
-      dl.append('<dt>Static</dt>');
-      dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
-Requires an <a href="/specify/workbench-plan/${this.dataset.id}/">upload plan</a> to be defined.</dd>`);
-    } else {
-      dl.append(
-        `<dt><label><input type="radio" name="validation-mode" value="live" ${
-          this.validationMode === 'live' ? 'checked' : ''
-        }> Live</label></dt>`
-      );
-      dl.append(
-        '<dd>Rows are validated independently from one another and in response to changes.</dd>'
-      );
-
-      if (this.dataset.rowresults == null) {
-        dl.append('<dt>Static</dt>');
-        dl.append(`<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.
-Only available after a trial upload is completed.</dd>`);
-      } else {
-        dl.append(
-          `<dt><label><input type="radio" name="validation-mode" value="static" ${
-            this.validationMode === 'static' ? 'checked' : ''
-          }> Static</label></dt>`
+    switch (this.validationMode) {
+      case 'live':
+        this.liveValidationStack = this.dataset.rows
+                                       .map((_, i) => i)
+                                       .reverse();
+        this.triggerLiveValidation();
+        this.el.classList.remove(
+          'wb-hide-new-cells',
+          'wb-hide-invalid-cells'
         );
-        dl.append(
-          '<dd>Row validation highlighting is based on the last trial upload and does not respond to changes.</dd>'
-        );
-      }
+        this.el.classList.add('wb-hide-modified-cells');
+        break;
+      case 'static':
+        this.getValidationResults();
+        this.el.classList.remove('wb-hide-invalid-cells');
+        this.el.classList.add('wb-hide-new-cells');
+      case 'off':
+        this.liveValidationStack = [];
+        this.liveValidationActive = false;
+        break;
     }
 
-    dl.append(
-      `<dt><label><input type="radio" name="validation-mode" value="off" ${
-        this.validationMode === 'off' ? 'checked' : ''
-      }> Off</label></dt>`
-    );
-    dl.append('<dd>Row validation highlighting is disabled.</dd>');
-
-    $('<div>')
-      .append(dl)
-      .dialog({
-        title: 'Validation Mode',
-        width: 360,
-        modal: true,
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          Select() {
-            const choice = $('input:checked', this).val();
-            selected(choice);
-            $(this).dialog('close');
-          },
-          Cancel() {
-            $(this).dialog('close');
-          },
-        },
-      });
-    const selected = (choice) => {
-      if (!['live', 'static', 'off'].includes(choice)) {
-        return;
-      }
-      this.validationMode = choice;
-      switch (this.validationMode) {
-        case 'live':
-          this.liveValidationStack = this.dataset.rows
-            .map((_, i) => i)
-            .reverse();
-          this.triggerLiveValidation();
-          this.el.classList.remove(
-            'wb-hide-new-cells',
-            'wb-hide-invalid-cells'
-          );
-          this.el.classList.add('wb-hide-modified-cells');
-          break;
-        case 'static':
-          this.getValidationResults();
-          this.el.classList.remove('wb-hide-invalid-cells');
-          this.el.classList.add('wb-hide-new-cells');
-        case 'off':
-          this.liveValidationStack = [];
-          this.liveValidationActive = false;
-          break;
-      }
-
-      this.clearAllMetaData();
-      this.updateValidationButton();
-    };
+    this.clearAllMetaData();
+    this.updateValidationButton();
   },
   startValidateRow(physicalRow) {
     if (this.validationMode !== 'live') return;
@@ -1072,19 +988,13 @@ Only available after a trial upload is completed.</dd>`);
     }
   },
   updateValidationButton() {
-    switch (this.validationMode) {
-      case 'live':
-        const n = this.liveValidationStack.length;
-        this.$('.wb-validate').text(
-          'Validation: Live' + (n > 0 ? ` (${n})` : '')
-        );
-        break;
-      case 'static':
-        this.$('.wb-validate').text('Validation: Static');
-        break;
-      case 'off':
-        this.$('.wb-validate').text('Validation: Off');
-        break;
+    if (this.validationMode === 'live') {
+      const n = this.liveValidationStack.length;
+      this.$('.wb-data-check').text(
+        'Data Check: On' + (n > 0 ? ` (${n})` : '')
+      );
+    } else {
+      this.$('.wb-data-check').text('Data Check');
     }
   },
   gotRowValidationResult(physicalRow, result) {
@@ -1158,10 +1068,14 @@ Only available after a trial upload is completed.</dd>`);
     if (this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = true;
 
-    this.$('.wb-upload')
+    this.$('.wb-upload, .wb-validate')
       .prop('disabled', true)
-      .prop('title', 'You should save your changes before Uploading');
+      .prop('title', 'This action requires all changes to be saved');
     this.$('.wb-save').prop('disabled', false);
+    this.$('.wb-revert').prop('disabled', false);
+    this.$('.wb-show-upload-view')
+        .prop('disabled', true)
+        .prop('title', 'The data set must be validated or uploaded');
     navigation.addUnloadProtect(this, 'The workbench has not been saved.');
   },
   checkDeletedFail(jqxhr) {
@@ -1173,8 +1087,9 @@ Only available after a trial upload is completed.</dd>`);
   spreadSheetUpToDate: function () {
     if (!this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = false;
-    this.$('.wb-upload').prop('disabled', false).prop('title', '');
+    this.$('.wb-upload, .wb-validate').prop('disabled', false).prop('title', '');
     this.$('.wb-save').prop('disabled', true);
+    this.$('.wb-revert').prop('disabled', true);
     navigation.removeUnloadProtect(this);
   },
   resize: function () {

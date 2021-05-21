@@ -3,16 +3,17 @@
     <div class="wb-name"></div>
     <div class="wb-controls">
       <button class="wb-show-plan" style="display: none">Show Plan</button>
-      <button class="wb-plan">Plan</button>
-      <button class="wb-validate">Validation: Off</button>
+      <button class="wb-plan">Upload Plan</button>
+      <button class="wb-data-check">Data Check</button>
+      <button class="wb-validate">Validate</button>
       <button class="wb-show-toolkit">Tools</button>
-      <% if(has_rowresults){ %>
-      <button class="wb-show-upload-view">Results</button>
-      <% } %> <% if(is_uploaded && is_manager){ %>
-      <button class="wb-unupload">Un-Upload</button>
+      <button class="wb-show-upload-view" disabled="disabled">Results</button>
+      <% if(is_uploaded && is_manager){ %>
+      <button class="wb-unupload">Rollback</button>
       <% } else { %> <% if(is_manager){ %>
       <button class="wb-upload">Upload</button>
       <% } %>
+      <button class="wb-revert" disabled="disabled">Abandon Edits</button>
       <button class="wb-save" disabled="disabled">Save</button>
       <% } %>
     </div>
