@@ -488,8 +488,8 @@ module.exports = Backbone.View.extend({
     function updateGeolocateUrl() {
       currentLocalityColumns = WbLocalityDataExtractor.getLocalityColumnsFromSelectedCell(
         that.localityColumns,
-        this.wbview.dataset.columns[
-          this.wbview.hot.toPhysicalColumn(
+        that.wbview.dataset.columns[
+          that.wbview.hot.toPhysicalColumn(
             finalSelectedCells[currentCellIndex][1]
           )
         ]
