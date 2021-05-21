@@ -95,7 +95,7 @@ export async function showLeafletMap({
   leafletMapContainer.dialog({
     width: 900,
     height: 600,
-    title: 'Leaflet map',
+    title: 'GeoMap',
     close() {
       map.remove();
       $(this).remove();
