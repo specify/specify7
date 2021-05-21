@@ -62,7 +62,7 @@ export const getLocalityData = (
   getField: (fieldName: string) => Field<string>,
   formatCoordinate: (fieldName: string) => Field<number>
 ): LocalityData | false =>
-  requiredLocalityColumns.every(getField)
+  requiredLocalityColumns.every((fieldName) => getField(fieldName).value !== '')
     ? ({
         ...Object.fromEntries(
           Object.keys(localityColumns)
