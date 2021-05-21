@@ -825,9 +825,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       .on('done', () => this.trigger('refresh', mode));
   },
   delete: function () {
-    const dialog = $('<div>Really delete?</div>').dialog({
+    const dialog = $('<div>Confirm Data Set Delete?</div>').dialog({
       modal: true,
-      title: 'Confirm delete',
+      title: 'Delete Data Set',
       close: () => dialog.remove(),
       buttons: {
         Delete: () => {

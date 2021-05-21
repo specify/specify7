@@ -717,7 +717,7 @@ module.exports = Backbone.View.extend({
         </li>
       </ul>`
     ).dialog({
-      title: 'Change Geocoordinate Formats',
+      title: 'Change Geocoordinate Format',
       close: closeDialog,
       width: 350,
       buttons: dialogButtons,

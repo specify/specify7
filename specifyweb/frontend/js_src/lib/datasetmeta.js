@@ -180,7 +180,7 @@ export default Backbone.View.extend({
   changeOwnerWindow() {
     this.fetchListOfUsers().then((users) => {
       this.changeOwnerDialog = $(`<div>
-        Select new owner:<br>
+        Select New Owner:<br>
         <select class="select-user-picklist" size="10" style="width:100%">
           ${users
             .map(
@@ -191,7 +191,7 @@ export default Backbone.View.extend({
             .join('<br>')}
         </select>
       </div>`).dialog({
-        title: 'Change Data Set Ownership',
+        title: 'Change Data Set Owner',
         modal: true,
         open(evt, ui) {
           $('.ui-dialog-titlebar-close', ui.dialog).hide();
@@ -199,7 +199,7 @@ export default Backbone.View.extend({
         close: () => this.changeOwnerDialog.dialog('destroy'),
         buttons: {
           Cancel: () => this.changeOwnerDialog.dialog('destroy'),
-          'Change owner': this.changeOwner.bind(this),
+          'Change Owner': this.changeOwner.bind(this),
         },
       });
     });
