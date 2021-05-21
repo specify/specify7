@@ -1076,11 +1076,11 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     this.$('.wb-show-upload-view')
         .prop('disabled', true)
         .prop('title', 'The data set must be validated or uploaded');
-    navigation.addUnloadProtect(this, 'The workbench has not been saved.');
+    navigation.addUnloadProtect(this, 'Changes to this Data Set have not been saved.');
   },
   checkDeletedFail(jqxhr) {
     if (jqxhr.status === 404) {
-      this.$el.empty().append('Dataset was deleted by another session.');
+      this.$el.empty().append('Data Set was deleted by another session.');
       jqxhr.errorHandled = true;
     }
   },
