@@ -626,14 +626,17 @@ module.exports = Backbone.View.extend({
       'locality.longitude2': 'Long',
     };
 
-    const columnsToSearchFor = Object.keys(columnHandlers);
-
     const coordinateColumns = this.localityColumns.reduce(
-      (coordinateColumns, columnIndexes) => [
+      (coordinateColumns, localityColumns) => [
         ...coordinateColumns,
-        ...Object.entries(columnIndexes).filter(
-          ([columnName]) => columnsToSearchFor.indexOf(columnName) !== -1
-        ),
+        ...Object.entries(localityColumns)
+          .filter(([fieldName]) => fieldName in columnHandlers)
+          .map(([fieldName, columnName]) => [
+            columnHandlers[fieldName],
+            this.wbview.hot.toVisualColumn(
+              this.wbview.dataset.columns.indexOf(columnName)
+            ),
+          ]),
       ],
       []
     );
@@ -758,11 +761,11 @@ module.exports = Backbone.View.extend({
 
       this.wbview.hot.setDataAtCell(
         coordinateColumns
-          .map(([columnName, columnIndex]) =>
+          .map(([columnRole, columnIndex]) =>
             this.wbview.hot
               .getDataAtCol(columnIndex)
               .map((cellValue, rowIndex) => [
-                latlongutils[columnHandlers[columnName]].parse(cellValue),
+                latlongutils[columnRole].parse(cellValue),
                 rowIndex,
               ])
               .filter(([coordinate]) => coordinate !== null)
@@ -779,6 +782,6 @@ module.exports = Backbone.View.extend({
           .flat()
       );
     };
-    dialog.on('change', handleOptionChange);
+    dialog.on('change', handleOptionChange.bind(this));
   },
 });
