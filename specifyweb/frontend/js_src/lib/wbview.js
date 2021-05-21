@@ -911,7 +911,18 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     a.click();
   },
   revertChanges() {
-    this.trigger('refresh');
+    $('<div>This action will discard all changes to the Data Set since the last save.</div>').dialog({
+      modal: true,
+      title: "Revert Unsaved Changes?",
+      close() { $(this).remove(); },
+      buttons: {
+        Revert: () => {
+          navigation.removeUnloadProtect(this);
+          this.trigger('refresh');
+        },
+        Cancel() { $(this).dialog('close'); },
+      }
+    });
   },
   saveClicked: function () {
     this.save().done();
