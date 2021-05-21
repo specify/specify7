@@ -807,28 +807,40 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
   // Actions
   unupload() {
-    if (typeof this.uploadedView !== 'undefined') {
-      this.uploadedView.remove();
-      this.uploadedView = undefined;
-    }
-    $.post(`/api/workbench/unupload/${this.dataset.id}/`);
-    this.openStatus('unupload');
+    $('<div>Rolling back the Data Set will attempt to remove the data it added to the main Specify tables. ' +
+      'The rollback can fail if the data has been referenced by other new data in the interim.</div>').dialog({
+        modal: true,
+        title: "Start Data Set Rollback?",
+        close() { $(this).remove(); },
+        buttons: {
+          Rollback: () => {
+            if (typeof this.uploadedView !== 'undefined') {
+              this.uploadedView.remove();
+              this.uploadedView = undefined;
+            }
+            $.post(`/api/workbench/unupload/${this.dataset.id}/`);
+            this.openStatus('unupload');
+          },
+          Cancel() { $(this).dialog('close'); },
+        }
+      });
   },
   upload(evt) {
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
-    const openPlan = () => this.openPlan();
     if (this.dataset.uploadplan) {
-      this.liveValidationStack = [];
-      this.liveValidationActive = false;
-      this.validationMode = 'off';
-      this.updateValidationButton();
-      $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-       .fail((jqxhr) => {
-         this.checkDeletedFail(jqxhr);
-       })
-       .done(() => {
-         this.openStatus(mode);
-       });
+      if (mode === 'upload') {
+        $('<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>').dialog({
+          modal: true,
+          title: "Start Data Set Upload?",
+          close() { $(this).remove(); },
+          buttons: {
+            Upload: () => this.startUpload(mode),
+            Cancel() { $(this).dialog('close'); },
+          }
+        });
+      } else {
+        this.startUpload(mode);
+      }
     } else {
       $(
         '<div>No plan has been defined for this dataset. Create one now?</div>'
@@ -839,10 +851,23 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           Cancel: function () {
             $(this).dialog('close');
           },
-          Create: openPlan,
+          Create: () => this.openPlan(),
         },
       });
     }
+  },
+  startUpload(mode) {
+    this.liveValidationStack = [];
+    this.liveValidationActive = false;
+    this.validationMode = 'off';
+    this.updateValidationButton();
+    $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
+     .fail((jqxhr) => {
+       this.checkDeletedFail(jqxhr);
+     })
+     .done(() => {
+       this.openStatus(mode);
+     });
   },
   openStatus(mode) {
     new WBStatus({ dataset: this.dataset })
@@ -1181,8 +1206,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
                         the upload process.`,
             },
       unupload: {
-        title: 'Unupload completed',
-        message: 'Unupload completed successfully.',
+        title: 'Data Set Rollback',
+        message: 'Data Set was rolled back successfully.',
       },
     };
 
