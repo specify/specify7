@@ -1170,7 +1170,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         cellCounts.invalidCells === 0
           ? {
               title: 'Upload completed',
-              message: `You can open the 'View' menu to see a detailed
+              message: `You can open the 'Results' menu to see a detailed
                         breakdown of the upload results.`,
             }
           : {
