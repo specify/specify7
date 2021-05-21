@@ -3,7 +3,8 @@ import type { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
   readonly name: string;
-  readonly getLocalizedName: () => string;
+  readonly getLocalizedName: () => string | null;
+  readonly getPickList: () => string | null | undefined;
   readonly isRequired: boolean;
   readonly isHidden: () => number;
   readonly isRelationship: boolean;

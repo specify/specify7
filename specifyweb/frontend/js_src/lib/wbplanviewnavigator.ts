@@ -496,9 +496,6 @@ export function getMappingLineData({
     iterate: () => firstIterationRequirement() && secondIterationRequirement(),
 
     getNextPathElement({ tableName }) {
-      if (internalState.mappingPathPosition === -2)
-        internalState.mappingPathPosition = mappingPath.length - 1;
-
       internalState.mappingPathPosition += 1;
 
       let nextPathElementName = mappingPath[internalState.mappingPathPosition];

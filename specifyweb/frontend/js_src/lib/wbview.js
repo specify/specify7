@@ -16,7 +16,8 @@ const userInfo = require('./userinfo.js');
 const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
 const NotFoundView = require('./notfoundview.js');
-const WBUploadedView = require('./components/wbuploadedview').default;
+const WBUploadedView = require('./components/wbuploadedview.tsx').default;
+const dataModelStorage = require('./wbplanviewmodel').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
 const {
@@ -144,17 +145,27 @@ const WBView = Backbone.View.extend({
       });
 
     this.initHot().then(() => {
-      this.dataset.rowresults && this.getValidationResults();
       fetchDataModelPromise().then(() => {
-        this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
-          ({ mappingPath }) =>
-            getMappingLineData({
-              baseTableName: this.mappings.baseTableName,
-              mappingPath: mappingPath.slice(0, -1),
-            })
-        );
+        if (this.mappings) {
+          this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
+            ({ mappingPath }) =>
+              getMappingLineData({
+                baseTableName: this.mappings.baseTableName,
+                mappingPath: mappingPath.slice(0, -1),
+              })[0]
+          );
+          if (
+            this.mappings.mappingLinesData.some(
+              (lineData) => typeof lineData === 'undefined'
+            )
+          )
+            throw new Error('Mapping Line Data can not be undefined');
+        }
         this.identifyMappedHeaders();
+        // This needs to run after identifyMappedHeaders
+        if (this.dataset.rowresults) this.getValidationResults();
         this.wbutils.findLocalityColumns();
+        this.identifyPickLists();
       });
       this.resize();
 
@@ -199,7 +210,7 @@ const WBView = Backbone.View.extend({
             data: i,
             ...getDefaultCellMeta(),
           })),
-          cells: this.cellRenderer.bind(this),
+          cells: () => ({ type: 'text' }),
           colHeaders: (col) => `<div class="wb-header-${col} ${
             this.dataset.columns[col] in this.mappedHeaders
               ? ''
@@ -287,6 +298,7 @@ const WBView = Backbone.View.extend({
           beforeColumnMove: this.beforeColumnMove.bind(this),
           afterColumnMove: this.afterColumnMove.bind(this),
           afterSetCellMeta: this.afterSetCellMeta.bind(this),
+          afterRenderer: this.afterRenderer.bind(this),
         });
         resolve();
       }, 0)
@@ -305,9 +317,7 @@ const WBView = Backbone.View.extend({
     const mappedHeadersAndTables = Object.fromEntries(
       this.mappings.arrayOfMappings.map(({ headerName }, index) => [
         headerName,
-        icons.getIcon(
-          this.mappings.mappingLinesData[index][0]?.tableName || ''
-        ),
+        icons.getIcon(this.mappings.mappingLinesData[index].tableName || ''),
       ])
     );
 
@@ -363,17 +373,55 @@ const WBView = Backbone.View.extend({
 
     this.$el.append(stylesContainer);
   },
-  cellRenderer() {
-    return { renderer: this.customRenderer.bind(this) };
-  },
-  customRenderer(instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(instance, arguments);
-    if (cellProperties.isModified)
-      this.afterSetCellMeta(td, undefined, 'isModified', true);
-    // if(cellProp)
+  identifyPickLists() {
+    if (!this.mappings) return;
+    const pickLists = Object.fromEntries(
+      this.mappings.mappingLinesData
+        .map((lineData, index) => ({
+          tableName: lineData.tableName,
+          fieldName: this.mappings.arrayOfMappings[index].mappingPath.slice(
+            -1
+          )[0],
+          headerName: this.mappings.arrayOfMappings[index].headerName,
+        }))
+        .map(({ tableName, fieldName, headerName }) => ({
+          physicalColumn: this.dataset.columns.indexOf(headerName),
+          pickList:
+            dataModelStorage.tables[tableName].fields[fieldName].pickList,
+        }))
+        .filter(({ pickList }) => typeof pickList !== 'undefined')
+        .map(Object.values)
+    );
+    this.hot.updateSettings({
+      cells: (_visualRow, visualCol, _prop) => {
+        const physicalColumn = this.hot.toPhysicalColumn(visualCol);
+        return physicalColumn in pickLists
+          ? {
+              type: 'autocomplete',
+              source: pickLists[physicalColumn].items,
+              strict: pickLists[physicalColumn].readOnly,
+              allowInvalid: true,
+            }
+          : { type: 'text' };
+      },
+    });
   },
 
   // Hooks
+  afterRenderer(td, row, col, prop, value, cellProperties) {
+    /*
+     * After cell is rendered, we need to reApply metaData classes
+     * NOTE:
+     * .isSearchResult is handled automatically by the search plugin.
+     * .issues are handled automatically by the comments plugin.
+     * This is why, afterRenderer only has to handle the isModified and isNew
+     * cases
+     * */
+    if (cellProperties.isModified)
+      this.afterSetCellMeta(row, col, 'isModified', true, td);
+    if (cellProperties.isNew)
+      this.afterSetCellMeta(row, col, 'isNew', true, td);
+  },
   afterChange(unfilteredChanges, source) {
     if (
       ![
@@ -459,13 +507,13 @@ const WBView = Backbone.View.extend({
       }).fail(this.checkDeletedFail.bind(this));
     }
   },
-  afterSetCellMeta(visualRow, visualCol, key, value) {
+  afterSetCellMeta(visualRow, visualCol, key, value, initialCell = undefined) {
     this.hasMetaDataChanges = true;
 
     const cell =
-      typeof visualRow === 'object' && typeof visualCol === 'undefined'
-        ? visualRow
-        : this.hot.getCell(visualRow, visualCol);
+      typeof initialCell === 'undefined'
+        ? this.hot.getCell(visualRow, visualCol)
+        : initialCell;
 
     /*
      * This happens when this.hot.query tries to set cellMeta for the
@@ -564,13 +612,11 @@ const WBView = Backbone.View.extend({
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const targetHeader = this.dataset.columns[physicalCol];
 
-    const mappingPath = this.mappings.arrayOfMappings.find(
+    const mappingIndex = this.mappings.arrayOfMappings.findIndex(
       ({ headerName }) => headerName === targetHeader
-    )?.mappingPath;
-    const tableName = getMappingLineData({
-      baseTableName: this.mappings.baseTableName,
-      mappingPath: mappingPath.slice(0, -1),
-    })[0]?.tableName;
+    );
+    const mappingPath = this.mappings.arrayOfMappings[mappingIndex].mappingPath;
+    const tableName = this.mappings.mappingLinesData[mappingIndex].tableName;
     const model = schema.getModel(tableName);
     const rowResult = this.rowResults[physicalRow];
     const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;

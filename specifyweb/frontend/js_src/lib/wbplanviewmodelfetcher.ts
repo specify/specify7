@@ -41,6 +41,12 @@ interface DataModelFieldWritablePrimer {
   tableName?: string;
   type?: RelationshipType;
   foreignName?: string;
+  pickList?: DataModelFieldPickList;
+}
+
+interface DataModelFieldPickList {
+  readonly readOnly: boolean;
+  readonly items: RA<string>;
 }
 
 interface DataModelNonRelationshipWritable
@@ -94,23 +100,25 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 /* Fetches ranks for a particular table */
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
-    (domain as DomainType).getTreeDef(tableName).done((treeDefinition) =>
-      treeDefinition.rget('treedefitems').done((treeDefItems) =>
-        treeDefItems.fetch({ limit: 0 }).done(() =>
-          resolve([
-            /*
-             * TODO: add complex logic for figuring out if
-             *  rank is required or not
-             */
-            tableName,
-            Object.values(treeDefItems.models).map((rank) => [
-              rank.get('name') as string,
-              false,
-            ]),
-          ])
-        )
+    (domain as DomainType)
+      .getTreeDef(tableName)
+      .done((treeDefinition) =>
+        treeDefinition
+          .rget('treedefitems')
+          .done((treeDefItems) =>
+            treeDefItems
+              .fetch({ limit: 0 })
+              .done(() =>
+                resolve([
+                  tableName,
+                  Object.values(treeDefItems.models).map((rank) => [
+                    rank.get('name') as string,
+                    false,
+                  ]),
+                ])
+              )
+          )
       )
-    )
   );
 
 const requiredFieldShouldBeHidden = (fieldName: string): boolean =>
@@ -189,6 +197,38 @@ function handleRelationshipField(
   return true;
 }
 
+const fetchPickList = async (
+  pickList: string,
+  fieldData: DataModelNonRelationshipWritable
+): Promise<void> =>
+  fetch(`/api/specify/picklist/?name=${pickList}&limit=1&domainfilter=true`)
+    .then(async (response) => response.json())
+    .then(
+      (response: {
+        readonly objects: [
+          {
+            readonly readonly: boolean;
+            readonly picklistitems: { readonly title: string }[];
+          }
+        ];
+      }) => {
+        if (typeof response?.objects?.[0] === 'undefined') return;
+
+        const readOnly = response.objects[0].readonly;
+        const items = response.objects[0].picklistitems.map(
+          (item) => item.title
+        );
+
+        fieldData.pickList = {
+          readOnly,
+          items,
+        };
+      }
+    )
+    .catch((error) => {
+      throw error;
+    });
+
 let cacheVersion = '';
 
 /* Fetches the data model */
@@ -197,7 +237,7 @@ export default async function (): Promise<void> {
 
   if (cacheVersion === '') {
     const request = await fetch('/context/collection/');
-    const data = await request.json();
+    const data = (await request.json()) as { readonly current: number };
     const currentCollection = data.current;
     cacheVersion = `${dataModelFetcherVersion}_${currentCollection}`;
   }
@@ -224,11 +264,11 @@ export default async function (): Promise<void> {
     );
 
     if (
-      tables &&
-      listOfBaseTables &&
-      ranks &&
-      rootRanks &&
-      originalRelationships
+      tables !== false &&
+      listOfBaseTables !== false &&
+      ranks !== false &&
+      rootRanks !== false &&
+      originalRelationships !== false
     ) {
       dataModelStorage.tables = tables;
       dataModelStorage.listOfBaseTables = listOfBaseTables;
@@ -241,6 +281,7 @@ export default async function (): Promise<void> {
 
   const listOfBaseTables: DataModelListOfTablesWritable = {};
   const fetchRanksQueue: Promise<TableRanksInline>[] = [];
+  const fetchPickListsQueue: Promise<void>[] = [];
   const originalRelationships: OriginalRelationshipsWritable = {};
 
   const tables = Object.values(
@@ -295,8 +336,11 @@ export default async function (): Promise<void> {
         isRelationship: field.isRelationship,
       };
 
-      if (
-        fieldData.isRelationship &&
+      if (!fieldData.isRelationship) {
+        const pickListName = field.getPickList();
+        if (pickListName !== null && typeof pickListName !== 'undefined')
+          fetchPickListsQueue.push(fetchPickList(pickListName, fieldData));
+      } else if (
         !handleRelationshipField(
           field,
           fieldData,
@@ -372,6 +416,8 @@ export default async function (): Promise<void> {
         delete tables[tableName].fields[relationshipName];
       })
   );
+
+  await Promise.all(fetchPickListsQueue);
 
   await Promise.all(fetchRanksQueue)
     .then((resolved) => {
