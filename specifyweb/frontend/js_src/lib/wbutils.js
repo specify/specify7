@@ -409,16 +409,30 @@ module.exports = Backbone.View.extend({
     let queryString;
 
     if (
-      typeof currentLocalityColumns.country !== 'undefined' &&
-      typeof currentLocalityColumns.state !== 'undefined'
+      typeof currentLocalityColumns['locality.geography.$Country.name'] !==
+        'undefined' &&
+      typeof currentLocalityColumns['locality.geography.$State.name'] !==
+        'undefined'
     ) {
       const data = Object.fromEntries(
-        ['country', 'state', 'county', 'localityname'].map((columnName) => [
+        [
+          'locality.geography.$Country.name',
+          'locality.geography.$State.name',
+          'locality.geography.$County.name',
+          'locality.localityname',
+        ].map((columnName) => [
           columnName,
           typeof currentLocalityColumns[columnName] === 'undefined'
             ? undefined
             : encodeURIComponent(
-                getDataAtCell(selectedRow, currentLocalityColumns[columnName])
+                getDataAtCell(
+                  selectedRow,
+                  this.wbview.hot.toVisualColumn(
+                    this.wbview.dataset.columns.indexOf(
+                      currentLocalityColumns[columnName]
+                    )
+                  )
+                )
               ),
         ])
       );
