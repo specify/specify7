@@ -1,3 +1,7 @@
+import type { Action } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
+
+import * as cache from './cache';
 import type {
   PartialWBPlanViewProps,
   PublicWBPlanViewProps,
@@ -19,10 +23,7 @@ import {
   mappingState,
 } from './components/wbplanviewstatereducer';
 import schema from './schema';
-import type { Action } from 'typesafe-reducer';
-import { generateReducer } from 'typesafe-reducer';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
-import * as cache from './cache';
 import { uniquifyHeaders } from './wbplanviewhelper';
 import {
   defaultColumnOptions,
@@ -30,6 +31,7 @@ import {
   getLinesFromUploadPlan,
 } from './wbplanviewlinesgetter';
 import dataModelStorage from './wbplanviewmodel';
+import { tableIsTree } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
 import {
   deduplicateMappings,
@@ -297,11 +299,8 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   OpenMappingScreenAction: ({ action }) => {
     if (!action.uploadPlan) throw new Error('Upload plan is not defined');
 
-    const {
-      baseTableName,
-      lines,
-      mustMatchPreferences,
-    } = getLinesFromUploadPlan(action.headers, action.uploadPlan);
+    const { baseTableName, lines, mustMatchPreferences } =
+      getLinesFromUploadPlan(action.headers, action.uploadPlan);
     const newState: MappingState = {
       ...getDefaultMappingState(),
       mappingIsTemplated: action.mappingIsTemplated,
@@ -350,8 +349,8 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     if (action.line >= mappingState(state).lines.length)
       throw new Error(`Tried to focus a line that doesn't exist`);
 
-    const focusedLineMappingPath = mappingState(state).lines[action.line]
-      .mappingPath;
+    const focusedLineMappingPath =
+      mappingState(state).lines[action.line].mappingPath;
     return {
       ...mappingState(state),
       focusedLine: action.line,
@@ -489,9 +488,9 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       mappingState(state),
       mappingState(state).openSelectElement!.line,
       {
-        mappingPath: mappingState(state).automapperSuggestions![
-          Number(suggestion) - 1
-        ].mappingPath,
+        mappingPath:
+          mappingState(state).automapperSuggestions![Number(suggestion) - 1]
+            .mappingPath,
       }
     ),
     openSelectElement: undefined,
@@ -507,6 +506,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   OpenMatchingLogicDialogAction: ({ state: originalState }) => {
     const state = mappingState(originalState);
 
+    const baseTableIsTree = tableIsTree(state.baseTableName);
     const arrayOfMappingPaths = state.lines.map((line) => line.mappingPath);
     const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
       getMappingLineData({
@@ -517,7 +517,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       }).filter((mappingElementData, index, list) => {
         if (
           // Exclude base table
-          index === 0 ||
+          index <= Number(baseTableIsTree) ||
           // Exclude -to-many
           mappingElementData.customSelectSubtype === 'toMany'
         )
