@@ -81,6 +81,7 @@ const WBView = Backbone.View.extend({
     this.liveValidationActive = false;
     this.hasUnSavedChanges = false;
     this.sortConfigIsSet = false;
+    this.hotIsReady = false;
 
     // These fields are primarily used for navigation, as the user may press the
     // "next" button several times per second - no point in reCalculating the
@@ -153,6 +154,11 @@ const WBView = Backbone.View.extend({
       this.wbutils.findLocalityColumns();
       this.identifyPickLists();
       this.identifyTreeRanks();
+      if (this.dataset.visualorder !== null)
+        this.hot.updateSettings({
+          manualColumnMove: this.dataset.visualorder,
+        });
+      this.hotIsReady = true;
     };
 
     this.initHot().then(() => {
@@ -265,7 +271,7 @@ const WBView = Backbone.View.extend({
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
           rowHeaders: true,
           manualColumnResize: true,
-          manualColumnMove: this.dataset.visualorder ?? true,
+          manualColumnMove: true,
           outsideClickDeselects: false,
           multiColumnSorting: true,
           sortIndicator: true,
@@ -613,10 +619,11 @@ const WBView = Backbone.View.extend({
 
     return false;
   },
-  beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
-    typeof endPosition !== 'undefined',
+  beforeColumnMove: (_columnIndexes, startPosition, endPosition) =>
+    // An ugly fix for jQuery dialogs conflicting with HOT
+    typeof endPosition !== 'undefined' || !this.hotIsReady,
   afterColumnMove(_columnIndexes, _startPosition, endPosition) {
-    if (typeof endPosition === 'undefined' || !this.hot) return;
+    if (typeof endPosition === 'undefined' || !this.hotIsReady) return;
 
     this.hasMetaDataObjectChanges = true;
 
