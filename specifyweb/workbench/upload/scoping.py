@@ -159,7 +159,13 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         treedef = collection.discipline.division.institution.storagetreedef
 
     else:
-        raise Exception('unexpected tree type: %s' % table)
+        raise Exception(f'unexpected tree type: {table.name}')
+
+    treedefitems = list(treedef.treedefitems.order_by('rankid'))
+    treedef_ranks = [tdi.name for tdi in treedefitems]
+    for rank in tr.ranks:
+        if rank not in treedef_ranks:
+            raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     return ScopedTreeRecord(
         name=tr.name,
