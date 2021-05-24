@@ -74,17 +74,7 @@ const WBView = Backbone.View.extend({
       this.data.push(Array(this.dataset.columns.length).fill(null));
     }
 
-    if (this.dataset.uploadplan) {
-      this.mappings = uploadPlanToMappingsTree(
-        this.dataset.columns,
-        this.dataset.uploadplan
-      );
-      this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
-        this.mappings.mappingsTree
-      );
-      this.mappings.mappingLinesData = undefined;
-      this.mappings.treeRanks = undefined;
-    } else this.mappings = undefined;
+    this.mappings = undefined;
 
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
     this.liveValidationStack = [];
@@ -156,30 +146,16 @@ const WBView = Backbone.View.extend({
       });
     }
 
+    const initDataModelIntegration = () => {
+      this.identifyMappedHeaders();
+      // This needs to run after identifyMappedHeaders
+      if (this.dataset.rowresults) this.getValidationResults();
+      this.wbutils.findLocalityColumns();
+      this.identifyPickLists();
+      this.identifyTreeRanks();
+    };
+
     this.initHot().then(() => {
-      fetchDataModelPromise().then(() => {
-        if (this.mappings) {
-          this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
-            ({ mappingPath }) =>
-              getMappingLineData({
-                baseTableName: this.mappings.baseTableName,
-                mappingPath: mappingPath.slice(0, -1),
-              })[0]
-          );
-          if (
-            this.mappings.mappingLinesData.some(
-              (lineData) => typeof lineData === 'undefined'
-            )
-          )
-            throw new Error('Mapping Line Data can not be undefined');
-        }
-        this.identifyMappedHeaders();
-        // This needs to run after identifyMappedHeaders
-        if (this.dataset.rowresults) this.getValidationResults();
-        this.wbutils.findLocalityColumns();
-        this.identifyPickLists();
-        this.identifyTreeRanks();
-      });
       this.resize();
 
       const searchPlugin = this.hot.getPlugin('search');
@@ -195,6 +171,36 @@ const WBView = Backbone.View.extend({
 
       this.commentsPlugin = this.hot.getPlugin('comments');
       this.multiColumnSortingPlugin = this.hot.getPlugin('multiColumnSorting');
+
+      if (this.dataset.uploadplan) {
+        fetchDataModelPromise().then(() => {
+          this.mappings = uploadPlanToMappingsTree(
+            this.dataset.columns,
+            this.dataset.uploadplan
+          );
+          this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
+            this.mappings.mappingsTree
+          );
+          this.mappings.treeRanks = undefined;
+
+          this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
+            ({ mappingPath }) =>
+              getMappingLineData({
+                baseTableName: this.mappings.baseTableName,
+                mappingPath: mappingPath.slice(0, -1),
+              })[0]
+          );
+
+          if (
+            this.mappings.mappingLinesData.some(
+              (lineData) => typeof lineData === 'undefined'
+            )
+          )
+            throw new Error('Mapping Line Data can not be undefined');
+
+          initDataModelIntegration();
+        });
+      } else initDataModelIntegration();
     });
 
     this.updateValidationButton();
