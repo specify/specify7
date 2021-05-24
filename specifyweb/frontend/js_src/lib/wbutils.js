@@ -207,7 +207,9 @@ module.exports = Backbone.View.extend({
     const buttonContainer = button.parentElement;
     const replacementValueElement =
       buttonContainer.getElementsByClassName('wb-replace-value')[0];
-    const replacementValue = replacementValueElement.value;
+    const replacementValue = this.searchPreferences.search.useRegex
+      ? replacementValueElement.value
+      : replacementValueElement.value.trim();
 
     const getNewCellValue = this.searchPreferences.search.fullMatch
       ? () => replacementValue
