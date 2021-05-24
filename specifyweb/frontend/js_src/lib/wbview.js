@@ -620,8 +620,8 @@ const WBView = Backbone.View.extend({
 
     this.hasMetaDataObjectChanges = true;
 
-    const columnOrder = this.dataset.columns.map((visualColumn) =>
-      this.hot.toPhysicalColumn(visualColumn)
+    const columnOrder = Object.keys(this.dataset.columns).map((physicalCol) =>
+      this.hot.toVisualColumn(Number.parseInt(physicalCol))
     );
 
     if (

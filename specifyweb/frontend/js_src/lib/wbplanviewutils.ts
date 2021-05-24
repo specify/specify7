@@ -51,21 +51,31 @@ export function savePlan(
   if (!ignoreValidation && validationResultsState.validationResults.length > 0)
     return validationResultsState;
 
+  const renamedMappedLines = renameNewlyCreatedHeaders(
+    state.baseTableName,
+    props.dataset.columns,
+    state.lines
+  );
+
+  const newlyAddedHeaders = renamedMappedLines
+    .filter(
+      ({ headerName, mappingPath }) =>
+        mappingPath.length > 0 &&
+        mappingPath[0] !== '0' &&
+        !props.dataset.columns.includes(headerName)
+    )
+    .map(({ headerName }) => headerName);
+
   // Props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
   const uploadPlan = mappingsTreeToUploadPlan(
     state.baseTableName,
-    getMappingsTree(
-      renameNewlyCreatedHeaders(
-        state.baseTableName,
-        props.dataset.columns,
-        state.lines
-      ),
-      true
-    ),
+    getMappingsTree(renamedMappedLines, true),
     state.mustMatchPreferences
   );
 
-  void $.ajax(`/api/workbench/dataset/${props.dataset.id}/`, {
+  const dataSetRequestUrl = `/api/workbench/dataset/${props.dataset.id}/`;
+
+  void $.ajax(dataSetRequestUrl, {
     type: 'PUT',
     data: JSON.stringify({
       uploadplan: uploadPlan,
@@ -75,7 +85,30 @@ export function savePlan(
   }).done(() => {
     if (state.changesMade) props.removeUnloadProtect();
 
-    goBack(props);
+    if (newlyAddedHeaders.length > 0)
+      $.ajax(dataSetRequestUrl, {
+        type: 'GET',
+      }).done(({ columns, visualorder }) => {
+        let newVisualOrder;
+        newVisualOrder =
+          visualorder === null
+            ? Object.keys(props.dataset.columns)
+            : visualorder;
+
+        newlyAddedHeaders.forEach((headerName) =>
+          newVisualOrder.push(columns.indexOf(headerName))
+        );
+
+        $.ajax(dataSetRequestUrl, {
+          type: 'PUT',
+          data: JSON.stringify({
+            visualorder: newVisualOrder,
+          }),
+          dataType: 'json',
+          processData: false,
+        }).done(() => goBack(props));
+      });
+    else goBack(props);
   });
 
   return state;
