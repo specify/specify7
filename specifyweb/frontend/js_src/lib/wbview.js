@@ -132,8 +132,8 @@ const WBView = Backbone.View.extend({
       this.$('.wb-show-upload-view').prop('disabled', false);
     } else {
       this.$('.wb-show-upload-view')
-          .prop('disabled', true)
-          .prop('title', 'The data set must be validated or uploaded');
+        .prop('disabled', true)
+        .prop('title', 'The data set must be validated or uploaded');
     }
 
     if (this.dataset.uploaderstatus) this.openStatus();
@@ -388,9 +388,8 @@ const WBView = Backbone.View.extend({
       this.mappings.mappingLinesData
         .map((lineData, index) => ({
           tableName: lineData.tableName,
-          fieldName: this.mappings.arrayOfMappings[index].mappingPath.slice(
-            -1
-          )[0],
+          fieldName:
+            this.mappings.arrayOfMappings[index].mappingPath.slice(-1)[0],
           headerName: this.mappings.arrayOfMappings[index].headerName,
         }))
         .map(({ tableName, fieldName, headerName }) => ({
@@ -807,36 +806,48 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
   // Actions
   unupload() {
-    $('<div>Rolling back the Data Set will attempt to remove the data it added to the main Specify tables. ' +
-      'The rollback can fail if the data has been referenced by other new data in the interim.</div>').dialog({
-        modal: true,
-        title: "Start Data Set Rollback?",
-        close() { $(this).remove(); },
-        buttons: {
-          Rollback: () => {
-            if (typeof this.uploadedView !== 'undefined') {
-              this.uploadedView.remove();
-              this.uploadedView = undefined;
-            }
-            $.post(`/api/workbench/unupload/${this.dataset.id}/`);
-            this.openStatus('unupload');
-          },
-          Cancel() { $(this).dialog('close'); },
-        }
-      });
+    $(
+      '<div>Rolling back the Data Set will attempt to remove the data it added to the main Specify tables. ' +
+        'The rollback can fail if the data has been referenced by other new data in the interim.</div>'
+    ).dialog({
+      modal: true,
+      title: 'Start Data Set Rollback?',
+      close() {
+        $(this).remove();
+      },
+      buttons: {
+        Rollback: () => {
+          if (typeof this.uploadedView !== 'undefined') {
+            this.uploadedView.remove();
+            this.uploadedView = undefined;
+          }
+          $.post(`/api/workbench/unupload/${this.dataset.id}/`);
+          this.openStatus('unupload');
+        },
+        Cancel() {
+          $(this).dialog('close');
+        },
+      },
+    });
   },
   upload(evt) {
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     if (this.dataset.uploadplan) {
       if (mode === 'upload') {
-        $('<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>').dialog({
+        $(
+          '<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>'
+        ).dialog({
           modal: true,
-          title: "Start Data Set Upload?",
-          close() { $(this).remove(); },
+          title: 'Start Data Set Upload?',
+          close() {
+            $(this).remove();
+          },
           buttons: {
             Upload: () => this.startUpload(mode),
-            Cancel() { $(this).dialog('close'); },
-          }
+            Cancel() {
+              $(this).dialog('close');
+            },
+          },
         });
       } else {
         this.startUpload(mode);
@@ -862,12 +873,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     this.validationMode = 'off';
     this.updateValidationButton();
     $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-     .fail((jqxhr) => {
-       this.checkDeletedFail(jqxhr);
-     })
-     .done(() => {
-       this.openStatus(mode);
-     });
+      .fail((jqxhr) => {
+        this.checkDeletedFail(jqxhr);
+      })
+      .done(() => {
+        this.openStatus(mode);
+      });
   },
   openStatus(mode) {
     new WBStatus({ dataset: this.dataset })
@@ -911,17 +922,23 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     a.click();
   },
   revertChanges() {
-    $('<div>This action will discard all changes to the Data Set since the last save.</div>').dialog({
+    $(
+      '<div>This action will discard all changes to the Data Set since the last save.</div>'
+    ).dialog({
       modal: true,
-      title: "Revert Unsaved Changes?",
-      close() { $(this).remove(); },
+      title: 'Revert Unsaved Changes?',
+      close() {
+        $(this).remove();
+      },
       buttons: {
         Revert: () => {
           navigation.removeUnloadProtect(this);
           this.trigger('refresh');
         },
-        Cancel() { $(this).dialog('close'); },
-      }
+        Cancel() {
+          $(this).dialog('close');
+        },
+      },
     });
   },
   saveClicked: function () {
@@ -969,14 +986,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
     switch (this.validationMode) {
       case 'live':
-        this.liveValidationStack = this.dataset.rows
-                                       .map((_, i) => i)
-                                       .reverse();
+        this.liveValidationStack = this.dataset.rows.map((_, i) => i).reverse();
         this.triggerLiveValidation();
-        this.el.classList.remove(
-          'wb-hide-new-cells',
-          'wb-hide-invalid-cells'
-        );
+        this.el.classList.remove('wb-hide-new-cells', 'wb-hide-invalid-cells');
         this.el.classList.add('wb-hide-modified-cells');
         break;
       case 'static':
@@ -1110,9 +1122,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     this.$('.wb-save').prop('disabled', false);
     this.$('.wb-revert').prop('disabled', false);
     this.$('.wb-show-upload-view')
-        .prop('disabled', true)
-        .prop('title', 'The data set must be validated or uploaded');
-    navigation.addUnloadProtect(this, 'Changes to this Data Set have not been saved.');
+      .prop('disabled', true)
+      .prop('title', 'The data set must be validated or uploaded');
+    navigation.addUnloadProtect(
+      this,
+      'Changes to this Data Set have not been saved.'
+    );
   },
   checkDeletedFail(jqxhr) {
     if (jqxhr.status === 404) {
@@ -1123,7 +1138,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   spreadSheetUpToDate: function () {
     if (!this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = false;
-    this.$('.wb-upload, .wb-validate').prop('disabled', false).prop('title', '');
+    this.$('.wb-upload, .wb-validate')
+      .prop('disabled', false)
+      .prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     this.$('.wb-revert').prop('disabled', true);
     navigation.removeUnloadProtect(this);
@@ -1174,9 +1191,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       navigationTotalElement.innerText = cellCounts[navigationType];
 
       if (cellCounts[navigationType] === 0) {
-        const currentPositionElement = navigationContainer.getElementsByClassName(
-          'wb-navigation-position'
-        )?.[0];
+        const currentPositionElement =
+          navigationContainer.getElementsByClassName(
+            'wb-navigation-position'
+          )?.[0];
         if (currentPositionElement !== 'undefined')
           currentPositionElement.innerText = 0;
       }
@@ -1248,10 +1266,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     }
   },
   clearAllMetaData() {
-    const {
-      isSearchResult: _,
-      ...partialDefaultCellMeta
-    } = getDefaultCellMeta();
+    const { isSearchResult: _, ...partialDefaultCellMeta } =
+      getDefaultCellMeta();
     this.hot.batchRender(() =>
       [...Array(this.hot.countRows())].forEach((_, visualRow) =>
         Object.keys(this.dataset.columns).map((physicalCol) =>
@@ -1280,7 +1296,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   getCellsMetaObject() {
     if (this.hasMetaDataObjectChanges) {
       const getPosition = (cellMetaData, first) =>
-        (this.wbutils.searchPreferences.navigation.direction === 'rowByRow') ===
+        (this.wbutils.searchPreferences.navigation.direction === 'rowFirst') ===
         first
           ? cellMetaData.visualRow
           : cellMetaData.visualCol;

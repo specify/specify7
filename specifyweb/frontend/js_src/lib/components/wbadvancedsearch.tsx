@@ -11,7 +11,7 @@ interface Props {
 
 type ComponentProps = Readonly<Props>;
 
-type NavigationDirection = 'columnByColumn' | 'rowByRow';
+type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
 export interface SearchPreferences {
@@ -42,7 +42,7 @@ export const getInitialSearchPreferences = (): SearchPreferences =>
   cache.get('workbench', 'search-properties', {
     defaultValue: {
       navigation: {
-        direction: 'columnByColumn',
+        direction: 'columnFirst',
       },
       search: {
         fullMatch: true,
@@ -117,7 +117,7 @@ function WbAdvancedSearch({
       <b>Navigation Options</b>
       <br />
       <label>
-        Navigation direction
+        Cursor Priority
         <br />
         <select
           onChange={({ target }): void =>
@@ -131,8 +131,8 @@ function WbAdvancedSearch({
           }
           value={state.navigation.direction}
         >
-          <option value="columnByColumn">Column by Column</option>
-          <option value="rowByRow">Row by Row</option>
+          <option value="columnFirst">Column first</option>
+          <option value="rowFirst">Row first</option>
         </select>
       </label>
       <br />
@@ -157,7 +157,7 @@ function WbAdvancedSearch({
       <b>Replace Options</b>
       <br />
       <label>
-        Replace mode:
+        Replace Mode
         <br />
         <select
           onChange={({ target }): void =>

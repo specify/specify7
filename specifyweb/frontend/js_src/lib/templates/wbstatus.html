@@ -11,17 +11,19 @@
      const operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
      const title = (
       (
-    		current === total ||
-    		typeof current === 'undefined' ||
-    		typeof total === 'undefined'
-    	) ?
-  		 operation === "Uploading" ?
-  		  'Updating trees...' :
-  		  `${operation}...` :
-		   `${operation} (<b>${current}/${total}</b>)`
+        current === total ||
+        typeof current === 'undefined' ||
+        typeof total === 'undefined'
+      ) ?
+       operation === "Uploading" ?
+        'Updating trees...' :
+        `${operation}...` :
+         `${operation} Row: ${current}/${total}`
      ); %>
     <div style="width:100%">
-      <%= title %>
+      <br>
+      <b><%= title %></b>
+      <br>
       <div class="wb-status-progress-bar"></div>
     </div>
   <% } %>

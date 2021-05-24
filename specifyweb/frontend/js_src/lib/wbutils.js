@@ -89,7 +89,7 @@ module.exports = Backbone.View.extend({
     let cellIsTypeCount = 0;
 
     const getPosition = (cellMetaData, first) =>
-      (this.searchPreferences.navigation.direction === 'rowByRow') === first
+      (this.searchPreferences.navigation.direction === 'rowFirst') === first
         ? cellMetaData.visualRow
         : cellMetaData.visualCol;
 
@@ -174,18 +174,15 @@ module.exports = Backbone.View.extend({
 
     const button = e.target;
     const buttonContainer = button.parentElement;
-    const navigationContainer = this.el.getElementsByClassName(
-      'wb-navigation'
-    )[0];
+    const navigationContainer =
+      this.el.getElementsByClassName('wb-navigation')[0];
     const navigationTotalElement = navigationContainer.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const searchQueryElement = buttonContainer.getElementsByClassName(
-      'wb-search-query'
-    )[0];
-    const navigationButton = navigationContainer.getElementsByClassName(
-      'wb-cell-navigation'
-    );
+    const searchQueryElement =
+      buttonContainer.getElementsByClassName('wb-search-query')[0];
+    const navigationButton =
+      navigationContainer.getElementsByClassName('wb-cell-navigation');
 
     this.searchQuery = this.searchPreferences.search.useRegex
       ? searchQueryElement.value
@@ -208,9 +205,8 @@ module.exports = Backbone.View.extend({
 
     const button = e.target;
     const buttonContainer = button.parentElement;
-    const replacementValueElement = buttonContainer.getElementsByClassName(
-      'wb-replace-value'
-    )[0];
+    const replacementValueElement =
+      buttonContainer.getElementsByClassName('wb-replace-value')[0];
     const replacementValue = replacementValueElement.value;
 
     const getNewCellValue = this.searchPreferences.search.fullMatch
@@ -265,8 +261,8 @@ module.exports = Backbone.View.extend({
   showAdvancedSearch() {
     if (typeof this.advancedSearch !== 'undefined') return;
 
-    let initialNavigationDirection = this.searchPreferences.navigation
-      .direction;
+    let initialNavigationDirection =
+      this.searchPreferences.navigation.direction;
     this.advancedSearch = new WbAdvancedSearch({
       initialSearchPreferences: this.searchPreferences,
       onChange: (newSearchPreferences) => {
@@ -276,8 +272,8 @@ module.exports = Backbone.View.extend({
           initialNavigationDirection
         ) {
           this.wbview.hasMetaDataObjectChanges = true;
-          initialNavigationDirection = this.searchPreferences.navigation
-            .direction;
+          initialNavigationDirection =
+            this.searchPreferences.navigation.direction;
         }
         if (this.searchPreferences.search.liveUpdate) {
           this.searchCells(
@@ -486,14 +482,15 @@ module.exports = Backbone.View.extend({
 
     let that = this;
     function updateGeolocateUrl() {
-      currentLocalityColumns = WbLocalityDataExtractor.getLocalityColumnsFromSelectedCell(
-        that.localityColumns,
-        that.wbview.dataset.columns[
-          that.wbview.hot.toPhysicalColumn(
-            finalSelectedCells[currentCellIndex][1]
-          )
-        ]
-      );
+      currentLocalityColumns =
+        WbLocalityDataExtractor.getLocalityColumnsFromSelectedCell(
+          that.localityColumns,
+          that.wbview.dataset.columns[
+            that.wbview.hot.toPhysicalColumn(
+              finalSelectedCells[currentCellIndex][1]
+            )
+          ]
+        );
 
       geolocateQueryUrl = that.getGeoLocateQueryURL(
         currentLocalityColumns,
@@ -613,12 +610,13 @@ module.exports = Backbone.View.extend({
         })
       );
 
-    const localityPoints = WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
-      this.localityColumns,
-      rows,
-      this.wbview.dataset.columns,
-      customRowNumbers
-    );
+    const localityPoints =
+      WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
+        this.localityColumns,
+        rows,
+        this.wbview.dataset.columns,
+        customRowNumbers
+      );
 
     Leaflet.showLeafletMap({
       localityPoints,
@@ -758,9 +756,8 @@ module.exports = Backbone.View.extend({
       const optionValue = selectedOption.attr('value');
       if (typeof options[optionValue] === 'undefined') return;
 
-      const { conversionFunctionName, showCardinalDirection } = options[
-        optionValue
-      ];
+      const { conversionFunctionName, showCardinalDirection } =
+        options[optionValue];
       const includeSymbolsFunction = includeSymbols
         ? (coordinate) => coordinate
         : (coordinate) => coordinate.replace(/[^\w\s\-.]/gm, '');

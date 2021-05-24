@@ -134,6 +134,12 @@
   background-color: var(--accent-color);
 }
 
+.handsontable tbody th.ht__highlight,
+.handsontable thead th.ht__highlight {
+  background-color: #8eb0e7;
+  color: #000;
+}
+
 /* The order here determines the priority of the states
  * From the lowest till the highest */
 .wbs-form:not(.wb-hide-new-cells) .wb-no-match-cell,
