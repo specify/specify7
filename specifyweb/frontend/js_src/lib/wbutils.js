@@ -318,8 +318,8 @@ module.exports = Backbone.View.extend({
       }
 
     if (this.searchPreferences.search.fullMatch)
-      return cellValue === searchQuery;
-    else return cellValue.includes(searchQuery);
+      return cellValue.trim() === searchQuery;
+    else return cellValue.trim().includes(searchQuery);
   },
   toggleToolkit() {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
