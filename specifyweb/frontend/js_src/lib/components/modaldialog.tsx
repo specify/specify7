@@ -6,11 +6,10 @@
  *
  */
 
-'use strict';
-
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import type { IR, RA } from './wbplanview';
 
 interface ModalDialogBaseProps {

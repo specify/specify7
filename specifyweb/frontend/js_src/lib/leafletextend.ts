@@ -2,10 +2,10 @@
  * Imports Leaflet, adds plugins along with new controls and reexports it
  */
 
-'use strict';
-
-import L from 'leaflet';
+// eslint-disable-next-line simple-import-sort/imports
 import $ from 'jquery';
+import L from 'leaflet';
+
 import 'leaflet/dist/leaflet.css';
 // Marker Clustering
 import 'leaflet.markercluster/dist/MarkerCluster.css';

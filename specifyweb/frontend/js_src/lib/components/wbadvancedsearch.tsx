@@ -1,7 +1,8 @@
 import React from 'react';
+
+import * as cache from '../cache';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import * as cache from '../cache';
 
 interface Props {
   initialSearchPreferences: SearchPreferences;

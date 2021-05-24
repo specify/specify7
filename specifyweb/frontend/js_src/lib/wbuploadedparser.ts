@@ -5,11 +5,12 @@
 
 'use string';
 
+import type { State } from 'typesafe-reducer';
+
 import type { IR, R, RA, RR } from './components/wbplanview';
 import icons from './icons';
 import type { Schema } from './legacytypes';
 import schema from './schema';
-import type { State } from 'typesafe-reducer';
 import type { UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import {
@@ -302,10 +303,8 @@ function handleUploadResult({
     );
 
   // 'parent' exists for tree ranks only
-  const {
-    parent: parentUploadResult = undefined,
-    ...toOneUploadResults
-  } = uploadResult.toOne;
+  const { parent: parentUploadResult = undefined, ...toOneUploadResults } =
+    uploadResult.toOne;
   const parentBase = parentUploadResult?.UploadResult.record_result;
   const parentType =
     parentBase &&
@@ -879,11 +878,11 @@ export function parseUploadResults(
       })
   );
 
-  const normalTableNames = Object.keys(((schema as unknown) as Schema).models);
+  const normalTableNames = Object.keys((schema as unknown as Schema).models);
   const lowercaseTableNames = normalTableNames.map((tableName) =>
     tableName.toLowerCase()
   );
-  const schemaModels = Object.values(((schema as unknown) as Schema).models);
+  const schemaModels = Object.values((schema as unknown as Schema).models);
 
   let columnNames: string[];
   return [
@@ -895,9 +894,10 @@ export function parseUploadResults(
           tableName in treeTables,
           headerGroups,
           {
-            tableLabel: schemaModels[
-              lowercaseTableNames.indexOf(tableName.toLowerCase())
-            ].getLocalizedName(),
+            tableLabel:
+              schemaModels[
+                lowercaseTableNames.indexOf(tableName.toLowerCase())
+              ].getLocalizedName(),
             tableIcon: icons.getIcon(
               normalTableNames[
                 lowercaseTableNames.indexOf(tableName.toLowerCase())
@@ -911,7 +911,6 @@ export function parseUploadResults(
                   columnNames: (columnNames = formatHeaders(
                     headersOrderedByGroups,
                     [
-                      // Save list of column indexes to `columnIndexes`
                       ...new Set(
                         // Make the list unique
                         tableRecords.flatMap(

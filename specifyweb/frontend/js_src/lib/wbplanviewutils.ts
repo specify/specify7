@@ -1,4 +1,5 @@
 import $ from 'jquery';
+
 import Automapper from './automapper';
 import type {
   PublicWBPlanViewProps,

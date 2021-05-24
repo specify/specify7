@@ -3,17 +3,17 @@
  *
  */
 
-'use strict';
-
-import React from 'react';
-import $ from 'jquery';
 import '../../css/wbdsdialog.css';
+
+import $ from 'jquery';
+import React from 'react';
+
 import navigation from '../navigation';
-import { ModalDialog, LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import type { DatasetBrief, RA } from './wbplanview';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
+import { LoadingScreen, ModalDialog } from './modaldialog';
+import createBackboneView from './reactbackboneextend';
+import type { DatasetBrief, RA } from './wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
   $.ajax('/api/workbench/dataset/', {
@@ -135,9 +135,8 @@ export function WbsDialog({
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
 }: ComponentProps) {
-  const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(
-    undefined
-  );
+  const [datasets, setDatasets] =
+    React.useState<undefined | RA<DatasetBrief>>(undefined);
 
   React.useEffect(() => {
     fetch(`/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`)

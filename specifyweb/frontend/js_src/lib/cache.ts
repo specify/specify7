@@ -5,8 +5,6 @@
  *
  */
 
-'use strict';
-
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './components/wbplanview';
 

@@ -6,10 +6,12 @@
  *
  */
 
-'use strict';
+import type { Action } from 'typesafe-reducer';
+import { generateDispatch } from 'typesafe-reducer';
 
 import type { Options, TableSynonym } from './automapperdefinitions';
 import AutoMapperDefinitions from './automapperdefinitions';
+import * as cache from './cache';
 import type { IR, R, RA } from './components/wbplanview';
 import type {
   AutomapperScope,
@@ -18,9 +20,6 @@ import type {
   RelationshipType,
 } from './components/wbplanviewmapper';
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
-import type { Action } from 'typesafe-reducer';
-import { generateDispatch } from 'typesafe-reducer';
-import * as cache from './cache';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
@@ -869,9 +868,8 @@ export default class Automapper {
                         new RegExp(`${tableSynonym} (\\d+) ${fieldSynonym}`),
                         new RegExp(`${tableSynonym} ${fieldSynonym} (\\d+)`),
                       ].some((regularExpression) => {
-                        const match = regularExpression.exec(
-                          lowercaseHeaderName
-                        );
+                        const match =
+                          regularExpression.exec(lowercaseHeaderName);
 
                         if (match === null || typeof match[1] === 'undefined')
                           return false;

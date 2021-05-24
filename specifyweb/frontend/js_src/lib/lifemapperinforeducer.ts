@@ -1,3 +1,6 @@
+import type { Action } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
+
 import type { MessageTypes } from './components/lifemapperinfo';
 import type { States } from './components/lifemapperinfostate';
 import { mainState } from './components/lifemapperinfostate';
@@ -9,8 +12,6 @@ import type {
   FullAggregatorInfo,
 } from './lifemapperinfoutills';
 import { BADGE_NAMES } from './lifemapperinfoutills';
-import type { Action } from 'typesafe-reducer';
-import { generateReducer } from 'typesafe-reducer';
 
 type LoadedAction = Action<
   'LoadedAction',

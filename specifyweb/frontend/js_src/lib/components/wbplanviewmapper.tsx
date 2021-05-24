@@ -6,9 +6,8 @@
  *
  */
 
-'use strict';
-
 import React from 'react';
+
 import type {
   ColumnOptions,
   MatchBehaviors,
@@ -151,10 +150,12 @@ export default function WBPlanViewMapper(
     )
       return;
 
-    (Object.entries(props.refObject.current.autoScroll) as [
-      AutoScrollTypes,
-      boolean
-    ][])
+    (
+      Object.entries(props.refObject.current.autoScroll) as [
+        AutoScrollTypes,
+        boolean
+      ][]
+    )
       .filter(([, autoScroll]) => autoScroll)
       .forEach(([autoScrollType]) => {
         if (autoScrollType === 'listOfMappings') {

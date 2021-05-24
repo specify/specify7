@@ -5,9 +5,8 @@
  *
  */
 
-'use strict';
-
 import React from 'react';
+
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import type {
   CustomSelectElementDefaultOptionProps,
@@ -161,9 +160,8 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
     ])
   );
 
-  let defaultOption:
-    | CustomSelectElementDefaultOptionProps
-    | undefined = undefined;
+  let defaultOption: CustomSelectElementDefaultOptionProps | undefined =
+    undefined;
 
   const fieldNames: string[] = [];
 

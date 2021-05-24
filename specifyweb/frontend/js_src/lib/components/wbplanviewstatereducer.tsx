@@ -1,8 +1,9 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
-import type { MatchBehaviors } from '../uploadplantomappingstree';
+
 import * as cache from '../cache';
+import type { MatchBehaviors } from '../uploadplantomappingstree';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
 import dataModelStorage from '../wbplanviewmodel';

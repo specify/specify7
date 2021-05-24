@@ -5,13 +5,13 @@
  *
  */
 
-'use strict';
+import '../../css/wbuploaded.css';
 
 import type Handsontable from 'handsontable';
 import React from 'react';
-import '../../css/wbuploaded.css';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
+
 import dataModelStorage from '../wbplanviewmodel';
 import fetchDataModel from '../wbplanviewmodelfetcher';
 import type {
@@ -532,12 +532,12 @@ const reducer = generateReducer<WBUploadedState, WBUploadedActions>({
   ToggleTableRecordsVisibilityAction: ({ state, action }) => ({
     ...state,
     [action.destination]: Object.fromEntries(
-      Object.entries(
-        state[action.destination]
-      ).map(([tableName, isCollapsed]) => [
-        tableName,
-        isCollapsed !== (tableName === action.tableName),
-      ])
+      Object.entries(state[action.destination]).map(
+        ([tableName, isCollapsed]) => [
+          tableName,
+          isCollapsed !== (tableName === action.tableName),
+        ]
+      )
     ),
   }),
   CellClickedAction: ({ state, action: { rowIndex, columnIndex } }) => {
@@ -649,15 +649,12 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
 function WBUploadedViewDataParser(
   props: WBUploadedViewDataParseProps
 ): JSX.Element {
-  const [treeRanks, setTreeRanks] = React.useState<IR<RA<string>> | undefined>(
-    ranks
-  );
-  const [uploadedRows, setUploadedRows] = React.useState<
-    UploadedRows | undefined
-  >(undefined);
-  const [uploadedPicklistItems, setUploadedPicklistItems] = React.useState<
-    UploadedPicklistItems | undefined
-  >(undefined);
+  const [treeRanks, setTreeRanks] =
+    React.useState<IR<RA<string>> | undefined>(ranks);
+  const [uploadedRows, setUploadedRows] =
+    React.useState<UploadedRows | undefined>(undefined);
+  const [uploadedPicklistItems, setUploadedPicklistItems] =
+    React.useState<UploadedPicklistItems | undefined>(undefined);
   React.useEffect(
     () =>
       // Fetch tree ranks
@@ -665,15 +662,15 @@ function WBUploadedViewDataParser(
         .then(() =>
           setTreeRanks(
             Object.fromEntries(
-              Object.entries(
-                dataModelStorage.ranks
-              ).map(([tableName, tableRanks]) => [
-                tableName,
-                [
-                  dataModelStorage.rootRanks[tableName],
-                  ...Object.keys(tableRanks),
-                ],
-              ])
+              Object.entries(dataModelStorage.ranks).map(
+                ([tableName, tableRanks]) => [
+                  tableName,
+                  [
+                    dataModelStorage.rootRanks[tableName],
+                    ...Object.keys(tableRanks),
+                  ],
+                ]
+              )
             )
           )
         )

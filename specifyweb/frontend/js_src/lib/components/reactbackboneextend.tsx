@@ -6,10 +6,9 @@
  *
  */
 
-'use strict';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import Backbone from '../backbone';
 import app from '../specifyapp.js';
 import ErrorBoundary from './errorboundary';

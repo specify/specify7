@@ -5,12 +5,11 @@
  *
  */
 
-'use strict';
-
 import React from 'react';
+
 import icons from '../icons';
 import { upperToKebab } from '../wbplanviewhelper';
-import type { R, IR, RA } from './wbplanview';
+import type { IR, R, RA } from './wbplanview';
 
 export type CustomSelectType =
   | 'OPENED_LIST'
@@ -359,9 +358,8 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable = !NON_INTERACTIVE_SELECT_TYPES.includes(
-    customSelectType
-  );
+  const optionIsIntractable =
+    !NON_INTERACTIVE_SELECT_TYPES.includes(customSelectType);
 
   const handleClick =
     optionIsIntractable &&

@@ -1,9 +1,10 @@
 import type React from 'react';
-import type { WBPlanViewProps } from './components/wbplanview';
-import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
+
 import * as cache from './cache';
+import type { WBPlanViewProps } from './components/wbplanview';
+import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
 import type { WBPlanViewActions } from './wbplanviewreducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
@@ -39,7 +40,8 @@ const flippedRefStatesMapper = Object.fromEntries(
 type RefChangeStateAction = Action<'RefChangeStateAction'>;
 type RefSetUnloadProtectAction = Action<'RefSetUnloadProtectAction'>;
 type RefUnsetUnloadProtectAction = Action<'RefUnsetUnloadProtectAction'>;
-type RefHideEmptyDataSetDialogAction = Action<'RefHideEmptyDataSetDialogAction'>;
+type RefHideEmptyDataSetDialogAction =
+  Action<'RefHideEmptyDataSetDialogAction'>;
 
 type MappingViewResizeAction = Action<
   'MappingViewResizeAction',

@@ -1,8 +1,8 @@
-'use strict';
+import '../../css/lifemapperinfo.css';
 
 import $ from 'jquery';
 import React from 'react';
-import '../../css/lifemapperinfo.css';
+
 import type { MarkerGroups } from '../leaflet';
 import * as Leaflet from '../leaflet';
 import type { LocalityData } from '../leafletutils';
@@ -186,16 +186,14 @@ function LifemapperInfo({
 
         const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
           (resolve) => {
-            const similarCollectionObjects = new (schema as any).models.CollectionObject.LazyCollection(
-              {
-                filters: {
-                  determinations__iscurrent: true,
-                  determinations__preferredtaxon__fullname: getOccurrenceName(
-                    0
-                  ),
-                },
-              }
-            );
+            const similarCollectionObjects = new (
+              schema as any
+            ).models.CollectionObject.LazyCollection({
+              filters: {
+                determinations__iscurrent: true,
+                determinations__preferredtaxon__fullname: getOccurrenceName(0),
+              },
+            });
 
             similarCollectionObjects
               .fetch({

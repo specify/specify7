@@ -3,10 +3,10 @@
  *
  */
 
-'use strict';
-
 import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
+
+import * as cache from './cache';
 import type { IR, RA, RR } from './components/wbplanview';
 import {
   coMapTileServers,
@@ -15,7 +15,6 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { LocalityData } from './leafletutils';
-import * as cache from './cache';
 import { capitalize } from './wbplanviewhelper';
 
 const DEFAULT_ZOOM = 5;
@@ -174,9 +173,8 @@ function addDetailsButton(
   L.control.details = (options) => new L.Control.Details(options);
   // @ts-expect-error
   L.control.details({ position: 'topleft' }).addTo(map);
-  const detailsContainer = container.getElementsByClassName(
-    'details-container'
-  )[0];
+  const detailsContainer =
+    container.getElementsByClassName('details-container')[0];
   detailsContainer.getElementsByTagName('span')[0].innerHTML = details;
   return detailsContainer;
 }

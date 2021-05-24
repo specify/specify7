@@ -5,8 +5,6 @@
  *
  */
 
-'use strict';
-
 import type { IR, RA } from './components/wbplanview';
 import type {
   FullMappingPath,

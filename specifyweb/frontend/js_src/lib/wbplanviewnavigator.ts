@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import type {
   CustomSelectSubtype,
   CustomSelectType,
@@ -159,11 +157,8 @@ function findNextNavigationDirection<RETURN_STRUCTURE>(
       finalData: callbacks.getFinalData(callbackPayload),
     };
 
-  const {
-    nextPathElementName,
-    nextPathElement,
-    nextRealPathElementName,
-  } = nextPathElementsData;
+  const { nextPathElementName, nextPathElement, nextRealPathElementName } =
+    nextPathElementsData;
 
   let nextTableName = '';
   let nextParentTableName = '';
@@ -302,10 +297,11 @@ function getNavigationChildrenTypes(
   parentPathElementName: string,
   tableName: string
 ) {
-  const parentRelationshipType: RelationshipType | undefined = (dataModelStorage
-    .tables[parentTableName]?.fields[
-    parentTableRelationshipName
-  ] as DataModelRelationship)?.type;
+  const parentRelationshipType: RelationshipType | undefined = (
+    dataModelStorage.tables[parentTableName]?.fields[
+      parentTableRelationshipName
+    ] as DataModelRelationship
+  )?.type;
 
   return {
     parentRelationshipType,
@@ -555,9 +551,8 @@ export function getMappingLineData({
           typeof dataModelStorage.ranks[tableName][treeRankName] !== 'undefined'
         ) {
           internalState.nextMappingPathElement = formattedTreeRankName;
-          mappingPath[
-            internalState.mappingPathPosition
-          ] = formattedTreeRankName;
+          mappingPath[internalState.mappingPathPosition] =
+            formattedTreeRankName;
         }
 
         internalState.defaultValue = internalState.nextMappingPathElement;

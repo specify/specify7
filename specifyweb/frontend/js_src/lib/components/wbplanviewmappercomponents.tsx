@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import type { RA } from './wbplanview';

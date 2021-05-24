@@ -1,6 +1,7 @@
-import React from 'react';
-import * as Leaflet from '../leaflet';
 import type L from 'leaflet';
+import React from 'react';
+
+import * as Leaflet from '../leaflet';
 import { issueDefinitions } from '../lifemapperinfoissuedefinitions';
 import type { LifemapperInfo } from '../lifemapperinforeducer';
 import type {

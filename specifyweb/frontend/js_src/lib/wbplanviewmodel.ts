@@ -6,14 +6,12 @@
  *
  */
 
-'use strict';
-
 import type { IR } from './components/wbplanview';
-import type { OriginalRelationships } from './wbplanviewmodelfetcher';
 import type {
   DataModelListOfTables,
   DataModelRanks,
   DataModelTables,
+  OriginalRelationships,
 } from './wbplanviewmodelfetcher';
 
 const dataModelStorage: {

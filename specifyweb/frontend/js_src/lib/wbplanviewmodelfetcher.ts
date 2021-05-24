@@ -6,8 +6,7 @@
  *
  */
 
-'use strict';
-
+import * as cache from './cache';
 import type { IR, R, RA } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import domain from './domain';
@@ -18,8 +17,6 @@ import type {
   SchemaModelTableRelationship,
 } from './legacytypes';
 import schema from './schema';
-import * as cache from './cache';
-
 import { getFriendlyName } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
@@ -61,7 +58,8 @@ interface DataModelRelationshipWritable extends DataModelFieldWritablePrimer {
   foreignName?: string;
 }
 
-export type DataModelNonRelationship = Readonly<DataModelNonRelationshipWritable>;
+export type DataModelNonRelationship =
+  Readonly<DataModelNonRelationshipWritable>;
 
 export type DataModelRelationship = Readonly<DataModelRelationshipWritable>;
 
@@ -160,7 +158,8 @@ function handleRelationshipField(
   hasRelationshipWithDefinition: () => void,
   hasRelationshipWithDefinitionItem: () => void
 ): boolean {
-  const relationship: SchemaModelTableRelationship = field as SchemaModelTableRelationship;
+  const relationship: SchemaModelTableRelationship =
+    field as SchemaModelTableRelationship;
 
   let foreignName = relationship.otherSideName;
   if (typeof foreignName !== 'undefined')
@@ -285,7 +284,7 @@ export default async function (): Promise<void> {
   const originalRelationships: OriginalRelationshipsWritable = {};
 
   const tables = Object.values(
-    ((schema as unknown) as SchemaType).models
+    (schema as unknown as SchemaType).models
   ).reduce<DataModelTablesWritable>((tables, tableData) => {
     const tableName = tableData.longName.split('.').slice(-1)[0].toLowerCase();
     const tableFriendlyName = tableData.getLocalizedName();
@@ -405,9 +404,11 @@ export default async function (): Promise<void> {
 
   // Remove relationships to system tables
   Object.entries(tables).forEach(([tableName, tableData]) =>
-    (Object.entries(tableData.fields).filter(
-      ([, { isRelationship }]) => isRelationship
-    ) as [fieldName: string, relationshipData: DataModelRelationship][])
+    (
+      Object.entries(tableData.fields).filter(
+        ([, { isRelationship }]) => isRelationship
+      ) as [fieldName: string, relationshipData: DataModelRelationship][]
+    )
       .filter(
         ([, { tableName: relationshipTableName }]) =>
           typeof tables[relationshipTableName] === 'undefined'

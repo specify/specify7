@@ -4,8 +4,8 @@ import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
 import { formatCoordinate, getField, getLocalityData } from './leafletutils';
-import { findSubArray } from './wbplanviewhelper';
 import type { SplitMappingPath } from './wbplanviewhelper';
+import { findSubArray } from './wbplanviewhelper';
 import {
   formatReferenceItem,
   mappingPathToString,

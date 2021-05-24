@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import type { RA } from './components/wbplanview';
 import type {
   MappingPath,

@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import type { IR, R } from './components/wbplanview';
 import type {
   ColumnDef,
@@ -181,12 +179,12 @@ const rankMappedFieldsToTreeRecordRanks = (
   rankMappedFields: IR<MappingsTreeNode>
 ): IR<ColumnDef> =>
   Object.fromEntries(
-    Object.entries(
-      rankMappedFields
-    ).map(([fieldName, headerMappingStructure]) => [
-      fieldName,
-      extractHeaderNameFromHeaderStructure(headerMappingStructure),
-    ])
+    Object.entries(rankMappedFields).map(
+      ([fieldName, headerMappingStructure]) => [
+        fieldName,
+        extractHeaderNameFromHeaderStructure(headerMappingStructure),
+      ]
+    )
   );
 
 const mappingsTreeToUploadPlanTree = (

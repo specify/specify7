@@ -6,9 +6,8 @@
  *
  */
 
-'use strict';
-
 import React from 'react';
+
 import { ModalDialog } from './modaldialog';
 
 type ErrorBoundaryState =

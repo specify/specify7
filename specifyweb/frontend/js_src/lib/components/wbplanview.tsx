@@ -5,10 +5,10 @@
  *
  */
 
-'use strict';
+import '../../css/wbplanview.css';
 
 import React from 'react';
-import '../../css/wbplanview.css';
+
 import type { JqueryPromise } from '../legacytypes';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import type { OpenMappingScreenAction } from '../wbplanviewreducer';
