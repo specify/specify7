@@ -401,6 +401,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         columnOptions: defaultColumnOptions,
       },
     ],
+    focusedLine: mappingState(state).lines.length,
     changesMade: true,
     mappingsAreValidated: false,
   }),
