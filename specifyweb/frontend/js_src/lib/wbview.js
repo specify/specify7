@@ -25,6 +25,7 @@ const {
   valueIsReferenceItem,
   valueIsTreeRank,
   mappingPathToString,
+  getNameFromTreeRankName,
 } = require('./wbplanviewmodelhelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
@@ -82,12 +83,14 @@ const WBView = Backbone.View.extend({
         this.mappings.mappingsTree
       );
       this.mappings.mappingLinesData = undefined;
+      this.mappings.treeRanks = undefined;
     } else this.mappings = undefined;
 
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.hasUnSavedChanges = false;
+    this.sortConfigIsSet = false;
 
     // These fields are primarily used for navigation, as the user may press the
     // "next" button several times per second - no point in reCalculating the
@@ -175,6 +178,7 @@ const WBView = Backbone.View.extend({
         if (this.dataset.rowresults) this.getValidationResults();
         this.wbutils.findLocalityColumns();
         this.identifyPickLists();
+        this.identifyTreeRanks();
       });
       this.resize();
 
@@ -190,6 +194,7 @@ const WBView = Backbone.View.extend({
         );
 
       this.commentsPlugin = this.hot.getPlugin('comments');
+      this.multiColumnSortingPlugin = this.hot.getPlugin('multiColumnSorting');
     });
 
     this.updateValidationButton();
@@ -256,7 +261,7 @@ const WBView = Backbone.View.extend({
           manualColumnResize: true,
           manualColumnMove: this.dataset.visualorder ?? true,
           outsideClickDeselects: false,
-          columnSorting: true,
+          multiColumnSorting: true,
           sortIndicator: true,
           search: {
             searchResultClass: 'wb-search-match-cell',
@@ -303,7 +308,7 @@ const WBView = Backbone.View.extend({
           afterChange: this.afterChange.bind(this),
           afterCreateRow: this.rowCountChanged.bind(this),
           afterRemoveRow: this.rowCountChanged.bind(this),
-          afterColumnSort: this.cellPositionChanged.bind(this),
+          beforeColumnSort: this.beforeColumnSort.bind(this),
           beforeColumnMove: this.beforeColumnMove.bind(this),
           afterColumnMove: this.afterColumnMove.bind(this),
           afterSetCellMeta: this.afterSetCellMeta.bind(this),
@@ -393,7 +398,7 @@ const WBView = Backbone.View.extend({
           headerName: this.mappings.arrayOfMappings[index].headerName,
         }))
         .map(({ tableName, fieldName, headerName }) => ({
-          physicalColumn: this.dataset.columns.indexOf(headerName),
+          physicalCol: this.dataset.columns.indexOf(headerName),
           pickList:
             dataModelStorage.tables[tableName].fields[fieldName].pickList,
         }))
@@ -402,17 +407,51 @@ const WBView = Backbone.View.extend({
     );
     this.hot.updateSettings({
       cells: (_visualRow, visualCol, _prop) => {
-        const physicalColumn = this.hot.toPhysicalColumn(visualCol);
-        return physicalColumn in pickLists
+        const physicalCol = this.hot.toPhysicalColumn(visualCol);
+        return physicalCol in pickLists
           ? {
               type: 'autocomplete',
-              source: pickLists[physicalColumn].items,
-              strict: pickLists[physicalColumn].readOnly,
+              source: pickLists[physicalCol].items,
+              strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
             }
           : { type: 'text' };
       },
     });
+  },
+  identifyTreeRanks() {
+    if (!this.mappings) return;
+
+    this.mappings.treeRanks = Object.values(
+      this.mappings.arrayOfMappings
+        .map((splitMappingPath, index) => ({
+          ...splitMappingPath,
+          index,
+        }))
+        .filter(
+          ({ mappingPath }) =>
+            valueIsTreeRank(mappingPath.slice(-2)[0]) &&
+            mappingPath.slice(-1)[0] === 'name'
+        )
+        .map(({ mappingPath, headerName, index }) => ({
+          mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
+          tableName: this.mappings.mappingLinesData[index].tableName,
+          rankName: getNameFromTreeRankName(mappingPath.slice(-2)[0]),
+          physicalCol: this.dataset.columns.indexOf(headerName),
+        }))
+        .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
+          mappingGroup,
+          physicalCol,
+          rankId: Object.keys(dataModelStorage.ranks[tableName]).indexOf(
+            rankName
+          ),
+        }))
+        .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
+          groupedRanks[mappingGroup] ??= [];
+          groupedRanks[mappingGroup].push(rankMapping);
+          return groupedRanks;
+        }, {})
+    );
   },
 
   // Hooks
@@ -488,15 +527,92 @@ const WBView = Backbone.View.extend({
     if (this.hot && source !== 'auto') this.spreadSheetChanged();
     this.hasMetaDataChanges = true;
   },
-  cellPositionChanged() {
+  beforeColumnSort(currentSortConfig, newSortConfig) {
     this.hasMetaDataObjectChanges = true;
+
+    if (!this.mappings || this.sortConfigIsSet) return true;
+
+    const findTreeColumns = (searchConfig, deltaSearchConfig) =>
+      searchConfig
+        .map(({ column, sortOrder }) => ({
+          sortOrder,
+          visualColumn: column,
+          physicalCol: this.hot.toPhysicalColumn(column),
+        }))
+        .map(({ physicalCol, ...rest }) => ({
+          ...rest,
+          rankGroup: this.mappings.treeRanks
+            ?.map((rankGroup, groupIndex) => ({
+              rankId: rankGroup.find(
+                (mapping) => mapping.physicalCol === physicalCol
+              )?.rankId,
+              groupIndex,
+            }))
+            .filter(({ rankId }) => typeof rankId !== 'undefined')?.[0],
+        }))
+        // Filter out columns that aren't tree ranks
+        .filter(({ rankGroup }) => typeof rankGroup !== 'undefined')
+        /*
+         * Filter out columns that didn't change
+         * In the end, there should only be 0 or 1 columns
+         * */
+        .filter(({ sortOrder, visualColumn }) => {
+          const deltaColumnState = deltaSearchConfig.find(
+            ({ column }) => column === visualColumn
+          );
+          return (
+            typeof deltaColumnState === 'undefined' ||
+            deltaColumnState.sortOrder !== sortOrder
+          );
+        })[0];
+
+    let changedTreeColumn = findTreeColumns(newSortConfig, currentSortConfig);
+    let newSortOrderIsUnset = false;
+
+    if (typeof changedTreeColumn === 'undefined') {
+      changedTreeColumn = findTreeColumns(currentSortConfig, newSortConfig);
+      newSortOrderIsUnset = true;
+    }
+
+    if (typeof changedTreeColumn === 'undefined') return true;
+
+    /*
+     * Filter out columns with higher rank than the changed column
+     * (lower rankId corresponds to a higher tree rank)
+     * */
+    const columnsToSort = this.mappings.treeRanks[
+      changedTreeColumn.rankGroup.groupIndex
+    ]
+      .filter(({ rankId }) => rankId >= changedTreeColumn.rankGroup.rankId)
+      .map(({ physicalCol }) => this.hot.toVisualColumn(physicalCol));
+
+    // Filter out columns that are about to be sorted
+    const partialSortConfig = newSortConfig.filter(
+      ({ column }) => !columnsToSort.includes(column)
+    );
+
+    const fullSortConfig = [
+      ...partialSortConfig,
+      ...(newSortOrderIsUnset
+        ? []
+        : columnsToSort.map((visualCol) => ({
+            column: visualCol,
+            sortOrder: changedTreeColumn.sortOrder,
+          }))),
+    ];
+
+    this.sortConfigIsSet = true;
+    this.multiColumnSortingPlugin.sort(fullSortConfig);
+    this.sortConfigIsSet = false;
+
+    return false;
   },
   beforeColumnMove: (_columnIndexes, _startPosition, endPosition) =>
     typeof endPosition !== 'undefined',
   afterColumnMove(_columnIndexes, _startPosition, endPosition) {
     if (typeof endPosition === 'undefined' || !this.hot) return;
 
-    this.cellPositionChanged();
+    this.hasMetaDataObjectChanges = true;
 
     const columnOrder = this.dataset.columns.map((visualColumn) =>
       this.hot.toPhysicalColumn(visualColumn)
