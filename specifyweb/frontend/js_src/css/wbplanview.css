@@ -323,7 +323,7 @@
   border-color: var(--text1);
 }
 
-.wbplanview-mapping-line-header-unmapped {
+.wbplanview-mapping-line-header-unmapped .custom-select-input {
   border-color: var(--error);
 }
 
@@ -358,7 +358,7 @@
   line-height: calc(var(--white-space) * 2);
 }
 
-.wbplanview-mapping-line-header-unmapped,
+.wbplanview-mapping-line-header-unmapped .wbplanview-mapping-line-header,
 .custom-select-input-label-unmapped,
 .custom-select-option-label-unmapped {
   color: var(--error);
