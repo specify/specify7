@@ -7,8 +7,6 @@
  *
  */
 
-'use strict';
-
 import type { IR, RA, RR } from './components/wbplanview';
 import type {
   AutomapperScope,
@@ -452,11 +450,12 @@ const definitions: AutoMapperDefinitions = {
         automapper: {
           headers: {
             contains: ['latitude 1'],
+            string: ['latitude', 'lat', 'lat1', 'lat 1'],
           },
         },
         suggestion: {
           headers: {
-            contains: ['latitude'],
+            contains: ['latitude', 'lat '],
           },
         },
       },
@@ -471,11 +470,12 @@ const definitions: AutoMapperDefinitions = {
         automapper: {
           headers: {
             contains: ['longitude 1'],
+            string: ['longitude', 'long', 'long1', 'long 1'],
           },
         },
         suggestion: {
           headers: {
-            contains: ['longitude'],
+            contains: ['longitude', 'long '],
           },
         },
       },
