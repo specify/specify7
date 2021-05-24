@@ -318,7 +318,7 @@ export const uniquifyHeaders = (
     );
 
 export const upperToKebab = (value: string): string =>
-  value.toLowerCase().replaceAll('_', '-');
+  value.toLowerCase().split('_').join('-');
 
 export const camelToKebab = (value: string): string =>
-  value.replaceAll(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+  value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
