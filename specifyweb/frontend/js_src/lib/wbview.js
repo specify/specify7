@@ -666,12 +666,16 @@ const WBView = Backbone.View.extend({
         );
         if (value.length === 0)
           this.commentsPlugin.removeCommentAtCell(visualRow, visualCol);
-        else
+        else {
           this.commentsPlugin.setCommentAtCell(
             visualRow,
             visualCol,
             value.join('<br>')
           );
+          this.commentsPlugin.updateCommentMeta(visualRow, visualCol, {
+            readOnly: true,
+          });
+        }
       },
       // Triggered by setCommentAtCell / removeCommentAtCell
       comment: () => {
