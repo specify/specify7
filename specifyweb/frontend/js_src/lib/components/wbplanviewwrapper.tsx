@@ -28,12 +28,18 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
       });
   }, [schemaLoaded]);
 
+  const headers =
+    props.dataset.visualorder === null
+      ? props.dataset.columns
+      : props.dataset.visualorder.map(
+          (physicalCol) => props.dataset.columns[physicalCol]
+        );
   const uploadPlan = props.dataset.uploadplan ? props.dataset.uploadplan : null;
   return schemaLoaded ? (
     <WBPlanView
       {...props}
       uploadPlan={uploadPlan}
-      headers={props.dataset.columns}
+      headers={headers}
       readonly={props.dataset.uploadresult?.success ?? false}
     />
   ) : (
