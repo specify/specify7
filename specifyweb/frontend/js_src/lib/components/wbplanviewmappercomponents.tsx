@@ -145,7 +145,7 @@ export function MappingView(props: {
       </div>
       <button
         className="wbplanview-mapping-view-map-button"
-        disabled={!mapButtonIsEnabled}
+        disabled={!mapButtonIsEnabled || !props.focusedLineExists}
         onClick={
           mapButtonIsEnabled && props.focusedLineExists
             ? props.handleMapButtonClick

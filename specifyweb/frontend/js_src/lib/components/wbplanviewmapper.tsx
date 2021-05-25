@@ -90,7 +90,7 @@ export type WBPlanViewMapperBaseProps = {
   readonly validationResults: MappingPath[];
   readonly lines: RA<MappingLine>;
   readonly openSelectElement?: SelectElementPosition;
-  readonly focusedLine?: number;
+  readonly focusedLine: number;
   readonly automapperSuggestions?: RA<AutomapperSuggestion>;
 };
 
@@ -283,7 +283,7 @@ export default function WBPlanViewMapper(
             )}
             <MappingView
               baseTableName={props.baseTableName}
-              focusedLineExists={typeof props.focusedLine !== 'undefined'}
+              focusedLineExists={props.lines.length > 0}
               mappingPath={props.mappingView}
               showHiddenFields={props.showHiddenFields}
               mapButtonIsEnabled={

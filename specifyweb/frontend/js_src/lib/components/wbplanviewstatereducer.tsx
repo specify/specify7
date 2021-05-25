@@ -106,6 +106,7 @@ export const getDefaultMappingState = (): MappingState => ({
   mappingsAreValidated: false,
   validationResults: [],
   lines: [],
+  focusedLine: 0,
   changesMade: false,
   displayMatchingOptionsDialog: false,
   mustMatchPreferences: {},
