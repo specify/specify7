@@ -12,6 +12,7 @@ import type {
   DataModelRanks,
   DataModelTables,
   OriginalRelationships,
+  TreeRankData,
 } from './wbplanviewmodelfetcher';
 
 const dataModelStorage: {
@@ -21,7 +22,7 @@ const dataModelStorage: {
   tables: DataModelTables;
   listOfBaseTables: DataModelListOfTables;
   ranks: DataModelRanks;
-  rootRanks: IR<string>;
+  rootRanks: IR<[string, TreeRankData]>;
   originalRelationships: OriginalRelationships;
 } = {
   // Each one of this can be modified to a single symbol or several symbols

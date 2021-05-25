@@ -33,6 +33,7 @@ import {
   isTooManyInsideOfTooMany,
   mappingPathToString,
   relationshipIsToMany,
+  tableIsTree,
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
@@ -532,7 +533,8 @@ export default class Automapper {
      * Function that returns the next path part to use in a new mapping
      * (on success)
      */
-    getNewPathPart: () => MappingPath
+    getNewPathPart: () => MappingPath,
+    tableName: string
   ) =>
     this.getUnmappedHeaders().forEach(([headerKey, { lowercaseHeaderName }]) =>
       Object.entries(Automapper.comparisons)
@@ -552,7 +554,8 @@ export default class Automapper {
                 getNewPathPart().map((pathPart) =>
                   valueIsTreeRank(pathPart) ? pathPart : pathPart.toLowerCase()
                 ),
-                headerKey
+                headerKey,
+                tableName
               )
           )
         )
@@ -593,7 +596,8 @@ export default class Automapper {
         this.handleDefinitionComparison(
           mappingPath,
           comparisons,
-          getNewPathPart
+          getNewPathPart,
+          tableName
         );
       });
     } else if (mode === 'synonymsAndMatches') {
@@ -608,7 +612,8 @@ export default class Automapper {
         this.handleDefinitionComparison(
           mappingPath,
           comparisons,
-          getNewPathPart
+          getNewPathPart,
+          tableName
         );
     }
   }
@@ -959,6 +964,13 @@ export default class Automapper {
    * makes a new mapping. Also, handles -to-many relationships by creating new
    * objects
    *
+   * Returns:
+   * Boolean: whether we can map another mapping to this header.
+   * Most of the time false return means that the mapping was not made
+   * (Mapping fails if field is inside a -to-one relationship or direct child
+   * of base table and is already mapped).
+   * Can also depend on this.allowMultipleMappings
+   *
    */
   private makeMapping(
     /*
@@ -980,12 +992,31 @@ export default class Automapper {
      *   don't do anything
      */
     toManyReferenceNumber: number | false = false
-  ): boolean /* False if we can map another mapping to this header.
-  Most of the time means that the mapping was not made
-  (Mapping fails if field is inside a -to-one relationship or direct child
-  of base table and is already mapped).
-  Can also depend on this.allowMultipleMappings */ {
-    let localPath: MappingPathWritable = [...mappingPath, ...newPathParts];
+  ): boolean {
+    /*
+     * Since autoMapper and autoMapperDefinitions converts all tree ranks to
+     *  lowercase, we need to convert them back to their proper case
+     */
+    let fixedNewPathParts = newPathParts;
+    const formatTreeRankUndefined = (
+      rankName: string | undefined
+    ): string | undefined =>
+      typeof rankName === 'undefined' ? rankName : formatTreeRank(rankName);
+    if (tableIsTree(tableName)) {
+      fixedNewPathParts = newPathParts.map((mappingPathPart) =>
+        valueIsTreeRank(mappingPathPart)
+          ? formatTreeRankUndefined(
+              Object.keys(dataModelStorage.ranks[tableName]).find(
+                (rankName) =>
+                  rankName.toLowerCase() ===
+                  getNameFromTreeRankName(mappingPathPart).toLowerCase()
+              )
+            ) ?? mappingPathPart
+          : mappingPathPart
+      );
+    }
+
+    let localPath: MappingPathWritable = [...mappingPath, ...fixedNewPathParts];
     const lastPathPart = localPath[localPath.length - 1];
 
     // Don't map if:

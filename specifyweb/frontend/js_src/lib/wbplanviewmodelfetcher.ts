@@ -78,11 +78,19 @@ type DataModelTablesWritable = R<DataModelTableWritable>;
 
 export type DataModelTables = IR<DataModelTable>;
 
-type TableRanksInline = [tableName: string, tableRanks: [string, boolean][]];
+export type TreeRankData = {
+  readonly isRequired: boolean;
+  readonly title: string;
+};
+
+type TableRanksInline = [
+  tableName: string,
+  tableRanks: [string, TreeRankData][]
+];
 
 // Type DataModelRanksWritable = R<R<boolean>>;
 
-export type DataModelRanks = IR<IR<boolean>>;
+export type DataModelRanks = IR<IR<TreeRankData>>;
 
 export type OriginalRelationships = IR<IR<RA<string>>>;
 type OriginalRelationshipsWritable = R<R<string[]>>;
@@ -98,25 +106,22 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 /* Fetches ranks for a particular table */
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
-    (domain as DomainType)
-      .getTreeDef(tableName)
-      .done((treeDefinition) =>
-        treeDefinition
-          .rget('treedefitems')
-          .done((treeDefItems) =>
-            treeDefItems
-              .fetch({ limit: 0 })
-              .done(() =>
-                resolve([
-                  tableName,
-                  Object.values(treeDefItems.models).map((rank) => [
-                    rank.get('name') as string,
-                    false,
-                  ]),
-                ])
-              )
-          )
+    (domain as DomainType).getTreeDef(tableName).done((treeDefinition) =>
+      treeDefinition.rget('treedefitems').done((treeDefItems) =>
+        treeDefItems.fetch({ limit: 0 }).done(() =>
+          resolve([
+            tableName,
+            Object.values(treeDefItems.models).map((rank) => [
+              rank.get('name') as string,
+              {
+                isRequired: false,
+                title: rank.get('title') as string,
+              },
+            ]),
+          ])
+        )
       )
+    )
   );
 
 const requiredFieldShouldBeHidden = (fieldName: string): boolean =>
@@ -263,11 +268,11 @@ export default async function (): Promise<void> {
     );
 
     if (
-      tables !== false &&
-      listOfBaseTables !== false &&
-      ranks !== false &&
-      rootRanks !== false &&
-      originalRelationships !== false
+      typeof tables === 'object' &&
+      typeof listOfBaseTables === 'object' &&
+      typeof ranks === 'object' &&
+      typeof rootRanks === 'object' &&
+      typeof originalRelationships === 'object'
     ) {
       dataModelStorage.tables = tables;
       dataModelStorage.listOfBaseTables = listOfBaseTables;
@@ -422,10 +427,10 @@ export default async function (): Promise<void> {
 
   await Promise.all(fetchRanksQueue)
     .then((resolved) => {
-      const rootRanks: IR<string> = Object.fromEntries(
-        resolved.map(([tableName], index) => [
+      const rootRanks: IR<[string, TreeRankData]> = Object.fromEntries(
+        resolved.map(([tableName, tableRanks]) => [
           tableName,
-          resolved[index][1].shift()?.[0] ?? '',
+          tableRanks.shift()!,
         ])
       );
 

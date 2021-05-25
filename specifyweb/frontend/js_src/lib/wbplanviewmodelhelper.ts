@@ -11,7 +11,6 @@ import type {
   MappingPath,
   RelationshipType,
 } from './components/wbplanviewmapper';
-import { capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   DataModelField,
@@ -130,7 +129,7 @@ export const formatReferenceItem = (index: number): string =>
  *
  */
 export const formatTreeRank = (rankName: string): string =>
-  `${dataModelStorage.treeSymbol}${capitalize(rankName)}`;
+  `${dataModelStorage.treeSymbol}${rankName}`;
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
   mappingPath.join(dataModelStorage.pathJoinSymbol);
@@ -184,8 +183,8 @@ export function showRequiredMissingFields(
 
     if (!lastPathElementIsRank)
       return keys.reduce((results, rankName) => {
-        const isRankRequired = dataModelStorage.ranks[tableName][rankName];
-        const complimentedRankName = dataModelStorage.treeSymbol + rankName;
+        const rankData = dataModelStorage.ranks[tableName][rankName];
+        const complimentedRankName = formatTreeRank(rankName);
         const localPath = [...path, complimentedRankName];
 
         if (listOfMappedFields.includes(complimentedRankName))
@@ -196,7 +195,7 @@ export function showRequiredMissingFields(
             localPath,
             results
           );
-        else if (isRankRequired) results.push(localPath);
+        else if (rankData.isRequired) results.push(localPath);
 
         return results;
       }, results);

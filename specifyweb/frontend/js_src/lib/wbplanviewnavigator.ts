@@ -619,10 +619,10 @@ export function getMappingLineData({
       const tableRanks = dataModelStorage.ranks[tableName];
 
       internalState.resultFields = Object.fromEntries(
-        Object.entries(tableRanks).map(([rankName, isRequired]) => [
+        Object.entries(tableRanks).map(([rankName, { isRequired, title }]) => [
           formatTreeRank(rankName),
           {
-            fieldFriendlyName: rankName,
+            fieldFriendlyName: title,
             isEnabled: true,
             isRequired,
             isHidden: false,

@@ -7,6 +7,7 @@ import type {
   DataModelRanks,
   DataModelTables,
   OriginalRelationships,
+  TreeRankData,
 } from './wbplanviewmodelfetcher';
 
 // The types of cached values are defined here
@@ -37,7 +38,7 @@ export type CacheDefinitions = IR<IR<unknown>> & {
     // List of tree ranks for each table
     readonly ranks: DataModelRanks;
     // The name of the root rank for each table (Life, Storage, Earth, ...)
-    readonly rootRanks: R<string>;
+    readonly rootRanks: R<[string, TreeRankData]>;
     /*
      * Preserves the original relationship type for a fields that had it's
      * relationship type changed though aliasRelationshipTypes object.

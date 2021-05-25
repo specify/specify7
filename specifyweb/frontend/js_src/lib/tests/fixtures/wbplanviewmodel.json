@@ -1,7 +1,7 @@
 {
   "referenceSymbol": "#",
   "treeSymbol": "$",
-  "pathJoinSymbol": "_",
+  "pathJoinSymbol": ".",
   "tables": {
     "accession": {
       "tableFriendlyName": "Accession",
@@ -76,7 +76,11 @@
           "friendlyName": "Status",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["In Process", "Complete", "No Data"]
+          }
         },
         "text1": {
           "friendlyName": "Text1",
@@ -130,7 +134,11 @@
           "friendlyName": "Type",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Gift", "Collection", "Field Work"]
+          }
         },
         "verbatimdate": {
           "friendlyName": "Verbatim Date",
@@ -268,7 +276,11 @@
           "friendlyName": "Role",
           "isHidden": false,
           "isRequired": true,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Staff", "Receiver", "Collector", "Reviewer", "Donor"]
+          }
         },
         "timestampcreated": {
           "friendlyName": "Timestamp Created",
@@ -635,7 +647,11 @@
           "friendlyName": "Type Of Addr",
           "isHidden": true,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Home", "Work"]
+          }
         },
         "version": {
           "friendlyName": "Version",
@@ -973,7 +989,11 @@
           "friendlyName": "Title",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Dr.", "Mrs.", "Asst. Director", "Mr.", "Ms.", "Curator"]
+          }
         },
         "url": {
           "friendlyName": "URL",
@@ -1263,7 +1283,17 @@
           "friendlyName": "Var Type",
           "isHidden": false,
           "isRequired": true,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "Vernacular",
+              "Label Name",
+              "Variant",
+              "Author Abbrev.",
+              "Author"
+            ]
+          }
         },
         "variant": {
           "friendlyName": "Variant",
@@ -1668,7 +1698,23 @@
           "friendlyName": "Role",
           "isHidden": false,
           "isRequired": true,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "Staff",
+              "Receiver",
+              "Donor",
+              "Benefactor",
+              "Borrower",
+              "Preparer",
+              "Sponsor",
+              "Other",
+              "Guest",
+              "Contributor",
+              "Student"
+            ]
+          }
         },
         "timestampcreated": {
           "friendlyName": "Timestamp Created",
@@ -1981,7 +2027,17 @@
           "friendlyName": "Method",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "seine",
+              "hook & line",
+              "trap",
+              "boat electro-shocker",
+              "<no data>"
+            ]
+          }
         },
         "reservedinteger3": {
           "friendlyName": "Reserved Integer3",
@@ -6319,7 +6375,11 @@
           "friendlyName": "Type",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Sheet", "None", "Folder", "Specimen"]
+          }
         },
         "version": {
           "friendlyName": "Version",
@@ -6679,7 +6739,11 @@
           "friendlyName": "Molecule Type",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": false,
+            "items": []
+          }
         },
         "number1": {
           "friendlyName": "Number1",
@@ -7561,7 +7625,11 @@
           "friendlyName": "Name Usage",
           "isHidden": true,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Flora of Kansas", "Shelved By"]
+          }
         },
         "number1": {
           "friendlyName": "Number1",
@@ -7621,7 +7689,50 @@
           "friendlyName": "Type Status",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "None",
+              "Allolectotype",
+              "Alloneotype",
+              "Allotype",
+              "Cotype",
+              "Epitype",
+              "Ex Epitype",
+              "Ex Holotype",
+              "Ex Isotype",
+              "Ex Lectotype",
+              "Ex Neotype",
+              "Ex Paratype",
+              "Ex Syntype",
+              "Ex Type",
+              "Hapantotype",
+              "Holotype",
+              "Iconotype",
+              "Isolectotype",
+              "Isoneotype",
+              "Isosyntype",
+              "Isotype",
+              "Lectotype",
+              "Neotype",
+              "Paralectotype",
+              "Paraneotype",
+              "Paratype",
+              "Plastoholotype",
+              "Plastoisotype",
+              "Plastolectotype",
+              "Plastoneotype",
+              "Plastoparatype",
+              "Plastosyntype",
+              "Plastotype",
+              "Secondary Type",
+              "Supplementary Type",
+              "Syntype",
+              "Topotype",
+              "Type"
+            ]
+          }
         },
         "varqualifier": {
           "friendlyName": "Var Qualifier",
@@ -7687,14 +7798,6 @@
           "isRequired": false,
           "isRelationship": true,
           "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "preferredtaxon": {
-          "friendlyName": "Preferred Taxon",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "taxon",
           "type": "many-to-one"
         },
         "taxon": {
@@ -9069,12 +9172,6 @@
           "isRequired": false,
           "isRelationship": false
         },
-        "fullname": {
-          "friendlyName": "Full Name",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
         "geographycode": {
           "friendlyName": "Geography Code",
           "isHidden": false,
@@ -9751,7 +9848,23 @@
           "friendlyName": "Role",
           "isHidden": false,
           "isRequired": true,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "Receiver",
+              "Preparer",
+              "Guest",
+              "Contributor",
+              "Sponsor",
+              "Benefactor",
+              "Other",
+              "Borrower",
+              "Student",
+              "Staff",
+              "Donor"
+            ]
+          }
         },
         "timestampcreated": {
           "friendlyName": "Timestamp Created",
@@ -10550,15 +10663,6 @@
           "tableName": "agent",
           "type": "many-to-one"
         },
-        "treedefitems": {
-          "friendlyName": "Tree Def Items",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "lithostrattreedefitem",
-          "type": "one-to-many",
-          "foreignName": "treedef"
-        },
         "treeentries": {
           "friendlyName": "Tree Entries",
           "isHidden": true,
@@ -10567,135 +10671,6 @@
           "tableName": "lithostrat",
           "type": "one-to-many",
           "foreignName": "definition"
-        }
-      }
-    },
-    "lithostrattreedefitem": {
-      "tableFriendlyName": "Lithostratigraphy Tree Definition Item",
-      "fields": {
-        "fullnameseparator": {
-          "friendlyName": "Full Name Separator",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "isenforced": {
-          "friendlyName": "Is Enforced",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "isinfullname": {
-          "friendlyName": "Is In Full Name",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "name": {
-          "friendlyName": "Name",
-          "isHidden": false,
-          "isRequired": true,
-          "isRelationship": false
-        },
-        "rankid": {
-          "friendlyName": "Rank Id",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "remarks": {
-          "friendlyName": "Remarks",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "textafter": {
-          "friendlyName": "Text After",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "textbefore": {
-          "friendlyName": "Text Before",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "timestampcreated": {
-          "friendlyName": "Timestamp Created",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "timestampmodified": {
-          "friendlyName": "Timestamp Modified",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "title": {
-          "friendlyName": "Title",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "version": {
-          "friendlyName": "Version",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "children": {
-          "friendlyName": "Children",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "lithostrattreedefitem",
-          "type": "one-to-many",
-          "foreignName": "parent"
-        },
-        "createdbyagent": {
-          "friendlyName": "Created By Agent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "modifiedbyagent": {
-          "friendlyName": "Modified By Agent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "parent": {
-          "friendlyName": "Parent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "lithostrattreedefitem",
-          "type": "many-to-one",
-          "foreignName": "children"
-        },
-        "treedef": {
-          "friendlyName": "Tree Def",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "lithostrattreedef",
-          "type": "many-to-one",
-          "foreignName": "treedefitems"
-        },
-        "treeentries": {
-          "friendlyName": "Tree Entries",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "lithostrat",
-          "type": "one-to-many",
-          "foreignName": "definitionitem"
         }
       }
     },
@@ -10943,7 +10918,23 @@
           "friendlyName": "Role",
           "isHidden": false,
           "isRequired": true,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "Receiver",
+              "Preparer",
+              "Guest",
+              "Contributor",
+              "Sponsor",
+              "Benefactor",
+              "Other",
+              "Borrower",
+              "Student",
+              "Staff",
+              "Donor"
+            ]
+          }
         },
         "timestampcreated": {
           "friendlyName": "Timestamp Created",
@@ -11491,7 +11482,7 @@
           "isRequired": false,
           "isRelationship": true,
           "tableName": "geocoorddetail",
-          "type": "one-to-one",
+          "type": "one-to-many",
           "foreignName": "locality"
         },
         "geography": {
@@ -11527,7 +11518,7 @@
           "isRequired": false,
           "isRelationship": true,
           "tableName": "localitydetail",
-          "type": "one-to-one",
+          "type": "one-to-many",
           "foreignName": "locality"
         },
         "localitynamealiass": {
@@ -12174,7 +12165,11 @@
           "friendlyName": "Sample Type",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["Extract"]
+          }
         },
         "srabioprojectid": {
           "friendlyName": "SRA Bio Project ID",
@@ -12750,7 +12745,17 @@
           "friendlyName": "Type",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "no data",
+              "US Dept Wildlife",
+              "International",
+              "Federal",
+              "State"
+            ]
+          }
         },
         "version": {
           "friendlyName": "Version",
@@ -14979,7 +14984,18 @@
           "friendlyName": "Type",
           "isHidden": false,
           "isRequired": true,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": [
+              "Section in Book",
+              "Book",
+              "Thesis",
+              "Electronic Media",
+              "Paper",
+              "Technical Report"
+            ]
+          }
         },
         "uri": {
           "friendlyName": "Uri",
@@ -15171,7 +15187,11 @@
           "friendlyName": "Status",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["In Process", "Complete", "No Data"]
+          }
         },
         "text1": {
           "friendlyName": "Text1",
@@ -15296,7 +15316,11 @@
           "friendlyName": "Method",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["DHL", "USPS", "By Hand", "UPS", "Fed Ex"]
+          }
         },
         "numberofpackages": {
           "friendlyName": "Num Of Packages",
@@ -15703,15 +15727,6 @@
           "tableName": "agent",
           "type": "many-to-one"
         },
-        "treedefitems": {
-          "friendlyName": "Tree Def Items",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "storagetreedefitem",
-          "type": "one-to-many",
-          "foreignName": "treedef"
-        },
         "treeentries": {
           "friendlyName": "Tree Entries",
           "isHidden": true,
@@ -15720,135 +15735,6 @@
           "tableName": "storage",
           "type": "one-to-many",
           "foreignName": "definition"
-        }
-      }
-    },
-    "storagetreedefitem": {
-      "tableFriendlyName": "Storage Tree Definition Item",
-      "fields": {
-        "fullnameseparator": {
-          "friendlyName": "Full Name Separator",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "isenforced": {
-          "friendlyName": "Is Enforced",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "isinfullname": {
-          "friendlyName": "Is In Full Name",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "name": {
-          "friendlyName": "Name",
-          "isHidden": false,
-          "isRequired": true,
-          "isRelationship": false
-        },
-        "rankid": {
-          "friendlyName": "Rank Id",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "remarks": {
-          "friendlyName": "Remarks",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "textafter": {
-          "friendlyName": "Text After",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "textbefore": {
-          "friendlyName": "Text Before",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "timestampcreated": {
-          "friendlyName": "Timestamp Created",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "timestampmodified": {
-          "friendlyName": "Timestamp Modified",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "title": {
-          "friendlyName": "Title",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "version": {
-          "friendlyName": "Version",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "children": {
-          "friendlyName": "Children",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "storagetreedefitem",
-          "type": "one-to-many",
-          "foreignName": "parent"
-        },
-        "createdbyagent": {
-          "friendlyName": "Created By Agent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "modifiedbyagent": {
-          "friendlyName": "Modified By Agent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "parent": {
-          "friendlyName": "Parent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "storagetreedefitem",
-          "type": "many-to-one",
-          "foreignName": "children"
-        },
-        "treedef": {
-          "friendlyName": "Tree Def",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "storagetreedef",
-          "type": "many-to-one",
-          "foreignName": "treedefitems"
-        },
-        "treeentries": {
-          "friendlyName": "Tree Entries",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "storage",
-          "type": "one-to-many",
-          "foreignName": "definitionitem"
         }
       }
     },
@@ -15973,7 +15859,11 @@
           "friendlyName": "Label Format",
           "isHidden": true,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": false,
+            "items": ["%G %S (%A1 ex. %A2)", "%G %S"]
+          }
         },
         "lsid": {
           "friendlyName": "LSID",
@@ -17555,15 +17445,6 @@
           "tableName": "agent",
           "type": "many-to-one"
         },
-        "treedefitems": {
-          "friendlyName": "Tree Def Items",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "taxontreedefitem",
-          "type": "one-to-many",
-          "foreignName": "treedef"
-        },
         "treeentries": {
           "friendlyName": "Tree Entries",
           "isHidden": true,
@@ -17572,141 +17453,6 @@
           "tableName": "taxon",
           "type": "one-to-many",
           "foreignName": "definition"
-        }
-      }
-    },
-    "taxontreedefitem": {
-      "tableFriendlyName": "Taxon Tree Definition Item",
-      "fields": {
-        "formattoken": {
-          "friendlyName": "Format Token",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "fullnameseparator": {
-          "friendlyName": "Full Name Separator",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "isenforced": {
-          "friendlyName": "Is Enforced",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "isinfullname": {
-          "friendlyName": "Is In Full Name",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "name": {
-          "friendlyName": "Name",
-          "isHidden": false,
-          "isRequired": true,
-          "isRelationship": false
-        },
-        "rankid": {
-          "friendlyName": "Rank Id",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "remarks": {
-          "friendlyName": "Remarks",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "textafter": {
-          "friendlyName": "Text After",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "textbefore": {
-          "friendlyName": "Text Before",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "timestampcreated": {
-          "friendlyName": "Timestamp Created",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "timestampmodified": {
-          "friendlyName": "Timestamp Modified",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "title": {
-          "friendlyName": "Title",
-          "isHidden": false,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "version": {
-          "friendlyName": "Version",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": false
-        },
-        "children": {
-          "friendlyName": "Children",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "taxontreedefitem",
-          "type": "one-to-many",
-          "foreignName": "parent"
-        },
-        "createdbyagent": {
-          "friendlyName": "Created By Agent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "modifiedbyagent": {
-          "friendlyName": "Modified By Agent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "agent",
-          "type": "many-to-one"
-        },
-        "parent": {
-          "friendlyName": "Parent",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "taxontreedefitem",
-          "type": "many-to-one",
-          "foreignName": "children"
-        },
-        "treedef": {
-          "friendlyName": "Tree Def",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "taxontreedef",
-          "type": "many-to-one",
-          "foreignName": "treedefitems"
-        },
-        "treeentries": {
-          "friendlyName": "Tree Entries",
-          "isHidden": true,
-          "isRequired": false,
-          "isRelationship": true,
-          "tableName": "taxon",
-          "type": "one-to-many",
-          "foreignName": "definitionitem"
         }
       }
     },
@@ -17855,7 +17601,11 @@
           "friendlyName": "Type",
           "isHidden": false,
           "isRequired": false,
-          "isRelationship": false
+          "isRelationship": false,
+          "pickList": {
+            "readOnly": true,
+            "items": ["CO2", "Bug Room"]
+          }
         },
         "version": {
           "friendlyName": "Version",
@@ -18406,56 +18156,152 @@
   },
   "ranks": {
     "geography": {
-      "Continent": false,
-      "Country": false,
-      "State": false,
-      "County": false
+      "Continent": {
+        "isRequired": false,
+        "title": "Continent"
+      },
+      "Country": {
+        "isRequired": false,
+        "title": "Country"
+      },
+      "State": {
+        "isRequired": false,
+        "title": "State"
+      },
+      "County": {
+        "isRequired": false,
+        "title": "County"
+      }
     },
     "geologictimeperiod": {},
     "lithostrat": {},
     "storage": {
-      "Building": false,
-      "Collection": false,
-      "Room": false,
-      "Aisle": false,
-      "Cabinet": false,
-      "Shelf": false,
-      "Box": false,
-      "Rack": false,
-      "Vial": false
+      "Building": {
+        "isRequired": false,
+        "title": "Building"
+      },
+      "Collection": {
+        "isRequired": false,
+        "title": "Collection"
+      },
+      "Room": {
+        "isRequired": false,
+        "title": "Room"
+      },
+      "Aisle": {
+        "isRequired": false,
+        "title": "Aisle"
+      },
+      "Cabinet": {
+        "isRequired": false,
+        "title": "Cabinet"
+      },
+      "Shelf": {
+        "isRequired": false,
+        "title": "Shelf"
+      },
+      "Box": {
+        "isRequired": false,
+        "title": "Box"
+      },
+      "Rack": {
+        "isRequired": false,
+        "title": "Rack"
+      },
+      "Vial": {
+        "isRequired": false,
+        "title": "Vial"
+      }
     },
     "taxon": {
-      "Kingdom": false,
-      "Phylum": false,
-      "Subphylum": false,
-      "Superclass": false,
-      "Class": false,
-      "Subclass": false,
-      "Infraclass": false,
-      "Superorder": false,
-      "Order": false,
-      "Family": false,
-      "Subfamily": false,
-      "Genus": false,
-      "Subgenus": false,
-      "Species": false,
-      "Subspecies": false
+      "Kingdom": {
+        "isRequired": false,
+        "title": "Kingdom"
+      },
+      "Phylum": {
+        "isRequired": false,
+        "title": "Phylum"
+      },
+      "Subphylum": {
+        "isRequired": false,
+        "title": "Subphylum"
+      },
+      "Superclass": {
+        "isRequired": false,
+        "title": "Superclass"
+      },
+      "Class": {
+        "isRequired": false,
+        "title": "Class"
+      },
+      "Subclass": {
+        "isRequired": false,
+        "title": "Subclass"
+      },
+      "Infraclass": {
+        "isRequired": false,
+        "title": "Infraclass"
+      },
+      "Superorder": {
+        "isRequired": false,
+        "title": "Superorder"
+      },
+      "Order": {
+        "isRequired": false,
+        "title": "Order"
+      },
+      "Family": {
+        "isRequired": false,
+        "title": "Family"
+      },
+      "Subfamily": {
+        "isRequired": false,
+        "title": "Subfamily"
+      },
+      "Genus": {
+        "isRequired": false,
+        "title": "Genus"
+      },
+      "Subgenus": {
+        "isRequired": false,
+        "title": "Subgenus"
+      },
+      "Species": {
+        "isRequired": false,
+        "title": "Species"
+      },
+      "Subspecies": {
+        "isRequired": false,
+        "title": "Subspecies"
+      }
     }
   },
   "rootRanks": {
-    "geography": "Earth",
-    "geologictimeperiod": "",
-    "lithostrat": "",
-    "storage": "Site",
-    "taxon": "Life"
+    "geography": [
+      "Earth",
+      {
+        "isRequired": false,
+        "title": "Earth"
+      }
+    ],
+    "storage": [
+      "Site",
+      {
+        "isRequired": false,
+        "title": "Site"
+      }
+    ],
+    "taxon": [
+      "Life",
+      {
+        "isRequired": false,
+        "title": "Life"
+      }
+    ]
   },
   "originalRelationships": {
-    "value": {
-      "zero-to-one": {
-        "locality": ["geocoorddetails", "localitydetails"]
-      }
-    },
-    "useCount": 4,
-    "version": "5"
+    "zero-to-one": {
+      "locality": ["geocoorddetails", "localitydetails"]
+    }
   }
 }

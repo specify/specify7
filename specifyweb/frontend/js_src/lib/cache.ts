@@ -74,7 +74,7 @@ function commitToStorage(): void {
 /* Commits a single cache bucket to localStorage */
 function commitBucketToStorage(bucketName: string): void {
   localStorage.setItem(
-    cachePrefix + bucketName,
+    `${cachePrefix}${bucketName}`,
     JSON.stringify(buckets[bucketName])
   );
 }
@@ -91,7 +91,7 @@ function fetchBucket(
    */
   if (typeof localStorage === 'undefined') return false;
 
-  const fullBucketName = cachePrefix + bucketName;
+  const fullBucketName = `${cachePrefix}${bucketName}`;
 
   const localStorageData = localStorage.getItem(fullBucketName);
   if (localStorageData === null) return false;

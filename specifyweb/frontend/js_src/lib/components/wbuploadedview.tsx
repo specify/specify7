@@ -13,6 +13,7 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import dataModelStorage from '../wbplanviewmodel';
+import type { TreeRankData } from '../wbplanviewmodelfetcher';
 import fetchDataModel from '../wbplanviewmodelfetcher';
 import type {
   UploadedPicklistItem,
@@ -104,7 +105,7 @@ type WBUploadedActions =
   | ToggleTableRecordsVisibilityAction
   | CellClickedAction;
 
-let ranks: IR<RA<string>>;
+let ranks: IR<IR<TreeRankData>>;
 const fetchDataModelPromise: Promise<void> = fetchDataModel();
 
 function UploadedTableRowsHeaderProps({
@@ -650,7 +651,7 @@ function WBUploadedViewDataParser(
   props: WBUploadedViewDataParseProps
 ): JSX.Element {
   const [treeRanks, setTreeRanks] =
-    React.useState<IR<RA<string>> | undefined>(ranks);
+    React.useState<IR<IR<TreeRankData>> | undefined>(ranks);
   const [uploadedRows, setUploadedRows] =
     React.useState<UploadedRows | undefined>(undefined);
   const [uploadedPicklistItems, setUploadedPicklistItems] =
@@ -665,10 +666,10 @@ function WBUploadedViewDataParser(
               Object.entries(dataModelStorage.ranks).map(
                 ([tableName, tableRanks]) => [
                   tableName,
-                  [
+                  Object.fromEntries([
                     dataModelStorage.rootRanks[tableName],
-                    ...Object.keys(tableRanks),
-                  ],
+                    ...Object.entries(tableRanks),
+                  ]),
                 ]
               )
             )

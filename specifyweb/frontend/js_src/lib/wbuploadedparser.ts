@@ -17,6 +17,7 @@ import {
   extractDefaultValues,
   generateMappingPathPreview,
 } from './wbplanviewhelper';
+import type { TreeRankData } from './wbplanviewmodelfetcher';
 import {
   getNameFromTreeRankName,
   mappingPathToString,
@@ -375,7 +376,7 @@ function formatListOfRows(
   mappedRanks: IR<string>,
   matchedRecordsNames: Record<number, string>,
   headers: RA<string>,
-  treeRanks: RA<string>,
+  treeRanks: IR<TreeRankData>,
   defaultValues: IR<string>
 ) {
   const rows: RA<[number, UploadedTreeRank]> = listOfRows
@@ -408,7 +409,7 @@ function formatListOfRows(
   );
 
   const ranksToShow = [...new Set(rows.map(([, { rankName }]) => rankName))];
-  const sortedRanksToShow = treeRanks.filter((rankName) =>
+  const sortedRanksToShow = Object.keys(treeRanks).filter((rankName) =>
     ranksToShow.includes(rankName)
   );
 
@@ -425,13 +426,15 @@ function formatListOfRows(
  */
 const getMinNode = (
   rows: [number, UploadedTreeRank][],
-  treeRanks: IR<RA<string>>,
+  treeRanks: IR<IR<TreeRankData>>,
   rowsObject: IR<UploadedTreeRank | undefined>,
   tableName: string
 ): number =>
   rows.reduce(
     ([minRank, minNodeId], [nodeId, rankData]) => {
-      const rankIndex = treeRanks[tableName]?.indexOf(rankData.rankName || '');
+      const rankIndex = Object.keys(
+        Object.entries(treeRanks[tableName])
+      )?.indexOf(rankData.rankName);
 
       return typeof rowsObject[nodeId] !== 'undefined' &&
         rankIndex !== -1 &&
@@ -737,7 +740,7 @@ export function parseUploadResults(
   uploadResults: RA<UploadResult>,
   headers: RA<string>,
   data: RA<RA<string>>,
-  treeRanks: IR<RA<string>>,
+  treeRanks: IR<IR<TreeRankData>>,
   plan: UploadPlan | null
 ): [UploadedRows, UploadedPicklistItems] {
   if (plan === null) throw new Error('Upload plan is invalid');

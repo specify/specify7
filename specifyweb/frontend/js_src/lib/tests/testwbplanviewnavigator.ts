@@ -412,7 +412,7 @@ export default function (): void {
         ]),
       ],
     ],
-    (arguments_: Parameters<typeof getMappingLineData>[0]) =>
-      JSON.stringify(getMappingLineData(arguments_))
+    (args: Parameters<typeof getMappingLineData>[0]) =>
+      JSON.stringify(getMappingLineData(args))
   );
 }
