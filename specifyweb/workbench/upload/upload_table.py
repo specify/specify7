@@ -2,7 +2,7 @@
 from functools import reduce
 
 import logging
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, NoReturn
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Tuple, NoReturn
 from django.db import transaction, IntegrityError
 
 from specifyweb.specify import models
@@ -85,12 +85,12 @@ class ScopedUploadTable(NamedTuple):
             }
         )
 
-    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundUploadTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]=None) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId)
+            result = uploadable.bind(collection, row, uploadingAgentId, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -100,7 +100,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundToManyRecord] = []
             for record in records:
-                result_ = record.bind(collection, row, uploadingAgentId)
+                result_ = record.bind(collection, row, uploadingAgentId, cache)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -118,6 +118,7 @@ class ScopedUploadTable(NamedTuple):
             toOne=toOne,
             toMany=toMany,
             uploadingAgentId=uploadingAgentId,
+            cache=cache,
         )
 
 class OneToOneTable(UploadTable):
@@ -129,8 +130,8 @@ class OneToOneTable(UploadTable):
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId)
+    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]=None) -> Union["BoundOneToOneTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
@@ -142,8 +143,8 @@ class MustMatchTable(UploadTable):
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId)
+    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]=None) -> Union["BoundMustMatchTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
@@ -155,6 +156,7 @@ class BoundUploadTable(NamedTuple):
     toMany: Dict[str, List[BoundToManyRecord]]
     scopingAttrs: Dict[str, int]
     uploadingAgentId: Optional[int]
+    cache: Optional[Dict]
 
     def is_one_to_one(self) -> bool:
         return False
@@ -254,24 +256,34 @@ class BoundUploadTable(NamedTuple):
 
         filters.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
 
-        to_many_filters, to_many_excludes = toManyFilters
+        cache_key = (
+            self.name,
+            tuple(sorted(filters.items())),
+            toManyFilters.match_key(),
+            tuple(sorted(self.scopingAttrs.items())),
+            tuple(sorted(self.static.items())),
+        )
 
-        qs = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
-                    to_many_excludes,
-                    reduce(lambda q, f: q.filter(**f),
-                           to_many_filters,
-                           model.objects.filter(**filters, **self.scopingAttrs, **self.static)))
+        cache_hit: Optional[List[int]] = self.cache.get(cache_key, None) if self.cache is not None else None
+        if cache_hit is not None:
+            ids = cache_hit
+        else:
+            to_many_filters, to_many_excludes = toManyFilters
 
-        ids = list(qs.values_list('id', flat=True)[:10])
+            qs = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
+                        to_many_excludes,
+                        reduce(lambda q, f: q.filter(**f),
+                               to_many_filters,
+                               model.objects.filter(**filters, **self.scopingAttrs, **self.static)))
+
+            ids = list(qs.values_list('id', flat=True)[:10])
+
+            if self.cache and ids:
+                self.cache[cache_key] = ids
+
         n_matched = len(ids)
         if n_matched > 1:
-            key = repr((
-                sorted(filters.items()),
-                toManyFilters.match_key(),
-                sorted(self.scopingAttrs.items()),
-                sorted(self.static.items())
-            ))
-            return MatchedMultiple(ids=ids, key=key, info=info)
+            return MatchedMultiple(ids=ids, key=repr(cache_key), info=info)
         elif n_matched == 1:
             return Matched(id=ids[0], info=info)
         else:
@@ -316,7 +328,7 @@ class BoundUploadTable(NamedTuple):
         auditlog.insert(uploaded, self.uploadingAgentId, None)
 
         toManyResults = {
-            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, records)
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.cache, records)
             for fieldname, records in self.toMany.items()
         }
         return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
@@ -396,7 +408,7 @@ def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) 
     return FilterPack(filters, excludes)
 
 
-def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], records) -> List[UploadResult]:
+def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], cache: Optional[Dict], records) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
@@ -408,6 +420,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
             static={**record.static, fk_field: parent_id},
             toMany={},
             uploadingAgentId=uploadingAgentId,
+            cache=cache,
         ).force_upload_row()
         for record in records
     ]

@@ -38,7 +38,7 @@ class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         ...
 
-    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundUploadable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
         ...
 
 Filter = Dict[str, Any]

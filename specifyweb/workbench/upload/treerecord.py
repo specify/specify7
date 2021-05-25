@@ -56,7 +56,7 @@ class ScopedTreeRecord(NamedTuple):
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[ParseFailure] = []
         for rank, cols in self.ranks.items():
@@ -82,6 +82,7 @@ class ScopedTreeRecord(NamedTuple):
             disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             uploadingAgentId=uploadingAgentId,
+            cache=cache,
         )
 
 class MustMatchTreeRecord(TreeRecord):
@@ -90,8 +91,8 @@ class MustMatchTreeRecord(TreeRecord):
         return ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int]) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId)
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):
@@ -103,12 +104,15 @@ class TreeDefItemWithParseResults(NamedTuple):
 
 MatchResult = Union[NoMatch, Matched, MatchedMultiple]
 
+MatchInfo = TypedDict('MatchInfo', {'id': int, 'name': str, 'definitionitem__name': str, 'definitionitem__rankid': int})
+
 class BoundTreeRecord(NamedTuple):
     name: str
     treedef: Any
     treedefitems: List
     parsedFields: Dict[str, List[ParseResult]]
     uploadingAgentId: Optional[int]
+    cache: Optional[Dict]
     disambiguation: Dict[str, int]
 
     def is_one_to_one(self) -> bool:
@@ -202,19 +206,30 @@ class BoundTreeRecord(NamedTuple):
                 info = ReportInfo(tableName=self.name, columns=matched_cols + [r.column for r in to_match.results], treeInfo=None)
                 return tdiwprs, NoMatch(info) # no levels matched at all
 
-    def _find_matching_descendent(self, parent, to_match: TreeDefItemWithParseResults) -> List[Dict]:
-        model = getattr(models, self.name)
+    def _find_matching_descendent(self, parent: Optional[MatchInfo], to_match: TreeDefItemWithParseResults) -> List[MatchInfo]:
         steps = sum(1 for tdi in self.treedefitems if parent['definitionitem__rankid'] < tdi.rankid <= to_match.treedefitem.rankid) \
             if parent is not None else 1
 
+        filters = {field: value for r in to_match.results for field, value in r.filter_on.items()}
+
+        cache_key = (self.name, steps, parent and parent['id'], to_match.treedefitem.id, tuple(sorted(filters.items())))
+        cached: Optional[List[MatchInfo]] = self.cache.get(cache_key, None) if self.cache is not None else None
+        if cached is not None:
+            return cached
+
+        model = getattr(models, self.name)
+
         for d in range(steps):
             matches = list(model.objects.filter(
-                definitionitem=to_match.treedefitem,
-                **{field: value for r in to_match.results for field, value in r.filter_on.items()},
+                definitionitem_id=to_match.treedefitem.id,
+                **filters,
                 **({'__'.join(["parent_id"]*(d+1)): parent['id']} if parent is not None else {})
             ).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
             if matches:
+                if self.cache is not None:
+                    self.cache[cache_key] = matches
                 break
+
         return matches
 
     def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch], enforce_levels: bool=True) -> UploadResult:
@@ -300,7 +315,6 @@ class BoundTreeRecord(NamedTuple):
 
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
-
 
 
 class BoundMustMatchTreeRecord(BoundTreeRecord):

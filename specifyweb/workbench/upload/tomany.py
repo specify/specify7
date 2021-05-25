@@ -53,12 +53,12 @@ class ScopedToManyRecord(NamedTuple):
             }
         )
 
-    def bind(self, collection, row: Row, uploadingAgentId: int) -> Union["BoundToManyRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]) -> Union["BoundToManyRecord", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId)
+            result = uploadable.bind(collection, row, uploadingAgentId, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:

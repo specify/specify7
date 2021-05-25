@@ -166,6 +166,7 @@ def do_upload(
         allow_partial: bool=True,
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
+    cache: Dict = {}
     total = len(rows) if isinstance(rows, Sized) else None
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -173,7 +174,7 @@ def do_upload(
         for i, row in enumerate(rows):
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id)
+                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, cache)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
