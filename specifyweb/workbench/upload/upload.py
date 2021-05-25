@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import json
 from jsonschema import validate # type: ignore
 
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any
 
 from django.db import connection, transaction
 from django.db.utils import OperationalError
@@ -16,7 +16,7 @@ from specifyweb.specify.datamodel import Table, datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
-from .uploadable import ScopedUploadable, Row, Disambiguation
+from .uploadable import ScopedUploadable, Row, Disambiguation, AuditLog
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
@@ -167,6 +167,11 @@ def do_upload(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     cache: Dict = {}
+    _auditlog: AuditLog
+    if no_commit:
+        _auditlog = NopLog()
+    else:
+        _auditlog = auditlog
     total = len(rows) if isinstance(rows, Sized) else None
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -174,7 +179,7 @@ def do_upload(
         for i, row in enumerate(rows):
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, cache)
+                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditlog, cache)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
@@ -200,7 +205,7 @@ def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: 
     while True:
         try:
             with savepoint("row validation"):
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id)
+                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, NopLog())
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 raise Rollback("validating only")
             break
@@ -229,3 +234,7 @@ def changed_tree(tree: str, result: UploadResult) -> bool:
     return (isinstance(result.record_result, Uploaded) and result.record_result.info.tableName.lower() == tree) \
         or any(changed_tree(tree, toOne) for toOne in result.toOne.values()) \
         or any(changed_tree(tree, r) for toMany in result.toMany.values() for r in toMany)
+
+class NopLog(object):
+    def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
+        pass

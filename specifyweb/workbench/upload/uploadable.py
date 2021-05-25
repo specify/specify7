@@ -38,7 +38,7 @@ class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         ...
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: "AuditLog", cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
         ...
 
 Filter = Dict[str, Any]
@@ -81,3 +81,6 @@ class BoundUploadable(Protocol):
     def force_upload_row(self) -> UploadResult:
         ...
 
+class AuditLog(Protocol):
+    def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
+        ...

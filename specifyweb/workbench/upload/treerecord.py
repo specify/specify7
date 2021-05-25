@@ -11,11 +11,10 @@ from typing_extensions import TypedDict
 from django.db import connection, transaction, IntegrityError
 
 from specifyweb.specify import models
-from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
-from .uploadable import Row, FilterPack, Disambiguation as DA, ScopedUploadable
+from .uploadable import Row, FilterPack, Disambiguation as DA, ScopedUploadable, AuditLog
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, TreeInfo
 from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
 from .column_options import ColumnOptions, ExtendedColumnOptions
@@ -56,7 +55,7 @@ class ScopedTreeRecord(NamedTuple):
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[ParseFailure] = []
         for rank, cols in self.ranks.items():
@@ -82,6 +81,7 @@ class ScopedTreeRecord(NamedTuple):
             disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             uploadingAgentId=uploadingAgentId,
+            auditlog=auditlog,
             cache=cache,
         )
 
@@ -91,8 +91,8 @@ class MustMatchTreeRecord(TreeRecord):
         return ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, cache)
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditlog, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):
@@ -112,6 +112,7 @@ class BoundTreeRecord(NamedTuple):
     treedefitems: List
     parsedFields: Dict[str, List[ParseResult]]
     uploadingAgentId: Optional[int]
+    auditlog: AuditLog
     cache: Optional[Dict]
     disambiguation: Dict[str, int]
 
@@ -300,7 +301,7 @@ class BoundTreeRecord(NamedTuple):
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(FailedBusinessRule(str(e), info), parent_result, {})
 
-            auditlog.insert(obj, self.uploadingAgentId, None)
+            self.auditlog.insert(obj, self.uploadingAgentId, None)
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
 
             parent_info = {'id': obj.id, 'definitionitem__rankid': obj.definitionitem.rankid}

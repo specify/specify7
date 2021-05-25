@@ -2,7 +2,7 @@ import logging
 
 from typing import Dict, Any, NamedTuple, List, Union, Set, Optional
 
-from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation
+from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, AuditLog
 from .upload_result import CellIssue, ParseFailures
 from .parsing import parse_many, ParseResult
 from .column_options import ColumnOptions, ExtendedColumnOptions
@@ -53,12 +53,12 @@ class ScopedToManyRecord(NamedTuple):
             }
         )
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, cache: Optional[Dict]) -> Union["BoundToManyRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: AuditLog, cache: Optional[Dict]) -> Union["BoundToManyRecord", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, cache)
+            result = uploadable.bind(collection, row, uploadingAgentId, auditlog, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
