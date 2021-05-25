@@ -656,19 +656,17 @@ const WBView = Backbone.View.extend({
      * This happens when this.hot.query tries to set cellMeta for the
      * disambiguation column
      * */
-    if (cell === null) return;
-
     const actions = {
       isNew: () =>
-        cell.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
+        cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
       isModified: () =>
-        cell.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
+        cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
       isSearchResult: () =>
-        cell.classList[value === true ? 'add' : 'remove'](
+        cell?.classList[value === true ? 'add' : 'remove'](
           'wb-search-match-cell'
         ),
       issues: () => {
-        cell.classList[value.length === 0 ? 'remove' : 'add'](
+        cell?.classList[value.length === 0 ? 'remove' : 'add'](
           'wb-invalid-cell'
         );
         if (value.length === 0)
