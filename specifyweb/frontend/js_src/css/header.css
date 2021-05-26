@@ -1,21 +1,32 @@
 /* header.css */
 
 header {
-    background: #fff;
-    margin: 0px 15px;
+    background: #f1f2f2;
+    border-bottom: solid 6px #f4763d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #site-header-main {
     display: flex;
     justify-content: space-between;
+    padding: 1rem;
+    width: calc(100% - 2rem);
+    max-width: 1000px;
 }
 
 #site-logo {
-    background-image: url(/static/img/seven_logo.png);
+    background-image: url('/static/img/seven_logo.png');
     background-size: 185px 55px;
     width: 185px;
     height: 55px;
-    margin: 10px 0 10px 20px;
+}
+
+nav {
+    padding: 0;
+    width: 100%;
+    max-width: 1000px;
 }
 
 #header-loading {
@@ -24,21 +35,15 @@ header {
     text-align: left;
     color: #555;
     font-size: 14px;
-    font-weight: bold;
-}
-
-header nav {
-    clear: both;
-    border-top: solid 6px #f4763d;
-    background: #f1f2f2;
-    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    font-weight: 800;
 }
 
 nav ul {
     margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    flex-wrap: wrap;
 }
 
 nav li {
@@ -48,19 +53,39 @@ nav li {
 nav a {
     display: inline-block;
     font-size: 14px;
-    font-weight: bold;
-    padding: 12px 15px 6px 15px;
-    border-bottom: solid 4px #f1f2f2;
+    font-weight: 800;
+    position: relative;
+    padding: 0.5rem 1rem;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: calc(-0.5rem + 2px);
+    width: 100%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #f4763d;
+}
+
+@media (max-width: 1000px) {
+    nav a::after {
+        content: initial;
+    }
+}
+
+nav a:hover::after {
+    background: #f1f2f2;
 }
 
 nav a:link,
 nav a:visited {
-    color: #555
+    color: #555;
 }
 
 nav a:hover {
     color: #000;
-    border-bottom: solid 4px #f4763d;
 }
 
 nav li img {
@@ -70,19 +95,13 @@ nav li img {
     margin-right: 5px;
 }
 
-#user-tools {
-    margin-top: 10px;
-    margin-right: 20px;
-    text-align: right;
-}
-
 #user-tools div:last-child {
     display: flex;
     justify-content: flex-end;
 }
 
 #user-tools a {
-    font-weight: bold;
+    font-weight: 800;
 }
 
 #user-tools .login-logout {
@@ -93,8 +112,8 @@ nav li img {
     background: #fff;
     border: none;
     color: #555;
-    font-weight: bold;
-    padding: 4px 0px;
+    font-weight: 800;
+    padding: 4px 0;
     margin-left: 2px;
     font-size: 12px;
     vertical-align: baseline;
@@ -105,17 +124,9 @@ nav li img {
 }
 
 #express-search .express-search-query {
-    width: 20em;
     background: #f1f2f2;
     border: 1px solid #aaa;
     font-size: 14px;
-}
-
-#express-search .express-search-submit {
-    width: 22px;
-    height: 18.5px;
-    margin: 0;
-    padding: 0;
 }
 
 .ui-autocomplete {
