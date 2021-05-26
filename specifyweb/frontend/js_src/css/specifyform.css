@@ -1,28 +1,46 @@
 /* specifyform.css */
 
 #content {
-    margin: 15px;
-    display: flex;
+    flex: 1;
+    margin: 0 1rem 1rem;
+    overflow: auto;
 }
 
 .specify-root-form {
-    padding: 0px 20px 10px;
+    padding-bottom: 10px;
     background: #f1f2f2;
-    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    box-shadow: 0 0 4px rgb(0 0 0 / 0.33), 0 2px 4px rgb(0 0 0 / 0.5);
     border: 1px solid #ddd;
     margin-left: auto;
     margin-right: auto;
+    height: calc(100% - 16px);
+    width: -moz-fit-content;
+    width: fit-content;
 }
 
-div.specify-view-content,
-div.specify-view-content-container,
 .specify-form-type-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+div.specify-view-content-container {
+    flex: 1;
+    overflow: auto;
+    padding: 0 21px;
+}
+
+div.specify-view-content {
     display: inline-block;
+}
+
+.specify-form-header,
+.specify-form-buttons {
+    padding: 0 26px;
 }
 
 .specify-form-header {
     border-bottom: solid 2px #f4763d;
-    margin-left: -8px;
     color: #000;
     display: flex;
     justify-content: space-between;
@@ -96,18 +114,24 @@ textarea.specify-field {
     width: 100%;
 }
 
-input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatted {
+input.specify-field[type='text'],
+.querycbx-strct input,
+.specify-object-formatted {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
 
-input.specify-field[type="text"][readonly], .querycbx-strct input[readonly], .specify-object-formatted[readonly] {
+input.specify-field[type='text'][readonly],
+.querycbx-strct input[readonly],
+.specify-object-formatted[readonly] {
     background: #eee;
     color: #555;
 }
 
-input.specify-field[type="text"][readonly]:focus, .querycbx-strct input[readonly]:focus, .specify-object-formatted[readonly]:focus {
+input.specify-field[type='text'][readonly]:focus,
+.querycbx-strct input[readonly]:focus,
+.specify-object-formatted[readonly]:focus {
     outline: none;
 }
 
@@ -116,7 +140,7 @@ select.specify-field {
 }
 
 .specify-required-field {
-    background-color: #C8E6FF;
+    background-color: #c8e6ff;
 }
 
 input.specify-numeric-field,
@@ -150,7 +174,7 @@ hr.separator {
 
 table.partialdateui-strct td:first-child,
 table.partialdateui-strct td:last-child {
-    padding: 0px;
+    padding: 0;
 }
 
 .partialdateui-month-year {
@@ -186,13 +210,15 @@ ul.ui-autocomplete li.ui-menu-item {
     vertical-align: middle;
 }
 
-.specify-subviewbutton-icon, .specify-subview-button-count {
+.specify-subviewbutton-icon,
+.specify-subview-button-count {
     display: table-cell;
     max-width: 40px;
     max-height: 20px;
 }
 
-.specify-formtable td, .specify-formtable th {
+.specify-formtable td,
+.specify-formtable th {
     text-align: center;
 }
 
@@ -201,7 +227,7 @@ ul.ui-autocomplete li.ui-menu-item {
 }
 
 .specify-formtable > tbody > tr > td {
-    border: 1px solid #9A9A9A;
+    border: 1px solid #9a9a9a;
 }
 
 .specify-formtable > tbody > tr > td.expand,
@@ -216,11 +242,12 @@ ul.ui-autocomplete li.ui-menu-item {
     border: 1px solid;
 }
 
-.specifyplugin-latlonui th, .specifyplugin-latlonui td {
+.specifyplugin-latlonui th,
+.specifyplugin-latlonui td {
     text-align: center;
 }
 
-input[type="submit"].saveblocked {
+input[type='submit'].saveblocked {
     background: red;
 }
 
@@ -248,7 +275,8 @@ input[type="submit"].saveblocked {
     list-style-type: none;
 }
 
-.savebutton, .deletebutton {
+.savebutton,
+.deletebutton {
     display: inline;
 }
 
@@ -270,8 +298,8 @@ input[type="submit"].saveblocked {
 
 .specify-plugin-weblink a {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 40px;
 }
 

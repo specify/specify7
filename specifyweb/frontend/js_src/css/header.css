@@ -13,7 +13,7 @@ header {
     justify-content: space-between;
     padding: 1rem;
     width: calc(100% - 2rem);
-    max-width: 1000px;
+    max-width: 950px;
 }
 
 #site-logo {
@@ -26,7 +26,7 @@ header {
 nav {
     padding: 0;
     width: 100%;
-    max-width: 1000px;
+    max-width: calc(950px + 2rem);
 }
 
 #header-loading {
