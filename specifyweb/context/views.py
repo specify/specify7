@@ -23,7 +23,8 @@ from specifyweb.specify.models import Agent, Collection, Institution, \
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
-from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.specify.views import endpoint_schema_to_json, \
+    login_maybe_required, openapi
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_localization
@@ -621,83 +622,6 @@ def generate_openapi_for_endpoints(use_json_schema=False, all_endpoints=False):
         )
     }
 
-
-def resolve_schema_references(open_api):
-    """Resolve the $ref objects in the OpenAPI schema.
-
-    Warning: this function uses a naїve string substitution approach, which
-    won't work for structures that have a circular reference wth themself.
-
-    Params:
-        open_api: OpenAPI Schema v3.0
-
-    Returns:
-        Resolved OpenAPI schema
-    """
-    open_api_string = json.dumps(open_api)
-    pattern = re.compile(r"{\"\$ref\": \"#\/components\/(\w+)\/(\w+)\"}")
-
-    for (component_group, component_name) in re.findall(pattern, open_api_string):
-        try:
-            component = open_api['components'][component_group][component_name]
-        except KeyError:
-            raise Error(
-                f"Unable to find the definition for the '{component_group}/"
-                f"{component_name}' OpenAPI component"
-            )
-
-        open_api_string = open_api_string.replace(
-            f'{"{"}"$ref": "#/components/{component_group}/'
-            f'{component_name}"{"}"}',
-            json.dumps(component)
-        )
-
-    return open_api_string
-
-
-def endpoint_schema_to_json(endpoint_schema):
-    """Convert the endpoint's OpenAPI schema to JSON Schema.
-
-    Params:
-        endpoint_schema: OpenAPI schema for an endpoint
-
-    Returns:
-        Endpoint's schema converted to JSON Schema
-    """
-    return {
-        key: {
-            **value,
-            **(
-                {
-                    "responses": {
-                        response_code: {
-                            **response_data,
-                            **(
-                                {
-                                    "content": {
-                                        content_type: {
-                                            "schema": to_json_schema(
-                                                content_schema['schema']
-                                            )
-                                        } for content_type, \
-                                              content_schema in
-                                        response_data['content'].items()
-                                    }
-                                }
-                                if 'content' in response_data
-                                else { }
-                            )
-                        }
-                        for response_code, \
-                            response_data in value['responses'].items()
-                    }
-                }
-                if 'responses' in value
-                else { }
-            )
-        } if type(value) == dict else value
-        for key, value in endpoint_schema.items()
-    }
 
 
 @require_GET
