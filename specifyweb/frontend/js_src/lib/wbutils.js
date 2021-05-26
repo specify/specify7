@@ -187,11 +187,29 @@ module.exports = Backbone.View.extend({
     this.searchQuery = this.searchPreferences.search.useRegex
       ? searchQueryElement.value
       : searchQueryElement.value.trim();
-    const searchPlugin = this.wbview.hot.getPlugin('search');
-    const results =
-      this.searchQuery === '' ? [] : searchPlugin.query(this.searchQuery);
 
-    navigationTotalElement.innerText = results.length;
+    if (this.searchQuery === '') {
+      navigationTotalElement.innerText = '0';
+      return;
+    }
+
+    let resultsCount = 0;
+    const callback = this.wbview.searchPlugin.getCallback();
+    const queryMethod = this.wbview.searchPlugin.getQueryMethod();
+    const rowCount = this.wbview.hot.countRows();
+    for (let visualRow = 0; visualRow < rowCount; visualRow++)
+      for (
+        let visualCol = 0;
+        visualCol < this.wbview.dataset.columns.length;
+        visualCol++
+      ) {
+        const cellData = this.wbview.hot.getDataAtCell(visualRow, visualCol);
+        const testResult = queryMethod(this.searchQuery, cellData);
+        callback(this.wbview.hot, visualRow, visualCol, cellData, testResult);
+        if (testResult) resultsCount += 1;
+      }
+
+    navigationTotalElement.innerText = resultsCount;
 
     if (e.key === 'Enter')
       this.navigateCells(

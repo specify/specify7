@@ -100,6 +100,7 @@ const WBView = Backbone.View.extend({
       el: this.el,
     });
     this.searchCell = undefined;
+    this.searchPlugin = undefined;
     this.commentsPlugin = undefined;
 
     this.uploaded =
@@ -164,10 +165,10 @@ const WBView = Backbone.View.extend({
     this.initHot().then(() => {
       this.resize();
 
-      const searchPlugin = this.hot.getPlugin('search');
-      const queryMethod = searchPlugin.getQueryMethod();
+      this.searchPlugin = this.hot.getPlugin('search');
+      const queryMethod = this.searchPlugin.getQueryMethod();
       this.searchCell = (visualRow, visualCol, value) =>
-        searchPlugin.callback(
+        this.searchPlugin.callback(
           this.hot,
           visualRow,
           visualCol,
@@ -263,6 +264,7 @@ const WBView = Backbone.View.extend({
             // hide the disambiguation column
             columns: [this.dataset.columns.length],
             indicators: false,
+            copyPasteEnabled: false,
           },
           minSpareRows: 1,
           comments: {
@@ -503,8 +505,13 @@ const WBView = Backbone.View.extend({
         newValue,
       }))
       .filter(
-        ({ oldValue, newValue }) =>
-          oldValue !== newValue && (oldValue !== null || newValue !== '')
+        ({ oldValue, newValue, visualCol }) =>
+          // Ignore cases when value didn't change
+          oldValue !== newValue &&
+          // or when value changed from null to empty
+          (oldValue !== null || newValue !== '') &&
+          // or the column does not exist
+          visualCol < this.dataset.columns.length
       );
 
     if (changes.length === 0) return;
