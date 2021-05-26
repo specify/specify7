@@ -3,14 +3,17 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
     font-size: 12px;
     font-family: 'Verdana', 'Arial', sans-serif;
     background: #fff;
+}
+
+#root-app-container {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    row-gap: 1rem;
+    flex-direction: column;
 }
 
 /* LINKS */
