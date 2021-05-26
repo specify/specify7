@@ -1,7 +1,9 @@
 import mimetypes
 import logging
 import json
+import re
 from functools import wraps
+from typing import Dict, Tuple
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import cache_control
@@ -9,6 +11,7 @@ from django.conf import settings
 from django import http
 from django.db.models.deletion import Collector
 from django.db import router
+from django.urls import resolve
 
 from openapi_core import create_spec
 from openapi_core.validation.request.validators import RequestValidator
@@ -42,7 +45,8 @@ def apply_access_control(view):
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
-def generate_openapi_spec(request, schema, components):
+
+def generate_openapi_spec(path, parameters, schema, components):
     """Generate a tiny OpenAPI schema for an endpoint.
 
     Params:
@@ -54,8 +58,9 @@ def generate_openapi_spec(request, schema, components):
     Returns:
         OpenAPI spec for an endpoint
     """
+
     return dict(
-        version='3.0.0',
+        openapi='3.0.0',
         info=dict(
             title='',
             version='',
@@ -64,10 +69,50 @@ def generate_openapi_spec(request, schema, components):
             url='/'
         )],
         paths={
-            request.path: schema,
+            path: {
+                **schema,
+                "parameters": [
+                    *[
+                        {
+                            'name': parameter_name,
+                            'in': 'path',
+                            'required': True,
+                            'schema': {
+                                'type': parameter_type
+                            }
+                        } for parameter_name, parameter_type in parameters.items()
+                    ],
+                    *(schema["parameters"] if "parameters" in schema else []),
+                ]
+            },
         },
         components=components
     )
+
+
+def extract_pattern_from_request(request)->Tuple[str, Dict[str,str]]:
+    raw_url = resolve(request.path).route
+    stripped_url = re.sub(
+        r'^\^?(?P<pattern>[^$]+)\$$',
+        '\\1',
+        raw_url
+    )
+
+    parameters = {}
+    def handle_parameter(match_object):
+        name = match_object.group('uri_parameter')[1:-1]
+        regex_type = match_object.group('type')
+        openapi_type = 'number' if regex_type == 'd' else 'string'
+        parameters[name] = openapi_type
+        return f"{'{'}{name}{'}'}"
+    url = re.sub(
+        r'\(\?P(?P<uri_parameter><(?P<type>\w+)>)\\\w\+\)',
+        handle_parameter,
+        stripped_url
+    )
+
+    return '/'+url, parameters
+
 
 def openapi(
     schema,
@@ -101,34 +146,58 @@ def openapi(
             if validate:
                 try:
                     django_request = args[0]
+                    pattern, parameters = \
+                        extract_pattern_from_request(django_request)
+
                     openapi_request = DjangoOpenAPIRequest(django_request)
+                    setattr(
+                        openapi_request,
+                        'full_url_pattern',
+                        pattern
+                    )
+
                     spec=generate_openapi_spec(
-                        django_request,
+                        pattern,
+                        parameters,
                         schema,
                         components
                     )
                     parsed_spec=create_spec(spec)
                     validator = RequestValidator(parsed_spec)
                     result = validator.validate(openapi_request)
-                    if strict:
+
+                    if strict or settings.DEBUG:
                         result.raise_for_errors()
                     else:
-                        logger.error(json.dumps(
+                        logger.warning(json.dumps(
                             result.errors,
                             default=lambda x: str(x)
                         ))
                 except Exception as error:
-                    if strict:
+                    if settings.DEBUG:
+                        raise error
+                    elif strict:
+                        return http.HttpResponseBadRequest(str(error))
+                    else:
+                        logger.warning(str(error))
+            response = view(*args, **kwargs)
+            if validate:
+                try:
+                    pass
+                except Exception as error:
+                    if settings.DEBUG:
                         raise error
                     else:
                         logger.error(str(error))
-            return view(*args, **kwargs)
+
+            return response
         setattr(wrapped, '__schema__', {
             'schema': schema,
             'components': components
         })
         return wrapped
     return decorator
+
 
 def api_view(dispatch_func):
     """Create a Django view function that handles exceptions arising

@@ -571,7 +571,11 @@ def generate_openapi_for_endpoints(use_json_schema=False, all_endpoints=False):
     """Returns a JSON description of endpoints.
 
     Params:
-        all_endpoints: whether to include endpoints that don't have OpenAPI schema
+        use_json_schema:
+            Whether to convert the endpoint response object's schema to JSON
+            Schema
+        all_endpoints:
+            Whether to include endpoints that don't have OpenAPI schema
     """
     components = { }
 

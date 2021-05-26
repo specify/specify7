@@ -6,6 +6,7 @@ RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         gettext \
         python3.6 \
+        python3-distutils \
         libldap-2.4-2 \
         libmariadbclient18 \
  && apt-get clean \
