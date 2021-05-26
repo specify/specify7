@@ -217,9 +217,6 @@ const WBView = Backbone.View.extend({
       this.el.classList.add('wb-hide-new-cells');
     }
 
-    // Calling resize here minimizes layout shift
-    this.resize();
-
     $(window).on('resize', this.resize);
 
     this.hasMetaDataChanges = true;
@@ -231,8 +228,6 @@ const WBView = Backbone.View.extend({
     return new Promise((resolve) =>
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
-          // initial height gets overwritten on page's load
-          height: 500,
           data: this.data,
           columns: this.dataset.columns.map((__, i) => ({
             data: i,
@@ -1302,8 +1297,6 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     navigation.removeUnloadProtect(this);
   },
   resize: function () {
-    // Height of the page - content offset - bottom margin
-    this.el.style.height = `${$(window).height() - this.el.offsetTop - 15}px`;
     if (!this.hot) return;
     this.hot.updateSettings({
       height: this.$el.find('.wb-spreadsheet').height(),
