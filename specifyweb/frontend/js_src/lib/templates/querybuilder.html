@@ -1,19 +1,20 @@
 <div class="querybuilder">
   <h1 class="querybuilder-header"><img /><span></span></h2>
   <ul class="spqueryfields"></ul>
-  <button class="field-add" title="New Field.">New</button>
-  <hr>
-  <input type="checkbox" name="countOnly" id="querybuilder-count-only-<%= cid %>">
-  <label for="querybuilder-count-only-<%= cid %>">Count</label>
-  <input type="checkbox" name="selectDistinct" id="querybuilder-select-distinct-<%= cid %>">
-  <label for="querybuilder-select-distinct-<%= cid %>">Distinct</label>
-  <input type="checkbox" name="formatAudits" id="querybuilder-format-audits-<%= cid %>">
-  <label name="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>">Format</label>
-  <input type="button" value="Query" class="query-execute" disabled>
-  <input type="button" value="Create CSV" class="query-csv" disabled>
-  <input type="button" value="Create KML" class="query-kml" disabled>
-  <input type="button" value="Make Record Set" class="query-to-recordset" disabled>
-  <input type="button" value="Abandon Changes" class="abandon-changes" disabled>
-  <input type="button" value="Save" class="query-save" disabled>
-  <input type="button" value="Save As" class="query-save-as">
+  <div class="querybuilder-controls">
+    <button class="field-add" title="New Field.">New</button>
+    <input type="checkbox" name="countOnly" id="querybuilder-count-only-<%= cid %>">
+    <label for="querybuilder-count-only-<%= cid %>">Count</label>
+    <input type="checkbox" name="selectDistinct" id="querybuilder-select-distinct-<%= cid %>">
+    <label for="querybuilder-select-distinct-<%= cid %>">Distinct</label>
+    <input type="checkbox" name="formatAudits" id="querybuilder-format-audits-<%= cid %>">
+    <label name="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>">Format</label>
+    <input type="button" value="Query" class="query-execute" disabled>
+    <input type="button" value="Create CSV" class="query-csv" disabled>
+    <input type="button" value="Create KML" class="query-kml" disabled>
+    <input type="button" value="Make Record Set" class="query-to-recordset" disabled>
+    <input type="button" value="Abandon Changes" class="abandon-changes" disabled>
+    <input type="button" value="Save" class="query-save" disabled>
+    <input type="button" value="Save As" class="query-save-as">
+  </div>
 </div>
