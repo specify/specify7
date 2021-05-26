@@ -416,14 +416,14 @@ def datasets(request) -> http.HttpResponse:
             }
         },
         "responses": {
-            "204": {"description": "Data set updated."},
-            "409": {"description": "Dataset in use by uploader."}
+            "204": {"description": "Data Set updated."},
+            "409": {"description": "Data Set in use by uploader."}
         }
     },
     "delete": {
         "responses": {
-            "204": {"description": "Data set deleted."},
-            "409": {"description": "Dataset in use by uploader"}
+            "204": {"description": "Data Set deleted."},
+            "409": {"description": "Data Set in use by uploader"}
         }
     }
 }, components=open_api_components)
