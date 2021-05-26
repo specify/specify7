@@ -63,7 +63,7 @@ def generate_openapi_spec(
         components:
             OpenAPI components referenced by endpoint's OpenAPI definition
 
-    Returns:
+    Args:
         OpenAPI spec for an endpoint
     """
 
@@ -78,7 +78,14 @@ def generate_openapi_spec(
         )],
         paths={
             path: {
-                **schema,
+                **{
+                    http_method:{
+                        key:value
+                        for key,value in method_schema.items()
+                        if key != 'requestBody'
+                    }
+                    for http_method,method_schema in schema.items()
+                },
                 "parameters": [
                     *[
                         {
@@ -96,51 +103,6 @@ def generate_openapi_spec(
         },
         components=components
     )
-
-
-def endpoint_schema_to_json(endpoint_schema):
-    """Convert the endpoint's OpenAPI schema to JSON Schema.
-
-    Params:
-        endpoint_schema: OpenAPI schema for an endpoint
-
-    Returns:
-        Endpoint's schema converted to JSON Schema
-    """
-    return {
-        key: {
-            **value,
-            **(
-                {
-                    "responses": {
-                        response_code: {
-                            **response_data,
-                            **(
-                                {
-                                    "content": {
-                                        content_type: {
-                                            "schema": to_json_schema(
-                                                content_schema['schema']
-                                            )
-                                        } for content_type, \
-                                              content_schema in
-                                        response_data['content'].items()
-                                    }
-                                }
-                                if 'content' in response_data
-                                else { }
-                            )
-                        }
-                        for response_code, \
-                            response_data in value['responses'].items()
-                    }
-                }
-                if 'responses' in value
-                else { }
-            )
-        } if type(value) == dict else value
-        for key, value in endpoint_schema.items()
-    }
 
 
 
@@ -174,7 +136,7 @@ def resolve_schema_references(open_api):
     Warning: this function uses a naїve string substitution approach, which
     won't work for structures that have a circular reference wth themself.
 
-    Params:
+    Args:
         open_api: OpenAPI Schema v3.0
 
     Returns:
@@ -201,6 +163,38 @@ def resolve_schema_references(open_api):
     return json.loads(open_api_string)
 
 
+def validate_object(schema, components, content, mime_type):
+    """Validate a response object or request body object.
+
+    Args:
+        schema:
+            OpenAPI schema for an object
+            The schema should not include content type keys or response codes
+        components:
+            The OpenAPI components that may be used in the schema object
+        content:
+            The content to validate (response object or request body object)
+        mime_type:
+            The mime type of the content to validate
+    """
+    if mime_type == 'application/json':
+        resolved_schema = resolve_schema_references(dict(
+            schema=schema,
+            components=components
+        ))['schema']
+        json_schema = \
+            to_json_schema(resolved_schema)
+
+        # Make sure the response is a valid JSON object
+        json_content = json.loads(content)
+
+        # Test the response against JSON schema
+        validate(json_content, json_schema)
+    else:
+        # It doesn't yet validate non JSON responses
+        pass
+
+
 def openapi(
     schema,
     components=None,
@@ -214,13 +208,10 @@ def openapi(
     Throws warnings/errors on invalid requests/responses.
 
     Limitations:
-        It can't handle situations where an OpenAPI schema's component
+        It can't handle situations where OpenAPI schema's component
         circularly references itself.
-        Also, if an endpoint can produce the result in multiple MIME types
-        based on the request headers (e.x JSON and XML), this decorator may
-        incorrectly asses the response schema.
 
-    Params:
+    Args:
         schema: OpenAPI Schema object for an endpoint
         components:
             The definitions of the components that are referenced in the
@@ -238,8 +229,10 @@ def openapi(
         @wraps(view)
         def wrapped(*args, **kwargs):
             django_request = args[0]
+            request_method = django_request.method.lower()
 
             # Validate the request object
+            request_has_issues = False
             if run_validation:
                 try:
                     pattern, parameters = \
@@ -255,6 +248,11 @@ def openapi(
                         pattern
                     )
 
+                    # Prevent openapi_core from validating the requestBody
+                    # Instead, that would be handled by the JSON Schema
+                    # validator
+                    setattr(openapi_request, 'body', '')
+
                     spec=generate_openapi_spec(
                         pattern,
                         parameters,
@@ -262,24 +260,48 @@ def openapi(
                         components
                     )
 
-                    # openapi_core mutates the object here.
-                    # Need to pass it a deep copy
+                    # openapi_core mutates the spec object here.
+                    # Need to make a deep copy
                     parsed_spec=create_spec(
                         json.loads(
-                            json.dumps(spec)
+                            json.dumps(
+                                spec
+                            )
                         )
                     )
                     validator = RequestValidator(parsed_spec)
                     result = validator.validate(openapi_request)
+                    result.raise_for_errors()
 
-                    if strict or settings.DEBUG:
-                        result.raise_for_errors()
-                    else:
-                        logger.error(json.dumps(
-                            result.errors,
-                            default=lambda x: str(x)
-                        ))
+                    if 'requestBody' in schema[request_method]:
+                        request_body = schema[request_method]['requestBody']
+                        if request_body['required'] \
+                            and django_request.body == '':
+                            raise Exception('Required requestBody is missing')
+
+                        accepted_content_types = \
+                            list(request_body['content'].keys())
+                        if django_request.content_type \
+                            not in accepted_content_types:
+                            raise Exception(
+                                f'Request body\'s content type '
+                                f'({django_request.content_type}) is not in '
+                                f'the list of accepted content types '
+                                f'({accepted_content_types})'
+                            )
+
+                        request_body_schema = \
+                            request_body['content'][django_request.content_type]
+                        validate_object(
+                            request_body_schema['schema'],
+                            components,
+                            django_request.body,
+                            django_request.content_type
+                        )
+
+
                 except Exception as error:
+                    request_has_issues = True
                     if settings.DEBUG:
                         raise error
                     elif strict:
@@ -289,12 +311,14 @@ def openapi(
 
             # Process the request
             response = view(*args, **kwargs)
-            if not run_validation:
+
+            # Don't validate the response object if the request object was
+            # invalid or if validation is turned off
+            if request_has_issues or not run_validation:
                 return response
 
             # Validate the response object
             try:
-                request_method = django_request.method.lower()
                 response_code = str(response.status_code)
                 if response_code not in \
                     schema[request_method]["responses"]:
@@ -328,24 +352,14 @@ def openapi(
                     )
 
                 # Use JSON Schema to validate a JSON response
-                if content_type == 'application/json':
-                    resolved_schema = resolve_schema_references(dict(
-                        schema=schema,
-                        components=components
-                    ))['schema']
-                    json_schema = endpoint_schema_to_json(resolved_schema)
-                    response_schema = \
-                        json_schema[request_method]["responses"][response_code]
-                    response_object_schema = \
-                        response_schema["content"]["application/json"]["schema"]
-
-                    # Make sure the response is a valid JSON object
-                    json_content = json.loads(response.content)
-
-                    # Test the response against JSON schema
-                    validate(json_content, response_object_schema)
-                else:
-                    pass
+                openapi_response_schema = \
+                    response_schema['content'][content_type]['schema']
+                validate_object(
+                    openapi_response_schema,
+                    components,
+                    response.content,
+                    content_type,
+                )
 
             except Exception as error:
                 if settings.DEBUG:
@@ -359,7 +373,11 @@ def openapi(
             return response
         setattr(wrapped, '__schema__', {
             'schema': schema,
-            'components': components
+            'components': components,
+            # Since strict endpoints may return a 400 (Bad Request) response,
+            # the OpenAPI schema needs to mention 400 as a possible HTTP
+            # response code
+            'strict': strict,
         })
         return wrapped
     return decorator
