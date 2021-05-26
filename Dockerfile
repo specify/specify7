@@ -5,6 +5,7 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         python3.6 \
+        python3-distutils \
         libldap-2.4-2 \
         libmariadbclient18 \
  && apt-get clean \
