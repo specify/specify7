@@ -51,7 +51,6 @@ interface WBPlanViewBackboneProps
   extends WBPlanViewWrapperProps,
     PublicWBPlanViewProps {
   header: HTMLElement;
-  handleResize: () => void;
 }
 
 const setUnloadProtect = (self: WBPlanViewBackboneProps): void =>
@@ -71,24 +70,11 @@ export default createBackboneView<
   initialize(self, { dataset }) {
     self.dataset = dataset;
     self.mappingIsTemplated = false;
-    const header = document.getElementById('site-header');
-    if (header === null) throw new Error(`Can't find site's header`);
-    self.header = header;
-    self.handleResize = (): void =>
-      self.el.style.setProperty(
-        '--menu-size',
-        `${Math.ceil(self.header.clientHeight)}px`
-      );
   },
   renderPre(self) {
     self.el.classList.add('wbplanview');
   },
-  renderPost(self) {
-    self.handleResize();
-    window.addEventListener('resize', self.handleResize);
-  },
   remove(self) {
-    window.removeEventListener('resize', self.handleResize);
     removeUnloadProtect(self);
   },
   Component: WBPlanViewWrapper,
