@@ -55,6 +55,9 @@ class ScopedTreeRecord(NamedTuple):
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
+    def get_treedefs(self) -> Set:
+        return set([self.treedef])
+
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[ParseFailure] = []

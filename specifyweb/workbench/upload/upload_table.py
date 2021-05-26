@@ -84,6 +84,13 @@ class ScopedUploadTable(NamedTuple):
             }
         )
 
+    def get_treedefs(self) -> Set:
+        return (
+            set(td for toOne in self.toOne.values() for td in toOne.get_treedefs()) |
+            set(td for toMany in self.toMany.values() for tmr in toMany for td in tmr.get_treedefs())
+        )
+
+
     def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
@@ -394,6 +401,9 @@ class DisambiguatedTable(NamedTuple):
 
     def force_upload_row(self) -> NoReturn:
         raise Exception('trying to force upload of disambiguated table')
+
+    def get_treedefs(self) -> NoReturn:
+        raise Exception('trying to get treedefs of disambiguated table')
 
 
 def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:

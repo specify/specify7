@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import json
 from jsonschema import validate # type: ignore
 
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
 
 from django.db import connection, transaction
 from django.db.utils import OperationalError
@@ -194,7 +194,7 @@ def do_upload(
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(results)
+            fixup_trees(upload_plan, results)
 
     return results
 
@@ -218,7 +218,9 @@ def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: 
 
     return result
 
-def fixup_trees(results: List[UploadResult]) -> None:
+def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> None:
+    treedefs = upload_plan.get_treedefs()
+
     to_fix = [
         tree
         for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage')
@@ -226,9 +228,17 @@ def fixup_trees(results: List[UploadResult]) -> None:
     ]
 
     for tree in to_fix:
+        tic = time.perf_counter()
         renumber_tree(tree)
-        for treedef in getattr(models, (tree + 'treedef').capitalize()).objects.all():
-            reset_fullnames(treedef)
+        toc = time.perf_counter()
+        logger.info(f"finished renumber of {tree} tree in {toc-tic}s")
+
+        for treedef in treedefs:
+            if treedef.specify_model.name.lower().startswith(tree):
+                tic = time.perf_counter()
+                reset_fullnames(treedef, null_only=True)
+                toc = time.perf_counter()
+                logger.info(f"finished reset fullnames of {tree} tree in {toc-tic}s")
 
 def changed_tree(tree: str, result: UploadResult) -> bool:
     return (isinstance(result.record_result, Uploaded) and result.record_result.info.tableName.lower() == tree) \

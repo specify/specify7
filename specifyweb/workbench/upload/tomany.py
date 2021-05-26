@@ -53,6 +53,9 @@ class ScopedToManyRecord(NamedTuple):
             }
         )
 
+    def get_treedefs(self) -> Set:
+        return set(td for toOne in self.toOne.values() for td in toOne.get_treedefs())
+
     def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: AuditLog, cache: Optional[Dict]) -> Union["BoundToManyRecord", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 

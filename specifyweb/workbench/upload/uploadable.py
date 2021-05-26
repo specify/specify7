@@ -41,6 +41,9 @@ class ScopedUploadable(Protocol):
     def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: "AuditLog", cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
         ...
 
+    def get_treedefs(self) -> Set:
+        ...
+
 Filter = Dict[str, Any]
 
 def filter_match_key(f: Filter) -> str:

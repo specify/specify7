@@ -331,13 +331,13 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def reset_fullnames(treedef):
+def reset_fullnames(treedef, null_only=False):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, reverse)
+    return set_fullnames(table, treedef.id, depth, reverse, null_only)
 
-def set_fullnames(table, treedefid, depth, reverse=False):
+def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -350,6 +350,7 @@ def set_fullnames(table, treedefid, depth, reverse=False):
         "where t{root}.parentid is null\n"
         "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
+        "{null_only}\n"
     ).format(
         root=depth-1,
         table=table,
@@ -357,6 +358,7 @@ def set_fullnames(table, treedefid, depth, reverse=False):
         set_expr="t0.fullname = {}".format(fullname_expr(depth, reverse)),
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
+        null_only="and t0.fullname is null" if null_only else "",
     )
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
