@@ -72,6 +72,7 @@ repos:
       - id: check-added-large-files
       - id: check-case-conflict
       - id: check-docstring-first
+      - id: check-json
       - id: check-xml
       - id: check-shebang-scripts-are-executable
       - id: check-merge-conflict
@@ -156,6 +157,13 @@ repos:
     rev: v1.2.2
     hooks:
       - id: python-safety-dependencies-check
+
+  - repo: https://github.com/lovesegfault/beautysh
+    rev: v6.1.0
+    hooks:
+      - id: beautysh
+        args:
+          - --indent-size=2
 
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.16.0
