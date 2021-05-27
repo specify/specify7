@@ -4,29 +4,34 @@ header {
     background: #f1f2f2;
     border-bottom: solid 6px #f4763d;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    padding: 10px;
+    column-gap: 15px;
 }
 
 #site-header-main {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    width: calc(100% - 2rem);
-    max-width: 950px;
+    display: contents;
 }
 
 #site-logo {
     background-image: url('/static/img/seven_logo.png');
     background-size: 185px 55px;
-    width: 185px;
+    background-repeat: no-repeat;
     height: 55px;
+    order: 1;
+    flex-basis: 300px;
+}
+
+#user-tools {
+    order: 3;
+    flex-basis: 300px;
 }
 
 nav {
     padding: 0;
-    width: 100%;
-    max-width: calc(950px + 2rem);
+    order: 2;
+    flex: 1;
+    height: 100%;
 }
 
 #header-loading {
@@ -41,9 +46,12 @@ nav {
 nav ul {
     margin: 0;
     padding: 0;
+    height: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
 }
 
 nav li {
@@ -61,12 +69,33 @@ nav a {
 nav a::after {
     content: '';
     position: absolute;
-    bottom: calc(-0.5rem + 2px);
+    bottom: -1rem;
     width: 100%;
     left: 0;
     right: 0;
     height: 6px;
     background: #f4763d;
+}
+
+@media (max-width: 1600px) {
+
+    header {
+        flex-direction: column;
+    }
+
+    #site-logo, nav, #user-tools {
+        order: unset;
+    }
+
+    nav {
+        padding-top: 10px;
+    }
+
+    #site-header-main {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
 }
 
 @media (max-width: 1000px) {
