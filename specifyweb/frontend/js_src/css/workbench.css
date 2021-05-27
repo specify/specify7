@@ -68,7 +68,7 @@
 }
 
 .wb-upload-view {
-  display: contents;
+  position: absolute;
 }
 
 /* HANDSONTABLE overwrites */

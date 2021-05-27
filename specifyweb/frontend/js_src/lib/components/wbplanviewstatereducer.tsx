@@ -511,69 +511,71 @@ export const stateReducer = generateReducer<
           }
         />
         {state.displayMatchingOptionsDialog ? (
-          <ModalDialog
-            onCloseCallback={handleMappingOptionsDialogClose}
-            properties={{
-              title: 'Change Matching Logic',
-              buttons: {
-                Done: handleMappingOptionsDialogClose,
-              },
-            }}
-          >
-            {Object.keys(state.mustMatchPreferences).length === 0 ? (
-              'Matching logic is unavailable for current mappings'
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Table Name</th>
-                    <th>Must Match</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(state.mustMatchPreferences).map(
-                    ([tableName, mustMatch]) => (
-                      <tr key={tableName}>
-                        <td>
-                          <div className="must-match-line">
-                            <Icon
-                              tableName={tableName}
-                              optionLabel={tableName}
-                              isRelationship={true}
-                            />
-                            {
-                              dataModelStorage.tables[tableName]
-                                .tableFriendlyName
-                            }
-                          </div>
-                        </td>
-                        <td>
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={mustMatch}
-                              {...(state.props.readonly
-                                ? {
-                                    disabled: true,
-                                  }
-                                : {
-                                    onChange: (): void =>
-                                      state.dispatch({
-                                        type: 'MustMatchPrefChangeAction',
-                                        tableName,
-                                        mustMatch: !mustMatch,
-                                      }),
-                                  })}
-                            />
-                          </label>
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            )}
-          </ModalDialog>
+          <div style={{ position: 'absolute' }}>
+            <ModalDialog
+              onCloseCallback={handleMappingOptionsDialogClose}
+              properties={{
+                title: 'Change Matching Logic',
+                buttons: {
+                  Done: handleMappingOptionsDialogClose,
+                },
+              }}
+            >
+              {Object.keys(state.mustMatchPreferences).length === 0 ? (
+                'Matching logic is unavailable for current mappings'
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Table Name</th>
+                      <th>Must Match</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(state.mustMatchPreferences).map(
+                      ([tableName, mustMatch]) => (
+                        <tr key={tableName}>
+                          <td>
+                            <div className="must-match-line">
+                              <Icon
+                                tableName={tableName}
+                                optionLabel={tableName}
+                                isRelationship={true}
+                              />
+                              {
+                                dataModelStorage.tables[tableName]
+                                  .tableFriendlyName
+                              }
+                            </div>
+                          </td>
+                          <td>
+                            <label>
+                              <input
+                                type="checkbox"
+                                checked={mustMatch}
+                                {...(state.props.readonly
+                                  ? {
+                                      disabled: true,
+                                    }
+                                  : {
+                                      onChange: (): void =>
+                                        state.dispatch({
+                                          type: 'MustMatchPrefChangeAction',
+                                          tableName,
+                                          mustMatch: !mustMatch,
+                                        }),
+                                    })}
+                              />
+                            </label>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </ModalDialog>
+          </div>
         ) : undefined}
       </Layout>
     );
