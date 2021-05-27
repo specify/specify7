@@ -416,8 +416,14 @@ module.exports = Backbone.View.extend({
       }
     }
   },
+  getVisualHeaders() {
+    return this.wbview.dataset.columns.map(
+      (_, index, columns) => columns[this.wbview.hot.toPhysicalColumn(index)]
+    );
+  },
   getGeoLocateQueryURL({ localityColumns, visualRow }) {
     let queryString = '';
+    const visualHeaders = this.getVisualHeaders();
 
     if (
       typeof localityColumns['locality.geography.$Country.name'] !==
@@ -437,11 +443,7 @@ module.exports = Backbone.View.extend({
             : encodeURIComponent(
                 this.wbview.hot.getDataAtCell(
                   visualRow,
-                  this.wbview.hot.toVisualColumn(
-                    this.wbview.dataset.columns.indexOf(
-                      localityColumns[columnName]
-                    )
-                  )
+                  visualHeaders.indexOf(localityColumns[columnName])
                 )
               ),
         ])
@@ -457,7 +459,7 @@ module.exports = Backbone.View.extend({
     } else {
       const pointDataDict = WbLocalityDataExtractor.getLocalityCoordinate(
         this.wbview.hot.getDataAtRow(visualRow),
-        this.wbview.dataset.columns,
+        visualHeaders,
         localityColumns
       );
 
@@ -478,13 +480,10 @@ module.exports = Backbone.View.extend({
 
     return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${queryString}`;
   },
-  showGeoLocate() {
-    // don't allow opening more than one window)
-    if ($('#geolocate-window').length !== 0) return;
-
+  getSelectedRegions() {
     const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
 
-    const fixedSelectedRegions = selectedRegions
+    return selectedRegions
       .map(([startRow, startCol, endRow, endCol]) =>
         startRow < endRow
           ? { startRow, startCol, endRow, endCol }
@@ -495,10 +494,16 @@ module.exports = Backbone.View.extend({
           ? { startCol, endCol, ...rest }
           : { startCol: endCol, endCol: startCol, ...rest }
       );
+  },
+  showGeoLocate() {
+    // don't allow opening more than one window)
+    if ($('#geolocate-window').length !== 0) return;
+
+    const selectedRegions = this.getSelectedRegions();
 
     const selectedHeaders = [
       ...new Set(
-        fixedSelectedRegions.flatMap(({ startCol, endCol }) =>
+        selectedRegions.flatMap(({ startCol, endCol }) =>
           [...Array(endCol - startCol + 1)].map((_, index) => startCol + index)
         )
       ),
@@ -523,7 +528,7 @@ module.exports = Backbone.View.extend({
 
     const selectedRows = [
       ...new Set(
-        fixedSelectedRegions.flatMap(({ startRow, endRow }) =>
+        selectedRegions.flatMap(({ startRow, endRow }) =>
           [...Array(endRow - startRow + 1)].map((_, index) => startRow + index)
         )
       ),
@@ -594,6 +599,7 @@ module.exports = Backbone.View.extend({
     }
     updateGeoLocate(localityIndex);
 
+    const visualHeaders = this.getVisualHeaders();
     const handleGeolocateResult = (event) => {
       const dataColumns = event.data.split('|');
       if (dataColumns.length !== 4 || event.data === '|||') return;
@@ -605,13 +611,13 @@ module.exports = Backbone.View.extend({
           'locality.latitude1',
           'locality.longitude1',
           'locality.latlongaccuracy',
-        ].map((fieldName, index) => [
-          visualRow,
-          this.wbview.hot.toVisualColumn(
-            this.wbview.dataset.columns.indexOf(localityColumns[fieldName])
-          ),
-          dataColumns[index],
-        ])
+        ]
+          .map((fieldName, index) => [
+            visualRow,
+            visualHeaders.indexOf(localityColumns[fieldName]),
+            dataColumns[index],
+          ])
+          .filter(([, visualCol]) => visualCol !== -1)
       );
     };
 
@@ -620,28 +626,26 @@ module.exports = Backbone.View.extend({
   showLeafletMap() {
     if ($('#leaflet-map').length !== 0) return;
 
-    const selectedRegions = this.wbview.hot.getSelected();
-    let rows = this.wbview.dataset.rows;
+    const selectedRegions = this.getSelectedRegions();
     let customRowNumbers = [];
-    if (
-      selectedRegions.every(
-        ([_startRow, startCol, _endRow, endCol]) =>
-          startCol === -1 ||
-          (startCol === 0 && endCol === this.wbview.dataset.columns.length - 1)
-      )
+    const rows = selectedRegions.every(
+      ({ startCol, endCol }) =>
+        startCol === -1 ||
+        (startCol === 0 && endCol === this.wbview.dataset.columns.length - 1)
     )
-      rows = selectedRegions.flatMap(([startRow, _startCol, endRow, _endCol]) =>
-        [...Array(endRow - startRow + 1)].map((_, index) => {
-          customRowNumbers.push(startRow + index);
-          return rows[startRow + index];
-        })
-      );
+      ? selectedRegions.flatMap(({ startRow, endRow }) =>
+          [...Array(endRow - startRow + 1)].map((_, index) => {
+            customRowNumbers.push(startRow + index);
+            return this.wbview.hot.getDataAtRow(startRow + index);
+          })
+        )
+      : this.wbview.hot.getData();
 
     const localityPoints =
       WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
         this.localityColumns,
         rows,
-        this.wbview.dataset.columns,
+        this.getVisualHeaders(),
         customRowNumbers
       );
 
@@ -649,13 +653,11 @@ module.exports = Backbone.View.extend({
       localityPoints,
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
-        const selectedColumn =
-          typeof this.wbview.hot.getSelectedLast() === 'undefined'
-            ? 0
-            : this.wbview.hot.getSelectedLast()[1];
+        const selectedColumn = this.wbview.hot.getSelectedLast()?.[1] ?? 0;
         // select the first cell to scroll the view
         this.wbview.hot.selectCell(rowNumber, selectedColumn);
-        this.wbview.hot.selectRows(rowNumber); // select an entire row
+        // select an entire row
+        this.wbview.hot.selectRows(rowNumber);
       },
     });
   },

@@ -98,6 +98,7 @@ const WBView = Backbone.View.extend({
     this.datasetmeta = new DataSetMeta({
       dataset: this.dataset,
       el: this.el,
+      getRowCount: () => this.hot?.countRows() ?? this.dataset.rows.length,
     });
     this.searchCell = undefined;
     this.searchPlugin = undefined;
@@ -1134,7 +1135,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
     switch (this.validationMode) {
       case 'live':
-        this.liveValidationStack = this.dataset.rows.map((_, i) => i).reverse();
+        this.liveValidationStack = [...Array(this.hot.countRows())]
+          .map((_, i) => i)
+          .reverse();
         this.triggerLiveValidation();
         this.el.classList.remove('wb-hide-new-cells', 'wb-hide-invalid-cells');
         this.el.classList.add('wb-hide-modified-cells');
@@ -1264,7 +1267,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     if (this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = true;
 
-    this.$('.wb-upload, .wb-validate')
+    this.$(
+      '.wb-upload, .wb-validate, .wb-export-data-set, .wb-change-data-set-owner'
+    )
       .prop('disabled', true)
       .prop('title', 'This action requires all changes to be saved');
     this.$('.wb-save').prop('disabled', false);
@@ -1286,7 +1291,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   spreadSheetUpToDate: function () {
     if (!this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = false;
-    this.$('.wb-upload, .wb-validate')
+    this.$(
+      '.wb-upload, .wb-validate, .wb-export-data-set, .wb-change-data-set-owner'
+    )
       .prop('disabled', false)
       .prop('title', '');
     this.$('.wb-save').prop('disabled', true);

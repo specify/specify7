@@ -13,7 +13,7 @@ export default Backbone.View.extend({
   events: {
     'click .ui-icon': 'startEditing',
   },
-  initialize({ dataset }) {
+  initialize({ dataset, getRowCount }) {
     this.dataset = dataset;
     this.dialog = null;
     this.model = schema.getModel('agent');
@@ -21,6 +21,7 @@ export default Backbone.View.extend({
     this.modifiedByAgent = null;
     this.changeOwnerDialog = null;
     this.listOfUsers = null;
+    this.getRowCount = getRowCount;
   },
   render() {
     if (this.dialog !== null) {
@@ -95,8 +96,8 @@ export default Backbone.View.extend({
         >${this.dataset.remarks ?? ''}</textarea>
       </label><br><br>
       <b>Metadata:</b><br>
-      Number of rows: <i>${this.dataset.rows.length}</i><br>
-      Number of columns: <i>${this.dataset.rows[0].length}</i><br>
+      Number of rows: <i>${this.getRowCount()}</i><br>
+      Number of columns: <i>${this.dataset.columns.length}</i><br>
       Date created: <i>${new Date(
         this.dataset.timestampcreated
       ).toLocaleString()}</i><br>
