@@ -39,8 +39,21 @@
   color: #555;
 }
 
-img.wb-upload-results-table-icon {
+.wb-upload-results-table-name .custom-select-option-icon-table {
+  width: 1rem;
   height: 1rem;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.wb-upload-results-table-name .custom-select-option-icon-table-undefined {
+  color: var(--background1);
+  border-radius: 3px;
+  justify-content: center;
+  display: flex !important;
+  align-items: center;
+  overflow: hidden;
 }
 
 .wb-upload-results-rows-container {

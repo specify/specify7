@@ -8,7 +8,6 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR, R, RA, RR } from './components/wbplanview';
-import icons from './icons';
 import type { Schema } from './legacytypes';
 import schema from './schema';
 import type { UploadPlan } from './uploadplantomappingstree';
@@ -217,7 +216,6 @@ type SpacedOutTree = RR<number, UploadedTreeRankSpacedOut | undefined>;
 export interface UploadedRowsTable {
   readonly tableLabel: string;
   readonly columnNames: RA<string>;
-  readonly tableIcon: string;
   readonly getRecordViewUrl: (rowId: number) => string;
   readonly rows: RA<UploadedRow>;
   readonly rowsCount?: number;
@@ -829,7 +827,7 @@ export function parseUploadResults(
   );
 
   const treeTables: IR<
-    Omit<UploadedRowsTable, 'getRecordViewUrl' | 'tableLabel' | 'tableIcon'>
+    Omit<UploadedRowsTable, 'getRecordViewUrl' | 'tableLabel'>
   > = Object.fromEntries(
     Object.entries(uploadedRows)
       .filter(
@@ -906,11 +904,6 @@ export function parseUploadResults(
               schemaModels[
                 lowercaseTableNames.indexOf(tableName.toLowerCase())
               ].getLocalizedName(),
-            tableIcon: icons.getIcon(
-              normalTableNames[
-                lowercaseTableNames.indexOf(tableName.toLowerCase())
-              ]
-            ),
             getRecordViewUrl: (recordId: number) =>
               `/specify/view/${tableName}/${recordId}/`,
             ...(tableName in treeTables

@@ -23,6 +23,7 @@ import type {
   UploadedRowsTable,
 } from '../wbuploadedparser';
 import { parseUploadResults } from '../wbuploadedparser';
+import { Icon } from './customselectelement';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, IR, RA } from './wbplanview';
@@ -319,7 +320,6 @@ function UploadedTableRows({
 }
 
 function UploadedTableHeader({
-  tableIcon,
   tableName,
   label,
   rowsCount,
@@ -328,7 +328,6 @@ function UploadedTableHeader({
   onCreateDataSet: handleCreateDataSet,
   onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
 }: {
-  readonly tableIcon?: string;
   readonly tableName?: string;
   readonly label: string;
   readonly rowsCount: number;
@@ -339,7 +338,6 @@ function UploadedTableHeader({
   readonly type: UploadedRecordsTypes;
 } & (
   | {
-      readonly tableIcon: string;
       readonly tableName: string;
       readonly label: string;
       readonly rowsCount: number;
@@ -367,13 +365,11 @@ function UploadedTableHeader({
     >
       <div className="wb-upload-results-table-name">
         {tableIsCollapsed ? '\u25B2' : '\u25BC'}
-        {tableIcon && (
-          <img
-            className="wb-upload-results-table-icon"
-            src={tableIcon}
-            alt={tableName}
-          />
-        )}
+        <Icon
+          tableName={tableName?.toLowerCase()}
+          optionLabel={tableName ?? '0'}
+          isRelationship={true}
+        />
         <div className="wb-upload-results-table-label">{label}</div>
         <div className="wb-upload-results-table-rows-count">- {rowsCount}</div>
       </div>
@@ -438,7 +434,6 @@ function UploadedTable({
         onToggleTableRecordsVisibility={handleToggleTableRecordsVisibility}
         {...(type === 'table'
           ? {
-              tableIcon: uploadedTable.tableIcon,
               label: uploadedTable.tableLabel,
               rowsCount: uploadedTable.rowsCount ?? uploadedTable.rows.length,
             }
