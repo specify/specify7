@@ -12,6 +12,7 @@ import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import { getFriendlyName } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 import type { TreeRankData } from '../wbplanviewmodelfetcher';
 import fetchDataModel from '../wbplanviewmodelfetcher';
@@ -321,14 +322,17 @@ function UploadedTableRows({
 
 function UploadedTableHeader({
   tableName,
+  iconTableName = tableName,
   label,
   rowsCount,
   tableIsCollapsed,
+  type,
   onCreateRecordSet: handleCreateRecordSet,
   onCreateDataSet: handleCreateDataSet,
   onToggleTableRecordsVisibility: handleToggleTableRecordsVisibility,
 }: {
   readonly tableName?: string;
+  readonly iconTableName?: string;
   readonly label: string;
   readonly rowsCount: number;
   readonly tableIsCollapsed: boolean;
@@ -366,11 +370,17 @@ function UploadedTableHeader({
       <div className="wb-upload-results-table-name">
         {tableIsCollapsed ? '\u25B2' : '\u25BC'}
         <Icon
-          tableName={tableName?.toLowerCase()}
-          optionLabel={tableName ?? '0'}
+          tableName={iconTableName?.toLowerCase()}
+          optionLabel={iconTableName ?? '0'}
           isRelationship={true}
         />
-        <div className="wb-upload-results-table-label">{label}</div>
+        <div className="wb-upload-results-table-label">
+          {type === 'table'
+            ? label
+            : `${getFriendlyName(label)} (${getFriendlyName(
+                iconTableName ?? ''
+              )})`}
+        </div>
         <div className="wb-upload-results-table-rows-count">- {rowsCount}</div>
       </div>
       <div className="wb-upload-results-controls">
@@ -428,6 +438,11 @@ function UploadedTable({
       <UploadedTableHeader
         type={type}
         tableName={tableName}
+        iconTableName={
+          Array.isArray(uploadedTable) && type === 'picklist'
+            ? uploadedTable[0]?.tableName ?? tableName
+            : tableName
+        }
         tableIsCollapsed={tableIsCollapsed}
         onCreateRecordSet={handleCreateRecordSet}
         onCreateDataSet={handleCreateDataSet}
@@ -528,12 +543,12 @@ const reducer = generateReducer<WBUploadedState, WBUploadedActions>({
   ToggleTableRecordsVisibilityAction: ({ state, action }) => ({
     ...state,
     [action.destination]: Object.fromEntries(
-      Object.entries(state[action.destination]).map(
-        ([tableName, isCollapsed]) => [
-          tableName,
-          isCollapsed !== (tableName === action.tableName),
-        ]
-      )
+      Object.entries(
+        state[action.destination]
+      ).map(([tableName, isCollapsed]) => [
+        tableName,
+        isCollapsed !== (tableName === action.tableName),
+      ])
     ),
   }),
   CellClickedAction: ({ state, action: { rowIndex, columnIndex } }) => {
@@ -645,12 +660,15 @@ function WBUploadedView(props: WBUploadedViewComponentProps): JSX.Element {
 function WBUploadedViewDataParser(
   props: WBUploadedViewDataParseProps
 ): JSX.Element {
-  const [treeRanks, setTreeRanks] =
-    React.useState<IR<IR<TreeRankData>> | undefined>(ranks);
-  const [uploadedRows, setUploadedRows] =
-    React.useState<UploadedRows | undefined>(undefined);
-  const [uploadedPicklistItems, setUploadedPicklistItems] =
-    React.useState<UploadedPicklistItems | undefined>(undefined);
+  const [treeRanks, setTreeRanks] = React.useState<
+    IR<IR<TreeRankData>> | undefined
+  >(ranks);
+  const [uploadedRows, setUploadedRows] = React.useState<
+    UploadedRows | undefined
+  >(undefined);
+  const [uploadedPicklistItems, setUploadedPicklistItems] = React.useState<
+    UploadedPicklistItems | undefined
+  >(undefined);
   React.useEffect(
     () =>
       // Fetch tree ranks
@@ -658,17 +676,17 @@ function WBUploadedViewDataParser(
         .then(() =>
           setTreeRanks(
             Object.fromEntries(
-              Object.entries(dataModelStorage.ranks).map(
-                ([tableName, tableRanks]) => [
-                  tableName,
-                  Object.fromEntries([
-                    ...(dataModelStorage.rootRanks[tableName]
-                      ? [dataModelStorage.rootRanks[tableName]]
-                      : []),
-                    ...Object.entries(tableRanks),
-                  ]),
-                ]
-              )
+              Object.entries(
+                dataModelStorage.ranks
+              ).map(([tableName, tableRanks]) => [
+                tableName,
+                Object.fromEntries([
+                  ...(dataModelStorage.rootRanks[tableName]
+                    ? [dataModelStorage.rootRanks[tableName]]
+                    : []),
+                  ...Object.entries(tableRanks),
+                ]),
+              ])
             )
           )
         )

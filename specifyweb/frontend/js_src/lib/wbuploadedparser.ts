@@ -228,6 +228,7 @@ export interface UploadedPicklistItem {
   readonly id: number;
   readonly rowIndex: number;
   readonly columnIndex: number;
+  readonly tableName: string;
 }
 
 export type UploadedPicklistItems = R<UploadedPicklistItem[]>;
@@ -296,6 +297,7 @@ function handleUploadResult({
           rowIndex,
           id,
           picklistValue,
+          tableName,
           columnIndex: headers.indexOf(caption) || -1,
         });
       }
