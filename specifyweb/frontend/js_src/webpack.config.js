@@ -1,4 +1,5 @@
-var webpack = require("webpack");
+const webpack = require("webpack");
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 module.exports = {
     module: {
@@ -52,7 +53,8 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx']
     },
     plugins: [
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+        new WebpackManifestPlugin()
     ],
     devtool: 'source-map',
     entry: {
@@ -64,6 +66,6 @@ module.exports = {
     output: {
         path: __dirname + "/../static/js/",
         publicPath: "/static/js/",
-        filename: "[name].bundle.js"
+        filename: "[name].[contenthash].bundle.js"
     },
 };

@@ -1,4 +1,5 @@
 {% load raven %}
+{% load script_manifest %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +8,7 @@
   <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
-  <script src="/static/js/main.bundle.js"></script>
+  <script src="{% script_src 'main.js' %}"></script>
 </head>
 
 <body>
