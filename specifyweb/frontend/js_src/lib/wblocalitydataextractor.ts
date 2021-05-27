@@ -143,19 +143,15 @@ const findLocalityColumns = (
     )
   );
 
-/*
- * If there are multiple localities present in a row, check which
- * group this field belongs too
- */
-export const getLocalityColumnsFromSelectedCell = (
+export const getLocalityColumnsFromSelectedCells = (
   localityColumnGroups: RA<IR<string>>,
-  selectedHeader: string
-): IR<string> | false =>
-  localityColumnGroups.find((localityColumns) =>
-    Object.values(localityColumns).includes(selectedHeader)
-  ) ??
-  localityColumnGroups[0] ??
-  false;
+  selectedHeaders: RA<string>
+): RA<IR<string>> =>
+  localityColumnGroups.filter((localityColumns) =>
+    Object.values(localityColumns).some((localityColumn) =>
+      selectedHeaders.includes(localityColumn)
+    )
+  ) || localityColumnGroups;
 
 export const findLocalityColumnsInDataSet = (
   baseTableName: string,

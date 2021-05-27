@@ -416,21 +416,13 @@ module.exports = Backbone.View.extend({
       }
     }
   },
-  getGeoLocateQueryURL(
-    currentLocalityColumns,
-    selectedRow,
-    getDataAtCell,
-    getDataAtRow
-  ) {
-    if (currentLocalityColumns === false) return;
-
-    let queryString;
+  getGeoLocateQueryURL({ localityColumns, visualRow }) {
+    let queryString = '';
 
     if (
-      typeof currentLocalityColumns['locality.geography.$Country.name'] !==
+      typeof localityColumns['locality.geography.$Country.name'] !==
         'undefined' &&
-      typeof currentLocalityColumns['locality.geography.$State.name'] !==
-        'undefined'
+      typeof localityColumns['locality.geography.$State.name'] !== 'undefined'
     ) {
       const data = Object.fromEntries(
         [
@@ -440,14 +432,14 @@ module.exports = Backbone.View.extend({
           'locality.localityname',
         ].map((columnName) => [
           columnName,
-          typeof currentLocalityColumns[columnName] === 'undefined'
+          typeof localityColumns[columnName] === 'undefined'
             ? undefined
             : encodeURIComponent(
-                getDataAtCell(
-                  selectedRow,
+                this.wbview.hot.getDataAtCell(
+                  visualRow,
                   this.wbview.hot.toVisualColumn(
                     this.wbview.dataset.columns.indexOf(
-                      currentLocalityColumns[columnName]
+                      localityColumns[columnName]
                     )
                   )
                 )
@@ -455,33 +447,33 @@ module.exports = Backbone.View.extend({
         ])
       );
 
-      queryString = `country=${data.country}&state=${data.state}`;
+      queryString = `country=${data['locality.geography.$Country.name']}&state=${data['locality.geography.$State.name']}`;
 
-      if (typeof data.county !== 'undefined')
-        queryString += `&county=${data.county}`;
+      if (typeof data['locality.geography.$County.name'] !== 'undefined')
+        queryString += `&county=${data['locality.geography.$County.name']}`;
 
-      if (typeof data.localityname !== 'undefined')
-        queryString += `&locality=${data.localityname}`;
+      if (typeof data['locality.localityname'] !== 'undefined')
+        queryString += `&locality=${data['locality.localityname']}`;
     } else {
       const pointDataDict = WbLocalityDataExtractor.getLocalityCoordinate(
-        getDataAtRow(selectedRow),
+        this.wbview.hot.getDataAtRow(visualRow),
         this.wbview.dataset.columns,
-        currentLocalityColumns
+        localityColumns
       );
 
-      if (!pointDataDict) return;
+      if (pointDataDict) {
+        const {
+          'locality.latitude1': { value: latitude1 },
+          'locality.longitude1': { value: longitude1 },
+          'locality.localityname': { value: localityname = '' } = { value: '' },
+        } = pointDataDict;
 
-      const {
-        'locality.latitude1': latitude1,
-        'locality.longitude1': longitude1,
-        'locality.localityname': localityname = '',
-      } = pointDataDict;
+        const pointDataList = [latitude1, longitude1];
 
-      const pointDataList = [latitude1, longitude1];
+        if (localityname !== '') pointDataList.push(localityname);
 
-      if (localityname !== '') pointDataList.push(localityname);
-
-      queryString = `points=${pointDataList.join('|')}`;
+        queryString = `points=${pointDataList.join('|')}`;
+      }
     }
 
     return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${queryString}`;
@@ -491,135 +483,136 @@ module.exports = Backbone.View.extend({
     if ($('#geolocate-window').length !== 0) return;
 
     const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
-    const selections = selectedRegions.map(([startRow, column, endRow]) =>
-      startRow < endRow
-        ? [startRow, endRow, column]
-        : [endRow, startRow, column]
-    );
-    const selectedCells = selections.flatMap(([startRow, endRow, column]) =>
-      [...Array(endRow - startRow + 1)].map((_, index) =>
-        [startRow + index, column].join(WbPlanViewModel.pathJoinSymbol)
+
+    const fixedSelectedRegions = selectedRegions
+      .map(([startRow, startCol, endRow, endCol]) =>
+        startRow < endRow
+          ? { startRow, startCol, endRow, endCol }
+          : { endRow, startCol, startRow, endCol }
       )
-    );
-    const uniqueSelectedCells = [...new Set(selectedCells)];
-    const finalSelectedCells = uniqueSelectedCells.map((selectedCell) =>
-      selectedCell
-        .split(WbPlanViewModel.pathJoinSymbol)
-        .map((index) => parseInt(index))
-    );
-
-    if (finalSelectedCells.length === 0) return;
-
-    let currentCellIndex = 0;
-    let geolocateQueryUrl = false;
-    let currentLocalityColumns = [];
-
-    let that = this;
-    function updateGeolocateUrl() {
-      currentLocalityColumns =
-        WbLocalityDataExtractor.getLocalityColumnsFromSelectedCell(
-          that.localityColumns,
-          that.wbview.dataset.columns[
-            that.wbview.hot.toPhysicalColumn(
-              finalSelectedCells[currentCellIndex][1]
-            )
-          ]
-        );
-
-      geolocateQueryUrl = that.getGeoLocateQueryURL(
-        currentLocalityColumns,
-        finalSelectedCells[currentCellIndex][0],
-        that.wbview.hot.getDataAtCell.bind(that.wbview.hot),
-        that.wbview.hot.getDataAtRow.bind(that.wbview.hot)
+      .map(({ startCol, endCol, ...rest }) =>
+        startCol < endCol
+          ? { startCol, endCol, ...rest }
+          : { startCol: endCol, endCol: startCol, ...rest }
       );
-    }
 
-    updateGeolocateUrl();
+    const selectedHeaders = [
+      ...new Set(
+        fixedSelectedRegions.flatMap(({ startCol, endCol }) =>
+          [...Array(endCol - startCol + 1)].map((_, index) => startCol + index)
+        )
+      ),
+    ]
+      .sort()
+      .map(
+        (visualCol) =>
+          this.wbview.dataset.columns[
+            this.wbview.hot.toPhysicalColumn(visualCol)
+          ]
+      );
 
-    if (geolocateQueryUrl === false) return;
+    const localityColumnGroups =
+      selectedHeaders.length === 1
+        ? this.localityColumns
+        : WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
+            this.localityColumns,
+            selectedHeaders
+          );
 
-    const handleAfterDialogClose = () =>
-      window.removeEventListener('message', handleGeolocateResult, false);
+    if (localityColumnGroups.length === 0) return;
+
+    const selectedRows = [
+      ...new Set(
+        fixedSelectedRegions.flatMap(({ startRow, endRow }) =>
+          [...Array(endRow - startRow + 1)].map((_, index) => startRow + index)
+        )
+      ),
+    ].sort();
+
+    const rowIndexes =
+      selectedRows.length === 1
+        ? [...Array(this.wbview.hot.countCols())].map((_, index) => index)
+        : selectedRows;
+
+    let localityIndex =
+      selectedRows.length === 1
+        ? selectedRows[0] * localityColumnGroups.length
+        : 0;
+
+    const parseLocalityIndex = (localityIndex) => ({
+      localityColumns:
+        localityColumnGroups[localityIndex % localityColumnGroups.length],
+      visualRow:
+        rowIndexes[Math.floor(localityIndex / localityColumnGroups.length)],
+    });
+
+    const getGeoLocateQueryURL = (localityIndex) =>
+      this.getGeoLocateQueryURL(parseLocalityIndex(localityIndex));
 
     const dialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
       width: 960,
-      height: finalSelectedCells.length === 1 ? 680 : 740,
+      height: 740,
       title: 'GEOLocate',
       close: function () {
         $(this).remove();
-        handleAfterDialogClose();
+        window.removeEventListener('message', handleGeolocateResult, false);
       },
     });
 
-    const updateGeolocate = () =>
+    const updateGeolocate = (localityIndex) =>
       dialog.html(`<iframe
         style="
             width: 100%;
             height: 100%;
             border: none;"
-        src="${geolocateQueryUrl}"></iframe>`);
-    updateGeolocate();
+        src="${getGeoLocateQueryURL(localityIndex)}"></iframe>`);
 
-    const updateSelectedRow = () =>
-      that.wbview.hot.selectRows(finalSelectedCells[currentCellIndex][0]);
-    updateSelectedRow();
+    const updateSelectedRow = (localityIndex) =>
+      this.wbview.hot.selectRows(parseLocalityIndex(localityIndex).visualRow);
 
-    function changeSelectedCell(newSelectedCell) {
-      currentCellIndex = newSelectedCell;
+    const updateButtons = (localityIndex) =>
+      dialog.dialog('option', 'buttons', [
+        {
+          text: 'Previous',
+          click: () => updateGeoLocate(localityIndex - 1),
+          disabled: localityIndex === 0,
+        },
+        {
+          text: 'Next',
+          click: () => updateGeoLocate(localityIndex + 1),
+          disabled:
+            localityIndex + 1 >=
+            rowIndexes.length * localityColumnGroups.length,
+        },
+      ]);
 
-      updateGeolocateUrl();
-
-      if (geolocateQueryUrl === false) return;
-
-      updateGeolocate();
-
-      updateSelectedRow();
-
-      updateButtons();
+    function updateGeoLocate(newLocalityIndex) {
+      localityIndex = newLocalityIndex;
+      updateGeolocate(newLocalityIndex);
+      updateSelectedRow(newLocalityIndex);
+      updateButtons(newLocalityIndex);
     }
-
-    const updateButtons = () =>
-      dialog.dialog(
-        'option',
-        'buttons',
-        finalSelectedCells.length > 1
-          ? [
-              {
-                text: 'Previous',
-                click: () => changeSelectedCell(currentCellIndex - 1),
-                disabled: currentCellIndex === 0,
-              },
-              {
-                text: 'Next',
-                click: () => changeSelectedCell(currentCellIndex + 1),
-                disabled: finalSelectedCells.length <= currentCellIndex + 1,
-              },
-            ]
-          : []
-      );
-    updateButtons();
+    updateGeoLocate(localityIndex);
 
     const handleGeolocateResult = (event) => {
       const dataColumns = event.data.split('|');
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
-      that.wbview.hot.setDataAtCell(
-        ['latitude1', 'longitude1', 'latlongaccuracy']
-          .map((column, index) => {
-            if (typeof currentLocalityColumns[column] !== 'undefined')
-              return [
-                finalSelectedCells[currentCellIndex][0],
-                currentLocalityColumns[column],
-                dataColumns[index],
-              ];
-          })
-          .filter((record) => typeof record !== 'undefined')
-      );
+      const { visualRow, localityColumns } = parseLocalityIndex(localityIndex);
 
-      if (finalSelectedCells.length === 1) {
-        dialog.dialog('close');
-        handleAfterDialogClose();
-      }
+      this.wbview.hot.setDataAtCell(
+        [
+          'locality.latitude1',
+          'locality.longitude1',
+          'locality.latlongaccuracy',
+        ].map((fieldName, index) => [
+          visualRow,
+          this.wbview.hot.toVisualColumn(
+            this.wbview.dataset.columns.indexOf(localityColumns[fieldName])
+          ),
+          dataColumns[index],
+        ])
+      );
     };
 
     window.addEventListener('message', handleGeolocateResult, false);

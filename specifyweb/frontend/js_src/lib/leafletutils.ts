@@ -4,8 +4,6 @@
  *
  */
 
-'use strict';
-
 import type { IR, RA, RR } from './components/wbplanview';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
@@ -91,6 +89,6 @@ export const getLocalityData = (
           getField('locality.latlongaccuracy').value
         )
           ? getField('locality.latlongaccuracy')
-          : ['', ''],
+          : { value: '', headerName: '' },
       } as LocalityData)
     : false;
