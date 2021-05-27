@@ -705,7 +705,12 @@ function groupCommonFields(
     );
 
     if (typeof headerGroup === 'undefined')
-      throw new Error('Unable to find the header group');
+      if (columns.every(({ cellValue }) => cellValue === ''))
+        return {
+          ...rest,
+          columns,
+        };
+      else throw new Error('Unable to find the header group');
 
     const groupColumns = headerGroup.map(
       (headerName) => columns[uploadedRowsTable.columnNames.indexOf(headerName)]
