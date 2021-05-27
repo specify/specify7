@@ -7,26 +7,18 @@
 }
 
 .specify-root-form {
-    padding-bottom: 10px;
+    padding-bottom: 4px;
     background: #f1f2f2;
     box-shadow: 0 0 4px rgb(0 0 0 / 0.33), 0 2px 4px rgb(0 0 0 / 0.5);
     border: 1px solid #ddd;
     margin-left: auto;
     margin-right: auto;
-    height: calc(100% - 16px);
+    overfllow-y: scroll;
     width: -moz-fit-content;
     width: fit-content;
 }
 
-.specify-form-type-form {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
 div.specify-view-content-container {
-    flex: 1;
-    overflow: auto;
     padding: 0 21px;
 }
 
