@@ -627,9 +627,10 @@ const WBView = Backbone.View.extend({
 
     return false;
   },
-  beforeColumnMove: (_columnIndexes, startPosition, endPosition) =>
+  beforeColumnMove(_columnIndexes, startPosition, endPosition) {
     // An ugly fix for jQuery dialogs conflicting with HOT
-    typeof endPosition !== 'undefined' || !this.hotIsReady,
+    return typeof endPosition !== 'undefined' || this.hotIsReady === false;
+  },
   afterColumnMove(_columnIndexes, _startPosition, endPosition) {
     if (typeof endPosition === 'undefined' || !this.hotIsReady) return;
 
