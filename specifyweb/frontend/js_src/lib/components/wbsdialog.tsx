@@ -54,12 +54,13 @@ function Dialog({
       properties={{
         title: showTemplates ? 'Copy plan from existing Data Det' : 'Data Sets',
         width: 600,
+        minHeight: 300,
         buttons: {
           ...(canImport
             ? {
                 'Import a File': (): void =>
                   navigation.go('/workbench-import/'),
-                'Create Empty': createEmptyDataSet,
+                'Create New': createEmptyDataSet,
               }
             : {}),
           Cancel: handleClose,

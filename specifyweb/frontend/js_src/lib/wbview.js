@@ -850,7 +850,15 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       });
 
       const applyToAll = $(`<label>
-          <input type="checkbox" class="da-use-for-all" value="yes">
+          <br>
+          <input
+            type="checkbox"
+            class="da-use-for-all"
+            value="yes"
+            style="
+              margin-left: 5px;
+            "
+          >
           Apply All
         </label>`);
 
@@ -859,11 +867,19 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         .append(applyToAll)
         .dialog({
           title: 'Disambiguate Multiple Record Matches',
+          minWidth: 400,
+          minHeight: 300,
           modal: true,
           close() {
             $(this).remove();
           },
           buttons: [
+            {
+              text: 'Cancel',
+              click() {
+                $(this).dialog('close');
+              },
+            },
             {
               text: 'Apply',
               click() {
@@ -873,12 +889,6 @@ you will need to add fields and values to the data set to resolve the ambiguity.
                   (useForAll ? doAll : doDA)(selected);
                   $(this).dialog('close');
                 }
-              },
-            },
-            {
-              text: 'Cancel',
-              click() {
-                $(this).dialog('close');
               },
             },
           ],
@@ -1356,14 +1366,15 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           : {
               title: 'Validation Failed',
               message: `Some issues were detected.<br>
-                    Please fix them before uploading the dataset.`,
+                        Please fix them before uploading the dataset.`,
             },
       upload:
         cellCounts.invalidCells === 0
           ? {
-              title: 'Upload completed',
-              message: `You can open the 'Results' menu to see a detailed
-                        breakdown of the upload results.`,
+              title: 'Upload Completed',
+              message: `Click on the "View Upload Results" button below or the
+                        "Results" button above, to see lists of new records
+                        added to each data table.`,
             }
           : {
               title: 'Upload failed due to validation errors',
@@ -1385,18 +1396,16 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         title: messages[refreshInitiatedBy].title,
         modal: true,
         buttons: {
-          Close() {
-            $(this).dialog('destroy');
-          },
           ...(this.refreshInitiatedBy === 'upload' &&
           cellCounts.invalidCells === 0
             ? {
-                'View upload results': () => {
+                'View Upload Results': () => {
                   this.displayUploadedView();
                   dialog.dialog('close');
                 },
               }
             : {}),
+          Close: () => dialog.dialog('destroy'),
         },
       });
 
