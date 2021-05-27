@@ -432,9 +432,9 @@ const getMinNode = (
 ): number =>
   rows.reduce(
     ([minRank, minNodeId], [nodeId, rankData]) => {
-      const rankIndex = Object.keys(
-        Object.entries(treeRanks[tableName])
-      )?.indexOf(rankData.rankName);
+      const rankIndex = Object.keys(treeRanks[tableName])?.indexOf(
+        rankData.rankName
+      );
 
       return typeof rowsObject[nodeId] !== 'undefined' &&
         rankIndex !== -1 &&

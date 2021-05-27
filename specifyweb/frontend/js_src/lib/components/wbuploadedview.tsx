@@ -667,7 +667,9 @@ function WBUploadedViewDataParser(
                 ([tableName, tableRanks]) => [
                   tableName,
                   Object.fromEntries([
-                    dataModelStorage.rootRanks[tableName],
+                    ...(dataModelStorage.rootRanks[tableName]
+                      ? [dataModelStorage.rootRanks[tableName]]
+                      : []),
                     ...Object.entries(tableRanks),
                   ]),
                 ]
