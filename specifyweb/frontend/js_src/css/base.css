@@ -13,7 +13,6 @@ body {
     overflow: hidden;
     display: flex;
     row-gap: 1rem;
-    flex-direction: column;
 }
 
 /* LINKS */

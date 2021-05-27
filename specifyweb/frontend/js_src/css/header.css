@@ -2,11 +2,12 @@
 
 header {
     background: #f1f2f2;
-    border-bottom: solid 6px #f4763d;
+    border-right: solid 6px #f4763d;
     display: flex;
-    align-items: center;
-    padding: 10px;
-    column-gap: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    row-gap: 1.5rem;
 }
 
 #site-header-main {
@@ -18,20 +19,23 @@ header {
     background-size: 185px 55px;
     background-repeat: no-repeat;
     height: 55px;
+    width: 185px;
     order: 1;
-    flex-basis: 300px;
 }
 
 #user-tools {
+    display: flex;
+    row-gap: 0.3rem;
+    flex-direction: column;
     order: 3;
-    flex-basis: 300px;
 }
 
 nav {
     padding: 0;
     order: 2;
     flex: 1;
-    height: 100%;
+    width: 100%;
+    margin: 0 -1rem;
 }
 
 #header-loading {
@@ -46,12 +50,8 @@ nav {
 nav ul {
     margin: 0;
     padding: 0;
-    height: 100%;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-end;
+    flex-direction: column;
 }
 
 nav li {
@@ -59,53 +59,15 @@ nav li {
 }
 
 nav a {
+    width: 100%;
     display: inline-block;
+    padding: 0.5rem 1rem;
     font-size: 14px;
     font-weight: 800;
-    position: relative;
-    padding: 0.5rem 1rem;
 }
 
-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: -1rem;
-    width: 100%;
-    left: 0;
-    right: 0;
-    height: 6px;
+nav a:hover {
     background: #f4763d;
-}
-
-@media (max-width: 1600px) {
-
-    header {
-        flex-direction: column;
-    }
-
-    #site-logo, nav, #user-tools {
-        order: unset;
-    }
-
-    nav {
-        padding-top: 10px;
-    }
-
-    #site-header-main {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-    }
-}
-
-@media (max-width: 1000px) {
-    nav a::after {
-        content: initial;
-    }
-}
-
-nav a:hover::after {
-    background: #f1f2f2;
 }
 
 nav a:link,
@@ -133,17 +95,12 @@ nav li img {
     font-weight: 800;
 }
 
-#user-tools .login-logout {
-    margin-right: 2px;
-}
-
 #user-tools select {
     background: #fff;
     border: none;
     color: #555;
     font-weight: 800;
     padding: 4px 0;
-    margin-left: 2px;
     font-size: 12px;
     vertical-align: baseline;
 }
@@ -156,6 +113,7 @@ nav li img {
     background: #f1f2f2;
     border: 1px solid #aaa;
     font-size: 14px;
+    width: 100%;
 }
 
 .ui-autocomplete {
