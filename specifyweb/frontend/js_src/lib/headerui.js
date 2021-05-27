@@ -53,7 +53,8 @@ module.exports = Backbone.View.extend({
         events: {
             'click #site-nav > ul > li > a': 'siteNavClick',
             'click .username': 'openUserTools',
-            'change #user-tools select': 'changeCollection'
+            'change #user-tools select': 'changeCollection',
+            'click #header-toggler': 'toggleMenu',
         },
         el: '#site-header',
         initialize: function(options) {
@@ -105,6 +106,9 @@ module.exports = Backbone.View.extend({
         },
         changeCollection: function(evt) {
             navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/');
-        }
+        },
+        toggleMenu() {
+            this.el.classList.toggle('hidden-header');
+        },
     });
 

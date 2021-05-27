@@ -2,7 +2,7 @@
 
 #content {
     flex: 1;
-    margin: 0 1rem 1rem;
+    padding: 1rem;
     overflow: auto;
 }
 

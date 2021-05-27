@@ -2,12 +2,31 @@
 
 header {
     background: #f1f2f2;
-    border-right: solid 6px #f4763d;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem;
     row-gap: 1.5rem;
+    position: relative;
+}
+
+#header-toggler {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 6px;
+    background: #f4763d;
+}
+
+header.hidden-header {
+    padding: 0;
+    width: 6px;
+}
+
+header.hidden-header #site-header-main,
+header.hidden-header #site-nav {
+    display: none;
 }
 
 #site-header-main {
