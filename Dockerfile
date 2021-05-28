@@ -27,11 +27,11 @@ FROM node:16.1.0-alpine3.11 AS build-frontend
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
 USER node
-WORKDIR /home/specify/frontend/js_src
+WORKDIR /home/node
 
 COPY --chown=node:node specifyweb/frontend/js_src/package.json .
 RUN npm install
-COPY --chown=node:node specifyweb/frontend ..
+COPY --chown=node:node specifyweb/frontend/js_src .
 RUN npx webpack
 
 #####################################################################
@@ -58,7 +58,7 @@ RUN python3.6 -m venv ve \
  && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn redis
 
-COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
+COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
 COPY --chown=specify:specify specifyweb /opt/specify7/specifyweb
 COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
