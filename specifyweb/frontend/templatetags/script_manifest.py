@@ -1,13 +1,14 @@
-import json
-from os import path
-
+import logging
 from django import template
 
-with open(path.join(path.dirname(__file__), "..", "static", "js", "manifest.json")) as f:
-    manifest = json.load(f)
+from ..static.js.manifest import manifest
+
+logger = logging.getLogger(__name__)
 
 register = template.Library()
 
 @register.simple_tag
 def script_src(script):
-    return manifest[script]
+    src = manifest[script]
+    logger.debug(f"found {src} for {script}")
+    return src

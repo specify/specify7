@@ -21,6 +21,7 @@ services:
       - "specify6:/opt/Specify:ro"
       - "static-files:/volumes/static-files"
       - "./specifyweb:/opt/specify7/specifyweb:ro"
+      - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro"
     environment:
       - DATABASE_HOST=mariadb
       - DATABASE_PORT=3306
@@ -44,9 +45,9 @@ services:
     command: npx webpack -w --mode development
     restart: unless-stopped
     volumes:
-      - "webpack-output:/home/specify/frontend/static/js"
-      - "./specifyweb/frontend/js_src/lib:/home/specify/frontend/js_src/lib:ro"
-      - "./specifyweb/frontend/js_src/css:/home/specify/frontend/js_src/css:ro"
+      - "webpack-output:/home/node/dist"
+      - "./specifyweb/frontend/js_src/lib:/home/node/lib:ro"
+      - "./specifyweb/frontend/js_src/css:/home/node/css:ro"
 
   specify7-worker:
     build:

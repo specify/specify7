@@ -1,5 +1,18 @@
+const path = require('path');
+const { writeFileSync } = require('fs');
 const webpack = require("webpack");
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+
+
+class EmitInitPyPlugin {
+    apply(compiler) {
+        compiler.hooks.done.tap('EmitInitPyPlugin', (stats) => {
+            const outPath = compiler.options.output.path;
+            writeFileSync(path.join(outPath, '__init__.py'), "# Allows manifest.py to be imported / reloaded by Django dev server.\n");
+        });
+    }
+}
+
 
 module.exports = {
     module: {
@@ -54,7 +67,11 @@ module.exports = {
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
-        new WebpackManifestPlugin()
+        new WebpackManifestPlugin({
+            fileName: 'manifest.py',
+            serialize: (manifest) => `manifest = ${JSON.stringify(manifest, null, 2)}\n`
+        }),
+        new EmitInitPyPlugin()
     ],
     devtool: 'source-map',
     entry: {
@@ -64,7 +81,7 @@ module.exports = {
         choosecollection: "./lib/choosecollection.js",
     },
     output: {
-        path: __dirname + "/../static/js/",
+        path: path.resolve(__dirname, 'dist'),
         publicPath: "/static/js/",
         filename: "[name].[contenthash].bundle.js"
     },
