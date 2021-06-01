@@ -17,10 +17,11 @@ services:
       context: ./.
     command: ve/bin/python manage.py runserver 0.0.0.0:8000
     init: true
+    restart: unless-stopped
     volumes:
       - "specify6:/opt/Specify:ro"
       - "static-files:/volumes/static-files"
-      - "./specifyweb:/opt/specify7/specifyweb:ro"
+      - "./specifyweb:/opt/specify7/specifyweb"
       - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro"
     environment:
       - DATABASE_HOST=mariadb

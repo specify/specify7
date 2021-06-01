@@ -31,8 +31,10 @@ WORKDIR /home/node
 
 COPY --chown=node:node specifyweb/frontend/js_src/package.json .
 RUN npm install
+RUN mkdir dist && chown node:node dist
 COPY --chown=node:node specifyweb/frontend/js_src .
 RUN npx webpack
+
 
 #####################################################################
 
