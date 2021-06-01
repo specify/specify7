@@ -213,13 +213,14 @@ export function generateMappingPathPreview(
       mappingElementData,
       mappingPathPart: mappingPath[index],
     }))
-    .slice(-2)
-    .map(
-      ({ mappingElementData, mappingPathPart }) =>
-        (Object.values(mappingElementData.fieldsData).find(
-          ({ isDefault }) => isDefault
-        )?.fieldFriendlyName as string) ?? mappingPathPart
-    );
+    .slice(-2);
+
+  const fieldLabels = mappingLineData.map(
+    ({ mappingElementData, mappingPathPart }) =>
+      (Object.values(mappingElementData.fieldsData).find(
+        ({ isDefault }) => isDefault
+      )?.fieldFriendlyName as string) ?? mappingPathPart
+  );
 
   const toManyLocation = [...mappingPath]
     .reverse()
@@ -231,7 +232,7 @@ export function generateMappingPathPreview(
     if (toManyIndexNumber > 1) toManyIndexString = ` ${toManyIndex}`;
   }
   const [possibleDataBaseTableName, databaseFieldName] = mappingPath.slice(-2);
-  const [possibleTableName, fieldName] = mappingLineData.slice(-2);
+  const [possibleTableName, fieldName] = fieldLabels.slice(-2);
 
   if (mappingLineData.length === 1)
     return [possibleDataBaseTableName, possibleTableName];
@@ -245,7 +246,13 @@ export function generateMappingPathPreview(
     ];
   else if (valueIsReferenceItem(possibleDataBaseTableName))
     return [databaseFieldName, `${fieldName} ${possibleTableName}`];
-  else return [databaseFieldName, `${fieldName}${toManyIndexString}`];
+  else
+    return [
+      databaseFieldName,
+      mappingLineData.slice(-1)[0].mappingElementData.tableName === 'agent'
+        ? `${possibleTableName} ${fieldName}${toManyIndexString}`
+        : `${fieldName}${toManyIndexString}`,
+    ];
 }
 
 export function renameNewlyCreatedHeaders(
