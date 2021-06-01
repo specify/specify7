@@ -721,20 +721,12 @@ module.exports = Backbone.View.extend({
       },
     ];
 
+    let handleOptionChangeBind = undefined;
+
     const closeDialog = () => {
-      dialog.off('change', handleOptionChange);
+      dialog[0].removeEventListener('change', handleOptionChangeBind);
       dialog.remove();
     };
-
-    const dialogButtons = [
-      {
-        text: 'Undo',
-        click: this.wbview.hot.undo,
-        disabled: true,
-        class: 'undo-button',
-      },
-      { text: 'Close', click: closeDialog },
-    ];
 
     const dialog = $(
       `<ul class="lat-long-format-options">
@@ -765,15 +757,10 @@ module.exports = Backbone.View.extend({
       title: 'Change Geocoordinate Format',
       close: closeDialog,
       width: 350,
-      buttons: dialogButtons,
+      buttons: [{ text: 'Apply', click: closeDialog }],
     });
 
     const handleOptionChange = () => {
-      if (dialogButtons[0].disabled) {
-        dialogButtons[0].disabled = false;
-        dialog.dialog('option', 'buttons', dialogButtons);
-      }
-
       const includeSymbolsCheckbox = dialog.find(
         'input[name="includesymbols"]'
       );
@@ -826,6 +813,7 @@ module.exports = Backbone.View.extend({
           .flat()
       );
     };
-    dialog.on('change', handleOptionChange.bind(this));
+    handleOptionChangeBind = handleOptionChange.bind(this);
+    dialog[0].addEventListener('change', handleOptionChangeBind);
   },
 });

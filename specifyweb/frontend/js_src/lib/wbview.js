@@ -1,7 +1,5 @@
 'use strict';
 
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-
 require('../css/workbench.css');
 
 const $ = require('jquery');
