@@ -54,6 +54,7 @@ export type MappingState = State<
     mappingsAreValidated: boolean;
     displayMatchingOptionsDialog: boolean;
     mustMatchPreferences: IR<boolean>;
+    showAutomapperDialog: boolean;
   }
 >;
 
@@ -110,6 +111,7 @@ export const getDefaultMappingState = (): MappingState => ({
   changesMade: false,
   displayMatchingOptionsDialog: false,
   mustMatchPreferences: {},
+  showAutomapperDialog: false,
 });
 
 export const stateReducer = generateReducer<
@@ -183,10 +185,10 @@ export const stateReducer = generateReducer<
       <ListOfBaseTables
         listOfTables={dataModelStorage.listOfBaseTables}
         showHiddenTables={state.showHiddenTables}
-        handleChange={(tableName: string): void =>
+        handleChange={(baseTableName: string): void =>
           state.dispatch({
             type: 'SelectTableAction',
-            tableName,
+            baseTableName,
             mappingIsTemplated: state.props.mappingIsTemplated,
             headers: state.props.headers,
           })
@@ -272,16 +274,28 @@ export const stateReducer = generateReducer<
                   (Read-Only Mode)
                 </span>
               ) : (
-                <button
-                  type="button"
-                  onClick={(): void =>
-                    state.dispatch({
-                      type: 'OpenBaseTableSelectionAction',
-                    })
-                  }
-                >
-                  Change Table
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={(): void =>
+                      state.dispatch({
+                        type: 'OpenBaseTableSelectionAction',
+                      })
+                    }
+                  >
+                    Change Table
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(): void =>
+                      state.dispatch({
+                        type: 'RerunAutomapperAction',
+                      })
+                    }
+                  >
+                    Rerun Automapper
+                  </button>
+                </>
               )
             }
             buttonsRight={
@@ -372,26 +386,6 @@ export const stateReducer = generateReducer<
         }
         handleClick={handleClose}
       >
-        {!refObject.current.hideEmptyDataSetDialogAction &&
-          state.lines.length === 0 && (
-            <ModalDialog
-              onCloseCallback={() =>
-                state.refObjectDispatch({
-                  type: 'RefHideEmptyDataSetDialogAction',
-                })
-              }
-              properties={{
-                title: 'Empty Data Set detected',
-              }}
-            >
-              <span>
-                This Data Set doesn&apos;t have any columns.
-                <br />
-                Press the &quot;Add New Column&quot; button at the bottom of the
-                screen to add new columns.
-              </span>
-            </ModalDialog>
-          )}
         <WBPlanViewMapper
           mappingIsTemplated={state.mappingIsTemplated}
           showHiddenFields={state.showHiddenFields}
@@ -510,8 +504,59 @@ export const stateReducer = generateReducer<
             })
           }
         />
-        {state.displayMatchingOptionsDialog ? (
-          <div style={{ position: 'absolute' }}>
+        <div style={{ position: 'absolute' }}>
+          {!refObject.current.hideEmptyDataSetDialogAction &&
+            state.lines.length === 0 && (
+              <ModalDialog
+                onCloseCallback={() =>
+                  state.refObjectDispatch({
+                    type: 'RefHideEmptyDataSetDialogAction',
+                  })
+                }
+                properties={{
+                  title: 'Empty Data Set detected',
+                }}
+              >
+                <span>
+                  This Data Set doesn&apos;t have any columns.
+                  <br />
+                  Press the &quot;Add New Column&quot; button at the bottom of
+                  the screen to add new columns.
+                </span>
+              </ModalDialog>
+            )}
+          {state.showAutomapperDialog && (
+            <ModalDialog
+              onCloseCallback={() =>
+                state.dispatch({
+                  type: 'CancelRerunAutomapperAction',
+                })
+              }
+              properties={{
+                title: 'Rerun Automapper?',
+                buttons: {
+                  'Rerun Automapper': () =>
+                    state.dispatch({
+                      type: 'SelectTableAction',
+                      headers: state.props.headers,
+                      baseTableName: state.baseTableName,
+                      mappingIsTemplated: state.props.mappingIsTemplated,
+                    }),
+                  Cancel: () =>
+                    state.dispatch({
+                      type: 'CancelRerunAutomapperAction',
+                    }),
+                },
+              }}
+            >
+              <>
+                Are you sure you want to automap the columns again?
+                <br />
+                This would reset your current mappings.
+              </>
+            </ModalDialog>
+          )}
+          {state.displayMatchingOptionsDialog && (
             <ModalDialog
               onCloseCallback={handleMappingOptionsDialogClose}
               properties={{
@@ -575,8 +620,8 @@ export const stateReducer = generateReducer<
                 </table>
               )}
             </ModalDialog>
-          </div>
-        ) : undefined}
+          )}
+        </div>
       </Layout>
     );
   },

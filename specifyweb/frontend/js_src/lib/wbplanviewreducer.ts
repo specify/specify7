@@ -67,7 +67,7 @@ type OpenBaseTableSelectionAction = Action<
 type SelectTableAction = Action<
   'SelectTableAction',
   {
-    tableName: string;
+    baseTableName: string;
     mappingIsTemplated: boolean;
     headers: RA<string>;
   }
@@ -89,6 +89,10 @@ type BaseTableSelectionActions =
   | UseTemplateAction;
 
 type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
+
+type RerunAutomapperAction = Action<'RerunAutomapperAction'>;
+
+type CancelRerunAutomapperAction = Action<'CancelRerunAutomapperAction'>;
 
 type TemplateSelectionActions = CancelTemplateSelectionAction;
 
@@ -220,6 +224,8 @@ type ChangeDefaultValue = Action<
 
 export type MappingActions =
   | OpenMappingScreenAction
+  | RerunAutomapperAction
+  | CancelRerunAutomapperAction
   | SavePlanAction
   | ToggleMappingViewAction
   | ToggleMappingIsTemplatedAction
@@ -260,11 +266,11 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   SelectTableAction: ({ action }) => ({
     ...getDefaultMappingState(),
     mappingIsTemplated: action.mappingIsTemplated,
-    baseTableName: action.tableName,
+    baseTableName: action.baseTableName,
     lines: getLinesFromHeaders({
       headers: action.headers,
       runAutomapper: true,
-      baseTableName: action.tableName,
+      baseTableName: action.baseTableName,
     }),
   }),
   ToggleHiddenTablesAction: ({ state }) => ({
@@ -332,6 +338,14 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     // TODO: test this in read-only mode
     mappingIsTemplated: !mappingState(state).mappingIsTemplated,
+  }),
+  RerunAutomapperAction: ({ state }) => ({
+    ...mappingState(state),
+    showAutomapperDialog: true,
+  }),
+  CancelRerunAutomapperAction: ({ state }) => ({
+    ...mappingState(state),
+    showAutomapperDialog: false,
   }),
   ValidationAction: ({ state }) => validate(mappingState(state)),
   ResetMappingsAction: ({ state }) => ({
