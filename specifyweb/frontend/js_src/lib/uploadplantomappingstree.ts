@@ -2,7 +2,7 @@ import type { IR, R, RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import { formatReferenceItem, formatTreeRank } from './wbplanviewmodelhelper';
-import { getMappingLineData } from './wbplanviewnavigator';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 
 export type MatchBehaviors = 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever';
@@ -153,10 +153,10 @@ function handleTreeRecordTypes(
   mappingPath: MappingPath
 ): ReturnType<typeof handleTreeRecord> {
   if ('mustMatchTreeRecord' in uploadPlan) {
-    const tableName = getMappingLineData({
+    const tableName = getTableFromMappingPath({
       baseTableName: mappingPath[0],
       mappingPath: mappingPath.slice(1),
-    })[0].tableName;
+    });
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
 
@@ -199,10 +199,10 @@ function handleUploadableTypes(
   mappingPath: MappingPath
 ) {
   if ('mustMatchTable' in uploadPlan) {
-    const tableName = getMappingLineData({
+    const tableName = getTableFromMappingPath({
       baseTableName: mappingPath[0],
       mappingPath: mappingPath.slice(1),
-    })[0].tableName;
+    });
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
 
@@ -264,26 +264,4 @@ export function uploadPlanToMappingsTree(
     ),
     mustMatchPreferences,
   };
-}
-
-export function uploadPlanStringToObject(
-  uploadPlanString: string
-): UploadPlan | null {
-  let uploadPlan: UploadPlan | null;
-
-  try {
-    uploadPlan = JSON.parse(uploadPlanString) as UploadPlan;
-  } catch (error: unknown) {
-    if (!(error instanceof SyntaxError))
-      // Only catch JSON parse errors
-      throw error;
-
-    return null;
-  }
-
-  return typeof uploadPlan !== 'object' ||
-    uploadPlan === null ||
-    typeof uploadPlan.baseTableName === 'undefined'
-    ? null
-    : uploadPlan;
 }

@@ -206,7 +206,6 @@ export function generateMappingPathPreview(
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,
-    customSelectType: 'OPENED_LIST',
     iterate: true,
   })
     .map((mappingElementData, index) => ({

@@ -14,7 +14,7 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
 import dataModelStorage from './wbplanviewmodel';
-import { getMappingLineData } from './wbplanviewnavigator';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -48,12 +48,10 @@ async function recursiveResourceResolve(
   if ('fetchIfNotPopulated' in resource) await resource.fetchIfNotPopulated();
 
   if (valueIsTreeRank(currentPart[0])) {
-    const treeTableName = getMappingLineData({
+    const treeTableName = getTableFromMappingPath({
       baseTableName: 'locality',
       mappingPath: pastParts,
-    }).slice(-1)[0].tableName;
-    if (typeof treeTableName === 'undefined')
-      throw new Error('Failed to fetch tree name');
+    });
     const tableRanks = Object.entries(dataModelStorage.ranks[treeTableName]);
     const currentRank = tableRanks.find(
       ([, { rankId }]) => rankId === resource.get('rankid')

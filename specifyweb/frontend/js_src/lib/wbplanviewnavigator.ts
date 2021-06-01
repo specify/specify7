@@ -35,11 +35,13 @@ import {
   getNameFromTreeRankName,
   isCircularRelationship,
   isTooManyInsideOfTooMany,
+  mappingPathToString,
   relationshipIsToMany,
   tableIsTree,
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
+import * as cache from './cache';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {
   readonly finished: boolean;
@@ -378,6 +380,30 @@ function navigatorInstance<RETURN_STRUCTURE>({
   callbacks.commitInstanceData(callbackPayload);
 
   return data;
+}
+
+export function getTableFromMappingPath({
+  baseTableName,
+  mappingPath,
+}: {
+  baseTableName: string;
+  mappingPath: MappingPath;
+}): string {
+  const cacheName = mappingPathToString([baseTableName, ...mappingPath]);
+  const results = cache.get('wbplanview-navigator-tables', cacheName);
+  if (results) return results;
+
+  const tableName = getMappingLineData({
+    baseTableName,
+    mappingPath,
+  }).slice(-1)[0].tableName;
+
+  if (typeof tableName === 'undefined')
+    throw new Error('Unable to extract the table name from mapping path');
+
+  cache.set('wbplanview-navigator-tables', cacheName, tableName);
+
+  return tableName;
 }
 
 /*

@@ -1,5 +1,7 @@
 'use strict';
 
+import { getTableFromMappingPath } from './wbplanviewnavigator';
+
 require('../css/workbench.css');
 
 const $ = require('jquery');
@@ -32,7 +34,7 @@ const {
 } = require('./wbplanviewtreehelper.ts');
 const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree.ts');
 const { extractDefaultValues } = require('./wbplanviewhelper.ts');
-const { getMappingLineData } = require('./wbplanviewnavigator.ts');
+const { getTableFromMappingPath } = require('./wbplanviewnavigator.ts');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
 const { capitalize } = require('./wbplanviewhelper.ts');
 const icons = require('./icons.js');
@@ -191,20 +193,13 @@ const WBView = Backbone.View.extend({
           );
           this.mappings.treeRanks = undefined;
 
-          this.mappings.mappingLinesData = this.mappings.arrayOfMappings.map(
+          this.mappings.tableNames = this.mappings.arrayOfMappings.map(
             ({ mappingPath }) =>
-              getMappingLineData({
+              getTableFromMappingPath({
                 baseTableName: this.mappings.baseTableName,
                 mappingPath: mappingPath.slice(0, -1),
-              })[0]
+              })
           );
-
-          if (
-            this.mappings.mappingLinesData.some(
-              (lineData) => typeof lineData === 'undefined'
-            )
-          )
-            throw new Error('Mapping Line Data can not be undefined');
 
           initDataModelIntegration();
         });
@@ -341,7 +336,7 @@ const WBView = Backbone.View.extend({
     const mappedHeadersAndTables = Object.fromEntries(
       this.mappings.arrayOfMappings.map(({ headerName }, index) => [
         headerName,
-        icons.getIcon(this.mappings.mappingLinesData[index].tableName || ''),
+        icons.getIcon(this.mappings.tableNames[index]),
       ])
     );
 
@@ -400,9 +395,9 @@ const WBView = Backbone.View.extend({
   identifyPickLists() {
     if (!this.mappings) return;
     const pickLists = Object.fromEntries(
-      this.mappings.mappingLinesData
-        .map((lineData, index) => ({
-          tableName: lineData.tableName,
+      this.mappings.tableNames
+        .map((tableName, index) => ({
+          tableName,
           fieldName:
             this.mappings.arrayOfMappings[index].mappingPath.slice(-1)[0],
           headerName: this.mappings.arrayOfMappings[index].headerName,
@@ -445,7 +440,7 @@ const WBView = Backbone.View.extend({
         )
         .map(({ mappingPath, headerName, index }) => ({
           mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
-          tableName: this.mappings.mappingLinesData[index].tableName,
+          tableName: this.mappings.tableNames[index],
           rankName: getNameFromTreeRankName(mappingPath.slice(-2)[0]),
           physicalCol: this.dataset.columns.indexOf(headerName),
         }))
@@ -759,7 +754,7 @@ const WBView = Backbone.View.extend({
       ({ headerName }) => headerName === targetHeader
     );
     const mappingPath = this.mappings.arrayOfMappings[mappingIndex].mappingPath;
-    const tableName = this.mappings.mappingLinesData[mappingIndex].tableName;
+    const tableName = this.mappings.tableNames[mappingIndex];
     const model = schema.getModel(tableName);
     const rowResult = this.rowResults[physicalRow];
     const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;

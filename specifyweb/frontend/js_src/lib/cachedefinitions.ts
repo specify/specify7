@@ -45,6 +45,10 @@ export type CacheDefinitions = IR<IR<unknown>> & {
      */
     readonly originalRelationships: OriginalRelationships;
   };
+  readonly 'wbplanview-navigator-tables': {
+    readonly // Output of getMappingLineData()
+    [key in string]: string;
+  };
   readonly workbench: {
     readonly 'search-properties': SearchPreferences;
   };

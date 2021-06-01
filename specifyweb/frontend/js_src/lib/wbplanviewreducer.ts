@@ -545,7 +545,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         mappingPath,
         baseTableName: state.baseTableName,
         iterate: true,
-        customSelectType: 'OPENED_LIST',
       }).filter((mappingElementData, index, list) => {
         if (
           // Exclude base table
