@@ -181,16 +181,21 @@ export function Icon({
   optionLabel = '0',
 }: CustomSelectElementIconProps): JSX.Element | null {
   if (optionLabel === '0')
-    return <span className="custom-select-option-icon-undefined">⃠</span>;
+    return (
+      <span className="custom-select-icon custom-select-icon-undefined">⃠</span>
+    );
   if (!isRelationship && (isPreview || !isEnabled))
-    return <span className="custom-select-option-icon-selected">✓</span>;
-  else if (!isRelationship || tableName === '') return null;
+    return (
+      <span className="custom-select-icon custom-select-icon-selected">✓</span>
+    );
+  else if (!isRelationship || tableName === '')
+    return <span className="custom-select-icon" />;
 
   const tableIconSource = icons.getIcon(tableName);
   if (tableIconSource !== '/images/unknown.png')
     return (
       <span
-        className="custom-select-option-icon-table"
+        className="custom-select-icon custom-select-icon-table"
         style={{ backgroundImage: `url('${tableIconSource}')` }}
       />
     );
@@ -205,7 +210,7 @@ export function Icon({
   return (
     <span
       style={{ backgroundColor: color }}
-      className="custom-select-option-icon-table-undefined"
+      className="custom-select-icon custom-select-option-icon-undefined"
     >
       {tableSubName.toUpperCase()}
     </span>
@@ -238,17 +243,15 @@ const Option = React.memo(function Option({
       onClick={handleClick}
       title={title}
     >
-      <span className="custom-select-option-icon">
-        <Icon
-          optionLabel={optionLabel}
-          isRelationship={isRelationship}
-          isEnabled={isEnabled}
-          tableName={tableName}
-        />
-      </span>
+      <Icon
+        optionLabel={optionLabel}
+        isRelationship={isRelationship}
+        isEnabled={isEnabled}
+        tableName={tableName}
+      />
       <span
         className={`custom-select-option-label ${
-          optionLabel === '0' ? 'custom-select-option-label-unmapped' : ''
+          optionLabel === '0' ? 'custom-select--label-unmapped' : ''
         }`}
       >
         {optionLabel === '0' ? 'UNMAP' : optionLabel}
@@ -358,8 +361,9 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable =
-    !NON_INTERACTIVE_SELECT_TYPES.includes(customSelectType);
+  const optionIsIntractable = !NON_INTERACTIVE_SELECT_TYPES.includes(
+    customSelectType
+  );
 
   const handleClick =
     optionIsIntractable &&
@@ -379,14 +383,12 @@ export function CustomSelectElement({
   if (SELECT_TYPES_WITH_HEADERS.includes(customSelectType) && selectLabel)
     header = (
       <span className="custom-select-header">
-        <span>
-          <Icon
-            isDefault={true}
-            isRelationship={true}
-            tableName={tableName}
-            optionLabel={tableName}
-          />
-        </span>
+        <Icon
+          isDefault={true}
+          isRelationship={true}
+          tableName={tableName}
+          optionLabel={tableName}
+        />
         <span>{selectLabel}</span>
       </span>
     );
@@ -401,19 +403,17 @@ export function CustomSelectElement({
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined
         }
       >
-        <span className="custom-select-input-icon">
-          <Icon
-            isDefault={true}
-            isRelationship={defaultOption.isRelationship}
-            tableName={defaultOption.tableName}
-            optionLabel={defaultOption.optionLabel}
-            isPreview={true}
-          />
-        </span>
+        <Icon
+          isDefault={true}
+          isRelationship={defaultOption.isRelationship}
+          tableName={defaultOption.tableName}
+          optionLabel={defaultOption.optionLabel}
+          isPreview={true}
+        />
         <span
           className={`custom-select-input-label ${
             defaultOption.optionLabel === '0'
-              ? 'custom-select-input-label-unmapped'
+              ? 'custom-select-label-unmapped'
               : ''
           }`}
         >

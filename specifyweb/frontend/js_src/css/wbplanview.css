@@ -189,15 +189,6 @@
   border-color: var(--b4);
 }
 
-/* MAPPING GENERAL */
-.mapping-line-list {
-  flex: 1;
-  display: grid;
-  grid-template-columns: max-content auto;
-  grid-auto-rows: max-content;
-  overflow-x: hidden;
-}
-
 /* VALIDATION RESULTS */
 .validation-results {
   display: flex;
@@ -216,6 +207,14 @@
 }
 
 /* MAPPING LINE */
+.mapping-line-list {
+  flex: 1;
+  display: grid;
+  grid-template-columns: max-content auto;
+  grid-auto-rows: max-content;
+  overflow-x: hidden;
+}
+
 .wbplanview-mapping-line {
   display: contents;
 }
@@ -336,15 +335,7 @@
   grid-template-columns: calc(var(--white-space) * 2) 1fr;
 }
 
-.custom-select-mapping-options-list .custom-select-input,
-.custom-select-mapping-options-list .custom-select-option {
-  display: flex;
-  align-items: center;
-  padding: var(--white-space);
-}
-
-.custom-select-mapping-options-list .custom-select-input-icon,
-.custom-select-mapping-options-list .custom-select-option-icon {
+.custom-select-mapping-options-list .custom-select-icon {
   display: none;
 }
 
@@ -355,12 +346,11 @@
 
 .custom-select-input-label,
 .custom-select-option-label {
-  line-height: calc(var(--white-space) * 2);
+  flex: 1;
 }
 
 .wbplanview-mapping-line-header-unmapped .wbplanview-mapping-line-header,
-.custom-select-input-label-unmapped,
-.custom-select-option-label-unmapped {
+.custom-select-label-unmapped {
   color: var(--error);
   font-weight: 800;
 }
@@ -380,11 +370,16 @@
 
 .custom-select-input,
 .custom-select-option {
+  padding: 0 var(--white-space);
+  min-height: calc(4 * var(--white-space));
   display: grid;
-  grid-template-columns: calc(var(--white-space) * 2) 1fr var(--white-space);
-  grid-column-gap: var(--white-space);
-  padding: var(--white-space);
-  min-height: calc(2 * var(--white-space));
+  grid-template-columns: calc(var(--white-space) * 2.2) 1fr var(--white-space);
+  grid-column-gap: calc(var(--white-space) / 2);
+  align-items: center;
+}
+
+.custom-select-mapping-options-list .custom-select-input {
+  display: flex;
 }
 
 .custom-select-input:hover::after {
@@ -503,41 +498,34 @@
   background-color: var(--accent) !important;
 }
 
-.custom-select-option-icon-selected {
+.custom-select-icon {
+  height: 100%;
   display: flex;
+  align-items: center;
   justify-content: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.custom-select-option-icon-undefined {
+  margin: calc(var(--white-space) * 0.9) 0;
+  border-radius: 3px;
+}
+
+.custom-select-icon-selected {
   color: var(--success);
   font-weight: 800;
 }
 
-.custom-select-option-icon-undefined {
+.custom-select-icon-undefined {
   color: var(--error);
   margin-top: -0.1rem;
-  justify-content: center;
-  display: flex !important;
-  align-items: center;
-  overflow: hidden;
 }
 
-.custom-select-option-icon-table-undefined {
+.custom-select-icon-table-undefined {
   color: var(--background1);
   border-radius: 3px;
-  justify-content: center;
-  display: flex !important;
-  align-items: center;
-  overflow: hidden;
-}
-
-.custom-select-option-icon-table {
-  width: 100%;
-  height: 100%;
-  display: block;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.custom-select-opened-list .custom-select-option-icon-table {
-  width: calc(2 * var(--white-space));
 }
 
 .must-match-line {
