@@ -20,20 +20,20 @@ export const fetchLocalScientificName = async (
   });
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
-  `http://notyeti-192.lifemapper.org/api/v1/occ/${occurrenceGuid}?count_only=0`;
+  `https://notyeti-192.lifemapper.org/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
 export const formatOccurrenceCountRequest = (
   dataAggregatorName: string,
   occurrenceScientificName: string
 ): string =>
-  `http://notyeti-192.lifemapper.org/api/v1/name/${encodeURIComponent(
+  `https://notyeti-192.lifemapper.org/api/v1/name/${encodeURIComponent(
     occurrenceScientificName
   )}?provider=${dataAggregatorName}&count_only=1`;
 
 export const formatOccurrenceMapRequest = (
   occurrenceScientificName: string
 ): string =>
-  `http://notyeti-192.lifemapper.org/api/v1/map/?provider=lm&scenariocode=worldclim-curr&namestr=${encodeURIComponent(
+  `https://notyeti-192.lifemapper.org/api/v1/map/?provider=lm&scenariocode=worldclim-curr&namestr=${encodeURIComponent(
     occurrenceScientificName
   )}`;
 

@@ -68,38 +68,43 @@ function LifemapperInfo({
   React.useEffect(() => {
     if (typeof guid === 'undefined') return;
 
-    $.get(formatOccurrenceDataRequest(guid)).done(
-      (response: {
-        readonly records: {
-          readonly provider: string;
-          readonly count: number;
-          readonly records: [] | [IR<unknown>];
-        }[];
-      }) =>
-        dispatch({
-          type: 'LoadedAction',
-          aggregatorInfos: Object.fromEntries(
-            (response.records || [])
-              .map((record) => ({
-                ...record,
-                provider: record.provider.toLowerCase(),
-              }))
-              .filter(
-                (record) => typeof sourceLabels[record.provider] !== 'undefined'
-              )
-              .map(({ provider, records, count }) => [
-                provider,
-                typeof records[0] === 'undefined'
-                  ? undefined
-                  : {
-                      ...extractBadgeInfo[provider](records[0]),
-                      count,
-                      occurrenceCount: undefined,
-                    },
-              ])
-          ),
-        })
-    );
+    fetch(formatOccurrenceDataRequest(guid), {
+      mode: 'cors',
+    })
+      .then((response) => response.json())
+      .then(
+        (response: {
+          readonly records: {
+            readonly provider: string;
+            readonly count: number;
+            readonly records: [] | [IR<unknown>];
+          }[];
+        }) =>
+          dispatch({
+            type: 'LoadedAction',
+            aggregatorInfos: Object.fromEntries(
+              (response.records || [])
+                .map((record) => ({
+                  ...record,
+                  provider: record.provider.toLowerCase(),
+                }))
+                .filter(
+                  (record) =>
+                    typeof sourceLabels[record.provider] !== 'undefined'
+                )
+                .map(({ provider, records, count }) => [
+                  provider,
+                  typeof records[0] === 'undefined'
+                    ? undefined
+                    : {
+                        ...extractBadgeInfo[provider](records[0]),
+                        count,
+                        occurrenceCount: undefined,
+                      },
+                ])
+            ),
+          })
+      );
   }, []);
 
   React.useEffect(() => {

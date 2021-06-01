@@ -3,14 +3,17 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
-import { formatCoordinate, getField, getLocalityData } from './leafletutils';
+import {
+  formatCoordinate,
+  getCanonicalMappingPath,
+  getField,
+  getLocalityData,
+} from './leafletutils';
 import type { SplitMappingPath } from './wbplanviewhelper';
 import { findSubArray } from './wbplanviewhelper';
 import {
-  formatReferenceItem,
   mappingPathToString,
   splitJoinedMappingPath,
-  valueIsReferenceItem,
 } from './wbplanviewmodelhelper';
 
 const addBaseTableName = (
@@ -21,14 +24,6 @@ const addBaseTableName = (
     ...rest,
     mappingPath: [baseTableName, ...mappingPath],
   }));
-
-// Replaces all to-many reference numbers with #1
-const getCanonicalMappingPath = (mappingPath: MappingPath): MappingPath =>
-  mappingPath.map((mappingPathPart) =>
-    valueIsReferenceItem(mappingPathPart)
-      ? formatReferenceItem(1)
-      : mappingPathPart
-  );
 
 const matchLocalityPinFields = (
   arrayOfMappings: RA<SplitMappingPath>

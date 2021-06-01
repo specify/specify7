@@ -81,6 +81,7 @@ export type DataModelTables = IR<DataModelTable>;
 export type TreeRankData = {
   readonly isRequired: boolean;
   readonly title: string;
+  readonly rankId: number;
 };
 
 type TableRanksInline = [
@@ -116,6 +117,7 @@ const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
               {
                 isRequired: false,
                 title: rank.get('title') as string,
+                rankId: rank.get('rankid') as number,
               },
             ]),
           ])

@@ -2,7 +2,7 @@ import type { IR, RA } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 
-export const dataModelFetcherVersion = '3';
+export const dataModelFetcherVersion = '4';
 
 export const knownRelationshipTypes: Set<string> = new Set([
   'one-to-one',

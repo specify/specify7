@@ -7,10 +7,14 @@ import { generateMappingPathPreview } from './wbplanviewhelper';
 import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import {
   formatReferenceItem,
+  formatTreeRank,
   mappingPathToString,
+  splitJoinedMappingPath,
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
+import dataModelStorage from './wbplanviewmodel';
+import { getMappingLineData } from './wbplanviewnavigator';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -34,7 +38,7 @@ function getNextMappingPathPart(
 
 async function recursiveResourceResolve(
   resource: any,
-  mappingPath: RA<string>,
+  mappingPath: MappingPath,
   pastParts: RA<string> = []
 ): Promise<RA<string>> {
   if (mappingPath.length === 0) return [pastParts, resource];
@@ -43,13 +47,25 @@ async function recursiveResourceResolve(
 
   if ('fetchIfNotPopulated' in resource) await resource.fetchIfNotPopulated();
 
-  if (valueIsTreeRank(currentPart[0]))
-    // TODO: fix not fetching higher level ranks
+  if (valueIsTreeRank(currentPart[0])) {
+    const treeTableName = getMappingLineData({
+      baseTableName: 'locality',
+      mappingPath: pastParts,
+    }).slice(-1)[0].tableName;
+    if (typeof treeTableName === 'undefined')
+      throw new Error('Failed to fetch tree name');
+    const tableRanks = Object.entries(dataModelStorage.ranks[treeTableName]);
+    const currentRank = tableRanks.find(
+      ([, { rankId }]) => rankId === resource.get('rankid')
+    );
+    if (typeof currentRank === 'undefined')
+      throw new Error('Failed to fetch tree name');
+    const currentRankName = formatTreeRank(currentRank[0]);
     return [
-      [...pastParts, ...currentPart, ...nextPart],
+      [...pastParts, currentRankName, ...nextPart],
       await resource.rget(nextPart[0]),
     ];
-  else if (valueIsReferenceItem(currentPart[0])) {
+  } else if (valueIsReferenceItem(currentPart[0])) {
     return new Promise(async (resolve) =>
       Promise.all<RA<string>>(
         Object.values(resource.models).map(async (model: any, index) =>
@@ -91,8 +107,48 @@ export async function getLocalityDataFromLocalityResource(
     .filter((mappingPath) => mappingPath[0] === 'locality')
     .map((mappingPath) => mappingPath.slice(1));
 
+  const findRanksInMappings = arrayOfMappings
+    .map((mappingPath) => ({
+      mappingPath,
+      treeRankLocation: mappingPath.findIndex((mappingPathPart) =>
+        valueIsTreeRank(mappingPathPart)
+      ),
+    }))
+    .map(({ mappingPath, treeRankLocation }) =>
+      treeRankLocation === -1
+        ? { groupName: '', treeRankLocation }
+        : {
+            treeRankLocation,
+            groupName: mappingPathToString(
+              mappingPath.slice(0, treeRankLocation)
+            ),
+          }
+    );
+
+  const filteredArrayOfMappings = arrayOfMappings.reduce<MappingPath[]>(
+    (arrayOfMappings, mappingPath, index) => {
+      const { groupName, treeRankLocation } = findRanksInMappings[index];
+      if (treeRankLocation === -1) {
+        arrayOfMappings.push(mappingPath);
+      } else if (
+        arrayOfMappings.every(
+          (existingGroupName) =>
+            !mappingPathToString(existingGroupName).startsWith(groupName)
+        )
+      )
+        arrayOfMappings.push([
+          ...splitJoinedMappingPath(groupName),
+          mappingPath[treeRankLocation],
+          'fullname',
+        ]);
+
+      return arrayOfMappings;
+    },
+    []
+  );
+
   const results = await Promise.all(
-    arrayOfMappings.map(async (mappingPath) =>
+    filteredArrayOfMappings.map(async (mappingPath) =>
       recursiveResourceResolve(localityResource, mappingPath)
     )
   );
