@@ -5,9 +5,8 @@ header {
     border-bottom: solid 6px #f4763d;
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 10px 10px 0;
     column-gap: 15px;
-    position: relative;
 }
 
 #site-header-main {
@@ -33,6 +32,11 @@ nav {
     order: 2;
     flex: 1;
     height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
 }
 
 #header-loading {
@@ -44,50 +48,38 @@ nav {
     font-weight: 800;
 }
 
-nav ul {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-end;
-}
-
-nav li {
-    padding: 0;
-}
-
 nav a {
-    display: inline-block;
     font-size: 14px;
     font-weight: 800;
     padding: 0.5rem 1rem;
+    position: relative;
 }
 
 nav a::after {
     content: '';
     position: absolute;
-    bottom: -1rem;
+    bottom: -6px;
     width: 100%;
     left: 0;
     right: 0;
-    height: 6px;
-    background: #f4763d;
+    height: 8px;
+    background: transparent;
 }
 
 @media (max-width: 1600px) {
-
     header {
         flex-direction: column;
     }
 
-    #site-logo, nav, #user-tools {
+    #site-logo,
+    nav,
+    #user-tools {
         order: unset;
     }
 
     nav {
         padding-top: 10px;
+        justify-content: unset;
     }
 
     #site-header-main {
@@ -116,16 +108,17 @@ nav a:hover {
     color: #000;
 }
 
-nav li img {
+nav img {
     display: inline;
     height: 16px;
     vertical-align: middle;
     margin-right: 5px;
 }
 
-#user-tools div:last-child {
+#user-tools div {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 }
 
 #user-tools a {
