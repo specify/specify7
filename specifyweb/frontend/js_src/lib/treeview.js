@@ -54,7 +54,7 @@ var setTitle = app.setTitle;
 
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
-        className: "tree-view",
+        className: "tree-view content-no-shadow",
         events: {
             'autocompleteselect': 'search',
             'click .tree-conform-save': 'setDefaultConformation',

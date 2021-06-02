@@ -48,7 +48,7 @@ const getDefaultCellMeta = () => ({
 
 const WBView = Backbone.View.extend({
   __name__: 'WbForm',
-  className: 'wbs-form',
+  className: 'wbs-form content-no-shadow',
   events: {
     'click .wb-upload': 'upload',
     'click .wb-validate': 'upload',

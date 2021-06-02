@@ -66,7 +66,7 @@ export default createBackboneView<
 >({
   moduleName: 'WBPlanView',
   title: (self) => self.dataset.name,
-  className: 'wb-plan-view',
+  className: 'wb-plan-view content-no-shadow',
   initialize(self, { dataset }) {
     self.dataset = dataset;
     self.mappingIsTemplated = false;

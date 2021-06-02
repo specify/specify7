@@ -1,22 +1,40 @@
 /* specifyform.css */
 
 #content {
+    --shadow-size: 4px;
+
     flex: 1;
-    margin: 0 1rem 1rem;
+    margin: 0 calc(1rem - var(--shadow-size)) calc(1rem - var(--shadow-size));
     overflow: auto;
 }
 
-.specify-root-form {
-    padding-bottom: 4px;
-    background: #f1f2f2;
-    box-shadow: 0 0 4px rgb(0 0 0 / 0.33), 0 2px 4px rgb(0 0 0 / 0.5);
+.content-shadow, .content-shadow-full-width {
+    box-shadow: 0 0 var(--shadow-size) calc(var(--shadow-size) / 2) rgba(0, 0, 0, 0.33);
+    height: calc(100% - calc(var(--shadow-size) * 2));
+    margin-top: var(--shadow-size);
     border: 1px solid #ddd;
+}
+
+.content-no-shadow {
+    margin: 0 var(--shadow-size);
+}
+
+.content-shadow-full-width {
+    width: calc(100% - calc(var(--shadow-size) * 2));
+    margin-left: var(--shadow-size);
+}
+
+.specify-root-form {
+    background: #f1f2f2;
+    box-sizing: border-box;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 4px;
-    overfllow-y: scroll;
     width: -moz-fit-content;
     width: fit-content;
+    height: unset;
+    max-height: calc(100% - calc(var(--shadow-size) * 2));
+    overflow-y: scroll;
+    padding-bottom: 2px;
 }
 
 div.specify-view-content-container {
@@ -51,7 +69,7 @@ div.specify-view-content {
 }
 
 .recordset-header .recordset-navigation {
-    padding: 0.4rem;
+    padding: 0.4rem 0.6rem;
     margin: 0;
     background: rgba(0, 0, 0, 0.1);
 }

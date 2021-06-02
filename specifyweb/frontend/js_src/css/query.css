@@ -1,19 +1,12 @@
 /* query.css */
 
-.query-view {
-    width: 100%;
-    height: 100%;
-}
-
 .querybuilder {
     padding: 10px;
     background: #f1f2f2;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.33), 0 2px 4px rgba(0, 0, 0, 0.5);
-    border: 1px solid #ddd;
-    height: calc(100% - 26px);
     display: flex;
     flex-direction: column;
     overflow: auto;
+    height: calc(100% - 20px);
 }
 
 .querybuilder-header {

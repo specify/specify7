@@ -20,7 +20,7 @@ var router             = require('./router.js');
 
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
-        className: "query-view",
+        className: "query-view content-shadow-full-width",
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',

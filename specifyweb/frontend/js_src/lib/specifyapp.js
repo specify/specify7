@@ -76,7 +76,7 @@ function viewSaved(resource, recordSet, options) {
 function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
-            className: "specify-root-form",
+            className: "specify-root-form content-shadow",
             populateForm: populateForm,
             model: resource,
             recordSet: recordSet,
