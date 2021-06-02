@@ -44,13 +44,16 @@ L.Control.FullScreen = L.Control.extend({
     return img;
   },
 
-  onRemove: () => {},
+  onRemove() {
+    // @ts-expect-error Somebody did a really poor job of typing Leaflet
+    L.DomEvent.off(this.img);
+  },
 });
 
 /* Adds a printer icon to print the map */
 // @ts-expect-error
 L.Control.PrintMap = L.Control.extend({
-  onAdd(map: Readonly<L.Map>) {
+  onAdd() {
     const button = L.DomUtil.create('span') as HTMLSpanElement;
     button.classList.add('leaflet-print-map');
     button.textContent = '🖨️';
@@ -58,11 +61,17 @@ L.Control.PrintMap = L.Control.extend({
     L.DomEvent.on(button, 'click', (event) => {
       L.DomEvent.stopPropagation(event);
       L.DomEvent.preventDefault(event);
-      toggleFullScreen(map, true);
       window.print();
     });
 
+    // @ts-expect-error
+    this.button = button;
+
     return button;
+  },
+  onRemove() {
+    // @ts-expect-error Somebody did a really poor job of typing Leaflet
+    L.DomEvent.off(this.button);
   },
 });
 
@@ -85,6 +94,10 @@ function toggleFullScreen(
   dialog.dialog('option', 'width', width);
   dialog.dialog('option', 'height', height);
   map.invalidateSize();
+
+  const container = map.getContainer();
+  if (newState) container.classList.add('leaflet-map-full-screen');
+  else container.classList.remove('leaflet-map-full-screen');
 }
 
 // @ts-expect-error
@@ -100,8 +113,6 @@ L.Control.Details = L.Control.extend({
 
     return details;
   },
-
-  onRemove: () => {},
 });
 
 export default L;
