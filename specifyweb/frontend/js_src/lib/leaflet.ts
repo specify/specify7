@@ -173,8 +173,9 @@ function addDetailsButton(
   L.control.details = (options) => new L.Control.Details(options);
   // @ts-expect-error
   L.control.details({ position: 'topleft' }).addTo(map);
-  const detailsContainer =
-    container.getElementsByClassName('details-container')[0];
+  const detailsContainer = container.getElementsByClassName(
+    'leaflet-details-container'
+  )[0];
   detailsContainer.getElementsByTagName('span')[0].innerHTML = details;
   return detailsContainer;
 }

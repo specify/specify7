@@ -1,0 +1,13 @@
+.leaflet-full-screen-toggle {
+  cursor: pointer;
+  background: #fffa;
+  width: 50px;
+}
+
+.leaflet-details-container {
+  color: #fff;
+  background: #000c;
+  padding: 10px;
+  max-width: 50%;
+  min-width: 92px;
+}

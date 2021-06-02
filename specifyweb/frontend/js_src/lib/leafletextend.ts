@@ -6,6 +6,7 @@
 import $ from 'jquery';
 import L from 'leaflet';
 
+import '../css/leaflet.css';
 import 'leaflet/dist/leaflet.css';
 // Marker Clustering
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -28,16 +29,12 @@ L.Icon.Default.mergeOptions({
 L.Control.FullScreen = L.Control.extend({
   onAdd(map: Readonly<L.Map>) {
     const img = L.DomUtil.create('img') as HTMLImageElement;
-    img.style.cursor = 'pointer';
-    img.style.background = '#fffa';
-    img.classList.add('full-screen');
+    img.classList.add('leaflet-full-screen-toggle');
+    img.src = '/static/img/full_screen.png';
 
     L.DomEvent.on(img, 'click', L.DomEvent.stopPropagation)
       .on(img, 'click', L.DomEvent.preventDefault)
       .on(img, 'click', () => toggleFullScreen(map));
-
-    img.src = '/static/img/full_screen.png';
-    img.style.width = '50px';
 
     // @ts-expect-error
     this.img = img;
@@ -67,12 +64,8 @@ function toggleFullScreen(map: Readonly<L.Map>): void {
 L.Control.Details = L.Control.extend({
   onAdd: () => {
     const details = L.DomUtil.create('details');
-    details.classList.add('details-container');
+    details.classList.add('leaflet-details-container');
     details.setAttribute('open', 'open');
-    details.style.background = '#000c';
-    details.style.padding = '10px';
-    details.style.maxWidth = '50%';
-    details.style.minWidth = '92px';
     details.innerHTML = `
       <summary style="font-size:1rem">Details</summary>
       <span></span>
