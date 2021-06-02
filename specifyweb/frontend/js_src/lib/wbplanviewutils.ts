@@ -25,9 +25,9 @@ import {
 } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
+  findRequiredMissingFields,
   formatReferenceItem,
   getMaxToManyValue,
-  showRequiredMissingFields,
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
@@ -116,7 +116,7 @@ export function savePlan(
 
 /* Validates the current mapping and shows error messages if needed */
 export function validate(state: MappingState): MappingState {
-  const validationResults = showRequiredMissingFields(
+  const validationResults = findRequiredMissingFields(
     state.baseTableName,
     getMappingsTree(state.lines, true)
   );

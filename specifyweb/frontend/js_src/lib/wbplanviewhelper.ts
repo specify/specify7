@@ -22,9 +22,10 @@ import {
 import { getMappingLineData } from './wbplanviewnavigator';
 
 /*
- * Get a friendly name from the field. (Converts Camel Case to human-readable
- * name and fixes some errors). This method is only called if schema
- * localization does not have a friendly name for this field
+ * Generate field label from the database field name.
+ * (Converts Camel Case to human-readable name and fixes some errors).
+ * This method is only called if schema
+ * localization does not have a label for a particular field
  *
  */
 export const getFriendlyName = (
@@ -49,8 +50,8 @@ export const capitalize = (string: string): string =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
 /*
- *Finds the point at which the source array begins to have values
- *different from the ones in the search array
+ * Finds the point at which the source array begins to have values
+ * different from the ones in the search array
  */
 export function findArrayDivergencePoint<T>(
   // The source array to use in the comparison
@@ -104,7 +105,7 @@ export function findArrayDivergencePoint<T>(
   return returnValue ?? searchLength - 1;
 }
 
-// Find the index of subArray in array. On failure returns -1
+// Find the index of a subArray in array. On failure returns -1
 export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
   array.findIndex((_, index) =>
     mappingPathToString(array.slice(index)).startsWith(
@@ -114,8 +115,10 @@ export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
 
 /*
  * Takes an array of mappings with headers and returns the indexes of the
- * duplicate headers (if three lines have the same mapping, the indexes of
- * the second and the third lines are returned)
+ * duplicate headers
+ * Example:
+ * if three lines have the same mapping, the indexes of the second and the
+ *  third lines are returned
  *
  */
 export const findDuplicateMappings = (

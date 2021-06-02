@@ -27,13 +27,13 @@ const dataModelStorage: {
 } = {
   // Each one of this can be modified to a single symbol or several symbols
 
-  // Prefix for -to-many indexes (used behind the scenes & is shown to the user)
+  // Prefix for -to-many indexes
   referenceSymbol: '#',
-  // Prefix for tree ranks (used behind the scenes)
+  // Prefix for tree ranks
   treeSymbol: '$',
   /*
    * A symbol to used to join multiple mapping path elements together when
-   * need to represent mapping path as a string
+   * there is a need to represent a mapping path as a string
    */
   pathJoinSymbol: '.',
 

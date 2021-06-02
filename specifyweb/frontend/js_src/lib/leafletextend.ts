@@ -14,7 +14,7 @@ import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
 
-/* This code is needed to properly load the images in the Leaflet CSS */
+/* This code is needed to properly load the images in the Leaflet's CSS */
 // @ts-expect-error
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({

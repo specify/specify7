@@ -102,7 +102,7 @@ export const getNameFromTreeRankName = (value: string): string =>
 export const getMaxToManyValue = (
   // List of reference item values
   values: RA<string>
-): number /* Max index. Returns 0 if there aren't any */ =>
+): number =>
   values.reduce((max, value) => {
     // Skip `add` values and other possible NaN cases
     if (!valueIsReferenceItem(value)) return max;
@@ -138,7 +138,7 @@ export const splitJoinedMappingPath = (string: string): MappingPath =>
   string.split(dataModelStorage.pathJoinSymbol);
 
 /* Iterates over the mappingsTree to find required fields that are missing */
-export function showRequiredMissingFields(
+export function findRequiredMissingFields(
   // Name of the current base table
   tableName: string,
   /*
@@ -164,7 +164,7 @@ export function showRequiredMissingFields(
     listOfMappedFields.forEach((mappedFieldName) => {
       const localPath = [...path, mappedFieldName];
       if (typeof mappingsTree[mappedFieldName] === 'object')
-        showRequiredMissingFields(
+        findRequiredMissingFields(
           tableName,
           mappingsTree[mappedFieldName] as MappingsTree,
           parentTableName,
@@ -188,7 +188,7 @@ export function showRequiredMissingFields(
         const localPath = [...path, complimentedRankName];
 
         if (listOfMappedFields.includes(complimentedRankName))
-          showRequiredMissingFields(
+          findRequiredMissingFields(
             tableName,
             mappingsTree[complimentedRankName] as MappingsTree,
             parentTableName,
@@ -244,7 +244,7 @@ export function showRequiredMissingFields(
       }
 
       if (isMapped)
-        showRequiredMissingFields(
+        findRequiredMissingFields(
           fieldData.tableName,
           mappingsTree[fieldName] as MappingsTree,
           tableName,

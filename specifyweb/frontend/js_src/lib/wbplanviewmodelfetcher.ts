@@ -1,7 +1,7 @@
 /*
  *
  * Fetches Specify data model with tree ranks, parses it and saves it to
- * an object for and easier usage across wbplanview
+ * an object for easier usage across wbplanview
  *
  *
  */

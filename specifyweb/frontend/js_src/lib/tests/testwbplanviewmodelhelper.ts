@@ -368,12 +368,12 @@ export default function (): void {
       [
         [
           mappingsTree1.baseTableName,
-          (mappingsTree1.mappingsTree as unknown) as MappingsTree,
+          mappingsTree1.mappingsTree as unknown as MappingsTree,
         ],
         [['collectingevent', 'locality', 'localityname']],
       ],
     ],
-    WbPlanViewModelHelper.showRequiredMissingFields
+    WbPlanViewModelHelper.findRequiredMissingFields
   );
 
   runTest(
