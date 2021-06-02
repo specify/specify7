@@ -2,11 +2,9 @@
 
 header {
     background: #f1f2f2;
-    border-bottom: solid 4px #f4763d;
+    border-bottom: solid 0.3rem #f4763d;
     display: flex;
     align-items: center;
-    padding: 10px;
-    column-gap: 15px;
     box-shadow: 0 3px 5px -1px #999;
 }
 
@@ -19,6 +17,7 @@ header {
     background-size: 185px 55px;
     background-repeat: no-repeat;
     height: 55px;
+    margin: 1rem;
     order: 1;
     flex-basis: 300px;
 }
@@ -26,6 +25,7 @@ header {
 #user-tools {
     order: 3;
     flex-basis: 300px;
+    margin: 1rem;
 }
 
 nav {
@@ -52,14 +52,17 @@ nav {
 nav a {
     font-size: 14px;
     font-weight: 800;
-    padding: 0.5rem 1rem;
+    padding: 0 1rem 1rem;
     position: relative;
+    height: calc(100% - 1rem);
+    display: flex;
+    align-items: end;
 }
 
 nav a::after {
     content: '';
     position: absolute;
-    bottom: -14px;
+    bottom: -0.3rem;
     width: 100%;
     left: 0;
     right: 0;
@@ -79,8 +82,17 @@ nav a::after {
     }
 
     nav {
-        padding-top: 10px;
+        margin-top: -1rem;
         justify-content: unset;
+    }
+
+    nav a {
+        padding: 1rem;
+        height: calc(100% - 2rem);
+    }
+
+    nav a::after {
+        bottom: -0.3rem;
     }
 
     #site-header-main {
