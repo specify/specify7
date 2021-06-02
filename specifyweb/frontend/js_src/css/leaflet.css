@@ -1,13 +1,29 @@
-.leaflet-full-screen-toggle {
-  cursor: pointer;
-  background: #fffa;
-  width: 50px;
-}
-
 .leaflet-details-container {
   color: #fff;
   background: #000c;
   padding: 10px;
   max-width: 50%;
   min-width: 92px;
+}
+
+.leaflet-full-screen-toggle {
+  width: 50px;
+}
+
+.leaflet-full-screen-toggle,
+.leaflet-print-map {
+  cursor: pointer !important;
+  background: #fffa;
+}
+
+.leaflet-print-map {
+  height: 50px;
+  font-size: 30px;
+  padding: 3px 10px;
+}
+
+@media print {
+  .leaflet-control-container {
+    display: none;
+  }
 }

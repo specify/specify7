@@ -32,9 +32,11 @@ L.Control.FullScreen = L.Control.extend({
     img.classList.add('leaflet-full-screen-toggle');
     img.src = '/static/img/full_screen.png';
 
-    L.DomEvent.on(img, 'click', L.DomEvent.stopPropagation)
-      .on(img, 'click', L.DomEvent.preventDefault)
-      .on(img, 'click', () => toggleFullScreen(map));
+    L.DomEvent.on(img, 'click', (event) => {
+      L.DomEvent.stopPropagation(event);
+      L.DomEvent.preventDefault(event);
+      toggleFullScreen(map);
+    });
 
     // @ts-expect-error
     this.img = img;
@@ -45,16 +47,41 @@ L.Control.FullScreen = L.Control.extend({
   onRemove: () => {},
 });
 
+/* Adds a printer icon to print the map */
+// @ts-expect-error
+L.Control.PrintMap = L.Control.extend({
+  onAdd(map: Readonly<L.Map>) {
+    const button = L.DomUtil.create('span') as HTMLSpanElement;
+    button.classList.add('leaflet-print-map');
+    button.textContent = '🖨️';
+
+    L.DomEvent.on(button, 'click', (event) => {
+      L.DomEvent.stopPropagation(event);
+      L.DomEvent.preventDefault(event);
+      toggleFullScreen(map, true);
+      window.print();
+    });
+
+    return button;
+  },
+});
+
 const DEFAULT_MAP_SIZE_X = 900;
 const DEFAULT_MAP_SIZE_Y = 600;
 
-function toggleFullScreen(map: Readonly<L.Map>): void {
+function toggleFullScreen(
+  map: Readonly<L.Map>,
+  stateOverwrite: boolean | undefined = undefined
+): void {
   // @ts-expect-error
   const dialog = $(map._container.closest('.ui-dialog-content'));
-  const [width, height] =
-    dialog[0].parentElement.style.top === '0px'
-      ? [DEFAULT_MAP_SIZE_X, DEFAULT_MAP_SIZE_Y]
-      : [window.innerWidth, window.innerHeight];
+  const newState =
+    typeof stateOverwrite === 'boolean'
+      ? stateOverwrite
+      : dialog[0].parentElement.style.top !== '0px';
+  const [width, height] = newState
+    ? [window.innerWidth, window.innerHeight]
+    : [DEFAULT_MAP_SIZE_X, DEFAULT_MAP_SIZE_Y];
   dialog.dialog('option', 'width', width);
   dialog.dialog('option', 'height', height);
   map.invalidateSize();

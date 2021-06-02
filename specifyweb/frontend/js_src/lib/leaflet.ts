@@ -135,6 +135,7 @@ export async function showLeafletMap({
   );
 
   addFullScreenButton(map);
+  addPrintMapButton(map);
   rememberSelectedLayers(map, tileLayers.baseMaps, '');
 
   return map;
@@ -159,9 +160,12 @@ function rememberSelectedLayers(
 
 function addFullScreenButton(map: L.Map): void {
   // @ts-expect-error
-  L.control.fullScreen = (options: any) => new L.Control.FullScreen(options);
+  new L.Control.FullScreen({ position: 'topleft' }).addTo(map);
+}
+
+function addPrintMapButton(map: L.Map): void {
   // @ts-expect-error
-  L.control.fullScreen({ position: 'topleft' }).addTo(map);
+  new L.Control.PrintMap({ position: 'topleft' }).addTo(map);
 }
 
 function addDetailsButton(
@@ -451,6 +455,7 @@ export async function showCOMap(
   layerGroup.addTo(map);
 
   addFullScreenButton(map);
+  addPrintMapButton(map);
 
   if (typeof details !== 'undefined')
     return [
