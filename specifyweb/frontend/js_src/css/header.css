@@ -2,11 +2,12 @@
 
 header {
     background: #f1f2f2;
-    border-bottom: solid 6px #f4763d;
+    border-bottom: solid 4px #f4763d;
     display: flex;
     align-items: center;
-    padding: 10px 10px 0;
+    padding: 10px;
     column-gap: 15px;
+    box-shadow: 0 3px 5px -1px #999;
 }
 
 #site-header-main {
@@ -58,7 +59,7 @@ nav a {
 nav a::after {
     content: '';
     position: absolute;
-    bottom: -6px;
+    bottom: -14px;
     width: 100%;
     left: 0;
     right: 0;

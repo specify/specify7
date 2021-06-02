@@ -13,6 +13,7 @@
     border: 1px solid #ddd;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 4px;
     overfllow-y: scroll;
     width: -moz-fit-content;
     width: fit-content;
