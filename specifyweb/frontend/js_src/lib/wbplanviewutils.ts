@@ -347,8 +347,6 @@ export async function getAutomapperSuggestions({
           : mappingLineData[mappingLineData.length - 1].tableName,
       path: baseMappingPath,
       pathOffset,
-      allowMultipleMappings: true,
-      checkForExistingMappings: true,
       scope: 'suggestion',
       pathIsMapped: pathIsMapped.bind(undefined, lines),
     }).map({

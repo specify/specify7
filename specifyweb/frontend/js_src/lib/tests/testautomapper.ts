@@ -92,7 +92,6 @@ export default function (): void {
             ],
             baseTable: 'collectionobject',
             scope: 'automapper',
-            checkForExistingMappings: false,
           },
         ],
         {

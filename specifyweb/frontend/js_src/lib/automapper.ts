@@ -59,7 +59,6 @@ interface AutoMapperConstructorBaseParameters {
    */
   readonly pathOffset?: number;
   // Whether to allow multiple mappings
-  readonly allowMultipleMappings?: boolean;
   // Scope to use for definitions. More info in automapperdefinitions.ts
   readonly scope?: AutomapperScope;
 }
@@ -70,7 +69,6 @@ interface AutoMapperConstructorCheckExistingParameters
    * Whether to check if the field is already mapped (outside AutoMapper,
    * in the mapping tree)
    */
-  readonly checkForExistingMappings: true;
   readonly pathIsMapped: PathIsMappedBind;
 }
 
@@ -80,7 +78,6 @@ interface AutoMapperConstructorDontCheckExistingParameters
    * Whether to check if the field is already mapped (outside AutoMapper,
    * in the mapping tree)
    */
-  readonly checkForExistingMappings: false;
   readonly pathIsMapped?: PathIsMappedBind;
 }
 
@@ -244,6 +241,8 @@ function handleDuplicateHeader(header: string): string {
     );
 }
 
+const CACHE_VERSION = '1';
+
 export default class Automapper {
   // Used to replace any white space characters with space
   private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
@@ -361,9 +360,7 @@ export default class Automapper {
     startingTable = baseTable,
     path = [],
     pathOffset = 0,
-    allowMultipleMappings = false,
     scope = 'automapper',
-    checkForExistingMappings = false,
     pathIsMapped,
   }: AutoMapperConstructorParameters) {
     // Strip extra characters to increase mapping success
@@ -422,8 +419,12 @@ export default class Automapper {
 
     this.results = {};
     this.scope = scope;
-    this.allowMultipleMappings = allowMultipleMappings;
-    this.checkForExistingMappings = checkForExistingMappings;
+
+    // Whether to allow finding multiple mappings for the same header
+    this.allowMultipleMappings = scope === 'suggestion';
+
+    // Whether to use getMappedFields to check for existing mappings
+    this.checkForExistingMappings = scope === 'suggestion';
     this.pathOffset = path.length - pathOffset;
     this.baseTable = baseTable;
     this.startingTable = startingTable;
@@ -447,7 +448,7 @@ export default class Automapper {
     if (Object.keys(this.headersToMap).length === 0) return {};
 
     const cacheName = JSON.stringify([
-      this.headersToMap,
+      Object.keys(this.headersToMap).sort(),
       this.baseTable,
       this.startingTable,
       this.startingPath,
@@ -456,7 +457,9 @@ export default class Automapper {
     ]);
 
     if (useCache && commitToCache) {
-      const cachedData = cache.get('wbplanview-automapper', cacheName);
+      const cachedData = cache.get('wbplanview-automapper', cacheName, {
+        version: CACHE_VERSION,
+      });
       if (cachedData) return cachedData;
     }
 
@@ -465,7 +468,9 @@ export default class Automapper {
     this.findMappingsDriver('synonymsAndMatches');
 
     if (commitToCache)
-      cache.set('wbplanview-automapper', cacheName, this.results);
+      cache.set('wbplanview-automapper', cacheName, this.results, {
+        version: CACHE_VERSION,
+      });
 
     return this.results;
   }

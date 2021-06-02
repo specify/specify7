@@ -43,7 +43,6 @@ export function getLinesFromHeaders({
     headers,
     baseTable: baseTableName,
     scope: 'automapper',
-    checkForExistingMappings: false,
   }).map();
 
   return lines.map((line) => {
@@ -68,11 +67,8 @@ export function getLinesFromUploadPlan(
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 } {
-  const {
-    baseTableName,
-    mappingsTree,
-    mustMatchPreferences,
-  } = uploadPlanToMappingsTree(originalHeaders, uploadPlan);
+  const { baseTableName, mappingsTree, mustMatchPreferences } =
+    uploadPlanToMappingsTree(originalHeaders, uploadPlan);
 
   const mappingLines = mappingsTreeToArrayOfSplitMappings(mappingsTree);
 
