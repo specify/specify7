@@ -31,7 +31,7 @@ jobs:
       - name: Install Specify 6
         if: steps.cache-specify6.outputs.cache-hit != 'true'
         run: |
-          wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+          wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
           sh Specify_unix_64.sh -q -dir ./Specify6
 
       - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)

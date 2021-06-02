@@ -8,7 +8,7 @@ from io import StringIO
 class ProfileMiddleware(object):
     """
     Displays hotshot profiling for any view.
-    http://yoursite.com/yourview/?prof
+    https://yoursite.com/yourview/?prof
 
     Add the "prof" key to query string by appending ?prof (or &prof=)
     and you'll see the profiling results in your browser.

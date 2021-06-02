@@ -2,7 +2,7 @@
 Example settings for LDAP authentication for Specify 7.
 
 LDAP authentication uses the django-auth-ldap library.
-See http://django-auth-ldap.readthedocs.io/en/stable/
+See https://django-auth-ldap.readthedocs.io/en/stable/
 
 Copy this file to ldap_settings.py and adjust the appropriate values to
 enable LDAP authentication.
@@ -14,7 +14,7 @@ from django_auth_ldap.config import LDAPSearch, PosixGroupType
 
 # This section is LDAP server configuration and user search.
 #
-# See http://django-auth-ldap.readthedocs.io/en/stable/authentication.html
+# See https://django-auth-ldap.readthedocs.io/en/stable/authentication.html
 # for more information about how these and other settings are used.
 
 AUTH_LDAP_SERVER_URI = "ldap://ldap-test.specifycloud.org"
@@ -27,7 +27,7 @@ AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=users,dc=ldap-test,dc=specifycloud,dc=org
 
 # This section configures the interaction with LDAP groups.
 #
-# See http://django-auth-ldap.readthedocs.io/en/stable/groups.html
+# See https://django-auth-ldap.readthedocs.io/en/stable/groups.html
 
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
     "ou=groups,dc=ldap-test,dc=specifycloud,dc=org",
@@ -42,7 +42,7 @@ AUTH_LDAP_REQUIRE_GROUP = "cn=specify-login,ou=groups,dc=ldap-test,dc=specifyclo
 # The following are Specify specific settings.
 #
 # The django-auth-ldap configuration described in
-# http://django-auth-ldap.readthedocs.io/en/stable/users.html is
+# https://django-auth-ldap.readthedocs.io/en/stable/users.html is
 # mostly not supported because the Specify user creation is largely
 # constrained by legacy Specify 6 requirements.
 #
