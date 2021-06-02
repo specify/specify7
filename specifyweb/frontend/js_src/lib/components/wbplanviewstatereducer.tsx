@@ -55,6 +55,7 @@ export type MappingState = State<
     displayMatchingOptionsDialog: boolean;
     mustMatchPreferences: IR<boolean>;
     showAutomapperDialog: boolean;
+    showInvalidValidationDialog: boolean;
   }
 >;
 
@@ -112,6 +113,7 @@ export const getDefaultMappingState = (): MappingState => ({
   displayMatchingOptionsDialog: false,
   mustMatchPreferences: {},
   showAutomapperDialog: false,
+  showInvalidValidationDialog: false,
 });
 
 export const stateReducer = generateReducer<
@@ -554,6 +556,26 @@ export const stateReducer = generateReducer<
                 <br />
                 This would reset your current mappings.
               </>
+            </ModalDialog>
+          )}
+          {state.showInvalidValidationDialog && (
+            <ModalDialog
+              onCloseCallback={() =>
+                state.dispatch({
+                  type: 'CloseInvalidValidationDialogAction',
+                })
+              }
+              properties={{
+                title: 'Nothing to validate',
+                buttons: {
+                  Close: () =>
+                    state.dispatch({
+                      type: 'CloseInvalidValidationDialogAction',
+                    }),
+                },
+              }}
+            >
+              <>Please map some headers before running the validation.</>
             </ModalDialog>
           )}
           {state.displayMatchingOptionsDialog && (

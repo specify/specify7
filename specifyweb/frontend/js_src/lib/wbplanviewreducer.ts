@@ -135,6 +135,9 @@ type ResetMappingsAction = Action<'ResetMappingsAction'>;
 
 type ValidationAction = Action<'ValidationAction'>;
 
+type CloseInvalidValidationDialogAction =
+  Action<'CloseInvalidValidationDialogAction'>;
+
 type FocusLineAction = Action<
   'FocusLineAction',
   {
@@ -232,6 +235,7 @@ export type MappingActions =
   | ToggleHiddenFieldsAction
   | ResetMappingsAction
   | ValidationAction
+  | CloseInvalidValidationDialogAction
   | FocusLineAction
   | MappingViewMapAction
   | AddNewHeaderAction
@@ -347,7 +351,20 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     showAutomapperDialog: false,
   }),
-  ValidationAction: ({ state }) => validate(mappingState(state)),
+  ValidationAction: ({ state }) =>
+    mappingState(state).lines.length === 0 ||
+    mappingState(state).lines.every(
+      ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
+    )
+      ? { ...mappingState(state), showInvalidValidationDialog: true }
+      : validate({
+          ...mappingState(state),
+          showInvalidValidationDialog: false,
+        }),
+  CloseInvalidValidationDialogAction: ({ state }) => ({
+    ...mappingState(state),
+    showInvalidValidationDialog: false,
+  }),
   ResetMappingsAction: ({ state }) => ({
     ...mappingState(state),
     lines: mappingState(state).lines.map((line) => ({
