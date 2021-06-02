@@ -107,6 +107,7 @@ RUN echo \
         "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
         "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
         "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
+        "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)" \
         "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
         "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
