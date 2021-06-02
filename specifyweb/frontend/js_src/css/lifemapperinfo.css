@@ -1,3 +1,9 @@
+.lifemapper-info {
+  min-width: 130px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .lifemapper-source-icon {
   background: none;
   border: none;
