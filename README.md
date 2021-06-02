@@ -6,7 +6,7 @@ The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
 https://specifysoftware.org
 
-Specify 7 Copyright © 2020 Specify Collections Consortium. Specify
+Specify 7 Copyright © 2021 Specify Collections Consortium. Specify
 comes with ABSOLUTELY NO WARRANTY.  This is free software licensed
 under GNU General Public License 2 (GPL2).
 
