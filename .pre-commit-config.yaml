@@ -100,7 +100,7 @@ repos:
       - id: codespell
 
   - repo: https://github.com/psf/black
-    rev: 21.5b1
+    rev: 21.5b2
     hooks:
       - id: black
         args:
@@ -130,7 +130,7 @@ repos:
       - id: pydocstyle
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.18.3
+    rev: v2.19.1
     hooks:
       - id: pyupgrade
 
