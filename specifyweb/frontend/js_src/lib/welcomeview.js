@@ -246,7 +246,9 @@ var aboutspecify         = require('./templates/aboutspecify.html');
             'click #about-specify': 'showAboutDialog'
         },
         render: function() {
-            this.$el.append(template({doTaxonTiles: DO_TAXON_TILES}));
+            $('<div></div>').append(
+              template({doTaxonTiles: DO_TAXON_TILES})
+            ).appendTo(this.$el);
             DO_TAXON_TILES && _.defer(makeTreeMap);
 
             // showRecentActivity(this);

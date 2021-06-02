@@ -56,7 +56,7 @@ nav a {
     position: relative;
     height: calc(100% - 1rem);
     display: flex;
-    align-items: end;
+    align-items: flex-end;
 }
 
 nav a::after {
