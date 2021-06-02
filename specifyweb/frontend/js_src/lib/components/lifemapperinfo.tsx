@@ -191,14 +191,16 @@ function LifemapperInfo({
 
         const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
           (resolve) => {
-            const similarCollectionObjects = new (
-              schema as any
-            ).models.CollectionObject.LazyCollection({
-              filters: {
-                determinations__iscurrent: true,
-                determinations__preferredtaxon__fullname: getOccurrenceName(0),
-              },
-            });
+            const similarCollectionObjects = new (schema as any).models.CollectionObject.LazyCollection(
+              {
+                filters: {
+                  determinations__iscurrent: true,
+                  determinations__preferredtaxon__fullname: getOccurrenceName(
+                    0
+                  ),
+                },
+              }
+            );
 
             similarCollectionObjects
               .fetch({
@@ -352,6 +354,7 @@ const View = createBackboneView<Props, Props, ComponentProps>({
   remove(self) {
     self.el.style.display = 'none';
   },
+  silentErrors: true,
   Component: LifemapperInfo,
   getComponentProps: (self) => ({
     model: self.model,

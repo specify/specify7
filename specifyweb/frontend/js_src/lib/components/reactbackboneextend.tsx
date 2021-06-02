@@ -27,6 +27,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   renderPre,
   renderPost,
   remove,
+  silentErrors = false,
   Component,
   getComponentProps,
 }: {
@@ -48,6 +49,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   readonly remove?: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => void;
+  readonly silentErrors?: boolean;
   readonly Component: (props: COMPONENT_PROPS) => JSX.Element;
   readonly getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
@@ -67,7 +69,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
 
       ReactDOM.render(
         <React.StrictMode>
-          <ErrorBoundary>
+          <ErrorBoundary silentErrors={silentErrors}>
             <Component {...getComponentProps(this)} />
           </ErrorBoundary>
         </React.StrictMode>,

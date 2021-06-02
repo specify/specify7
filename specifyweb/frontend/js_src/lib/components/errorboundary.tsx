@@ -21,7 +21,7 @@ type ErrorBoundaryState =
     };
 
 export default class ErrorBoundary extends React.Component<
-  { readonly children: JSX.Element | null },
+  { readonly children: JSX.Element | null; readonly silentErrors?: boolean },
   ErrorBoundaryState
 > {
   public state: ErrorBoundaryState = {
@@ -42,32 +42,36 @@ export default class ErrorBoundary extends React.Component<
 
   public render(): JSX.Element | null {
     return this.state.hasError ? (
-      <ModalDialog
-        properties={{
-          title: 'Unexpected Error',
-          buttons: [
-            {
-              text: 'Reload',
-              click(): void {
-                window.location.reload();
+      this.props.silentErrors ? (
+        <></>
+      ) : (
+        <ModalDialog
+          properties={{
+            title: 'Unexpected Error',
+            buttons: [
+              {
+                text: 'Reload',
+                click(): void {
+                  window.location.reload();
+                },
               },
-            },
-            {
-              text: 'Previous Page',
-              click(): void {
-                window.history.back();
+              {
+                text: 'Previous Page',
+                click(): void {
+                  window.history.back();
+                },
               },
-            },
-          ],
-        }}
-      >
-        <p>An unexpected error has occurred.</p>
-        <details style={{ whiteSpace: 'pre-wrap' }}>
-          {this.state.error?.toString()}
-          <br />
-          {this.state.errorInfo.componentStack}
-        </details>
-      </ModalDialog>
+            ],
+          }}
+        >
+          <p>An unexpected error has occurred.</p>
+          <details style={{ whiteSpace: 'pre-wrap' }}>
+            {this.state.error?.toString()}
+            <br />
+            {this.state.errorInfo.componentStack}
+          </details>
+        </ModalDialog>
+      )
     ) : (
       this.props.children
     );
