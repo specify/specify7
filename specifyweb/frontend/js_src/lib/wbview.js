@@ -985,7 +985,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             Cancel() {
               $(this).dialog('close');
             },
-          },
+          }
         });
       } else {
         this.startUpload(mode);

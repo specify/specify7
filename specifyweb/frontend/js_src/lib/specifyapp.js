@@ -29,8 +29,25 @@ var reports      = require('./reports.js');
             $.get('/api/test_error/');
         });
 
-    // Stop jquery-ui dialog from autofocusing first tabbable element.
-    $.ui.dialog.prototype._focusTabbable = function(){};
+    const dialogFocusHandler = $.ui.dialog.prototype._focusTabbable;
+    $.ui.dialog.prototype._focusTabbable = function(){
+        let previousFocusedElement = undefined;
+
+        // Remembers the previously focused element
+        window.addEventListener('focusout', (event)=>{
+            previousFocusedElement = event.target;
+        }, {
+            once: true,
+        });
+
+        // Finds the first focusable element and focus it
+        dialogFocusHandler.call(this);
+
+        // Returns focus to the previous focused element
+        this.element.parent().on('dialogbeforeclose',()=>
+            previousFocusedElement?.focus()
+        );
+    };
 
     // gets rid of any backbone view currently showing
     // and replaces it with the rendered view given

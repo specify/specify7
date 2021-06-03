@@ -35,7 +35,9 @@ function closeDialog(
   if (!$dialog.is(':ui-dialog')) return;
   ReactDOM.unmountComponentAtNode($dialog[0]);
   window.removeEventListener('resize', resize);
-  $dialog.dialog('destroy');
+  $dialog.dialog('close');
+  // Unset event listeners
+  $dialog.remove();
   onCloseCallback?.();
 }
 
