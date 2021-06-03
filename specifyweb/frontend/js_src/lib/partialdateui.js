@@ -28,6 +28,10 @@ module.exports =  UIPlugin.extend({
             var select = ui.find('select');
             select.prop('id', this.$el.prop('id'));
 
+            if (this.model.isNew() && ("" + this.$el.data('specify-default')).toLowerCase() === 'today')  {
+                this.model.set(init.df.toLowerCase(), moment().format('YYYY-MM-DD'));
+            }
+
             this.$el.replaceWith(ui);
             this.setElement(ui);
             ui.find('select, input').prop('readonly', disabled);

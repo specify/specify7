@@ -104,6 +104,13 @@ var QueryCbx = Backbone.View.extend({
         this.typesearch = options.typesearch || null;
         this.relatedModel = options.relatedModel || null;
         this.forceCollection = options.forceCollection || null;
+        if (this.model.isNew() &&
+            this.model.specifyModel.name.toLowerCase() === "collectionobject" &&
+            this.$el.attr('name') === "cataloger"
+           )
+        {
+            this.model.set('cataloger', userInfo.agent.resource_uri);
+        }
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
         if (isTreeModel(this.model)) {
