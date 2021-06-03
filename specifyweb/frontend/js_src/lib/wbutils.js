@@ -659,6 +659,7 @@ module.exports = Backbone.View.extend({
         // select an entire row
         this.wbview.hot.selectRows(rowNumber);
       },
+      leafletMapContainer: 'leaflet-map',
     });
   },
   showCoordinateConversion() {
