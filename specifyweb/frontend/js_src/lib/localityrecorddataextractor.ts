@@ -4,6 +4,7 @@ import { localityPinFields } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
 import { formatCoordinate, getLocalityData } from './leafletutils';
 import { generateMappingPathPreview } from './wbplanviewhelper';
+import dataModelStorage from './wbplanviewmodel';
 import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import {
   formatReferenceItem,
@@ -13,7 +14,6 @@ import {
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
-import dataModelStorage from './wbplanviewmodel';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
 
 const splitMappingPath = (
@@ -45,7 +45,13 @@ async function recursiveResourceResolve(
 
   const [currentPart, nextPart] = getNextMappingPathPart(mappingPath);
 
-  if ('fetchIfNotPopulated' in resource) await resource.fetchIfNotPopulated();
+  if (typeof resource === 'undefined') return [];
+
+  if (
+    'fetchIfNotPopulated' in resource &&
+    (typeof resource.related === 'undefined' || !resource.related.isNew())
+  )
+    await resource.fetchIfNotPopulated();
 
   if (valueIsTreeRank(currentPart[0])) {
     const treeTableName = getTableFromMappingPath({
