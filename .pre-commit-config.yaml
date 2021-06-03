@@ -36,7 +36,8 @@ repos:
     hooks:
       - id: frontend-tests
         name: TypeScript and QUnit
-        description: Run TypeScript typechecker and automatted tests on .ts files
+        description:
+          Run TypeScript typechecker and automatted tests on .ts files
         entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
         language: script
         types_or: [javascript, jsx, ts, tsx]
@@ -59,18 +60,6 @@ repos:
           - celery==5.0.1
 
   #- repo: https://github.com/pre-commit/mirrors-eslint
-  #  rev: v7.24.0
-  #  hooks:
-  #    - id: eslint
-  #      files: \.(js|jsx|ts|tsx)?$
-  #      additional_dependencies:
-  #        - "@typescript-eslint/eslint-plugin@^4.22.0"
-  #        - "@typescript-eslint/parser@^4.22.0"
-  #        - eslint-config-prettier@^8.2.0
-  #        - eslint-plugin-prettier@^3.3.1
-  #        - eslint-plugin-react@^7.23.2
-  #        - eslint-plugin-unicorn@^29.0.0
-  #        - prettier-eslint@^12.0.0
 
   # global hooks:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -78,11 +67,9 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: check-yaml
       - id: check-added-large-files
       - id: check-case-conflict
       - id: check-docstring-first
-      - id: check-json
       - id: check-xml
       - id: check-shebang-scripts-are-executable
       - id: check-merge-conflict
@@ -98,6 +85,8 @@ repos:
     rev: v2.0.0
     hooks:
       - id: codespell
+        args:
+          - --skip="./node_modules/,package-lock.json,./.idea/"
 
   - repo: https://github.com/psf/black
     rev: 21.5b2
@@ -143,7 +132,11 @@ repos:
     rev: v2.3.0
     hooks:
       - id: prettier
-        files: \.(js|jsx|ts|tsx|json|json5|yaml|css|scss|sass|html|less|md)?$
+        additional_dependencies:
+          - '@prettier/plugin-xml@^0.13.1'
+          - prettier-plugin-package@^1.3.0
+          - prettier-plugin-sh@^0.6.1
+          - prettier-plugin-tailwind-css@^1.5.0
 
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
     rev: 0.0.2
@@ -155,22 +148,10 @@ repos:
           - stylelint-config-prettier@^8.0.2
           - stylelint-config-standard@^20.0.0
 
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
-    rev: v1.1.1
-    hooks:
-      - id: dockerfile_lint
-
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
     rev: v1.2.1
     hooks:
       - id: python-safety-dependencies-check
-
-  - repo: https://github.com/lovesegfault/beautysh
-    rev: v6.1.0
-    hooks:
-      - id: beautysh
-        args:
-          - --indent-size=2
 
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.15.1
@@ -191,7 +172,7 @@ repos:
           - --git-recurse
 
   - repo: https://github.com/maxxxxxdlp/mirrors-jscpd
-    rev: v3.3.25
+    rev: v3.3.26
     hooks:
       - id: jscpd
         types: [text]
