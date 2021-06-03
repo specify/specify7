@@ -39,6 +39,10 @@ const escapeRegExp = require('./escaperegexp.js');
             return _.map(this.fields, function(field, i) {
                     return field.canonicalize(values[i]);
             }).join('');
+        },
+        pattern: function() {
+            return this.fields.some(f => f.pattern) ?
+                this.fields.map(f => f.pattern ? f.pattern : "").join('') : null;
         }
     });
 
@@ -47,6 +51,7 @@ const escapeRegExp = require('./escaperegexp.js');
         this.value = options.value;
         this.inc = options.inc;
         this.byYear = options.byYear;
+        this.pattern = options.pattern;
     }
     Field.extend = Backbone.Model.extend;
     _.extend(Field.prototype, {
@@ -75,12 +80,14 @@ const escapeRegExp = require('./escaperegexp.js');
             'numeric': NumericField,
             'alphanumeric': AlphaNumField,
             'anychar': AnyCharField,
+            'regex': RegexField,
             'separator': SeparatorField
         }[node.attr('type')])({
             size: parseInt(node.attr('size'), 10),
             value: node.attr('value'),
             inc: node.attr('inc') === 'true',
-            byYear: node.attr('byyear') === 'true'
+            byYear: node.attr('byyear') === 'true',
+            pattern: node.attr('pattern')
         });
     };
 
@@ -126,6 +133,13 @@ const escapeRegExp = require('./escaperegexp.js');
         __name__: "AnyCharField",
         valueRegexp: function() {
             return '.{' + this.size + '}';
+        }
+    });
+
+    var RegexField = Field.extend({
+        __name__: "RegexField",
+        valueRegexp: function() {
+            return this.value;
         }
     });
 

@@ -169,13 +169,14 @@ def new_field(node):
         'year': YearField,
         'alphanumeric': AlphaNumField,
         'anychar': AnyCharField,
+        'regex': RegexField,
         'separator': SeparatorField
         }[node.attrib['type']]
     return Field(
-        size = int(node.attrib['size']),
-        value = node.attrib.get('value'),
-        inc = node.attrib.get('inc') == 'true',
-        by_year = node.attrib.get('byyear') == 'true')
+        size = int(node.attrib['size']) if 'size' in node.attrib else None,
+        value = node.attrib.get('value', None),
+        inc = node.attrib.get('inc', 'false') == 'true',
+        by_year = node.attrib.get('byyear', 'false') == 'true')
 
 
 class Field(namedtuple("Field", "size value inc by_year")):
@@ -218,6 +219,10 @@ class AlphaNumField(Field):
 class AnyCharField(Field):
     def value_regexp(self):
         return r'.{%d}' % self.size
+
+class RegexField(Field):
+    def value_regexp(self):
+        return self.value
 
 class AlphaField(Field):
     def value_regexp(self):
