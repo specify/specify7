@@ -93,7 +93,7 @@
 }
 
 .htCore .colHeader {
-  display: contents;
+  display: contents !important;
 }
 
 .htCore .colHeader div {
@@ -110,6 +110,13 @@
 
 .handsontable .columnSorting {
   line-height: 20px;
+}
+
+.handsontable .columnSorting::before {
+  position: static !important;
+  order: 2;
+  margin-top: 5px !important;
+  margin-right: -13px;
 }
 
 /* CONTENT styles */
