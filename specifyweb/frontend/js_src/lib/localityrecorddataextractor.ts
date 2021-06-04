@@ -101,14 +101,20 @@ const resultsIntoPairs = (
     );
 
 export async function getLocalityDataFromLocalityResource(
-  localityResource: any
+  localityResource: any,
+  // Don't fetch related tables. Only return data from this resource.
+  quickFetch = false
 ): Promise<LocalityData | false> {
   // Needed by generateMappingPathPreview
   await fetchDataModelPromise();
 
   const arrayOfMappings = localityPinFields
     .flatMap(({ pathsToFields }) => pathsToFields)
-    .filter((mappingPath) => mappingPath[0] === 'locality')
+    .filter(
+      (mappingPath) =>
+        mappingPath[0] === 'locality' &&
+        (!quickFetch || mappingPath.length === 2)
+    )
     .map((mappingPath) => mappingPath.slice(1));
 
   const findRanksInMappings = arrayOfMappings

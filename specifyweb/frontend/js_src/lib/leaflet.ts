@@ -14,7 +14,7 @@ import {
   leafletTileServers,
 } from './leafletconfig';
 import L from './leafletextend';
-import type { LocalityData } from './leafletutils';
+import type { Field, LocalityData } from './leafletutils';
 import { capitalize } from './wbplanviewhelper';
 
 const DEFAULT_ZOOM = 5;
@@ -71,7 +71,7 @@ export async function showLeafletMap({
   leafletMapContainer,
 }: {
   readonly localityPoints: RA<LocalityData>;
-  readonly markerClickCallback?: () => void;
+  readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
   readonly leafletMapContainer: string | JQuery<HTMLDivElement> | undefined;
 }): Promise<L.Map | undefined> {
   const tileLayers = await getLeafletLayers();
@@ -311,6 +311,17 @@ const createLine = (
     smoothFactor: 1,
   });
 
+export const formatLocalityData = (
+  localityData: Partial<LocalityData>
+): string =>
+  Object.values(localityData)
+    .filter(
+      (field): field is Field<string | number> => typeof field !== 'undefined'
+    )
+    .filter((field) => field.value !== '')
+    .map((field) => `<b>${field.headerName}</b>: ${field.value}`)
+    .join('<br>');
+
 export function getMarkersFromLocalityData({
   localityData: {
     'locality.latitude1': latitude1,
@@ -326,7 +337,7 @@ export function getMarkersFromLocalityData({
   iconClass,
 }: {
   readonly localityData: LocalityData;
-  readonly markerClickCallback?: string | (() => void);
+  readonly markerClickCallback?: string | L.LeafletEventHandlerFn;
   readonly iconClass?: string;
 }): MarkerGroups {
   const markers: MarkerGroups = {
@@ -385,12 +396,7 @@ export function getMarkersFromLocalityData({
     .forEach((vector) => {
       if (typeof markerClickCallback === 'function')
         vector.on('click', markerClickCallback);
-      vector.bindPopup(
-        Object.values(rest)
-          .filter((field) => field.value !== '')
-          .map((field) => `<b>${field.headerName}</b>: ${field.value}`)
-          .join('<br>')
-      );
+      vector.bindPopup(formatLocalityData(rest));
     });
 
   return markers;

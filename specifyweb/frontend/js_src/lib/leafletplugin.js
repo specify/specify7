@@ -36,12 +36,27 @@ module.exports = UIPlugin.extend(
           },
         });
 
+      let fullLocalityData = undefined;
+
       LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
-        this.model
+        this.model,
+        true
       ).then((localityData) =>
         Leaflet.showLeafletMap({
           localityPoints: [localityData],
           leafletMapContainer: 'leaflet-plugin',
+          markerClickCallback: (_, { target: marker }) =>
+            (typeof fullLocalityData === 'undefined'
+              ? LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
+                  this.model
+                )
+              : Promise.resolve(fullLocalityData)
+            ).then((localityData) => {
+              fullLocalityData = localityData;
+              marker
+                .getPopup()
+                .setContent(Leaflet.formatLocalityData(localityData));
+            }),
         })
       );
     },
