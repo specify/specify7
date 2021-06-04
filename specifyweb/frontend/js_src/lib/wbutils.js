@@ -425,37 +425,29 @@ module.exports = Backbone.View.extend({
     let queryString = '';
     const visualHeaders = this.getVisualHeaders();
 
+    const getValue = (fieldName) =>
+      typeof localityColumns[fieldName] === 'undefined'
+        ? ''
+        : encodeURIComponent(
+            this.wbview.hot.getDataAtCell(
+              visualRow,
+              visualHeaders.indexOf(localityColumns[fieldName])
+            ) ?? ''
+          );
+
     if (
-      typeof localityColumns['locality.geography.$Country.name'] !==
-        'undefined' &&
-      typeof localityColumns['locality.geography.$State.name'] !== 'undefined'
+      getValue('locality.geography.$Country.name') &&
+      getValue('locality.geography.$State.name')
     ) {
-      const data = Object.fromEntries(
-        [
-          'locality.geography.$Country.name',
-          'locality.geography.$State.name',
-          'locality.geography.$County.name',
-          'locality.localityname',
-        ].map((columnName) => [
-          columnName,
-          typeof localityColumns[columnName] === 'undefined'
-            ? undefined
-            : encodeURIComponent(
-                this.wbview.hot.getDataAtCell(
-                  visualRow,
-                  visualHeaders.indexOf(localityColumns[columnName])
-                )
-              ),
-        ])
-      );
+      queryString = `country=${getValue(
+        'locality.geography.$Country.name'
+      )}&state=${getValue('locality.geography.$State.name')}`;
 
-      queryString = `country=${data['locality.geography.$Country.name']}&state=${data['locality.geography.$State.name']}`;
+      if (getValue('locality.geography.$County.name'))
+        queryString += `&county=${getValue('locality.geography.$County.name')}`;
 
-      if (typeof data['locality.geography.$County.name'] !== 'undefined')
-        queryString += `&county=${data['locality.geography.$County.name']}`;
-
-      if (typeof data['locality.localityname'] !== 'undefined')
-        queryString += `&locality=${data['locality.localityname']}`;
+      if (getValue('locality.localityname'))
+        queryString += `&locality=${getValue('locality.localityname')}`;
     } else {
       const pointDataDict = WbLocalityDataExtractor.getLocalityCoordinate(
         this.wbview.hot.getDataAtRow(visualRow),
