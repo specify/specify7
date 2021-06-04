@@ -3,6 +3,7 @@
 var $                = require('jquery');
 var _                = require('underscore');
 var Backbone         = require('./backbone.js');
+const navigation = require('./navigation.js');
 
 module.exports = {
 
@@ -34,6 +35,7 @@ module.exports = {
                         {text: 'Reload Page', click: function() { window.location.reload(); }},
                     ]
                 });
+                navigation.clearUnloadProtect();
             }
         })
     };

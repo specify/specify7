@@ -8,6 +8,7 @@
 
 import React from 'react';
 
+import { clearUnloadProtect } from '../navigation';
 import { ModalDialog } from './modaldialog';
 
 type ErrorBoundaryState =
@@ -33,6 +34,7 @@ export default class ErrorBoundary extends React.Component<
     errorInfo: { readonly componentStack: string }
   ): void {
     console.error(error, errorInfo);
+    clearUnloadProtect();
     this.setState({
       hasError: true,
       error,
