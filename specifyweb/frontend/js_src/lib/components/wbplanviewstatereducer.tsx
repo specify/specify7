@@ -352,20 +352,7 @@ export const stateReducer = generateReducer<
                         });
                       }}
                     >
-                      Validate Mapping
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(): void => {
-                        handleSave(false);
-                        state.refObjectDispatch({
-                          type: 'AutoScrollStatusChangeAction',
-                          autoScrollType: 'mappingView',
-                          status: true,
-                        });
-                      }}
-                    >
-                      Save
+                      Validate Mappings
                     </button>
                   </>
                 )}
@@ -381,6 +368,21 @@ export const stateReducer = generateReducer<
                 >
                   {state.props.readonly ? 'Return back' : 'Cancel'}
                 </button>
+                {!state.props.readonly && (
+                  <button
+                    type="button"
+                    onClick={(): void => {
+                      handleSave(false);
+                      state.refObjectDispatch({
+                        type: 'AutoScrollStatusChangeAction',
+                        autoScrollType: 'mappingView',
+                        status: true,
+                      });
+                    }}
+                  >
+                    Save
+                  </button>
+                )}
               </>
             }
           />
@@ -591,55 +593,65 @@ export const stateReducer = generateReducer<
               {Object.keys(state.mustMatchPreferences).length === 0 ? (
                 'Matching logic is unavailable for current mappings'
               ) : (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Table Name</th>
-                      <th>Must Match</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(state.mustMatchPreferences).map(
-                      ([tableName, mustMatch]) => (
-                        <tr key={tableName}>
-                          <td>
-                            <div className="must-match-line">
-                              <Icon
-                                tableName={tableName}
-                                optionLabel={tableName}
-                                isRelationship={true}
-                              />
-                              {
-                                dataModelStorage.tables[tableName]
-                                  .tableFriendlyName
-                              }
-                            </div>
-                          </td>
-                          <td>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={mustMatch}
-                                {...(state.props.readonly
-                                  ? {
-                                      disabled: true,
-                                    }
-                                  : {
-                                      onChange: (): void =>
-                                        state.dispatch({
-                                          type: 'MustMatchPrefChangeAction',
-                                          tableName,
-                                          mustMatch: !mustMatch,
-                                        }),
-                                    })}
-                              />
-                            </label>
-                          </td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
+                <>
+                  <h4 style={{ paddingLeft: '4px' }}>
+                    Require Data to Match Existing Records
+                  </h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Table Name</th>
+                        <th>Must Match</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(state.mustMatchPreferences).map(
+                        ([tableName, mustMatch]) => (
+                          <tr key={tableName}>
+                            <td>
+                              <div className="must-match-line">
+                                <Icon
+                                  tableName={tableName}
+                                  optionLabel={tableName}
+                                  isRelationship={true}
+                                />
+                                {
+                                  dataModelStorage.tables[tableName]
+                                    .tableFriendlyName
+                                }
+                              </div>
+                            </td>
+                            <td>
+                              <label
+                                style={{
+                                  display: 'block',
+                                  textAlign: 'center',
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={mustMatch}
+                                  {...(state.props.readonly
+                                    ? {
+                                        disabled: true,
+                                      }
+                                    : {
+                                        onChange: (): void =>
+                                          state.dispatch({
+                                            type: 'MustMatchPrefChangeAction',
+                                            tableName,
+                                            mustMatch: !mustMatch,
+                                          }),
+                                      })}
+                                />
+                              </label>
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </>
               )}
             </ModalDialog>
           )}
