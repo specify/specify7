@@ -5,6 +5,8 @@
  *
  */
 
+import '../../css/customselectelement.css';
+
 import React from 'react';
 
 import icons from '../icons';
@@ -361,9 +363,8 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable = !NON_INTERACTIVE_SELECT_TYPES.includes(
-    customSelectType
-  );
+  const optionIsIntractable =
+    !NON_INTERACTIVE_SELECT_TYPES.includes(customSelectType);
 
   const handleClick =
     optionIsIntractable &&

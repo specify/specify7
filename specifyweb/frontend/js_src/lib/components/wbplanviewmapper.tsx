@@ -265,8 +265,8 @@ export default function WBPlanViewMapper(
           className="mapping-view-parent"
           style={
             {
-              '--min-height': `${minMappingViewHeight}px`,
-              '--original-height': `${
+              '--mapping-view-min-height': `${minMappingViewHeight}px`,
+              '--mapping-view-height': `${
                 props.refObject.current.mappingViewHeight ?? ''
               }px`,
             } as React.CSSProperties
