@@ -120,7 +120,7 @@ function showResource(resource, recordSet, pushUrl) {
                 navigation.go(view.prev.viewUrl());
             } else {
                 view.$el.empty();
-                view.$el.append('<p>Item deleted.</p>');
+                view.$el.html('<p style="text-align: center">Item deleted.</p>');
             }
         }).on('changetitle', function(resource, title) {
             setTitle(title);
