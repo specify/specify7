@@ -6,7 +6,7 @@
  *
  */
 
-import type { RA } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import type {
   MappingPath,
   RelationshipType,
@@ -146,6 +146,8 @@ export function findRequiredMissingFields(
    * information about now mapped fields
    */
   mappingsTree?: MappingsTree,
+  // If a table is set as must match, all of it's fields are optional
+  mustMatchPreferences: IR<boolean> = {},
   // Used internally in a recursion. Previous table name
   parentTableName = '',
   // Used internally in a recursion. Current mapping path
@@ -167,6 +169,7 @@ export function findRequiredMissingFields(
         findRequiredMissingFields(
           tableName,
           mappingsTree[mappedFieldName] as MappingsTree,
+          mustMatchPreferences,
           parentTableName,
           localPath,
           results
@@ -191,11 +194,13 @@ export function findRequiredMissingFields(
           findRequiredMissingFields(
             tableName,
             mappingsTree[complimentedRankName] as MappingsTree,
+            mustMatchPreferences,
             parentTableName,
             localPath,
             results
           );
-        else if (rankData.isRequired) results.push(localPath);
+        else if (rankData.isRequired && !mustMatchPreferences[tableName])
+          results.push(localPath);
 
         return results;
       }, results);
@@ -247,12 +252,19 @@ export function findRequiredMissingFields(
         findRequiredMissingFields(
           fieldData.tableName,
           mappingsTree[fieldName] as MappingsTree,
+          mustMatchPreferences,
           tableName,
           localPath,
           results
         );
-      else if (fieldData.isRequired) results.push(localPath);
-    } else if (!isMapped && fieldData.isRequired) results.push(localPath);
+      else if (fieldData.isRequired && !mustMatchPreferences[tableName])
+        results.push(localPath);
+    } else if (
+      !isMapped &&
+      fieldData.isRequired &&
+      !mustMatchPreferences[tableName]
+    )
+      results.push(localPath);
   });
 
   return results;

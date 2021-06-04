@@ -15,7 +15,7 @@ import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import type { IR, RA, WBPlanViewProps } from './wbplanview';
+import type { RA, WBPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import { Layout, WBPlanViewHeader } from './wbplanviewheader';
 import type {
@@ -53,7 +53,6 @@ export type MappingState = State<
     changesMade: boolean;
     mappingsAreValidated: boolean;
     displayMatchingOptionsDialog: boolean;
-    mustMatchPreferences: IR<boolean>;
     showAutomapperDialog: boolean;
     showInvalidValidationDialog: boolean;
   }
@@ -403,6 +402,7 @@ export const stateReducer = generateReducer<
           focusedLine={state.focusedLine}
           refObject={refObject}
           readonly={state.props.readonly}
+          mustMatchPreferences={state.mustMatchPreferences}
           handleSave={(): void => handleSave(true)}
           handleToggleHiddenFields={(): void =>
             state.dispatch({ type: 'ToggleHiddenFieldsAction' })

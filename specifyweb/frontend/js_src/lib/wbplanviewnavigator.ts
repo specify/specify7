@@ -6,6 +6,7 @@
  *
  */
 
+import * as cache from './cache';
 import type {
   CustomSelectSubtype,
   CustomSelectType,
@@ -41,7 +42,6 @@ import {
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmodelhelper';
-import * as cache from './cache';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {
   readonly finished: boolean;
@@ -425,6 +425,7 @@ export function getMappingLineData({
   getMappedFields,
   automapperSuggestions,
   showHiddenFields = false,
+  mustMatchPreferences = {},
   mappingOptionsMenuGenerator = undefined,
 }: {
   readonly baseTableName: string;
@@ -457,6 +458,7 @@ export function getMappingLineData({
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
   readonly getMappedFields?: GetMappedFieldsBind;
   readonly automapperSuggestions?: RA<AutomapperSuggestion>;
+  readonly mustMatchPreferences?: IR<boolean>;
   readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
 }): MappingElementProps[] {
   const internalState: {
@@ -650,7 +652,7 @@ export function getMappingLineData({
           {
             fieldFriendlyName: title,
             isEnabled: true,
-            isRequired,
+            isRequired: isRequired && !mustMatchPreferences[tableName],
             isHidden: false,
             isRelationship: true,
             isDefault: formatTreeRank(rankName) === internalState.defaultValue,
@@ -719,7 +721,7 @@ export function getMappingLineData({
                   !internalState.mappedFields.includes(fieldName) ||
                   // Or is a relationship,
                   isRelationship,
-                isRequired,
+                isRequired: isRequired && !mustMatchPreferences[tableName],
                 isHidden,
                 isDefault: fieldIsDefault(
                   fieldName,

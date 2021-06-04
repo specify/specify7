@@ -606,13 +606,28 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     ...mappingState(state),
     displayMatchingOptionsDialog: false,
   }),
-  MustMatchPrefChangeAction: ({ state, action }) => ({
-    ...mappingState(state),
-    mustMatchPreferences: {
-      ...mappingState(state).mustMatchPreferences,
-      [action.tableName]: action.mustMatch,
-    },
-  }),
+  MustMatchPrefChangeAction: ({ state: initialState, action }) => {
+    const state = mappingState(initialState);
+    const newState = {
+      ...state,
+      mustMatchPreferences: {
+        ...state.mustMatchPreferences,
+        [action.tableName]: action.mustMatch,
+      },
+    };
+
+    /*
+     * Since setting table as must match causes all of it's fields to be
+     * optional, we may have to rerun validation on mustMatchPreferences changes
+     */
+    return newState.validationResults.length > 0 &&
+      newState.lines.length > 0 &&
+      newState.lines.some(({ mappingPath }) =>
+        mappingPathIsComplete(mappingPath)
+      )
+      ? validate(newState)
+      : newState;
+  },
   ChangeMatchBehaviorAction: ({ state, action }) => ({
     ...mappingState(state),
     lines: modifyLine(mappingState(state), action.line, {

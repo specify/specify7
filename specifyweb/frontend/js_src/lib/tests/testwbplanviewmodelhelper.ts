@@ -363,7 +363,7 @@ export default function (): void {
   );
 
   runTest(
-    'WbPlanViewModelHelper.showRequiredMissingFields',
+    'WbPlanViewModelHelper.findRequiredMissingFields',
     [
       [
         [

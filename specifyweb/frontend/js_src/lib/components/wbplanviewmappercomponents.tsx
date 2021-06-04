@@ -2,7 +2,7 @@ import React from 'react';
 
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import type { RA } from './wbplanview';
+import type { IR, RA } from './wbplanview';
 import { MappingPathComponent } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
 
@@ -67,6 +67,7 @@ export function FormatValidationResults(props: {
   readonly handleSave: () => void;
   readonly getMappedFields: GetMappedFieldsBind;
   readonly onValidationResultClick: (mappingPath: MappingPath) => void;
+  readonly mustMatchPreferences: IR<boolean>;
 }): JSX.Element | null {
   if (props.validationResults.length === 0) return null;
 
@@ -90,6 +91,7 @@ export function FormatValidationResults(props: {
               generateLastRelationshipData: false,
               customSelectType: 'PREVIEW_LIST',
               getMappedFields: props.getMappedFields,
+              mustMatchPreferences: props.mustMatchPreferences,
             })}
           />
         </div>
@@ -109,6 +111,7 @@ export function MappingView(props: {
   readonly mappingPath: MappingPath;
   readonly mapButtonIsEnabled: boolean;
   readonly readonly: boolean;
+  readonly mustMatchPreferences: IR<boolean>;
   readonly handleMapButtonClick?: () => void;
   readonly handleMappingViewChange?: (
     index: number,
@@ -129,6 +132,7 @@ export function MappingView(props: {
     handleChange: props.handleMappingViewChange,
     getMappedFields: props.getMappedFields,
     showHiddenFields: props.showHiddenFields,
+    mustMatchPreferences: props.mustMatchPreferences,
   });
   const mapButtonIsEnabled =
     !props.readonly &&

@@ -17,6 +17,7 @@ import type { MappingActions } from '../wbplanviewreducer';
 import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import type { RA } from './wbplanview';
+import type { IR } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingElement, MappingLineComponent } from './wbplanviewcomponents';
 import {
@@ -92,6 +93,7 @@ export type WBPlanViewMapperBaseProps = {
   readonly openSelectElement?: SelectElementPosition;
   readonly focusedLine: number;
   readonly automapperSuggestions?: RA<AutomapperSuggestion>;
+  readonly mustMatchPreferences: IR<boolean>;
 };
 
 export default function WBPlanViewMapper(
@@ -279,6 +281,7 @@ export default function WBPlanViewMapper(
                 handleSave={props.handleSave}
                 getMappedFields={getMappedFieldsBind}
                 onValidationResultClick={props.handleValidationResultClick}
+                mustMatchPreferences={props.mustMatchPreferences}
               />
             )}
             <MappingView
@@ -291,6 +294,7 @@ export default function WBPlanViewMapper(
                 mappingPathIsComplete(props.mappingView)
               }
               readonly={props.readonly}
+              mustMatchPreferences={props.mustMatchPreferences}
               handleMapButtonClick={
                 (!props.readonly && props.handleMappingViewMap) || undefined
               }
@@ -343,6 +347,7 @@ export default function WBPlanViewMapper(
                 showHiddenFields: props.showHiddenFields,
                 automapperSuggestions:
                   (!props.readonly && props.automapperSuggestions) || [],
+                mustMatchPreferences: props.mustMatchPreferences,
                 mappingOptionsMenuGenerator: () => ({
                   matchBehavior: {
                     fieldFriendlyName: (

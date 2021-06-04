@@ -118,7 +118,8 @@ export function savePlan(
 export function validate(state: MappingState): MappingState {
   const validationResults = findRequiredMissingFields(
     state.baseTableName,
-    getMappingsTree(state.lines, true)
+    getMappingsTree(state.lines, true),
+    state.mustMatchPreferences
   );
 
   return {
