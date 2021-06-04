@@ -134,7 +134,7 @@ const WBView = Backbone.View.extend({
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
-    if (!this.dataset.uploadplan) {
+    if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
       $(
         '<div>No upload plan has been defined for this dataset. Create one now?</div>'
       ).dialog({
@@ -968,7 +968,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   },
   upload(evt) {
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
-    if (this.dataset.uploadplan) {
+    if (this.mappings?.arrayOfMappings.length > 1) {
       if (mode === 'upload') {
         $(
           '<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>'
