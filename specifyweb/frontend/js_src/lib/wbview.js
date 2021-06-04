@@ -153,8 +153,7 @@ const WBView = Backbone.View.extend({
           'title',
           'Please define an upload plan before validating the Data Set'
         );
-    } else
-      this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+    } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
 
     const initDataModelIntegration = () => {
       this.identifyMappedHeaders();
@@ -1426,10 +1425,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     }
   },
   clearAllMetaData() {
-    const {
-      isSearchResult: _,
-      ...partialDefaultCellMeta
-    } = getDefaultCellMeta();
+    const { isSearchResult: _, ...partialDefaultCellMeta } =
+      getDefaultCellMeta();
     this.hot.batchRender(() =>
       [...Array(this.hot.countRows())].forEach((_, visualRow) =>
         this.dataset.columns.map((_, physicalCol) =>
@@ -1451,7 +1448,16 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     if (this.hasMetaDataChanges) {
       this.wbutils.metaCellCountChanged = {};
       this.hasMetaDataChanges = false;
-      this.cachedMetaDataArray = this.hot.getCellsMeta();
+      /*
+       * this.hot.getCellsMeta() causes exception when called from inside of
+       * afterChange hook when new rows where created, as their metaData is not
+       * yet initialized.
+       * this.hot.getCellMetaAtRow() seems to create metaData for records that
+       * don't have it, but then we have to manually loop over all rows.
+       * */
+      this.cachedMetaDataArray = [...Array(this.hot.countRows())].flatMap(
+        (_, physicalRow) => this.hot.getCellMetaAtRow(physicalRow)
+      );
     }
     return this.cachedMetaDataArray;
   },
