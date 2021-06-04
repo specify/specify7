@@ -136,7 +136,7 @@ const WBView = Backbone.View.extend({
 
     if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
       $(
-        '<div>No upload plan has been defined for this dataset. Create one now?</div>'
+        '<div>No upload plan has been defined for this Data Set. Create one now?</div>'
       ).dialog({
         title: 'No upload plan is defined',
         modal: true,
@@ -147,7 +147,14 @@ const WBView = Backbone.View.extend({
           },
         },
       });
-    }
+      this.$('.wb-validate, .wb-data-check')
+        .prop('disabled', true)
+        .prop(
+          'title',
+          'Please define an upload plan before validating the Data Set'
+        );
+    } else
+      this.$('.wb-validate, .wb-data-check').prop('disabled', false);
 
     const initDataModelIntegration = () => {
       this.identifyMappedHeaders();
@@ -1121,6 +1128,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   toggleDataCheck() {
     this.validationMode = this.validationMode === 'live' ? 'off' : 'live';
 
+    if (!(this.mappings?.arrayOfMappings.length > 0))
+      this.validationMode = 'off';
+
     switch (this.validationMode) {
       case 'live':
         this.liveValidationStack = [...Array(this.hot.countRows())]
@@ -1416,8 +1426,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     }
   },
   clearAllMetaData() {
-    const { isSearchResult: _, ...partialDefaultCellMeta } =
-      getDefaultCellMeta();
+    const {
+      isSearchResult: _,
+      ...partialDefaultCellMeta
+    } = getDefaultCellMeta();
     this.hot.batchRender(() =>
       [...Array(this.hot.countRows())].forEach((_, visualRow) =>
         this.dataset.columns.map((_, physicalCol) =>
