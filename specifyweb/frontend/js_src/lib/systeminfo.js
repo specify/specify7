@@ -13,8 +13,10 @@ var initialContext = require('./initialcontext.js');
                 version: systemInfo.version,
                 dbVersion: systemInfo.database_version,
                 institution: systemInfo.institution,
+                institutionGUID: systemInfo.institution_guid,
                 discipline: systemInfo.discipline,
                 collection: systemInfo.collection,
+                collectionGUID: systemInfo.collection_guid,
                 isaNumber: systemInfo.isa_number
             }).fail(jqxhr => jqxhr.errorHandled = true);
         }

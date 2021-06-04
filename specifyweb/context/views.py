@@ -306,8 +306,10 @@ def system_info(request):
         stats_url=settings.STATS_URL,
         database=settings.DATABASE_NAME,
         institution=institution.name,
+        institution_guid=institution.guid,
         discipline=discipline and discipline.name,
         collection=collection and collection.collectionname,
+        collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
