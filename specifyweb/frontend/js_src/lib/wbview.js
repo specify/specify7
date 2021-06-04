@@ -409,17 +409,15 @@ const WBView = Backbone.View.extend({
         .map(Object.values)
     );
     this.hot.updateSettings({
-      cells: (_visualRow, visualCol, _prop) => {
-        const physicalCol = this.hot.toPhysicalColumn(visualCol);
-        return physicalCol in pickLists
+      cells: (_physicalRow, physicalCol, _prop) =>
+        physicalCol in pickLists
           ? {
               type: 'autocomplete',
               source: pickLists[physicalCol].items,
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
             }
-          : { type: 'text' };
-      },
+          : { type: 'text' },
     });
   },
   identifyTreeRanks() {
