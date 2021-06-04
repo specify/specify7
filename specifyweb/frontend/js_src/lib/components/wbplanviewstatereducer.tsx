@@ -13,6 +13,7 @@ import type {
 } from '../wbplanviewreducer';
 import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
+import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import type { RA, WBPlanViewProps } from './wbplanview';
@@ -289,9 +290,19 @@ export const stateReducer = generateReducer<
                   <button
                     type="button"
                     onClick={(): void =>
-                      state.dispatch({
-                        type: 'RerunAutomapperAction',
-                      })
+                      mappingState(state).lines.length === 0 ||
+                      mappingState(state).lines.every(
+                        ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
+                      )
+                        ? state.dispatch({
+                            type: 'SelectTableAction',
+                            headers: state.props.headers,
+                            baseTableName: state.baseTableName,
+                            mappingIsTemplated: state.props.mappingIsTemplated,
+                          })
+                        : state.dispatch({
+                            type: 'RerunAutomapperAction',
+                          })
                     }
                   >
                     Rerun Automapper
@@ -553,11 +564,7 @@ export const stateReducer = generateReducer<
                 },
               }}
             >
-              <>
-                Are you sure you want to automap the columns again?
-                <br />
-                This would reset your current mappings.
-              </>
+              The Automapper will erase all of your current mappings. Confirm?
             </ModalDialog>
           )}
           {state.showInvalidValidationDialog && (
