@@ -134,28 +134,28 @@ const WBView = Backbone.View.extend({
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
-    if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
-      $(
-        '<div>No upload plan has been defined for this Data Set. Create one now?</div>'
-      ).dialog({
-        title: 'No upload plan is defined',
-        modal: true,
-        buttons: {
-          Create: this.openPlan.bind(this),
-          Cancel: function () {
-            $(this).dialog('close');
-          },
-        },
-      });
-      this.$('.wb-validate, .wb-data-check')
-        .prop('disabled', true)
-        .prop(
-          'title',
-          'Please define an upload plan before validating the Data Set'
-        );
-    } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
-
     const initDataModelIntegration = () => {
+      if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
+        $(`<div>
+        No upload plan has been defined for this Data Set. Create one now?
+       </div>`).dialog({
+          title: 'No upload plan is defined',
+          modal: true,
+          buttons: {
+            Create: this.openPlan.bind(this),
+            Cancel: function () {
+              $(this).dialog('close');
+            },
+          },
+        });
+        this.$('.wb-validate, .wb-data-check')
+          .prop('disabled', true)
+          .prop(
+            'title',
+            'Please define an upload plan before validating the Data Set'
+          );
+      } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+
       this.identifyMappedHeaders();
       // This needs to run after identifyMappedHeaders
       if (this.dataset.rowresults) this.getValidationResults();
