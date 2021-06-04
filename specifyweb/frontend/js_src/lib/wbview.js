@@ -1013,6 +1013,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
       .fail((jqxhr) => {
         this.checkDeletedFail(jqxhr);
+        this.checkConflictFail(jqxhr);
       })
       .done(() => {
         this.openStatus(mode);
@@ -1272,8 +1273,18 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     );
   },
   checkDeletedFail(jqxhr) {
-    if (jqxhr.status === 404) {
+    if (!jqxhr.errorHandled && jqxhr.status === 404) {
       this.$el.empty().append('Data Set was deleted by another session.');
+      jqxhr.errorHandled = true;
+    }
+  },
+  checkConflictFail(jqxhr) {
+    if (!jqxhr.errorHandled && jqxhr.status === 409) {
+      /*
+       * Upload/Validation/Un-Upload has been initialized by another session
+       * Need to reload the page to display the new state
+       * */
+      this.trigger('reload');
       jqxhr.errorHandled = true;
     }
   },
