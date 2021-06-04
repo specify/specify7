@@ -15,6 +15,16 @@
   font-weight: 300;
 }
 
-.wb-ds-dialog-table td {
+.wb-ds-dialog-table td,
+.wb-ds-dialog-table a {
+  font-size: 0.7rem;
+}
+
+.wb-ds-dialog-table td,
+.wb-ds-dialog-table a {
   padding-top: 0.6rem;
+}
+
+.wb-ds-dialog-table img {
+  padding-right: 5px;
 }

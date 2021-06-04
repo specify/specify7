@@ -67,6 +67,7 @@ function Dialog({
         },
       }}
     >
+      <br />
       {datasets.length === 0 ? (
         <p>
           {showTemplates
@@ -82,8 +83,8 @@ function Dialog({
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Uploaded</th>
                 <th>Created</th>
+                <th>Uploaded</th>
               </tr>
             </thead>
             <tbody>
@@ -114,11 +115,11 @@ function Dialog({
                         {dataset.name}
                       </a>
                     </td>
-                    <td title={dateUploaded?.toLocaleString() ?? ''}>
-                      {dateUploaded?.toDateString() ?? ''}
-                    </td>
                     <td title={dateCreated.toLocaleString()}>
                       {dateCreated.toDateString()}
+                    </td>
+                    <td title={dateUploaded?.toLocaleString() ?? ''}>
+                      {dateUploaded?.toDateString() ?? ''}
                     </td>
                   </tr>
                 );
