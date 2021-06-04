@@ -156,7 +156,7 @@ const WBView = Backbone.View.extend({
       this.wbutils.findLocalityColumns();
       this.identifyPickLists();
       this.identifyTreeRanks();
-      if (this.dataset.visualorder !== null)
+      if (this.dataset.visualorder?.some((column, index) => column !== index))
         this.hot.updateSettings({
           manualColumnMove: this.dataset.visualorder,
         });
@@ -624,8 +624,8 @@ const WBView = Backbone.View.extend({
 
     this.hasMetaDataObjectChanges = true;
 
-    const columnOrder = Object.keys(this.dataset.columns).map((physicalCol) =>
-      this.hot.toVisualColumn(Number.parseInt(physicalCol))
+    const columnOrder = this.dataset.columns.map((_, visualCol) =>
+      this.hot.toPhysicalColumn(visualCol)
     );
 
     if (
@@ -1422,14 +1422,14 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       getDefaultCellMeta();
     this.hot.batchRender(() =>
       [...Array(this.hot.countRows())].forEach((_, visualRow) =>
-        Object.keys(this.dataset.columns).map((physicalCol) =>
+        this.dataset.columns.map((_, physicalCol) =>
           this.hot.setCellMetaObject(
             visualRow,
             /*
              * Despite the fact that setCellMetaObject expects a visualCol,
              * it doesn't matter since we are looping though all the columns
              * */
-            parseInt(physicalCol),
+            physicalCol,
             partialDefaultCellMeta
           )
         )
