@@ -19,6 +19,7 @@ import {
   sourceLabels,
 } from '../lifemapperinfoutills';
 import { getLocalityDataFromLocalityResource } from '../localityrecorddataextractor';
+import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
 import schema from '../schema';
 import { stateReducer } from './lifemapperinfostate';
@@ -54,13 +55,7 @@ export const lifemapperMessagesMeta: RR<
   },
 } as const;
 
-function LifemapperInfo({
-  model,
-  guid,
-}: {
-  readonly model: any;
-  readonly guid: string | undefined;
-}): JSX.Element {
+function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'LoadingState',
   } as LoadingState);
@@ -71,7 +66,7 @@ function LifemapperInfo({
     fetch(formatOccurrenceDataRequest(guid), {
       mode: 'cors',
     })
-      .then((response) => response.json())
+      .then(async (response) => response.json())
       .then(
         (response: {
           readonly records: {
@@ -191,16 +186,14 @@ function LifemapperInfo({
 
         const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
           (resolve) => {
-            const similarCollectionObjects = new (schema as any).models.CollectionObject.LazyCollection(
-              {
-                filters: {
-                  determinations__iscurrent: true,
-                  determinations__preferredtaxon__fullname: getOccurrenceName(
-                    0
-                  ),
-                },
-              }
-            );
+            const similarCollectionObjects = new (
+              schema as any
+            ).models.CollectionObject.LazyCollection({
+              filters: {
+                determinations__iscurrent: true,
+                determinations__preferredtaxon__fullname: getOccurrenceName(0),
+              },
+            });
 
             similarCollectionObjects
               .fetch({
@@ -364,7 +357,11 @@ const View = createBackboneView<Props, Props, ComponentProps>({
 
 export default function register(): void {
   ResourceView.on('rendered', (resourceView: any) => {
-    if (resourceView.model.specifyModel.name === 'CollectionObject')
+    if (
+      resourceView.model.specifyModel.name === 'CollectionObject' &&
+      // @ts-expect-error
+      remotePrefs['s2n.badges.disable'] !== 'true'
+    )
       // @ts-expect-error
       new View({
         model: resourceView.model,
