@@ -14,7 +14,7 @@ class EmitInitPyPlugin {
 }
 
 
-module.exports = {
+module.exports = (_env, argv)=>({
     module: {
         rules: [
             {
@@ -69,7 +69,8 @@ module.exports = {
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
         new WebpackManifestPlugin({
             fileName: 'manifest.py',
-            serialize: (manifest) => `manifest = ${JSON.stringify(manifest, null, 2)}\n`
+            serialize: (manifest) =>
+                `manifest = ${JSON.stringify(manifest, null, 2)}\n`
         }),
         new EmitInitPyPlugin()
     ],
@@ -83,6 +84,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: "/static/js/",
-        filename: "[name].[contenthash].bundle.js"
+        filename: argv.mode === 'development'
+          ? "[name].bundle.js"
+          : "[name].[contenthash].bundle.js"
     },
-};
+});
