@@ -54,7 +54,10 @@
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   animation: validated-success ease-in-out 0.2s;
+  padding: inherit;
+  border-radius: 1px;
 }
 
 @keyframes validated-success {

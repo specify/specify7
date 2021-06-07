@@ -101,7 +101,7 @@
 
 .custom-select-element-shadow-list {
   margin-top: calc(var(--white-space) * -2);
-  padding-right: calc(calc(var(--white-space) * 7) + 7px);
+  padding-right: calc(calc(var(--white-space) * 6.2) + 2px);
   visibility: hidden;
   display: flex;
   flex-direction: column;
@@ -110,6 +110,7 @@
 .custom-select-element-shadow-list span {
   line-height: 0;
   padding: 0;
+  overflow-y: scroll;
 }
 
 .custom-select-input,
@@ -125,6 +126,10 @@
 .custom-select-mapping-options-list .custom-select-input,
 .custom-select-mapping-options-list .custom-select-option {
   display: flex;
+}
+
+.custom-select-mapping-options-list .custom-select-option {
+  padding: var(--white-space);
 }
 
 .custom-select-input:hover::after {
@@ -245,8 +250,9 @@
 }
 
 .custom-select-option-icon-undefined {
-  margin: calc(var(--white-space) * 0.9) 0;
   border-radius: 3px;
+  padding: 1px;
+  height: inherit;
 }
 
 .custom-select-icon-selected {
