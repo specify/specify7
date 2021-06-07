@@ -5,7 +5,7 @@
  */
 
 import type { IR, RA, RR } from './components/wbplanview';
-import { MappingPath } from './components/wbplanviewmapper';
+import type { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
 import {
@@ -93,11 +93,14 @@ export const getLocalityData = (
           ? {
               'locality.latitude2': formatCoordinate('locality.latitude2'),
               'locality.longitude2': formatCoordinate('locality.longitude2'),
-              'locality.latlongtype': ['line', ''].includes(
-                getField('locality.latlongtype').value.toLowerCase()
-              )
-                ? 'line'
-                : 'rectangle',
+              'locality.latlongtype': {
+                value: ['line', ''].includes(
+                  getField('locality.latlongtype').value.toLowerCase()
+                )
+                  ? 'line'
+                  : 'rectangle',
+                headerName: getField('locality.latlongtype').headerName,
+              },
             }
           : {}),
         'locality.latlongaccuracy': isValidAccuracy(
