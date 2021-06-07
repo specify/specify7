@@ -1,3 +1,5 @@
+import '../../css/theme.css';
+
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
@@ -142,6 +144,7 @@ export const stateReducer = generateReducer<
           buttonsLeft={
             <button
               type="button"
+              className="magic-button"
               onClick={(): void =>
                 state.dispatch({
                   type: 'UseTemplateAction',
@@ -155,6 +158,7 @@ export const stateReducer = generateReducer<
           buttonsRight={
             <button
               type="button"
+              className="magic-button"
               onClick={(): void =>
                 state.dispatch({
                   type: 'CancelMappingAction',
@@ -279,6 +283,7 @@ export const stateReducer = generateReducer<
                 <>
                   <button
                     type="button"
+                    className="magic-button"
                     onClick={(): void =>
                       state.dispatch({
                         type: 'OpenBaseTableSelectionAction',
@@ -289,6 +294,7 @@ export const stateReducer = generateReducer<
                   </button>
                   <button
                     type="button"
+                    className="magic-button"
                     onClick={(): void =>
                       mappingState(state).lines.length === 0 ||
                       mappingState(state).lines.every(
@@ -314,6 +320,7 @@ export const stateReducer = generateReducer<
               <>
                 <button
                   type="button"
+                  className="magic-button"
                   onClick={(): void =>
                     state.dispatch({
                       type: 'ToggleMappingViewAction',
@@ -325,6 +332,7 @@ export const stateReducer = generateReducer<
                 </button>
                 <button
                   type="button"
+                  className="magic-button"
                   onClick={(): void =>
                     state.dispatch({
                       type: 'OpenMatchingLogicDialogAction',
@@ -336,6 +344,7 @@ export const stateReducer = generateReducer<
                 {!state.props.readonly && (
                   <>
                     <button
+                      className="magic-button"
                       type="button"
                       onClick={(): void =>
                         state.dispatch({
@@ -347,7 +356,7 @@ export const stateReducer = generateReducer<
                     </button>
                     <button
                       type="button"
-                      className={`validation-indicator ${
+                      className={`magic-button validation-indicator ${
                         state.mappingsAreValidated
                           ? 'validation-indicator-success'
                           : ''
@@ -369,6 +378,7 @@ export const stateReducer = generateReducer<
                 )}
                 <button
                   type="button"
+                  className="magic-button"
                   onClick={(): void =>
                     state.dispatch({
                       type: 'CancelMappingAction',
@@ -382,6 +392,7 @@ export const stateReducer = generateReducer<
                 {!state.props.readonly && (
                   <button
                     type="button"
+                    className="magic-button"
                     onClick={(): void => {
                       handleSave(false);
                       state.refObjectDispatch({

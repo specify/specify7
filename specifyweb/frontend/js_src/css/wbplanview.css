@@ -155,11 +155,12 @@
 }
 
 .wbplanview-mapping-view-map-button {
-  font-size: calc(2 * var(--white-space));
+  font-size: calc(2 * var(--white-space)) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0.4rem !important;
 }
 
 .wbplanview-mapping-view-map-button-arrow {

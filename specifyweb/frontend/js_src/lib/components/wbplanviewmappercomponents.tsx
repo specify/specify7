@@ -1,3 +1,5 @@
+import '../../css/theme.css';
+
 import React from 'react';
 
 import { getMappingLineData } from '../wbplanviewnavigator';
@@ -38,7 +40,9 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   return (
     <div>
       {!readonly && (
-        <button onClick={handleAddNewHeader}>Add New Column</button>
+        <button className="magic-button" onClick={handleAddNewHeader}>
+          Add New Column
+        </button>
       )}
       {/* <label>
         <input
@@ -98,7 +102,9 @@ export function FormatValidationResults(props: {
       ))}
       <span>
         Or you can{' '}
-        <button onClick={props.handleSave}>Save Unfinished Mapping</button>
+        <button className="magic-button" onClick={props.handleSave}>
+          Save Unfinished Mapping
+        </button>
         and finish editing it later
       </span>
     </div>
@@ -148,7 +154,7 @@ export function MappingView(props: {
         <MappingPathComponent mappingLineData={mappingLineData} />
       </div>
       <button
-        className="wbplanview-mapping-view-map-button"
+        className="magic-button wbplanview-mapping-view-map-button"
         disabled={!mapButtonIsEnabled || !props.focusedLineExists}
         onClick={
           mapButtonIsEnabled && props.focusedLineExists

@@ -6,6 +6,7 @@
  */
 
 import '../../css/wbuploaded.css';
+import '../../css/theme.css';
 
 import type Handsontable from 'handsontable';
 import React from 'react';
@@ -388,10 +389,18 @@ function UploadedTableHeader({
           /* TODO: enable these buttons */
           rowsCount === -1 && (
             <>
-              <button type="button" onClick={handleCreateRecordSet}>
+              <button
+                className="magic-button"
+                type="button"
+                onClick={handleCreateRecordSet}
+              >
                 Record Set
               </button>
-              <button type="button" onClick={handleCreateDataSet}>
+              <button
+                className="magic-button"
+                type="button"
+                onClick={handleCreateDataSet}
+              >
                 Data Set
               </button>
             </>

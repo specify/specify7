@@ -2,47 +2,47 @@
   <div class="wb-primary-row">
     <div class="wb-name"></div>
     <div class="wb-controls">
-      <button class="wb-show-plan" style="display: none">Show Plan</button>
-      <button class="wb-plan">Upload Plan</button>
+      <button class="magic-button wb-show-plan" style="display: none">Show Plan</button>
+      <button class="magic-button wb-plan">Upload Plan</button>
       <% if(!is_uploaded) { %>
-      <button class="wb-data-check" disabled="disabled">Data Check</button>
-      <button class="wb-validate" disabled="disabled">Validate</button>
+      <button class="magic-button wb-data-check" disabled="disabled">Data Check</button>
+      <button class="magic-button wb-validate" disabled="disabled">Validate</button>
       <% } %>
-      <button class="wb-show-toolkit">Tools</button>
-      <button class="wb-show-upload-view" disabled="disabled">Results</button>
+      <button class="magic-button wb-show-toolkit">Tools</button>
+      <button class="magic-button wb-show-upload-view" disabled="disabled">Results</button>
       <% if(is_uploaded && is_manager){ %>
-      <button class="wb-unupload">Rollback</button>
+      <button class="magic-button wb-unupload">Rollback</button>
       <% } else { %> <% if(is_manager){ %>
-      <button class="wb-upload">Upload</button>
+      <button class="magic-button wb-upload">Upload</button>
       <% } %>
-      <button class="wb-revert" disabled="disabled">Revert</button>
-      <button class="wb-save" disabled="disabled">Save</button>
+      <button class="magic-button wb-revert" disabled="disabled">Revert</button>
+      <button class="magic-button wb-save" disabled="disabled">Save</button>
       <% } %>
     </div>
   </div>
   <div class="wb-toolkit" style="display: none">
     <div class="wb-toolkit-left">
-      <button class="wb-change-data-set-owner">Change Owner</button>
-      <button class="wb-export-data-set">Export</button>
-      <button class="wb-delete-data-set">Delete</button>
+      <button class="magic-button wb-change-data-set-owner">Change Owner</button>
+      <button class="magic-button wb-export-data-set">Export</button>
+      <button class="magic-button wb-delete-data-set">Delete</button>
     </div>
     <div class="wb-toolkit-right">
       <button
-        class="wb-convert-coordinates"
+        class="magic-button wb-convert-coordinates"
         disabled
         title="This tool requires locality columns to be mapped"
       >
         Convert Coordinates
       </button>
       <button
-        class="wb-geolocate"
+        class="magic-button wb-geolocate"
         title="This tool requires locality columns to be mapped"
         disabled
       >
         GeoLocate
       </button>
       <button
-        class="wb-leafletmap"
+        class="magic-button wb-leafletmap"
         title="This tool requires locality columns to be mapped"
         disabled
       >
@@ -68,7 +68,7 @@
       title="Replacement value"
     />
     <% }%>
-    <button class="wb-advanced-search" title="Configure Search & Replace">
+    <button class="magic-button wb-advanced-search" title="Configure Search & Replace">
       ⚙
     </button>
   </span>
