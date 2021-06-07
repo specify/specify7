@@ -114,7 +114,6 @@
 }
 
 .mapping-view-parent {
-
   --mapping-view-min-height: 250px;
   min-height: var(--mapping-view-min-height);
   overflow-x: auto;
@@ -233,7 +232,9 @@
 .wbplanview-mapping-line-header {
   display: flex;
   align-items: center;
+  justify-content: right;
   max-width: 25vw;
+  padding-right: var(--white-space);
 }
 
 .wbplanview-mapping-line-elements {

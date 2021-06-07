@@ -1039,7 +1039,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             type: 'DELETE',
           })
             .done(() => {
-              this.$el.empty().append('<p>Dataset deleted.</p>');
+              this.$el.empty().append('<p>Data Set deleted.</p>');
               dialog.dialog('close');
             })
             .fail((jqxhr) => {
@@ -1377,8 +1377,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             }
           : {
               title: 'Validation Failed',
-              message: `Some issues were detected.<br>
-                        Please fix them before uploading the dataset.`,
+              message: `The Data Set validation failed due to one or more cell
+                        value errors.<br>
+                        Review the
+                        mouseover hints for each error cell, and make the
+                        appropriate corrections. Save changes and retry the
+                        Validation.`,
             },
       upload:
         cellCounts.invalidCells === 0
@@ -1390,10 +1394,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             }
           : {
               title: 'Upload failed due to validation errors',
-              message: `Upload failed with ${cellCounts.invalidCells}
-                        invalid cells.<br>
-                        Please review the validation messages and repeat
-                        the upload process.`,
+              message: `The Data Set upload failed due to one or more cell
+                        value errors.<br>
+                        Review the
+                        mouseover hints for each error cell, and make the
+                        appropriate corrections. Save changes and retry the
+                        Upload.`,
             },
       unupload: {
         title: 'Data Set Rollback',
@@ -1407,6 +1413,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             </div>`).dialog({
         title: messages[refreshInitiatedBy].title,
         modal: true,
+        width: 300,
         buttons: {
           ...(this.refreshInitiatedBy === 'upload' &&
           cellCounts.invalidCells === 0

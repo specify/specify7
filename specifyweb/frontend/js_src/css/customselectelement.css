@@ -122,7 +122,8 @@
   align-items: center;
 }
 
-.custom-select-mapping-options-list .custom-select-input {
+.custom-select-mapping-options-list .custom-select-input,
+.custom-select-mapping-options-list .custom-select-option {
   display: flex;
 }
 

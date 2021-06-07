@@ -137,35 +137,34 @@ export const stateReducer = generateReducer<
       readonly={state.props.readonly}
       header={
         <WBPlanViewHeader
-          title="Select Base Table"
+          title="Select a Base Table"
           stateType={state.type}
-          buttonsLeft={undefined}
+          buttonsLeft={
+            <button
+              type="button"
+              onClick={(): void =>
+                state.dispatch({
+                  type: 'UseTemplateAction',
+                  dispatch: state.dispatch,
+                })
+              }
+            >
+              Choose Existing Plan
+            </button>
+          }
           buttonsRight={
-            <>
-              <button
-                type="button"
-                onClick={(): void =>
-                  state.dispatch({
-                    type: 'UseTemplateAction',
-                    dispatch: state.dispatch,
-                  })
-                }
-              >
-                Choose Existing Plan
-              </button>
-              <button
-                type="button"
-                onClick={(): void =>
-                  state.dispatch({
-                    type: 'CancelMappingAction',
-                    dataset: state.props.dataset,
-                    removeUnloadProtect: state.props.removeUnloadProtect,
-                  })
-                }
-              >
-                Cancel
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={(): void =>
+                state.dispatch({
+                  type: 'CancelMappingAction',
+                  dataset: state.props.dataset,
+                  removeUnloadProtect: state.props.removeUnloadProtect,
+                })
+              }
+            >
+              Cancel
+            </button>
           }
         />
       }
@@ -253,13 +252,14 @@ export const stateReducer = generateReducer<
           <WBPlanViewHeader
             title={
               <>
-                Base table:{' '}
+                {state.props.dataset.name} (
                 <b>
                   {
                     dataModelStorage.tables[state.baseTableName]
                       .tableFriendlyName
                   }
                 </b>
+                )
               </>
             }
             stateType={state.type}
