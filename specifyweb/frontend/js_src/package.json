@@ -3,14 +3,19 @@
   "version": "7.1.0",
   "private": true,
   "description": "Specify software manages species and specimen data for biological research collections. As a database platform, it tracks specimen transactions, links images to specimen records and publishes data to the Internet.",
-  "homepage": "https://specifysoftware.org",
+  "license": "GPL-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/specify/specify7.git"
   },
+  "author": "KU Biodiversity Institute",
+  "homepage": "https://specifysoftware.org",
   "main": "lib/main.js",
-  "directories": {
-    "test": "tests"
+  "scripts": {
+    "buildTests": "tsc --build tsconfig.tests.json ",
+    "check-types": "tsc",
+    "runTests": "qunit testBuild/tests/testmain.js",
+    "test": "npm run buildTests && npm run runTests"
   },
   "dependencies": {
     "backbone": "~0.9.10",
@@ -85,13 +90,8 @@
       "babel-plugin-replace-ts-export-assignment"
     ]
   },
-  "scripts": {
-    "buildTests": "tsc --build tsconfig.tests.json ",
-    "runTests": "qunit testBuild/tests/testmain.js",
-    "test": "npm run buildTests && npm run runTests",
-    "check-types": "tsc"
+  "directories": {
+    "test": "tests"
   },
-  "prettier": "@maxxxxxdlp/prettier-config",
-  "author": "KU Biodiversity Institute",
-  "license": "GPL-2.0"
+  "prettier": "@maxxxxxdlp/prettier-config"
 }
