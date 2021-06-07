@@ -8,7 +8,16 @@ class EmitInitPyPlugin {
     apply(compiler) {
         compiler.hooks.done.tap('EmitInitPyPlugin', (stats) => {
             const outPath = compiler.options.output.path;
-            writeFileSync(path.join(outPath, '__init__.py'), "# Allows manifest.py to be imported / reloaded by Django dev server.\n");
+            const fullOutPath = path.join(outPath, '__init__.py');
+            try {
+                readFileSync(fullOutPath)
+            }
+            catch (err) {
+                writeFileSync(
+                    fullOutPath,
+                    "# Allows manifest.py to be imported / reloaded by Django dev server.\n"
+                );
+            }
         });
     }
 }
