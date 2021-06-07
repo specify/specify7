@@ -627,7 +627,7 @@ export const stateReducer = generateReducer<
                         ([tableName, mustMatch]) => (
                           <tr key={tableName}>
                             <td>
-                              <div className="must-match-line">
+                              <div className="v-center must-match-line">
                                 <Icon
                                   tableName={tableName}
                                   optionLabel={tableName}

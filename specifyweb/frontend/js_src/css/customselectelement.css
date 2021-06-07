@@ -220,11 +220,6 @@
   overflow: visible;
 }
 
-.custom-select-suggestion-list .custom-select-option-label {
-  display: flex;
-  align-items: center;
-}
-
 .custom-select-option-disabled,
 .custom-select-option-selected {
   cursor: initial;
@@ -271,8 +266,6 @@
 
 .must-match-line {
   column-gap: 0.5rem;
-  display: flex;
-  align-items: center;
 }
 
 .must-match-line span {

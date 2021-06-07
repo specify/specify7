@@ -368,7 +368,7 @@ function UploadedTableHeader({
         handleToggleTableRecordsVisibility();
       }}
     >
-      <div className="wb-upload-results-table-name">
+      <div className="v-center wb-upload-results-table-name">
         {tableIsCollapsed ? '\u25B2' : '\u25BC'}
         <Icon
           tableName={iconTableName?.toLowerCase()}

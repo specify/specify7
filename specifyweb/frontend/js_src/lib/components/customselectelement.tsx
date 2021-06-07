@@ -6,6 +6,7 @@
  */
 
 import '../../css/customselectelement.css';
+import '../../css/theme.css';
 
 import React from 'react';
 
@@ -252,7 +253,7 @@ const Option = React.memo(function Option({
         tableName={tableName}
       />
       <span
-        className={`custom-select-option-label ${
+        className={`v-center custom-select-option-label ${
           optionLabel === '0' ? 'custom-select--label-unmapped' : ''
         }`}
       >
@@ -363,8 +364,9 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable =
-    !NON_INTERACTIVE_SELECT_TYPES.includes(customSelectType);
+  const optionIsIntractable = !NON_INTERACTIVE_SELECT_TYPES.includes(
+    customSelectType
+  );
 
   const handleClick =
     optionIsIntractable &&

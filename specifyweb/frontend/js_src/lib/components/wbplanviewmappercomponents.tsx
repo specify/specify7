@@ -83,7 +83,7 @@ export function FormatValidationResults(props: {
       </span>
       {props.validationResults.map((fieldPath, index) => (
         <div
-          className="wbplanview-mapping-line-elements"
+          className="v-center wbplanview-mapping-line-elements"
           key={index}
           onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
         >
@@ -150,11 +150,11 @@ export function MappingView(props: {
 
   return (
     <>
-      <div className="mapping-view">
+      <div className="v-center mapping-view">
         <MappingPathComponent mappingLineData={mappingLineData} />
       </div>
       <button
-        className="magic-button wbplanview-mapping-view-map-button"
+        className="v-center magic-button wbplanview-mapping-view-map-button"
         disabled={!mapButtonIsEnabled || !props.focusedLineExists}
         onClick={
           mapButtonIsEnabled && props.focusedLineExists

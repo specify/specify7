@@ -32,7 +32,6 @@
 
 .wb-upload-results-table-name {
   column-gap: 0.5rem;
-  align-items: center;
 }
 
 .wb-upload-results-table:hover .wb-upload-results-table-name {

@@ -1,3 +1,5 @@
+import '../../css/theme.css';
+
 import React from 'react';
 
 import type { IR } from './wbplanview';
@@ -17,7 +19,7 @@ export function WBPlanViewHeader({
   return (
     <div className={`wbplanview-header wbplanview-header-${stateType}`}>
       <div>
-        <span>{title}</span>
+        <span className="v-center">{title}</span>
         {buttonsLeft}
       </div>
       <div>{buttonsRight}</div>

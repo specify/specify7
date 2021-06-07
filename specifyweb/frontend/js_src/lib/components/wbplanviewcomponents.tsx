@@ -111,8 +111,10 @@ export function MappingLineComponent({
       `}
       onClick={handleFocus}
     >
-      <div className="wbplanview-mapping-line-header">{headerName}</div>
-      <div className="wbplanview-mapping-line-elements">
+      <div className="v-center wbplanview-mapping-line-header">
+        {headerName}
+      </div>
+      <div className="v-center wbplanview-mapping-line-elements">
         <MappingPathComponent mappingLineData={lineData} />
       </div>
     </div>
@@ -160,8 +162,9 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
     ])
   );
 
-  let defaultOption: CustomSelectElementDefaultOptionProps | undefined =
-    undefined;
+  let defaultOption:
+    | CustomSelectElementDefaultOptionProps
+    | undefined = undefined;
 
   const fieldNames: string[] = [];
 
