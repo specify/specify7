@@ -23,7 +23,6 @@ module.exports =  Backbone.View.extend({
               class="delete-button"
               style="display:inline-flex;"
             >
-              <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
               Delete
             </a>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +
@@ -34,6 +33,14 @@ module.exports =  Backbone.View.extend({
         },
         gotBlockers: function(blockers) {
             this.blockers = blockers;
+            if(blockers.length !== 0)
+              this.button[0].innerHTML = `
+                <span
+                  class="ui-icon ui-icon-alert"
+                  style="display: inline-block;"
+                ></span>
+                Delete
+              `;
         },
         openDialog: function(evt) {
             evt && evt.preventDefault();

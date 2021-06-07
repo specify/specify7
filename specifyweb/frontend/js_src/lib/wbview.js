@@ -1414,7 +1414,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             </div>`).dialog({
         title: messages[refreshInitiatedBy].title,
         modal: true,
-        width: 300,
+        width: 400,
         buttons: {
           ...(this.refreshInitiatedBy === 'upload' &&
           cellCounts.invalidCells === 0
