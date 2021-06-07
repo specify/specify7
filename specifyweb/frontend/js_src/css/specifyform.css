@@ -55,6 +55,9 @@ div.specify-view-content {
     color: #000;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    margin-top: 10px;
 }
 
 .specify-form-header a,
@@ -63,15 +66,21 @@ div.specify-view-content {
     font-size: 0.8em;
 }
 
+.specify-form-header a {
+    margin: 0 0.7rem;
+}
+
 .recordset-header {
     display: flex;
     align-items: center;
+    background: #cccc;
+    font-weight: initial;
 }
 
 .recordset-header .recordset-navigation {
     padding: 0.4rem 0.6rem;
     margin: 0;
-    background: rgba(0, 0, 0, 0.1);
+    background: #6664;
 }
 
 .recordset-navigation-text {
@@ -85,10 +94,10 @@ div.specify-view-content {
     text-align: center;
 }
 
-.specify-form-header span.recordset-prev,
-.specify-form-header span.recordset-next {
-    color: #d3d3d3;
+.specify-form-header span.recordset-navigation {
+    color: #999;
     font-size: 0.8em;
+    background: #ccc;
 }
 
 .specify-form-header img {
