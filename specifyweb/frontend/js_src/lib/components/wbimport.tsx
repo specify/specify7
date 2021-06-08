@@ -1,7 +1,9 @@
+import '../../css/theme.css';
+
 import Papa from 'papaparse';
 import React, { Component } from 'react';
-
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
+
 import { uniquifyHeaders } from '../wbplanviewhelper';
 
 const $ = require('jquery');
@@ -10,7 +12,7 @@ const navigation = require('../navigation.js');
 const uniquifyDataSetName = require('../wbuniquifyname.js');
 const encodings = require('../encodings.js');
 
-const PREVIEW_SIZE = 10;
+const PREVIEW_SIZE = 100;
 
 type FileType = 'csv' | 'xls';
 
@@ -325,14 +327,16 @@ export default class WbImport extends Component<{}, WbImportState> {
   render() {
     const update = (action: Action) => this.update(action);
 
+    let rows;
     let ui;
+    let preview;
     switch (this.state.type) {
       case 'FileTypeState':
-        ui = <SelectFileType fileType={null} update={update} />;
+        rows = <SelectFileType fileType={null} update={update} />;
         break;
 
       case 'ChooseXLSFileState':
-        ui = (
+        rows = (
           <>
             <SelectFileType fileType="xls" update={update} />
             <ChooseFile fileType="xls" update={update} />
@@ -341,7 +345,7 @@ export default class WbImport extends Component<{}, WbImportState> {
         break;
 
       case 'ChooseCSVFileState':
-        ui = (
+        rows = (
           <>
             <SelectFileType fileType="csv" update={update} />
             <ChooseEncoding encoding={this.state.encoding} update={update} />
@@ -351,25 +355,28 @@ export default class WbImport extends Component<{}, WbImportState> {
         break;
 
       case 'PreviewCSVState':
-        ui = (
+        rows = (
           <>
             <SelectFileType fileType="csv" update={update} />
             <ChooseEncoding encoding={this.state.encoding} update={update} />
             <ChooseFile fileType="csv" update={update} />
-            <ToggleHeader hasHeader={this.state.hasHeader} update={update} />
             <ChooseName name={this.state.datasetName} update={update} />
+            <ToggleHeader hasHeader={this.state.hasHeader} update={update} />
+          </>
+        );
+        ui = (
+          <>
             <DoImportButton update={update} />
             <h2>Preview Dataset</h2>
-            <Preview
-              data={this.state.preview}
-              hasHeader={this.state.hasHeader}
-            />
           </>
+        );
+        preview = (
+          <Preview data={this.state.preview} hasHeader={this.state.hasHeader} />
         );
         break;
 
       case 'BadCSVState':
-        ui = (
+        rows = (
           <>
             <SelectFileType fileType="csv" update={update} />
             <ChooseEncoding encoding={this.state.encoding} update={update} />
@@ -382,24 +389,27 @@ export default class WbImport extends Component<{}, WbImportState> {
         break;
 
       case 'PreviewXLSState':
-        ui = (
+        rows = (
           <>
             <SelectFileType fileType="xls" update={update} />
             <ChooseFile fileType="xls" update={update} />
             <ToggleHeader hasHeader={this.state.hasHeader} update={update} />
             <ChooseName name={this.state.datasetName} update={update} />
+          </>
+        );
+        ui = (
+          <>
             <DoImportButton update={update} />
             <h2>Preview Dataset</h2>
-            <Preview
-              data={this.state.preview}
-              hasHeader={this.state.hasHeader}
-            />
           </>
+        );
+        preview = (
+          <Preview data={this.state.preview} hasHeader={this.state.hasHeader} />
         );
         break;
 
       case 'BadXLSState':
-        ui = (
+        rows = (
           <>
             <SelectFileType fileType="xls" update={update} />
             <ChooseFile fileType="xls" update={update} />
@@ -428,10 +438,14 @@ export default class WbImport extends Component<{}, WbImportState> {
     }
 
     return (
-      <div>
-        <h2>Import Dataset</h2>
-        {ui}
-      </div>
+      <>
+        <div>
+          <h2>Import File to Create a New Data Set</h2>
+          <div className="wb-import-table">{rows}</div>
+          {ui}
+        </div>
+        {preview}
+      </>
     );
   }
 }
@@ -447,7 +461,8 @@ function SelectFileType(props: {
   }
 
   return (
-    <p>
+    <label>
+      Choose a File Type:
       <select
         onChange={(event) => selected(event.target.value)}
         value={props.fileType || ''}
@@ -456,7 +471,7 @@ function SelectFileType(props: {
         <option value="xls">Excel</option>
         <option value="csv">CSV</option>
       </select>
-    </p>
+    </label>
   );
 }
 
@@ -473,15 +488,15 @@ function ChooseEncoding(props: {
   ));
 
   return (
-    <p>
-      Character encoding:{' '}
+    <label>
+      Character encoding:
       <select
         onChange={(event) => selected(event.target.value)}
         value={props.encoding || ''}
       >
         {options}
       </select>
-    </p>
+    </label>
   );
 }
 
@@ -504,24 +519,17 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
       : assertExhaustive(props.fileType);
 
   return (
-    <p>
-      <label className="custom-file-picker">
-        <a
-          tabIndex={0}
-          className={`ui-button ui-widget ui-state-default ui-corner-all
-            ui-button-text-only`}
-        >
-          <span className="ui-button-text">Choose {props.fileType} file</span>
-        </a>
-        <br />
-        {fileName && <span>Chosen file: {fileName}</span>}
+    <label className="custom-file-picker">
+      <a tabIndex={0} className="magic-button">
+        Choose File to Import
         <input
           type="file"
           accept={extensions}
           onChange={(event) => changed(event.target)}
         />
-      </label>
-    </p>
+      </a>
+      <span>{fileName && <span>Chosen file: {fileName}</span>}</span>
+    </label>
   );
 }
 
@@ -553,8 +561,8 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
 
 function ChooseName(props: { name: string; update: HandleAction }) {
   return (
-    <p>
-      Name for new data set:{' '}
+    <label>
+      Name for New Data Set:
       <input
         type="text"
         value={props.name}
@@ -565,14 +573,14 @@ function ChooseName(props: { name: string; update: HandleAction }) {
           })
         }
       />
-    </p>
+    </label>
   );
 }
 
 function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
   return (
     <label>
-      First row is header:{' '}
+      First Row is Header:
       <input
         type="checkbox"
         onChange={() => props.update({ type: 'ToggleHeaderAction' })}
@@ -598,7 +606,7 @@ function extractHeader(
     ? uniquifyHeaders(data[0].map((header) => header.trim()))
     : data[0].map((_1, index) => `Column ${index + 1}`);
   const rows = headerInData ? data.slice(1) : data;
-  return { rows, header: [...header] };
+  return { rows, header: Array.from(header) };
 }
 
 function assertExhaustive(x: never): never {

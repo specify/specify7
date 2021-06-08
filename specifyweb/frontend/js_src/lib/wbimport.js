@@ -1,4 +1,3 @@
-
 require('../css/wbimport.css');
 
 import React from 'react';
@@ -9,17 +8,15 @@ const app = require('./specifyapp.js');
 const Backbone = require('./backbone.js');
 
 const WBImportView = Backbone.View.extend({
-    __name__: "WBImportView",
-    className: 'workbench-import-view',
-    render: function() {
-        ReactDOM.render(<WbImport />, this.el);
-        return this;
-    }
+  __name__: 'WBImportView',
+  className: 'workbench-import-view',
+  render: function () {
+    ReactDOM.render(<WbImport />, this.el);
+    return this;
+  },
 });
 
-
-export default function() {
-    app.setTitle("Import Dataset");
-    app.setCurrentView(new WBImportView());
-};
-
+export default function () {
+  app.setTitle('Import Data Set');
+  app.setCurrentView(new WBImportView());
+}
