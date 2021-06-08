@@ -268,6 +268,8 @@ const WBView = Backbone.View.extend({
           },
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
           rowHeaders: true,
+          autoWrapCol: false,
+          autoWrapRow: false,
           manualColumnResize: true,
           manualColumnMove: true,
           outsideClickDeselects: false,
@@ -1379,7 +1381,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           : {
               title: 'Validation Failed',
               message: `The Data Set validation failed due to one or more cell
-                        value errors.<br>
+                        value errors.<br><br>
                         Review the
                         mouseover hints for each error cell, and make the
                         appropriate corrections. Save changes and retry the
@@ -1396,8 +1398,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           : {
               title: 'Upload failed due to validation errors',
               message: `The Data Set upload failed due to one or more cell
-                        value errors.<br>
-                        Review the
+                        value errors.<br><br>
+                        Run "Data Check" or "Validate" again, review the
                         mouseover hints for each error cell, and make the
                         appropriate corrections. Save changes and retry the
                         Upload.`,

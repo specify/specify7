@@ -408,7 +408,10 @@ module.exports = Backbone.View.extend({
       leafletButton.disabled = false;
       if (this.wbview.uploaded) {
         [geoLocaleButton, coordinateConvertorButton].map((button) =>
-          button.title('This tool does not work with uploaded Data Sets')
+          button.setAttribute(
+            'title',
+            'This tool does not work with uploaded Data Sets'
+          )
         );
       } else {
         geoLocaleButton.disabled = false;
