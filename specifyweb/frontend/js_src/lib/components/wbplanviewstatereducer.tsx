@@ -270,14 +270,14 @@ export const stateReducer = generateReducer<
             buttonsLeft={
               state.props.readonly ? (
                 <span
-                  className="wbplanview-readonly-badge"
+                  className="v-center wbplanview-readonly-badge"
                   title={`
                   You are viewing the mappings for an uploaded dataset.
                   To edit the mappings, un-upload the dataset or create a new
                   dataset
                 `}
                 >
-                  (Read-Only Mode)
+                  Data Set Uploaded, Read-Only
                 </span>
               ) : (
                 <>

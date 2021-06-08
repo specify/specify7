@@ -142,7 +142,7 @@ nav img {
     max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #fff;
+    color: #000;
 }
 
 #user-tools .collection-select {
