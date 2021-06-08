@@ -602,7 +602,7 @@ const definitions: AutoMapperDefinitions = {
       name: {
         automapper: {
           headers: {
-            contains: ['prep ', 'preparation'],
+            contains: ['preptype', 'prep ', 'preparation'],
           },
         },
       },

@@ -103,7 +103,11 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
     getInitialWBPlanViewState
   );
 
-  // `refObject` is like `state`, but does not cause re-render on change
+  /*
+   * `refObject` is like `state`, but does not cause re-render on change
+   * Useful for animations, transitions and triggering async actions
+   * from inside of an action reducer
+   */
   const refObject = React.useRef<RefStates>(refInitialState);
   const refObjectDispatchCurried = (action: RefActions): void =>
     refObjectDispatch({

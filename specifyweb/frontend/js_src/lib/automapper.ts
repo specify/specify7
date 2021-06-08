@@ -58,8 +58,10 @@ interface AutoMapperConstructorBaseParameters {
    * to #2
    */
   readonly pathOffset?: number;
-  // Whether to allow multiple mappings
-  // Scope to use for definitions. More info in automapperdefinitions.ts
+  /*
+   * Whether to allow multiple mappings
+   * Scope to use for definitions. More info in automapperdefinitions.ts
+   */
   readonly scope?: AutomapperScope;
 }
 
@@ -241,7 +243,7 @@ function handleDuplicateHeader(header: string): string {
     );
 }
 
-const CACHE_VERSION = '1';
+const CACHE_VERSION = '2';
 
 export default class Automapper {
   // Used to replace any white space characters with space
@@ -805,13 +807,13 @@ export default class Automapper {
     }
 
     const tableSynonyms = this.findTableSynonyms(tableName, mappingPath, mode);
-    const tableNames = [
-      ...new Set(
+    const tableNames = Array.from(
+      new Set(
         tableSynonyms.length === 0
           ? [tableName, tableFriendlyName]
           : tableSynonyms
-      ),
-    ];
+      )
+    );
 
     const findMappingsInDefinitionsPayload = {
       mappingPath,
@@ -841,13 +843,13 @@ export default class Automapper {
       }
 
       const friendlyName = fieldData.friendlyName.toLowerCase();
-      const fieldNames = [
-        ...new Set([
+      const fieldNames = Array.from(
+        new Set([
           ...this.findFormattedHeaderFieldSynonyms(tableName, fieldName),
           friendlyName,
           fieldName,
-        ]),
-      ];
+        ])
+      );
 
       let toManyReferenceNumber;
       this.getUnmappedHeaders().some(
