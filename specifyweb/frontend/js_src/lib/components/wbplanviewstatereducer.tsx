@@ -302,7 +302,9 @@ export const stateReducer = generateReducer<
                       )
                         ? state.dispatch({
                             type: 'SelectTableAction',
-                            headers: state.props.headers,
+                            headers: state.lines.map(
+                              ({ headerName }) => headerName
+                            ),
                             baseTableName: state.baseTableName,
                             mappingIsTemplated: state.props.mappingIsTemplated,
                           })
@@ -565,7 +567,7 @@ export const stateReducer = generateReducer<
                   'Rerun Automapper': () =>
                     state.dispatch({
                       type: 'SelectTableAction',
-                      headers: state.props.headers,
+                      headers: state.lines.map(({ headerName }) => headerName),
                       baseTableName: state.baseTableName,
                       mappingIsTemplated: state.props.mappingIsTemplated,
                     }),
