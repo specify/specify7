@@ -136,6 +136,7 @@ nav img {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    column-gap: 0.2rem;
 }
 
 #user-tools .login-logout {

@@ -3,7 +3,6 @@
 #site-notifications {
     padding: 5px;
     cursor: pointer;
-    margin-right: 5px;
 }
 
 #site-notifications.unread-notifications {
