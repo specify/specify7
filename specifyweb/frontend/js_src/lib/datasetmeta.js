@@ -213,7 +213,19 @@ export default Backbone.View.extend({
     $.post(`/api/workbench/transfer/${this.dataset.id}/`, {
       specifyuserid: selectedOwner,
     })
-      .done(() => navigation.go('/specify/'))
+      .done(() => {
+        const handleClose = () => navigation.go('/specify/');
+        $(`<div>
+            Data Set owner changed
+          </div>`).dialog({
+          title: 'Data Set owner changed',
+          modal: true,
+          close: handleClose,
+          buttons: {
+            Close: handleClose,
+          },
+        });
+      })
       .fail((error) => {
         throw error;
       });
