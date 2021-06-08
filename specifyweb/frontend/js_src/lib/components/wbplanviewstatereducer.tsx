@@ -387,12 +387,13 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  {state.props.readonly ? 'Return back' : 'Cancel'}
+                  {state.props.readonly ? 'Back' : 'Cancel'}
                 </button>
                 {!state.props.readonly && (
                   <button
                     type="button"
                     className="magic-button"
+                    disabled={!state.changesMade}
                     onClick={(): void => {
                       handleSave(false);
                       state.refObjectDispatch({
