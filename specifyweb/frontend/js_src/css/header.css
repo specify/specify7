@@ -134,15 +134,18 @@ nav img {
     align-items: center;
 }
 
-#user-tools a {
-    font-weight: 800;
-}
-
 #user-tools .login-logout {
     margin-right: 2px;
 }
 
-#user-tools select {
+#user-tools .username {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+}
+
+#user-tools .collection-select {
     background: #fff;
     border: none;
     color: #555;
@@ -151,9 +154,11 @@ nav img {
     margin-left: 2px;
     font-size: 12px;
     vertical-align: baseline;
+    width: 200px;
 }
 
-#user-tools select:hover {
+#user-tools .collection-selector:hover,
+#user-tools.username:hover {
     color: #f4763d;
 }
 
@@ -161,6 +166,7 @@ nav img {
     background: #f1f2f2;
     border: 1px solid #aaa;
     font-size: 14px;
+    width: 150px;
 }
 
 .ui-autocomplete {

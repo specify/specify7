@@ -328,7 +328,7 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  {state.showMappingView ? 'Hide' : 'Show'} Mapping View
+                  {state.showMappingView ? 'Hide' : 'Show'} Mapping Editor
                 </button>
                 <button
                   type="button"
