@@ -366,6 +366,7 @@ export default class WbImport extends Component<{}, WbImportState> {
         );
         ui = (
           <>
+            <br />
             <DoImportButton update={update} />
             <h2>Preview Dataset</h2>
           </>
@@ -399,6 +400,7 @@ export default class WbImport extends Component<{}, WbImportState> {
         );
         ui = (
           <>
+            <br />
             <DoImportButton update={update} />
             <h2>Preview Dataset</h2>
           </>
@@ -592,7 +594,10 @@ function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
 
 function DoImportButton(props: { update: HandleAction }) {
   return (
-    <button onClick={() => props.update({ type: 'DoImportAction' })}>
+    <button
+      className="magic-button"
+      onClick={() => props.update({ type: 'DoImportAction' })}
+    >
       Import
     </button>
   );
