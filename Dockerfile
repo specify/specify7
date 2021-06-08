@@ -126,4 +126,4 @@ ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
 
 EXPOSE 8000
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
-CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "specifyweb_wsgi"]
+CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
