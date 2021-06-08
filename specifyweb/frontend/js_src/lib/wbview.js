@@ -806,7 +806,7 @@ const WBView = Backbone.View.extend({
       }
     };
 
-    const table = $('<table>');
+    const content = $('<div class="da-container">');
     resources.fetch({ limit: 0 }).done(() => {
       if (resources.length < 1) {
         $(`<div>None of the matched records currently exist in the database.
@@ -832,18 +832,24 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         return;
       }
 
-      resources.forEach((resource, i) => {
-        const tr = $(
-          `<tr><td><input type="radio" class="da-option" name="disambiguate" value="${resource.id}" id="da-option-${i}"></td></tr>`
-        ).appendTo(table);
-        tr.append(
-          $('<td>').append(
-            $(`<a target="_blank">ℹ️</a>`).attr('href', resource.viewUrl())
-          )
+      resources.forEach((resource) => {
+        const row = $(
+          `<label class="da-row">
+            <input
+              type="radio"
+              class="da-option"
+              name="disambiguate" value="${resource.id}"
+            >
+            <a
+              href="${resource.viewUrl()}"
+              target="_blank"
+            >ℹ️</a>
+            <span class="label">${resource.id}</span>
+          <label/>`
+        ).appendTo(content);
+        formatObj(resource).done((formatted) =>
+          row.find('.label').text(formatted)
         );
-        const label = $(`<label for="da-option-${i}">`).text(resource.id);
-        tr.append($('<td>').append(label));
-        formatObj(resource).done((formatted) => label.text(formatted));
       });
 
       const applyToAll = $(`<label>
@@ -852,15 +858,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             type="checkbox"
             class="da-use-for-all"
             value="yes"
-            style="
-              margin-left: 5px;
-            "
           >
           Apply All
         </label>`);
 
       $('<div>')
-        .append(table)
+        .append(content)
         .append(applyToAll)
         .dialog({
           title: 'Disambiguate Multiple Record Matches',

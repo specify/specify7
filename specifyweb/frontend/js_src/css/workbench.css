@@ -216,3 +216,13 @@
   font-size: 1rem;
   padding-top: 0;
 }
+
+/* Disambiguation */
+.da-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.da-row {
+  padding: 0.3rem 0;
+}
