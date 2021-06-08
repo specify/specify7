@@ -154,6 +154,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
           mappingIsTemplated: props.mappingIsTemplated,
           uploadPlan: uploadplan,
           headers: props.headers,
+          changesMade: true,
         })
       )
       .catch((error) => {

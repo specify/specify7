@@ -98,6 +98,7 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
       uploadPlan: props.uploadPlan,
       headers: props.headers,
       mappingIsTemplated: props.mappingIsTemplated,
+      changesMade: false,
     } as OpenMappingScreenAction,
     getInitialWBPlanViewState
   );

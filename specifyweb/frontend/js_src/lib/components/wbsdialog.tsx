@@ -52,7 +52,7 @@ function Dialog({
     <ModalDialog
       onCloseCallback={handleClose}
       properties={{
-        title: showTemplates ? 'Copy plan from existing Data Det' : 'Data Sets',
+        title: showTemplates ? 'Copy plan from existing Sata Det' : 'Data Sets',
         width: 600,
         minHeight: 300,
         buttons: {
@@ -137,8 +137,9 @@ export function WbsDialog({
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
 }: ComponentProps) {
-  const [datasets, setDatasets] =
-    React.useState<undefined | RA<DatasetBrief>>(undefined);
+  const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(
+    undefined
+  );
 
   React.useEffect(() => {
     fetch(`/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`)

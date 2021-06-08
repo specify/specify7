@@ -109,6 +109,7 @@ export type OpenMappingScreenAction = Action<
     readonly mappingIsTemplated: boolean;
     readonly headers: RA<string>;
     readonly uploadPlan: UploadPlan | null;
+    readonly changesMade: boolean;
   }
 >;
 
@@ -314,6 +315,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     const newState: MappingState = {
       ...getDefaultMappingState(),
       mappingIsTemplated: action.mappingIsTemplated,
+      changesMade: action.changesMade,
       mustMatchPreferences,
       baseTableName,
       lines,
@@ -433,7 +435,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       },
     ],
     focusedLine: mappingState(state).lines.length,
-    changesMade: true,
     mappingsAreValidated: false,
   }),
   ToggleHiddenFieldsAction: ({ state }) => ({
@@ -588,7 +589,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           (schema.embeddedPaleoContext === false ||
             tableName !== 'paleocontext')
       );
-    const distinctListOfTables = [...new Set(arrayOfTables)];
+    const distinctListOfTables = Array.from(new Set(arrayOfTables));
     const mustMatchPreferences = {
       ...Object.fromEntries(
         distinctListOfTables.map((tableName) => [tableName, false])
@@ -610,6 +611,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     const state = mappingState(initialState);
     const newState = {
       ...state,
+      changesMade: true,
       mustMatchPreferences: {
         ...state.mustMatchPreferences,
         [action.tableName]: action.mustMatch,
@@ -637,6 +639,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         matchBehavior: action.matchBehavior,
       },
     }),
+    changesMade: true,
   }),
   ToggleAllowNullsAction: ({ state, action }) => ({
     ...mappingState(state),
@@ -647,6 +650,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         nullAllowed: action.allowNull,
       },
     }),
+    changesMade: true,
   }),
   ChangeDefaultValue: ({ state, action }) => ({
     ...mappingState(state),
@@ -657,5 +661,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         default: action.defaultValue,
       },
     }),
+    changesMade: true,
   }),
 });
