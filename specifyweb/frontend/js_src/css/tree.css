@@ -104,6 +104,10 @@ div.tree-view {
     background-position: -112px -144px;
 }
 
+.tree-node-name:focus {
+    background: #cfc;
+}
+
 
 .context-menu-item:before {
     content: "";
