@@ -205,7 +205,6 @@ dependent_fields = {
     'Collectionobject.exsiccataitems',
     'CollectionObject.leftsiderels',
     'Collectionobject.otheridentifiers',
-    'Collectionobject.paleocontext',
     'Collectionobject.preparations',
     'Collectionobject.collectionobjectproperties',
     'CollectionObject.rightsiderels',
