@@ -81,14 +81,18 @@ nav a::after {
         order: unset;
     }
 
+    #user-tools {
+        flex-basis: unset;
+    }
+
     nav {
-        margin-top: -1rem;
+        margin-top: -0.5rem;
         justify-content: unset;
     }
 
     nav a {
         padding: 1rem;
-        height: calc(100% - 2rem);
+        height: unset;
     }
 
     nav a::after {
