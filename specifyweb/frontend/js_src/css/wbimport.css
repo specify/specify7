@@ -4,6 +4,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  font-size: 0.8rem;
 }
 
 .wb-import-table {
@@ -14,14 +15,15 @@
   align-items: center;
   width: 30vw;
   min-width: 400px;
+  margin: 0 0.2rem;
 }
 
 .wb-import-table > label {
   display: contents;
 }
 
-.custom-file-picker button {
-  cursor: pointer;
+.custom-file-picker a {
+  margin-left: -0.2rem;
 }
 
 .custom-file-picker input {
@@ -42,8 +44,13 @@
 }
 
 .workbench-import-view table tr.header {
-  background-color: #aaa;
+  background-color: #ddd;
   text-align: center;
+}
+
+.workbench-import-view table th {
+  border: 1px solid #ddd;
+  border-bottom-color: #888;
 }
 
 .workbench-import-view table td {

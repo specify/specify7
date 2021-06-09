@@ -442,7 +442,13 @@ export default class WbImport extends Component<{}, WbImportState> {
     return (
       <>
         <div>
-          <h2>Import File to Create a New Data Set</h2>
+          <h2
+            style={{
+              paddingBottom: '0.5rem',
+            }}
+          >
+            Import File to Create a New Data Set
+          </h2>
           <div className="wb-import-table">{rows}</div>
           {ui}
         </div>
@@ -530,7 +536,7 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
           onChange={(event) => changed(event.target)}
         />
       </a>
-      <span>{fileName && <span>Chosen file: {fileName}</span>}</span>
+      <span>{fileName && <span>{fileName}</span>}</span>
     </label>
   );
 }
@@ -583,11 +589,13 @@ function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
   return (
     <label>
       First Row is Header:
-      <input
-        type="checkbox"
-        onChange={() => props.update({ type: 'ToggleHeaderAction' })}
-        checked={props.hasHeader}
-      />
+      <span>
+        <input
+          type="checkbox"
+          onChange={() => props.update({ type: 'ToggleHeaderAction' })}
+          checked={props.hasHeader}
+        />
+      </span>
     </label>
   );
 }
@@ -598,7 +606,7 @@ function DoImportButton(props: { update: HandleAction }) {
       className="magic-button"
       onClick={() => props.update({ type: 'DoImportAction' })}
     >
-      Import
+      Import file
     </button>
   );
 }

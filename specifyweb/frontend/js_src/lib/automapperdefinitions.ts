@@ -114,7 +114,7 @@ interface AutoMapperDefinitions {
   >;
 
   /*
-   * Don't map headers the headers that match the selector in a given scope
+   * Don't map headers that match the regex
    * This is helpful if some fields are too ambiguous and thus should not be
    *  automapper
    * Don't map list is of the highest priority and would cancel
@@ -625,7 +625,9 @@ function definitionsToLowercase(
       ])
     );
 
-  // Specify how deep to go into each branch when converting
+  /*
+   * Specify how deep to go into each branch when converting to lowerCase
+   */
   const structureDepth: [
     structureName: keyof typeof definitions,
     depth: number
