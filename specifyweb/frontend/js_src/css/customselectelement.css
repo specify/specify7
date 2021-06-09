@@ -128,8 +128,20 @@
   display: flex;
 }
 
-.custom-select-mapping-options-list .custom-select-option {
+.custom-select-mapping-options-list
+  > .custom-select-options
+  > .custom-select-group
+  > .custom-select-option {
   padding: var(--white-space);
+  min-height: unset;
+}
+
+.custom-select-mapping-options-list
+  > .custom-select-options
+  > .custom-select-group
+  > .custom-select-option
+  > .custom-select-option-label {
+  display: initial;
 }
 
 .custom-select-input:hover::after {
