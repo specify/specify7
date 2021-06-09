@@ -1045,7 +1045,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             type: 'DELETE',
           })
             .done(() => {
-              this.$el.empty().append('<p>Data Set deleted.</p>');
+              this.$el.empty().append(`<p style="text-align: center">
+                Data Set deleted.
+              </p>`);
               dialog.dialog('close');
             })
             .fail((jqxhr) => {

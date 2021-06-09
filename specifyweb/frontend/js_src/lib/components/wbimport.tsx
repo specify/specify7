@@ -423,16 +423,6 @@ export default class WbImport extends Component<{}, WbImportState> {
         break;
 
       case 'LoadingFileState':
-        ui = (
-          <>
-            <h3>Processing...</h3>
-            <p>
-              The data from {this.state.file.name} is being imported into the
-              Workbench as dataset {this.state.datasetName}. Do not close this
-              page until the process is complete.
-            </p>
-          </>
-        );
         break;
 
       default:
