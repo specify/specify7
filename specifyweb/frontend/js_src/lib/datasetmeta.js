@@ -104,6 +104,15 @@ export default Backbone.View.extend({
       Date modified: <i>${new Date(
         this.dataset.timestampmodified
       ).toLocaleString()}</i><br>
+      ${
+        this.dataset.uploadresult?.success === true
+          ? `
+        Date uploaded: <i>${new Date(
+          this.dataset.uploadresult.timestamp
+        ).toLocaleString()}
+        </i><br>`
+          : undefined
+      }
       Created By: <i class="created-by-field">Loading...</i><br>
       Modified By: <i class="modified-by-field"></i><br>
       Imported file name: <i>${
