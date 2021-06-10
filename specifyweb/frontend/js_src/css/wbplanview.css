@@ -230,7 +230,7 @@
 
 /* MAPPINGS LINE ELEMENTS */
 .wbplanview-mapping-line-header {
-  justify-content: right;
+  justify-content: flex-end;
   max-width: 25vw;
   padding-right: var(--white-space);
 }

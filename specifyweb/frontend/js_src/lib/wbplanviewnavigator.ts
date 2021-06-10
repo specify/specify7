@@ -396,7 +396,7 @@ export function getTableFromMappingPath({
   const tableName = getMappingLineData({
     baseTableName,
     mappingPath,
-  }).slice(-1)[0].tableName;
+  }).slice(-1)[0]?.tableName;
 
   if (typeof tableName === 'undefined')
     throw new Error('Unable to extract the table name from mapping path');
@@ -483,7 +483,7 @@ export function getMappingLineData({
     generateMappingOptionsMenu: false,
   };
 
-  const mappingPath: MappingPathWritable = [...readonlyMappingPath];
+  const mappingPath: MappingPathWritable = Array.from(readonlyMappingPath);
 
   const firstIterationRequirement = (): boolean =>
     iterate ||
