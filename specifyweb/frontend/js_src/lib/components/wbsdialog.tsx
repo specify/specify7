@@ -52,7 +52,9 @@ function Dialog({
     <ModalDialog
       onCloseCallback={handleClose}
       properties={{
-        title: showTemplates ? 'Copy plan from existing Sata Det' : 'Data Sets',
+        title: showTemplates
+          ? 'Copy plan from existing Sata Det'
+          : `Data Sets (${datasets.length})`,
         width: 600,
         minHeight: 300,
         buttons: {

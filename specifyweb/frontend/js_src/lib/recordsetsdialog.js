@@ -21,7 +21,7 @@ module.exports = Backbone.View.extend({
             return  "Record Sets (" + this.options.recordSets._totalCount + ")";
         },
         maxHeight: function() {
-            return 400;
+            return 450;
         },
         render: function() {
             this.makeUI();
