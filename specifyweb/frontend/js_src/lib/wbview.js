@@ -4,6 +4,7 @@ require('../css/workbench.css');
 require('../css/theme.css');
 
 const $ = require('jquery');
+const _ = require('underscore');
 const Backbone = require('./backbone.js');
 const Q = require('q');
 const Handsontable = require('handsontable').default;
@@ -115,6 +116,8 @@ const WBView = Backbone.View.extend({
       : [];
 
     this.resize = this.resize.bind(this);
+
+    this.updateCellInfoStats = _.debounce(this.updateCellInfoStats, 1000, true);
   },
   render() {
     this.$el.append(
@@ -126,13 +129,12 @@ const WBView = Backbone.View.extend({
 
     this.datasetmeta.render();
 
-    if (this.dataset.rowresults !== null) {
-      this.$('.wb-show-upload-view').prop('disabled', false);
-    } else {
+    if (this.dataset.rowresults === null) {
       this.$('.wb-show-upload-view')
-        .prop('disabled', true)
-        .prop('title', 'The data set must be validated or uploaded');
-    }
+      .prop('disabled', true)
+      .prop('title', 'The data set must be validated or uploaded');
+    } else
+      this.$('.wb-show-upload-view').prop('disabled', false);
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
@@ -1337,7 +1339,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   },
 
   // MetaData
-  updateCellInfoStats(showValidationSummary = false) {
+  async updateCellInfoStats(showValidationSummary = false) {
     const cellsMeta = this.getCellsMeta();
 
     const cellCounts = {
