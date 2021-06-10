@@ -106,23 +106,23 @@ export default Backbone.View.extend({
       <b>Metadata:</b><br>
       Number of rows: <i>${this.getRowCount()}</i><br>
       Number of columns: <i>${this.dataset.columns.length}</i><br>
-      Date created: <i>${new Date(
+      Created: <i>${new Date(
         this.dataset.timestampcreated
       ).toLocaleString()}</i><br>
-      Date modified: <i>${new Date(
+      Modified: <i>${new Date(
         this.dataset.timestampmodified
       ).toLocaleString()}</i><br>
       ${
         this.dataset.uploadresult?.success === true
           ? `
-        Date uploaded: <i>${new Date(
+        Uploaded: <i>${new Date(
           this.dataset.uploadresult.timestamp
         ).toLocaleString()}
         </i><br>`
           : ''
       }
-      Created By: <i class="created-by-field">Loading...</i><br>
-      Modified By: <i class="modified-by-field"></i><br>
+      Created by: <i class="created-by-field">Loading...</i><br>
+      Modified by: <i class="modified-by-field"></i><br>
       Imported file name: <i>${
         this.dataset.importedfilename || '(no file name)'
       }</i><br><br>
