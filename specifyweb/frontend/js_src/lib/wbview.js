@@ -980,7 +980,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   },
   upload(evt) {
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
-    if (this.mappings?.arrayOfMappings.length > 1) {
+    if (this.mappings?.arrayOfMappings.length > 0) {
       if (mode === 'upload') {
         $(
           '<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>'
