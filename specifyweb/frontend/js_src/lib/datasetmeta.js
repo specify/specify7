@@ -119,7 +119,7 @@ export default Backbone.View.extend({
           this.dataset.uploadresult.timestamp
         ).toLocaleString()}
         </i><br>`
-          : undefined
+          : ''
       }
       Created By: <i class="created-by-field">Loading...</i><br>
       Modified By: <i class="modified-by-field"></i><br>
