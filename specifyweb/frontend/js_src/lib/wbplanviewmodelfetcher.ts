@@ -17,7 +17,7 @@ import type {
   SchemaModelTableRelationship,
 } from './legacytypes';
 import schema from './schema';
-import { getFriendlyName } from './wbplanviewhelper';
+import { capitalize, getFriendlyName } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
   aliasRelationshipTypes,
@@ -116,7 +116,9 @@ const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
               rank.get('name') as string,
               {
                 isRequired: false,
-                title: rank.get('title') as string,
+                title: capitalize(
+                  (rank.get('title') ?? rank.get('name')) as string
+                ),
                 rankId: rank.get('rankid') as number,
               },
             ]),
