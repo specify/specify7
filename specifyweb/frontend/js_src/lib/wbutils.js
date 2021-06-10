@@ -251,16 +251,19 @@ module.exports = Backbone.View.extend({
 
     if (this.searchPreferences.replace.replaceMode === 'replaceAll')
       this.wbview.hot.setDataAtCell(
-        this.wbview
-          .getCellsMeta()
-          .filter((cell) => cell.isSearchResult)
-          .map(({ visualRow, visualCol }) => [
-            visualRow,
-            visualCol,
-            getNewCellValue(
-              this.wbview.hot.getDataAtCell(visualRow, visualCol)
-            ),
-          ])
+        this.wbview.getCellsMeta().reduce((modifications, cell) => {
+          if (!cell.isSearchResult) return modifications;
+          const cellValue =
+            this.wbview.hot.getDataAtCell(cell.visualRow, cell.visualCol) || '';
+          // Don't replace cells with default values
+          if (cellValue === '') return modifications;
+          modifications.push([
+            cell.visualRow,
+            cell.visualCol,
+            getNewCellValue(cellValue),
+          ]);
+          return modifications;
+        }, [])
       );
     else {
       const nextCellOfType = () =>
