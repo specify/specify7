@@ -21,6 +21,7 @@ const WBUploadedView = require('./components/wbuploadedview.tsx').default;
 const dataModelStorage = require('./wbplanviewmodel').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
+const WbsDialog = require('./components/wbsdialog.tsx').default;
 const {
   getIndexFromReferenceItemName,
   valueIsReferenceItem,
@@ -1045,10 +1046,22 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             type: 'DELETE',
           })
             .done(() => {
-              this.$el.empty().append(`<p style="text-align: center">
-                Data Set deleted.
-              </p>`);
+              this.$el.empty();
               dialog.dialog('close');
+
+              $(`<p>Data Set deleted</p>`).dialog({
+                title: 'Data Set deleted',
+                modal: true,
+                close: () =>
+                  new WbsDialog({
+                    showTemplates: false,
+                  }).render(),
+                buttons: {
+                  Close: function () {
+                    $(this).dialog('close');
+                  },
+                },
+              });
             })
             .fail((jqxhr) => {
               this.checkDeletedFail(jqxhr);
