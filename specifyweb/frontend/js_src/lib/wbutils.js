@@ -197,15 +197,31 @@ module.exports = Backbone.View.extend({
     const callback = this.wbview.searchPlugin.getCallback();
     const queryMethod = this.wbview.searchPlugin.getQueryMethod();
     const rowCount = this.wbview.hot.countRows();
+    const physicalToVisualCol = Array.from(
+      { length: this.wbview.dataset.columns.length },
+      (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
+    );
     for (let visualRow = 0; visualRow < rowCount; visualRow++)
       for (
         let visualCol = 0;
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const cellData = this.wbview.hot.getDataAtCell(visualRow, visualCol);
-        const testResult = queryMethod(this.searchQuery, cellData);
-        callback(this.wbview.hot, visualRow, visualCol, cellData, testResult);
+        const cellData =
+          this.wbview.hot.getDataAtCell(visualRow, visualCol) || '';
+        const searchValue = cellData
+          ? cellData
+          : this.wbview.mappings.defaultValues[
+              physicalToVisualCol[visualCol]
+            ] ?? '';
+        const testResult = queryMethod(this.searchQuery, searchValue);
+        callback(
+          this.wbview.hot,
+          visualRow,
+          visualCol,
+          searchValue,
+          testResult
+        );
         if (testResult) resultsCount += 1;
       }
 

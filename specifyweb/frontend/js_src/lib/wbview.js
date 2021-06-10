@@ -380,7 +380,7 @@ const WBView = Backbone.View.extend({
       .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
       .join('\n')}`;
 
-    const defaultValues = Object.fromEntries(
+    this.mappings.defaultValues = Object.fromEntries(
       Object.entries(
         typeof this.mappings.arrayOfMappings === 'undefined'
           ? {}
@@ -393,9 +393,9 @@ const WBView = Backbone.View.extend({
 
     this.hot.updateSettings({
       columns: (index) =>
-        typeof defaultValues[index] === 'undefined'
+        typeof this.mappings.defaultValues[index] === 'undefined'
           ? {}
-          : { placeholder: defaultValues[index] },
+          : { placeholder: this.mappings.defaultValues[index] },
     });
 
     this.$el.append(stylesContainer);
