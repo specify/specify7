@@ -29,7 +29,15 @@ export default Backbone.View.extend({
       this.dialog = null;
     }
 
-    this.$el.find('.wb-name').text('Data Set: ' + this.dataset.name).append(`
+    const isUploaded =
+      this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
+    this.$el.find('.wb-name').html(`
+      Data Set: ${this.dataset.name}
+      ${
+        isUploaded
+          ? `<span style="color: #f24">(Uploaded, Read-Only)</span>`
+          : ''
+      }
       <span
         class="ui-icon ui-icon-pencil"
         title="Edit name"

@@ -257,12 +257,7 @@ export const stateReducer = generateReducer<
             title={
               <>
                 {state.props.dataset.name} (
-                <b>
-                  {
-                    dataModelStorage.tables[state.baseTableName]
-                      .tableFriendlyName
-                  }
-                </b>
+                {dataModelStorage.tables[state.baseTableName].tableFriendlyName}
                 )
               </>
             }
