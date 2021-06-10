@@ -90,6 +90,7 @@ const WBView = Backbone.View.extend({
     // "next" button several times per second - no point in reCalculating the
     // metaData for all the cells.
     this.hasMetaDataChanges = true;
+    this.hasMetaDataObjectChanges = true;
     this.cachedMetaDataArray = undefined;
     this.cachedMetaData = undefined;
 
@@ -131,10 +132,9 @@ const WBView = Backbone.View.extend({
 
     if (this.dataset.rowresults === null) {
       this.$('.wb-show-upload-view')
-      .prop('disabled', true)
-      .prop('title', 'The data set must be validated or uploaded');
-    } else
-      this.$('.wb-show-upload-view').prop('disabled', false);
+        .prop('disabled', true)
+        .prop('title', 'The data set must be validated or uploaded');
+    } else this.$('.wb-show-upload-view').prop('disabled', false);
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
@@ -320,9 +320,10 @@ const WBView = Backbone.View.extend({
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
           readOnly: this.uploaded,
+          beforePaste: this.beforePaste.bind(this),
           afterChange: this.afterChange.bind(this),
-          afterCreateRow: this.rowCountChanged.bind(this),
-          afterRemoveRow: this.rowCountChanged.bind(this),
+          afterCreateRow: this.afterRowCountChanged.bind(this),
+          afterRemoveRow: this.afterRowCountChanged.bind(this),
           beforeColumnSort: this.beforeColumnSort.bind(this),
           beforeColumnMove: this.beforeColumnMove.bind(this),
           afterColumnMove: this.afterColumnMove.bind(this),
@@ -482,6 +483,18 @@ const WBView = Backbone.View.extend({
     if (cellProperties.isNew)
       this.afterSetCellMeta(row, col, 'isNew', true, td);
   },
+  beforePaste(data) {
+    // Workaround for https://github.com/handsontable/handsontable/issues/7616
+    const currentRowCount = this.hot.countRows();
+    const newRowCount = Math.max(
+      currentRowCount,
+      this.hot.getSelectedRangeLast().getTopLeftCorner().row + data.length
+    );
+    if (newRowCount > currentRowCount)
+      Array.from({ length: newRowCount - currentRowCount }, (_, index) =>
+        this.hot.setDataAtCell(currentRowCount + index, 0, '')
+      );
+  },
   afterChange(unfilteredChanges, source) {
     if (
       ![
@@ -541,7 +554,7 @@ const WBView = Backbone.View.extend({
           .map(({ physicalRow }) => physicalRow)
       ).forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
-  rowCountChanged(index, amount, source) {
+  afterRowCountChanged(startIndex, amount, source) {
     if (this.hot && source !== 'auto') this.spreadSheetChanged();
     this.hasMetaDataChanges = true;
   },
@@ -1478,16 +1491,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     if (this.hasMetaDataChanges) {
       this.wbutils.metaCellCountChanged = {};
       this.hasMetaDataChanges = false;
-      /*
-       * this.hot.getCellsMeta() causes exception when called from inside of
-       * afterChange hook when new rows where created, as their metaData is not
-       * yet initialized.
-       * this.hot.getCellMetaAtRow() seems to create metaData for records that
-       * don't have it, but then we have to manually loop over all rows.
-       * */
-      this.cachedMetaDataArray = [...Array(this.hot.countRows())].flatMap(
-        (_, physicalRow) => this.hot.getCellMetaAtRow(physicalRow)
-      );
+      this.cachedMetaDataArray = this.hot.getCellsMeta();
     }
     return this.cachedMetaDataArray;
   },

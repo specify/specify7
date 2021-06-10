@@ -20,7 +20,7 @@
   "dependencies": {
     "backbone": "~0.9.10",
     "d3": "~3.5.12",
-    "handsontable": "8.3.2",
+    "handsontable": "9.0.0",
     "humanize-duration": "~3.5.0",
     "immutable": "~3.7.5",
     "jquery": "~1.12.0",
