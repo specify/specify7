@@ -121,7 +121,11 @@ class MatchedMultiple(NamedTuple):
                 TableIssue(
                     tableName=self.info.tableName,
                     columns=self.info.columns,
-                    issue="Multiple records matched."
+                    issue=(
+                        "This value matches two or more existing database " +
+                        "records and must be manually disambiguated before " +
+                        "uploading."
+                    )
         )])
 
     def to_json(self):
