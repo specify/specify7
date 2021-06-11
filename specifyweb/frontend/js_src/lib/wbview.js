@@ -1051,7 +1051,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       .on('done', () => this.trigger('refresh', mode));
   },
   delete: function () {
-    const dialog = $('<div>Confirm Data Set Delete?</div>').dialog({
+    const dialog = $(`<div> <p>Deleting a Data Set permanently removes it and its Upload
+Plan, and makes its Data Mappings unavailable for re-use with new Data
+Sets. Also after deleting, Rollback will not be an option for an
+uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
       modal: true,
       title: 'Delete Data Set',
       close: () => dialog.remove(),
