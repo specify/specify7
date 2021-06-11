@@ -125,8 +125,11 @@ function Dialog({
           {showTemplates
             ? 'There are no plans available, please continue to create an' +
               ' upload plan.'
-            : `No Data Sets present. ${
-                canImport ? 'Use the "Import" button to import data.' : ''
+            : `Currently no Data Sets exist. ${
+                canImport
+                  ? `Use "Import a file" or "Create New" to make a
+                  new one`
+                  : ''
               }`}
         </p>
       ) : (
