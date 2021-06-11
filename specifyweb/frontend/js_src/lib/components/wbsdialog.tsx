@@ -152,6 +152,7 @@ function Dialog({
                   <tr key={index}>
                     <td>
                       <a
+                        style={{ fontWeight: 800 }}
                         href={`/workbench/${dataset.id}/`}
                         {...(typeof handleDataSetSelect === 'undefined'
                           ? {
