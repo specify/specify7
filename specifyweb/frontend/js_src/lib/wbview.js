@@ -428,6 +428,7 @@ const WBView = Backbone.View.extend({
               source: pickLists[physicalCol].items,
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
+              filter: false,
             }
           : { type: 'text' },
     });
@@ -1050,41 +1051,42 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       .on('done', () => this.trigger('refresh', mode));
   },
   delete: function () {
-    const dialog = $(`<div> <p>Deleting a Data Set permanently removes it and its Upload
+    const dialog =
+      $(`<div> <p>Deleting a Data Set permanently removes it and its Upload
 Plan, and makes its Data Mappings unavailable for re-use with new Data
 Sets. Also after deleting, Rollback will not be an option for an
 uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
-      modal: true,
-      title: 'Delete Data Set',
-      close: () => dialog.remove(),
-      buttons: {
-        Delete: () => {
-          $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-            type: 'DELETE',
-          })
-            .done(() => {
-              this.$el.empty();
-              dialog.dialog('close');
-
-              $(`<p>Data Set deleted</p>`).dialog({
-                title: 'Data Set deleted',
-                modal: true,
-                close: () => navigation.go('/'),
-                buttons: {
-                  Close: function () {
-                    $(this).dialog('close');
-                  },
-                },
-              });
+        modal: true,
+        title: 'Delete Data Set',
+        close: () => dialog.remove(),
+        buttons: {
+          Delete: () => {
+            $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+              type: 'DELETE',
             })
-            .fail((jqxhr) => {
-              this.checkDeletedFail(jqxhr);
-              dialog.dialog('close');
-            });
+              .done(() => {
+                this.$el.empty();
+                dialog.dialog('close');
+
+                $(`<p>Data Set deleted</p>`).dialog({
+                  title: 'Data Set deleted',
+                  modal: true,
+                  close: () => navigation.go('/'),
+                  buttons: {
+                    Close: function () {
+                      $(this).dialog('close');
+                    },
+                  },
+                });
+              })
+              .fail((jqxhr) => {
+                this.checkDeletedFail(jqxhr);
+                dialog.dialog('close');
+              });
+          },
+          Cancel: () => dialog.dialog('close'),
         },
-        Cancel: () => dialog.dialog('close'),
-      },
-    });
+      });
   },
   export() {
     const data = Papa.unparse({
