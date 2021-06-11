@@ -13,7 +13,7 @@ export default Backbone.View.extend({
   events: {
     'click .ui-icon': 'startEditing',
   },
-  initialize({ dataset, getRowCount }) {
+  initialize({ dataset, getRowCount, onClose }) {
     this.dataset = dataset;
     this.dialog = null;
     this.model = schema.getModel('agent');
@@ -21,12 +21,14 @@ export default Backbone.View.extend({
     this.modifiedByAgent = null;
     this.changeOwnerDialog = null;
     this.listOfUsers = null;
-    this.getRowCount = getRowCount;
+    this.getRowCount = getRowCount ?? (() => dataset.rows.length);
+    this.handleClose = onClose;
   },
   render() {
     if (this.dialog !== null) {
       this.dialog.remove();
       this.dialog = null;
+      if (this.handleClose) this.handleClose();
     }
 
     const isUploaded =

@@ -8,12 +8,13 @@ import '../../css/wbdsdialog.css';
 import $ from 'jquery';
 import React from 'react';
 
+import DataSetMeta from '../datasetmeta';
 import navigation from '../navigation';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { DatasetBrief, RA } from './wbplanview';
+import type { Dataset, DatasetBrief, RA } from './wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
   $.ajax('/api/workbench/dataset/', {
@@ -34,6 +35,49 @@ const createEmptyDataSet = async (): Promise<void> =>
       throw error;
     });
 
+function DsMeta({
+  dsId,
+  onClose,
+}: {
+  readonly dsId: number;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const [dataset, setDataset] = React.useState<Dataset | undefined>(undefined);
+  const dialog = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    let datasetPromise: undefined | Promise<Dataset> = new Promise((resolve) =>
+      $.ajax(`/api/workbench/dataset/${dsId}/`).done(resolve)
+    );
+    datasetPromise.then((dataset) => {
+      if (typeof datasetPromise !== 'undefined') setDataset(dataset);
+    });
+    return () => {
+      datasetPromise = undefined;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof dataset === 'undefined' || dialog === null) return;
+
+    const dataSetMeta = DataSetMeta.initialize({
+      dataset,
+      el: dialog,
+      onClose,
+    });
+
+    dataSetMeta.render();
+
+    return () => dataSetMeta.remove();
+  }, [dataset, dialog]);
+
+  return (
+    <div>
+      <div ref={dialog} />
+    </div>
+  );
+}
+
 function Dialog({
   datasets,
   showTemplates,
@@ -45,8 +89,14 @@ function Dialog({
   readonly onDataSetSelect?: (id: number) => void;
   readonly onClose: () => void;
 }): JSX.Element {
+  // Whether to show DS meta dialog. Either false or DS ID
+  const [showMeta, setShowMeta] = React.useState<false | number>(false);
+
   const canImport =
     !showTemplates && !(userInfo as { isReadOnly: boolean }).isReadOnly;
+
+  if (typeof showMeta === 'number')
+    return <DsMeta dsId={showMeta} onClose={(): void => setShowMeta(false)} />;
 
   return (
     <ModalDialog
@@ -87,6 +137,7 @@ function Dialog({
                 <th>Name</th>
                 <th>Created</th>
                 <th>Uploaded</th>
+                <th />
               </tr>
             </thead>
             <tbody>
@@ -122,6 +173,13 @@ function Dialog({
                     </td>
                     <td title={dateUploaded?.toLocaleString() ?? ''}>
                       {dateUploaded?.toDateString() ?? ''}
+                    </td>
+                    <td>
+                      <span
+                        tabIndex={0}
+                        className="ui-icon ui-icon-pencil"
+                        onClick={(): void => setShowMeta(dataset.id)}
+                      />
                     </td>
                   </tr>
                 );
