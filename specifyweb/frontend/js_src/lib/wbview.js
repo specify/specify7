@@ -269,6 +269,11 @@ const WBView = Backbone.View.extend({
             displayDelay: 100,
           },
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
+          /*
+           * Assign these to a non-existent classname to disable the default
+           * styling
+           * */
+          invalidCellClassName: 'htInvalid--',
           rowHeaders: true,
           autoWrapCol: false,
           autoWrapRow: false,
@@ -321,6 +326,7 @@ const WBView = Backbone.View.extend({
           readOnly: this.uploaded,
           beforePaste: this.beforePaste.bind(this),
           afterChange: this.afterChange.bind(this),
+          afterValidate: this.afterValidate.bind(this),
           afterCreateRow: this.afterRowCountChanged.bind(this),
           afterRemoveRow: this.afterRowCountChanged.bind(this),
           beforeColumnSort: this.beforeColumnSort.bind(this),
@@ -482,6 +488,24 @@ const WBView = Backbone.View.extend({
       this.afterSetCellMeta(row, col, 'isModified', true, td);
     if (cellProperties.isNew)
       this.afterSetCellMeta(row, col, 'isNew', true, td);
+  },
+  afterValidate(isValid, _value, visualRow, prop) {
+    const visualCol = this.hot.propToCol(prop);
+
+    const issues =
+      this.hot.getCellMeta(visualRow, visualCol, 'issues')?.issues ?? [];
+    const invalidMessage = `This picklist is readonly. Please choose a value among available options`;
+    const newIssues = [...new Set([invalidMessage, ...issues])];
+    if (JSON.stringify(issues) !== JSON.stringify(newIssues)) {
+      this.hot.setCellMeta(visualRow, visualCol, 'issues', newIssues);
+      // remove isModified state to make error state visible
+      if (newIssues.length > 0)
+        setTimeout(
+          // need to reset the state after afterChange hook
+          () => this.hot.setCellMeta(visualRow, visualCol, 'isModified', false),
+          0
+        );
+    }
   },
   beforePaste(data) {
     // Workaround for https://github.com/handsontable/handsontable/issues/7616
@@ -695,7 +719,7 @@ const WBView = Backbone.View.extend({
           this.commentsPlugin.setCommentAtCell(
             visualRow,
             visualCol,
-            value.join('<br>')
+            value.join('\n')
           );
           this.commentsPlugin.updateCommentMeta(visualRow, visualCol, {
             readOnly: true,
