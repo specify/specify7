@@ -514,10 +514,17 @@ const WBView = Backbone.View.extend({
       currentRowCount,
       this.hot.getSelectedRangeLast().getTopLeftCorner().row + data.length
     );
-    if (newRowCount > currentRowCount)
-      Array.from({ length: newRowCount - currentRowCount }, (_, index) =>
-        this.hot.setDataAtCell(currentRowCount + index, 0, '')
+    if (newRowCount > currentRowCount) {
+      const rowIndexes = Array.from(
+        { length: newRowCount - currentRowCount },
+        (_, index) => currentRowCount + index
       );
+      this.hot.validateRows(rowIndexes);
+      rowIndexes.forEach(index=>this.hot.getCellsMetaAtRow(index))
+      const value = this.hot.getDataAtCell(0, 0);
+      this.hot.setDataAtCell(0, 0, '');
+      this.hot.setDataAtCell(0, 0, value);
+    }
   },
   afterChange(unfilteredChanges, source) {
     if (
