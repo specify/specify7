@@ -12,7 +12,6 @@ var querystring = require('./querystring.js');
 module.exports = Backbone.View.extend({
         __name__: "ScrollResults",
         events: {
-            'scroll': 'scroll',
             'remove': 'undelegateEvents'
         },
         initialize: function(options) {
@@ -20,12 +19,12 @@ module.exports = Backbone.View.extend({
             this.doFetch = options.fetch || this.doFetchSimple.bind(this);
             this.resultsView = options.view;
             this.offset = 0;
+            this.scrollElement = options.scrollElement ?? this.el;
 
-            this.container = options.onWindow ? win : this.$el;
-            this.content = options.onWindow ? doc : this.resultsView.$el;
+            this.scroll=this.scroll.bind(this);
         },
         scrolledToBottom: function() {
-            return this.container.height() + this.container.scrollTop() + 10 > this.content.height();
+            return this.scrollElement[0].scrollHeight - this.scrollElement.scrollTop()-10 < this.scrollElement.outerHeight();
         },
         shouldFetchMore: function(ignoreBottom) {
             var criteria = {
@@ -87,6 +86,7 @@ module.exports = Backbone.View.extend({
                 this.onScroll = this.scroll.bind(this);
                 win.on('scroll', this.onScroll);
             }
+            this.scrollElement[0].addEventListener('scroll', this.scroll);
             return this;
         },
         scroll: function(evt) {
@@ -95,6 +95,10 @@ module.exports = Backbone.View.extend({
         undelegateEvents: function() {
             this.onScroll && win.off('scroll', this.onScroll);
             Backbone.View.prototype.undelegateEvents.apply(this, arguments);
-        }
+        },
+        remove: function(){
+            this.scrollElement[0].removeEventListener('scroll', this.scroll);
+            Backbone.View.prototype.remove.apply(this, arguments);
+        },
     });
 
