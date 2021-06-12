@@ -435,6 +435,7 @@ const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter: false,
+              trimDropdown: false,
             }
           : { type: 'text' },
     });
@@ -489,13 +490,25 @@ const WBView = Backbone.View.extend({
     if (cellProperties.isNew)
       this.afterSetCellMeta(row, col, 'isNew', true, td);
   },
-  afterValidate(isValid, _value, visualRow, prop) {
+  afterValidate(isValid, value, visualRow, prop) {
     const visualCol = this.hot.propToCol(prop);
 
     const issues =
       this.hot.getCellMeta(visualRow, visualCol, 'issues')?.issues ?? [];
-    const invalidMessage = `This picklist is readonly. Please choose a value among available options`;
-    const newIssues = [...new Set([invalidMessage, ...issues])];
+    const newIssues = [
+      ...new Set([
+        ...(isValid
+          ? []
+          : [
+              `${value} is not a legal value in this picklist field.
+          Please click on the arrow to choose among available options.
+          `
+                .trim()
+                .replace(/ {2,}/, ' '),
+            ]),
+        ...issues,
+      ]),
+    ];
     if (JSON.stringify(issues) !== JSON.stringify(newIssues)) {
       this.hot.setCellMeta(visualRow, visualCol, 'issues', newIssues);
       // remove isModified state to make error state visible
@@ -1270,11 +1283,12 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     this.updateCellInfoStats();
   },
   parseRowValidationResult(physicalRow, result, isLive) {
-    const rowMeta = this.hot.getCellMetaAtRow(physicalRow).slice(0, -1);
+    const rowMeta = this.hot.getCellMetaAtRow(physicalRow);
     const newRowMeta = rowMeta.map((cellMeta) => ({
       ...getDefaultCellMeta(),
       isModified: (isLive && cellMeta.isModified) ?? false,
       isSearchResult: cellMeta.isSearchResult ?? false,
+      issues: [],
     }));
 
     const addErrorMessage = (columnName, issue) => {

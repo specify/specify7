@@ -172,7 +172,11 @@ def parse_with_picklist(collection, picklist, fieldname: str, value: str, column
             return filter_and_upload({fieldname: item.value}, column)
         except ObjectDoesNotExist:
             if picklist.readonly:
-                return ParseFailure("value {} not in picklist {}".format(value, picklist.name), column)
+                return ParseFailure(
+                    f"{value} is not a legal value in this picklist field.\n"
+                    f"Please click on the arrow to choose among available "
+                    f"options."
+                , column)
             else:
                 return filter_and_upload({fieldname: value}, column)._replace(
                     add_to_picklist=PicklistAddition(picklist=picklist, column=column, value=value)

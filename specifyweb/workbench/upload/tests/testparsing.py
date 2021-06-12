@@ -238,7 +238,12 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(message='value Hon. not in picklist AgentTitle', column='title')], result2.failures)
+        self.assertEqual([ParseFailure(
+            message="Hon. is not a legal value in this picklist field.\n"
+                    "Please click on the arrow to choose among available "
+                    "options.",
+            column='title'
+        )], result2.failures)
 
 
     def test_parse_latlong(self) -> None:
