@@ -8,12 +8,9 @@ import resourceApi from './resourceapi';
 import navigation from './navigation';
 import userInfo from './userinfo.js';
 
-export default Backbone.View.extend({
-  __name__: 'DataSetNameView',
-  events: {
-    'click .ui-icon': 'startEditing',
-  },
-  initialize({ dataset, getRowCount, onClose }) {
+export const DataSetMeta = Backbone.View.extend({
+  __name__: 'DataSetMetaView',
+  initialize({ dataset, getRowCount, onClose, isOpen = true }) {
     this.dataset = dataset;
     this.dialog = null;
     this.model = schema.getModel('agent');
@@ -23,29 +20,14 @@ export default Backbone.View.extend({
     this.listOfUsers = null;
     this.getRowCount = getRowCount ?? (() => dataset.rows.length);
     this.handleClose = onClose;
+    this.isOpen = isOpen;
   },
   render() {
     if (this.dialog !== null) {
       this.dialog.remove();
       this.dialog = null;
       if (this.handleClose) this.handleClose();
-    }
-
-    const isUploaded =
-      this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    this.$el.find('.wb-name').html(`
-      Data Set: ${this.dataset.name}
-      ${
-        isUploaded
-          ? `<span style="color: #f24">(Uploaded, Read-Only)</span>`
-          : ''
-      }
-      <span
-        class="ui-icon ui-icon-pencil"
-        title="Edit name"
-      >Edit name</span>`);
-    app.setTitle(this.dataset.name);
-    return this;
+    } else if (this.isOpen) this.startEditing();
   },
   fetchAgent(agentString) {
     return new Promise((resolve) => {
@@ -248,5 +230,43 @@ export default Backbone.View.extend({
       .fail((error) => {
         throw error;
       });
+  },
+});
+
+export default Backbone.View.extend({
+  __name__: 'DataSetNameView',
+  events: {
+    'click .ui-icon': 'startEditing',
+  },
+  initialize({ dataset, getRowCount, onClose }) {
+    this.dataset = dataset;
+    this.dataSetMeta = new DataSetMeta({
+      dataset,
+      getRowCount,
+      onClose,
+      isOpen: false,
+    });
+  },
+  render() {
+    this.dataSetMeta.render();
+
+    const isUploaded =
+      this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
+    this.$el.find('.wb-name').html(`
+      Data Set: ${this.dataset.name}
+      ${
+        isUploaded
+          ? `<span style="color: #f24">(Uploaded, Read-Only)</span>`
+          : ''
+      }
+      <span
+        class="ui-icon ui-icon-pencil"
+        title="Edit name"
+      >Edit name</span>`);
+    app.setTitle(this.dataset.name);
+    return this;
+  },
+  startEditing() {
+    this.dataSetMeta.open();
   },
 });
