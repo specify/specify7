@@ -520,7 +520,7 @@ const WBView = Backbone.View.extend({
         (_, index) => currentRowCount + index
       );
       this.hot.validateRows(rowIndexes);
-      rowIndexes.forEach(index=>this.hot.getCellsMetaAtRow(index))
+      rowIndexes.forEach((index) => this.hot.getCellsMetaAtRow(index));
       const value = this.hot.getDataAtCell(0, 0);
       this.hot.setDataAtCell(0, 0, '');
       this.hot.setDataAtCell(0, 0, value);
@@ -1099,8 +1099,8 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
                 this.$el.empty();
                 dialog.dialog('close');
 
-                $(`<p>Data Set deleted</p>`).dialog({
-                  title: 'Data Set deleted',
+                $(`<p>Data Set successfully deleted.</p>`).dialog({
+                  title: 'Delete Data Set',
                   modal: true,
                   close: () => navigation.go('/'),
                   buttons: {
