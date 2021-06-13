@@ -51,16 +51,16 @@ module.exports = Backbone.View.extend({
     if (currentCol < 0) currentCol = 0;
     return [currentRow, currentCol];
   },
-  cellIsType(cell, type) {
+  cellIsType(cellMeta, type) {
     switch (type) {
       case 'invalidCells':
-        return Array.isArray(cell.issues) && cell.issues.length > 0;
+        return Array.isArray(cellMeta.issues) && cellMeta.issues.length > 0;
       case 'newCells':
-        return cell.isNew === true;
+        return cellMeta.isNew === true;
       case 'modifiedCells':
-        return cell.isModified === true;
+        return cellMeta.isModified === true;
       case 'searchResults':
-        return cell.isSearchResult === true;
+        return cellMeta.isSearchResult === true;
       default:
         return false;
     }
@@ -80,7 +80,7 @@ module.exports = Backbone.View.extend({
 
     const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
 
-    const cellsMetaObject = this.wbview.getCellsMetaObject();
+    const cellMetaObject = this.wbview.getCellMetaObject();
 
     const orderIt =
       direction === 'next' ? (array) => array : (array) => [...array].reverse();
@@ -88,13 +88,13 @@ module.exports = Backbone.View.extend({
     let matchedCell;
     let cellIsTypeCount = 0;
 
-    const getPosition = (cellMetaData, first) =>
+    const getPosition = (visualRow, visualCol, first) =>
       (this.searchPreferences.navigation.direction === 'rowFirst') === first
-        ? cellMetaData.visualRow
-        : cellMetaData.visualCol;
+        ? visualRow
+        : visualCol;
 
     const getCurrentPosition = (first) =>
-      getPosition({ visualCol: currentCol, visualRow: currentRow }, first);
+      getPosition(currentRow, currentCol, first);
 
     const compareRows =
       direction === 'next'
@@ -110,16 +110,27 @@ module.exports = Backbone.View.extend({
         ? (visualCol) => visualCol <= getCurrentPosition(false)
         : (visualCol) => visualCol < getCurrentPosition(false);
 
-    orderIt(Object.entries(cellsMetaObject)).find(([, cells]) =>
-      orderIt(Object.values(cells)).find((cell) => {
-        const cellTypeMatches = this.cellIsType(cell, type);
+    /*
+     * The cellMetaObject is transposed when navigation direction changes
+     * In that case, the meaning of visualRow and visualCol is swapped
+     * getPosition exists to resolve the canonical visualRow/visualCol
+     */
+    orderIt(Object.entries(cellMetaObject)).find(([visualRow, metaRow]) =>
+      orderIt(Object.entries(metaRow)).find(([visualCol, cellMeta]) => {
+        visualRow = Number.parseInt(visualRow);
+        visualCol = Number.parseInt(visualCol);
+        const cellTypeMatches = this.cellIsType(cellMeta, type);
         cellIsTypeCount += cellTypeMatches;
         const foundIt =
           cellTypeMatches &&
-          compareRows(getPosition(cell, true)) &&
-          (getPosition(cell, true) !== getCurrentPosition(true) ||
-            compareCols(getPosition(cell, false)));
-        if (foundIt) matchedCell = cell;
+          compareRows(visualRow) &&
+          (visualRow !== getCurrentPosition(true) || compareCols(visualCol));
+        [realVisualRow, realVisualCol] = [
+          getPosition(visualRow, visualCol, true),
+          getPosition(visualRow, visualCol, false),
+        ];
+        if (foundIt)
+          matchedCell = { visualRow: realVisualRow, visualCol: realVisualCol };
         return foundIt;
       })
     );
@@ -194,8 +205,6 @@ module.exports = Backbone.View.extend({
     }
 
     let resultsCount = 0;
-    const callback = this.wbview.searchPlugin.getCallback();
-    const queryMethod = this.wbview.searchPlugin.getQueryMethod();
     const rowCount = this.wbview.hot.countRows();
     const physicalToVisualCol = Array.from(
       { length: this.wbview.dataset.columns.length },
@@ -214,8 +223,8 @@ module.exports = Backbone.View.extend({
           : this.wbview.mappings.defaultValues[
               physicalToVisualCol[visualCol]
             ] ?? '';
-        const testResult = queryMethod(this.searchQuery, searchValue);
-        callback(
+        const testResult = this.searchFunction(this.searchQuery, searchValue);
+        this.searchCallback(
           this.wbview.hot,
           visualRow,
           visualCol,
@@ -249,23 +258,30 @@ module.exports = Backbone.View.extend({
       ? () => replacementValue
       : (cellValue) => cellValue.split(this.searchQuery).join(replacementValue);
 
-    if (this.searchPreferences.replace.replaceMode === 'replaceAll')
-      this.wbview.hot.setDataAtCell(
-        this.wbview.getCellsMeta().reduce((modifications, cell) => {
-          if (!cell.isSearchResult) return modifications;
+    if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
+      const modifications = [];
+      Object.entries(this.wbview.cellMeta).forEach(([physicalRow, metaRow]) =>
+        Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
+          if (!cellMeta.isSearchResult) return;
+          const visualRow = this.wbview.hot.toVisualRow(
+            Number.parseInt(physicalRow)
+          );
+          const visualCol = this.wbview.hot.toVisualColumn(
+            Number.parseInt(physicalCol)
+          );
           const cellValue =
-            this.wbview.hot.getDataAtCell(cell.visualRow, cell.visualCol) || '';
+            this.wbview.hot.getDataAtCell(visualRow, visualCol) || '';
           // Don't replace cells with default values
-          if (cellValue === '') return modifications;
+          if (cellValue === '') return;
           modifications.push([
-            cell.visualRow,
-            cell.visualCol,
+            visualRow,
+            visualCol,
             getNewCellValue(cellValue),
           ]);
-          return modifications;
-        }, [])
+        })
       );
-    else {
+      this.wbview.hot.setDataAtCell(modifications);
+    } else {
       const nextCellOfType = () =>
         this.navigateCells(
           {
@@ -277,10 +293,12 @@ module.exports = Backbone.View.extend({
           false
         );
       const [currentRow, currentCol] = this.getSelectedLast();
+      const physicalRow = this.wbview.hot.toPhysicalRow(currentRow);
+      const physicalCol = this.wbview.hot.toPhysicalColumn(currentCol);
       let nextCell;
       if (
         this.cellIsType(
-          this.wbview.hot.getCellMeta(currentRow, currentCol),
+          this.wbview.cellMeta[physicalRow][physicalCol],
           'searchResults'
         )
       )
@@ -310,7 +328,7 @@ module.exports = Backbone.View.extend({
           this.searchPreferences.navigation.direction !==
           initialNavigationDirection
         ) {
-          this.wbview.hasMetaDataObjectChanges = true;
+          this.wbview.flushIndexedCellData = true;
           initialNavigationDirection =
             this.searchPreferences.navigation.direction;
         }
@@ -359,6 +377,14 @@ module.exports = Backbone.View.extend({
     if (this.searchPreferences.search.fullMatch)
       return cellValue.trim() === searchQuery;
     else return cellValue.trim().includes(searchQuery);
+  },
+  searchCallback(_, visualRow, visualCol, data, testResult) {
+    this.wbview.updateCellMeta(
+      this.wbview.hot.toPhysicalRow(visualRow),
+      this.wbview.hot.toPhysicalColumn(visualCol),
+      'isSearchResult',
+      testResult
+    );
   },
   toggleToolkit() {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
