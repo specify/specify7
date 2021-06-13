@@ -210,14 +210,14 @@ module.exports = Backbone.View.extend({
       { length: this.wbview.dataset.columns.length },
       (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
     );
-    const data = this.wbview.hot.getData();
+    const data = this.wbview.dataset.rows;
     for (let visualRow = 0; visualRow < rowCount; visualRow++)
       for (
         let visualCol = 0;
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const cellData = data[visualRow][visualCol] || '';
+        const cellData = [visualRow][visualCol] || '';
         const searchValue = cellData
           ? cellData
           : this.wbview.mappings.defaultValues[
@@ -693,9 +693,8 @@ module.exports = Backbone.View.extend({
       localityPoints,
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
-        const selectedColumn = this.wbview.hot.getSelectedLast()?.[1] ?? 0;
-        // select the first cell to scroll the view
-        this.wbview.hot.selectCell(rowNumber, selectedColumn);
+        const [_currentRow, currentCol] = this.getSelectedLast();
+        this.wbview.hot.scrollViewportTo(rowNumber, selectedColumn);
         // select an entire row
         this.wbview.hot.selectRows(rowNumber);
       },
@@ -705,29 +704,61 @@ module.exports = Backbone.View.extend({
   showCoordinateConversion() {
     if ($('.lat-long-format-options').length !== 0) return;
 
-    const columnHandlers = {
-      'locality.latitude1': 'Lat',
-      'locality.longitude1': 'Long',
-      'locality.latitude2': 'Lat',
-      'locality.longitude2': 'Long',
-    };
+    if (Object.keys(this.wbview.mappings.coordinateColumns).length === 0)
+      throw new Error('Unable to find Coordinate columnes');
 
-    const coordinateColumns = this.localityColumns.reduce(
-      (coordinateColumns, localityColumns) => [
-        ...coordinateColumns,
-        ...Object.entries(localityColumns)
-          .filter(([fieldName]) => fieldName in columnHandlers)
-          .map(([fieldName, columnName]) => [
-            columnHandlers[fieldName],
-            this.wbview.hot.toVisualColumn(
-              this.wbview.dataset.columns.indexOf(columnName)
-            ),
-          ]),
-      ],
-      []
-    );
+    const [currentRow, currentCol] = this.getSelectedLast();
+    if (
+      !Object.keys(this.wbview.mappings.coordinateColumns).includes(
+        currentCol.toString()
+      )
+    ) {
+      const firstCoordinateColumn = Number.parseInt(
+        Object.keys(this.wbview.mappings.coordinateColumns)[0]
+      );
+      this.wbview.hot.scrollViewportTo(currentRow, firstCoordinateColumn);
+    }
 
-    if (coordinateColumns.length === 0) return;
+    const buttons = [
+      'wb-leafletmap',
+      'wb-geolocate',
+      'wb-convert-coordinates',
+      'wb-replace-value',
+    ]
+      .map((className) => this.el.getElementsByClassName(className)[0])
+      .map((button) => [button, button.disabled]);
+    const originalReadOnlyState = this.wbview.readOnly;
+    this.wbview.readOnly = true;
+    this.wbview.hot.updateSettings({
+      readOnly: true,
+    });
+    this.el.classList.add('wb-focus-coordinates');
+
+    function cleanUp() {
+      buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
+      this.wbview.hot.updateSettings({
+        readOnly: originalReadOnlyState,
+      });
+      this.wbview.readOnly = originalReadOnlyState;
+      this.el.classList.remove('wb-focus-coordinates');
+    }
+
+    const orignalState = Object.keys(
+      this.wbview.mappings.coordinateColumns
+    ).map((physicalCol) => [
+      physicalCol,
+      this.wbview.hot.getDataAtCol(
+        this.wbview.hot.toVisualColumn(Number.parseInt(physicalCol))
+      ),
+    ]);
+
+    let handleOptionChangeBind = undefined;
+
+    function closeDialog() {
+      dialog[0].removeEventListener('change', handleOptionChangeBind);
+      dialog.remove();
+      cleanUp.call(this);
+    }
 
     const options = [
       {
@@ -762,12 +793,18 @@ module.exports = Backbone.View.extend({
       },
     ];
 
-    let handleOptionChangeBind = undefined;
-
-    const closeDialog = () => {
-      dialog[0].removeEventListener('change', handleOptionChangeBind);
-      dialog.remove();
-    };
+    function revertChanges() {
+      this.wbview.hot.setDataAtCell(
+        orignalState.flatMap(([visualCol, originalData]) =>
+          originalData.map((value, visualRow) => [
+            visualRow,
+            Number.parseInt(visualCol),
+            value,
+          ])
+        )
+      );
+      closeDialog.call(this);
+    }
 
     const dialog = $(
       `<ul class="lat-long-format-options">
@@ -796,9 +833,15 @@ module.exports = Backbone.View.extend({
       </ul>`
     ).dialog({
       title: 'Change Geocoordinate Format',
-      close: closeDialog,
+      close: revertChanges.bind(this),
       width: 350,
-      buttons: [{ text: 'Apply', click: closeDialog }],
+      buttons: [
+        {
+          text: 'Cancel',
+          click: revertChanges.bind(this),
+        },
+        { text: 'Apply', click: closeDialog.bind(this) },
+      ],
     });
 
     const handleOptionChange = () => {
@@ -832,26 +875,25 @@ module.exports = Backbone.View.extend({
           : finalValue;
 
       this.wbview.hot.setDataAtCell(
-        coordinateColumns
-          .map(([columnRole, columnIndex]) =>
+        Object.entries(this.wbview.mappings.coordinateColumns).flatMap(
+          ([visualCol, columnRole]) =>
             this.wbview.hot
-              .getDataAtCol(columnIndex)
-              .map((cellValue, rowIndex) => [
+              .getDataAtCol(Number.parseInt(visualCol))
+              .map((cellValue, visualRow) => [
                 latlongutils[columnRole].parse(cellValue),
-                rowIndex,
+                visualRow,
               ])
               .filter(([coordinate]) => coordinate !== null)
-              .map(([coordinate, rowIndex]) => [
-                rowIndex,
-                columnIndex,
+              .map(([coordinate, visualRow]) => [
+                visualRow,
+                Number.parseInt(visualCol),
                 includeSymbolsFunction(
                   stripCardinalDirections(
                     coordinate[conversionFunctionName]().format()
                   )
                 ).trim(),
               ])
-          )
-          .flat()
+        )
       );
     };
     handleOptionChangeBind = handleOptionChange.bind(this);

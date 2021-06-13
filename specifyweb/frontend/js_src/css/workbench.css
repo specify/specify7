@@ -133,6 +133,14 @@
   font-style: italic;
 }
 
+.wbs-form .wb-cell-unmapped {
+  color: #999;
+}
+
+.wbs-form.wb-focus-coordinates .wb-coordinate-cell {
+  color: #000;
+}
+
 .wbs-form .wb-invalid-cells {
   border: solid 1px;
   padding: 8px 5px;
