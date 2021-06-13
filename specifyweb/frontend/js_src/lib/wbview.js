@@ -113,7 +113,11 @@ const WBView = Backbone.View.extend({
 
     this.resize = this.resize.bind(this);
 
-    this.updateCellInfoStats = _.debounce(this.updateCellInfoStats, 1000, true);
+    // Throtle cell count update depending on the DS size (between 10ms and 2s)
+    this.updateCellInfoStats = _.throttle(
+      this.updateCellInfoStats,
+      Math.min(2000, Math.max(10, this.data.length / 10))
+    );
   },
   render() {
     this.$el.append(
