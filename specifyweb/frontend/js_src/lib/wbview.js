@@ -168,6 +168,7 @@ const WBView = Backbone.View.extend({
       if (this.dataset.rowresults) this.getValidationResults();
       this.wbutils.findLocalityColumns();
       this.identifyPickLists();
+      this.identifyDefaultValues();
       this.identifyTreeRanks();
       if (this.dataset.visualorder?.some((column, index) => column !== index))
         this.hot.updateSettings({
@@ -247,13 +248,15 @@ const WBView = Backbone.View.extend({
                 ? `<img
                     class="wb-header-icon"
                     alt="${
-                      this.mappedHeaders[this.dataset.columns[col]].split(
-                        '.'
-                      )?.[1] || ''
+                      this.mappedHeaders[this.dataset.columns[col]]
+                        .split('/')
+                        .slice(-1)?.[0]
+                        ?.split('.')?.[0] ||
+                      this.mappedHeaders[this.dataset.columns[col]]
                     }"
                     src="${this.mappedHeaders[this.dataset.columns[col]]}"
                   >`
-                : ''
+                : '<span class="wb-header-icon-undefined">⃠</span>'
             }
             <span class="wb-header-name columnSorting">
                 ${this.dataset.columns[col]}
@@ -341,36 +344,14 @@ const WBView = Backbone.View.extend({
 
     this.mappedHeaders = mappedHeadersAndTables;
 
-    Object.values(
-      this.el
-        .getElementsByClassName('wtSpreader')[0]
-        ?.getElementsByClassName('colHeader')
-    ).forEach((headerContainer) => {
-      const header = headerContainer.children[0];
-      let headerId = header?.className.match(/wb-header-(\d+)/)?.[1];
-
-      if (!headerId) return;
-
-      headerId = parseInt(headerId);
-
-      const src = this.mappedHeaders[headerId];
-
-      if (typeof src !== 'string') return;
-
-      const img = document.createElement('img');
-      img.classList.add('wb-header-icon');
-      img.setAttribute('src', src);
-      img.setAttribute(
-        'alt',
-        src.split('/').slice(-1)?.[0]?.split('.')?.[0] || src
-      );
-    });
-
     stylesContainer.innerHTML = `${Object.entries(this.dataset.columns)
       .filter(([, columnName]) => !(columnName in mappedHeadersAndTables))
       .map(([index]) => `.wb-col-${index} ${unmappedCellStyles}`)
       .join('\n')}`;
 
+    this.$el.append(stylesContainer);
+  },
+  identifyDefaultValues() {
     this.mappings.defaultValues = Object.fromEntries(
       Object.entries(
         typeof this.mappings.arrayOfMappings === 'undefined'
@@ -388,8 +369,6 @@ const WBView = Backbone.View.extend({
           ? {}
           : { placeholder: this.mappings.defaultValues[index] },
     });
-
-    this.$el.append(stylesContainer);
   },
   identifyPickLists() {
     if (!this.mappings) return;

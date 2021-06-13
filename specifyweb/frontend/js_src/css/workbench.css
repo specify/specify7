@@ -111,6 +111,12 @@
   line-height: 20px;
 }
 
+.wb-header-icon-undefined {
+  color: #f24;
+  font-size: 1rem;
+  margin-top: -4px;
+}
+
 .handsontable .columnSorting::before {
   position: static !important;
   order: 2;
@@ -124,7 +130,7 @@
 }
 
 .wbs-form .wb-header-unmapped {
-  color: #999;
+  font-style: italic;
 }
 
 .wbs-form .wb-invalid-cells {
