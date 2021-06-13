@@ -233,6 +233,7 @@ export const DataSetMeta = Backbone.View.extend({
   },
 });
 
+// A wrapper for DS Meta for embeeding in the WB
 export default Backbone.View.extend({
   __name__: 'DataSetNameView',
   events: {

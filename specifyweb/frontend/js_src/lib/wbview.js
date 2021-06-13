@@ -1015,7 +1015,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
       });
   },
   changeOwner() {
-    this.datasetmeta.changeOwnerWindow.call(this.datasetmeta);
+    this.datasetmeta.dataSetMeta.changeOwnerWindow.call(this.datasetmeta);
   },
 
   // Actions
@@ -1547,7 +1547,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
      *
      * Also, if the navigation direction is set to ColByCol, the resulting array
      * is transposed.
-    * */
+     * */
     if (this.flushIndexedCellData) {
       const getPosition = (visualRow, visualCol, first) =>
         (this.wbutils.searchPreferences.navigation.direction === 'rowFirst') ===
