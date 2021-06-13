@@ -210,14 +210,14 @@ module.exports = Backbone.View.extend({
       { length: this.wbview.dataset.columns.length },
       (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
     );
+    const data = this.wbview.hot.getData();
     for (let visualRow = 0; visualRow < rowCount; visualRow++)
       for (
         let visualCol = 0;
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const cellData =
-          this.wbview.hot.getDataAtCell(visualRow, visualCol) || '';
+        const cellData = data[visualRow][visualCol] || '';
         const searchValue = cellData
           ? cellData
           : this.wbview.mappings.defaultValues[
