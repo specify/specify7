@@ -108,6 +108,10 @@
   background-size: contain;
 }
 
+.wbs-form .wb-header-unmapped .wb-header-name {
+  padding-left: 0.3rem;
+}
+
 .handsontable .columnSorting {
   line-height: 20px;
 }
@@ -138,10 +142,6 @@
 /* CONTENT styles */
 .handsontable .htPlaceholder {
   color: #66f;
-}
-
-.wbs-form .wb-header-unmapped {
-  font-style: italic;
 }
 
 .wbs-form .wb-cell-unmapped {
