@@ -254,7 +254,9 @@ const WBView = Backbone.View.extend({
             const tableName =
               tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0] ||
               tableIcon;
-            return `<div class="${isMapped ? '' : 'wb-header-unmapped'}">
+            return `<div class="wb-col-header ${
+              isMapped ? '' : 'wb-header-unmapped'
+            }">
               ${
                 isMapped
                   ? `<img

@@ -95,10 +95,11 @@
   display: contents !important;
 }
 
-.htCore .colHeader div {
+.htCore .colHeader .wb-col-header {
   display: flex;
   column-gap: 0.2rem;
   align-items: center;
+  padding-left: 15px;
 }
 
 .htCore .colHeader .wb-header-icon {
@@ -117,11 +118,21 @@
   margin-top: -4px;
 }
 
+/* Sorting direction */
 .handsontable .columnSorting::before {
   position: static !important;
   order: 2;
   margin-top: 5px !important;
-  margin-right: -13px;
+  padding-right: 2px;
+  background-position-x: center !important;
+}
+
+/* Sorting priority index */
+.handsontable .columnSorting::after {
+  position: static !important;
+  order: 2;
+  margin-top: 8px !important;
+  margin-left: -10px;
 }
 
 /* CONTENT styles */
