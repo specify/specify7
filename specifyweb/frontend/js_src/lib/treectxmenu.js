@@ -29,7 +29,10 @@ function contextMenuBuilder(treeView) {
                     name: "Add child",
                     icon: "add-child",
                     accesskey: "a",
-                    disabled: view.acceptedId != null
+                    disabled:
+                        view.acceptedId != null
+                        // Forbid adding children to the lowest rank
+                        || view.ranks.slice(-1)[0] === view.rankId
                 },
                 'move': {name: "Move", icon: "move", accesskey: "m"},
                 'merge': {name: "Merge", icon: "merge", accesskey: "g"},
