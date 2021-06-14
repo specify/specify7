@@ -1,6 +1,8 @@
+import type hot from 'handsontable';
+
 import type { AutoMapperResults } from './automapper';
 import type { SearchPreferences } from './components/wbadvancedsearch';
-import type { IR, R } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type {
   DataModelListOfTables,
@@ -51,5 +53,8 @@ export type CacheDefinitions = IR<IR<unknown>> & {
   };
   readonly workbench: {
     readonly 'search-properties': SearchPreferences;
+  };
+  readonly 'workbench-sort-config': {
+    readonly [key in number]: RA<hot.columnSorting.Config>;
   };
 };

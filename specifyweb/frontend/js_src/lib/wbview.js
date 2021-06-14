@@ -40,6 +40,7 @@ const { capitalize } = require('./wbplanviewhelper.ts');
 const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
+const cache = require('./cache.ts');
 
 const getDefaultCellMeta = () => ({
   isNew: false,
@@ -180,6 +181,7 @@ const WBView = Backbone.View.extend({
       this.identifyCoordinateColumns();
       this.identifyDefaultValues();
       this.identifyTreeRanks();
+      this.fetchSortConfig();
       if (this.dataset.visualorder?.some((column, index) => column !== index))
         this.hot.updateSettings({
           manualColumnMove: this.dataset.visualorder,
@@ -326,6 +328,7 @@ const WBView = Backbone.View.extend({
           beforeRemoveRow: () => !this.readOnly,
           afterRemoveRow: this.afterRemoveRow.bind(this),
           beforeColumnSort: this.beforeColumnSort.bind(this),
+          afterColumnSort: this.afterColumnSort.bind(this),
           beforeColumnMove: this.beforeColumnMove.bind(this),
           afterColumnMove: this.afterColumnMove.bind(this),
           afterRenderer: this.afterRenderer.bind(this),
@@ -458,6 +461,19 @@ const WBView = Backbone.View.extend({
           return groupedRanks;
         }, {})
     );
+  },
+  async fetchSortConfig() {
+    const currentColection = await cache.getCurrentColectionId();
+    const sortConfig = cache.get(
+      'workbench-sort-config',
+      `${currentColection}_${this.dataset.id}`
+    );
+    if (!Array.isArray(sortConfig)) return;
+    const visualSortConfig = sortConfig.map(({ physicalCol, ...rest }) => ({
+      ...rest,
+      column: this.hot.toVisualColumn(physicalCol),
+    }));
+    this.multiColumnSortingPlugin.sort(visualSortConfig);
   },
 
   // Hooks
@@ -685,6 +701,23 @@ const WBView = Backbone.View.extend({
     this.sortConfigIsSet = false;
 
     return false;
+  },
+  async afterColumnSort(_previousSortConfig, sortConfig) {
+    const currentColection = await cache.getCurrentColectionId();
+    const physicalSortConfig = sortConfig.map(
+      ({ column: visualCol, ...rest }) => ({
+        ...rest,
+        physicalCol: this.hot.toPhysicalColumn(visualCol),
+      })
+    );
+    cache.set(
+      'workbench-sort-config',
+      `${currentColection}_${this.dataset.id}`,
+      physicalSortConfig,
+      {
+        overwrite: true,
+      }
+    );
   },
   beforeColumnMove(_columnIndexes, startPosition, endPosition) {
     // An ugly fix for jQuery dialogs conflicting with HOT

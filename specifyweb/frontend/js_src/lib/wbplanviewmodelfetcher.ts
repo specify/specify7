@@ -244,9 +244,7 @@ export default async function (): Promise<void> {
   if (typeof dataModelStorage.tables !== 'undefined') return;
 
   if (cacheVersion === '') {
-    const request = await fetch('/context/collection/');
-    const data = (await request.json()) as { readonly current: number };
-    const currentCollection = data.current;
+    const currentCollection = await cache.getCurrentColectionId();
     cacheVersion = `${dataModelFetcherVersion}_${currentCollection}`;
   }
 
