@@ -190,12 +190,10 @@ const WBView = Backbone.View.extend({
     this.initHot().then(() => {
       this.resize();
 
-      this.searchCell = (visualRow, visualCol, value) =>
+      this.searchCell = (physicalRow, physicalCol, value) =>
         this.wbutils.searchCallback(
-          this.hot,
-          visualRow,
-          visualCol,
-          value,
+          physicalRow,
+          physicalCol,
           this.wbutils.searchFunction(this.wbutils.searchQuery, value)
         );
 
@@ -558,17 +556,15 @@ const WBView = Backbone.View.extend({
 
     if (changes.length === 0) return;
 
-    changes.forEach(
-      ({ visualRow, visualCol, physicalRow, physicalCol, newValue }) => {
-        this.clearDisambiguation(physicalRow);
-        this.updateCellMeta(physicalRow, physicalCol, 'isModified', true);
-        if (
-          this.wbutils.searchPreferences.search.liveUpdate &&
-          this.wbutils.searchQuery !== ''
-        )
-          this.searchCell(visualRow, visualCol, newValue);
-      }
-    );
+    changes.forEach(({ physicalRow, physicalCol, newValue }) => {
+      this.clearDisambiguation(physicalRow);
+      this.updateCellMeta(physicalRow, physicalCol, 'isModified', true);
+      if (
+        this.wbutils.searchPreferences.search.liveUpdate &&
+        this.wbutils.searchQuery !== ''
+      )
+        this.searchCell(physicalRow, physicalCol, newValue);
+    });
 
     this.spreadSheetChanged();
     this.updateCellInfoStats();

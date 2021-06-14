@@ -206,33 +206,28 @@ module.exports = Backbone.View.extend({
 
     let resultsCount = 0;
     const rowCount = this.wbview.hot.countRows();
-    const physicalToVisualCol = Array.from(
+    const toPhysicalCol = Array.from(
       { length: this.wbview.dataset.columns.length },
-      (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
+      (_, visualCol) => this.wbview.hot.toPhysicalColumn(visualCol)
     );
     const data = this.wbview.dataset.rows;
-    for (let visualRow = 0; visualRow < rowCount; visualRow++)
+    for (let visualRow = 0; visualRow < rowCount; visualRow++) {
+      const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
       for (
         let visualCol = 0;
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const cellData = data[visualRow][visualCol] || '';
+        const physicalCol = toPhysicalCol[visualCol];
+        const cellData = data[physicalRow][physicalCol] || '';
         const searchValue = cellData
           ? cellData
-          : this.wbview.mappings.defaultValues[
-              physicalToVisualCol[visualCol]
-            ] ?? '';
+          : this.wbview.mappings.defaultValues[physicalCol] ?? '';
         const testResult = this.searchFunction(this.searchQuery, searchValue);
-        this.searchCallback(
-          this.wbview.hot,
-          visualRow,
-          visualCol,
-          searchValue,
-          testResult
-        );
+        this.searchCallback(physicalRow, physicalCol, testResult);
         if (testResult) resultsCount += 1;
       }
+    }
 
     navigationTotalElement.innerText = resultsCount;
 
@@ -378,10 +373,10 @@ module.exports = Backbone.View.extend({
       return cellValue.trim() === searchQuery;
     else return cellValue.trim().includes(searchQuery);
   },
-  searchCallback(_, visualRow, visualCol, data, testResult) {
+  searchCallback(physicalRow, physicalCol, testResult) {
     this.wbview.updateCellMeta(
-      this.wbview.hot.toPhysicalRow(visualRow),
-      this.wbview.hot.toPhysicalColumn(visualCol),
+      physicalRow,
+      physicalCol,
       'isSearchResult',
       testResult
     );
