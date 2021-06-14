@@ -513,18 +513,16 @@ const WBView = Backbone.View.extend({
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const issues = this.cellMeta[physicalRow][physicalCol]['issues'] ?? [];
+    const getValidationMessage = (value) =>
+      `
+      ${value} is not a legal value in this picklist field.
+      Please click on the arrow to choose among available options.`
+        .trim()
+        .replace(/ {2,}/, ' ');
     const newIssues = [
       ...new Set([
-        ...(isValid
-          ? []
-          : [
-              `${value} is not a legal value in this picklist field.
-          Please click on the arrow to choose among available options.
-          `
-                .trim()
-                .replace(/ {2,}/, ' '),
-            ]),
-        ...issues,
+        ...(isValid ? [] : [getValidationMessage(value)]),
+        ...issues.filter((issue) => !issue.endsWith(getValidationMessage(''))),
       ]),
     ];
     if (JSON.stringify(issues) !== JSON.stringify(newIssues)) {
