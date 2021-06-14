@@ -122,6 +122,14 @@
   margin-top: -4px;
 }
 
+.handsontable td .htAutocompleteArrow {
+    color: #000;
+}
+
+.handsontable td .htAutocompleteArrow:hover {
+    color: #999;
+}
+
 /* Sorting direction */
 .handsontable .columnSorting::before {
   position: static !important;
