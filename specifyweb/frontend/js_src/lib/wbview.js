@@ -596,6 +596,7 @@ const WBView = Backbone.View.extend({
       ),
       this.cellMeta.slice(startIndex + amount - 1),
     ].flat();
+    this.updateCellInfoStats();
   },
   afterRemoveRow(startIndex, amount, source) {
     if (this.hot && source !== 'auto') this.spreadSheetChanged();
@@ -605,6 +606,7 @@ const WBView = Backbone.View.extend({
       this.cellMeta.slice(0, startIndex),
       this.cellMeta.slice(startIndex + amount),
     ].flat();
+    this.updateCellInfoStats();
   },
   beforeColumnSort(currentSortConfig, newSortConfig) {
     this.flushIndexedCellMeta = true;
