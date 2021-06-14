@@ -217,7 +217,7 @@ module.exports = Backbone.View.extend({
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const cellData = [visualRow][visualCol] || '';
+        const cellData = data[visualRow][visualCol] || '';
         const searchValue = cellData
           ? cellData
           : this.wbview.mappings.defaultValues[
