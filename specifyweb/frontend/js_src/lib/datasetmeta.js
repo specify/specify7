@@ -268,6 +268,6 @@ export default Backbone.View.extend({
     return this;
   },
   startEditing() {
-    this.dataSetMeta.open();
+    this.dataSetMeta.startEditing();
   },
 });
