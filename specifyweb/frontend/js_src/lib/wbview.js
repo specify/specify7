@@ -613,7 +613,7 @@ const WBView = Backbone.View.extend({
 
     const findTreeColumns = (sortConfig, deltaSearchConfig) =>
       sortConfig
-        .map(({ visualCol, sortOrder }) => ({
+        .map(({ column: visualCol, sortOrder }) => ({
           sortOrder,
           visualCol,
           physicalCol: this.hot.toPhysicalColumn(visualCol),
@@ -663,7 +663,7 @@ const WBView = Backbone.View.extend({
       changedTreeColumn.rankGroup.groupIndex
     ]
       .filter(({ rankId }) => rankId >= changedTreeColumn.rankGroup.rankId)
-      .map(({ visualCol }) => visualCol);
+      .map(({ physicalCol }) => this.hot.toVisualColumn(physicalCol));
 
     // Filter out columns that are about to be sorted
     const partialSortConfig = newSortConfig.filter(
