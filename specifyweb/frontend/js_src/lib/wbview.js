@@ -83,7 +83,7 @@ const WBView = Backbone.View.extend({
   },
 
   // Constructors & Renderers
-  initialize({ dataset, refreshInitiatedBy }) {
+  initialize({ dataset, refreshInitiatedBy, refreshInitiatorAborted }) {
     this.dataset = dataset;
     this.data = dataset.rows;
     this.originalData = this.data.map((row) => [...row]);
@@ -131,6 +131,7 @@ const WBView = Backbone.View.extend({
     this.readOnly = this.uploaded;
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
+    this.refreshInitiatorAborted = refreshInitiatorAborted;
     this.rowResults = this.dataset.rowresults
       ? this.dataset.rowresults.slice()
       : [];
@@ -1109,10 +1110,12 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
   // Actions
   unupload() {
-    const dialog = $(
-      '<div>Rolling back the Data Set will attempt to remove the data it added to the main Specify tables. ' +
-        'The rollback can fail if the data has been referenced by other new data in the interim.</div>'
-    ).dialog({
+    const dialog = $(`<div>
+      Rolling back will remove the data records this Data Set added to the
+      Specify database. The entire rollback will be canceled if any of the
+      uploaded data have been referenced (re-used) by other data records in the
+      database since the time they were uploaded.
+    </div>`).dialog({
       modal: true,
       title: 'Start Data Set Rollback?',
       close() {
@@ -1191,9 +1194,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   openStatus(mode) {
     new WBStatus({ dataset: this.dataset })
       .render()
-      .on('done', (aborted) =>
-        this.trigger('refresh', aborted ? undefined : mode)
-      );
+      .on('done', (wasAborted) => this.trigger('refresh', mode, wasAborted));
   },
   delete: function () {
     const dialog =
@@ -1545,7 +1546,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     });
 
     const refreshInitiatedBy = showValidationSummary
-      ? 'validation'
+      ? 'validate'
       : this.refreshInitiatedBy;
 
     if (refreshInitiatedBy)
@@ -1553,7 +1554,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
   },
   operationCompletedMessage(cellCounts, refreshInitiatedBy) {
     const messages = {
-      validation:
+      validate:
         cellCounts.invalidCells === 0
           ? {
               title: 'Validation successful',
@@ -1591,10 +1592,21 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     };
 
     if (refreshInitiatedBy in messages) {
+      let title;
+      let message;
+      if (this.refreshInitiatorAborted) {
+        const action =
+          refreshInitiatedBy === 'validate' ? 'Validation' : refreshInitiatedBy;
+        title = `${capitalize(action)} successfully canceled`;
+        message = title;
+      } else {
+        title = messages[refreshInitiatedBy].title;
+        message = messages[refreshInitiatedBy].message;
+      }
       const dialog = $(`<div>
-                ${messages[refreshInitiatedBy].message}
+                ${message}
             </div>`).dialog({
-        title: messages[refreshInitiatedBy].title,
+        title,
         modal: true,
         width: 400,
         buttons: {
@@ -1603,6 +1615,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
       });
 
       this.refreshInitiatedBy = undefined;
+      this.refreshInitiatorAborted = false;
     }
   },
   clearAllMetaData() {
@@ -1660,7 +1673,11 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
   },
 });
 
-module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
+module.exports = function loadDataset(
+  id,
+  refreshInitiatedBy = undefined,
+  refreshInitiatorAborted = false
+) {
   const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
     title: 'Loading',
     modal: true,
@@ -1680,7 +1697,8 @@ module.exports = function loadDataset(id, refreshInitiatedBy = undefined) {
       const view = new WBView({
         dataset,
         refreshInitiatedBy,
-      }).on('refresh', (mode) => loadDataset(id, mode));
+        refreshInitiatorAborted,
+      }).on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted));
       app.setCurrentView(view);
     })
     .fail((jqXHR) => {
