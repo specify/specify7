@@ -166,16 +166,14 @@ class TreeMatchingTests(UploadTestsBase):
             {'State': 'Missouri', 'City': 'Columbia'},
         ]
         results = do_upload(self.collection, data, scoped_plan, self.agent.id)
-        self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertIsInstance(results[1].record_result, Uploaded)
-        for r in results:
-            uploaded_co = get_table('Geography').objects.get(id=r.get_id()).parent
-            self.assertEqual(co.id, uploaded_co.definitionitem.id)
-            self.assertEqual('Uploaded', uploaded_co.name)
-
-            uploaded_state = get_table('Geography').objects.get(id=r.get_id()).parent.parent
-            self.assertEqual(state.id, uploaded_state.definitionitem.id)
-
+        self.assertEqual(
+            results[0].record_result,
+            FailedBusinessRule(message="Missing values for enforced tree levels ['County'].",
+                               info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)))
+        self.assertEqual(
+            results[1].record_result,
+            FailedBusinessRule(message="Missing values for enforced tree levels ['County'].",
+                               info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)))
 
     def test_match_skip_level(self) -> None:
         plan_json = dict(

@@ -214,6 +214,8 @@ class BoundTreeRecord(NamedTuple):
         steps = sum(1 for tdi in self.treedefitems if parent['definitionitem__rankid'] < tdi.rankid <= to_match.treedefitem.rankid) \
             if parent is not None else 1
 
+        assert steps > 0, (parent, to_match)
+
         filters = {field: value for r in to_match.results for field, value in r.filter_on.items()}
 
         cache_key = (self.name, steps, parent and parent['id'], to_match.treedefitem.id, tuple(sorted(filters.items())))
@@ -236,51 +238,56 @@ class BoundTreeRecord(NamedTuple):
 
         return matches
 
-    def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch], enforce_levels: bool=True) -> UploadResult:
+    def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch]) -> UploadResult:
         assert to_upload
         model = getattr(models, self.name)
 
         parent_info: Optional[Dict]
         if isinstance(matched, Matched):
-            parent_info = model.objects.values('id', 'definitionitem__rankid').get(id=matched.id)
+            parent_info = model.objects.values('id', 'name', 'definitionitem__rankid', 'definitionitem__name').get(id=matched.id)
             parent_result = {'parent': UploadResult(matched, {}, {})}
         else:
             parent_info = None
             parent_result = {}
 
-        if enforce_levels:
-            tdis = [
-                tdi
+            placeholder: List[ParseResult] = [filter_and_upload({'name': "Uploaded"}, "")]
+
+            placeholders = [
+                TreeDefItemWithParseResults(tdi, placeholder)
                 for tdi in self.treedefitems
-                if  tdi.rankid <= to_upload[-1].treedefitem.rankid
-                and (parent_info is None or tdi.rankid > parent_info['definitionitem__rankid'])
+                if  tdi.rankid < to_upload[0].treedefitem.rankid
+                and (tdi.rankid == 0 or tdi.isenforced)
             ]
 
-            to_upload_by_rankid = {
-                tdiwpr.treedefitem.rankid: tdiwpr
-                for tdiwpr in to_upload
-            }
-
-            dummy: List[ParseResult] = [filter_and_upload({'name': "Uploaded"}, "")]
-
-            with_enforced = [
-                to_upload_by_rankid.get(tdi.rankid, TreeDefItemWithParseResults(tdi, dummy))
-                for tdi in tdis
-                if tdi.rankid == 0 or tdi.isenforced or tdi.rankid in to_upload_by_rankid
-            ]
-
-            if with_enforced[0] is not to_upload[0]:
+            if placeholders:
                 # dummy values were added above the nodes we want to upload
                 # rerun the match in case those dummy values already exist
-                unmatched, new_match_result = self._match(with_enforced)
+                unmatched, new_match_result = self._match(placeholders + to_upload)
                 if isinstance(new_match_result, MatchedMultiple):
                     return UploadResult(
                         FailedBusinessRule("There are multiple 'Uploaded' placeholder values in the tree!", new_match_result.info),
                         {}, {}
                     )
-                return self._upload(unmatched, new_match_result, False)
-            else:
-                to_upload = with_enforced
+                return self._upload(unmatched, new_match_result)
+
+        uploading_rankids = [u.treedefitem.rankid for u in to_upload]
+        skipped_enforced = [
+            tdi
+            for tdi in self.treedefitems
+            if tdi.isenforced
+            and tdi.rankid > (parent_info['definitionitem__rankid'] if parent_info else 0)
+            and tdi.rankid < uploading_rankids[-1]
+            and tdi.rankid not in uploading_rankids
+        ]
+
+        if skipped_enforced:
+            names = [tdi.title if tdi.title else tdi.name for tdi in skipped_enforced]
+            after_skipped = [u for u in to_upload if u.treedefitem.rankid > skipped_enforced[-1].rankid]
+            info = ReportInfo(tableName=self.name, columns=[r.column for r in after_skipped[0].results], treeInfo=None)
+            return UploadResult(
+                FailedBusinessRule(f'Missing values for enforced tree levels {repr(names)}.', info),
+                {}, {}
+            )
 
         for tdiwpr in to_upload:
             attrs = {c: v for r in tdiwpr.results for c, v in r.upload.items()}
