@@ -1071,7 +1071,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
   // Actions
   unupload() {
-    $(
+    const dialog = $(
       '<div>Rolling back the Data Set will attempt to remove the data it added to the main Specify tables. ' +
         'The rollback can fail if the data has been referenced by other new data in the interim.</div>'
     ).dialog({
@@ -1087,10 +1087,11 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             this.uploadedView = undefined;
           }
           $.post(`/api/workbench/unupload/${this.dataset.id}/`);
+          dialog.remove();
           this.openStatus('unupload');
         },
         Cancel() {
-          $(this).dialog('close');
+          $(this).remove();
         },
       },
     });
@@ -1099,18 +1100,21 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     if (this.mappings?.arrayOfMappings.length > 0) {
       if (mode === 'upload') {
-        $(
+        const dialog = $(
           '<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>'
         ).dialog({
           modal: true,
           title: 'Start Data Set Upload?',
           close() {
-            $(this).remove();
+            dialog.remove();
           },
           buttons: {
-            Upload: () => this.startUpload(mode),
+            Upload: () => {
+              this.startUpload(mode);
+              dialog.remove();
+            },
             Cancel() {
-              $(this).dialog('close');
+              dialog.remove();
             },
           },
         });
@@ -1455,6 +1459,8 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
 
   // MetaData
   async updateCellInfoStats(showValidationSummary = false) {
+    if (!this.hotIsReady) return;
+
     const cellMeta = this.cellMeta.flat(2);
 
     const cellCounts = {
@@ -1526,7 +1532,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
         cellCounts.invalidCells === 0
           ? {
               title: 'Upload Completed',
-              message: `Click on the "results" button above to see values for
+              message: `Click on the "Results" button above to see values for
                         new records added to each database table.`,
             }
           : {
