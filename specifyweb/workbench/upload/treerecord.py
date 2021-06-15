@@ -195,7 +195,7 @@ class BoundTreeRecord(NamedTuple):
         if n_matches > 1:
             info = ReportInfo(
                 tableName=self.name,
-                columns=matched_cols + [r.column for r in to_match.results],
+                columns=[r.column for r in to_match.results],
                 treeInfo=TreeInfo(to_match.treedefitem.name, "")
             )
             ids = [m['id'] for m in matches]
