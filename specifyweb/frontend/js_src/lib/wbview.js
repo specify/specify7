@@ -1526,9 +1526,8 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
         cellCounts.invalidCells === 0
           ? {
               title: 'Upload Completed',
-              message: `Click on the "View Upload Results" button below or the
-                        "Results" button above, to see lists of new records
-                        added to each data table.`,
+              message: `Click on the "results" button above to see values for
+                        new records added to each database table.`,
             }
           : {
               title: 'Upload failed due to validation errors',
@@ -1553,15 +1552,6 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
         modal: true,
         width: 400,
         buttons: {
-          ...(this.refreshInitiatedBy === 'upload' &&
-          cellCounts.invalidCells === 0
-            ? {
-                'View Upload Results': () => {
-                  this.displayUploadedView();
-                  dialog.dialog('close');
-                },
-              }
-            : {}),
           Close: () => dialog.dialog('destroy'),
         },
       });
