@@ -971,19 +971,8 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         );
       });
 
-      const applyToAll = $(`<label>
-          <br>
-          <input
-            type="checkbox"
-            class="da-use-for-all"
-            value="yes"
-          >
-          Apply All
-        </label>`);
-
       $('<div>')
         .append(content)
-        .append(applyToAll)
         .dialog({
           title: 'Disambiguate Multiple Record Matches',
           minWidth: 400,
@@ -1003,9 +992,18 @@ you will need to add fields and values to the data set to resolve the ambiguity.
               text: 'Apply',
               click() {
                 const selected = $('input.da-option:checked', this).val();
-                const useForAll = $('input.da-use-for-all:checked', this).val();
                 if (selected != null) {
-                  (useForAll ? doAll : doDA)(selected);
+                  doDA(selected);
+                  $(this).dialog('close');
+                }
+              },
+            },
+            {
+              text: 'Apply All',
+              click() {
+                const selected = $('input.da-option:checked', this).val();
+                if (selected != null) {
+                  doAll(selected);
                   $(this).dialog('close');
                 }
               },
