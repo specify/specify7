@@ -268,11 +268,12 @@ export const stateReducer = generateReducer<
                   className="v-center wbplanview-readonly-badge"
                   title={`
                   You are viewing the mappings for an uploaded dataset.
-                  To edit the mappings, un-upload the dataset or create a new
-                  dataset
-                `}
+                  To edit the mappings, rollback the upload or create a new
+                  dataset`
+                    .trim()
+                    .replace(/\s{2,}/g, ' ')}
                 >
-                  Data Set Uploaded, Read-Only
+                  Data Set uploaded. This Upload Plan cannot be changed
                 </span>
               ) : (
                 <>
