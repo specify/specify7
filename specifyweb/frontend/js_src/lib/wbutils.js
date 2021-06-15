@@ -689,7 +689,7 @@ module.exports = Backbone.View.extend({
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
         const [_currentRow, currentCol] = this.getSelectedLast();
-        this.wbview.hot.scrollViewportTo(rowNumber, selectedColumn);
+        this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
         // select an entire row
         this.wbview.hot.selectRows(rowNumber);
       },
