@@ -151,43 +151,43 @@ const WBView = Backbone.View.extend({
       Array.from({ length: this.dataset.columns.length }, getDefaultCellMeta)
     );
 
-    const initDataModelIntegration = () => {
-      if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
-        $(`<div>
+    const initDataModelIntegration = () =>
+      this.hot.batch(() => {
+        if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
+          $(`<div>
         No upload plan has been defined for this Data Set. Create one now?
        </div>`).dialog({
-          title: 'No upload plan is defined',
-          modal: true,
-          buttons: {
-            Create: this.openPlan.bind(this),
-            Cancel: function () {
-              $(this).dialog('close');
+            title: 'No upload plan is defined',
+            modal: true,
+            buttons: {
+              Create: this.openPlan.bind(this),
+              Cancel: function () {
+                $(this).dialog('close');
+              },
             },
-          },
-        });
-        this.$('.wb-validate, .wb-data-check')
-          .prop('disabled', true)
-          .prop(
-            'title',
-            'Please define an upload plan before validating the Data Set'
-          );
-      } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+          });
+          this.$('.wb-validate, .wb-data-check')
+            .prop('disabled', true)
+            .prop(
+              'title',
+              'Please define an upload plan before validating the Data Set'
+            );
+        } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
 
-      this.identifyMappedHeaders();
-      // This needs to run after identifyMappedHeaders
-      if (this.dataset.rowresults) this.getValidationResults();
-      this.wbutils.findLocalityColumns();
-      this.identifyPickLists();
-      this.identifyCoordinateColumns();
-      this.identifyDefaultValues();
-      this.identifyTreeRanks();
-      this.fetchSortConfig();
-      if (this.dataset.visualorder?.some((column, index) => column !== index))
-        this.hot.updateSettings({
-          manualColumnMove: this.dataset.visualorder,
-        });
-      this.hotIsReady = true;
-    };
+        this.identifyMappedHeaders();
+        if (this.dataset.rowresults) this.getValidationResults();
+        this.wbutils.findLocalityColumns();
+        this.identifyPickLists();
+        this.identifyCoordinateColumns();
+        this.identifyDefaultValues();
+        this.identifyTreeRanks();
+        this.fetchSortConfig();
+        if (this.dataset.visualorder?.some((column, index) => column !== index))
+          this.hot.updateSettings({
+            manualColumnMove: this.dataset.visualorder,
+          });
+        this.hotIsReady = true;
+      });
 
     this.initHot().then(() => {
       this.resize();
@@ -211,7 +211,6 @@ const WBView = Backbone.View.extend({
           this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
             this.mappings.mappingsTree
           );
-          this.mappings.treeRanks = undefined;
 
           this.mappings.tableNames = this.mappings.arrayOfMappings.map(
             ({ mappingPath }) =>
@@ -1337,7 +1336,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
   gotRowValidationResult(physicalRow, result) {
     if (this.validationMode !== 'live') return;
     this.rowResults[physicalRow] = result.result;
-    this.hot.batchRender(() =>
+    this.hot.batch(() =>
       this.parseRowValidationResult(physicalRow, result.validation, true)
     );
     this.updateCellInfoStats();
@@ -1391,7 +1390,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
           return;
         }
 
-        this.hot.batchRender(() => {
+        this.hot.batch(() => {
           results.forEach((result, physicalRow) => {
             this.parseRowValidationResult(physicalRow, result, false);
           });
@@ -1581,7 +1580,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     const columnIndexes = this.dataset.columns.map(
       (_, physicalCol) => physicalCol
     );
-    this.hot.batchRender(() =>
+    this.hot.batch(() =>
       Array.from({ length: this.hot.countRows() }, (_, physicalRow) =>
         columnIndexes.forEach((physicalCol) =>
           cellMeta.forEach(([key, value]) =>
