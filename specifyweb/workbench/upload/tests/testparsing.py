@@ -239,8 +239,8 @@ class ParsingTests(UploadTestsBase):
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
         self.assertEqual([ParseFailure(
-            message="Hon. is not a legal value in this picklist field.\n"
-                    "Please click on the arrow to choose among available "
+            message="\"Hon.\" is not a legal value in this picklist field.\n"
+                    "Click on the arrow to choose among available "
                     "options.",
             column='title'
         )], result2.failures)
