@@ -998,16 +998,22 @@ you will need to add fields and values to the data set to resolve the ambiguity.
               class="da-option"
               name="disambiguate" value="${resource.id}"
             >
+            <span class="label">${resource.id}</span>
             <a
               href="${resource.viewUrl()}"
               target="_blank"
             >ℹ️</a>
-            <span class="label">${resource.id}</span>
           <label/>`
         ).appendTo(content);
-        formatObj(resource).done((formatted) =>
-          row.find('.label').text(formatted)
-        );
+        if (model.getField('rankid')) {
+          resource.rget('parent.fullname').done((parentName) =>
+            row.find('.label').text(`${resource.get('fullname')} (in ${parentName})`)
+          );
+        } else {
+          formatObj(resource).done((formatted) =>
+            row.find('.label').text(formatted)
+          );
+        }
       });
 
       $('<div>')
