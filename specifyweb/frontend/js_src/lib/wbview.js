@@ -1231,10 +1231,8 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     // clear validation
     this.clearAllMetaData();
     this.dataset.rowresults = null;
-    if (this.validationMode === 'static') {
-      this.validationMode = 'off';
-      this.updateValidationButton();
-    }
+    this.validationMode = 'off';
+    this.updateValidationButton();
 
     //show saving progress bar
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
