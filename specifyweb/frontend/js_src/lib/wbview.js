@@ -530,7 +530,7 @@ const WBView = Backbone.View.extend({
       // remove isModified state to make error state visible
       if (newIssues.length > 0)
         setTimeout(
-          // need to reset the state after afterChange hook
+          // need to reset the state after the afterChange hook
           () =>
             this.updateCellMeta(physicalRow, physicalCol, 'isModified', false),
           0
@@ -589,8 +589,9 @@ const WBView = Backbone.View.extend({
           // Ignore changes to unmapped columns
           .filter(
             ({ physicalCol }) =>
-              Object.keys(this.mappings.mappedHeaders).indexOf(
-                this.dataset.columns[physicalCol]
+              this.mappings.arrayOfMappings.findIndex(
+                ({ headerName }) =>
+                  this.dataset.columns.indexOf(headerName) === physicalCol
               ) !== -1
           )
           .map(({ physicalRow }) => physicalRow)
