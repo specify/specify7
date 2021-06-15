@@ -206,7 +206,7 @@
 .mapping-line-list {
   flex: 1;
   display: grid;
-  grid-template-columns: max-content auto;
+  grid-template-columns: 2.2rem max-content auto;
   grid-auto-rows: max-content;
   overflow-x: hidden;
 }
@@ -226,6 +226,19 @@
 
 .wbplanview-mapping-line-focused > .wbplanview-mapping-line-elements {
   background: var(--b2);
+}
+
+/* MAPPING LINE CONTROLS */
+.wbplanview-mapping-line-controls button {
+  border: none;
+  background: var(--b2);
+  padding: 0.3rem;
+  height: 100%;
+  width: 100%;
+}
+
+.wbplanview-mapping-line-controls button:not([disabled]):hover {
+  background: var(--b3);
 }
 
 /* MAPPINGS LINE ELEMENTS */
