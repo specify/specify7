@@ -1191,7 +1191,9 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   openStatus(mode) {
     new WBStatus({ dataset: this.dataset })
       .render()
-      .on('done', () => this.trigger('refresh', mode));
+      .on('done', (aborted) =>
+        this.trigger('refresh', aborted ? undefined : mode)
+      );
   },
   delete: function () {
     const dialog =

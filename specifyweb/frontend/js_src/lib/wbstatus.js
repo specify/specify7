@@ -14,6 +14,7 @@ module.exports = Backbone.View.extend({
   initialize({ dataset }) {
     this.dataset = dataset;
     this.stopStatusRefresh = false;
+    this.aborted = false;
   },
   render() {
     const stopRefresh = () => (this.stopStatusRefresh = true);
@@ -32,7 +33,9 @@ module.exports = Backbone.View.extend({
         {
           text: 'Stop',
           click: () => {
-            $.post(`/api/workbench/abort/${this.dataset.id}/`);
+            $.post(`/api/workbench/abort/${this.dataset.id}/`).done(() => {
+              this.aborted = true;
+            });
           },
         },
       ],
@@ -57,7 +60,7 @@ module.exports = Backbone.View.extend({
       if (status == null) {
         this.stopStatusRefresh = true;
         this.$el.dialog('close');
-        this.trigger('done');
+        this.trigger('done', this.aborted);
       } else {
         this.$el.empty().append(statusTemplate({ status: status }));
         this.initializeProgressBar();
