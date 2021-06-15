@@ -43,9 +43,23 @@ const template = require('./templates/wbview.html');
 const cache = require('./cache.ts');
 
 const getDefaultCellMeta = () => ({
+  // The value in this cell would be used to create a new record
   isNew: false,
+  /*
+   * Thiis cell has been modified since last change
+   * Possible values:
+   *   false - not modified
+   *   true - modified
+   *   'persistent' - same as true, but is shown even if cell's value didn't
+   *     chagnge (useful for disambiguation)
+   *   'shadow' - if cell has not issues, acts like true. Else, acts like false
+   *     (useful for detecting picklist value errors on the front end, without
+   *     querying the back-end)
+   * */
   isModified: false,
+  // Whether the cells matches search query
   isSearchResult: false,
+  // List of strings representing the validation errors
   issues: [],
 });
 
@@ -491,7 +505,14 @@ const WBView = Backbone.View.extend({
         true
       );
     if (cellProperties.isNew)
-      this.updateCellMeta(physicalRow, physicalCol, 'isNew', true, td, true);
+      this.updateCellMeta(
+        physicalRow,
+        physicalCol,
+        'isNew',
+        true,
+        td,
+        cellProperties.isNew
+      );
     if (cellProperties.isSearchResult)
       this.updateCellMeta(
         physicalRow,
@@ -527,11 +548,16 @@ const WBView = Backbone.View.extend({
     if (JSON.stringify(issues) !== JSON.stringify(newIssues)) {
       this.updateCellMeta(physicalRow, physicalCol, 'issues', newIssues);
       // remove isModified state to make error state visible
-      if (newIssues.length > 0)
+      if (!isValid)
         setTimeout(
           // need to reset the state after the afterChange hook
           () =>
-            this.updateCellMeta(physicalRow, physicalCol, 'isModified', false),
+            this.updateCellMeta(
+              physicalRow,
+              physicalCol,
+              'isModified',
+              'shadow'
+            ),
           0
         );
     }
@@ -760,17 +786,20 @@ const WBView = Backbone.View.extend({
       typeof initialCell === 'undefined'
         ? this.hot.getCell(visualRow, visualCol)
         : initialCell;
+    const currentValue = this.cellMeta[physicalRow][physicalCol][key];
+    let effectValue = value;
 
-    const actions = {
-      isNew: () =>
+    // side effects
+    const effects = {
+      isNew: (value) =>
         cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
-      isModified: () =>
-        cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
-      isSearchResult: () =>
+      isModified: (value) =>
+        cell?.classList[value !== false ? 'add' : 'remove']('wb-modified-cell'),
+      isSearchResult: (value) =>
         cell?.classList[value === true ? 'add' : 'remove'](
           'wb-search-match-cell'
         ),
-      issues: () => {
+      issues: (value) => {
         cell?.classList[value.length === 0 ? 'remove' : 'add'](
           'wb-invalid-cell'
         );
@@ -789,25 +818,34 @@ const WBView = Backbone.View.extend({
       },
     };
 
-    if (!(key in actions))
+    if (!(key in effects))
       throw new Error(
-        `Unknown metaData ${key}=${value} is being set for ` +
-          `cell ${visualRow}x${visualCol}`
+        `Tried to set unknown metaData record ${key}=${value} for cell
+         ${visualRow}x${visualCol}`
       );
 
-    // Remove isModified state when cell is returned to it's original value
-    if (
-      key === 'isModified' &&
-      value === true &&
-      this.originalData[physicalRow]?.[physicalCol] ==
-        this.data[physicalRow][physicalCol]
-    )
-      value = false;
+    if (key === 'isModified') {
+      // Remove isModified state when cell is returned to it's original value
+      if (
+        currentValue !== 'persistent' &&
+        this.originalData[physicalRow]?.[physicalCol] ==
+          this.data[physicalRow][physicalCol]
+      ) {
+        value = false;
+        effectValue = false;
+      } else if (currentValue === 'persistent') {
+        value = 'persistent';
+        effectValue = 'persistent';
+      } else if (
+        value === 'shadow' &&
+        this.cellMeta[physicalRow][physicalCol].issues.length > 0
+      )
+        effectValue = false;
+    }
 
-    // Do not do anything if state is already in it's correct position, unless
-    // asked to forceReRender
+    // Do not run the side effect if state is already in it's correct position,
+    // unless asked to forceReRender
     if (!forceReRender) {
-      const currentValue = this.cellMeta[physicalRow][physicalCol][key];
       if (
         (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
           currentValue === value) ||
@@ -818,7 +856,7 @@ const WBView = Backbone.View.extend({
         return;
     }
 
-    actions[key]();
+    effects[key](effectValue);
     this.cellMeta[physicalRow][physicalCol][key] = value;
     this.flushIndexedCellData = true;
   },
@@ -859,7 +897,7 @@ const WBView = Backbone.View.extend({
 
     const visualRow = this.hot.toVisualRow(physicalRow);
     affectedColumns.forEach((physicalCol) =>
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', true)
+      this.updateCellMeta(physicalRow, physicalCol, 'isModified', 'persistent')
     );
     this.updateCellInfoStats();
   },

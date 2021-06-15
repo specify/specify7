@@ -58,7 +58,7 @@ module.exports = Backbone.View.extend({
       case 'newCells':
         return cellMeta.isNew === true;
       case 'modifiedCells':
-        return cellMeta.isModified === true;
+        return cellMeta.isModified !== false;
       case 'searchResults':
         return cellMeta.isSearchResult === true;
       default:
