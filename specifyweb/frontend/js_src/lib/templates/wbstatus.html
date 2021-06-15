@@ -1,15 +1,15 @@
 <% if (status) { %>
   <% const {uploaderstatus, taskstatus, taskinfo} = status;
+  const {total='unknown', current} = taskinfo;
+  let operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
+  if(operation==='Unuploading') operation = 'Rollback';
   if(taskstatus === 'PENDING') { %>
-    <p>Beginning the upload...</p>
+    <p>Beginning the <%= operation %>...</p>
   <% }
   else if(taskstatus === 'FAILURE'){ %>
     Error occurred during <%= uploaderstatus.operation %>:<br>
     <%- taskinfo %>
   <% } else {
-    const {total='unknown', current} = taskinfo;
-    let operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
-    if(operation==='Unuploading') operation = 'Rollback';
     const title = (
      (
        current === total ||
