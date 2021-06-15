@@ -729,6 +729,7 @@ module.exports = Backbone.View.extend({
     });
     this.el.classList.add('wb-focus-coordinates');
 
+    let numberOfChanges = 0;
     function cleanUp() {
       buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
       this.wbview.hot.updateSettings({
@@ -737,15 +738,6 @@ module.exports = Backbone.View.extend({
       this.wbview.readOnly = originalReadOnlyState;
       this.el.classList.remove('wb-focus-coordinates');
     }
-
-    const orignalState = Object.keys(
-      this.wbview.mappings.coordinateColumns
-    ).map((physicalCol) => [
-      physicalCol,
-      this.wbview.hot.getDataAtCol(
-        this.wbview.hot.toVisualColumn(Number.parseInt(physicalCol))
-      ),
-    ]);
 
     let handleOptionChangeBind = undefined;
 
@@ -789,13 +781,9 @@ module.exports = Backbone.View.extend({
     ];
 
     function revertChanges() {
-      this.wbview.hot.setDataAtCell(
-        orignalState.flatMap(([visualCol, originalData]) =>
-          originalData.map((value, visualRow) => [
-            visualRow,
-            Number.parseInt(visualCol),
-            value,
-          ])
+      this.wbview.hot.batch(() =>
+        Array.from({ length: numberOfChanges }).forEach(() =>
+          this.wbview.hot.undo()
         )
       );
       closeDialog.call(this);
@@ -839,6 +827,10 @@ module.exports = Backbone.View.extend({
       ],
     });
 
+    const toVisualCol = this.wbview.dataset.columns.map((_, physicalCol) =>
+      this.wbview.hot.toVisualColumn(physicalCol)
+    );
+
     const handleOptionChange = () => {
       const includeSymbolsCheckbox = dialog.find(
         'input[name="includesymbols"]'
@@ -873,7 +865,7 @@ module.exports = Backbone.View.extend({
         Object.entries(this.wbview.mappings.coordinateColumns).flatMap(
           ([visualCol, columnRole]) =>
             this.wbview.hot
-              .getDataAtCol(Number.parseInt(visualCol))
+              .getDataAtCol(toVisualCol[visualCol])
               .map((cellValue, visualRow) => [
                 latlongutils[columnRole].parse(cellValue),
                 visualRow,
@@ -881,7 +873,7 @@ module.exports = Backbone.View.extend({
               .filter(([coordinate]) => coordinate !== null)
               .map(([coordinate, visualRow]) => [
                 visualRow,
-                Number.parseInt(visualCol),
+                toVisualCol[visualCol],
                 includeSymbolsFunction(
                   stripCardinalDirections(
                     coordinate[conversionFunctionName]().format()
@@ -890,6 +882,8 @@ module.exports = Backbone.View.extend({
               ])
         )
       );
+
+      numberOfChanges += 1;
     };
     handleOptionChangeBind = handleOptionChange.bind(this);
     dialog[0].addEventListener('change', handleOptionChangeBind);
