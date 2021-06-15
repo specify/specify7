@@ -101,7 +101,7 @@
 
 .custom-select-element-shadow-list {
   margin-top: calc(var(--white-space) * -2);
-  padding-right: calc(calc(var(--white-space) * 6.2) + 2px);
+  padding-right: calc(calc(var(--white-space) * 8.2) - 7px);
   visibility: hidden;
   display: flex;
   flex-direction: column;
@@ -170,7 +170,7 @@
 }
 
 .custom-select-options::-webkit-scrollbar {
-  width: 5px !important;
+  width: 0.8rem !important;
   background: var(--b1);
 }
 
