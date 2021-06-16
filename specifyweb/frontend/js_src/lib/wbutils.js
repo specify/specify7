@@ -519,6 +519,7 @@ module.exports = Backbone.View.extend({
     const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
 
     return selectedRegions
+      .map((values) => values.map((value) => Math.max(0, value)))
       .map(([startRow, startCol, endRow, endCol]) =>
         startRow < endRow
           ? { startRow, startCol, endRow, endCol }
@@ -699,20 +700,66 @@ module.exports = Backbone.View.extend({
   showCoordinateConversion() {
     if ($('.lat-long-format-options').length !== 0) return;
 
-    if (Object.keys(this.wbview.mappings.coordinateColumns).length === 0)
-      throw new Error('Unable to find Coordinate columnes');
+    // List of coordate columns
+    const columnsToWorkWith = Object.keys(
+      this.wbview.mappings.coordinateColumns
+    ).map((physicalCol) =>
+      this.wbview.hot.toVisualColumn(Number.parseInt(physicalCol))
+    );
 
-    const [currentRow, currentCol] = this.getSelectedLast();
-    if (
-      !Object.keys(this.wbview.mappings.coordinateColumns).includes(
-        currentCol.toString()
+    if (columnsToWorkWith.length === 0)
+      throw new Error('Unable to find Coordinate columns');
+
+    let selectedRegions;
+    let selectedCells;
+    const getSelectedCells = () => {
+      if (
+        JSON.stringify(this.getSelectedRegions()) ===
+        JSON.stringify(selectedRegions)
       )
-    ) {
-      const firstCoordinateColumn = Number.parseInt(
-        Object.keys(this.wbview.mappings.coordinateColumns)[0]
+        return selectedCells;
+
+      selectedRegiouns = this.getSelectedRegions();
+      selectedCells = selectedRegiouns
+        .flatMap(({ startRow, endRow, startCol, endCol }) =>
+          Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
+            Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
+              startRow + rowIndex,
+              startCol + colIndex,
+            ])
+          )
+        )
+        .flat()
+        .reduce((indexedCells, [visualRow, visualCol]) => {
+          if (!columnsToWorkWith.includes(visualCol)) return indexedCells;
+          indexedCells[visualRow] ??= new Set();
+          indexedCells[visualRow].add(visualCol);
+          return indexedCells;
+        }, {});
+      return selectedCells;
+    };
+
+    if (Object.keys(getSelectedCells()).length === 0)
+      this.wbview.hot.scrollViewportTo(
+        this.getSelectedLast()[0],
+        columnsToWorkWith[0]
       );
-      this.wbview.hot.scrollViewportTo(currentRow, firstCoordinateColumn);
-    }
+
+    const toPhysicalCol = this.wbview.dataset.columns.map((_, visualCol) =>
+      this.wbview.hot.toPhysicalColumn(visualCol)
+    );
+
+    const originalState = columnsToWorkWith.flatMap((visualCol) =>
+      Array.from({ length: this.wbview.hot.countRows() }, (_, visualRow) => {
+        const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
+        const physicalCol = toPhysicalCol[visualCol];
+        return [
+          visualRow,
+          visualCol,
+          this.wbview.data[physicalRow][physicalCol],
+        ];
+      })
+    );
 
     const buttons = [
       'wb-leafletmap',
@@ -813,6 +860,12 @@ module.exports = Backbone.View.extend({
             Include DMS Symbols
           </label>
         </li>
+        <li>
+          <label>
+            <input type="checkbox" name="applyToAll">
+            Apply to All
+          </label>
+        </li>
       </ul>`
     ).dialog({
       title: 'Change Geocoordinate Format',
@@ -827,15 +880,11 @@ module.exports = Backbone.View.extend({
       ],
     });
 
-    const toVisualCol = this.wbview.dataset.columns.map((_, physicalCol) =>
-      this.wbview.hot.toVisualColumn(physicalCol)
-    );
-
     const handleOptionChange = () => {
-      const includeSymbolsCheckbox = dialog.find(
-        'input[name="includesymbols"]'
-      );
-      const includeSymbols = includeSymbolsCheckbox.is(':checked');
+      const includeSymbols = dialog
+        .find('input[name="includesymbols"]')
+        .is(':checked');
+      const applyToAll = dialog.find('input[name="applyToAll"]').is(':checked');
 
       const selectedOption = dialog.find('input[type="radio"]:checked');
       if (selectedOption.length === 0) return;
@@ -861,26 +910,31 @@ module.exports = Backbone.View.extend({
           ? removeLastChar(finalValue)
           : finalValue;
 
+      const selectedCells = getSelectedCells();
       this.wbview.hot.setDataAtCell(
-        Object.entries(this.wbview.mappings.coordinateColumns).flatMap(
-          ([visualCol, columnRole]) =>
-            this.wbview.hot
-              .getDataAtCol(toVisualCol[visualCol])
-              .map((cellValue, visualRow) => [
-                latlongutils[columnRole].parse(cellValue),
-                visualRow,
-              ])
-              .filter(([coordinate]) => coordinate !== null)
-              .map(([coordinate, visualRow]) => [
-                visualRow,
-                toVisualCol[visualCol],
-                includeSymbolsFunction(
+        originalState
+          .map(([visualRow, visualCol, originalValue]) => {
+            let value = originalValue;
+            if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
+              const columnRole =
+                this.wbview.mappings.coordinateColumns[
+                  toPhysicalCol[visualCol]
+                ];
+              const coordinate = latlongutils[columnRole].parse(originalValue);
+              if (coordinate)
+                value = includeSymbolsFunction(
                   stripCardinalDirections(
                     coordinate[conversionFunctionName]().format()
                   )
-                ).trim(),
-              ])
-        )
+                ).trim();
+            }
+            return [visualRow, visualCol, value];
+          })
+          .filter(([visualRow, visualCol, value]) => {
+            const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
+            const physicalCol = toPhysicalCol[visualCol];
+            return value !== this.wbview.data[physicalRow][physicalCol];
+          })
       );
 
       numberOfChanges += 1;
