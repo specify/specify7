@@ -1571,13 +1571,12 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
               message: 'Validation completed successfully!',
             }
           : {
-              title: 'Validation Failed',
-              message: `The Data Set validation failed due to one or more cell
-                        value errors.<br><br>
-                        Review the
-                        mouseover hints for each error cell, and make the
-                        appropriate corrections. Save changes and retry the
-                        Validation.`,
+              title: 'Validation Found Errors in Cell Values',
+              message: `Validation found errors with some cell values in this Data Set.<br><br>
+
+                        Review the mouseover hints for each error cell and make
+                        the appropriate corrections. Save changes and
+                        re-validate to confirm errors have been resolved.`,
             },
       upload:
         cellCounts.invalidCells === 0
