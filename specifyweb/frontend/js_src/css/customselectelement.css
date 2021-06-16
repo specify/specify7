@@ -131,6 +131,10 @@
 .custom-select-mapping-options-list
   > .custom-select-options
   > .custom-select-group
+  > .custom-select-option,
+.custom-select-suggestion-list
+  > .custom-select-options
+  > .custom-select-group
   > .custom-select-option {
   padding: var(--white-space);
   min-height: unset;
@@ -163,6 +167,11 @@
   width: auto;
   min-width: max-content;
   cursor: pointer;
+}
+
+.custom-select-suggestion-list .custom-select-options,
+.custom-select-mapping-options-list .custom-select-options {
+  overflow-y: auto;
 }
 
 .custom-select-options:not(:first-child) {
