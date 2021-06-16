@@ -21,7 +21,7 @@ module.exports = Backbone.View.extend({
 
     this.$el.append(statusTemplate(this.dataset.uploaderstatus)).dialog({
       modal: true,
-      title: 'Workbench Status',
+      title: 'Data Set Status',
       open(evt, ui) {
         $('.ui-dialog-titlebar-close', ui.dialog).hide();
       },
