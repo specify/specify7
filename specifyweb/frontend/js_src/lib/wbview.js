@@ -1006,9 +1006,13 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           <label/>`
         ).appendTo(content);
         if (model.getField('rankid')) {
-          resource.rget('parent.fullname').done((parentName) =>
-            row.find('.label').text(`${resource.get('fullname')} (in ${parentName})`)
-          );
+          resource
+            .rget('parent.fullname')
+            .done((parentName) =>
+              row
+                .find('.label')
+                .text(`${resource.get('fullname')} (in ${parentName})`)
+            );
         } else {
           formatObj(resource).done((formatted) =>
             row.find('.label').text(formatted)
@@ -1602,7 +1606,11 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
       let message;
       if (this.refreshInitiatorAborted) {
         const action =
-          refreshInitiatedBy === 'validate' ? 'Validation' : refreshInitiatedBy;
+          refreshInitiatedBy === 'validate'
+            ? 'Validation'
+            : refreshInitiatedBy === 'unupload'
+            ? 'Rollback'
+            : refreshInitiatedBy;
         title = `${capitalize(action)} successfully canceled`;
         message = title;
       } else {

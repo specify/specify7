@@ -134,7 +134,7 @@ function Dialog({
               : `Currently no Data Sets exist. ${
                   canImport
                     ? `Use "Import a file" or "Create New" to make a
-                  new one`
+                  new one.`
                     : ''
                 }`}
           </p>
