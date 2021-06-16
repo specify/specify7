@@ -873,6 +873,7 @@ export default class Automapper {
               fieldNames.some(
                 (fieldSynonym) =>
                   strippedHeaderName === `${fieldSynonym} ${tableSynonym}` ||
+                  finalHeaderName === `${tableSynonym}${fieldSynonym}` ||
                   (strippedHeaderName.startsWith(tableSynonym) &&
                     (strippedHeaderName === `${tableSynonym} ${fieldSynonym}` ||
                       [
