@@ -827,16 +827,16 @@ const WBView = Backbone.View.extend({
 
     if (key === 'isModified') {
       // Remove isModified state when cell is returned to it's original value
-      if (
-        currentValue !== 'persistent' &&
+      if (currentValue === 'persistent' && value !== false) {
+        value = 'persistent';
+        effectValue = 'persistent';
+      } else if (
+        value !== 'persistent' &&
         this.originalData[physicalRow]?.[physicalCol] ==
           this.data[physicalRow][physicalCol]
       ) {
         value = false;
         effectValue = false;
-      } else if (currentValue === 'persistent') {
-        value = 'persistent';
-        effectValue = 'persistent';
       } else if (
         value === 'shadow' &&
         this.cellMeta[physicalRow][physicalCol].issues.length > 0
