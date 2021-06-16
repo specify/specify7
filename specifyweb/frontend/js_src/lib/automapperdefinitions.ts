@@ -201,6 +201,10 @@ const definitions: AutoMapperDefinitions = {
   tableSynonyms: {
     Agent: [
       {
+        mappingPathFilter: ['determination', 'determiner'],
+        synonyms: ['determiner', 'who id'],
+      },
+      {
         mappingPathFilter: ['determinations', 'determiner'],
         synonyms: ['determiner', 'who id'],
       },
@@ -209,7 +213,15 @@ const definitions: AutoMapperDefinitions = {
         synonyms: ['collector'],
       },
       {
+        mappingPathFilter: ['collectingevents', 'collectors', 'agent'],
+        synonyms: ['collector'],
+      },
+      {
         mappingPathFilter: ['collectionobject', 'cataloger'],
+        synonyms: ['cataloger'],
+      },
+      {
+        mappingPathFilter: ['collectionobjects', 'cataloger'],
         synonyms: ['cataloger'],
       },
       {
@@ -221,8 +233,20 @@ const definitions: AutoMapperDefinitions = {
         synonyms: ['geo ref by'],
       },
       {
+        mappingPathFilter: ['preparation', 'preparedbyagent'],
+        synonyms: ['prepared'],
+      },
+      {
         mappingPathFilter: ['preparations', 'preparedbyagent'],
         synonyms: ['prepared'],
+      },
+      {
+        mappingPathFilter: ['accessionagent', 'agent'],
+        synonyms: ['accession agent', 'accessioned by'],
+      },
+      {
+        mappingPathFilter: ['accessionagents', 'agent'],
+        synonyms: ['accession agent', 'accessioned by'],
       },
     ],
     Determination: [

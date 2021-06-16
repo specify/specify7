@@ -243,6 +243,13 @@ function handleDuplicateHeader(header: string): string {
     );
 }
 
+function handleOrdinalNumbers(header: string): string {
+  const ordinalNumberMatch = Automapper.regexParseOrdinalNumbers.exec(header);
+  return ordinalNumberMatch === null
+    ? header
+    : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
+}
+
 const CACHE_VERSION = '2';
 
 export default class Automapper {
@@ -254,6 +261,9 @@ export default class Automapper {
 
   // Used to find duplicated headers (Like "First Name (1)")
   public static readonly regexDuplicatedHeader: RegExp = /\((\d+)\)$/;
+
+  public static readonly regexParseOrdinalNumbers: RegExp =
+    /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/;
 
   /*
    * Used to find duplicated headers with indexes at the end
@@ -369,11 +379,13 @@ export default class Automapper {
     this.headersToMap = Object.fromEntries(
       rawHeaders
         .map((originalName) => {
-          const lowercaseName = handleDuplicateHeader(
-            originalName
-              .toLowerCase()
-              .replace(Automapper.regexReplaceWhiteSpace, ' ')
-              .trim()
+          const lowercaseName = handleOrdinalNumbers(
+            handleDuplicateHeader(
+              originalName
+                .toLowerCase()
+                .replace(Automapper.regexReplaceWhiteSpace, ' ')
+                .trim()
+            )
           );
           const strippedName = lowercaseName
             .replace(Automapper.regexRemoveNonAz, '')

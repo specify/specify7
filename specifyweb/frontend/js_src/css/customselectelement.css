@@ -169,6 +169,7 @@
   cursor: pointer;
 }
 
+.custom-select-opened-list .custom-select-options,
 .custom-select-suggestion-list .custom-select-options,
 .custom-select-mapping-options-list .custom-select-options {
   overflow-y: auto;
