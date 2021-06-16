@@ -832,8 +832,8 @@ const WBView = Backbone.View.extend({
         effectValue = 'persistent';
       } else if (
         value !== 'persistent' &&
-        this.originalData[physicalRow]?.[physicalCol] ==
-          this.data[physicalRow][physicalCol]
+        `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` ==
+          `${this.data[physicalRow][physicalCol] ?? ''}`
       ) {
         value = false;
         effectValue = false;
