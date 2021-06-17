@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const _ = require('underscore');
 const Leaflet = require('./leaflet.ts');
 const WbLocalityDataExtractor = require('./wblocalitydataextractor.ts');
 const Backbone = require('./backbone.js');
@@ -36,7 +37,7 @@ module.exports = Backbone.View.extend({
     this.searchQuery = '';
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
-    this.queuedSearch = undefined;
+    this.searchCells = _.debounce(this.searchCells, 1000);
   },
   render() {
     return this;
@@ -167,19 +168,9 @@ module.exports = Backbone.View.extend({
     )}`;
     this.el.classList.toggle(cssClassName);
   },
-  searchCells(e) {
-    if (e.key !== 'Enter' && e.key !== 'Live') {
-      if (this.searchPreferences.search.liveUpdate) {
-        // Throttle live search down to once every few ms
-        if (typeof this.queuedSearch !== 'undefined')
-          clearTimeout(this.queuedSearch);
-        this.queuedSearch = setTimeout(() => {
-          this.searchCells({ target: e.target, key: 'Live' });
-          this.queuedSearch = undefined;
-        }, LIVE_SEARCH_THROTTLE);
-      }
-      return;
-    }
+  async searchCells(e) {
+    // Ignore meta keys
+    if (e.key.length > 1) return;
 
     this.el.classList.remove('wb-hide-search-results');
 
