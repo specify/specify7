@@ -30,6 +30,19 @@ export const formatOccurrenceCountRequest = (
     occurrenceScientificName
   )}?provider=${dataAggregatorName}&count_only=1`;
 
+const ICON_NAMES: RR<BadgeName, string> = {
+  gbif: 'gbif',
+  idigbio: 'idb',
+  morphosource: 'mopho',
+  lifemapper: 'lm',
+};
+
+export const formatIconRequest = (
+  providerName: BadgeName,
+  icon_status: 'active' | 'inactive' | 'hover'
+): string =>
+  `https://notyeti-192.lifemapper.org/api/v1/badge?provider=${ICON_NAMES[providerName]}&icon_status=${icon_status}`;
+
 export const formatOccurrenceMapRequest = (
   occurrenceScientificName: string
 ): string =>

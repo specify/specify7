@@ -9,7 +9,7 @@ import type {
   BadgeName,
   FullAggregatorInfo,
 } from '../lifemapperinfoutills';
-import { sourceLabels } from '../lifemapperinfoutills';
+import { formatIconRequest, sourceLabels } from '../lifemapperinfoutills';
 import type { MessageTypes } from './lifemapperinfo';
 import { lifemapperMessagesMeta } from './lifemapperinfo';
 import type { RA } from './wbplanview';
@@ -33,8 +33,23 @@ export function Badge<IS_ENABLED extends boolean>({
       className={`lifemapper-source-icon ${
         isEnabled ? '' : 'lifemapper-source-icon-not-found'
       } ${hasError ? 'lifemapper-source-icon-issues-detected' : ''}`}
+      title={sourceLabels[name]}
     >
-      <img src={`/static/img/${name}.png`} alt={sourceLabels[name]} />
+      <img
+        className="lifemapper-source-icon-active"
+        src={formatIconRequest(name, 'active')}
+        alt=""
+      />
+      <img
+        className="lifemapper-source-icon-inactive"
+        src={formatIconRequest(name, 'inactive')}
+        alt=""
+      />
+      <img
+        className="lifemapper-source-icon-hover"
+        src={formatIconRequest(name, 'hover')}
+        alt=""
+      />
     </button>
   );
 }
