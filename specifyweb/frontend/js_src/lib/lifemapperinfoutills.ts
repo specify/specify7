@@ -3,8 +3,8 @@ import type { OccurrenceCountRecord } from './lifemapperinforeducer';
 
 export const fetchLocalScientificName = async (
   model: any,
-  defaultValue?: string
-): Promise<string | undefined> =>
+  defaultValue = ''
+): Promise<string> =>
   new Promise((resolve) => {
     model
       .rget('determinations')
@@ -46,9 +46,9 @@ export const formatIconRequest = (
 export const formatOccurrenceMapRequest = (
   occurrenceScientificName: string
 ): string =>
-  `https://notyeti-192.lifemapper.org/api/v1/map/?provider=lm&scenariocode=worldclim-curr&namestr=${encodeURIComponent(
+  `https://broker.spcoco.org/api/v1/map/${encodeURIComponent(
     occurrenceScientificName
-  )}`;
+  )}?provider=lm`;
 
 export const AGGREGATOR_NAMES: RA<string> = [
   'gbif',
@@ -101,6 +101,6 @@ export const extractElement = (
   elements: Readonly<[string | undefined, string | undefined]>,
   preferredElement: 0 | 1
 ): string =>
-  (typeof elements[preferredElement] === 'undefined'
+  (!elements[preferredElement]
     ? elements[(preferredElement + 1) % elements.length]
     : elements[preferredElement]) ?? '';

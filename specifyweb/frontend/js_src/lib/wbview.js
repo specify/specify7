@@ -1122,7 +1122,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
   unupload() {
     const dialog = $(`<div>
       Rolling back will remove the data records this Data Set added to the
-      Specify database. The entire rollback will be canceled if any of the
+      Specify database. The entire rollback will be cancelled if any of the
       uploaded data have been referenced (re-used) by other data records in the
       database since the time they were uploaded.
     </div>`).dialog({

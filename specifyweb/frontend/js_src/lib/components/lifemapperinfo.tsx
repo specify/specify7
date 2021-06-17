@@ -28,9 +28,11 @@ import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
 const IS_DEVELOPMENT = false;
-// Const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
-const defaultGuid = 'dcb298f9-1ed3-11e3-bfac-90b11c41863e';
-// Const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
+const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
+/*
+ * Const defaultGuid = 'dcb298f9-1ed3-11e3-bfac-90b11c41863e';
+ * Const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
+ */
 const defaultOccurrenceName: Readonly<[string, string]> = [
   'Phlox longifolia Nutt.',
   'Phlox longifolia Nutt.',
@@ -66,6 +68,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
     type: 'LoadingState',
   } as LoadingState);
 
+  // Fetch occurrence data
   React.useEffect(() => {
     if (typeof guid === 'undefined') return;
 
@@ -110,31 +113,45 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
       );
   }, []);
 
+  // Set remoteOccurrenceName
   React.useEffect(() => {
     if (state.type !== 'MainState') return;
 
-    const occurrenceNames = Object.values(state.aggregatorInfos)
-      .filter((aggregatorInfo) => aggregatorInfo)
-      .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
-      .filter((occurrenceName) => occurrenceName) as RA<string>;
-
-    if (occurrenceNames.length === 0) return;
+    const occurrenceNames =
+      Object.values(state.aggregatorInfos)
+        .filter((aggregatorInfo) => aggregatorInfo)
+        .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
+        .find((occurrenceName) => occurrenceName)?.[0] ?? '';
 
     dispatch({
       type: 'SetRemoteOccurrenceNameAction',
       remoteOccurrenceName: IS_DEVELOPMENT
         ? defaultOccurrenceName[1]
-        : occurrenceNames[0],
+        : occurrenceNames,
     });
   }, [state.type]);
 
+  // Set localOccurrenceName
+  React.useEffect(() => {
+    if (state.type !== 'MainState') return;
+    fetchLocalScientificName(model).then((localOccurrenceName) =>
+      dispatch({
+        type: 'SetLocalOccurrenceNameAction',
+        localOccurrenceName,
+      })
+    );
+  }, [state.type]);
+
+  // Fetch occurrence count on dialog open if not yet fetched
   React.useEffect(
     () => {
-      if (
-        state.type !== 'MainState' ||
-        typeof state.remoteOccurrenceName === 'undefined'
-      )
-        return;
+      if (state.type !== 'MainState') return;
+      if (typeof state.remoteOccurrenceName === 'undefined') return;
+      let occurenceName = state.remoteOccurrenceName;
+      if (state.remoteOccurrenceName === '') {
+        if (!state.localOccurrenceName) return;
+        occurenceName = state.localOccurrenceName;
+      }
 
       Object.entries(state.aggregatorInfos)
         .filter(
@@ -145,52 +162,61 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
             typeof state.aggregatorInfos.occurrenceCount === 'undefined'
         )
         .forEach(([name]) => {
-          void $.get(
-            formatOccurrenceCountRequest(name, state.remoteOccurrenceName!)
-          ).done((response) =>
-            dispatch({
-              type: 'OccurrenceCountLoadedAction',
-              aggregatorName: name,
-              occurrenceCount:
-                response.records[0]?.records.map(
-                  ({
-                    scientificName,
-                    occurrence_count: count,
-                    occurrence_url: url,
-                  }: any) => ({
-                    scientificName,
-                    count,
-                    url,
-                  })
-                ) ?? [],
-            })
+          void $.get(formatOccurrenceCountRequest(name, occurenceName)).done(
+            (response) =>
+              dispatch({
+                type: 'OccurrenceCountLoadedAction',
+                aggregatorName: name,
+                occurrenceCount:
+                  response.records[0]?.records.map(
+                    ({
+                      scientificName,
+                      occurrence_count: count,
+                      occurrence_url: url,
+                    }: any) => ({
+                      scientificName,
+                      count,
+                      url,
+                    })
+                  ) ?? [],
+              })
           );
         });
     },
     state.type === 'MainState'
-      ? [state.remoteOccurrenceName, JSON.stringify(state.badgeStatuses)]
-      : [undefined, undefined]
+      ? [
+          state.localOccurrenceName,
+          state.remoteOccurrenceName,
+          JSON.stringify(state.badgeStatuses),
+        ]
+      : [undefined, undefined, undefined]
   );
 
+  /*
+   * Fetch related CO records
+   * Fetch projection map
+   */
   React.useEffect(
     () => {
       if (
         state.type !== 'MainState' ||
         !state.badgeStatuses.lifemapper?.isOpen ||
-        typeof state.remoteOccurrenceName === 'undefined'
+        typeof state.remoteOccurrenceName === 'undefined' ||
+        typeof state.localOccurrenceName === 'undefined'
       )
         return;
+
+      const getOccurrenceName = (index: 0 | 1): string =>
+        extractElement(
+          [state.localOccurrenceName, state.remoteOccurrenceName],
+          index
+        );
+      if (!getOccurrenceName(1)) return;
 
       fetchLocalScientificName(model).then((localScientificName) => {
         const localOccurrenceName = IS_DEVELOPMENT
           ? defaultOccurrenceName[0]
           : localScientificName;
-
-        const getOccurrenceName = (index: 0 | 1): string =>
-          extractElement(
-            [localOccurrenceName, state.remoteOccurrenceName],
-            index
-          );
 
         const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
           (resolve) => {
@@ -224,7 +250,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
                                   iconClass:
                                     model.get('id') ===
                                     collectionObject.get('id')
-                                      ? 'lifemapperCurrentCollectionObjectMarker'
+                                      ? 'lifemapper-current-collection-object-marker'
                                       : undefined,
                                 })
                               )
@@ -241,12 +267,10 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
           errorDetails: [],
           infoSection: [
             `Specify Species Name: ${
-              typeof localOccurrenceName === 'undefined'
-                ? 'Not found'
-                : localOccurrenceName
+              !localOccurrenceName ? 'Not found' : localOccurrenceName
             }`,
             `Remote occurrence name: ${
-              typeof state.remoteOccurrenceName === 'undefined'
+              !state.remoteOccurrenceName
                 ? 'Not found'
                 : state.remoteOccurrenceName
             }`,
@@ -259,10 +283,10 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
             readonly records: [
               {
                 readonly records: {
-                  readonly endpoint: string;
-                  readonly modtime: string;
-                  readonly layer_name: string;
-                  readonly layer_type: LifemapperLayerTypes;
+                  readonly 's2n:endpoint': string;
+                  readonly 's2n:modtime': string;
+                  readonly 's2n:layer_name': string;
+                  readonly 's2n:layer_type': LifemapperLayerTypes;
                 }[];
               }
             ];
@@ -279,8 +303,8 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
               layers = response.records[0].records
                 .sort(
                   (
-                    { layer_type: layerTypeLeft },
-                    { layer_type: layerTypeRight }
+                    { 's2n:layer_type': layerTypeLeft },
+                    { 's2n:layer_type': layerTypeRight }
                   ) =>
                     layerTypeLeft === layerTypeRight
                       ? 0
@@ -289,11 +313,11 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
                       : -1
                 )
                 .map((record) => ({
-                  ...lifemapperLayerVariations[record.layer_type],
+                  ...lifemapperLayerVariations[record['s2n:layer_type']],
                   tileLayer: {
-                    mapUrl: record.endpoint,
+                    mapUrl: record['s2n:endpoint'],
                     options: {
-                      layers: record.layer_name,
+                      layers: record['s2n:layer_name'],
                       service: 'wms',
                       version: '1.0',
                       height: '400',
@@ -301,12 +325,13 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
                       request: 'getmap',
                       srs: 'epsg:3857',
                       width: '800',
-                      ...lifemapperLayerVariations[record.layer_type],
+                      ...lifemapperLayerVariations[record['s2n:layer_type']],
                     },
                   },
                 }));
 
-              const modificationTime = response.records[0].records[0].modtime;
+              const modificationTime =
+                response.records[0].records[0]['s2n:modtime'];
               messages.errorDetails.push(
                 `Model Creation date: ${modificationTime}`
               );
@@ -323,8 +348,12 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
       });
     },
     state.type === 'MainState'
-      ? [state.remoteOccurrenceName, state.badgeStatuses.lifemapper?.isOpen]
-      : [undefined, undefined]
+      ? [
+          state.localOccurrenceName,
+          state.remoteOccurrenceName,
+          state.badgeStatuses.lifemapper?.isOpen,
+        ]
+      : [undefined, undefined, undefined]
   );
 
   return stateReducer(<></>, {

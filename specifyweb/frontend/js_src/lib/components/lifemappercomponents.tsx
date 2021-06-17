@@ -131,7 +131,7 @@ export function LifemapperMap({
           lifemapperMessagesMeta[name].className
         }"
       >
-        <p>${lifemapperMessagesMeta[name].title}</p>
+        <i>${lifemapperMessagesMeta[name].title}</i><br>
         ${messages.join('<br>')}
       </span>`
         )
