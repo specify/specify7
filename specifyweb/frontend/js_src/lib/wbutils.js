@@ -862,7 +862,7 @@ module.exports = Backbone.View.extend({
         </li>
         <li>
           <label>
-            <input type="checkbox" name="applyToAll">
+            <input type="checkbox" name="applyToAll" checked>
             Apply to All
           </label>
         </li>
@@ -911,33 +911,31 @@ module.exports = Backbone.View.extend({
           : finalValue;
 
       const selectedCells = getSelectedCells();
-      this.wbview.hot.setDataAtCell(
-        originalState
-          .map(([visualRow, visualCol, originalValue]) => {
-            let value = originalValue;
-            if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
-              const columnRole =
-                this.wbview.mappings.coordinateColumns[
-                  toPhysicalCol[visualCol]
-                ];
-              const coordinate = latlongutils[columnRole].parse(originalValue);
-              if (coordinate)
-                value = includeSymbolsFunction(
-                  stripCardinalDirections(
-                    coordinate[conversionFunctionName]().format()
-                  )
-                ).trim();
-            }
-            return [visualRow, visualCol, value];
-          })
-          .filter(([visualRow, visualCol, value]) => {
-            const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
-            const physicalCol = toPhysicalCol[visualCol];
-            return value !== this.wbview.data[physicalRow][physicalCol];
-          })
-      );
-
-      numberOfChanges += 1;
+      const changes = originalState
+        .map(([visualRow, visualCol, originalValue]) => {
+          let value = originalValue;
+          if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
+            const columnRole =
+              this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
+            const coordinate = latlongutils[columnRole].parse(originalValue);
+            if (coordinate)
+              value = includeSymbolsFunction(
+                stripCardinalDirections(
+                  coordinate[conversionFunctionName]().format()
+                )
+              ).trim();
+          }
+          return [visualRow, visualCol, value];
+        })
+        .filter(([visualRow, visualCol, value]) => {
+          const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
+          const physicalCol = toPhysicalCol[visualCol];
+          return value !== this.wbview.data[physicalRow][physicalCol];
+        });
+      if (changes.length > 0) {
+        numberOfChanges += 1;
+        this.wbview.hot.setDataAtCell(changes);
+      }
     };
     handleOptionChangeBind = handleOptionChange.bind(this);
     dialog[0].addEventListener('change', handleOptionChangeBind);
