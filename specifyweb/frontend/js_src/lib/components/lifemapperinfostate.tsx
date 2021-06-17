@@ -59,8 +59,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           key={name}
           isEnabled={typeof data !== 'undefined'}
           hasError={
-            typeof data !== 'undefined' &&
-            (data.listOfIssues.length > 0 || data.count > 1)
+            typeof data !== 'undefined' && Object.keys(data.issues).length > 0
           }
           onClick={
             typeof data === 'undefined'
@@ -134,10 +133,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             }}
           >
             {isAggregator ? (
-              <Aggregator
-                name={badgeName}
-                data={state.aggregatorInfos[badgeName]!}
-              />
+              <Aggregator data={state.aggregatorInfos[badgeName]!} />
             ) : typeof state.lifemapperInfo === 'undefined' ? (
               <p>Loading...</p>
             ) : (

@@ -9,7 +9,6 @@ import type { LocalityData } from '../leafletutils';
 import { reducer } from '../lifemapperinforeducer';
 import type { LifemapperLayerTypes } from '../lifemapperinfoutills';
 import {
-  extractBadgeInfo,
   extractElement,
   fetchLocalScientificName,
   formatOccurrenceCountRequest,
@@ -29,7 +28,8 @@ import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
 const IS_DEVELOPMENT = false;
-const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
+// Const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
+const defaultGuid = 'dcb298f9-1ed3-11e3-bfac-90b11c41863e';
 // Const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
 const defaultOccurrenceName: Readonly<[string, string]> = [
   'Phlox longifolia Nutt.',
@@ -55,6 +55,12 @@ export const lifemapperMessagesMeta: RR<
   },
 } as const;
 
+type S2NRecord = {
+  readonly 's2n:issues'?: IR<string>;
+  readonly 'dwc:scientificName': string;
+  readonly 's2n:view_url': string;
+};
+
 function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'LoadingState',
@@ -72,7 +78,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
           readonly records: {
             readonly provider: string;
             readonly count: number;
-            readonly records: [] | [IR<unknown>];
+            readonly records: [] | [S2NRecord];
           }[];
         }) =>
           dispatch({
@@ -92,9 +98,11 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
                   typeof records[0] === 'undefined'
                     ? undefined
                     : {
-                        ...extractBadgeInfo[provider](records[0]),
                         count,
                         occurrenceCount: undefined,
+                        issues: records[0]['s2n:issues'] ?? {},
+                        occurrenceName: records[0]['dwc:scientificName'],
+                        occurrenceViewLink: records[0]['s2n:view_url'],
                       },
                 ])
             ),

@@ -71,7 +71,7 @@ export const sourceLabels: RR<BadgeName, string> = {
 } as const;
 
 type AggregatorInfo = {
-  listOfIssues: RA<string>;
+  issues: IR<string>;
   occurrenceName: string;
   occurrenceViewLink: string;
 };
@@ -79,27 +79,6 @@ type AggregatorInfo = {
 export type FullAggregatorInfo = AggregatorInfo & {
   count: number;
   occurrenceCount?: RA<OccurrenceCountRecord>;
-};
-
-export const extractBadgeInfo: RR<
-  AggregatorName,
-  (occurrence: IR<any>) => AggregatorInfo
-> = {
-  gbif: (occurrence) => ({
-    listOfIssues: occurrence.issues,
-    occurrenceName: occurrence.scientificName,
-    occurrenceViewLink: `https://www.gbif.org/occurrence/${occurrence.key}`,
-  }),
-  idigbio: (occurrence) => ({
-    listOfIssues: occurrence.indexTerms.flags,
-    occurrenceName: '',
-    occurrenceViewLink: `https://www.idigbio.org/portal/records/${occurrence.uuid}`,
-  }),
-  morphosource: (occurrence) => ({
-    listOfIssues: [],
-    occurrenceName: '',
-    occurrenceViewLink: `https://www.morphosource.org/biological_specimens/0000S${occurrence['specimen.specimen_id']}`,
-  }),
 };
 
 export type LifemapperLayerTypes = 'vector' | 'raster';

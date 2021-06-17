@@ -2,7 +2,6 @@ import type L from 'leaflet';
 import React from 'react';
 
 import * as Leaflet from '../leaflet';
-import { issueDefinitions } from '../lifemapperinfoissuedefinitions';
 import type { LifemapperInfo } from '../lifemapperinforeducer';
 import type {
   AggregatorName,
@@ -55,15 +54,13 @@ export function Badge<IS_ENABLED extends boolean>({
 }
 
 export function Aggregator({
-  name,
   data,
 }: {
-  readonly name: AggregatorName;
   readonly data: FullAggregatorInfo;
 }): JSX.Element {
   return (
     <>
-      {data.listOfIssues.length === 0 ? (
+      {Object.keys(data.issues).length === 0 ? (
         <p>
           Record was indexed successfully and no data quality issues were
           reported
@@ -72,17 +69,9 @@ export function Aggregator({
         <>
           <h2>The following data quality issues were reported: </h2>
           <ul className="lifemapper-source-issues-list">
-            {[
-              ...data.listOfIssues,
-              ...(data.count > 1 ? ['HAS_MULTIPLE_RECORDS'] : []),
-            ].map((issue) => (
-              <li key={issue}>
-                {
-                  // @ts-expect-error
-                  issueDefinitions[name]?.[issue] ||
-                    issueDefinitions.common?.[issue] ||
-                    issue
-                }
+            {Object.entries(data.issues).map(([issueKey, issueLabel]) => (
+              <li key={issueKey} title={issueKey}>
+                {issueLabel}
               </li>
             ))}
           </ul>
