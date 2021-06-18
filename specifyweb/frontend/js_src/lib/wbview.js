@@ -495,6 +495,7 @@ const WBView = Backbone.View.extend({
     if (typeof this.hot === 'undefined') return;
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
+    if (physicalCol >= this.dataset.columns.length) return;
     const cellProperties = this.cellMeta[physicalRow][physicalCol];
     if (cellProperties.isModified)
       this.updateCellMeta(
@@ -1386,9 +1387,9 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
   },
   gotRowValidationResult(physicalRow, result) {
     if (this.validationMode !== 'live') return;
-    this.rowResults[physicalRow] = result.result;
+    this.rowResults[physicalRow] = result?.result;
     this.hot.batch(() =>
-      this.parseRowValidationResult(physicalRow, result.validation, true)
+      this.parseRowValidationResult(physicalRow, result?.validation, true)
     );
     this.updateCellInfoStats();
   },
