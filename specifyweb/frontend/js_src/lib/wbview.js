@@ -1567,21 +1567,30 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
       validate:
         cellCounts.invalidCells === 0
           ? {
-              title: 'Validation successful',
-              message: 'Validation completed successfully!',
+              title: 'Validation Completed with No Errors',
+              message: `Validation found no errors in the Data Set, it is ready
+                        to be uploaded into the Specify database.<br><br>
+
+                        The cell validations and their status highlights have
+                        been saved with the Data Set.  They will remain until
+                        the Data Set is edited and saved.  After editing and
+                        saving your changes, Validation should be re-run to
+                        re-confirm the absence of errors before uploading.`,
             }
           : {
-              title: 'Validation Found Errors in Cell Values',
-              message: `Validation found errors with some cell values in this Data Set.<br><br>
+              title: 'Validation Completed with Errors',
+              message: `Validation found errors in some cell values in this
+                        Data Set.<br><br>
 
                         Review the mouseover hints for each error cell and make
-                        the appropriate corrections. Save changes and
-                        re-validate to confirm errors have been resolved.`,
+                        the appropriate corrections.  After editing, click Save
+                        to save changes, then re-run Validation to verify that
+                        all errors have been resolved.`,
             },
       upload:
         cellCounts.invalidCells === 0
           ? {
-              title: 'Upload Completed',
+              title: 'Upload Completed with No Errors',
               message: `Click on the "Results" button above to see values for
                         new records added to each database table.`,
             }
