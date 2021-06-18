@@ -120,7 +120,18 @@ function showResource(resource, recordSet, pushUrl) {
                 navigation.go(view.prev.viewUrl());
             } else {
                 view.$el.empty();
-                view.$el.html('<p style="text-align: center">Item deleted.</p>');
+                const dialog = $(`<div>Item deleted.</div>`).dialog({
+                    title: 'Item Deleted',
+                    buttons: [
+                        {
+                            text: 'Close',
+                            click: ()=>{
+                                navigation.go('/');
+                                dialog.dialog('destroy');
+                            }
+                        }
+                    ]
+                });
             }
         }).on('changetitle', function(resource, title) {
             setTitle(title);
