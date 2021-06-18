@@ -346,6 +346,7 @@ const WBView = Backbone.View.extend({
           beforeColumnMove: this.beforeColumnMove.bind(this),
           afterColumnMove: this.afterColumnMove.bind(this),
           afterRenderer: this.afterRenderer.bind(this),
+          afterPaste: this.afterPaste.bind(this),
         });
         resolve();
       }, 0)
@@ -773,6 +774,12 @@ const WBView = Backbone.View.extend({
         processData: false,
       }).fail(this.checkDeletedFail.bind(this));
     }
+  },
+  afterPaste(data, coords) {
+    const lastCoords = coords.slice(-1)[0];
+    if (data.some((row) => row.length === this.dataset.columns.length))
+      // Do not scroll the viewport to the last column after instering a row
+      this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
   updateCellMeta(
     physicalRow,
