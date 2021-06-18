@@ -54,10 +54,13 @@ div.specify-view-content {
     border-bottom: solid 2px #f4763d;
     color: #000;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding-bottom: 5px;
     margin-top: 10px;
+}
+
+.specify-form-header .view-title {
+    flex: 1;
 }
 
 .specify-form-header a,

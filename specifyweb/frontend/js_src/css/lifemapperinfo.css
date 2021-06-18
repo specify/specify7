@@ -1,5 +1,5 @@
 .lifemapper-info {
-  min-width: 130px;
+  flex: 1;
   display: flex;
   justify-content: flex-end;
 }
