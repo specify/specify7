@@ -46,12 +46,12 @@ const getDefaultCellMeta = () => ({
   // The value in this cell would be used to create a new record
   isNew: false,
   /*
-   * Thiis cell has been modified since last change
+   * This cell has been modified since last change
    * Possible values:
    *   false - not modified
    *   true - modified
    *   'persistent' - same as true, but is shown even if cell's value didn't
-   *     chagnge (useful for disambiguation)
+   *     change (useful for disambiguation)
    *   'shadow' - if cell has not issues, acts like true. Else, acts like false
    *     (useful for detecting picklist value errors on the front end, without
    *     querying the back-end)
@@ -121,7 +121,7 @@ const WBView = Backbone.View.extend({
     /*
      * If DS is uploaded, you will see appropriate label and cells won't be
      * editable.
-     * Though, you are still able to sort and rearrenge columns
+     * Though, you are still able to sort and rearrange columns
      * */
     this.uploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
@@ -138,7 +138,7 @@ const WBView = Backbone.View.extend({
 
     this.resize = this.resize.bind(this);
 
-    // Throtle cell count update depending on the DS size (between 10ms and 2s)
+    // Throttle cell count update depending on the DS size (between 10ms and 2s)
     this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,
       Math.ceil(Math.min(2000, Math.max(10, this.data.length / 10)))
@@ -478,10 +478,10 @@ const WBView = Backbone.View.extend({
     );
   },
   async fetchSortConfig() {
-    const currentColection = await cache.getCurrentColectionId();
+    const currentCollection = await cache.getCurrentColectionId();
     const sortConfig = cache.get(
       'workbench-sort-config',
-      `${currentColection}_${this.dataset.id}`
+      `${currentCollection}_${this.dataset.id}`
     );
     if (!Array.isArray(sortConfig)) return;
     const visualSortConfig = sortConfig.map(({ physicalCol, ...rest }) => ({
@@ -492,7 +492,7 @@ const WBView = Backbone.View.extend({
   },
 
   // Hooks
-  afterRenderer(td, visualRow, visualCol, prop, value) {
+  afterRenderer(td, visualRow, visualCol, _prop, _value) {
     if (typeof this.hot === 'undefined') return;
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
@@ -609,7 +609,7 @@ const WBView = Backbone.View.extend({
     });
 
     this.spreadSheetChanged();
-    this.updateCellInfoStats();
+    void this.updateCellInfoStats();
 
     if (this.dataset.uploadplan)
       new Set(
@@ -627,7 +627,7 @@ const WBView = Backbone.View.extend({
   },
   afterCreateRow(startIndex, amount, source) {
     if (this.hot && source !== 'auto') this.spreadSheetChanged();
-    this.flushIndexedCellMeta = true;
+    this.flushIndexedCellData = true;
     this.cellMeta = [
       this.cellMeta.slice(0, startIndex),
       Array.from({ length: amount }, () =>
@@ -635,20 +635,20 @@ const WBView = Backbone.View.extend({
       ),
       this.cellMeta.slice(startIndex + amount - 1),
     ].flat();
-    this.updateCellInfoStats();
+    void this.updateCellInfoStats();
   },
   afterRemoveRow(startIndex, amount, source) {
     if (this.hot && source !== 'auto') this.spreadSheetChanged();
     this.spreadSheetChanged();
-    this.flushIndexedCellMeta = true;
+    this.flushIndexedCellData = true;
     this.cellMeta = [
       this.cellMeta.slice(0, startIndex),
       this.cellMeta.slice(startIndex + amount),
     ].flat();
-    this.updateCellInfoStats();
+    void this.updateCellInfoStats();
   },
   beforeColumnSort(currentSortConfig, newSortConfig) {
-    this.flushIndexedCellMeta = true;
+    this.flushIndexedCellData = true;
 
     if (this.readOnly) return false;
 
@@ -730,7 +730,7 @@ const WBView = Backbone.View.extend({
     return false;
   },
   async afterColumnSort(_previousSortConfig, sortConfig) {
-    const currentColection = await cache.getCurrentColectionId();
+    const currentCollection = await cache.getCurrentColectionId();
     const physicalSortConfig = sortConfig.map(
       ({ column: visualCol, ...rest }) => ({
         ...rest,
@@ -739,7 +739,7 @@ const WBView = Backbone.View.extend({
     );
     cache.set(
       'workbench-sort-config',
-      `${currentColection}_${this.dataset.id}`,
+      `${currentCollection}_${this.dataset.id}`,
       physicalSortConfig,
       {
         overwrite: true,
@@ -795,15 +795,20 @@ const WBView = Backbone.View.extend({
       typeof initialCell === 'undefined'
         ? this.hot.getCell(visualRow, visualCol)
         : initialCell;
+
+    // Current value of the meta property
     const currentValue = this.cellMeta[physicalRow][physicalCol][key];
+    // The value for which to run the sideEffect
     let effectValue = value;
+    // The value to store in the metaObject
+    let metaValue = value;
 
     // side effects
     const effects = {
       isNew: (value) =>
         cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
       isModified: (value) =>
-        cell?.classList[value !== false ? 'add' : 'remove']('wb-modified-cell'),
+        cell?.classList[value === false ? 'remove' : 'add']('wb-modified-cell'),
       isSearchResult: (value) =>
         cell?.classList[value === true ? 'add' : 'remove'](
           'wb-search-match-cell'
@@ -836,14 +841,14 @@ const WBView = Backbone.View.extend({
     if (key === 'isModified') {
       // Remove isModified state when cell is returned to it's original value
       if (currentValue === 'persistent' && value !== false) {
-        value = 'persistent';
+        metaValue = 'persistent';
         effectValue = 'persistent';
       } else if (
         value !== 'persistent' &&
-        `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` ==
+        `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` ===
           `${this.data[physicalRow][physicalCol] ?? ''}`
       ) {
-        value = false;
+        metaValue = false;
         effectValue = false;
       } else if (
         value === 'shadow' &&
@@ -857,10 +862,10 @@ const WBView = Backbone.View.extend({
     if (!forceReRender) {
       if (
         (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
-          currentValue === value) ||
+          currentValue === metaValue) ||
         (key === 'issues' &&
-          currentValue.length === value.length &&
-          JSON.stringify(currentValue) === JSON.stringify(value))
+          currentValue.length === metaValue.length &&
+          JSON.stringify(currentValue) === JSON.stringify(metaValue))
       )
         return;
     }
@@ -904,11 +909,10 @@ const WBView = Backbone.View.extend({
     this.data[physicalRow][cols] = JSON.stringify(extra);
     this.spreadSheetChanged();
 
-    const visualRow = this.hot.toVisualRow(physicalRow);
     affectedColumns.forEach((physicalCol) =>
       this.updateCellMeta(physicalRow, physicalCol, 'isModified', 'persistent')
     );
-    this.updateCellInfoStats();
+    void this.updateCellInfoStats();
   },
   disambiguateCell([
     {
@@ -975,26 +979,28 @@ const WBView = Backbone.View.extend({
     const content = $('<div class="da-container">');
     resources.fetch({ limit: 0 }).done(() => {
       if (resources.length < 1) {
-        $(`<div>None of the matched records currently exist in the database.
-This can happen if all of the matching records were deleted since the validation process occurred,
-or if all of the matches were ambiguous with respect other records in this data set. In the latter case,
-you will need to add fields and values to the data set to resolve the ambiguity.</div>`).dialog(
-          {
-            title: 'Disambiguate',
-            modal: true,
-            close() {
-              $(this).remove();
-            },
-            buttons: [
-              {
-                text: 'Close',
-                click() {
-                  $(this).dialog('close');
-                },
+        $(`<div>
+          None of the matched records currently exist in the database.
+          This can happen if all of the matching records were deleted since the
+          validation process occurred, or if all of the matches were ambiguous
+          with respect other records in this data set. In the latter case, you
+          will need to add fields and values to the data set to resolve the
+          ambiguity.
+        </div>`).dialog({
+          title: 'Disambiguate',
+          modal: true,
+          close() {
+            $(this).remove();
+          },
+          buttons: [
+            {
+              text: 'Close',
+              click() {
+                $(this).dialog('close');
               },
-            ],
-          }
-        );
+            },
+          ],
+        });
         return;
       }
 
@@ -1072,6 +1078,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
       let applyAllAvailable = true;
       const applyAllButton = dialog.parent().find('#applyAllButton');
+
       function updateIt() {
         const newState = this.liveValidationStack.length === 0;
         if (newState !== applyAllAvailable) {
@@ -1083,6 +1090,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           );
         }
       }
+
       const interval = setInterval(updateIt, 100);
     });
   },
@@ -1176,9 +1184,10 @@ you will need to add fields and values to the data set to resolve the ambiguity.
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     if (this.mappings?.arrayOfMappings.length > 0) {
       if (mode === 'upload') {
-        const dialog = $(
-          '<div>Uploading the Data Set will transfer the data into the main Specify tables.</div>'
-        ).dialog({
+        const dialog = $(`<div>
+          Uploading the Data Set will transfer the data into the main Specify
+          tables.
+        </div>`).dialog({
           modal: true,
           title: 'Start Data Set Upload?',
           close() {
@@ -1274,8 +1283,8 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
       fields: this.dataset.columns,
       data: this.dataset.rows,
     });
-    const wbname = this.dataset.name;
-    const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
+    const wbName = this.dataset.name;
+    const filename = wbName.match(/\.csv$/) ? wbName : wbName + '.csv';
     const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = window.URL.createObjectURL(blob);
@@ -1283,9 +1292,9 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     a.click();
   },
   revertChanges() {
-    $(
-      '<div>This action will discard all changes to the Data Set since the last save.</div>'
-    ).dialog({
+    $(`<div>
+      This action will discard all changes to the Data Set since the last save.
+    </div>`).dialog({
       modal: true,
       title: 'Revert Unsaved Changes?',
       close() {
@@ -1359,6 +1368,9 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
         this.getValidationResults();
         this.el.classList.remove('wb-hide-invalid-cells');
         this.el.classList.add('wb-hide-new-cells');
+        this.liveValidationStack = [];
+        this.liveValidationActive = false;
+        break;
       case 'off':
         this.liveValidationStack = [];
         this.liveValidationActive = false;
@@ -1450,7 +1462,6 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
       })
     );
 
-    const visualRow = this.hot.toVisualRow(physicalRow);
     newRowMeta.forEach((cellMeta, physicalCol) => {
       Object.entries(cellMeta).map(([key, value]) =>
         this.updateCellMeta(physicalRow, physicalCol, key, value)
@@ -1472,7 +1483,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
           });
         });
 
-        this.updateCellInfoStats(showValidationSummary);
+        void this.updateCellInfoStats(showValidationSummary);
       }
     );
   },
@@ -1681,7 +1692,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
         )
       )
     );
-    this.updateCellInfoStats();
+    void this.updateCellInfoStats();
   },
   getCellMetaObject() {
     /*
@@ -1710,7 +1721,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
           indexedCellMeta[getPosition(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[getPosition(visualRow, visualCol, true)][
             getPosition(visualRow, visualCol, false)
-          ] = this.cellMeta[physicalRow][physicalCol];
+          ] = cellMeta;
         })
       );
       this.indexedCellMeta = indexedCellMeta;

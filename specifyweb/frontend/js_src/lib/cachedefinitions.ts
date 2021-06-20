@@ -55,6 +55,6 @@ export type CacheDefinitions = IR<IR<unknown>> & {
     readonly 'search-properties': SearchPreferences;
   };
   readonly 'workbench-sort-config': {
-    readonly [key in number]: RA<hot.columnSorting.Config>;
+    readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
 };
