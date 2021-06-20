@@ -52,15 +52,9 @@ export default class ErrorBoundary extends React.Component<
             title: 'Unexpected Error',
             buttons: [
               {
-                text: 'Reload',
+                text: 'Okay',
                 click(): void {
-                  window.location.reload();
-                },
-              },
-              {
-                text: 'Previous Page',
-                click(): void {
-                  window.history.back();
+                  window.location.href = '/';
                 },
               },
             ],
