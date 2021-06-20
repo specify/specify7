@@ -39,7 +39,8 @@ module.exports = Backbone.View.extend({
     this.advancedSearch = undefined;
     this.searchCells = _.debounce(
       this.searchCells,
-      Math.ceil(Math.min(2000, Math.max(10, this.wbview.data.length / 10)))
+      Math.ceil(Math.min(200, Math.max(10, this.wbview.data.length / 20))),
+      false
     );
   },
   render() {

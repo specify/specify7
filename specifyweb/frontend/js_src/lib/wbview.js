@@ -790,7 +790,7 @@ const WBView = Backbone.View.extend({
       forceReRender = false,
       visualRow: initialVisualRow = undefined,
       visualCol: initialVisualCol = undefined,
-    }
+    } = {}
   ) {
     const visualRow = initialVisualRow ?? this.hot.toVisualRow(physicalRow);
     const visualCol = initialVisualCol ?? this.hot.toVisualColumn(physicalCol);
@@ -1088,7 +1088,7 @@ const WBView = Backbone.View.extend({
       let applyAllAvailable = true;
       const applyAllButton = dialog.parent().find('#applyAllButton');
 
-      function updateIt() {
+      const updateIt = () => {
         const newState = this.liveValidationStack.length === 0;
         if (newState !== applyAllAvailable) {
           applyAllAvailable = newState;
@@ -1098,7 +1098,7 @@ const WBView = Backbone.View.extend({
             `"Apply All" is not available while Data Check is in progress.`
           );
         }
-      }
+      };
 
       const interval = setInterval(updateIt, 100);
     });
@@ -1432,7 +1432,7 @@ const WBView = Backbone.View.extend({
     }
   },
   gotRowValidationResult(physicalRow, result) {
-    if (this.validationMode !== 'live' || !this.hot.isDestroyed) return;
+    if (this.validationMode !== 'live' || this.hot.isDestroyed) return;
     this.rowResults[physicalRow] = result?.result;
     this.hot.batch(() =>
       this.parseRowValidationResult(physicalRow, result?.validation, true)
