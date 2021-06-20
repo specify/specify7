@@ -129,7 +129,6 @@ export const fetchingParameters: {
       isprimary: 'hidden',
       ishybrid: 'hidden',
       isaccepted: 'hidden',
-      isloanable: 'hidden',
       fullname: 'remove',
     },
     agent: {
@@ -152,8 +151,11 @@ export const fetchingParameters: {
     locality: {
       srclatlongunit: 'optional',
     },
-    preptype: {
+    preparation: {
       isonloan: 'remove',
+    },
+    preptype: {
+      isloanable: 'remove',
     },
     token: {
       preferredtaxonof: 'remove',
