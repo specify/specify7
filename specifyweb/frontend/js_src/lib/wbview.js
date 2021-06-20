@@ -1072,7 +1072,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
 
       let applyAllAvailable = true;
       const applyAllButton = dialog.parent().find('#applyAllButton');
-      const updateIt = () => {
+      function updateIt() {
         const newState = this.liveValidationStack.length === 0;
         if (newState !== applyAllAvailable) {
           applyAllAvailable = newState;
@@ -1082,7 +1082,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             `"Apply All" is not available while Data Check is in progress.`
           );
         }
-      };
+      }
       const interval = setInterval(updateIt, 100);
     });
   },

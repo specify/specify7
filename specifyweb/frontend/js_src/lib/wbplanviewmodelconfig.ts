@@ -1,8 +1,8 @@
-import type { IR, RA } from './components/wbplanview';
+import type { IR } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 
-export const dataModelFetcherVersion = '4';
+export const dataModelFetcherVersion = '5';
 
 export const knownRelationshipTypes: Set<string> = new Set([
   'one-to-one',
@@ -15,116 +15,164 @@ export const aliasRelationshipTypes: IR<RelationshipType> = {
   'zero-to-one': 'one-to-many',
 };
 
+export type TableConfigOverwrite =
+  /*
+   * Adds a table to the list of common base tables (shown on the base table
+   *  selection screen even if "Show Advanced Tables" is not checked
+   */
+  | 'commonBaseTable'
+  /*
+   * Remove table from the list of base tables, but still make it available
+   *  mappable through relationships
+   */
+  | 'hidden'
+  /*
+   * Remove the table, all of it's fields/relationships and all
+   *  fields/relationships from any table to this table
+   */
+  | 'remove';
+
+export type FieldConfigOverwrite =
+  /*
+   * Makes a required field optional
+   */
+  | 'optional'
+  /*
+   * Removes a field from the mapper
+   */
+  | 'remove'
+  /*
+   * Hides a field. If it was required, it is made optional
+   */
+  | 'hidden';
+
 export const fetchingParameters: {
-  readonly requiredFieldsToHide: RA<string>;
-  readonly tablesToRemove: RA<string>;
-  readonly tableKeywordsToExclude: RA<string>;
-  readonly requiredFieldsToMakeOptional: IR<RA<string>>;
-  readonly commonBaseTables: RA<string>;
-  readonly fieldsToRemove: IR<RA<string>>;
-} = {
-  /*
-   * All required fields are not hidden, except for these, which are made
-   * not required
-   */
-  requiredFieldsToHide: [
-    'timestampcreated',
-    'timestampmodified',
-    'createdbyagent',
-    'modifiedbyagent',
-    'collectionmemberid',
-    'rankid',
-    'defintion',
-    'definitionitem',
-    'ordernumber',
-    'isprimary',
-    'ishybrid',
-    'isaccepted',
-    'isloanable',
-    'treedef',
-  ],
-
-  /*
-   * These tables and any relationships to these tables would be excluded
-   * from the WB mapper
-   */
-  tablesToRemove: [
-    'definition',
-    'definitionitem',
-    'geographytreedef',
-    'geologictimeperiodtreedef',
-    'treedef',
-    'lithostrattreedefitem',
-    'storagetreedefitem',
-    'taxontreedefitem',
-    'collectingeventattr',
-    'collectionobjectattr',
-    ...schema.orgHierarchy.filter(
-      (tableName) => tableName !== 'collectionobject'
+  readonly tableOverwrites: IR<TableConfigOverwrite>;
+  readonly endsWithTableOverwrites: IR<TableConfigOverwrite>;
+  readonly fieldOverwrites: IR<IR<FieldConfigOverwrite>>;
+  readonly endsWithFieldOverwrites: IR<FieldConfigOverwrite>;
+} = Object.freeze({
+  tableOverwrites: {
+    // All system tables are removed
+    accession: 'commonBaseTable',
+    agent: 'commonBaseTable',
+    borrow: 'commonBaseTable',
+    collectingevent: 'commonBaseTable',
+    collectionobject: 'commonBaseTable',
+    conservevent: 'commonBaseTable',
+    container: 'commonBaseTable',
+    deaccession: 'commonBaseTable',
+    determination: 'commonBaseTable',
+    dnasequence: 'commonBaseTable',
+    exchangein: 'commonBaseTable',
+    exchangeout: 'commonBaseTable',
+    geography: 'commonBaseTable',
+    gift: 'commonBaseTable',
+    loan: 'commonBaseTable',
+    locality: 'commonBaseTable',
+    permit: 'commonBaseTable',
+    preparation: 'commonBaseTable',
+    storage: 'commonBaseTable',
+    taxon: 'commonBaseTable',
+    treatmentevent: 'commonBaseTable',
+    definition: 'remove',
+    definitionitem: 'remove',
+    geographytreedef: 'remove',
+    geologictimeperiodtreedef: 'remove',
+    treedef: 'remove',
+    lithostrattreedefitem: 'remove',
+    storagetreedefitem: 'remove',
+    taxontreedefitem: 'remove',
+    collectingeventattr: 'remove',
+    collectionobjectattr: 'remove',
+    latlonpolygonpnt: 'remove',
+    // Remove hierarchy tables
+    ...Object.fromEntries(
+      schema.orgHierarchy
+        .filter((tableName) => tableName !== 'collectionobject')
+        .map((tableName) => [tableName, 'remove'])
     ),
-  ],
+  },
 
   /*
-   * Remove the tables that have any of these keywords from the list of base
-   * tables
+   * Same as tableOverwrites, but matches with tableName.endsWith(key),
+   *  instead of tableName===key
    */
-  tableKeywordsToExclude: [
-    'Authorization',
-    'Variant',
-    'Attribute',
-    'Property',
-    'Item',
-    'Definition',
-    'Pnt',
-    'Type',
-  ],
-
-  requiredFieldsToMakeOptional: {
-    agent: ['agenttype'],
-    determination: ['iscurrent'],
-    loadpreparation: ['isresolved'],
-    locality: ['srclatlongunit'],
+  endsWithTableOverwrites: {
+    authorization: 'hidden',
+    variant: 'hidden',
+    attribute: 'hidden',
+    def: 'hidden',
+    property: 'hidden',
+    item: 'hidden',
   },
 
-  // Base tables that are available by default
-  commonBaseTables: [
-    'accession',
-    'agent',
-    'borrow',
-    'collectingevent',
-    'collectionobject',
-    'conservevent',
-    'container',
-    'deaccession',
-    'determination',
-    'dnasequence',
-    'exchangein',
-    'exchangeout',
-    'geography',
-    'gift',
-    'loan',
-    'locality',
-    'permit',
-    'preparation',
-    'storage',
-    'taxon',
-    'treatmentevent',
-  ],
-
-  // Make these fields inaccessible in the WB's mapper
-  fieldsToRemove: {
-    agent: ['catalogerof'],
-    collectionobject: ['currentDetermination'],
-    loan: [
-      'totalpreps',
-      'unresolvedpreps',
-      'unresolveditems',
-      'resolvedpreps',
-      'resolveditems',
-    ],
-    preptype: ['isonloan'],
-    token: ['preferredtaxonof'],
-    geography: ['fullname'],
-    determination: ['preferredtaxon'],
+  /*
+   * All required fields are unhidden, unless they are overwritten to "hidden".
+   * readOnly relationships are removed.
+   * Make sure that front-end only fields (defined in schemaextras.js) are
+   *  removed too
+   */
+  fieldOverwrites: {
+    // _common overwrites apply to all tables
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    _common: {
+      timestampcreated: 'hidden',
+      timestampmodified: 'hidden',
+      createdbyagent: 'hidden',
+      modifiedbyagent: 'hidden',
+      collectionmemberid: 'hidden',
+      rankid: 'hidden',
+      definition: 'hidden',
+      definitionitem: 'hidden',
+      ordernumber: 'hidden',
+      isprimary: 'hidden',
+      ishybrid: 'hidden',
+      isaccepted: 'hidden',
+      isloanable: 'hidden',
+      fullname: 'remove',
+    },
+    agent: {
+      catalogerof: 'remove',
+      agenttype: 'optional',
+    },
+    collectionobject: {
+      currentdetermination: 'remove',
+    },
+    loan: {
+      totalpreps: 'remove',
+      unresolvedpreps: 'remove',
+      unresolveditems: 'remove',
+      resolvedpreps: 'remove',
+      resolveditems: 'remove',
+    },
+    loanpreparation: {
+      isresolved: 'optional',
+    },
+    locality: {
+      srclatlongunit: 'optional',
+    },
+    preptype: {
+      isonloan: 'remove',
+    },
+    token: {
+      preferredtaxonof: 'remove',
+    },
+    geography: {
+      fullname: 'remove',
+    },
+    determination: {
+      preferredtaxon: 'remove',
+      iscurrent: 'optional',
+    },
   },
-} as const;
+
+  /*
+   * Same as fieldOverwrites, but matches with fieldName.endsWith(key),
+   *  instead of fieldName===key.
+   * endsWithFieldOverwrites are checked against fields in all tables.
+   */
+  endsWithFieldOverwrites: {
+    precision: 'remove',
+  },
+});

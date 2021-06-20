@@ -19,6 +19,10 @@ import type {
 import schema from './schema';
 import { capitalize, getFriendlyName } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
+import type {
+  FieldConfigOverwrite,
+  TableConfigOverwrite,
+} from './wbplanviewmodelconfig';
 import {
   aliasRelationshipTypes,
   dataModelFetcherVersion,
@@ -128,17 +132,6 @@ const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
     )
   );
 
-const requiredFieldShouldBeHidden = (fieldName: string): boolean =>
-  fetchingParameters.requiredFieldsToHide.includes(fieldName);
-
-const fieldShouldBeMadeOptional = (
-  tableName: string,
-  fieldName: string
-): boolean =>
-  fetchingParameters.requiredFieldsToMakeOptional[tableName]?.includes(
-    fieldName
-  ) || false;
-
 function handleRelationshipType(
   relationshipType: RelationshipType,
   currentTableName: string,
@@ -192,10 +185,7 @@ function handleRelationshipField(
     return false;
   }
 
-  if (
-    relationship.readOnly ||
-    fetchingParameters.tablesToRemove.includes(tableName)
-  )
+  if (relationship.readOnly || tableHasOverwrite(tableName, 'remove'))
     return false;
 
   fieldData.tableName = tableName;
@@ -236,6 +226,27 @@ const fetchPickList = async (
     .catch((error) => {
       throw error;
     });
+
+const tableHasOverwrite = (
+  tableName: string,
+  overwriteName: TableConfigOverwrite
+): boolean =>
+  fetchingParameters.tableOverwrites[tableName] === overwriteName ||
+  Object.entries(fetchingParameters.endsWithTableOverwrites).findIndex(
+    ([label, action]) => tableName.endsWith(label) && action === overwriteName
+  ) !== -1;
+
+const fieldHasOverwrite = (
+  tableName: string,
+  fieldName: string,
+  overwriteName: FieldConfigOverwrite
+): boolean =>
+  fetchingParameters.fieldOverwrites[tableName]?.[fieldName] ===
+    overwriteName ||
+  fetchingParameters.fieldOverwrites._common?.[fieldName] === overwriteName ||
+  Object.entries(fetchingParameters.endsWithFieldOverwrites).findIndex(
+    ([key, action]) => fieldName.endsWith(key) && action === overwriteName
+  ) !== -1;
 
 let cacheVersion = '';
 
@@ -300,10 +311,7 @@ export default async function (): Promise<void> {
     let hasRelationshipWithDefinition = false;
     let hasRelationshipWithDefinitionItem = false;
 
-    if (
-      tableData.system ||
-      fetchingParameters.tablesToRemove.includes(tableName)
-    )
+    if (tableData.system || tableHasOverwrite(tableName, 'remove'))
       return tables;
 
     tableData.fields.forEach((field) => {
@@ -313,12 +321,7 @@ export default async function (): Promise<void> {
 
       fieldName = fieldName.toLowerCase();
 
-      // Remove frontend-only fields (from schemaextras.js)
-      if (
-        typeof fetchingParameters.fieldsToRemove[tableName] !== 'undefined' &&
-        fetchingParameters.fieldsToRemove[tableName].includes(fieldName)
-      )
-        return;
+      if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
 
       let isRequired = field.isRequired;
       let isHidden = field.isHidden() === 1;
@@ -327,12 +330,15 @@ export default async function (): Promise<void> {
        * Required fields should not be hidden, unless they are present in
        * this list
        */
-      if (requiredFieldShouldBeHidden(fieldName)) {
+      if (fieldHasOverwrite(tableName, fieldName, 'hidden')) {
         isRequired = false;
         isHidden = true;
-      } else if (isHidden && isRequired) isHidden = false;
+      }
+      // Un-hide required fields
+      else if (isHidden && isRequired) isHidden = false;
 
-      if (fieldShouldBeMadeOptional(tableName, fieldName)) isRequired = false;
+      if (fieldHasOverwrite(tableName, fieldName, 'optional'))
+        isRequired = false;
 
       // @ts-expect-error
       const fieldData: DataModelFieldWritable = {
@@ -388,14 +394,10 @@ export default async function (): Promise<void> {
         .map(([fieldName]) => [fieldName, fields[fieldName]])
     );
 
-    if (
-      !fetchingParameters.tableKeywordsToExclude.some((tableKeywordToExclude) =>
-        tableFriendlyName.includes(tableKeywordToExclude)
-      )
-    )
+    if (!tableHasOverwrite(tableName, 'hidden'))
       listOfBaseTables[tableName] = {
         tableFriendlyName,
-        isHidden: !fetchingParameters.commonBaseTables.includes(tableName),
+        isHidden: !tableHasOverwrite(tableName, 'commonBaseTable'),
       };
 
     tables[tableName] = {
