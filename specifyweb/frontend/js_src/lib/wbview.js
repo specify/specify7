@@ -1624,10 +1624,10 @@ const WBView = Backbone.View.extend({
               message: `Validation found errors in some cell values in this
                         Data Set.<br><br>
 
-                        Review the mouseover hints for each error cell and make
-                        the appropriate corrections.  After editing, click Save
-                        to save changes, then re-run Validation to verify that
-                        all errors have been resolved.`,
+                        If any cell is now edited and the Data Set re-saved,
+                        Validation should be run again as the last step prior
+                        to uploading to the Specify database. This is to confirm
+                        that no new errors have been introduced.`,
             },
       upload:
         cellCounts.invalidCells === 0
