@@ -29,22 +29,11 @@ var reports      = require('./reports.js');
             $.get('/api/test_error/');
         });
 
-    const dialogFocusHandler = $.ui.dialog.prototype._focusTabbable;
     $.ui.dialog.prototype._focusTabbable = function(){
-        let previousFocusedElement = undefined;
-
-        // Remembers the previously focused element
-        window.addEventListener('focusout', (event)=>{
-            previousFocusedElement = event.target;
-        }, {
-            once: true,
-        });
-
-        // Finds the first focusable element and focus it
-        dialogFocusHandler.call(this);
-
-        // Returns focus to the previous focused element
-        this.element.parent().on('dialogbeforeclose',()=>
+        let previousFocusedElement = document.activeElement;
+        this.uiDialog.focus();
+        // Return focus to the previous focused element
+        this.uiDialog.on('dialogbeforeclose',()=>
             previousFocusedElement?.focus()
         );
     };
