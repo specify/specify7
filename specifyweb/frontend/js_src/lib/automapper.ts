@@ -234,7 +234,7 @@ function handleOrdinalNumbers(header: string): string {
     : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
 }
 
-const CACHE_VERSION = '2';
+const CACHE_VERSION = '3';
 
 export default class Automapper {
   // Used to replace any white space characters with space

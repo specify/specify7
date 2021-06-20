@@ -328,7 +328,7 @@ const definitions: AutoMapperDefinitions = {
   dontMap: {
     automapper: {
       headers: {
-        regex: [/^type[^a-z]*$/, /^remarks/],
+        regex: [/^type[^a-z]*$/, /^remarks/, /^notes/],
       },
     },
   },
