@@ -1244,42 +1244,43 @@ const WBView = Backbone.View.extend({
       .on('done', (wasAborted) => this.trigger('refresh', mode, wasAborted));
   },
   delete: function () {
-    const dialog =
-      $(`<div> <p>Deleting a Data Set permanently removes it and its Upload
-Plan, and makes its Data Mappings unavailable for re-use with new Data
-Sets. Also after deleting, Rollback will not be an option for an
-uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
-        modal: true,
-        title: 'Delete Data Set',
-        close: () => dialog.remove(),
-        buttons: {
-          Delete: () => {
-            $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-              type: 'DELETE',
-            })
-              .done(() => {
-                this.$el.empty();
-                dialog.dialog('close');
+    const dialog = $(`<div>
+        Deleting a Data Set permanently removes it and its Upload Plan.
+        Data mappings will no longer be available for re-use with other
+        Data Sets. Also after deleting, Rollback will not be an option for
+        an uploaded Data Set.
+      </div>`).dialog({
+      modal: true,
+      title: 'Delete Data Set',
+      close: () => dialog.remove(),
+      buttons: {
+        Delete: () => {
+          $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
+            type: 'DELETE',
+          })
+            .done(() => {
+              this.$el.empty();
+              dialog.dialog('close');
 
-                $(`<p>Data Set successfully deleted.</p>`).dialog({
-                  title: 'Delete Data Set',
-                  modal: true,
-                  close: () => navigation.go('/'),
-                  buttons: {
-                    Close: function () {
-                      $(this).dialog('close');
-                    },
+              $(`<p>Data Set successfully deleted.</p>`).dialog({
+                title: 'Delete Data Set',
+                modal: true,
+                close: () => navigation.go('/'),
+                buttons: {
+                  Close: function () {
+                    $(this).dialog('close');
                   },
-                });
-              })
-              .fail((jqxhr) => {
-                this.checkDeletedFail(jqxhr);
-                dialog.dialog('close');
+                },
               });
-          },
-          Cancel: () => dialog.dialog('close'),
+            })
+            .fail((jqxhr) => {
+              this.checkDeletedFail(jqxhr);
+              dialog.dialog('close');
+            });
         },
-      });
+        Cancel: () => dialog.dialog('close'),
+      },
+    });
   },
   export() {
     const data = Papa.unparse({
