@@ -499,12 +499,45 @@ function ChooseEncoding(props: {
 }
 
 function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
-  function changed(target: HTMLInputElement) {
-    if (target.files && target.files[0]) {
-      props.update({ type: 'FileSelectedAction', file: target.files[0] });
-      setFileName(target.files[0].name);
-      target.value = '';
-    } else setFileName(undefined);
+  const [isDragging, setIsDragging] = React.useState<boolean>(false);
+
+  function handleFileSelected(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void {
+    if (handleFileChange(event.target.files?.[0])) event.target.value = '';
+  }
+
+  function handleFileDropped(event: React.DragEvent): void {
+    const file = event.dataTransfer?.items?.[0].getAsFile() ?? undefined;
+    handleFileChange(file);
+    preventPropagation(event);
+    setIsDragging(false);
+  }
+
+  function handleFileChange(file: File | undefined): boolean {
+    if (file) {
+      props.update({ type: 'FileSelectedAction', file });
+      setFileName(file.name);
+      return true;
+    } else {
+      setFileName(undefined);
+      return false;
+    }
+  }
+
+  function handleDragEnter(event: React.DragEvent): void {
+    setIsDragging(event.dataTransfer?.items?.length !== 0 ?? false);
+    preventPropagation(event);
+  }
+
+  function handleDragLeave(event: React.DragEvent): void {
+    setIsDragging(false);
+    preventPropagation(event);
+  }
+
+  function preventPropagation(event: React.DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
@@ -517,14 +550,21 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
       : assertExhaustive(props.fileType);
 
   return (
-    <label className="custom-file-picker">
-      <a tabIndex={0} className="magic-button">
+    <label
+      className={`custom-file-picker ${
+        isDragging ? 'custom-file-picker-dragging' : ''
+      }`}
+    >
+      <a
+        tabIndex={0}
+        className="magic-button"
+        onDrop={handleFileDropped}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={preventPropagation}
+      >
         Choose File to Import
-        <input
-          type="file"
-          accept={extensions}
-          onChange={(event) => changed(event.target)}
-        />
+        <input type="file" accept={extensions} onChange={handleFileSelected} />
       </a>
       <span>{fileName && <span>{fileName}</span>}</span>
     </label>

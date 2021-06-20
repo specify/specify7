@@ -26,6 +26,11 @@
   margin-left: -0.2rem;
 }
 
+.custom-file-picker.custom-file-picker-dragging a {
+  background: #fff;
+  border-color: #23f;
+}
+
 .custom-file-picker input {
   width: 0.1px;
   height: 0.1px;
