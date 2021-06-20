@@ -181,7 +181,7 @@ const matchRankAndFieldName = (
   fieldName: string
 ): boolean =>
   strippedHeaderName === `${stripedRankName} ${friendlyName}` ||
-  finalHeaderName === `${stripedRankName} ${fieldName}`;
+  finalHeaderName === `${stripedRankName}${fieldName}`;
 
 const isFieldInDontMatch = (
   tableName: string,
@@ -227,22 +227,6 @@ const findRankSynonyms = (
     ?.filter(({ rankName }) => targetRankName === rankName)
     .flatMap(({ synonyms }) => synonyms) ?? [];
 
-function handleDuplicateHeader(header: string): string {
-  const duplicatedIndex = Automapper.regexDuplicatedHeader.exec(header);
-
-  if (duplicatedIndex === null) return header;
-  else if (Automapper.regexDuplicatedHeaderWithIndex.test(header))
-    return header.slice(
-      0,
-      Math.max(0, header.length - duplicatedIndex[0].length - 1)
-    );
-  else
-    return (
-      header.slice(0, Math.max(0, header.length - duplicatedIndex[0].length)) +
-      duplicatedIndex[1]
-    );
-}
-
 function handleOrdinalNumbers(header: string): string {
   const ordinalNumberMatch = Automapper.regexParseOrdinalNumbers.exec(header);
   return ordinalNumberMatch === null
@@ -256,20 +240,17 @@ export default class Automapper {
   // Used to replace any white space characters with space
   private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
 
+  private static readonly regexRemoveDuplicateHeaderIndexes: RegExp =
+    /\(\d+\)/g;
+
   // Used to remove non letter characters
   private static readonly regexRemoveNonAz: RegExp = /[^\sa-z]+/g;
 
-  // Used to find duplicated headers (Like "First Name (1)")
-  public static readonly regexDuplicatedHeader: RegExp = /\((\d+)\)$/;
+  private static readonly regexRemoveParentheses: RegExp =
+    /\([^)]*\)|\[[^\]]*]|{[^}]*}|<[^>]*>/g;
 
   public static readonly regexParseOrdinalNumbers: RegExp =
-    /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/;
-
-  /*
-   * Used to find duplicated headers with indexes at the end
-   * (Like "First Name 2 (1)")
-   */
-  public static readonly regexDuplicatedHeaderWithIndex: RegExp = /\d \(\d+\)$/;
+    /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/g;
 
   // How deep to go into the schema
   private static readonly depth: number = 6;
@@ -380,17 +361,22 @@ export default class Automapper {
       rawHeaders
         .map((originalName) => {
           const lowercaseName = handleOrdinalNumbers(
-            handleDuplicateHeader(
-              originalName
-                .toLowerCase()
-                .replace(Automapper.regexReplaceWhiteSpace, ' ')
-                .trim()
-            )
+            originalName
+              .toLowerCase()
+              .replace(Automapper.regexReplaceWhiteSpace, ' ')
+              .replace(Automapper.regexRemoveDuplicateHeaderIndexes, '')
+              .trim()
           );
           const strippedName = lowercaseName
             .replace(Automapper.regexRemoveNonAz, '')
             .trim();
-          const finalName = strippedName.split(' ').join('');
+
+          const finalName = lowercaseName
+            .replace(Automapper.regexRemoveParentheses, '')
+            .replace(Automapper.regexRemoveNonAz, '')
+            .trim()
+            .split(' ')
+            .join('');
 
           return {
             originalName,
@@ -793,6 +779,11 @@ export default class Automapper {
                     stripedRankName,
                     strippedHeaderName
                   ) ||
+                    matchBaseRankName(
+                      friendlyName,
+                      stripedRankName,
+                      finalHeaderName
+                    ) ||
                     matchRankAndFieldName(
                       strippedHeaderName,
                       stripedRankName,
