@@ -354,6 +354,9 @@ const WBView = Backbone.View.extend({
   },
   remove() {
     this.hot.destroy();
+    this.liveValidationStack = [];
+    this.liveValidationActive = false;
+    this.validationMode = 'off';
     $(window).off('resize', this.resize);
   },
   identifyMappedHeaders() {
@@ -1422,7 +1425,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     }
   },
   gotRowValidationResult(physicalRow, result) {
-    if (this.validationMode !== 'live') return;
+    if (this.validationMode !== 'live' || !this.hot.isDestroyed) return;
     this.rowResults[physicalRow] = result?.result;
     this.hot.batch(() =>
       this.parseRowValidationResult(physicalRow, result?.validation, true)
@@ -1471,6 +1474,8 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
   getValidationResults(showValidationSummary = false) {
     Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
       (results) => {
+        if (this.hot.isDestroyed) return;
+
         if (results == null) {
           this.validationMode = 'off';
           this.updateValidationButton();
@@ -1677,6 +1682,7 @@ uploaded Data Set.</p> <p>Confirm Data Set delete?</p> </div>`).dialog({
     }
   },
   clearAllMetaData() {
+    if (this.hot.isDestroyed) return;
     const { isSearchResult: _, ...partialDefaultCellMeta } =
       getDefaultCellMeta();
     const cellMeta = Object.entries(partialDefaultCellMeta);
