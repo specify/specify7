@@ -1028,7 +1028,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
         }
       });
 
-      $('<div>')
+      const dialog = $('<div>')
         .append(content)
         .dialog({
           title: 'Disambiguate Multiple Record Matches',
@@ -1037,6 +1037,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
           modal: true,
           close() {
             $(this).remove();
+            clearInterval(interval);
           },
           buttons: [
             {
@@ -1056,6 +1057,7 @@ you will need to add fields and values to the data set to resolve the ambiguity.
               },
             },
             {
+              id: 'applyAllButton',
               text: 'Apply All',
               click() {
                 const selected = $('input.da-option:checked', this).val();
@@ -1067,6 +1069,21 @@ you will need to add fields and values to the data set to resolve the ambiguity.
             },
           ],
         });
+
+      let applyAllAvailable = true;
+      const applyAllButton = dialog.parent().find('#applyAllButton');
+      const updateIt = () => {
+        const newState = this.liveValidationStack.length === 0;
+        if (newState !== applyAllAvailable) {
+          applyAllAvailable = newState;
+          applyAllButton.button('option', 'disabled', !newState);
+          applyAllButton[0][newState ? 'removeAttribute' : 'setAttribute'](
+            'title',
+            `"Apply All" is not available while Data Check is in progress.`
+          );
+        }
+      };
+      const interval = setInterval(updateIt, 100);
     });
   },
 
