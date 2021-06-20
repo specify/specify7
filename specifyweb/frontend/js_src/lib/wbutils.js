@@ -37,7 +37,10 @@ module.exports = Backbone.View.extend({
     this.searchQuery = '';
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
-    this.searchCells = _.debounce(this.searchCells, 1000);
+    this.searchCells = _.debounce(
+      this.searchCells,
+      Math.ceil(Math.min(2000, Math.max(10, this.wbview.data.length / 10)))
+    );
   },
   render() {
     return this;
@@ -169,8 +172,12 @@ module.exports = Backbone.View.extend({
     this.el.classList.toggle(cssClassName);
   },
   async searchCells(e) {
-    // Ignore meta keys
-    if (e.key.length > 1) return;
+    if (
+      typeof e.target !== 'undefined' &&
+      e.target.value === this.searchQuery &&
+      e.key !== 'Enter'
+    )
+      return;
 
     this.el.classList.remove('wb-hide-search-results');
 
@@ -196,29 +203,73 @@ module.exports = Backbone.View.extend({
     }
 
     let resultsCount = 0;
-    const rowCount = this.wbview.hot.countRows();
     const toPhysicalCol = Array.from(
       { length: this.wbview.dataset.columns.length },
       (_, visualCol) => this.wbview.hot.toPhysicalColumn(visualCol)
     );
+    const toPhysicalRow = Array.from(
+      { length: this.wbview.data.length },
+      (_, visualRow) => this.wbview.hot.toPhysicalRow(visualRow)
+    );
     const data = this.wbview.dataset.rows;
-    for (let visualRow = 0; visualRow < rowCount; visualRow++) {
-      const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
+    const firstVisibleRow =
+      this.wbview.getHotPlugin('autoRowSize').getFirstVisibleRow() - 3;
+    const lastVisibleRow =
+      this.wbview.getHotPlugin('autoRowSize').getLastVisibleRow() + 3;
+    const firstVisibleColumn =
+      this.wbview.getHotPlugin('autoColumnSize').getFirstVisibleColumn() - 3;
+    const lastVisibleColumn =
+      this.wbview.getHotPlugin('autoColumnSize').getLastVisibleColumn() + 3;
+    this.wbview.hot.batch(() => {
       for (
-        let visualCol = 0;
-        visualCol < this.wbview.dataset.columns.length;
-        visualCol++
+        let visualRow = 0;
+        visualRow < this.wbview.data.length;
+        visualRow++
       ) {
-        const physicalCol = toPhysicalCol[visualCol];
-        const cellData = data[physicalRow][physicalCol] || '';
-        const searchValue = cellData
-          ? cellData
-          : this.wbview.mappings.defaultValues[physicalCol] ?? '';
-        const testResult = this.searchFunction(this.searchQuery, searchValue);
-        this.searchCallback(physicalRow, physicalCol, testResult);
-        if (testResult) resultsCount += 1;
+        const physicalRow = toPhysicalRow[visualRow];
+        for (
+          let visualCol = 0;
+          visualCol < this.wbview.dataset.columns.length;
+          visualCol++
+        ) {
+          const physicalCol = toPhysicalCol[visualCol];
+          const cellData = data[physicalRow][physicalCol] || '';
+          const searchValue = cellData
+            ? cellData
+            : this.wbview.mappings.defaultValues[physicalCol] ?? '';
+          const isSearchResult = this.searchFunction(
+            this.searchQuery,
+            searchValue
+          );
+
+          let cell = undefined;
+          let render = false;
+          if (
+            firstVisibleRow <= visualRow &&
+            lastVisibleRow >= visualRow &&
+            firstVisibleColumn <= visualCol &&
+            lastVisibleColumn >= visualCol
+          ) {
+            cell = this.wbview.hot.getCell(visualRow, visualCol);
+            render = !!cell;
+          }
+
+          this.wbview.updateCellMeta(
+            physicalRow,
+            physicalCol,
+            'isSearchResult',
+            isSearchResult,
+            {
+              cell,
+              render,
+              visualRow,
+              visualCol,
+            }
+          );
+          if (isSearchResult) resultsCount += 1;
+        }
       }
-    }
+    });
 
     navigationTotalElement.innerText = resultsCount;
 
@@ -363,14 +414,6 @@ module.exports = Backbone.View.extend({
     if (this.searchPreferences.search.fullMatch)
       return cellValue.trim() === searchQuery;
     else return cellValue.trim().includes(searchQuery);
-  },
-  searchCallback(physicalRow, physicalCol, testResult) {
-    this.wbview.updateCellMeta(
-      physicalRow,
-      physicalCol,
-      'isSearchResult',
-      testResult
-    );
   },
   toggleToolkit() {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
@@ -682,7 +725,7 @@ module.exports = Backbone.View.extend({
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
         const [_currentRow, currentCol] = this.getSelectedLast();
         this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
-        // select an entire row
+        // select entire row
         this.wbview.hot.selectRows(rowNumber);
       },
       leafletMapContainer: 'leaflet-map',
@@ -691,7 +734,7 @@ module.exports = Backbone.View.extend({
   showCoordinateConversion() {
     if ($('.lat-long-format-options').length !== 0) return;
 
-    // List of coordate columns
+    // List of coordinate columns
     const columnsToWorkWith = Object.keys(
       this.wbview.mappings.coordinateColumns
     ).map((physicalCol) =>
@@ -710,8 +753,8 @@ module.exports = Backbone.View.extend({
       )
         return selectedCells;
 
-      selectedRegiouns = this.getSelectedRegions();
-      selectedCells = selectedRegiouns
+      selectedRegions = this.getSelectedRegions();
+      selectedCells = selectedRegions
         .flatMap(({ startRow, endRow, startCol, endCol }) =>
           Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
             Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
