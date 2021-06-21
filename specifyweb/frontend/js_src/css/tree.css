@@ -1,7 +1,7 @@
 /* tree.css */
 
 div.tree-view {
-    width: 100%;
+    height: 100%;
 }
 
 .tree-view h1 {
@@ -102,6 +102,10 @@ div.tree-view {
 .tree-node-cell .ui-icon.leaf {
     /* .ui-icon-radio-off */
     background-position: -112px -144px;
+}
+
+.tree-node-name:focus {
+    background: #cfc;
 }
 
 

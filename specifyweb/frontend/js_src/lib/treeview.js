@@ -54,7 +54,7 @@ var setTitle = app.setTitle;
 
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
-        className: "tree-view",
+        className: "tree-view content-no-shadow",
         events: {
             'autocompleteselect': 'search',
             'click .tree-conform-save': 'setDefaultConformation',
@@ -90,9 +90,11 @@ var setTitle = app.setTitle;
             });
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             setTitle(title);
-            $('<h1>').text(title).appendTo(this.el);
-            this.$el.append(this.makeSearchBox());
-            this.$el.append(this.makeBtns());
+            const controls = $('<div class="tree-controls"></div>');
+            controls.appendTo(this.el);
+            $('<h1>').text(title).appendTo(controls);
+            controls.append(this.makeSearchBox());
+            controls.append(this.makeBtns());
             $('<table>').appendTo(this.el).append(
                 this.header.render().el,
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),

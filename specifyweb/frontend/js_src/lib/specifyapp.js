@@ -29,8 +29,14 @@ var reports      = require('./reports.js');
             $.get('/api/test_error/');
         });
 
-    // Stop jquery-ui dialog from autofocusing first tabbable element.
-    $.ui.dialog.prototype._focusTabbable = function(){};
+    $.ui.dialog.prototype._focusTabbable = function(){
+        let previousFocusedElement = document.activeElement;
+        this.uiDialog.focus();
+        // Return focus to the previous focused element
+        this.uiDialog.on('dialogbeforeclose',()=>
+            previousFocusedElement?.focus()
+        );
+    };
 
     // gets rid of any backbone view currently showing
     // and replaces it with the rendered view given
@@ -76,7 +82,7 @@ function viewSaved(resource, recordSet, options) {
 function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
-            className: "specify-root-form",
+            className: "specify-root-form content-shadow",
             populateForm: populateForm,
             model: resource,
             recordSet: recordSet,
@@ -103,7 +109,18 @@ function showResource(resource, recordSet, pushUrl) {
                 navigation.go(view.prev.viewUrl());
             } else {
                 view.$el.empty();
-                view.$el.append('<p>Item deleted.</p>');
+                const dialog = $(`<div>Item deleted.</div>`).dialog({
+                    title: 'Item Deleted',
+                    buttons: [
+                        {
+                            text: 'Close',
+                            click: ()=>{
+                                navigation.go('/');
+                                dialog.dialog('destroy');
+                            }
+                        }
+                    ]
+                });
             }
         }).on('changetitle', function(resource, title) {
             setTitle(title);

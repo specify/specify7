@@ -12,6 +12,10 @@ from specifyweb.context.app_resource import get_app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs, get_global_prefs
 from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem
 
+Collection = datamodel.get_table_strict('Collection')
+Discipline = datamodel.get_table_strict('Discipline')
+Division = datamodel.get_table_strict('Division')
+
 from . import auditcodes
 
 class AuditLog(object):
@@ -79,18 +83,24 @@ class AuditLog(object):
         return log_obj
         
     def _log(self, action, obj, agent, parent_record):
+        agent_id = agent if isinstance(agent, int) else (agent and agent.id)
         if self.isAuditing():
             logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
             assert obj.id is not None, "attempt to add object with null id to audit log"
             parentId = parent_record and parent_record.id
             parentTbl = parent_record and parent_record.specify_model.tableId
             if not parent_record:
-                scoper = next((s for s in ['collectionmember', 'collection', 'discipline', 'division'] if hasattr(obj, s)), None)
-                scopeObj = scoper and getattr(obj, scoper)
-                if scopeObj:
-                    parentId = scopeObj.id
-                    parentTbl = scopeObj.specify_model.tableId
-                
+                scoper, model = next(((s,m) for s,m in [
+                    ('collectionmemberid', Collection),
+                    ('collection_id', Collection),
+                    ('discipline_id', Discipline),
+                    ('division_id', Division),
+                ] if hasattr(obj, s)), (None, None))
+                scopeId = scoper and getattr(obj, scoper)
+                if scopeId is not None:
+                    parentId = scopeId
+                    parentTbl = model.tableId
+
             return Spauditlog.objects.create(
                 action=action,
                 parentrecordid=parentId,
@@ -98,10 +108,11 @@ class AuditLog(object):
                 recordid=obj.id,
                 recordversion=obj.version,
                 tablenum=obj.specify_model.tableId,
-                createdbyagent=agent,
-                modifiedbyagent=agent)
+                createdbyagent_id=agent_id,
+                modifiedbyagent_id=agent_id)
     
     def _log_fld_update(self, vals, log, agent):
+        agent_id = agent if isinstance(agent, int) else (agent and agent.id)
         newval = vals['new_value']
         if newval is not None:
             newval = str(vals['new_value'])[:(2**16 - 1)]
@@ -113,8 +124,8 @@ class AuditLog(object):
             newvalue=newval,
             oldvalue=oldval,
             spauditlog=log,
-            createdbyagent=agent,
-            modifiedbyagent=agent)
+            createdbyagent_id=agent_id,
+            modifiedbyagent_id=agent_id)
 
     def purge(self):
         match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', get_global_prefs())

@@ -1,0 +1,274 @@
+/* ROOT */
+.wbplanview {
+  --b1: #fff;
+  --b2: #ddd;
+  --b3: #bbb;
+  --b4: #999;
+  --t1: #000;
+  --t2: #222;
+  --t3: #444;
+  --t4: #666;
+  --border: #ccc;
+  --white-space: 0.5rem;
+  --text1: #000;
+  --text2: #666;
+  --mapping-view-height: unset;
+  --success: #2c0;
+  --error: #f24;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.wbplanview-event-listener {
+  display: contents;
+}
+
+/* HEADER */
+.wbplanview-header {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 0.5rem;
+}
+
+.wbplanview-header > div {
+  display: flex;
+  column-gap: var(--white-space);
+  align-items: stretch;
+}
+
+.wbplanview-readonly-badge {
+  color: var(--error);
+}
+
+.validation-indicator-success {
+  position: relative;
+}
+
+.validation-indicator-success::after {
+  background: #0f0;
+  content: 'Validated!';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  animation: validated-success ease-in-out 0.2s;
+  padding: inherit;
+  border-radius: 1px;
+}
+
+@keyframes validated-success {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* CONTAINER */
+.wbplanview-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* BASE TABLE SELECTION STATE */
+.wbplanview-container-BaseTableSelectionState {
+  display: flex;
+  flex-direction: column;
+  row-gap: calc(var(--white-space) * 2);
+}
+
+.custom-select-base-table-selection-list {
+  flex: 1;
+}
+
+.custom-select-base-table-selection-list .custom-select-options {
+  max-height: unset;
+  height: unset;
+  border: none;
+}
+
+.custom-select-base-table-selection-list
+  .custom-select-option-relationship-icon {
+  display: none;
+}
+
+/* MAPPING STATE */
+.wbplanview-container-MappingState {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.wbplanview-readonly .custom-select-options {
+  cursor: initial;
+}
+
+/* MAPPING VIEW */
+.mapping-view-container {
+  display: flex;
+  flex-wrap: nowrap;
+  column-gap: calc(4 * var(--white-space));
+  height: 100%;
+  width: max-content;
+}
+
+.mapping-view-parent {
+  --mapping-view-min-height: 250px;
+  min-height: var(--mapping-view-min-height);
+  overflow-x: auto;
+  max-height: 50vh;
+  height: var(--mapping-view-height);
+  resize: vertical;
+  position: relative;
+}
+
+.mapping-view-parent::after {
+  content: '⇲';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: calc(var(--white-space) * 2);
+  pointer-events: none;
+}
+
+.mapping-view {
+  flex-wrap: nowrap;
+}
+
+.mapping-view .custom-select {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapping-view .custom-select:last-of-type {
+  display: flex;
+  flex-direction: column;
+}
+
+.mapping-view .custom-select-options {
+  max-height: unset;
+  height: 100%;
+}
+
+.wbplanview-mapping-view-map-button {
+  font-size: calc(2 * var(--white-space)) !important;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.6rem !important;
+}
+
+.wbplanview-mapping-view-map-button-arrow {
+  color: var(--success);
+}
+
+.wbplanview-mapping-view-map-button[disabled]
+  .wbplanview-mapping-view-map-button-arrow {
+  opacity: 0;
+}
+
+.mapping-view-resizer {
+  margin-bottom: calc(var(--white-space) * -1);
+  height: var(--white-space);
+  cursor: pointer;
+  border: 1px solid var(--b2);
+  border-left: 0;
+  border-right: 0;
+  box-sizing: border-box;
+}
+
+.mapping-view-resizer:hover {
+  border-color: var(--b4);
+}
+
+/* VALIDATION RESULTS */
+.validation-results {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--white-space);
+  overflow-y: scroll;
+  max-width: 30vw;
+}
+
+.validation-results .wbplanview-mapping-line-elements:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.validation-results .custom-select {
+  margin-bottom: 0.4rem;
+}
+
+/* MAPPING LINE */
+.mapping-line-list {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2.2rem max-content auto;
+  grid-auto-rows: max-content;
+  overflow-x: hidden;
+}
+
+.wbplanview-mapping-line {
+  display: contents;
+}
+
+.wbplanview-mapping-line > * {
+  border-top: 1px solid var(--border);
+  padding: calc(var(--white-space) * 0.8) 0;
+}
+
+.wbplanview-mapping-line > *:not(:first-child) {
+  padding-left: 0.6rem;
+}
+
+.wbplanview-mapping-line-focused > .wbplanview-mapping-line-elements {
+  background: var(--b2);
+}
+
+/* MAPPING LINE CONTROLS */
+.wbplanview-mapping-line-controls button {
+  border: none;
+  background: var(--b2);
+  padding: 0.3rem;
+  height: 100%;
+  width: 100%;
+}
+
+.wbplanview-mapping-line-controls button:not([disabled]):hover {
+  background: var(--b3);
+}
+
+/* MAPPINGS LINE ELEMENTS */
+.wbplanview-mapping-line-header {
+  justify-content: flex-end;
+  max-width: 25vw;
+  padding-right: var(--white-space);
+}
+
+.wbplanview-mapping-line-elements {
+  flex-wrap: wrap;
+  row-gap: 0.6rem;
+}
+
+.wbplanview-mapping-line-divider {
+  font-size: calc(1.5 * var(--white-space));
+  text-align: center;
+  padding: 0 var(--white-space);
+}
+
+.wbplanview-mapping-line-header-unmapped .custom-select-input {
+  border-color: var(--error);
+}
+
+.custom-select-preview-list .custom-select-input,
+.wbplanview-readonly .custom-select-input {
+  cursor: initial;
+}
+
+.wbplanview-mapping-line-header-unmapped .wbplanview-mapping-line-header {
+  color: var(--error);
+  font-weight: 800;
+}

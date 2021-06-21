@@ -21,7 +21,7 @@ ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')
 class DwCAException(Exception):
     pass
 
-# from http://stackoverflow.com/a/17402424
+# from https://stackoverflow.com/a/17402424
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
     """

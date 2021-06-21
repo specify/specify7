@@ -20,7 +20,7 @@ var router             = require('./router.js');
 
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
-        className: "query-view",
+        className: "query-view content-shadow-full-width",
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
@@ -62,8 +62,8 @@ var router             = require('./router.js');
             //only visible for spauditlog queries
             this.$('input[name="formatAudits"]').prop('hidden', this.query.get('contexttableid') != 530);
             this.$('label[name="formatAuditsLabel"]').prop('hidden', this.query.get('contexttableid') != 530);
-            
-            
+
+
             return this;
         },
         gotFields: function(spqueryfields) {
@@ -208,7 +208,7 @@ var router             = require('./router.js');
             });
             return (lat && lng) || (latt && lngt);;
         },
-        
+
         searchDownload: function(evt) {
             this.$('.query-execute, .query-csv, .query-kml').blur();
             var cls = $(evt.currentTarget).attr('class');
@@ -251,9 +251,9 @@ var router             = require('./router.js');
                       close: function() { $(this).remove(); }
                   });
             });
-            
+
         },
-        
+
         search_: function() {
             if (this.fieldUIs.length < 1) return;
 
@@ -261,7 +261,7 @@ var router             = require('./router.js');
 
             this.results = new QueryResultsTable({
                 model: this.model,
-                scrollOnWindow: true,
+                scrollElement: this.$el.parent('#content'),
                 countOnly: this.query.get('countonly'),
                 format: this.query.get('formatauditrecids'),
                 fetchResults: this.fetchResults(),

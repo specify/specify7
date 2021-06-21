@@ -1,0 +1,59 @@
+.lifemapper-info {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lifemapper-source-icon {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  padding: 0.1rem;
+  background: none;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.lifemapper-source-icon img {
+  visibility: hidden;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+.lifemapper-source-icon:not(.lifemapper-source-icon-not-found):hover
+  .lifemapper-source-icon-hover,
+.lifemapper-source-icon:not(:hover):not(.lifemapper-source-icon-not-found)
+  .lifemapper-source-icon-active,
+.lifemapper-source-icon.lifemapper-source-icon-not-found
+  .lifemapper-source-icon-inactive {
+  visibility: visible;
+}
+
+.lifemapper-source-icon-not-found {
+  background-image: var(--icon-inactive);
+  cursor: initial;
+  outline: none;
+}
+
+.lifemapper-source-icon-issues-detected {
+  background: #f55;
+}
+
+.lifemapper-source-issues-list li {
+  list-style: disc;
+}
+
+.lifemapper-leaflet-map {
+  height: 100%;
+}
+
+.lifemapper-current-collection-object-marker {
+  filter: hue-rotate(135deg);
+}
+
+.lifemapper-message-section {
+  margin-bottom: 10px;
+  display: block;
+}

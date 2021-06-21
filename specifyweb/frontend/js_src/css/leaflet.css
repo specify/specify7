@@ -1,0 +1,33 @@
+.leaflet-details-container {
+  color: #fff;
+  background: #000c;
+  padding: 10px;
+  max-width: 50%;
+  min-width: 92px;
+}
+
+.leaflet-full-screen-toggle {
+  width: 2rem;
+  padding: 0.5rem;
+}
+
+.leaflet-full-screen-toggle,
+.leaflet-print-map {
+  cursor: pointer !important;
+  background: #fffa;
+}
+
+.leaflet-map-full-screen .leaflet-print-map {
+  font-size: 2rem;
+  padding: 0.1rem 0.5rem;
+}
+
+.leaflet-container:not(.leaflet-map-full-screen) .leaflet-print-map {
+  display: none;
+}
+
+@media print {
+  .leaflet-control-container {
+    display: none;
+  }
+}

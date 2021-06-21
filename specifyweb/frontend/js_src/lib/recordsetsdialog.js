@@ -20,16 +20,14 @@ module.exports = Backbone.View.extend({
         dlgTitle: function() {
             return  "Record Sets (" + this.options.recordSets._totalCount + ")";
         },
-        maxHeight: function() {
-            return 400;
-        },
         render: function() {
             this.makeUI();
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
                 title: this.dlgTitle(),
-                maxHeight: this.maxHeight(),
+                minWidth: 400,
+                maxHeight: 500,
                 buttons: this.buttons()
             });
             this.touchUpUI();

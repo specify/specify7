@@ -1,24 +1,139 @@
 <div class="wb-header">
-  <div class="wb-name">
+  <div class="wb-primary-row">
+    <div class="wb-name"></div>
+    <div class="wb-controls">
+      <button class="magic-button wb-show-plan" style="display: none">Show Plan</button>
+      <button class="magic-button wb-plan">Upload Plan</button>
+      <% if(!is_uploaded) { %>
+      <button class="magic-button wb-data-check" disabled="disabled">Data Check</button>
+      <button class="magic-button wb-validate" disabled="disabled">Validate</button>
+      <% } %>
+      <button class="magic-button wb-show-toolkit">Tools</button>
+      <button class="magic-button wb-show-upload-view" disabled="disabled">Results</button>
+      <% if(is_uploaded && is_manager){ %>
+      <button class="magic-button wb-unupload">Rollback</button>
+      <% } else { %> <% if(is_manager){ %>
+      <button class="magic-button wb-upload">Upload</button>
+      <% } %>
+      <button class="magic-button wb-revert" disabled="disabled">Revert</button>
+      <button class="magic-button wb-save" disabled="disabled">Save</button>
+      <% } %>
+    </div>
   </div>
-  <div class="wb-upload-controls" style="display:none">
-    <span class="wb-upload-info"></span>
-    <button class="wb-upload-details">Details</button>
-    <span class="wb-invalid-cells">
-      <button class="wb-next-error">Next</button>
-      <button class="wb-prev-error">Prev</button>
-      <button class="wb-toggle-highlights">Hide</button>
-      <span class="wb-invalid-cell-count"></span> cells
+  <div class="wb-toolkit" style="display: none">
+    <div class="wb-toolkit-left">
+      <button class="magic-button wb-change-data-set-owner">Change Owner</button>
+      <button class="magic-button wb-export-data-set">Export</button>
+      <button class="magic-button wb-delete-data-set">Delete</button>
+    </div>
+    <div class="wb-toolkit-right">
+      <button
+        class="magic-button wb-convert-coordinates"
+        disabled
+        title="This tool requires locality columns to be mapped"
+      >
+        Convert Coordinates
+      </button>
+      <button
+        class="magic-button wb-geolocate"
+        title="This tool requires locality columns to be mapped"
+        disabled
+      >
+        GeoLocate
+      </button>
+      <button
+        class="magic-button wb-leafletmap"
+        title="This tool requires locality columns to be mapped"
+        disabled
+      >
+        GeoMap
+      </button>
+    </div>
+  </div>
+</div>
+<div class="wb-spreadsheet"></div>
+<div class="wb-navigation">
+  <span class="wb-search-replace">
+    <input
+      type="text"
+      class="wb-search-query"
+      placeholder="Search"
+      title="Search Query"
+    />
+    <% if(!is_uploaded){ %>
+    <input
+      type="text"
+      class="wb-replace-value"
+      placeholder="Replace"
+      title="Replacement value"
+    />
+    <% }%>
+    <button class="magic-button wb-advanced-search" title="Configure Search & Replace">
+      ⚙
+    </button>
+  </span>
+  <span class="wb-navigation-section" data-navigation-type="searchResults">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;
+    </button>
+    <span class="wb-navigation-text">
+      Search Results (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
     </span>
-  </div>
-  <div class="wb-controls">
-    <button class="wb-setting">Settings</button>
-    <button class="wb-save" disabled="disabled">Save</button>
-    <button class="wb-upload">Upload</button>
-    <button class="wb-validate">Validate</button>
-    <button class="wb-delete">Delete</button>
-    <button class="wb-export">Export</button>
-  </div>
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;
+    </button>
+  </span>
+
+  <span class="wb-navigation-section" data-navigation-type="modifiedCells">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;
+    </button>
+    <span class="wb-navigation-text">
+      Modified Cells (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
+    </span>
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;
+    </button>
+  </span>
+
+  <span class="wb-navigation-section" data-navigation-type="newCells">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;
+    </button>
+    <span class="wb-navigation-text">
+      New Cells (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
+    </span>
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;
+    </button>
+  </span>
+
+  <span class="wb-navigation-section" data-navigation-type="invalidCells">
+    <button class="wb-cell-navigation" data-navigation-direction="previous">
+      &lt;
+    </button>
+    <span class="wb-navigation-text">
+      Error Cells (
+      <span class="wb-navigation-position">0</span>
+      /
+      <span class="wb-navigation-total">0</span>
+      )
+    </span>
+    <button class="wb-cell-navigation" data-navigation-direction="next">
+      &gt;
+    </button>
+  </span>
 </div>
-<div class="wb-spreadsheet">
-</div>
+<div class="wb-upload-view"></div>

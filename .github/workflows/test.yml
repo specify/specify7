@@ -31,7 +31,7 @@ jobs:
       - name: Install Specify 6
         if: steps.cache-specify6.outputs.cache-hit != 'true'
         run: |
-          wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+          wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
           sh Specify_unix_64.sh -q -dir ./Specify6
 
       - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)
@@ -50,7 +50,11 @@ jobs:
       - name: Install python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m venv ve
+          ve/bin/pip install -r requirements.txt
+
+      - name: Install testing python dependencies
+        run: ve/bin/pip install -r requirements-testing.txt
 
       - name: Create settings file
         run: |
@@ -60,7 +64,7 @@ jobs:
 
       - name: Need these files to be present
         run: make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
- 
+
       - name: Verify MariaDB connection
         env:
           PORT: ${{ job.services.mariadb.ports[3306] }}
@@ -69,8 +73,11 @@ jobs:
             sleep 1
           done
 
-      - name: Run python test suite
-        run: python manage.py test -k
+      - name: Run Mypy type checker
+        run: VIRTUAL_ENV=./ve make typecheck
+
+      - name: Run test suite
+        run: ./ve/bin/python manage.py test -k
 
       - name: Install nodejs
         run: sudo apt-get install -y nodejs npm

@@ -260,14 +260,6 @@ def schema_localization(request):
 @require_GET
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
-def wb_schema_localization(request):
-    """Return the WB schema localization information for the logged in collection."""
-    sl = get_schema_localization(request.specify_collection, 1)
-    return HttpResponse(sl, content_type='application/json')
-
-@require_GET
-@login_maybe_required
-@cache_control(max_age=86400, private=True)
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
     if 'collectionid' in request.GET:

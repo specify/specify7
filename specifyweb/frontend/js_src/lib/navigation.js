@@ -151,6 +151,7 @@ module.exports = {
     navigate: navigate,
     addUnloadProtect: addUnloadProtect,
     removeUnloadProtect: removeUnloadProtect,
+    clearUnloadProtect: clearUnloadProtect,
     go: function(url) {
         navigate(url, true);
     },

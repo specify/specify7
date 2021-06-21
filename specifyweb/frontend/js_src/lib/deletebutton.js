@@ -10,15 +10,21 @@ module.exports =  Backbone.View.extend({
         events: {
             'click .delete-button': 'openDialog'
         },
-    initialize: function({model, warning}) {
-        this.model = model;
-        this.warning = warning;
+        initialize: function({model, warning}) {
+            this.model = model;
+            this.warning = warning;
 
-        this.waitDialog = null;
-    },
+            this.waitDialog = null;
+        },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $('<a href="#" class="delete-button">*Delete</a>').appendTo(this.el);
+            this.button = $(`<a
+              href="#"
+              class="delete-button"
+              style="display:inline-flex;"
+            >
+              Delete
+            </a>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +
                                  this.model.specifyModel.name.toLowerCase() +
                                  '/' + this.model.id + '/');
@@ -27,9 +33,14 @@ module.exports =  Backbone.View.extend({
         },
         gotBlockers: function(blockers) {
             this.blockers = blockers;
-            if(blockers.length < 1) {
-                this.button.text("Delete");
-            }
+            if(blockers.length !== 0)
+              this.button[0].innerHTML = `
+                <span
+                  class="ui-icon ui-icon-alert"
+                  style="display: inline-block;"
+                ></span>
+                Delete
+              `;
         },
         openDialog: function(evt) {
             evt && evt.preventDefault();
@@ -72,10 +83,10 @@ module.exports =  Backbone.View.extend({
             });
         },
         openBlockedDialog: function() {
-            var dialog = $('<div title="Delete Blocked">' +
-                           '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
-                           'The resource cannot be deleted because it is referenced through the following fields:</p>' +
-                           '<ul></ul></div>').dialog({
+            var dialog = $(`<div title="Delete Blocked">
+                           <p>
+                           The resource cannot be deleted because it is referenced through the following fields:</p>
+                           <ul></ul></div>`).dialog({
                                close: function() { $(this).remove(); },
                                modal: true
                            });

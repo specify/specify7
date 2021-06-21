@@ -25,7 +25,7 @@ var QueryResults  = require('./queryresults.js');
         __name__: "QueryResultsTable",
         className: "query-results-table",
         initialize: function(options) {
-            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollOnWindow format";
+            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollElement format";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
             this.gotDataBefore = false;
         },
@@ -49,7 +49,7 @@ var QueryResults  = require('./queryresults.js');
 
             var results = this.results = new ScrollResults({
                 el: this.el,
-                onWindow: this.scrollOnWindow,
+                scrollElement: this.scrollElement,
                 view: new QueryResults({model: this.model,
                                         el: inner,
                                         fieldSpecs: this.fieldSpecs,

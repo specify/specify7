@@ -33,6 +33,10 @@ module.exports =  UIPlugin.extend({
          ).dialog({close: function(){ $(this).remove(); }});
     },
     openGeoLocate: function(data) {
+
+        if(document.getElementById('geolocate-dialog') !== null)
+            return;
+
         const url = querystring.param("//www.geo-locate.org/web/webgeoreflight.aspx", data)
                   .replace(/%7c/gi, '|'); // GEOLocate doesn't like '|' to be uri escaped.
 
@@ -129,4 +133,3 @@ module.exports =  UIPlugin.extend({
             });
     }
 }, { pluginsProvided: ['LocalityGeoRef'] });
-

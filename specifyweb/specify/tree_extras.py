@@ -25,7 +25,13 @@ class Tree(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, skip_tree_extras=False, **kwargs):
+        def save():
+            super(Tree, self).save(*args, **kwargs)
+
+        if skip_tree_extras:
+            return save()
+
         model = type(self)
         self.rankid = self.definitionitem.rankid
         self.definition = self.definitionitem.treedef
@@ -39,9 +45,6 @@ class Tree(models.Model):
         else:
             self.nodenumber = prev_self.nodenumber
             self.highestchildnodenumber = prev_self.highestchildnodenumber
-
-        def save():
-            super(Tree, self).save(*args, **kwargs)
 
         if prev_self is None:
             if self.parent_id is None:
@@ -75,9 +78,7 @@ class Tree(models.Model):
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            set_fullnames(self._meta.db_table,
-                          self.definition.treedefitems.count(),
-                          self.definition.fullnamedirection == -1)
+            reset_fullnames(self.definition)
 
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
@@ -330,7 +331,16 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def set_fullnames(table, depth, reverse=False):
+def reset_fullnames(treedef, null_only=False):
+    table = treedef.treeentries.model._meta.db_table
+    depth = treedef.treedefitems.count()
+    reverse = treedef.fullnamedirection == -1
+    return set_fullnames(table, treedef.id, depth, reverse, null_only)
+
+def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
+    logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
+    if depth < 1:
+        return
     cursor = connection.cursor()
     sql = (
         "update {table} t0\n"
@@ -338,13 +348,17 @@ def set_fullnames(table, depth, reverse=False):
         "{definition_joins}\n"
         "set {set_expr}\n"
         "where t{root}.parentid is null\n"
+        "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
+        "{null_only}\n"
     ).format(
         root=depth-1,
         table=table,
+        treedefid=treedefid,
         set_expr="t0.fullname = {}".format(fullname_expr(depth, reverse)),
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
+        null_only="and t0.fullname is null" if null_only else "",
     )
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)

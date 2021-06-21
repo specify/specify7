@@ -1,0 +1,29 @@
+.wb-ds-dialog-table {
+  width: 100%;
+}
+
+.wb-ds-dialog-table th {
+  padding: 0 0 2px;
+  font-size: 0.8rem;
+}
+
+.wb-ds-dialog-table th:first-child {
+  padding-left: 22px;
+}
+
+.wb-ds-dialog-table a {
+  font-weight: 300;
+}
+
+.wb-ds-dialog-table td,
+.wb-ds-dialog-table a {
+  font-size: 0.8rem;
+}
+
+.wb-ds-dialog-table td {
+  padding-top: 0.6rem;
+}
+
+.wb-ds-dialog-table img {
+  padding-right: 5px;
+}

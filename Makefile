@@ -2,6 +2,7 @@ VIRTUAL_ENV ?= /usr
 
 PYTHON = $(VIRTUAL_ENV)/bin/python
 PIP = $(VIRTUAL_ENV)/bin/pip
+MYPY = $(VIRTUAL_ENV)/bin/mypy
 
 .PHONY: clean runserver webpack_watch pip_requirements django_migrations frontend build
 
@@ -14,7 +15,7 @@ pip_requirements:
 	$(PIP) install --upgrade -r requirements.txt
 
 django_migrations: python_prep
-	$(PYTHON) manage.py migrate notifications
+	$(PYTHON) manage.py migrate notifications workbench
 
 specifyweb/settings/build_version.py: .FORCE
 	if [ -z "${BUILD_VERSION}" ]; \
@@ -36,5 +37,8 @@ runserver:
 
 webpack_watch:
 	$(MAKE) -C specifyweb/frontend/js_src watch
+
+typecheck:
+	$(MYPY) --follow-imports silent specifyweb/workbench
 
 .FORCE:

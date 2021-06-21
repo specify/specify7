@@ -11,16 +11,18 @@ from django.db import router
 from .specify_jar import specify_jar
 from . import api, models
 
+
+def login_maybe_required(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return http.HttpResponseForbidden()
+        return view(request, *args, **kwargs)
+    return wrapped
+
 if settings.ANONYMOUS_USER:
     login_maybe_required = lambda func: func
-else:
-    def login_maybe_required(view):
-        @wraps(view)
-        def wrapped(request, *args, **kwargs):
-            if not request.user.is_authenticated:
-                return http.HttpResponseForbidden()
-            return view(request, *args, **kwargs)
-        return wrapped
+
 
 def apply_access_control(view):
     @wraps(view)

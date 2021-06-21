@@ -70,7 +70,7 @@ SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
 RO_MODE = False
 
 # Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# https://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # On Unix systems, a value of None will cause Django to use the same
 # timezone as the operating system.
@@ -98,7 +98,7 @@ MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+# Examples: "https://media.lawrence.com/media/", "https://example.com/media/"
 MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
@@ -108,12 +108,12 @@ MEDIA_URL = ''
 STATIC_ROOT = ''
 
 # URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+# Example: "https://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
+# Examples: "https://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
@@ -186,6 +186,7 @@ INSTALLED_APPS = (
     'specifyweb.notifications',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
+    'django_jsonfield_backport',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'

@@ -4,9 +4,9 @@ Specify 7
 
 The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
-http://wwww.specifysoftware.org
+https://specifysoftware.org
 
-Specify 7 Copyright © 2020 Specify Collections Consortium. Specify
+Specify 7 Copyright © 2021 Specify Collections Consortium. Specify
 comes with ABSOLUTELY NO WARRANTY.  This is free software licensed
 under GNU General Public License 2 (GPL2).
 
@@ -91,7 +91,7 @@ as Specify 7 makes use of resource files. Specify 6 code is also
 executed by the server for Workbench validation and uploads.
 
 ```shell
-wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
 sh Specify_unix_64.sh -q -dir ./Specify6.8.0
 sudo ln -s $(pwd)/Specify6.8.0 /opt/Specify
 ```
@@ -109,7 +109,7 @@ tree.
 
 ### Setting up Python Virtual Environment
 Using a Python
-[virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
+[virtual environment](https://docs.python-guide.org/en/latest/dev/virtualenvs/)
 will avoid version conflicts with other Python libraries on your
 system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
@@ -312,4 +312,4 @@ Once the database version is updated, a corresponding copy of Specify
 [Installing Specify 6](#installing-specify-6) section of this guide
 for the new version of Specify 6.
 
-[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
+[![analytics](https://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()

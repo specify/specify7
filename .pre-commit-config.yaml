@@ -1,0 +1,179 @@
+# A config file for pre-commit.com
+#
+# Install pre-commit.com: https://pre-commit.com/#install
+#
+# Then run the following line to set up a pre-commit hook:
+# pre-commit install
+#
+# And this to update hooks to the newest version:
+# pre-commit autoupdate
+#
+# Now, whenever you try to commit, hooks defined in this file would run
+# and check your files.  They would run only only on staged files that
+# had changes.
+#
+# You can manually trigger the hooks like this:
+# pre-commit run
+#
+# You can tell it to check specific files:
+# pre-commit run --files *.ts
+#
+# Or give it all files:
+# pre-commit run --all-files
+#
+# Finally, you can disable some hooks by listing them in the `SKIP`
+# variable. Example:
+# SKIP=flake8,black git commit -m "foo"
+
+default_language_version:
+  python: python3
+default_stages:
+  - commit
+  - merge-commit
+exclude: ^(lib|.idea)
+repos:
+  - repo: local
+    hooks:
+      - id: frontend-tests
+        name: TypeScript and QUnit
+        description: Run TypeScript typechecker and automatted tests on .ts files
+        entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
+        language: script
+        types_or: [javascript, jsx, ts, tsx]
+        pass_filenames: false
+
+  - repo: https://github.com/maxxxxxdlp/pre-commit
+    rev: v1.0.5
+    hooks:
+      - id: regex-blacklist
+        args:
+          - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.812
+    hooks:
+      - id: mypy
+        exclude: ^docs/
+        additional_dependencies:
+          - django-stubs==1.8.0
+          - celery==5.0.1
+
+  #- repo: https://github.com/pre-commit/mirrors-eslint
+
+  # global hooks:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-xml
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: detect-private-key
+      - id: mixed-line-ending
+      - id: requirements-txt-fixer
+      - id: fix-byte-order-marker
+      - id: fix-encoding-pragma
+      - id: forbid-new-submodules
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.0.0
+    hooks:
+      - id: codespell
+        args:
+          - --skip="./node_modules/,package-lock.json,./.idea/"
+
+  - repo: https://github.com/psf/black
+    rev: 21.5b2
+    hooks:
+      - id: black
+        args:
+          - --line-length=72
+
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-bugbear
+        args:
+          # these settings are needed to make flake8 compatible with black
+          - --max-line-length=88
+          - --select=C,E,F,W,B,B950
+          - --extend-ignore=E203,E501
+
+  - repo: https://github.com/terrencepreilly/darglint
+    rev: v1.8.0
+    hooks:
+      - id: darglint
+        args:
+          - -v 2
+
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.19.1
+    hooks:
+      - id: pyupgrade
+
+  - repo: https://github.com/asottile/setup-cfg-fmt
+    rev: v1.17.0
+    hooks:
+      - id: setup-cfg-fmt
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.3.1
+    hooks:
+      - id: prettier
+        additional_dependencies:
+          - '@prettier/plugin-xml@^0.13.1'
+          - prettier-plugin-package@^1.3.0
+          - prettier-plugin-sh@^0.6.1
+          - prettier-plugin-tailwind-css@^1.5.0
+          - prettier-plugin-firebase-database@^1.0.1
+
+  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
+    rev: 0.0.2
+    hooks:
+      - id: stylelint
+        files: \.(css|scss|sass|js|jsx|ts|tsx)$
+        additional_dependencies:
+          - stylelint@^13.13.1
+          - stylelint-config-prettier@^8.0.2
+          - stylelint-config-standard@^22.0.0
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.2.1
+    hooks:
+      - id: python-safety-dependencies-check
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.15.1
+    hooks:
+      - id: gitlint
+
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v2.0.0
+    hooks:
+      - id: docker-compose-check
+
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.11.0
+    hooks:
+      - id: markdownlint
+        files: \.md$
+        args:
+          - --git-recurse
+
+  - repo: https://github.com/maxxxxxdlp/mirrors-jscpd
+    rev: v3.3.26
+    hooks:
+      - id: jscpd
+        types: [text]

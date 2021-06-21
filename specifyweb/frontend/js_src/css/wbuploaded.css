@@ -1,0 +1,105 @@
+.wb-upload-results {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.wb-upload-results:not(.wb-upload-results-undefined-cell) td {
+  cursor: pointer;
+}
+
+.wb-upload-results th {
+  text-align: center;
+}
+
+.wb-upload-results-table button {
+  cursor: pointer;
+}
+
+.wb-upload-results-header {
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  cursor: pointer;
+}
+
+.wb-upload-results-header > * {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.wb-upload-results-table-name {
+  column-gap: 0.5rem;
+}
+
+.wb-upload-results-table:hover .wb-upload-results-table-name {
+  color: #555;
+}
+
+.wb-upload-results-table-name .custom-select-icon-table {
+  width: 1rem;
+  height: 1rem;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.wb-upload-results-table-name .custom-select-icon-table-undefined {
+  color: var(--background1);
+  border-radius: 3px;
+  justify-content: center;
+  display: flex !important;
+  align-items: center;
+  overflow: hidden;
+}
+
+.wb-upload-results-rows-container {
+  width: 100%;
+  overflow-y: hidden;
+  border: 3px solid #fff;
+  border-top: none;
+  box-sizing: border-box;
+}
+
+.wb-upload-results-rows-tree td {
+  text-align: center;
+}
+
+.wb-upload-results-rows {
+  width: 100%;
+  overflow: hidden;
+}
+
+.wb-upload-results-rows thead tr {
+  background: #ccc;
+}
+
+.wb-upload-results-rows td {
+  border: 1px solid #fff;
+}
+
+td.wb-upload-results-record-link:not(:first-child) {
+  border-left: 4px solid #fff;
+}
+
+.wb-upload-results-rows td:first-child {
+  text-align: center;
+}
+
+.wb-upload-results-cell-matched {
+  background-color: #eef;
+}
+
+.wb-upload-results-undefined-cell {
+  background: #ddd;
+}
+
+.wb-upload-results-rows a {
+  color: #00f;
+}
+
+.wb-upload-results-rows a:hover {
+  color: #66f;
+}

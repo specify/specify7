@@ -1,0 +1,33 @@
+<% if (status) { %>
+  <% const {uploaderstatus, taskstatus, taskinfo} = status;
+  const {total='unknown', current} = taskinfo;
+  let operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
+  if(operation==='Unuploading') operation = 'Rollback';
+  if(taskstatus === 'PENDING') { %>
+    <p>Beginning the <%= operation %>...</p>
+  <% }
+  else if(taskstatus === 'FAILURE'){ %>
+    Error occurred during <%= uploaderstatus.operation %>:<br>
+    <%- taskinfo %>
+  <% } else {
+    const title = (
+     (
+       current === total ||
+       typeof current === 'undefined' ||
+       typeof total === 'undefined'
+     ) ?
+      operation === "Uploading" ?
+       'Updating trees...' :
+       `${operation}...` :
+        `${operation} Row: ${current}/${total}`
+    ); %>
+    <div style="width:100%">
+      <br>
+      <b><%= title %></b>
+      <br>
+      <div class="wb-status-progress-bar"></div>
+    </div>
+  <% } %>
+<% } else { %>
+  <p>Loading...</p>
+<% } %>

@@ -69,11 +69,23 @@ const renderMessage = {
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
-    'query-export-complete': message => {
+    'query-export-to-csv-complete': message => {
         const rendered = $('<p>Query export to CSV completed. <a download>Download.</a></p>');
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
+    'query-export-to-kml-complete': message => {
+        const rendered = $('<p>Query export to KML completed. <a download>Download.</a></p>');
+        $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
+        return rendered;
+    },
+    'dataset-ownership-transferred': message =>
+        $(`<p>
+          <i>${message.get('previous-owner-name')}</i> transfered the ownership of the
+          <a href="/specify/workbench/${message.get('dataset-id')}/">
+            <i>"${message.get('dataset-name')}"</i>
+          </a> dataset to you.
+        </p>`),
     default: message => JSON.stringify(message.toJSON())
 };
 

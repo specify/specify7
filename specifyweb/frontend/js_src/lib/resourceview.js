@@ -20,7 +20,7 @@ var NO_ADD_ANOTHER = [
     'RepositoryAgreement'
 ];
 
-module.exports =  Backbone.View.extend({
+const ResourceView = Backbone.View.extend({
     __name__: "ResourceView",
     // triggered events = {
     //   saved(this.model, options),
@@ -88,6 +88,7 @@ module.exports =  Backbone.View.extend({
             nextUrl: self.next && self.next.viewUrl(),
             newUrl: self.newUrl
         }));
+
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
         specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
             self.populateForm(form, self.model);
@@ -107,6 +108,8 @@ module.exports =  Backbone.View.extend({
                             '<p>Specify was unable to find the form definition ' +
                             'to display this resource.</p>');
         });
+
+        ResourceView.trigger('rendered', self);
         return self;
     },
     setTitle: function () {
@@ -135,3 +138,6 @@ module.exports =  Backbone.View.extend({
     }
 });
 
+_.extend(ResourceView, Backbone.Events);
+
+module.exports = ResourceView;

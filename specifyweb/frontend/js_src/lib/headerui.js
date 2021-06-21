@@ -51,7 +51,7 @@ var toolModules = [
 module.exports = Backbone.View.extend({
         __name__: "HeaderUI",
         events: {
-            'click #site-nav > ul > li > a': 'siteNavClick',
+            'click #site-nav a': 'siteNavClick',
             'click .username': 'openUserTools',
             'change #user-tools select': 'changeCollection'
         },
@@ -83,20 +83,17 @@ module.exports = Backbone.View.extend({
                       ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0])));
 
             var lis = this.visibleTools.map(this.makeButton);
-            this.$('#site-nav ul').empty().append(lis);
+            this.$('#site-nav').empty().append(lis);
             return this;
         },
         makeButton: function(toolDef) {
-            var li = $('<li>');
-            $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
+            return $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
                 .text(toolDef.title)
-                .prepend($('<img>', {src: toolDef.icon}))
-                .appendTo(li);
-            return li[0];
+                .prepend($('<img>', {src: toolDef.icon}))[0];
         },
         siteNavClick: function(evt) {
             evt.preventDefault();
-            var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
+            var index = this.$('#site-nav a').index(evt.currentTarget);
             this.visibleTools[index].execute();
             $(evt.currentTarget).blur();
         },
