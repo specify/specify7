@@ -19,9 +19,8 @@ module.exports = Backbone.View.extend({
             this.doFetch = options.fetch || this.doFetchSimple.bind(this);
             this.resultsView = options.view;
             this.offset = 0;
-            this.scrollElement = options.scrollElement ?? this.el;
-
-            this.scroll=this.scroll.bind(this);
+            this.scrollElement = options.scrollElement ?? this.$el;
+            this.scroll = this.scroll.bind(this);
         },
         scrolledToBottom: function() {
             return this.scrollElement[0].scrollHeight - this.scrollElement.scrollTop()-10 < this.scrollElement.outerHeight();
