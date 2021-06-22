@@ -620,6 +620,10 @@ const WBView = Backbone.View.extend({
                   this.dataset.columns.indexOf(headerName) === physicalCol
               ) !== -1
           )
+          .sort(
+            ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
+              visualRowLeft > visualRowRight
+          )
           .map(({ physicalRow }) => physicalRow)
       ).forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
@@ -1368,9 +1372,10 @@ const WBView = Backbone.View.extend({
 
     switch (this.validationMode) {
       case 'live':
-        this.liveValidationStack = [...Array(this.hot.countRows())]
-          .map((_, i) => i)
-          .reverse();
+        this.liveValidationStack = Array.from(
+          { length: this.hot.countRows() },
+          (_, visualRow) => this.hot.toPhysicalRow(visualRow)
+        ).reverse();
         this.triggerLiveValidation();
         this.el.classList.remove('wb-hide-new-cells', 'wb-hide-invalid-cells');
         this.el.classList.add('wb-hide-modified-cells');

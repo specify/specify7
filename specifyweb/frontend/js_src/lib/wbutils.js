@@ -117,7 +117,7 @@ module.exports = Backbone.View.extend({
 
     /*
      * The cellMetaObject is transposed when navigation direction changes
-     * In that case, the meaning of visualRow and visualCol is swapped
+     * In that case, the meaning of visualRow and visualCol is swapped.
      * getPosition exists to resolve the canonical visualRow/visualCol
      */
     orderIt(Object.entries(cellMetaObject)).find(([visualRow, metaRow]) =>
