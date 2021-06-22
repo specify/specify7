@@ -4,7 +4,10 @@
   let operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
   if(operation==='Unuploading') operation = 'Rollback';
   if(taskstatus === 'PENDING') { %>
-    <p>Beginning the <%= operation %>...</p>
+    <p>
+      Loading...<br>
+      Specify is about to begin <%= operation %>.
+    </p>
   <% }
   else if(taskstatus === 'FAILURE'){ %>
     Error occurred during <%= uploaderstatus.operation %>:<br>
