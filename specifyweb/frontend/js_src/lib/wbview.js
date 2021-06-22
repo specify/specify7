@@ -811,7 +811,7 @@ const WBView = Backbone.View.extend({
       isNew: (value) =>
         cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
       isModified: (value) =>
-        cell?.classList[value === false ? 'remove' : 'add']('wb-modified-cell'),
+        cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
       isSearchResult: (value) =>
         cell?.classList[value === true ? 'add' : 'remove'](
           'wb-search-match-cell'
@@ -850,9 +850,12 @@ const WBView = Backbone.View.extend({
 
     if (key === 'isModified') {
       // Remove isModified state when cell is returned to it's original value
-      if (currentValue === 'persistent' && value !== false) {
+      if (
+        (currentValue === 'persistent' && value !== false) ||
+        value === 'persistent'
+      ) {
         metaValue = 'persistent';
-        effectValue = 'persistent';
+        effectValue = true;
       } else if (
         value !== 'persistent' &&
         `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` ===
@@ -879,7 +882,7 @@ const WBView = Backbone.View.extend({
     // unless asked to forceReRender
     if (render && (forceReRender || valueIsChanged)) effects[key](effectValue);
 
-    this.cellMeta[physicalRow][physicalCol][key] = value;
+    this.cellMeta[physicalRow][physicalCol][key] = metaValue;
 
     if (valueIsChanged) this.flushIndexedCellData = true;
   },
@@ -946,16 +949,13 @@ const WBView = Backbone.View.extend({
       filters: { id__in: matches.ids.join(',') },
     });
 
-    const affectedHeaders = this.mappings.arrayOfMappings
+    const affectedColumns = this.mappings.arrayOfMappings
       .filter(
         ({ mappingPath: comparisonMappingPath }) =>
           mappingPathToString(comparisonMappingPath.slice(0, -1)) ===
           mappingPathToString(mappingPath.slice(0, -1))
       )
-      .map(({ headerName }) => headerName);
-    const affectedColumns = affectedHeaders.map((headerName) =>
-      this.dataset.columns.indexOf(headerName)
-    );
+      .map(({ headerName }) => this.dataset.columns.indexOf(headerName));
 
     const doDA = (selected) => {
       this.setDisambiguation(
@@ -968,19 +968,20 @@ const WBView = Backbone.View.extend({
     };
     const doAll = (selected) => {
       // loop backwards so the live validation will go from top to bottom
-      for (let i = this.data.length - 1; i >= 0; i--) {
-        const rowResult = this.rowResults[this.hot.toPhysicalRow(i)];
+      for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
+        const physicalRow = this.hot.toPhysicalRow(visualRow);
+        const rowResult = this.rowResults[physicalRow];
         const key =
           rowResult &&
           getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
         if (key === matches.key) {
           this.setDisambiguation(
-            i,
+            physicalRow,
             mappingPath,
             parseInt(selected, 10),
             affectedColumns
           );
-          this.startValidateRow(i);
+          this.startValidateRow(physicalRow);
         }
       }
     };
