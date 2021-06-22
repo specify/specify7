@@ -627,23 +627,52 @@ const WBView = Backbone.View.extend({
           .map(({ physicalRow }) => physicalRow)
       ).forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
-  afterCreateRow(startIndex, amount, source) {
+  afterCreateRow(visualRowStart, amount, source) {
+    /*
+     * This may be called before full initialization of the workbench because
+     * of the minSpareRows setting in HOT. Thus, be sure to check if
+     * this.hotIsReady is true
+     *
+     * Also, I don't think this is ever called with amount > 1.
+     * Even if multiple new rows where created at once (e.x on paste), HOT calls
+     * this hook one row at a time
+     *
+     * */
+
+    const addedRows = Array.from(
+      { length: amount },
+      (_, index) =>
+        /*
+         * If HOT is not yet initialized, we can assume that physical row order
+         * and visual row order is the same
+         */
+        this.hot?.toPhysicalRow(visualRowStart + index) ??
+        visualRowStart + index
+    ).sort();
+
     this.flushIndexedCellData = true;
-    this.cellMeta = [
-      this.cellMeta.slice(0, startIndex),
-      Array.from({ length: amount }, () =>
-        this.dataset.columns.map(getDefaultCellMeta)
-      ),
-      this.cellMeta.slice(startIndex + amount - 1),
-    ].flat();
+    addedRows.forEach((physicalRow) => {
+      this.cellMeta = [
+        ...this.cellMeta.slice(0, physicalRow),
+        this.dataset.columns.map(getDefaultCellMeta),
+        ...this.cellMeta.slice(physicalRow),
+      ];
+    });
     if (this.hotIsReady && source !== 'auto') this.spreadSheetChanged();
   },
-  afterRemoveRow(startIndex, amount, source) {
+  afterRemoveRow(visualRowStart, amount, source) {
+    const removedRows = Array.from({ length: amount }, (_, index) =>
+      this.hot.toPhysicalRow(visualRowStart + index)
+    );
+    this.liveValidationStack = this.liveValidationStack.filter(
+      (physicalRow) => !removedRows.includes(physicalRow)
+    );
+
     this.flushIndexedCellData = true;
-    this.cellMeta = [
-      this.cellMeta.slice(0, startIndex),
-      this.cellMeta.slice(startIndex + amount),
-    ].flat();
+    this.cellMeta = this.cellMeta.filter(
+      (_, physicalRow) => !removedRows.includes(physicalRow)
+    );
+
     if (this.hotIsReady && source !== 'auto') {
       this.spreadSheetChanged();
       void this.updateCellInfoStats();
@@ -1412,6 +1441,7 @@ const WBView = Backbone.View.extend({
       }
       this.liveValidationActive = true;
       const physicalRow = this.liveValidationStack.pop();
+      if (physicalRow === null) return;
       const rowData = this.hot.getSourceDataAtRow(physicalRow);
       Q(
         $.post(
