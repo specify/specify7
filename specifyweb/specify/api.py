@@ -749,6 +749,7 @@ def objs_to_data(objs, offset=0, limit=20):
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
+    offset, limit = int(offset), int(limit)
     total_count = objs.count()
 
     if limit == 0:

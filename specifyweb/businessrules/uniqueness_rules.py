@@ -16,7 +16,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
             if instance.id is not None:
                 conflicts = conflicts.exclude(id=instance.id)
             if conflicts:
-                raise BusinessRuleException("%s must have unique %s" % (model.__name__, unique_field))
+                raise BusinessRuleException("{} must have unique {}".format(model.__name__, unique_field))
     else:
         @orm_signal_handler('pre_save', model_name)
         def check_unique(instance):
@@ -34,7 +34,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
             if instance.id is not None:
                 conflicts = conflicts.exclude(id=instance.id)
             if conflicts:
-                raise BusinessRuleException("%s must have unique %s in %s" % (model.__name__, unique_field, parent_field))
+                raise BusinessRuleException("{} must have unique {} in {}".format(model.__name__, unique_field, parent_field))
     return check_unique
 
 UNIQUENESS_RULES = {
@@ -87,6 +87,9 @@ UNIQUENESS_RULES = {
         },
     'Repositoryagreement': {
         'repositoryagreementnumber': ['division'],
+        },
+    'Spappresourcedata': {
+        'spappresource': [None],
         },
     }
 
