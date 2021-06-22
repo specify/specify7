@@ -235,56 +235,54 @@ module.exports = Backbone.View.extend({
     const lastVisibleColumn =
       this.wbview.getHotPlugin('autoColumnSize').getLastVisibleColumn() + 3;
     const [toPhysicalRow, toPhysicalColumn] = this.getToPhysicalConvertors();
-    this.wbview.hot.batch(() => {
+    for (
+      let visualRow = 0;
+      visualRow < this.wbview.data.length;
+      visualRow++
+    ) {
+      const physicalRow = toPhysicalRow[visualRow];
       for (
-        let visualRow = 0;
-        visualRow < this.wbview.data.length;
-        visualRow++
+        let visualCol = 0;
+        visualCol < this.wbview.dataset.columns.length;
+        visualCol++
       ) {
-        const physicalRow = toPhysicalRow[visualRow];
-        for (
-          let visualCol = 0;
-          visualCol < this.wbview.dataset.columns.length;
-          visualCol++
+        const physicalCol = toPhysicalColumn[visualCol];
+        const cellData = data[physicalRow][physicalCol] || '';
+        const searchValue = cellData
+          ? cellData
+          : this.wbview.mappings.defaultValues[physicalCol] ?? '';
+        const isSearchResult = this.searchFunction(
+          this.searchQuery,
+          searchValue
+        );
+
+        let cell = undefined;
+        let render = false;
+        if (
+          firstVisibleRow <= visualRow &&
+          lastVisibleRow >= visualRow &&
+          firstVisibleColumn <= visualCol &&
+          lastVisibleColumn >= visualCol
         ) {
-          const physicalCol = toPhysicalColumn[visualCol];
-          const cellData = data[physicalRow][physicalCol] || '';
-          const searchValue = cellData
-            ? cellData
-            : this.wbview.mappings.defaultValues[physicalCol] ?? '';
-          const isSearchResult = this.searchFunction(
-            this.searchQuery,
-            searchValue
-          );
-
-          let cell = undefined;
-          let render = false;
-          if (
-            firstVisibleRow <= visualRow &&
-            lastVisibleRow >= visualRow &&
-            firstVisibleColumn <= visualCol &&
-            lastVisibleColumn >= visualCol
-          ) {
-            cell = this.wbview.hot.getCell(visualRow, visualCol);
-            render = !!cell;
-          }
-
-          this.wbview.updateCellMeta(
-            physicalRow,
-            physicalCol,
-            'isSearchResult',
-            isSearchResult,
-            {
-              cell,
-              render,
-              visualRow,
-              visualCol,
-            }
-          );
-          if (isSearchResult) resultsCount += 1;
+          cell = this.wbview.hot.getCell(visualRow, visualCol);
+          render = !!cell;
         }
+
+        this.wbview.updateCellMeta(
+          physicalRow,
+          physicalCol,
+          'isSearchResult',
+          isSearchResult,
+          {
+            cell,
+            render,
+            visualRow,
+            visualCol,
+          }
+        );
+        if (isSearchResult) resultsCount += 1;
       }
-    });
+    }
 
     navigationTotalElement.innerText = resultsCount;
 
