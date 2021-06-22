@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 @require_GET
 @never_cache
 def rss_feed(request):
+    "Returns an RSS XML document of the DwCA exports generated on this server."
     feed_resource = get_feed_resource()
     if feed_resource is None:
         raise Http404
@@ -83,6 +84,9 @@ def rss_feed(request):
 @require_GET
 @never_cache
 def extract_eml(request, filename):
+    """Return just the EML metadata from the DwCA <filename> hosted on this server.
+    Valid file names can be found in the RSS feed.
+    """
     with ZipFile(os.path.join(FEED_DIR, filename), 'r') as archive:
         meta = ET.fromstring(archive.open('meta.xml').read())
         eml = archive.open(meta.attrib['metadata']).read()
@@ -93,6 +97,11 @@ def extract_eml(request, filename):
 @require_POST
 @never_cache
 def export(request):
+    """Generate a DwCA export based on the 'definition' and 'metadata'
+    POST parameters.  Requesting user must be an admin. A notification
+    will be generated for the requesting user when the export
+    completes.
+    """
     if not request.specify_user.is_admin():
         return HttpResponseForbidden()
 
@@ -141,6 +150,10 @@ def export(request):
 @login_maybe_required
 @require_POST
 def force_update(request):
+    """Immediately update all exports defined in the export feed of this
+    server.  Requesting user must be an admin and will receive
+    notification as the process complete.
+    """
     if not request.specify_user.is_admin():
         return HttpResponseForbidden()
 
@@ -166,5 +179,8 @@ def force_update(request):
 @require_GET
 @never_cache
 def extract_query(request, query_id):
+    """Return an XML snippet for creating a DwCA definition based on the
+    query <query_id>.
+    """
     query = Spquery.objects.get(id=query_id)
     return HttpResponse(extract(query), 'text/xml')

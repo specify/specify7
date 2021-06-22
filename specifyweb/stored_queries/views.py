@@ -27,6 +27,9 @@ def value_from_request(field, get):
 @login_maybe_required
 @never_cache
 def query(request, id):
+    """Executes and returns the results of query with id <id>.
+    'limit' and 'offset' may be provided as GET parameters.
+    """
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))
 
@@ -49,6 +52,7 @@ def query(request, id):
 @login_maybe_required
 @never_cache
 def ephemeral(request):
+    """Executes and returns the results of the query provided as JSON in the POST body."""
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -61,6 +65,7 @@ def ephemeral(request):
 @login_maybe_required
 @never_cache
 def export_csv(request):
+    """Executes and return as CSV the results of the query provided as JSON in the POST body."""
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -85,6 +90,7 @@ def export_csv(request):
 @login_maybe_required
 @never_cache
 def export_kml(request):
+    """Executes and return as KML the results of the query provided as JSON in the POST body."""
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -113,6 +119,9 @@ def export_kml(request):
 @apply_access_control
 @never_cache
 def make_recordset(request):
+    """Executes the query provided as JSON in the POST body and creates a
+    recordset of the result. Redirects to the URL of the created recordset.
+    """
     try:
         recordset_info = json.load(request)
     except ValueError as e:

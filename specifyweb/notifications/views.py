@@ -13,6 +13,9 @@ from .models import Message
 @require_GET
 @login_maybe_required
 def get_messages(request):
+    """Returns a list of notification messages for the logged in user,
+    optionally restricted to those created after the 'since' GET parameter.
+    """
     since = request.GET.get('since', None)
     time_filter = {'timestampcreated__gt': since} if since is not None else {}
     messages = Message.objects.filter(user=request.specify_user, **time_filter).order_by('timestampcreated')
@@ -24,6 +27,8 @@ def get_messages(request):
 @require_POST
 @login_maybe_required
 def mark_read(request):
+    """Mark as read all notification messages created before the 'last_seen' POST parameter.
+    """
     if 'last_seen' not in request.POST:
         return HttpResponseBadRequest()
     Message.objects.filter(user=request.specify_user, timestampcreated__lte=request.POST['last_seen']).update(read=True)
@@ -35,6 +40,7 @@ def mark_read(request):
 @require_POST
 @login_maybe_required
 def delete(request):
+    "Delete the notification message indicated by the 'message_id' POST parameter."
     if 'message_id' not in request.POST:
         return HttpResponseBadRequest()
     Message.objects.filter(user=request.specify_user, id=request.POST['message_id']).delete()

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ title }}</title>
+    <script
+      src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"
+      charset="UTF-8"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css"
+    />
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+
+    <script>
+      SwaggerUIBundle({
+        url: "{{ open_api_schema_endpoint }}",
+        dom_id: "#swagger-ui",
+      });
+    </script>
+  </body>
+</html>
