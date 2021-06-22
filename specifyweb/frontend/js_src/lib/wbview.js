@@ -624,7 +624,6 @@ const WBView = Backbone.View.extend({
       ).forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
   afterCreateRow(startIndex, amount, source) {
-    if (this.hot && source !== 'auto') this.spreadSheetChanged();
     this.flushIndexedCellData = true;
     this.cellMeta = [
       this.cellMeta.slice(0, startIndex),
@@ -633,17 +632,18 @@ const WBView = Backbone.View.extend({
       ),
       this.cellMeta.slice(startIndex + amount - 1),
     ].flat();
-    void this.updateCellInfoStats();
+    if (this.hotIsReady && source !== 'auto') this.spreadSheetChanged();
   },
   afterRemoveRow(startIndex, amount, source) {
-    if (this.hot && source !== 'auto') this.spreadSheetChanged();
-    this.spreadSheetChanged();
     this.flushIndexedCellData = true;
     this.cellMeta = [
       this.cellMeta.slice(0, startIndex),
       this.cellMeta.slice(startIndex + amount),
     ].flat();
-    void this.updateCellInfoStats();
+    if (this.hotIsReady && source !== 'auto') {
+      this.spreadSheetChanged();
+      void this.updateCellInfoStats();
+    }
   },
   beforeColumnSort(currentSortConfig, newSortConfig) {
     this.flushIndexedCellData = true;
