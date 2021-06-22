@@ -122,8 +122,8 @@ module.exports = Backbone.View.extend({
      */
     orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
       orderIt(Object.entries(metaRow)).find(([visualColString, cellMeta]) => {
-        const visualRow = Number.parseInt(visualRowString);
-        const visualCol = Number.parseInt(visualColString);
+        const visualRow = visualRowString | 0;
+        const visualCol = visualColString | 0;
         const cellTypeMatches = this.cellIsType(cellMeta, type);
         cellIsTypeCount += cellTypeMatches;
         const foundIt =
@@ -427,8 +427,8 @@ module.exports = Backbone.View.extend({
       }
 
     if (this.searchPreferences.search.fullMatch)
-      return cellValue.trim() === searchQuery;
-    else return cellValue.trim().includes(searchQuery);
+      return trim(cellValue) === searchQuery;
+    else return trim(cellValue).includes(searchQuery);
   },
   toggleToolkit() {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
@@ -990,3 +990,22 @@ module.exports = Backbone.View.extend({
     dialog[0].addEventListener('change', handleOptionChangeBind);
   },
 });
+
+// A no-regex blazing fast implementation of "trim"
+function trim(str) {
+  const whitespace =
+    ' \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000';
+  for (let i = 0; i < str.length; i++) {
+    if (whitespace.indexOf(str.charAt(i)) === -1) {
+      str = str.substring(i);
+      break;
+    }
+  }
+  for (let i = str.length - 1; i >= 0; i--) {
+    if (whitespace.indexOf(str.charAt(i)) === -1) {
+      str = str.substring(0, i + 1);
+      break;
+    }
+  }
+  return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
+}
