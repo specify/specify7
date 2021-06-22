@@ -5,7 +5,6 @@ const WbLocalityDataExtractor = require('./wblocalitydataextractor.ts');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
 const WbPlanViewHelper = require('./wbplanviewhelper.ts');
-const WbPlanViewModel = require('./wbplanviewmodel.ts').default;
 const {
   findLocalityColumnsInDataSet,
 } = require('./wblocalitydataextractor.ts');
@@ -13,8 +12,6 @@ const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch.tsx');
-
-const LIVE_SEARCH_THROTTLE = 50;
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
@@ -59,7 +56,7 @@ module.exports = Backbone.View.extend({
   cellIsType(cellMeta, type) {
     switch (type) {
       case 'invalidCells':
-        return Array.isArray(cellMeta.issues) && cellMeta.issues.length > 0;
+        return cellMeta.issues.length > 0;
       case 'newCells':
         return cellMeta.isNew === true;
       case 'modifiedCells':
@@ -83,8 +80,6 @@ module.exports = Backbone.View.extend({
     )[0];
     const totalCount = parseInt(totalCountElement.innerText);
 
-    const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
-
     const cellMetaObject = this.wbview.getCellMetaObject();
 
     const orderIt =
@@ -98,44 +93,48 @@ module.exports = Backbone.View.extend({
         ? visualRow
         : visualCol;
 
-    const getCurrentPosition = (first) =>
-      getPosition(currentRow, currentCol, first);
+    const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
+
+    const [currentTransposedRow, currentTransposedCol] = [
+      getPosition(currentRow, currentCol, true),
+      getPosition(currentRow, currentCol, false),
+    ];
 
     const compareRows =
       direction === 'next'
-        ? (visualRow) => visualRow >= getCurrentPosition(true)
-        : (visualRow) => visualRow <= getCurrentPosition(true);
+        ? (visualRow) => visualRow >= currentTransposedRow
+        : (visualRow) => visualRow <= currentTransposedRow;
 
     const compareCols =
       direction === 'next'
         ? matchCurrentCell
-          ? (visualCol) => visualCol >= getCurrentPosition(false)
-          : (visualCol) => visualCol > getCurrentPosition(false)
+          ? (visualCol) => visualCol >= currentTransposedCol
+          : (visualCol) => visualCol > currentTransposedCol
         : matchCurrentCell
-        ? (visualCol) => visualCol <= getCurrentPosition(false)
-        : (visualCol) => visualCol < getCurrentPosition(false);
+        ? (visualCol) => visualCol <= currentTransposedCol
+        : (visualCol) => visualCol < currentTransposedCol;
 
     /*
-     * The cellMetaObject is transposed when navigation direction changes
+     * The cellMetaObject is transposed if navigation direction is "Column
+     * first".
      * In that case, the meaning of visualRow and visualCol is swapped.
      * getPosition exists to resolve the canonical visualRow/visualCol
      */
-    orderIt(Object.entries(cellMetaObject)).find(([visualRow, metaRow]) =>
-      orderIt(Object.entries(metaRow)).find(([visualCol, cellMeta]) => {
-        visualRow = Number.parseInt(visualRow);
-        visualCol = Number.parseInt(visualCol);
+    orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
+      orderIt(Object.entries(metaRow)).find(([visualColString, cellMeta]) => {
+        const visualRow = Number.parseInt(visualRowString);
+        const visualCol = Number.parseInt(visualColString);
         const cellTypeMatches = this.cellIsType(cellMeta, type);
         cellIsTypeCount += cellTypeMatches;
         const foundIt =
           cellTypeMatches &&
           compareRows(visualRow) &&
-          (visualRow !== getCurrentPosition(true) || compareCols(visualCol));
-        [realVisualRow, realVisualCol] = [
-          getPosition(visualRow, visualCol, true),
-          getPosition(visualRow, visualCol, false),
-        ];
+          (visualRow !== currentTransposedRow || compareCols(visualCol));
         if (foundIt)
-          matchedCell = { visualRow: realVisualRow, visualCol: realVisualCol };
+          matchedCell = {
+            visualRow: getPosition(visualRow, visualCol, true),
+            visualCol: getPosition(visualRow, visualCol, false),
+          };
         return foundIt;
       })
     );
@@ -172,6 +171,28 @@ module.exports = Backbone.View.extend({
     )}`;
     this.el.classList.toggle(cssClassName);
   },
+  getToVisualConvertors() {
+    const toVisualRow = Array.from(
+      { length: this.wbview.data.length },
+      (_, physicalRow) => this.wbview.hot.toVisualRow(physicalRow)
+    );
+    const toVisualColumn = Array.from(
+      { length: this.wbview.dataset.columns.length },
+      (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
+    );
+    return [toVisualRow, toVisualColumn];
+  },
+  getToPhysicalConvertors() {
+    const toPhysicalRow = Array.from(
+      { length: this.wbview.data.length },
+      (_, visualRow) => this.wbview.hot.toPhysicalRow(visualRow)
+    );
+    const toPhysicalColumn = Array.from(
+      { length: this.wbview.dataset.columns.length },
+      (_, visualCol) => this.wbview.hot.toPhysicalColumn(visualCol)
+    );
+    return [toPhysicalRow, toPhysicalColumn];
+  },
   async searchCells(e) {
     if (
       typeof e.target !== 'undefined' &&
@@ -204,14 +225,6 @@ module.exports = Backbone.View.extend({
     }
 
     let resultsCount = 0;
-    const toPhysicalCol = Array.from(
-      { length: this.wbview.dataset.columns.length },
-      (_, visualCol) => this.wbview.hot.toPhysicalColumn(visualCol)
-    );
-    const toPhysicalRow = Array.from(
-      { length: this.wbview.data.length },
-      (_, visualRow) => this.wbview.hot.toPhysicalRow(visualRow)
-    );
     const data = this.wbview.dataset.rows;
     const firstVisibleRow =
       this.wbview.getHotPlugin('autoRowSize').getFirstVisibleRow() - 3;
@@ -221,6 +234,7 @@ module.exports = Backbone.View.extend({
       this.wbview.getHotPlugin('autoColumnSize').getFirstVisibleColumn() - 3;
     const lastVisibleColumn =
       this.wbview.getHotPlugin('autoColumnSize').getLastVisibleColumn() + 3;
+    const [toPhysicalRow, toPhysicalColumn] = this.getToPhysicalConvertors();
     this.wbview.hot.batch(() => {
       for (
         let visualRow = 0;
@@ -233,7 +247,7 @@ module.exports = Backbone.View.extend({
           visualCol < this.wbview.dataset.columns.length;
           visualCol++
         ) {
-          const physicalCol = toPhysicalCol[visualCol];
+          const physicalCol = toPhysicalColumn[visualCol];
           const cellData = data[physicalRow][physicalCol] || '';
           const searchValue = cellData
             ? cellData

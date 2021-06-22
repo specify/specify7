@@ -681,6 +681,12 @@ const WBView = Backbone.View.extend({
   beforeColumnSort(currentSortConfig, newSortConfig) {
     this.flushIndexedCellData = true;
 
+    /*
+     * If a tree column is about to be sorted, overwrite the sort config by
+     * finding all lower level ranks of that tree and sorting them in the same
+     * direction
+     * */
+
     if (this.readOnly) return false;
 
     if (!this.mappings || this.sortConfigIsSet) return true;
@@ -1765,13 +1771,13 @@ const WBView = Backbone.View.extend({
           ? visualRow
           : visualCol;
 
+      const [toVisualRow, toVisualColumn] =
+        this.wbutils.getToVisualConvertors();
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          const visualRow = this.hot.toVisualRow(Number.parseInt(physicalRow));
-          const visualCol = this.hot.toVisualColumn(
-            Number.parseInt(physicalCol)
-          );
+          const visualRow = toVisualRow[physicalRow];
+          const visualCol = toVisualColumn[physicalCol];
           indexedCellMeta[getPosition(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[getPosition(visualRow, visualCol, true)][
             getPosition(visualRow, visualCol, false)
