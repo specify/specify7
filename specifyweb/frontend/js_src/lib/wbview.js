@@ -165,6 +165,9 @@ const WBView = Backbone.View.extend({
       Array.from({ length: this.dataset.columns.length }, getDefaultCellMeta)
     );
 
+    if (this.refreshInitiatedBy && this.refreshInitiatorAborted)
+      this.operationAbortedMessage();
+
     const initDataModelIntegration = () =>
       this.hot.batch(() => {
         if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
@@ -1521,7 +1524,7 @@ const WBView = Backbone.View.extend({
       );
     });
   },
-  getValidationResults(showValidationSummary = false) {
+  getValidationResults() {
     Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
       (results) => {
         if (this.hot.isDestroyed) return;
@@ -1538,7 +1541,7 @@ const WBView = Backbone.View.extend({
           });
         });
 
-        void this.updateCellInfoStats(showValidationSummary);
+        void this.updateCellInfoStats();
       }
     );
   },
@@ -1605,7 +1608,7 @@ const WBView = Backbone.View.extend({
   },
 
   // MetaData
-  async updateCellInfoStats(showValidationSummary = false) {
+  async updateCellInfoStats() {
     if (!this.hotIsReady) return;
 
     const cellMeta = this.cellMeta.flat(2);
@@ -1651,14 +1654,11 @@ const WBView = Backbone.View.extend({
       }
     });
 
-    const refreshInitiatedBy = showValidationSummary
-      ? 'validate'
-      : this.refreshInitiatedBy;
-
-    if (refreshInitiatedBy)
-      this.operationCompletedMessage(cellCounts, refreshInitiatedBy);
+    if (this.refreshInitiatedBy) this.operationCompletedMessage(cellCounts);
   },
-  operationCompletedMessage(cellCounts, refreshInitiatedBy) {
+  operationCompletedMessage(cellCounts) {
+    if (!this.refreshInitiatedBy) return;
+
     const messages = {
       validate:
         cellCounts.invalidCells === 0
@@ -1705,36 +1705,45 @@ const WBView = Backbone.View.extend({
       },
     };
 
-    if (refreshInitiatedBy in messages) {
-      let title;
-      let message;
-      if (this.refreshInitiatorAborted) {
-        const action =
-          refreshInitiatedBy === 'validate'
-            ? 'Validation'
-            : refreshInitiatedBy === 'unupload'
-            ? 'Rollback'
-            : refreshInitiatedBy;
-        title = `${capitalize(action)} successfully canceled`;
-        message = title;
-      } else {
-        title = messages[refreshInitiatedBy].title;
-        message = messages[refreshInitiatedBy].message;
-      }
-      const dialog = $(`<div>
-                ${message}
-            </div>`).dialog({
-        title,
-        modal: true,
-        width: 400,
-        buttons: {
-          Close: () => dialog.dialog('destroy'),
-        },
-      });
+    const title = messages[this.refreshInitiatedBy].title;
+    const message = messages[this.refreshInitiatedBy].message;
+    const dialog = $(`<div>
+        ${message}
+    </div>`).dialog({
+      title,
+      modal: true,
+      width: 400,
+      buttons: {
+        Close: () => dialog.dialog('destroy'),
+      },
+    });
 
-      this.refreshInitiatedBy = undefined;
-      this.refreshInitiatorAborted = false;
-    }
+    this.refreshInitiatedBy = undefined;
+    this.refreshInitiatorAborted = false;
+  },
+  operationAbortedMessage() {
+    if (!this.refreshInitiatedBy || !this.refreshInitiatorAborted) return;
+
+    const action =
+      this.refreshInitiatedBy === 'validate'
+        ? 'Validation'
+        : this.refreshInitiatedBy === 'unupload'
+        ? 'Rollback'
+        : this.refreshInitiatedBy;
+    const title = `${capitalize(action)} Process Status`;
+    const message = `${capitalize(action)} cancelled`;
+    const dialog = $(`<div>
+        ${message}
+    </div>`).dialog({
+      title,
+      modal: true,
+      width: 400,
+      buttons: {
+        Close: () => dialog.dialog('destroy'),
+      },
+    });
+    this.refreshInitiatedBy = undefined;
+    this.refreshInitiatorAborted = false;
   },
   clearAllMetaData() {
     if (this.hot.isDestroyed) return;
