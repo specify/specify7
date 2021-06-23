@@ -81,14 +81,14 @@ repos:
       - id: forbid-new-submodules
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.0.0
+    rev: v2.1.0
     hooks:
       - id: codespell
         args:
           - --skip="./node_modules/,package-lock.json,./.idea/"
 
   - repo: https://github.com/psf/black
-    rev: 21.5b2
+    rev: 21.6b0
     hooks:
       - id: black
         args:
@@ -119,7 +119,7 @@ repos:
       - id: pydocstyle
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.19.1
+    rev: v2.19.4
     hooks:
       - id: pyupgrade
 
