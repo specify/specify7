@@ -1,15 +1,23 @@
 <div class="wb-header">
   <div class="wb-primary-row">
-    <div class="wb-name"></div>
+    <div class="wb-name-container v-center"></div>
     <div class="wb-controls">
-      <button class="magic-button wb-show-plan" style="display: none">Show Plan</button>
+      <button class="magic-button wb-show-plan" style="display: none">
+        Show Plan
+      </button>
       <button class="magic-button wb-plan">Upload Plan</button>
       <% if(!is_uploaded) { %>
-      <button class="magic-button wb-data-check" disabled="disabled">Data Check</button>
-      <button class="magic-button wb-validate" disabled="disabled">Validate</button>
+      <button class="magic-button wb-data-check" disabled="disabled">
+        Data Check
+      </button>
+      <button class="magic-button wb-validate" disabled="disabled">
+        Validate
+      </button>
       <% } %>
       <button class="magic-button wb-show-toolkit">Tools</button>
-      <button class="magic-button wb-show-upload-view" disabled="disabled">Results</button>
+      <button class="magic-button wb-show-upload-view" disabled="disabled">
+        Results
+      </button>
       <% if(is_uploaded && is_manager){ %>
       <button class="magic-button wb-unupload">Rollback</button>
       <% } else { %> <% if(is_manager){ %>
@@ -22,7 +30,9 @@
   </div>
   <div class="wb-toolkit" style="display: none">
     <div class="wb-toolkit-left">
-      <button class="magic-button wb-change-data-set-owner">Change Owner</button>
+      <button class="magic-button wb-change-data-set-owner">
+        Change Owner
+      </button>
       <button class="magic-button wb-export-data-set">Export</button>
       <button class="magic-button wb-delete-data-set">Delete</button>
     </div>
@@ -68,7 +78,10 @@
       title="Replacement value"
     />
     <% }%>
-    <button class="magic-button wb-advanced-search" title="Configure Search & Replace">
+    <button
+      class="magic-button wb-advanced-search"
+      title="Configure Search & Replace"
+    >
       ⚙
     </button>
   </span>

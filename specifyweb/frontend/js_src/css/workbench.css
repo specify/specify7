@@ -16,6 +16,7 @@
 .wbs-form .wb-primary-row {
   display: flex;
   justify-content: space-between;
+  column-gap: 1rem;
   width: 100%;
 }
 
@@ -43,11 +44,18 @@
   justify-content: space-between;
 }
 
-.wbs-form .wb-name {
+.wbs-form .wb-name-container {
+  flex: 1;
   font-size: 0.8rem;
+  overflow-y: auto;
+  white-space: nowrap;
 }
 
-.wbs-form .wb-name span.ui-icon {
+.wbs-form .wb-name {
+  overflow-y: auto;
+}
+
+.wbs-form .wb-name-container span.ui-icon {
   display: inline-block;
   vertical-align: bottom;
 }
@@ -123,11 +131,11 @@
 }
 
 .handsontable td .htAutocompleteArrow {
-    color: #000;
+  color: #000;
 }
 
 .handsontable td .htAutocompleteArrow:hover {
-    color: #999;
+  color: #999;
 }
 
 /* Sorting direction */

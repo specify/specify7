@@ -253,8 +253,8 @@ export default Backbone.View.extend({
 
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    this.$el.find('.wb-name').html(`
-      Data Set: ${this.dataset.name}
+    this.$el.find('.wb-name-container').html(`
+      <span class="wb-name">Data Set: ${this.dataset.name}</span>
       ${
         isUploaded
           ? `<span style="color: #f24">(Uploaded, Read-Only)</span>`
