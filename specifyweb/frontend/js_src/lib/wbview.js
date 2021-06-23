@@ -1271,6 +1271,7 @@ const WBView = Backbone.View.extend({
     }
   },
   startUpload(mode) {
+    this.clearAllMetaData();
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';
