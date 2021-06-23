@@ -1,29 +1,41 @@
-.wb-ds-dialog-table {
-  width: 100%;
+.wbs-dialog-table {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  column-gap: 1rem;
 }
 
-.wb-ds-dialog-table th {
+.wbs-dialog-header,
+.wbs-dialog-body,
+.wbs-dialog-row {
+  display: contents;
+}
+
+.wbs-dialog-header .wbs-dialog-cell {
   padding: 0 0 2px;
-  font-size: 0.8rem;
 }
 
-.wb-ds-dialog-table th:first-child {
-  padding-left: 22px;
+.wbs-dialog-header .wbs-dialog-cell:first-child {
+  padding-left: 21px;
 }
 
-.wb-ds-dialog-table a {
+.wbs-dialog-row .wbs-dialog-cell:first-child {
+  overflow-x: auto;
+}
+
+.wbs-dialog-cell a {
   font-weight: 300;
+  display: flex;
 }
 
-.wb-ds-dialog-table td,
-.wb-ds-dialog-table a {
+.wbs-dialog-cell,
+.wbs-dialog-cell a {
   font-size: 0.8rem;
 }
 
-.wb-ds-dialog-table td {
+.wbs-dialog-cell {
   padding-top: 0.6rem;
 }
 
-.wb-ds-dialog-table img {
+.wbs-dialog-cell img {
   padding-right: 5px;
 }

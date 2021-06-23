@@ -140,16 +140,14 @@ function Dialog({
           </p>
         ) : (
           <span className="table-list-dialog">
-            <table className="wb-ds-dialog-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Created</th>
-                  <th>Uploaded</th>
-                  {canImport && <th />}
-                </tr>
-              </thead>
-              <tbody>
+            <div className="wbs-dialog-table">
+              <div className="wbs-dialog-header">
+                <div className="wbs-dialog-cell">Name</div>
+                <div className="wbs-dialog-cell">Created</div>
+                <div className="wbs-dialog-cell">Uploaded</div>
+                <div className="wbs-dialog-cell" />
+              </div>
+              <div className="wbs-dialog-body">
                 {datasets.map((dataset, index) => {
                   const dateCreated = new Date(dataset.timestampcreated);
                   const dateUploaded =
@@ -158,8 +156,8 @@ function Dialog({
                       : undefined;
 
                   return (
-                    <tr key={index}>
-                      <td>
+                    <div className="wbs-dialog-row" key={index}>
+                      <div className="wbs-dialog-cell">
                         <a
                           style={{ fontWeight: 800 }}
                           href={`/workbench/${dataset.id}/`}
@@ -168,7 +166,7 @@ function Dialog({
                                 className: 'intercept-navigation',
                               }
                             : {
-                                onClick: (event) => {
+                                onClick: (event): void => {
                                   event.preventDefault();
                                   handleDataSetSelect(dataset.id);
                                 },
@@ -177,27 +175,33 @@ function Dialog({
                           <img src="/images/Workbench32x32.png" alt="" />
                           {dataset.name}
                         </a>
-                      </td>
-                      <td title={dateCreated.toLocaleString()}>
+                      </div>
+                      <div
+                        className="wbs-dialog-cell"
+                        title={dateCreated.toLocaleString()}
+                      >
                         {dateCreated.toDateString()}
-                      </td>
-                      <td title={dateUploaded?.toLocaleString() ?? ''}>
+                      </div>
+                      <div
+                        className="wbs-dialog-cell"
+                        title={dateUploaded?.toLocaleString() ?? undefined}
+                      >
                         {dateUploaded?.toDateString() ?? ''}
-                      </td>
-                      {canImport && (
-                        <td>
+                      </div>
+                      <div className="wbs-dialog-cell">
+                        {canImport && (
                           <span
                             tabIndex={0}
                             className="ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
                           />
-                        </td>
-                      )}
-                    </tr>
+                        )}
+                      </div>
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </span>
         )}
       </ModalDialog>
