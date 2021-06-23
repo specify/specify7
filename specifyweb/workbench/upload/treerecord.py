@@ -285,7 +285,10 @@ class BoundTreeRecord(NamedTuple):
             after_skipped = [u for u in to_upload if u.treedefitem.rankid > skipped_enforced[-1].rankid]
             info = ReportInfo(tableName=self.name, columns=[r.column for r in after_skipped[0].results], treeInfo=None)
             return UploadResult(
-                FailedBusinessRule(f'Missing values for enforced tree levels {repr(names)}.', info),
+                FailedBusinessRule(
+                    f'Missing or unmapped required tree parent rank value for {repr(names)}.',
+                    info
+                ),
                 {}, {}
             )
 

@@ -168,12 +168,18 @@ class TreeMatchingTests(UploadTestsBase):
         results = do_upload(self.collection, data, scoped_plan, self.agent.id)
         self.assertEqual(
             results[0].record_result,
-            FailedBusinessRule(message="Missing values for enforced tree levels ['County'].",
-                               info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)))
+            FailedBusinessRule(
+                message="Missing or unmapped required tree parent rank value for ['County'].",
+                info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)
+            )
+        )
         self.assertEqual(
             results[1].record_result,
-            FailedBusinessRule(message="Missing values for enforced tree levels ['County'].",
-                               info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)))
+            FailedBusinessRule(
+                message="Missing or unmapped required tree parent rank value for ['County'].",
+                info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)
+            )
+        )
 
     def test_match_skip_level(self) -> None:
         plan_json = dict(
