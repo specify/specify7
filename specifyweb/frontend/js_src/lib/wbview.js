@@ -110,6 +110,7 @@ const WBView = Backbone.View.extend({
       wbview: this,
       el: this.el,
     });
+    this.wbstatus = undefined;
 
     this.datasetmeta = new DataSetMeta({
       dataset: this.dataset,
@@ -1289,9 +1290,12 @@ const WBView = Backbone.View.extend({
       });
   },
   openStatus(mode) {
-    new WBStatus({ dataset: this.dataset })
+    this.wbstatus = new WBStatus({ dataset: this.dataset })
       .render()
-      .on('done', (wasAborted) => this.trigger('refresh', mode, wasAborted));
+      .on('done', (wasAborted) => {
+        this.trigger('refresh', mode, wasAborted);
+        this.wbstatus = undefined;
+      });
   },
   delete: function () {
     const dialog = $(`<div>
@@ -1525,6 +1529,7 @@ const WBView = Backbone.View.extend({
     });
   },
   getValidationResults() {
+    if (typeof this.wbstatus !== 'undefined') return;
     Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
       (results) => {
         if (this.hot.isDestroyed) return;
