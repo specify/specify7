@@ -10,7 +10,7 @@
 
 .content-shadow, .content-shadow-full-width {
     box-shadow: 0 0 var(--shadow-size) calc(var(--shadow-size) / 2) rgba(0, 0, 0, 0.33);
-    height: calc(100% - calc(var(--shadow-size) * 2));
+    height: calc(100% - var(--shadow-size) * 2);
     margin-top: var(--shadow-size);
     border: 1px solid #ddd;
 }
@@ -20,7 +20,7 @@
 }
 
 .content-shadow-full-width {
-    width: calc(100% - calc(var(--shadow-size) * 2));
+    width: calc(100% - var(--shadow-size) * 2);
     margin-left: var(--shadow-size);
 }
 
@@ -32,7 +32,7 @@
     width: -moz-fit-content;
     width: fit-content;
     height: unset;
-    max-height: calc(100% - calc(var(--shadow-size) * 2));
+    max-height: calc(100% - var(--shadow-size) * 2);
     overflow-y: scroll;
     padding-bottom: 2px;
 }

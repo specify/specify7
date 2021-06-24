@@ -90,7 +90,7 @@
 
 .custom-select-element-shadow-list {
   margin-top: calc(var(--white-space) * -2);
-  padding-right: calc(calc(var(--white-space) * 8.2) - 7px);
+  padding-right: calc(var(--white-space) * 8.2 - 7px);
   visibility: hidden;
   display: flex;
   flex-direction: column;
@@ -149,7 +149,7 @@
 
 .custom-select-options {
   overflow-y: scroll;
-  max-height: calc(calc(4 * var(--white-space)) * var(--lines-to-display));
+  max-height: calc(4 * var(--white-space) * var(--lines-to-display));
   border: var(--border-size) solid var(--accent);
   background-color: var(--background1);
   z-index: 2;
