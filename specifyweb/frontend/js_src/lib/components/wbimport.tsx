@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
 import { uniquifyHeaders } from '../wbplanviewhelper';
+import { IR } from './wbplanview';
 
 const $ = require('jquery');
 
@@ -16,62 +17,58 @@ const PREVIEW_SIZE = 100;
 
 type FileType = 'csv' | 'xls';
 
-type FileTypeState = { type: 'FileTypeState' };
+type ChooseFileState = { type: 'ChooseFileState' };
 
-type ChooseCSVFileState = { type: 'ChooseCSVFileState'; encoding: string };
-
-type ChooseXLSFileState = { type: 'ChooseXLSFileState' };
-
-type PreviewCSVState = {
-  type: 'PreviewCSVState';
+type PreviewFileState = {
+  type: 'PreviewFileState';
   preview: string[][];
   file: File;
   encoding: string;
   datasetName: string;
   hasHeader: boolean;
+  fileType: FileType;
 };
 
-type PreviewXLSState = {
-  type: 'PreviewXLSState';
-  preview: string[][];
+type BadFileState = {
+  type: 'BadFileState';
   file: File;
-  datasetName: string;
-  hasHeader: boolean;
+  encoding: string;
+  fileType: FileType;
 };
-
-type BadCSVState = { type: 'BadCSVState'; file: File; encoding: string };
-
-type BadXLSState = { type: 'BadXLSState'; file: File };
 
 type LoadingFileState = {
   type: 'LoadingFileState';
   file: File;
+  fileType: FileType;
   datasetName: string;
 };
 
 type WbImportState =
-  | FileTypeState
-  | ChooseCSVFileState
-  | ChooseXLSFileState
-  | PreviewCSVState
-  | PreviewXLSState
-  | BadCSVState
-  | BadXLSState
+  | ChooseFileState
+  | PreviewFileState
+  | BadFileState
   | LoadingFileState;
-
-type FileTypeAction = { type: 'FileTypeAction'; fileType: FileType };
 
 type EncodingAction = { type: 'EncodingAction'; encoding: string };
 
-type FileSelectedAction = { type: 'FileSelectedAction'; file: File };
+type FileSelectedAction = {
+  type: 'FileSelectedAction';
+  file: File;
+  fileType: FileType;
+};
 
 type GotPreviewAction = {
   type: 'GotPreviewAction';
   preview: string[][];
   file: File;
+  fileType: FileType;
 };
 
-type BadImportFileAction = { type: 'BadImportFileAction'; file: File };
+type BadImportFileAction = {
+  type: 'BadImportFileAction';
+  file: File;
+  fileType: FileType;
+};
 
 type ToggleHeaderAction = { type: 'ToggleHeaderAction' };
 
@@ -80,7 +77,6 @@ type SetDataSetNameAction = { type: 'SetDataSetNameAction'; value: string };
 type DoImportAction = { type: 'DoImportAction' };
 
 type Action =
-  | FileTypeAction
   | EncodingAction
   | FileSelectedAction
   | GotPreviewAction
@@ -94,7 +90,7 @@ type HandleAction = (action: Action) => void;
 export default class WbImport extends Component<{}, WbImportState> {
   constructor(props: any) {
     super(props);
-    this.state = { type: 'FileTypeState' };
+    this.state = { type: 'ChooseFileState' };
   }
 
   generateCSVPreview(file: File, encoding: string) {
@@ -107,8 +103,8 @@ export default class WbImport extends Component<{}, WbImportState> {
         data.forEach((row) => row.push(...new Array(maxWidth - row.length)));
         this.update(
           data.length > 0
-            ? { type: 'GotPreviewAction', preview: data, file }
-            : { type: 'BadImportFileAction', file }
+            ? { type: 'GotPreviewAction', preview: data, file, fileType: 'csv' }
+            : { type: 'BadImportFileAction', file, fileType: 'csv' }
         );
       },
     });
@@ -120,8 +116,8 @@ export default class WbImport extends Component<{}, WbImportState> {
     worker.onmessage = ({ data }) =>
       this.update(
         data.length > 0
-          ? { type: 'GotPreviewAction', preview: data, file }
-          : { type: 'BadImportFileAction', file }
+          ? { type: 'GotPreviewAction', preview: data, file, fileType: 'xls' }
+          : { type: 'BadImportFileAction', file, fileType: 'xls' }
       );
   }
 
@@ -179,143 +175,81 @@ export default class WbImport extends Component<{}, WbImportState> {
     };
 
     switch (action.type) {
-      case 'FileTypeAction':
-        switch (action.fileType) {
-          case 'xls':
-            setState({ type: 'ChooseXLSFileState' });
-            break;
-          case 'csv':
-            setState({ type: 'ChooseCSVFileState', encoding: 'utf-8' });
-            break;
-          default:
-            assertExhaustive(action.fileType);
-        }
-        break;
-
       case 'EncodingAction':
-        switch (this.state.type) {
-          case 'ChooseCSVFileState':
-            setState({ type: 'ChooseCSVFileState', encoding: action.encoding });
-            break;
-
-          case 'PreviewCSVState':
-            setState({ type: 'ChooseCSVFileState', encoding: action.encoding });
-            this.generateCSVPreview(this.state.file, this.state.encoding);
-            break;
+        if ('encoding' in this.state && this.state.fileType === 'csv') {
+          setState({ ...this.state, encoding: action.encoding });
+          this.generateCSVPreview(this.state.file, this.state.encoding);
         }
         break;
 
       case 'FileSelectedAction':
-        switch (this.state.type) {
-          case 'ChooseCSVFileState':
-          case 'PreviewCSVState':
-          case 'BadCSVState':
-            this.generateCSVPreview(action.file, this.state.encoding);
-            break;
-
-          case 'ChooseXLSFileState':
-          case 'PreviewXLSState':
-          case 'BadXLSState':
-            this.generateXLSPreview(action.file);
-            break;
-        }
+        if (action.fileType === 'csv')
+          this.generateCSVPreview(
+            action.file,
+            'encoding' in this.state ? this.state.encoding : 'utf-8'
+          );
+        else this.generateXLSPreview(action.file);
         break;
 
       case 'GotPreviewAction':
-        switch (this.state.type) {
-          case 'ChooseCSVFileState':
-          case 'PreviewCSVState':
-          case 'BadCSVState':
-            setState({
-              type: 'PreviewCSVState',
-              preview: action.preview,
-              file: action.file,
-              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extension
-              encoding: this.state.encoding,
-              hasHeader: true,
-            });
-            break;
-
-          case 'ChooseXLSFileState':
-          case 'PreviewXLSState':
-          case 'BadXLSState':
-            setState({
-              type: 'PreviewXLSState',
-              preview: action.preview,
-              file: action.file,
-              datasetName: action.file.name.replace(/\.[^.]*$/, ''), // Remove extension
-              hasHeader: true,
-            });
-            break;
-        }
+        setState({
+          type: 'PreviewFileState',
+          preview: action.preview,
+          file: action.file,
+          fileType: action.fileType,
+          // Remove extension
+          datasetName: action.file.name.replace(/\.[^.]*$/, ''),
+          encoding: 'encoding' in this.state ? this.state.encoding : 'utf-8',
+          hasHeader: true,
+        });
         break;
 
       case 'BadImportFileAction':
-        switch (this.state.type) {
-          case 'ChooseCSVFileState':
-          case 'PreviewCSVState':
-          case 'BadCSVState':
-            setState({
-              type: 'BadCSVState',
-              file: action.file,
-              encoding: this.state.encoding,
-            });
-            break;
-
-          case 'ChooseXLSFileState':
-          case 'PreviewXLSState':
-          case 'BadXLSState':
-            setState({ type: 'BadXLSState', file: action.file });
-            break;
-        }
+        setState({
+          type: 'BadFileState',
+          file: action.file,
+          fileType: action.fileType,
+          encoding: 'encoding' in this.state ? this.state.encoding : 'utf-8',
+        });
         break;
 
       case 'ToggleHeaderAction':
-        switch (this.state.type) {
-          case 'PreviewCSVState':
-          case 'PreviewXLSState':
-            setState({ ...this.state, hasHeader: !this.state.hasHeader });
-            break;
-        }
+        if (this.state.type === 'PreviewFileState')
+          setState({ ...this.state, hasHeader: !this.state.hasHeader });
         break;
 
       case 'SetDataSetNameAction':
-        switch (this.state.type) {
-          case 'PreviewCSVState':
-          case 'PreviewXLSState':
-            setState({ ...this.state, datasetName: action.value });
-            break;
-        }
+        if (this.state.type === 'PreviewFileState')
+          setState({ ...this.state, datasetName: action.value });
         break;
 
       case 'DoImportAction':
-        switch (this.state.type) {
-          case 'PreviewCSVState':
-            setState({
-              type: 'LoadingFileState',
-              file: this.state.file,
-              datasetName: this.state.datasetName,
-            });
-            this.doImportCSV(
-              this.state.file,
-              this.state.datasetName,
-              this.state.hasHeader,
-              this.state.encoding
-            );
-            break;
-
-          case 'PreviewXLSState':
-            setState({
-              type: 'LoadingFileState',
-              file: this.state.file,
-              datasetName: this.state.datasetName,
-            });
-            this.doImportXLS(
-              this.state.file,
-              this.state.datasetName,
-              this.state.hasHeader
-            );
-            break;
+        if (this.state.type !== 'PreviewFileState') break;
+        if (this.state.fileType === 'csv') {
+          setState({
+            type: 'LoadingFileState',
+            file: this.state.file,
+            fileType: this.state.fileType,
+            datasetName: this.state.datasetName,
+          });
+          this.doImportCSV(
+            this.state.file,
+            this.state.datasetName,
+            this.state.hasHeader,
+            this.state.encoding
+          );
+        } else {
+          setState({
+            type: 'LoadingFileState',
+            file: this.state.file,
+            fileType: this.state.fileType,
+            datasetName: this.state.datasetName,
+          });
+          this.doImportXLS(
+            this.state.file,
+            this.state.datasetName,
+            this.state.hasHeader
+          );
         }
         break;
 
@@ -331,35 +265,21 @@ export default class WbImport extends Component<{}, WbImportState> {
     let ui;
     let preview;
     switch (this.state.type) {
-      case 'FileTypeState':
-        rows = <SelectFileType fileType={null} update={update} />;
-        break;
-
-      case 'ChooseXLSFileState':
+      case 'ChooseFileState':
         rows = (
           <>
-            <SelectFileType fileType="xls" update={update} />
-            <ChooseFile fileType="xls" update={update} />
+            <ChooseFile update={update} />
           </>
         );
         break;
 
-      case 'ChooseCSVFileState':
+      case 'PreviewFileState':
         rows = (
           <>
-            <SelectFileType fileType="csv" update={update} />
-            <ChooseEncoding encoding={this.state.encoding} update={update} />
-            <ChooseFile fileType="csv" update={update} />
-          </>
-        );
-        break;
-
-      case 'PreviewCSVState':
-        rows = (
-          <>
-            <SelectFileType fileType="csv" update={update} />
-            <ChooseEncoding encoding={this.state.encoding} update={update} />
-            <ChooseFile fileType="csv" update={update} />
+            <ChooseFile update={update} />
+            {this.state.fileType === 'csv' && (
+              <ChooseEncoding encoding={this.state.encoding} update={update} />
+            )}
             <ChooseName name={this.state.datasetName} update={update} />
             <ToggleHeader hasHeader={this.state.hasHeader} update={update} />
           </>
@@ -376,45 +296,13 @@ export default class WbImport extends Component<{}, WbImportState> {
         );
         break;
 
-      case 'BadCSVState':
+      case 'BadFileState':
         rows = (
           <>
-            <SelectFileType fileType="csv" update={update} />
-            <ChooseEncoding encoding={this.state.encoding} update={update} />
-            <ChooseFile fileType="csv" update={update} />
-            <p>
-              The file {this.state.file.name} is corrupt or contains no data!
-            </p>
-          </>
-        );
-        break;
-
-      case 'PreviewXLSState':
-        rows = (
-          <>
-            <SelectFileType fileType="xls" update={update} />
-            <ChooseFile fileType="xls" update={update} />
-            <ToggleHeader hasHeader={this.state.hasHeader} update={update} />
-            <ChooseName name={this.state.datasetName} update={update} />
-          </>
-        );
-        ui = (
-          <>
-            <br />
-            <DoImportButton update={update} />
-            <h2>Preview Dataset</h2>
-          </>
-        );
-        preview = (
-          <Preview data={this.state.preview} hasHeader={this.state.hasHeader} />
-        );
-        break;
-
-      case 'BadXLSState':
-        rows = (
-          <>
-            <SelectFileType fileType="xls" update={update} />
-            <ChooseFile fileType="xls" update={update} />
+            <ChooseFile update={update} />
+            {this.state.fileType === 'csv' && (
+              <ChooseEncoding encoding={this.state.encoding} update={update} />
+            )}
             <p>
               The file {this.state.file.name} is corrupt or contains no data!
             </p>
@@ -448,31 +336,6 @@ export default class WbImport extends Component<{}, WbImportState> {
   }
 }
 
-function SelectFileType(props: {
-  fileType: FileType | null;
-  update: HandleAction;
-}) {
-  function selected(value: string) {
-    if (value == 'csv' || value == 'xls') {
-      props.update({ type: 'FileTypeAction', fileType: value });
-    }
-  }
-
-  return (
-    <label>
-      Choose a File Type:
-      <select
-        onChange={(event) => selected(event.target.value)}
-        value={props.fileType || ''}
-      >
-        <option>Choose File Type</option>
-        <option value="xls">Excel</option>
-        <option value="csv">CSV</option>
-      </select>
-    </label>
-  );
-}
-
 function ChooseEncoding(props: {
   encoding: string | null;
   update: HandleAction;
@@ -498,8 +361,9 @@ function ChooseEncoding(props: {
   );
 }
 
-function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
+function ChooseFile(props: { update: HandleAction }) {
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
+  const filePickerButton = React.useRef<HTMLAnchorElement>(null);
 
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
@@ -516,7 +380,27 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
 
   function handleFileChange(file: File | undefined): boolean {
     if (file) {
-      props.update({ type: 'FileSelectedAction', file });
+      const fileMimeMapper: IR<FileType> = {
+        'text/csv': 'csv',
+        'text/tab-separated-values': 'csv',
+        'text/plain': 'csv',
+        'application/vnd.ms-excel': 'xls',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+          'xls',
+      };
+      if (!(file.type in fileMimeMapper)) {
+        props.update({
+          type: 'BadImportFileAction',
+          file,
+          fileType: 'xls',
+        });
+        return false;
+      }
+      props.update({
+        type: 'FileSelectedAction',
+        file,
+        fileType: fileMimeMapper[file.type],
+      });
       setFileName(file.name);
       return true;
     } else {
@@ -531,6 +415,13 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
   }
 
   function handleDragLeave(event: React.DragEvent): void {
+    if (
+      event.relatedTarget === null ||
+      filePickerButton.current === null ||
+      event.target !== filePickerButton.current ||
+      filePickerButton.current.contains(event.relatedTarget as Node)
+    )
+      return;
     setIsDragging(false);
     preventPropagation(event);
   }
@@ -542,31 +433,40 @@ function ChooseFile(props: { fileType: FileType; update: HandleAction }) {
 
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
 
-  const extensions =
-    props.fileType === 'csv'
-      ? '.csv,.tsv,.txt'
-      : props.fileType === 'xls'
-      ? '.xls,.xlsx'
-      : assertExhaustive(props.fileType);
-
   return (
     <label
       className={`custom-file-picker ${
         isDragging ? 'custom-file-picker-dragging' : ''
       }`}
+      onDrop={handleFileDropped}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={preventPropagation}
     >
       <a
+        ref={filePickerButton}
         tabIndex={0}
-        className="magic-button"
-        onDrop={handleFileDropped}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={preventPropagation}
+        style={{
+          gridColumn: '1 / span 2',
+        }}
+        className="magic-button v-center"
       >
-        Choose File to Import
-        <input type="file" accept={extensions} onChange={handleFileSelected} />
+        <span>
+          Choose a file or drag it here
+          <input
+            type="file"
+            accept=".csv,.tsv,.txt,.xls,.xlsx"
+            onChange={handleFileSelected}
+          />
+          {typeof fileName !== 'undefined' && (
+            <>
+              <br />
+              <br />
+              <b>Selected file: {fileName}</b>
+            </>
+          )}
+        </span>
       </a>
-      <span>{fileName && <span>{fileName}</span>}</span>
     </label>
   );
 }
@@ -647,7 +547,7 @@ function extractHeader(
 ): { rows: string[][]; header: string[] } {
   const header = headerInData
     ? uniquifyHeaders(data[0].map((header) => header.trim()))
-    : data[0].map((_1, index) => `Column ${index + 1}`);
+    : Array.from(data[0], (_, index) => `Column ${index + 1}`);
   const rows = headerInData ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
 }
