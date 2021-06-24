@@ -1,24 +1,53 @@
 const path = require('path');
-const { writeFileSync } = require('fs');
+const { writeFileSync, readFileSync } = require('fs');
 const webpack = require("webpack");
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
 
+
+function isFileChanged(fileName, fileContent){
+    try {
+        return fileContent !== readFileSync(path.join(fileName).toString());
+    }
+    catch (err) {
+        return true;
+    }
+}
 
 class EmitInitPyPlugin {
     apply(compiler) {
-        compiler.hooks.done.tap('EmitInitPyPlugin', (stats) => {
-            const outPath = compiler.options.output.path;
-            const fullOutPath = path.join(outPath, '__init__.py');
-            try {
-                readFileSync(fullOutPath)
-            }
-            catch (err) {
+        compiler.hooks.done.tap('EmitInitPyPlugin', () => {
+            const fullOutPath = path.join(
+              compiler.options.output.path,
+              '__init__.py'
+            );
+            const content =
+              "# Allows manifest.py to be imported / reloaded by Django dev server.\n";
+            if(isFileChanged(fullOutPath, content))
                 writeFileSync(
                     fullOutPath,
-                    "# Allows manifest.py to be imported / reloaded by Django dev server.\n"
+                    content
                 );
-            }
         });
+    }
+}
+
+const serializeManifest = (manifest) =>
+    `manifest = ${JSON.stringify(manifest, null, 2)}\n`;
+
+class SmartWebpackManifestPlugin {
+    apply(compiler) {
+        const { beforeEmit } = getCompilerHooks(compiler);
+
+        // Cancel webpack manifest emit if the file did not change
+        beforeEmit.tap('SmartWebpackManifestPlugin', (manifest) => {
+            const fullOutPath = path.join(
+              compiler.options.output.path,
+              'manifest.py'
+            );
+            return isFileChanged(fullOutPath, serializeManifest(manifest))?
+                manifest :
+                undefined;
+        })
     }
 }
 
@@ -76,10 +105,10 @@ module.exports = (_env, argv)=>({
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+        new SmartWebpackManifestPlugin(),
         new WebpackManifestPlugin({
             fileName: 'manifest.py',
-            serialize: (manifest) =>
-                `manifest = ${JSON.stringify(manifest, null, 2)}\n`
+            serialize: serializeManifest
         }),
         new EmitInitPyPlugin()
     ],
