@@ -14,13 +14,13 @@
     'options';
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
-  height: calc(4 * var(--white-space) + 2px);
+  height: calc(4 * var(--white-space) + var(--border-size) * 2);
   position: relative;
 }
 
 .custom-select-suggestion-list:not(.controlled) {
   position: absolute;
-  bottom: calc(4 * var(--white-space));
+  bottom: calc(4 * var(--white-space) + var(--border-size));
 }
 
 .custom-select-suggestion-list.controlled {
@@ -29,24 +29,9 @@
   z-index: 10;
 }
 
-.custom-select-closed-list .custom-select-options,
+.custom-select-closed-list > .custom-select-options,
 .custom-select-closed-list .custom-select-suggestion-list {
-  box-shadow: 0 0 calc(0.5 * var(--white-space)) calc(0.5 * var(--white-space))
-    var(--border);
-}
-
-.custom-select-closed-list .custom-select-options {
-  clip-path: inset(
-    0 calc(-1 * var(--white-space)) calc(-1 * var(--white-space))
-      calc(-1 * var(--white-space))
-  );
-}
-
-.custom-select-closed-list .custom-select-suggestion-list {
-  clip-path: inset(
-    calc(-1 * var(--white-space)) calc(-1 * var(--white-space)) 0
-      calc(-1 * var(--white-space))
-  );
+  box-shadow: 0 0 calc(var(--white-space) / 2) calc(var(--white-space) / 4) #555;
 }
 
 .custom-select-mapping-options-list {
@@ -78,6 +63,10 @@
 
 .custom-select-suggestion-line-list .custom-select-input {
   grid-template-columns: calc(var(--white-space) * 2) 1fr;
+}
+
+.custom-select-closed-list-active > .custom-select-input {
+  z-index: 3;
 }
 
 .custom-select-mapping-options-list .custom-select-icon {

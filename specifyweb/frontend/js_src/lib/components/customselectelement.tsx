@@ -364,9 +364,8 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
-  const optionIsIntractable = !NON_INTERACTIVE_SELECT_TYPES.includes(
-    customSelectType
-  );
+  const optionIsIntractable =
+    !NON_INTERACTIVE_SELECT_TYPES.includes(customSelectType);
 
   const handleClick =
     optionIsIntractable &&
@@ -519,7 +518,11 @@ export function CustomSelectElement({
     <span
       className={`custom-select custom-select-${upperToKebab(
         customSelectType
-      )}`}
+      )} ${
+        customSelectType === 'CLOSED_LIST' && isOpen
+          ? 'custom-select-closed-list-active'
+          : ''
+      }`}
       title={
         customSelectType === 'OPENED_LIST' ||
         customSelectType === 'BASE_TABLE_SELECTION_LIST'
