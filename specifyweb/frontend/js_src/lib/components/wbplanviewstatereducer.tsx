@@ -359,16 +359,11 @@ export const stateReducer = generateReducer<
                           ? 'validation-indicator-success'
                           : ''
                       }`}
-                      onClick={(): void => {
+                      onClick={(): void =>
                         state.dispatch({
                           type: 'ValidationAction',
-                        });
-                        state.refObjectDispatch({
-                          type: 'AutoScrollStatusChangeAction',
-                          autoScrollType: 'mappingView',
-                          status: true,
-                        });
-                      }}
+                        })
+                      }
                     >
                       Validate Mappings
                     </button>
@@ -392,14 +387,7 @@ export const stateReducer = generateReducer<
                     type="button"
                     className="magic-button"
                     disabled={!state.changesMade}
-                    onClick={(): void => {
-                      handleSave(false);
-                      state.refObjectDispatch({
-                        type: 'AutoScrollStatusChangeAction',
-                        autoScrollType: 'mappingView',
-                        status: true,
-                      });
-                    }}
+                    onClick={(): void => handleSave(false)}
                   >
                     Save
                   </button>
@@ -486,11 +474,16 @@ export const stateReducer = generateReducer<
               mappingPath,
             })
           }
-          handleToggleMappingIsTemplated={(): void =>
+          handleDismissValidation={(): void =>
+            state.dispatch({
+              type: 'ClearValidationResultsAction',
+            })
+          }
+          /*handleToggleMappingIsTemplated={(): void =>
             state.dispatch({
               type: 'ToggleMappingIsTemplatedAction',
             })
-          }
+          }*/
           handleMappingViewResize={(height): void =>
             state.refObjectDispatch({
               type: 'MappingViewResizeAction',
@@ -536,7 +529,7 @@ export const stateReducer = generateReducer<
           }
         />
         <div style={{ position: 'absolute' }}>
-          {!refObject.current.hideEmptyDataSetDialogAction &&
+          {!refObject.current.hideEmptyDataSetDialog &&
             state.lines.length === 0 && (
               <ModalDialog
                 onCloseCallback={() =>

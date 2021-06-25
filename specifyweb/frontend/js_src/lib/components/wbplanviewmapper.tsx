@@ -21,7 +21,7 @@ import type { IR } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingElement, MappingLineComponent } from './wbplanviewcomponents';
 import {
-  FormatValidationResults,
+  ValidationResults,
   MappingsControlPanel,
   MappingView,
   minMappingViewHeight,
@@ -119,7 +119,8 @@ export default function WBPlanViewMapper(
     readonly handleClearMapping: (index: number) => void;
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
-    readonly handleToggleMappingIsTemplated: () => void;
+    readonly handleDismissValidation: () => void;
+    // readonly handleToggleMappingIsTemplated: () => void;
     readonly handleMappingViewResize: (height: number) => void;
     readonly handleAutoScrollStatusChange: (
       autoScrollType: AutoScrollTypes,
@@ -144,7 +145,7 @@ export default function WBPlanViewMapper(
 
   const mappingViewParentRef = React.useRef<HTMLDivElement | null>(null);
 
-  // Scroll listOfMappings/mappingView/open picklist to correct position
+  // Scroll listOfMappings to the bottom when new header is added
   React.useEffect(() => {
     if (
       typeof props.refObject.current.autoScroll === 'undefined' ||
@@ -166,13 +167,6 @@ export default function WBPlanViewMapper(
 
           listOfMappings.current.scrollTop =
             listOfMappings.current.scrollHeight;
-        }
-
-        if (autoScrollType === 'mappingView') {
-          if (!mappingViewParentRef.current) return;
-
-          if (props.validationResults.length > 0)
-            mappingViewParentRef.current.scrollLeft = 0;
         }
 
         props.handleAutoScrollStatusChange(autoScrollType, false);
@@ -261,6 +255,17 @@ export default function WBPlanViewMapper(
 
   return (
     <>
+      {!props.readonly && props.validationResults.length > 0 && (
+        <ValidationResults
+          baseTableName={props.baseTableName}
+          validationResults={props.validationResults}
+          onSave={props.handleSave}
+          onDismissValidation={props.handleDismissValidation}
+          getMappedFields={getMappedFieldsBind}
+          onValidationResultClick={props.handleValidationResultClick}
+          mustMatchPreferences={props.mustMatchPreferences}
+        />
+      )}
       {props.showMappingView && (
         <div
           className="mapping-view-parent"
@@ -275,16 +280,6 @@ export default function WBPlanViewMapper(
           ref={mappingViewParentRef}
         >
           <div className="mapping-view-container">
-            {!props.readonly && (
-              <FormatValidationResults
-                baseTableName={props.baseTableName}
-                validationResults={props.validationResults}
-                handleSave={props.handleSave}
-                getMappedFields={getMappedFieldsBind}
-                onValidationResultClick={props.handleValidationResultClick}
-                mustMatchPreferences={props.mustMatchPreferences}
-              />
-            )}
             <MappingView
               baseTableName={props.baseTableName}
               focusedLineExists={props.lines.length > 0}

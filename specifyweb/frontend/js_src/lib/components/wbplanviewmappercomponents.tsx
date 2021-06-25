@@ -4,6 +4,7 @@ import React from 'react';
 
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
+import { ModalDialog } from './modaldialog';
 import type { IR, RA } from './wbplanview';
 import { MappingPathComponent } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
@@ -65,10 +66,11 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   );
 });
 
-export function FormatValidationResults(props: {
+export function ValidationResults(props: {
   readonly baseTableName: string;
   readonly validationResults: RA<MappingPath>;
-  readonly handleSave: () => void;
+  readonly onSave: () => void;
+  readonly onDismissValidation: () => void;
   readonly getMappedFields: GetMappedFieldsBind;
   readonly onValidationResultClick: (mappingPath: MappingPath) => void;
   readonly mustMatchPreferences: IR<boolean>;
@@ -76,37 +78,53 @@ export function FormatValidationResults(props: {
   if (props.validationResults.length === 0) return null;
 
   return (
-    <div className="validation-results">
-      <span>
-        The following required fields should be mapped before you can upload the
-        dataset:
-      </span>
-      {props.validationResults.map((fieldPath, index) => (
-        <div
-          className="v-center wbplanview-mapping-line-elements"
-          key={index}
-          onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
-        >
-          <MappingPathComponent
-            mappingLineData={getMappingLineData({
-              baseTableName: props.baseTableName,
-              mappingPath: fieldPath,
-              iterate: true,
-              generateLastRelationshipData: false,
-              customSelectType: 'PREVIEW_LIST',
-              getMappedFields: props.getMappedFields,
-              mustMatchPreferences: props.mustMatchPreferences,
-            })}
-          />
+    <div style={{ position: 'absolute' }}>
+      <ModalDialog
+        properties={{
+          title: 'Upload Plan Mapping',
+          modal: false,
+          width: '40vw',
+          height: 'auto',
+          close: props.onDismissValidation,
+          buttons: [
+            {
+              text: 'Continue Editing',
+              click: props.onDismissValidation,
+            },
+            {
+              text: 'Save Unfinished',
+              click: props.onSave,
+            },
+          ],
+        }}
+      >
+        <div className="validation-results">
+          <span>
+            This data mapping is missing one or more data fields required for
+            uploading by your Specify configuration. Add the missing mappings
+            shown or save this Upload Plan as unfinished.
+          </span>
+          {props.validationResults.map((fieldPath, index) => (
+            <div
+              className="v-center wbplanview-mapping-line-elements"
+              key={index}
+              onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
+            >
+              <MappingPathComponent
+                mappingLineData={getMappingLineData({
+                  baseTableName: props.baseTableName,
+                  mappingPath: fieldPath,
+                  iterate: true,
+                  generateLastRelationshipData: false,
+                  customSelectType: 'PREVIEW_LIST',
+                  getMappedFields: props.getMappedFields,
+                  mustMatchPreferences: props.mustMatchPreferences,
+                })}
+              />
+            </div>
+          ))}
         </div>
-      ))}
-      <span>
-        Or you can{' '}
-        <button className="magic-button" onClick={props.handleSave}>
-          Save Unfinished Mapping
-        </button>
-        and finish editing it later
-      </span>
+      </ModalDialog>
     </div>
   );
 }

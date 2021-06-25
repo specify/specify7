@@ -10,16 +10,14 @@ import type { WBPlanViewActions } from './wbplanviewreducer';
 type RefUndefinedState = State<'RefUndefinedState'>;
 export type AutoScrollTypes =
   // Scroll down to the last line in the list of mappings
-  | 'listOfMappings'
-  // Scroll to the left in the mapping view
-  | 'mappingView';
+  'listOfMappings';
 
 export interface RefMappingState extends State<'RefMappingState'> {
   unloadProtectIsSet: boolean;
   mappingViewHeight: number;
   mappingViewHeightChangeTimeout: NodeJS.Timeout;
   autoScroll: Record<AutoScrollTypes, boolean>;
-  hideEmptyDataSetDialogAction: boolean;
+  hideEmptyDataSetDialog: boolean;
 }
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
@@ -140,7 +138,6 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     const refMappingObject = getRefMappingState(refObject, state);
 
     refMappingObject.current.autoScroll ??= {
-      mappingView: false,
       listOfMappings: false,
     };
     refMappingObject.current.autoScroll[autoScrollType] = status;
@@ -162,6 +159,6 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
       }),
   RefHideEmptyDataSetDialogAction: ({ payload: { refObject, state } }) => {
     const refMappingObject = getRefMappingState(refObject, state);
-    refMappingObject.current.hideEmptyDataSetDialogAction = true;
+    refMappingObject.current.hideEmptyDataSetDialog = true;
   },
 });

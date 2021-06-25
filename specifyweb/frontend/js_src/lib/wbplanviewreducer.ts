@@ -136,6 +136,8 @@ type ResetMappingsAction = Action<'ResetMappingsAction'>;
 
 type ValidationAction = Action<'ValidationAction'>;
 
+type ClearValidationResultsAction = Action<'ClearValidationResultsAction'>;
+
 type ClearMappingLineAction = Action<
   'ClearMappingLineAction',
   {
@@ -243,6 +245,7 @@ export type MappingActions =
   | ToggleHiddenFieldsAction
   | ResetMappingsAction
   | ValidationAction
+  | ClearValidationResultsAction
   | CloseInvalidValidationDialogAction
   | ClearMappingLineAction
   | FocusLineAction
@@ -371,6 +374,10 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
           ...mappingState(state),
           showInvalidValidationDialog: false,
         }),
+  ClearValidationResultsAction: ({ state }) => ({
+    ...mappingState(state),
+    validationResults: [],
+  }),
   CloseInvalidValidationDialogAction: ({ state }) => ({
     ...mappingState(state),
     showInvalidValidationDialog: false,
