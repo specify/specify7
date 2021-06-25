@@ -564,6 +564,7 @@ const WBView = Backbone.View.extend({
       ![
         'edit',
         'CopyPaste.paste',
+        'CopyPaste.cut',
         'Autofill.fill',
         'UndoRedo.undo',
         'UndoRedo.redo',
