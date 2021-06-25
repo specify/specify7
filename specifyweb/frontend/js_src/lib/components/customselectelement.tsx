@@ -475,43 +475,66 @@ export function CustomSelectElement({
     </span>
   );
 
+  const previousDefaultOption = React.useRef<
+    undefined | CustomSelectElementDefaultOptionProps
+  >(undefined);
   React.useEffect(() => {
     if (
       /* Auto scroll down the option if: */
-      // It is open
+      // The list is open
       isOpen &&
       // And it can be opened
       optionIsIntractable &&
       // And DOM is rendered
       listOfOptionsRef.current !== null &&
-      // And list has a value
-      defaultOption.optionName !== '0' &&
       // And this type of picklist has auto scroll enabled
       SELECT_TYPES_WITH_AUTOSCROLL.includes(customSelectType) &&
-      // And the list is not already scrolled
-      listOfOptionsRef.current.scrollTop === 0
+      // And list is not scrolled
+      (listOfOptionsRef.current.scrollTop === 0 ||
+        // Or default value has changed
+        ((typeof previousDefaultOption.current !== 'undefined' ||
+          defaultOption.optionName !== '0') &&
+          previousDefaultOption.current?.optionName !==
+            defaultOption.optionName))
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
         'custom-select-option-selected'
       )?.[0] as undefined | HTMLElement;
 
-      // Scroll down only if selected item is not visible
-      if (
-        typeof selectedOption !== 'undefined' &&
-        listOfOptionsRef.current.offsetHeight <
+      if (typeof selectedOption !== 'undefined') {
+        // The current line and half a line before it is visible
+        const minGoodOffsetTop = Math.max(
+          0,
+          selectedOption.offsetTop +
+            selectedOption.offsetHeight -
+            listOfOptionsRef.current.offsetHeight
+        );
+        const maxGoodOffsetTop =
           selectedOption.offsetTop -
-            listOfOptionsRef.current.offsetTop +
-            selectedOption.offsetHeight
-      )
-        /*
-         * Scroll to the difference between position of the list and
-         * the position of the line minus half the height of a single line
-         */
-        listOfOptionsRef.current.scrollTop =
-          selectedOption.offsetTop -
-          listOfOptionsRef.current.offsetTop -
-          selectedOption.offsetHeight / 2;
+          selectedOption.offsetHeight -
+          listOfOptionsRef.current.offsetTop;
+
+        // Change scrollTop only if current option is not visible
+        if (
+          minGoodOffsetTop > listOfOptionsRef.current.scrollTop ||
+          listOfOptionsRef.current.scrollTop < maxGoodOffsetTop
+        )
+          /*
+           * Make selected option appear at the middle of the list, if possible
+           */
+          listOfOptionsRef.current.scrollTop =
+            minGoodOffsetTop === 0
+              ? 0
+              : Math.floor(
+                  minGoodOffsetTop + (maxGoodOffsetTop - minGoodOffsetTop) / 2
+                );
+      }
     }
+    if (
+      Object.values(defaultOption).join('') !==
+      Object.values(previousDefaultOption.current ?? {}).join('')
+    )
+      previousDefaultOption.current = defaultOption;
   }, [isOpen, listOfOptionsRef, Object.values(defaultOption).join('')]);
 
   return (
