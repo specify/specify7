@@ -305,6 +305,12 @@ const WBView = Backbone.View.extend({
                   row_above: 'row_above',
                   row_below: 'row_below',
                   remove_row: 'remove_row',
+                  disambiguate: {
+                    name: 'Disambiguate',
+                    disabled: () => !this.isAmbiguousCell(),
+                    callback: (__, selection) =>
+                      this.disambiguateCell(selection),
+                  },
                   separator_1: '---------',
                   fill_down: this.wbutils.fillCellsContextMenuItem(
                     'Fill Down',
@@ -315,12 +321,6 @@ const WBView = Backbone.View.extend({
                     this.wbutils.fillUp
                   ),
                   separator_2: '---------',
-                  disambiguate: {
-                    name: 'Disambiguate',
-                    disabled: () => !this.isAmbiguousCell(),
-                    callback: (__, selection) =>
-                      this.disambiguateCell(selection),
-                  },
                   undo: 'undo',
                   redo: 'redo',
                 },
