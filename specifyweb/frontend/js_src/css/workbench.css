@@ -116,18 +116,14 @@
   background-size: contain;
 }
 
-.wbs-form .wb-header-unmapped .wb-header-name {
-  padding-left: 0.3rem;
-}
-
 .handsontable .columnSorting {
   line-height: 20px;
 }
 
 .wb-header-icon-undefined {
   color: #f24;
-  font-size: 1rem;
-  margin-top: -4px;
+  font-size: 1.4rem;
+  margin-top: -5px;
 }
 
 .handsontable td .htAutocompleteArrow {
