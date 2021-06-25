@@ -115,7 +115,10 @@ const WBView = Backbone.View.extend({
     this.datasetmeta = new DataSetMeta({
       dataset: this.dataset,
       el: this.el,
-      getRowCount: () => this.hot?.countRows() ?? this.dataset.rows.length,
+      getRowCount: () =>
+        typeof this.hot === 'undefined'
+          ? this.dataset.rows.length
+          : this.hot.countRows() - this.hot.countEmptyRows(true),
     });
 
     /*
@@ -1736,7 +1739,7 @@ const WBView = Backbone.View.extend({
         ? 'Rollback'
         : this.refreshInitiatedBy;
     const title = `${capitalize(action)} Process Status`;
-    const message = `${capitalize(action)} cancelled`;
+    const message = `${capitalize(action)} cancelled.`;
     const dialog = $(`<div>
         ${message}
     </div>`).dialog({
