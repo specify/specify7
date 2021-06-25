@@ -2,11 +2,18 @@
   <% const {uploaderstatus, taskstatus, taskinfo} = status;
   const {total='unknown', current} = taskinfo;
   let operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
+  const mappedOperation = {
+    'Validating': 'Validation',
+    'Uploading': 'Upload'
+  }[operation] ?? operation;
   if(operation==='Unuploading') operation = 'Rollback';
   if(taskstatus === 'PENDING') { %>
     <p>
-      Loading...<br>
-      Specify is about to begin <%= operation %>.
+      <%= mappedOperation %> of this Data Set should begin shortly.<br><br>
+      If this message persists for longer than 30 seconds, the
+      <%= mappedOperation %> process is busy with another Data Set. Specify
+      currently supports only one <%= mappedOperation %> process at a time for
+      a Specify 7 installation. Please try again later.
     </p>
   <% }
   else if(taskstatus === 'FAILURE'){ %>
