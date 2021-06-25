@@ -144,7 +144,6 @@ export function arrayToTree(
 /*
  * Converts array of arrays of strings into a complete tree
  * The inverse of mappingsTreeToArrayOfMappings
- *
  */
 export function arrayOfMappingsToMappingsTree(
   /*
@@ -182,7 +181,6 @@ export function arrayOfMappingsToMappingsTree(
 /*
  * Converts mappings tree to array of mappings
  * The inverse of arrayOfMappingsToMappingsTree
- *
  */
 export const mappingsTreeToArrayOfMappings = (
   mappingsTree: MappingsTree,

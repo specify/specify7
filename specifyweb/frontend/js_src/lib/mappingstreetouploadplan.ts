@@ -201,15 +201,6 @@ const mappingsTreeToUploadPlanTree = (
     ])
   );
 
-/*
- *Const mappingsTreeToUploadTableTable = (
- *mappingsTree: MappingsTree,
- *tableName: string,
- *): UploadPlanUploadTableTable => (
- *{}
- *);
- */
-
 const mappingsTreeToUploadTable = (
   mappingsTree: Readonly<MappingsTree>,
   tableName: string,

@@ -69,7 +69,6 @@ export default createBackboneView<
   className: 'wb-plan-view content-no-shadow',
   initialize(self, { dataset }) {
     self.dataset = dataset;
-    self.mappingIsTemplated = false;
   },
   renderPre(self) {
     self.el.classList.add('wbplanview');
@@ -82,6 +81,5 @@ export default createBackboneView<
     dataset: self.dataset,
     removeUnloadProtect: removeUnloadProtect.bind(null, self),
     setUnloadProtect: setUnloadProtect.bind(null, self),
-    mappingIsTemplated: self.mappingIsTemplated,
   }),
 });

@@ -66,7 +66,6 @@ export function savePlan(
     )
     .map(({ headerName }) => headerName);
 
-  // Props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
   const uploadPlan = mappingsTreeToUploadPlan(
     state.baseTableName,
     getMappingsTree(renamedMappedLines, true),
@@ -285,7 +284,6 @@ const MAX_SUGGESTIONS_COUNT = 3;
  * Show automapper suggestion on top of an opened `CLOSED_LIST`
  * The automapper suggestions are shown only if the current box doesn't have
  * a value selected
- *
  */
 export async function getAutomapperSuggestions({
   lines,

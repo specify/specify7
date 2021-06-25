@@ -191,7 +191,6 @@ export function genericGet<T>(
   /*
    * {boolean} False on error
    * {mixed} value stored under cacheName on success
-   *
    */
   if (!eventListenerIsInitialized) initialize();
 
@@ -250,7 +249,7 @@ export const set = <
     setOptions
   );
 
-/* Set's cacheValue as cache value under cacheName in `bucketName` */
+// Set's cacheValue as cache value under cacheName in `bucketName`
 export function genericSet<T>(
   // The name of the bucket
   bucketName: string,
@@ -309,7 +308,6 @@ export function genericSet<T>(
  * Runs every time you set a new cache value
  * This method is needed to prevent memory leaks and stay under browser memory
  * limit - ~5 MB for Google Chrome ;(
- *
  */
 function trimBucket(
   // The bucket to trim

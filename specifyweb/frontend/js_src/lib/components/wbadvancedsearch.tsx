@@ -148,7 +148,7 @@ function WbAdvancedSearch({
         Match case
       </Checkbox>
       <Checkbox property="useRegex" state={state} setState={setState}>
-        Use regex
+        Use regular expression
       </Checkbox>
       <Checkbox property="liveUpdate" state={state} setState={setState}>
         Live update

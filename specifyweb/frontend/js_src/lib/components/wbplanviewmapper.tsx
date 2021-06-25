@@ -78,7 +78,6 @@ export interface AutomapperSuggestion extends MappingPathProps {
 }
 
 export type WBPlanViewMapperBaseProps = {
-  readonly mappingIsTemplated: boolean;
   readonly showHiddenFields: boolean;
   readonly showMappingView: boolean;
   readonly baseTableName: string;
@@ -120,7 +119,6 @@ export default function WBPlanViewMapper(
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleDismissValidation: () => void;
-    // readonly handleToggleMappingIsTemplated: () => void;
     readonly handleMappingViewResize: (height: number) => void;
     readonly handleAutoScrollStatusChange: (
       autoScrollType: AutoScrollTypes,
@@ -494,12 +492,6 @@ export default function WBPlanViewMapper(
               }
         }
         readonly={props.readonly}
-        /*
-         *HandleToggleMappingIsTemplated={
-         *(!props.readonly && props.handleToggleMappingIsTemplated) || undefined
-         *}
-         *mappingIsTemplated={props.mappingIsTemplated}
-         */
       />
     </>
   );

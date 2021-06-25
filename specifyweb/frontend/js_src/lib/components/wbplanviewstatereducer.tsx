@@ -99,7 +99,6 @@ export function mappingState(state: WBPlanViewStates): MappingState {
 
 export const getDefaultMappingState = (): MappingState => ({
   type: 'MappingState',
-  mappingIsTemplated: false,
   showHiddenFields: cache.get('wbplanview-ui', 'showHiddenFields'),
   showMappingView: cache.get('wbplanview-ui', 'showMappingView', {
     defaultValue: true,
@@ -194,7 +193,6 @@ export const stateReducer = generateReducer<
           state.dispatch({
             type: 'SelectTableAction',
             baseTableName,
-            mappingIsTemplated: state.props.mappingIsTemplated,
             headers: state.props.headers,
           })
         }
@@ -236,7 +234,6 @@ export const stateReducer = generateReducer<
         dataset: state.props.dataset,
         removeUnloadProtect: state.props.removeUnloadProtect,
         setUnloadProtect: state.props.setUnloadProtect,
-        mappingIsTemplated: state.mappingIsTemplated,
         ignoreValidation,
       });
     const handleClose = (): void =>
@@ -302,7 +299,6 @@ export const stateReducer = generateReducer<
                               ({ headerName }) => headerName
                             ),
                             baseTableName: state.baseTableName,
-                            mappingIsTemplated: state.props.mappingIsTemplated,
                           })
                         : state.dispatch({
                             type: 'RerunAutomapperAction',
@@ -399,7 +395,6 @@ export const stateReducer = generateReducer<
         handleClick={handleClose}
       >
         <WBPlanViewMapper
-          mappingIsTemplated={state.mappingIsTemplated}
           showHiddenFields={state.showHiddenFields}
           showMappingView={state.showMappingView}
           baseTableName={state.baseTableName}
@@ -479,11 +474,6 @@ export const stateReducer = generateReducer<
               type: 'ClearValidationResultsAction',
             })
           }
-          /*handleToggleMappingIsTemplated={(): void =>
-            state.dispatch({
-              type: 'ToggleMappingIsTemplatedAction',
-            })
-          }*/
           handleMappingViewResize={(height): void =>
             state.refObjectDispatch({
               type: 'MappingViewResizeAction',
@@ -564,7 +554,6 @@ export const stateReducer = generateReducer<
                       type: 'SelectTableAction',
                       headers: state.lines.map(({ headerName }) => headerName),
                       baseTableName: state.baseTableName,
-                      mappingIsTemplated: state.props.mappingIsTemplated,
                     }),
                   Cancel: () =>
                     state.dispatch({

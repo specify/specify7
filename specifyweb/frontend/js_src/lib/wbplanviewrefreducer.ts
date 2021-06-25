@@ -148,7 +148,6 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
       .then(({ uploadplan }) =>
         stateDispatch({
           type: 'OpenMappingScreenAction',
-          mappingIsTemplated: props.mappingIsTemplated,
           uploadPlan: uploadplan,
           headers: props.headers,
           changesMade: true,

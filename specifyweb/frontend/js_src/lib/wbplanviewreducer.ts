@@ -68,7 +68,6 @@ type SelectTableAction = Action<
   'SelectTableAction',
   {
     baseTableName: string;
-    mappingIsTemplated: boolean;
     headers: RA<string>;
   }
 >;
@@ -106,7 +105,6 @@ type CommonActions = CancelMappingAction;
 export type OpenMappingScreenAction = Action<
   'OpenMappingScreenAction',
   {
-    readonly mappingIsTemplated: boolean;
     readonly headers: RA<string>;
     readonly uploadPlan: UploadPlan | null;
     readonly changesMade: boolean;
@@ -127,8 +125,6 @@ type ToggleMappingViewAction = Action<
     isVisible: boolean;
   }
 >;
-
-type ToggleMappingIsTemplatedAction = Action<'ToggleMappingIsTemplatedAction'>;
 
 type ToggleHiddenFieldsAction = Action<'ToggleHiddenFieldsAction'>;
 
@@ -241,7 +237,6 @@ export type MappingActions =
   | CancelRerunAutomapperAction
   | SavePlanAction
   | ToggleMappingViewAction
-  | ToggleMappingIsTemplatedAction
   | ToggleHiddenFieldsAction
   | ResetMappingsAction
   | ValidationAction
@@ -281,7 +276,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       : state,
   SelectTableAction: ({ action }) => ({
     ...getDefaultMappingState(),
-    mappingIsTemplated: action.mappingIsTemplated,
     baseTableName: action.baseTableName,
     lines: getLinesFromHeaders({
       headers: action.headers,
@@ -325,7 +319,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       getLinesFromUploadPlan(action.headers, action.uploadPlan);
     const newState: MappingState = {
       ...getDefaultMappingState(),
-      mappingIsTemplated: action.mappingIsTemplated,
       changesMade: action.changesMade,
       mustMatchPreferences,
       baseTableName,
@@ -350,11 +343,6 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         priorityCommit: true,
       }
     ),
-  }),
-  ToggleMappingIsTemplatedAction: ({ state }) => ({
-    ...mappingState(state),
-    // TODO: test this in read-only mode
-    mappingIsTemplated: !mappingState(state).mappingIsTemplated,
   }),
   RerunAutomapperAction: ({ state }) => ({
     ...mappingState(state),

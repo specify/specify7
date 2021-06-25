@@ -409,7 +409,6 @@ export function getTableFromMappingPath({
 /*
  * Get data required to build a mapping line from a source mapping path
  * and other options
- *
  */
 export function getMappingLineData({
   baseTableName,

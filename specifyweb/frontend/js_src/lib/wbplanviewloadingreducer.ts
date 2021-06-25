@@ -4,14 +4,6 @@ import { generateDispatch } from 'typesafe-reducer';
 import type { SpecifyResource } from './components/wbplanview';
 import navigation from './navigation';
 
-/*
- *Import type { WBPlanViewActions } from './wbplanviewreducer';
- *
- *interface LoadingStateBase<T extends string> extends State<T> {
- *dispatchAction?: (action: WBPlanViewActions) => void;
- *}
- */
-
 type NavigateBackState = State<
   'NavigateBackState',
   {

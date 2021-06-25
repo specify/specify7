@@ -69,8 +69,6 @@ export type DataModelRelationship = Readonly<DataModelRelationshipWritable>;
 
 type DataModelFieldsWritable = R<DataModelFieldWritable>;
 
-// Export type DataModelFields = Readonly<DataModelFieldsWritable>;
-
 interface DataModelTableWritable {
   tableFriendlyName: string;
   fields: DataModelFieldsWritable;
@@ -92,8 +90,6 @@ type TableRanksInline = [
   tableName: string,
   tableRanks: [string, TreeRankData][]
 ];
-
-// Type DataModelRanksWritable = R<R<boolean>>;
 
 export type DataModelRanks = IR<IR<TreeRankData>>;
 
