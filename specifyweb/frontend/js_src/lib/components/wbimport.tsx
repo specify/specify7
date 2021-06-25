@@ -100,7 +100,9 @@ export default class WbImport extends Component<{}, WbImportState> {
       skipEmptyLines: true,
       complete: ({ data }) => {
         const maxWidth = Math.max(...data.map((row) => row.length));
-        data.forEach((row) => row.push(...new Array(maxWidth - row.length)));
+        data.forEach((row) =>
+          row.push(...Array.from({ length: maxWidth - row.length }).fill(''))
+        );
         this.update(
           data.length > 0
             ? { type: 'GotPreviewAction', preview: data, file, fileType: 'csv' }
@@ -119,6 +121,8 @@ export default class WbImport extends Component<{}, WbImportState> {
           ? { type: 'GotPreviewAction', preview: data, file, fileType: 'xls' }
           : { type: 'BadImportFileAction', file, fileType: 'xls' }
       );
+    worker.onerror = () =>
+      this.update({ type: 'BadImportFileAction', file, fileType: 'xls' });
   }
 
   doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
@@ -388,18 +392,10 @@ function ChooseFile(props: { update: HandleAction }) {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
           'xls',
       };
-      if (!(file.type in fileMimeMapper)) {
-        props.update({
-          type: 'BadImportFileAction',
-          file,
-          fileType: 'xls',
-        });
-        return false;
-      }
       props.update({
         type: 'FileSelectedAction',
         file,
-        fileType: fileMimeMapper[file.type],
+        fileType: fileMimeMapper[file.type] ?? 'xls',
       });
       setFileName(file.name);
       return true;
