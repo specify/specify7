@@ -228,7 +228,10 @@ export const stateReducer = generateReducer<
         }
       );
 
-    const handleSave = (ignoreValidation: boolean): void =>
+    const handleSave = (ignoreValidation: boolean): void => {
+      state.dispatch({
+        type: 'ClearValidationResultsAction',
+      });
       state.dispatch({
         type: 'SavePlanAction',
         dataset: state.props.dataset,
@@ -236,6 +239,7 @@ export const stateReducer = generateReducer<
         setUnloadProtect: state.props.setUnloadProtect,
         ignoreValidation,
       });
+    };
     const handleClose = (): void =>
       state.dispatch({
         type: 'CloseSelectElementAction',
@@ -368,13 +372,16 @@ export const stateReducer = generateReducer<
                 <button
                   type="button"
                   className="magic-button"
-                  onClick={(): void =>
+                  onClick={(): void => {
+                    state.dispatch({
+                      type: 'ClearValidationResultsAction',
+                    });
                     state.dispatch({
                       type: 'CancelMappingAction',
                       dataset: state.props.dataset,
                       removeUnloadProtect: state.props.removeUnloadProtect,
-                    })
-                  }
+                    });
+                  }}
                 >
                   {state.props.readonly ? 'Back' : 'Cancel'}
                 </button>
