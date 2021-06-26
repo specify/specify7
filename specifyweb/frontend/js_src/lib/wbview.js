@@ -135,14 +135,12 @@ const WBView = Backbone.View.extend({
     this.uploadedView = undefined;
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.refreshInitiatorAborted = refreshInitiatorAborted;
-    this.rowResults = this.dataset.rowresults
-      ? this.dataset.rowresults.slice()
-      : [];
+    this.ambiguousMatches = [];
 
     this.resize = this.resize.bind(this);
 
     // Throttle cell count update depending on the DS size (between 10ms and 2s)
-    this.updateCellInfoStats = _.debounce(
+    this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,
       Math.ceil(Math.min(2000, Math.max(10, this.data.length / 10)))
     );
@@ -939,21 +937,25 @@ const WBView = Backbone.View.extend({
   },
 
   // Disambiguation
+  getDisambiguation(physicalRow) {
+    const cols = this.dataset.columns.length;
+    const hidden = this.data[physicalRow][cols];
+    const extra = hidden ? JSON.parse(hidden) : {};
+    return extra.disambiguation || {};
+  },
   isAmbiguousCell() {
     if (!this.mappings) return false;
 
     const [visualRow, visualCol] = this.wbutils.getSelectedLast();
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
-    const targetHeader = this.dataset.columns[physicalCol];
-    const mappingPath = this.mappings.arrayOfMappings.find(
-      ({ headerName }) => headerName === targetHeader
-    )?.mappingPath;
-    const rowResult = this.rowResults[physicalRow];
-    return typeof rowResult === 'undefined' ||
-      typeof mappingPath === 'undefined'
-      ? false
-      : getRecordResult(rowResult, mappingPath)?.MatchedMultiple != null;
+    const da = this.getDisambiguation(physicalRow);
+
+    return (this.ambiguousMatches[physicalRow] ?? []).some(
+      ({ physicalCols, mappingPath }) =>
+        physicalCols.includes(physicalCol) &&
+        typeof da[mappingPathToString(mappingPath)] !== 'number'
+    );
   },
   clearDisambiguation(physicalRow) {
     const cols = this.dataset.columns.length;
@@ -962,12 +964,12 @@ const WBView = Backbone.View.extend({
     extra.disambiguation = {};
     this.data[physicalRow][cols] = JSON.stringify(extra);
   },
-  setDisambiguation(physicalRow, mapping, id, affectedColumns) {
+  setDisambiguation(physicalRow, mappingPath, id, affectedColumns) {
     const cols = this.dataset.columns.length;
     const hidden = this.data[physicalRow][cols];
     const extra = hidden ? JSON.parse(hidden) : {};
     const da = extra.disambiguation || {};
-    da[mapping.slice(0, -1).join(' ')] = id;
+    da[mappingPathToString(mappingPath)] = id;
     extra.disambiguation = da;
     this.data[physicalRow][cols] = JSON.stringify(extra);
     this.spreadSheetChanged();
@@ -986,34 +988,25 @@ const WBView = Backbone.View.extend({
 
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
-    const targetHeader = this.dataset.columns[physicalCol];
 
-    const mappingIndex = this.mappings.arrayOfMappings.findIndex(
-      ({ headerName }) => headerName === targetHeader
+    const matches = this.ambiguousMatches[physicalRow].find(
+      ({ physicalCols }) => physicalCols.includes(physicalCol)
     );
-    const mappingPath = this.mappings.arrayOfMappings[mappingIndex].mappingPath;
-    const tableName = this.mappings.tableNames[mappingIndex];
+    const tableName = getTableFromMappingPath({
+      baseTableName: this.mappings.baseTableName,
+      mappingPath: matches.mappingPath,
+    });
     const model = schema.getModel(tableName);
-    const rowResult = this.rowResults[physicalRow];
-    const matches = getRecordResult(rowResult, mappingPath).MatchedMultiple;
     const resources = new model.LazyCollection({
       filters: { id__in: matches.ids.join(',') },
     });
 
-    const affectedColumns = this.mappings.arrayOfMappings
-      .filter(
-        ({ mappingPath: comparisonMappingPath }) =>
-          mappingPathToString(comparisonMappingPath.slice(0, -1)) ===
-          mappingPathToString(mappingPath.slice(0, -1))
-      )
-      .map(({ headerName }) => this.dataset.columns.indexOf(headerName));
-
     const doDA = (selected) => {
       this.setDisambiguation(
         physicalRow,
-        mappingPath,
+        matches.mappingPath,
         parseInt(selected, 10),
-        affectedColumns
+        matches.physicalCols
       );
       this.startValidateRow(physicalRow);
     };
@@ -1021,19 +1014,23 @@ const WBView = Backbone.View.extend({
       // loop backwards so the live validation will go from top to bottom
       for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
         const physicalRow = this.hot.toPhysicalRow(visualRow);
-        const rowResult = this.rowResults[physicalRow];
-        const key =
-          rowResult &&
-          getRecordResult(rowResult, mappingPath)?.MatchedMultiple?.key;
-        if (key === matches.key) {
-          this.setDisambiguation(
-            physicalRow,
-            mappingPath,
-            parseInt(selected, 10),
-            affectedColumns
-          );
-          this.startValidateRow(physicalRow);
-        }
+        if (
+          !this.ambiguousMatches[physicalRow]?.find(
+            ({ key, mappingPath }) =>
+              key === matches.key &&
+              typeof this.getDisambiguation(physicalRow)[
+                mappingPathToString(mappingPath)
+              ] !== 'number'
+          )
+        )
+          continue;
+        this.setDisambiguation(
+          physicalRow,
+          matches.mappingPath,
+          parseInt(selected, 10),
+          matches.physicalCols
+        );
+        this.startValidateRow(physicalRow);
       }
     };
 
@@ -1844,6 +1841,7 @@ const WBView = Backbone.View.extend({
     const columnIndexes = this.dataset.columns.map(
       (_, physicalCol) => physicalCol
     );
+    this.ambiguousMatches = [];
     this.hot.batch(() =>
       Array.from({ length: this.hot.countRows() }, (_, physicalRow) =>
         columnIndexes.forEach((physicalCol) =>
@@ -1930,17 +1928,3 @@ module.exports = function loadDataset(
       return jqXHR;
     });
 };
-
-function getRecordResult({ UploadResult }, mappingPath) {
-  if (mappingPath.length <= 1 || valueIsTreeRank(mappingPath[0])) {
-    return UploadResult.record_result;
-  } else if (valueIsReferenceItem(mappingPath[1])) {
-    const idx = getIndexFromReferenceItemName(mappingPath[1]);
-    const toMany = UploadResult.toMany[mappingPath[0]];
-    const next = toMany && toMany[idx - 1];
-    return next && getRecordResult(next, mappingPath.slice(2));
-  } else {
-    const next = UploadResult.toOne[mappingPath[0]];
-    return next && getRecordResult(next, mappingPath.slice(1));
-  }
-}

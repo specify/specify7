@@ -36,4 +36,6 @@ class DisambiguationInfo:
 
 
 def from_json(data: Dict[str, int]) -> DisambiguationInfo:
-    return DisambiguationInfo({tuple(path.split()): id for path, id in data.items()})
+    return DisambiguationInfo({
+        tuple(path.split('.') if path else []): id for path, id in data.items()
+    })
