@@ -198,8 +198,10 @@ const WBView = Backbone.View.extend({
         this.identifyDefaultValues();
         this.identifyPickLists();
 
-        // The rest goes in order of importance
+        this.trigger('loaded');
         if (this.dataset.rowresults) this.getValidationResults();
+
+        // The rest goes in order of importance
         this.identifyMappedHeaders();
         if (this.dataset.visualorder?.some((column, index) => column !== index))
           this.hot.updateSettings({
@@ -1916,28 +1918,33 @@ module.exports = function loadDataset(
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false
 ) {
-  const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-    title: 'Loading',
-    modal: true,
-    open(evt, ui) {
-      $('.ui-dialog-titlebar-close', ui.dialog).hide();
-    },
-    close() {
-      $(this).remove();
-    },
-  });
-  $('.progress-bar', dialog).progressbar({ value: false });
+  let dialog;
+  function showLoadingBar() {
+    dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+      title: 'Loading',
+      modal: true,
+      open(evt, ui) {
+        $('.ui-dialog-titlebar-close', ui.dialog).hide();
+      },
+      close() {
+        $(this).remove();
+      },
+    });
+    $('.progress-bar', dialog).progressbar({ value: false });
+  }
+  showLoadingBar();
 
   $.get(`/api/workbench/dataset/${id}/`)
     .done((dataset) => {
-      dialog.dialog('close');
-
       const view = new WBView({
         dataset,
         refreshInitiatedBy,
         refreshInitiatorAborted,
-      }).on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted));
+      })
+        .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
+        .on('loaded', () => dialog.dialog('close'));
       app.setCurrentView(view);
+      showLoadingBar();
     })
     .fail((jqXHR) => {
       if (jqXHR.status === 404) {
