@@ -96,6 +96,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               title: isAggregator
                 ? `Record was indexed by ${sourceLabels[badgeName]}`
                 : sourceLabels[badgeName],
+              modal: false,
               close: (): void =>
                 dispatch({
                   type: 'ToggleAggregatorVisibilityAction',

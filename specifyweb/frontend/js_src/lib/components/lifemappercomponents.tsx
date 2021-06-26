@@ -124,14 +124,14 @@ export function LifemapperMap({
       mapRef.current,
       lifemapperInfo.layers,
       (Object.entries(lifemapperInfo.messages) as [MessageTypes, RA<string>][])
-        .filter(([messages]) => messages.length > 0)
+        .filter(([, messages]) => messages.length > 0)
         .map(
           ([name, messages]) => `<span
         class="lifemapper-message-section ${
           lifemapperMessagesMeta[name].className
         }"
       >
-        <i>${lifemapperMessagesMeta[name].title}</i><br>
+        <h3>${lifemapperMessagesMeta[name].title}</h3>
         ${messages.join('<br>')}
       </span>`
         )

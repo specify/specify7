@@ -49,7 +49,7 @@ export const lifemapperMessagesMeta: RR<
 > = {
   errorDetails: {
     className: 'error-details',
-    title: 'The following errors were reported by Lifemapper:',
+    title: 'Errors reported by Lifemapper:',
   },
   infoSection: {
     className: 'info-section',
@@ -213,139 +213,143 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
         );
       if (!getOccurrenceName(1)) return;
 
-      fetchLocalScientificName(model).then((localScientificName) => {
-        const localOccurrenceName = IS_DEVELOPMENT
-          ? defaultOccurrenceName[0]
-          : localScientificName;
+      const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
+        (resolve) => {
+          const similarCollectionObjects = new (
+            schema as any
+          ).models.CollectionObject.LazyCollection({
+            filters: {
+              determinations__iscurrent: true,
+              determinations__preferredtaxon__fullname: getOccurrenceName(0),
+            },
+          });
 
-        const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
-          (resolve) => {
-            const similarCollectionObjects = new (
-              schema as any
-            ).models.CollectionObject.LazyCollection({
-              filters: {
-                determinations__iscurrent: true,
-                determinations__preferredtaxon__fullname: getOccurrenceName(0),
-              },
-            });
+          const fetchedPopUps: number[] = [];
 
-            similarCollectionObjects
-              .fetch({
-                limit: 350,
-              })
-              .done(async () =>
-                Promise.all<MarkerGroups>(
-                  similarCollectionObjects.map(
-                    async (collectionObject: any) =>
-                      new Promise<MarkerGroups>((resolve) =>
-                        collectionObject
-                          .rget('collectingevent.locality')
-                          .done(async (localityResource: any) =>
-                            getLocalityDataFromLocalityResource(
-                              localityResource
-                            )
-                              .then((localityData) =>
-                                Leaflet.getMarkersFromLocalityData({
-                                  localityData: localityData as LocalityData,
-                                  iconClass:
-                                    model.get('id') ===
-                                    collectionObject.get('id')
-                                      ? 'lifemapper-current-collection-object-marker'
-                                      : undefined,
-                                })
-                              )
-                              .then(resolve)
+          similarCollectionObjects
+            .fetch({
+              limit: 350,
+            })
+            .done(async () =>
+              Promise.all<MarkerGroups>(
+                similarCollectionObjects.map(
+                  async (collectionObject: any, index: number) =>
+                    new Promise<MarkerGroups>((resolve) =>
+                      collectionObject
+                        .rget('collectingevent.locality')
+                        .done(async (localityResource: any) =>
+                          getLocalityDataFromLocalityResource(
+                            localityResource,
+                            true
                           )
-                      )
-                  )
-                ).then(resolve)
-              );
-          }
-        );
-
-        const messages: RR<MessageTypes, string[]> = {
-          errorDetails: [],
-          infoSection: [
-            `Specify Species Name: ${
-              !localOccurrenceName ? 'Not found' : localOccurrenceName
-            }`,
-            `Remote occurrence name: ${
-              !state.remoteOccurrenceName
-                ? 'Not found'
-                : state.remoteOccurrenceName
-            }`,
-          ],
-        };
-
-        $.get(formatOccurrenceMapRequest(getOccurrenceName(1))).done(
-          async (response: {
-            readonly errors: string[];
-            readonly records: [
-              {
-                readonly records: {
-                  readonly 's2n:endpoint': string;
-                  readonly 's2n:modtime': string;
-                  readonly 's2n:layer_name': string;
-                  readonly 's2n:layer_type': LifemapperLayerTypes;
-                }[];
-              }
-            ];
-          }) => {
-            let layers: RA<any> = [];
-
-            if (response.errors.length > 0)
-              messages.errorDetails.push(...response.errors);
-            else if (response.records[0]?.records.length === 0)
-              messages.errorDetails.push(
-                'Projection map for this species was not found'
-              );
-            else {
-              layers = response.records[0].records
-                .sort(
-                  (
-                    { 's2n:layer_type': layerTypeLeft },
-                    { 's2n:layer_type': layerTypeRight }
-                  ) =>
-                    layerTypeLeft === layerTypeRight
-                      ? 0
-                      : layerTypeLeft > layerTypeRight
-                      ? 1
-                      : -1
+                            .then((localityData) =>
+                              Leaflet.getMarkersFromLocalityData({
+                                localityData: localityData as LocalityData,
+                                iconClass:
+                                  model.get('id') === collectionObject.get('id')
+                                    ? 'lifemapper-current-collection-object-marker'
+                                    : undefined,
+                                markerClickCallback: ({ target: marker }) => {
+                                  if (fetchedPopUps.includes(index)) return;
+                                  void getLocalityDataFromLocalityResource(
+                                    localityResource
+                                  ).then((localityData) =>
+                                    localityData === false
+                                      ? undefined
+                                      : marker
+                                          .getPopup()
+                                          .setContent(
+                                            Leaflet.formatLocalityData(
+                                              localityData
+                                            )
+                                          )
+                                  );
+                                  fetchedPopUps.push(index);
+                                },
+                              })
+                            )
+                            .then(resolve)
+                        )
+                    )
                 )
-                .map((record) => ({
-                  ...lifemapperLayerVariations[record['s2n:layer_type']],
-                  tileLayer: {
-                    mapUrl: record['s2n:endpoint'],
-                    options: {
-                      layers: record['s2n:layer_name'],
-                      service: 'wms',
-                      version: '1.0',
-                      height: '400',
-                      format: 'image/png',
-                      request: 'getmap',
-                      srs: 'epsg:3857',
-                      width: '800',
-                      ...lifemapperLayerVariations[record['s2n:layer_type']],
-                    },
-                  },
-                }));
+              ).then(resolve)
+            );
+        }
+      );
 
-              const modificationTime =
-                response.records[0].records[0]['s2n:modtime'];
-              messages.errorDetails.push(
-                `Model Creation date: ${modificationTime}`
-              );
+      const messages: RR<MessageTypes, string[]> = {
+        errorDetails: [],
+        infoSection: [`Species Name: ${getOccurrenceName(1)}`],
+      };
+
+      $.get(formatOccurrenceMapRequest(getOccurrenceName(1))).done(
+        async (response: {
+          readonly errors: string[];
+          readonly records: [
+            {
+              readonly records: {
+                readonly 's2n:endpoint': string;
+                readonly 's2n:modtime': string;
+                readonly 's2n:layer_name': string;
+                readonly 's2n:layer_type': LifemapperLayerTypes;
+              }[];
             }
+          ];
+        }) => {
+          let layers: RA<any> = [];
 
-            dispatch({
-              type: 'MapLoadedAction',
-              markers: await similarCoMarkersPromise,
-              layers,
-              messages,
-            });
+          if (response.errors.length > 0)
+            messages.errorDetails.push(...response.errors);
+          else if (response.records[0]?.records.length === 0)
+            messages.errorDetails.push(
+              'Projection map for this species was not found'
+            );
+          else {
+            layers = response.records[0].records
+              .sort(
+                (
+                  { 's2n:layer_type': layerTypeLeft },
+                  { 's2n:layer_type': layerTypeRight }
+                ) =>
+                  layerTypeLeft === layerTypeRight
+                    ? 0
+                    : layerTypeLeft > layerTypeRight
+                    ? 1
+                    : -1
+              )
+              .map((record) => ({
+                ...lifemapperLayerVariations[record['s2n:layer_type']],
+                tileLayer: {
+                  mapUrl: record['s2n:endpoint'],
+                  options: {
+                    layers: record['s2n:layer_name'],
+                    service: 'wms',
+                    version: '1.0',
+                    height: '400',
+                    format: 'image/png',
+                    request: 'getmap',
+                    srs: 'epsg:3857',
+                    width: '800',
+                    ...lifemapperLayerVariations[record['s2n:layer_type']],
+                  },
+                },
+              }));
+
+            const modificationTime =
+              response.records[0].records[0]['s2n:modtime'];
+            messages.infoSection.push(
+              `Model Creation date: ${modificationTime}`
+            );
           }
-        );
-      });
+
+          dispatch({
+            type: 'MapLoadedAction',
+            markers: await similarCoMarkersPromise,
+            layers,
+            messages,
+          });
+        }
+      );
     },
     state.type === 'MainState'
       ? [
