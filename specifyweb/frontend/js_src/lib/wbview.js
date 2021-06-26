@@ -23,11 +23,11 @@ const dataModelStorage = require('./wbplanviewmodel').default;
 const WBStatus = require('./wbstatus.js');
 const WBUtils = require('./wbutils.js');
 const {
-  getIndexFromReferenceItemName,
-  valueIsReferenceItem,
   valueIsTreeRank,
   mappingPathToString,
   getNameFromTreeRankName,
+  formatReferenceItem,
+  formatTreeRank,
 } = require('./wbplanviewmodelhelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
@@ -195,18 +195,22 @@ const WBView = Backbone.View.extend({
             );
         } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
 
-        this.identifyMappedHeaders();
-        if (this.dataset.rowresults) this.getValidationResults();
-        this.wbutils.findLocalityColumns();
-        this.identifyPickLists();
-        this.identifyCoordinateColumns();
+        // These methods update HOT's cells settings, which resets meta data
+        // Thus, need to run them first
         this.identifyDefaultValues();
-        this.identifyTreeRanks();
-        this.fetchSortConfig();
+        this.identifyPickLists();
+
+        // The rest goes in order of importance
+        if (this.dataset.rowresults) this.getValidationResults();
+        this.identifyMappedHeaders();
         if (this.dataset.visualorder?.some((column, index) => column !== index))
           this.hot.updateSettings({
             manualColumnMove: this.dataset.visualorder,
           });
+        this.fetchSortConfig();
+        this.wbutils.findLocalityColumns();
+        this.identifyCoordinateColumns();
+        this.identifyTreeRanks();
         this.hotIsReady = true;
       });
 
@@ -1487,13 +1491,32 @@ const WBView = Backbone.View.extend({
   },
   gotRowValidationResult(physicalRow, result) {
     if (this.validationMode !== 'live' || this.hot.isDestroyed) return;
-    this.rowResults[physicalRow] = result?.result;
+    this.ambiguousMatches[physicalRow] = [];
     this.hot.batch(() =>
-      this.parseRowValidationResult(physicalRow, result?.validation, true)
+      this.applyRowValidationResults(physicalRow, result?.result, true)
     );
     this.updateCellInfoStats();
   },
-  parseRowValidationResult(physicalRow, result, isLive) {
+  resolveValidationColumns(initialColumns, mappingPathFilter) {
+    let columns = initialColumns.filter((column) => column);
+    if (columns.length === 0)
+      columns = this.mappings.arrayOfMappings
+        .filter(({ mappingPath }) =>
+          mappingPathToString(mappingPath).startsWith(
+            mappingPathToString(mappingPathFilter)
+          )
+        )
+        .map(({ headerName }) => headerName);
+    if (columns.length === 0)
+      columns = this.mappings.arrayOfMappings.map(
+        ({ headerName }) => headerName
+      );
+    if (columns.length === 0) columns = this.dataset.columns;
+    return columns
+      .map((column) => this.dataset.columns.indexOf(column))
+      .filter((physicalCol) => physicalCol !== -1);
+  },
+  applyRowValidationResults(physicalRow, result, isLive) {
     const rowMeta = this.cellMeta[physicalRow];
     const newRowMeta = rowMeta.map((cellMeta) => ({
       ...getDefaultCellMeta(),
@@ -1502,29 +1525,16 @@ const WBView = Backbone.View.extend({
       issues: [],
     }));
 
-    const addErrorMessage = (columnName, issue) => {
-      const physicalCol = this.dataset.columns.indexOf(columnName);
-      newRowMeta[physicalCol].issues.push(capitalize(issue));
-    };
+    const setMeta = (key, value, initialColumns, mappingPathFilter) =>
+      this.resolveValidationColumns(initialColumns, mappingPathFilter).forEach(
+        (physicalCol) => {
+          if (key === 'issues')
+            newRowMeta[physicalCol][key].push(capitalize(value));
+          else newRowMeta[physicalCol][key] = value;
+        }
+      );
 
-    result?.tableIssues.forEach((tableIssue) =>
-      (tableIssue.columns.length === 0
-        ? this.dataset.columns
-        : tableIssue.columns
-      ).forEach((columnName) => addErrorMessage(columnName, tableIssue.issue))
-    );
-
-    result?.cellIssues.forEach((cellIssue) =>
-      addErrorMessage(cellIssue.column, cellIssue.issue)
-    );
-
-    result?.newRows.forEach(({ columns }) =>
-      columns.forEach((columnName) => {
-        const physicalCol = this.dataset.columns.indexOf(columnName);
-        if (physicalCol === -1) return;
-        newRowMeta[physicalCol].isNew = true;
-      })
-    );
+    if (result) this.parseRowValidationResults(result, setMeta, physicalRow);
 
     newRowMeta.forEach((cellMeta, physicalCol) => {
       Object.entries(cellMeta).map(([key, value]) =>
@@ -1532,27 +1542,101 @@ const WBView = Backbone.View.extend({
       );
     });
   },
+  parseRowValidationResults(
+    result,
+    setMetaCallback,
+    physicalRow,
+    initialMappingPath = []
+  ) {
+    const uploadResult = result.UploadResult;
+    const uploadStatus = Object.keys(uploadResult.record_result)[0];
+    const statusData = uploadResult.record_result[uploadStatus];
+
+    const mappingPath = statusData.info?.treeInfo
+      ? [...initialMappingPath, formatTreeRank(statusData.info.treeInfo.rank)]
+      : initialMappingPath;
+
+    if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
+    } else if (uploadStatus === 'ParseFailures')
+      statusData.failures.forEach(([column, issue]) =>
+        setMetaCallback('issues', issue, [column], mappingPath)
+      );
+    else if (uploadStatus === 'NoMatch')
+      setMetaCallback(
+        'issues',
+        'No matching record for must-match table.',
+        statusData.info.columns,
+        mappingPath
+      );
+    else if (uploadStatus === 'FailedBusinessRule')
+      setMetaCallback(
+        'issues',
+        statusData.message,
+        statusData.info.columns,
+        mappingPath
+      );
+    else if (uploadStatus === 'MatchedMultiple') {
+      this.ambiguousMatches[physicalRow] ??= [];
+      this.ambiguousMatches[physicalRow].push({
+        physicalCols: this.resolveValidationColumns(
+          statusData.info.columns,
+          mappingPath
+        ),
+        mappingPath,
+        ids: statusData.ids,
+        key: statusData.key,
+      });
+      setMetaCallback(
+        'issues',
+        'This value matches two or more existing database records and must ' +
+          'be manually disambiguated before uploading.',
+        statusData.info.columns,
+        mappingPath
+      );
+    } else if (uploadStatus === 'Uploaded')
+      setMetaCallback('isNew', true, statusData.info.columns, mappingPath);
+    else
+      throw new Error(
+        `Trying to parse unknown uploadStatus type "${uploadStatus}" at
+        row ${this.hot.toVisualRow(physicalRow)}`
+      );
+
+    Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
+      this.parseRowValidationResults(
+        uploadResult,
+        setMetaCallback,
+        physicalRow,
+        [...mappingPath, fieldName]
+      )
+    );
+
+    Object.entries(uploadResult.toMany).forEach(([fieldName, uploadResults]) =>
+      uploadResults.forEach((uploadResult, toManyIndex) =>
+        this.parseRowValidationResults(
+          uploadResult,
+          setMetaCallback,
+          physicalRow,
+          [...mappingPath, fieldName, formatReferenceItem(toManyIndex)]
+        )
+      )
+    );
+  },
   getValidationResults() {
     if (typeof this.wbstatus !== 'undefined') return;
-    Q($.get(`/api/workbench/validation_results/${this.dataset.id}/`)).done(
-      (results) => {
-        if (this.hot.isDestroyed) return;
 
-        if (results == null) {
-          this.validationMode = 'off';
-          this.updateValidationButton();
-          return;
-        }
+    if (this.dataset.rowresults === null) {
+      this.validationMode = 'off';
+      this.updateValidationButton();
+      return;
+    }
 
-        this.hot.batch(() => {
-          results.forEach((result, physicalRow) => {
-            this.parseRowValidationResult(physicalRow, result, false);
-          });
-        });
+    this.hot.batch(() => {
+      this.dataset.rowresults.forEach((result, physicalRow) => {
+        this.applyRowValidationResults(physicalRow, result, false);
+      });
+    });
 
-        void this.updateCellInfoStats();
-      }
-    );
+    void this.updateCellInfoStats();
   },
 
   // Helpers
@@ -1618,8 +1702,6 @@ const WBView = Backbone.View.extend({
 
   // MetaData
   async updateCellInfoStats() {
-    if (!this.hotIsReady) return;
-
     const cellMeta = this.cellMeta.flat(2);
 
     const cellCounts = {

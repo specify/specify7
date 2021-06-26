@@ -182,7 +182,7 @@ export function arrayOfMappingsToMappingsTree(
  * Converts mappings tree to array of mappings
  * The inverse of arrayOfMappingsToMappingsTree
  */
-export const mappingsTreeToArrayOfMappings = (
+const mappingsTreeToArrayOfMappings = (
   mappingsTree: MappingsTree,
   // Used in a recursion to store intermediate path
   path: MappingPath = []
