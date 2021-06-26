@@ -198,7 +198,6 @@ const WBView = Backbone.View.extend({
         this.identifyDefaultValues();
         this.identifyPickLists();
 
-        this.trigger('loaded');
         if (this.dataset.rowresults) this.getValidationResults();
 
         // The rest goes in order of importance
@@ -211,6 +210,8 @@ const WBView = Backbone.View.extend({
         this.wbutils.findLocalityColumns();
         this.identifyCoordinateColumns();
         this.identifyTreeRanks();
+
+        this.trigger('loaded');
         this.hotIsReady = true;
       });
 
