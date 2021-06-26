@@ -1494,21 +1494,28 @@ const WBView = Backbone.View.extend({
     );
     this.updateCellInfoStats();
   },
-  resolveValidationColumns(initialColumns, mappingPathFilter) {
+  resolveValidationColumns(
+    initialColumns,
+    mappingPathFilter,
+    inferColumns = true
+  ) {
+    // See https://github.com/specify/specify7/issues/810
     let columns = initialColumns.filter((column) => column);
-    if (columns.length === 0)
-      columns = this.mappings.arrayOfMappings
-        .filter(({ mappingPath }) =>
-          mappingPathToString(mappingPath).startsWith(
-            mappingPathToString(mappingPathFilter)
+    if (inferColumns) {
+      if (columns.length === 0)
+        columns = this.mappings.arrayOfMappings
+          .filter(({ mappingPath }) =>
+            mappingPathToString(mappingPath).startsWith(
+              mappingPathToString(mappingPathFilter)
+            )
           )
-        )
-        .map(({ headerName }) => headerName);
-    if (columns.length === 0)
-      columns = this.mappings.arrayOfMappings.map(
-        ({ headerName }) => headerName
-      );
-    if (columns.length === 0) columns = this.dataset.columns;
+          .map(({ headerName }) => headerName);
+      if (columns.length === 0)
+        columns = this.mappings.arrayOfMappings.map(
+          ({ headerName }) => headerName
+        );
+      if (columns.length === 0) columns = this.dataset.columns;
+    }
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
       .filter((physicalCol) => physicalCol !== -1);
@@ -1522,14 +1529,22 @@ const WBView = Backbone.View.extend({
       issues: [],
     }));
 
-    const setMeta = (key, value, initialColumns, mappingPathFilter) =>
-      this.resolveValidationColumns(initialColumns, mappingPathFilter).forEach(
-        (physicalCol) => {
-          if (key === 'issues')
-            newRowMeta[physicalCol][key].push(capitalize(value));
-          else newRowMeta[physicalCol][key] = value;
-        }
-      );
+    const setMeta = (
+      key,
+      value,
+      initialColumns,
+      mappingPathFilter,
+      inferColumns = true
+    ) =>
+      this.resolveValidationColumns(
+        initialColumns,
+        mappingPathFilter,
+        inferColumns
+      ).forEach((physicalCol) => {
+        if (key === 'issues')
+          newRowMeta[physicalCol][key].push(capitalize(value));
+        else newRowMeta[physicalCol][key] = value;
+      });
 
     if (result) this.parseRowValidationResults(result, setMeta, physicalRow);
 
@@ -1591,7 +1606,13 @@ const WBView = Backbone.View.extend({
         mappingPath
       );
     } else if (uploadStatus === 'Uploaded')
-      setMetaCallback('isNew', true, statusData.info.columns, mappingPath);
+      setMetaCallback(
+        'isNew',
+        true,
+        statusData.info.columns,
+        mappingPath,
+        false
+      );
     else
       throw new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
