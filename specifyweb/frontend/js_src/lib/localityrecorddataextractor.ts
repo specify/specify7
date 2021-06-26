@@ -1,6 +1,6 @@
 import type { RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
-import { localityPinFields } from './leafletconfig';
+import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
 import { formatCoordinate, getLocalityData } from './leafletutils';
 import { generateMappingPathPreview } from './wbplanviewhelper';
@@ -72,12 +72,14 @@ async function recursiveResourceResolve(
   } else if (valueIsReferenceItem(currentPart[0])) {
     return new Promise(async (resolve) =>
       Promise.all<RA<string>>(
-        Object.values(resource.models).map(async (model: any, index) =>
-          recursiveResourceResolve(model, nextPart, [
-            ...pastParts,
-            formatReferenceItem(index + 1),
-          ])
-        )
+        Object.values(resource.models)
+          .slice(0, MAX_TO_MANY_INDEX)
+          .map(async (model: any, index) =>
+            recursiveResourceResolve(model, nextPart, [
+              ...pastParts,
+              formatReferenceItem(index + 1),
+            ])
+          )
       ).then((result) => resolve(result.flat()))
     );
   } else

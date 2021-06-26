@@ -160,6 +160,15 @@ export type LocalityPinFields = {
   readonly pathsToFields: RA<MappingPath>;
 };
 
+/*
+ * Applies only to the Leaflet map on the Locality form and the CO
+ *  Lifemapper badge.
+ * Defined the maximum number of -to-many records to fetch at any point of the
+ *   mapping path.
+ * Leaflet map in the workbench does not have such limit.
+ */
+export const MAX_TO_MANY_INDEX = 3;
+
 export const localityPinFields: RA<LocalityPinFields> = [
   {
     pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],
