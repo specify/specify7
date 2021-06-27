@@ -251,8 +251,8 @@ export default async function (): Promise<void> {
   if (typeof dataModelStorage.tables !== 'undefined') return;
 
   if (cacheVersion === '') {
-    const currentCollection = await cache.getCurrentColectionId();
-    cacheVersion = `${dataModelFetcherVersion}_${currentCollection}`;
+    dataModelStorage.currentCollectionId = await cache.getCurrentCollectionId();
+    cacheVersion = `${dataModelFetcherVersion}_${dataModelStorage.currentCollectionId}`;
   }
 
   {

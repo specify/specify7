@@ -484,7 +484,7 @@ const WBView = Backbone.View.extend({
     );
   },
   async fetchSortConfig() {
-    const currentCollection = await cache.getCurrentColectionId();
+    const currentCollection = await cache.getCurrentCollectionId();
     const sortConfig = cache.get(
       'workbench-sort-config',
       `${currentCollection}_${this.dataset.id}`
@@ -782,7 +782,7 @@ const WBView = Backbone.View.extend({
     return false;
   },
   async afterColumnSort(_previousSortConfig, sortConfig) {
-    const currentCollection = await cache.getCurrentColectionId();
+    const currentCollection = await cache.getCurrentCollectionId();
     const physicalSortConfig = sortConfig.map(
       ({ column: visualCol, ...rest }) => ({
         ...rest,

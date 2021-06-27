@@ -358,7 +358,7 @@ function trimBucket(
 }
 
 let collectionId: number | undefined = undefined;
-export async function getCurrentColectionId(): Promise<number> {
+export async function getCurrentCollectionId(): Promise<number> {
   if (typeof collectionId !== 'undefined') return collectionId;
   const request = await fetch('/context/collection/');
   const data = (await request.json()) as { readonly current: number };

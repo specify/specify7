@@ -24,6 +24,7 @@ const dataModelStorage: {
   ranks: DataModelRanks;
   rootRanks: IR<[string, TreeRankData]>;
   originalRelationships: OriginalRelationships;
+  currentCollectionId: number | undefined;
 } = {
   // Each one of this can be modified to a single symbol or several symbols
 
@@ -51,6 +52,8 @@ const dataModelStorage: {
    * using `aliasRelationshipTypes` dictionary
    */
   originalRelationships: undefined!,
+
+  currentCollectionId: undefined,
 };
 
 export default dataModelStorage;

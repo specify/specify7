@@ -456,9 +456,13 @@ export default class Automapper {
       this.scope,
     ]);
 
+    if (typeof dataModelStorage.currentCollectionId === 'undefined')
+      throw new Error('Current collection ID is not fetched');
+    const cacheVersion = `${CACHE_VERSION}_${dataModelStorage.currentCollectionId}`;
+
     if (useCache && commitToCache) {
       const cachedData = cache.get('wbplanview-automapper', cacheName, {
-        version: CACHE_VERSION,
+        version: cacheVersion,
       });
       if (cachedData) return cachedData;
     }
@@ -469,7 +473,7 @@ export default class Automapper {
 
     if (commitToCache)
       cache.set('wbplanview-automapper', cacheName, this.results, {
-        version: CACHE_VERSION,
+        version: cacheVersion,
       });
 
     return this.results;

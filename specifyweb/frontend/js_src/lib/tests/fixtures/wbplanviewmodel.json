@@ -18303,5 +18303,6 @@
     "zero-to-one": {
       "locality": ["geocoorddetails", "localitydetails"]
     }
-  }
+  },
+  "currentCollectionId": 1
 }
