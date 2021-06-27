@@ -1639,7 +1639,7 @@ const WBView = Backbone.View.extend({
           uploadResult,
           setMetaCallback,
           physicalRow,
-          [...mappingPath, fieldName, formatReferenceItem(toManyIndex)]
+          [...mappingPath, fieldName, formatReferenceItem(toManyIndex + 1)]
         )
       )
     );
@@ -1780,7 +1780,7 @@ const WBView = Backbone.View.extend({
               title: 'Validation Completed with No Errors',
               message: `Validation found no errors in the Data Set. It is
                         ready to be uploaded into the database.<br><br>
-                        
+
                         Cell validations and their status highlighting will
                         remain with the Data Set until it is edited and
                         re-saved. If any cells are edited, Validation should
