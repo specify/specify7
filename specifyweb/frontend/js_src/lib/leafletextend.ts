@@ -30,7 +30,7 @@ L.Control.FullScreen = L.Control.extend({
   onAdd(map: Readonly<L.Map>) {
     const img = L.DomUtil.create('img') as HTMLImageElement;
     img.classList.add('leaflet-full-screen-toggle');
-    img.src = '/static/img/full_screen.png';
+    img.src = '/static/img/full_screen.svg';
 
     L.DomEvent.on(img, 'click', (event) => {
       L.DomEvent.stopPropagation(event);
