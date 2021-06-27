@@ -1776,24 +1776,24 @@ const WBView = Backbone.View.extend({
         cellCounts.invalidCells === 0
           ? {
               title: 'Validation Completed with No Errors',
-              message: `Validation found no errors in the Data Set, it is ready
-                        to be uploaded into the Specify database.<br><br>
-
-                        The cell validations and their status highlights have
-                        been saved with the Data Set.  They will remain until
-                        the Data Set is edited and saved.  After editing and
-                        saving your changes, Validation should be re-run to
-                        re-confirm the absence of errors before uploading.`,
+              message: `Validation found no errors in the Data Set. It is
+                        ready to be uploaded into the database.<br><br>
+                        
+                        Cell validations and their status highlighting will
+                        remain with the Data Set until it is edited and
+                        re-saved. If any cells are edited, Validation should
+                        always be re-run as the last step prior to uploading,
+                        to confirm that no errors have been introduced.`,
             }
           : {
               title: 'Validation Completed with Errors',
               message: `Validation found errors in some cell values in this
                         Data Set.<br><br>
 
-                        If any cell is now edited and the Data Set re-saved,
-                        Validation should be run again as the last step prior
-                        to uploading to the Specify database. This is to confirm
-                        that no new errors have been introduced.`,
+                        If any cells are edited and the Data Set re-saved,
+                        Validation should always be re-run as the last step
+                        prior to uploading, to confirm that no errors have
+                        been introduced.`,
             },
       upload:
         cellCounts.invalidCells === 0
