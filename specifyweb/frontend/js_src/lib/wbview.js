@@ -1585,7 +1585,7 @@ const WBView = Backbone.View.extend({
 
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
-      statusData.failures.forEach(([column, issue]) =>
+      statusData.failures.forEach(([issue, column]) =>
         setMetaCallback('issues', issue, [column], mappingPath)
       );
     else if (uploadStatus === 'NoMatch')
