@@ -23,8 +23,8 @@ var sequence = sequenceFromState(window.history.state);
 
 var unloadBlockers = [];
 
-function addUnloadProtect(key, message) {
-    unloadBlockers = [...unloadBlockers, [key, message]];
+function addUnloadProtect(key, message, confirmNavigationHandler=defaultConfirmNavigationHandler) {
+    unloadBlockers = [...unloadBlockers, [key, message, confirmNavigationHandler]];
     window.onbeforeunload = () => message;
 }
 
@@ -104,36 +104,38 @@ Backbone.history.checkUrl = function(e) {
 // Open a dialog allowing the user to proceed with the navigation, or
 // remain on the same page. The proceed or cancel continuation will be
 // invoked accordingly. The unloadProtect variable will be cleared if
-// proceding.
-function confirmNavigation(proceed, cancel) {
+// proceeding.
+function defaultConfirmNavigationHandler(proceed, cancel){
     const [key, message] = unloadBlockers[unloadBlockers.length - 1];
 
     $('<div>').text(message).dialog({
-        title: 'Leave page?',
+        title: 'Leave Page?',
         modal: true,
-        open(evt, ui) {
-            $('.ui-dialog-titlebar-close', ui.dialog).hide();
-            $('.ui-dialog-buttonset button:first-child', ui.dialog).focus();
-        },
         close() {
             $(this).remove();
         },
         buttons: {
-            Leave() {
-                $(this).dialog('close');
-                clearUnloadProtect();
-                proceed();
-            },
             Cancel() {
                 $(this).dialog('close');
                 cancel();
-            }
+            },
+            Leave() {
+                $(this).dialog('close');
+                proceed();
+            },
         }
     });
 }
 
+function confirmNavigation(proceed, cancel){
+    const [key, message, confirmNavigationHandler] = unloadBlockers[unloadBlockers.length - 1];
+    confirmNavigationHandler(proceed, cancel);
+}
+
 function navigate(url, options) {
     const cont = () => {
+        clearUnloadProtect();
+
         var origin = window.location.origin || (
             window.location.protocol + '//' + window.location.host);
 
