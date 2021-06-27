@@ -537,8 +537,7 @@ const WBView = Backbone.View.extend({
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const issues = this.cellMeta[physicalRow][physicalCol]['issues'] ?? [];
     const getValidationMessage = (value) =>
-      `
-      "${value}" is not a legal value in this picklist field.
+      `${value ? `"${value}"` : ''} is not a legal value in this picklist field.
       Click on the arrow to choose among available options.`
         .trim()
         .replace(/ {2,}/, ' ');
