@@ -347,6 +347,7 @@ export default function WBPlanViewMapper(
                 automapperSuggestions:
                   (!props.readonly && props.automapperSuggestions) || [],
                 mustMatchPreferences: props.mustMatchPreferences,
+                columnOptions,
                 mappingOptionsMenuGenerator: () => ({
                   matchBehavior: {
                     fieldFriendlyName: (

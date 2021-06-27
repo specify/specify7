@@ -79,7 +79,7 @@ export default createBackboneView<
   Component: WBPlanViewWrapper,
   getComponentProps: (self) => ({
     dataset: self.dataset,
-    removeUnloadProtect: removeUnloadProtect.bind(null, self),
-    setUnloadProtect: setUnloadProtect.bind(null, self),
+    removeUnloadProtect: (): void => removeUnloadProtect(self),
+    setUnloadProtect: (): void => setUnloadProtect(self),
   }),
 });

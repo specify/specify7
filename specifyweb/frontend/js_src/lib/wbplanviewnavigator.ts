@@ -24,6 +24,8 @@ import type {
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import { ColumnOptions } from './uploadplantomappingstree';
+import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   DataModelField,
@@ -425,6 +427,7 @@ export function getMappingLineData({
   automapperSuggestions,
   showHiddenFields = false,
   mustMatchPreferences = {},
+  columnOptions,
   mappingOptionsMenuGenerator = undefined,
 }: {
   readonly baseTableName: string;
@@ -458,6 +461,7 @@ export function getMappingLineData({
   readonly getMappedFields?: GetMappedFieldsBind;
   readonly automapperSuggestions?: RA<AutomapperSuggestion>;
   readonly mustMatchPreferences?: IR<boolean>;
+  readonly columnOptions?: ColumnOptions;
   readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
 }): MappingElementProps[] {
   const internalState: {
@@ -785,7 +789,7 @@ export function getMappingLineData({
                 optionName: 'mappingOptions',
                 optionLabel: '⚙',
                 tableName: '',
-                isRelationship: false,
+                isRelationship: !columnOptionsAreDefault(columnOptions!),
               },
               ...(openSelectElement?.index ===
               internalState.mappingLineData.length

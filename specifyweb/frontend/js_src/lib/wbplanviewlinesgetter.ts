@@ -12,6 +12,13 @@ export const defaultColumnOptions: ColumnOptions = {
   default: null,
 } as const;
 
+export const columnOptionsAreDefault = (
+  columnOptions: ColumnOptions
+): boolean =>
+  Object.entries(columnOptions).every(
+    ([key, value]) => defaultColumnOptions[key as keyof ColumnOptions] === value
+  );
+
 export function getLinesFromHeaders({
   headers = [],
   runAutomapper,

@@ -398,8 +398,17 @@ export function CustomSelectElement({
     preview = (
       <span
         className={`custom-select-input ${
-          defaultOption.isRequired ? 'custom-select-input-required' : ''
-        } ${defaultOption.isHidden ? 'custom-select-input-hidden' : ''}`}
+          defaultOption?.isRequired === true
+            ? 'custom-select-input-required'
+            : ''
+        } ${
+          defaultOption?.isHidden === true ? 'custom-select-input-hidden' : ''
+        } ${
+          customSelectType === 'MAPPING_OPTIONS_LIST' &&
+          defaultOption?.isRelationship === true
+            ? 'custom-select-label-modified'
+            : ''
+        }`}
         tabIndex={0}
         onClick={
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined

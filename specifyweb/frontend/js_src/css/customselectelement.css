@@ -3,6 +3,7 @@
   --background2: #fdb;
   --accent: #f73;
   --success: #2c0;
+  --modified: #ffa;
   --error: #f24;
   --lines-to-display: 8;
   --border-size: 1px;
@@ -86,6 +87,10 @@
 .custom-select-label-unmapped {
   color: var(--error);
   font-weight: 800;
+}
+
+.custom-select-label-modified {
+  background: var(--modified);
 }
 
 .custom-select-element-shadow-list {
