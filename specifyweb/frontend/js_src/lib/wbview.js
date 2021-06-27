@@ -269,9 +269,7 @@ const WBView = Backbone.View.extend({
             const tableName =
               tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0] ||
               tableIcon;
-            return `<div class="wb-col-header ${
-              isMapped ? '' : 'wb-header-unmapped'
-            }">
+            return `<div class="wb-col-header">
               ${
                 isMapped
                   ? `<img
@@ -279,7 +277,11 @@ const WBView = Backbone.View.extend({
                       alt="${tableName}"
                       src="${tableIcon}"
                     >`
-                  : '<span class="wb-header-icon-undefined">⃠</span>'
+                  : `<img
+                      class="wb-header-icon"
+                      alt="Unmapped Header"
+                      src="/static/img/stop_sign.svg"
+                    >`
               }
               <span class="wb-header-name columnSorting">
                   ${this.dataset.columns[physicalCol]}
