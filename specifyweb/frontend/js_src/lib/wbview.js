@@ -339,6 +339,7 @@ const WBView = Backbone.View.extend({
           stretchH: 'all',
           readOnly: this.uploaded,
           afterChange: this.afterChange.bind(this),
+          beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
           beforeCreateRow: () => !this.readOnly,
           afterCreateRow: this.afterCreateRow.bind(this),
@@ -529,6 +530,16 @@ const WBView = Backbone.View.extend({
       td.classList.add('wb-cell-unmapped');
     if (typeof this.mappings?.coordinateColumns?.[physicalCol] !== 'undefined')
       td.classList.add('wb-coordinate-cell');
+  },
+  beforeValidate(value, _visualRow, prop) {
+    if (value) return value;
+
+    const visualCol = this.hot.propToCol(prop);
+    const physicalCol = this.hot.toPhysicalColumn(visualCol);
+
+    return typeof this.mappings.defaultValues[physicalCol] === 'undefined'
+      ? value
+      : this.mappings.defaultValues[physicalCol];
   },
   afterValidate(isValid, value, visualRow, prop) {
     const visualCol = this.hot.propToCol(prop);
