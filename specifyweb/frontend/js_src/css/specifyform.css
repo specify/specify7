@@ -76,14 +76,14 @@ div.specify-view-content {
 .recordset-header {
     display: flex;
     align-items: center;
-    background: #cccc;
     font-weight: initial;
+    border: 1px solid #ccc;
 }
 
 .recordset-header .recordset-navigation {
     padding: 0.4rem 0.6rem;
     margin: 0;
-    background: #6664;
+    background: #cccc;
 }
 
 .recordset-navigation-text {
@@ -100,7 +100,7 @@ div.specify-view-content {
 .specify-form-header span.recordset-navigation {
     color: #999;
     font-size: 0.8em;
-    background: #ccc;
+    background: transparent;
 }
 
 .specify-form-header img {
