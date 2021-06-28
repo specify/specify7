@@ -4,51 +4,44 @@ const webpack = require("webpack");
 const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
 
 
-function isFileChanged(fileName, fileContent){
+function writeIfChanged(compiler, fileName, fileContent){
+    const fullOutPath = path.join(
+        compiler.options.output.path,
+        fileName
+    );
+    let changed = true;
     try {
-        return fileContent !== readFileSync(path.join(fileName).toString());
+        changed = fileContent !== readFileSync(path.join(fileName)).toString();
     }
-    catch (err) {
-        return true;
-    }
+    catch (err) {}
+    if(changed)
+        writeFileSync(fullOutPath, fileContent); 
 }
 
 class EmitInitPyPlugin {
-    apply(compiler) {
-        compiler.hooks.done.tap('EmitInitPyPlugin', () => {
-            const fullOutPath = path.join(
-              compiler.options.output.path,
-              '__init__.py'
-            );
-            const content =
-              "# Allows manifest.py to be imported / reloaded by Django dev server.\n";
-            if(isFileChanged(fullOutPath, content))
-                writeFileSync(
-                    fullOutPath,
-                    content
-                );
-        });
-    }
+    apply = (compiler)=>
+        compiler.hooks.done.tap('EmitInitPyPlugin', () => 
+            writeIfChanged(
+                compiler,
+                '__init__.py',
+                "# Allows manifest.py to be imported / reloaded by Django dev server.\n"
+            )
+        );
 }
 
-const serializeManifest = (manifest) =>
-    `manifest = ${JSON.stringify(manifest, null, 2)}\n`;
-
 class SmartWebpackManifestPlugin {
-    apply(compiler) {
-        const { beforeEmit } = getCompilerHooks(compiler);
-
-        // Cancel webpack manifest emit if the file did not change
-        beforeEmit.tap('SmartWebpackManifestPlugin', (manifest) => {
-            const fullOutPath = path.join(
-              compiler.options.output.path,
-              'manifest.py'
-            );
-            return isFileChanged(fullOutPath, serializeManifest(manifest))?
-                manifest :
-                undefined;
-        })
-    }
+    apply = (compiler)=>
+        getCompilerHooks(compiler).afterEmit.tap(
+            'SmartWebpackManifestPlugin',
+            (manifest)=>
+                writeIfChanged(
+                    compiler,
+                    'manifest.py',
+                    `manifest = ${
+                        JSON.stringify(manifest, null, 2)
+                    }\n`
+                )
+        );
 }
 
 
@@ -107,8 +100,9 @@ module.exports = (_env, argv)=>({
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
         new SmartWebpackManifestPlugin(),
         new WebpackManifestPlugin({
-            fileName: 'manifest.py',
-            serialize: serializeManifest
+            // Create the file outside of the dist dir to avoid
+            // triggering the watcher
+            fileName: '../manifest.json',
         }),
         new EmitInitPyPlugin()
     ],
