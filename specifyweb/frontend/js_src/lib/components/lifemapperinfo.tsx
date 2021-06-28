@@ -49,7 +49,7 @@ export const lifemapperMessagesMeta: RR<
 > = {
   errorDetails: {
     className: 'error-details',
-    title: 'Errors reported by Lifemapper:',
+    title: 'Lifemapper Errors:',
   },
   infoSection: {
     className: 'info-section',
@@ -231,10 +231,10 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
               limit: 350,
             })
             .done(async () =>
-              Promise.all<MarkerGroups>(
+              Promise.all<MarkerGroups | undefined>(
                 similarCollectionObjects.map(
                   async (collectionObject: any, index: number) =>
-                    new Promise<MarkerGroups>((resolve) =>
+                    new Promise<MarkerGroups | undefined>((resolve) =>
                       collectionObject
                         .rget('collectingevent.locality')
                         .done(async (localityResource: any) =>
@@ -243,36 +243,48 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
                             true
                           )
                             .then((localityData) =>
-                              Leaflet.getMarkersFromLocalityData({
-                                localityData: localityData as LocalityData,
-                                iconClass:
-                                  model.get('id') === collectionObject.get('id')
-                                    ? 'lifemapper-current-collection-object-marker'
-                                    : undefined,
-                                markerClickCallback: ({ target: marker }) => {
-                                  if (fetchedPopUps.includes(index)) return;
-                                  void getLocalityDataFromLocalityResource(
-                                    localityResource
-                                  ).then((localityData) =>
-                                    localityData === false
-                                      ? undefined
-                                      : marker
-                                          .getPopup()
-                                          .setContent(
-                                            Leaflet.formatLocalityData(
-                                              localityData
-                                            )
-                                          )
-                                  );
-                                  fetchedPopUps.push(index);
-                                },
-                              })
+                              localityData === false
+                                ? undefined
+                                : Leaflet.getMarkersFromLocalityData({
+                                    localityData: localityData as LocalityData,
+                                    iconClass:
+                                      model.get('id') ===
+                                      collectionObject.get('id')
+                                        ? 'lifemapper-current-collection-object-marker'
+                                        : undefined,
+                                    markerClickCallback: ({
+                                      target: marker,
+                                    }) => {
+                                      if (fetchedPopUps.includes(index)) return;
+                                      void getLocalityDataFromLocalityResource(
+                                        localityResource
+                                      ).then((localityData) =>
+                                        localityData === false
+                                          ? undefined
+                                          : marker
+                                              .getPopup()
+                                              .setContent(
+                                                Leaflet.formatLocalityData(
+                                                  localityData
+                                                )
+                                              )
+                                      );
+                                      fetchedPopUps.push(index);
+                                    },
+                                  })
                             )
                             .then(resolve)
                         )
                     )
                 )
-              ).then(resolve)
+              )
+                .then((results) =>
+                  results.filter(
+                    (result): result is MarkerGroups =>
+                      typeof result !== 'undefined'
+                  )
+                )
+                .then(resolve)
             );
         }
       );
@@ -302,7 +314,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
             messages.errorDetails.push(...response.errors);
           else if (response.records[0]?.records.length === 0)
             messages.errorDetails.push(
-              'Projection map for this species was not found'
+              'No Species Distribution Model available.'
             );
           else {
             layers = response.records[0].records
