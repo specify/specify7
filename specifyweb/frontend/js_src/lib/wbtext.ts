@@ -12,16 +12,31 @@ const wbText: Dictionary = {
   apply: 'Apply',
   applyAll: 'Apply All',
   rollback: 'Rollback',
+  validate: 'Validate',
   upload: 'Upload',
+  results: 'Results',
+  save: 'Save',
   delete: 'Delete',
   disambiguate: 'Disambiguate',
   fillDown: 'Fill Down',
   fillUp: 'Fill Up',
   revert: 'Revert',
-  dataCheck: 'Data Check',
   next: 'Next',
   previous: 'Previous',
-  geolocate: 'GEOLocate',
+  geoLocate: 'GeoLocate',
+  geoMap: 'GeoMap',
+  uploadPlan: 'Upload Plan',
+  tools: 'Tools',
+  dataCheck: 'Data Check',
+  dataCheckOn: (queueLength: number): string =>
+    `Data Check: On ${queueLength > 0 ? ` (${queueLength})` : ''}`,
+  changeOwner: 'Change Owner',
+  export: 'Export',
+  convertCoordinates: 'Convert Coordinates',
+  searchResults: 'Search Results',
+  modifiedCells: 'Modified Cells',
+  newCells: 'New Cells',
+  errorCells: 'New Cells',
 
   // Dialogs
   dataSetLoadingDialogTitle: 'Loading',
@@ -62,8 +77,6 @@ const wbText: Dictionary = {
   revertChangesDialogMessage: `
     This action will discard all changes to the Data Set since the last save.`,
   savingDialogTitle: 'Saving',
-  dataCheckOn: (queueLength: number): string =>
-    `Data Check: On ${queueLength > 0 ? ` (${queueLength})` : ''}`,
   onExitDialogMessage: 'Changes to this Data Set have not been saved.',
 
   // Validation
@@ -115,7 +128,7 @@ const wbText: Dictionary = {
   rollbackCanceledDialogMessage: 'Rollback cancelled.',
   uploadCanceledDialogTitle: 'Upload Process Status',
   uploadCanceledDialogMessage: 'Upload cancelled.',
-  geolocateDialogTitle: 'GEOLocate',
+  geoLocateDialogTitle: 'GeoLocate',
   coordinateConverterDialogTitle: 'Change Geocoordinate Format',
 
   // Misc

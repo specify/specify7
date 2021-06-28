@@ -634,7 +634,7 @@ module.exports = Backbone.View.extend({
     const dialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
       width: 960,
       height: 740,
-      title: WbText.geolocateDialogTitle,
+      title: WbText.geoLocateDialogTitle,
       close: function () {
         $(this).remove();
         window.removeEventListener('message', handleGeolocateResult, false);

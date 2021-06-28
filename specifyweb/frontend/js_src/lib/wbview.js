@@ -151,6 +151,7 @@ const WBView = Backbone.View.extend({
       template({
         is_uploaded: this.uploaded,
         is_manager: userInfo.usertype === 'Manager',
+        WbText,
       })
     );
 

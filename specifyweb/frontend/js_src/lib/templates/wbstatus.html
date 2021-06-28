@@ -4,7 +4,8 @@
   let operation = uploaderstatus.operation[0].toUpperCase()+uploaderstatus.operation.slice(1);
   const mappedOperation = {
     'Validating': 'Validation',
-    'Uploading': 'Upload'
+    'Uploading': 'Upload',
+    'Unuploading': 'Rollback',
   }[operation] ?? operation;
   if(operation==='Unuploading') operation = 'Rollback';
   if(taskstatus === 'PENDING') { %>
