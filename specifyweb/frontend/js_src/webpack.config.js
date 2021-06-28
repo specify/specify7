@@ -1,5 +1,5 @@
 const path = require('path');
-const { writeFileSync, readFileSync } = require('fs');
+const fs = require('fs');
 const webpack = require("webpack");
 const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
 
@@ -9,13 +9,11 @@ function writeIfChanged(compiler, fileName, fileContent){
         compiler.options.output.path,
         fileName
     );
-    let changed = true;
-    try {
-        changed = fileContent !== readFileSync(path.join(fileName)).toString();
-    }
-    catch (err) {}
-    if(changed)
-        writeFileSync(fullOutPath, fileContent); 
+    if(
+        !fs.existsSync(fullOutPath) ||
+        fileContent !== fs.readFileSync(fullOutPath).toString()
+    )
+        fs.writeFileSync(fullOutPath, fileContent)
 }
 
 class EmitInitPyPlugin {
