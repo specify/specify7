@@ -41,6 +41,7 @@ const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
 const cache = require('./cache.ts');
+const WbText = require('./wbtext.ts').default;
 
 const getDefaultCellMeta = () => ({
   // The value in this cell would be used to create a new record
@@ -158,7 +159,7 @@ const WBView = Backbone.View.extend({
     if (this.dataset.rowresults === null) {
       this.$('.wb-show-upload-view')
         .prop('disabled', true)
-        .prop('title', 'The data set must be validated or uploaded');
+        .prop('title', WbText.wbUploadedUnavailable);
     } else this.$('.wb-show-upload-view').prop('disabled', false);
 
     if (this.dataset.uploaderstatus) this.openStatus();
@@ -173,24 +174,19 @@ const WBView = Backbone.View.extend({
     const initDataModelIntegration = () =>
       this.hot.batch(() => {
         if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
-          $(`<div>
-        No upload plan has been defined for this Data Set. Create one now?
-       </div>`).dialog({
-            title: 'No upload plan is defined',
+          $(`<div>${WbText.noUploadPlanDialogMessage}</div>`).dialog({
+            title: WbText.noUploadPlanDialogTitle,
             modal: true,
             buttons: {
-              Create: this.openPlan.bind(this),
-              Cancel: function () {
+              [WbText.create]: this.openPlan.bind(this),
+              [WbText.cancel]: function () {
                 $(this).dialog('close');
               },
             },
           });
           this.$('.wb-validate, .wb-data-check')
             .prop('disabled', true)
-            .prop(
-              'title',
-              'Please define an upload plan before validating the Data Set'
-            );
+            .prop('title', WbText.wbValidateUnavailable);
         } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
 
         // These methods update HOT's cells settings, which resets meta data
@@ -316,18 +312,18 @@ const WBView = Backbone.View.extend({
                   row_below: 'row_below',
                   remove_row: 'remove_row',
                   disambiguate: {
-                    name: 'Disambiguate',
+                    name: WbText.disambiguate,
                     disabled: () => !this.isAmbiguousCell(),
                     callback: (__, selection) =>
                       this.disambiguateCell(selection),
                   },
                   separator_1: '---------',
                   fill_down: this.wbutils.fillCellsContextMenuItem(
-                    'Fill Down',
+                    WbText.fillDown,
                     this.wbutils.fillDown
                   ),
                   fill_up: this.wbutils.fillCellsContextMenuItem(
-                    'Fill Up',
+                    WbText.fillUp,
                     this.wbutils.fillUp
                   ),
                   separator_2: '---------',
@@ -547,15 +543,12 @@ const WBView = Backbone.View.extend({
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const issues = this.cellMeta[physicalRow][physicalCol]['issues'] ?? [];
-    const getValidationMessage = (value) =>
-      `${value ? `"${value}"` : ''} is not a legal value in this picklist field.
-      Click on the arrow to choose among available options.`
-        .trim()
-        .replace(/ {2,}/, ' ');
     const newIssues = [
       ...new Set([
-        ...(isValid ? [] : [getValidationMessage(value)]),
-        ...issues.filter((issue) => !issue.endsWith(getValidationMessage(''))),
+        ...(isValid ? [] : [WbText.picklistValidationFailed(value)]),
+        ...issues.filter(
+          (issue) => !issue.endsWith(WbText.picklistValidationFailed(''))
+        ),
       ]),
     ];
     if (JSON.stringify(issues) !== JSON.stringify(newIssues)) {
@@ -1052,22 +1045,15 @@ const WBView = Backbone.View.extend({
     const content = $('<div class="da-container">');
     resources.fetch({ limit: 0 }).done(() => {
       if (resources.length < 1) {
-        $(`<div>
-          None of the matched records currently exist in the database.
-          This can happen if all of the matching records were deleted since the
-          validation process occurred, or if all of the matches were ambiguous
-          with respect other records in this data set. In the latter case, you
-          will need to add fields and values to the data set to resolve the
-          ambiguity.
-        </div>`).dialog({
-          title: 'Disambiguate',
+        $(`<div>${WbText.noDisambiguationResultsDialogMessage}</div>`).dialog({
+          title: WbText.noDisambiguationResultsDialogTitle,
           modal: true,
           close() {
             $(this).remove();
           },
           buttons: [
             {
-              text: 'Close',
+              text: WbText.close,
               click() {
                 $(this).dialog('close');
               },
@@ -1110,7 +1096,7 @@ const WBView = Backbone.View.extend({
       const dialog = $('<div>')
         .append(content)
         .dialog({
-          title: 'Disambiguate Multiple Record Matches',
+          title: WbText.disambiguationDialogTitle,
           minWidth: 400,
           minHeight: 300,
           modal: true,
@@ -1120,13 +1106,13 @@ const WBView = Backbone.View.extend({
           },
           buttons: [
             {
-              text: 'Cancel',
+              text: WbText.close,
               click() {
                 $(this).dialog('close');
               },
             },
             {
-              text: 'Apply',
+              text: WbText.apply,
               click() {
                 const selected = $('input.da-option:checked', this).val();
                 if (selected != null) {
@@ -1137,7 +1123,7 @@ const WBView = Backbone.View.extend({
             },
             {
               id: 'applyAllButton',
-              text: 'Apply All',
+              text: WbText.applyAll,
               click() {
                 const selected = $('input.da-option:checked', this).val();
                 if (selected != null) {
@@ -1159,7 +1145,7 @@ const WBView = Backbone.View.extend({
           applyAllButton.button('option', 'disabled', !newState);
           applyAllButton[0][newState ? 'removeAttribute' : 'setAttribute'](
             'title',
-            `"Apply All" is not available while Data Check is in progress.`
+            WbText.applyAllUnavailable
           );
         }
       };
@@ -1226,19 +1212,14 @@ const WBView = Backbone.View.extend({
 
   // Actions
   unupload() {
-    const dialog = $(`<div>
-      Rolling back will remove the data records this Data Set added to the
-      Specify database. The entire rollback will be cancelled if any of the
-      uploaded data have been referenced (re-used) by other data records in the
-      database since the time they were uploaded.
-    </div>`).dialog({
+    const dialog = $(`<div>${WbText.rollbackDialogMessage}</div>`).dialog({
       modal: true,
-      title: 'Start Data Set Rollback?',
+      title: WbText.rollbackDialogTitle,
       close() {
         $(this).remove();
       },
       buttons: {
-        Rollback: () => {
+        [WbText.rollback]: () => {
           if (typeof this.uploadedView !== 'undefined') {
             this.uploadedView.remove();
             this.uploadedView = undefined;
@@ -1247,7 +1228,7 @@ const WBView = Backbone.View.extend({
           dialog.remove();
           this.openStatus('unupload');
         },
-        Cancel() {
+        [WbText.cancel]() {
           $(this).remove();
         },
       },
@@ -1257,21 +1238,20 @@ const WBView = Backbone.View.extend({
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     if (this.mappings?.arrayOfMappings.length > 0) {
       if (mode === 'upload') {
-        const dialog = $(`<div>
-          Uploading the Data Set will transfer the data into the main Specify
-          tables.
-        </div>`).dialog({
+        const dialog = $(
+          `<div>${WbText.startUploadDialogMessage}</div>`
+        ).dialog({
           modal: true,
-          title: 'Start Data Set Upload?',
+          title: WbText.startUploadDialogTitle,
           close() {
             dialog.remove();
           },
           buttons: {
-            Upload: () => {
+            [WbText.upload]: () => {
               this.startUpload(mode);
               dialog.remove();
             },
-            Cancel() {
+            [WbText.cancel]() {
               dialog.remove();
             },
           },
@@ -1280,16 +1260,14 @@ const WBView = Backbone.View.extend({
         this.startUpload(mode);
       }
     } else {
-      $(
-        '<div>No plan has been defined for this dataset. Create one now?</div>'
-      ).dialog({
-        title: 'No Plan is defined',
+      $('<div>${WbText.noUploadPlanDialogMessage}</div>').dialog({
+        title: WbText.noUploadPlanDialogTitle,
         modal: true,
         buttons: {
-          Cancel: function () {
+          [WbText.cancel]: function () {
             $(this).dialog('close');
           },
-          Create: () => this.openPlan(),
+          [WbText.create]: () => this.openPlan(),
         },
       });
     }
@@ -1318,17 +1296,12 @@ const WBView = Backbone.View.extend({
       });
   },
   delete: function () {
-    const dialog = $(`<div>
-        Deleting a Data Set permanently removes it and its Upload Plan.
-        Data mappings will no longer be available for re-use with other
-        Data Sets. Also after deleting, Rollback will not be an option for
-        an uploaded Data Set.
-      </div>`).dialog({
+    const dialog = $(`<div>${WbText.deleteDataSetDialogMessage}</div>`).dialog({
       modal: true,
-      title: 'Delete Data Set',
+      title: WbText.deleteDataSetDialogTitle,
       close: () => dialog.remove(),
       buttons: {
-        Delete: () => {
+        [WbText.delete]: () => {
           $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
             type: 'DELETE',
           })
@@ -1336,8 +1309,8 @@ const WBView = Backbone.View.extend({
               this.$el.empty();
               dialog.dialog('close');
 
-              $(`<p>Data Set successfully deleted.</p>`).dialog({
-                title: 'Delete Data Set',
+              $(`<p>${WbText.dataSetDeletedMessage}</p>`).dialog({
+                title: WbText.dataSetDeletedTitle,
                 modal: true,
                 close: () => navigation.go('/'),
                 buttons: {
@@ -1352,7 +1325,7 @@ const WBView = Backbone.View.extend({
               dialog.dialog('close');
             });
         },
-        Cancel: () => dialog.dialog('close'),
+        [WbText.cancel]: () => dialog.dialog('close'),
       },
     });
   },
@@ -1370,19 +1343,17 @@ const WBView = Backbone.View.extend({
     a.click();
   },
   revertChanges() {
-    $(`<div>
-      This action will discard all changes to the Data Set since the last save.
-    </div>`).dialog({
+    $(`<div>${WbText.revertChangesDialogMessage}</div>`).dialog({
       modal: true,
-      title: 'Revert Unsaved Changes?',
+      title: WbText.revertChangesDialogTitle,
       close() {
         $(this).remove();
       },
       buttons: {
-        Cancel() {
+        [WbText.cancel]() {
           $(this).dialog('close');
         },
-        Revert: () => {
+        [WbText.revert]: () => {
           navigation.removeUnloadProtect(this);
           this.trigger('refresh');
         },
@@ -1393,15 +1364,15 @@ const WBView = Backbone.View.extend({
     this.save().done();
   },
   save: function () {
-    // clear validation
+    // Clear validation
     this.clearAllMetaData();
     this.dataset.rowresults = null;
     this.validationMode = 'off';
     this.updateValidationButton();
 
-    //show saving progress bar
+    // Show saving progress bar
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-      title: 'Saving',
+      title: WbText.savingDialogTitle,
       modal: true,
       open(evt, ui) {
         $('.ui-dialog-titlebar-close', ui.dialog).hide();
@@ -1492,13 +1463,12 @@ const WBView = Backbone.View.extend({
     }
   },
   updateValidationButton() {
-    if (this.validationMode === 'live') {
-      const n = this.liveValidationStack.length;
+    if (this.validationMode === 'live')
       this.$('.wb-data-check').text(
-        'Data Check: On' + (n > 0 ? ` (${n})` : '')
+        WbText.dataCheckOn(this.liveValidationStack.length)
       );
-    } else {
-      this.$('.wb-data-check').text('Data Check');
+    else {
+      this.$('.wb-data-check').text(WbText.dataCheck);
     }
   },
   gotRowValidationResult(physicalRow, result) {
@@ -1591,7 +1561,7 @@ const WBView = Backbone.View.extend({
     else if (uploadStatus === 'NoMatch')
       setMetaCallback(
         'issues',
-        'No matching record for must-match table.',
+        WbText.noMatchErrorMessage,
         statusData.info.columns,
         mappingPath
       );
@@ -1615,8 +1585,7 @@ const WBView = Backbone.View.extend({
       });
       setMetaCallback(
         'issues',
-        'This value matches two or more existing database records and must ' +
-          'be manually disambiguated before uploading.',
+        WbText.matchedMultipleErrorMessage,
         statusData.info.columns,
         mappingPath
       );
@@ -1686,20 +1655,17 @@ const WBView = Backbone.View.extend({
       '.wb-upload, .wb-validate, .wb-export-data-set, .wb-change-data-set-owner'
     )
       .prop('disabled', true)
-      .prop('title', 'This action requires all changes to be saved');
+      .prop('title', WbText.unavailableWhileEditing);
     this.$('.wb-save').prop('disabled', false);
     this.$('.wb-revert').prop('disabled', false);
     this.$('.wb-show-upload-view')
       .prop('disabled', true)
-      .prop('title', 'The data set must be validated or uploaded');
-    navigation.addUnloadProtect(
-      this,
-      'Changes to this Data Set have not been saved.'
-    );
+      .prop('title', WbText.wbUploadedUnavailable);
+    navigation.addUnloadProtect(this, WbText.onExitDialogMessage);
   },
   checkDeletedFail(jqxhr) {
     if (!jqxhr.errorHandled && jqxhr.status === 404) {
-      this.$el.empty().append('Data Set was deleted by another session.');
+      this.$el.empty().append(WbText.dataSetDeletedOrNotFound);
       jqxhr.errorHandled = true;
     }
   },
@@ -1787,45 +1753,26 @@ const WBView = Backbone.View.extend({
       validate:
         cellCounts.invalidCells === 0
           ? {
-              title: 'Validation Completed with No Errors',
-              message: `Validation found no errors in the Data Set. It is
-                        ready to be uploaded into the database.<br><br>
-
-                        Cell validations and their highlighting will
-                        remain with the Data Set until it is edited and
-                        re-saved. If any cells are edited, Validation should
-                        always be re-run as the last step prior to uploading
-                        to confirm that no errors have been introduced.`,
+              title: WbText.validationNoErrorsDialogTitle,
+              message: WbText.validationNoErrorsDialogMessage,
             }
           : {
-              title: 'Validation Completed with Errors',
-              message: `Validation found errors in some cell values in this
-                        Data Set.<br><br>
-
-                        If any cells are edited and the Data Set re-saved,
-                        Validation should always be re-run as the last step
-                        prior to uploading, to confirm that no errors have
-                        been introduced.`,
+              title: WbText.validationErrorsDialogTitle,
+              message: WbText.validationErrorsDialogMessage,
             },
       upload:
         cellCounts.invalidCells === 0
           ? {
-              title: 'Upload Completed with No Errors',
-              message: `Click on the "Results" button above to see values for
-                        new records added to each database table.`,
+              title: WbText.uploadNoErrorsDialogMessage,
+              message: WbText.uploadNoErrorsDialogTitle,
             }
           : {
-              title: 'Upload failed due to validation errors',
-              message: `The Data Set upload failed due to one or more cell
-                        value errors.<br><br>
-                        Run "Data Check" or "Validate" again, review the
-                        mouseover hints for each error cell, and make the
-                        appropriate corrections. Save changes and retry the
-                        Upload.`,
+              title: WbText.uploadErrorsDialogTitle,
+              message: WbText.uploadErrorsDialogMessage,
             },
       unupload: {
-        title: 'Data Set Rollback',
-        message: 'Data Set was rolled back successfully.',
+        title: WbText.dataSetRollbackDialogTitle,
+        message: WbText.dataSetRollbackDialogMessage,
       },
     };
 
@@ -1838,7 +1785,7 @@ const WBView = Backbone.View.extend({
       modal: true,
       width: 400,
       buttons: {
-        Close: () => dialog.dialog('destroy'),
+        [WbText.close]: () => dialog.dialog('destroy'),
       },
     });
 
@@ -1848,22 +1795,26 @@ const WBView = Backbone.View.extend({
   operationAbortedMessage() {
     if (!this.refreshInitiatedBy || !this.refreshInitiatorAborted) return;
 
-    const action =
+    const title =
       this.refreshInitiatedBy === 'validate'
-        ? 'Validation'
+        ? WbText.validationCanceledDialogTitle
         : this.refreshInitiatedBy === 'unupload'
-        ? 'Rollback'
-        : this.refreshInitiatedBy;
-    const title = `${capitalize(action)} Process Status`;
-    const message = `${capitalize(action)} cancelled.`;
-    const dialog = $(`<div>
-        ${message}
-    </div>`).dialog({
+        ? WbText.rollbackCanceledDialogTitle
+        : WbText.uploadCanceledDialogTitle;
+    const message =
+      this.refreshInitiatedBy === 'validate'
+        ? WbText.validationCanceledDialogMessage
+        : this.refreshInitiatedBy === 'unupload'
+        ? WbText.rollbackCanceledDialogMessage
+        : WbText.uploadCanceledDialogMessage;
+
+    const dialog = $(`<div>${message}</div>`).dialog({
       title,
       modal: true,
       width: 400,
+      close: () => dialog.dialog('destroy'),
       buttons: {
-        Close: () => dialog.dialog('destroy'),
+        [WbText.close]: () => dialog.dialog('destroy'),
       },
     });
     this.refreshInitiatedBy = undefined;
@@ -1934,7 +1885,7 @@ module.exports = function loadDataset(
   let dialog;
   function showLoadingBar() {
     dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-      title: 'Loading',
+      title: WbText.dataSetLoadingDialogTitle,
       modal: true,
       open(evt, ui) {
         $('.ui-dialog-titlebar-close', ui.dialog).hide();
@@ -1963,7 +1914,7 @@ module.exports = function loadDataset(
       if (jqXHR.status === 404) {
         jqXHR.errorHandled = true;
         app.setCurrentView(new NotFoundView());
-        app.setTitle('Page Not Found');
+        app.setTitle(WbText.dataSetNotFoundPageTitle);
         return '(not found)';
       }
       return jqXHR;

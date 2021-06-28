@@ -12,6 +12,7 @@ const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch.tsx');
+const WbText = require('./wbtext.ts').default;
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
@@ -491,10 +492,7 @@ module.exports = Backbone.View.extend({
       leafletButton.disabled = false;
       if (this.wbview.uploaded) {
         [geoLocaleButton, coordinateConvertorButton].map((button) =>
-          button.setAttribute(
-            'title',
-            'This tool does not work with uploaded Data Sets'
-          )
+          button.setAttribute('title', WbText.unavailableWhenUploaded)
         );
       } else {
         geoLocaleButton.disabled = false;
@@ -636,7 +634,7 @@ module.exports = Backbone.View.extend({
     const dialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
       width: 960,
       height: 740,
-      title: 'GEOLocate',
+      title: WbText.geolocateDialogTitle,
       close: function () {
         $(this).remove();
         window.removeEventListener('message', handleGeolocateResult, false);
@@ -657,12 +655,12 @@ module.exports = Backbone.View.extend({
     const updateButtons = (localityIndex) =>
       dialog.dialog('option', 'buttons', [
         {
-          text: 'Previous',
+          text: WbText.previous,
           click: () => updateGeoLocate(localityIndex - 1),
           disabled: localityIndex === 0,
         },
         {
-          text: 'Next',
+          text: WbText.next,
           click: () => updateGeoLocate(localityIndex + 1),
           disabled:
             localityIndex + 1 >=
@@ -900,26 +898,26 @@ module.exports = Backbone.View.extend({
           <br>
           <label>
             <input type="checkbox" name="includesymbols">
-            Include DMS Symbols
+            ${WbText.includeDmsSymbols}
           </label>
         </li>
         <li>
           <label>
             <input type="checkbox" name="applyToAll" checked>
-            Apply to All
+            ${WbText.applyAll}
           </label>
         </li>
       </ul>`
     ).dialog({
-      title: 'Change Geocoordinate Format',
+      title: WbText.coordinateConverterDialogTitle,
       close: revertChanges.bind(this),
       width: 350,
       buttons: [
         {
-          text: 'Cancel',
+          text: WbText.cancel,
           click: revertChanges.bind(this),
         },
-        { text: 'Apply', click: closeDialog.bind(this) },
+        { text: WbText.apply, click: closeDialog.bind(this) },
       ],
     });
 
