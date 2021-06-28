@@ -53,7 +53,7 @@ interface WBUploadedViewComponentProps {
 type UploadedRecordsTypes = 'table' | 'picklist';
 type HandleCellClicked = (rowIndex: number, columnIndex: number) => void;
 
-interface UploadedTableRowBaseProps {
+interface UploadedTableRowsBaseProps {
   readonly onCellClicked: HandleCellClicked;
   readonly getRecordViewUrl?: (rowId: number) => string;
   readonly isUploaded: boolean;
@@ -145,95 +145,107 @@ function CellLink({
   );
 }
 
-function UploadedTableRow({
+function UploadedTableRows({
   rows,
   isUploaded,
   onCellClicked: handleCellClicked,
   getRecordViewUrl,
-}: UploadedTableRowBaseProps & {
+}: UploadedTableRowsBaseProps & {
   readonly rows: RA<UploadedRow>;
   readonly getRecordViewUrl: (rowId: number) => string;
 }): JSX.Element {
   return (
     <tbody>
-      {rows.map(({ recordId, rowIndex, columns }, index) => (
-        <tr key={index}>
-          {isUploaded && (
-            <td key="viewRecord" className="wb-upload-results-record-link">
-              {typeof recordId !== 'undefined' && recordId >= 0 && (
-                <a
-                  target="_blank"
-                  href={getRecordViewUrl(recordId)}
-                  rel="noreferrer"
-                >
-                  ℹ️
-                </a>
-              )}
-            </td>
-          )}
-          {columns.map(
-            (
-              {
-                columnIndex,
-                cellValue,
-                rowIndex: cellRowIndex,
-                recordId,
-                spanSize,
-                matched,
-              },
-              index
-            ) => (
-              <React.Fragment key={index}>
-                <td
-                  className={`wb-upload-results-cell ${
-                    matched ? 'wb-upload-results-cell-matched' : ''
-                  } ${
-                    columnIndex < 0 || cellValue === ''
-                      ? 'wb-upload-results-undefined-cell'
-                      : ''
-                  }
-              `}
-                  rowSpan={spanSize}
-                  onClick={(): void =>
-                    handleCellClicked(
-                      rowIndex < 0 ? cellRowIndex ?? -1 : rowIndex,
-                      columnIndex
-                    )
-                  }
-                  title={
-                    columnIndex < 0
-                      ? undefined
-                      : `${['Uploaded', 'Matched'][matched ? 1 : 0]} record`
-                  }
-                >
-                  {isUploaded ? (
-                    <CellLink
-                      getRecordViewUrl={getRecordViewUrl}
-                      recordId={recordId}
-                    >
-                      {typeof cellValue === 'undefined'
-                        ? 'Uploaded'
-                        : cellValue}
-                    </CellLink>
-                  ) : typeof cellValue === 'undefined' ? (
-                    'Uploaded'
-                  ) : (
-                    cellValue
-                  )}
-                </td>
-              </React.Fragment>
-            )
-          )}
+      {!isUploaded && rows.every(({ columns }) => columns.length === 0) ? (
+        <tr>
+          <td className="wb-upload-results-undefined">
+            There is no information for this table as no fields were mapped to
+            it directly.
+            <br />
+            <br />
+            You may get more details after uploading the Data Set.
+          </td>
         </tr>
-      ))}
+      ) : (
+        rows.map(({ recordId, rowIndex, columns }, index) => (
+          <tr key={index}>
+            {isUploaded && (
+              <td key="viewRecord" className="wb-upload-results-record-link">
+                {typeof recordId !== 'undefined' && recordId >= 0 && (
+                  <a
+                    target="_blank"
+                    href={getRecordViewUrl(recordId)}
+                    rel="noreferrer"
+                  >
+                    ℹ️
+                  </a>
+                )}
+              </td>
+            )}
+            {columns.map(
+              (
+                {
+                  columnIndex,
+                  cellValue,
+                  rowIndex: cellRowIndex,
+                  recordId,
+                  spanSize,
+                  matched,
+                },
+                index
+              ) => (
+                <React.Fragment key={index}>
+                  <td
+                    className={`wb-upload-results-cell ${
+                      matched ? 'wb-upload-results-cell-matched' : ''
+                    } ${
+                      columnIndex < 0 || cellValue === ''
+                        ? 'wb-upload-results-undefined-cell'
+                        : ''
+                    }
+              `}
+                    rowSpan={spanSize}
+                    onClick={(): void =>
+                      handleCellClicked(
+                        rowIndex < 0 ? cellRowIndex ?? -1 : rowIndex,
+                        columnIndex
+                      )
+                    }
+                    title={
+                      columnIndex < 0
+                        ? undefined
+                        : `${['Uploaded', 'Matched'][matched ? 1 : 0]} record`
+                    }
+                  >
+                    {isUploaded ? (
+                      <CellLink
+                        getRecordViewUrl={getRecordViewUrl}
+                        recordId={recordId}
+                      >
+                        {typeof cellValue === 'undefined'
+                          ? 'Uploaded'
+                          : cellValue}
+                      </CellLink>
+                    ) : typeof cellValue === 'undefined' ? (
+                      'Uploaded'
+                    ) : (
+                      cellValue
+                    )}
+                  </td>
+                </React.Fragment>
+              )
+            )}
+          </tr>
+        ))
+      )}
     </tbody>
   );
 }
 
-function UploadedPicklistRow({
+function UploadedPicklistRows({
   rows,
   onCellClicked: handleCellClicked,
-}: UploadedTableRowBaseProps & {
+}: UploadedTableRowsBaseProps & {
   readonly rows: RA<UploadedPicklistItem>;
 }): JSX.Element {
   return (
@@ -252,7 +264,7 @@ function UploadedPicklistRow({
   );
 }
 
-function UploadedTableRows({
+function UploadedContent({
   type,
   isUploaded,
   rows,
@@ -301,7 +313,7 @@ function UploadedTableRows({
           }
         />
         {type === 'table' && getRecordViewUrl ? (
-          <UploadedTableRow
+          <UploadedTableRows
             // @ts-expect-error
             rows={rows}
             isUploaded={showViewLinks}
@@ -309,7 +321,7 @@ function UploadedTableRows({
             getRecordViewUrl={getRecordViewUrl}
           />
         ) : (
-          <UploadedPicklistRow
+          <UploadedPicklistRows
             // @ts-expect-error
             rows={rows}
             isUploaded={isUploaded}
@@ -468,7 +480,7 @@ function UploadedTable({
       />
       {tableIsCollapsed ? undefined : (
         // @ts-expect-error
-        <UploadedTableRows
+        <UploadedContent
           type={type}
           isUploaded={isUploaded}
           onCellClicked={handleCellClicked}
@@ -552,12 +564,12 @@ const reducer = generateReducer<WBUploadedState, WBUploadedActions>({
   ToggleTableRecordsVisibilityAction: ({ state, action }) => ({
     ...state,
     [action.destination]: Object.fromEntries(
-      Object.entries(
-        state[action.destination]
-      ).map(([tableName, isCollapsed]) => [
-        tableName,
-        isCollapsed !== (tableName === action.tableName),
-      ])
+      Object.entries(state[action.destination]).map(
+        ([tableName, isCollapsed]) => [
+          tableName,
+          isCollapsed !== (tableName === action.tableName),
+        ]
+      )
     ),
   }),
   CellClickedAction: ({ state, action: { rowIndex, columnIndex } }) => {
@@ -685,17 +697,17 @@ function WBUploadedViewDataParser(
         .then(() =>
           setTreeRanks(
             Object.fromEntries(
-              Object.entries(
-                dataModelStorage.ranks
-              ).map(([tableName, tableRanks]) => [
-                tableName,
-                Object.fromEntries([
-                  ...(dataModelStorage.rootRanks[tableName]
-                    ? [dataModelStorage.rootRanks[tableName]]
-                    : []),
-                  ...Object.entries(tableRanks),
-                ]),
-              ])
+              Object.entries(dataModelStorage.ranks).map(
+                ([tableName, tableRanks]) => [
+                  tableName,
+                  Object.fromEntries([
+                    ...(dataModelStorage.rootRanks[tableName]
+                      ? [dataModelStorage.rootRanks[tableName]]
+                      : []),
+                    ...Object.entries(tableRanks),
+                  ]),
+                ]
+              )
             )
           )
         )

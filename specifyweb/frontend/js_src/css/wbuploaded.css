@@ -9,10 +9,6 @@
   cursor: pointer;
 }
 
-.wb-upload-results th {
-  text-align: center;
-}
-
 .wb-upload-results-table button {
   cursor: pointer;
 }
@@ -68,7 +64,6 @@
 }
 
 .wb-upload-results-rows {
-  width: 100%;
   overflow: hidden;
 }
 
@@ -84,12 +79,16 @@ td.wb-upload-results-record-link:not(:first-child) {
   border-left: 4px solid #fff;
 }
 
-.wb-upload-results-rows td:first-child {
+.wb-upload-results-rows td:not(.wb-upload-results-undefined):first-child {
   text-align: center;
 }
 
-.wb-upload-results-cell-matched {
+.wb-upload-results-cell {
   background-color: #eef;
+}
+
+.wb-upload-results-cell-matched {
+  background-color: #eee;
 }
 
 .wb-upload-results-undefined-cell {

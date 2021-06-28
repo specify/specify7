@@ -233,7 +233,7 @@ export const DataSetMeta = Backbone.View.extend({
   },
 });
 
-// A wrapper for DS Meta for embeeding in the WB
+// A wrapper for DS Meta for embedding in the WB
 export default Backbone.View.extend({
   __name__: 'DataSetNameView',
   events: {
@@ -254,12 +254,13 @@ export default Backbone.View.extend({
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.$el.find('.wb-name-container').html(`
-      <span class="wb-name">Data Set: ${this.dataset.name}</span>
-      ${
-        isUploaded
-          ? `<span style="color: #f24">(Uploaded, Read-Only)</span>`
-          : ''
-      }
+      <span class="wb-name">Data Set: ${this.dataset.name}
+        ${
+          isUploaded
+            ? `<span style="color: #f24"> (Uploaded, Read-Only) </span>`
+            : ''
+        }
+      </span>
       <span
         class="ui-icon ui-icon-pencil"
         title="Edit name"

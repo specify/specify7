@@ -1379,12 +1379,12 @@ const WBView = Backbone.View.extend({
         $(this).remove();
       },
       buttons: {
+        Cancel() {
+          $(this).dialog('close');
+        },
         Revert: () => {
           navigation.removeUnloadProtect(this);
           this.trigger('refresh');
-        },
-        Cancel() {
-          $(this).dialog('close');
         },
       },
     });
@@ -1791,10 +1791,10 @@ const WBView = Backbone.View.extend({
               message: `Validation found no errors in the Data Set. It is
                         ready to be uploaded into the database.<br><br>
 
-                        Cell validations and their status highlighting will
+                        Cell validations and their highlighting will
                         remain with the Data Set until it is edited and
                         re-saved. If any cells are edited, Validation should
-                        always be re-run as the last step prior to uploading,
+                        always be re-run as the last step prior to uploading
                         to confirm that no errors have been introduced.`,
             }
           : {
