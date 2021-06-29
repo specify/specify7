@@ -1764,8 +1764,8 @@ const WBView = Backbone.View.extend({
       upload:
         cellCounts.invalidCells === 0
           ? {
-              title: WbText.uploadNoErrorsDialogMessage,
-              message: WbText.uploadNoErrorsDialogTitle,
+              title: WbText.uploadNoErrorsDialogTitle,
+              message: WbText.uploadNoErrorsDialogMessage,
             }
           : {
               title: WbText.uploadErrorsDialogTitle,

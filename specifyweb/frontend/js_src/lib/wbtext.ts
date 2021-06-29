@@ -112,7 +112,7 @@ const wbText: Dictionary = {
   uploadNoErrorsDialogMessage: `
     Click on the "Results" button above to see values for new records
     added to each database table.`,
-  uploadErrorsDialogTitle: 'Upload failed due to validation errors',
+  uploadErrorsDialogTitle: 'Upload Failed due to Validation Errors',
   uploadErrorsDialogMessage: `
     The Data Set upload failed due to one or more cell value errors.<br><br>
 
