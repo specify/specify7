@@ -5,6 +5,8 @@ const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-pl
 
 
 function writeIfChanged(compiler, fileName, fileContent){
+    if(!fs.existsSync(compiler.options.output.path))
+        fs.mkdirSync(compiler.options.output.path);
     const fullOutPath = path.join(
         compiler.options.output.path,
         fileName
