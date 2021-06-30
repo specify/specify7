@@ -138,8 +138,6 @@ const WBView = Backbone.View.extend({
     this.refreshInitiatorAborted = refreshInitiatorAborted;
     this.ambiguousMatches = [];
 
-    this.resize = this.resize.bind(this);
-
     // Throttle cell count update depending on the DS size (between 10ms and 2s)
     this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,
@@ -213,8 +211,6 @@ const WBView = Backbone.View.extend({
       });
 
     this.initHot().then(() => {
-      this.resize();
-
       if (this.dataset.uploadplan) {
         fetchDataModelPromise().then(() => {
           this.mappings = uploadPlanToMappingsTree(
@@ -244,8 +240,6 @@ const WBView = Backbone.View.extend({
       this.el.classList.add('wb-hide-new-cells');
     }
 
-    $(window).on('resize', this.resize);
-
     this.flushIndexedCellData = true;
 
     return this;
@@ -255,6 +249,7 @@ const WBView = Backbone.View.extend({
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
+          height: ()=>console.log('heightCalc') || this.$el.find('.wb-spreadsheet').height(),
           columns: this.dataset.columns.map((__, i) => ({
             data: i,
             ...getDefaultCellMeta(),
@@ -358,7 +353,6 @@ const WBView = Backbone.View.extend({
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';
-    $(window).off('resize', this.resize);
   },
   identifyMappedHeaders() {
     if (!this.mappings) return;
@@ -1691,13 +1685,6 @@ const WBView = Backbone.View.extend({
     this.$('.wb-save').prop('disabled', true);
     this.$('.wb-revert').prop('disabled', true);
     navigation.removeUnloadProtect(this);
-  },
-  resize: function () {
-    if (!this.hot) return;
-    this.hot.updateSettings({
-      height: this.$el.find('.wb-spreadsheet').height(),
-    });
-    return true;
   },
 
   // MetaData
