@@ -11,7 +11,7 @@ const wbText: Dictionary = {
   close: 'Close',
   apply: 'Apply',
   applyAll: 'Apply All',
-  rollback: 'Rollback',
+  rollback: 'Roll back',
   validate: 'Validate',
   upload: 'Upload',
   results: 'Results',
@@ -36,7 +36,7 @@ const wbText: Dictionary = {
   searchResults: 'Search Results',
   modifiedCells: 'Modified Cells',
   newCells: 'New Cells',
-  errorCells: 'New Cells',
+  errorCells: 'Error Cells',
 
   // Dialogs
   dataSetLoadingDialogTitle: 'Loading',
@@ -54,12 +54,12 @@ const wbText: Dictionary = {
   disambiguationDialogTitle: 'Disambiguate Multiple Record Matches',
   applyAllUnavailable: `
     "Apply All" is not available while Data Check is in progress.`,
-  rollbackDialogTitle: 'Start Data Set Rollback?',
+  rollbackDialogTitle: 'Start Data Set Roll back?',
   rollbackDialogMessage: `
     Rolling back will remove the data records this Data Set added to the
-    Specify database. The entire rollback will be cancelled if any of the
+    Specify database. The entire roll back will be cancelled if any of the
     uploaded data have been referenced (re-used) by other data records in the
-    database since the time they were uploaded.,`,
+    database since the time they were uploaded.`,
   startUploadDialogTitle: 'Start Data Set Upload?',
   startUploadDialogMessage: `
     Uploading the Data Set will transfer the data into the main Specify
@@ -68,7 +68,7 @@ const wbText: Dictionary = {
   deleteDataSetDialogMessage: `
     Deleting a Data Set permanently removes it and its Upload Plan.
     Data mappings will no longer be available for re-use with other
-    Data Sets. Also after deleting, Rollback will not be an option for
+    Data Sets. Also after deleting, Roll back will not be an option for
     an uploaded Data Set.`,
   dataSetDeletedTitle: 'Delete Data Set',
   dataSetDeletedMessage: 'Data Set successfully deleted.',
@@ -120,12 +120,12 @@ const wbText: Dictionary = {
     mouseover hints for each error cell, and make the
     appropriate corrections. Save changes and retry the
     Upload.`,
-  dataSetRollbackDialogTitle: 'Data Set Rollback',
+  dataSetRollbackDialogTitle: 'Data Set Roll back',
   dataSetRollbackDialogMessage: 'Data Set was rolled back successfully.',
   validationCanceledDialogTitle: 'Validation Process Status',
   validationCanceledDialogMessage: 'Validation cancelled.',
-  rollbackCanceledDialogTitle: 'Rollback Process Status',
-  rollbackCanceledDialogMessage: 'Rollback cancelled.',
+  rollbackCanceledDialogTitle: 'Roll back Process Status',
+  rollbackCanceledDialogMessage: 'Roll back cancelled.',
   uploadCanceledDialogTitle: 'Upload Process Status',
   uploadCanceledDialogMessage: 'Upload cancelled.',
   geoLocateDialogTitle: 'GeoLocate',
