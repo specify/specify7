@@ -1,104 +1,46 @@
-.wb-upload-results {
+.wb-uploaded-view {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  padding-top: 0.5rem;
+  height: 100%;
+  width: 15rem;
 }
 
-.wb-upload-results:not(.wb-upload-results-undefined-cell) td {
-  cursor: pointer;
+.wb-uploaded-view h2,
+.wb-uploaded-view p {
+  margin: 0;
 }
 
-.wb-upload-results-table button {
-  cursor: pointer;
-}
-
-.wb-upload-results-header {
+.wb-uploaded-view-content {
+  flex: 1;
   display: flex;
-  justify-content: space-between;
-  background: #fff;
-  cursor: pointer;
+  flex-direction: column;
+  row-gap: 0.5rem;
 }
 
-.wb-upload-results-header > * {
+.wb-uploaded-view-line {
   display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
+  column-gap: 0.3rem;
+  align-items: center;
 }
 
-.wb-upload-results-table-name {
-  column-gap: 0.5rem;
+.wb-uploaded-view-line .custom-select-icon {
+  flex-basis: 20px;
+  height: 20px;
 }
 
-.wb-upload-results-table:hover .wb-upload-results-table-name {
-  color: #555;
-}
-
-.wb-upload-results-table-name .custom-select-icon-table {
-  width: 1rem;
-  height: 1rem;
-  display: block;
+.custom-select-icon {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-size: contain;
   background-repeat: no-repeat;
+  background-position: center;
 }
 
-.wb-upload-results-table-name .custom-select-icon-table-undefined {
-  color: var(--background1);
+.custom-select-option-icon-undefined {
   border-radius: 3px;
-  justify-content: center;
-  display: flex !important;
-  align-items: center;
-  overflow: hidden;
-}
-
-.wb-upload-results-rows-container {
-  width: 100%;
-  overflow-y: hidden;
-  border: 3px solid #fff;
-  border-top: none;
-  box-sizing: border-box;
-}
-
-.wb-upload-results-rows-tree td {
-  text-align: center;
-}
-
-.wb-upload-results-rows {
-  overflow: hidden;
-}
-
-.wb-upload-results-rows thead tr {
-  background: #ccc;
-}
-
-.wb-upload-results-rows td {
-  border: 1px solid #fff;
-}
-
-td.wb-upload-results-record-link:not(:first-child) {
-  border-left: 4px solid #fff;
-}
-
-.wb-upload-results-rows td:not(.wb-upload-results-undefined):first-child {
-  text-align: center;
-}
-
-.wb-upload-results-cell {
-  background-color: #eef;
-}
-
-.wb-upload-results-cell-matched {
-  background-color: #eee;
-}
-
-.wb-upload-results-undefined-cell {
-  background: #ddd;
-}
-
-.wb-upload-results-rows a {
-  color: #00f;
-}
-
-.wb-upload-results-rows a:hover {
-  color: #66f;
+  padding: 1px;
+  height: inherit;
 }
