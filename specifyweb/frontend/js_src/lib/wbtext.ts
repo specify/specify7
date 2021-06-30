@@ -40,9 +40,9 @@ const wbText: Dictionary = {
 
   // Dialogs
   dataSetLoadingDialogTitle: 'Loading',
-  noUploadPlanDialogTitle: 'No upload plan is defined',
+  noUploadPlanDialogTitle: 'No Upload Plan is Defined',
   noUploadPlanDialogMessage:
-    'No upload plan has been defined for this Data Set. Create one now?',
+    'No Upload Plan has been defined for this Data Set. Create one now?',
   noDisambiguationResultsDialogTitle: 'Disambiguate',
   noDisambiguationResultsDialogMessage: `
     None of the matched records currently exist in the database.
@@ -54,28 +54,28 @@ const wbText: Dictionary = {
   disambiguationDialogTitle: 'Disambiguate Multiple Record Matches',
   applyAllUnavailable: `
     "Apply All" is not available while Data Check is in progress.`,
-  rollbackDialogTitle: 'Start Data Set Roll back?',
+  rollbackDialogTitle: 'Data Set Roll Back',
   rollbackDialogMessage: `
-    Rolling back will remove the data records this Data Set added to the
-    Specify database. The entire roll back will be cancelled if any of the
+    Rolling back will remove the new data records this Data Set added to the
+    Specify database. The entire rollback will be cancelled if any of the
     uploaded data have been referenced (re-used) by other data records in the
-    database since the time they were uploaded.`,
-  startUploadDialogTitle: 'Start Data Set Upload?',
+    database since they were uploaded.`,
+  startUploadDialogTitle: 'Data Set Upload',
   startUploadDialogMessage: `
-    Uploading the Data Set will transfer the data into the main Specify
-    tables.`,
+    Start the Upload? Uploading the Data Set will add the data to the Specify
+    database.`,
   deleteDataSetDialogTitle: 'Delete Data Set',
   deleteDataSetDialogMessage: `
-    Deleting a Data Set permanently removes it and its Upload Plan.
+    Delete this Data Set? Deleting permanently removes it and its Upload Plan.
     Data mappings will no longer be available for re-use with other
-    Data Sets. Also after deleting, Roll back will not be an option for
+    Data Sets. Also after deleting, Rollback will no longer be an option for
     an uploaded Data Set.`,
   dataSetDeletedTitle: 'Delete Data Set',
   dataSetDeletedMessage: 'Data Set successfully deleted.',
   revertChangesDialogTitle: `
-    Revert Unsaved Changes?`,
+    Reverting Unsaved Changes`,
   revertChangesDialogMessage: `
-    This action will discard all changes to the Data Set since the last save.`,
+    Revert Changes? This action will discard all changes to the Data Set since the last save.`,
   savingDialogTitle: 'Saving',
   onExitDialogMessage: 'Changes to this Data Set have not been saved.',
 
@@ -98,7 +98,7 @@ const wbText: Dictionary = {
     Cell validations and their highlighting will
     remain with the Data Set until it is edited and
     re-saved. If any cells are edited, Validation should
-    always be re-run as the last step prior to uploading
+    be re-run as the last step prior to uploading
     to confirm that no errors have been introduced.`,
   validationErrorsDialogTitle: 'Validation Completed with Errors',
   validationErrorsDialogMessage: `
@@ -106,7 +106,7 @@ const wbText: Dictionary = {
 
     If any cells are edited and the Data Set re-saved,
     Validation should always be re-run as the last step
-    prior to uploading, to confirm that no errors have
+    prior to uploading to confirm that no errors have
     been introduced.`,
   uploadNoErrorsDialogTitle: 'Upload Completed with No Errors',
   uploadNoErrorsDialogMessage: `
@@ -120,12 +120,12 @@ const wbText: Dictionary = {
     mouseover hints for each error cell, and make the
     appropriate corrections. Save changes and retry the
     Upload.`,
-  dataSetRollbackDialogTitle: 'Data Set Roll back',
+  dataSetRollbackDialogTitle: 'Data Set Rollback',
   dataSetRollbackDialogMessage: 'Data Set was rolled back successfully.',
   validationCanceledDialogTitle: 'Validation Process Status',
   validationCanceledDialogMessage: 'Validation cancelled.',
-  rollbackCanceledDialogTitle: 'Roll back Process Status',
-  rollbackCanceledDialogMessage: 'Roll back cancelled.',
+  rollbackCanceledDialogTitle: 'Rollback Process Status',
+  rollbackCanceledDialogMessage: 'Rollback cancelled.',
   uploadCanceledDialogTitle: 'Upload Process Status',
   uploadCanceledDialogMessage: 'Upload cancelled.',
   geoLocateDialogTitle: 'GeoLocate',
@@ -134,8 +134,8 @@ const wbText: Dictionary = {
   // Misc
   wbUploadedUnavailable: 'The data set must be validated or uploaded',
   wbValidateUnavailable:
-    'Please define an upload plan before validating the Data Set',
-  unavailableWhileEditing: 'This action requires all changes to be saved',
+    'Please define an Upload Plan before Validating the Data Set',
+  unavailableWhileEditing: 'This action requires all changes to be saved.',
   dataSetDeletedOrNotFound: 'Data Set was deleted by another session.',
   dataSetNotFoundPageTitle: 'Page Not Found',
   unavailableWhenUploaded: 'This tool does not work with uploaded Data Sets',
