@@ -604,7 +604,11 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
     const distinctListOfTables = Array.from(new Set(arrayOfTables));
     const mustMatchPreferences = {
       ...Object.fromEntries(
-        distinctListOfTables.map((tableName) => [tableName, false])
+        distinctListOfTables.map((tableName) => [
+          tableName,
+          tableName === 'preptype' &&
+            !('preptype' in state.mustMatchPreferences),
+        ])
       ),
       ...state.mustMatchPreferences,
     };
