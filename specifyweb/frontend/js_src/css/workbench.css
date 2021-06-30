@@ -224,7 +224,7 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-.wb-cell-navigation:not([dissabled]):hover,
+.wb-cell-navigation:not([disabled]):hover,
 .wbs-form.wb-hide-new-cells
   .wb-navigation-section[data-navigation-type='newCells']
   .wb-navigation-text,
@@ -237,7 +237,7 @@
 .wbs-form.wb-hide-search-results
   .wb-navigation-section[data-navigation-type='searchResults']
   .wb-navigation-text {
-  background: rgba(0 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .wb-cell-navigation[disabled] {

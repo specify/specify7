@@ -129,7 +129,7 @@ const WBView = Backbone.View.extend({
      * Allow column sort
      * Allow column move
      * */
-    this.uploaded =
+    this.isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     // Disallow all editing while this dialog is open
     this.uploadedView = undefined;
@@ -138,7 +138,10 @@ const WBView = Backbone.View.extend({
 
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.refreshInitiatorAborted = refreshInitiatorAborted;
-    this.ambiguousMatches = [];
+    this.uploadResults = {
+      ambiguousMatches: [],
+      recordCounts: {},
+    };
 
     // Throttle cell count update depending on the DS size (between 10ms and 2s)
     this.updateCellInfoStats = _.throttle(
@@ -149,7 +152,7 @@ const WBView = Backbone.View.extend({
   render() {
     this.$el.append(
       template({
-        is_uploaded: this.uploaded,
+        is_uploaded: this.isUploaded,
         is_manager: userInfo.usertype === 'Manager',
         WbText,
       })
@@ -174,7 +177,7 @@ const WBView = Backbone.View.extend({
 
     const initDataModelIntegration = () =>
       this.hot.batch(() => {
-        if (!this.uploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
+        if (!this.isUploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
           $(`<div>${WbText.noUploadPlanDialogMessage}</div>`).dialog({
             title: WbText.noUploadPlanDialogTitle,
             modal: true,
@@ -251,14 +254,9 @@ const WBView = Backbone.View.extend({
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
-          height: () =>
-            console.log('heightCalc') ||
-            this.$el.find('.wb-spreadsheet').height(),
-          columns: this.dataset.columns.map((__, i) => ({
-            data: i,
-            ...getDefaultCellMeta(),
+          columns: this.dataset.columns.map((_, physicalCol) => ({
+            data: physicalCol,
           })),
-          cells: () => ({ type: 'text' }),
           colHeaders: (physicalCol) => {
             const tableIcon = this.mappings?.mappedHeaders?.[physicalCol];
             const isMapped = typeof tableIcon !== 'undefined';
@@ -300,7 +298,7 @@ const WBView = Backbone.View.extend({
             displayDelay: 100,
           },
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
-          invalidCellClassName: '--l',
+          invalidCellClassName: '-',
           rowHeaders: true,
           autoWrapCol: false,
           autoWrapRow: false,
@@ -310,31 +308,31 @@ const WBView = Backbone.View.extend({
           multiColumnSorting: true,
           sortIndicator: true,
           contextMenu: {
-            items: this.uploaded
+            items: this.isUploaded
               ? {}
               : {
                   row_above: {
                     disabled: () =>
-                      this.uploaded ||
+                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView,
                   },
                   row_below: {
                     disabled: () =>
-                      this.uploaded ||
+                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView,
                   },
                   remove_row: {
                     disabled: () =>
-                      this.uploaded ||
+                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView,
                   },
                   disambiguate: {
                     name: WbText.disambiguate,
                     disabled: () =>
-                      this.uploaded ||
+                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView ||
                       !this.isAmbiguousCell(),
@@ -344,7 +342,7 @@ const WBView = Backbone.View.extend({
                   separator_1: '---------',
                   fill_down: {
                     disabled: () =>
-                      this.uploaded ||
+                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView,
                     callback: this.wbutils.fillCellsContextMenuItem(
@@ -354,7 +352,7 @@ const WBView = Backbone.View.extend({
                   },
                   fill_up: {
                     disabled: () =>
-                      this.uploaded ||
+                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView,
                     callback: this.wbutils.fillCellsContextMenuItem(
@@ -364,16 +362,16 @@ const WBView = Backbone.View.extend({
                   },
                   separator_2: '---------',
                   undo: {
-                    disabled: () => this.uploaded || this.uploadedView,
+                    disabled: () => this.isUploaded || this.uploadedView,
                   },
                   redo: {
-                    disabled: () => this.uploaded || this.uploadedView,
+                    disabled: () => this.isUploaded || this.uploadedView,
                   },
                 },
           },
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
-          readOnly: this.uploaded,
+          readOnly: this.isUploaded,
           afterChange: this.afterChange.bind(this),
           beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
@@ -749,7 +747,7 @@ const WBView = Backbone.View.extend({
      * direction
      * */
 
-    if (this.uploadedView || this.coordinateConverterView) return false;
+    if (this.coordinateConverterView) return false;
 
     if (!this.mappings || this.sortConfigIsSet) return true;
 
@@ -1009,7 +1007,7 @@ const WBView = Backbone.View.extend({
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const da = this.getDisambiguation(physicalRow);
 
-    return (this.ambiguousMatches[physicalRow] ?? []).some(
+    return (this.uploadResults.ambiguousMatches[physicalRow] ?? []).some(
       ({ physicalCols, mappingPath }) =>
         physicalCols.includes(physicalCol) &&
         typeof da[mappingPathToString(mappingPath)] !== 'number'
@@ -1047,7 +1045,7 @@ const WBView = Backbone.View.extend({
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
-    const matches = this.ambiguousMatches[physicalRow].find(
+    const matches = this.uploadResults.ambiguousMatches[physicalRow].find(
       ({ physicalCols }) => physicalCols.includes(physicalCol)
     );
     const tableName = getTableFromMappingPath({
@@ -1073,7 +1071,7 @@ const WBView = Backbone.View.extend({
       for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
         const physicalRow = this.hot.toPhysicalRow(visualRow);
         if (
-          !this.ambiguousMatches[physicalRow]?.find(
+          !this.uploadResults.ambiguousMatches[physicalRow]?.find(
             ({ key, mappingPath }) =>
               key === matches.key &&
               typeof this.getDisambiguation(physicalRow)[
@@ -1208,8 +1206,12 @@ const WBView = Backbone.View.extend({
   displayUploadedView() {
     // TODO: Render record id's `i` button inside of cells
 
-    if (!this.dataset.rowresults || typeof this.uploadedView !== 'undefined')
+    if (!this.dataset.rowresults) return;
+
+    if (typeof this.uploadedView !== 'undefined') {
+      this.uploadedView.onClose();
       return;
+    }
 
     if (this.liveValidationStack.length !== 0) {
       const dialog = $(`<div>
@@ -1247,7 +1249,9 @@ const WBView = Backbone.View.extend({
         .flatMap((element) =>
           Array.from(element.getElementsByClassName('wb-cell-navigation'))
         ),
-    ].map((element) => [element, element.getAttribute('title')]);
+    ]
+      .filter((element) => typeof element !== 'undefined')
+      .map((element) => [element, element.getAttribute('title')]);
 
     effects.push(() =>
       elementsToDisable.forEach(([element]) => {
@@ -1336,15 +1340,20 @@ const WBView = Backbone.View.extend({
 
     runEffects();
 
-    uploadView.innerHTML = '<div></div>';
-    const container = uploadView.children[0];
+    const uploadedViewWrapper = this.el.getElementsByClassName(
+      'wb-uploaded-view-wrapper'
+    )[0];
+    uploadedViewWrapper.style.display = '';
+    uploadedViewWrapper.innerHTML = '<div></div>';
 
     this.uploadedView = new WBUploadedView({
-      dataset: this.dataset,
-      hot: this.hot,
-      el: container,
-      removeCallback: () => {
+      el: uploadedViewWrapper.children[0],
+      recordCounts: this.uploadResults.recordCounts,
+      isUploaded: this.isUploaded,
+      onClose: () => {
+        this.uploadedView.remove();
         this.uploadedView = undefined;
+        uploadedViewWrapper.style.display = 'none';
         runCleanup();
       },
     }).render();
@@ -1650,7 +1659,7 @@ const WBView = Backbone.View.extend({
   },
   gotRowValidationResult(physicalRow, result) {
     if (this.validationMode !== 'live' || this.hot.isDestroyed) return;
-    this.ambiguousMatches[physicalRow] = [];
+    this.uploadResults.ambiguousMatches[physicalRow] = [];
     this.hot.batch(() =>
       this.applyRowValidationResults(physicalRow, result?.result, true)
     );
@@ -1750,8 +1759,8 @@ const WBView = Backbone.View.extend({
         mappingPath
       );
     else if (uploadStatus === 'MatchedMultiple') {
-      this.ambiguousMatches[physicalRow] ??= [];
-      this.ambiguousMatches[physicalRow].push({
+      this.uploadResults.ambiguousMatches[physicalRow] ??= [];
+      this.uploadResults.ambiguousMatches[physicalRow].push({
         physicalCols: this.resolveValidationColumns(
           statusData.info.columns,
           mappingPath
@@ -1766,7 +1775,7 @@ const WBView = Backbone.View.extend({
         statusData.info.columns,
         mappingPath
       );
-    } else if (uploadStatus === 'Uploaded')
+    } else if (uploadStatus === 'Uploaded') {
       setMetaCallback(
         'isNew',
         true,
@@ -1774,7 +1783,10 @@ const WBView = Backbone.View.extend({
         mappingPath,
         false
       );
-    else
+      const tableName = statusData.info.tableName.toLowerCase();
+      this.uploadResults.recordCounts[tableName] ??= 0;
+      this.uploadResults.recordCounts[tableName] += 1;
+    } else
       throw new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
@@ -1998,7 +2010,7 @@ const WBView = Backbone.View.extend({
     const columnIndexes = this.dataset.columns.map(
       (_, physicalCol) => physicalCol
     );
-    this.ambiguousMatches = [];
+    this.uploadResults.ambiguousMatches = [];
     this.hot.batch(() =>
       Array.from({ length: this.hot.countRows() }, (_, physicalRow) =>
         columnIndexes.forEach((physicalCol) =>

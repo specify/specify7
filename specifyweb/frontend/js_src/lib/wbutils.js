@@ -429,7 +429,6 @@ module.exports = Backbone.View.extend({
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
     if (toolkit.style.display === 'none') toolkit.style.display = '';
     else toolkit.style.display = 'none';
-    this.wbview.resize.bind(this.wbview)();
   },
   fillCells({ startRow, endRow, col, value }) {
     this.wbview.hot.setDataAtCell(
@@ -490,7 +489,7 @@ module.exports = Backbone.View.extend({
 
     if (this.localityColumns.length !== 0) {
       leafletButton.disabled = false;
-      if (this.wbview.uploaded) {
+      if (this.wbview.isUploaded) {
         [geoLocaleButton, coordinateConverterButton].map((button) =>
           button.setAttribute('title', WbText.unavailableWhenUploaded)
         );

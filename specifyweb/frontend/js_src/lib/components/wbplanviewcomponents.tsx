@@ -15,7 +15,7 @@ import type {
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import type { IR, R, RA } from './wbplanview';
+import type { IR, RA } from './wbplanview';
 import type {
   AutomapperSuggestion,
   MappingType,
@@ -155,7 +155,7 @@ export function MappingPathComponent({
   );
 }
 
-const fieldGroupLabels: R<string> = {
+const fieldGroupLabels: IR<string> = {
   requiredFields: 'Required Fields',
   optionalFields: 'Optional Fields',
   hiddenFields: 'Hidden Fields',

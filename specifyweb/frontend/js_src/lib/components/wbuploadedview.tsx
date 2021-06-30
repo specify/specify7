@@ -47,7 +47,11 @@ function WbUploadedView({
       <h2>
         {isUploaded ? WbText.uploadResults : WbText.potentialUploadResults}
       </h2>
-      <p>{WbText.wbUploadedDescriptions}</p>
+      <p>
+        {isUploaded
+          ? WbText.wbUploadedDescription
+          : WbText.wbUploadedPotentialDescription}
+      </p>
       <div className="wb-uploaded-view-content">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults

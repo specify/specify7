@@ -1,8 +1,8 @@
-import type { R, RA } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 
 const strip = (value: string): string => value.trim().replace(/ {2,}/, ' ');
 
-type Dictionary = R<string | ((...args: RA<never>) => string)>;
+type Dictionary = IR<string | ((...args: RA<never>) => string)>;
 
 const wbText: Dictionary = {
   // Buttons
@@ -140,10 +140,19 @@ const wbText: Dictionary = {
     'This action is unavailable while viewing the upload results',
   unavailableWhileValidating:
     'This action is unavailable while Data Check is in progress',
+  unavailableWithoutLocality:
+    'This tool requires locality columns to be mapped',
   unavailableWhenUploaded: 'This tool does not work with uploaded Data Sets',
   dataSetDeletedOrNotFound: 'Data Set was deleted by another session.',
   dataSetNotFoundPageTitle: 'Page Not Found',
   includeDmsSymbols: 'Include DMS Symbols',
+
+  // WbUploaded
+  uploadResults: 'Upload Results',
+  potentialUploadResults: 'Potential Upload Results',
+  wbUploadedDescription: 'The number of new records created in each table:',
+  wbUploadedPotentialDescription:
+    'The number of new records that would be created in each table:',
 } as const;
 
 export default wbText;

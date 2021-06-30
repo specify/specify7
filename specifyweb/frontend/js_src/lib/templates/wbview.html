@@ -5,9 +5,7 @@
       <button class="magic-button wb-show-plan" style="display: none">
         Show Plan
       </button>
-      <button class="magic-button wb-plan">
-        <%= WbText.uploadPlan %>
-      </button>
+      <button class="magic-button wb-plan"><%= WbText.uploadPlan %></button>
       <% if(!is_uploaded) { %>
       <button class="magic-button wb-data-check" disabled="disabled">
         <%= WbText.dataCheck %>
@@ -16,9 +14,7 @@
         <%= WbText.validate %>
       </button>
       <% } %>
-      <button class="magic-button wb-show-toolkit">
-        <%= WbText.tools %>
-      </button>
+      <button class="magic-button wb-show-toolkit"><%= WbText.tools %></button>
       <button class="magic-button wb-show-upload-view" disabled="disabled">
         <%= WbText.results %>
       </button>
@@ -51,21 +47,21 @@
     <div class="wb-toolkit-right">
       <button
         class="magic-button wb-convert-coordinates"
+        title="<%= WbText.unavailableWithoutLocality %>"
         disabled
-        title="This tool requires locality columns to be mapped"
       >
         <%= WbText.convertCoordinates %>
       </button>
       <button
         class="magic-button wb-geolocate"
-        title="This tool requires locality columns to be mapped"
+        title="<%= WbText.unavailableWithoutLocality %>"
         disabled
       >
         <%= WbText.geoLocate %>
       </button>
       <button
         class="magic-button wb-leafletmap"
-        title="This tool requires locality columns to be mapped"
+        title="<%= WbText.unavailableWithoutLocality %>"
         disabled
       >
         <%= WbText.geoMap %>
@@ -73,7 +69,10 @@
     </div>
   </div>
 </div>
-<div class="wb-spreadsheet"></div>
+<div class="wb-main-content">
+  <div class="wb-spreadsheet"></div>
+  <div class="wb-uploaded-view-wrapper" style="display: none"></div>
+</div>
 <div class="wb-navigation">
   <span class="wb-search-replace">
     <input
@@ -113,6 +112,7 @@
     </button>
   </span>
 
+  <% if(!is_uploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="modifiedCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
       &lt;
@@ -128,6 +128,7 @@
       &gt;
     </button>
   </span>
+  <% } %>
 
   <span class="wb-navigation-section" data-navigation-type="newCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
@@ -145,6 +146,7 @@
     </button>
   </span>
 
+  <% if(!is_uploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="invalidCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
       &lt;
@@ -160,5 +162,5 @@
       &gt;
     </button>
   </span>
+  <% } %>
 </div>
-<div class="wb-upload-view"></div>
