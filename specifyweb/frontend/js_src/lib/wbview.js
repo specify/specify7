@@ -123,17 +123,19 @@ const WBView = Backbone.View.extend({
     });
 
     /*
-     * If DS is uploaded, you will see appropriate label and cells won't be
-     * editable.
-     * Though, you are still able to sort and rearrange columns
+     * Add the "Uploaded" label next to DS Name
+     * Disable cell editing
+     * Disable adding/removing rows
+     * Allow column sort
+     * Allow column move
      * */
     this.uploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    /*
-     * Disables column sort/move. Disables adding removing rows
-     * */
-    this.readOnly = this.uploaded;
+    // Disallow all editing while this dialog is open
     this.uploadedView = undefined;
+    // Disallow all editing while this dialog is open
+    this.coordinateConverterView = undefined;
+
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.refreshInitiatorAborted = refreshInitiatorAborted;
     this.ambiguousMatches = [];
@@ -249,7 +251,9 @@ const WBView = Backbone.View.extend({
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
-          height: ()=>console.log('heightCalc') || this.$el.find('.wb-spreadsheet').height(),
+          height: () =>
+            console.log('heightCalc') ||
+            this.$el.find('.wb-spreadsheet').height(),
           columns: this.dataset.columns.map((__, i) => ({
             data: i,
             ...getDefaultCellMeta(),
@@ -309,27 +313,62 @@ const WBView = Backbone.View.extend({
             items: this.uploaded
               ? {}
               : {
-                  row_above: 'row_above',
-                  row_below: 'row_below',
-                  remove_row: 'remove_row',
+                  row_above: {
+                    disabled: () =>
+                      this.uploaded ||
+                      this.uploadedView ||
+                      this.coordinateConverterView,
+                  },
+                  row_below: {
+                    disabled: () =>
+                      this.uploaded ||
+                      this.uploadedView ||
+                      this.coordinateConverterView,
+                  },
+                  remove_row: {
+                    disabled: () =>
+                      this.uploaded ||
+                      this.uploadedView ||
+                      this.coordinateConverterView,
+                  },
                   disambiguate: {
                     name: WbText.disambiguate,
-                    disabled: () => !this.isAmbiguousCell(),
+                    disabled: () =>
+                      this.uploaded ||
+                      this.uploadedView ||
+                      this.coordinateConverterView ||
+                      !this.isAmbiguousCell(),
                     callback: (__, selection) =>
                       this.disambiguateCell(selection),
                   },
                   separator_1: '---------',
-                  fill_down: this.wbutils.fillCellsContextMenuItem(
-                    WbText.fillDown,
-                    this.wbutils.fillDown
-                  ),
-                  fill_up: this.wbutils.fillCellsContextMenuItem(
-                    WbText.fillUp,
-                    this.wbutils.fillUp
-                  ),
+                  fill_down: {
+                    disabled: () =>
+                      this.uploaded ||
+                      this.uploadedView ||
+                      this.coordinateConverterView,
+                    callback: this.wbutils.fillCellsContextMenuItem(
+                      WbText.fillDown,
+                      this.wbutils.fillDown
+                    ),
+                  },
+                  fill_up: {
+                    disabled: () =>
+                      this.uploaded ||
+                      this.uploadedView ||
+                      this.coordinateConverterView,
+                    callback: this.wbutils.fillCellsContextMenuItem(
+                      WbText.fillUp,
+                      this.wbutils.fillUp
+                    ),
+                  },
                   separator_2: '---------',
-                  undo: 'undo',
-                  redo: 'redo',
+                  undo: {
+                    disabled: () => this.uploaded || this.uploadedView,
+                  },
+                  redo: {
+                    disabled: () => this.uploaded || this.uploadedView,
+                  },
                 },
           },
           licenseKey: 'non-commercial-and-evaluation',
@@ -338,8 +377,6 @@ const WBView = Backbone.View.extend({
           afterChange: this.afterChange.bind(this),
           beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
-          beforeCreateRow: () => !this.readOnly,
-          beforeRemoveRow: () => !this.readOnly,
           beforeCreateRow: this.beforeCreateRow.bind(this),
           beforeRemoveRow: this.beforeRemoveRow.bind(this),
           beforeColumnSort: this.beforeColumnSort.bind(this),
@@ -712,7 +749,7 @@ const WBView = Backbone.View.extend({
      * direction
      * */
 
-    if (this.readOnly) return false;
+    if (this.uploadedView || this.coordinateConverterView) return false;
 
     if (!this.mappings || this.sortConfigIsSet) return true;
 
@@ -809,10 +846,16 @@ const WBView = Backbone.View.extend({
     );
   },
   beforeColumnMove(_columnIndexes, startPosition, endPosition) {
-    // An ugly fix for jQuery dialogs conflicting with HOT
     return (
-      !this.readOnly &&
-      (typeof endPosition !== 'undefined' || this.hotIsReady === false)
+      // Don't allow moving columns when readOnly
+      !this.uploadedView &&
+      !this.coordinateConverterView &&
+      // Don't allow pointless column moves
+      startPosition !==
+        endPosition(
+          // An ugly fix for jQuery dialogs conflicting with HOT
+          typeof endPosition !== 'undefined' || this.hotIsReady === false
+        )
     );
   },
   afterColumnMove(_columnIndexes, _startPosition, endPosition) {
@@ -1168,18 +1211,18 @@ const WBView = Backbone.View.extend({
     if (!this.dataset.rowresults || typeof this.uploadedView !== 'undefined')
       return;
 
-    if(this.liveValidationStack.length !== 0){
+    if (this.liveValidationStack.length !== 0) {
       const dialog = $(`<div>
         ${WbText.unavailableWhileValidating}
       </div>`).dialog({
         title: WbText.results,
         modal: false,
-        close: ()=>dialog.dialog('destroy'),
+        close: () => dialog.dialog('destroy'),
         buttons: [
           {
             text: WbText.close,
-            click: ()=>dialog.dialog('destroy'),
-          }
+            click: () => dialog.dialog('destroy'),
+          },
         ],
       });
       return;
@@ -1985,7 +2028,7 @@ const WBView = Backbone.View.extend({
           : visualCol;
 
       const [toVisualRow, toVisualColumn] =
-        this.wbutils.getToVisualConvertors();
+        this.wbutils.getToVisualConverters();
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {

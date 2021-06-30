@@ -172,7 +172,7 @@ module.exports = Backbone.View.extend({
     )}`;
     this.el.classList.toggle(cssClassName);
   },
-  getToVisualConvertors() {
+  getToVisualConverters() {
     const toVisualRow = Array.from(
       { length: this.wbview.data.length },
       (_, physicalRow) => this.wbview.hot.toVisualRow(physicalRow)
@@ -183,7 +183,7 @@ module.exports = Backbone.View.extend({
     );
     return [toVisualRow, toVisualColumn];
   },
-  getToPhysicalConvertors() {
+  getToPhysicalConverters() {
     const toPhysicalRow = Array.from(
       { length: this.wbview.data.length },
       (_, visualRow) => this.wbview.hot.toPhysicalRow(visualRow)
@@ -235,7 +235,7 @@ module.exports = Backbone.View.extend({
       this.wbview.getHotPlugin('autoColumnSize').getFirstVisibleColumn() - 3;
     const lastVisibleColumn =
       this.wbview.getHotPlugin('autoColumnSize').getLastVisibleColumn() + 3;
-    const [toPhysicalRow, toPhysicalColumn] = this.getToPhysicalConvertors();
+    const [toPhysicalRow, toPhysicalColumn] = this.getToPhysicalConverters();
     for (let visualRow = 0; visualRow < this.wbview.data.length; visualRow++) {
       const physicalRow = toPhysicalRow[visualRow];
       for (
@@ -484,19 +484,19 @@ module.exports = Backbone.View.extend({
 
     const leafletButton = this.el.getElementsByClassName('wb-leafletmap')[0];
     const geoLocaleButton = this.el.getElementsByClassName('wb-geolocate')[0];
-    const coordinateConvertorButton = this.el.getElementsByClassName(
+    const coordinateConverterButton = this.el.getElementsByClassName(
       'wb-convert-coordinates'
     )[0];
 
     if (this.localityColumns.length !== 0) {
       leafletButton.disabled = false;
       if (this.wbview.uploaded) {
-        [geoLocaleButton, coordinateConvertorButton].map((button) =>
+        [geoLocaleButton, coordinateConverterButton].map((button) =>
           button.setAttribute('title', WbText.unavailableWhenUploaded)
         );
       } else {
         geoLocaleButton.disabled = false;
-        coordinateConvertorButton.disabled = false;
+        coordinateConverterButton.disabled = false;
       }
     }
   },
@@ -739,7 +739,7 @@ module.exports = Backbone.View.extend({
     });
   },
   showCoordinateConversion() {
-    if ($('.lat-long-format-options').length !== 0) return;
+    if (typeof this.wbview.coordinateConverterView !== 'undefined') return;
 
     // List of coordinate columns
     const columnsToWorkWith = Object.keys(
@@ -811,7 +811,6 @@ module.exports = Backbone.View.extend({
       .map((className) => this.el.getElementsByClassName(className)[0])
       .map((button) => [button, button.disabled]);
     const originalReadOnlyState = this.wbview.readOnly;
-    this.wbview.readOnly = true;
     this.wbview.hot.updateSettings({
       readOnly: true,
     });
@@ -830,8 +829,12 @@ module.exports = Backbone.View.extend({
     let handleOptionChangeBind = undefined;
 
     function closeDialog() {
-      dialog[0].removeEventListener('change', handleOptionChangeBind);
-      dialog.remove();
+      this.wbview.coordinateConverterView[0].removeEventListener(
+        'change',
+        handleOptionChangeBind
+      );
+      this.wbview.coordinateConverterView.remove();
+      this.wbview.coordinateConverterView = undefined;
       cleanUp.call(this);
     }
 
@@ -877,7 +880,7 @@ module.exports = Backbone.View.extend({
       closeDialog.call(this);
     }
 
-    const dialog = $(
+    this.wbview.coordinateConverterView = $(
       `<ul class="lat-long-format-options">
         ${Object.values(options)
           .map(
@@ -922,12 +925,16 @@ module.exports = Backbone.View.extend({
     });
 
     const handleOptionChange = () => {
-      const includeSymbols = dialog
+      const includeSymbols = this.wbview.coordinateConverterView
         .find('input[name="includesymbols"]')
         .is(':checked');
-      const applyToAll = dialog.find('input[name="applyToAll"]').is(':checked');
+      const applyToAll = this.wbview.coordinateConverterView
+        .find('input[name="applyToAll"]')
+        .is(':checked');
 
-      const selectedOption = dialog.find('input[type="radio"]:checked');
+      const selectedOption = this.wbview.coordinateConverterView.find(
+        'input[type="radio"]:checked'
+      );
       if (selectedOption.length === 0) return;
 
       const optionValue = selectedOption.attr('value');
@@ -979,6 +986,9 @@ module.exports = Backbone.View.extend({
       }
     };
     handleOptionChangeBind = handleOptionChange.bind(this);
-    dialog[0].addEventListener('change', handleOptionChangeBind);
+    this.wbview.coordinateConverterView[0].addEventListener(
+      'change',
+      handleOptionChangeBind
+    );
   },
 });
