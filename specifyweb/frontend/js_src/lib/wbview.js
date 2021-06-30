@@ -286,6 +286,11 @@ const WBView = Backbone.View.extend({
             indicators: false,
             copyPasteEnabled: false,
           },
+          hiddenRows: {
+            columns: [],
+            indicators: false,
+            copyPasteEnabled: false,
+          },
           minSpareRows: 1,
           comments: {
             displayDelay: 100,
@@ -1158,11 +1163,135 @@ const WBView = Backbone.View.extend({
 
   // Tools
   displayUploadedView() {
-    if (!this.dataset.rowresults) return;
+    // TODO: Render record id's `i` button inside of cells
 
-    const uploadView = this.$el.find('.wb-upload-view')[0];
+    if (!this.dataset.rowresults || typeof this.uploadedView !== 'undefined')
+      return;
 
-    if (typeof this.uploadedView !== 'undefined') return;
+    if(this.liveValidationStack.length !== 0){
+      const dialog = $(`<div>
+        ${WbText.unavailableWhileValidating}
+      </div>`).dialog({
+        title: WbText.results,
+        modal: false,
+        close: ()=>dialog.dialog('destroy'),
+        buttons: [
+          {
+            text: WbText.close,
+            click: ()=>dialog.dialog('destroy'),
+          }
+        ],
+      });
+      return;
+    }
+
+    const effects = [];
+    const effectsCleanup = [];
+
+    const elementsToDisable = [
+      ...[
+        'wb-data-check',
+        'wb-replace-value',
+        'wb-convert-coordinates',
+        'wb-geolocate',
+      ].map((className) => this.el.getElementsByClassName(className)[0]),
+      ...Array.from(document.getElementsByClassName('wb-navigation-section'))
+        .filter((element) =>
+          ['modifiedCells', 'invalidCells'].includes(
+            element.getAttribute('data-navigation-type')
+          )
+        )
+        .flatMap((element) =>
+          Array.from(element.getElementsByClassName('wb-cell-navigation'))
+        ),
+    ].map((element) => [element, element.getAttribute('title')]);
+
+    effects.push(() =>
+      elementsToDisable.forEach(([element]) => {
+        element.disabled = true;
+        element.setAttribute('title', WbText.unavailableWhileViewingResults);
+      })
+    );
+    effectsCleanup.push(() =>
+      elementsToDisable.forEach(([element, title]) => {
+        element.disabled = false;
+        element.setAttribute('title', title);
+      })
+    );
+
+    const isReadOnly = this.hot.getSettings().readOnly;
+    effects.push(() => this.hot.updateSettings({ readOnly: true }));
+    effectsCleanup.push(() =>
+      this.hot.updateSettings({ readOnly: isReadOnly })
+    );
+
+    const initialHiddenRows = this.getHotPlugin('hiddenRows').getHiddenRows();
+    const initialHiddenCols =
+      this.getHotPlugin('hiddenColumns').getHiddenColumns();
+    const rowsToInclude = new Set();
+    const colsToInclude = new Set();
+    this.cellMeta.forEach((rowMeta, physicalRow) =>
+      rowMeta.forEach(({ isNew }, physicalCol) => {
+        if (!isNew) return;
+        rowsToInclude.add(physicalRow);
+        colsToInclude.add(physicalCol);
+      })
+    );
+    const rowsToHide = Array.from(
+      { length: this.data.length },
+      (_, physicalRow) => physicalRow
+    ).filter(
+      (physicalRow) =>
+        !rowsToInclude.has(physicalRow) &&
+        !initialHiddenRows.includes(physicalRow)
+    );
+    const colsToHide = Array.from(
+      { length: this.dataset.columns.length },
+      (_, physicalCol) => physicalCol
+    ).filter(
+      (physicalCol) =>
+        !colsToInclude.has(physicalCol) &&
+        !initialHiddenCols.includes(physicalCol)
+    );
+
+    effects.push(() => {
+      this.getHotPlugin('hiddenRows').hideRows(rowsToHide);
+      this.getHotPlugin('hiddenColumns').hideColumns(colsToHide);
+    });
+    effectsCleanup.push(() => {
+      this.getHotPlugin('hiddenRows').showRows(
+        rowsToHide.filter(
+          (physicalRow) => !initialHiddenRows.includes(physicalRow)
+        )
+      );
+      this.getHotPlugin('hiddenColumns').showColumns(
+        colsToHide.filter(
+          (physicalCol) => !initialHiddenCols.includes(physicalCol)
+        )
+      );
+    });
+
+    const newCellsAreHidden = this.el.classList.contains('wb-hide-new-cells');
+    effects.push(() => this.el.classList.remove('wb-hide-new-cells'));
+    effectsCleanup.push(() =>
+      newCellsAreHidden ? this.el.classList.add('wb-hide-new-cells') : undefined
+    );
+
+    effects.push(() => this.el.classList.add('wb-show-upload-results'));
+    effectsCleanup.push(() =>
+      this.el.classList.remove('wb-show-upload-results')
+    );
+
+    const runEffects = () =>
+      [...effects, this.hot.render.bind(this.hot)].forEach((effect) =>
+        effect()
+      );
+    const runCleanup = () =>
+      [...effectsCleanup, this.hot.render.bind(this.hot)].forEach(
+        (effectCleanup) => effectCleanup()
+      );
+
+    runEffects();
 
     uploadView.innerHTML = '<div></div>';
     const container = uploadView.children[0];
@@ -1171,7 +1300,10 @@ const WBView = Backbone.View.extend({
       dataset: this.dataset,
       hot: this.hot,
       el: container,
-      removeCallback: () => (this.uploadedView = undefined),
+      removeCallback: () => {
+        this.uploadedView = undefined;
+        runCleanup();
+      },
     }).render();
   },
   openPlan() {

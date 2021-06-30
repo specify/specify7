@@ -136,9 +136,13 @@ const wbText: Dictionary = {
   wbValidateUnavailable:
     'Please define an Upload Plan before Validating the Data Set',
   unavailableWhileEditing: 'This action requires all changes to be saved.',
+  unavailableWhileViewingResults:
+    'This action is unavailable while viewing the upload results',
+  unavailableWhileValidating:
+    'This action is unavailable while Data Check is in progress',
+  unavailableWhenUploaded: 'This tool does not work with uploaded Data Sets',
   dataSetDeletedOrNotFound: 'Data Set was deleted by another session.',
   dataSetNotFoundPageTitle: 'Page Not Found',
-  unavailableWhenUploaded: 'This tool does not work with uploaded Data Sets',
   includeDmsSymbols: 'Include DMS Symbols',
 } as const;
 
