@@ -75,8 +75,8 @@ schema = {
                             'items': {
                                 'type': 'array',
                                 'items': [
+                                    { 'type': 'string', 'description': 'Description of the issue.' },
                                     { 'type': 'string', 'description': 'The dataset column name.' },
-                                    { 'type': 'string', 'description': 'Description of the issue.' }
                                 ],
                             }
                         }
