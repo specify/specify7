@@ -334,9 +334,9 @@ const WBView = Backbone.View.extend({
           beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
           beforeCreateRow: () => !this.readOnly,
-          afterCreateRow: this.afterCreateRow.bind(this),
           beforeRemoveRow: () => !this.readOnly,
-          afterRemoveRow: this.afterRemoveRow.bind(this),
+          beforeCreateRow: this.beforeCreateRow.bind(this),
+          beforeRemoveRow: this.beforeRemoveRow.bind(this),
           beforeColumnSort: this.beforeColumnSort.bind(this),
           afterColumnSort: this.afterColumnSort.bind(this),
           beforeColumnMove: this.beforeColumnMove.bind(this),
@@ -537,7 +537,7 @@ const WBView = Backbone.View.extend({
 
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
-    const issues = this.cellMeta[physicalRow][physicalCol]['issues'] ?? [];
+    const issues = this.cellMeta[physicalRow]?.[physicalCol]?.['issues'] ?? [];
     const newIssues = [
       ...new Set([
         ...(isValid ? [] : [WbText.picklistValidationFailed(value)]),
@@ -640,7 +640,7 @@ const WBView = Backbone.View.extend({
           .map(({ physicalRow }) => physicalRow)
       ).forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
-  afterCreateRow(visualRowStart, amount, source) {
+  beforeCreateRow(visualRowStart, amount, source) {
     /*
      * This may be called before full initialization of the workbench because
      * of the minSpareRows setting in HOT. Thus, be sure to check if
@@ -649,6 +649,9 @@ const WBView = Backbone.View.extend({
      * Also, I don't think this is ever called with amount > 1.
      * Even if multiple new rows where created at once (e.x on paste), HOT calls
      * this hook one row at a time
+     *
+     * Also, this function needs to be called before afterValidate, thus I used
+     * beforeCreateRow, instead of afterCreateRow
      *
      * */
 
@@ -672,8 +675,10 @@ const WBView = Backbone.View.extend({
       ];
     });
     if (this.hotIsReady && source !== 'auto') this.spreadSheetChanged();
+
+    return true;
   },
-  afterRemoveRow(visualRowStart, amount, source) {
+  beforeRemoveRow(visualRowStart, amount, source) {
     const removedRows = Array.from({ length: amount }, (_, index) =>
       this.hot.toPhysicalRow(visualRowStart + index)
     );
@@ -690,6 +695,8 @@ const WBView = Backbone.View.extend({
       this.spreadSheetChanged();
       void this.updateCellInfoStats();
     }
+
+    return true;
   },
   beforeColumnSort(currentSortConfig, newSortConfig) {
     this.flushIndexedCellData = true;
