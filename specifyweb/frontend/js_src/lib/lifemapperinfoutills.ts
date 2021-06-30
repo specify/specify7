@@ -1,6 +1,8 @@
 import type { IR, RA, RR } from './components/wbplanview';
 import type { OccurrenceCountRecord } from './lifemapperinforeducer';
 
+const s2nServer = 'https://broker.spcoco.org';
+
 export const fetchLocalScientificName = async (
   model: any,
   defaultValue = ''
@@ -20,13 +22,13 @@ export const fetchLocalScientificName = async (
   });
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
-  `https://notyeti-192.lifemapper.org/api/v1/occ/${occurrenceGuid}?count_only=0`;
+  `${s2nServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
 export const formatOccurrenceCountRequest = (
   dataAggregatorName: string,
   occurrenceScientificName: string
 ): string =>
-  `https://notyeti-192.lifemapper.org/api/v1/name/${encodeURIComponent(
+  `${s2nServer}/api/v1/name/${encodeURIComponent(
     occurrenceScientificName
   )}?provider=${dataAggregatorName}&count_only=1`;
 
@@ -41,12 +43,12 @@ export const formatIconRequest = (
   providerName: BadgeName,
   icon_status: 'active' | 'inactive' | 'hover'
 ): string =>
-  `https://notyeti-192.lifemapper.org/api/v1/badge?provider=${ICON_NAMES[providerName]}&icon_status=${icon_status}`;
+  `${s2nServer}/api/v1/badge?provider=${ICON_NAMES[providerName]}&icon_status=${icon_status}`;
 
 export const formatOccurrenceMapRequest = (
   occurrenceScientificName: string
 ): string =>
-  `https://broker.spcoco.org/api/v1/map/${encodeURIComponent(
+  `${s2nServer}/api/v1/map/${encodeURIComponent(
     occurrenceScientificName
   )}?provider=lm`;
 
