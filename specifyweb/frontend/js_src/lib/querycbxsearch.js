@@ -44,13 +44,13 @@ module.exports = Backbone.View.extend({
                 width: 'auto',
                 buttons: [
                     {
+                        text: "Cancel",
+                        click: function() { $(this).dialog("close"); }
+                    },
+                    {
                         text: "Search",
                         click: _.bind(this.search, this)
                     },
-                    {
-                        text: "Cancel",
-                        click: function() { $(this).dialog("close"); }
-                    }
                 ],
                 open() {
                     $('input:text', this).first().focus();

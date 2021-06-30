@@ -182,10 +182,10 @@ const WBView = Backbone.View.extend({
             title: WbText.noUploadPlanDialogTitle,
             modal: true,
             buttons: {
-              [WbText.create]: this.openPlan.bind(this),
               [WbText.cancel]: function () {
                 $(this).dialog('close');
               },
+              [WbText.create]: this.openPlan.bind(this),
             },
           });
           this.$('.wb-validate, .wb-data-check')
@@ -1433,11 +1433,11 @@ const WBView = Backbone.View.extend({
             dialog.remove();
           },
           buttons: {
-            [WbText.upload]: () => {
-              this.startUpload(mode);
+            [WbText.cancel]() {
               dialog.remove();
             },
-            [WbText.cancel]() {
+            [WbText.upload]: () => {
+              this.startUpload(mode);
               dialog.remove();
             },
           },

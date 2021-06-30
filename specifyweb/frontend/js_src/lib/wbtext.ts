@@ -1,7 +1,5 @@
 import type { IR, RA } from './components/wbplanview';
 
-const strip = (value: string): string => value.trim().replace(/ {2,}/, ' ');
-
 type Dictionary = IR<string | ((...args: RA<never>) => string)>;
 
 const wbText: Dictionary = {
@@ -75,21 +73,22 @@ const wbText: Dictionary = {
   revertChangesDialogTitle: `
     Reverting Unsaved Changes`,
   revertChangesDialogMessage: `
-    Revert Changes? This action will discard all changes to the Data Set since the last save.`,
+    Revert Changes? This action will discard all changes to the Data Set since
+    the last save.`,
   savingDialogTitle: 'Saving',
   onExitDialogMessage: 'Changes to this Data Set have not been saved.',
 
   // Validation
   picklistValidationFailed: (value: string): string =>
-    strip(
-      `${value ? `"${value}"` : ''} is not a legal value in this picklist
-      field. Click on the arrow to choose among available options.`
-    ),
+    [
+      `${value ? `"${value}"` : ''} is not a legal value in this picklist `,
+      'field. Click on the arrow to choose among available options.',
+    ].join(''),
   noMatchErrorMessage: 'No matching record for must-match table.',
-  matchedMultipleErrorMessage: strip(
-    `This value matches two or more existing database records and must
-    be manually disambiguated before uploading.'`
-  ),
+  matchedMultipleErrorMessage: [
+    'This value matches two or more existing database records and must ',
+    'be manually disambiguated before uploading.',
+  ].join(''),
   validationNoErrorsDialogTitle: 'Validation Completed with No Errors',
   validationNoErrorsDialogMessage: `
     Validation found no errors in the Data Set. It is
