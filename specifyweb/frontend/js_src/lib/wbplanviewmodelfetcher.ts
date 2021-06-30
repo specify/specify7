@@ -365,6 +365,27 @@ export default async function (): Promise<void> {
       )
         return;
 
+      if (tableName === 'preptype' && fieldName === 'name')
+        fetchPickListsQueue.push(
+          new Promise(
+            (resolve) =>
+              void fetch('/api/specify/preptype/?domainfilter=true&limit=100')
+                .then(async (response) => response.json())
+                .then(
+                  (data: {
+                    readonly objects: RA<{ readonly name: string }>;
+                  }) => {
+                    fieldData.pickList = {
+                      readOnly: false,
+                      items: data.objects.map(({ name }) => name),
+                    };
+                    resolve();
+                  }
+                )
+                .catch(console.error)
+          )
+        );
+
       fields[fieldName] = fieldData;
     });
 
