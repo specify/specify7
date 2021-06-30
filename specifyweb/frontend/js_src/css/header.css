@@ -136,7 +136,7 @@ nav img {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    column-gap: 0.2rem;
+    column-gap: 0.4rem;
 }
 
 #user-tools .login-logout {
@@ -150,16 +150,14 @@ nav img {
     color: #000;
 }
 
-#user-tools .collection-select {
+#user-tools .collection-selector {
     background: #fff;
     border: none;
     color: #555;
-    font-weight: 800;
     padding: 4px 0;
-    margin-left: 2px;
     font-size: 12px;
     vertical-align: baseline;
-    width: 200px;
+    flex: 1;
 }
 
 #user-tools .collection-selector:hover,
@@ -167,11 +165,14 @@ nav img {
     color: #f4763d;
 }
 
+#express-search {
+    flex: 1;
+}
+
 #express-search .express-search-query {
-    background: #f1f2f2;
     border: 1px solid #aaa;
     font-size: 14px;
-    width: 150px;
+    width: 100%;
 }
 
 .ui-autocomplete {
