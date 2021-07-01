@@ -7,6 +7,7 @@ from django import http
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.utils import OperationalError
 from django.views.decorators.http import require_GET, require_POST, \
     require_http_methods
 from jsonschema import validate  # type: ignore
@@ -763,6 +764,19 @@ def status(request, ds_id: int) -> http.HttpResponse:
                     }
                 }
             },
+            "503": {
+                "description": "Indicates the process could not be terminated.",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                'timed out waiting for requested task to terminate'
+                            ]
+                        }
+                    }
+                }
+            },
         }
     },
 }, components=open_api_components)
@@ -785,7 +799,18 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     }[ds.uploaderstatus['operation']]
     result = task.AsyncResult(ds.uploaderstatus['taskid']).revoke(terminate=True)
 
-    models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
+    try:
+        models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
+    except OperationalError as e:
+        if e.args[0] == 1205: # (1205, 'Lock wait timeout exceeded; try restarting transaction')
+            return http.HttpResponse(
+                'timed out waiting for requested task to terminate',
+                status=503,
+                content_type='text/plain'
+            )
+        else:
+            raise
+
     return http.HttpResponse('ok', content_type='text/plain')
 
 @openapi(schema={
