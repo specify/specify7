@@ -123,7 +123,7 @@ function Dialog({
                   [wbText('createNew')]: createEmptyDataSet,
                 }
               : {}),
-            Cancel: handleClose,
+            [commonText('cancel')]: handleClose,
           },
         }}
       >

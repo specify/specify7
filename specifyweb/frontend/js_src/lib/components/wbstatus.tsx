@@ -15,7 +15,7 @@ type MainState = State<
   'MainState',
   {
     status: Status;
-    wasAborted: boolean;
+    aborted: boolean | 'pending' | 'failed';
   }
 >;
 
@@ -23,7 +23,10 @@ type States = MainState;
 
 type RefreshStatusAction = Action<'RefreshStatusAction', { status: Status }>;
 
-type AbortAction = Action<'AbortAction'>;
+type AbortAction = Action<
+  'AbortAction',
+  { aborted: boolean | 'pending' | 'failed' }
+>;
 
 type Actions = RefreshStatusAction | AbortAction;
 
@@ -32,9 +35,9 @@ const reducer = generateReducer<States, Actions>({
     ...state,
     status: action.status,
   }),
-  AbortAction: ({ state }) => ({
+  AbortAction: ({ state, action }) => ({
     ...state,
-    wasAborted: true,
+    aborted: action.aborted,
   }),
 });
 
@@ -72,7 +75,7 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'MainState',
     status: dataset.uploaderstatus,
-    wasAborted: false,
+    aborted: false,
   });
 
   React.useEffect(() => {
@@ -81,7 +84,10 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
       void $.get(`/api/workbench/status/${dataset.id}/`).done(
         (status: Status | null) => {
           if (destructorCalled) return;
-          if (status === null) handleFinished(state.wasAborted);
+          if (status === null)
+            handleFinished(
+              state.aborted === 'pending' || state.aborted === true
+            );
           else {
             dispatch({ type: 'RefreshStatusAction', status });
             setTimeout(fetchStatus, REFRESH_RATE);
@@ -92,7 +98,7 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
     return (): void => {
       destructorCalled = true;
     };
-  }, [state.wasAborted, dataset.id, handleFinished]);
+  }, [state.aborted, dataset.id, handleFinished]);
 
   const title = {
     validating: wbText('wbStatusValidationDialogTitle'),
@@ -106,6 +112,25 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
     unuploading: wbText('rollback'),
   }[state.status.uploaderstatus.operation];
 
+  if (state.aborted === 'failed')
+    return (
+      <ModalDialog
+        properties={{
+          title,
+          close: (): void => dispatch({ type: 'AbortAction', aborted: false }),
+          buttons: [
+            {
+              text: commonText('close'),
+              click: (): void =>
+                dispatch({ type: 'AbortAction', aborted: false }),
+            },
+          ],
+        }}
+      >
+        {wbText('wbStatusAbortFailed')(mappedOperation)}
+      </ModalDialog>
+    );
+
   let message;
   const current =
     typeof state.status?.taskinfo === 'object'
@@ -116,7 +141,8 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
       ? state.status.taskinfo?.total
       : 1;
 
-  if (state.status.taskstatus === 'PENDING')
+  if (state.aborted === 'pending') message = wbText('aborting');
+  else if (state.status.taskstatus === 'PENDING')
     message = wbText('wbStatusPendingDialogMessage')(mappedOperation);
   else if (state.status.taskstatus === 'PROGRESS') {
     if (current === total)
@@ -142,17 +168,36 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
       properties={{
         title,
         dialogClass: 'ui-dialog-no-close',
-        buttons: [
-          {
-            text: commonText('stop'),
-            click: (): void =>
-              void $.post(`/api/workbench/abort/${dataset.id}/`).done(() =>
-                dispatch({
-                  type: 'AbortAction',
-                })
-              ),
-          },
-        ],
+        buttons:
+          state.aborted === false
+            ? [
+                {
+                  text: commonText('stop'),
+                  click: (): void => {
+                    dispatch({
+                      type: 'AbortAction',
+                      aborted: 'pending',
+                    });
+                    $.post(`/api/workbench/abort/${dataset.id}/`)
+                      .done(() =>
+                        dispatch({
+                          type: 'AbortAction',
+                          aborted: true,
+                        })
+                      )
+                      .fail((jqXHR) => {
+                        if (jqXHR.status !== 503) return;
+                        // @ts-expect-error
+                        jqXHR.errorHandled = true;
+                        dispatch({
+                          type: 'AbortAction',
+                          aborted: 'failed',
+                        });
+                      });
+                  },
+                },
+              ]
+            : [],
       }}
     >
       <>

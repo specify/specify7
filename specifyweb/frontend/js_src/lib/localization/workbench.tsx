@@ -284,6 +284,9 @@ const wbText = createDictionary({
   wbStatusUnuploadDialogTitle: 'Data Set Rollback Status',
   wbStatusUploadDialogTitle: 'Data Set Upload Status',
   wbStatusValidationDialogTitle: 'Data Set Validation Status',
+  aborting: 'Aborting...',
+  wbStatusAbortFailed: (operationName: string) =>
+    `Failed aborting ${operationName}. Please try again later`,
   wbStatusOperationNoProgress: (operationName: string) => `${operationName}...`,
   wbStatusOperationProgress: (
     operationName: string,
