@@ -15,6 +15,7 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
+import leafletText from './localization/leaflet';
 import { capitalize } from './wbplanviewhelper';
 
 const DEFAULT_ZOOM = 5;
@@ -96,7 +97,7 @@ export async function showLeafletMap({
   leafletMapContainer.dialog({
     width: 900,
     height: 600,
-    title: 'GeoMap',
+    title: leafletText('geoMap'),
     close() {
       map.remove();
       $(this).remove();
@@ -273,11 +274,11 @@ export function addMarkersToMap(
   controlLayers.addOverlay(layerGroups.polygon, `${layerName} Polygons`);
   controlLayers.addOverlay(
     layerGroups.polygonBoundary,
-    `${layerName} Polygon Boundaries`
+    leafletText('polygonBoundaries')(layerName)
   );
   controlLayers.addOverlay(
     layerGroups.errorRadius,
-    `${layerName} Error Radius`
+    leafletText('errorRadius')(layerName)
   );
 }
 

@@ -5,6 +5,7 @@ const $ = require('jquery');
 const LocalityRecordDataExtractor = require('./localityrecorddataextractor.ts');
 const Leaflet = require('./leaflet.ts');
 const UIPlugin = require('./uiplugin.js');
+const leafletText = require('./localization/leaflet.tsx').default;
 
 module.exports = UIPlugin.extend(
   {
@@ -13,7 +14,7 @@ module.exports = UIPlugin.extend(
       click: 'click',
     },
     render() {
-      this.$el.attr('value', 'Show Map').prop('disabled', false);
+      this.$el.attr('value', leafletText('showMap')).prop('disabled', false);
       return this;
     },
     click(event_) {
@@ -23,9 +24,10 @@ module.exports = UIPlugin.extend(
       const long = this.model.get('longitude1');
 
       if (lat == undefined || long == undefined)
-        return $(`<div title="No coordinates">
-        Locality must have coordinates to be mapped.
+        return $(`<div>
+        ${leafletText('notEnoughInformationToMap')}
       </div>`).dialog({
+          title: leafletText('noCoordinates'),
           close() {
             $(this).remove();
           },
