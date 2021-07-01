@@ -1,5 +1,6 @@
 import type { IR, RA, RR } from './components/wbplanview';
 import type { OccurrenceCountRecord } from './lifemapperinforeducer';
+import lifemapperText from './localization/lifemapper';
 
 const s2nServer = 'https://broker.spcoco.org';
 
@@ -90,11 +91,11 @@ export const lifemapperLayerVariations: RR<
   { layerLabel: string; transparent: boolean }
 > = {
   raster: {
-    layerLabel: 'Projection',
+    layerLabel: lifemapperText('projection'),
     transparent: true,
   },
   vector: {
-    layerLabel: 'Occurrence Points',
+    layerLabel: lifemapperText('occurrencePoints'),
     transparent: true,
   },
 };

@@ -9,6 +9,7 @@ import type {
   FullAggregatorInfo,
 } from '../lifemapperinfoutills';
 import { formatIconRequest, sourceLabels } from '../lifemapperinfoutills';
+import lifemapperText from '../localization/lifemapper';
 import type { MessageTypes } from './lifemapperinfo';
 import { lifemapperMessagesMeta } from './lifemapperinfo';
 import type { RA } from './wbplanview';
@@ -61,13 +62,10 @@ export function Aggregator({
   return (
     <>
       {Object.keys(data.issues).length === 0 ? (
-        <p>
-          Record was indexed successfully and no data quality issues were
-          reported
-        </p>
+        <p>{lifemapperText('noIssuesDetected')}</p>
       ) : (
         <>
-          <h2>The following data quality issues were reported: </h2>
+          <h2>{lifemapperText('issuesDetected')}</h2>
           <ul className="lifemapper-source-issues-list">
             {Object.entries(data.issues).map(([issueKey, issueLabel]) => (
               <li key={issueKey} title={issueKey}>
@@ -81,7 +79,7 @@ export function Aggregator({
       {typeof data.occurrenceCount !== 'undefined' &&
         data.occurrenceCount.length > 0 && (
           <>
-            Number of occurrences of similar taxa records:
+            {lifemapperText('nameStrCount')}
             <ul className="lifemapper-source-issues-list">
               {data.occurrenceCount.map(
                 ({ scientificName, count, url }, index) => (
@@ -89,7 +87,7 @@ export function Aggregator({
                     <a target="_blank" href={url} rel="noreferrer nofollow">
                       {scientificName}{' '}
                     </a>
-                    (reported {count} times)
+                    {lifemapperText('reportedCountTimes')(count)}
                   </li>
                 )
               )}
@@ -142,7 +140,7 @@ export function LifemapperMap({
           map,
           layerGroup,
           lifemapperInfo.markers.flat(),
-          'Local Occurrence Points'
+          lifemapperText('localOccurrencePoints')
         );
         if (destructorCalled) destructor(map);
         else leafletMap = map;

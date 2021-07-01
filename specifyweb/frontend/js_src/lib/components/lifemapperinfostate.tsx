@@ -9,6 +9,8 @@ import type {
   FullAggregatorInfo,
 } from '../lifemapperinfoutills';
 import { AGGREGATOR_NAMES, sourceLabels } from '../lifemapperinfoutills';
+import commonText from '../localization/common';
+import lifemapperText from '../localization/lifemapper';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
 import type { RR } from './wbplanview';
@@ -94,7 +96,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             key={badgeName}
             properties={{
               title: isAggregator
-                ? `Record was indexed by ${sourceLabels[badgeName]}`
+                ? lifemapperText('aggregatorBadgeTitle')(
+                    sourceLabels[badgeName]
+                  )
                 : sourceLabels[badgeName],
               modal: false,
               close: (): void =>
@@ -115,7 +119,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                             }),
                         },
                         {
-                          text: `View occurrence at ${sourceLabels[badgeName]}`,
+                          text: lifemapperText('viewOccurrenceAt')(
+                            sourceLabels[badgeName]
+                          ),
                           click: (): void =>
                             void window.open(
                               state.aggregatorInfos[badgeName]!
@@ -136,7 +142,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             {isAggregator ? (
               <Aggregator data={state.aggregatorInfos[badgeName]!} />
             ) : typeof state.lifemapperInfo === 'undefined' ? (
-              <p>Loading...</p>
+              <p>${commonText('loading')}</p>
             ) : (
               <LifemapperMap
                 badgeName={badgeName}

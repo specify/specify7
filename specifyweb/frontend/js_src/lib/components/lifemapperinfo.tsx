@@ -18,6 +18,7 @@ import {
   sourceLabels,
 } from '../lifemapperinfoutills';
 import { getLocalityDataFromLocalityResource } from '../localityrecorddataextractor';
+import lifemapperText from '../localization/lifemapper';
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
 import schema from '../schema';
@@ -49,11 +50,11 @@ export const lifemapperMessagesMeta: RR<
 > = {
   errorDetails: {
     className: 'error-details',
-    title: 'Lifemapper Errors:',
+    title: lifemapperText('leafletDetailsErrorsTitle'),
   },
   infoSection: {
     className: 'info-section',
-    title: 'Projection Details:',
+    title: lifemapperText('leafletDetailsInfoTitle'),
   },
 } as const;
 
@@ -147,10 +148,10 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
     () => {
       if (state.type !== 'MainState') return;
       if (typeof state.remoteOccurrenceName === 'undefined') return;
-      let occurenceName = state.remoteOccurrenceName;
+      let occurrenceName = state.remoteOccurrenceName;
       if (state.remoteOccurrenceName === '') {
         if (!state.localOccurrenceName) return;
-        occurenceName = state.localOccurrenceName;
+        occurrenceName = state.localOccurrenceName;
       }
 
       Object.entries(state.aggregatorInfos)
@@ -162,7 +163,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
             typeof state.aggregatorInfos.occurrenceCount === 'undefined'
         )
         .forEach(([name]) => {
-          void $.get(formatOccurrenceCountRequest(name, occurenceName)).done(
+          void $.get(formatOccurrenceCountRequest(name, occurrenceName)).done(
             (response) =>
               dispatch({
                 type: 'OccurrenceCountLoadedAction',
@@ -291,7 +292,9 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
 
       const messages: RR<MessageTypes, string[]> = {
         errorDetails: [],
-        infoSection: [`Species Name: ${getOccurrenceName(1)}`],
+        infoSection: [
+          `${lifemapperText('speciesName')} ${getOccurrenceName(1)}`,
+        ],
       };
 
       $.get(formatOccurrenceMapRequest(getOccurrenceName(1))).done(
@@ -313,9 +316,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
           if (response.errors.length > 0)
             messages.errorDetails.push(...response.errors);
           else if (response.records[0]?.records.length === 0)
-            messages.errorDetails.push(
-              'No Species Distribution Model available.'
-            );
+            messages.errorDetails.push(lifemapperText('projectionNotFound'));
           else {
             layers = response.records[0].records
               .sort(
@@ -350,7 +351,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
             const modificationTime =
               response.records[0].records[0]['s2n:modtime'];
             messages.infoSection.push(
-              `Model Creation date: ${modificationTime}`
+              `${lifemapperText('modelCreationData')} ${modificationTime}`
             );
           }
 
