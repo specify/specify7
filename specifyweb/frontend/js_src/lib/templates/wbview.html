@@ -5,29 +5,33 @@
       <button class="magic-button wb-show-plan" style="display: none">
         Show Plan
       </button>
-      <button class="magic-button wb-plan"><%= WbText.uploadPlan %></button>
+      <button class="magic-button wb-plan"><%= wbText('uploadPlan') %></button>
       <% if(!is_uploaded) { %>
       <button class="magic-button wb-data-check" disabled="disabled">
-        <%= WbText.dataCheck %>
+        <%= wbText('dataCheck') %>
       </button>
       <button class="magic-button wb-validate" disabled="disabled">
-        <%= WbText.validate %>
+        <%= wbText('validate') %>
       </button>
       <% } %>
-      <button class="magic-button wb-show-toolkit"><%= WbText.tools %></button>
+      <button class="magic-button wb-show-toolkit">
+        <%= wbText('tools') %>
+      </button>
       <button class="magic-button wb-show-upload-view" disabled="disabled">
-        <%= WbText.results %>
+        <%= wbText('results') %>
       </button>
       <% if(is_uploaded && is_manager){ %>
-      <button class="magic-button wb-unupload"><%= WbText.rollback %></button>
+      <button class="magic-button wb-unupload">
+        <%= wbText('rollback') %>
+      </button>
       <% } else { %> <% if(is_manager){ %>
-      <button class="magic-button wb-upload"><%= WbText.upload %></button>
+      <button class="magic-button wb-upload"><%= wbText('upload') %></button>
       <% } %>
       <button class="magic-button wb-revert" disabled="disabled">
-        <%= WbText.revert %>
+        <%= wbText('revert') %>
       </button>
       <button class="magic-button wb-save" disabled="disabled">
-        <%= WbText.save %>
+        <%= wbText('save') %>
       </button>
       <% } %>
     </div>
@@ -35,36 +39,36 @@
   <div class="wb-toolkit" style="display: none">
     <div class="wb-toolkit-left">
       <button class="magic-button wb-change-data-set-owner">
-        <%= WbText.changeOwner %>
+        <%= wbText('changeOwner') %>
       </button>
       <button class="magic-button wb-export-data-set">
-        <%= WbText.export %>
+        <%= wbText('export') %>
       </button>
       <button class="magic-button wb-delete-data-set">
-        <%= WbText.delete %>
+        <%= wbText('delete') %>
       </button>
     </div>
     <div class="wb-toolkit-right">
       <button
         class="magic-button wb-convert-coordinates"
-        title="<%= WbText.unavailableWithoutLocality %>"
+        title="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
-        <%= WbText.convertCoordinates %>
+        <%= wbText('convertCoordinates') %>
       </button>
       <button
         class="magic-button wb-geolocate"
-        title="<%= WbText.unavailableWithoutLocality %>"
+        title="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
-        <%= WbText.geoLocate %>
+        <%= wbText('geoLocate') %>
       </button>
       <button
         class="magic-button wb-leafletmap"
-        title="<%= WbText.unavailableWithoutLocality %>"
+        title="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
-        <%= WbText.geoMap %>
+        <%= wbText('geoMap') %>
       </button>
     </div>
   </div>
@@ -101,7 +105,7 @@
       &lt;
     </button>
     <span class="wb-navigation-text">
-      <%= WbText.searchResults %> (
+      <%= wbText('searchResults') %> (
       <span class="wb-navigation-position">0</span>
       /
       <span class="wb-navigation-total">0</span>
@@ -118,7 +122,7 @@
       &lt;
     </button>
     <span class="wb-navigation-text">
-      <%= WbText.modifiedCells %> (
+      <%= wbText('modifiedCells') %> (
       <span class="wb-navigation-position">0</span>
       /
       <span class="wb-navigation-total">0</span>
@@ -135,7 +139,7 @@
       &lt;
     </button>
     <span class="wb-navigation-text">
-      <%= WbText.newCells %> (
+      <%= wbText('newCells') %> (
       <span class="wb-navigation-position">0</span>
       /
       <span class="wb-navigation-total">0</span>
@@ -152,7 +156,7 @@
       &lt;
     </button>
     <span class="wb-navigation-text">
-      <%= WbText.errorCells %> (
+      <%= wbText('errorCells') %> (
       <span class="wb-navigation-position">0</span>
       /
       <span class="wb-navigation-total">0</span>

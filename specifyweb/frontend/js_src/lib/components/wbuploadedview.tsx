@@ -1,9 +1,10 @@
 import '../../css/wbuploaded.css';
 
 import React from 'react';
-import dataModelStorage from '../wbplanviewmodel';
 
-import WbText from '../wbtext';
+import commonText from '../localization/common';
+import wbText from '../localization/workbench';
+import dataModelStorage from '../wbplanviewmodel';
 import { Icon } from './customselectelement';
 import createBackboneView from './reactbackboneextend';
 import type { IR } from './wbplanview';
@@ -45,12 +46,14 @@ function WbUploadedView({
   return (
     <>
       <h2>
-        {isUploaded ? WbText.uploadResults : WbText.potentialUploadResults}
+        {isUploaded
+          ? wbText('uploadResults')
+          : wbText('potentialUploadResults')}
       </h2>
       <p>
         {isUploaded
-          ? WbText.wbUploadedDescription
-          : WbText.wbUploadedPotentialDescription}
+          ? wbText('wbUploadedDescription')
+          : wbText('wbUploadedPotentialDescription')}
       </p>
       <div className="wb-uploaded-view-content">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
@@ -62,7 +65,7 @@ function WbUploadedView({
         ))}
       </div>
       <button type="button" className="magic-button" onClick={handleClose}>
-        {WbText.close}
+        {commonText('close')}
       </button>
     </>
   );

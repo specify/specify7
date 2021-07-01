@@ -1,30 +1,18 @@
-import type { IR, RA } from './components/wbplanview';
+import { createDictionary } from './utils';
 
-type Dictionary = IR<string | ((...args: RA<never>) => string)>;
-
-const wbText: Dictionary = {
+const wbText = createDictionary({
   // Buttons
-  cancel: 'Cancel',
-  create: 'Create',
-  close: 'Close',
-  apply: 'Apply',
-  applyAll: 'Apply All',
   rollback: 'Roll back',
   validate: 'Validate',
   upload: 'Upload',
   results: 'Results',
-  save: 'Save',
-  delete: 'Delete',
   disambiguate: 'Disambiguate',
   fillDown: 'Fill Down',
   fillUp: 'Fill Up',
   revert: 'Revert',
-  next: 'Next',
-  previous: 'Previous',
   geoLocate: 'GeoLocate',
   geoMap: 'GeoMap',
   uploadPlan: 'Upload Plan',
-  tools: 'Tools',
   dataCheck: 'Data Check',
   dataCheckOn: (queueLength: number): string =>
     `Data Check: On ${queueLength > 0 ? ` (${queueLength})` : ''}`,
@@ -152,6 +140,6 @@ const wbText: Dictionary = {
   wbUploadedDescription: 'The number of new records created in each table:',
   wbUploadedPotentialDescription:
     'The number of new records that would be created in each table:',
-} as const;
+});
 
 export default wbText;

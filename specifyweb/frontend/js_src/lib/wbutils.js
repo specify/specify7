@@ -12,7 +12,8 @@ const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch.tsx');
-const WbText = require('./wbtext.ts').default;
+const wbText = require('./localization/workbench.ts').default;
+const commonText = require('./localization/common.ts').default;
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',
@@ -491,7 +492,7 @@ module.exports = Backbone.View.extend({
       leafletButton.disabled = false;
       if (this.wbview.isUploaded) {
         [geoLocaleButton, coordinateConverterButton].map((button) =>
-          button.setAttribute('title', WbText.unavailableWhenUploaded)
+          button.setAttribute('title', wbText('unavailableWhenUploaded'))
         );
       } else {
         geoLocaleButton.disabled = false;
@@ -633,7 +634,7 @@ module.exports = Backbone.View.extend({
     const dialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
       width: 960,
       height: 740,
-      title: WbText.geoLocateDialogTitle,
+      title: wbText('geoLocateDialogTitle'),
       close: function () {
         $(this).remove();
         window.removeEventListener('message', handleGeolocateResult, false);
@@ -654,12 +655,12 @@ module.exports = Backbone.View.extend({
     const updateButtons = (localityIndex) =>
       dialog.dialog('option', 'buttons', [
         {
-          text: WbText.previous,
+          text: wbText('previous'),
           click: () => updateGeoLocate(localityIndex - 1),
           disabled: localityIndex === 0,
         },
         {
-          text: WbText.next,
+          text: wbText('next'),
           click: () => updateGeoLocate(localityIndex + 1),
           disabled:
             localityIndex + 1 >=
@@ -900,26 +901,26 @@ module.exports = Backbone.View.extend({
           <br>
           <label>
             <input type="checkbox" name="includesymbols">
-            ${WbText.includeDmsSymbols}
+            ${wbText('includeDmsSymbols')}
           </label>
         </li>
         <li>
           <label>
             <input type="checkbox" name="applyToAll" checked>
-            ${WbText.applyAll}
+            ${wbText('applyAll')}
           </label>
         </li>
       </ul>`
     ).dialog({
-      title: WbText.coordinateConverterDialogTitle,
+      title: wbText('coordinateConverterDialogTitle'),
       close: revertChanges.bind(this),
       width: 350,
       buttons: [
         {
-          text: WbText.cancel,
+          text: commonText('cancel'),
           click: revertChanges.bind(this),
         },
-        { text: WbText.apply, click: closeDialog.bind(this) },
+        { text: commonText('apply'), click: closeDialog.bind(this) },
       ],
     });
 
