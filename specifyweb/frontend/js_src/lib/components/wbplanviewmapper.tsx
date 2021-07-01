@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import wbText from '../localization/workbench';
 
 import type {
   ColumnOptions,
@@ -367,13 +368,8 @@ export default function WBPlanViewMapper(
                           }
                           fieldsData={{
                             ignoreWhenBlank: {
-                              fieldFriendlyName: 'Ignore when Blank',
-                              title:
-                                'When set to "Ignore when Blank" blank ' +
-                                'values in this column will not be ' +
-                                'considered for matching purposes. Blank ' +
-                                'values are ignored when matching even if a ' +
-                                'default value is provided',
+                              fieldFriendlyName: wbText('ignoreWhenBlank'),
+                              title: wbText('ignoreWhenBlankDescription'),
                               isEnabled: true,
                               isRequired: false,
                               isHidden: false,
@@ -382,11 +378,8 @@ export default function WBPlanViewMapper(
                                 'ignoreWhenBlank',
                             },
                             ignoreAlways: {
-                              fieldFriendlyName: 'Always ignore',
-                              title:
-                                'When set to ignoreAlways the value in ' +
-                                'this column will never be considered for ' +
-                                'matching purposes, only for uploading.',
+                              fieldFriendlyName: wbText('ignoreAlways'),
+                              title: wbText('ignoreAlwaysDescription'),
                               isEnabled: true,
                               isRequired: false,
                               isHidden: false,
@@ -394,11 +387,8 @@ export default function WBPlanViewMapper(
                                 columnOptions.matchBehavior === 'ignoreAlways',
                             },
                             ignoreNever: {
-                              fieldFriendlyName: 'Never ignore',
-                              title:
-                                'This column would always be considered ' +
-                                "for matching purposes, regardless of it's " +
-                                'value',
+                              fieldFriendlyName: wbText('ignoreNever'),
+                              title: wbText('ignoreNeverDescription'),
                               isEnabled: true,
                               isRequired: false,
                               isHidden: false,
@@ -427,7 +417,7 @@ export default function WBPlanViewMapper(
                             undefined
                           }
                         />{' '}
-                        Allow Null values
+                        {wbText('allowNullValues')}
                       </label>
                     ),
                   },
@@ -449,7 +439,7 @@ export default function WBPlanViewMapper(
                               undefined
                             }
                           />{' '}
-                          Use default value
+                          {wbText('useDefaultValue')}
                           {columnOptions.default !== null && ':'}
                         </label>
                         {typeof columnOptions.default === 'string' && (
@@ -472,7 +462,7 @@ export default function WBPlanViewMapper(
                         )}
                       </>
                     ),
-                    title: 'This value would be used in place of empty cells',
+                    title: wbText('useDefaultValueDescription'),
                   },
                 }),
               })}

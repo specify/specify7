@@ -1,6 +1,7 @@
 import '../../css/theme.css';
 
 import React from 'react';
+import wbText from '../localization/workbench';
 
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
@@ -34,7 +35,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
     <div>
       {!readonly && (
         <button className="magic-button" onClick={handleAddNewHeader}>
-          Add New Column
+          {wbText('addNewColumn')}
         </button>
       )}
       <label>
@@ -44,7 +45,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />{' '}
-        Reveal Hidden Form Fields
+        {wbText('revealHiddenFormFields')}
       </label>
     </div>
   );
@@ -65,29 +66,25 @@ export function ValidationResults(props: {
     <div style={{ position: 'absolute' }}>
       <ModalDialog
         properties={{
-          title: 'Upload Plan Mapping',
+          title: wbText('validationFailedDialogTitle'),
           modal: false,
           width: '40vw',
           height: 'auto',
           close: props.onDismissValidation,
           buttons: [
             {
-              text: 'Continue Editing',
+              text: wbText('continueEditing'),
               click: props.onDismissValidation,
             },
             {
-              text: 'Save Unfinished',
+              text: wbText('saveUnfinished'),
               click: props.onSave,
             },
           ],
         }}
       >
         <div className="validation-results">
-          <span>
-            This data mapping is missing one or more data fields required for
-            uploading by your Specify configuration. Add the missing mappings
-            shown or save this Upload Plan as unfinished.
-          </span>
+          <span>{wbText('validationFailedDialogDescription')}</span>
           {props.validationResults.map((fieldPath, index) => (
             <div
               className="v-center wbplanview-mapping-line-elements"
@@ -164,7 +161,7 @@ export function MappingView(props: {
             : undefined
         }
       >
-        Map
+        {wbText('map')}
         <span className="wbplanview-mapping-view-map-button-arrow">
           &#8594;
         </span>

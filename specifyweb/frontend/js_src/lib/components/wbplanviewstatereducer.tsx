@@ -5,6 +5,8 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import * as cache from '../cache';
+import commonText from '../localization/common';
+import wbText from '../localization/workbench';
 import type { MatchBehaviors } from '../uploadplantomappingstree';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
@@ -138,7 +140,7 @@ export const stateReducer = generateReducer<
       readonly={state.props.readonly}
       header={
         <WBPlanViewHeader
-          title="Select a Base Table"
+          title={wbText('selectBaseTable')}
           stateType={state.type}
           buttonsLeft={
             <button
@@ -151,7 +153,7 @@ export const stateReducer = generateReducer<
                 })
               }
             >
-              Choose Existing Plan
+              {wbText('chooseExistingPlan')}
             </button>
           }
           buttonsRight={
@@ -166,7 +168,7 @@ export const stateReducer = generateReducer<
                 })
               }
             >
-              Cancel
+              {commonText('cancel')}
             </button>
           }
         />
@@ -182,7 +184,7 @@ export const stateReducer = generateReducer<
               })
             }
           />{' '}
-          Show Advanced Tables
+          {wbText('showAdvancedTables')}
         </label>
       }
     >
@@ -267,14 +269,9 @@ export const stateReducer = generateReducer<
               state.props.readonly ? (
                 <span
                   className="v-center wbplanview-readonly-badge"
-                  title={`
-                  You are viewing the mappings for an uploaded dataset.
-                  To edit the mappings, rollback the upload or create a new
-                  dataset`
-                    .trim()
-                    .replace(/\s{2,}/g, ' ')}
+                  title={wbText('dataSetUploadedDescription')}
                 >
-                  Data Set uploaded. This Upload Plan cannot be changed
+                  {wbText('dataSetUploaded')}
                 </span>
               ) : (
                 <>
@@ -287,7 +284,7 @@ export const stateReducer = generateReducer<
                       })
                     }
                   >
-                    Change Table
+                    {wbText('changeTable')}
                   </button>
                   <button
                     type="button"
@@ -309,7 +306,7 @@ export const stateReducer = generateReducer<
                           })
                     }
                   >
-                    Rerun Automapper
+                    {wbText('reRunAutoMapper')}
                   </button>
                 </>
               )
@@ -326,7 +323,9 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  {state.showMappingView ? 'Hide' : 'Show'} Mapping Editor
+                  {state.showMappingView
+                    ? wbText('hideMappingEditor')
+                    : wbText('showMappingEditor')}
                 </button>
                 <button
                   type="button"
@@ -337,7 +336,7 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  Matching Logic
+                  {wbText('matchingLogic')}
                 </button>
                 {!state.props.readonly && (
                   <>
@@ -350,7 +349,7 @@ export const stateReducer = generateReducer<
                         })
                       }
                     >
-                      Clear Mappings
+                      {wbText('clearMappings')}
                     </button>
                     <button
                       type="button"
@@ -365,7 +364,7 @@ export const stateReducer = generateReducer<
                         })
                       }
                     >
-                      Validate Mappings
+                      {wbText('validateMappings')}
                     </button>
                   </>
                 )}
@@ -383,7 +382,9 @@ export const stateReducer = generateReducer<
                     });
                   }}
                 >
-                  {state.props.readonly ? 'Back' : 'Cancel'}
+                  {state.props.readonly
+                    ? commonText('back')
+                    : commonText('cancel')}
                 </button>
                 {!state.props.readonly && (
                   <button
@@ -392,7 +393,7 @@ export const stateReducer = generateReducer<
                     disabled={!state.changesMade}
                     onClick={(): void => handleSave(false)}
                   >
-                    Save
+                    {commonText('save')}
                   </button>
                 )}
               </>
@@ -535,15 +536,10 @@ export const stateReducer = generateReducer<
                   })
                 }
                 properties={{
-                  title: 'Empty Data Set detected',
+                  title: wbText('emptyDataSetDialogTitle'),
                 }}
               >
-                <span>
-                  This Data Set doesn&apos;t have any columns.
-                  <br />
-                  Press the &quot;Add New Column&quot; button at the bottom of
-                  the screen to add new columns.
-                </span>
+                {wbText('emptyDataSetDialogMessage')}
               </ModalDialog>
             )}
           {state.showAutomapperDialog && (
@@ -554,22 +550,30 @@ export const stateReducer = generateReducer<
                 })
               }
               properties={{
-                title: 'Rerun Automapper?',
-                buttons: {
-                  'Rerun Automapper': () =>
-                    state.dispatch({
-                      type: 'SelectTableAction',
-                      headers: state.lines.map(({ headerName }) => headerName),
-                      baseTableName: state.baseTableName,
-                    }),
-                  Cancel: () =>
-                    state.dispatch({
-                      type: 'CancelRerunAutomapperAction',
-                    }),
-                },
+                title: wbText('reRunAutoMapperDialogTitle'),
+                buttons: [
+                  {
+                    text: wbText('reRunAutoMapper'),
+                    click: () =>
+                      state.dispatch({
+                        type: 'SelectTableAction',
+                        headers: state.lines.map(
+                          ({ headerName }) => headerName
+                        ),
+                        baseTableName: state.baseTableName,
+                      }),
+                  },
+                  {
+                    text: commonText('cancel'),
+                    click: () =>
+                      state.dispatch({
+                        type: 'CancelRerunAutomapperAction',
+                      }),
+                  },
+                ],
               }}
             >
-              The Automapper will erase all of your current mappings. Confirm?
+              {wbText('reRunAutoMapperDialogMessage')}
             </ModalDialog>
           )}
           {state.showInvalidValidationDialog && (
@@ -580,7 +584,7 @@ export const stateReducer = generateReducer<
                 })
               }
               properties={{
-                title: 'Nothing to validate',
+                title: wbText('nothingToValidateDialogTitle'),
                 buttons: {
                   Close: () =>
                     state.dispatch({
@@ -589,31 +593,31 @@ export const stateReducer = generateReducer<
                 },
               }}
             >
-              <>Please map some headers before running the validation.</>
+              {wbText('nothingToValidateDialogMessage')}
             </ModalDialog>
           )}
           {state.displayMatchingOptionsDialog && (
             <ModalDialog
               onCloseCallback={handleMappingOptionsDialogClose}
               properties={{
-                title: 'Change Matching Logic',
+                title: wbText('matchingLogicDialogTitle'),
                 buttons: {
-                  Done: handleMappingOptionsDialogClose,
+                  [commonText('apply')]: handleMappingOptionsDialogClose,
                 },
               }}
             >
               {Object.keys(state.mustMatchPreferences).length === 0 ? (
-                'Matching logic is unavailable for current mappings'
+                wbText('matchingLogicUnavailable')
               ) : (
                 <>
                   <h4 style={{ paddingLeft: '4px' }}>
-                    Require Data to Match Existing Records
+                    {wbText('matchingLogicDialogMessage')}
                   </h4>
                   <table>
                     <thead>
                       <tr>
-                        <th>Table Name</th>
-                        <th>Must Match</th>
+                        <th>{commonText('tableName')}</th>
+                        <th>{wbText('mustMatch')}</th>
                       </tr>
                     </thead>
                     <tbody>

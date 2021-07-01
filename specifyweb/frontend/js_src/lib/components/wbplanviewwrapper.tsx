@@ -1,4 +1,5 @@
 import React from 'react';
+import wbText from '../localization/workbench';
 
 import navigation from '../navigation';
 import dataModelStorage from '../wbplanviewmodel';
@@ -54,7 +55,7 @@ interface WBPlanViewBackboneProps
 }
 
 const setUnloadProtect = (self: WBPlanViewBackboneProps): void =>
-  navigation.addUnloadProtect(self, 'This mapping has not been saved.');
+  navigation.addUnloadProtect(self, wbText('unloadProtectMessage'));
 
 const removeUnloadProtect = (self: WBPlanViewBackboneProps): void =>
   navigation.removeUnloadProtect(self);
