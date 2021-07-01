@@ -10,7 +10,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
 from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, AuditLog
-from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures, PropagatedFailure
+from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, ParseFailures, PropagatedFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
 

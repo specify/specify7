@@ -792,46 +792,6 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     'get': {
         "responses": {
             "200": {
-                "description": "Successful response",
-                "content": {
-                    "text/plain": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/components/schemas/wb_validation_results"
-                            },
-                        }
-                    }
-                }
-            },
-        }
-    },
-}, components=open_api_components)
-@login_maybe_required
-@apply_access_control
-@require_GET
-def validation_results(request, ds_id: int) -> http.HttpResponse:
-    "Returns any validation results for the dataset <ds_id>."
-    from .upload.upload_result import json_to_UploadResult
-
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
-
-    if ds.rowresults is None:
-        return http.JsonResponse(None, safe=False)
-
-    results = [
-        json_to_UploadResult(result).validation_info().to_json()
-        for result in json.loads(ds.rowresults)
-    ]
-    return http.JsonResponse(results, safe=False)
-
-
-@openapi(schema={
-    'get': {
-        "responses": {
-            "200": {
                 "description": "Successful operation",
                 "content": {
                     "text/plain": {
@@ -885,7 +845,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
         },
         "responses": {
             "200": {
-                "description": "Returns upload results and validation results for a single row.",
+                "description": "Returns upload results for a single row.",
                 "content": {
                     "text/plain": {
                         "schema": {
@@ -894,11 +854,8 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
                                 "results": {
                                     "$ref": "#/components/schemas/wb_upload_results"
                                 },
-                                "validation": {
-                                    "$ref": "#/components/schemas/wb_validation_results"
-                                }
                             },
-                            'required': ['results', 'validation'],
+                            'required': ['results'],
                             'additionalProperties': False
                         }
                     }
@@ -923,7 +880,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     row = rows[0]
     da = uploader.get_disambiguation_from_row(ncols, row)
     result = uploader.validate_row(collection, upload_plan, request.specify_user_agent.id, dict(zip(ds.columns, row)), da)
-    return http.JsonResponse({'result': result.to_json(), 'validation': result.validation_info().to_json()})
+    return http.JsonResponse({'result': result.to_json()})
 
 @openapi(schema={
     'get': {

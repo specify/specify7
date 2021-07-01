@@ -12,7 +12,7 @@ from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
 from ..column_options import ColumnOptions
 from ..upload_plan_schema import parse_column_options
-from .. import validation_schema
+from ..upload_results_schema import schema as upload_results_schema
 
 class ParsingTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -98,7 +98,7 @@ class ParsingTests(UploadTestsBase):
 
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
             self.assertIsInstance(result.record_result, Uploaded)
 
         for i, v in enumerate('River Lake marsh Lake marsh Lake'.split()):
@@ -137,7 +137,7 @@ class ParsingTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -479,7 +479,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank value.")
@@ -505,7 +505,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite default value.")
@@ -535,7 +535,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "Second record doesn't match first due to blank value.")
@@ -559,7 +559,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank value.")
@@ -586,7 +586,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -614,7 +614,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -643,7 +643,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -671,7 +671,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -700,7 +700,7 @@ class NullAllowedTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
@@ -724,7 +724,7 @@ class NullAllowedTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
@@ -748,7 +748,7 @@ class NullAllowedTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate(result.validation_info().to_json(), validation_schema.schema)
+            validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))

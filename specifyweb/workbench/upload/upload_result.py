@@ -1,7 +1,6 @@
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
 from typing_extensions import Literal
 
-from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation, NewPicklistItem
 from .parsing import ParseFailure
 
 Failure = Literal["Failure"]
@@ -47,23 +46,6 @@ class Uploaded(NamedTuple):
     def get_id(self) -> int:
         return self.id
 
-    def validation_info(self) -> RowValidation:
-        return RowValidation(
-            cellIssues=[],
-            tableIssues=[],
-            newRows=[NewRow(
-                tableName=self.info.tableName,
-                columns=self.info.columns,
-                id=self.id
-            )],
-            picklistAdditions=[NewPicklistItem(
-                name=a.name,
-                value=a.value,
-                column=a.caption,
-                id=a.id
-            ) for a in self.picklistAdditions]
-        )
-
     def to_json(self) -> Dict:
         return { 'Uploaded': dict(
             id=self.id,
@@ -87,9 +69,6 @@ class Matched(NamedTuple):
     def get_id(self) -> int:
         return self.id
 
-    def validation_info(self) -> RowValidation:
-        return RowValidation([], [], [], [])
-
     def to_json(self) -> Dict:
         return { 'Matched':  dict(
             id=self.id,
@@ -112,22 +91,6 @@ class MatchedMultiple(NamedTuple):
     def get_id(self) -> Failure:
         return "Failure"
 
-    def validation_info(self) -> RowValidation:
-        return RowValidation(
-            cellIssues=[],
-            newRows=[],
-            picklistAdditions=[],
-            tableIssues=[
-                TableIssue(
-                    tableName=self.info.tableName,
-                    columns=self.info.columns,
-                    issue=(
-                        "This value matches two or more existing database " +
-                        "records and must be manually disambiguated before " +
-                        "uploading."
-                    )
-        )])
-
     def to_json(self):
         return { 'MatchedMultiple': dict(
             ids=self.ids,
@@ -149,9 +112,6 @@ class NullRecord(NamedTuple):
     def get_id(self) -> None:
         return None
 
-    def validation_info(self) -> RowValidation:
-        return RowValidation([], [], [], [])
-
     def to_json(self):
         return { 'NullRecord': dict(info=self.info.to_json()) }
 
@@ -165,18 +125,6 @@ class FailedBusinessRule(NamedTuple):
 
     def get_id(self) -> Failure:
         return "Failure"
-
-    def validation_info(self) -> RowValidation:
-        return RowValidation(
-            cellIssues=[],
-            newRows=[],
-            picklistAdditions=[],
-            tableIssues=[
-                TableIssue(
-                    tableName=self.info.tableName,
-                    columns=self.info.columns,
-                    issue=self.message
-        )])
 
     def to_json(self):
         return { self.__class__.__name__: dict(message=self.message, info=self.info.to_json()) }
@@ -194,18 +142,6 @@ class NoMatch(NamedTuple):
     def get_id(self) -> Failure:
         return "Failure"
 
-    def validation_info(self) -> RowValidation:
-        return RowValidation(
-            cellIssues=[],
-            newRows=[],
-            picklistAdditions=[],
-            tableIssues=[
-                TableIssue(
-                    tableName=self.info.tableName,
-                    columns=self.info.columns,
-                    issue="No matching record for must-match table."
-        )])
-
     def to_json(self):
         return { self.__class__.__name__: dict(info=self.info.to_json()) }
 
@@ -219,16 +155,8 @@ class ParseFailures(NamedTuple):
     def get_id(self) -> Failure:
         return "Failure"
 
-    def validation_info(self) -> RowValidation:
-        return RowValidation(
-            cellIssues=[CellIssue(column=f.column, issue=f.message) for f in self.failures],
-            newRows=[],
-            tableIssues=[],
-            picklistAdditions=[],
-        )
-
     def to_json(self):
-        return { self.__class__.__name__: self._asdict() }
+        return { self.__class__.__name__: dict(failures=[f.to_json() for f in self.failures]) }
 
 def json_to_ParseFailures(json: Dict) -> ParseFailures:
     r = json['ParseFailures']
@@ -237,9 +165,6 @@ def json_to_ParseFailures(json: Dict) -> ParseFailures:
 class PropagatedFailure(NamedTuple):
     def get_id(self) -> Failure:
         return "Failure"
-
-    def validation_info(self) -> RowValidation:
-        return RowValidation([], [], [], [])
 
     def to_json(self):
         return { 'PropagatedFailure': {} }
@@ -262,29 +187,6 @@ class UploadResult(NamedTuple):
         return ( self.record_result.get_id() == "Failure"
                  or any(result.contains_failure() for result in self.toOne.values())
                  or any(result.contains_failure() for results in self.toMany.values() for result in results)
-        )
-
-    def validation_info(self) -> RowValidation:
-        info = self.record_result.validation_info()
-        toOneInfos = [r.validation_info() for r in self.toOne.values()]
-        toManyInfos = [rr.validation_info() for r in self.toMany.values() for rr in r]
-
-        return RowValidation(
-            cellIssues = info.cellIssues
-                + [cellIssue for info in toOneInfos for cellIssue in info.cellIssues]
-                + [cellIssue for info in toManyInfos for cellIssue in info.cellIssues],
-
-            tableIssues = info.tableIssues
-                + [tableIssue for info in toOneInfos for tableIssue in info.tableIssues]
-                + [tableIssue for info in toManyInfos for tableIssue in info.tableIssues],
-
-            newRows = info.newRows
-                + [newRow for info in toOneInfos for newRow in info.newRows]
-                + [newRow for info in toManyInfos for newRow in info.newRows],
-
-            picklistAdditions = info.picklistAdditions
-                + [picklistAddition for info in toOneInfos for picklistAddition in info.picklistAdditions]
-                + [picklistAddition for info in toManyInfos for picklistAddition in info.picklistAdditions],
         )
 
     def to_json(self) -> Dict:

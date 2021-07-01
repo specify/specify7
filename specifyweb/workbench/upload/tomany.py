@@ -3,7 +3,7 @@ import logging
 from typing import Dict, Any, NamedTuple, List, Union, Set, Optional
 
 from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, AuditLog
-from .upload_result import CellIssue, ParseFailures
+from .upload_result import ParseFailures
 from .parsing import parse_many, ParseResult
 from .column_options import ColumnOptions, ExtendedColumnOptions
 

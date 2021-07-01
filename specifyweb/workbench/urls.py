@@ -11,7 +11,6 @@ urlpatterns = [
     url(r'^validate/(?P<ds_id>\d+)/', views.upload, {'no_commit': True, 'allow_partial': True}),
     url(r'^unupload/(?P<ds_id>\d+)/', views.unupload),
     url(r'^status/(?P<ds_id>\d+)/', views.status),
-    url(r'^validation_results/(?P<ds_id>\d+)/', views.validation_results),
     url(r'^upload_results/(?P<ds_id>\d+)/', views.upload_results),
     url(r'^abort/(?P<ds_id>\d+)/', views.abort),
     url(r'^validate_row/(?P<ds_id>\d+)/', views.validate_row),

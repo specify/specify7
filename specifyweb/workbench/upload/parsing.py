@@ -29,6 +29,9 @@ class ParseFailure(NamedTuple):
     message: str
     column: str
 
+    def to_json(self) -> List:
+        return list(self)
+
 class ParseResult(NamedTuple):
     filter_on: Filter
     upload: Dict[str, Any]
