@@ -17,9 +17,7 @@ export interface SchemaModelTableRelationship extends SchemaModelTableField {
   readonly readOnly: boolean;
 }
 
-type SpecifyFetch = (filter: {
-  readonly filters: object;
-}) => {
+type SpecifyFetch = (filter: { readonly filters: object }) => {
   fetch: (filter: {
     readonly limit: number;
   }) => JqueryPromise<DomainTreeDefinitionItem>;

@@ -281,7 +281,6 @@ const wbText = createDictionary({
 
   // WbStatus
   wbStatusDialogTitle: 'Data Set Status',
-
 });
 
 export default wbText;
