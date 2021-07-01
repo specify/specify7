@@ -20,7 +20,7 @@ const navigation = require('./navigation.js');
 const NotFoundView = require('./notfoundview.js');
 const WBUploadedView = require('./components/wbuploadedview.tsx').default;
 const dataModelStorage = require('./wbplanviewmodel').default;
-const WBStatus = require('./wbstatus.js');
+const WBStatus = require('./components/wbstatus.tsx').default;
 const WBUtils = require('./wbutils.js');
 const {
   valueIsTreeRank,
@@ -156,6 +156,7 @@ const WBView = Backbone.View.extend({
         is_uploaded: this.isUploaded,
         is_manager: userInfo.usertype === 'Manager',
         wbText,
+        commonText,
       })
     );
 
@@ -1445,9 +1446,7 @@ const WBView = Backbone.View.extend({
             },
           },
         });
-      } else {
-        this.startUpload(mode);
-      }
+      } else this.startUpload(mode);
     } else {
       $(`<div>${wbText('noUploadPlanDialogMessage')}</div>`).dialog({
         title: wbText('noUploadPlanDialogTitle'),
@@ -1477,12 +1476,35 @@ const WBView = Backbone.View.extend({
       });
   },
   openStatus(mode) {
-    this.wbstatus = new WBStatus({ dataset: this.dataset })
-      .render()
-      .on('done', (wasAborted) => {
-        this.trigger('refresh', mode, wasAborted);
+    this.wbstatus = new WBStatus({
+      dataset: {
+        ...this.dataset,
+        // Create initial status if it doesn't yet exist
+        uploaderstatus:
+          this.dataset.uploaderstatus === null
+            ? {
+                uploaderstatus: {
+                  operation: {
+                    validate: 'validating',
+                    upload: 'uploading',
+                    unupload: 'unuploading',
+                  }[mode],
+                  taskid: '',
+                },
+                taskstatus: 'PENDING',
+                taskinfo: {
+                  current: 1,
+                  total: 1,
+                },
+              }
+            : this.dataset.uploaderstatus,
+      },
+      onFinished: (wasAborted) => {
+        this.wbstatus.remove();
         this.wbstatus = undefined;
-      });
+        this.trigger('refresh', mode, wasAborted);
+      },
+    }).render();
   },
   delete: function () {
     const dialog = $(

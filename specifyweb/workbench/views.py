@@ -83,6 +83,8 @@ open_api_components = {
                             "type": "string",
                             "enum": [
                                 "PROGRESS",
+                                "PENDING",
+                                "FAILURE",
                             ]
                         },
                         "uploaderstatus": {

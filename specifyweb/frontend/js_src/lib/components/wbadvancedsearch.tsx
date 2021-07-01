@@ -122,7 +122,7 @@ function WbAdvancedSearch({
         {wbText('cursorPriority')}
         <br />
         <select
-          onBlur={({ target }): void =>
+          onChange={({ target }): void =>
             setState({
               ...state,
               navigation: {
@@ -162,7 +162,7 @@ function WbAdvancedSearch({
         {wbText('replaceMode')}
         <br />
         <select
-          onBlur={({ target }): void =>
+          onChange={({ target }): void =>
             setState({
               ...state,
               replace: {

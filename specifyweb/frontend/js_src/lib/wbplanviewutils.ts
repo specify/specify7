@@ -251,7 +251,7 @@ export function mutateMappingPath({
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
-   * type is the same (or non existent in both cases) and the new box is a
+   * type is the same (or non-existent in both cases) and the new box is a
    * -to-many index, a tree rank or a different relationship to the same table
    */
   const preserveMappingPathToRight =

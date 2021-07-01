@@ -8,6 +8,7 @@ const wbText = createDictionary({
   // Buttons
   rollback: 'Roll back',
   validate: 'Validate',
+  validation: 'Validation',
   upload: 'Upload',
   results: 'Results',
   disambiguate: 'Disambiguate',
@@ -18,7 +19,7 @@ const wbText = createDictionary({
   geoMap: 'GeoMap',
   uploadPlan: 'Upload Plan',
   dataCheck: 'Data Check',
-  dataCheckOn: (queueLength: number): string =>
+  dataCheckOn: (queueLength: number) =>
     `Data Check: On ${queueLength > 0 ? ` (${queueLength})` : ''}`,
   changeOwner: 'Change Owner',
   export: 'Export',
@@ -71,7 +72,7 @@ const wbText = createDictionary({
   onExitDialogMessage: 'Changes to this Data Set have not been saved.',
 
   // Validation
-  picklistValidationFailed: (value: string): string =>
+  picklistValidationFailed: (value: string) =>
     [
       `${value ? `"${value}"` : ''} is not a legal value in this picklist `,
       'field. Click on the arrow to choose among available options.',
@@ -164,15 +165,15 @@ const wbText = createDictionary({
   // WbImport
   wbImportHeader: 'Import File to Create a New Data Set',
   previewDataSet: 'Preview Dataset',
-  corruptFile: (fileName: string): string =>
+  corruptFile: (fileName: string) =>
     `The file ${fileName} is corrupt or contains no data!`,
   characterEncoding: 'Character encoding:',
   filePickerMessage: 'Choose a file or drag it here',
-  selectedFileName: (fileName: string): string => `Selected file: ${fileName}`,
+  selectedFileName: (fileName: string) => `Selected file: ${fileName}`,
   chooseDataSetName: 'Name for New Data Set:',
   firstRowIsHeader: 'First Row is Header:',
   importFile: 'Import file',
-  columnName: (columnIndex: number): string => `Column ${columnIndex}`,
+  columnName: (columnIndex: number) => `Column ${columnIndex}`,
 
   // WbPlanView
   ignoreWhenBlank: 'Ignore when Blank',
@@ -250,7 +251,7 @@ const wbText = createDictionary({
   newHeaderName: (index: number): string => `New Column ${index}`,
 
   // WbsDialog
-  wbsDialogDefaultDialogTitle: (dataSetCount: string): string =>
+  wbsDialogDefaultDialogTitle: (dataSetCount: string) =>
     `Data Sets (${dataSetCount})`,
   wbsDialogEmptyDefaultDialogMessage: 'Currently no Data Sets exist.',
   wbsDialogTemplatesDialogTitle: 'Copy plan from existing Sata Det',
@@ -280,7 +281,45 @@ const wbText = createDictionary({
   dataSetUploadedLabel: '(Uploaded, Read-Only)',
 
   // WbStatus
-  wbStatusDialogTitle: 'Data Set Status',
+  wbStatusUnuploadDialogTitle: 'Data Set Rollback Status',
+  wbStatusUploadDialogTitle: 'Data Set Upload Status',
+  wbStatusValidationDialogTitle: 'Data Set Validation Status',
+  wbStatusOperationNoProgress: (operationName: string) => `${operationName}...`,
+  wbStatusOperationProgress: (
+    operationName: string,
+    current: number,
+    total: number
+  ) => `${operationName} Row: ${current}/${total}`,
+  wbStatusPendingDialogMessage: function wbStatusPendingDialogMessage(
+    operationName: string
+  ) {
+    return (
+      <>
+        {operationName} of this Data Set should begin shortly.
+        <br />
+        <br />
+        If this message persists for longer than 30 seconds, the {operationName}
+        process is busy with another Data Set. Specify currently supports only
+        one
+        {operationName} process at a time for a Specify 7 installation. Please
+        try try again later.
+      </>
+    );
+  },
+  wbStatusErrorDialogMessage: function wbStatusPendingDialogMessage(
+    operationName: string,
+    errorMessage: string
+  ) {
+    return (
+      <>
+        Error occurred during {operationName}:
+        <br />
+        <br />
+        {errorMessage}
+      </>
+    );
+  },
+  updatingTrees: 'Updating trees...',
 });
 
 export default wbText;

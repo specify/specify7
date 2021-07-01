@@ -2,6 +2,10 @@
   float: left;
 }
 
+.ui-dialog-no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
 .table-list-dialog table {
   width: 100%;
 }

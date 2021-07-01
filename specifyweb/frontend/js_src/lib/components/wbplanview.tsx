@@ -26,6 +26,25 @@ import {
 } from './wbplanviewstatereducer';
 
 // General definitions
+export type Status = {
+  readonly uploaderstatus: {
+    readonly operation: 'validating' | 'uploading' | 'unuploading';
+    readonly taskid: string;
+  };
+} & (
+  | {
+      readonly taskstatus: 'PENDING' | 'FAILURE';
+      readonly taskinfo: 'None';
+    }
+  | {
+      readonly taskstatus: 'PROGRESS';
+      readonly taskinfo: {
+        readonly total: number;
+        readonly current: number;
+      };
+    }
+);
+
 export type DatasetBrief = {
   id: number;
   name: string;
@@ -34,7 +53,7 @@ export type DatasetBrief = {
     timestamp: string;
     recordsetid: number;
   } | null;
-  uploaderstatus: IR<unknown> | null;
+  uploaderstatus: Status | null;
   timestampcreated: string;
   timestampmodified: string;
 };

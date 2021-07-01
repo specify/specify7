@@ -3,10 +3,21 @@ import type { RA, RR } from '../components/wbplanview';
 type Value = string | JSX.Element;
 type Dictionary = RR<string, Value | ((...args: RA<never>) => Value)>;
 
-function assertExhaustive(key: string): never {
-  throw new Error(
-    `Trying to access a value for a non existent localization key "${key}"`
-  );
+function assertExhaustive(key: string): string | never {
+  /*
+   * If a .ts or .tsx file tries to access a non-existing key, a
+   * build-time error would be thrown.
+   * For .js and .jsx files, some errors may be shown in the editor depending on
+   * the IDE. The rest would be thrown at runtime.
+   * For templates (.html), no errors would be shown, and thus this exception
+   * may be thrown at runtime.
+   */
+  const errorMessage = `
+    Trying to access the value for a non-existent localization key "${key}"`;
+  if (process.env.NODE_ENV === 'production') {
+    console.error(errorMessage);
+    return key;
+  } else throw new Error(errorMessage);
 }
 
 export const createDictionary =
@@ -14,7 +25,9 @@ export const createDictionary =
   <KEY extends Extract<keyof typeof dictionary, string>>(
     key: KEY
   ): typeof dictionary[typeof key] =>
-    key in dictionary ? dictionary[key] : assertExhaustive(key);
+    key in dictionary
+      ? dictionary[key]
+      : (assertExhaustive(key) as typeof dictionary[typeof key]);
 
 /*
  *
@@ -24,7 +37,7 @@ export const createDictionary =
  *   otherwise (e.x, in case of "S2N" or other proper nouns that contain
  *   numbers or capitalized letters)
  *
- * - Prefer full terms rather than acronyms or shortened versions.
+ * - Prefer full terms rather than acronyms or shortened variants.
  *   Some people may be unfamiliar with the acronyms used. Also, a single term
  *   may have multiple shortened variants, leading to inconsistencies and bugs.
  *   Notable exception is the "wb" (Workbench), as it is used extensively and
@@ -35,9 +48,8 @@ export const createDictionary =
  * - Similarly, try to be as consistent as possible in key naming.
  *   For example, in case of the dialog that appears when upload plan is not
  *   defined, use noUploadPlanDialogTitle, noUploadPlanDialogHeading,
- *   noUploadPlanMessageDialogMessage
- *   for specifying the title, heading and the message of the dialog
- *   respectively.
+ *   noUploadPlanDialogMessage for specifying the title, heading and the
+ *   message of the dialog respectively.
  *
  * - Each dictionary must be named in camel case and end with "Text" for
  *   consistency and easy grepping
@@ -62,21 +74,21 @@ export const createDictionary =
  *   Correct example:
  *   newDataSetName: (date: string)=>`New Data Set ${date}`,
  *
- * - When writing multi line strings, keep in mind that some values are
+ * - When writing multi-line strings, keep in mind that some values are
  *   going to be used in whitespace sensitive contexts. Most common example
  *   is the "title" attribute of a button. Another example is the cell comment
- *   text in the workbench. In such cases, use array join instead of the grave
+ *   text in the Workbench. In such cases, use array join instead of the grave
  *   accent mark.
  *   Incorrect example:
- *   someValue: `
+ *   someWhitespaceSensitiveValue: `
  *     Lorem Ipsum is simply dummy text of the printing and typesetting
  *     industry. Lorem Ipsum has been the industry's standard dummy text
  *     ever since the 1500s
  *   `,
  *   Correct example:
- *   someValue: [
- *     'Lorem Ipsum is simply dummy text of the printing and typesetting',
- *     'industry. Lorem Ipsum has been the industry's standard dummy text',
+ *   someWhitespaceSensitiveValue: [
+ *     'Lorem Ipsum is simply dummy text of the printing and typesetting ',
+ *     'industry. Lorem Ipsum has been the industry's standard dummy text ',
  *     'ever since the 1500s'
  *   ].join(''),
  *
