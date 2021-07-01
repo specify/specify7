@@ -1,4 +1,8 @@
+import React from 'react';
+
 import { createDictionary } from './utils';
+
+// Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
 const wbText = createDictionary({
   // Buttons
@@ -140,6 +144,144 @@ const wbText = createDictionary({
   wbUploadedDescription: 'The number of new records created in each table:',
   wbUploadedPotentialDescription:
     'The number of new records that would be created in each table:',
+
+  // WbAdvancedSearch
+  wbAdvancedSearchDialogTitle: 'Configure Search & Replace',
+  navigationOptions: 'Navigation Options',
+  cursorPriority: 'Cursor Priority',
+  columnFirst: 'Column first',
+  rowFirst: 'Row first',
+  searchOptions: 'Search Options',
+  findEntireCellsOnly: 'Find entire cells only',
+  matchCase: 'Match case',
+  useRegularExpression: 'Use regular expression',
+  liveUpdate: 'Live update',
+  replaceOptions: 'Replace Options',
+  replaceMode: 'Replace Mode',
+  replaceAll: 'Replace all matches',
+  replaceNext: 'Replace next occurrence',
+
+  // WbImport
+  wbImportHeader: 'Import File to Create a New Data Set',
+  previewDataSet: 'Preview Dataset',
+  corruptFile: (fileName: string): string =>
+    `The file ${fileName} is corrupt or contains no data!`,
+  characterEncoding: 'Character encoding:',
+  filePickerMessage: 'Choose a file or drag it here',
+  selectedFileName: (fileName: string): string => `Selected file: ${fileName}`,
+  chooseDataSetName: 'Name for New Data Set:',
+  firstRowIsHeader: 'First Row is Header:',
+  importFile: 'Import file',
+  columnName: (columnIndex: number): string => `Column ${columnIndex}`,
+
+  // WbPlanView
+  ignoreWhenBlank: 'Ignore when Blank',
+  ignoreWhenBlankDescription: [
+    'When set to "Ignore when Blank" blank ',
+    'values in this column will not be ',
+    'considered for matching purposes. Blank ',
+    'values are ignored when matching even if a ',
+    'default value is provided',
+  ].join(''),
+  ignoreAlways: 'Always ignore',
+  ignoreAlwaysDescription: [
+    'When set to ignoreAlways the value in ',
+    'this column will never be considered for ',
+    'matching purposes, only for uploading.',
+  ].join(''),
+  ignoreNever: 'Never ignore',
+  ignoreNeverDescription: [
+    'This column would always be considered ',
+    "for matching purposes, regardless of it's ",
+    'value',
+  ].join(''),
+  allowNullValues: 'Allow Null values',
+  useDefaultValue: 'Use default value',
+  useDefaultValueDescription:
+    'This value would be used in place of empty cells',
+  addNewColumn: 'Add New Column',
+  revealHiddenFormFields: 'Reveal Hidden Form Fields',
+  validationFailedDialogTitle: 'Upload Plan Mapping',
+  validationFailedDialogDescription: `
+    This data mapping is missing one or more data fields required for
+    uploading by your Specify configuration. Add the missing mappings
+    shown or save this Upload Plan as unfinished.`,
+  continueEditing: 'Continue Editing',
+  saveUnfinished: 'Save Unfinished',
+  map: 'Map',
+  selectBaseTable: 'Select a Base Table',
+  chooseExistingPlan: 'Choose Existing Plan',
+  showAdvancedTables: 'Show Advanced Tables',
+  dataSetUploaded: 'Data Set uploaded. This Upload Plan cannot be changed',
+  dataSetUploadedDescription: [
+    'You are viewing the mappings for an uploaded dataset.\n',
+    'To edit the mappings, rollback the upload or create a new ',
+    'dataset',
+  ].join(''),
+  changeTable: 'Change Table',
+  reRunAutoMapper: 'Rerun Automapper',
+  hideMappingEditor: 'Hide Mapping Editor',
+  showMappingEditor: 'Show Mapping Editor',
+  matchingLogic: 'Matching Logic',
+  clearMappings: 'Clear Mappings',
+  validateMappings: 'Validate Mappings',
+  emptyDataSetDialogTitle: 'Empty Data Set detected',
+  emptyDataSetDialogMessage: (
+    <>
+      This Data Set doesn&apos;t have any columns.
+      <br />
+      Press the &quot;Add New Column&quot; button at the bottom of the screen to
+      add new columns,
+    </>
+  ),
+  reRunAutoMapperDialogTitle: 'Rerun Automapper?',
+  reRunAutoMapperDialogMessage:
+    'The Automapper will erase all of your current mappings. Confirm?',
+  nothingToValidateDialogTitle: 'Nothing to validate',
+  nothingToValidateDialogMessage:
+    'Please map some headers before running the validation.',
+  matchingLogicDialogTitle: 'Change Matching Logic',
+  matchingLogicDialogMessage: 'Require Data to Match Existing Records',
+  matchingLogicUnavailable:
+    'Matching logic is unavailable for current mappings',
+  mustMatch: 'Must Match',
+  unloadProtectMessage: 'This mapping has not been saved.',
+  newDataSetName: (date: string): string => `New Data Set ${date}`,
+  newHeaderName: (index: number): string => `New Column ${index}`,
+
+  // WbsDialog
+  wbsDialogDefaultDialogTitle: (dataSetCount: string): string =>
+    `Data Sets (${dataSetCount})`,
+  wbsDialogEmptyDefaultDialogMessage: 'Currently no Data Sets exist.',
+  wbsDialogTemplatesDialogTitle: 'Copy plan from existing Sata Det',
+  wbsDialogEmptyTemplateDialogMessage:
+    'There are no plans available, please continue to create an upload plan.',
+  createDataSetInstructions: `
+    Use "Import a file" or "Create New" to make a new one.`,
+  createNew: 'Create New',
+
+  // DataSetMeta
+  dataSetMetaDialogTitle: 'Data Set Properties',
+  dataSetName: 'Data Set Name:',
+  remarks: 'Remarks:',
+  metadata: 'Metadata:',
+  numberOfRows: 'Number of rows',
+  numberOfColumns: 'Number of columns',
+  created: 'Created:',
+  modified: 'Modified:',
+  uploaded: 'Uploaded:',
+  importedFileName: 'Imported file name:',
+  noFileName: '(no file name)',
+  changeDataSetOwnerDialogTitle: 'Change Data Set Owner',
+  selectNewOwner: 'Select New Owner:',
+  dataSetOwnerChangedDialogTitle: 'Data Set owner changed',
+  dataSetOwnerChangedDialogMessage: 'Data Set owner changed',
+  dataSet: 'Data Set:',
+  dataSetUploadedLabel: '(Uploaded, Read-Only)',
+
+  // WbStatus
+  wbStatusDialogTitle: 'Data Set Status',
+
 });
 
 export default wbText;

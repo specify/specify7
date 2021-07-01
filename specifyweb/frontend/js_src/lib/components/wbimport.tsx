@@ -3,6 +3,7 @@ import '../../css/theme.css';
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
+import wbText from '../localization/workbench';
 
 import { uniquifyHeaders } from '../wbplanviewhelper';
 import { IR } from './wbplanview';
@@ -292,7 +293,7 @@ export default class WbImport extends Component<{}, WbImportState> {
           <>
             <br />
             <DoImportButton update={update} />
-            <h2>Preview Dataset</h2>
+            <h2>${wbText('previewDataSet')}</h2>
           </>
         );
         preview = (
@@ -307,9 +308,7 @@ export default class WbImport extends Component<{}, WbImportState> {
             {this.state.fileType === 'csv' && (
               <ChooseEncoding encoding={this.state.encoding} update={update} />
             )}
-            <p>
-              The file {this.state.file.name} is corrupt or contains no data!
-            </p>
+            <p>{wbText('corruptFile')(this.state.file.name)}</p>
           </>
         );
         break;
@@ -329,7 +328,7 @@ export default class WbImport extends Component<{}, WbImportState> {
               paddingBottom: '0.5rem',
             }}
           >
-            Import File to Create a New Data Set
+            {wbText('wbImportHeader')}
           </h2>
           <div className="wb-import-table">{rows}</div>
           {ui}
@@ -354,7 +353,7 @@ function ChooseEncoding(props: {
 
   return (
     <label>
-      Character encoding:
+      {wbText('characterEncoding')}
       <select
         onChange={(event) => selected(event.target.value)}
         value={props.encoding || ''}
@@ -448,7 +447,7 @@ function ChooseFile(props: { update: HandleAction }) {
         className="magic-button v-center"
       >
         <span>
-          Choose a file or drag it here
+          {wbText('filePickerMessage')}
           <input
             type="file"
             accept=".csv,.tsv,.txt,.xls,.xlsx"
@@ -458,7 +457,7 @@ function ChooseFile(props: { update: HandleAction }) {
             <>
               <br />
               <br />
-              <b>Selected file: {fileName}</b>
+              <b>{wbText('selectedFileName')(fileName)}</b>
             </>
           )}
         </span>
@@ -496,7 +495,7 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
 function ChooseName(props: { name: string; update: HandleAction }) {
   return (
     <label>
-      Name for New Data Set:
+      {wbText('chooseDataSetName')}
       <input
         type="text"
         value={props.name}
@@ -514,7 +513,7 @@ function ChooseName(props: { name: string; update: HandleAction }) {
 function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
   return (
     <label>
-      First Row is Header:
+      {wbText('firstRowIsHeader')}
       <span>
         <input
           type="checkbox"
@@ -532,7 +531,7 @@ function DoImportButton(props: { update: HandleAction }) {
       className="magic-button"
       onClick={() => props.update({ type: 'DoImportAction' })}
     >
-      Import file
+      {wbText('importFile')}
     </button>
   );
 }
@@ -543,7 +542,7 @@ function extractHeader(
 ): { rows: string[][]; header: string[] } {
   const header = headerInData
     ? uniquifyHeaders(data[0].map((header) => header.trim()))
-    : Array.from(data[0], (_, index) => `Column ${index + 1}`);
+    : Array.from(data[0], (_, index) => wbText('columnName')(index + 1));
   const rows = headerInData ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
 }

@@ -5,6 +5,8 @@ const _ = require('underscore');
 const Backbone = require('./backbone.js');
 
 const statusTemplate = require('./templates/wbstatus.html');
+const commonText = require('./localization/common.tsx').default;
+const wbText = require('./localization/workbench.tsx').default;
 
 const refreshTime = 2000;
 
@@ -21,7 +23,7 @@ module.exports = Backbone.View.extend({
 
     this.$el.append(statusTemplate(this.dataset.uploaderstatus)).dialog({
       modal: true,
-      title: 'Data Set Status',
+      title: wbText('wbStatusDialogTitle'),
       open(evt, ui) {
         $('.ui-dialog-titlebar-close', ui.dialog).hide();
       },
@@ -31,7 +33,7 @@ module.exports = Backbone.View.extend({
       },
       buttons: [
         {
-          text: 'Stop',
+          text: commonText('close'),
           click: () => {
             $.post(`/api/workbench/abort/${this.dataset.id}/`).done(() => {
               this.wasAborted = true;

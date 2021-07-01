@@ -9,6 +9,8 @@ import $ from 'jquery';
 import React from 'react';
 
 import { DataSetMeta } from '../datasetmeta';
+import commonText from '../localization/common';
+import wbText from '../localization/workbench';
 import navigation from '../navigation';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
@@ -21,7 +23,7 @@ const createEmptyDataSet = async (): Promise<void> =>
     type: 'POST',
     data: JSON.stringify({
       name: await uniquifyDataSetName(
-        `New Data Set ${new Date().toDateString()}`
+        wbText('newDataSetName')(new Date().toDateString())
       ),
       importedfilename: '',
       columns: [],
@@ -109,16 +111,16 @@ function Dialog({
         onCloseCallback={handleClose}
         properties={{
           title: showTemplates
-            ? 'Copy plan from existing Sata Det'
-            : `Data Sets (${datasets.length})`,
+            ? wbText('wbsDialogTemplatesDialogTitle')
+            : wbText('wbsDialogDefaultDialogTitle'),
           width: 600,
           minHeight: 300,
           buttons: {
             ...(canImport
               ? {
-                  'Import a File': (): void =>
+                  [wbText('importFile')]: (): void =>
                     navigation.go('/workbench-import/'),
-                  'Create New': createEmptyDataSet,
+                  [wbText('createNew')]: createEmptyDataSet,
                 }
               : {}),
             Cancel: handleClose,
@@ -129,22 +131,18 @@ function Dialog({
         {datasets.length === 0 ? (
           <p>
             {showTemplates
-              ? 'There are no plans available, please continue to create an' +
-                ' upload plan.'
-              : `Currently no Data Sets exist. ${
-                  canImport
-                    ? `Use "Import a file" or "Create New" to make a
-                  new one.`
-                    : ''
+              ? wbText('wbsDialogEmptyTemplateDialogMessage')
+              : `${wbText('wbsDialogEmptyDefaultDialogMessage')} ${
+                  canImport ? wbText('createDataSetInstructions') : ''
                 }`}
           </p>
         ) : (
           <span className="table-list-dialog">
             <div className="wbs-dialog-table">
               <div className="wbs-dialog-header">
-                <div className="wbs-dialog-cell">Name</div>
-                <div className="wbs-dialog-cell">Created</div>
-                <div className="wbs-dialog-cell">Uploaded</div>
+                <div className="wbs-dialog-cell">{commonText('name')}</div>
+                <div className="wbs-dialog-cell">{commonText('created')}</div>
+                <div className="wbs-dialog-cell">{commonText('uploaded')}</div>
                 <div className="wbs-dialog-cell" />
               </div>
               <div className="wbs-dialog-body">

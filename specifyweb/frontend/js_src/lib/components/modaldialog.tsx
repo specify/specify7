@@ -9,6 +9,7 @@
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import commonText from '../localization/common';
 
 import type { IR, RA } from './wbplanview';
 
@@ -70,7 +71,7 @@ export const ModalDialog = React.memo(function ModalDialog({
       close: closeDialogBind,
       buttons: [
         {
-          text: 'Close',
+          text: commonText('close'),
           click: closeDialogBind,
         },
       ],
@@ -113,7 +114,7 @@ export function LoadingScreen(): JSX.Element {
       onLoadCallback={handleOnLoad}
       properties={{
         modal: false,
-        title: 'Loading',
+        title: commonText('loading'),
         buttons: [],
         close: undefined,
       }}

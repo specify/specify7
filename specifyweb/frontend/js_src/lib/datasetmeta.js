@@ -1,12 +1,14 @@
-import $ from 'jquery';
+import $            from 'jquery';
 import uniquifyName from './wbuniquifyname';
-import Backbone from './backbone';
-import app from './specifyapp';
-import { format } from './dataobjformatters';
-import schema from './schema';
-import resourceApi from './resourceapi';
-import navigation from './navigation';
-import userInfo from './userinfo.js';
+import Backbone     from './backbone';
+import app          from './specifyapp';
+import { format }   from './dataobjformatters';
+import schema       from './schema';
+import resourceApi  from './resourceapi';
+import navigation   from './navigation';
+import userInfo     from './userinfo.js';
+import wbText       from './localization/workbench';
+import commonText   from './localization/common';
 
 export const DataSetMeta = Backbone.View.extend({
   __name__: 'DataSetMetaView',
@@ -69,7 +71,7 @@ export const DataSetMeta = Backbone.View.extend({
 
     this.dialog = $(`<div>
       <label>
-        <b>Data Set Name:</b><br>
+        <b>${wbText('dataSetName')}</b><br>
         <input
           type="text"
           style="
@@ -81,37 +83,41 @@ export const DataSetMeta = Backbone.View.extend({
         >
       </label><br>
       <label>
-        <b>Remarks:</b><br>
+        <b>${wbText('remarks')}</b><br>
         <textarea
           style="width: 100%"
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
       </label><br><br>
-      <b>Metadata:</b><br>
-      Number of rows: <i>${this.getRowCount()}</i><br>
-      Number of columns: <i>${this.dataset.columns.length}</i><br>
-      Created: <i>${new Date(
+      <b>${wbText('metadata')}</b><br>
+      ${wbText('numberOfRows')} <i>${this.getRowCount()}</i><br>
+      ${wbText('numberOfColumns')} <i>${this.dataset.columns.length}</i><br>
+      ${wbText('created')} <i>${new Date(
         this.dataset.timestampcreated
       ).toLocaleString()}</i><br>
-      Modified: <i>${new Date(
+      ${wbText('modified')} <i>${new Date(
         this.dataset.timestampmodified
       ).toLocaleString()}</i><br>
       ${
         this.dataset.uploadresult?.success === true
           ? `
-        Uploaded: <i>${new Date(
+        ${wbText('uploaded')} <i>${new Date(
           this.dataset.uploadresult.timestamp
         ).toLocaleString()}
         </i><br>`
           : ''
       }
-      Created by: <i class="created-by-field">Loading...</i><br>
-      Modified by: <i class="modified-by-field"></i><br>
-      Imported file name: <i>${
-        this.dataset.importedfilename || '(no file name)'
+      ${commonText('createdBy')} <i class="created-by-field">
+        ${commonText('loading')}
+      </i><br>
+      ${commonText('modifiedText')} <i class="modified-by-field">
+        ${commonText('loading')}
+      </i><br>
+      ${wbText('importedFileName')} <i>${
+        this.dataset.importedfilename || wbText('noFileName')
       }</i><br><br>
     </div>`).dialog({
-      title: 'Data Set Properties',
+      title: wbText('dataSetMetaDialogTitle'),
       modal: true,
       open(evt, ui) {
         $('.ui-dialog-titlebar-close', ui.dialog).hide();
@@ -182,7 +188,7 @@ export const DataSetMeta = Backbone.View.extend({
   changeOwnerWindow() {
     this.fetchListOfUsers().then((users) => {
       this.changeOwnerDialog = $(`<div>
-        Select New Owner:<br>
+        ${wbText('selectNewOwner')}<br>
         <select class="select-user-picklist" size="10" style="width:100%">
           ${users
             .map(
@@ -193,15 +199,15 @@ export const DataSetMeta = Backbone.View.extend({
             .join('<br>')}
         </select>
       </div>`).dialog({
-        title: 'Change Data Set Owner',
+        title: wbText('changeDataSetOwnerDialogTitle'),
         modal: true,
         open(evt, ui) {
           $('.ui-dialog-titlebar-close', ui.dialog).hide();
         },
         close: () => this.changeOwnerDialog.dialog('destroy'),
         buttons: {
-          Cancel: () => this.changeOwnerDialog.dialog('destroy'),
-          'Change Owner': this.changeOwner.bind(this),
+          [commonText('cancel')]: () => this.changeOwnerDialog.dialog('destroy'),
+          [wbText('changeOwner')]: this.changeOwner.bind(this),
         },
       });
     });
@@ -217,13 +223,13 @@ export const DataSetMeta = Backbone.View.extend({
       .done(() => {
         const handleClose = () => navigation.go('/specify/');
         $(`<div>
-            Data Set owner changed
-          </div>`).dialog({
-          title: 'Data Set owner changed',
+          ${wbText('dataSetOwnerChangedDialogMessage')}
+        </div>`).dialog({
+          title: wbText('dataSetOwnerChangedDialogTitle'),
           modal: true,
           close: handleClose,
           buttons: {
-            Close: handleClose,
+            [commonText('close')]: handleClose,
           },
         });
       })
@@ -254,17 +260,19 @@ export default Backbone.View.extend({
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.$el.find('.wb-name-container').html(`
-      <span class="wb-name">Data Set: ${this.dataset.name}
+      <span class="wb-name">${wbText('dataSet')} ${this.dataset.name}
         ${
           isUploaded
-            ? `<span style="color: #f24"> (Uploaded, Read-Only) </span>`
+            ? `<span style="color: #f24">
+                ${wbText('dataSetUploadedLabel')}
+              </span>`
             : ''
         }
       </span>
       <span
         class="ui-icon ui-icon-pencil"
-        title="Edit name"
-      >Edit name</span>`);
+        title="${commonText('editName')}"
+      >${commonText('editName')}</span>`);
     app.setTitle(this.dataset.name);
     return this;
   },

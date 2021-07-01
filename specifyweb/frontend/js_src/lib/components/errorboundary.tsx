@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import commonText from '../localization/common';
 
 import { clearUnloadProtect } from '../navigation';
 import { ModalDialog } from './modaldialog';
@@ -49,10 +50,10 @@ export default class ErrorBoundary extends React.Component<
       ) : (
         <ModalDialog
           properties={{
-            title: 'Unexpected Error',
+            title: commonText('errorBoundaryDialogTitle'),
             buttons: [
               {
-                text: 'Okay',
+                text: commonText('okay'),
                 click(): void {
                   window.location.href = '/';
                 },
@@ -60,7 +61,7 @@ export default class ErrorBoundary extends React.Component<
             ],
           }}
         >
-          <p>An unexpected error has occurred.</p>
+          <p>{commonText('errorBoundaryDialogMessage')}</p>
           <details style={{ whiteSpace: 'pre-wrap' }}>
             {this.state.error?.toString()}
             <br />

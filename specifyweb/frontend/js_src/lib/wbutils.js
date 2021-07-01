@@ -12,8 +12,8 @@ const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch.tsx');
-const wbText = require('./localization/workbench.ts').default;
-const commonText = require('./localization/common.ts').default;
+const wbText = require('./localization/workbench.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',

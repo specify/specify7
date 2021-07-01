@@ -22,6 +22,7 @@ import {
   getDefaultMappingState,
   mappingState,
 } from './components/wbplanviewstatereducer';
+import wbText from './localization/workbench';
 import schema from './schema';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import { uniquifyHeaders } from './wbplanviewhelper';
@@ -437,7 +438,7 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
         headerName: uniquifyHeaders(
           [
             ...mappingState(state).lines.map(({ headerName }) => headerName),
-            `New Column ${mappingState(state).newHeaderId}`,
+            wbText('newHeaderName')(mappingState(state).newHeaderId),
           ],
           [mappingState(state).lines.length]
         ).slice(-1)[0],

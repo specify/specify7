@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as cache from '../cache';
+import wbText from '../localization/workbench';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
@@ -68,7 +69,7 @@ function Checkbox({
   readonly property: keyof SearchPreferences['search'];
   readonly state: SearchPreferences;
   readonly setState: (state: SearchPreferences) => void;
-}) {
+}): JSX.Element {
   return (
     <label>
       <input
@@ -110,18 +111,18 @@ function WbAdvancedSearch({
     <ModalDialog
       onCloseCallback={handleClose}
       properties={{
-        title: 'Configure Search & Replace',
+        title: wbText('wbAdvancedSearchDialogTitle'),
         close: handleClose,
         modal: false,
       }}
     >
-      <b>Navigation Options</b>
+      <b>{wbText('navigationOptions')}</b>
       <br />
       <label>
-        Cursor Priority
+        {wbText('cursorPriority')}
         <br />
         <select
-          onChange={({ target }): void =>
+          onBlur={({ target }): void =>
             setState({
               ...state,
               navigation: {
@@ -132,36 +133,36 @@ function WbAdvancedSearch({
           }
           value={state.navigation.direction}
         >
-          <option value="columnFirst">Column first</option>
-          <option value="rowFirst">Row first</option>
+          <option value="columnFirst">{wbText('columnFirst')}</option>
+          <option value="rowFirst">{wbText('rowFirst')}</option>
         </select>
       </label>
       <br />
       <br />
 
-      <b>Search Options</b>
+      <b>{wbText('searchOptions')}</b>
       <br />
       <Checkbox property="fullMatch" state={state} setState={setState}>
-        Find entire cells only
+        {wbText('findEntireCellsOnly')}
       </Checkbox>
       <Checkbox property="caseSensitive" state={state} setState={setState}>
-        Match case
+        {wbText('matchCase')}
       </Checkbox>
       <Checkbox property="useRegex" state={state} setState={setState}>
-        Use regular expression
+        {wbText('useRegularExpression')}
       </Checkbox>
       <Checkbox property="liveUpdate" state={state} setState={setState}>
-        Live update
+        {wbText('liveUpdate')}
       </Checkbox>
       <br />
 
-      <b>Replace Options</b>
+      <b>{wbText('replaceOptions')}</b>
       <br />
       <label>
-        Replace Mode
+        {wbText('replaceMode')}
         <br />
         <select
-          onChange={({ target }): void =>
+          onBlur={({ target }): void =>
             setState({
               ...state,
               replace: {
@@ -172,8 +173,8 @@ function WbAdvancedSearch({
           }
           value={state.replace.replaceMode}
         >
-          <option value="replaceAll">Replace all matches</option>
-          <option value="replaceNext">Replace next occurrence</option>
+          <option value="replaceAll">{wbText('replaceAll')}</option>
+          <option value="replaceNext">{wbText('replaceNext')}</option>
         </select>
       </label>
     </ModalDialog>

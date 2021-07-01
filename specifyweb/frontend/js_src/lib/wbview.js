@@ -41,8 +41,8 @@ const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
 const cache = require('./cache.ts');
-const wbText = require('./localization/workbench.ts').default;
-const commonText = require('./localization/common.ts').default;
+const wbText = require('./localization/workbench.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 const getDefaultCellMeta = () => ({
   // The value in this cell would be used to create a new record
