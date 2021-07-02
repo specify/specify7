@@ -15,6 +15,9 @@ var router              = require('./router.js');
 var app                 = require('./specifyapp.js');
 var querystring         = require('./querystring.js');
 
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
+
     var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
     function getRecordSetItem(recordSet, index) {
@@ -36,14 +39,9 @@ var querystring         = require('./querystring.js');
         events: {
             'click .recordset-delete': 'delete'
         },
-        template: _.template('<h2>The Record Set "<%= name %>" contains no records.</h2>'
-                             + '<p>You can <a class="recordset-delete">delete</a> the record set or '
-                             + '<a class="recordset-add intercept-navigation">add</a> records to it.</p>'
-                             + '<p>Be aware that another user maybe getting ready to add records, '
-                             + 'so only delete this record set if you are sure it is not to be used.</p>'),
         render: function() {
             var specifyModel = schema.getModelById(this.model.get('dbtableid'));
-            this.$el.empty().append(this.template({ name: this.model.get('name') }));
+            this.$el.empty().append(formsText('emptyRecordSetMessage')(this.model.get('name')));
             this.$('.recordset-add, .recordset-delete').button();
 
             var url = api.makeResourceViewUrl(specifyModel, null, this.model.id);
@@ -81,7 +79,7 @@ var querystring         = require('./querystring.js');
     function newResourceView(model) {
         if (userInfo.isReadOnly) {
             app.setCurrentView(new NotFoundView());
-            app.setTitle('Page Not Found');
+            app.setTitle(commonText('pageNotFound'));
         } else {
             resourceView(model, null);
         }
@@ -94,7 +92,7 @@ var querystring         = require('./querystring.js');
 
         if(typeof model === "undefined"){
             app.setCurrentView(new NotFoundView());
-            app.setTitle('Page Not Found');
+            app.setTitle(commonText('pageNotFound'));
             return;
         }
 
@@ -122,7 +120,7 @@ var querystring         = require('./querystring.js');
         byGUID.fetch({ limit: 1 }).done(function() {
             if (byGUID.length < 1) {
                 app.setCurrentView(new NotFoundView());
-                app.setTitle('Page Not Found');
+                app.setTitle(commonText('pageNotFound'));
                 return;
             }
             // should we update the url state to the row id version?
@@ -172,7 +170,7 @@ var querystring         = require('./querystring.js');
         }).done(function(notFound) {
             if (notFound) {
                 app.setCurrentView(new NotFoundView());
-                app.setTitle('Page Not Found');
+                app.setTitle(commonText('pageNotFound'));
             }
         });
     }

@@ -12,6 +12,8 @@ const userInfo          = require('./userinfo.js');
 const QueryCbxSearch    = require('./querycbxsearch.js');
 
 const format = dataobjformatters.format;
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports =  UIPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",
@@ -67,7 +69,10 @@ module.exports =  UIPlugin.extend({
         var table = $('<table>').addClass('collectionrelonetomanyplugin');
         this.$el.replaceWith(table);
         this.setElement(table);
-        table.append('<tr><th>Collection Object</th><th>Collection</th></tr>');
+        table.append(`<tr>
+            <th>${formsText('collectionObject')}</th>
+            <th>${formsText('collection')}</th>
+        </tr>`);
         var footer = $('<tfoot>').appendTo(table);
         $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<a>', {class: "sp-rel-plugin-add"}).appendTo(footer));
         this.model.isNew() || this.fillIn();
@@ -136,13 +141,14 @@ module.exports =  UIPlugin.extend({
             navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
         } else {
             $('<div>').text(
-                `You do not have access to the collection ${this.otherCollection.get('collectionname')}
-                through the currently logged in account.`
+                formsText('collectionAccessDeniedDialogMessage')(
+                  this.otherCollection.get('collectionname')
+                )
             ).dialog({
-                title: "Access denied.",
+                title: formsText('collectionAccessDeniedDialogTitle'),
                 close() { $(this).remove(); },
                 buttons: {
-                    Ok() { $(this).dialog('close'); }
+                    [commonText('close')]() { $(this).dialog('close'); }
                 }
             });
         }

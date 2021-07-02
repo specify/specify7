@@ -124,8 +124,8 @@ export const DataSetMeta = Backbone.View.extend({
       },
       close: () => this.render(),
       buttons: {
-        Cancel: () => this.render(),
-        Save: this.setName.bind(this, this.render.bind(this)),
+        [commonText('cancel')]: () => this.render(),
+        [commonText('save')]: this.setName.bind(this, this.render.bind(this)),
       },
     });
 

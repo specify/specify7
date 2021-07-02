@@ -14,6 +14,9 @@ var systemInfo           = require('./systeminfo.js');
 var template             = require('./templates/welcome.html');
 var aboutspecify         = require('./templates/aboutspecify.html');
 
+const welcomeText = require('./localization/welcome.tsx').default;
+const commonText = require('./localization/common.tsx').default;
+
     var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
 
     var ACTION = ['Added', 'Modified', 'Deleted'];
@@ -133,8 +136,8 @@ var aboutspecify         = require('./templates/aboutspecify.html');
                 $('.treemap .node').tooltip({track: true, show: false, hide: false});
             });
 
-            $('<p>', { title: "Showing Taxa with " + thres + " or more Collection Objects" })
-                .text("Taxon Tiles")
+            $('<p>', { title: welcomeText('taxonTilesDescription')(thres) })
+                .text(welcomeText('taxonTiles'))
                 .appendTo(div[0])
                 .tooltip({track: true, show: false, hide: false});
         });
@@ -257,8 +260,12 @@ var aboutspecify         = require('./templates/aboutspecify.html');
         },
         showAboutDialog: function(evt) {
             evt.preventDefault();
-            $(aboutspecify(systemInfo)).dialog({
-                title: "About Specify",
+            $(aboutspecify({
+                ...systemInfo,
+                welcomeText,
+                commonText
+            })).dialog({
+                title: welcomeText('aboutSpecifyDialogTitle'),
                 width: 480,
                 close: function() { $(this).remove(); }
             });
@@ -268,5 +275,5 @@ var aboutspecify         = require('./templates/aboutspecify.html');
 
 module.exports = function() {
     app.setCurrentView(new WelcomeView());
-    app.setTitle('Welcome');
+    app.setTitle(welcomeText('pageTitle'));
 };

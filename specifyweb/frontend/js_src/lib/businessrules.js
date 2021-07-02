@@ -8,6 +8,8 @@ var saveblockers      = require('./saveblockers.js');
 var treeBusinessRules = require('./treebusinessrules.js');
 var rules             = require('./businessruledefs.js');
 
+const formsText = require('./localization/forms.tsx').default;
+
     var enabled = true;
 
     api.on('initresource', function(resource) {
@@ -169,17 +171,15 @@ var rules             = require('./businessruledefs.js');
     };
 
     var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
-        var result = 'Value must be unique to ';
-        if (fldInfo.length > 1) {
-            var fldNames = _.reduce(fldInfo, function(result, fld, idx) {
-                if (idx > 0) {
-                    result = result +  (idx < fldInfo.length-1 ? ', ' : ' and ');
-                }
-                return result + fld.getLocalizedName();
-            }, '');
-            result = 'Values of ' + fldNames + ' must be unique to ';
-        }
-        return result + (parentFldInfo ? parentFldInfo.getLocalizedName() : 'database');
+        const fieldName = parentFldInfo ?
+          parentFldInfo.getLocalizedName() :
+          formsText('database');
+        return fldInfo.length > 1 ?
+            formsText('valuesOfMustBeUniqueToField')(
+              fldInfo.map(fld=>fld.getLocalizedName()),
+              fieldName
+            ) :
+            formsText('valueMustBeUniqueToField')(fieldName);
     };
 
     var uniqueIn = function(toOneField, resource, valueFieldArg) {

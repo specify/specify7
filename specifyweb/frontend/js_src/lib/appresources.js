@@ -17,6 +17,8 @@ const DeleteButton = require('./deletebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
 const newResourceTmpl = require('./templates/newappresource.html');
+const adminText = require('./localization/admin.tsx');
+const commonText = require('./localization/common.tsx');
 
 function makeUrl(resource) {
     return {
@@ -102,21 +104,31 @@ const ResourceDataView = Backbone.View.extend({
                     $('<span class="view-title">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
-                $('<label class="metadata-input">Metadata: <input type="text" spellcheck="false"/><label>').appendTo(this.el);
+                $(`<label class="metadata-input">
+                    ${adminText('metadata')}
+                    <input type="text" spellcheck="false"/>
+                <label>`).appendTo(this.el);
                 $('.metadata-input input', this.el).val(this.model.get('metadata'));
 
                 if (this.model.specifyModel.name === 'SpAppResource') {
-                    $('<label class="mimetype-input">Mimetype: <input type="text" spellcheck="false"/><label>').appendTo(this.el);
+                    $(`<label class="mimetype-input">
+                        ${adminText('mimetype')}
+                        <input type="text" spellcheck="false"/>
+                    <label>`).appendTo(this.el);
                     $('.mimetype-input input', this.el).val(this.model.get('mimetype'));
                 }
 
                 if (userInfo.isadmin) {
-                    this.$el.append('<a class="load-file">Load File</a>');
+                    this.$el.append(
+                      `<a class="load-file">${adminText('loadFile')}</a>`
+                    );
                 }
 
                 const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
                 const url = (window.URL || window.webkitURL).createObjectURL(blob);
-                $('<a class="download-resource">Download</a>').attr({
+                $(`<a class="download-resource">
+                    ${adminText('download')}
+                </a>`).attr({
                     href: url,
                     download: this.model.get('name') + fileExtFor(this.model)
                 }).appendTo(this.el);
@@ -146,8 +158,7 @@ const ResourceDataView = Backbone.View.extend({
                         .render().el
                 );
             } else {
-                $('<p>This app resource appears to be corrupt but may be in the process of being saved by another '
-                  + 'session. It can be deleted if that is not the case.</p>').appendTo(this.el);
+                $(`<p>${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
             userInfo.isadmin &&  buttonsDiv.append(
@@ -168,9 +179,11 @@ const ResourceDataView = Backbone.View.extend({
     },
     loadFile() {
         const fileInput = $('<input type="file">');
-        const dialog = $('<div><p>Select the file to be loaded into the editor.</p></div>').append(fileInput).dialog({
+        const dialog = $(`<div><p>
+            ${adminText('resourceLoadDialogMessage')}
+        </p></div>`).append(fileInput).dialog({
             modal: true,
-            title: "Load file",
+            title: adminText('resourceLoadDialogTitle'),
             close: function() { $(this).remove(); },
             buttons: { Cancel() { $(this).dialog('close'); } }
         });
@@ -225,7 +238,9 @@ const ResourceList = Backbone.View.extend({
             this.views.map(v => v.render().el)
         );
         if (userInfo.isadmin) {
-            this.$el.append(`<li class="new-resource">New ${this.ResourceModel.getLocalizedName()}</li>`);
+            this.$el.append(`<li class="new-resource">
+                ${adminText('newResourceName')(this.ResourceModel.getLocalizedName())}
+            </li>`);
         }
         return this;
     },
@@ -260,8 +275,8 @@ const ResourceList = Backbone.View.extend({
             modal: true,
             close: function() { $(this).remove(); },
             buttons: [
-                {text: 'Create', click: createResource},
-                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                {text: commonText('create'), click: createResource},
+                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
             ]});
         $('input', dialog).focus();
         $('form', dialog).submit(createResource);
@@ -322,7 +337,9 @@ const GlobalResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content" data-appdir="global">Global <small>(${this.resourceList.resources.length})</small></h3>`,
+            `<h3 class="toggle-content" data-appdir="global">
+                ${adminText('globalResourcesTitle')(this.resourceList.resources.length)}
+            </h3>`,
             this.resourceList.render().$el
                 .toggle(this.resourceList.containsSelected || getStoredToggleState(this.options.ResourceModel, 'global'))
         );
@@ -362,7 +379,9 @@ const DisciplinesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content" data-appdir="disciplines">Disciplines <small>(${this.count})</small></h3>`,
+            `<h3 class="toggle-content" data-appdir="disciplines">
+                ${adminText('disciplineResourcesTitle')(this.count)}
+            </h3>`,
             $('<div>').append(this.views.map(v => v.render().el))
                 .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'disciplines'))
         );
@@ -484,11 +503,11 @@ const CollectionResourcesView = Backbone.View.extend({
             $('<div>').append(
                 this.resourceList.render().el,
                 $('<h5 class="toggle-content" data-appdir="usertypes">')
-                    .text('User Types')
+                    .text(adminText('userTypes'))
                     .append(` <small>(${this.userTypeView.count})</small>`),
                 this.userTypeView.render().el,
                 $('<h5 class="toggle-content" data-appdir="users">')
-                    .text('Users')
+                    .text(adminText('users'))
                     .append(` <small>(${this.userView.count})</small>`),
                 this.userView.render().el
             ).toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.collection.get('resource_uri')))
