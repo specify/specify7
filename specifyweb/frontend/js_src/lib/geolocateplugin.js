@@ -7,6 +7,7 @@ const Q = require('q');
 const UIPlugin = require('./uiplugin.js');
 const querystring = require('./querystring.js');
 const schema = require('./schema.js');
+const localityText = require('./localization/locality.tsx').default
 
 module.exports =  UIPlugin.extend({
     __name__: "GeoLocatePlugin",
@@ -17,7 +18,7 @@ module.exports =  UIPlugin.extend({
         if (this.model.specifyModel.name !== "Locality") {
             throw new Error("geolocateplugin can only be used with locality resources");
         }
-        this.$el.attr('value', 'GEOLocate');
+        this.$el.attr('value', localityText('geolocate'));
         return this;
     },
     click: function(evt) {
@@ -27,10 +28,12 @@ module.exports =  UIPlugin.extend({
         }.bind(this));
     },
     geoRequired: function() {
-        $('<div title="Geography Required">' +
-          '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
-          'The GeoLocate plugin requires the geography field to be populated.</p></div>'
-         ).dialog({close: function(){ $(this).remove(); }});
+        $(`<div title="Geography Required">
+            <p>
+                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                ${localityText('geographyMustBeMapped')}
+            </p>
+        </div>`).dialog({close: function(){ $(this).remove(); }});
     },
     openGeoLocate: function(data) {
 
@@ -51,7 +54,7 @@ module.exports =  UIPlugin.extend({
             .dialog({
                 width: 'auto',
                 resizable: false,
-                title: 'GEOLocate',
+                title: localityText('geolocate'),
                 close: function() {
                     window.removeEventListener('message', listener, false);
                     $(this).remove();
@@ -67,7 +70,8 @@ module.exports =  UIPlugin.extend({
             long1text: long,
             longitude1: parseFloat(long),
             latlongtype: "Point",
-            latlongmethod: "GEOLocate" // Presumably available in picklist.
+            // Presumably available in picklist.
+            latlongmethod: localityText('geolocate')
         });
 
         const uncertaintyParsed = uncertainty === 'Unavailable' ? null : parseFloat(uncertainty);

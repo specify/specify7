@@ -24,6 +24,12 @@ const adminText = createDictionary({
     `Discipliine <small>(${resourceCount})</small>`,
   userTypes: 'User Types',
   users: 'Users',
+
+  setPassword: 'Set Password',
+  passwordLengthError: 'Password must have at least six characters.',
+  passwordsDoNotMatchError: 'Passwords do not match.',
+  saveUserBeforeSettingPasswordError: 'Save user before setting password.',
+
 });
 
 export default adminText;

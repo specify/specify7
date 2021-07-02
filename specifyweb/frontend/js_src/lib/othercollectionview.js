@@ -8,6 +8,7 @@ const singularTemplate = require('./templates/othercollectiontemplate.html');
 const pluralTemplate = require('./templates/othercollectionstemplate.html');
 const navigation =  require('./navigation.js');
 const userInfo = require('./userinfo.js');
+const formsText = require('./localization/forms.tsx').default;
 
 
 module.exports =  Backbone.View.extend({
@@ -38,8 +39,7 @@ module.exports =  Backbone.View.extend({
                 this.$('a').data('collection-id', this.collections[0].id).button();
                 this.$('span.collection-name').text(this.collections[0].get('collectionname'));
             } else {
-                this.$el.text("You do not have access to any collection containing this resource " +
-                              "through the currently logged in account.");
+                this.$el.text(formsText('noAccessToResource'));
             }
             return this;
         },

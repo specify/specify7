@@ -6,6 +6,8 @@ var Q = require('q');
 
 var Base   = require('./basepicklist.js');
 var schema = require('./schema.js');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 
 module.exports = Base.extend({
@@ -27,7 +29,7 @@ module.exports = Base.extend({
             if (!control.attr('disabled')) {
                 $('<a class="combobox-toggle ui-corner-right">')
                     .attr( "tabIndex", -1 )
-                    .attr( "title", "Show All Items" )
+                    .attr( "title", formsText('showAllItems') )
                     .appendTo( wrapper )
                     .button({
                         icons: {
@@ -107,18 +109,20 @@ module.exports = Base.extend({
             var resetValue = this.resetValue.bind(this);
             var doAddValue = this.doAddValue.bind(this, value);
 
-            var d = $('<div>Add value, <span class="pl-value"></span>, ' +
-                      'to the pick list named ' + '<span class="pl-name"></span>?' +
-                      '</div>')
-                    .dialog({
-                        title: "Add to pick list",
-                        modal: true,
-                        close: function() { $(this).remove(); },
-                        buttons: [
-                            { text: 'Add', click: function() { $(this).dialog('close'); doAddValue(); } },
-                            { text: 'Cancel', click: function() { $(this).dialog('close'); resetValue(); } }
-                        ]
-                    });
+            var d = $(`<div>
+                ${formsText('addToPickListConfirmationDialogMessage')(
+                    '<span class="pl-value"></span>',
+                    '<span class="pl-name"></span>'
+                )}
+            </div>`).dialog({
+                title: formsText('addToPickListConfirmationDialogTitle'),
+                modal: true,
+                close: function() { $(this).remove(); },
+                buttons: [
+                    { text: commonText('add'), click: function() { $(this).dialog('close'); doAddValue(); } },
+                    { text: commonText('cancel'), click: function() { $(this).dialog('close'); resetValue(); } }
+                ]
+            });
             d.find('.pl-value').text(value);
             d.find('.pl-name').text(this.info.pickList.get('name'));
         },

@@ -4,8 +4,8 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var UICmd            = require('./uicommand.js');
-var schema           = require('./schema.js');
 var PrepReturnDialog = require('./prepreturndialog.js');
+const formsText = require('./localization/forms.tsx').default;
 
 module.exports =  UICmd.extend({
     __name__: "LoanReturnCommand",
@@ -24,7 +24,7 @@ module.exports =  UICmd.extend({
     click: function(evt) {
         evt.preventDefault();
         if (this.model.isNew() || this.model.get('id') == null) {
-            $("<p>").append("Preparations cannot be returned in this context.").dialog({
+            $("<p>").append(formsText('preparationsCanNotBeReturned')).dialog({
                 modal: true,
                 width: 500,
                 title: this.$el[0].value,
@@ -39,7 +39,7 @@ module.exports =  UICmd.extend({
                 if (lps.length > 0) {
                     new PrepReturnDialog({ populateForm: this.populateForm, loanpreparations: lps }).render();
                 } else {
-                    $("<p>").append("There no unresolved preparations for this loan.").dialog({
+                    $("<p>").append(formsText('noUnresolvedPreparations')).dialog({
                         modal: true,
                         width: 500,
                         title: this.$el[0].value,

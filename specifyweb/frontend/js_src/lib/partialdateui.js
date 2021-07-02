@@ -9,6 +9,7 @@ var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
 var ToolTipMgr    = require('./tooltipmgr.js');
 var saveblockers  = require('./saveblockers.js');
+const formsText = require('./localization/forms.tsx').default;
 
     var precisions = ['full', 'month-year', 'year'];
 
@@ -118,13 +119,13 @@ module.exports =  UIPlugin.extend({
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
             } else {
                 this.model.saveBlockers.add('invaliddate:' + this.init.df, this.init.df,
-                                            invalidMessage || "Invalid date");
+                                            invalidMessage || formsText('invalidData'));
             }
         },
         updateFullDate: function() {
             var val = this.$('input.partialdateui-full').val().trim() || null;
             var m = val && moment(val, dateFormatStr(), true);
-            this.updateIfValid(m, "Required Format: " + dateFormatStr());
+            this.updateIfValid(m, `${formsText('requiredFormat')} ${dateFormatStr()}`);
         },
         updateMonth: function() {
             var orig = this.model.get(this.init.df);

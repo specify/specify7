@@ -8,6 +8,7 @@ var api = require('./specifyapi.js');
 var latlongutils = require('./latlongutils.js');
 var UIPlugin = require('./uiplugin.js');
 var template = require('./templates/latlonui.html');
+const localityText = require('./localization/locality.tsx').default;
 
 
 module.exports =  UIPlugin.extend({
@@ -71,18 +72,18 @@ module.exports =  UIPlugin.extend({
                     switch (type.val()) {
                     case 'Point':
                         tbody.find('tr').each(function(i) {
-                            if (i === 0) $(this).show().find('th').text('Coords');
+                            if (i === 0) $(this).show().find('th').text(localityText('coordinates'));
                             else $(this).hide();
                         });
                         break;
                     case 'Line':
                         tbody.find('tr').each(function(i) {
-                            $(this).show().find('th').text(['Start', 'End'][i]);
+                            $(this).show().find('th').text([localityText('start'),localityText('end')][i]);
                         });
                         break;
                     case 'Rectangle':
                         tbody.find('tr').each(function(i) {
-                            $(this).show().find('th').text(['NW Corner', 'SE Corner'][i]);
+                            $(this).show().find('th').text([localityText('northWestCorner'), localityText('southEastCorner')][i]);
                         });
                         break;
                     }

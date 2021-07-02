@@ -14,7 +14,9 @@ const commonText = createDictionary({
   close: 'Close',
   apply: 'Apply',
   applyAll: 'Apply All',
+  clearAll: 'Clear all',
   save: 'Save',
+  add: 'Add',
   delete: 'Delete',
   next: 'Next',
   previous: 'Previous',
@@ -29,6 +31,7 @@ const commonText = createDictionary({
   editName: 'Edit Name',
   details: 'Details',
   stop: 'Stop',
+  remove: 'Remove',
 
   // Error Boundary
   errorBoundaryDialogTitle: 'Unexpected Error',
@@ -45,6 +48,20 @@ const commonText = createDictionary({
   running: 'Running...',
   noMatches: 'No Matches',
 
+  // Unload Protection
+  leavePageDialogTitle: 'Leave Page?',
+  leave: 'Leave',
+
+  // Notifications
+  feedItemUpdated: 'Export feed item updated.',
+  updateFeedFailed: 'Export feed update failed.',
+  dwcaExportCompleted: 'DwCA export completed.',
+  dwcaExportFailed: 'DwCA export failed.',
+  queryExportToCsvCompleted: 'Query export to CSV completed.',
+  queryExportToKmlCompleted: 'Query export to KML completed.',
+  dataSetOwnershipTransferred: (userName: string, dataSetName: string) => `
+    ${userName} transferred the ownership of the ${dataSetName} dataset 
+    to you.`,
 });
 
 export default commonText;

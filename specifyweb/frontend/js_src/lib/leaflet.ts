@@ -15,7 +15,7 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
-import leafletText from './localization/leaflet';
+import localityText from './localization/locality';
 import { capitalize } from './wbplanviewhelper';
 
 const DEFAULT_ZOOM = 5;
@@ -97,7 +97,7 @@ export async function showLeafletMap({
   leafletMapContainer.dialog({
     width: 900,
     height: 600,
-    title: leafletText('geoMap'),
+    title: localityText('geoMap'),
     close() {
       map.remove();
       $(this).remove();
@@ -271,14 +271,14 @@ export function addMarkersToMap(
   map.on('overlayremove', handleOverlayEvent);
 
   // Add layer groups' checkboxes to the layer control menu
-  controlLayers.addOverlay(layerGroups.polygon, `${layerName} Polygons`);
+  controlLayers.addOverlay(layerGroups.polygon, localityText('occurrencePolygons')(layerName));
   controlLayers.addOverlay(
     layerGroups.polygonBoundary,
-    leafletText('polygonBoundaries')(layerName)
+    localityText('polygonBoundaries')(layerName)
   );
   controlLayers.addOverlay(
     layerGroups.errorRadius,
-    leafletText('errorRadius')(layerName)
+    localityText('errorRadius')(layerName)
   );
 }
 

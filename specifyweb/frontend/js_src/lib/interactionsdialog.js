@@ -14,6 +14,8 @@ var userInfo          = require('./userinfo.js');
 var InteractionDialog = require('./interactiondialog.js');
 var s                 = require('./stringlocalization.js');
 var reports           = require('./reports.js');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
     var interaction_entries, views, actions;
 
@@ -64,11 +66,14 @@ module.exports = Backbone.View.extend({
             var entries = _.map(interaction_entries, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: "Interactions",
+                title: formsText('formsText'),
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },
-                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
+                buttons: [{
+                    text: commonText('close'),
+                    click: function() { $(this).dialog('close'); }
+                }]
             });
             return this;
         },
@@ -132,7 +137,7 @@ module.exports = Backbone.View.extend({
                     autoSelectSingle: true
                 });
             } else {
-                alert(action.attr('action') + " action is not supported.");
+                alert(formsText('actionNotSupported')(action.attr('action')));
             }
         }
     });

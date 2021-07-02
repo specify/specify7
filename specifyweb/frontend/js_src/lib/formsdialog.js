@@ -10,6 +10,7 @@ var schema         = require('./schema.js');
 var icons          = require('./icons.js');
 var specifyform    = require('./specifyform.js');
 var initialContext = require('./initialcontext.js');
+const commonText = require('./localization/common.tsx').default;
 
 
     // I don't think the non-sidebar items are ever used in Sp6.
@@ -41,7 +42,10 @@ module.exports = Backbone.View.extend({
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },
-                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
+                buttons: [{
+                  text: commonText('cancel'),
+                  click: function() { $(this).dialog('close'); }
+                }]
             });
             return this;
         },

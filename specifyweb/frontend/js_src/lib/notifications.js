@@ -5,6 +5,7 @@ const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
 const moment = require('moment');
+const commonText = require('./localization/common.tsx').default;
 
 const Message = Backbone.Model.extend({
     __name__: "NotificationMessage"
@@ -50,41 +51,43 @@ $(document).on('visibilitychange', () => messageCollection.startFetching());
 const renderMessage = {
     'feed-item-updated': message => {
         const filename = message.get('file');
-        const rendered = $('<p>Export feed item updated. <a download></a></p>');
+        const rendered = $(`<p>${commonText('feedItemUpdated')} <a download></a></p>`);
         $('a', rendered).attr('href', '/static/depository/export_feed/' + filename).text(filename);
         return rendered;
     },
     'update-feed-failed': message => {
-        const rendered = $('<p>Export feed update failed. <a download>Exception</a></p>');
+        const rendered = $(`<p>${commonText('updateFeedFailed')} <a download>Exception</a></p>`);
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
     'dwca-export-complete': message => {
-        const rendered = $('<p>DwCA export completed. <a download>Download.</a></p>');
+        const rendered = $(`<p>${commonText('dwcaExportCompleted')} <a download>Download.</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
     'dwca-export-failed': message => {
-        const rendered = $('<p>DwCA export failed. <a download>Exception</a></p>');
+        const rendered = $(`<p>${commonText('dwcaExportFailed')} <a download>Exception</a></p>`);
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
     'query-export-to-csv-complete': message => {
-        const rendered = $('<p>Query export to CSV completed. <a download>Download.</a></p>');
+        const rendered = $(`<p>${commonText('queryExportToCsvCompleted')} <a download>Download.</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
     'query-export-to-kml-complete': message => {
-        const rendered = $('<p>Query export to KML completed. <a download>Download.</a></p>');
+        const rendered = $(`<p>${commonText('queryExportToKmlCompleted')} <a download>Download.</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
     'dataset-ownership-transferred': message =>
         $(`<p>
-          <i>${message.get('previous-owner-name')}</i> transfered the ownership of the
-          <a href="/specify/workbench/${message.get('dataset-id')}/">
-            <i>"${message.get('dataset-name')}"</i>
-          </a> dataset to you.
+            ${commonText('dataSetOwnershipTransferred')(
+                `<i>${message.get('previous-owner-name')}</i>`,
+                `<a href="/specify/workbench/${message.get('dataset-id')}/">
+                    <i>"${message.get('dataset-name')}"</i>
+                </a>`
+            )}
         </p>`),
     default: message => JSON.stringify(message.toJSON())
 };
@@ -103,7 +106,7 @@ const MessageView = Backbone.View.extend({
         const time = moment(this.message.get('timestamp')).format('lll');
         this.$el.append(
             `<span>${time}</span>`,
-            '<a class="ui-icon ui-icon-trash" style="float: right;">delete</a>',
+            `<a class="ui-icon ui-icon-trash" style="float: right;">${commonText('delete')}</a>`,
             render(this.message)
         );
         if (!this.message.get('read')) this.$el.addClass('unread-notification');

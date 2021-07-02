@@ -3,6 +3,7 @@
 const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
+const commonText = require('./localization/common.tsx').default;
 
 // We introduce a sequence variable that is incremented and passed in
 // the state argument of each history.pushState invocation. When a
@@ -109,17 +110,17 @@ function defaultConfirmNavigationHandler(proceed, cancel){
     const [key, message] = unloadBlockers[unloadBlockers.length - 1];
 
     $('<div>').text(message).dialog({
-        title: 'Leave Page?',
+        title: commonText('leavePageDialogTitle'),
         modal: true,
         close() {
             $(this).remove();
         },
         buttons: {
-            Cancel() {
+            [commonText('cancel')]() {
                 $(this).dialog('close');
                 cancel();
             },
-            Leave() {
+            [commonText('leave')]() {
                 $(this).dialog('close');
                 proceed();
             },
