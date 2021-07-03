@@ -17,6 +17,7 @@ function assertExhaustive(key: string): string | never {
     Trying to access the value for a non-existent localization key "${key}"`;
   if (process.env.NODE_ENV === 'production') {
     console.error(errorMessage);
+    // Convert a camel case key to a human readable form
     return camelToHuman(key);
   } else throw new Error(errorMessage);
 }

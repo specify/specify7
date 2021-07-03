@@ -1,13 +1,34 @@
+/*
+ *
+ * Walks through front-end files in search of invalid usages of localization
+ * keys.
+ *
+ * Accepts optional `--verbose` argument to enable verbose output
+ *
+ */
+
 import fs from 'fs';
 import path from 'path';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');
 
-const currentDirectory = path.dirname(path.dirname(process.argv[1]));
-const sourceDirectory = path.join(path.dirname(currentDirectory), 'lib');
-const localizationDirectory = path.join(sourceDirectory, 'localization');
+// CONFIGURATION
+/*
+ * When tests are build, this scrip would get executed from
+ * `js_src/testBuild/tests/testlocalization.js`. We need to go up two
+ * levels to get to the `js_src` directory.
+ * */
+const jsSrcDirectory = path.dirname(path.dirname(process.argv[1]));
+const libDirectory = path.join(path.dirname(jsSrcDirectory), 'lib');
+
+// Directory that contains the localization script
+const localizationDirectory = path.join(libDirectory, 'localization');
+
+// Directories that contain front-end source code (non-recursively)
 const directoriesToScan = ['./', './components', './templates'];
+
+// Decide whether verbose mode should be turned on
 const verbose = process.argv[2] === '--verbose';
 
 const log = console.log;
@@ -90,7 +111,7 @@ if (Object.keys(dictionaries).length === 0)
 const sourceFiles = directoriesToScan
   .flatMap((directoryName) =>
     fs
-      .readdirSync(path.join(sourceDirectory, directoryName))
+      .readdirSync(path.join(libDirectory, directoryName))
       .map((fileName) => path.join(directoryName, fileName))
   )
   .filter((fileName) =>
@@ -103,7 +124,7 @@ sourceFiles.forEach((fileName) => {
   if (verbose) log(`Looking for language string usages in ${fileName}`);
 
   const fileContent = fs
-    .readFileSync(path.join(sourceDirectory, fileName))
+    .readFileSync(path.join(libDirectory, fileName))
     .toString();
   let foundUsages = false;
 
