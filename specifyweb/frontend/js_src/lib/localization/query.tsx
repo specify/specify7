@@ -38,6 +38,7 @@ const queryText = createDictionary({
   missingRequiredPicklistValue: 'Invalid null selection',
 
   // QueryTask
+  queryTaskTitle: (queryName: string) => `Query: ${queryName}`,
   new: 'New',
   newButtonDescription: 'New Field',
   countOnly: 'Count',

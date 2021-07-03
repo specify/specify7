@@ -20,8 +20,6 @@ const cookies = require('./cookies.js');
 const treeText = require('./localization/tree.tsx').default;
 const commonText = require('./localization/common.tsx').default;
 
-var setTitle = app.setTitle;
-
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
         className: "tree-header",
@@ -90,8 +88,11 @@ var setTitle = app.setTitle;
                 selector: ".tree-node .expander",
                 build: contextMenuBuilder(this)
             });
-            var title = schema.getModel(this.table).getLocalizedName() + " Tree";
-            setTitle(title);
+            app.setTitle(
+                treeText('treeViewTitle')(
+                    schema.getModel(this.table).getLocalizedName()
+                )
+            );
             const controls = $('<div class="tree-controls"></div>');
             controls.appendTo(this.el);
             $('<h1>').text(title).appendTo(controls);

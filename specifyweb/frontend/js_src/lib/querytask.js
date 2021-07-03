@@ -18,8 +18,6 @@ var router             = require('./router.js');
 const queryText = require('./localization/query.tsx').default;
 const commonText = require('./localization/common.tsx').default;
 
-    var setTitle = app.setTitle;
-
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
         className: "query-view content-shadow-full-width",
@@ -41,7 +39,7 @@ const commonText = require('./localization/common.tsx').default;
         },
         render: function() {
             var title = 'Query: ' + this.query.get('name');
-            setTitle(title);
+            app.setTitle(queryText('queryTaskTitle')(this.query.get('name')));
             this.$el.append(template({ queryText, commonText, cid: this.cid }));
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());

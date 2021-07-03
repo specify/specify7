@@ -65,6 +65,7 @@ const treeText = createDictionary({
   acceptedName: 'Preferred:',
 
   // TreeView
+  treeViewTitle: (treeName: string)=>`${treeName} Tree`,
   searchTreePlaceholder: 'Search Tree',
   remember: 'Remember',
   rememberButtonDescription: 'Save Tree Layout',
