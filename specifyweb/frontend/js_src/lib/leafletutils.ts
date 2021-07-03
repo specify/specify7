@@ -15,7 +15,7 @@ import {
 import {
   formatReferenceItem,
   valueIsReferenceItem,
-} from './wbplanviewmodelhelper';
+} from './wbplanviewmappinghelper';
 
 export type Field<T> = { readonly headerName: string; readonly value: T };
 

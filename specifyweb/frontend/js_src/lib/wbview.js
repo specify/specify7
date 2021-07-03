@@ -28,7 +28,7 @@ const {
   getNameFromTreeRankName,
   formatReferenceItem,
   formatTreeRank,
-} = require('./wbplanviewmodelhelper');
+} = require('./wbplanviewmappinghelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
 } = require('./wbplanviewtreehelper.ts');
@@ -88,7 +88,7 @@ const WBView = Backbone.View.extend({
   initialize({ dataset, refreshInitiatedBy, refreshInitiatorAborted }) {
     this.dataset = dataset;
     this.data = dataset.rows;
-    this.originalData = this.data.map((row) => [...row]);
+    this.originalData = this.data.map((row) => Array.from(row));
     if (this.data.length < 1) {
       this.data.push(Array(this.dataset.columns.length).fill(null));
     }

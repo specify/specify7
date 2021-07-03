@@ -14,14 +14,14 @@ import type {
   UploadPlan,
 } from './uploadplantomappingstree';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
-import dataModelStorage from './wbplanviewmodel';
-import type { DataModelFieldWritable } from './wbplanviewmodelfetcher';
 import {
   getNameFromTreeRankName,
-  tableIsTree,
   valueIsReferenceItem,
   valueIsTreeRank,
-} from './wbplanviewmodelhelper';
+} from './wbplanviewmappinghelper';
+import dataModelStorage from './wbplanviewmodel';
+import type { DataModelFieldWritable } from './wbplanviewmodelfetcher';
+import { tableIsTree } from './wbplanviewmodelhelper';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 
 // TODO: make these functions type safe

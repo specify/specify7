@@ -9,12 +9,12 @@ import {
   getField,
   getLocalityData,
 } from './leafletutils';
-import type { SplitMappingPath } from './wbplanviewhelper';
-import { findSubArray } from './wbplanviewhelper';
+import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
+  findSubArray,
   mappingPathToString,
   splitJoinedMappingPath,
-} from './wbplanviewmodelhelper';
+} from './wbplanviewmappinghelper';
 
 const addBaseTableName = (
   baseTableName: string,

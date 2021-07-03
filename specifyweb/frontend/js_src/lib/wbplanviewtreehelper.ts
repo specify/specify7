@@ -11,8 +11,8 @@ import type {
   MappingType,
 } from './components/wbplanviewmapper';
 import type { ColumnOptions } from './uploadplantomappingstree';
-import type { SplitMappingPath } from './wbplanviewhelper';
-import { splitFullMappingPathComponents } from './wbplanviewhelper';
+import type { SplitMappingPath } from './wbplanviewmappinghelper';
+import { splitFullMappingPathComponents } from './wbplanviewmappinghelper';
 
 interface NestedRecord<T> extends R<T | NestedRecord<T>> {}
 

@@ -25,7 +25,6 @@ import {
 import wbText from './localization/workbench';
 import schema from './schema';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
-import { uniquifyHeaders } from './wbplanviewhelper';
 import {
   defaultColumnOptions,
   getLinesFromHeaders,
@@ -42,6 +41,7 @@ import {
   mutateMappingPath,
   savePlan,
   validate,
+  uniquifyHeaders,
 } from './wbplanviewutils';
 
 const modifyLine = (

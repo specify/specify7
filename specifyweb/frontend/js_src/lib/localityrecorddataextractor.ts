@@ -3,17 +3,17 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
 import { formatCoordinate, getLocalityData } from './leafletutils';
-import { generateMappingPathPreview } from './wbplanviewhelper';
-import dataModelStorage from './wbplanviewmodel';
-import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import {
   formatReferenceItem,
   formatTreeRank,
+  generateMappingPathPreview,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsReferenceItem,
   valueIsTreeRank,
-} from './wbplanviewmodelhelper';
+} from './wbplanviewmappinghelper';
+import dataModelStorage from './wbplanviewmodel';
+import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
 
 const splitMappingPath = (

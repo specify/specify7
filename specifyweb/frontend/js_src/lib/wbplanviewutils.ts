@@ -17,19 +17,20 @@ import type {
   LoadingState,
   MappingState,
 } from './components/wbplanviewstatereducer';
+import wbText from './localization/workbench';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
 import {
   findDuplicateMappings,
+  formatReferenceItem,
   renameNewlyCreatedHeaders,
-} from './wbplanviewhelper';
+  valueIsReferenceItem,
+  valueIsTreeRank,
+} from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
 import {
   findRequiredMissingFields,
-  formatReferenceItem,
   getMaxToManyValue,
-  valueIsReferenceItem,
-  valueIsTreeRank,
 } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { ChangeSelectElementValueAction } from './wbplanviewreducer';
@@ -371,3 +372,42 @@ export async function getAutomapperSuggestions({
     }).slice(baseMappingPath.length - pathOffset),
   }));
 }
+
+const formatUniqueifiedHeader = (
+  headers: RA<string>,
+  header: string,
+  initialIndex: number
+): string =>
+  `${header} (${
+    initialIndex +
+    ([...Array.from({ length: 2 ** 10 })]
+      .map((_, index) => index)
+      .find(
+        (index) => !headers.includes(`${header} (${initialIndex + index})`)
+      ) ?? 2 ** 10 + Math.floor(Math.random() * 2 ** 11))
+  })`;
+
+export const uniquifyHeaders = (
+  headers: RA<string>,
+  headersToUniquify: RA<number> | false = false
+): RA<string> =>
+  headers
+    .map((header) => (header ? header : wbText('noHeader')))
+    .map((header, index, headers) =>
+      headers.indexOf(header) === index ||
+      (Array.isArray(headersToUniquify) && !headersToUniquify.includes(index))
+        ? header
+        : formatUniqueifiedHeader(
+            headers,
+            header,
+            headers
+              .slice(0, index)
+              .reduce(
+                (numberOfOccurrences, headerOccurrence) =>
+                  header === headerOccurrence
+                    ? numberOfOccurrences + 1
+                    : numberOfOccurrences,
+                0
+              ) + 1
+          )
+    );

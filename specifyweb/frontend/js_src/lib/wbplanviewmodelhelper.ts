@@ -11,6 +11,13 @@ import type {
   MappingPath,
   RelationshipType,
 } from './components/wbplanviewmapper';
+import {
+  formatTreeRank,
+  getIndexFromReferenceItemName,
+  relationshipIsToMany,
+  valueIsReferenceItem,
+  valueIsTreeRank,
+} from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   DataModelField,
@@ -63,41 +70,6 @@ export const getTableRelationships = (
 export const tableIsTree = (tableName?: string): boolean =>
   typeof dataModelStorage.ranks[tableName ?? ''] !== 'undefined';
 
-/*
- * Returns whether relationship is a -to-many
- *	(e.x. one-to-many or many-to-many)
- *
- */
-export const relationshipIsToMany = (
-  relationshipType?: RelationshipType | ''
-): boolean => (relationshipType ?? '').includes('-to-many');
-
-/* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
-export const valueIsReferenceItem = (value?: string): boolean =>
-  value?.slice(0, dataModelStorage.referenceSymbol.length) ===
-    dataModelStorage.referenceSymbol || false;
-
-/* Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
-export const valueIsTreeRank = (value: string): boolean =>
-  value?.startsWith(dataModelStorage.treeSymbol) || false;
-
-/*
- * Returns index from a complete reference item value (e.x #1 => 1)
- * Opposite of formatReferenceItem
- *
- */
-export const getIndexFromReferenceItemName = (value: string): number =>
-  Number(value.slice(dataModelStorage.referenceSymbol.length));
-
-/*
- * Returns tree rank name from a complete tree rank name
- * (e.x $Kingdom => Kingdom)
- * Opposite of formatTreeRank
- *
- */
-export const getNameFromTreeRankName = (value: string): string =>
-  value.slice(dataModelStorage.treeSymbol.length);
-
 /* Returns the max index in the list of reference item values */
 export const getMaxToManyValue = (
   // List of reference item values
@@ -113,29 +85,6 @@ export const getMaxToManyValue = (
 
     return max;
   }, 0);
-
-/*
- * Returns a complete reference item from an index (e.x 1 => #1)
- * Opposite of getIndexFromReferenceItemName
- *
- */
-export const formatReferenceItem = (index: number): string =>
-  `${dataModelStorage.referenceSymbol}${index}`;
-
-/*
- * Returns a complete tree rank name from a tree rank name
- * (e.x Kingdom => $Kingdom)
- * Opposite of getNameFromTreeRankName
- *
- */
-export const formatTreeRank = (rankName: string): string =>
-  `${dataModelStorage.treeSymbol}${rankName}`;
-
-export const mappingPathToString = (mappingPath: MappingPath): string =>
-  mappingPath.join(dataModelStorage.pathJoinSymbol);
-
-export const splitJoinedMappingPath = (string: string): MappingPath =>
-  string.split(dataModelStorage.pathJoinSymbol);
 
 /* Iterates over the mappingsTree to find required fields that are missing */
 export function findRequiredMissingFields(

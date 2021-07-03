@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 import wbText from '../localization/workbench';
 
-import { uniquifyHeaders } from '../wbplanviewhelper';
+import { uniquifyHeaders } from '../wbplanviewutils';
 import { IR } from './wbplanview';
 
 const $ = require('jquery');

@@ -1,7 +1,7 @@
 import type { IR, R, RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
-import { formatReferenceItem, formatTreeRank } from './wbplanviewmodelhelper';
+import { formatReferenceItem, formatTreeRank } from './wbplanviewmappinghelper';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 

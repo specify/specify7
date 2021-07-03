@@ -11,7 +11,7 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
-import type { R, IR, RA } from './components/wbplanview';
+import type { IR, R, RA } from './components/wbplanview';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -25,25 +25,27 @@ import type {
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import { getCanonicalMappingPath } from './leafletutils';
-import { ColumnOptions } from './uploadplantomappingstree';
+import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
+import {
+  formatReferenceItem,
+  formatTreeRank,
+  getNameFromTreeRankName,
+  mappingPathToString,
+  relationshipIsToMany,
+  valueIsReferenceItem,
+  valueIsTreeRank,
+} from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   DataModelField,
   DataModelRelationship,
 } from './wbplanviewmodelfetcher';
 import {
-  formatReferenceItem,
-  formatTreeRank,
   getMaxToManyValue,
-  getNameFromTreeRankName,
   isCircularRelationship,
   isTooManyInsideOfTooMany,
-  mappingPathToString,
-  relationshipIsToMany,
   tableIsTree,
-  valueIsReferenceItem,
-  valueIsTreeRank,
 } from './wbplanviewmodelhelper';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {

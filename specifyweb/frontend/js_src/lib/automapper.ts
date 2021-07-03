@@ -21,21 +21,23 @@ import type {
 } from './components/wbplanviewmapper';
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
-import dataModelStorage from './wbplanviewmodel';
 import {
   formatReferenceItem,
   formatTreeRank,
   getIndexFromReferenceItemName,
   getNameFromTreeRankName,
+  mappingPathToString,
+  relationshipIsToMany,
+  valueIsReferenceItem,
+  valueIsTreeRank,
+} from './wbplanviewmappinghelper';
+import dataModelStorage from './wbplanviewmodel';
+import {
   getTableNonRelationshipFields,
   getTableRelationships,
   isCircularRelationship,
   isTooManyInsideOfTooMany,
-  mappingPathToString,
-  relationshipIsToMany,
   tableIsTree,
-  valueIsReferenceItem,
-  valueIsTreeRank,
 } from './wbplanviewmodelhelper';
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';

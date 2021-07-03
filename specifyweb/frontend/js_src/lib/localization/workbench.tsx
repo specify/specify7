@@ -250,6 +250,7 @@ const wbText = createDictionary({
   unloadProtectMessage: 'This mapping has not been saved.',
   newDataSetName: (date: string): string => `New Data Set ${date}`,
   newHeaderName: (index: number): string => `New Column ${index}`,
+  noHeader: '(no header)',
 
   // WbsDialog
   wbsDialogDefaultDialogTitle: (dataSetCount: number) =>

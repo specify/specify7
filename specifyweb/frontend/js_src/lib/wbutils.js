@@ -85,7 +85,9 @@ module.exports = Backbone.View.extend({
     const cellMetaObject = this.wbview.getCellMetaObject();
 
     const orderIt =
-      direction === 'next' ? (array) => array : (array) => [...array].reverse();
+      direction === 'next'
+        ? (array) => array
+        : (array) => Array.from(array).reverse();
 
     let matchedCell;
     let cellIsTypeCount = 0;
