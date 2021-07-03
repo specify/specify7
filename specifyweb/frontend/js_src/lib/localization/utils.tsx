@@ -1,4 +1,5 @@
 import type { RA, RR } from '../components/wbplanview';
+import { camelToHuman } from '../wbplanviewhelper';
 
 type Value = string | JSX.Element;
 type Dictionary = RR<string, Value | ((...args: RA<never>) => Value)>;
@@ -16,7 +17,7 @@ function assertExhaustive(key: string): string | never {
     Trying to access the value for a non-existent localization key "${key}"`;
   if (process.env.NODE_ENV === 'production') {
     console.error(errorMessage);
-    return key;
+    return camelToHuman(key);
   } else throw new Error(errorMessage);
 }
 
