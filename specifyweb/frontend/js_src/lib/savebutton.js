@@ -123,7 +123,7 @@ module.exports =  Backbone.View.extend({
                 var dialog = $(`<div>
                     <p>
                         <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-                        ${formsText('saveConflictDialogMessage')} 
+                        ${formsText('saveBlockedDialogMessage')} 
                     </p>
                     <ul class="saveblockers">
                     </ul>

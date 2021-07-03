@@ -45,7 +45,6 @@ const formsText = createDictionary({
     following fields:`,
   contract: 'Contract',
   expand: 'Expand',
-  remove: 'Remove',
 
   // Forms Dialog
   formsDialogTitle: 'Forms',
@@ -207,7 +206,6 @@ const formsText = createDictionary({
   lengthOverflow: (maxLength: string) =>
     `Value cannot be longer than ${maxLength}.`,
   requiredFormat: (format: string) => `Required Format: ${format}.`,
-  requiredField: 'Field is required.',
   noParser: (type: string) => `No parser for type ${type}`,
 
   // UserAgentsPlugin

@@ -18,7 +18,7 @@ module.exports =  UIPlugin.extend({
         if (this.model.specifyModel.name !== "Locality") {
             throw new Error("geolocateplugin can only be used with locality resources");
         }
-        this.$el.attr('value', localityText('geolocate'));
+        this.$el.attr('value', localityText('geoLocate'));
         return this;
     },
     click: function(evt) {
@@ -54,7 +54,7 @@ module.exports =  UIPlugin.extend({
             .dialog({
                 width: 'auto',
                 resizable: false,
-                title: localityText('geolocate'),
+                title: localityText('geoLocate'),
                 close: function() {
                     window.removeEventListener('message', listener, false);
                     $(this).remove();
@@ -71,7 +71,7 @@ module.exports =  UIPlugin.extend({
             longitude1: parseFloat(long),
             latlongtype: "Point",
             // Presumably available in picklist.
-            latlongmethod: localityText('geolocate')
+            latlongmethod: localityText('geoLocate')
         });
 
         const uncertaintyParsed = uncertainty === 'Unavailable' ? null : parseFloat(uncertainty);

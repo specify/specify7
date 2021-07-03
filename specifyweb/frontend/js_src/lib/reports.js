@@ -188,7 +188,7 @@ var FixImagesDialog = Backbone.View.extend({
             this.$el.append(`<b>${formsText('missingAttachments')}</b>`);
             $('<ul class="missing-attachments">').appendTo(this.el).append(
                 _.map(missingAttachments, function(f) {
-                    return $('<li>').append($('<a href="#" title="Fix.">').text(f))[0];
+                    return $('<li>').append($(`<a href="#" title="${formsText('fix')}">`).text(f))[0];
                 }));
         }
         makeDialog(this.$el, {

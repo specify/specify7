@@ -11,7 +11,6 @@ const commonText = createDictionary({
     `You do not have access to the collection ${collectionName}
     through the currently logged in account.`,
 
-  yes: 'Yes',
   no: 'No',
   back: 'Back',
   cancel: 'Cancel',
@@ -45,7 +44,6 @@ const commonText = createDictionary({
   labels: 'Labels',
   edit: 'Edit',
   ignore: 'Ignore',
-  query: 'Query',
   // A verb
   login: 'Login',
   start: 'Start',

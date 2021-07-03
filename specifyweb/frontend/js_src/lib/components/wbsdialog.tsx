@@ -112,7 +112,7 @@ function Dialog({
         properties={{
           title: showTemplates
             ? wbText('wbsDialogTemplatesDialogTitle')
-            : wbText('wbsDialogDefaultDialogTitle'),
+            : wbText('wbsDialogDefaultDialogTitle')(datasets.length),
           width: 600,
           minHeight: 300,
           buttons: {

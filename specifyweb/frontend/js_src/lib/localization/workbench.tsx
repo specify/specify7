@@ -252,7 +252,7 @@ const wbText = createDictionary({
   newHeaderName: (index: number): string => `New Column ${index}`,
 
   // WbsDialog
-  wbsDialogDefaultDialogTitle: (dataSetCount: string) =>
+  wbsDialogDefaultDialogTitle: (dataSetCount: number) =>
     `Data Sets (${dataSetCount})`,
   wbsDialogEmptyDefaultDialogMessage: 'Currently no Data Sets exist.',
   wbsDialogTemplatesDialogTitle: 'Copy plan from existing Sata Det',

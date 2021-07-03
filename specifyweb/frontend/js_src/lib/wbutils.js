@@ -655,12 +655,12 @@ module.exports = Backbone.View.extend({
     const updateButtons = (localityIndex) =>
       dialog.dialog('option', 'buttons', [
         {
-          text: wbText('previous'),
+          text: commonText('previous'),
           click: () => updateGeoLocate(localityIndex - 1),
           disabled: localityIndex === 0,
         },
         {
-          text: wbText('next'),
+          text: commonText('next'),
           click: () => updateGeoLocate(localityIndex + 1),
           disabled:
             localityIndex + 1 >=
@@ -907,7 +907,7 @@ module.exports = Backbone.View.extend({
         <li>
           <label>
             <input type="checkbox" name="applyToAll" checked>
-            ${wbText('applyAll')}
+            ${commonText('applyAll')}
           </label>
         </li>
       </ul>`

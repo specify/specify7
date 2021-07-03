@@ -119,7 +119,7 @@ module.exports =  UIPlugin.extend({
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
             } else {
                 this.model.saveBlockers.add('invaliddate:' + this.init.df, this.init.df,
-                                            invalidMessage || formsText('invalidData'));
+                                            invalidMessage || formsText('invalidDate'));
             }
         },
         updateFullDate: function() {

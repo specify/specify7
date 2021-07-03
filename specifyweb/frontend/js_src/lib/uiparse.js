@@ -23,7 +23,7 @@ var dateFormatStr = require('./dateformat.js');
                 break;
             default:
                 result.isValid = false;
-                result.reason = formsText('illegalBool'),(value);
+                result.reason = formsText('illegalBool')(value);
                 break;
             }
             return result;
@@ -156,7 +156,7 @@ module.exports = function(field, value) {
             return field.isRequired ? {
                 value: value,
                 isValid: false,
-                reason: "Field is required."
+                reason: formsText('requiredField')
             } : {
                 value: value,
                 isValid: true,

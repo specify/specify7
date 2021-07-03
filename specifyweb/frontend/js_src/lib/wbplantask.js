@@ -14,7 +14,7 @@ module.exports = function () {
         fetch(`/api/workbench/dataset/${id}/`).then((response) => {
           if (response.status === 404) {
             app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('pageNotFOund'));
+            app.setTitle(commonText('pageNotFound'));
           } else
             response
               .json()

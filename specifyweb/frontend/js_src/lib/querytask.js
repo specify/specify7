@@ -253,7 +253,7 @@ const commonText = require('./localization/common.tsx').default;
                 if (this.fieldUIs.length < 1) return;
                 $.post(postUrl, JSON.stringify(this.query));
                 $(`<div>
-                    ${queryText('queryExportStartedDialogMessage')}
+                    ${queryText('queryExportStartedDialogMessage')(fileDesc)}
                 </div>`).dialog({
                     title: queryText('queryExportStartedDialogTitle'),
                     modal: true,

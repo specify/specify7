@@ -47,7 +47,7 @@ module.exports =  Backbone.View.extend({
                 `);
                 this.$('a').data('collection-id', this.collections[0].id).button();
             } else {
-                this.$el.text(formsText('noAccessToResource'));
+                this.$el.text(commonText('noAccessToResource'));
             }
             return this;
         },
