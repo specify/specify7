@@ -206,7 +206,7 @@ module.exports = Backbone.View.extend({
     )
       return;
 
-    this.el.classList.remove('wb-hide-search-results');
+    this.toggleCellTypes(e, 'remove');
 
     const button = e.target;
     const buttonContainer = button.parentElement;

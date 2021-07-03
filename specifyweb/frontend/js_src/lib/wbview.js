@@ -242,10 +242,8 @@ const WBView = Backbone.View.extend({
     });
 
     this.updateValidationButton();
-    if (this.validationMode === 'static') {
+    if (this.validationMode === 'static')
       this.el.classList.remove('wb-hide-invalid-cells');
-      this.el.classList.add('wb-hide-new-cells');
-    }
 
     this.flushIndexedCellData = true;
 
@@ -1628,7 +1626,6 @@ const WBView = Backbone.View.extend({
       case 'static':
         this.getValidationResults();
         this.el.classList.remove('wb-hide-invalid-cells');
-        this.el.classList.add('wb-hide-new-cells');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
         break;
