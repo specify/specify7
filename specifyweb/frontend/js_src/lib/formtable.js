@@ -130,6 +130,8 @@ module.exports =  Backbone.View.extend({
             this.lastRender = this.collection.pluck('cid');
 
             var header = $(subviewheader({
+                formsText,
+                commonText,
                 title: this.title,
                 dependent: this.field.isDependent()
             }));

@@ -16,7 +16,6 @@ const SaveButton = require('./savebutton.js');
 const DeleteButton = require('./deletebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
-const newResourceTmpl = require('./templates/newappresource.html');
 const adminText = require('./localization/admin.tsx').default;
 const commonText = require('./localization/common.tsx').default;
 
@@ -185,7 +184,7 @@ const ResourceDataView = Backbone.View.extend({
             modal: true,
             title: adminText('resourceLoadDialogTitle'),
             close: function() { $(this).remove(); },
-            buttons: { Cancel() { $(this).dialog('close'); } }
+            buttons: { [commonText('cancel')]() { $(this).dialog('close'); } }
         });
         fileInput.on('change', () => {
             const file = fileInput[0].files[0];
@@ -239,7 +238,7 @@ const ResourceList = Backbone.View.extend({
         );
         if (userInfo.isadmin) {
             this.$el.append(`<li class="new-resource">
-                ${adminText('newResourceName')(this.ResourceModel.getLocalizedName())}
+                ${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}
             </li>`);
         }
         return this;
@@ -271,7 +270,13 @@ const ResourceList = Backbone.View.extend({
             thisCreateResource( $('input', this).val() );
         };
 
-        const dialog = $(newResourceTmpl()).dialog({
+        const dialog = $(`<div>
+            <form>
+                <label style="white-space: nowrap;">${adminText('newResourceName')} <input type="text"></label>
+                <input type="submit" style="display: none;">
+            </form>
+        </div>`).dialog({
+            dialog: adminText('createResourceDialogTitle'),
             modal: true,
             close: function() { $(this).remove(); },
             buttons: [

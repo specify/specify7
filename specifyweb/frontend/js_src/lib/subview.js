@@ -8,6 +8,8 @@ var schema         = require('./schema.js');
 var specifyform    = require('./specifyform.js');
 var QueryCbxSearch = require('./querycbxsearch.js');
 var subviewheader = require('./templates/subviewheader.html');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "Subview",
@@ -31,6 +33,8 @@ module.exports =  Backbone.View.extend({
             var self = this;
             self.$el.empty();
             var header = $(subviewheader({
+                formsText,
+                commonText,
                 title: self.title,
                 dependent: self.field.isDependent()
             }));

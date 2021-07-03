@@ -171,7 +171,7 @@ const formsText = require('./localization/forms.tsx').default;
             if (!self.related.isNew() && !self.field.isDependent()) {
                 const link = `<a href="${self.related.viewUrl()}">
                     <span class="ui-icon ui-icon-link">
-                        ${formsText('formsText')}
+                        ${formsText('link')}
                     </span>
                 </a>`;
                 self.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(link);

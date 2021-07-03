@@ -114,7 +114,7 @@ const template = require('./templates/attachmentbrowser.html');
         },
         render: function() {
             var self = this;
-            self.$el.html(template());
+            self.$el.html(template({formsText}));
 
             var resize = function() {
                 self.setSize();
@@ -200,7 +200,7 @@ const template = require('./templates/attachmentbrowser.html');
                     dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
                         `<a href="${resource.viewUrl()}">
                             <span class="ui-icon ui-icon-link">
-                                ${formsText('link')}
+                                ${formsText('linkInline')}
                             </span>
                         </a>`
                     );

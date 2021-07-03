@@ -76,7 +76,7 @@ module.exports = Backbone.View.extend({
                 { text: commonText('new'), click: this.openFormsDialog.bind(this),
                   title: formsText('createRecordSetButtonDescription') }
             ];
-            buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
+            buttons.push({ text: commonText('cancel'), click: function() { $(this).dialog('close'); }});
             return buttons;
         },
         openFormsDialog: function() {

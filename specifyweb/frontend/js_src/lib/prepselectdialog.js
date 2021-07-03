@@ -300,7 +300,7 @@ module.exports =  PrepDialog.extend({
 
                 $('<a>', { href: resourceModel.viewUrl() })
                     .addClass('intercept-navigation')
-                    .append(`<span class="ui-icon ui-icon-link">${formsText('link')}</span>`)
+                    .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
                     .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             });
         },

@@ -226,6 +226,7 @@ const wbText = createDictionary({
   matchingLogic: 'Matching Logic',
   clearMappings: 'Clear Mappings',
   validateMappings: 'Validate Mappings',
+  validated: 'Validated!',
   emptyDataSetDialogTitle: 'Empty Data Set detected',
   emptyDataSetDialogMessage: (
     <>

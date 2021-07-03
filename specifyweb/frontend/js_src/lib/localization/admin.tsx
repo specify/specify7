@@ -17,18 +17,23 @@ const adminText = createDictionary({
     being saved by another session. It can be deleted if that is not the case.`,
   resourceLoadDialogTitle: 'Load file',
   resourceLoadDialogMessage: 'Select the file to be loaded into the editor.',
-  newResourceName: (modelName: string) => `New ${modelName}`,
   globalResourcesTitle: (resourceCount: string) =>
     `Global <small>(${resourceCount})</small>`,
   disciplineResourcesTitle: (resourceCount: string) =>
     `Discipliine <small>(${resourceCount})</small>`,
   userTypes: 'User Types',
   users: 'Users',
+  createResourceDialogTitle: 'New Resource Name',
+  newResourceName: 'New Resource Name:',
 
   setPassword: 'Set Password',
   passwordLengthError: 'Password must have at least six characters.',
   passwordsDoNotMatchError: 'Passwords do not match.',
   saveUserBeforeSettingPasswordError: 'Save user before setting password.',
+
+  // PasswordChange
+  password: 'Password',
+  confirmPassword: 'Confirm',
 
   // UserCollectionsPlugin
   collections: 'Collections',

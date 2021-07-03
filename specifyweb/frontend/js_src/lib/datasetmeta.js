@@ -110,7 +110,7 @@ export const DataSetMeta = Backbone.View.extend({
       ${commonText('createdBy')} <i class="created-by-field">
         ${commonText('loading')}
       </i><br>
-      ${commonText('modifiedText')} <i class="modified-by-field">
+      ${commonText('modifiedBy')} <i class="modified-by-field">
         ${commonText('loading')}
       </i><br>
       ${wbText('importedFileName')} <i>${

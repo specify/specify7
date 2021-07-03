@@ -3,7 +3,6 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-var template = require('./templates/confirmdelete.html');
 
 const commonText = require('./localization/common.tsx').default;
 const formsText = require('./localization/forms.tsx').default;
@@ -71,7 +70,10 @@ module.exports =  Backbone.View.extend({
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            $(template({warning: this.warning})).dialog({
+            $(`<div><p>
+                ${this.warning ?? formsText('deleteConfirmationDialogMessage')}
+            </p></div>`).dialog({
+                title: formsText('deleteConfirmationDialogTitle'),
                 resizable: false,
                 close: function() { $(this).remove(); },
                 modal: true,

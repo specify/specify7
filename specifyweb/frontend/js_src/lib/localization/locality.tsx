@@ -24,6 +24,17 @@ const localityText = createDictionary({
   end: 'End',
   northWestCorner: 'NW Corner',
   southEastCorner: 'SE Corner',
+
+  // LatLongUI
+  point: 'Point',
+  line: 'Line',
+  rectangle: 'Rectangle',
+  source: 'Source',
+  parsed: 'Parsed',
+  latitude: 'Latitude',
+  longitude: 'Longitude',
+  coords: 'Coords',
+  notApplicable: 'N/A',
 });
 
 export default localityText;

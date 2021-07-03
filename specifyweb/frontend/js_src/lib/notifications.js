@@ -170,7 +170,7 @@ module.exports = Backbone.View.extend({
 
         const dialog = this.dialog = new MessageList({collection: this.collection});
         this.dialog.$el.dialog({
-            title: 'Notifications',
+            title: commonText('notificationsDialogTitle'),
             maxHeight: 400,
             position: {my: 'center top', at: 'center bottom', of: this.$el},
             close: () => {

@@ -66,7 +66,7 @@ module.exports = Backbone.View.extend({
             var entries = _.map(interaction_entries, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: formsText('formsText'),
+                title: commonText('interactions'),
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },

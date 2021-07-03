@@ -15,7 +15,7 @@ const adminText = require('./localization/admin.tsx').default;
         },
         render: function() {
             this.$el.attr('title', adminText('setPassword'));
-            this.$el.append(template());
+            this.$el.append(template({adminText}));
             this.$el.dialog({
                 modal: true,
                 width: 'auto',

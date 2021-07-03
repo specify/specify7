@@ -36,6 +36,30 @@ const queryText = createDictionary({
     results ${exportFileType} file is ready for download.`,
   invalidPicklistValue: (value: string) => `${value} (current, invalid value)`,
   missingRequiredPicklistValue: 'Invalid null selection',
+
+  // QueryTask
+  new: 'New',
+  newButtonDescription: 'New Field',
+  countOnly: 'Count',
+  distinct: 'Distinct',
+  format: 'Format',
+  query: 'Query',
+  createCsv: 'Create CSV',
+  createKml: 'Create KML',
+  makeRecordSet: 'Make Record Set',
+  abandonChanges: 'Abandon Changes',
+  saveAs: 'Save As',
+
+  // QueryField
+  expand: 'Expand',
+  expandButtonDescription: 'Field is valid and will be saved. Click to expand',
+  sort: 'Sort',
+  moveUp: 'Move up',
+  moveDown: 'Move down',
+  showButtonDescription: 'Show in results',
+
+  // QueryResultsTable
+  results: 'Results:',
 });
 
 export default queryText;

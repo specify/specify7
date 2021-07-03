@@ -125,7 +125,7 @@ module.exports =  UIPlugin.extend({
         format(co).done(function(text) { label.text(text); });
         var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
         otherColFormatted.done(function(text) { collection.text(text); });
-        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: "Remove"}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
+        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: commonText('remove')}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
     },
     gotRelatedObjects: function(collectionObjects) {
         var otherCollectionFormatted = format(this.otherCollection);

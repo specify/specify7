@@ -22,7 +22,7 @@ module.exports =  Backbone.View.extend({
     },
     render: function() {
         this.formatter && this.$el.attr(
-            'title', formsText('formText')(this.formatter.pattern() || this.formatter.value())
+            'title', formsText('formatPopUp')(this.formatter.pattern() || this.formatter.value())
         );
         const placeholder = this.formatStr || (this.formatter && this.formatter.pattern());
         console.log('placeholder', placeholder);

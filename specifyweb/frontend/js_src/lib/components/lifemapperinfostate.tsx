@@ -111,7 +111,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   ? {
                       buttons: [
                         {
-                          text: `Close`,
+                          text: commonText('close'),
                           click: (): void =>
                             dispatch({
                               type: 'ToggleAggregatorVisibilityAction',

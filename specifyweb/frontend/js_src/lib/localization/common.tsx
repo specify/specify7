@@ -52,6 +52,7 @@ const commonText = createDictionary({
   update: 'Update',
   generate: 'Generate',
   loadingInline: '(loading...)',
+  listTruncated: '(list truncated)',
 
   // Toolbar
   attachments: 'Attachments',
@@ -67,6 +68,10 @@ const commonText = createDictionary({
   feedExportStartedDialogMessage: `
     Update started. You will receive a notification for each feed item
     updated.`,
+  dwcaExportStartedDialogTitle: 'Make DwCA',
+  dwcaExportStartedDialogMessage: `
+    Export started. You will receive a notification
+    when the export is complete.`,
   interactions: 'Interactions',
   generateMasterKey: 'Generate Master Key',
   generateMasterKeyDialogTitle: 'Generate Master Key',
@@ -97,6 +102,9 @@ const commonText = createDictionary({
   manageUsers: 'Manage Users',
   manageUsersDialogTitle: 'Manage Users',
   workbench: 'WorkBench',
+  chooseDwcaDialogTitle: 'Choose DwCA',
+  dwcaDefinition: 'DwCA definition:',
+  metadataResource: 'Metadata resource:',
 
   // Error Boundary
   errorBoundaryDialogTitle: 'Unexpected Error',
@@ -118,6 +126,7 @@ const commonText = createDictionary({
   leave: 'Leave',
 
   // Notifications
+  notificationsDialogTitle: 'Notifications',
   feedItemUpdated: 'Export feed item updated.',
   updateFeedFailed: 'Export feed update failed.',
   dwcaExportCompleted: 'DwCA export completed.',
@@ -127,6 +136,17 @@ const commonText = createDictionary({
   dataSetOwnershipTransferred: (userName: string, dataSetName: string) => `
     ${userName} transferred the ownership of the ${dataSetName} dataset 
     to you.`,
+
+  // OtherCollectionView
+  noAccessToResource: `
+    You do not have access to any collection containing this resource
+    through the currently logged in account`,
+  resourceInaccessible: `
+    The requested resource cannot be accessed while logged into the
+    current collection.`,
+  selectCollection: 'Select one of the following collections:',
+  loginToProceed: (collectionName: string) => `
+    You can login to the collection, ${collectionName}, to proceed:`,
 
   // SpecifyApp
   versionMismatchDialogTitle: 'Version Mismatch',
@@ -152,8 +172,6 @@ const commonText = createDictionary({
   logOut: 'Log out',
   changePassword: 'Change password',
   userToolsDialogTitle: '',
-
-
 });
 
 export default commonText;

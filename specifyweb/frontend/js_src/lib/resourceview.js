@@ -83,6 +83,7 @@ const ResourceView = Backbone.View.extend({
         var self = this;
         self.$el.empty();
         self.header = self.options.noHeader ? null : $(viewheader({
+            formsText,
             viewTitle: self.model.specifyModel.getLocalizedName(),
             recordsetInfo: self.recordsetInfo,
             recordsetName: self.recordSet && self.recordSet.get('name'),

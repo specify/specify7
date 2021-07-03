@@ -16,7 +16,7 @@ function execute() {
     title: commonText('resourcesDialogTitle'),
     close: function() { $(this).remove(); },
     buttons: {
-        Cancel: function() { $(this).dialog('close'); }
+        [commonText('cancel')]: function() { $(this).dialog('close'); }
     }
 });
 }

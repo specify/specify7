@@ -53,11 +53,11 @@ const commonText = require('./localization/common.tsx').default;
                 table.append(makeEntry(query));
             });
             this.options.queries.isComplete() ||
-                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+                table.append(`<tr><td></td><td>${commonText('listTruncated')}</td></tr>`);
 
             this.$el.append(table);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
-                title: commonText('queriesDialogTitlethis')(options.queries._totalCount),
+                title: commonText('queriesDialogTitle')(this.options.queries._totalCount),
                 maxHeight: 400,
                 buttons: [
                     {text: commonText('new'), click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }},

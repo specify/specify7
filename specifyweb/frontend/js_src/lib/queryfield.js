@@ -10,6 +10,7 @@ var domain            = require('./domain.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var QueryFieldInputUI = require('./queryfieldinput.js');
 const queryText = require('./localization/query.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -67,7 +68,7 @@ module.exports =  Backbone.View.extend({
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
-            this.$el.append(template({cid: this.cid}));
+            this.$el.append(template({commonText, queryText, cid: this.cid}));
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 

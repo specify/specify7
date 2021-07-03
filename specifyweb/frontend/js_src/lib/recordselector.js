@@ -212,6 +212,8 @@ module.exports =  Backbone.View.extend({
 
             this.noHeader || new Header({
                 el: subviewheader({
+                    formsText,
+                    commonText,
                     title: this.title,
                     dependent: this.dependent
                 }),

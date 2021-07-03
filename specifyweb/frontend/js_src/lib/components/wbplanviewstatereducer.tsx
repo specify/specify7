@@ -363,6 +363,11 @@ export const stateReducer = generateReducer<
                           type: 'ValidationAction',
                         })
                       }
+                      style={
+                        {
+                          '--text-content': wbText('validated'),
+                        } as React.CSSProperties
+                      }
                     >
                       {wbText('validateMappings')}
                     </button>
@@ -586,7 +591,7 @@ export const stateReducer = generateReducer<
               properties={{
                 title: wbText('nothingToValidateDialogTitle'),
                 buttons: {
-                  Close: () =>
+                  [commonText('close')]: () =>
                     state.dispatch({
                       type: 'CloseInvalidValidationDialogAction',
                     }),
@@ -602,7 +607,9 @@ export const stateReducer = generateReducer<
               properties={{
                 title: wbText('matchingLogicDialogTitle'),
                 buttons: {
-                  [commonText('apply')]: handleMappingOptionsDialogClose,
+                  [Object.keys(state.mustMatchPreferences).length === 0
+                    ? commonText('close')
+                    : commonText('apply')]: handleMappingOptionsDialogClose,
                 },
               }}
             >

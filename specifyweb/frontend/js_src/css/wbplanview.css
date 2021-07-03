@@ -58,12 +58,13 @@
 }
 
 .validation-indicator-success {
+  --text-content: 'Validated!';
   position: relative;
 }
 
 .validation-indicator-success::after {
   background: #0f0;
-  content: 'Validated!';
+  content: var(--text-content);
   position: absolute;
   left: 0;
   right: 0;

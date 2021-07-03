@@ -24,7 +24,7 @@ const commonText = require('./localization/common.tsx').default;
     router
         .route('*whatever', 'notFound', function() {
             app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('commonText'));
+            app.setTitle(commonText('pageNotFound'));
         })
         .route('test_error/', 'testError', function() {
             $.get('/api/test_error/');

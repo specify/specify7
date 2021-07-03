@@ -3,7 +3,6 @@
 const $ = require('jquery');
 const Q = require('q');
 const chooseTmpl = require('./templates/chooseDwCADef.html');
-const startedTmpl = require('./templates/dwcaExportStarted.html');
 const commonText = require('./localization/common.tsx').default;
 
 const title = commonText('makeDwca');
@@ -21,14 +20,15 @@ function execute() {
         });
     }
 
-    dialog = $(chooseTmpl()).dialog({
-    modal: true,
-    title: title,
-    close: function() { $(this).remove(); dialog = null; },
-    buttons: [
-        {text: commonText('start'), click: next},
-        {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
-    ]});
+    dialog = $(chooseTmpl({commonText})).dialog({
+        modal: true,
+        title: commonText('chooseDwcaDialogTitle'),
+        close: function() { $(this).remove(); dialog = null; },
+        buttons: [
+            {text: commonText('start'), click: next},
+            {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
+        ]}
+    );
 
     $('input.dwca-definition', dialog).focus();
     $('form', dialog).submit(next);
@@ -76,9 +76,11 @@ function startExport(definition, metadata) {
 
     $.post('/export/make_dwca/', params).done(() => {
         dialog.dialog('close');
-        dialog = $(startedTmpl()).dialog({
+        dialog = $(`<div>
+            ${commonText('dwcaExportStartedDialogMessage')}
+        </div>`).dialog({
             modal: true,
-            title: title,
+            title: commonText('dwcaExportStartedDialogTitle'),
             close: function() { $(this).remove(); dialog = null; },
             buttons: [
                 {text: commonText('close'), click: function() { $(this).dialog('close'); }}

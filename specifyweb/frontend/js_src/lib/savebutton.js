@@ -4,8 +4,6 @@ var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
 
-var saveblocked = require('./templates/saveblocked.html');
-var conflict = require('./templates/conflict.html');
 const navigation = require('./navigation.js');
 const formsText = require('./localization/forms.tsx').default;
 const commonText = require('./localization/common.tsx').default;
@@ -107,7 +105,11 @@ module.exports =  Backbone.View.extend({
                     .fail(function(jqXHR) {
                         if (jqXHR.status === 409) {
                             jqXHR.errorHandled = true;
-                            $(conflict()).dialog({
+                            $(`<div><p>
+                                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                                ${formsText('saveConflictDialogMessage')}
+                            </p></div>`).dialog({
+                                title: formsText('saveConflictDialogTitle'),
                                 resizable: false,
                                 modal: true,
                                 open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
@@ -118,7 +120,15 @@ module.exports =  Backbone.View.extend({
                         }
                     });
             } else {
-                var dialog = $(saveblocked()).appendTo(this.el).dialog({
+                var dialog = $(`<div>
+                    <p>
+                        <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+                        ${formsText('saveConflictDialogMessage')} 
+                    </p>
+                    <ul class="saveblockers">
+                    </ul>
+                </div>`).appendTo(this.el).dialog({
+                    title: formsText('saveBlockedDialogTitle'),
                     resizable: false,
                     modal: true,
                     close: function() { return dialog.remove(); }

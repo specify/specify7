@@ -315,7 +315,7 @@ var QueryCbx = Backbone.View.extend({
         var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
         var fieldTitles = searchFields.map(
             f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
-        control.attr('title', queryText('queryText')(fieldTitles));
+        control.attr('title', queryText('queryBoxDescription')(fieldTitles));
 
         this.readOnly || control.autocomplete({
             minLength: 1,

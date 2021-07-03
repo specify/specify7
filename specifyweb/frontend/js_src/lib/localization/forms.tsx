@@ -9,7 +9,7 @@ const formsText = createDictionary({
   attachmentServerUnavailable: 'Attachment server unavailable.',
   tables: 'Tables',
   openDataDialogTitle: 'Opening...',
-  link: 'link',
+  linkInline: 'link',
 
   // BusinessRules
   valueMustBeUniqueToField: (fieldName: string) =>
@@ -47,6 +47,9 @@ const formsText = createDictionary({
   expand: 'Expand',
   remove: 'Remove',
 
+  // Forms Dialog
+  formsDialogTitle: 'Forms',
+
   // Interactions
   addItems: 'Add Items',
   recordReturn: (modelName: string) => `${modelName} Return`,
@@ -76,11 +79,6 @@ const formsText = createDictionary({
   returnSelectedPreparations: 'Return selected preparations',
   selectAllAvailablePreparations: 'Select all available preparations',
 
-  // OtherCollectionView
-  noAccessToResource: `
-    You do not have access to any collection containing this resource
-    through the currently logged in account`,
-
   // PaleoLocationPlugin
   paleoMap: 'Paleo Map',
   paleoRequiresGeographyDialogTitle: 'Geography Required',
@@ -98,6 +96,21 @@ const formsText = createDictionary({
 
   // DateParser
   invalidDate: 'Invalid Date',
+
+  // DeleteButton
+  deleteConfirmationDialogTitle: 'Delete?',
+  deleteConfirmationDialogMessage: `
+    This item(s) will be permanently deleted and cannot be
+    recovered. Confirm delete?`,
+
+  // PartialDateUi
+  fullDate: 'Full Date',
+  monthYear: 'Mon / Year',
+  year: 'Year',
+  monthPlaceholder: 'MM',
+  yearPlaceholder: 'YYYY',
+  today: 'Today',
+  todayButtonDescription: 'Set to current date',
 
   // PickListBox
   showAllItems: 'Show All Items',
@@ -123,7 +136,6 @@ const formsText = createDictionary({
   // Reports
   reportsCanNotBePrinted: 'Reports/Labels cannot be printed in this context.',
   noReportsAvailable: 'No reports are available for this table.',
-  listTruncated: '(list truncated)',
   reportProblemsDialogTitle: 'Problems with report',
   reportsProblemsDialogMessage:
     'The selected report has the following problems:',
@@ -140,10 +152,19 @@ const formsText = createDictionary({
   missingFormDefinitionPageHeading: 'Missing form definition',
   missingFormDefinitionPageContent: `
     Specify was unable to find the form definition to display this resource`,
+  addingToRecordSet: 'Adding to Record Set and Database',
 
   // SaveButton
   unsavedFormUnloadProtect: 'This form has not been saved.',
   saveAndAddAnother: 'Save and Add Another',
+  saveConflictDialogTitle: 'Conflict',
+  saveConflictDialogMessage: ` 
+    The data shown on this page has been changed by another user or in
+    another browser tab and is out of date. The page must be reloaded to
+    prevent inconsistent data from being saved.`,
+  saveBlockedDialogTitle: 'Save blocked',
+  saveBlockedDialogMessage:
+    'Form cannot be saved while the following errors exist:',
 
   // ShowTransCommand
   resolvedLoans: 'Resolved Loans',
@@ -169,6 +190,10 @@ const formsText = createDictionary({
     It was probably included on this form from <i>Specify&nbsp6</i> and
     may be supported in the future.`,
   pluginName: 'Plugin name:',
+
+  // SubViewHeader
+  link: 'Link',
+  visit: 'Visit',
 
   // UiInputField
   formatPopUp: (format: string) => `Format: ${format}`,

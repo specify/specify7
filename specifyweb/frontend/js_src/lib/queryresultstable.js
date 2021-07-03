@@ -8,6 +8,7 @@ var Backbone  = require('./backbone.js');
 var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
+const queryText = require('./localization/query.tsx').default;
 const commonText = require('./localization/common.tsx').default;
 
     function renderHeader(fieldSpec) {
@@ -36,7 +37,7 @@ const commonText = require('./localization/common.tsx').default;
             return $('<thead>').append(header);
         },
         render: function() {
-            var inner = $(template());
+            var inner = $(template({queryText}));
             this.$el.append(inner);
             var table = this.$('table.query-results');
             this.$('.query-results-count').text(commonText('loadingInline'));

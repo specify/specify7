@@ -27,7 +27,7 @@ module.exports =  UIPlugin.extend({
             var resource = this.model;
 
             resource.fetchIfNotPopulated().done(function() {
-                var plugin = $(template());
+                var plugin = $(template({localityText}));
                 var tbody = plugin.find('tbody');
                 tbody.append(tbody.find('tr').clone().hide());
                 tbody.find('input').each(function(i) {

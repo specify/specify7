@@ -25,7 +25,7 @@ module.exports =  UIPlugin.extend({
         render: function() {
             var init = this.init;
             var disabled = this.$el.prop('disabled');
-            var ui = $(template());
+            var ui = $(template({formsText}));
             var select = ui.find('select');
             select.prop('id', this.$el.prop('id'));
 

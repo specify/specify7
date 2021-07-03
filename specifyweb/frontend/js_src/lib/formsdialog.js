@@ -11,6 +11,7 @@ var icons          = require('./icons.js');
 var specifyform    = require('./specifyform.js');
 var initialContext = require('./initialcontext.js');
 const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms.tsx').default;
 
 
     // I don't think the non-sidebar items are ever used in Sp6.
@@ -38,7 +39,7 @@ module.exports = Backbone.View.extend({
             var entries = _.map(views, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: "Forms",
+                title: formsText('formsDialogTitle'),
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },

@@ -79,13 +79,13 @@ var ReportListDialog = Backbone.View.extend({
                 .append(`<h2>${commonText('labels')}</h2>`).append(labels);
 
             if(this.options.appResources.isComplete())
-                this.$el.append(`<p>${formsText('listTruncated')}</p>`);
+                this.$el.append(`<p>${commonText('listTruncated')}</p>`);
 
             makeDialog(this.$el, {
                 title: title,
                 maxHeight: 400,
                 buttons: [{
-                    text: commonText('Close'),
+                    text: commonText('close'),
                     click: function() {
                         $(this).dialog('close');
                     }
@@ -375,7 +375,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         var table = $('<table>');
         table.append.apply(table, this.recordSets.map(this.dialogEntry, this));
         this.recordSets.isComplete() ||
-            table.append(`<tr><td></td><td>${formsText('listTruncated')}</td></tr>`);
+            table.append(`<tr><td></td><td>${commonText('listTruncated')}</td></tr>`);
         this.$el.append(table);
         makeDialog(this.$el, {
             title: formsText('labelFromRecordSetDialogTitle'),

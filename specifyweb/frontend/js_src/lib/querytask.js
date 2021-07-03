@@ -42,7 +42,7 @@ const commonText = require('./localization/common.tsx').default;
         render: function() {
             var title = 'Query: ' + this.query.get('name');
             setTitle(title);
-            this.$el.append(template({ cid: this.cid }));
+            this.$el.append(template({ queryText, commonText, cid: this.cid }));
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
@@ -110,8 +110,8 @@ const commonText = require('./localization/common.tsx').default;
                 modal: true,
                 close(){ $(this).remove(); },
                 buttons: {
-                    Remove() { doIt(); },
-                    Cancel() { $(this).dialog('close'); }
+                    [commonText('remove')]() { doIt(); },
+                    [commonText('cancel')]() { $(this).dialog('close'); }
                 }
             });
 

@@ -72,8 +72,6 @@ const treeText = createDictionary({
   restoreButtonDescription: 'Display Saved Tree Layout',
   forget: 'Forget',
   forgetButtonDescription: 'Forget Saved Tree Layout',
-
-
 });
 
 export default treeText;

@@ -6,6 +6,7 @@ const LocalityRecordDataExtractor = require('./localityrecorddataextractor.ts');
 const Leaflet = require('./leaflet.ts');
 const UIPlugin = require('./uiplugin.js');
 const localityText = require('./localization/locality.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports = UIPlugin.extend(
   {
@@ -32,7 +33,7 @@ module.exports = UIPlugin.extend(
             $(this).remove();
           },
           buttons: {
-            close() {
+            [commonText('close')]() {
               $(this).remove();
             },
           },

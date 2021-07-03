@@ -1527,7 +1527,7 @@ const WBView = Backbone.View.extend({
                 modal: true,
                 close: () => navigation.go('/'),
                 buttons: {
-                  Close: function () {
+                  [commonText('delete')]: function () {
                     $(this).dialog('close');
                   },
                 },
