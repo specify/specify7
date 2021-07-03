@@ -24,7 +24,7 @@ function assertExhaustive(key: string): string | never {
 
 export const createDictionary =
   <DICT extends Dictionary>(dictionary: DICT) =>
-  <KEY extends Extract<keyof typeof dictionary, string>>(
+  <KEY extends string & keyof typeof dictionary>(
     key: KEY
   ): typeof dictionary[typeof key] =>
     key in dictionary

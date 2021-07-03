@@ -195,7 +195,8 @@ export function genericGet<T>(
   if (!eventListenerIsInitialized) initialize();
 
   if (
-    (typeof buckets[bucketName] === 'undefined' && !fetchBucket(bucketName)) ||
+    (typeof buckets[bucketName] === 'undefined' &&
+      !Boolean(fetchBucket(bucketName))) ||
     typeof buckets[bucketName].records[cacheName] === 'undefined'
   ) {
     if (typeof defaultValue === 'undefined') return false;
@@ -215,7 +216,7 @@ export function genericGet<T>(
     });
   }
 
-  buckets[bucketName].records[cacheName].useCount++;
+  buckets[bucketName].records[cacheName].useCount += 1;
   return buckets[bucketName].records[cacheName].value as T;
 }
 
@@ -274,6 +275,8 @@ export function genericSet<T>(
     throw new Error('Cache record name cannot be undefined');
 
   if (!eventListenerIsInitialized) initialize();
+
+  if (typeof buckets[bucketName] === 'undefined') fetchBucket(bucketName);
 
   buckets[bucketName] ??= {
     type: bucketType,
