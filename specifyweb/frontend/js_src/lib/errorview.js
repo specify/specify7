@@ -30,7 +30,7 @@ module.exports = {
                 this.$el.dialog({
                     modal: true,
                     width: 'auto',
-                    open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                    dialogClass: 'ui-dialog-no-close',
                     buttons: [
                         {text:  commonText('okay'), click: function() { window.location = "/"; }},
                     ]

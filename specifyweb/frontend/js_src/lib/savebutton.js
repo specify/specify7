@@ -112,7 +112,7 @@ module.exports =  Backbone.View.extend({
                                 title: formsText('saveConflictDialogTitle'),
                                 resizable: false,
                                 modal: true,
-                                open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                                dialogClass: 'ui-dialog-no-close',
                                 buttons: [{text: commonText('okay'), click: function() {
                                     window.location.reload();
                                 }}]

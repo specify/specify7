@@ -1587,9 +1587,7 @@ const WBView = Backbone.View.extend({
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
       title: wbText('savingDialogTitle'),
       modal: true,
-      open(evt, ui) {
-        $('.ui-dialog-titlebar-close', ui.dialog).hide();
-      },
+      dialogClass: 'ui-dialog-no-close',
       close() {
         $(this).remove();
       },
@@ -2096,9 +2094,7 @@ module.exports = function loadDataset(
     dialog = $('<div><div class="progress-bar"></div></div>').dialog({
       title: wbText('dataSetLoadingDialogTitle'),
       modal: true,
-      open(evt, ui) {
-        $('.ui-dialog-titlebar-close', ui.dialog).hide();
-      },
+      dialogClass: 'ui-dialog-no-close',
       close() {
         $(this).remove();
       },

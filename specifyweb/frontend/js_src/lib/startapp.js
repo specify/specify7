@@ -34,7 +34,7 @@ var tasks = [
                 .appendTo('body').dialog({
                     title: commonText('sessionTimeOutDialogTitle'),
                     modal: true,
-                    open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                    dialogClass: 'ui-dialog-no-close',
                     buttons: [{
                         text: commonText('login'),
                         click: function() {

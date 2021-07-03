@@ -141,7 +141,7 @@ class Action {
         const $dialog = $('<div>').append(this.message()).dialog({
             title: this.title(),
             modal: true,
-            open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+            dialogClass: 'ui-dialog-no-close',
             close() { $(this).remove(); },
             buttons: {
                 [commonText('start')]: proceedAction,

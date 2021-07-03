@@ -119,9 +119,7 @@ export const DataSetMeta = Backbone.View.extend({
     </div>`).dialog({
       title: wbText('dataSetMetaDialogTitle'),
       modal: true,
-      open(evt, ui) {
-        $('.ui-dialog-titlebar-close', ui.dialog).hide();
-      },
+      dialogClass: 'ui-dialog-no-close',
       close: () => this.render(),
       buttons: {
         [commonText('cancel')]: () => this.render(),
@@ -201,9 +199,7 @@ export const DataSetMeta = Backbone.View.extend({
       </div>`).dialog({
         title: wbText('changeDataSetOwnerDialogTitle'),
         modal: true,
-        open(evt, ui) {
-          $('.ui-dialog-titlebar-close', ui.dialog).hide();
-        },
+        dialogClass: 'ui-dialog-no-close',
         close: () => this.changeOwnerDialog.dialog('destroy'),
         buttons: {
           [commonText('cancel')]: () => this.changeOwnerDialog.dialog('destroy'),
