@@ -162,16 +162,19 @@ module.exports = Backbone.View.extend({
 
     this.wbview.hot.selectCell(matchedCell.visualRow, matchedCell.visualCol);
 
+    // Turn on the respective cell type if it was hidden
+    this.toggleCellTypes(e, 'remove');
+
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
-  toggleCellTypes(e) {
+  toggleCellTypes(e, action = 'toggle') {
     const button = e.target;
     const buttonContainer = button.closest('.wb-navigation-section');
     const buttonLabel = buttonContainer.getAttribute('data-navigation-type');
     const cssClassName = `wb-hide-${WbPlanViewHelper.camelToKebab(
       buttonLabel
     )}`;
-    this.el.classList.toggle(cssClassName);
+    this.el.classList[action](cssClassName);
   },
   getToVisualConverters() {
     const toVisualRow = Array.from(
