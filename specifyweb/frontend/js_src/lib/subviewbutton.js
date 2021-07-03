@@ -8,6 +8,8 @@ var specifyform    = require('./specifyform.js');
 var navigation     = require('./navigation.js');
 var RecordSelector = require('./recordselector.js');
 
+const formsText = require('./localization/forms.tsx').default;
+
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
         events: {
@@ -159,7 +161,6 @@ var RecordSelector = require('./recordselector.js');
             }
 
             this.populateForm(dialogForm, self.related);
-            var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>';
             self.dialog = $('<div>').append(dialogForm).dialog({
                 width: 'auto',
                 title: title,
@@ -168,8 +169,12 @@ var RecordSelector = require('./recordselector.js');
 
             // TODO: this was copied from querycbx. should factor out somehow.
             if (!self.related.isNew() && !self.field.isDependent()) {
-                self.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                    '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+                const link = `<a href="${self.related.viewUrl()}">
+                    <span class="ui-icon ui-icon-link">
+                        ${formsText('formsText')}
+                    </span>
+                </a>`;
+                self.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(link);
 
                 self.dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
                     evt.preventDefault();

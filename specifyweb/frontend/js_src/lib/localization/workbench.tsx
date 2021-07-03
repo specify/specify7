@@ -136,7 +136,6 @@ const wbText = createDictionary({
     'This tool requires locality columns to be mapped',
   unavailableWhenUploaded: 'This tool does not work with uploaded Data Sets',
   dataSetDeletedOrNotFound: 'Data Set was deleted by another session.',
-  dataSetNotFoundPageTitle: 'Page Not Found',
   includeDmsSymbols: 'Include DMS Symbols',
 
   // WbUploaded
@@ -163,6 +162,7 @@ const wbText = createDictionary({
   replaceNext: 'Replace next occurrence',
 
   // WbImport
+  importDataSet: 'Import Data Set',
   wbImportHeader: 'Import File to Create a New Data Set',
   previewDataSet: 'Preview Dataset',
   corruptFile: (fileName: string) =>

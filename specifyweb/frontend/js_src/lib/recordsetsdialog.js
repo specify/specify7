@@ -9,6 +9,8 @@ var FormsDialog        = require('./formsdialog.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var navigation         = require('./navigation.js');
 var querystring        = require('./querystring.js');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 
 module.exports = Backbone.View.extend({
@@ -17,15 +19,14 @@ module.exports = Backbone.View.extend({
         events: {
             'click a.edit': 'edit'
         },
-        dlgTitle: function() {
-            return  "Record Sets (" + this.options.recordSets._totalCount + ")";
-        },
         render: function() {
             this.makeUI();
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
-                title: this.dlgTitle(),
+                title: formsText('recordSetsDialogTitle')(
+                    this.options.recordSets._totalCount
+                ),
                 minWidth: 400,
                 maxHeight: 500,
                 buttons: this.buttons()
@@ -72,8 +73,8 @@ module.exports = Backbone.View.extend({
         },
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
-                { text: 'New', click: this.openFormsDialog.bind(this),
-                  title: 'Create a new record set.' }
+                { text: commonText('new'), click: this.openFormsDialog.bind(this),
+                  title: formsText('createRecordSetButtonDescription') }
             ];
             buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
             return buttons;
@@ -103,8 +104,9 @@ module.exports = Backbone.View.extend({
             this.$el.dialog('close');
             new EditResourceDialog({
                 resource: recordset,
-                deleteWarning: `The record set "${recordset.get('name')}" will be deleted. The
-                                referenced records will NOT be deleted.`
+                deleteWarning:formsText('recordSetDeletionWarning')(
+                    recordset.get('name')
+                ),
             }).render();
         }
     });

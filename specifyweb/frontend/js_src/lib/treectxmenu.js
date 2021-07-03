@@ -9,6 +9,8 @@ const populateForm = require('./populateform.js');
 const schema = require('./schema.js');
 const api = require('./specifyapi.js');
 const userInfo = require('./userinfo.js');
+const treeText = require('./localization/tree.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 const ro = userInfo.isReadOnly;
 
@@ -18,15 +20,15 @@ function contextMenuBuilder(treeView) {
         var items = {};
         if (treeView.currentAction != null) {
             items.receive = treeView.currentAction.receiveMenuItem(view);
-            items.cancelAction = {name: "Cancel action", icon: "cancel", accesskey: 'c'};
+            items.cancelAction = {name: treeText('cancelAction'), icon: "cancel", accesskey: 'c'};
         } else {
             items = {
-                'query': {name: "Query", icon: "query", accesskey: "q"},
-                'open': {name: ro ? "View" : "Edit", icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
+                'query': {name: treeText('query'), icon: "query", accesskey: "q"},
+                'open': {name: ro ? treeText('view') : treeText('edit'), icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
             };
             if (!ro) Object.assign(items, {
                 'add-child': {
-                    name: "Add child",
+                    name: treeText('addChild'),
                     icon: "add-child",
                     accesskey: "a",
                     disabled:
@@ -34,10 +36,10 @@ function contextMenuBuilder(treeView) {
                         // Forbid adding children to the lowest rank
                         || view.ranks.slice(-1)[0] === view.rankId
                 },
-                'move': {name: "Move", icon: "move", accesskey: "m"},
-                'merge': {name: "Merge", icon: "merge", accesskey: "g"},
+                'move': {name: treeText('move'), icon: "move", accesskey: "m"},
+                'merge': {name: treeText('merge'), icon: "merge", accesskey: "g"},
                 'synonymize': {
-                    name: view.acceptedId != null ? "Undo Synonymy" : "Synonymize",
+                    name: view.acceptedId != null ? treeText('undoSynonymy') : treeText('synonymize'),
                     icon: "synonymize",
                     accesskey: "s",
                     disabled: view.acceptedId == null && view.children > 0
@@ -126,10 +128,10 @@ class Action {
                     this.node.treeView.reOpenTree();
                 } else {
                     $dialog.dialog('option', 'buttons', {Close() { $(this).dialog('close'); }})
-                        .dialog('option', 'title', "Failed")
+                        .dialog('option', 'title', treeText('actionFailedDialogTitle'))
                         .empty()
                         .append(
-                            "<p>The operation could not be completed due to the following:</p>",
+                            `<p>${treeText('actionFailedDialogMessage')}</p>`,
                             $('<em>').text(result.error)
                         );
                 }
@@ -142,8 +144,8 @@ class Action {
             open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close() { $(this).remove(); },
             buttons: {
-                Proceed: proceedAction,
-                Cancel() { $(this).dialog('close'); }
+                [commonText('start')]: proceedAction,
+                [commonText('cancel')]() { $(this).dialog('close'); }
             }
         });
     }
@@ -174,7 +176,7 @@ const TreeActionHint = Backbone.View.extend({
         this.$el.append(`
 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all">
     <span class="ui-dialog-title">${this.action.hintMessage()}</span>
-    <button>Cancel</button>
+    <button>${commonText('cancel')}</button>
 </div>
 `).appendTo('body');
 
@@ -200,15 +202,14 @@ class MoveNodeAction extends Action {
         const tree = this.model.getLocalizedName().toLowerCase();
         const object = this.node.fullName;
         const receiver = this.receivingNode.fullName;
-        return `The ${tree} node <em>${object}</em> will be placed, along with all of
-its descendants, under the new parent <em>${receiver}</em>.`;
+        return treeText('nodeMoveMessage')(tree,object,receiver);
     }
 
-    title() { return "Move node"; }
+    title() { return treeText('moveNode'); }
 
     receiveMenuItem(node) {
         return {
-            name: "Move " + this.node.name + " here",
+            name: treeText('moveNodeHere')(this.node.name),
             icon: "receive-move",
             accesskey: 'm',
             disabled: node.rankId >= this.node.rankId ||
@@ -217,7 +218,7 @@ its descendants, under the new parent <em>${receiver}</em>.`;
     }
 
     hintMessage() {
-        return `Right-click to select a new parent for <em>${this.node.name}</em>.`;
+        return treeText('nodeMoveHintMessage')(this.node.name);
     }
 }
 
@@ -231,17 +232,14 @@ class MergeNodeAction extends Action {
         const tree = this.model.getLocalizedName().toLowerCase();
         const object = this.node.fullName;
         const receiver = this.receivingNode.fullName;
-        return `All references to ${tree} node <em>${object}</em> will be replaced
-with <em>${receiver}</em>, and all descendants of <em>${object}</em>  will be
-moved to <em>${receiver}</em> with any descendants matching in name
-and rank being themselves merged recursively.`;
+        return treeText('mergeNodeMessage')(tree,object,receiver);
     }
 
-    title() { return "Merge node"; }
+    title() { return treeText('mergeNode'); }
 
     receiveMenuItem(node) {
         return {
-            name: "Merge " + this.node.name + " here",
+            name: treeText('mergeNodeHere')(this.node.name),
             icon: "receive-merge",
             accesskey: 'g',
             disabled: node.nodeId === this.node.nodeId ||
@@ -251,7 +249,7 @@ and rank being themselves merged recursively.`;
     }
 
     hintMessage() {
-        return `Right-click to select a target for <em>${this.node.name}</em> to be merged into.`;
+        return treeText('mergeNodeHintMessage')(this.node.name);
     }
 }
 
@@ -265,14 +263,14 @@ class SynonymizeNodeAction extends Action {
         const tree = this.model.getLocalizedName().toLowerCase();
         const object = this.node.fullName;
         const receiver = this.receivingNode.fullName;
-        return `The ${tree} node <em>${object}</em> will be made a synonym of <em>${receiver}</em>.`;
+        return treeText('synonymizeMessage')(tree,object,receiver);
     }
 
-    title() { return "Synonymize node"; }
+    title() { return treeText('synonymizeNode'); }
 
     receiveMenuItem(node) {
         return {
-            name: `Make ${this.node.name} a synonym of ${node.name}`,
+            name: treeText('makeSynonym')(this.node.name,node.name),
             icon: "receive-synonym",
             accesskey: 's',
             disabled: node.nodeId === this.node.nodeId ||
@@ -281,7 +279,7 @@ class SynonymizeNodeAction extends Action {
     }
 
     hintMessage() {
-        return `Right-click to select a target for <em>${this.node.name}</em> to be synonymized to.`;
+        return treeText('synonymizeNodeHintMessage')(this.node.name);
     }
 }
 
@@ -294,10 +292,10 @@ class UnSynonymizeNodeAction extends Action {
         const tree = this.model.getLocalizedName().toLowerCase();
         const object = this.node.fullName;
         const accepted = this.node.acceptedName;
-        return `The ${tree} node <em>${object}</em> will no longer be a synonym of <em>${accepted}</em>.`;
+        return treeText('unsynonymizeNodeMessage')(tree,object,accepted);
     }
 
-    title() { return "Unsynonymize node"; }
+    title() { return treeText('unsynonymizeNode'); }
 }
 
 const AddChildDialog = Backbone.View.extend({

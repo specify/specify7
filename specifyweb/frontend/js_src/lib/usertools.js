@@ -3,6 +3,7 @@
 var $                = require('jquery');
 var _                = require('underscore');
 var Backbone         = require('./backbone.js');
+const commonText = require('./localization/common.tsx').default;
 
 
 module.exports = Backbone.View.extend({
@@ -17,16 +18,16 @@ module.exports = Backbone.View.extend({
         },
         render: function() {
             var table = $('<table>').appendTo(this.el);
-            table.append('<tr><td><a href="/accounts/logout/">Log out</a></td></tr>');
-            table.append('<tr><td><a href="/accounts/password_change/">Change password</a></td></tr>');
+            table.append(`<tr><td><a href="/accounts/logout/">${commonText('logOut')}</a></td></tr>`);
+            table.append(`<tr><td><a href="/accounts/password_change/">${commonText('changePassword')}</a></td></tr>`);
             table.append(this.tools.map(this.makeItem));
 
             this.$el.dialog({
                 modal: true,
-                title: "User Tools",
+                title: commonText('userToolsDialogTitle'),
                 close: function() { $(this).remove(); },
                 buttons: [
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
                 ]
             });
             return this;

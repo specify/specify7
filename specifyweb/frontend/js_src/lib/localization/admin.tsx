@@ -30,6 +30,10 @@ const adminText = createDictionary({
   passwordsDoNotMatchError: 'Passwords do not match.',
   saveUserBeforeSettingPasswordError: 'Save user before setting password.',
 
+  // UserCollectionsPlugin
+  collections: 'Collections',
+  userCollectionsPluginButtonDisabledDescription: 'Save user first',
+  userCollectionsPluginDialogTitle: 'Select user collection access',
 });
 
 export default adminText;

@@ -4,8 +4,9 @@ const $ = require('jquery');
 const Backbone = require('./backbone.js');
 const domain = require('./domain.js');
 const schema = require('./schema.js');
+const commonText = require('./localization/common.tsx').default;
 
-const title = 'Repair Tree';
+const title = commonText('repairTree');
 
 const treesForAll = ['geography', 'storage', 'taxon'];
 const treesForPaleo = ['geologictimeperiod', 'lithostrat'];
@@ -28,7 +29,7 @@ const RepairTreeView = Backbone.View.extend({
             title: title,
             modal: true,
             close() { $(this).remove(); },
-            buttons: { Cancel() { $(this).dialog('close'); }}
+            buttons: { [commonText('cancel')]() { $(this).dialog('close'); }}
         });
         return this;
     },

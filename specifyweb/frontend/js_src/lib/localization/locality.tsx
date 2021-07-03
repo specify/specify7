@@ -11,8 +11,7 @@ const localityText = createDictionary({
   showMap: 'Show Map',
   noCoordinates: 'No coordinates',
   notEnoughInformationToMap: 'Locality must have coordinates to be mapped.',
-  occurrencePolygons: (groupName: string)=>
-    `${groupName} Polygons`,
+  occurrencePolygons: (groupName: string) => `${groupName} Polygons`,
 
   // GeoLocate
   geoLocate: 'GEOLocate',

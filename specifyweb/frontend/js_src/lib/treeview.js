@@ -17,6 +17,8 @@ const contextMenuBuilder = require('./treectxmenu.js');
 const userInfo = require('./userinfo.js');
 const remoteprefs  = require('./remoteprefs.js');
 const cookies = require('./cookies.js');
+const treeText = require('./localization/tree.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 var setTitle = app.setTitle;
 
@@ -98,7 +100,7 @@ var setTitle = app.setTitle;
             $('<table>').appendTo(this.el).append(
                 this.header.render().el,
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
-                '<tbody><tr class="loading"><td>(loading...)</td></tr></tbody>'
+                `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
             );
             this.$('tr.loading').append(new Array(this.ranks.length-1).fill('<td>'));
             this.getRows();
@@ -169,7 +171,7 @@ var setTitle = app.setTitle;
         },
         makeSearchBox: function() {
             var tree = schema.getModel(this.table);
-            return $('<input class="tree-search" type="search" placeholder="Search Tree" tabindex="1">').autocomplete({
+            return $(`<input class="tree-search" type="search" placeholder="${treeText('searchTreePlaceholder')}" tabindex="1">`).autocomplete({
                 source: function(request, response) {
                     var collection = new tree.LazyCollection({
                         filters: { name__istartswith: request.term, orderby: 'name' },
@@ -185,9 +187,10 @@ var setTitle = app.setTitle;
             });
         },
         makeBtns: function() {
-            return $('<button type="button" class="tree-conform-save" tabindex="2" title="save tree layout">remember</button>'
-                     + '<button type="button" class="tree-conform-restore" tabindex="3" title="display saved tree layout">restore</button>'
-                    + '<button type="button" class="tree-conform-forget" tabindex="4" title="forget saved tree layout">forget</button>');
+            return $(`
+                <button type="button" class="tree-conform-save" tabindex="2" title="${treeText('rememberButtonDescription')}">${treeText('remember')}</button>
+                <button type="button" class="tree-conform-restore" tabindex="3" title="${treeText('restoreButtonDescription')}">${treeText('restore')}</button>
+                <button type="button" class="tree-conform-forget" tabindex="4" title="${treeText('forgetButtonDescription')}">${treeText('forget')}</button>`);
         },
         applyConformation: function(encoded) {
             var serialized = encoded.replace(/([^~])~/g, '$1,~').replace(/~/g, '[').replace(/-/g, ']');

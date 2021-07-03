@@ -21,6 +21,8 @@ var initialContext    = require('./initialcontext.js');
 var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
 var userInfo          = require('./userinfo.js');
+const queryText = require('./localization/query.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 var dataobjformat = dataobjformatters.format;
 
@@ -313,7 +315,7 @@ var QueryCbx = Backbone.View.extend({
         var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
         var fieldTitles = searchFields.map(
             f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
-        control.attr('title', 'Searches: ' + fieldTitles.join(', '));
+        control.attr('title', queryText('queryText')(fieldTitles));
 
         this.readOnly || control.autocomplete({
             minLength: 1,
@@ -366,7 +368,7 @@ var QueryCbx = Backbone.View.extend({
                 } else {
                     _this.$('input').val('');
                     _this.isRequired && _this.model.saveBlockers.add(
-                        'fieldrequired:' + _this.fieldName, _this.fieldName, 'Field is required', true);
+                        'fieldrequired:' + _this.fieldName, _this.fieldName, queryText('fieldIsRequired'), true);
                 }
             });
         }
@@ -429,13 +431,12 @@ var QueryCbx = Backbone.View.extend({
                 const otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
                 otherColl.fetch().done(function() {
                     $('<div>').text(
-                        `You do not have access to the collection ${otherColl.get('collectionname')}
-                            through the currently logged in account.`
+                        commonText('collectionAccessDeniedDialogMessage')(otherColl.get('collectionname'))
                     ).dialog({
-                        title: "Access denied.",
+                        title: commonText('collectionAccessDeniedDialogTitle'),
                         close() { $(this).remove(); },
                         buttons: {
-                            Ok() { $(this).dialog('close'); }
+                            [commonText('close')]() { $(this).dialog('close'); }
                         }
                     });
                 });
@@ -506,7 +507,7 @@ var QueryCbx = Backbone.View.extend({
         if (!related.isNew()) {
             $('<a>', { href: related.viewUrl() })
                 .addClass('intercept-navigation')
-                .append('<span class="ui-icon ui-icon-link">link</span>')
+                .append(`<span class="ui-icon ui-icon-link">${commonText('close')}</span>`)
                 .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
         }
     },

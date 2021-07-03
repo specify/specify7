@@ -56,7 +56,7 @@ const commonText = require('./localization/common.tsx').default;
                     function(jqXHR) {
                         if (jqXHR.status === 404) {
                             jqXHR.errorHandled = true;
-                            return '(deleted)';
+                            return commonText('pageNotFound');
                         }
                         return jqXHR;
                     }

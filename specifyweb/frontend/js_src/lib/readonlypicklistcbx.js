@@ -2,6 +2,7 @@
 
 var $ = require('jquery');
 var _ = require('underscore');
+const queryText = require('./localization/query.tsx').default;
 
 var Base = require('./basepicklist.js');
 
@@ -55,12 +56,14 @@ module.exports =  Base.extend({
 
             if (value && options.every(option => option.attr('value') !== value)) {
                 // current value is not in picklist
-                this.$el.append($('<option>', { value: value }).text("" + value + " (current, invalid value)"));
+                this.$el.append($('<option>', { value: value }).text(queryText('invalidPicklistValue')(value)));
             }
 
             if (value === '' && this.$el.hasClass('specify-required-field')) {
                 // value is required but missing from database
-                this.$el.append('<option>Invalid null selection</option>');
+                this.$el.append(`<option>
+                    ${queryText('missingRequiredPicklistValue')}
+                </option>`);
             }
 
             this.$el.val(value);

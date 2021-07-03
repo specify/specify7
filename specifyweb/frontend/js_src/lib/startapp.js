@@ -7,6 +7,8 @@ var businessRules    = require('./businessrules.js');
 var errorview        = require('./errorview.js');
 var HeaderUI         = require('./headerui.js');
 var navigation       = require('./navigation.js');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 
 var tasks = [
@@ -28,14 +30,13 @@ var tasks = [
     function handleUnexpectedError(event, jqxhr, settings, exception) {
         if (jqxhr.errorHandled) return; // Not unexpected.
         if (jqxhr.status === 403) {
-            $('<div title="Insufficient Privileges">'
-              + 'You lack sufficient privileges for that action, '
-              + 'or your current session has been logged out.</div>')
+            $(`<div>${formsText('sessionTimeOutDialogMessage')}</div>`)
                 .appendTo('body').dialog({
+                    title: formsText('sessionTimeOutDialogTitle'),
                     modal: true,
                     open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
                     buttons: [{
-                        text: 'Login',
+                        text: commonText('login'),
                         click: function() {
                             window.location = "/accounts/login/?next=" + window.location.href;
                         }

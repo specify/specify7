@@ -7,6 +7,8 @@ var Backbone = require('./backbone.js');
 var saveblocked = require('./templates/saveblocked.html');
 var conflict = require('./templates/conflict.html');
 const navigation = require('./navigation.js');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
@@ -40,7 +42,7 @@ module.exports =  Backbone.View.extend({
             this.buttonsDisabled = disabled;
             this.buttons && this.buttons.prop('disabled', disabled);
             if(!disabled) {
-                navigation.addUnloadProtect(this, "This form has not been saved.");
+                navigation.addUnloadProtect(this, formsText('unsavedFormUnloadProtect'));
             } else {
                 navigation.removeUnloadProtect(this);
             }
@@ -62,13 +64,13 @@ module.exports =  Backbone.View.extend({
                 this.$el.append($('<input>', {
                     type: "submit",
                     "class": "save-and-add-button",
-                    value: "Save and Add Another"
+                    value: formsText('saveAndAddAnother')
                 }));
             }
             this.$el.append($('<input>', {
                 type: "submit",
                 "class": "save-button",
-                value: "Save"
+                value: commonText('save')
             }));
             this.buttons = this.$(':submit');
             this.buttons.appendTo(this.el);
@@ -109,7 +111,7 @@ module.exports =  Backbone.View.extend({
                                 resizable: false,
                                 modal: true,
                                 open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-                                buttons: [{text: "Reload", click: function() {
+                                buttons: [{text: commonText('okay'), click: function() {
                                     window.location.reload();
                                 }}]
                             });

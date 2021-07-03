@@ -15,6 +15,7 @@ var ResourceView = require('./resourceview.js');
 var router       = require('./router.js');
 var systemInfo   = require('./systeminfo.js');
 var reports      = require('./reports.js');
+const commonText = require('./localization/common.tsx').default;
 
     var currentView;
     var versionMismatchWarned = false;
@@ -23,7 +24,7 @@ var reports      = require('./reports.js');
     router
         .route('*whatever', 'notFound', function() {
             app.setCurrentView(new NotFoundView());
-            app.setTitle('Page Not Found');
+            app.setTitle(commonText('commonText'));
         })
         .route('test_error/', 'testError', function() {
             $.get('/api/test_error/');
@@ -51,12 +52,19 @@ var reports      = require('./reports.js');
         $('#content').append(currentView.el);
 
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
-            $('<div title="Version Mismatch">' +
-              '<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>' +
-              'The Specify version (' + systemInfo.specify6_version + ') ' +
-              'does not match the database version (' + systemInfo.database_version + ').</p>' +
-              '<p>Some features of Specify 7 may therefore fail to operate correctly.</p>' +
-              '</div>').dialog({ modal: true });
+            $(`<div title="Version Mismatch">
+                <p>
+                    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+                    ${commonText('versionMismatchDialogMessage')(
+                        systemInfo.specify6_version,
+                        systemInfo.database_version
+                    )}
+                </p>
+                <p>${commonText('versionMismatchSecondDialogMessage')}</p>
+            </div>`).dialog({
+                title: commonText('versionMismatchDialogTitle'),
+                modal: true,
+            });
             versionMismatchWarned = true;
         }
     }
@@ -109,11 +117,13 @@ function showResource(resource, recordSet, pushUrl) {
                 navigation.go(view.prev.viewUrl());
             } else {
                 view.$el.empty();
-                const dialog = $(`<div>Item deleted.</div>`).dialog({
-                    title: 'Item Deleted',
+                const dialog = $(`<div>
+                    ${commonText('resourceDeletedDialogTitle')}
+                </div>`).dialog({
+                    title: commonText('resourceDeletedDialogMessage'),
                     buttons: [
                         {
-                            text: 'Close',
+                            text: commonText('cancel'),
                             click: ()=>{
                                 navigation.go('/');
                                 dialog.dialog('destroy');
@@ -131,7 +141,7 @@ function showResource(resource, recordSet, pushUrl) {
 
     //set title of browser tab
     function setTitle(title) {
-        window.document.title = title + " | Specify 7";
+        window.document.title = commonText('appTitle')(title);
     }
 
     // the exported interface

@@ -11,7 +11,7 @@ var SaveButton   = require('./savebutton.js');
 var DeleteButton = require('./deletebutton.js');
 var specifyform  = require('./specifyform.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 
 module.exports = Backbone.View.extend({
@@ -53,7 +53,7 @@ module.exports = Backbone.View.extend({
             this.$el.append(form).dialog({
                 width: 'auto',
                 title: this.resource.isNew() ?
-                    formsText('newResourceTitle')(resourceLabel) :
+                    commonText('newResourceTitle')(resourceLabel) :
                     resourceLabel,
                 modal: true,
                 close: function() { $(this).remove(); }

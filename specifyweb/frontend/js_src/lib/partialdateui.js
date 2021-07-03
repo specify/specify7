@@ -125,7 +125,7 @@ module.exports =  UIPlugin.extend({
         updateFullDate: function() {
             var val = this.$('input.partialdateui-full').val().trim() || null;
             var m = val && moment(val, dateFormatStr(), true);
-            this.updateIfValid(m, `${formsText('requiredFormat')} ${dateFormatStr()}`);
+            this.updateIfValid(m, formsText('requiredFormat')(dateFormatStr()));
         },
         updateMonth: function() {
             var orig = this.model.get(this.init.df);

@@ -5,6 +5,8 @@ const Backbone = require('./backbone.js');
 
 const navigation = require('./navigation.js');
 const userInfo = require('./userinfo.js');
+const queryText = require('./localization/query.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports = Backbone.View.extend({
     __name__: "QuerySaveDialog",
@@ -18,20 +20,20 @@ module.exports = Backbone.View.extend({
     },
     render() {
         if (this.clone) {
-            this.$el.append('<p>The query will be saved with a new name leaving the current query unchanged.</p>');
+            this.$el.append(`<p>${queryText('saveClonedQueryDialogMessage')}</p>`);
         } else {
-            this.$el.append('<p>Enter a name for the new query.</p>');
+            this.$el.append(`<p>${queryText('saveQueryDialogMessage')}</p>`);
         }
 
-        this.$el.append('<form><label>Query name: <input type="text"/></label></form>');
+        this.$el.append(`<form><label>${queryText('queryName')} <input type="text"/></label></form>`);
 
         this.$el.dialog({
-            title: 'Save query as...',
+            title: queryText('saveQueryDialogTitle'),
             modal: true,
             close() { $(this).remove(); },
             buttons: {
-                Save: () => this.doSave(),
-                Cancel() { $(this).dialog('close'); }
+                [commonText('save')]: () => this.doSave(),
+                [commonText('cancel')]() { $(this).dialog('close'); }
             }
         });
 
@@ -64,7 +66,7 @@ module.exports = Backbone.View.extend({
         });
 
         this.$el
-            .dialog('option', 'title', 'Saving...')
+            .dialog('option', 'title', queryText('savingQueryDialogTitle'))
             .dialog('option', 'buttons', []);
 
         this.$(':input').prop('readonly', true);

@@ -3,6 +3,7 @@
 const app = require('./specifyapp.js');
 const router = require('./router.js');
 const NotFoundView = require('./notfoundview.js');
+const commonText = require('./localization/common.tsx').default;
 
 module.exports = function () {
   router.route('workbench-plan/:id/', 'workbench-plan', (id) => {
@@ -13,7 +14,7 @@ module.exports = function () {
         fetch(`/api/workbench/dataset/${id}/`).then((response) => {
           if (response.status === 404) {
             app.setCurrentView(new NotFoundView());
-            app.setTitle('Page Not Found');
+            app.setTitle(commonText('pageNotFOund'));
           } else
             response
               .json()

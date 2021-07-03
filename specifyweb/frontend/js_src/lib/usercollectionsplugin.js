@@ -6,6 +6,8 @@ const Backbone = require('./backbone.js');
 
 const UIPlugin = require('./uiplugin.js');
 const schema = require('./schema.js');
+const adminText = require('./localization/admin.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 const SetCollectionsView = Backbone.View.extend({
     __name__: "UserCollectionsUI",
@@ -40,11 +42,11 @@ const SetCollectionsView = Backbone.View.extend({
 
         this.$el.dialog({
             modal: true,
-            title: 'Select user collection access.',
+            title: adminText('userCollectionsPluginDialogTitle'),
             close: function() { $(this).remove(); },
             buttons: {
-                Save: function() { save().done(() => $(this).dialog('close')); },
-                Cancel: function() { $(this).dialog('close'); }
+                [commonText('save')]: function() { save().done(() => $(this).dialog('close')); },
+                [commonText('cancel')]: function() { $(this).dialog('close'); }
             }
         });
         return this;
@@ -63,8 +65,8 @@ module.exports =  UIPlugin.extend({
     },
     render: function() {
         Q.all([this.user.fetch(), this.allCollections.fetch({limit:0})]).then(() => {
-            this.$el.attr('value', 'Collections');
-            this.user.isNew() && this.$el.attr('title', 'Save user first.').prop('disabled', true);
+            this.$el.attr('value', adminText('collections'));
+            this.user.isNew() && this.$el.attr('title', adminText('userCollectionsPluginButtonDisabledDescription')).prop('disabled', true);
         });
         return this;
     },

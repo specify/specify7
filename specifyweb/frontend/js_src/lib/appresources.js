@@ -17,8 +17,8 @@ const DeleteButton = require('./deletebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
 const newResourceTmpl = require('./templates/newappresource.html');
-const adminText = require('./localization/admin.tsx');
-const commonText = require('./localization/common.tsx');
+const adminText = require('./localization/admin.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 function makeUrl(resource) {
     return {

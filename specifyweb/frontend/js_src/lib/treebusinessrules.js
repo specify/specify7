@@ -2,6 +2,7 @@
 var $ = require('jquery');
 var Q = require('q');
 var _ = require('underscore');
+const treeText = require('./localization/tree.tsx').default;
 
 function predictFullName(resource, options) {
     const treeName = resource.specifyModel.name.toLowerCase();
@@ -29,7 +30,7 @@ function predictFullName(resource, options) {
                     return {
                         key: 'tree-structure',
                         valid: false,
-                        reason: 'Bad tree structure.'
+                        reason: treeText('badStructure')
                     };
                 else throw error;
             }

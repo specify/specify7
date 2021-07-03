@@ -1,18 +1,19 @@
 "use strict";
 
 const $ = require('jquery');
+const commonText = require('./localization/common.tsx').default;
 
 function execute() {
     $(`
 <div class="table-list-dialog">
 <table>
-<tr><td><a href="/specify/appresources/" class="intercept-navigation">App Resources</a></td></tr>
-<tr><td><a href="/specify/viewsets/" class="intercept-navigation">View Sets</a></td></tr>
+<tr><td><a href="/specify/appresources/" class="intercept-navigation">${commonText('appResources')}</a></td></tr>
+<tr><td><a href="/specify/viewsets/" class="intercept-navigation">${commonText('viewSets')}</a></td></tr>
 </table>
 </div>
 `).dialog({
     modal: true,
-    title: "Resources",
+    title: commonText('resourcesDialogTitle'),
     close: function() { $(this).remove(); },
     buttons: {
         Cancel: function() { $(this).dialog('close'); }
@@ -23,7 +24,7 @@ function execute() {
 
 module.exports = {
     task: 'resources',
-    title: 'Resources',
+    title: commonText('resources'),
     icon: null,
     execute: execute,
     disabled: user => !user.isadmin

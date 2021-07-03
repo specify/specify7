@@ -4,8 +4,9 @@ const $ = require('jquery');
 const Q = require('q');
 const chooseTmpl = require('./templates/chooseDwCADef.html');
 const startedTmpl = require('./templates/dwcaExportStarted.html');
+const commonText = require('./localization/common.tsx').default;
 
-const title = 'Make DwCA';
+const title = commonText('makeDwca');
 
 var dialog = null;
 
@@ -25,8 +26,8 @@ function execute() {
     title: title,
     close: function() { $(this).remove(); dialog = null; },
     buttons: [
-        {text: 'Start', click: next},
-        {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+        {text: commonText('start'), click: next},
+        {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
     ]});
 
     $('input.dwca-definition', dialog).focus();
@@ -59,9 +60,9 @@ function checkForResources({definition, metadata}) {
         },
         error => {
             if (error === definitionNotFound) {
-                $('p.error', dialog).text(`Definiton resource "${definition}" was not found.`);
+                $('p.error', dialog).text(commonText('definitionResourceNotFound')(definition));
             } else if (error === metadataNotFound) {
-                $('p.error', dialog).text(`Metadata resource "${metadata}" was not found.`);
+                $('p.error', dialog).text(commonText('metadataResourceNotFound')(metadata));
             } else {
                 throw error;
             }
@@ -80,7 +81,7 @@ function startExport(definition, metadata) {
             title: title,
             close: function() { $(this).remove(); dialog = null; },
             buttons: [
-                {text: 'OK', click: function() { $(this).dialog('close'); }}
+                {text: commonText('close'), click: function() { $(this).dialog('close'); }}
             ]});
     });
 }

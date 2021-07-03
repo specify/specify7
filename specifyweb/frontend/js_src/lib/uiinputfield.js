@@ -3,7 +3,7 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-
+const formsText = require('./localization/forms.tsx').default;
 
 module.exports =  Backbone.View.extend({
     __name__: "UIFieldInput",
@@ -22,7 +22,7 @@ module.exports =  Backbone.View.extend({
     },
     render: function() {
         this.formatter && this.$el.attr(
-            'title', 'Format: ' + (this.formatter.pattern() || this.formatter.value())
+            'title', formsText('formText')(this.formatter.pattern() || this.formatter.value())
         );
         const placeholder = this.formatStr || (this.formatter && this.formatter.pattern());
         console.log('placeholder', placeholder);

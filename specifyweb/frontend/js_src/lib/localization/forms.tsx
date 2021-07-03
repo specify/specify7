@@ -1,4 +1,4 @@
-import { RA } from '../components/wbplanview';
+import type { RA } from '../components/wbplanview';
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
@@ -17,7 +17,7 @@ const formsText = createDictionary({
   valuesOfMustBeUniqueToField: (fieldName: string, values: RA<string>) =>
     `Values of ${
       values.length === 1
-        ? values
+        ? values[0]
         : `${values.slice(0, -1).join(', ')} and ${values.slice(-1)[0]}`
     }} must be unique to ${fieldName}}`,
   database: 'database',
@@ -25,10 +25,6 @@ const formsText = createDictionary({
   // CollectionReLoneToManyPlugin
   collectionObject: 'Collection Object',
   collection: 'Collection',
-  collectionAccessDeniedDialogTitle: 'Access denied',
-  collectionAccessDeniedDialogMessage: (collectionName: string) =>
-    `You do not have access to the collection ${collectionName}
-    through the currently logged in account.`,
   // "set" as in "Set Value"
   set: 'Set',
 
@@ -47,13 +43,11 @@ const formsText = createDictionary({
   deleteBlockedDialogMessage: `
     The resource cannot be deleted because it is referenced through the
     following fields:`,
-  newResourceTitle: (resourceName: string) => `New ${resourceName}`,
   contract: 'Contract',
   expand: 'Expand',
   remove: 'Remove',
 
   // Interactions
-  interactions: 'Interactions',
   addItems: 'Add Items',
   recordReturn: (modelName: string) => `${modelName} Return`,
   createRecord: (modelName: string) => `Create ${modelName}`,
@@ -82,7 +76,6 @@ const formsText = createDictionary({
   returnSelectedPreparations: 'Return selected preparations',
   selectAllAvailablePreparations: 'Select all available preparations',
 
-
   // OtherCollectionView
   noAccessToResource: `
     You do not have access to any collection containing this resource
@@ -103,9 +96,8 @@ const formsText = createDictionary({
     This plugin cannot be used on this form. Try moving it to the locality,
     collecting event or collection object forms.`,
 
-  // Date parser
+  // DateParser
   invalidDate: 'Invalid Date',
-  requiredFormat: 'Required Format:',
 
   // PickListBox
   showAllItems: 'Show All Items',
@@ -113,7 +105,90 @@ const formsText = createDictionary({
   addToPickListConfirmationDialogMessage: (
     value: string,
     pickListName: string
-  ) => `Add value "${value}" to the pick list named ${pickListName}?`
+  ) => `Add value "${value}" to the pick list named ${pickListName}?`,
+
+  // ReadOnlyPickListComboBox
+  noData: 'No Data.',
+
+  // RecordSelector
+  removeRecordDialogTitle: 'Remove?',
+
+  // RecordSetsDialog
+  recordSetsDialogTitle: (count: number) => `Record Sets (${count})`,
+  createRecordSetButtonDescription: 'Create a new record set',
+  recordSetDeletionWarning: (recordSetName: string) => `
+    The record set "${recordSetName}" will be deleted. The referenced
+    records will NOT be deleted.`,
+
+  // Reports
+  reportsCanNotBePrinted: 'Reports/Labels cannot be printed in this context.',
+  noReportsAvailable: 'No reports are available for this table.',
+  listTruncated: '(list truncated)',
+  reportProblemsDialogTitle: 'Problems with report',
+  reportsProblemsDialogMessage:
+    'The selected report has the following problems:',
+  badImageExpressions: 'Bad Image Expressions',
+  missingAttachments: 'Missing attachments',
+  // A verb
+  fix: 'Fix',
+  missingAttachmentsFixDialogTitle: 'Choose file',
+  reportParameters: 'Report Parameters',
+  labelFromRecordSetDialogTitle: 'From Record Set',
+  runReport: 'Run Report',
+
+  // ResourceView
+  missingFormDefinitionPageHeading: 'Missing form definition',
+  missingFormDefinitionPageContent: `
+    Specify was unable to find the form definition to display this resource`,
+
+  // SaveButton
+  unsavedFormUnloadProtect: 'This form has not been saved.',
+  saveAndAddAnother: 'Save and Add Another',
+
+  // ShowTransCommand
+  resolvedLoans: 'Resolved Loans',
+  // Open is a noun
+  openLoans: 'Open Loans',
+  gifts: 'Gifts',
+  exchanges: 'Exchanges',
+
+  // SpecifyCommands
+  unavailableCommandButton: 'Command N/A',
+  unavailableCommandDialogTitle: 'Command Not Available',
+  unavailableCommandDialogMessage: `
+    This command is currently unavailable for <i>Specify&nbsp7</i>
+    It was probably included on this form from <i>Specify&nbsp6</i> and
+    may be supported in the future.`,
+  commandName: 'Command name:',
+
+  // SpecifyPlugins
+  unavailablePluginButton: 'Plugin N/A',
+  unavailablePluginDialogTitle: 'Plugin Not Available',
+  unavailablePluginDialogMessage: `
+    This plugin is currently unavailable for <i>Specify&nbsp7</i>
+    It was probably included on this form from <i>Specify&nbsp6</i> and
+    may be supported in the future.`,
+  pluginName: 'Plugin name:',
+
+  // UiInputField
+  formatPopUp: (format: string) => `Format: ${format}`,
+
+  // UiParse
+  illegalBool: (value: string) => `Illegal value for Boolean: "${value}.`,
+  outOfRange: (minSafeInteger: number, maxSafeInteger: number) =>
+    `Value must be between ${minSafeInteger} and ${maxSafeInteger}.`,
+  notNumber: 'Not a valid number.',
+  notInteger: 'Not a valid integer.',
+  lengthOverflow: (maxLength: string) =>
+    `Value cannot be longer than ${maxLength}.`,
+  requiredFormat: (format: string) => `Required Format: ${format}.`,
+  requiredField: 'Field is required.',
+  noParser: (type: string) => `No parser for type ${type}`,
+
+  // UserAgentsPlugin
+  setAgents: 'Set Agents',
+  setAgentsDisabledButtonDescription: 'Save user before adding agents.',
+  userAgentsPluginDialogTitle: 'Set User Agents',
 });
 
 export default formsText;

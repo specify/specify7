@@ -4,7 +4,7 @@ var $                = require('jquery');
 var _                = require('underscore');
 var Backbone         = require('./backbone.js');
 const navigation = require('./navigation.js');
-const commonText = require('./localization/common.tsx');
+const commonText = require('./localization/common.tsx').default;
 
 module.exports = {
 

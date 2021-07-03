@@ -8,6 +8,7 @@ var Backbone  = require('./backbone.js');
 var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
+const commonText = require('./localization/common.tsx').default;
 
     function renderHeader(fieldSpec) {
         var field = _.last(fieldSpec.joinPath);
@@ -38,7 +39,7 @@ var QueryResults  = require('./queryresults.js');
             var inner = $(template());
             this.$el.append(inner);
             var table = this.$('table.query-results');
-            this.$('.query-results-count').text('(loading...)');
+            this.$('.query-results-count').text(commonText('loadingInline'));
             this.countOnly || table.append(this.renderHeader());
             this.noHeader && this.$('h3').remove();
             this.$('.fetching-more').hide();

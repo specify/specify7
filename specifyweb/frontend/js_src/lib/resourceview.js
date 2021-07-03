@@ -9,6 +9,8 @@ var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
+const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -104,9 +106,10 @@ const ResourceView = Backbone.View.extend({
         }).fail(function(jqXHR) {
             if (jqXHR.status !== 404) return;
             jqXHR.errorHandled = true;
-            self.$el.append('<h1>Missing form definition</h1>' +
-                            '<p>Specify was unable to find the form definition ' +
-                            'to display this resource.</p>');
+            self.$el.append(`
+                <h1>${formsText('missingFormDefinitionPageHeading')}</h1
+                <p>${formsText('missingFormDefinitionPageContent')}</p>
+            `);
         });
 
         ResourceView.trigger('rendered', self);
@@ -114,8 +117,11 @@ const ResourceView = Backbone.View.extend({
     },
     setTitle: function () {
         var self = this;
-        var title = (self.model.isNew() ? 'New ' : '') +
-                self.model.specifyModel.getLocalizedName();
+
+        const resourceLabel = self.model.specifyModel.getLocalizedName();
+        var title = self.model.isNew() ?
+          commonText('newResourceTitle')(resourceLabel) :
+          resourceLabel;
 
         self.setFormTitle(title);
         self.trigger('changetitle', self, title);

@@ -3,10 +3,11 @@ const $ = require('jquery');
 
 var schema = require('./schema.js');
 var WbsDialog = require('./components/wbsdialog.tsx').default;
+const commonText = require('./localization/common.tsx').default;
 
 module.exports = {
   task: 'workbenches',
-  title: 'WorkBench',
+  title: commonText('workbench'),
   icon: '/static/img/workbench.png',
   execute() {
     new WbsDialog({ showTemplates: false }).render();
