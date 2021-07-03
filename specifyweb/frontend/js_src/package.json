@@ -12,10 +12,10 @@
   "homepage": "https://specifysoftware.org",
   "main": "lib/main.js",
   "scripts": {
-    "buildTests": "tsc --build tsconfig.tests.json ",
-    "check-types": "tsc",
-    "runTests": "qunit testBuild/tests/testmain.js",
-    "test": "npm run buildTests && npm run runTests"
+    "buildTests": "tsc --build tsconfig.tests.json",
+    "runUnitTests": "qunit testBuild/tests/testmain.js",
+    "runLocalizationTests": "node testBuild/tests/testlocalization.js",
+    "test": "npm run buildTests && npm run runUnitTests && npm run runLocalizationTests"
   },
   "dependencies": {
     "backbone": "~0.9.10",
