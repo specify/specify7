@@ -157,7 +157,7 @@ const formsText = createDictionary({
   unsavedFormUnloadProtect: 'This form has not been saved.',
   saveAndAddAnother: 'Save and Add Another',
   saveConflictDialogTitle: 'Conflict',
-  saveConflictDialogMessage: ` 
+  saveConflictDialogMessage: `
     The data shown on this page has been changed by another user or in
     another browser tab and is out of date. The page must be reloaded to
     prevent inconsistent data from being saved.`,
@@ -205,6 +205,7 @@ const formsText = createDictionary({
   notInteger: 'Not a valid integer.',
   lengthOverflow: (maxLength: string) =>
     `Value cannot be longer than ${maxLength}.`,
+  requiredField: 'Field is required.',
   requiredFormat: (format: string) => `Required Format: ${format}.`,
   noParser: (type: string) => `No parser for type ${type}`,
 
