@@ -24,6 +24,7 @@ import type {
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import { getCanonicalMappingPath } from './leafletutils';
 import { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import dataModelStorage from './wbplanviewmodel';
@@ -391,13 +392,24 @@ export function getTableFromMappingPath({
   baseTableName: string;
   mappingPath: MappingPath;
 }): string {
-  const cacheName = mappingPathToString([baseTableName, ...mappingPath]);
+  const trimmedMappingPath =
+    valueIsReferenceItem(mappingPath.slice(-1)[0]) ||
+    valueIsTreeRank(mappingPath.slice(-1)[0])
+      ? mappingPath.slice(0, -1)
+      : mappingPath;
+
+  const canonicalMappingPath = getCanonicalMappingPath(trimmedMappingPath);
+
+  const cacheName = mappingPathToString([
+    baseTableName,
+    ...canonicalMappingPath,
+  ]);
   const results = cache.get('wbplanview-navigator-tables', cacheName);
-  if (results) return results;
+  if (typeof results === 'string') return results;
 
   const tableName = getMappingLineData({
     baseTableName,
-    mappingPath,
+    mappingPath: canonicalMappingPath,
   }).slice(-1)[0]?.tableName;
 
   if (typeof tableName === 'undefined')
