@@ -1,5 +1,7 @@
 {% load raven %}
 {% load script_manifest %}
+{% load i18n %}
+{% trans 'Log In' as title %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +11,7 @@
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
   <script src="{% script_src 'login.js' %}"></script>
-  <title>Log In | Specify 7</title>
+  <title>{% blocktrans with title=chooseCollection %}{{ title }} | Specify 7{% endblocktrans %}</title>
 </head>
 
 <body>
@@ -26,12 +28,12 @@
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
       <div class="form-row">
-        <label for="id_username" class="required">Username</label>
+        <label for="id_username" class="required">{% trans 'Username' %}</label>
         {{ form.username.errors }}
         {{ form.username }}
       </div>
       <div class="form-row">
-        <label for="id_password" class="required">Password</label>
+        <label for="id_password" class="required">{% trans 'Password' %}</label>
         {{ form.password.errors }}
         {{ form.password }}
         <input type="hidden" name="this_is_the_login_form" value="1" />
@@ -44,7 +46,7 @@
         {% endwith %}
       </div>
       <div class="submit-row">
-        <input type="submit" value="Login" />
+        <input type="submit" value="{% trans 'Login' %}" />
       </div>
     </form>
   </div>
