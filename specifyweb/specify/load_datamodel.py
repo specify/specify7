@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.conf import settings # type: ignore
+from django.utils.translation import gettext as _
 
 class DoesNotExistError(Exception):
     pass
@@ -41,7 +42,7 @@ class Datamodel(object):
         for table in self.tables:
             if table.name.lower() == tablename:
                 return table
-        raise TableDoesNotExistError("No table with name: %r" % tablename)
+        raise TableDoesNotExistError(_("No table with name: %(table_name)r") % {'table_name':tablename})
 
     def get_table_by_id(self, table_id: int, strict: bool=False) -> Optional['Table']:
         return strict_to_optional(self.get_table_by_id_strict, table_id, strict)
@@ -50,7 +51,7 @@ class Datamodel(object):
         for table in self.tables:
             if table.tableId == table_id:
                 return table
-        raise TableDoesNotExistError("No table with id: %d" % table_id)
+        raise TableDoesNotExistError(_("No table with id: %{table_id}d") % {'table_id':table_id})
 
     def reverse_relationship(self, relationship: 'Relationship') -> Optional['Relationship']:
         if hasattr(relationship, 'otherSideName'):
@@ -100,8 +101,8 @@ class Table(object):
         for field in self.all_fields:
             if field.name.lower() == fieldname:
                 return field
-        raise FieldDoesNotExistError("Field %s not in table %s. " % (fieldname, self.name) +
-                                     "Fields: %s" % [f.name for f in self.all_fields])
+        raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
+                                     _("Fields: %(fields)s") % {'fields':[f.name for f in self.all_fields]})
 
     def get_relationship(self, name: str) -> 'Relationship':
         field = self.get_field_strict(name)
