@@ -142,7 +142,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             {isAggregator ? (
               <Aggregator data={state.aggregatorInfos[badgeName]!} />
             ) : typeof state.lifemapperInfo === 'undefined' ? (
-              <p>${commonText('loading')}</p>
+              <p>{commonText('loading')}</p>
             ) : (
               <LifemapperMap
                 badgeName={badgeName}

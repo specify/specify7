@@ -9,7 +9,7 @@ var RecordSetsDialog = require('./recordsetsdialog.js');
 var PrepSelectDialog = require('./prepselectdialog.js');
 var navigation       = require('./navigation.js');
 var s                = require('./stringlocalization.js');
-const formsText = require('./localization/forms');
+const formsText = require('./localization/forms').default;
 
     var dialog;
     function makeDialog(el, options) {

@@ -95,7 +95,7 @@ const commonText = require('./localization/common').default;
             );
             const controls = $('<div class="tree-controls"></div>');
             controls.appendTo(this.el);
-            $('<h1>').text(title).appendTo(controls);
+            $('<h1>').text(commonText('trees')).appendTo(controls);
             controls.append(this.makeSearchBox());
             controls.append(this.makeBtns());
             $('<table>').appendTo(this.el).append(

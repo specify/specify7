@@ -6,7 +6,7 @@ import WbImport from './components/wbimport';
 
 const app = require('./specifyapp.js');
 const Backbone = require('./backbone.js');
-const wbText = require('./localization/workbench');
+const wbText = require('./localization/workbench').default;
 
 const WBImportView = Backbone.View.extend({
   __name__: 'WBImportView',

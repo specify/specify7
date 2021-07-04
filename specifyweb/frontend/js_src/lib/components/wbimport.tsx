@@ -293,7 +293,7 @@ export default class WbImport extends Component<{}, WbImportState> {
           <>
             <br />
             <DoImportButton update={update} />
-            <h2>${wbText('previewDataSet')}</h2>
+            <h2>{wbText('previewDataSet')}</h2>
           </>
         );
         preview = (

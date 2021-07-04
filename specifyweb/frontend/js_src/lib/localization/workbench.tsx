@@ -303,11 +303,12 @@ const wbText = createDictionary({
         {operationName} of this Data Set should begin shortly.
         <br />
         <br />
-        If this message persists for longer than 30 seconds, the {operationName}
+        If this message persists for longer than 30 seconds, the {
+          operationName
+        }{' '}
         process is busy with another Data Set. Specify currently supports only
-        one
-        {operationName} process at a time for a Specify 7 installation. Please
-        try try again later.
+        one {operationName} process at a time for a Specify 7 installation.
+        Please try again later.
       </>
     );
   },
