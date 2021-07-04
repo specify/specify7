@@ -11,7 +11,7 @@ var SaveButton   = require('./savebutton.js');
 var DeleteButton = require('./deletebutton.js');
 var specifyform  = require('./specifyform.js');
 
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 
 module.exports = Backbone.View.extend({

@@ -8,7 +8,7 @@ var OneToMany         = require('./collectionrelonetomanyplugin.js');
 
 var format = dataobjformatters.format;
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 module.exports =  OneToMany.extend({
     __name__: "CollectionRelOneToOnePlugin",

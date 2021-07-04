@@ -17,8 +17,8 @@ const contextMenuBuilder = require('./treectxmenu.js');
 const userInfo = require('./userinfo.js');
 const remoteprefs  = require('./remoteprefs.js');
 const cookies = require('./cookies.js');
-const treeText = require('./localization/tree.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const treeText = require('./localization/tree').default;
+const commonText = require('./localization/common').default;
 
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",

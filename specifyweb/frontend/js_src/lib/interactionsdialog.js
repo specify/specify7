@@ -14,8 +14,8 @@ var userInfo          = require('./userinfo.js');
 var InteractionDialog = require('./interactiondialog.js');
 var s                 = require('./stringlocalization.js');
 var reports           = require('./reports.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var interaction_entries, views, actions;
 

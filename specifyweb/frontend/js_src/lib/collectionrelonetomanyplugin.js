@@ -12,8 +12,8 @@ const userInfo          = require('./userinfo.js');
 const QueryCbxSearch    = require('./querycbxsearch.js');
 
 const format = dataobjformatters.format;
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  UIPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",

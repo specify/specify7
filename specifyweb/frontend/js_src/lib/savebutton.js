@@ -5,8 +5,8 @@ var _        = require('underscore');
 var Backbone = require('./backbone.js');
 
 const navigation = require('./navigation.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",

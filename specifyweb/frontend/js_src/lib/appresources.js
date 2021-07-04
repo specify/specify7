@@ -16,8 +16,8 @@ const SaveButton = require('./savebutton.js');
 const DeleteButton = require('./deletebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
-const adminText = require('./localization/admin.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const adminText = require('./localization/admin').default;
+const commonText = require('./localization/common').default;
 
 function makeUrl(resource) {
     return {

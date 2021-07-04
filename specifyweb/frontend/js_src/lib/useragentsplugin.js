@@ -8,8 +8,8 @@ var UIPlugin = require('./uiplugin.js');
 var schema   = require('./schema.js');
 var QueryCbx = require('./querycbx.js');
 var whenall  = require('./whenall.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var AgentForDiv = Backbone.View.extend({
         __name__: "AgentForDivisionSelector",

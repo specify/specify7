@@ -3,7 +3,7 @@
 var navigation = require('./navigation.js');
 var attachments = require('./attachments.js');
 
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  {
         task: 'attachments',

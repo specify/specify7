@@ -9,8 +9,8 @@ var FormsDialog        = require('./formsdialog.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var navigation         = require('./navigation.js');
 var querystring        = require('./querystring.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 
 module.exports = Backbone.View.extend({

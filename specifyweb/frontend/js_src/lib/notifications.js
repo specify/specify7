@@ -5,7 +5,7 @@ const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
 const moment = require('moment');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 const Message = Backbone.Model.extend({
     __name__: "NotificationMessage"

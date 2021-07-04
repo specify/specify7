@@ -18,9 +18,9 @@ const userInfo = require('./userinfo.js');
 const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
 const NotFoundView = require('./notfoundview.js');
-const WBUploadedView = require('./components/wbuploadedview.tsx').default;
+const WBUploadedView = require('./components/wbuploadedview').default;
 const dataModelStorage = require('./wbplanviewmodel').default;
-const WBStatus = require('./components/wbstatus.tsx').default;
+const WBStatus = require('./components/wbstatus').default;
 const WBUtils = require('./wbutils.js');
 const {
   valueIsTreeRank,
@@ -31,18 +31,18 @@ const {
 } = require('./wbplanviewmappinghelper');
 const {
   mappingsTreeToArrayOfSplitMappings,
-} = require('./wbplanviewtreehelper.ts');
-const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree.ts');
-const { extractDefaultValues } = require('./wbplanviewhelper.ts');
-const { getTableFromMappingPath } = require('./wbplanviewnavigator.ts');
-const fetchDataModelPromise = require('./wbplanviewmodelfetcher.ts').default;
-const { capitalize } = require('./wbplanviewhelper.ts');
+} = require('./wbplanviewtreehelper');
+const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree');
+const { extractDefaultValues } = require('./wbplanviewhelper');
+const { getTableFromMappingPath } = require('./wbplanviewnavigator');
+const fetchDataModelPromise = require('./wbplanviewmodelfetcher').default;
+const { capitalize } = require('./wbplanviewhelper');
 const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
-const cache = require('./cache.ts');
-const wbText = require('./localization/workbench.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const cache = require('./cache');
+const wbText = require('./localization/workbench').default;
+const commonText = require('./localization/common').default;
 
 const getDefaultCellMeta = () => ({
   // The value in this cell would be used to create a new record

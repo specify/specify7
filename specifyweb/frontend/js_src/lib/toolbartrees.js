@@ -6,7 +6,7 @@ var Backbone = require('./backbone.js');
 
 var schema = require('./schema.js');
 var domain = require('./domain.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 
     var treesForAll = ['geography', 'storage', 'taxon'];

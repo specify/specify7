@@ -2,8 +2,8 @@
 const $ = require('jquery');
 
 var schema = require('./schema.js');
-var WbsDialog = require('./components/wbsdialog.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+var WbsDialog = require('./components/wbsdialog').default;
+const commonText = require('./localization/common').default;
 
 module.exports = {
   task: 'workbenches',

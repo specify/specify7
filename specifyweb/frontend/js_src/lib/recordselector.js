@@ -11,8 +11,8 @@ var subviewheader = require('./templates/subviewheader.html');
 var collectionapi  = require('./collectionapi.js');
 var assert         = require('./assert.js');
 var querystring    = require('./querystring.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var emptyTemplate = `<p>${formsText('noData')}</p>`;
 

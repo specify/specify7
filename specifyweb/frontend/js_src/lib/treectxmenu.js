@@ -9,8 +9,8 @@ const populateForm = require('./populateform.js');
 const schema = require('./schema.js');
 const api = require('./specifyapi.js');
 const userInfo = require('./userinfo.js');
-const treeText = require('./localization/tree.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const treeText = require('./localization/tree').default;
+const commonText = require('./localization/common').default;
 
 const ro = userInfo.isReadOnly;
 

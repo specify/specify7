@@ -14,8 +14,8 @@ var systemInfo           = require('./systeminfo.js');
 var template             = require('./templates/welcome.html');
 var aboutspecify         = require('./templates/aboutspecify.html');
 
-const welcomeText = require('./localization/welcome.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const welcomeText = require('./localization/welcome').default;
+const commonText = require('./localization/common').default;
 
     var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
 

@@ -7,7 +7,7 @@ const Q = require('q');
 const UIPlugin = require('./uiplugin.js');
 const querystring = require('./querystring.js');
 const schema = require('./schema.js');
-const localityText = require('./localization/locality.tsx').default
+const localityText = require('./localization/locality').default
 
 module.exports =  UIPlugin.extend({
     __name__: "GeoLocatePlugin",

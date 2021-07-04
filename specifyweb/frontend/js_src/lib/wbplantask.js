@@ -3,7 +3,7 @@
 const app = require('./specifyapp.js');
 const router = require('./router.js');
 const NotFoundView = require('./notfoundview.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 module.exports = function () {
   router.route('workbench-plan/:id/', 'workbench-plan', (id) => {

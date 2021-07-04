@@ -8,7 +8,7 @@ var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
 var attachments = require('./attachments.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",

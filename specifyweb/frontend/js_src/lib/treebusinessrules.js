@@ -2,7 +2,7 @@
 var $ = require('jquery');
 var Q = require('q');
 var _ = require('underscore');
-const treeText = require('./localization/tree.tsx').default;
+const treeText = require('./localization/tree').default;
 
 function predictFullName(resource, options) {
     const treeName = resource.specifyModel.name.toLowerCase();

@@ -3,7 +3,7 @@
 var $      = require('jquery');
 var _      = require('underscore');
 var moment = require('moment');
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 var dateFormatStr = require('./dateformat.js');
 

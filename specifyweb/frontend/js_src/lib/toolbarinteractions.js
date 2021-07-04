@@ -2,7 +2,7 @@
 
 var navigation         = require('./navigation.js');
 var InteractionsDialog = require('./interactionsdialog.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 
 module.exports = {

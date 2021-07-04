@@ -10,8 +10,8 @@ const parsespecifyproperties = require('./parsespecifyproperties.js');
 const AttachmentPlugin       = require('./attachmentplugin.js');
 const attachments            = require('./attachments.js');
 const userInfo               = require('./userinfo.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 const csrftoken = require('./csrftoken.js');
 const populateForm = require('./populateform.js');

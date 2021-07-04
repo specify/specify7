@@ -2,11 +2,11 @@
 
 const $ = require('jquery');
 
-const LocalityRecordDataExtractor = require('./localityrecorddataextractor.ts');
-const Leaflet = require('./leaflet.ts');
+const LocalityRecordDataExtractor = require('./localityrecorddataextractor');
+const Leaflet = require('./leaflet');
 const UIPlugin = require('./uiplugin.js');
-const localityText = require('./localization/locality.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const localityText = require('./localization/locality').default;
+const commonText = require('./localization/common').default;
 
 module.exports = UIPlugin.extend(
   {

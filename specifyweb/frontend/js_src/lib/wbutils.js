@@ -1,19 +1,19 @@
 const $ = require('jquery');
 const _ = require('underscore');
-const Leaflet = require('./leaflet.ts');
-const WbLocalityDataExtractor = require('./wblocalitydataextractor.ts');
+const Leaflet = require('./leaflet');
+const WbLocalityDataExtractor = require('./wblocalitydataextractor');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
-const WbPlanViewHelper = require('./wbplanviewhelper.ts');
+const WbPlanViewHelper = require('./wbplanviewhelper');
 const {
   findLocalityColumnsInDataSet,
-} = require('./wblocalitydataextractor.ts');
+} = require('./wblocalitydataextractor');
 const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
-} = require('./components/wbadvancedsearch.tsx');
-const wbText = require('./localization/workbench.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+} = require('./components/wbadvancedsearch');
+const wbText = require('./localization/workbench').default;
+const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
   __name__: 'WbUtils',

@@ -9,8 +9,8 @@ var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 var NO_ADD_ANOTHER = [
     'Gift',

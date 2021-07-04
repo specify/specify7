@@ -7,7 +7,7 @@ const Q = require('q');
 
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
-const treeText = require('./localization/tree.tsx').default;
+const treeText = require('./localization/tree').default;
 
 var TreeNodeView = Backbone.View.extend({
     __name__: "TreeNodeView",

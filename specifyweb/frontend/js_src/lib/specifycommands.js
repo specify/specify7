@@ -7,7 +7,7 @@ var ReportCmd = require('./reportcommand.js');
 var ShowTransCmd = require('./showtranscommand.js');
 var UICmd         = require('./uicommand.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 module.exports =  {
     ReturnLoan: LoanReturnCmd,

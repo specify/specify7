@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var UIPlugin = require('./uiplugin.js');
 
-const adminText = require('./localization/admin.tsx').default;
+const adminText = require('./localization/admin').default;
 
 
 module.exports =  UIPlugin.extend({

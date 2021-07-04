@@ -1,7 +1,7 @@
 var navigation  = require('./navigation');
 var FormsDialog = require('./formsdialog.js');
 
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 
 module.exports = {

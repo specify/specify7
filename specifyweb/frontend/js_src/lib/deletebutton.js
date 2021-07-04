@@ -4,8 +4,8 @@ var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
 
-const commonText = require('./localization/common.tsx').default;
-const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common').default;
+const formsText = require('./localization/forms').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "DeleteButton",

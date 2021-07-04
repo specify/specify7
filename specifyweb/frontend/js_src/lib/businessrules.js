@@ -8,7 +8,7 @@ var saveblockers      = require('./saveblockers.js');
 var treeBusinessRules = require('./treebusinessrules.js');
 var rules             = require('./businessruledefs.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
     var enabled = true;
 

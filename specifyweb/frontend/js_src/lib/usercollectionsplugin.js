@@ -6,8 +6,8 @@ const Backbone = require('./backbone.js');
 
 const UIPlugin = require('./uiplugin.js');
 const schema = require('./schema.js');
-const adminText = require('./localization/admin.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const adminText = require('./localization/admin').default;
+const commonText = require('./localization/common').default;
 
 const SetCollectionsView = Backbone.View.extend({
     __name__: "UserCollectionsUI",

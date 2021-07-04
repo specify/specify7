@@ -10,7 +10,7 @@ var uiparse      = require('./uiparse.js');
 var UIFieldInput = require('./uiinputfield.js');
 var saveblockers = require('./saveblockers.js');
 var ToolTipMgr   = require('./tooltipmgr.js');
-const queryText = require('./localization/query.tsx').default;
+const queryText = require('./localization/query').default;
 
     var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
     var stringParser = uiparse.bind(null, {type: 'java.lang.String'});

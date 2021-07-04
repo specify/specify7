@@ -9,7 +9,7 @@ var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
 var ToolTipMgr    = require('./tooltipmgr.js');
 var saveblockers  = require('./saveblockers.js');
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
     var precisions = ['full', 'month-year', 'year'];
 

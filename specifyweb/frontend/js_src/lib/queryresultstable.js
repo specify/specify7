@@ -8,8 +8,8 @@ var Backbone  = require('./backbone.js');
 var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
-const queryText = require('./localization/query.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     function renderHeader(fieldSpec) {
         var field = _.last(fieldSpec.joinPath);

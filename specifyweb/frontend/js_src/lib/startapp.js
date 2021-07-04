@@ -7,8 +7,8 @@ var businessRules    = require('./businessrules.js');
 var errorview        = require('./errorview.js');
 var HeaderUI         = require('./headerui.js');
 var navigation       = require('./navigation.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 
 var tasks = [

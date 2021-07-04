@@ -10,8 +10,8 @@ var schema         = require('./schema.js');
 var icons          = require('./icons.js');
 var specifyform    = require('./specifyform.js');
 var initialContext = require('./initialcontext.js');
-const commonText = require('./localization/common.tsx').default;
-const formsText = require('./localization/forms.tsx').default;
+const commonText = require('./localization/common').default;
+const formsText = require('./localization/forms').default;
 
 
     // I don't think the non-sidebar items are ever used in Sp6.

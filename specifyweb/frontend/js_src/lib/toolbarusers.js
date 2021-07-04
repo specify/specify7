@@ -6,7 +6,7 @@ var Backbone  = require('./backbone.js');
 
 var schema     = require('./schema.js');
 var navigation = require('./navigation.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
     var UsersView = Backbone.View.extend({
         __name__: "UsersView",

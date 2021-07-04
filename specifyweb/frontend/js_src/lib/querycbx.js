@@ -21,8 +21,8 @@ var initialContext    = require('./initialcontext.js');
 var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
 var userInfo          = require('./userinfo.js');
-const queryText = require('./localization/query.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
 var dataobjformat = dataobjformatters.format;
 

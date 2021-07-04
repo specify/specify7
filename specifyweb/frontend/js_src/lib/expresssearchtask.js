@@ -13,7 +13,7 @@ var s                 = require('./stringlocalization.js');
 var initialContext    = require('./initialcontext.js');
 var app               = require('./specifyapp.js');
 var querystring       = require('./querystring.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 
     var relatedSearches;

@@ -5,7 +5,7 @@ var _ = require('underscore');
 
 var UICmd = require('./uicommand.js');
 var reports = require('./reports.js');
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 module.exports =  UICmd.extend({
     __name__: "ReportCommand",

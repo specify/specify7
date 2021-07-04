@@ -4,7 +4,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var UIPlugin = require('./uiplugin.js');
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 var providers = [
     require('./usercollectionsplugin.js'),

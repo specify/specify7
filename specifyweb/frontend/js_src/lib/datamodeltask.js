@@ -9,7 +9,7 @@ var schema = require('./schema.js');
 var router = require('./router.js');
 var app    = require('./specifyapp.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 const SchemaView = Backbone.View.extend({
     __name__: "SchemaView",

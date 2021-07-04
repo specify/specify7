@@ -11,8 +11,8 @@ var ResourceView = require('./resourceview.js');
 var FieldFormat  = require('./fieldformat.js');
 var PrepDialog   = require('./prepdialog.js');
 var app          = require('./specifyapp.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  PrepDialog.extend({
         __name__: "PrepSelectDialog",

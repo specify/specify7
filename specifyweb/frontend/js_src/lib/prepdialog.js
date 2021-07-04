@@ -6,7 +6,7 @@ var Backbone = require('./backbone.js');
 
 var schema = require('./schema.js');
 var s      = require('./stringlocalization.js');
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 
 module.exports =  Backbone.View.extend({

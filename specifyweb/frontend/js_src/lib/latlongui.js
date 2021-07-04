@@ -8,7 +8,7 @@ var api = require('./specifyapi.js');
 var latlongutils = require('./latlongutils.js');
 var UIPlugin = require('./uiplugin.js');
 var template = require('./templates/latlonui.html');
-const localityText = require('./localization/locality.tsx').default;
+const localityText = require('./localization/locality').default;
 
 
 module.exports =  UIPlugin.extend({

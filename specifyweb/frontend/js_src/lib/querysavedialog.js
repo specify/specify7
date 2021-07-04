@@ -5,8 +5,8 @@ const Backbone = require('./backbone.js');
 
 const navigation = require('./navigation.js');
 const userInfo = require('./userinfo.js');
-const queryText = require('./localization/query.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
     __name__: "QuerySaveDialog",

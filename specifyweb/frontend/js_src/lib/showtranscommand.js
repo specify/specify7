@@ -6,8 +6,8 @@ var Backbone = require('./backbone.js');
 
 var UICmd = require('./uicommand.js');
 var schema = require('./schema.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 var title =  "Transactions";
 

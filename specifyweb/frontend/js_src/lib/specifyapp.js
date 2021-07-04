@@ -15,7 +15,7 @@ var ResourceView = require('./resourceview.js');
 var router       = require('./router.js');
 var systemInfo   = require('./systeminfo.js');
 var reports      = require('./reports.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
     var currentView;
     var versionMismatchWarned = false;

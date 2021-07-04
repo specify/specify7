@@ -3,7 +3,7 @@
 const $ = require('jquery');
 const Q = require('q');
 const chooseTmpl = require('./templates/chooseDwCADef.html');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 const title = commonText('makeDwca');
 

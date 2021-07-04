@@ -3,7 +3,7 @@
 const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 // We introduce a sequence variable that is incremented and passed in
 // the state argument of each history.pushState invocation. When a

@@ -2,7 +2,7 @@
 
 var reports        = require('./reports.js');
 var initialContext = require('./initialcontext.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
     initialContext.load('report_runner_status.json', status => reports.disable = !status.available);
 

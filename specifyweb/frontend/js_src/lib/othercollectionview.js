@@ -6,7 +6,7 @@ const Backbone  = require('./backbone.js');
 
 const navigation =  require('./navigation.js');
 const userInfo = require('./userinfo.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 
 module.exports =  Backbone.View.extend({

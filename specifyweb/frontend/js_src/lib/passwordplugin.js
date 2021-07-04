@@ -5,8 +5,8 @@ var Backbone = require('./backbone.js');
 
 var UIPlugin = require('./uiplugin.js');
 var template = require('./templates/passwordchange.html');
-const commonText = require('./localization/common.tsx').default;
-const adminText = require('./localization/admin.tsx').default;
+const commonText = require('./localization/common').default;
+const adminText = require('./localization/admin').default;
 
     var Dialog = Backbone.View.extend({
         __name__: "PasswordResetDialog",

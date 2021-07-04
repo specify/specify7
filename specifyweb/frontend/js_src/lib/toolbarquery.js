@@ -13,7 +13,7 @@ const SaveButton     = require('./savebutton.js');
 const DeleteButton   = require('./deletebutton.js');
 const initialContext = require('./initialcontext.js');
 const userInfo       = require('./userinfo.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
     var qbDef;
     initialContext.loadResource('querybuilder.xml', data => qbDef = data);

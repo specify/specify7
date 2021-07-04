@@ -1,7 +1,7 @@
 "use strict";
 
 const $ = require('jquery');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 function execute() {
     $(`

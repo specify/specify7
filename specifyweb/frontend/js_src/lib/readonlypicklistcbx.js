@@ -2,7 +2,7 @@
 
 var $ = require('jquery');
 var _ = require('underscore');
-const queryText = require('./localization/query.tsx').default;
+const queryText = require('./localization/query').default;
 
 var Base = require('./basepicklist.js');
 

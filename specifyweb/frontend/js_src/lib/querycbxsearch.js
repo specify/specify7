@@ -10,7 +10,7 @@ var dataobjformatters = require('./dataobjformatters.js');
 var whenAll           = require('./whenall.js');
 var initialContext    = require('./initialcontext.js');
 var resourceapi       = require('./resourceapi.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
     var dialogdefs;
     initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);

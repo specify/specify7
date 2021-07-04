@@ -13,7 +13,7 @@ var specifyform  = require('./specifyform.js');
 var navigation   = require('./navigation.js');
 var whenAll      = require('./whenall.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 const template = require('./templates/attachmentbrowser.html');
 

@@ -12,8 +12,8 @@ const fieldFormat = require('./fieldformat.js');
 const userInfo    = require('./userinfo.js');
 const s = require('./stringlocalization.js');
 const QueryCbx = require('./querycbx.js');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');

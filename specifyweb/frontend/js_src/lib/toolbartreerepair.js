@@ -4,7 +4,7 @@ const $ = require('jquery');
 const Backbone = require('./backbone.js');
 const domain = require('./domain.js');
 const schema = require('./schema.js');
-const commonText = require('./localization/common.tsx').default;
+const commonText = require('./localization/common').default;
 
 const title = commonText('repairTree');
 

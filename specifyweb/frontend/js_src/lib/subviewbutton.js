@@ -8,7 +8,7 @@ var specifyform    = require('./specifyform.js');
 var navigation     = require('./navigation.js');
 var RecordSelector = require('./recordselector.js');
 
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",

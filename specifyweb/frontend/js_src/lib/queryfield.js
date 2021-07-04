@@ -9,8 +9,8 @@ var schema            = require('./schema.js');
 var domain            = require('./domain.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var QueryFieldInputUI = require('./queryfieldinput.js');
-const queryText = require('./localization/query.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 

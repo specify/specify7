@@ -15,8 +15,8 @@ var QueryResultsTable  = require('./queryresultstable.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var QuerySaveDialog    = require('./querysavedialog.js');
 var router             = require('./router.js');
-const queryText = require('./localization/query.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",

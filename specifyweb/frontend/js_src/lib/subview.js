@@ -8,8 +8,8 @@ var schema         = require('./schema.js');
 var specifyform    = require('./specifyform.js');
 var QueryCbxSearch = require('./querycbxsearch.js');
 var subviewheader = require('./templates/subviewheader.html');
-const formsText = require('./localization/forms.tsx').default;
-const commonText = require('./localization/common.tsx').default;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "Subview",

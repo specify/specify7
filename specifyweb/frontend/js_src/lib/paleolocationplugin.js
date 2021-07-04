@@ -5,7 +5,7 @@ const $ = require('jquery');
 const UIPlugin = require('./uiplugin.js');
 const template = require('./templates/pmapplugin.html');
 const Q = require('q');
-const formsText = require('./localization/forms.tsx').default;
+const formsText = require('./localization/forms').default;
 
 module.exports = UIPlugin.extend({
     __name__: "PaleolocationMapPlugin",
