@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.translation import gettext as _
 from xml.etree import ElementTree
 import os
 import re
@@ -14,9 +15,13 @@ def check_versions(Spversion):
 
     if not settings.TESTING:
         spversion = Spversion.objects.get()
-        assert spversion.appversion == SPECIFY_VERSION and spversion.schemaversion == SCHEMA_VERSION, """
-               Specify version: %s, Schema Version: %s do not match database values: %s, %s
-               Please update and/or run the host thickclient installation at %s
-               to update the database.""" % (
-               SPECIFY_VERSION, SCHEMA_VERSION, spversion.appversion, spversion.schemaversion,
-               settings.SPECIFY_THICK_CLIENT)
+        assert spversion.appversion == SPECIFY_VERSION and spversion.schemaversion == SCHEMA_VERSION, _("""
+               Specify version: %(specify_version)s, Schema Version: %(schema_version)s do not match database values: %(app_specify_version)s, %(app_schema_version)s
+               Please update and/or run the host thickclient installation at %(thich_client_location)s
+               to update the database.""") % {
+                   'specify_version': SPECIFY_VERSION,
+                   'schema_version': SCHEMA_VERSION,
+                   'app_specify_version': spversion.appversion,
+                   'app_schema_version': spversion.schemaversion,
+                   'thich_client_location': settings.SPECIFY_THICK_CLIENT
+               }
