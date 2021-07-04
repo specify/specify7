@@ -7,7 +7,6 @@
 import type { RA } from './components/wbplanview';
 import type {
   FullMappingPath,
-  MappingLine,
   MappingPath,
   MappingType,
   RelationshipType,
@@ -15,7 +14,6 @@ import type {
 import type { ColumnOptions } from './uploadplantomappingstree';
 import dataModelStorage from './wbplanviewmodel';
 import { getMappingLineData } from './wbplanviewnavigator';
-import { uniquifyHeaders } from './wbplanviewutils';
 
 export const relationshipIsToMany = (
   relationshipType?: RelationshipType | ''
@@ -204,32 +202,12 @@ export const findDuplicateMappings = (
   return duplicateIndexes;
 };
 
-export function renameNewlyCreatedHeaders(
-  baseTableName: string,
-  headers: RA<string>,
-  lines: RA<MappingLine>
-): RA<MappingLine> {
-  const generatedHeaderPreviews = Object.fromEntries(
-    lines
-      .map((line, index) => ({ line, index }))
-      .filter(({ line }) => !headers.includes(line.headerName))
-      .map(({ line, index }) => [
-        index,
-        generateMappingPathPreview(baseTableName, line.mappingPath)[1],
-      ])
+// Replaces all to-many reference numbers with #1
+export const getCanonicalMappingPath = (
+  mappingPath: MappingPath
+): MappingPath =>
+  mappingPath.map((mappingPathPart) =>
+    valueIsReferenceItem(mappingPathPart)
+      ? formatReferenceItem(1)
+      : mappingPathPart
   );
-
-  const newHeaders = lines.map(
-    ({ headerName }, index) => generatedHeaderPreviews[index] ?? headerName
-  );
-
-  const uniqueHeaders = uniquifyHeaders(
-    newHeaders,
-    Object.keys(generatedHeaderPreviews).map((index) => Number.parseInt(index))
-  );
-
-  return lines.map((line, index) => ({
-    ...line,
-    headerName: uniqueHeaders[index],
-  }));
-}

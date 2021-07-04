@@ -5,17 +5,12 @@
  */
 
 import type { IR, RA, RR } from './components/wbplanview';
-import type { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
 import {
   mappingLocalityColumns,
   requiredLocalityColumns,
 } from './leafletconfig';
-import {
-  formatReferenceItem,
-  valueIsReferenceItem,
-} from './wbplanviewmappinghelper';
 
 export type Field<T> = { readonly headerName: string; readonly value: T };
 
@@ -59,16 +54,6 @@ export function formatCoordinate(coordinate: string): number {
   };
   return parsedCoordinate._components[0] * parsedCoordinate._sign;
 }
-
-// Replaces all to-many reference numbers with #1
-export const getCanonicalMappingPath = (
-  mappingPath: MappingPath
-): MappingPath =>
-  mappingPath.map((mappingPathPart) =>
-    valueIsReferenceItem(mappingPathPart)
-      ? formatReferenceItem(1)
-      : mappingPathPart
-  );
 
 export const getLocalityData = (
   localityColumns: IR<string>,

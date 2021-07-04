@@ -24,7 +24,6 @@ import type {
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
-import { getCanonicalMappingPath } from './leafletutils';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {
@@ -34,6 +33,7 @@ import {
   mappingPathToString,
   relationshipIsToMany,
   valueIsReferenceItem,
+  getCanonicalMappingPath,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';

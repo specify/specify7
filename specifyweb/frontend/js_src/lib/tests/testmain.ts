@@ -1,4 +1,5 @@
 import QUnit from 'qunit';
+
 import type { RA } from '../components/wbplanview';
 import dataModelStorage from '../wbplanviewmodel';
 import dataModel from './fixtures/wbplanviewmodel.json';

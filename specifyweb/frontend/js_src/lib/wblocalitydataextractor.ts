@@ -3,16 +3,12 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
-import {
-  formatCoordinate,
-  getCanonicalMappingPath,
-  getField,
-  getLocalityData,
-} from './leafletutils';
+import { formatCoordinate, getField, getLocalityData } from './leafletutils';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
   findSubArray,
   mappingPathToString,
+  getCanonicalMappingPath,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
 
