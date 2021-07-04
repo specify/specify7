@@ -50,7 +50,8 @@ RUN apt-get update \
         libmariadbclient-dev \
         libsasl2-dev \
         python3-venv \
-        python3.6-dev
+        python3.6-dev \
+        gettext
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
