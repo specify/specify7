@@ -507,7 +507,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             ds.delete()
             return http.HttpResponse(status=204)
 
-        assert False, "Unexpect HTTP method"
+        assert False, "Unexpected HTTP method"
 
 
 @openapi(schema={

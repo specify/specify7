@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 from typing_extensions import TypedDict
 
 from django.db import connection, transaction, IntegrityError
+from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
@@ -265,7 +266,7 @@ class BoundTreeRecord(NamedTuple):
                 unmatched, new_match_result = self._match(placeholders + to_upload)
                 if isinstance(new_match_result, MatchedMultiple):
                     return UploadResult(
-                        FailedBusinessRule("There are multiple 'Uploaded' placeholder values in the tree!", new_match_result.info),
+                        FailedBusinessRule(_("There are multiple 'Uploaded' placeholder values in the tree!"), new_match_result.info),
                         {}, {}
                     )
                 return self._upload(unmatched, new_match_result)
@@ -286,7 +287,7 @@ class BoundTreeRecord(NamedTuple):
             info = ReportInfo(tableName=self.name, columns=[r.column for r in after_skipped[0].results], treeInfo=None)
             return UploadResult(
                 FailedBusinessRule(
-                    f'Missing or unmapped required tree parent rank value for {repr(names)}.',
+                    _('Missing or unmapped required tree parent rank value for %(value)s') % {'value':repr(names)},
                     info
                 ),
                 {}, {}
