@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.conf import settings
 from django.utils import translation
+from django.utils.translation import gettext as _
 
 DIR = os.path.dirname(__file__)
 
@@ -46,7 +47,7 @@ def api_tables(request):
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/api/specify_schema/openapi.json",
-            title="Specify 7 Tables API",
+            title=_("Specify 7 Tables API"),
         ),
     )
 
@@ -58,7 +59,7 @@ def api_operations(request):
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/context/api_endpoints.json",
-            title="Specify 7 Operations API",
+            title=_("Specify 7 Operations API"),
         ),
     )
 
@@ -69,6 +70,6 @@ def api_operations_all(request):
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/context/api_endpoints_all.json",
-            title="Specify 7 Operations API (all)",
+            title=_("Specify 7 Operations API (all)"),
         ),
     )

@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from django.views.decorators.cache import cache_control
 from django.conf import settings
+from django.utils.translation import gettext as _
 
 from specifyweb.specify.views import login_maybe_required, openapi
 
@@ -130,7 +131,7 @@ def delete_attachment_file(attch_loc):
     r = requests.post(server_urls["delete"], data=data)
     update_time_delta(r)
     if r.status_code not in (200, 404):
-        raise AttachmentError("Deletion failed: " + r.text)
+        raise AttachmentError(_("Deletion failed: %(reason)s") % {'reason': r.text})
 
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
@@ -186,9 +187,9 @@ def test_key():
     if r.status_code == 200:
         return
     elif r.status_code == 403:
-        raise AttachmentError("Bad attachment key.")
+        raise AttachmentError(_("Bad attachment key."))
     else:
-        raise AttachmentError("Attachment key test failed.")
+        raise AttachmentError(_("Attachment key test failed."))
 
 init()
 

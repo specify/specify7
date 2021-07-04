@@ -8,6 +8,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.conf import settings
 from django.template import loader, Context
+from django.utils.translation import gettext as _
 
 from ..specify.views import login_maybe_required
 from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
@@ -32,14 +33,14 @@ def run(request):
     Returns the result as a PDF.
     """
     if settings.REPORT_RUNNER_HOST == '':
-        raise ReportException("Report service is not configured.")
+        raise ReportException(_("Report service is not configured."))
 
     port = settings.REPORT_RUNNER_PORT
     if port == '': port = 80
 
     report_data = run_query(request.specify_collection, request.specify_user, request.POST['query'])
     if len(report_data['rows']) < 1:
-        return HttpResponse("The report query returned no results.", content_type="text/plain")
+        return HttpResponse(_("The report query returned no results."), content_type="text/plain")
 
     r = requests.post("http://%s:%s/report" %
                       (settings.REPORT_RUNNER_HOST, port),
