@@ -1,5 +1,6 @@
 import logging
 import re
+from django.utils.translation import gettext as _
 
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
@@ -89,7 +90,7 @@ class ObjectFormatter(object):
         formatterNode = self.getFormatterDef(specify_model, formatter_name)
         if formatterNode is None:
             logger.warn("no dataobjformatter for %s", specify_model)
-            return query, literal("<Formatter not defined.>")
+            return query, literal(_("<Formatter not defined.>"))
         logger.debug("using dataobjformatter: %s", ElementTree.tostring(formatterNode))
 
         def case_value_convert(value): return value
@@ -146,7 +147,7 @@ class ObjectFormatter(object):
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_name)
         if aggregatorNode is None:
             logger.warn("aggregator is not defined")
-            return literal("<Aggregator not defined.>")
+            return literal(_("<Aggregator not defined.>"))
         logger.debug("using aggregator: %s", ElementTree.tostring(aggregatorNode))
         formatter_name = aggregatorNode.attrib.get('format', None)
         separator = aggregatorNode.attrib.get('separator', ',')
