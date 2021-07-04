@@ -7,6 +7,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse
 from django.template import loader
 from django.conf import settings
+from django.utils import translation
 
 DIR = os.path.dirname(__file__)
 
@@ -25,7 +26,17 @@ def specify(request):
             "use_raven": settings.RAVEN_CONFIG is not None,
         }
     )
-    return HttpResponse(resp)
+    response = HttpResponse(resp)
+
+    language = translation.get_language()
+    if request.COOKIES.get('language') != language:
+        response.set_cookie(
+            'language',
+            language,
+            max_age=365 * 24 * 60 * 60
+        )
+
+    return response
 
 
 @login_maybe_required
