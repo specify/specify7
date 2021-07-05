@@ -68,6 +68,8 @@ COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
 
+RUN cd specifyweb && ../ve/bin/python ../manage.py compilemessages
+
 ARG BUILD_VERSION
 ARG GIT_SHA
 ENV BUILD_VERSION=$BUILD_VERSION
