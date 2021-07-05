@@ -62,10 +62,10 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
         for q in queries[1:]:
             fields = q.get_export_fields()
             if fields != export_fields:
-                raise DwCAException(_("""
-                Query definitions have conflicting fields.
-                Offending values: %(fields)s vs %(export_fields)s
-                """) % {'fields':fields, 'export_fields':export_fields})
+                raise DwCAException(_(
+                "Query definitions have conflicting fields."
+                "Offending values: %(fields)s vs %(export_fields)s"
+                ) % {'fields':fields, 'export_fields':export_fields})
 
         id_fields = [f.index for f in export_fields if f.is_core_id]
 
