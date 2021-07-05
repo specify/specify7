@@ -56,8 +56,9 @@ const wbText = createDictionary({
     Start the Upload? Uploading the Data Set will add the data to the Specify
     database.`,
   deleteDataSetDialogTitle: 'Delete Data Set',
+  deleteDataSetDialogHeader: 'Delete this Data Set?',
   deleteDataSetDialogMessage: `
-    Delete this Data Set? Deleting permanently removes it and its Upload Plan.
+    Deleting a Data Set permanently removes it and its Upload Plan.
     Data mappings will no longer be available for re-use with other
     Data Sets. Also after deleting, Rollback will no longer be an option for
     an uploaded Data Set.`,
