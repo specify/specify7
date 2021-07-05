@@ -95,6 +95,7 @@ FROM common AS run-common
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         rsync \
+        gettext \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
