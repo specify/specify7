@@ -40,7 +40,7 @@ module.exports = UIPlugin.extend({
         const form = this.model.specifyModel.getLocalizedName();
         if (data == null) {
             $(`<div>
-                ${formsText('noCoordinatesDialogHeader')}
+                ${formsText('noCoordinatesDialogHeader')(form)}
                 <p>${formsText('noCoordinatesDialogMessage')(form)}</p>
             </div>`).dialog({
                 title: formsText('noCoordinatesDialogTitle'),

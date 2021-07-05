@@ -21,7 +21,7 @@ module.exports = Backbone.View.extend({
     render() {
         if (this.clone) {
             this.$el
-                .append(queryText('saveClonnedQueryDialogHeader'))
+                .append(queryText('saveClonedQueryDialogHeader'))
                 .append(`<p>${queryText('saveClonedQueryDialogMessage')}</p>`);
         } else {
             this.$el

@@ -4,14 +4,16 @@ const $ = require('jquery');
 const Q = require('q');
 const commonText = require('./localization/common').default;
 
-const title = commonText('updateExportFeedDialogTitle');
 
 var dialog = null;
 
 function execute() {
     if (dialog) return;
 
-    dialog = $(`<div>${commonText('updateExportFeedDialogMessage')}</div>`).dialog({
+    dialog = $(`<div>
+        ${commonText('updateExportFeedDialogHeader')}
+        ${commonText('updateExportFeedDialogMessage')}
+    </div>`).dialog({
         modal: true,
         title: commonText('updateExportFeedDialogTitle'),
         close: function() { $(this).remove(); dialog = null; },

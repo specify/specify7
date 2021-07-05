@@ -18,12 +18,13 @@ if (typeof process.argv[1] === 'undefined')
  * When tests are build, this scrip would get executed from
  * `js_src/testBuild/tests/testlocalization.js`. We need to go up two
  * levels to get to the `js_src` directory.
- * */
-const jsSrcDirectory = path.dirname(path.dirname(process.argv[1]));
-const libDirectory = path.join(path.dirname(jsSrcDirectory), 'lib');
+ *
+ */
+const jsSourceDirectory = path.dirname(path.dirname(process.argv[1]));
+const libraryDirectory = path.join(path.dirname(jsSourceDirectory), 'lib');
 
 // Directory that contains the localization script
-const localizationDirectory = path.join(libDirectory, 'localization');
+const localizationDirectory = path.join(libraryDirectory, 'localization');
 
 // Directories that contain front-end source code (non-recursively)
 const directoriesToScan = ['./', './components', './templates'];
@@ -41,14 +42,15 @@ let errorsCount = 0;
 function error(value: string): void {
   errorsCount += 1;
   process.exitCode = 1;
-  console.warn(`\u001B[31m${value}\u001B[0m\n\n`);
+  console.error(`\u001B[31m${value}\u001B[0m\n\n`);
 }
 
 log(`Looking for localization dictionaries in ${localizationDirectory}`);
 
 const reFindDictionary =
   /const (?<dictionaryName>[a-z][A-Za-z]+Text) = createDictionary/;
-const reFindKeys = /^\s*(?<keyName>\w+):\s*(?<keyType>["'([`f](?:\s*<)?)/gm;
+const reFindKeys =
+  /^ {2}(?<keyName>\w+):\s*(?<keyType>\(\s*<|function[ (|]|.)/gm;
 const lookAroundLength = 40;
 
 type Key = {
@@ -82,8 +84,9 @@ const dictionaries = Object.fromEntries(
                 groups.keyName,
                 {
                   expectsArguments:
-                    (groups.keyType === '(' && groups.keyType.length === 1) ||
-                    groups.keyType === 'f',
+                    groups.keyType === 'function(' ||
+                    groups.keyType === 'function ' ||
+                    (groups.keyType === '(' && groups.keyType.length === 1),
                   useCount: 0,
                 },
               ]
@@ -111,7 +114,7 @@ if (Object.keys(dictionaries).length === 0)
 const sourceFiles = directoriesToScan
   .flatMap((directoryName) =>
     fs
-      .readdirSync(path.join(libDirectory, directoryName))
+      .readdirSync(path.join(libraryDirectory, directoryName))
       .map((fileName) => path.join(directoryName, fileName))
   )
   .filter((fileName) =>
@@ -124,7 +127,7 @@ sourceFiles.forEach((fileName) => {
   if (verbose) log(`Looking for language string usages in ${fileName}`);
 
   const fileContent = fs
-    .readFileSync(path.join(libDirectory, fileName))
+    .readFileSync(path.join(libraryDirectory, fileName))
     .toString();
   let foundUsages = false;
 
