@@ -576,11 +576,11 @@ def generate_openapi_for_endpoints(all_endpoints=False):
         **base_schema(
             _("Specify 7 Operations API"),
             description=(
-                "<a href="/documentation/api/tables/">"
+                '<a href="/documentation/api/tables/">'
                 f'{_("Specify 7 APIs for database tables")}'
-                "</a><br><a href="/documentation/api/operations/all/">"
+                '</a><br><a href="/documentation/api/operations/all/">'
                 f'{_("Specify 7 APIs for system operations (all endpoints)")}'
-                "</a>"
+                '</a>'
             )
         ),
         **dict(

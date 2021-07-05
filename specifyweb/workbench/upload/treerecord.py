@@ -287,7 +287,7 @@ class BoundTreeRecord(NamedTuple):
             info = ReportInfo(tableName=self.name, columns=[r.column for r in after_skipped[0].results], treeInfo=None)
             return UploadResult(
                 FailedBusinessRule(
-                    _('Missing or unmapped required tree parent rank value for %(value)s') % {'value':repr(names)},
+                    _('Missing or unmapped required tree parent rank value for %(value)s.') % {'value':repr(names)},
                     info
                 ),
                 {}, {}
