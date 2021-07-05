@@ -50,11 +50,11 @@ export const lifemapperMessagesMeta: RR<
 > = {
   errorDetails: {
     className: 'error-details',
-    title: lifemapperText('leafletDetailsErrorsTitle'),
+    title: lifemapperText('leafletDetailsErrorsHeader'),
   },
   infoSection: {
     className: 'info-section',
-    title: lifemapperText('leafletDetailsInfoTitle'),
+    title: lifemapperText('leafletDetailsInfoHeader'),
   },
 } as const;
 

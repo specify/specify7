@@ -179,6 +179,7 @@ const ResourceDataView = Backbone.View.extend({
     loadFile() {
         const fileInput = $('<input type="file">');
         const dialog = $(`<div><p>
+            ${adminText('resourceLoadDialogHeader')}
             ${adminText('resourceLoadDialogMessage')}
         </p></div>`).append(fileInput).dialog({
             modal: true,
@@ -271,12 +272,13 @@ const ResourceList = Backbone.View.extend({
         };
 
         const dialog = $(`<div>
+            ${adminText('createResourceDialogHeader')}
             <form>
                 <label style="white-space: nowrap;">${adminText('newResourceName')} <input type="text"></label>
                 <input type="submit" style="display: none;">
             </form>
         </div>`).dialog({
-            dialog: adminText('createResourceDialogTitle'),
+            title: adminText('createResourceDialogTitle'),
             modal: true,
             close: function() { $(this).remove(); },
             buttons: [

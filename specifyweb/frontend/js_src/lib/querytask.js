@@ -101,9 +101,10 @@ const commonText = require('./localization/common').default;
                 return;
             }
 
-            const dialog = $(
-                `<div>${queryText('queryDeleteIncompleteDialogMessage')}</div>`
-            ).dialog({
+            const dialog = $(`<div>
+                ${queryText('queryDeleteIncompleteDialogHeader')}
+                ${queryText('queryDeleteIncompleteDialogMessage')}
+            </div>`).dialog({
                 title: queryText('queryDeleteIncompleteDialogTitle'),
                 modal: true,
                 close(){ $(this).remove(); },
@@ -169,6 +170,7 @@ const commonText = require('./localization/common').default;
             if (this.fieldUIs.length < 1) return;
 
             var dialog = $(`<div>
+                ${queryText('recordSetToQueryDialogHeader')}<
                 <p>${queryText('recordSetToQueryDialogMessage')}</p>
                 <div class="progress" />
             </div>`).dialog({
@@ -221,6 +223,7 @@ const commonText = require('./localization/common').default;
             var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
             if (fileDesc == 'KML' && !this.hasGeoCoords()) {
                 $(`<div>
+                    ${queryText('unableToExportAsKmlDialogHeader')}
                     ${queryText('unableToExportAsKmlDialogMessage')}
                 </div>`).dialog({
                     title: queryText('unableToExportAsKmlDialogTitle'),
@@ -251,6 +254,7 @@ const commonText = require('./localization/common').default;
                 if (this.fieldUIs.length < 1) return;
                 $.post(postUrl, JSON.stringify(this.query));
                 $(`<div>
+                    ${queryText('queryExportStartedDialogHeader')}
                     ${queryText('queryExportStartedDialogMessage')(fileDesc)}
                 </div>`).dialog({
                     title: queryText('queryExportStartedDialogTitle'),

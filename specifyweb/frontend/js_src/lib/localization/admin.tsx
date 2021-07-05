@@ -1,4 +1,4 @@
-import { createDictionary } from './utils';
+import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -16,6 +16,7 @@ const adminText = createDictionary({
     This app resource appears to be corrupt but may be in the process of
     being saved by another session. It can be deleted if that is not the case.`,
   resourceLoadDialogTitle: 'Load file',
+  resourceLoadDialogHeader: createHeader(''),
   resourceLoadDialogMessage: 'Select the file to be loaded into the editor.',
   globalResourcesTitle: (resourceCount: string) =>
     `Global <small>(${resourceCount})</small>`,
@@ -24,6 +25,7 @@ const adminText = createDictionary({
   userTypes: 'User Types',
   users: 'Users',
   createResourceDialogTitle: 'New Resource Name',
+  createResourceDialogHeader: createHeader(''),
   newResourceName: 'New Resource Name:',
 
   setPassword: 'Set Password',

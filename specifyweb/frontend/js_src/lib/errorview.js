@@ -22,6 +22,7 @@ module.exports = {
             __name__: "UnhandledErrorView",
             render: function() {
                 this.$el.attr('title', commonText('backEndErrorDialogTitle'))
+                    .append(commonText('backEndErrorDialogHeader'))
                     .append(`<p>${commonText('backendErrorDialogMessage')}</p>`);
                 var response = this.options.jqxhr.responseText;
                 if (/^Traceback:/m.test(response)) {

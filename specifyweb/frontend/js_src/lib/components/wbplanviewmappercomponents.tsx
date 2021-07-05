@@ -84,7 +84,8 @@ export function ValidationResults(props: {
         }}
       >
         <div className="validation-results">
-          <span>{wbText('validationFailedDialogDescription')}</span>
+          {wbText('validationFailedDialogHeader')}
+          <span>{wbText('validationFailedDialogMessage')}</span>
           {props.validationResults.map((fieldPath, index) => (
             <div
               className="v-center wbplanview-mapping-line-elements"

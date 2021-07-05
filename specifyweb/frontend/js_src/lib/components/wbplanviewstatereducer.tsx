@@ -544,7 +544,10 @@ export const stateReducer = generateReducer<
                   title: wbText('emptyDataSetDialogTitle'),
                 }}
               >
-                {wbText('emptyDataSetDialogMessage')}
+                <>
+                  {wbText('emptyDataSetDialogHeader')}
+                  {wbText('emptyDataSetDialogMessage')}
+                </>
               </ModalDialog>
             )}
           {state.showAutomapperDialog && (
@@ -578,7 +581,10 @@ export const stateReducer = generateReducer<
                 ],
               }}
             >
-              {wbText('reRunAutoMapperDialogMessage')}
+              <>
+                {wbText('reRunAutoMapperDialogHeader')}
+                {wbText('reRunAutoMapperDialogMessage')}
+              </>
             </ModalDialog>
           )}
           {state.showInvalidValidationDialog && (
@@ -598,7 +604,10 @@ export const stateReducer = generateReducer<
                 },
               }}
             >
-              {wbText('nothingToValidateDialogMessage')}
+              <>
+                {wbText('nothingToValidateDialogHeader')}
+                {wbText('nothingToValidateDialogMessage')}
+              </>
             </ModalDialog>
           )}
           {state.displayMatchingOptionsDialog && (
@@ -614,7 +623,7 @@ export const stateReducer = generateReducer<
               }}
             >
               {Object.keys(state.mustMatchPreferences).length === 0 ? (
-                wbText('matchingLogicUnavailable')
+                wbText('matchingLogicUnavailableDialogMessage')
               ) : (
                 <>
                   <h4 style={{ paddingLeft: '4px' }}>

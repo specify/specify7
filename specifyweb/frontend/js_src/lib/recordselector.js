@@ -299,7 +299,10 @@ module.exports =  Backbone.View.extend({
                 this.collection.remove(resource);
             } else {
                 var _this = this;
-                var dialog = $('<div>').text(formsText('removeRecordDialogTitle')).dialog({
+                var dialog = $(`<div>
+                    ${formsText('removeRecordDialogHeader')}
+                    ${formsText('removeRecordDialogMessage')}
+                </div>`).dialog({
                     modal: true,
                     title: resource.specifyModel.getLocalizedName(),
                     buttons: {

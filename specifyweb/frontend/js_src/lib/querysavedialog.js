@@ -20,9 +20,13 @@ module.exports = Backbone.View.extend({
     },
     render() {
         if (this.clone) {
-            this.$el.append(`<p>${queryText('saveClonedQueryDialogMessage')}</p>`);
+            this.$el
+                .append(queryText('saveClonnedQueryDialogHeader'))
+                .append(`<p>${queryText('saveClonedQueryDialogMessage')}</p>`);
         } else {
-            this.$el.append(`<p>${queryText('saveQueryDialogMessage')}</p>`);
+            this.$el
+                .append(queryText('saveQueryDialogHeader'))
+                .append(`<p>${queryText('saveQueryDialogMessage')}</p>`);
         }
 
         this.$el.append(`<form><label>${queryText('queryName')} <input type="text"/></label></form>`);

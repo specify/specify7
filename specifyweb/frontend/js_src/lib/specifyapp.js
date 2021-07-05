@@ -53,6 +53,7 @@ const commonText = require('./localization/common').default;
 
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
             $(`<div title="Version Mismatch">
+                ${commonText('versionMismatchDialogHeader')}
                 <p>
                     <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
                     ${commonText('versionMismatchDialogMessage')(
@@ -118,9 +119,10 @@ function showResource(resource, recordSet, pushUrl) {
             } else {
                 view.$el.empty();
                 const dialog = $(`<div>
-                    ${commonText('resourceDeletedDialogTitle')}
+                    ${commonText('resourceDeletedDialogHeader')}
+                    ${commonText('resourceDeletedDialogMessage')}
                 </div>`).dialog({
-                    title: commonText('resourceDeletedDialogMessage'),
+                    title: commonText('resourceDeletedDialogTitle'),
                     buttons: [
                         {
                             text: commonText('cancel'),

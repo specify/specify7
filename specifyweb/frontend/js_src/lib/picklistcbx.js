@@ -110,6 +110,7 @@ module.exports = Base.extend({
             var doAddValue = this.doAddValue.bind(this, value);
 
             var d = $(`<div>
+                ${formsText('addToPickListConfirmationDialogHeader')}
                 ${formsText('addToPickListConfirmationDialogMessage')(
                     '<span class="pl-value"></span>',
                     '<span class="pl-name"></span>'

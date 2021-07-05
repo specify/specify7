@@ -1,4 +1,4 @@
-import { createDictionary } from './utils';
+import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -16,6 +16,7 @@ const treeText = createDictionary({
   undoSynonymy: 'Undo Synonymy',
   synonymize: 'Synonymize',
   actionFailedDialogTitle: 'Failed',
+  actionFailedDialogHeader: createHeader(''),
   actionFailedDialogMessage:
     'The operation could not be completed due to the following:',
   moveNode: 'Move node',
@@ -65,7 +66,7 @@ const treeText = createDictionary({
   acceptedName: 'Preferred:',
 
   // TreeView
-  treeViewTitle: (treeName: string)=>`${treeName} Tree`,
+  treeViewTitle: (treeName: string) => `${treeName} Tree`,
   searchTreePlaceholder: 'Search Tree',
   remember: 'Remember',
   rememberButtonDescription: 'Save Tree Layout',

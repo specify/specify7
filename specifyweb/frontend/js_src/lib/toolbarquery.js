@@ -220,7 +220,9 @@ const commonText = require('./localization/common').default;
                 return report.rget('appresource');
             }).done(appresource => navigation.go(`/specify/appresources/${appresource.id}/`));
 
-            $('<div>').append(nameInput).dialog({
+            $(`<div>
+                ${isLabel ? commonText('createLabelDialogHeader') : commonText('createReportDialogHeader')}
+            </div>`).append(nameInput).dialog({
                 modal: true,
                 width: 'auto',
                 title: isLabel ? commonText('createLabelDialogTitle') : commonText('createReportDialogTitle'),
@@ -239,7 +241,10 @@ const commonText = require('./localization/common').default;
         },
         exportQuery: function() {
             $.get({url: `/export/extract_query/${this.spquery.id}/`, dataType: 'text'}).done(xml => {
-                const dialog = $('<div><textarea cols="120" rows="40" readonly></textarea></div>');
+                const dialog = $(`<div>
+                    ${commonText('exportQueryForDwcaDialogHeader')}
+                    <textarea cols="120" rows="40" readonly></textarea>
+                </div>`);
                 $('textarea', dialog).text(xml);
                 dialog.dialog({
                     modal: true,

@@ -13,7 +13,7 @@ function execute() {
 
     dialog = $(`<div>${commonText('updateExportFeedDialogMessage')}</div>`).dialog({
         modal: true,
-        title: title,
+        title: commonText('updateExportFeedDialogTitle'),
         close: function() { $(this).remove(); dialog = null; },
         buttons: [
             {text: commonText('update'), click: startUpdate},
@@ -24,7 +24,10 @@ function execute() {
 function startUpdate() {
     $.post('/export/force_update/').done(() => {
         dialog.dialog('close');
-        dialog = $(`<div>${commonText('feedExportStartedDialogMessage')}</div>`).dialog({
+        dialog = $(`<div>
+            ${commonText('feedExportStartedDialogHeader')}
+            ${commonText('feedExportStartedDialogMessage')}
+        </div>`).dialog({
             modal: true,
             title: commonText('feedExportStartedDialogTitle'),
             close: function() { $(this).remove(); dialog = null; },
@@ -37,7 +40,7 @@ function startUpdate() {
 
 module.exports = {
     task: 'forceupdatefeed',
-    title: title,
+    title: commonText('updateExportFeed'),
     icon: null,
     execute: execute,
     disabled: user => !user.isadmin

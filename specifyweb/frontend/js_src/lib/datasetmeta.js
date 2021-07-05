@@ -70,6 +70,7 @@ export const DataSetMeta = Backbone.View.extend({
     if (this.dialog !== null) return;
 
     this.dialog = $(`<div>
+      ${wbText('dataSetMetaDialogHeader')}
       <label>
         <b>${wbText('dataSetName')}</b><br>
         <input
@@ -186,7 +187,8 @@ export const DataSetMeta = Backbone.View.extend({
   changeOwnerWindow() {
     this.fetchListOfUsers().then((users) => {
       this.changeOwnerDialog = $(`<div>
-        ${wbText('selectNewOwner')}<br>
+        ${wbText('changeDataSetOwnerDialogHeader')}
+        ${wbText('changeDataSetOwnerDialogMessage')}<br>
         <select class="select-user-picklist" size="10" style="width:100%">
           ${users
             .map(
@@ -219,6 +221,7 @@ export const DataSetMeta = Backbone.View.extend({
       .done(() => {
         const handleClose = () => navigation.go('/specify/');
         $(`<div>
+          ${wbText('dataSetOwnerChangedDialogHeader')}
           ${wbText('dataSetOwnerChangedDialogMessage')}
         </div>`).dialog({
           title: wbText('dataSetOwnerChangedDialogTitle'),

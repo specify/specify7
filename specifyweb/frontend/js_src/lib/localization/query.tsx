@@ -1,5 +1,5 @@
 import type { RA } from '../components/wbplanview';
-import { createDictionary } from './utils';
+import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -15,22 +15,28 @@ const queryText = createDictionary({
   saveQueryDialogTitle: 'Save query as...',
   savingQueryDialogTitle: 'Saving...',
   saveQueryDialogMessage: 'Enter a name for the new query.',
+  saveQueryDialogHeader: createHeader(''),
+  saveClonedQueryDialogHeader: createHeader(''),
   saveClonedQueryDialogMessage: `
     The query will be saved with a new name leaving the current query
     unchanged.`,
   queryName: 'Query Name:',
   queryDeleteIncompleteDialogTitle: 'Incomplete fields',
+  queryDeleteIncompleteDialogHeader: createHeader(''),
   queryDeleteIncompleteDialogMessage: `
     There are uncompleted fields in the query definition. Do you want to
     remove them?`,
   queryUnloadProtectDialogMessage: 'This query definition has not been saved.',
   recordSetToQueryDialogTitle: 'Record Set from Query',
+  recordSetToQueryDialogHeader: createHeader(''),
   recordSetToQueryDialogMessage: 'Generating record set.',
   openNewlyCreatedRecordSet: 'Open newly created record set now?',
   unableToExportAsKmlDialogTitle: 'Unable to Export',
+  unableToExportAsKmlDialogHeader: createHeader(''),
   unableToExportAsKmlDialogMessage:
     'Please add latitude and longitude fields to the query.',
   queryExportStartedDialogTitle: 'Query Started',
+  queryExportStartedDialogHeader: createHeader(''),
   queryExportStartedDialogMessage: (exportFileType: string) => `
     The query has begun executing. You will receive a notification when the
     results ${exportFileType} file is ready for download.`,

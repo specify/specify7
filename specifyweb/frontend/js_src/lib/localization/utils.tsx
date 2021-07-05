@@ -31,6 +31,9 @@ export const createDictionary =
       ? dictionary[key]
       : (assertExhaustive(key) as typeof dictionary[typeof key]);
 
+export const createHeader = (header: string): string =>
+  header === '' ? '' : `<h2>${header}</h2>`;
+
 /*
  *
  * Guidelines for Programmers:

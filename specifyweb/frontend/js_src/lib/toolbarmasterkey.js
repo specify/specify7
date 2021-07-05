@@ -14,6 +14,7 @@ const commonText = require('./localization/common').default;
         };
 
         dialog = $(`<div>
+            ${commonText('generateMasterKeyDialogHeader')}
             <form>
                 <label>${commonText('userPassword')}</label>
                 <input type="password">
@@ -41,6 +42,7 @@ const commonText = require('./localization/common').default;
     function gotKey(masterKey) {
         dialog.dialog('close');
         dialog = $(`<div>
+            ${commonText('masterKeyDialogHeader')}
             <label>${commonText('masterKeyFieldLabel')}</label>
             <input type="text" size="60" readonly>
         </div>`).dialog({

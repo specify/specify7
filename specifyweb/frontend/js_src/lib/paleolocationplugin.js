@@ -26,6 +26,7 @@ module.exports = UIPlugin.extend({
         $(`<div>
             <p>
                 <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                ${formsText('paleoRequiresGeographyDialogHeader')}
                 ${formsText('paleoRequiresGeographyDialogMessage')}
             </p>
         </div>`).dialog({
@@ -39,6 +40,7 @@ module.exports = UIPlugin.extend({
         const form = this.model.specifyModel.getLocalizedName();
         if (data == null) {
             $(`<div>
+                ${formsText('noCoordinatesDialogHeader')}
                 <p>${formsText('noCoordinatesDialogMessage')(form)}</p>
             </div>`).dialog({
                 title: formsText('noCoordinatesDialogTitle'),
@@ -75,6 +77,7 @@ module.exports = UIPlugin.extend({
             lng = Q(this.model.rget('collectingevent.locality.longitude1', true));
         } else {
             $(`<div>
+                ${formsText('unsupportedFormDialogHeader')}
                 <p>${formsText('unsupportedFormDialogMessage')}</p>
             </div>`).dialog({
                 title: formsText('unsupportedFormDialogTitle'),

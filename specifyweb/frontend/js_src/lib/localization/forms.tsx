@@ -1,5 +1,5 @@
 import type { RA } from '../components/wbplanview';
-import { createDictionary } from './utils';
+import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -40,6 +40,7 @@ const formsText = createDictionary({
     so only delete this record set if you are sure it is not to be used.</p>`,
   checkingIfResourceCanBeDeleted: 'Checking if resource can be deleted.',
   deleteBlockedDialogTitle: 'Delete Blocked',
+  deleteBlockedDialogHeader: createHeader(''),
   deleteBlockedDialogMessage: `
     The resource cannot be deleted because it is referenced through the
     following fields:`,
@@ -81,14 +82,18 @@ const formsText = createDictionary({
   // PaleoLocationPlugin
   paleoMap: 'Paleo Map',
   paleoRequiresGeographyDialogTitle: 'Geography Required',
+  paleoRequiresGeographyDialogHeader: createHeader(''),
   paleoRequiresGeographyDialogMessage: `
     The Paleo Map plugin requires that the locality have geographic
     coordinates and that the paleo context have a geographic age with at
     least a start time or and end time populated.`,
   noCoordinatesDialogTitle: 'No coordinates',
+  noCoordinatesDialogHeader: (modelName: string) =>
+    createHeader(`Not enough information to map ${modelName}`),
   noCoordinatesDialogMessage: (modelName: string) => `
     ${modelName} must have coordinates and paleo context to be mapped.`,
   unsupportedFormDialogTitle: 'Incorrect Form',
+  unsupportedFormDialogHeader: createHeader(''),
   unsupportedFormDialogMessage: `
     This plugin cannot be used on this form. Try moving it to the locality,
     collecting event or collection object forms.`,
@@ -98,6 +103,7 @@ const formsText = createDictionary({
 
   // DeleteButton
   deleteConfirmationDialogTitle: 'Delete?',
+  deleteConfirmationDialogHeader: createHeader(''),
   deleteConfirmationDialogMessage: `
     This item(s) will be permanently deleted and cannot be
     recovered. Confirm delete?`,
@@ -114,6 +120,7 @@ const formsText = createDictionary({
   // PickListBox
   showAllItems: 'Show All Items',
   addToPickListConfirmationDialogTitle: 'Add to pick list',
+  addToPickListConfirmationDialogHeader: createHeader(''),
   addToPickListConfirmationDialogMessage: (
     value: string,
     pickListName: string
@@ -123,7 +130,8 @@ const formsText = createDictionary({
   noData: 'No Data.',
 
   // RecordSelector
-  removeRecordDialogTitle: 'Remove?',
+  removeRecordDialogHeader: createHeader(''),
+  removeRecordDialogMessage: 'Remove?',
 
   // RecordSetsDialog
   recordSetsDialogTitle: (count: number) => `Record Sets (${count})`,
@@ -148,7 +156,7 @@ const formsText = createDictionary({
   runReport: 'Run Report',
 
   // ResourceView
-  missingFormDefinitionPageHeading: 'Missing form definition',
+  missingFormDefinitionPageHeader: 'Missing form definition',
   missingFormDefinitionPageContent: `
     Specify was unable to find the form definition to display this resource`,
   addingToRecordSet: 'Adding to Record Set and Database',
@@ -157,11 +165,13 @@ const formsText = createDictionary({
   unsavedFormUnloadProtect: 'This form has not been saved.',
   saveAndAddAnother: 'Save and Add Another',
   saveConflictDialogTitle: 'Conflict',
+  saveConflictDialogHeader: createHeader(''),
   saveConflictDialogMessage: `
     The data shown on this page has been changed by another user or in
     another browser tab and is out of date. The page must be reloaded to
     prevent inconsistent data from being saved.`,
   saveBlockedDialogTitle: 'Save blocked',
+  saveBlockedDialogHeader: createHeader(''),
   saveBlockedDialogMessage:
     'Form cannot be saved while the following errors exist:',
 
@@ -175,6 +185,7 @@ const formsText = createDictionary({
   // SpecifyCommands
   unavailableCommandButton: 'Command N/A',
   unavailableCommandDialogTitle: 'Command Not Available',
+  unavailableCommandDialogHeader: createHeader(''),
   unavailableCommandDialogMessage: `
     This command is currently unavailable for <i>Specify&nbsp7</i>
     It was probably included on this form from <i>Specify&nbsp6</i> and
@@ -184,6 +195,7 @@ const formsText = createDictionary({
   // SpecifyPlugins
   unavailablePluginButton: 'Plugin N/A',
   unavailablePluginDialogTitle: 'Plugin Not Available',
+  unavailablePluginDialogHeader: createHeader(''),
   unavailablePluginDialogMessage: `
     This plugin is currently unavailable for <i>Specify&nbsp7</i>
     It was probably included on this form from <i>Specify&nbsp6</i> and

@@ -4,14 +4,13 @@ const $ = require('jquery');
 const commonText = require('./localization/common').default;
 
 function execute() {
-    $(`
-<div class="table-list-dialog">
-<table>
-<tr><td><a href="/specify/appresources/" class="intercept-navigation">${commonText('appResources')}</a></td></tr>
-<tr><td><a href="/specify/viewsets/" class="intercept-navigation">${commonText('viewSets')}</a></td></tr>
-</table>
-</div>
-`).dialog({
+    $(`<div class="table-list-dialog">
+        ${commonText('resourcesDialogHeader')}
+        <table>
+            <tr><td><a href="/specify/appresources/" class="intercept-navigation">${commonText('appResources')}</a></td></tr>
+            <tr><td><a href="/specify/viewsets/" class="intercept-navigation">${commonText('viewSets')}</a></td></tr>
+        </table>
+    </div>`).dialog({
     modal: true,
     title: commonText('resourcesDialogTitle'),
     close: function() { $(this).remove(); },

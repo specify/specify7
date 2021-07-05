@@ -24,7 +24,10 @@ module.exports =  {
         },
         click: function(evt) {
             evt.preventDefault();
-            $(`<div>${formsText('unavailableCommandDialogMessage')}</div>`)
+            $(`<div>
+                ${formsText('unavailableCommandDialogHeader')}
+                ${formsText('unavailableCommandDialogMessage')}
+            </div>`)
                 .append(`<dt>${formsText('commandName')}</dt>`)
                 .append($('<dd>').text(this.init.name))
                 .dialog({

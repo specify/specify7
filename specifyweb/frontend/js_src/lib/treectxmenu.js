@@ -131,6 +131,7 @@ class Action {
                         .dialog('option', 'title', treeText('actionFailedDialogTitle'))
                         .empty()
                         .append(
+                            treeText('actionFailedDialogHeader'),
                             `<p>${treeText('actionFailedDialogMessage')}</p>`,
                             $('<em>').text(result.error)
                         );

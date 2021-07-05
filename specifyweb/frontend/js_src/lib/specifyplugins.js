@@ -36,7 +36,10 @@ var providers = [
             },
             click: function(evt) {
                 evt.preventDefault();
-                $(`<div>${formsText('unavailablePluginDialogMessage')}</div>`)
+                $(`<div>
+                    ${formsText('unavailablePluginDialogHeader')}
+                    ${formsText('unavailablePluginDialogMessage')}
+                </div>`)
                 .append(`<dt>${formsText('pluginName')}</dt>`)
                 .append($('<dd>').text(this.init.name))
                 .dialog({

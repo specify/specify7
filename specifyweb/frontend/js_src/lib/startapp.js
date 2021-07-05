@@ -30,7 +30,10 @@ var tasks = [
     function handleUnexpectedError(event, jqxhr, settings, exception) {
         if (jqxhr.errorHandled) return; // Not unexpected.
         if (jqxhr.status === 403) {
-            $(`<div>${commonText('sessionTimeOutDialogMessage')}</div>`)
+            $(`<div>
+                ${commonText('sessionTimeOutDialogHeader')}
+                ${commonText('sessionTimeOutDialogMessage')}
+            </div>`)
                 .appendTo('body').dialog({
                     title: commonText('sessionTimeOutDialogTitle'),
                     modal: true,

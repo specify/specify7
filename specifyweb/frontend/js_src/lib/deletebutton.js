@@ -71,6 +71,7 @@ module.exports =  Backbone.View.extend({
             var doDelete = this.doDelete.bind(this);
 
             $(`<div><p>
+                ${formsText('deleteConfirmationDialogHeader')}
                 ${this.warning ?? formsText('deleteConfirmationDialogMessage')}
             </p></div>`).dialog({
                 title: formsText('deleteConfirmationDialogTitle'),
@@ -90,6 +91,7 @@ module.exports =  Backbone.View.extend({
         },
         openBlockedDialog: function() {
             var dialog = $(`<div title="Delete Blocked">
+               ${formsText('deleteBlockedDialogHeader')}
                <p>${formsText('deleteBlockedDialogMessage')}</p>
                <ul></ul>
             </div>`).dialog({

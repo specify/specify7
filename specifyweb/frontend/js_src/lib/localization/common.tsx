@@ -1,4 +1,4 @@
-import { createDictionary } from './utils';
+import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -7,6 +7,7 @@ const commonText = createDictionary({
   pageNotFound: 'Page Not Found',
 
   collectionAccessDeniedDialogTitle: 'Access denied',
+  collectionAccessDeniedDialogHeader: createHeader(''),
   collectionAccessDeniedDialogMessage: (collectionName: string) =>
     `You do not have access to the collection ${collectionName}
     through the currently logged in account.`,
@@ -60,21 +61,27 @@ const commonText = createDictionary({
     `Definition resource "${resourceName}" was not found.`,
   metadataResourceNotFound: (resourceName: string) =>
     `Metadata resource "${resourceName}" was not found.`,
+  updateExportFeed: 'Update Feed Now',
   updateExportFeedDialogTitle: 'Update Feed Now',
+  updateExportFeedDialogHeader: createHeader(''),
   updateExportFeedDialogMessage: 'Update all export feed items now?',
   feedExportStartedDialogTitle: 'Update Started',
+  feedExportStartedDialogHeader: createHeader(''),
   feedExportStartedDialogMessage: `
     Update started. You will receive a notification for each feed item
     updated.`,
   dwcaExportStartedDialogTitle: 'Make DwCA',
+  dwcaExportStartedDialogHeader: createHeader(''),
   dwcaExportStartedDialogMessage: `
     Export started. You will receive a notification
     when the export is complete.`,
   interactions: 'Interactions',
   generateMasterKey: 'Generate Master Key',
   generateMasterKeyDialogTitle: 'Generate Master Key',
+  generateMasterKeyDialogHeader: createHeader(''),
   userPassword: 'User Password:',
   masterKeyDialogTitle: 'Master Key',
+  masterKeyDialogHeader: createHeader(''),
   masterKeyFieldLabel: 'Master Key:',
   incorrectPassword: 'Password was incorrect.',
   queries: 'Queries',
@@ -82,18 +89,22 @@ const commonText = createDictionary({
   newQueryDialogTitle: 'New Query Type',
   exportQueryForDwca: 'Export query for DwCA definition.',
   exportQueryForDwcaDialogTitle: 'Query XML for DwCA definition.',
+  exportQueryForDwcaDialogHeader: createHeader(''),
   exportQueryAsReport: 'Define report based on query.',
   exportQueryAsLabel: 'Define label based on query.',
   newResourceTitle: (resourceName: string) => `New ${resourceName}`,
   labelName: 'Label Name',
   reportName: 'Report Name',
   createLabelDialogTitle: 'Create new label',
+  createLabelDialogHeader: createHeader(''),
   createReportDialogTitle: 'Create new label',
+  createReportDialogHeader: createHeader(''),
   recordSets: 'Record Sets',
   resources: 'Resources',
   appResources: 'App Resources',
   viewSets: 'View Sets',
   resourcesDialogTitle: 'Resources',
+  resourcesDialogHeader: createHeader(''),
   repairTree: 'Repair Tree',
   trees: 'Trees',
   treesDialogTitle: 'Trees',
@@ -106,8 +117,10 @@ const commonText = createDictionary({
 
   // Error Boundary
   errorBoundaryDialogTitle: 'Unexpected Error',
+  errorBoundaryDialogHeader: createHeader(''),
   errorBoundaryDialogMessage: 'An unexpected error has occurred.',
   backEndErrorDialogTitle: 'Server Error',
+  backEndErrorDialogHeader: createHeader(''),
   backendErrorDialogMessage: `
     An error has occurred during communication with the server.`,
   okay: 'Okay',
@@ -132,7 +145,7 @@ const commonText = createDictionary({
   queryExportToCsvCompleted: 'Query export to CSV completed.',
   queryExportToKmlCompleted: 'Query export to KML completed.',
   dataSetOwnershipTransferred: (userName: string, dataSetName: string) => `
-    ${userName} transferred the ownership of the ${dataSetName} dataset 
+    ${userName} transferred the ownership of the ${dataSetName} dataset
     to you.`,
 
   // OtherCollectionView
@@ -148,6 +161,7 @@ const commonText = createDictionary({
 
   // SpecifyApp
   versionMismatchDialogTitle: 'Version Mismatch',
+  versionMismatchDialogHeader: createHeader(''),
   versionMismatchDialogMessage: (
     specifySixVersion: string,
     databaseVersion: string
@@ -157,11 +171,13 @@ const commonText = createDictionary({
   versionMismatchSecondDialogMessage:
     'Some features of Specify 7 may therefore fail to operate correctly.',
   resourceDeletedDialogTitle: 'Item Deleted',
+  resourceDeletedDialogHeader: createHeader(''),
   resourceDeletedDialogMessage: 'Item Deleted.',
   appTitle: (baseTitle: string) => `${baseTitle} | Specify 7`,
 
   // StartApp
   sessionTimeOutDialogTitle: 'Insufficient Privileges',
+  sessionTimeOutDialogHeader: createHeader(''),
   sessionTimeOutDialogMessage: `
     You lack sufficient privileges for that action, or your current
     session has been logged out.`,
@@ -169,7 +185,7 @@ const commonText = createDictionary({
   // UserTools
   logOut: 'Log out',
   changePassword: 'Change password',
-  userToolsDialogTitle: '',
+  userToolsDialogTitle: 'User Tools',
 });
 
 export default commonText;

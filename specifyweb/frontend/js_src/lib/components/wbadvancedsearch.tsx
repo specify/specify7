@@ -116,67 +116,69 @@ function WbAdvancedSearch({
         modal: false,
       }}
     >
-      <b>{wbText('navigationOptions')}</b>
-      <br />
-      <label>
-        {wbText('cursorPriority')}
+      <>
+        {wbText('wbAdvancedSearchDialogHeader')}
         <br />
-        <select
-          onChange={({ target }): void =>
-            setState({
-              ...state,
-              navigation: {
-                ...state.navigation,
-                direction: target.value as NavigationDirection,
-              },
-            })
-          }
-          value={state.navigation.direction}
-        >
-          <option value="columnFirst">{wbText('columnFirst')}</option>
-          <option value="rowFirst">{wbText('rowFirst')}</option>
-        </select>
-      </label>
-      <br />
-      <br />
-
-      <b>{wbText('searchOptions')}</b>
-      <br />
-      <Checkbox property="fullMatch" state={state} setState={setState}>
-        {wbText('findEntireCellsOnly')}
-      </Checkbox>
-      <Checkbox property="caseSensitive" state={state} setState={setState}>
-        {wbText('matchCase')}
-      </Checkbox>
-      <Checkbox property="useRegex" state={state} setState={setState}>
-        {wbText('useRegularExpression')}
-      </Checkbox>
-      <Checkbox property="liveUpdate" state={state} setState={setState}>
-        {wbText('liveUpdate')}
-      </Checkbox>
-      <br />
-
-      <b>{wbText('replaceOptions')}</b>
-      <br />
-      <label>
-        {wbText('replaceMode')}
+        <label>
+          {wbText('cursorPriority')}
+          <br />
+          <select
+            onChange={({ target }): void =>
+              setState({
+                ...state,
+                navigation: {
+                  ...state.navigation,
+                  direction: target.value as NavigationDirection,
+                },
+              })
+            }
+            value={state.navigation.direction}
+          >
+            <option value="columnFirst">{wbText('columnFirst')}</option>
+            <option value="rowFirst">{wbText('rowFirst')}</option>
+          </select>
+        </label>
         <br />
-        <select
-          onChange={({ target }): void =>
-            setState({
-              ...state,
-              replace: {
-                ...state.replace,
-                replaceMode: target.value as ReplaceMode,
-              },
-            })
-          }
-          value={state.replace.replaceMode}
-        >
-          <option value="replaceAll">{wbText('replaceAll')}</option>
-          <option value="replaceNext">{wbText('replaceNext')}</option>
-        </select>
-      </label>
+        <br />
+
+        <b>{wbText('searchOptions')}</b>
+        <br />
+        <Checkbox property="fullMatch" state={state} setState={setState}>
+          {wbText('findEntireCellsOnly')}
+        </Checkbox>
+        <Checkbox property="caseSensitive" state={state} setState={setState}>
+          {wbText('matchCase')}
+        </Checkbox>
+        <Checkbox property="useRegex" state={state} setState={setState}>
+          {wbText('useRegularExpression')}
+        </Checkbox>
+        <Checkbox property="liveUpdate" state={state} setState={setState}>
+          {wbText('liveUpdate')}
+        </Checkbox>
+        <br />
+
+        <b>{wbText('replaceOptions')}</b>
+        <br />
+        <label>
+          {wbText('replaceMode')}
+          <br />
+          <select
+            onChange={({ target }): void =>
+              setState({
+                ...state,
+                replace: {
+                  ...state.replace,
+                  replaceMode: target.value as ReplaceMode,
+                },
+              })
+            }
+            value={state.replace.replaceMode}
+          >
+            <option value="replaceAll">{wbText('replaceAll')}</option>
+            <option value="replaceNext">{wbText('replaceNext')}</option>
+          </select>
+        </label>
+      </>
     </ModalDialog>
   );
 }

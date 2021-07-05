@@ -107,6 +107,7 @@ module.exports =  Backbone.View.extend({
                             jqXHR.errorHandled = true;
                             $(`<div><p>
                                 <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                                ${formsText('saveConflictDialogHeader')}
                                 ${formsText('saveConflictDialogMessage')}
                             </p></div>`).dialog({
                                 title: formsText('saveConflictDialogTitle'),
@@ -123,6 +124,7 @@ module.exports =  Backbone.View.extend({
                 var dialog = $(`<div>
                     <p>
                         <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+                        ${formsText('saveBlockedDialogHeader')}
                         ${formsText('saveBlockedDialogMessage')} 
                     </p>
                     <ul class="saveblockers">
