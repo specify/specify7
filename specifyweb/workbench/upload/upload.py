@@ -10,6 +10,7 @@ from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
 
 from django.db import connection, transaction
 from django.db.utils import OperationalError
+from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import Table, datamodel
