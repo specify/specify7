@@ -117,7 +117,7 @@ function WbAdvancedSearch({
       }}
     >
       <>
-        {wbText('wbAdvancedSearchDialogHeader')}
+        <b>{wbText('navigationOptions')}</b>
         <br />
         <label>
           {wbText('cursorPriority')}

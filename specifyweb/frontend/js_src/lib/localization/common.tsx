@@ -1,4 +1,4 @@
-import { createDictionary, createHeader } from './utils';
+import { createDictionary, createHeader, createJsxHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -85,7 +85,7 @@ const commonText = createDictionary({
   masterKeyFieldLabel: 'Master Key:',
   incorrectPassword: 'Password was incorrect.',
   queries: 'Queries',
-  queriesDialogTitle: (count: number) => `"Queries (${count})`,
+  queriesDialogTitle: (count: number) => `Queries (${count})`,
   newQueryDialogTitle: 'New Query Type',
   exportQueryForDwca: 'Export query for DwCA definition.',
   exportQueryForDwcaDialogTitle: 'Query XML for DwCA definition.',
@@ -117,7 +117,7 @@ const commonText = createDictionary({
 
   // Error Boundary
   errorBoundaryDialogTitle: 'Unexpected Error',
-  errorBoundaryDialogHeader: createHeader(''),
+  errorBoundaryDialogHeader: createJsxHeader(''),
   errorBoundaryDialogMessage: 'An unexpected error has occurred.',
   backEndErrorDialogTitle: 'Server Error',
   backEndErrorDialogHeader: createHeader(''),

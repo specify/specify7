@@ -1,3 +1,5 @@
+import React from 'react';
+
 import type { RA, RR } from '../components/wbplanview';
 import { camelToHuman } from '../wbplanviewhelper';
 
@@ -33,6 +35,9 @@ export const createDictionary =
 
 export const createHeader = (header: string): string =>
   header === '' ? '' : `<h2>${header}</h2>`;
+
+export const createJsxHeader = (header: string): string | JSX.Element =>
+  header === '' ? '' : <h2>${header}</h2>;
 
 /*
  *

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createDictionary, createHeader } from './utils';
+import { createDictionary, createHeader, createJsxHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
@@ -163,7 +163,7 @@ const wbText = createDictionary({
 
   // WbAdvancedSearch
   wbAdvancedSearchDialogTitle: 'Configure Search & Replace',
-  wbAdvancedSearchDialogHeader: createHeader('Navigation Options'),
+  navigationOptions: 'Navigation Options',
   cursorPriority: 'Cursor Priority',
   columnFirst: 'Column first',
   rowFirst: 'Row first',
@@ -219,7 +219,7 @@ const wbText = createDictionary({
   addNewColumn: 'Add New Column',
   revealHiddenFormFields: 'Reveal Hidden Form Fields',
   validationFailedDialogTitle: 'Upload Plan Mapping',
-  validationFailedDialogHeader: createHeader(''),
+  validationFailedDialogHeader: createJsxHeader(''),
   validationFailedDialogMessage: `
     This data mapping is missing one or more data fields required for
     uploading by your Specify configuration. Add the missing mappings
@@ -245,7 +245,7 @@ const wbText = createDictionary({
   validateMappings: 'Validate Mappings',
   validated: 'Validated!',
   emptyDataSetDialogTitle: 'Empty Data Set detected',
-  emptyDataSetDialogHeader: createHeader(''),
+  emptyDataSetDialogHeader: createJsxHeader(''),
   emptyDataSetDialogMessage: (
     <>
       This Data Set doesn&apos;t have any columns.
@@ -255,11 +255,11 @@ const wbText = createDictionary({
     </>
   ),
   reRunAutoMapperDialogTitle: 'Rerun Automapper?',
-  reRunAutoMapperDialogHeader: createHeader(''),
+  reRunAutoMapperDialogHeader: createJsxHeader(''),
   reRunAutoMapperDialogMessage:
     'The Automapper will erase all of your current mappings. Confirm?',
   nothingToValidateDialogTitle: 'Nothing to validate',
-  nothingToValidateDialogHeader: createHeader(''),
+  nothingToValidateDialogHeader: createJsxHeader(''),
   nothingToValidateDialogMessage:
     'Please map some headers before running the validation.',
   matchingLogicDialogTitle: 'Change Matching Logic',
