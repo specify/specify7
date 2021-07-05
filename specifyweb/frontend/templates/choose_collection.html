@@ -11,7 +11,7 @@
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
   <script src="{% script_src 'choosecollection.js' %}"></script>
-  <title>{% blocktrans with title=chooseCollection %}{{ title }} | Specify 7{% endblocktrans %}</title>
+  <title>{% blocktrans with title=title %}{{ title }} | Specify 7{% endblocktrans %}</title>
 </head>
 
 <body>
@@ -38,7 +38,7 @@
     </form>
     {% else %}
     <p>
-      {% blocktrans with next=next|urlencode %}
+      {% blocktrans trimmed with next=next|urlencode %}
       The logged in user has not been given access to any collections
       in this database. You must
       <a href="/accounts/login/?next={{ next }}">login</a> as another user.
