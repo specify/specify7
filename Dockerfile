@@ -50,8 +50,7 @@ RUN apt-get update \
         libmariadbclient-dev \
         libsasl2-dev \
         python3-venv \
-        python3.6-dev \
-        gettext
+        python3.6-dev
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
@@ -67,8 +66,6 @@ COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
-
-RUN cd specifyweb && ../ve/bin/python ../manage.py compilemessages
 
 ARG BUILD_VERSION
 ARG GIT_SHA
@@ -86,6 +83,7 @@ FROM common AS run-common
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         rsync \
+        gettext \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
