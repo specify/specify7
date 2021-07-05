@@ -85,7 +85,7 @@ LANGUAGE_CODE = 'en-us'
 LOCALE_PATHS = (
     os.path.join(
         os.path.abspath(os.path.dirname(__name__)),
-        'specifyweb','frontend','locale'
+        'frontend','locale'
     ),
 )
 
