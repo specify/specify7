@@ -194,10 +194,10 @@ msgstr "value $(value)s is not a valid decimal value"
 #: workbench/upload/parsing.py:186
 #, python-format
 msgid ""
-"%(value) is not a legal value in this picklist field.\n"
+"\"%(value)\" is not a legal value in this picklist field.\n"
 "Click on the arrow to choose among available options."
 msgstr ""
-"%(value) is not a legal value in this picklist field.\n"
+"\"%(value)\" is not a legal value in this picklist field.\n"
 "Click on the arrow to choose among available options."
 
 #: workbench/upload/parsing.py:217

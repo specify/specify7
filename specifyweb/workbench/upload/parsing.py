@@ -191,7 +191,7 @@ def parse_with_picklist(collection, picklist, fieldname: str, value: str, column
         except ObjectDoesNotExist:
             if picklist.readonly:
                 return ParseFailure(
-                    _("%(value) is not a legal value in this picklist field.\n"
+                    _("\"%(value)s\" is not a legal value in this picklist field.\n"
                     "Click on the arrow to choose among available "
                     "options.") % {'value': value},
                     column
