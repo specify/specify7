@@ -31,8 +31,8 @@ const wbText = createDictionary({
 
   // Dialogs
   dataSetLoadingDialogTitle: 'Loading',
-  noUploadPlanDialogTitle: 'No Upload Plan is Defined',
-  noUploadPlanDialogHeader: createHeader(''),
+  noUploadPlanDialogTitle: 'Upload Plan Status',
+  noUploadPlanDialogHeader: createHeader('No Upload Plan is Defined'),
   noUploadPlanDialogMessage:
     'No Upload Plan has been defined for this Data Set. Create one now?',
   noDisambiguationResultsDialogTitle: 'Disambiguate',
@@ -264,10 +264,11 @@ const wbText = createDictionary({
       add new columns,
     </>
   ),
-  reRunAutoMapperDialogTitle: 'Rerun Automapper?',
-  reRunAutoMapperDialogHeader: createJsxHeader(''),
-  reRunAutoMapperDialogMessage:
-    'The Automapper will erase all of your current mappings. Confirm?',
+  reRunAutoMapperDialogTitle: 'Automapper',
+  reRunAutoMapperDialogHeader: createJsxHeader(
+    'Automap to start a new Upload Plan?'
+  ),
+  reRunAutoMapperDialogMessage: 'This will erase existing data field mappings.',
   nothingToValidateDialogTitle: 'Nothing to validate',
   nothingToValidateDialogHeader: createJsxHeader(''),
   nothingToValidateDialogMessage:

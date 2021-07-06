@@ -566,6 +566,13 @@ export const stateReducer = generateReducer<
                 title: wbText('reRunAutoMapperDialogTitle'),
                 buttons: [
                   {
+                    text: commonText('cancel'),
+                    click: (): void =>
+                      state.dispatch({
+                        type: 'CancelRerunAutomapperAction',
+                      }),
+                  },
+                  {
                     text: wbText('reRunAutoMapper'),
                     click: (): void =>
                       state.dispatch({
@@ -574,13 +581,6 @@ export const stateReducer = generateReducer<
                           ({ headerName }) => headerName
                         ),
                         baseTableName: state.baseTableName,
-                      }),
-                  },
-                  {
-                    text: commonText('cancel'),
-                    click: (): void =>
-                      state.dispatch({
-                        type: 'CancelRerunAutomapperAction',
                       }),
                   },
                 ],
