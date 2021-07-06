@@ -307,9 +307,11 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
   }),
 
   // Common
-  CancelMappingAction: ({ state, action }) => {
-    goBack(action);
-    return state;
+  CancelMappingAction: ({ action }) => {
+    setTimeout(() => goBack(action), 0);
+    return {
+      type: 'LoadingState',
+    };
   },
 
   // MappingState

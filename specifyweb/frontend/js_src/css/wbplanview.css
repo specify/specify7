@@ -1,6 +1,6 @@
 /* ROOT */
 .wbplanview,
-.validation-results {
+.wbplanview-init {
   --b1: #fff;
   --b2: #ddd;
   --b3: #bbb;
@@ -90,12 +90,12 @@
 }
 
 /* BASE TABLE SELECTION STATE */
-.wbplanview-container-BaseTableSelectionState {
+.wbplanview-base-table-selection {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: calc(var(--white-space) * 2);
+  row-gap: var(--white-space);
 }
-
 .custom-select-base-table-selection-list {
   flex: 1;
 }

@@ -138,45 +138,49 @@ export const stateReducer = generateReducer<
     return <LoadingScreen />;
   },
   BaseTableSelectionState: ({ action: state }) => (
-    <Layout
-      stateName={state.type}
-      readonly={state.props.readonly}
-      header={
-        <WBPlanViewHeader
-          title={wbText('selectBaseTable')}
-          stateType={state.type}
-          buttonsLeft={
-            <button
-              type="button"
-              className="magic-button"
-              onClick={(): void =>
-                state.dispatch({
-                  type: 'UseTemplateAction',
-                  dispatch: state.dispatch,
-                })
-              }
-            >
-              {wbText('chooseExistingPlan')}
-            </button>
-          }
-          buttonsRight={
-            <button
-              type="button"
-              className="magic-button"
-              onClick={(): void =>
-                state.dispatch({
-                  type: 'CancelMappingAction',
-                  dataset: state.props.dataset,
-                  removeUnloadProtect: state.props.removeUnloadProtect,
-                })
-              }
-            >
-              {commonText('cancel')}
-            </button>
+    <ModalDialog
+      properties={{
+        title: wbText('selectBaseTable'),
+        height: 400,
+        close: (): void =>
+          state.dispatch({
+            type: 'CancelMappingAction',
+            dataset: state.props.dataset,
+            removeUnloadProtect: state.props.removeUnloadProtect,
+          }),
+        buttons: [
+          {
+            text: commonText('cancel'),
+            click: (): void =>
+              state.dispatch({
+                type: 'CancelMappingAction',
+                dataset: state.props.dataset,
+                removeUnloadProtect: state.props.removeUnloadProtect,
+              }),
+          },
+          {
+            text: wbText('chooseExistingPlan'),
+            click: (): void =>
+              state.dispatch({
+                type: 'UseTemplateAction',
+                dispatch: state.dispatch,
+              }),
+          },
+        ],
+      }}
+    >
+      <div className="wbplanview-base-table-selection wbplanview-init">
+        <ListOfBaseTables
+          listOfTables={dataModelStorage.listOfBaseTables}
+          showHiddenTables={state.showHiddenTables}
+          handleChange={(baseTableName: string): void =>
+            state.dispatch({
+              type: 'SelectTableAction',
+              baseTableName,
+              headers: state.props.headers,
+            })
           }
         />
-      }
-      footer={
         <label>
           <input
             type="checkbox"
@@ -189,20 +193,8 @@ export const stateReducer = generateReducer<
           />{' '}
           {wbText('showAdvancedTables')}
         </label>
-      }
-    >
-      <ListOfBaseTables
-        listOfTables={dataModelStorage.listOfBaseTables}
-        showHiddenTables={state.showHiddenTables}
-        handleChange={(baseTableName: string): void =>
-          state.dispatch({
-            type: 'SelectTableAction',
-            baseTableName,
-            headers: state.props.headers,
-          })
-        }
-      />
-    </Layout>
+      </div>
+    </ModalDialog>
   ),
   TemplateSelectionState: ({ action: state }) => (
     <WbsDialog
