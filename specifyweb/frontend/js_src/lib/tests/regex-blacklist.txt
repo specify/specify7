@@ -1,2 +1,2 @@
-^const ((IS_)?DEV(EL(OP(MENT)?)?)?|DEBUG) = true;
+^const ((IS_)?DEV(EL(OP(MENT)?)?)?|DEBUG) = true
 FIXME:

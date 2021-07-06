@@ -3,13 +3,13 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
 const lifemapperText = createDictionary({
+  specifyNetwork: 'Specify Network',
+  lifemapper: 'Lifemapper',
   noIssuesDetected: `
     Record was indexed successfully and no data quality issues were
     reported`,
   issuesDetected: 'The following data quality issues were reported:',
-  nameStrCount: 'Number of occurrences of similar taxa records:',
   localOccurrencePoints: 'Local Occurrence Points',
-  reportedCountTimes: (count: string): string => `(reported ${count} times)`,
   leafletDetailsErrorsHeader: 'Lifemapper Errors:',
   leafletDetailsInfoHeader: 'Projection Details:',
   speciesName: 'Species Name:',
@@ -21,6 +21,7 @@ const lifemapperText = createDictionary({
     `View occurrence at ${aggregatorName}`,
   projection: 'Projection',
   occurrencePoints: 'Occurrence Points',
+  moreDetails: 'More Details',
 });
 
 export default lifemapperText;

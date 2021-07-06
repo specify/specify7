@@ -2,42 +2,26 @@ import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { MessageTypes } from './components/lifemapperinfo';
-import type { States } from './components/lifemapperinfostate';
+import { SN_SERVICES } from './components/lifemapperinfo';
+import type { MainState, States } from './components/lifemapperinfostate';
 import { mainState } from './components/lifemapperinfostate';
-import type { RA, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './components/wbplanview';
 import type { LayerConfig, MarkerGroups } from './leaflet';
-import type {
-  AggregatorName,
-  BadgeName,
-  FullAggregatorInfo,
-} from './lifemapperinfoutills';
-import { BADGE_NAMES } from './lifemapperinfoutills';
 
 type LoadedAction = Action<
   'LoadedAction',
   {
-    aggregatorInfos: RR<AggregatorName, FullAggregatorInfo | undefined>;
+    occurrenceData: IR<{
+      readonly badge: MainState['badges'][string];
+      readonly aggregator: MainState['aggregators'][string] | undefined;
+    }>;
   }
 >;
 
 type ToggleAggregatorVisibilityAction = Action<
   'ToggleAggregatorVisibilityAction',
   {
-    badgeName: BadgeName;
-  }
->;
-
-export type OccurrenceCountRecord = {
-  scientificName: string;
-  count: string;
-  url: string;
-};
-
-type OccurrenceCountLoadedAction = Action<
-  'OccurrenceCountLoadedAction',
-  {
-    aggregatorName: AggregatorName;
-    occurrenceCount: RA<OccurrenceCountRecord>;
+    badgeName: string;
   }
 >;
 
@@ -66,7 +50,6 @@ type MapLoadedAction = Action<'MapLoadedAction', LifemapperInfo>;
 export type Actions =
   | LoadedAction
   | ToggleAggregatorVisibilityAction
-  | OccurrenceCountLoadedAction
   | MapLoadedAction
   | SetRemoteOccurrenceNameAction
   | SetLocalOccurrenceNameAction;
@@ -74,14 +57,24 @@ export type Actions =
 export const reducer = generateReducer<States, Actions>({
   LoadedAction: ({ action }) => ({
     type: 'MainState',
-    aggregatorInfos: action.aggregatorInfos,
-    badgeStatuses: Object.fromEntries(
-      BADGE_NAMES.map((badgeName) => [
-        badgeName,
+    badges: Object.fromEntries([
+      ...Object.entries(action.occurrenceData).map(([name, { badge }]) => [
+        name,
+        badge,
+      ]),
+      ...Object.entries(SN_SERVICES).map(([name, label]) => [
+        name,
         {
+          label,
           isOpen: false,
+          isActive: true,
         },
-      ])
+      ]),
+    ]),
+    aggregators: Object.fromEntries(
+      Object.entries(action.occurrenceData)
+        .filter(([_name, { aggregator }]) => typeof aggregator !== 'undefined')
+        .map(([name, { aggregator }]) => [name, aggregator!])
     ),
     localOccurrenceName: undefined,
     remoteOccurrenceName: undefined,
@@ -89,21 +82,11 @@ export const reducer = generateReducer<States, Actions>({
   }),
   ToggleAggregatorVisibilityAction: ({ action, state }) => ({
     ...mainState(state),
-    badgeStatuses: {
-      ...mainState(state).badgeStatuses,
+    badges: {
+      ...mainState(state).badges,
       [action.badgeName]: {
-        ...mainState(state).badgeStatuses[action.badgeName],
-        isOpen: !mainState(state).badgeStatuses[action.badgeName].isOpen,
-      },
-    },
-  }),
-  OccurrenceCountLoadedAction: ({ action, state }) => ({
-    ...mainState(state),
-    aggregatorInfos: {
-      ...mainState(state).aggregatorInfos,
-      [action.aggregatorName]: {
-        ...mainState(state).aggregatorInfos[action.aggregatorName]!,
-        occurrenceCount: action.occurrenceCount,
+        ...mainState(state).badges[action.badgeName],
+        isOpen: !mainState(state).badges[action.badgeName].isOpen,
       },
     },
   }),

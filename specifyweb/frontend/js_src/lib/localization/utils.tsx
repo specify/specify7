@@ -1,10 +1,10 @@
 import React from 'react';
 
-import type { RA, RR } from '../components/wbplanview';
+import type { RA, IR } from '../components/wbplanview';
 import { camelToHuman } from '../wbplanviewhelper';
 
 type Value = string | JSX.Element;
-type Dictionary = RR<string, Value | ((...args: RA<never>) => Value)>;
+type Dictionary = IR<Value | ((...args: RA<never>) => Value)>;
 
 function assertExhaustive(key: string): string | never {
   /*

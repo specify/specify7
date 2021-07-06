@@ -3,30 +3,32 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { Actions, LifemapperInfo } from '../lifemapperinforeducer';
-import type {
-  AggregatorName,
-  BadgeName,
-  FullAggregatorInfo,
+import {
+  extractElement,
+  formatLifemapperViewPageRequest,
 } from '../lifemapperinfoutills';
-import { AGGREGATOR_NAMES, sourceLabels } from '../lifemapperinfoutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
+import { SN_SERVICES } from './lifemapperinfo';
 import { ModalDialog } from './modaldialog';
-import type { RR } from './wbplanview';
+import type { IR } from './wbplanview';
 
 type LoadingState = State<'LoadingState'>;
 
 export type MainState = State<
   'MainState',
   {
-    aggregatorInfos: RR<AggregatorName, FullAggregatorInfo | undefined>;
-    badgeStatuses: RR<
-      BadgeName,
-      {
-        isOpen: boolean;
-      }
-    >;
+    badges: IR<{
+      readonly label: string;
+      readonly isOpen: boolean;
+      readonly isActive: boolean;
+    }>;
+    aggregators: IR<{
+      readonly issues: IR<string>;
+      readonly occurrenceName: string;
+      readonly occurrenceViewLink: string;
+    }>;
     localOccurrenceName?: string;
     remoteOccurrenceName?: string;
     lifemapperInfo?: LifemapperInfo;
@@ -43,6 +45,7 @@ export function mainState(state: States): MainState {
 type StateWithParameters = States & {
   params: {
     dispatch: (action: Actions) => void;
+    guid: string;
   };
 };
 
@@ -50,104 +53,119 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   LoadingState: () => <></>,
   MainState: ({
     action: {
-      params: { dispatch },
+      params: { dispatch, guid },
       ...state
     },
   }) => (
     <>
-      {Object.entries(state.aggregatorInfos).map(([name, data]) => (
-        <Badge
-          name={name}
-          key={name}
-          isEnabled={typeof data !== 'undefined'}
-          hasError={
-            typeof data !== 'undefined' && Object.keys(data.issues).length > 0
-          }
-          onClick={
-            typeof data === 'undefined'
-              ? undefined
-              : (): void =>
-                  dispatch({
+      {Object.entries(state.badges)
+        .map(([name, badge]) => ({
+          name,
+          badge,
+          aggregator: state.aggregators[name],
+        }))
+        .map(({ name, badge, aggregator }) => (
+          <Badge
+            name={name}
+            title={badge.label}
+            key={name}
+            isEnabled={name in SN_SERVICES || typeof aggregator !== 'undefined'}
+            hasError={
+              typeof aggregator !== 'undefined' &&
+              Object.keys(aggregator.issues).length > 0
+            }
+            onClick={(): void =>
+              name === 'sn'
+                ? void window.open(
+                    formatLifemapperViewPageRequest(
+                      guid,
+                      extractElement(
+                        [state.localOccurrenceName, state.remoteOccurrenceName],
+                        1
+                      ),
+                      ''
+                    ),
+                    '_blank'
+                  )
+                : dispatch({
                     type: 'ToggleAggregatorVisibilityAction',
                     badgeName: name,
                   })
-          }
-        />
-      ))}
-      <Badge
-        name={'lifemapper'}
-        isEnabled={true}
-        hasError={false}
-        onClick={(): void =>
-          dispatch({
-            type: 'ToggleAggregatorVisibilityAction',
-            badgeName: 'lifemapper',
-          })
-        }
-      />
-      {Object.entries(state.badgeStatuses)
+            }
+          />
+        ))}
+      {Object.entries(state.badges)
         .filter(([, { isOpen }]) => isOpen)
-        .map(([badgeName]) => ({
-          badgeName,
-          isAggregator: AGGREGATOR_NAMES.includes(badgeName),
-        }))
-        .map(({ badgeName, isAggregator }) => (
+        .map(([badgeName, { label }]) => (
           <ModalDialog
             key={badgeName}
             properties={{
-              title: isAggregator
-                ? lifemapperText('aggregatorBadgeTitle')(
-                    sourceLabels[badgeName]
-                  )
-                : sourceLabels[badgeName],
+              title:
+                typeof state.aggregators[badgeName] === 'undefined'
+                  ? label
+                  : lifemapperText('aggregatorBadgeTitle')(label),
               modal: false,
               close: (): void =>
                 dispatch({
                   type: 'ToggleAggregatorVisibilityAction',
                   badgeName,
                 }),
-              ...(isAggregator
-                ? state.aggregatorInfos[badgeName]?.occurrenceViewLink
-                  ? {
-                      buttons: [
-                        {
-                          text: commonText('close'),
-                          click: (): void =>
-                            dispatch({
-                              type: 'ToggleAggregatorVisibilityAction',
-                              badgeName,
-                            }),
-                        },
-                        {
-                          text: lifemapperText('viewOccurrenceAt')(
-                            sourceLabels[badgeName]
-                          ),
-                          click: (): void =>
-                            void window.open(
-                              state.aggregatorInfos[badgeName]!
-                                .occurrenceViewLink,
-                              '_blank'
-                            ),
-                        },
-                      ],
-                      width: 400,
-                    }
-                  : {}
-                : {
+              ...(typeof state.aggregators[badgeName] === 'undefined'
+                ? {
                     width: 950,
                     height: 500,
-                  }),
+                  }
+                : state.aggregators[badgeName]?.occurrenceViewLink
+                ? {
+                    buttons: [
+                      {
+                        text: commonText('close'),
+                        click: (): void =>
+                          dispatch({
+                            type: 'ToggleAggregatorVisibilityAction',
+                            badgeName,
+                          }),
+                      },
+                      {
+                        text: lifemapperText('moreDetails'),
+                        click: (): void =>
+                          void window.open(
+                            formatLifemapperViewPageRequest(
+                              guid,
+                              extractElement(
+                                [
+                                  state.localOccurrenceName,
+                                  state.remoteOccurrenceName,
+                                ],
+                                1
+                              ),
+                              badgeName
+                            ),
+                            '_blank'
+                          ),
+                      },
+                      {
+                        text: lifemapperText('viewOccurrenceAt')(label),
+                        click: (): void =>
+                          void window.open(
+                            state.aggregators[badgeName].occurrenceViewLink,
+                            '_blank'
+                          ),
+                      },
+                    ],
+                    width: 400,
+                  }
+                : {}),
             }}
           >
-            {isAggregator ? (
-              <Aggregator data={state.aggregatorInfos[badgeName]!} />
-            ) : typeof state.lifemapperInfo === 'undefined' ? (
-              <p>{commonText('loading')}</p>
+            {typeof state.aggregators[badgeName] === 'undefined' ? (
+              typeof state.lifemapperInfo === 'undefined' ? (
+                <p>{commonText('loading')}</p>
+              ) : (
+                <LifemapperMap lifemapperInfo={state.lifemapperInfo} />
+              )
             ) : (
-              <LifemapperMap
-                badgeName={badgeName}
-                lifemapperInfo={state.lifemapperInfo}
-              />
+              <Aggregator data={state.aggregators[badgeName]} />
             )}
           </ModalDialog>
         ))}

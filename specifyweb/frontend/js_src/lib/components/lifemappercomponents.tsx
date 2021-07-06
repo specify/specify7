@@ -3,24 +3,22 @@ import React from 'react';
 
 import * as Leaflet from '../leaflet';
 import type { LifemapperInfo } from '../lifemapperinforeducer';
-import type {
-  AggregatorName,
-  BadgeName,
-  FullAggregatorInfo,
-} from '../lifemapperinfoutills';
-import { formatIconRequest, sourceLabels } from '../lifemapperinfoutills';
+import { formatIconRequest } from '../lifemapperinfoutills';
 import lifemapperText from '../localization/lifemapper';
 import type { MessageTypes } from './lifemapperinfo';
 import { lifemapperMessagesMeta } from './lifemapperinfo';
+import { MainState } from './lifemapperinfostate';
 import type { RA } from './wbplanview';
 
 export function Badge<IS_ENABLED extends boolean>({
   name,
+  title,
   onClick: handleClick,
   isEnabled,
   hasError,
 }: {
-  readonly name: AggregatorName;
+  readonly name: string;
+  readonly title: string;
   readonly onClick: IS_ENABLED extends true ? () => void : undefined;
   readonly isEnabled: IS_ENABLED;
   readonly hasError: boolean;
@@ -29,11 +27,11 @@ export function Badge<IS_ENABLED extends boolean>({
     <button
       type="button"
       disabled={!isEnabled}
-      onClick={handleClick}
+      onClick={isEnabled ? handleClick : undefined}
       className={`lifemapper-source-icon ${
         isEnabled ? '' : 'lifemapper-source-icon-not-found'
       } ${hasError ? 'lifemapper-source-icon-issues-detected' : ''}`}
-      title={sourceLabels[name]}
+      title={title}
     >
       <img
         className="lifemapper-source-icon-active"
@@ -57,7 +55,7 @@ export function Badge<IS_ENABLED extends boolean>({
 export function Aggregator({
   data,
 }: {
-  readonly data: FullAggregatorInfo;
+  readonly data: MainState['aggregators'][string];
 }): JSX.Element {
   return (
     <>
@@ -75,39 +73,16 @@ export function Aggregator({
           </ul>
         </>
       )}
-      <br />
-      {typeof data.occurrenceCount !== 'undefined' &&
-        data.occurrenceCount.length > 0 && (
-          <>
-            {lifemapperText('nameStrCount')}
-            <ul className="lifemapper-source-issues-list">
-              {data.occurrenceCount.map(
-                ({ scientificName, count, url }, index) => (
-                  <li key={index}>
-                    <a target="_blank" href={url} rel="noreferrer nofollow">
-                      {scientificName}{' '}
-                    </a>
-                    {lifemapperText('reportedCountTimes')(count)}
-                  </li>
-                )
-              )}
-            </ul>
-          </>
-        )}
     </>
   );
 }
 
 export function LifemapperMap({
-  badgeName,
   lifemapperInfo,
 }: {
-  readonly badgeName: BadgeName;
   readonly lifemapperInfo: LifemapperInfo;
 }): JSX.Element | null {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
-
-  if (badgeName !== 'lifemapper') return null;
 
   React.useEffect(() => {
     if (!mapRef.current) return undefined;
@@ -149,7 +124,7 @@ export function LifemapperMap({
         throw error;
       });
 
-    return () => {
+    return (): void => {
       if (typeof leafletMap === 'undefined') {
         destructorCalled = true;
       } else destructor(leafletMap);

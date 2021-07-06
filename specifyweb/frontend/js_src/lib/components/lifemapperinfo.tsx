@@ -5,23 +5,22 @@ import React from 'react';
 
 import type { MarkerGroups } from '../leaflet';
 import * as Leaflet from '../leaflet';
-import type { LocalityData } from '../leafletutils';
 import { reducer } from '../lifemapperinforeducer';
 import type { LifemapperLayerTypes } from '../lifemapperinfoutills';
 import {
   extractElement,
   fetchLocalScientificName,
-  formatOccurrenceCountRequest,
+  formatLifemapperViewPageRequest,
   formatOccurrenceDataRequest,
   formatOccurrenceMapRequest,
   lifemapperLayerVariations,
-  sourceLabels,
 } from '../lifemapperinfoutills';
 import { getLocalityDataFromLocalityResource } from '../localityrecorddataextractor';
 import lifemapperText from '../localization/lifemapper';
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
 import schema from '../schema';
+import { Badge } from './lifemappercomponents';
 import { stateReducer } from './lifemapperinfostate';
 import createBackboneView from './reactbackboneextend';
 import type { IR, RA, RR } from './wbplanview';
@@ -29,16 +28,26 @@ import type { LoadingState } from './wbplanviewstatereducer';
 
 // TODO: remove this
 const IS_DEVELOPMENT = false;
-const defaultGuid = '2c1becd5-e641-4e83-b3f5-76a55206539a';
-/*
- * Const defaultGuid = 'dcb298f9-1ed3-11e3-bfac-90b11c41863e';
- * Const defaultGuid = '8eb23b1e-582e-4943-9dd9-e3a36ceeb498';
- */
+const defaultGuid = [
+  '2c1becd5-e641-4e83-b3f5-76a55206539a',
+  'dcb298f9-1ed3-11e3-bfac-90b11c41863e',
+  '8eb23b1e-582e-4943-9dd9-e3a36ceeb498',
+][0];
 const defaultOccurrenceName: Readonly<[string, string]> = [
   'Phlox longifolia Nutt.',
   'Phlox longifolia Nutt.',
 ] as const;
 
+const HTTP_OK = 200;
+
+export const snServer = 'https://broker-dev.spcoco.org';
+export const snFrontendServer = 'https://broker.spcoco.org';
+
+export const SN_SERVICES: IR<string> = {
+  sn: lifemapperText('specifyNetwork'),
+  lm: lifemapperText('lifemapper'),
+};
+const ignoredAggregators: RA<string> = ['specify'];
 export type MessageTypes = 'errorDetails' | 'infoSection';
 
 export const lifemapperMessagesMeta: RR<
@@ -58,13 +67,35 @@ export const lifemapperMessagesMeta: RR<
   },
 } as const;
 
-type S2NRecord = {
-  readonly 's2n:issues'?: IR<string>;
-  readonly 'dwc:scientificName': string;
-  readonly 's2n:view_url': string;
+type AggregatorResponseBase = {
+  readonly provider: {
+    readonly code: string;
+    readonly label: string;
+    readonly status_code: number;
+  };
 };
 
-function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
+type AggregatorResponseWithoutData = AggregatorResponseBase & {
+  readonly records: [];
+};
+
+type AggregatorResponseWithData = AggregatorResponseBase & {
+  readonly records: [
+    {
+      readonly 's2n:issues'?: IR<string>;
+      readonly 'dwc:scientificName': string;
+      readonly 's2n:view_url': string;
+    }
+  ];
+};
+
+function LifemapperInfo({
+  model,
+  guid,
+  handleOccurrenceNameFetch,
+}: ComponentProps & {
+  readonly handleOccurrenceNameFetch: (occurrenceName: string) => void;
+}): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'LoadingState',
   } as LoadingState);
@@ -79,35 +110,38 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
       .then(async (response) => response.json())
       .then(
         (response: {
-          readonly records: {
-            readonly provider: string;
-            readonly count: number;
-            readonly records: [] | [S2NRecord];
-          }[];
+          readonly records: (
+            | AggregatorResponseWithoutData
+            | AggregatorResponseWithData
+          )[];
         }) =>
           dispatch({
             type: 'LoadedAction',
-            aggregatorInfos: Object.fromEntries(
-              (response.records || [])
-                .map((record) => ({
-                  ...record,
-                  provider: record.provider.toLowerCase(),
-                }))
+            occurrenceData: Object.fromEntries(
+              response.records
                 .filter(
-                  (record) =>
-                    typeof sourceLabels[record.provider] !== 'undefined'
+                  ({ provider }) => !ignoredAggregators.includes(provider.code)
                 )
-                .map(({ provider, records, count }) => [
-                  provider,
-                  typeof records[0] === 'undefined'
-                    ? undefined
-                    : {
-                        count,
-                        occurrenceCount: undefined,
-                        issues: records[0]['s2n:issues'] ?? {},
-                        occurrenceName: records[0]['dwc:scientificName'],
-                        occurrenceViewLink: records[0]['s2n:view_url'],
-                      },
+                .map(({ provider, records }) => [
+                  provider.code,
+                  {
+                    badge: {
+                      label: provider.label,
+                      isOpen: false,
+                      isActive:
+                        provider.status_code === HTTP_OK &&
+                        typeof records[0] !== 'undefined',
+                    },
+                    aggregator:
+                      provider.status_code === HTTP_OK &&
+                      typeof records[0] !== 'undefined'
+                        ? {
+                            issues: records[0]['s2n:issues'] ?? {},
+                            occurrenceName: records[0]['dwc:scientificName'],
+                            occurrenceViewLink: records[0]['s2n:view_url'],
+                          }
+                        : undefined,
+                  },
                 ])
             ),
           })
@@ -116,10 +150,14 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
 
   // Set remoteOccurrenceName
   React.useEffect(() => {
-    if (state.type !== 'MainState') return;
+    if (
+      state.type !== 'MainState' ||
+      typeof state.localOccurrenceName !== 'undefined'
+    )
+      return;
 
-    const occurrenceNames =
-      Object.values(state.aggregatorInfos)
+    const occurrenceName =
+      Object.values(state.aggregators)
         .filter((aggregatorInfo) => aggregatorInfo)
         .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
         .find((occurrenceName) => occurrenceName)?.[0] ?? '';
@@ -128,70 +166,37 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
       type: 'SetRemoteOccurrenceNameAction',
       remoteOccurrenceName: IS_DEVELOPMENT
         ? defaultOccurrenceName[1]
-        : occurrenceNames,
+        : occurrenceName,
     });
-  }, [state.type]);
+
+    handleOccurrenceNameFetch(
+      extractElement([state.localOccurrenceName, occurrenceName], 1)
+    );
+  }, [
+    state.type,
+    state.type === 'MainState' ? state.localOccurrenceName : undefined,
+  ]);
 
   // Set localOccurrenceName
   React.useEffect(() => {
-    if (state.type !== 'MainState') return;
-    fetchLocalScientificName(model).then((localOccurrenceName) =>
+    if (
+      state.type !== 'MainState' ||
+      typeof state.localOccurrenceName !== 'undefined'
+    )
+      return;
+    void fetchLocalScientificName(model).then((localOccurrenceName) => {
       dispatch({
         type: 'SetLocalOccurrenceNameAction',
         localOccurrenceName,
-      })
-    );
-  }, [state.type]);
-
-  // Fetch occurrence count on dialog open if not yet fetched
-  React.useEffect(
-    () => {
-      if (state.type !== 'MainState') return;
-      if (typeof state.remoteOccurrenceName === 'undefined') return;
-      let occurrenceName = state.remoteOccurrenceName;
-      if (state.remoteOccurrenceName === '') {
-        if (!state.localOccurrenceName) return;
-        occurrenceName = state.localOccurrenceName;
-      }
-
-      Object.entries(state.aggregatorInfos)
-        .filter(
-          ([name, data]) =>
-            data &&
-            data.occurrenceName !== '' &&
-            state.badgeStatuses[name]?.isOpen &&
-            typeof state.aggregatorInfos.occurrenceCount === 'undefined'
-        )
-        .forEach(([name]) => {
-          void $.get(formatOccurrenceCountRequest(name, occurrenceName)).done(
-            (response) =>
-              dispatch({
-                type: 'OccurrenceCountLoadedAction',
-                aggregatorName: name,
-                occurrenceCount:
-                  response.records[0]?.records.map(
-                    ({
-                      scientificName,
-                      occurrence_count: count,
-                      occurrence_url: url,
-                    }: any) => ({
-                      scientificName,
-                      count,
-                      url,
-                    })
-                  ) ?? [],
-              })
-          );
-        });
-    },
-    state.type === 'MainState'
-      ? [
-          state.localOccurrenceName,
-          state.remoteOccurrenceName,
-          JSON.stringify(state.badgeStatuses),
-        ]
-      : [undefined, undefined, undefined]
-  );
+      });
+      if (typeof state.remoteOccurrenceName === 'undefined')
+        handleOccurrenceNameFetch(localOccurrenceName);
+    });
+  }, [
+    state.type,
+    state.type === 'MainState' ? state.remoteOccurrenceName : undefined,
+    state.type === 'MainState' ? state.localOccurrenceName : undefined,
+  ]);
 
   /*
    * Fetch related CO records
@@ -201,7 +206,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
     () => {
       if (
         state.type !== 'MainState' ||
-        !state.badgeStatuses.lifemapper?.isOpen ||
+        !state.badges.lm.isOpen ||
         typeof state.remoteOccurrenceName === 'undefined' ||
         typeof state.localOccurrenceName === 'undefined'
       )
@@ -247,7 +252,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
                               localityData === false
                                 ? undefined
                                 : Leaflet.getMarkersFromLocalityData({
-                                    localityData: localityData as LocalityData,
+                                    localityData,
                                     iconClass:
                                       model.get('id') ===
                                       collectionObject.get('id')
@@ -368,7 +373,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
       ? [
           state.localOccurrenceName,
           state.remoteOccurrenceName,
-          state.badgeStatuses.lifemapper?.isOpen,
+          state.badges.lm.isOpen,
         ]
       : [undefined, undefined, undefined]
   );
@@ -377,6 +382,7 @@ function LifemapperInfo({ model, guid }: ComponentProps): JSX.Element {
     ...state,
     params: {
       dispatch,
+      guid,
     },
   });
 }
@@ -387,6 +393,55 @@ interface Props {
 
 interface ComponentProps extends Props {
   readonly guid: string;
+}
+
+class ErrorBoundary extends React.Component<
+  { readonly children: JSX.Element; readonly hasErrorCallback: () => void },
+  { readonly hasError: boolean }
+> {
+  public state: { readonly hasError: boolean } = {
+    hasError: false,
+  };
+
+  public componentDidCatch = this.props.hasErrorCallback;
+
+  public render(): JSX.Element | null {
+    return this.props.children;
+  }
+}
+
+// If any error occurs, fallback to displaying a link to the SN page
+function LifemapperWrapper(props: ComponentProps): JSX.Element {
+  const [hasError, setHasError] = React.useState<boolean>(false);
+  const [occurrenceName, setOccurrenceName] = React.useState<
+    string | undefined
+  >(undefined);
+
+  return hasError ? (
+    typeof occurrenceName === 'undefined' ? (
+      <></>
+    ) : (
+      <Badge
+        name={'sn'}
+        title={SN_SERVICES.sn}
+        onClick={(): void =>
+          void window.open(
+            formatLifemapperViewPageRequest(props.guid, occurrenceName, ''),
+            '_blank'
+          )
+        }
+        isEnabled={true}
+        hasError={false}
+      />
+    )
+  ) : (
+    <ErrorBoundary hasErrorCallback={() => setHasError(true)}>
+      <LifemapperInfo
+        {...props}
+        handleOccurrenceNameFetch={setOccurrenceName}
+      />
+    </ErrorBoundary>
+  );
 }
 
 const View = createBackboneView<Props, Props, ComponentProps>({
@@ -402,7 +457,7 @@ const View = createBackboneView<Props, Props, ComponentProps>({
     self.el.style.display = 'none';
   },
   silentErrors: true,
-  Component: LifemapperInfo,
+  Component: LifemapperWrapper,
   getComponentProps: (self) => ({
     model: self.model,
     guid: IS_DEVELOPMENT ? defaultGuid : self.model.get('guid'),
