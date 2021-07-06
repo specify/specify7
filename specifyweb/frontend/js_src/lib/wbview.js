@@ -1344,8 +1344,6 @@ const WBView = Backbone.View.extend({
         (effectCleanup) => effectCleanup()
       );
 
-    runEffects();
-
     const uploadedViewWrapper = this.el.getElementsByClassName(
       'wb-uploaded-view-wrapper'
     )[0];
@@ -1363,6 +1361,8 @@ const WBView = Backbone.View.extend({
         runCleanup();
       },
     }).render();
+
+    runEffects();
   },
   openPlan() {
     navigation.go(`/workbench-plan/${this.dataset.id}/`);
