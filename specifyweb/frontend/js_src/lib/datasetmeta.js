@@ -1,14 +1,14 @@
-import $            from 'jquery';
+import $ from 'jquery';
 import uniquifyName from './wbuniquifyname';
-import Backbone     from './backbone';
-import app          from './specifyapp';
-import { format }   from './dataobjformatters';
-import schema       from './schema';
-import resourceApi  from './resourceapi';
-import navigation   from './navigation';
-import userInfo     from './userinfo.js';
-import wbText       from './localization/workbench';
-import commonText   from './localization/common';
+import Backbone from './backbone';
+import app from './specifyapp';
+import { format } from './dataobjformatters';
+import schema from './schema';
+import resourceApi from './resourceapi';
+import navigation from './navigation';
+import userInfo from './userinfo.js';
+import wbText from './localization/workbench';
+import commonText from './localization/common';
 
 export const DataSetMeta = Backbone.View.extend({
   __name__: 'DataSetMetaView',
@@ -94,17 +94,17 @@ export const DataSetMeta = Backbone.View.extend({
       ${wbText('numberOfRows')} <i>${this.getRowCount()}</i><br>
       ${wbText('numberOfColumns')} <i>${this.dataset.columns.length}</i><br>
       ${wbText('created')} <i>${new Date(
-        this.dataset.timestampcreated
-      ).toLocaleString()}</i><br>
+      this.dataset.timestampcreated
+    ).toLocaleString()}</i><br>
       ${wbText('modified')} <i>${new Date(
-        this.dataset.timestampmodified
-      ).toLocaleString()}</i><br>
+      this.dataset.timestampmodified
+    ).toLocaleString()}</i><br>
       ${
         this.dataset.uploadresult?.success === true
           ? `
         ${wbText('uploaded')} <i>${new Date(
-          this.dataset.uploadresult.timestamp
-        ).toLocaleString()}
+              this.dataset.uploadresult.timestamp
+            ).toLocaleString()}
         </i><br>`
           : ''
       }
@@ -115,8 +115,8 @@ export const DataSetMeta = Backbone.View.extend({
         ${commonText('loading')}
       </i><br>
       ${wbText('importedFileName')} <i>${
-        this.dataset.importedfilename || wbText('noFileName')
-      }</i><br><br>
+      this.dataset.importedfilename || wbText('noFileName')
+    }</i><br><br>
     </div>`).dialog({
       title: wbText('dataSetMetaDialogTitle'),
       modal: true,
@@ -204,7 +204,8 @@ export const DataSetMeta = Backbone.View.extend({
         dialogClass: 'ui-dialog-no-close',
         close: () => this.changeOwnerDialog.dialog('destroy'),
         buttons: {
-          [commonText('cancel')]: () => this.changeOwnerDialog.dialog('destroy'),
+          [commonText('cancel')]: () =>
+            this.changeOwnerDialog.dialog('destroy'),
           [wbText('changeOwner')]: this.changeOwner.bind(this),
         },
       });
@@ -258,7 +259,7 @@ export default Backbone.View.extend({
 
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    this.$el.find('.wb-name-container').html(`
+    this.$el.find('.wb-name-container').prepend(`
       <span class="wb-name">${wbText('dataSet')} ${this.dataset.name}
         ${
           isUploaded

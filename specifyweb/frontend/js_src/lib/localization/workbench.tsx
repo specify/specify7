@@ -287,7 +287,7 @@ const wbText = createDictionary({
   wbsDialogDefaultDialogTitle: (dataSetCount: number) =>
     `Data Sets (${dataSetCount})`,
   wbsDialogEmptyDefaultDialogMessage: 'Currently no Data Sets exist.',
-  wbsDialogTemplatesDialogTitle: 'Copy plan from existing Sata Det',
+  wbsDialogTemplatesDialogTitle: 'Copy plan from existing Data Set',
   wbsDialogEmptyTemplateDialogMessage:
     'There are no plans available, please continue to create an upload plan.',
   createDataSetInstructions: `

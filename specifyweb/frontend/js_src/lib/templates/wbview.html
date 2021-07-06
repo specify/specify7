@@ -1,6 +1,10 @@
 <div class="wb-header">
   <div class="wb-primary-row">
-    <div class="wb-name-container v-center"></div>
+    <div class="wb-name-container v-center">
+      <button class="magic-button wb-show-toolkit">
+        <%= commonText('tools') %>
+      </button>
+    </div>
     <div class="wb-controls">
       <button class="magic-button wb-show-plan" style="display: none">
         Show Plan
@@ -14,9 +18,6 @@
         <%= wbText('validate') %>
       </button>
       <% } %>
-      <button class="magic-button wb-show-toolkit">
-        <%= commonText('tools') %>
-      </button>
       <button class="magic-button wb-show-upload-view" disabled="disabled">
         <%= wbText('results') %>
       </button>

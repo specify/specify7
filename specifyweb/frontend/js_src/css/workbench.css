@@ -16,7 +16,6 @@
 .wbs-form .wb-primary-row {
   display: flex;
   justify-content: space-between;
-  column-gap: 1rem;
   width: 100%;
 }
 
@@ -58,6 +57,7 @@
 .wbs-form .wb-name-container span.ui-icon {
   display: inline-block;
   vertical-align: bottom;
+  margin-right: 0.5rem;
 }
 
 .wb-search-replace {

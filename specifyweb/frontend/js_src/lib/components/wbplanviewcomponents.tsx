@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
-import commonText from '../localization/common';
 
+import commonText from '../localization/common';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import type {
   CustomSelectElementDefaultOptionProps,
@@ -122,6 +122,7 @@ export function ButtonWithConfirmation(props: {
             onCloseCallback={(): void => setDisplayPrompt(false)}
             properties={{
               title: props.dialogTitle,
+              width: '400',
               buttons: [
                 {
                   text: props.confirmButtonText,
