@@ -52,6 +52,7 @@ const commonText = createDictionary({
   generate: 'Generate',
   loadingInline: '(loading...)',
   listTruncated: '(list truncated)',
+  fullName: 'Full Name',
 
   // Toolbar
   attachments: 'Attachments',

@@ -11,6 +11,7 @@ import type {
   MappingType,
   RelationshipType,
 } from './components/wbplanviewmapper';
+import commonText from './localization/common';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import dataModelStorage from './wbplanviewmodel';
 import { getMappingLineData } from './wbplanviewnavigator';
@@ -87,7 +88,8 @@ export function generateMappingPathPreview(
     ({ mappingElementData, mappingPathPart }) =>
       (Object.values(mappingElementData.fieldsData).find(
         ({ isDefault }) => isDefault
-      )?.fieldFriendlyName as string) ?? mappingPathPart
+      )?.fieldFriendlyName as string) ??
+      (mappingPathPart === 'fullname' ? commonText('fullName') : mappingPath)
   );
 
   const toManyLocation = Array.from(mappingPath)
