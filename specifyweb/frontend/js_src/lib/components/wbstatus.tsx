@@ -69,7 +69,7 @@ function ProgressBar({
 }
 
 function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
-  if (dataset.uploaderstatus === null)
+  if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
 
   const [state, dispatch] = React.useReducer(reducer, {

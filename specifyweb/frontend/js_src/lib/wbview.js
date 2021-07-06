@@ -1486,24 +1486,24 @@ const WBView = Backbone.View.extend({
       dataset: {
         ...this.dataset,
         // Create initial status if it doesn't yet exist
-        uploaderstatus:
-          this.dataset.uploaderstatus === null
-            ? {
-                uploaderstatus: {
+        uploaderstatus: {
+          uploaderstatus:
+            this.dataset.uploaderstatus === null
+              ? {
                   operation: {
                     validate: 'validating',
                     upload: 'uploading',
                     unupload: 'unuploading',
                   }[mode],
                   taskid: '',
-                },
-                taskstatus: 'PENDING',
-                taskinfo: {
-                  current: 1,
-                  total: 1,
-                },
-              }
-            : this.dataset.uploaderstatus,
+                }
+              : this.dataset.uploaderstatus,
+          taskstatus: 'PENDING',
+          taskinfo: {
+            current: 1,
+            total: 1,
+          },
+        },
       },
       onFinished: (wasAborted) => {
         this.wbstatus.remove();
@@ -1995,7 +1995,7 @@ const WBView = Backbone.View.extend({
             },
       unupload: {
         title: wbText('dataSetRollbackDialogTitle'),
-        title: wbText('dataSetRollbackDialogHeader'),
+        header: wbText('dataSetRollbackDialogHeader'),
         message: wbText('dataSetRollbackDialogMessage'),
       },
     };
