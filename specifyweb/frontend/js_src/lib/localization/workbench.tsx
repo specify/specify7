@@ -236,8 +236,18 @@ const wbText = createDictionary({
     'To edit the mappings, rollback the upload or create a new ',
     'dataset',
   ].join(''),
-  changeTable: 'Change Table',
+  baseTable: 'Base Table',
+  goToBaseTableDialogTitle:
+    'Change the Base Table for Mapping Data Set Columns',
+  goToBaseTableDialogHeader: createJsxHeader(''),
+  goToBaseTableDialogMessage: `
+    Choosing a different Base Table for a Data Set Upload will make that
+    table the new starting point for column-to-data field mappings and
+    will erase existing mappings. The Automapper will attempt to map
+    columns to the new Base Table fields.`,
+  changeBaseTable: 'Change Base Table',
   reRunAutoMapper: 'Rerun Automapper',
+  autoMapper: 'Automapper',
   hideMappingEditor: 'Hide Mapping Editor',
   showMappingEditor: 'Show Mapping Editor',
   matchingLogic: 'Matching Logic',

@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import commonText from '../localization/common';
 
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import type {
@@ -15,6 +16,7 @@ import type {
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
+import { ModalDialog } from './modaldialog';
 import type { IR, RA } from './wbplanview';
 import type {
   AutomapperSuggestion,
@@ -94,6 +96,54 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
     />
   );
 });
+
+export function ButtonWithConfirmation(props: {
+  readonly children: React.ReactNode;
+  readonly onConfirm: () => void;
+  readonly dialogTitle: React.ReactNode;
+  readonly dialogHeader: React.ReactNode;
+  readonly dialogMessage: React.ReactNode;
+  readonly confirmButtonText: React.ReactNode;
+}): JSX.Element {
+  const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
+
+  return (
+    <>
+      <button
+        className="magic-button"
+        type={'button'}
+        onClick={(): void => setDisplayPrompt(true)}
+      >
+        {props.children}
+      </button>
+      {displayPrompt ? (
+        <div style={{ position: 'absolute' }}>
+          <ModalDialog
+            onCloseCallback={(): void => setDisplayPrompt(false)}
+            properties={{
+              title: props.dialogTitle,
+              buttons: [
+                {
+                  text: props.confirmButtonText,
+                  click: props.onConfirm,
+                },
+                {
+                  text: commonText('cancel'),
+                  click: (): void => setDisplayPrompt(false),
+                },
+              ],
+            }}
+          >
+            <>
+              {props.dialogHeader}
+              {props.dialogMessage}
+            </>
+          </ModalDialog>
+        </div>
+      ) : undefined}
+    </>
+  );
+}
 
 export function MappingLineComponent({
   lineData,

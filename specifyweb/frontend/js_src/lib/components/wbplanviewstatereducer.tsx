@@ -21,7 +21,10 @@ import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Icon } from './customselectelement';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import type { RA, WBPlanViewProps } from './wbplanview';
-import { ListOfBaseTables } from './wbplanviewcomponents';
+import {
+  ButtonWithConfirmation,
+  ListOfBaseTables,
+} from './wbplanviewcomponents';
 import { Layout, WBPlanViewHeader } from './wbplanviewheader';
 import type {
   AutomapperSuggestion,
@@ -204,13 +207,13 @@ export const stateReducer = generateReducer<
   TemplateSelectionState: ({ action: state }) => (
     <WbsDialog
       showTemplates={true}
-      onClose={() =>
+      onClose={(): void =>
         state.dispatch({
           type: 'OpenBaseTableSelectionAction',
           referrer: state.type,
         })
       }
-      onDataSetSelect={(id: number) =>
+      onDataSetSelect={(id: number): void =>
         state.refObjectDispatch({
           type: 'TemplateSelectedAction',
           id,
@@ -275,17 +278,19 @@ export const stateReducer = generateReducer<
                 </span>
               ) : (
                 <>
-                  <button
-                    type="button"
-                    className="magic-button"
-                    onClick={(): void =>
+                  <ButtonWithConfirmation
+                    dialogTitle={wbText('goToBaseTableDialogTitle')}
+                    dialogHeader={wbText('goToBaseTableDialogHeader')}
+                    dialogMessage={wbText('goToBaseTableDialogMessage')}
+                    confirmButtonText={wbText('changeBaseTable')}
+                    onConfirm={(): void =>
                       state.dispatch({
                         type: 'OpenBaseTableSelectionAction',
                       })
                     }
                   >
-                    {wbText('changeTable')}
-                  </button>
+                    {wbText('baseTable')}
+                  </ButtonWithConfirmation>
                   <button
                     type="button"
                     className="magic-button"
@@ -306,7 +311,7 @@ export const stateReducer = generateReducer<
                           })
                     }
                   >
-                    {wbText('reRunAutoMapper')}
+                    {wbText('autoMapper')}
                   </button>
                 </>
               )
@@ -535,7 +540,7 @@ export const stateReducer = generateReducer<
           {!refObject.current.hideEmptyDataSetDialog &&
             state.lines.length === 0 && (
               <ModalDialog
-                onCloseCallback={() =>
+                onCloseCallback={(): void =>
                   state.refObjectDispatch({
                     type: 'RefHideEmptyDataSetDialogAction',
                   })
@@ -552,7 +557,7 @@ export const stateReducer = generateReducer<
             )}
           {state.showAutomapperDialog && (
             <ModalDialog
-              onCloseCallback={() =>
+              onCloseCallback={(): void =>
                 state.dispatch({
                   type: 'CancelRerunAutomapperAction',
                 })
@@ -562,7 +567,7 @@ export const stateReducer = generateReducer<
                 buttons: [
                   {
                     text: wbText('reRunAutoMapper'),
-                    click: () =>
+                    click: (): void =>
                       state.dispatch({
                         type: 'SelectTableAction',
                         headers: state.lines.map(
@@ -573,7 +578,7 @@ export const stateReducer = generateReducer<
                   },
                   {
                     text: commonText('cancel'),
-                    click: () =>
+                    click: (): void =>
                       state.dispatch({
                         type: 'CancelRerunAutomapperAction',
                       }),
@@ -589,7 +594,7 @@ export const stateReducer = generateReducer<
           )}
           {state.showInvalidValidationDialog && (
             <ModalDialog
-              onCloseCallback={() =>
+              onCloseCallback={(): void =>
                 state.dispatch({
                   type: 'CloseInvalidValidationDialogAction',
                 })
@@ -597,7 +602,7 @@ export const stateReducer = generateReducer<
               properties={{
                 title: wbText('nothingToValidateDialogTitle'),
                 buttons: {
-                  [commonText('close')]: () =>
+                  [commonText('close')]: (): void =>
                     state.dispatch({
                       type: 'CloseInvalidValidationDialogAction',
                     }),
