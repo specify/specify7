@@ -34,7 +34,6 @@ const commonText = createDictionary({
   uploaded: 'Uploaded',
   createdBy: 'Created by',
   modifiedBy: 'Modified by',
-  editName: 'Edit Name',
   details: 'Details',
   stop: 'Stop',
   remove: 'Remove',
@@ -52,6 +51,8 @@ const commonText = createDictionary({
   loadingInline: '(loading...)',
   listTruncated: '(list truncated)',
   fullName: 'Full Name',
+  metadataInline: 'Metadata:',
+  metadata: 'Metadata',
 
   // Toolbar
   attachments: 'Attachments',

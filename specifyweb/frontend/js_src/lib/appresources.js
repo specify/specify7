@@ -104,7 +104,7 @@ const ResourceDataView = Backbone.View.extend({
                 ).appendTo(this.el);
 
                 $(`<label class="metadata-input">
-                    ${adminText('metadata')}
+                    ${commonText('metadataInline')}
                     <input type="text" spellcheck="false"/>
                 <label>`).appendTo(this.el);
                 $('.metadata-input input', this.el).val(this.model.get('metadata'));

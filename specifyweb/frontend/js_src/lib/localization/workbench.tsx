@@ -298,7 +298,6 @@ const wbText = createDictionary({
   dataSetMetaDialogHeader: createHeader(''),
   dataSetName: 'Data Set Name:',
   remarks: 'Remarks:',
-  metadata: 'Metadata:',
   numberOfRows: 'Number of rows',
   numberOfColumns: 'Number of columns',
   created: 'Created:',

@@ -19,7 +19,8 @@
   width: 100%;
 }
 
-.wb-controls,
+.wb-controls-left,
+.wb-controls-right,
 .wb-toolkit,
 .wb-toolkit-left,
 .wb-toolkit-right,
@@ -30,7 +31,7 @@
   row-gap: 0.5rem;
 }
 
-.wb-controls,
+.wb-controls-right,
 .wb-navigation {
   justify-content: flex-end;
 }
@@ -43,18 +44,19 @@
   justify-content: space-between;
 }
 
-.wbs-form .wb-name-container {
+.wbs-form .wb-controls-left {
   flex: 1;
   font-size: 0.8rem;
   overflow-y: auto;
   white-space: nowrap;
+  flex-wrap: nowrap;
 }
 
 .wbs-form .wb-name {
   overflow-y: auto;
 }
 
-.wbs-form .wb-name-container span.ui-icon {
+.wbs-form .wb-controls-left span.ui-icon {
   display: inline-block;
   vertical-align: bottom;
   margin-right: 0.5rem;

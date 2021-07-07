@@ -90,7 +90,7 @@ export const DataSetMeta = Backbone.View.extend({
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
       </label><br><br>
-      <b>${wbText('metadata')}</b><br>
+      <b>${commonText('metadataInline')}</b><br>
       ${wbText('numberOfRows')} <i>${this.getRowCount()}</i><br>
       ${wbText('numberOfColumns')} <i>${this.dataset.columns.length}</i><br>
       ${wbText('created')} <i>${new Date(
@@ -243,7 +243,7 @@ export const DataSetMeta = Backbone.View.extend({
 export default Backbone.View.extend({
   __name__: 'DataSetNameView',
   events: {
-    'click .ui-icon': 'startEditing',
+    'click .wb-metadata': 'startEditing',
   },
   initialize({ dataset, getRowCount, onClose }) {
     this.dataset = dataset;
@@ -259,7 +259,7 @@ export default Backbone.View.extend({
 
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    this.$el.find('.wb-name-container').prepend(`
+    this.$el.find('.wb-controls-left').prepend(`
       <span class="wb-name">${wbText('dataSet')} ${this.dataset.name}
         ${
           isUploaded
@@ -269,10 +269,11 @@ export default Backbone.View.extend({
             : ''
         }
       </span>
-      <span
-        class="ui-icon ui-icon-pencil"
-        title="${commonText('editName')}"
-      >${commonText('editName')}</span>`);
+      <button
+          type="button"
+          class="wb-metadata magic-button"
+      >${commonText('metadata')}</button>
+    `);
     app.setTitle(this.dataset.name);
     return this;
   },

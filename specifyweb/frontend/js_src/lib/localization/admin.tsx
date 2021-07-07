@@ -8,7 +8,6 @@ const adminText = createDictionary({
   adminStatusUnsavedDescription: 'Save user first',
   mustBeManager: 'User must be saved as Manager first',
 
-  metadata: 'Metadata:',
   mimetype: 'Mimetype:',
   loadFile: 'Load File:',
   download: 'Download',
