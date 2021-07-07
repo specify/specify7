@@ -127,3 +127,25 @@ ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
 EXPOSE 8000
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
+
+
+######################################################################
+
+FROM run AS run-development
+
+USER root
+
+COPY requirements-testing.txt /home/specify/
+
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends \
+        python3.6-distutils \
+        ca-certificates \
+        make
+
+RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+
+USER specify
+
+COPY mypy.ini ./
+

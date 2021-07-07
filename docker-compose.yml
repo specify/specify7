@@ -16,6 +16,7 @@ services:
   specify7:
     build:
       context: ./.
+      target: run-development
     command: ve/bin/python manage.py runserver 0.0.0.0:8000
     init: true
     restart: unless-stopped
@@ -54,6 +55,7 @@ services:
   specify7-worker:
     build:
       context: ./.
+      target: run-development
     command: ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q specify
     init: true
     volumes:
