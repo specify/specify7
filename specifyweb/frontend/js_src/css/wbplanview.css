@@ -39,7 +39,7 @@
 .wbplanview-header-controls,
 .wbplanview-ds-name-container {
   display: flex;
-  column-gap: var(--white-space);
+  column-gap: calc(var(--white-space) * 0.6);
   align-items: stretch;
 }
 
@@ -148,6 +148,7 @@
   bottom: 0;
   font-size: calc(var(--white-space) * 2);
   pointer-events: none;
+  z-index: -1;
 }
 
 .mapping-view {

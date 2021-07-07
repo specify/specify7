@@ -32,7 +32,7 @@ function TableResults({
         isRelationship={true}
       />
       <span>
-        {`${dataModelStorage.tables[tableName].label} - ${recordCount}`}
+        {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
       </span>
     </div>
   );

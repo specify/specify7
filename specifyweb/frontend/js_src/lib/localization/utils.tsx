@@ -37,7 +37,7 @@ export const createHeader = (header: string): string =>
   header === '' ? '' : `<h2>${header}</h2>`;
 
 export const createJsxHeader = (header: string): string | JSX.Element =>
-  header === '' ? '' : <h2>${header}</h2>;
+  header === '' ? '' : <h2>{header}</h2>;
 
 /*
  *

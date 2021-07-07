@@ -174,7 +174,7 @@
 }
 
 .custom-select-options::-webkit-scrollbar {
-  width: 0.8rem !important;
+  width: 0.8rem;
   background: var(--b1);
 }
 

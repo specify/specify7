@@ -18,7 +18,7 @@ import type {
 } from '../wbplanviewreducer';
 import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
-import { mappingPathIsComplete } from '../wbplanviewutils';
+import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
 import { Icon } from './customselectelement';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import type { RA, WbPlanViewProps } from './wbplanview';
@@ -118,7 +118,7 @@ export const getDefaultMappingState = (): MappingState => ({
   validationResults: [],
   lines: [],
   focusedLine: 0,
-  changesMade: true,
+  changesMade: false,
   displayMatchingOptionsDialog: false,
   mustMatchPreferences: {},
 });
@@ -148,16 +148,8 @@ export const stateReducer = generateReducer<
         close: (_event, ui): void =>
           typeof ui === 'undefined' || 'length' in ui
             ? undefined
-            : state.dispatch({
-                type: 'CancelMappingAction',
-                dataset: state.props.dataset,
-                removeUnloadProtect: state.props.removeUnloadProtect,
-              }),
+            : goBack(state.props),
         buttons: [
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
           {
             text: wbText('chooseExistingPlan'),
             click: (): void =>
@@ -165,6 +157,10 @@ export const stateReducer = generateReducer<
                 type: 'UseTemplateAction',
                 dispatch: state.dispatch,
               }),
+          },
+          {
+            text: commonText('cancel'),
+            click: closeDialog,
           },
         ],
       }}
@@ -397,11 +393,7 @@ export const stateReducer = generateReducer<
                     state.dispatch({
                       type: 'ClearValidationResultsAction',
                     });
-                    state.dispatch({
-                      type: 'CancelMappingAction',
-                      dataset: state.props.dataset,
-                      removeUnloadProtect: state.props.removeUnloadProtect,
-                    });
+                    goBack(state.props);
                   }}
                 >
                   {state.props.readonly

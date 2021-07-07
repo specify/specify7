@@ -852,11 +852,9 @@ const WBView = Backbone.View.extend({
       !this.uploadedView &&
       !this.coordinateConverterView &&
       // Don't allow pointless column moves
-      startPosition !==
-        endPosition(
-          // An ugly fix for jQuery dialogs conflicting with HOT
-          typeof endPosition !== 'undefined' || this.hotIsReady === false
-        )
+      startPosition !== endPosition &&
+      // An ugly fix for jQuery dialogs conflicting with HOT
+      (typeof endPosition !== 'undefined' || this.hotIsReady === false)
     );
   },
   afterColumnMove(_columnIndexes, _startPosition, endPosition) {
@@ -1399,7 +1397,9 @@ const WBView = Backbone.View.extend({
       });
   },
   changeOwner() {
-    this.datasetmeta.dataSetMeta.changeOwnerWindow.call(this.datasetmeta);
+    this.datasetmeta.dataSetMeta.changeOwnerWindow.call(
+      this.datasetmeta.dataSetMeta
+    );
   },
 
   // Actions

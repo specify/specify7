@@ -99,7 +99,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     };
   },
   RefSetUnloadProtectAction: ({ payload: { refObject, props, state } }) => {
-    props.removeUnloadProtect();
+    props.setUnloadProtect();
     getRefMappingState(refObject, state).current.unloadProtectIsSet = false;
   },
   RefUnsetUnloadProtectAction: ({ payload: { refObject, props, state } }) => {

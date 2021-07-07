@@ -3,7 +3,6 @@ import { generateReducer } from 'typesafe-reducer';
 
 import * as cache from './cache';
 import type {
-  PartialWbPlanViewProps,
   PublicWbPlanViewProps,
   RA,
   WbPlanViewWrapperProps,
@@ -37,7 +36,6 @@ import { getMappingLineData } from './wbplanviewnavigator';
 import {
   deduplicateMappings,
   getAutomapperSuggestions,
-  goBack,
   mappingPathIsComplete,
   mutateMappingPath,
   savePlan,
@@ -91,13 +89,6 @@ type BaseTableSelectionActions =
 type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
 
 type TemplateSelectionActions = CancelTemplateSelectionAction;
-
-type CancelMappingAction = Action<
-  'CancelMappingAction',
-  PublicWbPlanViewProps & PartialWbPlanViewProps
->;
-
-type CommonActions = CancelMappingAction;
 
 export type OpenMappingScreenAction = Action<
   'OpenMappingScreenAction',
@@ -253,7 +244,6 @@ export type MappingActions =
 export type WbPlanViewActions =
   | BaseTableSelectionActions
   | TemplateSelectionActions
-  | CommonActions
   | MappingActions;
 
 export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
@@ -262,7 +252,9 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     !action.referrer || action.referrer === state.type
       ? {
           type: 'BaseTableSelectionState',
-          showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables'),
+          showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables', {
+            defaultValue: true,
+          }),
         }
       : state,
   SelectTableAction: ({ action }) => ({
@@ -293,16 +285,10 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   // TemplateSelectionState
   CancelTemplateSelectionAction: () => ({
     type: 'BaseTableSelectionState',
-    showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables'),
+    showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables', {
+      defaultValue: true,
+    }),
   }),
-
-  // Common
-  CancelMappingAction: ({ action }) => {
-    setTimeout(() => goBack(action), 0);
-    return {
-      type: 'LoadingState',
-    };
-  },
 
   // MappingState
   OpenMappingScreenAction: ({ action }) => {
