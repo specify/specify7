@@ -44,56 +44,25 @@ type FlatTree = NestedRecord<string>;
 /*
  * Merges objects recursively
  *	(by reference only, does not create a copy of the tree)
- *
  */
-export const deepMergeObject = (
-  // Tree that is used as a basis
-  target: any,
-  // Tree that is used as a source
-  source: object
-): IR<unknown> =>
-  /*
-   * For example, if target is:
-   * 	Accession
-   * 		Accession Agents
-   * 			#1
-   * 				Agent
-   * 				Remarks
-   * And source is:
-   * 	Accession
-   * 		Accession Agents
-   * 			#2
-   * 				Agent
-   * Resulting tree is:
-   * 	Accession
-   * 		Accession Agents
-   * 			#1
-   * 				Agent
-   * 					Remarks
-   * 			#2
-   * 				Agent
-   *
-   */ typeof source === 'object'
-    ? Object.entries(source).reduce((target, [sourceProperty, sourceValue]) => {
-        if (typeof target[sourceProperty] === 'undefined')
-          target[sourceProperty] = sourceValue;
-        else if (typeof target === 'object')
-          target[sourceProperty] = deepMergeObject(
-            target[sourceProperty],
+export const deepMergeObject = (base: any, merge: object): IR<unknown> =>
+  typeof merge === 'object'
+    ? Object.entries(merge).reduce((base, [sourceProperty, sourceValue]) => {
+        if (typeof base[sourceProperty] === 'undefined')
+          base[sourceProperty] = sourceValue;
+        else if (typeof base === 'object')
+          base[sourceProperty] = deepMergeObject(
+            base[sourceProperty],
             sourceValue
           );
 
-        return target;
-      }, target)
-    : target;
+        return base;
+      }, base)
+    : base;
 
-/* Converts an array to tree */
-export function arrayToTree(
-  // Array to be converted
-  array: RA<any>,
-  // Whether an array has headers in it
-  hasHeaders = false
-): FlatTree /*
+/*
+ * Converts array to tree
+ *
  * Example:
  * 	if
  * 		array is ['accession', 'accession agents', '#1, 'agent', 'first name']
@@ -131,7 +100,13 @@ export function arrayToTree(
  * 			}
  * 		}
  * 	}
- * */ {
+ */
+export function arrayToTree(
+  // Array to be converted
+  array: RA<any>,
+  // Whether an array has headers in it
+  hasHeaders = false
+): FlatTree {
   if (array.length === 0) return {};
 
   const [node, ...newArray] = array;

@@ -3,15 +3,15 @@ import '../../css/theme.css';
 import React from 'react';
 
 import type { IR } from './wbplanview';
-import type { WBPlanViewStates } from './wbplanviewstatereducer';
+import type { WbPlanViewStates } from './wbplanviewstatereducer';
 
-export function WBPlanViewHeader({
+export function WbPlanViewHeader({
   stateType,
   title,
   buttonsLeft,
   buttonsRight,
 }: {
-  readonly stateType: WBPlanViewStates['type'];
+  readonly stateType: WbPlanViewStates['type'];
   readonly title: string | JSX.Element;
   readonly buttonsLeft: React.ReactNode;
   readonly buttonsRight: React.ReactNode;
@@ -32,7 +32,7 @@ export function Layout(props: {
   readonly readonly: boolean;
   readonly header: JSX.Element;
   readonly footer?: JSX.Element;
-  readonly stateName: WBPlanViewStates['type'];
+  readonly stateName: WbPlanViewStates['type'];
   readonly handleClick?: () => void;
   readonly extraContainerProps?: IR<unknown>;
 }): JSX.Element {

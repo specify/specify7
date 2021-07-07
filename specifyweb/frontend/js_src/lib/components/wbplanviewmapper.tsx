@@ -78,7 +78,7 @@ export interface AutomapperSuggestion extends MappingPathProps {
   readonly mappingPath: MappingPath;
 }
 
-export type WBPlanViewMapperBaseProps = {
+export type WbPlanViewMapperBaseProps = {
   readonly showHiddenFields: boolean;
   readonly showMappingView: boolean;
   readonly baseTableName: string;
@@ -96,8 +96,8 @@ export type WBPlanViewMapperBaseProps = {
   readonly mustMatchPreferences: IR<boolean>;
 };
 
-export default function WBPlanViewMapper(
-  props: WBPlanViewMapperBaseProps & {
+export default function WbPlanViewMapper(
+  props: WbPlanViewMapperBaseProps & {
     readonly mapperDispatch: (action: MappingActions) => void;
     readonly refObject: React.MutableRefObject<Partial<RefMappingState>>;
     readonly handleSave: () => void;
@@ -351,7 +351,7 @@ export default function WBPlanViewMapper(
                 columnOptions,
                 mappingOptionsMenuGenerator: () => ({
                   matchBehavior: {
-                    fieldFriendlyName: (
+                    label: (
                       <label>
                         Match behavior:
                         <MappingElement
@@ -368,7 +368,7 @@ export default function WBPlanViewMapper(
                           }
                           fieldsData={{
                             ignoreWhenBlank: {
-                              fieldFriendlyName: wbText('ignoreWhenBlank'),
+                              label: wbText('ignoreWhenBlank'),
                               title: wbText('ignoreWhenBlankDescription'),
                               isEnabled: true,
                               isRequired: false,
@@ -378,7 +378,7 @@ export default function WBPlanViewMapper(
                                 'ignoreWhenBlank',
                             },
                             ignoreAlways: {
-                              fieldFriendlyName: wbText('ignoreAlways'),
+                              label: wbText('ignoreAlways'),
                               title: wbText('ignoreAlwaysDescription'),
                               isEnabled: true,
                               isRequired: false,
@@ -387,7 +387,7 @@ export default function WBPlanViewMapper(
                                 columnOptions.matchBehavior === 'ignoreAlways',
                             },
                             ignoreNever: {
-                              fieldFriendlyName: wbText('ignoreNever'),
+                              label: wbText('ignoreNever'),
                               title: wbText('ignoreNeverDescription'),
                               isEnabled: true,
                               isRequired: false,
@@ -401,7 +401,7 @@ export default function WBPlanViewMapper(
                     ),
                   },
                   nullAllowed: {
-                    fieldFriendlyName: (
+                    label: (
                       <label>
                         <input
                           type="checkbox"
@@ -422,7 +422,7 @@ export default function WBPlanViewMapper(
                     ),
                   },
                   default: {
-                    fieldFriendlyName: (
+                    label: (
                       <>
                         <label>
                           <input

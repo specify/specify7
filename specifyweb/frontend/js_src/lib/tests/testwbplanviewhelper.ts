@@ -1,22 +1,11 @@
-import * as WBPlanViewHelper from '../wbplanviewhelper';
+import * as WbPlanViewHelper from '../wbplanviewhelper';
 import { loadDataModel, runTest } from './testmain';
 
 export default function (): void {
   loadDataModel();
 
   runTest(
-    'UploadPlanToMappingsTree.uploadPlanToMappingsTree',
-    [
-      [['collectionObject'], 'Collection Object'],
-      [['taxonomy'], 'Taxonomy'],
-      [['latLongPt'], 'Lat Long Pt'],
-      [[''], ''],
-    ],
-    WBPlanViewHelper.getFriendlyName
-  );
-
-  runTest(
-    'WBPlanViewHelper.findArrayDivergencePoint',
+    'WbPlanViewHelper.findArrayDivergencePoint',
     [
       [[['Accession', 'Accession Agents', '#1', 'Agent', 'First Name'], []], 0],
       [
@@ -45,6 +34,6 @@ export default function (): void {
         -1,
       ],
     ],
-    WBPlanViewHelper.findArrayDivergencePoint
+    WbPlanViewHelper.findArrayDivergencePoint
   );
 }

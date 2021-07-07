@@ -21,7 +21,7 @@ import {
 } from '../wbplanviewrefreducer';
 import type { UploadResult } from '../wbuploadedparser';
 import {
-  getInitialWBPlanViewState,
+  getInitialWbPlanViewState,
   stateReducer,
 } from './wbplanviewstatereducer';
 
@@ -87,29 +87,29 @@ export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
 // Immutable Array
 export type RA<V> = readonly V[];
 
-export interface WBPlanViewProps
-  extends WBPlanViewWrapperProps,
-    PublicWBPlanViewProps {
+export interface WbPlanViewProps
+  extends WbPlanViewWrapperProps,
+    PublicWbPlanViewProps {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;
   readonly setUnloadProtect: () => void;
   readonly readonly: boolean;
 }
 
-export type PartialWBPlanViewProps = {
+export type PartialWbPlanViewProps = {
   readonly removeUnloadProtect: () => void;
 };
 
-export type WBPlanViewWrapperProps = PartialWBPlanViewProps &
-  PublicWBPlanViewProps & {
+export type WbPlanViewWrapperProps = PartialWbPlanViewProps &
+  PublicWbPlanViewProps & {
     readonly setUnloadProtect: () => void;
   };
 
-export type PublicWBPlanViewProps = {
+export type PublicWbPlanViewProps = {
   dataset: Dataset;
 };
 
-export function WBPlanView(props: WBPlanViewProps): JSX.Element {
+export function WbPlanView(props: WbPlanViewProps): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
     {
@@ -117,7 +117,7 @@ export function WBPlanView(props: WBPlanViewProps): JSX.Element {
       headers: props.headers,
       changesMade: false,
     } as OpenMappingScreenAction,
-    getInitialWBPlanViewState
+    getInitialWbPlanViewState
   );
 
   /*

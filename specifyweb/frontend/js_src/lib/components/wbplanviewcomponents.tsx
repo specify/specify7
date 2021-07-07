@@ -25,7 +25,7 @@ import type {
 } from './wbplanviewmapper';
 
 export interface HtmlGeneratorFieldData {
-  readonly fieldFriendlyName: string | JSX.Element;
+  readonly label: string | JSX.Element;
   readonly title?: string;
   readonly isEnabled?: boolean;
   readonly isRequired?: boolean;
@@ -81,10 +81,10 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
         (showHiddenTables
           ? Object.entries(listOfTables)
           : Object.entries(listOfTables).filter(([, { isHidden }]) => !isHidden)
-        ).map(([tableName, { tableFriendlyName, isHidden }]) => [
+        ).map(([tableName, { label, isHidden }]) => [
           tableName,
           {
-            fieldFriendlyName: tableFriendlyName,
+            label: label,
             tableName,
             isRelationship: true,
             isHidden,
@@ -271,7 +271,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
       fieldName,
       {
         // Field label
-        fieldFriendlyName,
+        label,
         title,
         // Whether field is enabled (not mapped yet)
         isEnabled = true,
@@ -295,7 +295,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
 
         defaultOption = {
           optionName: fieldName,
-          optionLabel: fieldFriendlyName,
+          optionLabel: label,
           tableName,
           isRelationship,
           isRequired,
@@ -305,15 +305,14 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
 
       if (props.isOpen)
         fieldGroups[getFieldGroupName(isHidden, isRequired)][fieldName] = {
-          optionLabel: fieldFriendlyName,
+          optionLabel: label,
           title,
           isEnabled,
           isRelationship,
           isDefault,
           tableName,
         };
-      else if (typeof fieldFriendlyName === 'string')
-        fieldNames.push(fieldFriendlyName);
+      else if (typeof label === 'string') fieldNames.push(label);
     }
   );
 

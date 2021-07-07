@@ -16,7 +16,7 @@ export default function (): void {
           [
             'altcatalognumber',
             {
-              friendlyName: 'Alt Cat Number',
+              label: 'Alt Cat Number',
               isHidden: false,
               isRequired: false,
               isRelationship: false,
@@ -25,7 +25,7 @@ export default function (): void {
           [
             'catalognumber',
             {
-              friendlyName: 'Catalog Number',
+              label: 'Catalog Number',
               isHidden: false,
               isRequired: false,
               isRelationship: false,
@@ -34,7 +34,7 @@ export default function (): void {
           [
             'catalogeddate',
             {
-              friendlyName: 'Cataloged Date',
+              label: 'Cataloged Date',
               isHidden: false,
               isRequired: false,
               isRelationship: false,
@@ -43,7 +43,7 @@ export default function (): void {
           [
             'guid',
             {
-              friendlyName: 'GUID',
+              label: 'GUID',
               isHidden: false,
               isRequired: false,
               isRelationship: false,
@@ -52,7 +52,7 @@ export default function (): void {
           [
             'projectnumber',
             {
-              friendlyName: 'Project Number',
+              label: 'Project Number',
               isHidden: false,
               isRequired: false,
               isRelationship: false,
@@ -73,7 +73,7 @@ export default function (): void {
           [
             'agent1',
             {
-              friendlyName: 'Agent1',
+              label: 'Agent1',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -84,7 +84,7 @@ export default function (): void {
           [
             'appraisal',
             {
-              friendlyName: 'Appraisal',
+              label: 'Appraisal',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -96,7 +96,7 @@ export default function (): void {
           [
             'collectionobjectcitations',
             {
-              friendlyName: 'Collection Object Citations',
+              label: 'Collection Object Citations',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -108,7 +108,7 @@ export default function (): void {
           [
             'collectionobjectproperties',
             {
-              friendlyName: 'Collection Object Properties',
+              label: 'Collection Object Properties',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -120,7 +120,7 @@ export default function (): void {
           [
             'conservdescriptions',
             {
-              friendlyName: 'Conserv Descriptions',
+              label: 'Conserv Descriptions',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -132,7 +132,7 @@ export default function (): void {
           [
             'container',
             {
-              friendlyName: 'Container',
+              label: 'Container',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -144,7 +144,7 @@ export default function (): void {
           [
             'containerowner',
             {
-              friendlyName: 'Container Owner',
+              label: 'Container Owner',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -156,7 +156,7 @@ export default function (): void {
           [
             'createdbyagent',
             {
-              friendlyName: 'Created By Agent',
+              label: 'Created By Agent',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -167,7 +167,7 @@ export default function (): void {
           [
             'dnasequences',
             {
-              friendlyName: 'DNA Sequences',
+              label: 'DNA Sequences',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -179,7 +179,7 @@ export default function (): void {
           [
             'exsiccataitems',
             {
-              friendlyName: 'Exsiccata Items',
+              label: 'Exsiccata Items',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -191,7 +191,7 @@ export default function (): void {
           [
             'fieldnotebookpage',
             {
-              friendlyName: 'Field Notebook Page',
+              label: 'Field Notebook Page',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -203,7 +203,7 @@ export default function (): void {
           [
             'inventorizedby',
             {
-              friendlyName: 'Inventoried By',
+              label: 'Inventoried By',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -214,7 +214,7 @@ export default function (): void {
           [
             'modifiedbyagent',
             {
-              friendlyName: 'Modified By Agent',
+              label: 'Modified By Agent',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -225,7 +225,7 @@ export default function (): void {
           [
             'paleocontext',
             {
-              friendlyName: 'Paleo Context',
+              label: 'Paleo Context',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -237,7 +237,7 @@ export default function (): void {
           [
             'projects',
             {
-              friendlyName: 'Projects',
+              label: 'Projects',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -249,7 +249,7 @@ export default function (): void {
           [
             'treatmentevents',
             {
-              friendlyName: 'Treatment Events',
+              label: 'Treatment Events',
               isHidden: true,
               isRequired: false,
               isRelationship: true,
@@ -261,7 +261,7 @@ export default function (): void {
           [
             'voucherrelationships',
             {
-              friendlyName: 'Voucher Relationships',
+              label: 'Voucher Relationships',
               isHidden: true,
               isRequired: false,
               isRelationship: true,

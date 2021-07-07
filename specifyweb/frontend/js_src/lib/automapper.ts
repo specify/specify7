@@ -169,20 +169,20 @@ type AutomapperFindMappingsQueueActions =
 
 // Find cases like `Phylum` and remap them to `Phylum > Name`
 const matchBaseRankName = (
-  friendlyName: string,
+  label: string,
   stripedRankName: string,
   strippedHeaderName: string
-): boolean => friendlyName === 'name' && stripedRankName === strippedHeaderName;
+): boolean => label === 'name' && stripedRankName === strippedHeaderName;
 
 const matchRankAndFieldName = (
   // Find cases like `Kingdom Author`
   strippedHeaderName: string,
   stripedRankName: string,
-  friendlyName: string,
+  label: string,
   finalHeaderName: string,
   fieldName: string
 ): boolean =>
-  strippedHeaderName === `${stripedRankName} ${friendlyName}` ||
+  strippedHeaderName === `${stripedRankName} ${label}` ||
   finalHeaderName === `${stripedRankName}${fieldName}`;
 
 const isFieldInDontMatch = (
@@ -734,7 +734,7 @@ export default class Automapper {
     const tableData = dataModelStorage.tables[tableName];
     const ranksData = dataModelStorage.ranks[tableName];
     const fields = getTableNonRelationshipFields(tableName, false);
-    const tableFriendlyName = tableData.tableFriendlyName.toLowerCase();
+    const label = tableData.label.toLowerCase();
 
     if (typeof ranksData !== 'undefined') {
       let ranks = Object.keys(ranksData);
@@ -774,26 +774,26 @@ export default class Automapper {
 
           fields
             .map(([fieldName, fieldData]) => [
-              fieldData.friendlyName.toLowerCase(),
+              fieldData.label.toLowerCase(),
               fieldName,
             ])
-            .forEach(([friendlyName, fieldName]) =>
+            .forEach(([label, fieldName]) =>
               this.getUnmappedHeaders().some(
                 ([headerName, { strippedHeaderName, finalHeaderName }]) =>
                   (matchBaseRankName(
-                    friendlyName,
+                    label,
                     stripedRankName,
                     strippedHeaderName
                   ) ||
                     matchBaseRankName(
-                      friendlyName,
+                      label,
                       stripedRankName,
                       finalHeaderName
                     ) ||
                     matchRankAndFieldName(
                       strippedHeaderName,
                       stripedRankName,
-                      friendlyName,
+                      label,
                       finalHeaderName,
                       fieldName
                     )) &&
@@ -817,11 +817,7 @@ export default class Automapper {
 
     const tableSynonyms = this.findTableSynonyms(tableName, mappingPath, mode);
     const tableNames = Array.from(
-      new Set(
-        tableSynonyms.length === 0
-          ? [tableName, tableFriendlyName]
-          : tableSynonyms
-      )
+      new Set(tableSynonyms.length === 0 ? [tableName, label] : tableSynonyms)
     );
 
     const findMappingsInDefinitionsPayload = {
@@ -851,11 +847,11 @@ export default class Automapper {
         }
       }
 
-      const friendlyName = fieldData.friendlyName.toLowerCase();
+      const label = fieldData.label.toLowerCase();
       const fieldNames = Array.from(
         new Set([
           ...this.findFormattedHeaderFieldSynonyms(tableName, fieldName),
-          friendlyName,
+          label,
           fieldName,
         ])
       );

@@ -3,10 +3,10 @@ import { generateReducer } from 'typesafe-reducer';
 
 import * as cache from './cache';
 import type {
-  PartialWBPlanViewProps,
-  PublicWBPlanViewProps,
+  PartialWbPlanViewProps,
+  PublicWbPlanViewProps,
   RA,
-  WBPlanViewWrapperProps,
+  WbPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
   AutomapperSuggestion,
@@ -16,7 +16,7 @@ import type {
 } from './components/wbplanviewmapper';
 import type {
   MappingState,
-  WBPlanViewStates,
+  WbPlanViewStates,
 } from './components/wbplanviewstatereducer';
 import {
   getDefaultMappingState,
@@ -61,7 +61,7 @@ const modifyLine = (
 type OpenBaseTableSelectionAction = Action<
   'OpenBaseTableSelectionAction',
   {
-    referrer?: WBPlanViewStates['type'];
+    referrer?: WbPlanViewStates['type'];
   }
 >;
 
@@ -78,7 +78,7 @@ type ToggleHiddenTablesAction = Action<'ToggleHiddenTablesAction'>;
 type UseTemplateAction = Action<
   'UseTemplateAction',
   {
-    readonly dispatch: (action: WBPlanViewActions) => void;
+    readonly dispatch: (action: WbPlanViewActions) => void;
   }
 >;
 
@@ -94,7 +94,7 @@ type TemplateSelectionActions = CancelTemplateSelectionAction;
 
 type CancelMappingAction = Action<
   'CancelMappingAction',
-  PublicWBPlanViewProps & PartialWBPlanViewProps
+  PublicWbPlanViewProps & PartialWbPlanViewProps
 >;
 
 type CommonActions = CancelMappingAction;
@@ -110,8 +110,8 @@ export type OpenMappingScreenAction = Action<
 
 type SavePlanAction = Action<
   'SavePlanAction',
-  WBPlanViewWrapperProps &
-    PublicWBPlanViewProps & {
+  WbPlanViewWrapperProps &
+    PublicWbPlanViewProps & {
       ignoreValidation?: boolean;
     }
 >;
@@ -250,13 +250,13 @@ export type MappingActions =
   | ToggleAllowNullsAction
   | ChangeDefaultValue;
 
-export type WBPlanViewActions =
+export type WbPlanViewActions =
   | BaseTableSelectionActions
   | TemplateSelectionActions
   | CommonActions
   | MappingActions;
 
-export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
+export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   // BaseTableSelectionState
   OpenBaseTableSelectionAction: ({ state, action }) =>
     !action.referrer || action.referrer === state.type

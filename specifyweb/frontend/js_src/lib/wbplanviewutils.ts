@@ -2,9 +2,9 @@ import $ from 'jquery';
 
 import Automapper from './automapper';
 import type {
-  PublicWBPlanViewProps,
+  PublicWbPlanViewProps,
   RA,
-  WBPlanViewWrapperProps,
+  WbPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
   AutomapperSuggestion,
@@ -39,11 +39,11 @@ import {
   traverseTree,
 } from './wbplanviewtreehelper';
 
-export const goBack = (props: PublicWBPlanViewProps): void =>
+export const goBack = (props: PublicWbPlanViewProps): void =>
   navigation.go(`/workbench/${props.dataset.id}/`);
 
 export function savePlan(
-  props: WBPlanViewWrapperProps,
+  props: WbPlanViewWrapperProps,
   state: MappingState,
   ignoreValidation = false
 ): LoadingState | MappingState {

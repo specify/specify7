@@ -7,14 +7,14 @@ import fetchDataModel from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type {
-  PublicWBPlanViewProps,
-  WBPlanViewWrapperProps,
+  PublicWbPlanViewProps,
+  WbPlanViewWrapperProps,
 } from './wbplanview';
-import { WBPlanView } from './wbplanview';
+import { WbPlanView } from './wbplanview';
 
 const schemaFetchedPromise = fetchDataModel();
 
-function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
+function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
   const [schemaLoaded, setSchemaLoaded] = React.useState<boolean>(
     typeof dataModelStorage.tables !== 'undefined'
   );
@@ -37,7 +37,7 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
         );
   const uploadPlan = props.dataset.uploadplan ? props.dataset.uploadplan : null;
   return schemaLoaded ? (
-    <WBPlanView
+    <WbPlanView
       {...props}
       uploadPlan={uploadPlan}
       headers={headers}
@@ -48,24 +48,24 @@ function WBPlanViewWrapper(props: WBPlanViewWrapperProps): JSX.Element {
   );
 }
 
-interface WBPlanViewBackboneProps
-  extends WBPlanViewWrapperProps,
-    PublicWBPlanViewProps {
+interface WbPlanViewBackboneProps
+  extends WbPlanViewWrapperProps,
+    PublicWbPlanViewProps {
   header: HTMLElement;
 }
 
-const setUnloadProtect = (self: WBPlanViewBackboneProps): void =>
+const setUnloadProtect = (self: WbPlanViewBackboneProps): void =>
   navigation.addUnloadProtect(self, wbText('unloadProtectMessage'));
 
-const removeUnloadProtect = (self: WBPlanViewBackboneProps): void =>
+const removeUnloadProtect = (self: WbPlanViewBackboneProps): void =>
   navigation.removeUnloadProtect(self);
 
 export default createBackboneView<
-  PublicWBPlanViewProps,
-  WBPlanViewBackboneProps,
-  WBPlanViewWrapperProps
+  PublicWbPlanViewProps,
+  WbPlanViewBackboneProps,
+  WbPlanViewWrapperProps
 >({
-  moduleName: 'WBPlanView',
+  moduleName: 'WbPlanView',
   title: (self) => self.dataset.name,
   className: 'wb-plan-view content-no-shadow',
   initialize(self, { dataset }) {
@@ -77,7 +77,7 @@ export default createBackboneView<
   remove(self) {
     removeUnloadProtect(self);
   },
-  Component: WBPlanViewWrapper,
+  Component: WbPlanViewWrapper,
   getComponentProps: (self) => ({
     dataset: self.dataset,
     removeUnloadProtect: (): void => removeUnloadProtect(self),

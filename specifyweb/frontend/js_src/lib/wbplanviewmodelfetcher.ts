@@ -17,7 +17,7 @@ import type {
   SchemaModelTableRelationship,
 } from './legacytypes';
 import schema from './schema';
-import { capitalize, getFriendlyName } from './wbplanviewhelper';
+import { capitalize, camelToHuman } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   FieldConfigOverwrite,
@@ -36,7 +36,7 @@ export type DataModelFieldWritable =
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
 interface DataModelFieldWritablePrimer {
-  friendlyName: string;
+  label: string;
   isHidden: boolean;
   isRequired: boolean;
   tableName?: string;
@@ -70,7 +70,7 @@ export type DataModelRelationship = Readonly<DataModelRelationshipWritable>;
 type DataModelFieldsWritable = R<DataModelFieldWritable>;
 
 interface DataModelTableWritable {
-  tableFriendlyName: string;
+  label: string;
   fields: DataModelFieldsWritable;
 }
 
@@ -96,10 +96,9 @@ export type DataModelRanks = IR<IR<TreeRankData>>;
 export type OriginalRelationships = IR<IR<RA<string>>>;
 type OriginalRelationshipsWritable = R<R<string[]>>;
 
-// A dictionary like tableName==>tableFriendlyName
 type DataModelListOfTablesWritable = R<{
-  tableFriendlyName: string;
-  isHidden: boolean;
+  readonly label: string;
+  readonly isHidden: boolean;
 }>;
 
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
@@ -301,7 +300,7 @@ export default async function (): Promise<void> {
     (schema as unknown as SchemaType).models
   ).reduce<DataModelTablesWritable>((tables, tableData) => {
     const tableName = tableData.longName.split('.').slice(-1)[0].toLowerCase();
-    const tableFriendlyName = tableData.getLocalizedName();
+    const label = tableData.getLocalizedName();
 
     const fields: DataModelFieldsWritable = {};
     let hasRelationshipWithDefinition = false;
@@ -312,8 +311,7 @@ export default async function (): Promise<void> {
 
     tableData.fields.forEach((field) => {
       let fieldName = field.name;
-      const friendlyName =
-        field.getLocalizedName() ?? getFriendlyName(fieldName);
+      const label = field.getLocalizedName() ?? camelToHuman(fieldName);
 
       fieldName = fieldName.toLowerCase();
 
@@ -338,7 +336,7 @@ export default async function (): Promise<void> {
 
       // @ts-expect-error
       const fieldData: DataModelFieldWritable = {
-        friendlyName,
+        label,
         isHidden,
         isRequired,
         isRelationship: field.isRelationship,
@@ -393,17 +391,17 @@ export default async function (): Promise<void> {
       Object.entries(fields)
         .sort(
           (
-            [, { isRelationship, friendlyName }],
+            [, { isRelationship, label }],
             [
               ,
               {
                 isRelationship: secondIsRelationship,
-                friendlyName: secondFriendlyName,
+                label: secondFriendlyName,
               },
             ]
           ) =>
             isRelationship === secondIsRelationship
-              ? friendlyName.localeCompare(secondFriendlyName)
+              ? label.localeCompare(secondFriendlyName)
               : isRelationship
               ? 1
               : -1
@@ -413,12 +411,12 @@ export default async function (): Promise<void> {
 
     if (!tableHasOverwrite(tableName, 'hidden'))
       listOfBaseTables[tableName] = {
-        tableFriendlyName,
+        label,
         isHidden: !tableHasOverwrite(tableName, 'commonBaseTable'),
       };
 
     tables[tableName] = {
-      tableFriendlyName,
+      label,
       fields: orderedFields,
     };
 

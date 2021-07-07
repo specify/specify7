@@ -88,7 +88,7 @@ export function generateMappingPathPreview(
     ({ mappingElementData, mappingPathPart }) =>
       (Object.values(mappingElementData.fieldsData).find(
         ({ isDefault }) => isDefault
-      )?.fieldFriendlyName as string) ??
+      )?.label as string) ??
       (mappingPathPart === 'fullname' ? commonText('fullName') : mappingPath)
   );
 
@@ -150,38 +150,17 @@ export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
   );
 
 /*
- * Takes an array of mappings with headers and returns the indexes of the
- * duplicate headers
+ * Takes array of mappings and returns the indexes of duplicate mappings
  * Example:
- * if three lines have the same mapping, the indexes of the second and the
- *  third lines are returned
- *
+ * if three lines have the same mapping, the indexes of the second and
+ *  third lines are returned. (The first occurrence remains, while all others
+ *  are unmapped, except for the case when focusedLine is a duplicate - all
+ *  duplicates except for the focused line get unmapped)
  */
 export const findDuplicateMappings = (
-  // Array of mappings as returned by mappings.getArrayOfMappings()
   arrayOfMappings: RA<MappingPath>,
   focusedLine: number | false
-): RA<number> => /*
- * Array of duplicate indexes
- * Example:
- *   if
- *     arrayOfMappings is [
- *       ['Accession','Accession Number','existing header,'Accession #;],
- *       ['Catalog Number','existing header','cat num'],
- *       ['Accession','Accession Number'],
- *     ]
- *     hasHeaders is True
- *   then return [2]
- *   if
- *     arrayOfMappings is [
- *       ['Start Date'],
- *       ['End Date'],
- *       ['Start Date'],
- *       ['Start Date'],
- *     ]
- *     hasHeaders is False
- *   then return [2,3]
- * */ {
+): RA<number> => {
   const duplicateIndexes: number[] = [];
 
   arrayOfMappings.reduce<string[]>(
@@ -190,7 +169,7 @@ export const findDuplicateMappings = (
 
       if (dictionaryOfMappings.includes(stringMappingPath))
         duplicateIndexes.push(
-          focusedLine && focusedLine === index
+          typeof focusedLine === 'number' && focusedLine === index
             ? dictionaryOfMappings.indexOf(stringMappingPath)
             : index
         );

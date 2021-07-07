@@ -628,7 +628,7 @@ export function getMappingLineData({
         const mappedObjectName = formatReferenceItem(index);
 
         internalState.resultFields[mappedObjectName] = {
-          fieldFriendlyName: mappedObjectName,
+          label: mappedObjectName,
           isEnabled: true,
           isRequired: false,
           isHidden: false,
@@ -649,7 +649,7 @@ export function getMappingLineData({
         ]?.includes(internalState.currentMappingPathPart ?? '')
       )
         internalState.resultFields.add = {
-          fieldFriendlyName: 'Add',
+          label: 'Add',
           isEnabled: true,
           isRequired: false,
           isHidden: false,
@@ -667,7 +667,7 @@ export function getMappingLineData({
         Object.entries(tableRanks).map(([rankName, { isRequired, title }]) => [
           formatTreeRank(rankName),
           {
-            fieldFriendlyName: title,
+            label: title,
             isEnabled: true,
             isRequired: isRequired && !mustMatchPreferences[tableName],
             isHidden: false,
@@ -725,13 +725,13 @@ export function getMappingLineData({
                 isRelationship,
                 isHidden,
                 isRequired,
-                friendlyName,
+                label,
                 tableName: fieldTableName,
               },
             ]) => [
               fieldName,
               {
-                fieldFriendlyName: friendlyName,
+                label: label,
                 // Enable field
                 isEnabled:
                   // If it is not mapped
@@ -755,7 +755,7 @@ export function getMappingLineData({
     getInstanceData: ({ tableName }) => ({
       customSelectType: internalState.customSelectType,
       customSelectSubtype: internalState.customSelectSubtype,
-      selectLabel: dataModelStorage.tables[tableName].tableFriendlyName,
+      selectLabel: dataModelStorage.tables[tableName].label,
       fieldsData: internalState.resultFields,
       tableName,
       ...(internalState.isOpen

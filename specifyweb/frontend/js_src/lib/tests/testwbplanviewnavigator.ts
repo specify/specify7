@@ -25,7 +25,7 @@ export default function (): void {
             selectLabel: 'Collection Object',
             fieldsData: {
               altcatalognumber: {
-                fieldFriendlyName: 'Alt Cat Number',
+                label: 'Alt Cat Number',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -33,7 +33,7 @@ export default function (): void {
                 isRelationship: false,
               },
               catalognumber: {
-                fieldFriendlyName: 'Catalog Number',
+                label: 'Catalog Number',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -41,7 +41,7 @@ export default function (): void {
                 isRelationship: false,
               },
               catalogeddate: {
-                fieldFriendlyName: 'Cataloged Date',
+                label: 'Cataloged Date',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -49,7 +49,7 @@ export default function (): void {
                 isRelationship: false,
               },
               guid: {
-                fieldFriendlyName: 'GUID',
+                label: 'GUID',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -57,7 +57,7 @@ export default function (): void {
                 isRelationship: false,
               },
               projectnumber: {
-                fieldFriendlyName: 'Project Number',
+                label: 'Project Number',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -65,7 +65,7 @@ export default function (): void {
                 isRelationship: false,
               },
               accession: {
-                fieldFriendlyName: 'Accession',
+                label: 'Accession',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -74,7 +74,7 @@ export default function (): void {
                 tableName: 'accession',
               },
               cataloger: {
-                fieldFriendlyName: 'Cataloger',
+                label: 'Cataloger',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -83,7 +83,7 @@ export default function (): void {
                 tableName: 'agent',
               },
               collectionobjectattribute: {
-                fieldFriendlyName: 'Col Obj Attribute',
+                label: 'Col Obj Attribute',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -92,7 +92,7 @@ export default function (): void {
                 tableName: 'collectionobjectattribute',
               },
               collectingevent: {
-                fieldFriendlyName: 'Collecting Event',
+                label: 'Collecting Event',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -101,7 +101,7 @@ export default function (): void {
                 tableName: 'collectingevent',
               },
               determinations: {
-                fieldFriendlyName: 'Determinations',
+                label: 'Determinations',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -110,7 +110,7 @@ export default function (): void {
                 tableName: 'determination',
               },
               preparations: {
-                fieldFriendlyName: 'Preparations',
+                label: 'Preparations',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -128,7 +128,7 @@ export default function (): void {
             selectLabel: 'Determination',
             fieldsData: {
               '#1': {
-                fieldFriendlyName: '#1',
+                label: '#1',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -137,7 +137,7 @@ export default function (): void {
                 tableName: 'determination',
               },
               add: {
-                fieldFriendlyName: 'Add',
+                label: 'Add',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -155,7 +155,7 @@ export default function (): void {
             selectLabel: 'Determination',
             fieldsData: {
               iscurrent: {
-                fieldFriendlyName: 'Current',
+                label: 'Current',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -163,7 +163,7 @@ export default function (): void {
                 isRelationship: false,
               },
               determineddate: {
-                fieldFriendlyName: 'Determined Date',
+                label: 'Determined Date',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -171,7 +171,7 @@ export default function (): void {
                 isRelationship: false,
               },
               guid: {
-                fieldFriendlyName: 'GUID',
+                label: 'GUID',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -179,7 +179,7 @@ export default function (): void {
                 isRelationship: false,
               },
               typestatusname: {
-                fieldFriendlyName: 'Type Status',
+                label: 'Type Status',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -187,7 +187,7 @@ export default function (): void {
                 isRelationship: false,
               },
               determiner: {
-                fieldFriendlyName: 'Determiner',
+                label: 'Determiner',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -196,7 +196,7 @@ export default function (): void {
                 tableName: 'agent',
               },
               taxon: {
-                fieldFriendlyName: 'Taxon',
+                label: 'Taxon',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -214,7 +214,7 @@ export default function (): void {
             selectLabel: 'Taxon',
             fieldsData: {
               $Kingdom: {
-                fieldFriendlyName: 'Kingdom',
+                label: 'Kingdom',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -223,7 +223,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Phylum: {
-                fieldFriendlyName: 'Phylum',
+                label: 'Phylum',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -232,7 +232,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subphylum: {
-                fieldFriendlyName: 'Subphylum',
+                label: 'Subphylum',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -241,7 +241,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Superclass: {
-                fieldFriendlyName: 'Superclass',
+                label: 'Superclass',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -250,7 +250,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Class: {
-                fieldFriendlyName: 'Class',
+                label: 'Class',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -259,7 +259,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subclass: {
-                fieldFriendlyName: 'Subclass',
+                label: 'Subclass',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -268,7 +268,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Infraclass: {
-                fieldFriendlyName: 'Infraclass',
+                label: 'Infraclass',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -277,7 +277,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Superorder: {
-                fieldFriendlyName: 'Superorder',
+                label: 'Superorder',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -286,7 +286,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Order: {
-                fieldFriendlyName: 'Order',
+                label: 'Order',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -295,7 +295,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Family: {
-                fieldFriendlyName: 'Family',
+                label: 'Family',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -304,7 +304,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subfamily: {
-                fieldFriendlyName: 'Subfamily',
+                label: 'Subfamily',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -313,7 +313,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Genus: {
-                fieldFriendlyName: 'Genus',
+                label: 'Genus',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -322,7 +322,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subgenus: {
-                fieldFriendlyName: 'Subgenus',
+                label: 'Subgenus',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -331,7 +331,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Species: {
-                fieldFriendlyName: 'Species',
+                label: 'Species',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -340,7 +340,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subspecies: {
-                fieldFriendlyName: 'Subspecies',
+                label: 'Subspecies',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -358,7 +358,7 @@ export default function (): void {
             selectLabel: 'Taxon',
             fieldsData: {
               author: {
-                fieldFriendlyName: 'Author',
+                label: 'Author',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -366,7 +366,7 @@ export default function (): void {
                 isRelationship: false,
               },
               commonname: {
-                fieldFriendlyName: 'Common Name',
+                label: 'Common Name',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -374,7 +374,7 @@ export default function (): void {
                 isRelationship: false,
               },
               fullname: {
-                fieldFriendlyName: 'Full Name',
+                label: 'Full Name',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -382,7 +382,7 @@ export default function (): void {
                 isRelationship: false,
               },
               guid: {
-                fieldFriendlyName: 'GUID',
+                label: 'GUID',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -390,7 +390,7 @@ export default function (): void {
                 isRelationship: false,
               },
               name: {
-                fieldFriendlyName: 'Name',
+                label: 'Name',
                 isEnabled: true,
                 isRequired: true,
                 isHidden: false,
@@ -398,7 +398,7 @@ export default function (): void {
                 isRelationship: false,
               },
               source: {
-                fieldFriendlyName: 'Source',
+                label: 'Source',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,

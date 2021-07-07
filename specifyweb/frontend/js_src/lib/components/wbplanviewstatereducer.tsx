@@ -14,26 +14,26 @@ import { loadingStateDispatch } from '../wbplanviewloadingreducer';
 import dataModelStorage from '../wbplanviewmodel';
 import type {
   OpenMappingScreenAction,
-  WBPlanViewActions,
+  WbPlanViewActions,
 } from '../wbplanviewreducer';
 import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Icon } from './customselectelement';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
-import type { RA, WBPlanViewProps } from './wbplanview';
+import type { RA, WbPlanViewProps } from './wbplanview';
 import {
   ButtonWithConfirmation,
   ListOfBaseTables,
   ValidationButton,
 } from './wbplanviewcomponents';
-import { Layout, WBPlanViewHeader } from './wbplanviewheader';
+import { Layout, WbPlanViewHeader } from './wbplanviewheader';
 import type {
   AutomapperSuggestion,
   MappingPath,
-  WBPlanViewMapperBaseProps,
+  WbPlanViewMapperBaseProps,
 } from './wbplanviewmapper';
-import WBPlanViewMapper from './wbplanviewmapper';
+import WbPlanViewMapper from './wbplanviewmapper';
 import {
   defaultMappingViewHeight,
   EmptyDataSetDialog,
@@ -46,7 +46,7 @@ export type LoadingState = State<
   'LoadingState',
   {
     loadingState?: LoadingStates;
-    dispatchAction?: WBPlanViewActions;
+    dispatchAction?: WbPlanViewActions;
   }
 >;
 
@@ -61,7 +61,7 @@ type TemplateSelectionState = State<'TemplateSelectionState'>;
 
 export type MappingState = State<
   'MappingState',
-  WBPlanViewMapperBaseProps & {
+  WbPlanViewMapperBaseProps & {
     automapperSuggestionsPromise?: Promise<RA<AutomapperSuggestion>>;
     changesMade: boolean;
     mappingsAreValidated: boolean;
@@ -69,22 +69,22 @@ export type MappingState = State<
   }
 >;
 
-export type WBPlanViewStates =
+export type WbPlanViewStates =
   | BaseTableSelectionState
   | LoadingState
   | TemplateSelectionState
   | MappingState;
 
-type WBPlanViewStatesWithParameters = WBPlanViewStates & {
-  readonly dispatch: (action: WBPlanViewActions) => void;
-  readonly props: WBPlanViewProps;
+type WbPlanViewStatesWithParameters = WbPlanViewStates & {
+  readonly dispatch: (action: WbPlanViewActions) => void;
+  readonly props: WbPlanViewProps;
   readonly refObject: React.MutableRefObject<RefStates>;
   readonly refObjectDispatch: (action: RefActions) => void;
 };
 
-export const getInitialWBPlanViewState = (
+export const getInitialWbPlanViewState = (
   props: OpenMappingScreenAction
-): WBPlanViewStates => ({
+): WbPlanViewStates => ({
   type: 'LoadingState',
   dispatchAction: props.uploadPlan
     ? {
@@ -96,7 +96,7 @@ export const getInitialWBPlanViewState = (
       },
 });
 
-export function mappingState(state: WBPlanViewStates): MappingState {
+export function mappingState(state: WbPlanViewStates): MappingState {
   if (state.type === 'MappingState') return state;
   else
     throw new Error(
@@ -127,7 +127,7 @@ const MAPPING_VIEW_RESIZE_THROTTLE = 150;
 
 export const stateReducer = generateReducer<
   JSX.Element,
-  WBPlanViewStatesWithParameters
+  WbPlanViewStatesWithParameters
 >({
   LoadingState: ({ action: state }) => {
     if (typeof state.loadingState !== 'undefined')
@@ -207,7 +207,7 @@ export const stateReducer = generateReducer<
       }
       onDataSetSelect={(id: number): void =>
         state.refObjectDispatch({
-          type: 'TemplateSelectedAction',
+          type: 'RefTemplateSelectedAction',
           id,
         })
       }
@@ -251,12 +251,11 @@ export const stateReducer = generateReducer<
         stateName={state.type}
         readonly={state.props.readonly}
         header={
-          <WBPlanViewHeader
+          <WbPlanViewHeader
             title={
               <>
                 {state.props.dataset.name} (
-                {dataModelStorage.tables[state.baseTableName].tableFriendlyName}
-                )
+                {dataModelStorage.tables[state.baseTableName].label})
               </>
             }
             stateType={state.type}
@@ -425,7 +424,7 @@ export const stateReducer = generateReducer<
         }
         handleClick={handleClose}
       >
-        <WBPlanViewMapper
+        <WbPlanViewMapper
           showHiddenFields={state.showHiddenFields}
           showMappingView={state.showMappingView}
           baseTableName={state.baseTableName}
@@ -508,14 +507,14 @@ export const stateReducer = generateReducer<
           handleMappingViewResize={_.throttle(
             (height): void =>
               state.refObjectDispatch({
-                type: 'MappingViewResizeAction',
+                type: 'RefMappingViewResizeAction',
                 height,
               }),
             MAPPING_VIEW_RESIZE_THROTTLE
           )}
           handleAutoScrollStatusChange={(autoScrollType, status): void =>
             state.refObjectDispatch({
-              type: 'AutoScrollStatusChangeAction',
+              type: 'RefAutoScrollStatusChangeAction',
               autoScrollType,
               status,
             })
@@ -593,10 +592,7 @@ export const stateReducer = generateReducer<
                                 optionLabel={tableName}
                                 isRelationship={true}
                               />
-                              {
-                                dataModelStorage.tables[tableName]
-                                  .tableFriendlyName
-                              }
+                              {dataModelStorage.tables[tableName].label}
                             </div>
                           </td>
                           <td>

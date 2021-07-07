@@ -3,9 +3,9 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import * as cache from './cache';
-import type { WBPlanViewProps } from './components/wbplanview';
-import type { WBPlanViewStates } from './components/wbplanviewstatereducer';
-import type { WBPlanViewActions } from './wbplanviewreducer';
+import type { WbPlanViewProps } from './components/wbplanview';
+import type { WbPlanViewStates } from './components/wbplanviewstatereducer';
+import type { WbPlanViewActions } from './wbplanviewreducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
 export type AutoScrollTypes =
@@ -36,23 +36,23 @@ const flippedRefStatesMapper = Object.fromEntries(
 type RefChangeStateAction = Action<'RefChangeStateAction'>;
 type RefSetUnloadProtectAction = Action<'RefSetUnloadProtectAction'>;
 type RefUnsetUnloadProtectAction = Action<'RefUnsetUnloadProtectAction'>;
-type MappingViewResizeAction = Action<
-  'MappingViewResizeAction',
+type RefMappingViewResizeAction = Action<
+  'RefMappingViewResizeAction',
   {
     height: number;
   }
 >;
 
-type AutoScrollStatusChangeAction = Action<
-  'AutoScrollStatusChangeAction',
+type RefAutoScrollStatusChangeAction = Action<
+  'RefAutoScrollStatusChangeAction',
   {
     autoScrollType: AutoScrollTypes;
     status: boolean;
   }
 >;
 
-type TemplateSelectedAction = Action<
-  'TemplateSelectedAction',
+type RefTemplateSelectedAction = Action<
+  'RefTemplateSelectedAction',
   {
     id: number;
   }
@@ -62,22 +62,22 @@ export type RefActions =
   | RefChangeStateAction
   | RefSetUnloadProtectAction
   | RefUnsetUnloadProtectAction
-  | MappingViewResizeAction
-  | AutoScrollStatusChangeAction
-  | TemplateSelectedAction;
+  | RefMappingViewResizeAction
+  | RefAutoScrollStatusChangeAction
+  | RefTemplateSelectedAction;
 
 type RefActionsWithPayload = RefActions & {
   payload: {
     refObject: React.MutableRefObject<RefStates>;
-    state: WBPlanViewStates;
-    stateDispatch: (action: WBPlanViewActions) => void;
-    props: WBPlanViewProps;
+    state: WbPlanViewStates;
+    stateDispatch: (action: WbPlanViewActions) => void;
+    props: WbPlanViewProps;
   };
 };
 
 export function getRefMappingState(
   refObject: React.MutableRefObject<RefStates>,
-  state: WBPlanViewStates,
+  state: WbPlanViewStates,
   quiet = false
 ): React.MutableRefObject<RefMappingState> {
   const refWrongStateMessage =
@@ -106,7 +106,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     props.removeUnloadProtect();
     getRefMappingState(refObject, state).current.unloadProtectIsSet = false;
   },
-  MappingViewResizeAction: ({ height, payload: { refObject, state } }) => {
+  RefMappingViewResizeAction: ({ height, payload: { refObject, state } }) => {
     const refMappingObject = getRefMappingState(refObject, state);
 
     refMappingObject.current.mappingViewHeight = height;
@@ -115,7 +115,7 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
       priorityCommit: true,
     });
   },
-  AutoScrollStatusChangeAction: ({
+  RefAutoScrollStatusChangeAction: ({
     autoScrollType,
     status,
     payload: { refObject, state },
@@ -127,7 +127,10 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     };
     refMappingObject.current.autoScroll[autoScrollType] = status;
   },
-  TemplateSelectedAction: async ({ id, payload: { props, stateDispatch } }) =>
+  RefTemplateSelectedAction: async ({
+    id,
+    payload: { props, stateDispatch },
+  }) =>
     fetch(`/api/workbench/dataset/${id}`)
       .then(async (response) => response.json())
       .then(({ uploadplan }) =>
