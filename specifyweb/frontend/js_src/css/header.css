@@ -83,6 +83,7 @@ nav a::after {
 
     #user-tools {
         flex-basis: unset;
+        min-width: 300px;
     }
 
     nav {
@@ -136,11 +137,7 @@ nav img {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    column-gap: 0.4rem;
-}
-
-#user-tools .login-logout {
-    margin-right: 2px;
+    column-gap: 0.7rem;
 }
 
 #user-tools .username {

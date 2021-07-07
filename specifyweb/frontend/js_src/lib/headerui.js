@@ -12,6 +12,7 @@ var userInfo   = require('./userinfo.js');
 var router     = require('./router.js');
 var querystring = require('./querystring.js');
 const NotificationsUI = require('./notifications.js');
+const commonText = require('./localization/common').default;
 
 
 var toolModules = [
@@ -71,11 +72,14 @@ module.exports = Backbone.View.extend({
         render: function() {
             new ExpressSearchInput({el: this.$('#express-search')});
             new NotificationsUI({el: this.$('#site-notifications')});
-            userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
-            this.$('#user-tools a.login-logout')
-                .text(userInfo.isauthenticated ? '' : 'Log in')
-                .attr('href', '/accounts/' + (userInfo.isauthenticated ? 'logout/' : 'login/'))
-                .attr('title', userInfo.isauthenticated ? 'Log out.' : 'Log in.');
+            if(userInfo.isauthenticated){
+                this.$('#user-tools a.username').text(userInfo.name);
+                this.$('#user-tools a.login').hide();
+            }
+            else
+                this.$('#user-tools a.login')
+                    .text(commonText('logIn'))
+                    .attr('href', '/accounts/logout/');
 
             var collectionSelector = this.$('#user-tools select');
             $.get('/context/collection/').done(({current, available}) => collectionSelector.append(

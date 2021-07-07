@@ -45,8 +45,7 @@ const commonText = createDictionary({
   labels: 'Labels',
   edit: 'Edit',
   ignore: 'Ignore',
-  // A verb
-  login: 'Login',
+  logIn: 'Log In',
   start: 'Start',
   update: 'Update',
   generate: 'Generate',

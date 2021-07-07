@@ -39,7 +39,7 @@ var tasks = [
                     modal: true,
                     dialogClass: 'ui-dialog-no-close',
                     buttons: [{
-                        text: commonText('login'),
+                        text: commonText('logIn'),
                         click: function() {
                             window.location = "/accounts/login/?next=" + window.location.href;
                         }
