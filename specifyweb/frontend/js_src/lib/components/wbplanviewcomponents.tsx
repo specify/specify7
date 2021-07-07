@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
+import wbText from '../localization/workbench';
 
-import commonText from '../localization/common';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import type {
   CustomSelectElementDefaultOptionProps,
@@ -99,11 +99,14 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
 
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
+  readonly buttons: (
+    confirm: () => void,
+    cancel: () => void
+  ) => JQueryUI.DialogOptions['buttons'];
+  readonly dialogContent: React.ReactNode;
   readonly onConfirm: () => void;
   readonly dialogTitle: string;
-  readonly dialogHeader: React.ReactNode;
-  readonly dialogMessage: React.ReactNode;
-  readonly confirmButtonText: string;
+  readonly showConfirmation?: () => boolean;
 }): JSX.Element {
   const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
 
@@ -111,8 +114,13 @@ export function ButtonWithConfirmation(props: {
     <>
       <button
         className="magic-button"
-        type={'button'}
-        onClick={(): void => setDisplayPrompt(true)}
+        type="button"
+        onClick={(): void =>
+          typeof props.showConfirmation === 'undefined' ||
+          props.showConfirmation()
+            ? setDisplayPrompt(true)
+            : props.onConfirm()
+        }
       >
         {props.children}
       </button>
@@ -122,22 +130,50 @@ export function ButtonWithConfirmation(props: {
             title: props.dialogTitle,
             close: (): void => setDisplayPrompt(false),
             width: '400',
-            buttons: [
-              {
-                text: props.confirmButtonText,
-                click: props.onConfirm,
-              },
-              {
-                text: commonText('cancel'),
-                click: closeDialog,
-              },
-            ],
+            buttons: props.buttons(props.onConfirm, closeDialog),
           }}
         >
-          <>
-            {props.dialogHeader}
-            {props.dialogMessage}
-          </>
+          {props.dialogContent}
+        </ModalDialog>
+      ) : undefined}
+    </>
+  );
+}
+
+export function ValidationButton(props: {
+  readonly canValidate: boolean;
+  readonly isValidated: boolean;
+  readonly onClick: () => void;
+}): JSX.Element {
+  const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
+
+  return (
+    <>
+      <button
+        className={`magic-button validation-indicator ${
+          props.isValidated ? 'validation-indicator-success' : ''
+        }`}
+        type="button"
+        style={
+          {
+            '--text-content': wbText('validated'),
+          } as React.CSSProperties
+        }
+        onClick={
+          props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
+        }
+      >
+        {wbText('validate')}
+      </button>
+      {displayPrompt ? (
+        <ModalDialog
+          properties={{
+            title: wbText('nothingToValidateDialogTitle'),
+            close: (): void => setDisplayPrompt(false),
+          }}
+        >
+          {wbText('nothingToValidateDialogHeader')}
+          {wbText('nothingToValidateDialogMessage')}
         </ModalDialog>
       ) : undefined}
     </>
@@ -321,9 +357,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
         props.automapperSuggestions.length > 0 &&
         typeof props.handleAutomapperSuggestionSelection !== 'undefined' ? (
           <SuggestionBox
-            handleAutomapperSuggestionSelection={
-              props.handleAutomapperSuggestionSelection
-            }
+            onSelect={props.handleAutomapperSuggestionSelection}
             selectOptionsData={Object.fromEntries(
               props.automapperSuggestions.map((automapperSuggestion, index) => [
                 /*
@@ -349,25 +383,6 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
       defaultOption={defaultOption}
       {...props}
       fieldNames={fieldNames}
-    />
-  );
-}
-
-/* Return a textarea with a given value for a new static header */
-export function StaticHeader({
-  defaultValue = '',
-  onChange: handleChange,
-  disabled = false,
-}: {
-  readonly defaultValue: string;
-  readonly onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  readonly disabled?: boolean;
-}): JSX.Element {
-  return (
-    <textarea
-      value={defaultValue}
-      onChange={handleChange}
-      disabled={disabled}
     />
   );
 }

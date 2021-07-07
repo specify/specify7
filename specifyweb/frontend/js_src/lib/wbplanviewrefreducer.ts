@@ -15,7 +15,6 @@ export type AutoScrollTypes =
 export interface RefMappingState extends State<'RefMappingState'> {
   unloadProtectIsSet: boolean;
   mappingViewHeight: number;
-  mappingViewHeightChangeTimeout: NodeJS.Timeout;
   autoScroll: Record<AutoScrollTypes, boolean>;
 }
 
@@ -76,8 +75,6 @@ type RefActionsWithPayload = RefActions & {
   };
 };
 
-const MAPPING_VIEW_RESIZE_TIMEOUT = 150;
-
 export function getRefMappingState(
   refObject: React.MutableRefObject<RefStates>,
   state: WBPlanViewStates,
@@ -112,18 +109,11 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
   MappingViewResizeAction: ({ height, payload: { refObject, state } }) => {
     const refMappingObject = getRefMappingState(refObject, state);
 
-    if (refMappingObject.current.mappingViewHeightChangeTimeout)
-      clearTimeout(refMappingObject.current.mappingViewHeightChangeTimeout);
-
     refMappingObject.current.mappingViewHeight = height;
-    refMappingObject.current.mappingViewHeightChangeTimeout = setTimeout(
-      () =>
-        cache.set('wbplanview-ui', 'mappingViewHeight', height, {
-          overwrite: true,
-          priorityCommit: true,
-        }),
-      MAPPING_VIEW_RESIZE_TIMEOUT
-    );
+    cache.set('wbplanview-ui', 'mappingViewHeight', height, {
+      overwrite: true,
+      priorityCommit: true,
+    });
   },
   AutoScrollStatusChangeAction: ({
     autoScrollType,

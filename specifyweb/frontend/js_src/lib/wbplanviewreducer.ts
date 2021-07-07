@@ -90,10 +90,6 @@ type BaseTableSelectionActions =
 
 type CancelTemplateSelectionAction = Action<'CancelTemplateSelectionAction'>;
 
-type RerunAutomapperAction = Action<'RerunAutomapperAction'>;
-
-type CancelRerunAutomapperAction = Action<'CancelRerunAutomapperAction'>;
-
 type TemplateSelectionActions = CancelTemplateSelectionAction;
 
 type CancelMappingAction = Action<
@@ -141,9 +137,6 @@ type ClearMappingLineAction = Action<
     line: number;
   }
 >;
-
-type CloseInvalidValidationDialogAction =
-  Action<'CloseInvalidValidationDialogAction'>;
 
 type FocusLineAction = Action<
   'FocusLineAction',
@@ -234,15 +227,12 @@ type ChangeDefaultValue = Action<
 
 export type MappingActions =
   | OpenMappingScreenAction
-  | RerunAutomapperAction
-  | CancelRerunAutomapperAction
   | SavePlanAction
   | ToggleMappingViewAction
   | ToggleHiddenFieldsAction
   | ResetMappingsAction
   | ValidationAction
   | ClearValidationResultsAction
-  | CloseInvalidValidationDialogAction
   | ClearMappingLineAction
   | FocusLineAction
   | MappingViewMapAction
@@ -347,31 +337,10 @@ export const reducer = generateReducer<WBPlanViewStates, WBPlanViewActions>({
       }
     ),
   }),
-  RerunAutomapperAction: ({ state }) => ({
-    ...mappingState(state),
-    showAutomapperDialog: true,
-  }),
-  CancelRerunAutomapperAction: ({ state }) => ({
-    ...mappingState(state),
-    showAutomapperDialog: false,
-  }),
-  ValidationAction: ({ state }) =>
-    mappingState(state).lines.length === 0 ||
-    mappingState(state).lines.every(
-      ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
-    )
-      ? { ...mappingState(state), showInvalidValidationDialog: true }
-      : validate({
-          ...mappingState(state),
-          showInvalidValidationDialog: false,
-        }),
+  ValidationAction: ({ state }) => validate(mappingState(state)),
   ClearValidationResultsAction: ({ state }) => ({
     ...mappingState(state),
     validationResults: [],
-  }),
-  CloseInvalidValidationDialogAction: ({ state }) => ({
-    ...mappingState(state),
-    showInvalidValidationDialog: false,
   }),
   ResetMappingsAction: ({ state }) => ({
     ...mappingState(state),

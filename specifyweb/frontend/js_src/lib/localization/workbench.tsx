@@ -252,7 +252,6 @@ const wbText = createDictionary({
   showMappingEditor: 'Show Mapping Editor',
   matchingLogic: 'Matching Logic',
   clearMappings: 'Clear Mappings',
-  validateMappings: 'Validate Mappings',
   validated: 'Validated!',
   emptyDataSetDialogTitle: 'Empty Data Set detected',
   emptyDataSetDialogHeader: createJsxHeader(''),

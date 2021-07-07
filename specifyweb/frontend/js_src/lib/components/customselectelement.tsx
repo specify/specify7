@@ -573,11 +573,11 @@ export function CustomSelectElement({
 
 export function SuggestionBox({
   selectOptionsData,
-  handleAutomapperSuggestionSelection,
+  onSelect: handleSelect,
   ...props
 }: Partial<CustomSelectElementPropsOpen> & {
   readonly selectOptionsData: CustomSelectElementOptions;
-  readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
+  readonly onSelect: (suggestion: string) => void;
 }): JSX.Element {
   return (
     <CustomSelectElement
@@ -590,7 +590,7 @@ export function SuggestionBox({
         },
       }}
       isOpen={true}
-      handleChange={handleAutomapperSuggestionSelection}
+      handleChange={handleSelect}
       {...props}
     />
   );

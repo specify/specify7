@@ -3,6 +3,7 @@ import '../../css/theme.css';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
+import _ from 'underscore';
 
 import * as cache from '../cache';
 import commonText from '../localization/common';
@@ -24,6 +25,7 @@ import type { RA, WBPlanViewProps } from './wbplanview';
 import {
   ButtonWithConfirmation,
   ListOfBaseTables,
+  ValidationButton,
 } from './wbplanviewcomponents';
 import { Layout, WBPlanViewHeader } from './wbplanviewheader';
 import type {
@@ -64,8 +66,6 @@ export type MappingState = State<
     changesMade: boolean;
     mappingsAreValidated: boolean;
     displayMatchingOptionsDialog: boolean;
-    showAutomapperDialog: boolean;
-    showInvalidValidationDialog: boolean;
   }
 >;
 
@@ -121,9 +121,9 @@ export const getDefaultMappingState = (): MappingState => ({
   changesMade: true,
   displayMatchingOptionsDialog: false,
   mustMatchPreferences: {},
-  showAutomapperDialog: false,
-  showInvalidValidationDialog: false,
 });
+
+const MAPPING_VIEW_RESIZE_THROTTLE = 150;
 
 export const stateReducer = generateReducer<
   JSX.Element,
@@ -272,9 +272,22 @@ export const stateReducer = generateReducer<
                 <>
                   <ButtonWithConfirmation
                     dialogTitle={wbText('goToBaseTableDialogTitle')}
-                    dialogHeader={wbText('goToBaseTableDialogHeader')}
-                    dialogMessage={wbText('goToBaseTableDialogMessage')}
-                    confirmButtonText={wbText('changeBaseTable')}
+                    dialogContent={
+                      <>
+                        {wbText('goToBaseTableDialogHeader')}
+                        {wbText('goToBaseTableDialogMessage')}
+                      </>
+                    }
+                    buttons={(confirm, cancel) => [
+                      {
+                        text: commonText('cancel'),
+                        click: cancel,
+                      },
+                      {
+                        text: wbText('changeBaseTable'),
+                        click: confirm,
+                      },
+                    ]}
                     onConfirm={(): void =>
                       state.dispatch({
                         type: 'OpenBaseTableSelectionAction',
@@ -283,28 +296,42 @@ export const stateReducer = generateReducer<
                   >
                     {wbText('baseTable')}
                   </ButtonWithConfirmation>
-                  <button
-                    type="button"
-                    className="magic-button"
-                    onClick={(): void =>
-                      mappingState(state).lines.length === 0 ||
-                      mappingState(state).lines.every(
-                        ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
+                  <ButtonWithConfirmation
+                    dialogTitle={wbText('reRunAutoMapperDialogTitle')}
+                    dialogContent={
+                      <>
+                        {wbText('reRunAutoMapperDialogHeader')}
+                        {wbText('reRunAutoMapperDialogMessage')}
+                      </>
+                    }
+                    buttons={(confirm, cancel) => [
+                      {
+                        text: commonText('cancel'),
+                        click: cancel,
+                      },
+                      {
+                        text: wbText('reRunAutoMapper'),
+                        click: confirm,
+                      },
+                    ]}
+                    showConfirmation={() =>
+                      mappingState(state).lines.length > 0 &&
+                      mappingState(state).lines.some(({ mappingPath }) =>
+                        mappingPathIsComplete(mappingPath)
                       )
-                        ? state.dispatch({
-                            type: 'SelectTableAction',
-                            headers: state.lines.map(
-                              ({ headerName }) => headerName
-                            ),
-                            baseTableName: state.baseTableName,
-                          })
-                        : state.dispatch({
-                            type: 'RerunAutomapperAction',
-                          })
+                    }
+                    onConfirm={(): void =>
+                      state.dispatch({
+                        type: 'SelectTableAction',
+                        headers: state.lines.map(
+                          ({ headerName }) => headerName
+                        ),
+                        baseTableName: state.baseTableName,
+                      })
                     }
                   >
                     {wbText('autoMapper')}
-                  </button>
+                  </ButtonWithConfirmation>
                 </>
               )
             }
@@ -348,26 +375,20 @@ export const stateReducer = generateReducer<
                     >
                       {wbText('clearMappings')}
                     </button>
-                    <button
-                      type="button"
-                      className={`magic-button validation-indicator ${
-                        state.mappingsAreValidated
-                          ? 'validation-indicator-success'
-                          : ''
-                      }`}
+                    <ValidationButton
+                      canValidate={
+                        state.lines.length > 0 &&
+                        state.lines.some(({ mappingPath }) =>
+                          mappingPathIsComplete(mappingPath)
+                        )
+                      }
+                      isValidated={state.mappingsAreValidated}
                       onClick={(): void =>
                         state.dispatch({
                           type: 'ValidationAction',
                         })
                       }
-                      style={
-                        {
-                          '--text-content': wbText('validated'),
-                        } as React.CSSProperties
-                      }
-                    >
-                      {wbText('validateMappings')}
-                    </button>
+                    />
                   </>
                 )}
                 <button
@@ -484,12 +505,14 @@ export const stateReducer = generateReducer<
               type: 'ClearValidationResultsAction',
             })
           }
-          handleMappingViewResize={(height): void =>
-            state.refObjectDispatch({
-              type: 'MappingViewResizeAction',
-              height,
-            })
-          }
+          handleMappingViewResize={_.throttle(
+            (height): void =>
+              state.refObjectDispatch({
+                type: 'MappingViewResizeAction',
+                height,
+              }),
+            MAPPING_VIEW_RESIZE_THROTTLE
+          )}
           handleAutoScrollStatusChange={(autoScrollType, status): void =>
             state.refObjectDispatch({
               type: 'AutoScrollStatusChangeAction',
@@ -529,53 +552,6 @@ export const stateReducer = generateReducer<
           }
         />
         <EmptyDataSetDialog lineCount={state.lines.length} />
-        {state.showAutomapperDialog && (
-          <ModalDialog
-            properties={{
-              title: wbText('reRunAutoMapperDialogTitle'),
-              close: (): void =>
-                state.dispatch({
-                  type: 'CancelRerunAutomapperAction',
-                }),
-              buttons: [
-                {
-                  text: commonText('cancel'),
-                  click: closeDialog,
-                },
-                {
-                  text: wbText('reRunAutoMapper'),
-                  click: (): void =>
-                    state.dispatch({
-                      type: 'SelectTableAction',
-                      headers: state.lines.map(({ headerName }) => headerName),
-                      baseTableName: state.baseTableName,
-                    }),
-                },
-              ],
-            }}
-          >
-            <>
-              {wbText('reRunAutoMapperDialogHeader')}
-              {wbText('reRunAutoMapperDialogMessage')}
-            </>
-          </ModalDialog>
-        )}
-        {state.showInvalidValidationDialog && (
-          <ModalDialog
-            properties={{
-              close: (): void =>
-                state.dispatch({
-                  type: 'CloseInvalidValidationDialogAction',
-                }),
-              title: wbText('nothingToValidateDialogTitle'),
-            }}
-          >
-            <>
-              {wbText('nothingToValidateDialogHeader')}
-              {wbText('nothingToValidateDialogMessage')}
-            </>
-          </ModalDialog>
-        )}
         {state.displayMatchingOptionsDialog && (
           <ModalDialog
             properties={{

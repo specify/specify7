@@ -62,7 +62,7 @@ export default class ErrorBoundary extends React.Component<
             ],
           }}
         >
-          <>{commonText('errorBoundaryDialogHeader')}</>
+          {commonText('errorBoundaryDialogHeader')}
           <p>{commonText('errorBoundaryDialogMessage')}</p>
           <details style={{ whiteSpace: 'pre-wrap' }}>
             {this.state.error?.toString()}

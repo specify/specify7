@@ -183,10 +183,8 @@ export function EmptyDataSetDialog({
         close: () => setShowDialog(false),
       }}
     >
-      <>
-        {wbText('emptyDataSetDialogHeader')}
-        {wbText('emptyDataSetDialogMessage')}
-      </>
+      {wbText('emptyDataSetDialogHeader')}
+      {wbText('emptyDataSetDialogMessage')}
     </ModalDialog>
   ) : null;
 }
