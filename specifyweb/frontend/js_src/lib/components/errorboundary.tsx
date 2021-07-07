@@ -51,6 +51,7 @@ export default class ErrorBoundary extends React.Component<
         <ModalDialog
           properties={{
             title: commonText('errorBoundaryDialogTitle'),
+            dialogClass: 'ui-dialog-no-close',
             buttons: [
               {
                 text: commonText('okay'),

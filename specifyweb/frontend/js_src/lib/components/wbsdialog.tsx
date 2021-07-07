@@ -14,7 +14,7 @@ import wbText from '../localization/workbench';
 import navigation from '../navigation';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
-import { LoadingScreen, ModalDialog } from './modaldialog';
+import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, DatasetBrief, RA } from './wbplanview';
 
@@ -108,23 +108,28 @@ function Dialog({
   return (
     <>
       <ModalDialog
-        onCloseCallback={handleClose}
         properties={{
           title: showTemplates
             ? wbText('wbsDialogTemplatesDialogTitle')
             : wbText('wbsDialogDefaultDialogTitle')(datasets.length),
           width: 600,
           minHeight: 300,
-          buttons: {
+          close: handleClose,
+          buttons: [
             ...(canImport
-              ? {
-                  [wbText('importFile')]: (): void =>
-                    navigation.go('/workbench-import/'),
-                  [wbText('createNew')]: createEmptyDataSet,
-                }
-              : {}),
-            [commonText('cancel')]: handleClose,
-          },
+              ? [
+                  {
+                    text: wbText('importFile'),
+                    click: (): void => navigation.go('/workbench-import/'),
+                  },
+                  {
+                    text: wbText('createNew'),
+                    click: createEmptyDataSet,
+                  },
+                ]
+              : []),
+            { text: commonText('close'), click: closeDialog },
+          ],
         }}
       >
         <br />

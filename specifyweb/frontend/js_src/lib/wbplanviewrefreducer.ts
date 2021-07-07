@@ -17,7 +17,6 @@ export interface RefMappingState extends State<'RefMappingState'> {
   mappingViewHeight: number;
   mappingViewHeightChangeTimeout: NodeJS.Timeout;
   autoScroll: Record<AutoScrollTypes, boolean>;
-  hideEmptyDataSetDialog: boolean;
 }
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
@@ -38,9 +37,6 @@ const flippedRefStatesMapper = Object.fromEntries(
 type RefChangeStateAction = Action<'RefChangeStateAction'>;
 type RefSetUnloadProtectAction = Action<'RefSetUnloadProtectAction'>;
 type RefUnsetUnloadProtectAction = Action<'RefUnsetUnloadProtectAction'>;
-type RefHideEmptyDataSetDialogAction =
-  Action<'RefHideEmptyDataSetDialogAction'>;
-
 type MappingViewResizeAction = Action<
   'MappingViewResizeAction',
   {
@@ -69,8 +65,7 @@ export type RefActions =
   | RefUnsetUnloadProtectAction
   | MappingViewResizeAction
   | AutoScrollStatusChangeAction
-  | TemplateSelectedAction
-  | RefHideEmptyDataSetDialogAction;
+  | TemplateSelectedAction;
 
 type RefActionsWithPayload = RefActions & {
   payload: {
@@ -156,8 +151,4 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
       .catch((error) => {
         throw error;
       }),
-  RefHideEmptyDataSetDialogAction: ({ payload: { refObject, state } }) => {
-    const refMappingObject = getRefMappingState(refObject, state);
-    refMappingObject.current.hideEmptyDataSetDialog = true;
-  },
 });

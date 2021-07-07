@@ -16,7 +16,7 @@ import type {
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import { ModalDialog } from './modaldialog';
+import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR, RA } from './wbplanview';
 import type {
   AutomapperSuggestion,
@@ -100,10 +100,10 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
   readonly onConfirm: () => void;
-  readonly dialogTitle: React.ReactNode;
+  readonly dialogTitle: string;
   readonly dialogHeader: React.ReactNode;
   readonly dialogMessage: React.ReactNode;
-  readonly confirmButtonText: React.ReactNode;
+  readonly confirmButtonText: string;
 }): JSX.Element {
   const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
 
@@ -117,30 +117,28 @@ export function ButtonWithConfirmation(props: {
         {props.children}
       </button>
       {displayPrompt ? (
-        <div style={{ position: 'absolute' }}>
-          <ModalDialog
-            onCloseCallback={(): void => setDisplayPrompt(false)}
-            properties={{
-              title: props.dialogTitle,
-              width: '400',
-              buttons: [
-                {
-                  text: props.confirmButtonText,
-                  click: props.onConfirm,
-                },
-                {
-                  text: commonText('cancel'),
-                  click: (): void => setDisplayPrompt(false),
-                },
-              ],
-            }}
-          >
-            <>
-              {props.dialogHeader}
-              {props.dialogMessage}
-            </>
-          </ModalDialog>
-        </div>
+        <ModalDialog
+          properties={{
+            title: props.dialogTitle,
+            close: (): void => setDisplayPrompt(false),
+            width: '400',
+            buttons: [
+              {
+                text: props.confirmButtonText,
+                click: props.onConfirm,
+              },
+              {
+                text: commonText('cancel'),
+                click: closeDialog,
+              },
+            ],
+          }}
+        >
+          <>
+            {props.dialogHeader}
+            {props.dialogMessage}
+          </>
+        </ModalDialog>
       ) : undefined}
     </>
   );

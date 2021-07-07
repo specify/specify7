@@ -118,13 +118,6 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
         properties={{
           title,
           close: (): void => dispatch({ type: 'AbortAction', aborted: false }),
-          buttons: [
-            {
-              text: commonText('close'),
-              click: (): void =>
-                dispatch({ type: 'AbortAction', aborted: false }),
-            },
-          ],
         }}
       >
         {wbText('wbStatusAbortFailed')(mappedOperation)}

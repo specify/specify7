@@ -5,7 +5,7 @@ import wbText from '../localization/workbench';
 
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import { ModalDialog } from './modaldialog';
+import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR, RA } from './wbplanview';
 import { MappingPathComponent } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
@@ -63,51 +63,49 @@ export function ValidationResults(props: {
   if (props.validationResults.length === 0) return null;
 
   return (
-    <div style={{ position: 'absolute' }}>
-      <ModalDialog
-        properties={{
-          title: wbText('validationFailedDialogTitle'),
-          modal: false,
-          width: '40vw',
-          height: 'auto',
-          close: props.onDismissValidation,
-          buttons: [
-            {
-              text: wbText('continueEditing'),
-              click: props.onDismissValidation,
-            },
-            {
-              text: wbText('saveUnfinished'),
-              click: props.onSave,
-            },
-          ],
-        }}
-      >
-        <div className="validation-results wbplanview-init">
-          {wbText('validationFailedDialogHeader')}
-          <span>{wbText('validationFailedDialogMessage')}</span>
-          {props.validationResults.map((fieldPath, index) => (
-            <div
-              className="v-center wbplanview-mapping-line-elements"
-              key={index}
-              onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
-            >
-              <MappingPathComponent
-                mappingLineData={getMappingLineData({
-                  baseTableName: props.baseTableName,
-                  mappingPath: fieldPath,
-                  iterate: true,
-                  generateLastRelationshipData: false,
-                  customSelectType: 'PREVIEW_LIST',
-                  getMappedFields: props.getMappedFields,
-                  mustMatchPreferences: props.mustMatchPreferences,
-                })}
-              />
-            </div>
-          ))}
-        </div>
-      </ModalDialog>
-    </div>
+    <ModalDialog
+      properties={{
+        title: wbText('validationFailedDialogTitle'),
+        modal: false,
+        width: '40vw',
+        height: 'auto',
+        close: props.onDismissValidation,
+        buttons: [
+          {
+            text: wbText('continueEditing'),
+            click: closeDialog,
+          },
+          {
+            text: wbText('saveUnfinished'),
+            click: props.onSave,
+          },
+        ],
+      }}
+    >
+      <div className="validation-results wbplanview-init">
+        {wbText('validationFailedDialogHeader')}
+        <span>{wbText('validationFailedDialogMessage')}</span>
+        {props.validationResults.map((fieldPath, index) => (
+          <div
+            className="v-center wbplanview-mapping-line-elements"
+            key={index}
+            onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
+          >
+            <MappingPathComponent
+              mappingLineData={getMappingLineData({
+                baseTableName: props.baseTableName,
+                mappingPath: fieldPath,
+                iterate: true,
+                generateLastRelationshipData: false,
+                customSelectType: 'PREVIEW_LIST',
+                getMappedFields: props.getMappedFields,
+                mustMatchPreferences: props.mustMatchPreferences,
+              })}
+            />
+          </div>
+        ))}
+      </div>
+    </ModalDialog>
   );
 }
 
@@ -169,6 +167,28 @@ export function MappingView(props: {
       </button>
     </>
   );
+}
+
+export function EmptyDataSetDialog({
+  lineCount,
+}: {
+  readonly lineCount: number;
+}): JSX.Element | null {
+  const [showDialog, setShowDialog] = React.useState<boolean>(lineCount === 0);
+
+  return showDialog ? (
+    <ModalDialog
+      properties={{
+        title: wbText('emptyDataSetDialogTitle'),
+        close: () => setShowDialog(false),
+      }}
+    >
+      <>
+        {wbText('emptyDataSetDialogHeader')}
+        {wbText('emptyDataSetDialogMessage')}
+      </>
+    </ModalDialog>
+  ) : null;
 }
 
 export const defaultMappingViewHeight = 300;

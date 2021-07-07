@@ -19,7 +19,7 @@ import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Icon } from './customselectelement';
-import { LoadingScreen, ModalDialog } from './modaldialog';
+import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import type { RA, WBPlanViewProps } from './wbplanview';
 import {
   ButtonWithConfirmation,
@@ -32,7 +32,10 @@ import type {
   WBPlanViewMapperBaseProps,
 } from './wbplanviewmapper';
 import WBPlanViewMapper from './wbplanviewmapper';
-import { defaultMappingViewHeight } from './wbplanviewmappercomponents';
+import {
+  defaultMappingViewHeight,
+  EmptyDataSetDialog,
+} from './wbplanviewmappercomponents';
 import { WbsDialog } from './wbsdialog';
 
 // States
@@ -140,23 +143,20 @@ export const stateReducer = generateReducer<
   BaseTableSelectionState: ({ action: state }) => (
     <ModalDialog
       properties={{
-        title: wbText('selectBaseTable'),
+        title: wbText('selectBaseTableDialogTitle'),
         height: 400,
-        close: (): void =>
-          state.dispatch({
-            type: 'CancelMappingAction',
-            dataset: state.props.dataset,
-            removeUnloadProtect: state.props.removeUnloadProtect,
-          }),
-        buttons: [
-          {
-            text: commonText('cancel'),
-            click: (): void =>
-              state.dispatch({
+        close: (_event, ui): void =>
+          typeof ui === 'undefined' || 'length' in ui
+            ? undefined
+            : state.dispatch({
                 type: 'CancelMappingAction',
                 dataset: state.props.dataset,
                 removeUnloadProtect: state.props.removeUnloadProtect,
               }),
+        buttons: [
+          {
+            text: commonText('cancel'),
+            click: closeDialog,
           },
           {
             text: wbText('chooseExistingPlan'),
@@ -528,163 +528,135 @@ export const stateReducer = generateReducer<
             })
           }
         />
-        <div style={{ position: 'absolute' }}>
-          {!refObject.current.hideEmptyDataSetDialog &&
-            state.lines.length === 0 && (
-              <ModalDialog
-                onCloseCallback={(): void =>
-                  state.refObjectDispatch({
-                    type: 'RefHideEmptyDataSetDialogAction',
-                  })
-                }
-                properties={{
-                  title: wbText('emptyDataSetDialogTitle'),
-                }}
-              >
-                <>
-                  {wbText('emptyDataSetDialogHeader')}
-                  {wbText('emptyDataSetDialogMessage')}
-                </>
-              </ModalDialog>
-            )}
-          {state.showAutomapperDialog && (
-            <ModalDialog
-              onCloseCallback={(): void =>
+        <EmptyDataSetDialog lineCount={state.lines.length} />
+        {state.showAutomapperDialog && (
+          <ModalDialog
+            properties={{
+              title: wbText('reRunAutoMapperDialogTitle'),
+              close: (): void =>
                 state.dispatch({
                   type: 'CancelRerunAutomapperAction',
-                })
-              }
-              properties={{
-                title: wbText('reRunAutoMapperDialogTitle'),
-                buttons: [
-                  {
-                    text: commonText('cancel'),
-                    click: (): void =>
-                      state.dispatch({
-                        type: 'CancelRerunAutomapperAction',
-                      }),
-                  },
-                  {
-                    text: wbText('reRunAutoMapper'),
-                    click: (): void =>
-                      state.dispatch({
-                        type: 'SelectTableAction',
-                        headers: state.lines.map(
-                          ({ headerName }) => headerName
-                        ),
-                        baseTableName: state.baseTableName,
-                      }),
-                  },
-                ],
-              }}
-            >
-              <>
-                {wbText('reRunAutoMapperDialogHeader')}
-                {wbText('reRunAutoMapperDialogMessage')}
-              </>
-            </ModalDialog>
-          )}
-          {state.showInvalidValidationDialog && (
-            <ModalDialog
-              onCloseCallback={(): void =>
-                state.dispatch({
-                  type: 'CloseInvalidValidationDialogAction',
-                })
-              }
-              properties={{
-                title: wbText('nothingToValidateDialogTitle'),
-                buttons: {
-                  [commonText('close')]: (): void =>
+                }),
+              buttons: [
+                {
+                  text: commonText('cancel'),
+                  click: closeDialog,
+                },
+                {
+                  text: wbText('reRunAutoMapper'),
+                  click: (): void =>
                     state.dispatch({
-                      type: 'CloseInvalidValidationDialogAction',
+                      type: 'SelectTableAction',
+                      headers: state.lines.map(({ headerName }) => headerName),
+                      baseTableName: state.baseTableName,
                     }),
                 },
-              }}
-            >
-              <>
-                {wbText('nothingToValidateDialogHeader')}
-                {wbText('nothingToValidateDialogMessage')}
-              </>
-            </ModalDialog>
-          )}
-          {state.displayMatchingOptionsDialog && (
-            <ModalDialog
-              onCloseCallback={handleMappingOptionsDialogClose}
-              properties={{
-                title: wbText('matchingLogicDialogTitle'),
-                buttons: {
-                  [Object.keys(state.mustMatchPreferences).length === 0
-                    ? commonText('close')
-                    : commonText('apply')]: handleMappingOptionsDialogClose,
+              ],
+            }}
+          >
+            <>
+              {wbText('reRunAutoMapperDialogHeader')}
+              {wbText('reRunAutoMapperDialogMessage')}
+            </>
+          </ModalDialog>
+        )}
+        {state.showInvalidValidationDialog && (
+          <ModalDialog
+            properties={{
+              close: (): void =>
+                state.dispatch({
+                  type: 'CloseInvalidValidationDialogAction',
+                }),
+              title: wbText('nothingToValidateDialogTitle'),
+            }}
+          >
+            <>
+              {wbText('nothingToValidateDialogHeader')}
+              {wbText('nothingToValidateDialogMessage')}
+            </>
+          </ModalDialog>
+        )}
+        {state.displayMatchingOptionsDialog && (
+          <ModalDialog
+            properties={{
+              title: wbText('matchingLogicDialogTitle'),
+              close: handleMappingOptionsDialogClose,
+              buttons: [
+                {
+                  text:
+                    Object.keys(state.mustMatchPreferences).length === 0
+                      ? commonText('close')
+                      : commonText('apply'),
+                  click: closeDialog,
                 },
-              }}
-            >
-              {Object.keys(state.mustMatchPreferences).length === 0 ? (
-                wbText('matchingLogicUnavailableDialogMessage')
-              ) : (
-                <>
-                  <h4 style={{ paddingLeft: '4px' }}>
-                    {wbText('matchingLogicDialogMessage')}
-                  </h4>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>{commonText('tableName')}</th>
-                        <th>{wbText('mustMatch')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(state.mustMatchPreferences).map(
-                        ([tableName, mustMatch]) => (
-                          <tr key={tableName}>
-                            <td>
-                              <div className="v-center must-match-line">
-                                <Icon
-                                  tableName={tableName}
-                                  optionLabel={tableName}
-                                  isRelationship={true}
-                                />
-                                {
-                                  dataModelStorage.tables[tableName]
-                                    .tableFriendlyName
-                                }
-                              </div>
-                            </td>
-                            <td>
-                              <label
-                                style={{
-                                  display: 'block',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={mustMatch}
-                                  {...(state.props.readonly
-                                    ? {
-                                        disabled: true,
-                                      }
-                                    : {
-                                        onChange: (): void =>
-                                          state.dispatch({
-                                            type: 'MustMatchPrefChangeAction',
-                                            tableName,
-                                            mustMatch: !mustMatch,
-                                          }),
-                                      })}
-                                />
-                              </label>
-                            </td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </>
-              )}
-            </ModalDialog>
-          )}
-        </div>
+              ],
+            }}
+          >
+            {Object.keys(state.mustMatchPreferences).length === 0 ? (
+              wbText('matchingLogicUnavailableDialogMessage')
+            ) : (
+              <>
+                <h4 style={{ paddingLeft: '4px' }}>
+                  {wbText('matchingLogicDialogMessage')}
+                </h4>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>{commonText('tableName')}</th>
+                      <th>{wbText('mustMatch')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(state.mustMatchPreferences).map(
+                      ([tableName, mustMatch]) => (
+                        <tr key={tableName}>
+                          <td>
+                            <div className="v-center must-match-line">
+                              <Icon
+                                tableName={tableName}
+                                optionLabel={tableName}
+                                isRelationship={true}
+                              />
+                              {
+                                dataModelStorage.tables[tableName]
+                                  .tableFriendlyName
+                              }
+                            </div>
+                          </td>
+                          <td>
+                            <label
+                              style={{
+                                display: 'block',
+                                textAlign: 'center',
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={mustMatch}
+                                {...(state.props.readonly
+                                  ? {
+                                      disabled: true,
+                                    }
+                                  : {
+                                      onChange: (): void =>
+                                        state.dispatch({
+                                          type: 'MustMatchPrefChangeAction',
+                                          tableName,
+                                          mustMatch: !mustMatch,
+                                        }),
+                                    })}
+                              />
+                            </label>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </ModalDialog>
+        )}
       </Layout>
     );
   },

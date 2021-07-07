@@ -11,7 +11,7 @@ import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
 import { SN_SERVICES } from './lifemapperinfo';
-import { ModalDialog } from './modaldialog';
+import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR } from './wbplanview';
 
 type LoadingState = State<'LoadingState'>;
@@ -120,11 +120,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     buttons: [
                       {
                         text: commonText('close'),
-                        click: (): void =>
-                          dispatch({
-                            type: 'ToggleAggregatorVisibilityAction',
-                            badgeName,
-                          }),
+                        click: closeDialog,
                       },
                       {
                         text: lifemapperText('moreDetails'),

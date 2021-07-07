@@ -109,7 +109,6 @@ function WbAdvancedSearch({
 
   return (
     <ModalDialog
-      onCloseCallback={handleClose}
       properties={{
         title: wbText('wbAdvancedSearchDialogTitle'),
         close: handleClose,

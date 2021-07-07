@@ -227,7 +227,7 @@ const wbText = createDictionary({
   continueEditing: 'Continue Editing',
   saveUnfinished: 'Save Unfinished',
   map: 'Map',
-  selectBaseTable: 'Select a Base Table',
+  selectBaseTableDialogTitle: 'Select a Base Table',
   chooseExistingPlan: 'Choose Existing Plan',
   showAdvancedTables: 'Show Advanced Tables',
   dataSetUploaded: 'Data Set uploaded. This Upload Plan cannot be changed',

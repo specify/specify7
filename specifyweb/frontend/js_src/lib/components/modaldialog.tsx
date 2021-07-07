@@ -9,12 +9,12 @@
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import commonText from '../localization/common';
 
-import type { IR, RA } from './wbplanview';
+import commonText from '../localization/common';
+import { RA } from './wbplanview';
 
 interface ModalDialogBaseProps {
-  readonly children: JSX.Element | RA<JSX.Element> | string;
+  readonly children: React.ReactNode;
 }
 
 function ModalDialogContent({
@@ -23,12 +23,12 @@ function ModalDialogContent({
 }: ModalDialogBaseProps & {
   readonly onLoadCallback?: () => void | (() => void);
 }): JSX.Element {
-  if (onLoadCallback) React.useEffect(onLoadCallback, []);
+  React.useEffect(onLoadCallback ?? ((): void => {}), []);
 
   return <>{children}</>;
 }
 
-function closeDialog(
+function closeDialogCallback(
   $dialog: JQuery,
   resize: () => void,
   onCloseCallback?: () => void
@@ -36,22 +36,26 @@ function closeDialog(
   if (!$dialog.is(':ui-dialog')) return;
   ReactDOM.unmountComponentAtNode($dialog[0]);
   window.removeEventListener('resize', resize);
-  // Run event listeners
-  $dialog.dialog('close');
+  onCloseCallback?.();
   // Unset event listeners
   $dialog.remove();
-  onCloseCallback?.();
 }
 
+export const closeDialog = (...args: RA<unknown>): void =>
+  console.error(...args);
+
 export const ModalDialog = React.memo(function ModalDialog({
-  onCloseCallback,
   properties,
   onLoadCallback,
   children,
 }: ModalDialogBaseProps & {
   readonly onLoadCallback?: (dialog: JQuery) => void | (() => void);
-  readonly onCloseCallback?: () => void;
-  readonly properties?: IR<unknown>;
+  readonly properties: JQueryUI.DialogOptions & {
+    readonly close?: (
+      event: JQueryUI.DialogEvent | Event | undefined,
+      ui: JQueryUI.DialogUIParams | undefined
+    ) => void;
+  };
 }) {
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const [$dialog, setDialog] = React.useState<JQuery | undefined>();
@@ -63,20 +67,39 @@ export const ModalDialog = React.memo(function ModalDialog({
     const resize = (): void =>
       void dialogElement.dialog('option', 'position', 'center');
 
-    const closeDialogBind = (): void =>
-      closeDialog(dialogElement, resize, onCloseCallback);
+    const closeDialogBind = (
+      event: JQueryUI.DialogEvent | Event | undefined = undefined,
+      ui: JQueryUI.DialogUIParams | undefined = undefined
+    ): void =>
+      closeDialogCallback(
+        dialogElement,
+        resize,
+        properties.close?.bind(null, event, ui)
+      );
+
+    const buttons =
+      typeof properties.buttons === 'object' &&
+      !Array.isArray(properties.buttons)
+        ? properties.buttons
+        : (
+            properties.buttons ?? [
+              { text: commonText('close'), click: closeDialog },
+            ]
+          ).map((button) =>
+            button.click === closeDialog
+              ? {
+                  ...button,
+                  click: closeDialogBind,
+                }
+              : button
+          );
 
     dialogElement.dialog({
       modal: true,
       width: 300,
-      close: closeDialogBind,
-      buttons: [
-        {
-          text: commonText('close'),
-          click: closeDialogBind,
-        },
-      ],
       ...properties,
+      close: closeDialogBind,
+      buttons,
     });
     window.addEventListener('resize', resize);
 
@@ -99,7 +122,7 @@ export const ModalDialog = React.memo(function ModalDialog({
   }, [$dialog, children]);
 
   return (
-    <div ref={dialogRef}>
+    <div style={{ position: 'absolute' }} ref={dialogRef}>
       <div />
     </div>
   );
@@ -115,9 +138,9 @@ export function LoadingScreen(): JSX.Element {
       onLoadCallback={handleOnLoad}
       properties={{
         modal: false,
+        dialogClass: 'ui-dialog-no-close',
         title: commonText('loading'),
         buttons: [],
-        close: undefined,
       }}
     >
       <div className="progress-bar" />
