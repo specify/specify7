@@ -3,6 +3,8 @@ from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
 from xml.etree import ElementTree
 import os
 import warnings
+import logging
+logger = logging.getLogger(__name__)
 
 from django.conf import settings # type: ignore
 
@@ -240,7 +242,12 @@ def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
 def flag_dependent_fields(datamodel: Datamodel) -> None:
     for name in dependent_fields:
         tablename, fieldname = name.split('.')
-        field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
+        try:
+            field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
+        except DoesNotExistError as e:
+            logger.warn("missing table or relationship setting dependent field: %s", name)
+            continue
+
         field.dependent = True
 
     for table in datamodel.tables:
@@ -295,6 +302,8 @@ dependent_fields = {
     'Deaccession.deaccessionagents',
     'Deaccession.deaccessionpreparations',
     'Determination.determinationcitations',
+    'Disposal.disposalagents',
+    'Disposal.disposalpreparations',
     'Dnasequence.dnasequencingruns',
     'Dnasequencingrun.citations',
     'Exchangein.exchangeinpreps',
