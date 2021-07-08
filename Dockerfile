@@ -78,7 +78,7 @@ RUN date > specifyweb/frontend/static/build_date.txt
 
 ######################################################################
 
-FROM common AS run
+FROM common AS run-common
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
@@ -125,17 +125,13 @@ ENV DJANGO_SETTINGS_MODULE='settings'
 ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
 
 EXPOSE 8000
-RUN mv specifyweb.wsgi specifyweb_wsgi.py
-CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
 
 
 ######################################################################
 
-FROM run AS run-development
+FROM run-common AS run-development
 
 USER root
-
-COPY requirements-testing.txt /home/specify/
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
@@ -143,9 +139,21 @@ RUN apt-get update \
         ca-certificates \
         make
 
-RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
-
 USER specify
 
+COPY requirements-testing.txt /home/specify/
+
+RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+
 COPY mypy.ini ./
+
+
+######################################################################
+
+FROM run-common AS run
+
+RUN mv specifyweb.wsgi specifyweb_wsgi.py
+
+CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
+
 
