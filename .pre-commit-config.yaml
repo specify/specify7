@@ -36,8 +36,8 @@ repos:
     hooks:
       - id: frontend-tests
         name: TypeScript and QUnit
-        description: Run TypeScript typechecker and automatted tests on .ts files
-        entry: ./specifyweb/frontend/js_src/lib/tests/testmain.sh
+        description: Run TypeScript typechecker and automated tests on .ts files
+        entry: /bin/bash -c "cd specifyweb/frontend/js_src && npm run test"
         language: script
         types_or: [javascript, jsx, ts, tsx]
         pass_filenames: false
@@ -49,15 +49,18 @@ repos:
         args:
           - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.812
+  - repo: local
     hooks:
       - id: mypy
-        exclude: ^docs/
-        additional_dependencies:
-          - django-stubs==1.8.0
-          - celery==5.0.1
+        name: mypy
+        description: Python mypy typechecker
+        entry: /bin/bash -c "docker exec --tty specify7_specify7_1 bash -c 'VIRTUAL_ENV=./ve make typecheck'"
+        language: script
+        types: [python]
+        pass_filenames: false
 
+
+  #- repo: https://github.com/pre-commit/mirrors-mypy
   #- repo: https://github.com/pre-commit/mirrors-eslint
 
   # global hooks:
