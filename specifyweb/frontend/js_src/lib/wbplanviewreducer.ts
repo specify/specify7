@@ -259,6 +259,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       : state,
   SelectTableAction: ({ action }) => ({
     ...getDefaultMappingState(),
+    changesMade: true,
     baseTableName: action.baseTableName,
     lines: getLinesFromHeaders({
       headers: action.headers,

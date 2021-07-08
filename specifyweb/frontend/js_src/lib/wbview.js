@@ -142,6 +142,7 @@ const WBView = Backbone.View.extend({
     this.uploadResults = {
       ambiguousMatches: [],
       recordCounts: {},
+      newRecords: {},
     };
 
     // Throttle cell count update depending on the DS size (between 10ms and 2s)
@@ -312,30 +313,77 @@ const WBView = Backbone.View.extend({
           sortIndicator: true,
           contextMenu: {
             items: this.isUploaded
-              ? {}
+              ? {
+                  upload_results: {
+                    disableSelection: true,
+                    isCommand: false,
+                    renderer: (_hot, wrapper) => {
+                      const { endRow: visualRow, endCol: visualCol } =
+                        this.wbutils.getSelectedRegions().slice(-1)[0];
+                      const physicalRow = this.hot.toPhysicalRow(visualRow);
+                      const physicalCol = this.hot.toPhysicalColumn(visualCol);
+
+                      const createdRecords =
+                        this.uploadResults.newRecords[physicalRow]?.[
+                          physicalCol
+                        ];
+
+                      if (
+                        typeof createdRecords === 'undefined' ||
+                        this.cellMeta[physicalRow]?.[physicalCol]?.isNew !==
+                          true
+                      ) {
+                        wrapper.textContent = wbText(
+                          'noUploadResultsAvailable'
+                        );
+                        wrapper.style.whiteSpace = 'white-space';
+                        wrapper.parentElement.classList.add('htDisabled');
+                        const span = document.createElement('span');
+                        span.style.display = 'none';
+                        return span;
+                      }
+
+                      wrapper.classList.add('wb-uploaded-view-context-menu');
+                      wrapper.innerHTML = createdRecords
+                        .map(([tableName, recordId, label]) => {
+                          const tableLabel =
+                            label === ''
+                              ? dataModelStorage.tables[tableName].label
+                              : label;
+                          const tableIcon = icons.getIcon(tableName);
+
+                          return `<a
+                            href="/specify/view/${tableName}/${recordId}/"
+                            target="_blank"
+                          >
+                            <img src="${tableIcon}" alt="${tableLabel}">
+                            ${tableLabel}
+                          </a>`;
+                        })
+                        .join('');
+
+                      const div = document.createElement('div');
+                      div.style.display = 'none';
+                      return div;
+                    },
+                  },
+                }
               : {
                   row_above: {
                     disabled: () =>
-                      this.isUploaded ||
-                      this.uploadedView ||
-                      this.coordinateConverterView,
+                      this.uploadedView || this.coordinateConverterView,
                   },
                   row_below: {
                     disabled: () =>
-                      this.isUploaded ||
-                      this.uploadedView ||
-                      this.coordinateConverterView,
+                      this.uploadedView || this.coordinateConverterView,
                   },
                   remove_row: {
                     disabled: () =>
-                      this.isUploaded ||
-                      this.uploadedView ||
-                      this.coordinateConverterView,
+                      this.uploadedView || this.coordinateConverterView,
                   },
                   disambiguate: {
                     name: wbText('disambiguate'),
                     disabled: () =>
-                      this.isUploaded ||
                       this.uploadedView ||
                       this.coordinateConverterView ||
                       !this.isAmbiguousCell(),
@@ -343,32 +391,22 @@ const WBView = Backbone.View.extend({
                       this.disambiguateCell(selection),
                   },
                   separator_1: '---------',
-                  fill_down: {
-                    disabled: () =>
-                      this.isUploaded ||
-                      this.uploadedView ||
-                      this.coordinateConverterView,
-                    callback: this.wbutils.fillCellsContextMenuItem(
-                      wbText('fillDown'),
-                      this.wbutils.fillDown
-                    ),
-                  },
-                  fill_up: {
-                    disabled: () =>
-                      this.isUploaded ||
-                      this.uploadedView ||
-                      this.coordinateConverterView,
-                    callback: this.wbutils.fillCellsContextMenuItem(
-                      wbText('fillUp'),
-                      this.wbutils.fillUp
-                    ),
-                  },
+                  fill_down: this.wbutils.fillCellsContextMenuItem(
+                    wbText('fillDown'),
+                    this.wbutils.fillDown,
+                    () => this.uploadedView || this.coordinateConverterView
+                  ),
+                  fill_up: this.wbutils.fillCellsContextMenuItem(
+                    wbText('fillUp'),
+                    this.wbutils.fillUp,
+                    () => this.uploadedView || this.coordinateConverterView
+                  ),
                   separator_2: '---------',
                   undo: {
-                    disabled: () => this.isUploaded || this.uploadedView,
+                    disabled: () => this.uploadedView,
                   },
                   redo: {
-                    disabled: () => this.isUploaded || this.uploadedView,
+                    disabled: () => this.uploadedView,
                   },
                 },
           },
@@ -1823,6 +1861,19 @@ const WBView = Backbone.View.extend({
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
+      this.uploadResults.newRecords[physicalRow] ??= {};
+      this.resolveValidationColumns(statusData.info.columns, mappingPath).map(
+        (physicalCol) => {
+          this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
+          this.uploadResults.newRecords[physicalRow][physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
       throw new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
@@ -1834,7 +1885,9 @@ const WBView = Backbone.View.extend({
         uploadResult,
         setMetaCallback,
         physicalRow,
-        [...mappingPath, fieldName]
+        fieldName === 'parent' && typeof statusData.info.treeInfo === 'object'
+          ? mappingPath.slice(0, -1)
+          : [...mappingPath, fieldName]
       )
     );
 

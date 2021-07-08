@@ -5,9 +5,7 @@ const WbLocalityDataExtractor = require('./wblocalitydataextractor');
 const Backbone = require('./backbone.js');
 const latlongutils = require('./latlongutils.js');
 const WbPlanViewHelper = require('./wbplanviewhelper');
-const {
-  findLocalityColumnsInDataSet,
-} = require('./wblocalitydataextractor');
+const { findLocalityColumnsInDataSet } = require('./wblocalitydataextractor');
 const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
@@ -458,13 +456,15 @@ module.exports = Backbone.View.extend({
       value: this.wbview.hot.getDataAtCell(props.endRow, props.col),
     });
   },
-  fillCellsContextMenuItem(name, handlerFunction) {
+  fillCellsContextMenuItem(name, handlerFunction, isDisabled) {
     return {
       name: name,
       disabled: () =>
-        this.wbview.hot
+        isDisabled() ||
+        (this.wbview.hot
           .getSelected()
-          ?.every((selection) => selection[0] === selection[2]) ?? false,
+          ?.every((selection) => selection[0] === selection[2]) ??
+          false),
       callback: (_, selections) =>
         selections.forEach((selection) =>
           [

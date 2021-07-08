@@ -44,3 +44,29 @@
   padding: 1px;
   height: inherit;
 }
+
+.htCustomMenuRenderer.htDisabled .htItemWrapper {
+  word-wrap: initial;
+}
+
+.wb-uploaded-view-context-menu {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  padding-bottom: 4px;
+}
+
+.wb-uploaded-view-context-menu a:hover {
+  background: #eee;
+}
+
+.wb-uploaded-view-context-menu a img {
+  width: 20px;
+}
+
+.wb-uploaded-view-context-menu a {
+  display: flex;
+  align-items: center;
+  column-gap: 0.3rem;
+  padding: 0.1rem;
+}

@@ -157,6 +157,7 @@ const wbText = createDictionary({
   // WbUploaded
   uploadResults: 'Upload Results',
   potentialUploadResults: 'Potential Upload Results',
+  noUploadResultsAvailable: 'No upload results are available for this cell',
   wbUploadedDescription: 'The number of new records created in each table:',
   wbUploadedPotentialDescription:
     'The number of new records that would be created in each table:',
