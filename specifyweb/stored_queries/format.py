@@ -185,6 +185,9 @@ class ObjectFormatter(object):
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
+        if specify_field.type == "java.sql.Timestamp":
+            return func.date_format(field, self.date_format)
+
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
         format_expr = \
