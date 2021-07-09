@@ -1,4 +1,4 @@
-import '../../css/lifemapperinfo.css';
+import '../../css/lifemapper.css';
 
 import React from 'react';
 
@@ -7,17 +7,17 @@ import {
   resolveGuid,
   resolveOccurrenceNames,
 } from '../lifemapperconfig';
-import { prepareLifemapperProjectionMap } from '../lifemapperinfomap';
-import { reducer } from '../lifemapperinforeducer';
+import { prepareLifemapperProjectionMap } from '../lifemappermap';
+import { reducer } from '../lifemapperreducer';
 import {
   extractElement,
   fetchLocalScientificName,
   formatOccurrenceDataRequest,
-} from '../lifemapperinfoutills';
-import { stateReducer } from './lifemapperinfostate';
-import type { ComponentProps } from './lifemapperinfowrapper';
+} from '../lifemapperutills';
+import { stateReducer } from './lifemapperstate';
+import type { ComponentProps } from './lifemapperwrapper';
 import type { IR } from './wbplanview';
-import type { LoadingState } from './wbplanviewstatereducer';
+import type { LoadingState } from './wbplanviewstate';
 
 type AggregatorResponseBase = {
   readonly provider: {
@@ -41,7 +41,7 @@ type AggregatorResponseWithData = AggregatorResponseBase & {
   ];
 };
 
-export function LifemapperInfo({
+export function Lifemapper({
   model,
   guid: originalGuid,
   handleOccurrenceNameFetch,
@@ -164,7 +164,7 @@ export function LifemapperInfo({
         !state.badges.lm.isOpen ||
         typeof state.remoteOccurrenceName === 'undefined' ||
         typeof state.localOccurrenceName === 'undefined' ||
-        typeof state.lifemapperInfo !== 'undefined'
+        typeof state.lifemapper !== 'undefined'
       )
         return;
 
@@ -176,10 +176,10 @@ export function LifemapperInfo({
       if (!getOccurrenceName(1)) return;
 
       prepareLifemapperProjectionMap(getOccurrenceName, model).then(
-        (lifemapperInfo) =>
+        (lifemapper) =>
           dispatch({
             type: 'MapLoadedAction',
-            ...lifemapperInfo,
+            ...lifemapper,
           })
       );
     },
@@ -188,7 +188,7 @@ export function LifemapperInfo({
           state.localOccurrenceName,
           state.remoteOccurrenceName,
           state.badges.lm.isOpen,
-          state.lifemapperInfo,
+          state.lifemapper,
         ]
       : [undefined, undefined, undefined, undefined]
   );

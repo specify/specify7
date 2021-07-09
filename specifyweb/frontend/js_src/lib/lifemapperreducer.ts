@@ -1,8 +1,8 @@
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import type { MainState, States } from './components/lifemapperinfostate';
-import { mainState } from './components/lifemapperinfostate';
+import type { MainState, States } from './components/lifemapperstate';
+import { mainState } from './components/lifemapperstate';
 import type { IR, RA, RR } from './components/wbplanview';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
@@ -39,13 +39,13 @@ type SetLocalOccurrenceNameAction = Action<
   }
 >;
 
-export type LifemapperInfo = {
+export type Lifemapper = {
   readonly layers: RA<LayerConfig>;
   readonly markers: RA<MarkerGroups>;
   readonly messages: RR<MessageTypes, RA<string>>;
 };
 
-type MapLoadedAction = Action<'MapLoadedAction', LifemapperInfo>;
+type MapLoadedAction = Action<'MapLoadedAction', Lifemapper>;
 
 export type Actions =
   | LoadedAction
@@ -78,7 +78,7 @@ export const reducer = generateReducer<States, Actions>({
     ),
     localOccurrenceName: undefined,
     remoteOccurrenceName: undefined,
-    lifemapperInfo: undefined,
+    lifemapper: undefined,
   }),
   ToggleAggregatorVisibilityAction: ({ action, state }) => ({
     ...mainState(state),
@@ -90,9 +90,9 @@ export const reducer = generateReducer<States, Actions>({
       },
     },
   }),
-  MapLoadedAction: ({ action: { type: _, ...lifemapperInfo }, state }) => ({
+  MapLoadedAction: ({ action: { type: _, ...lifemapper }, state }) => ({
     ...mainState(state),
-    lifemapperInfo,
+    lifemapper,
   }),
   SetRemoteOccurrenceNameAction: ({
     action: { remoteOccurrenceName },

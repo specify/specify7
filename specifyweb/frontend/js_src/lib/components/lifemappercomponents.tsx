@@ -4,10 +4,10 @@ import React from 'react';
 import * as Leaflet from '../leaflet';
 import type { MessageTypes } from '../lifemapperconfig';
 import { lifemapperMessagesMeta } from '../lifemapperconfig';
-import type { LifemapperInfo } from '../lifemapperinforeducer';
-import { formatIconRequest } from '../lifemapperinfoutills';
+import type { Lifemapper } from '../lifemapperreducer';
+import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
-import type { MainState } from './lifemapperinfostate';
+import type { MainState } from './lifemapperstate';
 import type { RA } from './wbplanview';
 
 export function Badge<IS_ENABLED extends boolean>({
@@ -78,9 +78,9 @@ export function Aggregator({
 }
 
 export function LifemapperMap({
-  lifemapperInfo,
+  lifemapper,
 }: {
-  readonly lifemapperInfo: LifemapperInfo;
+  readonly lifemapper: Lifemapper;
 }): JSX.Element | null {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -95,8 +95,8 @@ export function LifemapperMap({
     let leafletMap: L.Map | undefined;
     Leaflet.showCOMap(
       mapRef.current,
-      lifemapperInfo.layers,
-      (Object.entries(lifemapperInfo.messages) as [MessageTypes, RA<string>][])
+      lifemapper.layers,
+      (Object.entries(lifemapper.messages) as [MessageTypes, RA<string>][])
         .filter(([, messages]) => messages.length > 0)
         .map(
           ([name, messages]) => `<span
@@ -114,7 +114,7 @@ export function LifemapperMap({
         Leaflet.addMarkersToMap(
           map,
           layerGroup,
-          lifemapperInfo.markers.flat(),
+          lifemapper.markers.flat(),
           lifemapperText('localOccurrencePoints')
         );
         if (destructorCalled) destructor(map);

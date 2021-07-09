@@ -16,11 +16,11 @@ import type {
 import type {
   MappingState,
   WbPlanViewStates,
-} from './components/wbplanviewstatereducer';
+} from './components/wbplanviewstate';
 import {
   getDefaultMappingState,
   mappingState,
-} from './components/wbplanviewstatereducer';
+} from './components/wbplanviewstate';
 import wbText from './localization/workbench';
 import schema from './schema';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';

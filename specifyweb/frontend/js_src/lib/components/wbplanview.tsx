@@ -23,7 +23,7 @@ import type { UploadResult } from '../wbuploadedparser';
 import {
   getInitialWbPlanViewState,
   stateReducer,
-} from './wbplanviewstatereducer';
+} from './wbplanviewstate';
 
 // General definitions
 export type Status = {

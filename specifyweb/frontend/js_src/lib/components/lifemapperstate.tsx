@@ -3,11 +3,11 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { SN_SERVICES } from '../lifemapperconfig';
-import type { Actions, LifemapperInfo } from '../lifemapperinforeducer';
+import type { Actions, Lifemapper } from '../lifemapperreducer';
 import {
   extractElement,
   formatLifemapperViewPageRequest,
-} from '../lifemapperinfoutills';
+} from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
@@ -31,7 +31,7 @@ export type MainState = State<
     }>;
     localOccurrenceName?: string;
     remoteOccurrenceName?: string;
-    lifemapperInfo?: LifemapperInfo;
+    lifemapper?: Lifemapper;
   }
 >;
 
@@ -155,10 +155,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             }}
           >
             {typeof state.aggregators[badgeName] === 'undefined' ? (
-              typeof state.lifemapperInfo === 'undefined' ? (
+              typeof state.lifemapper === 'undefined' ? (
                 <p>{commonText('loading')}</p>
               ) : (
-                <LifemapperMap lifemapperInfo={state.lifemapperInfo} />
+                <LifemapperMap lifemapper={state.lifemapper} />
               )
             ) : (
               <Aggregator data={state.aggregators[badgeName]} />

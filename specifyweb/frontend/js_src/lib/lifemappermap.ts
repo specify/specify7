@@ -5,12 +5,12 @@ import csrftoken from './csrftoken';
 import type { MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
-import type { LifemapperInfo } from './lifemapperinforeducer';
-import type { LifemapperLayerTypes } from './lifemapperinfoutills';
+import type { Lifemapper } from './lifemapperreducer';
+import type { LifemapperLayerTypes } from './lifemapperutills';
 import {
   formatOccurrenceMapRequest,
   lifemapperLayerVariations,
-} from './lifemapperinfoutills';
+} from './lifemapperutills';
 import {
   formatLocalityDataObject,
   getLocalityDataFromLocalityResource,
@@ -23,7 +23,7 @@ import fetchDataModel from './wbplanviewmodelfetcher';
 export async function prepareLifemapperProjectionMap(
   getOccurrenceName: (preferredElement: 0 | 1) => string,
   model: any
-): Promise<LifemapperInfo> {
+): Promise<Lifemapper> {
   const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
     async (resolve) => {
       await fetchDataModel();

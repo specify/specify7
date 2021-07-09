@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import React from 'react';
 import { SN_SERVICES } from '../lifemapperconfig';
-import { formatLifemapperViewPageRequest } from '../lifemapperinfoutills';
+import { formatLifemapperViewPageRequest } from '../lifemapperutills';
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
 import { Badge } from './lifemappercomponents';
-import { LifemapperInfo } from './lifemapperinfo';
+import { Lifemapper } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
 
 interface Props {
@@ -57,7 +57,7 @@ function LifemapperWrapper(props: ComponentProps): JSX.Element {
     )
   ) : (
     <ErrorBoundary hasErrorCallback={() => setHasError(true)}>
-      <LifemapperInfo
+      <Lifemapper
         {...props}
         handleOccurrenceNameFetch={setOccurrenceName}
       />
@@ -66,7 +66,7 @@ function LifemapperWrapper(props: ComponentProps): JSX.Element {
 }
 
 const View = createBackboneView<Props, Props, ComponentProps>({
-  moduleName: 'LifemapperInfo',
+  moduleName: 'Lifemapper',
   className: 'lifemapper-info',
   initialize(self, { model }) {
     self.model = model;
