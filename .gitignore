@@ -23,6 +23,7 @@ seed-database
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js
 /specifyweb/frontend/static/css
+/specifyweb/frontend/static/manifest.json
 /specifyweb/frontend/js_src/bower_components
 /specifyweb/frontend/js_src/node_modules
 /specifyweb/frontend/js_src/testBuild
