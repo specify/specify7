@@ -20,7 +20,7 @@ const adminText = createDictionary({
   globalResourcesTitle: (resourceCount: string) =>
     `Global <small>(${resourceCount})</small>`,
   disciplineResourcesTitle: (resourceCount: string) =>
-    `Discipliine <small>(${resourceCount})</small>`,
+    `Discipline <small>(${resourceCount})</small>`,
   userTypes: 'User Types',
   users: 'Users',
   createResourceDialogTitle: 'New Resource Name',
