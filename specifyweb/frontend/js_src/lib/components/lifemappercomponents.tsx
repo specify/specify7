@@ -2,12 +2,12 @@ import type L from 'leaflet';
 import React from 'react';
 
 import * as Leaflet from '../leaflet';
+import type { MessageTypes } from '../lifemapperconfig';
+import { lifemapperMessagesMeta } from '../lifemapperconfig';
 import type { LifemapperInfo } from '../lifemapperinforeducer';
 import { formatIconRequest } from '../lifemapperinfoutills';
 import lifemapperText from '../localization/lifemapper';
-import type { MessageTypes } from './lifemapperinfo';
-import { lifemapperMessagesMeta } from './lifemapperinfo';
-import { MainState } from './lifemapperinfostate';
+import type { MainState } from './lifemapperinfostate';
 import type { RA } from './wbplanview';
 
 export function Badge<IS_ENABLED extends boolean>({

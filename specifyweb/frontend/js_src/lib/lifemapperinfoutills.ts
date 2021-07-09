@@ -1,5 +1,5 @@
-import { snFrontendServer, snServer } from './components/lifemapperinfo';
 import type { RR } from './components/wbplanview';
+import { snFrontendServer, snServer } from './lifemapperconfig';
 import lifemapperText from './localization/lifemapper';
 
 export const fetchLocalScientificName = async (

@@ -1,12 +1,12 @@
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import type { MessageTypes } from './components/lifemapperinfo';
-import { SN_SERVICES } from './components/lifemapperinfo';
 import type { MainState, States } from './components/lifemapperinfostate';
 import { mainState } from './components/lifemapperinfostate';
 import type { IR, RA, RR } from './components/wbplanview';
 import type { LayerConfig, MarkerGroups } from './leaflet';
+import type { MessageTypes } from './lifemapperconfig';
+import { SN_SERVICES } from './lifemapperconfig';
 
 type LoadedAction = Action<
   'LoadedAction',

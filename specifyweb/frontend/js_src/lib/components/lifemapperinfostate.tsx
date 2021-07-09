@@ -2,6 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import { SN_SERVICES } from '../lifemapperconfig';
 import type { Actions, LifemapperInfo } from '../lifemapperinforeducer';
 import {
   extractElement,
@@ -10,7 +11,6 @@ import {
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
-import { SN_SERVICES } from './lifemapperinfo';
 import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR } from './wbplanview';
 
