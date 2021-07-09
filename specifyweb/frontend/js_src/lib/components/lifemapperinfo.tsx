@@ -15,7 +15,11 @@ import {
   formatOccurrenceMapRequest,
   lifemapperLayerVariations,
 } from '../lifemapperinfoutills';
-import { getLocalityDataFromLocalityResource } from '../localityrecorddataextractor';
+import {
+  formatLocalityDataObject,
+  getLocalityDataFromLocalityResource,
+  parseLocalityPinFields,
+} from '../localityrecorddataextractor';
 import lifemapperText from '../localization/lifemapper';
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
@@ -25,6 +29,8 @@ import { stateReducer } from './lifemapperinfostate';
 import createBackboneView from './reactbackboneextend';
 import type { IR, RA, RR } from './wbplanview';
 import type { LoadingState } from './wbplanviewstatereducer';
+import csrftoken from '../csrftoken.js';
+import fetchDataModel from '../wbplanviewmodelfetcher';
 
 // TODO: remove this
 const IS_DEVELOPMENT = false;
@@ -160,7 +166,7 @@ function LifemapperInfo({
       Object.values(state.aggregators)
         .filter((aggregatorInfo) => aggregatorInfo)
         .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
-        .find((occurrenceName) => occurrenceName)?.[0] ?? '';
+        .find((occurrenceName) => occurrenceName) ?? '';
 
     dispatch({
       type: 'SetRemoteOccurrenceNameAction',
@@ -208,7 +214,8 @@ function LifemapperInfo({
         state.type !== 'MainState' ||
         !state.badges.lm.isOpen ||
         typeof state.remoteOccurrenceName === 'undefined' ||
-        typeof state.localOccurrenceName === 'undefined'
+        typeof state.localOccurrenceName === 'undefined' ||
+        typeof state.lifemapperInfo !== 'undefined'
       )
         return;
 
@@ -220,78 +227,164 @@ function LifemapperInfo({
       if (!getOccurrenceName(1)) return;
 
       const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
-        (resolve) => {
-          const similarCollectionObjects = new (
-            schema as any
-          ).models.CollectionObject.LazyCollection({
-            filters: {
-              determinations__iscurrent: true,
-              determinations__preferredtaxon__fullname: getOccurrenceName(0),
-            },
+        async (resolve) => {
+          await fetchDataModel();
+
+          const determination = await model.rget('determinations');
+
+          const currentDetermination = determination.models.filter(
+            (model: any) => model.get('iscurrent')
+          )[0];
+
+          if (typeof currentDetermination === 'undefined') resolve([]);
+
+          const taxon = await currentDetermination.rget('taxon');
+
+          const LIMIT = 10_000;
+
+          const parsedLocalityFields = parseLocalityPinFields(true);
+
+          const request = await fetch('/stored_query/ephemeral/', {
+            headers: { 'X-CSRFToken': csrftoken! },
+            method: 'POST',
+            body: JSON.stringify({
+              name: 'Lifemapper Local Occurrence query',
+              contextname: 'CollectionObject',
+              contexttableid: 1,
+              limit: LIMIT,
+              selectdistinct: true,
+              countonly: false,
+              specifyuser: '/api/specify/specifyuser/1/',
+              isfavorite: true,
+              ordinal: 32_767,
+              formatauditrecids: false,
+              fields: [
+                {
+                  tablelist: '1,9-determinations,4',
+                  stringid: '1,9-determinations,4.taxon.taxonid',
+                  fieldname: 'taxonid',
+                  isrelfld: false,
+                  sorttype: 0,
+                  isdisplay: false,
+                  isnot: false,
+                  startvalue: `${taxon.get('id')}`,
+                  operstart: 1,
+                  position: 0,
+                },
+                {
+                  tablelist: '1,9-determinations',
+                  stringid: '1,9-determinations.determination.isCurrent',
+                  fieldname: 'isCurrent',
+                  isrelfld: false,
+                  sorttype: 0,
+                  isdisplay: false,
+                  isnot: false,
+                  startvalue: '',
+                  operstart: 6,
+                  position: 1,
+                },
+                {
+                  sorttype: 0,
+                  isdisplay: true,
+                  isnot: false,
+                  startvalue: '',
+                  query: '/api/specify/spquery/',
+                  position: 2,
+                  tablelist: '1,10,2',
+                  stringid: '1,10,2.locality.localityid',
+                  fieldname: 'localityid',
+                  isrelfld: false,
+                  operstart: 1,
+                },
+                ...parsedLocalityFields.map(([fieldName]) => ({
+                  sorttype: 0,
+                  isdisplay: true,
+                  isnot: false,
+                  startvalue: '',
+                  query: '/api/specify/spquery/',
+                  position: 3,
+                  tablelist: '1,10,2',
+                  stringid: `1,10,2.locality.${fieldName}`,
+                  fieldname: fieldName,
+                  isrelfld: false,
+                  operstart: 1,
+                })),
+              ],
+              offset: 0,
+            }),
           });
 
-          const fetchedPopUps: number[] = [];
+          const results: {
+            readonly results: RA<[number, number, ...RA<string>]>;
+          } = await request.json();
 
-          similarCollectionObjects
-            .fetch({
-              limit: 350,
-            })
-            .done(async () =>
-              Promise.all<MarkerGroups | undefined>(
-                similarCollectionObjects.map(
-                  async (collectionObject: any, index: number) =>
-                    new Promise<MarkerGroups | undefined>((resolve) =>
-                      collectionObject
-                        .rget('collectingevent.locality')
-                        .done(async (localityResource: any) =>
-                          getLocalityDataFromLocalityResource(
-                            localityResource,
-                            true
-                          )
-                            .then((localityData) =>
-                              localityData === false
-                                ? undefined
-                                : Leaflet.getMarkersFromLocalityData({
-                                    localityData,
-                                    iconClass:
-                                      model.get('id') ===
-                                      collectionObject.get('id')
-                                        ? 'lifemapper-current-collection-object-marker'
-                                        : undefined,
-                                    markerClickCallback: ({
-                                      target: marker,
-                                    }) => {
-                                      if (fetchedPopUps.includes(index)) return;
-                                      void getLocalityDataFromLocalityResource(
-                                        localityResource
-                                      ).then((localityData) =>
-                                        localityData === false
-                                          ? undefined
-                                          : marker
-                                              .getPopup()
-                                              .setContent(
-                                                Leaflet.formatLocalityData(
-                                                  localityData
-                                                )
-                                              )
-                                      );
-                                      fetchedPopUps.push(index);
-                                    },
-                                  })
-                            )
-                            .then(resolve)
-                        )
-                    )
-                )
-              )
-                .then((results) =>
-                  results.filter(
-                    (result): result is MarkerGroups =>
-                      typeof result !== 'undefined'
-                  )
-                )
-                .then(resolve)
-            );
+          let currentLocalityId: undefined | number;
+          const localities = await Promise.all(
+            results.results.map(
+              ([collectionObjectId, localityId, ...localityData]) => {
+                if (collectionObjectId === model.get('id'))
+                  currentLocalityId = localityId;
+
+                return {
+                  localityId,
+                  localityData: formatLocalityDataObject(
+                    parsedLocalityFields.map((mappingPath, index) => [
+                      mappingPath,
+                      localityData[index],
+                    ])
+                  ),
+                  fetchLocalityResource: () =>
+                    new Promise<any>((resolve) => {
+                      const locality = new (
+                        schema as any
+                      ).models.Locality.LazyCollection({
+                        filters: { id: localityId },
+                      });
+                      locality
+                        .fetch({ limit: 1 })
+                        .then(() => resolve(locality.models[0]));
+                    }),
+                };
+              }
+            )
+          );
+
+          const fetchedPopUps: number[] = [];
+          const markers = await Promise.all(
+            localities.map(
+              ({ localityId, localityData, fetchLocalityResource }, index) =>
+                localityData === false
+                  ? undefined
+                  : Leaflet.getMarkersFromLocalityData({
+                      localityData,
+                      iconClass:
+                        localityId === currentLocalityId
+                          ? 'lifemapper-current-collection-object-marker'
+                          : undefined,
+                      markerClickCallback: async ({ target: marker }) => {
+                        if (fetchedPopUps.includes(index)) return;
+                        const localityResource = await fetchLocalityResource();
+                        const localityData =
+                          await getLocalityDataFromLocalityResource(
+                            localityResource
+                          );
+                        if (localityData !== false)
+                          marker
+                            .getPopup()
+                            .setContent(
+                              Leaflet.formatLocalityData(localityData)
+                            );
+                        fetchedPopUps.push(index);
+                      },
+                    })
+            )
+          );
+
+          resolve(
+            markers.filter(
+              (result): result is MarkerGroups => typeof result !== 'undefined'
+            )
+          );
         }
       );
 
@@ -374,8 +467,9 @@ function LifemapperInfo({
           state.localOccurrenceName,
           state.remoteOccurrenceName,
           state.badges.lm.isOpen,
+          state.lifemapperInfo,
         ]
-      : [undefined, undefined, undefined]
+      : [undefined, undefined, undefined, undefined]
   );
 
   return stateReducer(<></>, {

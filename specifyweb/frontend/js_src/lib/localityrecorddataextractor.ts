@@ -102,13 +102,15 @@ const resultsIntoPairs = (
         typeof pair !== 'undefined'
     );
 
-export async function getLocalityDataFromLocalityResource(
-  localityResource: any,
-  // Don't fetch related tables. Only return data from this resource.
-  quickFetch = false
-): Promise<LocalityData | false> {
-  // Needed by generateMappingPathPreview
-  await fetchDataModelPromise();
+export const parsedLocalityPinFields: [
+  RA<MappingPath> | undefined,
+  RA<MappingPath> | undefined
+] = [undefined, undefined];
+export const parseLocalityPinFields = (
+  quickFetch: boolean
+): RA<MappingPath> => {
+  const parsedResult = parsedLocalityPinFields[Number(quickFetch)];
+  if (Array.isArray(parsedResult)) return parsedResult;
 
   const arrayOfMappings = localityPinFields
     .flatMap(({ pathsToFields }) => pathsToFields)
@@ -159,14 +161,34 @@ export async function getLocalityDataFromLocalityResource(
     []
   );
 
+  parsedLocalityPinFields[Number(quickFetch)] = filteredArrayOfMappings;
+  return filteredArrayOfMappings;
+};
+
+export async function getLocalityDataFromLocalityResource(
+  localityResource: any,
+  // Don't fetch related tables. Only return data from this resource.
+  quickFetch = false
+): Promise<LocalityData | false> {
+  // Needed by generateMappingPathPreview
+  await fetchDataModelPromise();
+
+  const filteredArrayOfMappings = parseLocalityPinFields(quickFetch);
+
   const results = await Promise.all(
     filteredArrayOfMappings.map(async (mappingPath) =>
       recursiveResourceResolve(localityResource, mappingPath)
     )
   );
 
+  return formatLocalityDataObject(resultsIntoPairs(results.flat()));
+}
+
+export function formatLocalityDataObject(
+  results: RA<[MappingPath, string | null]>
+): LocalityData | false {
   const rawLocalityData = Object.fromEntries(
-    resultsIntoPairs(results.flat())
+    results
       .filter(([, fieldValue]) => fieldValue !== null)
       .map(
         ([mappingPath, fieldValue]) =>

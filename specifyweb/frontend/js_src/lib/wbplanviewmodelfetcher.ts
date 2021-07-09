@@ -243,16 +243,13 @@ const fieldHasOverwrite = (
     ([key, action]) => fieldName.endsWith(key) && action === overwriteName
   ) !== -1;
 
-let cacheVersion = '';
-
 /* Fetches the data model */
 export default async function (): Promise<void> {
   if (typeof dataModelStorage.tables !== 'undefined') return;
 
-  if (cacheVersion === '') {
+  if (typeof dataModelStorage.currentCollectionId === 'undefined')
     dataModelStorage.currentCollectionId = await cache.getCurrentCollectionId();
-    cacheVersion = `${dataModelFetcherVersion}_${dataModelStorage.currentCollectionId}`;
-  }
+  const cacheVersion = `${dataModelFetcherVersion}_${dataModelStorage.currentCollectionId}`;
 
   {
     const tables = cache.get('wbplanview-datamodel', 'tables', {
