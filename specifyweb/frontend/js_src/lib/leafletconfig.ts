@@ -167,8 +167,18 @@ export type LocalityPinFields = {
  *   mapping path.
  * Leaflet map in the workbench does not have such limit.
  */
-export const MAX_TO_MANY_INDEX = 3;
+export const MAX_TO_MANY_INDEX = 10;
 
+/*
+ * NOTE:
+ * Leaflet map on the Locality form and the CO Lifemapper badge is going
+ * to display `$rank > fullname` for a single rank that is attached to given
+ * record, instead of `$rank > name` for each rank specified in this definition.
+ *
+ * Similarly, those maps are going to display `agent > fullname`, instead of
+ * `agent > lastname`
+ *
+ */
 export const localityPinFields: RA<LocalityPinFields> = [
   {
     pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],

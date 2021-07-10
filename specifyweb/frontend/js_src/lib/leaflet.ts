@@ -8,6 +8,7 @@ import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import * as cache from './cache';
 import type { IR, RA, RR } from './components/wbplanview';
+import { MappingPath } from './components/wbplanviewmapper';
 import {
   coMapTileServers,
   leafletLayersEndpoint,
@@ -271,7 +272,10 @@ export function addMarkersToMap(
   map.on('overlayremove', handleOverlayEvent);
 
   // Add layer groups' checkboxes to the layer control menu
-  controlLayers.addOverlay(layerGroups.polygon, localityText('occurrencePolygons')(layerName));
+  controlLayers.addOverlay(
+    layerGroups.polygon,
+    localityText('occurrencePolygons')(layerName)
+  );
   controlLayers.addOverlay(
     layerGroups.polygonBoundary,
     localityText('polygonBoundaries')(layerName)

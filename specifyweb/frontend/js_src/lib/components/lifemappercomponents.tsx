@@ -4,7 +4,7 @@ import React from 'react';
 import * as Leaflet from '../leaflet';
 import type { MessageTypes } from '../lifemapperconfig';
 import { lifemapperMessagesMeta } from '../lifemapperconfig';
-import type { Lifemapper } from '../lifemapperreducer';
+import type { MapInfo } from '../lifemapperreducer';
 import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
 import type { MainState } from './lifemapperstate';
@@ -78,9 +78,9 @@ export function Aggregator({
 }
 
 export function LifemapperMap({
-  lifemapper,
+  mapInfo,
 }: {
-  readonly lifemapper: Lifemapper;
+  readonly mapInfo: MapInfo;
 }): JSX.Element | null {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -95,8 +95,8 @@ export function LifemapperMap({
     let leafletMap: L.Map | undefined;
     Leaflet.showCOMap(
       mapRef.current,
-      lifemapper.layers,
-      (Object.entries(lifemapper.messages) as [MessageTypes, RA<string>][])
+      mapInfo.layers,
+      (Object.entries(mapInfo.messages) as [MessageTypes, RA<string>][])
         .filter(([, messages]) => messages.length > 0)
         .map(
           ([name, messages]) => `<span
@@ -114,7 +114,7 @@ export function LifemapperMap({
         Leaflet.addMarkersToMap(
           map,
           layerGroup,
-          lifemapper.markers.flat(),
+          mapInfo.markers.flat(),
           lifemapperText('localOccurrencePoints')
         );
         if (destructorCalled) destructor(map);

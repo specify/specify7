@@ -5,7 +5,7 @@ import csrftoken from './csrftoken';
 import type { MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
-import type { Lifemapper } from './lifemapperreducer';
+import type { MapInfo } from './lifemapperreducer';
 import type { LifemapperLayerTypes } from './lifemapperutills';
 import {
   formatOccurrenceMapRequest,
@@ -23,7 +23,7 @@ import fetchDataModel from './wbplanviewmodelfetcher';
 export async function prepareLifemapperProjectionMap(
   getOccurrenceName: (preferredElement: 0 | 1) => string,
   model: any
-): Promise<Lifemapper> {
+): Promise<MapInfo> {
   const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
     async (resolve) => {
       await fetchDataModel();
@@ -124,6 +124,7 @@ export async function prepareLifemapperProjectionMap(
               currentLocalityId = localityId;
 
             return {
+              collectionObjectId,
               localityId,
               localityData: formatLocalityDataObject(
                 parsedLocalityFields.map((mappingPath, index) => [
@@ -150,7 +151,15 @@ export async function prepareLifemapperProjectionMap(
       const fetchedPopUps: number[] = [];
       const markers = await Promise.all(
         localities.map(
-          ({ localityId, localityData, fetchLocalityResource }, index) =>
+          (
+            {
+              collectionObjectId,
+              localityId,
+              localityData,
+              fetchLocalityResource,
+            },
+            index
+          ) =>
             localityData === false
               ? undefined
               : Leaflet.getMarkersFromLocalityData({
@@ -164,7 +173,12 @@ export async function prepareLifemapperProjectionMap(
                     const localityResource = await fetchLocalityResource();
                     const localityData =
                       await getLocalityDataFromLocalityResource(
-                        localityResource
+                        localityResource,
+                        false,
+                        (_mappingPathParts, resource) =>
+                          typeof resource?.specifyModel?.name !== 'string' ||
+                          resource.specifyModel.name !== 'CollectionObject' ||
+                          resource.get('id') === collectionObjectId
                       );
                     if (localityData !== false)
                       marker

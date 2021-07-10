@@ -3,18 +3,20 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
 import { formatCoordinate, getLocalityData } from './leafletutils';
+import { deflateLocalityData } from './lifemapperhelper';
 import {
   formatReferenceItem,
   formatTreeRank,
-  generateMappingPathPreview,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
+import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import dataModelStorage from './wbplanviewmodel';
 import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
+import dataObjectFormatters from './dataobjformatters';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -27,7 +29,7 @@ const splitMappingPath = (
 function getNextMappingPathPart(
   mappingPath: MappingPath
 ): [MappingPath, MappingPath] {
-  for (let index = 0; index < mappingPath.length; index++)
+  for (let index = 0; index < mappingPath.length; index += 1)
     if (
       valueIsTreeRank(mappingPath[index]) ||
       valueIsReferenceItem(mappingPath[index])
@@ -36,9 +38,19 @@ function getNextMappingPathPart(
   return [mappingPath, []];
 }
 
+type FilterFunction = (
+  mappingPath: [
+    pastParts: MappingPath,
+    currentPart: MappingPath,
+    nextParts: MappingPath
+  ],
+  resource: any
+) => boolean;
+
 async function recursiveResourceResolve(
   resource: any,
   mappingPath: MappingPath,
+  filterFunction?: FilterFunction,
   pastParts: RA<string> = []
 ): Promise<RA<string>> {
   if (mappingPath.length === 0) return [pastParts, resource];
@@ -46,6 +58,12 @@ async function recursiveResourceResolve(
   const [currentPart, nextPart] = getNextMappingPathPart(mappingPath);
 
   if (typeof resource === 'undefined') return [];
+
+  if (
+    typeof filterFunction !== 'undefined' &&
+    !filterFunction([pastParts, currentPart, nextPart], resource)
+  )
+    return [];
 
   if (
     'fetchIfNotPopulated' in resource &&
@@ -75,19 +93,25 @@ async function recursiveResourceResolve(
         Object.values(resource.models)
           .slice(0, MAX_TO_MANY_INDEX)
           .map(async (model: any, index) =>
-            recursiveResourceResolve(model, nextPart, [
+            recursiveResourceResolve(model, nextPart, filterFunction, [
               ...pastParts,
               formatReferenceItem(index + 1),
             ])
           )
       ).then((result) => resolve(result.flat()))
     );
-  } else
-    return recursiveResourceResolve(
-      await resource.rget(mappingPathToString(currentPart)),
-      nextPart,
-      [...pastParts, ...currentPart]
-    );
+  } else {
+    const overwriteAgent =
+      currentPart[0] === 'agent' && currentPart[1] === 'lastname';
+    const nextResource = overwriteAgent
+      ? await dataObjectFormatters.format(resource)
+      : await resource.rget(mappingPathToString(currentPart));
+
+    return recursiveResourceResolve(nextResource, nextPart, filterFunction, [
+      ...pastParts,
+      ...(overwriteAgent ? ['agent', 'fullname'] : currentPart),
+    ]);
+  }
 }
 
 const resultsIntoPairs = (
@@ -168,7 +192,8 @@ export const parseLocalityPinFields = (
 export async function getLocalityDataFromLocalityResource(
   localityResource: any,
   // Don't fetch related tables. Only return data from this resource.
-  quickFetch = false
+  quickFetch = false,
+  filterFunction?: FilterFunction
 ): Promise<LocalityData | false> {
   // Needed by generateMappingPathPreview
   await fetchDataModelPromise();
@@ -177,11 +202,17 @@ export async function getLocalityDataFromLocalityResource(
 
   const results = await Promise.all(
     filteredArrayOfMappings.map(async (mappingPath) =>
-      recursiveResourceResolve(localityResource, mappingPath)
+      recursiveResourceResolve(localityResource, mappingPath, filterFunction)
     )
   );
 
-  return formatLocalityDataObject(resultsIntoPairs(results.flat()));
+  const localityData = formatLocalityDataObject(
+    resultsIntoPairs(results.flat())
+  );
+
+  return typeof filterFunction === 'undefined' || localityData === false
+    ? localityData
+    : deflateLocalityData(localityData);
 }
 
 export function formatLocalityDataObject(
@@ -195,10 +226,7 @@ export function formatLocalityDataObject(
           [
             mappingPathToString(['locality', ...mappingPath]),
             {
-              headerName: generateMappingPathPreview(
-                'locality',
-                mappingPath
-              )[1],
+              headerName: generateMappingPathPreview('locality', mappingPath),
               value: fieldValue?.toString() ?? '',
             },
           ] as const

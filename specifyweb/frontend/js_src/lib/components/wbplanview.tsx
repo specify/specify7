@@ -20,10 +20,7 @@ import {
   refStatesMapper,
 } from '../wbplanviewrefreducer';
 import type { UploadResult } from '../wbuploadedparser';
-import {
-  getInitialWbPlanViewState,
-  stateReducer,
-} from './wbplanviewstate';
+import { getInitialWbPlanViewState, stateReducer } from './wbplanviewstate';
 
 // General definitions
 export type Status = {

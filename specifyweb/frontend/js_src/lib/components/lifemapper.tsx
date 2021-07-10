@@ -164,7 +164,7 @@ export function Lifemapper({
         !state.badges.lm.isOpen ||
         typeof state.remoteOccurrenceName === 'undefined' ||
         typeof state.localOccurrenceName === 'undefined' ||
-        typeof state.lifemapper !== 'undefined'
+        typeof state.mapInfo !== 'undefined'
       )
         return;
 
@@ -175,12 +175,11 @@ export function Lifemapper({
         );
       if (!getOccurrenceName(1)) return;
 
-      prepareLifemapperProjectionMap(getOccurrenceName, model).then(
-        (lifemapper) =>
-          dispatch({
-            type: 'MapLoadedAction',
-            ...lifemapper,
-          })
+      prepareLifemapperProjectionMap(getOccurrenceName, model).then((mapInfo) =>
+        dispatch({
+          type: 'MapLoadedAction',
+          ...mapInfo,
+        })
       );
     },
     state.type === 'MainState'
@@ -188,7 +187,7 @@ export function Lifemapper({
           state.localOccurrenceName,
           state.remoteOccurrenceName,
           state.badges.lm.isOpen,
-          state.lifemapper,
+          state.mapInfo,
         ]
       : [undefined, undefined, undefined, undefined]
   );

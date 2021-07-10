@@ -39,13 +39,13 @@ type SetLocalOccurrenceNameAction = Action<
   }
 >;
 
-export type Lifemapper = {
+export type MapInfo = {
   readonly layers: RA<LayerConfig>;
   readonly markers: RA<MarkerGroups>;
   readonly messages: RR<MessageTypes, RA<string>>;
 };
 
-type MapLoadedAction = Action<'MapLoadedAction', Lifemapper>;
+type MapLoadedAction = Action<'MapLoadedAction', MapInfo>;
 
 export type Actions =
   | LoadedAction
@@ -78,7 +78,7 @@ export const reducer = generateReducer<States, Actions>({
     ),
     localOccurrenceName: undefined,
     remoteOccurrenceName: undefined,
-    lifemapper: undefined,
+    mapInfo: undefined,
   }),
   ToggleAggregatorVisibilityAction: ({ action, state }) => ({
     ...mainState(state),
@@ -90,9 +90,9 @@ export const reducer = generateReducer<States, Actions>({
       },
     },
   }),
-  MapLoadedAction: ({ action: { type: _, ...lifemapper }, state }) => ({
+  MapLoadedAction: ({ action: { type: _, ...mapInfo }, state }) => ({
     ...mainState(state),
-    lifemapper,
+    mapInfo,
   }),
   SetRemoteOccurrenceNameAction: ({
     action: { remoteOccurrenceName },
