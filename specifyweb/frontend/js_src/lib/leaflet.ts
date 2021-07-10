@@ -8,7 +8,6 @@ import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import * as cache from './cache';
 import type { IR, RA, RR } from './components/wbplanview';
-import { MappingPath } from './components/wbplanviewmapper';
 import {
   coMapTileServers,
   leafletLayersEndpoint,

@@ -13,10 +13,7 @@ import type {
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import type {
-  LoadingState,
-  MappingState,
-} from './components/wbplanviewstatereducer';
+import type { LoadingState, MappingState } from './components/wbplanviewstate';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';

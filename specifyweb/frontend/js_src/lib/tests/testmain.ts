@@ -12,6 +12,7 @@ import testWbPlanViewLinesGetter from './testwbplanviewlinesgetter';
 import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
 import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
+import testWbPlanViewTreePreview from './testwbplanviewmappingpreview';
 
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
@@ -43,6 +44,7 @@ function runTests(): void {
   testWbPlanViewModelHelper();
   testWbPlanViewTreeHelper();
   testWbPlanViewNavigator();
+  testWbPlanViewTreePreview();
   testAutoMapper();
 }
 

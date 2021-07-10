@@ -1,7 +1,7 @@
 import type { RA } from './components/wbplanview';
 import type { MappingLine } from './components/wbplanviewmapper';
 import wbText from './localization/workbench';
-import { generateMappingPathPreview } from './wbplanviewmappinghelper';
+import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 
 const formatUniqueifiedHeader = (
   headers: RA<string>,
@@ -51,7 +51,7 @@ export function renameNewlyCreatedHeaders(
       .filter(({ line }) => !headers.includes(line.headerName))
       .map(({ line, index }) => [
         index,
-        generateMappingPathPreview(baseTableName, line.mappingPath)[1],
+        generateMappingPathPreview(baseTableName, line.mappingPath),
       ])
   );
 

@@ -4,7 +4,7 @@ import { generateDispatch } from 'typesafe-reducer';
 
 import * as cache from './cache';
 import type { WbPlanViewProps } from './components/wbplanview';
-import type { WbPlanViewStates } from './components/wbplanviewstatereducer';
+import type { WbPlanViewStates } from './components/wbplanviewstate';
 import type { WbPlanViewActions } from './wbplanviewreducer';
 
 type RefUndefinedState = State<'RefUndefinedState'>;

@@ -93,4 +93,4 @@ export const camelToKebab = (value: string): string =>
   value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 export const camelToHuman = (value: string): string =>
-  capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace('Dna', 'DNA');
+  capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');

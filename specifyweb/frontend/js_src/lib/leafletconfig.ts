@@ -172,7 +172,7 @@ export const MAX_TO_MANY_INDEX = 10;
 /*
  * NOTE:
  * Leaflet map on the Locality form and the CO Lifemapper badge is going
- * to display `$rank > fullname` for a single rank that is attached to given
+ * to display `$rank > fullname` for a single rank that is attached to a given
  * record, instead of `$rank > name` for each rank specified in this definition.
  *
  * Similarly, those maps are going to display `agent > fullname`, instead of

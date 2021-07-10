@@ -4,6 +4,7 @@
  *
  */
 
+import { R } from './components/wbplanview';
 import type { RA } from './components/wbplanview';
 import type {
   FullMappingPath,
@@ -11,10 +12,8 @@ import type {
   MappingType,
   RelationshipType,
 } from './components/wbplanviewmapper';
-import commonText from './localization/common';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import dataModelStorage from './wbplanviewmodel';
-import { getMappingLineData } from './wbplanviewnavigator';
 
 export const relationshipIsToMany = (
   relationshipType?: RelationshipType | ''
@@ -68,62 +67,6 @@ export const mappingPathToString = (mappingPath: MappingPath): string =>
 
 export const splitJoinedMappingPath = (string: string): MappingPath =>
   string.split(dataModelStorage.pathJoinSymbol);
-
-export function generateMappingPathPreview(
-  baseTableName: string,
-  mappingPath: MappingPath
-): [string, string] {
-  const mappingLineData = getMappingLineData({
-    baseTableName,
-    mappingPath,
-    iterate: true,
-  })
-    .map((mappingElementData, index) => ({
-      mappingElementData,
-      mappingPathPart: mappingPath[index],
-    }))
-    .slice(-2);
-
-  const fieldLabels = mappingLineData.map(
-    ({ mappingElementData, mappingPathPart }) =>
-      (Object.values(mappingElementData.fieldsData).find(
-        ({ isDefault }) => isDefault
-      )?.label as string) ??
-      (mappingPathPart === 'fullname' ? commonText('fullName') : mappingPath)
-  );
-
-  const toManyLocation = Array.from(mappingPath)
-    .reverse()
-    .findIndex((mappingPathPart) => valueIsReferenceItem(mappingPathPart));
-  let toManyIndexString = '';
-  if (toManyLocation > 1) {
-    const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
-    const toManyIndexNumber = getIndexFromReferenceItemName(toManyIndex);
-    if (toManyIndexNumber > 1) toManyIndexString = ` ${toManyIndex}`;
-  }
-  const [possibleDataBaseTableName, databaseFieldName] = mappingPath.slice(-2);
-  const [possibleTableName, fieldName] = fieldLabels.slice(-2);
-
-  if (mappingLineData.length === 1)
-    return [possibleDataBaseTableName, possibleTableName];
-
-  if (valueIsTreeRank(possibleDataBaseTableName))
-    return [
-      databaseFieldName,
-      databaseFieldName === 'name'
-        ? possibleTableName
-        : `${possibleTableName} ${fieldName}${toManyIndexString}`,
-    ];
-  else if (valueIsReferenceItem(possibleDataBaseTableName))
-    return [databaseFieldName, `${fieldName} ${possibleTableName}`];
-  else
-    return [
-      databaseFieldName,
-      mappingLineData.slice(-1)[0].mappingElementData.tableName === 'agent'
-        ? `${possibleTableName} ${fieldName}${toManyIndexString}`
-        : `${fieldName}${toManyIndexString}`,
-    ];
-}
 
 export type SplitMappingPath = {
   readonly mappingPath: MappingPath;
@@ -192,3 +135,62 @@ export const getCanonicalMappingPath = (
       ? formatReferenceItem(1)
       : mappingPathPart
   );
+
+/*
+ * Rebases -to-many reference numbers to make sure there are no skipped indexes
+ *
+ * For example, given this input:
+ * arrayOfMappings = [
+ *   ['locality','collectingevents','#2','startdate',
+ *   ['locality','collectingevents','#3','startdate',
+ * ]
+ *
+ * The output would be:
+ * [
+ *   ['locality','collectingevents','#1','startdate',
+ *   ['locality','collectingevents','#2','startdate',
+ * ]
+ */
+export function deflateArrayOfMappings(
+  arrayOfMappings: RA<MappingPath>
+): RA<MappingPath> {
+  const changes: R<string> = {};
+  return arrayOfMappings.reduce<RA<MappingPath>>(
+    (arrayOfMappings, mappingPath, rowIndex) => {
+      let resetToManys = false;
+      const newMappingPath = Array.from(mappingPath);
+      mappingPath.forEach((mappingPathPart, partIndex) => {
+        if (!valueIsReferenceItem(mappingPathPart)) return;
+        const subPath = mappingPathToString(
+          newMappingPath.slice(0, partIndex + 1)
+        );
+        if (resetToManys) changes[subPath] = formatReferenceItem(1);
+        if (subPath in changes) {
+          newMappingPath[partIndex] = changes[subPath];
+          return;
+        }
+
+        const newIndex =
+          getIndexFromReferenceItemName(
+            arrayOfMappings
+              .slice(0, rowIndex)
+              .reverse()
+              .map((mappingPath) => mappingPath.slice(0, partIndex + 1))
+              .find(
+                (mappingPath) =>
+                  mappingPathToString(mappingPath.slice(0, -1)) ===
+                  mappingPathToString(newMappingPath.slice(0, partIndex))
+              )
+              ?.slice(-1)[0] ?? formatReferenceItem(0)
+          ) + 1;
+        if (newIndex === getIndexFromReferenceItemName(mappingPathPart)) return;
+        resetToManys = true;
+        const newValue = formatReferenceItem(newIndex);
+        changes[subPath] = newValue;
+        newMappingPath[partIndex] = newValue;
+      });
+      return [...arrayOfMappings, newMappingPath];
+    },
+    []
+  );
+}
