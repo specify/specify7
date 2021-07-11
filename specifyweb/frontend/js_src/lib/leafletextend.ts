@@ -14,7 +14,6 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
-import commonText from './localization/common';
 
 /* This code is needed to properly load the images in the Leaflet's CSS */
 // @ts-expect-error
@@ -108,7 +107,7 @@ L.Control.Details = L.Control.extend({
     details.classList.add('leaflet-details-container');
     details.setAttribute('open', 'open');
     details.innerHTML = `
-      <summary style="font-size:1rem">${commonText('details')}</summary>
+      <summary style="font-size:1rem"></summary>
       <span></span>
     `;
 

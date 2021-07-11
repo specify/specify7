@@ -34,7 +34,6 @@ const commonText = createDictionary({
   uploaded: 'Uploaded',
   createdBy: 'Created by',
   modifiedBy: 'Modified by',
-  details: 'Details',
   stop: 'Stop',
   remove: 'Remove',
   search: 'Search',

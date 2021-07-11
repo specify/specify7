@@ -115,19 +115,8 @@ export const leafletTileServers: RR<
   },
 } as const;
 
-export const coMapTileServers: RA<{
-  readonly transparent: boolean;
-  readonly layerLabel: string;
-}> = [
-  {
-    transparent: false,
-    layerLabel: 'Satellite Map (ESRI)',
-  },
-  {
-    transparent: true,
-    layerLabel: 'Labels and boundaries',
-  },
-];
+export const preferredOverlayLayer = 'Labels and boundaries';
+export const preferredBaseLayer = 'Satellite Map (ESRI)';
 
 // These fields should be present for locality to be mappable
 export const requiredLocalityColumns: RA<LocalityField> = [

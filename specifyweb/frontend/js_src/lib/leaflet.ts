@@ -9,9 +9,10 @@ import type { LayersControlEventHandlerFn } from 'leaflet';
 import * as cache from './cache';
 import type { IR, RA, RR } from './components/wbplanview';
 import {
-  coMapTileServers,
   leafletLayersEndpoint,
   leafletTileServers,
+  preferredBaseLayer,
+  preferredOverlayLayer,
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
@@ -116,9 +117,7 @@ export async function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const map = L.map(leafletMapContainer[0], {
-    layers: [Object.values(tileLayers.baseMaps)[0]],
-  }).setView(defaultCenter, defaultZoom);
+  const map = L.map(leafletMapContainer[0]).setView(defaultCenter, defaultZoom);
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,
     tileLayers.overlays
@@ -139,26 +138,63 @@ export async function showLeafletMap({
 
   addFullScreenButton(map);
   addPrintMapButton(map);
-  rememberSelectedLayers(map, tileLayers.baseMaps, '');
+  rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
 
   return map;
 }
 
-export type LeafletCacheSalt = string & '';
+export type LeafletCacheSalt = string & ('MainMap' | 'CoMap');
 
-function rememberSelectedLayers(
+function rememberSelectedBaseLayers(
   map: L.Map,
   layers: IR<L.TileLayer>,
   cacheSalt: LeafletCacheSalt
 ): void {
   const cacheName = `currentLayer${cacheSalt}` as const;
   const currentLayer = cache.get('leaflet', cacheName);
-  if (currentLayer !== false && currentLayer in layers)
-    layers[currentLayer].addTo(map);
+  const baseLayer =
+    currentLayer !== false && currentLayer in layers
+      ? layers[currentLayer]
+      : layers[preferredBaseLayer] ?? layers[0];
+  baseLayer.addTo(map);
 
-  map.on('baselayerchange', ({ name }: { readonly name: string }) =>
-    cache.set('leaflet', cacheName, name, { overwrite: true })
-  );
+  map.on('baselayerchange', ({ name }: { readonly name: string }) => {
+    cache.set('leaflet', cacheName, name, { overwrite: true });
+  });
+}
+
+function rememberSelectedOverlays(
+  map: L.Map,
+  layers: IR<L.TileLayer | L.FeatureGroup>,
+  defaultOverlays: IR<boolean> = {}
+): void {
+  const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
+    const layerName = Object.entries(layers).find(
+      ([_, layerObject]) => layerObject === layer
+    )?.[0];
+    if (typeof layerName !== 'undefined')
+      cache.set(
+        'leaflet',
+        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
+        type === 'overlayadd',
+        {
+          overwrite: true,
+        }
+      );
+  };
+
+  Object.keys(layers)
+    .filter((layerName) =>
+      cache.get(
+        'leaflet',
+        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
+        { defaultValue: defaultOverlays[layerName] ?? false }
+      )
+    )
+    .forEach((layerName) => layers[layerName].addTo(map));
+
+  map.on('overlayadd', handleOverlayEvent);
+  map.on('overlayremove', handleOverlayEvent);
 }
 
 function addFullScreenButton(map: L.Map): void {
@@ -174,7 +210,7 @@ function addPrintMapButton(map: L.Map): void {
 function addDetailsButton(
   container: HTMLDivElement,
   map: L.Map,
-  details: string
+  [header, details]: [string, string]
 ): Element {
   // @ts-expect-error
   L.control.details = (options) => new L.Control.Details(options);
@@ -183,6 +219,7 @@ function addDetailsButton(
   const detailsContainer = container.getElementsByClassName(
     'leaflet-details-container'
   )[0];
+  detailsContainer.getElementsByTagName('summary')[0].textContent = header;
   detailsContainer.getElementsByTagName('span')[0].innerHTML = details;
   return detailsContainer;
 }
@@ -212,7 +249,34 @@ export function addMarkersToMap(
   if (markers.length === 0) return;
 
   // Initialize layer groups
-  const cluster = L.markerClusterGroup();
+  const cluster = L.markerClusterGroup({
+    iconCreateFunction(cluster) {
+      const childCount = cluster.getChildCount();
+
+      const minHue = 10;
+      const maxHue = 90;
+      const maxValue = 200;
+      const hue = Math.max(
+        0,
+        Math.round((childCount / maxValue) * (minHue - maxHue) + maxHue)
+      );
+
+      const iconObject = new L.DivIcon({
+        html: `<div
+          style="background-color: hsl(${hue}deg, 50%, 50%, 0.7)"
+        ><span>${childCount}</span></div>`,
+        className: `marker-cluster marker-cluster-${
+          childCount < 10 ? 'small' : childCount < 100 ? 'medium' : 'large'
+        }`,
+        iconSize: new L.Point(40, 40),
+      });
+
+      const iconElement = iconObject.createIcon();
+      iconElement.classList.add('test');
+
+      return iconObject;
+    },
+  });
   cluster.addTo(map);
 
   const layerGroups = Object.fromEntries(
@@ -234,43 +298,13 @@ export function addMarkersToMap(
     )
   );
 
-  // Enable some layer groups
-  Object.entries(layerGroups).forEach(([markerGroupName, layer]) => {
-    if (
-      markerGroupName === 'marker' ||
-      cache.get(
-        'leaflet',
-        `show${
-          capitalize(markerGroupName) as Capitalize<MarkerLayerName>
-        }` as const,
-        {
-          defaultValue:
-            defaultMarkerGroupsState[markerGroupName as MarkerLayerName],
-        }
-      )
-    )
-      layer.addTo(map);
-  });
-
-  // Remember user's preference for layer's visibility
-  const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
-    const layerName = Object.entries(layerGroups).find(
-      ([_, layerObject]) => layerObject === layer
-    )?.[0];
-    if (typeof layerName !== 'undefined')
-      cache.set(
-        'leaflet',
-        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
-        type === 'overlayadd',
-        {
-          overwrite: true,
-        }
-      );
-  };
-  map.on('overlayadd', handleOverlayEvent);
-  map.on('overlayremove', handleOverlayEvent);
+  rememberSelectedOverlays(map, layerGroups, defaultMarkerGroupsState);
 
   // Add layer groups' checkboxes to the layer control menu
+  controlLayers.addOverlay(
+    layerGroups.marker,
+    localityText('occurrencePoints')(layerName)
+  );
   controlLayers.addOverlay(
     layerGroups.polygon,
     localityText('occurrencePolygons')(layerName)
@@ -318,15 +352,27 @@ const createLine = (
   });
 
 export const formatLocalityData = (
-  localityData: Partial<LocalityData>
+  localityData: Partial<LocalityData>,
+  viewUrl?: string
 ): string =>
-  Object.values(localityData)
-    .filter(
-      (field): field is Field<string | number> => typeof field !== 'undefined'
-    )
-    .filter((field) => field.value !== '')
-    .map((field) => `<b>${field.headerName}</b>: ${field.value}`)
-    .join('<br>');
+  [
+    ...Object.values(localityData)
+      .filter(
+        (field): field is Field<string | number> => typeof field !== 'undefined'
+      )
+      .filter((field) => field.value !== '')
+      .map((field) => `<b>${field.headerName}</b>: ${field.value}`),
+    ...(viewUrl
+      ? [
+          `
+          <br>
+          <a
+            href="${viewUrl}"
+            target="_blank"
+          >${localityText('viewRecord')}</a>`,
+        ]
+      : []),
+  ].join('<br>');
 
 export function getMarkersFromLocalityData({
   localityData: {
@@ -420,7 +466,7 @@ export type LayerConfig = {
 export async function showCOMap(
   mapContainer: Readonly<HTMLDivElement>,
   listOfLayersRaw: RA<LayerConfig>,
-  details: string | undefined = undefined
+  details: [string, string] | undefined = undefined
 ): Promise<[L.Map, L.Control.Layers, HTMLDivElement | undefined]> {
   const tileLayers = await getLeafletLayers();
 
@@ -429,10 +475,15 @@ export async function showCOMap(
     layerLabel: string;
     tileLayer: L.TileLayer.WMS | L.TileLayer;
   }[] = [
-    ...coMapTileServers.map(({ transparent, layerLabel }) => ({
-      transparent,
+    ...Object.entries(tileLayers.baseMaps).map(([layerLabel, tileLayer]) => ({
+      transparent: false,
       layerLabel,
-      tileLayer: tileLayers[transparent ? 'overlays' : 'baseMaps'][layerLabel],
+      tileLayer,
+    })),
+    ...Object.entries(tileLayers.overlays).map(([layerLabel, tileLayer]) => ({
+      transparent: true,
+      layerLabel,
+      tileLayer,
     })),
     ...listOfLayersRaw.map(
       ({ transparent, layerLabel, tileLayer: { mapUrl, options } }) => ({
@@ -454,20 +505,29 @@ export async function showCOMap(
       listOfLayers.map(({ layerLabel, tileLayer }) => [layerLabel, tileLayer])
     );
 
-  const allLayers = Object.values(formatLayersDict(listOfLayers));
   const overlayLayers = formatLayersDict(
     listOfLayers.filter(({ transparent }) => transparent)
   );
+  const baseLayers = formatLayersDict(
+    listOfLayers.filter(({ transparent }) => !transparent)
+  );
 
-  const map = L.map(mapContainer, {
-    layers: allLayers,
-  }).setView([0, 0], 1);
+  const map = L.map(mapContainer).setView([0, 0], 1);
 
-  const layerGroup = L.control.layers({}, overlayLayers);
+  const layerGroup = L.control.layers(baseLayers, overlayLayers);
   layerGroup.addTo(map);
 
   addFullScreenButton(map);
   addPrintMapButton(map);
+  rememberSelectedBaseLayers(map, baseLayers, 'CoMap');
+  rememberSelectedOverlays(map, overlayLayers, {
+    [preferredOverlayLayer]: true,
+    ...Object.fromEntries(
+      listOfLayersRaw
+        .filter(({ transparent }) => transparent)
+        .map(({ layerLabel }) => [layerLabel, true])
+    ),
+  });
 
   if (typeof details !== 'undefined')
     return [

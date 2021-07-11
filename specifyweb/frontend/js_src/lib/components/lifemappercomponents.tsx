@@ -93,23 +93,31 @@ export function LifemapperMap({
       map.remove();
     }
     let leafletMap: L.Map | undefined;
-    Leaflet.showCOMap(
-      mapRef.current,
-      mapInfo.layers,
-      (Object.entries(mapInfo.messages) as [MessageTypes, RA<string>][])
-        .filter(([, messages]) => messages.length > 0)
-        .map(
-          ([name, messages]) => `<span
+    Leaflet.showCOMap(mapRef.current, mapInfo.layers, [
+      lifemapperText('leafletDetailsHeader'),
+      [
+        ...(Object.entries(mapInfo.messages) as [MessageTypes, RA<string>][])
+          .filter(([, messages]) => messages.length > 0)
+          .map(
+            ([name, messages], _index, { length: sectionCount }) => `<span
         class="lifemapper-message-section ${
           lifemapperMessagesMeta[name].className
         }"
       >
-        <h3>${lifemapperMessagesMeta[name].title}</h3>
+        ${
+          sectionCount > 1
+            ? `<h3>${lifemapperMessagesMeta[name].title}</h3>`
+            : ''
+        }
         ${messages.join('<br>')}
       </span>`
-        )
-        .join('')
-    )
+          ),
+        `<span class="lifemapper-map-scale">
+          <span>0</span>
+          <span>200+</span>
+        </span>`,
+      ].join(''),
+    ])
       .then(([map, layerGroup]) => {
         Leaflet.addMarkersToMap(
           map,

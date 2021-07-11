@@ -24,6 +24,13 @@ export async function prepareLifemapperProjectionMap(
   getOccurrenceName: (preferredElement: 0 | 1) => string,
   model: any
 ): Promise<MapInfo> {
+  const messages: RR<MessageTypes, string[]> = {
+    errorDetails: [],
+    infoSection: [
+      `${lifemapperText('speciesName')} <i>${getOccurrenceName(1)}</i>`,
+    ],
+  };
+
   const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
     async (resolve) => {
       await fetchDataModel();
@@ -49,7 +56,7 @@ export async function prepareLifemapperProjectionMap(
           name: 'Lifemapper Local Occurrence query',
           contextname: 'CollectionObject',
           contexttableid: 1,
-          limit: LIMIT,
+          limit: LIMIT + 1,
           selectdistinct: true,
           countonly: false,
           specifyuser: '/api/specify/specifyuser/1/',
@@ -116,10 +123,16 @@ export async function prepareLifemapperProjectionMap(
         readonly results: RA<[number, number, ...RA<string>]>;
       } = await request.json();
 
+      if (results.results.length > LIMIT)
+        messages.errorDetails.push(`
+          <b style="color:#f00">${lifemapperText('overLimitMessage')(LIMIT)}</b>
+        `);
+
       let currentLocalityId: undefined | number;
       const localities = await Promise.all(
-        results.results.map(
-          ([collectionObjectId, localityId, ...localityData]) => {
+        results.results
+          .slice(0, LIMIT)
+          .map(([collectionObjectId, localityId, ...localityData]) => {
             if (collectionObjectId === model.get('id'))
               currentLocalityId = localityId;
 
@@ -144,8 +157,7 @@ export async function prepareLifemapperProjectionMap(
                     .then(() => resolve(locality.models[0]));
                 }),
             };
-          }
-        )
+          })
       );
 
       const fetchedPopUps: number[] = [];
@@ -183,7 +195,12 @@ export async function prepareLifemapperProjectionMap(
                     if (localityData !== false)
                       marker
                         .getPopup()
-                        .setContent(Leaflet.formatLocalityData(localityData));
+                        .setContent(
+                          Leaflet.formatLocalityData(
+                            localityData,
+                            `/specify/view/collectionobject/${collectionObjectId}`
+                          )
+                        );
                     fetchedPopUps.push(index);
                   },
                 })
@@ -197,11 +214,6 @@ export async function prepareLifemapperProjectionMap(
       );
     }
   );
-
-  const messages: RR<MessageTypes, string[]> = {
-    errorDetails: [],
-    infoSection: [`${lifemapperText('speciesName')} ${getOccurrenceName(1)}`],
-  };
 
   const projectionMapResponse: {
     readonly errors: string[];
@@ -257,7 +269,7 @@ export async function prepareLifemapperProjectionMap(
     const modificationTime =
       projectionMapResponse.records[0].records[0]['s2n:modtime'];
     messages.infoSection.push(
-      `${lifemapperText('modelCreationData')} ${modificationTime}`
+      `${lifemapperText('modelCreationData')} <i>${modificationTime}</i>`
     );
   }
 

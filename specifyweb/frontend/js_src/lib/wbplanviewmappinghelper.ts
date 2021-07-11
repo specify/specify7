@@ -183,7 +183,7 @@ export function deflateArrayOfMappings(
               )
               ?.slice(-1)[0] ?? formatReferenceItem(0)
           ) + 1;
-        if (newIndex === getIndexFromReferenceItemName(mappingPathPart)) return;
+        if (newIndex >= getIndexFromReferenceItemName(mappingPathPart)) return;
         resetToManys = true;
         const newValue = formatReferenceItem(newIndex);
         changes[subPath] = newValue;
