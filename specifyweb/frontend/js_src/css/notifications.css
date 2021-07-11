@@ -7,6 +7,7 @@
 #site-notifications.unread-notifications {
     color: #fff;
     background: #f4763d;
+    padding: 4px;
 }
 
 .notification-message {
