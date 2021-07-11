@@ -15,10 +15,10 @@ const treeText = createDictionary({
   merge: 'Merge',
   undoSynonymy: 'Undo Synonymy',
   synonymize: 'Synonymize',
-  actionFailedDialogTitle: 'Failed',
-  actionFailedDialogHeader: createHeader(''),
+  actionFailedDialogTitle: 'Operation failed',
+  actionFailedDialogHeader: createHeader('Operation failed'),
   actionFailedDialogMessage:
-    'The operation could not be completed due to the following:',
+    'The operation could not be completed due to the following errors:',
   moveNode: 'Move node',
   moveNodeHere: (nodeName: string) => `Move ${nodeName} here`,
   nodeMoveMessage: (treeName: string, nodeName: string, parentName: string) => `

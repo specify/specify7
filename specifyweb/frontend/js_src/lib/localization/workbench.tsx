@@ -36,7 +36,7 @@ const wbText = createDictionary({
   noUploadPlanDialogMessage:
     'No Upload Plan has been defined for this Data Set. Create one now?',
   noDisambiguationResultsDialogTitle: 'Disambiguate',
-  noDisambiguationResultsDialogHeader: createHeader(''),
+  noDisambiguationResultsDialogHeader: createHeader('Unable to disambiguate'),
   noDisambiguationResultsDialogMessage: `
     None of the matched records currently exist in the database.
     This can happen if all of the matching records were deleted since the
@@ -48,17 +48,16 @@ const wbText = createDictionary({
   applyAllUnavailable: `
     "Apply All" is not available while Data Check is in progress.`,
   rollbackDialogTitle: 'Data Set Roll Back',
-  rollbackDialogHeader: createHeader(''),
+  rollbackDialogHeader: createHeader('Begin Data Set Roll Back?'),
   rollbackDialogMessage: `
     Rolling back will remove the new data records this Data Set added to the
     Specify database. The entire rollback will be cancelled if any of the
     uploaded data have been referenced (re-used) by other data records in the
     database since they were uploaded.`,
   startUploadDialogTitle: 'Data Set Upload',
-  startUploadDialogHeader: createHeader(''),
+  startUploadDialogHeader: createHeader('Begin Data Set Upload?'),
   startUploadDialogMessage: `
-    Start the Upload? Uploading the Data Set will add the data to the Specify
-    database.`,
+    Uploading the Data Set will add the data to the Specify database.`,
   deleteDataSetDialogTitle: 'Delete Data Set',
   deleteDataSetDialogHeader: createHeader('Delete this Data Set?'),
   deleteDataSetDialogMessage: `
@@ -67,13 +66,12 @@ const wbText = createDictionary({
     Data Sets. Also after deleting, Rollback will no longer be an option for
     an uploaded Data Set.`,
   dataSetDeletedTitle: 'Delete Data Set',
-  dataSetDeletedHeader: createHeader(''),
+  dataSetDeletedHeader: createHeader('Data Set successfully deleted'),
   dataSetDeletedMessage: 'Data Set successfully deleted.',
-  revertChangesDialogTitle: `
-    Reverting Unsaved Changes`,
-  revertChangesDialogHeader: createHeader(''),
+  revertChangesDialogTitle: 'Revert Changes',
+  revertChangesDialogHeader: createHeader('Revert Unsaved Changes?'),
   revertChangesDialogMessage: `
-    Revert Changes? This action will discard all changes to the Data Set since
+    This action will discard all changes to the Data Set since
     the last save.`,
   savingDialogTitle: 'Saving',
   onExitDialogMessage: 'Changes to this Data Set have not been saved.',
@@ -89,8 +87,10 @@ const wbText = createDictionary({
     'This value matches two or more existing database records and must ',
     'be manually disambiguated before uploading.',
   ].join(''),
-  validationNoErrorsDialogTitle: 'Validation Completed with No Errors',
-  validationNoErrorsDialogHeader: createHeader(''),
+  validationNoErrorsDialogTitle: 'Data Set Validation',
+  validationNoErrorsDialogHeader: createHeader(
+    'Validation Completed with No Errors'
+  ),
   validationNoErrorsDialogMessage: `
     Validation found no errors in the Data Set. It is
     ready to be uploaded into the database.<br><br>
@@ -100,8 +100,10 @@ const wbText = createDictionary({
     re-saved. If any cells are edited, Validation should
     be re-run as the last step prior to uploading
     to confirm that no errors have been introduced.`,
-  validationErrorsDialogTitle: 'Validation Completed with Errors',
-  validationErrorsDialogHeader: createHeader(''),
+  validationErrorsDialogTitle: 'Data Set Validation',
+  validationErrorsDialogHeader: createHeader(
+    'Validation Completed with Errors'
+  ),
   validationErrorsDialogMessage: `
     Validation found errors in some cell values in this Data Set.<br><br>
 
@@ -109,13 +111,15 @@ const wbText = createDictionary({
     Validation should always be re-run as the last step
     prior to uploading to confirm that no errors have
     been introduced.`,
-  uploadNoErrorsDialogTitle: 'Upload Completed with No Errors',
-  uploadNoErrorsDialogHeader: createHeader(''),
+  uploadNoErrorsDialogTitle: 'Data Set Upload',
+  uploadNoErrorsDialogHeader: createHeader('Upload Completed with No Errors'),
   uploadNoErrorsDialogMessage: `
     Click on the "Results" button above to see values for new records
     added to each database table.`,
-  uploadErrorsDialogTitle: 'Upload Failed due to Validation Errors',
-  uploadErrorsDialogHeader: createHeader(''),
+  uploadErrorsDialogTitle: 'Data Set Upload',
+  uploadErrorsDialogHeader: createHeader(
+    'Upload Failed due to Validation Errors'
+  ),
   uploadErrorsDialogMessage: `
     The Data Set upload failed due to one or more cell value errors.<br><br>
 
@@ -124,20 +128,26 @@ const wbText = createDictionary({
     appropriate corrections. Save changes and retry the
     Upload.`,
   dataSetRollbackDialogTitle: 'Data Set Rollback',
-  dataSetRollbackDialogHeader: createHeader(''),
-  dataSetRollbackDialogMessage: 'Data Set was rolled back successfully.',
-  validationCanceledDialogTitle: 'Validation Process Status',
-  validationCanceledDialogHeader: createHeader(''),
-  validationCanceledDialogMessage: 'Validation cancelled.',
-  rollbackCanceledDialogTitle: 'Rollback Process Status',
-  rollbackCanceledDialogHeader: createHeader(''),
-  rollbackCanceledDialogMessage: 'Rollback cancelled.',
-  uploadCanceledDialogTitle: 'Upload Process Status',
-  uploadCanceledDialogHeader: createHeader(''),
-  uploadCanceledDialogMessage: 'Upload cancelled.',
+  dataSetRollbackDialogHeader: createHeader(
+    'Data Set was rolled back successfully'
+  ),
+  dataSetRollbackDialogMessage: `
+    You can make the necessary edits and begin the upload process again.
+  `,
+  validationCanceledDialogTitle: 'Data Set Validation',
+  validationCanceledDialogHeader: createHeader('Validation Canceled'),
+  validationCanceledDialogMessage: 'Data Set Validation cancelled.',
+  rollbackCanceledDialogTitle: 'Data Set Rollback',
+  rollbackCanceledDialogHeader: createHeader('Rollback Canceled'),
+  rollbackCanceledDialogMessage: 'Data Set Rollback cancelled.',
+  uploadCanceledDialogTitle: 'Data Set Upload',
+  uploadCanceledDialogHeader: createHeader('Upload Canceled'),
+  uploadCanceledDialogMessage: 'Data Set Upload cancelled.',
   geoLocateDialogTitle: 'GeoLocate',
   coordinateConverterDialogTitle: 'Change Geocoordinate Format',
-  coordinateConverterDialogHeader: createHeader(''),
+  coordinateConverterDialogHeader: createHeader(
+    'Choose New Geocoordinate format'
+  ),
 
   // Misc
   wbUploadedUnavailable: 'The data set must be validated or uploaded',
@@ -219,8 +229,10 @@ const wbText = createDictionary({
     'This value would be used in place of empty cells',
   addNewColumn: 'Add New Column',
   revealHiddenFormFields: 'Reveal Hidden Form Fields',
-  validationFailedDialogTitle: 'Upload Plan Mapping',
-  validationFailedDialogHeader: createJsxHeader(''),
+  validationFailedDialogTitle: 'Upload Plan Validation',
+  validationFailedDialogHeader: createJsxHeader(
+    'Validation found missing mappings:'
+  ),
   validationFailedDialogMessage: `
     This data mapping is missing one or more data fields required for
     uploading by your Specify configuration. Add the missing mappings
@@ -238,9 +250,10 @@ const wbText = createDictionary({
     'dataset',
   ].join(''),
   baseTable: 'Base Table',
-  goToBaseTableDialogTitle:
-    'Change the Base Table for Mapping Data Set Columns',
-  goToBaseTableDialogHeader: createJsxHeader(''),
+  goToBaseTableDialogTitle: 'Change Base Table',
+  goToBaseTableDialogHeader: createJsxHeader(
+    'Change the Base Table for Mapping Data Set Columns?'
+  ),
   goToBaseTableDialogMessage: `
     Choosing a different Base Table for a Data Set Upload will make that
     table the new starting point for column-to-data field mappings and
@@ -254,8 +267,8 @@ const wbText = createDictionary({
   matchingLogic: 'Matching Logic',
   clearMappings: 'Clear Mappings',
   validated: 'Validated!',
-  emptyDataSetDialogTitle: 'Empty Data Set detected',
-  emptyDataSetDialogHeader: createJsxHeader(''),
+  emptyDataSetDialogTitle: 'Empty Data Set',
+  emptyDataSetDialogHeader: createJsxHeader('Empty Data Set'),
   emptyDataSetDialogMessage: (
     <>
       This Data Set doesn&apos;t have any columns.
@@ -270,7 +283,9 @@ const wbText = createDictionary({
   ),
   reRunAutoMapperDialogMessage: 'This will erase existing data field mappings.',
   nothingToValidateDialogTitle: 'Nothing to validate',
-  nothingToValidateDialogHeader: createJsxHeader(''),
+  nothingToValidateDialogHeader: createJsxHeader(
+    'There are no mappings to validate'
+  ),
   nothingToValidateDialogMessage:
     'Please map some headers before running the validation.',
   matchingLogicDialogTitle: 'Change Matching Logic',
@@ -296,7 +311,6 @@ const wbText = createDictionary({
 
   // DataSetMeta
   dataSetMetaDialogTitle: 'Data Set Properties',
-  dataSetMetaDialogHeader: createHeader(''),
   dataSetName: 'Data Set Name:',
   remarks: 'Remarks:',
   numberOfRows: 'Number of rows',
@@ -306,11 +320,11 @@ const wbText = createDictionary({
   uploaded: 'Uploaded:',
   importedFileName: 'Imported file name:',
   noFileName: '(no file name)',
-  changeDataSetOwnerDialogTitle: 'Change Data Set Owner',
-  changeDataSetOwnerDialogHeader: createHeader(''),
+  changeDataSetOwnerDialogTitle: 'Data Set Properties',
+  changeDataSetOwnerDialogHeader: createHeader('Change Data Set Owner'),
   changeDataSetOwnerDialogMessage: 'Select New Owner:',
-  dataSetOwnerChangedDialogTitle: 'Data Set owner changed',
-  dataSetOwnerChangedDialogHeader: createHeader(''),
+  dataSetOwnerChangedDialogTitle: 'Data Set Properties',
+  dataSetOwnerChangedDialogHeader: createHeader('Data Set owner changed'),
   dataSetOwnerChangedDialogMessage: 'Data Set owner changed',
   dataSet: 'Data Set:',
   dataSetUploadedLabel: '(Uploaded, Read-Only)',

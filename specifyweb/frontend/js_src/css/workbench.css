@@ -279,3 +279,8 @@
 .da-row {
   padding: 0.3rem 0;
 }
+
+/* Coordinate Converter */
+.lat-long-format-options {
+  padding: 0;
+}

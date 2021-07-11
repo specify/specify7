@@ -170,7 +170,7 @@ const commonText = require('./localization/common').default;
             if (this.fieldUIs.length < 1) return;
 
             var dialog = $(`<div>
-                ${queryText('recordSetToQueryDialogHeader')}<
+                ${queryText('recordSetToQueryDialogHeader')}
                 <p>${queryText('recordSetToQueryDialogMessage')}</p>
                 <div class="progress" />
             </div>`).dialog({
@@ -188,7 +188,11 @@ const commonText = require('./localization/common').default;
             new EditResourceDialog({resource: recordset}).render()
                 .on('saving', function() { dialog.dialog('open'); })
                 .on('savecomplete', function() {
-                    dialog.html(`<p>${queryText('openNewlyCreatedRecordSet')}</p>`)
+                    dialog.html(`
+                        ${queryText('recordSetCreatedDialogHeader')}
+                        <p>${queryText('recordSetCreatedDialogMessage')}</p>
+                    `)
+                        .dialog('title', queryText('recordSetCreatedDialogTitle'))
                         .dialog('option', 'buttons', [
                             {text: commonText('open'), click: function() {
                                 navigation.go('/specify/recordset/' + recordset.id + '/');

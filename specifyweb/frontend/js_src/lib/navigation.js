@@ -109,7 +109,10 @@ Backbone.history.checkUrl = function(e) {
 function defaultConfirmNavigationHandler(proceed, cancel){
     const [key, message] = unloadBlockers[unloadBlockers.length - 1];
 
-    $('<div>').text(message).dialog({
+    $(`<div>
+        ${commonText('leavePageDialogHeader')}
+        ${message}
+    </div>`).dialog({
         title: commonText('leavePageDialogTitle'),
         modal: true,
         close() {

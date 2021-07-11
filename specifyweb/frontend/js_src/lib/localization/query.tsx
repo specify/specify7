@@ -13,30 +13,38 @@ const queryText = createDictionary({
   any: 'any',
   addValuesHint: 'Add values one by one, or as comma-separated list:',
   saveQueryDialogTitle: 'Save query as...',
-  savingQueryDialogTitle: 'Saving...',
+  savingQueryDialogTitle: 'Save Query',
+  saveQueryDialogHeader: createHeader('Save Query'),
   saveQueryDialogMessage: 'Enter a name for the new query.',
-  saveQueryDialogHeader: createHeader(''),
-  saveClonedQueryDialogHeader: createHeader(''),
+  saveClonedQueryDialogHeader: createHeader('Clone Query'),
   saveClonedQueryDialogMessage: `
     The query will be saved with a new name leaving the current query
     unchanged.`,
   queryName: 'Query Name:',
   queryDeleteIncompleteDialogTitle: 'Incomplete fields',
-  queryDeleteIncompleteDialogHeader: createHeader(''),
+  queryDeleteIncompleteDialogHeader: createHeader(
+    'Query definition contains incomplete fields'
+  ),
   queryDeleteIncompleteDialogMessage: `
     There are uncompleted fields in the query definition. Do you want to
     remove them?`,
   queryUnloadProtectDialogMessage: 'This query definition has not been saved.',
-  recordSetToQueryDialogTitle: 'Record Set from Query',
-  recordSetToQueryDialogHeader: createHeader(''),
-  recordSetToQueryDialogMessage: 'Generating record set.',
-  openNewlyCreatedRecordSet: 'Open newly created record set now?',
-  unableToExportAsKmlDialogTitle: 'Unable to Export',
-  unableToExportAsKmlDialogHeader: createHeader(''),
+  recordSetToQueryDialogTitle: 'Record Set',
+  recordSetToQueryDialogHeader: createHeader(
+    'Creating a Record Set from Query'
+  ),
+  recordSetToQueryDialogMessage: 'Generating Record Set...',
+  recordSetCreatedDialogTitle: 'Record Set Created',
+  recordSetCreatedDialogHeader: createHeader(
+    'Open newly created record set now?'
+  ),
+  recordSetCreatedDialogMessage: 'Open newly created record set now?',
+  unableToExportAsKmlDialogTitle: 'KML Export',
+  unableToExportAsKmlDialogHeader: createHeader('Unable to export to KML'),
   unableToExportAsKmlDialogMessage:
     'Please add latitude and longitude fields to the query.',
-  queryExportStartedDialogTitle: 'Query Started',
-  queryExportStartedDialogHeader: createHeader(''),
+  queryExportStartedDialogTitle: 'Export Query',
+  queryExportStartedDialogHeader: createHeader('Query Export started'),
   queryExportStartedDialogMessage: (exportFileType: string) => `
     The query has begun executing. You will receive a notification when the
     results ${exportFileType} file is ready for download.`,

@@ -39,8 +39,8 @@ const formsText = createDictionary({
     <p>Be aware that another user maybe getting ready to add records,
     so only delete this record set if you are sure it is not to be used.</p>`,
   checkingIfResourceCanBeDeleted: 'Checking if resource can be deleted.',
-  deleteBlockedDialogTitle: 'Delete Blocked',
-  deleteBlockedDialogHeader: createHeader(''),
+  deleteBlockedDialogTitle: 'Delete resource',
+  deleteBlockedDialogHeader: createHeader('Delete blocked'),
   deleteBlockedDialogMessage: `
     The resource cannot be deleted because it is referenced through the
     following fields:`,
@@ -81,8 +81,8 @@ const formsText = createDictionary({
 
   // PaleoLocationPlugin
   paleoMap: 'Paleo Map',
-  paleoRequiresGeographyDialogTitle: 'Geography Required',
-  paleoRequiresGeographyDialogHeader: createHeader(''),
+  paleoRequiresGeographyDialogTitle: 'Paleo Map',
+  paleoRequiresGeographyDialogHeader: createHeader('Geography Required'),
   paleoRequiresGeographyDialogMessage: `
     The Paleo Map plugin requires that the locality have geographic
     coordinates and that the paleo context have a geographic age with at
@@ -92,8 +92,8 @@ const formsText = createDictionary({
     createHeader(`Not enough information to map ${modelName}`),
   noCoordinatesDialogMessage: (modelName: string) => `
     ${modelName} must have coordinates and paleo context to be mapped.`,
-  unsupportedFormDialogTitle: 'Incorrect Form',
-  unsupportedFormDialogHeader: createHeader(''),
+  unsupportedFormDialogTitle: 'Unsupported Plugin',
+  unsupportedFormDialogHeader: createHeader('Incorrect Form'),
   unsupportedFormDialogMessage: `
     This plugin cannot be used on this form. Try moving it to the locality,
     collecting event or collection object forms.`,
@@ -103,10 +103,10 @@ const formsText = createDictionary({
 
   // DeleteButton
   deleteConfirmationDialogTitle: 'Delete?',
-  deleteConfirmationDialogHeader: createHeader(''),
-  deleteConfirmationDialogMessage: `
-    This item(s) will be permanently deleted and cannot be
-    recovered. Confirm delete?`,
+  deleteConfirmationDialogHeader: createHeader(
+    'Are you sure you want to permanently delete this item(s)?'
+  ),
+  deleteConfirmationDialogMessage: 'This action can not be undone.',
 
   // PartialDateUi
   fullDate: 'Full Date',
@@ -119,8 +119,8 @@ const formsText = createDictionary({
 
   // PickListBox
   showAllItems: 'Show All Items',
-  addToPickListConfirmationDialogTitle: 'Add to pick list',
-  addToPickListConfirmationDialogHeader: createHeader(''),
+  addToPickListConfirmationDialogTitle: 'Pick List',
+  addToPickListConfirmationDialogHeader: createHeader('Add to pick list?'),
   addToPickListConfirmationDialogMessage: (
     value: string,
     pickListName: string
@@ -130,8 +130,8 @@ const formsText = createDictionary({
   noData: 'No Data.',
 
   // RecordSelector
-  removeRecordDialogHeader: createHeader(''),
-  removeRecordDialogMessage: 'Remove?',
+  removeRecordDialogHeader: createHeader('Remove dependent record'),
+  removeRecordDialogMessage: 'Are you sure you want to remove this record?',
 
   // RecordSetsDialog
   recordSetsDialogTitle: (count: number) => `Record Sets (${count})`,
@@ -164,14 +164,14 @@ const formsText = createDictionary({
   // SaveButton
   unsavedFormUnloadProtect: 'This form has not been saved.',
   saveAndAddAnother: 'Save and Add Another',
-  saveConflictDialogTitle: 'Conflict',
-  saveConflictDialogHeader: createHeader(''),
+  saveConflictDialogTitle: 'Save record',
+  saveConflictDialogHeader: createHeader('Save conflict'),
   saveConflictDialogMessage: `
     The data shown on this page has been changed by another user or in
     another browser tab and is out of date. The page must be reloaded to
     prevent inconsistent data from being saved.`,
-  saveBlockedDialogTitle: 'Save blocked',
-  saveBlockedDialogHeader: createHeader(''),
+  saveBlockedDialogTitle: 'Save record',
+  saveBlockedDialogHeader: createHeader('Save blocked'),
   saveBlockedDialogMessage:
     'Form cannot be saved while the following errors exist:',
 
@@ -185,7 +185,7 @@ const formsText = createDictionary({
   // SpecifyCommands
   unavailableCommandButton: 'Command N/A',
   unavailableCommandDialogTitle: 'Command Not Available',
-  unavailableCommandDialogHeader: createHeader(''),
+  unavailableCommandDialogHeader: createHeader('Command Not Available'),
   unavailableCommandDialogMessage: `
     This command is currently unavailable for <i>Specify&nbsp7</i>
     It was probably included on this form from <i>Specify&nbsp6</i> and
@@ -195,7 +195,7 @@ const formsText = createDictionary({
   // SpecifyPlugins
   unavailablePluginButton: 'Plugin N/A',
   unavailablePluginDialogTitle: 'Plugin Not Available',
-  unavailablePluginDialogHeader: createHeader(''),
+  unavailablePluginDialogHeader: createHeader('Plugin Not Available'),
   unavailablePluginDialogMessage: `
     This plugin is currently unavailable for <i>Specify&nbsp7</i>
     It was probably included on this form from <i>Specify&nbsp6</i> and

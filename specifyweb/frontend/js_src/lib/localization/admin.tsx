@@ -23,8 +23,8 @@ const adminText = createDictionary({
     `Discipline <small>(${resourceCount})</small>`,
   userTypes: 'User Types',
   users: 'Users',
-  createResourceDialogTitle: 'New Resource Name',
-  createResourceDialogHeader: createHeader(''),
+  createResourceDialogTitle: 'Create Resource',
+  createResourceDialogHeader: createHeader('Create New Resource File'),
   newResourceName: 'New Resource Name:',
 
   setPassword: 'Set Password',

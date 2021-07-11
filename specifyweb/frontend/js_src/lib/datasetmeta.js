@@ -70,7 +70,6 @@ export const DataSetMeta = Backbone.View.extend({
     if (this.dialog !== null) return;
 
     this.dialog = $(`<div>
-      ${wbText('dataSetMetaDialogHeader')}
       <label>
         <b>${wbText('dataSetName')}</b><br>
         <input

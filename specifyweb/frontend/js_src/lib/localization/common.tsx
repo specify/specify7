@@ -3,14 +3,16 @@ import { createDictionary, createHeader, createJsxHeader } from './utils';
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
 
 const commonText = createDictionary({
-  specifySeven: 'Specify 7',
+  specifySeven: 'Specify&nbsp7',
   pageNotFound: 'Page Not Found',
 
   collectionAccessDeniedDialogTitle: 'Access denied',
-  collectionAccessDeniedDialogHeader: createHeader(''),
+  collectionAccessDeniedDialogHeader: createHeader(
+    'You do not have access to this collection'
+  ),
   collectionAccessDeniedDialogMessage: (collectionName: string) =>
-    `You do not have access to the collection ${collectionName}
-    through the currently logged in account.`,
+    `The currently logged in account does not have access to the
+    ${collectionName} collection.`,
 
   no: 'No',
   back: 'Back',
@@ -61,26 +63,28 @@ const commonText = createDictionary({
   metadataResourceNotFound: (resourceName: string) =>
     `Metadata resource "${resourceName}" was not found.`,
   updateExportFeed: 'Update Feed Now',
-  updateExportFeedDialogTitle: 'Update Feed Now',
-  updateExportFeedDialogHeader: createHeader(''),
+  updateExportFeedDialogTitle: 'Export Feed',
+  updateExportFeedDialogHeader: createHeader(
+    'Update all export feed items now?'
+  ),
   updateExportFeedDialogMessage: 'Update all export feed items now?',
-  feedExportStartedDialogTitle: 'Update Started',
-  feedExportStartedDialogHeader: createHeader(''),
+  feedExportStartedDialogTitle: 'Export Feed',
+  feedExportStartedDialogHeader: createHeader('Export feed update started'),
   feedExportStartedDialogMessage: `
     Update started. You will receive a notification for each feed item
     updated.`,
-  dwcaExportStartedDialogTitle: 'Make DwCA',
-  dwcaExportStartedDialogHeader: createHeader(''),
+  dwcaExportStartedDialogTitle: 'DwCA',
+  dwcaExportStartedDialogHeader: createHeader('DwCA export started'),
   dwcaExportStartedDialogMessage: `
     Export started. You will receive a notification
     when the export is complete.`,
   interactions: 'Interactions',
   generateMasterKey: 'Generate Master Key',
-  generateMasterKeyDialogTitle: 'Generate Master Key',
-  generateMasterKeyDialogHeader: createHeader(''),
+  generateMasterKeyDialogTitle: 'Master Key',
+  generateMasterKeyDialogHeader: createHeader('Generate Master Key'),
   userPassword: 'User Password:',
   masterKeyDialogTitle: 'Master Key',
-  masterKeyDialogHeader: createHeader(''),
+  masterKeyDialogHeader: createHeader('Master key generated'),
   masterKeyFieldLabel: 'Master Key:',
   incorrectPassword: 'Password was incorrect.',
   queries: 'Queries',
@@ -94,16 +98,18 @@ const commonText = createDictionary({
   newResourceTitle: (resourceName: string) => `New ${resourceName}`,
   labelName: 'Label Name',
   reportName: 'Report Name',
-  createLabelDialogTitle: 'Create new label',
-  createLabelDialogHeader: createHeader(''),
-  createReportDialogTitle: 'Create new label',
-  createReportDialogHeader: createHeader(''),
+  createLabelDialogTitle: 'Labels',
+  createLabelDialogHeader: createHeader('Create new label'),
+  createReportDialogTitle: 'Reports',
+  createReportDialogHeader: createHeader('Create new report'),
   recordSets: 'Record Sets',
   resources: 'Resources',
   appResources: 'App Resources',
   viewSets: 'View Sets',
   resourcesDialogTitle: 'Resources',
-  resourcesDialogHeader: createHeader(''),
+  resourcesDialogHeader: createHeader(
+    'Choose the resource type you with to edit:'
+  ),
   repairTree: 'Repair Tree',
   trees: 'Trees',
   treesDialogTitle: 'Trees',
@@ -116,12 +122,19 @@ const commonText = createDictionary({
 
   // Error Boundary
   errorBoundaryDialogTitle: 'Unexpected Error',
-  errorBoundaryDialogHeader: createJsxHeader(''),
-  errorBoundaryDialogMessage: 'An unexpected error has occurred.',
+  errorBoundaryDialogHeader: createJsxHeader(
+    'An unexpected error has occurred'
+  ),
+  errorBoundaryDialogMessage: `
+    Please reload the page and try again. If this issue persists, please
+    contact your IT support.`,
   backEndErrorDialogTitle: 'Server Error',
-  backEndErrorDialogHeader: createHeader(''),
+  backEndErrorDialogHeader: createHeader(
+    'An error has occurred during communication with the server'
+  ),
   backendErrorDialogMessage: `
-    An error has occurred during communication with the server.`,
+    Please reload the page and try again. If this issue persists, please
+    contact your IT support.`,
   okay: 'Okay',
 
   // Search
@@ -132,7 +145,10 @@ const commonText = createDictionary({
   noMatches: 'No Matches',
 
   // Unload Protection
-  leavePageDialogTitle: 'Leave Page?',
+  leavePageDialogTitle: 'Unsaved changes detected',
+  leavePageDialogHeader: createHeader(
+    'Are you sure you want to leave this page?'
+  ),
   leave: 'Leave',
 
   // Notifications
@@ -160,23 +176,25 @@ const commonText = createDictionary({
 
   // SpecifyApp
   versionMismatchDialogTitle: 'Version Mismatch',
-  versionMismatchDialogHeader: createHeader(''),
+  versionMismatchDialogHeader: createHeader(
+    'Specify version does not match database version'
+  ),
   versionMismatchDialogMessage: (
     specifySixVersion: string,
     databaseVersion: string
   ) => `
     The Specify version ${specifySixVersion} does not match the database
-    version ${databaseVersion}`,
+    version ${databaseVersion}.`,
   versionMismatchSecondDialogMessage:
     'Some features of Specify 7 may therefore fail to operate correctly.',
-  resourceDeletedDialogTitle: 'Item Deleted',
-  resourceDeletedDialogHeader: createHeader(''),
-  resourceDeletedDialogMessage: 'Item Deleted.',
+  resourceDeletedDialogTitle: 'Deleted',
+  resourceDeletedDialogHeader: createHeader('Item deleted'),
+  resourceDeletedDialogMessage: 'Item was deleted successfully.',
   appTitle: (baseTitle: string) => `${baseTitle} | Specify 7`,
 
   // StartApp
-  sessionTimeOutDialogTitle: 'Insufficient Privileges',
-  sessionTimeOutDialogHeader: createHeader(''),
+  sessionTimeOutDialogTitle: 'Access denied',
+  sessionTimeOutDialogHeader: createHeader('Insufficient Privileges'),
   sessionTimeOutDialogMessage: `
     You lack sufficient privileges for that action, or your current
     session has been logged out.`,
