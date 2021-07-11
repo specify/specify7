@@ -6,6 +6,11 @@
   display: none;
 }
 
+.ui-dialog-with-header .ui-dialog-title {
+  font-weight: 300;
+  font-size: 0.8rem;
+}
+
 .table-list-dialog table {
   width: 100%;
 }

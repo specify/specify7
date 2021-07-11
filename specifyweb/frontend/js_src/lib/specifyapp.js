@@ -37,6 +37,14 @@ const commonText = require('./localization/common').default;
         this.uiDialog.on('dialogbeforeclose',()=>
             previousFocusedElement?.focus()
         );
+
+        if(!this.options.dialogClass.split(' ').includes('ui-dialog-react'))
+            this.uiDialog.on(
+                'dialogopen',
+                () =>
+                    this.uiDialog[0].getElementsByTagName('h2').length &&
+                    this.uiDialog[0].classList.add('ui-dialog-with-header')
+            );
     };
 
     // gets rid of any backbone view currently showing

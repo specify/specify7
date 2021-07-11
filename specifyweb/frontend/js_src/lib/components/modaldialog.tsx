@@ -44,6 +44,14 @@ function closeDialogCallback(
 export const closeDialog = (...args: RA<unknown>): void =>
   console.error(...args);
 
+const hasHeader = (children: React.ReactNode): boolean =>
+  typeof children === 'object' &&
+  children !== null &&
+  'type' in children &&
+  (children?.type === 'h2' ||
+    (typeof children?.props?.children?.some === 'function' &&
+      children.props.children.some(hasHeader)));
+
 export const ModalDialog = React.memo(function ModalDialog({
   properties,
   onLoadCallback,
@@ -100,6 +108,13 @@ export const ModalDialog = React.memo(function ModalDialog({
       ...properties,
       close: closeDialogBind,
       buttons,
+      dialogClass: [
+        'ui-dialog-react',
+        hasHeader(children) ? 'ui-dialog-with-header' : '',
+        properties.dialogClass,
+      ]
+        .filter((className) => className)
+        .join(' '),
     });
     window.addEventListener('resize', resize);
 
