@@ -63,7 +63,7 @@ function contextMenuCallback(key, options) {
     var specifyModel = schema.getModel(treeView.table);
     switch (key) {
     case 'open':
-        window.open(api.makeResourceViewUrl(specifyModel, treeNodeView.nodeId));
+        new EditNodeDialog({treeNodeView: treeNodeView}).render();
         break;
     case 'query':
         window.open('/specify/query/fromtree/' + treeNodeView.table + '/' + treeNodeView.nodeId + '/');
@@ -298,6 +298,38 @@ class UnSynonymizeNodeAction extends Action {
 
     title() { return treeText('unsynonymizeNode'); }
 }
+
+const EditNodeDialog = Backbone.View.extend({
+    __name__: "EditNodeDialog",
+    initialize: function(options) {
+        this.treeNodeView = options.treeNodeView;
+    },
+    render: function() {
+        const model = new this.treeNodeView.specifyModel.Resource({id: this.treeNodeView.nodeId});
+        new ResourceView({
+            populateForm: populateForm,
+            el: this.el,
+            model,
+            mode: 'edit',
+            noHeader: true
+        }).render()
+            .on('saved', this.childSaved, this)
+            .on('changetitle', this.changeDialogTitle, this);
+
+        this.$el.dialog({
+            width: 'auto',
+            close: function() { $(this).remove(); }
+        });
+        return this;
+    },
+    childSaved: function() {
+        this.treeNodeView.treeView.reOpenTree();
+        this.$el.dialog('close');
+    },
+    changeDialogTitle: function(resource, title) {
+        this.$el.dialog('option', 'title', title);
+    }
+});
 
 const AddChildDialog = Backbone.View.extend({
     __name__: "AddChildDialog",

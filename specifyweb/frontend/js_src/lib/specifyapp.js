@@ -133,7 +133,7 @@ function showResource(resource, recordSet, pushUrl) {
                     title: commonText('resourceDeletedDialogTitle'),
                     buttons: [
                         {
-                            text: commonText('cancel'),
+                            text: commonText('close'),
                             click: ()=>{
                                 navigation.go('/');
                                 dialog.dialog('destroy');
