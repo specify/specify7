@@ -278,10 +278,14 @@ const commonText = require('./localization/common').default;
 
             this.results && this.results.remove();
 
+            const hasVisibleFields = this.fieldUIs.some(({ spqueryfield }) =>
+              spqueryfield.get('isdisplay')
+            );
+
             this.results = new QueryResultsTable({
                 model: this.model,
                 scrollElement: this.$el.parent('#content'),
-                countOnly: this.query.get('countonly'),
+                countOnly: this.query.get('countonly') || !hasVisibleFields,
                 format: this.query.get('formatauditrecids'),
                 fetchResults: this.fetchResults(),
                 fetchCount: this.fetchCount(),
