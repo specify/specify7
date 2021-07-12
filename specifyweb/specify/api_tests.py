@@ -216,6 +216,20 @@ class RecordSetTests(ApiTests):
         ids.sort()
         self.assertEqual(result_ids, ids)
 
+    def test_delete_from_record_set(self):
+        obj = api.post_resource(self.collection, self.agent, 'collectionobject', {
+                'collection': api.uri_for_model('collection', self.collection.id),
+                'catalognumber': 'foobar'}, recordsetid=self.recordset.id)
+
+        self.assertEqual(self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
+
+        api.delete_from_record_set(obj, obj.version, self.recordset.id)
+
+        self.assertEqual(
+            self.recordset.recordsetitems.filter(recordid=obj.id).count(), 0)
+
+        api.delete_resource(self.agent, 'collectionobject', obj.id, obj.version)
+
     def test_deleting_recordset_deletes_items(self):
         ids = [co.id for co in self.collectionobjects]
 

@@ -161,6 +161,14 @@ const formsText = createDictionary({
   missingFormDefinitionPageContent: `
     Specify was unable to find the form definition to display this resource`,
   addingToRecordSet: 'Adding to Record Set and Database',
+  removeFromRecordSetButtonDescription: 'Remove record from Record Set',
+  removeRecordFromRecordSetDialogTitle: 'Remove from Record Set',
+  removeRecordFromRecordSetDialogHeader: createHeader(
+    'Remove this record from the Record Set?'
+  ),
+  removeRecordFromRecordSetDialogMessage: `
+    The record would still be available in the database and other
+    Record Sets.`,
 
   // SaveButton
   unsavedFormUnloadProtect: 'This form has not been saved.',
