@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-05 10:17+0000\n"
+"POT-Creation-Date: 2021-07-12 19:56+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -154,26 +154,6 @@ msgstr ""
 "Please update and/or run the host thickclient installation at "
 "%(thich_client_location)s to update the database."
 
-#: specify/load_datamodel.py:43
-#, python-format
-msgid "No table with name: %(table_name)r"
-msgstr "No table with name: %(table_name)r"
-
-#: specify/load_datamodel.py:52
-#, python-brace-format
-msgid "No table with id: %{table_id}d"
-msgstr "No table with id: %{table_id}d"
-
-#: specify/load_datamodel.py:102
-#, python-format
-msgid "Field %(field_name)s not in table %(table_name)s."
-msgstr "Field %(field_name)s not in table %(table_name)s."
-
-#: specify/load_datamodel.py:103
-#, python-format
-msgid "Fields: %(fields)s"
-msgstr "Fields: %(fields)s"
-
 #: stored_queries/format.py:93
 msgid "<Formatter not defined.>"
 msgstr "<Formatter not defined.>"
@@ -192,9 +172,9 @@ msgid "value $(value)s is not a valid decimal value"
 msgstr "value $(value)s is not a valid decimal value"
 
 #: workbench/upload/parsing.py:186
-#, python-format
+#, fuzzy, python-format
 msgid ""
-"\"%(value)\" is not a legal value in this picklist field.\n"
+"\"%(value)s\" is not a legal value in this picklist field.\n"
 "Click on the arrow to choose among available options."
 msgstr ""
 "\"%(value)\" is not a legal value in this picklist field.\n"
@@ -210,11 +190,11 @@ msgid "There are multiple 'Uploaded' placeholder values in the tree!"
 msgstr "There are multiple 'Uploaded' placeholder values in the tree!"
 
 #: workbench/upload/treerecord.py:290
-#, python-format
-msgid "Missing or unmapped required tree parent rank value for %(value)s"
+#, fuzzy, python-format
+msgid "Missing or unmapped required tree parent rank value for %(value)s."
 msgstr "Missing or unmapped required tree parent rank value for %(value)s"
 
-#: workbench/upload/upload.py:129
+#: workbench/upload/upload.py:130
 #, python-format
 msgid "WB Upload of %(data_set_name)s"
 msgstr "WB Upload of %(data_set_name)s"
