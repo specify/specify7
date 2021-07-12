@@ -1,13 +1,15 @@
 <% if(doTaxonTiles) { %>
-<div id="taxon-treemap" style="width:950px;height:473px;margin-left:auto;margin-right:auto">
-</div>
+<div
+  id="taxon-treemap"
+  style="width: 950px; height: 473px; margin-left: auto; margin-right: auto"
+></div>
 <% } else { %>
-<div style="margin-left:auto;margin-right:auto;max-width:950px">
-  <img src="/static/img/icons_as_background_small.png" width="950" height="473">
+<div id="welcome-screen-content">
+  <img src="/static/img/icons_as_background_small.png" />
 </div>
 <% } %>
 
-<p style="text-align:right;max-width:950px">
+<p style="text-align: right; max-width: 950px">
   <button
     class="fake-link"
     id="about-specify"
