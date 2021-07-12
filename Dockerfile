@@ -4,6 +4,7 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
+        gettext \
         python3.6 \
         libldap-2.4-2 \
         libmariadbclient18 \
@@ -75,6 +76,17 @@ RUN echo $BUILD_VERSION > specifyweb/frontend/static/build_version.txt
 RUN echo $GIT_SHA > specifyweb/frontend/static/git_sha.txt
 RUN date > specifyweb/frontend/static/build_date.txt
 
+# The following is needed to run manage.py compilemessages:
+# The secret key file needs to exist so it can be imported.
+# The INSTALLED_APPS needs to be cleared out so Django doesn't
+# try to import the Specify datamodel which isn't defined yet.
+RUN echo "SECRET_KEY = 'bogus'" > specifyweb/settings/secret_key.py
+RUN echo "INSTALLED_APPS = ['specifyweb.frontend']" >> specifyweb/settings/__init__.py
+RUN (cd specifyweb && ../ve/bin/python ../manage.py compilemessages)
+
+# Now put things back the way they were.
+RUN rm specifyweb/settings/secret_key.py
+COPY --chown=specify:specify specifyweb/settings/__init__.py /opt/specify7/specifyweb/settings/__init__.py
 
 ######################################################################
 
@@ -83,7 +95,6 @@ FROM common AS run-common
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         rsync \
-        gettext \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
