@@ -198,7 +198,7 @@ var QueryCbx = Backbone.View.extend({
                 //add rank limits
                 if (treeRanks != null) {
                     if (this.model.get('rankid')) //original value, not updated with unsaved changes {
-                        var r = _.findIndex(treeRanks, function(rank) {
+                        var r = _.findIndex(treeRanks, (rank) => {
                             return rank.rankid == this.model.get('rankid');
                         });
                     var nextRankId = 0;
