@@ -522,7 +522,14 @@ var QueryCbx = Backbone.View.extend({
         this.fillIn();
     },
     changeDialogTitle: function(resource, title) {
-        this.dialog && this.dialog.dialog('option', 'title', title);
+        if(!this.dialog)
+            return;
+        this.dialog.dialog('option', 'title', title);
+        const dialog = this.dialog[0].closest('.ui-dialog');
+        const maxTitleWidth = Math.floor(this.dialog.width() * 0.9);
+        const titleElement =
+          dialog.getElementsByClassName('ui-dialog-title')[0];
+        titleElement.style.maxWidth = `${maxTitleWidth}px`;
     },
     blur: function() {
         var val = this.$('input').val().trim();
