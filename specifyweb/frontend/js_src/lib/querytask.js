@@ -192,7 +192,7 @@ const commonText = require('./localization/common').default;
                         ${queryText('recordSetCreatedDialogHeader')}
                         <p>${queryText('recordSetCreatedDialogMessage')}</p>
                     `)
-                        .dialog('title', queryText('recordSetCreatedDialogTitle'))
+                        .dialog('option','title', queryText('recordSetCreatedDialogTitle'))
                         .dialog('option', 'buttons', [
                             {text: commonText('open'), click: function() {
                                 navigation.go('/specify/recordset/' + recordset.id + '/');
