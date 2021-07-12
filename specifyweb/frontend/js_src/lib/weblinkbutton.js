@@ -72,6 +72,11 @@ module.exports =   UIPlugin.extend({
             var inFormTable = this.inFormTable;
             this.buildUrl().done(function(url) {
                 a.attr('href', url);
+                const isInternal = a[0].hostname === window.location.hostname;
+                if (!isInternal) {
+                  a.attr('target', '_blank');
+                  a.attr('rel', 'noopener');
+                }
                 inFormTable && !this.def && a.text(url || '');
            });
         },
