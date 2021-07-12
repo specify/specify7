@@ -73,6 +73,10 @@ div.specify-view-content {
     margin: 0 0.7rem;
 }
 
+.specify-form-header a:not(:hover) {
+    color: #000;
+}
+
 .recordset-header {
     display: flex;
     align-items: center;
@@ -104,6 +108,10 @@ div.specify-view-content {
     color: #999;
     font-size: 0.8em;
     background: transparent;
+}
+
+.remove-from-data-set-button {
+    display: contents;
 }
 
 .specify-form-header img {

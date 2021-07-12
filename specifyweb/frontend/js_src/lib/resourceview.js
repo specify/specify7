@@ -9,6 +9,7 @@ var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
+const RemoveFromRecordSetButton = require('./removefromrecordsetbutton.js');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
@@ -72,6 +73,12 @@ const ResourceView = Backbone.View.extend({
             });
 
             self.saveBtn.on('savecomplete', self.saved, self);
+
+            if(self.recordsetInfo)
+                self.removeFromRsBtn = new RemoveFromRecordSetButton({
+                    model: self.model,
+                    recordsetId: self.recordsetInfo.recordsetid,
+                });
         }
 
         if (!self.readOnly && !self.model.isNew()) {
@@ -97,11 +104,14 @@ const ResourceView = Backbone.View.extend({
             self.populateForm(form, self.model);
             self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                 form.find('.specify-form-header').remove();
-
-            var buttons = $('<div class="specify-form-buttons">').appendTo(form);
+            
+            const buttons = $('<div class="specify-form-buttons">').appendTo(form);
             self.$el.append(form);
             self.saveBtn && self.saveBtn.render().$el.appendTo(buttons);
             self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
+            self.removeFromRsBtn && self.removeFromRsBtn.render().$el.appendTo(
+                self.header.find('.recordset-header')
+            );
             self.reporterOnSave = self.$el.find(".specify-print-on-save");
             self.setTitle();
         }).fail(function(jqXHR) {
