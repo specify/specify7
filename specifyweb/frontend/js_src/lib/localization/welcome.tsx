@@ -9,6 +9,7 @@ const welcomeText = createDictionary({
   taxonTilesDescription: (count: number) =>
     `Showing Taxa with ${count} or more Collection Objects`,
 
+  aboutSpecify: 'About Specify',
   aboutSpecifyDialogTitle: 'About Specify',
   fullAddress: `
     Specify Collections Consortium<br>
