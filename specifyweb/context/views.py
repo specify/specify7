@@ -97,6 +97,7 @@ def choose_collection(request):
     )
 
     available_collections = users_collections(connection.cursor(), request.specify_user.id)
+    available_collections.sort(key=lambda x: x[1])
 
     if len(available_collections) < 1:
         auth_logout(request)
