@@ -11,6 +11,5 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   ve/bin/python manage.py migrate notifications
   set -e
   ve/bin/python manage.py migrate workbench
-  (cd specifyweb && ../ve/bin/python ../manage.py compilemessages)
 fi
 exec "$@"
