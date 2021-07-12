@@ -12,15 +12,19 @@ import schema from './schema';
 import remotePrefs from './remoteprefs';
 import dataobjectformatters from './dataobjformatters';
 import systemInfo from './systeminfo';
-import template from './templates/welcome.html';
 import aboutspecify from './templates/aboutspecify.html';
 import welcomeText from './localization/welcome';
 import commonText from './localization/common';
 
 const DO_TAXON_TILES = remotePrefs['sp7.doTaxonTiles'] == "true";
+const defaultWelcomeScreenImage = '/static/img/icons_as_background_small.png';
+const welcomeScreenUrl =
+  remotePrefs['sp7.welcomeScreenUrl'] || defaultWelcomeScreenImage;
 
 function makeTreeMap() {
-  const treeContainer = $('#taxon-treemap');
+  const treeContainer = $('#welcome-screen-content');
+  treeContainer[0].classList.add('taxon-treemap');
+
   const width = treeContainer.width();
   const height = treeContainer.height();
 
@@ -37,7 +41,7 @@ function makeTreeMap() {
     });
 
   const div = d3
-    .select('#taxon-treemap')
+    .select('#welcome-screen-content')
     .append('div')
     .attr('class', 'treemap')
     .style('position', 'relative')
@@ -65,17 +69,14 @@ function makeTreeMap() {
     const thres = tree[1];
     let makeName;
 
-    if (_.isNull(genusRankID)) {
-      makeName = function (d) {
-        return (
-          (function recur(d) {
-            return d.parent ? recur(d.parent) + ' ' + d.name : '';
-          })(d.parent) +
-          ' ' +
-          d.count
-        );
-      };
-    } else {
+    if (_.isNull(genusRankID))
+      makeName = (d) =>
+        (function recur(d) {
+          return d.parent ? recur(d.parent) + ' ' + d.name : '';
+        })(d.parent) +
+        ' ' +
+        d.count;
+    else
       makeName = function (d) {
         const name =
           d.rankId <= genusRankID
@@ -90,7 +91,6 @@ function makeTreeMap() {
           console.error('empty name for', d, 'with rankId', d.rankId);
         return name + ' ' + d.count;
       };
-    }
 
     div
       .selectAll('.node')
@@ -117,6 +117,24 @@ function makeTreeMap() {
       .appendTo(div[0])
       .tooltip({ track: true, show: false, hide: false });
   });
+}
+
+function drawWelcomeScreen() {
+  const welcomeScreen = document.getElementById('welcome-screen-content');
+  fetch(welcomeScreenUrl, { method: 'HEAD' })
+    .then(({ headers }) =>
+      draw(headers.get('Content-Type')?.startsWith('image'), welcomeScreenUrl)
+    )
+    .catch(() => draw(true, defaultWelcomeScreenImage));
+
+  function draw(isImage, url) {
+    welcomeScreen.classList.add(
+      isImage ? 'welcome-screen-image' : 'welcome-screen-iframe'
+    );
+    welcomeScreen.innerHTML = isImage
+      ? `<img src="${url}" alt="">`
+      : `<iframe src="${url}"></iframe>`;
+  }
 }
 
 function position() {
@@ -168,11 +186,8 @@ function buildTree(data) {
   _.each(nodes, function (node) {
     if (!node || !node.parentId) return;
     const parent = nodes[node.parentId];
-    if (parent) {
-      parent.children.push(node);
-    } else {
-      console.warn('taxon node with missing parent:', node);
-    }
+    if (parent) parent.children.push(node);
+    else console.warn('taxon node with missing parent:', node);
   });
 
   function pullUp(node) {
@@ -212,14 +227,20 @@ const WelcomeView = Backbone.View.extend({
     'click #about-specify': 'showAboutDialog',
   },
   render: function () {
-    $('<div></div>')
-      .append(
-        template({
-          doTaxonTiles,
-        })
-      )
-      .appendTo(this.$el);
-    doTaxonTiles && _.defer(makeTreeMap);
+    $(`
+      <div id="welcome-screen-content"></div>
+
+      <p class="welcome-footer">
+        <a href="#" id="about-specify" title="${welcomeText('aboutSpecify')}">
+          <img
+            src="/static/img/specify_7_small.png"
+            alt="${welcomeText('aboutSpecify')}"
+          >
+        </a>
+      </p>
+    `).appendTo(this.$el);
+
+    _.defer(doTaxonTiles ? makeTreeMap : drawWelcomeScreen);
 
     return this;
   },

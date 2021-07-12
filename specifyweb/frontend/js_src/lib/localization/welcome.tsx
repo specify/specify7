@@ -9,6 +9,7 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 const welcomeText = createDictionary({
+<<<<<<< HEAD
   pageTitle: {
     'en-us': 'Welcome',
     'ru-ru': 'Добро пожаловать',
