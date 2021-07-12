@@ -77,7 +77,10 @@ div.specify-view-content {
     display: flex;
     align-items: center;
     font-weight: initial;
-    border: 1px solid #ccc;
+}
+
+.recordset-header:not([title=""]) {
+  border: 1px solid #ccc;
 }
 
 .recordset-header .recordset-navigation {
