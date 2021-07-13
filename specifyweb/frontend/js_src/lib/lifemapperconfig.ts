@@ -13,18 +13,19 @@ const defaultOccurrenceNames: Readonly<[string, string]> = [
   'Phlox longifolia Nutt.',
 ] as const;
 
-export const resolveGuid = (originalGuid: string) =>
+export const resolveGuid = (originalGuid: string): string =>
   IS_DEVELOPMENT ? defaultGuid : originalGuid;
 export const resolveOccurrenceNames = (
   occurrenceNames: Readonly<[string, string]>
-) => (IS_DEVELOPMENT ? defaultOccurrenceNames : occurrenceNames);
+): Readonly<[string, string]> =>
+  IS_DEVELOPMENT ? defaultOccurrenceNames : occurrenceNames;
 
 export const snServer = 'https://broker-dev.spcoco.org';
 export const snFrontendServer = 'https://broker.spcoco.org';
 
 export const SN_SERVICES: IR<string> = {
-  sn: lifemapperText('specifyNetwork'),
   lm: lifemapperText('speciesDistributionMap'),
+  sn: lifemapperText('specifyNetwork'),
 };
 export const ignoredAggregators: RA<string> = ['specify'];
 export type MessageTypes = 'errorDetails' | 'infoSection';
