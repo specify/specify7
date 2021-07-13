@@ -1,28 +1,15 @@
 /* ROOT */
-.wbplanview,
-.wbplanview-init {
-  --b1: #fff;
-  --b2: #ddd;
-  --b3: #bbb;
-  --b4: #999;
-  --t1: #000;
-  --t2: #222;
-  --t3: #444;
-  --t4: #666;
-  --border: #555;
-  --white-space: 0.5rem;
-  --text1: #000;
-  --text2: #666;
+.wbplanview {
+  --mapping-view-min-height: 250px;
+  --mapping-view-max-height: 50vh;
   --mapping-view-height: unset;
-  --success: #2c0;
-  --error: #f24;
 }
 
 .wbplanview {
   height: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: var(--size);
 }
 
 .wbplanview-event-listener {
@@ -33,13 +20,13 @@
 .wbplanview-header {
   display: flex;
   justify-content: space-between;
-  column-gap: 0.5rem;
+  column-gap: var(--half-size);
 }
 
 .wbplanview-header-controls,
 .wbplanview-ds-name-container {
   display: flex;
-  column-gap: calc(var(--white-space) * 0.6);
+  column-gap: var(--quarter-size);
   align-items: stretch;
 }
 
@@ -57,30 +44,8 @@
   color: var(--error);
 }
 
-.validation-indicator-success {
-  --text-content: 'Validated!';
-  position: relative;
-}
-
-.validation-indicator-success::after {
-  background: #0f0;
-  content: var(--text-content);
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  animation: validated-success ease-in-out 0.2s;
-  padding: inherit;
-  border-radius: 1px;
-}
-
-@keyframes validated-success {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.magic-button.validation-indicator-success {
+  background: var(--success);
 }
 
 /* CONTAINER */
@@ -94,7 +59,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: var(--white-space);
+  row-gap: var(--half-size);
 }
 .custom-select-base-table-selection-list {
   flex: 1;
@@ -115,7 +80,7 @@
 .wbplanview-container-MappingState {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: var(--size);
 }
 
 .wbplanview-readonly .custom-select-options {
@@ -126,17 +91,16 @@
 .mapping-view-container {
   display: flex;
   flex-wrap: nowrap;
-  column-gap: calc(4 * var(--white-space));
+  column-gap: var(--double-size);
   height: 100%;
   width: max-content;
 }
 
 .mapping-view-parent {
-  --mapping-view-min-height: 250px;
   min-height: var(--mapping-view-min-height);
-  overflow-x: auto;
-  max-height: 50vh;
+  max-height: var(--mapping-view-max-height);
   height: var(--mapping-view-height);
+  overflow-x: auto;
   resize: vertical;
   position: relative;
 }
@@ -146,7 +110,7 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  font-size: calc(var(--white-space) * 2);
+  font-size: var(--size);
   pointer-events: none;
   z-index: -1;
 }
@@ -172,10 +136,10 @@
 }
 
 .wbplanview-mapping-view-map-button {
-  font-size: calc(2 * var(--white-space)) !important;
+  font-size: var(--size) !important;
   flex-direction: column;
   justify-content: center;
-  padding: 0.6rem !important;
+  padding: var(--half-size) !important;
 }
 
 .wbplanview-mapping-view-map-button-arrow {
@@ -188,10 +152,10 @@
 }
 
 .mapping-view-resizer {
-  margin-bottom: calc(var(--white-space) * -1);
-  height: var(--white-space);
+  margin-bottom: calc(var(--half-size) * -1);
+  height: var(--half-size);
   cursor: pointer;
-  border: 1px solid var(--b2);
+  border: var(--border-size) solid var(--b2);
   border-left: 0;
   border-right: 0;
   box-sizing: border-box;
@@ -205,7 +169,7 @@
 .validation-results {
   display: flex;
   flex-direction: column;
-  row-gap: var(--white-space);
+  row-gap: var(--half-size);
 }
 
 .validation-results .wbplanview-mapping-line-elements {
@@ -213,18 +177,18 @@
 }
 
 .validation-results .wbplanview-mapping-line-elements:not(:first-of-type) {
-  border-top: 1px solid var(--border);
+  border-top: var(--border-size) solid var(--border);
 }
 
 .validation-results .custom-select {
-  margin-top: var(--white-space);
+  margin-top: var(--half-size);
 }
 
 /* MAPPING LINE */
 .mapping-line-list {
   flex: 1;
   display: grid;
-  grid-template-columns: 2.2rem max-content auto;
+  grid-template-columns: auto max-content auto;
   grid-auto-rows: max-content;
   overflow-x: hidden;
 }
@@ -234,12 +198,8 @@
 }
 
 .wbplanview-mapping-line > * {
-  border-top: 1px solid var(--border);
-  padding: calc(var(--white-space) * 0.8) 0;
-}
-
-.wbplanview-mapping-line > *:not(:first-child) {
-  padding-left: 0.6rem;
+  border-top: var(--border-size) solid var(--border);
+  padding: var(--half-size) 0;
 }
 
 .wbplanview-mapping-line-focused > .wbplanview-mapping-line-elements {
@@ -250,7 +210,7 @@
 .wbplanview-mapping-line-controls button {
   border: none;
   background: var(--b2);
-  padding: 0.3rem;
+  padding: var(--half-size);
   height: 100%;
   width: 100%;
 }
@@ -263,18 +223,18 @@
 .wbplanview-mapping-line-header {
   justify-content: flex-end;
   max-width: 25vw;
-  padding-right: var(--white-space);
+  padding: 0 var(--half-size);
 }
 
 .wbplanview-mapping-line-elements {
   flex-wrap: wrap;
-  row-gap: var(--white-space);
+  row-gap: var(--half-size);
 }
 
 .wbplanview-mapping-line-divider {
-  font-size: calc(1.5 * var(--white-space));
+  font-size: var(--size);
   text-align: center;
-  padding: 0 var(--white-space);
+  padding: 0 var(--half-size);
 }
 
 .wbplanview-mapping-line-header-unmapped .custom-select-input {

@@ -5,7 +5,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: var(--size);
 }
 
 /* Header */
@@ -27,8 +27,8 @@
 .wb-navigation {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 0.3rem;
-  row-gap: 0.5rem;
+  column-gap: var(--quarter-size);
+  row-gap: var(--half-size);
 }
 
 .wb-controls-right,
@@ -46,7 +46,7 @@
 
 .wbs-form .wb-controls-left {
   flex: 1;
-  font-size: 0.8rem;
+  font-size: var(--size);
   overflow-y: auto;
   white-space: nowrap;
   flex-wrap: nowrap;
@@ -59,7 +59,7 @@
 .wbs-form .wb-controls-left span.ui-icon {
   display: inline-block;
   vertical-align: bottom;
-  margin-right: 0.5rem;
+  margin-right: var(--half-size);
 }
 
 .wb-search-replace {
@@ -68,7 +68,6 @@
 
 .wb-search-replace input {
   margin: 0;
-  vertical-align: baseline;
 }
 
 /* Content */
@@ -76,7 +75,7 @@
   flex: 1;
   overflow: hidden;
   display: flex;
-  column-gap: 1rem;
+  column-gap: var(--size);
 }
 
 .wb-spreadsheet {
@@ -90,19 +89,6 @@
 }
 
 /* HANDSONTABLE overwrites */
-.wbs-form .ht_clone_top {
-  z-index: 97;
-}
-
-.wbs-form .ht_clone_left {
-  z-index: 98;
-}
-
-.wbs-form .ht_clone_top_left_corner,
-.wbs-form .ht_clone_bottom_left_corner {
-  z-index: 99;
-}
-
 .htCore th > .relative {
   display: flex;
   align-content: center;
@@ -116,14 +102,14 @@
 
 .htCore .colHeader .wb-col-header {
   display: flex;
-  column-gap: 0.2rem;
+  column-gap: var(--quarter-size);
   align-items: center;
-  padding-left: 15px;
+  padding-left: var(--size);
 }
 
 .htCore .colHeader .wb-header-icon {
-  width: 20px;
-  height: 20px;
+  width: var(--table-icon-size);
+  height: var(--table-icon-size);
   background-size: contain;
 }
 
@@ -132,11 +118,11 @@
 }
 
 .handsontable td .htAutocompleteArrow {
-  color: #000;
+  color: var(--t1);
 }
 
 .handsontable td .htAutocompleteArrow:hover {
-  color: #999;
+  color: var(--b4);
 }
 
 /* Sorting direction */
@@ -158,20 +144,15 @@
 
 /* CONTENT styles */
 .handsontable .htPlaceholder {
-  color: #66f;
+  color: var(--default-cell);
 }
 
 .wbs-form .wb-cell-unmapped {
-  color: #999;
+  color: var(--b4);
 }
 
 .wbs-form.wb-focus-coordinates .wb-coordinate-cell {
-  color: #000;
-}
-
-.wbs-form .wb-invalid-cells {
-  border: solid 1px;
-  padding: 8px 5px;
+  color: var(--t1);
 }
 
 .wbs-form .wb-no-match-cell,
@@ -184,30 +165,30 @@
 
 .handsontable tbody th.ht__highlight,
 .handsontable thead th.ht__highlight {
-  background-color: #007eff61;
-  color: #000;
+  background-color: var(--highlighted-row);
+  color: var(--t1);
 }
 
 /* The order here determines the priority of the states
  * From the lowest till the highest */
 .wbs-form:not(.wb-hide-new-cells) .wb-no-match-cell,
 .wb-navigation-section[data-navigation-type='newCells'] {
-  --accent-color: #aaf;
+  --accent-color: var(--new-cell);
 }
 
 .wbs-form:not(.wb-hide-invalid-cells) .wb-invalid-cell,
 .wb-navigation-section[data-navigation-type='invalidCells'] {
-  --accent-color: #faa;
+  --accent-color: var(--invalid-cell);
 }
 
 .wbs-form:not(.wb-hide-modified-cells) .wb-modified-cell,
 .wb-navigation-section[data-navigation-type='modifiedCells'] {
-  --accent-color: #ffa;
+  --accent-color: var(--modified-cell);
 }
 
 .wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
 .wb-navigation-section[data-navigation-type='searchResults'] {
-  --accent-color: #afa;
+  --accent-color: var(--search-result);
 }
 
 .wb-navigation-section {
@@ -216,13 +197,13 @@
 
 .wb-cell-navigation,
 .wb-navigation-text {
-  transition: 0.2s;
+  transition: var(--animation-duration);
   cursor: pointer;
 }
 
 .wb-cell-navigation {
   border: 0;
-  padding: 0.4rem;
+  padding: var(--half-size);
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -251,14 +232,14 @@
 }
 
 .wbs-form.wb-show-upload-results .wb-no-match-cell {
-  color: #000;
+  color: var(--t1);
 }
 
 .wb-navigation-text {
   display: grid;
   grid-template-columns: auto 1fr auto 1fr auto;
   align-items: center;
-  padding: 0 3px;
+  padding: 0 var(--quarter-size);
 }
 
 .wb-navigation-position {
@@ -266,7 +247,7 @@
 }
 
 .wb-advanced-search {
-  font-size: 1rem;
+  font-size: var(--size);
   padding-top: 0;
 }
 
@@ -277,7 +258,7 @@
 }
 
 .da-row {
-  padding: 0.3rem 0;
+  padding: var(--quarter-size) 0;
 }
 
 /* Coordinate Converter */

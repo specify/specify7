@@ -356,7 +356,11 @@ const WBView = Backbone.View.extend({
                             href="/specify/view/${tableName}/${recordId}/"
                             target="_blank"
                           >
-                            <img src="${tableIcon}" alt="${tableLabel}">
+                            <div
+                              class="table-icon table-icon-image"
+                              style="background-image: url('${tableIcon}')"
+                              title="${tableLabel}"
+                            ></div>
                             ${tableLabel}
                           </a>`;
                         })

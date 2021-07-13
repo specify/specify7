@@ -165,7 +165,7 @@ export const stateReducer = generateReducer<
         ],
       }}
     >
-      <div className="wbplanview-base-table-selection wbplanview-init">
+      <div className="wbplanview-base-table-selection">
         <ListOfBaseTables
           listOfTables={dataModelStorage.listOfBaseTables}
           showHiddenTables={state.showHiddenTables}

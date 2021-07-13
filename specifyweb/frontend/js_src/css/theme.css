@@ -6,7 +6,8 @@
   font-size: 0.8rem;
   font-weight: 400;
   color: #555;
-  transition: background 0.2s, border 0.2s;
+  transition: background var(--animation-duration) ease,
+    border var(--animation-duration) ease;
   cursor: pointer;
 }
 
@@ -22,12 +23,6 @@
   cursor: no-drop;
   background: #ccc;
   color: #888;
-}
-
-@media (prefers-reduced-motion) {
-  .magic-button {
-    transition: none;
-  }
 }
 
 .v-center {
@@ -53,7 +48,7 @@
 }
 
 .table-icon-generated {
-  border-radius: 3px;
+  border-radius: var(--border-radius);
   color: var(--b1);
 }
 

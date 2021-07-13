@@ -1,7 +1,7 @@
 .wbs-dialog-table {
   display: grid;
   grid-template-columns: 1fr auto auto auto;
-  column-gap: 1rem;
+  column-gap: var(--size);
 }
 
 .wbs-dialog-header,

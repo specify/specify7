@@ -157,11 +157,6 @@ export function ValidationButton(props: {
           props.isValidated ? 'validation-indicator-success' : ''
         }`}
         type="button"
-        style={
-          {
-            '--text-content': wbText('validated'),
-          } as React.CSSProperties
-        }
         onClick={
           props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
         }

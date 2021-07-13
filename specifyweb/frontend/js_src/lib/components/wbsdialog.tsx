@@ -3,7 +3,7 @@
  *
  */
 
-import '../../css/wbdsdialog.css';
+import '../../css/wbsdialog.css';
 
 import $ from 'jquery';
 import React from 'react';

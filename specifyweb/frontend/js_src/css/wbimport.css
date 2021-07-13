@@ -4,18 +4,18 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-size: 0.8rem;
+  font-size: var(--size);
 }
 
 .wb-import-table {
   display: grid;
   grid-template-columns: auto auto;
-  row-gap: 0.5rem;
-  column-gap: 0.5rem;
+  row-gap: var(--half-size);
+  column-gap: var(--half-size);
   align-items: center;
   width: 30vw;
   min-width: 400px;
-  margin: 0 0.2rem;
+  margin: 0 var(--quarter-size);
 }
 
 .wb-import-table > label {
@@ -23,14 +23,14 @@
 }
 
 .custom-file-picker a {
-  margin-left: -0.2rem;
+  margin-left: calc(var(--quarter-size) * -1);
   height: 150px;
   text-align: center;
   justify-content: center;
 }
 
 .custom-file-picker.custom-file-picker-dragging a {
-  background: #fff;
+  background: var(--b1);
   border-color: #23f;
 }
 
@@ -48,19 +48,19 @@
 }
 
 .workbench-import-view table {
-  background-color: #fff;
+  background-color: var(--b1);
 }
 
 .workbench-import-view table tr.header {
-  background-color: #ddd;
+  background-color: var(--b2);
   text-align: center;
 }
 
 .workbench-import-view table th {
-  border: 1px solid #ddd;
-  border-bottom-color: #888;
+  border: var(--border-size) solid var(--b2);
+  border-bottom-color: var(--b4);
 }
 
 .workbench-import-view table td {
-  border: 1px solid #888;
+  border: var(--border-size) solid var(--b4);
 }

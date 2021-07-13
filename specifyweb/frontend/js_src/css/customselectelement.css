@@ -1,27 +1,20 @@
 .custom-select {
-  --background1: #fff;
-  --background2: #fdb;
-  --accent: #f73;
-  --success: #2c0;
-  --modified: #ffa;
-  --error: #f24;
   --lines-to-display: 8;
-  --border-size: 1px;
 
-  color: var(--text1);
+  color: var(--t1);
   display: grid;
   grid-template-areas:
     'header'
     'options';
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
-  height: calc(4 * var(--white-space) + var(--border-size) * 2);
+  height: calc(var(--double-size) + var(--border-size) * 2);
   position: relative;
 }
 
 .custom-select-suggestion-list:not(.controlled) {
   position: absolute;
-  bottom: calc(4 * var(--white-space) + var(--border-size));
+  bottom: calc(var(--double-size) + var(--border-size));
 }
 
 .custom-select-suggestion-list.controlled {
@@ -32,11 +25,11 @@
 
 .custom-select-closed-list > .custom-select-options,
 .custom-select-closed-list .custom-select-suggestion-list {
-  box-shadow: 0 0 calc(var(--white-space) / 2) calc(var(--white-space) / 4) #555;
+  box-shadow: 0 0 var(--half-size) var(--quarter-size) var(--border);
 }
 
 .custom-select-mapping-options-list {
-  padding-left: var(--white-space);
+  padding-left: var(--half-size);
 }
 
 .custom-select-mapping-option-line-list {
@@ -50,22 +43,22 @@
 }
 
 .custom-select-header {
-  padding: var(--white-space);
+  padding: var(--half-size);
   display: flex;
-  row-gap: var(--white-space);
-  column-gap: var(--white-space);
+  row-gap: var(--half-size);
+  column-gap: var(--quarter-size);
   align-items: center;
-  background-color: var(--background2);
+  background-color: var(--accent-hover);
 }
 
 .custom-select-input {
   cursor: pointer;
-  border-color: var(--text1);
-  background-color: var(--background1);
+  border-color: var(--t1);
+  background-color: var(--b1);
 }
 
 .custom-select-suggestion-line-list .custom-select-input {
-  grid-template-columns: calc(var(--white-space) * 2) 1fr;
+  grid-template-columns: var(--size) 1fr;
 }
 
 .custom-select-closed-list-active > .custom-select-input {
@@ -77,8 +70,8 @@
 }
 
 .custom-select-mapping-options-list .custom-select-input-label {
-  font-size: calc(var(--white-space) * 2.8);
-  margin-bottom: 3px;
+  font-size: calc(var(--size) + var(--half-size));
+  margin-bottom: var(--quarter-size);
 }
 
 .custom-select-input-label,
@@ -96,8 +89,8 @@
 }
 
 .custom-select-element-shadow-list {
-  margin-top: calc(var(--white-space) * -2);
-  padding-right: calc(var(--white-space) * 4 + var(--table-icon-size) + 2px);
+  margin-top: calc(var(--size) * -1);
+  padding-right: calc(var(--double-size) + var(--table-icon-size) + var(--border-size) * 2);
   visibility: hidden;
   display: flex;
   flex-direction: column;
@@ -111,11 +104,11 @@
 
 .custom-select-input,
 .custom-select-option {
-  padding: 0 var(--white-space);
-  height: calc(4 * var(--white-space));
+  padding: 0 var(--half-size);
+  min-height: var(--double-size);
   display: grid;
-  grid-template-columns: var(--table-icon-size) 1fr var(--white-space);
-  grid-column-gap: calc(var(--white-space) / 2);
+  grid-template-columns: var(--table-icon-size) 1fr var(--half-size);
+  grid-column-gap: var(--quarter-size);
   align-items: center;
 }
 
@@ -132,7 +125,7 @@
   > .custom-select-options
   > .custom-select-group
   > .custom-select-option {
-  padding: var(--white-space);
+  padding: var(--half-size);
   min-height: unset;
 }
 
@@ -145,7 +138,7 @@
 }
 
 .custom-select-input:hover::after {
-  color: var(--text2);
+  color: var(--t3);
 }
 
 .custom-select-options,
@@ -156,9 +149,9 @@
 
 .custom-select-options {
   overflow-y: scroll;
-  max-height: calc(4 * var(--white-space) * var(--lines-to-display));
+  max-height: calc(var(--double-size) * var(--lines-to-display));
   border: var(--border-size) solid var(--accent);
-  background-color: var(--background1);
+  background-color: var(--custom-select-b1);
   z-index: 2;
   min-width: max-content;
   cursor: pointer;
@@ -175,7 +168,6 @@
 }
 
 .custom-select-options::-webkit-scrollbar {
-  width: 0.8rem;
   background: var(--b1);
 }
 
@@ -184,58 +176,58 @@
 }
 
 .custom-select-group {
-  background-color: var(--background1);
+  background-color: var(--custom-select-b1);
   display: flex;
   flex-direction: column;
 }
 
 .custom-select-group-optional-fields {
-  --background1: #fff;
-  --background2: #fdb;
-  --accent: #f73;
+  --custom-select-b1: var(--custom-select-normal-b1);
+  --custom-select-b2: var(--custom-select-normal-b2);
+  --custom-select-accent: var(--custom-select-normal-accent);
 }
 
 .custom-select-group-required-fields {
-  --background1: #dff;
-  --background2: #cff;
-  --accent: #3ef;
+  --custom-select-b1: var(--custom-select-required-b1);
+  --custom-select-b2: var(--custom-select-required-b2);
+  --custom-select-accent: var(--custom-select-required-accent);
 }
 
 .custom-select-input-required {
-  background: #cff;
+  background: var(--custom-select-required-b2);
 }
 
 .custom-select-group-hidden-fields {
-  --background1: #ccc;
-  --background2: #aaa;
-  --accent: #666;
+  --custom-select-b1: var(--custom-select-hidden-b1);
+  --custom-select-b2: var(--custom-select-hidden-b2);
+  --custom-select-accent: var(--custom-select-hidden-accent);
 }
 
 .custom-select-input-hidden {
-  background: #aaa;
+  background: var(--custom-select-hidden-b2);
 }
 
 .custom-select-group-suggested-mappings {
-  --background1: #dfd;
-  --background2: #bfc;
-  --accent: #9f9;
+  --custom-select-b1: var(--custom-select-suggested-b1);
+  --custom-select-b2: var(--custom-select-suggested-b2);
+  --custom-select-accent: var(--custom-select-suggested-accent);
 }
 
 .custom-select-group-label {
-  background-color: var(--background2);
-  padding: calc(0.5 * var(--white-space));
-  color: var(--text2);
+  background-color: var(--custom-select-b2);
+  padding: var(--quarter-size);
+  color: var(--t3);
   cursor: initial;
 }
 
 .custom-select-option:hover,
 .custom-select-option:focus {
-  background-color: var(--background2);
+  background-color: var(--custom-select-b2);
 }
 
 .custom-select-suggestion-list .custom-select-option {
   display: inline;
-  padding-left: var(--white-space);
+  padding-left: var(--half-size);
 }
 
 .custom-select-mapping-option-line-list .custom-select-options {
@@ -248,19 +240,19 @@
 }
 
 .custom-select-option-disabled {
-  color: var(--text2);
-  background-color: var(--background1) !important;
+  color: var(--t3);
+  background-color: var(--custom-select-b1) !important;
 }
 
 .custom-select-option-selected {
-  background-color: var(--accent) !important;
+  background-color: var(--custom-select-accent) !important;
 }
 
 .must-match-line {
-  column-gap: 0.5rem;
+  column-gap: var(--half-size);
 }
 
 .must-match-line span {
-  width: 1rem;
-  height: 1rem;
+  width: var(--size);
+  height: var(--size);
 }
