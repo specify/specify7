@@ -4,24 +4,24 @@ import { createDictionary } from './utils';
 
 const lifemapperText = createDictionary({
   specifyNetwork: 'Specify Network',
-  lifemapper: 'Lifemapper',
+  speciesDistributionMap: 'Species Distribution Map',
   noIssuesDetected: `
     Record was indexed successfully and no data quality issues were
     reported`,
   issuesDetected: 'The following data quality issues were reported:',
-  localOccurrencePoints: 'Local Occurrence Points',
-  leafletDetailsHeader: 'Lifemapper',
+  localOccurrencePoints: 'Your Database Occurrences',
+  leafletDetailsHeader: 'Legend',
   leafletDetailsErrorsHeader: 'Status:',
-  leafletDetailsInfoHeader: 'Details:',
-  speciesName: 'Species Name:',
-  projectionNotFound: 'No Species Distribution Model available.',
-  modelCreationData: 'Model Creation date:',
+  gbif: 'GBIF:',
+  speciesName: 'Species:',
+  projectionNotFound: 'No Distribution Model available.',
+  modelCreationData: 'Model Created:',
   aggregatorBadgeTitle: (aggregatorName: string): string =>
     `Record was indexed by ${aggregatorName}`,
   viewOccurrenceAt: (aggregatorName: string): string =>
     `View occurrence at ${aggregatorName}`,
-  projection: 'Projection',
-  occurrencePoints: 'Occurrence Points',
+  projection: 'Lifemapper Distribution Model',
+  occurrencePoints: 'GBIF Occurrence Points',
   moreDetails: 'More Details',
   overLimitMessage: (limit: number) =>
     `Only the first ${limit} specimens are shown`,

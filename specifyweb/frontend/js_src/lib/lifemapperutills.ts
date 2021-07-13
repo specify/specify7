@@ -49,11 +49,12 @@ export type LifemapperLayerTypes = 'vector' | 'raster';
 
 export const lifemapperLayerVariations: RR<
   LifemapperLayerTypes,
-  { layerLabel: string; transparent: boolean }
+  { layerLabel: string; transparent: boolean; opacity?: number }
 > = {
   raster: {
     layerLabel: lifemapperText('projection'),
     transparent: true,
+    opacity: 0.5,
   },
   vector: {
     layerLabel: lifemapperText('occurrencePoints'),

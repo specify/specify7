@@ -89,6 +89,19 @@
 }
 
 /* HANDSONTABLE overwrites */
+.wbs-form .ht_clone_top {
+  z-index: 97;
+}
+
+.wbs-form .ht_clone_left {
+  z-index: 98;
+}
+
+.wbs-form .ht_clone_top_left_corner,
+.wbs-form .ht_clone_bottom_left_corner {
+  z-index: 99;
+}
+
 .htCore th > .relative {
   display: flex;
   align-content: center;

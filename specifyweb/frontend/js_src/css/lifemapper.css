@@ -11,7 +11,7 @@
   padding: 0.1rem;
   background: none;
   border: none;
-  border-radius: 100px;
+  border-radius: var(--round);
   cursor: pointer;
 }
 
@@ -38,11 +38,16 @@
 }
 
 .lifemapper-source-icon-issues-detected {
-  background: #f55;
+  background: var(--error);
 }
 
 .lifemapper-source-issues-list li {
   list-style: disc;
+}
+
+.lifemapper-legend {
+  display: flex;
+  flex-direction: column;
 }
 
 .lifemapper-leaflet-map {
@@ -53,18 +58,13 @@
   filter: hue-rotate(135deg);
 }
 
-.lifemapper-message-section {
-  margin-bottom: 10px;
-  display: block;
-}
-
-.lifemapper-message-section h3 {
+.lifemapper-legend h2 {
   color: #fff;
 }
 
 .lifemapper-map-scale {
   width: calc(100% - 1rem);
-  height: 1.5rem;
+  height: var(--double-size);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -74,4 +74,11 @@
     hsl(90deg, 50%, 50%),
     hsl(10deg, 50%, 50%)
   );
+}
+
+.lifemapper-map-legend {
+  width: 100%;
+  height: var(--double-size);
+  background-size: cover;
+  background-position: center;
 }

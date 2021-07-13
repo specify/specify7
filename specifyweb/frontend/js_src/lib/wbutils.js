@@ -168,12 +168,15 @@ module.exports = Backbone.View.extend({
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
   toggleCellTypes(e, action = 'toggle') {
-    const button = e.target;
-    const buttonContainer = button.closest('.wb-navigation-section');
-    const buttonLabel = buttonContainer.getAttribute('data-navigation-type');
-    const cssClassName = `wb-hide-${WbPlanViewHelper.camelToKebab(
-      buttonLabel
-    )}`;
+    let groupName;
+    if (typeof e === 'string') groupName = e;
+    else {
+      const button = e.target;
+      const buttonContainer = button.closest('.wb-navigation-section');
+      const buttonLabel = buttonContainer.getAttribute('data-navigation-type');
+      groupName = WbPlanViewHelper.camelToKebab(buttonLabel);
+    }
+    const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
   },
   getToVisualConverters() {
@@ -206,7 +209,7 @@ module.exports = Backbone.View.extend({
     )
       return;
 
-    this.toggleCellTypes(e, 'remove');
+    this.toggleCellTypes('search-results', 'remove');
 
     const button = e.target;
     const buttonContainer = button.parentElement;

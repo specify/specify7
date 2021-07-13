@@ -2,13 +2,10 @@ import type L from 'leaflet';
 import React from 'react';
 
 import * as Leaflet from '../leaflet';
-import type { MessageTypes } from '../lifemapperconfig';
-import { lifemapperMessagesMeta } from '../lifemapperconfig';
 import type { MapInfo } from '../lifemapperreducer';
 import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
 import type { MainState } from './lifemapperstate';
-import type { RA } from './wbplanview';
 
 export function Badge<IS_ENABLED extends boolean>({
   name,
@@ -95,28 +92,43 @@ export function LifemapperMap({
     let leafletMap: L.Map | undefined;
     Leaflet.showCOMap(mapRef.current, mapInfo.layers, [
       lifemapperText('leafletDetailsHeader'),
-      [
-        ...(Object.entries(mapInfo.messages) as [MessageTypes, RA<string>][])
-          .filter(([, messages]) => messages.length > 0)
-          .map(
-            ([name, messages], _index, { length: sectionCount }) => `<span
-        class="lifemapper-message-section ${
-          lifemapperMessagesMeta[name].className
-        }"
-      >
-        ${
-          sectionCount > 1
-            ? `<h3>${lifemapperMessagesMeta[name].title}</h3>`
-            : ''
-        }
-        ${messages.join('<br>')}
-      </span>`
-          ),
-        `<span class="lifemapper-map-scale">
+      `<div class="lifemapper-legend">
+        <h2>${lifemapperText('speciesName')}</h2>
+        <i>${mapInfo.messages.infoSection.speciesName}</i>
+        <h2>${lifemapperText('localOccurrencePoints')}:</h2>
+        <span class="lifemapper-map-scale">
           <span>0</span>
           <span>200+</span>
-        </span>`,
-      ].join(''),
+        </span>
+        <h2>${lifemapperText('gbif')}</h2>
+        <span
+          class="lifemapper-map-legend"
+          style="background-image: url('/static/img/lifemapper_occurrence.png')"
+        ></span>
+        <h2>${lifemapperText('leafletDetailsErrorsHeader')}</h2>
+        ${
+          Object.keys(mapInfo.messages.errorDetails).length === 0
+            ? `
+              ${
+                mapInfo.messages.infoSection.dateCreated
+                  ? `<span>
+                ${lifemapperText('modelCreationData')}
+                <i>${mapInfo.messages.infoSection.dateCreated}</i>
+              </span>`
+                  : ''
+              }
+              <span
+                class="lifemapper-map-legend"
+                style="
+                  background-image: url('/static/img/lifemapper_projection.png')
+                "
+              ></span>
+              `
+            : Object.values(mapInfo.messages.errorDetails).map(
+                (message) => `<i>${message}</i>`
+              )
+        }
+      </div>`,
     ])
       .then(([map, layerGroup]) => {
         Leaflet.addMarkersToMap(

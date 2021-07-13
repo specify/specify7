@@ -42,7 +42,7 @@ type SetLocalOccurrenceNameAction = Action<
 export type MapInfo = {
   readonly layers: RA<LayerConfig>;
   readonly markers: RA<MarkerGroups>;
-  readonly messages: RR<MessageTypes, RA<string>>;
+  readonly messages: RR<MessageTypes, IR<string>>;
 };
 
 type MapLoadedAction = Action<'MapLoadedAction', MapInfo>;

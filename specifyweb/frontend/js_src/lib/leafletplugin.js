@@ -58,7 +58,9 @@ module.exports = UIPlugin.extend(
               fullLocalityData = localityData;
               marker
                 .getPopup()
-                .setContent(Leaflet.formatLocalityData(localityData));
+                .setContent(
+                  Leaflet.formatLocalityData(localityData, undefined, true)
+                );
             }),
         })
       );

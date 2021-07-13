@@ -1,4 +1,4 @@
-import type { IR, RA, RR } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import lifemapperText from './localization/lifemapper';
 
 const IS_DEVELOPMENT = false;
@@ -24,24 +24,7 @@ export const snFrontendServer = 'https://broker.spcoco.org';
 
 export const SN_SERVICES: IR<string> = {
   sn: lifemapperText('specifyNetwork'),
-  lm: lifemapperText('lifemapper'),
+  lm: lifemapperText('speciesDistributionMap'),
 };
 export const ignoredAggregators: RA<string> = ['specify'];
 export type MessageTypes = 'errorDetails' | 'infoSection';
-
-export const lifemapperMessagesMeta: RR<
-  MessageTypes,
-  {
-    className: string;
-    title: string;
-  }
-> = {
-  errorDetails: {
-    className: 'error-details',
-    title: lifemapperText('leafletDetailsErrorsHeader'),
-  },
-  infoSection: {
-    className: 'info-section',
-    title: lifemapperText('leafletDetailsInfoHeader'),
-  },
-} as const;

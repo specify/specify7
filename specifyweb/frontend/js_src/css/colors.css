@@ -8,6 +8,7 @@
   --t3: #444;
   --t4: #666;
   --border: #555;
+  --darken: #000c;
 
   --success: #2c0;
   --error: #f24;
@@ -25,9 +26,9 @@
 
   --border-size: 1px;
   --border-radius: 3px;
+  --round: 99999px;
 
   --table-icon-size: calc(var(--size) * 1.25);
-
 
   /* Workbench */
   --default-cell: #66f;
@@ -36,7 +37,6 @@
   --invalid-cell: #faa;
   --modified-cell: var(--modified);
   --search-result: #afa;
-
 
   /* Custom Select Element */
   --custom-select-normal-b1: var(--b1);
@@ -54,10 +54,7 @@
   --custom-select-suggested-b1: #dfd;
   --custom-select-suggested-b2: #bfc;
   --custom-select-suggested-accent: #9f9;
-
 }
-
-
 
 @media (prefers-reduced-motion) {
   :root {

@@ -9,7 +9,7 @@ import {
 import { getMappingLineData } from './wbplanviewnavigator';
 
 // Use table name instead of field name for the following fields:
-const fieldsToHide: Set<string> = new Set(['name', 'fullname']);
+const fieldsToHide: Set<string> = new Set(['name', 'fullname', 'localityname']);
 
 /*
  * Use table name alongside field label (if field label consists of a single
@@ -22,7 +22,12 @@ const genericFields: Set<string> = new Set([]);
  * (the table name would be used alongside field label). The following
  * fields are exempt from such behaviour:
  */
-const nonGenericFields: Set<string> = new Set([]);
+const nonGenericFields: Set<string> = new Set([
+  'latitude1',
+  'longitude1',
+  'latitude2',
+  'longitude2',
+]);
 
 // Use parent table label instead of this table label (if possible)
 const tablesToHide: Set<string> = new Set(['agent', 'addresses']);

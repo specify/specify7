@@ -113,7 +113,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               ...(typeof state.aggregators[badgeName] === 'undefined'
                 ? {
                     width: 950,
-                    height: 500,
+                    height: 600,
                   }
                 : state.aggregators[badgeName]?.occurrenceViewLink
                 ? {

@@ -11,8 +11,8 @@ import type { IR, RA, RR } from './components/wbplanview';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
+  mappingLocalityColumns,
   preferredBaseLayer,
-  preferredOverlayLayer,
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
@@ -117,7 +117,10 @@ export async function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const map = L.map(leafletMapContainer[0]).setView(defaultCenter, defaultZoom);
+  const map = L.map(leafletMapContainer[0], { maxZoom: 23 }).setView(
+    defaultCenter,
+    defaultZoom
+  );
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,
     tileLayers.overlays
@@ -153,9 +156,9 @@ function rememberSelectedBaseLayers(
   const cacheName = `currentLayer${cacheSalt}` as const;
   const currentLayer = cache.get('leaflet', cacheName);
   const baseLayer =
-    currentLayer !== false && currentLayer in layers
+    (currentLayer !== false && currentLayer in layers
       ? layers[currentLayer]
-      : layers[preferredBaseLayer] ?? layers[0];
+      : layers[preferredBaseLayer]) ?? Object.values(layers)[0];
   baseLayer.addTo(map);
 
   map.on('baselayerchange', ({ name }: { readonly name: string }) => {
@@ -353,10 +356,17 @@ const createLine = (
 
 export const formatLocalityData = (
   localityData: Partial<LocalityData>,
-  viewUrl?: string
+  viewUrl?: string,
+  hideRedundant = false
 ): string =>
   [
-    ...Object.values(localityData)
+    ...Object.entries(localityData)
+      .filter(
+        ([fieldName]) =>
+          !hideRedundant ||
+          !(mappingLocalityColumns as RA<string>).includes(fieldName)
+      )
+      .map(([_fieldName, field]) => field)
       .filter(
         (field): field is Field<string | number> => typeof field !== 'undefined'
       )
@@ -457,6 +467,7 @@ export function getMarkersFromLocalityData({
 export type LayerConfig = {
   readonly transparent: boolean;
   readonly layerLabel: string;
+  readonly isDefault: boolean;
   readonly tileLayer: {
     readonly mapUrl: string;
     readonly options: IR<unknown>;
@@ -471,17 +482,12 @@ export async function showCOMap(
   const tileLayers = await getLeafletLayers();
 
   const listOfLayers: {
-    transparent: boolean;
-    layerLabel: string;
-    tileLayer: L.TileLayer.WMS | L.TileLayer;
+    readonly transparent: boolean;
+    readonly layerLabel: string;
+    readonly tileLayer: L.TileLayer.WMS | L.TileLayer;
   }[] = [
     ...Object.entries(tileLayers.baseMaps).map(([layerLabel, tileLayer]) => ({
       transparent: false,
-      layerLabel,
-      tileLayer,
-    })),
-    ...Object.entries(tileLayers.overlays).map(([layerLabel, tileLayer]) => ({
-      transparent: true,
       layerLabel,
       tileLayer,
     })),
@@ -492,6 +498,11 @@ export async function showCOMap(
         tileLayer: L.tileLayer.wms(mapUrl, options),
       })
     ),
+    ...Object.entries(tileLayers.overlays).map(([layerLabel, tileLayer]) => ({
+      transparent: true,
+      layerLabel,
+      tileLayer,
+    })),
   ];
 
   const formatLayersDict = (
@@ -521,13 +532,16 @@ export async function showCOMap(
   addPrintMapButton(map);
   rememberSelectedBaseLayers(map, baseLayers, 'CoMap');
   rememberSelectedOverlays(map, overlayLayers, {
-    [preferredOverlayLayer]: true,
     ...Object.fromEntries(
-      listOfLayersRaw
-        .filter(({ transparent }) => transparent)
-        .map(({ layerLabel }) => [layerLabel, true])
+      Object.keys(tileLayers.overlays).map((label) => [label, true])
     ),
   });
+
+  listOfLayersRaw
+    .filter(({ transparent, isDefault }) => transparent && isDefault)
+    .forEach(({ layerLabel }) => {
+      overlayLayers[layerLabel].addTo(map);
+    });
 
   if (typeof details !== 'undefined')
     return [

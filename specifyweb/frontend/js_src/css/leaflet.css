@@ -1,29 +1,33 @@
 .leaflet-details-container {
-  color: #fff;
-  background: #000c;
+  color: var(--b1);
+  background: var(--darken);
   padding: 10px;
   max-width: 50%;
-  min-width: 92px;
+  width: 20rem;
 }
 
 .leaflet-full-screen-toggle {
-  width: 2rem;
-  padding: 0.5rem;
+  width: var(--double-size);
+  padding: var(--half-size);
 }
 
 .leaflet-full-screen-toggle,
 .leaflet-print-map {
   cursor: pointer !important;
-  background: #fffa;
+  background: var(--darken);
 }
 
 .leaflet-map-full-screen .leaflet-print-map {
-  font-size: 2rem;
-  padding: 0.1rem 0.5rem;
+  font-size: var(--double-size);
+  padding: 0.1rem var(--half-size);
 }
 
 .leaflet-container:not(.leaflet-map-full-screen) .leaflet-print-map {
   display: none;
+}
+
+.leaflet-top.leaflet-left {
+  max-height: 100%;
 }
 
 @media print {

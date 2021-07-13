@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import type { RA, RR } from './components/wbplanview';
+import type { R, RA, RR } from './components/wbplanview';
 import csrftoken from './csrftoken';
 import type { MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
@@ -24,11 +24,11 @@ export async function prepareLifemapperProjectionMap(
   getOccurrenceName: (preferredElement: 0 | 1) => string,
   model: any
 ): Promise<MapInfo> {
-  const messages: RR<MessageTypes, string[]> = {
-    errorDetails: [],
-    infoSection: [
-      `${lifemapperText('speciesName')} <i>${getOccurrenceName(1)}</i>`,
-    ],
+  const messages: RR<MessageTypes, R<string>> = {
+    errorDetails: {},
+    infoSection: {
+      speciesName: getOccurrenceName(1),
+    },
   };
 
   const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
@@ -124,9 +124,9 @@ export async function prepareLifemapperProjectionMap(
       } = await request.json();
 
       if (results.results.length > LIMIT)
-        messages.errorDetails.push(`
-          <b style="color:#f00">${lifemapperText('overLimitMessage')(LIMIT)}</b>
-        `);
+        messages.errorDetails.overLimitMessage = `<b style="color:#f00">
+          ${lifemapperText('overLimitMessage')(LIMIT)}
+        </b>`;
 
       let currentLocalityId: undefined | number;
       const localities = await Promise.all(
@@ -198,7 +198,8 @@ export async function prepareLifemapperProjectionMap(
                         .setContent(
                           Leaflet.formatLocalityData(
                             localityData,
-                            `/specify/view/collectionobject/${collectionObjectId}`
+                            `/specify/view/collectionobject/${collectionObjectId}/`,
+                            true
                           )
                         );
                     fetchedPopUps.push(index);
@@ -232,10 +233,14 @@ export async function prepareLifemapperProjectionMap(
   let layers: RA<any> = [];
 
   if (projectionMapResponse.errors.length > 0)
-    messages.errorDetails.push(...projectionMapResponse.errors);
+    projectionMapResponse.errors.forEach((error) => {
+      messages.errorDetails[error] = error;
+    });
   else if (projectionMapResponse.records[0]?.records.length === 0)
-    messages.errorDetails.push(lifemapperText('projectionNotFound'));
+    messages.errorDetails.projectionNotFound =
+      lifemapperText('projectionNotFound');
   else {
+    const layerCount: R<number> = {};
     layers = projectionMapResponse.records[0].records
       .sort(
         (
@@ -248,29 +253,39 @@ export async function prepareLifemapperProjectionMap(
             ? 1
             : -1
       )
-      .map((record) => ({
-        ...lifemapperLayerVariations[record['s2n:layer_type']],
-        tileLayer: {
-          mapUrl: record['s2n:endpoint'],
-          options: {
-            layers: record['s2n:layer_name'],
-            service: 'wms',
-            version: '1.0',
-            height: '400',
-            format: 'image/png',
-            request: 'getmap',
-            srs: 'epsg:3857',
-            width: '800',
-            ...lifemapperLayerVariations[record['s2n:layer_type']],
+      .map((record) => {
+        layerCount[record['s2n:layer_type']] ??= 0;
+        layerCount[record['s2n:layer_type']] += 1;
+
+        const layerLabel = `${
+          lifemapperLayerVariations[record['s2n:layer_type']].layerLabel
+        } (${layerCount[record['s2n:layer_type']]})`;
+        return {
+          ...lifemapperLayerVariations[record['s2n:layer_type']],
+          isDefault: layerCount[record['s2n:layer_type']] === 1,
+          layerLabel,
+          tileLayer: {
+            mapUrl: record['s2n:endpoint'],
+            options: {
+              layers: record['s2n:layer_name'],
+              service: 'wms',
+              version: '1.0',
+              height: '400',
+              format: 'image/png',
+              request: 'getmap',
+              srs: 'epsg:3857',
+              width: '800',
+              ...lifemapperLayerVariations[record['s2n:layer_type']],
+            },
           },
-        },
-      }));
+        };
+      });
 
     const modificationTime =
       projectionMapResponse.records[0].records[0]['s2n:modtime'];
-    messages.infoSection.push(
-      `${lifemapperText('modelCreationData')} <i>${modificationTime}</i>`
-    );
+    messages.infoSection.dateCreated = Number.isNaN(new Date(modificationTime))
+      ? modificationTime
+      : new Date(modificationTime).toLocaleDateString();
   }
 
   const markers = await similarCoMarkersPromise;
