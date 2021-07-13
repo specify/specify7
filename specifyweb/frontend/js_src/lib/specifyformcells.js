@@ -69,7 +69,7 @@ const userInfo             = require('./userinfo.js');
                 var props = parseSpecifyProperties(cell.attr('initialize'));
                 if (props.btn === 'true') {
                     td.addClass('specify-subview-button');
-                    id && td.prop('id', id);
+                    id && td.prop('id',id);
                     td.attr('data-specify-initialize', cell.attr('initialize'));
                     props.align && td.addClass('align-' + props.align);
                     doingFormTable && td.addClass('specify-subview-in-table');

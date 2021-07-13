@@ -32,7 +32,10 @@ const formsText = require('./localization/forms').default;
             self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
 
-            var link = $('<a>', {title: self.field.getLocalizedName()}).appendTo(self.el);
+            var link = $('<a>', {
+                tabIndex: 0,
+                title: self.field.getLocalizedName()
+            }).appendTo(self.el);
 
             if (!self.$el.hasClass('specify-subview-in-table')) {
                 $('<div style="display: table-row">')

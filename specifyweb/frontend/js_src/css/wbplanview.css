@@ -188,7 +188,7 @@
 .mapping-line-list {
   flex: 1;
   display: grid;
-  grid-template-columns: auto max-content auto;
+  grid-template-columns: var(--double-size) max-content auto;
   grid-auto-rows: max-content;
   overflow-x: hidden;
 }

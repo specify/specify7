@@ -93,8 +93,7 @@ export function LifemapperMap({
     Leaflet.showCOMap(mapRef.current, mapInfo.layers, [
       lifemapperText('leafletDetailsHeader'),
       `<div class="lifemapper-legend">
-        <h2>${lifemapperText('speciesName')}</h2>
-        <i>${mapInfo.messages.infoSection.speciesName}</i>
+        <h2>${mapInfo.messages.infoSection.speciesName}</h2>
         <h2>${lifemapperText('localOccurrencePoints')}:</h2>
         <span class="lifemapper-map-scale">
           <span>0</span>
@@ -131,12 +130,12 @@ export function LifemapperMap({
       </div>`,
     ])
       .then(([map, layerGroup]) => {
-        Leaflet.addMarkersToMap(
-          map,
-          layerGroup,
-          mapInfo.markers.flat(),
-          lifemapperText('localOccurrencePoints')
-        );
+        Leaflet.addMarkersToMap(map, layerGroup, mapInfo.markers.flat(), {
+          marker: lifemapperText('markerLayerLabel'),
+          polygon: lifemapperText('polygonLayerLabel'),
+          polygonBoundary: lifemapperText('polygonBoundaryLayerLabel'),
+          // Don't display error radii layer
+        });
         if (destructorCalled) destructor(map);
         else leafletMap = map;
       })

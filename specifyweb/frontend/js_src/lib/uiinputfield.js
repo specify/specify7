@@ -27,7 +27,10 @@ module.exports =  Backbone.View.extend({
         const placeholder = this.formatStr || (this.formatter && this.formatter.pattern());
         console.log('placeholder', placeholder);
         placeholder && this.$el.attr('placeholder', placeholder);
-        this.readOnly && this.$el.prop('readonly', true);
+        if(this.readOnly){
+            this.$el.prop('readonly', true);
+            this.$el.prop('tabindex',-1);
+        }
         return this;
     },
     selectAll() {

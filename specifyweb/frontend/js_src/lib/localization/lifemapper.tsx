@@ -9,11 +9,13 @@ const lifemapperText = createDictionary({
     Record was indexed successfully and no data quality issues were
     reported`,
   issuesDetected: 'The following data quality issues were reported:',
-  localOccurrencePoints: 'Your Database Occurrences',
+  localOccurrencePoints: 'Your Database Points',
+  markerLayerLabel: 'Your Database Pins',
+  polygonLayerLabel: 'Your Database Polygons',
+  polygonBoundaryLayerLabel: 'Your Database Polygon Boundaries',
   leafletDetailsHeader: 'Legend',
-  leafletDetailsErrorsHeader: 'Status:',
+  leafletDetailsErrorsHeader: 'Lifemapper:',
   gbif: 'GBIF:',
-  speciesName: 'Species:',
   projectionNotFound: 'No Distribution Model available.',
   modelCreationData: 'Model Created:',
   aggregatorBadgeTitle: (aggregatorName: string): string =>

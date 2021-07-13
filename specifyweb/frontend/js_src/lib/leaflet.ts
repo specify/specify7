@@ -247,7 +247,7 @@ export function addMarkersToMap(
   map: L.Map,
   controlLayers: L.Control.Layers,
   markers: RA<MarkerGroups>,
-  layerName = ''
+  labels?: Partial<RR<MarkerLayerName, string>>
 ): void {
   if (markers.length === 0) return;
 
@@ -303,22 +303,18 @@ export function addMarkersToMap(
 
   rememberSelectedOverlays(map, layerGroups, defaultMarkerGroupsState);
 
+  const layerLabels: Exclude<typeof labels, undefined> =
+    typeof labels === 'undefined'
+      ? {
+          marker: localityText('occurrencePoints'),
+          polygon: localityText('occurrencePolygons'),
+          polygonBoundary: localityText('polygonBoundaries'),
+          errorRadius: localityText('errorRadius'),
+        }
+      : labels;
   // Add layer groups' checkboxes to the layer control menu
-  controlLayers.addOverlay(
-    layerGroups.marker,
-    localityText('occurrencePoints')(layerName)
-  );
-  controlLayers.addOverlay(
-    layerGroups.polygon,
-    localityText('occurrencePolygons')(layerName)
-  );
-  controlLayers.addOverlay(
-    layerGroups.polygonBoundary,
-    localityText('polygonBoundaries')(layerName)
-  );
-  controlLayers.addOverlay(
-    layerGroups.errorRadius,
-    localityText('errorRadius')(layerName)
+  Object.entries(layerLabels).forEach(([key, label]) =>
+    controlLayers.addOverlay(layerGroups[key as MarkerGroups], label)
   );
 }
 

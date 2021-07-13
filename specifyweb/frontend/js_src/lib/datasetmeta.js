@@ -98,15 +98,12 @@ export const DataSetMeta = Backbone.View.extend({
       ${wbText('modified')} <i>${new Date(
       this.dataset.timestampmodified
     ).toLocaleString()}</i><br>
-      ${
-        this.dataset.uploadresult?.success === true
-          ? `
-        ${wbText('uploaded')} <i>${new Date(
-              this.dataset.uploadresult.timestamp
-            ).toLocaleString()}
-        </i><br>`
-          : ''
-      }
+      ${wbText('uploaded')} <i>${
+      this.dataset.uploadresult?.success === true
+        ? new Date(this.dataset.uploadresult.timestamp).toLocaleString()
+        : commonText('no')
+    }
+      </i><br>
       ${commonText('createdBy')} <i class="created-by-field">
         ${commonText('loading')}
       </i><br>

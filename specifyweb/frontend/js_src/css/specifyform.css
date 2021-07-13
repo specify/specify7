@@ -87,7 +87,13 @@ div.specify-view-content {
     padding: 0.4rem 0.6rem;
     margin: 0;
     background: #cccc;
+    background: var(--accent-pale);
 }
+
+.recordset-header .recordset-navigation:hover {
+    background: var(--b2);
+}
+
 
 .recordset-navigation-text {
     display: grid;

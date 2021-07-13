@@ -12,10 +12,11 @@
 
   --success: #2c0;
   --error: #f24;
-  --accent: #f73;
   --modified: #ffa;
 
   --accent-hover: #fdb;
+  --accent: #f73;
+  --accent-pale: #f94;
 
   --animation-duration: 2s;
 

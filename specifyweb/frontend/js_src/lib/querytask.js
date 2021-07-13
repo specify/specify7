@@ -262,7 +262,7 @@ const commonText = require('./localization/common').default;
                     ${queryText('queryExportStartedDialogMessage')(fileDesc)}
                 </div>`).dialog({
                     title: queryText('queryExportStartedDialogTitle'),
-                    modal: true,
+                    modal: false,
                     close: function() { $(this).remove(); }
                 });
             });

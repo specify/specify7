@@ -5,14 +5,13 @@ import { createDictionary } from './utils';
 const localityText = createDictionary({
   // Leaflet
   geoMap: 'GeoMap',
-  polygonBoundaries: (layerName: string): string =>
-    `${layerName} Polygon Boundaries`,
-  errorRadius: (layerName: string): string => `${layerName} Error Radius`,
+  polygonBoundaries: 'Polygon Boundaries',
+  errorRadius: 'Error Radius',
   showMap: 'Show Map',
   noCoordinates: 'No coordinates',
   notEnoughInformationToMap: 'Locality must have coordinates to be mapped.',
-  occurrencePoints: (groupName: string) => `${groupName} Pins`,
-  occurrencePolygons: (groupName: string) => `${groupName} Polygons`,
+  occurrencePoints: 'Pins',
+  occurrencePolygons: 'Polygons',
   viewRecord: 'View Record',
 
   // GeoLocate

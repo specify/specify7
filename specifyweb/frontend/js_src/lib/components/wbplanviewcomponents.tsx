@@ -131,8 +131,8 @@ export function ButtonWithConfirmation(props: {
             close: (): void => setDisplayPrompt(false),
             width: '400',
             buttons: props.buttons(() => {
-              props.onConfirm();
               setDisplayPrompt(false);
+              props.onConfirm();
             }, closeDialog),
           }}
         >
