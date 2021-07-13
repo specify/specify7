@@ -11,7 +11,7 @@
 }
 
 .magic-button:hover {
-  background: #fff;
+  background: var(--b1);
 }
 
 .magic-button:active {
@@ -30,8 +30,39 @@
   }
 }
 
-
 .v-center {
   display: flex;
   align-items: center;
+}
+
+.table-icon {
+  width: var(--table-icon-size);
+  height: var(--table-icon-size);
+}
+
+.table-icon-image {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.table-icon:not(.table-icon-image) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-icon-generated {
+  border-radius: 3px;
+  color: var(--b1);
+}
+
+.table-icon-selected {
+  color: var(--success);
+  font-weight: 800;
+}
+
+.table-icon-undefined {
+  color: var(--error);
+  margin-top: -0.1rem;
 }

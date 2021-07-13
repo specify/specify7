@@ -19,7 +19,7 @@ import type {
 import type { RefActions, RefStates } from '../wbplanviewrefreducer';
 import { getRefMappingState } from '../wbplanviewrefreducer';
 import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
-import { Icon } from './customselectelement';
+import { TableIcon } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import type { RA, WbPlanViewProps } from './wbplanview';
 import {
@@ -579,10 +579,8 @@ export const stateReducer = generateReducer<
                         <tr key={tableName}>
                           <td>
                             <div className="v-center must-match-line">
-                              <Icon
+                              <TableIcon
                                 tableName={tableName}
-                                optionLabel={tableName}
-                                isRelationship={true}
                               />
                               {dataModelStorage.tables[tableName].label}
                             </div>

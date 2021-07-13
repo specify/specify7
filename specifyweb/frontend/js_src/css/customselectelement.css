@@ -47,19 +47,21 @@
 .custom-select-input {
   grid-area: header;
   border: var(--border-size) solid var(--accent);
-  background-color: var(--background1);
 }
 
 .custom-select-header {
-  padding: calc(var(--white-space) * 2);
+  padding: var(--white-space);
   display: flex;
   row-gap: var(--white-space);
   column-gap: var(--white-space);
+  align-items: center;
+  background-color: var(--background2);
 }
 
 .custom-select-input {
   cursor: pointer;
   border-color: var(--text1);
+  background-color: var(--background1);
 }
 
 .custom-select-suggestion-line-list .custom-select-input {
@@ -70,7 +72,7 @@
   z-index: 3;
 }
 
-.custom-select-mapping-options-list .custom-select-icon {
+.custom-select-mapping-options-list .table-icon {
   display: none;
 }
 
@@ -95,7 +97,7 @@
 
 .custom-select-element-shadow-list {
   margin-top: calc(var(--white-space) * -2);
-  padding-right: calc(var(--white-space) * 8.2 - 7px);
+  padding-right: calc(var(--white-space) * 4 + var(--table-icon-size) + 2px);
   visibility: hidden;
   display: flex;
   flex-direction: column;
@@ -110,9 +112,9 @@
 .custom-select-input,
 .custom-select-option {
   padding: 0 var(--white-space);
-  min-height: calc(4 * var(--white-space));
+  height: calc(4 * var(--white-space));
   display: grid;
-  grid-template-columns: calc(var(--white-space) * 2.2) 1fr var(--white-space);
+  grid-template-columns: var(--table-icon-size) 1fr var(--white-space);
   grid-column-gap: calc(var(--white-space) / 2);
   align-items: center;
 }
@@ -158,7 +160,6 @@
   border: var(--border-size) solid var(--accent);
   background-color: var(--background1);
   z-index: 2;
-  width: auto;
   min-width: max-content;
   cursor: pointer;
 }
@@ -253,37 +254,6 @@
 
 .custom-select-option-selected {
   background-color: var(--accent) !important;
-}
-
-.custom-select-icon {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.custom-select-option-icon-undefined {
-  border-radius: 3px;
-  padding: 1px;
-  height: inherit;
-}
-
-.custom-select-icon-selected {
-  color: var(--success);
-  font-weight: 800;
-}
-
-.custom-select-icon-undefined {
-  color: var(--error);
-  margin-top: -0.1rem;
-}
-
-.custom-select-icon-table-undefined {
-  color: var(--background1);
-  border-radius: 3px;
 }
 
 .must-match-line {

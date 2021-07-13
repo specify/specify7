@@ -10,8 +10,13 @@ import '../../css/theme.css';
 
 import React from 'react';
 
-import icons from '../icons';
 import { upperToKebab } from '../wbplanviewhelper';
+import {
+  TableIcon,
+  TableIconEmpty,
+  TableIconSelected,
+  TableIconUndefined,
+} from './common';
 import type { IR, R, RA } from './wbplanview';
 
 export type CustomSelectType =
@@ -182,42 +187,11 @@ export function Icon({
   isEnabled = true,
   tableName = '',
   optionLabel = '0',
-}: CustomSelectElementIconProps): JSX.Element | null {
-  if (optionLabel === '0')
-    return (
-      <span className="custom-select-icon custom-select-icon-undefined">⃠</span>
-    );
-  if (!isRelationship && (isPreview || !isEnabled))
-    return (
-      <span className="custom-select-icon custom-select-icon-selected">✓</span>
-    );
-  else if (!isRelationship || tableName === '')
-    return <span className="custom-select-icon" />;
-
-  const tableIconSource = icons.getIcon(tableName);
-  if (tableIconSource !== '/images/unknown.png')
-    return (
-      <span
-        className="custom-select-icon custom-select-icon-table"
-        style={{ backgroundImage: `url('${tableIconSource}')` }}
-      />
-    );
-
-  const tableSubName = tableName.slice(0, 2);
-  const colorHue =
-    (tableSubName[0].charCodeAt(0) +
-      tableSubName[1].charCodeAt(0) -
-      'a'.charCodeAt(0) * 2) *
-    7.2;
-  const color = `hsl(${colorHue}, 70%, 50%)`;
-  return (
-    <span
-      style={{ backgroundColor: color }}
-      className="custom-select-icon custom-select-option-icon-undefined"
-    >
-      {tableSubName.toUpperCase()}
-    </span>
-  );
+}: CustomSelectElementIconProps): JSX.Element {
+  if (optionLabel === '0') return TableIconUndefined;
+  if (!isRelationship && (isPreview || !isEnabled)) return TableIconSelected;
+  else if (!isRelationship || tableName === '') return TableIconEmpty;
+  else return <TableIcon tableName={tableName} />;
 }
 
 const Option = React.memo(function Option({

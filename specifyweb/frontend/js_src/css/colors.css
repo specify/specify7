@@ -1,0 +1,25 @@
+:root {
+  --b1: #fff;
+  --b2: #ddd;
+  --b3: #bbb;
+  --b4: #999;
+  --t1: #000;
+  --t2: #222;
+  --t3: #444;
+  --t4: #666;
+  --border: #555;
+
+  --success: #2c0;
+  --error: #f24;
+  --accent: #f73;
+  --modified: #ffa;
+
+  --white-space: 0.5rem;
+  --size: 1rem;
+  --half-size: 0.5rem;
+
+  --border-size: 1px;
+  --border-radius: 3px;
+
+  --table-icon-size: calc(var(--size) * 1.25);
+}

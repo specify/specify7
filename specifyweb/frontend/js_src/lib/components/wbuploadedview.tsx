@@ -5,7 +5,7 @@ import React from 'react';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import dataModelStorage from '../wbplanviewmodel';
-import { Icon } from './customselectelement';
+import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
 import type { IR } from './wbplanview';
 
@@ -26,10 +26,8 @@ function TableResults({
 }): JSX.Element {
   return (
     <div className="wb-uploaded-view-line">
-      <Icon
+      <TableIcon
         tableName={tableName.toLowerCase()}
-        optionLabel={tableName}
-        isRelationship={true}
       />
       <span>
         {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
