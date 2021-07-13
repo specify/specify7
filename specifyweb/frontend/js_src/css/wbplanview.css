@@ -250,3 +250,24 @@
   color: var(--error);
   font-weight: 800;
 }
+
+@media print {
+  .wbplanview-mapping-line-controls,
+  .mapping-view-parent:after,
+  .wbplanview-control-panel {
+    display: none;
+  }
+
+  .mapping-line-list {
+    grid-template-columns: min-content auto;
+  }
+
+  .wbplanview-mapping-line-divider {
+    padding: 0 var(--quarter-size);
+  }
+
+  .wbplanview-mapping-line-elements {
+    row-gap: var(--quarter-size);
+    padding: var(--quarter-size) 0;
+  }
+}

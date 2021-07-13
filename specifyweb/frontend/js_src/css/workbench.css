@@ -248,7 +248,7 @@
 
 .wb-advanced-search {
   font-size: var(--size);
-  padding-top: 0;
+  padding-top: var(--quarter-size);
 }
 
 /* Disambiguation */

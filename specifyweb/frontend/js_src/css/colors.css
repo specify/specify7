@@ -31,10 +31,10 @@
 
   /* Workbench */
   --default-cell: #66f;
-  --highlighted-row: #007eff61;
+  --highlighted-row: #07f6;
   --new-cell: #aaf;
   --invalid-cell: #faa;
-  --modified-cell: #ffa;
+  --modified-cell: var(--modified);
   --search-result: #afa;
 
 

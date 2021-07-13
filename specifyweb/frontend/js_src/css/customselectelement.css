@@ -256,3 +256,15 @@
   width: var(--size);
   height: var(--size);
 }
+
+@media print {
+  .custom-select-element-shadow-list,
+  .custom-select-input span:nth-child(3),
+  .custom-select-option-relationship-icon {
+    display: none
+  }
+
+  .custom-select-input, .custom-select-option {
+    grid-template-columns: var(--table-icon-size) auto auto;
+  }
+}

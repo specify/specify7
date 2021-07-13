@@ -32,7 +32,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   readonly readonly: boolean;
 }) {
   return (
-    <div>
+    <div className="wbplanview-control-panel">
       {!readonly && (
         <button className="magic-button" onClick={handleAddNewHeader}>
           {wbText('addNewColumn')}
