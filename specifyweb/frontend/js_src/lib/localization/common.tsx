@@ -108,7 +108,7 @@ const commonText = createDictionary({
   viewSets: 'View Sets',
   resourcesDialogTitle: 'Resources',
   resourcesDialogHeader: createHeader(
-    'Choose the resource type you with to edit:'
+    'Choose the resource type you wish to edit:'
   ),
   repairTree: 'Repair Tree',
   trees: 'Trees',
