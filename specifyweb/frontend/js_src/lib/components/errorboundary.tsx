@@ -45,7 +45,7 @@ export default class ErrorBoundary extends React.Component<
 
   public render(): JSX.Element | null {
     return this.state.hasError ? (
-      this.props.silentErrors ? (
+      this.props.silentErrors && process.env.NODE_ENV === 'production' ? (
         <></>
       ) : (
         <ModalDialog

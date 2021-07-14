@@ -7,6 +7,7 @@ import type { IR, RA, RR } from './components/wbplanview';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
 import { SN_SERVICES } from './lifemapperconfig';
+import commonText from './localization/common';
 
 type LoadedAction = Action<
   'LoadedAction',
@@ -18,24 +19,24 @@ type LoadedAction = Action<
   }
 >;
 
-type ToggleAggregatorVisibilityAction = Action<
-  'ToggleAggregatorVisibilityAction',
+type ToggleBadgeAction = Action<
+  'ToggleBadgeAction',
   {
     badgeName: string;
   }
 >;
 
-type SetRemoteOccurrenceNameAction = Action<
-  'SetRemoteOccurrenceNameAction',
+type DisableBadgeAction = Action<
+  'DisableBadgeAction',
   {
-    remoteOccurrenceName: string;
+    badgeName: string;
   }
 >;
 
-type SetLocalOccurrenceNameAction = Action<
-  'SetLocalOccurrenceNameAction',
+type SetOccurrenceNameAction = Action<
+  'SetOccurrenceNameAction',
   {
-    localOccurrenceName: string;
+    occurrenceName: string;
   }
 >;
 
@@ -45,14 +46,14 @@ export type MapInfo = {
   readonly messages: RR<MessageTypes, IR<string>>;
 };
 
-type MapLoadedAction = Action<'MapLoadedAction', MapInfo>;
+type MapLoadedAction = Action<'MapLoadedAction', { mapInfo: MapInfo | string }>;
 
 export type Actions =
   | LoadedAction
-  | ToggleAggregatorVisibilityAction
+  | ToggleBadgeAction
+  | DisableBadgeAction
   | MapLoadedAction
-  | SetRemoteOccurrenceNameAction
-  | SetLocalOccurrenceNameAction;
+  | SetOccurrenceNameAction;
 
 export const reducer = generateReducer<States, Actions>({
   LoadedAction: ({ action }) => ({
@@ -76,11 +77,20 @@ export const reducer = generateReducer<States, Actions>({
         .filter(([_name, { aggregator }]) => typeof aggregator !== 'undefined')
         .map(([name, { aggregator }]) => [name, aggregator!])
     ),
-    localOccurrenceName: undefined,
-    remoteOccurrenceName: undefined,
-    mapInfo: undefined,
+    occurrenceName: undefined,
+    mapInfo: commonText('loading'),
   }),
-  ToggleAggregatorVisibilityAction: ({ action, state }) => ({
+  DisableBadgeAction: ({ action, state }) => ({
+    ...mainState(state),
+    badges: {
+      ...mainState(state).badges,
+      [action.badgeName]: {
+        ...mainState(state).badges[action.badgeName],
+        isActive: false,
+      },
+    },
+  }),
+  ToggleBadgeAction: ({ action, state }) => ({
     ...mainState(state),
     badges: {
       ...mainState(state).badges,
@@ -90,22 +100,12 @@ export const reducer = generateReducer<States, Actions>({
       },
     },
   }),
-  MapLoadedAction: ({ action: { type: _, ...mapInfo }, state }) => ({
+  MapLoadedAction: ({ action: { type: _, mapInfo }, state }) => ({
     ...mainState(state),
     mapInfo,
   }),
-  SetRemoteOccurrenceNameAction: ({
-    action: { remoteOccurrenceName },
-    state,
-  }) => ({
+  SetOccurrenceNameAction: ({ action: { occurrenceName }, state }) => ({
     ...mainState(state),
-    remoteOccurrenceName,
-  }),
-  SetLocalOccurrenceNameAction: ({
-    action: { localOccurrenceName },
-    state,
-  }) => ({
-    ...mainState(state),
-    localOccurrenceName,
+    occurrenceName,
   }),
 });

@@ -2,27 +2,25 @@ import '../../css/lifemapper.css';
 
 import React from 'react';
 
-import {
-  ignoredAggregators,
-  resolveGuid,
-  resolveOccurrenceNames,
-} from '../lifemapperconfig';
+import { ignoredAggregators } from '../lifemapperconfig';
 import { prepareLifemapperProjectionMap } from '../lifemappermap';
 import { reducer } from '../lifemapperreducer';
 import {
-  extractElement,
   fetchLocalScientificName,
+  formatNameDataRequest,
   formatOccurrenceDataRequest,
 } from '../lifemapperutills';
+import lifemapperText from '../localization/lifemapper';
+import type { LoadingState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
 import type { ComponentProps } from './lifemapperwrapper';
-import type { IR } from './wbplanview';
-import type { LoadingState } from './wbplanviewstate';
+import type { IR, RA } from './wbplanview';
 
 type AggregatorResponseBase = {
   readonly provider: {
     readonly code: string;
     readonly label: string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     readonly status_code: number;
   };
 };
@@ -36,6 +34,7 @@ type AggregatorResponseWithData = AggregatorResponseBase & {
     {
       readonly 's2n:issues'?: IR<string>;
       readonly 'dwc:scientificName': string;
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       readonly 's2n:view_url': string;
     }
   ];
@@ -43,13 +42,8 @@ type AggregatorResponseWithData = AggregatorResponseBase & {
 
 export function Lifemapper({
   model,
-  guid: originalGuid,
-  handleOccurrenceNameFetch,
-}: ComponentProps & {
-  readonly handleOccurrenceNameFetch: (occurrenceName: string) => void;
-}): JSX.Element {
-  const guid = resolveGuid(originalGuid);
-
+  guid,
+}: ComponentProps): JSX.Element | null {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'LoadingState',
   } as LoadingState);
@@ -58,16 +52,16 @@ export function Lifemapper({
   React.useEffect(() => {
     if (typeof guid === 'undefined') return;
 
+    const HTTP_OK = 200;
     fetch(formatOccurrenceDataRequest(guid), {
       mode: 'cors',
     })
       .then(async (response) => response.json())
       .then(
         (response: {
-          readonly records: (
-            | AggregatorResponseWithoutData
-            | AggregatorResponseWithData
-          )[];
+          readonly records: RA<
+            AggregatorResponseWithoutData | AggregatorResponseWithData
+          >;
         }) =>
           dispatch({
             type: 'LoadedAction',
@@ -83,11 +77,11 @@ export function Lifemapper({
                       label: provider.label,
                       isOpen: false,
                       isActive:
-                        provider.status_code === 200 &&
+                        provider.status_code === HTTP_OK &&
                         typeof records[0] !== 'undefined',
                     },
                     aggregator:
-                      provider.status_code === 200 &&
+                      provider.status_code === HTTP_OK &&
                       typeof records[0] !== 'undefined'
                         ? {
                             issues: records[0]['s2n:issues'] ?? {},
@@ -99,100 +93,108 @@ export function Lifemapper({
                 ])
             ),
           })
-      );
-  }, []);
+      )
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: 'LoadedAction', occurrenceData: {} });
+      });
+  }, [guid]);
 
-  // Set remoteOccurrenceName
+  // Fetch occurrence name
+  const aggregators =
+    state.type === 'MainState' ? state.aggregators : undefined;
   React.useEffect(() => {
-    if (
-      state.type !== 'MainState' ||
-      typeof state.localOccurrenceName !== 'undefined'
-    )
+    if (state.type !== 'MainState' || typeof aggregators === 'undefined')
       return;
 
-    const occurrenceName =
-      Object.values(state.aggregators)
+    const remoteOccurrence =
+      Object.values(aggregators)
         .filter((aggregatorInfo) => aggregatorInfo)
         .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
         .find((occurrenceName) => occurrenceName) ?? '';
 
-    dispatch({
-      type: 'SetRemoteOccurrenceNameAction',
-      remoteOccurrenceName: resolveOccurrenceNames(['', occurrenceName])[1],
-    });
-
-    handleOccurrenceNameFetch(
-      extractElement([state.localOccurrenceName, occurrenceName], 1)
-    );
-  }, [
-    state.type,
-    state.type === 'MainState' ? state.localOccurrenceName : undefined,
-  ]);
-
-  // Set localOccurrenceName
-  React.useEffect(() => {
-    if (
-      state.type !== 'MainState' ||
-      typeof state.localOccurrenceName !== 'undefined'
-    )
-      return;
-    void fetchLocalScientificName(model).then((localOccurrenceName) => {
-      dispatch({
-        type: 'SetLocalOccurrenceNameAction',
-        localOccurrenceName: resolveOccurrenceNames([
-          localOccurrenceName,
-          '',
-        ])[0],
-      });
-      if (typeof state.remoteOccurrenceName === 'undefined')
-        handleOccurrenceNameFetch(localOccurrenceName);
-    });
-  }, [
-    state.type,
-    state.type === 'MainState' ? state.remoteOccurrenceName : undefined,
-    state.type === 'MainState' ? state.localOccurrenceName : undefined,
-  ]);
+    new Promise<string>((resolve) => {
+      resolve(
+        remoteOccurrence === ''
+          ? fetchLocalScientificName(model).then(async (localOccurrence) =>
+              fetch(formatNameDataRequest(localOccurrence), {
+                mode: 'cors',
+              })
+                .then(async (response) => response.json())
+                .then(
+                  (response: {
+                    readonly records: RA<{ readonly count: number }>;
+                  }) =>
+                    response.records.some(({ count }) => count !== 0)
+                      ? localOccurrence
+                      : ''
+                )
+            )
+          : remoteOccurrence
+      );
+    })
+      .catch((error) => {
+        console.error(error);
+        return '';
+      })
+      .then((occurrenceName) =>
+        dispatch({
+          type: 'SetOccurrenceNameAction',
+          occurrenceName,
+        })
+      )
+      .catch(console.error);
+  }, [state.type, aggregators, model]);
 
   /*
    * Fetch related CO records
    * Fetch projection map
    */
-  React.useEffect(
-    () => {
-      if (
-        state.type !== 'MainState' ||
-        !state.badges.lm.isOpen ||
-        typeof state.remoteOccurrenceName === 'undefined' ||
-        typeof state.localOccurrenceName === 'undefined' ||
-        typeof state.mapInfo !== 'undefined'
-      )
-        return;
+  const isOpen =
+    state.type === 'MainState' ? state.badges.lm.isOpen : undefined;
+  const mapInfo = state.type === 'MainState' ? state.mapInfo : undefined;
+  const occurrenceName =
+    state.type === 'MainState' ? state.occurrenceName : undefined;
+  React.useEffect(() => {
+    if (
+      !Boolean(isOpen) ||
+      typeof occurrenceName === 'undefined' ||
+      typeof mapInfo === 'object'
+    )
+      return;
 
-      const getOccurrenceName = (index: 0 | 1): string =>
-        extractElement(
-          [state.localOccurrenceName, state.remoteOccurrenceName],
-          index
-        );
-      if (!getOccurrenceName(1)) return;
+    if (!occurrenceName) {
+      dispatch({ type: 'DisableBadgeAction', badgeName: 'lm' });
+      dispatch({
+        type: 'MapLoadedAction',
+        mapInfo: `
+          <h2>${lifemapperText('errorsOccurred')}</h2><br>
+          ${lifemapperText('noMap')}`,
+      });
+      return;
+    }
 
-      prepareLifemapperProjectionMap(getOccurrenceName, model).then((mapInfo) =>
+    prepareLifemapperProjectionMap(occurrenceName, model)
+      .then((mapInfo) =>
         dispatch({
           type: 'MapLoadedAction',
-          ...mapInfo,
+          mapInfo:
+            mapInfo.layers.length === 0 && mapInfo.markers.length === 0
+              ? `<h2>${lifemapperText('errorsOccurred')}</h2>
+                </br>
+                ${
+                  Object.keys(mapInfo.messages.errorDetails).length === 0
+                    ? Object.values(mapInfo.messages.errorDetails).join('<br>')
+                    : lifemapperText('noMap')
+                }`
+              : mapInfo,
         })
-      );
-    },
-    state.type === 'MainState'
-      ? [
-          state.localOccurrenceName,
-          state.remoteOccurrenceName,
-          state.badges.lm.isOpen,
-          state.mapInfo,
-        ]
-      : [undefined, undefined, undefined, undefined]
-  );
+      )
+      .catch(() => dispatch({ type: 'DisableBadgeAction', badgeName: 'lm' }));
+  }, [occurrenceName, mapInfo, isOpen, model]);
 
-  return stateReducer(<></>, {
+  // eslint-disable-next-line unicorn/no-null
+  return stateReducer(null, {
     ...state,
     params: {
       dispatch,

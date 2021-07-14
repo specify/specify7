@@ -54,22 +54,18 @@ export function Aggregator({
 }: {
   readonly data: MainState['aggregators'][string];
 }): JSX.Element {
-  return (
+  return Object.keys(data.issues).length === 0 ? (
+    <p>{lifemapperText('noIssuesDetected')}</p>
+  ) : (
     <>
-      {Object.keys(data.issues).length === 0 ? (
-        <p>{lifemapperText('noIssuesDetected')}</p>
-      ) : (
-        <>
-          <h2>{lifemapperText('issuesDetected')}</h2>
-          <ul className="lifemapper-source-issues-list">
-            {Object.entries(data.issues).map(([issueKey, issueLabel]) => (
-              <li key={issueKey} title={issueKey}>
-                {issueLabel}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <h2>{lifemapperText('issuesDetected')}</h2>
+      <ul className="lifemapper-source-issues-list">
+        {Object.entries(data.issues).map(([issueKey, issueLabel]) => (
+          <li key={issueKey} title={issueKey}>
+            {issueLabel}
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
@@ -123,9 +119,9 @@ export function LifemapperMap({
                 "
               ></span>
               `
-            : Object.values(mapInfo.messages.errorDetails).map(
-                (message) => `<i>${message}</i>`
-              )
+            : Object.values(mapInfo.messages.errorDetails)
+                .map((message) => `<i>${message}</i>`)
+                .join('')
         }
       </div>`,
     ])
@@ -138,6 +134,7 @@ export function LifemapperMap({
         });
         if (destructorCalled) destructor(map);
         else leafletMap = map;
+        return map;
       })
       .catch((error) => {
         throw error;
@@ -148,7 +145,7 @@ export function LifemapperMap({
         destructorCalled = true;
       } else destructor(leafletMap);
     };
-  }, [mapRef]);
+  }, [mapRef, mapInfo]);
 
   return <div className="lifemapper-leaflet-map" ref={mapRef} />;
 }

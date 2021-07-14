@@ -1,8 +1,6 @@
-import $ from 'jquery';
-
 import type { R, RA, RR } from './components/wbplanview';
-import csrftoken from './csrftoken';
-import type { MarkerGroups } from './leaflet';
+import csrfToken from './csrftoken';
+import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
 import type { MapInfo } from './lifemapperreducer';
@@ -21,13 +19,13 @@ import schema from './schema';
 import fetchDataModel from './wbplanviewmodelfetcher';
 
 export async function prepareLifemapperProjectionMap(
-  getOccurrenceName: (preferredElement: 0 | 1) => string,
+  remoteOccurrence: string,
   model: any
 ): Promise<MapInfo> {
   const messages: RR<MessageTypes, R<string>> = {
     errorDetails: {},
     infoSection: {
-      speciesName: getOccurrenceName(1),
+      speciesName: remoteOccurrence,
     },
   };
 
@@ -50,7 +48,7 @@ export async function prepareLifemapperProjectionMap(
       const parsedLocalityFields = parseLocalityPinFields(true);
 
       const request = await fetch('/stored_query/ephemeral/', {
-        headers: { 'X-CSRFToken': csrftoken! },
+        headers: { 'X-CSRFToken': csrfToken! },
         method: 'POST',
         body: JSON.stringify({
           name: 'Lifemapper Local Occurrence query',
@@ -214,7 +212,10 @@ export async function prepareLifemapperProjectionMap(
         )
       );
     }
-  );
+  ).catch((error) => {
+    console.error(error);
+    return [];
+  });
 
   const projectionMapResponse: {
     readonly errors: string[];
@@ -223,14 +224,21 @@ export async function prepareLifemapperProjectionMap(
         readonly records: {
           readonly 's2n:endpoint': string;
           readonly 's2n:modtime': string;
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           readonly 's2n:layer_name': string;
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           readonly 's2n:layer_type': LifemapperLayerTypes;
         }[];
       }
     ];
-  } = await $.get(formatOccurrenceMapRequest(getOccurrenceName(1)));
+  } = await fetch(formatOccurrenceMapRequest(remoteOccurrence))
+    .then(async (response) => response.json())
+    .catch((error: Error) => {
+      console.error(error);
+      return { errors: [error?.message ?? error] };
+    });
 
-  let layers: RA<any> = [];
+  let layers: RA<LayerConfig> = [];
 
   if (projectionMapResponse.errors.length > 0)
     projectionMapResponse.errors.forEach((error) => {
@@ -241,6 +249,7 @@ export async function prepareLifemapperProjectionMap(
       lifemapperText('projectionNotFound');
   else {
     const layerCount: R<number> = {};
+    const layerCountLimit = 10;
     layers = projectionMapResponse.records[0].records
       .sort(
         (
@@ -253,16 +262,17 @@ export async function prepareLifemapperProjectionMap(
             ? 1
             : -1
       )
-      .map((record) => {
-        layerCount[record['s2n:layer_type']] ??= 0;
-        layerCount[record['s2n:layer_type']] += 1;
+      .map((record): LayerConfig | undefined => {
+        const layerType = record['s2n:layer_type'];
+        layerCount[layerType] ??= 0;
+        layerCount[layerType] += 1;
 
-        const layerLabel = `${
-          lifemapperLayerVariations[record['s2n:layer_type']].layerLabel
-        } (${layerCount[record['s2n:layer_type']]})`;
+        if (layerCount[layerType] > layerCountLimit) return undefined;
+
+        const layerLabel = `${lifemapperLayerVariations[layerType].layerLabel} (${layerCount[layerType]})`;
         return {
-          ...lifemapperLayerVariations[record['s2n:layer_type']],
-          isDefault: layerCount[record['s2n:layer_type']] === 1,
+          ...lifemapperLayerVariations[layerType],
+          isDefault: layerCount[layerType] === 1,
           layerLabel,
           tileLayer: {
             mapUrl: record['s2n:endpoint'],
@@ -275,11 +285,12 @@ export async function prepareLifemapperProjectionMap(
               request: 'getmap',
               srs: 'epsg:3857',
               width: '800',
-              ...lifemapperLayerVariations[record['s2n:layer_type']],
+              ...lifemapperLayerVariations[layerType],
             },
           },
         };
-      });
+      })
+      .filter((record): record is LayerConfig => typeof record !== 'undefined');
 
     const modificationTime =
       projectionMapResponse.records[0].records[0]['s2n:modtime'];
@@ -288,9 +299,8 @@ export async function prepareLifemapperProjectionMap(
       : new Date(modificationTime).toLocaleDateString();
   }
 
-  const markers = await similarCoMarkersPromise;
   return {
-    markers,
+    markers: await similarCoMarkersPromise,
     layers,
     messages,
   };

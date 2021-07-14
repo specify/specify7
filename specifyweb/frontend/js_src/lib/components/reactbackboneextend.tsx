@@ -50,7 +50,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => void;
   readonly silentErrors?: boolean;
-  readonly Component: (props: COMPONENT_PROPS) => JSX.Element;
+  readonly Component: (props: COMPONENT_PROPS) => JSX.Element | null;
   readonly getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => COMPONENT_PROPS;

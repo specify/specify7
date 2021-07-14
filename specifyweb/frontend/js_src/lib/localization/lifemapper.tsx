@@ -27,6 +27,9 @@ const lifemapperText = createDictionary({
   moreDetails: 'More Details',
   overLimitMessage: (limit: number) =>
     `Only the first ${limit} specimens are shown`,
+  errorsOccurred:
+    'The following errors occurred while trying to display the map:',
+  noMap: 'Failed to find a projection map',
 });
 
 export default lifemapperText;

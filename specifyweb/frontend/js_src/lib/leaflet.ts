@@ -127,14 +127,13 @@ export async function showLeafletMap({
   );
   controlLayers.addTo(map);
 
-  let index = 0;
   addMarkersToMap(
     map,
     controlLayers,
-    localityPoints.map((pointDataDict) =>
+    localityPoints.map((pointDataDict, index) =>
       getMarkersFromLocalityData({
         localityData: pointDataDict,
-        markerClickCallback: markerClickCallback?.bind(undefined, index++),
+        markerClickCallback: markerClickCallback?.bind(undefined, index),
       })
     )
   );
@@ -314,7 +313,7 @@ export function addMarkersToMap(
       : labels;
   // Add layer groups' checkboxes to the layer control menu
   Object.entries(layerLabels).forEach(([key, label]) =>
-    controlLayers.addOverlay(layerGroups[key as MarkerGroups], label)
+    controlLayers.addOverlay(layerGroups[key as MarkerLayerName], label)
   );
 }
 

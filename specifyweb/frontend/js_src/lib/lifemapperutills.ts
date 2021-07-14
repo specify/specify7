@@ -32,6 +32,9 @@ export const formatLifemapperViewPageRequest = (
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
+export const formatNameDataRequest = (speciesName: string): string =>
+  `${snServer}/api/v1/name/?namestr=${speciesName}`;
+
 export const formatIconRequest = (
   providerName: string,
   icon_status: 'active' | 'inactive' | 'hover'
@@ -61,11 +64,3 @@ export const lifemapperLayerVariations: RR<
     transparent: true,
   },
 };
-
-export const extractElement = (
-  elements: Readonly<[string | undefined, string | undefined]>,
-  preferredElement: 0 | 1
-): string =>
-  (Boolean(elements[preferredElement])
-    ? elements[preferredElement]
-    : elements[(preferredElement + 1) % elements.length]) ?? '';

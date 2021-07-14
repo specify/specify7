@@ -4,17 +4,14 @@ import { generateReducer } from 'typesafe-reducer';
 
 import { SN_SERVICES } from '../lifemapperconfig';
 import type { Actions, MapInfo } from '../lifemapperreducer';
-import {
-  extractElement,
-  formatLifemapperViewPageRequest,
-} from '../lifemapperutills';
+import { formatLifemapperViewPageRequest } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { Aggregator, Badge, LifemapperMap } from './lifemappercomponents';
 import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR } from './wbplanview';
 
-type LoadingState = State<'LoadingState'>;
+export type LoadingState = State<'LoadingState'>;
 
 export type MainState = State<
   'MainState',
@@ -29,9 +26,8 @@ export type MainState = State<
       readonly occurrenceName: string;
       readonly occurrenceViewLink: string;
     }>;
-    localOccurrenceName?: string;
-    remoteOccurrenceName?: string;
-    mapInfo?: MapInfo;
+    occurrenceName?: string;
+    mapInfo: string | MapInfo;
   }
 >;
 
@@ -49,122 +45,122 @@ type StateWithParameters = States & {
   };
 };
 
-export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
-  LoadingState: () => <></>,
-  MainState: ({
+export const stateReducer = generateReducer<
+  JSX.Element | null,
+  StateWithParameters
+>({
+  // eslint-disable-next-line unicorn/no-null
+  LoadingState: () => null,
+  MainState({
     action: {
       params: { dispatch, guid },
       ...state
     },
-  }) => (
-    <>
-      {Object.entries(state.badges)
-        .map(([name, badge]) => ({
-          name,
-          badge,
-          aggregator: state.aggregators[name],
-        }))
-        .map(({ name, badge, aggregator }) => (
-          <Badge
-            name={name}
-            title={badge.label}
-            key={name}
-            isEnabled={name in SN_SERVICES || typeof aggregator !== 'undefined'}
-            hasError={
-              typeof aggregator !== 'undefined' &&
-              Object.keys(aggregator.issues).length > 0
-            }
-            onClick={(): void =>
-              name === 'sn'
-                ? void window.open(
-                    formatLifemapperViewPageRequest(
-                      guid,
-                      extractElement(
-                        [state.localOccurrenceName, state.remoteOccurrenceName],
-                        1
-                      ),
-                      ''
-                    ),
-                    '_blank'
-                  )
-                : dispatch({
-                    type: 'ToggleAggregatorVisibilityAction',
-                    badgeName: name,
-                  })
-            }
-          />
-        ))}
-      {Object.entries(state.badges)
-        .filter(([, { isOpen }]) => isOpen)
-        .map(([badgeName, { label }]) => (
-          <ModalDialog
-            key={badgeName}
-            properties={{
-              title:
-                typeof state.aggregators[badgeName] === 'undefined'
-                  ? label
-                  : lifemapperText('aggregatorBadgeTitle')(label),
-              modal: false,
-              close: (): void =>
-                dispatch({
-                  type: 'ToggleAggregatorVisibilityAction',
-                  badgeName,
-                }),
-              ...(typeof state.aggregators[badgeName] === 'undefined'
-                ? {
-                    width: 950,
-                    height: 600,
-                  }
-                : state.aggregators[badgeName]?.occurrenceViewLink
-                ? {
-                    buttons: [
-                      {
-                        text: commonText('close'),
-                        click: closeDialog,
-                      },
-                      {
-                        text: lifemapperText('moreDetails'),
-                        click: (): void =>
-                          void window.open(
-                            formatLifemapperViewPageRequest(
-                              guid,
-                              extractElement(
-                                [
-                                  state.localOccurrenceName,
-                                  state.remoteOccurrenceName,
-                                ],
-                                1
+  }): JSX.Element {
+    return (
+      <>
+        {Object.entries(state.badges)
+          .map(([name, badge]) => ({
+            name,
+            badge,
+            aggregator: state.aggregators[name],
+          }))
+          .map(({ name, badge, aggregator }) =>
+            name in SN_SERVICES &&
+            !Boolean(state.occurrenceName) ? undefined : (
+              <Badge
+                name={name}
+                title={badge.label}
+                key={name}
+                isEnabled={badge.isActive}
+                hasError={
+                  typeof aggregator !== 'undefined' &&
+                  Object.keys(aggregator.issues).length > 0
+                }
+                onClick={(): void =>
+                  name === 'sn'
+                    ? void window.open(
+                        formatLifemapperViewPageRequest(
+                          guid,
+                          state.occurrenceName ?? '',
+                          ''
+                        ),
+                        '_blank'
+                      )
+                    : dispatch({
+                        type: 'ToggleBadgeAction',
+                        badgeName: name,
+                      })
+                }
+              />
+            )
+          )}
+        {Object.entries(state.badges)
+          .filter(([, { isOpen }]) => isOpen)
+          .map(([badgeName, { label }]) => (
+            <ModalDialog
+              key={badgeName}
+              properties={{
+                title:
+                  typeof state.aggregators[badgeName] === 'undefined'
+                    ? label
+                    : lifemapperText('aggregatorBadgeTitle')(label),
+                modal: false,
+                close: (): void =>
+                  dispatch({
+                    type: 'ToggleBadgeAction',
+                    badgeName,
+                  }),
+                ...(typeof state.aggregators[badgeName] === 'undefined'
+                  ? {
+                      width: 950,
+                      height: 600,
+                    }
+                  : state.aggregators[badgeName]?.occurrenceViewLink
+                  ? {
+                      buttons: [
+                        {
+                          text: commonText('close'),
+                          click: closeDialog,
+                        },
+                        {
+                          text: lifemapperText('moreDetails'),
+                          click: (): void =>
+                            void window.open(
+                              formatLifemapperViewPageRequest(
+                                guid,
+                                state.occurrenceName ?? '',
+                                badgeName
                               ),
-                              badgeName
+                              '_blank'
                             ),
-                            '_blank'
-                          ),
-                      },
-                      {
-                        text: lifemapperText('viewOccurrenceAt')(label),
-                        click: (): void =>
-                          void window.open(
-                            state.aggregators[badgeName].occurrenceViewLink,
-                            '_blank'
-                          ),
-                      },
-                    ],
-                    width: 400,
-                  }
-                : {}),
-            }}
-          >
-            {typeof state.aggregators[badgeName] === 'undefined' ? (
-              typeof state.mapInfo === 'undefined' ? (
-                <p>{commonText('loading')}</p>
+                        },
+                        {
+                          text: lifemapperText('viewOccurrenceAt')(label),
+                          click: (): void =>
+                            void window.open(
+                              state.aggregators[badgeName].occurrenceViewLink,
+                              '_blank'
+                            ),
+                        },
+                      ],
+                      width: 400,
+                    }
+                  : {}),
+              }}
+            >
+              {typeof state.aggregators[badgeName] === 'undefined' ? (
+                typeof state.mapInfo === 'string' ? (
+                  <p>{state.mapInfo}</p>
+                ) : (
+                  <LifemapperMap mapInfo={state.mapInfo} />
+                )
               ) : (
-                <LifemapperMap mapInfo={state.mapInfo} />
-              )
-            ) : (
-              <Aggregator data={state.aggregators[badgeName]} />
-            )}
-          </ModalDialog>
-        ))}
-    </>
-  ),
+                <Aggregator data={state.aggregators[badgeName]} />
+              )}
+            </ModalDialog>
+          ))}
+      </>
+    );
+  },
 });
