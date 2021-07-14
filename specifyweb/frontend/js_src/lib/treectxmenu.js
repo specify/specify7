@@ -322,12 +322,15 @@ const EditNodeDialog = Backbone.View.extend({
         });
         return this;
     },
+    dialogIsOpen(){
+        return this.$el?.is(':ui-dialog') === true;
+    },
     childSaved: function() {
         this.treeNodeView.treeView.reOpenTree();
-        this.$el.dialog('close');
+        this.dialogIsOpen() && this.$el.dialog('close');
     },
     changeDialogTitle: function(resource, title) {
-        this.$el.dialog('option', 'title', title);
+        this.dialogIsOpen() && this.$el.dialog('option', 'title', title);
     }
 });
 
@@ -356,12 +359,15 @@ const AddChildDialog = Backbone.View.extend({
         });
         return this;
     },
+    dialogIsOpen(){
+        return this.$el?.is(':ui-dialog') === true;
+    },
     childSaved: function() {
         this.treeNodeView.treeView.reOpenTree();
-        this.$el.dialog('close');
+        this.dialogIsOpen() && this.$el.dialog('close');
     },
     changeDialogTitle: function(resource, title) {
-        this.$el.dialog('option', 'title', title);
+        this.dialogIsOpen() && this.$el.dialog('option', 'title', title);
     }
 });
 

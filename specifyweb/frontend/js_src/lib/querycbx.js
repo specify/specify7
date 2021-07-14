@@ -511,18 +511,21 @@ var QueryCbx = Backbone.View.extend({
                 .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
         }
     },
+    dialogIsOpen(){
+        return this.$el?.is(':ui-dialog') === true;
+    },
     resourceSaved: function(related) {
-        this.dialog.dialog('close');
+        this.dialogIsOpen() && this.dialog.dialog('close');
         this.model.set(this.fieldName, related);
         this.fillIn();
     },
     resourceDeleted: function() {
-        this.dialog.dialog('close');
+        this.dialogIsOpen() && this.dialog.dialog('close');
         this.model.set(this.fieldName, null);
         this.fillIn();
     },
     changeDialogTitle: function(resource, title) {
-        this.dialog && this.dialog.dialog('option', 'title', title);
+        this.dialogIsOpen() && this.dialog.dialog('option', 'title', title);
     },
     blur: function() {
         var val = this.$('input').val().trim();
