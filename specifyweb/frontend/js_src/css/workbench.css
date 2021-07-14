@@ -9,7 +9,8 @@
 }
 
 /* Header */
-.wbs-form .wb-header {
+.wbs-form .wb-header,
+.wb-name-container {
   display: contents;
 }
 

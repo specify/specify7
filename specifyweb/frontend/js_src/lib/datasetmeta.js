@@ -246,16 +246,17 @@ export default Backbone.View.extend({
     this.dataSetMeta = new DataSetMeta({
       dataset,
       getRowCount,
-      onClose,
+      onClose: () => {
+        this.handleRename();
+        onClose?.();
+      },
       isOpen: false,
     });
   },
-  render() {
-    this.dataSetMeta.render();
-
+  handleRename() {
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    this.$el.find('.wb-controls-left').prepend(`
+    this.$el.find('.wb-name-container').html(`
       <span class="wb-name">${wbText('dataSet')} ${this.dataset.name}
         ${
           isUploaded
@@ -271,6 +272,10 @@ export default Backbone.View.extend({
       >${commonText('metadata')}</button>
     `);
     app.setTitle(this.dataset.name);
+  },
+  render() {
+    this.dataSetMeta.render();
+    this.handleRename();
     return this;
   },
   startEditing() {
