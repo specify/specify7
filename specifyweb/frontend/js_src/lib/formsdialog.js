@@ -15,15 +15,18 @@ const formsText = require('./localization/forms').default;
 
 
     // I don't think the non-sidebar items are ever used in Sp6.
-    var views;
+    let views;
+    let forms;
+    let getFormsPromise;
     initialContext.load(
         'app.resource?name=DataEntryTaskInit',
-        data => views = _.map($('view', data), $).filter(view => view.attr('sidebar') === 'true'));
-
-    function getFormsPromise() {
-        return Q.all(views.map(
-            view => specifyform.getView(view.attr('view')).pipe(form => form)));
-    }
+        data => {
+            views = _.map($('view', data), $).filter(view => view.attr('sidebar') === 'true');
+            getFormsPromise = Q.all(views.map(
+                view => specifyform.getView(view.attr('view')).pipe(form => form))
+            );
+        }
+    );
 
 module.exports = Backbone.View.extend({
         __name__: "FormsDialog",
@@ -31,7 +34,24 @@ module.exports = Backbone.View.extend({
         events: {'click a': 'selected'},
         render: function() {
             var render = this._render.bind(this);
-            getFormsPromise().done(render);
+            if(typeof getFormsPromise === 'undefined')
+              render();
+            else {
+              const loadingDialog = $(
+                  '<div><div class="progress-bar"></div></div>'
+              ).dialog({
+                  title: commonText('loading'),
+                  modal: true,
+                  dialogClass: 'ui-dialog-no-close',
+              });
+              $('.progress-bar', loadingDialog).progressbar({ value: false });
+              getFormsPromise.done(fetchedForms=>{
+                forms=fetchedForms;
+                getFormsPromise = undefined;
+                loadingDialog.dialog('destroy');
+                render();
+              });
+            }
             return this;
         },
         _render: function(forms) {

@@ -17,7 +17,7 @@ var reports           = require('./reports.js');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
-    var interaction_entries, views, actions;
+    var interaction_entries, views, actions, forms, getFormsPromise;
 
     initialContext.load('app.resource?name=InteractionsTaskInit', function (data) {
         interaction_entries = _.map($('entry', data), $)
@@ -28,6 +28,10 @@ const commonText = require('./localization/common').default;
         actions = interaction_entries.filter(isActionEntry);
 
         actions.forEach(actionEntry => actionEntry.table = getTableForObjToCreate(actionEntry));
+
+        getFormsPromise = Q.all(views.map(
+          view => Q(specifyform.getView(view.attr('view'))).then(form => form)
+        ));
     });
 
     function getTableForObjToCreate(action) {
@@ -46,9 +50,6 @@ const commonText = require('./localization/common').default;
         return actionAttr && actionAttr != 'OpenNewView' && actionAttr != 'NEW_ACC';
     }
 
-    function getFormsPromise() {
-        return Q.all(views.map(view => Q(specifyform.getView(view.attr('view'))).then(form => form)));
-    }
 
 module.exports = Backbone.View.extend({
         __name__: "InteractionsDialog",
@@ -59,7 +60,24 @@ module.exports = Backbone.View.extend({
         },
         render: function() {
             var render = this._render.bind(this);
-            getFormsPromise().done(render);
+            if(typeof getFormsPromise === 'undefined')
+              render();
+            else {
+              const loadingDialog = $(
+                  '<div><div class="progress-bar"></div></div>'
+              ).dialog({
+                  title: commonText('loading'),
+                  modal: true,
+                  dialogClass: 'ui-dialog-no-close',
+              });
+              $('.progress-bar', loadingDialog).progressbar({ value: false });
+              getFormsPromise.done(fetchedForms=>{
+                forms=fetchedForms;
+                getFormsPromise = undefined;
+                loadingDialog.dialog('destroy');
+                render();
+              });
+            }
             return this;
         },
         _render: function(forms) {
