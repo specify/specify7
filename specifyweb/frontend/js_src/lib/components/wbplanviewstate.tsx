@@ -147,8 +147,8 @@ export const stateReducer = generateReducer<
         height: 400,
         close: (_event, ui): void =>
           typeof ui === 'undefined' || 'length' in ui
-            ? undefined
-            : goBack(state.props),
+            ? goBack(state.props)
+            : undefined,
         buttons: [
           {
             text: wbText('chooseExistingPlan'),
@@ -579,9 +579,7 @@ export const stateReducer = generateReducer<
                         <tr key={tableName}>
                           <td>
                             <div className="v-center must-match-line">
-                              <TableIcon
-                                tableName={tableName}
-                              />
+                              <TableIcon tableName={tableName} />
                               {dataModelStorage.tables[tableName].label}
                             </div>
                           </td>
