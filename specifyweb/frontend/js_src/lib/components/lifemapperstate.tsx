@@ -78,7 +78,7 @@ export const stateReducer = generateReducer<
                   Object.keys(aggregator.issues).length > 0
                 }
                 onClick={(): void =>
-                  name === 'sn'
+                  name === 'specify'
                     ? void window.open(
                         formatLifemapperViewPageRequest(
                           guid,

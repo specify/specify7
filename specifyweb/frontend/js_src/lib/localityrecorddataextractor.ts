@@ -47,10 +47,18 @@ type FilterFunction = (
   resource: any
 ) => boolean;
 
+export const defaultRecordFilterFunction: FilterFunction = (
+  _mappingPathParts,
+  resource
+) =>
+  typeof resource?.specifyModel?.name !== 'string' ||
+  resource.specifyModel.name !== 'Determination' ||
+  resource.get('iscurrent') === true;
+
 async function recursiveResourceResolve(
   resource: any,
   mappingPath: MappingPath,
-  filterFunction?: FilterFunction,
+  filterFunction: FilterFunction,
   pastParts: RA<string> = []
 ): Promise<RA<string>> {
   if (mappingPath.length === 0) return [pastParts, resource];
@@ -193,7 +201,7 @@ export async function getLocalityDataFromLocalityResource(
   localityResource: any,
   // Don't fetch related tables. Only return data from this resource.
   quickFetch = false,
-  filterFunction?: FilterFunction
+  filterFunction: FilterFunction = defaultRecordFilterFunction
 ): Promise<LocalityData | false> {
   // Needed by generateMappingPathPreview
   await fetchDataModelPromise();

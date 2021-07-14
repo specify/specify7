@@ -10,6 +10,7 @@ import {
   lifemapperLayerVariations,
 } from './lifemapperutills';
 import {
+  defaultRecordFilterFunction,
   formatLocalityDataObject,
   getLocalityDataFromLocalityResource,
   parseLocalityPinFields,
@@ -185,10 +186,14 @@ export async function prepareLifemapperProjectionMap(
                       await getLocalityDataFromLocalityResource(
                         localityResource,
                         false,
-                        (_mappingPathParts, resource) =>
-                          typeof resource?.specifyModel?.name !== 'string' ||
-                          resource.specifyModel.name !== 'CollectionObject' ||
-                          resource.get('id') === collectionObjectId
+                        (mappingPathParts, resource) =>
+                          (typeof resource?.specifyModel?.name !== 'string' ||
+                            resource.specifyModel.name !== 'CollectionObject' ||
+                            resource.get('id') === collectionObjectId) &&
+                          defaultRecordFilterFunction(
+                            mappingPathParts,
+                            resource
+                          )
                       );
                     if (localityData !== false)
                       marker

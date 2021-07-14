@@ -6,7 +6,7 @@ export const snFrontendServer = 'https://broker.spcoco.org';
 
 export const SN_SERVICES: IR<string> = {
   lm: lifemapperText('speciesDistributionMap'),
-  sn: lifemapperText('specifyNetwork'),
+  specify: lifemapperText('specifyNetwork'),
 };
 export const ignoredAggregators: RA<string> = ['specify'];
 export type MessageTypes = 'errorDetails' | 'infoSection';
