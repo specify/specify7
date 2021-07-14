@@ -122,7 +122,7 @@ repos:
       - id: pydocstyle
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.19.4
+    rev: v2.21.0
     hooks:
       - id: pyupgrade
 
@@ -163,7 +163,7 @@ repos:
       - id: gitlint
 
   - repo: https://github.com/IamTheFij/docker-pre-commit
-    rev: v2.0.0
+    rev: v2.0.1
     hooks:
       - id: docker-compose-check
 
