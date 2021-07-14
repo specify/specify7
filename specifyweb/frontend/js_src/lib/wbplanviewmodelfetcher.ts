@@ -425,16 +425,19 @@ export default async function (): Promise<void> {
 
   // Remove relationships to system tables
   Object.entries(tables).forEach(([tableName, tableData]) => {
-    tables[tableName].fields = Object.fromEntries(
-      (
+    tables[tableName].fields = Object.fromEntries([
+      ...Object.entries(tableData.fields).filter(
+        ([, { isRelationship }]) => !isRelationship
+      ),
+      ...(
         Object.entries(tableData.fields).filter(
           ([, { isRelationship }]) => isRelationship
         ) as [fieldName: string, relationshipData: DataModelRelationship][]
       ).filter(
         ([, { tableName: relationshipTableName }]) =>
           typeof tables[relationshipTableName] !== 'undefined'
-      )
-    );
+      ),
+    ]);
   });
 
   await Promise.all(fetchPickListsQueue);
