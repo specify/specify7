@@ -16,10 +16,8 @@ module.exports =  Backbone.View.extend({
             var fieldName = this.$el.attr('name');
             var init = specifyform.parseSpecifyProperties(this.$el.data('specify-initialize'));
 
-            this.$el.prop('readonly') || this.$el.spinner({
-                    min: init['min'] || 0,
-                    max: init['max'] || null
-            });
+            this.el.setAttribute('min',init['min']||0);
+            this.el.setAttribute('max',init['max']||undefined);
 
             var self = this;
             this.model.on('change:' + fieldName.toLowerCase(), this.fillIn, this);

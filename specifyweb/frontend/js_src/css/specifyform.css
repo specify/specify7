@@ -167,6 +167,7 @@ textarea.specify-field {
 }
 
 input.specify-field[type='text'],
+input.specify-field[type='number'],
 .querycbx-strct input,
 .specify-object-formatted {
     width: 100%;
@@ -175,6 +176,7 @@ input.specify-field[type='text'],
 }
 
 input.specify-field[type='text'][readonly],
+input.specify-field[type='number'][readonly],
 .querycbx-strct input[readonly],
 .specify-object-formatted[readonly] {
     background: #eee;
@@ -182,6 +184,7 @@ input.specify-field[type='text'][readonly],
 }
 
 input.specify-field[type='text'][readonly]:focus,
+input.specify-field[type='number'][readonly]:focus,
 .querycbx-strct input[readonly]:focus,
 .specify-object-formatted[readonly]:focus {
     outline: none;
