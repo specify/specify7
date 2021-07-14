@@ -71,7 +71,7 @@ function DsMeta({
     dataSetMeta.render();
 
     return () => dataSetMeta.remove();
-  }, [dataset, dialog, onClose]);
+  }, [dataset, dialog]);
 
   return (
     <div>

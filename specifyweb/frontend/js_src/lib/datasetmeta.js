@@ -25,11 +25,14 @@ export const DataSetMeta = Backbone.View.extend({
     this.isOpen = isOpen;
   },
   render() {
-    if (this.dialog !== null) {
-      this.dialog.remove();
-      this.dialog = null;
-      if (this.handleClose) this.handleClose();
-    } else if (this.isOpen) this.startEditing();
+    if (this.dialog !== null) this.remove();
+    else if (this.isOpen) this.startEditing();
+  },
+  remove() {
+    if (this.dialog === null) return;
+    this.dialog.remove();
+    this.dialog = null;
+    if (this.handleClose) this.handleClose();
   },
   fetchAgent(agentString) {
     return new Promise((resolve) => {
