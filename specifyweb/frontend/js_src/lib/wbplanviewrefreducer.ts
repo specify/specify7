@@ -112,7 +112,6 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     refMappingObject.current.mappingViewHeight = height;
     cache.set('wbplanview-ui', 'mappingViewHeight', height, {
       overwrite: true,
-      priorityCommit: true,
     });
   },
   RefAutoScrollStatusChangeAction: ({

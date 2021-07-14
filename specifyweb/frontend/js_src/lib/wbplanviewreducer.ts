@@ -275,7 +275,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       'showHiddenTables' in state ? !state.showHiddenTables : false,
       {
         overwrite: true,
-        priorityCommit: true,
       }
     ),
   }),
@@ -320,7 +319,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       action.isVisible,
       {
         overwrite: true,
-        priorityCommit: true,
       }
     ),
   }),
@@ -416,7 +414,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       !mappingState(state).showHiddenFields,
       {
         overwrite: true,
-        priorityCommit: true,
       }
     ),
     revealHiddenFieldsClicked: true,

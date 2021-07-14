@@ -17,7 +17,7 @@ import type {
   SchemaModelTableRelationship,
 } from './legacytypes';
 import schema from './schema';
-import { capitalize, camelToHuman } from './wbplanviewhelper';
+import { camelToHuman, capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   FieldConfigOverwrite,
@@ -424,20 +424,18 @@ export default async function (): Promise<void> {
   }, {});
 
   // Remove relationships to system tables
-  Object.entries(tables).forEach(([tableName, tableData]) =>
-    (
-      Object.entries(tableData.fields).filter(
-        ([, { isRelationship }]) => isRelationship
-      ) as [fieldName: string, relationshipData: DataModelRelationship][]
-    )
-      .filter(
+  Object.entries(tables).forEach(([tableName, tableData]) => {
+    tables[tableName].fields = Object.fromEntries(
+      (
+        Object.entries(tableData.fields).filter(
+          ([, { isRelationship }]) => isRelationship
+        ) as [fieldName: string, relationshipData: DataModelRelationship][]
+      ).filter(
         ([, { tableName: relationshipTableName }]) =>
-          typeof tables[relationshipTableName] === 'undefined'
+          typeof tables[relationshipTableName] !== 'undefined'
       )
-      .forEach(([relationshipName]) => {
-        delete tables[tableName].fields[relationshipName];
-      })
-  );
+    );
+  });
 
   await Promise.all(fetchPickListsQueue);
 
@@ -474,7 +472,6 @@ export default async function (): Promise<void> {
         {
           version: cacheVersion,
           overwrite: true,
-          priorityCommit: true,
         }
       );
       dataModelStorage.listOfBaseTables = cache.set(
@@ -484,7 +481,6 @@ export default async function (): Promise<void> {
         {
           version: cacheVersion,
           overwrite: true,
-          priorityCommit: true,
         }
       );
       dataModelStorage.ranks = cache.set(
@@ -494,7 +490,6 @@ export default async function (): Promise<void> {
         {
           version: cacheVersion,
           overwrite: true,
-          priorityCommit: true,
         }
       );
       dataModelStorage.rootRanks = cache.set(
@@ -504,7 +499,6 @@ export default async function (): Promise<void> {
         {
           version: cacheVersion,
           overwrite: true,
-          priorityCommit: true,
         }
       );
       dataModelStorage.originalRelationships = cache.set(
@@ -514,7 +508,6 @@ export default async function (): Promise<void> {
         {
           version: cacheVersion,
           overwrite: true,
-          priorityCommit: true,
         }
       );
     })

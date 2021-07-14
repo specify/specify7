@@ -1,12 +1,6 @@
-/*
- *
- * Caching module for workbench mapper
- *
- *
- */
-
 import type { CacheDefinitions } from './cachedefinitions';
-import type { R } from './components/wbplanview';
+import { safeToTrim } from './cachedefinitions';
+import type { R, RA } from './components/wbplanview';
 
 // Determines how persistent bucket's storage would be
 type BucketType =
@@ -39,12 +33,6 @@ const buckets: R<BucketData> = {};
  * to localStorage. It is used to avoid collisions
  */
 const cachePrefix = 'specify7-';
-// Start trimming a bucket if records in the bucket are over this limit
-const localStorageBucketSoftLimit = 100;
-// Start trimming a bucket if records in a bucket are over this limit
-const sessionStorageBucketSoftLimit = 100;
-// Between 0 and 1 - decides the minimum passing cache usage
-const trimAggressiveness = 0.5;
 /*
  * Indicates whether initialize() was run. If not, runs it on the next call
  * to get() or set()
@@ -62,13 +50,13 @@ function initialize(): void {
 function commitToStorage(): void {
   if (typeof localStorage === 'undefined') return;
 
-  Object.entries(buckets)
-    .filter(
+  trimUnusedCache(
+    Object.entries(buckets).filter(
       ([, bucketData]) =>
         bucketData.type === 'localStorage' &&
         Object.keys(bucketData.records).length > 0
     )
-    .map(([bucketName]) => commitBucketToStorage(bucketName));
+  ).map(([bucketName]) => commitBucketToStorage(bucketName));
 }
 
 /* Commits a single cache bucket to localStorage */
@@ -89,14 +77,21 @@ function fetchBucket(
    * {object} bucket content if bucket exists
    *
    */
-  if (typeof localStorage === 'undefined') return false;
+  if (
+    typeof localStorage === 'undefined' ||
+    typeof sessionStorage === 'undefined'
+  )
+    return false;
 
   const fullBucketName = `${cachePrefix}${bucketName}`;
 
-  const localStorageData = localStorage.getItem(fullBucketName);
-  if (localStorageData === null) return false;
+  const data =
+    localStorage.getItem(fullBucketName) ??
+    sessionStorage.getItem(fullBucketName);
 
-  return (buckets[bucketName] = JSON.parse(localStorageData));
+  if (data === null) return false;
+  buckets[bucketName] = JSON.parse(data) as BucketData;
+  return buckets[bucketName];
 }
 
 /*
@@ -200,7 +195,7 @@ export function genericGet<T>(
     typeof buckets[bucketName].records[cacheName] === 'undefined'
   ) {
     if (typeof defaultValue === 'undefined') return false;
-    set(bucketName, cacheName, defaultValue, defaultSetOptions);
+    genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
   // If cache version is specified, and it doesn't match, clear the record
@@ -208,9 +203,12 @@ export function genericGet<T>(
     typeof version !== 'undefined' &&
     buckets[bucketName].records[cacheName].version !== version
   ) {
-    delete buckets[bucketName].records[cacheName];
+    const { [cacheName]: _deletedCacheRecord, ...rest } =
+      buckets[bucketName].records;
+    console.warn(`Deleted cache key ${cacheName} due to version mismatch`);
+    buckets[bucketName].records = rest;
     if (typeof defaultValue === 'undefined') return false;
-    set(bucketName, cacheName, defaultValue, {
+    genericSet(bucketName, cacheName, defaultValue, {
       ...defaultSetOptions,
       overwrite: true,
     });
@@ -230,8 +228,6 @@ interface SetOptions {
   readonly overwrite?: boolean;
   // Version of this record (used for invalidating older cache)
   readonly version?: string;
-  // Whether to commit the value to localStorage as soon as it is changed
-  readonly priorityCommit?: boolean;
 }
 
 export const set = <
@@ -265,7 +261,6 @@ export function genericSet<T>(
     bucketType = 'localStorage',
     overwrite = false,
     version = undefined,
-    priorityCommit = false,
   }: SetOptions = {}
 ): T {
   if (typeof bucketName === 'undefined')
@@ -299,65 +294,29 @@ export function genericSet<T>(
         }),
   };
 
-  trimBucket(bucketName);
-
-  if (priorityCommit) commitBucketToStorage(bucketName);
-
   return cacheValue;
 }
 
-/*
- * Trims buckets that go beyond the size limit
- * Runs every time you set a new cache value
- * This method is needed to prevent memory leaks and stay under browser memory
- * limit - ~5 MB for Google Chrome ;(
- */
-function trimBucket(
-  // The bucket to trim
-  bucketName: string
-): boolean {
-  /*
-   * Don't trim cache if the amount records in this bucket is smaller than
-   * soft limits
-   */
-  if (
-    (buckets[bucketName].type === 'localStorage' &&
-      Object.keys(buckets[bucketName].records).length <
-        localStorageBucketSoftLimit) ||
-    (buckets[bucketName].type === 'sessionStorage' &&
-      Object.keys(buckets[bucketName].records).length <
-        sessionStorageBucketSoftLimit)
-  )
-    return false;
-
-  const cacheUsages = Object.values(buckets[bucketName].records).map(
-    ({ useCount }) => useCount
-  );
-  const totalUsage = cacheUsages.reduce(
-    (totalUsage: number, usage: number | string) => totalUsage + Number(usage),
+const getObjectSize = (objectEntries: RA<[string, BucketData]>): number =>
+  objectEntries.reduce(
+    (total, [{ length }, value]) =>
+      total + length + JSON.stringify(value).length,
     0
-  );
-  const cacheItemsCount = cacheUsages.length;
-  const averageUsage = totalUsage / cacheItemsCount;
+  ) * 2;
 
-  // Trim all caches with usage equal to or smaller than usageToTrim
-  let usageToTrim = Math.round(averageUsage * trimAggressiveness);
+// 5MB
+const CACHE_LIMIT = 5_242_880;
 
-  if (usageToTrim === 0) usageToTrim = 1;
-
-  const cacheKeys = Object.keys(buckets[bucketName].records);
-
-  buckets[bucketName].records = Object.fromEntries(
-    Object.entries(cacheUsages)
-      .map(([cacheIndex, cacheUsage]) => [
-        cacheKeys[Number(cacheIndex)],
-        cacheUsage,
-      ])
-      .filter(([, cacheUsage]) => cacheUsage >= usageToTrim)
-      .map(([cacheKey]) => [cacheKey, buckets[bucketName].records[cacheKey]])
-  );
-
-  return true;
+function trimUnusedCache(
+  buckets: RA<[string, BucketData]>
+): RA<[string, BucketData]> {
+  const usedSpace = getObjectSize(buckets);
+  if (usedSpace < CACHE_LIMIT) return buckets;
+  return buckets.filter(([bucketName, bucketData]) => {
+    if (!safeToTrim.includes(bucketName as keyof CacheDefinitions)) return true;
+    sessionStorage.setItem(bucketName, JSON.stringify(bucketData));
+    return false;
+  });
 }
 
 let collectionId: number | undefined = undefined;

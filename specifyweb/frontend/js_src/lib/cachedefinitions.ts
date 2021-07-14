@@ -2,7 +2,7 @@ import type hot from 'handsontable';
 
 import type { AutoMapperResults } from './automapper';
 import type { SearchPreferences } from './components/wbadvancedsearch';
-import type { IR, R, RA } from './components/wbplanview';
+import type { R, RA } from './components/wbplanview';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type {
   DataModelListOfTables,
@@ -13,7 +13,7 @@ import type {
 } from './wbplanviewmodelfetcher';
 
 // The types of cached values are defined here
-export type CacheDefinitions = IR<IR<unknown>> & {
+export type CacheDefinitions = {
   readonly 'wbplanview-ui': {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
@@ -58,3 +58,9 @@ export type CacheDefinitions = IR<IR<unknown>> & {
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
 };
+
+export const safeToTrim: RA<keyof CacheDefinitions> = [
+  'wbplanview-automapper',
+  'wbplanview-datamodel',
+  'wbplanview-navigator-tables',
+];
