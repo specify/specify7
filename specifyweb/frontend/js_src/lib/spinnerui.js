@@ -9,7 +9,6 @@ var specifyform = require('./specifyform.js');
 module.exports =  Backbone.View.extend({
         __name__: 'SpinnerFieldUI',
         events: {
-            'spinstop': 'change',
             'change': 'change'
         },
         render: function() {
@@ -32,12 +31,10 @@ module.exports =  Backbone.View.extend({
             if (this.$el.prop('readonly')) {
                 this.$el.val(val);
             } else {
-                //this.$el.spinner('value', val); });
                 this.$el.val(val);
             }
         },
         change: function() {
-            //var val = this.$el.spinner('value');
             var val = this.$el.val();
             val = val && parseInt(val, 10);
             this.model.set(this.$el.attr('name'), val);

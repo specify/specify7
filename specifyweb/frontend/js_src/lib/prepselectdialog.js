@@ -20,8 +20,7 @@ module.exports =  PrepDialog.extend({
         events: {
             'click a.prepselect-unavailable': 'prepInteractions',
             'click :checkbox': 'prepCheck',
-            'click .ui-spinner-button': 'spun', //when not binding in finishRender()
-            'keyup .ui-spinner-input': 'putin', //when not binding in finishRender()
+            'keyup .ui-spinner-input': 'spun', //when not binding in finishRender()
             'keydown .prepselect-amt': 'prepselectKeyDown' 
         },
         availabilityDblChk: false,
@@ -62,30 +61,7 @@ module.exports =  PrepDialog.extend({
         },
         finishRender: function() {
             var spinners = this.$(".prepselect-amt");
-            spinners.spinner(/*{
-                change: _.bind(function( evt ) {
-                    var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-                    if (idx >= 0) {
-                        var val = new Number($(evt.currentTarget).attr('value'));
-                        var max = this.options.preps[idx].available;
-                        var min = 0;
-                        if (val > new Number(max)) {
-                            $(evt.currentTarget).attr('value', max);
-                        } else if (isNaN(val) || val < min) {
-                            $(evt.currentTarget).attr('value',  min);
-                        }
-                        this.$(':checkbox')[idx].checked = new Number($(evt.currentTarget).attr('value')) > 0;
-                    }
-                }, this),
-                spin: _.bind(function( evt, ui ) {
-                    var idx = this.$(".prepselect-amt").index(evt.target);
-                    if (idx >= 0) {
-                        var val = new Number($(ui).attr('value'));
-                        this.$(':checkbox')[idx].checked = val > 0;
-                    }
-                }, this)
-                              }*/);
-            spinners.width(50);
+            spinners.css('width',50);
         },
 
         dialogEntry: function(iprep) {
@@ -103,7 +79,7 @@ module.exports =  PrepDialog.extend({
                 $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
-                $('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
+                $('<td>').append($('<input>').attr('align', 'right').attr('type','number').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
                 $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
                 unavailable);
             return [entry];
@@ -153,28 +129,6 @@ module.exports =  PrepDialog.extend({
         //<<<<<<<<<<<<<<<<<<<< ui elements stuff
 
         //events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-    putin: function(evt) {
-        var isUpDownArrow = ["ArrowDown", "ArrowUp"].indexOf(evt.key) >= 0;
-        if (isUpDownArrow || !isNaN(String.fromCharCode(evt.which))) {
-            var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-            if (idx >= 0) {
-                if (!isUpDownArrow) {
-                    var val = new Number(evt.currentTarget.value);
-                    var max = this.options.preps[idx].available;
-                    var min = 0;
-                    if (val > new Number(max)) {
-                        evt.currentTarget.value = max + "";
-                    } else if (isNaN(val) || val < min) {
-                        evt.currentTarget.value = min + "";
-                    }
-                }
-                this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
-            }
-        } else {
-            evt.preventDefault();
-        }
-    },
 
     spun: function(evt) {
         var rows = $(evt.target).parentsUntil("tbody");
