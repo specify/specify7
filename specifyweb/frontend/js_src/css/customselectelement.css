@@ -1,5 +1,8 @@
 .custom-select {
   --lines-to-display: 8;
+  --custom-select-b1: var(--custom-select-normal-b1);
+  --custom-select-b2: var(--custom-select-normal-b2);
+  --custom-select-accent: var(--custom-select-normal-accent);
 
   color: var(--t1);
   display: grid;
@@ -179,12 +182,6 @@
   background-color: var(--custom-select-b1);
   display: flex;
   flex-direction: column;
-}
-
-.custom-select-group-optional-fields {
-  --custom-select-b1: var(--custom-select-normal-b1);
-  --custom-select-b2: var(--custom-select-normal-b2);
-  --custom-select-accent: var(--custom-select-normal-accent);
 }
 
 .custom-select-group-required-fields {
