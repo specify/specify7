@@ -343,9 +343,10 @@ module.exports =  Backbone.View.extend({
         // External event handlers.
 
         valueChanged: function(inputUI, value) {
-            this.value = value;
-            this.spqueryfield.set('startvalue', value);
-            console.log('updating value to', value);
+            const nonNullValue = value ?? '';
+            this.value = nonNullValue;
+            this.spqueryfield.set('startvalue', nonNullValue);
+            console.log('updating value to', nonNullValue);
         },
         positionChanged: function() {
             var position = this.$el.parent().find('li').index(this.el);
