@@ -48,9 +48,7 @@ def no_savepoint():
     yield
 
 def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
-    if ds.rowresults is None:
-        return
-    results = json.loads(ds.rowresults)
+    results = list(ds.rowresults.values_list('result', flat=True))
     total = len(results)
     current = 0
     with transaction.atomic():
@@ -62,7 +60,7 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
 
         for row in reversed(results):
             logger.info(f"rolling back row {current} of {total}")
-            upload_result = json_to_UploadResult(row)
+            upload_result = json_to_UploadResult(json.loads(row))
             if not upload_result.contains_failure():
                 unupload_record(upload_result, agent)
 
@@ -102,17 +100,19 @@ def do_upload_dataset(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     assert not ds.was_uploaded(), "Already uploaded!"
-    ds.rowresults = None
+    ds.rowresults.all().delete()
     ds.uploadresult = None
-    ds.save(update_fields=['rowresults', 'uploadresult'])
+    ds.save(update_fields=['uploadresult'])
 
     ncols = len(ds.columns)
-    rows = [dict(zip(ds.columns, row)) for row in ds.data]
-    disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
+    rows = [dict(zip(ds.columns, row)) for row in ds.rows.values_list('data', flat=True)]
+    disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.rows.values_list('data', flat=True)]
     base_table, upload_plan = get_ds_upload_plan(collection, ds)
 
     results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
     success = not any(r.contains_failure() for r in results)
+    for i, r in enumerate(results):
+        ds.rowresults.create(rownumber=i, result=json.dumps(r.to_json()))
     if not no_commit:
         rs = create_record_set(ds, base_table, results) if results and success else None
         ds.uploadresult = {
@@ -121,8 +121,7 @@ def do_upload_dataset(
             'recordsetid': rs and rs.id,
             'uploadingAgentId': uploading_agent_id,
         }
-    ds.rowresults = json.dumps([r.to_json() for r in results])
-    ds.save(update_fields=['rowresults', 'uploadresult'])
+        ds.save(update_fields=['uploadresult'])
     return results
 
 def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):

@@ -305,11 +305,13 @@ def datasets(request) -> http.HttpResponse:
             collection=request.specify_collection,
             name=data['name'],
             columns=columns,
-            data=rows,
             importedfilename=data['importedfilename'],
             createdbyagent=request.specify_user_agent,
             modifiedbyagent=request.specify_user_agent,
         )
+        for i, row in enumerate(rows):
+            ds.rows.create(rownumber=i, data=row)
+
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
 
     else:
@@ -447,11 +449,11 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             name=ds.name,
             columns=ds.columns,
             visualorder=ds.visualorder,
-            rows=ds.data,
+            rows=list(ds.rows.values_list('data', flat=True)),
             uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
             uploaderstatus=ds.uploaderstatus,
             uploadresult=ds.uploadresult,
-            rowresults=ds.rowresults and json.loads(ds.rowresults),
+            rowresults=[json.loads(r) for r in ds.rowresults.values_list('result', flat=True)],
             remarks=ds.remarks,
             importedfilename=ds.importedfilename,
             timestampcreated=ds.timestampcreated,
@@ -492,11 +494,12 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
                 if new_cols:
                     ncols = len(ds.columns)
                     ds.columns += list(new_cols)
-                    for i, row in enumerate(ds.data):
-                        ds.data[i] = row[:ncols] + [""]*len(new_cols) + row[ncols:]
+                    for row in ds.rows.all():
+                        row.data = row.data[:ncols] + [""]*len(new_cols) + row.data[ncols:]
+                        row.save()
 
                 ds.uploadplan = json.dumps(plan)
-                ds.rowresults = None
+                ds.rowresults.all().delete()
                 ds.uploadresult = None
 
             ds.save()
@@ -588,15 +591,17 @@ def rows(request, ds_id: str) -> http.HttpResponse:
 
         rows = regularize_rows(len(ds.columns), json.load(request))
 
-        ds.data = rows
-        ds.rowresults = None
+        ds.rows.all().delete()
+        for i, row in enumerate(rows):
+            ds.rows.create(rownumber=i, data=row)
+        ds.rowresults.all().delete()
         ds.uploadresult = None
         ds.modifiedbyagent = request.specify_user_agent
         ds.save()
         return http.HttpResponse(status=204)
 
     else: # GET
-        return http.JsonResponse(ds.data, safe=False)
+        return http.JsonResponse(ds.rows.values_list('data', flat=True), safe=False)
 
 
 @openapi(schema={

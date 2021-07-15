@@ -13,13 +13,11 @@ class Spdataset(models.Model):
     name = models.CharField(max_length=256)
     columns = JSONField()
     visualorder = JSONField(null=True)
-    data = JSONField(default=list)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
     uploadplan = models.TextField(null=True)
     uploaderstatus = JSONField(null=True)
     uploadresult = JSONField(null=True)
-    rowresults = models.TextField(null=True)
     remarks = models.TextField(null=True)
     importedfilename = models.TextField(null=True)
     timestampcreated = models.DateTimeField(default=timezone.now)
@@ -32,3 +30,27 @@ class Spdataset(models.Model):
 
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult['success']
+
+class Spdatasetrow(models.Model):
+    spdataset = models.ForeignKey(Spdataset, on_delete=models.CASCADE, related_name="rows")
+    rownumber = models.IntegerField()
+    data = JSONField()
+
+    class Meta:
+        db_table = 'spdatasetrow'
+        ordering = ['rownumber']
+        constraints = [
+            models.UniqueConstraint(fields=['spdataset', 'rownumber'], name='unique_rownumber_row')
+        ]
+
+class Spdatasetrowresult(models.Model):
+    spdataset = models.ForeignKey(Spdataset, on_delete=models.CASCADE, related_name="rowresults")
+    rownumber = models.IntegerField()
+    result = models.TextField()
+
+    class Meta:
+        db_table = 'spdatasetrowresult'
+        ordering = ['rownumber']
+        constraints = [
+            models.UniqueConstraint(fields=['spdataset', 'rownumber'], name='unique_rownumber_result')
+        ]
