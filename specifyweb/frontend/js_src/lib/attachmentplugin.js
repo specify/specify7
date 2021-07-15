@@ -18,9 +18,10 @@ module.exports =  UIPlugin.extend({
         },
         render: function() {
             var self = this;
-            if (!attachments) {
+            if (!attachments.systemAvailable()) {
                 self.$el.replaceWith(`<div>
-                    ${formsText('attachmentServerUnavailable')}
+                    ${formsText('attachmentServerUnavailableDialogHeader')}
+                    ${formsText('attachmentServerUnavailableDialogMessage')}
                 </div>`);
                 return this;
             }
