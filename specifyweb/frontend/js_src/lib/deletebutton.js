@@ -20,13 +20,11 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $(`<a
-              href="#"
+            this.button = $(`<input
+              type="button"
               class="delete-button"
-              style="display:inline-flex;"
-            >
-              ${commonText('delete')} 
-            </a>`).appendTo(this.el);
+              value="${commonText('delete')}"
+            >`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +
                                  this.model.specifyModel.name.toLowerCase() +
                                  '/' + this.model.id + '/');
@@ -44,9 +42,7 @@ module.exports =  Backbone.View.extend({
                 ${commonText('delete')}
               `;
         },
-        openDialog: function(evt) {
-            evt && evt.preventDefault();
-
+        openDialog: function() {
             if (this.promise.state() == 'pending') {
                 this.waitDialog || this.openWaitDialog();
                 this.promise.done(this.openDialog.bind(this, null));

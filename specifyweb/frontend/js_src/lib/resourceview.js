@@ -110,6 +110,7 @@ const ResourceView = Backbone.View.extend({
             self.$el.append(form);
             self.saveBtn && self.saveBtn.render().$el.appendTo(buttons);
             self.addAnotherBtn && self.addAnotherBtn.render().$el.appendTo(buttons);
+            buttons.append('<div class="push"></div>');
             self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
             self.reporterOnSave = self.$el.find(".specify-print-on-save");
             self.setTitle();

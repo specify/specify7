@@ -125,13 +125,12 @@ div.specify-view-content {
 .specify-form-buttons {
     display: flex;
     flex-direction: row-reverse;
-    justify-content: space-between;
+    column-gap: var(--half-size);
     border-top: 2px solid #f4763d;
     padding-top: 4px;
 }
 
 .specify-form-buttons input {
-    margin-left: 10px;
     border-radius: 0;
     border: 2px solid #f4763d;
     background: #f79244;
@@ -157,9 +156,13 @@ div.specify-view-content {
     border: 2px solid #d3d3d3;
 }
 
-.specify-form-buttons .deletebutton {
-    padding: 4px;
-    font-weight: bold;
+.specify-form-buttons .deletebutton input {
+    background-color: var(--b1);
+    border-color: var(--b2);
+}
+
+.specify-form-buttons .push {
+    margin-left: auto;
 }
 
 textarea.specify-field {
