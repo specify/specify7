@@ -135,7 +135,7 @@ const ResourceView = Backbone.View.extend({
         });
     },
     setFormTitle: function(title) {
-        this.header && this.header.find('.view-title').text(title);
+        this.$el.is(':ui-dialog') && this.$el.dialog('option','title',title);
     },
     saved: function(options) {
         this.trigger('saved', this.model, options);
