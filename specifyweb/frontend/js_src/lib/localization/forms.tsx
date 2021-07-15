@@ -6,8 +6,20 @@ import { createDictionary, createHeader } from './utils';
 const formsText = createDictionary({
   // Attachments
   attachments: 'Attachments',
-  attachmentServerUnavailable: 'Attachment server unavailable.',
   attachmentUploadDialogTitle: 'Uploading...',
+  attachmentServerUnavailableDialogHeader: createHeader(
+    'Attachment server unavailable'
+  ),
+  attachmentServerUnavailableDialogMessage: `
+    No Attachment server is configured.<br>
+    Please <a
+      target="_blank"
+      href="https://github.com/specify/web-asset-server"
+    >setup the web server</a> and <a
+      target="_blank"
+      href="https://github.com/specify/specify7/blob/production/specifyweb/settings/specify_settings.py#L23-L32"
+    >configure Specify 7 to work with it</a>.
+  `,
   tables: 'Tables',
   openDataDialogTitle: 'Opening...',
   linkInline: 'link',
