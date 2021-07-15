@@ -236,8 +236,8 @@ const commonText = require('./localization/common').default;
                   });
                 return;
             }
-            if (cls == 'query-kml') {
-                var captions = _.chain(this.fieldUIs)
+            const captions = cls === 'query-kml' ?
+                 _.chain(this.fieldUIs)
                         .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                         .sortBy(function(f) { return f.spqueryfield.get('position'); })
                         .map(function(f) { return {spec: f.fieldSpec, isdisplay: f.spqueryfield.get('isdisplay')};})
@@ -249,14 +249,16 @@ const commonText = require('./localization/common').default;
                             }
                             //return {caption: name, isdisplay: f.isdisplay};
                             return name;
-                        }).value();
-                //sneaky cheat. Doesn't seem to be a facility for localizations in the query api
-                //And it may be better to use the 'live' captions in case they get adjusted to avoid duplication.
-                this.query.set('captions', captions);
-            }
+                        }).value()
+                : undefined;
+
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
-                $.post(postUrl, JSON.stringify(this.query));
+                //sneaky cheat. Doesn't seem to be a facility for localizations in the query api
+                //And it may be better to use the 'live' captions in case they get adjusted to avoid duplication.
+                const data = this.query.toJSON();
+                data.captions = captions ?? data.captions;
+                $.post(postUrl, JSON.stringify(data));
                 const dialog = $(`<div>
                     ${queryText('queryExportStartedDialogHeader')}
                     ${queryText('queryExportStartedDialogMessage')(fileDesc)}
