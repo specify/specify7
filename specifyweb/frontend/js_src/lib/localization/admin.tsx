@@ -38,6 +38,8 @@ const adminText = createDictionary({
 
   // UserCollectionsPlugin
   collections: 'Collections',
+  notAvailableOnAdmins:
+    'This option is unavailable for admin users',
   userCollectionsPluginButtonDisabledDescription: 'Save user first',
   userCollectionsPluginDialogTitle: 'Select user collection access',
 });
