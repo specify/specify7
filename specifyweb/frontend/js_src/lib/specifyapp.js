@@ -84,9 +84,7 @@ const commonText = require('./localization/common').default;
     }
 
 function viewSaved(resource, recordSet, options) {
-    if (options.addAnother) {
-        showResource(options.newResource, recordSet);
-    } else if (options.wasNew) {
+    if (options.wasNew) {
         navigation.go(resource.viewUrl());
     } else {
         const reloadResource = new resource.constructor({ id: resource.id });
@@ -94,6 +92,11 @@ function viewSaved(resource, recordSet, options) {
         reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
     }
 }
+
+function addAnother(resource, recordSet, options) {
+    showResource(options.newResource, recordSet);
+}
+
 
     // build and display view for resource
 function showResource(resource, recordSet, pushUrl) {
@@ -119,6 +122,8 @@ function showResource(resource, recordSet, pushUrl) {
             } else {
                 viewSaved(resource, recordSet, options);
             }
+        }).on('addanother', function(resource, options) {
+            addAnother(resource, recordSet, options);
         }).on('deleted', function() {
             if (view.next) {
                 navigation.go(view.next.viewUrl());

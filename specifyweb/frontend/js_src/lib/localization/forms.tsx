@@ -163,7 +163,7 @@ const formsText = createDictionary({
 
   // SaveButton
   unsavedFormUnloadProtect: 'This form has not been saved.',
-  saveAndAddAnother: 'Save and Add Another',
+  addAnother: 'Add Another',
   saveConflictDialogTitle: 'Save record',
   saveConflictDialogHeader: createHeader('Save conflict'),
   saveConflictDialogMessage: `

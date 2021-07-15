@@ -58,13 +58,6 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('savebutton');
-            if (this.options.addAnother) {
-                this.$el.append($('<input>', {
-                    type: "submit",
-                    "class": "save-and-add-button",
-                    value: formsText('saveAndAddAnother')
-                }));
-            }
             this.$el.append($('<input>', {
                 type: "submit",
                 "class": "save-button",
@@ -80,10 +73,9 @@ module.exports =  Backbone.View.extend({
         },
         submit: function(evt) {
             evt.preventDefault();
-            var addAnother = $(evt.currentTarget).is('.save-and-add-button');
-            this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
+            this.model.businessRuleMgr.pending.then(this.doSave.bind(this));
         },
-        doSave: function(addAnother) {
+        doSave: function() {
             _.each(this.blockingResources, function(resource) {
                 return resource.saveBlockers.fireDeferredBlockers();
             });
@@ -91,16 +83,10 @@ module.exports =  Backbone.View.extend({
             if (_.isEmpty(this.blockingResources)) {
                 this.setButtonsDisabled(true);
 
-                // # This has to be done before saving so that the data we get back isn't copied.
-                // # Eg. autonumber fields, the id, etc.
-                var newResource = addAnother ? this.model.clone() : undefined;
-                var wasNew = this.model.isNew();
                 this.trigger('saving', this, this.model);
                 this.model.save()
                     .done(this.trigger.bind(this, 'savecomplete', {
-                        addAnother: addAnother,
-                        newResource: newResource,
-                        wasNew: wasNew
+                        wasNew: this.model.isNew()
                     }))
                     .fail(function(jqXHR) {
                         if (jqXHR.status === 409) {

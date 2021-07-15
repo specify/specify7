@@ -8,6 +8,7 @@ var specifyform       = require('./specifyform.js');
 var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
+var AddAnotherButton  = require('./addanotherbutton.js');
 var DeleteButton      = require('./deletebutton.js');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
@@ -66,12 +67,19 @@ const ResourceView = Backbone.View.extend({
         if (!self.readOnly) {
             self.saveBtn = new SaveButton({
                 model: self.model,
-                addAnother: self.model.isNew() &&
-                    !self.options.noAddAnother &&
-                    !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name)
             });
 
             self.saveBtn.on('savecomplete', self.saved, self);
+
+            const addAnother = !self.model.isNew() &&
+                !self.options.noAddAnother &&
+                !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name);
+            if(addAnother){
+                self.addAnotherBtn = new AddAnotherButton({model: self.model});
+                self.addAnotherBtn.on('addanother', self.addAnother, self);
+            }
+
+
         }
 
         if (!self.readOnly && !self.model.isNew()) {
@@ -101,6 +109,7 @@ const ResourceView = Backbone.View.extend({
             var buttons = $('<div class="specify-form-buttons">').appendTo(form);
             self.$el.append(form);
             self.saveBtn && self.saveBtn.render().$el.appendTo(buttons);
+            self.addAnotherBtn && self.addAnotherBtn.render().$el.appendTo(buttons);
             self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
             self.reporterOnSave = self.$el.find(".specify-print-on-save");
             self.setTitle();
@@ -139,6 +148,9 @@ const ResourceView = Backbone.View.extend({
     },
     saved: function(options) {
         this.trigger('saved', this.model, options);
+    },
+    addAnother: function(options) {
+        this.trigger('addanother', this.model, options);
     },
     deleted: function() {
         this.trigger('deleted');
