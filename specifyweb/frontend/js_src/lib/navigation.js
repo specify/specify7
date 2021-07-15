@@ -20,27 +20,41 @@ function sequenceFromState(state) {
 
 // If the page is reloaded, the sequence needs to be set from the
 // stored state.
-var sequence = sequenceFromState(window.history.state);
+let sequence = sequenceFromState(window.history.state);
 
-var unloadBlockers = [];
+let unloadBlockers = [];
+let onBeforeUnloadHandler = undefined;
 
-function addUnloadProtect(key, message, confirmNavigationHandler=defaultConfirmNavigationHandler) {
+function addUnloadProtect(
+  key,
+  message,
+  confirmNavigationHandler=defaultConfirmNavigationHandler
+) {
     unloadBlockers = [...unloadBlockers, [key, message, confirmNavigationHandler]];
-    window.onbeforeunload = () => message;
+    changeOnBeforeUnloadHandler(()=>message);
+}
+
+function changeOnBeforeUnloadHandler(handler){
+    if(typeof onBeforeUnloadHandler === 'function')
+        window.removeEventListener('onbeforeunload',onBeforeUnloadHandler);
+    onBeforeUnloadHandler = handler;
+    if(typeof handler === 'function')
+        window.addEventListener('onbeforeunload',onBeforeUnloadHandler);
 }
 
 function removeUnloadProtect(remKey) {
     unloadBlockers = unloadBlockers.filter(([key]) => key !== remKey);
-    window.onbeforeunload = unloadBlockers.length === 0 ? null :
+    changeOnBeforeUnloadHandler( unloadBlockers.length === 0 ? undefined :
         () => {
             const [key, message] = unloadBlockers[unloadBlockers.length - 1];
             return message;
-        };
+        }
+    );
 }
 
 function clearUnloadProtect() {
     unloadBlockers = [];
-    window.onbeforeunload = null;
+    changeOnBeforeUnloadHandler(undefined);
 }
 
 // We are going to extend the window.history object to automatically
