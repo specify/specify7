@@ -9,7 +9,7 @@ const adminText = createDictionary({
   mustBeManager: 'User must be saved as Manager first',
 
   mimetype: 'Mimetype:',
-  loadFile: 'Load File:',
+  loadFile: 'Load File',
   download: 'Download',
   corruptResourceOrConflict: `
     This app resource appears to be corrupt but may be in the process of

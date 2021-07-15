@@ -145,8 +145,8 @@ export const stateReducer = generateReducer<
       properties={{
         title: wbText('selectBaseTableDialogTitle'),
         height: 400,
-        close: (_event, ui): void =>
-          typeof ui === 'undefined' || 'length' in ui
+        close: (event, ui): void =>
+          typeof event !== 'undefined' && typeof ui === 'undefined'
             ? goBack(state.props)
             : undefined,
         buttons: [
