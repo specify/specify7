@@ -311,7 +311,8 @@ const EditNodeDialog = Backbone.View.extend({
             el: this.el,
             model,
             mode: 'edit',
-            noHeader: true
+            noHeader: true,
+            noAddAnother: true
         }).render()
             .on('saved', this.childSaved, this)
             .on('changetitle', this.changeDialogTitle, this);
