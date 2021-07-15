@@ -4,8 +4,9 @@ import { createDictionary, createHeader } from './utils';
 
 const adminText = createDictionary({
   removeAdmin: 'Remove Admin',
+  canNotRemoveYourself: 'You can not revoke your own admin status',
   makeAdmin: 'Make Admin',
-  adminStatusUnsavedDescription: 'Save user first',
+  saveUserFirst: 'Save user first',
   mustBeManager: 'User must be saved as Manager first',
 
   mimetype: 'Mimetype:',
@@ -38,9 +39,7 @@ const adminText = createDictionary({
 
   // UserCollectionsPlugin
   collections: 'Collections',
-  notAvailableOnAdmins:
-    'This option is unavailable for admin users',
-  userCollectionsPluginButtonDisabledDescription: 'Save user first',
+  notAvailableOnAdmins: 'This option is unavailable for admin users',
   userCollectionsPluginDialogTitle: 'Select user collection access',
 });
 

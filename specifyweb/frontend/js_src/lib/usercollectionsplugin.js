@@ -65,13 +65,15 @@ module.exports =  UIPlugin.extend({
     },
     render: function() {
         this.el.setAttribute('value', adminText('collections'));
+
         if(this.user.get('isadmin')){
             this.el.disabled = true;
             this.el.setAttribute('title',adminText('notAvailableOnAdmins'));
             return this;
         }
+
         Q.all([this.user.fetch(), this.allCollections.fetch({limit:0})]).then(() => {
-            this.user.isNew() && this.$el.attr('title', adminText('userCollectionsPluginButtonDisabledDescription')).prop('disabled', true);
+            this.user.isNew() && this.$el.attr('title', adminText('saveUserFirst')).prop('disabled', true);
         });
         return this;
     },
