@@ -48,6 +48,12 @@ export async function prepareLifemapperProjectionMap(
 
       const parsedLocalityFields = parseLocalityPinFields(true);
 
+      const commonFieldConfig = {
+        isrelfld: false,
+        sorttype: 0,
+        isnot: false,
+      };
+
       const request = await fetch('/stored_query/ephemeral/', {
         headers: { 'X-CSRFToken': csrfToken! },
         method: 'POST',
@@ -64,53 +70,55 @@ export async function prepareLifemapperProjectionMap(
           formatauditrecids: false,
           fields: [
             {
+              ...commonFieldConfig,
               tablelist: '1,9-determinations,4',
               stringid: '1,9-determinations,4.taxon.taxonid',
               fieldname: 'taxonid',
-              isrelfld: false,
-              sorttype: 0,
               isdisplay: false,
-              isnot: false,
               startvalue: `${taxon.get('id')}`,
               operstart: 1,
               position: 0,
             },
             {
+              ...commonFieldConfig,
               tablelist: '1,9-determinations',
               stringid: '1,9-determinations.determination.isCurrent',
               fieldname: 'isCurrent',
-              isrelfld: false,
-              sorttype: 0,
               isdisplay: false,
-              isnot: false,
               startvalue: '',
               operstart: 6,
               position: 1,
             },
             {
-              sorttype: 0,
+              ...commonFieldConfig,
+              tablelist: '1,10',
+              stringid: '1,10.collectingevent.collectingeventid',
+              fieldname: 'collectingeventid',
               isdisplay: true,
-              isnot: false,
               startvalue: '',
-              query: '/api/specify/spquery/',
-              position: 2,
-              tablelist: '1,10,2',
-              stringid: '1,10,2.locality.localityid',
-              fieldname: 'localityid',
-              isrelfld: false,
               operstart: 1,
+              position: 2,
             },
-            ...parsedLocalityFields.map(([fieldName]) => ({
-              sorttype: 0,
+            {
+              ...commonFieldConfig,
               isdisplay: true,
-              isnot: false,
               startvalue: '',
               query: '/api/specify/spquery/',
               position: 3,
               tablelist: '1,10,2',
+              stringid: '1,10,2.locality.localityid',
+              fieldname: 'localityid',
+              operstart: 1,
+            },
+            ...parsedLocalityFields.map(([fieldName], index) => ({
+              ...commonFieldConfig,
+              isdisplay: true,
+              startvalue: '',
+              query: '/api/specify/spquery/',
+              position: 4 + index,
+              tablelist: '1,10,2',
               stringid: `1,10,2.locality.${fieldName}`,
               fieldname: fieldName,
-              isrelfld: false,
               operstart: 1,
             })),
           ],
@@ -119,7 +127,7 @@ export async function prepareLifemapperProjectionMap(
       });
 
       const results: {
-        readonly results: RA<[number, number, ...RA<string>]>;
+        readonly results: RA<[number, number, number, ...RA<string>]>;
       } = await request.json();
 
       if (results.results.length > LIMIT)
@@ -131,32 +139,40 @@ export async function prepareLifemapperProjectionMap(
       const localities = await Promise.all(
         results.results
           .slice(0, LIMIT)
-          .map(([collectionObjectId, localityId, ...localityData]) => {
-            if (collectionObjectId === model.get('id'))
-              currentLocalityId = localityId;
-
-            return {
+          .map(
+            ([
               collectionObjectId,
+              collectingEventId,
               localityId,
-              localityData: formatLocalityDataObject(
-                parsedLocalityFields.map((mappingPath, index) => [
-                  mappingPath,
-                  localityData[index],
-                ])
-              ),
-              fetchLocalityResource: async () =>
-                new Promise<any>((resolve) => {
-                  const locality = new (
-                    schema as any
-                  ).models.Locality.LazyCollection({
-                    filters: { id: localityId },
-                  });
-                  locality
-                    .fetch({ limit: 1 })
-                    .then(() => resolve(locality.models[0]));
-                }),
-            };
-          })
+              ...localityData
+            ]) => {
+              if (collectionObjectId === model.get('id'))
+                currentLocalityId = localityId;
+
+              return {
+                collectionObjectId,
+                collectingEventId,
+                localityId,
+                localityData: formatLocalityDataObject(
+                  parsedLocalityFields.map((mappingPath, index) => [
+                    mappingPath,
+                    localityData[index],
+                  ])
+                ),
+                fetchLocalityResource: async () =>
+                  new Promise<any>((resolve) => {
+                    const locality = new (
+                      schema as any
+                    ).models.Locality.LazyCollection({
+                      filters: { id: localityId },
+                    });
+                    locality
+                      .fetch({ limit: 1 })
+                      .then(() => resolve(locality.models[0]));
+                  }),
+              };
+            }
+          )
       );
 
       const fetchedPopUps: number[] = [];
@@ -165,6 +181,7 @@ export async function prepareLifemapperProjectionMap(
           (
             {
               collectionObjectId,
+              collectingEventId,
               localityId,
               localityData,
               fetchLocalityResource,
@@ -188,8 +205,12 @@ export async function prepareLifemapperProjectionMap(
                         false,
                         (mappingPathParts, resource) =>
                           (typeof resource?.specifyModel?.name !== 'string' ||
-                            resource.specifyModel.name !== 'CollectionObject' ||
-                            resource.get('id') === collectionObjectId) &&
+                            ((resource.specifyModel.name !==
+                              'CollectionObject' ||
+                              resource.get('id') === collectionObjectId) &&
+                              (resource.specifyModel.name !==
+                                'CollectingEvent' ||
+                                resource.get('id') === collectingEventId))) &&
                           defaultRecordFilterFunction(
                             mappingPathParts,
                             resource
