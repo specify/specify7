@@ -53,7 +53,7 @@ export const defaultRecordFilterFunction: FilterFunction = (
 ) =>
   typeof resource?.specifyModel?.name !== 'string' ||
   resource.specifyModel.name !== 'Determination' ||
-  resource.get('iscurrent') === true;
+  resource.get('isCurrent') === true;
 
 async function recursiveResourceResolve(
   resource: any,
@@ -86,7 +86,7 @@ async function recursiveResourceResolve(
     });
     const tableRanks = Object.entries(dataModelStorage.ranks[treeTableName]);
     const currentRank = tableRanks.find(
-      ([, { rankId }]) => rankId === resource.get('rankid')
+      ([, { rankId }]) => rankId === resource.get('rankId')
     );
     if (typeof currentRank === 'undefined')
       throw new Error('Failed to fetch tree name');

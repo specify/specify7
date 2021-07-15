@@ -118,7 +118,7 @@ const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
                 title: capitalize(
                   (rank.get('title') ?? rank.get('name')) as string
                 ),
-                rankId: rank.get('rankid') as number,
+                rankId: rank.get('rankId') as number,
               },
             ]),
           ])

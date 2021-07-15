@@ -37,7 +37,7 @@ export async function prepareLifemapperProjectionMap(
       const determination = await model.rget('determinations');
 
       const currentDetermination = determination.models.find((model: any) =>
-        model.get('iscurrent')
+        model.get('isCurrent')
       );
 
       if (typeof currentDetermination === 'undefined') resolve([]);
