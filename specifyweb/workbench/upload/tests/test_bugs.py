@@ -3,21 +3,56 @@ import io
 import json
 import csv
 from pprint import pprint
-from unittest import skip
+from unittest import skip, expectedFailure
 from datetime import datetime
 from decimal import Decimal
 
 from ..uploadable import Exclude
-from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo, TreeInfo
+from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, NullRecord, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload_csv
+from ..upload import do_upload_csv, validate_row
 from ..upload_plan_schema import parse_plan
 
 from .base import UploadTestsBase, get_table
 
 
 class BugTests(UploadTestsBase):
+
+    @expectedFailure # FIX ME
+    def test_bogus_null_record(self) -> None:
+        Taxon = get_table('Taxon')
+        life = Taxon.objects.create(name='Life', definitionitem=self.taxontreedef.treedefitems.get(name='Taxonomy Root'))
+        funduloidea = Taxon.objects.create(name='Funduloidea', definitionitem=self.taxontreedef.treedefitems.get(name='Family'), parent=life)
+        profunduloidea = Taxon.objects.create(name='Profunduloidea', definitionitem=self.taxontreedef.treedefitems.get(name='Family'), parent=life)
+        fundulus1 = Taxon.objects.create(name='Fundulus', definitionitem=self.taxontreedef.treedefitems.get(name='Genus'), parent=funduloidea)
+        fundulus2 = Taxon.objects.create(name='Fundulus', definitionitem=self.taxontreedef.treedefitems.get(name='Genus'), parent=profunduloidea)
+
+        plan = {
+            "baseTableName": "collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"catalognumber": "Cat #",},
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "determinations": [{
+                            "wbcols": {},
+                            "static": {},
+                            "toOne": {
+                                "taxon": {"treeRecord": {
+                                    "ranks": {
+                                        "Genus": {"treeNodeCols": {"name": "Genus"}},
+                                        "Species": {"treeNodeCols": {"name": "Species"}}}}},}}],}}}}
+
+        cols = ["Cat #", "Genus", "Species"]
+
+        row = ["", "Fundulus", "olivaceus"]
+
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
+        self.assertNotIsInstance(result.record_result, NullRecord, "The CO should be created b/c it has determinations.")
 
     def test_duplicate_refworks(self) -> None:
         """ Andy found that duplicate reference works were being created from data similar to the following. """
