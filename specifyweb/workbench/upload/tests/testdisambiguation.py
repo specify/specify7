@@ -177,3 +177,51 @@ class DisambiguationTests(UploadTestsBase):
         taxon_result = result.toMany['determinations'][0].toOne['taxon'].toOne['parent'].record_result
         assert isinstance(taxon_result, Matched)
         self.assertEqual(fundulus2.id, taxon_result.id)
+
+    def test_disambiguate_agent_deleted(self) -> None:
+        Agent = get_table('Agent')
+        andy = Agent.objects.create(lastname='Bentley', firstname='Andrew', agenttype=1, division=self.division)
+        bogus = Agent.objects.create(lastname='Bentley', firstname='Bogus', agenttype=1, division=self.division)
+
+        plan = {
+            "baseTableName": "collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"catalognumber": "Cat #"},
+                    "static": {},
+                    "toOne": {
+                        "cataloger": {
+                            "uploadTable": {
+                                "wbcols": {"lastname": "Cat last"},
+                                "static": {},
+                                "toOne": {},
+                                "toMany": {}}}},
+                    "toMany": {}}}}
+
+        cols = ["Cat #", "Cat last"]
+        row = ["123", "Bentley"]
+
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
+        agent_result = result.toOne['cataloger'].record_result
+        assert isinstance(agent_result, MatchedMultiple)
+        self.assertEqual(set(agent_result.ids), set([andy.id, bogus.id]))
+
+        da_row = ["123", "Bentley", "{\"disambiguation\":{\"cataloger\":%d}}" % bogus.id]
+
+        da = get_disambiguation_from_row(len(cols), da_row)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), da)
+        agent_result = result.toOne['cataloger'].record_result
+        assert isinstance(agent_result, Matched)
+        self.assertEqual(bogus.id, agent_result.id)
+
+        bogus.delete()
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), da)
+        assert not result.contains_failure()
+
+        agent_result = result.toOne['cataloger'].record_result
+        assert isinstance(agent_result, Matched)
+        self.assertEqual(andy.id, agent_result.id)

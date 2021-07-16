@@ -61,16 +61,14 @@ class ScopedUploadTable(NamedTuple):
     toOne: Dict[str, ScopedUploadable]
     toMany: Dict[str, List[ScopedToManyRecord]]
     scopingAttrs: Dict[str, int]
+    disambiguation: Optional[int]
 
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         if disambiguation is None:
             return self
 
-        id = disambiguation.disambiguate()
-        if id is not None:
-            return DisambiguatedTable(name=self.name, id=id)
-
         return self._replace(
+            disambiguation = disambiguation.disambiguate(),
             toOne={
                 fieldname: uploadable.disambiguate(disambiguation.disambiguate_to_one(fieldname))
                 for fieldname, uploadable in self.toOne.items()
@@ -120,6 +118,7 @@ class ScopedUploadTable(NamedTuple):
             name=self.name,
             static=self.static,
             scopingAttrs=self.scopingAttrs,
+            disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             toOne=toOne,
             toMany=toMany,
@@ -162,6 +161,7 @@ class BoundUploadTable(NamedTuple):
     toOne: Dict[str, BoundUploadable]
     toMany: Dict[str, List[BoundToManyRecord]]
     scopingAttrs: Dict[str, int]
+    disambiguation: Optional[int]
     uploadingAgentId: Optional[int]
     auditlog: AuditLog
     cache: Optional[Dict]
@@ -173,6 +173,10 @@ class BoundUploadTable(NamedTuple):
         return False
 
     def filter_on(self, path: str) -> FilterPack:
+        if self.disambiguation is not None:
+            if getattr(models, self.name.capitalize()).objects.filter(id=self.disambiguation).exists():
+                return FilterPack([{f'{path}__id': self.disambiguation}], [])
+
         filters = {
             (path + '__' + fieldname_): value
             for parsedField in self.parsedFields
@@ -205,6 +209,10 @@ class BoundUploadTable(NamedTuple):
 
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
+        if self.disambiguation is not None:
+            if model.objects.filter(id=self.disambiguation).exists():
+                return UploadResult(Matched(id=self.disambiguation, info=ReportInfo(self.name, [], None)), {}, {})
+
         info = ReportInfo(tableName=self.name, columns=[pr.column for pr in self.parsedFields], treeInfo=None)
 
         toOneResults = self._process_to_ones()
@@ -374,37 +382,6 @@ class BoundMustMatchTable(BoundUploadTable):
     def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
 
-class DisambiguatedTable(NamedTuple):
-    name: str
-    id: int
-
-    def disambiguate(self, *args) -> NoReturn:
-        raise Exception('already disambiguated')
-
-    def bind(self, *args) -> "DisambiguatedTable":
-        return self
-
-    def is_one_to_one(self) -> bool:
-        return False
-
-    def must_match(self) -> bool:
-        return True
-
-    def filter_on(self, path: str) -> FilterPack:
-        return FilterPack([{f'{path}__id': self.id}], [])
-
-    def match_row(self) -> UploadResult:
-        return UploadResult(Matched(id=self.id, info=ReportInfo(self.name, [], None)), {}, {})
-
-    def process_row(self) -> UploadResult:
-        return self.match_row()
-
-    def force_upload_row(self) -> NoReturn:
-        raise Exception('trying to force upload of disambiguated table')
-
-    def get_treedefs(self) -> NoReturn:
-        raise Exception('trying to get treedefs of disambiguated table')
-
 
 def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:
     filters: List[Dict] = []
@@ -426,6 +403,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
         BoundUploadTable(
             name=record.name,
             scopingAttrs=record.scopingAttrs,
+            disambiguation=None,
             parsedFields=record.parsedFields,
             toOne=record.toOne,
             static={**record.static, fk_field: parent_id},

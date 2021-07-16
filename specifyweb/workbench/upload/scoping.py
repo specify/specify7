@@ -88,6 +88,7 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTab
         toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
         toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
         scopingAttrs=scoping_relationships(collection, table),
+        disambiguation=None,
     )
 
 def to_one_adjustments(collection, table: Table) -> AdjustToOnes:
