@@ -628,7 +628,7 @@ module.exports = Backbone.View.extend({
     const rowIndexes =
       selectedRows.length === 1
         ? Array.from(
-            { length: this.wbview.hot.countCols() },
+            { length: this.wbview.hot.countRows() },
             (_, index) => index
           )
         : selectedRows;
