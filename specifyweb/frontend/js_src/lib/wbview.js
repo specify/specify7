@@ -146,9 +146,16 @@ const WBView = Backbone.View.extend({
     };
 
     // Throttle cell count update depending on the DS size (between 10ms and 2s)
+    const throttleRate = Math.ceil(
+      Math.min(2000, Math.max(10, this.data.length / 10))
+    );
     this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,
-      Math.ceil(Math.min(2000, Math.max(10, this.data.length / 10)))
+      throttleRate
+    );
+    this.handleResize = _.throttle(
+      () => console.log('1') || this.hot?.render(),
+      throttleRate
     );
   },
   render() {
@@ -250,6 +257,7 @@ const WBView = Backbone.View.extend({
       this.el.classList.remove('wb-hide-invalid-cells');
 
     this.flushIndexedCellData = true;
+    window.addEventListener('resize', this.handleResize);
 
     return this;
   },
@@ -438,6 +446,7 @@ const WBView = Backbone.View.extend({
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';
+    window.removeEventListener('resize', this.handleResize);
   },
   identifyMappedHeaders() {
     if (!this.mappings) return;

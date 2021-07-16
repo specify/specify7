@@ -436,6 +436,7 @@ module.exports = Backbone.View.extend({
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
     if (toolkit.style.display === 'none') toolkit.style.display = '';
     else toolkit.style.display = 'none';
+    this.wbview.handleResize();
   },
   fillCells({ startRow, endRow, col, value }) {
     this.wbview.hot.setDataAtCell(
