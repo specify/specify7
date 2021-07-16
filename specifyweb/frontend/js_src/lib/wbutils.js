@@ -67,8 +67,8 @@ module.exports = Backbone.View.extend({
         return false;
     }
   },
-  navigateCells(e, matchCurrentCell = false, currentCell = undefined) {
-    const button = e.target;
+  navigateCells(event, matchCurrentCell = false, currentCell = undefined) {
+    const button = event.target;
     const direction = button.getAttribute('data-navigation-direction');
     const buttonParent = button.parentElement;
     const type = buttonParent.getAttribute('data-navigation-type');
@@ -124,8 +124,11 @@ module.exports = Backbone.View.extend({
      */
     orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
       orderIt(Object.entries(metaRow)).find(([visualColString, cellMeta]) => {
+        // This is 10 times faster then Number.parseInt because of a slow
+        // Babel polyfill
         const visualRow = visualRowString | 0;
         const visualCol = visualColString | 0;
+
         const cellTypeMatches = this.cellIsType(cellMeta, type);
         cellIsTypeCount += cellTypeMatches;
         const foundIt =
@@ -163,7 +166,7 @@ module.exports = Backbone.View.extend({
     this.wbview.hot.selectCell(matchedCell.visualRow, matchedCell.visualCol);
 
     // Turn on the respective cell type if it was hidden
-    this.toggleCellTypes(e, 'remove');
+    this.toggleCellTypes(event, 'remove');
 
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
@@ -201,17 +204,17 @@ module.exports = Backbone.View.extend({
     );
     return [toPhysicalRow, toPhysicalColumn];
   },
-  async searchCells(e) {
+  async searchCells(event) {
     if (
-      typeof e.target !== 'undefined' &&
-      e.target.value === this.searchQuery &&
-      e.key !== 'Enter'
+      typeof event.target !== 'undefined' &&
+      event.target.value === this.searchQuery &&
+      !['SettingsChange', 'Enter'].includes(event.key)
     )
       return;
 
     this.toggleCellTypes('search-results', 'remove');
 
-    const button = e.target;
+    const button = event.target;
     const buttonContainer = button.parentElement;
     const navigationContainer =
       this.el.getElementsByClassName('wb-navigation')[0];
@@ -290,17 +293,17 @@ module.exports = Backbone.View.extend({
 
     navigationTotalElement.innerText = resultsCount;
 
-    if (e.key === 'Enter')
+    if (event.key === 'Enter')
       this.navigateCells(
         { target: navigationButton[1] },
-        e.key === 'Enter',
-        e.key === 'Enter' ? [0, 0] : undefined
+        event.key === 'Enter',
+        event.key === 'Enter' ? [0, 0] : undefined
       );
   },
-  replaceCells(e) {
-    if (e.key !== 'Enter') return;
+  replaceCells(event) {
+    if (event.key !== 'Enter') return;
 
-    const button = e.target;
+    const button = event.target;
     const buttonContainer = button.parentElement;
     const replacementValueElement =
       buttonContainer.getElementsByClassName('wb-replace-value')[0];
@@ -387,13 +390,10 @@ module.exports = Backbone.View.extend({
             this.searchPreferences.navigation.direction;
         }
         if (this.searchPreferences.search.liveUpdate) {
-          this.searchCells(
-            {
-              target: this.el.getElementsByClassName('wb-search-query')[0],
-              key: 'Live',
-            },
-            false
-          );
+          this.searchCells({
+            target: this.el.getElementsByClassName('wb-search-query')[0],
+            key: 'SettingsChange',
+          });
         }
       },
       onClose: () => {
