@@ -7,6 +7,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse
 from django.template import loader
 from django.conf import settings
+from django.utils import translation
+from django.utils.translation import gettext as _
 
 DIR = os.path.dirname(__file__)
 
@@ -25,7 +27,17 @@ def specify(request):
             "use_raven": settings.RAVEN_CONFIG is not None,
         }
     )
-    return HttpResponse(resp)
+    response = HttpResponse(resp)
+
+    language = translation.get_language()
+    if request.COOKIES.get('language') != language:
+        response.set_cookie(
+            'language',
+            language,
+            max_age=365 * 24 * 60 * 60
+        )
+
+    return response
 
 
 @login_maybe_required
@@ -35,7 +47,7 @@ def api_tables(request):
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/api/specify_schema/openapi.json",
-            title="Specify 7 Tables API",
+            title=_("Specify 7 Tables API"),
         ),
     )
 
@@ -47,7 +59,7 @@ def api_operations(request):
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/context/api_endpoints.json",
-            title="Specify 7 Operations API",
+            title=_("Specify 7 Operations API"),
         ),
     )
 
@@ -58,6 +70,6 @@ def api_operations_all(request):
         "swagger-ui.html",
         dict(
             open_api_schema_endpoint="/context/api_endpoints_all.json",
-            title="Specify 7 Operations API (all)",
+            title=_("Specify 7 Operations API (all)"),
         ),
     )

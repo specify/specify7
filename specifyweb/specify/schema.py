@@ -3,6 +3,7 @@
 from django import http
 from django.conf import settings
 from django.views.decorators.http import require_GET
+from django.utils.translation import gettext as _
 from typing import Dict, List, Tuple, Union
 
 from .datamodel import (
@@ -98,11 +99,11 @@ def openapi(request) -> http.HttpResponse:
 
 def generate_openapi_for_tables():
     return {
-        **base_schema("Specify 7 Tables API"),
+        **base_schema(_("Specify 7 Tables API")),
         **base_schema(
-            "Specify 7 Tables API",
-            description="""<a href="/documentation/api/operations/">
-                    Specify 7 APIs for system operations
+            _("Specify 7 Tables API"),
+            description=f"""<a href="/documentation/api/operations/">
+                    {_("Specify 7 APIs for system operations")}
                 </a>"""
         ),
         "paths": {
