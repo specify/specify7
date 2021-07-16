@@ -7,7 +7,9 @@ const lifemapperText = createDictionary({
   speciesDistributionMap: 'Species Distribution Map',
   noIssuesDetected: `
     Record was indexed successfully and no data quality issues were
-    reported`,
+    reported.`,
+  // Used when aggregator does not report issues
+  recordWasIndexed: 'Record was indexed successfully.',
   issuesDetected: 'The following data quality issues were reported:',
   localOccurrencePoints: 'Your Database Points',
   markerLayerLabel: 'Your Database Pins',

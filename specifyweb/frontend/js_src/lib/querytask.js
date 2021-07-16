@@ -194,10 +194,10 @@ const commonText = require('./localization/common').default;
                     `)
                         .dialog('option','title', queryText('recordSetCreatedDialogTitle'))
                         .dialog('option', 'buttons', [
+                            {text: commonText('no'), click: function() { $(this).dialog('close'); }},
                             {text: commonText('open'), click: function() {
                                 navigation.go('/specify/recordset/' + recordset.id + '/');
                             }},
-                            {text: commonText('no'), click: function() { $(this).dialog('close'); }}
                         ]);
                 });
         },

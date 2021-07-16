@@ -54,7 +54,9 @@ export function Aggregator({
 }: {
   readonly data: MainState['aggregators'][string];
 }): JSX.Element {
-  return Object.keys(data.issues).length === 0 ? (
+  return typeof data.issues === 'undefined' ? (
+    <>{lifemapperText('recordWasIndexed')}</>
+  ) : Object.keys(data.issues).length === 0 ? (
     <p>{lifemapperText('noIssuesDetected')}</p>
   ) : (
     <>
@@ -62,7 +64,7 @@ export function Aggregator({
       <ul className="lifemapper-source-issues-list">
         {Object.entries(data.issues).map(([issueKey, issueLabel]) => (
           <li key={issueKey} title={issueKey}>
-            {issueLabel}
+            {`${issueLabel} ${issueLabel === 'TBD' ? `(${issueKey})` : ''}`}
           </li>
         ))}
       </ul>

@@ -84,7 +84,7 @@ export function Lifemapper({
                       provider.status_code === HTTP_OK &&
                       typeof records[0] !== 'undefined'
                         ? {
-                            issues: records[0]['s2n:issues'] ?? {},
+                            issues: records[0]['s2n:issues'],
                             occurrenceName: records[0]['dwc:scientificName'],
                             occurrenceViewLink: records[0]['s2n:view_url'],
                           }

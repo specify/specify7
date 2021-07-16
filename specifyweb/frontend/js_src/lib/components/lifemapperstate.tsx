@@ -22,7 +22,7 @@ export type MainState = State<
       readonly isActive: boolean;
     }>;
     aggregators: IR<{
-      readonly issues: IR<string>;
+      readonly issues?: IR<string>;
       readonly occurrenceName: string;
       readonly occurrenceViewLink: string;
     }>;
@@ -75,7 +75,7 @@ export const stateReducer = generateReducer<
                 isEnabled={badge.isActive}
                 hasError={
                   typeof aggregator !== 'undefined' &&
-                  Object.keys(aggregator.issues).length > 0
+                  Object.keys(aggregator.issues ?? {}).length > 0
                 }
                 onClick={(): void =>
                   name === 'specify'
@@ -144,7 +144,7 @@ export const stateReducer = generateReducer<
                             ),
                         },
                       ],
-                      width: 400,
+                      width: 500,
                     }
                   : {}),
               }}
