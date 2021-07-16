@@ -291,7 +291,7 @@ export async function getAutomapperSuggestions({
   readonly lines: RA<MappingLine>;
   readonly baseTableName: string;
 }): Promise<RA<AutomapperSuggestion>> {
-  const localMappingPath = [...lines[line].mappingPath];
+  const localMappingPath = Array.from(lines[line].mappingPath);
 
   if (
     /*

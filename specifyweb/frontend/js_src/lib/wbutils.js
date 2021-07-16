@@ -439,7 +439,7 @@ module.exports = Backbone.View.extend({
   },
   fillCells({ startRow, endRow, col, value }) {
     this.wbview.hot.setDataAtCell(
-      [...Array(endRow - startRow).keys()].map((index) => [
+      Array.from({ length: endRow - startRow }, (_, index) => [
         startRow + index + 1,
         col,
         value,
@@ -589,7 +589,10 @@ module.exports = Backbone.View.extend({
     const selectedHeaders = [
       ...new Set(
         selectedRegions.flatMap(({ startCol, endCol }) =>
-          [...Array(endCol - startCol + 1)].map((_, index) => startCol + index)
+          Array.from(
+            { length: endCol - startCol + 1 },
+            (_, index) => startCol + index
+          )
         )
       ),
     ]
@@ -614,14 +617,20 @@ module.exports = Backbone.View.extend({
     const selectedRows = [
       ...new Set(
         selectedRegions.flatMap(({ startRow, endRow }) =>
-          [...Array(endRow - startRow + 1)].map((_, index) => startRow + index)
+          Array.from(
+            { length: endRow - startRow + 1 },
+            (_, index) => startRow + index
+          )
         )
       ),
     ].sort();
 
     const rowIndexes =
       selectedRows.length === 1
-        ? [...Array(this.wbview.hot.countCols())].map((_, index) => index)
+        ? Array.from(
+            { length: this.wbview.hot.countCols() },
+            (_, index) => index
+          )
         : selectedRows;
 
     let localityIndex =
@@ -686,7 +695,7 @@ module.exports = Backbone.View.extend({
 
     const visualHeaders = this.getVisualHeaders();
     const handleGeolocateResult = (event) => {
-      const dataColumns = event.data.split('|');
+      const dataColumns = event.data?.split('|') ?? [];
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
       const { visualRow, localityColumns } = parseLocalityIndex(localityIndex);
@@ -719,7 +728,7 @@ module.exports = Backbone.View.extend({
         (startCol === 0 && endCol === this.wbview.dataset.columns.length - 1)
     )
       ? selectedRegions.flatMap(({ startRow, endRow }) =>
-          [...Array(endRow - startRow + 1)].map((_, index) => {
+          Array.from({ length: endRow - startRow + 1 }, (_, index) => {
             customRowNumbers.push(startRow + index);
             return this.wbview.hot.getDataAtRow(startRow + index);
           })
