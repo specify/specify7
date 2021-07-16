@@ -120,6 +120,7 @@ export const leafletTileServers: RR<
 } as const;
 
 export const preferredBaseLayer = 'Satellite Map (ESRI)';
+export const preferredOverlay = 'Labels and boundaries';
 
 // These fields should be present for locality to be mappable
 export const requiredLocalityColumns: RA<LocalityField> = [

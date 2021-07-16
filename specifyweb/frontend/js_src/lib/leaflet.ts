@@ -13,6 +13,7 @@ import {
   leafletTileServers,
   mappingLocalityColumns,
   preferredBaseLayer,
+  preferredOverlay,
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
@@ -300,7 +301,10 @@ export function addMarkersToMap(
     )
   );
 
-  rememberSelectedOverlays(map, layerGroups, defaultMarkerGroupsState);
+  rememberSelectedOverlays(map, layerGroups, {
+    ...defaultMarkerGroupsState,
+    [preferredOverlay]: true,
+  });
 
   const layerLabels: Exclude<typeof labels, undefined> =
     typeof labels === 'undefined'
@@ -527,6 +531,7 @@ export async function showCOMap(
   addPrintMapButton(map);
   rememberSelectedBaseLayers(map, baseLayers, 'CoMap');
   rememberSelectedOverlays(map, overlayLayers, {
+    [preferredOverlay]: true,
     ...Object.fromEntries(
       Object.keys(tileLayers.overlays).map((label) => [label, true])
     ),
