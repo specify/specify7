@@ -2,7 +2,7 @@
 
 var schema              = require('./schema.js');
 var RecordSetsDialog    = require('./recordsetsdialog.js');
-var userInfo            = require('./userinfo.js');
+var userInfo            = require('./userinfo').default;
 const commonText = require('./localization/common').default;
 
 module.exports =  {

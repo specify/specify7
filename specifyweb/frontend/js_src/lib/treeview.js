@@ -14,7 +14,7 @@ var querystring  = require('./querystring.js');
 var TreeNodeView = require('./treenodeview.js');
 
 const contextMenuBuilder = require('./treectxmenu.js');
-const userInfo = require('./userinfo.js');
+const userInfo = require('./userinfo').default;
 const remoteprefs  = require('./remoteprefs.js');
 const cookies = require('./cookies.js');
 const treeText = require('./localization/tree').default;

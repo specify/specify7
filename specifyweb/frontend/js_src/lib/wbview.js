@@ -13,7 +13,7 @@ require('handsontable/dist/handsontable.full.css');
 
 const schema = require('./schema.js');
 const app = require('./specifyapp.js');
-const userInfo = require('./userinfo.js');
+const userInfo = require('./userinfo').default;
 const DataSetMeta = require('./datasetmeta.js').default;
 const navigation = require('./navigation.js');
 const NotFoundView = require('./notfoundview.js');

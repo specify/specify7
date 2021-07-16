@@ -6,7 +6,7 @@ import { format } from './dataobjformatters';
 import schema from './schema';
 import resourceApi from './resourceapi';
 import navigation from './navigation';
-import userInfo from './userinfo.js';
+import userInfo from './userinfo';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
 import React from 'react';

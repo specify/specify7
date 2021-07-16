@@ -6,7 +6,7 @@ global.jQuery = $;
 require('jquery-contextmenu');
 require('jquery-ui');
 
-var userInfo     = require('./userinfo.js');
+var userInfo     = require('./userinfo').default;
 var populateForm = require('./populateform.js');
 var errorview    = require('./errorview.js');
 var NotFoundView = require('./notfoundview.js');
