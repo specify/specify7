@@ -324,7 +324,7 @@ const wbText = createDictionary({
   changeDataSetOwnerDialogMessage: 'Select New Owner:',
   dataSetOwnerChangedDialogTitle: 'Data Set Properties',
   dataSetOwnerChangedDialogHeader: createHeader('Data Set owner changed'),
-  dataSetOwnerChangedDialogMessage: 'Data Set owner changed',
+  dataSetOwnerChangedDialogMessage: 'Data Set owner changed.',
   dataSet: 'Data Set:',
   dataSetUploadedLabel: '(Uploaded, Read-Only)',
 

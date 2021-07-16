@@ -888,19 +888,17 @@ const WBView = Backbone.View.extend({
       }
     );
   },
-  beforeColumnMove(_columnIndexes, startPosition, endPosition) {
+  beforeColumnMove(_columnIndexes, _finalIndex, dropIndex) {
     return (
       // Don't allow moving columns when readOnly
       !this.uploadedView &&
       !this.coordinateConverterView &&
-      // Don't allow pointless column moves
-      startPosition !== endPosition &&
       // An ugly fix for jQuery dialogs conflicting with HOT
-      (typeof endPosition !== 'undefined' || this.hotIsReady === false)
+      (typeof dropIndex !== 'undefined' || this.hotIsReady === false)
     );
   },
-  afterColumnMove(_columnIndexes, _startPosition, endPosition) {
-    if (typeof endPosition === 'undefined' || !this.hotIsReady) return;
+  afterColumnMove(_columnIndexes, _finalIndex, dropIndex) {
+    if (typeof dropIndex === 'undefined' || !this.hotIsReady) return;
 
     this.flushIndexedCellData = true;
 
