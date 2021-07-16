@@ -71,6 +71,10 @@
   margin: 0;
 }
 
+.wb-search-query-invalid {
+  background-color: var(--error);
+}
+
 /* Content */
 .wb-main-content {
   flex: 1;

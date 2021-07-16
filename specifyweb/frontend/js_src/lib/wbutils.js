@@ -235,6 +235,27 @@ module.exports = Backbone.View.extend({
       return;
     }
 
+    let searchQueryValidationError = undefined;
+    if (this.searchPreferences.search.useRegex)
+      try {
+        RegExp(
+          this.searchPreferences.search.fullMatch
+            ? `^${this.searchQuery}$`
+            : this.searchQuery,
+          this.searchPreferences.search.caseSensitive ? 'i' : ''
+        );
+      } catch (error) {
+        searchQueryValidationError = error.toString();
+      }
+    if (typeof searchQueryValidationError === 'undefined') {
+      searchQueryElement.classList.remove('wb-search-query-invalid');
+      searchQueryElement.removeAttribute('title');
+    } else {
+      searchQueryElement.classList.add('wb-search-query-invalid');
+      searchQueryElement.setAttribute('title', searchQueryValidationError);
+      return;
+    }
+
     let resultsCount = 0;
     const data = this.wbview.dataset.rows;
     const firstVisibleRow =
