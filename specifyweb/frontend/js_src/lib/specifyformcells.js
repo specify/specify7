@@ -8,7 +8,7 @@ var parseSpecifyProperties = require('./parsespecifyproperties.js');
 var processColumnDef       = require('./processcolumndef.js');
 
 const cookies              = require('./cookies.js');
-const userInfo             = require('./userinfo.js');
+const userInfo             = require('./userinfo').default;
 
     function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
