@@ -3,7 +3,7 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import * as cache from './cache';
-import type { WbPlanViewProps } from './components/wbplanview';
+import type { Dataset, WbPlanViewProps } from './components/wbplanview';
 import type { WbPlanViewStates } from './components/wbplanviewstate';
 import type { WbPlanViewActions } from './wbplanviewreducer';
 
@@ -132,11 +132,14 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
   }) =>
     fetch(`/api/workbench/dataset/${id}`)
       .then(async (response) => response.json())
-      .then(({ uploadplan }) =>
+      .then(({ uploadplan, columns, visualorder }: Dataset) =>
         stateDispatch({
           type: 'OpenMappingScreenAction',
           uploadPlan: uploadplan,
-          headers: props.headers,
+          headers:
+            props.headers.length === 0 && Array.isArray(visualorder)
+              ? visualorder.map((visualCol) => columns[visualCol])
+              : props.headers,
           changesMade: true,
         })
       )
