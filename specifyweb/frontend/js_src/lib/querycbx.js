@@ -20,7 +20,7 @@ var QueryFieldSpec    = require('./queryfieldspec.js');
 var initialContext    = require('./initialcontext.js');
 var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
-var userInfo          = require('./userinfo.js');
+var userInfo          = require('./userinfo').default;
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
 

@@ -9,7 +9,7 @@ const QueryFieldUI           = require('./queryfield.js');
 const parsespecifyproperties = require('./parsespecifyproperties.js');
 const AttachmentPlugin       = require('./attachmentplugin.js');
 const attachments            = require('./attachments.js');
-const userInfo               = require('./userinfo.js');
+const userInfo               = require('./userinfo').default;
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 

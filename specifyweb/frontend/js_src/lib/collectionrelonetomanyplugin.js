@@ -8,7 +8,7 @@ const navigation        = require('./navigation.js');
 const UIPlugin          = require('./uiplugin.js');
 const whenAll           = require('./whenall.js');
 const schema            = require('./schema.js');
-const userInfo          = require('./userinfo.js');
+const userInfo          = require('./userinfo').default;
 const QueryCbxSearch    = require('./querycbxsearch.js');
 
 const format = dataobjformatters.format;

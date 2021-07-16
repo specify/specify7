@@ -2,7 +2,7 @@
 
 var FormTable = require('./formtable.js');
 var schema    = require('./schema.js');
-var userInfo  = require('./userinfo.js');
+var userInfo  = require('./userinfo').default;
 
 
 module.exports =  FormTable.extend({

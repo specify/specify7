@@ -3,7 +3,7 @@ const $ = require('jquery');
 const Q = require('q');
 const _ = require('underscore');
 const schema = require('./schema.js');
-const userInfo = require('./userinfo.js');
+const userInfo = require('./userinfo').default;
 
 function addSuffix(name, usedNames) {
     let i = 1, newName;

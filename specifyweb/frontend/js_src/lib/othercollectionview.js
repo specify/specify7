@@ -5,7 +5,7 @@ const _         = require('underscore');
 const Backbone  = require('./backbone.js');
 
 const navigation =  require('./navigation.js');
-const userInfo = require('./userinfo.js');
+const userInfo = require('./userinfo').default;
 const commonText = require('./localization/common').default;
 
 

@@ -8,7 +8,7 @@ var navigation = require('./navigation.js');
 var domain     = require('./domain.js');
 var schema     = require('./schema.js');
 var UserTools  = require('./usertools.js');
-var userInfo   = require('./userinfo.js');
+var userInfo   = require('./userinfo').default;
 var router     = require('./router.js');
 var querystring = require('./querystring.js');
 const NotificationsUI = require('./notifications.js');
@@ -20,7 +20,7 @@ var toolModules = [
     require('./toolbarinteractions.js'),
     require('./toolbartrees.js'),
     require('./toolbarrecordsets.js'),
-    require('./toolbarquery.js'),
+    require('./components/toolbarquery').default,
     require('./toolbarreport.js'),
     require('./toolbarattachments.js'),
     require('./toolbarwbs.js'),
