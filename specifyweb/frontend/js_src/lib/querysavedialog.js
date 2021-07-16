@@ -4,7 +4,7 @@ const $ = require('jquery');
 const Backbone = require('./backbone.js');
 
 const navigation = require('./navigation.js');
-const userInfo = require('./userinfo.js');
+const userInfo = require('./userinfo').default;
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
 

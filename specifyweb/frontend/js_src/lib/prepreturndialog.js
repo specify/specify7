@@ -9,7 +9,7 @@ const moment = require('moment');
 
 const schema      = require('./schema.js');
 const fieldFormat = require('./fieldformat.js');
-const userInfo    = require('./userinfo.js');
+const userInfo    = require('./userinfo').default;
 const s = require('./stringlocalization.js');
 const QueryCbx = require('./querycbx.js');
 const {getDateInputValue} = require('./dayjs');

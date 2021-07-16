@@ -19,7 +19,7 @@ var SubView              = require('./subview.js');
 var CheckBox             = require('./checkbox.js');
 var SpinnerUI            = require('./spinnerui.js');
 var cookies              = require('./cookies.js');
-var userInfo             = require('./userinfo.js');
+var userInfo             = require('./userinfo').default;
 
     var MultiView = Backbone.View.extend({
         __name__: "MultiView",
