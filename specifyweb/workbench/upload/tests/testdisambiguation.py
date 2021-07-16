@@ -5,8 +5,8 @@ from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, Fa
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload, do_upload_csv
-from ..upload_plan_schema import parse_column_options
+from ..upload import do_upload, do_upload_csv, validate_row, get_disambiguation_from_row
+from ..upload_plan_schema import parse_column_options, parse_plan
 from ..disambiguation import DisambiguationInfo
 
 from .base import UploadTestsBase, get_table
@@ -88,3 +88,92 @@ class DisambiguationTests(UploadTestsBase):
 
         self.assertEqual(get_table('Author').objects.get(referencework_id=results[2].get_id(), ordernumber=0).agent, senior)
         self.assertEqual(get_table('Author').objects.get(referencework_id=results[2].get_id(), ordernumber=1).agent, junior)
+
+    def test_disambiguate_taxon(self) -> None:
+        Taxon = get_table('Taxon')
+        life = Taxon.objects.create(name='Life', definitionitem=self.taxontreedef.treedefitems.get(name='Taxonomy Root'))
+        funduloidea = Taxon.objects.create(name='Funduloidea', definitionitem=self.taxontreedef.treedefitems.get(name='Family'), parent=life)
+        profunduloidea = Taxon.objects.create(name='Profunduloidea', definitionitem=self.taxontreedef.treedefitems.get(name='Family'), parent=life)
+        fundulus1 = Taxon.objects.create(name='Fundulus', definitionitem=self.taxontreedef.treedefitems.get(name='Genus'), parent=funduloidea)
+        fundulus2 = Taxon.objects.create(name='Fundulus', definitionitem=self.taxontreedef.treedefitems.get(name='Genus'), parent=profunduloidea)
+
+        plan = {
+            "baseTableName": "collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"catalognumber": "Cat #",},
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "determinations": [{
+                            "wbcols": {},
+                            "static": {},
+                            "toOne": {
+                                "taxon": {"treeRecord": {
+                                    "ranks": {
+                                        "Genus": {"treeNodeCols": {"name": "Genus"}},
+                                        "Species": {"treeNodeCols": {"name": "Species"}}}}},}}],}}}}
+
+        cols = ["Cat #", "Genus", "Species"]
+        row = ["123", "Fundulus", "olivaceus"]
+
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
+        taxon_result = result.toMany['determinations'][0].toOne['taxon'].record_result
+        assert isinstance(taxon_result, MatchedMultiple)
+        self.assertEqual(set(taxon_result.ids), set([fundulus1.id, fundulus2.id]))
+
+        da_row = ["123", "Fundulus", "olivaceus", "{\"disambiguation\":{\"determinations.#1.taxon.$Genus\":%d}}" % fundulus1.id]
+        da = get_disambiguation_from_row(len(cols), da_row)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), da)
+        taxon_result = result.toMany['determinations'][0].toOne['taxon'].toOne['parent'].record_result
+        assert isinstance(taxon_result, Matched)
+        self.assertEqual(fundulus1.id, taxon_result.id)
+
+    def test_disambiguate_taxon_deleted(self) -> None:
+        Taxon = get_table('Taxon')
+        life = Taxon.objects.create(name='Life', definitionitem=self.taxontreedef.treedefitems.get(name='Taxonomy Root'))
+        funduloidea = Taxon.objects.create(name='Funduloidea', definitionitem=self.taxontreedef.treedefitems.get(name='Family'), parent=life)
+        profunduloidea = Taxon.objects.create(name='Profunduloidea', definitionitem=self.taxontreedef.treedefitems.get(name='Family'), parent=life)
+        fundulus1 = Taxon.objects.create(name='Fundulus', definitionitem=self.taxontreedef.treedefitems.get(name='Genus'), parent=funduloidea)
+        fundulus2 = Taxon.objects.create(name='Fundulus', definitionitem=self.taxontreedef.treedefitems.get(name='Genus'), parent=profunduloidea)
+
+        plan = {
+            "baseTableName": "collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"catalognumber": "Cat #",},
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "determinations": [{
+                            "wbcols": {},
+                            "static": {},
+                            "toOne": {
+                                "taxon": {"treeRecord": {
+                                    "ranks": {
+                                        "Genus": {"treeNodeCols": {"name": "Genus"}},
+                                        "Species": {"treeNodeCols": {"name": "Species"}}}}},}}],}}}}
+
+        cols = ["Cat #", "Genus", "Species"]
+        row = ["123", "Fundulus", "olivaceus"]
+
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
+        taxon_result = result.toMany['determinations'][0].toOne['taxon'].record_result
+        assert isinstance(taxon_result, MatchedMultiple)
+        self.assertEqual(set(taxon_result.ids), set([fundulus1.id, fundulus2.id]))
+
+        da_row = ["123", "Fundulus", "olivaceus", "{\"disambiguation\":{\"determinations.#1.taxon.$Genus\":%d}}" % fundulus1.id]
+
+        fundulus1.delete()
+
+        da = get_disambiguation_from_row(len(cols), da_row)
+
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), da)
+        taxon_result = result.toMany['determinations'][0].toOne['taxon'].toOne['parent'].record_result
+        assert isinstance(taxon_result, Matched)
+        self.assertEqual(fundulus2.id, taxon_result.id)

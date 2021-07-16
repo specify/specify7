@@ -173,8 +173,15 @@ class BoundTreeRecord(NamedTuple):
             to_match = tdiwprs[0]
             tried_to_match.append(to_match)
             da = self.disambiguation.get(to_match.treedefitem.name, None)
-            matches = self._find_matching_descendent(parent, to_match) if da is None else \
-                list(model.objects.filter(id=da).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
+
+            if da is not None:
+                matches = list(model.objects.filter(id=da).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
+                if not matches:
+                    # disambigation target was deleted or something
+                    # revert to regular matching mechanism
+                    matches = self._find_matching_descendent(parent, to_match)
+            else:
+                matches = self._find_matching_descendent(parent, to_match)
 
             if len(matches) != 1:
                 # matching failed at to_match level
