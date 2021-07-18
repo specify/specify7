@@ -35,10 +35,16 @@ const commonText = require('./localization/common').default;
         initialize: function(options) {
             this.query = options.query;
             this.readOnly = options.readOnly;
+            this.recordSet = options.recordSet;
             this.model = schema.getModel(this.query.get('contextname'));
         },
         render: function() {
-            var title = 'Query: ' + this.query.get('name');
+            const title = this.recordSet ?
+                queryText('queryRecordSetTitle')(
+                    this.query.get('name'),
+                    this.recordSet.get('name')
+                )
+                : queryText('queryTaskTitle')(this.query.get('name'));
             app.setTitle(queryText('queryTaskTitle')(this.query.get('name')));
             this.$el.append(template({ queryText, commonText, cid: this.cid }));
             this.$('.querybuilder-header h2').text(title);
@@ -217,7 +223,7 @@ const commonText = require('./localization/common').default;
                     //lngt = lngt || fld === 'long1text';
                 }
             });
-            return (lat && lng) || (latt && lngt);;
+            return (lat && lng) || (latt && lngt);
         },
 
         searchDownload: function(evt) {
@@ -293,15 +299,21 @@ const commonText = require('./localization/common').default;
             });
             this.results.render().$el.appendTo(this.el);
         },
+        queryToJson(){
+            const query = this.query.toJSON();
+            if(this.recordSet)
+                query.recordsetid = this.recordSet.id;
+            return query;
+        },
         fetchResults: function() {
-            var query = this.query.toJSON();
-            return function(offset) {
+            return (offset)=>{
+                const query = this.queryToJson();
                 query.offset = offset;
                 return $.post('/stored_query/ephemeral/', JSON.stringify(query));
             };
         },
         fetchCount: function() {
-            var query = this.query.toJSON();
+            var query = this.queryToJson();
             query.countonly = true;
             return $.post('/stored_query/ephemeral/', JSON.stringify(query));
         },
@@ -320,20 +332,36 @@ const commonText = require('./localization/common').default;
             });
         }
     });
+    
+async function fetchRecordSet() {
+    const recordSetId = Object.fromEntries(
+        new URLSearchParams(window.location.search
+    ).entries()).recordsetid ?? undefined;
+    if (typeof recordSetId === 'undefined')
+        return Promise.resolve(undefined);
+    const recordSet = new schema.models.RecordSet.LazyCollection({
+        filters: { id: recordSetId },
+    });
+    await recordSet.fetch();
+    return recordSet.models[0];
+}
 
 module.exports =  function() {
         router.route('query/:id/', 'storedQuery', function(id) {
-            (function showView() {
+            (async function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });
-                query.fetch().fail(app.handleError).done(function() {
-                    var view = new QueryBuilder({ query: query, readOnly: userInfo.isReadOnly });
-                    view.on('redisplay', showView);
-                    app.setCurrentView(view);
+                await query.fetch().fail(app.handleError);
+                var view = new QueryBuilder({
+                    query: query,
+                    readOnly: userInfo.isReadOnly,
+                    recordSet: await fetchRecordSet()
                 });
+                view.on('redisplay', showView);
+                app.setCurrentView(view);
             })();
         });
 
-        router.route('query/new/:table/', 'ephemeralQuery', function(table) {
+        router.route('query/new/:table/', 'ephemeralQuery', async function(table) {
             var query = new schema.models.SpQuery.Resource();
             var model = schema.getModel(table);
             query.set({
@@ -350,8 +378,22 @@ module.exports =  function() {
                 'ordinal': 32767
             });
 
-            var view = new QueryBuilder({ query: query, readOnly: userInfo.isReadOnly });
-            view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
+            const recordSet = await fetchRecordSet();
+
+            var view = new QueryBuilder({
+                query: query,
+                readOnly: userInfo.isReadOnly,
+                recordSet,
+            });
+            view.on('redisplay', function() {
+                navigation.go(
+                    `/query/${query.id}/${
+                        typeof recordSet === 'undefined' ?
+                            '' :
+                            `?recordsetid=${recordSet.id}`
+                    }`
+                );
+            });
             app.setCurrentView(view);
         });
 

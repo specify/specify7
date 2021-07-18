@@ -54,6 +54,9 @@ const queryText = createDictionary({
 
   // QueryTask
   queryTaskTitle: (queryName: string) => `Query: ${queryName}`,
+  queryRecordSetTitle: (queryName: string, recordSetName: string) =>
+    `Query on ${recordSetName}: ${queryName}`,
+  new: 'New',
   newButtonDescription: 'New Field',
   countOnly: 'Count',
   distinct: 'Distinct',
