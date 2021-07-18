@@ -38,6 +38,7 @@
 
 .table-icon {
   width: var(--table-icon-size);
+  min-width: var(--table-icon-size);
   height: var(--table-icon-size);
 }
 
@@ -88,6 +89,11 @@
   color: var(--accent);
 }
 
+.fake-link:hover {
+  color: var(--accent);
+  cursor: pointer;
+}
+
 .fake-link[aria-pressed="true"] .ui-icon {
   background-color: var(--b1);
 }
@@ -126,4 +132,8 @@
 menu {
   margin: 0;
   padding: 0;
+}
+
+.sort-indicator {
+  color: var(--accent);
 }
