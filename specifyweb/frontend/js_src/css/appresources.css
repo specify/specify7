@@ -60,3 +60,9 @@
 .appresource-data .metadata-input input {
     width: 400px;
 }
+
+.validation-results {
+    margin-top: var(--half-size);
+    padding: var(--size);
+    background: var(--error);
+}

@@ -26,6 +26,9 @@ const adminText = createDictionary({
   createResourceDialogTitle: 'Create Resource',
   createResourceDialogHeader: createHeader('Create New Resource File'),
   newResourceName: 'New Resource Name:',
+  resourceValidationFailed: `
+    The following errors occurred during validation of this resource:
+  `,
 
   setPassword: 'Set Password',
   passwordLengthError: 'Password must have at least six characters.',
