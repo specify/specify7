@@ -65,7 +65,7 @@ export const ModalDialog = React.memo(function ModalDialog({
   onLoadCallback,
   children,
 }: ModalDialogBaseProps & {
-  readonly onLoadCallback?: (dialog: JQuery) => void | (() => void);
+  readonly onLoadCallback?: (dialog: JQuery) => undefined | (() => void);
   readonly properties: DialogProperties;
 }) {
   const dialogRef = React.useRef<HTMLDivElement>(null);

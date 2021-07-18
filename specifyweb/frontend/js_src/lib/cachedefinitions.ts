@@ -1,6 +1,7 @@
 import type hot from 'handsontable';
 
 import type { AutoMapperResults } from './automapper';
+import { Query, SortConfig } from './components/toolbarquery';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { R, RA } from './components/wbplanview';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
@@ -56,6 +57,12 @@ export type CacheDefinitions = {
   };
   readonly 'workbench-sort-config': {
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
+  };
+  readonly 'sort-config': {
+    readonly listOfQueries: SortConfig<keyof Query & ('name' | 'dateCreated')>;
+  };
+  readonly common: {
+    readonly listOfQueryTables: RA<string>;
   };
 };
 

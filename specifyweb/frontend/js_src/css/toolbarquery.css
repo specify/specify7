@@ -1,0 +1,46 @@
+.list-of-queries {
+  display: grid;
+  grid-template-columns: auto auto min-content;
+  row-gap: var(--half-size);
+  column-gap: var(--half-size);
+  align-items: center;
+}
+
+.list-of-queries > div {
+  display: contents;
+}
+
+.list-of-queries-header > button {
+  font-weight: 800;
+}
+
+.list-of-queries-header > button:first-child {
+  padding-left: calc(var(--table-icon-size) + var(--quarter-size));
+}
+
+.list-of-queries button:hover {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.list-of-queries-name {
+  overflow-x: auto;
+}
+
+.list-of-queries
+  > div:not(.list-of-queries-header)
+  .list-of-queries-date-created {
+  color: var(--t3);
+}
+
+.list-of-queries .ui-icon {
+  display: flex;
+  column-gap: var(--quarter-size);
+  align-items: center;
+}
+
+.list-of-tables {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--quarter-size);
+}

@@ -107,7 +107,9 @@ export function mappingState(state: WbPlanViewStates): MappingState {
 
 export const getDefaultMappingState = (): MappingState => ({
   type: 'MappingState',
-  showHiddenFields: cache.get('wbplanview-ui', 'showHiddenFields'),
+  showHiddenFields: cache.get('wbplanview-ui', 'showHiddenFields', {
+    defaultValue: false,
+  }),
   showMappingView: cache.get('wbplanview-ui', 'showMappingView', {
     defaultValue: true,
   }),

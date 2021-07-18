@@ -32,6 +32,7 @@
 
 .table-icon {
   width: var(--table-icon-size);
+  min-width: var(--table-icon-size);
   height: var(--table-icon-size);
 }
 
@@ -60,4 +61,24 @@
 .table-icon-undefined {
   color: var(--error);
   margin-top: -0.1rem;
+}
+
+.fake-link {
+  border: none;
+  background-color: transparent;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  column-gap: var(--quarter-size);
+  align-items: center;
+}
+
+.fake-link:hover {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.sort-indicator {
+  color: var(--accent);
 }
