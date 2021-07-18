@@ -488,4 +488,14 @@ export const adminText = createDictionary({
     ca: 'There must be at least one Institution Admin in institution',
     'es-es': 'There must be at least one Institution Admin in institution',
   },
+  // FIXME: localize
+  resourceValidationFailed: {
+    'en-us':
+      'The following errors occurred during validation of this resource:',
+    'ru-ru':
+      'The following errors occurred during validation of this resource:',
+    ca: 'The following errors occurred during validation of this resource:',
+    'es-es':
+      'The following errors occurred during validation of this resource:',
+  },
 });
