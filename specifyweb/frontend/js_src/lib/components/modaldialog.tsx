@@ -11,7 +11,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
-import type { RA } from './wbplanview';
+import type { RA, IR } from './wbplanview';
 
 function closeDialogCallback(
   $dialog: JQuery,
@@ -37,18 +37,21 @@ const hasHeader = (children: React.ReactNode): boolean =>
     (typeof children?.props?.children?.some === 'function' &&
       children.props.children.some(hasHeader)));
 
+type DialogProperties = IR<unknown> &
+  JQueryUI.DialogOptions & {
+    readonly close?: (
+      event: JQueryUI.DialogEvent | Event | undefined,
+      ui: JQueryUI.DialogUIParams | undefined
+    ) => void;
+  };
+
 export function ModalDialog({
   properties,
   children,
   className,
 }: {
   readonly children: React.ReactNode;
-  readonly properties: JQueryUI.DialogOptions & {
-    readonly close?: (
-      event: JQueryUI.DialogEvent | Event | undefined,
-      ui: JQueryUI.DialogUIParams | undefined
-    ) => void;
-  };
+  readonly properties: DialogProperties;
   readonly className?: string;
 }): JSX.Element {
   const dialogRef = React.useRef<HTMLDivElement>(null);
@@ -71,7 +74,7 @@ export function ModalDialog({
       closeDialogCallback(
         dialogElement,
         resize.current,
-        properties.close?.bind(null, event, ui)
+        properties.close?.bind(undefined, event, ui)
       );
 
     const buttons =
@@ -118,6 +121,23 @@ export function ModalDialog({
 
     ReactDOM.render(<>{children}</>, $dialog[0], resize.current);
   }, [$dialog, children]);
+
+  // Update dialog on changes to the "properties" object
+  const previousProperties = React.useRef<DialogProperties | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    if (typeof $dialog === 'undefined') return;
+    if (typeof previousProperties.current !== 'undefined')
+      Object.entries(properties)
+        .filter(
+          ([key, value]) =>
+            JSON.stringify(previousProperties.current?.[key]) !==
+            JSON.stringify(value)
+        )
+        .forEach(([key, value]) => $dialog.dialog('option', key, value));
+    previousProperties.current = properties;
+  }, [$dialog, JSON.stringify(properties)]);
 
   return (
     <div style={{ position: 'absolute' }} ref={dialogRef}>
