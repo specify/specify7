@@ -77,7 +77,7 @@ function QueryList({
   onSelect: handleSelect,
 }: {
   readonly queries: RA<Query>;
-  readonly onEdit: (query: Query) => void;
+  readonly onEdit?: (query: Query) => void;
   readonly onSelect: (query: Query) => void;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
@@ -156,11 +156,15 @@ function QueryList({
               ? new Date(query.dateCreated).toDateString() ?? ''
               : ''}
           </div>
-          <button
-            type="button"
-            className="fake-link ui-icon ui-icon-pencil"
-            onClick={(): void => handleEdit(query)}
-          />
+          {typeof handleEdit === 'function' ? (
+            <button
+              type="button"
+              className="fake-link ui-icon ui-icon-pencil"
+              onClick={(): void => handleEdit(query)}
+            />
+          ) : (
+            <div />
+          )}
         </div>
       ))}
     </div>
@@ -204,19 +208,23 @@ type States = ShowQueryListState | CreateQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
-type Props = IR<never>;
-type ComponentProps = {
-  readonly onClose: () => void;
-  readonly onSelect: (query: Query) => void;
-  readonly onCreate: (tableName: string) => void;
-  readonly onEdit: (query: Query) => void;
+type Props = {
+  onClose: () => void;
+  onSelect: (query: Query) => void;
+  onCreate?: (tableName: string) => void;
+  onEdit?: (query: Query) => void;
+  spQueryFilter?: IR<unknown>;
+  buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
 };
+type ComponentProps = Readonly<Props>;
 
 function QueryToolbarItem({
   onClose: handleClose,
   onSelect: handleSelect,
   onCreate: handleCreate,
   onEdit: handleEdit,
+  spQueryFilter,
+  buttons,
 }: ComponentProps): JSX.Element {
   const [tablesToShow] = useCachedState({
     bucketName: 'common',
@@ -236,7 +244,7 @@ function QueryToolbarItem({
   React.useEffect(() => {
     let destructorCalled = false;
     const queryModels = new (schema as any).models.SpQuery.LazyCollection({
-      filters: { specifyuser: userInfo.id },
+      filters: spQueryFilter ?? { specifyuser: userInfo.id },
     });
     queryModels.fetch({ limit: QUERY_FETCH_LIMIT }).done(() =>
       destructorCalled
@@ -255,7 +263,7 @@ function QueryToolbarItem({
     return (): void => {
       destructorCalled = true;
     };
-  }, []);
+  }, [spQueryFilter]);
 
   if (state.type === 'ShowQueryListState') {
     return typeof queries === 'undefined' ? (
@@ -269,13 +277,18 @@ function QueryToolbarItem({
           width: 400,
           title: commonText('queriesDialogTitle')(queries.length),
           buttons: [
-            {
-              text: commonText('new'),
-              click: (): void =>
-                setState({
-                  type: 'CreateQueryState',
-                }),
-            },
+            ...(buttons?.(state) ?? []),
+            ...(typeof handleCreate === 'undefined'
+              ? []
+              : [
+                  {
+                    text: commonText('new'),
+                    click: (): void =>
+                      setState({
+                        type: 'CreateQueryState',
+                      }),
+                  },
+                ]),
             {
               text: commonText('cancel'),
               click: closeDialog,
@@ -290,7 +303,10 @@ function QueryToolbarItem({
         />
       </ModalDialog>
     );
-  } else if (state.type === 'CreateQueryState')
+  } else if (
+    state.type === 'CreateQueryState' &&
+    typeof handleCreate !== 'undefined'
+  )
     return typeof tablesToShow === 'undefined' ? (
       <LoadingScreen />
     ) : (
@@ -302,6 +318,7 @@ function QueryToolbarItem({
           width: 300,
           title: commonText('newQueryDialogTitle'),
           buttons: [
+            ...(buttons?.(state) ?? []),
             {
               text: commonText('cancel'),
               click: (): void => setState({ type: 'ShowQueryListState' }),
@@ -315,26 +332,39 @@ function QueryToolbarItem({
   else throw new Error('Invalid ToolbarQuery State type');
 }
 
-const QueryToolbarView = createBackboneView<Props, Props, ComponentProps>({
+export const QueryToolbarView = createBackboneView<
+  Props,
+  Props,
+  ComponentProps
+>({
   moduleName: 'QueryToolbarItem',
   className: 'query-toolbar-item',
   Component: QueryToolbarItem,
+  initialize(
+    self,
+    {
+      onClose,
+      onCreate = undefined,
+      onSelect,
+      onEdit = undefined,
+      spQueryFilter = undefined,
+      buttons = undefined,
+    }
+  ) {
+    self.onClose = onClose;
+    self.onCreate = onCreate;
+    self.onSelect = onSelect;
+    self.onEdit = onEdit;
+    self.spQueryFilter = spQueryFilter;
+    self.buttons = buttons;
+  },
   getComponentProps: (self) => ({
-    onClose: (): void => self.remove(),
-    onCreate: (tableName): void =>
-      navigation.go(`/specify/query/new/${tableName}/`),
-    onSelect: (query): void => navigation.go(`/specify/query/${query.id}/`),
-    onEdit: (query): void => {
-      self.remove();
-      const queryModel = new (schema as any).models.SpQuery.LazyCollection({
-        filters: { id: query.id },
-      });
-      queryModel.fetch({ limit: 1 }).then(() => {
-        const dialog = new EditQueryDialog({ spquery: queryModel.models[0] });
-        $('body').append(dialog.el);
-        dialog.render();
-      });
-    },
+    onClose: self.onClose,
+    onCreate: self.onCreate,
+    onSelect: self.onSelect,
+    onEdit: self.onEdit,
+    spQueryFilter: self.spQueryFilter,
+    buttons: self.buttons,
   }),
 });
 
@@ -345,7 +375,33 @@ export default {
   execute(): void {
     const element = document.createElement('div');
     // @ts-expect-error
-    const view = new QueryToolbarView({ el: element });
+    const view = new QueryToolbarView({
+      el: element,
+      onClose: () => view.remove(),
+      onCreate: userInfo.isReadOnly
+        ? undefined
+        : (tableName: string): void =>
+            navigation.go(`/specify/query/new/${tableName}/`),
+      onSelect: (query: Query): void =>
+        navigation.go(`/specify/query/${query.id}/`),
+      onEdit: userInfo.isReadOnly
+        ? undefined
+        : (query: Query): void => {
+            view.remove();
+            const queryModel = new (
+              schema as any
+            ).models.SpQuery.LazyCollection({
+              filters: { id: query.id },
+            });
+            queryModel.fetch({ limit: 1 }).then(() => {
+              const dialog = new EditQueryDialog({
+                spquery: queryModel.models[0],
+              });
+              $('body').append(dialog.el);
+              dialog.render();
+            });
+          },
+    });
     document.body.append(element);
     view.render();
   },
