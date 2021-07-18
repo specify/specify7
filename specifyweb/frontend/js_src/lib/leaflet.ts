@@ -156,7 +156,7 @@ function rememberSelectedBaseLayers(
   const cacheName = `currentLayer${cacheSalt}` as const;
   const currentLayer = cache.get('leaflet', cacheName);
   const baseLayer =
-    (currentLayer !== false && currentLayer in layers
+    (typeof currentLayer !== 'undefined' && currentLayer in layers
       ? layers[currentLayer]
       : layers[preferredBaseLayer]) ?? Object.values(layers)[0];
   baseLayer.addTo(map);
