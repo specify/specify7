@@ -17,9 +17,16 @@ const commonText = require('./localization/common').default;
 module.exports = Backbone.View.extend({
         __name__: "EditResourceDialog",
         className: "resource-edit-dialog",
-    initialize: function({resource, deleteWarning}) {
+    initialize: function({
+        resource,
+        deleteWarning,
+        onRendered,
+        onClose,
+    }) {
         this.resource = resource;
         this.deleteWarning = deleteWarning;
+        this.handleRendered = onRendered;
+        this.handleClose = onClose;
     },
         render: function() {
             var viewName = this.resource.specifyModel.view || this.resource.specifyModel.name;
@@ -35,7 +42,7 @@ module.exports = Backbone.View.extend({
                 saveButton.render().$el.prependTo(buttons);
                 saveButton.on('saving', this.trigger.bind(this, 'saving'));
                 saveButton.on('savecomplete', function() {
-                    this.close();
+                    this.remove();
                     this.trigger('savecomplete', this, this.resource);
                 }, this);
             }
@@ -43,7 +50,7 @@ module.exports = Backbone.View.extend({
             if (!this.resource.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.resource, warning: this.deleteWarning });
                 deleteButton.render().$el.prependTo(buttons);
-                deleteButton.on('deleting', this.close, this);
+                deleteButton.on('deleting', this.trigger, this);
             }
 
             populateform(form, this.resource);
@@ -56,11 +63,14 @@ module.exports = Backbone.View.extend({
                     commonText('newResourceTitle')(resourceLabel) :
                     resourceLabel,
                 modal: true,
-                close: function() { $(this).remove(); }
+                close: ()=>this.remove(),
             });
+
+            this.handleRendered?.();
         },
-        close: function() {
-            this.$el.dialog('close');
+        remove: function() {
+            this.handleClose?.();
+            Backbone.View.prototype.remove.call(this);
         }
     });
 
