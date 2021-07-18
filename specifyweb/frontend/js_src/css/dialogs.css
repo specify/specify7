@@ -33,8 +33,6 @@
 .forms-dialog td:first-of-type + td,
 .reports-dialog td:first-of-type + td,
 .recordset-for-report-dialog td:first-of-type + td,
-.stored-queries-dialog td:first-of-type + td,
-.query-type-dialog td:first-of-type + td,
 .trees-dialog td:first-of-type + td,
 .recordsets-dialog td:first-of-type + td {
   width: 100%;

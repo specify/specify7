@@ -21,9 +21,9 @@ export function TableIcon({
   readonly tableLabel?: string | false;
 }): JSX.Element {
   const tableIconSource = icons.getIcon(tableName);
-  const resolvedLabel =
+  const resolvedTableLabel =
     tableLabel === false
-      ? undefined
+      ? ''
       : tableLabel ?? dataModelStorage.tables[tableName]?.label ?? '';
   if (tableIconSource !== '/images/unknown.png')
     return (
@@ -31,8 +31,8 @@ export function TableIcon({
         className="table-icon table-icon-image"
         role="img"
         style={{ backgroundImage: `url('${tableIconSource}')` }}
-        title={resolvedLabel}
-        aria-label={resolvedLabel}
+        title={resolvedTableLabel}
+        aria-label={resolvedTableLabel}
       />
     );
 
@@ -43,8 +43,8 @@ export function TableIcon({
       style={{ backgroundColor: color }}
       role="img"
       className="table-icon table-icon-generated"
-      title={resolvedLabel}
-      aria-label={resolvedLabel}
+      title={resolvedTableLabel}
+      aria-label={resolvedTableLabel}
     >
       {tableName.slice(0, 2).toUpperCase()}
     </span>
