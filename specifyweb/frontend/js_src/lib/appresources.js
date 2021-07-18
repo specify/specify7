@@ -149,6 +149,9 @@ const ResourceDataView = Backbone.View.extend({
                         editor.setValue(this.appresourceData.get('data'));
                         editor.clearSelection();
                     }
+                    this.validateResource(value)
+                        .then(this.clearValidationResults.bind(this))
+                        .catch(this.showValidationResults.bind(this));
                 });
 
                 userInfo.isadmin && buttonsDiv.append(
@@ -167,9 +170,39 @@ const ResourceDataView = Backbone.View.extend({
             );
 
             this.$el.append(buttonsDiv);
+            this.$el.append(`<div class="validation-results" style="display:none;">
+                ${adminText('resourceValidationFailed')}
+                <div class="validation-results-content"></div>
+            </div>`);
         });
 
         return this;
+    },
+    validateResource(value){
+        return new Promise((resolve, reject)=>{
+        const resolvedMimeType = modeForResource(this.model);
+        if(resolvedMimeType === 'ace/mode/xml'){
+             const parsedXml = new DOMParser().parseFromString(value,'text/xml');
+             const parseError = parsedXml.documentElement.getElementsByTagName('parsererror')[0];
+             if(parseError)
+                 reject(parseError.innerHTML);
+        }
+        if(resolvedMimeType === 'ace/mode/json')
+            JSON.parse(value);
+        resolve(true);
+        });
+    },
+    showValidationResults(validationResults){
+        const validationResultsElement = this.el.getElementsByClassName('validation-results')[0];
+        validationResultsElement.style.display='';
+        validationResultsElement.getElementsByClassName(
+            'validation-results-content'
+        )[0].innerHTML = validationResults;
+    },
+    clearValidationResults(){
+        this.el.getElementsByClassName(
+            'validation-results'
+        )[0].style.display='none';
     },
     metadataChanged() {
         this.model.set('mimetype', $('.mimetype-input input', this.el).val());
