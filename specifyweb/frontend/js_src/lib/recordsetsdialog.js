@@ -9,6 +9,8 @@ var FormsDialog        = require('./formsdialog.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var navigation         = require('./navigation.js');
 var querystring        = require('./querystring.js');
+const userInfo = require('./userinfo.ts').default;
+const {QueryToolbarView} = require('./components/toolbarquery');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
@@ -107,14 +109,59 @@ module.exports = Backbone.View.extend({
             return this.$(selector).index(evt.currentTarget);
         },
         edit: function(evt) {
-            const index = this.getIndex(evt, 'button.edit');
-            const recordset = this.options.recordSets.at(index);
-            this.$el.dialog('close');
-            new EditResourceDialog({
-                resource: recordset,
-                deleteWarning:formsText('recordSetDeletionWarning')(
-                    recordset.get('name')
-                ),
+            const index = this.getIndex(evt, "button.edit");
+            const recordSet = this.options.recordSets.at(index);
+            this.$el.dialog("close");
+            const button = document.createElement("input");
+            button.setAttribute("type", "button");
+            button.setAttribute("value", commonText("query"));
+            const queryEventListener = () => {
+                editView.remove();
+                const element = document.createElement("div");
+                const view = new QueryToolbarView({
+                    el: element,
+                    onClose: () => view.remove(),
+                    onSelect: (query) => {
+                        view.remove();
+                        navigation.go(
+                             `/specify/query/${query.id}/?recordsetid=${recordSet.id}`
+                        );
+                    },
+                    spQueryFilter: {
+                        specifyuser: userInfo.id,
+                        contexttableid: recordSet.get("dbTableId"),
+                    },
+                    buttons: ({ type }) => type === "ShowQueryListState" ?
+                        [{
+                            text: commonText("new"),
+                            click: () => {
+                                view.remove();
+                                navigation.go(
+                                      `/specify/query/new/${schema
+                                    .getModelById(recordSet.get("dbTableId"))
+                                    .name.toLowerCase()}/?recordsetid=${recordSet.id}`
+                                );
+                            },
+                        }]
+                        : [],
+                });
+                document.body.append(element);
+                view.render();
+            };
+            button.addEventListener("click", queryEventListener);
+            const editView = new EditResourceDialog({
+                resource: recordSet,
+                deleteWarning: formsText("recordSetDeletionWarning")(recordSet.get("name")),
+                onRendered: () => {
+                    const buttons = editView.el.getElementsByClassName(
+                        "specify-form-buttons"
+                    )[0];
+                    const deleteButton =
+                        buttons.getElementsByClassName("deletebutton")[0] ??
+                        buttons.children[0];
+                    buttons.insertBefore(button, deleteButton);
+                },
+                onClose: () => window.removeEventListener("click", queryEventListener),
             }).render();
         }
     });
