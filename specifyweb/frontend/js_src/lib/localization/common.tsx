@@ -110,6 +110,7 @@ const commonText = createDictionary({
   masterKeyFieldLabel: 'Master Key:',
   incorrectPassword: 'Password was incorrect.',
   queries: 'Queries',
+  query: 'Query',
   queriesDialogTitle: (count: number) => `Queries (${count})`,
   newQueryDialogTitle: 'New Query Type',
   exportQueryForDwca: 'Export query for DwCA definition.',
