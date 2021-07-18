@@ -3,7 +3,7 @@ import { safeToTrim } from './cachedefinitions';
 import type { R, RA } from './components/wbplanview';
 
 // Determines how persistent bucket's storage would be
-type BucketType =
+export type BucketType =
   // Persistent across sessions
   | 'localStorage'
   // Persistent only during a single session
@@ -112,7 +112,7 @@ export const get: {
       readonly defaultValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME];
     }
   ): CacheDefinitions[BUCKET_NAME][CACHE_NAME];
-  // Overload without a default value (returns T|false)
+  // Overload without a default value (returns T|undefined)
   <
     BUCKET_NAME extends string & keyof CacheDefinitions,
     CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
@@ -123,7 +123,7 @@ export const get: {
       readonly version?: string;
       readonly defaultSetOptions?: SetOptions;
     }
-  ): CacheDefinitions[BUCKET_NAME][CACHE_NAME] | false;
+  ): CacheDefinitions[BUCKET_NAME][CACHE_NAME] | undefined;
 } = <
   BUCKET_NAME extends string & keyof CacheDefinitions,
   CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
@@ -155,7 +155,7 @@ export function genericGet<T>(
     defaultSetOptions?: SetOptions;
   }
 ): T;
-// Overload without defaultValue (returns T|false)
+// Overload without defaultValue (returns T|undefined)
 export function genericGet<T = never>(
   // The name of the bucket
   bucketName: string,
@@ -167,7 +167,7 @@ export function genericGet<T = never>(
         defaultSetOptions?: SetOptions;
       }
     | undefined
-): T | false;
+): T | undefined;
 export function genericGet<T>(
   // The name of the bucket
   bucketName: string,
@@ -182,7 +182,7 @@ export function genericGet<T>(
     readonly defaultSetOptions?: SetOptions;
     readonly defaultValue?: T;
   } = {}
-): T | false {
+): T | undefined {
   /*
    * {boolean} False on error
    * {mixed} value stored under cacheName on success
@@ -194,7 +194,7 @@ export function genericGet<T>(
       !Boolean(fetchBucket(bucketName))) ||
     typeof buckets[bucketName].records[cacheName] === 'undefined'
   ) {
-    if (typeof defaultValue === 'undefined') return false;
+    if (typeof defaultValue === 'undefined') return undefined;
     genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
@@ -207,7 +207,7 @@ export function genericGet<T>(
       buckets[bucketName].records;
     console.warn(`Deleted cache key ${cacheName} due to version mismatch`);
     buckets[bucketName].records = rest;
-    if (typeof defaultValue === 'undefined') return false;
+    if (typeof defaultValue === 'undefined') return undefined;
     genericSet(bucketName, cacheName, defaultValue, {
       ...defaultSetOptions,
       overwrite: true,
