@@ -2,8 +2,8 @@ import '../../css/toolbarquery.css';
 
 import type { Model } from 'backbone';
 import Backbone from 'backbone';
-import React from 'react';
 import $ from 'jquery';
+import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import DeleteButton from '../deletebutton';
@@ -402,8 +402,8 @@ const EditQueryDialog = Backbone.View.extend({
       saveButton.on(
         'savecomplete',
         () => {
+          this.remove();
           navigation.go(`/query/${this.spquery.id}/`);
-          this.$el.dialog('destroy');
         },
         this
       );
@@ -417,9 +417,7 @@ const EditQueryDialog = Backbone.View.extend({
     if (!this.spquery.isNew() && !this.readOnly) {
       const deleteButton = new DeleteButton({ model: this.spquery });
       deleteButton.render().$el.appendTo(buttons);
-      deleteButton.on('deleted', () => {
-        this.$el.dialog('destroy');
-      });
+      deleteButton.on('deleted', () => this.remove());
     }
 
     populateform(form, this.spquery);
@@ -428,8 +426,11 @@ const EditQueryDialog = Backbone.View.extend({
       modal: true,
       width: 'auto',
       title,
-      close: () => this.$el.remove(),
+      close: () => this.remove(),
     });
+  },
+  remove() {
+    this.$el.remove();
   },
   createReport(event_: MouseEvent) {
     const isLabel = (event_.currentTarget as HTMLElement).classList.contains(
