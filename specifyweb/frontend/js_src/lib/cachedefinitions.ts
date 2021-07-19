@@ -57,6 +57,9 @@ export type CacheDefinitions = {
   readonly 'workbench-sort-config': {
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
+  readonly common: {
+    readonly specialCharactersCategory: string;
+  };
 };
 
 export const safeToTrim: RA<keyof CacheDefinitions> = [

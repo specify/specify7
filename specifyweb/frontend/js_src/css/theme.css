@@ -61,3 +61,16 @@
   color: var(--error);
   margin-top: -0.1rem;
 }
+
+.hidden-element {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--double-size);
+  height: var(--double-size);
+  padding: 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}

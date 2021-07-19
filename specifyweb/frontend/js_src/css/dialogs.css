@@ -6,6 +6,10 @@
   display: none;
 }
 
+.ui-dialog-persistent {
+  z-index: 101;
+}
+
 .ui-dialog-with-header .ui-dialog-title {
   font-weight: 300;
   font-size: 0.8rem;

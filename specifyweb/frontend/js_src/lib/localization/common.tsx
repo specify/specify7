@@ -203,6 +203,9 @@ const commonText = createDictionary({
   logOut: 'Log out',
   changePassword: 'Change password',
   userToolsDialogTitle: 'User Tools',
+
+  // Special Characters
+  specialCharacters: 'Special Characters',
 });
 
 export default commonText;

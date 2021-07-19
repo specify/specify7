@@ -30,6 +30,7 @@ var toolModules = [
     require('./toolbarresources.js'),
     require('./toolbardwca.js'),
     require('./toolbarforceupdate.js'),
+    require('./toolbarspecialcharacters').default,
 ];
 
     var ExpressSearchInput = Backbone.View.extend({
