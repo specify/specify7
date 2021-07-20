@@ -254,6 +254,7 @@ export async function prepareLifemapperProjectionMap(
           readonly 's2n:layer_name': string;
           // eslint-disable-next-line @typescript-eslint/naming-convention
           readonly 's2n:layer_type': LifemapperLayerTypes;
+          readonly 's2n:sdm_projection_scenario_code'?: string;
         }[];
       }
     ];
@@ -264,19 +265,35 @@ export async function prepareLifemapperProjectionMap(
       return { errors: [error?.message ?? error] };
     });
 
+  const filteredResponse: typeof projectionMapResponse = {
+    ...projectionMapResponse,
+    records: [
+      {
+        records: projectionMapResponse.records[0]?.records.filter(
+          (record) =>
+            typeof record['s2n:sdm_projection_scenario_code'] !== 'string' ||
+            record['s2n:sdm_projection_scenario_code'] === 'worldclim-curr'
+        ),
+      },
+    ],
+  };
+
   let layers: RA<LayerConfig> = [];
 
-  if (projectionMapResponse.errors.length > 0)
-    projectionMapResponse.errors.forEach((error) => {
+  if (filteredResponse.errors.length > 0)
+    filteredResponse.errors.forEach((error) => {
       messages.errorDetails[error] = error;
     });
-  else if (projectionMapResponse.records[0]?.records.length === 0)
+  else if (
+    !Array.isArray(filteredResponse.records[0]?.records) ||
+    filteredResponse.records[0].records.length === 0
+  )
     messages.errorDetails.projectionNotFound =
       lifemapperText('projectionNotFound');
   else {
     const layerCount: R<number> = {};
     const layerCountLimit = 10;
-    layers = projectionMapResponse.records[0].records
+    layers = filteredResponse.records[0].records
       .sort(
         (
           { 's2n:layer_type': layerTypeLeft },
@@ -295,7 +312,14 @@ export async function prepareLifemapperProjectionMap(
 
         if (layerCount[layerType] > layerCountLimit) return undefined;
 
-        const layerLabel = `${lifemapperLayerVariations[layerType].layerLabel} (${layerCount[layerType]})`;
+        const showLayerIndex =
+          filteredResponse.records[0].records.filter(
+            (record) => record['s2n:layer_type'] === layerType
+          ).length > 1;
+
+        const layerLabel = `${lifemapperLayerVariations[layerType].layerLabel}${
+          showLayerIndex ? ` (${layerCount[layerType]})` : ''
+        }`;
         return {
           ...lifemapperLayerVariations[layerType],
           isDefault: layerCount[layerType] === 1,
@@ -319,7 +343,7 @@ export async function prepareLifemapperProjectionMap(
       .filter((record): record is LayerConfig => typeof record !== 'undefined');
 
     const modificationTime =
-      projectionMapResponse.records[0].records[0]['s2n:modtime'];
+      filteredResponse.records[0].records[0]['s2n:modtime'];
     messages.infoSection.dateCreated = Number.isNaN(new Date(modificationTime))
       ? modificationTime
       : new Date(modificationTime).toLocaleDateString();

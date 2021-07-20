@@ -11,5 +11,6 @@ module.exports = {
   extends: ['@maxxxxxdlp/eslint-config'],
   rules: {
     '@typescript-eslint/no-empty-interface': 'off',
+    '@next/next/no-img-element': 'off',
   },
 };

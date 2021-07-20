@@ -62,23 +62,13 @@
   color: #fff;
 }
 
-.lifemapper-map-scale {
-  width: calc(100% - 1rem);
-  height: var(--double-size);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0.5rem;
-  background: linear-gradient(
-    90deg,
-    hsl(90deg, 50%, 50%),
-    hsl(10deg, 50%, 50%)
-  );
-}
-
 .lifemapper-map-legend {
-  width: 100%;
+  width: calc(100% - var(--size));
   height: var(--double-size);
   background-size: cover;
   background-position: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--half-size);
 }

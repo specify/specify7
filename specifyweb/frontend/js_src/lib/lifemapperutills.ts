@@ -57,7 +57,6 @@ export const lifemapperLayerVariations: RR<
   raster: {
     layerLabel: lifemapperText('projection'),
     transparent: true,
-    opacity: 0.5,
   },
   vector: {
     layerLabel: lifemapperText('occurrencePoints'),

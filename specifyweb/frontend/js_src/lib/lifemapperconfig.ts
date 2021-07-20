@@ -10,3 +10,5 @@ export const SN_SERVICES: IR<string> = {
 };
 export const ignoredAggregators: RA<string> = ['specify'];
 export type MessageTypes = 'errorDetails' | 'infoSection';
+
+export const defaultProjectionMapOpacity = 90;

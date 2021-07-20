@@ -11,7 +11,6 @@ const lifemapperText = createDictionary({
   // Used when aggregator does not report issues
   recordWasIndexed: 'Record was indexed successfully.',
   issuesDetected: 'The following data quality issues were reported:',
-  localOccurrencePoints: 'Your Database Points',
   markerLayerLabel: 'Your Database Pins',
   polygonLayerLabel: 'Your Database Polygons',
   polygonBoundaryLayerLabel: 'Your Database Polygon Boundaries',
@@ -20,6 +19,7 @@ const lifemapperText = createDictionary({
   gbif: 'GBIF:',
   projectionNotFound: 'No Distribution Model available.',
   modelCreationData: 'Model Created:',
+  modelOpacity: 'Model Opacity:',
   aggregatorBadgeTitle: (aggregatorName: string): string =>
     `Record was indexed by ${aggregatorName}`,
   viewOccurrenceAt: (aggregatorName: string): string =>

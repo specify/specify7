@@ -2,10 +2,12 @@ import type L from 'leaflet';
 import React from 'react';
 
 import * as Leaflet from '../leaflet';
+import { defaultProjectionMapOpacity } from '../lifemapperconfig';
 import type { MapInfo } from '../lifemapperreducer';
 import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
 import type { MainState } from './lifemapperstate';
+import * as cache from '../cache';
 
 export function Badge<IS_ENABLED extends boolean>({
   name,
@@ -83,20 +85,17 @@ export function LifemapperMap({
     if (!mapRef.current) return undefined;
 
     let destructorCalled = false;
+    const destructors: (() => void)[] = [];
     function destructor(map: L.Map): void {
       map.off();
       map.remove();
+      destructors.map((destructor) => destructor());
     }
     let leafletMap: L.Map | undefined;
     Leaflet.showCOMap(mapRef.current, mapInfo.layers, [
       lifemapperText('leafletDetailsHeader'),
       `<div class="lifemapper-legend">
         <h2>${mapInfo.messages.infoSection.speciesName}</h2>
-        <h2>${lifemapperText('localOccurrencePoints')}:</h2>
-        <span class="lifemapper-map-scale">
-          <span>0</span>
-          <span>200+</span>
-        </span>
         <h2>${lifemapperText('gbif')}</h2>
         <span
           class="lifemapper-map-legend"
@@ -119,7 +118,21 @@ export function LifemapperMap({
                 style="
                   background-image: url('/static/img/lifemapper_projection.png')
                 "
-              ></span>
+              >
+                <span>0%</span>
+                <span>100%</span>
+              </span>
+
+              <label>
+                <p>${lifemapperText('modelOpacity')}</p>
+                <input
+                  class="projection-opacity"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="${defaultProjectionMapOpacity}"
+                >
+              </label>
               `
             : Object.values(mapInfo.messages.errorDetails)
                 .map((message) => `<i>${message}</i>`)
@@ -128,6 +141,34 @@ export function LifemapperMap({
       </div>`,
     ])
       .then(([map, layerGroup]) => {
+        const projectionSlider = mapRef.current?.getElementsByClassName(
+          'projection-opacity'
+        )[0] as HTMLInputElement;
+        const defaultOpacity = cache.get('lifemapper', 'projectionOpacity', {
+          defaultValue: defaultProjectionMapOpacity,
+        });
+        projectionSlider.value = defaultOpacity.toString();
+
+        function handleProjectionOpacityChange(): void {
+          const opacity = Number.parseInt(projectionSlider.value) / 100;
+          (layerGroup as any)._layers
+            .filter(({ name }: any) =>
+              name.startsWith(lifemapperText('projection'))
+            )
+            .map(({ layer }: any) => layer.setOpacity(opacity));
+        }
+        projectionSlider.addEventListener(
+          'change',
+          handleProjectionOpacityChange
+        );
+        destructors.push(() =>
+          projectionSlider.addEventListener(
+            'change',
+            handleProjectionOpacityChange
+          )
+        );
+        handleProjectionOpacityChange();
+
         Leaflet.addMarkersToMap(map, layerGroup, mapInfo.markers.flat(), {
           marker: lifemapperText('markerLayerLabel'),
           polygon: lifemapperText('polygonLayerLabel'),

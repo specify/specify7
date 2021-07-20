@@ -32,6 +32,9 @@ export type CacheDefinitions = {
       readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
       [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
     };
+  readonly lifemapper: {
+    readonly projectionOpacity: number;
+  };
   readonly 'wbplanview-datamodel': {
     // Data on the fields in the tables that are included in wbplanview
     readonly tables: DataModelTables;
