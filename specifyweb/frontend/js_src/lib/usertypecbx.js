@@ -12,16 +12,14 @@ module.exports =  Backbone.View.extend({
             this.resource = info.resource;
             this.field = info.field.name.toLowerCase();
             this.resource.on('change:' + this.field, this.render, this);
-        },
-        getUserTypes: function() {
-            return ["Manager", "FullAccess", "LimitedAccess", "Guest"];
+            this.userTyps = ["Manager", "FullAccess", "LimitedAccess", "Guest"];
         },
         render: function() {
-            var options = this.getUserTypes().map(function(type) {
+            var options = this.userTyps.map(function(type) {
                 return $('<option>').attr('value', type).text(type)[0];
             });
             this.$el.empty().append(options);
-            this.$el.val(this.resource.get(this.field));
+            this.resource.get(this.field) && this.$el.val(this.resource.get(this.field));
             this.set();
             return this;
         },
