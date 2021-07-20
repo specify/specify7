@@ -13,6 +13,10 @@
 </head>
 
 <body>
+  <button id="skip-link" class="sr-only">
+    Skip to Content
+  </button>
+
   <div id="root-app-container">
     <header id="site-header">
       <div id="site-header-main">
@@ -29,13 +33,17 @@
               class="magic-button"
               disabled
             ></button>
-            <form id="express-search" action="/specify/express_search/">
+            <form
+                id="express-search"
+                action="/specify/express_search/"
+                role="search"
+            >
               <input type="search" class="express-search-query" name="q" placeholder="{% trans 'Search' %}">
             </form>
           </div>
         </div>
       </div>
-      <nav id="site-nav">
+      <nav id="site-nav" aria-label="primary">
         <ul>
           <li id="header-loading">{% trans 'Specify is loading...' %}</li>
         </ul>

@@ -1,5 +1,3 @@
-import '../../css/theme.css';
-
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';

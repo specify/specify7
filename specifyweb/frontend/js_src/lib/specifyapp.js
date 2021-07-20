@@ -20,6 +20,7 @@ const commonText = require('./localization/common').default;
     var currentView;
     var versionMismatchWarned = false;
 
+
     // setup basic routes.
     router
         .route('*whatever', 'notFound', function() {
