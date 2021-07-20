@@ -72,6 +72,7 @@ export function LifemapperMap({
         <h2>${lifemapperText('gbif')}</h2>
         <span
           class="lifemapper-map-legend"
+          role="img"
           style="background-image: url('/static/img/lifemapper_occurrence.png')"
         ></span>
         <h2>${lifemapperText('leafletDetailsErrorsHeader')}</h2>
@@ -88,6 +89,7 @@ export function LifemapperMap({
               }
               <span
                 class="lifemapper-map-legend"
+                role="img"
                 style="
                   background-image: url('/static/img/lifemapper_projection.png')
                 "

@@ -193,15 +193,15 @@ export function MappingLineComponent({
   return (
     <article
       className={`wbplanview-mapping-line ${
-        isFocused ? 'wbplanview-mapping-line-focused' : ''
-      } ${
         lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
           ? ''
           : 'wbplanview-mapping-line-header-unmapped'
-      }
-      `}
+      }`}
       aria-label={headerName}
+      aria-current={isFocused}
+      role="listitem"
       onClick={handleFocus}
+      onFocus={handleFocus}
     >
       <div className="wbplanview-mapping-line-controls">
         <button
@@ -217,7 +217,11 @@ export function MappingLineComponent({
       <div className="v-center wbplanview-mapping-line-header">
         {headerName}
       </div>
-      <div className="v-center wbplanview-mapping-line-elements">
+      <div
+        className="v-center wbplanview-mapping-line-elements"
+        aria-orientation="horizontal"
+        role="list"
+      >
         <MappingPathComponent mappingLineData={lineData} />
       </div>
     </article>
@@ -335,6 +339,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
   return props.isOpen ? (
     <CustomSelectElement
       {...props}
+      role="listitem"
       customSelectOptionGroups={Object.fromEntries(
         Object.entries(fieldGroups)
           .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
@@ -384,6 +389,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
     <CustomSelectElement
       defaultOption={defaultOption}
       {...props}
+      role="listitem"
       fieldNames={fieldNames}
     />
   );

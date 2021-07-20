@@ -1,9 +1,10 @@
 <div class="wb-header">
-  <menu class="wb-primary-row">
+  <menu role="toolbar" class="wb-primary-row">
     <div class="wb-controls-left v-center">
       <div class="wb-name-container"></div>
       <button
         type="button"
+        aria-pressed="false"
         aria-haspopup="grid"
         class="magic-button wb-show-toolkit"
       >
@@ -22,7 +23,12 @@
         <%= wbText('dataMapper') %>
       </button>
       <% if(!is_uploaded) { %>
-      <!--<button type="button" class="magic-button wb-data-check" disabled="disabled">
+      <!--<button
+        type="button"
+        aria-pressed="false"
+        class="magic-button wb-data-check"
+        disabled="disabled"
+      >
         <%= wbText('dataCheck') %>
       </button>-->
       <button
@@ -81,6 +87,7 @@
   </menu>
   <menu
     class="wb-toolkit"
+    role="toolbar"
     style="display: none"
     aria-label="<%= commonText('tools') %>"
   >
@@ -141,10 +148,14 @@
   <section class="wb-spreadsheet"></section>
   <section class="wb-uploaded-view-wrapper" style="display: none"></section>
 </div>
-<footer class="wb-navigation" aria-label="<%= wbText('navigation') %>">
+<footer
+  role="toolbar"
+  class="wb-navigation"
+  aria-label="<%= wbText('navigation') %>"
+>
   <span class="wb-search-replace" role="search">
     <input
-      type="text"
+      type="search"
       class="wb-search-query"
       placeholder="<%= commonText('search') %>"
       title="<%= wbText('searchQuery') %>"
@@ -163,6 +174,7 @@
     <button
       type="button"
       aria-haspopup="dialog"
+      aria-pressed="false"
       class="magic-button wb-advanced-search"
       title="<%= wbText('configureSearchReplace') %>"
       aria-label="<%= wbText('configureSearchReplace') %>"

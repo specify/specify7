@@ -15,7 +15,10 @@ export function WbPlanViewHeader({
   readonly buttonsRight: React.ReactNode;
 }): JSX.Element {
   return (
-    <header className={`wbplanview-header wbplanview-header-${stateType}`}>
+    <header
+      role="toolbar"
+      className={`wbplanview-header wbplanview-header-${stateType}`}
+    >
       <menu className="wbplanview-ds-name-container">
         <span className="wbplanview-ds-name v-center">{title}</span>
         {buttonsLeft}

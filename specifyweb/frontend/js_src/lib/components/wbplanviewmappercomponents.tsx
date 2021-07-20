@@ -20,17 +20,17 @@ export type PathIsMappedBind = (
 
 export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   showHiddenFields,
-  handleToggleHiddenFields,
-  handleAddNewHeader,
+  onToggleHiddenFields: handleToggleHiddenFields,
+  onAddNewHeader: handleAddNewHeader,
   readonly,
 }: {
   readonly showHiddenFields: boolean;
-  readonly handleToggleHiddenFields?: () => void;
-  readonly handleAddNewHeader?: () => void;
+  readonly onToggleHiddenFields?: () => void;
+  readonly onAddNewHeader?: () => void;
   readonly readonly: boolean;
 }) {
   return (
-    <footer className="wbplanview-control-panel">
+    <footer role="toolbar" className="wbplanview-control-panel">
       {!readonly && (
         <button className="magic-button" onClick={handleAddNewHeader}>
           {wbText('addNewColumn')}
@@ -183,7 +183,10 @@ export function MappingView(props: {
         aria-label={wbText('mapButtonDescription')}
       >
         {wbText('map')}
-        <span className="wbplanview-mapping-view-map-button-arrow">
+        <span
+          className="wbplanview-mapping-view-map-button-arrow"
+          aria-hidden="true"
+        >
           &#8594;
         </span>
       </button>
