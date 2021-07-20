@@ -12,16 +12,16 @@
 }
 
 .magic-button:hover,
-.magic-button.active {
+.magic-button[aria-pressed='true'] {
   background: var(--b1);
 }
 
 .magic-button:active,
-.magic-button.active:hover {
+.magic-button[aria-pressed='true']:hover {
   background: #ccc;
 }
 
-.magic-button.active:active,
+.magic-button[aria-pressed='true']:active,
 .magic-button[disabled] {
   background: #ccc;
   color: #888;

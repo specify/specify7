@@ -137,6 +137,7 @@ interface CustomSelectElementPropsBase {
   readonly defaultOption?: CustomSelectElementDefaultOptionProps;
   readonly isOpen: boolean;
   readonly tableName?: string;
+  readonly role?: string;
 
   readonly handleOpen?: () => void;
   readonly fieldNames?: RA<string>;
@@ -230,10 +231,13 @@ const Option = React.memo(function Option({
           ? (event): void => handleClick(event.detail > 1)
           : undefined
       }
-      title={title}
       title={fullTitle === optionLabel ? tableLabel : fullTitle}
       aria-label={fullTitle}
       disabled={!isEnabled}
+      aria-selected={isDefault}
+      role="option"
+      disabled={!isEnabled}
+      aria-current={!isEnabled}
     >
       <Icon
         optionLabel={optionLabel}
@@ -277,9 +281,11 @@ function OptionGroup({
           (letter) => `-${letter.toLowerCase()}`
         ) ?? 'undefined'
       }`}
+      role="group"
+      aria-label={selectGroupLabel}
     >
       {typeof selectGroupLabel !== 'undefined' && (
-        <header className="custom-select-group-label">
+        <header aria-hidden={true} className="custom-select-group-label">
           {selectGroupLabel}
         </header>
       )}
@@ -315,7 +321,7 @@ const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
   readonly fieldNames: RA<string>;
 }) {
   return (
-    <span className="custom-select-element-shadow-list">
+    <span className="custom-select-element-shadow-list" aria-hidden="true">
       {fieldNames.map((fieldName, index) => (
         <span key={index}>{fieldName}</span>
       ))}
@@ -361,6 +367,7 @@ export function CustomSelectElement({
   handleOpen,
   handleClose,
   automapperSuggestions,
+  role,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
@@ -420,6 +427,7 @@ export function CustomSelectElement({
         onClick={
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined
         }
+        aria-haspopup={true}
         aria-expanded={isOpen}
       >
         <Icon
@@ -486,7 +494,12 @@ export function CustomSelectElement({
       ));
 
   const customSelectOptions = (firstRow || groups) && (
-    <span className="custom-select-options" ref={listOfOptionsRef}>
+    <span
+      className="custom-select-options"
+      ref={listOfOptionsRef}
+      aria-readonly={!optionIsIntractable || typeof handleChange !== 'function'}
+      role="listbox"
+    >
       {firstRow}
       {groups}
     </span>
@@ -571,6 +584,7 @@ export function CustomSelectElement({
       }`}
       title={title}
       aria-label={title}
+      role={role}
     >
       {automapperSuggestions}
       {header}

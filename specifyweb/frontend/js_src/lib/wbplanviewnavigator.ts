@@ -24,16 +24,17 @@ import type {
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import wbText from './localization/workbench';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {
   formatReferenceItem,
   formatTreeRank,
+  getCanonicalMappingPath,
   getNameFromTreeRankName,
   mappingPathToString,
   relationshipIsToMany,
   valueIsReferenceItem,
-  getCanonicalMappingPath,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -391,8 +392,8 @@ export function getTableFromMappingPath({
   baseTableName,
   mappingPath,
 }: {
-  baseTableName: string;
-  mappingPath: MappingPath;
+  readonly baseTableName: string;
+  readonly mappingPath: MappingPath;
 }): string {
   const trimmedMappingPath =
     valueIsReferenceItem(mappingPath.slice(-1)[0]) ||
@@ -730,7 +731,7 @@ export function getMappingLineData({
             ]) => [
               fieldName,
               {
-                label: label,
+                label,
                 // Enable field
                 isEnabled:
                   // If it is not mapped
@@ -757,7 +758,7 @@ export function getMappingLineData({
       selectLabel: dataModelStorage.tables[tableName].label,
       fieldsData: internalState.resultFields,
       tableName,
-      ...(internalState.isOpen
+      ...(Boolean(internalState.isOpen)
         ? {
             isOpen: true,
             handleChange: handleChange?.bind(
@@ -801,28 +802,25 @@ export function getMappingLineData({
                 tableName: '',
                 isRelationship: !columnOptionsAreDefault(columnOptions!),
               },
+              selectLabel: wbText('mappingOptions'),
               ...(openSelectElement?.index ===
               internalState.mappingLineData.length
                 ? {
                     isOpen: true,
                     handleChange: undefined,
-                    handleClose:
-                      handleClose &&
-                      handleClose.bind(
-                        undefined,
-                        internalState.mappingLineData.length
-                      ),
+                    handleClose: handleClose?.bind(
+                      undefined,
+                      internalState.mappingLineData.length
+                    ),
                     automapperSuggestions,
                     handleAutomapperSuggestionSelection,
                   }
                 : {
                     isOpen: false,
-                    handleOpen:
-                      handleOpen &&
-                      handleOpen.bind(
-                        undefined,
-                        internalState.mappingLineData.length
-                      ),
+                    handleOpen: handleOpen?.bind(
+                      undefined,
+                      internalState.mappingLineData.length
+                    ),
                   }),
             },
           ]

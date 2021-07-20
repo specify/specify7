@@ -397,7 +397,7 @@ module.exports = Backbone.View.extend({
       return;
     }
 
-    event.target.classList.add('active');
+    event.target.ariaPressed = true;
 
     let initialNavigationDirection =
       this.searchPreferences.navigation.direction;
@@ -422,7 +422,7 @@ module.exports = Backbone.View.extend({
       },
       onClose: () => {
         this.advancedSearch = undefined;
-        event.target.classList.remove('active');
+        event.target.ariaPressed = false;
       },
     }).render();
   },
@@ -459,14 +459,8 @@ module.exports = Backbone.View.extend({
   },
   toggleToolkit(event) {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
-    const isHidden = toolkit.style.display === 'none';
-    if (isHidden) {
-      toolkit.style.display = '';
-      event.target.classList.add('active');
-    } else {
-      toolkit.style.display = 'none';
-      event.target.classList.remove('active');
-    }
+    event.target.ariaPressed = toolkit.style.display === 'none';
+    toolkit.style.display = event.target.ariaPressed ? '' : 'none';
     this.wbview.handleResize();
   },
   fillCells({ startRow, endRow, col, value }) {

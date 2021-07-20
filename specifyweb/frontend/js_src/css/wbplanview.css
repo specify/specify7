@@ -188,7 +188,8 @@
   padding: var(--half-size) 0;
 }
 
-.wbplanview-mapping-line-focused > .wbplanview-mapping-line-elements {
+.wbplanview-mapping-line[aria-current='true']
+  > .wbplanview-mapping-line-elements {
   background: var(--b2);
 }
 
