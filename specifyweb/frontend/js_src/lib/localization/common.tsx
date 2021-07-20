@@ -46,6 +46,7 @@ const commonText = createDictionary({
   remove: 'Remove',
   search: 'Search',
   noResults: 'No Results',
+  notFound: 'Not found',
   new: 'New',
   reports: 'Reports',
   labels: 'Labels',

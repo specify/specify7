@@ -58,22 +58,25 @@ module.exports =  Backbone.View.extend({
         openWaitDialog: function() {
             var _this = this;
             this.waitDialog && this.waitDialog.dialog('close');
-            this.waitDialog = $(`<div title="Wait">
+            this.waitDialog = $(`<aside>
                 <p>${formsText('checkingIfResourceCanBeDeleted')}</p>
                 <div class="progress"></div>
-            </div>`).dialog({
-                                    close: function() { $(this).remove(); _this.waitDialog = null;},
-                                    modal: true
+            </aside>`).dialog({
+                title: commonText('loading'),
+                close: function() { $(this).remove(); _this.waitDialog = null;},
+                modal: true
                                 });
             $('.progress', this.waitDialog).progressbar({ value: false });
         },
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            $(`<div><p>
+            $(`<aside>
                 ${formsText('deleteConfirmationDialogHeader')}
-                ${this.warning ?? formsText('deleteConfirmationDialogMessage')}
-            </p></div>`).dialog({
+                <p>${
+                    this.warning ?? formsText('deleteConfirmationDialogMessage')
+               }</p>
+            </aside>`).dialog({
                 title: formsText('deleteConfirmationDialogTitle'),
                 resizable: false,
                 close: function() { $(this).remove(); },
@@ -90,11 +93,11 @@ module.exports =  Backbone.View.extend({
             });
         },
         openBlockedDialog: function() {
-            var dialog = $(`<div title="Delete Blocked">
+            var dialog = $(`<aside>
                ${formsText('deleteBlockedDialogHeader')}
                <p>${formsText('deleteBlockedDialogMessage')}</p>
                <ul></ul>
-            </div>`).dialog({
+            </aside>`).dialog({
                title: formsText('deleteBlockedDialogTitle'),
                close: function() { $(this).remove(); },
                modal: true

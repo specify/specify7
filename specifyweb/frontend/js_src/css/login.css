@@ -4,7 +4,7 @@ body {
   background: #f79244;
 }
 
-header {
+#site-header {
   background: #f1f2f2;
   height: 450px;
   width: 100%;
@@ -14,7 +14,7 @@ header {
   background-position: center 255px;
 }
 
-#content {
+main {
   background: #fff;
   border: solid 1px #aaa;
   width: 300px;
@@ -25,7 +25,7 @@ header {
   font-size: 14px;
 }
 
-#content h2 {
+main h2 {
   border: 1px solid #f4763d;
   background: #f79244;
   color: #fff;
@@ -34,18 +34,18 @@ header {
   font-size: 1em;
 }
 
-#content .errornote {
+main .errornote {
   background: #fff;
   color: #f4763d;
   font-size: 14px;
 }
 
-#content .errorlist {
+main .errorlist {
   margin: 0;
   padding: 0;
 }
 
-#content .errorlist li {
+main .errorlist li {
   background: #fff;
   color: #f4763d;
   font-size: 14px;
@@ -55,10 +55,6 @@ header {
 label {
   display: block;
   color: #888;
-}
-
-#content-main {
-  width: 100%;
 }
 
 .form-row {

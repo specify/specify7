@@ -1,6 +1,6 @@
 /* specifyform.css */
 
-#content {
+main {
     --shadow-size: 4px;
 
     flex: 1;
@@ -61,6 +61,8 @@ div.specify-view-content {
 
 .specify-form-header .view-title {
     flex: 1;
+    margin: 0;
+    color: var(--t2);
 }
 
 .specify-form-header a,

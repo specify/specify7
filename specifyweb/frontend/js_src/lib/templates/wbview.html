@@ -1,5 +1,5 @@
 <div class="wb-header">
-  <div class="wb-primary-row">
+  <nav class="wb-primary-row">
     <div class="wb-controls-left v-center">
       <div class="wb-name-container"></div>
       <button class="magic-button wb-show-toolkit">
@@ -43,8 +43,9 @@
       </button>
       <% } %>
     </div>
-  </div>
-  <div class="wb-toolkit" style="display: none">
+  </nav>
+  <nav class="wb-toolkit" style="display: none">
+    <h2 class="sr-only" id="wb-toolkit-header"><%= commonText('tools') %></h2>
     <div class="wb-toolkit-left">
       <button class="magic-button wb-change-data-set-owner">
         <%= wbText('changeOwner') %>
@@ -79,13 +80,13 @@
         <%= wbText('geoMap') %>
       </button>
     </div>
-  </div>
+  </nav>
 </div>
 <div class="wb-main-content">
-  <div class="wb-spreadsheet"></div>
-  <div class="wb-uploaded-view-wrapper" style="display: none"></div>
+  <section class="wb-spreadsheet"></section>
+  <section class="wb-uploaded-view-wrapper" style="display: none"></section>
 </div>
-<div class="wb-navigation">
+<nav class="wb-navigation">
   <span class="wb-search-replace">
     <input
       type="text"
@@ -175,4 +176,4 @@
     </button>
   </span>
   <% } %>
-</div>
+</nav>

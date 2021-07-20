@@ -23,13 +23,10 @@ module.exports = UIPlugin.extend({
         }.bind(this));
     },
     paleoRequired: function () {
-        $(`<div>
-            <p>
-                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
-                ${formsText('paleoRequiresGeographyDialogHeader')}
-                ${formsText('paleoRequiresGeographyDialogMessage')}
-            </p>
-        </div>`).dialog({
+        $(`<aside>
+            ${formsText('paleoRequiresGeographyDialogHeader')}
+            <p>${formsText('paleoRequiresGeographyDialogMessage')}</p>
+        </aside>`).dialog({
             title: formsText('paleoRequiresGeographyDialogTitle'),
             close: function () {
                 $(this).remove();
@@ -39,10 +36,10 @@ module.exports = UIPlugin.extend({
     openPaleoMap: function (data) {
         const form = this.model.specifyModel.getLocalizedName();
         if (data == null) {
-            $(`<div>
+            $(`<aside>
                 ${formsText('noCoordinatesDialogHeader')(form)}
                 <p>${formsText('noCoordinatesDialogMessage')(form)}</p>
-            </div>`).dialog({
+            </aside>`).dialog({
                 title: formsText('noCoordinatesDialogTitle'),
                 close: function () {
                     $(this).remove();
@@ -76,10 +73,10 @@ module.exports = UIPlugin.extend({
             lat = Q(this.model.rget('collectingevent.locality.latitude1', true));
             lng = Q(this.model.rget('collectingevent.locality.longitude1', true));
         } else {
-            $(`<div>
+            $(`<aside>
                 ${formsText('unsupportedFormDialogHeader')}
                 <p>${formsText('unsupportedFormDialogMessage')}</p>
-            </div>`).dialog({
+            </aside>`).dialog({
                 title: formsText('unsupportedFormDialogTitle'),
                 close: function () {
                     $(this).remove();

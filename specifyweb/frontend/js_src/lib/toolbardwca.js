@@ -76,10 +76,10 @@ function startExport(definition, metadata) {
 
     $.post('/export/make_dwca/', params).done(() => {
         dialog.dialog('close');
-        dialog = $(`<div>
+        dialog = $(`<aside>
             ${commonText('dwcaExportStartedDialogHeader')}
-            ${commonText('dwcaExportStartedDialogMessage')}
-        </div>`).dialog({
+            <p>${commonText('dwcaExportStartedDialogMessage')}</p>
+        </aside>`).dialog({
             modal: true,
             title: commonText('dwcaExportStartedDialogTitle'),
             close: function() { $(this).remove(); dialog = null; },

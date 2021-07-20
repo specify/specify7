@@ -52,3 +52,23 @@ export const TableIconSelected = (
 );
 
 export const TableIconEmpty = <span className="table-icon table-icon-emtpy" />;
+
+export function DateElement({
+  date,
+  fallback = undefined,
+}: {
+  readonly date: string | undefined;
+  readonly fallback?: React.ReactNode;
+}): JSX.Element {
+  if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
+    return <>{fallback}</>;
+  const dateObject = new Date(date);
+  return (
+    <time
+      dateTime={dateObject.toISOString()}
+      title={dateObject.toLocaleString()}
+    >
+      {dateObject.toDateString()}
+    </time>
+  );
+}

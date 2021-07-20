@@ -14,6 +14,7 @@ import wbText from '../localization/workbench';
 import navigation from '../navigation';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
+import { DateElement } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, DatasetBrief, RA } from './wbplanview';
@@ -143,25 +144,21 @@ function Dialog({
                 }`}
           </p>
         ) : (
-          <span className="table-list-dialog">
-            <div className="wbs-dialog-table">
-              <div className="wbs-dialog-header">
-                <div className="wbs-dialog-cell">{commonText('name')}</div>
-                <div className="wbs-dialog-cell">{commonText('created')}</div>
-                <div className="wbs-dialog-cell">{commonText('uploaded')}</div>
-                <div className="wbs-dialog-cell" />
-              </div>
-              <div className="wbs-dialog-body">
+          <nav className="table-list-dialog">
+            <table className="wbs-dialog-table">
+              <thead>
+                <tr>
+                  <th>{commonText('name')}</th>
+                  <th>{commonText('created')}</th>
+                  <th>{commonText('uploaded')}</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
                 {datasets.map((dataset, index) => {
-                  const dateCreated = new Date(dataset.timestampcreated);
-                  const dateUploaded =
-                    dataset.uploadresult?.success === true
-                      ? new Date(dataset.uploadresult.timestamp)
-                      : undefined;
-
                   return (
-                    <div className="wbs-dialog-row" key={index}>
-                      <div className="wbs-dialog-cell">
+                    <tr key={index}>
+                      <td>
                         <a
                           style={{ fontWeight: 800 }}
                           href={`/specify/workbench/${dataset.id}/`}
@@ -179,20 +176,14 @@ function Dialog({
                           <img src="/images/Workbench32x32.png" alt="" />
                           {dataset.name}
                         </a>
-                      </div>
-                      <div
-                        className="wbs-dialog-cell"
-                        title={dateCreated.toLocaleString()}
-                      >
-                        {dateCreated.toDateString()}
-                      </div>
-                      <div
-                        className="wbs-dialog-cell"
-                        title={dateUploaded?.toLocaleString() ?? undefined}
-                      >
-                        {dateUploaded?.toDateString() ?? ''}
-                      </div>
-                      <div className="wbs-dialog-cell">
+                      </td>
+                      <td>
+                        <DateElement date={dataset.timestampcreated} />
+                      </td>
+                      <td>
+                        <DateElement date={dataset.uploadresult?.timestamp} />
+                      </td>
+                      <td>
                         {canImport && (
                           <span
                             tabIndex={0}
@@ -201,13 +192,13 @@ function Dialog({
                             onClick={(): void => setShowMeta(dataset.id)}
                           />
                         )}
-                      </div>
-                    </div>
+                      </td>
+                    </tr>
                   );
                 })}
-              </div>
-            </div>
-          </span>
+              </tbody>
+            </table>
+          </nav>
         )}
       </ModalDialog>
       {showMeta !== false && (

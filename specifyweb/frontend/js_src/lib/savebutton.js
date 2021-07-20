@@ -105,11 +105,10 @@ module.exports =  Backbone.View.extend({
                     .fail(function(jqXHR) {
                         if (jqXHR.status === 409) {
                             jqXHR.errorHandled = true;
-                            $(`<div><p>
-                                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                            $(`<aside>
                                 ${formsText('saveConflictDialogHeader')}
-                                ${formsText('saveConflictDialogMessage')}
-                            </p></div>`).dialog({
+                                <p>${formsText('saveConflictDialogMessage')}</p>
+                            </aside>`).dialog({
                                 title: formsText('saveConflictDialogTitle'),
                                 resizable: false,
                                 modal: true,

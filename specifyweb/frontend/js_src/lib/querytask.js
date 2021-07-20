@@ -41,7 +41,7 @@ const commonText = require('./localization/common').default;
             var title = 'Query: ' + this.query.get('name');
             app.setTitle(queryText('queryTaskTitle')(this.query.get('name')));
             this.$el.append(template({ queryText, commonText, cid: this.cid }));
-            this.$('.querybuilder-header span').text(title);
+            this.$('.querybuilder-header h1').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
             this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
@@ -101,10 +101,10 @@ const commonText = require('./localization/common').default;
                 return;
             }
 
-            const dialog = $(`<div>
+            const dialog = $(`<aside>
                 ${queryText('queryDeleteIncompleteDialogHeader')}
-                ${queryText('queryDeleteIncompleteDialogMessage')}
-            </div>`).dialog({
+                <p>${queryText('queryDeleteIncompleteDialogMessage')}</p>
+            </aside>`).dialog({
                 title: queryText('queryDeleteIncompleteDialogTitle'),
                 modal: true,
                 close(){ $(this).remove(); },
@@ -169,11 +169,11 @@ const commonText = require('./localization/common').default;
         makeRecordSet_: function() {
             if (this.fieldUIs.length < 1) return;
 
-            var dialog = $(`<div>
+            var dialog = $(`<aside>
                 ${queryText('recordSetToQueryDialogHeader')}
                 <p>${queryText('recordSetToQueryDialogMessage')}</p>
                 <div class="progress" />
-            </div>`).dialog({
+            </aside>`).dialog({
                 title: queryText('recordSetToQueryDialogTitle'),
                 modal: true,
                 autoOpen: false,
@@ -226,10 +226,10 @@ const commonText = require('./localization/common').default;
             var postUrl = '/stored_query/' + (cls == 'query-csv' ? 'exportcsv' : 'exportkml') + '/';
             var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
             if (fileDesc == 'KML' && !this.hasGeoCoords()) {
-                $(`<div>
+                $(`<aside>
                     ${queryText('unableToExportAsKmlDialogHeader')}
-                    ${queryText('unableToExportAsKmlDialogMessage')}
-                </div>`).dialog({
+                    <p>${queryText('unableToExportAsKmlDialogMessage')}</p>
+                </aside>`).dialog({
                     title: queryText('unableToExportAsKmlDialogTitle'),
                     modal: true,
                     close: function() { $(this).remove(); }
@@ -261,7 +261,7 @@ const commonText = require('./localization/common').default;
                 $.post(postUrl, JSON.stringify(data));
                 const dialog = $(`<div>
                     ${queryText('queryExportStartedDialogHeader')}
-                    ${queryText('queryExportStartedDialogMessage')(fileDesc)}
+                    <p>${queryText('queryExportStartedDialogMessage')(fileDesc)}</p>
                 </div>`).dialog({
                     title: queryText('queryExportStartedDialogTitle'),
                     modal: false,
@@ -282,7 +282,7 @@ const commonText = require('./localization/common').default;
 
             this.results = new QueryResultsTable({
                 model: this.model,
-                scrollElement: this.$el.parent('#content'),
+                scrollElement: this.$el.parent('main'),
                 countOnly: this.query.get('countonly'),
                 format: this.query.get('formatauditrecids'),
                 fetchResults: this.fetchResults(),
