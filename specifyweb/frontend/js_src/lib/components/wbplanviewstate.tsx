@@ -1,5 +1,3 @@
-import '../../css/theme.css';
-
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';

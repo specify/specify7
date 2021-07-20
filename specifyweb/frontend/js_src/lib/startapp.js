@@ -62,6 +62,14 @@ module.exports = function appStart() {
     task();
   });
 
+  document.getElementById('skip-link').addEventListener('click',()=> {
+    const main= document.getElementsByTagName('main')[0];
+    main.setAttribute('tabindex',-1);
+    main.focus();
+    main.removeAttribute('tabindex');
+  });
+
+
   // start processing the urls to draw the corresponding views
   navigation.start({ pushState: true, root: '/specify/' });
 

@@ -83,11 +83,31 @@
 
 .sr-only {
   position: absolute;
+  top: auto;
+  left: -999px;
   width: 1px;
   height: 1px;
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  opacity: 0.1;
   clip: rect(0,0,0,0);
   border: 0;
+}
+
+.sr-only:active,
+.sr-only:hover,
+.sr-only:focus {
+  background: var(--accent);
+  color: var(--t1);
+  opacity: 1;
+  clip: unset;
+  padding: var(--half-size);
+  display: inline-block;
+  height: auto;
+  width: auto;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
