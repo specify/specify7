@@ -107,6 +107,7 @@ export function ButtonWithConfirmation(props: {
   readonly onConfirm: () => void;
   readonly dialogTitle: string;
   readonly showConfirmation?: () => boolean;
+  readonly role?: string;
 }): JSX.Element {
   const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
 
@@ -114,6 +115,8 @@ export function ButtonWithConfirmation(props: {
     <>
       <button
         className="magic-button"
+        role={props.role}
+        aria-haspopup="dialog"
         type="button"
         onClick={(): void =>
           typeof props.showConfirmation === 'undefined' ||
@@ -156,6 +159,7 @@ export function ValidationButton(props: {
         className={`magic-button validation-indicator ${
           props.isValidated ? 'validation-indicator-success' : ''
         }`}
+        role="menuitem"
         type="button"
         onClick={
           props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
@@ -196,6 +200,7 @@ export function MappingLineComponent({
           : 'wbplanview-mapping-line-header-unmapped'
       }
       `}
+      aria-label={headerName}
       onClick={handleFocus}
     >
       <div className="wbplanview-mapping-line-controls">

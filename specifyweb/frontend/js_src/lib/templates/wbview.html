@@ -2,20 +2,35 @@
   <menu class="wb-primary-row">
     <div class="wb-controls-left v-center">
       <div class="wb-name-container"></div>
-      <button class="magic-button wb-show-toolkit">
+      <button
+        type="button"
+        aria-haspopup="grid"
+        class="magic-button wb-show-toolkit"
+      >
         <%= commonText('tools') %>
       </button>
     </div>
     <div class="wb-controls-right">
-      <button class="magic-button wb-show-plan" style="display: none">
+      <button
+        type="button"
+        class="magic-button wb-show-plan"
+        style="display: none"
+      >
         Show Plan
       </button>
-      <button class="magic-button wb-plan"><%= wbText('dataMapper') %></button>
+      <button type="button" class="magic-button wb-plan">
+        <%= wbText('dataMapper') %>
+      </button>
       <% if(!is_uploaded) { %>
-      <!--<button class="magic-button wb-data-check" disabled="disabled">
+      <!--<button type="button" class="magic-button wb-data-check" disabled="disabled">
         <%= wbText('dataCheck') %>
       </button>-->
-      <button class="magic-button wb-validate" disabled="disabled">
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-validate"
+        disabled="disabled"
+      >
         <%= wbText('validate') %>
       </button>
       <% } %>
@@ -29,16 +44,36 @@
         <%= wbText('results') %>
       </button>
       <% if(is_uploaded && is_manager){ %>
-      <button class="magic-button wb-unupload">
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-unupload"
+      >
         <%= wbText('rollback') %>
       </button>
       <% } else { %> <% if(is_manager){ %>
-      <button class="magic-button wb-upload"><%= wbText('upload') %></button>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-upload"
+      >
+        <%= wbText('upload') %>
+      </button>
       <% } %>
-      <button class="magic-button wb-revert" disabled="disabled">
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-revert"
+        disabled="disabled"
+      >
         <%= wbText('revert') %>
       </button>
-      <button class="magic-button wb-save" disabled="disabled">
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-save"
+        disabled="disabled"
+      >
         <%= commonText('save') %>
       </button>
       <% } %>
@@ -50,18 +85,28 @@
     aria-label="<%= commonText('tools') %>"
   >
     <div class="wb-toolkit-left">
-      <button class="magic-button wb-change-data-set-owner">
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-change-data-set-owner"
+      >
         <%= wbText('changeOwner') %>
       </button>
-      <button class="magic-button wb-export-data-set">
+      <button type="button" class="magic-button wb-export-data-set">
         <%= wbText('export') %>
       </button>
-      <button class="magic-button wb-delete-data-set">
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        class="magic-button wb-delete-data-set"
+      >
         <%= commonText('delete') %>
       </button>
     </div>
     <div class="wb-toolkit-right">
       <button
+        type="button"
+        aria-haspopup="dialog"
         class="magic-button wb-convert-coordinates"
         title="<%= wbText('unavailableWithoutLocality') %>"
         aria-label="<%= wbText('unavailableWithoutLocality') %>"
@@ -70,6 +115,8 @@
         <%= wbText('convertCoordinates') %>
       </button>
       <button
+        type="button"
+        aria-haspopup="dialog"
         class="magic-button wb-geolocate"
         title="<%= wbText('unavailableWithoutLocality') %>"
         aria-label="<%= wbText('unavailableWithoutLocality') %>"
@@ -78,6 +125,8 @@
         <%= wbText('geoLocate') %>
       </button>
       <button
+        type="button"
+        aria-haspopup="dialog"
         class="magic-button wb-leafletmap"
         title="<%= wbText('unavailableWithoutLocality') %>"
         aria-label="<%= wbText('unavailableWithoutLocality') %>"
@@ -92,7 +141,7 @@
   <section class="wb-spreadsheet"></section>
   <section class="wb-uploaded-view-wrapper" style="display: none"></section>
 </div>
-<nav class="wb-navigation" aria-label="<%= wbText('navigation') %>">
+<footer class="wb-navigation" aria-label="<%= wbText('navigation') %>">
   <span class="wb-search-replace" role="search">
     <input
       type="text"
@@ -112,6 +161,8 @@
     />
     <% } %>
     <button
+      type="button"
+      aria-haspopup="dialog"
       class="magic-button wb-advanced-search"
       title="<%= wbText('configureSearchReplace') %>"
       aria-label="<%= wbText('configureSearchReplace') %>"
@@ -120,7 +171,11 @@
     </button>
   </span>
   <span class="wb-navigation-section" data-navigation-type="searchResults">
-    <button class="wb-cell-navigation" data-navigation-direction="previous">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="previous"
+    >
       &lt;
     </button>
     <span class="wb-navigation-text">
@@ -130,14 +185,22 @@
       <span class="wb-navigation-total">0</span>
       )
     </span>
-    <button class="wb-cell-navigation" data-navigation-direction="next">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="next"
+    >
       &gt;
     </button>
   </span>
 
   <% if(!is_uploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="modifiedCells">
-    <button class="wb-cell-navigation" data-navigation-direction="previous">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="previous"
+    >
       &lt;
     </button>
     <span class="wb-navigation-text">
@@ -147,14 +210,22 @@
       <span class="wb-navigation-total">0</span>
       )
     </span>
-    <button class="wb-cell-navigation" data-navigation-direction="next">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="next"
+    >
       &gt;
     </button>
   </span>
   <% } %>
 
   <span class="wb-navigation-section" data-navigation-type="newCells">
-    <button class="wb-cell-navigation" data-navigation-direction="previous">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="previous"
+    >
       &lt;
     </button>
     <span class="wb-navigation-text">
@@ -164,14 +235,22 @@
       <span class="wb-navigation-total">0</span>
       )
     </span>
-    <button class="wb-cell-navigation" data-navigation-direction="next">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="next"
+    >
       &gt;
     </button>
   </span>
 
   <% if(!is_uploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="invalidCells">
-    <button class="wb-cell-navigation" data-navigation-direction="previous">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="previous"
+    >
       &lt;
     </button>
     <span class="wb-navigation-text">
@@ -181,9 +260,13 @@
       <span class="wb-navigation-total">0</span>
       )
     </span>
-    <button class="wb-cell-navigation" data-navigation-direction="next">
+    <button
+      type="button"
+      class="wb-cell-navigation"
+      data-navigation-direction="next"
+    >
       &gt;
     </button>
   </span>
   <% } %>
-</nav>
+</footer>

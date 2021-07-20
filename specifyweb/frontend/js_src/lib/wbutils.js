@@ -391,8 +391,13 @@ module.exports = Backbone.View.extend({
       nextCellOfType();
     }
   },
-  showAdvancedSearch() {
-    if (typeof this.advancedSearch !== 'undefined') return;
+  showAdvancedSearch(event) {
+    if (typeof this.advancedSearch !== 'undefined') {
+      this.advancedSearch.remove();
+      return;
+    }
+
+    event.target.classList.add('active');
 
     let initialNavigationDirection =
       this.searchPreferences.navigation.direction;
@@ -417,6 +422,7 @@ module.exports = Backbone.View.extend({
       },
       onClose: () => {
         this.advancedSearch = undefined;
+        event.target.classList.remove('active');
       },
     }).render();
   },
@@ -451,10 +457,16 @@ module.exports = Backbone.View.extend({
       return cellValue === searchQuery;
     else return cellValue.includes(searchQuery);
   },
-  toggleToolkit() {
+  toggleToolkit(event) {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
-    if (toolkit.style.display === 'none') toolkit.style.display = '';
-    else toolkit.style.display = 'none';
+    const isHidden = toolkit.style.display === 'none';
+    if (isHidden) {
+      toolkit.style.display = '';
+      event.target.classList.add('active');
+    } else {
+      toolkit.style.display = 'none';
+      event.target.classList.remove('active');
+    }
     this.wbview.handleResize();
   },
   fillCells({ startRow, endRow, col, value }) {

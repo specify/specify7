@@ -105,14 +105,14 @@
   position: relative;
 }
 
-.mapping-view-parent::after {
-  content: '⇲';
+.mapping-view-resizer {
   position: absolute;
   right: 0;
   bottom: 0;
   font-size: var(--size);
   pointer-events: none;
   z-index: -1;
+  cursor: pointer;
 }
 
 .mapping-view {
@@ -149,20 +149,6 @@
 .wbplanview-mapping-view-map-button[disabled]
   .wbplanview-mapping-view-map-button-arrow {
   opacity: 0;
-}
-
-.mapping-view-resizer {
-  margin-bottom: calc(var(--half-size) * -1);
-  height: var(--half-size);
-  cursor: pointer;
-  border: var(--border-size) solid var(--b2);
-  border-left: 0;
-  border-right: 0;
-  box-sizing: border-box;
-}
-
-.mapping-view-resizer:hover {
-  border-color: var(--b4);
 }
 
 /* VALIDATION RESULTS */
