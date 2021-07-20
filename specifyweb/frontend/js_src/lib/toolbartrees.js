@@ -45,6 +45,7 @@ const commonText = require('./localization/common').default;
 
 module.exports =  {
         task: 'tree',
+        path: '/specify/tree',
         title: commonText('trees'),
         icon: '/static/img/trees.png',
         execute: function() {

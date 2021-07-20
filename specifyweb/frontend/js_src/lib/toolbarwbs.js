@@ -9,6 +9,7 @@ module.exports = {
   task: 'workbenches',
   title: commonText('workbench'),
   icon: '/static/img/workbench.png',
+  path: '/specify/workbench',
   execute() {
     new WbsDialog({ showTemplates: false }).render();
   },
