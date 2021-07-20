@@ -207,7 +207,8 @@ const wbText = createDictionary({
 
   // WbPlanView
   matchBehavior: 'Match Behavior:',
-  ignoreWhenBlank: 'Ignore When Blank',
+  mappingOptions: 'Mapping Options',
+  ignoreWhenBlank: 'Ignore when Blank',
   ignoreWhenBlankDescription: [
     'When set to "Ignore when Blank" blank values in this column will not be ',
     'considered for matching purposes. Blank values are ignored when matching ',

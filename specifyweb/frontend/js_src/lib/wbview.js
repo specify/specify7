@@ -368,6 +368,7 @@ const WBView = Backbone.View.extend({
                           >
                             <div
                               class="table-icon table-icon-image"
+                              role="img"
                               style="background-image: url('${tableIcon}')"
                               title="${tableLabel}"
                               aria-label="${tableLabel}"
@@ -1549,8 +1550,12 @@ const WBView = Backbone.View.extend({
         : undefined
     );
 
-    effects.push(() => event.target.classList.add('active'));
-    effectsCleanup.push(() => event.target.classList.remove('active'));
+    effects.push(() => {
+      event.target.ariaPressed = true;
+    });
+    effectsCleanup.push(() => {
+      event.target.ariaPressed = false;
+    });
 
     effects.push(() => this.el.classList.add('wb-show-upload-results'));
     effectsCleanup.push(() =>
@@ -1869,19 +1874,19 @@ const WBView = Backbone.View.extend({
         this.triggerLiveValidation();
         this.wbutils.toggleCellTypes('newCells', 'remove');
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
-        event.target.classList.add('active');
+        event.target.ariaPressed = true;
         break;
       case 'static':
         this.getValidationResults();
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
-        event.target.classList.remove('active');
+        event.target.ariaPressed = false;
         break;
       case 'off':
         this.liveValidationStack = [];
         this.liveValidationActive = false;
-        event.target.classList.remove('active');
+        event.target.ariaPressed = false;
         break;
     }
 

@@ -311,6 +311,7 @@ export default function WbPlanViewMapper(
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
         aria-label={wbText('mappings')}
+        role="list"
       >
         {props.lines.map(
           ({ mappingPath, headerName, mappingType, columnOptions }, index) => (
@@ -468,8 +469,8 @@ export default function WbPlanViewMapper(
 
       <MappingsControlPanel
         showHiddenFields={props.showHiddenFields}
-        handleToggleHiddenFields={props.handleToggleHiddenFields}
-        handleAddNewHeader={
+        onToggleHiddenFields={props.handleToggleHiddenFields}
+        onAddNewHeader={
           props.readonly
             ? undefined
             : (): void => {

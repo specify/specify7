@@ -23,6 +23,7 @@ export function TableIcon({
     return (
       <span
         className="table-icon table-icon-image"
+        role="img"
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={tableLabel}
         aria-label={tableLabel}
@@ -34,6 +35,7 @@ export function TableIcon({
   return (
     <span
       style={{ backgroundColor: color }}
+      role="img"
       className="table-icon table-icon-generated"
       title={tableLabel}
       aria-label={tableLabel}
