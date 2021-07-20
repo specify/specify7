@@ -9,7 +9,9 @@ import '../../css/customselectelement.css';
 
 import React from 'react';
 
+import wbText from '../localization/workbench';
 import { upperToKebab } from '../wbplanviewhelper';
+import dataModelStorage from '../wbplanviewmodel';
 import {
   TableIcon,
   TableIconEmpty,
@@ -209,8 +211,18 @@ const Option = React.memo(function Option({
 
   if (isDefault) classes.push('custom-select-option-selected');
 
+  const fullTitle = [
+    title ?? optionLabel,
+    isRelationship ? `(${wbText('relationship')})` : '',
+    isDefault ? `(${wbText('selected')})` : '',
+  ]
+    .filter((part) => part)
+    .join(' ');
+
+  const tableLabel = dataModelStorage.tables?.[tableName]?.label;
+
   return (
-    <span
+    <button
       className={classes.join(' ')}
       tabIndex={0}
       onClick={
@@ -219,7 +231,9 @@ const Option = React.memo(function Option({
           : undefined
       }
       title={title}
-      aria-label={title}
+      title={fullTitle === optionLabel ? tableLabel : fullTitle}
+      aria-label={fullTitle}
+      disabled={!isEnabled}
     >
       <Icon
         optionLabel={optionLabel}
@@ -235,9 +249,17 @@ const Option = React.memo(function Option({
         {optionLabel === '0' ? 'UNMAP' : optionLabel}
       </span>
       {isRelationship && (
-        <span className="custom-select-option-relationship-icon">▶</span>
+        <span
+          className="custom-select-option-relationship-icon"
+          title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
+          aria-label={
+            tableLabel ? wbText('relationship')(tableLabel) : undefined
+          }
+        >
+          ▶
+        </span>
       )}
-    </span>
+    </button>
   );
 });
 
@@ -248,7 +270,7 @@ function OptionGroup({
   handleClick,
 }: CustomSelectElementOptionGroupProps): JSX.Element {
   return (
-    <span
+    <section
       className={`custom-select-group custom-select-group-${
         selectGroupName?.replace(
           /[A-Z]/g,
@@ -257,7 +279,9 @@ function OptionGroup({
       }`}
     >
       {typeof selectGroupLabel !== 'undefined' && (
-        <span className="custom-select-group-label">{selectGroupLabel}</span>
+        <header className="custom-select-group-label">
+          {selectGroupLabel}
+        </header>
       )}
       {Object.entries(selectOptionsData).map(
         ([optionName, selectionOptionData]) => {
@@ -281,7 +305,7 @@ function OptionGroup({
           );
         }
       )}
-    </span>
+    </section>
   );
 }
 
@@ -366,7 +390,7 @@ export function CustomSelectElement({
   let optionsShadow;
   if (SELECT_TYPES_WITH_HEADERS.includes(customSelectType) && selectLabel)
     header = (
-      <span className="custom-select-header">
+      <header className="custom-select-header">
         <Icon
           isDefault={true}
           isRelationship={true}
@@ -374,11 +398,11 @@ export function CustomSelectElement({
           optionLabel={tableName}
         />
         <span>{selectLabel}</span>
-      </span>
+      </header>
     );
   else if (SELECT_TYPES_WITH_FIRST_ROW.includes(customSelectType)) {
     preview = (
-      <span
+      <header
         className={`custom-select-input ${
           defaultOption?.isRequired === true
             ? 'custom-select-input-required'
@@ -392,9 +416,11 @@ export function CustomSelectElement({
             : ''
         }`}
         tabIndex={0}
+        role="button"
         onClick={
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined
         }
+        aria-expanded={isOpen}
       >
         <Icon
           isDefault={true}
@@ -417,7 +443,7 @@ export function CustomSelectElement({
         {optionIsIntractable && customSelectType !== 'MAPPING_OPTIONS_LIST' && (
           <span>▼</span>
         )}
-      </span>
+      </header>
     );
 
     const showFirstRow =
@@ -528,13 +554,14 @@ export function CustomSelectElement({
       previousDefaultOption.current = defaultOption;
   }, [isOpen, listOfOptionsRef, Object.values(defaultOption).join('')]);
 
-  const title = customSelectType === 'OPENED_LIST' ||
+  const title =
+    customSelectType === 'OPENED_LIST' ||
     customSelectType === 'BASE_TABLE_SELECTION_LIST'
       ? undefined
       : selectLabel;
 
   return (
-    <span
+    <article
       className={`custom-select custom-select-${upperToKebab(
         customSelectType
       )} ${
@@ -550,7 +577,7 @@ export function CustomSelectElement({
       {preview}
       {optionsShadow}
       {customSelectOptions}
-    </span>
+    </article>
   );
 }
 
