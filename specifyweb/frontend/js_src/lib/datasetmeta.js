@@ -9,6 +9,19 @@ import navigation from './navigation';
 import userInfo from './userinfo.js';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
+import React from 'react';
+
+function dateElement(date, fallback = '') {
+  if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
+    return fallback;
+  const dateObject = new Date(date);
+  return `<time
+    datetime="${dateObject.toISOString()}"
+    title="${dateObject.toLocaleString()}"
+  >
+    ${dateObject.toDateString()}
+  </time>`;
+}
 
 export const DataSetMeta = Backbone.View.extend({
   __name__: 'DataSetMetaView',
@@ -41,7 +54,14 @@ export const DataSetMeta = Backbone.View.extend({
       const createdByAgentResource = new this.model.Resource({
         id: agentId,
       });
-      format(createdByAgentResource).done(resolve);
+      format(createdByAgentResource).done((formattedAgent) =>
+        resolve(
+          `<a
+          class="intercept-navigation"
+          href="${createdByAgentResource.viewUrl()}"
+        >${formattedAgent}</a>`
+        )
+      );
     });
   },
   loadAgentInfo(createdByField, modifiedByField) {
@@ -66,15 +86,15 @@ export const DataSetMeta = Backbone.View.extend({
     );
   },
   showAgentInfo(createdByField, modifiedByField) {
-    createdByField.text(this.createdByAgent ?? 'null');
-    modifiedByField.text(this.modifiedByAgent ?? 'null');
+    createdByField.html(this.createdByAgent ?? commonText('notFound'));
+    modifiedByField.html(this.modifiedByAgent ?? commonText('notFound'));
   },
   startEditing() {
     if (this.dialog !== null) return;
 
-    this.dialog = $(`<div>
+    this.dialog = $(`<aside>
       <label>
-        <b>${wbText('dataSetName')}</b><br>
+        <h3>${wbText('dataSetName')}</h3>
         <input
           type="text"
           style="
@@ -84,29 +104,27 @@ export const DataSetMeta = Backbone.View.extend({
           class="dataset-name"
           value="${this.dataset.name}"
         >
-      </label><br>
+      </label>
       <label>
-        <b>${wbText('remarks')}</b><br>
+        <h3>${wbText('remarks')}</h3>
         <textarea
           style="width: 100%"
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
-      </label><br><br>
-      <b>${commonText('metadataInline')}</b><br>
+      </label><br>
+      <h3>${commonText('metadataInline')}</h3>
       ${wbText('numberOfRows')} <i>${this.getRowCount()}</i><br>
       ${wbText('numberOfColumns')} <i>${this.dataset.columns.length}</i><br>
-      ${wbText('created')} <i>${new Date(
+      ${wbText('created')} <i>${dateElement(
       this.dataset.timestampcreated
-    ).toLocaleString()}</i><br>
-      ${wbText('modified')} <i>${new Date(
+    )}</i><br>
+      ${wbText('modified')} <i>${dateElement(
       this.dataset.timestampmodified
-    ).toLocaleString()}</i><br>
-      ${wbText('uploaded')} <i>${
-      this.dataset.uploadresult?.success === true
-        ? new Date(this.dataset.uploadresult.timestamp).toLocaleString()
-        : commonText('no')
-    }
-      </i><br>
+    )}</i><br>
+      ${wbText('uploaded')} <i>${dateElement(
+      this.dataset.uploadresult?.success,
+      commonText('no')
+    )}</i><br>
       ${commonText('createdBy')} <i class="created-by-field">
         ${commonText('loading')}
       </i><br>
@@ -115,8 +133,8 @@ export const DataSetMeta = Backbone.View.extend({
       </i><br>
       ${wbText('importedFileName')} <i>${
       this.dataset.importedfilename || wbText('noFileName')
-    }</i><br><br>
-    </div>`).dialog({
+    }</i><br>
+    </aside>`).dialog({
       title: wbText('dataSetMetaDialogTitle'),
       modal: true,
       close: () => this.render(),
@@ -184,9 +202,9 @@ export const DataSetMeta = Backbone.View.extend({
   },
   changeOwnerWindow() {
     this.fetchListOfUsers().then((users) => {
-      this.changeOwnerDialog = $(`<div>
+      this.changeOwnerDialog = $(`<aside>
         ${wbText('changeDataSetOwnerDialogHeader')}
-        ${wbText('changeDataSetOwnerDialogMessage')}<br>
+        <p>${wbText('changeDataSetOwnerDialogMessage')}</p>
         <select class="select-user-picklist" size="10" style="width:100%">
           ${users
             .map(
@@ -196,7 +214,7 @@ export const DataSetMeta = Backbone.View.extend({
             )
             .join('<br>')}
         </select>
-      </div>`).dialog({
+      </aside>`).dialog({
         title: wbText('changeDataSetOwnerDialogTitle'),
         modal: true,
         dialogClass: 'ui-dialog-no-close',
@@ -219,10 +237,10 @@ export const DataSetMeta = Backbone.View.extend({
     })
       .done(() => {
         const handleClose = () => navigation.go('/specify/');
-        $(`<div>
+        $(`<aside>
           ${wbText('dataSetOwnerChangedDialogHeader')}
-          ${wbText('dataSetOwnerChangedDialogMessage')}
-        </div>`).dialog({
+          <p>${wbText('dataSetOwnerChangedDialogMessage')}</p>
+        </aside>`).dialog({
           title: wbText('dataSetOwnerChangedDialogTitle'),
           modal: true,
           close: handleClose,

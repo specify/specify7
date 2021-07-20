@@ -109,13 +109,13 @@ module.exports = Base.extend({
             var resetValue = this.resetValue.bind(this);
             var doAddValue = this.doAddValue.bind(this, value);
 
-            var d = $(`<div>
+            var d = $(`<aside>
                 ${formsText('addToPickListConfirmationDialogHeader')}
-                ${formsText('addToPickListConfirmationDialogMessage')(
+                <p>${formsText('addToPickListConfirmationDialogMessage')(
                     '<span class="pl-value"></span>',
                     '<span class="pl-name"></span>'
-                )}
-            </div>`).dialog({
+                )}</p>
+            </aside>`).dialog({
                 title: formsText('addToPickListConfirmationDialogTitle'),
                 modal: true,
                 close: function() { $(this).remove(); },

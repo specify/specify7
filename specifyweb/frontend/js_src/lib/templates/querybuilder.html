@@ -1,7 +1,7 @@
 <div class="querybuilder">
-  <h1 class="querybuilder-header"><img /><span></span></h1>
+  <header class="querybuilder-header"><img /><h1></h1></header>
   <ul class="spqueryfields"></ul>
-  <div class="querybuilder-controls">
+  <nav class="querybuilder-controls">
     <button class="field-add" title="<%= queryText('newButtonDescription') %>"><%= queryText('new') %></button>
     <input type="checkbox" name="countOnly" id="querybuilder-count-only-<%= cid %>">
     <label for="querybuilder-count-only-<%= cid %>"><%= queryText('countOnly') %></label>
@@ -16,5 +16,5 @@
     <input type="button" value="<%= queryText('abandonChanges') %>" class="abandon-changes" disabled>
     <input type="button" value="<%= commonText('save') %>" class="query-save" disabled>
     <input type="button" value="<%= queryText('saveAs') %>" class="query-save-as">
-  </div>
+  </nav>
 </div>

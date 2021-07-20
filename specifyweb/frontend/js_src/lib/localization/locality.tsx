@@ -1,4 +1,4 @@
-import { createDictionary } from './utils';
+import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -16,7 +16,9 @@ const localityText = createDictionary({
 
   // GeoLocate
   geoLocate: 'GEOLocate',
-  geographyMustBeMapped:
+  geographyRequiredDialogTitle: 'Geography Required',
+  geographyRequiredDialogHeader: createHeader('Geography must be mapped'),
+  geographyRequiredDialogMessage:
     'The GeoLocate plugin requires the geography field to be populated.',
 
   // LatLongUI

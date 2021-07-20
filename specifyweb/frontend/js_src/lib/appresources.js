@@ -83,6 +83,7 @@ function modeForResource(appResource) {
 
 const ResourceDataView = Backbone.View.extend({
     __name__: "AppResourceDataView",
+    tagName: 'section',
     className: "appresource-data",
     events: {
         'click .load-file': 'loadFile',
@@ -99,8 +100,8 @@ const ResourceDataView = Backbone.View.extend({
             this.appresourceData = sards.first();
 
             if (this.appresourceData) {
-                $('<h2 class="specify-form-header">').append(
-                    $('<span class="view-title">').text(this.model.get('name'))
+                $('<header class="specify-form-header">').append(
+                    $('<h2 class="view-title">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
                 $(`<label class="metadata-input">
@@ -271,13 +272,13 @@ const ResourceList = Backbone.View.extend({
             thisCreateResource( $('input', this).val() );
         };
 
-        const dialog = $(`<div>
+        const dialog = $(`<aside>
             ${adminText('createResourceDialogHeader')}
             <form>
                 <label style="white-space: nowrap;">${adminText('newResourceName')} <input type="text"></label>
                 <input type="submit" style="display: none;">
             </form>
-        </div>`).dialog({
+        </aside>`).dialog({
             title: adminText('createResourceDialogTitle'),
             modal: true,
             close: function() { $(this).remove(); },
@@ -292,6 +293,7 @@ const ResourceList = Backbone.View.extend({
 
 const AppResourcesView = Backbone.View.extend({
     __name__: "AppResourcesView",
+    tagName: 'aside',
     id: 'appresources-view',
     events: {
         'click .toggle-content': 'toggle'
@@ -299,8 +301,8 @@ const AppResourcesView = Backbone.View.extend({
     render() {
         this.$el.append(
             $('<h2>').text(this.options.ResourceModel.getLocalizedName()),
-            new GlobalResourcesView(this.options).render().el,
-            new DisciplinesView(this.options).render().el
+            $('<menu>').append(new GlobalResourcesView(this.options).render().el),
+            $('<menu>').append(new DisciplinesView(this.options).render().el)
         );
         return this;
     },

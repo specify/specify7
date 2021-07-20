@@ -267,7 +267,7 @@ export default function WbPlanViewMapper(
         />
       )}
       {props.showMappingView && (
-        <div
+        <section
           className="mapping-view-parent"
           style={
             {
@@ -302,10 +302,10 @@ export default function WbPlanViewMapper(
               getMappedFields={getMappedFieldsBind}
             />
           </div>
-        </div>
+        </section>
       )}
 
-      <div
+      <section
         className="mapping-line-list"
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
@@ -462,7 +462,7 @@ export default function WbPlanViewMapper(
             />
           )
         )}
-      </div>
+      </section>
 
       <MappingsControlPanel
         showHiddenFields={props.showHiddenFields}

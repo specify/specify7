@@ -23,6 +23,7 @@ var NO_ADD_ANOTHER = [
 ];
 
 const ResourceView = Backbone.View.extend({
+    tagName: "section",
     __name__: "ResourceView",
     // triggered events = {
     //   saved(this.model, options),

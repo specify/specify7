@@ -1,6 +1,6 @@
 /* header.css */
 
-header {
+#site-header {
     background: #f1f2f2;
     border-bottom: solid 0.3rem #f4763d;
     display: flex;
@@ -28,7 +28,7 @@ header {
     margin: 1rem;
 }
 
-nav {
+#site-nav {
     padding: 0;
     order: 2;
     flex: 1;
@@ -49,7 +49,7 @@ nav {
     font-weight: 800;
 }
 
-nav a {
+#site-nav a {
     font-size: 14px;
     font-weight: 800;
     padding: 0 1rem 1rem;
@@ -59,7 +59,7 @@ nav a {
     align-items: flex-end;
 }
 
-nav a::after {
+#site-nav a::after {
     content: '';
     position: absolute;
     bottom: -0.3rem;
@@ -71,12 +71,12 @@ nav a::after {
 }
 
 @media (max-width: 1600px) {
-    header {
+    #site-header {
         flex-direction: column;
     }
 
     #site-logo,
-    nav,
+    #site-nav,
     #user-tools {
         order: unset;
     }
@@ -86,17 +86,17 @@ nav a::after {
         min-width: 275px;
     }
 
-    nav {
+    #site-nav {
         margin-top: -0.5rem;
         justify-content: unset;
     }
 
-    nav a {
+    #site-nav a {
         padding: 1rem;
         height: unset;
     }
 
-    nav a::after {
+    #site0nav a::after {
         bottom: -0.3rem;
     }
 
@@ -108,25 +108,25 @@ nav a::after {
 }
 
 @media (max-width: 1000px) {
-    nav a::after {
+    #site-nav a::after {
         content: initial;
     }
 }
 
-nav a:hover::after {
+#site-nav a:hover::after {
     background: #f1f2f2;
 }
 
-nav a:link,
-nav a:visited {
+#site-nav a:link,
+#site-nav a:visited {
     color: #555;
 }
 
-nav a:hover {
+#site-nav a:hover {
     color: #000;
 }
 
-nav img {
+#site-nav img {
     display: inline;
     height: 16px;
     vertical-align: middle;

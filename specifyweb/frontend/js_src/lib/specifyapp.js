@@ -52,25 +52,24 @@ const commonText = require('./localization/common').default;
     // also manages other niceties involved in changing views
     function setCurrentView(view) {
         currentView && currentView.remove(); // remove old view
-        $('#content').empty();
+        $('main').empty();
         $('.ui-autocomplete').remove(); // these are getting left behind sometimes
         $('.ui-dialog-content:not(.ui-dialog-persistent)').dialog('close'); // close any open dialogs
         currentView = view;
         currentView.render();
-        $('#content').append(currentView.el);
+        $('main').append(currentView.el);
 
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
-            $(`<div title="Version Mismatch">
+            $(`<aside>
                 ${commonText('versionMismatchDialogHeader')}
                 <p>
-                    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
                     ${commonText('versionMismatchDialogMessage')(
                         systemInfo.specify6_version,
                         systemInfo.database_version
                     )}
                 </p>
                 <p>${commonText('versionMismatchSecondDialogMessage')}</p>
-            </div>`).dialog({
+            </aside>`).dialog({
                 title: commonText('versionMismatchDialogTitle'),
                 modal: true,
             });
@@ -126,10 +125,10 @@ function showResource(resource, recordSet, pushUrl) {
                 navigation.go(view.prev.viewUrl());
             } else {
                 view.$el.empty();
-                const dialog = $(`<div>
+                const dialog = $(`<aside>
                     ${commonText('resourceDeletedDialogHeader')}
-                    ${commonText('resourceDeletedDialogMessage')}
-                </div>`).dialog({
+                    <p>${commonText('resourceDeletedDialogMessage')}</p>
+                </aside>`).dialog({
                     title: commonText('resourceDeletedDialogTitle'),
                     buttons: [
                         {

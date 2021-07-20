@@ -22,7 +22,7 @@ module.exports = function(formNode) {
         if (!model) return;
 
         $('.specify-form-header', form).prepend(
-            $('<span>').text(model.getLocalizedName())
+            $('<h2>').text(model.getLocalizedName())
         );
 
         var fillinLabel = function() {

@@ -13,14 +13,14 @@ const commonText = require('./localization/common').default;
             generate( $('input', this).val() );
         };
 
-        dialog = $(`<div>
+        dialog = $(`<aside>
             ${commonText('generateMasterKeyDialogHeader')}
             <form>
                 <label>${commonText('userPassword')}</label>
                 <input type="password">
                 <input type="submit" style="display: none;">
             </form>
-        </div>`).dialog({
+        </aside>`).dialog({
             title: commonText('generateMasterKeyDialogTitle'),
             modal: true,
             close: function() { $(this).remove(); dialog = null;},
@@ -41,11 +41,11 @@ const commonText = require('./localization/common').default;
 
     function gotKey(masterKey) {
         dialog.dialog('close');
-        dialog = $(`<div>
+        dialog = $(`<aside>
             ${commonText('masterKeyDialogHeader')}
             <label>${commonText('masterKeyFieldLabel')}</label>
             <input type="text" size="60" readonly>
-        </div>`).dialog({
+        </aside>`).dialog({
             title: commonText('masterKeyDialogTitle'),
             modal: true,
             width: 'auto',

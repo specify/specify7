@@ -15,6 +15,7 @@ const commonText = require('./localization/common').default;
 
     var TreeListDialog = Backbone.View.extend({
         __name__: "TreeListDialog",
+        tagName: 'nav',
         className: "trees-dialog table-list-dialog",
         _render: function(trees) {
             var entries = _.map(trees, this.dialogEntry, this);

@@ -4,38 +4,39 @@
   column-gap: var(--size);
 }
 
-.wbs-dialog-header,
-.wbs-dialog-body,
-.wbs-dialog-row {
+.wbs-dialog-table thead,
+.wbs-dialog-table tbody,
+.wbs-dialog-table tr {
   display: contents;
 }
 
-.wbs-dialog-header .wbs-dialog-cell {
+.wbs-dialog-table th {
   padding: 0 0 2px;
 }
 
-.wbs-dialog-header .wbs-dialog-cell:first-child {
+.wbs-dialog-table th:first-child {
   padding-left: 21px;
 }
 
-.wbs-dialog-row .wbs-dialog-cell:first-child {
+.wbs-dialog-table td:first-child {
   overflow-x: auto;
 }
 
-.wbs-dialog-cell a {
+.wbs-dialog-table td a {
   font-weight: 300;
   display: flex;
 }
 
-.wbs-dialog-cell,
-.wbs-dialog-cell a {
+.wbs-dialog-table td,
+.wbs-dialog-table th,
+.wbs-dialog-table td a {
   font-size: 0.8rem;
 }
 
-.wbs-dialog-cell {
+.wbs-dialog-table td {
   padding-top: 0.6rem;
 }
 
-.wbs-dialog-cell img {
+.wbs-dialog-table td img {
   padding-right: 5px;
 }
