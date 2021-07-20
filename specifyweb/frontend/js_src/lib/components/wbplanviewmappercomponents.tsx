@@ -157,6 +157,8 @@ export function MappingView(props: {
             ? props.handleMapButtonClick
             : undefined
         }
+        title={wbText('mapButtonDescription')}
+        aria-label={wbText('mapButtonDescription')}
       >
         {wbText('map')}
         <span className="wbplanview-mapping-view-map-button-arrow">

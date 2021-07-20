@@ -1,24 +1,90 @@
 <div class="querybuilder">
-  <header class="querybuilder-header"><img /><h1></h1></header>
+  <header class="querybuilder-header">
+    <img />
+    <h1></h1>
+  </header>
   <ul class="spqueryfields"></ul>
-  <nav class="querybuilder-controls">
+  <menu class="querybuilder-controls">
     <button
+      type="button"
+      role="menuitem"
       class="field-add"
       title="<%= queryText('newButtonDescription') %>"
       aria-label="<%= queryText('newButtonDescription') %>"
-    ><%= queryText('new') %></button>
-    <input type="checkbox" name="countOnly" id="querybuilder-count-only-<%= cid %>">
-    <label for="querybuilder-count-only-<%= cid %>"><%= queryText('countOnly') %></label>
-    <input type="checkbox" name="selectDistinct" id="querybuilder-select-distinct-<%= cid %>">
-    <label for="querybuilder-select-distinct-<%= cid %>"><%= queryText('distinct') %></label>
-    <input type="checkbox" name="formatAudits" id="querybuilder-format-audits-<%= cid %>">
-    <label name="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>"><%= queryText('format') %></label>
-    <input type="button" value="<%= queryText('query') %>" class="query-execute" disabled>
-    <input type="button" value="<%= queryText('createCsv') %>" class="query-csv" disabled>
-    <input type="button" value="<%= queryText('createKml') %>" class="query-kml" disabled>
-    <input type="button" value="<%= queryText('makeRecordSet') %>" class="query-to-recordset" disabled>
-    <input type="button" value="<%= queryText('abandonChanges') %>" class="abandon-changes" disabled>
-    <input type="button" value="<%= commonText('save') %>" class="query-save" disabled>
-    <input type="button" value="<%= queryText('saveAs') %>" class="query-save-as">
-  </nav>
+    >
+      <%= queryText('new') %>
+    </button>
+    <input
+      type="checkbox"
+      name="countOnly"
+      id="querybuilder-count-only-<%= cid %>"
+    />
+    <label for="querybuilder-count-only-<%= cid %>"
+      ><%= queryText('countOnly') %></label
+    >
+    <input
+      type="checkbox"
+      name="selectDistinct"
+      id="querybuilder-select-distinct-<%= cid %>"
+    />
+    <label for="querybuilder-select-distinct-<%= cid %>"
+      ><%= queryText('distinct') %></label
+    >
+    <input
+      type="checkbox"
+      name="formatAudits"
+      id="querybuilder-format-audits-<%= cid %>"
+    />
+    <label name="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>"
+      ><%= queryText('format') %></label
+    >
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= queryText('query') %>"
+      class="query-execute"
+      disabled
+    />
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= queryText('createCsv') %>"
+      class="query-csv"
+      disabled
+    />
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= queryText('createKml') %>"
+      class="query-kml"
+      disabled
+    />
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= queryText('makeRecordSet') %>"
+      class="query-to-recordset"
+      disabled
+    />
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= queryText('abandonChanges') %>"
+      class="abandon-changes"
+      disabled
+    />
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= commonText('save') %>"
+      class="query-save"
+      disabled
+    />
+    <input
+      role="menuitem"
+      type="button"
+      value="<%= queryText('saveAs') %>"
+      class="query-save-as"
+    />
+  </menu>
 </div>

@@ -16,11 +16,11 @@ export function WbPlanViewHeader({
 }): JSX.Element {
   return (
     <header className={`wbplanview-header wbplanview-header-${stateType}`}>
-      <nav className="wbplanview-ds-name-container">
+      <menu className="wbplanview-ds-name-container">
         <span className="wbplanview-ds-name v-center">{title}</span>
         {buttonsLeft}
-      </nav>
-      <nav className="wbplanview-header-controls">{buttonsRight}</nav>
+      </menu>
+      <menu className="wbplanview-header-controls">{buttonsRight}</menu>
     </header>
   );
 }

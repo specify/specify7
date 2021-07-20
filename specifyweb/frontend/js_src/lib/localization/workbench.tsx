@@ -240,6 +240,10 @@ const wbText = createDictionary({
   continueEditing: 'Continue Editing',
   saveUnfinished: 'Save Unfinished',
   map: 'Map',
+  mapButtonDescription: 'Map selected field to selected header',
+  selected: 'Selected',
+  relationship: (tableName: string): string =>
+    `Relationship with the ${tableName} table`,
   selectBaseTableDialogTitle: 'Select a Base Table',
   chooseExistingPlan: 'Choose Existing Plan',
   showAdvancedTables: 'Show Advanced Tables',
@@ -266,6 +270,9 @@ const wbText = createDictionary({
   mappingEditor: 'Map Explorer',
   hideMappingEditor: 'Hide Map Explorer',
   showMappingEditor: 'Show Map Explorer',
+  resizeMappingEditor: 'Resize Map Explorer',
+  resizeMappingEditorButtonDescription:
+    'Click and drag up or down to resize the Map Explorer',
   matchingLogic: 'Must Match',
   mappings: 'Mappings',
   clearMappings: 'Clear Mappings',

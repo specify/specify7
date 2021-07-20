@@ -1549,6 +1549,9 @@ const WBView = Backbone.View.extend({
         : undefined
     );
 
+    effects.push(() => event.target.classList.add('active'));
+    effectsCleanup.push(() => event.target.classList.remove('active'));
+
     effects.push(() => this.el.classList.add('wb-show-upload-results'));
     effectsCleanup.push(() =>
       this.el.classList.remove('wb-show-upload-results')
@@ -1845,7 +1848,7 @@ const WBView = Backbone.View.extend({
   },
 
   // Validation
-  toggleDataCheck() {
+  toggleDataCheck(event) {
     this.validationMode = this.validationMode === 'live' ? 'off' : 'live';
 
     if (!(this.mappings?.arrayOfMappings.length > 0))
@@ -1866,16 +1869,19 @@ const WBView = Backbone.View.extend({
         this.triggerLiveValidation();
         this.wbutils.toggleCellTypes('newCells', 'remove');
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
+        event.target.classList.add('active');
         break;
       case 'static':
         this.getValidationResults();
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
+        event.target.classList.remove('active');
         break;
       case 'off':
         this.liveValidationStack = [];
         this.liveValidationActive = false;
+        event.target.classList.remove('active');
         break;
     }
 

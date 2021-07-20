@@ -296,6 +296,13 @@ export default function WbPlanViewMapper(
               getMappedFields={getMappedFieldsBind}
             />
           </div>
+          <span
+            className="mapping-view-resizer"
+            title={wbText('resizeMappingEditorButtonDescription')}
+            aria-label={wbText('resizeMappingEditor')}
+          >
+            ⇲
+          </span>
         </section>
       )}
 

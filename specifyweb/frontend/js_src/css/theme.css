@@ -11,18 +11,24 @@
   cursor: pointer;
 }
 
-.magic-button:hover {
+.magic-button:hover,
+.magic-button.active {
   background: var(--b1);
 }
 
-.magic-button:active {
+.magic-button:active,
+.magic-button.active:hover {
   background: #ccc;
+}
+
+.magic-button.active:active,
+.magic-button[disabled] {
+  background: #ccc;
+  color: #888;
 }
 
 .magic-button[disabled] {
   cursor: no-drop;
-  background: #ccc;
-  color: #888;
 }
 
 .v-center {
@@ -91,7 +97,7 @@
   margin: -1px;
   overflow: hidden;
   opacity: 0.1;
-  clip: rect(0,0,0,0);
+  clip: rect(0, 0, 0, 0);
   border: 0;
 }
 
@@ -110,4 +116,9 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+menu {
+  margin: 0;
+  padding: 0;
 }
