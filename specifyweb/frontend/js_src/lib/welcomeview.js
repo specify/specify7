@@ -251,7 +251,7 @@ const commonText = require('./localization/common').default;
         },
         render: function() {
             $('<div></div>').append(
-              template({doTaxonTiles: DO_TAXON_TILES})
+              template({doTaxonTiles: DO_TAXON_TILES, commonText})
             ).appendTo(this.$el);
             DO_TAXON_TILES && _.defer(makeTreeMap);
 

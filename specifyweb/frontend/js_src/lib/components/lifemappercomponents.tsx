@@ -26,6 +26,7 @@ export function Badge<IS_ENABLED extends boolean>({
         isEnabled ? '' : 'lifemapper-source-icon-not-found'
       }`}
       title={title}
+      aria-label={title}
     >
       <img
         className="lifemapper-source-icon-active"

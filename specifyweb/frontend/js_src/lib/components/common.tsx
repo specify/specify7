@@ -25,6 +25,7 @@ export function TableIcon({
         className="table-icon table-icon-image"
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={tableLabel}
+        aria-label={tableLabel}
       />
     );
 
@@ -35,6 +36,7 @@ export function TableIcon({
       style={{ backgroundColor: color }}
       className="table-icon table-icon-generated"
       title={tableLabel}
+      aria-label={tableLabel}
     >
       {tableName.slice(0, 2).toUpperCase()}
     </span>
@@ -65,6 +67,7 @@ export function DateElement({
     <time
       dateTime={dateObject.toISOString()}
       title={dateObject.toLocaleString()}
+      aria-label={dateObject.toLocaleString()}
     >
       {dateObject.toDateString()}
     </time>

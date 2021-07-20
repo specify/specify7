@@ -1,6 +1,10 @@
 <header class="specify-form-header">
   <h2 class="view-title check"><%- viewTitle %></h2>
-  <span class="recordset-header" title="<%- recordsetName %>">
+  <span
+    class="recordset-header"
+    title="<%- recordsetName %>"
+    aria-label="<%- recordsetName %>"
+  >
     <% if (recordsetInfo) { %>
       <% if (prevUrl) { %>
           <a class="intercept-navigation recordset-prev recordset-navigation" href="<%= prevUrl %>">&lt;</a>
