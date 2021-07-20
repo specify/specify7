@@ -5,13 +5,13 @@ import wbText from '../localization/workbench';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-interface Props {
+type Props = {
   initialSearchPreferences: SearchPreferences;
   onChange: (newSearchPreferences: SearchPreferences) => void;
   onClose: () => void;
-}
+};
 
-type ComponentProps = Readonly<Props>;
+type ComponentProps = Readonly<Omit<Props, 'triggerButton'>>;
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';

@@ -248,8 +248,18 @@ export const stateReducer = generateReducer<
           <WbPlanViewHeader
             title={
               <>
-                {state.props.dataset.name} (
-                {dataModelStorage.tables[state.baseTableName].label})
+                <span
+                  title={wbText('dataSetName')}
+                  aria-label={wbText('dataSetName')}
+                >
+                  {state.props.dataset.name}
+                </span>{' '}
+                <span
+                  title={wbText('baseTable')}
+                  aria-label={wbText('baseTable')}
+                >
+                  ({dataModelStorage.tables[state.baseTableName].label})
+                </span>
               </>
             }
             stateType={state.type}
@@ -265,6 +275,7 @@ export const stateReducer = generateReducer<
               ) : (
                 <>
                   <ButtonWithConfirmation
+                    role="menuitem"
                     dialogTitle={wbText('goToBaseTableDialogTitle')}
                     dialogContent={
                       <>
@@ -291,6 +302,8 @@ export const stateReducer = generateReducer<
                     {wbText('baseTable')}
                   </ButtonWithConfirmation>
                   <button
+                    role="menuitem"
+                    aria-haspopup="dialog"
                     className="magic-button"
                     type="button"
                     onClick={(): void =>
@@ -302,6 +315,7 @@ export const stateReducer = generateReducer<
                     {wbText('clearMappings')}
                   </button>
                   <ButtonWithConfirmation
+                    role="menuitem"
                     dialogTitle={wbText('reRunAutoMapperDialogTitle')}
                     dialogContent={
                       <>
@@ -344,7 +358,10 @@ export const stateReducer = generateReducer<
               <>
                 <button
                   type="button"
-                  className="magic-button"
+                  role="menuitem"
+                  className={`magic-button ${
+                    state.showMappingView ? '' : 'active'
+                  }`}
                   onClick={(): void =>
                     state.dispatch({
                       type: 'ToggleMappingViewAction',
@@ -357,6 +374,8 @@ export const stateReducer = generateReducer<
                     : wbText('showMappingEditor')}
                 </button>
                 <button
+                  role="menuitem"
+                  aria-haspopup="dialog"
                   type="button"
                   className="magic-button"
                   onClick={(): void =>
@@ -386,7 +405,9 @@ export const stateReducer = generateReducer<
                   </>
                 )}
                 <button
+                  role="menuitem"
                   type="button"
+                  aria-haspopup="dialog"
                   className="magic-button"
                   onClick={(): void => {
                     state.dispatch({
@@ -401,6 +422,7 @@ export const stateReducer = generateReducer<
                 </button>
                 {!state.props.readonly && (
                   <button
+                    role="menuitem"
                     type="button"
                     className="magic-button"
                     disabled={!state.changesMade}
