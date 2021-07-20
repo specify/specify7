@@ -10,10 +10,15 @@ module.exports = function(doingFormTable, mode, cell, id) {
             uitype = 'text';
         }
 
+        const isReadOnly = doingFormTable
+            || mode === 'view'
+            || cell.attr('readonly') === 'true';
+
         var makeField = {
             checkbox: function() {
                 var control = $('<input type=checkbox class="specify-field">');
-                control.attr('disabled', doingFormTable || mode === 'view');
+
+                control.prop('disabled',isReadOnly);
                 if (cell.attr('default') != null) {
                     control.attr('data-specify-default', cell.attr('default') === 'true');
                 }
@@ -26,38 +31,36 @@ module.exports = function(doingFormTable, mode, cell, id) {
                 return control.add(label);
             },
             textarea: function () {
-                if (doingFormTable || mode === 'view')
+                if (isReadOnly)
                     return $('<input type=text class="specify-field" readonly>');
                 var control = $('<textarea class="specify-field">)');
                 control.attr('rows', cell.attr('rows'));
                 return control;
             },
             textareabrief: function() {
-                if (doingFormTable || mode == 'view')
+                if (isReadOnly)
                     return $('<input type=text class="specify-field" readonly>');
                 return $('<textarea class="specify-field">').attr('rows', cell.attr('rows') || 1);
             },
             combobox: function() {
                 var control = $('<select class="specify-combobox specify-field">');
-                control.attr({'disabled': doingFormTable || mode === 'view',
+                control.attr({'disabled': isReadOnly,
                               'data-specify-picklist': cell.attr('picklist'),
                               'data-specify-default': cell.attr('default')});
                 return control;
             },
             spinner: function() {
                 return $('<input type=text class="specify-spinner specify-field">')
-                    .attr('readonly', doingFormTable || mode === 'view');
+                    .prop('readonly',isReadOnly);
             },
             querycbx: function() {
                 return $('<input type=text class="specify-querycbx specify-field">')
-                    .attr('readonly', doingFormTable || mode === 'view');
+                    .prop('readonly',isReadOnly);
             },
             text: function() {
-                const readonly = cell.attr('readonly') && cell.attr('readonly').toLowerCase() === "true";
-
                 return $('<input type=text class="specify-field">')
                     .attr('value', cell.attr('default'))
-                    .attr('readonly', doingFormTable || mode === 'view' || readonly);
+                    .prop('readonly', isReadOnly);
             },
             dsptextfield: function() {
                 return $('<input type=text class="specify-field" readonly>')
@@ -66,7 +69,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
             formattedtext: function() {
                 return $('<input type=text class="specify-formattedtext specify-field">')
                     .attr('value', cell.attr('default'))
-                    .attr('readonly', doingFormTable || mode === 'view');
+                    .prop('readonly', isReadOnly);
             },
             label: function() {
                 return $('<input type=text class="specify-field" readonly>');
@@ -74,7 +77,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
             plugin: function() {
                 return $('<input type=button value="plugin" class="specify-uiplugin specify-field">')
                     .attr('data-specify-default', cell.attr('default'))
-                    .attr('disabled', doingFormTable || mode === 'view');
+                    .attr('disabled', isReadOnly);
             },
             browse: function() {
                 return $('<input type=file class="specify-field">');
