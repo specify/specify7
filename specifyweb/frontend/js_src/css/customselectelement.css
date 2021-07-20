@@ -116,6 +116,8 @@
   grid-template-columns: var(--table-icon-size) 1fr var(--half-size);
   grid-column-gap: var(--quarter-size);
   align-items: center;
+  border: none;
+  background: var(--b1);
 }
 
 .custom-select-mapping-options-list .custom-select-input,
