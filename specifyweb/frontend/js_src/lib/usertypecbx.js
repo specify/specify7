@@ -21,7 +21,7 @@ module.exports =  Backbone.View.extend({
                 return $('<option>').attr('value', type).text(type)[0];
             });
             this.$el.empty().append(options);
-            this.resource.isNew() || this.$el.val(this.resource.get(this.field));
+            this.$el.val(this.resource.get(this.field));
             this.set();
             return this;
         },
