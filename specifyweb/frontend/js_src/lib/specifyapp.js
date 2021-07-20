@@ -46,6 +46,10 @@ const commonText = require('./localization/common').default;
                     this.uiDialog[0].getElementsByTagName('h2').length &&
                     this.uiDialog[0].classList.add('ui-dialog-with-header')
             );
+
+        this.uiDialog[0].setAttribute('role','dialog');
+        this.uiDialog.find('.ui-dialog-titlebar')[0]?.setAttribute('role','header');
+        this.uiDialog.find('.ui-dialog-buttonpane')[0]?.setAttribute('role','menu');
     };
 
     // gets rid of any backbone view currently showing
@@ -59,8 +63,6 @@ const commonText = require('./localization/common').default;
         currentView = view;
         currentView.render();
         $('main').append(currentView.el);
-
-        console.log(window.location.pathname);
 
         Array.from(
           document.getElementById('site-nav').getElementsByTagName('a'),
