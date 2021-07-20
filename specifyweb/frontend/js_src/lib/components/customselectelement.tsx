@@ -6,7 +6,6 @@
  */
 
 import '../../css/customselectelement.css';
-import '../../css/theme.css';
 
 import React from 'react';
 

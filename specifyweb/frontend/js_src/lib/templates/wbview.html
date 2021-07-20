@@ -87,12 +87,13 @@
   <section class="wb-uploaded-view-wrapper" style="display: none"></section>
 </div>
 <nav class="wb-navigation">
-  <span class="wb-search-replace">
+  <span class="wb-search-replace" role="search">
     <input
       type="text"
       class="wb-search-query"
       placeholder="Search"
       title="Search Query"
+      spellcheck="false"
     />
     <% if(!is_uploaded){ %>
     <input

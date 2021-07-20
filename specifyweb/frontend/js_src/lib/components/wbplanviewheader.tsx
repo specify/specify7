@@ -1,5 +1,3 @@
-import '../../css/theme.css';
-
 import React from 'react';
 
 import type { IR } from './wbplanview';

@@ -1,7 +1,6 @@
 'use strict';
 
 require('../css/workbench.css');
-require('../css/theme.css');
 
 const $ = require('jquery');
 const _ = require('underscore');

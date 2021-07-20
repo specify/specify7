@@ -37,7 +37,6 @@ $(document).unbind('keydown').bind('keydown', (event) => {
     prevent && event.preventDefault();
 });
 
-
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
