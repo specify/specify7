@@ -13,8 +13,8 @@
 </head>
 
 <body>
-  <header></header>
-  <div id="content">
+  <header id="site-header"></header>
+  <main>
     {% if form.non_field_errors %}
     {% for error in form.non_field_errors %}
     <p class="errornote">
@@ -41,7 +41,7 @@
         <input type="submit" value="Login" />
       </div>
     </form>
-  </div>
+  </main>
 </body>
 </html>
 

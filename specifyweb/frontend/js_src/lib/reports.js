@@ -81,8 +81,16 @@ var ReportListDialog = Backbone.View.extend({
                 labels.append(`<p>${commonText('noResults')}</p>`);
 
             this.$el
-                .append(`<h2>${commonText('reports')}</h2>`).append(reports)
-                .append(`<h2>${commonText('labels')}</h2>`).append(labels);
+                .append(
+                    $('<section>')
+                        .append(`<h2>${commonText('reports')}</h2>`)
+                        .append($('<nav>').append(reports))
+                )
+                .append(
+                    $('<section>')
+                        .append(`<h2>${commonText('labels')}</h2>`)
+                        .append($('<nav>').append(labels))
+                );
 
             if(!this.options.appResources.isComplete())
                 this.$el.append(`<p>${commonText('listTruncated')}</p>`);

@@ -15,6 +15,7 @@ const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
         __name__: "RecordSetsDialog",
+        tagName: 'nav',
         className: "recordsets-dialog table-list-dialog",
         events: {
             'click a.edit': 'edit'

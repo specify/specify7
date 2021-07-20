@@ -288,7 +288,7 @@ module.exports =  PrepDialog.extend({
 
                 var _this = _self;
                 this.dialog.dialog({
-                    position: { my: "left top", at: "left+20 top+20", of: $('#content') },
+                    position: { my: "left top", at: "left+20 top+20", of: $('main') },
                     width: 'auto',
                     close: function() { $(this).remove(); _this.dialog = null; },
                     modal: true

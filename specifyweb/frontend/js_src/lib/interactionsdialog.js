@@ -52,6 +52,7 @@ const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
         __name__: "InteractionsDialog",
+        tagName: 'nav',
         className: "interactions-dialog table-list-dialog",
         events: {
             'click a.intercept-navigation': 'selected',

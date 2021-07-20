@@ -53,6 +53,7 @@ const commonText = require('./localization/common').default;
     });
 
     var TreeView = Backbone.View.extend({
+        tagName: 'section',
         __name__: "TreeView",
         className: "tree-view content-no-shadow",
         events: {
@@ -93,7 +94,7 @@ const commonText = require('./localization/common').default;
                     schema.getModel(this.table).getLocalizedName()
                 )
             );
-            const controls = $('<div class="tree-controls"></div>');
+            const controls = $('<header class="tree-controls"></header>');
             controls.appendTo(this.el);
             $('<h1>').text(commonText('trees')).appendTo(controls);
             controls.append(this.makeSearchBox());

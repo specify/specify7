@@ -56,7 +56,7 @@ module.exports = Backbone.View.extend({
             'click .username': 'openUserTools',
             'change #user-tools select': 'changeCollection'
         },
-        el: '#site-header',
+        el: 'header',
         initialize: function(options) {
             this.toolModules = toolModules.filter(function(mod){
                 return !(_.isFunction(mod.disabled) ? mod.disabled(userInfo) : mod.disabled);

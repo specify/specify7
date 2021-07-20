@@ -244,6 +244,7 @@ const commonText = require('./localization/common').default;
 
     var WelcomeView = Backbone.View.extend({
         __name__: "WelcomeView",
+        tagName: "section",
         className: "specify-welcome",
         events: {
             'click #about-specify': 'showAboutDialog'

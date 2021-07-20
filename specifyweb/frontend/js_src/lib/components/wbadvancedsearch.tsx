@@ -115,8 +115,7 @@ function WbAdvancedSearch({
         modal: false,
       }}
     >
-      <b>{wbText('navigationOptions')}</b>
-      <br />
+      <h3>{wbText('navigationOptions')}</h3>
       <label>
         {wbText('cursorPriority')}
         <br />
@@ -137,10 +136,8 @@ function WbAdvancedSearch({
         </select>
       </label>
       <br />
-      <br />
 
-      <b>{wbText('searchOptions')}</b>
-      <br />
+      <h3>{wbText('searchOptions')}</h3>
       <Checkbox property="fullMatch" state={state} setState={setState}>
         {wbText('findEntireCellsOnly')}
       </Checkbox>
@@ -155,8 +152,7 @@ function WbAdvancedSearch({
       </Checkbox>
       <br />
 
-      <b>{wbText('replaceOptions')}</b>
-      <br />
+      <h3>{wbText('replaceOptions')}</h3>
       <label>
         {wbText('replaceMode')}
         <br />

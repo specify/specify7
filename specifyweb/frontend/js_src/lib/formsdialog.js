@@ -27,6 +27,7 @@ const formsText = require('./localization/forms').default;
 
 module.exports = Backbone.View.extend({
         __name__: "FormsDialog",
+        tagName: 'nav',
         className: "forms-dialog table-list-dialog",
         events: {'click a': 'selected'},
         render: function() {

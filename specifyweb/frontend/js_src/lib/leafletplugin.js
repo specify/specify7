@@ -25,9 +25,9 @@ module.exports = UIPlugin.extend(
       const long = this.model.get('longitude1');
 
       if (lat == undefined || long == undefined)
-        return $(`<div>
+        return $(`<aside>
         ${localityText('notEnoughInformationToMap')}
-      </div>`).dialog({
+      </aside>`).dialog({
           title: localityText('noCoordinates'),
           close() {
             $(this).remove();

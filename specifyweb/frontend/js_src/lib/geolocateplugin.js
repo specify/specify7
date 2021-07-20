@@ -28,12 +28,13 @@ module.exports =  UIPlugin.extend({
         }.bind(this));
     },
     geoRequired: function() {
-        $(`<div title="Geography Required">
-            <p>
-                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
-                ${localityText('geographyMustBeMapped')}
-            </p>
-        </div>`).dialog({close: function(){ $(this).remove(); }});
+        $(`<aside>
+            ${localityText('geographyRequiredDialogHeader')} 
+            <p>${localityText('geographyRequiredDialogMessage')}</p>
+        </aside>`).dialog({
+            title: localityText('geographyRequiredDialogTitle'),
+            close: function(){ $(this).remove(); }
+        });
     },
     openGeoLocate: function(data) {
 

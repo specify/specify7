@@ -495,7 +495,7 @@ var QueryCbx = Backbone.View.extend({
 
         var _this = this;
         this.dialog.dialog({
-            position: { my: "left top", at: "left+20 top+20", of: $('#content') },
+            position: { my: "left top", at: "left+20 top+20", of: $('main') },
             width: 'auto',
             close: function() { $(this).remove(); _this.dialog = null; }
         }).parent().delegate('.ui-dialog-title a', 'click', function(evt) {

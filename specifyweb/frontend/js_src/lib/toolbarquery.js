@@ -42,6 +42,7 @@ const commonText = require('./localization/common').default;
 
     var QueryListDialog = Backbone.View.extend({
         __name__: "QueryListDialog",
+        tagName: 'nav',
         className: "stored-queries-dialog table-list-dialog",
         events: {
             'click a.edit': 'edit'

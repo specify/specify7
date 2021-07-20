@@ -187,7 +187,7 @@ export function MappingLineComponent({
   handleClearMapping,
 }: MappingLineBaseProps): JSX.Element {
   return (
-    <div
+    <article
       className={`wbplanview-mapping-line ${
         isFocused ? 'wbplanview-mapping-line-focused' : ''
       } ${
@@ -214,7 +214,7 @@ export function MappingLineComponent({
       <div className="v-center wbplanview-mapping-line-elements">
         <MappingPathComponent mappingLineData={lineData} />
       </div>
-    </div>
+    </article>
   );
 }
 

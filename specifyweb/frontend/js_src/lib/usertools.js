@@ -8,6 +8,7 @@ const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
         __name__: "UserTools",
+        tagName: 'nav',
         className: "table-list-dialog",
         events: {
             'click .user-tool': 'clicked'
