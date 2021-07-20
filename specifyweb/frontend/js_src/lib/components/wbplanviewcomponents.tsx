@@ -201,7 +201,8 @@ export function MappingLineComponent({
       <div className="wbplanview-mapping-line-controls">
         <button
           type="button"
-          title="Clear mapping"
+          title={wbText('clearMapping')}
+          aria-label={wbText('clearMapping')}
           onClick={handleClearMapping}
           disabled={readonly}
         >

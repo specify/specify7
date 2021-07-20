@@ -190,9 +190,26 @@ const commonText = require('./localization/common').default;
         },
         makeBtns: function() {
             return $(`
-                <button type="button" class="tree-conform-save" tabindex="2" title="${treeText('rememberButtonDescription')}">${treeText('remember')}</button>
-                <button type="button" class="tree-conform-restore" tabindex="3" title="${treeText('restoreButtonDescription')}">${treeText('restore')}</button>
-                <button type="button" class="tree-conform-forget" tabindex="4" title="${treeText('forgetButtonDescription')}">${treeText('forget')}</button>`);
+                <button
+                    type="button"
+                    class="tree-conform-save"
+                    tabindex="2"
+                    title="${treeText('rememberButtonDescription')}"
+                    aria-label="${treeText('rememberButtonDescription')}"
+                >${treeText('remember')}</button>
+                <button
+                    type="button"
+                    class="tree-conform-restore"
+                    tabindex="3"
+                    title="${treeText('restoreButtonDescription')}"
+                    aria-label="${treeText('restoreButtonDescription')}"
+                >${treeText('restore')}</button>
+                <button
+                    type="button"
+                    class="tree-conform-forget"
+                    tabindex="4"
+                    aria-label="${treeText('forgetButtonDescription')}"
+                >${treeText('forget')}</button>`);
         },
         applyConformation: function(encoded) {
             var serialized = encoded.replace(/([^~])~/g, '$1,~').replace(/~/g, '[').replace(/-/g, ']');

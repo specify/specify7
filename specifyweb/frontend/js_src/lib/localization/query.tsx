@@ -68,6 +68,7 @@ const queryText = createDictionary({
   expand: 'Expand',
   expandButtonDescription: 'Field is valid and will be saved. Click to expand',
   sort: 'Sort',
+  negate: 'Negate',
   moveUp: 'Move up',
   moveDown: 'Move down',
   showButtonDescription: 'Show in results',

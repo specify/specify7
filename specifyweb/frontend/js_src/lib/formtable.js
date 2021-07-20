@@ -15,21 +15,30 @@ const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
     var CONTRACT = `<td class="contract">
-        <a title="${formsText('contract')}">
+        <a
+          title="${formsText('contract')}"
+          aria-label="${formsText('contract')}"
+        >
             <span class="ui-icon ui-icon-triangle-1-s">
                 ${formsText('contract')}
             </span>
         </a>
     </td>`;
     var EXPAND = `<td class="expand">
-        <a title="${formsText('expand')}">
+        <a
+          title="${formsText('expand')}"
+          aria-label="${formsText('expand')}"
+        >
             <span class="ui-icon ui-icon-triangle-1-e">
                 ${formsText('expand')}
             </span>
         </a>
     </td>`;
     var REMOVE = `<td class="remove">
-        <a title="${commonText('remove')}">
+        <a
+          title="${commonText('remove')}"
+          aria-label="${commonText('remove')}"
+        >
             <span class="ui-icon ui-icon-trash">
                 ${commonText('remove')}
             </span>
