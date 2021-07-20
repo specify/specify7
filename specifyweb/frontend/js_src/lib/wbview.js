@@ -153,10 +153,7 @@ const WBView = Backbone.View.extend({
       this.updateCellInfoStats,
       throttleRate
     );
-    this.handleResize = _.throttle(
-      () => console.log('1') || this.hot?.render(),
-      throttleRate
-    );
+    this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
     this.$el.append(
@@ -447,6 +444,7 @@ const WBView = Backbone.View.extend({
     this.liveValidationActive = false;
     this.validationMode = 'off';
     window.removeEventListener('resize', this.handleResize);
+    Backbone.View.prototype.remove.call(this);
   },
   identifyMappedHeaders() {
     if (!this.mappings) return;
