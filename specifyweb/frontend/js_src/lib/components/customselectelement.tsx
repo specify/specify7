@@ -212,6 +212,7 @@ const Option = React.memo(function Option({
       tabIndex={0}
       onClick={handleClick}
       title={title}
+      aria-label={title}
     >
       <Icon
         optionLabel={optionLabel}
@@ -513,6 +514,11 @@ export function CustomSelectElement({
       previousDefaultOption.current = defaultOption;
   }, [isOpen, listOfOptionsRef, Object.values(defaultOption).join('')]);
 
+  const title = customSelectType === 'OPENED_LIST' ||
+    customSelectType === 'BASE_TABLE_SELECTION_LIST'
+      ? undefined
+      : selectLabel;
+
   return (
     <span
       className={`custom-select custom-select-${upperToKebab(
@@ -522,12 +528,8 @@ export function CustomSelectElement({
           ? 'custom-select-closed-list-active'
           : ''
       }`}
-      title={
-        customSelectType === 'OPENED_LIST' ||
-        customSelectType === 'BASE_TABLE_SELECTION_LIST'
-          ? undefined
-          : selectLabel
-      }
+      title={title}
+      aria-label={title}
     >
       {automapperSuggestions}
       {header}

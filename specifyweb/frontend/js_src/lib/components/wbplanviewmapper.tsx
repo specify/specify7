@@ -41,12 +41,6 @@ export type MappingPathWritable = string[];
 export type FullMappingPath = Readonly<
   [...MappingPath, MappingType, string, ColumnOptions]
 >;
-export type FullMappingPathWritable = [
-  ...MappingPathWritable,
-  MappingType,
-  string,
-  ColumnOptions
-];
 /*
  * MappingType remains here from the time when we had `NewHeader` and
  *  `NewStaticHeader`. Also, it is not removed as it might be useful in the
@@ -276,6 +270,7 @@ export default function WbPlanViewMapper(
               }px`,
             } as React.CSSProperties
           }
+          aria-label={wbText('mappingEditor')}
           ref={mappingViewParentRef}
         >
           <div className="mapping-view-container">
@@ -308,6 +303,7 @@ export default function WbPlanViewMapper(
         className="mapping-line-list"
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
+        aria-label={wbText('mappings')}
       >
         {props.lines.map(
           ({ mappingPath, headerName, mappingType, columnOptions }, index) => (

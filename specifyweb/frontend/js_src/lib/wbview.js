@@ -370,6 +370,7 @@ const WBView = Backbone.View.extend({
                               class="table-icon table-icon-image"
                               style="background-image: url('${tableIcon}')"
                               title="${tableLabel}"
+                              aria-label="${tableLabel}"
                             ></div>
                             ${tableLabel}
                           </a>`;

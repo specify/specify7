@@ -4,6 +4,7 @@ import { createDictionary } from './utils';
 
 const welcomeText = createDictionary({
   pageTitle: 'Welcome',
+  aboutSpecifyButtonDescription: 'About Specify',
 
   taxonTiles: 'Taxon Tiles',
   taxonTilesDescription: (count: number) =>

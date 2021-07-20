@@ -2,7 +2,11 @@
   <header class="querybuilder-header"><img /><h1></h1></header>
   <ul class="spqueryfields"></ul>
   <nav class="querybuilder-controls">
-    <button class="field-add" title="<%= queryText('newButtonDescription') %>"><%= queryText('new') %></button>
+    <button
+      class="field-add"
+      title="<%= queryText('newButtonDescription') %>"
+      aria-label="<%= queryText('newButtonDescription') %>"
+    ><%= queryText('new') %></button>
     <input type="checkbox" name="countOnly" id="querybuilder-count-only-<%= cid %>">
     <label for="querybuilder-count-only-<%= cid %>"><%= queryText('countOnly') %></label>
     <input type="checkbox" name="selectDistinct" id="querybuilder-select-distinct-<%= cid %>">

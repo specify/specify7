@@ -258,6 +258,7 @@ export const stateReducer = generateReducer<
                 <span
                   className="v-center wbplanview-readonly-badge"
                   title={wbText('dataSetUploadedDescription')}
+                  aria-label={wbText('dataSetUploadedDescription')}
                 >
                   {wbText('dataSetUploaded')}
                 </span>

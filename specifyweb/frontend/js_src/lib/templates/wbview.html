@@ -1,5 +1,5 @@
 <div class="wb-header">
-  <nav class="wb-primary-row">
+  <menu class="wb-primary-row">
     <div class="wb-controls-left v-center">
       <div class="wb-name-container"></div>
       <button class="magic-button wb-show-toolkit">
@@ -43,9 +43,12 @@
       </button>
       <% } %>
     </div>
-  </nav>
-  <nav class="wb-toolkit" style="display: none">
-    <h2 class="sr-only" id="wb-toolkit-header"><%= commonText('tools') %></h2>
+  </menu>
+  <menu
+    class="wb-toolkit"
+    style="display: none"
+    aria-label="<%= commonText('tools') %>"
+  >
     <div class="wb-toolkit-left">
       <button class="magic-button wb-change-data-set-owner">
         <%= wbText('changeOwner') %>
@@ -61,6 +64,7 @@
       <button
         class="magic-button wb-convert-coordinates"
         title="<%= wbText('unavailableWithoutLocality') %>"
+        aria-label="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
         <%= wbText('convertCoordinates') %>
@@ -68,6 +72,7 @@
       <button
         class="magic-button wb-geolocate"
         title="<%= wbText('unavailableWithoutLocality') %>"
+        aria-label="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
         <%= wbText('geoLocate') %>
@@ -75,37 +80,41 @@
       <button
         class="magic-button wb-leafletmap"
         title="<%= wbText('unavailableWithoutLocality') %>"
+        aria-label="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
         <%= wbText('geoMap') %>
       </button>
     </div>
-  </nav>
+  </menu>
 </div>
 <div class="wb-main-content">
   <section class="wb-spreadsheet"></section>
   <section class="wb-uploaded-view-wrapper" style="display: none"></section>
 </div>
-<nav class="wb-navigation">
+<nav class="wb-navigation" aria-label="<%= wbText('navigation') %>">
   <span class="wb-search-replace" role="search">
     <input
       type="text"
       class="wb-search-query"
-      placeholder="Search"
-      title="Search Query"
+      placeholder="<%= commonText('search') %>"
+      title="<%= wbText('searchQuery') %>"
+      aria-label="<%= wbText('searchQuery') %>"
       spellcheck="false"
     />
     <% if(!is_uploaded){ %>
     <input
       type="text"
       class="wb-replace-value"
-      placeholder="Replace"
-      title="Replacement value"
+      placeholder="<%= wbText('replace') %>"
+      title="<%= wbText('replacementValue') %>"
+      aria-label="<%= wbText('replacementValue') %>"
     />
     <% } %>
     <button
       class="magic-button wb-advanced-search"
-      title="Configure Search & Replace"
+      title="<%= wbText('configureSearchReplace') %>"
+      aria-label="<%= wbText('configureSearchReplace') %>"
     >
       ⚙
     </button>
