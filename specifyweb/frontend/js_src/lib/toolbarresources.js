@@ -4,7 +4,7 @@ const $ = require('jquery');
 const commonText = require('./localization/common').default;
 
 function execute() {
-    $(`<dialog class="table-list-dialog">
+    $(`<aside class="table-list-dialog">
         ${commonText('resourcesDialogHeader')}
         <nav>
             <a href="/specify/appresources/" class="intercept-navigation">${commonText('appResources')}</a>

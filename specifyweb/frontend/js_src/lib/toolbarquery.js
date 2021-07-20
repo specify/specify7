@@ -262,6 +262,7 @@ module.exports =  {
         task: 'query',
         title: title,
         icon: '/static/img/query.png',
+        path: '/specify/query',
         execute: function() {
             if (dialog) return;
             var queries = new schema.models.SpQuery.LazyCollection({

@@ -113,8 +113,13 @@
     }
 }
 
-#site-nav a:hover::after {
+#site-nav a:hover::after,
+#site-nav a[aria-current]::after {
     background: #f1f2f2;
+}
+
+#site-nav a:active {
+    background: var(--b1);
 }
 
 #site-nav a:link,
@@ -122,8 +127,9 @@
     color: #555;
 }
 
-#site-nav a:hover {
-    color: #000;
+#site-nav a:hover,
+#site-nav a[aria-current] {
+    color: var(--t1);
 }
 
 #site-nav img {

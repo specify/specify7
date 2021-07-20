@@ -60,6 +60,19 @@ const commonText = require('./localization/common').default;
         currentView.render();
         $('main').append(currentView.el);
 
+        console.log(window.location.pathname);
+
+        Array.from(
+          document.getElementById('site-nav').getElementsByTagName('a'),
+          (link)=>{
+              const path = link.getAttribute('data-path');
+              if(window.location.pathname.startsWith(path))
+                  link.setAttribute('aria-current','page');
+              else
+                  link.removeAttribute('aria-current');
+          }
+       );
+
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
             $(`<aside>
                 ${commonText('versionMismatchDialogHeader')}
