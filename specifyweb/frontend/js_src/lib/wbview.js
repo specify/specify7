@@ -52,8 +52,6 @@ const getDefaultCellMeta = () => ({
    * Possible values:
    *   false - not modified
    *   true - modified
-   *   'persistent' - same as true, but is shown even if cell's value didn't
-   *     change (useful for disambiguation)
    *   'shadow' - if cell has not issues, acts like true. Else, acts like false
    *     (useful for detecting picklist value errors on the front end, without
    *     querying the back-end)
@@ -1004,18 +1002,15 @@ const WBView = Backbone.View.extend({
     if (key === 'isModified') {
       // Remove isModified state when cell is returned to it's original value
       if (
-        (currentValue === 'persistent' && value !== false) ||
-        value === 'persistent'
-      ) {
-        metaValue = 'persistent';
-        effectValue = true;
-      } else if (
-        value !== 'persistent' &&
         `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` ===
-          `${this.data[physicalRow][physicalCol] ?? ''}`
+        `${this.data[physicalRow][physicalCol] ?? ''}`
       ) {
-        metaValue = false;
-        effectValue = false;
+        const cellWasDisambiguated = this.cellWasDisambiguated(
+          physicalRow,
+          physicalCol
+        );
+        metaValue = cellWasDisambiguated;
+        effectValue = cellWasDisambiguated;
       } else if (
         value === 'shadow' &&
         this.cellMeta[physicalRow][physicalCol].issues.length > 0
@@ -1061,18 +1056,22 @@ const WBView = Backbone.View.extend({
         typeof da[mappingPathToString(mappingPath)] !== 'number'
     );
   },
+  cellWasDisambiguated(physicalRow, physicalCol) {
+    const da = this.getDisambiguation(physicalRow);
+    return Boolean(
+      this.uploadResults.ambiguousMatches[physicalRow]?.find(
+        ({ physicalCols, mappingPath }) =>
+          physicalCols.includes(physicalCol) &&
+          typeof da[mappingPathToString(mappingPath)] === 'number'
+      )
+    );
+  },
   clearDisambiguation(physicalRow) {
     const cols = this.dataset.columns.length;
     const hidden = this.data[physicalRow][cols];
     const extra = hidden ? JSON.parse(hidden) : {};
     extra.disambiguation = {};
     this.data[physicalRow][cols] = JSON.stringify(extra);
-    this.cellMeta[physicalRow]
-      .map((cell, physicalCol) => [cell, physicalCol])
-      .filter(([{ isModified }]) => isModified === 'persistent')
-      .forEach(([_cellMeta, physicalCol]) =>
-        this.updateCellMeta(physicalRow, physicalCol, 'isModified', false)
-      );
   },
   setDisambiguation(physicalRow, mappingPath, id, affectedColumns) {
     const cols = this.dataset.columns.length;
@@ -1085,7 +1084,7 @@ const WBView = Backbone.View.extend({
     this.spreadSheetChanged();
 
     affectedColumns.forEach((physicalCol) =>
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', 'persistent')
+      this.updateCellMeta(physicalRow, physicalCol, 'isModified', true)
     );
     void this.updateCellInfoStats();
   },
