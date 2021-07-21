@@ -106,10 +106,18 @@ var _ = require('underscore');
         sendToolTips: function() {
             var view = this.view;
 
-            if (!view || !view.model.saveBlockers) return;
-            _.each(view.model.saveBlockers.blockersForField(this.field), function(blocker) {
-                view.trigger('tooltipitem', blocker.reason);
-            });
+
+            const saveBlockers =
+              view?.model.saveBlockers?.blockersForField(this.field) ?? [];
+            if(saveBlockers.length > 0)
+                saveBlockers.forEach((blocker)=>
+                    view.trigger('tooltipitem', blocker.reason)
+                );
+            else if(
+              typeof view.toolTipText === 'string'
+              && view.toolTipText.length > 0
+            )
+                view.trigger('tooltipitem',view.toolTipText);
         }
     });
 
