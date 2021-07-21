@@ -1067,6 +1067,12 @@ const WBView = Backbone.View.extend({
     const extra = hidden ? JSON.parse(hidden) : {};
     extra.disambiguation = {};
     this.data[physicalRow][cols] = JSON.stringify(extra);
+    this.cellMeta[physicalRow]
+      .map((cell, physicalCol) => [cell, physicalCol])
+      .filter(([{ isModified }]) => isModified === 'persistent')
+      .forEach(([_cellMeta, physicalCol]) =>
+        this.updateCellMeta(physicalRow, physicalCol, 'isModified', false)
+      );
   },
   setDisambiguation(physicalRow, mappingPath, id, affectedColumns) {
     const cols = this.dataset.columns.length;
