@@ -118,6 +118,7 @@ const formsText = createDictionary({
   fullDate: 'Full Date',
   monthYear: 'Mon / Year',
   year: 'Year',
+  dayPlaceholder: 'DD',
   monthPlaceholder: 'MM',
   yearPlaceholder: 'YYYY',
   today: 'Today',

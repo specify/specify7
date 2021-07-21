@@ -11,6 +11,14 @@ var ToolTipMgr    = require('./tooltipmgr.js');
 var saveblockers  = require('./saveblockers.js');
 const formsText = require('./localization/forms').default;
 
+function isInputSupported(type) {
+	var input = document.createElement('input');
+	var value = 'a';
+	input.setAttribute('type', type);
+	input.setAttribute('value', value);
+	return (input.value !== value);
+}
+
     var precisions = ['full', 'month-year', 'year'];
 
 module.exports =  UIPlugin.extend({
@@ -20,6 +28,8 @@ module.exports =  UIPlugin.extend({
             'change input.partialdateui-full': 'updateFullDate',
             'change input.partialdateui-month': 'updateMonth',
             'change input.partialdateui-year': 'updateYear',
+            'paste input.partialdateui-full': 'pasteFullDate',
+            'paste input.partialdateui-month': 'pasteMonth',
             'click a.partialdateui-current-date': 'setToday'
         },
         render: function() {
@@ -37,15 +47,23 @@ module.exports =  UIPlugin.extend({
             this.setElement(ui);
             ui.find('select, input').prop('readonly', disabled);
 
+            this.inputFull = this.$('input.partialdateui-full');
+            this.inputMonth = this.$('input.partialdateui-month');
+            this.inputYear = this.$('input.partialdateui-year');
+            this.inputTypeDateSupported = isInputSupported('date');
+            this.inputTypeMonthSupported = isInputSupported('month');
+
             if (disabled) {
                 select.hide();
                 this.$('.partialdateui-current-date').hide();
             }
+            if(this.inputTypeDateSupported && this.inputTypeMonthSupported)
+                this.$('.partialdateui-current-date').hide();
 
             var label = ui.parents().last().find('label[for="' + select.prop('id') + '"]');
             label.text() || label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
 
-            this.$('input.partialdateui-full').attr({
+            this.inputFull.attr({
                 'size': dateFormatStr().length + 1,
                 'placeholder': dateFormatStr()
             });
@@ -64,9 +82,18 @@ module.exports =  UIPlugin.extend({
         setInput: function() {
             var value = this.model.get(this.init.df);
             var m = moment(value);
-            this.$('.partialdateui-full').val(value ? m.format(dateFormatStr()) : '');
-            this.$('.partialdateui-month').val(value ? m.format('M') : '');
-            this.$('.partialdateui-year').val(value ? m.format('YYYY') : '');
+
+            // If input[type="date"] or input[type="month"] is not supported,
+            // present the date in a more human readable format
+            const inputFullFormat = this.inputTypeDateSupported ?
+                  'YYYY-MM-DD' :
+                  dateFormatStr();
+            const inputMonthFormat = this.inputTypeMonthSupported ?
+                  'YYYY-MM' :
+                  'MM/YYYY';
+            this.inputFull.val(value ? m.format(inputFullFormat) : '');
+            this.inputMonth.val(value ? m.format(inputMonthFormat) : '');
+            this.inputYear.val(value ? m.format('YYYY') : '');
         },
         setPrecision: function() {
             var defaultPrec;
@@ -123,14 +150,25 @@ module.exports =  UIPlugin.extend({
             }
         },
         updateFullDate: function() {
-            var val = this.$('input.partialdateui-full').val().trim() || null;
-            var m = val && moment(val, dateFormatStr(), true);
+            let val = this.inputFull.val().trim() || null;
+            // The date would be in this format if browser supports
+            // input[type="date"]
+            let m = val && moment(val, 'YYYY-MM-DD', true);
+            // As a fallback, and on manual paste, default to preferred
+            // date format
+            if(m && !m.isValid())
+                m = moment(val, dateFormatStr(), true);
             this.updateIfValid(m, formsText('requiredFormat')(dateFormatStr()));
         },
         updateMonth: function() {
-            var orig = this.model.get(this.init.df);
-            var val = parseInt(this.$('input.partialdateui-month').val(), 10);
-            var m = (orig ? moment(orig) : moment()).month(val - 1);
+            let val = this.inputMonth.val().trim() || null;
+            // The date would be in this format if browser supports
+            // input[type="date"]
+            let m = val && moment(val, 'YYYY-MM', true);
+            // As a fallback, and on manual paste, default to
+            // the format used in the placeholder
+            if(m && !m.isValid())
+                m = moment(val, 'MM/YYYY', true);
             this.updateIfValid(m);
         },
         updateYear: function() {
@@ -141,6 +179,25 @@ module.exports =  UIPlugin.extend({
         },
         setToday: function() {
             this.updateIfValid(moment());
-        }
+        },
+        pasteFullDate(event){
+            this.pasteDate(event, this.updateFullDate.bind(this))
+        },
+        pasteMonth(event){
+            this.pasteDate(event, this.updateMonth.bind(this))
+        },
+        pasteDate(event, updateHandler){
+            const initialType = event.target.type;
+            event.target.type = 'text';
+            try {
+                event.target.value = event.originalEvent.clipboardData.getData('text/plain');
+                updateHandler();
+            } catch {
+                return;
+            }
+
+            event.preventDefault();
+            event.target.type = initialType;
+        },
     }, { pluginsProvided: ['PartialDateUI'] });
 
