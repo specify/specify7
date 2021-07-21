@@ -6,15 +6,35 @@
       <option value="3"><%= formsText('year') %></option>
     </select>
   </td>
-  <td class="partialdateui-full"><input type="text" class="partialdateui-full"></td>
-  <td class="partialdateui-month-year">
-    <input type="text" class="partialdateui-month" size="2" placeholder="<%= formsText('monthPlaceholder') %>"> /
-    <input type="text" class="partialdateui-year" size="4" placeholder="<%= formsText('yearPlaceholder') %>">
+  <td class="partialdateui-full">
+    <input
+      type="date"
+      class="partialdateui-full"
+      placeholder="<%= formsText('monthPlaceholder') %>/<%= formsText('dayPlaceholder') %>/<%= formsText('yearPlaceholder') %>"
+    />
   </td>
-  <td class="partialdateui-year"><input type="text" class="partialdateui-year" size="4" placeholder="<%= formsText('yearPlaceholder') %>"></td>
-  <td><a
-    class="partialdateui-current-date"
-    title="<%= formsText('todayButtonDescription') %>"
-    aria-label="<%= formsText('todayButtonDescription') %>"
-  ><span class="ui-icon ui-icon-calendar"><%= formsText('today') %></span></a></td>
+  <td class="partialdateui-month-year">
+    <input
+      type="month"
+      class="partialdateui-month"
+      placeholder="<%= formsText('monthPlaceholder') %>/<%= formsText('yearPlaceholder') %>"
+    />
+  </td>
+  <td class="partialdateui-year">
+    <input
+      type="number"
+      class="partialdateui-year"
+      placeholder="<%= formsText('yearPlaceholder') %>"
+      max="9999"
+    />
+  </td>
+  <td>
+    <a
+      class="partialdateui-current-date"
+      title="<%= formsText('todayButtonDescription') %>"
+      ><span class="ui-icon ui-icon-calendar"
+        ><%= formsText('today') %></span
+      ></a
+    >
+  </td>
 </table>
