@@ -69,6 +69,7 @@ module.exports =  UIPlugin.extend({
             });
 
             this.toolTipMgr = new ToolTipMgr(this).enable();
+            this.toolTipText = undefined;
             this.saveblockerEhancement = new saveblockers.FieldViewEnhancer(this, init.df);
 
             var setInput = this.setInput.bind(this);
@@ -78,6 +79,10 @@ module.exports =  UIPlugin.extend({
 
             this.model.fetchIfNotPopulated().done(setInput).done(setPrecision);
             return this;
+        },
+        remove(){
+            this.toolTipMgr.remove();
+            UIPlugin.prototype.remove.call(this);
         },
         setInput: function() {
             var value = this.model.get(this.init.df);
@@ -144,6 +149,8 @@ module.exports =  UIPlugin.extend({
                 this.setInput();
                 console.log('setting date to', value);
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
+
+                this.toolTipText = m.format(dateFormatStr());
             } else {
                 this.model.saveBlockers.add('invaliddate:' + this.init.df, this.init.df,
                                             invalidMessage || formsText('invalidDate'));
