@@ -1081,7 +1081,7 @@ const WBView = Backbone.View.extend({
     const da = extra.disambiguation || {};
     da[mappingPathToString(mappingPath)] = id;
     extra.disambiguation = da;
-    this.data[physicalRow][cols] = JSON.stringify(extra);
+    this.hot.setDataAtCell(physicalRow, cols, JSON.stringify(extra));
     this.spreadSheetChanged();
 
     affectedColumns.forEach((physicalCol) =>
