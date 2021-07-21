@@ -309,9 +309,10 @@ def datasets(request) -> http.HttpResponse:
             createdbyagent=request.specify_user_agent,
             modifiedbyagent=request.specify_user_agent,
         )
-        for i, row in enumerate(rows):
-            ds.rows.create(rownumber=i, data=row)
-
+        uploader.batch_create(models.Spdatasetrow, (
+            models.Spdatasetrow(spdataset=ds, rownumber=i, data=row)
+            for i, row in enumerate(rows)
+        ))
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
 
     else:
@@ -592,8 +593,10 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         rows = regularize_rows(len(ds.columns), json.load(request))
 
         ds.rows.all().delete()
-        for i, row in enumerate(rows):
-            ds.rows.create(rownumber=i, data=row)
+        uploader.batch_create(models.Spdatasetrow, (
+            models.Spdatasetrow(spdataset=ds, rownumber=i, data=row)
+            for i, row in enumerate(rows)
+        ))
         ds.rowresults.all().delete()
         ds.uploadresult = None
         ds.modifiedbyagent = request.specify_user_agent

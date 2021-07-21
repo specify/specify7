@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from itertools import islice
 import time
 import logging
 import csv
@@ -6,9 +7,11 @@ from datetime import datetime, timezone
 import json
 from jsonschema import validate # type: ignore
 
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set, \
+    Type, TypeVar, Iterable, Sequence
 
 from django.db import connection, transaction
+from django.db.models import Model as ModelBase
 from django.db.utils import OperationalError
 
 from specifyweb.specify import models
@@ -20,7 +23,7 @@ from .uploadable import ScopedUploadable, Row, Disambiguation, AuditLog
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
-from ..models import Spdataset
+from ..models import Spdataset, Spdatasetrowresult
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -111,8 +114,10 @@ def do_upload_dataset(
 
     results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
     success = not any(r.contains_failure() for r in results)
-    for i, r in enumerate(results):
-        ds.rowresults.create(rownumber=i, result=json.dumps(r.to_json()))
+    batch_create(Spdatasetrowresult, (
+        Spdatasetrowresult(spdataset=ds, rownumber=i, result=json.dumps(r.to_json()))
+        for i, r in enumerate(results)
+    ))
     if not no_commit:
         rs = create_record_set(ds, base_table, results) if results and success else None
         ds.uploadresult = {
@@ -124,6 +129,15 @@ def do_upload_dataset(
         ds.save(update_fields=['uploadresult'])
     return results
 
+T = TypeVar('T', bound=ModelBase)
+def batch_create(Model: Type[T], iterable: Iterable[T]) -> None:
+    batch_size = 1000
+    while True:
+        batch = list(islice(iterable, batch_size))
+        if not batch:
+            break
+        Model.objects.bulk_create(batch, batch_size)
+
 def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
@@ -133,11 +147,11 @@ def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
         type=0,
     )
     Rsi = getattr(models, 'Recordsetitem')
-    Rsi.objects.bulk_create([
+    batch_create(Rsi, (
         Rsi(order=i, recordid=r.get_id(), recordset=rs)
         for i, r in enumerate(results)
         if isinstance(r.record_result, Uploaded)
-    ])
+    ))
     return rs
 
 def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
@@ -160,10 +174,11 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
 
 def do_upload(
         collection,
-        rows: Rows,
+        cols: Sequence[str],
+        rows: Iterable[Sequence[str]],
         upload_plan: ScopedUploadable,
         uploading_agent_id: int,
-        disambiguations: Optional[List[Disambiguation]]=None,
+        # disambiguations: Optional[List[Disambiguation]]=None,
         no_commit: bool=False,
         allow_partial: bool=True,
         progress: Optional[Progress]=None
