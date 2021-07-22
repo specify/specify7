@@ -114,7 +114,7 @@ export const stateReducer = generateReducer<
                 ...(typeof state.aggregators[badgeName] === 'undefined'
                   ? {
                       width: 950,
-                      height: 600,
+                      height: 650,
                     }
                   : state.aggregators[badgeName]?.occurrenceViewLink
                   ? {

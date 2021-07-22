@@ -72,3 +72,8 @@
   align-items: center;
   padding: 0 var(--half-size);
 }
+
+.projection-opacity {
+  width: 100%;
+  padding: 0;
+}
