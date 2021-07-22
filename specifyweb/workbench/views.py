@@ -6,7 +6,7 @@ from uuid import uuid4
 from django import http
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.utils import OperationalError
 from django.views.decorators.http import require_GET, require_POST, \
     require_http_methods
@@ -500,7 +500,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
                         row.save()
 
                 ds.uploadplan = json.dumps(plan)
-                ds.rowresults.all().delete()
+                connection.cursor().execute("delete from spdatasetrowresult where spdataset_id = %s", [ds.id])
                 ds.uploadresult = None
 
             ds.save()
@@ -592,12 +592,12 @@ def rows(request, ds_id: str) -> http.HttpResponse:
 
         rows = regularize_rows(len(ds.columns), json.load(request))
 
-        ds.rows.all().delete()
+        connection.cursor().execute("delete from spdatasetrow where spdataset_id = %s", [ds.id])
         uploader.batch_create(models.Spdatasetrow, (
             models.Spdatasetrow(spdataset=ds, rownumber=i, data=row)
             for i, row in enumerate(rows)
         ))
-        ds.rowresults.all().delete()
+        connection.cursor().execute("delete from spdatasetrowresult where spdataset_id = %s", [ds.id])
         ds.uploadresult = None
         ds.modifiedbyagent = request.specify_user_agent
         ds.save()

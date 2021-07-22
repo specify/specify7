@@ -102,7 +102,8 @@ def do_upload_dataset(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     assert not ds.was_uploaded(), "Already uploaded!"
-    ds.rowresults.all().delete()
+    cursor = connection.cursor()
+    cursor.execute("delete from spdatasetrowresult where spdataset_id = %s", [ds.id])
     ds.uploadresult = None
     ds.save(update_fields=['uploadresult'])
 
