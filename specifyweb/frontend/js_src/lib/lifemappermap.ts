@@ -1,4 +1,4 @@
-import type { R, RA, RR } from './components/wbplanview';
+import type { IR, R, RA, RR } from './components/wbplanview';
 import csrfToken from './csrftoken';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
@@ -244,7 +244,7 @@ export async function prepareLifemapperProjectionMap(
   });
 
   const projectionMapResponse: {
-    readonly errors: string[];
+    readonly errors: RA<IR<string> | string>;
     readonly records: [
       {
         readonly records: {
@@ -282,7 +282,9 @@ export async function prepareLifemapperProjectionMap(
 
   if (filteredResponse.errors.length > 0)
     filteredResponse.errors.forEach((error) => {
-      messages.errorDetails[error] = error;
+      const formattedError =
+        typeof error === 'object' ? Object.values(error)[0] : String(error);
+      messages.errorDetails[formattedError] = formattedError;
     });
   else if (
     !Array.isArray(filteredResponse.records[0]?.records) ||
