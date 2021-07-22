@@ -141,9 +141,26 @@ export function LifemapperMap({
       </div>`,
     ])
       .then(([map, layerGroup]) => {
+        if (destructorCalled) {
+          destructor(map);
+          return;
+        }
+        leafletMap = map;
+
+        Leaflet.addMarkersToMap(map, layerGroup, mapInfo.markers.flat(), {
+          marker: lifemapperText('markerLayerLabel'),
+          polygon: lifemapperText('polygonLayerLabel'),
+          polygonBoundary: lifemapperText('polygonBoundaryLayerLabel'),
+          // Don't display error radii layer
+        });
+
         const projectionSlider = mapRef.current?.getElementsByClassName(
           'projection-opacity'
         )[0] as HTMLInputElement;
+
+        // The slider won't be there if there was a LifeMapper error
+        if (!Boolean(projectionSlider)) return;
+
         const defaultOpacity = cache.get('lifemapper', 'projectionOpacity', {
           defaultValue: defaultProjectionMapOpacity,
         });
@@ -169,14 +186,6 @@ export function LifemapperMap({
         );
         handleProjectionOpacityChange();
 
-        Leaflet.addMarkersToMap(map, layerGroup, mapInfo.markers.flat(), {
-          marker: lifemapperText('markerLayerLabel'),
-          polygon: lifemapperText('polygonLayerLabel'),
-          polygonBoundary: lifemapperText('polygonBoundaryLayerLabel'),
-          // Don't display error radii layer
-        });
-        if (destructorCalled) destructor(map);
-        else leafletMap = map;
         return map;
       })
       .catch((error) => {
