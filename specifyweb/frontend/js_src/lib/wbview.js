@@ -47,15 +47,7 @@ const commonText = require('./localization/common').default;
 const getDefaultCellMeta = () => ({
   // The value in this cell would be used to create a new record
   isNew: false,
-  /*
-   * This cell has been modified since last change
-   * Possible values:
-   *   false - not modified
-   *   true - modified
-   *   'shadow' - if cell has not issues, acts like true. Else, acts like false
-   *     (useful for detecting picklist value errors on the front end, without
-   *     querying the back-end)
-   * */
+  // This cell has been modified since last change
   isModified: false,
   // Whether the cells matches search query
   isSearchResult: false,
@@ -97,6 +89,7 @@ const WBView = Backbone.View.extend({
     this.liveValidationActive = false;
     this.hasUnSavedChanges = false;
     this.sortConfigIsSet = false;
+    this.undoRedoIsHandled = false;
     this.hotIsReady = false;
     this.hotPlugins = {};
 
@@ -143,7 +136,12 @@ const WBView = Backbone.View.extend({
       newRecords: {},
     };
 
-    // Throttle cell count update depending on the DS size (between 10ms and 2s)
+    /*
+     * Throttle cell count update depending on the DS size (between 10ms and 2s)
+     * Even if throttling may not be needed for small Data Sets, wrapping the
+     * function in _.throttle allows to not worry about calling it several
+     * time in a very short amount of time.
+     * */
     const throttleRate = Math.ceil(
       Math.min(2000, Math.max(10, this.data.length / 10))
     );
@@ -422,6 +420,8 @@ const WBView = Backbone.View.extend({
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
           readOnly: this.isUploaded,
+          afterUndo: this.afterUndo.bind(this),
+          afterRedo: this.afterRedo.bind(this),
           afterChange: this.afterChange.bind(this),
           beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
@@ -638,23 +638,49 @@ const WBView = Backbone.View.extend({
         ),
       ]),
     ];
-    if (JSON.stringify(issues) !== JSON.stringify(newIssues)) {
+    if (JSON.stringify(issues) !== JSON.stringify(newIssues))
       this.updateCellMeta(physicalRow, physicalCol, 'issues', newIssues);
-      // remove isModified state to make error state visible
-      if (!isValid)
-        setTimeout(
-          // need to reset the state after the afterChange hook
-          () =>
-            this.updateCellMeta(
-              physicalRow,
-              physicalCol,
-              'isModified',
-              'shadow',
-              { visualRow, visualCol }
-            ),
-          0
-        );
-    }
+  },
+  afterUndo(data) {
+    this.afterUndoRedo('undo', data);
+  },
+  afterRedo(data) {
+    this.afterUndoRedo('redo', data);
+  },
+  afterUndoRedo(type, data) {
+    if (
+      this.undoRedoIsHandled ||
+      data.actionType !== 'change' ||
+      data.changes.length !== 1
+    )
+      return;
+
+    const [visualRow, visualCol, newData, oldData] = data.changes[0];
+    const physicalRow = this.hot.toPhysicalRow(visualRow);
+    const physicalCol = this.hot.toPhysicalColumn(visualCol);
+    if (physicalCol !== this.dataset.columns.length) return;
+
+    const newValue = JSON.parse(newData || '{}').disambiguation;
+    const oldValue = JSON.parse(oldData || '{}').disambiguation;
+
+    /*
+     * Disambiguation results are cleared when value in that row changes.
+     * That change creates a separate point in the undo stack.
+     * Thus, if HOT tries to undo disambiguation clearing, we need to
+     * also undo the change that caused the clearing in the first place
+     * */
+    if (
+      type === 'undo' &&
+      Object.keys(newValue ?? {}).length !== 0 &&
+      Object.keys(oldValue ?? {}).length === 0
+    )
+      setTimeout(() => {
+        this.undoRedoIsHandled = true;
+        this.hot.undo();
+        this.undoRedoIsHandled = false;
+        this.afterChangeDisambiguation(physicalRow);
+      }, 0);
+    else this.afterChangeDisambiguation(physicalRow);
   },
   afterChange(unfilteredChanges, source) {
     if (
@@ -690,10 +716,31 @@ const WBView = Backbone.View.extend({
 
     if (changes.length === 0) return;
 
+    const changedRows = new Set(
+      changes
+        // Ignore changes to unmapped columns
+        .filter(
+          ({ physicalCol }) =>
+            this.mappings.arrayOfMappings.findIndex(
+              ({ headerName }) =>
+                this.dataset.columns.indexOf(headerName) === physicalCol
+            ) !== -1
+        )
+        .sort(
+          ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
+            visualRowLeft > visualRowRight
+        )
+        .map(({ physicalRow }) => physicalRow)
+    );
+
+    if (!this.undoRedoIsHandled)
+      changedRows.forEach((physicalRow) =>
+        this.clearDisambiguation(physicalRow)
+      );
+
     changes.forEach(
       ({ physicalRow, physicalCol, newValue, visualRow, visualCol }) => {
-        this.clearDisambiguation(physicalRow);
-        this.updateCellMeta(physicalRow, physicalCol, 'isModified', true, {
+        this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
         });
@@ -715,22 +762,7 @@ const WBView = Backbone.View.extend({
     void this.updateCellInfoStats();
 
     if (this.dataset.uploadplan)
-      new Set(
-        changes
-          // Ignore changes to unmapped columns
-          .filter(
-            ({ physicalCol }) =>
-              this.mappings.arrayOfMappings.findIndex(
-                ({ headerName }) =>
-                  this.dataset.columns.indexOf(headerName) === physicalCol
-              ) !== -1
-          )
-          .sort(
-            ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
-              visualRowLeft > visualRowRight
-          )
-          .map(({ physicalRow }) => physicalRow)
-      ).forEach((physicalRow) => this.startValidateRow(physicalRow));
+      changedRows.forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
   beforeCreateRow(visualRowStart, amount, source) {
     /*
@@ -932,16 +964,64 @@ const WBView = Backbone.View.extend({
       // Do not scroll the viewport to the last column after inserting a row
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
+  cellIsModified(physicalRow, physicalCol) {
+    // For now, only readonly picklists are validated on the front-end
+    const hasFrontEndValidationErrors = this.cellMeta[physicalRow][
+      physicalCol
+    ].issues.some((issue) =>
+      issue.startsWith(wbText('picklistValidationFailed')(''))
+    );
+    if (hasFrontEndValidationErrors) return false;
+
+    const cellValueChanged =
+      `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` !==
+      `${this.data[physicalRow][physicalCol] ?? ''}`;
+    if (cellValueChanged) return true;
+
+    return this.cellWasDisambiguated(physicalRow, physicalCol);
+  },
+  // Updates cell's isModified meta state
+  recalculateIsModifiedState(
+    physicalRow,
+    physicalCol,
+    {
+      // Can optionally provide this to improve performance
+      visualRow = undefined,
+      // Can optionally provide this to improve performance
+      visualCol = undefined,
+    } = {}
+  ) {
+    const isModified = this.cellIsModified(physicalRow, physicalCol);
+    if (this.cellMeta[physicalRow][physicalCol]['isModified'] !== isModified)
+      this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
+        visualRow,
+        visualCol,
+      });
+  },
   updateCellMeta(
     physicalRow,
     physicalCol,
     key,
     value,
     {
+      // Can optionally specify this to improve the performance
       cell: initialCell = undefined,
+      /*
+       * Whether to try fetch cell and reRender it if there was meta value
+       * change.
+       * This is set to false only in WbUtils.searchCells when it knows
+       * for sure that cell is outside the viewport
+       * */
       render = true,
+      /*
+       * Whether to run the effect even if meta value did not change
+       * Used inside of afterRenderer to apply meta styles to newly created
+       * cell
+       * */
       forceReRender = false,
+      // Can optionally provide this to improve performance
       visualRow: initialVisualRow = undefined,
+      // Can optionally provide this to improve performance
       visualCol: initialVisualCol = undefined,
     } = {}
   ) {
@@ -1001,25 +1081,6 @@ const WBView = Backbone.View.extend({
          ${visualRow}x${visualCol}`
       );
 
-    if (key === 'isModified') {
-      // Remove isModified state when cell is returned to it's original value
-      if (
-        `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` ===
-        `${this.data[physicalRow][physicalCol] ?? ''}`
-      ) {
-        const cellWasDisambiguated = this.cellWasDisambiguated(
-          physicalRow,
-          physicalCol
-        );
-        metaValue = cellWasDisambiguated;
-        effectValue = cellWasDisambiguated;
-      } else if (
-        value === 'shadow' &&
-        this.cellMeta[physicalRow][physicalCol].issues.length > 0
-      )
-        effectValue = false;
-    }
-
     const valueIsChanged = !(
       (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
         currentValue === metaValue) ||
@@ -1068,27 +1129,36 @@ const WBView = Backbone.View.extend({
       )
     );
   },
-  clearDisambiguation(physicalRow) {
+  changeDisambiguation(physicalRow, changeFunction, source) {
     const cols = this.dataset.columns.length;
     const hidden = this.data[physicalRow][cols];
     const extra = hidden ? JSON.parse(hidden) : {};
-    extra.disambiguation = {};
-    this.data[physicalRow][cols] = JSON.stringify(extra);
+    extra.disambiguation = changeFunction(extra.disambiguation || {});
+    const visualRow = this.hot.toVisualRow(physicalRow);
+    const visualCol = this.hot.toVisualColumn(cols);
+    this.hot.setDataAtCell(visualRow, visualCol, JSON.stringify(extra), source);
+    this.afterChangeDisambiguation(physicalRow);
   },
-  setDisambiguation(physicalRow, mappingPath, id, affectedColumns) {
-    const cols = this.dataset.columns.length;
-    const hidden = this.data[physicalRow][cols];
-    const extra = hidden ? JSON.parse(hidden) : {};
-    const da = extra.disambiguation || {};
-    da[mappingPathToString(mappingPath)] = id;
-    extra.disambiguation = da;
-    this.hot.setDataAtCell(physicalRow, cols, JSON.stringify(extra));
-    this.spreadSheetChanged();
-
-    affectedColumns.forEach((physicalCol) =>
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', true)
-    );
+  afterChangeDisambiguation(physicalRow) {
+    (this.uploadResults.ambiguousMatches[physicalRow] ?? [])
+      .flatMap(({ physicalCols }) => physicalCols)
+      .forEach((physicalCol) =>
+        this.recalculateIsModifiedState(physicalRow, physicalCol)
+      );
     void this.updateCellInfoStats();
+  },
+  clearDisambiguation(physicalRow) {
+    this.changeDisambiguation(physicalRow, () => ({}), 'Disambiguation.Clear');
+  },
+  setDisambiguation(physicalRow, mappingPath, id) {
+    this.changeDisambiguation(
+      physicalRow,
+      (disambiguations) => ({
+        ...disambiguations,
+        [mappingPathToString(mappingPath)]: id,
+      }),
+      'Disambiguation.Set'
+    );
   },
   disambiguateCell([
     {
@@ -1116,8 +1186,7 @@ const WBView = Backbone.View.extend({
       this.setDisambiguation(
         physicalRow,
         matches.mappingPath,
-        parseInt(selected, 10),
-        matches.physicalCols
+        parseInt(selected, 10)
       );
       this.startValidateRow(physicalRow);
     };
@@ -1138,8 +1207,7 @@ const WBView = Backbone.View.extend({
         this.setDisambiguation(
           physicalRow,
           matches.mappingPath,
-          parseInt(selected, 10),
-          matches.physicalCols
+          parseInt(selected, 10)
         );
         this.startValidateRow(physicalRow);
       }
@@ -2187,6 +2255,7 @@ module.exports = function loadDataset(
   refreshInitiatorAborted = false
 ) {
   let dialog;
+
   function showLoadingBar() {
     dialog = $('<div><div class="progress-bar"></div></div>').dialog({
       title: wbText('dataSetLoadingDialogTitle'),
@@ -2198,6 +2267,7 @@ module.exports = function loadDataset(
     });
     $('.progress-bar', dialog).progressbar({ value: false });
   }
+
   showLoadingBar();
 
   $.get(`/api/workbench/dataset/${id}/`)
