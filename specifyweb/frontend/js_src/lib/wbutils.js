@@ -132,19 +132,20 @@ module.exports = Backbone.View.extend({
         const visualRow = visualRowString | 0;
         const visualCol = visualColString | 0;
 
+        const cellTypeMatches = this.cellIsType(metaArray, type);
+        cellIsTypeCount += cellTypeMatches;
+
         const isWithinBounds =
           compareRows(visualRow) &&
           (visualRow !== currentTransposedRow || compareCols(visualCol));
-        if (!isWithinBounds) return false;
 
-        const cellTypeMatches = this.cellIsType(metaArray, type);
-        cellIsTypeCount += cellTypeMatches;
-        if (cellTypeMatches)
+        const matches = cellTypeMatches && isWithinBounds;
+        if (matches)
           matchedCell = {
             visualRow: resolveIndex(visualRow, visualCol, true),
             visualCol: resolveIndex(visualRow, visualCol, false),
           };
-        return cellTypeMatches;
+        return matches;
       })
     );
 
