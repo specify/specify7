@@ -56,16 +56,16 @@ module.exports = Backbone.View.extend({
     if (currentCol < 0) currentCol = 0;
     return [currentRow, currentCol];
   },
-  cellIsType(cellMeta, type) {
+  cellIsType(metaArray, type) {
     switch (type) {
       case 'invalidCells':
-        return cellMeta.issues.length > 0;
+        return this.wbview.getCellMetaFromArray(metaArray, 'issues').length > 0;
       case 'newCells':
-        return cellMeta.isNew === true;
+        return this.wbview.getCellMetaFromArray(metaArray, 'isNew');
       case 'modifiedCells':
-        return cellMeta.isModified !== false;
+        return this.wbview.getCellMetaFromArray(metaArray, 'isModified');
       case 'searchResults':
-        return cellMeta.isSearchResult === true;
+        return this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult');
       default:
         return false;
     }
@@ -93,7 +93,7 @@ module.exports = Backbone.View.extend({
     let matchedCell;
     let cellIsTypeCount = 0;
 
-    const getPosition = (visualRow, visualCol, first) =>
+    const resolveIndex = (visualRow, visualCol, first) =>
       (this.searchPreferences.navigation.direction === 'rowFirst') === first
         ? visualRow
         : visualCol;
@@ -101,8 +101,8 @@ module.exports = Backbone.View.extend({
     const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
 
     const [currentTransposedRow, currentTransposedCol] = [
-      getPosition(currentRow, currentCol, true),
-      getPosition(currentRow, currentCol, false),
+      resolveIndex(currentRow, currentCol, true),
+      resolveIndex(currentRow, currentCol, false),
     ];
 
     const compareRows =
@@ -123,27 +123,28 @@ module.exports = Backbone.View.extend({
      * The cellMetaObject is transposed if navigation direction is "Column
      * first".
      * In that case, the meaning of visualRow and visualCol is swapped.
-     * getPosition exists to resolve the canonical visualRow/visualCol
+     * resolveIndex exists to resolve the canonical visualRow/visualCol
      */
     orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
-      orderIt(Object.entries(metaRow)).find(([visualColString, cellMeta]) => {
+      orderIt(Object.entries(metaRow)).find(([visualColString, metaArray]) => {
         // This is 10 times faster then Number.parseInt because of a slow
         // Babel polyfill
         const visualRow = visualRowString | 0;
         const visualCol = visualColString | 0;
 
-        const cellTypeMatches = this.cellIsType(cellMeta, type);
-        cellIsTypeCount += cellTypeMatches;
-        const foundIt =
-          cellTypeMatches &&
+        const isWithinBounds =
           compareRows(visualRow) &&
           (visualRow !== currentTransposedRow || compareCols(visualCol));
-        if (foundIt)
+        if (!isWithinBounds) return false;
+
+        const cellTypeMatches = this.cellIsType(metaArray, type);
+        cellIsTypeCount += cellTypeMatches;
+        if (cellTypeMatches)
           matchedCell = {
-            visualRow: getPosition(visualRow, visualCol, true),
-            visualCol: getPosition(visualRow, visualCol, false),
+            visualRow: resolveIndex(visualRow, visualCol, true),
+            visualCol: resolveIndex(visualRow, visualCol, false),
           };
-        return foundIt;
+        return cellTypeMatches;
       })
     );
 
@@ -196,31 +197,28 @@ module.exports = Backbone.View.extend({
     return newState;
   },
   getToVisualConverters() {
-    const toVisualRow = Array.from(
-      { length: this.wbview.data.length },
-      (_, physicalRow) => this.wbview.hot.toVisualRow(physicalRow)
+    const toVisualRow = this.wbview.data.map((_, physicalRow) =>
+      this.wbview.hot.toVisualRow(physicalRow)
     );
-    const toVisualColumn = Array.from(
-      { length: this.wbview.dataset.columns.length },
-      (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
+    const toVisualColumn = this.wbview.dataset.columns.map((_, physicalCol) =>
+      this.wbview.hot.toVisualColumn(physicalCol)
     );
     return [toVisualRow, toVisualColumn];
   },
   getToPhysicalConverters() {
-    const toPhysicalRow = Array.from(
-      { length: this.wbview.data.length },
-      (_, visualRow) => this.wbview.hot.toPhysicalRow(visualRow)
+    const toPhysicalRow = this.wbview.data.map((_, visualRow) =>
+      this.wbview.hot.toPhysicalRow(visualRow)
     );
-    const toPhysicalColumn = Array.from(
-      { length: this.wbview.dataset.columns.length },
-      (_, visualCol) => this.wbview.hot.toPhysicalColumn(visualCol)
+    const toPhysicalColumn = this.wbview.dataset.columns.map((_, visualCol) =>
+      this.wbview.hot.toPhysicalColumn(visualCol)
     );
     return [toPhysicalRow, toPhysicalColumn];
   },
   async searchCells(event) {
+    const searchQueryElement =
+      this.el.getElementsByClassName('wb-search-query')[0];
     if (
-      typeof event.target !== 'undefined' &&
-      event.target.value === this.searchQuery &&
+      searchQueryElement.value === this.searchQuery &&
       !['SettingsChange', 'Enter'].includes(event.key)
     )
       return;
@@ -228,15 +226,12 @@ module.exports = Backbone.View.extend({
     if (event.key !== 'Enter' && !this.searchPreferences.search.liveUpdate)
       return;
 
-    const button = event.target;
-    const buttonContainer = button.parentElement;
-    const navigationContainer =
-      this.el.getElementsByClassName('wb-navigation')[0];
+    const navigationContainer = this.el.querySelector(
+      '.wb-navigation-section[data-navigation-type="searchResults"]'
+    );
     const navigationTotalElement = navigationContainer.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const searchQueryElement =
-      buttonContainer.getElementsByClassName('wb-search-query')[0];
     const navigationButton =
       navigationContainer.getElementsByClassName('wb-cell-navigation');
 
@@ -307,14 +302,13 @@ module.exports = Backbone.View.extend({
           render = !!cell;
         }
 
-        this.wbview.updateCellMeta(
+        this.wbview[render ? 'updateCellMeta' : 'setCellMeta'](
           physicalRow,
           physicalCol,
           'isSearchResult',
           isSearchResult,
           {
             cell,
-            render,
             visualRow,
             visualCol,
           }
@@ -350,8 +344,9 @@ module.exports = Backbone.View.extend({
     if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
       const modifications = [];
       Object.entries(this.wbview.cellMeta).forEach(([physicalRow, metaRow]) =>
-        Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          if (!cellMeta.isSearchResult) return;
+        Object.entries(metaRow).forEach(([physicalCol, metaArray]) => {
+          if (!this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult'))
+            return;
           const visualRow = this.wbview.hot.toVisualRow(
             Number.parseInt(physicalRow)
           );
@@ -387,7 +382,7 @@ module.exports = Backbone.View.extend({
       let nextCell;
       if (
         this.cellIsType(
-          this.wbview.cellMeta[physicalRow][physicalCol],
+          this.wbview.cellMeta[physicalRow]?.[physicalCol],
           'searchResults'
         )
       )
@@ -428,7 +423,6 @@ module.exports = Backbone.View.extend({
         }
         if (this.searchPreferences.search.liveUpdate) {
           this.searchCells({
-            target: this.el.getElementsByClassName('wb-search-query')[0],
             key: 'SettingsChange',
           });
         }

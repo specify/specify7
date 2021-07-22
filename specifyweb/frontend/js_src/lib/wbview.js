@@ -44,16 +44,20 @@ const cache = require('./cache');
 const wbText = require('./localization/workbench').default;
 const commonText = require('./localization/common').default;
 
-const getDefaultCellMeta = () => ({
-  // The value in this cell would be used to create a new record
-  isNew: false,
-  // This cell has been modified since last change
-  isModified: false,
-  // Whether the cells matches search query
-  isSearchResult: false,
-  // List of strings representing the validation errors
-  issues: [],
-});
+const metaKeys = [
+  'isNew',
+  'isModified',
+  'isSearchResult',
+  'issues',
+  'originalValue',
+];
+const defaultMetaValues = Object.freeze([
+  false,
+  false,
+  false,
+  Object.freeze([]),
+  undefined,
+]);
 
 const WBView = Backbone.View.extend({
   __name__: 'WbForm',
@@ -79,7 +83,6 @@ const WBView = Backbone.View.extend({
   initialize({ dataset, refreshInitiatedBy, refreshInitiatorAborted }) {
     this.dataset = dataset;
     this.data = dataset.rows;
-    this.originalData = this.data.map((row) => Array.from(row));
     if (this.data.length < 1) {
       this.data.push(Array(this.dataset.columns.length).fill(null));
     }
@@ -171,9 +174,7 @@ const WBView = Backbone.View.extend({
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
-    this.cellMeta = Array.from({ length: this.dataset.rows.length }, () =>
-      Array.from({ length: this.dataset.columns.length }, getDefaultCellMeta)
-    );
+    this.cellMeta = [];
 
     if (this.refreshInitiatedBy && this.refreshInitiatorAborted)
       this.operationAbortedMessage();
@@ -342,8 +343,7 @@ const WBView = Backbone.View.extend({
 
                       if (
                         typeof createdRecords === 'undefined' ||
-                        this.cellMeta[physicalRow]?.[physicalCol]?.isNew !==
-                          true
+                        !this.getCellMeta(physicalRow, physicalCol, 'isNew')
                       ) {
                         wrapper.textContent = wbText(
                           'noUploadResultsAvailable'
@@ -624,28 +624,19 @@ const WBView = Backbone.View.extend({
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     if (physicalCol >= this.dataset.columns.length) return;
-    const cellProperties = this.cellMeta[physicalRow][physicalCol];
-    if (cellProperties.isModified)
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', true, {
-        cell: td,
-        forceReRender: true,
+    const metaArray = this.cellMeta[physicalRow]?.[physicalCol];
+    if (this.getCellMetaFromArray(metaArray, 'isModified'))
+      this.runMetaUpdateEffects(td, 'isModified', true, visualRow, visualCol);
+    if (this.getCellMetaFromArray(metaArray, 'isNew'))
+      this.runMetaUpdateEffects(td, 'isNew', true, visualRow, visualCol);
+    if (this.getCellMetaFromArray(metaArray, 'isSearchResult'))
+      this.runMetaUpdateEffects(
+        td,
+        'isSearchResult',
+        true,
         visualRow,
-        visualCol,
-      });
-    if (cellProperties.isNew)
-      this.updateCellMeta(physicalRow, physicalCol, 'isNew', true, {
-        cell: td,
-        forceReRender: true,
-        visualRow,
-        visualCol,
-      });
-    if (cellProperties.isSearchResult)
-      this.updateCellMeta(physicalRow, physicalCol, 'isSearchResult', true, {
-        cell: td,
-        forceReRender: true,
-        visualRow,
-        visualCol,
-      });
+        visualCol
+      );
     if (typeof this.mappings?.mappedHeaders?.[physicalCol] === 'undefined')
       td.classList.add('wb-cell-unmapped');
     if (typeof this.mappings?.coordinateColumns?.[physicalCol] !== 'undefined')
@@ -666,7 +657,7 @@ const WBView = Backbone.View.extend({
 
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
-    const issues = this.cellMeta[physicalRow]?.[physicalCol]?.['issues'] ?? [];
+    const issues = this.getCellMeta(physicalRow, physicalCol, 'issues');
     const newIssues = [
       ...new Set([
         ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
@@ -701,10 +692,10 @@ const WBView = Backbone.View.extend({
     const oldValue = JSON.parse(oldData || '{}').disambiguation;
 
     /*
-     * Disambiguation results are cleared when value in that row changes.
+     * Disambiguation results are cleared when any cell in row changes.
      * That change creates a separate point in the undo stack.
      * Thus, if HOT tries to undo disambiguation clearing, we need to
-     * also undo the change that caused the clearing in the first place
+     * also need to undo the change that caused disambiguation clearing
      * */
     if (
       type === 'undo' &&
@@ -794,13 +785,27 @@ const WBView = Backbone.View.extend({
         .map(({ physicalRow }) => physicalRow)
     );
 
+    // Don't clear disambiguation when afterChange is triggered by
+    // this.hot.undo() from inside of this.afterUndoRedo()
     if (!this.undoRedoIsHandled)
       changedRows.forEach((physicalRow) =>
         this.clearDisambiguation(physicalRow)
       );
 
     changes.forEach(
-      ({ physicalRow, physicalCol, newValue, visualRow, visualCol }) => {
+      ({
+        visualRow,
+        visualCol,
+        physicalRow,
+        physicalCol,
+        oldValue,
+        newValue,
+      }) => {
+        if (
+          typeof this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
+          'undefined'
+        )
+          this.setCellMeta(physicalRow, physicalCol, 'originalValue', oldValue);
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
@@ -844,21 +849,17 @@ const WBView = Backbone.View.extend({
       { length: amount },
       (_, index) =>
         /*
-         * If HOT is not yet initialized, we can assume that physical row order
-         * and visual row order is the same
+         * If HOT is not yet fully initialized, we can assume that physical row
+         * order and visual row order is the same
          */
         this.hot?.toPhysicalRow(visualRowStart + index) ??
         visualRowStart + index
     ).sort();
 
     this.flushIndexedCellData = true;
-    addedRows.forEach((physicalRow) => {
-      this.cellMeta = [
-        ...this.cellMeta.slice(0, physicalRow),
-        this.dataset.columns.map(getDefaultCellMeta),
-        ...this.cellMeta.slice(physicalRow),
-      ];
-    });
+    addedRows
+      .filter((physicalRow) => physicalRow < this.cellMeta.length)
+      .forEach((physicalRow) => this.cellMeta.splice(physicalRow, 0, []));
     if (this.hotIsReady && source !== 'auto') this.spreadSheetChanged();
 
     return true;
@@ -866,15 +867,16 @@ const WBView = Backbone.View.extend({
   beforeRemoveRow(visualRowStart, amount, source) {
     const removedRows = Array.from({ length: amount }, (_, index) =>
       this.hot.toPhysicalRow(visualRowStart + index)
-    );
-    this.liveValidationStack = this.liveValidationStack.filter(
-      (physicalRow) => !removedRows.includes(physicalRow)
-    );
+    )
+      .sort()
+      .reverse();
+
+    removedRows.forEach((physicalRow) => {
+      this.cellMeta.splice(physicalRow, 1);
+      this.liveValidationStack.splice(physicalRow, 1);
+    });
 
     this.flushIndexedCellData = true;
-    this.cellMeta = this.cellMeta.filter(
-      (_, physicalRow) => !removedRows.includes(physicalRow)
-    );
 
     if (this.hotIsReady && source !== 'auto') {
       this.spreadSheetChanged();
@@ -1067,18 +1069,68 @@ const WBView = Backbone.View.extend({
         10
       );
   },
-  cellIsModified(physicalRow, physicalCol) {
-    // For now, only readonly picklists are validated on the front-end
-    const hasFrontEndValidationErrors = this.cellMeta[physicalRow][
-      physicalCol
-    ].issues.some((issue) =>
-      issue.endsWith(wbText('picklistValidationFailed')(''))
+  // Meta Data
+  getCellMeta(physicalRow, physicalCol, key) {
+    const index = metaKeys.indexOf(key);
+    return (
+      this.cellMeta[physicalRow]?.[physicalCol]?.[index] ??
+      defaultMetaValues[index]
     );
+  },
+  getCellMetaFromArray(metaCell, key) {
+    const index = metaKeys.indexOf(key);
+    return metaCell?.[index] ?? defaultMetaValues[index];
+  },
+  /*
+   * This does not run side effects
+   * For changing meta with side effects, use this.updateCellMeta
+   */
+  setCellMeta(physicalRow, physicalCol, key, value) {
+    // Current value of the meta property
+    const currentValue = this.getCellMeta(physicalRow, physicalCol, key);
+
+    const issuesChanged =
+      key === 'issues' &&
+      (currentValue.length !== value.length ||
+        JSON.stringify(currentValue) !== JSON.stringify(value));
+    const cellValueChanged = key === 'originalValue';
+    const metaValueChanged =
+      issuesChanged ||
+      cellValueChanged ||
+      !(
+        ['isNew', 'isModified', 'isSearchResult'].includes(key) &&
+        currentValue === value
+      );
+
+    if (!metaValueChanged) return false;
+
+    const index = metaKeys.indexOf(key);
+    this.cellMeta[physicalRow] ??= [];
+    this.cellMeta[physicalRow][physicalCol] ??= Array.from(defaultMetaValues);
+    this.cellMeta[physicalRow][physicalCol][index] = value;
+
+    this.flushIndexedCellData = true;
+
+    return true;
+  },
+  isCellModified(physicalRow, physicalCol) {
+    // For now, only readonly picklists are validated on the front-end
+    const hasFrontEndValidationErrors = this.getCellMeta(
+      physicalRow,
+      physicalCol,
+      'issues'
+    ).some((issue) => issue.startsWith(wbText('picklistValidationFailed')('')));
     if (hasFrontEndValidationErrors) return false;
 
+    const originalCellValue = this.getCellMeta(
+      physicalRow,
+      physicalCol,
+      'originalValue'
+    );
     const cellValueChanged =
-      `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` !==
-      `${this.data[physicalRow][physicalCol] ?? ''}`;
+      typeof originalCellValue !== 'undefined' &&
+      `${originalCellValue ?? ''}` !==
+        `${this.data[physicalRow][physicalCol] ?? ''}`;
     if (cellValueChanged) return true;
 
     return this.cellWasDisambiguated(physicalRow, physicalCol);
@@ -1094,66 +1146,21 @@ const WBView = Backbone.View.extend({
       visualCol = undefined,
     } = {}
   ) {
-    const isModified = this.cellIsModified(physicalRow, physicalCol);
-    if (this.cellMeta[physicalRow][physicalCol]['isModified'] !== isModified)
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
-        visualRow,
-        visualCol,
-      });
+    const isModified = this.isCellModified(physicalRow, physicalCol);
+    this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
+      visualRow,
+      visualCol,
+    });
   },
-  updateCellMeta(
-    physicalRow,
-    physicalCol,
-    key,
-    value,
-    {
-      // Can optionally specify this to improve the performance
-      cell: initialCell = undefined,
-      /*
-       * Whether to try fetch cell and reRender it if there was meta value
-       * change.
-       * This is set to false only in WbUtils.searchCells when it knows
-       * for sure that cell is outside the viewport
-       * */
-      render = true,
-      /*
-       * Whether to run the effect even if meta value did not change
-       * Used inside of afterRenderer to apply meta styles to newly created
-       * cell
-       * */
-      forceReRender = false,
-      // Can optionally provide this to improve performance
-      visualRow: initialVisualRow = undefined,
-      // Can optionally provide this to improve performance
-      visualCol: initialVisualCol = undefined,
-    } = {}
-  ) {
-    const visualRow = initialVisualRow ?? this.hot.toVisualRow(physicalRow);
-    const visualCol = initialVisualCol ?? this.hot.toVisualColumn(physicalCol);
-    const cell =
-      render && typeof initialCell === 'undefined'
-        ? this.hot.getCell(visualRow, visualCol)
-        : initialCell;
-
-    // Current value of the meta property
-    const currentValue = this.cellMeta[physicalRow][physicalCol][key];
-    // The value for which to run the sideEffect
-    let effectValue = value;
-    // The value to store in the metaObject
-    let metaValue = value;
-
-    // side effects
+  runMetaUpdateEffects(cell, key, value, visualRow, visualCol) {
     const effects = {
-      isNew: (value) =>
-        cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
-      isModified: (value) =>
-        cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
-      isSearchResult: (value) =>
-        cell?.classList[value === true ? 'add' : 'remove'](
-          'wb-search-match-cell'
-        ),
-      issues: (value) => {
-        cell?.classList[value.length === 0 ? 'remove' : 'add'](
+      isNew: () => cell.classList[value ? 'add' : 'remove']('wb-no-match-cell'),
+      isModified: () =>
+        cell.classList[value ? 'add' : 'remove']('wb-modified-cell'),
+      isSearchResult: () =>
+        cell.classList[value ? 'add' : 'remove']('wb-search-match-cell'),
+      issues: () => {
+        cell.classList[value.length === 0 ? 'remove' : 'add'](
           'wb-invalid-cell'
         );
         if (value.length === 0)
@@ -1183,21 +1190,36 @@ const WBView = Backbone.View.extend({
         `Tried to set unknown metaData record ${key}=${value} for cell
          ${visualRow}x${visualCol}`
       );
+    effects[key]();
+  },
+  updateCellMeta(
+    physicalRow,
+    physicalCol,
+    key,
+    value,
+    {
+      // Can optionally provide this to improve the performance
+      cell: initialCell = undefined,
+      // Can optionally provide this to improve performance
+      visualRow: initialVisualRow = undefined,
+      // Can optionally provide this to improve performance
+      visualCol: initialVisualCol = undefined,
+    } = {}
+  ) {
+    const isValueChanged = this.setCellMeta(
+      physicalRow,
+      physicalCol,
+      key,
+      value
+    );
+    if (!isValueChanged) return false;
 
-    const valueIsChanged =
-      (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
-        currentValue !== metaValue) ||
-      (key === 'issues' &&
-        (currentValue.length !== metaValue.length ||
-          JSON.stringify(currentValue) !== JSON.stringify(metaValue)));
+    const visualRow = initialVisualRow ?? this.hot.toVisualRow(physicalRow);
+    const visualCol = initialVisualCol ?? this.hot.toVisualColumn(physicalCol);
+    const cell = initialCell ?? this.hot.getCell(visualRow, visualCol);
+    if (cell) this.runMetaUpdateEffects(cell, key, value, visualRow, visualCol);
 
-    // Do not run the side effect if state is already in it's correct position,
-    // unless asked to forceReRender
-    if (render && (forceReRender || valueIsChanged)) effects[key](effectValue);
-
-    this.cellMeta[physicalRow][physicalCol][key] = metaValue;
-
-    if (valueIsChanged) this.flushIndexedCellData = true;
+    return true;
   },
 
   // Disambiguation
@@ -1518,26 +1540,22 @@ const WBView = Backbone.View.extend({
     const rowsToInclude = new Set();
     const colsToInclude = new Set();
     this.cellMeta.forEach((rowMeta, physicalRow) =>
-      rowMeta.forEach(({ isNew }, physicalCol) => {
-        if (!isNew) return;
+      rowMeta.forEach((metaArray, physicalCol) => {
+        if (!this.getCellMetaFromArray(metaArray, 'isNew')) return;
         rowsToInclude.add(physicalRow);
         colsToInclude.add(physicalCol);
       })
     );
-    const rowsToHide = Array.from(
-      { length: this.data.length },
-      (_, physicalRow) => physicalRow
-    )
+    const rowsToHide = this.data
+      .map((_, physicalRow) => physicalRow)
       .filter(
         (physicalRow) =>
           !rowsToInclude.has(physicalRow) &&
           !initialHiddenRows.includes(physicalRow)
       )
       .map(this.hot.toVisualRow);
-    const colsToHide = Array.from(
-      { length: this.dataset.columns.length },
-      (_, physicalCol) => physicalCol
-    )
+    const colsToHide = this.dataset.columns
+      .map((_, physicalCol) => physicalCol)
       .filter(
         (physicalCol) =>
           !colsToInclude.has(physicalCol) &&
@@ -1710,7 +1728,6 @@ const WBView = Backbone.View.extend({
     }
   },
   startUpload(mode) {
-    this.clearAllMetaData();
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';
@@ -1834,7 +1851,6 @@ const WBView = Backbone.View.extend({
   },
   save: function () {
     // Clear validation
-    this.clearAllMetaData();
     this.dataset.rowresults = null;
     this.validationMode = 'off';
     this.updateValidationButton();
@@ -1860,6 +1876,9 @@ const WBView = Backbone.View.extend({
     )
       .then(() => {
         this.spreadSheetUpToDate();
+        this.cellMeta = [];
+        this.wbutils.searchCells({ key: 'SettingsChange' });
+        this.hot.render();
       })
       .finally(() => dialog.dialog('close'));
   },
@@ -1876,6 +1895,7 @@ const WBView = Backbone.View.extend({
       recordCounts: {},
       newRecords: {},
     };
+    this.cellMeta = [];
 
     switch (this.validationMode) {
       case 'live':
@@ -1902,7 +1922,7 @@ const WBView = Backbone.View.extend({
         break;
     }
 
-    this.clearAllMetaData();
+    this.hot.render();
     this.updateValidationButton();
   },
   startValidateRow(physicalRow) {
@@ -1997,11 +2017,9 @@ const WBView = Backbone.View.extend({
       .filter((physicalCol) => physicalCol !== -1);
   },
   applyRowValidationResults(physicalRow, result, isLive) {
-    const rowMeta = this.cellMeta[physicalRow];
-    const newRowMeta = rowMeta.map((cellMeta) => ({
-      ...getDefaultCellMeta(),
-      isModified: (isLive && cellMeta.isModified) ?? false,
-      isSearchResult: cellMeta.isSearchResult ?? false,
+
+    const rowMeta = this.dataset.columns.map(() => ({
+      isNew: false,
       issues: [],
     }));
 
@@ -2009,16 +2027,21 @@ const WBView = Backbone.View.extend({
       this.resolveValidationColumns(columns, inferColumnsCallback).forEach(
         (physicalCol) => {
           if (key === 'issues')
-            newRowMeta[physicalCol][key].push(capitalize(value));
-          else newRowMeta[physicalCol][key] = value;
+            rowMeta[physicalCol][key].push(capitalize(value));
+          else rowMeta[physicalCol][key] = value;
         }
       );
 
     if (result) this.parseRowValidationResults(result, setMeta, physicalRow);
 
-    newRowMeta.forEach((cellMeta, physicalCol) => {
+    rowMeta.forEach((cellMeta, physicalCol) => {
       Object.entries(cellMeta).map(([key, value]) =>
-        this.updateCellMeta(physicalRow, physicalCol, key, value)
+        this[isLive ? 'updateCellMeta' : 'setCellMeta'](
+          physicalRow,
+          physicalCol,
+          key,
+          value
+        )
       );
     });
   },
@@ -2132,10 +2155,8 @@ const WBView = Backbone.View.extend({
       return;
     }
 
-    this.hot.batch(() => {
-      this.dataset.rowresults.forEach((result, physicalRow) => {
-        this.applyRowValidationResults(physicalRow, result, false);
-      });
+    this.dataset.rowresults.forEach((result, physicalRow) => {
+      this.applyRowValidationResults(physicalRow, result, false);
     });
 
     void this.updateCellInfoStats();
@@ -2194,23 +2215,27 @@ const WBView = Backbone.View.extend({
 
   // MetaData
   async updateCellInfoStats() {
-    const cellMeta = this.cellMeta.flat(2);
+    const cellMeta = this.cellMeta.flat();
 
     const cellCounts = {
       newCells: cellMeta.reduce(
-        (count, info) => count + (info.isNew ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isNew') ? 1 : 0),
         0
       ),
       invalidCells: cellMeta.reduce(
-        (count, info) => count + (info.issues?.length ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'issues').length ? 1 : 0),
         0
       ),
       searchResults: cellMeta.reduce(
-        (count, info) => count + (info.isSearchResult ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isSearchResult') ? 1 : 0),
         0
       ),
       modifiedCells: cellMeta.reduce(
-        (count, info) => count + (info.isModified ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isModified') ? 1 : 0),
         0
       ),
     };
@@ -2342,30 +2367,10 @@ const WBView = Backbone.View.extend({
     this.refreshInitiatedBy = undefined;
     this.refreshInitiatorAborted = false;
   },
-  clearAllMetaData() {
-    if (this.hot.isDestroyed) return;
-    const { isSearchResult: _, ...partialDefaultCellMeta } =
-      getDefaultCellMeta();
-    const cellMeta = Object.entries(partialDefaultCellMeta);
-    const columnIndexes = this.dataset.columns.map(
-      (_, physicalCol) => physicalCol
-    );
-    this.uploadResults.ambiguousMatches = [];
-    this.hot.batch(() =>
-      Array.from({ length: this.hot.countRows() }, (_, physicalRow) =>
-        columnIndexes.forEach((physicalCol) =>
-          cellMeta.forEach(([key, value]) =>
-            this.updateCellMeta(physicalRow, physicalCol, key, value)
-          )
-        )
-      )
-    );
-    void this.updateCellInfoStats();
-  },
   getCellMetaObject() {
     /*
-     * Return's this.cellMeta, but instead of being indexed by physical row/col
-     * indexes, the resulting array is indexed by visual row/col indexes.
+     * Returns this.cellMeta, but instead of indexing by physical row/col,
+     * indexes by visual row/col
      *
      * This is used for navigation among cells.
      *
