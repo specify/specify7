@@ -247,7 +247,7 @@ const WBView = Backbone.View.extend({
 
     this.updateValidationButton();
     if (this.validationMode === 'static')
-      this.el.classList.remove('wb-hide-invalid-cells');
+      this.wbutils.toggleCellTypes('invalidCells', 'remove');
 
     this.flushIndexedCellData = true;
     window.addEventListener('resize', this.handleResize);
@@ -1445,9 +1445,11 @@ const WBView = Backbone.View.extend({
     });
 
     const newCellsAreHidden = this.el.classList.contains('wb-hide-new-cells');
-    effects.push(() => this.el.classList.remove('wb-hide-new-cells'));
+    effects.push(() => this.wbutils.toggleCellTypes('newCells', 'remove'));
     effectsCleanup.push(() =>
-      newCellsAreHidden ? this.el.classList.add('wb-hide-new-cells') : undefined
+      newCellsAreHidden
+        ? this.wbutils.toggleCellTypes('newCells', 'add')
+        : undefined
     );
 
     effects.push(() => this.el.classList.add('wb-show-upload-results'));
@@ -1757,12 +1759,12 @@ const WBView = Backbone.View.extend({
           (_, visualRow) => this.hot.toPhysicalRow(visualRow)
         ).reverse();
         this.triggerLiveValidation();
-        this.el.classList.remove('wb-hide-new-cells', 'wb-hide-invalid-cells');
-        this.el.classList.add('wb-hide-modified-cells');
+        this.wbutils.toggleCellTypes('newCells', 'remove');
+        this.wbutils.toggleCellTypes('invalidCells', 'remove');
         break;
       case 'static':
         this.getValidationResults();
-        this.el.classList.remove('wb-hide-invalid-cells');
+        this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
         break;

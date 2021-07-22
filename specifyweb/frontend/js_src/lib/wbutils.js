@@ -171,14 +171,14 @@ module.exports = Backbone.View.extend({
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
   toggleCellTypes(e, action = 'toggle') {
-    let groupName;
-    if (typeof e === 'string') groupName = e;
+    let buttonLabel;
+    if (typeof e === 'string') buttonLabel = e;
     else {
       const button = e.target;
       const buttonContainer = button.closest('.wb-navigation-section');
       const buttonLabel = buttonContainer.getAttribute('data-navigation-type');
-      groupName = WbPlanViewHelper.camelToKebab(buttonLabel);
     }
+    const groupName = WbPlanViewHelper.camelToKebab(buttonLabel);
     const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
   },
@@ -212,7 +212,7 @@ module.exports = Backbone.View.extend({
     )
       return;
 
-    this.toggleCellTypes('search-results', 'remove');
+    this.toggleCellTypes('searchResults', 'remove');
 
     const button = event.target;
     const buttonContainer = button.parentElement;
