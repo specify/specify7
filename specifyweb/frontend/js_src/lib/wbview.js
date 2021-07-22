@@ -410,10 +410,12 @@ const WBView = Backbone.View.extend({
                   ),
                   separator_2: '---------',
                   undo: {
-                    disabled: () => this.uploadedView,
+                    disabled: () =>
+                      this.uploadedView || !this.hot.isUndoAvailable(),
                   },
                   redo: {
-                    disabled: () => this.uploadedView,
+                    disabled: () =>
+                      this.uploadedView || !this.hot.isRedoAvailable(),
                   },
                 },
           },
