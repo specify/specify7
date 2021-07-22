@@ -25,7 +25,6 @@ from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
 from ..models import Spdataset, Spdatasetrowresult
 
-Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
 
 logger = logging.getLogger(__name__)
@@ -107,12 +106,19 @@ def do_upload_dataset(
     ds.uploadresult = None
     ds.save(update_fields=['uploadresult'])
 
-    ncols = len(ds.columns)
-    rows = [dict(zip(ds.columns, row)) for row in ds.rows.values_list('data', flat=True)]
-    disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.rows.values_list('data', flat=True)]
+    def rows():
+        last_rownumber = -1
+        while True:
+            rs = ds.rows.filter(rownumber__gt=last_rownumber)[:1000]
+            if not rs:
+                break
+            for r in rs:
+                last_rownumber = r.rownumber
+                yield r.data
+
     base_table, upload_plan = get_ds_upload_plan(collection, ds)
 
-    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
+    results = do_upload(collection, ds.columns, rows(), upload_plan, uploading_agent_id, no_commit, allow_partial, progress)
     success = not any(r.contains_failure() for r in results)
     batch_create(Spdatasetrowresult, (
         Spdatasetrowresult(spdataset=ds, rownumber=i, result=json.dumps(r.to_json()))
@@ -154,7 +160,7 @@ def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
     ))
     return rs
 
-def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
+def get_disambiguation_from_row(ncols: int, row: Sequence[str]) -> Disambiguation:
     extra = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
 
@@ -178,7 +184,6 @@ def do_upload(
         rows: Iterable[Sequence[str]],
         upload_plan: ScopedUploadable,
         uploading_agent_id: int,
-        # disambiguations: Optional[List[Disambiguation]]=None,
         no_commit: bool=False,
         allow_partial: bool=True,
         progress: Optional[Progress]=None
@@ -194,9 +199,9 @@ def do_upload(
         tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
-            da = disambiguations[i] if disambiguations else None
+            da = get_disambiguation_from_row(len(cols), row)
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditlog, cache)
+                bind_result = upload_plan.disambiguate(da).bind(collection, dict(zip(cols, row)), uploading_agent_id, _auditlog, cache)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
@@ -214,8 +219,6 @@ def do_upload(
             fixup_trees(upload_plan, results)
 
     return results
-
-do_upload_csv = do_upload
 
 def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation) -> UploadResult:
     retries = 3

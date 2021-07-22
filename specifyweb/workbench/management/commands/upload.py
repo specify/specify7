@@ -43,4 +43,4 @@ class Command(BaseCommand):
         ds = Spdataset.objects.get(id=options['dataset_id'])
         agent = Agent.objects.get(id=options['agent_id'])
         result = do_upload_dataset(specify_collection, agent.id, ds, not options['commit'], options['allow_partial'])
-        self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))
+

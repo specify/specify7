@@ -8,7 +8,7 @@ from django.db import transaction
 
 from specifyweb.specify import models
 
-from specifyweb.workbench.upload.upload import do_upload_csv
+from specifyweb.workbench.upload.upload import do_upload
 from specifyweb.workbench.upload.upload_plan_schema import schema, parse_plan
 
 Collection = getattr(models, 'Collection')
@@ -37,8 +37,10 @@ class Command(BaseCommand):
         validate(plan, schema)
 
         with open(options['csv_file'], newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            result = do_upload_csv(specify_collection, reader, parse_plan(specify_collection, plan).apply_scoping(specify_collection), not options['commit'])
+            reader = csv.reader(csvfile)
+            cols = next(reader)
+            plan = parse_plan(specify_collection, plan).apply_scoping(specify_collection)
+            result = do_upload(specify_collection, cols, reader, plan, not options['commit'])
 
         self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))
 
