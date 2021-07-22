@@ -40,6 +40,13 @@ type SetOccurrenceNameAction = Action<
   }
 >;
 
+type SetSpeciesViewLinksAction = Action<
+  'SetSpeciesViewLinksAction',
+  {
+    speciesViewLinks: IR<string>;
+  }
+>;
+
 export type MapInfo = {
   readonly layers: RA<LayerConfig>;
   readonly markers: RA<MarkerGroups>;
@@ -53,7 +60,8 @@ export type Actions =
   | ToggleBadgeAction
   | DisableBadgeAction
   | MapLoadedAction
-  | SetOccurrenceNameAction;
+  | SetOccurrenceNameAction
+  | SetSpeciesViewLinksAction;
 
 export const reducer = generateReducer<States, Actions>({
   LoadedAction: ({ action }) => ({
@@ -107,5 +115,23 @@ export const reducer = generateReducer<States, Actions>({
   SetOccurrenceNameAction: ({ action: { occurrenceName }, state }) => ({
     ...mainState(state),
     occurrenceName,
+  }),
+  SetSpeciesViewLinksAction: ({ action: { speciesViewLinks }, state }) => ({
+    ...mainState(state),
+    aggregators: Object.fromEntries(
+      Object.entries(mainState(state).aggregators).map(
+        ([aggregator, aggregatorData]) => [
+          aggregator,
+          {
+            ...aggregatorData,
+            ...(aggregator in speciesViewLinks
+              ? {
+                  speciesViewLink: speciesViewLinks[aggregator],
+                }
+              : {}),
+          },
+        ]
+      )
+    ),
   }),
 });

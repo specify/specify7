@@ -24,9 +24,10 @@ const lifemapperText = createDictionary({
     `Record was indexed by ${aggregatorName}`,
   viewOccurrenceAt: (aggregatorName: string): string =>
     `View occurrence at ${aggregatorName}`,
+  viewSpeciesAt: (aggregatorName: string): string =>
+    `View species at ${aggregatorName}`,
   projection: 'Lifemapper Distribution Model',
   occurrencePoints: 'GBIF Occurrence Points',
-  moreDetails: 'More Details',
   overLimitMessage: (limit: number) =>
     `Only the first ${limit} specimens are shown`,
   errorsOccurred:

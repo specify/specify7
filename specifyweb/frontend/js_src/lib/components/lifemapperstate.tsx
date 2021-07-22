@@ -25,6 +25,7 @@ export type MainState = State<
       readonly issues?: IR<string>;
       readonly occurrenceName: string;
       readonly occurrenceViewLink: string;
+      readonly speciesViewLink?: string;
     }>;
     occurrenceName?: string;
     mapInfo: string | MapInfo;
@@ -116,25 +117,26 @@ export const stateReducer = generateReducer<
                       width: 950,
                       height: 650,
                     }
-                  : state.aggregators[badgeName]?.occurrenceViewLink
-                  ? {
+                  : {
                       buttons: [
                         {
                           text: commonText('close'),
                           click: closeDialog,
                         },
-                        {
-                          text: lifemapperText('moreDetails'),
-                          click: (): void =>
-                            void window.open(
-                              formatLifemapperViewPageRequest(
-                                guid,
-                                state.occurrenceName ?? '',
-                                badgeName
-                              ),
-                              '_blank'
-                            ),
-                        },
+                        ...(typeof state.aggregators[badgeName]
+                          ?.speciesViewLink === 'string'
+                          ? [
+                              {
+                                text: lifemapperText('viewSpeciesAt')(label),
+                                click: (): void =>
+                                  void window.open(
+                                    state.aggregators[badgeName]
+                                      .speciesViewLink,
+                                    '_blank'
+                                  ),
+                              },
+                            ]
+                          : []),
                         {
                           text: lifemapperText('viewOccurrenceAt')(label),
                           click: (): void =>
@@ -145,8 +147,7 @@ export const stateReducer = generateReducer<
                         },
                       ],
                       width: 500,
-                    }
-                  : {}),
+                    }),
               }}
             >
               {typeof state.aggregators[badgeName] === 'undefined' ? (

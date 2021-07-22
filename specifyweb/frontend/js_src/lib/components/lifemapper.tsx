@@ -17,6 +17,7 @@ import type { ComponentProps } from './lifemapperwrapper';
 import type { IR, RA } from './wbplanview';
 
 type AggregatorResponseBase = {
+  readonly count: number;
   readonly provider: {
     readonly code: string;
     readonly label: string;
@@ -25,19 +26,17 @@ type AggregatorResponseBase = {
   };
 };
 
-type AggregatorResponseWithoutData = AggregatorResponseBase & {
-  readonly records: [];
+type AggregatorResponse = AggregatorResponseBase & {
+  readonly records: RA<{
+    readonly 's2n:issues'?: IR<string>;
+    readonly 'dwc:scientificName': string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    readonly 's2n:view_url': string;
+  }>;
 };
 
-type AggregatorResponseWithData = AggregatorResponseBase & {
-  readonly records: [
-    {
-      readonly 's2n:issues'?: IR<string>;
-      readonly 'dwc:scientificName': string;
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      readonly 's2n:view_url': string;
-    }
-  ];
+type FullAggregatorResponse = {
+  readonly records: RA<AggregatorResponse>;
 };
 
 export function Lifemapper({
@@ -57,42 +56,37 @@ export function Lifemapper({
       mode: 'cors',
     })
       .then(async (response) => response.json())
-      .then(
-        (response: {
-          readonly records: RA<
-            AggregatorResponseWithoutData | AggregatorResponseWithData
-          >;
-        }) =>
-          dispatch({
-            type: 'LoadedAction',
-            occurrenceData: Object.fromEntries(
-              response.records
-                .filter(
-                  ({ provider }) => !ignoredAggregators.includes(provider.code)
-                )
-                .map(({ provider, records }) => [
-                  provider.code,
-                  {
-                    badge: {
-                      label: provider.label,
-                      isOpen: false,
-                      isActive:
-                        provider.status_code === HTTP_OK &&
-                        typeof records[0] !== 'undefined',
-                    },
-                    aggregator:
+      .then((response: FullAggregatorResponse) =>
+        dispatch({
+          type: 'LoadedAction',
+          occurrenceData: Object.fromEntries(
+            response.records
+              .filter(
+                ({ provider }) => !ignoredAggregators.includes(provider.code)
+              )
+              .map(({ provider, records }) => [
+                provider.code,
+                {
+                  badge: {
+                    label: provider.label,
+                    isOpen: false,
+                    isActive:
                       provider.status_code === HTTP_OK &&
-                      typeof records[0] !== 'undefined'
-                        ? {
-                            issues: records[0]['s2n:issues'],
-                            occurrenceName: records[0]['dwc:scientificName'],
-                            occurrenceViewLink: records[0]['s2n:view_url'],
-                          }
-                        : undefined,
+                      typeof records[0] !== 'undefined',
                   },
-                ])
-            ),
-          })
+                  aggregator:
+                    provider.status_code === HTTP_OK &&
+                    typeof records[0] !== 'undefined'
+                      ? {
+                          issues: records[0]['s2n:issues'],
+                          occurrenceName: records[0]['dwc:scientificName'],
+                          occurrenceViewLink: records[0]['s2n:view_url'],
+                        }
+                      : undefined,
+                },
+              ])
+          ),
+        })
       )
       .catch((error) => {
         console.error(error);
@@ -103,8 +97,14 @@ export function Lifemapper({
   // Fetch occurrence name
   const aggregators =
     state.type === 'MainState' ? state.aggregators : undefined;
+  const occurrenceName =
+    state.type === 'MainState' ? state.occurrenceName : undefined;
   React.useEffect(() => {
-    if (state.type !== 'MainState' || typeof aggregators === 'undefined')
+    if (
+      state.type !== 'MainState' ||
+      typeof aggregators === 'undefined' ||
+      typeof occurrenceName !== 'undefined'
+    )
       return;
 
     const remoteOccurrence =
@@ -112,6 +112,8 @@ export function Lifemapper({
         .filter((aggregatorInfo) => aggregatorInfo)
         .map((aggregatorInfo) => aggregatorInfo?.occurrenceName)
         .find((occurrenceName) => occurrenceName) ?? '';
+
+    let nameResponse: undefined | FullAggregatorResponse = undefined;
 
     new Promise<string>((resolve) => {
       resolve(
@@ -121,14 +123,15 @@ export function Lifemapper({
                 mode: 'cors',
               })
                 .then(async (response) => response.json())
-                .then(
-                  (response: {
-                    readonly records: RA<{ readonly count: number }>;
-                  }) =>
-                    response.records.some(({ count }) => count !== 0)
-                      ? localOccurrence
-                      : ''
-                )
+                .then((response: FullAggregatorResponse) => {
+                  const matched = response.records.some(
+                    ({ count }) => count !== 0
+                  )
+                    ? localOccurrence
+                    : '';
+                  if (matched) nameResponse = response;
+                  return matched;
+                })
             )
           : remoteOccurrence
       );
@@ -137,14 +140,44 @@ export function Lifemapper({
         console.error(error);
         return '';
       })
-      .then((occurrenceName) =>
+      .then((occurrenceName) => {
         dispatch({
           type: 'SetOccurrenceNameAction',
           occurrenceName,
+        });
+        return occurrenceName;
+      })
+      .then(async (occurrenceName) =>
+        (typeof nameResponse === 'object'
+          ? Promise.resolve(nameResponse)
+          : fetch(formatNameDataRequest(occurrenceName), { mode: 'cors' }).then(
+              async (response) => response.json()
+            )
+        ).then((response: FullAggregatorResponse) =>
+          Object.fromEntries(
+            response.records
+              .filter((record) => record.count === 1)
+              .map((record) => ({
+                provider: record.provider.code,
+                viewUrl: record.records[0]['s2n:view_url'],
+              }))
+              .filter(({ provider }) => provider in aggregators)
+              .map(({ provider, viewUrl }) => [provider, viewUrl])
+          )
+        )
+      )
+      .catch((error) => {
+        console.error(error);
+        return {};
+      })
+      .then((speciesViewLinks) =>
+        dispatch({
+          type: 'SetSpeciesViewLinksAction',
+          speciesViewLinks,
         })
       )
       .catch(console.error);
-  }, [state.type, aggregators, model]);
+  }, [state.type, aggregators, occurrenceName, model]);
 
   /*
    * Fetch related CO records
@@ -153,8 +186,6 @@ export function Lifemapper({
   const isOpen =
     state.type === 'MainState' ? state.badges.lm.isOpen : undefined;
   const mapInfo = state.type === 'MainState' ? state.mapInfo : undefined;
-  const occurrenceName =
-    state.type === 'MainState' ? state.occurrenceName : undefined;
   React.useEffect(() => {
     if (
       !Boolean(isOpen) ||
