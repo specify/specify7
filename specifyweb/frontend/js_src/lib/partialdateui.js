@@ -28,8 +28,8 @@ module.exports =  UIPlugin.extend({
             'change input.partialdateui-full': 'updateFullDate',
             'change input.partialdateui-month': 'updateMonth',
             'change input.partialdateui-year': 'updateYear',
-            'paste input.partialdateui-full': 'pasteFullDate',
-            'paste input.partialdateui-month': 'pasteMonth',
+            'paste td.partialdateui-full': 'pasteFullDate',
+            'paste td.partialdateui-month': 'pasteMonth',
             'click a.partialdateui-current-date': 'setToday'
         },
         render: function() {
@@ -141,6 +141,7 @@ module.exports =  UIPlugin.extend({
                 this.setInput();
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
                 console.log('setting date to null');
+                this.toolTipText = undefined;
             } else if (m.isValid()) {
                 var value = m.format('YYYY-MM-DD');
                 this.model.set(this.init.df, value);
@@ -194,17 +195,23 @@ module.exports =  UIPlugin.extend({
             this.pasteDate(event, this.updateMonth.bind(this))
         },
         pasteDate(event, updateHandler){
-            const initialType = event.target.type;
-            event.target.type = 'text';
+            const input =
+                event.target.tagName === 'INPUT' ?
+                    event.target :
+                    event.target.getElementsByTagName('input')[0];
+            const initialType = input.type;
+            input.type = 'text';
             try {
-                event.target.value = event.originalEvent.clipboardData.getData('text/plain');
+                input.value = (
+                  event.originalEvent.clipboardData ?? window.clipboardData
+                ).getData('text/plain');
                 updateHandler();
             } catch {
                 return;
             }
 
             event.preventDefault();
-            event.target.type = initialType;
+            input.type = initialType;
         },
     }, { pluginsProvided: ['PartialDateUI'] });
 
