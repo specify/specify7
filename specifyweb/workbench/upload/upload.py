@@ -161,8 +161,11 @@ def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
     return rs
 
 def get_disambiguation_from_row(ncols: int, row: Sequence[str]) -> Disambiguation:
-    extra = json.loads(row[ncols]) if row[ncols] else None
-    return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
+    if len(row) > ncols:
+        extra = json.loads(row[ncols]) if row[ncols] else None
+        return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
+    else:
+        return None
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
     if ds.uploadplan is None:
