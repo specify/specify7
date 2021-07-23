@@ -32,7 +32,8 @@ module.exports = Backbone.View.extend({
     this.wbview = wbview;
 
     this.localityColumns = [];
-    this.searchQuery = '';
+    this.searchQuery = undefined;
+    this.rawSearchQuery = undefined;
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
     this.geoLocateDialog = undefined;
@@ -215,11 +216,53 @@ module.exports = Backbone.View.extend({
     );
     return [toPhysicalRow, toPhysicalColumn];
   },
+  parseSearchQuery() {
+    const searchQueryElement =
+      this.el.getElementsByClassName('wb-search-query')[0];
+
+    this.rawSearchQuery = searchQueryElement.value;
+
+    this.searchQuery = this.searchPreferences.search.useRegex
+      ? this.rawSearchQuery
+      : this.rawSearchQuery.trim();
+
+    if (this.searchQuery === '') {
+      this.searchQuery = undefined;
+      return;
+    }
+
+    if (this.searchPreferences.search.useRegex)
+      try {
+        if (this.searchPreferences.search.fullMatch) {
+          if (this.searchQuery[0] !== '^')
+            this.searchQuery = `^${this.searchQuery}`;
+          if (this.searchQuery.slice(-1) !== '$')
+            this.searchQuery = `${this.searchQuery}$`;
+        }
+        this.searchQuery = RegExp(
+          this.searchQuery,
+          this.searchPreferences.search.caseSensitive ? '' : 'i'
+        );
+      } catch (error) {
+        searchQueryElement.classList.add('wb-search-query-invalid');
+        searchQueryElement.setAttribute('title', error.toString());
+        this.searchQuery = undefined;
+        return;
+      }
+    else if (!this.searchPreferences.search.caseSensitive)
+      this.searchQuery = this.searchQuery.toLowerCase();
+
+    searchQueryElement.classList.remove('wb-search-query-invalid');
+    searchQueryElement.removeAttribute('title');
+
+    return this.searchQuery;
+  },
   async searchCells(event) {
     const searchQueryElement =
       this.el.getElementsByClassName('wb-search-query')[0];
+
     if (
-      searchQueryElement.value === this.searchQuery &&
+      searchQueryElement.value === this.rawSearchQuery &&
       !['SettingsChange', 'Enter'].includes(event.key)
     )
       return;
@@ -233,35 +276,16 @@ module.exports = Backbone.View.extend({
     const navigationTotalElement = navigationContainer.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const navigationButton =
-      navigationContainer.getElementsByClassName('wb-cell-navigation');
 
-    this.searchQuery = this.searchPreferences.search.useRegex
-      ? searchQueryElement.value
-      : searchQueryElement.value.trim();
-
-    if (this.searchQuery === '') {
+    if (typeof this.parseSearchQuery() === 'undefined') {
       navigationTotalElement.innerText = '0';
       this.toggleCellTypes('searchResults', 'add');
       return;
     }
-
-    if (this.searchPreferences.search.useRegex)
-      try {
-        RegExp(
-          this.searchPreferences.search.fullMatch
-            ? `^${this.searchQuery}$`
-            : this.searchQuery
-        );
-      } catch (error) {
-        searchQueryElement.classList.add('wb-search-query-invalid');
-        searchQueryElement.setAttribute('title', error.toString());
-        this.toggleCellTypes('searchResults', 'add');
-        return;
-      }
-    searchQueryElement.classList.remove('wb-search-query-invalid');
-    searchQueryElement.removeAttribute('title');
     this.toggleCellTypes('searchResults', 'remove');
+
+    const navigationButton =
+      navigationContainer.getElementsByClassName('wb-cell-navigation');
 
     let resultsCount = 0;
     const data = this.wbview.dataset.rows;
@@ -286,13 +310,17 @@ module.exports = Backbone.View.extend({
         const searchValue = cellData
           ? cellData
           : this.wbview.mappings?.defaultValues[physicalCol] ?? '';
-        const isSearchResult = this.searchFunction(
-          this.searchQuery,
-          searchValue
-        );
+        const isSearchResult = this.searchFunction(searchValue);
 
         let cell = undefined;
         let render = false;
+
+        /*
+         * Calling this.wbview.hot.getCell only if cell is within the render
+         * bounds.
+         * While hot.getCell is supposed to check for this too, doing it this
+         * way makes search about 25% faster
+         * */
         if (
           firstVisibleRow <= visualRow &&
           lastVisibleRow >= visualRow &&
@@ -435,36 +463,20 @@ module.exports = Backbone.View.extend({
       },
     }).render();
   },
-  searchFunction(initialSearchQuery, initialCellValue) {
-    let cellValue = initialCellValue;
-    let searchQuery = initialSearchQuery;
+  searchFunction(initialCellValue) {
+    let cellValue = initialCellValue ?? '';
 
-    if (cellValue === null) cellValue = '';
+    if (typeof this.searchQuery === 'undefined') return false;
 
-    if (!this.searchPreferences.search.caseSensitive) {
+    if (!this.searchPreferences.search.caseSensitive)
       cellValue = cellValue.toLowerCase();
-      searchQuery = searchQuery.toLowerCase();
-    }
 
     if (this.searchPreferences.search.useRegex)
-      try {
-        return !!cellValue.match(
-          RegExp(
-            this.searchPreferences.search.fullMatch
-              ? `^(?:${searchQuery})$`
-              : searchQuery,
-            this.searchPreferences.search.caseSensitive ? '' : 'i'
-          )
-        );
-      } catch (error) {
-        // Ignore exceptions on invalid regex
-        if (error instanceof SyntaxError) return;
-        else throw error;
-      }
+      return cellValue.search(this.searchQuery) !== -1;
 
-    if (this.searchPreferences.search.fullMatch)
-      return cellValue === searchQuery;
-    else return cellValue.includes(searchQuery);
+    return this.searchPreferences.search.fullMatch
+      ? cellValue === this.searchQuery
+      : cellValue.includes(this.searchQuery);
   },
   toggleToolkit(event) {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];

@@ -812,13 +812,13 @@ const WBView = Backbone.View.extend({
         });
         if (
           this.wbutils.searchPreferences.search.liveUpdate &&
-          this.wbutils.searchQuery !== ''
+          typeof this.wbutils.searchQuery !== 'undefined'
         )
           this.updateCellMeta(
             physicalRow,
             physicalCol,
             'isSearchResult',
-            this.wbutils.searchFunction(this.wbutils.searchQuery, newValue),
+            this.wbutils.searchFunction(newValue),
             { visualRow, visualCol }
           );
       }
@@ -2017,7 +2017,6 @@ const WBView = Backbone.View.extend({
       .filter((physicalCol) => physicalCol !== -1);
   },
   applyRowValidationResults(physicalRow, result, isLive) {
-
     const rowMeta = this.dataset.columns.map(() => ({
       isNew: false,
       issues: [],
