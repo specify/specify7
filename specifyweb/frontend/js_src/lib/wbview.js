@@ -2386,8 +2386,8 @@ const WBView = Backbone.View.extend({
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          const visualRow = this.hot.toVisualRow(physicalRow);
-          const visualCol = this.hot.toPhysicalRow(physicalCol);
+          const visualRow = this.hot.toVisualRow(physicalRow | 0);
+          const visualCol = this.hot.toPhysicalRow(physicalCol | 0);
           indexedCellMeta[getPosition(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[getPosition(visualRow, visualCol, true)][
             getPosition(visualRow, visualCol, false)
