@@ -42,5 +42,5 @@ class Command(BaseCommand):
         specify_collection = Collection.objects.get(id=options['collection_id'])
         ds = Spdataset.objects.get(id=options['dataset_id'])
         agent = Agent.objects.get(id=options['agent_id'])
-        result = do_upload_dataset(specify_collection, agent.id, ds, not options['commit'], options['allow_partial'])
+        do_upload_dataset(specify_collection, agent.id, ds, not options['commit'], options['allow_partial'])
 
