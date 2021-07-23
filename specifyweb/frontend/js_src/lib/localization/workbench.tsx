@@ -66,11 +66,12 @@ const wbText = createDictionary({
   deleteDataSetDialogHeader: createHeader('Delete this Data Set?'),
   deleteDataSetDialogMessage: `
     Deleting a Data Set permanently removes it and its Upload Plan.
-    Data mappings will not be available for re-use; Rollback will not be
-    an option for an uploaded Data Set.`,
-  dataSetDeletedTitle: 'Delete Data Set',
-  dataSetDeletedHeader: createHeader('Data Set successfully deleted'),
-  dataSetDeletedMessage: 'Data Set successfully deleted.',
+    Data mappings will no longer be available for re-use with other
+    Data Sets. Also after deleting, Rollback will no longer be an option for
+    an uploaded Data Set.`,
+  dataSetDeletedDialogTitle: 'Delete Data Set',
+  dataSetDeletedDialogHeader: createHeader('Data Set successfully deleted'),
+  dataSetDeletedDialogMessage: 'Data Set successfully deleted.',
   revertChangesDialogTitle: 'Revert Changes',
   revertChangesDialogHeader: createHeader('Revert Unsaved Changes?'),
   revertChangesDialogMessage: `
@@ -146,6 +147,8 @@ const wbText = createDictionary({
   ),
 
   // Misc
+  unmappedColumn: 'Unmapped Column',
+  emptyStringInline: '(empty string)',
   wbUploadedUnavailable: 'The data set must be validated or uploaded',
   wbValidateUnavailable:
     'An Upload Plan needs to defined before this Data Set can be Validated',

@@ -123,8 +123,8 @@ module.exports = Backbone.View.extend({
      * In that case, the meaning of visualRow and visualCol is swapped.
      * resolveIndex exists to resolve the canonical visualRow/visualCol
      */
-    orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
-      orderIt(Object.entries(metaRow)).find(([visualColString, metaArray]) => {
+    orderIt(cellMetaObject).find((metaRow, visualRowString) =>
+      orderIt(metaRow).find((metaArray, visualColString) => {
         // This is 10 times faster then Number.parseInt because of a slow
         // Babel polyfill
         const visualRow = visualRowString | 0;
@@ -275,11 +275,11 @@ module.exports = Backbone.View.extend({
         visualCol++
       ) {
         const physicalCol = this.wbview.hot.toPhysicalColumn(visualCol);
-        const cellData = data[physicalRow][physicalCol] || '';
-        const searchValue = cellData
-          ? cellData
-          : this.wbview.mappings?.defaultValues[physicalCol] ?? '';
-        const isSearchResult = this.searchFunction(searchValue);
+        const isSearchResult = this.searchFunction(
+          (data[physicalRow][physicalCol] ||
+            this.wbview.mappings.defaultValues[physicalCol]) ??
+            ''
+        );
 
         let cell = undefined;
         let render = false;
@@ -345,12 +345,8 @@ module.exports = Backbone.View.extend({
         Object.entries(metaRow).forEach(([physicalCol, metaArray]) => {
           if (!this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult'))
             return;
-          const visualRow = this.wbview.hot.toVisualRow(
-            Number.parseInt(physicalRow)
-          );
-          const visualCol = this.wbview.hot.toVisualColumn(
-            Number.parseInt(physicalCol)
-          );
+          const visualRow = this.wbview.hot.toVisualRow(physicalRow | 0);
+          const visualCol = this.wbview.hot.toVisualColumn(physicalCol | 0);
           const cellValue =
             this.wbview.hot.getDataAtCell(visualRow, visualCol) || '';
           // Don't replace cells with default values
@@ -414,11 +410,10 @@ module.exports = Backbone.View.extend({
           initialNavigationDirection =
             this.searchPreferences.navigation.direction;
         }
-        if (this.searchPreferences.search.liveUpdate) {
+        if (this.searchPreferences.search.liveUpdate)
           this.searchCells({
             key: 'SettingsChange',
           });
-        }
       },
       onClose: () => {
         this.advancedSearch = undefined;
@@ -633,9 +628,9 @@ module.exports = Backbone.View.extend({
     const updateGeolocate = (localityIndex) =>
       dialog.html(`<iframe
         style="
-            width: 100%;
-            height: 100%;
-            border: none;"
+          width: 100%;
+          height: 100%;
+          border: none;"
         src="${getGeoLocateQueryURL(localityIndex)}"></iframe>`);
 
     const updateSelectedRow = (localityIndex) =>

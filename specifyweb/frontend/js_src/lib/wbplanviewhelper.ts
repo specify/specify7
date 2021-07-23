@@ -70,7 +70,7 @@ export function findArrayDivergencePoint<T>(
 
 export const extractDefaultValues = (
   arrayOfSplitMappings: RA<SplitMappingPath>,
-  visualizeEmptyString = false
+  emptyStringReplacement = ''
 ): IR<string> =>
   Object.fromEntries(
     arrayOfSplitMappings
@@ -78,8 +78,8 @@ export const extractDefaultValues = (
         ({ headerName, columnOptions }) =>
           [
             headerName,
-            columnOptions.default === '' && visualizeEmptyString
-              ? '(empty string)'
+            columnOptions.default === ''
+              ? emptyStringReplacement
               : columnOptions.default,
           ] as [string, string]
       )
@@ -96,7 +96,12 @@ export const camelToHuman = (value: string): string =>
   capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
 
 export const spanNumber =
-  (minInput: number, maxInput: number, minOutput: number, maxOutput: number) =>
-  (input: number) =>
+  (
+    minInput: number,
+    maxInput: number,
+    minOutput: number,
+    maxOutput: number
+  ): ((input: number) => number) =>
+  (input: number): number =>
     ((input - minInput) / (maxInput - minInput)) * (maxOutput - minOutput) +
     minOutput;

@@ -28,11 +28,11 @@
       >
         <%= wbText('results') %>
       </button>
-      <% if(is_uploaded && is_manager){ %>
+      <% if(isUploaded && isManager){ %>
       <button class="magic-button wb-unupload">
         <%= wbText('rollback') %>
       </button>
-      <% } else { %> <% if(is_manager){ %>
+      <% } else { %> <% if(isManager){ %>
       <button class="magic-button wb-upload"><%= wbText('upload') %></button>
       <% } %>
       <button class="magic-button wb-revert" disabled="disabled">
@@ -93,7 +93,7 @@
       placeholder="Search"
       title="Search Query"
     />
-    <% if(!is_uploaded){ %>
+    <% if(!isUploaded){ %>
     <input
       type="text"
       class="wb-replace-value"
@@ -124,7 +124,7 @@
     </button>
   </span>
 
-  <% if(!is_uploaded){ %>
+  <% if(!isUploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="modifiedCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
       &lt;
@@ -158,7 +158,7 @@
     </button>
   </span>
 
-  <% if(!is_uploaded){ %>
+  <% if(!isUploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="invalidCells">
     <button class="wb-cell-navigation" data-navigation-direction="previous">
       &lt;
