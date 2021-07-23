@@ -176,7 +176,7 @@ module.exports = Backbone.View.extend({
     else {
       const button = e.target;
       const buttonContainer = button.closest('.wb-navigation-section');
-      const buttonLabel = buttonContainer.getAttribute('data-navigation-type');
+      buttonLabel = buttonContainer.getAttribute('data-navigation-type');
     }
     const groupName = WbPlanViewHelper.camelToKebab(buttonLabel);
     const cssClassName = `wb-hide-${groupName}`;
@@ -210,6 +210,9 @@ module.exports = Backbone.View.extend({
       event.target.value === this.searchQuery &&
       !['SettingsChange', 'Enter'].includes(event.key)
     )
+      return;
+
+    if (event.key !== 'Enter' && !this.searchPreferences.search.liveUpdate)
       return;
 
     this.toggleCellTypes('searchResults', 'remove');
