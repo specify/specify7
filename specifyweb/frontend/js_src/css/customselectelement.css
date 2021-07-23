@@ -61,14 +61,15 @@
 }
 
 .custom-select-suggestion-line-list .custom-select-input {
-  grid-template-columns: var(--size) 1fr;
+  grid-template-columns: var(--table-icon-size) 1fr;
 }
 
 .custom-select-closed-list-active > .custom-select-input {
   z-index: 3;
 }
 
-.custom-select-mapping-options-list .table-icon {
+.custom-select-mapping-options-list .table-icon,
+.custom-select-group-suggested-mappings > .custom-select-option > .table-icon {
   display: none;
 }
 
@@ -93,7 +94,9 @@
 
 .custom-select-element-shadow-list {
   margin-top: calc(var(--size) * -1);
-  padding-right: calc(var(--double-size) + var(--table-icon-size) + var(--border-size) * 2);
+  padding-right: calc(
+    var(--double-size) + var(--table-icon-size) + var(--border-size) * 2
+  );
   visibility: hidden;
   display: flex;
   flex-direction: column;
@@ -258,10 +261,11 @@
   .custom-select-element-shadow-list,
   .custom-select-input span:nth-child(3),
   .custom-select-option-relationship-icon {
-    display: none
+    display: none;
   }
 
-  .custom-select-input, .custom-select-option {
+  .custom-select-input,
+  .custom-select-option {
     grid-template-columns: var(--table-icon-size) auto auto;
   }
 }
