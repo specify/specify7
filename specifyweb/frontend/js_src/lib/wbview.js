@@ -1148,6 +1148,10 @@ const WBView = Backbone.View.extend({
     void this.updateCellInfoStats();
   },
   clearDisambiguation(physicalRow) {
+    const disambiguation = this.getDisambiguation(physicalRow);
+    if (Object.keys(disambiguation).length === 0)
+      // Nothing to clear
+      return;
     this.changeDisambiguation(physicalRow, () => ({}), 'Disambiguation.Clear');
   },
   setDisambiguation(physicalRow, mappingPath, id) {
