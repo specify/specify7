@@ -474,7 +474,7 @@ const WBView = Backbone.View.extend({
         Object.entries(localityColumns)
           .filter(([fieldName]) => fieldName in columnHandlers)
           .map(([fieldName, headerName]) => [
-            this.hot.toPhysicalColumn(this.dataset.columns.indexOf(headerName)),
+            this.dataset.columns.indexOf(headerName),
             columnHandlers[fieldName],
           ])
       )
@@ -969,7 +969,7 @@ const WBView = Backbone.View.extend({
     const hasFrontEndValidationErrors = this.cellMeta[physicalRow][
       physicalCol
     ].issues.some((issue) =>
-      issue.startsWith(wbText('picklistValidationFailed')(''))
+      issue.endsWith(wbText('picklistValidationFailed')(''))
     );
     if (hasFrontEndValidationErrors) return false;
 
@@ -1081,13 +1081,12 @@ const WBView = Backbone.View.extend({
          ${visualRow}x${visualCol}`
       );
 
-    const valueIsChanged = !(
+    const valueIsChanged =
       (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
-        currentValue === metaValue) ||
+        currentValue !== metaValue) ||
       (key === 'issues' &&
-        currentValue.length === metaValue.length &&
-        JSON.stringify(currentValue) === JSON.stringify(metaValue))
-    );
+        (currentValue.length !== metaValue.length ||
+          JSON.stringify(currentValue) !== JSON.stringify(metaValue)));
 
     // Do not run the side effect if state is already in it's correct position,
     // unless asked to forceReRender
@@ -1137,6 +1136,7 @@ const WBView = Backbone.View.extend({
     const visualRow = this.hot.toVisualRow(physicalRow);
     const visualCol = this.hot.toVisualColumn(cols);
     this.hot.setDataAtCell(visualRow, visualCol, JSON.stringify(extra), source);
+    this.spreadSheetChanged();
     this.afterChangeDisambiguation(physicalRow);
   },
   afterChangeDisambiguation(physicalRow) {
