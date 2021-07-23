@@ -2383,13 +2383,11 @@ const WBView = Backbone.View.extend({
           ? visualRow
           : visualCol;
 
-      const [toVisualRow, toVisualColumn] =
-        this.wbutils.getToVisualConverters();
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          const visualRow = toVisualRow[physicalRow];
-          const visualCol = toVisualColumn[physicalCol];
+          const visualRow = this.hot.toVisualRow(physicalRow);
+          const visualCol = this.hot.toPhysicalRow(physicalCol);
           indexedCellMeta[getPosition(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[getPosition(visualRow, visualCol, true)][
             getPosition(visualRow, visualCol, false)

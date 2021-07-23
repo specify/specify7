@@ -198,24 +198,6 @@ module.exports = Backbone.View.extend({
     )[0].ariaPressed = newState;
     return newState;
   },
-  getToVisualConverters() {
-    const toVisualRow = this.wbview.data.map((_, physicalRow) =>
-      this.wbview.hot.toVisualRow(physicalRow)
-    );
-    const toVisualColumn = this.wbview.dataset.columns.map((_, physicalCol) =>
-      this.wbview.hot.toVisualColumn(physicalCol)
-    );
-    return [toVisualRow, toVisualColumn];
-  },
-  getToPhysicalConverters() {
-    const toPhysicalRow = this.wbview.data.map((_, visualRow) =>
-      this.wbview.hot.toPhysicalRow(visualRow)
-    );
-    const toPhysicalColumn = this.wbview.dataset.columns.map((_, visualCol) =>
-      this.wbview.hot.toPhysicalColumn(visualCol)
-    );
-    return [toPhysicalRow, toPhysicalColumn];
-  },
   parseSearchQuery() {
     const searchQueryElement =
       this.el.getElementsByClassName('wb-search-query')[0];
@@ -297,15 +279,15 @@ module.exports = Backbone.View.extend({
       this.wbview.getHotPlugin('autoColumnSize').getFirstVisibleColumn() - 3;
     const lastVisibleColumn =
       this.wbview.getHotPlugin('autoColumnSize').getLastVisibleColumn() + 3;
-    const [toPhysicalRow, toPhysicalColumn] = this.getToPhysicalConverters();
+
     for (let visualRow = 0; visualRow < this.wbview.data.length; visualRow++) {
-      const physicalRow = toPhysicalRow[visualRow];
+      const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
       for (
         let visualCol = 0;
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const physicalCol = toPhysicalColumn[visualCol];
+        const physicalCol = this.wbview.hot.toPhysicalColumn(visualCol);
         const cellData = data[physicalRow][physicalCol] || '';
         const searchValue = cellData
           ? cellData
