@@ -114,9 +114,6 @@ def do_upload_dataset(
         progress: Optional[Progress]=None
 ) -> None:
     assert not ds.was_uploaded(), "Already uploaded!"
-    ds.uploadresult = None
-    ds.save(update_fields=['uploadresult'])
-
     base_table, upload_plan = get_ds_upload_plan(collection, ds)
 
     def rows():
@@ -130,7 +127,7 @@ def do_upload_dataset(
                 yield r.data
 
     with create_connection() as result_conn:
-        # result_conn.set_autocommit(False)
+        result_conn.set_autocommit(False)
         cursor = result_conn.cursor()
         cursor.execute("delete from spdatasetrowresult where spdataset_id = %s", [ds.id])
 
@@ -151,7 +148,7 @@ def do_upload_dataset(
 
         _do_upload(collection, ds.columns, rows(), upload_plan, uploading_agent_id, _progress, no_commit, allow_partial)
         insert_batch()
-        # result_conn.commit()
+        result_conn.commit()
 
     if not no_commit:
         rs = create_record_set(ds, base_table) if success else None
@@ -207,7 +204,6 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     validate(plan, schema)
     base_table, plan = parse_plan_with_basetable(collection, plan)
     return base_table, plan.apply_scoping(collection)
-
 
 def do_upload(
         collection,

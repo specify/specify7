@@ -316,11 +316,15 @@ def datasets(request) -> http.HttpResponse:
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
 
     else:
-        attrs = ('name', 'uploadresult', 'uploaderstatus', 'timestampcreated', 'timestampmodified')
-        dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only(*attrs)
+        attrs = ('name', 'uploadresult', 'timestampcreated', 'timestampmodified')
+        dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).select_related('spdatasetlock')
         if 'with_plan' in request.GET:
             dss = dss.filter(uploadplan__isnull=False)
-        return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
+        return http.JsonResponse([{
+            'id': ds.id,
+            'uploaderstatus': ds.spdatasetlock.info if hasattr(ds, 'spdatasetlock') else None,
+            **{attr: getattr(ds, attr) for attr in attrs},
+        } for ds in dss], safe=False)
 
 @openapi(schema={
     "get": {
@@ -445,6 +449,11 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         return http.HttpResponseForbidden()
 
     if request.method == "GET":
+        try:
+            status = ds.spdatasetlock.info
+        except ObjectDoesNotExist:
+            status = None
+
         return http.JsonResponse(dict(
             id=ds.id,
             name=ds.name,
@@ -452,7 +461,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             visualorder=ds.visualorder,
             rows=list(ds.rows.values_list('data', flat=True)),
             uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
-            uploaderstatus=ds.uploaderstatus,
+            uploaderstatus=status,
             uploadresult=ds.uploadresult,
             rowresults=[json.loads(r) for r in ds.rowresults.values_list('result', flat=True)],
             remarks=ds.remarks,
@@ -464,7 +473,9 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         ))
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+        ds = models.Spdataset.objects.get(id=ds_id)
+        lock = models.Spdatasetlock.objects.select_for_update().filter(spdataset=ds)
+        # select_for_update prevents locks on ds from being created until this transaction completes
 
         if request.method == "PUT":
             attrs = json.load(request)
@@ -486,8 +497,9 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
                 except ValidationError as e:
                     return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
 
-                if ds.uploaderstatus != None:
+                if lock:
                     return http.HttpResponse('dataset in use by uploader', status=409)
+
                 if ds.was_uploaded():
                     return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
 
@@ -507,8 +519,9 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             return http.HttpResponse(status=204)
 
         if request.method == "DELETE":
-            if ds.uploaderstatus != None:
+            if lock:
                 return http.HttpResponse('dataset in use by uploader', status=409)
+
             ds.delete()
             return http.HttpResponse(status=204)
 
@@ -577,7 +590,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 def rows(request, ds_id: str) -> http.HttpResponse:
     """Returns (GET) or sets (PUT) the row data for dataset <ds_id>."""
     try:
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+        ds = models.Spdataset.objects.get(id=ds_id)
     except ObjectDoesNotExist:
         return http.HttpResponseNotFound()
 
@@ -585,8 +598,9 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         return http.HttpResponseForbidden()
 
     if request.method == "PUT":
-        if ds.uploaderstatus is not None:
-            return http.HttpResponse('dataset in use by uploader.', status=409)
+        if models.Spdatasetlock.objects.select_for_update().filter(spdataset=ds):
+            return http.HttpResponse('dataset in use by uploader', status=409)
+
         if ds.was_uploaded():
             return http.HttpResponse('dataset has been uploaded. changing data not allowed.', status=400)
 
@@ -639,8 +653,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
         return http.HttpResponseForbidden("Only manager users may upload data sets.")
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
-        if ds.uploaderstatus is not None:
+        if models.Spdatasetlock.objects.select_for_update().filter(spdataset=ds):
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if ds.collection != request.specify_collection:
             return http.HttpResponse('dataset belongs to a different collection.', status=400)
@@ -648,6 +661,11 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
         taskid = str(uuid4())
+        models.Spdatasetlock.objects.create(spdataset=ds, info={
+            'operation': "validating" if no_commit else "uploading",
+            'taskid': taskid
+        })
+
         async_result = tasks.upload.apply_async([
             request.specify_collection.id,
             request.specify_user_agent.id,
@@ -655,11 +673,6 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
             no_commit,
             allow_partial
         ], task_id=taskid)
-        ds.uploaderstatus = {
-            'operation': "validating" if no_commit else "uploading",
-            'taskid': taskid
-        }
-        ds.save(update_fields=['uploaderstatus'])
 
     return http.JsonResponse(async_result.id, safe=False)
 
@@ -696,19 +709,18 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
         return http.HttpResponseForbidden("Only manager users may un-upload data sets.")
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
-        if ds.uploaderstatus is not None:
+        if models.Spdatasetlock.objects.select_for_update().filter(spdataset=ds):
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if not ds.was_uploaded():
             return http.HttpResponse('dataset has not been uploaded.', status=400)
 
         taskid = str(uuid4())
-        async_result = tasks.unupload.apply_async([ds.id, request.specify_user_agent.id], task_id=taskid)
-        ds.uploaderstatus = {
+        models.Spdatasetlock.objects.create(spdataset=ds, info={
             'operation': "unuploading",
             'taskid': taskid
-        }
-        ds.save(update_fields=['uploaderstatus'])
+        })
+
+        async_result = tasks.unupload.apply_async([ds.id, request.specify_user_agent.id], task_id=taskid)
 
     return http.JsonResponse(async_result.id, safe=False)
 
@@ -734,20 +746,20 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
 def status(request, ds_id: int) -> http.HttpResponse:
     "Returns the uploader status for the dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
-    # if (wb.specifyuser != request.specify_user):
-    #     return http.HttpResponseForbidden()
 
-    if ds.uploaderstatus is None:
+    try:
+        status = models.Spdatasetlock.objects.get(spdataset=ds).info
+    except models.Spdatasetlock.DoesNotExist:
         return http.JsonResponse(None, safe=False)
 
     task = {
         'uploading': tasks.upload,
         'validating': tasks.upload,
         'unuploading': tasks.unupload,
-    }[ds.uploaderstatus['operation']]
-    result = task.AsyncResult(ds.uploaderstatus['taskid'])
+    }[status['operation']]
+    result = task.AsyncResult(status['taskid'])
     status = {
-        'uploaderstatus': ds.uploaderstatus,
+        'uploaderstatus': status,
         'taskstatus': result.state,
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
@@ -797,18 +809,24 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    if ds.uploaderstatus is None:
+    try:
+        lock = models.Spdatasetlock.objects.get(spdataset=ds)
+        # We don't use select_for_update here because we don't want to block
+        # on the locking transaction. That would defeat the purpose!
+    except models.Spdatasetlock.DoesNotExist:
         return http.HttpResponse('not running', content_type='text/plain')
 
     task = {
         'uploading': tasks.upload,
         'validating': tasks.upload,
         'unuploading': tasks.unupload,
-    }[ds.uploaderstatus['operation']]
-    result = task.AsyncResult(ds.uploaderstatus['taskid']).revoke(terminate=True)
+    }[lock.info['operation']]
+    result = task.AsyncResult(lock.info['taskid']).revoke(terminate=True)
 
     try:
-        models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
+        lock.delete()
+        # The locking transaction should release the lock when it terminates. This
+        # operation will block until that happens.
     except OperationalError as e:
         if e.args[0] == 1205: # (1205, 'Lock wait timeout exceeded; try restarting transaction')
             return http.HttpResponse(

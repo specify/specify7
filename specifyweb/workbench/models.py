@@ -16,7 +16,6 @@ class Spdataset(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
     uploadplan = models.TextField(null=True)
-    uploaderstatus = JSONField(null=True)
     uploadresult = JSONField(null=True)
     remarks = models.TextField(null=True)
     importedfilename = models.TextField(null=True)
@@ -30,6 +29,13 @@ class Spdataset(models.Model):
 
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult['success']
+
+class Spdatasetlock(models.Model):
+    spdataset = models.OneToOneField(Spdataset, on_delete=models.CASCADE, primary_key=True)
+    info = JSONField()
+
+    class Meta:
+        db_table = 'spdatasetlock'
 
 class Spdatasetrow(models.Model):
     spdataset = models.ForeignKey(Spdataset, on_delete=models.CASCADE, related_name="rows")
