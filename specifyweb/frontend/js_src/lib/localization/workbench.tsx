@@ -1,3 +1,9 @@
+/**
+ * Localization strings used by the WorkBench (and WbPlanView)
+ *
+ * @module
+ */
+
 import React from 'react';
 
 import {
@@ -274,8 +280,9 @@ const wbText = createDictionary({
   deleteDataSetDialogMessage: {
     'en-us': `
       Deleting a Data Set permanently removes it and its Upload Plan.
-      Data mappings will not be available for re-use; Rollback will not be
-      an option for an uploaded Data Set.`,
+      Data mappings will no longer be available for re-use with other
+      Data Sets. Also after deleting, Rollback will no longer be an option for
+      an uploaded Data Set.`,
     'ru-ru': `
       Удаление набора данных приводит к безвозвратному удалению его и его плана
       загрузки. План загрузки не будут доступным для повторного использования;
@@ -285,17 +292,17 @@ const wbText = createDictionary({
       Data mappings will not be available for re-use; Rollback will not be
       an option for an uploaded Data Set.`,
   },
-  dataSetDeletedTitle: {
+  dataSetDeletedDialogTitle: {
     'en-us': 'Delete Data Set',
     'ru-ru': 'Удалить набор данных',
     ca: 'Delete Data Set',
   },
-  dataSetDeletedHeader: {
+  dataSetDeletedDialogHeader: {
     'en-us': createHeader('Data Set successfully deleted'),
     'ru-ru': createHeader('Набор данных успешно удален'),
     ca: createHeader('Data Set successfully deleted'),
   },
-  dataSetDeletedMessage: {
+  dataSetDeletedDialogMessage: {
     'en-us': 'Data Set successfully deleted.',
     'ru-ru': 'Набор данных успешно удален.',
     ca: 'Data Set successfully deleted.',
@@ -566,6 +573,16 @@ const wbText = createDictionary({
     ca: createHeader('Choose a preferred Geocoordinate format'),
   },
   // Misc
+  unmappedColumn: {
+    'en-us': 'Unmapped Column',
+    'ru-ru': 'Несопоставленный столбец',
+    ca: 'Columna sense mapes',
+  },
+  emptyStringInline: {
+    'en-us': '(empty string)',
+    'ru-ru': '(пуста строка)',
+    ca: '(cadena buida)',
+  },
   wbUploadedUnavailable: {
     'en-us': 'The data set must be validated or uploaded',
     'ru-ru': 'The data set must be validated or uploaded',
@@ -1034,17 +1051,17 @@ const wbText = createDictionary({
     'en-us': `
       Choosing a different Base Table for a Data Set Upload will make that
       table the new starting point for column-to-data field mappings and
-      will erase existing mappings. The Automapper will attempt to map
+      will erase existing mappings. The AutoMapper will attempt to map
       columns to the new Base Table fields.`,
     'ru-ru': `
       Выбор другой базовой таблице для загрузки набора данных сделает ту
       таблицу новой отправной точкой для сопоставлений полей столбцов и данных и
-      сотрет существующие сопоставления. Automapper попытается сопоставить
+      сотрет существующие сопоставления. AutoMapper попытается сопоставить
       столбцы в новые поля базовой таблицы.`,
     ca: `
       Choosing a different Base Table for a Data Set Upload will make that
       table the new starting point for column-to-data field mappings and
-      will erase existing mappings. The Automapper will attempt to map
+      will erase existing mappings. The AutoMapper will attempt to map
       columns to the new Base Table fields.`,
   },
   clearMapping: {
@@ -1052,15 +1069,20 @@ const wbText = createDictionary({
     'ru-ru': 'Очистить сопоставление',
     ca: 'Clear Mapping',
   },
+  changeBaseTable: {
+    'en-us': 'Change Base Table',
+    'ru-ru': 'Изменить базовую таблицу',
+    ca: 'Change Base Table',
+  },
   reRunAutoMapper: {
-    'en-us': 'Rerun Automapper',
-    'ru-ru': 'Перезапустить Automapper',
-    ca: 'Rerun Automapper',
+    'en-us': 'Rerun AutoMapper',
+    'ru-ru': 'Перезапустить AutoMapper',
+    ca: 'Rerun AutoMapper',
   },
   autoMapper: {
-    'en-us': 'Automapper',
-    'ru-ru': 'Automapper',
-    ca: 'Automapper',
+    'en-us': 'AutoMapper',
+    'ru-ru': 'AutoMapper',
+    ca: 'AutoMapper',
   },
   mappingEditor: {
     'en-us': 'Map Explorer',
@@ -1132,9 +1154,9 @@ const wbText = createDictionary({
     ),
   },
   reRunAutoMapperDialogTitle: {
-    'en-us': 'Automapper',
-    'ru-ru': 'Automapper',
-    ca: 'Automapper',
+    'en-us': 'AutoMapper',
+    'ru-ru': 'AutoMapper',
+    ca: 'AutoMapper',
   },
   reRunAutoMapperDialogHeader: {
     'en-us': createJsxHeader('Automap to start a new Upload Plan?'),

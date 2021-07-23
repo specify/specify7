@@ -87,7 +87,23 @@ const WBView = Backbone.View.extend({
       this.data.push(Array(this.dataset.columns.length).fill(null));
     }
 
-    this.mappings = undefined;
+    this.mappings /*:
+      | undefined
+      | {
+        baseTableName: string;
+        mappingsTree: MappingsTree;
+        mustMatchPreferences: IR<boolean>;
+        arrayOfMappings: RA<SplitMappingsPath>;
+        tableNames: RA<string>; // tableName of each column
+        mappedHeaders: RR<number, string>; // path to an icon for each header
+        coordinateColumns: RR<number, 'Lat'|'Long'>;
+        defaultValues: RR<number, string>;
+        treeRanks: IR<{
+          readonly physicalCol: number;
+          readonly rankId: number;
+        }>
+      }
+    */ = undefined;
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
     this.liveValidationStack = [];
     this.liveValidationActive = false;
@@ -121,22 +137,41 @@ const WBView = Backbone.View.extend({
     });
 
     /*
+     * If this.isUploaded, render() will:
      * Add the "Uploaded" label next to DS Name
      * Disable cell editing
      * Disable adding/removing rows
-     * Allow column sort
-     * Allow column move
+     * Still allow column sort
+     * Still allow column move
      * */
     this.isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    // Disallow all editing while this dialog is open
+    // Disallow all editing and some tools while this dialog is open
     this.uploadedView = undefined;
-    // Disallow all editing while this dialog is open
+    // Disallow all editing and all tools while this dialog is open
     this.coordinateConverterView = undefined;
 
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.refreshInitiatorAborted = refreshInitiatorAborted;
-    this.uploadResults = {
+    this.uploadResults /*
+      :{
+        readonly ambiguousMatches: RA<{
+          readonly physicalCols: RA<number>,
+          readonly mappingPath: MappingPath,
+          readonly ids: RA<number>,
+          readonly key: string}>
+      };
+      recordCounts: IR<string>;
+      newRecords: RA<
+        RA<
+          Readonly<[
+            tableName: string,
+            id: number,
+            alternativeLabel: '' | string
+          ]>
+        >
+      >
+    */ = {
       ambiguousMatches: [],
       recordCounts: {},
       newRecords: {},
@@ -160,8 +195,8 @@ const WBView = Backbone.View.extend({
   render() {
     this.$el.append(
       template({
-        is_uploaded: this.isUploaded,
-        is_manager: userInfo.usertype === 'Manager',
+        isUploaded: this.isUploaded,
+        isManager: userInfo.usertype === 'Manager',
         wbText,
         commonText,
       })
@@ -277,20 +312,23 @@ const WBView = Backbone.View.extend({
           colHeaders: (physicalCol) => {
             const tableIcon = this.mappings?.mappedHeaders?.[physicalCol];
             const isMapped = typeof tableIcon !== 'undefined';
+            const mappingCol = this.physicalColToMappingCol(physicalCol);
             const tableName =
-              tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0] ||
-              tableIcon;
+              this.mappings?.tableNames[mappingCol] ??
+              tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
+            const tableLabel =
+              dataModelStorage?.tables?.[tableName]?.label ?? tableName ?? '';
             return `<div class="wb-col-header">
               ${
                 isMapped
                   ? `<img
                       class="wb-header-icon"
-                      alt="${tableName}"
+                      alt="${tableLabel}"
                       src="${tableIcon}"
                     >`
                   : `<img
                       class="wb-header-icon"
-                      alt="Unmapped Header"
+                      alt="${wbText('unmappedColumn')}"
                       src="/static/img/stop_sign.svg"
                     >`
               }
@@ -300,7 +338,7 @@ const WBView = Backbone.View.extend({
             </div>`;
           },
           hiddenColumns: {
-            // hide the disambiguation column
+            // Hide the disambiguation column
             columns: [this.dataset.columns.length],
             indicators: false,
             copyPasteEnabled: false,
@@ -484,11 +522,8 @@ const WBView = Backbone.View.extend({
     if (!this.mappings) return;
 
     this.mappings.mappedHeaders = Object.fromEntries(
-      this.mappings.tableNames.map((tableName, index) => [
-        // physicalCol
-        this.dataset.columns.indexOf(
-          this.mappings.arrayOfMappings[index].headerName
-        ),
+      this.mappings.tableNames.map((tableName, mappingCol) => [
+        this.mappingColToPhysicalCol(mappingCol),
         icons.getIcon(tableName),
       ])
     );
@@ -521,7 +556,10 @@ const WBView = Backbone.View.extend({
       Object.entries(
         typeof this.mappings.arrayOfMappings === 'undefined'
           ? {}
-          : extractDefaultValues(this.mappings.arrayOfMappings, true)
+          : extractDefaultValues(
+              this.mappings.arrayOfMappings,
+              wbText('emptyStringInline')
+            )
       ).map(([headerName, defaultValue]) => [
         this.dataset.columns.indexOf(headerName),
         defaultValue,
@@ -642,6 +680,7 @@ const WBView = Backbone.View.extend({
     if (typeof this.mappings?.coordinateColumns?.[physicalCol] !== 'undefined')
       td.classList.add('wb-coordinate-cell');
   },
+  // Make HOT use defaultValues for validation if cell is empty
   beforeValidate(value, _visualRow, prop) {
     if (value) return value;
 
@@ -692,7 +731,7 @@ const WBView = Backbone.View.extend({
     const oldValue = JSON.parse(oldData || '{}').disambiguation;
 
     /*
-     * Disambiguation results are cleared when any cell in row changes.
+     * Disambiguation results are cleared when any cell in a row changes.
      * That change creates a separate point in the undo stack.
      * Thus, if HOT tries to undo disambiguation clearing, we need to
      * also need to undo the change that caused disambiguation clearing
@@ -702,6 +741,7 @@ const WBView = Backbone.View.extend({
       Object.keys(newValue ?? {}).length !== 0 &&
       Object.keys(oldValue ?? {}).length === 0
     )
+      // HOT doesn't seem to like calling undo from inside of afterUndo
       setTimeout(() => {
         this.undoRedoIsHandled = true;
         this.hot.undo();
@@ -758,11 +798,11 @@ const WBView = Backbone.View.extend({
       }))
       .filter(
         ({ oldValue, newValue, visualCol }) =>
-          // Ignore cases when value didn't change
+          // Ignore cases where value didn't change
           oldValue !== newValue &&
-          // or when value changed from null to empty
+          // or where value changed from null to empty
           (oldValue !== null || newValue !== '') &&
-          // or the column does not exist
+          // or the column does not exist (that can happen on paste)
           visualCol < this.dataset.columns.length
       );
 
@@ -772,11 +812,7 @@ const WBView = Backbone.View.extend({
       changes
         // Ignore changes to unmapped columns
         .filter(
-          ({ physicalCol }) =>
-            this.mappings?.arrayOfMappings.findIndex(
-              ({ headerName }) =>
-                this.dataset.columns.indexOf(headerName) === physicalCol
-            ) !== -1
+          ({ physicalCol }) => this.physicalColToMappingCol(physicalCol) !== -1
         )
         .sort(
           ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
@@ -868,6 +904,7 @@ const WBView = Backbone.View.extend({
     const removedRows = Array.from({ length: amount }, (_, index) =>
       this.hot.toPhysicalRow(visualRowStart + index)
     )
+      .filter((physicalRow) => physicalRow < this.cellMeta.length)
       .sort()
       .reverse();
 
@@ -890,8 +927,8 @@ const WBView = Backbone.View.extend({
 
     /*
      * If a tree column is about to be sorted, overwrite the sort config by
-     * finding all lower level ranks of that tree and sorting them in the same
-     * direction
+     * finding all lower level ranks of that tree (within the same -to-many)
+     * and sorting them in the same direction
      * */
 
     if (this.coordinateConverterView) return false;
@@ -973,6 +1010,7 @@ const WBView = Backbone.View.extend({
 
     return false;
   },
+  // Cache sort config to preserve column sort order across sessions
   async afterColumnSort(_previousSortConfig, sortConfig) {
     const currentCollection = await cache.getCurrentCollectionId();
     const physicalSortConfig = sortConfig.map(
@@ -995,10 +1033,11 @@ const WBView = Backbone.View.extend({
       // Don't allow moving columns when readOnly
       !this.uploadedView &&
       !this.coordinateConverterView &&
-      // An ugly fix for jQuery dialogs conflicting with HOT
+      // An ugly fix for jQuery's dialogs conflicting with HOT
       (typeof dropIndex !== 'undefined' || this.hotIsReady === false)
     );
   },
+  // Save new visualOrder on the back end
   afterColumnMove(_columnIndexes, _finalIndex, dropIndex) {
     if (typeof dropIndex === 'undefined' || !this.hotIsReady) return;
 
@@ -1086,7 +1125,6 @@ const WBView = Backbone.View.extend({
    * For changing meta with side effects, use this.updateCellMeta
    */
   setCellMeta(physicalRow, physicalCol, key, value) {
-    // Current value of the meta property
     const currentValue = this.getCellMeta(physicalRow, physicalCol, key);
 
     const issuesChanged =
@@ -1097,10 +1135,8 @@ const WBView = Backbone.View.extend({
     const metaValueChanged =
       issuesChanged ||
       cellValueChanged ||
-      !(
-        ['isNew', 'isModified', 'isSearchResult'].includes(key) &&
-        currentValue === value
-      );
+      (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
+        currentValue !== value);
 
     if (!metaValueChanged) return false;
 
@@ -1113,14 +1149,21 @@ const WBView = Backbone.View.extend({
 
     return true;
   },
+  // Figuring out if a cell was modified is more complicated then it might seem
   isCellModified(physicalRow, physicalCol) {
     // For now, only readonly picklists are validated on the front-end
     const hasFrontEndValidationErrors = this.getCellMeta(
       physicalRow,
       physicalCol,
       'issues'
-    ).some((issue) => issue.startsWith(wbText('picklistValidationFailed')('')));
-    if (hasFrontEndValidationErrors) return false;
+    ).some((issue) => issue.endsWith(wbText('picklistValidationFailed')('')));
+    if (hasFrontEndValidationErrors)
+      /*
+       * Since isModified state has higher priority then issues, we need to
+       * remove the isModified state if front end validation errors are to be
+       * visible
+       */
+      return false;
 
     const originalCellValue = this.getCellMeta(
       physicalRow,
@@ -1198,7 +1241,7 @@ const WBView = Backbone.View.extend({
     key,
     value,
     {
-      // Can optionally provide this to improve the performance
+      // Can optionally provide this to improve performance
       cell: initialCell = undefined,
       // Can optionally provide this to improve performance
       visualRow: initialVisualRow = undefined,
@@ -1539,10 +1582,10 @@ const WBView = Backbone.View.extend({
       this.getHotPlugin('hiddenColumns').getHiddenColumns();
     const rowsToInclude = new Set();
     const colsToInclude = new Set();
-    this.cellMeta.forEach((rowMeta, physicalRow) =>
+    Object.entries(this.cellMeta).forEach(([physicalRow, rowMeta]) =>
       rowMeta.forEach((metaArray, physicalCol) => {
         if (!this.getCellMetaFromArray(metaArray, 'isNew')) return;
-        rowsToInclude.add(physicalRow);
+        rowsToInclude.add(physicalRow | 0);
         colsToInclude.add(physicalCol);
       })
     );
@@ -1745,7 +1788,7 @@ const WBView = Backbone.View.extend({
     this.wbstatus = new WBStatus({
       dataset: {
         ...this.dataset,
-        // Create initial status if it doesn't yet exist
+        // Create initial status if it doesn't exist yet
         uploaderstatus: {
           uploaderstatus:
             this.dataset.uploaderstatus === null
@@ -1790,10 +1833,10 @@ const WBView = Backbone.View.extend({
               dialog.dialog('close');
 
               $(`<div>
-                ${wbText('dataSetDeletedHeader')}
-                <p>${wbText('dataSetDeletedMessage')}</p>
+                ${wbText('dataSetDeletedDialogHeader')}
+                <p>${wbText('dataSetDeletedDialogMessage')}</p>
               </div>`).dialog({
-                title: wbText('dataSetDeletedTitle'),
+                title: wbText('dataSetDeletedDialogTitle'),
                 modal: true,
                 close: () => navigation.go('/'),
                 buttons: {
@@ -1974,12 +2017,13 @@ const WBView = Backbone.View.extend({
     if (this.validationMode !== 'live' || this.hot.isDestroyed) return;
     this.uploadResults.ambiguousMatches[physicalRow] = [];
     this.hot.batch(() =>
-      this.applyRowValidationResults(physicalRow, result?.result, true)
+      this.applyRowValidationResults(physicalRow, result?.result)
     );
     this.updateCellInfoStats();
   },
   getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
     if (!persevering)
+      // Find all columns with the shared parent mapping path
       return this.mappings.arrayOfMappings
         .filter(({ mappingPath }) =>
           mappingPathToString(mappingPath).startsWith(
@@ -2000,11 +2044,6 @@ const WBView = Backbone.View.extend({
         .map(({ headerName }) => headerName);
       return columns.length !== 0;
     });
-    if (columns.length === 0)
-      columns = this.mappings.arrayOfMappings.map(
-        ({ headerName }) => headerName
-      );
-    if (columns.length === 0) columns = this.dataset.columns;
     return columns;
   },
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
@@ -2012,11 +2051,14 @@ const WBView = Backbone.View.extend({
     let columns = initialColumns.filter((column) => column);
     if (typeof inferColumnsCallback === 'function' && columns.length === 0)
       columns = inferColumnsCallback();
+      if (columns.length === 0)
+
+    // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
       .filter((physicalCol) => physicalCol !== -1);
   },
-  applyRowValidationResults(physicalRow, result, isLive) {
+  applyRowValidationResults(physicalRow, result) {
     const rowMeta = this.dataset.columns.map(() => ({
       isNew: false,
       issues: [],
@@ -2035,12 +2077,7 @@ const WBView = Backbone.View.extend({
 
     rowMeta.forEach((cellMeta, physicalCol) => {
       Object.entries(cellMeta).map(([key, value]) =>
-        this[isLive ? 'updateCellMeta' : 'setCellMeta'](
-          physicalRow,
-          physicalCol,
-          key,
-          value
-        )
+        this.updateCellMeta(physicalRow, physicalCol, key, value)
       );
     });
   },
@@ -2155,13 +2192,30 @@ const WBView = Backbone.View.extend({
     }
 
     this.dataset.rowresults.forEach((result, physicalRow) => {
-      this.applyRowValidationResults(physicalRow, result, false);
+      this.applyRowValidationResults(physicalRow, result);
     });
 
     void this.updateCellInfoStats();
   },
 
   // Helpers
+  /*
+   * mappingCol is the index of the arrayOfMappings' line corresponding to
+   * a particular physicalCol. Since there can be unmapped columns, these
+   * indexes do not line up and need to be converted like this:
+   * */
+  physicalColToMappingCol(physicalCol) {
+    return this.mappings?.arrayOfMappings.findIndex(
+      ({ headerName }) => headerName === this.dataset.columns[physicalCol]
+    );
+  },
+  mappingColToPhysicalCol(mappingCol) {
+    return this.mappings
+      ? this.dataset.columns.indexOf(
+          this.mappings.arrayOfMappings[mappingCol].headerName
+        )
+      : undefined;
+  },
   getHotPlugin(pluginName) {
     if (!this.hotPlugins[pluginName])
       this.hotPlugins[pluginName] = this.hot.getPlugin(pluginName);
@@ -2239,7 +2293,7 @@ const WBView = Backbone.View.extend({
       ),
     };
 
-    //update navigation information
+    // Update navigation information
     Object.values(
       this.el.getElementsByClassName('wb-navigation-total')
     ).forEach((navigationTotalElement) => {
@@ -2373,11 +2427,11 @@ const WBView = Backbone.View.extend({
      *
      * This is used for navigation among cells.
      *
-     * Also, if the navigation direction is set to ColByCol, the resulting array
+     * Also, if navigation direction is set to ColByCol, the resulting array
      * is transposed.
      * */
     if (this.flushIndexedCellData) {
-      const getPosition = (visualRow, visualCol, first) =>
+      const resolveIndex = (visualRow, visualCol, first) =>
         (this.wbutils.searchPreferences.navigation.direction === 'rowFirst') ===
         first
           ? visualRow
@@ -2385,12 +2439,12 @@ const WBView = Backbone.View.extend({
 
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
-        Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
+        metaRow.forEach((cellMeta, physicalCol) => {
           const visualRow = this.hot.toVisualRow(physicalRow | 0);
-          const visualCol = this.hot.toPhysicalRow(physicalCol | 0);
-          indexedCellMeta[getPosition(visualRow, visualCol, true)] ??= [];
-          indexedCellMeta[getPosition(visualRow, visualCol, true)][
-            getPosition(visualRow, visualCol, false)
+          const visualCol = this.hot.toPhysicalRow(physicalCol);
+          indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
+          indexedCellMeta[resolveIndex(visualRow, visualCol, true)][
+            resolveIndex(visualRow, visualCol, false)
           ] = cellMeta;
         })
       );

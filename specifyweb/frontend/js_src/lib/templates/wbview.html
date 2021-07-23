@@ -49,7 +49,7 @@
       >
         <%= wbText('results') %>
       </button>
-      <% if(is_uploaded && is_manager){ %>
+      <% if(isUploaded && isManager){ %>
       <button
         type="button"
         aria-haspopup="dialog"
@@ -57,7 +57,7 @@
       >
         <%= wbText('rollback') %>
       </button>
-      <% } else { %> <% if(is_manager){ %>
+      <% } else { %> <% if(isManager){ %>
       <button
         type="button"
         aria-haspopup="dialog"
@@ -164,7 +164,7 @@
       autocomplete="on"
       spellcheck="false"
     />
-    <% if(!is_uploaded){ %>
+    <% if(!isUploaded){ %>
     <input
       type="text"
       class="wb-replace-value"
@@ -213,7 +213,7 @@
     </button>
   </span>
 
-  <% if(!is_uploaded){ %>
+  <% if(!isUploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="modifiedCells" aria-atomic="true">
     <button
       type="button"
@@ -263,7 +263,7 @@
     </button>
   </span>
 
-  <% if(!is_uploaded){ %>
+  <% if(!isUploaded){ %>
   <span class="wb-navigation-section" data-navigation-type="invalidCells" aria-atomic="true">
     <button
       type="button"
