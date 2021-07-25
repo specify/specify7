@@ -52,8 +52,7 @@ const wbText = createDictionary({
   rollbackDialogMessage: `
     Rolling back will remove the new data records this Data Set added to the
     Specify database. The entire rollback will be cancelled if any of the
-    uploaded data have been referenced (re-used) by other data records in the
-    database since they were uploaded.`,
+    uploaded data have been referenced (re-used) by other data records since they were uploaded.`,
   startUploadDialogTitle: 'Data Set Upload',
   startUploadDialogHeader: createHeader('Begin Data Set Upload?'),
   startUploadDialogMessage: `
@@ -129,7 +128,7 @@ const wbText = createDictionary({
     Upload.`,
   dataSetRollbackDialogTitle: 'Data Set Rollback',
   dataSetRollbackDialogHeader: createHeader(
-    'Data Set was rolled back successfully'
+    'Data Set was rolledback successfully'
   ),
   dataSetRollbackDialogMessage: `
     You can make the necessary edits and begin the upload process again.
@@ -352,9 +351,7 @@ const wbText = createDictionary({
         If this message persists for longer than 30 seconds, the {
           operationName
         }{' '}
-        process is busy with another Data Set. Specify currently supports only
-        one {operationName} process at a time for a Specify 7 installation.
-        Please try again later.
+        process is busy with another Data Set. Please try again later.
       </>
     );
   },
