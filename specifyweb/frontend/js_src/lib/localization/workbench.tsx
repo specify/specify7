@@ -62,7 +62,7 @@ const wbText = createDictionary({
   deleteDataSetDialogMessage: `
     Deleting a Data Set permanently removes it and its Upload Plan.
     Data mappings will no longer be available for re-use with other
-    Data Sets. Also after deleting, Rollback will no longer be an option for
+    Data Sets. Also, Rollback will no longer be an option for
     an uploaded Data Set.`,
   dataSetDeletedTitle: 'Delete Data Set',
   dataSetDeletedHeader: createHeader('Data Set successfully deleted'),
@@ -71,9 +71,9 @@ const wbText = createDictionary({
   revertChangesDialogHeader: createHeader('Revert Unsaved Changes?'),
   revertChangesDialogMessage: `
     This action will discard all changes to the Data Set since
-    the last save.`,
+    the last Save.`,
   savingDialogTitle: 'Saving',
-  onExitDialogMessage: 'Changes to this Data Set have not been saved.',
+  onExitDialogMessage: 'Changes to this Data Set have not been Saved.',
 
   // Validation
   picklistValidationFailed: (value: string) =>
@@ -84,7 +84,7 @@ const wbText = createDictionary({
   noMatchErrorMessage: 'No matching record for must-match table.',
   matchedMultipleErrorMessage: [
     'This value matches two or more existing database records and must ',
-    'be manually disambiguated before uploading.',
+    'be disambiguated before uploading.',
   ].join(''),
   validationNoErrorsDialogTitle: 'Data Set Validation',
   validationNoErrorsDialogHeader: createHeader(
@@ -104,10 +104,10 @@ const wbText = createDictionary({
     'Validation Completed with Errors'
   ),
   validationErrorsDialogMessage: `
-    Validation found errors in some cell values in this Data Set.<br><br>
+    Validation found errors in some cells in the Data Set.<br><br>
 
     If any cells are edited and the Data Set re-saved,
-    Validation should always be re-run as the last step
+    Validate should always be re-run as the last step
     prior to uploading to confirm that no errors have
     been introduced.`,
   uploadNoErrorsDialogTitle: 'Data Set Upload',
@@ -167,9 +167,9 @@ const wbText = createDictionary({
   uploadResults: 'Upload Results',
   potentialUploadResults: 'Potential Upload Results',
   noUploadResultsAvailable: 'No upload results are available for this cell',
-  wbUploadedDescription: 'The number of new records created in each table:',
+  wbUploadedDescription: 'Number of new records created in each table:',
   wbUploadedPotentialDescription:
-    'The number of new records that would be created in each table:',
+    'Number of new records that would be created in each table:',
 
   // WbAdvancedSearch
   wbAdvancedSearchDialogTitle: 'Configure Search & Replace',
@@ -245,7 +245,7 @@ const wbText = createDictionary({
   dataSetUploaded: 'Data Set uploaded. This Upload Plan cannot be changed',
   dataSetUploadedDescription: [
     'You are viewing the mappings for an uploaded dataset.\n',
-    'To edit the mappings, rollback the upload or create a new ',
+    'To edit the mappings, rollback the uploaded data or create a new ',
     'dataset',
   ].join(''),
   baseTable: 'Base Table',
