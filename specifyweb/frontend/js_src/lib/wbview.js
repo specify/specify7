@@ -2106,6 +2106,19 @@ const WBView = Backbone.View.extend({
       }
     });
 
+    const uploadButton = this.$el.find('.wb-upload');
+    if (
+      !uploadButton.attr('disabled') ||
+      uploadButton.attr('title') === wbText('uploadUnavailableWhileHasErrors')
+    ) {
+      const hasErrors = cellCounts.invalidCells > 0;
+      uploadButton.prop('disabled', hasErrors);
+      uploadButton.attr(
+        'title',
+        hasErrors ? wbText('uploadUnavailableWhileHasErrors') : undefined
+      );
+    }
+
     if (this.refreshInitiatedBy) this.operationCompletedMessage(cellCounts);
   },
   operationCompletedMessage(cellCounts) {

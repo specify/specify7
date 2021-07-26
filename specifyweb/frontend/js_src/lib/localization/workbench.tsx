@@ -52,7 +52,8 @@ const wbText = createDictionary({
   rollbackDialogMessage: `
     Rolling back will remove the new data records this Data Set added to the
     Specify database. The entire rollback will be cancelled if any of the
-    uploaded data have been referenced (re-used) by other data records since they were uploaded.`,
+    uploaded data have been referenced (re-used) by other data records since
+    they were uploaded.`,
   startUploadDialogTitle: 'Data Set Upload',
   startUploadDialogHeader: createHeader('Begin Data Set Upload?'),
   startUploadDialogMessage: `
@@ -129,11 +130,10 @@ const wbText = createDictionary({
     Upload.`,
   dataSetRollbackDialogTitle: 'Data Set Rollback',
   dataSetRollbackDialogHeader: createHeader(
-    'Data Set was rolledback successfully'
+    'Data Set was rolled back successfully'
   ),
-  dataSetRollbackDialogMessage: `
-    Make necessary edits and begin the upload process again.
-  `,
+  dataSetRollbackDialogMessage:
+    'Make necessary edits and begin the upload process again.',
   validationCanceledDialogTitle: 'Data Set Validation',
   validationCanceledDialogHeader: createHeader('Validation Canceled'),
   validationCanceledDialogMessage: 'Data Set Validation cancelled.',
@@ -153,7 +153,9 @@ const wbText = createDictionary({
   wbUploadedUnavailable: 'The data set must be validated or uploaded',
   wbValidateUnavailable:
     'Please define an Upload Plan before Validating the Data Set',
-  unavailableWhileEditing: 'This action requires all changes to be saved.',
+  unavailableWhileEditing: 'This action requires all changes to be saved',
+  uploadUnavailableWhileHasErrors:
+    'Upload is unavailable while some cells have validation errors',
   unavailableWhileViewingResults:
     'This action is unavailable while viewing the upload results',
   unavailableWhileValidating:
