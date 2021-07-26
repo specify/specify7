@@ -3,12 +3,17 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
-import { formatCoordinate, getField, getLocalityData } from './leafletutils';
+import {
+  findRanksInMappings,
+  formatCoordinate,
+  getField,
+  getLocalityData,
+} from './leafletutils';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
   findSubArray,
-  mappingPathToString,
   getCanonicalMappingPath,
+  mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
 
@@ -111,8 +116,8 @@ function groupLocalityColumns(
     }
   });
   return Object.values(groupedLocalityColumns).map((groupOfColumns) => ({
-    ...groupOfColumns,
     ...globalLocalityColumns,
+    ...groupOfColumns,
   }));
 }
 
@@ -137,15 +142,18 @@ const findLocalityColumns = (
     )
   );
 
-export const getLocalityColumnsFromSelectedCells = (
+export function getLocalityColumnsFromSelectedCells(
   localityColumnGroups: RA<IR<string>>,
   selectedHeaders: RA<string>
-): RA<IR<string>> =>
-  localityColumnGroups.filter((localityColumns) =>
+): RA<IR<string>> {
+  const localityColumns = localityColumnGroups.filter((localityColumns) =>
     Object.values(localityColumns).some((localityColumn) =>
       selectedHeaders.includes(localityColumn)
     )
-  ) || localityColumnGroups;
+  );
+
+  return localityColumns.length === 0 ? localityColumnGroups : localityColumns;
+}
 
 type SplitMappingPaths = RA<
   SplitMappingPath & { readonly canonicalMappingPath: MappingPath }
@@ -181,14 +189,70 @@ export const getLocalitiesDataFromSpreadsheet = (
         index: customRowNumbers[index] ?? index,
       }))
       .filter(({ locality }) => typeof locality !== 'boolean')
-      .map(
-        ({ locality, index }) =>
-          ({
-            ...locality,
-            rowNumber: { headerName: 'Row Number', value: index },
-          } as LocalityData)
-      )
+      .map(({ locality, index }) => ({
+        ...locality,
+        rowNumber: { headerName: 'Row Number', value: index },
+      }))
   );
+
+// Aggregate tree ranks into a single full name
+function reshapeLocalityData(localityData: LocalityData): LocalityData {
+  const localityDataEntries = Object.entries(localityData)
+    .map(([mappingPathString, field]) => ({
+      mappingPath: splitJoinedMappingPath(mappingPathString),
+      field,
+    }))
+    .reverse();
+  const treeRanks = findRanksInMappings(
+    localityDataEntries.map(({ mappingPath }) => mappingPath)
+  );
+  const aggregatedTreeRanks = treeRanks.reduce<R<Field<string | number>>>(
+    (aggregated, { groupName, treeRankLocation }, index) => {
+      if (treeRankLocation === -1) return aggregated;
+
+      const { headerName, value } = localityDataEntries[index].field;
+
+      if (groupName in aggregated)
+        aggregated[groupName] = {
+          ...aggregated[groupName],
+          value: `${value} ${aggregated[groupName].value}`,
+        };
+      else
+        aggregated[groupName] = {
+          headerName,
+          value,
+        };
+
+      return aggregated;
+    },
+    {}
+  );
+
+  return Object.fromEntries(
+    localityDataEntries
+      .reduce<[string, Field<string | number>][]>(
+        (filteredEntries, { mappingPath, field }, index) => {
+          const mappingPathString = mappingPathToString(mappingPath);
+          const { treeRankLocation, groupName } = treeRanks[index];
+          if (treeRankLocation === -1)
+            filteredEntries.push([mappingPathString, field]);
+          else if (
+            treeRanks.findIndex(
+              (treeRank) => treeRank.groupName === groupName
+            ) === index
+          )
+            filteredEntries.push([
+              mappingPathString,
+              aggregatedTreeRanks[groupName],
+            ]);
+
+          return filteredEntries;
+        },
+        []
+      )
+      .reverse()
+  );
+}
 
 export function getLocalityCoordinate(
   row: RA<string>,
@@ -204,9 +268,13 @@ export function getLocalityCoordinate(
     value: formatCoordinate(getFieldCurried(fieldName).value),
   });
 
-  return getLocalityData(
+  const localityData = getLocalityData(
     localityColumns,
     getFieldCurried,
     formatCoordinateCurried
   );
+
+  return typeof localityData === 'object'
+    ? reshapeLocalityData(localityData)
+    : localityData;
 }

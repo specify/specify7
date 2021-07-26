@@ -4,39 +4,22 @@
  *
  */
 
-import type { IR, RA, RR } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
+import { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
 import {
   mappingLocalityColumns,
   requiredLocalityColumns,
 } from './leafletconfig';
+import {
+  mappingPathToString,
+  valueIsTreeRank,
+} from './wbplanviewmappinghelper';
 
 export type Field<T> = { readonly headerName: string; readonly value: T };
 
-interface BareLocalityData {
-  readonly 'locality.latitude1': Field<number>;
-  readonly 'locality.longitude1': Field<number>;
-}
-
-interface ComplexLocalityCoordinate {
-  readonly 'locality.latitude2': Field<number>;
-  readonly 'locality.longitude2': Field<number>;
-  readonly 'locality.latlongtype': Field<'point' | 'line' | 'rectangle'>;
-}
-
-interface LocalityWithAccuracy {
-  readonly 'locality.latlongaccuracy': Field<string>;
-}
-
-export type LocalityData = BareLocalityData &
-  (ComplexLocalityCoordinate | RR<keyof ComplexLocalityCoordinate, undefined>) &
-  LocalityWithAccuracy &
-  IR<Field<string | number>>;
-
-export type LocalityField = keyof (BareLocalityData &
-  ComplexLocalityCoordinate &
-  LocalityWithAccuracy);
+export type LocalityData = IR<Field<string | number>>;
 
 export const getField = (
   row: RA<string>,
@@ -55,13 +38,34 @@ export function formatCoordinate(coordinate: string): number {
   return parsedCoordinate._components[0] * parsedCoordinate._sign;
 }
 
+export const findRanksInMappings = (
+  mappingPaths: RA<MappingPath>
+): RA<{ readonly groupName: string; treeRankLocation: number }> =>
+  mappingPaths
+    .map((mappingPath) => ({
+      mappingPath,
+      treeRankLocation: mappingPath.findIndex((mappingPathPart) =>
+        valueIsTreeRank(mappingPathPart)
+      ),
+    }))
+    .map(({ mappingPath, treeRankLocation }) =>
+      treeRankLocation === -1
+        ? { groupName: '', treeRankLocation }
+        : {
+            treeRankLocation,
+            groupName: mappingPathToString(
+              mappingPath.slice(0, treeRankLocation)
+            ),
+          }
+    );
+
 export const getLocalityData = (
   localityColumns: IR<string>,
   getField: (fieldName: string) => Field<string>,
   formatCoordinate: (fieldName: string) => Field<number>
 ): LocalityData | false =>
   requiredLocalityColumns.every((fieldName) => getField(fieldName).value !== '')
-    ? ({
+    ? {
         ...Object.fromEntries(
           Object.keys(localityColumns)
             .filter(
@@ -93,5 +97,5 @@ export const getLocalityData = (
         )
           ? getField('locality.latlongaccuracy')
           : { value: '', headerName: '' },
-      } as LocalityData)
+      }
     : false;

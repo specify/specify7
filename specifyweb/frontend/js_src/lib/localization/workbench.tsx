@@ -76,7 +76,7 @@ const wbText = createDictionary({
   onExitDialogMessage: 'Changes to this Data Set have not been Saved.',
 
   // Validation
-  // This value must match the one on the back-end exactly
+  /* This value must match the one on the back-end exactly */
   picklistValidationFailed: (value: string) =>
     [
       `${value ? `"${value}"` : ''} is not a legal value in this picklist `,

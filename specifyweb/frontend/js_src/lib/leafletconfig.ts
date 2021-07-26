@@ -6,7 +6,6 @@
 import type { IR, RA, RR } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
 import L from './leafletextend';
-import type { LocalityField } from './leafletutils';
 
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json';
@@ -123,12 +122,12 @@ export const preferredBaseLayer = 'Satellite Map (ESRI)';
 export const preferredOverlay = 'Labels and boundaries';
 
 // These fields should be present for locality to be mappable
-export const requiredLocalityColumns: RA<LocalityField> = [
+export const requiredLocalityColumns: RA<string> = [
   'locality.latitude1',
   'locality.longitude1',
 ] as const;
 
-export const mappingLocalityColumns: RA<LocalityField> = [
+export const mappingLocalityColumns: RA<string> = [
   ...requiredLocalityColumns,
   'locality.latitude2',
   'locality.longitude2',
@@ -176,8 +175,6 @@ export const localityPinFields: RA<LocalityPinFields> = [
   {
     pathToRelationship: ['collectionobject', 'collectingevent', 'locality'],
     pathsToFields: [
-      ['collectionobject', 'catalognumber'],
-      ['collectionobject', 'fieldnumber'],
       ['collectionobject', 'determinations', '#1', 'taxon', '$Genus', 'name'],
       ['collectionobject', 'determinations', '#1', 'taxon', '$Species', 'name'],
       [
@@ -188,28 +185,13 @@ export const localityPinFields: RA<LocalityPinFields> = [
         '$Subspecies',
         'name',
       ],
+      ['collectionobject', 'catalognumber'],
+      ['collectionobject', 'fieldnumber'],
     ],
   },
   {
     pathToRelationship: ['locality', 'collectingevents', '#1'],
     pathsToFields: [
-      [
-        'locality',
-        'collectingevents',
-        '#1',
-        'collectionobjects',
-        '#1',
-        'catalognumber',
-      ],
-      ['locality', 'collectingevents', '#1', 'stationfieldnumber'],
-      [
-        'locality',
-        'collectingevents',
-        '#1',
-        'collectionobjects',
-        '#1',
-        'fieldnumber',
-      ],
       [
         'locality',
         'collectingevents',
@@ -245,6 +227,23 @@ export const localityPinFields: RA<LocalityPinFields> = [
         'taxon',
         '$Subspecies',
         'name',
+      ],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'catalognumber',
+      ],
+      ['locality', 'collectingevents', '#1', 'stationfieldnumber'],
+      [
+        'locality',
+        'collectingevents',
+        '#1',
+        'collectionobjects',
+        '#1',
+        'fieldnumber',
       ],
       [
         'locality',

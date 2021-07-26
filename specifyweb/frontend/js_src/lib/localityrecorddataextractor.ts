@@ -1,8 +1,13 @@
 import type { RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
+import dataObjectFormatters from './dataobjformatters';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
-import { formatCoordinate, getLocalityData } from './leafletutils';
+import {
+  findRanksInMappings,
+  formatCoordinate,
+  getLocalityData,
+} from './leafletutils';
 import { deflateLocalityData } from './lifemapperhelper';
 import {
   formatReferenceItem,
@@ -16,7 +21,6 @@ import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import dataModelStorage from './wbplanviewmodel';
 import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
-import dataObjectFormatters from './dataobjformatters';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -153,27 +157,11 @@ export const parseLocalityPinFields = (
     )
     .map((mappingPath) => mappingPath.slice(1));
 
-  const findRanksInMappings = arrayOfMappings
-    .map((mappingPath) => ({
-      mappingPath,
-      treeRankLocation: mappingPath.findIndex((mappingPathPart) =>
-        valueIsTreeRank(mappingPathPart)
-      ),
-    }))
-    .map(({ mappingPath, treeRankLocation }) =>
-      treeRankLocation === -1
-        ? { groupName: '', treeRankLocation }
-        : {
-            treeRankLocation,
-            groupName: mappingPathToString(
-              mappingPath.slice(0, treeRankLocation)
-            ),
-          }
-    );
+  const treeRanks = findRanksInMappings(arrayOfMappings);
 
   const filteredArrayOfMappings = arrayOfMappings.reduce<MappingPath[]>(
     (arrayOfMappings, mappingPath, index) => {
-      const { groupName, treeRankLocation } = findRanksInMappings[index];
+      const { groupName, treeRankLocation } = treeRanks[index];
       if (treeRankLocation === -1) {
         arrayOfMappings.push(mappingPath);
       } else if (
@@ -199,7 +187,7 @@ export const parseLocalityPinFields = (
 
 export async function getLocalityDataFromLocalityResource(
   localityResource: any,
-  // Don't fetch related tables. Only return data from this resource.
+  // Don't fetch related tables. Only return data from the locality resource
   quickFetch = false,
   filterFunction: FilterFunction = defaultRecordFilterFunction
 ): Promise<LocalityData | false> {

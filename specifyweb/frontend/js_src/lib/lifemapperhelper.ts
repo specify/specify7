@@ -18,7 +18,7 @@ export function deflateLocalityData(localityData: LocalityData): LocalityData {
       mappingPathToString(deflatedMappingPaths[index]),
       value,
     ])
-  ) as LocalityData;
+  );
 }
 
 /*
@@ -72,7 +72,7 @@ export function splitLocalityData(
     .filter(([key]) => key !== '')
     .map(([groupKey, groupData]) =>
       deflateLocalityData({
-        ...(groups[''] as LocalityData),
+        ...groups[''],
         ...Object.fromEntries(
           Object.entries(groupData).map(([mappingPathString, field]) => [
             mappingPathToString([

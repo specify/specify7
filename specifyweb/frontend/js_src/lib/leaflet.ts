@@ -112,8 +112,8 @@ export async function showLeafletMap({
   let defaultZoom = 1;
   if (localityPoints.length > 0) {
     defaultCenter = [
-      localityPoints[0]['locality.latitude1'].value,
-      localityPoints[0]['locality.longitude1'].value,
+      localityPoints[0]['locality.latitude1'].value as number,
+      localityPoints[0]['locality.longitude1'].value as number,
     ];
     defaultZoom = DEFAULT_ZOOM;
   }
@@ -321,7 +321,9 @@ export function addMarkersToMap(
   );
 }
 
-export function isValidAccuracy(latlongaccuracy: string | undefined): boolean {
+export function isValidAccuracy(
+  latlongaccuracy: string | undefined
+): latlongaccuracy is string {
   try {
     if (
       typeof latlongaccuracy === 'undefined' ||
@@ -362,8 +364,7 @@ export const formatLocalityData = (
     ...Object.entries(localityData)
       .filter(
         ([fieldName]) =>
-          !hideRedundant ||
-          !(mappingLocalityColumns as RA<string>).includes(fieldName)
+          !hideRedundant || !mappingLocalityColumns.includes(fieldName)
       )
       .map(([_fieldName, field]) => field)
       .filter(
@@ -384,16 +385,7 @@ export const formatLocalityData = (
   ].join('<br>');
 
 export function getMarkersFromLocalityData({
-  localityData: {
-    'locality.latitude1': latitude1,
-    'locality.longitude1': longitude1,
-    'locality.latitude2': latitude2 = undefined,
-    'locality.longitude2': longitude2 = undefined,
-    'locality.latlongtype': latlongtype = undefined,
-    'locality.latlongaccuracy': latlongaccuracy = { headerName: '', value: '' },
-    rowNumber: _rowNumber,
-    ...rest
-  },
+  localityData: { rowNumber: _rowNumber, ...localityData },
   markerClickCallback,
   iconClass,
 }: {
@@ -408,7 +400,29 @@ export function getMarkersFromLocalityData({
     errorRadius: [],
   };
 
-  if (typeof latitude1 === 'undefined' || typeof longitude1 === undefined)
+  const getNumber = (fieldName: string): number | undefined =>
+    typeof localityData[fieldName]?.value === 'number'
+      ? (localityData[fieldName].value as number)
+      : undefined;
+
+  const getString = (fieldName: string): string | undefined =>
+    typeof localityData[fieldName]?.value === 'string'
+      ? (localityData[fieldName].value as string)
+      : undefined;
+
+  const parsedLocalityData = {
+    latitude1: getNumber('locality.latitude1'),
+    latitude2: getNumber('locality.latitude2'),
+    longitude1: getNumber('locality.longitude1'),
+    longitude2: getNumber('locality.longitude2'),
+    latlongaccuracy: getString('locality.latlongaccuracy'),
+    latlongtype: getString('locality.latlongtype'),
+  };
+
+  if (
+    typeof parsedLocalityData.latitude1 === 'undefined' ||
+    typeof parsedLocalityData.longitude1 === 'undefined'
+  )
     return markers;
 
   const icon = new L.Icon.Default();
@@ -419,36 +433,42 @@ export function getMarkersFromLocalityData({
       icon,
     });
 
-  if (typeof latitude2 === 'undefined' || typeof longitude2 === 'undefined') {
+  if (
+    typeof parsedLocalityData.latitude2 === 'undefined' ||
+    typeof parsedLocalityData.longitude2 === 'undefined'
+  ) {
     // A circle
-    if (isValidAccuracy(latlongaccuracy.value))
+    if (isValidAccuracy(parsedLocalityData.latlongaccuracy))
       markers.errorRadius.push(
-        L.circle([latitude1.value, longitude1.value], {
-          radius: Number.parseFloat(latlongaccuracy.value),
-        })
+        L.circle(
+          [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
+          {
+            radius: Number.parseFloat(parsedLocalityData.latlongaccuracy),
+          }
+        )
       );
 
     // A point
-    markers.marker.push(createPoint(latitude1.value, longitude1.value));
+    markers.marker.push(
+      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude1)
+    );
   } else {
     markers.polygon.push(
-      latlongtype?.value?.toLowerCase() === 'line'
-        ? // A line
-          createLine(
-            [latitude1.value, longitude1.value],
-            [latitude2.value, longitude2.value]
+      parsedLocalityData.latlongtype?.toLowerCase() === 'line'
+        ? createLine(
+            [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
+            [parsedLocalityData.latitude2, parsedLocalityData.longitude2]
           )
-        : // A polygon
-          L.polygon([
-            [latitude1.value, longitude1.value],
-            [latitude2.value, longitude1.value],
-            [latitude2.value, longitude2.value],
-            [latitude1.value, longitude2.value],
+        : L.polygon([
+            [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
+            [parsedLocalityData.latitude2, parsedLocalityData.longitude1],
+            [parsedLocalityData.latitude2, parsedLocalityData.longitude2],
+            [parsedLocalityData.latitude1, parsedLocalityData.longitude2],
           ])
     );
     markers.polygonBoundary.push(
-      createPoint(latitude1.value, longitude1.value),
-      createPoint(latitude2.value, longitude2.value)
+      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude1),
+      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude2)
     );
   }
 
@@ -457,7 +477,7 @@ export function getMarkersFromLocalityData({
     .forEach((vector) => {
       if (typeof markerClickCallback === 'function')
         vector.on('click', markerClickCallback);
-      vector.bindPopup(formatLocalityData(rest));
+      vector.bindPopup(formatLocalityData(localityData, undefined, true));
     });
 
   return markers;

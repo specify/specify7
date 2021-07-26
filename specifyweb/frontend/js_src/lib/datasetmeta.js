@@ -119,7 +119,6 @@ export const DataSetMeta = Backbone.View.extend({
     </div>`).dialog({
       title: wbText('dataSetMetaDialogTitle'),
       modal: true,
-      dialogClass: 'ui-dialog-no-close',
       close: () => this.render(),
       buttons: {
         [commonText('cancel')]: () => this.render(),
