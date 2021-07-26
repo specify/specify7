@@ -76,10 +76,11 @@ const wbText = createDictionary({
   onExitDialogMessage: 'Changes to this Data Set have not been Saved.',
 
   // Validation
+  // This value must match the one on the back-end exactly
   picklistValidationFailed: (value: string) =>
     [
       `${value ? `"${value}"` : ''} is not a legal value in this picklist `,
-      'field. Click on the arrow to choose among available options.',
+      'field.\nClick on the arrow to choose among available options.',
     ].join(''),
   noMatchErrorMessage: 'No matching record for must-match table.',
   matchedMultipleErrorMessage: [
