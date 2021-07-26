@@ -1756,6 +1756,12 @@ const WBView = Backbone.View.extend({
     if (!(this.mappings?.arrayOfMappings.length > 0))
       this.validationMode = 'off';
 
+    this.uploadResults = {
+      ambiguousMatches: [],
+      recordCounts: {},
+      newRecords: {},
+    };
+
     switch (this.validationMode) {
       case 'live':
         this.liveValidationStack = Array.from(
