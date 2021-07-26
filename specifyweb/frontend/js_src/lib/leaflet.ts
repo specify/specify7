@@ -19,6 +19,7 @@ import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
 import localityText from './localization/locality';
 import { capitalize } from './wbplanviewhelper';
+import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 
 const DEFAULT_ZOOM = 5;
 
@@ -356,7 +357,7 @@ const createLine = (
   });
 
 export const formatLocalityData = (
-  localityData: Partial<LocalityData>,
+  localityData: LocalityData,
   viewUrl?: string,
   hideRedundant = false
 ): string =>
@@ -366,12 +367,15 @@ export const formatLocalityData = (
         ([fieldName]) =>
           !hideRedundant || !mappingLocalityColumns.includes(fieldName)
       )
-      .map(([_fieldName, field]) => field)
       .filter(
-        (field): field is Field<string | number> => typeof field !== 'undefined'
+        (entry): entry is [string, Field<string | number>] =>
+          typeof entry[1] !== 'undefined' && entry[1].value !== ''
       )
-      .filter((field) => field.value !== '')
-      .map((field) => `<b>${field.headerName}</b>: ${field.value}`),
+      .map(([fieldName, field]) =>
+        splitJoinedMappingPath(fieldName).includes('taxon')
+          ? `<b>${field.value}</b>`
+          : `<b>${field.headerName}</b>: ${field.value}`
+      ),
     ...(viewUrl
       ? [
           `

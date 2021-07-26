@@ -244,8 +244,7 @@ module.exports = Backbone.View.extend({
         RegExp(
           this.searchPreferences.search.fullMatch
             ? `^${this.searchQuery}$`
-            : this.searchQuery,
-          this.searchPreferences.search.caseSensitive ? 'i' : ''
+            : this.searchQuery
         );
       } catch (error) {
         searchQueryValidationError = error.toString();
@@ -443,7 +442,7 @@ module.exports = Backbone.View.extend({
             this.searchPreferences.search.fullMatch
               ? `^${searchQuery}$`
               : searchQuery,
-            this.searchPreferences.search.caseSensitive ? 'i' : ''
+            this.searchPreferences.search.caseSensitive ? '' : 'i'
           )
         );
       } catch (error) {
