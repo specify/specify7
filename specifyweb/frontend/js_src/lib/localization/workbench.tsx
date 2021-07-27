@@ -62,16 +62,14 @@ const wbText = createDictionary({
   deleteDataSetDialogHeader: createHeader('Delete this Data Set?'),
   deleteDataSetDialogMessage: `
     Deleting a Data Set permanently removes it and its Upload Plan.
-    Data mappings will no longer be available for re-use with other
-    Data Sets. Also, Rollback will no longer be an option for
-    an uploaded Data Set.`,
+    Data mappings will not be available for re-use; Rollback will not be an option for an uploaded Data Set.`,
   dataSetDeletedTitle: 'Delete Data Set',
   dataSetDeletedHeader: createHeader('Data Set successfully deleted'),
   dataSetDeletedMessage: 'Data Set successfully deleted.',
   revertChangesDialogTitle: 'Revert Changes',
   revertChangesDialogHeader: createHeader('Revert Unsaved Changes?'),
   revertChangesDialogMessage: `
-    This action will discard all changes to the Data Set since
+    This action will discard all changes made to the Data Set since
     the last Save.`,
   savingDialogTitle: 'Saving',
   onExitDialogMessage: 'Changes to this Data Set have not been Saved.',
@@ -85,7 +83,7 @@ const wbText = createDictionary({
     ].join(''),
   noMatchErrorMessage: 'No matching record for must-match table.',
   matchedMultipleErrorMessage: [
-    'This value matches two or more existing database records and must ',
+    'This value matches two or more existing database records and the match must ',
     'be disambiguated before uploading.',
   ].join(''),
   validationNoErrorsDialogTitle: 'Data Set Validation',
