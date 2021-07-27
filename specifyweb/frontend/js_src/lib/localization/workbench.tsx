@@ -90,50 +90,46 @@ const wbText = createDictionary({
   ].join(''),
   validationNoErrorsDialogTitle: 'Data Set Validation',
   validationNoErrorsDialogHeader: createHeader(
-    'Validation Completed with No Errors'
+    'Validate Completed with No Errors'
   ),
   validationNoErrorsDialogMessage: `
-    Validation found no errors in the Data Set. It is
+    
+    Validation found no errors, it is
     ready to be uploaded into the database.<br><br>
 
-    Cell validations and their highlighting will
-    remain with the Data Set until it is edited and
-    re-saved. If any cells are edited, Validation should
-    be re-run as the last step prior to uploading
-    to confirm that no errors have been introduced.`,
+    Note: If this Data Set is edited and re-saved, Validate should
+    be re-run prior to Uploading to verify that no errors have been introduced.`,
   validationErrorsDialogTitle: 'Data Set Validation',
   validationErrorsDialogHeader: createHeader(
-    'Validation Completed with Errors'
+    'Validate Completed with Errors'
   ),
   validationErrorsDialogMessage: `
-    Validation found errors in some cells in the Data Set.<br><br>
+    Validation found errors in the Data Set.<br><br>
 
-    If any cells are edited and the Data Set re-saved,
-    Validate should always be re-run as the last step
-    prior to uploading to confirm that no errors have
-    been introduced.`,
+   Note: If this Data Set is edited and re-saved, Validate should 
+   be re-run prior to Uploading to verify that no errors have been introduced.`,
   uploadNoErrorsDialogTitle: 'Data Set Upload',
   uploadNoErrorsDialogHeader: createHeader('Upload Completed with No Errors'),
   uploadNoErrorsDialogMessage: `
-    Click on the "Results" button above to see values for new records
+    Click on the "Results" button to see the number of new records
     added to each database table.`,
   uploadErrorsDialogTitle: 'Data Set Upload',
   uploadErrorsDialogHeader: createHeader(
-    'Upload Failed due to Validation Errors'
+    'Upload Failed due to Error Cells'
   ),
   uploadErrorsDialogMessage: `
-    The Data Set upload failed due to one or more cell value errors.<br><br>
+    The upload failed due to one or more cell value errors.<br><br>
 
-    Run "Data Check" or "Validate" again, review the
-    mouseover hints for each error cell, and make the
-    appropriate corrections. Save changes and retry the
+    Validate the Data Set and review the
+    mouseover hints for each error cell, then make the
+    appropriate corrections. Save and retry the
     Upload.`,
   dataSetRollbackDialogTitle: 'Data Set Rollback',
   dataSetRollbackDialogHeader: createHeader(
     'Data Set was rolled back successfully'
   ),
   dataSetRollbackDialogMessage:
-    'Make necessary edits and begin the upload process again.',
+    'This Data Set can now be edited, saved, or re-uploaded.',
   validationCanceledDialogTitle: 'Data Set Validation',
   validationCanceledDialogHeader: createHeader('Validation Canceled'),
   validationCanceledDialogMessage: 'Data Set Validation cancelled.',
@@ -144,15 +140,15 @@ const wbText = createDictionary({
   uploadCanceledDialogHeader: createHeader('Upload Canceled'),
   uploadCanceledDialogMessage: 'Data Set Upload cancelled.',
   geoLocateDialogTitle: 'GeoLocate',
-  coordinateConverterDialogTitle: 'Change Geocoordinate Format',
+  coordinateConverterDialogTitle: 'Geocoordinate Format',
   coordinateConverterDialogHeader: createHeader(
-    'Choose New Geocoordinate format'
+    'Choose a preferred Geocoordinate format'
   ),
 
   // Misc
   wbUploadedUnavailable: 'The data set must be validated or uploaded',
   wbValidateUnavailable:
-    'Please define an Upload Plan before Validating the Data Set',
+    'An Upload Plan needs to defined before this Data Set cab be Validated',
   unavailableWhileEditing: 'This action requires all changes to be saved',
   uploadUnavailableWhileHasErrors:
     'Upload is unavailable while some cells have validation errors',
@@ -192,7 +188,7 @@ const wbText = createDictionary({
 
   // WbImport
   importDataSet: 'Import Data Set',
-  wbImportHeader: 'Import File to Create a New Data Set',
+  wbImportHeader: 'Import a File to Create a New Data Set',
   previewDataSet: 'Preview Dataset',
   corruptFile: (fileName: string) =>
     `The file ${fileName} is corrupt or contains no data!`,
