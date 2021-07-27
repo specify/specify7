@@ -49,11 +49,13 @@ def savepoint(description: str):
 def no_savepoint():
     yield
 
-from django.db import connections
-from django.db.utils import DEFAULT_DB_ALIAS, load_backend
-
 @contextmanager
-def create_connection(alias=DEFAULT_DB_ALIAS):
+def create_connection():
+    from django.db import connections
+    from django.db.utils import DEFAULT_DB_ALIAS, load_backend
+    # TODO: The following can be replaced with connections.create_connection(...)
+    # after updating Django to a version with https://github.com/django/django/pull/9272
+    alias = DEFAULT_DB_ALIAS
     connections.ensure_defaults(alias)
     connections.prepare_test_settings(alias)
     db = connections.databases[alias]
