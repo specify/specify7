@@ -104,6 +104,7 @@ export const DataSetMeta = Backbone.View.extend({
           "
           class="dataset-name"
           value="${this.dataset.name}"
+          spellcheck="true"
         >
       </label>
       <label>

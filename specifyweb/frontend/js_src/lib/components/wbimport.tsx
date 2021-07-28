@@ -496,6 +496,7 @@ function ChooseName(props: { name: string; update: HandleAction }) {
       {wbText('chooseDataSetName')}
       <input
         type="text"
+        spellCheck={true}
         value={props.name}
         onChange={(event) =>
           props.update({

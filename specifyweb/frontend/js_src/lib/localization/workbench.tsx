@@ -242,7 +242,6 @@ const wbText = createDictionary({
   saveUnfinished: 'Save Unfinished',
   map: 'Map',
   mapButtonDescription: 'Map selected field to selected header',
-  selected: 'Selected',
   relationship: (tableName: string): string =>
     `Relationship with the ${tableName} table`,
   selectBaseTableDialogTitle: 'Select a Base Table',

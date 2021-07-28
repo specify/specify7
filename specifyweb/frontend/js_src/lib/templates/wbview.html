@@ -160,6 +160,7 @@
       placeholder="<%= commonText('search') %>"
       title="<%= wbText('searchQuery') %>"
       aria-label="<%= wbText('searchQuery') %>"
+      autocomplete="on"
       spellcheck="false"
     />
     <% if(!is_uploaded){ %>
@@ -169,6 +170,7 @@
       placeholder="<%= wbText('replace') %>"
       title="<%= wbText('replacementValue') %>"
       aria-label="<%= wbText('replacementValue') %>"
+      autocomplete="on"
     />
     <% } %>
     <button

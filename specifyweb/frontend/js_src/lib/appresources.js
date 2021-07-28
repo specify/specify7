@@ -106,14 +106,14 @@ const ResourceDataView = Backbone.View.extend({
 
                 $(`<label class="metadata-input">
                     ${commonText('metadataInline')}
-                    <input type="text" spellcheck="false"/>
+                    <input type="text" spellcheck="false" autocomplete="on" />
                 <label>`).appendTo(this.el);
                 $('.metadata-input input', this.el).val(this.model.get('metadata'));
 
                 if (this.model.specifyModel.name === 'SpAppResource') {
                     $(`<label class="mimetype-input">
                         ${adminText('mimetype')}
-                        <input type="text" spellcheck="false"/>
+                        <input type="text" spellcheck="false" autocomplete="on" />
                     <label>`).appendTo(this.el);
                     $('.mimetype-input input', this.el).val(this.model.get('mimetype'));
                 }
@@ -275,7 +275,7 @@ const ResourceList = Backbone.View.extend({
         const dialog = $(`<aside>
             ${adminText('createResourceDialogHeader')}
             <form>
-                <label style="white-space: nowrap;">${adminText('newResourceName')} <input type="text"></label>
+                <label style="white-space: nowrap;">${adminText('newResourceName')} <input type="text" spellcheck="on"></label>
                 <input type="submit" style="display: none;">
             </form>
         </aside>`).dialog({

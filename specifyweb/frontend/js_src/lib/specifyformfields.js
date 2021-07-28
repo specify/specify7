@@ -16,7 +16,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
 
         var makeField = {
             checkbox: function() {
-                var control = $('<input type=checkbox class="specify-field">');
+                var control = $('<input type="checkbox" class="specify-field">');
 
                 control.prop('disabled',isReadOnly);
                 if (cell.attr('default') != null) {
@@ -32,14 +32,14 @@ module.exports = function(doingFormTable, mode, cell, id) {
             },
             textarea: function () {
                 if (isReadOnly)
-                    return $('<input type=text class="specify-field" readonly>');
+                    return $('<input type="text" class="specify-field" readonly>');
                 var control = $('<textarea class="specify-field">)');
                 control.attr('rows', cell.attr('rows'));
                 return control;
             },
             textareabrief: function() {
                 if (isReadOnly)
-                    return $('<input type=text class="specify-field" readonly>');
+                    return $('<input type="text" class="specify-field" readonly>');
                 return $('<textarea class="specify-field">').attr('rows', cell.attr('rows') || 1);
             },
             combobox: function() {
@@ -50,37 +50,37 @@ module.exports = function(doingFormTable, mode, cell, id) {
                 return control;
             },
             spinner: function() {
-                return $('<input type=text class="specify-spinner specify-field">')
+                return $('<input type="text" class="specify-spinner specify-field">')
                     .prop('readonly',isReadOnly);
             },
             querycbx: function() {
-                return $('<input type=text class="specify-querycbx specify-field">')
+                return $('<input type="text" class="specify-querycbx specify-field">')
                     .prop('readonly',isReadOnly);
             },
             text: function() {
-                return $('<input type=text class="specify-field">')
+                return $('<input type="text" class="specify-field">')
                     .attr('value', cell.attr('default'))
                     .prop('readonly', isReadOnly);
             },
             dsptextfield: function() {
-                return $('<input type=text class="specify-field" readonly>')
+                return $('<input type="text" class="specify-field" readonly>')
                     .attr('value', cell.attr('default'));
             },
             formattedtext: function() {
-                return $('<input type=text class="specify-formattedtext specify-field">')
+                return $('<input type="text" class="specify-formattedtext specify-field">')
                     .attr('value', cell.attr('default'))
                     .prop('readonly', isReadOnly);
             },
             label: function() {
-                return $('<input type=text class="specify-field" readonly>');
+                return $('<input type="text" class="specify-field" readonly>');
             },
             plugin: function() {
-                return $('<input type=button value="plugin" class="specify-uiplugin specify-field">')
+                return $('<input type="button" value="plugin" class="specify-uiplugin specify-field">')
                     .attr('data-specify-default', cell.attr('default'))
                     .attr('disabled', isReadOnly);
             },
             browse: function() {
-                return $('<input type=file class="specify-field">');
+                return $('<input type="file" class="specify-field">');
             }
         };
 

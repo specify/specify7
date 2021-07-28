@@ -9,6 +9,7 @@ var navigation     = require('./navigation.js');
 var RecordSelector = require('./recordselector.js');
 
 const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
@@ -155,7 +156,7 @@ const formsText = require('./localization/forms').default;
             var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
 
             if (!self.readOnly) {
-                $('<input type="button" value="Remove">').appendTo(buttons).click(function() {
+                $(`<input type="button" value="${commonText('remove')}">`).appendTo(buttons).click(function() {
                     self.dialog.dialog('close');
                     self.related = null;
                     self.model.set(self.field.name, self.related);
