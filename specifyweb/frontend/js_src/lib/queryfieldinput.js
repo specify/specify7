@@ -19,7 +19,11 @@ const queryText = require('./localization/query').default;
         __name__: "FieldInputUI",
         opName: 'NA',
         format: false,
-        input: '<input type="text">',
+        input: `<input
+            type="text"
+            title="${queryText('searchQuery')}"
+            aria-label="${queryText('searchQuery')}"
+        >`,
         initialize: function(options) {
             this.field = options.field;
             this.isDatePart = options.isDatePart;
@@ -87,7 +91,17 @@ const queryText = require('./localization/query').default;
 
     var Between = {
         opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers', 'catnos'],
-        input: '<input type="text" autocomplete="on"> and <input type="text" autocomplete="on">', format: true,
+        input: `<input
+            type="text"
+            autocomplete="on"
+            title="${queryText('startValue')}"
+            aria-label="${queryText('startValue')}"
+        > and <input
+            type="text"
+            autocomplete="on"
+            title="${queryText('endValue')}"
+            aria-label="${queryText('endValue')}"
+        >`, format: true,
         getValue: function() {
             return this.values.join(',');
         },
@@ -101,7 +115,10 @@ const queryText = require('./localization/query').default;
             'keydown input': 'keydown'
         },
         opName: 'In', negation: 'Not In', types: ['strings', 'numbers', 'catnos'], listInput: true,
-        input: '<span class="in-values">' + queryText('addValuesHint') + '</span> <input type="text" autocomplete="on">', format: true,
+        input: `<label>
+            <span class="in-values">${queryText('addValuesHint')}</span>
+            <input type="text" autocomplete="on">
+        </label>`, format: true,
         getValue: function() {
             return this.values.join(',');
         },

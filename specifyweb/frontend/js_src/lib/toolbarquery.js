@@ -206,9 +206,12 @@ const commonText = require('./localization/common').default;
         },
         createReport(evt) {
             const isLabel = evt.currentTarget.classList.contains('create-label');
+            const nameInputLabel = isLabel ? commonText('labelName') : commonText('reportName');
             const nameInput = $(`<input
                 type="text"
-                placeholder="${isLabel ? commonText('labelName') : commonText('reportName')}"
+                placeholder="${nameInputLabel}"
+                title="${nameInputLabel}"
+                aria-label="${nameInputLabel}"
                 size="40"
             >`);
 

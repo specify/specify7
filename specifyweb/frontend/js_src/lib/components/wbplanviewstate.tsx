@@ -584,56 +584,51 @@ export const stateReducer = generateReducer<
               wbText('matchingLogicUnavailableDialogMessage')
             ) : (
               <>
-                <h4 style={{ paddingLeft: '4px' }}>
-                  {wbText('matchingLogicDialogMessage')}
-                </h4>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>{commonText('tableName')}</th>
-                      <th>{wbText('mustMatch')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <p>{wbText('matchingLogicDialogMessage')}</p>
+                <span className="matching-logic-dialog" role="table">
+                  <span role="rowgroup">
+                    <span role="row">
+                      <span role="cell">{commonText('tableName')}</span>
+                      <span role="cell">{wbText('mustMatch')}</span>
+                    </span>
+                  </span>
+                  <span role="rowgroup">
                     {Object.entries(state.mustMatchPreferences).map(
                       ([tableName, mustMatch]) => (
-                        <tr key={tableName}>
-                          <td>
-                            <div className="v-center must-match-line">
-                              <TableIcon tableName={tableName} />
-                              {dataModelStorage.tables[tableName].label}
-                            </div>
-                          </td>
-                          <td>
-                            <label
-                              style={{
-                                display: 'block',
-                                textAlign: 'center',
-                              }}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={mustMatch}
-                                {...(state.props.readonly
-                                  ? {
-                                      disabled: true,
-                                    }
-                                  : {
-                                      onChange: (): void =>
-                                        state.dispatch({
-                                          type: 'MustMatchPrefChangeAction',
-                                          tableName,
-                                          mustMatch: !mustMatch,
-                                        }),
-                                    })}
-                              />
-                            </label>
-                          </td>
-                        </tr>
+                        <label role="row" key={tableName}>
+                          <span
+                            role="cell"
+                            className="v-center must-match-line"
+                          >
+                            <TableIcon
+                              tableName={tableName}
+                              tableLabel={false}
+                            />
+                            {dataModelStorage.tables[tableName].label}
+                          </span>
+                          <span role="cell" style={{ textAlign: 'center' }}>
+                            <input
+                              type="checkbox"
+                              checked={mustMatch}
+                              {...(state.props.readonly
+                                ? {
+                                    disabled: true,
+                                  }
+                                : {
+                                    onChange: (): void =>
+                                      state.dispatch({
+                                        type: 'MustMatchPrefChangeAction',
+                                        tableName,
+                                        mustMatch: !mustMatch,
+                                      }),
+                                  })}
+                            />
+                          </span>
+                        </label>
                       )
                     )}
-                  </tbody>
-                </table>
+                  </span>
+                </span>
               </>
             )}
           </ModalDialog>

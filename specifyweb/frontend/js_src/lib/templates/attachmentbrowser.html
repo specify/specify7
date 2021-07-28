@@ -1,6 +1,13 @@
-<div class="attachments-header">
-  <div class="attachments-title"><%= formsText('attachments') %></div><select class="specify-attachment-type"></select>
-</div>
+<header class="attachments-header">
+  <h1><%= formsText('attachments') %></h1>
+  <label>
+    <span class="sr-only"><%= formsText('filterAttachments') %></span>
+    <select
+      class="specify-attachment-type"
+      title="<%= formsText('filterAttachments') %>"
+    ></select>
+  </label>
+</header>
 <div class="specify-attachment-browser">
   <div class="specify-attachment-cells"></div>
 </div>

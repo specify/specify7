@@ -95,7 +95,7 @@ export const DataSetMeta = Backbone.View.extend({
 
     this.dialog = $(`<aside>
       <label>
-        <h3>${wbText('dataSetName')}</h3>
+        <b>${wbText('dataSetName')}</b>
         <input
           type="text"
           style="
@@ -107,14 +107,15 @@ export const DataSetMeta = Backbone.View.extend({
           spellcheck="true"
         >
       </label>
+      <br>
       <label>
-        <h3>${wbText('remarks')}</h3>
+        <b>${wbText('remarks')}</b>
         <textarea
           style="width: 100%"
           class="dataset-remarks"
         >${this.dataset.remarks ?? ''}</textarea>
-      </label><br>
-      <h3>${commonText('metadataInline')}</h3>
+      </label><br><br>
+      <b>${commonText('metadataInline')}</b><br>
       ${wbText('numberOfRows')} <i>${this.getRowCount()}</i><br>
       ${wbText('numberOfColumns')} <i>${this.dataset.columns.length}</i><br>
       ${wbText('created')} <i>${dateElement(
@@ -206,16 +207,18 @@ export const DataSetMeta = Backbone.View.extend({
     this.fetchListOfUsers().then((users) => {
       this.changeOwnerDialog = $(`<aside>
         ${wbText('changeDataSetOwnerDialogHeader')}
-        <p>${wbText('changeDataSetOwnerDialogMessage')}</p>
-        <select class="select-user-picklist" size="10" style="width:100%">
-          ${users
-            .map(
-              (user) => `<option value="${user.id}">
-            ${user.name}
-          </option>`
-            )
-            .join('<br>')}
-        </select>
+        <label>
+          <p>${wbText('changeDataSetOwnerDialogMessage')}</p>
+          <select class="select-user-picklist" size="10" style="width:100%">
+            ${users
+              .map(
+                (user) => `<option value="${user.id}">
+              ${user.name}
+            </option>`
+              )
+              .join('<br>')}
+          </select>
+        </label>
       </aside>`).dialog({
         title: wbText('changeDataSetOwnerDialogTitle'),
         modal: true,

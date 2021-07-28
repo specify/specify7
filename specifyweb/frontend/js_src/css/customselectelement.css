@@ -250,15 +250,6 @@
   background-color: var(--custom-select-accent) !important;
 }
 
-.must-match-line {
-  column-gap: var(--half-size);
-}
-
-.must-match-line span {
-  width: var(--size);
-  height: var(--size);
-}
-
 @media print {
   .custom-select-element-shadow-list,
   .custom-select-input span:nth-child(3),
