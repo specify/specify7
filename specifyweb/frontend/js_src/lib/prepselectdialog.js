@@ -99,11 +99,11 @@ module.exports =  PrepDialog.extend({
                 unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
             }
             var entry = $('<tr>').append(
-                $('<td>').append($('<input>').attr('type', 'checkbox')),
+                $('<td>').append($('<input>').attr('type', 'checkbox').attr('title',formsText('selectAll')).attr('aria-label',formsText('selectAll'))),
                 $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
-                $('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
+                $('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('title',formsText('selectedAmount')).attr('aria-label',formsText('selectedAmount')).attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
                 $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
                 unavailable);
             return [entry];

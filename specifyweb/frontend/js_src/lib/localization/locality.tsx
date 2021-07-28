@@ -29,6 +29,7 @@ const localityText = createDictionary({
   southEastCorner: 'SE Corner',
 
   // LatLongUI
+  coordinateType: 'Coordinate Type',
   point: 'Point',
   line: 'Line',
   rectangle: 'Rectangle',

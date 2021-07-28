@@ -6,6 +6,7 @@ import { createDictionary, createHeader } from './utils';
 const formsText = createDictionary({
   // Attachments
   attachments: 'Attachments',
+  filterAttachments: 'Filter Attachments',
   attachmentServerUnavailable: 'Attachment server unavailable.',
   attachmentUploadDialogTitle: 'Uploading...',
   tables: 'Tables',
@@ -79,6 +80,12 @@ const formsText = createDictionary({
   returnAllPreparations: 'Return all preparations',
   returnSelectedPreparations: 'Return selected preparations',
   selectAllAvailablePreparations: 'Select all available preparations',
+  selectAll: 'Select All',
+  selectedAmount: 'Selected Amount',
+  returnedAmount: 'Returned Amount',
+  resolvedAmount: 'Resolved Amount',
+  receivedBy: 'Received by',
+  dateResolved: 'Date resolved',
 
   // PaleoLocationPlugin
   paleoMap: 'Paleo Map',
