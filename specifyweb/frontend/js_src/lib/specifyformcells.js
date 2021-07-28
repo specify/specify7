@@ -86,7 +86,7 @@ const userInfo             = require('./userinfo.js');
                 return $('<td>').append(table);
             },
             command: function() {
-                var button = $('<input type=button>').attr({
+                var button = $('<input type="button">').attr({
                     value: cell.attr('label'),
                     name: cell.attr('name'),
                     "class": "specify-uicommand",

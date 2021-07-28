@@ -364,7 +364,7 @@ var ReportParametersDialog = Backbone.View.extend({
         var rows = _.map(this.parameters, function(param) {
             return $('<tr>').append(
                 $('<th>').text($(param).attr('name')),
-                $('<td><input type="text"></td>'))[0];
+                $('<td><input type="text" autocomplete="on" spellcheck="true"></td>'))[0];
         });
         $('<table>').append(rows).appendTo(this.el);
         makeDialog(this.$el, {

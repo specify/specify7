@@ -87,7 +87,7 @@ const queryText = require('./localization/query').default;
 
     var Between = {
         opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers', 'catnos'],
-        input: '<input type="text"> and <input type="text">', format: true,
+        input: '<input type="text" autocomplete="on"> and <input type="text" autocomplete="on">', format: true,
         getValue: function() {
             return this.values.join(',');
         },
@@ -101,7 +101,7 @@ const queryText = require('./localization/query').default;
             'keydown input': 'keydown'
         },
         opName: 'In', negation: 'Not In', types: ['strings', 'numbers', 'catnos'], listInput: true,
-        input: '<span class="in-values">' + queryText('addValuesHint') + '</span> <input type="text">', format: true,
+        input: '<span class="in-values">' + queryText('addValuesHint') + '</span> <input type="text" autocomplete="on">', format: true,
         getValue: function() {
             return this.values.join(',');
         },
