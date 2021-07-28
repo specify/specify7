@@ -22,7 +22,6 @@ import {
   mappingState,
 } from './components/wbplanviewstate';
 import wbText from './localization/workbench';
-import schema from './schema';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import { uniquifyHeaders } from './wbplanviewheaderhelper';
 import {
@@ -30,12 +29,10 @@ import {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from './wbplanviewlinesgetter';
-import dataModelStorage from './wbplanviewmodel';
-import { tableIsTree } from './wbplanviewmodelhelper';
-import { getMappingLineData } from './wbplanviewnavigator';
 import {
   deduplicateMappings,
   getAutomapperSuggestions,
+  getMustMatchTables,
   mappingPathIsComplete,
   mutateMappingPath,
   savePlan,
@@ -292,7 +289,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
 
   // MappingState
   OpenMappingScreenAction: ({ action }) => {
-    if (!action.uploadPlan) throw new Error('Upload plan is not defined');
+    if (!action.uploadPlan) throw new Error('Upload Plan is not defined');
 
     const { baseTableName, lines, mustMatchPreferences } =
       getLinesFromUploadPlan(action.headers, action.uploadPlan);
@@ -504,77 +501,11 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     ...mappingState(state),
     mappingView: mappingPath,
   }),
-  OpenMatchingLogicDialogAction: ({ state: originalState }) => {
-    const state = mappingState(originalState);
-
-    const baseTableIsTree = tableIsTree(state.baseTableName);
-    const arrayOfMappingPaths = state.lines.map((line) => line.mappingPath);
-    const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
-      getMappingLineData({
-        mappingPath,
-        baseTableName: state.baseTableName,
-        iterate: true,
-      }).filter((mappingElementData, index, list) => {
-        if (
-          // Exclude base table
-          index <= Number(baseTableIsTree) ||
-          // Exclude -to-many
-          mappingElementData.customSelectSubtype === 'toMany'
-        )
-          return false;
-
-        if (typeof list[index - 1] === 'undefined') {
-          if (
-            state.baseTableName === 'collectionobject' &&
-            list[index].tableName === 'collectingevent'
-          )
-            return false;
-        } else {
-          // Exclude direct child of -to-many
-          if (list[index - 1].customSelectSubtype === 'toMany') return false;
-
-          // Exclude embedded collecting event
-          if (
-            schema.embeddedCollectingEvent === true &&
-            list[index - 1].tableName === 'collectionobject' &&
-            list[index].tableName === 'collectingevent'
-          )
-            return false;
-        }
-
-        return true;
-      })
-    );
-
-    const arrayOfTables = arrayOfMappingLineData
-      .map((mappingElementData) => mappingElementData.tableName ?? '')
-      .filter(
-        (tableName) =>
-          tableName &&
-          typeof dataModelStorage.tables[tableName] !== 'undefined' &&
-          !tableName.endsWith('attribute') &&
-          // Exclude embedded paleo context
-          (schema.embeddedPaleoContext === false ||
-            tableName !== 'paleocontext')
-      );
-    const distinctListOfTables = Array.from(new Set(arrayOfTables));
-    const mustMatchPreferences = {
-      ...Object.fromEntries(
-        distinctListOfTables.map((tableName) => [
-          tableName,
-          tableName === 'preptype' &&
-            !('preptype' in state.mustMatchPreferences),
-        ])
-      ),
-      ...state.mustMatchPreferences,
-    };
-
-    return {
-      ...state,
-      displayMatchingOptionsDialog: true,
-      mustMatchPreferences,
-    };
-  },
+  OpenMatchingLogicDialogAction: ({ state: originalState }) => ({
+    ...mappingState(originalState),
+    displayMatchingOptionsDialog: true,
+    mustMatchPreferences: getMustMatchTables(mappingState(originalState)),
+  }),
   CloseMatchingLogicDialogAction: ({ state }) => ({
     ...mappingState(state),
     displayMatchingOptionsDialog: false,

@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import Automapper from './automapper';
 import type {
+  IR,
   PublicWbPlanViewProps,
   RA,
   WbPlanViewWrapperProps,
@@ -16,6 +17,7 @@ import type {
 import type { LoadingState, MappingState } from './components/wbplanviewstate';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
+import schema from './schema';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,
@@ -27,6 +29,7 @@ import dataModelStorage from './wbplanviewmodel';
 import {
   findRequiredMissingFields,
   getMaxToManyValue,
+  tableIsTree,
 } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { ChangeSelectElementValueAction } from './wbplanviewreducer';
@@ -66,7 +69,7 @@ export function savePlan(
   const uploadPlan = mappingsTreeToUploadPlan(
     state.baseTableName,
     getMappingsTree(renamedMappedLines, true),
-    state.mustMatchPreferences
+    getMustMatchTables(state)
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${props.dataset.id}/`;
@@ -148,6 +151,70 @@ export function deduplicateMappings(
         }
       : line
   );
+}
+
+export function getMustMatchTables(state: MappingState): IR<boolean> {
+  const baseTableIsTree = tableIsTree(state.baseTableName);
+  const arrayOfMappingPaths = state.lines.map((line) => line.mappingPath);
+  const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
+    getMappingLineData({
+      mappingPath,
+      baseTableName: state.baseTableName,
+      iterate: true,
+    }).filter((mappingElementData, index, list) => {
+      if (
+        // Exclude base table
+        index <= Number(baseTableIsTree) ||
+        // Exclude -to-many
+        mappingElementData.customSelectSubtype === 'toMany'
+      )
+        return false;
+
+      if (typeof list[index - 1] === 'undefined') {
+        if (
+          state.baseTableName === 'collectionobject' &&
+          list[index].tableName === 'collectingevent'
+        )
+          return false;
+      } else {
+        // Exclude direct child of -to-many
+        if (list[index - 1].customSelectSubtype === 'toMany') return false;
+
+        // Exclude embedded collecting event
+        if (
+          schema.embeddedCollectingEvent === true &&
+          list[index - 1].tableName === 'collectionobject' &&
+          list[index].tableName === 'collectingevent'
+        )
+          return false;
+      }
+
+      return true;
+    })
+  );
+
+  const arrayOfTables = arrayOfMappingLineData
+    .map((mappingElementData) => mappingElementData.tableName ?? '')
+    .filter(
+      (tableName) =>
+        tableName &&
+        typeof dataModelStorage.tables[tableName] !== 'undefined' &&
+        !tableName.endsWith('attribute') &&
+        // Exclude embedded paleo context
+        (schema.embeddedPaleoContext === false || tableName !== 'paleocontext')
+    );
+  const distinctListOfTables = Array.from(new Set(arrayOfTables));
+
+  return {
+    ...Object.fromEntries(
+      distinctListOfTables.map((tableName) => [
+        tableName,
+        // Whether to check it by default
+        tableName === 'preptype' && !('preptype' in state.mustMatchPreferences),
+      ])
+    ),
+    ...state.mustMatchPreferences,
+  };
 }
 
 export function getArrayOfMappings(
