@@ -14,19 +14,24 @@ const getHue = spanNumber(
 
 export function TableIcon({
   tableName,
+  tableLabel,
 }: {
   readonly tableName: string;
+  readonly tableLabel: string | undefined | false;
 }): JSX.Element {
   const tableIconSource = icons.getIcon(tableName);
-  const tableLabel = dataModelStorage.tables[tableName]?.label ?? '';
+  const resolvedLabel =
+    tableLabel === false
+      ? undefined
+      : tableLabel ?? dataModelStorage.tables[tableName]?.label ?? '';
   if (tableIconSource !== '/images/unknown.png')
     return (
       <span
         className="table-icon table-icon-image"
         role="img"
         style={{ backgroundImage: `url('${tableIconSource}')` }}
-        title={tableLabel}
-        aria-label={tableLabel}
+        title={resolvedLabel}
+        aria-label={resolvedLabel}
       />
     );
 
@@ -37,8 +42,8 @@ export function TableIcon({
       style={{ backgroundColor: color }}
       role="img"
       className="table-icon table-icon-generated"
-      title={tableLabel}
-      aria-label={tableLabel}
+      title={resolvedLabel}
+      aria-label={resolvedLabel}
     >
       {tableName.slice(0, 2).toUpperCase()}
     </span>

@@ -3,16 +3,19 @@
     <thead>
       <tr>
         <th rowspan="2">
-          <select name="type">
-            <option><%= localityText('point') %></option>
-            <option><%= localityText('line') %></option>
-            <option><%= localityText('rectangle') %></option>
-          </select>
+          <label>
+            <span class="sr-only"><%= localityText('coordinateType') %></span>
+            <select name="type" title="<%= localityText('coordinateType') %>">
+              <option><%= localityText('point') %></option>
+              <option><%= localityText('line') %></option>
+              <option><%= localityText('rectangle') %></option>
+            </select>
+          </label>
         </th>
         <th colspan="2"><%= localityText('source') %></th>
         <th rowspan="2"><%= localityText('parsed') %></th>
       </tr>
-      <tr>
+      <tr aria-hidden="true">
         <th><%= localityText('latitude') %></th>
         <th><%= localityText('longitude') %></th>
       </tr>
@@ -20,7 +23,18 @@
     <tbody>
       <tr>
         <th><%= localityText('coords') %></th>
-        <td><input type="text"></td><td><input type="text"></td>
+        <td>
+          <label>
+            <span class="sr-only"><%= localityText('latitude') %></span>
+            <input type="text" />
+          </label>
+        </td>
+        <td>
+          <label>
+            <span class="sr-only"><%= localityText('longitude') %></span>
+            <input type="text" />
+          </label>
+        </td>
         <td>
           <span><%= localityText('notApplicable') %></span>,
           <span><%= localityText('notApplicable') %></span>

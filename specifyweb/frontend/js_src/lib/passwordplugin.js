@@ -29,8 +29,8 @@ const adminText = require('./localization/admin').default;
         },
         submit: function(event) {
             event && event.preventDefault();
-            var pass1 = this.$('input[name="pass1"]').val();
-            var pass2 = this.$('input[name="pass2"]').val();
+            var pass1 = this.$('input#pass1').val();
+            var pass2 = this.$('input#pass2').val();
 
             if (pass1.length < 6) {
                 alert(adminText('passwordLengthError'));

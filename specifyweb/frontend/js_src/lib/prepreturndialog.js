@@ -41,16 +41,42 @@ const PrepReturnRow = Backbone.View.extend({
         const lp = this.loanpreparation;
         const unresolved = this.unresolved;
 
-        this.$el.append(
-            '<td><input type="checkbox"></td>',
-            '<td class="return-catnum">',
-            '<td class="return-taxon">',
-            '<td class="return-prep-type">',
-            `<td class="unresolved-count">${unresolved}</td>`,
-            `<td><input type="number" value="0" min="0" max="${unresolved}" class="return-amt"></td>`,
-            `<td><input type="number" value="0" min="0" max="${unresolved}" class="resolve-amt"></td>`,
-            `<td><a class="return-remark" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></a></td>`
-        );
+        this.$el.append(`
+            <td>
+                <input
+                    type="checkbox"
+                    title="${formsText('selectAll')}"
+                    aria-label="${formsText('selectAll')}"
+                >
+            </td>
+            <td class="return-catnum">
+            <td class="return-taxon">
+            <td class="return-prep-type">
+            <td class="unresolved-count">${unresolved}</td>
+            <td>
+                <input
+                    type="number"
+                    value="0"
+                    min="0"
+                    max="${unresolved}"
+                    class="return-amt"
+                    title="${formsText('returnedAmount')}"
+                    aria-label="${formsText('returnedAmount')}"
+                >
+            </td>
+            <td>
+                <input
+                    type="number"
+                    value="0"
+                    min="0"
+                    max="${unresolved}"
+                    class="resolve-amt"
+                    title="${formsText('resolvedAmount')}"
+                    aria-label="${formsText('resolvedAmount')}"
+                >
+            </td>
+            <td><a class="return-remark" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></a></td>
+        `);
 
         $.when(
             lp.rget('preparation.collectionobject', true),
@@ -155,17 +181,42 @@ const METADATAFORM = `
   <tr>
     <td class="specify-form-label"><label for="lrp-receivedby"></label></td>
     <td>
-      <input type="text" class="specify-querycbx specify-field" name="receivedBy" id="lrp-receivedby" data-specify-initialize="name=Agent">
+      <input
+        type="text"
+        class="specify-querycbx specify-field"
+        name="receivedBy"
+        id="lrp-receivedby"
+        data-specify-initialize="name=Agent"
+        title="${formsText('receivedBy')}"  
+        aria-label="${formsText('receivedBy')}"  
+      >
     </td>
     <td class="specify-form-label"><label for="lrp-date"></label></td>
-    <td><input type="text" class="specify-formattedtext specify-field" name="returnedDate" id="lrp-date"></td>
+    <td>
+      <input
+        type="text"
+        class="specify-formattedtext specify-field"
+        name="returnedDate"
+        id="lrp-date"
+        title="${formsText('dateResolved')}"  
+        aria-label="${formsText('dateResolved')}"  
+      >
+    </td>
   </tr>
 </table>
 `;
 
 const REMARKSROW = `<tr class="return-remark" style="display:none">
-<td></td>
-<td colspan="6"><input type="text" class="return-remark" placeholder="Remarks"></td>
+  <td></td>
+  <td colspan="6">
+    <input
+      type="text"
+      class="return-remark"
+      placeholder="${formsText('remarks')}"
+      title="${formsText('remarks')}" 
+      aria-label="${formsText('remarks')}"  
+    >
+  </td>
 </tr>`;
 
 module.exports =  Backbone.View.extend({
