@@ -6,7 +6,7 @@
       module('querycbx');
       test1 = function() {
         var model, node;
-        node = '<input type=text class="specify-querycbx specify-field" name="cataloger" data-specify-initialize="name=Agent">';
+        node = '<input type="text" class="specify-querycbx specify-field" name="cataloger" data-specify-initialize="name=Agent">';
         model = new (api.Resource.forModel('CollectionObject'))({
           id: 100
         });

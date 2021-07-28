@@ -173,7 +173,7 @@ const commonText = require('./localization/common').default;
         },
         makeSearchBox: function() {
             var tree = schema.getModel(this.table);
-            return $(`<input class="tree-search" type="search" placeholder="${treeText('searchTreePlaceholder')}" tabindex="1">`).autocomplete({
+            return $(`<input class="tree-search" type="search" autocomplete="on" placeholder="${treeText('searchTreePlaceholder')}" tabindex="1">`).autocomplete({
                 source: function(request, response) {
                     var collection = new tree.LazyCollection({
                         filters: { name__istartswith: request.term, orderby: 'name' },

@@ -29,7 +29,7 @@ module.exports = Backbone.View.extend({
                 .append(`<p>${queryText('saveQueryDialogMessage')}</p>`);
         }
 
-        this.$el.append(`<form><label>${queryText('queryName')} <input type="text"/></label></form>`);
+        this.$el.append(`<form><label>${queryText('queryName')} <input type="text" autocomplete="on" spellcheck="true" /></label></form>`);
 
         this.$el.dialog({
             title: queryText('saveQueryDialogTitle'),

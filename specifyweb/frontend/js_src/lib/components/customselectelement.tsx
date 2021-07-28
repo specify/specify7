@@ -212,15 +212,15 @@ const Option = React.memo(function Option({
   const tableLabel = dataModelStorage.tables?.[tableName]?.label;
 
   return (
-    <button
+    <article
       className={classes.join(' ')}
       tabIndex={0}
       onClick={handleClick}
-      title={tableLabel}
-      aria-label={tableLabel}
+      title={title ?? tableLabel}
+      aria-label={title ?? tableLabel}
       aria-selected={isDefault}
       role="option"
-      disabled={!isEnabled}
+      aria-disabled={!isEnabled}
       aria-current={!isEnabled}
     >
       <Icon
@@ -247,7 +247,7 @@ const Option = React.memo(function Option({
           ▶
         </span>
       )}
-    </button>
+    </article>
   );
 });
 
@@ -404,7 +404,7 @@ export function CustomSelectElement({
         onClick={
           optionIsIntractable ? (isOpen ? handleClose : handleOpen) : undefined
         }
-        aria-haspopup={true}
+        aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
         <Icon
