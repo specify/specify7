@@ -23,7 +23,7 @@ module.exports = {
             render: function() {
                 this.$el.attr('title', commonText('backEndErrorDialogTitle'))
                     .append(commonText('backEndErrorDialogHeader'))
-                    .append(`<p>${commonText('backendErrorDialogMessage')}</p>`);
+                    .append(`<p>${commonText('backEndErrorDialogMessage')}</p>`);
                 var response = this.options.jqxhr.responseText;
                 if (/^Traceback:/m.test(response)) {
                     this.$el.append($('<textarea readonly>').val(response).css({'min-width': 800, 'min-height': 600}));
@@ -33,7 +33,7 @@ module.exports = {
                     width: 'auto',
                     dialogClass: 'ui-dialog-no-close',
                     buttons: [
-                        {text:  commonText('okay'), click: function() { window.location = "/"; }},
+                        {text:  commonText('close'), click: function() { window.location = "/"; }},
                     ]
                 });
                 navigation.clearUnloadProtect();

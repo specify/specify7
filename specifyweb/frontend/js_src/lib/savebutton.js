@@ -114,7 +114,7 @@ module.exports =  Backbone.View.extend({
                                 resizable: false,
                                 modal: true,
                                 dialogClass: 'ui-dialog-no-close',
-                                buttons: [{text: commonText('okay'), click: function() {
+                                buttons: [{text: commonText('close'), click: function() {
                                     window.location.reload();
                                 }}]
                             });

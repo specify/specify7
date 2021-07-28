@@ -1497,30 +1497,28 @@ const WBView = Backbone.View.extend({
     const dataset = this.dataset;
     const $this = this;
     const planJson = JSON.stringify(dataset.uploadplan, null, 4);
-    $('<div>')
+    const dialog = $('<div>')
       .append($('<textarea cols="120" rows="50">').text(planJson))
       .dialog({
-        title: 'Upload plan',
+        title: wbText('dataMapper'),
         width: 'auto',
         modal: true,
         close() {
           $(this).remove();
         },
         buttons: {
-          Save() {
-            dataset.uploadplan = JSON.parse($('textarea', this).val());
+          Save: () => {
+            dataset.uploadplan = JSON.parse($('textarea', dialog).val());
             $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
               type: 'PUT',
               data: JSON.stringify({ uploadplan: dataset.uploadplan }),
               dataType: 'json',
               processData: false,
             }).fail(this.checkDeletedFail.bind(this));
-            $(this).dialog('close');
+            dialog.dialog('close');
             $this.trigger('refresh');
           },
-          Close() {
-            $(this).dialog('close');
-          },
+          Close: () => dialog.dialog('close'),
         },
       });
   },

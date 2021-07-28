@@ -127,15 +127,20 @@ const commonText = createDictionary({
   ),
   errorBoundaryDialogMessage: `
     Please reload the page and try again. If this issue persists, please
-    contact your IT support or if this is a Specify Cloud database, contact support@specifysoftware.org.`,
+    contact your IT support or if this is a Specify Cloud database, contact
+    <a href="mailto:support@specifysoftware.org">
+      support@specifysoftware.org
+    </a>.`,
   backEndErrorDialogTitle: 'Server Error',
   backEndErrorDialogHeader: createHeader(
     'An error occurred communicating with the Specify 7 server.'
   ),
-  backendErrorDialogMessage: `
+  backEndErrorDialogMessage: `
     Please reload the page and try again. If the issue persists, please
-    contact your IT support, or if this is a Specify Cloud database, contact support@specifysoftware.org.`,
-  okay: 'Close',
+    contact your IT support, or if this is a Specify Cloud database, contact
+    <a href="mailto:support@specifysoftware.org">
+      support@specifysoftware.org
+    </a>.`,
 
   // Search
   expressSearch: 'Express Search',

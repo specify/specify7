@@ -17,7 +17,7 @@ const wbText = createDictionary({
   revert: 'Revert',
   geoLocate: 'GeoLocate',
   geoMap: 'GeoMap',
-  uploadPlan: 'Upload Plan',
+  dataMapper: 'Data Mapper',
   dataCheck: 'Data Check',
   dataCheckOn: (queueLength: number) =>
     `Data Check: On ${queueLength > 0 ? ` (${queueLength})` : ''}`,
@@ -62,7 +62,8 @@ const wbText = createDictionary({
   deleteDataSetDialogHeader: createHeader('Delete this Data Set?'),
   deleteDataSetDialogMessage: `
     Deleting a Data Set permanently removes it and its Upload Plan.
-    Data mappings will not be available for re-use; Rollback will not be an option for an uploaded Data Set.`,
+    Data mappings will not be available for re-use; Rollback will not be
+    an option for an uploaded Data Set.`,
   dataSetDeletedTitle: 'Delete Data Set',
   dataSetDeletedHeader: createHeader('Data Set successfully deleted'),
   dataSetDeletedMessage: 'Data Set successfully deleted.',
@@ -83,28 +84,27 @@ const wbText = createDictionary({
     ].join(''),
   noMatchErrorMessage: 'No matching record for must-match table.',
   matchedMultipleErrorMessage: [
-    'This value matches two or more existing database records and the match must ',
-    'be disambiguated before uploading.',
+    'This value matches two or more existing database records and the match ',
+    'must be disambiguated before uploading.',
   ].join(''),
   validationNoErrorsDialogTitle: 'Data Set Validation',
   validationNoErrorsDialogHeader: createHeader(
     'Validate Completed with No Errors'
   ),
   validationNoErrorsDialogMessage: `
-    
+
     Validation found no errors, it is
     ready to be uploaded into the database.<br><br>
 
     Note: If this Data Set is edited and re-saved, Validate should
-    be re-run prior to Uploading to verify that no errors have been introduced.`,
+    be re-run prior to Uploading to verify that no errors have been
+    introduced.`,
   validationErrorsDialogTitle: 'Data Set Validation',
-  validationErrorsDialogHeader: createHeader(
-    'Validate Completed with Errors'
-  ),
+  validationErrorsDialogHeader: createHeader('Validate Completed with Errors'),
   validationErrorsDialogMessage: `
     Validation found errors in the Data Set.<br><br>
 
-   Note: If this Data Set is edited and re-saved, Validate should 
+   Note: If this Data Set is edited and re-saved, Validate should
    be re-run prior to Uploading to verify that no errors have been introduced.`,
   uploadNoErrorsDialogTitle: 'Data Set Upload',
   uploadNoErrorsDialogHeader: createHeader('Upload Completed with No Errors'),
@@ -112,9 +112,7 @@ const wbText = createDictionary({
     Click on the "Results" button to see the number of new records
     added to each database table.`,
   uploadErrorsDialogTitle: 'Data Set Upload',
-  uploadErrorsDialogHeader: createHeader(
-    'Upload Failed due to Error Cells'
-  ),
+  uploadErrorsDialogHeader: createHeader('Upload Failed due to Error Cells'),
   uploadErrorsDialogMessage: `
     The upload failed due to one or more cell value errors.<br><br>
 
@@ -146,7 +144,7 @@ const wbText = createDictionary({
   // Misc
   wbUploadedUnavailable: 'The data set must be validated or uploaded',
   wbValidateUnavailable:
-    'An Upload Plan needs to defined before this Data Set cab be Validated',
+    'An Upload Plan needs to defined before this Data Set can be Validated',
   unavailableWhileEditing: 'This action requires all changes to be saved',
   uploadUnavailableWhileHasErrors:
     'Upload is unavailable while some cells have validation errors',
@@ -258,8 +256,8 @@ const wbText = createDictionary({
   changeBaseTable: 'Change Base Table',
   reRunAutoMapper: 'Rerun Automapper',
   autoMapper: 'Automapper',
-  hideMappingEditor: 'Hide Mapping Editor',
-  showMappingEditor: 'Show Mapping Editor',
+  hideMappingEditor: 'Hide Map Explorer',
+  showMappingEditor: 'Show Map Explorer',
   matchingLogic: 'Matching Logic',
   clearMappings: 'Clear Mappings',
   emptyDataSetDialogTitle: 'Empty Data Set',

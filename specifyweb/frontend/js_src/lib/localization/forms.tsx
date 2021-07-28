@@ -7,6 +7,7 @@ const formsText = createDictionary({
   // Attachments
   attachments: 'Attachments',
   attachmentServerUnavailable: 'Attachment server unavailable.',
+  attachmentUploadDialogTitle: 'Uploading...',
   tables: 'Tables',
   openDataDialogTitle: 'Opening...',
   linkInline: 'link',

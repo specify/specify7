@@ -249,7 +249,7 @@ export function uploadPlanToMappingsTree(
 } {
   if (typeof uploadPlan.baseTableName === 'undefined')
     throw new Error(
-      'Upload plan should contain `baseTableName` as a root node'
+      'Upload Plan should contain `baseTableName` as a root node'
     );
 
   const mustMatchPreferences: IR<boolean> = {};

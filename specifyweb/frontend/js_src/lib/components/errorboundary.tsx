@@ -54,7 +54,7 @@ export default class ErrorBoundary extends React.Component<
             dialogClass: 'ui-dialog-no-close',
             buttons: [
               {
-                text: commonText('okay'),
+                text: commonText('close'),
                 click(): void {
                   window.location.href = '/';
                 },

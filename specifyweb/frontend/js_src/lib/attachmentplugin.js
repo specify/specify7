@@ -51,7 +51,10 @@ module.exports =  UIPlugin.extend({
 
             self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
 
-            self.progressDialog = $('<div>', {title: 'Uploading'})
+            self.progressDialog = $(
+                '<div>',
+                {title: formsText('attachmentUploadDialogTitle')}
+            )
                 .appendTo(self.el)
                 .append(self.progressBar)
                 .dialog({ modal:true });
