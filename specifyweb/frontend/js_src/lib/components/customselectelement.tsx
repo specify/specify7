@@ -212,12 +212,11 @@ const Option = React.memo(function Option({
   const tableLabel = dataModelStorage.tables?.[tableName]?.label;
 
   return (
-    <article
+    <span
       className={classes.join(' ')}
       tabIndex={0}
       onClick={handleClick}
       title={title ?? tableLabel}
-      aria-label={title ?? tableLabel}
       aria-selected={isDefault}
       role="option"
       aria-disabled={!isEnabled}
@@ -247,7 +246,7 @@ const Option = React.memo(function Option({
           ▶
         </span>
       )}
-    </article>
+    </span>
   );
 });
 

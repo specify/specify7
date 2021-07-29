@@ -30,7 +30,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   readonly readonly: boolean;
 }) {
   return (
-    <footer role="toolbar" className="wbplanview-control-panel">
+    <div role="toolbar" className="wbplanview-control-panel">
       {!readonly && (
         <button className="magic-button" onClick={handleAddNewHeader}>
           {wbText('addNewColumn')}
@@ -45,7 +45,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
         />{' '}
         {wbText('revealHiddenFormFields')}
       </label>
-    </footer>
+    </div>
   );
 });
 
@@ -159,7 +159,7 @@ export function MappingView(props: {
             : undefined
         }
         title={wbText('mapButtonDescription')}
-        aria-label={wbText('mapButtonDescription')}
+        aria-description={wbText('mapButtonDescription')}
       >
         {wbText('map')}
         <span

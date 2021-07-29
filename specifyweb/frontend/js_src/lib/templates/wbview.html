@@ -1,5 +1,5 @@
 <div class="wb-header">
-  <menu role="toolbar" class="wb-primary-row">
+  <div role="toolbar" class="wb-primary-row">
     <div class="wb-controls-left v-center">
       <div class="wb-name-container"></div>
       <button
@@ -84,8 +84,8 @@
       </button>
       <% } %>
     </div>
-  </menu>
-  <menu
+  </div>
+  <div
     class="wb-toolkit"
     role="toolbar"
     style="display: none"
@@ -116,7 +116,7 @@
         aria-haspopup="dialog"
         class="magic-button wb-convert-coordinates"
         title="<%= wbText('unavailableWithoutLocality') %>"
-        aria-label="<%= wbText('unavailableWithoutLocality') %>"
+        aria-description="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
         <%= wbText('convertCoordinates') %>
@@ -126,7 +126,7 @@
         aria-haspopup="dialog"
         class="magic-button wb-geolocate"
         title="<%= wbText('unavailableWithoutLocality') %>"
-        aria-label="<%= wbText('unavailableWithoutLocality') %>"
+        aria-description="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
         <%= wbText('geoLocate') %>
@@ -136,19 +136,19 @@
         aria-haspopup="dialog"
         class="magic-button wb-leafletmap"
         title="<%= wbText('unavailableWithoutLocality') %>"
-        aria-label="<%= wbText('unavailableWithoutLocality') %>"
+        aria-description="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
         <%= wbText('geoMap') %>
       </button>
     </div>
-  </menu>
+  </div>
 </div>
 <div class="wb-main-content">
   <section class="wb-spreadsheet"></section>
   <section class="wb-uploaded-view-wrapper" style="display: none"></section>
 </div>
-<footer
+<div
   role="toolbar"
   class="wb-navigation"
   aria-label="<%= wbText('navigation') %>"
@@ -283,4 +283,4 @@
     </button>
   </span>
   <% } %>
-</footer>
+</div>

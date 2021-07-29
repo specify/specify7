@@ -13,13 +13,17 @@
 }
 
 #site-logo {
+    order: 1;
+    flex-basis: 300px;
+}
+
+#site-logo a {
+    display: block;
+    height: 55px;
+    margin: 1rem;
     background-image: url('/static/img/seven_logo.png');
     background-size: 185px 55px;
     background-repeat: no-repeat;
-    height: 55px;
-    margin: 1rem;
-    order: 1;
-    flex-basis: 300px;
 }
 
 #user-tools {
