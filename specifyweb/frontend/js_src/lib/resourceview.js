@@ -96,6 +96,7 @@ const ResourceView = Backbone.View.extend({
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
         specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
             self.populateForm(form, self.model);
+            self.$el.attr('aria-label', self.model.specifyModel.getLocalizedName());
             self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                 form.find('.specify-form-header').remove();
 
