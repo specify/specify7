@@ -1,13 +1,9 @@
-"use strict";
+'use strict';
 
-var router           = require('./router.js');
+var router = require('./router.js');
 
-module.exports = function() {
-    router.route('workbench-import/', 'workbench-import', function() {
-        require.ensure(['./wbimport.js'], function(require) {
-            var wbimport = require('./wbimport.js').default;
-            wbimport();
-        }, 'wbimport');
-    });
+module.exports = function () {
+  router.route('workbench-import/', 'workbench-import', () =>
+    import('./wbimport').then((wbImport) => wbImport())
+  );
 };
-
