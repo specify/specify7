@@ -226,6 +226,7 @@ const wbText = createDictionary({
   ].join(''),
   allowNullValues: 'Allow Null Values',
   useDefaultValue: 'Use Default Value',
+  defaultValue: 'Default Value',
   useDefaultValueDescription:
     'This value would be used in place of empty cells',
   addNewColumn: 'Add New Column',

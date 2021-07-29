@@ -179,10 +179,10 @@ const WBView = Backbone.View.extend({
     const initDataModelIntegration = () =>
       this.hot.batch(() => {
         if (!this.isUploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
-          $(`<aside>
+          $(`<div>
               ${wbText('noUploadPlanDialogHeader')}
               <p>${wbText('noUploadPlanDialogMessage')}</p>
-          </aside>`).dialog({
+          </div>`).dialog({
             title: wbText('noUploadPlanDialogTitle'),
             modal: true,
             buttons: {
@@ -1316,10 +1316,10 @@ const WBView = Backbone.View.extend({
     const content = $('<div class="da-container">');
     resources.fetch({ limit: 0 }).done(() => {
       if (resources.length < 1) {
-        $(`<aside>
+        $(`<div>
             ${wbText('noDisambiguationResultsDialogHeader')}
             <p>${wbText('noDisambiguationResultsDialogMessage')}</p>
-        </aside>`).dialog({
+        </div>`).dialog({
           title: wbText('noDisambiguationResultsDialogTitle'),
           modal: true,
           close() {
@@ -1438,9 +1438,9 @@ const WBView = Backbone.View.extend({
     }
 
     if (this.liveValidationStack.length !== 0) {
-      const dialog = $(`<aside>
+      const dialog = $(`<div>
         ${wbText('unavailableWhileValidating')}
-      </aside>`).dialog({
+      </div>`).dialog({
         title: wbText('results'),
         modal: false,
         close: () => dialog.dialog('destroy'),
@@ -1631,10 +1631,10 @@ const WBView = Backbone.View.extend({
 
   // Actions
   unupload() {
-    const dialog = $(`<aside>
+    const dialog = $(`<div>
       ${wbText('rollbackDialogHeader')}
       <p>${wbText('rollbackDialogMessage')}</p>
-    </aside>`).dialog({
+    </div>`).dialog({
       modal: true,
       title: wbText('rollbackDialogTitle'),
       close() {
@@ -1661,10 +1661,10 @@ const WBView = Backbone.View.extend({
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
     if (this.mappings?.arrayOfMappings.length > 0) {
       if (mode === 'upload') {
-        const dialog = $(`<aside>
+        const dialog = $(`<div>
           ${wbText('startUploadDialogHeader')}
           <p>${wbText('startUploadDialogMessage')}</p>
-        </aside>`).dialog({
+        </div>`).dialog({
           modal: true,
           title: wbText('startUploadDialogTitle'),
           close() {
@@ -1744,10 +1744,10 @@ const WBView = Backbone.View.extend({
     }).render();
   },
   delete: function () {
-    const dialog = $(`<aside>
+    const dialog = $(`<div>
       ${wbText('deleteDataSetDialogHeader')}
       <p>${wbText('deleteDataSetDialogMessage')}</p>
-    </aside>`).dialog({
+    </div>`).dialog({
       modal: true,
       title: wbText('deleteDataSetDialogTitle'),
       close: () => dialog.remove(),
@@ -1760,10 +1760,10 @@ const WBView = Backbone.View.extend({
               this.$el.empty();
               dialog.dialog('close');
 
-              $(`<aside>
+              $(`<div>
                 ${wbText('dataSetDeletedHeader')}
                 <p>${wbText('dataSetDeletedMessage')}</p>
-              </aside>`).dialog({
+              </div>`).dialog({
                 title: wbText('dataSetDeletedTitle'),
                 modal: true,
                 close: () => navigation.go('/'),
@@ -1797,10 +1797,10 @@ const WBView = Backbone.View.extend({
     a.click();
   },
   revertChanges() {
-    $(`<aside>
+    $(`<div>
       ${wbText('revertChangesDialogHeader')}
       <p>${wbText('revertChangesDialogMessage')}</p>
-    </aside>`).dialog({
+    </div>`).dialog({
       modal: true,
       title: wbText('revertChangesDialogTitle'),
       close() {
@@ -2274,10 +2274,10 @@ const WBView = Backbone.View.extend({
     const title = messages[this.refreshInitiatedBy].title;
     const header = messages[this.refreshInitiatedBy].header;
     const message = messages[this.refreshInitiatedBy].message;
-    const dialog = $(`<aside>
+    const dialog = $(`<div>
         ${header}
         <p>${message}</p>
-    </aside>`).dialog({
+    </div>`).dialog({
       title,
       modal: true,
       width: 400,
@@ -2311,10 +2311,10 @@ const WBView = Backbone.View.extend({
         ? wbText('rollbackCanceledDialogMessage')
         : wbText('uploadCanceledDialogMessage');
 
-    const dialog = $(`<aside>
+    const dialog = $(`<div>
       ${header}
       <p>${message}</p>
-    </aside>`).dialog({
+    </div>`).dialog({
       title,
       modal: true,
       width: 400,

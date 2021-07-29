@@ -140,12 +140,12 @@ module.exports =  UIPlugin.extend({
         if (collections.includes(this.otherCollection.id)) {
             navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
         } else {
-            $(`<aside>
+            $(`<div>
                 ${commonText('collectionAccessDeniedDialogHeader')}
                 <p>${commonText('collectionAccessDeniedDialogMessage')(
                   this.otherCollection.get('collectionname')
                 )}</p>
-            </aside>`).dialog({
+            </div>`).dialog({
                 title: commonText('collectionAccessDeniedDialogTitle'),
                 close() { $(this).remove(); },
                 buttons: {

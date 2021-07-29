@@ -149,7 +149,8 @@ const formsText = createDictionary({
     records will NOT be deleted.`,
 
   // Reports
-  reportsCanNotBePrinted: 'Reports/Labels cannot be printed in this context.',
+  reportsCanNotBePrintedDialogMessage:
+    'Reports/Labels cannot be printed in this context.',
   noReportsAvailable: 'No reports are available for this table.',
   reportProblemsDialogTitle: 'Problems with report',
   reportsProblemsDialogMessage:

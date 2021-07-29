@@ -58,10 +58,10 @@ module.exports =  Backbone.View.extend({
         openWaitDialog: function() {
             var _this = this;
             this.waitDialog && this.waitDialog.dialog('close');
-            this.waitDialog = $(`<aside>
+            this.waitDialog = $(`<div>
                 <p>${formsText('checkingIfResourceCanBeDeleted')}</p>
                 <div class="progress"></div>
-            </aside>`).dialog({
+            </div>`).dialog({
                 title: commonText('loading'),
                 close: function() { $(this).remove(); _this.waitDialog = null;},
                 modal: true
@@ -71,12 +71,12 @@ module.exports =  Backbone.View.extend({
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            $(`<aside>
+            $(`<div>
                 ${formsText('deleteConfirmationDialogHeader')}
                 <p>${
                     this.warning ?? formsText('deleteConfirmationDialogMessage')
                }</p>
-            </aside>`).dialog({
+            </div>`).dialog({
                 title: formsText('deleteConfirmationDialogTitle'),
                 resizable: false,
                 close: function() { $(this).remove(); },
@@ -93,11 +93,11 @@ module.exports =  Backbone.View.extend({
             });
         },
         openBlockedDialog: function() {
-            var dialog = $(`<aside>
+            var dialog = $(`<div>
                ${formsText('deleteBlockedDialogHeader')}
                <p>${formsText('deleteBlockedDialogMessage')}</p>
                <ul></ul>
-            </aside>`).dialog({
+            </div>`).dialog({
                title: formsText('deleteBlockedDialogTitle'),
                close: function() { $(this).remove(); },
                modal: true

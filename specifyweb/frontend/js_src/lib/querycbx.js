@@ -430,9 +430,10 @@ var QueryCbx = Backbone.View.extend({
             if (relCollId && !collections.includes(relCollId)) {
                 const otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
                 otherColl.fetch().done(function() {
-                    $('<div>').text(
-                        commonText('collectionAccessDeniedDialogMessage')(otherColl.get('collectionname'))
-                    ).dialog({
+                    $(`<div>
+                        ${commonText('collectionAccessDeniedDialogHeader')}
+                        <p>${commonText('collectionAccessDeniedDialogMessage')(otherColl)}</p>
+                    </div>`).dialog({
                         title: commonText('collectionAccessDeniedDialogTitle'),
                         close() { $(this).remove(); },
                         buttons: {

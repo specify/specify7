@@ -26,7 +26,7 @@ module.exports =  {
             evt.preventDefault();
             $(`<div>
                 ${formsText('unavailableCommandDialogHeader')}
-                ${formsText('unavailableCommandDialogMessage')}
+                <p>${formsText('unavailableCommandDialogMessage')}</p>
             </div>`)
                 .append(`<dt>${formsText('commandName')}</dt>`)
                 .append($('<dd>').text(this.init.name))

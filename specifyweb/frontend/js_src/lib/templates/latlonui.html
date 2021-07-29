@@ -5,7 +5,11 @@
         <th rowspan="2">
           <label>
             <span class="sr-only"><%= localityText('coordinateType') %></span>
-            <select name="type" title="<%= localityText('coordinateType') %>">
+            <select
+              name="type"
+              title="<%= localityText('coordinateType') %>"
+              aria-label="<%= localityText('coordinateType') %>"
+            >
               <option><%= localityText('point') %></option>
               <option><%= localityText('line') %></option>
               <option><%= localityText('rectangle') %></option>

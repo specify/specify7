@@ -28,10 +28,10 @@ module.exports =  UIPlugin.extend({
         }.bind(this));
     },
     geoRequired: function() {
-        $(`<aside>
+        $(`<div>
             ${localityText('geographyRequiredDialogHeader')} 
             <p>${localityText('geographyRequiredDialogMessage')}</p>
-        </aside>`).dialog({
+        </div>`).dialog({
             title: localityText('geographyRequiredDialogTitle'),
             close: function(){ $(this).remove(); }
         });

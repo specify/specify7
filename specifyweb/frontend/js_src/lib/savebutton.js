@@ -105,10 +105,10 @@ module.exports =  Backbone.View.extend({
                     .fail(function(jqXHR) {
                         if (jqXHR.status === 409) {
                             jqXHR.errorHandled = true;
-                            $(`<aside>
+                            $(`<div>
                                 ${formsText('saveConflictDialogHeader')}
                                 <p>${formsText('saveConflictDialogMessage')}</p>
-                            </aside>`).dialog({
+                            </div>`).dialog({
                                 title: formsText('saveConflictDialogTitle'),
                                 resizable: false,
                                 modal: true,
@@ -121,13 +121,9 @@ module.exports =  Backbone.View.extend({
                     });
             } else {
                 var dialog = $(`<div>
-                    <p>
-                        <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-                        ${formsText('saveBlockedDialogHeader')}
-                        ${formsText('saveBlockedDialogMessage')} 
-                    </p>
-                    <ul class="saveblockers">
-                    </ul>
+                    ${formsText('saveBlockedDialogHeader')}
+                    <p>${formsText('saveBlockedDialogMessage')}</p>
+                    <ul class="saveblockers"></ul>
                 </div>`).appendTo(this.el).dialog({
                     title: formsText('saveBlockedDialogTitle'),
                     resizable: false,

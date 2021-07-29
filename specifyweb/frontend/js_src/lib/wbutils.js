@@ -913,7 +913,7 @@ module.exports = Backbone.View.extend({
       closeDialog.call(this);
     }
 
-    this.wbview.coordinateConverterView = $(`<aside>
+    this.wbview.coordinateConverterView = $(`<div>
       ${wbText('coordinateConverterDialogHeader')}
       <ul class="lat-long-format-options">
         ${Object.values(options)
@@ -945,7 +945,7 @@ module.exports = Backbone.View.extend({
           </label>
         </li>
       </ul>
-    </aside>`).dialog({
+    </div>`).dialog({
       title: wbText('coordinateConverterDialogTitle'),
       close: revertChanges.bind(this),
       width: 350,

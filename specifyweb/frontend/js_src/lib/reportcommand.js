@@ -18,7 +18,7 @@ module.exports =  UICmd.extend({
     click: function(evt) {
         evt.preventDefault();
         if (this.model.isNew() || this.model.get('id') == null) {
-            $("<p>").append(formsText('reportsCanNotBePrinted')).dialog({
+            $("<p>").append(formsText('reportsCanNotBePrintedDialogMessage')).dialog({
                 modal: true,
                 width: 500,
                 title: this.$el[0].value,
