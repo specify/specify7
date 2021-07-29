@@ -223,7 +223,7 @@ const Option = React.memo(function Option({
   const tableLabel = dataModelStorage.tables?.[tableName]?.label;
 
   return (
-    <article
+    <span
       className={classes.join(' ')}
       tabIndex={0}
       onClick={
@@ -262,7 +262,7 @@ const Option = React.memo(function Option({
           ▶
         </span>
       )}
-    </article>
+    </span>
   );
 });
 

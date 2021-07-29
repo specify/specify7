@@ -51,7 +51,6 @@ export const stateReducer = generateReducer<
             <Badge
               name={name}
               title={badge.label}
-              aria-label={badge.label}
               key={name}
               isEnabled={badge.isActive}
               onClick={(): void =>

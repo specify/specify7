@@ -74,7 +74,7 @@ export function DateElement({
     <time
       dateTime={dateObject.toISOString()}
       title={dateObject.toLocaleString()}
-      aria-label={dateObject.toLocaleString()}
+      aria-description={dateObject.toLocaleString()}
     >
       {dateObject.toDateString()}
     </time>

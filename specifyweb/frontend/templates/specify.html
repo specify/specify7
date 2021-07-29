@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 {% load raven %}
 {% load script_manifest %}
 {% load i18n %}
-=======
-{% load raven %} {% load script_manifest %}
->>>>>>> 27850f02 (Better mark active WB buttons)
 <!DOCTYPE html>
 <html>
   <head>
@@ -24,7 +20,9 @@
     <div id="root-app-container">
       <header id="site-header">
         <div id="site-header-main">
-          <a id="site-logo" href="/specify/" class="intercept-navigation"></a>
+          <h1 id="site-logo">
+            <a href="/specify/" class="intercept-navigation"></a>
+          </h1>
           <div id="user-tools">
             <div>
               <button

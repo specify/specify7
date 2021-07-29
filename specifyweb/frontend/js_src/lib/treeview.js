@@ -96,7 +96,7 @@ const commonText = require('./localization/common').default;
             );
             const controls = $('<header class="tree-controls"></header>');
             controls.appendTo(this.el);
-            $('<h1>').text(commonText('trees')).appendTo(controls);
+            $('<h2>').text(commonText('trees')).appendTo(controls);
             controls.append(this.makeSearchBox());
             controls.append(this.makeBtns());
             $('<table>').appendTo(this.el).append(
@@ -203,20 +203,20 @@ const commonText = require('./localization/common').default;
                     class="tree-conform-save"
                     tabindex="2"
                     title="${treeText('rememberButtonDescription')}"
-                    aria-label="${treeText('rememberButtonDescription')}"
+                    aria-description="${treeText('rememberButtonDescription')}"
                 >${treeText('remember')}</button>
                 <button
                     type="button"
                     class="tree-conform-restore"
                     tabindex="3"
                     title="${treeText('restoreButtonDescription')}"
-                    aria-label="${treeText('restoreButtonDescription')}"
+                    aria-description="${treeText('restoreButtonDescription')}"
                 >${treeText('restore')}</button>
                 <button
                     type="button"
                     class="tree-conform-forget"
                     tabindex="4"
-                    aria-label="${treeText('forgetButtonDescription')}"
+                    aria-description="${treeText('forgetButtonDescription')}"
                 >${treeText('forget')}</button>`);
         },
         applyConformation: function(encoded) {

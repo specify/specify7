@@ -191,7 +191,7 @@ export function MappingLineComponent({
   handleClearMapping,
 }: MappingLineBaseProps): JSX.Element {
   return (
-    <article
+    <li
       className={`wbplanview-mapping-line ${
         lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
           ? ''
@@ -199,7 +199,6 @@ export function MappingLineComponent({
       }`}
       aria-label={headerName}
       aria-current={isFocused}
-      role="listitem"
       onClick={handleFocus}
       onFocus={handleFocus}
     >
@@ -224,7 +223,7 @@ export function MappingLineComponent({
       >
         <MappingPathComponent mappingLineData={lineData} />
       </div>
-    </article>
+    </li>
   );
 }
 
