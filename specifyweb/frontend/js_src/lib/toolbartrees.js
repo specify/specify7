@@ -18,6 +18,7 @@ const commonText = require('./localization/common').default;
         tagName: 'nav',
         className: "trees-dialog table-list-dialog",
         _render: function(trees) {
+          this.$el.attr('role','toolbar');
             var entries = _.map(trees, this.dialogEntry, this);
             var table = $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({

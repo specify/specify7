@@ -169,6 +169,15 @@ const formsText = createDictionary({
   missingFormDefinitionPageContent: `
     Specify was unable to find the form definition to display this resource`,
   addingToRecordSet: 'Adding to Record Set and Database',
+  createRecord: 'Create record',
+  createRecordButtonDescription: 'Create record and add to Record Set',
+  recordSetAreaDescription: (recordSetName: string): string =>
+    `Record Set: ${recordSetName}`,
+  previousRecord: 'Previous Record',
+  nextRecord: 'Next Record',
+  currentPositionInTheRecordSet: 'Current Position in the Record Set',
+  // Current index in the record set
+  aOutOfB: (current: number, total: number): string => `${current} out of ${total}`,
 
   // SaveButton
   unsavedFormUnloadProtect: 'This form has not been saved.',

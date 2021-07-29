@@ -253,6 +253,7 @@ const commonText = require('./localization/common').default;
             $('<div></div>').append(
               template({doTaxonTiles: DO_TAXON_TILES, welcomeText})
             ).appendTo(this.$el);
+            this.$el.attr('aria-label',welcomeText('mainPage'));
             DO_TAXON_TILES && _.defer(makeTreeMap);
 
             // showRecentActivity(this);
