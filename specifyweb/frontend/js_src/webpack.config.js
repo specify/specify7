@@ -135,6 +135,9 @@ module.exports = (_env, argv)=>({
     watchOptions: {
         ignored: '/node_modules/',
     },
+    performance: {
+        hints: 'warning',
+    },
     stats: {
         env: true,
         outputPath: true,
