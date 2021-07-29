@@ -104,7 +104,9 @@ module.exports = (_env, argv)=>({
         }),
         new EmitInitPyPlugin()
     ],
-    devtool: 'source-map',
+    devtool: argv.mode === 'development'
+        ? 'eval-source-map'
+        : 'source-map',
     entry: {
         main: "./lib/main.js",
         login: "./lib/login.js",
