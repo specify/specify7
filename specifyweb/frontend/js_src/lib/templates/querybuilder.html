@@ -1,16 +1,17 @@
 <div class="querybuilder">
   <header class="querybuilder-header">
     <img />
-    <h1></h1>
+    <h2></h2>
   </header>
   <ul class="spqueryfields"></ul>
-  <footer role="toolbar" class="querybuilder-controls">
+  <div role="toolbar" class="querybuilder-controls">
     <button
       type="button"
       class="field-add"
       title="<%= queryText('newButtonDescription') %>"
-      aria-label="<%= queryText('newButtonDescription') %>"
-    ><%= queryText('new') %></button>
+    >
+      <%= queryText('new') %>
+    </button>
     <input
       type="checkbox"
       name="countOnly"
@@ -76,5 +77,5 @@
       value="<%= queryText('saveAs') %>"
       class="query-save-as"
     />
-  </footer>
+  </div>
 </div>

@@ -134,7 +134,7 @@ export default function WbPlanViewMapper(
   }
 ): JSX.Element {
   const getMappedFieldsBind = getMappedFields.bind(undefined, props.lines);
-  const listOfMappings = React.useRef<HTMLDivElement>(null);
+  const listOfMappings = React.useRef<HTMLUListElement>(null);
 
   const mappingViewParentRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -300,19 +300,18 @@ export default function WbPlanViewMapper(
           <span
             className="mapping-view-resizer"
             title={wbText('resizeMappingEditorButtonDescription')}
-            aria-label={wbText('resizeMappingEditor')}
+            aria-hidden={true}
           >
             ⇲
           </span>
         </section>
       )}
 
-      <section
+      <ul
         className="mapping-line-list"
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
         aria-label={wbText('mappings')}
-        role="list"
       >
         {props.lines.map(
           ({ mappingPath, headerName, mappingType, columnOptions }, index) => (
@@ -468,7 +467,7 @@ export default function WbPlanViewMapper(
             />
           )
         )}
-      </section>
+      </ul>
 
       <MappingsControlPanel
         showHiddenFields={props.showHiddenFields}

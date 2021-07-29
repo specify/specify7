@@ -34,6 +34,11 @@
 .wbplanview-ds-name {
   white-space: nowrap;
   overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  font-size: calc(var(--size) * 0.8);
+  font-weight: 400;
+  color: var(--t1);
 }
 
 .wbplanview-header-controls {

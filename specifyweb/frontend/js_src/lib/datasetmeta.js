@@ -18,7 +18,7 @@ function dateElement(date, fallback = '') {
   return `<time
     datetime="${dateObject.toISOString()}"
     title="${dateObject.toLocaleString()}"
-    aria-label="${dateObject.toLocaleString()}"
+    aria-description="${dateObject.toLocaleString()}"
   >
     ${dateObject.toDateString()}
   </time>`;
@@ -282,7 +282,7 @@ export default Backbone.View.extend({
     const isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     this.$el.find('.wb-name-container').html(`
-      <span class="wb-name">${wbText('dataSet')} ${this.dataset.name}
+      <h2 class="wb-name">${wbText('dataSet')} ${this.dataset.name}
         ${
           isUploaded
             ? `<span style="color: #f24">
@@ -290,7 +290,7 @@ export default Backbone.View.extend({
               </span>`
             : ''
         }
-      </span>
+      </h2>
       <button
           type="button"
           class="wb-metadata magic-button"
