@@ -120,6 +120,11 @@ module.exports = (_env, argv)=>({
             ? "[name].bundle.js"
             : "[name].[contenthash].bundle.js",
         clean: true,
+        environment: {
+            arrowFunction: true,
+            const: true,
+            destructuring: true,
+        },
     },
     stats: {
         env: true,
