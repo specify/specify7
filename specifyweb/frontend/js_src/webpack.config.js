@@ -126,6 +126,9 @@ module.exports = (_env, argv)=>({
             destructuring: true,
         },
     },
+    watchOptions: {
+        ignored: '/node_modules/',
+    },
     stats: {
         env: true,
         outputPath: true,
