@@ -124,6 +124,12 @@ module.exports = (_env, argv)=>({
             arrowFunction: true,
             const: true,
             destructuring: true,
+            ...(argv.mode === 'development' ? {
+                bigIntLiteral: true,
+                dynamicImport: true,
+                forOf: true,
+                module: true,
+            } : {})
         },
     },
     watchOptions: {
