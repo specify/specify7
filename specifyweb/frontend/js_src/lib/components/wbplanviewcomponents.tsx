@@ -175,7 +175,7 @@ export function ValidationButton(props: {
           }}
         >
           {wbText('nothingToValidateDialogHeader')}
-          {wbText('nothingToValidateDialogMessage')}
+          <p>{wbText('nothingToValidateDialogMessage')}</p>
         </ModalDialog>
       ) : undefined}
     </>

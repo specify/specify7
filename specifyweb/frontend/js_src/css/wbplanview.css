@@ -159,15 +159,18 @@
 }
 
 .validation-results .wbplanview-mapping-line-elements {
+  width: 100%;
+  background: transparent;
   cursor: pointer;
+  border: 0;
+}
+
+.validation-results .wbplanview-mapping-line-elements:hover {
+  background: var(--b2);
 }
 
 .validation-results .wbplanview-mapping-line-elements:not(:first-of-type) {
   border-top: var(--border-size) solid var(--border);
-}
-
-.validation-results .custom-select {
-  margin-top: var(--half-size);
 }
 
 /* MAPPING LINE */

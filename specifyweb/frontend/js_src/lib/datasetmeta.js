@@ -93,7 +93,7 @@ export const DataSetMeta = Backbone.View.extend({
   startEditing() {
     if (this.dialog !== null) return;
 
-    this.dialog = $(`<aside>
+    this.dialog = $(`<div>
       <label>
         <b>${wbText('dataSetName')}</b>
         <input
@@ -137,7 +137,7 @@ export const DataSetMeta = Backbone.View.extend({
       ${wbText('importedFileName')} <i>${
       this.dataset.importedfilename || wbText('noFileName')
     }</i><br>
-    </aside>`).dialog({
+    </div>`).dialog({
       title: wbText('dataSetMetaDialogTitle'),
       modal: true,
       close: () => this.render(),
@@ -205,7 +205,7 @@ export const DataSetMeta = Backbone.View.extend({
   },
   changeOwnerWindow() {
     this.fetchListOfUsers().then((users) => {
-      this.changeOwnerDialog = $(`<aside>
+      this.changeOwnerDialog = $(`<div>
         ${wbText('changeDataSetOwnerDialogHeader')}
         <label>
           <p>${wbText('changeDataSetOwnerDialogMessage')}</p>
@@ -219,7 +219,7 @@ export const DataSetMeta = Backbone.View.extend({
               .join('<br>')}
           </select>
         </label>
-      </aside>`).dialog({
+      </div>`).dialog({
         title: wbText('changeDataSetOwnerDialogTitle'),
         modal: true,
         dialogClass: 'ui-dialog-no-close',
@@ -242,10 +242,10 @@ export const DataSetMeta = Backbone.View.extend({
     })
       .done(() => {
         const handleClose = () => navigation.go('/specify/');
-        $(`<aside>
+        $(`<div>
           ${wbText('dataSetOwnerChangedDialogHeader')}
           <p>${wbText('dataSetOwnerChangedDialogMessage')}</p>
-        </aside>`).dialog({
+        </div>`).dialog({
           title: wbText('dataSetOwnerChangedDialogTitle'),
           modal: true,
           close: handleClose,

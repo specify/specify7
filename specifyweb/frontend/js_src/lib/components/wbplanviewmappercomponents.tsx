@@ -80,11 +80,12 @@ export function ValidationResults(props: {
         ],
       }}
     >
-      <div className="validation-results">
-        {wbText('validationFailedDialogHeader')}
-        <span>{wbText('validationFailedDialogMessage')}</span>
+      {wbText('validationFailedDialogHeader')}
+      <p>{wbText('validationFailedDialogMessage')}</p>
+      <section className="validation-results">
         {props.validationResults.map((fieldPath, index) => (
-          <div
+          <button
+            type="button"
             className="v-center wbplanview-mapping-line-elements"
             key={index}
             onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
@@ -100,9 +101,9 @@ export function ValidationResults(props: {
                 mustMatchPreferences: props.mustMatchPreferences,
               })}
             />
-          </div>
+          </button>
         ))}
-      </div>
+      </section>
     </ModalDialog>
   );
 }
@@ -205,11 +206,11 @@ export function EmptyDataSetDialog({
     <ModalDialog
       properties={{
         title: wbText('emptyDataSetDialogTitle'),
-        close: () => setShowDialog(false),
+        close: (): void => setShowDialog(false),
       }}
     >
       {wbText('emptyDataSetDialogHeader')}
-      {wbText('emptyDataSetDialogMessage')}
+      <p>{wbText('emptyDataSetDialogMessage')}</p>
     </ModalDialog>
   ) : null;
 }

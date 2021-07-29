@@ -13,14 +13,12 @@ import ReactDOM from 'react-dom';
 import commonText from '../localization/common';
 import { RA } from './wbplanview';
 
-interface ModalDialogBaseProps {
-  readonly children: React.ReactNode;
-}
 
 function ModalDialogContent({
   children,
   onLoadCallback,
-}: ModalDialogBaseProps & {
+}: {
+  readonly children: React.ReactNode;
   readonly onLoadCallback?: () => void | (() => void);
 }): JSX.Element {
   React.useEffect(onLoadCallback ?? ((): void => {}), []);
@@ -56,7 +54,9 @@ export const ModalDialog = React.memo(function ModalDialog({
   properties,
   onLoadCallback,
   children,
-}: ModalDialogBaseProps & {
+  className,
+}: {
+  readonly children: React.ReactNode;
   readonly onLoadCallback?: (dialog: JQuery) => void | (() => void);
   readonly properties: JQueryUI.DialogOptions & {
     readonly close?: (
@@ -64,6 +64,7 @@ export const ModalDialog = React.memo(function ModalDialog({
       ui: JQueryUI.DialogUIParams | undefined
     ) => void;
   };
+  readonly className?: string;
 }) {
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const [$dialog, setDialog] = React.useState<JQuery | undefined>();
@@ -112,6 +113,7 @@ export const ModalDialog = React.memo(function ModalDialog({
       close: closeDialogBind,
       buttons,
       dialogClass: [
+        className,
         'ui-dialog-react',
         hasHeader(children) ? 'ui-dialog-with-header' : '',
         properties.dialogClass,

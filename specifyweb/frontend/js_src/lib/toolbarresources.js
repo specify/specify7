@@ -4,7 +4,7 @@ const $ = require('jquery');
 const commonText = require('./localization/common').default;
 
 function execute() {
-    $(`<aside class="table-list-dialog">
+    $(`<div>
         ${commonText('resourcesDialogHeader')}
         <nav>
             <a href="/specify/appresources/" class="intercept-navigation">${commonText('appResources')}</a>
@@ -12,8 +12,9 @@ function execute() {
             <br>
             <a href="/specify/viewsets/" class="intercept-navigation">${commonText('viewSets')}</a>
         </nav>
-    </aside>`).dialog({
+    </div>`).dialog({
     modal: true,
+    dialogClass: 'table-list-dialog',
     title: commonText('resourcesDialogTitle'),
     close: function() { $(this).remove(); },
     buttons: {

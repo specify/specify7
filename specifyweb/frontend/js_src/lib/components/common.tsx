@@ -17,7 +17,7 @@ export function TableIcon({
   tableLabel,
 }: {
   readonly tableName: string;
-  readonly tableLabel: string | undefined | false;
+  readonly tableLabel?: string | false;
 }): JSX.Element {
   const tableIconSource = icons.getIcon(tableName);
   const resolvedLabel =

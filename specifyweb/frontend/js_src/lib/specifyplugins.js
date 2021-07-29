@@ -38,7 +38,7 @@ var providers = [
                 evt.preventDefault();
                 $(`<div>
                     ${formsText('unavailablePluginDialogHeader')}
-                    ${formsText('unavailablePluginDialogMessage')}
+                    <p>${formsText('unavailablePluginDialogMessage')}</p>
                 </div>`)
                 .append(`<dt>${formsText('pluginName')}</dt>`)
                 .append($('<dd>').text(this.init.name))

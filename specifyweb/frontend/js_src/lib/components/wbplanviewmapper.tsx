@@ -444,6 +444,8 @@ export default function WbPlanViewMapper(
                             <br />
                             <textarea
                               value={columnOptions.default || ''}
+                              title={wbText('defaultValue')}
+                              aria-label={wbText('defaultValue')}
                               onChange={
                                 (!props.readonly &&
                                   ((event): void =>

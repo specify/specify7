@@ -14,11 +14,11 @@ const adminText = require('./localization/admin').default;
             'submit form' : 'submit'
         },
         render: function() {
-            this.$el.attr('title', adminText('setPassword'));
             this.$el.append(template({adminText}));
             this.$el.dialog({
                 modal: true,
                 width: 'auto',
+                title: adminText('setPassword'),
                 close: function() { $(this).remove(); },
                 buttons: [
                     {text: commonText('apply'), click: this.submit.bind(this)},

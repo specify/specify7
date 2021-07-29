@@ -10,6 +10,7 @@ var PrepSelectDialog = require('./prepselectdialog.js');
 var navigation       = require('./navigation.js');
 var s                = require('./stringlocalization.js');
 const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var dialog;
     function makeDialog(el, options) {
@@ -162,11 +163,12 @@ module.exports = RecordSetsDialog.extend({
            }
         },
         makeEntryUI: function() {
-            var html = '<div type="action-entry"'
-                    + (this.options.recordSets._totalCount > 0 ? ' style="display:none"' : '')
-                    + '><textarea class="i-action-entry" style="width:100%"'
-                    + 'rows=5 spellcheck="false"></textarea><button disabled="true" type="action-entry">OK</button></div><br>';
-            this.$el.append(html);
+            this.$el.append(`<div type="action-entry"
+                ${this.options.recordSets._totalCount > 0 ? ' style="display:none"' : ''}
+            >
+                <textarea class="i-action-entry" style="width:100%" rows=5 spellcheck="false"></textarea>
+                <button disabled="true" type="action-entry">${commonText('next')}</button>
+            </div><br>`);
         },
 
         makeSnagList: function(hdr, snags) {
