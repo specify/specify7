@@ -121,4 +121,14 @@ module.exports = (_env, argv)=>({
             : "[name].[contenthash].bundle.js",
         clean: true,
     },
+    stats: {
+        env: true,
+        outputPath: true,
+        warnings: true,
+        errors: true,
+        errorDetails: true,
+        errorStack: true,
+        moduleTrace: true,
+        timings: true,
+    },
 });
