@@ -181,7 +181,6 @@ export function MappingView(props: {
             : undefined
         }
         title={wbText('mapButtonDescription')}
-        aria-description={wbText('mapButtonDescription')}
       >
         {wbText('map')}
         <span

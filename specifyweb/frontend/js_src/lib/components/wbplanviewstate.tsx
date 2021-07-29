@@ -249,13 +249,11 @@ export const stateReducer = generateReducer<
               <>
                 <span
                   title={wbText('dataSetName')}
-                  aria-description={wbText('dataSetName')}
                 >
                   {state.props.dataset.name}
                 </span>{' '}
                 <span
                   title={wbText('baseTable')}
-                  aria-description={wbText('baseTable')}
                 >
                   ({dataModelStorage.tables[state.baseTableName].label})
                 </span>
@@ -267,7 +265,6 @@ export const stateReducer = generateReducer<
                 <span
                   className="v-center wbplanview-readonly-badge"
                   title={wbText('dataSetUploadedDescription')}
-                  aria-description={wbText('dataSetUploadedDescription')}
                 >
                   {wbText('dataSetUploaded')}
                 </span>
