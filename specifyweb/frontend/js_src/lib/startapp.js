@@ -29,7 +29,7 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
   if (jqxhr.status === 403) {
     $(`<div>
         ${commonText('sessionTimeOutDialogHeader')}
-        ${commonText('sessionTimeOutDialogMessage')}
+        <p>${commonText('sessionTimeOutDialogMessage')}</p>
     </div>`)
       .appendTo('body')
       .dialog({

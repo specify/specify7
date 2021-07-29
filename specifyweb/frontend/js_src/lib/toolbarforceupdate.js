@@ -10,10 +10,10 @@ var dialog = null;
 function execute() {
     if (dialog) return;
 
-    dialog = $(`<aside>
+    dialog = $(`<div>
         ${commonText('updateExportFeedDialogHeader')}
         <p>${commonText('updateExportFeedDialogMessage')}</p>
-    </aside>`).dialog({
+    </div>`).dialog({
         modal: true,
         title: commonText('updateExportFeedDialogTitle'),
         close: function() { $(this).remove(); dialog = null; },
@@ -26,10 +26,10 @@ function execute() {
 function startUpdate() {
     $.post('/export/force_update/').done(() => {
         dialog.dialog('close');
-        dialog = $(`<aside>
+        dialog = $(`<div>
             ${commonText('feedExportStartedDialogHeader')}
             <p>${commonText('feedExportStartedDialogMessage')}</p>
-        </aside>`).dialog({
+        </div>`).dialog({
             modal: true,
             title: commonText('feedExportStartedDialogTitle'),
             close: function() { $(this).remove(); dialog = null; },

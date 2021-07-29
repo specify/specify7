@@ -66,7 +66,6 @@ const commonText = require('./localization/common').default;
             this.divInfos = options.divInfos;
         },
         render: function() {
-            this.$el.attr('title', formsText('userAgentsPluginDialogTitle'));
             var controls = _.map(this.divInfos, function(divInfo) { return new AgentForDiv(divInfo); });
             _.invoke(controls, 'render');
             $('<table>').append(_.pluck(controls, 'el')).appendTo(this.el);
@@ -74,6 +73,7 @@ const commonText = require('./localization/common').default;
             var user = this.user;
             this.$el.dialog({
                 modal: true,
+                title: formsText('userAgentsPluginDialogTitle'),
                 width: 'auto',
                 minHeight: 175,
                 close: function() { $(this).remove(); },

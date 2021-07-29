@@ -48,6 +48,8 @@ const commonText = require('./localization/common').default;
             );
 
         this.uiDialog[0].setAttribute('role','dialog');
+        if(this.options.modal)
+            this.uiDialog[0].setAttribute('aria-modal','true');
         this.uiDialog.find('.ui-dialog-titlebar')[0]?.setAttribute('role','header');
         this.uiDialog.find('.ui-dialog-buttonpane')[0]?.setAttribute('role','menu');
     };
@@ -76,7 +78,7 @@ const commonText = require('./localization/common').default;
        );
 
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
-            $(`<aside>
+            $(`<div>
                 ${commonText('versionMismatchDialogHeader')}
                 <p>
                     ${commonText('versionMismatchDialogMessage')(
@@ -85,7 +87,7 @@ const commonText = require('./localization/common').default;
                     )}
                 </p>
                 <p>${commonText('versionMismatchSecondDialogMessage')}</p>
-            </aside>`).dialog({
+            </div>`).dialog({
                 title: commonText('versionMismatchDialogTitle'),
                 modal: true,
             });
@@ -141,10 +143,10 @@ function showResource(resource, recordSet, pushUrl) {
                 navigation.go(view.prev.viewUrl());
             } else {
                 view.$el.empty();
-                const dialog = $(`<aside>
+                const dialog = $(`<div>
                     ${commonText('resourceDeletedDialogHeader')}
                     <p>${commonText('resourceDeletedDialogMessage')}</p>
-                </aside>`).dialog({
+                </div>`).dialog({
                     title: commonText('resourceDeletedDialogTitle'),
                     buttons: [
                         {
