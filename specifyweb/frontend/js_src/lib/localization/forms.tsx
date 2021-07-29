@@ -169,7 +169,6 @@ const formsText = createDictionary({
   missingFormDefinitionPageContent: `
     Specify was unable to find the form definition to display this resource`,
   addingToRecordSet: 'Adding to Record Set and Database',
-  createRecord: 'Create record',
   createRecordButtonDescription: 'Create record and add to Record Set',
   recordSetAreaDescription: (recordSetName: string): string =>
     `Record Set: ${recordSetName}`,
