@@ -271,7 +271,6 @@ const wbText = createDictionary({
   mappingEditor: 'Map Explorer',
   hideMappingEditor: 'Hide Map Explorer',
   showMappingEditor: 'Show Map Explorer',
-  resizeMappingEditor: 'Resize Map Explorer',
   resizeMappingEditorButtonDescription:
     'Click and drag up or down to resize the Map Explorer',
   matchingLogic: 'Must Match',

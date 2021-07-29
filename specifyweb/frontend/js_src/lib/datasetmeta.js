@@ -18,7 +18,6 @@ function dateElement(date, fallback = '') {
   return `<time
     datetime="${dateObject.toISOString()}"
     title="${dateObject.toLocaleString()}"
-    aria-description="${dateObject.toLocaleString()}"
   >
     ${dateObject.toDateString()}
   </time>`;

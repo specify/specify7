@@ -203,20 +203,17 @@ const commonText = require('./localization/common').default;
                     class="tree-conform-save"
                     tabindex="2"
                     title="${treeText('rememberButtonDescription')}"
-                    aria-description="${treeText('rememberButtonDescription')}"
                 >${treeText('remember')}</button>
                 <button
                     type="button"
                     class="tree-conform-restore"
                     tabindex="3"
                     title="${treeText('restoreButtonDescription')}"
-                    aria-description="${treeText('restoreButtonDescription')}"
                 >${treeText('restore')}</button>
                 <button
                     type="button"
                     class="tree-conform-forget"
                     tabindex="4"
-                    aria-description="${treeText('forgetButtonDescription')}"
                 >${treeText('forget')}</button>`);
         },
         applyConformation: function(encoded) {
