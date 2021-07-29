@@ -100,6 +100,7 @@ const ResourceDataView = Backbone.View.extend({
             this.appresourceData = sards.first();
 
             if (this.appresourceData) {
+                this.$el.attr('aria-label',this.model.get('name'));
                 $('<header class="specify-form-header">').append(
                     $('<h2 class="view-title">').text(this.model.get('name'))
                 ).appendTo(this.el);

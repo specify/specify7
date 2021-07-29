@@ -162,6 +162,7 @@ const WBView = Backbone.View.extend({
         commonText,
       })
     );
+    this.$el.attr('aria-label', commonText('workbench'));
 
     document.body.classList.add('overflow-x-hidden');
 
