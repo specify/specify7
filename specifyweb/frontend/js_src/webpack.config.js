@@ -49,12 +49,9 @@ module.exports = (_env, argv)=>({
     module: {
         rules: [
             {
-                test: /\.(png)|(gif)|(jpg)$/,
+                test: /\.(png|gif|jpg|jpeg|svg)$/,
                 use: [{
-                    loader: "url-loader",
-                    options: {
-                        limit: 100000
-                    }
+                    loader: "asset",
                 }]
             },
             {
