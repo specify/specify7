@@ -50,9 +50,7 @@ module.exports = (_env, argv)=>({
         rules: [
             {
                 test: /\.(png|gif|jpg|jpeg|svg)$/,
-                use: [{
-                    loader: "asset",
-                }]
+                type: 'asset',
             },
             {
                 test: /\.css$/,
@@ -74,16 +72,24 @@ module.exports = (_env, argv)=>({
                 test: /\.[tj]sx?$/,
                 exclude: /(node_modules)|(bower_components)/,
                 use: [{
-                    loader: "babel-loader",
+                    loader: "babel-loader?+cacheDirectory",
                     options: {
+                        plugins: [
+                            "babel-plugin-replace-ts-export-assignment",
+                        ],
                         presets: [
-                            ['@babel/preset-react'],
                             [
                                 '@babel/preset-env',
                                 {
-                                    targets: "defaults"
+                                    debug: true, // FIXME: remove this
+                                    useBuiltIns: 'usage',
+                                    corejs: '3.15',
+                                    bugfixes: true,
+                                    browserslistEnv: argv.mode,
                                 }
-                            ]
+                            ],
+                            ['@babel/preset-react'],
+                            ['@babel/preset-typescript'],
                         ]
                     }
                 }]
@@ -134,9 +140,6 @@ module.exports = (_env, argv)=>({
     },
     watchOptions: {
         ignored: '/node_modules/',
-    },
-    performance: {
-        hints: 'warning',
     },
     stats: {
         env: true,
