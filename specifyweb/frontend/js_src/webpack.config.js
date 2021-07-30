@@ -1,7 +1,7 @@
-import path from 'path';
-import fs from 'fs';
-import webpack from "webpack";
-import { WebpackManifestPlugin, getCompilerHooks } from 'webpack-manifest-plugin';
+const path = require('path');
+const fs = require('fs');
+const webpack = require("webpack");
+const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
 
 
 function writeIfChanged(compiler, fileName, fileContent){
@@ -74,14 +74,10 @@ module.exports = (_env, argv)=>({
                 use: [{
                     loader: "babel-loader?+cacheDirectory",
                     options: {
-                        plugins: [
-                            "babel-plugin-replace-ts-export-assignment",
-                        ],
                         presets: [
                             [
                                 '@babel/preset-env',
                                 {
-                                    debug: true, // FIXME: remove this
                                     useBuiltIns: 'usage',
                                     corejs: '3.15',
                                     bugfixes: true,
