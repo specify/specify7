@@ -1,10 +1,10 @@
 "use strict";
 
-var _      = require('underscore');
-var schema = require('./schema.js');
-var api    = require('./specifyapi.js');
+import _ from 'underscore';
+import schema from './schema';
+import api from './specifyapi';
 
-    var interactionBusinessRules = {
+    export default {
         previousReturned: [],
         previousResolved: [],
         getTotalLoaned: function(loanreturnprep) {
@@ -53,6 +53,4 @@ var api    = require('./specifyapi.js');
             }
         }
     };
-
-module.exports = interactionBusinessRules;
 

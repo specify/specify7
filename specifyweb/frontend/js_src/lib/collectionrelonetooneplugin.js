@@ -1,16 +1,15 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
 
-var dataobjformatters = require('./dataobjformatters.js');
-var OneToMany         = require('./collectionrelonetomanyplugin.js');
+import dataobjformatters from './dataobjformatters';
+import OneToMany from './collectionrelonetomanyplugin';
 
 var format = dataobjformatters.format;
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
-module.exports =  OneToMany.extend({
+export default OneToMany.extend({
     __name__: "CollectionRelOneToOnePlugin",
     render: function() {
         var control = $(`<div>

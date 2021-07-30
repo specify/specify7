@@ -1,14 +1,11 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
-const navigation = require('./navigation.js');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import Backbone from './backbone';
+import * as navigation from './navigation';
+import commonText from './localization/common';
 
-module.exports = {
-
-        ErrorView: Backbone.View.extend({
+        export const ErrorView = Backbone.View.extend({
             __name__: "ErrorView",
             render: function() {
                 var request = this.options.request;
@@ -16,9 +13,9 @@ module.exports = {
                 this.$el.append("<h3>" + request.status +"</h3");
                 this.$el.append("<p>" + request.statusText + "</p>");
             }
-        }),
+        });
 
-        UnhandledErrorView: Backbone.View.extend({
+        export const UnhandledErrorView =Backbone.View.extend({
             __name__: "UnhandledErrorView",
             render: function() {
                 this.$el.attr('title', commonText('backEndErrorDialogTitle'))
@@ -38,5 +35,4 @@ module.exports = {
                 });
                 navigation.clearUnloadProtect();
             }
-        })
-    };
+        });

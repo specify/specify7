@@ -1,21 +1,21 @@
 "use strict";
 
-const $        = require('jquery');
-const _        = require('underscore');
-const Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-const schema                 = require('./schema.js');
-const QueryFieldUI           = require('./queryfield.js');
-const parsespecifyproperties = require('./parsespecifyproperties.js');
-const AttachmentPlugin       = require('./attachmentplugin.js');
-const attachments            = require('./attachments.js');
-const userInfo               = require('./userinfo.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import QueryFieldUI from './queryfield';
+import parsespecifyproperties from './parsespecifyproperties';
+import AttachmentPlugin from './attachmentplugin';
+import * as attachments from './attachments';
+import userInfo from './userinfo';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
-const csrftoken = require('./csrftoken.js');
-const populateForm = require('./populateform.js');
-const navigation = require('./navigation.js');
+import csrftoken from './csrftoken';
+import populateForm from './populateform';
+import * as navigation from './navigation';
 
 var title =  "Reports";
 
@@ -553,7 +553,7 @@ function fixupImages(reportXML) {
     });
 }
 
-module.exports =  function(options) {
+export default function(options) {
     options || (options = {});
     options.readOnly = options.readOnly || !userInfo.isadmin;
 

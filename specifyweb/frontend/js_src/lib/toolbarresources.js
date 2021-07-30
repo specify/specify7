@@ -1,7 +1,7 @@
 "use strict";
 
-const $ = require('jquery');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import commonText from './localization/common';
 
 function execute() {
     $(`<div class="table-list-dialog">
@@ -21,7 +21,7 @@ function execute() {
 }
 
 
-module.exports = {
+export default {
     task: 'resources',
     title: commonText('resources'),
     icon: null,

@@ -1,9 +1,9 @@
 "use strict";
-const $ = require('jquery');
-const Q = require('q');
-const _ = require('underscore');
-const schema = require('./schema.js');
-const userInfo = require('./userinfo.js');
+import $ from 'jquery';
+import Q from 'q';
+import _ from 'underscore';
+import schema from './schema';
+import userInfo from './userinfo';
 
 function addSuffix(name, usedNames) {
     let i = 1, newName;
@@ -14,7 +14,7 @@ function addSuffix(name, usedNames) {
     return newName;
 }
 
-module.exports = function uniquifyDataSetName(name, existingId) {
+export function uniquifyDataSetName(name, existingId) {
     name = name.trim().substr(0, 64);
 
     return Q($.get(`/api/workbench/dataset/`)).then(datasets => {

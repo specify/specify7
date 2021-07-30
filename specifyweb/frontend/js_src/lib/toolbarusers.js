@@ -1,12 +1,12 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema     = require('./schema.js');
-var navigation = require('./navigation.js');
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import * as navigation from './navigation';
+import commonText from './localization/common';
 
     var UsersView = Backbone.View.extend({
         __name__: "UsersView",
@@ -47,7 +47,7 @@ const commonText = require('./localization/common').default;
         });
     };
 
-module.exports =  {
+export default {
         task: 'users',
         title: commonText('manageUsers'),
         icon: null,

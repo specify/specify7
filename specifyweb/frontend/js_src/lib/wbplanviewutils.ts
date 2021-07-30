@@ -16,7 +16,7 @@ import type {
 } from './components/wbplanviewmapper';
 import type { LoadingState, MappingState } from './components/wbplanviewstate';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
-import navigation from './navigation';
+import * as navigation from './navigation';
 import schema from './schema';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {

@@ -1,35 +1,33 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var navigation = require('./navigation.js');
-var domain     = require('./domain.js');
-var schema     = require('./schema.js');
-var UserTools  = require('./usertools.js');
-var userInfo   = require('./userinfo.js');
-var router     = require('./router.js');
-var querystring = require('./querystring.js');
-const NotificationsUI = require('./notifications.js');
-const commonText = require('./localization/common').default;
+import * as navigation from './navigation';
+import UserTools from './usertools';
+import userInfo from './userinfo';
+import router from './router';
+import * as querystring from './querystring';
+import NotificationsUI from './notifications';
+import commonText from './localization/common';
 
 
 var toolModules = [
-    require('./toolbardataentry.js'),
-    require('./toolbarinteractions.js'),
-    require('./toolbartrees.js'),
-    require('./toolbarrecordsets.js'),
-    require('./toolbarquery.js'),
-    require('./toolbarreport.js'),
-    require('./toolbarattachments.js'),
-    require('./toolbarwbs.js'),
-    require('./toolbarmasterkey.js'),
-    require('./toolbarusers.js'),
-    require('./toolbartreerepair.js'),
-    require('./toolbarresources.js'),
-    require('./toolbardwca.js'),
-    require('./toolbarforceupdate.js'),
+    require('./toolbardataentry').default,
+    require('./toolbarinteractions').default,
+    require('./toolbartrees').default,
+    require('./toolbarrecordsets').default,
+    require('./toolbarquery').default,
+    require('./toolbarreport').default,
+    require('./toolbarattachments').default,
+    require('./toolbarwbs').default,
+    require('./toolbarmasterkey').default,
+    require('./toolbarusers').default,
+    require('./toolbartreerepair').default,
+    require('./toolbarresources').default,
+    require('./toolbardwca').default,
+    require('./toolbarforceupdate').default,
 ];
 
     var ExpressSearchInput = Backbone.View.extend({
@@ -49,7 +47,7 @@ var toolModules = [
     });
 
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "HeaderUI",
         events: {
             'click #site-nav a': 'siteNavClick',

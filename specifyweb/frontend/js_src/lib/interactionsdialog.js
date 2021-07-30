@@ -1,21 +1,21 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
 
 
-var schema            = require('./schema.js');
-var icons             = require('./icons.js');
-var specifyform       = require('./specifyform.js');
-var initialContext    = require('./initialcontext.js');
-var userInfo          = require('./userinfo.js');
-var InteractionDialog = require('./interactiondialog.js');
-var s                 = require('./stringlocalization.js');
-var reports           = require('./reports.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import { getIcon } from './icons';
+import specifyform from './specifyform';
+import * as initialContext from './initialcontext';
+import userInfo from './userinfo';
+import InteractionDialog from './interactiondialog';
+import * as s from './stringlocalization';
+import reports from './reports';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
     var interaction_entries, views, actions, forms, getFormsPromise;
 
@@ -51,7 +51,7 @@ const commonText = require('./localization/common').default;
     }
 
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "InteractionsDialog",
         className: "interactions-dialog table-list-dialog",
         events: {
@@ -113,7 +113,7 @@ module.exports = Backbone.View.extend({
             }
         },
         dialogEntry: function(interaction_entry) {
-            var img = $('<img>', { src: icons.getIcon(interaction_entry.attr('icon')) });
+            var img = $('<img>', { src: getIcon(interaction_entry.attr('icon')) });
             var link = isActionEntry(interaction_entry) ?
                     $('<a>').addClass("interaction-action").text(this.getDialogEntryText(interaction_entry)) :
                     $('<a>').addClass("intercept-navigation").text(this.getDialogEntryText(interaction_entry));

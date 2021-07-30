@@ -1,10 +1,10 @@
-var navigation  = require('./navigation');
-var FormsDialog = require('./formsdialog.js');
+import * as navigation from './navigation';
+import FormsDialog from './formsdialog';
 
-const commonText = require('./localization/common').default;
+import commonText from './localization/common';
 
 
-module.exports = {
+export default {
         task: 'data',
         title: commonText('dataEntry'),
         icon: '/static/img/data entry.png',

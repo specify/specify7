@@ -1,11 +1,11 @@
 "use strict";
-require('../css/notifications.css');
+import '../css/notifications.css';
 
-const $        = require('jquery');
-const _        = require('underscore');
-const Backbone = require('./backbone.js');
-const moment = require('moment');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import moment from 'moment';
+import commonText from './localization/common';
 
 const Message = Backbone.Model.extend({
     __name__: "NotificationMessage"
@@ -144,7 +144,7 @@ const MessageList = Backbone.View.extend({
     }
 });
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "NotificationsUI",
     events: {
         'click': 'openMessages'

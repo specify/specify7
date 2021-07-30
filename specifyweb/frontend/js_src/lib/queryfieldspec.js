@@ -1,8 +1,8 @@
 "use strict";
 
-var _ = require('underscore');
+import _ from 'underscore';
 
-var schema = require('./schema.js');
+import schema from './schema';
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
 
@@ -144,5 +144,5 @@ var schema = require('./schema.js');
         }
     });
 
-module.exports =  QueryFieldSpec;
+    export default QueryFieldSpec;
 

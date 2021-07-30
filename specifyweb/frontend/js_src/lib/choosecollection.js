@@ -1,9 +1,9 @@
 "use strict";
-require('../css/base.css');
-require('../css/login.css');
-require('../css/choosecollection.css');
+import '../css/base.css';
+import '../css/login.css';
+import '../css/choosecollection.css';
 
-const $ = require('jquery');
+import $ from 'jquery';
 
 $(function() {
     if ($('input[name="collection"]:checked').val()) {

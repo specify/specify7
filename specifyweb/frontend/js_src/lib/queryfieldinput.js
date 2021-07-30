@@ -1,16 +1,16 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
 
-var fieldformat  = require('./fieldformat.js');
-var uiparse      = require('./uiparse.js');
-var UIFieldInput = require('./uiinputfield.js');
-var saveblockers = require('./saveblockers.js');
-var ToolTipMgr   = require('./tooltipmgr.js');
-const queryText = require('./localization/query').default;
+import fieldformat from './fieldformat';
+import uiparse from './uiparse';
+import UIFieldInput from './uiinputfield';
+import saveblockers from './saveblockers';
+import ToolTipMgr from './tooltipmgr';
+import queryText from './localization/query';
 
     var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
     var stringParser = uiparse.bind(null, {type: 'java.lang.String'});
@@ -170,7 +170,7 @@ var Like = {
         {opName: 'False or Null', negation: 'True', types: ['bools'], input: null}
     ];
 
-module.exports =  _.map(opInfo, function(extras, i) {
+export default _.map(opInfo, function(extras, i) {
         var options = _.extend({ __name__: "OpFieldInputUI", index: i }, extras);
         return FieldInputUI.extend(options);
     });

@@ -1,4 +1,4 @@
 "use strict";
-require ('../css/base.css');
-require ('../css/login.css');
+import '../css/base.css';
+import '../css/login.css';
 

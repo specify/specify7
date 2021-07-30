@@ -1,20 +1,20 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var schema       = require('./schema.js');
-var navigation   = require('./navigation.js');
-var populateForm = require('./populateform.js');
-var api          = require('./specifyapi.js');
-var ResourceView = require('./resourceview.js');
-var FieldFormat  = require('./fieldformat.js');
-var PrepDialog   = require('./prepdialog.js');
-var app          = require('./specifyapp.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import * as navigation from './navigation';
+import populateForm from './populateform';
+import api from './specifyapi';
+import ResourceView from './resourceview';
+import FieldFormat from './fieldformat';
+import PrepDialog from './prepdialog';
+import * as app from './specifyapp';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
-module.exports =  PrepDialog.extend({
+export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
         className: "prepselectdialog table-list-dialog",
         events: {

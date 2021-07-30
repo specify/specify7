@@ -1,7 +1,7 @@
 import React from 'react';
 
 import wbText from '../localization/workbench';
-import navigation from '../navigation';
+import * as navigation from '../navigation';
 import dataModelStorage from '../wbplanviewmodel';
 import fetchDataModel from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';

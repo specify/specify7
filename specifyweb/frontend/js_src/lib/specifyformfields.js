@@ -1,9 +1,8 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
+import $ from 'jquery';
 
-module.exports = function(doingFormTable, mode, cell, id) {
+export default function(doingFormTable, mode, cell, id) {
         var uitype = cell.attr('uitype');
         if (!uitype) {
             console.error('field is missing uitype', cell);

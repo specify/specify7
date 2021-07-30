@@ -1,17 +1,16 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
-var schema         = require('./schema.js');
-var specifyform    = require('./specifyform.js');
-var QueryCbxSearch = require('./querycbxsearch.js');
-var subviewheader = require('./templates/subviewheader.html');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import specifyform from './specifyform';
+import QueryCbxSearch from './querycbxsearch';
+import subviewheader from './templates/subviewheader.html';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "Subview",
         initialize: function(options) {
             // options = {

@@ -64,8 +64,6 @@ export interface JqueryPromise<T> {
   readonly done: (callback: (t: T) => void) => void;
 }
 
-export interface Domain {
-  readonly getTreeDef: (
-    tableName: string
-  ) => JqueryPromise<DomainTreeDefinition>;
-}
+export type GetTreeDef = (
+  tableName: string
+) => JqueryPromise<DomainTreeDefinition>;

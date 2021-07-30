@@ -1,12 +1,11 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var icons          = require('./icons.js');
-var schema         = require('./schema.js');
-var assert         = require('./assert.js');
-var initialContext = require('./initialcontext.js');
+import { getIcon } from './icons';
+import schema from './schema';
+import * as initialContext from './initialcontext';
 
     var settings;
     initialContext.load('attachment_settings.json', data => settings = data);
@@ -16,14 +15,14 @@ var initialContext = require('./initialcontext.js');
     function iconForMimeType(mimetype) {
         var iconName;
 
-        if (mimetype === 'text/plain') return icons.getIcon('text');
-        if (mimetype === 'text/html') return icons.getIcon('html');
+        if (mimetype === 'text/plain') return getIcon('text');
+        if (mimetype === 'text/html') return getIcon('html');
 
         var parts = mimetype.split('/');
         var type = parts[0], subtype = parts[1];
 
         if (_("audio video image text".split()).contains(type)) {
-            return icons.getIcon(type);
+            return getIcon(type);
         }
 
         if (type === 'application') {
@@ -34,10 +33,10 @@ var initialContext = require('./initialcontext.js');
                 'vnd.ms-powerpoint': 'MSPowerPoint'
             }[subtype];
 
-            if (iconName) return icons.getIcon(iconName);
+            if (iconName) return getIcon(iconName);
         }
 
-        return icons.getIcon('unknown');
+        return getIcon('unknown');
     }
 
     function getToken(filename) {
@@ -46,10 +45,9 @@ var initialContext = require('./initialcontext.js');
                     : $.when(null);
     }
 
-    var attachments = {
-        systemAvailable: function() { return !_.isEmpty(settings); },
+        export function systemAvailable() { return !_.isEmpty(settings); }
 
-        getThumbnail: function(attachment, scale) {
+        export function getThumbnail(attachment, scale) {
             scale || (scale = 256);
             var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";
 
@@ -72,8 +70,8 @@ var initialContext = require('./initialcontext.js');
 
                 return $('<img>', {src: src, style: style});
             });
-        },
-        originalURL: function(attachmentLocation, token, downLoadName) {
+        }
+        export function originalURL(attachmentLocation, token, downLoadName) {
             return settings.read + "?" + $.param({
                 coll: settings.collection,
                 type: "O",
@@ -81,8 +79,8 @@ var initialContext = require('./initialcontext.js');
                 downloadname: downLoadName,
                 token: token
             });
-        },
-        openOriginal: function(attachment) {
+        }
+        export function openOriginal(attachment) {
             var attachmentLocation = attachment.get('attachmentlocation');
             var origFilename = attachment.get('origfilename').replace(/^.*[\\\/]/, '');
 
@@ -90,8 +88,8 @@ var initialContext = require('./initialcontext.js');
                 var src = attachments.originalURL(attachmentLocation, token, attachment.get('origfilename'));
                 window.open(src);
             });
-        },
-        uploadFile: function(file, progressCB) {
+        }
+        export function uploadFile(file, progressCB) {
             var formData = new FormData();
             var attachmentLocation;
             var attachment;
@@ -126,7 +124,3 @@ var initialContext = require('./initialcontext.js');
                     });
                 });
         }
-    };
-
-module.exports = attachments;
-

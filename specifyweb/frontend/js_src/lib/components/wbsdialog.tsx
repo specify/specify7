@@ -11,9 +11,9 @@ import React from 'react';
 import { DataSetMeta } from '../datasetmeta';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import navigation from '../navigation';
+import * as navigation from '../navigation';
 import userInfo from '../userinfo';
-import uniquifyDataSetName from '../wbuniquifyname';
+import { uniquifyDataSetName } from '../wbuniquifyname';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, DatasetBrief, RA } from './wbplanview';
@@ -103,7 +103,8 @@ function Dialog({
   }, [showMeta]);
 
   const canImport =
-    !showTemplates && !(userInfo as { isReadOnly: boolean }).isReadOnly;
+    !showTemplates &&
+    !(userInfo as unknown as { isReadOnly: boolean }).isReadOnly;
 
   return (
     <>

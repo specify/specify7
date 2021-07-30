@@ -1,14 +1,11 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var processField           = require('./specifyformfields.js');
-var parseSpecifyProperties = require('./parsespecifyproperties.js');
-var processColumnDef       = require('./processcolumndef.js');
-
-const cookies              = require('./cookies.js');
-const userInfo             = require('./userinfo.js');
+import processField from './specifyformfields';
+import parseSpecifyProperties from './parsespecifyproperties';
+import processColumnDef from './processcolumndef';
 
     function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
@@ -110,5 +107,5 @@ const userInfo             = require('./userinfo.js');
         return td;
     };
 
-module.exports = processCell;
+export default processCell;
 

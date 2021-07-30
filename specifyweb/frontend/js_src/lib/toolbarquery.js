@@ -1,19 +1,19 @@
 "use strict";
 
-const $        = require('jquery');
-const _        = require('underscore');
-const Q        = require('q');
-const Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
+import Backbone from './backbone';
 
-const schema         = require('./schema.js');
-const navigation     = require('./navigation.js');
-const specifyform    = require('./specifyform.js');
-const populateform   = require('./populateform.js');
-const SaveButton     = require('./savebutton.js');
-const DeleteButton   = require('./deletebutton.js');
-const initialContext = require('./initialcontext.js');
-const userInfo       = require('./userinfo.js');
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import * as navigation from './navigation';
+import specifyform from './specifyform';
+import populateform from './populateform';
+import SaveButton from './savebutton';
+import DeleteButton from './deletebutton';
+import * as initialContext from './initialcontext';
+import userInfo from './userinfo';
+import commonText from './localization/common';
 
     var qbDef;
     initialContext.loadResource('querybuilder.xml', data => qbDef = data);
@@ -257,7 +257,7 @@ const commonText = require('./localization/common').default;
         }
     });
 
-module.exports =  {
+export default {
         task: 'query',
         title: title,
         icon: '/static/img/query.png',

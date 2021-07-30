@@ -1,11 +1,11 @@
 "use strict";
 
-var $      = require('jquery');
-var _      = require('underscore');
-var moment = require('moment');
-const formsText = require('./localization/forms').default;
+import $ from 'jquery';
+import _ from 'underscore';
+import moment from 'moment';
+import formsText from './localization/forms';
 
-var dateFormatStr = require('./dateformat.js');
+import dateFormatStr from './dateformat';
 
     var parsers = {
         "java.lang.Boolean": function(field, value) {
@@ -151,7 +151,7 @@ var dateFormatStr = require('./dateformat.js');
 
     var stringLike = _.bind(_.contains, _, ['java.lang.String', 'text']);
 
-module.exports = function(field, value) {
+export default function(field, value) {
         if (value.trim() === '' && !stringLike(field.type))
             return field.isRequired ? {
                 value: value,

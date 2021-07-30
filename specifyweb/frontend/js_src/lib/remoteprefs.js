@@ -1,7 +1,6 @@
 "use strict";
 
-var _ = require('underscore');
-var initialContext = require('./initialcontext.js');
+import * as initialContext from './initialcontext';
 
     var prefs = {};
 
@@ -13,5 +12,5 @@ var initialContext = require('./initialcontext.js');
         });
     });
 
-module.exports = prefs;
+    export default prefs;
 

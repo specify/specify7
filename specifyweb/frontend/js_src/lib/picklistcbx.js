@@ -1,16 +1,16 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
-var Q = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
 
-var Base   = require('./basepicklist.js');
-var schema = require('./schema.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import Base from './basepicklist';
+import schema from './schema';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
 
-module.exports = Base.extend({
+export default Base.extend({
         __name__: "PickListCBXView",
         events: {
             autocompleteselect: 'selected',

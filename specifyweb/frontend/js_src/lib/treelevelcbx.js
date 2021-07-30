@@ -1,9 +1,9 @@
 "use strict";
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Q = require('q');
-const Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
+import Backbone from './backbone';
 
 
 function getPossibleRanks(lowestChildRank, parentTreeDefItem, treeDef) {
@@ -30,7 +30,7 @@ function getPossibleRanks(lowestChildRank, parentTreeDefItem, treeDef) {
     });
 }
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "TreeLevelCBX",
         events: {
             change: 'changed'

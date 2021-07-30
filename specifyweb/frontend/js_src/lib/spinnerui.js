@@ -1,12 +1,10 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import Backbone from './backbone';
 
-var specifyform = require('./specifyform.js');
+import specifyform from './specifyform';
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: 'SpinnerFieldUI',
         events: {
             'spinstop': 'change',

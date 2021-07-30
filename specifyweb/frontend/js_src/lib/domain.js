@@ -1,11 +1,11 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var api = require('./specifyapi.js');
-var schema = require('./schema.js');
-var remoteprefs = require('./remoteprefs.js');
+import api from './specifyapi';
+import schema from './schema';
+import remoteprefs from './remoteprefs';
 
 
     function takeBetween(items, startElem, endElem) {
@@ -52,21 +52,20 @@ var remoteprefs = require('./remoteprefs.js');
         taxon: 'discipline'
     };
 
-    var domain = {
-        getDomainResource: function(level) {
+        export function getDomainResource(level) {
             const id = schema.domainLevelIds[level];
             return id == null ? null : new (schema.getModel(level).Resource)({ id: id });
-        },
-        getTreeDef: function(treeName) {
+        }
+        export function getTreeDef(treeName) {
             treeName = treeName.toLowerCase();
             var level = treeDefLevels[treeName];
             if (level != null) {
-                return domain.getDomainResource(level).rget(treeName + 'treedef');
+                return getDomainResource(level).rget(treeName + 'treedef');
             } else {
                 return null;
             }
-        },
-        collectionsInDomain: function(domainResource) {
+        }
+        export function collectionsInDomain(domainResource) {
             if (domainResource == null) return null;
             var domainLevel = domainResource.specifyModel.name.toLowerCase();
             if (domainLevel === 'collectionobject') {
@@ -84,8 +83,8 @@ var remoteprefs = require('./remoteprefs.js');
             filter[path.join('__')] = domainResource.id;
             var collections = new schema.models.Collection.LazyCollection({ filters: filter });
             return collections.fetch({ limit: 0 }).pipe(function() { return collections.models; });
-        },
-        collectionsForResource: function(resource) {
+        }
+        export function collectionsForResource(resource) {
             var collectionmemberid = resource.get('collectionmemberid');
             if (_.isNumber(collectionmemberid)) {
                 var collection = new schema.models.Collection.Resource({ id: collectionmemberid });
@@ -93,11 +92,8 @@ var remoteprefs = require('./remoteprefs.js');
             }
             var domainField = resource.specifyModel.orgRelationship();
             if (domainField) {
-                return resource.rget(domainField.name).pipe(domain.collectionsInDomain);
+                return resource.rget(domainField.name).pipe(collectionsInDomain);
             } else {
                 return $.when(null);
             }
         }
-    };
-
-module.exports = domain;

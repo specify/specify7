@@ -1,15 +1,15 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema = require('./schema.js');
-var s      = require('./stringlocalization.js');
-const formsText = require('./localization/forms').default;
+import schema from './schema';
+import * as s from './stringlocalization';
+import formsText from './localization/forms';
 
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "PrepDialog",
     className: "prepdialog table-list-dialog",
     initialize() {

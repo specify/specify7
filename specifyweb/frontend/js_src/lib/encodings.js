@@ -1,8 +1,8 @@
 "use strict";
-const _ = require('underscore');
+import _ from 'underscore';
 
 // From https://encoding.spec.whatwg.org/
-const table =
+export const table =
           [
               {
                   "encodings": [
@@ -459,10 +459,5 @@ const table =
               }
           ];
 
-const allLabels = _.flatten(table.map(group => group.encodings.map(encoding => encoding.labels)));
+export const allLabels = _.flatten(table.map(group => group.encodings.map(encoding => encoding.labels)));
 allLabels.sort();
-
-module.exports = {
-    table: table,
-    allLabels: allLabels
-};

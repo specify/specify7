@@ -2,7 +2,7 @@ import '../../css/theme.css';
 
 import React from 'react';
 
-import icons from '../icons';
+import { getIcon } from '../icons';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 
@@ -19,7 +19,7 @@ export function TableIcon({
 }: {
   readonly tableName: string;
 }): JSX.Element {
-  const tableIconSource = icons.getIcon(tableName);
+  const tableIconSource = getIcon(tableName);
   const tableLabel = dataModelStorage.tables[tableName]?.label ?? '';
   if (tableIconSource !== '/images/unknown.png')
     return (

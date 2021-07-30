@@ -1,10 +1,10 @@
 "use strict";
 
-var $        = require('jquery');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "AgentTypeCBX",
         events: {
             change: 'set'

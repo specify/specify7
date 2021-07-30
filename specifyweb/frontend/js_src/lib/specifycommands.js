@@ -1,15 +1,15 @@
 "use strict";
 
-var $ = require('jquery');
+import $ from 'jquery';
 
-var LoanReturnCmd = require('./loanreturncommand.js');
-var ReportCmd = require('./reportcommand.js');
-var ShowTransCmd = require('./showtranscommand.js');
-var UICmd         = require('./uicommand.js');
+import LoanReturnCmd from './loanreturncommand';
+import ReportCmd from './reportcommand';
+import ShowTransCmd from './showtranscommand';
+import UICmd from './uicommand';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
-module.exports =  {
+export default {
     ReturnLoan: LoanReturnCmd,
     generateLabelBtn: ReportCmd,
     ShowLoansBtn: ShowTransCmd,

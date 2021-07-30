@@ -1,11 +1,11 @@
 "use strict";
 
-var _ = require('underscore');
-var Q = require('q');
+import _ from 'underscore';
+import Q from 'q';
 
-var schema            = require('./schema.js');
-var api               = require('./specifyapi.js');
-var dataobjformatters = require('./dataobjformatters.js');
+import schema from './schema';
+import api from './specifyapi';
+import dataobjformatters from './dataobjformatters';
 
     // User defined picklist.
     //
@@ -68,7 +68,7 @@ function makeMixin(source, name) {
     return {getItems: source, __name__: name};
 }
 
-module.exports = {
+export default {
     userDefined   : makeMixin(userDefined, 'UserDefinedPL'),
     fromTable     : makeMixin(fromTable, 'FromTablePL'),
     fromField     : makeMixin(fromField, 'FromFieldPL')

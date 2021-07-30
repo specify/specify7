@@ -1,15 +1,14 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
-var querystring = require('./querystring.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import * as querystring from './querystring';
 
 
     var win = $(window);
-    var doc = $(document);
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "ScrollResults",
         events: {
             'remove': 'undelegateEvents'

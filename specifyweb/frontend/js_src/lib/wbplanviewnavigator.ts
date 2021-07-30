@@ -29,11 +29,11 @@ import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {
   formatReferenceItem,
   formatTreeRank,
+  getCanonicalMappingPath,
   getNameFromTreeRankName,
   mappingPathToString,
   relationshipIsToMany,
   valueIsReferenceItem,
-  getCanonicalMappingPath,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';

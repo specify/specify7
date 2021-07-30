@@ -1,9 +1,8 @@
 "use strict";
 
-var _              = require('underscore');
-var initialContext = require('./initialcontext.js');
-const commonText = require('./localization/common').default;
-const $ = require('jquery');
+import _ from 'underscore';
+import * as initialContext from './initialcontext';
+import $ from 'jquery';
 
     var userInfo = {};
     initialContext.load('user.json', function(data) {
@@ -32,4 +31,4 @@ const $ = require('jquery');
         });
     });
 
-module.exports = userInfo;
+export default userInfo;

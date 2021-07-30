@@ -1,11 +1,11 @@
 "use strict";
 
-var schema              = require('./schema.js');
-var RecordSetsDialog    = require('./recordsetsdialog.js');
-var userInfo            = require('./userinfo.js');
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import RecordSetsDialog from './recordsetsdialog';
+import userInfo from './userinfo';
+import commonText from './localization/common';
 
-module.exports =  {
+export default {
         task: 'recordsets',
         title: commonText('recordSets'),
         icon: '/static/img/record sets.png',

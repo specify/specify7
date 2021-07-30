@@ -1,15 +1,15 @@
 "use strict";
 
-var $              = require('jquery');
-var _              = require('underscore');
-var Backbone       = require('./backbone.js');
-var initialContext = require('./initialcontext.js');
-const escapeRegExp = require('./escaperegexp.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import * as initialContext from './initialcontext';
+import escapeRegExp from './escaperegexp';
 
     var uiformatters;
     initialContext.load('app.resource?name=UIFormatters', data => uiformatters = $(data));
 
-    function UIFormatter(fields) {
+    export function UIFormatter(fields) {
         this.fields = fields;
     }
     UIFormatter.extend = Backbone.Model.extend;
@@ -46,7 +46,7 @@ const escapeRegExp = require('./escaperegexp.js');
         }
     });
 
-    function Field(options) {
+    export function Field(options) {
         this.size = options.size;
         this.value = options.value;
         this.inc = options.inc;
@@ -167,7 +167,7 @@ const escapeRegExp = require('./escaperegexp.js');
     )});
 
 
-    function getUIFormatter(name) {
+    export function getByName(name) {
         var node = $(uiformatters.find('[name="' + name + '"]'));
         if (!node) return null;
         var external = node.find('external');
@@ -183,10 +183,4 @@ const escapeRegExp = require('./escaperegexp.js');
                 _(node.find('field')).map(Field.forNode));
         }
     }
-
-module.exports = {
-        getByName: getUIFormatter,
-        UIFormatter: UIFormatter,
-        Field: Field
-    };
 

@@ -1,18 +1,17 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Q        = require('q');
-var Backbone = require('./backbone.js');
+import _ from 'underscore';
+import Q from 'q';
+import Backbone from './backbone';
 
 
-var dataobjformatters = require('./dataobjformatters.js');
-var fieldformat       = require('./fieldformat.js');
-var uiparse           = require('./uiparse.js');
-var UIFieldInput      = require('./uiinputfield.js');
-var saveblockers      = require('./saveblockers.js');
-var ToolTipMgr        = require('./tooltipmgr.js');
-var dateFormatStr     = require('./dateformat.js');
+import dataobjformatters from './dataobjformatters';
+import fieldformat from './fieldformat';
+import uiparse from './uiparse';
+import UIFieldInput from './uiinputfield';
+import saveblockers from './saveblockers';
+import ToolTipMgr from './tooltipmgr';
+import dateFormatStr from './dateformat';
 
 var objformat = dataobjformatters.format;
 
@@ -36,7 +35,7 @@ function isDate(field) {
     ].includes(field.type);
 }
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "UIField",
         render: function() {
             var fieldName = this.$el.attr('name');

@@ -1,7 +1,7 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
     //TODO: only propagate for dependent resources
 
@@ -113,7 +113,7 @@ var _ = require('underscore');
         }
     });
 
-module.exports = {
-        SaveBlockers: SaveBlockers,
-        FieldViewEnhancer: FieldViewEnhancer
-    };
+export default {
+    SaveBlockers: SaveBlockers,
+    FieldViewEnhancer: FieldViewEnhancer
+};

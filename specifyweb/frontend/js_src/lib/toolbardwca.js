@@ -1,9 +1,9 @@
 "use strict";
 
-const $ = require('jquery');
-const Q = require('q');
-const chooseTmpl = require('./templates/chooseDwCADef.html');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import Q from 'q';
+import chooseTmpl from './templates/chooseDwCADef.html';
+import commonText from './localization/common';
 
 const title = commonText('makeDwca');
 
@@ -89,7 +89,7 @@ function startExport(definition, metadata) {
     });
 }
 
-module.exports = {
+export default {
     task: 'makedwca',
     title: title,
     icon: null,

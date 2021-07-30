@@ -1,11 +1,11 @@
 "use strict";
 
 
-var _ = require('underscore');
+import _ from 'underscore';
 
     var fromRe = /FROM\s+(\w+)\s+(AS\s+)?(\w+)/i;
     var joinRe = /JOIN\s+(\w+\.\w+)\s+(AS\s+)?(\w+)/ig;
-    var self = {
+    const self = {
         parse: function(select) {
             var colMap = {};
             var match = select.match(fromRe);
@@ -33,5 +33,4 @@ var _ = require('underscore');
         }
     };
 
-module.exports = self;
-
+export default self;

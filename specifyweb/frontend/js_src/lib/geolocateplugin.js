@@ -1,15 +1,14 @@
 "use strict";
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Q = require('q');
+import $ from 'jquery';
+import Q from 'q';
 
-const UIPlugin = require('./uiplugin.js');
-const querystring = require('./querystring.js');
-const schema = require('./schema.js');
-const localityText = require('./localization/locality').default
+import UIPlugin from './uiplugin';
+import * as querystring from './querystring';
+import schema from './schema';
+import localityText from './localization/locality';
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
     __name__: "GeoLocatePlugin",
     events: {
         'click': 'click'

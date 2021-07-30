@@ -1,10 +1,10 @@
 "use strict";
 
-const _ = require('underscore');
+import _ from 'underscore';
 
-const uiformatters = require('./uiformatters.js');
-const schema = require('./schemabase.js');
-const assert = require('./assert.js');
+import * as uiformatters from './uiformatters';
+import schema from './schemabase';
+import assert from './assert';
 
 
 // Define a JS object constructor to represent fields of Specify data objects.
@@ -126,5 +126,5 @@ schema.Relationship = function(model, relDef) {
 
 _.extend(schema.Relationship.prototype, schema.Field.prototype);
 
-module.exports = schema;
+export default schema;
 

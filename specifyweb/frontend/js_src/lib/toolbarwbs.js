@@ -1,11 +1,9 @@
 'use strict';
-const $ = require('jquery');
 
-var schema = require('./schema.js');
-var WbsDialog = require('./components/wbsdialog').default;
-const commonText = require('./localization/common').default;
+import WbsDialog from './components/wbsdialog';
+import commonText from './localization/common';
 
-module.exports = {
+export default {
   task: 'workbenches',
   title: commonText('workbench'),
   icon: '/static/img/workbench.png',

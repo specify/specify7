@@ -10,7 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Backbone from '../backbone';
-import app from '../specifyapp.js';
+import { setTitle } from '../specifyapp';
 import ErrorBoundary from './errorboundary';
 import type { IR } from './wbplanview';
 
@@ -64,8 +64,8 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     render() {
       renderPre?.(this);
 
-      if (typeof title === 'string') app.setTitle(title);
-      else if (typeof title === 'function') app.setTitle(title(this));
+      if (typeof title === 'string') setTitle(title);
+      else if (typeof title === 'function') setTitle(title(this));
 
       ReactDOM.render(
         <React.StrictMode>

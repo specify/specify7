@@ -2,7 +2,7 @@ import type { State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import type { SpecifyResource } from './components/wbplanview';
-import navigation from './navigation';
+import * as navigation from './navigation';
 
 type NavigateBackState = State<
   'NavigateBackState',

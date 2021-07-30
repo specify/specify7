@@ -1,16 +1,16 @@
 "use strict";
 
-var $        = require('jquery');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
-var icons          = require('./icons.js');
-var specifyform    = require('./specifyform.js');
-var navigation     = require('./navigation.js');
-var RecordSelector = require('./recordselector.js');
+import { getIcon } from './icons';
+import specifyform from './specifyform';
+import * as navigation from './navigation';
+import RecordSelector from './recordselector';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
-    var Base =  Backbone.View.extend({
+    export const Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
         events: {
             'click a': 'clicked'
@@ -25,7 +25,7 @@ const formsText = require('./localization/forms').default;
             self.model = self.options.parentResource || self.options.collection.parent;
 
             var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
-            self.icon = props.icon ? icons.getIcon(props.icon) : self.relatedModel.getIcon();
+            self.icon = props.icon ? getIcon(props.icon) : self.relatedModel.getIcon();
         },
         render: function() {
             var self = this;
@@ -61,7 +61,7 @@ const formsText = require('./localization/forms').default;
         }
     });
 
-    var ToMany = Base.extend({
+    export const ToMany = Base.extend({
         __name__: "ToManySubViewButton",
         initialize: function(options) {
             Base.prototype.initialize.call(this, options);
@@ -111,7 +111,7 @@ const formsText = require('./localization/forms').default;
         }
     });
 
-    var ToOne = Base.extend({
+    export const ToOne = Base.extend({
         __name__: "ToOneSubViewButton",
         initialize: function(options) {
             Base.prototype.initialize.call(this, options);
@@ -187,10 +187,3 @@ const formsText = require('./localization/forms').default;
             }
         }
     });
-
-module.exports =  {
-        ToMany: ToMany,
-        ToOne: ToOne,
-        Attachments: ToMany
-    };
-

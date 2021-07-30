@@ -1,7 +1,7 @@
 "use strict";
 
-var $ = require('jquery');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import commonText from './localization/common';
 
     var dialog = null;
 
@@ -64,7 +64,7 @@ const commonText = require('./localization/common').default;
         }
     }
 
-module.exports =  {
+export default {
         task: 'masterkey',
         title: commonText('generateMasterKey'),
         icon: null,

@@ -1,9 +1,9 @@
 "use strict";
 
 
-var _ = require('underscore');
+import _ from 'underscore';
 
-function Coord(flt) {
+export function Coord(flt) {
     // construct a coordinate from a single floating point number.
     flt = flt || 0.0;
     this._sign = Math.sign(flt);
@@ -64,8 +64,9 @@ Coord.parse = function(str) {
     return result && result.isValid() ? result : null;
 };
 
+export default Coord.parse;
 
-function Lat(flt) {
+export function Lat(flt) {
     Coord.call(this, flt);
 }
 
@@ -88,7 +89,7 @@ Lat.parse = function(str) {
 };
 
 
-function Long(flt) {
+export function Long(flt) {
     Coord.call(this, flt);
 }
 
@@ -179,6 +180,4 @@ function parse(str) {
     }
     return null; // No parser succeeded.
 }
-
-module.exports =  { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };
 

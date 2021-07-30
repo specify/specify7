@@ -1,17 +1,17 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
 
 
-var schema         = require('./schema.js');
-var icons          = require('./icons.js');
-var specifyform    = require('./specifyform.js');
-var initialContext = require('./initialcontext.js');
-const commonText = require('./localization/common').default;
-const formsText = require('./localization/forms').default;
+import schema from './schema';
+import { getIcon } from './icons';
+import specifyform from './specifyform';
+import * as initialContext from './initialcontext';
+import commonText from './localization/common';
+import formsText from './localization/forms';
 
 
     // I don't think the non-sidebar items are ever used in Sp6.
@@ -28,7 +28,7 @@ const formsText = require('./localization/forms').default;
         }
     );
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "FormsDialog",
         className: "forms-dialog table-list-dialog",
         events: {'click a': 'selected'},
@@ -68,7 +68,7 @@ module.exports = Backbone.View.extend({
             return this;
         },
         dialogEntry: function(view) {
-            var img = $('<img>', { src: icons.getIcon(view.attr('iconname')) });
+            var img = $('<img>', { src: getIcon(view.attr('iconname')) });
             var link = $('<a>').addClass("intercept-navigation").text(view.attr('title'));
             return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
         },

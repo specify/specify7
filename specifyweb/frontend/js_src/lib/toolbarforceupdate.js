@@ -1,8 +1,7 @@
 "use strict";
 
-const $ = require('jquery');
-const Q = require('q');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import commonText from './localization/common';
 
 
 var dialog = null;
@@ -40,7 +39,7 @@ function startUpdate() {
     });
 }
 
-module.exports = {
+export default {
     task: 'forceupdatefeed',
     title: commonText('updateExportFeed'),
     icon: null,

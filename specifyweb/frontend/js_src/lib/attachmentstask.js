@@ -1,21 +1,21 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var attachments  = require('./attachments.js');
-var router       = require('./router.js');
-var app          = require('./specifyapp.js');
-var schema       = require('./schema.js');
-var populateform = require('./populateform.js');
-var specifyform  = require('./specifyform.js');
-var navigation   = require('./navigation.js');
-var whenAll      = require('./whenall.js');
+import * as attachments from './attachments';
+import router from './router';
+import * as app from './specifyapp';
+import schema from './schema';
+import populateform from './populateform';
+import specifyform from './specifyform';
+import * as navigation from './navigation';
+import whenAll from './whenall';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
-const template = require('./templates/attachmentbrowser.html');
+import template from './templates/attachmentbrowser.html';
 
 
     var AttachmentsView = Backbone.View.extend({
@@ -220,7 +220,7 @@ const template = require('./templates/attachmentbrowser.html');
         }
     });
 
-module.exports =  function() {
+export default function() {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
             app.setTitle(formsText('attachments'));

@@ -1,11 +1,10 @@
 "use strict";
 
-var $      = require('jquery');
-var _      = require('underscore');
-var moment = require('moment');
+import _ from 'underscore';
+import moment from 'moment';
 
-var dateFormatStr = require('./dateformat.js');
-var AgentTypeCBX  = require('./agenttypecbx.js');
+import dateFormatStr from './dateformat';
+import AgentTypeCBX from './agenttypecbx';
 
     function formatDate(value) {
         if (value == null) return value;
@@ -28,7 +27,7 @@ var AgentTypeCBX  = require('./agenttypecbx.js');
         "java.util.Date": formatDate
     };
 
-module.exports = function(field, value) {
+export default function(field, value) {
         var asInt = parseInt(value, 10);
         if (field.getFormat() === 'CatalogNumberNumeric') {
             return _.isNaN(asInt) ? value : asInt;

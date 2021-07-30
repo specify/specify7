@@ -1,15 +1,15 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
 
-var schema = require('./schema.js');
-var router = require('./router.js');
-var app    = require('./specifyapp.js');
+import schema from './schema';
+import router from './router';
+import * as app from './specifyapp';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
 const SchemaView = Backbone.View.extend({
     __name__: "SchemaView",
@@ -53,7 +53,7 @@ const DataModelView = Backbone.View.extend({
 });
 
 
-module.exports = function() {
+export default function() {
     function view(model) {
         const View = model ? DataModelView : SchemaView;
         app.setCurrentView(new View({ model: model }));

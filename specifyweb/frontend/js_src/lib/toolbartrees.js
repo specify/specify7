@@ -1,12 +1,12 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema = require('./schema.js');
-var domain = require('./domain.js');
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import { getDomainResource } from './domain';
+import commonText from './localization/common';
 
 
     var treesForAll = ['geography', 'storage', 'taxon'];
@@ -27,7 +27,7 @@ const commonText = require('./localization/common').default;
             });
         },
         render: function() {
-            domain.getDomainResource('discipline').rget('type').pipe(function(type) {
+            getDomainResource('discipline').rget('type').pipe(function(type) {
                 return treesForAll.concat(_.contains(paleoDiscs, type) ? treesForPaleo : []);
             }).done(this._render.bind(this));
             return this;
@@ -42,7 +42,7 @@ const commonText = require('./localization/common').default;
         }
     });
 
-module.exports =  {
+export default {
         task: 'tree',
         title: commonText('trees'),
         icon: '/static/img/trees.png',

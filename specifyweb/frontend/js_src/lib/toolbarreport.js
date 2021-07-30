@@ -1,18 +1,16 @@
 "use strict";
 
-var reports        = require('./reports.js');
-var initialContext = require('./initialcontext.js');
-const commonText = require('./localization/common').default;
+import reports from './reports';
+import * as initialContext from './initialcontext';
+import commonText from './localization/common';
 
     initialContext.load('report_runner_status.json', status => reports.disable = !status.available);
 
-    var reportsToolbarItem = {
+    export default {
         task: 'report',
         title: commonText('reports'),
         icon: '/static/img/report_icon.png',
         disabled: undefined,
         execute: reports
     };
-
-module.exports =  reportsToolbarItem;
 

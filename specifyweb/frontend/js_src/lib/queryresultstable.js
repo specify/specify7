@@ -1,20 +1,20 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
 
-var template      = require('./templates/queryresults.html');
-var ScrollResults = require('./scrollresults.js');
-var QueryResults  = require('./queryresults.js');
-const domain = require('./domain.js');
-const queryText = require('./localization/query').default;
-const commonText = require('./localization/common').default;
+import template from './templates/queryresults.html';
+import ScrollResults from './scrollresults';
+import QueryResults from './queryresults';
+import { getTreeDef } from './domain';
+import queryText from './localization/query';
+import commonText from './localization/common';
 
 async function getTreeRanks(tableName){
-    const getTreeDef = await domain.getTreeDef(tableName);
-    const treeDefItems = await getTreeDef.rget('treedefitems');
+    const treeDef = await getTreeDef(tableName);
+    const treeDefItems = await treeDef.rget('treedefitems');
     await treeDefItems.fetch({limit: 0});
     return treeDefItems.models;
 }
@@ -47,7 +47,7 @@ async function getTreeRanks(tableName){
         return th;
     }
 
-    var QueryResultsTable = Backbone.View.extend({
+    export default Backbone.View.extend({
         __name__: "QueryResultsTable",
         className: "query-results-table",
         initialize: function(options) {
@@ -109,6 +109,3 @@ async function getTreeRanks(tableName){
             this.gotDataBefore = true;
         }
     });
-
-module.exports =  QueryResultsTable;
-

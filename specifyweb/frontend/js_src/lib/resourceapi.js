@@ -1,10 +1,10 @@
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var assert = require('./assert.js');
-var api = require('./specifyapi.js');
-var querystring = require('./querystring.js');
+import assert from './assert';
+import api from './specifyapi';
+import * as querystring from './querystring';
 
     function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -560,4 +560,4 @@ var querystring = require('./querystring.js');
 
     });
 
-module.exports = ResourceBase;
+export default ResourceBase;

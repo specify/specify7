@@ -1,7 +1,7 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
     function ToolTipMgr(view, control) {
         this.view = view;
@@ -37,4 +37,4 @@ var _ = require('underscore');
         }
     });
 
-module.exports =  ToolTipMgr;
+export default ToolTipMgr;

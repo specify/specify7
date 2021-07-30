@@ -1,8 +1,8 @@
 'use strict';
 
-var router = require('./router.js');
+import router from './router';
 
-module.exports = function () {
+export default function () {
   router.route('workbench-import/', 'workbench-import', () =>
     import('./wbimport').then((wbImport) => wbImport())
   );

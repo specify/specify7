@@ -1,10 +1,10 @@
 "use strict";
 
-const $ = require('jquery');
-const Backbone = require('./backbone.js');
-const domain = require('./domain.js');
-const schema = require('./schema.js');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import Backbone from './backbone';
+import { getDomainResource} from './domain';
+import schema from './schema';
+import commonText from './localization/common';
 
 const title = commonText('repairTree');
 
@@ -52,14 +52,14 @@ const RepairTreeView = Backbone.View.extend({
 });
 
 function execute() {
-    domain.getDomainResource('discipline').rget('type')
+    getDomainResource('discipline').rget('type')
         .pipe(type => [].concat(
             treesForAll,
             paleoDiscs.includes(type) ? treesForPaleo : []))
         .done(trees => new RepairTreeView({trees: trees}).render());
 }
 
-module.exports = {
+export default {
     task: 'repairtree',
     title: title,
     icon: null,

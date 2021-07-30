@@ -1,19 +1,19 @@
 "use strict";
 
-var $      = require('jquery');
-var _      = require('underscore');
-var moment = require('moment');
+import $ from 'jquery';
+import _ from 'underscore';
+import moment from 'moment';
 
-var UIPlugin      = require('./uiplugin.js');
-var template = require('./templates/partialdateui.html');
-var dateFormatStr = require('./dateformat.js');
-var ToolTipMgr    = require('./tooltipmgr.js');
-var saveblockers  = require('./saveblockers.js');
-const formsText = require('./localization/forms').default;
+import UIPlugin from './uiplugin';
+import template from './templates/partialdateui.html';
+import dateFormatStr from './dateformat';
+import ToolTipMgr from './tooltipmgr';
+import saveblockers from './saveblockers';
+import formsText from './localization/forms';
 
     var precisions = ['full', 'month-year', 'year'];
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "PartialDateUI",
         events: {
             'change select': 'updatePrecision',

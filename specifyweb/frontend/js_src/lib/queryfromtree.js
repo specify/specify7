@@ -1,16 +1,16 @@
 "use strict";
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Q = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
 
-const schema         = require('./schema.js');
-const domain         = require('./domain.js');
-const QueryFieldSpec = require('./queryfieldspec.js');
+import schema from './schema';
+import { getDomainResource } from './domain';
+import QueryFieldSpec from './queryfieldspec';
 
 
 function paleoPathP() {
-    return domain.getDomainResource('discipline').rget('paleocontextchildtable').pipe(function(table) {
+    return getDomainResource('discipline').rget('paleocontextchildtable').pipe(function(table) {
         switch (table.toLowerCase()) {
         case 'collectionobject':
             return 'paleoContext';
@@ -285,7 +285,7 @@ var fieldsFor = {
     }
 };
 
-module.exports =  function(user, table, nodeId) {
+export default function(user, table, nodeId) {
     const tree = schema.getModel(table);
     const node = new tree.Resource({id: nodeId});
     return Q([

@@ -1,12 +1,12 @@
 "use strict";
 
-var $ = require('jquery');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
-var UIPlugin = require('./uiplugin.js');
-var template = require('./templates/passwordchange.html');
-const commonText = require('./localization/common').default;
-const adminText = require('./localization/admin').default;
+import UIPlugin from './uiplugin';
+import template from './templates/passwordchange.html';
+import commonText from './localization/common';
+import adminText from './localization/admin';
 
     var Dialog = Backbone.View.extend({
         __name__: "PasswordResetDialog",
@@ -45,7 +45,7 @@ const adminText = require('./localization/admin').default;
         }
     });
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "PasswordUIPlugin",
         events: {
             'click': 'click'

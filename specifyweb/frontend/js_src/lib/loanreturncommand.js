@@ -1,13 +1,12 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
 
-var UICmd            = require('./uicommand.js');
-var PrepReturnDialog = require('./prepreturndialog.js');
-const formsText = require('./localization/forms').default;
+import UICmd from './uicommand';
+import PrepReturnDialog from './prepreturndialog';
+import formsText from './localization/forms';
 
-module.exports =  UICmd.extend({
+export default UICmd.extend({
     __name__: "LoanReturnCommand",
     events: {
         'click': 'click'

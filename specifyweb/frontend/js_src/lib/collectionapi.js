@@ -1,10 +1,10 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var assert   = require('./assert.js');
-var whenAll  = require('./whenall.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import assert from './assert';
+import whenAll from './whenall';
 
 
     var Base =  Backbone.Collection.extend({
@@ -168,5 +168,4 @@ var whenAll  = require('./whenall.js');
         }
     });
 
-
-module.exports = collectionapi;
+    export default collectionapi;

@@ -1,24 +1,24 @@
 "use strict";
-require('../css/tree.css');
+import '../css/tree.css';
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema       = require('./schema.js');
-var domain       = require('./domain.js');
-var NotFoundView = require('./notfoundview.js');
-var navigation   = require('./navigation.js');
-var app          = require('./specifyapp.js');
-var querystring  = require('./querystring.js');
-var TreeNodeView = require('./treenodeview.js');
+import schema from './schema';
+import { getTreeDef } from './domain';
+import NotFoundView from './notfoundview';
+import * as navigation from './navigation';
+import * as app from './specifyapp';
+import * as querystring from './querystring';
+import TreeNodeView from './treenodeview';
 
-const contextMenuBuilder = require('./treectxmenu.js');
-const userInfo = require('./userinfo.js');
-const remoteprefs  = require('./remoteprefs.js');
-const cookies = require('./cookies.js');
-const treeText = require('./localization/tree').default;
-const commonText = require('./localization/common').default;
+import contextMenuBuilder from './treectxmenu';
+import userInfo from './userinfo';
+import remoteprefs from './remoteprefs';
+import { readCookie, createCookie, eraseCookie } from './cookies';
+import treeText from './localization/tree';
+import commonText from './localization/common';
 
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
@@ -135,7 +135,7 @@ const commonText = require('./localization/common').default;
         },
         getDefaultConformation: function() {
             //return remoteprefs[this.getDefaultConformPrefName()];
-            return cookies.readCookie(this.getDefaultConformPrefName());
+            return readCookie(this.getDefaultConformPrefName());
         },
         restoreDefaultConformation: function() {
             //so that there are no open nodes that are not open in the default...
@@ -154,10 +154,10 @@ const commonText = require('./localization/common').default;
             var serialized = JSON.stringify(TreeNodeView.conformation(this.roots));
             var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
             //remoteprefs[this.getDefaultConformPrefName()] = encoded;
-            cookies.createCookie(this.getDefaultConformPrefName(), encoded);
+            createCookie(this.getDefaultConformPrefName(), encoded);
         },
         forgetDefaultConformation: function() {
-            cookies.eraseCookie(this.getDefaultConformPrefName());
+            eraseCookie(this.getDefaultConformPrefName());
         },
         search: function(event, ui) {
             this.$('.tree-search').blur();
@@ -228,8 +228,8 @@ const commonText = require('./localization/common').default;
         }
     });
 
-module.exports = function(table) {
-    var getTreeDef = domain.getTreeDef(table);
+export default function(table) {
+    var getTreeDef = getTreeDef(table);
     if (!getTreeDef) {
         app.setCurrentView(new NotFoundView());
         return;

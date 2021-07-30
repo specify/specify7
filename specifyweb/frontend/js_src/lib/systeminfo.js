@@ -1,8 +1,8 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
-var initialContext = require('./initialcontext.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import * as initialContext from './initialcontext';
 
     var systemInfo = {user_agent: window.navigator.userAgent};
 
@@ -22,5 +22,5 @@ var initialContext = require('./initialcontext.js');
         }
     });
 
-module.exports =  systemInfo;
+export default systemInfo;
 

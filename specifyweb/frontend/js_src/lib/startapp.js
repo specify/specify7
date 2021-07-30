@@ -1,26 +1,26 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var businessRules = require('./businessrules.js');
-var errorview = require('./errorview.js');
-var HeaderUI = require('./headerui.js');
-var navigation = require('./navigation.js');
-const commonText = require('./localization/common').default;
+import * as businessRules from './businessrules';
+import { UnhandledErrorView } from './errorview';
+import HeaderUI from './headerui';
+import * as navigation from './navigation';
+import commonText from './localization/common';
 
 var tasks = [
-  require('./welcometask.js'),
-  require('./datatask.js'),
-  require('./querytask.js'),
-  require('./treetask.js'),
-  require('./expresssearchtask.js'),
-  require('./datamodeltask.js'),
-  require('./attachmentstask.js'),
-  require('./wbtask.js'),
-  require('./wbimporttask.js'),
-  require('./wbplantask.js'),
-  require('./appresourcetask.js'),
+  require('./welcometask').default,
+  require('./datatask').default,
+  require('./querytask').default,
+  require('./treetask').default,
+  require('./expresssearchtask').default,
+  require('./datamodeltask').default,
+  require('./attachmentstask').default,
+  require('./wbtask').default,
+  require('./wbimporttask').default,
+  require('./wbplantask').default,
+  require('./appresourcetask').default,
   require('./components/lifemapperwrapper').default,
 ];
 
@@ -47,12 +47,12 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
       });
     return;
   }
-  new errorview.UnhandledErrorView({ jqxhr: jqxhr }).render();
+  new UnhandledErrorView({ jqxhr: jqxhr }).render();
 
   console.log(arguments);
 }
 
-module.exports = function appStart() {
+export default function appStart() {
   console.info('specify app starting');
   // addBasicRoutes(router);
   $(document).ajaxError(handleUnexpectedError);

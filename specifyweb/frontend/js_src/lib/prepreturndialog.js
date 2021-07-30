@@ -1,19 +1,18 @@
 "use strict";
 
-require('../css/prepreturndialog.css');
+import '../css/prepreturndialog.css';
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Backbone = require('./backbone.js');
-const moment = require('moment');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import moment from 'moment';
 
-const schema      = require('./schema.js');
-const fieldFormat = require('./fieldformat.js');
-const userInfo    = require('./userinfo.js');
-const s = require('./stringlocalization.js');
-const QueryCbx = require('./querycbx.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import fieldFormat from './fieldformat';
+import userInfo from './userinfo';
+import * as s from './stringlocalization';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');
@@ -168,7 +167,7 @@ const REMARKSROW = `<tr class="return-remark" style="display:none">
 <td colspan="6"><input type="text" class="return-remark" placeholder="Remarks"></td>
 </tr>`;
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "PrepReturnDialog",
     className: "prepreturndialog table-list-dialog",
     initialize({populateForm, loanpreparations}) {

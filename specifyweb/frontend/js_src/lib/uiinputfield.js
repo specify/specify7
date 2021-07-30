@@ -1,11 +1,10 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-const formsText = require('./localization/forms').default;
+import _ from 'underscore';
+import Backbone from './backbone';
+import formsText from './localization/forms';
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "UIFieldInput",
     events: {
         'change': 'change',

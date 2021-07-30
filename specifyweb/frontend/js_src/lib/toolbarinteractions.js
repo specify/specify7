@@ -1,11 +1,11 @@
 "use strict";
 
-var navigation         = require('./navigation.js');
-var InteractionsDialog = require('./interactionsdialog.js');
-const commonText = require('./localization/common').default;
+import * as navigation from './navigation';
+import InteractionsDialog from './interactionsdialog';
+import commonText from './localization/common';
 
 
-module.exports = {
+export default {
         task: 'interactions',
         title: commonText('interactions'),
         icon: '/static/img/interactions.png',

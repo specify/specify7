@@ -1,11 +1,11 @@
 "use strict";
 
-var navigation = require('./navigation.js');
-var attachments = require('./attachments.js');
+import * as navigation from './navigation';
+import * as attachments from './attachments';
 
-const commonText = require('./localization/common').default;
+import commonText from './localization/common';
 
-module.exports =  {
+export default {
         task: 'attachments',
         title: commonText('attachments'),
         icon: '/static/img/attachment_icon.png',

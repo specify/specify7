@@ -1,14 +1,14 @@
 "use strict";
 
-const $ = require('jquery');
-const Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
-const navigation = require('./navigation.js');
-const userInfo = require('./userinfo.js');
-const queryText = require('./localization/query').default;
-const commonText = require('./localization/common').default;
+import * as navigation from './navigation';
+import userInfo from './userinfo';
+import queryText from './localization/query';
+import commonText from './localization/common';
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "QuerySaveDialog",
     events: {
         'submit': 'doSave'

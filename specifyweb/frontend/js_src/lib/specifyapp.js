@@ -1,21 +1,21 @@
 "use strict";
 
-var $ = require('jquery');
+import $ from 'jquery';
 
 global.jQuery = $;
-require('jquery-contextmenu');
-require('jquery-ui');
+import 'jquery-contextmenu';
+import 'jquery-ui';
 
-var userInfo     = require('./userinfo.js');
-var populateForm = require('./populateform.js');
-var errorview    = require('./errorview.js');
-var NotFoundView = require('./notfoundview.js');
-var navigation   = require('./navigation.js');
-var ResourceView = require('./resourceview.js');
-var router       = require('./router.js');
-var systemInfo   = require('./systeminfo.js');
-var reports      = require('./reports.js');
-const commonText = require('./localization/common').default;
+import userInfo from './userinfo';
+import populateForm from './populateform';
+import { ErrorView } from './errorview';
+import NotFoundView from './notfoundview';
+import * as navigation from './navigation';
+import ResourceView from './resourceview';
+import router from './router';
+import systemInfo from './systeminfo';
+import reports from './reports';
+import commonText from './localization/common';
 
     var currentView;
     var versionMismatchWarned = false;
@@ -50,7 +50,7 @@ const commonText = require('./localization/common').default;
     // gets rid of any backbone view currently showing
     // and replaces it with the rendered view given
     // also manages other niceties involved in changing views
-    function setCurrentView(view) {
+    export function setCurrentView(view) {
         currentView && currentView.remove(); // remove old view
         $('#content').empty();
         $('.ui-autocomplete').remove(); // these are getting left behind sometimes
@@ -78,8 +78,8 @@ const commonText = require('./localization/common').default;
         }
     }
 
-    function handleError(jqxhr) {
-        setCurrentView(new errorview.ErrorView({ request: jqxhr }));
+    export function handleError(jqxhr) {
+        setCurrentView(new ErrorView({ request: jqxhr }));
         jqxhr.errorHandled = true;
     }
 
@@ -96,7 +96,7 @@ function viewSaved(resource, recordSet, options) {
 }
 
     // build and display view for resource
-function showResource(resource, recordSet, pushUrl) {
+export function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
             className: "specify-root-form content-shadow",
@@ -150,18 +150,10 @@ function showResource(resource, recordSet, pushUrl) {
     }
 
     //set title of browser tab
-    function setTitle(title) {
+    export function setTitle(title) {
         window.document.title = commonText('appTitle')(title);
     }
 
     // the exported interface
-    var app = {
-        handleError: handleError,
-        setCurrentView: setCurrentView,
-        showResource: showResource,
-        setTitle: setTitle,
-        getCurrentView: function() { return currentView; }  // a reference to the current view
-    };
-
-module.exports =  app;
+    export function getCurrentView() { return currentView; }  // a reference to the current view
 

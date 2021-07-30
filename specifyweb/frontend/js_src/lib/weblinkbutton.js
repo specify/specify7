@@ -1,13 +1,13 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var api            = require('./specifyapi.js');
-var UIPlugin       = require('./uiplugin.js');
-var icons          = require('./icons.js');
-var UIField        = require('./uifield.js');
-var initialContext = require('./initialcontext.js');
+import api from './specifyapi';
+import UIPlugin from './uiplugin';
+import { getIcon } from './icons';
+import UIField from './uifield';
+import * as initialContext from './initialcontext';
 
     var webLinksDefs = {};
     initialContext.load('app.resource?name=WebLinks', function(xml) {
@@ -26,7 +26,7 @@ var initialContext = require('./initialcontext.js');
         }
     };
 
-module.exports =   UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "WebLinkButton",
         render: function() {
             this.inFormTable = this.$el.hasClass('specify-field-in-table');
@@ -58,7 +58,7 @@ module.exports =   UIPlugin.extend({
 
                 $('<a>', { title: title })
                     .prependTo(this.el)
-                    .append($('<img>', { src: icons.getIcon(this.init.icon || "WebLink") }))
+                    .append($('<img>', { src: getIcon(this.init.icon || "WebLink") }))
                     .button();
             }
 

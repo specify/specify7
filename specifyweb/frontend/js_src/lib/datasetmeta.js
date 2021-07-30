@@ -1,12 +1,12 @@
 import $ from 'jquery';
-import uniquifyName from './wbuniquifyname';
+import { uniquifyDataSetName } from './wbuniquifyname';
 import Backbone from './backbone';
-import app from './specifyapp';
-import { format } from './dataobjformatters';
+import * as app from './specifyapp';
+import dataobjformatters from './dataobjformatters';
 import schema from './schema';
 import resourceApi from './resourceapi';
-import navigation from './navigation';
-import userInfo from './userinfo.js';
+import * as navigation from './navigation';
+import userInfo from './userinfo';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
 
@@ -41,7 +41,7 @@ export const DataSetMeta = Backbone.View.extend({
       const createdByAgentResource = new this.model.Resource({
         id: agentId,
       });
-      format(createdByAgentResource).done(resolve);
+      dataobjformatters.format(createdByAgentResource).done(resolve);
     });
   },
   loadAgentInfo(createdByField, modifiedByField) {
@@ -150,7 +150,7 @@ export const DataSetMeta = Backbone.View.extend({
     )
       callback();
     else {
-      uniquifyName(newName, this.dataset.id).done((uniqueName) => {
+      uniquifyDataSetName(newName, this.dataset.id).done((uniqueName) => {
         $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
           type: 'PUT',
           data: JSON.stringify({ name: uniqueName, remarks: newRemarks }),

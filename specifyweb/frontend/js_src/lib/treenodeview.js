@@ -1,13 +1,13 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
-const Q = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
 
-var schema       = require('./schema.js');
-var remoteprefs  = require('./remoteprefs.js');
-const treeText = require('./localization/tree').default;
+import schema from './schema';
+import remoteprefs from './remoteprefs';
+import treeText from './localization/tree';
 
 var TreeNodeView = Backbone.View.extend({
     __name__: "TreeNodeView",
@@ -269,5 +269,5 @@ var TreeNodeView = Backbone.View.extend({
         return _.invoke(_.where(nodes, {expanded: true}), 'conformation');
     };
 
-module.exports = TreeNodeView;
+export default TreeNodeView;
 

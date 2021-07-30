@@ -1,7 +1,7 @@
-const path = require('path');
-const fs = require('fs');
-const webpack = require("webpack");
-const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
+import path from 'path';
+import fs from 'fs';
+import webpack from "webpack";
+import { WebpackManifestPlugin, getCompilerHooks } from 'webpack-manifest-plugin';
 
 
 function writeIfChanged(compiler, fileName, fileContent){

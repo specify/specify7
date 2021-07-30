@@ -1,12 +1,11 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import Backbone from './backbone';
+import commonText from './localization/common';
 
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "UserTools",
         className: "table-list-dialog",
         events: {

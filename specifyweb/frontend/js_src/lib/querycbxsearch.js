@@ -1,23 +1,22 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var specifyform       = require('./specifyform.js');
-var api               = require('./specifyapi.js');
-var dataobjformatters = require('./dataobjformatters.js');
-var whenAll           = require('./whenall.js');
-var initialContext    = require('./initialcontext.js');
-var resourceapi       = require('./resourceapi.js');
-const commonText = require('./localization/common').default;
+import specifyform from './specifyform';
+import api from './specifyapi';
+import dataobjformatters from './dataobjformatters';
+import whenAll from './whenall';
+import * as initialContext from './initialcontext';
+import commonText from './localization/common';
 
     var dialogdefs;
     initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
 
     function format(obj) { return dataobjformatters.format(obj); }
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "QueryCbxSearch",
         className: "querycbx-dialog-search",
         events: {
