@@ -7,8 +7,6 @@ import Backbone from './backbone';
 
 
 import specifyform from './specifyform';
-import SaveButton from './savebutton';
-import DeleteButton from './deletebutton';
 import assert from './assert';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';

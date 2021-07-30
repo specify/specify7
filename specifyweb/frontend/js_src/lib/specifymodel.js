@@ -7,7 +7,7 @@ import { getIcon } from './icons';
 import schema from './schemabase';
 import ResourceBase from './resourceapi';
 import collectionapi from './collectionapi';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
 
 // The schema config / localization information is loaded dynamically.

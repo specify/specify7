@@ -13,14 +13,14 @@ export default Backbone.View.extend({
         events: {
             'click :submit': 'submit'
         },
-        initialize: function(options) {
+        initialize: function() {
             this.blockingResources = {};
             this.saveBlocked = false;
             this.buttonsDisabled = true;
 
             if (this.model.isNew()) this.setButtonsDisabled(false);
 
-            this.model.on('saverequired changing', function(resource) {
+            this.model.on('saverequired changing', function(_iresource) {
                 this.setButtonsDisabled(false);
             }, this);
 

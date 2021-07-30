@@ -32,7 +32,7 @@ import * as querystring from './querystring';
         };
     }
 
-    function eventHandlerForToMany(related, field) {
+    function eventHandlerForToMany(_related, field) {
         return function(event) {
             var args = _.toArray(arguments);
             switch (event) {
@@ -60,12 +60,12 @@ import * as querystring from './querystring';
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
 
-        constructor: function(attributes, options) {
+        constructor: function(_attributes, options) {
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
         },
-        initialize: function(attributes, options) {
+        initialize: function(attributes) {
             this.noBusinessRules = options && options.noBusinessRules;
             this.noValidation = options && options.noValidation;
 
@@ -76,7 +76,7 @@ import * as querystring from './querystring';
             // the resource needs to be saved if any of its fields change
             // unless they change because the resource is being fetched
             // or updated during a save
-            this.on('change', function(resource, options) {
+            this.on('change', function() {
                 if (!this._fetch && !this._save) {
                     this.needsSaved = true;
                     this.trigger('saverequired');
@@ -484,8 +484,8 @@ import * as querystring from './querystring';
             // fetch and return a deferred.
             return resource.fetch().pipe(function() { return resource; });
         },
-        parse: function(resp) {
-            // since we are putting in data, the resource in now populated
+        parse: function(_resp) {
+            // since we are putting in data, the resourcgfse in now populated
             this.populated = true;
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },

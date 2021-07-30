@@ -36,7 +36,7 @@ var ReportListDialog = Backbone.View.extend({
         'click a.select': 'getReportUI',
         'click a.edit': 'editReport',
     },
-    initialize: function(options) {
+    initialize: function() {
         var appResources = this.options.appResources;
         if (this.options.metaDataFilter) {
             var mdFilter = this.options.metaDataFilter;
@@ -478,7 +478,7 @@ var QueryParamsDialog = Backbone.View.extend({
     }
 });
 
-function runReport(reportResources, recordSetId, fieldUIs) {
+function runReport(reportResources, recordSetId, _fieldUIs) {
     dialog && dialog.dialog('close');
     var query = reportResources.query;
     if (_.isFunction(query.set)) {

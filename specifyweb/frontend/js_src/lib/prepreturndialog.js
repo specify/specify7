@@ -21,7 +21,7 @@ function formatCatNo(catNo) {
 
 function localize(key, fallback) {
     return s.localizeFrom('resources', key, fallback);
-};
+}
 
 const PrepReturnRow = Backbone.View.extend({
     __name__: "PrepReturnRow",
@@ -76,7 +76,7 @@ const PrepReturnRow = Backbone.View.extend({
 
         return this;
     },
-    returnAmountChanged(evt) {
+    returnAmountChanged() {
         const returnUI = this.$(".return-amt");
         const resolveUI = this.$(".resolve-amt");
         // make return <= unresolved
@@ -96,7 +96,7 @@ const PrepReturnRow = Backbone.View.extend({
         this.updateCheckbox();
         this.showHideRemarks();
     },
-    checkChanged(evt) {
+    checkChanged() {
         const value = this.$(':checkbox').prop('checked') ? this.unresolved : 0;
         this.$(".return-amt").val(value);
         this.$(".resolve-amt").val(value);

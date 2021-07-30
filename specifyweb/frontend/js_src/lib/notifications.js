@@ -2,7 +2,6 @@
 import '../css/notifications.css';
 
 import $ from 'jquery';
-import _ from 'underscore';
 import Backbone from './backbone';
 import moment from 'moment';
 import commonText from './localization/common';

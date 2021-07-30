@@ -252,7 +252,7 @@ export default Backbone.View.extend({
         },
         setupDatePartState: function() {
             var select = this.$('.datepart-select').empty();
-            var options = _(['Extract...', 'Full Date', 'Year', 'Month', 'Day']).each(function(datepart) {
+            _(['Extract...', 'Full Date', 'Year', 'Month', 'Day']).each(function(datepart) {
                 $('<option>', {value: datepart}).text(datepart).appendTo(select);
             });
         },
@@ -341,11 +341,18 @@ export default Backbone.View.extend({
 
         // External event handlers.
 
+<<<<<<< HEAD
         valueChanged: function(inputUI, value) {
             const nonNullValue = value ?? '';
             this.value = nonNullValue;
             this.spqueryfield.set('startvalue', nonNullValue);
             console.log('updating value to', nonNullValue);
+=======
+        valueChanged: function(_inputUI, value) {
+            this.value = value;
+            this.spqueryfield.set('startvalue', value);
+            console.log('updating value to', value);
+>>>>>>> 0c9cc659 (Remove unused variables and imports)
         },
         positionChanged: function() {
             var position = this.$el.parent().find('li').index(this.el);

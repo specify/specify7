@@ -44,7 +44,7 @@ import commonText from './localization/common';
 
     var Header = Controls.extend({
         __name__: "RecordSelectorHeader",
-        initialize: function(options) {
+        initialize: function() {
             Controls.prototype.initialize.apply(this, arguments);
             this.recordSelector.collection.on('sync add remove', this.updateCount, this);
         },
@@ -104,7 +104,7 @@ import commonText from './localization/common';
         setOffset: function(val) {
             this.$('.ui-slider').slider('value', val);
         },
-        updateRecordSelector: function(evt, ui) {
+        updateRecordSelector: function(_evt, ui) {
             this.recordSelector.redraw(ui.value);
         },
         hide: function() {

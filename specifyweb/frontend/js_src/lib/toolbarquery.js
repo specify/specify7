@@ -11,7 +11,7 @@ import specifyform from './specifyform';
 import populateform from './populateform';
 import SaveButton from './savebutton';
 import DeleteButton from './deletebutton';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import userInfo from './userinfo';
 import commonText from './localization/common';
 

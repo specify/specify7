@@ -108,7 +108,7 @@ import queryText from './localization/query';
         setValue: function(value) {
             this.updateValues(value.split(','));
         },
-        inputChanged: function(idx, value) {
+        inputChanged: function(_idx, value) {
             if (value == "") return;
             this.$('input').val('');
             this.updateValues(this.values.concat(value));

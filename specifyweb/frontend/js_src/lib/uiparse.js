@@ -1,6 +1,5 @@
 "use strict";
 
-import $ from 'jquery';
 import _ from 'underscore';
 import moment from 'moment';
 import formsText from './localization/forms';
@@ -39,7 +38,7 @@ import dateFormatStr from './dateformat';
             return result;
         },
 
-        "java.lang.Double": function(field, value) {
+        "java.lang.Double": function(_field, value) {
             var result = {
                 isValid: true,
                 value: value,
@@ -57,7 +56,7 @@ import dateFormatStr from './dateformat';
             return (parsers["java.lang.Double"])(field, value);
         },
 
-        "java.lang.Long": function(field, value) {
+        "java.lang.Long": function(_field, value) {
             var result = {
                 isValid: true,
                 value: value,
@@ -116,7 +115,7 @@ import dateFormatStr from './dateformat';
             return (parsers["java.lang.Double"])(field, value);
         },
 
-        "java.sql.Timestamp": function(field, value) {
+        "java.sql.Timestamp": function(_field, value) {
             var parsed = ("" + value).toLowerCase() === "today" ?
                 moment() :
                 moment(value, dateFormatStr(), true);

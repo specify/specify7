@@ -2,8 +2,6 @@
 import $ from 'jquery';
 import Q from 'q';
 import _ from 'underscore';
-import schema from './schema';
-import userInfo from './userinfo';
 
 function addSuffix(name, usedNames) {
     let i = 1, newName;

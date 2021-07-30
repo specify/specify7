@@ -1,7 +1,7 @@
 "use strict";
 
 import reports from './reports';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import commonText from './localization/common';
 
     initialContext.load('report_runner_status.json', status => reports.disable = !status.available);

@@ -187,7 +187,7 @@ export default PrepDialog.extend({
         }
     },
     
-        prepselectKeyDown: function( evt, a, b) {
+        prepselectKeyDown: function( evt) {
             if (isNaN(String.fromCharCode(evt.which))) {
                 if (["ArrowLeft", "ArrowRight"].indexOf(evt.key) == -1) {
                     evt.preventDefault();

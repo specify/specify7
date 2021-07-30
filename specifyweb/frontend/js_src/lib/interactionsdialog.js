@@ -9,7 +9,7 @@ import Q from 'q';
 import schema from './schema';
 import { getIcon } from './icons';
 import specifyform from './specifyform';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import userInfo from './userinfo';
 import InteractionDialog from './interactiondialog';
 import * as s from './stringlocalization';

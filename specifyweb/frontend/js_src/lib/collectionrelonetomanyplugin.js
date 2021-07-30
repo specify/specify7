@@ -29,7 +29,7 @@ export default UIPlugin.extend({
         this.items.remove(toRemove);
         this.$('tr').filter(".sp-rel-plugin-" + this.relType.id)[idx].remove();
     },
-    add: function(evt) {
+    add: function() {
         console.info("add");
         this.openSearch();
     },

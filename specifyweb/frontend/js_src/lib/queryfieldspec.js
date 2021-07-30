@@ -80,7 +80,7 @@ import schema from './schema';
     QueryFieldSpec.fromStringId = function(stringId, isRelationship) {
         var match = STRINGID_RE.exec(stringId);
         var path = match[1].split(',');
-        var tableName = match[2];
+        var _tableName = match[2];
         var fieldName = match[3];
 
         isRelationship && path.pop();

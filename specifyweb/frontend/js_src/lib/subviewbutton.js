@@ -92,7 +92,7 @@ import formsText from './localization/forms';
                     title: self.field.getLocalizedName(),
                     close: function() {
                         $(this).remove(); self.dialog = null;
-                        var fname = self.field.name.toLowerCase();
+                        var _fname = self.field.name.toLowerCase();
                         /*var changed = {};
                         changed[fname] = '';
                         self.collection.related.changed = changed;

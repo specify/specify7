@@ -45,7 +45,7 @@ export default Base.extend({
             Base.prototype.render.apply(this, arguments);
             return this;
         },
-        _render: function(info) {
+        _render: function() {
             this.input.autocomplete({
                     delay: 0,
                     minLength: 0,
@@ -81,11 +81,11 @@ export default Base.extend({
         checkOpen: function() {
             this.wasOpen = this.input.autocomplete('widget').is(':visible');
         },
-        selected: function(event, ui) {
+        selected: function(_event, ui) {
             var value = ui.item.item.value;
             this.model.set(this.info.field.name, value);
         },
-        changed: function(event, ui) {
+        changed: function(_event, ui) {
             if (ui.item) { return; }
 
             if (!this.input.hasClass('specify-required-field') && this.input.val() === '') {

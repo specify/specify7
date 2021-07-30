@@ -9,7 +9,7 @@ import Q from 'q';
 import schema from './schema';
 import { getIcon } from './icons';
 import specifyform from './specifyform';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 

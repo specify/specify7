@@ -23,8 +23,8 @@ import commonText from './localization/common';
     // setup basic routes.
     router
         .route('*whatever', 'notFound', function() {
-            app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('pageNotFound'));
+            setCurrentView(new NotFoundView());
+            setTitle(commonText('pageNotFound'));
         })
         .route('test_error/', 'testError', function() {
             $.get('/api/test_error/');
@@ -107,7 +107,6 @@ export function showResource(resource, recordSet, pushUrl) {
         });
 
         view.on('saved', function(resource, options) {
-            var todoNext;
             if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
                 console.log('generating label or invoice');
                 reports( {
@@ -142,7 +141,7 @@ export function showResource(resource, recordSet, pushUrl) {
                     ]
                 });
             }
-        }).on('changetitle', function(resource, title) {
+        }).on('changetitle', function(_resource, title) {
             setTitle(title);
         });
     pushUrl && navigation.push(resource.viewUrl());

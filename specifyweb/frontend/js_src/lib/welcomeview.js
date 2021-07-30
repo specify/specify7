@@ -17,7 +17,7 @@ import aboutspecify from './templates/aboutspecify.html';
 import welcomeText from './localization/welcome';
 import commonText from './localization/common';
 
-    var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
+    var DO_TAXON_TILES = remotePrefs['sp7.doTaxonTiles'] == "true";
 
     var ACTION = ['Added', 'Modified', 'Deleted'];
 

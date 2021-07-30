@@ -115,7 +115,7 @@ _.extend(schema.Field.prototype, {
 
 // Define a JS object constructor to represent relationship fields of Specify data objects.
 // Extends the Field object.
-schema.Relationship = function(model, relDef) {
+schema.Relationship = function(_model, relDef) {
     schema.Field.apply(this, arguments);
     this.isRelationship = true;
 

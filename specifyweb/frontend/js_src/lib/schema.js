@@ -6,7 +6,7 @@
 
 import schema from './schemabase';
 import extras from './schemaextras';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
 import './specifymodel';
 import './specifyfield';

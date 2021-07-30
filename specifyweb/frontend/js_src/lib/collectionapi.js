@@ -4,7 +4,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 import assert from './assert';
-import whenAll from './whenall';
 
 
     var Base =  Backbone.Collection.extend({
@@ -63,7 +62,7 @@ import whenAll from './whenall';
             assert(_.isArray(models));
             Base.call(this, models, options);
         },
-        initialize: function(models, options) {
+        initialize: function(_models, options) {
             this.on('add remove', function() {
                 this.trigger('saverequired');
             }, this);
@@ -102,7 +101,7 @@ import whenAll from './whenall';
         isComplete: function() {
             return this.length === this._totalCount;
         },
-        parse: function(resp, xhr) {
+        parse: function(resp) {
             var objects;
             if (resp.meta) {
                 this._totalCount = resp.meta.total_count;
@@ -113,7 +112,6 @@ import whenAll from './whenall';
                 objects = resp;
             }
 
-            this.hasData = true;
             return objects;
         },
         fetch: function(options) {
@@ -156,7 +154,7 @@ import whenAll from './whenall';
 
     collectionapi.ToOne = collectionapi.Lazy.extend({
         __name__: "LazyToOneCollectionBase",
-        initialize: function(models, options) {
+        initialize: function(_models, options) {
             setupToOne(this, options);
         },
         fetch: function() {

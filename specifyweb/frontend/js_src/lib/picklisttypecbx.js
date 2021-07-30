@@ -25,7 +25,7 @@ export default Backbone.View.extend({
             this.set();
             return this;
         },
-        set: function(event) {
+        set: function() {
             var val = parseInt(this.$el.val(), 10);
             this.resource.set('type', val);
         }

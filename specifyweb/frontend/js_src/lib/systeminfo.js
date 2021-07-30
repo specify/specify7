@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
     var systemInfo = {user_agent: window.navigator.userAgent};
 

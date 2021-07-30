@@ -17,7 +17,7 @@ import saveblockers from './saveblockers';
 import ToolTipMgr from './tooltipmgr';
 import QueryCbxSearch from './querycbxsearch';
 import QueryFieldSpec from './queryfieldspec';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import { getTreeDef } from './domain';
 import resourceapi from './resourceapi';
 import userInfo from './userinfo';
@@ -274,7 +274,7 @@ export default Backbone.View.extend({
         }
         return null;
     },
-    select: function (event, ui) {
+    select: function (_event, ui) {
         var resource = ui.item.resource;
         this.model.set(this.fieldName, resource);
     },
@@ -375,12 +375,11 @@ export default Backbone.View.extend({
         _.defer(fillIn);
     },
     renderItem: function (resource) {
-        var rget = resource.rget.bind(resource);
         return dataobjformat(resource, this.typesearch.attr('dataobjformatter')).pipe(function(formatted) {
             return { label: formatted, value: formatted, resource: resource };
         });
     },
-    openSearch: function(event, ui) {
+    openSearch: function(event) {
         var self = this;
         event.preventDefault();
 
@@ -524,7 +523,7 @@ export default Backbone.View.extend({
         this.model.set(this.fieldName, null);
         this.fillIn();
     },
-    changeDialogTitle: function(resource, title) {
+    changeDialogTitle: function(_resource, title) {
         this.dialogIsOpen() && this.dialog.dialog('option', 'title', title);
     },
     blur: function() {

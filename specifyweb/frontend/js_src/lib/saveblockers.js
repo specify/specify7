@@ -1,6 +1,5 @@
 "use strict";
 
-import $ from 'jquery';
 import _ from 'underscore';
 
     //TODO: only propagate for dependent resources

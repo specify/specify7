@@ -17,7 +17,7 @@ import remoteprefs from './remoteprefs';
 
     api.on('newresource', function(resource) {
         const domainField = resource.specifyModel.orgRelationship();
-        const parentResource = domainField && domain.getDomainResource(domainField.name);
+        const parentResource = domainField && getDomainResource(domainField.name);
         if (parentResource && !resource.get(domainField.name)) {
             resource.set(domainField.name, parentResource.url());
         }

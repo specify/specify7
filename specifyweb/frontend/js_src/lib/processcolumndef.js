@@ -10,7 +10,7 @@ import template from './templates/formdeftemplate.html';
 export default function(columnDef) {
         return $(template({
             widths: _(columnDef.split(',')).chain()
-                .filter(function(def, ind) { return ind%2 === 0; })
+                .filter(function(_def, ind) { return ind%2 === 0; })
                 .map(function(def) {
                     var width = /(\d+)px/.exec(def);
                     return width && width[1];

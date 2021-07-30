@@ -1,7 +1,6 @@
 "use strict";
 
 import $ from 'jquery';
-import _ from 'underscore';
 import Backbone from './backbone';
 
 import schema from './schema';

@@ -25,7 +25,7 @@ export default Backbone.View.extend({
             this.set();
             return this;
         },
-        set: function(event) {
+        set: function() {
             this.resource.set(this.field, this.$el.val());
         }
     });
