@@ -7,7 +7,7 @@ import formsText from './localization/forms';
 import dateFormatStr from './dateformat';
 
     var parsers = {
-        "java.lang.Boolean": function(field, value) {
+        "java.lang.Boolean": function(_field, value) {
             var result = {value: value, isValid: false};
             switch(value.toLowerCase()) {
             case 'true':

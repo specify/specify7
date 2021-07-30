@@ -229,12 +229,12 @@ import commonText from './localization/common';
     });
 
 export default function(table) {
-    var getTreeDef = getTreeDef(table);
-    if (!getTreeDef) {
+    var treeDef = getTreeDef(table);
+    if (!treeDef) {
         app.setCurrentView(new NotFoundView());
         return;
     }
-    getTreeDef.done(function(treeDef) {
+    treeDef.done(function(treeDef) {
         treeDef.rget('treedefitems').pipe(function (treeDefItems) {
             return treeDefItems.fetch({limit: 0}).pipe(function() { return treeDefItems; });
         }).done(function(treeDefItems) {

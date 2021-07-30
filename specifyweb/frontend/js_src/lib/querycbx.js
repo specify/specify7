@@ -196,12 +196,14 @@ export default Backbone.View.extend({
             }
             if (this.fieldName === 'parent') {
                 //add rank limits
+                let nextRankId;
                 if (treeRanks != null) {
+                    let r;
                     if (this.model.get('rankid')) //original value, not updated with unsaved changes {
-                        var r = _.findIndex(treeRanks, (rank) => {
+                        r = _.findIndex(treeRanks, (rank) => {
                             return rank.rankid == this.model.get('rankid');
                         });
-                    var nextRankId = 0;
+                    nextRankId = 0;
                     if (r && r != -1) {
                         for (var i = r+1; i < treeRanks.length && !treeRanks[i].isenforced; i++);
                         nextRankId = treeRanks[i-1].rankid;

@@ -39,7 +39,7 @@ export default UIPlugin.extend({
             this.$el.append('<form enctype="multipart/form-data"><input type="file" name="file"></form>');
             this.$('input').click();
         },
-        fileSelected: function(evt) {
+        fileSelected: function() {
             var files = this.$(':file').get(0).files;
             if (files.length === 0) return;
             this.startUpload(files[0]);
