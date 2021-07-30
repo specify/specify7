@@ -60,6 +60,10 @@ var userInfo             = require('./userinfo.js');
     var populateSubview = function(resource, node) {
         var fieldName = node.data('specify-field-name');
         var field = resource.specifyModel.getField(fieldName);
+        if (field == null) {
+            console.error("undefined relationship:", resource.specifyModel.name, fieldName);
+            return null;
+        }
         var viewOptions = { el: node, field: field, populateForm: populateForm };
         return resource.rget(fieldName).done(function(related) {
             var View;
