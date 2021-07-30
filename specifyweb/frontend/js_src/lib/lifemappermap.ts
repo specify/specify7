@@ -135,7 +135,6 @@ export async function prepareLifemapperProjectionMap(
           ${lifemapperText('overLimitMessage')(LIMIT)}
         </b>`;
 
-      let currentLocalityId: undefined | number;
       const localities = await Promise.all(
         results.results
           .slice(0, LIMIT)
@@ -146,9 +145,6 @@ export async function prepareLifemapperProjectionMap(
               localityId,
               ...localityData
             ]) => {
-              if (collectionObjectId === model.get('id'))
-                currentLocalityId = localityId;
-
               return {
                 collectionObjectId,
                 collectingEventId,
@@ -182,7 +178,6 @@ export async function prepareLifemapperProjectionMap(
             {
               collectionObjectId,
               collectingEventId,
-              localityId,
               localityData,
               fetchLocalityResource,
             },
@@ -193,7 +188,7 @@ export async function prepareLifemapperProjectionMap(
               : Leaflet.getMarkersFromLocalityData({
                   localityData,
                   iconClass:
-                    localityId === currentLocalityId
+                    collectionObjectId === model.get('id')
                       ? 'lifemapper-current-collection-object-marker'
                       : undefined,
                   markerClickCallback: async ({ target: marker }) => {
