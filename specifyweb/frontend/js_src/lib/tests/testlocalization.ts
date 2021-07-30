@@ -133,15 +133,17 @@ sourceFiles.forEach((fileName) => {
 
   Object.entries(dictionaries).forEach(([dictionaryName, keys]) => {
     const regex = new RegExp(
-      `${dictionaryName}\\s*\\(\\s*["'\`](?<keyName>\\w+)["'\`]\\s*\\)\\s*(?<hasArguments>\\()?`,
+      `${dictionaryName}\\s*\\(\\s*(?<keyName>[^)]+)\\s*\\)\\s*(?<hasArguments>\\()?`,
       'g'
     );
 
     Array.from(fileContent.matchAll(regex)).forEach(({ groups, index }) => {
       if (typeof groups === 'undefined' || typeof index === 'undefined') return;
 
-      const keyName = groups.keyName;
       const hasArguments = typeof groups.hasArguments !== 'undefined';
+
+      const paddedKeyName = groups.keyName.trim();
+      const keyName = paddedKeyName.slice(1, -1);
 
       const position = fileContent.slice(
         index - lookAroundLength,
@@ -149,6 +151,22 @@ sourceFiles.forEach((fileName) => {
       );
       const lineNumber = (fileContent.slice(0, index).match(/\n/g) ?? [])
         .length;
+
+      if (
+        !`'"\``.includes(paddedKeyName[0]) ||
+        !paddedKeyName.startsWith(paddedKeyName.slice(-1)[0])
+      ) {
+        error(
+          [
+            `Found invalid key ${dictionaryName}.${paddedKeyName} in ${fileName}\n`,
+            `Key must be a string literal, not a variable or function call.\n`,
+            `\n`,
+            `On line ${lineNumber}:\n`,
+            `${position}`,
+          ].join('')
+        );
+        return;
+      }
 
       if (!(keyName in keys)) {
         error(

@@ -57,7 +57,7 @@ module.exports = RecordSetsDialog.extend({
             } else {
                 return this.options.close ?
                   formsText('recordReturn')(tblTitle):
-                  formsText(createRecord)(tblTitle);
+                  formsText('createRecord')(tblTitle);
             }
         },
         getNoPrepCaption: function() {
