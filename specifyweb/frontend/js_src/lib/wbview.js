@@ -721,7 +721,7 @@ const WBView = Backbone.View.extend({
         // Ignore changes to unmapped columns
         .filter(
           ({ physicalCol }) =>
-            this.mappings.arrayOfMappings.findIndex(
+            this.mappings?.arrayOfMappings.findIndex(
               ({ headerName }) =>
                 this.dataset.columns.indexOf(headerName) === physicalCol
             ) !== -1
