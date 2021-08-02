@@ -215,8 +215,6 @@ module.exports = Backbone.View.extend({
     if (event.key !== 'Enter' && !this.searchPreferences.search.liveUpdate)
       return;
 
-    this.toggleCellTypes('searchResults', 'remove');
-
     const button = event.target;
     const buttonContainer = button.parentElement;
     const navigationContainer =
@@ -235,10 +233,10 @@ module.exports = Backbone.View.extend({
 
     if (this.searchQuery === '') {
       navigationTotalElement.innerText = '0';
+      this.toggleCellTypes('searchResults', 'add');
       return;
     }
 
-    let searchQueryValidationError = undefined;
     if (this.searchPreferences.search.useRegex)
       try {
         RegExp(
@@ -247,16 +245,14 @@ module.exports = Backbone.View.extend({
             : this.searchQuery
         );
       } catch (error) {
-        searchQueryValidationError = error.toString();
+        searchQueryElement.classList.add('wb-search-query-invalid');
+        searchQueryElement.setAttribute('title', error.toString());
+        this.toggleCellTypes('searchResults', 'add');
+        return;
       }
-    if (typeof searchQueryValidationError === 'undefined') {
-      searchQueryElement.classList.remove('wb-search-query-invalid');
-      searchQueryElement.removeAttribute('title');
-    } else {
-      searchQueryElement.classList.add('wb-search-query-invalid');
-      searchQueryElement.setAttribute('title', searchQueryValidationError);
-      return;
-    }
+    searchQueryElement.classList.remove('wb-search-query-invalid');
+    searchQueryElement.removeAttribute('title');
+    this.toggleCellTypes('searchResults', 'remove');
 
     let resultsCount = 0;
     const data = this.wbview.dataset.rows;
