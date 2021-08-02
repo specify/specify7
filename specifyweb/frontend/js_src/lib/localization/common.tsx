@@ -55,6 +55,7 @@ const commonText = createDictionary({
   metadata: 'Metadata',
 
   // Toolbar
+  notifications: (count: number)=>`Notifications: ${count}`,
   attachments: 'Attachments',
   dataEntry: 'Data Entry',
   makeDwca: 'Make DwCA',

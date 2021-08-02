@@ -4,7 +4,7 @@
     color: var(--t1);
 }
 
-#site-notifications:not([disabled]) {
+#site-notifications.unread-notifications {
     color: var(--b1);
     background: var(--accent);
     padding: 4px;
@@ -20,5 +20,5 @@
 }
 
 .notification-message a {
-    color: #f4763d;
+    color: var(--accent);
 }
