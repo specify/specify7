@@ -157,11 +157,10 @@ module.exports = Backbone.View.extend({
     },
     render() {
         this.$el.empty().append(`Notifications: ${this.collection.length}`);
-        if (this.collection.filter(m => !m.get('read')).length > 0) {
-            this.$el.addClass('unread-notifications');
-        } else {
-            this.$el.removeClass('unread-notifications');
-        }
+
+        const hasNotifications = this.collection.filter(m => !m.get('read')).length > 0;
+        this.el.disabled = !hasNotifications;
+
         return this;
     },
     openMessages() {

@@ -1,13 +1,15 @@
 /* notifications.css */
 
-#site-notifications {
-    cursor: pointer;
+#site-notifications[disabled] {
+    color: var(--t1);
 }
 
-#site-notifications.unread-notifications {
-    color: #fff;
-    background: #f4763d;
+#site-notifications:not([disabled]) {
+    color: var(--b1);
+    background: var(--accent);
     padding: 4px;
+    font-weight: bold;
+    border: 1px solid var(--accent-hover);
 }
 
 .notification-message {
@@ -19,8 +21,4 @@
 
 .notification-message a {
     color: #f4763d;
-}
-
-.unread-notification {
-    font-weight: bold;
 }

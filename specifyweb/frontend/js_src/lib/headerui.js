@@ -73,8 +73,8 @@ module.exports = Backbone.View.extend({
             new ExpressSearchInput({el: this.$('#express-search')});
             new NotificationsUI({el: this.$('#site-notifications')});
             if(userInfo.isauthenticated){
-                this.$('#user-tools a.username').text(userInfo.name);
-                this.$('#user-tools a.login').hide();
+                this.$('#user-tools .username').text(userInfo.name);
+                this.$('#user-tools .login').hide();
             }
             else
                 this.$('#user-tools a.login')

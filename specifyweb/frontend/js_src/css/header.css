@@ -144,7 +144,6 @@ nav img {
     max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #000;
 }
 
 #user-tools .collection-selector {
