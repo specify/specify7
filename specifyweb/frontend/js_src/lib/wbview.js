@@ -1834,28 +1834,40 @@ const WBView = Backbone.View.extend({
     );
     this.updateCellInfoStats();
   },
-  resolveValidationColumns(
-    initialColumns,
-    mappingPathFilter,
-    inferColumns = true
-  ) {
-    // See https://github.com/specify/specify7/issues/810
-    let columns = initialColumns.filter((column) => column);
-    if (inferColumns) {
-      if (columns.length === 0)
-        columns = this.mappings.arrayOfMappings
-          .filter(({ mappingPath }) =>
-            mappingPathToString(mappingPath).startsWith(
-              mappingPathToString(mappingPathFilter)
+  getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
+    if (!persevering)
+      return this.mappings.arrayOfMappings
+        .filter(({ mappingPath }) =>
+          mappingPathToString(mappingPath).startsWith(
+            mappingPathToString(mappingPathFilter)
+          )
+        )
+        .map(({ headerName }) => headerName);
+    let columns;
+    mappingPathFilter.some((_, index) => {
+      columns = this.mappings.arrayOfMappings
+        .filter(({ mappingPath }) =>
+          mappingPathToString(mappingPath).startsWith(
+            mappingPathToString(
+              mappingPath.slice(0, index === 0 ? undefined : -1 * index)
             )
           )
-          .map(({ headerName }) => headerName);
-      if (columns.length === 0)
-        columns = this.mappings.arrayOfMappings.map(
-          ({ headerName }) => headerName
-        );
-      if (columns.length === 0) columns = this.dataset.columns;
-    }
+        )
+        .map(({ headerName }) => headerName);
+      return columns.length !== 0;
+    });
+    if (columns.length === 0)
+      columns = this.mappings.arrayOfMappings.map(
+        ({ headerName }) => headerName
+      );
+    if (columns.length === 0) columns = this.dataset.columns;
+    return columns;
+  },
+  resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
+    // See https://github.com/specify/specify7/issues/810
+    let columns = initialColumns.filter((column) => column);
+    if (typeof inferColumnsCallback === 'function' && columns.length === 0)
+      columns = inferColumnsCallback();
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
       .filter((physicalCol) => physicalCol !== -1);
@@ -1869,22 +1881,14 @@ const WBView = Backbone.View.extend({
       issues: [],
     }));
 
-    const setMeta = (
-      key,
-      value,
-      initialColumns,
-      mappingPathFilter,
-      inferColumns = true
-    ) =>
-      this.resolveValidationColumns(
-        initialColumns,
-        mappingPathFilter,
-        inferColumns
-      ).forEach((physicalCol) => {
-        if (key === 'issues')
-          newRowMeta[physicalCol][key].push(capitalize(value));
-        else newRowMeta[physicalCol][key] = value;
-      });
+    const setMeta = (key, value, columns, inferColumnsCallback) =>
+      this.resolveValidationColumns(columns, inferColumnsCallback).forEach(
+        (physicalCol) => {
+          if (key === 'issues')
+            newRowMeta[physicalCol][key].push(capitalize(value));
+          else newRowMeta[physicalCol][key] = value;
+        }
+      );
 
     if (result) this.parseRowValidationResults(result, setMeta, physicalRow);
 
@@ -1908,6 +1912,11 @@ const WBView = Backbone.View.extend({
       ? [...initialMappingPath, formatTreeRank(statusData.info.treeInfo.rank)]
       : initialMappingPath;
 
+    const resolveColumns = this.getHeadersFromMappingPath.bind(
+      this,
+      mappingPath
+    );
+
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
       statusData.failures.forEach(([issue, column]) =>
@@ -1918,23 +1927,23 @@ const WBView = Backbone.View.extend({
         'issues',
         wbText('noMatchErrorMessage'),
         statusData.info.columns,
-        mappingPath
+        resolveColumns
       );
     else if (uploadStatus === 'FailedBusinessRule')
       setMetaCallback(
         'issues',
         statusData.message,
         statusData.info.columns,
-        mappingPath
+        resolveColumns
       );
     else if (uploadStatus === 'MatchedMultiple') {
       this.uploadResults.ambiguousMatches[physicalRow] ??= [];
       this.uploadResults.ambiguousMatches[physicalRow].push({
         physicalCols: this.resolveValidationColumns(
           statusData.info.columns,
-          mappingPath
+          resolveColumns
         ),
-        mappingPath,
+        resolveColumns,
         ids: statusData.ids,
         key: statusData.key,
       });
@@ -1942,32 +1951,26 @@ const WBView = Backbone.View.extend({
         'issues',
         wbText('matchedMultipleErrorMessage'),
         statusData.info.columns,
-        mappingPath
+        resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback(
-        'isNew',
-        true,
-        statusData.info.columns,
-        mappingPath,
-        false
-      );
+      setMetaCallback('isNew', true, statusData.info.columns);
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
       this.uploadResults.newRecords[physicalRow] ??= {};
-      this.resolveValidationColumns(statusData.info.columns, mappingPath).map(
-        (physicalCol) => {
-          this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
-          this.uploadResults.newRecords[physicalRow][physicalCol].push([
-            tableName,
-            statusData.id,
-            statusData.info?.treeInfo
-              ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
-              : '',
-          ]);
-        }
-      );
+      this.resolveValidationColumns(statusData.info.columns, () =>
+        resolveColumns(false)
+      ).map((physicalCol) => {
+        this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
+        this.uploadResults.newRecords[physicalRow][physicalCol].push([
+          tableName,
+          statusData.id,
+          statusData.info?.treeInfo
+            ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
+            : '',
+        ]);
+      });
     } else
       throw new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
