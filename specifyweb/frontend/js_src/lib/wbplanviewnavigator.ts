@@ -568,11 +568,9 @@ export function getMappingLineData({
     navigatorInstancePre({ tableName }) {
       internalState.isOpen =
         openSelectElement?.index === internalState.mappingPathPosition + 1 ||
-        [
-          'OPENED_LIST',
-          'BASE_TABLE_SELECTION_LIST',
-          'MAPPING_OPTION_LINE_LIST',
-        ].includes(internalState.customSelectType);
+        ['OPENED_LIST', 'BASE_TABLE_SELECTION_LIST'].includes(
+          internalState.customSelectType
+        );
 
       internalState.customSelectSubtype = 'simple';
 

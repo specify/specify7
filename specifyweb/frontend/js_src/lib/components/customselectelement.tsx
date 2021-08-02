@@ -20,53 +20,47 @@ import {
 import type { IR, R, RA } from './wbplanview';
 
 export type CustomSelectType =
-  | 'OPENED_LIST'
   /*
    * Used in the mapping view
    * list without an `input` box but with always opened list of options
    * and a table name on top has onChange event
    */
-  | 'CLOSED_LIST'
+  | 'OPENED_LIST'
   /*
    * Used in mapping lines
    * list with an `input` box and a list of options that can be opened
    * has onOpen/onClose and onChange events
    */
-  | 'PREVIEW_LIST'
+  | 'CLOSED_LIST'
   /*
    * Used in the mapping validation results
    * list with an `input` box but with no list of options
    * has no events
    */
-  | 'SUGGESTION_LIST'
+  | 'PREVIEW_LIST'
   /*
    * Used to display a list of AutoMapper suggestions
    * like OPENED_LIST, but without a table name on top
    * has onChange event:
    */
-  | 'SUGGESTION_LINE_LIST'
+  | 'SUGGESTION_LIST'
   /*
    * Used inside `SUGGESTION_LIST` to display a mapping path element for
    * a single suggestion line list with an `input` box but with no list of
    * options has no events:
    */
-  | 'BASE_TABLE_SELECTION_LIST'
+  | 'SUGGESTION_LINE_LIST'
   /*
    * Used for base table selection
    * like OPENED_LIST, but without a header and option group labels
    * has onChange event
    */
-  | 'MAPPING_OPTIONS_LIST'
+  | 'BASE_TABLE_SELECTION_LIST'
   /*
    * Used for configuring mapping options for a mapping line
    * appears as a gear icon at the end of the mapping line
    */
-  | 'MAPPING_OPTION_LINE_LIST';
-/*
- * Used inside of MAPPING_OPTIONS_LIST
- * exactly the same as BASE_TABLE_SELECTION_LIST
- * it is named differently to avoid confusion
- */
+  | 'MAPPING_OPTIONS_LIST';
 
 export type CustomSelectSubtype =
   // For fields and relationships

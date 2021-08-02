@@ -7,8 +7,8 @@
  */
 
 import React from 'react';
-import wbText from '../localization/workbench';
 
+import wbText from '../localization/workbench';
 import type {
   ColumnOptions,
   MatchBehaviors,
@@ -17,15 +17,14 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingActions } from '../wbplanviewreducer';
 import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
-import type { RA } from './wbplanview';
-import type { IR } from './wbplanview';
+import type { IR, RA } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
-import { MappingElement, MappingLineComponent } from './wbplanviewcomponents';
+import { MappingLineComponent } from './wbplanviewcomponents';
 import {
-  ValidationResults,
   MappingsControlPanel,
   MappingView,
   minMappingViewHeight,
+  ValidationResults,
 } from './wbplanviewmappercomponents';
 
 /*
@@ -189,7 +188,7 @@ export default function WbPlanViewMapper(
 
     resizeObserver.observe(mappingViewParentRef.current);
 
-    return () => resizeObserver.disconnect();
+    return (): void => resizeObserver.disconnect();
   }, [mappingViewParentRef.current]);
 
   // Reposition suggestions box if it doesn't fit
@@ -249,7 +248,8 @@ export default function WbPlanViewMapper(
 
   React.useEffect(() => {
     window.addEventListener('resize', repositionSuggestionBox);
-    return () => window.removeEventListener('resize', repositionSuggestionBox);
+    return (): void =>
+      window.removeEventListener('resize', repositionSuggestionBox);
   }, []);
 
   return (
@@ -352,52 +352,44 @@ export default function WbPlanViewMapper(
                 mappingOptionsMenuGenerator: () => ({
                   matchBehavior: {
                     label: (
-                      <label>
-                        Match behavior:
-                        <MappingElement
-                          isOpen={true}
-                          customSelectType="MAPPING_OPTION_LINE_LIST"
-                          handleChange={
-                            (!props.readonly &&
-                              ((matchBehavior): void =>
-                                props.handleChangeMatchBehaviorAction(
-                                  index,
-                                  matchBehavior as MatchBehaviors
-                                ))) ||
-                            undefined
-                          }
-                          fieldsData={{
+                      <>
+                        {wbText('matchBehavior')}
+                        <ul style={{ padding: 0, margin: 0 }}>
+                          {Object.entries({
                             ignoreWhenBlank: {
-                              label: wbText('ignoreWhenBlank'),
-                              title: wbText('ignoreWhenBlankDescription'),
-                              isEnabled: true,
-                              isRequired: false,
-                              isHidden: false,
-                              isDefault:
-                                columnOptions.matchBehavior ===
-                                'ignoreWhenBlank',
+                              title: wbText('ignoreWhenBlank'),
+                              description: wbText('ignoreWhenBlankDescription'),
                             },
                             ignoreAlways: {
-                              label: wbText('ignoreAlways'),
-                              title: wbText('ignoreAlwaysDescription'),
-                              isEnabled: true,
-                              isRequired: false,
-                              isHidden: false,
-                              isDefault:
-                                columnOptions.matchBehavior === 'ignoreAlways',
+                              title: wbText('ignoreAlways'),
+                              description: wbText('ignoreAlwaysDescription'),
                             },
                             ignoreNever: {
-                              label: wbText('ignoreNever'),
-                              title: wbText('ignoreNeverDescription'),
-                              isEnabled: true,
-                              isRequired: false,
-                              isHidden: false,
-                              isDefault:
-                                columnOptions.matchBehavior === 'ignoreNever',
+                              title: wbText('ignoreNever'),
+                              description: wbText('ignoreNeverDescription'),
                             },
-                          }}
-                        />
-                      </label>
+                          }).map(([id, { title, description }]) => (
+                            <li key={id}>
+                              <label title={description}>
+                                <input
+                                  type="radio"
+                                  name="match-behavior"
+                                  value={id}
+                                  checked={columnOptions.matchBehavior === id}
+                                  readOnly={props.readonly}
+                                  onChange={({ target }): void =>
+                                    props.handleChangeMatchBehaviorAction(
+                                      index,
+                                      target.value as MatchBehaviors
+                                    )
+                                  }
+                                />
+                                {` ${title}`}
+                              </label>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
                     ),
                   },
                   nullAllowed: {

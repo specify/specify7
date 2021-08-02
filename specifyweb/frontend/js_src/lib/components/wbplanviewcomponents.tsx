@@ -340,8 +340,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
                 props.customSelectSubtype === 'tree' ||
                 props.customSelectSubtype === 'toMany' ||
                 props.customSelectType === 'BASE_TABLE_SELECTION_LIST' ||
-                props.customSelectType === 'MAPPING_OPTIONS_LIST' ||
-                props.customSelectType === 'MAPPING_OPTION_LINE_LIST'
+                props.customSelectType === 'MAPPING_OPTIONS_LIST'
                   ? undefined
                   : fieldGroupLabels[groupName],
               selectOptionsData: groupFields,
