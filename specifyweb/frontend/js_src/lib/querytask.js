@@ -257,13 +257,17 @@ const commonText = require('./localization/common').default;
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
                 $.post(postUrl, JSON.stringify(this.query));
-                $(`<div>
+                const dialog = $(`<div>
                     ${queryText('queryExportStartedDialogHeader')}
                     ${queryText('queryExportStartedDialogMessage')(fileDesc)}
                 </div>`).dialog({
                     title: queryText('queryExportStartedDialogTitle'),
                     modal: false,
-                    close: function() { $(this).remove(); }
+                    close: function() { $(this).remove(); },
+                    buttons: [{
+                        text: commonText('close'),
+                        click: ()=>dialog.dialog('close')
+                    }]
                 });
             });
 

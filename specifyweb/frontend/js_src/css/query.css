@@ -1,7 +1,12 @@
 /* query.css */
 
+.query-view {
+    display: flex;
+}
+
 .querybuilder {
-    padding: 10px;
+    width: 100%;
+    padding: var(--size);
     background: #f1f2f2;
     display: flex;
     flex-direction: column;
