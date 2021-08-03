@@ -583,7 +583,10 @@ const WBView = Backbone.View.extend({
 
   // Hooks
   afterRenderer(td, visualRow, visualCol, _prop, _value) {
-    if (typeof this.hot === 'undefined') return;
+    if (typeof this.hot === 'undefined') {
+      td.classList.add('wb-cell-unmapped');
+      return;
+    }
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     if (physicalCol >= this.dataset.columns.length) return;
