@@ -276,7 +276,7 @@ module.exports = Backbone.View.extend({
         const cellData = data[physicalRow][physicalCol] || '';
         const searchValue = cellData
           ? cellData
-          : this.wbview.mappings.defaultValues[physicalCol] ?? '';
+          : this.wbview.mappings?.defaultValues[physicalCol] ?? '';
         const isSearchResult = this.searchFunction(
           this.searchQuery,
           searchValue
@@ -503,7 +503,7 @@ module.exports = Backbone.View.extend({
     };
   },
   findLocalityColumns() {
-    if (this.wbview.dataset.uploadplan === null) return;
+    if (!this.wbview.mappings) return;
 
     this.localityColumns = findLocalityColumnsInDataSet(
       this.wbview.mappings.baseTableName,

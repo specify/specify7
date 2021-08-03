@@ -639,7 +639,7 @@ const WBView = Backbone.View.extend({
     const visualCol = this.hot.propToCol(prop);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
-    return typeof this.mappings.defaultValues[physicalCol] === 'undefined'
+    return typeof this.mappings?.defaultValues[physicalCol] === 'undefined'
       ? value
       : this.mappings.defaultValues[physicalCol];
   },
