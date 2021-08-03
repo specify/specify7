@@ -645,13 +645,14 @@ const WBView = Backbone.View.extend({
   },
 
   // Hooks
-  afterRenderer(td, visualRow, visualCol, _prop, _value) {
+  afterRenderer(td, visualRow, visualCol, prop, _value) {
     if (typeof this.hot === 'undefined') {
       td.classList.add('wb-cell-unmapped');
       return;
     }
     const physicalRow = this.hot.toPhysicalRow(visualRow);
-    const physicalCol = this.hot.toPhysicalColumn(visualCol);
+    const physicalCol =
+      typeof prop === 'number' ? prop : this.hot.toPhysicalColumn(visualCol);
     if (physicalCol >= this.dataset.columns.length) return;
     const metaArray = this.cellMeta[physicalRow]?.[physicalCol];
     if (this.getCellMetaFromArray(metaArray, 'isModified'))
@@ -783,7 +784,10 @@ const WBView = Backbone.View.extend({
         visualRow,
         visualCol: this.hot.propToCol(prop),
         physicalRow: this.hot.toPhysicalRow(visualRow),
-        physicalCol: this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
+        physicalCol:
+          typeof prop === 'number'
+            ? prop
+            : this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
         oldValue,
         newValue,
       }))
@@ -2023,12 +2027,11 @@ const WBView = Backbone.View.extend({
     let columns = initialColumns.filter((column) => column);
     if (typeof inferColumnsCallback === 'function' && columns.length === 0)
       columns = inferColumnsCallback();
-      if (columns.length === 0)
-
-    // Convert to physicalCol and filter out unknown columns
-    return columns
-      .map((column) => this.dataset.columns.indexOf(column))
-      .filter((physicalCol) => physicalCol !== -1);
+    if (columns.length === 0)
+      // Convert to physicalCol and filter out unknown columns
+      return columns
+        .map((column) => this.dataset.columns.indexOf(column))
+        .filter((physicalCol) => physicalCol !== -1);
   },
   applyRowValidationResults(physicalRow, result) {
     const rowMeta = this.dataset.columns.map(() => ({
