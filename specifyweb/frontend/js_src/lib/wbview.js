@@ -437,6 +437,7 @@ const WBView = Backbone.View.extend({
           afterUndo: this.afterUndo.bind(this),
           afterRedo: this.afterRedo.bind(this),
           beforePaste: this.beforePaste.bind(this),
+          beforeChange: this.beforeChange.bind(this),
           afterChange: this.afterChange.bind(this),
           beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
@@ -702,6 +703,27 @@ const WBView = Backbone.View.extend({
   },
   beforePaste() {
     return !this.uploadedView && !this.isUploaded;
+  },
+  beforeChange(unfilteredChanges, source) {
+    if (source !== 'CopyPaste.paste') return true;
+    /*
+     * This logic shouldn't be put into beforePaste because it receives
+     * arguments that are inconvenient to work with
+     * */
+
+    const filteredChanges = unfilteredChanges.filter(
+      ([, prop]) => prop < this.dataset.columns.length
+    );
+    if (filteredChanges.length === unfilteredChanges.length) return true;
+    this.hot.setDataAtCell(
+      filteredChanges.map(([visualRow, prop, _oldValue, newValue]) => [
+        visualRow,
+        this.hot.propToCol(prop),
+        newValue,
+      ]),
+      'CopyPaste.paste'
+    );
+    return false;
   },
   afterChange(unfilteredChanges, source) {
     if (
