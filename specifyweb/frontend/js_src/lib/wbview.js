@@ -260,7 +260,7 @@ const WBView = Backbone.View.extend({
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
           columns: Array.from(
-            { length: this.dataset.columns + 1 },
+            { length: this.dataset.columns.length + 1 },
             (_, physicalCol) => ({
               data: physicalCol,
             })
