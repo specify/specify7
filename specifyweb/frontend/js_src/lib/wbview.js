@@ -422,6 +422,7 @@ const WBView = Backbone.View.extend({
           readOnly: this.isUploaded,
           afterUndo: this.afterUndo.bind(this),
           afterRedo: this.afterRedo.bind(this),
+          beforePaste: this.beforePaste.bind(this),
           afterChange: this.afterChange.bind(this),
           beforeValidate: this.beforeValidate.bind(this),
           afterValidate: this.afterValidate.bind(this),
@@ -684,6 +685,9 @@ const WBView = Backbone.View.extend({
         this.afterChangeDisambiguation(physicalRow);
       }, 0);
     else this.afterChangeDisambiguation(physicalRow);
+  },
+  beforePaste(){
+    return !this.uploadedView && !this.isUploaded;
   },
   afterChange(unfilteredChanges, source) {
     if (
