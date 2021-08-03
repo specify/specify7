@@ -259,9 +259,12 @@ const WBView = Backbone.View.extend({
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
-          columns: this.dataset.columns.map((_, physicalCol) => ({
-            data: physicalCol,
-          })),
+          columns: Array.from(
+            { length: this.dataset.columns + 1 },
+            (_, physicalCol) => ({
+              data: physicalCol,
+            })
+          ),
           colHeaders: (physicalCol) => {
             const tableIcon = this.mappings?.mappedHeaders?.[physicalCol];
             const isMapped = typeof tableIcon !== 'undefined';
@@ -294,7 +297,7 @@ const WBView = Backbone.View.extend({
             copyPasteEnabled: false,
           },
           hiddenRows: {
-            columns: [],
+            rows: [],
             indicators: false,
             copyPasteEnabled: false,
           },
@@ -686,7 +689,7 @@ const WBView = Backbone.View.extend({
       }, 0);
     else this.afterChangeDisambiguation(physicalRow);
   },
-  beforePaste(){
+  beforePaste() {
     return !this.uploadedView && !this.isUploaded;
   },
   afterChange(unfilteredChanges, source) {
@@ -704,7 +707,7 @@ const WBView = Backbone.View.extend({
 
     const changes = unfilteredChanges
       .map(([visualRow, prop, oldValue, newValue]) => ({
-        visualRow: visualRow,
+        visualRow,
         visualCol: this.hot.propToCol(prop),
         physicalRow: this.hot.toPhysicalRow(visualRow),
         physicalCol: this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
