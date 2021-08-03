@@ -1943,7 +1943,7 @@ const WBView = Backbone.View.extend({
           statusData.info.columns,
           resolveColumns
         ),
-        resolveColumns,
+        mappingPath,
         ids: statusData.ids,
         key: statusData.key,
       });
