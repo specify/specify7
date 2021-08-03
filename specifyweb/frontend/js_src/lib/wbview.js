@@ -386,8 +386,19 @@ const WBView = Backbone.View.extend({
                       this.uploadedView || this.coordinateConverterView,
                   },
                   remove_row: {
-                    disabled: () =>
-                      this.uploadedView || this.coordinateConverterView,
+                    disabled: () => {
+                      // If readonly
+                      if (this.uploadedView || this.coordinateConverterView)
+                        return true;
+                      // or if called on the last row
+                      const selectedRegions = this.wbutils.getSelectedRegions();
+                      return (
+                        selectedRegions.length === 1 &&
+                        selectedRegions[0].startRow === this.data.length - 1 &&
+                        selectedRegions[0].startRow ===
+                          selectedRegions[0].endRow
+                      );
+                    },
                   },
                   disambiguate: {
                     name: wbText('disambiguate'),
