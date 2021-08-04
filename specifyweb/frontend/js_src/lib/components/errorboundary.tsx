@@ -7,8 +7,8 @@
  */
 
 import React from 'react';
-import commonText from '../localization/common';
 
+import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import { ModalDialog } from './modaldialog';
 
@@ -51,6 +51,7 @@ export default class ErrorBoundary extends React.Component<
         <ModalDialog
           properties={{
             title: commonText('errorBoundaryDialogTitle'),
+            width: 500,
             dialogClass: 'ui-dialog-no-close',
             buttons: [
               {

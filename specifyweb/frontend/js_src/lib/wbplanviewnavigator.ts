@@ -24,6 +24,7 @@ import type {
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import commonText from './localization/common';
 import wbText from './localization/workbench';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
@@ -465,13 +466,14 @@ export function getMappingLineData({
   readonly showHiddenFields?: boolean;
   readonly handleChange?: (
     index: number,
+    close: boolean,
     newValue: string,
     isRelationship: boolean,
     currentTable: string,
     newTable: string
   ) => void;
   readonly handleOpen?: (index: number) => void;
-  readonly handleClose?: (index: number) => void;
+  readonly handleClose?: () => void;
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
   readonly getMappedFields?: GetMappedFieldsBind;
   readonly automapperSuggestions?: RA<AutomapperSuggestion>;
@@ -627,7 +629,7 @@ export function getMappingLineData({
         const mappedObjectName = formatReferenceItem(index);
 
         internalState.resultFields[mappedObjectName] = {
-          label: mappedObjectName,
+          optionLabel: mappedObjectName,
           isEnabled: true,
           isRequired: false,
           isHidden: false,
@@ -648,7 +650,7 @@ export function getMappingLineData({
         ]?.includes(internalState.currentMappingPathPart ?? '')
       )
         internalState.resultFields.add = {
-          label: 'Add',
+          optionLabel: commonText('add'),
           isEnabled: true,
           isRequired: false,
           isHidden: false,
@@ -666,7 +668,7 @@ export function getMappingLineData({
         Object.entries(tableRanks).map(([rankName, { isRequired, title }]) => [
           formatTreeRank(rankName),
           {
-            label: title,
+            optionLabel: title,
             isEnabled: true,
             isRequired: isRequired && !mustMatchPreferences[tableName],
             isHidden: false,
@@ -730,7 +732,7 @@ export function getMappingLineData({
             ]) => [
               fieldName,
               {
-                label,
+                optionLabel: label,
                 // Enable field
                 isEnabled:
                   // If it is not mapped
@@ -795,7 +797,7 @@ export function getMappingLineData({
               customSelectType: 'MAPPING_OPTIONS_LIST',
               customSelectSubtype: 'simple',
               fieldsData: mappingOptionsMenuGenerator!(),
-              defaultOption: {
+              previewOption: {
                 optionName: 'mappingOptions',
                 optionLabel: '⚙',
                 tableName: '',

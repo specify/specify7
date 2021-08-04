@@ -214,6 +214,7 @@ const commonText = require('./localization/common').default;
                     type="button"
                     class="tree-conform-forget"
                     tabindex="4"
+                    title="${treeText('forgetButtonDescription')}"
                 >${treeText('forget')}</button>`);
         },
         applyConformation: function(encoded) {

@@ -185,6 +185,8 @@
   grid-template-columns: var(--double-size) max-content auto;
   grid-auto-rows: max-content;
   overflow-x: hidden;
+  padding: 0;
+  list-style: none;
 }
 
 .wbplanview-mapping-line {
@@ -254,12 +256,12 @@
   column-gap: var(--half-size);
 }
 
-.matching-logic-dialog [role="rowgroup"],
-.matching-logic-dialog [role="row"] {
+.matching-logic-dialog [role='rowgroup'],
+.matching-logic-dialog [role='row'] {
   display: contents;
 }
 
-.matching-logic-dialog [role="rowgroup"]:first-child {
+.matching-logic-dialog [role='rowgroup']:first-child {
   font-weight: 800;
 }
 
@@ -267,6 +269,12 @@
   column-gap: var(--half-size);
 }
 
+/* FOOTER */
+.wbplanview-control-panel {
+  display: flex;
+  align-items: center;
+  column-gap: var(--half-size);
+}
 
 @media print {
   .wbplanview-mapping-line-controls,

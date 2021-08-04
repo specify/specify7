@@ -67,12 +67,9 @@ export default createBackboneView<
 >({
   moduleName: 'WbPlanView',
   title: (self) => self.dataset.name,
-  className: 'wb-plan-view content-no-shadow',
+  className: 'wbplanview content-no-shadow',
   initialize(self, { dataset }) {
     self.dataset = dataset;
-  },
-  renderPre(self) {
-    self.el.classList.add('wbplanview');
   },
   remove(self) {
     removeUnloadProtect(self);

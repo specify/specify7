@@ -26,9 +26,7 @@ function TableResults({
 }): JSX.Element {
   return (
     <div className="wb-uploaded-view-line">
-      <TableIcon
-        tableName={tableName.toLowerCase()}
-      />
+      <TableIcon tableName={tableName.toLowerCase()} />
       <span>
         {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
       </span>
@@ -71,13 +69,12 @@ function WbUploadedView({
 
 export default createBackboneView<Props, ConstructorProps, Props>({
   moduleName: 'WBUploadedView',
-  className: 'wb-uploaded',
+  className: 'wb-uploaded-view',
   initialize(self, { recordCounts, onClose, isUploaded }) {
     self.recordCounts = recordCounts;
     self.onClose = onClose;
     self.isUploaded = isUploaded;
   },
-  renderPre: (self) => self.el.classList.add('wb-uploaded-view'),
   Component: WbUploadedView,
   getComponentProps: (self) => ({
     recordCounts: self.recordCounts,
