@@ -268,7 +268,6 @@ export const stateReducer = generateReducer<
               ) : (
                 <>
                   <ButtonWithConfirmation
-                    role="menuitem"
                     dialogTitle={wbText('goToBaseTableDialogTitle')}
                     dialogContent={
                       <>
@@ -295,7 +294,6 @@ export const stateReducer = generateReducer<
                     {wbText('baseTable')}
                   </ButtonWithConfirmation>
                   <button
-                    role="menuitem"
                     aria-haspopup="dialog"
                     className="magic-button"
                     type="button"
@@ -308,7 +306,6 @@ export const stateReducer = generateReducer<
                     {wbText('clearMappings')}
                   </button>
                   <ButtonWithConfirmation
-                    role="menuitem"
                     dialogTitle={wbText('reRunAutoMapperDialogTitle')}
                     dialogContent={
                       <>
@@ -351,7 +348,6 @@ export const stateReducer = generateReducer<
               <>
                 <button
                   type="button"
-                  role="menuitem"
                   className={`magic-button ${
                     state.showMappingView ? '' : 'active'
                   }`}
@@ -367,7 +363,6 @@ export const stateReducer = generateReducer<
                     : wbText('showMappingEditor')}
                 </button>
                 <button
-                  role="menuitem"
                   aria-haspopup="dialog"
                   type="button"
                   className="magic-button"
@@ -398,7 +393,6 @@ export const stateReducer = generateReducer<
                   </>
                 )}
                 <button
-                  role="menuitem"
                   type="button"
                   aria-haspopup="dialog"
                   className="magic-button"
@@ -415,7 +409,6 @@ export const stateReducer = generateReducer<
                 </button>
                 {!state.props.readonly && (
                   <button
-                    role="menuitem"
                     type="button"
                     className="magic-button"
                     disabled={!state.changesMade}
