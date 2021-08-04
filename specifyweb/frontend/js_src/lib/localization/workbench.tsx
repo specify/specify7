@@ -6,10 +6,13 @@ import { createDictionary, createHeader, createJsxHeader } from './utils';
 
 const wbText = createDictionary({
   // Buttons
-  rollback: 'Roll back',
+  rollback: 'Roll Back',
   validate: 'Validate',
   validation: 'Validation',
   upload: 'Upload',
+  rollingBack: 'Rolling Back',
+  uploading: 'Uploading',
+  validating: 'Validating',
   results: 'Results',
   disambiguate: 'Disambiguate',
   fillDown: 'Fill Down',
@@ -28,6 +31,7 @@ const wbText = createDictionary({
   modifiedCells: 'Modified Cells',
   newCells: 'New Cells',
   errorCells: 'Error Cells',
+  dataEditor: 'Data Editor',
 
   // Dialogs
   dataSetLoadingDialogTitle: 'Loading',
@@ -331,7 +335,7 @@ const wbText = createDictionary({
     operationName: string,
     current: number,
     total: number
-  ) => `${operationName} Row: ${current}/${total}`,
+  ) => `${operationName} row ${current}/${total}`,
   wbStatusPendingDialogMessage: function wbStatusPendingDialogMessage(
     operationName: string
   ) {

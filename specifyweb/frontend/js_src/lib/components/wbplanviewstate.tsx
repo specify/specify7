@@ -397,7 +397,7 @@ export const stateReducer = generateReducer<
                   }}
                 >
                   {state.props.readonly
-                    ? commonText('back')
+                    ? wbText('dataEditor')
                     : commonText('cancel')}
                 </button>
                 {!state.props.readonly && (

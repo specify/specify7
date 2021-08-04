@@ -116,6 +116,12 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
     unuploading: wbText('rollback'),
   }[state.status.uploaderstatus.operation];
 
+  const standartalizedOperation = {
+    validating: wbText('validating'),
+    uploading: wbText('uploading'),
+    unuploading: wbText('rollingBack'),
+  }[state.status.uploaderstatus.operation];
+
   if (state.aborted === 'failed')
     return (
       <ModalDialog
@@ -149,7 +155,7 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
           : wbText('wbStatusOperationNoProgress')(mappedOperation);
     else
       message = wbText('wbStatusOperationProgress')(
-        mappedOperation,
+        standartalizedOperation,
         current,
         total
       );

@@ -15,7 +15,6 @@ const commonText = createDictionary({
     ${collectionName} collection.`,
 
   no: 'No',
-  back: 'Back',
   cancel: 'Cancel',
   create: 'Create',
   close: 'Close',
@@ -55,7 +54,7 @@ const commonText = createDictionary({
   metadata: 'Metadata',
 
   // Toolbar
-  notifications: (count: number)=>`Notifications: ${count}`,
+  notifications: (count: number) => `Notifications: ${count}`,
   attachments: 'Attachments',
   dataEntry: 'Data Entry',
   makeDwca: 'Make DwCA',
