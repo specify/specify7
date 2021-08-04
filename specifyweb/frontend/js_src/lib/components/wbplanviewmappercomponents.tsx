@@ -1,6 +1,6 @@
 import React from 'react';
-import wbText from '../localization/workbench';
 
+import wbText from '../localization/workbench';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import { closeDialog, ModalDialog } from './modaldialog';
@@ -18,7 +18,7 @@ export type PathIsMappedBind = (
   mappingPathFilter: MappingPath
 ) => boolean;
 
-export const MappingsControlPanel = React.memo(function MappingsControlPanel({
+export function MappingsControlPanel({
   showHiddenFields,
   onToggleHiddenFields: handleToggleHiddenFields,
   onAddNewHeader: handleAddNewHeader,
@@ -28,11 +28,15 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
   readonly onToggleHiddenFields?: () => void;
   readonly onAddNewHeader?: () => void;
   readonly readonly: boolean;
-}) {
+}): JSX.Element {
   return (
     <div role="toolbar" className="wbplanview-control-panel">
       {!readonly && (
-        <button className="magic-button" onClick={handleAddNewHeader}>
+        <button
+          type="button"
+          className="magic-button"
+          onClick={handleAddNewHeader}
+        >
           {wbText('addNewColumn')}
         </button>
       )}
@@ -47,7 +51,7 @@ export const MappingsControlPanel = React.memo(function MappingsControlPanel({
       </label>
     </div>
   );
-});
+}
 
 export function ValidationResults(props: {
   readonly baseTableName: string;
@@ -118,6 +122,7 @@ export function MappingView(props: {
   readonly handleMapButtonClick?: () => void;
   readonly handleMappingViewChange?: (
     index: number,
+    close: boolean,
     newValue: string,
     isRelationship: boolean,
     currentTable: string,
@@ -173,6 +178,7 @@ export function MappingView(props: {
         <MappingPathComponent mappingLineData={mappingLineData} />
       </div>
       <button
+        type="button"
         className="v-center magic-button wbplanview-mapping-view-map-button"
         disabled={!mapButtonIsEnabled || !props.focusedLineExists}
         onClick={

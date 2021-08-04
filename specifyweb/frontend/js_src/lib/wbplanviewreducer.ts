@@ -147,12 +147,13 @@ type CloseSelectElementAction = Action<'CloseSelectElementAction'>;
 export type ChangeSelectElementValueAction = Action<
   'ChangeSelectElementValueAction',
   {
-    readonly value: string;
-    readonly isRelationship: boolean;
     readonly line: number | 'mappingView';
     readonly index: number;
-    readonly currentTableName: string;
+    readonly close: boolean;
+    readonly value: string;
+    readonly isRelationship: boolean;
     readonly newTableName: string;
+    readonly currentTableName: string;
   }
 >;
 
@@ -468,7 +469,9 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
         }),
         mappingState(state).openSelectElement?.line ?? false
       ),
-      openSelectElement: undefined,
+      openSelectElement: action.close
+        ? undefined
+        : mappingState(state).openSelectElement,
       automapperSuggestionsPromise: undefined,
       automapperSuggestions: undefined,
       changesMade: true,

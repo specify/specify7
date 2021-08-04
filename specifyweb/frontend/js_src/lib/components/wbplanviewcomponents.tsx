@@ -6,26 +6,21 @@
  */
 
 import React from 'react';
-import wbText from '../localization/workbench';
 
+import wbText from '../localization/workbench';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import type {
-  CustomSelectElementDefaultOptionProps,
   CustomSelectElementOptions,
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { IR, RA } from './wbplanview';
-import type {
-  AutomapperSuggestion,
-  MappingType,
-  SelectElementPosition,
-} from './wbplanviewmapper';
+import type { IR, R, RA } from './wbplanview';
+import type { AutomapperSuggestion, MappingType } from './wbplanviewmapper';
 
 export interface HtmlGeneratorFieldData {
-  readonly label: string | JSX.Element;
+  readonly optionLabel: string | JSX.Element;
   readonly title?: string;
   readonly isEnabled?: boolean;
   readonly isRequired?: boolean;
@@ -40,8 +35,9 @@ interface MappingLineBaseProps {
   readonly mappingType: MappingType;
   readonly headerName: string;
   readonly isFocused: boolean;
-  readonly handleFocus: () => void;
-  readonly handleClearMapping: () => void;
+  readonly onFocus: () => void;
+  readonly onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  readonly onClearMapping: () => void;
   readonly readonly: boolean;
 }
 
@@ -49,34 +45,34 @@ export interface MappingPathProps {
   readonly mappingLineData: RA<MappingElementProps>;
 }
 
-type HtmlGeneratorFieldsData = IR<HtmlGeneratorFieldData>;
-
-export type MappingElementProps =
-  | (Omit<CustomSelectElementPropsOpenBase, 'automapperSuggestions'> & {
-      readonly fieldsData: HtmlGeneratorFieldsData;
+export type MappingElementProps = {
+  readonly fieldsData: IR<HtmlGeneratorFieldData>;
+} & (
+  | (Omit<
+      CustomSelectElementPropsOpenBase,
+      'onFocusAutomapper' | 'automapperSuggestions'
+    > & {
       readonly automapperSuggestions?: RA<AutomapperSuggestion>;
       readonly handleAutomapperSuggestionSelection?: (
         suggestion: string
       ) => void;
     })
-  | (Omit<CustomSelectElementPropsClosed, 'fieldNames'> & {
-      readonly fieldsData: HtmlGeneratorFieldsData;
-    });
+  | Omit<CustomSelectElementPropsClosed, 'onFocusAutomapper' | 'fieldNames'>
+);
 
-export const ListOfBaseTables = React.memo(function ListOfBaseTables({
+export function ListOfBaseTables({
   listOfTables,
   handleChange,
   showHiddenTables,
 }: {
   readonly listOfTables: DataModelListOfTables;
-  readonly handleChange: (newValue: string, isRelationship: boolean) => void;
+  readonly handleChange: (newValue: string) => void;
   readonly showHiddenTables: boolean;
-}) {
+}): JSX.Element {
   return (
     <MappingElement
       isOpen={true}
-      handleChange={handleChange}
-      selectLabel=""
+      handleChange={(_close, newValue): void => handleChange(newValue)}
       fieldsData={Object.fromEntries(
         (showHiddenTables
           ? Object.entries(listOfTables)
@@ -84,7 +80,7 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
         ).map(([tableName, { label, isHidden }]) => [
           tableName,
           {
-            label: label,
+            optionLabel: label,
             tableName,
             isRelationship: true,
             isHidden,
@@ -95,7 +91,7 @@ export const ListOfBaseTables = React.memo(function ListOfBaseTables({
       customSelectSubtype="simple"
     />
   );
-});
+}
 
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
@@ -187,9 +183,17 @@ export function MappingLineComponent({
   headerName,
   readonly,
   isFocused,
-  handleFocus,
-  handleClearMapping,
+  onFocus: handleFocus,
+  onKeyDown: handleKeyDown,
+  onClearMapping: handleClearMapping,
 }: MappingLineBaseProps): JSX.Element {
+  const lineRef = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    if (isFocused && !lineRef.current?.contains(document.activeElement))
+      lineRef.current?.focus();
+  }, [isFocused]);
+
   return (
     <li
       className={`wbplanview-mapping-line ${
@@ -199,8 +203,6 @@ export function MappingLineComponent({
       }`}
       aria-label={headerName}
       aria-current={isFocused}
-      onClick={handleFocus}
-      onFocus={handleFocus}
     >
       <div className="wbplanview-mapping-line-controls">
         <button
@@ -218,8 +220,11 @@ export function MappingLineComponent({
       </div>
       <div
         className="v-center wbplanview-mapping-line-elements"
-        aria-orientation="horizontal"
         role="list"
+        tabIndex={0}
+        onClick={handleFocus}
+        onKeyDown={handleKeyDown}
+        ref={lineRef}
       >
         <MappingPathComponent mappingLineData={lineData} />
       </div>
@@ -229,14 +234,12 @@ export function MappingLineComponent({
 
 export function MappingPathComponent({
   mappingLineData,
-}: MappingPathProps & {
-  readonly openSelectElement?: SelectElementPosition;
-}): JSX.Element {
+}: MappingPathProps): JSX.Element {
   return (
     <>
       {mappingLineData.map((mappingDetails, index) => (
         <React.Fragment key={index}>
-          <MappingElement {...mappingDetails} />
+          <MappingElement {...mappingDetails} role="listitem" />
           {index + 1 !== mappingLineData.length &&
             mappingLineData[index + 1]?.customSelectType !==
               'MAPPING_OPTIONS_LIST' &&
@@ -247,123 +250,57 @@ export function MappingPathComponent({
   );
 }
 
-const fieldGroupLabels: IR<string> = {
-  requiredFields: 'Required Fields',
-  optionalFields: 'Optional Fields',
-  hiddenFields: 'Hidden Fields',
+const fieldGroupLabels = {
+  suggestedMappings: wbText('suggestedMappings'),
+  requiredFields: wbText('requiredFields'),
+  optionalFields: wbText('optionalFields'),
+  hiddenFields: wbText('hiddenFields'),
 } as const;
 
 const MappingElementDivider = (
-  <span className="wbplanview-mapping-line-divider">&#x2192;</span>
+  <span className="wbplanview-mapping-line-divider" aria-hidden={true}>
+    {'→'}
+  </span>
 );
 
-const getFieldGroupName = (isHidden: boolean, isRequired: boolean) =>
+const getFieldGroupName = (isHidden: boolean, isRequired: boolean): string =>
   isHidden ? 'hiddenFields' : isRequired ? 'requiredFields' : 'optionalFields';
 
 export function MappingElement(props: MappingElementProps): JSX.Element {
-  const fieldGroups = Object.fromEntries(
-    Object.keys(fieldGroupLabels).map((fieldGroupLabel) => [
-      fieldGroupLabel,
-      {} as CustomSelectElementOptions,
-    ])
+  const fieldGroups = Object.entries(props.fieldsData).reduce<
+    R<CustomSelectElementOptions>
+  >((fieldGroups, [fieldName, { isRequired, isHidden, ...rest }]) => {
+    const groupName = getFieldGroupName(isHidden ?? false, isRequired ?? false);
+    fieldGroups[groupName] ??= {};
+    fieldGroups[groupName][fieldName] = rest;
+    return fieldGroups;
+  }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
+
+  const customSelectOptionGroups = Object.fromEntries(
+    Object.entries(fieldGroups)
+      .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
+      .map(([groupName, groupFields]) => [
+        groupName,
+        {
+          selectGroupLabel:
+            fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
+          selectOptionsData: groupFields,
+        },
+      ])
   );
-
-  let defaultOption: CustomSelectElementDefaultOptionProps | undefined =
-    undefined;
-
-  const fieldNames: string[] = [];
-
-  Object.entries(props.fieldsData).forEach(
-    ([
-      fieldName,
-      {
-        // Field label
-        label,
-        title,
-        // Whether field is enabled (not mapped yet)
-        isEnabled = true,
-        // Whether field is selected by default
-        isDefault = false,
-        // Table name for this option
-        tableName = '',
-        // Whether this field is relationship, tree rank or reference item
-        isRelationship = false,
-        // Whether this field is required
-        isRequired = false,
-        // Whether this field is hidden
-        isHidden = false,
-      },
-    ]) => {
-      if (isDefault) {
-        if (defaultOption)
-          throw new Error(
-            'Multiple default options cannot be present in the same list'
-          );
-
-        defaultOption = {
-          optionName: fieldName,
-          optionLabel: label,
-          tableName,
-          isRelationship,
-          isRequired,
-          isHidden,
-        };
-      }
-
-      if (props.isOpen)
-        fieldGroups[getFieldGroupName(isHidden, isRequired)][fieldName] = {
-          optionLabel: label,
-          title,
-          isEnabled,
-          isRelationship,
-          isDefault,
-          tableName,
-        };
-      else if (typeof label === 'string') fieldNames.push(label);
-    }
-  );
-
-  defaultOption ??=
-    typeof props.defaultOption == 'undefined'
-      ? {
-          optionName: '0',
-          optionLabel: '0',
-          tableName: '',
-          isRelationship: false,
-          isRequired: false,
-          isHidden: false,
-        }
-      : props.defaultOption;
 
   return props.isOpen ? (
     <CustomSelectElement
       {...props}
-      role="listitem"
-      customSelectOptionGroups={Object.fromEntries(
-        Object.entries(fieldGroups)
-          .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
-          .map(([groupName, groupFields]) => [
-            groupName,
-            {
-              // Don't show group labels on some custom select types
-              selectGroupLabel:
-                props.customSelectSubtype === 'tree' ||
-                props.customSelectSubtype === 'toMany' ||
-                props.customSelectType === 'BASE_TABLE_SELECTION_LIST' ||
-                props.customSelectType === 'MAPPING_OPTIONS_LIST'
-                  ? undefined
-                  : fieldGroupLabels[groupName],
-              selectOptionsData: groupFields,
-            },
-          ])
-      )}
-      defaultOption={defaultOption}
+      customSelectOptionGroups={customSelectOptionGroups}
       automapperSuggestions={
         typeof props.automapperSuggestions !== 'undefined' &&
         props.automapperSuggestions.length > 0 &&
         typeof props.handleAutomapperSuggestionSelection !== 'undefined' ? (
           <SuggestionBox
-            onSelect={props.handleAutomapperSuggestionSelection}
+            onSelect={(selection): void =>
+              props.handleAutomapperSuggestionSelection?.(selection)
+            }
             selectOptionsData={Object.fromEntries(
               props.automapperSuggestions.map((automapperSuggestion, index) => [
                 /*
@@ -386,10 +323,8 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
     />
   ) : (
     <CustomSelectElement
-      defaultOption={defaultOption}
       {...props}
-      role="listitem"
-      fieldNames={fieldNames}
+      customSelectOptionGroups={customSelectOptionGroups}
     />
   );
 }

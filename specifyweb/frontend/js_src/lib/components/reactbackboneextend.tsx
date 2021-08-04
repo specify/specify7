@@ -25,7 +25,6 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   className,
   initialize,
   renderPre,
-  renderPost,
   remove,
   silentErrors = false,
   Component,
@@ -41,9 +40,6 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     viewProps: CONSTRUCTOR_PROPS
   ) => void;
   readonly renderPre?: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
-  ) => void;
-  readonly renderPost?: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => void;
   readonly remove?: (
@@ -75,7 +71,6 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
         </React.StrictMode>,
         this.el
       );
-      renderPost?.(this);
       return this;
     },
     remove() {

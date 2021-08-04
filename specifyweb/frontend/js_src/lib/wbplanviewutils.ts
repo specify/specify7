@@ -291,7 +291,7 @@ export function mutateMappingPath({
   value,
   currentTableName,
   newTableName,
-}: Omit<ChangeSelectElementValueAction, 'type'> & {
+}: Omit<ChangeSelectElementValueAction, 'type' | 'close'> & {
   readonly lines: RA<MappingLine>;
   readonly mappingView: MappingPath;
   readonly isRelationship: boolean;
