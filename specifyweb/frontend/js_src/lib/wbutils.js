@@ -436,7 +436,7 @@ module.exports = Backbone.View.extend({
         return !!cellValue.match(
           RegExp(
             this.searchPreferences.search.fullMatch
-              ? `^${searchQuery}$`
+              ? `^(?:${searchQuery})$`
               : searchQuery,
             this.searchPreferences.search.caseSensitive ? '' : 'i'
           )
