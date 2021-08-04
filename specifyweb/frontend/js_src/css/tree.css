@@ -4,16 +4,20 @@ div.tree-view {
     height: 100%;
 }
 
+.tree-controls {
+    display: flex;
+    align-items: center;
+    column-gap: var(--half-size);
+}
+
 .tree-view h2 {
-    float: left;
+    margin: 0;
 }
 
 .tree-view .tree-search {
-    margin-left: 20px;
     width: 180px;
     background: #f1f2f2;
     border: 1px solid #aaa;
-    font-size: 14px;
 }
 
 .tree-view table {
