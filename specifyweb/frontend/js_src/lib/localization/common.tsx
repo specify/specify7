@@ -62,6 +62,8 @@ const commonText = createDictionary({
   metadataInline: 'Metadata:',
   metadata: 'Metadata',
   query: 'Query',
+  unmapped: 'Unmapped',
+  selected: 'Selected',
 
   // Toolbar
   notifications: (count: number) => `Notifications: ${count}`,

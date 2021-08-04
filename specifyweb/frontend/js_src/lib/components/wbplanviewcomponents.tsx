@@ -258,7 +258,7 @@ const fieldGroupLabels = {
 } as const;
 
 const MappingElementDivider = (
-  <span className="wbplanview-mapping-line-divider" aria-hidden={true}>
+  <span className="wbplanview-mapping-line-divider" aria-label=",">
     {'→'}
   </span>
 );

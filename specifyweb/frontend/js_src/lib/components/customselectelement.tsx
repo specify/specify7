@@ -194,7 +194,7 @@ export function Icon({
   else return <TableIcon tableName={tableName} />;
 }
 
-const Option = React.memo(function Option({
+function Option({
   optionLabel,
   title,
   isEnabled = true,
@@ -202,7 +202,7 @@ const Option = React.memo(function Option({
   isDefault = false,
   tableName = '',
   handleClick,
-}: CustomSelectElementOptionProps) {
+}: CustomSelectElementOptionProps): JSX.Element {
   const classes = ['custom-select-option'];
 
   if (!isEnabled && !isRelationship)
@@ -252,16 +252,15 @@ const Option = React.memo(function Option({
         <span
           className="custom-select-option-relationship-icon"
           title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
-          aria-label={
-            tableLabel ? wbText('relationship')(tableLabel) : undefined
-          }
+          aria-label={wbText('relationship')(tableLabel ?? '')}
+          role="img"
         >
           ▶
         </span>
       )}
     </span>
   );
-});
+}
 
 function OptionGroup({
   selectGroupName,
@@ -531,6 +530,7 @@ export function CustomSelectElement({
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       role="listbox"
       tabIndex={-1}
+      aria-label={selectLabel}
     >
       {unmapOption}
       {groups}
@@ -611,7 +611,6 @@ export function CustomSelectElement({
         customSelectType
       )} ${isOpen ? 'custom-select-active' : ''}`}
       title={selectLabel}
-      aria-label={selectLabel}
       role={role}
       ref={customSelectElementRef}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}

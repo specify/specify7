@@ -174,7 +174,7 @@ export function MappingView(props: {
 
   return (
     <>
-      <div className="v-center mapping-view">
+      <div className="v-center mapping-view" role="list">
         <MappingPathComponent mappingLineData={mappingLineData} />
       </div>
       <button
