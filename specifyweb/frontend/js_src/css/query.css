@@ -1,11 +1,11 @@
 /* query.css */
 
 .query-view {
-    display: flex;
+    max-height: calc(100% - var(--shadow-size) * 2);
+    height: auto;
 }
 
 .querybuilder {
-    width: 100%;
     padding: var(--size);
     background: #f1f2f2;
     display: flex;
