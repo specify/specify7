@@ -207,6 +207,10 @@ const wbText = createDictionary({
 
   // WbPlanView
   matchBehavior: 'Match Behavior:',
+  suggestedMappings: 'Suggested Mappings:',
+  requiredFields: 'Required Fields',
+  optionalFields: 'Optional Fields',
+  hiddenFields: 'Hidden Fields',
   mappingOptions: 'Mapping Options',
   ignoreWhenBlank: 'Ignore when Blank',
   ignoreWhenBlankDescription: [
@@ -216,12 +220,12 @@ const wbText = createDictionary({
   ].join(''),
   ignoreAlways: 'Always Ignore',
   ignoreAlwaysDescription: [
-    'When set to "Ignore Always" the value in this column will never be',
+    'When set to "Ignore Always" the value in this column will never be ',
     'considered for matching purposes, only for uploading.',
   ].join(''),
   ignoreNever: 'Never Ignore',
   ignoreNeverDescription: [
-    'This column would always be considered for matching purposes, regardless',
+    'This column would always be considered for matching purposes, regardless ',
     "of it's value",
   ].join(''),
   allowNullValues: 'Allow Null Values',

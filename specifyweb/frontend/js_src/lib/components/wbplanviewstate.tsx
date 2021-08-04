@@ -140,7 +140,6 @@ export const stateReducer = generateReducer<
   },
   BaseTableSelectionState: ({ action: state }) => (
     <ModalDialog
-      className="wbplanview-base-table-selection"
       properties={{
         title: wbText('selectBaseTableDialogTitle'),
         height: 400,
@@ -164,29 +163,31 @@ export const stateReducer = generateReducer<
         ],
       }}
     >
-      <ListOfBaseTables
-        listOfTables={dataModelStorage.listOfBaseTables}
-        showHiddenTables={state.showHiddenTables}
-        handleChange={(baseTableName: string): void =>
-          state.dispatch({
-            type: 'SelectTableAction',
-            baseTableName,
-            headers: state.props.headers,
-          })
-        }
-      />
-      <label>
-        <input
-          type="checkbox"
-          checked={state.showHiddenTables}
-          onChange={(): void =>
+      <div className="wbplanview-base-table-selection">
+        <ListOfBaseTables
+          listOfTables={dataModelStorage.listOfBaseTables}
+          showHiddenTables={state.showHiddenTables}
+          handleChange={(baseTableName: string): void =>
             state.dispatch({
-              type: 'ToggleHiddenTablesAction',
+              type: 'SelectTableAction',
+              baseTableName,
+              headers: state.props.headers,
             })
           }
-        />{' '}
-        {wbText('showAdvancedTables')}
-      </label>
+        />
+        <label>
+          <input
+            type="checkbox"
+            checked={state.showHiddenTables}
+            onChange={(): void =>
+              state.dispatch({
+                type: 'ToggleHiddenTablesAction',
+              })
+            }
+          />{' '}
+          {wbText('showAdvancedTables')}
+        </label>
+      </div>
     </ModalDialog>
   ),
   TemplateSelectionState: ({ action: state }) => (
@@ -247,15 +248,11 @@ export const stateReducer = generateReducer<
           <WbPlanViewHeader
             title={
               <>
-                <span
-                  title={wbText('dataSetName')}
-                >
+                <span title={wbText('dataSetName')}>
                   {state.props.dataset.name}
-                </span>{' '}
-                <span
-                  title={wbText('baseTable')}
-                >
-                  ({dataModelStorage.tables[state.baseTableName].label})
+                </span>
+                <span title={wbText('baseTable')}>
+                  {` ( ${dataModelStorage.tables[state.baseTableName].label})`}
                 </span>
               </>
             }
@@ -441,7 +438,6 @@ export const stateReducer = generateReducer<
           lines={state.lines}
           mappingView={state.mappingView}
           validationResults={state.validationResults}
-          mapperDispatch={state.dispatch}
           openSelectElement={state.openSelectElement}
           automapperSuggestions={state.automapperSuggestions}
           focusedLine={state.focusedLine}
@@ -475,6 +471,7 @@ export const stateReducer = generateReducer<
           handleChange={(
             line: 'mappingView' | number,
             index: number,
+            close: boolean,
             value: string,
             isRelationship: boolean,
             currentTableName: string,
@@ -488,6 +485,7 @@ export const stateReducer = generateReducer<
               isRelationship,
               currentTableName,
               newTableName,
+              close,
             })
           }
           handleClearMapping={(line: number): void =>

@@ -364,7 +364,7 @@ function ChooseEncoding(props: {
 
 function ChooseFile(props: { update: HandleAction }) {
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
-  const filePickerButton = React.useRef<HTMLAnchorElement>(null);
+  const filePickerButton = React.useRef<HTMLButtonElement>(null);
 
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
@@ -436,9 +436,8 @@ function ChooseFile(props: { update: HandleAction }) {
       onDragLeave={handleDragLeave}
       onDragOver={preventPropagation}
     >
-      <a
+      <button
         ref={filePickerButton}
-        tabIndex={0}
         style={{
           gridColumn: '1 / span 2',
         }}
@@ -459,7 +458,7 @@ function ChooseFile(props: { update: HandleAction }) {
             </>
           )}
         </span>
-      </a>
+      </button>
     </label>
   );
 }

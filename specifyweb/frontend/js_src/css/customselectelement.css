@@ -64,7 +64,7 @@
   grid-template-columns: var(--table-icon-size) 1fr;
 }
 
-.custom-select-closed-list-active > .custom-select-input {
+.custom-select-active > .custom-select-input {
   z-index: 3;
 }
 
@@ -117,7 +117,6 @@
   grid-column-gap: var(--quarter-size);
   align-items: center;
   border: none;
-  background: var(--b1);
 }
 
 .custom-select-mapping-options-list .custom-select-input,

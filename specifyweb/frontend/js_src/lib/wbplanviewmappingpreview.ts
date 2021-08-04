@@ -64,7 +64,7 @@ export function generateMappingPathPreview(
       (mappingElementData) =>
         Object.values(mappingElementData.fieldsData).find(
           ({ isDefault }) => isDefault
-        )?.label as string
+        )?.optionLabel as string
     ),
   ];
 

@@ -14,7 +14,6 @@ import type {
   MatchBehaviors,
 } from '../uploadplantomappingstree';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import type { MappingActions } from '../wbplanviewreducer';
 import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import type { IR, RA } from './wbplanview';
@@ -91,7 +90,6 @@ export type WbPlanViewMapperBaseProps = {
 
 export default function WbPlanViewMapper(
   props: WbPlanViewMapperBaseProps & {
-    readonly mapperDispatch: (action: MappingActions) => void;
     readonly refObject: React.MutableRefObject<Partial<RefMappingState>>;
     readonly handleSave: () => void;
     readonly handleFocus: (lineIndex: number) => void;
@@ -104,6 +102,7 @@ export default function WbPlanViewMapper(
     readonly handleChange: (
       line: 'mappingView' | number,
       index: number,
+      close: boolean,
       newValue: string,
       isRelationship: boolean,
       currentTable: string,
@@ -309,163 +308,194 @@ export default function WbPlanViewMapper(
 
       <ul
         className="mapping-line-list"
+        tabIndex={-1}
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
         aria-label={wbText('mappings')}
       >
         {props.lines.map(
-          ({ mappingPath, headerName, mappingType, columnOptions }, index) => (
-            <MappingLineComponent
-              key={index}
-              headerName={headerName}
-              mappingType={mappingType}
-              readonly={props.readonly}
-              isFocused={index === props.focusedLine}
-              handleFocus={props.handleFocus.bind(undefined, index)}
-              handleClearMapping={props.handleClearMapping.bind(
+          ({ mappingPath, headerName, mappingType, columnOptions }, index) => {
+            const lineData = getMappingLineData({
+              baseTableName: props.baseTableName,
+              mappingPath,
+              generateLastRelationshipData: true,
+              iterate: true,
+              customSelectType: 'CLOSED_LIST',
+              handleChange:
+                (!props.readonly &&
+                  props.handleChange.bind(undefined, index)) ||
                 undefined,
-                index
-              )}
-              lineData={getMappingLineData({
-                baseTableName: props.baseTableName,
-                mappingPath,
-                generateLastRelationshipData: true,
-                iterate: true,
-                customSelectType: 'CLOSED_LIST',
-                handleChange:
-                  (!props.readonly &&
-                    props.handleChange.bind(undefined, index)) ||
-                  undefined,
-                handleOpen: props.handleOpen.bind(undefined, index),
-                handleClose: props.handleClose.bind(undefined, index),
-                handleAutomapperSuggestionSelection:
-                  (!props.readonly &&
-                    props.handleAutomapperSuggestionSelection) ||
-                  undefined,
-                getMappedFields: getMappedFieldsBind,
-                openSelectElement:
-                  typeof props.openSelectElement !== 'undefined' &&
-                  props.openSelectElement.line === index
-                    ? props.openSelectElement
-                    : undefined,
-                showHiddenFields: props.showHiddenFields,
-                automapperSuggestions:
-                  (!props.readonly && props.automapperSuggestions) || [],
-                mustMatchPreferences: props.mustMatchPreferences,
-                columnOptions,
-                mappingOptionsMenuGenerator: () => ({
-                  matchBehavior: {
-                    label: (
-                      <>
-                        {wbText('matchBehavior')}
-                        <ul style={{ padding: 0, margin: 0 }}>
-                          {Object.entries({
-                            ignoreWhenBlank: {
-                              title: wbText('ignoreWhenBlank'),
-                              description: wbText('ignoreWhenBlankDescription'),
-                            },
-                            ignoreAlways: {
-                              title: wbText('ignoreAlways'),
-                              description: wbText('ignoreAlwaysDescription'),
-                            },
-                            ignoreNever: {
-                              title: wbText('ignoreNever'),
-                              description: wbText('ignoreNeverDescription'),
-                            },
-                          }).map(([id, { title, description }]) => (
-                            <li key={id}>
-                              <label title={description}>
-                                <input
-                                  type="radio"
-                                  name="match-behavior"
-                                  value={id}
-                                  checked={columnOptions.matchBehavior === id}
-                                  readOnly={props.readonly}
-                                  onChange={({ target }): void =>
-                                    props.handleChangeMatchBehaviorAction(
-                                      index,
-                                      target.value as MatchBehaviors
-                                    )
-                                  }
-                                />
-                                {` ${title}`}
-                              </label>
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    ),
-                  },
-                  nullAllowed: {
-                    label: (
+              handleOpen: props.handleOpen.bind(undefined, index),
+              handleClose: props.handleClose,
+              handleAutomapperSuggestionSelection:
+                (!props.readonly &&
+                  props.handleAutomapperSuggestionSelection) ||
+                undefined,
+              getMappedFields: getMappedFieldsBind,
+              openSelectElement:
+                props.openSelectElement?.line === index
+                  ? props.openSelectElement
+                  : undefined,
+              showHiddenFields: props.showHiddenFields,
+              automapperSuggestions:
+                (!props.readonly && props.automapperSuggestions) || [],
+              mustMatchPreferences: props.mustMatchPreferences,
+              columnOptions,
+              mappingOptionsMenuGenerator: () => ({
+                matchBehavior: {
+                  optionLabel: (
+                    <>
+                      {wbText('matchBehavior')}
+                      <ul style={{ padding: 0, margin: 0 }}>
+                        {Object.entries({
+                          ignoreWhenBlank: {
+                            title: wbText('ignoreWhenBlank'),
+                            description: wbText('ignoreWhenBlankDescription'),
+                          },
+                          ignoreAlways: {
+                            title: wbText('ignoreAlways'),
+                            description: wbText('ignoreAlwaysDescription'),
+                          },
+                          ignoreNever: {
+                            title: wbText('ignoreNever'),
+                            description: wbText('ignoreNeverDescription'),
+                          },
+                        }).map(([id, { title, description }]) => (
+                          <li key={id}>
+                            <label title={description}>
+                              <input
+                                type="radio"
+                                name="match-behavior"
+                                value={id}
+                                checked={columnOptions.matchBehavior === id}
+                                readOnly={props.readonly}
+                                onChange={({ target }): void =>
+                                  props.handleChangeMatchBehaviorAction(
+                                    index,
+                                    target.value as MatchBehaviors
+                                  )
+                                }
+                              />
+                              {` ${title}`}
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ),
+                },
+                nullAllowed: {
+                  optionLabel: (
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={columnOptions.nullAllowed}
+                        disabled={props.readonly}
+                        onChange={
+                          (!props.readonly &&
+                            ((event): void =>
+                              props.handleToggleAllowNullsAction(
+                                index,
+                                event.target.checked
+                              ))) ||
+                          undefined
+                        }
+                      />{' '}
+                      {wbText('allowNullValues')}
+                    </label>
+                  ),
+                },
+                default: {
+                  optionLabel: (
+                    <>
                       <label>
                         <input
                           type="checkbox"
-                          checked={columnOptions.nullAllowed}
+                          checked={columnOptions.default !== null}
                           disabled={props.readonly}
                           onChange={
                             (!props.readonly &&
-                              ((event): void =>
-                                props.handleToggleAllowNullsAction(
+                              ((): void =>
+                                props.handleChangeDefaultValue(
                                   index,
-                                  event.target.checked
+                                  columnOptions.default === null ? '' : null
                                 ))) ||
                             undefined
                           }
                         />{' '}
-                        {wbText('allowNullValues')}
+                        {wbText('useDefaultValue')}
+                        {columnOptions.default !== null && ':'}
                       </label>
-                    ),
-                  },
-                  default: {
-                    label: (
-                      <>
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={columnOptions.default !== null}
-                            disabled={props.readonly}
+                      {typeof columnOptions.default === 'string' && (
+                        <>
+                          <br />
+                          <textarea
+                            value={columnOptions.default || ''}
+                            title={wbText('defaultValue')}
+                            aria-label={wbText('defaultValue')}
                             onChange={
                               (!props.readonly &&
-                                ((): void =>
+                                ((event): void =>
                                   props.handleChangeDefaultValue(
                                     index,
-                                    columnOptions.default === null ? '' : null
+                                    event.target.value
                                   ))) ||
                               undefined
                             }
-                          />{' '}
-                          {wbText('useDefaultValue')}
-                          {columnOptions.default !== null && ':'}
-                        </label>
-                        {typeof columnOptions.default === 'string' && (
-                          <>
-                            <br />
-                            <textarea
-                              value={columnOptions.default || ''}
-                              title={wbText('defaultValue')}
-                              aria-label={wbText('defaultValue')}
-                              onChange={
-                                (!props.readonly &&
-                                  ((event): void =>
-                                    props.handleChangeDefaultValue(
-                                      index,
-                                      event.target.value
-                                    ))) ||
-                                undefined
-                              }
-                              disabled={props.readonly}
-                            />
-                          </>
-                        )}
-                      </>
-                    ),
-                    title: wbText('useDefaultValueDescription'),
-                  },
-                }),
-              })}
-            />
-          )
+                            disabled={props.readonly}
+                          />
+                        </>
+                      )}
+                    </>
+                  ),
+                  title: wbText('useDefaultValueDescription'),
+                },
+              }),
+            });
+            return (
+              <MappingLineComponent
+                key={index}
+                headerName={headerName}
+                mappingType={mappingType}
+                readonly={props.readonly}
+                isFocused={index === props.focusedLine}
+                onFocus={props.handleFocus.bind(undefined, index)}
+                onKeyDown={(event): void => {
+                  const openSelectElement =
+                    props.openSelectElement?.line === index
+                      ? props.openSelectElement.index
+                      : undefined;
+
+                  if (typeof openSelectElement === 'number') {
+                    if (event.key === 'ArrowLeft')
+                      if (openSelectElement > 0)
+                        props.handleOpen(index, openSelectElement - 1);
+                      else props.handleClose();
+                    else if (event.key === 'ArrowRight')
+                      if (openSelectElement + 1 < lineData.length)
+                        props.handleOpen(index, openSelectElement + 1);
+                      else props.handleClose();
+
+                    return;
+                  }
+
+                  if (event.key === 'ArrowLeft')
+                    props.handleOpen(index, lineData.length - 1);
+                  else if (event.key === 'ArrowRight' || event.key === 'Enter')
+                    props.handleOpen(index, 0);
+                  else if (event.key === 'ArrowUp' && index > 0)
+                    props.handleFocus(index - 1);
+                  else if (
+                    event.key === 'ArrowDown' &&
+                    index + 1 < props.lines.length
+                  )
+                    props.handleFocus(index + 1);
+                }}
+                onClearMapping={props.handleClearMapping.bind(undefined, index)}
+                lineData={lineData}
+              />
+            );
+          }
         )}
       </ul>
 

@@ -185,10 +185,9 @@ function Dialog({
                       </td>
                       <td>
                         {canImport && (
-                          <span
-                            tabIndex={0}
-                            style={{ cursor: 'pointer' }}
-                            className="ui-icon ui-icon-pencil"
+                          <button
+                            type="button"
+                            className="fake-link ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
                           />
                         )}
