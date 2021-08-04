@@ -34,9 +34,11 @@ const commonText = require('./localization/common').default;
         render: function() {
             var headings = this.treeDefItems.map(
                 (tdi, i) => $('<th>').append(
-                    $('<div>')
+                    $('<button>', {class:'fake-link'})
+                    .append($('<span></span>')
                         .addClass(this.collapsedRanks[i] ? 'tree-header-collapsed' : '')
                         .text(tdi.get('title') || tdi.get('name'))
+                    )
                 )[0]
             );
 

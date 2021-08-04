@@ -8,6 +8,7 @@ const Q = require('q');
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
 const treeText = require('./localization/tree').default;
+const commonText = require('./localization/common').default;
 
 var TreeNodeView = Backbone.View.extend({
     __name__: "TreeNodeView",
@@ -73,11 +74,13 @@ var TreeNodeView = Backbone.View.extend({
             }, this);
             this.$el.append(cells).data('view', this);
 
-            this.$('.tree-node-cell p').append(
-                '<a class="ui-icon expander">',
-                '<a class="expander tree-node-name" tabindex="2">',
-                '<span class="stats">'
-            );
+            this.$('.tree-node-cell p')
+                .attr('role','none')
+                .append(`
+                    <a class="ui-icon expander">
+                    <a class="expander tree-node-name" tabindex="2">
+                    <span class="stats">
+                `);
             this.$('.tree-node-name').text(this.name)
                 .addClass(this.acceptedId != null ? 'tree-synonym-node' : '')
                 .attr('title', this.acceptedId != null ? `${treeText('acceptedName')} ${this.acceptedName}` : '');
@@ -97,7 +100,13 @@ var TreeNodeView = Backbone.View.extend({
         setupExpander: function() {
             this.$('.expander')
                 .removeClass('open close leaf')
-                .addClass(this.children > 0 ? 'open' : 'leaf');
+                .addClass(this.children > 0 ? 'open' : 'leaf')
+                .attr(
+                    'aria-label',
+                    this.children > 0 ?
+                        treeText('closed') :
+                        treeText('leafNode')
+                );
         },
     adjustCollapsed: function() {
         const collapsed = this.collapsedRanks[this.ranks.indexOf(this.rankId)];
@@ -125,7 +134,10 @@ var TreeNodeView = Backbone.View.extend({
                 if (this.opened) {
                     this.closeNode();
                 } else {
-                    next = cells.index(this.parent().$('.tree-node-name'));
+                    const parent = this.parent();
+                    if(typeof parent === 'undefined')
+                        return;
+                    next = cells.index(parent.$('.tree-node-name'));
                 }
                 break;
             case 38: // up
@@ -182,7 +194,10 @@ var TreeNodeView = Backbone.View.extend({
         },
         getChildren: function() {
             console.log('getChildren', this.name);
-            this.$('.expander').removeClass('open').addClass('wait');
+            this.$('.expander')
+                .removeClass('open')
+                .addClass('wait')
+                .attr('aria-label',commonText('loading'));
             return $.getJSON(this.baseUrl + this.nodeId + '/' + this.sortField + '/').pipe(this.gotChildren.bind(this));
         },
         gotChildren: function(childRows) {
@@ -212,7 +227,10 @@ var TreeNodeView = Backbone.View.extend({
             console.log('renderChildren', this.name);
             this.expanded = true;
             this.opened = true;
-            this.$('.expander').removeClass('open wait').addClass('close');
+            this.$('.expander')
+                .removeClass('open wait')
+                .addClass('close')
+                .attr('aria-label', treeText('opened'));
 
             var nodes = this.childNodes.slice();
             // Have to add the nodes in reverse since they are being
@@ -236,7 +254,10 @@ var TreeNodeView = Backbone.View.extend({
             console.log('closeNode', this.name);
             this.expanded = false;
             this.opened = false;
-            this.$('.expander').removeClass('close').addClass('open');
+            this.$('.expander')
+                .removeClass('close')
+                .addClass('open')
+                .attr('aria-label', treeText('closed'));
             _.invoke(this.childNodes, 'remove');
             this.treeView.updateConformation();
         },
