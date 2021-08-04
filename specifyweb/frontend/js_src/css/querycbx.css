@@ -1,14 +1,10 @@
 .querycbx-strct {
-    display: table;
+    display: flex;
     width: 100%;
+    align-items: center;
 }
 
-.querycbx-strct input {
-    display: table-cell;
-}
-
-.querycbx-strct a {
-    display: table-cell;
+.querycbx-strct button {
     width: 16px;
 }
 

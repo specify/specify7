@@ -31,7 +31,8 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             var self = this;
-            self.$el.empty();
+            self.el.innerHTML = '<section></section>';
+            const section = $(self.el.children[0]);
             var header = $(subviewheader({
                 formsText,
                 commonText,
@@ -51,20 +52,20 @@ module.exports =  Backbone.View.extend({
             header.on('click', '.specify-add-related', this.add.bind(this));
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
-            specifyform.buildSubView(self.$el, mode).done(function(form) {
+            specifyform.buildSubView(section, mode).done(function(form) {
                 self.readOnly && $('.specify-delete-related, .specify-add-related', header).remove();
 
-                self.$el.append(header);
+                section.append(header);
                 if (!self.model) {
                     $('.specify-delete-related', header).remove();
-                    self.$el.append('<p>No Data.</p>');
+                    section.append(`<p>${formsText('noData')}</p>`);
                     return;
                 } else {
                     $('.specify-add-related', header).remove();
                 }
 
                 self.populateForm(form, self.model);
-                self.$el.append(form);
+                section.append(form);
             });
             return self;
         },

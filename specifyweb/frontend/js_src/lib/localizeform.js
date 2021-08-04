@@ -27,23 +27,32 @@ module.exports = function(formNode) {
 
         var fillinLabel = function() {
             var label = $('label', this);
+            const setText = (text) => {
+              label.text(text);
+              if(text.trim().length===0)
+                this.setAttribute('aria-hidden','true');
+            }
             if (label.text()) {
                 // the label was hard coded in the form
-                label.text(localize(label.text()));
+                setText(localize(label.text()));
                 return;
             }
             var forId = label.prop('for');
-            if (!forId) return; // not much we can do about that
+            if (!forId){
+              // not much we can do about that
+              setText('');
+              return;
+            }
             var control = $('#' + forId, form);
             var override = control.data('specify-field-label-override');
             if (override !== undefined) {
-                label.text(localize(override));
+                setText(localize(override));
                 return;
             }
             var fieldname = getControlFieldName(control);
             if (!fieldname) return; // probably a label for a plugin
             var field = model.getField(fieldname);
-            field && label.text(field.getLocalizedName());
+            field && setText(field.getLocalizedName());
             var title = field && field.getLocalizedDesc();
             title && label.attr('title', title);
         };

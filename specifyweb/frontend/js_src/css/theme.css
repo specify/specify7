@@ -74,7 +74,7 @@
   text-align: left;
   margin: 0;
   padding: 0;
-  display: flex;
+  display: inline-flex;
   column-gap: var(--quarter-size);
   align-items: center;
 }
@@ -116,22 +116,6 @@
   position: absolute;
   top: 0;
   left: 0;
-}
-
-.fake-link {
-  border: none;
-  background-color: transparent;
-  text-align: left;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  column-gap: var(--quarter-size);
-  align-items: center;
-}
-
-.fake-link:hover {
-  color: var(--accent);
-  cursor: pointer;
 }
 
 menu {
