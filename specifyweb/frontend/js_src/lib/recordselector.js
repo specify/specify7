@@ -24,16 +24,13 @@ const commonText = require('./localization/common').default;
             Backbone.View.prototype.initialize.call(this, options);
         },
         events: {
-            'click .specify-add-related': function (evt) {
-                evt.preventDefault();
+            'click .specify-add-related': function () {
                 this.recordSelector.add();
             },
-            'click .specify-delete-related': function (evt) {
-                evt.preventDefault();
+            'click .specify-delete-related': function () {
                 this.recordSelector.delete();
             },
-            'click .specify-visit-related': function (evt) {
-                evt.preventDefault();
+            'click .specify-visit-related': function () {
                 this.recordSelector.visit();
             }
         },
@@ -206,7 +203,8 @@ module.exports =  Backbone.View.extend({
             return this;
         },
         _render: function() {
-            this.$el.empty();
+            this.el.innerHTML = '<section></section>';
+            const section = $(this.el.children[0]);
             this.slider = new Slider({ recordSelector: this }).render();
             this.slider.setMax(this.collection.length - 1);
 
@@ -219,18 +217,18 @@ module.exports =  Backbone.View.extend({
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly
-            }).render().$el.appendTo(this.el);
+            }).render().$el.appendTo(section);
 
-            this.sliderAtTop && this.$el.append(this.slider.el);
+            this.sliderAtTop && section.append(this.slider.el);
 
-            this.noContent = $(emptyTemplate).appendTo(this.el);
+            this.noContent = $(emptyTemplate).appendTo(section);
 
-            this.content = $('<div>').appendTo(this.el);
+            this.content = $('<div>').appendTo(section);
 
-            this.sliderAtTop || this.$el.append(this.slider.el);
+            this.sliderAtTop || section.append(this.slider.el);
 
             if (this.noHeader && !this.readOnly) {
-                new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(this.el);
+                new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(section);
             }
 
             var params = querystring.deparam();

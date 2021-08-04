@@ -28,7 +28,10 @@ const userInfo             = require('./userinfo.js');
                 var control = td.find('.specify-field');
                 if (control) {
                     control.attr('name', fieldName);
-                    id && control.prop('id', id);
+                    if(id){
+                        control.prop('id', id);
+                        td.attr('aria-labelledby',id);
+                    }
                     initialize && control.attr('data-specify-initialize', initialize);
                     if (isRequired && isRequired.toLowerCase() === 'true') {
                         control.addClass('specify-required-field');
