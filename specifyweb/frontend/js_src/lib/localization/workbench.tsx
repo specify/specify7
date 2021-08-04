@@ -125,7 +125,7 @@ const wbText = createDictionary({
     'Data Set was rolled back successfully'
   ),
   dataSetRollbackDialogMessage:
-    'This Data Set can now be edited, saved, or re-uploaded.',
+    'This Rolledback Data Set is saved, and can be edited or re-uploaded.',
   validationCanceledDialogTitle: 'Data Set Validation',
   validationCanceledDialogHeader: createHeader('Validation Canceled'),
   validationCanceledDialogMessage: 'Data Set Validation cancelled.',
