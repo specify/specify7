@@ -27,9 +27,14 @@ module.exports = function(formNode) {
 
         var fillinLabel = function() {
             var label = $('label', this);
-            if (label.text()) {
+            if (label.text().trim()) {
                 // the label was hard coded in the form
                 label.text(localize(label.text()));
+                return;
+            }
+            const cellId = label.attr('data-specify-label-id');
+            if(model.name === 'Accession' && cellId === 'divLabel'){
+                label.text(localize('Division'));
                 return;
             }
             var forId = label.prop('for');
