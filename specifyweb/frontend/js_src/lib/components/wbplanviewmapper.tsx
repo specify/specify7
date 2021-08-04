@@ -311,6 +311,7 @@ export default function WbPlanViewMapper(
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
         aria-label={wbText('mappings')}
+        aria-orientation="vertical"
       >
         {props.lines.map(
           ({ mappingPath, headerName, mappingType, columnOptions }, index) => {

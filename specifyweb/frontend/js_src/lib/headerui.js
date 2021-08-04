@@ -94,7 +94,7 @@ module.exports = Backbone.View.extend({
             return $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
                 .text(toolDef.title)
                 .attr('data-path',toolDef.path)
-                .prepend($('<img>', {src: toolDef.icon}))[0];
+                .prepend($('<img>', {src: toolDef.icon, }))[0];
         },
         siteNavClick: function(evt) {
             evt.preventDefault();

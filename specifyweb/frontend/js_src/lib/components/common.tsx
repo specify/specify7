@@ -1,6 +1,7 @@
 import React from 'react';
 
 import icons from '../icons';
+import commonText from '../localization/common';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 
@@ -51,14 +52,28 @@ export function TableIcon({
 }
 
 export const TableIconUndefined = (
-  <span className="table-icon table-icon-undefined">⃠</span>
+  <span
+    className="table-icon table-icon-undefined"
+    aria-label={commonText('unmapped')}
+    role="img"
+  >
+    ⃠
+  </span>
 );
 
 export const TableIconSelected = (
-  <span className="table-icon table-icon-selected">✓</span>
+  <span
+    className="table-icon table-icon-selected"
+    aria-label={commonText('unmapped')}
+    role="img"
+  >
+    ✓
+  </span>
 );
 
-export const TableIconEmpty = <span className="table-icon table-icon-emtpy" />;
+export const TableIconEmpty = (
+  <span className="table-icon table-icon-empty" aria-hidden={true} />
+);
 
 export function DateElement({
   date,
