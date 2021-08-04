@@ -14,7 +14,7 @@ const commonText = require('./localization/common').default;
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
         events: {
-            'click a': 'clicked'
+            'click button': 'clicked'
         },
         initialize: function(options) {
             var self = this;
@@ -33,18 +33,24 @@ const commonText = require('./localization/common').default;
             self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
 
-            var link = $('<a>', {
-                tabIndex: 0,
+            var link = $('<button>', {
+                type: 'button',
+                class: 'magic-button',
                 title: self.field.getLocalizedName()
             }).appendTo(self.el);
 
             if (!self.$el.hasClass('specify-subview-in-table')) {
                 $('<div style="display: table-row">')
-                    .append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}))
+                    .append($(
+                        '<img>',
+                        {
+                            class: "specify-subviewbutton-icon",
+                            src: self.icon,
+                            'aria-hidden': true,
+                        }
+                    ))
                     .append('<span class="specify-subview-button-count">')
-                    .appendTo(link);
-
-                link.button();
+                    .appendTo(link)
             } else {
                 link.addClass('specify-subview-link');
             }

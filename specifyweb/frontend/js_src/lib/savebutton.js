@@ -58,6 +58,7 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('savebutton');
+            this.el.setAttribute('role','toolbar');
             if (this.options.addAnother) {
                 this.$el.append($('<input>', {
                     type: "submit",

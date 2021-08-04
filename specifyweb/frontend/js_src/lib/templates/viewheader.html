@@ -1,63 +1,65 @@
 <header class="specify-form-header">
   <h2 class="view-title check"><%- viewTitle %></h2>
-  <nav
-    class="recordset-header"
-    title="<%= formsText('recordSetAreaDescription')(recordsetName) %>"
-    aria-label="<%= formsText('recordSetAreaDescription')(recordsetName) %>"
-  >
-    <% if (recordsetInfo) { %>
-      <% if (prevUrl) { %>
+  <% if (recordsetName) { %>
+    <nav
+      class="recordset-header"
+      title="<%= formsText('recordSetAreaDescription')(recordsetName) %>"
+      aria-label="<%= formsText('recordSetAreaDescription')(recordsetName) %>"
+    >
+      <% if (recordsetInfo) { %>
+        <% if (prevUrl) { %>
+            <a
+              class="intercept-navigation recordset-navigation"
+              href="<%= prevUrl %>"
+              rel="prev"
+              title="<%= formsText('previousRecord') %>"
+              aria-label="<%= formsText('previousRecord') %>"
+            >&lt;</a>
+        <% } else { %>
+            <span class="recordset-prev recordset-navigation" aria-hidden="true">&lt;</span>
+        <% } %>
+        <label class="sr-only">
+          <%= formsText('currentPositionInTheRecordSet') %>
+          <meter
+            min="0"
+            value="<%= recordsetInfo.index + 1 %>"
+            max="<%= recordsetInfo.total_count %>"
+          ><%= formsText('aOutOfB')(recordsetInfo.index + 1, recordsetInfo.total_count) %></meter>
+        </label>
+        <span
+          class="recordset-navigation-text"
+          aria-hidden="true"
+        >
+          <span class="recordset-navigation-current"><%= recordsetInfo.index + 1 %></span>
+          /
+          <span class="recordset-navigation-total"><%= recordsetInfo.total_count %></span>
+        </span>
+        <% if (nextUrl) { %>
+            <a
+              class="intercept-navigation recordset-navigation"
+              href="<%= nextUrl %>"
+              rel="next"
+              title="<%= formsText('nextRecord') %>"
+              aria-label="<%= formsText('nextRecord') %>"
+            >&gt;</a>
+        <% } else { %>
+            <span class="recordset-next recordset-navigation" aria-hidden="true">&gt;</span>
+        <% } %>
+        <% if (newUrl) { %>
           <a
-            class="intercept-navigation recordset-navigation"
-            href="<%= prevUrl %>"
-            rel="prev"
-            title="<%= formsText('previousRecord') %>"
-            aria-label="<%= formsText('previousRecord') %>"
-          >&lt;</a>
-      <% } else { %>
-          <span class="recordset-prev recordset-navigation" aria-hidden="true">&lt;</span>
+            href="<%= newUrl %>"
+            class="intercept-navigation recordset-new"
+            title="<%= formsText('createRecordButtonDescription') %>"
+            aria-label="<%= formsText('createRecordButtonDescription') %>"
+          >+</a>
+        <% } %>
+      <% } else if (recordsetName != null) { %>
+        <span class="recordset-info">
+          <%= formsText('addingToRecordSet') %>
+        </span>
       <% } %>
-      <label class="sr-only">
-        <%= formsText('currentPositionInTheRecordSet') %>
-        <meter
-          min="0"
-          value="<%= recordsetInfo.index + 1 %>"
-          max="<%= recordsetInfo.total_count %>"
-        ><%= formsText('aOutOfB')(recordsetInfo.index + 1, recordsetInfo.total_count) %></meter>
-      </label>
-      <span
-        class="recordset-navigation-text"
-        aria-hidden="true"
-      >
-        <span class="recordset-navigation-current"><%= recordsetInfo.index + 1 %></span>
-        /
-        <span class="recordset-navigation-total"><%= recordsetInfo.total_count %></span>
-      </span>
-      <% if (nextUrl) { %>
-          <a
-            class="intercept-navigation recordset-navigation"
-            href="<%= nextUrl %>"
-            rel="next"
-            title="<%= formsText('nextRecord') %>"
-            aria-label="<%= formsText('nextRecord') %>"
-          >&gt;</a>
-      <% } else { %>
-          <span class="recordset-next recordset-navigation" aria-hidden="true">&gt;</span>
-      <% } %>
-      <% if (newUrl) { %>
-        <a
-          href="<%= newUrl %>"
-          class="intercept-navigation recordset-new"
-          title="<%= formsText('createRecordButtonDescription') %>"
-          aria-label="<%= formsText('createRecordButtonDescription') %>"
-        >+</a>
-      <% } %>
-    <% } else if (recordsetName != null) { %>
-      <span class="recordset-info">
-        <%= formsText('addingToRecordSet') %>
-      </span>
-    <% } %>
-  </nav>
+    </nav>
+  <% } %>
 </header>
 
 

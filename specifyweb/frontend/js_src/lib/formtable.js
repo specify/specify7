@@ -96,7 +96,7 @@ const commonText = require('./localization/common').default;
 module.exports =  Backbone.View.extend({
         __name__: "FormTableView",
         events: {
-            'click .specify-subview-header a.specify-add-related': 'add'
+            'click .specify-subview-header button.specify-add-related': 'add'
         },
         initialize: function(options) {
             // options = {
@@ -147,10 +147,13 @@ module.exports =  Backbone.View.extend({
 
             header.find('.specify-delete-related, .specify-visit-related').remove();
             this.readOnly && header.find('.specify-add-related').remove();
-            this.$el.empty().append(header);
+
+            this.el.innerHTML = '<section</section>';
+            const section = $(this.el.children[0]);
+            section.append(header);
 
             if (this.collection.length < 1) {
-                this.$el.append('<p>No Data.</p>');
+                section.append(`<p>${formsText('noData')}</p>`);
                 return;
             }
 
@@ -159,7 +162,7 @@ module.exports =  Backbone.View.extend({
 
                 var el = $('.specify-view-content:first', form);
                 if (index === 0)
-                    this.$el.append(form);
+                    section.append(form);
                 else
                     this.$('.specify-view-content-container:first').append(el);
 
