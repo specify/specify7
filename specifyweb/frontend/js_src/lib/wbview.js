@@ -1588,9 +1588,10 @@ const WBView = Backbone.View.extend({
             this.uploadedView.remove();
             this.uploadedView = undefined;
           }
-          $.post(`/api/workbench/unupload/${this.dataset.id}/`);
+          $.post(`/api/workbench/unupload/${this.dataset.id}/`).then(() =>
+            this.openStatus('unupload')
+          );
           dialog.remove();
-          this.openStatus('unupload');
         },
         [commonText('cancel')]() {
           $(this).remove();

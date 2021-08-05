@@ -81,22 +81,18 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = (): void =>
-      void setTimeout(
-        (): void =>
-          void $.get(`/api/workbench/status/${dataset.id}/`).done(
-            (status: Status | null) => {
-              if (destructorCalled) return;
-              if (status === null)
-                handleFinished(
-                  state.aborted === 'pending' || state.aborted === true
-                );
-              else {
-                dispatch({ type: 'RefreshStatusAction', status });
-                fetchStatus();
-              }
-            }
-          ),
-        REFRESH_RATE
+      void $.get(`/api/workbench/status/${dataset.id}/`).done(
+        (status: Status | null) => {
+          if (destructorCalled) return;
+          if (status === null)
+            handleFinished(
+              state.aborted === 'pending' || state.aborted === true
+            );
+          else {
+            dispatch({ type: 'RefreshStatusAction', status });
+            setTimeout(fetchStatus, REFRESH_RATE);
+          }
+        }
       );
     fetchStatus();
     return (): void => {
