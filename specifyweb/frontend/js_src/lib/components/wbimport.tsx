@@ -436,7 +436,14 @@ function ChooseFile(props: { update: HandleAction }) {
       onDragLeave={handleDragLeave}
       onDragOver={preventPropagation}
     >
-      <button
+      <input
+        type="file"
+        accept=".csv,.tsv,.txt,.xls,.xlsx"
+        onChange={handleFileSelected}
+        className="sr-only"
+        style={{ opacity: 0 }}
+      />
+      <span
         ref={filePickerButton}
         style={{
           gridColumn: '1 / span 2',
@@ -445,11 +452,6 @@ function ChooseFile(props: { update: HandleAction }) {
       >
         <span>
           {wbText('filePickerMessage')}
-          <input
-            type="file"
-            accept=".csv,.tsv,.txt,.xls,.xlsx"
-            onChange={handleFileSelected}
-          />
           {typeof fileName !== 'undefined' && (
             <>
               <br />
@@ -458,7 +460,7 @@ function ChooseFile(props: { update: HandleAction }) {
             </>
           )}
         </span>
-      </button>
+      </span>
     </label>
   );
 }
