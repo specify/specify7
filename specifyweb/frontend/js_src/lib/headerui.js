@@ -105,7 +105,6 @@ module.exports = Backbone.View.extend({
             evt.preventDefault();
             var index = this.$('#site-nav a').index(evt.currentTarget);
             this.visibleTools[index].execute();
-            $(evt.currentTarget).blur();
         },
         openUserTools: function(evt) {
             new UserTools({user: userInfo, tools: this.hiddenTools}).render();

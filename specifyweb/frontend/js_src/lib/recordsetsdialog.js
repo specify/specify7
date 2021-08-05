@@ -18,7 +18,7 @@ module.exports = Backbone.View.extend({
         tagName: 'nav',
         className: "recordsets-dialog table-list-dialog",
         events: {
-            'click a.edit': 'edit'
+            'click button.edit': 'edit'
         },
         render: function() {
             this.makeUI();
@@ -62,11 +62,14 @@ module.exports = Backbone.View.extend({
                 $('<td>').append(link),
                 $('<td class="item-count" style="display:none">'));
 
-            this.options.readOnly || entry.append('<td><a class="edit ui-icon ui-icon-pencil"></a></td>');
+            this.options.readOnly || entry.append(`<td><button class="edit ui-icon ui-icon-pencil fake-link">${commonText('edit')}</button></td>`);
 
             recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
             recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
-                $('.item-count', entry).text('(' + count + ')').show();
+                $('.item-count', entry)
+                    .text('(' + count + ')')
+                    .attr('title',formsText('recordCount'))
+                    .show();
             });
             return entry;
         },
@@ -103,7 +106,7 @@ module.exports = Backbone.View.extend({
             return this.$(selector).index(evt.currentTarget);
         },
         edit: function(evt) {
-            const index = this.getIndex(evt, 'a.edit');
+            const index = this.getIndex(evt, 'button.edit');
             const recordset = this.options.recordSets.at(index);
             this.$el.dialog('close');
             new EditResourceDialog({

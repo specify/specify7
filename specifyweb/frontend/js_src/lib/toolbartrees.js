@@ -6,6 +6,7 @@ var Backbone = require('./backbone.js');
 
 var schema = require('./schema.js');
 var domain = require('./domain.js');
+const icons = require('./icons.js');
 const commonText = require('./localization/common').default;
 
 
@@ -16,11 +17,11 @@ const commonText = require('./localization/common').default;
     var TreeListDialog = Backbone.View.extend({
         __name__: "TreeListDialog",
         tagName: 'nav',
-        className: "trees-dialog table-list-dialog",
+        className: "trees-dialog",
         _render: function(trees) {
           this.$el.attr('role','toolbar');
             var entries = _.map(trees, this.dialogEntry, this);
-            var table = $('<table>').append(entries).appendTo(this.el);
+            var table = $('<ul>').css('padding',0).append(entries).appendTo(this.el);
             this.$el.dialog({
                 title: commonText('treesDialogTitle'),
                 modal: true,
@@ -35,13 +36,27 @@ const commonText = require('./localization/common').default;
             return this;
         },
         dialogEntry: function(tree) {
-            var model = schema.getModel(tree);
-            var img = $('<img>', { src: model.getIcon() });
-            var link = $('<a>', {href: '/specify/tree/' + tree + '/'})
-                    .addClass("intercept-navigation")
-                    .text(model.getLocalizedName());
-            return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
-        }
+            const model = schema.getModel(tree);
+            return $('<li>').append(
+                $('<a>', {
+                    class: 'intercept-navigation',
+                    href: '/specify/tree/' + tree + '/'
+                })
+                    .addClass("fake-link")
+                    .css({fontSize: '0.8rem'})
+                    .append(
+                        $(
+                            '<img>',
+                            {
+                                src: model.getIcon(),
+                                width: 'var(--table-icon-size)',
+                                'aria-hidden': true,
+                            }
+                        ),
+                        model.getLocalizedName()
+                    )
+            )[0];
+        },
     });
 
 module.exports =  {
