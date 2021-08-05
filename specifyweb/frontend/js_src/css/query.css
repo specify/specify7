@@ -15,11 +15,16 @@
 
 .querybuilder-header {
     display: flex;
+    align-items: center;
 }
 
 .querybuilder-header img {
     height: 24px;
     margin-right: 8px;
+}
+
+.querybuilder-header h2 {
+    margin: 0;
 }
 
 .querybuilder-expand {
@@ -76,7 +81,6 @@
 }
 
 .spqueryfield .field-operation,
-.spqueryfield .field-label-field,
 .spqueryfield .field-label-datepart,
 .spqueryfield .field-label-treerank,
 .spqueryfield button {
@@ -120,7 +124,6 @@
 
 .spqueryfield button {
     vertical-align: middle;
-    padding-bottom: 8px;
 }
 
 .spqueryfield button.ui-button {
