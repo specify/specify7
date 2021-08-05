@@ -59,12 +59,14 @@ const commonText = require('./localization/common').default;
     // also manages other niceties involved in changing views
     function setCurrentView(view) {
         currentView && currentView.remove(); // remove old view
-        $('main').empty();
+        const main = $('main');
+        main.empty();
         $('.ui-autocomplete').remove(); // these are getting left behind sometimes
         $('.ui-dialog-content').dialog('close'); // close any open dialogs
         currentView = view;
         currentView.render();
-        $('main').append(currentView.el);
+        main.append(currentView.el);
+        main[0].focus();
 
         Array.from(
           document.getElementById('site-nav').getElementsByTagName('a'),

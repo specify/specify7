@@ -28,8 +28,8 @@ const formsText = require('./localization/forms').default;
 module.exports = Backbone.View.extend({
         __name__: "FormsDialog",
         tagName: 'nav',
-        className: "forms-dialog table-list-dialog",
-        events: {'click a': 'selected'},
+        className: "forms-dialog",
+        events: {'click button': 'selected'},
         render: function() {
             var render = this._render.bind(this);
             getFormsPromise().done(render);
@@ -38,7 +38,7 @@ module.exports = Backbone.View.extend({
         _render: function(forms) {
             this.forms = forms;
             var entries = _.map(views, this.dialogEntry, this);
-            $('<table>').append(entries).appendTo(this.el);
+            $('<ul>').css('padding',0).append(entries).appendTo(this.el);
             this.$el.dialog({
                 title: formsText('formsDialogTitle'),
                 maxHeight: 400,
@@ -52,12 +52,25 @@ module.exports = Backbone.View.extend({
             return this;
         },
         dialogEntry: function(view) {
-            var img = $('<img>', { src: icons.getIcon(view.attr('iconname')) });
-            var link = $('<a>').addClass("intercept-navigation").text(view.attr('title'));
-            return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
+            return $('<li>').append(
+                $('<button>')
+                    .addClass("fake-link")
+                    .css({fontSize: '0.8rem'})
+                    .append(
+                        $(
+                            '<img>',
+                            {
+                                src: icons.getIcon(view.attr('iconname')),
+                                width: 'var(--table-icon-size)',
+                                'aria-hidden': true,
+                            }
+                        ),
+                        view.attr('title')
+                    )
+            )[0];
         },
         selected: function(evt) {
-            var index = this.$('a').index(evt.currentTarget);
+            var index = this.$('button').index(evt.currentTarget);
             this.$el.dialog('close');
             var form = this.forms[index];
             var model = schema.getModel(form['class'].split('.').pop());

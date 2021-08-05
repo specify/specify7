@@ -53,10 +53,10 @@ const commonText = require('./localization/common').default;
 module.exports = Backbone.View.extend({
         __name__: "InteractionsDialog",
         tagName: 'nav',
-        className: "interactions-dialog table-list-dialog",
+        className: "interactions-dialog",
         events: {
-            'click a.intercept-navigation': 'selected',
-            'click a.interaction-action': 'interactionActionClick'
+            'click button.intercept-navigation': 'selected',
+            'click button.interaction-action': 'interactionActionClick'
         },
         render: function() {
             var render = this._render.bind(this);
@@ -66,7 +66,7 @@ module.exports = Backbone.View.extend({
         _render: function(forms) {
             this.forms = forms;
             var entries = _.map(interaction_entries, this.dialogEntry, this);
-            $('<table>').append(entries).appendTo(this.el);
+            $('<ul>').css('padding',0).append(entries).appendTo(this.el);
             this.$el.dialog({
                 title: commonText('interactions'),
                 maxHeight: 400,
@@ -99,13 +99,28 @@ module.exports = Backbone.View.extend({
                 }
             }
         },
-        dialogEntry: function(interaction_entry) {
-            var img = $('<img>', { src: icons.getIcon(interaction_entry.attr('icon')) });
-            var link = isActionEntry(interaction_entry) ?
-                    $('<a>').addClass("interaction-action").text(this.getDialogEntryText(interaction_entry)) :
-                    $('<a>').addClass("intercept-navigation").text(this.getDialogEntryText(interaction_entry));
-            this.addDialogEntryToolTip(interaction_entry, link);
-            return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
+        dialogEntry: function(interactionEntry) {
+            const link = $('<li>').append(
+                $('<button>', {class:
+                    isActionEntry(interactionEntry) ?
+                        'interaction-action' : 'intercept-navigation'
+                })
+                    .addClass("fake-link")
+                    .css({fontSize: '0.8rem'})
+                    .append(
+                        $(
+                            '<img>',
+                            {
+                                src: icons.getIcon(interactionEntry.attr('icon')),
+                                width: 'var(--table-icon-size)',
+                                'aria-hidden': true,
+                            }
+                        ),
+                        this.getDialogEntryText(interactionEntry)
+                    )
+            );
+            this.addDialogEntryToolTip(interactionEntry, link);
+            return link[0];
         },
         selected: function(evt) {
             var index = this.$('a').filter(".intercept-navigation").index(evt.currentTarget);

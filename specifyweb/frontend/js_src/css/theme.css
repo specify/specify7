@@ -81,6 +81,7 @@
 
 .fake-link:not([disabled]) {
   cursor: pointer;
+  color: var(--t1);
 }
 
 .fake-link:not([disabled]):hover {
