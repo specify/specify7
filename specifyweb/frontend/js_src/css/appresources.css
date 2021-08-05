@@ -23,12 +23,11 @@
     padding: 0;
 }
 
-#appresources-view .toggle-content {
-    cursor: pointer;
-}
-
-#appresources-view .new-resource {
-    cursor: pointer;
+#appresources-view menu :not(li) > .fake-link {
+    color: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    display: inline;
 }
 
 #appresources-view .appresource-name.selected a {
@@ -45,18 +44,31 @@
     border: 1px solid #ddd;
 }
 
+.appresource-data .specify-form-header,
+.appresource-data .specify-form-buttons {
+    padding: var(--half-size) 0;
+}
+
 .appresource-data .resource-editor {
     width: 100%;
     border: 1px solid #aaa;
     height: 50em;
 }
 
-.appresource-data .mimetype-input,
-.appresource-data .load-file,
-.appresource-data .download-resource {
-    margin-left: 10px;
+.appresource-toolbar {
+    display: flex;
+    align-items: center;
+    column-gap: var(--half-size);
 }
 
-.appresource-data .metadata-input input {
-    width: 400px;
+.appresource-toolbar label {
+    display: flex;
+    align-items: center;
+    column-gap: var(--quarter-size);
+    flex-wrap: wrap;
+}
+
+.appresource-data .metadata-input,
+.appresource-toolbar input {
+    flex: 1;
 }
