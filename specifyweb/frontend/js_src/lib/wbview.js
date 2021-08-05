@@ -188,7 +188,7 @@ const WBView = Backbone.View.extend({
             title: wbText('noUploadPlanDialogTitle'),
             modal: true,
             buttons: {
-              [commonText('cancel')]: function () {
+              [commonText('close')]: function () {
                 $(this).dialog('close');
               },
               [commonText('create')]: this.openPlan.bind(this),
@@ -1624,11 +1624,14 @@ const WBView = Backbone.View.extend({
         });
       } else this.startUpload(mode);
     } else {
-      $(`<div>${wbText('noUploadPlanDialogMessage')}</div>`).dialog({
+      $(`<div>
+        ${wbText('noUploadPlanDialogHeader')}
+        ${wbText('noUploadPlanDialogMessage')}
+      </div>`).dialog({
         title: wbText('noUploadPlanDialogTitle'),
         modal: true,
         buttons: {
-          [commonText('cancel')]: function () {
+          [commonText('close')]: function () {
             $(this).dialog('close');
           },
           [commonText('create')]: () => this.openPlan(),
