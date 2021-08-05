@@ -4,7 +4,6 @@ import { createDictionary, createHeader } from './utils';
 
 const localityText = createDictionary({
   // Leaflet
-  geoMap: 'GeoMap',
   polygonBoundaries: 'Polygon Boundaries',
   errorRadius: 'Error Radius',
   showMap: 'Show Map',

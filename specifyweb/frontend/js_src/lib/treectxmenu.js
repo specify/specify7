@@ -24,7 +24,7 @@ function contextMenuBuilder(treeView) {
         } else {
             items = {
                 'query': {name: treeText('query'), icon: "query", accesskey: "q"},
-                'open': {name: ro ? treeText('view') : treeText('edit'), icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
+                'open': {name: ro ? treeText('view') : commonText('edit'), icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
             };
             if (!ro) Object.assign(items, {
                 'add-child': {

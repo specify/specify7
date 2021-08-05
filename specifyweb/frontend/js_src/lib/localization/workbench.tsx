@@ -19,7 +19,6 @@ const wbText = createDictionary({
   fillUp: 'Fill Up',
   revert: 'Revert',
   geoLocate: 'GeoLocate',
-  geoMap: 'GeoMap',
   dataMapper: 'Data Mapper',
   dataCheck: 'Data Check',
   dataCheckOn: (queueLength: number) =>
@@ -28,7 +27,6 @@ const wbText = createDictionary({
   export: 'Export',
   convertCoordinates: 'Convert Coordinates',
   navigation: 'Navigation',
-  searchQuery: 'Search Query',
   replace: 'Replace',
   replacementValue: 'Replacement value',
   searchResults: 'Search Results',
@@ -277,7 +275,6 @@ const wbText = createDictionary({
   showMappingEditor: 'Show Map Explorer',
   resizeMappingEditorButtonDescription:
     'Click and drag up or down to resize the Map Explorer',
-  matchingLogic: 'Must Match',
   mappings: 'Mappings',
   clearMappings: 'Clear Mappings',
   emptyDataSetDialogTitle: 'Empty Data Set',

@@ -372,7 +372,7 @@ export const stateReducer = generateReducer<
                     })
                   }
                 >
-                  {wbText('matchingLogic')}
+                  {wbText('mustMatch')}
                 </button>
                 {!state.props.readonly && (
                   <>

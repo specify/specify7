@@ -11,7 +11,6 @@ const queryText = createDictionary({
   treeRankAuthor: (rankName: string) => `${rankName} Author`,
   selectOp: 'Select Op...',
   any: 'any',
-  searchQuery: 'Search Query',
   startValue: 'Start Value',
   endValue: 'End Value',
   addValuesHint: 'Add values one by one, or as comma-separated list:',
@@ -69,7 +68,6 @@ const queryText = createDictionary({
   saveAs: 'Save As',
 
   // QueryField
-  expand: 'Expand',
   expandButtonDescription: 'Field is valid and will be saved. Click to expand',
   anyInline: '(any)',
   sort: 'Sort',

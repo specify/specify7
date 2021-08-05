@@ -15,7 +15,7 @@ const adminText = createDictionary({
     This app resource appears to be corrupt but may be in the process of
     being saved by another session. It can be deleted if that is not the case.`,
   resourceLoadDialogTitle: 'Load file',
-  resourceLoadDialogHeader: createHeader(''),
+  resourceLoadDialogHeader: createHeader('Load resource file'),
   resourceLoadDialogMessage: 'Select the file to be loaded into the editor.',
   globalResourcesTitle: (resourceCount: string) =>
     `Global <small>(${resourceCount})</small>`,
