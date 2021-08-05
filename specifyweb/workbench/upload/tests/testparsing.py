@@ -5,7 +5,7 @@ from jsonschema import validate # type: ignore
 from specifyweb.specify import auditcodes
 
 from .base import UploadTestsBase, get_table
-from ..upload_result import Uploaded, Matched, ParseFailures, ParseFailure, FailedBusinessRule
+from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, ParseFailure, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable
@@ -207,7 +207,7 @@ class ParsingTests(UploadTestsBase):
             {'catno': '5', 'habitat': 'Lagoon'},
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
-        for result, expected in zip(results, [Uploaded, ParseFailures, ParseFailures, ParseFailures, Uploaded]):
+        for result, expected in zip(results, [Uploaded, ParseFailures, ParseFailures, NullRecord, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
     def test_readonly_picklist(self) -> None:
@@ -438,6 +438,28 @@ class MatchingBehaviorTests(UploadTestsBase):
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "Second record doesn't match first due to blank author.")
         self.assertIsInstance(results[2].record_result, Uploaded, "Third record doesn't match due to different author.")
+
+    def test_tree_cols_with_required(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'),
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None))
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
+            {'Genus': 'Eupatorium', 'Species': '', 'Species Author': ''},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, ParseFailures, "Second record fails due to blank author.")
+        self.assertIsInstance(results[2].record_result, Uploaded, "Third record doesn't match due to different author.")
+        self.assertIsInstance(results[3].record_result, Matched, "Fourth record matches at genus level due to null species record.")
 
     def test_tree_cols_with_ignoreAlways(self) -> None:
         plan = TreeRecord(
@@ -718,9 +740,11 @@ class NullAllowedTests(UploadTestsBase):
             toMany={}
         ).apply_scoping(self.collection)
         data = [
-            {'lastname': 'Doe', 'firstname': 'River'},
-            {'lastname': 'Doe', 'firstname': ''},
-            {'lastname': 'Doe', 'firstname': 'Stream'},
+            {'lastname': 'Doe1', 'firstname': 'River'},
+            {'lastname': 'Doe2', 'firstname': ''},
+            {'lastname': 'Doe3', 'firstname': 'Stream'},
+            {'lastname': 'Doe1', 'firstname': ''},
+            {'lastname': 'Doe1', 'firstname': 'Stream'},
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
@@ -729,6 +753,8 @@ class NullAllowedTests(UploadTestsBase):
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
+        self.assertIsInstance(results[3].record_result, Matched)
+        self.assertIsInstance(results[4].record_result, Uploaded)
 
     def test_wbcols_with_null_disallowed_and_ignoreAlways(self) -> None:
         plan = UploadTable(
@@ -742,9 +768,11 @@ class NullAllowedTests(UploadTestsBase):
             toMany={}
         ).apply_scoping(self.collection)
         data = [
-            {'lastname': 'Doe', 'firstname': 'River'},
-            {'lastname': 'Doe', 'firstname': ''},
-            {'lastname': 'Doe', 'firstname': 'Stream'},
+            {'lastname': 'Doe1', 'firstname': 'River'},
+            {'lastname': 'Doe2', 'firstname': ''},
+            {'lastname': 'Doe3', 'firstname': 'Stream'},
+            {'lastname': 'Doe1', 'firstname': ''},
+            {'lastname': 'Doe1', 'firstname': 'Stream'},
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
@@ -752,5 +780,7 @@ class NullAllowedTests(UploadTestsBase):
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
-        self.assertIsInstance(results[2].record_result, Matched)
+        self.assertIsInstance(results[2].record_result, Uploaded)
+        self.assertIsInstance(results[3].record_result, Matched)
+        self.assertIsInstance(results[4].record_result, Matched)
 

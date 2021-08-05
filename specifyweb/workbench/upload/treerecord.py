@@ -299,6 +299,18 @@ class BoundTreeRecord(NamedTuple):
                 {}, {}
             )
 
+        missing_requireds = [
+            # TODO: there should probably be a different structure for
+            # missing required fields than ParseFailure
+            ParseFailure(r.missing_required, r.column)
+            for tdiwpr in to_upload
+            for r in tdiwpr.results
+            if r.missing_required is not None
+        ]
+
+        if missing_requireds:
+            return UploadResult(ParseFailures(missing_requireds), {}, {})
+
         for tdiwpr in to_upload:
             attrs = {c: v for r in tdiwpr.results for c, v in r.upload.items()}
             info = ReportInfo(

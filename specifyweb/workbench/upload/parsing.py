@@ -37,13 +37,14 @@ class ParseResult(NamedTuple):
     upload: Dict[str, Any]
     add_to_picklist: Optional[PicklistAddition]
     column: str
+    missing_required: Optional[str]
 
     def match_key(self) -> str:
         from .uploadable import filter_match_key
         return filter_match_key(self.filter_on)
 
 def filter_and_upload(f: Filter, column: str) -> ParseResult:
-    return ParseResult(f, f, None, column)
+    return ParseResult(f, f, None, column, None)
 
 def parse_many(collection, tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[ParseFailure]]:
     results = [
@@ -62,12 +63,12 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
     was_blank = value_in.strip() == ""
     if was_blank:
         if colopts.default is None:
-            if not colopts.nullAllowed:
-                result = ParseFailure("field is required by upload plan mapping", colopts.column)
-            elif required_by_schema:
-                result = ParseFailure("field is required by schema config", colopts.column)
-            else:
-                result = ParseResult({fieldname: None}, {}, None, colopts.column)
+            missing_required = (
+                "field is required by upload plan mapping" if not colopts.nullAllowed else
+                "field is required by schema config" if required_by_schema else
+                None
+            )
+            result = ParseResult({fieldname: None}, {}, None, colopts.column, missing_required)
         else:
             result = _parse(collection, tablename, fieldname, colopts, colopts.default)
     else:
@@ -268,7 +269,8 @@ def parse_latlong(field, value: str, column: str) -> Union[ParseResult, ParseFai
         text_filter,
         {field.name: coord, 'originallatlongunit': unit, **text_filter},
         None,
-        column
+        column,
+        None
     )
 
 

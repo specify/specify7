@@ -306,6 +306,17 @@ class BoundUploadTable(NamedTuple):
             return None
 
     def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
+        missing_requireds = [
+            # TODO: there should probably be a different structure for
+            # missing required fields than ParseFailure
+            ParseFailure(parsedField.missing_required, parsedField.column)
+            for parsedField in self.parsedFields
+            if parsedField.missing_required is not None
+        ]
+
+        if missing_requireds:
+            return UploadResult(ParseFailures(missing_requireds), toOneResults, {})
+
         attrs = {
             fieldname_: value
             for parsedField in self.parsedFields
