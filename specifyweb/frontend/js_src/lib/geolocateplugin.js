@@ -97,7 +97,7 @@ module.exports =  UIPlugin.extend({
     geoRefData: function() {
         const currentLat = this.model.get('latitude1');
         const currentLon = this.model.get('longitude1');
-        const name = this.model.get('localityname');
+        const name = this.model.get('localityname') ?? '';
 
         const point = (currentLat != null && currentLon != null) ? [currentLat, currentLon, name, ''] : null;
 
@@ -126,7 +126,7 @@ module.exports =  UIPlugin.extend({
                     w: 900,
                     h: 400,
                     georef: 'run',
-                    locality: this.model.get('localityname'),
+                    locality: this.model.get('localityname') ?? '',
                     tab: 'results'
                 }, geo);
 
