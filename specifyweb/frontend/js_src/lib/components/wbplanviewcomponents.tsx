@@ -69,24 +69,25 @@ export function ListOfBaseTables({
   readonly handleChange: (newValue: string) => void;
   readonly showHiddenTables: boolean;
 }): JSX.Element {
+  const fieldsData = Object.fromEntries(
+    (showHiddenTables
+      ? Object.entries(listOfTables)
+      : Object.entries(listOfTables).filter(([, { isHidden }]) => !isHidden)
+    ).map(([tableName, { label, isHidden }]) => [
+      tableName,
+      {
+        optionLabel: label,
+        tableName,
+        isRelationship: true,
+        isHidden,
+      },
+    ])
+  );
   return (
     <MappingElement
       isOpen={true}
-      handleChange={(_close, newValue): void => handleChange(newValue)}
-      fieldsData={Object.fromEntries(
-        (showHiddenTables
-          ? Object.entries(listOfTables)
-          : Object.entries(listOfTables).filter(([, { isHidden }]) => !isHidden)
-        ).map(([tableName, { label, isHidden }]) => [
-          tableName,
-          {
-            optionLabel: label,
-            tableName,
-            isRelationship: true,
-            isHidden,
-          },
-        ])
-      )}
+      handleChange={(_close, value): void => handleChange(value)}
+      fieldsData={fieldsData}
       customSelectType="BASE_TABLE_SELECTION_LIST"
       customSelectSubtype="simple"
     />
