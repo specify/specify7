@@ -429,7 +429,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       method: {
-        automapper: {
+        suggestion: {
           headers: {
             contains: ['method'],
           },
