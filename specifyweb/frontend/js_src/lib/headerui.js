@@ -68,6 +68,8 @@ module.exports = Backbone.View.extend({
             _.each(this.toolModules, function(module) {
                 router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
             });
+
+            this.currentCollection = undefined;
         },
         render: function() {
             new ExpressSearchInput({el: this.$('#express-search')});
@@ -82,9 +84,12 @@ module.exports = Backbone.View.extend({
                     .attr('href', '/accounts/logout/');
 
             var collectionSelector = this.$('#user-tools select');
-            $.get('/context/collection/').done(({current, available}) => collectionSelector.append(
-                _.map(available,
-                      ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0])));
+            $.get('/context/collection/').done(({current, available}) => {
+                this.currentCollection = current;
+                collectionSelector.append(
+                    _.map(available,
+                      ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0]))
+            });
 
             var lis = this.visibleTools.map(this.makeButton);
             this.$('#site-nav').empty().append(lis);
@@ -104,8 +109,10 @@ module.exports = Backbone.View.extend({
         openUserTools: function(evt) {
             new UserTools({user: userInfo, tools: this.hiddenTools}).render();
         },
-        changeCollection: function(evt) {
-            navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/');
+        changeCollection: function(event) {
+            navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/', ()=> {
+                event.target.value = this.currentCollection
+            });
         }
     });
 
