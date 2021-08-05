@@ -4,7 +4,8 @@ import type { IR, RA } from '../components/wbplanview';
 import { camelToHuman } from '../wbplanviewhelper';
 
 type Value = string | JSX.Element;
-type Dictionary = IR<Value | ((...args: RA<never>) => Value)>;
+export type CompoundValue = Value | ((...args: RA<never>) => Value);
+type Dictionary = IR<CompoundValue>;
 
 function assertExhaustive(key: string): never {
   /*
@@ -41,12 +42,14 @@ function assertExhaustive(key: string): never {
   } else throw new Error(errorMessage);
 }
 
-export const createDictionary =
-  <DICT extends Dictionary>(dictionary: DICT) =>
-  <KEY extends string & keyof typeof dictionary>(
+export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
+  const resolver = <KEY extends string & keyof typeof dictionary>(
     key: KEY
   ): typeof dictionary[typeof key] =>
     key in dictionary ? dictionary[key] : assertExhaustive(key);
+  resolver.dictionary = dictionary;
+  return resolver;
+}
 
 export const createHeader = (header: string): string =>
   header === '' ? '' : `<h2>${header}</h2>`;
