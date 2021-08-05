@@ -479,7 +479,7 @@ export function CustomSelectElement({
       )?.[0] as undefined | HTMLElement;
 
       if (typeof selectedOption !== 'undefined') {
-        // The current line and half a line before it is visible
+        // The current line and half a line before it should be visible
         const minGoodOffsetTop = Math.max(
           0,
           selectedOption.offsetTop +
@@ -494,7 +494,7 @@ export function CustomSelectElement({
         // Change scrollTop only if current option is not visible
         if (
           minGoodOffsetTop > listOfOptionsRef.current.scrollTop ||
-          listOfOptionsRef.current.scrollTop < maxGoodOffsetTop
+          listOfOptionsRef.current.scrollTop > maxGoodOffsetTop
         )
           /*
            * Make selected option appear at the middle of the list, if possible
