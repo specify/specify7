@@ -98,7 +98,7 @@ interface AutoMapperDefinitions {
    *   tables as ineligible for automatic matching under
    *   certain scopes
    * This is helpful if some fields are commonly matched when
-   *   they should be
+   *   they should not be
    * Don't match list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
@@ -116,7 +116,7 @@ interface AutoMapperDefinitions {
   /*
    * Don't map headers that match the regex
    * This is helpful if some fields are too ambiguous and thus should not be
-   *  automapper
+   *  automapped
    * Don't map list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
@@ -429,6 +429,11 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       method: {
+        automapper: {
+          headers: {
+            contains: ['collection method'],
+          },
+        },
         suggestion: {
           headers: {
             contains: ['method'],
@@ -507,6 +512,18 @@ const definitions: AutoMapperDefinitions = {
         automapper: {
           headers: {
             contains: ['longitude 2'],
+          },
+        },
+      },
+      latlongmethod: {
+        automapper: {
+          headers: {
+            contains: ['lat/long method'],
+          },
+        },
+        suggestion: {
+          headers: {
+            contains: ['method'],
           },
         },
       },

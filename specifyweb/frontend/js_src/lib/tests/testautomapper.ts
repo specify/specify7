@@ -123,9 +123,6 @@ export default function (): void {
           'Determiner 1 Title': [
             ['determinations', '#1', 'determiner', 'title'],
           ],
-          'Verbatim Collecting method': [
-            ['cataloger', 'collectors', '#1', 'collectingevent', 'method'],
-          ],
           'Collector 1 First Name': [
             ['collectingevent', 'collectors', '#1', 'agent', 'firstname'],
           ],

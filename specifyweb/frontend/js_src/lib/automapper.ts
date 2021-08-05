@@ -236,7 +236,7 @@ function handleOrdinalNumbers(header: string): string {
     : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
 }
 
-const CACHE_VERSION = '5';
+const CACHE_VERSION = '6';
 
 export default class Automapper {
   // Used to replace any white space characters with space
@@ -370,12 +370,14 @@ export default class Automapper {
               .trim()
           );
           const strippedName = lowercaseName
-            .replace(Automapper.regexRemoveNonAz, '')
+            .replace(Automapper.regexRemoveNonAz, ' ')
+            .replace(Automapper.regexReplaceWhiteSpace, ' ')
             .trim();
 
           const finalName = lowercaseName
-            .replace(Automapper.regexRemoveParentheses, '')
-            .replace(Automapper.regexRemoveNonAz, '')
+            .replace(Automapper.regexRemoveParentheses, ' ')
+            .replace(Automapper.regexRemoveNonAz, ' ')
+            .replace(Automapper.regexReplaceWhiteSpace, ' ')
             .trim()
             .split(' ')
             .join('');
