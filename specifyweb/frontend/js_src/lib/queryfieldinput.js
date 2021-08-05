@@ -56,7 +56,7 @@ const queryText = require('./localization/query').default;
         },
         render: function() {
             this.$el.empty();
-            $('<a class="field-operation">').text(this.opName).appendTo(this.el);
+            $('<button class="field-operation fake-link">').text(this.opName).appendTo(this.el);
             this.input && $(this.input).appendTo(this.el);
             this.inputUIs = _.map(this.$('input'), this.addUIFieldInput, this);
             return this;

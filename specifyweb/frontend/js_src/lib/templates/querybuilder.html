@@ -1,6 +1,6 @@
 <div class="querybuilder">
   <header class="querybuilder-header">
-    <img />
+    <img aria-hidden="true" alt="" />
     <h2></h2>
   </header>
   <ul class="spqueryfields"></ul>
@@ -36,46 +36,39 @@
     <label name="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>"
       ><%= queryText('format') %></label
     >
-    <input
+    <button
       type="button"
-      value="<%= queryText('query') %>"
-      class="query-execute"
+      class="query-execute magic-button"
       disabled
-    />
-    <input
+    ><%= queryText('query') %></button>
+    <button
       type="button"
-      value="<%= queryText('createCsv') %>"
-      class="query-csv"
+      class="query-csv magic-button"
       disabled
-    />
-    <input
+    ><%= queryText('createCsv') %></button>
+    <button
       type="button"
-      value="<%= queryText('createKml') %>"
-      class="query-kml"
+      class="query-kml magic-button"
       disabled
-    />
-    <input
+    ><%= queryText('createKml') %></button>
+    <button
       type="button"
-      value="<%= queryText('makeRecordSet') %>"
-      class="query-to-recordset"
+      class="query-to-recordset magic-button"
       disabled
-    />
-    <input
+    ><%= queryText('makeRecordSet') %></button>
+    <button
       type="button"
-      value="<%= queryText('abandonChanges') %>"
-      class="abandon-changes"
+      class="abandon-changes magic-button"
       disabled
-    />
-    <input
+    ><%= queryText('abandonChanges') %></button>
+    <button
       type="button"
-      value="<%= commonText('save') %>"
-      class="query-save"
+      class="query-save magic-button"
       disabled
-    />
-    <input
+    ><%= commonText('save') %></button>
+    <button
       type="button"
-      value="<%= queryText('saveAs') %>"
-      class="query-save-as"
-    />
+      class="query-save-as magic-button"
+    ><%= queryText('saveAs') %></button>
   </div>
 </div>
