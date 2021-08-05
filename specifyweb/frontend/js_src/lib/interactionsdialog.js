@@ -125,6 +125,7 @@ module.exports = Backbone.View.extend({
                         $(
                             '<img>',
                             {
+                                alt: interactionEntry.attr('icon'),
                                 src: icons.getIcon(interactionEntry.attr('icon')),
                                 width: 'var(--table-icon-size)',
                                 'aria-hidden': true,
@@ -137,7 +138,7 @@ module.exports = Backbone.View.extend({
             return link[0];
         },
         selected: function(evt) {
-            var index = this.$('a').filter(".intercept-navigation").index(evt.currentTarget);
+            var index = this.$('button').filter(".intercept-navigation").index(evt.currentTarget);
             getFormsPromise.done(forms => {
                 this.$el.dialog('close');
                 var form = forms[index];
@@ -149,7 +150,7 @@ module.exports = Backbone.View.extend({
             return actionName == 'NEW_GIFT' || actionName == 'NEW_LOAN';
         },
         interactionActionClick: function(evt) {
-            var index = this.$('a').filter(".interaction-action").index(evt.currentTarget);
+            var index = this.$('button').filter(".interaction-action").index(evt.currentTarget);
             this.$el.dialog('close');
             var action = actions[index];
             var isRsAction = this.isRsAction(action.attr('action'));

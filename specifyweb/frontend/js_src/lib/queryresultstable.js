@@ -27,7 +27,7 @@ async function getTreeRanks(tableName){
         const th = $(`<th><span></span></th>`);
         const span = th.find('span');
 
-        // If it is a tree rank, display rank name while rank title is fetching
+        // If it is a tree rank, display rank name while fetching rank title
         span.text(name ?? fieldSpec.treeRank);
 
         if(fieldSpec.treeRank)
@@ -41,9 +41,10 @@ async function getTreeRanks(tableName){
               .then(title=>span.text(title));
 
         else if (fieldSpec.datePart && fieldSpec.datePart !== 'Full Date')
-            span.text(`(${fieldSpec.datePart})`);
+            span.text(`${name} (${fieldSpec.datePart})`);
 
         icon && th.prepend($('<img>', {src: icon}));
+        icon && th.prepend($('<img>', {src: icon, alt: ''}));
         return th;
     }
 

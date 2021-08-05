@@ -55,7 +55,8 @@ module.exports = Backbone.View.extend({
             this.$el.append(table);
         },
         dialogEntry: function(recordSet) {
-            var img = $('<img>', {src: schema.getModelById(recordSet.get('dbtableid')).getIcon()});
+            const model = schema.getModelById(recordSet.get('dbtableid'));
+            const img = $('<img>', {src: model.getIcon(), alt: model.getLocalizedName()});
             var link = this.makeEntryLink(recordSet);
             var entry = $('<tr>').append(
                 $('<td>').append(img),

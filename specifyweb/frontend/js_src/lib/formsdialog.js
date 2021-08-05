@@ -77,6 +77,7 @@ module.exports = Backbone.View.extend({
                         $(
                             '<img>',
                             {
+                                alt: view.attr('iconname'),
                                 src: icons.getIcon(view.attr('iconname')),
                                 width: 'var(--table-icon-size)',
                                 'aria-hidden': true,

@@ -17,7 +17,7 @@ const csrftoken = require('./csrftoken.js');
 const populateForm = require('./populateform.js');
 const navigation = require('./navigation.js');
 
-var title =  "Reports";
+var title = commonText('reports');
 
 var dialog;
 function makeDialog(el, options) {
@@ -407,8 +407,9 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         return this;
     },
     dialogEntry: function(recordSet) {
-        var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
-        var img = $('<img>', {src: icon});
+        const model = schema.getModelById(recordSet.get('dbtableid'));
+        const icon = model.getIcon();
+        const img = $('<img>', {src: icon, alt: model.getLocalizedName()});
         var link = $('<a href="#">').text(recordSet.get('name'));
         var entry = $('<tr>').append(
             $('<td>').append(img),
