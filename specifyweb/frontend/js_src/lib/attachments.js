@@ -7,6 +7,7 @@ var icons          = require('./icons.js');
 var schema         = require('./schema.js');
 var assert         = require('./assert.js');
 var initialContext = require('./initialcontext.js');
+const commonText = require('./localization/common').default;
 
     var settings;
     initialContext.load('attachment_settings.json', data => settings = data);
@@ -16,14 +17,14 @@ var initialContext = require('./initialcontext.js');
     function iconForMimeType(mimetype) {
         var iconName;
 
-        if (mimetype === 'text/plain') return icons.getIcon('text');
-        if (mimetype === 'text/html') return icons.getIcon('html');
+        if (mimetype === 'text/plain') return ['text',icons.getIcon('text')];
+        if (mimetype === 'text/html') return ['html',icons.getIcon('html')];
 
         var parts = mimetype.split('/');
         var type = parts[0], subtype = parts[1];
 
         if (_("audio video image text".split()).contains(type)) {
-            return icons.getIcon(type);
+            return [type,icons.getIcon(type)];
         }
 
         if (type === 'application') {
@@ -34,10 +35,10 @@ var initialContext = require('./initialcontext.js');
                 'vnd.ms-powerpoint': 'MSPowerPoint'
             }[subtype];
 
-            if (iconName) return icons.getIcon(iconName);
+            if (iconName) return [iconName,icons.getIcon(iconName)];
         }
 
-        return icons.getIcon('unknown');
+        return [commonText('unknown'), icons.getIcon('unknown')];
     }
 
     function getToken(filename) {
@@ -55,8 +56,8 @@ var initialContext = require('./initialcontext.js');
 
             var mimetype = attachment.get('mimetype');
             if (!_(thumbnailable).contains(mimetype)) {
-                var src = iconForMimeType(mimetype);
-                return $.when( $('<img>', {src: src, style: style}) );
+                const [alt, src] = iconForMimeType(mimetype);
+                return $.when( $('<img>', {src, style, alt}) );
             }
 
             var attachmentLocation = attachment.get('attachmentlocation');

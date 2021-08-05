@@ -76,7 +76,8 @@ const template = require('./templates/attachmentbrowser.html');
 
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",
-                src: icon
+                src: icon,
+                alt: model.getLocalizedName()
             }).appendTo(wrapper);
 
             attachments.getThumbnail(attachment, 123).done(function(img) {

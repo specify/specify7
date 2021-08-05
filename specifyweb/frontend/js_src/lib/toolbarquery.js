@@ -68,7 +68,8 @@ const commonText = require('./localization/common').default;
             return this;
         },
         dialogEntry: function(query) {
-            var img = $('<img>', { src: schema.getModelById(query.get('contexttableid')).getIcon() });
+            const model = schema.getModelById(query.get('contexttableid'));
+            var img = $('<img>', { src: model.getIcon(), alt: model.getLocalizedName(), 'aria-hidden': true });
             var link = $('<a>', { href: '/specify/query/' + query.id + '/' })
                     .addClass("intercept-navigation")
                     .text(query.get('name'));
@@ -120,7 +121,7 @@ const commonText = require('./localization/common').default;
         },
         dialogEntry: function(table) {
             var model = schema.getModel(table.attr('name'));
-            var img = $('<img>', { src: model.getIcon() });
+            var img = $('<img>', { src: model.getIcon(), alt: '', 'aria-hidden': true });
             var link = $('<a>').text(model.getLocalizedName());
             var entry = $('<tr>').append(
                 $('<td>').append(img),

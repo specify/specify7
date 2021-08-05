@@ -42,7 +42,7 @@ const commonText = require('./localization/common').default;
             app.setTitle(queryText('queryTaskTitle')(this.query.get('name')));
             this.$el.append(template({ queryText, commonText, cid: this.cid }));
             this.$('.querybuilder-header h2').text(title);
-            this.$('.querybuilder-header img').attr('src', this.model.getIcon());
+            this.$('.querybuilder-header img').attr('src', this.model.getIcon()).attr('alt',this.model.getLocalizedName());
             this.query.isNew() && this.$('.abandon-changes').remove();
             this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
             this.query.id == null && this.$('.query-save-as').remove();
