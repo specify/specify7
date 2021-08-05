@@ -34,7 +34,12 @@ type Properties =
   // Has option group labels
   | 'groupLabels'
   // Has tabIndex of 0
-  | 'tabIndex';
+  | 'tabIndex'
+  /*
+   * Handle keyboard navigation click locally instead of emitting
+   * handleClick(close: false, value, ...)
+   */
+  | 'handleKeyboardClick';
 const customSelectTypes: IR<RA<Properties>> = {
   /* eslint-disable @typescript-eslint/naming-convention */
   // Used in the mapping view
@@ -56,10 +61,19 @@ const customSelectTypes: IR<RA<Properties>> = {
   // Used inside of mapping validation results dialog and suggestion list
   PREVIEW_LIST: ['preview'],
   // Used to display a list of AutoMapper suggestions
-  SUGGESTION_LIST: ['interactive', 'groupLabels', 'tabIndex'],
-  SUGGESTION_LINE_LIST: ['preview'],
+  SUGGESTION_LIST: [
+    'interactive',
+    'groupLabels',
+    'tabIndex',
+    'handleKeyboardClick',
+  ],
   // Used for base table selection
-  BASE_TABLE_SELECTION_LIST: ['interactive', 'tabIndex'],
+  BASE_TABLE_SELECTION_LIST: [
+    'interactive',
+    'autoScroll',
+    'tabIndex',
+    'handleKeyboardClick',
+  ],
   // Used for configuring mapping options for a mapping line
   MAPPING_OPTIONS_LIST: ['interactive', 'preview'],
   /* eslint-enable @typescript-eslint/naming-convention */
@@ -323,7 +337,7 @@ const defaultDefaultOption = {
 export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
-  customSelectOptionGroups,
+  customSelectOptionGroups: initialSelectOptionGroups,
   selectLabel = '',
   isOpen,
   tableName,
@@ -336,6 +350,30 @@ export function CustomSelectElement({
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const has = (property: Properties): boolean =>
     customSelectTypes[customSelectType].includes(property);
+
+  // Used to store internal state if handleKeyboardClick is set
+  const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
+    undefined
+  );
+  const customSelectOptionGroups =
+    typeof selectedValue === 'string'
+      ? Object.fromEntries(
+          Object.entries(initialSelectOptionGroups ?? {}).map(
+            ([groupName, { selectOptionsData, ...groupData }]) => [
+              groupName,
+              {
+                ...groupData,
+                selectOptionsData: Object.fromEntries(
+                  Object.entries(selectOptionsData).map(([key, data]) => [
+                    key,
+                    { ...data, isDefault: key === selectedValue },
+                  ])
+                ),
+              },
+            ]
+          )
+        )
+      : initialSelectOptionGroups;
 
   let inlineOptions: RA<CustomSelectElementDefaultOptionProps> = Object.values(
     customSelectOptionGroups ?? {}
@@ -371,8 +409,7 @@ export function CustomSelectElement({
         isRelationship: boolean,
         newTable: string
       ): void =>
-        newValue === defaultOption.optionName &&
-        customSelectType !== 'SUGGESTION_LIST'
+        newValue === defaultOption.optionName && !has('handleKeyboardClick')
           ? undefined
           : handleChange?.(
               close,
@@ -508,23 +545,15 @@ export function CustomSelectElement({
   const previousDefaultOption = React.useRef<
     undefined | CustomSelectElementDefaultOptionProps
   >(undefined);
-  const serializedDefaultOption = Object.values(defaultOption).join('');
   React.useEffect(() => {
     if (
-      /* Auto scroll down the option if: */
-      // The list is open
-      isOpen &&
-      // And DOM is rendered
+      /* Auto scroll the list to selected option if: */
+      // List is open
       listOfOptionsRef.current !== null &&
       // And this type of picklist has auto scroll enabled
       has('autoScroll') &&
-      // And list is not scrolled
-      (listOfOptionsRef.current.scrollTop === 0 ||
-        // Or default value has changed
-        ((typeof previousDefaultOption.current !== 'undefined' ||
-          defaultOption.optionName !== '0') &&
-          previousDefaultOption.current?.optionName !==
-            defaultOption.optionName))
+      // And default value has changed
+      previousDefaultOption.current?.optionName !== defaultOption.optionName
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
         'custom-select-option-selected'
@@ -564,7 +593,7 @@ export function CustomSelectElement({
       Object.values(previousDefaultOption.current ?? {}).join('')
     )
       previousDefaultOption.current = defaultOption;
-  }, [isOpen, listOfOptionsRef, serializedDefaultOption]);
+  }, [listOfOptionsRef.current, defaultOption.optionName]);
 
   const customSelectElementRef = React.useRef<HTMLElement>(null);
   const interactive = has('interactive');
@@ -614,7 +643,7 @@ export function CustomSelectElement({
 
               if (
                 event.key === 'Enter' &&
-                customSelectType === 'SUGGESTION_LIST' &&
+                has('handleKeyboardClick') &&
                 typeof inlineOptions[selectedValueIndex] === 'object'
               ) {
                 close = true;
@@ -632,13 +661,18 @@ export function CustomSelectElement({
                   newIndex = selectedValueIndex + 1;
                 else newIndex = 0;
 
-              if (typeof newIndex === 'number')
-                handleClick?.(
-                  close,
-                  inlineOptions[newIndex]?.optionName ?? '0',
-                  inlineOptions[newIndex]?.isRelationship ?? false,
-                  inlineOptions[newIndex]?.tableName ?? '0'
-                );
+              if (typeof newIndex === 'number') {
+                const newValue = inlineOptions[newIndex]?.optionName ?? '0';
+                if (!close && has('handleKeyboardClick'))
+                  setSelectedValue(newValue);
+                else
+                  handleClick?.(
+                    close,
+                    newValue,
+                    inlineOptions[newIndex]?.isRelationship ?? false,
+                    inlineOptions[newIndex]?.tableName ?? '0'
+                  );
+              }
             }
           : undefined
       }
@@ -660,9 +694,6 @@ export function SuggestionBox({
   readonly selectOptionsData: CustomSelectElementOptions;
   readonly onSelect: (selection: string) => void;
 }): JSX.Element {
-  const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
-    undefined
-  );
   return (
     <CustomSelectElement
       customSelectType="SUGGESTION_LIST"
@@ -670,23 +701,11 @@ export function SuggestionBox({
       customSelectOptionGroups={{
         suggestedMappings: {
           selectGroupLabel: wbText('suggestedMappings'),
-          selectOptionsData:
-            typeof selectedValue === 'string'
-              ? Object.fromEntries(
-                  Object.entries(selectOptionsData).map(([key, data]) => [
-                    key,
-                    { ...data, isDefault: key === selectedValue },
-                  ])
-                )
-              : selectOptionsData,
+          selectOptionsData,
         },
       }}
       isOpen={true}
-      handleChange={(close, value): void => {
-        console.log(close, value, selectedValue);
-        if (close) handleSelect(value);
-        else setSelectedValue(value);
-      }}
+      handleChange={(_close, value): void => handleSelect(value)}
       {...props}
     />
   );

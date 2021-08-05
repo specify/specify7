@@ -430,7 +430,7 @@ export async function getAutomapperSuggestions({
       baseTableName,
       mappingPath: automapperResult,
       iterate: true,
-      customSelectType: 'SUGGESTION_LINE_LIST',
+      customSelectType: 'PREVIEW_LIST',
       getMappedFields: getMappedFields.bind(undefined, lines),
     }).slice(baseMappingPath.length - pathOffset),
   }));
