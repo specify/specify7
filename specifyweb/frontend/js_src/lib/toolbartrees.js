@@ -51,6 +51,7 @@ const commonText = require('./localization/common').default;
                                 src: model.getIcon(),
                                 width: 'var(--table-icon-size)',
                                 'aria-hidden': true,
+                                alt: '',
                             }
                         ),
                         model.getLocalizedName()

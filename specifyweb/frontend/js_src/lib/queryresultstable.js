@@ -19,7 +19,7 @@ const commonText = require('./localization/common').default;
             name += ' (' + fieldSpec.datePart + ')';
         }
         var th = $('<th>').text(name);
-        icon && th.prepend($('<img>', {src: icon}));
+        icon && th.prepend($('<img>', {src: icon, alt: name}));
         return th;
     }
 

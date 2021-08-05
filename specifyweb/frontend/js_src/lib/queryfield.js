@@ -185,7 +185,7 @@ module.exports =  Backbone.View.extend({
                 this.fieldSpec.table = field.getRelatedModel();
             }
 
-            this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon());
+            this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon()).attr('alt',this.fieldSpec.table.getLocalizedName());
             var fieldSelect = this.$('.field-select').empty().append(
                 `<option>${queryText('selectFields')}</option>`
             );

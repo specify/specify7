@@ -35,7 +35,7 @@ const RepairTreeView = Backbone.View.extend({
     },
     dialogEntry(tree) {
         const model = schema.getModel(tree);
-        const img = $('<img>', { src: model.getIcon() });
+        const img = $('<img>', { src: model.getIcon(), alt: '', 'aria-hidden': true });
         const link = $('<a>', { text: model.getLocalizedName() });
         return $('<tr>').append(
             $('<td>').append(img),
