@@ -401,6 +401,8 @@ class OneToOneAttributeTests(UploadTestsBase):
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         pas = [get_table('Preparation').objects.get(id=r.get_id()).preparationattribute_id for r in results]
+        self.assertTrue(all(pa is not None for pa in pas), "All prep attributes got created.")
+        self.assertEqual(len(data), len(pas), "Each prep gets a prep attribute.")
         self.assertEqual(len(pas), len(set(pas)), "The preparation attributes are not shared.")
 
 
@@ -428,6 +430,8 @@ class OneToOneAttributeTests(UploadTestsBase):
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
+        self.assertTrue(all(coa is not None for coa in coas), "All the COAs were created.")
+        self.assertEqual(len(data), len(coas), "Each collection object gets an attribute row.")
         self.assertEqual(len(coas), len(set(coas)), "The collection object attributes are not shared.")
 
     def test_collectingeventattribute(self) -> None:

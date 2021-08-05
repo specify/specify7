@@ -215,24 +215,29 @@ class BoundUploadTable(NamedTuple):
 
         info = ReportInfo(tableName=self.name, columns=[pr.column for pr in self.parsedFields], treeInfo=None)
 
-        toOneResults = self._process_to_ones()
+        toOneResults_ = self._process_to_ones()
 
-        toOneIdsForMatching: Dict[str, Optional[int]] = {}
-        multipleOneToOneMatch = False
+        multi_one_to_one = lambda field, result: self.toOne[field].is_one_to_one() and isinstance(result.record_result, MatchedMultiple)
 
-        for field, result in toOneResults.items():
-            if self.toOne[field].is_one_to_one() and isinstance(result.record_result, MatchedMultiple):
-                # If a one-to-one related object matched multiple
-                # records, we won't be able to use it for matching
-                # this object, but we need to remember that there was
-                # data here.
-                multipleOneToOneMatch = True
-                continue
+        multipleOneToOneMatch = any(
+            # If a one-to-one related object matched multiple
+            # records, we won't be able to use it for matching
+            # this object, but we need to remember that there was
+            # data here.
+            multi_one_to_one(field, result)
+            for field, result in toOneResults_.items()
+        )
 
-            id = result.get_id()
-            if id == "Failure":
-                return UploadResult(PropagatedFailure(), toOneResults, {})
-            toOneIdsForMatching[field] = id
+        toOneResults = {
+            # Filter out the one-to-ones that matched multiple
+            # b/c they aren't errors nor can be used for matching.
+            field: result
+            for field, result in toOneResults_.items()
+            if not multi_one_to_one(field, result)
+        }
+
+        if any(result.get_id() == "Failure" for result in toOneResults.values()):
+            return UploadResult(PropagatedFailure(), toOneResults, {})
 
         toManyFilters = _to_many_filters_and_excludes(self.toMany)
 
@@ -242,7 +247,7 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.upload.items()
         }
 
-        attrs.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIdsForMatching.items() })
+        attrs.update({ model._meta.get_field(fieldname).attname: r.get_id() for fieldname, r in toOneResults.items() })
 
         to_many_filters, to_many_excludes = toManyFilters
 
@@ -251,7 +256,7 @@ class BoundUploadTable(NamedTuple):
             return UploadResult(NullRecord(info), toOneResults, {})
 
         if not force_upload:
-            match = self._match(model, toOneIdsForMatching, toManyFilters, info)
+            match = self._match(model, toOneResults, toManyFilters, info)
             if match:
                 return UploadResult(match, toOneResults, {})
 
@@ -263,14 +268,14 @@ class BoundUploadTable(NamedTuple):
             for fieldname, to_one_def in self.toOne.items()
         }
 
-    def _match(self, model, toOneIds: Dict[str, Optional[int]], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
+    def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
         filters = {
             fieldname_: value
             for parsedField in self.parsedFields
             for fieldname_, value in parsedField.filter_on.items()
         }
 
-        filters.update({ model._meta.get_field(fieldname).attname: id for fieldname, id in toOneIds.items() })
+        filters.update({ model._meta.get_field(fieldname).attname: r.get_id() for fieldname, r in toOneResults.items() })
 
         cache_key = (
             self.name,
@@ -328,8 +333,9 @@ class BoundUploadTable(NamedTuple):
             fieldname: to_one_def.force_upload_row()
             for fieldname, to_one_def in self.toOne.items()
             if to_one_def.is_one_to_one()
-            for result in [toOneResults[fieldname].record_result]
-            if isinstance(result, Matched) or isinstance(result, MatchedMultiple)
+            if fieldname not in toOneResults # the field was removed b/c there were multiple matches
+            or isinstance(toOneResults[fieldname].record_result, Matched) # this stops the record from being shared
+            or isinstance(toOneResults[fieldname].record_result, MatchedMultiple) # this shouldn't ever be the case
         }}
 
         toOneIds: Dict[str, Optional[int]] = {}
