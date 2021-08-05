@@ -148,23 +148,29 @@ module.exports =  Backbone.View.extend({
         updateLabel: function() {
             var fieldLabel = this.$('.field-label').empty();
             _.each(this.fieldSpec.joinPath, function(field) {
-                $('<a class="field-label-field">')
+                $('<button class="field-label-field fake-link">')
                     .text(field.getLocalizedName() || field.name)
-                    .prepend($('<img>', { src: field.model.getIcon() }))
+                    .prepend($(
+                        '<img>',
+                        {
+                            src: field.model.getIcon(),
+                            alt: field.model.getLocalizedName(),
+                        }
+                    ))
                     .appendTo(fieldLabel);
             });
             if (this.formattedRecord) {
                 var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
                 $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
-                this.$('label.op-negate').hide();
+                this.$('.op-negate').hide();
             } else {
                 this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
                 if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
                     $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {
-                    $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
-                    this.$('label.op-negate').hide();
+                    $('<button class="field-operation fake-link">').text(queryText('anyInline')).appendTo(fieldLabel);
+                    this.$('.op-negate').hide();
                 }
             }
         },
