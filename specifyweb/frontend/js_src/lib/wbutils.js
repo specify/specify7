@@ -503,12 +503,10 @@ module.exports = Backbone.View.extend({
     };
   },
   findLocalityColumns() {
-    if (!this.wbview.mappings) return;
-
-    this.localityColumns = findLocalityColumnsInDataSet(
+    this.localityColumns = this.wbview.mappings ? findLocalityColumnsInDataSet(
       this.wbview.mappings.baseTableName,
       this.wbview.mappings.arrayOfMappings
-    );
+    ) : [];
 
     const leafletButton = this.el.getElementsByClassName('wb-leafletmap')[0];
     const geoLocaleButton = this.el.getElementsByClassName('wb-geolocate')[0];
