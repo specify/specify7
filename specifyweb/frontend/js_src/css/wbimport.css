@@ -22,25 +22,20 @@
   display: contents;
 }
 
-.custom-file-picker a {
+.custom-file-picker > span {
   margin-left: calc(var(--quarter-size) * -1);
   height: 150px;
   text-align: center;
   justify-content: center;
 }
 
-.custom-file-picker.custom-file-picker-dragging a {
-  background: var(--b1);
-  border-color: #23f;
+.custom-file-picker input:focus ~ span {
+  outline: var(--border-size) solid var(--accent);
 }
 
-.custom-file-picker input {
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1;
+.custom-file-picker.custom-file-picker-dragging > span {
+  background: var(--b1);
+  border-color: #23f;
 }
 
 .workbench-import-view .preview-table-wrapper {
