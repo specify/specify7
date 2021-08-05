@@ -135,7 +135,7 @@ function defaultConfirmNavigationHandler(proceed, cancel){
         buttons: {
             [commonText('cancel')]() {
                 $(this).dialog('close');
-                cancel();
+                cancel?.();
             },
             [commonText('leave')]() {
                 $(this).dialog('close');
@@ -178,8 +178,8 @@ module.exports = {
     push: function(url) {
         navigate(url, {trigger: false, replace: true});
     },
-    switchCollection: function(collection, nextUrl) {
-        $.ajax({
+    switchCollection: function(collection, nextUrl, cancelCallback) {
+        const cont = () => $.ajax({
             url: '/context/collection/',
             type: 'POST',
             data: _.isNumber(collection) ? collection : collection.id,
@@ -191,5 +191,8 @@ module.exports = {
                 window.location.reload();
             }
         });
+        if(unloadBlockers.length) confirmNavigation(cont, cancelCallback);
+        else cont();
+
     }
 };
