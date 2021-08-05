@@ -11,6 +11,7 @@ var UIFieldInput = require('./uiinputfield.js');
 var saveblockers = require('./saveblockers.js');
 var ToolTipMgr   = require('./tooltipmgr.js');
 const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
     var stringParser = uiparse.bind(null, {type: 'java.lang.String'});
@@ -21,8 +22,8 @@ const queryText = require('./localization/query').default;
         format: false,
         input: `<input
             type="text"
-            title="${queryText('searchQuery')}"
-            aria-label="${queryText('searchQuery')}"
+            title="${commonText('searchQuery')}"
+            aria-label="${commonText('searchQuery')}"
         >`,
         initialize: function(options) {
             this.field = options.field;
