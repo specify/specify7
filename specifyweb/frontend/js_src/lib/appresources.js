@@ -37,6 +37,24 @@ function fileExtFor(resource) {
     return "";
 }
 
+// Copied from https://github.com/ajaxorg/ace/issues/3149#issuecomment-444570508
+function setCommandEnabled(editor, name, enabled) {
+    const command = editor.commands.byName[name];
+    if (!command.bindKeyOriginal)
+        command.bindKeyOriginal = command.bindKey;
+    command.bindKey = enabled ? command.bindKeyOriginal : null;
+    editor.commands.addCommand(command);
+    // special case for backspace and delete which will be called from
+    // textarea if not handled by main commandb binding
+    if (!enabled) {
+        var key = command.bindKeyOriginal;
+        if (key && typeof key == "object")
+            key = key[editor.commands.platform];
+        if (/backspace|delete/i.test(key))
+            editor.commands.bindKey(key, "null")
+    }
+}
+
 const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
     id: "appresource-page",
@@ -144,6 +162,21 @@ const ResourceDataView = Backbone.View.extend({
                 editor.setValue(this.appresourceData.get('data'));
                 editor.setPrintMarginColumn(null);
                 editor.clearSelection();
+
+                editor.on('focus', ()=>{
+                    setCommandEnabled(editor, "indent", true);
+                    setCommandEnabled(editor, "outdent", true);
+                });
+
+                editor.commands.addCommand({
+                  name: "escape",
+                  bindKey: {win: "Esc", mac: "Esc"},
+                  exec() {
+                      setCommandEnabled(editor, "indent", false);
+                      setCommandEnabled(editor, "outdent", false);
+                  }
+                });
+
                 editor.on("change", () => {
                     this.appresourceData.set('data', editor.getValue(), {changedBy: editor});
                 });
@@ -446,7 +479,7 @@ const DisciplineResourcesView = Backbone.View.extend({
                     type="button"
                     class="fake-link"
                 >
-                    ${this.discipline.get('name')}
+                    ${this.discipline.get('name')} 
                     <small>(${this.count})</small>
                 </button>`)),
             $('<div>').append(
@@ -520,7 +553,7 @@ const CollectionResourcesView = Backbone.View.extend({
                     type="button"
                     class="fake-link"
                 >
-                    ${this.collection.get('collectionname')}
+                    ${this.collection.get('collectionname')} 
                     <small>(${this.count})</small>
                 </button>`)),
             $('<div>').append(
@@ -531,7 +564,7 @@ const CollectionResourcesView = Backbone.View.extend({
                         type="button"
                         class="fake-link"
                     >
-                        ${adminText('userTypes')}
+                        ${adminText('userTypes')} 
                         <small>(${this.userTypeView.count})</small>
                     </button>`)),
                 this.userTypeView.render().el,
@@ -541,7 +574,7 @@ const CollectionResourcesView = Backbone.View.extend({
                         type="button"
                         class="fake-link"
                     >
-                        ${adminText('users')}
+                        ${adminText('users')} 
                         <small>(${this.userView.count})</small>
                     </button>`)),
                 this.userView.render().el
@@ -621,7 +654,7 @@ const UserTypeResourcesView = Backbone.View.extend({
                     type="button"
                     class="fake-link"
                 >
-                    ${this.usertype}
+                    ${this.usertype} 
                     <small>(${this.count})</small>
                 </button>`)),
             this.resourceList.render().$el
@@ -703,7 +736,7 @@ const UserResourcesView = Backbone.View.extend({
                     type="button"
                     class="fake-link"
                 >
-                    ${this.user.get('name')}
+                    ${this.user.get('name')} 
                     <small>(${this.count})</small>
                 </button>`)),
             this.resourceList.render().$el
