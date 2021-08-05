@@ -14,6 +14,7 @@ var navigation   = require('./navigation.js');
 var whenAll      = require('./whenall.js');
 
 const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 const template = require('./templates/attachmentbrowser.html');
 
@@ -114,7 +115,7 @@ const template = require('./templates/attachmentbrowser.html');
         },
         render: function() {
             var self = this;
-            self.$el.html(template({formsText}));
+            self.$el.html(template({formsText, commonText}));
 
             var resize = function() {
                 self.setSize();
@@ -223,7 +224,7 @@ const template = require('./templates/attachmentbrowser.html');
 module.exports =  function() {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
-            app.setTitle(formsText('attachments'));
+            app.setTitle(commonText('attachments'));
         });
     };
 

@@ -26,11 +26,11 @@ const commonText = require('./localization/common').default;
     </td>`;
     var EXPAND = `<td class="expand">
         <a
-          title="${formsText('expand')}"
-          aria-label="${formsText('expand')}"
+          title="${commonText('expand')}"
+          aria-label="${commonText('expand')}"
         >
             <span class="ui-icon ui-icon-triangle-1-e">
-                ${formsText('expand')}
+                ${commonText('expand')}
             </span>
         </a>
     </td>`;

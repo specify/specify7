@@ -17,6 +17,7 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
+import commonText from './localization/common';
 import localityText from './localization/locality';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
@@ -100,7 +101,7 @@ export async function showLeafletMap({
   leafletMapContainer.dialog({
     width: 900,
     height: 600,
-    title: localityText('geoMap'),
+    title: commonText('geoMap'),
     close() {
       map.remove();
       $(this).remove();

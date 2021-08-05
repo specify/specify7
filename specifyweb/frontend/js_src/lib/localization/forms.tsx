@@ -5,7 +5,6 @@ import { createDictionary, createHeader } from './utils';
 
 const formsText = createDictionary({
   // Attachments
-  attachments: 'Attachments',
   filterAttachments: 'Filter Attachments',
   attachmentServerUnavailable: 'Attachment server unavailable.',
   attachmentUploadDialogTitle: 'Uploading...',
@@ -47,7 +46,6 @@ const formsText = createDictionary({
     The resource cannot be deleted because it is referenced through the
     following fields:`,
   contract: 'Contract',
-  expand: 'Expand',
 
   // Forms Dialog
   formsDialogTitle: 'Forms',
