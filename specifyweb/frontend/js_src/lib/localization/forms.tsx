@@ -147,6 +147,7 @@ const formsText = createDictionary({
   recordSetDeletionWarning: (recordSetName: string) => `
     The record set "${recordSetName}" will be deleted. The referenced
     records will NOT be deleted.`,
+  recordCount: 'Record Count',
 
   // Reports
   reportsCanNotBePrintedDialogMessage:
