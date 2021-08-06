@@ -1,5 +1,7 @@
 "use strict";
 
+require('../css/range.css');
+
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
@@ -67,68 +69,50 @@ const commonText = require('./localization/common').default;
         render: function () {
             this.$el.append(`
                 <input type="button" value="${commonText('new')}" class="specify-add-related">
-                <input type="button" value="${commonText('delete')}" class="specify-delete-related">`);
+                <input type="button" value="${commonText('delete')}" class="specify-delete-related">`).css('margin-top','5px');
             this.showHide();
             return this;
         }
     });
 
-    var Slider = Backbone.View.extend({
+    const Slider = Backbone.View.extend({
         __name__: "RecordSelectorSlider",
-        className: 'recordselector-slider',
+        className: 'recordselector-slider custom',
+        tagName: 'input',
         events: {
-            'slidestop': 'updateRecordSelector',
-            'slide': 'updateRecordSelector'
+            'change': 'change',
         },
-        initialize: function(options) {
-            this.recordSelector = options.recordSelector;
+        initialize: function({onChange: handleChange}) {
+            this.handleChange = handleChange;
         },
         render: function() {
-            $('<div>').appendTo(this.el).slider();
-            _.defer(function() {
-                this.$el.closest('.ui-dialog')
-                    .on("dialogresizestart", this.startResizing.bind(this))
-                    .on("dialogresizestop", this.stopResizing.bind(this));
-            }.bind(this));
+            this.el.type = 'range';
+            this.el.min = 1;
+            this.hide();
             return this;
         },
-        setMax: function(val) {
-            this.$('.ui-slider').slider('option', 'max', val);
-            this.adjustSize();
+        setMax: function(value) {
+            this.el.max = Math.max(0,value+1);
+            this.el.style.setProperty(
+                '--width',
+                `${Math.round(100/Math.max(1,value+1))}%`
+            );
         },
         getOffset: function() {
-            return this.$('.ui-slider').slider('value');
+            return this.el.value-1;
         },
-        setOffset: function(val) {
-            this.$('.ui-slider').slider('value', val);
+        setOffset: function(value) {
+            this.el.value = value+1;
         },
-        updateRecordSelector: function(evt, ui) {
-            this.recordSelector.redraw(ui.value);
+        change: function() {
+            this.handleChange(this.getOffset());
         },
         hide: function() {
             this.$el.hide();
         },
         show: function() {
             this.$el.show();
-            _.defer(this.adjustSize.bind(this));
         },
-        adjustSize: function() {
-            var slider = this.$('.ui-slider');
-            var max = slider.slider('option', 'max');
-            var size = this.$el.width() / (max + 1);
-            slider.width(this.$el.width() - size);
-            this.$('.ui-slider-handle').css({
-                width: size - 2, // 2px for border
-                "margin-left": -size/2
-            });
-        },
-        startResizing: function() {
-            this.$('.ui-slider').hide();
-        },
-        stopResizing: function() {
-            this.$('.ui-slider').show();
-            _.defer(this.adjustSize.bind(this));
-        }
     });
 
 module.exports =  Backbone.View.extend({
@@ -205,8 +189,11 @@ module.exports =  Backbone.View.extend({
         _render: function() {
             this.el.innerHTML = '<section></section>';
             const section = $(this.el.children[0]);
-            this.slider = new Slider({ recordSelector: this }).render();
+            const sliderContainer = document.createElement('div');
+            sliderContainer.style.padding = '0 25px';
+            this.slider = new Slider({ onChange: this.redraw.bind(this) }).render();
             this.slider.setMax(this.collection.length - 1);
+            sliderContainer.append(this.slider.el);
 
             this.noHeader || new Header({
                 el: subviewheader({
@@ -219,13 +206,13 @@ module.exports =  Backbone.View.extend({
                 readOnly: this.readOnly
             }).render().$el.appendTo(section);
 
-            this.sliderAtTop && section.append(this.slider.el);
+            this.sliderAtTop && section.append(sliderContainer);
 
             this.noContent = $(emptyTemplate).appendTo(section);
 
             this.content = $('<div>').appendTo(section);
 
-            this.sliderAtTop || section.append(this.slider.el);
+            this.sliderAtTop || section.append(sliderContainer);
 
             if (this.noHeader && !this.readOnly) {
                 new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(section);
