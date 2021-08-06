@@ -1,0 +1,56 @@
+input[type="range"].custom {
+  --height: var(--size);
+  --width: 25%;
+
+  width: 100%;
+  height: var(--height);
+  margin: 0;
+  background: var(--b1);
+  border: var(--border-size) solid var(--border);
+  -webkit-appearance: none;
+}
+
+/* Styles for each Non-standard pseudo element must be specified separately */
+input[type="range"].custom::-webkit-slider-runnable-track {
+  width: 100%;
+  height: var(--height);
+  cursor: pointer;
+}
+input[type="range"].custom::-moz-range-track {
+  width: 100%;
+  height: var(--height);
+  cursor: pointer;
+}
+input[type="range"].custom::-webkit-slider-thumb {
+  width: var(--width);
+  height: var(--height);
+  margin-top: 0;
+  background: var(--accent-hover);
+  cursor: pointer;
+  -webkit-appearance: none;
+  border-radius: 0;
+  border: 0;
+}
+input[type="range"].custom::-moz-range-thumb {
+  width: var(--width);
+  height: var(--height);
+  background: var(--accent-hover);
+  cursor: pointer;
+  border-radius: 0;
+  border: 0;
+}
+
+input[type="range"].custom:hover::-webkit-slider-thumb,
+input[type="range"].custom:focus::-webkit-slider-thumb {
+  background: var(--accent);
+}
+
+input[type="range"].custom:hover::-moz-range-thumb,
+input[type="range"].custom:focus::-moz-range-thumb {
+  background: var(--accent);
+}
+
+input[type="range"].custom:hover,
+input[type="range"].custom:focus {
+  background: var(--b3);
+}
