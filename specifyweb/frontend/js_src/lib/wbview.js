@@ -1377,8 +1377,6 @@ const WBView = Backbone.View.extend({
 
   // Tools
   displayUploadedView() {
-    // TODO: Render record id's `i` button inside of cells
-
     if (!this.dataset.rowresults) return;
 
     if (typeof this.uploadedView !== 'undefined') {
@@ -1460,19 +1458,23 @@ const WBView = Backbone.View.extend({
     const rowsToHide = Array.from(
       { length: this.data.length },
       (_, physicalRow) => physicalRow
-    ).filter(
-      (physicalRow) =>
-        !rowsToInclude.has(physicalRow) &&
-        !initialHiddenRows.includes(physicalRow)
-    );
+    )
+      .filter(
+        (physicalRow) =>
+          !rowsToInclude.has(physicalRow) &&
+          !initialHiddenRows.includes(physicalRow)
+      )
+      .map(this.hot.toVisualRow);
     const colsToHide = Array.from(
       { length: this.dataset.columns.length },
       (_, physicalCol) => physicalCol
-    ).filter(
-      (physicalCol) =>
-        !colsToInclude.has(physicalCol) &&
-        !initialHiddenCols.includes(physicalCol)
-    );
+    )
+      .filter(
+        (physicalCol) =>
+          !colsToInclude.has(physicalCol) &&
+          !initialHiddenCols.includes(physicalCol)
+      )
+      .map(this.hot.toVisualColumn);
 
     effects.push(() => {
       this.getHotPlugin('hiddenRows').hideRows(rowsToHide);
@@ -1480,14 +1482,10 @@ const WBView = Backbone.View.extend({
     });
     effectsCleanup.push(() => {
       this.getHotPlugin('hiddenRows').showRows(
-        rowsToHide.filter(
-          (physicalRow) => !initialHiddenRows.includes(physicalRow)
-        )
+        rowsToHide.filter((visualRow) => !initialHiddenRows.includes(visualRow))
       );
       this.getHotPlugin('hiddenColumns').showColumns(
-        colsToHide.filter(
-          (physicalCol) => !initialHiddenCols.includes(physicalCol)
-        )
+        colsToHide.filter((visualCol) => !initialHiddenCols.includes(visualCol))
       );
     });
 
