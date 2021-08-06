@@ -291,6 +291,17 @@ export const stateReducer = generateReducer<
                   >
                     {wbText('baseTable')}
                   </ButtonWithConfirmation>
+                  <button
+                    className="magic-button"
+                    type="button"
+                    onClick={(): void =>
+                      state.dispatch({
+                        type: 'ResetMappingsAction',
+                      })
+                    }
+                  >
+                    {wbText('clearMappings')}
+                  </button>
                   <ButtonWithConfirmation
                     dialogTitle={wbText('reRunAutoMapperDialogTitle')}
                     dialogContent={
@@ -359,17 +370,6 @@ export const stateReducer = generateReducer<
                 </button>
                 {!state.props.readonly && (
                   <>
-                    <button
-                      className="magic-button"
-                      type="button"
-                      onClick={(): void =>
-                        state.dispatch({
-                          type: 'ResetMappingsAction',
-                        })
-                      }
-                    >
-                      {wbText('clearMappings')}
-                    </button>
                     <ValidationButton
                       canValidate={
                         state.lines.length > 0 &&
