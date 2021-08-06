@@ -248,6 +248,10 @@ const definitions: AutoMapperDefinitions = {
         mappingPathFilter: ['accessionagents', 'agent'],
         synonyms: ['accession agent', 'accessioned by'],
       },
+      {
+        mappingPathFilter: ['dnasequence', 'sequencer'],
+        synonyms: ['sequencer'],
+      },
     ],
     Determination: [
       {
@@ -363,6 +367,15 @@ const definitions: AutoMapperDefinitions = {
     },
   },
   synonyms: {
+    DnaSequence: {
+      genbankAccessionNumber: {
+        automapper: {
+          headers: {
+            contains: ['genbank'],
+          },
+        },
+      },
+    },
     Agent: {
       middleInitial: {
         suggestion: {

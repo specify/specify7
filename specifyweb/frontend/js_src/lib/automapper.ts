@@ -850,13 +850,15 @@ export default class Automapper {
       }
 
       const label = fieldData.label.toLowerCase();
-      const fieldNames = Array.from(
-        new Set([
-          ...this.findFormattedHeaderFieldSynonyms(tableName, fieldName),
-          label,
-          fieldName,
-        ])
+      const headerFieldSynonyms = this.findFormattedHeaderFieldSynonyms(
+        tableName,
+        fieldName
       );
+      const fieldNames = Array.from(
+        new Set([...headerFieldSynonyms, label, fieldName])
+      );
+      const conservativeFieldNames =
+        mode === 'synonymsAndMatches' ? fieldNames : headerFieldSynonyms;
 
       let toManyReferenceNumber;
       this.getUnmappedHeaders().some(
@@ -866,10 +868,9 @@ export default class Automapper {
         ]) =>
           !(toManyReferenceNumber = false) &&
           /*
-           * Compare each field's schema name and friendly schema name
-           * to headers
+           * Compare each field's name and label to headers
            */
-          (fieldNames.some((fieldName) =>
+          (conservativeFieldNames.some((fieldName) =>
             [lowercaseHeaderName, strippedHeaderName, finalHeaderName].includes(
               fieldName
             )
