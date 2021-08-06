@@ -133,8 +133,10 @@ const commonText = createDictionary({
   ),
   errorBoundaryDialogMessage: (
     <>
-      Please reload the page and try again. If this issue persists, please
-      contact your IT support or if this is a Specify Cloud database, contact
+      Please reload the page and try again.
+      <br />
+      If this issue persists, please contact your IT support or if this is a
+      Specify Cloud database, contact
       <a href="mailto:support@specifysoftware.org">
         support@specifysoftware.org
       </a>
@@ -146,8 +148,9 @@ const commonText = createDictionary({
     'An error occurred communicating with the Specify 7 server.'
   ),
   backEndErrorDialogMessage: `
-    Please reload the page and try again. If the issue persists, please
-    contact your IT support, or if this is a Specify Cloud database, contact
+    Please reload the page and try again.<br>
+    If the issue persists, please contact your IT support, or if this is
+    a Specify Cloud database, contact
     <a href="mailto:support@specifysoftware.org">
       support@specifysoftware.org
     </a>.`,

@@ -357,6 +357,7 @@ export const stateReducer = generateReducer<
                       isVisible: !state.showMappingView,
                     })
                   }
+                  aria-pressed={!state.showMappingView}
                 >
                   {state.showMappingView
                     ? wbText('hideMappingEditor')

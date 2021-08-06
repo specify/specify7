@@ -34,6 +34,8 @@ module.exports = Backbone.View.extend({
     this.searchQuery = '';
     this.searchPreferences = getInitialSearchPreferences();
     this.advancedSearch = undefined;
+    this.geoLocateDialog = undefined;
+    this.geoMapDialog = undefined;
     this.searchCells = _.debounce(
       this.searchCells,
       Math.ceil(Math.min(200, Math.max(10, this.wbview.data.length / 20))),
@@ -171,16 +173,26 @@ module.exports = Backbone.View.extend({
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
   toggleCellTypes(e, action = 'toggle') {
-    let buttonLabel;
-    if (typeof e === 'string') buttonLabel = e;
-    else {
+    let navigationType;
+    let buttonContainer;
+    if (typeof e === 'string') {
+      navigationType = e;
+      buttonContainer = this.el.querySelector(
+        `.wb-navigation-section[data-navigation-type="${navigationType}"]`
+      );
+    } else {
       const button = e.target;
-      const buttonContainer = button.closest('.wb-navigation-section');
-      buttonLabel = buttonContainer.getAttribute('data-navigation-type');
+      buttonContainer = button.closest('.wb-navigation-section');
+      navigationType = buttonContainer.getAttribute('data-navigation-type');
     }
-    const groupName = WbPlanViewHelper.camelToKebab(buttonLabel);
+    const groupName = WbPlanViewHelper.camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
+    const newState = this.el.classList.contains(cssClassName);
+    buttonContainer.getElementsByClassName(
+      'wb-navigation-text'
+    )[0].ariaPressed = newState;
+    return newState;
   },
   getToVisualConverters() {
     const toVisualRow = Array.from(
@@ -460,7 +472,7 @@ module.exports = Backbone.View.extend({
   toggleToolkit(event) {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
     event.target.ariaPressed = toolkit.style.display === 'none';
-    toolkit.style.display = event.target.ariaPressed ? '' : 'none';
+    toolkit.style.display = toolkit.style.display === 'none' ? '' : 'none';
     this.wbview.handleResize();
   },
   fillCells({ startRow, endRow, col, value }) {
@@ -606,9 +618,14 @@ module.exports = Backbone.View.extend({
           : { startCol: endCol, endCol: startCol, ...rest }
       );
   },
-  showGeoLocate() {
-    // don't allow opening more than one window)
-    if ($('#geolocate-window').length !== 0) return;
+  showGeoLocate(event) {
+
+    if(typeof this.geoLocateDialog !== 'undefined'){
+      this.geoLocateDialog.dialog('close');
+      return;
+    }
+
+    event.target.ariaPressed = true;
 
     const selectedRegions = this.getSelectedRegions();
 
@@ -661,18 +678,20 @@ module.exports = Backbone.View.extend({
     const getGeoLocateQueryURL = (localityIndex) =>
       this.getGeoLocateQueryURL(parseLocalityIndex(localityIndex));
 
-    const dialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
+    this.geoLocateDialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
       width: 960,
       height: 740,
       title: wbText('geoLocateDialogTitle'),
       close: function () {
         $(this).remove();
         window.removeEventListener('message', handleGeolocateResult, false);
+        event.target.ariaPressed = false;
+        this.geoLocateDialog = undefined;
       },
     });
 
     const updateGeolocate = (localityIndex) =>
-      dialog.html(`<iframe
+      this.geoLocateDialog.html(`<iframe
         style="
             width: 100%;
             height: 100%;
@@ -683,7 +702,7 @@ module.exports = Backbone.View.extend({
       this.wbview.hot.selectRows(parseLocalityIndex(localityIndex).visualRow);
 
     const updateButtons = (localityIndex) =>
-      dialog.dialog('option', 'buttons', [
+      this.geoLocateDialog.dialog('option', 'buttons', [
         {
           text: commonText('previous'),
           click: () => updateGeoLocate(localityIndex - 1),
@@ -733,8 +752,13 @@ module.exports = Backbone.View.extend({
 
     window.addEventListener('message', handleGeolocateResult, false);
   },
-  showLeafletMap() {
-    if ($('#leaflet-map').length !== 0) return;
+  showLeafletMap(event) {
+
+    if(typeof this.geoMapDialog !== 'undefined'){
+      this.geoMapDialog.dialog('close');
+      return;
+    }
+    event.target.ariaPressed = true;
 
     const selectedRegions = this.getSelectedRegions();
     let customRowNumbers = [];
@@ -759,6 +783,7 @@ module.exports = Backbone.View.extend({
         customRowNumbers
       );
 
+    const dialog = document.createElement('div');
     Leaflet.showLeafletMap({
       localityPoints,
       markerClickCallback: (localityPoint) => {
@@ -768,8 +793,13 @@ module.exports = Backbone.View.extend({
         // select entire row
         this.wbview.hot.selectRows(rowNumber);
       },
-      leafletMapContainer: 'leaflet-map',
+      leafletMapContainer: dialog,
     });
+    this.geoMapDialog = $(dialog);
+    this.geoMapDialog.on('dialogbeforeclose',()=>{
+      this.geoMapDialog=undefined;
+      event.target.ariaPressed = false;
+    })
   },
   showCoordinateConversion() {
     if (typeof this.wbview.coordinateConverterView !== 'undefined') return;

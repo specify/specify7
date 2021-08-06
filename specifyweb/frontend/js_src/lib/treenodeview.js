@@ -77,7 +77,7 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.tree-node-cell p')
                 .attr('role','none')
                 .append(`
-                    <a class="ui-icon expander">
+                    <button class="fake-link ui-icon expander" aria-pressed="false"></button>
                     <a class="expander tree-node-name" tabindex="2">
                     <span class="stats">
                 `);
@@ -101,6 +101,7 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.expander')
                 .removeClass('open close leaf')
                 .addClass(this.children > 0 ? 'open' : 'leaf')
+                .attr('aria-pressed', 'false')
                 .attr(
                     'aria-label',
                     this.children > 0 ?
@@ -197,6 +198,7 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.expander')
                 .removeClass('open')
                 .addClass('wait')
+                .attr('aria-pressed','mixed')
                 .attr('aria-label',commonText('loading'));
             return $.getJSON(this.baseUrl + this.nodeId + '/' + this.sortField + '/').pipe(this.gotChildren.bind(this));
         },
@@ -230,6 +232,7 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.expander')
                 .removeClass('open wait')
                 .addClass('close')
+                .attr('aria-pressed','true')
                 .attr('aria-label', treeText('opened'));
 
             var nodes = this.childNodes.slice();
@@ -257,6 +260,7 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.expander')
                 .removeClass('close')
                 .addClass('open')
+                .attr('aria-pressed','false')
                 .attr('aria-label', treeText('closed'));
             _.invoke(this.childNodes, 'remove');
             this.treeView.updateConformation();

@@ -79,26 +79,11 @@ export async function showLeafletMap({
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
-  readonly leafletMapContainer: string | JQuery<HTMLDivElement> | undefined;
+  readonly leafletMapContainer: HTMLDivElement;
 }): Promise<L.Map | undefined> {
   const tileLayers = await getLeafletLayers();
 
-  if (
-    typeof leafletMapContainer === 'string' &&
-    document.getElementById(leafletMapContainer) !== null
-  )
-    return undefined;
-
-  if (typeof leafletMapContainer !== 'object')
-    leafletMapContainer = $(
-      `<div ${
-        typeof leafletMapContainer === 'undefined'
-          ? ''
-          : `id="${leafletMapContainer}"`
-      }></div>`
-    );
-
-  leafletMapContainer.dialog({
+  $(leafletMapContainer).dialog({
     width: 900,
     height: 600,
     title: commonText('geoMap'),
@@ -108,7 +93,7 @@ export async function showLeafletMap({
     },
   });
 
-  leafletMapContainer[0].style.overflow = 'hidden';
+  leafletMapContainer.style.overflow = 'hidden';
 
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
@@ -120,7 +105,7 @@ export async function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const map = L.map(leafletMapContainer[0], { maxZoom: 23 }).setView(
+  const map = L.map(leafletMapContainer, { maxZoom: 23 }).setView(
     defaultCenter,
     defaultZoom
   );
