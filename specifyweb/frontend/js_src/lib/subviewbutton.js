@@ -33,11 +33,11 @@ const commonText = require('./localization/common').default;
             self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
 
-            var link = $('<button>', {
+            this.button = $('<button>', {
                 type: 'button',
                 class: 'magic-button',
                 title: self.field.getLocalizedName()
-            }).appendTo(self.el);
+            }).appendTo(self.el)[0];
 
             if (!self.$el.hasClass('specify-subview-in-table')) {
                 $('<div style="display: table-row">')
@@ -50,22 +50,28 @@ const commonText = require('./localization/common').default;
                         }
                     ))
                     .append('<span class="specify-subview-button-count">')
-                    .appendTo(link)
+                    .appendTo(this.button)
             } else {
-                link.addClass('specify-subview-link');
+                this.button.addClass('specify-subview-link');
             }
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count, .specify-subview-link').text(c);
         },
-        clicked: function(evt) {
-            evt.preventDefault();
+        clicked: function(event) {
+            event.preventDefault();
             if (this.dialog) {
                 this.dialog.dialog('close');
             } else {
                 this.openDialog();
+                this.button.ariaPressed = true;
             }
-        }
+        },
+        closeDialog(){
+            this.button.ariaPressed = false;
+            this.dialog.remove();
+            this.dialog = undefined;
+        },
     });
 
     var ToMany = Base.extend({
@@ -93,26 +99,11 @@ const commonText = require('./localization/common').default;
                 subformNode: self.$el,
                 readOnly: self.readOnly,
                 noHeader: true
-            }).on('renderdone', function(recordSelector) {
+            }).on('renderdone', (recordSelector)=>{
                 self.dialog = $('<div>').append(recordSelector.el).dialog({
                     width: 'auto',
                     title: self.field.getLocalizedName(),
-                    close: function() {
-                        $(this).remove(); self.dialog = null;
-                        var fname = self.field.name.toLowerCase();
-                        /*var changed = {};
-                        changed[fname] = '';
-                        self.collection.related.changed = changed;
-                        self.collection.related.trigger('change', self.collection.related);
-                        */
-                        //instead of hacking the changed field, could use selfcollection.related.set(fname, [Some appropriate value])???;
-                        //self.collection.related.set(fname, self.collection.models);
-                        //but changed object is not updated and still need to force the trigger
-
-                        //This seems to work, for loanreturnpreps anyway
-                        //self.collection.related.changed[fname] = '';
-                        //self.collection.related.trigger('change', self.collection.related);
-                    }
+                    close: this.closeDialog.bind(this)
                 });
             }).render();
         }
@@ -174,7 +165,7 @@ const commonText = require('./localization/common').default;
             self.dialog = $('<div>').append(dialogForm).dialog({
                 width: 'auto',
                 title: title,
-                close: function() { $(this).remove(); self.dialog = null; }
+                close: this.closeDialog.bind(this)
             });
 
             // TODO: this was copied from querycbx. should factor out somehow.

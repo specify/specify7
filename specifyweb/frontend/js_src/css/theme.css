@@ -88,6 +88,10 @@
   color: var(--accent);
 }
 
+.fake-link[aria-pressed="true"] .ui-icon {
+  background-color: var(--b1);
+}
+
 .sr-only {
   position: absolute;
   top: auto;

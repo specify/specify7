@@ -16,16 +16,22 @@ module.exports = UIPlugin.extend(
     },
     render() {
       this.$el.attr('value', localityText('showMap')).prop('disabled', false);
+      this.geoMapDialog = undefined;
       return this;
     },
     click(event_) {
+      if (typeof this.geoMapDialog !== 'undefined') {
+        this.geoMapDialog.dialog('close');
+        return;
+      }
+
       event_.preventDefault();
 
       const lat = this.model.get('latitude1');
       const long = this.model.get('longitude1');
 
-      if (lat == undefined || long == undefined)
-        return $(`<p>
+      if (lat == undefined || long == undefined) {
+        this.geoMapDialog = $(`<p>
         ${localityText('notEnoughInformationToMap')}
       </p>`).dialog({
           title: localityText('noCoordinates'),
@@ -38,8 +44,12 @@ module.exports = UIPlugin.extend(
             },
           },
         });
+        return;
+      }
 
+      this.el.ariaPressed = true;
       let fullLocalityData = undefined;
+      const dialog = document.createElement('div');
 
       LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
         this.model,
@@ -47,7 +57,7 @@ module.exports = UIPlugin.extend(
       ).then((localityData) =>
         Leaflet.showLeafletMap({
           localityPoints: [localityData],
-          leafletMapContainer: 'leaflet-plugin',
+          leafletMapContainer: dialog,
           markerClickCallback: (_, { target: marker }) =>
             (typeof fullLocalityData === 'undefined'
               ? LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
@@ -64,6 +74,12 @@ module.exports = UIPlugin.extend(
             }),
         })
       );
+
+      this.geoMapDialog = $(dialog);
+      this.geoMapDialog.on('dialogbeforeclose', () => {
+        this.el.ariaPressed = false;
+        this.geoMapDialog = undefined;
+      });
     },
   },
   { pluginsProvided: ['LocalityGoogleEarth'] }
