@@ -19,10 +19,19 @@ module.exports =  UIPlugin.extend({
             throw new Error("geolocateplugin can only be used with locality resources");
         }
         this.$el.attr('value', localityText('geoLocate'));
+        this.geoLocateDialog = undefined;
         return this;
     },
-    click: function(evt) {
-        evt.preventDefault();
+    click: function(event) {
+
+        if(typeof this.geoLocateDialog !== 'undefined'){
+            this.geoLocateDialog.dialog('close');
+            event.target.ariaPressed = false;
+            return;
+        }
+        event.target.ariaPressed = true;
+
+        event.preventDefault();
         this.geoRefData().done(function(data) {
             data ? this.openGeoLocate(data) : this.geoRequired();
         }.bind(this));
@@ -50,15 +59,16 @@ module.exports =  UIPlugin.extend({
 
         window.addEventListener('message', listener, false);
 
-        $('<div id="geolocate-dialog">')
+        this.geoLocateDialog = $('<div id="geolocate-dialog">')
             .append($('<iframe>', {src: url, style: "width:908px; height:653px;"}))
             .dialog({
                 width: 'auto',
                 resizable: false,
                 title: localityText('geoLocate'),
-                close: function() {
+                close: ()=>{
                     window.removeEventListener('message', listener, false);
-                    $(this).remove();
+                    this.geoLocateDialog.remove();
+                    this.geoLocateDialog=undefined;
                 }
             });
     },

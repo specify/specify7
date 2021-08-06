@@ -22,6 +22,7 @@ var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
 var userInfo          = require('./userinfo.js');
 const queryText = require('./localization/query').default;
+const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
 var dataobjformat = dataobjformatters.format;
@@ -384,6 +385,8 @@ var QueryCbx = Backbone.View.extend({
         var self = this;
         event.preventDefault();
 
+        event.target.ariaPressed = true;
+
         if (self.dialog) {
             // if the open dialog is for search just close it and don't open a new one
             var closeOnly = self.dialog.hasClass('querycbx-dialog-search');
@@ -471,15 +474,16 @@ var QueryCbx = Backbone.View.extend({
             .pipe(function() { return related.clone(); })
             .done(this.openDialog.bind(this, mode));
     },
-    closeDialogIfAlreadyOpen: function(mode) {
-        if (this.dialog) {
-            // if the open dialog is for selected mode, just close it and don't open a new one
-            var closeOnly = this.dialog.hasClass('querycbx-dialog-' + mode);
-            this.dialog.dialog('close');
-            if (closeOnly) return;
-        }
+    closeDialogIfAlreadyOpen: function() {
+        this.$el.find('button').attr('aria-pressed',false);
+        this.dialog?.dialog('close');
     },
     openDialog: function(mode, related) {
+
+        const buttonsQuery = ['edit','display'].includes(mode) ?
+            'button.querycbx-edit, button.querycbx-display' :
+            `button.querycbx-${mode}`;
+        this.$el.find(buttonsQuery).attr('aria-pressed',true);
         this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
         new ResourceView({
@@ -508,7 +512,7 @@ var QueryCbx = Backbone.View.extend({
         if (!related.isNew()) {
             $('<a>', { href: related.viewUrl() })
                 .addClass('intercept-navigation')
-                .append(`<span class="ui-icon ui-icon-link">${commonText('close')}</span>`)
+                .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
                 .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
         }
     },

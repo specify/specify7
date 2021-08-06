@@ -248,9 +248,10 @@ const ResourceView = Backbone.View.extend({
             $('<a>', {
                 href: makeUrl(this.model),
                 text: this.model.get('name'),
-                'class': 'intercept-navigation'
+                'class': 'intercept-navigation',
+                'aria-current': this.isSelected ? 'page' : 'false',
             })
-        ).addClass(this.isSelected ? 'selected' : '');
+        );
         return this;
     }
 });

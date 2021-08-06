@@ -30,9 +30,9 @@
     display: inline;
 }
 
-#appresources-view .appresource-name.selected a {
-    font-weight: bold;
-    color: #f4763d;
+#appresources-view a[aria-current="page"] {
+    font-weight: 800;
+    color: var(--accent);
 }
 
 .appresource-data {
