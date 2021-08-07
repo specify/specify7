@@ -2045,7 +2045,7 @@ const WBView = Backbone.View.extend({
     );
   },
   getValidationResults() {
-    if (typeof this.wbstatus !== 'undefined') return;
+    if (typeof this.wbstatus !== 'undefined' || !this.mappings) return;
 
     if (this.dataset.rowresults === null) {
       this.validationMode = 'off';
