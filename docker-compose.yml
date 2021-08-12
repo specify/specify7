@@ -20,6 +20,14 @@ services:
     command: ve/bin/python manage.py runserver 0.0.0.0:8000
     init: true
     restart: unless-stopped
+    depends_on:
+      # It seems like there was a race condition on the the
+      # webpack-output volume. I suspect if this container mounts it
+      # first, the mount point ends up owned by root instead of the
+      # node user in the webpack container. Adding webpack to the
+      # depends_on will hopefully stop that.
+      - webpack
+      - mariadb
     volumes:
       - "specify6:/opt/Specify:ro"
       - "static-files:/volumes/static-files"
