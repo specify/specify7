@@ -120,6 +120,8 @@ RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
 RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
         > settings/secret_key.py
 
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 ENV DJANGO_SETTINGS_MODULE='settings'
 
 ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]

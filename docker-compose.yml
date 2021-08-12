@@ -71,8 +71,6 @@ services:
       - "static-files:/volumes/static-files"
       - "./specifyweb:/opt/specify7/specifyweb"
     environment:
-      - LC_ALL=C.UTF-8
-      - LANG=C.UTF-8
       - DATABASE_HOST=mariadb
       - DATABASE_PORT=3306
       - DATABASE_NAME=specify
