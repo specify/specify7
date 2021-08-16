@@ -1576,10 +1576,8 @@ const WBView = Backbone.View.extend({
       'wb-uploaded-view-wrapper'
     )[0];
     uploadedViewWrapper.style.display = '';
-    uploadedViewWrapper.innerHTML = '<div></div>';
 
     this.uploadedView = new WBUploadedView({
-      el: uploadedViewWrapper.children[0],
       recordCounts: this.uploadResults.recordCounts,
       isUploaded: this.isUploaded,
       onClose: () => {
@@ -1589,6 +1587,8 @@ const WBView = Backbone.View.extend({
         runCleanup();
       },
     }).render();
+
+    uploadedViewWrapper.append(this.uploadedView.el);
 
     runEffects();
   },
