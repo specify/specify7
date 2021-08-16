@@ -200,8 +200,6 @@ export default function (): void {
       ],
     ],
     (parameters: AutoMapperConstructorParameters) =>
-      new Automapper(parameters).map({
-        useCache: false,
-      })
+      new Automapper(parameters).map()
   );
 }

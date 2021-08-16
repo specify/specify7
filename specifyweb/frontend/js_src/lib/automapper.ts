@@ -11,7 +11,6 @@ import { generateDispatch } from 'typesafe-reducer';
 
 import type { Options, TableSynonym } from './automapperdefinitions';
 import AutoMapperDefinitions from './automapperdefinitions';
-import * as cache from './cache';
 import type { IR, R, RA } from './components/wbplanview';
 import type {
   AutomapperScope,
@@ -236,8 +235,6 @@ function handleOrdinalNumbers(header: string): string {
     : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
 }
 
-const CACHE_VERSION = '7';
-
 export default class Automapper {
   // Used to replace any white space characters with space
   private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
@@ -440,45 +437,12 @@ export default class Automapper {
    * Method that would be used by external classes to match headers to
    * possible mappings
    */
-  public map({
-    useCache = true,
-    commitToCache = true,
-  }: {
-    // Whether to use cached values
-    readonly useCache?: boolean;
-    // Whether to commit result to cache for future references
-    readonly commitToCache?: boolean;
-  } = {}): AutoMapperResults {
+  public map(): AutoMapperResults {
     if (Object.keys(this.headersToMap).length === 0) return {};
-
-    const cacheName = JSON.stringify([
-      Object.keys(this.headersToMap).sort(),
-      this.baseTable,
-      this.startingTable,
-      this.startingPath,
-      this.pathOffset,
-      this.scope,
-    ]);
-
-    if (typeof dataModelStorage.currentCollectionId === 'undefined')
-      throw new Error('Current collection ID is not fetched');
-    const cacheVersion = `${CACHE_VERSION}_${dataModelStorage.currentCollectionId}`;
-
-    if (useCache && commitToCache) {
-      const cachedData = cache.get('wbplanview-automapper', cacheName, {
-        version: cacheVersion,
-      });
-      if (cachedData) return cachedData;
-    }
 
     // Do 2 passes over the schema
     this.findMappingsDriver('shortcutsAndTableSynonyms');
     this.findMappingsDriver('synonymsAndMatches');
-
-    if (commitToCache)
-      cache.set('wbplanview-automapper', cacheName, this.results, {
-        version: cacheVersion,
-      });
 
     return this.results;
   }

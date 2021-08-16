@@ -410,9 +410,7 @@ export async function getAutomapperSuggestions({
       pathOffset,
       scope: 'suggestion',
       pathIsMapped: pathIsMapped.bind(undefined, lines),
-    }).map({
-      commitToCache: false,
-    })
+    }).map()
   );
 
   if (allAutomapperResults.length === 0) return [];
