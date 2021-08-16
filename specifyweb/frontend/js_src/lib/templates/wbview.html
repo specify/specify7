@@ -19,7 +19,13 @@
         <%= wbText('validate') %>
       </button>
       <% } %>
-      <button class="magic-button wb-show-upload-view" disabled="disabled">
+      <button
+        type="button"
+        aria-haspopup="tree"
+        class="magic-button wb-show-upload-view"
+        disabled="disabled"
+        title="<%= wbText('wbUploadedUnavailable') %>"
+      >
         <%= wbText('results') %>
       </button>
       <% if(is_uploaded && is_manager){ %>

@@ -163,12 +163,6 @@ const WBView = Backbone.View.extend({
 
     this.datasetmeta.render();
 
-    if (this.dataset.rowresults === null) {
-      this.$('.wb-show-upload-view')
-        .prop('disabled', true)
-        .prop('title', wbText('wbUploadedUnavailable'));
-    } else this.$('.wb-show-upload-view').prop('disabled', false);
-
     if (this.dataset.uploaderstatus) this.openStatus();
 
     this.cellMeta = Array.from({ length: this.dataset.rows.length }, () =>
@@ -197,7 +191,12 @@ const WBView = Backbone.View.extend({
           this.$('.wb-validate, .wb-data-check')
             .prop('disabled', true)
             .prop('title', wbText('wbValidateUnavailable'));
-        } else this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+        } else {
+          this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+          this.$('.wb-show-upload-view')
+            .prop('disabled', false)
+            .prop('title', undefined);
+        }
 
         // These methods update HOT's cells settings, which resets meta data
         // Thus, need to run them first
