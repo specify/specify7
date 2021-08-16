@@ -1,6 +1,5 @@
 import type hot from 'handsontable';
 
-import type { AutoMapperResults } from './automapper';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { R, RA } from './components/wbplanview';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
@@ -19,10 +18,6 @@ export type CacheDefinitions = {
     readonly showHiddenFields: boolean;
     readonly showMappingView: boolean;
     readonly mappingViewHeight: number;
-  };
-  readonly 'wbplanview-automapper': {
-    readonly // Caches AutoMapper results
-    [key in string]: AutoMapperResults;
   };
   readonly leaflet: {
     readonly // Remembers the selected base layer
