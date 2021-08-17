@@ -75,35 +75,36 @@ div.tree-view {
     vertical-align: bottom;
 }
 
-.tree-node-cell p {
+.tree-node-cell button {
     padding-top: 10px;
     margin: 0 0 -12px -5px;
-}
-
-.tree-node-cell a {
-    color: #000;
+    display: flex;
 }
 
 .tree-node .tree-synonym-node {
     color: #f00;
 }
 
-.tree-node-cell .ui-icon.open {
+.tree-node-cell button .ui-icon {
+    background-color: unset !important;
+}
+
+.tree-node-cell button.open .ui-icon {
     /* .ui-icon-triangle-1-e */
     background-position: -32px -16px;
 }
 
-.tree-node-cell .ui-icon.close {
+.tree-node-cell button.close .ui-icon {
     /* .ui-icon-triangle-1-s  */
     background-position: -64px -16px;
 }
 
-.tree-node-cell .ui-icon.wait {
+.tree-node-cell button.wait .ui-icon {
     /* .ui-icon-clock  */
     background-position: -80px -112px;
 }
 
-.tree-node-cell .ui-icon.leaf {
+.tree-node-cell button.leaf .ui-icon {
     /* .ui-icon-radio-off */
     background-position: -112px -144px;
 }

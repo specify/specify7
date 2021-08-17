@@ -182,7 +182,6 @@ const commonText = require('./localization/common').default;
                 placeholder="${treeText('searchTreePlaceholder')}"
                 title="${treeText('searchTreePlaceholder')}"
                 aria-label="${treeText('searchTreePlaceholder')}"
-                tabindex="1"
             >`).autocomplete({
                 source: function(request, response) {
                     var collection = new tree.LazyCollection({
@@ -203,19 +202,16 @@ const commonText = require('./localization/common').default;
                 <button
                     type="button"
                     class="tree-conform-save"
-                    tabindex="2"
                     title="${treeText('rememberButtonDescription')}"
                 >${treeText('remember')}</button>
                 <button
                     type="button"
                     class="tree-conform-restore"
-                    tabindex="3"
                     title="${treeText('restoreButtonDescription')}"
                 >${treeText('restore')}</button>
                 <button
                     type="button"
                     class="tree-conform-forget"
-                    tabindex="4"
                     title="${treeText('forgetButtonDescription')}"
                 >${treeText('forget')}</button>`);
         },
