@@ -203,8 +203,8 @@ var FixImagesDialog = Backbone.View.extend({
             $('<ul class="missing-attachments">').appendTo(this.el).append(
                 _.map(missingAttachments, function(f) {
                     return $('<li>').append(
-                        $(`<a
-                            href="#"
+                        $(`<button
+                            class="fake-link"
                             title="${formsText('fix')}"
                             aria-label="${formsText('fix')}"
                         >`).text(f))[0];
@@ -223,7 +223,7 @@ var FixImagesDialog = Backbone.View.extend({
         evt.preventDefault();
         if (!attachments) return;
 
-        var index = this.$('.missing-attachments a').index(evt.currentTarget);
+        var index = this.$('.missing-attachments button').index(evt.currentTarget);
         var attachmentPlugin = new AttachmentPlugin({populateForm: populateForm});
         makeDialog(attachmentPlugin.render().$el, {
             title: formsText('missingAttachmentsFixDialogTitle')
@@ -407,13 +407,13 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         const model = schema.getModelById(recordSet.get('dbtableid'));
         const icon = model.getIcon();
         const img = $('<img>', {src: icon, alt: model.getLocalizedName()});
-        var link = $('<a href="#">').text(recordSet.get('name'));
+        var link = $(`<button class="fake-link">${recordSet.get('name')}</button>`);
         var entry = $('<tr>').append(
             $('<td>').append(img),
             $('<td>').append(link),
             $('<td class="item-count" style="display:none">'));
 
-        recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
+        recordSet.get('remarks') && entry.find('button').attr('title', recordSet.get('remarks'));
         recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
             $('.item-count', entry).text('(' + count + ')').show();
         });
