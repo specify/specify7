@@ -20,13 +20,9 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $(`<a
-              href="#"
-              class="delete-button"
-              style="display:inline-flex;"
-            >
+            this.button = $(`<button class="delete-button magic-button">
               ${commonText('delete')} 
-            </a>`).appendTo(this.el);
+            </button>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +
                                  this.model.specifyModel.name.toLowerCase() +
                                  '/' + this.model.id + '/');
