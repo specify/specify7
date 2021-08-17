@@ -15,9 +15,9 @@ var TreeNodeView = Backbone.View.extend({
     tagName: "tr",
     className: "tree-node",
     events: {
-        'keydown .tree-node-name': 'keydown',
-        'click a.open': 'openNode',
-        'click a.close': 'closeNode'
+        'keydown .tree-node-cell button': 'keydown',
+        'click .tree-node-cell button.open': 'openNode',
+        'click .tree-node-cell button.close': 'closeNode'
     },
     initialize: function({table, ranks, collapsedRanks, path, baseUrl, treeView, row}) {
         this.table = table;
@@ -65,7 +65,7 @@ var TreeNodeView = Backbone.View.extend({
                     td.addClass('tree-vertical-edge');
                 }
                 if (rank == this.rankId) {
-                    td.addClass('tree-node-cell').append('<p>');
+                    td.addClass('tree-node-cell').append('<button>');
                 }
                 if (foundParentRank && !foundThisRank) {
                     td.addClass('tree-horizontal-edge');
@@ -74,12 +74,14 @@ var TreeNodeView = Backbone.View.extend({
             }, this);
             this.$el.append(cells).data('view', this);
 
-            this.$('.tree-node-cell p')
+            this.$('.tree-node-cell button')
                 .attr('role','none')
+                .attr('aria-pressed',false)
+                .attr('class','fake-link')
                 .append(`
-                    <button class="fake-link ui-icon expander" aria-pressed="false"></button>
-                    <a class="expander tree-node-name" tabindex="2">
-                    <span class="stats">
+                    <span class="ui-icon expander"></span>
+                    <span class="expander tree-node-name"></span>
+                    <span class="stats"></span>
                 `);
             this.$('.tree-node-name').text(this.name)
                 .addClass(this.acceptedId != null ? 'tree-synonym-node' : '')
@@ -99,6 +101,7 @@ var TreeNodeView = Backbone.View.extend({
         },
         setupExpander: function() {
             this.$('.expander')
+                .parent()
                 .removeClass('open close leaf')
                 .addClass(this.children > 0 ? 'open' : 'leaf')
                 .attr('aria-pressed', 'false')
@@ -196,6 +199,7 @@ var TreeNodeView = Backbone.View.extend({
         getChildren: function() {
             console.log('getChildren', this.name);
             this.$('.expander')
+                .parent()
                 .removeClass('open')
                 .addClass('wait')
                 .attr('aria-pressed','mixed')
@@ -230,6 +234,7 @@ var TreeNodeView = Backbone.View.extend({
             this.expanded = true;
             this.opened = true;
             this.$('.expander')
+                .parent()
                 .removeClass('open wait')
                 .addClass('close')
                 .attr('aria-pressed','true')
@@ -258,6 +263,7 @@ var TreeNodeView = Backbone.View.extend({
             this.expanded = false;
             this.opened = false;
             this.$('.expander')
+                .parent()
                 .removeClass('close')
                 .addClass('open')
                 .attr('aria-pressed','false')
