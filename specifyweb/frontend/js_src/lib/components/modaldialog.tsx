@@ -11,20 +11,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
-import { RA } from './wbplanview';
-
-
-function ModalDialogContent({
-  children,
-  onLoadCallback,
-}: {
-  readonly children: React.ReactNode;
-  readonly onLoadCallback?: () => void | (() => void);
-}): JSX.Element {
-  React.useEffect(onLoadCallback ?? ((): void => {}), []);
-
-  return <>{children}</>;
-}
+import type { RA } from './wbplanview';
 
 function closeDialogCallback(
   $dialog: JQuery,
@@ -50,14 +37,12 @@ const hasHeader = (children: React.ReactNode): boolean =>
     (typeof children?.props?.children?.some === 'function' &&
       children.props.children.some(hasHeader)));
 
-export const ModalDialog = React.memo(function ModalDialog({
+export function ModalDialog({
   properties,
-  onLoadCallback,
   children,
   className,
 }: {
   readonly children: React.ReactNode;
-  readonly onLoadCallback?: (dialog: JQuery) => void | (() => void);
   readonly properties: JQueryUI.DialogOptions & {
     readonly close?: (
       event: JQueryUI.DialogEvent | Event | undefined,
@@ -65,7 +50,7 @@ export const ModalDialog = React.memo(function ModalDialog({
     ) => void;
   };
   readonly className?: string;
-}) {
+}): JSX.Element {
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const [$dialog, setDialog] = React.useState<JQuery | undefined>();
   const resize = React.useRef<() => void>(() => {
@@ -131,15 +116,7 @@ export const ModalDialog = React.memo(function ModalDialog({
   React.useEffect(() => {
     if (typeof $dialog === 'undefined') return;
 
-    ReactDOM.render(
-      <ModalDialogContent
-        onLoadCallback={onLoadCallback?.bind(undefined, $dialog)}
-      >
-        {children}
-      </ModalDialogContent>,
-      $dialog[0],
-      resize.current
-    );
+    ReactDOM.render(<>{children}</>, $dialog[0], resize.current);
   }, [$dialog, children]);
 
   return (
@@ -147,16 +124,38 @@ export const ModalDialog = React.memo(function ModalDialog({
       <div />
     </div>
   );
-});
+}
 
-// Loading Screen
-const handleOnLoad = (dialog: JQuery) =>
-  void $('.progress-bar', dialog).progressbar({ value: false });
+export function ProgressBar({
+  current = false,
+  total = 1,
+}: {
+  readonly current?: number | false;
+  readonly total?: number;
+}): JSX.Element {
+  const progressBarRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(
+    () =>
+      progressBarRef.current === null
+        ? undefined
+        : void $(progressBarRef.current).progressbar({
+            value: current,
+            max: total,
+          }),
+    [current, total, progressBarRef]
+  );
+
+  return (
+    <div>
+      <div ref={progressBarRef} aria-atomic="true" />
+    </div>
+  );
+}
 
 export function LoadingScreen(): JSX.Element {
   return (
     <ModalDialog
-      onLoadCallback={handleOnLoad}
       properties={{
         modal: false,
         dialogClass: 'ui-dialog-no-close',
@@ -164,7 +163,7 @@ export function LoadingScreen(): JSX.Element {
         buttons: [],
       }}
     >
-      <div className="progress-bar" />
+      <ProgressBar />
     </ModalDialog>
   );
 }
