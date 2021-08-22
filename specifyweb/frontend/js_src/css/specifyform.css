@@ -81,13 +81,15 @@ div.specify-view-content {
 }
 
 .recordset-header:not([title=""]) {
-  border: 1px solid #ccc;
+    border: 1px solid #ccc;
+}
+
+.recordset-header > span, .recordset-header > a {
+    padding: 0.4rem 0.6rem;
+    margin: 0;
 }
 
 .recordset-header .recordset-navigation {
-    padding: 0.4rem 0.6rem;
-    margin: 0;
-    background: #cccc;
     background: var(--accent-pale);
 }
 
