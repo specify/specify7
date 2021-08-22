@@ -101,11 +101,14 @@ const commonText = require('./localization/common').default;
             $('<h2>').text(commonText('trees')).appendTo(controls);
             controls.append(this.makeSearchBox());
             controls.append(this.makeBtns());
-            $('<table>').appendTo(this.el).append(
-                this.header.render().el,
-                $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
-                `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
-            );
+            $('<table>')
+                .prop('aria-live','polite')
+                .appendTo(this.el)
+                .append(
+                    this.header.render().el,
+                    $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
+                    `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
+                );
             this.$('tr.loading').append(new Array(this.ranks.length-1).fill('<td>'));
             this.getRows();
             return this;
