@@ -172,10 +172,12 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
             : [],
       }}
     >
-      {message}
-      {state.status.taskstatus === 'PROGRESS' && (
-        <ProgressBar current={current} total={total} />
-      )}
+      <div aria-live="polite">
+        {message}
+        {state.status.taskstatus === 'PROGRESS' && (
+          <ProgressBar current={current} total={total} />
+        )}
+      </div>
     </ModalDialog>
   );
 }

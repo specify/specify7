@@ -306,7 +306,7 @@ export default class WbImport extends Component<{}, WbImportState> {
             {this.state.fileType === 'csv' && (
               <ChooseEncoding encoding={this.state.encoding} update={update} />
             )}
-            <p>{wbText('corruptFile')(this.state.file.name)}</p>
+            <p role="alert">{wbText('corruptFile')(this.state.file.name)}</p>
           </>
         );
         break;

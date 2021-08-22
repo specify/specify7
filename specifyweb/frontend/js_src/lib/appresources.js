@@ -194,7 +194,7 @@ const ResourceDataView = Backbone.View.extend({
                         .render().el
                 );
             } else {
-                $(`<p>${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
+                $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
             userInfo.isadmin &&  buttonsDiv.append(

@@ -22,6 +22,7 @@ module.exports =  Backbone.View.extend({
     },
         render: function() {
             this.$el.empty();
+            this.el.setAttribute('role','alert');
             if (this.collections.length > 1) {
                 this.$el.html(`
                     <p>${commonText('resourceInaccessible')}</p>
