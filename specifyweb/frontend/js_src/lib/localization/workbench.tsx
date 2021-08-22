@@ -99,7 +99,6 @@ const wbText = createDictionary({
     'Validate Completed with No Errors'
   ),
   validationNoErrorsDialogMessage: `
-
     Validation found no errors, it is
     ready to be uploaded into the database.<br><br>
 

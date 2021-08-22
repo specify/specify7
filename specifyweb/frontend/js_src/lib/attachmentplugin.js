@@ -53,6 +53,7 @@ module.exports =  UIPlugin.extend({
 
             self.progressDialog = $(
                 '<div>',
+                { 'aria-live': 'polite' }
             )
                 .appendTo(self.el)
                 .append(self.progressBar)

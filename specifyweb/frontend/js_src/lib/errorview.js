@@ -30,6 +30,7 @@ module.exports = {
                 if (/^Traceback:/m.test(response)) {
                     this.$el.append($('<textarea readonly>').val(response).css({'width': '100%', 'min-height': 600}));
                 }
+                this.el.setAttribute('role','alert');
                 this.$el.dialog({
                     modal: true,
                     width: '800',

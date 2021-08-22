@@ -41,6 +41,7 @@ const commonText = require('./localization/common').default;
         },
         render: function() {
             var specifyModel = schema.getModelById(this.model.get('dbtableid'));
+            this.el.setAttribute('role','alert');
             this.$el.empty().append(formsText('emptyRecordSetMessage')(this.model.get('name')));
             this.$('.recordset-add, .recordset-delete').button();
 

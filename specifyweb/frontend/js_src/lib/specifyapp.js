@@ -80,7 +80,7 @@ const commonText = require('./localization/common').default;
        );
 
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
-            $(`<div>
+            $(`<div role="alert">
                 ${commonText('versionMismatchDialogHeader')}
                 <p>
                     ${commonText('versionMismatchDialogMessage')(

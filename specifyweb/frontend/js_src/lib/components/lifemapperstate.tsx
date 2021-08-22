@@ -79,7 +79,7 @@ export const stateReducer = generateReducer<
               }}
             >
               {typeof state.mapInfo === 'string' ? (
-                <p>{state.mapInfo}</p>
+                <p role="alert">{state.mapInfo}</p>
               ) : (
                 <LifemapperMap mapInfo={state.mapInfo} />
               )}
