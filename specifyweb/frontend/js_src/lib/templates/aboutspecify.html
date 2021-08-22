@@ -20,43 +20,43 @@
     <h3><%= welcomeText('systemInformation') %></h3>
     <table>
       <tr>
-        <th><%= welcomeText('version') %></th>
+        <th scope="row"><%= welcomeText('version') %></th>
         <td><%- version %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('specifySixVersion') %></th>
+        <th scope="row"><%= welcomeText('specifySixVersion') %></th>
         <td><%- specify6_version %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('databaseVersion') %></th>
+        <th scope="row"><%= welcomeText('databaseVersion') %></th>
         <td><%- database_version %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('schemaVersion') %></th>
+        <th scope="row"><%= welcomeText('schemaVersion') %></th>
         <td><%- schema_version %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('databaseName') %></th>
+        <th scope="row"><%= welcomeText('databaseName') %></th>
         <td><%- database %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('institution') %></th>
+        <th scope="row"><%= welcomeText('institution') %></th>
         <td><%- institution %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('discipline') %></th>
+        <th scope="row"><%= welcomeText('discipline') %></th>
         <td><%- discipline %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('collection') %></th>
+        <th scope="row"><%= welcomeText('collection') %></th>
         <td><%- collection %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('isaNumber') %></th>
+        <th scope="row"><%= welcomeText('isaNumber') %></th>
         <td><%- isa_number == null ? 'N/A' : isa_number %></td>
       </tr>
       <tr>
-        <th><%= welcomeText('browser') %></th>
+        <th scope="row"><%= welcomeText('browser') %></th>
         <td><%- user_agent %></td>
       </tr>
     </table>
