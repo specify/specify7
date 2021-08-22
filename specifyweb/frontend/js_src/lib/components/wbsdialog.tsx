@@ -163,7 +163,7 @@ function Dialog({
                       <div className="wbs-dialog-cell">
                         <a
                           style={{ fontWeight: 800 }}
-                          href={`/workbench/${dataset.id}/`}
+                          href={`/specify/workbench/${dataset.id}/`}
                           {...(typeof handleDataSetSelect === 'undefined'
                             ? {
                                 className: 'intercept-navigation',
