@@ -269,6 +269,7 @@ export const localityPinFields: RA<LocalityPinFields> = [
       ['locality', 'latlongaccuracy'],
       ['locality', 'geography', '$Country', 'name'],
       ['locality', 'geography', '$State', 'name'],
+      ['locality', 'geography', '$County', 'name'],
     ],
   },
   {
