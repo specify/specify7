@@ -143,7 +143,11 @@
 </div>
 <div class="wb-main-content">
   <section class="wb-spreadsheet"></section>
-  <aside class="wb-uploaded-view-wrapper" style="display: none"></aside>
+  <aside
+    class="wb-uploaded-view-wrapper"
+    style="display: none"
+    aria-live="polite"
+  ></aside>
 </div>
 <div
   role="toolbar"
@@ -181,7 +185,11 @@
       ⚙
     </button>
   </span>
-  <span class="wb-navigation-section" data-navigation-type="searchResults">
+  <span
+    class="wb-navigation-section"
+    data-navigation-type="searchResults"
+    aria-atomic="true"
+  >
     <button
       type="button"
       class="wb-cell-navigation"
@@ -206,7 +214,7 @@
   </span>
 
   <% if(!is_uploaded){ %>
-  <span class="wb-navigation-section" data-navigation-type="modifiedCells">
+  <span class="wb-navigation-section" data-navigation-type="modifiedCells" aria-atomic="true">
     <button
       type="button"
       class="wb-cell-navigation"
@@ -231,7 +239,7 @@
   </span>
   <% } %>
 
-  <span class="wb-navigation-section" data-navigation-type="newCells">
+  <span class="wb-navigation-section" data-navigation-type="newCells" aria-atomic="true">
     <button
       type="button"
       class="wb-cell-navigation"
@@ -256,7 +264,7 @@
   </span>
 
   <% if(!is_uploaded){ %>
-  <span class="wb-navigation-section" data-navigation-type="invalidCells">
+  <span class="wb-navigation-section" data-navigation-type="invalidCells" aria-atomic="true">
     <button
       type="button"
       class="wb-cell-navigation"

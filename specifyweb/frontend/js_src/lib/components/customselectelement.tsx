@@ -7,7 +7,7 @@ import '../../css/customselectelement.css';
 import React from 'react';
 
 import wbText from '../localization/workbench';
-import { upperToKebab } from '../wbplanviewhelper';
+import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 import {
   TableIcon,
@@ -248,6 +248,7 @@ function Option({
       role="option"
       aria-disabled={!isEnabled}
       aria-current={!isEnabled}
+      aria-atomic="true"
     >
       <Icon
         optionLabel={optionLabel}
@@ -284,12 +285,9 @@ function OptionGroup({
 }: CustomSelectElementOptionGroupProps): JSX.Element {
   return (
     <section
-      className={`custom-select-group custom-select-group-${
-        selectGroupName?.replace(
-          /[A-Z]/g,
-          (letter) => `-${letter.toLowerCase()}`
-        ) ?? 'undefined'
-      }`}
+      className={`custom-select-group custom-select-group-${camelToKebab(
+        selectGroupName ?? ''
+      )}`}
       role="group"
       aria-label={selectGroupLabel}
     >
@@ -642,6 +640,7 @@ export function CustomSelectElement({
       title={selectLabel}
       role={role}
       ref={customSelectElementRef}
+      aria-live={has('interactive') ? 'polite' : 'off'}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       onBlur={
         has('interactive')

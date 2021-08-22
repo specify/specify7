@@ -64,6 +64,7 @@ async function getTreeRanks(tableName){
         render: function() {
             var inner = $(template({queryText}));
             this.$el.append(inner);
+            this.el.setAttribute('aria-live','polite');
             var table = this.$('table.query-results');
             this.$('.query-results-count').text(commonText('loadingInline'));
             this.countOnly || table.append(this.renderHeader());
