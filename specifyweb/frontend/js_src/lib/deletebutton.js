@@ -54,7 +54,7 @@ module.exports =  Backbone.View.extend({
         openWaitDialog: function() {
             var _this = this;
             this.waitDialog && this.waitDialog.dialog('close');
-            this.waitDialog = $(`<div>
+            this.waitDialog = $(`<div aria-live="polite">
                 <p>${formsText('checkingIfResourceCanBeDeleted')}</p>
                 <div class="progress"></div>
             </div>`).dialog({

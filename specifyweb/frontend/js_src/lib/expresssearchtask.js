@@ -37,12 +37,12 @@ const commonText = require('./localization/common').default;
             this.$el.append(`
                 <h3>${commonText('primarySearch')}</h3>
                 <p class="status primary">${commonText('running')}</p>
-                <div class="results primary"></div>
+                <div class="results primary" aria-live="polite"></div>
             `);
             this.$el.append(`
                 <h3>${commonText('secondarySearch')}</h3>
                 <p class="status related">${commonText('running')}</p>
-                <div class="results related"></div>
+                <div class="results related" aria-live="polite"></div>
             `);
             this.$('.results').accordion(accordionOptions);
             var query = querystring.deparam().q;

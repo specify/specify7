@@ -175,7 +175,8 @@ const formsText = createDictionary({
   nextRecord: 'Next Record',
   currentPositionInTheRecordSet: 'Current Position in the Record Set',
   // Current index in the record set
-  aOutOfB: (current: number, total: number): string => `${current} out of ${total}`,
+  aOutOfB: (current: number, total: number): string =>
+    `${current} out of ${total}`,
 
   // SaveButton
   unsavedFormUnloadProtect: 'This form has not been saved.',

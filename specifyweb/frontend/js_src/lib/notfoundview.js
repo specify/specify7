@@ -10,6 +10,7 @@ module.exports = Backbone.View.extend({
         render: function() {
             var self = this;
             self.$el.empty();
+            self.el.setAttribute('role', 'alert');
             self.$el.append(`<h3>${commonText('pageNotFound')}</h3`);
         }
     });
