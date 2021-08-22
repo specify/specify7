@@ -148,10 +148,10 @@ function Dialog({
             <table className="wbs-dialog-table">
               <thead>
                 <tr>
-                  <th>{commonText('name')}</th>
-                  <th>{commonText('created')}</th>
-                  <th>{commonText('uploaded')}</th>
-                  <th />
+                  <th scope="col">{commonText('name')}</th>
+                  <th scope="col">{commonText('created')}</th>
+                  <th scope="col">{commonText('uploaded')}</th>
+                  <td />
                 </tr>
               </thead>
               <tbody>

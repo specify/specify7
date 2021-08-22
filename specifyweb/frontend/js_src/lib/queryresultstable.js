@@ -43,7 +43,6 @@ async function getTreeRanks(tableName){
         else if (fieldSpec.datePart && fieldSpec.datePart !== 'Full Date')
             span.text(`${name} (${fieldSpec.datePart})`);
 
-        icon && th.prepend($('<img>', {src: icon}));
         icon && th.prepend($('<img>', {src: icon, alt: ''}));
         return th;
     }
