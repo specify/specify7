@@ -5,7 +5,7 @@ import { generateReducer } from 'typesafe-reducer';
 
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { ModalDialog } from './modaldialog';
+import { ModalDialog, ProgressBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
 
@@ -40,33 +40,6 @@ const reducer = generateReducer<States, Actions>({
     aborted: action.aborted,
   }),
 });
-
-function ProgressBar({
-  current,
-  total,
-}: {
-  readonly current: number;
-  readonly total: number;
-}): JSX.Element {
-  const progressBarRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(
-    () =>
-      progressBarRef.current === null
-        ? undefined
-        : void $(progressBarRef.current).progressbar({
-            value: current,
-            max: total,
-          }),
-    [current, total, progressBarRef]
-  );
-
-  return (
-    <div>
-      <div ref={progressBarRef} />
-    </div>
-  );
-}
 
 function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   if (!dataset.uploaderstatus)
@@ -134,7 +107,7 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   const current =
     typeof state.status?.taskinfo === 'object'
       ? state.status.taskinfo.current
-      : 1;
+      : false;
   const total =
     typeof state.status?.taskinfo === 'object'
       ? state.status.taskinfo?.total
@@ -152,7 +125,7 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
     else
       message = wbText('wbStatusOperationProgress')(
         standartalizedOperation,
-        current,
+        current || 0,
         total
       );
   } else
