@@ -253,7 +253,7 @@ const WBView = Backbone.View.extend({
     });
 
     this.updateValidationButton();
-    if (this.validationMode === 'static')
+    if (this.validationMode === 'static' && !this.isUploaded)
       this.wbutils.toggleCellTypes('invalidCells', 'remove');
 
     this.flushIndexedCellData = true;
@@ -1643,10 +1643,6 @@ const WBView = Backbone.View.extend({
       },
       buttons: {
         [wbText('rollback')]: () => {
-          if (typeof this.uploadedView !== 'undefined') {
-            this.uploadedView.remove();
-            this.uploadedView = undefined;
-          }
           $.post(`/api/workbench/unupload/${this.dataset.id}/`).then(() =>
             this.openStatus('unupload')
           );
