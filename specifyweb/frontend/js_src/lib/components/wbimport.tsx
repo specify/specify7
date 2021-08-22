@@ -470,7 +470,7 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
   const data = props.data;
   const { rows, header } = extractHeader(data, hasHeader);
 
-  const headerCells = header.map((cell, index) => <th key={index}>{cell}</th>);
+  const headerCells = header.map((cell, index) => <th key={index} scope="col">{cell}</th>);
   const dataRows = rows.map((row, index) => (
     <tr key={index}>
       {row.map((cell, index) => (

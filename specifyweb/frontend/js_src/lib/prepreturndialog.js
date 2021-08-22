@@ -242,19 +242,21 @@ module.exports =  Backbone.View.extend({
 
         this.prepReturnRows = this.loanpreparations.map(lp => new PrepReturnRow({ loanpreparation: lp }));
 
-        $('<table>').append(
-            $('<tr>').append(
-                '<th></th>',
-                $('<th>').text(schema.models.CollectionObject.getField('catalognumber').getLocalizedName()),
-                $('<th>').text(schema.models.Determination.getField('taxon').getLocalizedName()),
-                $('<th>').text(schema.models.Preparation.getField('preptype').getLocalizedName()),
-                `<th>${formsText('unresolved')}</th>`,
-                `<th>${formsText('return')}</th>`,
-                `<th colspan="2">${formsText('resolve')}</th>`
+        this.el.append(
+            $('<table>').append(`
+                <tr>
+                    <td></td>
+                    <th scope="col">${schema.models.CollectionObject.getField('catalognumber').getLocalizedName()}</th>
+                    <th scope="col">${schema.models.Determination.getField('taxon').getLocalizedName()}</th>
+                    <th scope="col">${schema.models.Preparation.getField('preptype').getLocalizedName()}</th>
+                    <th scope="col">${formsText('unresolved')}</th>
+                    <th scope="col">${formsText('return')}</th>
+                    <th scope="col" colspan="2">${formsText('resolve')}</th>
+                </tr>`
+            ).append(
+                [].concat(...this.prepReturnRows.map(row => [row.render().$el, REMARKSROW]))
             )
-        ).append(
-            [].concat(...this.prepReturnRows.map(row => [row.render().$el, REMARKSROW]))
-        ).appendTo(this.el);
+        );
 
         const buttons = (this.options.readOnly ? [] : [
             {

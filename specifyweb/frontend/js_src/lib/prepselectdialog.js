@@ -52,13 +52,15 @@ module.exports =  PrepDialog.extend({
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         getTblHdr: function() {
-            return '<tr><th>  </th>'
-                + '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
-                + '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
-                + '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
-                + '<th>' + this.getProp('InteractionsTask.Selected', 'Selected') + '</th>'
-                + '<th>' + this.getProp('InteractionsTask.Available', 'Available') + '</th>'
-                + '<th>' + this.getProp('InteractionsTask.Unavailable', 'Unavailable') + '</th></tr>';
+            return `<tr>
+                <td></td>
+                <th scope="col">${this.colobjModel.getField('catalognumber').getLocalizedName()}</th>
+                <th scope="col">${this.detModel.getField('taxon').getLocalizedName()}</th>
+                <th scope="col">${this.prepModel.getField('preptype').getLocalizedName()}</th>
+                <th scope="col">${this.getProp('InteractionsTask.Selected', 'Selected')}</th>
+                <th scope="col">${this.getProp('InteractionsTask.Available', 'Available')}</th>
+                <th scope="col">${this.getProp('InteractionsTask.Unavailable', 'Unavailable')}</th>
+            </tr>`;
         },
         finishRender: function() {
             var spinners = this.$(".prepselect-amt");

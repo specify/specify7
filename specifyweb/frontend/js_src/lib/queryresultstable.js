@@ -18,7 +18,7 @@ const commonText = require('./localization/common').default;
         if (fieldSpec.datePart &&  fieldSpec.datePart != 'Full Date') {
             name += ' (' + fieldSpec.datePart + ')';
         }
-        var th = $('<th>').text(name);
+        var th = $('<th>', {scope: 'col'}).text(name);
         icon && th.prepend($('<img>', {src: icon, alt: name}));
         return th;
     }
