@@ -88,7 +88,7 @@ module.exports = Base.extend({
         changed: function(event, ui) {
             if (ui.item) { return; }
 
-            if (!this.input.hasClass('specify-required-field') && this.input.val() === '') {
+            if (!this.input[0].required && this.input.val() === '') {
                 this.model.set(this.info.field.name, null);
                 return;
             }

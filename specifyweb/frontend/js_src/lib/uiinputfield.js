@@ -101,8 +101,7 @@ module.exports =  Backbone.View.extend({
             return { parsed: value };
         }
 
-        var isRequired = this.$el.is('.specify-required-field');
-        if (value === '' && isRequired) {
+        if (value === '' && this.el.required) {
             throw [this, 'fieldrequired', 'Field is reqired.', deferred];
              return undefined;
         } else {

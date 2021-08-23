@@ -31,7 +31,7 @@ module.exports =  Base.extend({
 
             const nullValueInPL = items.some(item => item.value == null);
 
-            if (!this.$el.hasClass('specify-required-field') && !nullValueInPL) {
+            if (!this.el.required && !nullValueInPL) {
                 // need an option for no selection
                 this.$el.append('<option>');
             }
@@ -59,7 +59,7 @@ module.exports =  Base.extend({
                 this.$el.append($('<option>', { value: value }).text(queryText('invalidPicklistValue')(value)));
             }
 
-            if (value === '' && this.$el.hasClass('specify-required-field')) {
+            if (value === '' && this.el.required) {
                 // value is required but missing from database
                 this.$el.append(`<option>
                     ${queryText('missingRequiredPicklistValue')}

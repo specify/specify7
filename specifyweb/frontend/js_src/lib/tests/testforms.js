@@ -85,7 +85,7 @@ define([
                 equal(control.attr('name'), 'aField', 'name is correct');
                 equal(control.prop('id'), 'specify-field-'+formNumber+'-1', 'id is correct');
                 ok(_.isUndefined(control.data('specify-initialize')), 'no initialize data');
-                ok(!control.hasClass('specify-required-field'), 'field is not required');
+                ok(!control[0].required, 'field is not required');
             });
         });});
 
@@ -99,7 +99,7 @@ define([
                 equal(control.attr('name'), 'aField', 'name is correct');
                 equal(control.prop('id'), 'specify-field-'+formNumber+'-1', 'id is correct');
                 equal(control.data('specify-initialize'), 'somedata', 'initialize data is correct');
-                ok(control.hasClass('specify-required-field'), 'field is required');
+                ok(control[0].required, 'field is required');
             });
         });});
 

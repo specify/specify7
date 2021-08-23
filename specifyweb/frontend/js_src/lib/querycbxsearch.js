@@ -38,7 +38,7 @@ module.exports = Backbone.View.extend({
             $('.specify-field', form).addClass('for-search-form');
             this.populateForm(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
-            form.find('.specify-required-field').removeClass('specify-required-field');
+            form.find('.specify-field[required]').prop('required',false);
             this.$el.append(form).append('<ul class="querycbx-search-results">');
             this.$el.dialog({
                 title: commonText('search'),
