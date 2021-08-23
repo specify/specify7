@@ -194,7 +194,7 @@ select.specify-field {
     width: 100%;
 }
 
-.specify-required-field {
+.specify-field[required] {
     background-color: #c8e6ff;
 }
 

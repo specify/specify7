@@ -301,8 +301,8 @@ var QueryCbx = Backbone.View.extend({
             this.$('.querycbx-edit, .querycbx-add, .querycbx-clone, .querycbx-display').hide();
         }
         this.readOnly && control.prop('readonly', true);
-        field.isRequired && this.$('input').addClass('specify-required-field');
-        this.isRequired = this.$('input').is('.specify-required-field');
+        field.isRequired && this.$('input').prop('required',true);
+        this.isRequired = this.$('input').attr('required');
 
         var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
