@@ -72,7 +72,7 @@ module.exports = function(formNode) {
                 if (fieldName) {
                     var field = model.getField(fieldName);
                     if (field && field.isRequiredBySchemaLocalization())
-                        control.addClass('specify-required-field');
+                        control[0].required = true;
                 } else {
                     console.error("control without name", this);
                 }

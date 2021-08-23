@@ -29,7 +29,7 @@ module.exports =  Backbone.View.extend({
                 this.toolTipMgr = new ToolTipMgr(this).enable();
                 this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, info.field.name);
             }
-            info.field.isRequired && this.$el.addClass('specify-required-field');
+            info.field.isRequired && this.el.setAttribute('required','');
             info.resource.on('change:' + info.field.name.toLowerCase(), this.resetValue, this);
             this._render(info);
         }

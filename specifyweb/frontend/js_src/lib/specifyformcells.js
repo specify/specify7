@@ -34,7 +34,7 @@ const userInfo             = require('./userinfo.js');
                     }
                     initialize && control.attr('data-specify-initialize', initialize);
                     if (isRequired && isRequired.toLowerCase() === 'true') {
-                        control.addClass('specify-required-field');
+                        control[0].required = true;
                     }
                     if (ignore && ignore.toLowerCase() == 'true') {
                         control.addClass('specify-ignore-field');

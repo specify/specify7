@@ -71,7 +71,7 @@ module.exports =  Backbone.View.extend({
             var formatter = field.getUIFormatter();
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
-            field.isRequired && this.$el.addClass('specify-required-field');
+            field.isRequired && this.el.setAttribute('required','');
             isNumeric(field) && this.$el.addClass('specify-numeric-field');
 
             var inputUI = new UIFieldInput({
