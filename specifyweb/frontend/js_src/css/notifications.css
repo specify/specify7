@@ -1,5 +1,9 @@
 /* notifications.css */
 
+#site-notifications {
+  white-space: pre;
+}
+
 #site-notifications[disabled] {
     color: var(--t1);
 }
