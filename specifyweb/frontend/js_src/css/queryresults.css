@@ -34,6 +34,14 @@
 
 .query-results td {
   border-right: 1px solid #aaa;
+  padding: 0;
+}
+
+.query-result-link {
+  padding: 5px;
+  width: 100%;
+  display: block;
+  min-height: 0.8rem;
 }
 
 .query-results th {
