@@ -363,3 +363,7 @@ input[type='submit'].saveblocked {
 .specify-plugin-weblink a .ui-button-text {
     padding: 5px;
 }
+
+.ui-helper-hidden-accessible {
+    top: 0;
+}
