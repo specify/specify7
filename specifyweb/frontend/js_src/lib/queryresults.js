@@ -225,7 +225,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         addResults: function(results) {
             var table = this.$('table.query-results');
             _.each(results.results, function(result) {
-                if (this.forceResourceLoad) {
+                if (this.forceResourceLoad && this.linkField !== -1) {
                     var siht = this;
                     var lr = new this.model.LazyCollection({filters: {id: result[this.linkField]}});   
                     lr.fetch({limit: 1}).done(function(){
