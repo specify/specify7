@@ -289,7 +289,8 @@ const commonText = require('./localization/common').default;
                     .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                     .sortBy(function(f) { return f.spqueryfield.get('position'); })
                     .pluck('fieldSpec')
-                    .value()
+                    .value(),
+                linkField: this.query.get('selectdistinct') ? -1 : 0,
             });
             this.results.render().$el.appendTo(this.el);
         },

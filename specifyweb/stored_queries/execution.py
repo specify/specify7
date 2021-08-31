@@ -441,7 +441,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session)
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
 
     if distinct:
         query = query.distinct()
@@ -456,7 +456,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
         return {'results': list(query)}
 
-def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False, formatauditobjs=False):
+def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -479,6 +479,8 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
     will be filtered to items from the given record set unless None.
 
     replace_nulls = if True, replace null values with ""
+
+    distinct = if True, do not return record IDs and query distinct rows
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
@@ -486,7 +488,7 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(id_field),
+        query=session.query() if distinct else session.query(id_field),
     )
 
 

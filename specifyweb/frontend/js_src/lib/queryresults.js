@@ -180,7 +180,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
     var QueryResultsView = Backbone.View.extend({
         __name__: "QueryResultsView",
         events: {
-            'click .query-result-link': 'openRecord'
+            'click a.query-result-link': 'openRecord'
         },
         initialize: function(options) {
             this.fieldSpecs = options.fieldSpecs;
@@ -197,13 +197,16 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             return results.results.length < 1;
         },
         renderResult: function(row, fieldSpec, rowHref, result, idx, format, resource) {
-            var value = result[idx];
-            var cell =  $('<a class="query-result-link">')
-                    .prop('href', rowHref)
-                    .text(value == null ? '' : value); 
+            const value = rowHref ? result[idx + 1] : result[idx];
+            const cell = rowHref ?
+                $('<a>').prop('href', rowHref) :
+                $('<span>');
+            cell
+                .addClass('query-result-link')
+                .text(value == null ? '' : value);
             var field = fieldSpec.getField();
             if (field && format) {
-                if (value && this.auditObjFormatter.active) {
+                if (value && resource && this.auditObjFormatter.active) {
                     this.auditObjFormatter.format(field, result, resource, cell, value);
                 } else if (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date') {
                     cell.text = fieldformat(field, value);
@@ -214,9 +217,9 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
 
         addResult: function(result, table, resource) {
             var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
-            var href = resource.viewUrl();
+            var href = resource?.viewUrl();
             _.each(this.fieldSpecs, function(f, i) {
-                this.renderResult(row, f, href, result, i+1, this.format, resource);
+                this.renderResult(row, f, href, result, i, this.format, resource);
             }, this);
         },
         addResults: function(results) {
@@ -229,15 +232,17 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
                         siht.addResult(result, table, lr.models[0]);
                     });
                 } else {
-                    var resource = new this.model.Resource({ id: result[this.linkField] });
-                    this.addResult(result, table, this.auditObjFormatter.setResourceReqFlds(resource, result));
+                    const resource = this.linkField === -1 ?
+                        undefined :
+                        new this.model.Resource({ id: result[this.linkField] });
+                    this.addResult(result, table, resource && this.auditObjFormatter.setResourceReqFlds(resource, result));
                 }
             }, this);
             return results.results.length;
         },
-        openRecord: function(evt) {
+        openRecord: function(event) {
             evt.preventDefault();
-            window.open($(evt.currentTarget).attr('href'));
+            window.open(event.target.href);
         }
     });
 

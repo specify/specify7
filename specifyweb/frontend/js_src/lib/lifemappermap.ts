@@ -68,7 +68,7 @@ export async function prepareLifemapperProjectionMap(
           contextname: 'CollectionObject',
           contexttableid: 1,
           limit: LIMIT + 1,
-          selectdistinct: true,
+          selectdistinct: false,
           countonly: false,
           specifyuser: '/api/specify/specifyuser/1/',
           isfavorite: true,
