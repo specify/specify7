@@ -232,11 +232,11 @@ def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[P
         prec = parsed['period']
         date = parsed['date_obj']
         if prec == 'day':
-            return filter_and_upload({fieldname: date, precision_field.name.lower(): 0}, column)
+            return filter_and_upload({fieldname: date, precision_field.name.lower(): 1}, column)
         elif prec == 'month':
-            return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 1}, column)
+            return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 2}, column)
         elif prec == 'year':
-            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2}, column)
+            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 3}, column)
         else:
             return ParseFailure('expected date precision to be day month or year. got: {}'.format(prec), column)
 
