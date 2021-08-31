@@ -47,7 +47,10 @@ module.exports = Backbone.View.extend({
                 table.append(makeEntry(recordSet));
             });
             this.options.recordSets.isComplete() ||
-                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+                table.append(`<tr>
+                    <td></td>
+                    <td>${commonText('listTruncated')}</td>
+                </tr>`);
             this.$el.append(table);
         },
         dialogEntry: function(recordSet) {

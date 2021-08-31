@@ -74,11 +74,17 @@ var ReportListDialog = Backbone.View.extend({
             reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
             labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
 
+            if(this.reports.length === 0)
+                reports.append(`<p>${commonText('noResults')}</p>`);
+
+            if(this.labels.length === 0)
+                labels.append(`<p>${commonText('noResults')}</p>`);
+
             this.$el
                 .append(`<h2>${commonText('reports')}</h2>`).append(reports)
                 .append(`<h2>${commonText('labels')}</h2>`).append(labels);
 
-            if(this.options.appResources.isComplete())
+            if(!this.options.appResources.isComplete())
                 this.$el.append(`<p>${commonText('listTruncated')}</p>`);
 
             makeDialog(this.$el, {
