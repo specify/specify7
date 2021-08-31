@@ -69,10 +69,10 @@ module.exports = Backbone.View.extend({
                 return $('<option>', {
                     value: url,
                     selected: url === value
-                }).text(rank.get('name'))[0];
+                }).text(rank.get('title') || rank.get('name'))[0];
             });
             this.$el.append(options);
-            // # make sure value in the resouce is consitent with what is displayed.
+            // # make sure value in the resource is consistent with what is displayed.
             if (!value || this.$el.find(`option[value="${value}"]`).length < 1) {
                 this.model.set(fieldName, higherRanks.first());
             }

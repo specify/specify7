@@ -36,7 +36,7 @@ const commonText = require('./localization/common').default;
                 (tdi, i) => $('<th>').append(
                     $('<div>')
                         .addClass(this.collapsedRanks[i] ? 'tree-header-collapsed' : '')
-                        .text(tdi.get('name'))
+                        .text(tdi.get('title') || tdi.get('name'))
                 )[0]
             );
 
