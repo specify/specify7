@@ -210,15 +210,27 @@ def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]
         return ParseFailure("bad agent type: {}. Expected one of {}".format(value, agenttypes), column)
     return filter_and_upload({'agenttype': agenttype}, column)
 
-def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
-    precision_field = table.get_field(fieldname + 'precision')
-    parsed = DateDataParser(
+def parse_date_(strict: bool, period: Optional[str], value: str):
+    require_parts = (
+        ['day', 'month', 'year'] if period is 'day' else
+        ['month', 'year'] if period is 'month' else
+        ['year'] if period is 'year' else
+        []
+    )
+    return DateDataParser(
         settings={
             'PREFER_DAY_OF_MONTH': 'first',
             'PREFER_DATES_FROM': 'past',
-            'STRICT_PARSING': precision_field is None,
+            'STRICT_PARSING': strict,
+            'REQUIRE_PARTS': require_parts
         },
-    ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
+    ).get_date_data(value)
+
+
+def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
+    precision_field = table.get_field(fieldname + 'precision')
+    strict = precision_field is None
+    parsed = parse_date_(strict, None, value)
 
     if parsed['date_obj'] is None:
         return ParseFailure("bad date value: {}".format(value), column)
@@ -231,6 +243,11 @@ def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[P
     else:
         prec = parsed['period']
         date = parsed['date_obj']
+
+        reparsed = parse_date_(False, prec, value)
+        if reparsed['date_obj'] is None:
+            return ParseFailure("bad date value: {}".format(value), column)
+
         if prec == 'day':
             return filter_and_upload({fieldname: date, precision_field.name.lower(): 1}, column)
         elif prec == 'month':

@@ -1,18 +1,52 @@
 import io
 import csv
 from jsonschema import validate # type: ignore
+from datetime import datetime
 
 from specifyweb.specify import auditcodes
+from specifyweb.specify.datamodel import datamodel
 
 from .base import UploadTestsBase, get_table
 from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, ParseFailure, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
-from ..parsing import parse_coord
+from ..parsing import parse_coord, parse_date, ParseResult as PR, ParseFailure as PF
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
 from ..column_options import ColumnOptions
 from ..upload_plan_schema import parse_column_options
 from ..upload_results_schema import schema as upload_results_schema
+
+class DateParsingTests(UploadTestsBase):
+    def test_partial_dates_good(self) -> None:
+        co = datamodel.get_table_strict('Collectionobject')
+        for date_str, expected, prec in [
+                ('8/31/2021', '2021-8-31', 1),
+                ('8/2021', '2021-8-1', 2),
+                ('2021', '2021-1-1', 3),
+                ('March 61', '1961-3-1', 2),
+                ('2013-12', '2013-12-1', 2),
+                ('2013-7-2', '2013-7-2', 1),
+                # ('00/00/2015', '2015-1-1', 3),
+                # ('00/01/2020', '2020-1-1', 2),
+                # ('1990-02-00', '1990-2-1', 2),
+                # ('1990-00-00', '1990-1-1', 3),
+        ]:
+            result = parse_date(co, 'catalogeddate', date_str, 'catdate')
+            self.assertIsInstance(result, PR, f"{date_str} should parse")
+            self.assertEqual({'catalogeddate': datetime.strptime(expected, '%Y-%m-%d'), 'catalogeddateprecision': prec}, result.upload,
+                             f"correctly parses {date_str}")
+
+    def test_partial_dates_bad(self) -> None:
+        co = datamodel.get_table_strict('Collectionobject')
+        for date_str in [
+                '8/31',
+                '20',
+                'May',
+                'Tuesday',
+        ]:
+            result = parse_date(co, 'catalogeddate', date_str, 'catdate')
+            self.assertIsInstance(result, PF, f"{date_str} should not parse")
+
 
 class ParsingTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -783,4 +817,3 @@ class NullAllowedTests(UploadTestsBase):
         self.assertIsInstance(results[2].record_result, Uploaded)
         self.assertIsInstance(results[3].record_result, Matched)
         self.assertIsInstance(results[4].record_result, Matched)
-
