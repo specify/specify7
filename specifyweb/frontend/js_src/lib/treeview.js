@@ -216,6 +216,7 @@ const commonText = require('./localization/common').default;
             navigation.push(querystring.param(window.location.href, {conformation: encoded}));
         },
         reOpenTree: function() {
+            $('.context-menu-list').trigger('contextmenu:hide');
             this.roots.forEach(root => root.remove());
             this.getRows();
         },
