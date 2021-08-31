@@ -30,11 +30,11 @@ var Q = require('q');
         return final.promise;
     }
 
-    function load(type, file, cb) {
+    function load(type, file, success, fail) {
         return register(
             file,
             Q($.get('/' + type + '/' + file))
-                .then(cb));
+                .then(success).catch(fail));
     }
 
     var initialContext = {
