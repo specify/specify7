@@ -933,17 +933,17 @@ class UploadTests(UploadTestsBase):
 
         # Check some determination dates.
         self.assertEqual(set(co.determinations.get().determineddate for co in cos), set((None, datetime(2003, 11, 1, 0, 0), datetime(2002, 1, 1, 0, 0))))
-        self.assertEqual(set(co.determinations.get().determineddateprecision for co in cos), set((None, 1)))
+        self.assertEqual(set(co.determinations.get().determineddateprecision for co in cos), set((None, 2)))
 
         # Check some collectingevent dates.
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001906").collectingevent.startdate, datetime(1987,5,4,0,0))
-        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001906").collectingevent.startdateprecision, 0)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001906").collectingevent.startdateprecision, 1) # full
 
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000005009").collectingevent.startdate, datetime(1980,1,1,0,0))
-        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000005009").collectingevent.startdateprecision, 2)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000005009").collectingevent.startdateprecision, 3) # year
 
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdate, datetime(1998,4,1,0,0))
-        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdateprecision, 1)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdateprecision, 2) # month
 
         # Check that trees are valid.
         for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat'):
