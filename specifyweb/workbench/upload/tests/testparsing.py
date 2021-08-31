@@ -33,6 +33,7 @@ class DateParsingTests(UploadTestsBase):
         ]:
             result = parse_date(co, 'catalogeddate', date_str, 'catdate')
             self.assertIsInstance(result, PR, f"{date_str} should parse")
+            assert isinstance(result, PR)
             self.assertEqual({'catalogeddate': datetime.strptime(expected, '%Y-%m-%d'), 'catalogeddateprecision': prec}, result.upload,
                              f"correctly parses {date_str}")
 
