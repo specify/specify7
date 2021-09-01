@@ -74,8 +74,8 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
 
 def unupload_record(upload_result: UploadResult, agent) -> None:
     if isinstance(upload_result.record_result, Uploaded):
-        for toMany in upload_result.toMany.values():
-            for record in toMany:
+        for _, toMany in sorted(upload_result.toMany.items(), key=lambda kv: kv[0], reverse=True):
+            for record in reversed(toMany):
                 unupload_record(record, agent)
 
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
@@ -84,13 +84,13 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
         auditlog.remove(obj, agent, None)
         obj.delete()
 
-        for addition in upload_result.record_result.picklistAdditions:
+        for addition in reversed(upload_result.record_result.picklistAdditions):
             pli = getattr(models, 'Picklistitem').objects.get(id=addition.id)
             logger.debug(f"deleting {pli}")
             auditlog.remove(pli, agent, None)
             pli.delete()
 
-    for record in upload_result.toOne.values():
+    for _, record in sorted(upload_result.toOne.items(), key=lambda kv: kv[0], reverse=True):
         unupload_record(record, agent)
 
 def do_upload_dataset(

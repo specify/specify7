@@ -265,7 +265,8 @@ class BoundUploadTable(NamedTuple):
     def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
             fieldname: to_one_def.process_row()
-            for fieldname, to_one_def in self.toOne.items()
+            for fieldname, to_one_def in
+            sorted(self.toOne.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
 
     def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
@@ -331,7 +332,10 @@ class BoundUploadTable(NamedTuple):
         # replace any one-to-one records that matched with forced uploads
         toOneResults = {**toOneResults, **{
             fieldname: to_one_def.force_upload_row()
-            for fieldname, to_one_def in self.toOne.items()
+            for fieldname, to_one_def in
+            # Make the upload order deterministic (maybe? depends on if it matched I guess)
+            # But because the records can't be shared, the unupload order shouldn't matter anyways...
+            sorted(self.toOne.items(), key=lambda kv: kv[0])
             if to_one_def.is_one_to_one()
             if fieldname not in toOneResults # the field was removed b/c there were multiple matches
             or isinstance(toOneResults[fieldname].record_result, Matched) # this stops the record from being shared
@@ -362,7 +366,8 @@ class BoundUploadTable(NamedTuple):
 
         toManyResults = {
             fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditlog, self.cache, records)
-            for fieldname, records in self.toMany.items()
+            for fieldname, records in
+            sorted(self.toMany.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
         return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
 
