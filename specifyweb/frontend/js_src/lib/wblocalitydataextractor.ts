@@ -189,10 +189,12 @@ export const getLocalitiesDataFromSpreadsheet = (
         index: customRowNumbers[index] ?? index,
       }))
       .filter(({ locality }) => typeof locality !== 'boolean')
-      .map(({ locality, index }) => ({
-        ...locality,
-        rowNumber: { headerName: 'Row Number', value: index },
-      }))
+      .map(({ locality, index }) =>
+        reshapeLocalityData({
+          ...locality,
+          rowNumber: { headerName: 'Row Number', value: index },
+        })
+      )
   );
 
 // Aggregate tree ranks into a single full name
@@ -268,13 +270,9 @@ export function getLocalityCoordinate(
     value: formatCoordinate(getFieldCurried(fieldName).value),
   });
 
-  const localityData = getLocalityData(
+  return getLocalityData(
     localityColumns,
     getFieldCurried,
     formatCoordinateCurried
   );
-
-  return typeof localityData === 'object'
-    ? reshapeLocalityData(localityData)
-    : localityData;
 }
