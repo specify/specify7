@@ -195,6 +195,7 @@ function Dialog({
                         {canImport && (
                           <span
                             tabIndex={0}
+                            style={{cursor: 'pointer'}}
                             className="ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
                           />
