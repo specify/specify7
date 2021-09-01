@@ -91,7 +91,7 @@ var dateFormatStr = require('./dateformat.js');
 
             const minInteger = -1<<15;
             const maxInteger = 1<<15;
-            if (result.isValid && result.parsed < minInteger || maxInteger) {
+            if (result.isValid && (result.parsed < minInteger || result.parsed > maxInteger)) {
                 result.isValid = false;
                 result.reason = formsText('outOfRange')(minInteger,maxInteger);
             }
