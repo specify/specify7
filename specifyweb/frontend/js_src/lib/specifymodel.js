@@ -126,6 +126,11 @@ _.extend(schema.Model.prototype, {
             return path;
         }
         return undefined;
+    },
+
+    isHidden() {
+        const l = this._getLocalization();
+        return l?.get('ishidden') === 1;
     }
 });
 

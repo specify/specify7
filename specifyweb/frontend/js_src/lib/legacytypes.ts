@@ -29,6 +29,7 @@ interface SchemaModelTableData {
   readonly system: boolean;
   readonly fields: RA<SchemaModelTableField>;
   readonly LazyCollection: SpecifyFetch;
+  readonly isHidden: ()=>boolean;
 }
 
 type SchemaModels<T> = IR<T>;

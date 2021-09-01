@@ -151,6 +151,7 @@ function handleRelationshipField(
   fieldData: DataModelFieldWritable,
   fieldName: string,
   currentTableName: string,
+  hiddenTables: Readonly<Set<string>>,
   originalRelationships: OriginalRelationshipsWritable,
   hasRelationshipWithDefinition: () => void,
   hasRelationshipWithDefinitionItem: () => void
@@ -182,6 +183,8 @@ function handleRelationshipField(
 
   if (relationship.readOnly || tableHasOverwrite(tableName, 'remove'))
     return false;
+
+  fieldData.isHidden ||= hiddenTables.has(tableName);
 
   fieldData.tableName = tableName;
   fieldData.type = relationshipType;
@@ -293,10 +296,22 @@ export default async function (): Promise<void> {
   const fetchPickListsQueue: Promise<void>[] = [];
   const originalRelationships: OriginalRelationshipsWritable = {};
 
+  const getTableName = (tableData: SchemaType['models'][string]): string =>
+    tableData.longName.split('.').slice(-1)[0].toLowerCase();
+  const hiddenTables = new Set(
+    Object.values((schema as unknown as SchemaType).models)
+      .map<Readonly<[string, boolean]>>((tableData) => [
+        getTableName(tableData),
+        tableData.isHidden(),
+      ])
+      .filter(([_tableName, isHidden]) => isHidden)
+      .map(([tableName]) => tableName)
+  );
+
   const tables = Object.values(
     (schema as unknown as SchemaType).models
   ).reduce<DataModelTablesWritable>((tables, tableData) => {
-    const tableName = tableData.longName.split('.').slice(-1)[0].toLowerCase();
+    const tableName = getTableName(tableData);
     const label = tableData.getLocalizedName();
 
     const fields: DataModelFieldsWritable = {};
@@ -349,6 +364,7 @@ export default async function (): Promise<void> {
           fieldData,
           fieldName,
           tableName,
+          hiddenTables,
           originalRelationships,
           () => {
             hasRelationshipWithDefinition = true;
