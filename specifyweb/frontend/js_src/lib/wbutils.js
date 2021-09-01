@@ -625,12 +625,10 @@ module.exports = Backbone.View.extend({
       );
 
     const localityColumnGroups =
-      selectedHeaders.length === 1
-        ? this.localityColumns
-        : WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
-            this.localityColumns,
-            selectedHeaders
-          );
+      WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
+        this.localityColumns,
+        selectedHeaders
+      );
 
     if (localityColumnGroups.length === 0) return;
 
@@ -645,14 +643,6 @@ module.exports = Backbone.View.extend({
       ),
     ].sort();
 
-    const rowIndexes =
-      selectedRows.length === 1
-        ? Array.from(
-            { length: this.wbview.hot.countRows() },
-            (_, index) => index
-          )
-        : selectedRows;
-
     let localityIndex =
       selectedRows.length === 1
         ? selectedRows[0] * localityColumnGroups.length
@@ -662,7 +652,7 @@ module.exports = Backbone.View.extend({
       localityColumns:
         localityColumnGroups[localityIndex % localityColumnGroups.length],
       visualRow:
-        rowIndexes[Math.floor(localityIndex / localityColumnGroups.length)],
+        selectedRows[Math.floor(localityIndex / localityColumnGroups.length)],
     });
 
     const getGeoLocateQueryURL = (localityIndex) =>
@@ -701,7 +691,7 @@ module.exports = Backbone.View.extend({
           click: () => updateGeoLocate(localityIndex + 1),
           disabled:
             localityIndex + 1 >=
-            rowIndexes.length * localityColumnGroups.length,
+            selectedRows.length * localityColumnGroups.length,
         },
       ]);
 
@@ -733,6 +723,9 @@ module.exports = Backbone.View.extend({
           ])
           .filter(([, visualCol]) => visualCol !== -1)
       );
+
+      if (selectedRows.length * localityColumnGroups.length)
+        dialog.dialog('close');
     };
 
     window.addEventListener('message', handleGeolocateResult, false);
