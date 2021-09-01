@@ -467,7 +467,8 @@ export function getMappingLineData({
     newValue: string,
     isRelationship: boolean,
     currentTable: string,
-    newTable: string
+    newTable: string,
+    isDoubleClick: boolean
   ) => void;
   readonly handleOpen?: (index: number) => void;
   readonly handleClose?: (index: number) => void;
@@ -759,26 +760,23 @@ export function getMappingLineData({
       ...(internalState.isOpen
         ? {
             isOpen: true,
-            handleChange:
-              handleChange &&
-              handleChange.bind(
-                undefined,
-                internalState.mappingPathPosition + 1
-              ),
-            handleClose:
-              handleClose &&
-              handleClose.bind(
-                undefined,
-                internalState.mappingPathPosition + 1
-              ),
+            handleChange: handleChange?.bind(
+              undefined,
+              internalState.mappingPathPosition + 1
+            ),
+            handleClose: handleClose?.bind(
+              undefined,
+              internalState.mappingPathPosition + 1
+            ),
             automapperSuggestions,
             handleAutomapperSuggestionSelection,
           }
         : {
             isOpen: false,
-            handleOpen:
-              handleOpen &&
-              handleOpen.bind(undefined, internalState.mappingPathPosition + 1),
+            handleOpen: handleOpen?.bind(
+              undefined,
+              internalState.mappingPathPosition + 1
+            ),
           }),
     }),
 

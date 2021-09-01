@@ -94,7 +94,7 @@ interface CustomSelectElementIconProps {
 }
 
 interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
-  readonly handleClick?: () => void;
+  readonly handleClick?: (isDoubleClick: boolean) => void;
 }
 
 export interface CustomSelectElementDefaultOptionProps {
@@ -121,7 +121,8 @@ interface CustomSelectElementOptionGroupProps {
   readonly handleClick?: (
     newValue: string,
     isRelationship: boolean,
-    newTableName: string
+    newTableName: string,
+    isDoubleClick: boolean
   ) => void;
 }
 
@@ -143,7 +144,8 @@ interface CustomSelectElementPropsBase {
     newValue: string,
     isRelationship: boolean,
     currentTable: string,
-    newTable: string
+    newTable: string,
+    isDoubleClick: boolean
   ) => void;
   readonly handleClose?: () => void;
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
@@ -164,7 +166,8 @@ export interface CustomSelectElementPropsOpenBase
     newValue: string,
     isRelationship: boolean,
     currentTable: string,
-    newTable: string
+    newTable: string,
+    isDoubleCLick: boolean
   ) => void;
   readonly handleClose?: () => void;
 }
@@ -211,7 +214,11 @@ const Option = React.memo(function Option({
     <span
       className={classes.join(' ')}
       tabIndex={0}
-      onClick={handleClick}
+      onClick={
+        typeof handleClick === 'function'
+          ? (event): void => handleClick(event.detail > 1)
+          : undefined
+      }
       title={title}
     >
       <Icon
@@ -257,16 +264,17 @@ function OptionGroup({
           return (
             <Option
               key={optionName}
-              handleClick={
-                selectionOptionData.isEnabled === false
-                  ? undefined
-                  : handleClick?.bind(
-                      null,
+              handleClick={(isDoubleClick: boolean): void =>
+                typeof handleClick === 'function' &&
+                (isDoubleClick || selectionOptionData.isEnabled !== false)
+                  ? handleClick(
                       optionName,
                       typeof selectionOptionData.isRelationship !==
                         'undefined' && selectionOptionData.isRelationship,
-                      selectionOptionData.tableName ?? ''
+                      selectionOptionData.tableName ?? '',
+                      isDoubleClick
                     )
+                  : undefined
               }
               {...selectionOptionData}
             />
@@ -337,13 +345,19 @@ export function CustomSelectElement({
 
   const handleClick =
     optionIsIntractable &&
-    ((newValue: string, isRelationship: boolean, newTable: string) =>
-      newValue !== defaultOption.optionName &&
+    ((
+      newValue: string,
+      isRelationship: boolean,
+      newTable: string,
+      isDoubleClick: boolean
+    ) =>
+      (isDoubleClick || newValue !== defaultOption.optionName) &&
       handleChange?.(
         newValue,
         isRelationship,
         defaultOption.tableName ?? '',
-        newTable
+        newTable,
+        isDoubleClick
       ));
 
   let header;
