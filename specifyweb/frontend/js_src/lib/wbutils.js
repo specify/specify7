@@ -503,10 +503,12 @@ module.exports = Backbone.View.extend({
     };
   },
   findLocalityColumns() {
-    this.localityColumns = this.wbview.mappings ? findLocalityColumnsInDataSet(
-      this.wbview.mappings.baseTableName,
-      this.wbview.mappings.arrayOfMappings
-    ) : [];
+    this.localityColumns = this.wbview.mappings
+      ? findLocalityColumnsInDataSet(
+          this.wbview.mappings.baseTableName,
+          this.wbview.mappings.arrayOfMappings
+        )
+      : [];
 
     const leafletButton = this.el.getElementsByClassName('wb-leafletmap')[0];
     const geoLocaleButton = this.el.getElementsByClassName('wb-geolocate')[0];
@@ -580,7 +582,7 @@ module.exports = Backbone.View.extend({
       }
     }
 
-    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${queryString}`;
+    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&georef=run&${queryString}`;
   },
   getSelectedRegions() {
     const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
