@@ -537,52 +537,28 @@ module.exports = Backbone.View.extend({
     let queryString = '';
     const visualHeaders = this.getVisualHeaders();
 
-    const getValue = (fieldName) =>
-      typeof localityColumns[fieldName] === 'undefined'
-        ? ''
-        : encodeURIComponent(
-            this.wbview.hot.getDataAtCell(
-              visualRow,
-              visualHeaders.indexOf(localityColumns[fieldName])
-            ) ?? ''
-          );
-
-    if (
-      getValue('locality.geography.$Country.name') &&
-      getValue('locality.geography.$State.name')
-    ) {
-      queryString = `country=${getValue(
-        'locality.geography.$Country.name'
-      )}&state=${getValue('locality.geography.$State.name')}`;
-
-      if (getValue('locality.geography.$County.name'))
-        queryString += `&county=${getValue('locality.geography.$County.name')}`;
-
-      if (getValue('locality.localityname'))
-        queryString += `&locality=${getValue('locality.localityname')}`;
-    } else {
-      const pointDataDict = WbLocalityDataExtractor.getLocalityCoordinate(
+    const localityData =
+      WbLocalityDataExtractor.getLocalityCoordinate(
         this.wbview.hot.getDataAtRow(visualRow),
         visualHeaders,
         localityColumns
-      );
+      ) || {};
 
-      if (pointDataDict) {
-        const {
-          'locality.latitude1': { value: latitude1 },
-          'locality.longitude1': { value: longitude1 },
-          'locality.localityname': { value: localityname = '' } = { value: '' },
-        } = pointDataDict;
+    if (localityData['locality.geography.$Country.name'])
+      queryString += `&country=${localityData['locality.geography.$Country.name'].value}`;
+    if (localityData['locality.geography.$State.name'])
+      queryString += `&state=${localityData['locality.geography.$State.name'].value}`;
+    if (localityData['locality.geography.$County.name'])
+      queryString += `&county=${localityData['locality.geography.$County.name'].value}`;
+    if (localityData['locality.localityname'])
+      queryString += `&locality=${localityData['locality.localityname'].value}`;
+    if (
+      localityData['locality.latitude1'] &&
+      localityData['locality.longitude1']
+    )
+      queryString += `&points=${localityData['locality.latitude1'].value}|${localityData['locality.longitude1'].value}`;
 
-        const pointDataList = [latitude1, longitude1];
-
-        if (localityname !== '') pointDataList.push(localityname);
-
-        queryString = `points=${pointDataList.join('|')}`;
-      }
-    }
-
-    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&georef=run&${queryString}`;
+    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&georef=run${queryString}`;
   },
   getSelectedRegions() {
     const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
