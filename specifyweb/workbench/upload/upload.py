@@ -61,6 +61,7 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
 
 
         for row in reversed(results):
+            logger.info(f"rolling back row {current} of {total}")
             upload_result = json_to_UploadResult(row)
             if not upload_result.contains_failure():
                 unupload_record(upload_result, agent)
@@ -79,11 +80,13 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
 
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
         obj = model.objects.get(id=upload_result.get_id())
+        logger.debug(f"deleting {obj}")
         auditlog.remove(obj, agent, None)
         obj.delete()
 
         for addition in upload_result.record_result.picklistAdditions:
             pli = getattr(models, 'Picklistitem').objects.get(id=addition.id)
+            logger.debug(f"deleting {pli}")
             auditlog.remove(pli, agent, None)
             pli.delete()
 

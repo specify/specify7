@@ -5,6 +5,7 @@ from ..upload_result import Uploaded, ParseFailures, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv, unupload_record
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
+from ..tomany import ToManyRecord
 from ..upload_plan_schema import parse_column_options
 
 
@@ -161,3 +162,62 @@ class UnUploadTests(UploadTestsBase):
                                  createdbyagent_id=self.agent.id
                              ).count(),
                              "There is a corresponding remove entry in audit log after un-upload.")
+
+    def test_tricky_sequencing(self) -> None:
+        """This test exhibits a bug caused by the (un)uploading sequencing of
+        to-one records with in a single row.  The cataloger and
+        collector both refer to a new agent. If the cataloger is
+        uploaded first the collector will be a match and thus the
+        unupload order has to be reversed, collector first then
+        cataloger.
+        """
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={
+                'catalognumber': parse_column_options('catno'),
+            },
+            static={},
+            toOne={
+                'cataloger': UploadTable(
+                    name='Agent',
+                    wbcols={
+                        'lastname': parse_column_options('cataloger'),
+                    },
+                    static={},
+                    toOne={},
+                    toMany={},
+                ),
+                'collectingevent': UploadTable(
+                    name='CollectingEvent',
+                    wbcols={},
+                    static={},
+                    toOne={},
+                    toMany={
+                        'collectors': [ToManyRecord(
+                            name='Collector',
+                            wbcols={},
+                            static={},
+                            toOne={
+                                'agent': UploadTable(
+                                    name='Agent',
+                                    wbcols={
+                                        'lastname': parse_column_options('collector'),
+                                    },
+                                    static={},
+                                    toOne={},
+                                    toMany={},
+                                ),
+                            })]
+                    }
+                )
+            },
+            toMany={}
+        ).apply_scoping(self.collection)
+
+        data = [
+            {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},
+        ]
+
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in reversed(results):
+            unupload_record(result, self.agent)
