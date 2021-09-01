@@ -422,7 +422,7 @@ export default async function (): Promise<void> {
         .map(([fieldName]) => [fieldName, fields[fieldName]])
     );
 
-    if (!tableHasOverwrite(tableName, 'hidden'))
+    if (!tableHasOverwrite(tableName, 'hidden') && !hiddenTables.has(tableName))
       listOfBaseTables[tableName] = {
         label,
         isHidden: !tableHasOverwrite(tableName, 'commonBaseTable'),
