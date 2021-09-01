@@ -122,7 +122,8 @@ export function MappingView(props: {
     newValue: string,
     isRelationship: boolean,
     currentTable: string,
-    newTable: string
+    newTable: string,
+    isDoubleClick: boolean
   ) => void;
   readonly getMappedFields: GetMappedFieldsBind;
   readonly showHiddenFields?: boolean;
@@ -133,7 +134,28 @@ export function MappingView(props: {
     generateLastRelationshipData: true,
     iterate: true,
     customSelectType: 'OPENED_LIST',
-    handleChange: props.handleMappingViewChange,
+    handleChange(...data) {
+      const [
+        index,
+        newValue,
+        isRelationship,
+        currentTable,
+        newTable,
+        isDoubleClick,
+      ] = data;
+      console.log(data);
+      if (isDoubleClick) {
+        props.handleMapButtonClick?.();
+      } else
+        props.handleMappingViewChange?.(
+          index,
+          newValue,
+          isRelationship,
+          currentTable,
+          newTable,
+          isDoubleClick
+        );
+    },
     getMappedFields: props.getMappedFields,
     showHiddenFields: props.showHiddenFields,
     mustMatchPreferences: props.mustMatchPreferences,

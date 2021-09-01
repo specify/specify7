@@ -113,7 +113,8 @@ export default function WbPlanViewMapper(
       newValue: string,
       isRelationship: boolean,
       currentTable: string,
-      newTable: string
+      newTable: string,
+      isDoubleClick: boolean
     ) => void;
     readonly handleClearMapping: (index: number) => void;
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
@@ -291,12 +292,12 @@ export default function WbPlanViewMapper(
               readonly={props.readonly}
               mustMatchPreferences={props.mustMatchPreferences}
               handleMapButtonClick={
-                (!props.readonly && props.handleMappingViewMap) || undefined
+                props.readonly ? undefined : props.handleMappingViewMap
               }
               handleMappingViewChange={
-                (!props.readonly &&
-                  props.handleChange.bind(undefined, 'mappingView')) ||
-                undefined
+                props.readonly
+                  ? undefined
+                  : props.handleChange.bind(undefined, 'mappingView')
               }
               getMappedFields={getMappedFieldsBind}
             />
