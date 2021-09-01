@@ -211,11 +211,10 @@ export function Lifemapper({
           type: 'MapLoadedAction',
           mapInfo:
             mapInfo.layers.length === 0 && mapInfo.markers.length === 0
-              ? `<h2>${lifemapperText('errorsOccurred')}</h2>
-                </br>
+              ? `${lifemapperText('errorsOccurred')}\n\n
                 ${
                   Object.keys(mapInfo.messages.errorDetails).length === 0
-                    ? Object.values(mapInfo.messages.errorDetails).join('<br>')
+                    ? Object.values(mapInfo.messages.errorDetails).join('\n')
                     : lifemapperText('noMap')
                 }`
               : mapInfo,
