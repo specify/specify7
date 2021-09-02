@@ -724,7 +724,7 @@ module.exports = Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selectedRows.length * localityColumnGroups.length)
+      if (selectedRows.length * localityColumnGroups.length === 0)
         dialog.dialog('close');
     };
 
