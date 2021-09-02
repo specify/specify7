@@ -60,7 +60,6 @@ export type CacheDefinitions = {
 };
 
 export const safeToTrim: RA<keyof CacheDefinitions> = [
-  'wbplanview-automapper',
   'wbplanview-datamodel',
   'wbplanview-navigator-tables',
 ];

@@ -569,26 +569,17 @@ module.exports = Backbone.View.extend({
 
     return selectedRegions
       .map((values) => values.map((value) => Math.max(0, value)))
-      .map(([startRow, startCol, endRow, endCol]) =>
-        startRow < endRow
-          ? { startRow, startCol, endRow, endCol }
-          : { endRow, startCol, startRow, endCol }
-      )
-      .map(({ startCol, endCol, ...rest }) =>
-        startCol < endCol
-          ? { startCol, endCol, ...rest }
-          : { startCol: endCol, endCol: startCol, ...rest }
-      );
+      .map(([startRow, startCol, endRow, endCol]) => ({
+        startRow: Math.min(startRow, endRow),
+        endRow: Math.max(startRow, endRow),
+        startCol: Math.min(startCol, endCol),
+        endCol: Math.max(startCol, endCol),
+      }));
   },
-  showGeoLocate(event) {
-
-    if(typeof this.geoLocateDialog !== 'undefined'){
-      this.geoLocateDialog.dialog('close');
-      return;
-    }
-
-    event.target.ariaPressed = true;
-
+  getSelectedLocalities(
+    // If false, treat single cell selection as entire spreadsheet selection
+    allowSingleCell
+  ) {
     const selectedRegions = this.getSelectedRegions();
 
     const selectedHeaders = [
@@ -609,14 +600,6 @@ module.exports = Backbone.View.extend({
           ]
       );
 
-    const localityColumnGroups =
-      WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
-        this.localityColumns,
-        selectedHeaders
-      );
-
-    if (localityColumnGroups.length === 0) return;
-
     const selectedRows = [
       ...new Set(
         selectedRegions.flatMap(({ startRow, endRow }) =>
@@ -628,17 +611,56 @@ module.exports = Backbone.View.extend({
       ),
     ].sort();
 
-    let localityIndex = 0;
+    const selectAll =
+      !allowSingleCell &&
+      selectedHeaders.length === 1 &&
+      selectedRows.length === 1;
 
-    const parseLocalityIndex = (localityIndex) => ({
-      localityColumns:
-        localityColumnGroups[localityIndex % localityColumnGroups.length],
-      visualRow:
-        selectedRows[Math.floor(localityIndex / localityColumnGroups.length)],
-    });
+    const localityColumnGroups = selectAll
+      ? this.localityColumns
+      : WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
+          this.localityColumns,
+          selectedHeaders
+        );
+    if (localityColumnGroups.length === 0) return undefined;
+
+    const visualRows = selectAll
+      ? Array.from({ length: this.wbview.hot.countRows() }, (_, index) => index)
+      : selectedRows;
+    const length = visualRows.length * localityColumnGroups.length;
+
+    return {
+      localityIndex: visualRows[0],
+      length,
+      isFirst: (index) => index === 0,
+      isLast: (index) => index + 1 >= length,
+      visualRows,
+      selectedHeaders,
+      localityColumnGroups,
+      parseLocalityIndex: (localityIndex) => ({
+        localityColumns:
+          localityColumnGroups[localityIndex % localityColumnGroups.length],
+        visualRow:
+          visualRows[Math.floor(localityIndex / localityColumnGroups.length)],
+      }),
+    };
+  },
+
+  showGeoLocate() {
+    // don't allow opening more than one window)
+    if(typeof this.geoLocateDialog !== 'undefined'){
+      this.geoLocateDialog.dialog('close');
+      return;
+    }
+
+    event.target.ariaPressed = true;
+
+    const selection = this.getSelectedLocalities(true);
+
+    if (typeof selection === 'undefined') return;
 
     const getGeoLocateQueryURL = (localityIndex) =>
-      this.getGeoLocateQueryURL(parseLocalityIndex(localityIndex));
+      this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
 
     this.geoLocateDialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
       width: 960,
@@ -663,38 +685,40 @@ module.exports = Backbone.View.extend({
       ></iframe>`);
 
     const updateSelectedRow = (localityIndex) =>
-      this.wbview.hot.selectRows(parseLocalityIndex(localityIndex).visualRow);
+      this.wbview.hot.selectRows(
+        selection.parseLocalityIndex(localityIndex).visualRow
+      );
 
     const updateButtons = (localityIndex) =>
       this.geoLocateDialog.dialog('option', 'buttons', [
         {
           text: commonText('previous'),
           click: () => updateGeoLocate(localityIndex - 1),
-          disabled: localityIndex === 0,
+          disabled: selection.isFirst(localityIndex),
         },
         {
           text: commonText('next'),
           click: () => updateGeoLocate(localityIndex + 1),
-          disabled:
-            localityIndex + 1 >=
-            selectedRows.length * localityColumnGroups.length,
+          disabled: selection.isLast(localityIndex),
         },
       ]);
 
     function updateGeoLocate(newLocalityIndex) {
-      localityIndex = newLocalityIndex;
+      selection.localityIndex = newLocalityIndex;
       updateGeolocate(newLocalityIndex);
       updateSelectedRow(newLocalityIndex);
       updateButtons(newLocalityIndex);
     }
-    updateGeoLocate(localityIndex);
+    updateGeoLocate(selection.localityIndex);
 
     const visualHeaders = this.getVisualHeaders();
     const handleGeolocateResult = (event) => {
       const dataColumns = event.data?.split('|') ?? [];
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
-      const { visualRow, localityColumns } = parseLocalityIndex(localityIndex);
+      const { visualRow, localityColumns } = selection.parseLocalityIndex(
+        selection.localityIndex
+      );
 
       this.wbview.hot.setDataAtCell(
         [
@@ -710,8 +734,7 @@ module.exports = Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selectedRows.length * localityColumnGroups.length === 1)
-        dialog.dialog('close');
+      if (selection.length === 1) dialog.dialog('close');
     };
 
     window.addEventListener('message', handleGeolocateResult, false);
@@ -724,27 +747,18 @@ module.exports = Backbone.View.extend({
     }
     event.target.ariaPressed = true;
 
-    const selectedRegions = this.getSelectedRegions();
-    let customRowNumbers = [];
-    const rows = selectedRegions.every(
-      ({ startCol, endCol }) =>
-        startCol === -1 ||
-        (startCol === 0 && endCol === this.wbview.dataset.columns.length - 1)
-    )
-      ? selectedRegions.flatMap(({ startRow, endRow }) =>
-          Array.from({ length: endRow - startRow + 1 }, (_, index) => {
-            customRowNumbers.push(startRow + index);
-            return this.wbview.hot.getDataAtRow(startRow + index);
-          })
-        )
-      : this.wbview.hot.getData();
+    const selection = this.getSelectedLocalities(false);
+
+    if (typeof selection === 'undefined') return;
 
     const localityPoints =
       WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
         this.localityColumns,
-        rows,
+        selection.visualRows.map((visualRow) =>
+          this.wbview.hot.getDataAtRow(visualRow)
+        ),
         this.getVisualHeaders(),
-        customRowNumbers
+        selection.visualRows
       );
 
     const dialog = document.createElement('div');
@@ -752,6 +766,8 @@ module.exports = Backbone.View.extend({
       localityPoints,
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
+        if (typeof rowNumber !== 'number')
+          throw new Error('rowNumber must be a number');
         const [_currentRow, currentCol] = this.getSelectedLast();
         this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
         // select entire row
