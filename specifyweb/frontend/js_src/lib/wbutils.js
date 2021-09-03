@@ -643,10 +643,7 @@ module.exports = Backbone.View.extend({
       ),
     ].sort();
 
-    let localityIndex =
-      selectedRows.length === 1
-        ? selectedRows[0] * localityColumnGroups.length
-        : 0;
+    let localityIndex = 0;
 
     const parseLocalityIndex = (localityIndex) => ({
       localityColumns:
@@ -724,7 +721,7 @@ module.exports = Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selectedRows.length * localityColumnGroups.length === 0)
+      if (selectedRows.length * localityColumnGroups.length === 1)
         dialog.dialog('close');
     };
 
