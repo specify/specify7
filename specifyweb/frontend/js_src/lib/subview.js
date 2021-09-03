@@ -44,11 +44,11 @@ module.exports =  Backbone.View.extend({
                 self.field === schema.models.CollectionObject.getField('collectingevent');
 
             if (embeddedCE){
-                $('.specify-delete-related, .specify-add-related', header).remove();
+                $('.specify-delete-related', header).remove();
             } else {
                 header.on('click', '.specify-delete-related', this.delete.bind(this));
-                header.on('click', '.specify-add-related', this.add.bind(this));
             }
+            header.on('click', '.specify-add-related', this.add.bind(this));
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
             specifyform.buildSubView(self.$el, mode).done(function(form) {
