@@ -228,6 +228,9 @@ def parse_date_(strict: bool, period: Optional[str], value: str):
 
 
 def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
+    if re.search('[0-9]{4}', value) is None:
+        return ParseFailure("date value must contain four digit year: {}".format(value), column)
+
     precision_field = table.get_field(fieldname + 'precision')
     strict = precision_field is None
     parsed = parse_date_(strict, None, value)

@@ -23,7 +23,7 @@ class DateParsingTests(UploadTestsBase):
                 ('8/31/2021', '2021-8-31', 1),
                 ('8/2021', '2021-8-1', 2),
                 ('2021', '2021-1-1', 3),
-                ('March 61', '1961-3-1', 2),
+                ('March 1861', '1861-3-1', 2),
                 ('2013-12', '2013-12-1', 2),
                 ('2013-7-2', '2013-7-2', 1),
                 # ('00/00/2015', '2015-1-1', 3),
@@ -44,6 +44,8 @@ class DateParsingTests(UploadTestsBase):
                 '20',
                 'May',
                 'Tuesday',
+                '01/01/21',
+                'May 78',
         ]:
             result = parse_date(co, 'catalogeddate', date_str, 'catdate')
             self.assertIsInstance(result, PF, f"{date_str} should not parse")
@@ -337,7 +339,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='bad date value: foobar', column='Start Date Collected'), ParseFailure(message='bad date value: bad date', column='ID Date')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='date value must contain four digit year: foobar', column='Start Date Collected'), ParseFailure(message='date value must contain four digit year: bad date', column='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
         reader = csv.DictReader(io.StringIO(
