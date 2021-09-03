@@ -143,6 +143,11 @@
   color: var(--b4);
 }
 
+.htComments.repositioned {
+  --offset-left: 0;
+  left: var(--offset-left) !important;
+}
+
 /* Sorting direction */
 .handsontable .columnSorting::before {
   position: static !important;

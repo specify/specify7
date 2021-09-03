@@ -92,6 +92,8 @@ const WBView = Backbone.View.extend({
     this.undoRedoIsHandled = false;
     this.hotIsReady = false;
     this.hotPlugins = {};
+    this.hotCommentsContainer = false;
+    this.hotCommentsContainerRepositionCallback = undefined;
 
     // Meta data for each cell (indexed by physical columns)
     this.cellMeta = undefined;
@@ -161,6 +163,8 @@ const WBView = Backbone.View.extend({
       })
     );
 
+    document.body.classList.add('overflow-x-hidden');
+
     this.datasetmeta.render();
 
     if (this.dataset.uploaderstatus) this.openStatus();
@@ -218,6 +222,9 @@ const WBView = Backbone.View.extend({
 
         this.trigger('loaded');
         this.hotIsReady = true;
+
+        this.hotCommentsContainer =
+          document.getElementsByClassName('htComments')[0];
       });
 
     this.initHot().then(() => {
@@ -448,6 +455,8 @@ const WBView = Backbone.View.extend({
           afterColumnMove: this.afterColumnMove.bind(this),
           afterRenderer: this.afterRenderer.bind(this),
           afterPaste: this.afterPaste.bind(this),
+          afterOnCellMouseOver: this.afterOnCellMouseOver.bind(this),
+          afterOnCellMouseOut: this.afterOnCellMouseOut.bind(this),
         });
         resolve();
       }, 0)
@@ -459,6 +468,7 @@ const WBView = Backbone.View.extend({
     this.liveValidationActive = false;
     this.validationMode = 'off';
     window.removeEventListener('resize', this.handleResize);
+    document.body.classList.remove('overflow-x-hidden');
     Backbone.View.prototype.remove.call(this);
   },
   identifyMappedHeaders() {
@@ -1005,6 +1015,53 @@ const WBView = Backbone.View.extend({
     if (data.some((row) => row.length === this.dataset.columns.length))
       // Do not scroll the viewport to the last column after inserting a row
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
+  },
+  // Reposition the comment box if it is overflowing
+  afterOnCellMouseOver(_event, coordinates, cell) {
+    const physicalRow = this.hot.toPhysicalRow(coordinates.row);
+    const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
+
+    // Make sure cell has comments
+    if (this.cellMeta[physicalRow]?.[physicalCol]?.issues.length === 0) return;
+
+    const commentsContainerBoundingBox =
+      this.hotCommentsContainer.getBoundingClientRect();
+    const cellContainerBoundingBox = cell.getBoundingClientRect();
+
+    // Make sure box is overflowing horizontally
+    if (
+      window.innerWidth >
+      cellContainerBoundingBox.right + commentsContainerBoundingBox.width
+    )
+      return;
+
+    this.hotCommentsContainer.style.setProperty(
+      '--offset-left',
+      `${Math.round(
+        cellContainerBoundingBox.x - commentsContainerBoundingBox.width
+      )}px`
+    );
+    this.hotCommentsContainer.classList.add('repositioned');
+    if (this.hotCommentsContainerRepositionCallback) {
+      clearTimeout(this.hotCommentsContainerRepositionCallback);
+      this.hotCommentsContainerRepositionCallback = undefined;
+    }
+  },
+  /*
+   * Revert comment box's position to original state if needed.
+   * The 10ms delay helps prevent visual artifacts when the mouse pointer
+   * moves between cells.
+   * */
+  afterOnCellMouseOut() {
+    if (this.hotCommentsContainerRepositionCallback)
+      clearTimeout(this.hotCommentsContainerRepositionCallback);
+    if (
+      this.hotCommentsContainer.style.getPropertyValue('--offset-left') !== ''
+    )
+      this.hotCommentsContainerRepositionCallback = setTimeout(
+        () => this.hotCommentsContainer.classList.remove('repositioned'),
+        10
+      );
   },
   cellIsModified(physicalRow, physicalCol) {
     // For now, only readonly picklists are validated on the front-end
