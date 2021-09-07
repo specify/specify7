@@ -180,7 +180,7 @@ const wbText = createDictionary({
   findEntireCellsOnly: 'Find entire cells only',
   matchCase: 'Match case',
   useRegularExpression: 'Use regular expression',
-  liveUpdate: 'Live update',
+  liveUpdate: 'Live search',
   replaceOptions: 'Replace Options',
   replaceMode: 'Replace Mode',
   replaceAll: 'Replace all matches',
