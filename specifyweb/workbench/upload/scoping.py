@@ -4,6 +4,7 @@ from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.stored_queries.format import get_date_format
 
 from .uploadable import Uploadable, ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
@@ -69,10 +70,14 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
     picklist = picklistname and getattr(models, 'Picklist').objects.get(name=picklistname, collection=collection)
 
     return ExtendedColumnOptions(
+        column=colopts.column,
+        matchBehavior=colopts.matchBehavior,
+        nullAllowed=colopts.nullAllowed,
+        default=colopts.default,
         schemaitem=schemaitem,
         uiformatter=get_uiformatter(collection, tablename, fieldname),
         picklist=picklist,
-        **colopts._asdict(),
+        dateformat=get_date_format(),
     )
 
 

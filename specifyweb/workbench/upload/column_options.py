@@ -23,3 +23,4 @@ class ExtendedColumnOptions(NamedTuple):
     uiformatter: Any
     schemaitem: Any
     picklist: Any
+    dateformat: Optional[str]

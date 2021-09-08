@@ -2,16 +2,17 @@
 import logging
 import math
 import re
+from datetime import datetime
 from decimal import Decimal
 
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
-from dateparser import DateDataParser # type: ignore
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import FormatMismatch
+from specifyweb.stored_queries.format import MYSQL_TO_YEAR, MYSQL_TO_MONTH
 
 from .column_options import ExtendedColumnOptions
 
@@ -119,7 +120,7 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         return parse_latlong(field, value, colopts.column)
 
     if field.is_temporal():
-        return parse_date(table, fieldname, value, colopts.column)
+        return parse_date(table, fieldname, colopts.dateformat or "%Y-%m-%d", value, colopts.column)
 
     if field.type == "java.lang.Boolean":
         return parse_boolean(fieldname, value, colopts.column)
@@ -210,56 +211,40 @@ def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]
         return ParseFailure("bad agent type: {}. Expected one of {}".format(value, agenttypes), column)
     return filter_and_upload({'agenttype': agenttype}, column)
 
-def parse_date_(strict: bool, period: Optional[str], value: str):
-    require_parts = (
-        ['day', 'month', 'year'] if period is 'day' else
-        ['month', 'year'] if period is 'month' else
-        ['year'] if period is 'year' else
-        []
-    )
-    return DateDataParser(
-        settings={
-            'PREFER_DAY_OF_MONTH': 'first',
-            'PREFER_DATES_FROM': 'past',
-            'STRICT_PARSING': strict,
-            'REQUIRE_PARTS': require_parts
-        },
-    ).get_date_data(value)
-
-
-def parse_date(table: Table, fieldname: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
+def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     if re.search('[0-9]{4}', value) is None:
         return ParseFailure("date value must contain four digit year: {}".format(value), column)
 
+    dateformat = dateformat.replace('%y', '%Y')
     precision_field = table.get_field(fieldname + 'precision')
-    strict = precision_field is None
-    parsed = parse_date_(strict, None, value)
-
-    if parsed['date_obj'] is None:
-        return ParseFailure("bad date value: {}".format(value), column)
-
     if precision_field is None:
-        if parsed['period'] == 'day':
-            return filter_and_upload({fieldname: parsed['date_obj']}, column)
-        else:
-            return ParseFailure("bad date value: {}".format(value), column)
-    else:
-        prec = parsed['period']
-        date = parsed['date_obj']
+        try:
+            date = datetime.strptime(value, dateformat).date()
+        except ValueError:
+            return ParseFailure("bad date value: {} expected: {}".format(value, dateformat), column)
+        return filter_and_upload({fieldname: date}, column)
 
-        reparsed = parse_date_(False, prec, value)
-        if reparsed['date_obj'] is None:
-            return ParseFailure("bad date value: {}".format(value), column)
+    date_formats = [
+        dateformat,
+        MYSQL_TO_MONTH[dateformat],
+        MYSQL_TO_YEAR[dateformat],
+        dateformat.replace('%d', '00'),
+        re.sub('(%m)|(%d)', '00', dateformat),
+    ]
 
-        if prec == 'day':
+    for df in date_formats:
+        try:
+            date = datetime.strptime(value, df).date()
+        except ValueError:
+            continue
+        if '%d' in df:
             return filter_and_upload({fieldname: date, precision_field.name.lower(): 1}, column)
-        elif prec == 'month':
+        elif '%m' in df or '%b' in df:
             return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 2}, column)
-        elif prec == 'year':
-            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 3}, column)
         else:
-            return ParseFailure('expected date precision to be day month or year. got: {}'.format(prec), column)
+            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 3}, column)
 
+    return ParseFailure("bad date value: {} expected: {}".format(value, dateformat), column)
 
 def parse_string(value: str) -> Optional[str]:
     result = value.strip()
