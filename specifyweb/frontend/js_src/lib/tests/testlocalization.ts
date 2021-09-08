@@ -143,7 +143,7 @@ sourceFiles.forEach((fileName) => {
       const hasArguments = typeof groups.hasArguments !== 'undefined';
 
       const paddedKeyName = groups.keyName.trim();
-      const keyName = paddedKeyName.slice(1, -1);
+      const keyName = paddedKeyName.slice(1, -1).trim();
 
       const position = fileContent.slice(
         index - lookAroundLength,
@@ -158,7 +158,7 @@ sourceFiles.forEach((fileName) => {
       ) {
         error(
           [
-            `Found invalid key ${dictionaryName}.${paddedKeyName} in ${fileName}\n`,
+            `Found invalid key ${dictionaryName}[${paddedKeyName}] in ${fileName}\n`,
             `Key must be a string literal, not a variable or function call.\n`,
             `\n`,
             `On line ${lineNumber}:\n`,
