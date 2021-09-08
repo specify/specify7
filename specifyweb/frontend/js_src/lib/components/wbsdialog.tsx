@@ -114,6 +114,7 @@ function Dialog({
             : wbText('wbsDialogDefaultDialogTitle')(datasets.length),
           width: 600,
           minHeight: 300,
+          maxHeight: 800,
           close: handleClose,
           buttons: [
             ...(canImport
@@ -195,7 +196,7 @@ function Dialog({
                         {canImport && (
                           <span
                             tabIndex={0}
-                            style={{cursor: 'pointer'}}
+                            style={{ cursor: 'pointer' }}
                             className="ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
                           />

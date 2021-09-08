@@ -67,12 +67,15 @@ export const ModalDialog = React.memo(function ModalDialog({
 }) {
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const [$dialog, setDialog] = React.useState<JQuery | undefined>();
+  const resize = React.useRef<() => void>(() => {
+    throw new Error('Function not defined');
+  });
 
   React.useEffect(() => {
     if (dialogRef.current === null) return undefined;
 
     const dialogElement = $(dialogRef.current.children[0] as HTMLElement);
-    const resize = (): void =>
+    resize.current = (): void =>
       void dialogElement.dialog('option', 'position', 'center');
 
     const closeDialogBind = (
@@ -81,7 +84,7 @@ export const ModalDialog = React.memo(function ModalDialog({
     ): void =>
       closeDialogCallback(
         dialogElement,
-        resize,
+        resize.current,
         properties.close?.bind(null, event, ui)
       );
 
@@ -116,7 +119,7 @@ export const ModalDialog = React.memo(function ModalDialog({
         .filter((className) => className)
         .join(' '),
     });
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize.current);
 
     setDialog(dialogElement);
 
@@ -132,7 +135,8 @@ export const ModalDialog = React.memo(function ModalDialog({
       >
         {children}
       </ModalDialogContent>,
-      $dialog[0]
+      $dialog[0],
+      resize.current
     );
   }, [$dialog, children]);
 
