@@ -144,8 +144,9 @@
 }
 
 .htComments.repositioned {
-  --offset-left: 0;
-  left: var(--offset-left) !important;
+  --offset-right: 50vw;
+  right: var(--offset-right);
+  left: unset !important;
 }
 
 /* Sorting direction */

@@ -1024,22 +1024,17 @@ const WBView = Backbone.View.extend({
     // Make sure cell has comments
     if (this.cellMeta[physicalRow]?.[physicalCol]?.issues.length === 0) return;
 
-    const commentsContainerBoundingBox =
-      this.hotCommentsContainer.getBoundingClientRect();
     const cellContainerBoundingBox = cell.getBoundingClientRect();
+    const oneRem = parseFloat(
+      getComputedStyle(document.documentElement).fontSize
+    );
 
     // Make sure box is overflowing horizontally
-    if (
-      window.innerWidth >
-      cellContainerBoundingBox.right + commentsContainerBoundingBox.width
-    )
-      return;
+    if (window.innerWidth > cellContainerBoundingBox.right + oneRem) return;
 
     this.hotCommentsContainer.style.setProperty(
-      '--offset-left',
-      `${Math.round(
-        cellContainerBoundingBox.x - commentsContainerBoundingBox.width
-      )}px`
+      '--offset-right',
+      `${Math.round(window.innerWidth - cellContainerBoundingBox.x)}px`
     );
     this.hotCommentsContainer.classList.add('repositioned');
     if (this.hotCommentsContainerRepositionCallback) {
@@ -1056,7 +1051,7 @@ const WBView = Backbone.View.extend({
     if (this.hotCommentsContainerRepositionCallback)
       clearTimeout(this.hotCommentsContainerRepositionCallback);
     if (
-      this.hotCommentsContainer.style.getPropertyValue('--offset-left') !== ''
+      this.hotCommentsContainer.style.getPropertyValue('--offset-right') !== ''
     )
       this.hotCommentsContainerRepositionCallback = setTimeout(
         () => this.hotCommentsContainer.classList.remove('repositioned'),
