@@ -22,18 +22,12 @@ export const fetchLocalScientificName = async (
 
 export const formatLifemapperViewPageRequest = (
   occurrenceGuid: string,
-  speciesName: string,
-  badgeName?: string
+  speciesName: string
 ): string =>
-  `${snFrontendServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}${
-    typeof badgeName === 'undefined' ? '' : `#occ_${badgeName}`
-  }`;
+  `${snFrontendServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}`;
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
-
-export const formatNameDataRequest = (speciesName: string): string =>
-  `${snServer}/api/v1/name/?namestr=${speciesName}`;
 
 export const formatIconRequest = (
   providerName: string,

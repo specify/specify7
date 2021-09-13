@@ -239,7 +239,7 @@ export async function prepareLifemapperProjectionMap(
   });
 
   const projectionMapResponse: {
-    readonly errors: RA<IR<string> | string>;
+    readonly errors: IR<IR<string> | string>;
     readonly records: [
       {
         readonly records: {
@@ -275,12 +275,12 @@ export async function prepareLifemapperProjectionMap(
 
   let layers: RA<LayerConfig> = [];
 
-  if (filteredResponse.errors.length > 0)
-    filteredResponse.errors.forEach((error) => {
-      const formattedError =
-        typeof error === 'object' ? Object.values(error)[0] : String(error);
-      messages.errorDetails[formattedError] = formattedError;
-    });
+  if (Object.keys(filteredResponse.errors).length > 0)
+    Object.values(filteredResponse.errors)
+      .flatMap((errors) => Object.entries(errors))
+      .forEach(([key, value]) => {
+        messages.errorDetails[key] = value;
+      });
   else if (
     !Array.isArray(filteredResponse.records[0]?.records) ||
     filteredResponse.records[0].records.length === 0

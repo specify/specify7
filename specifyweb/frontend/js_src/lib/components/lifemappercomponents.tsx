@@ -6,7 +6,6 @@ import { defaultProjectionMapOpacity } from '../lifemapperconfig';
 import type { MapInfo } from '../lifemapperreducer';
 import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
-import type { MainState } from './lifemapperstate';
 import * as cache from '../cache';
 
 export function Badge<IS_ENABLED extends boolean>({
@@ -14,13 +13,11 @@ export function Badge<IS_ENABLED extends boolean>({
   title,
   onClick: handleClick,
   isEnabled,
-  hasError,
 }: {
   readonly name: string;
   readonly title: string;
   readonly onClick: IS_ENABLED extends true ? () => void : undefined;
   readonly isEnabled: IS_ENABLED;
-  readonly hasError: boolean;
 }): JSX.Element {
   return (
     <button
@@ -29,7 +26,7 @@ export function Badge<IS_ENABLED extends boolean>({
       onClick={isEnabled ? handleClick : undefined}
       className={`lifemapper-source-icon ${
         isEnabled ? '' : 'lifemapper-source-icon-not-found'
-      } ${hasError ? 'lifemapper-source-icon-issues-detected' : ''}`}
+      }`}
       title={title}
     >
       <img
@@ -48,29 +45,6 @@ export function Badge<IS_ENABLED extends boolean>({
         alt=""
       />
     </button>
-  );
-}
-
-export function Aggregator({
-  data,
-}: {
-  readonly data: MainState['aggregators'][string];
-}): JSX.Element {
-  return typeof data.issues === 'undefined' ? (
-    <>{lifemapperText('recordWasIndexed')}</>
-  ) : Object.keys(data.issues).length === 0 ? (
-    <p>{lifemapperText('noIssuesDetected')}</p>
-  ) : (
-    <>
-      <h2>{lifemapperText('issuesDetected')}</h2>
-      <ul className="lifemapper-source-issues-list">
-        {Object.entries(data.issues).map(([issueKey, issueLabel]) => (
-          <li key={issueKey} title={issueKey}>
-            {`${issueLabel} ${issueLabel === 'TBD' ? `(${issueKey})` : ''}`}
-          </li>
-        ))}
-      </ul>
-    </>
   );
 }
 
