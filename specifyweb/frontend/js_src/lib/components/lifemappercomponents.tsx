@@ -8,6 +8,28 @@ import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
 import * as cache from '../cache';
 
+export function BadgeIcon({ name }: { name: string }): JSX.Element {
+  return (
+    <>
+      <img
+        className="lifemapper-source-icon-active"
+        src={formatIconRequest(name, 'active')}
+        alt=""
+      />
+      <img
+        className="lifemapper-source-icon-inactive"
+        src={formatIconRequest(name, 'inactive')}
+        alt=""
+      />
+      <img
+        className="lifemapper-source-icon-hover"
+        src={formatIconRequest(name, 'hover')}
+        alt=""
+      />
+    </>
+  );
+}
+
 export function Badge<IS_ENABLED extends boolean>({
   name,
   title,
@@ -29,21 +51,7 @@ export function Badge<IS_ENABLED extends boolean>({
       }`}
       title={title}
     >
-      <img
-        className="lifemapper-source-icon-active"
-        src={formatIconRequest(name, 'active')}
-        alt=""
-      />
-      <img
-        className="lifemapper-source-icon-inactive"
-        src={formatIconRequest(name, 'inactive')}
-        alt=""
-      />
-      <img
-        className="lifemapper-source-icon-hover"
-        src={formatIconRequest(name, 'hover')}
-        alt=""
-      />
+      <BadgeIcon name={name} />
     </button>
   );
 }

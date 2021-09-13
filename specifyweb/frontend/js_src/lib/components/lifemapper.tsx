@@ -7,10 +7,12 @@ import { prepareLifemapperProjectionMap } from '../lifemappermap';
 import { reducer } from '../lifemapperreducer';
 import {
   fetchLocalScientificName,
+  formatLifemapperViewPageRequest,
   formatOccurrenceDataRequest,
 } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
+import { BadgeIcon } from './lifemappercomponents';
 import type { MainState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
 import type { ComponentProps } from './lifemapperwrapper';
@@ -28,6 +30,55 @@ type FullAggregatorResponse = {
     }>;
   }>;
 };
+
+export function SpecifyNetworkBadge({
+  guid,
+  model,
+}: ComponentProps): JSX.Element {
+  const [occurrenceName, setOccurrenceName] = React.useState('');
+
+  React.useEffect(() => {
+    fetchOccurrenceName({ guid, model })
+      .then(setOccurrenceName)
+      .catch(console.error);
+  }, [guid, model]);
+
+  return (
+    <a
+      href={formatLifemapperViewPageRequest(guid, occurrenceName)}
+      target="_blank"
+      title={lifemapperText('specifyNetwork')}
+      rel="noreferrer"
+      className="lifemapper-source-icon"
+    >
+      <BadgeIcon name="specify" />
+    </a>
+  );
+}
+
+async function fetchOccurrenceName({
+  model,
+  guid,
+}: ComponentProps): Promise<string> {
+  if (typeof guid === 'undefined') return '';
+
+  return fetch(formatOccurrenceDataRequest(guid), {
+    mode: 'cors',
+  })
+    .then(async (response) => response.json())
+    .then((response: FullAggregatorResponse) =>
+      response.records
+        .filter(({ count }) => count > 0)
+        .map(({ records }) => records[0]['dwc:scientificName'])
+        .find((occurrenceName) => occurrenceName)
+    )
+    .catch(console.error)
+    .then(
+      (remoteOccurrence) => remoteOccurrence ?? fetchLocalScientificName(model)
+    )
+    .catch(console.error)
+    .then((occurrenceName) => occurrenceName ?? '');
+}
 
 export function Lifemapper({
   model,
@@ -50,24 +101,7 @@ export function Lifemapper({
 
   // Fetch occurrence data
   React.useEffect(() => {
-    if (typeof guid === 'undefined') return;
-
-    fetch(formatOccurrenceDataRequest(guid), {
-      mode: 'cors',
-    })
-      .then(async (response) => response.json())
-      .then((response: FullAggregatorResponse) =>
-        response.records
-          .filter(({ count }) => count > 0)
-          .map(({ records }) => records[0]['dwc:scientificName'])
-          .find((occurrenceName) => occurrenceName)
-      )
-      .catch(console.error)
-      .then(
-        (remoteOccurrence) =>
-          remoteOccurrence ?? fetchLocalScientificName(model)
-      )
-      .catch(console.error)
+    fetchOccurrenceName({ guid, model })
       .then((occurrenceName) =>
         dispatch({
           type: 'SetOccurrenceNameAction',

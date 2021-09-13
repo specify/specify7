@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
-import { Lifemapper } from './lifemapper';
+import { Lifemapper, SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
 
 interface Props {
@@ -13,17 +13,27 @@ export interface ComponentProps extends Props {
   readonly guid: string;
 }
 
-const View = createBackboneView<Props, Props, ComponentProps>({
+const CollectionObjectBadges = createBackboneView<Props, Props, ComponentProps>(
+  {
+    moduleName: 'Lifemapper',
+    className: 'lifemapper-info',
+    initialize(self, { model }) {
+      self.model = model;
+    },
+    silentErrors: true,
+    Component: SpecifyNetworkBadge,
+    getComponentProps: (self) => ({
+      model: self.model,
+      guid: self.model.get('guid'),
+    }),
+  }
+);
+
+const TaxonBadges = createBackboneView<Props, Props, ComponentProps>({
   moduleName: 'Lifemapper',
   className: 'lifemapper-info',
   initialize(self, { model }) {
     self.model = model;
-  },
-  renderPre(self) {
-    self.el.style.display = '';
-  },
-  remove(self) {
-    self.el.style.display = 'none';
   },
   silentErrors: true,
   Component: Lifemapper,
@@ -36,16 +46,20 @@ const View = createBackboneView<Props, Props, ComponentProps>({
 export default function register(): void {
   ResourceView.on('rendered', (resourceView: any) => {
     if (
-      resourceView.model.specifyModel.name === 'CollectionObject' &&
+      ['CollectionObject', 'Taxon'].includes(
+        resourceView.model.specifyModel.name
+      ) &&
       // @ts-expect-error
       remotePrefs['s2n.badges.disable'] !== 'true'
     )
       // @ts-expect-error
-      new View({
+      new (resourceView.model.specifyModel.name === 'Taxon'
+        ? TaxonBadges
+        : CollectionObjectBadges)({
         model: resourceView.model,
-        el: $(
-          '<span class="lifemapper-info" style="display:none;"></span>'
-        ).appendTo(resourceView.header),
+        el: $('<span class="lifemapper-info"></span>').appendTo(
+          resourceView.header
+        ),
       }).render();
   });
 }
