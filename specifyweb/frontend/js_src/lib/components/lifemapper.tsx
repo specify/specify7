@@ -53,7 +53,7 @@ export function SpecifyNetworkBadge({
       className="lifemapper-source-icon"
     >
       <img
-        src="/static/img/specify_network_box_only.svg"
+        src="/static/img/specify_network_logo_long.svg"
         alt="Specify Network"
       />
     </a>

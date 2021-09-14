@@ -11,14 +11,16 @@
 }
 
 .lifemapper-source-icon {
-  width: 28px;
   height: 28px;
   position: relative;
-  padding: 0.1rem;
   background: none;
   border: none;
   border-radius: var(--round);
   cursor: pointer;
+}
+
+a.lifemapper-source-icon:hover {
+  background: var(--b1);
 }
 
 button.lifemapper-source-icon img {
@@ -29,7 +31,7 @@ button.lifemapper-source-icon img {
 }
 
 a.lifemapper-source-icon img {
-  height: unset;
+  height: 100%;
   margin: unset;
 }
 
