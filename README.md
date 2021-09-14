@@ -38,6 +38,12 @@ under GNU General Public License 2 (GPL2).
    * [Updating Specify 7](#updating-specify-7)
    * [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
 
+# Deployment
+Beginning with version 7.6.0 the recommend deployment of Specify 7 is
+via Docker. Please contact Specify support for detailed Docker
+deployment instructions. For existing non-Docker installations the
+relevant instructions have been updated below.
+
 # Installation
 After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
@@ -56,15 +62,6 @@ conf can be changed to point to it (or changed back to the old
 version, if problems arise).
 
 
-## Installation with Docker
-If you would like to deploy Specify 7 in a
-[Docker](https://www.docker.com/) container checkout the instructions
-in this repository:
-https://github.com/specify/specify7-docker
-
-
-## Ordinary installation
-
 ### Installing system dependencies
 Specify 7 requires Python 3.6. Ubuntu 18.04 LTS is recommended. For
 other distributions these instructions will have to be adapted.
@@ -78,22 +75,24 @@ sudo apt-get -y install --no-install-recommends \
     libsasl2-dev \
     nodejs \
     npm \
-    openjdk-11-jre-headless \
     python3-venv \
     python3.6 \
     python3.6-dev \
+    reddis \
     unzip
 ```
 
 ### Installing Specify 6
 A copy of the most recent Specify 6 release is required on the server
-as Specify 7 makes use of resource files. Specify 6 code is also
-executed by the server for Workbench validation and uploads.
+as Specify 7 makes use of resource files. A Java runtime is required
+to execute the Specify 6 installer, but is not needed to run
+Specify 7. It is possible to copy the Specify 6 install from another
+Linux system to avoid the need to install Java on the server.
 
 ```shell
-wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
-sh Specify_unix_64.sh -q -dir ./Specify6.8.0
-sudo ln -s $(pwd)/Specify6.8.0 /opt/Specify
+wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
+sh Specify_unix_64.sh -q -dir ./Specify6.8.01
+sudo ln -s $(pwd)/Specify6.8.01 /opt/Specify
 ```
 
 ### Cloning Specify 7 source repository
@@ -126,25 +125,6 @@ To build Specify 7 use the default make target.
 ```shell
 cd specify7
 make
-```
-
-When building the frontend, *Webpack* will issue the following
-warnings that can be safely ignored:
-
-```
-WARNING in ./bower_components/handsontable/dist/handsontable.full.js
-Critical dependencies:
-41:48-74 This seems to be a pre-built javascript file. Though this is
-possible, it's not recommended. Try to require the original source to
-get better results.
- @ ./bower_components/handsontable/dist/handsontable.full.js 41:48-74
-
-WARNING in ./bower_components/handsontable/dist/handsontable.full.js
-Critical dependencies:
-47:38-65 This seems to be a pre-built javascript file. Though this is
-possible, it's not recommended. Try to require the original source to
-get better results.
- @ ./bower_components/handsontable/dist/handsontable.full.js 47:38-65
 ```
 
 Other make targets:
@@ -224,10 +204,26 @@ contenttypes, and sessions) but does not need the corresponding tables
 to be added to the database. Running `make django_migrations` will
 apply only those migrations needed for Specify 7 to operate.
 
+### The Specify 7 worker
+Beginning with v7.6.0 the Specify WorkBench upload and validate
+operations are carried out by a separate worker process using a
+[Celery](https://docs.celeryproject.org/en/master/index.html) job
+queue with
+[Reddis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html)
+as the broker. The worker process can be started from the commandline
+by executing:
 
-## Deployment to production
-Start by following the development instructions above, but don't
-enable debugging (or disable it if you enabled it previously).
+```shell
+cd specify7
+celery -A specifyweb worker -l INFO --concurrency=1
+```
+
+For deployment purposes it is recommended to configure a systemd unit
+to automatically start the Specify 7 worker process on system start up
+by executing the above command within the installation directory. It
+is possible to run Redis and worker process on a separate server and
+to provision multiple worker processes for high volume
+scenarios. Contact the Specify team about these use cases.
 
 ### Installing production requirements
 For production environments, Specify7 can be hosted by Apache. The
@@ -290,7 +286,11 @@ proceed as follows:
    `local_specify_settings.py`, if you are updating the Specify 6
    version.
 
-4. Create a new virtualenv for the new installation by following the
+4. Update the system level dependencies by executing the *apt-get*
+   command in the [Installing system
+   dependencies](#installing-system-dependencies) section.
+
+5. Create a new virtualenv for the new installation by following the
    [Python Virtual Environment](#python-virtual-environment) section
    for the new directory.
 
@@ -300,6 +300,9 @@ proceed as follows:
 
 8. Deploy the new version by updating your Apache config to replace
    the old installation paths with the new ones and restarting Apache.
+
+9. Configure the Specify 7 worker process to execute at system start
+   up as described in [The Specify 7 worker](#the-specify-7-worker) section.
 
 # Updating the database (Specify 6) version
 The Specify database is updated from one version to the next by the
