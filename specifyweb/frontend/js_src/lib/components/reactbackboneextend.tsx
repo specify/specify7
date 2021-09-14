@@ -55,6 +55,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => COMPONENT_PROPS;
 }): IR<unknown> =>
+  // @ts-expect-error
   Backbone.View.extend({
     __name__: moduleName,
     className,

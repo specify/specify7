@@ -4,7 +4,6 @@ import { generateReducer } from 'typesafe-reducer';
 
 import { SN_SERVICES } from '../lifemapperconfig';
 import type { Actions, MapInfo } from '../lifemapperreducer';
-import { formatLifemapperViewPageRequest } from '../lifemapperutills';
 import { Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
 import type { IR } from './wbplanview';
@@ -27,7 +26,6 @@ export type States = MainState;
 type StateWithParameters = States & {
   params: {
     dispatch: (action: Actions) => void;
-    guid: string;
   };
 };
 
@@ -37,7 +35,7 @@ export const stateReducer = generateReducer<
 >({
   MainState({
     action: {
-      params: { dispatch, guid },
+      params: { dispatch },
       ...state
     },
   }): JSX.Element {
@@ -56,18 +54,10 @@ export const stateReducer = generateReducer<
               key={name}
               isEnabled={badge.isActive}
               onClick={(): void =>
-                name === 'specify'
-                  ? void window.open(
-                      formatLifemapperViewPageRequest(
-                        guid,
-                        state.occurrenceName ?? ''
-                      ),
-                      '_blank'
-                    )
-                  : dispatch({
-                      type: 'ToggleBadgeAction',
-                      badgeName: name,
-                    })
+                dispatch({
+                  type: 'ToggleBadgeAction',
+                  badgeName: name,
+                })
               }
             />
           ))}

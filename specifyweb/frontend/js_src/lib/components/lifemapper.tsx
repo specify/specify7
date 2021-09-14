@@ -15,7 +15,7 @@ import lifemapperText from '../localization/lifemapper';
 import { BadgeIcon } from './lifemappercomponents';
 import type { MainState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
-import type { ComponentProps } from './lifemapperwrapper';
+import type { Props, ComponentProps } from './lifemapperwrapper';
 import type { IR, RA } from './wbplanview';
 
 type FullAggregatorResponse = {
@@ -43,6 +43,8 @@ export function SpecifyNetworkBadge({
       .catch(console.error);
   }, [guid, model]);
 
+  if (!guid) return <></>;
+
   return (
     <a
       href={formatLifemapperViewPageRequest(guid, occurrenceName)}
@@ -60,8 +62,6 @@ async function fetchOccurrenceName({
   model,
   guid,
 }: ComponentProps): Promise<string> {
-  if (typeof guid === 'undefined') return '';
-
   return fetch(formatOccurrenceDataRequest(guid), {
     mode: 'cors',
   })
@@ -80,10 +80,7 @@ async function fetchOccurrenceName({
     .then((occurrenceName) => occurrenceName ?? '');
 }
 
-export function Lifemapper({
-  model,
-  guid,
-}: ComponentProps): JSX.Element | null {
+export function Lifemapper({ model }: Props): JSX.Element | null {
   const [state, dispatch] = React.useReducer(reducer, {
     type: 'MainState',
     badges: Object.fromEntries(
@@ -101,7 +98,9 @@ export function Lifemapper({
 
   // Fetch occurrence data
   React.useEffect(() => {
-    fetchOccurrenceName({ guid, model })
+    new Promise<string | undefined>((resolve) =>
+      model.rget('fullName').then(resolve)
+    )
       .then((occurrenceName) =>
         dispatch({
           type: 'SetOccurrenceNameAction',
@@ -109,7 +108,7 @@ export function Lifemapper({
         })
       )
       .catch(console.error);
-  }, [guid, model]);
+  }, [model]);
 
   /*
    * Fetch related CO records
@@ -162,7 +161,6 @@ export function Lifemapper({
     ...state,
     params: {
       dispatch,
-      guid,
     },
   });
 }

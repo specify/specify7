@@ -5,7 +5,7 @@ import ResourceView from '../resourceview';
 import { Lifemapper, SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
 
-interface Props {
+export interface Props {
   model: any;
 }
 
@@ -29,7 +29,7 @@ const CollectionObjectBadges = createBackboneView<Props, Props, ComponentProps>(
   }
 );
 
-const TaxonBadges = createBackboneView<Props, Props, ComponentProps>({
+const TaxonBadges = createBackboneView<Props, Props, Props>({
   moduleName: 'Lifemapper',
   className: 'lifemapper-info',
   initialize(self, { model }) {
@@ -39,27 +39,42 @@ const TaxonBadges = createBackboneView<Props, Props, ComponentProps>({
   Component: Lifemapper,
   getComponentProps: (self) => ({
     model: self.model,
-    guid: self.model.get('guid'),
   }),
 });
 
 export default function register(): void {
   ResourceView.on('rendered', (resourceView: any) => {
-    if (
-      ['CollectionObject', 'Taxon'].includes(
-        resourceView.model.specifyModel.name
-      ) &&
-      // @ts-expect-error
-      remotePrefs['s2n.badges.disable'] !== 'true'
-    )
-      // @ts-expect-error
-      new (resourceView.model.specifyModel.name === 'Taxon'
-        ? TaxonBadges
-        : CollectionObjectBadges)({
+    const render = (
+      View: any,
+      attach: (element: JQuery<HTMLElement>) => JQuery<HTMLElement>
+    ) =>
+      new View({
         model: resourceView.model,
-        el: $('<span class="lifemapper-info"></span>').appendTo(
-          resourceView.header
-        ),
+        el: attach($('<span class="lifemapper-info"></span>')),
       }).render();
+    if (
+      // @ts-expect-error
+      remotePrefs['s2n.badges.disable'] !== 'true' &&
+      !resourceView.model.isNew()
+    )
+      if (resourceView.model.specifyModel.name === 'Taxon') {
+        if (resourceView.header)
+          render(TaxonBadges, (el) => el.appendTo(resourceView.header));
+        else
+          setTimeout(
+            () =>
+              render(TaxonBadges, (container) =>
+                container.insertBefore(
+                  resourceView.el
+                    .closest('.ui-dialog')
+                    .getElementsByClassName('ui-dialog-title')[0]
+                )
+              ),
+            0
+          );
+      } else if (resourceView.model.specifyModel.name === 'CollectionObject')
+        render(CollectionObjectBadges, (container) =>
+          container.appendTo(resourceView.header)
+        );
   });
 }

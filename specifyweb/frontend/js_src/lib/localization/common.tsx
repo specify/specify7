@@ -1,3 +1,4 @@
+import React from 'react';
 import { createDictionary, createHeader, createJsxHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
@@ -125,12 +126,16 @@ const commonText = createDictionary({
   errorBoundaryDialogHeader: createJsxHeader(
     'An unexpected error has occurred'
   ),
-  errorBoundaryDialogMessage: `
-    Please reload the page and try again. If this issue persists, please
-    contact your IT support or if this is a Specify Cloud database, contact
-    <a href="mailto:support@specifysoftware.org">
-      support@specifysoftware.org
-    </a>.`,
+  errorBoundaryDialogMessage: (
+    <>
+      Please reload the page and try again. If this issue persists, please
+      contact your IT support or if this is a Specify Cloud database, contact
+      <a href="mailto:support@specifysoftware.org">
+        support@specifysoftware.org
+      </a>
+      .
+    </>
+  ),
   backEndErrorDialogTitle: 'Server Error',
   backEndErrorDialogHeader: createHeader(
     'An error occurred communicating with the Specify 7 server.'

@@ -4,6 +4,12 @@
   justify-content: flex-end;
 }
 
+.ui-dialog .lifemapper-info {
+  float: left;
+  margin-top: -3px;
+  margin-bottom: -3px;
+}
+
 .lifemapper-source-icon {
   width: 28px;
   height: 28px;

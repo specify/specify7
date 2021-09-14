@@ -30,19 +30,25 @@ export async function prepareLifemapperProjectionMap(
     },
   };
 
+  const isCollectionObject = model.specifyModel.name === 'CollectionObject';
+
   const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
     async (resolve) => {
       await fetchDataModel();
 
-      const determination = await model.rget('determinations');
+      let taxon;
 
-      const currentDetermination = determination.models.find((model: any) =>
-        model.get('isCurrent')
-      );
+      if (isCollectionObject) {
+        const determination = await model.rget('determinations');
 
-      if (typeof currentDetermination === 'undefined') resolve([]);
+        const currentDetermination = determination.models.find((model: any) =>
+          model.get('isCurrent')
+        );
 
-      const taxon = await currentDetermination.rget('taxon');
+        if (typeof currentDetermination === 'undefined') resolve([]);
+
+        taxon = await currentDetermination.rget('taxon');
+      } else taxon = model;
 
       const LIMIT = 10_000;
 
@@ -188,7 +194,7 @@ export async function prepareLifemapperProjectionMap(
               : Leaflet.getMarkersFromLocalityData({
                   localityData,
                   iconClass:
-                    collectionObjectId === model.get('id')
+                    isCollectionObject && collectionObjectId === model.get('id')
                       ? 'lifemapper-current-collection-object-marker'
                       : undefined,
                   markerClickCallback: async ({ target: marker }) => {
