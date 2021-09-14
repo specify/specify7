@@ -1945,7 +1945,7 @@ const WBView = Backbone.View.extend({
         .filter(({ mappingPath }) =>
           mappingPathToString(mappingPath).startsWith(
             mappingPathToString(
-              mappingPath.slice(0, index === 0 ? undefined : -1 * index)
+              mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
             )
           )
         )
