@@ -21,11 +21,16 @@
   cursor: pointer;
 }
 
-.lifemapper-source-icon img {
+button.lifemapper-source-icon img {
   visibility: hidden;
   position: absolute;
   top: 2px;
   left: 2px;
+}
+
+a.lifemapper-source-icon img {
+  height: unset;
+  margin: unset;
 }
 
 .lifemapper-source-icon:not(.lifemapper-source-icon-not-found):hover

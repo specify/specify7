@@ -12,7 +12,6 @@ import {
 } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
-import { BadgeIcon } from './lifemappercomponents';
 import type { MainState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
 import type { Props, ComponentProps } from './lifemapperwrapper';
@@ -53,7 +52,10 @@ export function SpecifyNetworkBadge({
       rel="noreferrer"
       className="lifemapper-source-icon"
     >
-      <BadgeIcon name="specify" />
+      <img
+        src="/static/img/specify_network_box_only.svg"
+        alt="Specify Network"
+      />
     </a>
   );
 }
