@@ -50,6 +50,7 @@ class ScopedTreeRecord(NamedTuple):
     ranks: Dict[str, Dict[str, ExtendedColumnOptions]]
     treedef: Any
     treedefitems: List
+    root: Optional[Any]
     disambiguation: Dict[str, int]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
@@ -81,6 +82,7 @@ class ScopedTreeRecord(NamedTuple):
             name=self.name,
             treedef=self.treedef,
             treedefitems=self.treedefitems,
+            root=self.root,
             disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             uploadingAgentId=uploadingAgentId,
@@ -113,6 +115,7 @@ class BoundTreeRecord(NamedTuple):
     name: str
     treedef: Any
     treedefitems: List
+    root: Optional[Any]
     parsedFields: Dict[str, List[ParseResult]]
     uploadingAgentId: Optional[int]
     auditlog: AuditLog
@@ -256,11 +259,10 @@ class BoundTreeRecord(NamedTuple):
         else:
             parent_info = None
             parent_result = {}
-
-            placeholder: List[ParseResult] = [filter_and_upload({'name': "Uploaded"}, "")]
+            root_name = self.root.name if self.root else "Uploaded"
 
             placeholders = [
-                TreeDefItemWithParseResults(tdi, placeholder)
+                TreeDefItemWithParseResults(tdi, [filter_and_upload({'name': root_name if tdi.rankid == 0 else "Uploaded"}, "")])
                 for tdi in self.treedefitems
                 if  tdi.rankid < to_upload[0].treedefitem.rankid
                 and (tdi.rankid == 0 or tdi.isenforced)

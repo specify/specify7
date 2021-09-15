@@ -173,10 +173,13 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         if rank not in treedef_ranks:
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
+    root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
+
     return ScopedTreeRecord(
         name=tr.name,
         ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
         treedef=treedef,
         treedefitems=list(treedef.treedefitems.order_by('rankid')),
+        root=root[0] if root else None,
         disambiguation={},
     )
