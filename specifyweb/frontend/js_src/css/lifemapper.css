@@ -12,6 +12,7 @@
 
 .lifemapper-source-icon {
   height: 28px;
+  min-width: 28px;
   position: relative;
   background: none;
   border: none;
