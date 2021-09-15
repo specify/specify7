@@ -264,10 +264,13 @@ class TreeMatchingTests(UploadTestsBase):
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
-        # TODO: test that nodes are parented to root
+        self.assertEqual(results[0].toOne['parent'].toOne['parent'].record_result.info.treeInfo.rank, "Planet")
 
-    # TODO: this test needs to be fixed to have some enforced levels
     def test_match_uploaded_just_enforced(self) -> None:
+        country = self.geographytreedef.treedefitems.get(name='Country')
+        country.isenforced = True
+        country.save()
+
         plan_json = dict(
             baseTableName = 'Geography',
             uploadable = { 'treeRecord': dict(
@@ -286,7 +289,13 @@ class TreeMatchingTests(UploadTestsBase):
         results = do_upload(self.collection, data, scoped_plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
-        # TODO: test that nodes are parented to root
+
+        self.assertIsInstance(results[0].toOne['parent'].toOne['parent'].record_result, Uploaded)
+        self.assertEqual(results[0].toOne['parent'].toOne['parent'].record_result.info.treeInfo, ("Country", "Uploaded"))
+        self.assertEqual(results[0].toOne['parent'].toOne['parent'].record_result.info.treeInfo, ("Country", "Uploaded"))
+
+        self.assertIsInstance(results[1].toOne['parent'].toOne['parent'].record_result, Matched)
+        self.assertEqual(results[1].toOne['parent'].toOne['parent'].get_id(), results[0].toOne['parent'].toOne['parent'].get_id())
 
     def test_upload_partial_match(self) -> None:
         plan_json = dict(
