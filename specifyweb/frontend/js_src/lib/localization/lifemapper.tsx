@@ -13,7 +13,6 @@ const lifemapperText = createDictionary({
   gbif: 'GBIF:',
   projectionNotFound: 'No Distribution Model available.',
   modelCreationData: 'Model Created:',
-  modelOpacity: 'Model Opacity:',
   projection: 'Lifemapper Distribution Model',
   occurrencePoints: 'GBIF Occurrence Points',
   overLimitMessage: (limit: number) =>

@@ -2,11 +2,9 @@ import type L from 'leaflet';
 import React from 'react';
 
 import * as Leaflet from '../leaflet';
-import { defaultProjectionMapOpacity } from '../lifemapperconfig';
 import type { MapInfo } from '../lifemapperreducer';
 import { formatIconRequest } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
-import * as cache from '../cache';
 
 export function Badge<IS_ENABLED extends boolean>({
   name,
@@ -96,17 +94,6 @@ export function LifemapperMap({
                 <span>0%</span>
                 <span>100%</span>
               </span>
-
-              <label>
-                <p>${lifemapperText('modelOpacity')}</p>
-                <input
-                  class="projection-opacity"
-                  type="range"
-                  min="0"
-                  max="100"
-                  value="${defaultProjectionMapOpacity}"
-                >
-              </label>
               `
             : Object.values(mapInfo.messages.errorDetails)
                 .map((message) => `<i>${message}</i>`)
@@ -127,38 +114,6 @@ export function LifemapperMap({
           polygonBoundary: lifemapperText('polygonBoundaryLayerLabel'),
           // Don't display error radii layer
         });
-
-        const projectionSlider = mapRef.current?.getElementsByClassName(
-          'projection-opacity'
-        )[0] as HTMLInputElement;
-
-        // The slider won't be there if there was a LifeMapper error
-        if (!Boolean(projectionSlider)) return;
-
-        const defaultOpacity = cache.get('lifemapper', 'projectionOpacity', {
-          defaultValue: defaultProjectionMapOpacity,
-        });
-        projectionSlider.value = defaultOpacity.toString();
-
-        function handleProjectionOpacityChange(): void {
-          const opacity = Number.parseInt(projectionSlider.value) / 100;
-          (layerGroup as any)._layers
-            .filter(({ name }: any) =>
-              name.startsWith(lifemapperText('projection'))
-            )
-            .map(({ layer }: any) => layer.setOpacity(opacity));
-        }
-        projectionSlider.addEventListener(
-          'change',
-          handleProjectionOpacityChange
-        );
-        destructors.push(() =>
-          projectionSlider.addEventListener(
-            'change',
-            handleProjectionOpacityChange
-          )
-        );
-        handleProjectionOpacityChange();
 
         return map;
       })
