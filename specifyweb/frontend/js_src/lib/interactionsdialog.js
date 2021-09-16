@@ -21,7 +21,8 @@ const commonText = require('./localization/common').default;
 
     initialContext.load('app.resource?name=InteractionsTaskInit', function (data) {
         interaction_entries = _.map($('entry', data), $)
-            .filter(entry => entry.attr('isonleft') === 'true'  && entry.attr('action') != 'LN_NO_PRP');
+            .filter(entry => entry.attr('isonleft') === 'true'
+                    && !['NEW_DISPOSAL', 'NEW_EXCHANGE_OUT', 'LN_NO_PRP', 'Specify Info Request'].includes(entry.attr('action')));
 
         views = interaction_entries.filter(entry => !isActionEntry(entry));
         actions = interaction_entries.filter(isActionEntry);
