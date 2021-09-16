@@ -36,15 +36,78 @@ under GNU General Public License 2 (GPL2).
          * [Setting up Apache](#setting-up-apache)
          * [Restarting Apache](#restarting-apache)
    * [Updating Specify 7](#updating-specify-7)
-   * [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+   * [Updating the database (Specify 6)
+     version](#updating-the-database-specify-6-version)
 
-# Deployment
+## Release notes
+### 7.6.0 (16 September 2021)
+This Specify 7.6.0 update is being released simultaneously with
+Specify 6.8.01. Both platforms require a database schema update for
+existing Specify 6 and 7 installations. The new Specify database
+schema is v2.9 updated from current production v2.7 (v2.8 skipped).
+
+Here is the GitHub list of user-facing software issues (except for the
+WorkBench) fixed or enhanced in this release: [Issues Fixed in the
+Specify 7.6.0 Release](https://github.com/specify/specify7/issues?q=is%3Aissue+milestone%3A7.6.0+label%3Afor-release-notes).
+
+See: [Specify Schema Update (v2.9): Additions, Changes, Virtual
+Fields](https://www.specifysoftware.org/wp-content/uploads/2021/09/Specify-Schema-Update-v2.9-15-Sep-2021.pdf)
+for a list of the data tables and fields added and changed in the
+Specify v2.9 schema update, as well as new virtual, calculated fields
+outside of the schema.
+
+The highlight of this Specify 7 release is a new WorkBench
+module. Much SCC software engineering during 2020 through mid-2021 was
+focused on developing it. The WorkBench is an effective tool for
+capturing new records from specimen digitization or for migrating old
+records from legacy systems. We re-designed the WorkBench to be able
+to import and upload more kinds of data into a Specify collection
+database--with increased flexibility for mapping between external data
+columns and Specify database fields; comprehensive error checking,
+validating and editing of Data sets, and with efficient uploading of
+data into the database. The new WorkBench has intuitive features for
+‘everyday uploading’ and advanced settings for more complex mapping
+and uploading workflows.
+
+This document: [Specify 7.6.0 Release Notes: New
+WorkBench](https://docs.google.com/document/u/0/d/1P5rPb1ij4uMoQuUDFfzCyWTt1musX3Pj2QllOTLHPp8)
+includes a structured walk-through of the operation of the new Specify
+7 WorkBench on a public Specify7 test server.
+
+Another major push in the development of Specify 7.6.0 was the
+elaboration and documentation of Specify 7 server APIs. This was in
+response to increasing community interest in API integrations and for
+a global, digital object based, biodiversity data architecture.
+
+Current Specify API documentation can be viewed on the demonstration
+server at:
+
+http://api.test.specifycloud.org/documentation/api/tables/
+and http://api.test.specifycloud.org/documentation/api/operations/
+
+Each installation of Specify 7.6.0 will have this API documentation
+interface turned on by default and be accessible at the server URL
+with the `/documentation/…` string postpended.
+
+Last but not least with the concurrent 7.6.0 and 6.8.01 Specify
+releases we are excited to announce the creation of the Specify
+Network.  With these updates, both Specify 6 and 7 are now integrated
+with it. The Specify Network’s initial API-based integrations find and
+return information held in aggregators and name authorities about
+specimens in your collection.
+
+For an introduction to the new [Specify
+Network](https://www.specifysoftware.org/specify-network/) and its
+current services see the Specify Network page on the Specify
+Collections Consortium site.
+
+## Docker installation
 Beginning with version 7.6.0 the recommend deployment of Specify 7 is
 via Docker. Please contact Specify support for detailed Docker
 deployment instructions. For existing non-Docker installations the
 relevant instructions have been updated below.
 
-# Installation
+## Installation
 After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
 browser on your local machine.
@@ -262,7 +325,7 @@ After changing Apache's config files restart the service.
 sudo systemctl restart apache2.service
 ```
 
-# Updating Specify 7
+## Updating Specify 7
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
 from one of these versions, it will be necessary to install Python 3.6
 by running the `apt-get` commands in the
@@ -304,7 +367,7 @@ proceed as follows:
 9. Configure the Specify 7 worker process to execute at system start
    up as described in [The Specify 7 worker](#the-specify-7-worker) section.
 
-# Updating the database (Specify 6) version
+## Updating the database (Specify 6) version
 The Specify database is updated from one version to the next by the
 Specify 6 application. To update the database version connect to the
 database with a new version of Specify 6 and follow the Specify 6
