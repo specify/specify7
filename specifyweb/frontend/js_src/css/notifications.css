@@ -1,14 +1,19 @@
 /* notifications.css */
 
 #site-notifications {
-    padding: 5px;
-    cursor: pointer;
-    margin-right: 5px;
+  white-space: pre;
+}
+
+#site-notifications[disabled] {
+    color: var(--t1);
 }
 
 #site-notifications.unread-notifications {
-    color: #fff;
-    background: #f4763d;
+    color: var(--b1);
+    background: var(--accent);
+    padding: 4px;
+    font-weight: bold;
+    border: 1px solid var(--accent-hover);
 }
 
 .notification-message {
@@ -19,9 +24,5 @@
 }
 
 .notification-message a {
-    color: #f4763d;
-}
-
-.unread-notification {
-    font-weight: bold;
+    color: var(--accent);
 }

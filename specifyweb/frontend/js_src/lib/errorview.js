@@ -3,6 +3,8 @@
 var $                = require('jquery');
 var _                = require('underscore');
 var Backbone         = require('./backbone.js');
+const navigation = require('./navigation.js');
+const commonText = require('./localization/common').default;
 
 module.exports = {
 
@@ -19,19 +21,22 @@ module.exports = {
         UnhandledErrorView: Backbone.View.extend({
             __name__: "UnhandledErrorView",
             render: function() {
-                this.$el.attr('title', 'Unexpected Error')
-                    .append('<p>An unexpected error has occured during communication with the server.</p>');
+                this.$el.attr('title', commonText('backEndErrorDialogTitle'))
+                    .append(commonText('backEndErrorDialogHeader'))
+                    .append(`<p>${commonText('backEndErrorDialogMessage')}</p>`);
                 var response = this.options.jqxhr.responseText;
                 if (/^Traceback:/m.test(response)) {
-                    this.$el.append($('<textarea readonly>').val(response).css({'min-width': 800, 'min-height': 600}));
+                    this.$el.append($('<textarea readonly>').val(response).css({'width': '100%', 'min-height': 600}));
                 }
                 this.$el.dialog({
                     modal: true,
-                    width: 'auto',
-                    open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-                    buttons: [{text: 'Reload', click: function() { window.location.reload(); }},
-                              {text: 'Previous Page', click: function() { window.history.back(); }}]
+                    width: '800',
+                    dialogClass: 'ui-dialog-no-close',
+                    buttons: [
+                        {text:  commonText('close'), click: function() { window.location = "/"; }},
+                    ]
                 });
+                navigation.clearUnloadProtect();
             }
         })
     };

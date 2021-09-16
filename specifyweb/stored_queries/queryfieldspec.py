@@ -5,6 +5,7 @@ from sqlalchemy import orm, sql
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.models import datamodel
+from specifyweb.specify.uiformatters import get_uiformatter
 
 from . import models
 from .query_ops import QueryOps
@@ -235,21 +236,3 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         query = query.reset_joinpoint()
         return query, orm_field
-
-def get_uiformatter(collection, tablename, fieldname):
-    from specifyweb.specify.models import Splocalecontaineritem
-    from specifyweb.specify.uiformatters import get_uiformatter
-
-    if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
-        return get_uiformatter(collection, None, collection.catalognumformatname)
-
-    try:
-        field_format = Splocalecontaineritem.objects.get(
-            container__discipline=collection.discipline,
-            container__name=tablename.lower(),
-            name=fieldname.lower(),
-            format__isnull=False).format
-    except ObjectDoesNotExist:
-        return None
-    else:
-        return get_uiformatter(collection, None, field_format)

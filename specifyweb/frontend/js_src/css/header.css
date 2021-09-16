@@ -1,21 +1,43 @@
 /* header.css */
 
 header {
-    background: #fff;
-    margin: 0px 15px;
+    background: #f1f2f2;
+    border-bottom: solid 0.3rem #f4763d;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 3px 5px -1px #999;
 }
 
 #site-header-main {
-    display: flex;
-    justify-content: space-between;
+    display: contents;
 }
 
 #site-logo {
-    background-image: url(/static/img/seven_logo.png);
+    background-image: url('/static/img/seven_logo.png');
     background-size: 185px 55px;
-    width: 185px;
+    background-repeat: no-repeat;
     height: 55px;
-    margin: 10px 0 10px 20px;
+    margin: 1rem;
+    order: 1;
+    flex-basis: 300px;
+}
+
+#user-tools {
+    order: 3;
+    flex-basis: 300px;
+    margin: 1rem;
+}
+
+nav {
+    padding: 0;
+    order: 2;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
 }
 
 #header-loading {
@@ -24,98 +46,129 @@ header {
     text-align: left;
     color: #555;
     font-size: 14px;
-    font-weight: bold;
-}
-
-header nav {
-    clear: both;
-    border-top: solid 6px #f4763d;
-    background: #f1f2f2;
-    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
-}
-
-nav ul {
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-}
-
-nav li {
-    padding: 0;
+    font-weight: 800;
 }
 
 nav a {
-    display: inline-block;
     font-size: 14px;
-    font-weight: bold;
-    padding: 12px 15px 6px 15px;
-    border-bottom: solid 4px #f1f2f2;
+    font-weight: 800;
+    padding: 0 1rem 1rem;
+    position: relative;
+    height: calc(100% - 1rem);
+    display: flex;
+    align-items: flex-end;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -0.3rem;
+    width: 100%;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: transparent;
+}
+
+@media (max-width: 1600px) {
+    header {
+        flex-direction: column;
+    }
+
+    #site-logo,
+    nav,
+    #user-tools {
+        order: unset;
+    }
+
+    #user-tools {
+        flex-basis: unset;
+        min-width: 300px;
+    }
+
+    nav {
+        margin-top: -0.5rem;
+        justify-content: unset;
+    }
+
+    nav a {
+        padding: 1rem;
+        height: unset;
+    }
+
+    nav a::after {
+        bottom: -0.3rem;
+    }
+
+    #site-header-main {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 1000px) {
+    nav a::after {
+        content: initial;
+    }
+}
+
+nav a:hover::after {
+    background: #f1f2f2;
 }
 
 nav a:link,
 nav a:visited {
-    color: #555
+    color: #555;
 }
 
 nav a:hover {
     color: #000;
-    border-bottom: solid 4px #f4763d;
 }
 
-nav li img {
+nav img {
     display: inline;
     height: 16px;
     vertical-align: middle;
     margin-right: 5px;
 }
 
-#user-tools {
-    margin-top: 10px;
-    margin-right: 20px;
-    text-align: right;
-}
-
-#user-tools div:last-child {
+#user-tools div {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    column-gap: 0.7rem;
 }
 
-#user-tools a {
-    font-weight: bold;
+#user-tools .username {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-#user-tools .login-logout {
-    margin-right: 2px;
-}
-
-#user-tools select {
+#user-tools .collection-selector {
     background: #fff;
     border: none;
     color: #555;
-    font-weight: bold;
-    padding: 4px 0px;
-    margin-left: 2px;
+    padding: 4px 0;
     font-size: 12px;
     vertical-align: baseline;
+    flex: 1;
 }
 
-#user-tools select:hover {
+#user-tools .collection-selector:hover,
+#user-tools.username:hover {
     color: #f4763d;
 }
 
-#express-search .express-search-query {
-    width: 20em;
-    background: #f1f2f2;
-    border: 1px solid #aaa;
-    font-size: 14px;
+#express-search {
+    flex: 1;
 }
 
-#express-search .express-search-submit {
-    width: 22px;
-    height: 18.5px;
-    margin: 0;
-    padding: 0;
+#express-search .express-search-query {
+    border: 1px solid #aaa;
+    font-size: 14px;
+    width: 100%;
 }
 
 .ui-autocomplete {

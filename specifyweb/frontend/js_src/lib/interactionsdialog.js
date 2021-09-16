@@ -14,12 +14,15 @@ var userInfo          = require('./userinfo.js');
 var InteractionDialog = require('./interactiondialog.js');
 var s                 = require('./stringlocalization.js');
 var reports           = require('./reports.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var interaction_entries, views, actions;
 
     initialContext.load('app.resource?name=InteractionsTaskInit', function (data) {
         interaction_entries = _.map($('entry', data), $)
-            .filter(entry => entry.attr('isonleft') === 'true'  && entry.attr('action') != 'LN_NO_PRP');
+            .filter(entry => entry.attr('isonleft') === 'true'
+                    && !['NEW_DISPOSAL', 'NEW_EXCHANGE_OUT', 'LN_NO_PRP', 'Specify Info Request'].includes(entry.attr('action')));
 
         views = interaction_entries.filter(entry => !isActionEntry(entry));
         actions = interaction_entries.filter(isActionEntry);
@@ -64,11 +67,14 @@ module.exports = Backbone.View.extend({
             var entries = _.map(interaction_entries, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: "Interactions",
+                title: commonText('interactions'),
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },
-                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
+                buttons: [{
+                    text: commonText('close'),
+                    click: function() { $(this).dialog('close'); }
+                }]
             });
             return this;
         },
@@ -132,7 +138,7 @@ module.exports = Backbone.View.extend({
                     autoSelectSingle: true
                 });
             } else {
-                alert(action.attr('action') + " action is not supported.");
+                alert(formsText('actionNotSupported')(action.attr('action')));
             }
         }
     });

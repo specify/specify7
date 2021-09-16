@@ -8,7 +8,7 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, openapi
 
 server_urls = None
 server_time_delta = None
@@ -24,10 +24,30 @@ def get_collection():
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
 
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Information required for interacting with the asset server.",
+                "content": {"application/json": {"schema": {
+                    'type': 'object',
+                    'nullable': True,
+                    'properties': {
+                        'collection': {'type': 'string', 'description': 'The collection name to use.'},
+                        'token_required_for_get': {'type': 'boolean', 'description': 'Whether a token is required for retrieving assets.'},
+                    },
+                    'additionalProperties': {'type': 'string', 'description': 'URL for accessing the asset server.'},
+                    'required': ['collection', 'token_required_for_get']
+                    }
+                }}},
+        }
+    }
+})
 @login_maybe_required
 @require_GET
 @cache_control(max_age=86400, private=True)
 def get_settings(request):
+    "Returns settings needed to access the asset server for this Specify instance."
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
 
@@ -38,22 +58,62 @@ def get_settings(request):
     data.update(server_urls)
     return HttpResponse(json.dumps(data), content_type='application/json')
 
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {'in': 'query', 'name': 'filename', 'required': True, 'schema': {'type': 'string', 'description': 'The attachmentlocation filename.'}}
+        ],
+        "responses": {
+            "200": {
+                "description": "Returns a token for accessing a file from the asset server. This is needed if the asset server is "
+                + "configure to require a token for GET requests.",
+                "content": {"text/plain": {"schema": {
+                    'type': 'string',
+                    'nullable': True,
+                }}},
+            }
+        }
+    }
+})
 @login_maybe_required
 @require_GET
 def get_token(request):
+    "Returns an asset server access token. Must be supplied 'filename' GET parameter."
     filename = request.GET['filename']
-    token = generate_token(get_timestamp(), filename)
+    token = generate_token(get_timestamp(), filename) if server_urls is not None else ""
     return HttpResponse(token, content_type='text/plain')
 
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {'in': 'query', 'name': 'filename', 'required': True, 'schema': {'type': 'string', 'description': 'The name of the file to be uploaded.'}}
+        ],
+        "responses": {
+            "200": {
+                "description": "Returns the information needed to upload a file to the asset server.",
+                "content": {"application/json": {"schema": {
+                    'type': 'object',
+                    'nullable': True,
+                    'properties': {
+                        'attachmentlocation': {'type': 'string', 'description': 'The filename to use for uploading to the asset server.'},
+                        'token': {'type': 'string', 'description': 'The token allows the asset server to accept the request.'},
+                    },
+                    'required': ['attachmentlocation', 'token']
+                    }
+                }}},
+        }
+    }
+})
 @login_maybe_required
 @require_GET
 def get_upload_params(request):
+    "Returns information for uploading a file with GET parameter 'filename' to the asset server."
     filename = request.GET['filename']
     attch_loc = make_attachment_filename(filename)
     data = {
         'attachmentlocation': attch_loc,
         'token': generate_token(get_timestamp(), attch_loc)
-        }
+    } if server_urls is not None else None
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 def make_attachment_filename(filename):

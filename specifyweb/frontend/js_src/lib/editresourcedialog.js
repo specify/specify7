@@ -11,6 +11,8 @@ var SaveButton   = require('./savebutton.js');
 var DeleteButton = require('./deletebutton.js');
 var specifyform  = require('./specifyform.js');
 
+const commonText = require('./localization/common').default;
+
 
 module.exports = Backbone.View.extend({
         __name__: "EditResourceDialog",
@@ -37,7 +39,6 @@ module.exports = Backbone.View.extend({
                     this.trigger('savecomplete', this, this.resource);
                 }, this);
             }
-            var title = (this.resource.isNew() ? "New " : "") + this.resource.specifyModel.getLocalizedName();
 
             if (!this.resource.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.resource, warning: this.deleteWarning });
@@ -47,9 +48,13 @@ module.exports = Backbone.View.extend({
 
             populateform(form, this.resource);
 
+            const resourceLabel = this.resource.specifyModel.getLocalizedName();
+
             this.$el.append(form).dialog({
                 width: 'auto',
-                title: title,
+                title: this.resource.isNew() ?
+                    commonText('newResourceTitle')(resourceLabel) :
+                    resourceLabel,
                 modal: true,
                 close: function() { $(this).remove(); }
             });

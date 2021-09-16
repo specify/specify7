@@ -3,22 +3,30 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-var template = require('./templates/confirmdelete.html');
+
+const commonText = require('./localization/common').default;
+const formsText = require('./localization/forms').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "DeleteButton",
         events: {
             'click .delete-button': 'openDialog'
         },
-    initialize: function({model, warning}) {
-        this.model = model;
-        this.warning = warning;
+        initialize: function({model, warning}) {
+            this.model = model;
+            this.warning = warning;
 
-        this.waitDialog = null;
-    },
+            this.waitDialog = null;
+        },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $('<a href="#" class="delete-button">*Delete</a>').appendTo(this.el);
+            this.button = $(`<a
+              href="#"
+              class="delete-button"
+              style="display:inline-flex;"
+            >
+              ${commonText('delete')} 
+            </a>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +
                                  this.model.specifyModel.name.toLowerCase() +
                                  '/' + this.model.id + '/');
@@ -27,9 +35,14 @@ module.exports =  Backbone.View.extend({
         },
         gotBlockers: function(blockers) {
             this.blockers = blockers;
-            if(blockers.length < 1) {
-                this.button.text("Delete");
-            }
+            if(blockers.length !== 0)
+              this.button[0].innerHTML = `
+                <span
+                  class="ui-icon ui-icon-alert"
+                  style="display: inline-block;"
+                ></span>
+                ${commonText('delete')}
+              `;
         },
         openDialog: function(evt) {
             evt && evt.preventDefault();
@@ -45,9 +58,10 @@ module.exports =  Backbone.View.extend({
         openWaitDialog: function() {
             var _this = this;
             this.waitDialog && this.waitDialog.dialog('close');
-            this.waitDialog = $('<div title="Wait">' +
-                                '<p>Checking if resource can be deleted.</p>' +
-                                '<div class="progress"></div></div>').dialog({
+            this.waitDialog = $(`<div title="Wait">
+                <p>${formsText('checkingIfResourceCanBeDeleted')}</p>
+                <div class="progress"></div>
+            </div>`).dialog({
                                     close: function() { $(this).remove(); _this.waitDialog = null;},
                                     modal: true
                                 });
@@ -56,30 +70,35 @@ module.exports =  Backbone.View.extend({
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            $(template({warning: this.warning})).dialog({
+            $(`<div><p>
+                ${formsText('deleteConfirmationDialogHeader')}
+                ${this.warning ?? formsText('deleteConfirmationDialogMessage')}
+            </p></div>`).dialog({
+                title: formsText('deleteConfirmationDialogTitle'),
                 resizable: false,
                 close: function() { $(this).remove(); },
                 modal: true,
                 buttons: {
-                    'Delete': function() {
+                    [commonText('delete')]: function() {
                         doDelete();
                         $(this).dialog('close');
                     },
-                    'Cancel': function() {
+                    [commonText('cancel')]: function() {
                         $(this).dialog('close');
                     }
                 }
             });
         },
         openBlockedDialog: function() {
-            var dialog = $('<div title="Delete Blocked">' +
-                           '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
-                           'The resource cannot be deleted because it is referenced through the following fields:</p>' +
-                           '<ul></ul></div>').dialog({
-                               close: function() { $(this).remove(); },
-                               modal: true
-                           });
-            var model = this.model.specifyModel;
+            var dialog = $(`<div title="Delete Blocked">
+               ${formsText('deleteBlockedDialogHeader')}
+               <p>${formsText('deleteBlockedDialogMessage')}</p>
+               <ul></ul>
+            </div>`).dialog({
+               title: formsText('deleteBlockedDialogTitle'),
+               close: function() { $(this).remove(); },
+               modal: true
+            });
             var lis = _.map(this.blockers, function(field) {
                 return $('<li>').text(field)[0];
             });

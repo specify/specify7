@@ -9,6 +9,8 @@ var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -20,7 +22,7 @@ var NO_ADD_ANOTHER = [
     'RepositoryAgreement'
 ];
 
-module.exports =  Backbone.View.extend({
+const ResourceView = Backbone.View.extend({
     __name__: "ResourceView",
     // triggered events = {
     //   saved(this.model, options),
@@ -81,6 +83,7 @@ module.exports =  Backbone.View.extend({
         var self = this;
         self.$el.empty();
         self.header = self.options.noHeader ? null : $(viewheader({
+            formsText,
             viewTitle: self.model.specifyModel.getLocalizedName(),
             recordsetInfo: self.recordsetInfo,
             recordsetName: self.recordSet && self.recordSet.get('name'),
@@ -88,6 +91,7 @@ module.exports =  Backbone.View.extend({
             nextUrl: self.next && self.next.viewUrl(),
             newUrl: self.newUrl
         }));
+
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
         specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
             self.populateForm(form, self.model);
@@ -103,16 +107,22 @@ module.exports =  Backbone.View.extend({
         }).fail(function(jqXHR) {
             if (jqXHR.status !== 404) return;
             jqXHR.errorHandled = true;
-            self.$el.append('<h1>Missing form definition</h1>' +
-                            '<p>Specify was unable to find the form definition ' +
-                            'to display this resource.</p>');
+            self.$el.append(`
+                <h1>${formsText('missingFormDefinitionPageHeader')}</h1
+                <p>${formsText('missingFormDefinitionPageContent')}</p>
+            `);
         });
+
+        ResourceView.trigger('rendered', self);
         return self;
     },
     setTitle: function () {
         var self = this;
-        var title = (self.model.isNew() ? 'New ' : '') +
-                self.model.specifyModel.getLocalizedName();
+
+        const resourceLabel = self.model.specifyModel.getLocalizedName();
+        var title = self.model.isNew() ?
+          commonText('newResourceTitle')(resourceLabel) :
+          resourceLabel;
 
         self.setFormTitle(title);
         self.trigger('changetitle', self, title);
@@ -125,7 +135,7 @@ module.exports =  Backbone.View.extend({
         });
     },
     setFormTitle: function(title) {
-        this.header && this.header.find('.view-title').text(title);
+        this.$el.is(':ui-dialog') && this.$el.dialog('option','title',title);
     },
     saved: function(options) {
         this.trigger('saved', this.model, options);
@@ -135,3 +145,6 @@ module.exports =  Backbone.View.extend({
     }
 });
 
+_.extend(ResourceView, Backbone.Events);
+
+module.exports = ResourceView;

@@ -9,6 +9,7 @@ var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
 var ToolTipMgr    = require('./tooltipmgr.js');
 var saveblockers  = require('./saveblockers.js');
+const formsText = require('./localization/forms').default;
 
     var precisions = ['full', 'month-year', 'year'];
 
@@ -24,9 +25,13 @@ module.exports =  UIPlugin.extend({
         render: function() {
             var init = this.init;
             var disabled = this.$el.prop('disabled');
-            var ui = $(template());
+            var ui = $(template({formsText}));
             var select = ui.find('select');
             select.prop('id', this.$el.prop('id'));
+
+            if (this.model.isNew() && ("" + this.$el.data('specify-default')).toLowerCase() === 'today')  {
+                this.model.set(init.df.toLowerCase(), moment().format('YYYY-MM-DD'));
+            }
 
             this.$el.replaceWith(ui);
             this.setElement(ui);
@@ -114,13 +119,13 @@ module.exports =  UIPlugin.extend({
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
             } else {
                 this.model.saveBlockers.add('invaliddate:' + this.init.df, this.init.df,
-                                            invalidMessage || "Invalid date");
+                                            invalidMessage || formsText('invalidDate'));
             }
         },
         updateFullDate: function() {
             var val = this.$('input.partialdateui-full').val().trim() || null;
             var m = val && moment(val, dateFormatStr(), true);
-            this.updateIfValid(m, "Required Format: " + dateFormatStr());
+            this.updateIfValid(m, formsText('requiredFormat')(dateFormatStr()));
         },
         updateMonth: function() {
             var orig = this.model.get(this.init.df);

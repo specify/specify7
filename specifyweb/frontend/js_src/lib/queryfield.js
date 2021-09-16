@@ -9,6 +9,8 @@ var schema            = require('./schema.js');
 var domain            = require('./domain.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var QueryFieldInputUI = require('./queryfieldinput.js');
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -66,7 +68,7 @@ module.exports =  Backbone.View.extend({
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
-            this.$el.append(template({cid: this.cid}));
+            this.$el.append(template({commonText, queryText, cid: this.cid}));
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 
@@ -178,7 +180,9 @@ module.exports =  Backbone.View.extend({
             }
 
             this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon());
-            var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
+            var fieldSelect = this.$('.field-select').empty().append(
+                `<option>${queryText('selectFields')}</option>`
+            );
 
             if (this.fieldSpec.joinPath.length > 0) {
                 var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
@@ -214,7 +218,7 @@ module.exports =  Backbone.View.extend({
                         .appendTo(optGroup);
                     if (item.specifyModel.name == 'TaxonTreeDefItem') {
                         $('<option>', {value: 'treerank-' + item.get('name') + ' Author'})
-                            .text(item.get('name') + ' Author')
+                            .text(queryText('treeRankAuthor')(item.get('name')))
                             .appendTo(optGroup);
                     }
                 });
@@ -222,8 +226,8 @@ module.exports =  Backbone.View.extend({
         },
         setupOperationState: function() {
             var opSelect = this.$('.op-type').empty()
-                    .append('<option>Select Op...</option>')
-                    .append('<option value="anything">(any)</option>');
+                    .append(`<option>${queryText('selectOp')}</option>`)
+                    .append(`<option value="anything">${queryText('any')}</option>`);
             var type = this.getTypeForOp();
             _.chain(QueryFieldInputUI)
                 .filter(function(ui) { return _(ui.prototype.types).contains(type); })

@@ -15,12 +15,12 @@ var QueryResultsTable  = require('./queryresultstable.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var QuerySaveDialog    = require('./querysavedialog.js');
 var router             = require('./router.js');
-
-    var setTitle = app.setTitle;
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
-        className: "query-view",
+        className: "query-view content-shadow-full-width",
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
@@ -39,8 +39,8 @@ var router             = require('./router.js');
         },
         render: function() {
             var title = 'Query: ' + this.query.get('name');
-            setTitle(title);
-            this.$el.append(template({ cid: this.cid }));
+            app.setTitle(queryText('queryTaskTitle')(this.query.get('name')));
+            this.$el.append(template({ queryText, commonText, cid: this.cid }));
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
@@ -62,8 +62,8 @@ var router             = require('./router.js');
             //only visible for spauditlog queries
             this.$('input[name="formatAudits"]').prop('hidden', this.query.get('contexttableid') != 530);
             this.$('label[name="formatAuditsLabel"]').prop('hidden', this.query.get('contexttableid') != 530);
-            
-            
+
+
             return this;
         },
         gotFields: function(spqueryfields) {
@@ -101,15 +101,16 @@ var router             = require('./router.js');
                 return;
             }
 
-            const dialog = $(
-                `<div>There are uncompleted fields in the query definition. Do you want to remove them?</div>`
-            ).dialog({
-                title: 'Incomplete fields',
+            const dialog = $(`<div>
+                ${queryText('queryDeleteIncompleteDialogHeader')}
+                ${queryText('queryDeleteIncompleteDialogMessage')}
+            </div>`).dialog({
+                title: queryText('queryDeleteIncompleteDialogTitle'),
                 modal: true,
                 close(){ $(this).remove(); },
                 buttons: {
-                    Remove() { doIt(); },
-                    Cancel() { $(this).dialog('close'); }
+                    [commonText('remove')]() { doIt(); },
+                    [commonText('cancel')]() { $(this).dialog('close'); }
                 }
             });
 
@@ -121,7 +122,10 @@ var router             = require('./router.js');
         },
         saveRequired: function() {
             this.$('.abandon-changes, .query-save').prop('disabled', false);
-            navigation.addUnloadProtect(this, "This query definition has not been saved.");
+            navigation.addUnloadProtect(
+                this,
+                queryText('queryUnloadProtectDialogMessage')
+            );
         },
         abandonChanges: function() {
             navigation.removeUnloadProtect(this);
@@ -165,13 +169,16 @@ var router             = require('./router.js');
         makeRecordSet_: function() {
             if (this.fieldUIs.length < 1) return;
 
-            var dialog = $('<div title="Record Set from Query">' +
-                           '<p>Generating record set.</p><div class="progress" />' +
-                           '</div>').dialog({
-                               modal: true,
-                               autoOpen: false,
-                               close: function() { $(this).remove(); }
-                           });
+            var dialog = $(`<div>
+                ${queryText('recordSetToQueryDialogHeader')}
+                <p>${queryText('recordSetToQueryDialogMessage')}</p>
+                <div class="progress" />
+            </div>`).dialog({
+                title: queryText('recordSetToQueryDialogTitle'),
+                modal: true,
+                autoOpen: false,
+                close: function() { $(this).remove(); }
+            });
             $('.progress', dialog).progressbar({ value: false });
 
             var recordset = new schema.models.RecordSet.Resource();
@@ -181,12 +188,16 @@ var router             = require('./router.js');
             new EditResourceDialog({resource: recordset}).render()
                 .on('saving', function() { dialog.dialog('open'); })
                 .on('savecomplete', function() {
-                    dialog.html('<p>Go to newly created record set now?</p>')
+                    dialog.html(`
+                        ${queryText('recordSetCreatedDialogHeader')}
+                        <p>${queryText('recordSetCreatedDialogMessage')}</p>
+                    `)
+                        .dialog('option','title', queryText('recordSetCreatedDialogTitle'))
                         .dialog('option', 'buttons', [
-                            {text: "Yes", click: function() {
+                            {text: commonText('no'), click: function() { $(this).dialog('close'); }},
+                            {text: commonText('open'), click: function() {
                                 navigation.go('/specify/recordset/' + recordset.id + '/');
                             }},
-                            {text: "No", click: function() { $(this).dialog('close'); }}
                         ]);
                 });
         },
@@ -208,17 +219,20 @@ var router             = require('./router.js');
             });
             return (lat && lng) || (latt && lngt);;
         },
-        
+
         searchDownload: function(evt) {
             this.$('.query-execute, .query-csv, .query-kml').blur();
             var cls = $(evt.currentTarget).attr('class');
             var postUrl = '/stored_query/' + (cls == 'query-csv' ? 'exportcsv' : 'exportkml') + '/';
             var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
             if (fileDesc == 'KML' && !this.hasGeoCoords()) {
-                $('<div title="Unable to Export">Please add latitude and longitude fields to the query. ' +
-                  '</div>').dialog({
-                      modal: true,
-                      close: function() { $(this).remove(); }
+                $(`<div>
+                    ${queryText('unableToExportAsKmlDialogHeader')}
+                    ${queryText('unableToExportAsKmlDialogMessage')}
+                </div>`).dialog({
+                    title: queryText('unableToExportAsKmlDialogTitle'),
+                    modal: true,
+                    close: function() { $(this).remove(); }
                   });
                 return;
             }
@@ -243,17 +257,22 @@ var router             = require('./router.js');
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
                 $.post(postUrl, JSON.stringify(this.query));
-                $('<div title="Query Started">The query has begun executing. ' +
-                  'You will receive a notification when the results ' + fileDesc + ' file ' +
-                  'is ready for download.' +
-                  '</div>').dialog({
-                      modal: true,
-                      close: function() { $(this).remove(); }
-                  });
+                const dialog = $(`<div>
+                    ${queryText('queryExportStartedDialogHeader')}
+                    ${queryText('queryExportStartedDialogMessage')(fileDesc)}
+                </div>`).dialog({
+                    title: queryText('queryExportStartedDialogTitle'),
+                    modal: false,
+                    close: function() { $(this).remove(); },
+                    buttons: [{
+                        text: commonText('close'),
+                        click: ()=>dialog.dialog('close')
+                    }]
+                });
             });
-            
+
         },
-        
+
         search_: function() {
             if (this.fieldUIs.length < 1) return;
 
@@ -261,7 +280,7 @@ var router             = require('./router.js');
 
             this.results = new QueryResultsTable({
                 model: this.model,
-                scrollOnWindow: true,
+                scrollElement: this.$el.parent('#content'),
                 countOnly: this.query.get('countonly'),
                 format: this.query.get('formatauditrecids'),
                 fetchResults: this.fetchResults(),

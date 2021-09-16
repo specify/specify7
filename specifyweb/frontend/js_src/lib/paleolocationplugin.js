@@ -5,6 +5,7 @@ const $ = require('jquery');
 const UIPlugin = require('./uiplugin.js');
 const template = require('./templates/pmapplugin.html');
 const Q = require('q');
+const formsText = require('./localization/forms').default;
 
 module.exports = UIPlugin.extend({
     __name__: "PaleolocationMapPlugin",
@@ -12,7 +13,7 @@ module.exports = UIPlugin.extend({
         'click': 'click'
     },
     render: function () {
-        this.$el.attr('value', 'Paleo Map').prop('disabled', false);
+        this.$el.attr('value', formsText('paleoMap')).prop('disabled', false);
         return this;
     },
     click: function (evt) {
@@ -22,12 +23,14 @@ module.exports = UIPlugin.extend({
         }.bind(this));
     },
     paleoRequired: function () {
-        $('<div title="Geography Required">' +
-            '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
-            'The Paleo Map plugin requires that the locality have geographic coordinates and that the paleo ' +
-            'context have a geographic age with at least a start time or and end time populated.' +
-            '</p></div>'
-        ).dialog({
+        $(`<div>
+            <p>
+                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                ${formsText('paleoRequiresGeographyDialogHeader')}
+                ${formsText('paleoRequiresGeographyDialogMessage')}
+            </p>
+        </div>`).dialog({
+            title: formsText('paleoRequiresGeographyDialogTitle'),
             close: function () {
                 $(this).remove();
             }
@@ -36,12 +39,15 @@ module.exports = UIPlugin.extend({
     openPaleoMap: function (data) {
         const form = this.model.specifyModel.getLocalizedName();
         if (data == null) {
-            $('<div title="No coordinates"><p>' + form + ' must have coordinates and paleo context to be mapped.</p></div>')
-                .dialog({
-                    close: function () {
-                        $(this).remove();
-                    }
-                });
+            $(`<div>
+                ${formsText('noCoordinatesDialogHeader')(form)}
+                <p>${formsText('noCoordinatesDialogMessage')(form)}</p>
+            </div>`).dialog({
+                title: formsText('noCoordinatesDialogTitle'),
+                close: function () {
+                    $(this).remove();
+                }
+            });
         } else {
             $('<div>').append(template(data)).dialog({
                 width: 800,
@@ -70,13 +76,15 @@ module.exports = UIPlugin.extend({
             lat = Q(this.model.rget('collectingevent.locality.latitude1', true));
             lng = Q(this.model.rget('collectingevent.locality.longitude1', true));
         } else {
-            $('<div title="Incorrect Form"><p>This plugin cannot be used on this form. Try moving it to the locality, ' +
-                'collecting event or collection object forms.</p></div>')
-                .dialog({
-                    close: function () {
-                        $(this).remove();
-                    }
-                });
+            $(`<div>
+                ${formsText('unsupportedFormDialogHeader')}
+                <p>${formsText('unsupportedFormDialogMessage')}</p>
+            </div>`).dialog({
+                title: formsText('unsupportedFormDialogTitle'),
+                close: function () {
+                    $(this).remove();
+                }
+            });
         }
 
         // Because the paleo context is related directly to each of the possible forms in the same way

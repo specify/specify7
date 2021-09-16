@@ -13,6 +13,7 @@ var s                 = require('./stringlocalization.js');
 var initialContext    = require('./initialcontext.js');
 var app               = require('./specifyapp.js');
 var querystring       = require('./querystring.js');
+const commonText = require('./localization/common').default;
 
 
     var relatedSearches;
@@ -33,8 +34,16 @@ var querystring       = require('./querystring.js');
             'accordionchange': 'panelOpened'
         },
         render: function() {
-            this.$el.append('<h3>Primary Search</h3><p class="status primary">Running...</p><div class="results primary"></div>');
-            this.$el.append('<h3>Secondary Search</h3><p class="status related">Running...</p><div class="results related"></div>');
+            this.$el.append(`
+                <h3>${commonText('primarySearch')}</h3>
+                <p class="status primary">${commonText('running')}</p>
+                <div class="results primary"></div>
+            `);
+            this.$el.append(`
+                <h3>${commonText('secondarySearch')}</h3>
+                <p class="status related">${commonText('running')}</p>
+                <div class="results related"></div>
+            `);
             this.$('.results').accordion(accordionOptions);
             var query = querystring.deparam().q;
             $('.express-search-query').val(query);
@@ -87,7 +96,7 @@ var querystring       = require('./querystring.js');
 
             whenAll(deferreds).then(function(counts) {
                 var totalCount = _.reduce(counts, (function(a, b) {return a + b;}), 0);
-                totalCount < 1 ? statusEl.text('No Matches') : statusEl.hide();
+                totalCount < 1 ? statusEl.text(commonText('noMatches')) : statusEl.hide();
             });
         },
         showRelatedResults: function(ajaxUrl, data) {
@@ -127,7 +136,7 @@ var querystring       = require('./querystring.js');
 module.exports =  function() {
         router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
-            app.setTitle('Express Search');
+            app.setTitle(commonText('expressSearch'));
         });
     };
 

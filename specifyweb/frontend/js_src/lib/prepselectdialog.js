@@ -11,6 +11,8 @@ var ResourceView = require('./resourceview.js');
 var FieldFormat  = require('./fieldformat.js');
 var PrepDialog   = require('./prepdialog.js');
 var app          = require('./specifyapp.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  PrepDialog.extend({
         __name__: "PrepSelectDialog",
@@ -57,9 +59,6 @@ module.exports =  PrepDialog.extend({
                 + '<th>' + this.getProp('InteractionsTask.Selected', 'Selected') + '</th>'
                 + '<th>' + this.getProp('InteractionsTask.Available', 'Available') + '</th>'
                 + '<th>' + this.getProp('InteractionsTask.Unavailable', 'Unavailable') + '</th></tr>';
-        },
-        getDlgTitle: function() {
-            return "Preparations";
         },
         finishRender: function() {
             var spinners = this.$(".prepselect-amt");
@@ -113,11 +112,11 @@ module.exports =  PrepDialog.extend({
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
                 { text: this.getProp('SELECTALL'), click: _.bind(this.selectAll, this),
-                  title: 'Select all available preparations.' },
+                  title: formsText('selectAllAvailablePreparations') },
                 { text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
-                  title: 'Clear all.' },
-                { text: 'OK', click: _.bind(this.makeInteraction, this),
-                  title: this.options.interactionresource ? 'Add items' : 'Create ' + this.getTextForObjToCreate() }
+                  title: commonText('clearAll') },
+                { text: commonText('apply'), click: _.bind(this.makeInteraction, this),
+                  title: this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.getTextForObjToCreate()) }
             ];
             buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
             return buttons;
@@ -301,7 +300,7 @@ module.exports =  PrepDialog.extend({
 
                 $('<a>', { href: resourceModel.viewUrl() })
                     .addClass('intercept-navigation')
-                    .append('<span class="ui-icon ui-icon-link">link</span>')
+                    .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
                     .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             });
         },

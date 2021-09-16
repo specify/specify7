@@ -3,7 +3,7 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-
+const formsText = require('./localization/forms').default;
 
 module.exports =  Backbone.View.extend({
     __name__: "UIFieldInput",
@@ -21,9 +21,16 @@ module.exports =  Backbone.View.extend({
         this.listInput = options.listInput;
     },
     render: function() {
-        this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
-        this.formatStr && this.$el.attr('placeholder', this.formatStr);
-        this.readOnly && this.$el.prop('readonly', true);
+        this.formatter && this.$el.attr(
+            'title', formsText('formatPopUp')(this.formatter.pattern() || this.formatter.value())
+        );
+        const placeholder = this.formatStr || (this.formatter && this.formatter.pattern());
+        console.log('placeholder', placeholder);
+        placeholder && this.$el.attr('placeholder', placeholder);
+        if(this.readOnly){
+            this.$el.prop('readonly', true);
+            this.$el.prop('tabindex',-1);
+        }
         return this;
     },
     selectAll() {
@@ -50,7 +57,7 @@ module.exports =  Backbone.View.extend({
         this.readOnly || this.trigger("changing");
     },
     validate: function(deferred) {
-        var value = this.$el.val().trim();        
+        var value = this.$el.val().trim();
         if (this.listInput) {
             return this.validateList(value, deferred);
         } else {
@@ -105,7 +112,12 @@ module.exports =  Backbone.View.extend({
         if (this.formatter) {
             var formatterVals = this.formatter.parse(value);
             if (!formatterVals) {
-                throw [this, 'badformat', 'Required format: ' + this.formatter.value(), deferred];
+                throw [
+                    this,
+                    'badformat',
+                    'Required format: ' + (this.formatter.pattern() || this.formatter.value()),
+                    deferred
+                ];
                 return undefined;
             } else {
                 this.trigger('removesaveblocker', 'badformat');

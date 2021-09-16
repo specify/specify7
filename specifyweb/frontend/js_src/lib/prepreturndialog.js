@@ -12,6 +12,8 @@ const fieldFormat = require('./fieldformat.js');
 const userInfo    = require('./userinfo.js');
 const s = require('./stringlocalization.js');
 const QueryCbx = require('./querycbx.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');
@@ -47,7 +49,7 @@ const PrepReturnRow = Backbone.View.extend({
             `<td class="unresolved-count">${unresolved}</td>`,
             `<td><input type="number" value="0" min="0" max="${unresolved}" class="return-amt"></td>`,
             `<td><input type="number" value="0" min="0" max="${unresolved}" class="resolve-amt"></td>`,
-            '<td><a class="return-remark" style="display:none"><span class="ui-icon ui-icon-comment">remarks</span></a></td>'
+            `<td><a class="return-remark" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></a></td>`
         );
 
         $.when(
@@ -195,9 +197,9 @@ module.exports =  Backbone.View.extend({
                 $('<th>').text(schema.models.CollectionObject.getField('catalognumber').getLocalizedName()),
                 $('<th>').text(schema.models.Determination.getField('taxon').getLocalizedName()),
                 $('<th>').text(schema.models.Preparation.getField('preptype').getLocalizedName()),
-                '<th>Unresolved</th>',
-                '<th>Return</th>',
-                '<th colspan="2">Resolve</th>'
+                `<th>${formsText('unresolved')}</th>`,
+                `<th>${formsText('return')}</th>`,
+                `<th colspan="2">${formsText('resolve')}</th>`
             )
         ).append(
             [].concat(...this.prepReturnRows.map(row => [row.render().$el, REMARKSROW]))
@@ -207,17 +209,17 @@ module.exports =  Backbone.View.extend({
             {
                 text: localize('SELECTALL'),
                 click: _.bind(this.selectAll, this),
-                title: 'Return all preparations.'
+                title: formsText('returnAllPreparations')
             },
             {
                 text: localize('DESELECTALL'),
                 click: _.bind(this.deSelectAll, this),
-                title: 'Clear all.'
+                title: commonText('clearAll'),
             },
             {
-                text: 'OK',
+                text: commonText('apply'),
                 click: _.bind(this.returnSelections, this),
-                title: 'Return selected preparations.'
+                title: formsText('returnSelectedPreparations')
             }
         ]).concat({
             text: localize('CANCEL'),

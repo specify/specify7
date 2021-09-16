@@ -4,13 +4,16 @@ import json
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import cache_control
 from django.db.models import Q
+from django.db import transaction
 from django.http import HttpResponse
 from django.conf import settings
+from django.template import loader, Context
 
 from ..specify.views import login_maybe_required
-from ..specify.api import objs_to_data, toJson
-from ..specify.models import Spappresource
-from ..stored_queries.execution import run_ephemeral_query
+from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
+from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
+from ..stored_queries.execution import run_ephemeral_query, models
+from ..stored_queries.queryfield import QueryField
 
 class ReportException(Exception):
     pass
@@ -18,12 +21,16 @@ class ReportException(Exception):
 @require_GET
 @cache_control(max_age=86400, private=True)
 def get_status(request):
+    "Indicates whether a report runner server is available."
     resp = {'available': settings.REPORT_RUNNER_HOST != ''}
     return HttpResponse(toJson(resp), content_type="application/json")
 
 @require_POST
 @login_maybe_required
 def run(request):
+    """Executes the named 'report' using the given 'query' and 'parameters' as POST parameters.
+    Returns the result as a PDF.
+    """
     if settings.REPORT_RUNNER_HOST == '':
         raise ReportException("Report service is not configured.")
 
@@ -48,6 +55,7 @@ def run(request):
 @require_GET
 @login_maybe_required
 def get_reports(request):
+    "Returns a list of available reports and labels."
     reports = Spappresource.objects.filter(
         mimetype__startswith="jrxml",
         spappresourcedir__discipline=request.specify_collection.discipline) \
@@ -58,13 +66,13 @@ def get_reports(request):
             Q(spappresourcedir__specifyuser=request.specify_user) |
             Q(spappresourcedir__ispersonal=False))
 
-
-    data = objs_to_data(reports, limit=100)
+    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
     return HttpResponse(toJson(data), content_type="application/json")
 
 @require_GET
 @login_maybe_required
 def get_reports_by_tbl(request, tbl_id):
+    "Returns a list of availabel reports and labels for the given table <tbl_id>."
     reports = Spappresource.objects.filter(
         mimetype__startswith="jrxml",
         spappresourcedir__discipline=request.specify_collection.discipline) \
@@ -77,8 +85,80 @@ def get_reports_by_tbl(request, tbl_id):
         .filter(
             Q(spreports__query__contexttableid=tbl_id))
 
-    data = objs_to_data(reports, limit=100)
+    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
     return HttpResponse(toJson(data), content_type="application/json")
+
+@require_POST
+@login_maybe_required
+def create(request):
+    report = create_report(
+        request.specify_user.id,
+        request.specify_collection.discipline.id,
+        request.POST['queryid'],
+        request.POST['mimetype'],
+        request.POST['name'],
+    )
+    return HttpResponseCreated(toJson(obj_to_data(report)), content_type="application/json")
+
+@transaction.atomic
+def create_report(user_id, discipline_id, query_id, mimetype, name):
+    assert mimetype in ("jrxml/label", "jrxml/report")
+    query = Spquery.objects.get(id=query_id)
+    try:
+        spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)
+    except Spappresourcedir.DoesNotExist:
+        spappdir = Spappresourcedir.objects.create(discipline_id=discipline_id)
+
+    appresource = spappdir.sppersistedappresources.create(
+        version=0,
+        mimetype=mimetype,
+        level=0,
+        name=name,
+        description=name,
+        specifyuser_id=user_id,
+        metadata="tableid=-1;reporttype=Report;",
+        )
+    appresource.spappresourcedatas.create(
+        version=0,
+        data=template_report_for_query(query_id, name),
+    )
+    return Spreport.objects.create(
+        version=0,
+        name=name,
+        appresource=appresource,
+        query_id=query_id,
+        specifyuser_id=user_id,
+    )
+
+def template_report_for_query(query_id, name):
+    def field_element(field):
+        queryfield = QueryField.from_spqueryfield(field)
+        fieldspec = queryfield.fieldspec
+        field_type = fieldspec.get_field().type
+
+        if field.formatName \
+           or field.isRelFld \
+           or fieldspec.tree_rank \
+           or fieldspec.date_part \
+           or field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date"):
+            field_type = 'java.lang.String'
+
+        return dict(stringid=field.stringId, field_type=field_type)
+
+    with models.session_context() as session:
+        sp_query = session.query(models.SpQuery).get(query_id)
+
+        field_els = [
+            field_element(field)
+            for field in sorted(sp_query.fields, key=lambda field: field.position)
+            if field.isDisplay
+        ]
+
+    template = loader.get_template('report_template.xml')
+    return template.render({
+        'name': name,
+        'fields': field_els
+    })
 
 
 def run_query(collection, user, query_json):

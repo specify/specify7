@@ -4,9 +4,9 @@ var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
 
-var saveblocked = require('./templates/saveblocked.html');
-var conflict = require('./templates/conflict.html');
 const navigation = require('./navigation.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
@@ -40,7 +40,7 @@ module.exports =  Backbone.View.extend({
             this.buttonsDisabled = disabled;
             this.buttons && this.buttons.prop('disabled', disabled);
             if(!disabled) {
-                navigation.addUnloadProtect(this, "This form has not been saved.");
+                navigation.addUnloadProtect(this, formsText('unsavedFormUnloadProtect'));
             } else {
                 navigation.removeUnloadProtect(this);
             }
@@ -62,13 +62,13 @@ module.exports =  Backbone.View.extend({
                 this.$el.append($('<input>', {
                     type: "submit",
                     "class": "save-and-add-button",
-                    value: "Save and Add Another"
+                    value: formsText('saveAndAddAnother')
                 }));
             }
             this.$el.append($('<input>', {
                 type: "submit",
                 "class": "save-button",
-                value: "Save"
+                value: commonText('save')
             }));
             this.buttons = this.$(':submit');
             this.buttons.appendTo(this.el);
@@ -105,18 +105,32 @@ module.exports =  Backbone.View.extend({
                     .fail(function(jqXHR) {
                         if (jqXHR.status === 409) {
                             jqXHR.errorHandled = true;
-                            $(conflict()).dialog({
+                            $(`<div><p>
+                                <span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>
+                                ${formsText('saveConflictDialogHeader')}
+                                ${formsText('saveConflictDialogMessage')}
+                            </p></div>`).dialog({
+                                title: formsText('saveConflictDialogTitle'),
                                 resizable: false,
                                 modal: true,
-                                open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-                                buttons: [{text: "Reload", click: function() {
+                                dialogClass: 'ui-dialog-no-close',
+                                buttons: [{text: commonText('close'), click: function() {
                                     window.location.reload();
                                 }}]
                             });
                         }
                     });
             } else {
-                var dialog = $(saveblocked()).appendTo(this.el).dialog({
+                var dialog = $(`<div>
+                    <p>
+                        <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+                        ${formsText('saveBlockedDialogHeader')}
+                        ${formsText('saveBlockedDialogMessage')} 
+                    </p>
+                    <ul class="saveblockers">
+                    </ul>
+                </div>`).appendTo(this.el).dialog({
+                    title: formsText('saveBlockedDialogTitle'),
                     resizable: false,
                     modal: true,
                     close: function() { return dialog.remove(); }

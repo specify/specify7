@@ -5,6 +5,7 @@ const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
 const moment = require('moment');
+const commonText = require('./localization/common').default;
 
 const Message = Backbone.Model.extend({
     __name__: "NotificationMessage"
@@ -50,30 +51,44 @@ $(document).on('visibilitychange', () => messageCollection.startFetching());
 const renderMessage = {
     'feed-item-updated': message => {
         const filename = message.get('file');
-        const rendered = $('<p>Export feed item updated. <a download></a></p>');
+        const rendered = $(`<p>${commonText('feedItemUpdated')} <a download></a></p>`);
         $('a', rendered).attr('href', '/static/depository/export_feed/' + filename).text(filename);
         return rendered;
     },
     'update-feed-failed': message => {
-        const rendered = $('<p>Export feed update failed. <a download>Exception</a></p>');
+        const rendered = $(`<p>${commonText('updateFeedFailed')} <a download>Exception</a></p>`);
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
     'dwca-export-complete': message => {
-        const rendered = $('<p>DwCA export completed. <a download>Download.</a></p>');
+        const rendered = $(`<p>${commonText('dwcaExportCompleted')} <a download>Download.</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
     'dwca-export-failed': message => {
-        const rendered = $('<p>DwCA export failed. <a download>Exception</a></p>');
+        const rendered = $(`<p>${commonText('dwcaExportFailed')} <a download>Exception</a></p>`);
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
-    'query-export-complete': message => {
-        const rendered = $('<p>Query export to CSV completed. <a download>Download.</a></p>');
+    'query-export-to-csv-complete': message => {
+        const rendered = $(`<p>${commonText('queryExportToCsvCompleted')} <a download>Download.</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
+    'query-export-to-kml-complete': message => {
+        const rendered = $(`<p>${commonText('queryExportToKmlCompleted')} <a download>Download.</a></p>`);
+        $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
+        return rendered;
+    },
+    'dataset-ownership-transferred': message =>
+        $(`<p>
+            ${commonText('dataSetOwnershipTransferred')(
+                `<i>${message.get('previous-owner-name')}</i>`,
+                `<a href="/specify/workbench/${message.get('dataset-id')}/">
+                    <i>"${message.get('dataset-name')}"</i>
+                </a>`
+            )}
+        </p>`),
     default: message => JSON.stringify(message.toJSON())
 };
 
@@ -91,7 +106,7 @@ const MessageView = Backbone.View.extend({
         const time = moment(this.message.get('timestamp')).format('lll');
         this.$el.append(
             `<span>${time}</span>`,
-            '<a class="ui-icon ui-icon-trash" style="float: right;">delete</a>',
+            `<a class="ui-icon ui-icon-trash" style="float: right;">${commonText('delete')}</a>`,
             render(this.message)
         );
         if (!this.message.get('read')) this.$el.addClass('unread-notification');
@@ -141,12 +156,12 @@ module.exports = Backbone.View.extend({
         this.render();
     },
     render() {
-        this.$el.empty().append(`Notifications: ${this.collection.length}`);
-        if (this.collection.filter(m => !m.get('read')).length > 0) {
-            this.$el.addClass('unread-notifications');
-        } else {
-            this.$el.removeClass('unread-notifications');
-        }
+        this.$el.empty().append(commonText('notifications')(this.collection.length));
+
+        const hasNotifications = this.collection.filter(m => !m.get('read')).length > 0;
+        this.el.disabled = this.collection.length === 0;
+        this.el.classList[hasNotifications ? 'add' : 'remove']('unread-notifications');
+
         return this;
     },
     openMessages() {
@@ -155,7 +170,7 @@ module.exports = Backbone.View.extend({
 
         const dialog = this.dialog = new MessageList({collection: this.collection});
         this.dialog.$el.dialog({
-            title: 'Notifications',
+            title: commonText('notificationsDialogTitle'),
             maxHeight: 400,
             position: {my: 'center top', at: 'center bottom', of: this.$el},
             close: () => {

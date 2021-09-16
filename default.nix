@@ -11,5 +11,6 @@ stdenv.mkDerivation rec {
     openssl
     openldap
     cyrus_sasl
+    nodejs
   ];
 }

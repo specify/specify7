@@ -6,8 +6,7 @@ var Backbone  = require('./backbone.js');
 
 var schema     = require('./schema.js');
 var navigation = require('./navigation.js');
-
-    var title = 'Manage Users';
+const commonText = require('./localization/common').default;
 
     var UsersView = Backbone.View.extend({
         __name__: "UsersView",
@@ -20,12 +19,12 @@ var navigation = require('./navigation.js');
             var trs = this.users.map(this.makeItem);
             $('<table>').append(trs).appendTo(this.el);
             this.$el.dialog({
-                title: title,
+                title: commonText('manageUsersDialogTitle'),
                 modal: true,
                 close: function() { $(this).remove(); },
                 buttons: [
-                    {text: 'New', click: function() { navigation.go('view/specifyuser/new/'); }},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    {text: commonText('new'), click: function() { navigation.go('view/specifyuser/new/'); }},
+                    {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
                 ]
             });
             return this;
@@ -50,7 +49,7 @@ var navigation = require('./navigation.js');
 
 module.exports =  {
         task: 'users',
-        title: title,
+        title: commonText('manageUsers'),
         icon: null,
         execute: execute,
         disabled: function(user) { return !user.isadmin; }

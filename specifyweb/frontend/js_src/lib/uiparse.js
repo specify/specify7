@@ -3,6 +3,7 @@
 var $      = require('jquery');
 var _      = require('underscore');
 var moment = require('moment');
+const formsText = require('./localization/forms').default;
 
 var dateFormatStr = require('./dateformat.js');
 
@@ -22,7 +23,7 @@ var dateFormatStr = require('./dateformat.js');
                 break;
             default:
                 result.isValid = false;
-                result.reason = 'Illegal value for Boolean: "' + value + '".';
+                result.reason = formsText('illegalBool')(value);
                 break;
             }
             return result;
@@ -33,7 +34,7 @@ var dateFormatStr = require('./dateformat.js');
 
             if (result.isValid && result.parsed < 0 || result > 255) {
                 result.isValid = false;
-                result.reason = "Value must be between 0 and 255";
+                result.reason = formsText('outOfRange')(0,255);
             }
             return result;
         },
@@ -47,7 +48,7 @@ var dateFormatStr = require('./dateformat.js');
 
             if (_(result.parsed).isNaN()) {
                 result.isValid = false;
-                result.reason = "Not a valid number.";
+                result.reason = formsText('notNumber');
             }
             return result;
         },
@@ -65,10 +66,10 @@ var dateFormatStr = require('./dateformat.js');
 
             if(_(result.parsed).isNaN()) {
                 result.isValid = false;
-                result.reason = "Not a valid integer.";
+                result.reason = formsText('notInteger');
             } else if (!Number.isSafeInteger(result.parsed)) {
                 result.isValid = false;
-                result.reason = `Value must be between ${Number.MIN_SAFE_INTEGER} and ${Number.MAX_SAFE_INTEGER}.`;
+                result.reason = formsText('outOfRange')(Number.MIN_SAFE_INTEGER,Number.MAX_SAFE_INTEGER);
             }
             return result;
         },
@@ -76,9 +77,11 @@ var dateFormatStr = require('./dateformat.js');
         "java.lang.Integer": function(field, value) {
             const result = (parsers["java.lang.Long"])(field, value);
 
-            if (result.isValid && result.parsed < -Math.pow(2,31) || result.parsed >= Math.pow(2,31)) {
+            const minInteger = -Math.pow(2,31);
+            const maxInteger = Math.pow(2,31);
+            if (result.isValid && result.parsed < minInteger || result.parsed >= maxInteger) {
                 result.isValid = false;
-                result.reason = `Value must be between ${-Math.pow(2,31)} and ${Math.pow(2,31)}.`;
+                result.reason = formsText('outOfRange')(minInteger,maxInteger);
             }
             return result;
         },
@@ -86,9 +89,11 @@ var dateFormatStr = require('./dateformat.js');
         "java.lang.Short": function(field, value) {
             var result = (parsers["java.lang.Integer"])(field, value);
 
-            if (result.isValid && result.parsed < -1<<15 || result.parsed >= 1<<15) {
+            const minInteger = -1<<15;
+            const maxInteger = 1<<15;
+            if (result.isValid && (result.parsed < minInteger || result.parsed >= maxInteger)) {
                 result.isValid = false;
-                result.reason = "Value must be between " + (-1<<15) + " and " + (1<<15 - 1) + ".";
+                result.reason = formsText('outOfRange')(minInteger,maxInteger);
             }
             return result;
         },
@@ -102,7 +107,7 @@ var dateFormatStr = require('./dateformat.js');
 
             if (field.length && field.length < result.parsed.length) {
                 result.isValid = false;
-                result.reason = "Value cannot be longer than " + field.length + ".";
+                result.reason = formsText('lengthOverflow')(field.length);
             }
             return result;
         },
@@ -112,13 +117,15 @@ var dateFormatStr = require('./dateformat.js');
         },
 
         "java.sql.Timestamp": function(field, value) {
-            var parsed = moment(value, dateFormatStr(), true);
+            var parsed = ("" + value).toLowerCase() === "today" ?
+                moment() :
+                moment(value, dateFormatStr(), true);
             if (!parsed.isValid()) {
                 return {
                     isValid: false,
                     value: value,
                     parsed: null,
-                    reason: "Required Format: " + dateFormatStr()
+                    reason: formsText('requiredFormat')(dateFormatStr()),
                 };
             } else {
                 return {
@@ -149,7 +156,7 @@ module.exports = function(field, value) {
             return field.isRequired ? {
                 value: value,
                 isValid: false,
-                reason: "Field is required."
+                reason: formsText('requiredField')
             } : {
                 value: value,
                 isValid: true,
@@ -160,7 +167,7 @@ module.exports = function(field, value) {
         return parser ? parser(field, value) : {
             value: value,
             isValid: false,
-            reason: "No parser for type " + field.type
+            reason: formsText('noParser')(field.type),
         };
     };
 

@@ -1,5 +1,5 @@
 # Based on stackoverflow answer from Wolph:
-# http://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
+# https://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
 
 import sqlalchemy
 from sqlalchemy.sql import expression

@@ -1,19 +1,21 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+const $        = require('jquery');
+const _        = require('underscore');
+const Backbone = require('./backbone.js');
 
-var schema                 = require('./schema.js');
-var QueryFieldUI           = require('./queryfield.js');
-var parsespecifyproperties = require('./parsespecifyproperties.js');
-var AttachmentPlugin       = require('./attachmentplugin.js');
-var attachments            = require('./attachments.js');
-var userInfo               = require('./userinfo.js');
+const schema                 = require('./schema.js');
+const QueryFieldUI           = require('./queryfield.js');
+const parsespecifyproperties = require('./parsespecifyproperties.js');
+const AttachmentPlugin       = require('./attachmentplugin.js');
+const attachments            = require('./attachments.js');
+const userInfo               = require('./userinfo.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
-const editReport = require('./editreport.js');
 const csrftoken = require('./csrftoken.js');
 const populateForm = require('./populateform.js');
+const navigation = require('./navigation.js');
 
 var title =  "Reports";
 
@@ -31,7 +33,8 @@ var ReportListDialog = Backbone.View.extend({
     __name__: "ReportListDialog",
     className: "reports-dialog table-list-dialog",
     events: {
-        'click a': 'getReportUI'
+        'click a.select': 'getReportUI',
+        'click a.edit': 'editReport',
     },
     initialize: function(options) {
         var appResources = this.options.appResources;
@@ -52,7 +55,7 @@ var ReportListDialog = Backbone.View.extend({
             if (appResources.length == 1) {
                 this.getReport(appResources.models[0], getReportParams);
             } else if (appResources.length == 0) {
-                alert("No reports are available for this table."); //currently safe to assume a tableid was provided.
+                alert(formsText('noReportsAvailable')); //currently safe to assume a tableid was provided.
             }
         }
         function byType(type) {
@@ -71,18 +74,28 @@ var ReportListDialog = Backbone.View.extend({
             reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
             labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
 
-            this.$el
-                .append("<h2>Reports</h2>").append(reports)
-                .append("<h2>Labels</h2>").append(labels);
+            if(this.reports.length === 0)
+                reports.append(`<p>${commonText('noResults')}</p>`);
 
-            this.options.appResources.isComplete() || this.$el.append('<p>(list truncated)</p>');
+            if(this.labels.length === 0)
+                labels.append(`<p>${commonText('noResults')}</p>`);
+
+            this.$el
+                .append(`<h2>${commonText('reports')}</h2>`).append(reports)
+                .append(`<h2>${commonText('labels')}</h2>`).append(labels);
+
+            if(!this.options.appResources.isComplete())
+                this.$el.append(`<p>${commonText('listTruncated')}</p>`);
 
             makeDialog(this.$el, {
                 title: title,
                 maxHeight: 400,
-                buttons: [
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ],
+                buttons: [{
+                    text: commonText('close'),
+                    click: function() {
+                        $(this).dialog('close');
+                    }
+                }],
                 done: this.options.done
             });
         } else {
@@ -99,14 +112,19 @@ var ReportListDialog = Backbone.View.extend({
                 .data('resource', appResource)
                 .append($('<td>').append(img), $('<td>').append(a));
 
-        this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
+        if(!this.options.readOnly)
+            entry.append(`<a class="edit ui-icon ui-icon-pencil">${commonText('edit')}</a>`);
         return entry;
     },
     getReportUI: function(evt) {
         evt.preventDefault();
         var appResource = $(evt.currentTarget).closest('tr').data('resource');
-        var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
-        this.getReport(appResource, action);
+        this.getReport(appResource, getReportParams);
+    },
+    editReport(evt) {
+        evt.preventDefault();
+        const appResource = $(evt.currentTarget).closest('tr').data('resource');
+        navigation.go(`/specify/appresources/${appResource.id}/`);
     },
     getReport: function(appResource, action) {
         var reports = new schema.models.SpReport.LazyCollection({
@@ -163,25 +181,25 @@ var FixImagesDialog = Backbone.View.extend({
         this.action = options.action;
     },
     render: function() {
-        this.$el.attr('title', "Problems with report")
-            .append('<p>The selected report has the following problems:</p>');
+        this.$el.attr('title', formsText('reportProblemsDialogTitle'))
+            .append(`<p>${formsText('reportsProblemsDialogMessage')}</p>`);
         var badImageExprs = this.imageFixResult.badImageExpressions;
         var missingAttachments = this.imageFixResult.missingAttachments;
         if (badImageExprs.length) {
-            this.$el.append('<b>Bad Image Expressions<b>');
+            this.$el.append(`<b>${formsText('badImageExpressions')}<b>`);
             $('<ul>').appendTo(this.el).append(
                 _.map(badImageExprs, function(e) {return $('<li>').text(e)[0];}));
         }
         if (missingAttachments.length) {
-            this.$el.append('<b>Missing attachments</b>');
+            this.$el.append(`<b>${formsText('missingAttachments')}</b>`);
             $('<ul class="missing-attachments">').appendTo(this.el).append(
                 _.map(missingAttachments, function(f) {
-                    return $('<li>').append($('<a href="#" title="Fix.">').text(f))[0];
+                    return $('<li>').append($(`<a href="#" title="${formsText('fix')}">`).text(f))[0];
                 }));
         }
         makeDialog(this.$el, {
-            buttons: [{text: "Ignore", click: this.ignoreProblems.bind(this)},
-                      {text: "Cancel", click: function() { $(this).dialog('close'); }}]
+            buttons: [{text: commonText('ignore'), click: this.ignoreProblems.bind(this)},
+                      {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}]
         });
         return this;
     },
@@ -195,7 +213,7 @@ var FixImagesDialog = Backbone.View.extend({
         var index = this.$('.missing-attachments a').index(evt.currentTarget);
         var attachmentPlugin = new AttachmentPlugin({populateForm: populateForm});
         makeDialog(attachmentPlugin.render().$el, {
-            title: "Choose file"
+            title: formsText('missingAttachmentsFixDialogTitle')
         });
         attachmentPlugin.on('uploadcomplete', this.uploadComplete.bind(this, index));
     },
@@ -334,10 +352,10 @@ var ReportParametersDialog = Backbone.View.extend({
         });
         $('<table>').append(rows).appendTo(this.el);
         makeDialog(this.$el, {
-            title: "Report Parameters",
+            title: formsText('reportParameters'),
             buttons: [
-                {text: 'Ok', click: this.done.bind(this)},
-                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                {text: commonText('save'), click: this.done.bind(this)},
+                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
             ]
         });
         return this;
@@ -363,10 +381,10 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         var table = $('<table>');
         table.append.apply(table, this.recordSets.map(this.dialogEntry, this));
         this.recordSets.isComplete() ||
-            table.append('<tr><td></td><td>(list truncated)</td></tr>');
+            table.append(`<tr><td></td><td>${commonText('listTruncated')}</td></tr>`);
         this.$el.append(table);
         makeDialog(this.$el, {
-            title: "From Record Set",
+            title: formsText('labelFromRecordSetDialogTitle'),
             maxHeight: 400,
             buttons: this.dialogButtons()
         });
@@ -388,11 +406,11 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         return entry;
     },
     dialogButtons: function() {
-        var buttons = [{ text: 'Cancel', click: function() { $(this).dialog('close'); }}];
+        var buttons = [{ text: commonText('cancel'), click: function() { $(this).dialog('close'); }}];
         var reportResources = this.reportResources;
         if (reportResources.query) {
             buttons.unshift({
-                text: 'Query',
+                text: commonText('cancel'),
                 click: function() {
                     new QueryParamsDialog({reportResources: reportResources}).render();
                 }
@@ -440,8 +458,8 @@ var QueryParamsDialog = Backbone.View.extend({
             width: 800,
             position: { my: "top", at: "top+20", of: $('body') },
             buttons: [
-                {text: "Run", click: this.runReport.bind(this)},
-                {text: "Cancel", click: function() { $(this).dialog('close'); }}
+                {text: formsText('runReport'), click: this.runReport.bind(this)},
+                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
             ]
         });
         var ul = this.$('ul');
@@ -499,13 +517,8 @@ function fixupImages(reportXML) {
         if ($(this).hasClass('java.net.URL')) return;
 
         var imageExpression = $(this).text();
-        if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
-        if (imageExpression.match(/^new\s*java\.net\.URL\s*\(\s*"http:\/\//)) return;
         var match = imageExpression.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/);
-        if (!match) {
-            badImageExpressions.push(imageExpression);
-            $(this).text(badImageUrl);
-        } else {
+        if (match) {
             filenames[match[1]] ? filenames[match[1]].push($(this)) : (filenames[match[1]] = [$(this)]);
         }
     });

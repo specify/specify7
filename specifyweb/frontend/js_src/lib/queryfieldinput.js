@@ -10,6 +10,7 @@ var uiparse      = require('./uiparse.js');
 var UIFieldInput = require('./uiinputfield.js');
 var saveblockers = require('./saveblockers.js');
 var ToolTipMgr   = require('./tooltipmgr.js');
+const queryText = require('./localization/query').default;
 
     var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
     var stringParser = uiparse.bind(null, {type: 'java.lang.String'});
@@ -95,14 +96,12 @@ var ToolTipMgr   = require('./tooltipmgr.js');
         }
     };
 
-    var ADD_VALUES_HINT = "Add values one by one, or as comma-separated list:";
-
     var In = {
         events: {
             'keydown input': 'keydown'
         },
         opName: 'In', negation: 'Not In', types: ['strings', 'numbers', 'catnos'], listInput: true,
-        input: '<span class="in-values">' + ADD_VALUES_HINT + '</span> <input type="text">', format: true,
+        input: '<span class="in-values">' + queryText('addValuesHint') + '</span> <input type="text">', format: true,
         getValue: function() {
             return this.values.join(',');
         },
@@ -116,7 +115,7 @@ var ToolTipMgr   = require('./tooltipmgr.js');
             this.trigger('changed', this, this.getValue());
         },
         renderValues: function() {
-            var text = this.values.length ? this.values.join(', ') : ADD_VALUES_HINT;
+            var text = this.values.length ? this.values.join(', ') : queryText('addValuesHint');
             this.$('.in-values').text(text);
         },
         keydown: function(event) {

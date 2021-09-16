@@ -1,6 +1,7 @@
 "use strict";
 
 var $ = require('jquery');
+const commonText = require('./localization/common').default;
 
     var dialog = null;
 
@@ -12,19 +13,22 @@ var $ = require('jquery');
             generate( $('input', this).val() );
         };
 
-        dialog = $('<div title="Generate Master Key">\n' +
-                   '<form>\n' +
-                   '<label>User Password:</label>\n' +
-                   '<input type="password">\n' +
-                   '<input type="submit" style="display: none;">\n' +
-                   '</form>\n' +
-                   '</div>').dialog({
-                       modal: true,
-                       close: function() { $(this).remove(); dialog = null;},
-                       buttons: [
-                           {text: 'Generate', click: callGenerate},
-                           {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                       ]});
+        dialog = $(`<div>
+            ${commonText('generateMasterKeyDialogHeader')}
+            <form>
+                <label>${commonText('userPassword')}</label>
+                <input type="password">
+                <input type="submit" style="display: none;">
+            </form>
+        </div>`).dialog({
+            title: commonText('generateMasterKeyDialogTitle'),
+            modal: true,
+            close: function() { $(this).remove(); dialog = null;},
+            buttons: [
+                {text: commonText('generate'), click: callGenerate},
+                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
+            ]
+        });
         $('input', dialog).focus();
         $('form', dialog).submit(callGenerate);
     }
@@ -37,29 +41,32 @@ var $ = require('jquery');
 
     function gotKey(masterKey) {
         dialog.dialog('close');
-        dialog = $('<div title="Master Key">\n' +
-                   '<label>Master Key:</label>\n' +
-                   '<input type="text" size="60" readonly>\n' +
-                   '</div>').dialog({
-                       modal: true,
-                       width: 'auto',
-                       close: function() { $(this).remove(); dialog = null; },
-                       buttons: [
-                           {text: 'Done', click: function() { $(this).dialog('close'); }}
-                       ]});
+        dialog = $(`<div>
+            ${commonText('masterKeyDialogHeader')}
+            <label>${commonText('masterKeyFieldLabel')}</label>
+            <input type="text" size="60" readonly>
+        </div>`).dialog({
+            title: commonText('masterKeyDialogTitle'),
+            modal: true,
+            width: 'auto',
+            close: function() { $(this).remove(); dialog = null; },
+            buttons: [
+                {text: commonText('close'), click: function() { $(this).dialog('close'); }}
+            ]
+        });
         dialog.find('input').val(masterKey).focus().select();
     }
 
     function requestFailed(jqXHR) {
         if (jqXHR.status == 403) {
-            alert("Password was incorrect.");
+            alert(commonText('incorrectPassword'));
             jqXHR.errorHandled = true;
         }
     }
 
 module.exports =  {
         task: 'masterkey',
-        title: 'Generate Master Key',
+        title: commonText('generateMasterKey'),
         icon: null,
         execute: execute
     };

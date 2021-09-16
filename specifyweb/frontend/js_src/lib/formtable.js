@@ -11,10 +11,30 @@ var SaveButton   = require('./savebutton.js');
 var DeleteButton = require('./deletebutton.js');
 var assert       = require('./assert.js');
 var subviewheader = require('./templates/subviewheader.html');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
-    var CONTRACT = '<td class="contract"><a title="Contract."><span class="ui-icon ui-icon-triangle-1-s">contract</span></a></td>';
-    var EXPAND = '<td class="expand"><a title="Expand."><span class="ui-icon ui-icon-triangle-1-e">expand</span></a></td>';
-    var REMOVE = '<td class="remove"><a title="Remove."><span class="ui-icon ui-icon-trash">remove</span></a></td>';
+    var CONTRACT = `<td class="contract">
+        <a title="${formsText('contract')}">
+            <span class="ui-icon ui-icon-triangle-1-s">
+                ${formsText('contract')}
+            </span>
+        </a>
+    </td>`;
+    var EXPAND = `<td class="expand">
+        <a title="${formsText('expand')}">
+            <span class="ui-icon ui-icon-triangle-1-e">
+                ${formsText('expand')}
+            </span>
+        </a>
+    </td>`;
+    var REMOVE = `<td class="remove">
+        <a title="${commonText('remove')}">
+            <span class="ui-icon ui-icon-trash">
+                ${commonText('remove')}
+            </span>
+        </a>
+    </td>`;
 
     function prepForm(formIn, readOnly) {
         let form = formIn.clone();
@@ -82,7 +102,7 @@ module.exports =  Backbone.View.extend({
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
-            this.collection.on('add remove distroy', this.reRender, this);
+            this.collection.on('add remove destroy', this.reRender, this);
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
         },
@@ -110,6 +130,8 @@ module.exports =  Backbone.View.extend({
             this.lastRender = this.collection.pluck('cid');
 
             var header = $(subviewheader({
+                formsText,
+                commonText,
                 title: this.title,
                 dependent: this.field.isDependent()
             }));
@@ -144,6 +166,8 @@ module.exports =  Backbone.View.extend({
                 if (this.added === resource) {
                     row.expand();
                     this.added = null;
+                } else if (resource.isNew()) {
+                    row.expand();
                 }
             }, this);
         },

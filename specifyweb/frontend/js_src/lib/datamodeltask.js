@@ -9,10 +9,12 @@ var schema = require('./schema.js');
 var router = require('./router.js');
 var app    = require('./specifyapp.js');
 
+const formsText = require('./localization/forms').default;
+
 const SchemaView = Backbone.View.extend({
     __name__: "SchemaView",
     render: function() {
-        this.$el.append('<h2>Specify Schema</h2>');
+        this.$el.append(`<h2>${formsText('specifySchema')}</h2>`);
         const rows = _.map(
             schema.models, model => $('<tr>').append($('<td>').append(
                 $(`<a class="intercept-navigation" href="${model.name.toLowerCase()}/">`).text(model.name)

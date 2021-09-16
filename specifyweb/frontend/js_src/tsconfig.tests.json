@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./testBuild",
+    "sourceMap": false,
+    "target": "es2020"
+  }
+}

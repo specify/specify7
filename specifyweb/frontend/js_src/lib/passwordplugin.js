@@ -5,6 +5,8 @@ var Backbone = require('./backbone.js');
 
 var UIPlugin = require('./uiplugin.js');
 var template = require('./templates/passwordchange.html');
+const commonText = require('./localization/common').default;
+const adminText = require('./localization/admin').default;
 
     var Dialog = Backbone.View.extend({
         __name__: "PasswordResetDialog",
@@ -12,15 +14,15 @@ var template = require('./templates/passwordchange.html');
             'submit form' : 'submit'
         },
         render: function() {
-            this.$el.attr('title', "Set Password");
-            this.$el.append(template());
+            this.$el.attr('title', adminText('setPassword'));
+            this.$el.append(template({adminText}));
             this.$el.dialog({
                 modal: true,
                 width: 'auto',
                 close: function() { $(this).remove(); },
                 buttons: [
-                    {text: 'Set', click: this.submit.bind(this)},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    {text: commonText('apply'), click: this.submit.bind(this)},
+                    {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
                 ]
             });
             return this;
@@ -31,11 +33,11 @@ var template = require('./templates/passwordchange.html');
             var pass2 = this.$('input[name="pass2"]').val();
 
             if (pass1.length < 6) {
-                alert("Password must have at least six characters.");
+                alert(adminText('passwordLengthError'));
                 return;
             }
             if (pass1 !== pass2) {
-                alert("Passwords do not match.");
+                alert(adminText('passwordsDoNotMatchError'));
                 return;
             }
             $.post('/api/set_password/' + this.model.id + '/', {password: pass1});
@@ -49,8 +51,12 @@ module.exports =  UIPlugin.extend({
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', 'Set Password');
-            this.model.isNew() && this.$el.attr('title', 'Save user before setting password.').prop('disabled', true);
+            this.$el.attr('value', adminText('setPassword'));
+            if(this.model.isNew())
+                this.$el.attr(
+                  'title',
+                  adminText('saveUserBeforeSettingPasswordError')
+                ).prop('disabled', true);
             return this;
         },
         click: function(event) {

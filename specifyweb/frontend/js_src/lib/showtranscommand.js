@@ -6,6 +6,8 @@ var Backbone = require('./backbone.js');
 
 var UICmd = require('./uicommand.js');
 var schema = require('./schema.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 var title =  "Transactions";
 
@@ -47,16 +49,16 @@ var TransListDialog = Backbone.View.extend({
         exchanges && _.map(this.options.exchanges.models, this.makeEntry.bind(this, exchanges, 'exchange', 'exchangeoutnumber'));
 
         this.$el
-            .append("<h2>Open Loans</h2>").append(openLoans || ' (none) ')
-            .append("<h2>Resolved Loans</h2>").append(resolvedLoans || ' (none) ')
-            .append("<h2>Gifts</h2>").append(gifts || ' (none) ');
-        exchanges && this.$el.append("<h2>Exchanges</h2>").append(exchanges);
+            .append(`<h2>${formsText('openLoans')}</h2>`).append(openLoans || ' (none) ')
+            .append(`<h2>${formsText('resolvedLoans')}</h2>`).append(resolvedLoans || ' (none) ')
+            .append(`<h2>${formsText('gifts')}</h2>`).append(gifts || ' (none) ');
+        exchanges && this.$el.append(`<h2>${formsText('exchanges')}</h2>`).append(exchanges);
 
         makeDialog(this.$el, {
             title: title,
             maxHeight: 400,
             buttons: [
-                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
             ]
         });
         return this;

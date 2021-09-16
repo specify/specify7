@@ -6,7 +6,7 @@ The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
 https://specifysoftware.org
 
-Specify 7 Copyright © 2020 Specify Collections Consortium. Specify
+Specify 7 Copyright © 2021 Specify Collections Consortium. Specify
 comes with ABSOLUTELY NO WARRANTY.  This is free software licensed
 under GNU General Public License 2 (GPL2).
 
@@ -18,27 +18,96 @@ under GNU General Public License 2 (GPL2).
 
 ## Table of Contents
 
-   * [Specify 7](#specify-7)
-      * [Table of Contents](#table-of-contents)
+* [Specify 7](#specify-7)
+   * [Table of Contents](#table-of-contents)
+   * [Release notes](#release-notes)
+      * [7.6.0 (16 September 2021)](#760-16-september-2021)
+   * [Docker installation](#docker-installation)
    * [Installation](#installation)
-      * [Installation with Docker](#installation-with-docker)
-      * [Ordinary installation](#ordinary-installation)
-         * [Installing system dependencies](#installing-system-dependencies)
-         * [Installing Specify 6](#installing-specify-6)
-         * [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
-         * [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
-         * [Building](#building)
-         * [Adjusting settings files](#adjusting-settings-files)
-         * [Turning on debugging](#turning-on-debugging)
-         * [The development server](#the-development-server)
-      * [Deployment to production](#deployment-to-production)
-         * [Installing production requirements](#installing-production-requirements)
-         * [Setting up Apache](#setting-up-apache)
-         * [Restarting Apache](#restarting-apache)
+      * [Installing system dependencies](#installing-system-dependencies)
+      * [Installing Specify 6](#installing-specify-6)
+      * [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
+      * [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
+      * [Building](#building)
+      * [Adjusting settings files](#adjusting-settings-files)
+      * [Turning on debugging](#turning-on-debugging)
+      * [The development server](#the-development-server)
+      * [The Specify 7 worker](#the-specify-7-worker)
+      * [Installing production requirements](#installing-production-requirements)
+      * [Setting up Apache](#setting-up-apache)
+      * [Restarting Apache](#restarting-apache)
    * [Updating Specify 7](#updating-specify-7)
    * [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
 
-# Installation
+## Release notes
+### 7.6.0 (16 September 2021)
+This Specify 7.6.0 update is being released simultaneously with
+Specify 6.8.01. Both platforms require a database schema update for
+existing Specify 6 and 7 installations. The new Specify database
+schema is v2.9 updated from current production v2.7 (v2.8 skipped).
+
+Here is the GitHub list of user-facing software issues (except for the
+WorkBench) fixed or enhanced in this release: [Issues Fixed in the
+Specify 7.6.0 Release](https://github.com/specify/specify7/issues?q=is%3Aissue+milestone%3A7.6.0+label%3Afor-release-notes).
+
+See: [Specify Schema Update (v2.9): Additions, Changes, Virtual
+Fields](https://www.specifysoftware.org/wp-content/uploads/2021/09/Specify-Schema-Update-v2.9-15-Sep-2021.pdf)
+for a list of the data tables and fields added and changed in the
+Specify v2.9 schema update, as well as new virtual, calculated fields
+outside of the schema.
+
+The highlight of this Specify 7 release is a new WorkBench
+module. Much SCC software engineering during 2020 through mid-2021 was
+focused on developing it. The WorkBench is an effective tool for
+capturing new records from specimen digitization or for migrating old
+records from legacy systems. We re-designed the WorkBench to be able
+to import and upload more kinds of data into a Specify collection
+database--with increased flexibility for mapping between external data
+columns and Specify database fields; comprehensive error checking,
+validating and editing of Data sets, and with efficient uploading of
+data into the database. The new WorkBench has intuitive features for
+‘everyday uploading’ and advanced settings for more complex mapping
+and uploading workflows.
+
+This document: [Specify 7.6.0 Release Notes: New
+WorkBench](https://docs.google.com/document/u/0/d/1P5rPb1ij4uMoQuUDFfzCyWTt1musX3Pj2QllOTLHPp8)
+includes a structured walk-through of the operation of the new Specify
+7 WorkBench on a public Specify7 test server.
+
+Another major push in the development of Specify 7.6.0 was the
+elaboration and documentation of Specify 7 server APIs. This was in
+response to increasing community interest in API integrations and for
+a global, digital object based, biodiversity data architecture.
+
+Current Specify API documentation can be viewed on the demonstration
+server at:
+
+http://api.test.specifycloud.org/documentation/api/tables/
+and http://api.test.specifycloud.org/documentation/api/operations/
+
+Each installation of Specify 7.6.0 will have this API documentation
+interface turned on by default and be accessible at the server URL
+with the `/documentation/…` string postpended.
+
+Last but not least with the concurrent 7.6.0 and 6.8.01 Specify
+releases we are excited to announce the creation of the Specify
+Network.  With these updates, both Specify 6 and 7 are now integrated
+with it. The Specify Network’s initial API-based integrations find and
+return information held in aggregators and name authorities about
+specimens in your collection.
+
+For an introduction to the new [Specify
+Network](https://www.specifysoftware.org/specify-network/) and its
+current services see the Specify Network page on the Specify
+Collections Consortium site.
+
+## Docker installation
+Beginning with version 7.6.0 the recommend deployment of Specify 7 is
+via Docker. Please contact Specify support for detailed Docker
+deployment instructions. For existing non-Docker installations the
+relevant instructions have been updated below.
+
+## Installation
 After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
 browser on your local machine.
@@ -56,15 +125,6 @@ conf can be changed to point to it (or changed back to the old
 version, if problems arise).
 
 
-## Installation with Docker
-If you would like to deploy Specify 7 in a
-[Docker](https://www.docker.com/) container checkout the instructions
-in this repository:
-https://github.com/specify/specify7-docker
-
-
-## Ordinary installation
-
 ### Installing system dependencies
 Specify 7 requires Python 3.6. Ubuntu 18.04 LTS is recommended. For
 other distributions these instructions will have to be adapted.
@@ -79,10 +139,10 @@ sudo apt-get -y install --no-install-recommends \
     libsasl2-dev \
     nodejs \
     npm \
-    openjdk-11-jre-headless \
     python3-venv \
     python3.6 \
     python3.6-dev \
+    reddis \
     unzip
 ```
 
@@ -105,13 +165,15 @@ yum install -y \
 
 ### Installing Specify 6
 A copy of the most recent Specify 6 release is required on the server
-as Specify 7 makes use of resource files. Specify 6 code is also
-executed by the server for Workbench validation and uploads.
+as Specify 7 makes use of resource files. A Java runtime is required
+to execute the Specify 6 installer, but is not needed to run
+Specify 7. It is possible to copy the Specify 6 install from another
+Linux system to avoid the need to install Java on the server.
 
 ```shell
-wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
-sh Specify_unix_64.sh -q -dir ./Specify6.8.0
-sudo ln -s $(pwd)/Specify6.8.0 /opt/Specify
+wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
+sh Specify_unix_64.sh -q -dir ./Specify6.8.01
+sudo ln -s $(pwd)/Specify6.8.01 /opt/Specify
 ```
 
 ### Cloning Specify 7 source repository
@@ -127,7 +189,7 @@ tree.
 
 ### Setting up Python Virtual Environment
 Using a Python
-[virtual environment](https://docs.python-guide.org/dev/virtualenvs/)
+[virtual environment](https://docs.python-guide.org/en/latest/dev/virtualenvs/)
 will avoid version conflicts with other Python libraries on your
 system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
@@ -144,25 +206,6 @@ To build Specify 7 use the default make target.
 ```shell
 cd specify7
 make
-```
-
-When building the frontend, *Webpack* will issue the following
-warnings that can be safely ignored:
-
-```
-WARNING in ./bower_components/handsontable/dist/handsontable.full.js
-Critical dependencies:
-41:48-74 This seems to be a pre-built javascript file. Though this is
-possible, it's not recommended. Try to require the original source to
-get better results.
- @ ./bower_components/handsontable/dist/handsontable.full.js 41:48-74
-
-WARNING in ./bower_components/handsontable/dist/handsontable.full.js
-Critical dependencies:
-47:38-65 This seems to be a pre-built javascript file. Though this is
-possible, it's not recommended. Try to require the original source to
-get better results.
- @ ./bower_components/handsontable/dist/handsontable.full.js 47:38-65
 ```
 
 Other make targets:
@@ -242,10 +285,26 @@ contenttypes, and sessions) but does not need the corresponding tables
 to be added to the database. Running `make django_migrations` will
 apply only those migrations needed for Specify 7 to operate.
 
+### The Specify 7 worker
+Beginning with v7.6.0 the Specify WorkBench upload and validate
+operations are carried out by a separate worker process using a
+[Celery](https://docs.celeryproject.org/en/master/index.html) job
+queue with
+[Reddis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html)
+as the broker. The worker process can be started from the commandline
+by executing:
 
-## Deployment to production
-Start by following the development instructions above, but don't
-enable debugging (or disable it if you enabled it previously).
+```shell
+cd specify7
+celery -A specifyweb worker -l INFO --concurrency=1
+```
+
+For deployment purposes it is recommended to configure a systemd unit
+to automatically start the Specify 7 worker process on system start up
+by executing the above command within the installation directory. It
+is possible to run Redis and worker process on a separate server and
+to provision multiple worker processes for high volume
+scenarios. Contact the Specify team about these use cases.
 
 ### Installing production requirements
 For production environments, Specify7 can be hosted by Apache. The
@@ -302,7 +361,7 @@ CentOS / Red Hat:
 sudo systemctl restart httpd.service
 ```
 
-# Updating Specify 7
+## Updating Specify 7
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
 from one of these versions, it will be necessary to install Python 3.6
 by running the `apt-get` commands in the
@@ -326,7 +385,11 @@ proceed as follows:
    `local_specify_settings.py`, if you are updating the Specify 6
    version.
 
-4. Create a new virtualenv for the new installation by following the
+4. Update the system level dependencies by executing the *apt-get*
+   command in the [Installing system
+   dependencies](#installing-system-dependencies) section.
+
+5. Create a new virtualenv for the new installation by following the
    [Python Virtual Environment](#python-virtual-environment) section
    for the new directory.
 
@@ -337,7 +400,10 @@ proceed as follows:
 8. Deploy the new version by updating your Apache config to replace
    the old installation paths with the new ones and restarting Apache.
 
-# Updating the database (Specify 6) version
+9. Configure the Specify 7 worker process to execute at system start
+   up as described in [The Specify 7 worker](#the-specify-7-worker) section.
+
+## Updating the database (Specify 6) version
 The Specify database is updated from one version to the next by the
 Specify 6 application. To update the database version connect to the
 database with a new version of Specify 6 and follow the Specify 6
@@ -348,4 +414,4 @@ Once the database version is updated, a corresponding copy of Specify
 [Installing Specify 6](#installing-specify-6) section of this guide
 for the new version of Specify 6.
 
-[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
+[![analytics](https://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()

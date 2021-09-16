@@ -7,6 +7,8 @@ var ReportCmd = require('./reportcommand.js');
 var ShowTransCmd = require('./showtranscommand.js');
 var UICmd         = require('./uicommand.js');
 
+const formsText = require('./localization/forms').default;
+
 module.exports =  {
     ReturnLoan: LoanReturnCmd,
     generateLabelBtn: ReportCmd,
@@ -17,18 +19,19 @@ module.exports =  {
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', 'Command N/A').prop('disabled', false);
+            this.$el.attr('value', formsText('unavailableCommandButton')).prop('disabled', false);
             return this;
         },
         click: function(evt) {
             evt.preventDefault();
-            $('<div title="Command Not Available">' +
-              'This command is currently unavailable for <i>Specify&nbsp7</i>. ' +
-              'It was probably included on this form from <i>Specify&nbsp6</i> and ' +
-              'may be supported in the future.</div>')
-                .append('<dt>Command name:</dt>')
+            $(`<div>
+                ${formsText('unavailableCommandDialogHeader')}
+                ${formsText('unavailableCommandDialogMessage')}
+            </div>`)
+                .append(`<dt>${formsText('commandName')}</dt>`)
                 .append($('<dd>').text(this.init.name))
                 .dialog({
+                    title: formsText('unavailableCommandDialogTitle'),
                     modal: true,
                     close: function() { $(this).remove(); }
                 });

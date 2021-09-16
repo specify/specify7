@@ -2,35 +2,39 @@
 
 const $ = require('jquery');
 const Q = require('q');
+const commonText = require('./localization/common').default;
 
-const title = 'Update Feed Now';
 
 var dialog = null;
 
 function execute() {
     if (dialog) return;
 
-    dialog = $('<div>Update all export feed items now?</div>').dialog({
+    dialog = $(`<div>
+        ${commonText('updateExportFeedDialogHeader')}
+        ${commonText('updateExportFeedDialogMessage')}
+    </div>`).dialog({
         modal: true,
-        title: title,
+        title: commonText('updateExportFeedDialogTitle'),
         close: function() { $(this).remove(); dialog = null; },
         buttons: [
-            {text: 'Update', click: startUpdate},
-            {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+            {text: commonText('update'), click: startUpdate},
+            {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
         ]});
 }
 
 function startUpdate() {
     $.post('/export/force_update/').done(() => {
         dialog.dialog('close');
-        dialog = $(
-            '<div>Update started. You will receive a notification for each feed item updated.</div>'
-        ).dialog({
+        dialog = $(`<div>
+            ${commonText('feedExportStartedDialogHeader')}
+            ${commonText('feedExportStartedDialogMessage')}
+        </div>`).dialog({
             modal: true,
-            title: 'Update Started',
+            title: commonText('feedExportStartedDialogTitle'),
             close: function() { $(this).remove(); dialog = null; },
             buttons: [
-                {text: 'OK', click: function() { $(this).dialog('close'); }}
+                {text: commonText('close'), click: function() { $(this).dialog('close'); }}
             ]});
 
     });
@@ -38,7 +42,7 @@ function startUpdate() {
 
 module.exports = {
     task: 'forceupdatefeed',
-    title: title,
+    title: commonText('updateExportFeed'),
     icon: null,
     execute: execute,
     disabled: user => !user.isadmin

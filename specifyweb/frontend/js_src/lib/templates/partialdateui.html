@@ -1,16 +1,16 @@
 <table class="partialdateui-strct">
   <td>
     <select class="partialdateui-precision">
-      <option value="1">Full Date</option>
-      <option value="2">Mon / Year</option>
-      <option value="3">Year</option>
+      <option value="1"><%= formsText('fullDate') %></option>
+      <option value="2"><%= formsText('monthYear') %></option>
+      <option value="3"><%= formsText('year') %></option>
     </select>
   </td>
   <td class="partialdateui-full"><input type="text" class="partialdateui-full"></td>
   <td class="partialdateui-month-year">
-    <input type="text" class="partialdateui-month" size="2" placeholder="MM"> /
-    <input type="text" class="partialdateui-year" size="4" placeholder="YYYY">
+    <input type="text" class="partialdateui-month" size="2" placeholder="<%= formsText('monthPlaceholder') %>"> /
+    <input type="text" class="partialdateui-year" size="4" placeholder="<%= formsText('yearPlaceholder') %>">
   </td>
-  <td class="partialdateui-year"><input type="text" class="partialdateui-year" size="4" placeholder="YYYY"></td>
-  <td><a class="partialdateui-current-date" title="Set to current date."><span class="ui-icon ui-icon-calendar">Today</span></a></td>
+  <td class="partialdateui-year"><input type="text" class="partialdateui-year" size="4" placeholder="<%= formsText('yearPlaceholder') %>"></td>
+  <td><a class="partialdateui-current-date" title="<%= formsText('todayButtonDescription') %>"><span class="ui-icon ui-icon-calendar"><%= formsText('today') %></span></a></td>
 </table>

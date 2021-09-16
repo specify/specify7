@@ -11,8 +11,10 @@ var subviewheader = require('./templates/subviewheader.html');
 var collectionapi  = require('./collectionapi.js');
 var assert         = require('./assert.js');
 var querystring    = require('./querystring.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
-    var emptyTemplate = '<p>No Data.</p>';
+    var emptyTemplate = `<p>${formsText('noData')}</p>`;
 
     var Controls = Backbone.View.extend({
         __name__: "RecordSelectorControls",
@@ -66,8 +68,9 @@ var querystring    = require('./querystring.js');
         __name__: "RecordSelectorAddDeleteButtons",
         className: "recordselector-add-delete-buttons specify-form-buttons",
         render: function () {
-            this.$el.append('<input type="button" value="New" class="specify-add-related">' +
-                            '<input type="button" value="Delete" class="specify-delete-related">');
+            this.$el.append(`
+                <input type="button" value="${commonText('new')}" class="specify-add-related">
+                <input type="button" value="${commonText('delete')}" class="specify-delete-related">`);
             this.showHide();
             return this;
         }
@@ -209,6 +212,8 @@ module.exports =  Backbone.View.extend({
 
             this.noHeader || new Header({
                 el: subviewheader({
+                    formsText,
+                    commonText,
                     title: this.title,
                     dependent: this.dependent
                 }),
@@ -294,17 +299,20 @@ module.exports =  Backbone.View.extend({
                 this.collection.remove(resource);
             } else {
                 var _this = this;
-                var dialog = $('<div>').text("Remove?").dialog({ // TODO: better message
+                var dialog = $(`<div>
+                    ${formsText('removeRecordDialogHeader')}
+                    ${formsText('removeRecordDialogMessage')}
+                </div>`).dialog({
                     modal: true,
                     title: resource.specifyModel.getLocalizedName(),
                     buttons: {
-                        Ok: function() {
+                        [commonText('remove')]: function() {
                             _this.collection.remove(resource);
                             resource.set(_this.field.otherSideName, null);
                             resource.save();
                             dialog.dialog('close');
                         },
-                        Cancel: function() { dialog.dialog('close'); }
+                        [commonText('cancel')]: function() { dialog.dialog('close'); }
                     }
                 });
             }

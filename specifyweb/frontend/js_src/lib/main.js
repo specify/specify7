@@ -1,5 +1,5 @@
 "use strict";
-require('babel-polyfill');
+require('@babel/polyfill');
 require('../css/main.css');
 
 const $ = require('jquery');
@@ -10,7 +10,7 @@ const csrftoken = require('./csrftoken.js');
 
 // Stop bckspc from navigating back.
 // Based on:
-// http://stackoverflow.com/questions/1495219/how-can-i-prevent-the-backspace-key-from-navigating-back
+// https://stackoverflow.com/questions/1495219/how-can-i-prevent-the-backspace-key-from-navigating-back
 
 $(document).unbind('keydown').bind('keydown', (event) => {
     if (event.keyCode !== 8) return;

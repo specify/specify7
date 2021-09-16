@@ -8,6 +8,8 @@ var Backbone  = require('./backbone.js');
 var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
     function renderHeader(fieldSpec) {
         var field = _.last(fieldSpec.joinPath);
@@ -25,7 +27,7 @@ var QueryResults  = require('./queryresults.js');
         __name__: "QueryResultsTable",
         className: "query-results-table",
         initialize: function(options) {
-            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollOnWindow format";
+            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollElement format";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
             this.gotDataBefore = false;
         },
@@ -35,10 +37,10 @@ var QueryResults  = require('./queryresults.js');
             return $('<thead>').append(header);
         },
         render: function() {
-            var inner = $(template());
+            var inner = $(template({queryText}));
             this.$el.append(inner);
             var table = this.$('table.query-results');
-            this.$('.query-results-count').text('(loading...)');
+            this.$('.query-results-count').text(commonText('loadingInline'));
             this.countOnly || table.append(this.renderHeader());
             this.noHeader && this.$('h3').remove();
             this.$('.fetching-more').hide();
@@ -49,7 +51,7 @@ var QueryResults  = require('./queryresults.js');
 
             var results = this.results = new ScrollResults({
                 el: this.el,
-                onWindow: this.scrollOnWindow,
+                scrollElement: this.scrollElement,
                 view: new QueryResults({model: this.model,
                                         el: inner,
                                         fieldSpecs: this.fieldSpecs,

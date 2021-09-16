@@ -12,6 +12,8 @@ const userInfo          = require('./userinfo.js');
 const QueryCbxSearch    = require('./querycbxsearch.js');
 
 const format = dataobjformatters.format;
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  UIPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",
@@ -67,7 +69,10 @@ module.exports =  UIPlugin.extend({
         var table = $('<table>').addClass('collectionrelonetomanyplugin');
         this.$el.replaceWith(table);
         this.setElement(table);
-        table.append('<tr><th>Collection Object</th><th>Collection</th></tr>');
+        table.append(`<tr>
+            <th>${formsText('collectionObject')}</th>
+            <th>${formsText('collection')}</th>
+        </tr>`);
         var footer = $('<tfoot>').appendTo(table);
         $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<a>', {class: "sp-rel-plugin-add"}).appendTo(footer));
         this.model.isNew() || this.fillIn();
@@ -120,7 +125,7 @@ module.exports =  UIPlugin.extend({
         format(co).done(function(text) { label.text(text); });
         var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
         otherColFormatted.done(function(text) { collection.text(text); });
-        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: "Remove"}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
+        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: commonText('remove')}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
     },
     gotRelatedObjects: function(collectionObjects) {
         var otherCollectionFormatted = format(this.otherCollection);
@@ -135,14 +140,16 @@ module.exports =  UIPlugin.extend({
         if (collections.includes(this.otherCollection.id)) {
             navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
         } else {
-            $('<div>').text(
-                `You do not have access to the collection ${this.otherCollection.get('collectionname')}
-                through the currently logged in account.`
-            ).dialog({
-                title: "Access denied.",
+            $('<div>').text(`
+                ${commonText('collectionAccessDeniedDialogHeader')}
+                ${commonText('collectionAccessDeniedDialogMessage')(
+                  this.otherCollection.get('collectionname')
+                )}
+            `).dialog({
+                title: commonText('collectionAccessDeniedDialogTitle'),
                 close() { $(this).remove(); },
                 buttons: {
-                    Ok() { $(this).dialog('close'); }
+                    [commonText('close')]() { $(this).dialog('close'); }
                 }
             });
         }

@@ -4,10 +4,9 @@ const $         = require('jquery');
 const _         = require('underscore');
 const Backbone  = require('./backbone.js');
 
-const singularTemplate = require('./templates/othercollectiontemplate.html');
-const pluralTemplate = require('./templates/othercollectionstemplate.html');
 const navigation =  require('./navigation.js');
 const userInfo = require('./userinfo.js');
+const commonText = require('./localization/common').default;
 
 
 module.exports =  Backbone.View.extend({
@@ -24,7 +23,13 @@ module.exports =  Backbone.View.extend({
         render: function() {
             this.$el.empty();
             if (this.collections.length > 1) {
-                this.$el.html(pluralTemplate());
+                this.$el.html(`
+                    <p>${commonText('resourceInaccessible')}</p>
+                    <p>${commonText('selectCollection')}</p>
+                    <ul>
+                        <li><a>Collection</a></li>
+                    </ul>
+                `);
                 var ul = this.$('ul');
                 var li = ul.find('li').detach();
                 _.each(this.collections, function(collection) {
@@ -34,12 +39,15 @@ module.exports =  Backbone.View.extend({
                         .button();
                 }, this);
             } else if (this.collections.length == 1) {
-                this.$el.html(singularTemplate());
+                this.$el.html(`
+                    <p>${commonText('resourceInaccessible')}</p>
+                    <p>${commonText('loginToProceed')(this.collections[0].get('collectionname'))}
+                      <a>${commonText('open')}</a>
+                    </p>
+                `);
                 this.$('a').data('collection-id', this.collections[0].id).button();
-                this.$('span.collection-name').text(this.collections[0].get('collectionname'));
             } else {
-                this.$el.text("You do not have access to any collection containing this resource " +
-                              "through the currently logged in account.");
+                this.$el.text(commonText('noAccessToResource'));
             }
             return this;
         },

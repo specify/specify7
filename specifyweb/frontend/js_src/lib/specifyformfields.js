@@ -14,6 +14,9 @@ module.exports = function(doingFormTable, mode, cell, id) {
             checkbox: function() {
                 var control = $('<input type=checkbox class="specify-field">');
                 control.attr('disabled', doingFormTable || mode === 'view');
+                if (cell.attr('default') != null) {
+                    control.attr('data-specify-default', cell.attr('default') === 'true');
+                }
                 if (doingFormTable) {
                     return control.attr('data-specify-field-label-override', cell.attr('label'));
                 }
@@ -37,7 +40,8 @@ module.exports = function(doingFormTable, mode, cell, id) {
             combobox: function() {
                 var control = $('<select class="specify-combobox specify-field">');
                 control.attr({'disabled': doingFormTable || mode === 'view',
-                              'data-specify-picklist': cell.attr('picklist')});
+                              'data-specify-picklist': cell.attr('picklist'),
+                              'data-specify-default': cell.attr('default')});
                 return control;
             },
             spinner: function() {
@@ -49,15 +53,19 @@ module.exports = function(doingFormTable, mode, cell, id) {
                     .attr('readonly', doingFormTable || mode === 'view');
             },
             text: function() {
+                const readonly = cell.attr('readonly') && cell.attr('readonly').toLowerCase() === "true";
+
                 return $('<input type=text class="specify-field">')
                     .attr('value', cell.attr('default'))
-                    .attr('readonly', doingFormTable || mode === 'view');
+                    .attr('readonly', doingFormTable || mode === 'view' || readonly);
             },
             dsptextfield: function() {
-                return $('<input type=text class="specify-field" readonly>');
+                return $('<input type=text class="specify-field" readonly>')
+                    .attr('value', cell.attr('default'));
             },
             formattedtext: function() {
                 return $('<input type=text class="specify-formattedtext specify-field">')
+                    .attr('value', cell.attr('default'))
                     .attr('readonly', doingFormTable || mode === 'view');
             },
             label: function() {
@@ -65,6 +73,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
             },
             plugin: function() {
                 return $('<input type=button value="plugin" class="specify-uiplugin specify-field">')
+                    .attr('data-specify-default', cell.attr('default'))
                     .attr('disabled', doingFormTable || mode === 'view');
             },
             browse: function() {

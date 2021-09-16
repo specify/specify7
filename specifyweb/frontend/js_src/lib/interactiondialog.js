@@ -9,6 +9,7 @@ var RecordSetsDialog = require('./recordsetsdialog.js');
 var PrepSelectDialog = require('./prepselectdialog.js');
 var navigation       = require('./navigation.js');
 var s                = require('./stringlocalization.js');
+const formsText = require('./localization/forms').default;
 
     var dialog;
     function makeDialog(el, options) {
@@ -52,48 +53,22 @@ module.exports = RecordSetsDialog.extend({
             var tblName = this.options.close ? 'loan' : this.options.action.table;
             var tblTitle = schema.getModel(tblName).getLocalizedName();
             if (this.options.interactionresource) {
-                return "Add Items";
+                return formsText('addItems');
             } else {
-                return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
+                return this.options.close ?
+                  formsText('recordReturn')(tblTitle):
+                  formsText('createRecord')(tblTitle);
             }
-        },
-        getInvalidEntrySnagTxt: function() {
-            return "Invalid:";
-        },
-        getMissingEntrySnagTxt: function() {
-            return "Missing:";
-        },
-        getNoAvailablePrepsSnagTxt: function() {
-            return "No preparations were found.";
-        },
-        getSnagDisplayHdr: function() {
-            return "There are problems with the entry:";
-        },
-        getSnagSnubTxt: function() {
-            return "Ignore and continue";
-        },
-        getRSCaption: function() {
-            var rsCount = this.options.recordSets._totalCount;
-            return "By choosing a recordset ("
-                + (rsCount == 0 ? "none" : rsCount)
-                + " available)";
-        },
-        getEntryCaption: function() {
-            return "By entering " + this.getSrchFld().getLocalizedName() + "s";
         },
         getNoPrepCaption: function() {
-            if (this.options.close || this.options.action.table != 'loan' || this.options.interactionresource) {
-                return "";
-            } else {
-                return "Without preparations";
-            }
+            return this.options.close || this.options.action.table != 'loan' || this.options.interactionresource ?
+               '' :
+              formsText('noPreparationsCaption');
         },
         getNoCOCaption: function() {
-            if (!this.options.interactionresource) {
-                return "";
-            } else {
-                return "Add unassociated item";
-            }
+            return this.options.interactionresource ?
+                formsText('noCollectionObjectCaption') :
+                '';
         },
     
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< l10n-able stuff
@@ -160,12 +135,18 @@ module.exports = RecordSetsDialog.extend({
         makeUI: function() {
             var breaker = '';
             if (this.options.recordSets._totalCount > 0) {
-                this.$el.append($('<a class="i-action-rs"><span class="' + this.openIcon + '"/>' + this.getRSCaption() + '</a>'));
+                this.$el.append($(`<a class="i-action-rs">
+                    <span class="${this.openIcon}"/>
+                    ${formsText('recordSetCaption')(this.options.recordSets._totalCount)}
+                </a>`));
                 this.makeTable();
                 breaker = '<br><br>';
             }
             this.$el.append(breaker);
-            this.$el.append($('<a class="i-action-enter"><span class="' + this.openIcon + '"/>' + this.getEntryCaption() + '</a>'));
+            this.$el.append($(`<a class="i-action-enter">
+                <span class="${this.openIcon}"/>
+                ${formsText('entryCaption')(this.getSrchFld().getLocalizedName())}
+            </a>`));
             this.makeEntryUI();
             var noPrepCap = this.getNoPrepCaption();
             if (noPrepCap != "") {
@@ -204,21 +185,21 @@ module.exports = RecordSetsDialog.extend({
 
         makeSnagDisplay: function(prepsData, missing, invalidEntries, action) {
             var slozzler = $('<div class="i-action-entry-snag">');
-            slozzler.append('<h4>' + this.getSnagDisplayHdr() + '</h4>');
+            slozzler.append(`<h4>${formsText('problemsFound')}</h4>`);
             if (invalidEntries && invalidEntries.length > 0) {
-                slozzler.append(this.makeSnagList(this.getInvalidEntrySnagTxt(), invalidEntries));
+                slozzler.append(this.makeSnagList(formsText('invalid'), invalidEntries));
             }
             if (missing.length > 0) {
-                slozzler.append(this.makeSnagList(this.getMissingEntrySnagTxt(), missing));
+                slozzler.append(this.makeSnagList(formsText('missing'), missing));
             }
             if (prepsData.length == 0) {
-                slozzler.append('<h4>' + this.getNoAvailablePrepsSnagTxt() + '</h4>');
+                slozzler.append(`<h4>${formsText('preparationsNotFound')}</h4>`);
             } else {
                 var showDlg = _.bind(this.showPrepSelectDlg, this, prepsData, action);
                 var btn = $('<button/>',  {
-                    html: this.getSnagSnubTxt(),
+                    html: formsText('ignoreAndContinue'),
                     click: showDlg,
-                    "type": "i-snag-snub"
+                    type: "i-snag-snub"
                 });
                 slozzler.append(btn);
             }

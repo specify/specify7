@@ -4,6 +4,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var UIPlugin = require('./uiplugin.js');
+const formsText = require('./localization/forms').default;
 
 var providers = [
     require('./usercollectionsplugin.js'),
@@ -18,7 +19,7 @@ var providers = [
     require('./passwordplugin.js'),
     require('./useragentsplugin.js'),
     require('./adminstatusplugin.js'),
-    require('./googlemapsplugin.js'),
+    require('./leafletplugin.js'),
     require('./paleolocationplugin.js'),
 ];
 
@@ -30,18 +31,19 @@ var providers = [
                 'click': 'click'
             },
             render: function() {
-                this.$el.attr('value', 'Plugin N/A').prop('disabled', false);
+                this.$el.attr('value', formsText('unavailablePluginButton')).prop('disabled', false);
                 return this;
             },
             click: function(evt) {
                 evt.preventDefault();
-                $('<div title="Plugin Not Available">' +
-                 'This plugin is currently unavailable for <i>Specify&nbsp7</i>. ' +
-                 'It was probably included on this form from <i>Specify&nbsp6</i> and ' +
-                 'may be supported in the future.</div>')
-                .append('<dt>Plugin name:</dt>')
+                $(`<div>
+                    ${formsText('unavailablePluginDialogHeader')}
+                    ${formsText('unavailablePluginDialogMessage')}
+                </div>`)
+                .append(`<dt>${formsText('pluginName')}</dt>`)
                 .append($('<dd>').text(this.init.name))
                 .dialog({
+                    title: formsText('unavailablePluginDialogTitle'),
                     modal: true,
                     close: function() { $(this).remove(); }
                 });

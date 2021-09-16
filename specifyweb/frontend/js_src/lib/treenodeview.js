@@ -7,6 +7,7 @@ const Q = require('q');
 
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
+const treeText = require('./localization/tree').default;
 
 var TreeNodeView = Backbone.View.extend({
     __name__: "TreeNodeView",
@@ -79,7 +80,7 @@ var TreeNodeView = Backbone.View.extend({
             );
             this.$('.tree-node-name').text(this.name)
                 .addClass(this.acceptedId != null ? 'tree-synonym-node' : '')
-                .attr('title', this.acceptedId != null ? `Preferred: ${this.acceptedName}` : '');
+                .attr('title', this.acceptedId != null ? `${treeText('acceptedName')} ${this.acceptedName}` : '');
 
             this.setupExpander();
             this.adjustCollapsed();

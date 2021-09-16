@@ -1,21 +1,15 @@
-"use strict";
+'use strict';
+const $ = require('jquery');
 
-var schema      = require('./schema.js');
-var WbsDialog   = require('./wbsdialog.js');
-var userInfo    = require('./userinfo.js');
+var schema = require('./schema.js');
+var WbsDialog = require('./components/wbsdialog').default;
+const commonText = require('./localization/common').default;
 
-module.exports =  {
-        task: 'workbenches',
-        title: 'WorkBench',
-        icon: '/static/img/workbench.png',
-        execute: function() {
-            var wbs = new schema.models.Workbench.LazyCollection({
-                filters: { specifyuser: userInfo.id, orderby: 'name' }
-            });
-            wbs.fetch({ limit: 5000 }) // That's a lot of workbenches
-                .done(function() {
-                    new WbsDialog({ wbs: wbs, readOnly: userInfo.isReadOnly }).render();
-                });
-        }
-    };
-
+module.exports = {
+  task: 'workbenches',
+  title: commonText('workbench'),
+  icon: '/static/img/workbench.png',
+  execute() {
+    new WbsDialog({ showTemplates: false }).render();
+  },
+};

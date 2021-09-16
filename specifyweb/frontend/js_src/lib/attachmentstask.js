@@ -13,6 +13,8 @@ var specifyform  = require('./specifyform.js');
 var navigation   = require('./navigation.js');
 var whenAll      = require('./whenall.js');
 
+const formsText = require('./localization/forms').default;
+
 const template = require('./templates/attachmentbrowser.html');
 
 
@@ -112,7 +114,7 @@ const template = require('./templates/attachmentbrowser.html');
         },
         render: function() {
             var self = this;
-            self.$el.html(template());
+            self.$el.html(template({formsText}));
 
             var resize = function() {
                 self.setSize();
@@ -126,7 +128,9 @@ const template = require('./templates/attachmentbrowser.html');
 
             self.getCounts().done(function(counts) {
                 var cols = self.attachmentCollections;
-                var tables = $('<optgroup label="Tables"></optgroup>');
+                var tables = $(`<optgroup
+                    label="${formsText('tables')}
+                "></optgroup>`);
 
                 var i = 0;
                 _.each(self.attachmentCollections, function(collection, key) {
@@ -156,7 +160,7 @@ const template = require('./templates/attachmentbrowser.html');
             self.dialog && self.dialog.dialog('close');
 
             self.dialog = $('<div>').dialog({
-                title: "Opening...",
+                title: formsText('openDataDialogTitle'),
                 modal: true
             });
 
@@ -194,7 +198,12 @@ const template = require('./templates/attachmentbrowser.html');
 
                 if (!resource.isNew()) {
                     dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                        '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+                        `<a href="${resource.viewUrl()}">
+                            <span class="ui-icon ui-icon-link">
+                                ${formsText('linkInline')}
+                            </span>
+                        </a>`
+                    );
 
                     dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
                         evt.preventDefault();
@@ -214,7 +223,7 @@ const template = require('./templates/attachmentbrowser.html');
 module.exports =  function() {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
-            app.setTitle('Attachments');
+            app.setTitle(formsText('attachments'));
         });
     };
 

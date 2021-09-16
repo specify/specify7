@@ -5,6 +5,7 @@ var _ = require('underscore');
 
 var UICmd = require('./uicommand.js');
 var reports = require('./reports.js');
+const formsText = require('./localization/forms').default;
 
 module.exports =  UICmd.extend({
     __name__: "ReportCommand",
@@ -17,7 +18,7 @@ module.exports =  UICmd.extend({
     click: function(evt) {
         evt.preventDefault();
         if (this.model.isNew() || this.model.get('id') == null) {
-            $("<p>").append("Reports/Labels cannot be printed in this context.").dialog({
+            $("<p>").append(formsText('reportsCanNotBePrinted')).dialog({
                 modal: true,
                 width: 500,
                 title: this.$el[0].value,

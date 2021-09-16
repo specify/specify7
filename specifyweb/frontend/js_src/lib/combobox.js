@@ -61,7 +61,7 @@ var TreeLevelCBX        = require('./treelevelcbx.js');
                 options.limit = picklist.get('readonly') ? picklist.get('sizelimit') : 0;
                 if (options.limit < 1) options.limit = 0;
                 var Control = picklist.get('readonly') ? ReadOnlyPickListCBX : PickListCBX;
-                
+
                 switch (picklist.get('type')) {
                 case 0: // items in picklistitems table
                     return new (Control.extend(mixins.userDefined))(options);
@@ -86,7 +86,8 @@ module.exports =  Backbone.View.extend({
                 el: this.el,
                 model: this.model,
                 fieldName: this.$el.attr('name'),
-                pickListName: this.$el.data('specify-picklist')
+                pickListName: this.$el.data('specify-picklist'),
+                default: this.$el.data('specify-default')
             };
 
             this.cbxPromise = Q(this.model.getResourceAndField(options.fieldName))

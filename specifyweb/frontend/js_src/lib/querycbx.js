@@ -21,6 +21,8 @@ var initialContext    = require('./initialcontext.js');
 var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
 var userInfo          = require('./userinfo.js');
+const queryText = require('./localization/query').default;
+const commonText = require('./localization/common').default;
 
 var dataobjformat = dataobjformatters.format;
 
@@ -104,6 +106,13 @@ var QueryCbx = Backbone.View.extend({
         this.typesearch = options.typesearch || null;
         this.relatedModel = options.relatedModel || null;
         this.forceCollection = options.forceCollection || null;
+        if (this.model.isNew() &&
+            this.model.specifyModel.name.toLowerCase() === "collectionobject" &&
+            this.$el.attr('name') === "cataloger"
+           )
+        {
+            this.model.set('cataloger', userInfo.agent.resource_uri);
+        }
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
         if (isTreeModel(this.model)) {
@@ -189,7 +198,7 @@ var QueryCbx = Backbone.View.extend({
                 //add rank limits
                 if (treeRanks != null) {
                     if (this.model.get('rankid')) //original value, not updated with unsaved changes {
-                        var r = _.findIndex(treeRanks, function(rank) {
+                        var r = _.findIndex(treeRanks, (rank) => {
                             return rank.rankid == this.model.get('rankid');
                         });
                     var nextRankId = 0;
@@ -306,7 +315,7 @@ var QueryCbx = Backbone.View.extend({
         var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
         var fieldTitles = searchFields.map(
             f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
-        control.attr('title', 'Searches: ' + fieldTitles.join(', '));
+        control.attr('title', queryText('queryBoxDescription')(fieldTitles));
 
         this.readOnly || control.autocomplete({
             minLength: 1,
@@ -359,7 +368,7 @@ var QueryCbx = Backbone.View.extend({
                 } else {
                     _this.$('input').val('');
                     _this.isRequired && _this.model.saveBlockers.add(
-                        'fieldrequired:' + _this.fieldName, _this.fieldName, 'Field is required', true);
+                        'fieldrequired:' + _this.fieldName, _this.fieldName, queryText('fieldIsRequired'), true);
                 }
             });
         }
@@ -422,13 +431,12 @@ var QueryCbx = Backbone.View.extend({
                 const otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
                 otherColl.fetch().done(function() {
                     $('<div>').text(
-                        `You do not have access to the collection ${otherColl.get('collectionname')}
-                            through the currently logged in account.`
+                        commonText('collectionAccessDeniedDialogMessage')(otherColl.get('collectionname'))
                     ).dialog({
-                        title: "Access denied.",
+                        title: commonText('collectionAccessDeniedDialogTitle'),
                         close() { $(this).remove(); },
                         buttons: {
-                            Ok() { $(this).dialog('close'); }
+                            [commonText('close')]() { $(this).dialog('close'); }
                         }
                     });
                 });
@@ -499,22 +507,25 @@ var QueryCbx = Backbone.View.extend({
         if (!related.isNew()) {
             $('<a>', { href: related.viewUrl() })
                 .addClass('intercept-navigation')
-                .append('<span class="ui-icon ui-icon-link">link</span>')
+                .append(`<span class="ui-icon ui-icon-link">${commonText('close')}</span>`)
                 .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
         }
     },
+    dialogIsOpen(){
+        return this.$el?.is(':ui-dialog') === true;
+    },
     resourceSaved: function(related) {
-        this.dialog.dialog('close');
+        this.dialogIsOpen() && this.dialog.dialog('close');
         this.model.set(this.fieldName, related);
         this.fillIn();
     },
     resourceDeleted: function() {
-        this.dialog.dialog('close');
+        this.dialogIsOpen() && this.dialog.dialog('close');
         this.model.set(this.fieldName, null);
         this.fillIn();
     },
     changeDialogTitle: function(resource, title) {
-        this.dialog && this.dialog.dialog('option', 'title', title);
+        this.dialogIsOpen() && this.dialog.dialog('option', 'title', title);
     },
     blur: function() {
         var val = this.$('input').val().trim();

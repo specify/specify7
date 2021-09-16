@@ -39,9 +39,6 @@ const userInfo             = require('./userinfo.js');
                             control.addClass('specify-print-on-save');
                         }
                     }
-                    if (fieldName && fieldName.toLowerCase() === 'isonloan') {
-                        control.addClass('specify-is-on-loan');
-                    }
                     doingFormTable && control.addClass('specify-field-in-table');
                 }
                 return td;
@@ -69,7 +66,7 @@ const userInfo             = require('./userinfo.js');
                 var props = parseSpecifyProperties(cell.attr('initialize'));
                 if (props.btn === 'true') {
                     td.addClass('specify-subview-button');
-                    id && td.prop('id', id);
+                    id && td.prop('id',id);
                     td.attr('data-specify-initialize', cell.attr('initialize'));
                     props.align && td.addClass('align-' + props.align);
                     doingFormTable && td.addClass('specify-subview-in-table');

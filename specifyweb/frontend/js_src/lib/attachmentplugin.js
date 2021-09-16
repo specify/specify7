@@ -8,6 +8,8 @@ var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
 var attachments = require('./attachments.js');
 
+const formsText = require('./localization/forms').default;
+
 module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",
         events: {
@@ -17,7 +19,9 @@ module.exports =  UIPlugin.extend({
         render: function() {
             var self = this;
             if (!attachments) {
-                self.$el.replaceWith('<div>Attachment server unavailable.</div>');
+                self.$el.replaceWith(`<div>
+                    ${formsText('attachmentServerUnavailable')}
+                </div>`);
                 return this;
             }
             var control = $('<div class="specify-attachment-container">');
@@ -47,7 +51,10 @@ module.exports =  UIPlugin.extend({
 
             self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
 
-            self.progressDialog = $('<div>', {title: 'Uploading'})
+            self.progressDialog = $(
+                '<div>',
+                {title: formsText('attachmentUploadDialogTitle')}
+            )
                 .appendTo(self.el)
                 .append(self.progressBar)
                 .dialog({ modal:true });

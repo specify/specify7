@@ -1,22 +1,24 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+const $        = require('jquery');
+const _        = require('underscore');
+const Q        = require('q');
+const Backbone = require('./backbone.js');
 
-var schema         = require('./schema.js');
-var navigation     = require('./navigation.js');
-var specifyform    = require('./specifyform.js');
-var populateform   = require('./populateform.js');
-var SaveButton     = require('./savebutton.js');
-var DeleteButton   = require('./deletebutton.js');
-var initialContext = require('./initialcontext.js');
-var userInfo       = require('./userinfo.js');
+const schema         = require('./schema.js');
+const navigation     = require('./navigation.js');
+const specifyform    = require('./specifyform.js');
+const populateform   = require('./populateform.js');
+const SaveButton     = require('./savebutton.js');
+const DeleteButton   = require('./deletebutton.js');
+const initialContext = require('./initialcontext.js');
+const userInfo       = require('./userinfo.js');
+const commonText = require('./localization/common').default;
 
     var qbDef;
     initialContext.loadResource('querybuilder.xml', data => qbDef = data);
 
-    var title = "Queries";
+    var title = commonText('queries');
 
     var dialog;
     var commonDialogOpts = {
@@ -51,15 +53,15 @@ var userInfo       = require('./userinfo.js');
                 table.append(makeEntry(query));
             });
             this.options.queries.isComplete() ||
-                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+                table.append(`<tr><td></td><td>${commonText('listTruncated')}</td></tr>`);
 
             this.$el.append(table);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
-                title: "Queries (" + this.options.queries._totalCount + ")",
+                title: commonText('queriesDialogTitle')(this.options.queries._totalCount),
                 maxHeight: 400,
                 buttons: [
-                    {text: 'New', click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    {text: commonText('new'), click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }},
+                    {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
                 ]
             }));
             return this;
@@ -104,9 +106,9 @@ var userInfo       = require('./userinfo.js');
             });
             this.$el.append($table);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
-                title: "New Query Type",
+                title: commonText('newQueryDialogTitle'),
                 maxHeight: 400,
-                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
+                buttons: [{ text: commonText('cancel'), click: function() { $(this).dialog('close'); } }]
             }));
             return this;
         },
@@ -136,7 +138,10 @@ var userInfo       = require('./userinfo.js');
     var EditQueryDialog = Backbone.View.extend({
         __name__: "EditQueryDialog",
         className: "query-edit-dialog",
-        events: {'click .query-export': 'exportQuery'},
+        events: {
+            'click .query-export': 'exportQuery',
+            'click .create-report, .create-label': 'createReport'
+        },
         initialize: function(options) {
             this.spquery = options.spquery;
             this.model = schema.getModelById(this.spquery.get('contexttableid'));
@@ -147,6 +152,26 @@ var userInfo       = require('./userinfo.js');
         },
         _render: function(form) {
             form.find('.specify-form-header:first').remove();
+
+            if (!this.spquery.isNew()) {
+                form.append(`
+                  <ul style="padding: 0">
+                     <li style="display:flex;margin:5px">
+                         <span class="ui-icon ui-icon-circle-plus"/>
+                         <a class="query-export">${commonText('exportQueryForDwca')}</a>
+                     </li>
+                     <li style="display:flex;margin:5px">
+                         <span class="ui-icon ui-icon-circle-plus"/>
+                         <a class="create-report">${commonText('exportQueryAsReport')}</a>
+                     </li>
+                     <li style="display:flex;margin:5px">
+                         <span class="ui-icon ui-icon-circle-plus"/>
+                         <a class="create-label">${commonText('exportQueryAsLabel')}</a>
+                     </li>
+                  </ul>
+                `);
+            }
+
             var buttons = $('<div class="specify-form-buttons">').appendTo(form);
 
             if (!this.readOnly) {
@@ -159,7 +184,8 @@ var userInfo       = require('./userinfo.js');
                 }, this);
             }
 
-            var title = (this.spquery.isNew() ? "New " : "") + this.spquery.specifyModel.getLocalizedName();
+            const label = this.spquery.specifyModel.getLocalizedName();
+            const title = this.spquery.isNew() ? commonText('newResourceTitle')(label) : label;
 
             if (!this.spquery.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.spquery });
@@ -168,8 +194,6 @@ var userInfo       = require('./userinfo.js');
                     dialog.$el.dialog('close');
                     dialog = null;
                 });
-
-                $('<input type="button" value="Export" class="query-export">').appendTo(buttons);
             }
 
             populateform(form, this.spquery);
@@ -179,16 +203,55 @@ var userInfo       = require('./userinfo.js');
                 title: title
             }));
         },
+        createReport(evt) {
+            const isLabel = evt.currentTarget.classList.contains('create-label');
+            const nameInput = $(`<input
+                type="text"
+                placeholder="${isLabel ? commonText('labelName') : commonText('reportName')}"
+                size="40"
+            >`);
+
+            const createReport = () => Q($.post('/report_runner/create/', {
+                queryid: this.spquery.id,
+                mimetype: isLabel ? "jrxml/label" : "jrxml/report",
+                name: nameInput.val(),
+            })).then(reportJSON => {
+                const report = new schema.models.SpReport.Resource(reportJSON);
+                return report.rget('appresource');
+            }).done(appresource => navigation.go(`/specify/appresources/${appresource.id}/`));
+
+            $(`<div>
+                ${isLabel ? commonText('createLabelDialogHeader') : commonText('createReportDialogHeader')}
+            </div>`).append(nameInput).dialog({
+                modal: true,
+                width: 'auto',
+                title: isLabel ? commonText('createLabelDialogTitle') : commonText('createReportDialogTitle'),
+                close() { $(this).remove(); },
+                buttons: {
+                    [commonText('create')]() {
+                        if (nameInput.val().trim() == "") return;
+                        $(this).dialog('close');
+                        createReport();
+                    },
+                    [commonText('cancel')]() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+        },
         exportQuery: function() {
             $.get({url: `/export/extract_query/${this.spquery.id}/`, dataType: 'text'}).done(xml => {
-                const dialog = $('<div><textarea cols="120" rows="40" readonly></textarea></div>');
+                const dialog = $(`<div>
+                    ${commonText('exportQueryForDwcaDialogHeader')}
+                    <textarea cols="120" rows="40" readonly></textarea>
+                </div>`);
                 $('textarea', dialog).text(xml);
                 dialog.dialog({
                     modal: true,
                     width: 'auto',
-                    title: "Query XML for DwCA definition.",
+                    title: commonText('exportQueryForDwcaDialogTitle'),
                     close() { $(this).remove(); },
-                    buttons: { Close() { $(this).dialog('close'); } }
+                    buttons: { [commonText('close')]() { $(this).dialog('close'); } }
                 });
             });
         }

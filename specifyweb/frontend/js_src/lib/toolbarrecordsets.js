@@ -3,10 +3,11 @@
 var schema              = require('./schema.js');
 var RecordSetsDialog    = require('./recordsetsdialog.js');
 var userInfo            = require('./userinfo.js');
+const commonText = require('./localization/common').default;
 
 module.exports =  {
         task: 'recordsets',
-        title: 'Record Sets',
+        title: commonText('recordSets'),
         icon: '/static/img/record sets.png',
         execute: function() {
             var recordSets = new schema.models.RecordSet.LazyCollection({

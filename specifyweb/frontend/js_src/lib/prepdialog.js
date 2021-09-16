@@ -6,6 +6,7 @@ var Backbone = require('./backbone.js');
 
 var schema = require('./schema.js');
 var s      = require('./stringlocalization.js');
+const formsText = require('./localization/forms').default;
 
 
 module.exports =  Backbone.View.extend({
@@ -37,7 +38,7 @@ module.exports =  Backbone.View.extend({
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
-                title: this.getDlgTitle(),
+                title: formsText('preparationsDialogTitle'),
                 maxHeight: 700,
                 width: 600,
                 buttons: this.buttons()

@@ -12,6 +12,9 @@ module.exports =  Backbone.View.extend({
         initialize: function(info) {
             this.resource = info.resource;
             this.field = info.field.name.toLowerCase();
+            if (this.resource.isNew()) {
+                this.resource.set(this.field, info.default);
+            }
             this.resource.on('change:' + this.field, this.render, this);
         },
         getAgentTypes: function() {

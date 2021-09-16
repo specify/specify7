@@ -12,6 +12,7 @@ var userInfo   = require('./userinfo.js');
 var router     = require('./router.js');
 var querystring = require('./querystring.js');
 const NotificationsUI = require('./notifications.js');
+const commonText = require('./localization/common').default;
 
 
 var toolModules = [
@@ -51,7 +52,7 @@ var toolModules = [
 module.exports = Backbone.View.extend({
         __name__: "HeaderUI",
         events: {
-            'click #site-nav > ul > li > a': 'siteNavClick',
+            'click #site-nav a': 'siteNavClick',
             'click .username': 'openUserTools',
             'change #user-tools select': 'changeCollection'
         },
@@ -71,11 +72,14 @@ module.exports = Backbone.View.extend({
         render: function() {
             new ExpressSearchInput({el: this.$('#express-search')});
             new NotificationsUI({el: this.$('#site-notifications')});
-            userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
-            this.$('#user-tools a.login-logout')
-                .text(userInfo.isauthenticated ? '' : 'Log in')
-                .attr('href', '/accounts/' + (userInfo.isauthenticated ? 'logout/' : 'login/'))
-                .attr('title', userInfo.isauthenticated ? 'Log out.' : 'Log in.');
+            if(userInfo.isauthenticated){
+                this.$('#user-tools .username').text(userInfo.name);
+                this.$('#user-tools .login').hide();
+            }
+            else
+                this.$('#user-tools a.login')
+                    .text(commonText('logIn'))
+                    .attr('href', '/accounts/logout/');
 
             var collectionSelector = this.$('#user-tools select');
             $.get('/context/collection/').done(({current, available}) => collectionSelector.append(
@@ -83,20 +87,17 @@ module.exports = Backbone.View.extend({
                       ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0])));
 
             var lis = this.visibleTools.map(this.makeButton);
-            this.$('#site-nav ul').empty().append(lis);
+            this.$('#site-nav').empty().append(lis);
             return this;
         },
         makeButton: function(toolDef) {
-            var li = $('<li>');
-            $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
+            return $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
                 .text(toolDef.title)
-                .prepend($('<img>', {src: toolDef.icon}))
-                .appendTo(li);
-            return li[0];
+                .prepend($('<img>', {src: toolDef.icon}))[0];
         },
         siteNavClick: function(evt) {
             evt.preventDefault();
-            var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
+            var index = this.$('#site-nav a').index(evt.currentTarget);
             this.visibleTools[index].execute();
             $(evt.currentTarget).blur();
         },

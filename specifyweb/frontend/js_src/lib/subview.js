@@ -8,6 +8,8 @@ var schema         = require('./schema.js');
 var specifyform    = require('./specifyform.js');
 var QueryCbxSearch = require('./querycbxsearch.js');
 var subviewheader = require('./templates/subviewheader.html');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "Subview",
@@ -31,6 +33,8 @@ module.exports =  Backbone.View.extend({
             var self = this;
             self.$el.empty();
             var header = $(subviewheader({
+                formsText,
+                commonText,
                 title: self.title,
                 dependent: self.field.isDependent()
             }));
@@ -40,11 +44,11 @@ module.exports =  Backbone.View.extend({
                 self.field === schema.models.CollectionObject.getField('collectingevent');
 
             if (embeddedCE){
-                $('.specify-delete-related, .specify-add-related', header).remove();
+                $('.specify-delete-related', header).remove();
             } else {
                 header.on('click', '.specify-delete-related', this.delete.bind(this));
-                header.on('click', '.specify-add-related', this.add.bind(this));
             }
+            header.on('click', '.specify-add-related', this.add.bind(this));
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
             specifyform.buildSubView(self.$el, mode).done(function(form) {

@@ -10,6 +10,7 @@ var dataobjformatters = require('./dataobjformatters.js');
 var whenAll           = require('./whenall.js');
 var initialContext    = require('./initialcontext.js');
 var resourceapi       = require('./resourceapi.js');
+const commonText = require('./localization/common').default;
 
     var dialogdefs;
     initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
@@ -40,17 +41,17 @@ module.exports = Backbone.View.extend({
             form.find('.specify-required-field').removeClass('specify-required-field');
             this.$el.append(form).append('<ul class="querycbx-search-results">');
             this.$el.dialog({
-                title: 'Search',
+                title: commonText('search'),
                 width: 'auto',
                 buttons: [
                     {
-                        text: "Search",
-                        click: _.bind(this.search, this)
+                        text: commonText('cancel'),
+                        click: function() { $(this).dialog("close"); }
                     },
                     {
-                        text: "Cancel",
-                        click: function() { $(this).dialog("close"); }
-                    }
+                        text: commonText('search'),
+                        click: _.bind(this.search, this)
+                    },
                 ],
                 open() {
                     $('input:text', this).first().focus();
@@ -114,7 +115,7 @@ module.exports = Backbone.View.extend({
 
         this.$('.querycbx-search-results').append(_.pluck(items, 'dom'));
 
-        if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
+        if (formattedResults.length < 1) this.$('.querycbx-search-results').append(`<li>${commonText('noResults')}</li>`);
         if (formattedResults.length === 100) this.$('.querycbx-search-results').append('<li>...</li>');
     },
         select: function(evt) {

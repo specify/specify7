@@ -3,6 +3,7 @@
 const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
+const commonText = require('./localization/common').default;
 
 // We introduce a sequence variable that is incremented and passed in
 // the state argument of each history.pushState invocation. When a
@@ -19,27 +20,41 @@ function sequenceFromState(state) {
 
 // If the page is reloaded, the sequence needs to be set from the
 // stored state.
-var sequence = sequenceFromState(window.history.state);
+let sequence = sequenceFromState(window.history.state);
 
-var unloadBlockers = [];
+let unloadBlockers = [];
+let onBeforeUnloadHandler = undefined;
 
-function addUnloadProtect(key, message) {
-    unloadBlockers = [...unloadBlockers, [key, message]];
-    window.onbeforeunload = () => message;
+function addUnloadProtect(
+  key,
+  message,
+  confirmNavigationHandler=defaultConfirmNavigationHandler
+) {
+    unloadBlockers = [...unloadBlockers, [key, message, confirmNavigationHandler]];
+    changeOnBeforeUnloadHandler(()=>message);
+}
+
+function changeOnBeforeUnloadHandler(handler){
+    if(typeof onBeforeUnloadHandler === 'function')
+        window.removeEventListener('onbeforeunload',onBeforeUnloadHandler);
+    onBeforeUnloadHandler = handler;
+    if(typeof handler === 'function')
+        window.addEventListener('onbeforeunload',onBeforeUnloadHandler);
 }
 
 function removeUnloadProtect(remKey) {
     unloadBlockers = unloadBlockers.filter(([key]) => key !== remKey);
-    window.onbeforeunload = unloadBlockers.length === 0 ? null :
+    changeOnBeforeUnloadHandler( unloadBlockers.length === 0 ? undefined :
         () => {
             const [key, message] = unloadBlockers[unloadBlockers.length - 1];
             return message;
-        };
+        }
+    );
 }
 
 function clearUnloadProtect() {
     unloadBlockers = [];
-    window.onbeforeunload = null;
+    changeOnBeforeUnloadHandler(undefined);
 }
 
 // We are going to extend the window.history object to automatically
@@ -104,36 +119,41 @@ Backbone.history.checkUrl = function(e) {
 // Open a dialog allowing the user to proceed with the navigation, or
 // remain on the same page. The proceed or cancel continuation will be
 // invoked accordingly. The unloadProtect variable will be cleared if
-// proceding.
-function confirmNavigation(proceed, cancel) {
+// proceeding.
+function defaultConfirmNavigationHandler(proceed, cancel){
     const [key, message] = unloadBlockers[unloadBlockers.length - 1];
 
-    $('<div>').text(message).dialog({
-        title: 'Leave page?',
+    $(`<div>
+        ${commonText('leavePageDialogHeader')}
+        ${message}
+    </div>`).dialog({
+        title: commonText('leavePageDialogTitle'),
         modal: true,
-        open(evt, ui) {
-            $('.ui-dialog-titlebar-close', ui.dialog).hide();
-            $('.ui-dialog-buttonset button:first-child', ui.dialog).focus();
-        },
         close() {
             $(this).remove();
         },
         buttons: {
-            Leave() {
-                $(this).dialog('close');
-                clearUnloadProtect();
-                proceed();
-            },
-            Cancel() {
+            [commonText('cancel')]() {
                 $(this).dialog('close');
                 cancel();
-            }
+            },
+            [commonText('leave')]() {
+                $(this).dialog('close');
+                proceed();
+            },
         }
     });
 }
 
+function confirmNavigation(proceed, cancel){
+    const [key, message, confirmNavigationHandler] = unloadBlockers[unloadBlockers.length - 1];
+    confirmNavigationHandler(proceed, cancel);
+}
+
 function navigate(url, options) {
     const cont = () => {
+        clearUnloadProtect();
+
         var origin = window.location.origin || (
             window.location.protocol + '//' + window.location.host);
 
@@ -151,6 +171,7 @@ module.exports = {
     navigate: navigate,
     addUnloadProtect: addUnloadProtect,
     removeUnloadProtect: removeUnloadProtect,
+    clearUnloadProtect: clearUnloadProtect,
     go: function(url) {
         navigate(url, true);
     },

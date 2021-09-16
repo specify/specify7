@@ -6,6 +6,8 @@
 testing
 specifypanel/ve
 specifyweb/virtenv
+venv/
+seed-database
 
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
@@ -16,13 +18,21 @@ specifyweb/virtenv
 
 
 # Build artifacts:
+/.mypy_cache
 /specifyweb/settings/build_version.py
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js
 /specifyweb/frontend/static/css
+/specifyweb/frontend/static/manifest.json
 /specifyweb/frontend/js_src/bower_components
 /specifyweb/frontend/js_src/node_modules
+/specifyweb/frontend/js_src/testBuild
 /specifyweb/frontend/templates/specify-built.html
 /local_specifyweb_apache.conf
 
 /specifyweb/settings/ldap_settings.py
+/specifyweb/frontend/wb_uploader/.cache/
+/specifyweb/frontend/wb_uploader/.spago/
+/specifyweb/frontend/wb_uploader/dist/
+/specifyweb/frontend/wb_uploader/node_modules/
+/specifyweb/frontend/wb_uploader/output/

@@ -8,6 +8,8 @@ var UIPlugin = require('./uiplugin.js');
 var schema   = require('./schema.js');
 var QueryCbx = require('./querycbx.js');
 var whenall  = require('./whenall.js');
+const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
     var AgentForDiv = Backbone.View.extend({
         __name__: "AgentForDivisionSelector",
@@ -64,7 +66,7 @@ var whenall  = require('./whenall.js');
             this.divInfos = options.divInfos;
         },
         render: function() {
-            this.$el.attr('title', "Set User Agents");
+            this.$el.attr('title', formsText('userAgentsPluginDialogTitle'));
             var controls = _.map(this.divInfos, function(divInfo) { return new AgentForDiv(divInfo); });
             _.invoke(controls, 'render');
             $('<table>').append(_.pluck(controls, 'el')).appendTo(this.el);
@@ -76,8 +78,8 @@ var whenall  = require('./whenall.js');
                 minHeight: 175,
                 close: function() { $(this).remove(); },
                 buttons: [
-                    {text: 'Update', click: function() { _.invoke(controls, 'save', user); $(this).dialog('close'); }},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    {text: commonText('save'), click: function() { _.invoke(controls, 'save', user); $(this).dialog('close'); }},
+                    {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
                 ]
             });
             return this;
@@ -90,8 +92,8 @@ module.exports = UIPlugin.extend({
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', 'Set Agents');
-            this.model.isNew() && this.$el.attr('title', 'Save user before adding agents.').prop('disabled', true);
+            this.$el.attr('value', formsText('setAgents'));
+            this.model.isNew() && this.$el.attr('title', formsText('setAgentsDisabledButtonDescription')).prop('disabled', true);
             return this;
         },
         click: function(event) {

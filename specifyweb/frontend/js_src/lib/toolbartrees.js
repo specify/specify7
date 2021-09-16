@@ -6,6 +6,7 @@ var Backbone = require('./backbone.js');
 
 var schema = require('./schema.js');
 var domain = require('./domain.js');
+const commonText = require('./localization/common').default;
 
 
     var treesForAll = ['geography', 'storage', 'taxon'];
@@ -19,10 +20,10 @@ var domain = require('./domain.js');
             var entries = _.map(trees, this.dialogEntry, this);
             var table = $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: 'Trees',
+                title: commonText('treesDialogTitle'),
                 modal: true,
                 close: function() { $(this).remove(); },
-                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
+                buttons: [{ text: commonText('cancel'), click: function() { $(this).dialog('close'); } }]
             });
         },
         render: function() {
@@ -43,7 +44,7 @@ var domain = require('./domain.js');
 
 module.exports =  {
         task: 'tree',
-        title: 'Trees',
+        title: commonText('trees'),
         icon: '/static/img/trees.png',
         execute: function() {
             new TreeListDialog().render();
