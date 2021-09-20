@@ -67,7 +67,9 @@ columns and Specify database fields; comprehensive error checking,
 validating and editing of Data sets, and with efficient uploading of
 data into the database. The new WorkBench has intuitive features for
 ‘everyday uploading’ and advanced settings for more complex mapping
-and uploading workflows.
+and uploading workflows. Data sets created with Specify 6 or previous
+versions of Specify 7 will not be compatible with the new WorkBench 
+and will be inaccessible in the new version.
 
 This document: [Specify 7.6.0 Release Notes: New
 WorkBench](https://docs.google.com/document/u/0/d/1P5rPb1ij4uMoQuUDFfzCyWTt1musX3Pj2QllOTLHPp8)
