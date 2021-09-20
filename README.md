@@ -142,7 +142,7 @@ sudo apt-get -y install --no-install-recommends \
     python3-venv \
     python3.6 \
     python3.6-dev \
-    reddis \
+    redis \
     unzip
 ```
 
@@ -160,6 +160,7 @@ yum install -y \
     python36-virtualenv \
     python36 \
     python36u-devel \
+    redis \
     unzip
 ```
 
