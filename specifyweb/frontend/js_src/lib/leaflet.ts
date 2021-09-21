@@ -26,7 +26,7 @@ const DEFAULT_ZOOM = 5;
 // Try to fetch up-to-date tile servers. If fails, use the default tile servers
 let leafletMaps: typeof leafletTileServers | undefined;
 
-const parseLayersFromJson = (json: Record<string, any>) =>
+const parseLayersFromJson = (json: IR<unknown>) =>
   Object.fromEntries(
     Object.entries(json).map(([layerGroup, layers]) => [
       layerGroup,
