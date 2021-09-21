@@ -282,12 +282,15 @@ export function addMarkersToMap(
     )
   ) as RR<MarkerLayerName, L.FeatureGroup>;
 
+  const groupsWithMarkers = new Set<string>();
+
   // Sort markers by layer groups
   markers.forEach((markers) =>
     Object.entries(markers).forEach(([markerGroupName, markers]) =>
-      (markers as Marker[]).forEach((marker) =>
-        layerGroups[markerGroupName as MarkerLayerName].addLayer(marker)
-      )
+      (markers as Marker[]).forEach((marker) => {
+        layerGroups[markerGroupName as MarkerLayerName].addLayer(marker);
+        groupsWithMarkers.add(markerGroupName);
+      })
     )
   );
 
@@ -306,9 +309,11 @@ export function addMarkersToMap(
         }
       : labels;
   // Add layer groups' checkboxes to the layer control menu
-  Object.entries(layerLabels).forEach(([key, label]) =>
-    controlLayers.addOverlay(layerGroups[key as MarkerLayerName], label)
-  );
+  Object.entries(layerLabels)
+    .filter(([markerGroupName]) => groupsWithMarkers.has(markerGroupName))
+    .forEach(([key, label]) =>
+      controlLayers.addOverlay(layerGroups[key as MarkerLayerName], label)
+    );
 }
 
 export function isValidAccuracy(

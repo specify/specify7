@@ -26,22 +26,20 @@ type LoadedAction = Action<'LoadedAction', { version: string }>;
 
 type GetPinInfoAction = Action<'GetPinInfoAction', { index: number }>;
 
-type ViewRecordAction = Action<'ViewRecordAction', { index: number }>;
-
-type IncomingMessage = LoadedAction | GetPinInfoAction | ViewRecordAction;
+type IncomingMessage = LoadedAction | GetPinInfoAction;
 
 type IncomingMessageExtended = IncomingMessage & {
   state: {
     readonly sendMessage: (message: OutgoingMessage) => void;
     readonly model: SpecifyResource;
-    readonly occurrenceData: React.MutableRefObject<
+    readonly occurrences: React.MutableRefObject<
       RA<OccurrenceData> | undefined
     >;
   };
 };
 
 const dispatch = generateDispatch<IncomingMessageExtended>({
-  LoadedAction: ({ state: { sendMessage, model, occurrenceData } }) =>
+  LoadedAction: ({ state: { sendMessage, model, occurrences } }) =>
     void getLeafletLayers()
       .then((leafletLayers) =>
         sendMessage({
@@ -68,16 +66,16 @@ const dispatch = generateDispatch<IncomingMessageExtended>({
       )
       .then(async () => fetchLocalOccurrences(model))
       .then((fetchedOccurrenceData) => {
-        occurrenceData.current = fetchedOccurrenceData;
+        occurrences.current = fetchedOccurrenceData;
         sendMessage({
           type: 'LocalOccurrencesAction',
-          localityData: fetchedOccurrenceData.map(
-            ({ localityData }) => localityData
+          occurrences: fetchedOccurrenceData.map(
+            ({ fetchMoreData: _, ...rest }) => rest
           ),
         });
       }),
-  GetPinInfoAction({ index, state: { sendMessage, occurrenceData } }) {
-    occurrenceData.current?.[index].fetchMoreData().then((localityData) =>
+  GetPinInfoAction({ index, state: { sendMessage, occurrences } }) {
+    occurrences.current?.[index].fetchMoreData().then((localityData) =>
       typeof localityData === 'object'
         ? sendMessage({
             type: 'PointDataAction',
@@ -85,14 +83,6 @@ const dispatch = generateDispatch<IncomingMessageExtended>({
             localityData,
           })
         : console.error('Failed to fetch locality data')
-    );
-  },
-  ViewRecordAction({ index, state: { occurrenceData } }) {
-    if (!Array.isArray(occurrenceData.current))
-      throw new Error('Occurrence data is not fetched');
-    window.open(
-      `/specify/view/collectionobject/${occurrenceData.current[index].collectionObjectId}/`,
-      '_blank'
     );
   },
 });
@@ -115,7 +105,7 @@ type BasicInformationAction = State<
 type LocalOccurrencesAction = State<
   'LocalOccurrencesAction',
   {
-    localityData: RA<LocalityData>;
+    occurrences: RA<Omit<OccurrenceData, 'fetchMoreData'>>;
   }
 >;
 
@@ -138,10 +128,7 @@ export function SpecifyNetworkBadge({
 }: ComponentProps): JSX.Element | null {
   const [occurrenceName, setOccurrenceName] = React.useState('');
   const [hasFailure, setHasFailure] = React.useState(false);
-  const occurrenceData = React.useRef<RA<OccurrenceData> | undefined>(
-    undefined
-  );
-  const [communicationReference] = React.useState<number>(Math.random());
+  const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
   React.useEffect(() => {
     fetchOccurrenceName({
@@ -160,13 +147,10 @@ export function SpecifyNetworkBadge({
       dispatch({
         ...action,
         state: {
-          sendMessage(message: OutgoingMessage) {
-            if (typeof event.source === 'undefined')
-              throw new Error('S^N: Window is not defined');
-            (event.source as Window).postMessage(message, snServer);
-          },
+          sendMessage: (message: OutgoingMessage) =>
+            (event.source as Window | null)?.postMessage(message, snServer),
           model,
-          occurrenceData,
+          occurrences,
         },
       });
     },
@@ -195,11 +179,7 @@ export function SpecifyNetworkBadge({
         </ModalDialog>
       )}
       <a
-        href={formatLifemapperViewPageRequest(
-          guid,
-          occurrenceName,
-          communicationReference
-        )}
+        href={formatLifemapperViewPageRequest(guid, occurrenceName)}
         target="_blank"
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}

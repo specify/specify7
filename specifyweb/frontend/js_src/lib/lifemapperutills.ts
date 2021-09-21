@@ -23,9 +23,8 @@ export const fetchLocalScientificName = async (
 export const formatLifemapperViewPageRequest = (
   occurrenceGuid: string,
   speciesName: string,
-  ref: number
 ): string =>
-  `${snServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}&origin=${window.location.origin}&ref=${ref}`;
+  `${snServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}&origin=${window.location.origin}`;
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
