@@ -8,7 +8,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import L from './leafletextend';
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json';
+  'https://files.specifysoftware.org/specify7/7.6.1/leaflet-layers.json';
 
 /*
  *
