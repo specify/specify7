@@ -91,7 +91,7 @@ repos:
           - --skip="./node_modules/,package-lock.json,./.idea/"
 
   - repo: https://github.com/psf/black
-    rev: 21.8b0
+    rev: 21.9b0
     hooks:
       - id: black
         args:
@@ -122,7 +122,7 @@ repos:
       - id: pydocstyle
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.25.0
+    rev: v2.29.0
     hooks:
       - id: pyupgrade
 
@@ -132,7 +132,7 @@ repos:
       - id: setup-cfg-fmt
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.2
+    rev: v2.4.1
     hooks:
       - id: prettier
         additional_dependencies:
@@ -153,7 +153,7 @@ repos:
           - stylelint-config-standard@^22.0.0
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.2.1
+    rev: v1.2.2
     hooks:
       - id: python-safety-dependencies-check
 
