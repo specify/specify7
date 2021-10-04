@@ -6,7 +6,7 @@ import { createDictionary, createHeader } from './utils';
 const queryText = createDictionary({
   queryBoxDescription: (fieldNames: RA<string>) =>
     `Searches: ${fieldNames.join(', ')}`,
-  fieldIsRequired: 'Field is required',
+  fieldIsRequired: 'Field is required.',
   selectFields: 'Select Field...',
   treeRankAuthor: (rankName: string) => `${rankName} Author`,
   selectOp: 'Select Op...',
