@@ -10,9 +10,6 @@ const commonText = require('./localization/common').default;
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
-        events: {
-            'click :submit': 'submit'
-        },
         initialize: function(options) {
             this.blockingResources = {};
             this.saveBlocked = false;
@@ -77,12 +74,24 @@ module.exports =  Backbone.View.extend({
             // get buttons to match current state
             this.setButtonsDisabled(this.buttonsDisabled);
             this.setSaveBlocked(this.saveBlocked);
+
             return this;
         },
-        submit: function(evt) {
-            evt.preventDefault();
-            var addAnother = $(evt.currentTarget).is('.save-and-add-button');
+        bindToForm(form){
+            Array.from(this.buttons).forEach(button=>
+                button.setAttribute('form',form.id)
+            );
+            this.form = form;
+            this.form.addEventListener('submit',this.submit);
+        },
+        remove(){
+            this.form.removeEventListener('submit',this.submit);
+            Backbone.View.prototype.remove.call(this);
+        },
+        submit: function(event) {
+            var addAnother = $(event.submitter).is('.save-and-add-button');
             this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
+            return false;
         },
         doSave: function(addAnother) {
             _.each(this.blockingResources, function(resource) {
