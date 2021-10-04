@@ -30,6 +30,7 @@ const wbText = createDictionary({
   replace: 'Replace',
   replacementValue: 'Replacement value',
   searchResults: 'Search Results',
+  clickToToggle: 'Click to toggle visibility',
   configureSearchReplace: 'Configure Search & Replace',
   modifiedCells: 'Modified Cells',
   newCells: 'New Cells',
@@ -204,6 +205,7 @@ const wbText = createDictionary({
 
   // WbPlanView
   matchBehavior: 'Match Behavior:',
+  columnMapping: 'Column Mapping',
   suggestedMappings: 'Suggested Mappings:',
   requiredFields: 'Required Fields',
   optionalFields: 'Optional Fields',
