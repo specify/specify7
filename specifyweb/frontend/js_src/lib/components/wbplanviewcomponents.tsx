@@ -226,6 +226,7 @@ export function MappingLineComponent({
         onClick={handleFocus}
         onKeyDown={handleKeyDown}
         ref={lineRef}
+        title={wbText('columnMapping')}
       >
         <MappingPathComponent mappingLineData={lineData} />
       </div>
