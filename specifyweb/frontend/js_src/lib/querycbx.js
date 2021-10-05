@@ -357,23 +357,23 @@ var QueryCbx = Backbone.View.extend({
             };
         }, this);
     },
-    fillIn: function () {
-        var _this = this;
-        function fillIn() {
-            _this.model.rget(_this.fieldName, true).done(function(related) {
+    fillIn() {
+        setTimeout(()=>{
+            this.model.rget(this.fieldName, true).done((related)=>{
                 if (related) {
-                    _this.renderItem(related).done(function(item) {
-                        _this.$('input').val(item.value);
-                    });
-                    _this.model.saveBlockers.remove('fieldrequired:' + _this.fieldName);
+                    this.renderItem(related).done((item)=>
+                        this.$('input').val(item.value)
+                    );
+                    this.model.saveBlockers.remove('fieldrequired:' + this.fieldName);
+                    this.$('.querycbx-edit, .querycbx-display').prop('disabled', false);
                 } else {
-                    _this.$('input').val('');
-                    _this.isRequired && _this.model.saveBlockers.add(
-                        'fieldrequired:' + _this.fieldName, _this.fieldName, queryText('fieldIsRequired'), true);
+                    this.$('input').val('');
+                    this.$('.querycbx-edit, .querycbx-display').prop('disabled', true);
+                    this.isRequired && this.model.saveBlockers.add(
+                        'fieldrequired:' + this.fieldName, this.fieldName, queryText('fieldIsRequired'), true);
                 }
             });
-        }
-        _.defer(fillIn);
+        },0);
     },
     renderItem: function (resource) {
         var rget = resource.rget.bind(resource);
@@ -498,11 +498,14 @@ var QueryCbx = Backbone.View.extend({
             .on('deleted', this.resourceDeleted, this)
             .on('changetitle', this.changeDialogTitle, this);
 
-        var _this = this;
         this.dialog.dialog({
             position: { my: "left top", at: "left+20 top+20", of: $('main') },
             width: 'auto',
-            close: function() { $(this).remove(); _this.dialog = null; }
+            close: ()=>{
+                this.dialog.remove();
+                this.dialog = null;
+                this.closeDialogIfAlreadyOpen();
+            }
         }).parent().delegate('.ui-dialog-title a', 'click', function(evt) {
             evt.preventDefault();
             navigation.go(related.viewUrl());
