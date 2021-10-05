@@ -306,7 +306,7 @@ input[type='submit'].saveblocked {
     background: red;
 }
 
-.saveblocked {
+.saveblocked, input:invalid {
     background-color: red;
 }
 
