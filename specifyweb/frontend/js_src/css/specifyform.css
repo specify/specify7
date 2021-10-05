@@ -65,13 +65,27 @@ div.specify-view-content {
     color: var(--t2);
 }
 
-.specify-subview-header h3 {
-    display: inline;
+.specify-view-content fieldset {
+    border: none;
 }
 
-.specify-subview-header button {
-    margin-left: 1em;
-    font-weight: 800;
+
+.specify-subview-header {
+    border-bottom: solid 1px #555;
+    display: flex;
+    column-gap: var(--half-size);
+    margin-top: var(--size);
+    margin-bottom: var(--half-size);
+    font-weight: bold;
+}
+
+.specify-subview-header legend {
+    font-size: var(--size);
+    color: var(--t4);
+}
+
+.specify-subview-header > div {
+    display: contents;
 }
 
 .recordset-header {
@@ -119,10 +133,6 @@ div.specify-view-content {
     vertical-align: bottom;
     margin: 0 2px 2px 0;
     height: 24px;
-}
-
-.specify-subview-header {
-    border-bottom: solid 1px #555;
 }
 
 .specify-form-buttons {
