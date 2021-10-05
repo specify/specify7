@@ -8,6 +8,10 @@
     width: 16px;
 }
 
+.querycbx-strct button[disabled] {
+    opacity: 0.5;
+}
+
 .querycbx-search-results {
     background-color: #fff;
     height: 15em;
