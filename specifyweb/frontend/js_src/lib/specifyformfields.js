@@ -33,17 +33,19 @@ module.exports = function(doingFormTable, mode, cell, id) {
             textarea: function () {
                 if (isReadOnly)
                     return $('<input type="text" class="specify-field" readonly>');
-                var control = $('<textarea class="specify-field">)');
+                var control = $('<textarea class="specify-field"></textarea>');
                 control.attr('rows', cell.attr('rows'));
                 return control;
             },
             textareabrief: function() {
                 if (isReadOnly)
                     return $('<input type="text" class="specify-field" readonly>');
-                return $('<textarea class="specify-field">').attr('rows', cell.attr('rows') || 1);
+                return $('<textarea class="specify-field"></textarea>').attr('rows', cell.attr('rows') || 1);
             },
             combobox: function() {
-                var control = $('<select class="specify-combobox specify-field">');
+                const control= $(`<select
+                    class="specify-combobox specify-field"
+                ></select>`);
                 control.attr({'disabled': isReadOnly,
                               'data-specify-picklist': cell.attr('picklist'),
                               'data-specify-default': cell.attr('default')});
