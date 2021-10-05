@@ -360,15 +360,14 @@ var QueryCbx = Backbone.View.extend({
     fillIn() {
         setTimeout(()=>{
             this.model.rget(this.fieldName, true).done((related)=>{
+                this.$('.querycbx-edit, .querycbx-display, .querycbx-clone').prop('disabled', !related);
                 if (related) {
                     this.renderItem(related).done((item)=>
                         this.$('input').val(item.value)
                     );
                     this.model.saveBlockers.remove('fieldrequired:' + this.fieldName);
-                    this.$('.querycbx-edit, .querycbx-display').prop('disabled', false);
                 } else {
                     this.$('input').val('');
-                    this.$('.querycbx-edit, .querycbx-display').prop('disabled', true);
                     this.isRequired && this.model.saveBlockers.add(
                         'fieldrequired:' + this.fieldName, this.fieldName, queryText('fieldIsRequired'), true);
                 }
