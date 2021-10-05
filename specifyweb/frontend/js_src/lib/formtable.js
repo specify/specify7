@@ -15,34 +15,40 @@ const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
     var CONTRACT = `<td class="contract">
-        <a
+        <button
+          type="button" 
+          class="fake-link"
           title="${formsText('contract')}"
           aria-label="${formsText('contract')}"
         >
             <span class="ui-icon ui-icon-triangle-1-s">
                 ${formsText('contract')}
             </span>
-        </a>
+        </button>
     </td>`;
     var EXPAND = `<td class="expand">
-        <a
+        <button
+          type="button"
+          class="fake-link"
           title="${commonText('expand')}"
           aria-label="${commonText('expand')}"
         >
             <span class="ui-icon ui-icon-triangle-1-e">
                 ${commonText('expand')}
             </span>
-        </a>
+        </button>
     </td>`;
     var REMOVE = `<td class="remove">
-        <a
+        <button
+          type="button"
+          class="fake-link"
           title="${commonText('remove')}"
           aria-label="${commonText('remove')}"
         >
             <span class="ui-icon ui-icon-trash">
                 ${commonText('remove')}
             </span>
-        </a>
+        </button>
     </td>`;
 
     function prepForm(formIn, readOnly) {
@@ -59,9 +65,9 @@ const commonText = require('./localization/common').default;
     var FormTableRow = Backbone.View.extend({
         __name__: "FormTableRow",
         events: {
-            'click .expand a': 'expand',
-            'click .contract a': 'contract',
-            'click .remove a': 'remove'
+            'click .expand button': 'expand',
+            'click .contract button': 'contract',
+            'click .remove button': 'remove'
         },
         initialize: function({populateForm, form, expandedForm, readOnly}) {
             this.populateForm = populateForm;

@@ -97,10 +97,9 @@ module.exports =  Backbone.View.extend({
         handleFormKeyPress(event){
             if(event.key === 'Enter'){
                 event.preventDefault();
-                this.submit({
-                    ...event,
-                    submitter: this.$el.find('.save-button')[0],
-                })
+                const modifiedEvent = event;
+                event.submitter = this.$el.find('.save-button')[0];
+                this.submit(modifiedEvent);
             }
         },
         handleFieldFocus(event){
