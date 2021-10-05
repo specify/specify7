@@ -306,8 +306,11 @@ input[type='submit'].saveblocked {
     background: red;
 }
 
-.saveblocked, input:invalid {
-    background-color: red;
+.saveblocked,
+input:not(:required):invalid,
+form.submitted input:invalid,
+input.touched:invalid {
+    background-color: red !important;
 }
 
 .tooltip {
