@@ -32,6 +32,8 @@ module.exports =  Backbone.View.extend({
                 if (!blocker.deferred) this.setButtonsDisabled(true);
                 if (!blocker.deferred) this.setSaveBlocked(true);
             }, this);
+
+            this.handleFormKeyPress = this.handleFormKeyPress.bind(this);
         },
         setButtonsDisabled: function(disabled) {
             this.buttonsDisabled = disabled;
@@ -45,6 +47,11 @@ module.exports =  Backbone.View.extend({
         setSaveBlocked: function(saveBlocked) {
             this.saveBlocked = saveBlocked;
             this.buttons && this.buttons[saveBlocked ? 'addClass' : 'removeClass']('saveblocked');
+            /*
+             * Don't disable the save button on validation errors
+             * to allow for browser's native form validation
+             * */
+            this.buttons.prop('disabled', this.buttonsDisabled && !this.saveBlocked);
         },
         removeBlocker: function(resource) {
             delete this.blockingResources[resource.cid];
@@ -58,14 +65,14 @@ module.exports =  Backbone.View.extend({
             this.el.setAttribute('role','toolbar');
             if (this.options.addAnother) {
                 this.$el.append($('<input>', {
-                    type: "submit",
-                    "class": "save-and-add-button",
+                    type: "button",
+                    class: "save-and-add-button",
                     value: formsText('saveAndAddAnother')
                 }));
             }
             this.$el.append($('<input>', {
                 type: "submit",
-                "class": "save-button",
+                class: "save-button",
                 value: commonText('save')
             }));
             this.buttons = this.$(':submit');
@@ -83,14 +90,31 @@ module.exports =  Backbone.View.extend({
             );
             this.form = form;
             this.form.addEventListener('submit',this.submit);
+            this.form.addEventListener('keypress',this.handleFormKeyPress);
+        },
+        handleFormKeyPress(event){
+            if(event.key === 'Enter'){
+                event.preventDefault();
+                this.submit({
+                    ...event,
+                    submitter: this.$el.find('.save-button')[0],
+                })
+            }
         },
         remove(){
             this.form.removeEventListener('submit',this.submit);
+            this.form.removeEventListener('keypress',this.handleFormKeyPress);
             Backbone.View.prototype.remove.call(this);
         },
         submit: function(event) {
-            var addAnother = $(event.submitter).is('.save-and-add-button');
-            this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
+
+            if(this.buttonsDisabled || this.saveBlocked)
+                event.preventDefault();
+            else {
+                const addAnother = $(event.submitter).is('.save-and-add-button');
+                this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
+            }
+
             return false;
         },
         doSave: function(addAnother) {
