@@ -51,9 +51,8 @@ const commonText = require('./localization/common').default;
                     ))
                     .append('<span class="specify-subview-button-count">')
                     .appendTo(this.button)
-            } else {
-                this.button.addClass('specify-subview-link');
-            }
+            } else
+                this.button.classList.add('specify-subview-link');
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count, .specify-subview-link').text(c);

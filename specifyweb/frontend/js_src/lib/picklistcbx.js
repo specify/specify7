@@ -1,146 +1,130 @@
-"use strict";
+'use strict';
 
 var $ = require('jquery');
 var _ = require('underscore');
 var Q = require('q');
 
-var Base   = require('./basepicklist.js');
+var Base = require('./basepicklist.js');
 var schema = require('./schema.js');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
 
 module.exports = Base.extend({
-        __name__: "PickListCBXView",
-        events: {
-            autocompleteselect: 'selected',
-            autocompletechange: 'changed',
-            'click .combobox-toggle': 'showAll',
-            'mousedown .combobox-toggle': 'checkOpen'
+  __name__: 'PickListCBXView',
+  events: {
+    'change': 'handleChange',
+  },
+  render: function() {
+    const wrapper = $('<span class="combobox-wrapper">');
+    this.input = $(`<input
+      type="text"
+      list="${this.el.id}"
+      class="${this.$el.attr('class')}"
+      ${this.$el.attr('disabled') ? 'disabled' : ''}
+      ${this.$el.attr('required') ? 'required' : ''}
+    >`).appendTo(wrapper);
+
+    this.dataList = $(`<datalist id="${this.el.id}"></datalist>`).appendTo(wrapper);
+
+    this.$el.replaceWith(wrapper);
+    this.setElement(wrapper);
+    Base.prototype.render.apply(this, arguments);
+    return this;
+  },
+  _render: function() {
+    if (this.info.field.length != null) {
+      this.input.attr('maxlength', this.info.field.length);
+    }
+
+    this.dataList[0].innerHTML = this.source().map((label) =>
+      `<option value="${label}">`,
+    ).join('');
+
+    this.resetValue();
+  },
+  getCurrentValue: function() {
+    const value = this.info.resource.get(this.info.field.name);
+    return this.info.pickListItems.find(item =>
+      item.value === value,
+    )?.title || value;
+  },
+  source: function() {
+    const labels = this.info.pickListItems.filter(item => item.value != null).map(item => item.title);
+    if (labels.length !== new Set(labels).size)
+      console.error(
+        'Duplicate picklist entries found',
+        this.info,
+      );
+    return labels;
+  },
+  handleChange: function() {
+    const value = this.info.pickListItems.find(({title}) =>
+      title === this.input.val(),
+    )?.value;
+    if(this.input.val() === ''){
+      if(!this.input[0].required)
+        this.model.set(this.info.field.name, null);
+    }
+    else if (typeof value === 'undefined')
+      this.addValue(this.input.val());
+    else
+      this.model.set(this.info.field.name, value);
+  },
+  resetValue: function() {
+    this.input.val(this.getCurrentValue());
+  },
+  addValue: function(value) {
+    if (this.info.pickList.get('type') === 2) {
+      this.model.set(this.info.field.name, value);
+      return;
+    }
+    if (this.info.pickList.get('type') !== 0)
+      throw new Error('adding item to wrong type of picklist');
+
+    const dialog = $(`<div>
+      ${formsText('addToPickListConfirmationDialogHeader')}
+      <p>
+        ${formsText('addToPickListConfirmationDialogMessage')(
+      value,
+      this.info.pickList.get('name'),
+    )}
+      </p>
+    </div>`).dialog({
+      title: formsText('addToPickListConfirmationDialogTitle'),
+      modal: true,
+      close: function() {
+        $(this).remove();
+      },
+      buttons: [
+        {
+          text: commonText('add'),
+          click: () => {
+            dialog.dialog('close');
+            this.doAddValue(value);
+          },
         },
-        render: function() {
-            var control = this.$el;
-            var wrapper = $('<span class="combobox-wrapper">');
-            this.input = $('<input type="text">')
-                .appendTo(wrapper)
-                .addClass(control.attr('class'))
-                .attr('disabled', control.attr('disabled'));
-
-            if (!control.attr('disabled')) {
-                $('<a class="combobox-toggle ui-corner-right">')
-                    .attr( "tabIndex", -1 )
-                    .attr( "title", formsText('showAllItems') )
-                    .appendTo( wrapper )
-                    .button({
-                        icons: {
-                            primary: "ui-icon-triangle-1-s"
-                        },
-                        text: false
-                    })
-                    .removeClass( "ui-corner-all" );
-            }
-
-            control.replaceWith(wrapper);
-            this.setElement(wrapper);
-            Base.prototype.render.apply(this, arguments);
-            return this;
-        },
-        _render: function(info) {
-            this.input.autocomplete({
-                    delay: 0,
-                    minLength: 0,
-                    source: this.source.bind(this)
-            });
-            if (this.info.field.length != null) {
-                this.input.attr('maxlength', this.info.field.length);
-            }
-
+        {
+          text: commonText('cancel'),
+          click: () => {
+            dialog.dialog('close');
             this.resetValue();
+          },
         },
-        getCurrentValue: function() {
-            var value = this.info.resource.get(this.info.field.name);
-            var item = _.find(this.info.pickListItems, function(item) { return item.value === value; });
-            return item ? item.title : value;
-        },
-        source: function(request, response) {
-            var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i");
-            var options = this.info.pickListItems.map(function(item) {
-                return (item.value != null && matcher.test(item.title)) &&
-                    {
-                        label: item.title,
-                        value: item.title,
-                        item: item
-                    };
-            }).filter(function(option) { return !!option; });
-            response(options);
-        },
-        showAll: function() {
-            this.input.focus();
-            this.wasOpen || this.input.autocomplete("search", "");
-        },
-        checkOpen: function() {
-            this.wasOpen = this.input.autocomplete('widget').is(':visible');
-        },
-        selected: function(event, ui) {
-            var value = ui.item.item.value;
-            this.model.set(this.info.field.name, value);
-        },
-        changed: function(event, ui) {
-            if (ui.item) { return; }
-
-            if (!this.input[0].required && this.input.val() === '') {
-                this.model.set(this.info.field.name, null);
-                return;
-            }
-
-            this.addValue(this.input.val());
-        },
-        resetValue: function() {
-            this.input.val(this.getCurrentValue());
-        },
-        addValue: function(value) {
-            if (this.info.pickList.get('type') === 2) {
-                this.model.set(this.info.field.name, value);
-                return;
-            }
-            if (this.info.pickList.get('type') !== 0)
-                throw new Error("adding item to wrong type of picklist");
-
-            var resetValue = this.resetValue.bind(this);
-            var doAddValue = this.doAddValue.bind(this, value);
-
-            var d = $(`<div>
-                ${formsText('addToPickListConfirmationDialogHeader')}
-                <p>${formsText('addToPickListConfirmationDialogMessage')(
-                    '<span class="pl-value"></span>',
-                    '<span class="pl-name"></span>'
-                )}</p>
-            </div>`).dialog({
-                title: formsText('addToPickListConfirmationDialogTitle'),
-                modal: true,
-                close: function() { $(this).remove(); },
-                buttons: [
-                    { text: commonText('add'), click: function() { $(this).dialog('close'); doAddValue(); } },
-                    { text: commonText('cancel'), click: function() { $(this).dialog('close'); resetValue(); } }
-                ]
-            });
-            d.find('.pl-value').text(value);
-            d.find('.pl-name').text(this.info.pickList.get('name'));
-        },
-        doAddValue: function(value) {
-            var info = this.info;
-            var model = this.model;
-
-            Q(info.pickList.rget('picklistitems'))
-                .then(function(plItems) {
-                    var item = new schema.models.PickListItem.Resource();
-                    item.set({ title: value, value: value });
-                    plItems.add(item);
-                    return Q(info.pickList.save());
-                })
-                .then(function() {
-                    info.pickListItems.push({ title: value, value: value });
-                    model.set(info.field.name, value);
-                });
-        }
+      ],
     });
+  },
+  doAddValue: function(value) {
+
+    Q(this.info.pickList.rget('picklistitems')).then((plItems) => {
+      var item = new schema.models.PickListItem.Resource();
+      item.set({title: value, value: value});
+      plItems.add(item);
+      return Q(this.info.pickList.save());
+    }).then(() => {
+      this.info.pickListItems.push({title: value, value: value});
+      this.model.set(this.info.field.name, value);
+      this._render();
+    });
+  },
+});
