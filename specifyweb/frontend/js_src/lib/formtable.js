@@ -148,7 +148,7 @@ module.exports =  Backbone.View.extend({
             header.find('.specify-delete-related, .specify-visit-related').remove();
             this.readOnly && header.find('.specify-add-related').remove();
 
-            this.el.innerHTML = '<section</section>';
+            this.el.innerHTML = '<fieldset></fieldset>';
             const section = $(this.el.children[0]);
             section.append(header);
 

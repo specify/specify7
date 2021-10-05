@@ -31,7 +31,7 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             var self = this;
-            self.el.innerHTML = '<section></section>';
+            self.el.innerHTML = '<fieldset></fieldset>';
             const section = $(self.el.children[0]);
             var header = $(subviewheader({
                 formsText,

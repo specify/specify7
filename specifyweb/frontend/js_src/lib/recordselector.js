@@ -187,7 +187,7 @@ module.exports =  Backbone.View.extend({
             return this;
         },
         _render: function() {
-            this.el.innerHTML = '<section></section>';
+            this.el.innerHTML = '<fieldset></fieldset>';
             const section = $(this.el.children[0]);
             const sliderContainer = document.createElement('div');
             sliderContainer.style.padding = '0 25px';
