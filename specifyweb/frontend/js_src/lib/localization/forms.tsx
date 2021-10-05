@@ -124,7 +124,6 @@ const formsText = createDictionary({
   todayButtonDescription: 'Set to current date',
 
   // PickListBox
-  showAllItems: 'Show All Items',
   addToPickListConfirmationDialogTitle: 'Pick List',
   addToPickListConfirmationDialogHeader: createHeader('Add to pick list?'),
   addToPickListConfirmationDialogMessage: (
