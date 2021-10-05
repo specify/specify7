@@ -38,7 +38,7 @@ var attachmentview = require('./templates/attachmentview.html');
         return table;
     }
 
-    function buildForm(formNumber, viewdef, processCell) {
+    function buildForm(formNumber, viewdef, processCell, isSubView) {
         var rows = viewdef.children('rows').children('row');
         var cellsIn = function(row) { return $(row).children('cell'); };
         var table = processColumnDef(getColumnDef(viewdef));
@@ -49,10 +49,13 @@ var attachmentview = require('./templates/attachmentview.html');
             _(cellsIn(row)).chain().map(processCell).each(appendToTr);
         });
 
-        return $(formtemplate({ formNumber: formNumber })).find('form').append(table).end();
+        return $(formtemplate({
+            formNumber: formNumber,
+            tagName: isSubView ? 'div' : 'form'
+        })).find('.specify-view-content').append(table).end();
     }
 
-    function buildView(view, defaultType, mode) {
+    function buildView(view, defaultType, mode, isSubView) {
         defaultType || (defaultType = 'form');
         mode || (mode = 'edit');
         console.log("buildView", view, "defaultType:", defaultType, 'mode:', mode);
@@ -89,7 +92,7 @@ var attachmentview = require('./templates/attachmentview.html');
 
         var wrapper = $(viewwrapper({ viewModel: getModelFromViewdef(actual_viewdef) }));
 
-        (doingFormTable ? buildFormTable : buildForm)(formNumber, actual_viewdef, processCell).appendTo(wrapper);
+        (doingFormTable ? buildFormTable : buildForm)(formNumber, actual_viewdef, processCell, isSubView).appendTo(wrapper);
         wrapper.addClass('specify-form-type-' + viewdef.attr('type'));
         wrapper.attr('data-specify-altview-mode', altview.mode);
         wrapper.attr('data-specify-form-mode', mode === 'view' ? 'view' : altview.mode);
@@ -104,18 +107,18 @@ var attachmentview = require('./templates/attachmentview.html');
         parseSpecifyProperties: parseSpecifyProperties,
         getView: getView,
 
-        buildViewByName: function (viewName, defaultType, mode) {
+        buildViewByName: function (viewName, defaultType, mode, isSubView=false) {
             if (viewName === "ObjectAttachment") {
                 return $.when($(attachmentview()));
             }
-            return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode); });
+            return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode, isSubView); });
         },
 
         buildSubView: function (node, mode) {
             var defaultType = specifyform.getSubViewType(node);
             mode = mode === 'view' || specifyform.subViewMode(node) === 'view' ? 'view' : 'edit';
             var viewName = node.data('specify-viewname');
-            var buildView = specifyform.buildViewByName(viewName, defaultType, mode);
+            var buildView = specifyform.buildViewByName(viewName, defaultType, mode, true);
 
             return buildView.pipe(function(form) {
                 form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();
