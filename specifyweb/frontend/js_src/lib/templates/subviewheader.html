@@ -1,27 +1,22 @@
-<header class="specify-subview-header">
-  <% if (dependent) { %>
-  <h3>
+<div class="specify-subview-header">
+  <legend>
+    <% if (!dependent) { %>
+      <span class="ui-icon ui-icon-arrowthick-1-e"><%= formsText('link') %></span>
+    <% } %>
     <span class="specify-subview-title"><%- title %></span>
     <span class="specify-subview-count" style="display: none"></span>
-  </h3>
-  <button type="button" class="specify-add-related fake-link">
-    <%= commonText('add') %>
-  </button>
-  <button type="button" class="specify-delete-related fake-link">
-    <%= commonText('delete') %>
-  </button>
-  <% } else { %>
-  <span class="ui-icon ui-icon-arrowthick-1-e"><%= formsText('link') %></span>
-  <span class="specify-subview-title"><%- title %></span>
-  <span class="specify-subview-count" style="display: none"></span>
-  <button type="button" class="specify-add-related fake-link">
-    <%= commonText('add') %>
-  </button>
-  <button type="button" class="specify-delete-related fake-link">
-    <%= commonText('remove') %>
-  </button>
-  <button type="button" class="specify-visit-related fake-link">
-    <%= formsText('visit') %>
-  </button>
-  <% } %>
-</header>
+  </legend>
+  <div>
+    <button type="button" class="specify-add-related fake-link">
+      <%= commonText('add') %>
+    </button>
+    <button type="button" class="specify-delete-related fake-link">
+      <%= commonText('delete') %>
+    </button>
+    <% if (!dependent) { %>
+      <button type="button" class="specify-visit-related fake-link">
+        <%= formsText('visit') %>
+      </button>
+    <% } %>
+  </div>
+</div>
