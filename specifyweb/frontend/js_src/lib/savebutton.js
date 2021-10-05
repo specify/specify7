@@ -34,6 +34,7 @@ module.exports =  Backbone.View.extend({
             }, this);
 
             this.handleFormKeyPress = this.handleFormKeyPress.bind(this);
+            this.handleFieldFocus = this.handleFieldFocus.bind(this);
         },
         setButtonsDisabled: function(disabled) {
             this.buttonsDisabled = disabled;
@@ -91,6 +92,7 @@ module.exports =  Backbone.View.extend({
             this.form = form;
             this.form.addEventListener('submit',this.submit);
             this.form.addEventListener('keypress',this.handleFormKeyPress);
+            this.form.addEventListener('focusout',this.handleFieldFocus);
         },
         handleFormKeyPress(event){
             if(event.key === 'Enter'){
@@ -101,12 +103,19 @@ module.exports =  Backbone.View.extend({
                 })
             }
         },
+        handleFieldFocus(event){
+            if(event.target.classList.contains('specify-field'))
+                event.target.classList.add('touched');
+        },
         remove(){
             this.form.removeEventListener('submit',this.submit);
             this.form.removeEventListener('keypress',this.handleFormKeyPress);
+            this.form.removeEventListener('focusout',this.handleFieldFocus);
             Backbone.View.prototype.remove.call(this);
         },
         submit: function(event) {
+
+            this.form.classList.add('submitted');
 
             if(this.buttonsDisabled || this.saveBlocked)
                 event.preventDefault();
@@ -180,4 +189,3 @@ module.exports =  Backbone.View.extend({
             }
         }
     });
-
