@@ -68,8 +68,9 @@ const commonText = require('./localization/common').default;
         className: "recordselector-add-delete-buttons specify-form-buttons",
         render: function () {
             this.$el.append(`
+                <input type="button" value="${commonText('delete')}" class="specify-delete-related">
                 <input type="button" value="${commonText('new')}" class="specify-add-related">
-                <input type="button" value="${commonText('delete')}" class="specify-delete-related">`).css('margin-top','5px');
+        `).css('margin-top','5px');
             this.showHide();
             return this;
         }
