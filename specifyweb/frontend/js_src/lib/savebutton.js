@@ -33,12 +33,19 @@ module.exports =  Backbone.View.extend({
                 if (!blocker.deferred) this.setSaveBlocked(true);
             }, this);
 
-            this.handleFormKeyPress = this.handleFormKeyPress.bind(this);
+            this.submit = this.submit.bind(this);
             this.handleFieldFocus = this.handleFieldFocus.bind(this);
         },
         setButtonsDisabled: function(disabled) {
             this.buttonsDisabled = disabled;
-            this.buttons && this.buttons.prop('disabled', disabled);
+            if(this.buttons){
+                if(disabled){
+                    const dialog = document.activeElement.closest('.ui-dialog');
+                    // Find and focus dialog close button
+                    dialog?.getElementsByClassName('ui-dialog-titlebar-close')[0]?.focus();
+                }
+                this.buttons.prop('disabled', disabled);
+            }
             if(!disabled) {
                 navigation.addUnloadProtect(this, formsText('unsavedFormUnloadProtect'));
             } else {
@@ -91,16 +98,7 @@ module.exports =  Backbone.View.extend({
             );
             this.form = form;
             this.form.addEventListener('submit',this.submit);
-            this.form.addEventListener('keypress',this.handleFormKeyPress);
             this.form.addEventListener('focusout',this.handleFieldFocus);
-        },
-        handleFormKeyPress(event){
-            if(event.key === 'Enter'){
-                event.preventDefault();
-                const modifiedEvent = event;
-                event.submitter = this.$el.find('.save-button')[0];
-                this.submit(modifiedEvent);
-            }
         },
         handleFieldFocus(event){
             if(event.target.classList.contains('specify-field'))
@@ -108,7 +106,6 @@ module.exports =  Backbone.View.extend({
         },
         remove(){
             this.form.removeEventListener('submit',this.submit);
-            this.form.removeEventListener('keypress',this.handleFormKeyPress);
             this.form.removeEventListener('focusout',this.handleFieldFocus);
             Backbone.View.prototype.remove.call(this);
         },
@@ -116,9 +113,8 @@ module.exports =  Backbone.View.extend({
 
             this.form.classList.add('submitted');
 
-            if(this.buttonsDisabled || this.saveBlocked)
-                event.preventDefault();
-            else {
+            event.preventDefault();
+            if(!this.buttonsDisabled && !this.saveBlocked){
                 const addAnother = $(event.submitter).is('.save-and-add-button');
                 this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
             }

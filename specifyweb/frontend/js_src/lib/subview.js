@@ -52,7 +52,7 @@ module.exports =  Backbone.View.extend({
             header.on('click', '.specify-add-related', this.add.bind(this));
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
-            specifyform.buildSubView(section, mode).done(function(form) {
+            specifyform.buildSubView(self.$el, mode).done(function(form) {
                 self.readOnly && $('.specify-delete-related, .specify-add-related', header).remove();
 
                 section.append(header);
