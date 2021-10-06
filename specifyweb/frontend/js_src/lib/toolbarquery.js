@@ -178,7 +178,7 @@ const commonText = require('./localization/common').default;
 
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.spquery });
-                saveButton.render().$el.appendTo(buttons);
+                saveButton.render().$el.prependTo(buttons);
                 saveButton.on('savecomplete', function() {
                     navigation.go('/query/' + this.spquery.id + '/');
                     dialog.$el.dialog('close');
@@ -191,7 +191,7 @@ const commonText = require('./localization/common').default;
 
             if (!this.spquery.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.spquery });
-                deleteButton.render().$el.appendTo(buttons);
+                deleteButton.render().$el.prependTo(buttons);
                 deleteButton.on('deleted', function() {
                     dialog.$el.dialog('close');
                     dialog = null;

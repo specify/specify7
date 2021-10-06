@@ -32,7 +32,7 @@ module.exports = Backbone.View.extend({
 
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.resource });
-                saveButton.render().$el.appendTo(buttons);
+                saveButton.render().$el.prependTo(buttons);
                 saveButton.on('saving', this.trigger.bind(this, 'saving'));
                 saveButton.on('savecomplete', function() {
                     this.close();
@@ -42,7 +42,7 @@ module.exports = Backbone.View.extend({
 
             if (!this.resource.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.resource, warning: this.deleteWarning });
-                deleteButton.render().$el.appendTo(buttons);
+                deleteButton.render().$el.prependTo(buttons);
                 deleteButton.on('deleting', this.close, this);
             }
 

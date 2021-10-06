@@ -14,7 +14,7 @@ var subviewheader = require('./templates/subviewheader.html');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
-    var CONTRACT = `<td class="contract">
+    const CONTRACT = `<td class="contract">
         <button
           type="button" 
           class="fake-link"
@@ -26,7 +26,7 @@ const commonText = require('./localization/common').default;
             </span>
         </button>
     </td>`;
-    var EXPAND = `<td class="expand">
+    const EXPAND = `<td class="expand">
         <button
           type="button"
           class="fake-link"
@@ -38,7 +38,7 @@ const commonText = require('./localization/common').default;
             </span>
         </button>
     </td>`;
-    var REMOVE = `<td class="remove">
+    const REMOVE = `<td class="remove">
         <button
           type="button"
           class="fake-link"
