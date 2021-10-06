@@ -19,12 +19,12 @@ header {
     height: 55px;
     margin: 1rem;
     order: 1;
-    flex-basis: 300px;
+    flex-basis: 275px;
 }
 
 #user-tools {
     order: 3;
-    flex-basis: 300px;
+    flex-basis: 275px;
     margin: 1rem;
 }
 
@@ -83,7 +83,7 @@ nav a::after {
 
     #user-tools {
         flex-basis: unset;
-        min-width: 300px;
+        min-width: 275px;
     }
 
     nav {
