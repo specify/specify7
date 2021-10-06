@@ -188,7 +188,7 @@ const ResourceDataView = Backbone.View.extend({
                     }
                 });
 
-                userInfo.isadmin && buttonsDiv.append(
+                userInfo.isadmin && buttonsDiv.prepend(
                     new SaveButton({model: this.appresourceData})
                         .on('savecomplete', () => this.model.save()) // so the save button does both
                         .render().el
@@ -197,7 +197,7 @@ const ResourceDataView = Backbone.View.extend({
                 $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
-            userInfo.isadmin &&  buttonsDiv.append(
+            userInfo.isadmin &&  buttonsDiv.prepend(
                 new DeleteButton({model: this.model}).render()
                     .on('deleted', () => navigation.go('/specify/appresources/'))
                     .el

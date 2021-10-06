@@ -136,10 +136,16 @@ div.specify-view-content {
 
 .specify-form-buttons {
     display: flex;
-    flex-direction: row-reverse;
     justify-content: space-between;
     border-top: 2px solid #f4763d;
     padding-top: 4px;
+}
+
+/* If there is only one button, align it to the right */
+.specify-form-buttons > *:only-child {
+    display: block;
+    width: fit-content;
+    margin-left: auto;
 }
 
 .specify-form-buttons input {
