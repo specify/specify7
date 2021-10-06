@@ -24,6 +24,7 @@ var userInfo          = require('./userinfo.js');
 const queryText = require('./localization/query').default;
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
+const autocomplete = require('./autocomplete').default;
 
 var dataobjformat = dataobjformatters.format;
 
@@ -98,7 +99,7 @@ var QueryCbx = Backbone.View.extend({
         'click .querycbx-add': 'addRelated',
         'click .querycbx-clone': 'cloneRelated',
         'click .querycbx-search': 'openSearch',
-        'autocompleteselect': 'select',
+        'change input': 'select',
         'blur input': 'blur'
     },
     initialize: function(options) {
@@ -275,8 +276,8 @@ var QueryCbx = Backbone.View.extend({
         }
         return null;
     },
-    select: function (event, ui) {
-        var resource = ui.item.resource;
+    select: function(event) {
+        const resource = this.autocompleteRecords[event.target.value];
         this.model.set(this.fieldName, resource);
     },
     render: function () {
@@ -318,10 +319,14 @@ var QueryCbx = Backbone.View.extend({
             f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
         control.attr('title', queryText('queryBoxDescription')(fieldTitles));
 
-        this.readOnly || control.autocomplete({
-            minLength: 1,
-            source: this.makeQuery.bind(this, searchFieldStrs)
-        });
+        if (!this.readOnly) {
+            this.autocomplete = autocomplete({
+                input: control[0],
+                source: this.makeQuery.bind(this, searchFieldStrs),
+            });
+            this.autocompleteRecords = undefined;
+        }
+
 
         this.model.on('change:' + this.fieldName.toLowerCase(), this.fillIn, this);
         this.fillIn();
@@ -330,32 +335,34 @@ var QueryCbx = Backbone.View.extend({
         this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
         return this;
     },
-    makeQuery: function(searchFieldStrs, request, response) {
-        var siht = this;
-        $.when(this.lowestChildRankPromise, this.treeRanksPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
-            var queries = _.map(searchFieldStrs, function(s) {
-                return makeQuery(s, request.term, treeRanks, lowestChildRank, leftSideRels, rightSideRels, siht);
-            }, siht);
-            if (siht.forceCollection) {
-                console.log('force query collection id to:', siht.forceCollection.id);
-                _.invoke(queries, 'set', 'collectionid', siht.forceCollection.id);
-            }
-            var requests = _.map(queries, function(query) {
-                return $.post('/stored_query/ephemeral/', JSON.stringify(query)).pipe(function(data) { return data; });
+    remove() {
+        this.autocomplete?.();
+        Backbone.View.prototype.remove.call(this);
+    },
+    makeQuery: function(searchFieldStrs, value) {
+        return new Promise(resolve=>{var siht = this;
+            $.when(this.lowestChildRankPromise, this.treeRanksPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
+                var queries = _.map(searchFieldStrs, function(s) {
+                    return makeQuery(s, value, treeRanks, lowestChildRank, leftSideRels, rightSideRels, siht);
+                }, siht);
+                if (siht.forceCollection) {
+                    console.log('force query collection id to:', siht.forceCollection.id);
+                    _.invoke(queries, 'set', 'collectionid', siht.forceCollection.id);
+                }
+                var requests = _.map(queries, function(query) {
+                    return $.post('/stored_query/ephemeral/', JSON.stringify(query)).pipe(function(data) { return data; });
+                });
+                whenAll(requests).pipe(siht.processResponse.bind(siht)).done(resolve);
             });
-            whenAll(requests).pipe(siht.processResponse.bind(siht)).done(response);
         });
     },
-    processResponse: function(resps) {
-        var data = _.pluck(resps, 'results');
-        var allResults = _.reduce(data, function(a, b) { return a.concat(b); }, []);
-        return _.map(allResults, function(row) {
-            return {
-                label: row[1],
-                value: row[1],
-                resource: new this.relatedModel.Resource({ id: row[0] })
-            };
-        }, this);
+    processResponse: function(responses) {
+        this.autocompleteRecords = {};
+        return responses.flatMap(({results}) => results).map(result => {
+            this.autocompleteRecords[result[1]] =
+                new this.relatedModel.Resource({id: result[0]});
+            return result[1];
+        });
     },
     fillIn() {
         setTimeout(()=>{

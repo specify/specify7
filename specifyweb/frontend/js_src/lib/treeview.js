@@ -19,6 +19,7 @@ const remoteprefs  = require('./remoteprefs.js');
 const cookies = require('./cookies.js');
 const treeText = require('./localization/tree').default;
 const commonText = require('./localization/common').default;
+const autocomplete = require('./autocomplete').default;
 
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
@@ -59,7 +60,7 @@ const commonText = require('./localization/common').default;
         __name__: "TreeView",
         className: "tree-view content-no-shadow",
         events: {
-            'autocompleteselect': 'search',
+            'change input': 'search',
             'click .tree-conform-save': 'setDefaultConformation',
             'click .tree-conform-restore': 'restoreDefaultConformation',
             'click .tree-conform-forget': 'forgetDefaultConformation'
@@ -99,7 +100,9 @@ const commonText = require('./localization/common').default;
             const controls = $('<header class="tree-controls"></header>');
             controls.appendTo(this.el);
             $('<h2>').text(commonText('trees')).appendTo(controls);
-            controls.append(this.makeSearchBox());
+            const searchBox = this.makeSearchBox();
+            controls.append(searchBox);
+            this.configureAutocomplete(searchBox);
             controls.append(this.makeBtns());
             $('<table>')
                 .prop('aria-live','polite')
@@ -112,6 +115,10 @@ const commonText = require('./localization/common').default;
             this.$('tr.loading').append(new Array(this.ranks.length-1).fill('<td>'));
             this.getRows();
             return this;
+        },
+        remove(){
+            this.autocomplete?.();
+            Backbone.View.prototype.remove.call(this);
         },
         getRows: function() {
             $.getJSON(this.baseUrl + 'null/' + this.sortField + '/').done(this.gotRows.bind(this));
@@ -165,10 +172,13 @@ const commonText = require('./localization/common').default;
         forgetDefaultConformation: function() {
             cookies.eraseCookie(this.getDefaultConformPrefName());
         },
-        search: function(event, ui) {
+        search: function(event) {
             this.$('.tree-search').blur();
             var roots = this.roots;
-            $.getJSON('/api/specify_tree/' + this.table + '/' + ui.item.nodeId + '/path/').done(function(path) {
+            const nodeId = this.autocompleteResults[event.target.value];
+            if(typeof nodeId === 'undefined')
+                return;
+            $.getJSON('/api/specify_tree/' + this.table + '/' + nodeId + '/path/').done(function(path) {
                 var nodeIds = _(path).chain().values()
                         .filter(function(node) { return node.rankid != null; })
                         .sortBy(function(node) { return node.rankid; })
@@ -177,7 +187,6 @@ const commonText = require('./localization/common').default;
             });
         },
         makeSearchBox: function() {
-            var tree = schema.getModel(this.table);
             return $(`<input
                 class="tree-search"
                 type="search"
@@ -185,19 +194,33 @@ const commonText = require('./localization/common').default;
                 placeholder="${treeText('searchTreePlaceholder')}"
                 title="${treeText('searchTreePlaceholder')}"
                 aria-label="${treeText('searchTreePlaceholder')}"
-            >`).autocomplete({
-                source: function(request, response) {
-                    var collection = new tree.LazyCollection({
+            >`);
+        },
+        configureAutocomplete(searchBox){
+            const tree = schema.getModel(this.table);
+            this.autocomplete = autocomplete({
+                input: searchBox[0],
+                source: (request)=>new Promise(resolve=>{
+                    const collection = new tree.LazyCollection({
                         filters: { name__istartswith: request.term, orderby: 'name' },
                         domainfilter: true
                     });
-                    collection.fetch().pipe(function() {
-                        var items = collection.map(function(node) {
-                            return { label: node.get('fullname'), value: node.get('name'), nodeId: node.id };
-                        });
-                        response(items);
+                    collection.fetch().pipe(()=>{
+                        this.autocompleteResults = {};
+                        const items = Object.fromEntries(collection.map((node)=>{
+                            this.autocompleteResults[node.get('fullname')] = node.id;
+                            const rankDefinition = this.treeDefItems.find(rank=>
+                              rank.get('rankid') === node.get('rankid')
+                            );
+                            const rankName =
+                              rankDefinition?.get('title')
+                              ?? rankDefinition?.get('name')
+                              ?? node.get('name');
+                            return [node.get('fullname'), rankName];
+                        }));
+                        resolve(items);
                     });
-                }
+                }),
             });
         },
         makeBtns: function() {
