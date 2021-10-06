@@ -140,7 +140,6 @@ const commonText = createDictionary({
       <a href="mailto:support@specifysoftware.org">
         support@specifysoftware.org
       </a>
-      .
     </>
   ),
   backEndErrorDialogTitle: 'Server Error',
