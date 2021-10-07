@@ -226,7 +226,7 @@ class AnyCharField(Field):
         return r'.{%d}' % self.size
 
 class RegexField(Field):
-    def value_regexp(self):
+    def value_regexp(self) -> str:
         return self.value
 
 class AlphaField(Field):
@@ -284,6 +284,7 @@ def new_field(node) -> Field:
         'year': YearField,
         'alphanumeric': AlphaNumField,
         'anychar': AnyCharField,
+        'regex': RegexField,
         'separator': SeparatorField
         }[node.attrib['type']]
     return Field(
