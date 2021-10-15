@@ -6,15 +6,10 @@ var Backbone = require('./backbone.js');
 
 
 var fieldformat  = require('./fieldformat.js');
-var uiparse      = require('./uiparse.js');
-var UIFieldInput = require('./uiinputfield.js');
-var saveblockers = require('./saveblockers.js');
-var ToolTipMgr   = require('./tooltipmgr.js');
+var { default: uiparse, addValidationAttributes, resolveParser } = require('./uiparse.ts');
+var SaveBlockers = require('./saveblockers.js');
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
-
-    var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
-    var stringParser = uiparse.bind(null, {type: 'java.lang.String'});
 
     var FieldInputUI = Backbone.View.extend({
         __name__: "FieldInputUI",
@@ -26,21 +21,23 @@ const commonText = require('./localization/common').default;
             aria-label="${commonText('searchQuery')}"
         >`,
         initialize: function(options) {
-            this.field = options.field;
-            this.isDatePart = options.isDatePart;
-            this.isTreeField = options.isTreeField;
-
-            this.inputFormatter = (this.isDatePart || this.isTreeField) ? null :
-                this.field.getUIFormatter();
-            this.outputFormatter = (this.isDatePart || this.isTreeField) ? null :
+            const isDatePart = typeof options.datePart !== 'undefined';
+            this.inputFormatter = (isDatePart || options.isTreeField) ? null :
+                options.field.getUIFormatter();
+            this.outputFormatter = (isDatePart || options.isTreeField) ? null :
                 function(value) { return fieldformat(options.field, value); };
-            this.parser = this.isDatePart ? intParser : this.isTreeField ? stringParser :
-                uiparse.bind(null, this.field);
+            this.field = options.isTreeField
+              ? {type: 'java.lang.String'}
+              : {
+                ...options.field,
+                datePart: options.datePart,
+              };
             this.values = [];
+            this.destructors = [];
 
             // A dummy model to keep track of invalid values;
             this.model = new Backbone.Model();
-            this.model.saveBlockers = new saveblockers.SaveBlockers(this.model);
+            this.model.saveBlockers = new SaveBlockers(this.model);
         },
         getValue: function() {
             return this.values[0];
@@ -53,40 +50,66 @@ const commonText = require('./localization/common').default;
             this.renderValues();
         },
         renderValues: function() {
-            _.each(this.inputUIs, function(ui, i) { ui.fillIn(this.values[i]); }, this);
+            this.inputs.forEach((input, index)=>{
+                input.value = this.values[index];
+            });
         },
         render: function() {
-            this.$el.empty();
-            $('<button class="field-operation fake-link">').text(this.opName).appendTo(this.el);
-            this.input && $(this.input).appendTo(this.el);
-            this.inputUIs = _.map(this.$('input'), this.addUIFieldInput, this);
+            this.el.innerHTML = `<button class="field-operation fake-link">
+                ${this.opName}
+            </button>
+            ${this.input}`;
+            this.inputs = Array.from(this.el.getElementsByTagName('input'));
+            this.inputs.forEach((input,index)=>this.addUIFieldInput(input, index));
             return this;
         },
         addUIFieldInput: function(el, i) {
-            var ui = new UIFieldInput({
-                el: el,
-                model: this.model,
-                formatter: this.inputFormatter,
-                parser: this.parser,
-                listInput: this.listInput
-            }).render()
-                .on('changed', this.inputChanged.bind(this, i))
-                .on('addsaveblocker', this.addSaveBlocker.bind(this, i))
-                .on('removesaveblocker', this.removeSaveBlocker.bind(this, i));
 
-            new saveblockers.FieldViewEnhancer(ui, this.cid + '-' + i);
-            new ToolTipMgr(ui).enable();
-            return ui;
+            this.parser = resolveParser(
+                this.field,
+                  this.inputFormatter ?? undefined
+            );
+            this.parser = this.parserMutator?.(this.parser) ?? this.parser;
+            addValidationAttributes(el, this.field, this.parser);
+
+            this.handleChange = ()=>{
+                const parser = uiparse.bind(undefined, this.field, this.parser);
+                const results = this.listInput
+                  ? el.value.split(',').map(parser)
+                  : [parser(el.value)];
+                this.inputChanged(i,results)
+            };
+            el.addEventListener('change', this.handleChange);
+            this.destructors.push(() =>
+                el.removeEventListener('change', this.handleChange)
+            );
+
+            this.model.saveBlockers?.linkInput(el, this.cid + '-' + i);
+            this.destructors.push(()=>this.model.saveBlockers?.unlinkInput(el));
         },
-        inputChanged: function(idx, value) {
-            this.values[idx] = value;
-            this.trigger('changed', this, this.getValue());
+        remove() {
+            this.destructors.forEach(destructor=>destructor());
+            Backbone.View.prototype.remove.call(this);
         },
-        addSaveBlocker: function(idx, key, message) {
-            this.model.saveBlockers.add(key + ":" + this.cid + '-' + idx, this.cid + '-' + idx, message);
+        inputChanged(idx, results) {
+            console.log('parse result:', results);
+
+            const invalidResults = results.filter(({isValid})=>!isValid);
+            const fieldName = `${this.cid}-${idx}`;
+            const key = `parseError:${fieldName}`;
+
+            this.model.saveBlockers.remove(key);
+            invalidResults.forEach((result)=>
+                this.model.saveBlockers.add(key, fieldName, result.reason)
+            );
+
+            if(invalidResults.length === 0){
+                this.afterValidChange(idx, results);
+                this.trigger('changed', this, this.getValue());
+            }
         },
-        removeSaveBlocker: function(idx, key) {
-            this.model.saveBlockers.remove(key + ":" + this.cid + '-' + idx);
+        afterValidChange(idx, results){
+            this.values[idx] = results[0].parsed;
         }
     });
 
@@ -126,11 +149,32 @@ const commonText = require('./localization/common').default;
         setValue: function(value) {
             this.updateValues(value.split(','));
         },
-        inputChanged: function(idx, value) {
-            if (value == "") return;
+        parserMutator(parser){
+            if(typeof parser?.pattern === 'object'){
+                // If a pattern is set, modify it to allow for comma separators
+                const pattern = parser.pattern.source.replaceAll(/^\^\(|\)\$$/g,'');
+                // Pattern with whitespace
+                const escaped = `\\s*(?:${pattern})\\s*`;
+                return {
+                    ...parser,
+                    pattern: RegExp(
+                      `^(|${escaped}(?:,${escaped})*)$`
+                    )
+                }
+            }
+            else return parser;
+        },
+        afterValidChange: function(idx, results) {
             this.$('input').val('');
-            this.updateValues(this.values.concat(value));
-            this.trigger('changed', this, this.getValue());
+            this.values = Array.from(new Set([
+                ...this.values,
+                ...results
+                    .filter(result=>result.parsed !== null)
+                    .map(result=>
+                        this.outputFormatter?.(result.parsed) ?? result.parsed
+                    )
+            ]));
+            this.updateValues(this.values);
         },
         renderValues: function() {
             var text = this.values.length ? this.values.join(', ') : queryText('addValuesHint');
@@ -139,7 +183,8 @@ const commonText = require('./localization/common').default;
         keydown: function(event) {
             if (event.keyCode != 8 || this.$('input').val() != "" || this.values.length == 0) return;
             event.preventDefault();
-            this.inputUIs[0].fillIn(this.values.pop()).validate();
+            this.inputs[0].value = this.values.pop();
+            this.handleChange();
             this.updateValues(this.values);
         }
     };
@@ -149,11 +194,17 @@ var Contains = {
     negation: "Doesn't Contain",
     types: ['strings', 'catnos'],
     addUIFieldInput: function(el, i) {
-        return new UIFieldInput({
-            el: el,
-            model: this.model,
-            parser: stringParser
-        }).render().on('changed', this.inputChanged.bind(this, i));
+        const handleChange = ()=>{
+                const parser = uiparse.bind(undefined, {type: 'java.lang.String'});
+                const results = this.listInput
+                  ? el.value.split(',').map(parser)
+                  : [parser(el.value)];
+                this.inputChanged(i,results)
+            };
+        el.addEventListener('change', handleChange);
+        this.destructors.push(() =>
+            el.removeEventListener('change', handleChange)
+        );
     }
 };
 
@@ -162,11 +213,17 @@ var Like = {
     negation: 'Not Like',
     types: ['strings', 'catnos'],
     addUIFieldInput: function(el, i) {
-        return new UIFieldInput({
-            el: el,
-            model: this.model,
-            parser: stringParser
-        }).render().on('changed', this.inputChanged.bind(this, i));
+         const handleChange = ()=>{
+                const parser = uiparse.bind(undefined, {type: 'java.lang.String'});
+                const results = this.listInput
+                  ? el.value.split(',').map(parser)
+                  : [parser(el.value)];
+                this.inputChanged(i,results)
+            };
+        el.addEventListener('change', handleChange);
+        this.destructors.push(() =>
+            el.removeEventListener('change', handleChange)
+        );
     }
 };
 

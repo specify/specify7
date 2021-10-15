@@ -6,6 +6,7 @@ var Q = require('q');
 
 var Base = require('./basepicklist.js');
 var schema = require('./schema.js');
+const {addValidationAttributes, resolveParser} = require('./uiparse.ts');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
@@ -21,7 +22,7 @@ module.exports = Base.extend({
       type="text"
       list="${this.el.id}"
       class="${this.$el.attr('class')}"
-      ${this.$el.attr('disabled') ? 'disabled' : ''}
+      ${this.$el.attr('disabled') ? 'disabled tabIndex="-1"' : ''}
       ${this.$el.attr('required') ? 'required' : ''}
     >`).appendTo(wrapper);
 
@@ -33,9 +34,12 @@ module.exports = Base.extend({
     return this;
   },
   _render: function() {
-    if (this.info.field.length != null) {
-      this.input.attr('maxlength', this.info.field.length);
-    }
+    const parser = resolveParser(this.info.field);
+    addValidationAttributes(
+        this.input[0],
+        this.info.field,
+        parser,
+    );
 
     this.dataList[0].innerHTML = this.source().map((label) =>
       `<option value="${label}">`,
@@ -70,6 +74,8 @@ module.exports = Base.extend({
       this.addValue(this.input.val());
     else
       this.model.set(this.info.field.name, value);
+
+    this.validatiionMessages.refresh();
   },
   resetValue: function() {
     this.input.val(this.getCurrentValue());

@@ -7,9 +7,8 @@ var moment = require('moment');
 var UIPlugin      = require('./uiplugin.js');
 var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
-var ToolTipMgr    = require('./tooltipmgr.js');
-var saveblockers  = require('./saveblockers.js');
 const formsText = require('./localization/forms').default;
+const commonText = require('./localization/common').default;
 
 function isInputSupported(type) {
 	var input = document.createElement('input');
@@ -35,9 +34,11 @@ module.exports =  UIPlugin.extend({
         render: function() {
             var init = this.init;
             var disabled = this.$el.prop('disabled');
-            var ui = $(template({formsText}));
+            var ui = $(template({formsText, commonText}));
             var select = ui.find('select');
             select.prop('id', this.$el.prop('id'));
+
+            this.destructors = [];
 
             if (this.model.isNew() && ("" + this.$el.data('specify-default')).toLowerCase() === 'today')  {
                 this.model.set(init.df.toLowerCase(), moment().format('YYYY-MM-DD'));
@@ -63,14 +64,16 @@ module.exports =  UIPlugin.extend({
             var label = ui.parents().last().find('label[for="' + select.prop('id') + '"]');
             label.text() || label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
 
-            this.inputFull.attr({
-                'size': dateFormatStr().length + 1,
-                'placeholder': dateFormatStr()
-            });
 
-            this.toolTipMgr = new ToolTipMgr(this).enable();
-            this.toolTipText = undefined;
-            this.saveblockerEhancement = new saveblockers.FieldViewEnhancer(this, init.df);
+            const inputs = [
+                this.inputFull[0],
+                this.inputMonth[0],
+                this.inputYear[0]
+            ];
+            inputs.forEach(input=>{
+                this.model.saveBlockers?.linkInput(input,init.df);
+                this.destructors.push(()=>this.model.saveBlockers?.unlinkInput(input));
+            });
 
             var setInput = this.setInput.bind(this);
             var setPrecision = this.setPrecision.bind(this);
@@ -81,7 +84,7 @@ module.exports =  UIPlugin.extend({
             return this;
         },
         remove(){
-            this.toolTipMgr.remove();
+            this.destructors.forEach(destructor=>destructor());
             UIPlugin.prototype.remove.call(this);
         },
         setInput: function() {
@@ -99,6 +102,20 @@ module.exports =  UIPlugin.extend({
             this.inputFull.val(value ? m.format(inputFullFormat) : '');
             this.inputMonth.val(value ? m.format(inputMonthFormat) : '');
             this.inputYear.val(value ? m.format('YYYY') : '');
+
+            if(!this.inputTypeDateSupported)
+                this.inputFull.attr({
+                    minlength: dateFormatStr().length,
+                    maxlength: dateFormatStr().length,
+                    placeholder: dateFormatStr(),
+                });
+
+            if(!this.inputTypeMonthSupported)
+                this.inputMonth.attr({
+                    pattern: '/(?:0\d|1[012])-\d{4}/',
+                    placeholder: 'MM/YYYY',
+                    title: formsText('invalidDate'),
+                });
         },
         setPrecision: function() {
             var defaultPrec;
@@ -141,7 +158,6 @@ module.exports =  UIPlugin.extend({
                 this.setInput();
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
                 console.log('setting date to null');
-                this.toolTipText = undefined;
             } else if (m.isValid()) {
                 var value = m.format('YYYY-MM-DD');
                 this.model.set(this.init.df, value);
@@ -151,11 +167,10 @@ module.exports =  UIPlugin.extend({
                 console.log('setting date to', value);
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
 
-                this.toolTipText = m.format(dateFormatStr());
-            } else {
+                this.inputFull.title = m.format(dateFormatStr());
+            } else
                 this.model.saveBlockers.add('invaliddate:' + this.init.df, this.init.df,
                                             invalidMessage || formsText('invalidDate'));
-            }
         },
         updateFullDate: function() {
             let val = this.inputFull.val().trim() || null;

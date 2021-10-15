@@ -1,7 +1,7 @@
 "use strict";
 
-var $ = require('jquery');
 var _ = require('underscore');
+const {validationMessages} = require('./validationmessages');
 
     //TODO: only propagate for dependent resources
 
@@ -19,6 +19,7 @@ var _ = require('underscore');
     function SaveBlockers(resource) {
         this.resource = resource;
         this.blockers = {};
+        this.inputs = {};
         this.resource.on('saveblocked', function(blocker) {
             triggerOnParent(resource)('saveblocked', blocker);
             triggerOnCollectionRelated(resource)('saveblocked', blocker);
@@ -33,39 +34,79 @@ var _ = require('underscore');
     }
 
     _.extend(SaveBlockers.prototype, {
-        add: function(key, field, reason, deferred) {
+        add: function(key, fieldName, reason, deferred) {
             if (deferred == null) deferred = false;
-            field = field != null ? field.toLowerCase() : void 0;
+            fieldName = fieldName != null ? fieldName.toLowerCase() : void 0;
             var blocker = this.blockers[key] = {
                 resource: this.resource,
-                field: field,
+                fieldName: fieldName,
                 reason: reason,
                 deferred: deferred
             };
             this.triggerSaveBlocked(blocker);
+            this.refreshValidation(blocker);
         },
         triggerSaveBlocked: function(blocker) {
             this.resource.trigger('saveblocked', blocker);
-            blocker.field && this.resource.trigger("saveblocked:" + blocker.field, blocker);
+            blocker.fieldName && this.resource.trigger("saveblocked:" + blocker.fieldName, blocker);
         },
         remove: function(key) {
             var blocker = this.blockers[key];
             if (!blocker) return;
 
-            var field = blocker.field;
+            var fieldName = blocker.fieldName;
             delete this.blockers[key];
-            if (field && _.isEmpty(this.blockersForField(field))) {
-                this.resource.trigger("nosaveblockers:" + field);
+            if (fieldName && _.isEmpty(this.blockersForField(fieldName))) {
+                this.resource.trigger("nosaveblockers:" + fieldName);
             }
             if (_.isEmpty(this.blockers)) {
                 this.resource.trigger('oktosave', this.resource);
             }
+            
+            this.refreshValidation(blocker);
+        },
+        linkInput(input, fieldName){
+            this.inputs[fieldName] ??= [];
+            const update = ()=>
+                Object.values(this.blockers).filter(blocker=>
+                    blocker.fieldName === fieldName
+                ).forEach(blocker=>this.refreshValidation(blocker));
+
+            input.addEventListener('focus', update);
+            this.inputs[fieldName].push({
+                el: input,
+                destructor: () => input.removeEventListener('focus', update),
+            });
+            update();
+        },
+        unlinkInput(targetInput){
+            this.inputs = Object.fromEntries(
+                Object.entries(this.inputs).filter(([_fieldName, inputs]) =>
+                    inputs.filter((input) => {
+                        if(input.el === targetInput){
+                            input.destructor();
+                            return true;
+                        }
+                        return false;
+                    })
+                )
+            );
+        },
+        refreshValidation(blocker){
+            (
+                this.inputs[blocker.fieldName] ?? []
+            ).forEach(input =>
+                validationMessages(input.el, this.blockersForField(
+                    blocker.fieldName,
+                ).map(blocker => blocker.reason) ?? []),
+            );
         },
         getAll: function() {
             return this.blockers;
         },
-        blockersForField: function(field) {
-            return _.filter(this.blockers, function(blocker) { return blocker.field === field; });
+        blockersForField(fieldName) {
+            return Object.values(this.blockers)
+                .filter(blocker=>blocker.fieldName===fieldName)
         },
         fireDeferredBlockers: function() {
             _.each(this.blockers, function(blocker) {
@@ -83,45 +124,5 @@ var _ = require('underscore');
         }
     });
 
-    function FieldViewEnhancer(view, fieldName, control) {
-        this.view = view;
-        this.field = fieldName.toLowerCase();
-        this.control = control || this.view.$el;
-        this.view.model.on("saveblocked:" + this.field, this.indicatorOn, this);
-        this.view.model.on("nosaveblockers:" + this.field, this.indicatorOff, this);
-        this.view.on('requestfortooltips', this.sendToolTips, this);
 
-        this.view.model.saveBlockers &&
-            _.each(this.view.model.saveBlockers.blockersForField(this.field),
-                   this.indicatorOn, this);
-    }
-
-    _.extend(FieldViewEnhancer.prototype, {
-        indicatorOn: function(blocker) {
-            blocker.deferred || this.control.addClass('saveblocked');
-        },
-        indicatorOff: function() {
-            this.control.removeClass('saveblocked');
-        },
-        sendToolTips: function() {
-            var view = this.view;
-
-
-            const saveBlockers =
-              view?.model.saveBlockers?.blockersForField(this.field) ?? [];
-            if(saveBlockers.length > 0)
-                saveBlockers.forEach((blocker)=>
-                    view.trigger('tooltipitem', blocker.reason)
-                );
-            else if(
-              typeof view.toolTipText === 'string'
-              && view.toolTipText.length > 0
-            )
-                view.trigger('tooltipitem',view.toolTipText);
-        }
-    });
-
-module.exports = {
-        SaveBlockers: SaveBlockers,
-        FieldViewEnhancer: FieldViewEnhancer
-    };
+module.exports = SaveBlockers;
