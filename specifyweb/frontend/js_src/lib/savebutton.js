@@ -14,6 +14,7 @@ module.exports =  Backbone.View.extend({
             this.blockingResources = {};
             this.saveBlocked = false;
             this.buttonsDisabled = true;
+            this.destructors = [];
 
             if (this.model.isNew()) this.setButtonsDisabled(false);
 
@@ -32,9 +33,6 @@ module.exports =  Backbone.View.extend({
                 if (!blocker.deferred) this.setButtonsDisabled(true);
                 if (!blocker.deferred) this.setSaveBlocked(true);
             }, this);
-
-            this.submit = this.submit.bind(this);
-            this.handleFieldFocus = this.handleFieldFocus.bind(this);
         },
         setButtonsDisabled: function(disabled) {
             this.buttonsDisabled = disabled;
@@ -83,7 +81,7 @@ module.exports =  Backbone.View.extend({
                 class: "save-button",
                 value: commonText('save')
             }));
-            this.buttons = this.$(':submit');
+            this.buttons = this.$('input');
             this.buttons.appendTo(this.el);
 
             // get buttons to match current state
@@ -97,22 +95,52 @@ module.exports =  Backbone.View.extend({
                 button.setAttribute('form',form.id)
             );
             this.form = form;
-            this.form.addEventListener('submit',this.submit);
-            this.form.addEventListener('focusout',this.handleFieldFocus);
-        },
-        handleFieldFocus(event){
-            if(event.target.classList.contains('specify-field'))
-                event.target.classList.add('touched');
+
+            const submit = this.submit.bind(this);
+            this.form.addEventListener('submit',submit);
+            this.destructors.push(()=>
+                this.form.removeEventListener('submit',submit)
+            );
+
+            const handleFocus = this.handleFocus.bind(this);
+            this.form.addEventListener('focusin', handleFocus);
+            this.destructors.push(()=>
+                this.form.removeEventListener('focusin',handleFocus)
+            );
+
+            const handleClick = (event)=>{
+                if(event.target.type === 'button')
+                    this.submit(event);
+
+                /*
+                 * If tried to submit form, untouched blank required fields are
+                 * no longer hidden
+                 *
+                 * Can't do this inside of onsubmit handler, because
+                 * onsubmit is only called on valid forms
+                 * */
+                this.form.classList.add('submitted');
+            };
+            Array.from(this.buttons).forEach(button=> {
+                button.addEventListener('click', handleClick);
+                this.destructors.push(()=>
+                    button.removeEventListener('click', handleClick)
+                );
+            })
         },
         remove(){
-            this.form.removeEventListener('submit',this.submit);
-            this.form.removeEventListener('focusout',this.handleFieldFocus);
+            this.destructors.forEach(destructor => destructor());
             Backbone.View.prototype.remove.call(this);
         },
+        handleFocus(event){
+            if(event.target?.required === true)
+                /*
+                 * Don't display "This is a required field" error message
+                 * until input was interacted with
+                 */
+                event.target.classList.add('touched');
+        },
         submit: function(event) {
-
-            this.form.classList.add('submitted');
-
             event.preventDefault();
             if(!this.buttonsDisabled && !this.saveBlocked){
                 const addAnother = $(event.submitter).is('.save-and-add-button');
