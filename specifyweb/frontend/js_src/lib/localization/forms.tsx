@@ -115,9 +115,7 @@ const formsText = createDictionary({
   deleteConfirmationDialogMessage: 'This action can not be undone.',
 
   // PartialDateUi
-  fullDate: 'Full Date',
   monthYear: 'Mon / Year',
-  year: 'Year',
   dayPlaceholder: 'DD',
   monthPlaceholder: 'MM',
   yearPlaceholder: 'YYYY',
@@ -223,20 +221,19 @@ const formsText = createDictionary({
   link: 'Link',
   visit: 'Visit',
 
-  // UiInputField
-  formatPopUp: (format: string) => `Format: ${format}`,
-
   // UiParse
-  illegalBool: (value: string) => `Illegal value for Boolean: "${value}.`,
-  outOfRange: (minSafeInteger: number, maxSafeInteger: number) =>
-    `Value must be between ${minSafeInteger} and ${maxSafeInteger}.`,
-  notNumber: 'Not a valid number.',
-  notInteger: 'Not a valid integer.',
-  lengthOverflow: (maxLength: string) =>
-    `Value cannot be longer than ${maxLength}.`,
+  illegalBool: 'Illegal value for a Yes/No field',
   requiredField: 'Field is required.',
   requiredFormat: (format: string) => `Required Format: ${format}.`,
   noParser: (type: string) => `No parser for type ${type}`,
+  inputTypeNumber: `Value must be a number`,
+  minimumLength: (number: number) =>
+    `Minimum length for this field is ${number} characters`,
+  maximumLength: (number: number) =>
+    `Value can not be longer than ${number} characters`,
+  minimumNumber: (number: number) => `Number must be smaller than ${number}`,
+  maximumNumber: (number: number) => `Value must be greater than ${number}`,
+  wrongStep: (step: number) => `Value must be a multiple of ${step}`,
 
   // UserAgentsPlugin
   setAgents: 'Set Agents',
