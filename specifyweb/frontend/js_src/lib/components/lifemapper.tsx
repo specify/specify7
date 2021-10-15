@@ -49,7 +49,6 @@ export function SpecifyNetworkBadge({
       href={formatLifemapperViewPageRequest(guid, occurrenceName)}
       target="_blank"
       title={lifemapperText('specifyNetwork')}
-      rel="noreferrer"
       className="lifemapper-source-icon"
     >
       <img
