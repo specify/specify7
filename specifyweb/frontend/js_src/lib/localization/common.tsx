@@ -65,6 +65,8 @@ const commonText = createDictionary({
   unmapped: 'Unmapped',
   expand: 'Expand',
   geoMap: 'GeoMap',
+  fullDate: 'Full Date',
+  year: 'Year',
 
   // Toolbar
   notifications: (count: number) => `Notifications: ${count}`,
