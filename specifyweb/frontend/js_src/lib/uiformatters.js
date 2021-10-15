@@ -30,11 +30,6 @@ const escapeRegExp = require('./escaperegexp.js');
         canAutonumber: function() {
             return _.any(_.invoke(this.fields, 'canAutonumber'));
         },
-        needsAutoNumber: function(values) {
-            return _.any(this.fields, function(field, i) {
-                return field.isWild(values[i]);
-            });
-        },
         canonicalize: function(values) {
             return _.map(this.fields, function(field, i) {
                     return field.canonicalize(values[i]);
@@ -60,10 +55,6 @@ const escapeRegExp = require('./escaperegexp.js');
         },
         wildRegexp: function() {
             return escapeRegExp(this.value);
-        },
-        isWild: function(value) {
-            return RegExp(this.wildRegexp()).test(value) &&
-                !RegExp(this.valueRegexp()).test(value);
         },
         wildOrValueRegexp: function() {
             return this.canAutonumber() ? this.wildRegexp() + '|' + this.valueRegexp()
@@ -93,7 +84,6 @@ const escapeRegExp = require('./escaperegexp.js');
 
     var ConstantField = Field.extend({
         __name__: "ConstantField",
-        isWild: function() { return false; },
         valueRegexp: Field.prototype.wildRegexp
     });
 

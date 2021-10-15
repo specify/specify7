@@ -1,6 +1,5 @@
 "use strict";
 
-var $        = require('jquery');
 var _        = require('underscore');
 var Q        = require('q');
 var Backbone = require('./backbone.js');
@@ -8,33 +7,10 @@ var Backbone = require('./backbone.js');
 
 var dataobjformatters = require('./dataobjformatters.js');
 var fieldformat       = require('./fieldformat.js');
-var uiparse           = require('./uiparse.js');
-var UIFieldInput      = require('./uiinputfield.js');
-var saveblockers      = require('./saveblockers.js');
-var ToolTipMgr        = require('./tooltipmgr.js');
-var dateFormatStr     = require('./dateformat.js');
+var { default: uiparse, addValidationAttributes, resolveParser} = require('./uiparse.ts');
+const formsText = require('./localization/forms').default;
 
 var objformat = dataobjformatters.format;
-
-function isNumeric(field) {
-    return [
-        'java.lang.Byte',
-        'java.lang.Double',
-        'java.lang.Float',
-        'java.lang.Integer',
-        'java.lang.Long',
-        'java.lang.Short',
-        'java.math.BigDecimal',
-    ].includes(field.type);
-}
-
-function isDate(field) {
-    return [
-        "java.sql.Timestamp",
-        "java.util.Calendar",
-        "java.util.Date",
-    ].includes(field.type);
-}
 
 module.exports =  Backbone.View.extend({
         __name__: "UIField",
@@ -47,6 +23,7 @@ module.exports =  Backbone.View.extend({
             Q(this.model.getResourceAndField(fieldName))
                 .spread(this._render.bind(this))
                 .done();
+            this.destructors = [];
             return this;
         },
         _render: function(resource, field) {
@@ -71,35 +48,44 @@ module.exports =  Backbone.View.extend({
             var formatter = field.getUIFormatter();
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
-            field.isRequired && this.el.setAttribute('required','');
-            isNumeric(field) && this.$el.addClass('specify-numeric-field');
 
-            var inputUI = new UIFieldInput({
-                el: this.el,
-                readOnly: readOnly,
-                noValidation: this.model.noValidation,
-                formatter: formatter,
-                formatStr: isDate(field) ? dateFormatStr() : null, // should be part of uiparse, really.
-                parser: uiparse.bind(null, field)
-            }).render()
-                    .on('changed', this.inputChanged, this)
-                    .on('changing', this.inputChanging, this)
-                    .on('addsaveblocker', this.addSaveBlocker, this)
-                    .on('removesaveblocker', this.removeSaveBlocker, this);
+            const parser = resolveParser(field, formatter ?? undefined);
 
-            if (resource.isNew() && this.$el.val()) {
-                console.log('setting default value', this.$el.val(), 'into', field);
-                inputUI.readOnly = false;
-                inputUI.fillIn(this.$el.val()).change();
-                inputUI.readOnly = readOnly;
+            if(field.readOnly){
+              this.el.readonly = true;
+              this.el.tabIndex = -1;
+            }
+            else
+                addValidationAttributes(
+                    this.el,
+                    field,
+                    parser,
+                );
+
+            if(!readOnly){
+              const changing = ()=>this.model.trigger('changing');
+              this.el.addEventListener('input', changing);
+              this.destructors.push(()=>
+                this.el.removeEventListener('input', changing)
+              );
             }
 
-            if (resource) {
-                var fillItIn = function() {
-                    var format = field.isRelationship ? objformat : _.bind(fieldformat, null, field);
+            const parserFunction = this.model.noValidation
+                ? (value)=>({ isValid: true, value, parsed: value })
+                : uiparse.bind(null, field, parser);
 
-                    resource.rget(fieldName).pipe(format).done(function(value) {
-                        inputUI.fillIn(value);
+            const handleChange = ()=>this.inputChanged(parserFunction(this.el.value));
+            this.el.addEventListener('change', handleChange);
+            this.destructors.push(() =>
+                this.el.removeEventListener('change', handleChange)
+            );
+
+            if (resource) {
+                const fillItIn = ()=>{
+                    const format = field.isRelationship ? objformat : _.bind(fieldformat, null, field);
+
+                    resource.rget(fieldName).pipe(format).done((value)=>{
+                        this.el.value = value ?? '';
                     });
                 };
 
@@ -109,29 +95,33 @@ module.exports =  Backbone.View.extend({
 
             if (readOnly) return;
 
-            if (!this.model.noValidation) {
-                this.toolTipMgr = new ToolTipMgr(this).enable();
-                this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, fieldName);
+            if (!this.model.noValidation){
+                this.model.saveBlockers?.linkInput(this.el, fieldName);
+                this.destructors.push(()=>
+                  this.model.saveBlockers?.unlinkInput(this.el, fieldName)
+                );
             }
 
-            if (this.model.isNew()) {
-                var autoNumberValue = formatter && formatter.canAutonumber() && formatter.value();
+            if (this.model.isNew() && formatter && formatter.canAutonumber()) {
+                const autoNumberValue = formatter.value();
                 autoNumberValue && this.model.set(this.fieldName, autoNumberValue);
-
-                inputUI.validate(true); // validate any default value and defer result
             }
+            handleChange();
+
         },
-        inputChanged: function(value) {
-            this.model.set(this.fieldName, value);
+        remove() {
+            this.destructors.forEach(destructor=>destructor());
+            Backbone.View.prototype.remove.call(this);
         },
-        inputChanging: function() {
-            this.model.trigger('changing');
+        inputChanged: function(result) {
+            console.log('parse result:', result);
+            const key = `parseError:${this.fieldName}`;
+            if(result.isValid){
+              this.model.saveBlockers.remove(key);
+              this.model.set(this.fieldName, result.parsed);
+            }
+            else
+              this.model.saveBlockers.add(key, this.fieldName, result.reason);
         },
-        addSaveBlocker: function(key, message, deferred) {
-            this.model.saveBlockers.add(key + ':' + this.fieldName, this.fieldName, message, deferred);
-        },
-        removeSaveBlocker: function(key) {
-            this.model.saveBlockers.remove(key + ':' + this.fieldName);
-        }
     });
 
