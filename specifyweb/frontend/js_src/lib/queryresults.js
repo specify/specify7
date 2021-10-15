@@ -205,7 +205,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             if (field && format) {
                 if (value && this.auditObjFormatter.active) {
                     this.auditObjFormatter.format(field, result, resource, cell, value);
-                } else if (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date') {
+                } else if (!fieldSpec.datePart || fieldSpec.datePart === 'fullDate') {
                     cell.text = fieldformat(field, value);
                 }
             }

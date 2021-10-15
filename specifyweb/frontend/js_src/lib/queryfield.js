@@ -165,10 +165,10 @@ module.exports =  Backbone.View.extend({
                 this.$('.op-negate').hide();
             } else {
                 this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
-                if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
-                    $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
-                }
-                if (this.operation == 'anything') {
+                if (_(['month', 'year', 'day']).contains(this.fieldSpec.datePart))
+                    $('<a class="field-label-datepart">')
+                        .text(`(${queryText(this.fieldSpec.datePart)})`).appendTo(fieldLabel);
+                if (this.operation === 'anything') {
                     $('<button class="field-operation fake-link">').text(queryText('anyInline')).appendTo(fieldLabel);
                     this.$('.op-negate').hide();
                 }
@@ -244,10 +244,15 @@ module.exports =  Backbone.View.extend({
                 });
         },
         setupDatePartState: function() {
-            var select = this.$('.datepart-select').empty();
-            var options = _(['Extract...', 'Full Date', 'Year', 'Month', 'Day']).each(function(datepart) {
-                $('<option>', {value: datepart}).text(datepart).appendTo(select);
-            });
+            this.$('.datepart-select')[0].innerHTML = Object.entries({
+                extract: queryText('extract'),
+                fullDate: commonText('fullDate'),
+                year: commonText('year'),
+                month: queryText('month'),
+                day: queryText('day'),
+            }).map(([value, label])=>`
+                <option value="${value}">${label}</option>
+            `).join('');
         },
         setupCompleteState: function() {
             this.$el.removeClass('field-incomplete');
@@ -257,7 +262,9 @@ module.exports =  Backbone.View.extend({
                     field: field,
                     el: this.$('.field-input'),
                     isTreeField: !!this.fieldSpec.treeRank,
-                    isDatePart: field && field.isTemporal() && this.fieldSpec.datePart != 'Full Date'
+                    datePart: field && field.isTemporal()
+                        ? this.fieldSpec.datePart
+                        : undefined
                 });
                 this.inputUI.render();
                 this.inputUI.on('changed', this.valueChanged, this);
@@ -368,7 +375,7 @@ module.exports =  Backbone.View.extend({
             return this.fieldSpec.getField();
         },
         getTypeForOp: function() {
-            if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) return 'numbers';
+            if (_(['month', 'year', 'day']).contains(this.fieldSpec.datePart)) return 'numbers';
             if (this.fieldSpec.treeRank) return 'strings';
             var field = this.getField();
             if (field.model.name === 'CollectionObject' &&

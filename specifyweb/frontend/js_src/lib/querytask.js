@@ -244,7 +244,7 @@ const commonText = require('./localization/common').default;
                         .map(function(f){
                             var field = _.last(f.spec.joinPath);
                             var name = f.spec.treeRank || field.getLocalizedName();
-                            if (f.spec.datePart &&  f.spec.datePart != 'Full Date') {
+                            if (f.spec.datePart &&  f.spec.datePart !== 'fullDate') {
                                 name += ' (' + f.spec.datePart + ')';
                             }
                             //return {caption: name, isdisplay: f.isdisplay};

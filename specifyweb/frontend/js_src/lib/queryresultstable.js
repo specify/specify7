@@ -15,7 +15,7 @@ const commonText = require('./localization/common').default;
         var field = _.last(fieldSpec.joinPath);
         var icon = field && field.model.getIcon();
         var name = fieldSpec.treeRank || field.getLocalizedName();
-        if (fieldSpec.datePart &&  fieldSpec.datePart != 'Full Date') {
+        if (fieldSpec.datePart &&  fieldSpec.datePart !== 'fullDate') {
             name += ' (' + fieldSpec.datePart + ')';
         }
         var th = $('<th>', {scope: 'col'}).text(name);

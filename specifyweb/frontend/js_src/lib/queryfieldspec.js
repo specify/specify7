@@ -34,7 +34,7 @@ var schema = require('./schema.js');
 
     function makeStringId(fs, tableList) {
         var fieldName = fs.treeRank || (fs.joinPath.length ? _.last(fs.joinPath).name : '');
-        if (fs.datePart && fs.datePart !== "Full Date") {
+        if (fs.datePart && fs.datePart !== 'fullDate') {
             fieldName += 'Numeric' + fs.datePart;
         }
         return [tableList, fs.table.name.toLowerCase(), fieldName];
@@ -72,7 +72,7 @@ var schema = require('./schema.js');
         return _.extend(new QueryFieldSpec(rootTable), {
             joinPath: joinPath,
             table: node,
-            datePart: (joinPath.length && _.last(joinPath).isTemporal()) ? 'Full Date' : null,
+            datePart: (joinPath.length && _.last(joinPath).isTemporal()) ? 'fullDate' : null,
             treeRank: null
         });
     };
@@ -107,7 +107,7 @@ var schema = require('./schema.js');
             console.log("using fieldname as treerank", treeRank);
         } else {
             joinPath.push(field);
-            field.isTemporal() && datePart || ( datePart = "Full Date" );
+            field.isTemporal() && datePart || ( datePart = "fullDate" );
         }
 
         var result = _.extend(new QueryFieldSpec(rootTable), {
