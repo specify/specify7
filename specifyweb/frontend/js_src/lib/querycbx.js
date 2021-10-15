@@ -13,8 +13,6 @@ var dataobjformatters = require('./dataobjformatters.js');
 var whenAll           = require('./whenall.js');
 var parseselect       = require('./parseselect.js');
 var navigation        = require('./navigation.js');
-var saveblockers      = require('./saveblockers.js');
-var ToolTipMgr        = require('./tooltipmgr.js');
 var QueryCbxSearch    = require('./querycbxsearch.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var initialContext    = require('./initialcontext.js');
@@ -277,8 +275,8 @@ var QueryCbx = Backbone.View.extend({
         return null;
     },
     select: function(event) {
-        const resource = this.autocompleteRecords[event.target.value];
-        this.model.set(this.fieldName, resource);
+        const resource = this.autocompleteRecords?.[event.target.value];
+        this.model.set(this.fieldName, resource ?? null);
     },
     render: function () {
         var control = this.$el;
@@ -331,8 +329,6 @@ var QueryCbx = Backbone.View.extend({
         this.model.on('change:' + this.fieldName.toLowerCase(), this.fillIn, this);
         this.fillIn();
 
-        this.toolTipMgr = new ToolTipMgr(this, control).enable();
-        this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
         return this;
     },
     remove() {
@@ -368,16 +364,13 @@ var QueryCbx = Backbone.View.extend({
         setTimeout(()=>{
             this.model.rget(this.fieldName, true).done((related)=>{
                 this.$('.querycbx-edit, .querycbx-display, .querycbx-clone').prop('disabled', !related);
-                if (related) {
+                if (related)
                     this.renderItem(related).done((item)=>
                         this.$('input').val(item.value)
                     );
-                    this.model.saveBlockers.remove('fieldrequired:' + this.fieldName);
-                } else {
+                else
                     this.$('input').val('');
-                    this.isRequired && this.model.saveBlockers.add(
-                        'fieldrequired:' + this.fieldName, this.fieldName, queryText('fieldIsRequired'), true);
-                }
+
             });
         },0);
     },

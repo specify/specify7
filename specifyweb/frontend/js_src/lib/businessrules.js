@@ -4,7 +4,7 @@ var $                 = require('jquery');
 var _                 = require('underscore');
 var Q                 = require('q');
 var api               = require('./specifyapi.js');
-var saveblockers      = require('./saveblockers.js');
+var SaveBlockers      = require('./saveblockers.js');
 var treeBusinessRules = require('./treebusinessrules.js');
 var rules             = require('./businessruledefs.js');
 
@@ -20,7 +20,7 @@ const formsText = require('./localization/forms').default;
         var mgr;
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
-        resource.saveBlockers = new saveblockers.SaveBlockers(resource);
+        resource.saveBlockers = new SaveBlockers(resource);
         mgr.isTreeNode && treeBusinessRules.init(resource);
         mgr.doCustomInit();
     };
