@@ -35,7 +35,6 @@ type Parser = Partial<{
   readonly max: number;
   readonly step: number;
   readonly placeholder: string;
-  // FIXME: form:invalid styles?
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
   readonly title: string;

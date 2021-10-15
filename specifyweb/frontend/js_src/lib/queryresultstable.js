@@ -24,7 +24,7 @@ async function getTreeRanks(tableName){
         const icon = field && field.model.getIcon();
         let name = field?.getLocalizedName();
 
-        const th = $(`<th><span></span></th>`);
+        const th = $(`<th scope="col"><span></span></th>`);
         const span = th.find('span');
 
         // If it is a tree rank, display rank name while fetching rank title
@@ -40,7 +40,7 @@ async function getTreeRanks(tableName){
                 .then(treeRank=>treeRank.get('title'))
               .then(title=>span.text(title));
 
-        else if (fieldSpec.datePart && fieldSpec.datePart !== 'Full Date')
+        else if (fieldSpec.datePart && fieldSpec.datePart !== 'fullDate')
             span.text(`${name} (${fieldSpec.datePart})`);
 
         icon && th.prepend($('<img>', {src: icon, alt: ''}));
