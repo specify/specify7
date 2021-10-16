@@ -3,6 +3,7 @@
 var _ = require('underscore');
 
 var schema = require('./schema.js');
+const {capitalize} = require('./wbplanviewhelper');
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
 
@@ -35,7 +36,7 @@ var schema = require('./schema.js');
     function makeStringId(fs, tableList) {
         var fieldName = fs.treeRank || (fs.joinPath.length ? _.last(fs.joinPath).name : '');
         if (fs.datePart && fs.datePart !== 'fullDate') {
-            fieldName += 'Numeric' + fs.datePart;
+            fieldName += 'Numeric' + capitalize(fs.datePart);
         }
         return [tableList, fs.table.name.toLowerCase(), fieldName];
     }

@@ -185,8 +185,10 @@ module.exports =  Backbone.View.extend({
                         year: commonText('year'),
                         month: commonText('month'),
                         day: commonText('day'),
-                    }[this.field.datePart];
-                    $('<a class="field-label-datepart">').text(`(${localized})`).appendTo(fieldLabel);
+                    }[this.fieldSpec.datePart];
+                    $('<a class="field-label-datepart">')
+                        .text(`(${localized})`)
+                        .appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {
                     $('<button class="field-operation fake-link">').text(queryText('anyInline')).appendTo(fieldLabel);
