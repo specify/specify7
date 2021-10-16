@@ -74,8 +74,6 @@ module.exports = Base.extend({
       this.addValue(this.input.val());
     else
       this.model.set(this.info.field.name, value);
-
-    this.validatiionMessages.refresh();
   },
   resetValue: function() {
     this.input.val(this.getCurrentValue());

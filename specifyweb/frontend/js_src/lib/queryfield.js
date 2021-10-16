@@ -170,7 +170,7 @@ module.exports =  Backbone.View.extend({
                         year: commonText('year'),
                         month: commonText('month'),
                         day: commonText('day'),
-                    }[this.field.datePart];
+                    }[this.fieldSpec.datePart];
                     $('<a class="field-label-datepart">')
                         .text(`(${localized})`).appendTo(fieldLabel);
                 }

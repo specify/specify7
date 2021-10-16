@@ -132,7 +132,7 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
 
   year: {
     type: 'number',
-    min: 0,
+    min: 1,
     max: 9999,
     step: 1,
     formatters: [formatter.int],
@@ -141,7 +141,7 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
 
   month: {
     type: 'number',
-    min: 0,
+    min: 1,
     max: 12,
     step: 1,
     formatters: [formatter.int],
@@ -150,7 +150,7 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
 
   day: {
     type: 'number',
-    min: 0,
+    min: 1,
     max: 31,
     step: 1,
     formatters: [formatter.int],
@@ -314,14 +314,14 @@ function validateAttributes(parser: Parser, value: string): undefined | string {
   if (
     typeof parser.max === 'number' &&
     !Number.isNaN(Number.parseInt(value)) &&
-    Number.parseInt(value) < parser.max
+    Number.parseInt(value) > parser.max
   )
     return formsText('maximumNumber')(parser.max);
 
   if (
     typeof parser.step === 'number' &&
-    !Number.isNaN(Number.parseInt(value)) &&
-    (Number.parseInt(value) / parser.step) % 1 === 0
+    !Number.isNaN(Number.parseFloat(value)) &&
+    (Number.parseFloat(value) / parser.step) % 1 !== 0
   )
     return formsText('wrongStep')(parser.step);
 
