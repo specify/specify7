@@ -4,7 +4,6 @@ require('../css/notifications.css');
 const $        = require('jquery');
 const _        = require('underscore');
 const Backbone = require('./backbone.js');
-const moment = require('moment');
 const commonText = require('./localization/common').default;
 
 const Message = Backbone.Model.extend({
@@ -103,9 +102,10 @@ const MessageView = Backbone.View.extend({
     },
     render() {
         const render = renderMessage[this.message.get('type')] || renderMessage.default;
-        const time = moment(this.message.get('timestamp')).format('lll');
+        const date  = new Date(this.message.get('timestamp'));
+        const formatted = new Intl.DateTimeFormat([], { dateStyle: 'medium', timeStyle: 'short' }).format(date);
         this.$el.append(
-            `<span>${time}</span>`,
+            `<time datetime="${date.toISOString()}">${formatted}</time>`,
             `<a class="ui-icon ui-icon-trash" style="float: right;">${commonText('delete')}</a>`,
             render(this.message)
         );

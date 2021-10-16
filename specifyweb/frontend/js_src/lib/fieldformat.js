@@ -2,14 +2,14 @@
 
 var $      = require('jquery');
 var _      = require('underscore');
-var moment = require('moment');
 
 var dateFormatStr = require('./dateformat.js');
 var AgentTypeCBX  = require('./agenttypecbx.js');
+const dayjs = require('./dayjs');
 
     function formatDate(value) {
         if (value == null) return value;
-        var m = moment(value);
+        var m = dayjs(value);
         return m.isValid() ? m.format(dateFormatStr()) : (value || '');
     }
 

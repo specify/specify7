@@ -12,6 +12,7 @@ const fieldFormat = require('./fieldformat.js');
 const userInfo    = require('./userinfo.js');
 const s = require('./stringlocalization.js');
 const QueryCbx = require('./querycbx.js');
+const {getDateInputValue} = require('./dayjs');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
@@ -22,7 +23,7 @@ function formatCatNo(catNo) {
 
 function localize(key, fallback) {
     return s.localizeFrom('resources', key, fallback);
-};
+}
 
 const PrepReturnRow = Backbone.View.extend({
     __name__: "PrepReturnRow",
@@ -235,7 +236,7 @@ module.exports =  Backbone.View.extend({
 
         // this is used to capture the receiving agent and date
         this.dummyLRP = new schema.models.LoanReturnPreparation.Resource({
-            returneddate: moment().format('YYYY-MM-DD'),
+            returneddate: getDateInputValue(new Date()),
             receivedby: userInfo.agent.resource_uri
         });
         this.populateForm(form, this.dummyLRP);
