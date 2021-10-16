@@ -67,17 +67,18 @@ const {validationMessages} = require('./validationmessages');
         },
         linkInput(input, fieldName){
             this.inputs[fieldName] ??= [];
-            const update = ()=>
-                Object.values(this.blockers).filter(blocker=>
-                    blocker.fieldName === fieldName
-                ).forEach(blocker=>this.refreshValidation(blocker));
-
+            const update = this.handleFocus.bind(this, input, fieldName);
             input.addEventListener('focus', update);
             this.inputs[fieldName].push({
                 el: input,
                 destructor: () => input.removeEventListener('focus', update),
             });
             update();
+        },
+        handleFocus(input, fieldName){
+            validationMessages(input, Object.values(this.blockers).filter(blocker =>
+                blocker.fieldName === fieldName,
+            ).map(blocker => blocker.reason));
         },
         unlinkInput(targetInput){
             this.inputs = Object.fromEntries(
