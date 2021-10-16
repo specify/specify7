@@ -9,6 +9,7 @@ var latlongutils = require('./latlongutils.js');
 var UIPlugin = require('./uiplugin.js');
 var template = require('./templates/latlonui.html');
 const localityText = require('./localization/locality').default;
+const commonText = require('./localization/common').default;
 
 
 module.exports =  UIPlugin.extend({
@@ -78,7 +79,7 @@ module.exports =  UIPlugin.extend({
                         break;
                     case 'Line':
                         tbody.find('tr').each(function(i) {
-                            $(this).show().find('th').text([localityText('start'),localityText('end')][i]);
+                            $(this).show().find('th').text([commonText('start'),commonText('end')][i]);
                         });
                         break;
                     case 'Rectangle':

@@ -181,7 +181,12 @@ module.exports =  Backbone.View.extend({
                         )
                         .catch(console.error)
                 if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
-                    $('<a class="field-label-datepart">').text('(' + queryText(this.fieldSpec.datePart) + ')').appendTo(fieldLabel);
+                    const localized = {
+                        year: commonText('year'),
+                        month: commonText('month'),
+                        day: commonText('day'),
+                    }[this.field.datePart];
+                    $('<a class="field-label-datepart">').text(`(${localized})`).appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {
                     $('<button class="field-operation fake-link">').text(queryText('anyInline')).appendTo(fieldLabel);
@@ -262,8 +267,8 @@ module.exports =  Backbone.View.extend({
                 extract: queryText('extract'),
                 fullDate: commonText('fullDate'),
                 year: commonText('year'),
-                month: queryText('month'),
-                day: queryText('day'),
+                month: commonText('month'),
+                day: commonText('day'),
             }).map(([value, label])=>`
                 <option value="${value}">${label}</option>
             `).join('');
