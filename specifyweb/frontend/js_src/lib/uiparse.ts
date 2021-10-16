@@ -1,8 +1,6 @@
-// @ts-expect-error
-import moment from 'moment';
-
 import type { IR, RA } from './components/wbplanview';
 import dateFormatString from './dateformat.js';
+import dayjs from './dayjs';
 import formsText from './localization/forms';
 
 const stringGuard =
@@ -115,8 +113,8 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
     maxLength: dateFormatString().length,
     formatters: [
       formatter.toLowerCase,
-      (value) =>
-        value === 'today' ? moment() : moment(value, dateFormatString(), true),
+      stringGuard((value) =>
+        value === 'today' ? dayjs() : dayjs(value, dateFormatString(), true)),
     ],
     validators: [
       (value) =>
