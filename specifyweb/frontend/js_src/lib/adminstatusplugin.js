@@ -29,7 +29,7 @@ module.exports =  UIPlugin.extend({
             if(this.user.isNew())
               this.$el.attr(
                 'title',
-                adminText('adminStatusUnsavedDescription')
+                adminText('saveUserFirst')
               ).prop('disabled', true);
             if (this.user.get('usertype') != 'Manager') {
                 this.$el.attr(

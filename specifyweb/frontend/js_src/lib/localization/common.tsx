@@ -49,6 +49,7 @@ const commonText = createDictionary({
   ignore: 'Ignore',
   logIn: 'Log In',
   start: 'Start',
+  end: 'End',
   update: 'Update',
   generate: 'Generate',
   loadingInline: '(loading...)',
@@ -60,6 +61,12 @@ const commonText = createDictionary({
   geoMap: 'GeoMap',
   fullDate: 'Full Date',
   year: 'Year',
+  month: 'Month',
+  day: 'Day',
+  query: 'Query',
+  view: 'View',
+  addChild: 'Add child',
+  move: 'Move',
 
   // Toolbar
   notifications: (count: number) => `Notifications: ${count}`,

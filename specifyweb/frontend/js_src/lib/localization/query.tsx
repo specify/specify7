@@ -6,7 +6,6 @@ import { createDictionary, createHeader } from './utils';
 const queryText = createDictionary({
   queryBoxDescription: (fieldNames: RA<string>) =>
     `Searches: ${fieldNames.join(', ')}`,
-  fieldIsRequired: 'Field is required.',
   selectFields: 'Select Field...',
   treeRankAuthor: (rankName: string) => `${rankName} Author`,
   selectOp: 'Select Op...',
@@ -55,12 +54,10 @@ const queryText = createDictionary({
 
   // QueryTask
   queryTaskTitle: (queryName: string) => `Query: ${queryName}`,
-  new: 'New',
   newButtonDescription: 'New Field',
   countOnly: 'Count',
   distinct: 'Distinct',
   format: 'Format',
-  query: 'Query',
   createCsv: 'Create CSV',
   createKml: 'Create KML',
   makeRecordSet: 'Make Record Set',
@@ -75,8 +72,6 @@ const queryText = createDictionary({
   moveUp: 'Move up',
   moveDown: 'Move down',
   showButtonDescription: 'Show in results',
-  month: 'Month',
-  day: 'Day',
   extract: 'Extract...',
 
   // QueryResultsTable

@@ -5,7 +5,7 @@ import { createDictionary, createHeader } from './utils';
 const adminText = createDictionary({
   removeAdmin: 'Remove Admin',
   makeAdmin: 'Make Admin',
-  adminStatusUnsavedDescription: 'Save user first',
+  saveUserFirst: 'Save user first',
   mustBeManager: 'User must be saved as Manager first',
 
   mimetype: 'Mimetype:',
@@ -38,7 +38,6 @@ const adminText = createDictionary({
 
   // UserCollectionsPlugin
   collections: 'Collections',
-  userCollectionsPluginButtonDisabledDescription: 'Save user first',
   userCollectionsPluginDialogTitle: 'Select user collection access',
 });
 

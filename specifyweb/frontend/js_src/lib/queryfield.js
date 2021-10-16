@@ -165,9 +165,15 @@ module.exports =  Backbone.View.extend({
                 this.$('.op-negate').hide();
             } else {
                 this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
-                if (_(['month', 'year', 'day']).contains(this.fieldSpec.datePart))
+                if (_(['month', 'year', 'day']).contains(this.fieldSpec.datePart)){
+                    const localized = {
+                        year: commonText('year'),
+                        month: commonText('month'),
+                        day: commonText('day'),
+                    }[this.field.datePart];
                     $('<a class="field-label-datepart">')
-                        .text(`(${queryText(this.fieldSpec.datePart)})`).appendTo(fieldLabel);
+                        .text(`(${localized})`).appendTo(fieldLabel);
+                }
                 if (this.operation === 'anything') {
                     $('<button class="field-operation fake-link">').text(queryText('anyInline')).appendTo(fieldLabel);
                     this.$('.op-negate').hide();
@@ -248,8 +254,8 @@ module.exports =  Backbone.View.extend({
                 extract: queryText('extract'),
                 fullDate: commonText('fullDate'),
                 year: commonText('year'),
-                month: queryText('month'),
-                day: queryText('day'),
+                month: commonText('month'),
+                day: commonText('day'),
             }).map(([value, label])=>`
                 <option value="${value}">${label}</option>
             `).join('');

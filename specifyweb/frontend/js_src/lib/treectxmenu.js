@@ -23,12 +23,12 @@ function contextMenuBuilder(treeView) {
             items.cancelAction = {name: treeText('cancelAction'), icon: "cancel", accesskey: 'c'};
         } else {
             items = {
-                'query': {name: treeText('query'), icon: "query", accesskey: "q"},
-                'open': {name: ro ? treeText('view') : commonText('edit'), icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
+                'query': {name: commonText('query'), icon: "query", accesskey: "q"},
+                'open': {name: ro ? commonText('view') : commonText('edit'), icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
             };
             if (!ro) Object.assign(items, {
                 'add-child': {
-                    name: treeText('addChild'),
+                    name: commonText('addChild'),
                     icon: "add-child",
                     accesskey: "a",
                     disabled:
@@ -36,7 +36,7 @@ function contextMenuBuilder(treeView) {
                         // Forbid adding children to the lowest rank
                         || view.ranks.slice(-1)[0] === view.rankId
                 },
-                'move': {name: treeText('move'), icon: "move", accesskey: "m"},
+                'move': {name: commonText('move'), icon: "move", accesskey: "m"},
                 'merge': {name: treeText('merge'), icon: "merge", accesskey: "g"},
                 'synonymize': {
                     name: view.acceptedId != null ? treeText('undoSynonymy') : treeText('synonymize'),

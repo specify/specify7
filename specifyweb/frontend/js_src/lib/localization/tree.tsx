@@ -7,10 +7,6 @@ const treeText = createDictionary({
 
   // TreeContextMenu
   cancelAction: 'Cancel action',
-  query: 'Query',
-  view: 'View',
-  addChild: 'Add child',
-  move: 'Move',
   merge: 'Merge',
   undoSynonymy: 'Undo Synonymy',
   synonymize: 'Synonymize',
