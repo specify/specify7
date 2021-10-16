@@ -54,7 +54,8 @@ module.exports = function(formNode) {
             var field = model.getField(fieldname);
             field && setText(field.getLocalizedName());
             var title = field && field.getLocalizedDesc();
-            title && label.attr('title', title);
+            if(title && title !== label.text())
+              label.attr('title', title);
         };
 
         if ($('.specify-formtable', form).length) {
