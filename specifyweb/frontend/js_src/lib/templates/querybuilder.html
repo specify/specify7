@@ -10,7 +10,7 @@
       class="field-add"
       title="<%= queryText('newButtonDescription') %>"
     >
-      <%= queryText('new') %>
+      <%= commonText('new') %>
     </button>
     <input
       type="checkbox"
@@ -33,14 +33,14 @@
       name="formatAudits"
       id="querybuilder-format-audits-<%= cid %>"
     />
-    <label name="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>"
-      ><%= queryText('format') %></label
-    >
+    <label class="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>">
+      <%= queryText('format') %>
+    </label>
     <button
       type="button"
       class="query-execute magic-button"
       disabled
-    ><%= queryText('query') %></button>
+    ><%= commonText('query') %></button>
     <button
       type="button"
       class="query-csv magic-button"

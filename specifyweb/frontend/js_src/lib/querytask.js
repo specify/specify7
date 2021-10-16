@@ -61,7 +61,7 @@ const commonText = require('./localization/common').default;
             this.$('input[name="formatAudits"]').prop('checked', this.query.get('formatauditrecids'));
             //only visible for spauditlog queries
             this.$('input[name="formatAudits"]').prop('hidden', this.query.get('contexttableid') != 530);
-            this.$('label[name="formatAuditsLabel"]').prop('hidden', this.query.get('contexttableid') != 530);
+            this.$('label.formatAuditsLabel').prop('hidden', this.query.get('contexttableid') != 530);
 
 
             return this;

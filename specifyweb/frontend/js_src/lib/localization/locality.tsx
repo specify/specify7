@@ -22,8 +22,6 @@ const localityText = createDictionary({
 
   // LatLongUI
   coordinates: 'Coordinates',
-  start: 'Start',
-  end: 'End',
   northWestCorner: 'NW Corner',
   southEastCorner: 'SE Corner',
 
