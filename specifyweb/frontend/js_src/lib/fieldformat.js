@@ -5,7 +5,7 @@ var _      = require('underscore');
 
 var dateFormatStr = require('./dateformat.js');
 var AgentTypeCBX  = require('./agenttypecbx.js');
-const dayjs = require('./dayjs');
+const dayjs = require('./dayjs').default;
 
     function formatDate(value) {
         if (value == null) return value;

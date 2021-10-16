@@ -6,6 +6,7 @@ var _      = require('underscore');
 var UIPlugin      = require('./uiplugin.js');
 var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
+var { addValidationAttributes, resolveParser } = require('./uiparse.ts');
 const {default: dayjs, getDateInputValue} = require('./dayjs');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
@@ -36,7 +37,7 @@ module.exports =  UIPlugin.extend({
             var disabled = this.$el.prop('disabled');
             var ui = $(template({formsText, commonText}));
             var select = ui.find('select');
-            select.prop('id', this.$el.prop('id'));
+            this.id = this.$el.prop('id');
 
             this.destructors = [];
 
@@ -54,6 +55,10 @@ module.exports =  UIPlugin.extend({
             this.inputTypeDateSupported = isInputSupported('date');
             this.inputTypeMonthSupported = isInputSupported('month');
 
+            const field = {type: 'year'};
+            const parser = resolveParser(field);
+            addValidationAttributes(this.inputYear[0], field, parser);
+
             if (disabled) {
                 select.hide();
                 this.$('.partialdateui-current-date').hide();
@@ -61,8 +66,8 @@ module.exports =  UIPlugin.extend({
             if(this.inputTypeDateSupported && this.inputTypeMonthSupported)
                 this.$('.partialdateui-current-date').hide();
 
-            var label = ui.parents().last().find('label[for="' + select.prop('id') + '"]');
-            label.text() || label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
+            this.label = ui.parents().last().find(`label[for="${this.id}"]`);
+            this.label.text() || this.label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
 
 
             const inputs = [
@@ -70,7 +75,8 @@ module.exports =  UIPlugin.extend({
                 this.inputMonth[0],
                 this.inputYear[0]
             ];
-            inputs.forEach(input=>{
+            inputs.forEach((input, index)=>{
+                input.id = `${this.id}-${precisions[index]}`;
                 this.model.saveBlockers?.linkInput(input,init.df);
                 this.destructors.push(()=>this.model.saveBlockers?.unlinkInput(input));
             });
@@ -123,25 +129,19 @@ module.exports =  UIPlugin.extend({
                 });
         },
         setPrecision: function(moveFocus) {
-            var defaultPrec;
-            switch(this.init.defaultprecision) {
-            case 'year':
-                defaultPrec = 3;
-                break;
-            case 'month':
-                defaultPrec = 2;
-                break;
-            default:
-                defaultPrec = 1;
-            }
-            var precisionIdx = this.model.get(this.init.tp) || defaultPrec;
-            _.each(precisions, function(p, i) {
-                const cell = this.$("td.partialdateui-" + p);
-                const selected = i + 1 === precisionIdx;
+            const defaultPrecision =
+              { year: 3, month: 2 }[this.init.defaultprecision] ?? 1;
+            const precisionIdx = this.model.get(this.init.tp) || defaultPrecision;
+            precisions.forEach((name, index)=>{
+                const cell = this.$(`td.partialdateui-${name}`);
+                const selected = index + 1 === precisionIdx;
                 cell[selected ? 'show' : 'hide']();
-                if(selected && moveFocus)
-                    cell.find('input')[0].focus();
-            }, this);
+                if(selected){
+                    this.label[0].setAttribute('for', `${this.id}-${name}`);
+                    if(moveFocus)
+                        cell.find('input')[0].focus();
+                }
+            });
 
             this.$('select').val(precisionIdx);
         },

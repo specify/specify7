@@ -10,6 +10,7 @@ const {addValidationAttributes, resolveParser} = require('./uiparse.ts');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
+let index = 0;
 
 module.exports = Base.extend({
   __name__: 'PickListCBXView',
@@ -18,15 +19,20 @@ module.exports = Base.extend({
   },
   render: function() {
     const wrapper = $('<span class="combobox-wrapper">');
+
+    const listId = 'datalist-${index}';
+    index+=1;
+
     this.input = $(`<input
       type="text"
-      list="${this.el.id}"
+      id="${this.el.id}"
+      list="${listId}"
       class="${this.$el.attr('class')}"
       ${this.$el.attr('disabled') ? 'disabled tabIndex="-1"' : ''}
       ${this.$el.attr('required') ? 'required' : ''}
     >`).appendTo(wrapper);
 
-    this.dataList = $(`<datalist id="${this.el.id}"></datalist>`).appendTo(wrapper);
+    this.dataList = $(`<datalist id="${listId}"></datalist>`).appendTo(wrapper);
 
     this.$el.replaceWith(wrapper);
     this.setElement(wrapper);
