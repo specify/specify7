@@ -11,11 +11,11 @@ const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
 function isInputSupported(type) {
-	var input = document.createElement('input');
-	var value = 'a';
-	input.setAttribute('type', type);
-	input.setAttribute('value', value);
-	return (input.value !== value);
+    var input = document.createElement('input');
+    var value = 'a';
+    input.setAttribute('type', type);
+    input.setAttribute('value', value);
+    return (input.value !== value);
 }
 
     var precisions = ['full', 'month-year', 'year'];
@@ -76,11 +76,16 @@ module.exports =  UIPlugin.extend({
             });
 
             var setInput = this.setInput.bind(this);
-            var setPrecision = this.setPrecision.bind(this);
             this.model.on('change:' + init.df.toLowerCase(), setInput);
-            this.model.on('change:' + init.tp.toLowerCase(), setPrecision);
+            this.model.on(
+              'change:' + init.tp.toLowerCase(),
+              this.setPrecision.bind(this, true)
+            );
 
-            this.model.fetchIfNotPopulated().done(setInput).done(setPrecision);
+            this.model
+              .fetchIfNotPopulated()
+              .done(setInput)
+              .done(this.setPrecision.bind(this, false));
             return this;
         },
         remove(){
@@ -117,7 +122,7 @@ module.exports =  UIPlugin.extend({
                     title: formsText('invalidDate'),
                 });
         },
-        setPrecision: function() {
+        setPrecision: function(moveFocus) {
             var defaultPrec;
             switch(this.init.defaultprecision) {
             case 'year':
@@ -131,7 +136,11 @@ module.exports =  UIPlugin.extend({
             }
             var precisionIdx = this.model.get(this.init.tp) || defaultPrec;
             _.each(precisions, function(p, i) {
-                this.$("td.partialdateui-" + p)[(i + 1 === precisionIdx) ? 'show' : 'hide']();
+                const cell = this.$("td.partialdateui-" + p);
+                const selected = i + 1 === precisionIdx;
+                cell[selected ? 'show' : 'hide']();
+                if(selected && moveFocus)
+                    cell.find('input')[0].focus();
             }, this);
 
             this.$('select').val(precisionIdx);
