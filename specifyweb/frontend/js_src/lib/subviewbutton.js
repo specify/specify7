@@ -40,17 +40,15 @@ const commonText = require('./localization/common').default;
             }).appendTo(self.el)[0];
 
             if (!self.$el.hasClass('specify-subview-in-table')) {
-                $('<div style="display: table-row">')
-                    .append($(
-                        '<img>',
-                        {
-                            class: "specify-subviewbutton-icon",
-                            src: self.icon,
-                            'aria-hidden': true,
-                        }
-                    ))
-                    .append('<span class="specify-subview-button-count">')
-                    .appendTo(this.button)
+                $(`<div style="display: table-row">
+                  <img
+                    class="specify-subviewbutton-icon"
+                    src="${self.icon}"
+                    alt=""
+                  >
+                  <span class="sr-only">${self.field.getLocalizedName()}</span>
+                  <span class="specify-subview-button-count">
+                </div>`).appendTo(this.button)
             } else
                 this.button.classList.add('specify-subview-link');
         },
