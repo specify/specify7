@@ -2,11 +2,11 @@
 
 var $      = require('jquery');
 var _      = require('underscore');
-var moment = require('moment');
 
 var UIPlugin      = require('./uiplugin.js');
 var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
+const {default: dayjs, getDateInputValue} = require('./dayjs');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
@@ -41,7 +41,7 @@ module.exports =  UIPlugin.extend({
             this.destructors = [];
 
             if (this.model.isNew() && ("" + this.$el.data('specify-default')).toLowerCase() === 'today')  {
-                this.model.set(init.df.toLowerCase(), moment().format('YYYY-MM-DD'));
+                this.model.set(init.df.toLowerCase(), getDateInputValue(new Date()));
             }
 
             this.$el.replaceWith(ui);
@@ -89,7 +89,7 @@ module.exports =  UIPlugin.extend({
         },
         setInput: function() {
             var value = this.model.get(this.init.df);
-            var m = moment(value);
+            var m = dayjs(value);
 
             // If input[type="date"] or input[type="month"] is not supported,
             // present the date in a more human readable format
@@ -142,7 +142,7 @@ module.exports =  UIPlugin.extend({
         this.setInput();
         this.model.saveBlockers.remove('invaliddate:' + this.init.df);
 
-        var m = moment(this.model.get(this.init.df));
+        var m = dayjs(this.model.get(this.init.df));
         switch (precisions[precisionIdx-1]) {
         case 'year':
             m = m.month(0);
@@ -176,32 +176,32 @@ module.exports =  UIPlugin.extend({
             let val = this.inputFull.val().trim() || null;
             // The date would be in this format if browser supports
             // input[type="date"]
-            let m = val && moment(val, 'YYYY-MM-DD', true);
+            let m = val && dayjs(val, 'YYYY-MM-DD', true);
             // As a fallback, and on manual paste, default to preferred
             // date format
             if(m && !m.isValid())
-                m = moment(val, dateFormatStr(), true);
+                m = dayjs(val, dateFormatStr(), true);
             this.updateIfValid(m, formsText('requiredFormat')(dateFormatStr()));
         },
         updateMonth: function() {
             let val = this.inputMonth.val().trim() || null;
             // The date would be in this format if browser supports
             // input[type="date"]
-            let m = val && moment(val, 'YYYY-MM', true);
+            let m = val && dayjs(val, 'YYYY-MM', true);
             // As a fallback, and on manual paste, default to
             // the format used in the placeholder
             if(m && !m.isValid())
-                m = moment(val, 'MM/YYYY', true);
+                m = dayjs(val, 'MM/YYYY', true);
             this.updateIfValid(m);
         },
         updateYear: function() {
             var orig = this.model.get(this.init.df);
             var val = parseInt(this.$('input.partialdateui-year:visible').val(), 10);
-            var m = (orig ? moment(orig) : moment()).year(val);
+            var m = (orig ? dayjs(orig) : dayjs()).year(val);
             this.updateIfValid(m);
         },
         setToday: function() {
-            this.updateIfValid(moment());
+            this.updateIfValid(dayjs());
         },
         pasteFullDate(event){
             this.pasteDate(event, this.updateFullDate.bind(this))
