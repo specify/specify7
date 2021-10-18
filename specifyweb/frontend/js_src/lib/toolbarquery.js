@@ -12,7 +12,7 @@ const populateform   = require('./populateform.js');
 const SaveButton     = require('./savebutton.js');
 const DeleteButton   = require('./deletebutton.js');
 const initialContext = require('./initialcontext.js');
-const userInfo       = require('./userinfo.js');
+const userInfo       = require('./userinfo').default;
 const commonText = require('./localization/common').default;
 
     var qbDef;
