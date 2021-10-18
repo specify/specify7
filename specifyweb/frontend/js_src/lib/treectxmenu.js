@@ -8,7 +8,7 @@ const ResourceView = require('./resourceview.js');
 const populateForm = require('./populateform.js');
 const schema = require('./schema.js');
 const api = require('./specifyapi.js');
-const userInfo = require('./userinfo');
+const userInfo = require('./userinfo').default;
 const treeText = require('./localization/tree').default;
 const commonText = require('./localization/common').default;
 
