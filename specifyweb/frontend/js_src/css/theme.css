@@ -137,3 +137,58 @@ menu {
 .sort-indicator {
   color: var(--accent);
 }
+
+/* Reset user-agent table styles
+ * Copied from:
+ * https://stackoverflow.com/questions/13076227/css-reset-table-to-default-equivalent/27851231
+ */
+table.grid-table,
+.grid-table thead,
+.grid-table tbody,
+.grid-table tfoot,
+.grid-table tr,
+.grid-table th,
+.grid-table td {
+  display: block;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  text-align: left;
+  -webkit-border-horizontal-spacing: 0;
+  -webkit-border-vertical-spacing: 0;
+}
+
+table.grid-table {
+  /*--cols: 2;*/
+
+  display: grid;
+  /*grid-template-columns: repeat(calc(var(--cols) + 1), minmax(0, 1fr));*/
+  grid-template-columns: auto auto min-content;
+  grid-gap: var(--quarter-size);
+}
+
+.grid-table thead,
+.grid-table tbody,
+.grid-table tr {
+  display: contents;
+}
+
+.grid-table th,
+.grid-table td {
+  display: flex;
+  align-items: center;
+}
+
+th.pl-table-icon {
+  padding-left: calc(var(--table-icon-size) + var(--quarter-size))
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: end;
+}
