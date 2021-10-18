@@ -4,83 +4,184 @@ import { createDictionary, createHeader } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 const queryText = createDictionary({
-  queryBoxDescription: (fieldNames: RA<string>) =>
-    `Searches: ${fieldNames.join(', ')}`,
-  selectFields: 'Select Field...',
-  treeRankAuthor: (rankName: string) => `${rankName} Author`,
-  selectOp: 'Select Op...',
-  any: 'any',
-  startValue: 'Start Value',
-  endValue: 'End Value',
-  addValuesHint: 'Add values one by one, or as comma-separated list:',
-  saveQueryDialogTitle: 'Save query as...',
-  savingQueryDialogTitle: 'Save Query',
-  saveQueryDialogHeader: createHeader('Save Query'),
-  saveQueryDialogMessage: 'Enter a name for the new query.',
-  saveClonedQueryDialogHeader: createHeader('Clone Query'),
-  saveClonedQueryDialogMessage: `
-    The query will be saved with a new name leaving the current query
-    unchanged.`,
-  queryName: 'Query Name:',
-  queryDeleteIncompleteDialogTitle: 'Incomplete fields',
-  queryDeleteIncompleteDialogHeader: createHeader(
-    'Query definition contains incomplete fields'
-  ),
-  queryDeleteIncompleteDialogMessage: `
-    There are uncompleted fields in the query definition. Do you want to
-    remove them?`,
-  queryUnloadProtectDialogMessage: 'This query definition has not been saved.',
-  recordSetToQueryDialogTitle: 'Record Set',
-  recordSetToQueryDialogHeader: createHeader(
-    'Creating a Record Set from Query'
-  ),
-  recordSetToQueryDialogMessage: 'Generating Record Set...',
-  recordSetCreatedDialogTitle: 'Record Set Created',
-  recordSetCreatedDialogHeader: createHeader(
-    'Open newly created record set now?'
-  ),
-  recordSetCreatedDialogMessage: 'Open newly created record set now?',
-  unableToExportAsKmlDialogTitle: 'KML Export',
-  unableToExportAsKmlDialogHeader: createHeader('Unable to export to KML'),
-  unableToExportAsKmlDialogMessage:
-    'Please add latitude and longitude fields to the query.',
-  queryExportStartedDialogTitle: 'Export Query',
-  queryExportStartedDialogHeader: createHeader('Query Export started'),
-  queryExportStartedDialogMessage: (exportFileType: string) => `
-    The query has begun executing. You will receive a notification when the
-    results ${exportFileType} file is ready for download.`,
-  invalidPicklistValue: (value: string) => `${value} (current, invalid value)`,
-  missingRequiredPicklistValue: 'Invalid null selection',
-
+  queryBoxDescription: {
+    'en-us': (fieldNames: RA<string>) => `Searches: ${fieldNames.join(', ')}`,
+  },
+  selectFields: {
+    'en-us': 'Select Field...',
+  },
+  treeRankAuthor: {
+    'en-us': (rankName: string) => `${rankName} Author`,
+  },
+  selectOp: {
+    'en-us': 'Select Op...',
+  },
+  any: {
+    'en-us': 'any',
+  },
+  startValue: {
+    'en-us': 'Start Value',
+  },
+  endValue: {
+    'en-us': 'End Value',
+  },
+  addValuesHint: {
+    'en-us': 'Add values one by one, or as comma-separated list:',
+  },
+  saveQueryDialogTitle: {
+    'en-us': 'Save query as...',
+  },
+  savingQueryDialogTitle: {
+    'en-us': 'Save Query',
+  },
+  saveQueryDialogHeader: {
+    'en-us': createHeader('Save Query'),
+  },
+  saveQueryDialogMessage: {
+    'en-us': 'Enter a name for the new query.',
+  },
+  saveClonedQueryDialogHeader: {
+    'en-us': createHeader('Clone Query'),
+  },
+  saveClonedQueryDialogMessage: {
+    'en-us': `
+      The query will be saved with a new name leaving the current query
+      unchanged.`,
+  },
+  queryName: {
+    'en-us': 'Query Name:',
+  },
+  queryDeleteIncompleteDialogTitle: {
+    'en-us': 'Incomplete fields',
+  },
+  queryDeleteIncompleteDialogHeader: {
+    'en-us': createHeader('Query definition contains incomplete fields'),
+  },
+  queryDeleteIncompleteDialogMessage: {
+    'en-us': `
+      There are uncompleted fields in the query definition. Do you want to
+      remove them?`,
+  },
+  queryUnloadProtectDialogMessage: {
+    'en-us': 'This query definition has not been saved.',
+  },
+  recordSetToQueryDialogTitle: {
+    'en-us': 'Record Set',
+  },
+  recordSetToQueryDialogHeader: {
+    'en-us': createHeader('Creating a Record Set from Query'),
+  },
+  recordSetToQueryDialogMessage: {
+    'en-us': 'Generating Record Set...',
+  },
+  recordSetCreatedDialogTitle: {
+    'en-us': 'Record Set Created',
+  },
+  recordSetCreatedDialogHeader: {
+    'en-us': createHeader('Open newly created record set now?'),
+  },
+  recordSetCreatedDialogMessage: {
+    'en-us': 'Open newly created record set now?',
+  },
+  unableToExportAsKmlDialogTitle: {
+    'en-us': 'KML Export',
+  },
+  unableToExportAsKmlDialogHeader: {
+    'en-us': createHeader('Unable to export to KML'),
+  },
+  unableToExportAsKmlDialogMessage: {
+    'en-us': 'Please add latitude and longitude fields to the query.',
+  },
+  queryExportStartedDialogTitle: {
+    'en-us': 'Export Query',
+  },
+  queryExportStartedDialogHeader: {
+    'en-us': createHeader('Query Export started'),
+  },
+  queryExportStartedDialogMessage: {
+    'en-us': (exportFileType: string) => `
+      The query has begun executing. You will receive a notification when the
+      results ${exportFileType} file is ready for download.`,
+  },
+  invalidPicklistValue: {
+    'en-us': (value: string) => `${value} (current, invalid value)`,
+  },
+  missingRequiredPicklistValue: {
+    'en-us': 'Invalid null selection',
+  },
   // QueryTask
-  queryTaskTitle: (queryName: string) => `Query: ${queryName}`,
-  queryRecordSetTitle: (queryName: string, recordSetName: string) =>
-    `Query on ${recordSetName}: ${queryName}`,
-  newButtonDescription: 'New Field',
-  countOnly: 'Count',
-  distinct: 'Distinct',
-  format: 'Format',
-  createCsv: 'Create CSV',
-  createKml: 'Create KML',
-  makeRecordSet: 'Make Record Set',
-  abandonChanges: 'Abandon Changes',
-  saveAs: 'Save As',
-
+  queryTaskTitle: {
+    'en-us': (queryName: string) => `Query: ${queryName}`,
+  },
+  queryRecordSetTitle: {
+    'en-us': (queryName: string, recordSetName: string) =>
+      `Query on ${recordSetName}: ${queryName}`,
+  },
+  newButtonDescription: {
+    'en-us': 'New Field',
+  },
+  countOnly: {
+    'en-us': 'Count',
+  },
+  distinct: {
+    'en-us': 'Distinct',
+  },
+  format: {
+    'en-us': 'Format',
+  },
+  createCsv: {
+    'en-us': 'Create CSV',
+  },
+  createKml: {
+    'en-us': 'Create KML',
+  },
+  makeRecordSet: {
+    'en-us': 'Make Record Set',
+  },
+  abandonChanges: {
+    'en-us': 'Abandon Changes',
+  },
+  saveAs: {
+    'en-us': 'Save As',
+  },
   // QueryField
-  expandButtonDescription: 'Field is valid and will be saved. Click to expand',
-  anyInline: '(any)',
-  sort: 'Sort',
-  negate: 'Negate',
-  moveUp: 'Move up',
-  moveDown: 'Move down',
-  showButtonDescription: 'Show in results',
-  treeRanks: 'Tree Ranks',
-  month: 'Month',
-  day: 'Day',
-  extract: 'Extract...',
-
+  expandButtonDescription: {
+    'en-us': 'Field is valid and will be saved. Click to expand',
+  },
+  anyInline: {
+    'en-us': '(any)',
+  },
+  sort: {
+    'en-us': 'Sort',
+  },
+  negate: {
+    'en-us': 'Negate',
+  },
+  moveUp: {
+    'en-us': 'Move up',
+  },
+  moveDown: {
+    'en-us': 'Move down',
+  },
+  showButtonDescription: {
+    'en-us': 'Show in results',
+  },
+  treeRanks: {
+    'en-us': 'Tree Ranks',
+  },
+  month: {
+    'en-us': 'Month',
+  },
+  day: {
+    'en-us': 'Day',
+  },
+  extract: {
+    'en-us': 'Extract...',
+  },
   // QueryResultsTable
-  results: 'Results:',
+  results: {
+    'en-us': 'Results:',
+  },
 });
 
 export default queryText;
