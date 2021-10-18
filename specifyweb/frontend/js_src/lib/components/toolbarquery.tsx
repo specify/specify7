@@ -15,7 +15,7 @@ import SaveButton from '../savebutton';
 import schema from '../schema';
 import specifyform from '../specifyform';
 import userInfo from '../userinfo';
-import { TableIcon } from './common';
+import { DateElement, TableIcon } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
@@ -104,70 +104,71 @@ function QueryList({
   );
 
   return (
-    <div className="list-of-queries">
-      <div className="list-of-queries-header">
-        <button
-          type="button"
-          className="fake-link list-of-queries-name"
-          onClick={(): void =>
-            setSortConfig({
-              sortField: 'name',
-              ascending: !sortConfig.ascending,
-            })
-          }
-        >
-          {commonText('name')}
-          <SortIndicator fieldName="name" sortConfig={sortConfig} />
-        </button>
-        <button
-          type="button"
-          className="fake-link list-of-queries-date-created"
-          onClick={(): void =>
-            setSortConfig({
-              sortField: 'dateCreated',
-              ascending: !sortConfig.ascending,
-            })
-          }
-        >
-          {commonText('created')}
-          <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-        </button>
-        <div />
-      </div>
-      {queries.map((query) => (
-        <div key={query.id}>
-          <button
-            type="button"
-            className="fake-link list-of-queries-name"
-            onClick={(): void => handleSelect(query)}
-          >
-            <TableIcon tableName={query.tableName} tableLabel={false} />
-            {query.name}
-          </button>
-          <div
-            className="fake-link list-of-queries-date-created"
-            title={
-              query.dateCreated
-                ? new Date(query.dateCreated).toLocaleString() ?? ''
-                : ''
-            }
-          >
-            {query.dateCreated
-              ? new Date(query.dateCreated).toDateString() ?? ''
-              : ''}
-          </div>
-          {typeof handleEdit === 'function' ? (
+    <table className="grid-table list-of-queries">
+      <thead>
+        <tr>
+          <th scope="col" className="pl-table-icon">
             <button
               type="button"
-              className="fake-link ui-icon ui-icon-pencil"
-              onClick={(): void => handleEdit(query)}
-            />
-          ) : (
-            <div />
-          )}
-        </div>
-      ))}
-    </div>
+              className="fake-link list-of-queries-name"
+              onClick={(): void =>
+                setSortConfig({
+                  sortField: 'name',
+                  ascending: !sortConfig.ascending,
+                })
+              }
+            >
+              {commonText('name')}
+              <SortIndicator fieldName="name" sortConfig={sortConfig} />
+            </button>
+          </th>
+          <th scope="col">
+            <button
+              type="button"
+              className="fake-link list-of-queries-date-created"
+              onClick={(): void =>
+                setSortConfig({
+                  sortField: 'dateCreated',
+                  ascending: !sortConfig.ascending,
+                })
+              }
+            >
+              {commonText('created')}
+              <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
+            </button>
+          </th>
+          <td />
+        </tr>
+      </thead>
+      <tbody>
+        {queries.map((query) => (
+          <tr key={query.id}>
+            <td>
+              <button
+                type="button"
+                className="fake-link list-of-queries-name"
+                onClick={(): void => handleSelect(query)}
+              >
+                <TableIcon tableName={query.tableName} tableLabel={false} />
+                {query.name}
+              </button>
+            </td>
+            <td>
+              <DateElement date={query.dateCreated} />
+            </td>
+            <td className="justify-end">
+              {typeof handleEdit === 'function' && (
+                <button
+                  type="button"
+                  className="fake-link ui-icon ui-icon-pencil"
+                  onClick={(): void => handleEdit(query)}
+                />
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
