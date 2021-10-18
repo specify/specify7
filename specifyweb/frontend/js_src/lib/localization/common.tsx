@@ -70,7 +70,6 @@ const commonText = createDictionary({
   year: 'Year',
   month: 'Month',
   day: 'Day',
-  query: 'Query',
   view: 'View',
   addChild: 'Add child',
   move: 'Move',
