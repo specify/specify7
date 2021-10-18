@@ -1,11 +1,23 @@
 import React from 'react';
 
-import type { IR, RA } from '../components/wbplanview';
+import type { RA, RR } from '../components/wbplanview';
 import { camelToHuman } from '../wbplanviewhelper';
 
-type Value = string | JSX.Element;
-export type CompoundValue = Value | ((...args: RA<never>) => Value);
-type Dictionary = IR<CompoundValue>;
+const languages = ['en-us'] as const;
+type Language = typeof languages[number];
+export const LANGUAGE: Language =
+  (document.documentElement.lang in languages
+    ? (document.documentElement.lang as Language)
+    : undefined) ?? 'en-us';
+
+type Line = string | JSX.Element;
+type Value = RR<Language, Line | ((...args: RA<never>) => Line)>;
+type GetValueType<VALUE extends Value> = VALUE extends (
+  ...args: RA<never>
+) => Line
+  ? ReturnType<VALUE>[Language]
+  : VALUE[Language];
+type Dictionary = RR<string, Value>;
 
 function assertExhaustive(key: string): never {
   /*
@@ -45,10 +57,11 @@ function assertExhaustive(key: string): never {
 export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
   const resolver = <KEY extends string & keyof typeof dictionary>(
     key: KEY
-  ): typeof dictionary[typeof key] =>
-    key in dictionary ? dictionary[key] : assertExhaustive(key);
+  ): GetValueType<typeof dictionary[typeof key]> =>
+    key in dictionary ? dictionary[key][LANGUAGE] : assertExhaustive(key);
   resolver.dictionary = dictionary;
   return resolver;
+  // typeof dictionary[typeof key][Language]
 }
 
 export const createHeader = (header: string): string =>
