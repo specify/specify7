@@ -410,7 +410,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         var reportResources = this.reportResources;
         if (reportResources.query) {
             buttons.unshift({
-                text: commonText('cancel'),
+                text: commonText('query'),
                 click: function() {
                     new QueryParamsDialog({reportResources: reportResources}).render();
                 }

@@ -58,7 +58,6 @@ const queryText = createDictionary({
   countOnly: 'Count',
   distinct: 'Distinct',
   format: 'Format',
-  query: 'Query',
   createCsv: 'Create CSV',
   createKml: 'Create KML',
   makeRecordSet: 'Make Record Set',

@@ -53,6 +53,7 @@ const commonText = createDictionary({
   listTruncated: '(list truncated)',
   metadataInline: 'Metadata:',
   metadata: 'Metadata',
+  query: 'Query',
 
   // Toolbar
   notifications: (count: number) => `Notifications: ${count}`,
