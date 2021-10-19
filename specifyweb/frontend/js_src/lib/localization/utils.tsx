@@ -1,23 +1,28 @@
 import React from 'react';
 
-import type { RA, RR } from '../components/wbplanview';
+import type { RA, RR, IR } from '../components/wbplanview';
 import { camelToHuman } from '../wbplanviewhelper';
 
-const languages = ['en-us'] as const;
-type Language = typeof languages[number];
+
+export const languages = ['en-us'] as const;
+export type Language = typeof languages[number];
+export const DEFAULT_LANGUAGE = 'en-us';
 export const LANGUAGE: Language =
-  (document.documentElement.lang in languages
+  (typeof document !== 'undefined' && document.documentElement.lang in languages
     ? (document.documentElement.lang as Language)
-    : undefined) ?? 'en-us';
+    : undefined) ?? DEFAULT_LANGUAGE;
 
 type Line = string | JSX.Element;
-type Value = RR<Language, Line | ((...args: RA<never>) => Line)>;
+// Wrap this in a Partial<> to allow skipping languages in the dictionary
+export type Value =
+  | RR<Language, Line>
+  | RR<Language, (...args: RA<never>) => Line>;
 type GetValueType<VALUE extends Value> = VALUE extends (
   ...args: RA<never>
 ) => Line
   ? ReturnType<VALUE>[Language]
   : VALUE[Language];
-type Dictionary = RR<string, Value>;
+export type Dictionary = IR<Value>;
 
 function assertExhaustive(key: string): never {
   /*
@@ -28,8 +33,8 @@ function assertExhaustive(key: string): never {
    * For templates (.html), no errors would be shown, and thus this exception
    * may be thrown at runtime.
    * To prevent runtime errors, a ../tests/testlocalization.ts script has been
-   * added. It checks both for invalid key usages, invalid usages and unused
-   * keys
+   * added. It checks both for nonexistent key usages, invalid usages and unused
+   * keys. It also warns about duplicate key values.
    */
   const errorMessage = `
     Trying to access the value for a non-existent localization key "${key}"`;
@@ -58,10 +63,11 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
   const resolver = <KEY extends string & keyof typeof dictionary>(
     key: KEY
   ): GetValueType<typeof dictionary[typeof key]> =>
-    key in dictionary ? dictionary[key][LANGUAGE] : assertExhaustive(key);
+    key in dictionary
+      ? dictionary[key][LANGUAGE] ?? assertExhaustive(key)
+      : assertExhaustive(key);
   resolver.dictionary = dictionary;
   return resolver;
-  // typeof dictionary[typeof key][Language]
 }
 
 export const createHeader = (header: string): string =>
