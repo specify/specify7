@@ -10,7 +10,12 @@
 import fs from 'fs';
 import path from 'path';
 import type { IR, R } from '../components/wbplanview';
-import type { CompoundValue } from '../localization/utils';
+import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
+import type {
+  Value,
+  Language,
+  Dictionary as LanguageDictionary,
+} from '../localization/utils';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');
@@ -36,17 +41,29 @@ const directoriesToScan = ['./', './components', './templates'];
 const verbose = process.argv[2] === '--verbose';
 
 const log = console.log;
+
+let todosCount = 0;
+
+function todo(value: string): void {
+  todosCount += 1;
+  console.warn(`\u001B[36m${value}\u001B[0m\n`);
+}
+
 let warningsCount = 0;
+
 function warn(value: string): void {
   warningsCount += 1;
   console.warn(`\u001B[33m${value}\u001B[0m\n`);
 }
+
 let errorsCount = 0;
+
 function error(value: string): void {
   errorsCount += 1;
   process.exitCode = 1;
   console.error(`\u001B[31m${value}\u001B[0m\n\n`);
 }
+
 const reDictionaryName = /export default (?<dictionaryName>\w+);/;
 
 log(`Looking for localization dictionaries in ${localizationDirectory}`);
@@ -54,7 +71,7 @@ log(`Looking for localization dictionaries in ${localizationDirectory}`);
 const lookAroundLength = 40;
 
 type Key = {
-  readonly value: CompoundValue;
+  readonly strings: Partial<Value>;
   useCount: number;
 };
 
@@ -78,7 +95,9 @@ type Dictionary = IR<Key>;
               .join('.');
 
             const dictionaryFile = await import(filePathWithoutExtension);
-            const dictionary = dictionaryFile?.default?.dictionary;
+            const dictionary = dictionaryFile?.default?.dictionary as
+              | LanguageDictionary
+              | undefined;
             if (typeof dictionary !== 'object') {
               warn(`Unable to find a dictionary in ${fileName}`);
               return undefined;
@@ -103,13 +122,39 @@ type Dictionary = IR<Key>;
             }
 
             const entries = Object.fromEntries(
-              Object.entries(dictionary).map(([key, value]) => [
-                key,
-                {
-                  value: value as CompoundValue,
-                  useCount: 0,
-                },
-              ])
+              Object.entries(dictionary).map(([key, strings]) => {
+                languages
+                  .filter((language) => !(language in strings))
+                  .forEach((language) =>
+                    (language === DEFAULT_LANGUAGE ? error : todo)(
+                      [
+                        `${language} localization is missing for key ${key}`,
+                        `in ${dictionaryName}`,
+                      ].join('')
+                    )
+                  );
+
+                Object.keys(strings)
+                  .filter(
+                    (language) => !languages.includes(language as Language)
+                  )
+                  .forEach((language) =>
+                    warn(
+                      [
+                        `A string for an undefined language ${language} was`,
+                        `found for key ${key} in ${dictionaryName}`,
+                      ].join('')
+                    )
+                  );
+
+                return [
+                  key,
+                  {
+                    strings,
+                    useCount: 0,
+                  },
+                ];
+              })
             );
 
             return [dictionaryName, entries];
@@ -195,7 +240,8 @@ type Dictionary = IR<Key>;
           return;
         }
 
-        const expectsArguments = typeof entries[keyName].value === 'function';
+        const expectsArguments =
+          typeof entries[keyName].strings[DEFAULT_LANGUAGE] === 'function';
         if (expectsArguments !== hasArguments) {
           if (hasArguments)
             error(
@@ -229,34 +275,43 @@ type Dictionary = IR<Key>;
 
   // Find duplicate values
   const compoundDictionaries = Object.entries(dictionaries).reduce<
-    R<(readonly [fileName: string, key: string])[]>
+    Partial<Record<Language, R<(readonly [fileName: string, key: string])[]>>>
   >((compoundDictionaries, [fileName, entries]) => {
-    Object.entries(entries).forEach(([key, { value }]) => {
-      const valueString =
-        typeof value === 'string'
-          ? value
-          : typeof value === 'object'
-          ? JSON.stringify(value)
-          : value.toString();
-      compoundDictionaries[valueString] ??= [];
-      compoundDictionaries[valueString].push([fileName, key]);
-    });
+    Object.entries(entries).forEach(([key, { strings }]) =>
+      Object.entries(strings).forEach(([language, value]) => {
+        const valueString =
+          typeof value === 'string'
+            ? value
+            : typeof value === 'object'
+            ? JSON.stringify(value)
+            : value.toString();
+        compoundDictionaries[language as Language] ??= {};
+        compoundDictionaries[language as Language]![valueString] ??= [];
+        compoundDictionaries[language as Language]![valueString].push([
+          fileName,
+          key,
+        ]);
+      })
+    );
     return compoundDictionaries;
   }, {});
-  Object.entries(compoundDictionaries)
-    .filter(([_valueString, instances]) => instances.length > 1)
-    .forEach(([valueString, instances]) => {
-      warn(
-        [
-          'Multiple instances of the same value were found in:\n',
-          ...instances.map(
-            ([fileName, key]) => `\t"${fileName}" under key "${key}"\n`
-          ),
-          'Value:\n',
-          valueString,
-        ].join('')
-      );
-    });
+  Object.entries(compoundDictionaries).forEach(([language, valueDictionary]) =>
+    Object.entries(valueDictionary)
+      .filter(([_valueString, instances]) => instances.length > 1)
+      .forEach(([valueString, instances]) => {
+        warn(
+          [
+            'Multiple instances of the same value were found for language ',
+            `${language} in:\n`,
+            ...instances.map(
+              ([fileName, key]) => `\t"${fileName}" under key "${key}"\n`
+            ),
+            'Value:\n',
+            valueString,
+          ].join('')
+        );
+      })
+  );
 
   // Unused key errors
   Object.entries(dictionaries).forEach(([dictionaryName, keys]) =>
@@ -280,6 +335,7 @@ type Dictionary = IR<Key>;
       )
     );
   }
+  todo(`TODOs: ${todosCount}`);
   warn(`Warnings: ${warningsCount}`);
   warn(`Errors: ${errorsCount}`);
 })();
