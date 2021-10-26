@@ -224,6 +224,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 JAVA_PATH = '/usr/bin/java'
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 419430400  # 300mb
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100mb
+
 try:
     from .local_logging_settings import LOGGING
 except ImportError:
