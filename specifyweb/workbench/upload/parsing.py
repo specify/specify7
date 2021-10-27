@@ -100,6 +100,9 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         if result is not None:
             return result
 
+    table = datamodel.get_table_strict(tablename)
+    field = table.get_field_strict(fieldname)
+
     if colopts.uiformatter:
         try:
             parsed = colopts.uiformatter.parse(value)
@@ -111,10 +114,10 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         else:
             canonicalized = colopts.uiformatter.canonicalize(parsed)
 
-        return filter_and_upload({fieldname: canonicalized}, colopts.column)
+        if hasattr(field, 'length') and len(canonicalized) > field.length:
+            return ParseFailure(f"value must not have length greater than {field.length}", colopts.column)
 
-    table = datamodel.get_table_strict(tablename)
-    field = table.get_field_strict(fieldname)
+        return filter_and_upload({fieldname: canonicalized}, colopts.column)
 
     if is_latlong(table, field):
         return parse_latlong(field, value, colopts.column)
@@ -133,6 +136,9 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
 
     if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
         return parse_integer(fieldname, value, colopts.column)
+
+    if hasattr(field, 'length') and len(value) > field.length:
+        return ParseFailure(f"value must not have length greater than {field.length}", colopts.column)
 
     return filter_and_upload({fieldname: value}, colopts.column)
 
