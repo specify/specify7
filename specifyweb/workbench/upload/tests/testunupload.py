@@ -214,10 +214,10 @@ class UnUploadTests(UploadTestsBase):
             toMany={}
         ).apply_scoping(self.collection)
 
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},
-        ]
+        ])
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in reversed(results):
             unupload_record(result, self.agent)

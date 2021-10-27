@@ -508,13 +508,13 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None))
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
             {'Genus': 'Eupatorium', 'Species': '', 'Species Author': ''},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, ParseFailures, "Second record fails due to blank author.")
