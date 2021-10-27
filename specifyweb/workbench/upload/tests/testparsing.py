@@ -432,6 +432,25 @@ class ParsingTests(UploadTestsBase):
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', column='Species Author')]))
 
+    def test_value_too_long(self) -> None:
+        plan = TreeRecord(
+            name='Taxon',
+            ranks=dict(
+                Genus=dict(name=parse_column_options('Genus')),
+                Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
+            )
+        ).apply_scoping(self.collection)
+        data  = [
+            {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
+            {'Genus': 'Eupatorium', 'Species': 'barelyfits', 'Species Author': 'x'*128},
+            {'Genus': 'Eupatorium', 'Species': 'toolong', 'Species Author': 'x'*129},
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertEqual(results[2].record_result, ParseFailures(failures=[ParseFailure(message='value must not have length greater than 128', column='Species Author')]))
+
 
 class MatchingBehaviorTests(UploadTestsBase):
 
