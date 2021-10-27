@@ -283,9 +283,12 @@ def parse_coord(value: str) -> Optional[Tuple[float, int]]:
     for p in LATLONG_PARSER_DEFS:
         match = re.compile(p.regex, re.I).match(value)
         if match and match.group(1):
-            # relies on signed zeros in floats
-            # see https://docs.python.org/3/library/math.html#math.copysign
-            comps = [float(match.group(i)) for i in p.comp_groups]
+            try:
+                # relies on signed zeros in floats
+                # see https://docs.python.org/3/library/math.html#math.copysign
+                comps = [float(match.group(i)) for i in p.comp_groups]
+            except ValueError:
+                continue
             result, divisor = 0.0, 1
             for comp in comps:
                 result += abs(comp) / divisor
