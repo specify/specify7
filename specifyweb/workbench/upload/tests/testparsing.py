@@ -331,6 +331,7 @@ class ParsingTests(UploadTestsBase):
             '-1 01': (-(1 + 1/60), 2),
             '-0 01': (-(0 + 1/60), 2),
             'foobar': None,
+            '-': None,
         }
 
         for k, v in tests.items():
