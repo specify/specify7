@@ -68,6 +68,7 @@ def create_connection():
 
 def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
     results = list(ds.rowresults.values_list('result', flat=True))
+    total = len(results)
     with transaction.atomic():
         if ds.uploadresult is not None:
             rsid = ds.uploadresult.get('recordsetid', None)
@@ -75,8 +76,8 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
                 getattr(models, 'Recordset').objects.filter(id=rsid).delete()
 
 
-        for row in reversed(results):
-            logger.info(f"rolling back row {current} of {total}")
+        for i, row in enumerate(reversed(results)):
+            logger.info(f"rolling back row {i+1} of {total}")
             upload_result = json_to_UploadResult(json.loads(row))
             if not upload_result.contains_failure():
                 unupload_record(upload_result, agent)
