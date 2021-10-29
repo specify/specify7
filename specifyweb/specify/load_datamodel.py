@@ -105,7 +105,8 @@ class Table(object):
 
     def get_relationship(self, name: str) -> 'Relationship':
         field = self.get_field_strict(name)
-        assert isinstance(field, Relationship)
+        if not isinstance(field, Relationship):
+            raise FieldDoesNotExistError(f"Field {name} in table {self.name} is not a relationship.")
         return field
 
     @property
