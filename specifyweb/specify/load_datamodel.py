@@ -359,7 +359,6 @@ system_tables = {
     'Collectionrelationship',
     'Datatype',
     'Morphbankview',
-    'Otheridentifier',
     'Picklist',
     'Picklistitem',
     'Recordset',
