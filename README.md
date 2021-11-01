@@ -40,6 +40,17 @@ under GNU General Public License 2 (GPL2).
    * [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
 
 ## Release notes
+### 7.6.1 (1 November 2021)
+* Fixes typo in README. [#956](https://github.com/specify/specify7/issues/956)
+* Fixes menu overflow on some screens.
+* Updates version of Python Requests library. [#1005](https://github.com/specify/specify7/issues/1005)
+* Fixes regression in regex uiformatter. [#1010](https://github.com/specify/specify7/issues/1010)
+* Fixes tree level titles. [#740](https://github.com/specify/specify7/issues/740)
+* Fixes *From Record Set* dialog having wrong button label. [#1026](https://github.com/specify/specify7/issues/1026)
+* Updates README to require Ubuntu 20.04.
+* Fixes Workbench upload/validation handling of over length values. [#1041](https://github.com/specify/specify7/issues/1041)
+* Fixes Workbench mapping of *OtherIdentifier* table. [#1029](https://github.com/specify/specify7/issues/1029)
+
 ### 7.6.0 (16 September 2021)
 This Specify 7.6.0 update is being released simultaneously with
 Specify 6.8.01. Both platforms require a database schema update for
