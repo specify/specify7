@@ -21,6 +21,7 @@ under GNU General Public License 2 (GPL2).
 * [Specify 7](#specify-7)
    * [Table of Contents](#table-of-contents)
    * [Release notes](#release-notes)
+      * [7.6.1 (1 November 2021)](#761-1-november-2021)
       * [7.6.0 (16 September 2021)](#760-16-september-2021)
    * [Docker installation](#docker-installation)
    * [Installation](#installation)
