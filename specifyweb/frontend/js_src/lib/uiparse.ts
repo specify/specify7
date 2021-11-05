@@ -274,7 +274,7 @@ export function addValidationAttributes(
 
   if (parser.required === true) input.required = true;
 
-  if (typeof parser.pattern === 'object') input.pattern = parser.pattern.source;
+  if (typeof parser.pattern === 'object') input.pattern = parser.pattern;
 
   [
     'minLength',

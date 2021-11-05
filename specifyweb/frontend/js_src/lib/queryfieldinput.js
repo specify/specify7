@@ -158,7 +158,7 @@ const commonText = require('./localization/common').default;
                 return {
                     ...parser,
                     pattern: RegExp(
-                      `^(|${escaped}(?:,${escaped})*)$`
+                      `|${escaped}(?:,${escaped})*`
                     )
                 }
             }
