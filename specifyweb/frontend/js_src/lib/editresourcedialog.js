@@ -40,6 +40,7 @@ module.exports = Backbone.View.extend({
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.resource });
                 saveButton.render().$el.prependTo(buttons);
+                saveButton.bindToForm(form[0].querySelector('form'));
                 saveButton.on('saving', this.trigger.bind(this, 'saving'));
                 saveButton.on('savecomplete', function() {
                     this.remove();

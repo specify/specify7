@@ -101,7 +101,7 @@ function modeForResource(appResource) {
 
 const ResourceDataView = Backbone.View.extend({
     __name__: "AppResourceDataView",
-    tagName: 'section',
+    tagName: 'form',
     className: "appresource-data",
     events: {
         'click .load-file': 'loadFile',
@@ -188,11 +188,13 @@ const ResourceDataView = Backbone.View.extend({
                     }
                 });
 
-                userInfo.isadmin && buttonsDiv.prepend(
-                    new SaveButton({model: this.appresourceData})
-                        .on('savecomplete', () => this.model.save()) // so the save button does both
-                        .render().el
-                );
+                if(userInfo.isadmin){
+                    const saveButton = new SaveButton({model: this.appresourceData})
+                        .on('savecomplete', () => this.model.save())
+                        .render();
+                    saveButton.bindToForm(this.el);
+                    buttonsDiv.append(saveButton.el);
+                }
             } else {
                 $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
@@ -317,13 +319,14 @@ const ResourceList = Backbone.View.extend({
             </form>
         </div>`).dialog({
             title: adminText('createResourceDialogTitle'),
+            width: 350,
             modal: true,
             close: function() { $(this).remove(); },
             buttons: [
+                // TODO: convert this to an input[type="submit"]
                 {text: commonText('create'), click: createResource},
                 {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
             ]});
-        $('input', dialog).focus();
         $('form', dialog).submit(createResource);
     }
 });

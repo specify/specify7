@@ -8,6 +8,8 @@ const navigation = require('./navigation.js');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
+let formId = 0;
+
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
         initialize: function(options) {
@@ -91,6 +93,10 @@ module.exports =  Backbone.View.extend({
             return this;
         },
         bindToForm(form){
+            if(form.id === ''){
+                form.id = `form-${formId}`;
+                formId+=1;
+            }
             Array.from(this.buttons).forEach(button=>
                 button.setAttribute('form',form.id)
             );
