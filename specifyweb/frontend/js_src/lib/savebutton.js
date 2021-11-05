@@ -133,10 +133,13 @@ module.exports =  Backbone.View.extend({
             Backbone.View.prototype.remove.call(this);
         },
         handleFocus(event){
-            if(event.target?.required === true)
+            if(
+                event.target?.required === true
+                || event.target?.hasAttribute('pattern')
+            )
                 /*
-                 * Don't display "This is a required field" error message
-                 * until input was interacted with
+                 * Don't display "This is a required field" error or pattern
+                 * mismatch message until input was interacted with
                  */
                 event.target.classList.add('touched');
         },
