@@ -205,7 +205,7 @@ module.exports =  Backbone.View.extend({
             });
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
-            var optGroup = $('<optgroup label="Tree Ranks">').appendTo( this.$('.field-select') );
+            var optGroup = $(`<optgroup label="${queryText('treeRanks')}">`).appendTo( this.$('.field-select') );
 
             getTreeDef.pipe(function(treeDef) {
                 return treeDef.rget('treedefitems');
@@ -214,11 +214,11 @@ module.exports =  Backbone.View.extend({
             }).done(function(treeDefItems) {
                 treeDefItems.each(function(item) {
                     $('<option>', {value: 'treerank-' + item.get('name')})
-                        .text(item.get('name'))
+                        .text(item.get('title') ?? item.get('name'))
                         .appendTo(optGroup);
                     if (item.specifyModel.name == 'TaxonTreeDefItem') {
                         $('<option>', {value: 'treerank-' + item.get('name') + ' Author'})
-                            .text(queryText('treeRankAuthor')(item.get('name')))
+                            .text(queryText('treeRankAuthor')(item.get('title') ?? item.get('name')))
                             .appendTo(optGroup);
                     }
                 });
