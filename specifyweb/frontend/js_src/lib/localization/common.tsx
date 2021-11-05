@@ -1,7 +1,7 @@
 import React from 'react';
 import { createDictionary, createHeader, createJsxHeader } from './utils';
 
-// Refer to "Guidelines for Programmers" in ./utils.tsx before editing this file
+// Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 const commonText = createDictionary({
   specifySeven: 'Specify&nbsp7',
