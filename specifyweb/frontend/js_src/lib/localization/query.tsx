@@ -71,6 +71,7 @@ const queryText = createDictionary({
   moveUp: 'Move up',
   moveDown: 'Move down',
   showButtonDescription: 'Show in results',
+  treeRanks: 'Tree Ranks',
 
   // QueryResultsTable
   results: 'Results:',
