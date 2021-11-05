@@ -4,7 +4,7 @@ var $              = require('jquery');
 var _              = require('underscore');
 var Backbone       = require('./backbone.js');
 var initialContext = require('./initialcontext.js');
-const escapeRegExp = require('./escaperegexp.js');
+const {escapeRegExp} = require('./escaperegexp');
 
     var uiformatters;
     initialContext.load('app.resource?name=UIFormatters', data => uiformatters = $(data));
