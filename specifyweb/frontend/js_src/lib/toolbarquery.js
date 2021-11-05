@@ -179,6 +179,7 @@ const commonText = require('./localization/common').default;
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.spquery });
                 saveButton.render().$el.prependTo(buttons);
+                saveButton.bindToForm(form[0].querySelector('form'));
                 saveButton.on('savecomplete', function() {
                     navigation.go('/query/' + this.spquery.id + '/');
                     dialog.$el.dialog('close');

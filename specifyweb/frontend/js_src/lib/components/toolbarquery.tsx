@@ -428,27 +428,27 @@ const EditQueryDialog = Backbone.View.extend({
 
     if (!this.spquery.isNew()) {
       form.append(`
-                  <ul style="padding: 0">
-                     <li style="display:flex;margin:5px">
-                         <span class="ui-icon ui-icon-circle-plus"/>
-                         <a class="query-export">${commonText(
-                           'exportQueryForDwca'
-                         )}</a>
-                     </li>
-                     <li style="display:flex;margin:5px">
-                         <span class="ui-icon ui-icon-circle-plus"/>
-                         <a class="create-report">${commonText(
-                           'exportQueryAsReport'
-                         )}</a>
-                     </li>
-                     <li style="display:flex;margin:5px">
-                         <span class="ui-icon ui-icon-circle-plus"/>
-                         <a class="create-label">${commonText(
-                           'exportQueryAsLabel'
-                         )}</a>
-                     </li>
-                  </ul>
-                `);
+        <ul style="padding: 0">
+           <li style="display:flex;margin:5px">
+               <span class="ui-icon ui-icon-circle-plus"/>
+               <a class="query-export">${commonText(
+                 'exportQueryForDwca'
+               )}</a>
+           </li>
+           <li style="display:flex;margin:5px">
+               <span class="ui-icon ui-icon-circle-plus"/>
+               <a class="create-report">${commonText(
+                 'exportQueryAsReport'
+               )}</a>
+           </li>
+           <li style="display:flex;margin:5px">
+               <span class="ui-icon ui-icon-circle-plus"/>
+               <a class="create-label">${commonText(
+                 'exportQueryAsLabel'
+               )}</a>
+           </li>
+        </ul>
+      `);
     }
 
     const buttons = $('<div class="specify-form-buttons">').appendTo(form);
@@ -456,6 +456,7 @@ const EditQueryDialog = Backbone.View.extend({
     if (!this.readOnly) {
       const saveButton = new SaveButton({ model: this.spquery });
       saveButton.render().$el.appendTo(buttons);
+      saveButton.bindToForm(form[0].querySelector('form'));
       saveButton.on(
         'savecomplete',
         () => {
