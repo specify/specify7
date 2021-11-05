@@ -9,6 +9,11 @@
   transition: background var(--animation-duration) ease,
     border var(--animation-duration) ease;
   cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  column-gap: var(--quarter-size);
 }
 
 .magic-button:hover,

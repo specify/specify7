@@ -54,12 +54,17 @@ module.exports =   UIPlugin.extend({
                     uiField.render().$el.appendTo(this.el).show();
                 }
 
-                var title = this.def && this.def.find('> desc').text();
+                const title = this.def?.find('> desc').text() ?? '';
 
-                $('<a>', { title: title })
-                    .prependTo(this.el)
-                    .append($('<img>', { src: icons.getIcon(this.init.icon || "WebLink") }))
-                    .button();
+                this.el.append($(`<a
+                  title="${title}"
+                  class="magic-button"
+                >
+                  <img
+                    src="${icons.getIcon(this.init.icon || "WebLink") }"
+                    alt="${title}"
+                  >
+                </a>`)[0]);
             }
 
             this.model.on('change', this.setLink, this);
