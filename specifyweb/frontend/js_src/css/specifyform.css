@@ -269,7 +269,8 @@ ul.ui-autocomplete li.ui-menu-item {
 }
 
 .specify-subviewbutton-icon {
-    padding-right: 5px;
+    max-width: 40px;
+    max-height: 20px;
 }
 
 .specify-subview-button .ui-button-text div {
@@ -278,13 +279,6 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-subview-button a {
     vertical-align: middle;
-}
-
-.specify-subviewbutton-icon,
-.specify-subview-button-count {
-    display: table-cell;
-    max-width: 40px;
-    max-height: 20px;
 }
 
 .specify-formtable td,
