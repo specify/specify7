@@ -13,8 +13,13 @@ export function validationMessages(
    */
   const isUntouchedRequired =
     !isInputTouched(field) &&
-    field.validity.valueMissing &&
-    !hasNativeErrors(field, ['customError', 'valid', 'valueMissing']);
+    (field.validity.valueMissing || field.validity.patternMismatch) &&
+    !hasNativeErrors(field, [
+      'customError',
+      'valid',
+      'valueMissing',
+      'patternMismatch',
+    ]);
 
   if (hasNativeErrors(field)) {
     if (!isUntouchedRequired) field.reportValidity();
