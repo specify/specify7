@@ -28,10 +28,11 @@ module.exports =  Backbone.View.extend({
         render: function() {
             var table = $('<table>');
             table.append(this.getTblHdr());
+            const tbody = $('<tbody>').appendTo(table);
             var makeEntry = this.dialogEntry.bind(this);
             _.each(this.options.preps, function(prep, index) {
                 _.each(makeEntry(prep, index), function(entry) {
-                    table.append(entry);
+                    tbody.append(entry);
                 });
             });
             this.$el.append(table);
@@ -43,7 +44,6 @@ module.exports =  Backbone.View.extend({
                 width: 600,
                 buttons: this.buttons()
             });
-            this.finishRender();
 
             return this;
         },

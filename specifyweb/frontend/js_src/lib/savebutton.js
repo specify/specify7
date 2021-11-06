@@ -100,6 +100,7 @@ module.exports =  Backbone.View.extend({
             Array.from(this.buttons).forEach(button=>
                 button.setAttribute('form',form.id)
             );
+
             this.form = form;
 
             const submit = this.submit.bind(this);
