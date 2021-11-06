@@ -207,7 +207,8 @@ const commonText = require('./localization/common').default;
                         ]);
                 });
         },
-        search: function(evt) {
+        search: function(event) {
+            event.preventDefault();
             this.$('.query-execute, .query-csv, .query-kml').blur();
             this.deleteIncompleteFields(() => this.search_());
         },

@@ -72,7 +72,7 @@ module.exports =  Backbone.View.extend({
 
             const parserFunction = this.model.noValidation
                 ? (value)=>({ isValid: true, value, parsed: value })
-                : uiparse.bind(null, field, parser);
+                : uiparse.bind(null, field, parser, this.el);
 
             const handleChange = ()=>this.inputChanged(parserFunction(this.el.value));
             this.el.addEventListener('change', handleChange);

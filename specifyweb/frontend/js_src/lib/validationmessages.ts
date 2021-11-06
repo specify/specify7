@@ -8,10 +8,11 @@ export function validationMessages(
   field.setCustomValidity('');
 
   /*
-   * Don't report "Required" errors until field is interacted with or
-   * form is being submitted
+   * Don't report "Required" or "Pattern Mismatch" errors until field is
+   * interacted with or form is being submitted
    */
   const isUntouchedRequired =
+    field.classList.contains('specify-field') &&
     !isInputTouched(field) &&
     (field.validity.valueMissing || field.validity.patternMismatch) &&
     !hasNativeErrors(field, [
@@ -50,7 +51,7 @@ function updateCustomValidity(
  * this.control.checkValidity() returns true if custom error message has
  * been set, which is why it can't be used here
  */
-const hasNativeErrors = (
+export const hasNativeErrors = (
   field: HTMLInputElement,
   exceptions = ['customError', 'valid']
 ): boolean =>
