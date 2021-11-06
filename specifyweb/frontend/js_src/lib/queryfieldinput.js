@@ -72,8 +72,8 @@ const commonText = require('./localization/common').default;
             this.parser = this.parserMutator?.(this.parser) ?? this.parser;
             addValidationAttributes(el, this.field, this.parser);
 
+            const parser = uiparse.bind(undefined, this.field, this.parser, el);
             this.handleChange = ()=>{
-                const parser = uiparse.bind(undefined, this.field, this.parser);
                 const results = this.listInput
                   ? el.value.split(',').map(parser)
                   : [parser(el.value)];
@@ -152,7 +152,7 @@ const commonText = require('./localization/common').default;
         parserMutator(parser){
             if(typeof parser?.pattern === 'object'){
                 // If a pattern is set, modify it to allow for comma separators
-                const pattern = parser.pattern.source.replaceAll(/^\^\(|\)\$$/g,'');
+                const pattern = parser.pattern.toString().replaceAll(/^\/\^\(?|\)?\$\/$/g,'');
                 // Pattern with whitespace
                 const escaped = `\\s*(?:${pattern})\\s*`;
                 return {
@@ -195,7 +195,7 @@ var Contains = {
     types: ['strings', 'catnos'],
     addUIFieldInput: function(el, i) {
         const handleChange = ()=>{
-                const parser = uiparse.bind(undefined, {type: 'java.lang.String'});
+                const parser = uiparse.bind(undefined, {type: 'java.lang.String'}, el);
                 const results = this.listInput
                   ? el.value.split(',').map(parser)
                   : [parser(el.value)];
@@ -214,7 +214,7 @@ var Like = {
     types: ['strings', 'catnos'],
     addUIFieldInput: function(el, i) {
          const handleChange = ()=>{
-                const parser = uiparse.bind(undefined, {type: 'java.lang.String'});
+                const parser = uiparse.bind(undefined, {type: 'java.lang.String'}, el);
                 const results = this.listInput
                   ? el.value.split(',').map(parser)
                   : [parser(el.value)];

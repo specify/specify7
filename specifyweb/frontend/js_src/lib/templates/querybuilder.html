@@ -1,4 +1,4 @@
-<div class="querybuilder">
+<form class="querybuilder">
   <header class="querybuilder-header">
     <img alt="" />
     <h2></h2>
@@ -36,11 +36,12 @@
     <label class="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>">
       <%= queryText('format') %>
     </label>
-    <button
-      type="button"
+    <input
+      type="submit"
       class="query-execute magic-button"
+      value="<%= commonText('query') %>"
       disabled
-    ><%= commonText('query') %></button>
+    >
     <button
       type="button"
       class="query-csv magic-button"
@@ -71,4 +72,4 @@
       class="query-save-as magic-button"
     ><%= queryText('saveAs') %></button>
   </div>
-</div>
+</form>

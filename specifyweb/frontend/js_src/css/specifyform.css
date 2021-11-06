@@ -316,7 +316,8 @@ input[type='submit'].saveblocked {
 }
 
 .saveblocked,
-input:not(:required):not([pattern]):invalid,
+input:not(.specify-field):invalid,
+input.touched:invalid,
 form.submitted input:invalid,
 input.touched:invalid {
     background-color: red !important;

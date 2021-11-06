@@ -125,7 +125,7 @@ module.exports =  Backbone.View.extend({
             var mode = this.readOnly ? 'view' : 'edit';
             Q([
                 specifyform.buildSubView(this.$el),
-                specifyform.buildViewByName(this.collection.model.specifyModel.view, null, mode)
+                specifyform.buildViewByName(this.collection.model.specifyModel.view, null, mode, true)
             ]).spread(function(subform, expandedForm) {
                 this.subform = subform;
                 this.expandedForm = expandedForm;

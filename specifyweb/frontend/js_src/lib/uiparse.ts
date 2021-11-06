@@ -2,6 +2,7 @@ import type { IR, RA } from './components/wbplanview';
 import dateFormatString from './dateformat.js';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
+import {hasNativeErrors} from './validationmessages';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) => {
@@ -114,7 +115,8 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
     formatters: [
       formatter.toLowerCase,
       stringGuard((value) =>
-        value === 'today' ? dayjs() : dayjs(value, dateFormatString(), true)),
+        value === 'today' ? dayjs() : dayjs(value, dateFormatString(), true)
+      ),
     ],
     validators: [
       (value) =>
@@ -274,7 +276,8 @@ export function addValidationAttributes(
 
   if (parser.required === true) input.required = true;
 
-  if (typeof parser.pattern === 'object') input.pattern = parser.pattern;
+  if (typeof parser.pattern === 'object')
+    input.pattern = parser.pattern.toString().replaceAll(/^\/\^?|\$?\/$/g, '');
 
   [
     'minLength',
@@ -297,7 +300,11 @@ export function addValidationAttributes(
     );
 }
 
-function validateAttributes(parser: Parser, value: string): undefined | string {
+function validateAttributes(parser: Parser, value: string, input: HTMLInputElement | undefined): undefined | string {
+
+  if(typeof input !== 'undefined' && hasNativeErrors(input))
+    return input.validationMessage;
+
   if (typeof parser.minLength === 'number' && value.length < parser.minLength)
     return formsText('minimumLength')(parser.minLength);
 
@@ -348,6 +355,7 @@ export type UiParseResult =
 export default function parse(
   field: Field,
   parser: Parser | undefined,
+  input: HTMLInputElement | undefined,
   value: string
 ): UiParseResult {
   if (value.trim() === '')
@@ -370,7 +378,7 @@ export default function parse(
       reason: formsText('noParser')(field.type),
     };
 
-  let errorMessage = validateAttributes(parser, value.trim());
+  let errorMessage = validateAttributes(parser, value.trim(), input);
   let formattedValue: unknown;
 
   if (typeof errorMessage === 'undefined') {

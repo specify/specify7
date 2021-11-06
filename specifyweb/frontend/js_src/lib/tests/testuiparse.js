@@ -9,7 +9,7 @@ define(['underscore', 'uiparse'], function(_, uiparse) {
                 isRequired: true
             };
             const parser = uiparse.resolveParser(field);
-            const result = uiparse.default(field, parser, '  ');
+            const result = uiparse.default(field, parser, undefined, '  ');
             equal(result.isValid, false);
             equal(result.reason, 'Field is required.');
         });
@@ -20,7 +20,7 @@ define(['underscore', 'uiparse'], function(_, uiparse) {
                 isRequired: false
             };
             const parser = uiparse.resolveParser(field);
-            const result = uiparse.default(field, parser, '  ');
+            const result = uiparse.default(field, parser, undefined, '  ');
             equal(result.isValid, true);
             equal(result.parsed, null);
         });
@@ -31,7 +31,7 @@ define(['underscore', 'uiparse'], function(_, uiparse) {
                 isRequired: true
             };
             const parser = uiparse.resolveParser(field);
-            const result = uiparse.default(field, parser, '');
+            const result = uiparse.default(field, parser, undefined, '');
             equal(result.isValid, true);
             equal(result.parsed, '');
         });
@@ -102,7 +102,7 @@ define(['underscore', 'uiparse'], function(_, uiparse) {
 
         function checkIt(expected, value) {
             const parser = uiparse.resolveParser(this);
-            const result = uiparse.default(this, parser, value);
+            const result = uiparse.default(this, parser, undefined, value);
             equal(result.isValid, expected[0]);
             !_.isUndefined(expected[1]) && equal(result.parsed, expected[1]);
             !expected[0] && equal(result.reason, expected[2]);
