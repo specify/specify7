@@ -5,7 +5,9 @@ export function validationMessages(
   field: HTMLInputElement,
   validationMessages: RA<string>
 ): void {
+
   field.setCustomValidity('');
+  if (!hasNativeErrors(field)) updateCustomValidity(field, validationMessages);
 
   /*
    * Don't report "Required" or "Pattern Mismatch" errors until field is
@@ -22,12 +24,7 @@ export function validationMessages(
       'patternMismatch',
     ]);
 
-  if (hasNativeErrors(field)) {
-    if (!isUntouchedRequired) field.reportValidity();
-  } else {
-    updateCustomValidity(field, validationMessages);
-    if (!isUntouchedRequired) field.reportValidity();
-  }
+  if (!isUntouchedRequired) field.reportValidity();
 }
 
 function updateCustomValidity(

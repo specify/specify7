@@ -20,9 +20,7 @@ module.exports =  PrepDialog.extend({
         events: {
             'click a.prepselect-unavailable': 'prepInteractions',
             'click :checkbox': 'prepCheck',
-            'click .ui-spinner-button': 'spun', //when not binding in finishRender()
-            'keyup .ui-spinner-input': 'putin', //when not binding in finishRender()
-            'keydown .prepselect-amt': 'prepselectKeyDown' 
+            'change .prepselect-amt': 'spun',
         },
         availabilityDblChk: false,
 
@@ -52,42 +50,17 @@ module.exports =  PrepDialog.extend({
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         getTblHdr: function() {
-            return `<tr>
-                <td></td>
-                <th scope="col">${this.colobjModel.getField('catalognumber').getLocalizedName()}</th>
-                <th scope="col">${this.detModel.getField('taxon').getLocalizedName()}</th>
-                <th scope="col">${this.prepModel.getField('preptype').getLocalizedName()}</th>
-                <th scope="col">${this.getProp('InteractionsTask.Selected', 'Selected')}</th>
-                <th scope="col">${this.getProp('InteractionsTask.Available', 'Available')}</th>
-                <th scope="col">${this.getProp('InteractionsTask.Unavailable', 'Unavailable')}</th>
-            </tr>`;
-        },
-        finishRender: function() {
-            var spinners = this.$(".prepselect-amt");
-            spinners.spinner(/*{
-                change: _.bind(function( evt ) {
-                    var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-                    if (idx >= 0) {
-                        var val = new Number($(evt.currentTarget).attr('value'));
-                        var max = this.options.preps[idx].available;
-                        var min = 0;
-                        if (val > new Number(max)) {
-                            $(evt.currentTarget).attr('value', max);
-                        } else if (isNaN(val) || val < min) {
-                            $(evt.currentTarget).attr('value',  min);
-                        }
-                        this.$(':checkbox')[idx].checked = new Number($(evt.currentTarget).attr('value')) > 0;
-                    }
-                }, this),
-                spin: _.bind(function( evt, ui ) {
-                    var idx = this.$(".prepselect-amt").index(evt.target);
-                    if (idx >= 0) {
-                        var val = new Number($(ui).attr('value'));
-                        this.$(':checkbox')[idx].checked = val > 0;
-                    }
-                }, this)
-                              }*/);
-            spinners.width(50);
+            return `<thead>
+                <tr>
+                    <td></td>
+                    <th scope="col">${this.colobjModel.getField('catalognumber').getLocalizedName()}</th>
+                    <th scope="col">${this.detModel.getField('taxon').getLocalizedName()}</th>
+                    <th scope="col">${this.prepModel.getField('preptype').getLocalizedName()}</th>
+                    <th scope="col">${this.getProp('InteractionsTask.Selected', 'Selected')}</th>
+                    <th scope="col">${this.getProp('InteractionsTask.Available', 'Available')}</th>
+                    <th scope="col">${this.getProp('InteractionsTask.Unavailable', 'Unavailable')}</th>
+                </tr>
+            </thead>`;
         },
 
         dialogEntry: function(iprep) {
@@ -105,7 +78,14 @@ module.exports =  PrepDialog.extend({
                 $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
-                $('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('title',formsText('selectedAmount')).attr('aria-label',formsText('selectedAmount')).attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
+                $('<td>').append($('<input type="number">')
+                    .attr('class', 'specify-field')
+                    .attr('value', '0')
+                    .attr('title',formsText('selectedAmount'))
+                    .attr('aria-label',formsText('selectedAmount'))
+                    .attr('max', iprep.available)
+                    .attr('min', 0)
+                    .addClass('prepselect-amt')),
                 $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
                 unavailable);
             return [entry];
@@ -156,59 +136,18 @@ module.exports =  PrepDialog.extend({
 
         //events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    putin: function(evt) {
-        var isUpDownArrow = ["ArrowDown", "ArrowUp"].indexOf(evt.key) >= 0;
-        if (isUpDownArrow || !isNaN(String.fromCharCode(evt.which))) {
-            var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-            if (idx >= 0) {
-                if (!isUpDownArrow) {
-                    var val = new Number(evt.currentTarget.value);
-                    var max = this.options.preps[idx].available;
-                    var min = 0;
-                    if (val > new Number(max)) {
-                        evt.currentTarget.value = max + "";
-                    } else if (isNaN(val) || val < min) {
-                        evt.currentTarget.value = min + "";
-                    }
-                }
-                this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
-            }
-        } else {
-            evt.preventDefault();
-        }
+    spun({target}) {
+        const row = target.closest('tr');
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        checkbox.checked = Number.parseInt(target.value) > 0;
     },
 
-    spun: function(evt) {
-        var rows = $(evt.target).parentsUntil("tbody");
-        var row = rows[rows.length - 1];
-        var idx = this.$("tr").index(row) - 1;
-        var ui = this.$(".prepselect-amt")[idx];
-        if (idx >= 0) {
-            var val = new Number(ui.value);
-            this.$(':checkbox')[idx].checked = val > 0;
-        }
-    },
-    
-        prepselectKeyDown: function( evt, a, b) {
-            if (isNaN(String.fromCharCode(evt.which))) {
-                if (["ArrowLeft", "ArrowRight"].indexOf(evt.key) == -1) {
-                    evt.preventDefault();
-                }
-            }
-        },
-
-        prepCheck: function( evt ) {
-            var idx = this.$(':checkbox').index( evt.target );
-            var available = this.options.preps[idx].available;
-            if (available <= 0) {
-                evt.preventDefault();
-            } else {
-                if (evt.target.checked) {
-                    $(this.$('.prepselect-amt')[idx])[0].value = available;
-                } else {
-                    $(this.$('.prepselect-amt')[idx])[0].value = 0;
-                }
-            }
+        prepCheck({target}) {
+            const row = target.closest('tr');
+            const index = Array.from(row.parentElement.children).indexOf(row);
+            const input = row.querySelector('.prepselect-amt');
+            const available = Math.max(0,this.options.preps[index].available);
+            input.value = target.checked ? available : 0;
         },
 
         prepInteractions: function(evt) {

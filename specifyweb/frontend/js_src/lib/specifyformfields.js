@@ -52,7 +52,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
                 return control;
             },
             spinner: function() {
-                return $('<input type="text" class="specify-spinner specify-field">')
+                return $('<input type="number" class="specify-spinner specify-field">')
                     .prop('readonly',isReadOnly);
             },
             querycbx: function() {

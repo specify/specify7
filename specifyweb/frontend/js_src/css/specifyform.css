@@ -213,9 +213,28 @@ select.specify-field {
     background-color: #c8e6ff;
 }
 
-input.specify-numeric-field,
-input.specify-spinner.specify-field-in-table {
-    text-align: right;
+.specify-field[type=number].chrome {
+    text-align:right;
+    position: relative;
+    /* Make room for spinner buttons */
+    padding-right: calc(var(--size) * 1.3);
+}
+
+.specify-field[type=number]::-webkit-inner-spin-button,
+.specify-field[type=number]::-webkit-outer-spin-button {
+    /* Always show spinner buttons */
+    opacity: 1;
+}
+
+.specify-field[type=number]::-webkit-outer-spin-button,
+.specify-field[type=number]::-webkit-inner-spin-button {
+    /* Make spinner buttons larger */
+    -webkit-appearance: inner-spin-button !important;
+    width: var(--half-size);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
 }
 
 h1.separator,
