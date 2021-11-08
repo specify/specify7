@@ -51,7 +51,7 @@ module.exports =  UIPlugin.extend({
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', adminText('setPassword'));
+            this.el.innerText = adminText('setPassword');
             if(this.model.isNew())
                 this.$el.attr(
                   'title',

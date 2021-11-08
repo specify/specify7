@@ -15,7 +15,7 @@ module.exports = UIPlugin.extend(
       click: 'click',
     },
     render() {
-      this.$el.attr('value', localityText('showMap')).prop('disabled', false);
+      this.el.innerText = localityText('showMap');
       this.geoMapDialog = undefined;
       return this;
     },

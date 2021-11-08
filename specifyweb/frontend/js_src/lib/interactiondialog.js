@@ -33,8 +33,8 @@ module.exports = RecordSetsDialog.extend({
             'click a.i-action-rs': 'toggleRs',
             'click a.i-action-enter': 'toggleCats',
             'keyup textarea.i-action-entry': 'catNumChange',
-            'click input.i-action-noprep': 'zeroPrepLoan',
-            'click input.i-action-noco': 'zeroCoPrep'
+            'click button.i-action-noprep': 'zeroPrepLoan',
+            'click button.i-action-noco': 'zeroCoPrep'
         },
 
 
@@ -150,12 +150,28 @@ module.exports = RecordSetsDialog.extend({
             </a>`));
             this.makeEntryUI();
             var noPrepCap = this.getNoPrepCaption();
-            if (noPrepCap != "") {
-                this.$el.append('<br><input type="button" class="i-action-noprep" value="' + noPrepCap + '"</><br>');
-            }
-            if (this.options.interactionresource) {
-                this.$el.append('<br><input type="button" class="i-action-noco" value="' + this.getNoCOCaption() + '"</><br>');                
-            }
+            if (noPrepCap != "")
+                this.$el.append(`
+                    <br>
+                    <button
+                        type="button"
+                        class="magic-button i-action-noprep"
+                    >
+                        ${noPrepCap}
+                    </button>
+                    <br>
+                `);
+            if (this.options.interactionresource)
+              this.$el.append(`
+                  <br>
+                  <button
+                      type="button"
+                      class="magic-button i-action-noco"
+                  >
+                      ${this.getNoCOCaption()}
+                  </button>
+                  <br>
+              `);
         },
         touchUpUI: function() {
            if (this.options.recordSets._totalCount > 0) {

@@ -69,7 +69,7 @@ define([
                 var result = instProcessCell(false, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.children().first();
-                ok(control.is('input[type="button"]'), 'control is button input');
+                ok(control.is('button[type="button"]'), 'control is button input');
                 equal(control.attr('name'), 'ReturnLoan');
                 equal(control.attr('value'), 'Return Loan');
             });
@@ -245,7 +245,7 @@ define([
                 var result = instProcessCell(doingFormTable, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.find('.specify-field');
-                ok(control.is('input[type="button"]'), 'control is button');
+                ok(control.is('button[type="button"]'), 'control is button');
                 ok(control.hasClass('specify-uiplugin'), 'control has plugin class');
                 equal(control.prop('disabled'), doingFormTable, 'plugin is disabled iff doingFormTable');
             });

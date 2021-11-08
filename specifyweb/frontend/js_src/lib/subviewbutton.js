@@ -148,12 +148,13 @@ const commonText = require('./localization/common').default;
             var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
 
             if (!self.readOnly) {
-                $(`<input type="button" value="${commonText('remove')}">`).prependTo(buttons).click(function() {
-                    self.dialog.dialog('close');
-                    self.related = null;
-                    self.model.set(self.field.name, self.related);
-                    self.resourceChanged();
-                });
+                $(`<button type="button">${commonText('remove')}</button>>`)
+                    .prependTo(buttons).click(function() {
+                        self.dialog.dialog('close');
+                        self.related = null;
+                        self.model.set(self.field.name, self.related);
+                        self.resourceChanged();
+                    });
             }
 
             this.populateForm(dialogForm, self.related);

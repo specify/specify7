@@ -19,7 +19,8 @@ module.exports =  {
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', formsText('unavailableCommandButton')).prop('disabled', false);
+            this.el.innerText = formsText('unavailableCommandButton');
+            this.el.disabled = false;
             return this;
         },
         click: function(evt) {

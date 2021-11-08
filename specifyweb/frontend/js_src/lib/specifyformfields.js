@@ -77,9 +77,14 @@ module.exports = function(doingFormTable, mode, cell, id) {
                 return $('<input type="text" class="specify-field" readonly>');
             },
             plugin: function() {
-                return $('<input type="button" value="plugin" class="specify-uiplugin specify-field">')
-                    .attr('data-specify-default', cell.attr('default'))
-                    .attr('disabled', isReadOnly);
+                return $(`<button
+                    type="button"
+                    class="magic-button specify-uiplugin specify-field"
+                    data-specify-default="${cell.attr('default')}"
+                    ${isReadOnly ? 'disabled' : ''}
+                >
+                    plugin
+                </button>`);
             },
             browse: function() {
                 return $('<input type="file" class="specify-field">');

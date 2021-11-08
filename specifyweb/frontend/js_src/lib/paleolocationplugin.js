@@ -13,7 +13,8 @@ module.exports = UIPlugin.extend({
         'click': 'click'
     },
     render: function () {
-        this.$el.attr('value', formsText('paleoMap')).prop('disabled', false);
+        this.el.innerText = formsText('paleoMap');
+        this.el.disabled = false;
         return this;
     },
     click: function (evt) {
