@@ -90,15 +90,16 @@ const userInfo             = require('./userinfo').default;
                 return $('<td>').append(table);
             },
             command: function() {
-                var button = $('<input type="button">').attr({
-                    value: cell.attr('label'),
-                    name: cell.attr('name'),
-                    "class": "specify-uicommand",
-                    action: cell.attr('action'),
-                    'data-specify-initialize': cell.attr('initialize'),
-                    disabled: doingFormTable || mode === 'view'
-                });
-                return $('<td>').append(button);
+                return $('<td>').append($(`<button
+                    type="button"
+                    name="${cell.attr('name')}"
+                    class="magic-button specify-uicommand"
+                    action="${cell.attr('action')}"
+                    data-specify-initialize="${cell.attr('initialize')}"
+                    ${doingFormTable || mode === 'view' ? 'disabled': ''}
+                >
+                    ${cell.attr('label')}
+                </button>`));
             },
             other: function() {
                 return $('<td>').text("unsupported cell type: " + cell.attr('type'));

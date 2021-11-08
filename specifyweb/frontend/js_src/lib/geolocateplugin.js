@@ -18,7 +18,8 @@ module.exports =  UIPlugin.extend({
         if (this.model.specifyModel.name !== "Locality") {
             throw new Error("geolocateplugin can only be used with locality resources");
         }
-        this.$el.attr('value', localityText('geoLocate'));
+        this.el.innerText = localityText('geoLocate');
+        this.el.disabled = false;
         this.geoLocateDialog = undefined;
         return this;
     },

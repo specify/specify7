@@ -31,7 +31,8 @@ var providers = [
                 'click': 'click'
             },
             render: function() {
-                this.$el.attr('value', formsText('unavailablePluginButton')).prop('disabled', false);
+                this.el.innerText = formsText('unavailablePluginButton');
+                this.el.disabled = false;
                 return this;
             },
             click: function(evt) {
