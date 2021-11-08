@@ -246,6 +246,10 @@ const ResourceView = Backbone.View.extend({
         this.isSelected = this.model === selectedResource;
     },
     render() {
+        this.el.role = 'treeitem';
+        this.el.ariaExpanded = true;
+        // FIXME: remove this line and othersl iike it
+        this.el.classList.add('resource-view');
         this.$el.append(
             $('<a>', {
                 href: makeUrl(this.model),
@@ -262,7 +266,7 @@ const ResourceList = Backbone.View.extend({
     __name__: "ResourceListView",
     tagName: 'ul',
     events: {
-        'click .new-resource .fake-link': 'openNameDialog'
+        'click .new-resource': 'openNameDialog'
     },
     initialize({resources, getDirectory, selectedResource, ResourceModel}) {
         this.resources = resources;
@@ -274,14 +278,20 @@ const ResourceList = Backbone.View.extend({
         this.containsSelected = this.views.some(v => v.isSelected);
     },
     render() {
+        this.el.role = 'group';
+        this.el.classList.add('ResourceList');
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (userInfo.isadmin) {
-            this.$el.append(`<li class="new-resource">
-                <button type="button" class="fake-link">${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}</button>
-            </li>`);
-        }
+        if (userInfo.isadmin)
+            this.el.innerHTML += `<li role="treeitem">
+                <button
+                    type="button"
+                    class="fake-link new-resource"
+                >
+                    ${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}
+                </button>
+            </li>`;
         return this;
     },
     createResource(name) {
@@ -336,20 +346,23 @@ const AppResourcesView = Backbone.View.extend({
     tagName: 'aside',
     id: 'appresources-view',
     events: {
-        'click .toggle-content .fake-link': 'toggle'
+        'click .toggle-content': 'toggle'
     },
     render() {
         this.$el.append(
             $('<h2>').text(this.options.ResourceModel.getLocalizedName()),
-            $('<menu>').append(new GlobalResourcesView(this.options).render().el),
-            $('<menu>').append(new DisciplinesView(this.options).render().el)
+            $('<ul role="tree">')
+                .append(new GlobalResourcesView(this.options).render().el)
+                .append(new DisciplinesView(this.options).render().el)
         );
         return this;
     },
     toggle(evt) {
-        const header = $(evt.currentTarget.parentNode);
+        const header = $(evt.currentTarget);
         const toToggle = header.next();
-        setStoredToggleState(this.options.ResourceModel, header.data('appdir'), !toToggle.is(":visible"));
+        const isVisible = toToggle.is(":visible");
+        setStoredToggleState(this.options.ResourceModel, header.data('appdir'), !isVisible);
+        toToggle[0].ariaExpanded = !isVisible;
         toToggle.slideToggle();
     }
 });
@@ -369,6 +382,7 @@ function setStoredToggleState(resourceModel, levelKey, state) {
 
 const GlobalResourcesView = Backbone.View.extend({
     __name__: "GlobalResourcesView",
+    tagName: 'li',
     initialize({directories, resources, selectedResource, ResourceModel}) {
         // there are multiple "global" directories
         // distinguished by the usertype field
@@ -386,10 +400,11 @@ const GlobalResourcesView = Backbone.View.extend({
         });
     },
     render() {
+        this.el.classList.add('GlobalResourcesView');
         this.$el.append(
-            `<h3 class="toggle-content" data-appdir="global">
-                <button type="button" class="fake-link">${adminText('globalResourcesTitle')(this.resourceList.resources.length)}</button>
-            </h3>`,
+            `<button type="button" class="toggle-content fake-link" data-appdir="global">
+                ${adminText('globalResourcesTitle')(this.resourceList.resources.length)}
+            </button>`,
             this.resourceList.render().$el
                 .toggle(this.resourceList.containsSelected || getStoredToggleState(this.options.ResourceModel, 'global'))
         );
@@ -411,6 +426,7 @@ const GlobalResourcesView = Backbone.View.extend({
 
 const DisciplinesView = Backbone.View.extend({
     __name__: "DisciplineView",
+    tagName: 'li',
     initialize({users, disciplines, directories, collections, resources, selectedResource, ResourceModel}) {
         this.views = disciplines.map(
             disc => new DisciplineResourcesView({
@@ -428,11 +444,12 @@ const DisciplinesView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
+        this.el.classList.add('DisciplinesView');
         this.$el.append(
-            `<h3 class="toggle-content" data-appdir="disciplines">
-                <button type="button" class="fake-link">${adminText('disciplineResourcesTitle')(this.count)}</button>
-            </h3>`,
-            $('<div>').append(this.views.map(v => v.render().el))
+           `<button type="button" class="toggle-content fake-link" data-appdir="disciplines">
+                ${adminText('disciplineResourcesTitle')(this.count)}
+            </button>`,
+            $('<ul role="group">').append(this.views.map(v => v.render().el))
                 .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'disciplines'))
         );
         return this;
@@ -441,6 +458,7 @@ const DisciplinesView = Backbone.View.extend({
 
 const DisciplineResourcesView = Backbone.View.extend({
     __name__: "DisciplineResourcesView",
+    tagName: 'li',
     initialize({discipline, users, directories, collections, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collections = collections.filter(col => col.get('discipline') === discipline.get('resource_uri'));
@@ -476,18 +494,15 @@ const DisciplineResourcesView = Backbone.View.extend({
         this.count = this.resources.length + this.collectionViews.reduce((a, v) => a + v.count, 0);
     },
     render() {
+        this.el.role='treeitem';
+        this.el.classList.add('DisciplineResourcesView');
         this.$el.append(
-            $('<h3 class="toggle-content">')
-                .data('appdir', this.discipline.get('resource_uri'))
-                .append($(`<button
-                    type="button"
-                    class="fake-link"
-                >
-                    ${this.discipline.get('name')} 
-                    <small>(${this.count})</small>
-                </button>`)),
-            $('<div>').append(
-                this.resourceList.render().el,
+            $(`<button type="button" class="toggle-content fake-link">
+                ${this.discipline.get('name')} 
+                <small>(${this.count})</small>
+            </button>`).data('appdir', this.discipline.get('resource_uri')),
+            $('<ul role="group">').append(
+                this.resourceList.render().el.children,
                 this.collectionViews.map(v => v.render().el)
             ).toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.discipline.get('resource_uri')))
         );
@@ -507,6 +522,7 @@ const DisciplineResourcesView = Backbone.View.extend({
 
 const CollectionResourcesView = Backbone.View.extend({
     __name__: "CollectionResourcesView",
+    tagName: 'li',
     initialize({users, discipline, collection, directories, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collection = collection;
@@ -550,38 +566,33 @@ const CollectionResourcesView = Backbone.View.extend({
         this.count = this.resources.length + this.userTypeView.count + this.userView.count;
     },
     render() {
+        this.el.classList.add('CollectionResourcesView');
+        this.el.role = 'treeitem';
         this.$el.append(
-            $('<h4 class="toggle-content">')
-                .data('appdir', this.discipline.get('resource_uri'))
-                .append($(`<button
-                    type="button"
-                    class="fake-link"
-                >
-                    ${this.collection.get('collectionname')} 
-                    <small>(${this.count})</small>
-                </button>`)),
-            $('<div>').append(
-                this.resourceList.render().el,
-                $('<h5 class="toggle-content" data-appdir="usertypes">')
-                    .data('appdir', this.discipline.get('resource_uri'))
-                    .append($(`<button
-                        type="button"
-                        class="fake-link"
-                    >
+            $(`<button type="button" class="toggle-content fake-link">
+                ${this.collection.get('collectionname')} 
+                <small>(${this.count})</small>
+            </button>`).data('appdir', this.discipline.get('resource_uri')),
+            $('<ul role="group">').append(
+                this.resourceList.render().el.children,
+                $(`<li role="treeitem">
+                    <button type="button" class="toggle-content fake-link" data-appdir="usertypes">
                         ${adminText('userTypes')} 
                         <small>(${this.userTypeView.count})</small>
-                    </button>`)),
-                this.userTypeView.render().el,
-                $('<h5 class="toggle-content" data-appdir="users">')
+                    </button>
+                </li>`)
                     .data('appdir', this.discipline.get('resource_uri'))
-                    .append($(`<button
-                        type="button"
-                        class="fake-link"
-                    >
-                        ${adminText('users')} 
-                        <small>(${this.userView.count})</small>
-                    </button>`)),
-                this.userView.render().el
+                    .append(
+                        this.userTypeView.render().el
+                    ),
+              $(`<li role="treeitem">
+                  <button type="button" class="toggle-content fake-link" data-appdir="users">
+                      ${adminText('users')} 
+                      <small>(${this.userView.count})</small>
+                  </button>
+              </li>`)
+                    .data('appdir', this.discipline.get('resource_uri'))
+                    .append(this.userView.render().el),
             ).toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.collection.get('resource_uri')))
         );
         return this;
@@ -600,6 +611,7 @@ const CollectionResourcesView = Backbone.View.extend({
 
 const UserTypeView = Backbone.View.extend({
     __name__: "UserTypeView",
+    tagName: 'ul',
     initialize({discipline, collection, directories, resources, selectedResource, ResourceModel}) {
 
         this.views = ["Manager", "FullAccess", "LimitedAccess", "Guest"].map(
@@ -618,6 +630,8 @@ const UserTypeView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
+        this.el.role = 'group';
+        this.el.classList.add('UserTypeView');
         this.$el.append(this.views.map(v => v.render().el))
             .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'usertypes'));
         return this;
@@ -626,6 +640,7 @@ const UserTypeView = Backbone.View.extend({
 
 const UserTypeResourcesView = Backbone.View.extend({
     __name__: "UserTypeResourcesView",
+    tagName: 'li',
     initialize({discipline, collection, directories, type, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collection = collection;
@@ -651,16 +666,13 @@ const UserTypeResourcesView = Backbone.View.extend({
         this.count = this.resources.length;
     },
     render() {
+        this.el.role = 'treeitem';
+        this.el.classList.add('UserTypeResourcesView');
         this.$el.append(
-            $('<h4 class="toggle-content">')
-                .data('appdir', 'usertype-' + this.usertype)
-                .append($(`<button
-                    type="button"
-                    class="fake-link"
-                >
-                    ${this.usertype} 
-                    <small>(${this.count})</small>
-                </button>`)),
+            $(`<button type="button" class="toggle-content fake-link" data-appdir="users">
+                ${this.usertype} 
+                <small>(${this.count})</small>
+            </button>`).data('appdir', `usertype-${this.usertype}`),
             this.resourceList.render().$el
                 .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'usertype-' + this.usertype))
         );
@@ -681,6 +693,7 @@ const UserTypeResourcesView = Backbone.View.extend({
 
 const UserView = Backbone.View.extend({
     __name__: "UserView",
+    tagName: 'ul',
     initialize({discipline, collection, users, directories, resources, selectedResource, ResourceModel}) {
 
         this.views = users.map(
@@ -699,6 +712,8 @@ const UserView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
+        this.el.role = 'group';
+        this.el.classList.add('UserView');
         this.$el.append(this.views.map(v => v.render().el))
             .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'users'));
         return this;
@@ -708,6 +723,7 @@ const UserView = Backbone.View.extend({
 
 const UserResourcesView = Backbone.View.extend({
     __name__: "UserResourcesView",
+    tagName: 'li',
     initialize({discipline, collection, directories, user, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collection = collection;
@@ -733,16 +749,13 @@ const UserResourcesView = Backbone.View.extend({
         this.count = this.resources.length;
     },
     render() {
+        this.el.role = 'treeitem';
+        this.el.classList.add('UserResourcesView');
         this.$el.append(
-            $('<h4 class="toggle-content">')
-                .data('appdir', this.user.get('resource_uri'))
-                .append($(`<button
-                    type="button"
-                    class="fake-link"
-                >
-                    ${this.user.get('name')} 
-                    <small>(${this.count})</small>
-                </button>`)),
+            $(`<button type="button" class="toggle-content fake-link" data-appdir="users">
+                ${this.user.get('name')} 
+                <small>(${this.count})</small>
+            </button>`).data('appdir', this.user.get('resource_uri')),
             this.resourceList.render().$el
                 .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.user.get('resource_uri')))
         );
