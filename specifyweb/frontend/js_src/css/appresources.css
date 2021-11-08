@@ -14,13 +14,14 @@
     border: 1px solid #ddd;
 }
 
-#appresources-view div {
-    margin-left: 1em;
-}
-
 #appresources-view ul {
     margin-left: 1em;
     padding: 0;
+}
+
+#appresources-view .new-resource {
+    font-size: 11px;
+    color: var(--t3);
 }
 
 #appresources-view menu :not(li) > .fake-link {
