@@ -80,9 +80,6 @@ const localityText = createDictionary({
   coords: {
     'en-us': 'Coords',
   },
-  notApplicable: {
-    'en-us': 'N/A',
-  },
 });
 
 export default localityText;

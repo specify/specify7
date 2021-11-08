@@ -20,6 +20,9 @@ const formsText = createDictionary({
   openDataDialogTitle: {
     'en-us': 'Opening...',
   },
+  clone: {
+    'en-us': 'Clone',
+  },
   linkInline: {
     'en-us': 'link',
   },
