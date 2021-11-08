@@ -121,7 +121,7 @@ var attachmentview = require('./templates/attachmentview.html');
             var buildView = specifyform.buildViewByName(viewName, defaultType, mode, true);
 
             return buildView.pipe(function(form) {
-                form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();
+                form.find('.specify-form-header:first, :submit, .delete-button').remove();
                 return form;
             }).fail(jqxhr => {
                 if (jqxhr.status === 404) {

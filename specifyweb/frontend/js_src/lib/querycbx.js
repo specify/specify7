@@ -280,7 +280,7 @@ var QueryCbx = Backbone.View.extend({
     },
     render: function () {
         var control = this.$el;
-        var querycbx = $(template());
+        var querycbx = $(template({commonText, formsText}));
         control.replaceWith(querycbx);
         this.setElement(querycbx);
         this.$('input').replaceWith(control);

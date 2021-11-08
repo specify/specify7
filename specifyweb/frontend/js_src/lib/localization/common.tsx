@@ -108,6 +108,9 @@ const commonText = createDictionary({
   noResults: {
     'en-us': 'No Results',
   },
+  notApplicable: {
+    'en-us': 'N/A',
+  },
   notFound: {
     'en-us': 'Not found',
   },

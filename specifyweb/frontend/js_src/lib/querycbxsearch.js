@@ -37,7 +37,7 @@ module.exports = Backbone.View.extend({
         makeDialog: function(form) {
             $('.specify-field', form).addClass('for-search-form');
             this.populateForm(form, this.model);
-            form.find('.specify-form-header, input[value="Delete"], :submit').remove();
+            form.find('.specify-form-header, .delete-button, :submit').remove();
             form.find('.specify-field[required]').prop('required',false);
             this.$el.append(form).append('<ul class="querycbx-search-results">');
             this.$el.dialog({
