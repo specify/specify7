@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: type:bug
+labels: 'type:bug, pri:unknown'
 assignees: ''
 
 ---
@@ -24,9 +24,12 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Specify 7 Version [e.g. 7.6.01]
+ - OS: [e.g. Windows 10]
+ - Browser [e.g. Chrome, Safari]
+ - Specify 7 Version [e.g. 7.6.1]
+
+**Reported By**
+Name of your institution
 
 **Additional context**
 Add any other context about the problem here.
