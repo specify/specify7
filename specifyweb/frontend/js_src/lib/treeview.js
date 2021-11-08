@@ -104,14 +104,15 @@ const autocomplete = require('./autocomplete').default;
             controls.append(searchBox);
             this.configureAutocomplete(searchBox);
             controls.append(this.makeBtns());
-            $('<table>')
-                .prop('aria-live','polite')
-                .appendTo(this.el)
-                .append(
-                    this.header.render().el,
-                    $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
-                    `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
-                );
+            $(`<div class="tree-table"></div>`).append(
+                $('<table>')
+                    .prop('aria-live','polite')
+                    .append(
+                        this.header.render().el,
+                        $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
+                        `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
+                    )
+            ).appendTo(this.el);
             this.$('tr.loading').append(new Array(this.ranks.length-1).fill('<td>'));
             this.getRows();
             return this;

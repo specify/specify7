@@ -1,6 +1,9 @@
 /* tree.css */
 
-div.tree-view {
+.tree-view {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--size);
     height: 100%;
 }
 
@@ -20,11 +23,15 @@ div.tree-view {
     border: 1px solid #aaa;
 }
 
+.tree-table {
+    flex: 1;
+    overflow-y: scroll;
+}
+
 .tree-view table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0px;
-    margin-top: 6px;
     padding: 0 20px;
     background: #f1f2f2;
     box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
