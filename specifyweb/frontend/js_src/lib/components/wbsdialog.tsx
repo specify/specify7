@@ -144,11 +144,16 @@ function Dialog({
                 }`}
           </p>
         ) : (
-          <nav className="table-list-dialog">
-            <table className="wbs-dialog-table">
+          <nav>
+            <table
+              className="grid-table"
+              style={{ gridTemplateColumns: '1fr auto auto auto' }}
+            >
               <thead>
                 <tr>
-                  <th scope="col">{commonText('name')}</th>
+                  <th scope="col" className="pl-table-icon">
+                    {commonText('name')}
+                  </th>
                   <th scope="col">{commonText('created')}</th>
                   <th scope="col">{commonText('uploaded')}</th>
                   <td />
@@ -158,13 +163,13 @@ function Dialog({
                 {datasets.map((dataset, index) => {
                   return (
                     <tr key={index}>
-                      <td>
+                      <td style={{ overflowX: 'auto' }}>
                         <a
                           style={{ fontWeight: 800 }}
                           href={`/specify/workbench/${dataset.id}/`}
                           {...(typeof handleDataSetSelect === 'undefined'
                             ? {
-                                className: 'intercept-navigation',
+                                className: 'intercept-navigation fake-link',
                               }
                             : {
                                 onClick: (event): void => {
@@ -173,7 +178,11 @@ function Dialog({
                                 },
                               })}
                         >
-                          <img src="/images/Workbench32x32.png" alt="" />
+                          <img
+                            src="/images/Workbench32x32.png"
+                            alt=""
+                            style={{ width: 'var(--table-icon-size)' }}
+                          />
                           {dataset.name}
                         </a>
                       </td>

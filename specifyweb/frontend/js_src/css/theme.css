@@ -186,6 +186,16 @@ table.grid-table {
   align-items: center;
 }
 
+.grid-table th {
+  padding-bottom: var(--half-size);
+}
+
+.grid-table td,
+.grid-table th,
+.grid-table td a {
+  font-size: 0.8rem;
+}
+
 th.pl-table-icon {
   padding-left: calc(var(--table-icon-size) + var(--quarter-size))
 }
