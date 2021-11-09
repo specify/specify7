@@ -30,8 +30,8 @@ module.exports = RecordSetsDialog.extend({
         events: {
             'click a.rs-select': 'rsSelect',
             'click button[type=action-entry]': 'processEntry',
-            'click a.i-action-rs': 'toggleRs',
-            'click a.i-action-enter': 'toggleCats',
+            'click button.i-action-rs': 'toggleRs',
+            'click button.i-action-enter': 'toggleCats',
             'keyup textarea.i-action-entry': 'catNumChange',
             'click button.i-action-noprep': 'zeroPrepLoan',
             'click button.i-action-noco': 'zeroCoPrep'
@@ -136,18 +136,18 @@ module.exports = RecordSetsDialog.extend({
         makeUI: function() {
             var breaker = '';
             if (this.options.recordSets._totalCount > 0) {
-                this.$el.append($(`<a class="i-action-rs">
+                this.$el.append($(`<button class="i-action-rs fake-link" type="button">
                     <span class="${this.openIcon}"/>
                     ${formsText('recordSetCaption')(this.options.recordSets._totalCount)}
-                </a>`));
+                </button>`));
                 this.makeTable();
                 breaker = '<br><br>';
             }
             this.$el.append(breaker);
-            this.$el.append($(`<a class="i-action-enter">
+            this.$el.append($(`<button class="i-action-enter fake-link" type="button">
                 <span class="${this.openIcon}"/>
                 ${formsText('entryCaption')(this.getSrchFld().getLocalizedName())}
-            </a>`));
+            </button>`));
             this.makeEntryUI();
             var noPrepCap = this.getNoPrepCaption();
             if (noPrepCap != "")

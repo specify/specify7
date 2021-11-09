@@ -344,6 +344,15 @@ const commonText = createDictionary({
   treesDialogTitle: {
     'en-us': 'Trees',
   },
+  recordSet: {
+    'en-us': 'Record Set',
+  },
+  recordCount: {
+    'en-us': 'Record Count',
+  },
+  size: {
+    'en-us': 'Size',
+  },
   manageUsers: {
     'en-us': 'Manage Users',
   },

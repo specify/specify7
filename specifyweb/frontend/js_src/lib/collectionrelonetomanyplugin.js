@@ -74,7 +74,7 @@ module.exports =  UIPlugin.extend({
             <th>${formsText('collection')}</th>
         </tr>`);
         var footer = $('<tfoot>').appendTo(table);
-        $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<a>', {class: "sp-rel-plugin-add"}).appendTo(footer));
+        $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<button>', {class: "fake-link sp-rel-plugin-add", type:'button'}).appendTo(footer));
         this.model.isNew() || this.fillIn();
         return this;
     },
@@ -125,7 +125,7 @@ module.exports =  UIPlugin.extend({
         format(co).done(function(text) { label.text(text); });
         var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
         otherColFormatted.done(function(text) { collection.text(text); });
-        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: commonText('remove')}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
+        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<button>', {class: "sp-rel-plugin-remove magic-button", type:'button', title: commonText('remove')}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
     },
     gotRelatedObjects: function(collectionObjects) {
         var otherCollectionFormatted = format(this.otherCollection);

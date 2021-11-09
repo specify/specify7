@@ -44,42 +44,80 @@ module.exports = Backbone.View.extend({
             this.makeTable();
         },
         makeTable: function() {
-            var table = $('<table class="rs-dlg-tbl">');
+            const table = $(`<table
+                class="grid-table"
+                style="grid-template-columns: 1fr min-content min-content;"
+            >
+                <thead>
+                    <tr>
+                        <th
+                            scope="col"
+                            class="pl-table-icon"
+                        >
+                            <span class="sr-only">
+                                ${commonText('size')}
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sr-only">
+                                ${commonText('recordCount')}
+                            </span>
+                        </th>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>`);
+            const tbody = table.find('tbody');
             var makeEntry = this.dialogEntry.bind(this);
             this.options.recordSets.each(function(recordSet) {
-                table.append(makeEntry(recordSet));
+                tbody.append(makeEntry(recordSet));
             });
             this.options.recordSets.isComplete() ||
-                table.append(`<tr>
-                    <td></td>
+                tbody.append(`<tr>
                     <td>${commonText('listTruncated')}</td>
                 </tr>`);
             this.$el.append(table);
         },
         dialogEntry: function(recordSet) {
             const model = schema.getModelById(recordSet.get('dbtableid'));
-            const img = $('<img>', {src: model.getIcon(), alt: model.getLocalizedName()});
-            var link = this.makeEntryLink(recordSet);
-            var entry = $('<tr>').append(
-                $('<td>').append(img),
-                $('<td>').append(link),
-                $('<td class="item-count" style="display:none">'));
+            const entry = $(`<tr>
+                <td>
+                    <a
+                        href="/specify/recordset/${recordSet.id}/"
+                        class="intercept-navigation fake-link"
+                        title="${recordSet.get('remarks') ?? ''}"
+                    >
+                        <img
+                            src="${model.getIcon()}"
+                            alt="${model.getLocalizedName()}"
+                        >
+                        ${recordSet.get('name')} 
+                    </a>
+                </td>
+                <td class="item-count" style="display:none"></td>
+                <td>
+                    ${this.options.readOnly
+                        ? ''
+                        : `<button
+                              class="edit ui-icon ui-icon-pencil fake-link"
+                          >${commonText('edit')}</button>`
+                    }
+                </td>
+            </tr>`);
 
-            this.options.readOnly || entry.append(`<td><button class="edit ui-icon ui-icon-pencil fake-link">${commonText('edit')}</button></td>`);
-
-            recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
-            recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
+            recordSet.getRelatedObjectCount('recordsetitems').done((count)=>
                 $('.item-count', entry)
-                    .text('(' + count + ')')
+                    .text(`(${count})`)
                     .attr('title',formsText('recordCount'))
-                    .show();
-            });
+                    .attr('aria-label',count)
+                    .show()
+            );
+
+
             return entry;
-        },
-        makeEntryLink: function(recordSet) {
-            return $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
-                .addClass("intercept-navigation")
-                .text(recordSet.get('name'));
         },
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
@@ -90,13 +128,15 @@ module.exports = Backbone.View.extend({
             return buttons;
         },
         openFormsDialog: function() {
-            new FormsDialog().render().on('selected', function(model) {
-                var recordset = new schema.models.RecordSet.Resource();
-                recordset.set('dbtableid', model.tableId);
-                recordset.set('type', 0);
-                new EditResourceDialog({ resource: recordset }).render()
-                    .on('savecomplete', this.gotoForm.bind(this, model, recordset));
-            }, this);
+            new FormsDialog({
+                onSelected: (model)=>{
+                    const recordset = new schema.models.RecordSet.Resource();
+                    recordset.set('dbtableid', model.tableId);
+                    recordset.set('type', 0);
+                    new EditResourceDialog({ resource: recordset }).render()
+                        .on('savecomplete', this.gotoForm.bind(this, model, recordset));
+                }
+            }).render();
         },
         gotoForm: function(model, recordset) {
             // TODO: got to be a better way to get the url
