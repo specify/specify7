@@ -10,9 +10,7 @@ module.exports = {
         icon: '/static/img/data entry.png',
         path: '/specify/view',
         execute: function() {
-            new FormsDialog().render().on('selected', function(model) {
-                navigation.go(new model.Resource().viewUrl());
-            });
+            new FormsDialog().render();
         }
     };
 
