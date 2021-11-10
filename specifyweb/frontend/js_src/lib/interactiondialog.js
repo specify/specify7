@@ -119,8 +119,9 @@ module.exports = RecordSetsDialog.extend({
             }
         },
 
-        rsSelect: function(evt) {
-            var index = this.getIndex(evt, 'a.rs-select');
+        rsSelect: function(event) {
+            event.preventDefault();
+            var index = this.getIndex(event, 'a.rs-select');
             var recordSet =  this.options.recordSets.at(index);
             this.interactionAction(recordSet, true);
         },
