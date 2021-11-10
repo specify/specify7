@@ -66,7 +66,7 @@ module.exports = Backbone.View.extend({
             this.hiddenTools = this.toolModules.filter(function(t) { return t.icon == null; });
 
             _.each(this.toolModules, function(module) {
-                router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
+                router.route('task/' + module.task + '/(:options)', 'startTask', module.execute.bind(module));
             });
 
             this.currentCollection = undefined;

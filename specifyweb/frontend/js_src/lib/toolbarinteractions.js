@@ -9,8 +9,8 @@ module.exports = {
         task: 'interactions',
         title: commonText('interactions'),
         icon: '/static/img/interactions.png',
-        execute: function() {
-            new InteractionsDialog().render().on('selected', function(model) {
+        execute: function(action) {
+            new InteractionsDialog({action}).render().on('selected', function(model) {
                 navigation.go(new model.Resource().viewUrl());
             });
         }

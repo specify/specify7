@@ -56,51 +56,56 @@ module.exports = Backbone.View.extend({
         tagName: 'nav',
         className: "interactions-dialog",
         events: {
-            'click button.interaction-action': 'interactionActionClick'
+            'click a.interaction-action': 'interactionActionClick'
         },
         render: function() {
             if(getFormsPromise.isFulfilled()) {
                 this._render();
             } else {
-              const loadingDialog = $(
-                  '<div><div class="progress-bar"></div></div>'
-              ).dialog({
-                  title: commonText('loading'),
-                  modal: true,
-                  dialogClass: 'ui-dialog-no-close',
-              });
-              $('.progress-bar', loadingDialog).progressbar({ value: false });
-              getFormsPromise.done(fetchedForms=>{
-                loadingDialog.dialog('destroy');
-                this._render();
+                const loadingDialog = $(
+                    '<div><div class="progress-bar"></div></div>'
+                ).dialog({
+                    title: commonText('loading'),
+                    modal: true,
+                    dialogClass: 'ui-dialog-no-close',
+                });
+                $('.progress-bar', loadingDialog).progressbar({ value: false });
+                getFormsPromise.done(fetchedForms=>{
+                  loadingDialog.dialog('destroy');
+                  this._render();
               });
             }
             return this;
         },
         _render: function(forms) {
-            this.forms = forms;
-            let formIndex = -1;
-            this.el.innerHTML = `<ul style="padding: 0">
-                ${interaction_entries
-                    .map((entry)=>{
-                        if(!isActionEntry(entry))
-                          formIndex+=1;
-                        return this.dialogEntry(entry, formIndex);
-                    })
-                    .join('')}
-            </ul>`;
+            if(typeof this.options.action === 'undefined'){
+                this.forms = forms;
+                let formIndex = -1;
+                this.el.innerHTML = `<ul style="padding: 0">
+                    ${interaction_entries
+                        .map((entry)=>{
+                            if(!isActionEntry(entry))
+                              formIndex+=1;
+                            return this.dialogEntry(entry, formIndex);
+                        })
+                        .join('')}
+                </ul>`;
 
-            this.$el.dialog({
-                title: commonText('interactions'),
-                maxHeight: 400,
-                modal: true,
-                close: function() { $(this).remove(); },
-                buttons: [{
-                    text: commonText('close'),
-                    click: function() { $(this).dialog('close'); }
-                }]
-            });
-            return this;
+                this.$el.dialog({
+                    title: commonText('interactions'),
+                    maxHeight: 400,
+                    modal: true,
+                    close: function() { $(this).remove(); },
+                    buttons: [{
+                        text: commonText('close'),
+                        click: function() { $(this).dialog('close'); }
+                    }]
+                });
+            } else {
+                const action = interaction_entries
+                    .find(a=>a[0].getAttribute('action')==='NEW_LOAN');
+                this.handleAction(action);
+            }
         },
         getDialogEntryText: function(entry) {
             if (entry.attr('label')) {
@@ -120,27 +125,28 @@ module.exports = Backbone.View.extend({
             return '';
         },
         dialogEntry: function(interactionEntry, formIndex) {
-            let tagName = 'button';
             let className = 'interaction-action';
-            let attributes = 'type="button"';
+            let href='';
 
-            if(!isActionEntry(interactionEntry)){
+            if(isActionEntry(interactionEntry)) {
+                const action = interactionEntry[0].getAttribute('action');
+                href = `/specify/task/interactions/${action}`;
+            }
+            else {
               const form = this.forms[formIndex];
               const model = schema.getModel(form['class'].split('.').pop());
-              const href = new model.Resource().viewUrl();
 
-              attributes = `href="${href}"`;
-              tagName = 'a';
+              href = new model.Resource().viewUrl();
               className = 'intercept-navigation';
             }
 
             return `<li
                 title="${this.getDialogEntryTooltip(interactionEntry)}"
             >
-                <${tagName}
+                <a
                     class="${className} fake-link"
                     style="font-size: 0.8rem"
-                    ${attributes}
+                    href="${href}"
                 >
                     <img
                         alt="${interactionEntry.attr('icon')}"
@@ -149,25 +155,19 @@ module.exports = Backbone.View.extend({
                         aria-hidden="true"
                     > 
                     ${this.getDialogEntryText(interactionEntry)}
-                </${tagName}>
+                </a>
             </li>`;
-        },
-        selected: function(evt) {
-            var index = this.$('button').filter(".intercept-navigation").index(evt.currentTarget);
-            getFormsPromise.done(forms => {
-                this.$el.dialog('close');
-                var form = forms[index];
-                var model = schema.getModel(form['class'].split('.').pop());
-                this.trigger('selected', model);
-            });
         },
         isRsAction: function(actionName) {
             return actionName == 'NEW_GIFT' || actionName == 'NEW_LOAN';
         },
-        interactionActionClick: function(evt) {
-            var index = this.$('button').filter(".interaction-action").index(evt.currentTarget);
+        interactionActionClick(event) {
+            event.preventDefault();
+            const index = this.$('a').filter(".interaction-action").index(event.currentTarget);
             this.$el.dialog('close');
-            var action = actions[index];
+            this.handleAction(actions[index]);
+        },
+        handleAction(action){
             var isRsAction = this.isRsAction(action.attr('action'));
             if (isRsAction || action.attr('action') == 'RET_LOAN') {
                 var tblId = isRsAction ? 1 : 52;

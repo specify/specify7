@@ -87,7 +87,11 @@ module.exports = Backbone.View.extend({
                 <td>
                     <a
                         href="/specify/recordset/${recordSet.id}/"
-                        class="intercept-navigation fake-link"
+                        class="fake-link ${
+                            this.options.readOnly
+                                ? 'rs-select'
+                                : 'intercept-navigation'
+                        }"
                         title="${recordSet.get('remarks') ?? ''}"
                     >
                         <img
