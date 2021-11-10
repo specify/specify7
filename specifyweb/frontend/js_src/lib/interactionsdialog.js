@@ -56,7 +56,6 @@ module.exports = Backbone.View.extend({
         tagName: 'nav',
         className: "interactions-dialog",
         events: {
-            'click button.intercept-navigation': 'selected',
             'click button.interaction-action': 'interactionActionClick'
         },
         render: function() {
@@ -78,9 +77,19 @@ module.exports = Backbone.View.extend({
             }
             return this;
         },
-        _render: function() {
-            var entries = _.map(interaction_entries, this.dialogEntry, this);
-            $('<ul>').css('padding',0).append(entries).appendTo(this.el);
+        _render: function(forms) {
+            this.forms = forms;
+            let formIndex = -1;
+            this.el.innerHTML = `<ul style="padding: 0">
+                ${interaction_entries
+                    .map((entry)=>{
+                        if(!isActionEntry(entry))
+                          formIndex+=1;
+                        return this.dialogEntry(entry, formIndex);
+                    })
+                    .join('')}
+            </ul>`;
+
             this.$el.dialog({
                 title: commonText('interactions'),
                 maxHeight: 400,
@@ -104,38 +113,44 @@ module.exports = Backbone.View.extend({
                 return entry.attr('table');
             }
         },
-        addDialogEntryToolTip: function(entry, link) {
-            var ttResourceKey = entry.attr('tooltip');
-            if (ttResourceKey !== '') {
-                var tt = s.localizeFrom('resources', ttResourceKey);
-                if (tt) {
-                    link.attr('title', tt);
-                }
-            }
+        getDialogEntryTooltip: function(entry) {
+            const ttResourceKey = entry.attr('tooltip');
+            if (ttResourceKey !== '')
+                return s.localizeFrom('resources', ttResourceKey) || '';
+            return '';
         },
-        dialogEntry: function(interactionEntry) {
-            const link = $('<li>').append(
-                $('<button>', {class:
-                    isActionEntry(interactionEntry) ?
-                        'interaction-action' : 'intercept-navigation'
-                })
-                    .addClass("fake-link")
-                    .css({fontSize: '0.8rem'})
-                    .append(
-                        $(
-                            '<img>',
-                            {
-                                alt: interactionEntry.attr('icon'),
-                                src: icons.getIcon(interactionEntry.attr('icon')),
-                                width: 'var(--table-icon-size)',
-                                'aria-hidden': true,
-                            }
-                        ),
-                        this.getDialogEntryText(interactionEntry)
-                    )
-            );
-            this.addDialogEntryToolTip(interactionEntry, link);
-            return link[0];
+        dialogEntry: function(interactionEntry, formIndex) {
+            let tagName = 'button';
+            let className = 'interaction-action';
+            let attributes = 'type="button"';
+
+            if(!isActionEntry(interactionEntry)){
+              const form = this.forms[formIndex];
+              const model = schema.getModel(form['class'].split('.').pop());
+              const href = new model.Resource().viewUrl();
+
+              attributes = `href="${href}"`;
+              tagName = 'a';
+              className = 'intercept-navigation';
+            }
+
+            return `<li
+                title="${this.getDialogEntryTooltip(interactionEntry)}"
+            >
+                <${tagName}
+                    class="${className} fake-link"
+                    style="font-size: 0.8rem"
+                    ${attributes}
+                >
+                    <img
+                        alt="${interactionEntry.attr('icon')}"
+                        src="${icons.getIcon(interactionEntry.attr('icon'))}"
+                        style="width: var(--table-icon-size)"
+                        aria-hidden="true"
+                    > 
+                    ${this.getDialogEntryText(interactionEntry)}
+                </${tagName}>
+            </li>`;
         },
         selected: function(evt) {
             var index = this.$('button').filter(".intercept-navigation").index(evt.currentTarget);
