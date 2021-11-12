@@ -41,6 +41,11 @@
   align-items: center;
 }
 
+.new-tab-link-icon {
+  width: var(--half-size);
+  padding-left: var(--quarter-size);
+}
+
 .table-icon {
   width: var(--table-icon-size);
   min-width: var(--table-icon-size);

@@ -35,7 +35,8 @@ export const leafletTileServers: RR<
       {
         maxZoom: 19,
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="https://www.openstreetmap.org/copyright"' +
+          ' target="_blank">OpenStreetMap</a> contributors',
       }
     ),
     'Street Map (ESRI)': L.tileLayer(
@@ -66,7 +67,8 @@ export const leafletTileServers: RR<
       'https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
       {
         attribution:
-          '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+          '<a target="_blank" href="https://www.geoportail.gouv.fr/"' +
+          ' target="_blank">Geoportail France</a>',
         bounds: [
           [-75, -180],
           [81, 180],
@@ -84,7 +86,8 @@ export const leafletTileServers: RR<
       {
         maxZoom: 20,
         attribution:
-          'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>',
+          'Tiles courtesy of the <a href="https://usgs.gov/"' +
+          ' target="_blank">U.S. Geological Survey</a>',
       }
     ),
     'Live Satellite Map (NASA/GIBS)': L.tileLayer(
@@ -92,7 +95,9 @@ export const leafletTileServers: RR<
       {
         attribution:
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
-          '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          '(<a href="https://earthdata.nasa.gov" target="_blank">ESDIS</a>)' +
+          ' with' +
+          ' funding provided by NASA/HQ.',
         bounds: [
           [-85.051_128_777_6, -179.999_999_975],
           [85.051_128_777_6, 179.999_999_975],

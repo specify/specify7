@@ -192,6 +192,9 @@ const commonText = createDictionary({
   move: {
     'en-us': 'Move',
   },
+  opensInNewTab: {
+    'en-us': '(opens in a new tab)',
+  },
 
   // Toolbar
   notifications: {
