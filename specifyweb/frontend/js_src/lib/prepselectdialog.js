@@ -18,7 +18,7 @@ module.exports =  PrepDialog.extend({
         __name__: "PrepSelectDialog",
         className: "prepselectdialog table-list-dialog",
         events: {
-            'click a.prepselect-unavailable': 'prepInteractions',
+            'click button.prepselect-unavailable': 'prepInteractions',
             'click :checkbox': 'prepCheck',
             'change .prepselect-amt': 'spun',
         },
@@ -69,7 +69,7 @@ module.exports =  PrepDialog.extend({
             var unavailableCnt = iprep.countamt - iprep.available;
             //if unavailable items, link to related interactions
             if (unavailableCnt != 0) {
-                unavailable.append($('<a>').text(unavailableCnt).addClass('prepselect-unavailable'));
+                unavailable.append($('<button>',{type: 'button', class: 'fake-link'}).text(unavailableCnt).addClass('prepselect-unavailable'));
             } else {
                 unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
             }

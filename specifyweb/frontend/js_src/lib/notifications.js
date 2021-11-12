@@ -55,27 +55,27 @@ const renderMessage = {
         return rendered;
     },
     'update-feed-failed': message => {
-        const rendered = $(`<p>${commonText('updateFeedFailed')} <a download>Exception</a></p>`);
+        const rendered = $(`<p>${commonText('updateFeedFailed')} <a download>${commonText('exception')}</a></p>`);
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
     'dwca-export-complete': message => {
-        const rendered = $(`<p>${commonText('dwcaExportCompleted')} <a download>Download.</a></p>`);
+        const rendered = $(`<p>${commonText('dwcaExportCompleted')} <a download>${commonText('download')}</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
     'dwca-export-failed': message => {
-        const rendered = $(`<p>${commonText('dwcaExportFailed')} <a download>Exception</a></p>`);
+        const rendered = $(`<p>${commonText('dwcaExportFailed')} <a download>${commonText('exception')}</a></p>`);
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
     'query-export-to-csv-complete': message => {
-        const rendered = $(`<p>${commonText('queryExportToCsvCompleted')} <a download>Download.</a></p>`);
+        const rendered = $(`<p>${commonText('queryExportToCsvCompleted')} <a download>${commonText('download')}</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
     'query-export-to-kml-complete': message => {
-        const rendered = $(`<p>${commonText('queryExportToKmlCompleted')} <a download>Download.</a></p>`);
+        const rendered = $(`<p>${commonText('queryExportToKmlCompleted')} <a download>${commonText('download')}</a></p>`);
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },

@@ -453,6 +453,12 @@ const commonText = createDictionary({
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
   },
+  exception: {
+    'en-us': 'Exception',
+  },
+  download: {
+    'en-us': 'Download',
+  },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
   },
@@ -483,6 +489,9 @@ const commonText = createDictionary({
   },
   selectCollection: {
     'en-us': 'Select one of the following collections:',
+  },
+  collection: {
+    'en-us': 'Collection',
   },
   loginToProceed: {
     'en-us': (collectionName: string) => `

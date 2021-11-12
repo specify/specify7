@@ -43,7 +43,6 @@ const commonText = require('./localization/common').default;
             var specifyModel = schema.getModelById(this.model.get('dbtableid'));
             this.el.setAttribute('role','alert');
             this.$el.empty().append(formsText('emptyRecordSetMessage')(this.model.get('name')));
-            this.$('.recordset-add, .recordset-delete').button();
 
             var url = api.makeResourceViewUrl(specifyModel, null, this.model.id);
             this.$('.recordset-add').attr('href', url);
@@ -200,4 +199,3 @@ module.exports =  function() {
         router.route('view/:model/new/', 'newResourceView', newResourceView);
         router.route('bycatalog/:collection/:catno/', 'byCatNo', byCatNo);
     };
-

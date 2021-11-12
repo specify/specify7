@@ -14,17 +14,17 @@ const paleoDiscs = 'paleobotany invertpaleo vertpaleo'.split(' ');
 
 const RepairTreeView = Backbone.View.extend({
     __name__: "RepairTreeView",
-    className: "repair-tree-dialog table-list-dialog",
+    className: "repair-tree-dialog",
     events: {
-        'click a': 'selected'
+        'click button': 'selected'
     },
     initialize({trees}) {
         this.trees = trees;
     },
     render() {
-        const entries = this.trees.map(tree => this.dialogEntry(tree));
+        const entries = this.trees.map(tree => this.dialogEntry(tree)).join('');
         this.$el.append(
-            $('<table>').append(entries)
+            $('<ul>').css('padding',0).html(entries)
         ).dialog({
             title: title,
             modal: true,
@@ -35,14 +35,24 @@ const RepairTreeView = Backbone.View.extend({
     },
     dialogEntry(tree) {
         const model = schema.getModel(tree);
-        const img = $('<img>', { src: model.getIcon(), alt: '', 'aria-hidden': true });
-        const link = $('<a>', { text: model.getLocalizedName() });
-        return $('<tr>').append(
-            $('<td>').append(img),
-            $('<td>').append(link))[0];
+        return `<li>
+            <button
+                type="button"
+                class="fake-link intercept-navigation"
+                style="font-size: 0.8rem;"
+            >
+                <img
+                    alt=''
+                    aria-hidden="true"
+                    src="${model.getIcon()}"
+                    style="width: var(--table-icon-size);"
+                >
+                ${model.getLocalizedName()}
+            </button>
+        </li>`;
     },
     selected(evt) {
-        const idx = this.$('a').index(evt.currentTarget);
+        const idx = this.$('button').index(evt.currentTarget);
         const tree = this.trees[idx];
         this.$el.dialog('option', 'buttons', []);
         this.$el.empty().append('<div>');

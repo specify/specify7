@@ -28,7 +28,7 @@ module.exports =  Backbone.View.extend({
                     <p>${commonText('resourceInaccessible')}</p>
                     <p>${commonText('selectCollection')}</p>
                     <ul>
-                        <li><a>Collection</a></li>
+                        <li><a>${commonText('collection')}</a></li>
                     </ul>
                 `);
                 var ul = this.$('ul');
@@ -57,4 +57,3 @@ module.exports =  Backbone.View.extend({
             navigation.switchCollection($(evt.currentTarget).data('collection-id'));
         }
     });
-

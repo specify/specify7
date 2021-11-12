@@ -37,7 +37,10 @@ export function SpecifyNetworkBadge({
   const [occurrenceName, setOccurrenceName] = React.useState('');
 
   React.useEffect(() => {
-    fetchOccurrenceName({ guid, model })
+    fetchOccurrenceName({
+      guid,
+      model,
+    })
       .then(setOccurrenceName)
       .catch(console.error);
   }, [guid, model]);
@@ -49,12 +52,10 @@ export function SpecifyNetworkBadge({
       href={formatLifemapperViewPageRequest(guid, occurrenceName)}
       target="_blank"
       title={lifemapperText('specifyNetwork')}
+      aria-label={lifemapperText('specifyNetwork')}
       className="lifemapper-source-icon"
     >
-      <img
-        src="/static/img/specify_network_logo_long.svg"
-        alt="Specify Network"
-      />
+      <img src="/static/img/specify_network_logo_long.svg" alt="" />
     </a>
   );
 }
