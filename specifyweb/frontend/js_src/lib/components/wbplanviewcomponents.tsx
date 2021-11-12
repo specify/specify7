@@ -9,6 +9,7 @@ import React from 'react';
 
 import wbText from '../localization/workbench';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
+import { useId } from './common';
 import type {
   CustomSelectElementOptions,
   CustomSelectElementPropsClosed,
@@ -195,6 +196,8 @@ export function MappingLineComponent({
       lineRef.current?.focus();
   }, [isFocused]);
 
+  const id = useId('mapping-line');
+
   return (
     <li
       className={`wbplanview-mapping-line ${
@@ -216,7 +219,7 @@ export function MappingLineComponent({
           ⌦
         </button>
       </div>
-      <div className="v-center wbplanview-mapping-line-header">
+      <div className="v-center wbplanview-mapping-line-header" id={id('header')}>
         {headerName}
       </div>
       <div
@@ -227,6 +230,7 @@ export function MappingLineComponent({
         onKeyDown={handleKeyDown}
         ref={lineRef}
         title={wbText('columnMapping')}
+        aria-labelledby={id('header')}
       >
         <MappingPathComponent mappingLineData={lineData} />
       </div>

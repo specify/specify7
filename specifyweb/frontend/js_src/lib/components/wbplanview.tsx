@@ -20,6 +20,7 @@ import {
   refStatesMapper,
 } from '../wbplanviewrefreducer';
 import type { UploadResult } from '../wbuploadedparser';
+import { useId } from './common';
 import { getInitialWbPlanViewState, stateReducer } from './wbplanviewstate';
 
 // General definitions
@@ -182,11 +183,14 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
       : undefined,
   ]);
 
+  const id=useId('wbplanview');
+
   return stateReducer(<i />, {
     ...state,
     props,
     dispatch,
     refObject,
     refObjectDispatch: refObjectDispatchCurried,
+    id,
   });
 }

@@ -249,24 +249,8 @@
 }
 
 /* MATCHING LOGIC */
-.matching-logic-dialog {
-  display: inline-grid;
+.grid-table.matching-logic-dialog {
   grid-template-columns: auto auto;
-  row-gap: var(--half-size);
-  column-gap: var(--half-size);
-}
-
-.matching-logic-dialog [role='rowgroup'],
-.matching-logic-dialog [role='row'] {
-  display: contents;
-}
-
-.matching-logic-dialog [role='rowgroup']:first-child {
-  font-weight: 800;
-}
-
-.must-match-line {
-  column-gap: var(--half-size);
 }
 
 /* FOOTER */
