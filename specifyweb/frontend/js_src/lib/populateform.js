@@ -17,7 +17,7 @@ var FormTable            = require('./formtable.js');
 var IActionItemFormTable = require('./formtableinteractionitem.js');
 var SubView              = require('./subview.js');
 var CheckBox             = require('./checkbox.js');
-var SpinnerUI            = require('./spinnerui');
+var SpinnerUI            = require('./spinnerui').default;
 var cookies              = require('./cookies.js');
 var userInfo             = require('./userinfo').default;
 
