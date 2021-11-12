@@ -4,6 +4,7 @@ import icons from '../icons';
 import commonText from '../localization/common';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
+import { R } from './wbplanview';
 
 const MAX_HUE = 360;
 const getHue = spanNumber(
@@ -64,7 +65,7 @@ export const TableIconUndefined = (
 export const TableIconSelected = (
   <span
     className="table-icon table-icon-selected"
-    aria-label={commonText('unmapped')}
+    aria-label={commonText('mapped')}
     role="img"
   >
     ✓
@@ -93,4 +94,22 @@ export function DateElement({
       {dateObject.toDateString()}
     </time>
   );
+}
+
+const idStore: R<number> = {};
+
+export function useId(prefix: string): (suffix: string) => string {
+  const id = React.useRef(-1);
+
+  const resolvedPrefix = `${prefix}-`;
+
+  if (!(resolvedPrefix in idStore)) idStore[resolvedPrefix] = 0;
+
+  if (id.current === -1) {
+    id.current = idStore[resolvedPrefix];
+    idStore[resolvedPrefix] += 1;
+  }
+
+  return (suffix = '') =>
+    `${resolvedPrefix}${id.current}${suffix ? `-${suffix}` : ''}`;
 }
