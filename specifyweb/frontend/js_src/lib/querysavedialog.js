@@ -7,6 +7,7 @@ const navigation = require('./navigation.js');
 const userInfo = require('./userinfo').default;
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
+const {BackboneLoadingScreen} = require('./components/modaldialog');
 
 module.exports = Backbone.View.extend({
     __name__: "QuerySaveDialog",
@@ -29,28 +30,27 @@ module.exports = Backbone.View.extend({
                 .append(`<p>${queryText('saveQueryDialogMessage')}</p>`);
         }
 
-        this.$el.append(`<form><label>${queryText('queryName')} <input type="text" autocomplete="on" spellcheck="true" /></label></form>`);
-
-        this.$el.dialog({
-            title: queryText('saveQueryDialogTitle'),
-            modal: true,
-            close() { $(this).remove(); },
-            buttons: {
-                [commonText('save')]: () => this.doSave(),
-                [commonText('cancel')]() { $(this).dialog('close'); }
-            }
-        });
+        this.$el.append(`<form><label>${queryText('queryName')} <input type="text" autocomplete="on" spellcheck="true" required /></label></form>`);
 
         this.$(':input').val(this.query.get('name')).focus().select();
 
-        if (!this.query.isNew() && !this.clone) {
+        if (!this.query.isNew() && !this.clone)
             this.doSave();
-        }
+        else
+            this.$el.dialog({
+                title: queryText('saveQueryDialogTitle'),
+                modal: true,
+                close() { $(this).remove(); },
+                buttons: {
+                    [commonText('save')]: () => this.doSave(),
+                    [commonText('cancel')]() { $(this).dialog('close'); }
+                }
+            });
 
         return this;
     },
 
-    doSave(evt) {
+    async doSave(evt) {
         evt && evt.preventDefault();
         const name = this.$(':input').val().trim();
         if (name === '') return;
@@ -60,19 +60,17 @@ module.exports = Backbone.View.extend({
 
         this.clone && query.set('specifyuser', userInfo.resource_uri);
 
-        query.save().done(() => {
+        if(this.el.parentElement.classList.contains('ui-dialog'))
             this.$el.dialog('close');
+        const loadingScreen = new BackboneLoadingScreen().render();
 
-            navigation.removeUnloadProtect(this.queryBuilder);
-            this.clone ?
-                navigation.go(`/specify/query/${query.id}/`) :
-                this.queryBuilder.trigger('redisplay');
-        });
+        await new Promise((resolve)=>query.save().done(resolve));
 
-        this.$el
-            .dialog('option', 'title', queryText('savingQueryDialogTitle'))
-            .dialog('option', 'buttons', []);
+        loadingScreen.remove();
 
-        this.$(':input').prop('readonly', true);
+        navigation.removeUnloadProtect(this.queryBuilder);
+        this.clone ?
+            navigation.go(`/specify/query/${query.id}/`) :
+            this.queryBuilder.trigger('redisplay');
     }
 });
