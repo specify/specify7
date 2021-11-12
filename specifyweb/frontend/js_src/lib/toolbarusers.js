@@ -16,8 +16,8 @@ const commonText = require('./localization/common').default;
             this.users = options.users;
         },
         render: function() {
-            var trs = this.users.map(this.makeItem);
-            $('<table>').append(trs).appendTo(this.el);
+            var trs = this.users.map(this.makeItem).join('');
+            this.el.innerHTML = `<ul style="padding: 0">${trs}</ul>`;
             this.$el.dialog({
                 title: commonText('manageUsersDialogTitle'),
                 modal: true,
@@ -29,13 +29,14 @@ const commonText = require('./localization/common').default;
             });
             return this;
         },
-        makeItem: function(user) {
-            var tr = $('<tr>');
-            $('<a>', { href: user.viewUrl(), 'class': 'intercept-navigation' })
-                .text(user.get('name'))
-                .appendTo($('<td>').appendTo(tr));
-            return tr[0];
-        }
+        makeItem: (user)=>
+            `<li>
+                <a
+                    class="fake-link intercept-navigation"
+                    href="${user.viewUrl()}"
+                    style="font-size: 0.8rem;"
+                >${user.get('name')}</a>
+            </li>`,
     });
 
     function execute() {
@@ -54,4 +55,3 @@ module.exports =  {
         execute: execute,
         disabled: function(user) { return !user.isadmin; }
     };
-

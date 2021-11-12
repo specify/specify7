@@ -232,6 +232,9 @@ const formsText = createDictionary({
     'en-us': 'This action can not be undone.',
   },
   // PartialDateUi
+  datePrecision: {
+    'en-us': 'Date Precision',
+  },
   monthYear: {
     'en-us': 'Mon / Year',
   },

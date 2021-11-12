@@ -18,10 +18,17 @@ module.exports = Backbone.View.extend({
             this.tools = options.tools;
         },
         render: function() {
-            var table = $('<table>').appendTo(this.el);
-            table.append(`<tr><td><a href="/accounts/logout/">${commonText('logOut')}</a></td></tr>`);
-            table.append(`<tr><td><a href="/accounts/password_change/">${commonText('changePassword')}</a></td></tr>`);
-            table.append(this.tools.map(this.makeItem));
+            this.el.innerHTML = `<ul style="padding: 0">
+                ${this.tools.map(this.makeItem).join('')}
+                ${this.makeItem({
+                    task:'/accounts/logout/',
+                    title: commonText('logOut')
+                },'')}
+                ${this.makeItem({
+                    task:'/accounts/password_change/',
+                    title: commonText('changePassword')
+                },'')}
+            </ul>`;
 
             this.$el.dialog({
                 modal: true,
@@ -33,13 +40,14 @@ module.exports = Backbone.View.extend({
             });
             return this;
         },
-        makeItem: function(toolDef) {
-            var tr = $('<tr>');
-            $('<a>', { href: '/specify/task/' + toolDef.task + '/', 'class': 'user-tool' })
-                .text(toolDef.title)
-                .appendTo($('<td>').appendTo(tr));
-            return tr[0];
-        },
+        makeItem: (toolDef, defaultPath='/specify/task/') =>
+            `<li>
+                <a
+                    href="${defaultPath}${toolDef.task}/"
+                    class="user-tool fake-link"
+                    style="font-size: 0.8rem"
+                >${toolDef.title}</a>
+            </li>`,
         clicked: function(event) {
             event.preventDefault();
             this.$el.dialog('close');
@@ -48,4 +56,3 @@ module.exports = Backbone.View.extend({
             this.tools[index].execute();
         }
     });
-
