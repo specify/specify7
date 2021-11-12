@@ -106,6 +106,7 @@ module.exports = Backbone.View.extend({
                     ${this.options.readOnly
                         ? ''
                         : `<button
+                              type="button"
                               class="edit ui-icon ui-icon-pencil fake-link"
                           >${commonText('edit')}</button>`
                     }

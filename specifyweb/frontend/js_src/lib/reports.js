@@ -112,16 +112,21 @@ var ReportListDialog = Backbone.View.extend({
         return this;
     },
     makeEntry: function(icon, appResource) {
-        var img = $('<img>', {src: icon});
-        var a = $('<a class="select">')
-                .text(appResource.get('name'))
-                .attr('title', appResource.get('remarks') || "");
+        const img = $('<img>', {src: icon});
+        const a = $(`<button
+            type="button"
+            class="select fake-link"
+            title="${appResource.get('remarks') || ""}"
+        >${appResource.get('name')}></button>`);
         var entry = $('<tr>')
                 .data('resource', appResource)
                 .append($('<td>').append(img), $('<td>').append(a));
 
         if(!this.options.readOnly)
-            entry.append(`<a class="edit ui-icon ui-icon-pencil">${commonText('edit')}</a>`);
+            entry.append(`<button
+                type="button"
+                class="edit ui-icon ui-icon-pencil fake-link"
+            >${commonText('edit')}</button>`);
         return entry;
     },
     getReportUI: function(evt) {

@@ -30,7 +30,7 @@ module.exports =  UIPlugin.extend({
             'change input.partialdateui-year': 'updateYear',
             'paste td.partialdateui-full': 'pasteFullDate',
             'paste td.partialdateui-month': 'pasteMonth',
-            'click a.partialdateui-current-date': 'setToday'
+            'click button.partialdateui-current-date': 'setToday'
         },
         render: function() {
             var init = this.init;
