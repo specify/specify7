@@ -5,7 +5,6 @@ var _         = require('underscore');
 var Backbone  = require('./backbone.js');
 
 
-var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
 const domain = require('./domain.js');
@@ -24,11 +23,13 @@ async function getTreeRanks(tableName){
         const icon = field && field.model.getIcon();
         let name = field?.getLocalizedName();
 
-        const th = $(`<th scope="col"><span></span></th>`);
-        const span = th.find('span');
+        const th = $(`<div role="columnheader" scope="col">i
+          <div class="v-center"></div>
+        </div>`);
+        const div = th.find('div');
 
         // If it is a tree rank, display rank name while fetching rank title
-        span.text(name ?? fieldSpec.treeRank);
+        div.text(name ?? fieldSpec.treeRank);
 
         if(fieldSpec.treeRank)
             getTreeRanks(fieldSpec.table.name)
@@ -38,12 +39,15 @@ async function getTreeRanks(tableName){
                     )
                 )
                 .then(treeRank=>treeRank.get('title') ?? fieldSpec.treeRank)
-              .then(title=>span.text(title));
+              .then(title=>div.text(title));
 
         else if (fieldSpec.datePart && fieldSpec.datePart !== 'fullDate')
-            span.text(`${name} (${fieldSpec.datePart})`);
+            div.text(`${name} (${fieldSpec.datePart})`);
 
-        icon && th.prepend($('<img>', {src: icon, alt: ''}));
+        icon && th.prepend($('<img>', {
+            src: icon,
+            alt: ''
+        }).css('width':'var(--table-icon-size)'));
         return th;
     }
 
@@ -55,30 +59,44 @@ async function getTreeRanks(tableName){
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
             this.gotDataBefore = false;
         },
-        renderHeader: function() {
-            var header = $('<tr>');
-            _.each(this.fieldSpecs, function(f) { header.append(renderHeader(f)); });
-            return $('<thead>').append(header);
-        },
         render: function() {
-            var inner = $(template({queryText}));
-            this.$el.append(inner);
+            this.el.innerHTML = `
+                ${this.noHeader
+                    ? ''
+                    : `<h3 class="query-results-count">
+                        ${queryText('results')(commonText('loadingInline'))}
+                    </h3>`
+                }
+                ${this.countOnly
+                    ? ''
+                    : `<div class="grid-table" role="table">
+                          <div role="rowgroup">
+                              <div role="row">
+                                  ${this.fieldSpecs
+                                      .map(renderHeader)
+                                      .join('')}
+                              </div>
+                          </div>
+                          <div role="rowgroup" class="query-results"></div>
+                    </div>`
+                }
+                <div class="fetching-more" style="display: none;">
+                      <img
+                          src="/static/img/specify128spinner.gif"
+                          alt="${commonText('loading')}"
+                      >
+                </div>`;
             this.el.setAttribute('aria-live','polite');
-            var table = this.$('table.query-results');
-            this.$('.query-results-count').text(commonText('loadingInline'));
-            this.countOnly || table.append(this.renderHeader());
-            this.noHeader && this.$('h3').remove();
-            this.$('.fetching-more').hide();
 
             this.fetchCount && this.fetchCount.done(this.setCount.bind(this));
 
             if (this.countOnly) return this;
 
-            var results = this.results = new ScrollResults({
+            this.results = new ScrollResults({
                 el: this.el,
                 scrollElement: this.scrollElement,
                 view: new QueryResults({model: this.model,
-                                        el: inner,
+                                        el: this.el,
                                         fieldSpecs: this.fieldSpecs,
                                         format: this.format,
                                         linkField: this.linkField}),
@@ -86,7 +104,7 @@ async function getTreeRanks(tableName){
                 ajaxUrl: this.ajaxUrl,
                 initialData: this.initialData
             });
-            results.render()
+            this.results.render()
                 .on('fetching', this.fetchingMore, this)
                 .on('gotdata', this.gotData, this)
                 .start();
@@ -94,7 +112,7 @@ async function getTreeRanks(tableName){
             return this;
         },
         setCount: function(data) {
-            this.$('.query-results-count').text(data.count);
+            this.$('.query-results-count').text(queryText('results')(data.count));
         },
         remove: function() {
             this.results && this.results.undelegateEvents();

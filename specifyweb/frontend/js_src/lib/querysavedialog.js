@@ -60,7 +60,7 @@ module.exports = Backbone.View.extend({
 
         this.clone && query.set('specifyuser', userInfo.resource_uri);
 
-        if(this.el.parentElement.classList.contains('ui-dialog'))
+        if(this.el.classList.contains('ui-dialog-content'))
             this.$el.dialog('close');
         const loadingScreen = new BackboneLoadingScreen().render();
 
