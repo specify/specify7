@@ -28,8 +28,8 @@ module.exports =  UIPlugin.extend({
             'change input.partialdateui-full': 'updateFullDate',
             'change input.partialdateui-month': 'updateMonth',
             'change input.partialdateui-year': 'updateYear',
-            'paste td.partialdateui-full': 'pasteFullDate',
-            'paste td.partialdateui-month': 'pasteMonth',
+            'paste label.partialdateui-full': 'pasteFullDate',
+            'paste label.partialdateui-month': 'pasteMonth',
             'click button.partialdateui-current-date': 'setToday'
         },
         render: function() {
@@ -133,7 +133,7 @@ module.exports =  UIPlugin.extend({
               { year: 3, month: 2 }[this.init.defaultprecision] ?? 1;
             const precisionIdx = this.model.get(this.init.tp) || defaultPrecision;
             precisions.forEach((name, index)=>{
-                const cell = this.$(`td.partialdateui-${name}`);
+                const cell = this.$(`label.partialdateui-${name}`);
                 const selected = index + 1 === precisionIdx;
                 cell[selected ? 'show' : 'hide']();
                 if(selected){
@@ -238,4 +238,3 @@ module.exports =  UIPlugin.extend({
             input.type = initialType;
         },
     }, { pluginsProvided: ['PartialDateUI'] });
-

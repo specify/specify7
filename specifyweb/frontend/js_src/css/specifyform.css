@@ -261,9 +261,17 @@ hr.separator {
     margin-left: 3px;
 }
 
-table.partialdateui-strct td:first-child,
-table.partialdateui-strct td:last-child {
-    padding: 0;
+.partialdateui {
+    display: flex;
+    column-gap: var(--quarter-size);
+}
+
+.partialdateui label {
+    display: flex;
+}
+
+.partialdateui input, .partialdateui select {
+    margin: 0;
 }
 
 .partialdateui-month-year {

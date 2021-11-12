@@ -1,5 +1,3 @@
-import '../../css/toolbarquery.css';
-
 import type { Model } from 'backbone';
 import Backbone from 'backbone';
 import $ from 'jquery';
@@ -155,7 +153,7 @@ function QueryList({
                 {query.name}
               </a>
             </td>
-            <td>
+            <td style={{ color: 'var(--t3)' }}>
               <DateElement date={query.dateCreated} />
             </td>
             <td className="justify-end">
@@ -182,18 +180,16 @@ function ListOfTables({
   readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
-    <div className="list-of-tables">
+    <ul className="list-of-tables" style={{padding: 0}}>
       {tables.map((tableName, index) => (
-        <a
-          href={getQueryCreateUrl(tableName)}
-          className="fake-link"
-          key={index}
-        >
-          <TableIcon tableName={tableName} tableLabel={false} />
-          {schema.getModel(tableName).getLocalizedName()}
-        </a>
+        <li key={index}>
+          <a href={getQueryCreateUrl(tableName)} className="fake-link">
+            <TableIcon tableName={tableName} tableLabel={false} />
+            {schema.getModel(tableName).getLocalizedName()}
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 

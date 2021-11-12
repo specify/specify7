@@ -13,7 +13,7 @@ const commonText = require('./localization/common').default;
 
     var AgentForDiv = Backbone.View.extend({
         __name__: "AgentForDivisionSelector",
-        tagName: 'tr',
+        tagName: 'li',
         initialize: function(options) {
             this.populateForm = options.populateForm;
             this.collection = options.collection;
@@ -26,12 +26,14 @@ const commonText = require('./localization/common').default;
             this.agent && this.model.set('agent', this.agent);
         },
         render: function() {
-            $('<td>').text(this.division.get('name')).appendTo(this.el);
-            var control = $('<td><input type="text" name="agent"></td>').appendTo(this.el);
+            this.el.innerHTML = `<label>
+                ${this.division.get('name')}:
+                <input type="text" name="agent">
+            </label>`;
 
             new QueryCbx({
                 populateForm: this.populateForm,
-                el: $('input', control),
+                el: $('input', this.el),
                 model: this.model,
                 relatedModel: schema.models.Agent,
                 forceCollection: this.collection,
@@ -68,7 +70,7 @@ const commonText = require('./localization/common').default;
         render: function() {
             var controls = _.map(this.divInfos, function(divInfo) { return new AgentForDiv(divInfo); });
             _.invoke(controls, 'render');
-            $('<table>').append(_.pluck(controls, 'el')).appendTo(this.el);
+            $('<ul>').css('padding',0).append(_.pluck(controls, 'el')).appendTo(this.el);
 
             var user = this.user;
             this.$el.dialog({
@@ -116,4 +118,3 @@ module.exports = UIPlugin.extend({
             });
         }
     }, { pluginsProvided: ['UserAgentsUI'] });
-
