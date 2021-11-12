@@ -106,7 +106,7 @@ const MessageView = Backbone.View.extend({
         const formatted = new Intl.DateTimeFormat([], { dateStyle: 'medium', timeStyle: 'short' }).format(date);
         this.$el.append(
             `<time datetime="${date.toISOString()}">${formatted}</time>`,
-            `<a class="ui-icon ui-icon-trash" style="float: right;">${commonText('delete')}</a>`,
+            `<button class="ui-icon ui-icon-trash fake-link" type="button" style="float: right;">${commonText('delete')}</button>`,
             render(this.message)
         );
         if (!this.message.get('read')) this.$el.addClass('unread-notification');
