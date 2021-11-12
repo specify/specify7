@@ -25,12 +25,12 @@ function TableResults({
   readonly recordCount: number;
 }): JSX.Element {
   return (
-    <div className="wb-uploaded-view-line">
+    <li>
       <TableIcon tableName={tableName.toLowerCase()} />
       <span>
         {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
       </span>
-    </div>
+    </li>
   );
 }
 
@@ -51,7 +51,7 @@ function WbUploadedView({
           ? wbText('wbUploadedDescription')
           : wbText('wbUploadedPotentialDescription')}
       </p>
-      <div className="wb-uploaded-view-content">
+      <ul>
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults
             key={index}
@@ -59,7 +59,7 @@ function WbUploadedView({
             recordCount={recordCount}
           />
         ))}
-      </div>
+      </ul>
       <button type="button" className="magic-button" onClick={handleClose}>
         {commonText('close')}
       </button>

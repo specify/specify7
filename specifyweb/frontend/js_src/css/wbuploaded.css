@@ -11,14 +11,15 @@
   margin: 0;
 }
 
-.wb-uploaded-view-content {
+.wb-uploaded-view ul {
+  padding: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
-  row-gap: var(--size);
+  row-gap: var(--half-size);
 }
 
-.wb-uploaded-view-line {
+.wb-uploaded-view li {
   display: flex;
   column-gap: var(--quarter-size);
   align-items: center;
