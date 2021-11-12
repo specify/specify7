@@ -69,7 +69,7 @@ async function recursiveResourceResolve(
 
   const [currentPart, nextPart] = getNextMappingPathPart(mappingPath);
 
-  if (typeof resource === 'undefined') return [];
+  if (typeof resource === 'undefined' || resource === null) return [];
 
   if (
     typeof filterFunction !== 'undefined' &&
