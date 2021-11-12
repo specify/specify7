@@ -166,12 +166,8 @@ module.exports = Backbone.View.extend({
                 const view = new QueryToolbarView({
                     el: element,
                     onClose: () => view.remove(),
-                    onSelect: (query) => {
-                        view.remove();
-                        navigation.go(
-                             `/specify/query/${query.id}/?recordsetid=${recordSet.id}`
-                        );
-                    },
+                    getQuerySelectUrl: (query) =>
+                         `/specify/query/${query.id}/?recordsetid=${recordSet.id}`,
                     spQueryFilter: {
                         specifyuser: userInfo.id,
                         contexttableid: recordSet.get("dbTableId"),

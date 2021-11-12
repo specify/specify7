@@ -74,11 +74,11 @@ function SortIndicator({
 function QueryList({
   queries: unsortedQueries,
   onEdit: handleEdit,
-  onSelect: handleSelect,
+  getQuerySelectUrl,
 }: {
   readonly queries: RA<Query>;
   readonly onEdit?: (query: Query) => void;
-  readonly onSelect?: (query: Query) => void;
+  readonly getQuerySelectUrl?: (query: Query) => string;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sort-config',
@@ -141,51 +141,34 @@ function QueryList({
         </tr>
       </thead>
       <tbody>
-        {queries.map((query) => {
-          const name = (
-            <>
-              <TableIcon tableName={query.tableName} tableLabel={false} />
-              {query.name}
-            </>
-          );
-          const wrappedName =
-            typeof handleSelect === 'function' ? (
-              <button
-                type="button"
-                className="fake-link"
-                style={{ overflowX: 'auto' }}
-                onClick={(): void => handleSelect(query)}
-              >
-                {name}
-              </button>
-            ) : (
+        {queries.map((query) => (
+          <tr key={query.id}>
+            <td>
               <a
-                href={`/specify/query/${query.id}/`}
+                href={
+                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
+                }
                 className="fake-link"
                 style={{ overflowX: 'auto' }}
               >
-                {name}
+                <TableIcon tableName={query.tableName} tableLabel={false} />
+                {query.name}
               </a>
-            );
-
-          return (
-            <tr key={query.id}>
-              <td>{wrappedName}</td>
-              <td>
-                <DateElement date={query.dateCreated} />
-              </td>
-              <td className="justify-end">
-                {typeof handleEdit === 'function' && (
-                  <button
-                    type="button"
-                    className="fake-link ui-icon ui-icon-pencil"
-                    onClick={(): void => handleEdit(query)}
-                  />
-                )}
-              </td>
-            </tr>
-          );
-        })}
+            </td>
+            <td>
+              <DateElement date={query.dateCreated} />
+            </td>
+            <td className="justify-end">
+              {typeof handleEdit === 'function' && (
+                <button
+                  type="button"
+                  className="fake-link ui-icon ui-icon-pencil"
+                  onClick={(): void => handleEdit(query)}
+                />
+              )}
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
@@ -193,23 +176,22 @@ function QueryList({
 
 function ListOfTables({
   tables,
-  onSelect: handleSelect,
+  getQueryCreateUrl,
 }: {
   readonly tables: RA<string>;
-  readonly onSelect: (tableName: string) => void;
+  readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
     <div className="list-of-tables">
       {tables.map((tableName, index) => (
-        <button
-          type="button"
+        <a
+          href={getQueryCreateUrl(tableName)}
           className="fake-link"
           key={index}
-          onClick={(): void => handleSelect(tableName)}
         >
           <TableIcon tableName={tableName} tableLabel={false} />
           {schema.getModel(tableName).getLocalizedName()}
-        </button>
+        </a>
       ))}
     </div>
   );
@@ -230,8 +212,8 @@ const QUERY_FETCH_LIMIT = 5000;
 
 type Props = {
   onClose: () => void;
-  onSelect?: (query: Query) => void;
-  onCreate?: (tableName: string) => void;
+  getQueryCreateUrl?: (tableName: string) => string;
+  getQuerySelectUrl?: (query: Query) => string;
   onEdit?: (query: Query) => void;
   spQueryFilter?: IR<unknown>;
   buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
@@ -240,8 +222,8 @@ type ComponentProps = Readonly<Props>;
 
 function QueryToolbarItem({
   onClose: handleClose,
-  onSelect: handleSelect,
-  onCreate: handleCreate,
+  getQueryCreateUrl,
+  getQuerySelectUrl,
   onEdit: handleEdit,
   spQueryFilter,
   buttons,
@@ -298,7 +280,7 @@ function QueryToolbarItem({
           title: commonText('queriesDialogTitle')(queries.length),
           buttons: [
             ...(buttons?.(state) ?? []),
-            ...(typeof handleCreate === 'undefined'
+            ...(typeof getQueryCreateUrl === 'undefined'
               ? []
               : [
                   {
@@ -319,13 +301,13 @@ function QueryToolbarItem({
         <QueryList
           queries={queries}
           onEdit={handleEdit}
-          onSelect={handleSelect}
+          getQuerySelectUrl={getQuerySelectUrl}
         />
       </ModalDialog>
     );
   } else if (
     state.type === 'CreateQueryState' &&
-    typeof handleCreate !== 'undefined'
+    typeof getQueryCreateUrl !== 'undefined'
   )
     return typeof tablesToShow === 'undefined' ? (
       <LoadingScreen />
@@ -346,7 +328,10 @@ function QueryToolbarItem({
           ],
         }}
       >
-        <ListOfTables tables={tablesToShow} onSelect={handleCreate} />
+        <ListOfTables
+          tables={tablesToShow}
+          getQueryCreateUrl={getQueryCreateUrl}
+        />
       </ModalDialog>
     );
   else throw new Error('Invalid ToolbarQuery State type');
@@ -364,24 +349,24 @@ export const QueryToolbarView = createBackboneView<
     self,
     {
       onClose,
-      onCreate = undefined,
-      onSelect,
+      getQueryCreateUrl = undefined,
+      getQuerySelectUrl,
       onEdit = undefined,
       spQueryFilter = undefined,
       buttons = undefined,
     }
   ) {
     self.onClose = onClose;
-    self.onCreate = onCreate;
-    self.onSelect = onSelect;
+    self.getQueryCreateUrl = getQueryCreateUrl;
+    self.getQuerySelectUrl = getQuerySelectUrl;
     self.onEdit = onEdit;
     self.spQueryFilter = spQueryFilter;
     self.buttons = buttons;
   },
   getComponentProps: (self) => ({
     onClose: self.onClose,
-    onCreate: self.onCreate,
-    onSelect: self.onSelect,
+    getQueryCreateUrl: self.getQueryCreateUrl,
+    getQuerySelectUrl: self.getQuerySelectUrl,
     onEdit: self.onEdit,
     spQueryFilter: self.spQueryFilter,
     buttons: self.buttons,
@@ -398,11 +383,10 @@ export default {
     const view = new QueryToolbarView({
       el: element,
       onClose: () => view.remove(),
-      onCreate: userInfo.isReadOnly
+      getQueryCreateUrl: userInfo.isReadOnly
         ? undefined
-        : (tableName: string): void =>
-            navigation.go(`/specify/query/new/${tableName}/`),
-      onSelect: undefined,
+        : (tableName: string): string => `/specify/query/new/${tableName}/`,
+      getQuerySelectUrl: undefined,
       onEdit: userInfo.isReadOnly
         ? undefined
         : (query: Query): void => {
