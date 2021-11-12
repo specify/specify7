@@ -55,12 +55,12 @@ module.exports = Backbone.View.extend({
                             class="pl-table-icon"
                         >
                             <span class="sr-only">
-                                ${commonText('size')}
+                                ${commonText('recordSet')}
                             </span>
                         </th>
                         <th scope="col">
                             <span class="sr-only">
-                                ${commonText('recordCount')}
+                                ${commonText('size')}
                             </span>
                         </th>
                         <td></td>
@@ -116,7 +116,7 @@ module.exports = Backbone.View.extend({
             recordSet.getRelatedObjectCount('recordsetitems').done((count)=>
                 $('.item-count', entry)
                     .text(`(${count})`)
-                    .attr('title',formsText('recordCount'))
+                    .attr('title',commonText('recordCount'))
                     .attr('aria-label',count)
                     .show()
             );
