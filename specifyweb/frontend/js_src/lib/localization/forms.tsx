@@ -284,9 +284,6 @@ const formsText = createDictionary({
       The record set "${recordSetName}" will be deleted. The referenced
       records will NOT be deleted.`,
   },
-  recordCount: {
-    'en-us': 'Record Count',
-  },
   // Reports
   reportsCanNotBePrintedDialogMessage: {
     'en-us': 'Reports/Labels cannot be printed in this context.',
