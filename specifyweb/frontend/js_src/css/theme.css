@@ -104,7 +104,7 @@
   cursor: pointer;
 }
 
-.fake-link[aria-pressed="true"] .ui-icon {
+.fake-link[aria-pressed='true'] .ui-icon {
   background-color: var(--b1);
 }
 
@@ -170,7 +170,8 @@ table.grid-table,
   -webkit-border-vertical-spacing: 0;
 }
 
-table.grid-table {
+table.grid-table,
+.grid-table[role='table'] {
   /*--cols: 2;*/
 
   display: grid;
@@ -181,28 +182,37 @@ table.grid-table {
 
 .grid-table thead,
 .grid-table tbody,
-.grid-table tr {
+.grid-table tr,
+.grid-table [role='rowgroup'],
+.grid-table [role='row'] {
   display: contents;
 }
 
 .grid-table th,
-.grid-table td {
+.grid-table td,
+.grid-table [role='columnheader'],
+.grid-table [role='rowheader'],
+.grid-table [role='cell'] {
   display: flex;
   align-items: center;
 }
 
-.grid-table th {
+.grid-table th,
+.grit-table [role='columnheader'],
+.grit-table [role='rowheader'] {
   padding-bottom: var(--half-size);
 }
 
 .grid-table td,
 .grid-table th,
-.grid-table td a {
+.grid-table td a,
+.grid-table [role='cell'],
+.grid-table [role='cell'] a {
   font-size: 0.8rem;
 }
 
-th.pl-table-icon {
-  padding-left: calc(var(--table-icon-size) + var(--quarter-size))
+.grid-table .pl-table-icon {
+  padding-left: calc(var(--table-icon-size) + var(--quarter-size));
 }
 
 .justify-center {

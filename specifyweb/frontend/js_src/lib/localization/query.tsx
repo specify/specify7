@@ -180,7 +180,7 @@ const queryText = createDictionary({
   },
   // QueryResultsTable
   results: {
-    'en-us': 'Results:',
+    'en-us': (count: number | string) => `Results: ${count}`,
   },
 });
 
