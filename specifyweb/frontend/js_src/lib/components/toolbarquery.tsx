@@ -78,7 +78,7 @@ function QueryList({
 }: {
   readonly queries: RA<Query>;
   readonly onEdit?: (query: Query) => void;
-  readonly onSelect: (query: Query) => void;
+  readonly onSelect?: (query: Query) => void;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sort-config',
@@ -141,32 +141,51 @@ function QueryList({
         </tr>
       </thead>
       <tbody>
-        {queries.map((query) => (
-          <tr key={query.id}>
-            <td>
+        {queries.map((query) => {
+          const name = (
+            <>
+              <TableIcon tableName={query.tableName} tableLabel={false} />
+              {query.name}
+            </>
+          );
+          const wrappedName =
+            typeof handleSelect === 'function' ? (
               <button
                 type="button"
-                className="fake-link list-of-queries-name"
+                className="fake-link"
+                style={{ overflowX: 'auto' }}
                 onClick={(): void => handleSelect(query)}
               >
-                <TableIcon tableName={query.tableName} tableLabel={false} />
-                {query.name}
+                {name}
               </button>
-            </td>
-            <td>
-              <DateElement date={query.dateCreated} />
-            </td>
-            <td className="justify-end">
-              {typeof handleEdit === 'function' && (
-                <button
-                  type="button"
-                  className="fake-link ui-icon ui-icon-pencil"
-                  onClick={(): void => handleEdit(query)}
-                />
-              )}
-            </td>
-          </tr>
-        ))}
+            ) : (
+              <a
+                href={`/specify/query/${query.id}/`}
+                className="fake-link"
+                style={{ overflowX: 'auto' }}
+              >
+                {name}
+              </a>
+            );
+
+          return (
+            <tr key={query.id}>
+              <td>{wrappedName}</td>
+              <td>
+                <DateElement date={query.dateCreated} />
+              </td>
+              <td className="justify-end">
+                {typeof handleEdit === 'function' && (
+                  <button
+                    type="button"
+                    className="fake-link ui-icon ui-icon-pencil"
+                    onClick={(): void => handleEdit(query)}
+                  />
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -211,7 +230,7 @@ const QUERY_FETCH_LIMIT = 5000;
 
 type Props = {
   onClose: () => void;
-  onSelect: (query: Query) => void;
+  onSelect?: (query: Query) => void;
   onCreate?: (tableName: string) => void;
   onEdit?: (query: Query) => void;
   spQueryFilter?: IR<unknown>;
@@ -383,8 +402,7 @@ export default {
         ? undefined
         : (tableName: string): void =>
             navigation.go(`/specify/query/new/${tableName}/`),
-      onSelect: (query: Query): void =>
-        navigation.go(`/specify/query/${query.id}/`),
+      onSelect: undefined,
       onEdit: userInfo.isReadOnly
         ? undefined
         : (query: Query): void => {
