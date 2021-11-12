@@ -23,10 +23,6 @@
   cursor: pointer;
 }
 
-.list-of-queries-name {
-  overflow-x: auto;
-}
-
 .list-of-queries
   > div:not(.list-of-queries-header)
   .list-of-queries-date-created {
