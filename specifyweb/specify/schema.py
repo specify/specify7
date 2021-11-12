@@ -34,6 +34,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
                 href="https://www.leverege.com/blogpost/what-is-an-api"
                 rel="noreferrer nofollow"
                 target="_blank"
+                title="(opens in new tab)"
               >
                 A brief</a
               >
@@ -42,6 +43,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
                 href="https://blog.usejournal.com/part-1-gentle-introduction-to-apis-for-non-technical-people-what-is-it-fde4d97a3083"
                 rel="noreferrer nofollow"
                 target="_blank"
+                title="(opens in new tab)"
                 >a not-so-brief</a
               >
               introduction to APIs for non-programmers.

@@ -369,7 +369,15 @@ export const formatLocalityData = (
           <a
             href="${viewUrl}"
             target="_blank"
-          >${localityText('viewRecord')}</a>`,
+            title="${commonText('opensInNewTab')}"
+          >
+            ${localityText('viewRecord')}
+            <img
+              src="/static/img/new_tab.svg"
+              alt="${commonText('opensInNewTab')}"
+              class="new-tab-link-icon"
+            >
+          </a>`,
         ]
       : []),
   ].join('<br>');

@@ -4,7 +4,7 @@ import { createDictionary } from './utils';
 
 const lifemapperText = createDictionary({
   specifyNetwork: {
-    'en-us': 'Specify Network',
+    'en-us': 'Specify Network (opens in new tab)',
   },
   speciesDistributionMap: {
     'en-us': 'Species Distribution Map',
