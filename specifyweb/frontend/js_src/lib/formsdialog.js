@@ -77,7 +77,13 @@ module.exports = Backbone.View.extend({
             const model = schema.getModel(modelName);
             return $('<li>').append(
                 $('<a>')
-                    .addClass("fake-link intercept-navigation")
+                    .addClass(
+                        `fake-link ${
+                            typeof this.options.onSelected === 'undefined'
+                                ? 'intercept-navigation'
+                                : ''
+                        }`
+                    )
                     .attr('href', new model.Resource().viewUrl())
                     .css({fontSize: '0.8rem'})
                     .attr('data-model-name', modelName)
