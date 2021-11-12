@@ -71,7 +71,7 @@ module.exports = RecordSetsDialog.extend({
                 formsText('noCollectionObjectCaption') :
                 '';
         },
-    
+
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< l10n-able stuff
 
 
@@ -131,9 +131,6 @@ module.exports = RecordSetsDialog.extend({
 
         //ui element stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-        makeEntryLink: function(recordSet) {
-            return $('<a>').addClass("rs-select").text(recordSet.get('name'));
-        },
         makeUI: function() {
             var breaker = '';
             if (this.options.recordSets._totalCount > 0) {
@@ -317,7 +314,7 @@ module.exports = RecordSetsDialog.extend({
                     this.options.itemcollection.add([item]);
                 } else {
                     this.$('textarea.i-action-entry').after(this.makeSnagDisplay(prepsData, missing, invalidEntries, action));
-                } 
+                }
             } else {
                 this.showPrepSelectDlg(prepsData, action);
             }
@@ -368,7 +365,7 @@ module.exports = RecordSetsDialog.extend({
             this.$el.dialog('close');
             this.availablePrepsReady(false, "unassociated item", "none", [], [], []);
         },
-    
+
         interactionAction: function(selection, isRs, invalidEntries) {
             if (this.options.close) {
                 this.$el.dialog('close');

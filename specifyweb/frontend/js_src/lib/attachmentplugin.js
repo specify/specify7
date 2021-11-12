@@ -14,7 +14,7 @@ module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",
         events: {
             'change :file': 'fileSelected',
-            'click .specify-attachment-display a': 'openOriginal'
+            'click .specify-attachment-display button': 'openOriginal'
         },
         render: function() {
             var self = this;
@@ -88,7 +88,10 @@ module.exports =  UIPlugin.extend({
             self.$el.empty().append('<div class="specify-attachment-display">');
 
             attachments.getThumbnail(attachment).done(function(img) {
-                $('<a>').append(img).appendTo(self.$('.specify-attachment-display'));
+                $('<button>', {type: 'button'})
+                    .append(img)
+                    .appendTo(self.$('.specify-attachment-display')
+                );
             });
         },
         openOriginal: function(evt) {
@@ -98,4 +101,3 @@ module.exports =  UIPlugin.extend({
             });
         }
     }, { pluginsProvided: ['AttachmentPlugin'] });
-

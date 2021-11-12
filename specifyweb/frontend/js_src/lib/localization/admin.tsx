@@ -24,9 +24,6 @@ const adminText = createDictionary({
   loadFile: {
     'en-us': 'Load File',
   },
-  download: {
-    'en-us': 'Download',
-  },
   corruptResourceOrConflict: {
     'en-us': `
       This app resource appears to be corrupt but may be in the process of

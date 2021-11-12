@@ -449,15 +449,21 @@ const EditQueryDialog = Backbone.View.extend({
         <ul style="padding: 0">
            <li style="display:flex;margin:5px">
                <span class="ui-icon ui-icon-circle-plus"/>
-               <a class="query-export">${commonText('exportQueryForDwca')}</a>
+               <button type="button" class="query-export fake-link">${commonText(
+                 'exportQueryForDwca'
+               )}</button>
            </li>
            <li style="display:flex;margin:5px">
                <span class="ui-icon ui-icon-circle-plus"/>
-               <a class="create-report">${commonText('exportQueryAsReport')}</a>
+               <button type="button" class="create-report fake-link">${commonText(
+                 'exportQueryAsReport'
+               )}</button>
            </li>
            <li style="display:flex;margin:5px">
                <span class="ui-icon ui-icon-circle-plus"/>
-               <a class="create-label">${commonText('exportQueryAsLabel')}</a>
+               <button type="button" class="create-label fake-link">${commonText(
+                 'exportQueryAsLabel'
+               )}</button>
            </li>
         </ul>
       `);

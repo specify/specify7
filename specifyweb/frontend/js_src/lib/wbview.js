@@ -1350,6 +1350,8 @@ const WBView = Backbone.View.extend({
             <a
               href="${resource.viewUrl()}"
               target="_blank"
+              title="${commonText('view')}"
+              aria-label="${commonText('view')}"
             >ℹ️</a>
           <label/>`
         ).appendTo(content);

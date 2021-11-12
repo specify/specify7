@@ -40,8 +40,10 @@ module.exports =   UIPlugin.extend({
             if (webLinkName == null) console.error("couldn't determine weblink for", this.fieldName);
             this.def = webLinksDefs[webLinkName];
 
+
+            const title = this.def?.find('> desc').text() ?? '';
             if (this.inFormTable) {
-                newEl = $('<div class="specify-plugin-weblink-in-table">').append('<a>');
+                newEl = $('<div class="specify-plugin-weblink-in-table">').append($('<a>',{class:'magic-button', title,}));
                 placeHolder.replaceWith(newEl);
                 this.setElement(newEl);
             } else {
@@ -53,8 +55,6 @@ module.exports =   UIPlugin.extend({
                     var uiField = new UIField({ el: placeHolder, model: this.model });
                     uiField.render().$el.appendTo(this.el).show();
                 }
-
-                const title = this.def?.find('> desc').text() ?? '';
 
                 this.el.append($(`<a
                   title="${title}"
@@ -114,4 +114,3 @@ module.exports =   UIPlugin.extend({
             });
         }
     }, { pluginsProvided: ['WebLinkButton'] });
-

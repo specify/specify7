@@ -60,8 +60,8 @@ const formsText = createDictionary({
   emptyRecordSetMessage: {
     'en-us': (recordSetName: string) => `
       <h2>The Record Set "${recordSetName}" contains no records.</h2>
-      <p>You can <a class="recordset-delete">delete</a> the record set or
-      <a class="recordset-add intercept-navigation">add</a> records to it.</p>
+      <p>You can <button class="recordset-delete magic-button" type="button">delete</button> the record set or
+      <a class="recordset-add intercept-navigation magic-button">add</a> records to it.</p>
       <p>Be aware that another user maybe getting ready to add records,
       so only delete this record set if you are sure it is not to be used.</p>`,
   },
