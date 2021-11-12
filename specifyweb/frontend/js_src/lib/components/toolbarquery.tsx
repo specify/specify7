@@ -58,13 +58,19 @@ function SortIndicator({
   readonly fieldName: string;
   readonly sortConfig: SortConfig<string>;
 }): JSX.Element {
+  const isSorted = sortConfig.sortField === fieldName;
   return (
-    <span className="sort-indicator">
-      {sortConfig.sortField === fieldName
-        ? sortConfig.ascending
-          ? '▲'
-          : '▼'
-        : undefined}
+    <span
+      className="sort-indicator"
+      aria-label={
+        isSorted
+          ? sortConfig.ascending
+            ? commonText('ascending')
+            : commonText('descending')
+          : undefined
+      }
+    >
+      {isSorted ? (sortConfig.ascending ? '▲' : '▼') : undefined}
     </span>
   );
 }
@@ -162,6 +168,8 @@ function QueryList({
                   type="button"
                   className="fake-link ui-icon ui-icon-pencil"
                   onClick={(): void => handleEdit(query)}
+                  aria-label={commonText('edit')}
+                  title={commonText('edit')}
                 />
               )}
             </td>
@@ -180,7 +188,7 @@ function ListOfTables({
   readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
-    <ul className="list-of-tables" style={{padding: 0}}>
+    <ul className="list-of-tables" style={{ padding: 0 }}>
       {tables.map((tableName, index) => (
         <li key={index}>
           <a href={getQueryCreateUrl(tableName)} className="fake-link">

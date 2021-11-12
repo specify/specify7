@@ -162,6 +162,9 @@ const commonText = createDictionary({
   unmapped: {
     'en-us': 'Unmapped',
   },
+  mapped: {
+    'en-us': 'Mapped',
+  },
   expand: {
     'en-us': 'Expand',
   },
@@ -271,6 +274,12 @@ const commonText = createDictionary({
   },
   incorrectPassword: {
     'en-us': 'Password was incorrect.',
+  },
+  ascending: {
+    'en-us': 'Ascending',
+  },
+  descending: {
+    'en-us': 'Descending',
   },
   queries: {
     'en-us': 'Queries',
