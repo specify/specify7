@@ -36,6 +36,7 @@ const { extractDefaultValues } = require('./wbplanviewhelper');
 const { getTableFromMappingPath } = require('./wbplanviewnavigator');
 const fetchDataModelPromise = require('./wbplanviewmodelfetcher').default;
 const { capitalize } = require('./wbplanviewhelper');
+const { BackboneLoadingScreen } = require('./components/modaldialog');
 const icons = require('./icons.js');
 const formatObj = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
@@ -375,6 +376,11 @@ const WBView = Backbone.View.extend({
                               aria-label="${tableLabel}"
                             ></div>
                             ${tableLabel}
+                            <img
+                              src="/static/img/new_tab.svg"
+                              alt="${commonText('opensInNewTab')}"
+                              class="new-tab-link-icon"
+                            >
                           </a>`;
                         })
                         .join('');
@@ -1352,7 +1358,14 @@ const WBView = Backbone.View.extend({
               target="_blank"
               title="${commonText('view')}"
               aria-label="${commonText('view')}"
-            >ℹ️</a>
+            >
+              ℹ️
+              <img
+                src="/static/img/new_tab.svg"
+                alt="${commonText('opensInNewTab')}"
+                class="new-tab-link-icon"
+              >
+            </a>
           <label/>`
         ).appendTo(content);
         if (model.getField('rankid')) {
@@ -2387,21 +2400,7 @@ module.exports = function loadDataset(
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false
 ) {
-  let dialog;
-
-  function showLoadingBar() {
-    dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-      title: wbText('dataSetLoadingDialogTitle'),
-      modal: true,
-      dialogClass: 'ui-dialog-no-close',
-      close() {
-        $(this).remove();
-      },
-    });
-    $('.progress-bar', dialog).progressbar({ value: false });
-  }
-
-  showLoadingBar();
+  const loadingScreen = new BackboneLoadingScreen().render();
 
   $.get(`/api/workbench/dataset/${id}/`)
     .done((dataset) => {
@@ -2411,9 +2410,8 @@ module.exports = function loadDataset(
         refreshInitiatorAborted,
       })
         .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
-        .on('loaded', () => dialog.dialog('close'));
+        .on('loaded', () => loadingScreen.remove());
       app.setCurrentView(view);
-      showLoadingBar();
     })
     .fail((jqXHR) => {
       if (jqXHR.status === 404) {

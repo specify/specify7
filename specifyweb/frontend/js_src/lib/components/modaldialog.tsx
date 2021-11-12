@@ -11,6 +11,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
+import createBackboneView from './reactbackboneextend';
 import type { RA, IR } from './wbplanview';
 
 function closeDialogCallback(
@@ -187,3 +188,14 @@ export function LoadingScreen(): JSX.Element {
     </ModalDialog>
   );
 }
+
+export const BackboneLoadingScreen = createBackboneView<
+  IR<never>,
+  IR<never>,
+  IR<never>
+>({
+  moduleName: 'LoadingDialog',
+  className: 'loading-dialog',
+  Component: LoadingScreen,
+  getComponentProps: () => ({}),
+});

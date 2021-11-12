@@ -95,9 +95,6 @@ const wbText = createDictionary({
     'en-us': 'Data Editor',
   },
   // Dialogs
-  dataSetLoadingDialogTitle: {
-    'en-us': 'Loading',
-  },
   noUploadPlanDialogTitle: {
     'en-us': 'Upload Plan Status',
   },
