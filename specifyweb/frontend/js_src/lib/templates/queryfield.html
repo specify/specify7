@@ -1,11 +1,12 @@
 <button
   class="field-expand"
+  type="button"
   title="<%= queryText('expandButtonDescription') %>"
   data-icon="check"
 >
   <%= commonText('expand') %>
 </button>
-<button class="field-delete" data-icon="trash">
+<button type="button" class="field-delete" data-icon="trash">
   <%= commonText('remove') %>
 </button>
 <span class="field-label"></span>
@@ -60,13 +61,13 @@
     for="<%= cid %>-show"
     class="ui-icon ui-icon-lightbulb"
   ></label>
-  <button class="field-sort" data-icon="bullet">
+  <button type="button" class="field-sort" data-icon="bullet">
     <%= queryText('sort') %>
   </button>
-  <button class="field-move-up" data-icon="arrowthick-1-n">
+  <button type="button" class="field-move-up" data-icon="arrowthick-1-n">
     <%= queryText('moveUp') %>
   </button>
-  <button class="field-move-down" data-icon="arrowthick-1-s">
+  <button type="button" class="field-move-down" data-icon="arrowthick-1-s">
     <%= queryText('moveDown') %>
   </button>
 </span>

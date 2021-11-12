@@ -40,6 +40,12 @@
     margin-left: 5px;
 }
 
+.querybuilder input[type="submit"] {
+    vertical-align: unset;
+    margin: 0 !important;
+    font-family: sans-serif;
+}
+
 .spqueryfields {
     padding: 0;
     margin: 10px 0;
