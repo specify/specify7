@@ -298,6 +298,7 @@ dependent_fields = {
     'Collectionobject.collectionobjectproperties',
     'CollectionObject.rightsiderels',
     'Collectionobject.treatmentevents',
+    'Collectionobject.voucherrelationships',
     'Commonnametx.citations',
     'Conservdescription.events',
     'Deaccession.deaccessionagents',
