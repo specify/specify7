@@ -31,12 +31,9 @@ const formsText = createDictionary({
     'en-us': (fieldName: string) => `Value must be unique to ${fieldName}`,
   },
   valuesOfMustBeUniqueToField: {
-    'en-us': (fieldName: string, values: RA<string>) =>
-      `Values of ${
-        values.length === 1
-          ? values[0]
-          : `${values.slice(0, -1).join(', ')} and ${values.slice(-1)[0]}`
-      }} must be unique to ${fieldName}}`,
+    'en-us': (fieldName: string, values: RA<string>, lastValue) =>
+      `Values of ${values.join(', ')} and ${lastValue}
+       must be unique to ${fieldName}}`,
   },
   database: {
     'en-us': 'database',

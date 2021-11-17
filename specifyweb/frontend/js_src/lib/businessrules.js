@@ -177,7 +177,8 @@ const formsText = require('./localization/forms').default;
         return fldInfo.length > 1 ?
             formsText('valuesOfMustBeUniqueToField')(
               fieldName,
-              fldInfo.map(fld=>fld.getLocalizedName()),
+              fldInfo.slice(0,-1).map(fld=>fld.getLocalizedName()),
+              fldInfo.slice(-1)[0].getLocalizedName(),
             ) :
             formsText('valueMustBeUniqueToField')(fieldName);
     };
