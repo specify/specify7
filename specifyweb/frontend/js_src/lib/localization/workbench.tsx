@@ -52,8 +52,7 @@ const wbText = createDictionary({
     'en-us': 'Data Check',
   },
   dataCheckOn: {
-    'en-us': (queueLength: number) =>
-      `Data Check: On ${queueLength > 0 ? ` (${queueLength})` : ''}`,
+    'en-us': `Data Check: On`,
   },
   changeOwner: {
     'en-us': 'Change Owner',

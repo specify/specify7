@@ -1940,7 +1940,11 @@ const WBView = Backbone.View.extend({
   updateValidationButton() {
     if (this.validationMode === 'live')
       this.$('.wb-data-check').text(
-        wbText('dataCheckOn')(this.liveValidationStack.length)
+        `${wbText('dataCheckOn')}${
+          this.liveValidationStack.length > 0
+            ? ` (${this.liveValidationStack.length})`
+            : ''
+        }`()
       );
     else {
       this.$('.wb-data-check').text(wbText('dataCheck'));
