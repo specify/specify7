@@ -7,11 +7,7 @@ const $ = require('jquery');
 
     var userInfo = {};
     initialContext.load('user.json', function(data) {
-        _.extend(userInfo, data, {
-            isReadOnly: !_(['Manager', 'FullAccess']).contains(data.usertype)
-        });
-    }, (error)=>{
-        if(error.status === 400){
+        if(typeof data.user === 'undefined'){
             const dialog = $(`<div>
                 ${commonText('noAgentDialogHeader')}
                 <p>${commonText('noAgentDialogMessage')}</p>
@@ -31,7 +27,9 @@ const $ = require('jquery');
             });
             dialog[0].classList.add('ui-dialog-persistent');
         }
-        else throw new Error(error);
+        _.extend(userInfo, data, {
+            isReadOnly: !_(['Manager', 'FullAccess']).contains(data.usertype)
+        });
     });
 
 module.exports = userInfo;
