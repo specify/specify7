@@ -1,4 +1,6 @@
-# Guidelines for Programmers
+# Front-end Localization
+
+## Guidelines for Programmers
 
 - All keys must use strict camel case, unless absolutely necessary to do
   otherwise (e.x, in case of `S2N` or other proper nouns that contain numbers or
@@ -49,13 +51,13 @@
   Incorrect example:
 
   ```js
-  DataSetName: ()=>`New Data Set ${new Date().toDateString()}`
+  DataSetName: () => `New Data Set ${new Date().toDateString()}`;
   ```
 
   Correct example:
 
   ```js
-  newDataSetName: (date: string)=>`New Data Set ${date}`
+  newDataSetName: (date: string) => `New Data Set ${date}`;
   ```
 
 - When writing multi-line strings, keep in mind that some values are going to be
@@ -70,7 +72,7 @@
     Lorem Ipsum is simply dummy text of the printing and typesetting
     industry. Lorem Ipsum has been the industry's standard dummy text
     ever since the 1500s
-  `
+  `;
   ```
 
   Correct example:
@@ -78,7 +80,38 @@
   ```js
   someWhitespaceSensitiveValue: [
     'Lorem Ipsum is simply dummy text of the printing and typesetting ',
-    'industry. Lorem Ipsum has been the industry\'s standard dummy text ',
-    'ever since the 1500s'
-  ].join('')
+    "industry. Lorem Ipsum has been the industry's standard dummy text ",
+    'ever since the 1500s',
+  ].join('');
   ```
+
+## Localization Utils
+
+### Copy strings from existing language into new language
+
+1. Paste whole dictionary file content into an HTML <textbox>
+2. Assign the `textbox` variable to the HTML Textbox element
+3. Run this code in the DevTools console:
+
+   ```js
+   textarea.value = textarea.value.replaceAll(
+     /:\s+{\s+'en-us':(([\s\S]*?),\n)(?:\n|}|  (?!( |]))) /g,
+     ": {\n    'en-us':$1    'ru-ru':$1  "
+   );
+   ```
+
+   (Replace `en-us` with source and `ru-ru` with target)
+
+### Get text from a dictionary as array
+
+1. Paste whole dictionary file content into an HTML <textbox>
+2. Assign the `textbox` variable to the HTML Textbox element
+3. Run this code in the DevTools console:
+
+   ```js
+   matches = Array.from(
+     textarea.value.matchAll(
+       /(?:\s{6}|[:>]\s*|\(|return\s)(?:'([^']+)'|`\s*([^`]+)\s*`|\(([^)]+)\)[,;]|\[\s+([^\]]+)\s+\])/g
+     )
+   ).map((match, index) => Array.from(match).slice(1).find(Boolean).trim());
+   ```
