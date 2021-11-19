@@ -53,6 +53,23 @@ translated values.
 NOTE: Keep in mind the difference between language codes and locale names.
 [More info](https://docs.djangoproject.com/en/3.1/topics/i18n/#term-locale-name)
 
+## Utilities
+
+### Get text from a dictionary as array
+
+1. Paste whole dictionary file content into an HTML <textbox>
+2. Assign the `textbox` variable to the HTML Textbox element
+3. Run this code in the DevTools console:
+
+   ```js
+   matches = Array.from(
+     textarea.value.matchAll(
+       /(?:msgid "([^"]+)"|msgid ""\n((?:.+\n)+)msgstr "")/g
+     )
+   ).map((match, index) => Array.from(match).slice(1).find(Boolean).trim());
+   ```
+
+
 ## Additional resources
 
 - [Comprehensive tutorial](https://lokalise.com/blog/advanced-django-internationalization/)
