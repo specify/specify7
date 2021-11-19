@@ -91,7 +91,7 @@ repos:
           - --skip="./node_modules/,package-lock.json,./.idea/"
 
   - repo: https://github.com/psf/black
-    rev: 21.10b0
+    rev: 21.11b0
     hooks:
       - id: black
         args:
@@ -122,7 +122,7 @@ repos:
       - id: pydocstyle
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.0
+    rev: v2.29.1
     hooks:
       - id: pyupgrade
 
@@ -148,9 +148,9 @@ repos:
       - id: stylelint
         files: \.(css|scss|sass|js|jsx|ts|tsx)$
         additional_dependencies:
-          - stylelint@^14.0.1
+          - stylelint@^14.1.0
           - stylelint-config-prettier@^9.0.3
-          - stylelint-config-standard@^23.0.0
+          - stylelint-config-standard@^24.0.0
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
     rev: v1.2.2
