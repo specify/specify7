@@ -11,6 +11,10 @@ var QueryFieldSpec    = require('./queryfieldspec.js');
 var QueryFieldInputUI = require('./queryfieldinput.js');
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
+const dataModelStorage = require('./wbplanviewmodel').default;
+const fetchDataModel = require('./wbplanviewmodelfetcher').default;
+
+let dataModelPromise = fetchDataModel();
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -68,6 +72,18 @@ module.exports =  Backbone.View.extend({
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
+            (typeof dataModelPromise === 'undefined'
+              ? Promise.resolve()
+              : dataModelPromise
+            ).then(() => {
+              dataModelPromise = undefined;
+              this._render();
+            });
+            
+            return this;
+        },
+    
+        _render(){
             this.$el.append(template({commonText, queryText, cid: this.cid}));
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
@@ -86,7 +102,6 @@ module.exports =  Backbone.View.extend({
             if (this.forReport) {
                 this.$('.field-controls, .field-expand, .field-delete').remove();
             }
-            return this;
         },
 
         // Simple UI event handlers.
@@ -146,6 +161,7 @@ module.exports =  Backbone.View.extend({
             this['setup' + state + 'State']();
         },
         updateLabel: function() {
+            
             var fieldLabel = this.$('.field-label').empty();
             _.each(this.fieldSpec.joinPath, function(field) {
                 $('<a class="field-label-field">')
@@ -158,7 +174,21 @@ module.exports =  Backbone.View.extend({
                 $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
-                this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
+                if(this.fieldSpec.treeRank){
+                    const tableName = this.fieldSpec.table.name.toLowerCase();
+                    let treeRank =
+                        dataModelStorage.ranks[tableName][
+                            this.fieldSpec.treeRank
+                        ];
+                    if (typeof treeRank === 'undefined')
+                      if (
+                          dataModelStorage.rootRanks[tableName][0] ===
+                          this.fieldSpec.treeRank
+                      )
+                          treeRank = dataModelStorage.rootRanks[tableName][1];
+                      else throw new Error('Unknown tree rank');
+                    $('<a class="field-label-treerank">').text(treeRank.title).appendTo(fieldLabel);
+                }
                 if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
                     $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
                 }

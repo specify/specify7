@@ -7,7 +7,6 @@ var schema    = require('./schema.js');
 var dataobjformatters = require('./dataobjformatters.js');
 var fieldformat = require('./fieldformat.js');
 
-
 function auditedObjFormatter(fieldSpecs, model, localize) {
     this.fieldSpecs = fieldSpecs;
     this.model = model;
