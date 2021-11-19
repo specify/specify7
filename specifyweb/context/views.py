@@ -259,10 +259,7 @@ def user(request):
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
     data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
-
-    data['agent'] = obj_to_data(request.specify_user_agent) \
-        if hasattr(request.specify_user_agent, '_meta') \
-        else None
+    data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
 
     if settings.RO_MODE or not request.user.is_authenticated:
         data['usertype'] = "readonly"
