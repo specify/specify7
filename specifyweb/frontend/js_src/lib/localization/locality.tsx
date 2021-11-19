@@ -6,35 +6,35 @@ const localityText = createDictionary({
   // Leaflet
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
-    'ru-ru': 'Polygon Boundaries',
+    'ru-ru': 'Границы многоугольника',
   },
   errorRadius: {
     'en-us': 'Error Radius',
-    'ru-ru': 'Error Radius',
+    'ru-ru': 'Радиус ошибки',
   },
   showMap: {
     'en-us': 'Show Map',
-    'ru-ru': 'Show Map',
+    'ru-ru': 'Показать карту',
   },
   noCoordinates: {
     'en-us': 'No coordinates',
-    'ru-ru': 'No coordinates',
+    'ru-ru': 'Нет координат',
   },
   notEnoughInformationToMap: {
     'en-us': 'Locality must have coordinates to be mapped.',
-    'ru-ru': 'Locality must have coordinates to be mapped.',
+    'ru-ru': 'Чтобы нанести на карту, необходимо указать координаты.',
   },
   occurrencePoints: {
     'en-us': 'Pins',
-    'ru-ru': 'Pins',
+    'ru-ru': 'Точки',
   },
   occurrencePolygons: {
     'en-us': 'Polygons',
-    'ru-ru': 'Polygons',
+    'ru-ru': 'Полигоны',
   },
   viewRecord: {
     'en-us': 'View Record',
-    'ru-ru': 'View Record',
+    'ru-ru': 'Открыть запись',
   },
   // GeoLocate
   geoLocate: {
@@ -43,67 +43,66 @@ const localityText = createDictionary({
   },
   geographyRequiredDialogTitle: {
     'en-us': 'Geography Required',
-    'ru-ru': 'Geography Required',
+    'ru-ru': 'Требуется география',
   },
   geographyRequiredDialogHeader: {
     'en-us': createHeader('Geography must be mapped'),
-    'ru-ru': createHeader('Geography must be mapped'),
+    'ru-ru': createHeader('География должна быть связана'),
   },
   geographyRequiredDialogMessage: {
     'en-us':
       'The GeoLocate plugin requires the geography field to be populated.',
-    'ru-ru':
-      'The GeoLocate plugin requires the geography field to be populated.',
+    'ru-ru': 'Плагин GeoLocate требует, чтобы поле географии было заполнено.',
   },
   // LatLongUI
   coordinates: {
     'en-us': 'Coordinates',
-    'ru-ru': 'Coordinates',
+    'ru-ru': 'Координаты',
   },
   northWestCorner: {
     'en-us': 'NW Corner',
-    'ru-ru': 'NW Corner',
+    'ru-ru': 'СЗ Угол',
   },
   southEastCorner: {
     'en-us': 'SE Corner',
-    'ru-ru': 'SE Corner',
+    'ru-ru': 'ЮВ Угол',
   },
   // LatLongUI
   coordinateType: {
     'en-us': 'Coordinate Type',
-    'ru-ru': 'Coordinate Type',
+    'ru-ru': 'Тип координат',
   },
   point: {
     'en-us': 'Point',
-    'ru-ru': 'Point',
+    'ru-ru': 'Точка',
   },
   line: {
     'en-us': 'Line',
-    'ru-ru': 'Line',
+    'ru-ru': 'Линия',
   },
   rectangle: {
     'en-us': 'Rectangle',
-    'ru-ru': 'Rectangle',
+    'ru-ru': 'Прямоугольник',
   },
   source: {
     'en-us': 'Source',
-    'ru-ru': 'Source',
+    'ru-ru': 'Источник',
   },
   parsed: {
     'en-us': 'Parsed',
-    'ru-ru': 'Parsed',
+    'ru-ru': 'Проверено',
   },
   latitude: {
     'en-us': 'Latitude',
-    'ru-ru': 'Latitude',
+    'ru-ru': 'Широта',
   },
   longitude: {
     'en-us': 'Longitude',
-    'ru-ru': 'Longitude',
+    'ru-ru': 'Долгота',
   },
   coords: {
     'en-us': 'Coords',
-    'ru-ru': 'Coords',
+    'ru-ru': 'Координаты',
   },
 });
 
