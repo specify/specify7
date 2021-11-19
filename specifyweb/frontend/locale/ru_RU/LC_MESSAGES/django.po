@@ -20,27 +20,27 @@ msgstr ""
 #: attachment_gw/views.py:134
 #, python-format
 msgid "Deletion failed: %(reason)s"
-msgstr ""
+msgstr "Не удалось удалить: %(reason)s"
 
 #: attachment_gw/views.py:190
 msgid "Bad attachment key."
-msgstr ""
+msgstr "Неверный ключ прикрепления"
 
 #: attachment_gw/views.py:192
 msgid "Attachment key test failed."
-msgstr ""
+msgstr "Не удалось выполнить проверку ключа прикрепления"
 
 #: businessrules/accessionagent_rules.py:8
 msgid "AccessionAgent -> Agent relationship is required."
-msgstr ""
+msgstr "Требуется присоединение к отношениям с агентом по присоединению"
 
 #: context/views.py:577 frontend/views.py:54
-msgid "Specify 7 Operations API"
-msgstr ""
+msgid "Specify 7 операций API"
+msgstr "Specify 7 API операций"
 
 #: export/dwca.py:60
 msgid "Definition doesn't include any queries."
-msgstr ""
+msgstr "Определение не включает никаких запросов."
 
 #: export/dwca.py:66
 #, python-format
@@ -48,32 +48,34 @@ msgid ""
 "Query definitions have conflicting fields.Offending values: %(fields)s vs "
 "%(export_fields)s"
 msgstr ""
+"В определениях запроса есть конфликтующие поля. Неверные значения: %(fields)s "
+"против %(export_fields)s"
 
 #: export/dwca.py:73
 msgid "Definition doesn't include id field."
-msgstr ""
+msgstr "Определение не включает поле идентификатора"
 
 #: export/dwca.py:75
 msgid "Definition includes multiple id fields."
-msgstr ""
+msgstr "Определение включает несколько полей идентификатора"
 
 #: frontend/templates/choose_collection.html:4
 msgid "Choose Collection"
-msgstr ""
+msgstr "Выбрать коллекцию"
 
 #: frontend/templates/choose_collection.html:15
 #: frontend/templates/login.html:15 frontend/templates/password_change.html:15
 #, python-format
 msgid "%(title)s | Specify 7"
-msgstr ""
+msgstr "%(title)s | Specify 7"
 
 #: frontend/templates/choose_collection.html:30
 msgid "Collection"
-msgstr ""
+msgstr "Коллекция"
 
 #: frontend/templates/choose_collection.html:37
 msgid "Select"
-msgstr ""
+msgstr "Выбрать"
 
 #: frontend/templates/choose_collection.html:42
 #, python-format
@@ -82,82 +84,85 @@ msgid ""
 "database. You must <a href=\"/accounts/login/?next=%(next)s\">login</a> as "
 "another user."
 msgstr ""
+"Авторизованному пользователю не был предоставлен доступ ни к одной коллекции "
+"в этой база данных. Вы должны <a href=\"/accounts/login/?next=%(next)s\">"
+"войти</a> как другой пользователь."
 
 #: frontend/templates/login.html:4
 msgid "Log In"
-msgstr ""
+msgstr "Вход"
 
 #: frontend/templates/login.html:32
 msgid "Username"
-msgstr ""
+msgstr "Имя пользователя"
 
 #: frontend/templates/login.html:37
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
 #: frontend/templates/login.html:44
 msgid "Login"
-msgstr ""
+msgstr "Войти"
 
 #: frontend/templates/password_change.html:4
 msgid "Change Password"
-msgstr ""
+msgstr "Изменить пароль"
 
 #: frontend/templates/password_change.html:32
 msgid "Old password"
-msgstr ""
+msgstr "Прежний пароль"
 
 #: frontend/templates/password_change.html:37
 msgid "New password"
-msgstr ""
+msgstr "Новый пароль"
 
 #: frontend/templates/password_change.html:42
 msgid "Retype new password"
-msgstr ""
+msgstr "Введите повторно новый пароль"
 
 #: frontend/templates/password_change.html:47
 msgid "Change"
-msgstr ""
+msgstr "Изменить"
 
 #: frontend/templates/specify.html:19
 msgid "Skip to Content"
-msgstr ""
+msgstr "Перейти к содержанию"
 
 #: frontend/templates/specify.html:26
 msgid "Go to homepage"
-msgstr ""
+msgstr "Вернуться на домашнюю страницу"
 
 #: frontend/templates/specify.html:33
 msgid "Current User"
-msgstr ""
+msgstr "Текущий пользователь"
 
 #: frontend/templates/specify.html:38 frontend/templates/specify.html:39
 msgid "Current Collection"
-msgstr ""
+msgstr "Текущая коллекция"
 
 #: frontend/templates/specify.html:58 frontend/templates/specify.html:59
 msgid "Search"
-msgstr ""
+msgstr "Поиск"
 
 #: frontend/templates/specify.html:67
 msgid "Specify is loading..."
-msgstr ""
+msgstr "Загрузка Specify..."
 
 #: frontend/views.py:42 specify/schema.py:104 specify/schema.py:106
 msgid "Specify 7 Tables API"
-msgstr ""
+msgstr "Specify 7 API таблиц"
 
 #: frontend/views.py:65
 msgid "Specify 7 Operations API (all)"
-msgstr ""
+msgstr "Specify 7 API операций (все)"
 
 #: report_runner/views.py:36
 msgid "Report service is not configured."
-msgstr ""
+msgstr "Служба отчетов не настроена"
 
 #: report_runner/views.py:43
 msgid "The report query returned no results."
-msgstr ""
+msgstr "Запрос отчета не дал результатов"
 
 #: specify/check_versions.py:19
 #, python-format
@@ -167,23 +172,28 @@ msgid ""
 "Please update and/or run the host thickclient installation at "
 "%(thich_client_location)s to update the database."
 msgstr ""
+"Версия Specify: %(specify_version)s, версия схемы: %(schema_version)s "
+"не соответствуют c значениям d базе данных:  %(app_specify_version)s, "
+"%(app_schema_version)s\n"
+"Пожалуйста, обновите и / или запустите установку толстого клиента хоста по "
+"адресу %(thich_client_location)s для обновления базы данных."
 
 #: stored_queries/format.py:93
 msgid "<Formatter not defined.>"
-msgstr ""
+msgstr "<Форматирования не определено.>"
 
 #: stored_queries/format.py:150
 msgid "<Aggregator not defined.>"
-msgstr ""
+msgstr "<Агрегатор не определен.>"
 
 #: workbench/upload/parsing.py:153
 #, python-format
 msgid "value %(value)s not resolvable to True or False"
-msgstr ""
+msgstr "значение %(value)s не разрешается to True or False"
 
 #: workbench/upload/parsing.py:164
 msgid "value $(value)s is not a valid decimal value"
-msgstr ""
+msgstr "значение $(value)s не является допустимым чеслом"
 
 #: workbench/upload/parsing.py:194
 #, python-format
@@ -191,22 +201,26 @@ msgid ""
 "\"%(value)s\" is not a legal value in this picklist field.\n"
 "Click on the arrow to choose among available options."
 msgstr ""
+"\"%(value)s\" е является допустимым значением в этом списке.\n"
+"Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
 
 #: workbench/upload/parsing.py:225
 #, python-format
 msgid "bad agent type: %(bad_type)s. Expected one of %(valid_types)s"
-msgstr ""
+msgstr "неверный тип агента: %(bad_type)s. Ожидается один из %(valid_types)s"
 
 #: workbench/upload/treerecord.py:278
 msgid "There are multiple 'Uploaded' placeholder values in the tree!"
-msgstr ""
+msgstr "В дереве есть несколько веток с именем 'Uploaded'!"
 
 #: workbench/upload/treerecord.py:299
 #, python-format
 msgid "Missing or unmapped required tree parent rank value for %(value)s."
 msgstr ""
+"Отсутствует или не сопоставлено необходимое значение родительского ранга"
+"для дерева %(value)s."
 
 #: workbench/upload/upload.py:133
 #, python-format
 msgid "WB Upload of %(data_set_name)s"
-msgstr ""
+msgstr "Загрузка WB %(data_set_name)s"
