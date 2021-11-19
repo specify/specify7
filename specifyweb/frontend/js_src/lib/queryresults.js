@@ -219,20 +219,21 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
             var href = resource?.viewUrl();
             _.each(this.fieldSpecs, function(f, i) {
-                this.renderResult(row, f, href, result, i, this.format, resource);
+                const index = typeof this.linkField ===  'undefined' ? i : i+1;
+                this.renderResult(row, f, href, result, index, this.format, resource);
             }, this);
         },
         addResults: function(results) {
             var table = this.$('table.query-results');
             _.each(results.results, function(result) {
-                if (this.forceResourceLoad && this.linkField !== -1) {
+                if (this.forceResourceLoad && typeof this.linkField === 'number') {
                     var siht = this;
-                    var lr = new this.model.LazyCollection({filters: {id: result[this.linkField]}});   
+                    var lr = new this.model.LazyCollection({filters: {id: result[this.linkField]}});
                     lr.fetch({limit: 1}).done(function(){
                         siht.addResult(result, table, lr.models[0]);
                     });
                 } else {
-                    const resource = this.linkField === -1 ?
+                    const resource = typeof this.linkField === 'undefined' ?
                         undefined :
                         new this.model.Resource({ id: result[this.linkField] });
                     this.addResult(result, table, resource && this.auditObjFormatter.setResourceReqFlds(resource, result));
@@ -241,7 +242,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             return results.results.length;
         },
         openRecord: function(event) {
-            evt.preventDefault();
+            event.preventDefault();
             window.open(event.target.href);
         }
     });

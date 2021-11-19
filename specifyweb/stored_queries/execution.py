@@ -443,9 +443,6 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
     set_group_concat_max_len(session)
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
 
-    if distinct:
-        query = query.distinct()
-
     if count_only:
         return {'count': query.count()}
     else:
@@ -488,7 +485,7 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query() if distinct else session.query(id_field),
+        query=session.query().distinct() if distinct else session.query(id_field),
     )
 
 

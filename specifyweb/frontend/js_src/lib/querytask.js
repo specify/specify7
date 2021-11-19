@@ -290,7 +290,7 @@ const commonText = require('./localization/common').default;
                     .sortBy(function(f) { return f.spqueryfield.get('position'); })
                     .pluck('fieldSpec')
                     .value(),
-                linkField: this.query.get('selectdistinct') ? -1 : 0,
+                linkField: this.query.get('selectdistinct') ? undefined : 0,
             });
             this.results.render().$el.appendTo(this.el);
         },
