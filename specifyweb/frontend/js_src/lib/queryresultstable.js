@@ -10,11 +10,29 @@ var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
+const dataModelStorage = require('./wbplanviewmodel').default;
+const fetchDataModel = require('./wbplanviewmodelfetcher').default;
+
+let dataModelPromise = fetchDataModel();
 
     function renderHeader(fieldSpec) {
-        var field = _.last(fieldSpec.joinPath);
-        var icon = field && field.model.getIcon();
-        var name = fieldSpec.treeRank || field.getLocalizedName();
+        const field = _.last(fieldSpec.joinPath);
+        const icon = field && field.model.getIcon();
+        let name = field?.getLocalizedName();
+        if(fieldSpec.treeRank){
+            const tableName = fieldSpec.table.name.toLowerCase();
+            let treeRank =
+                dataModelStorage.ranks[tableName][
+                    fieldSpec.treeRank
+                ];
+            if (typeof treeRank === 'undefined')
+                if (
+                    dataModelStorage.rootRanks[tableName][0] ===
+                    fieldSpec.treeRank
+                )
+                    treeRank = dataModelStorage.rootRanks[tableName][1];
+            name = treeRank?.title ?? name;
+        }
         if (fieldSpec.datePart &&  fieldSpec.datePart != 'Full Date') {
             name += ' (' + fieldSpec.datePart + ')';
         }
@@ -37,6 +55,17 @@ const commonText = require('./localization/common').default;
             return $('<thead>').append(header);
         },
         render: function() {
+            (typeof dataModelPromise === 'undefined'
+              ? Promise.resolve()
+              : dataModelPromise
+            ).then(() => {
+              dataModelPromise = undefined;
+              this._render();
+            });
+
+            return this;
+        },
+        _render: function() {
             var inner = $(template({queryText}));
             this.$el.append(inner);
             var table = this.$('table.query-results');
@@ -65,8 +94,6 @@ const commonText = require('./localization/common').default;
                 .on('fetching', this.fetchingMore, this)
                 .on('gotdata', this.gotData, this)
                 .start();
-
-            return this;
         },
         setCount: function(data) {
             this.$('.query-results-count').text(data.count);
