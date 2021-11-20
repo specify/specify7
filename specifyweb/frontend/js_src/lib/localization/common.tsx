@@ -761,6 +761,14 @@ const commonText = createDictionary({
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
   },
+  language: {
+    'en-us': 'Language:',
+    'ru-ru': 'Язык:',
+  },
+  changeLanguage: {
+    'en-us': 'Change Language',
+    'ru-ru': 'Изменить язык',
+  }
 });
 
 export default commonText;

@@ -14,8 +14,12 @@ from django.urls import URLPattern, URLResolver
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_POST, \
+    require_http_methods
 from django.utils.translation import gettext as _
+from django.contrib.auth.decorators import login_required
+from django.utils.translation import activate, LANGUAGE_SESSION_KEY, \
+    get_language_info
 
 from specifyweb.specify.models import Agent, Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
@@ -605,3 +609,26 @@ def api_endpoints(request):
 def api_endpoints_all(request):
     """Returns a JSON description of all endpoints."""
     return JsonResponse(generate_openapi_for_endpoints(True))
+
+@login_required
+@require_GET
+@never_cache
+def set_language(request, language: str):
+    """Set language for current session."""
+    activate(language)
+    request.session[LANGUAGE_SESSION_KEY] = language
+    return HttpResponse('', status=204)
+
+@login_required
+@require_GET
+@never_cache
+def get_languages(request):
+    """Get List of available languages."""
+    return JsonResponse({
+        'data': {
+            code:{
+                **get_language_info(code),
+                'is_current': code==request.LANGUAGE_CODE
+            } for code, name in settings.LANGUAGES
+        }
+    })
