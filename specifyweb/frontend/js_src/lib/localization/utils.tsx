@@ -7,7 +7,8 @@ export const languages = ['en-us', 'ru-ru'] as const;
 export type Language = typeof languages[number];
 export const DEFAULT_LANGUAGE = 'en-us';
 export const LANGUAGE: Language =
-  (typeof document !== 'undefined' && document.documentElement.lang in languages
+  (typeof document !== 'undefined' &&
+  languages.includes(document.documentElement.lang as Language)
     ? (document.documentElement.lang as Language)
     : undefined) ?? DEFAULT_LANGUAGE;
 

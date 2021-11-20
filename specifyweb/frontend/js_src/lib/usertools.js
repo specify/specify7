@@ -21,11 +21,11 @@ module.exports = Backbone.View.extend({
             this.el.innerHTML = `<ul style="padding: 0">
                 ${this.tools.map(this.makeItem).join('')}
                 ${this.makeItem({
-                    task:'/accounts/logout/',
+                    task:'/accounts/logout',
                     title: commonText('logOut')
                 },'')}
                 ${this.makeItem({
-                    task:'/accounts/password_change/',
+                    task:'/accounts/password_change',
                     title: commonText('changePassword')
                 },'')}
             </ul>`;
@@ -46,13 +46,19 @@ module.exports = Backbone.View.extend({
                     href="${defaultPath}${toolDef.task}/"
                     class="user-tool fake-link"
                     style="font-size: 0.8rem"
+                    data-task="${toolDef.task}"
                 >${toolDef.title}</a>
             </li>`,
         clicked: function(event) {
-            event.preventDefault();
             this.$el.dialog('close');
 
-            var index = this.$('.user-tool').index(event.currentTarget);
-            this.tools[index].execute();
+            const taskName = event.target.getAttribute('data-task');
+            const task = this.tools.find(({task})=>task===taskName);
+
+            if(typeof task === 'undefined')
+              return;
+
+            event.preventDefault();
+            task.execute();
         }
     });
