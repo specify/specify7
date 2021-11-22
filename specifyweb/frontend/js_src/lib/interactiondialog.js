@@ -29,7 +29,7 @@ module.exports = RecordSetsDialog.extend({
         closeIcon: "ui-icon ui-icon-radio-on",
         events: {
             'click a.rs-select': 'rsSelect',
-            'click button[type=action-entry]': 'processEntry',
+            'click button.action-entry': 'processEntry',
             'click button.i-action-rs': 'toggleRs',
             'click button.i-action-enter': 'toggleCats',
             'keyup textarea.i-action-entry': 'catNumChange',
@@ -78,11 +78,11 @@ module.exports = RecordSetsDialog.extend({
         //eventhandlers and stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         toggleRs: function(evt, duration) {
-            this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]', '.i-action-rs span', '.i-action-enter span', duration);
+            this.toggleIt('table.rs-dlg-tbl', 'div.action-entry', '.i-action-rs span', '.i-action-enter span', duration);
         },
 
         toggleCats: function(evt, duration) {
-            this.toggleIt('div[type=action-entry]', 'table.rs-dlg-tbl', '.i-action-enter span', '.i-action-rs span', duration);
+            this.toggleIt('div.action-entry', 'table.rs-dlg-tbl', '.i-action-enter span', '.i-action-rs span', duration);
         },
 
         toggleIcon: function(icon_selector) {
@@ -113,9 +113,9 @@ module.exports = RecordSetsDialog.extend({
             this.$('button[type=i-snag-snub]').remove();
             var entry = evt.currentTarget;
             if (entry.value) {
-                this.$('button[type=action-entry]').removeAttr("disabled");
+                this.$('button.action-entry').removeAttr("disabled");
             } else {
-                this.$('button[type=action-entry]').attr("disabled", "true");
+                this.$('button.action-entry').attr("disabled", "true");
             }
         },
 
@@ -177,11 +177,15 @@ module.exports = RecordSetsDialog.extend({
            }
         },
         makeEntryUI: function() {
-            this.$el.append(`<div type="action-entry"
+            this.$el.append(`<div class="action-entry"
                 ${this.options.recordSets._totalCount > 0 ? ' style="display:none"' : ''}
             >
                 <textarea class="i-action-entry" style="width:100%" rows=5 spellcheck="false"></textarea>
-                <button disabled="true" type="action-entry">${commonText('next')}</button>
+                <button
+                    class="action-entry"
+                    type="button"
+                    disabled
+                >${commonText('next')}</button>
             </div><br>`);
         },
 
@@ -215,7 +219,8 @@ module.exports = RecordSetsDialog.extend({
                 var btn = $('<button/>',  {
                     html: formsText('ignoreAndContinue'),
                     click: showDlg,
-                    type: "i-snag-snub"
+                    class: "i-snag-snub",
+                    type: 'button',
                 });
                 slozzler.append(btn);
             }
@@ -282,7 +287,7 @@ module.exports = RecordSetsDialog.extend({
 
 
         availablePrepsReady: function(isRs, action, idFld, entries, invalidEntries, prepsData) {
-            this.$('button[type=action-entry]').attr("disabled", "true");
+            this.$('button.action-entry').attr("disabled", "true");
 
             var missing = [];
             if (!isRs) {
@@ -313,7 +318,7 @@ module.exports = RecordSetsDialog.extend({
                     }
                     this.options.itemcollection.add([item]);
                 } else {
-                    this.$('textarea.i-action-entry').after(this.makeSnagDisplay(prepsData, missing, invalidEntries, action));
+                    this.$('textarea.i-action-entry').parent().after(this.makeSnagDisplay(prepsData, missing, invalidEntries, action));
                 }
             } else {
                 this.showPrepSelectDlg(prepsData, action);
