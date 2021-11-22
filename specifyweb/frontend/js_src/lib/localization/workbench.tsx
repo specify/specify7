@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { createDictionary, createHeader, createJsxHeader } from './utils';
+import {
+  createDictionary,
+  createHeader,
+  createJsxHeader,
+  whitespaceSensitive,
+} from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -259,17 +264,18 @@ const wbText = createDictionary({
   // Validation
   /* This value must match the one on the back-end exactly */
   picklistValidationFailed: {
-    'en-us': (value: string) =>
-      [
-        `${value ? `"${value}"` : ''} is not a legal value in this picklist `,
-        'field.\nClick on the arrow to choose among available options.',
-      ].join(''),
-    'ru-ru': (value: string) =>
-      [
-        `${value ? `"${value}"` : ''} не является допустимым значением в этом `,
-        'списке.\nНажмите на стрелку, чтобы выбрать один из доступных ',
-        'вариантов.',
-      ].join(''),
+    'en-us': (value: string) => whitespaceSensitive(
+      `${value ? `"${value}"` : ''} is not a legal value in this picklist
+      field.<br>
+      
+      Click on the arrow to choose among available options.`
+    ),
+    'ru-ru': (value: string) => whitespaceSensitive(
+      `${value ? `"${value}"` : ''} не является допустимым значением в этом
+      списке.<br>
+      
+      Нажмите на стрелку, чтобы выбрать один из доступных вариантов.`
+    ),
   },
   noMatchErrorMessage: {
     'en-us': 'No matching record for must-match table.',
@@ -277,14 +283,12 @@ const wbText = createDictionary({
       'Нет соответствующей записи для таблицы обязательного соответствия.',
   },
   matchedMultipleErrorMessage: {
-    'en-us': [
-      'This value matches two or more existing database records and the match ',
-      'must be disambiguated before uploading.',
-    ].join(''),
-    'ru-ru': [
-      'Это значение соответствует двум или более существующим записям базы ',
-      'данных и совпадению',
-    ].join(''),
+    'en-us': `
+      This value matches two or more existing database records and the match 
+      must be disambiguated before uploading.`,
+    'ru-ru': `
+      Это значение соответствует двум или более существующим записям базы
+      данных и совпадению`,
   },
   validationNoErrorsDialogTitle: {
     'en-us': 'Data Set Validation',
@@ -440,10 +444,10 @@ const wbText = createDictionary({
   wbValidateUnavailable: {
     'en-us':
       'An Upload Plan needs to defined before this Data Set can be Validated',
-    'ru-ru': [
-      'План загрузки должен быть определен до того, как этот набор данных ',
-      'может быть проверен',
-    ].join(''),
+    'ru-ru': whitespaceSensitive(`
+      План загрузки должен быть определен до того, как этот набор данных
+      может быть проверен
+    `),
   },
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',
@@ -451,10 +455,10 @@ const wbText = createDictionary({
   },
   uploadUnavailableWhileHasErrors: {
     'en-us': 'Upload is unavailable while some cells have validation errors',
-    'ru-ru': [
-      'Загрузка недоступна, в то время как в некоторых ячейках есть ошибки ',
-      'проверки',
-    ].join(''),
+    'ru-ru': whitespaceSensitive(`
+      Загрузка недоступна, в то время как в некоторых ячейках есть ошибки 
+      проверки
+    `),
   },
   unavailableWhileViewingResults: {
     'en-us': 'This action is unavailable while viewing the upload results',
@@ -641,46 +645,46 @@ const wbText = createDictionary({
     'ru-ru': 'Игнорировать, когда пусто',
   },
   ignoreWhenBlankDescription: {
-    'en-us': [
-      'When set to "Ignore when Blank" blank values in this column will not be ',
-      'considered for matching purposes. Blank values are ignored when matching ',
-      'even if a default value is provided',
-    ].join(''),
-    'ru-ru': [
-      'Если задано значение «Игнорировать, когда пусто», пустые значения в ',
-      'этом столбце не будет рассматривается для целей сопоставления. ',
-      'Пустые значения игнорируются при сопоставлении даже если указано ',
-      'значение по умолчанию',
-    ].join(''),
+    'en-us': whitespaceSensitive(`
+      When set to "Ignore when Blank" blank values in this column will not be 
+      considered for matching purposes. Blank values are ignored when matching 
+      even if a default value is provided
+    `),
+    'ru-ru': whitespaceSensitive(`
+      Если задано значение «Игнорировать, когда пусто», пустые значения в 
+      этом столбце не будет рассматривается для целей сопоставления.
+      Пустые значения игнорируются при сопоставлении даже если указано 
+      значение по умолчанию
+    `),
   },
   ignoreAlways: {
     'en-us': 'Always Ignore',
     'ru-ru': 'Всегда игнорировать',
   },
   ignoreAlwaysDescription: {
-    'en-us': [
-      'When set to "Ignore Always" the value in this column will never be ',
-      'considered for matching purposes, only for uploading.',
-    ].join(''),
-    'ru-ru': [
-      'Если задано значение «Всегда игнорировать», значение в этом столбце ',
-      'никогда не будет рассматривается для целей сопоставления, только для ',
-      'загрузки',
-    ].join(''),
+    'en-us': whitespaceSensitive(`
+      When set to "Ignore Always" the value in this column will never be
+      considered for matching purposes, only for uploading.
+    `),
+    'ru-ru': whitespaceSensitive(`
+      Если задано значение «Всегда игнорировать», значение в этом столбце 
+      никогда не будет рассматривается для целей сопоставления, только для 
+      загрузки
+    `),
   },
   ignoreNever: {
     'en-us': 'Never Ignore',
     'ru-ru': 'Никогда не игнорировать',
   },
   ignoreNeverDescription: {
-    'en-us': [
-      'This column would always be considered for matching purposes, regardless ',
-      "of it's value",
-    ].join(''),
-    'ru-ru': [
-      'Этот столбец всегда будет учитываться для целей сопоставления, ',
-      'независимо от содержимое столбца',
-    ].join(''),
+    'en-us': whitespaceSensitive(`
+      This column would always be considered for matching purposes, regardless
+      of it's value
+    `),
+    'ru-ru': whitespaceSensitive(`
+      Этот столбец всегда будет учитываться для целей сопоставления,
+      независимо от содержимое столбца
+    `),
   },
   allowNullValues: {
     'en-us': 'Allow Null Values',
@@ -763,16 +767,18 @@ const wbText = createDictionary({
     'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',
   },
   dataSetUploadedDescription: {
-    'en-us': [
-      'You are viewing the mappings for an uploaded dataset.\n',
-      'To edit the mappings, rollback the uploaded data or create a new ',
-      'dataset',
-    ].join(''),
-    'ru-ru': [
-      'Вы просматриваете сопоставления для загруженного набора данных. \n ',
-      'Чтобы изменить сопоставления, откатите загруженные данные или создайте ',
-      'новый набор данных',
-    ].join(''),
+    'en-us': whitespaceSensitive(`
+      You are viewing the mappings for an uploaded dataset.<br>
+      
+      To edit the mappings, rollback the uploaded data or create a new
+      dataset
+    `),
+    'ru-ru': whitespaceSensitive(`
+      Вы просматриваете сопоставления для загруженного набора данных.<br> 
+      
+      Чтобы изменить сопоставления, откатите загруженные данные или создайте
+      новый набор данных
+    `),
   },
   baseTable: {
     'en-us': 'Base Table',
@@ -832,10 +838,10 @@ const wbText = createDictionary({
   },
   resizeMappingEditorButtonDescription: {
     'en-us': 'Click and drag up or down to resize the Map Explorer',
-    'ru-ru': [
-      'Щелкните и перетащите вверх или вниз, чтобы изменить размер ',
-      'обозревателя сопоставлений',
-    ].join(''),
+    'ru-ru': whitespaceSensitive(`
+      Щелкните и перетащите вверх или вниз, чтобы изменить размер
+      обозревателя сопоставлений
+    `),
   },
   mappings: {
     'en-us': 'Mappings',

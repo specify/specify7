@@ -75,3 +75,12 @@ export const createHeader = (header: string): string =>
 
 export const createJsxHeader = (header: string): string | JSX.Element =>
   header === '' ? '' : <h2>{header}</h2>;
+
+export const whitespaceSensitive = (string: string): string =>
+  string
+    .trim()
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join(' ')
+    .replace(/<br>\s?/, '\n');
