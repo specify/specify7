@@ -168,9 +168,11 @@ def run_query(collection, user, query_json):
         raise ReportException(e)
     spquery['limit'] = 0
 
-    report_fields = ['id'] + [field['stringid']
-                              for field in sorted(spquery['fields'],
-                                                  key=lambda f: f['position'])]
+    report_fields = ['id'] + [
+        field['stringid']
+        for field in sorted(spquery['fields'], key=lambda f: f['position'])
+        if field['isdisplay']
+    ]
 
     query_result = run_ephemeral_query(collection, user, spquery)
 
