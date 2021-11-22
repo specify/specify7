@@ -28,13 +28,13 @@
 
   Incorrect example:
 
-  ```js
+  ```javascript
   wbText(hasError ? 'errorOccurred' : 'successMessage');
   ```
 
   Correct example:
 
-  ```js
+  ```javascript
   hasError ? wbText('errorOccurred') : wbText('successMessage');
   ```
 
@@ -50,41 +50,45 @@
 
   Incorrect example:
 
-  ```js
+  ```javascript
   DataSetName: () => `New Data Set ${new Date().toDateString()}`;
   ```
 
   Correct example:
 
-  ```js
+  ```javascript
   newDataSetName: (date: string) => `New Data Set ${date}`;
   ```
 
 - When writing multi-line strings, keep in mind that some values are going to be
   used in whitespace sensitive contexts. Most common example is the "title"
   attribute of a button. Another example is the cell comment text in the
-  Workbench. In such cases, use array join instead of the grave accent mark.
+  Workbench. In such cases, wrap the string in a 
+  whitespaceSensitive function call and use the `<br>` HTML tags
+  for new lines.
 
   Incorrect example:
 
-  ```js
+  ```javascript
   someWhitespaceSensitiveValue: `
     Lorem Ipsum is simply dummy text of the printing and typesetting
-    industry. Lorem Ipsum has been the industry's standard dummy text
+    industry.
+    Lorem Ipsum has been the industry's standard dummy text<br>
     ever since the 1500s
-  `;
+  `,
   ```
 
   Correct example:
 
-  ```js
-  someWhitespaceSensitiveValue: [
-    'Lorem Ipsum is simply dummy text of the printing and typesetting ',
-    "industry. Lorem Ipsum has been the industry's standard dummy text ",
-    'ever since the 1500s',
-  ].join('');
+  ```javascript
+  someWhitespaceSensitiveValue: whitespaceSensitive(`
+    Lorem Ipsum is simply dummy text of the printing and typesetting
+    industry.<br>
+    Lorem Ipsum has been the industry's standard dummy text
+    ever since the 1500s
+  `),
   ```
-
+  
 ## Localization Utils
 
 ### Copy strings from existing language into new language
@@ -93,7 +97,7 @@
 2. Assign the `textbox` variable to the HTML Textbox element
 3. Run this code in the DevTools console:
 
-   ```js
+   ```javascript
    textarea.value = textarea.value.replaceAll(
      /:\s+{\s+'en-us':(([\s\S]*?),\n)(?:\n|}|  (?!( |]))) /g,
      ": {\n    'en-us':$1    'ru-ru':$1  "
@@ -108,10 +112,10 @@
 2. Assign the `textbox` variable to the HTML Textbox element
 3. Run this code in the DevTools console:
 
-   ```js
+   ```javascript
    matches = Array.from(
      textarea.value.matchAll(
-       /(?:\s{6}|[:>]\s*|\(|return\s)(?:'([^']+)'|`\s*([^`]+)\s*`|\(([^)]+)\)[,;]|\[\s+([^\]]+)\s+\])/g
+       /(?:\s{6}|[:>]\s*\w*|\(|return\s)(?:'([^']+)'|`\s*([^`]+)\s*`|\(\s?([^)]+\s?)\)[,;])/g
      )
    ).map((match, index) => Array.from(match).slice(1).find(Boolean).trim());
    ```
