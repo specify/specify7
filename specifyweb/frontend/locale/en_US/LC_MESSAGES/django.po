@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-22 14:13+0000\n"
+"POT-Creation-Date: 2021-11-22 23:40+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -85,15 +85,19 @@ msgstr ""
 msgid "Log In"
 msgstr "Log In"
 
-#: frontend/templates/login.html:32
+#: frontend/templates/login.html:33
+msgid "Language:"
+msgstr ""
+
+#: frontend/templates/login.html:60
 msgid "Username"
 msgstr "Username"
 
-#: frontend/templates/login.html:37
+#: frontend/templates/login.html:65
 msgid "Password"
 msgstr "Password"
 
-#: frontend/templates/login.html:44
+#: frontend/templates/login.html:72
 msgid "Login"
 msgstr "Login"
 

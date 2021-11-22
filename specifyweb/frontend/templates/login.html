@@ -26,6 +26,34 @@
     {% endfor %}
     {% endif %}
 
+    <form action="{% url 'set_language' %}" method="post">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ redirect_to }}">
+      <label>
+        {% trans 'Language:' %}
+        {% get_available_languages as LANGUAGES %}
+        {{ LANGUAGES.all|json_script:'languages' }}
+        {{ LANGUAGES.items|json_script:'languages' }}
+        {{ LANGUAGES|json_script:'languages' }}
+        <select
+          name="language"
+          onchange="this.closest('form').submit()"
+        >
+          {% for language_code, _language_name in LANGUAGES %}
+            {% get_language_info for language_code as language %}
+            <option
+              value="{{ language.code }}"
+              {% if LANGUAGE_CODE == language_code %}selected{% endif %}
+            >
+              {{ language.name_local }} ({{ language.code }})
+              {{ language_name }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <input type="submit" class="sr-only">
+    </form>
+    <br>
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
       <div class="form-row">

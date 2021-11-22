@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-22 14:13+0000\n"
+"POT-Creation-Date: 2021-11-22 23:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,15 +94,19 @@ msgstr ""
 msgid "Log In"
 msgstr "Вход"
 
-#: frontend/templates/login.html:32
+#: frontend/templates/login.html:33
+msgid "Language:"
+msgstr "Язык:"
+
+#: frontend/templates/login.html:60
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: frontend/templates/login.html:37
+#: frontend/templates/login.html:65
 msgid "Password"
 msgstr "Пароль"
 
-#: frontend/templates/login.html:44
+#: frontend/templates/login.html:72
 msgid "Login"
 msgstr "Войти"
 
@@ -194,7 +198,9 @@ msgid "value %(value)s not resolvable to True or False"
 msgstr "значение %(value)s не разрешается to True or False"
 
 #: workbench/upload/parsing.py:164
-msgid "value %(value)s is not a valid decimal value"
+#, fuzzy
+#| msgid "value %(value)s is not a valid decimal value"
+msgid "value $(value)s is not a valid decimal value"
 msgstr "значение %(value)s не является допустимым чеслом"
 
 #: workbench/upload/parsing.py:194
