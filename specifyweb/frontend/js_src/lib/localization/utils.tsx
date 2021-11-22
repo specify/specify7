@@ -15,8 +15,8 @@ export const LANGUAGE: Language =
 type Line = string | JSX.Element;
 // Wrap this in a Partial<> to allow skipping languages in the dictionary
 export type Value =
-  | RR<Language, Line>
-  | RR<Language, (...args: RA<never>) => Line>;
+  | (RR<Language, Line>
+  | RR<Language, (...args: RA<never>) => Line>);
 type GetValueType<VALUE extends Value> = VALUE extends (
   ...args: RA<never>
 ) => Line

@@ -264,18 +264,20 @@ const wbText = createDictionary({
   // Validation
   /* This value must match the one on the back-end exactly */
   picklistValidationFailed: {
-    'en-us': (value: string) => whitespaceSensitive(
-      `${value ? `"${value}"` : ''} is not a legal value in this picklist
+    'en-us': (value: string) =>
+      whitespaceSensitive(
+        `${value ? `"${value}"` : ''} is not a legal value in this picklist
       field.<br>
       
       Click on the arrow to choose among available options.`
-    ),
-    'ru-ru': (value: string) => whitespaceSensitive(
-      `${value ? `"${value}"` : ''} не является допустимым значением в этом
+      ),
+    'ru-ru': (value: string) =>
+      whitespaceSensitive(
+        `${value ? `"${value}"` : ''} не является допустимым значением в этом
       списке.<br>
       
       Нажмите на стрелку, чтобы выбрать один из доступных вариантов.`
-    ),
+      ),
   },
   noMatchErrorMessage: {
     'en-us': 'No matching record for must-match table.',
@@ -1070,58 +1072,46 @@ const wbText = createDictionary({
       `${operationName} строка ${current}/${total}`,
   },
   wbStatusPendingDialogMessage: {
-    'en-us': function wbStatusPendingDialogMessage(operationName: string) {
-      return (
-        <>
-          {operationName} of this Data Set should begin shortly.
-          <br />
-          <br />
-          If this message persists for longer than 30 seconds, the{' '}
-          {operationName} process is busy with another Data Set. Please try
-          again later.
-        </>
-      );
-    },
-    'ru-ru': function wbStatusPendingDialogMessage(operationName: string) {
-      return (
-        <>
-          {operationName} этого набора данных должно начаться в ближайшее время.
-          <br />
-          <br />
-          Если это сообщение отображается дольше 30 секунд Процесс{' '}
-          {operationName} занят другим набором данных. Пожалуйста, попробуй
-          снова позже.
-        </>
-      );
-    },
+    'en-us': (operationName: string) => (
+      <>
+        {operationName} of this Data Set should begin shortly.
+        <br />
+        <br />
+        If this message persists for longer than 30 seconds, the {
+          operationName
+        }{' '}
+        process is busy with another Data Set. Please try again later.
+      </>
+    ),
+    'ru-ru': (operationName: string) => (
+      <>
+        {operationName} этого набора данных должно начаться в ближайшее время.
+        <br />
+        <br />
+        Если это сообщение отображается дольше 30 секунд Процесс {
+          operationName
+        }{' '}
+        занят другим набором данных. Пожалуйста, попробуй снова позже.
+      </>
+    ),
   },
   wbStatusErrorDialogMessage: {
-    'en-us': function wbStatusPendingDialogMessage(
-      operationName: string,
-      errorMessage: string
-    ) {
-      return (
-        <>
-          Error occurred during {operationName}:
-          <br />
-          <br />
-          {errorMessage}
-        </>
-      );
-    },
-    'ru-ru': function wbStatusPendingDialogMessage(
-      operationName: string,
-      errorMessage: string
-    ) {
-      return (
-        <>
-          Произошла ошибка во время {operationName}:
-          <br />
-          <br />
-          {errorMessage}
-        </>
-      );
-    },
+    'en-us': (operationName: string, errorMessage: string) => (
+      <>
+        Error occurred during {operationName}:
+        <br />
+        <br />
+        {errorMessage}
+      </>
+    ),
+    'ru-ru': (operationName: string, errorMessage: string) => (
+      <>
+        Произошла ошибка во время {operationName}:
+        <br />
+        <br />
+        {errorMessage}
+      </>
+    ),
   },
   updatingTrees: {
     'en-us': 'Updating trees...',
