@@ -106,16 +106,20 @@
 
    (Replace `en-us` with source and `ru-ru` with target)
 
-### Get text from a dictionary as array
+### Extract serialized strings from dictionary
 
 1. Paste whole dictionary file content into an HTML <textbox>
-2. Assign the `textbox` variable to the HTML Textbox element
+2. Assign the `textbox` JS variable to the HTML Textbox element
 3. Run this code in the DevTools console:
 
    ```javascript
-   matches = Array.from(
-     textarea.value.matchAll(
-       /(?:\s{6}|[:>]\s*\w*|\(|return\s)(?:'([^']+)'|`\s*([^`]+)\s*`|\(\s?([^)]+\s?)\)[,;])/g
+   dictionary = Object.fromEntries(
+     Array.from(
+       textarea.value.matchAll(
+         /(?<key>\w+):\s{\s+'en-us':\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?<enUS>[\s\S]*?)['"`)]\s*\)?,\s+'ru-ru':\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?<ruRU>[\s\S]*?)['"`)]\s*\)?,/g
+       ),
+       ({groups: {key, ...strings}})=>[key, strings]
      )
-   ).map((match, index) => Array.from(match).slice(1).find(Boolean).trim());
+   );
    ```
+   

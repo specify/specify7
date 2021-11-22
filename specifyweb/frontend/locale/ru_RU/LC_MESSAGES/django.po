@@ -47,7 +47,7 @@ msgstr "Определение не включает никаких запрос
 #: export/dwca.py:66
 #, python-format
 msgid ""
-"Query definitions have conflicting fields.Offending values: %(fields)s vs "
+"Query definitions have conflicting fields. Offending values: %(fields)s vs "
 "%(export_fields)s"
 msgstr ""
 "В определениях запроса есть конфликтующие поля. Неверные значения: "
@@ -194,8 +194,8 @@ msgid "value %(value)s not resolvable to True or False"
 msgstr "значение %(value)s не разрешается to True or False"
 
 #: workbench/upload/parsing.py:164
-msgid "value $(value)s is not a valid decimal value"
-msgstr "значение $(value)s не является допустимым чеслом"
+msgid "value %(value)s is not a valid decimal value"
+msgstr "значение %(value)s не является допустимым чеслом"
 
 #: workbench/upload/parsing.py:194
 #, python-format
@@ -226,6 +226,3 @@ msgstr ""
 #, python-format
 msgid "WB Upload of %(data_set_name)s"
 msgstr "Загрузка WB %(data_set_name)s"
-
-#~ msgid "Specify 7 операций API"
-#~ msgstr "Specify 7 API операций"

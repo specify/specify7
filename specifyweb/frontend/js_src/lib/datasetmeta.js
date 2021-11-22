@@ -221,7 +221,6 @@ export const DataSetMeta = Backbone.View.extend({
       </div>`).dialog({
         title: wbText('changeDataSetOwnerDialogTitle'),
         modal: true,
-        dialogClass: 'ui-dialog-no-close',
         close: () => this.changeOwnerDialog.dialog('destroy'),
         buttons: {
           [commonText('cancel')]: () =>
