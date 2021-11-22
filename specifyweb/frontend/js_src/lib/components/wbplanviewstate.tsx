@@ -253,7 +253,7 @@ export const stateReducer = generateReducer<
               {state.props.dataset.name}
             </span>
             <span title={wbText('baseTable')}>
-              {` ( ${dataModelStorage.tables[state.baseTableName].label})`}
+              {` (${dataModelStorage.tables[state.baseTableName].label})`}
             </span>
           </>
         }
@@ -554,6 +554,7 @@ export const stateReducer = generateReducer<
             properties={{
               title: wbText('matchingLogicDialogTitle'),
               close: handleMappingOptionsDialogClose,
+              width: 350,
               buttons: [
                 {
                   text:

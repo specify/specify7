@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-19 22:45+0000\n"
+"POT-Creation-Date: 2021-11-22 14:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,9 +34,11 @@ msgstr "Не удалось выполнить проверку ключа пр�
 msgid "AccessionAgent -> Agent relationship is required."
 msgstr "Требуется присоединение к отношениям с агентом по присоединению"
 
-#: context/views.py:577 frontend/views.py:54
-msgid "Specify 7 операций API"
-msgstr "Specify 7 API операций"
+#: context/views.py:581 frontend/views.py:54
+#, fuzzy
+#| msgid "Specify 7 Operations API (all)"
+msgid "Specify 7 Operations API"
+msgstr "Specify 7 API операций (все)"
 
 #: export/dwca.py:60
 msgid "Definition doesn't include any queries."
@@ -48,8 +50,8 @@ msgid ""
 "Query definitions have conflicting fields.Offending values: %(fields)s vs "
 "%(export_fields)s"
 msgstr ""
-"В определениях запроса есть конфликтующие поля. Неверные значения: %(fields)s "
-"против %(export_fields)s"
+"В определениях запроса есть конфликтующие поля. Неверные значения: "
+"%(fields)s против %(export_fields)s"
 
 #: export/dwca.py:73
 msgid "Definition doesn't include id field."
@@ -85,8 +87,8 @@ msgid ""
 "another user."
 msgstr ""
 "Авторизованному пользователю не был предоставлен доступ ни к одной коллекции "
-"в этой база данных. Вы должны <a href=\"/accounts/login/?next=%(next)s\">"
-"войти</a> как другой пользователь."
+"в этой база данных. Вы должны <a href=\"/accounts/login/?next=%(next)s"
+"\">войти</a> как другой пользователь."
 
 #: frontend/templates/login.html:4
 msgid "Log In"
@@ -172,8 +174,8 @@ msgid ""
 "Please update and/or run the host thickclient installation at "
 "%(thich_client_location)s to update the database."
 msgstr ""
-"Версия Specify: %(specify_version)s, версия схемы: %(schema_version)s "
-"не соответствуют c значениям d базе данных:  %(app_specify_version)s, "
+"Версия Specify: %(specify_version)s, версия схемы: %(schema_version)s не "
+"соответствуют c значениям d базе данных:  %(app_specify_version)s, "
 "%(app_schema_version)s\n"
 "Пожалуйста, обновите и / или запустите установку толстого клиента хоста по "
 "адресу %(thich_client_location)s для обновления базы данных."
@@ -217,10 +219,13 @@ msgstr "В дереве есть несколько веток с именем '
 #, python-format
 msgid "Missing or unmapped required tree parent rank value for %(value)s."
 msgstr ""
-"Отсутствует или не сопоставлено необходимое значение родительского ранга"
-"для дерева %(value)s."
+"Отсутствует или не сопоставлено необходимое значение родительского рангадля "
+"дерева %(value)s."
 
 #: workbench/upload/upload.py:133
 #, python-format
 msgid "WB Upload of %(data_set_name)s"
 msgstr "Загрузка WB %(data_set_name)s"
+
+#~ msgid "Specify 7 операций API"
+#~ msgstr "Specify 7 API операций"

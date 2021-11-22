@@ -129,6 +129,7 @@ function defaultConfirmNavigationHandler(proceed, cancel){
     </div>`).dialog({
         title: commonText('leavePageDialogTitle'),
         modal: true,
+        width: 350,
         close() {
             $(this).remove();
         },
