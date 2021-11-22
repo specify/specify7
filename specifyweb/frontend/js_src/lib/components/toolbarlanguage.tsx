@@ -1,4 +1,5 @@
 import * as React from 'react';
+import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -8,7 +9,8 @@ function ChangeLanguage() {
   const [languages, setLanguages] = React.useState<
     | undefined
     | IR<{
-        name_local: string;
+        readonly name_local: string;
+        readonly code: string;
       }>
   >(undefined);
 
@@ -30,24 +32,27 @@ function ChangeLanguage() {
         },
       }}
     >
-      <label>
-        {commonText('language')}
-        <br />
-        <select
-          value={document.documentElement.lang}
-          onChange={({ target }) =>
-            fetch(`/context/language/${target.value}`)
-              .then(()=>window.location.reload())
-              .catch(console.error)
-          }
-        >
-          {Object.entries(languages).map(([code, { name_local }]) => (
-            <option key={code} value={code}>
-              {name_local}
-            </option>
-          ))}
-        </select>
-      </label>
+      <form action="/context/language/setlang/" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken ?? ''} />
+        <label>
+          {commonText('language')}
+          <br />
+          <select
+            name="language"
+            value={document.documentElement.lang}
+            onChange={({ target }) => target.closest('form')?.submit()}
+          >
+            {Object.entries(languages).map(
+              ([code, { name_local, code: short_code }]) => (
+                <option key={code} value={code}>
+                  {name_local} ({short_code})
+                </option>
+              )
+            )}
+          </select>
+        </label>
+        <input type="submit" className="sr-only" />
+      </form>
     </ModalDialog>
   );
 }
@@ -66,6 +71,7 @@ export default {
   task: 'change-language',
   title: commonText('changeLanguage'),
   execute: function () {
+    // @ts-expect-error
     new View().render();
   },
 };

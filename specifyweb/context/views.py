@@ -610,7 +610,6 @@ def api_endpoints_all(request):
     """Returns a JSON description of all endpoints."""
     return JsonResponse(generate_openapi_for_endpoints(True))
 
-@login_required
 @require_GET
 @never_cache
 def set_language(request, language: str):
@@ -619,7 +618,6 @@ def set_language(request, language: str):
     request.session[LANGUAGE_SESSION_KEY] = language
     return HttpResponse('', status=204)
 
-@login_required
 @require_GET
 @never_cache
 def get_languages(request):
