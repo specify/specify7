@@ -8,7 +8,7 @@ const wbText = createDictionary({
   // Buttons
   rollback: {
     'en-us': 'Roll Back',
-    'ru-ru': 'Вернуть',
+    'ru-ru': 'Откат',
   },
   validate: {
     'en-us': 'Validate',
@@ -60,7 +60,7 @@ const wbText = createDictionary({
   },
   dataMapper: {
     'en-us': 'Data Mapper',
-    'ru-ru': 'Карта',
+    'ru-ru': 'Сопоставления',
   },
   dataCheck: {
     'en-us': 'Data Check',
@@ -906,11 +906,11 @@ const wbText = createDictionary({
   },
   matchingLogicUnavailableDialogMessage: {
     'en-us': 'Matching logic is unavailable for current mappings',
-    'ru-ru': 'Логика сопоставления недоступна для текущих сопоставлений',
+    'ru-ru': 'Логика соответствия недоступна для текущих сопоставлений',
   },
   mustMatch: {
     'en-us': 'Must Match',
-    'ru-ru': 'Должен соответствовать',
+    'ru-ru': 'Логика соответствия',
   },
   unloadProtectMessage: {
     'en-us': 'This mapping has not been saved.',

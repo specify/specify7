@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-19 22:45+0000\n"
+"POT-Creation-Date: 2021-11-22 14:13+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,7 +27,7 @@ msgstr "Attachment key test failed."
 msgid "AccessionAgent -> Agent relationship is required."
 msgstr "AccessionAgent -> Agent relationship is required."
 
-#: context/views.py:577 frontend/views.py:54
+#: context/views.py:581 frontend/views.py:54
 msgid "Specify 7 Operations API"
 msgstr "Specify 7 Operations API"
 
