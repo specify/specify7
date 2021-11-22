@@ -278,6 +278,9 @@ function getReportParams(reportResources) {
 }
 
 function runReportForRecord(reportResources) {
+    // for consistency's sake since we set all fields to isdisplay in QueryParamsDialog
+    reportResources.query.dependentResources.fields.each((f) => f.set('isdisplay', true));
+
     clearQueryFilters(reportResources);
     addRecordIdFilterToQuery(reportResources);
     runReport(reportResources);
