@@ -8,35 +8,41 @@ var Backbone  = require('./backbone.js');
 var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
+const domain = require('./domain.js');
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
-const dataModelStorage = require('./wbplanviewmodel').default;
-const fetchDataModel = require('./wbplanviewmodelfetcher').default;
 
-let dataModelPromise = fetchDataModel();
+async function getTreeRanks(tableName){
+    const getTreeDef = await domain.getTreeDef(tableName);
+    const treeDefItems = await getTreeDef.rget('treedefitems');
+    await treeDefItems.fetch({limit: 0});
+    return treeDefItems.models;
+}
 
     function renderHeader(fieldSpec) {
         const field = _.last(fieldSpec.joinPath);
         const icon = field && field.model.getIcon();
         let name = field?.getLocalizedName();
-        if(fieldSpec.treeRank){
-            const tableName = fieldSpec.table.name.toLowerCase();
-            let treeRank =
-                dataModelStorage.ranks[tableName][
-                    fieldSpec.treeRank
-                ];
-            if (typeof treeRank === 'undefined')
-                if (
-                    dataModelStorage.rootRanks[tableName][0] ===
-                    fieldSpec.treeRank
+
+        const th = $(`<th><span></span></th>`);
+        const span = th.find('span');
+
+        // If it is a tree rank, display rank name while rank title is fetching
+        span.text(name ?? fieldSpec.treeRank);
+
+        if(fieldSpec.treeRank)
+            getTreeRanks(fieldSpec.table.name)
+                .then(treeRanks=>
+                    treeRanks.find(item=>
+                        item.get('name')===fieldSpec.treeRank
+                    )
                 )
-                    treeRank = dataModelStorage.rootRanks[tableName][1];
-            name = treeRank?.title ?? name;
-        }
-        if (fieldSpec.datePart &&  fieldSpec.datePart != 'Full Date') {
-            name += ' (' + fieldSpec.datePart + ')';
-        }
-        var th = $('<th>').text(name);
+                .then(treeRank=>treeRank.get('title'))
+              .then(title=>span.text(title));
+
+        else if (fieldSpec.datePart && fieldSpec.datePart !== 'Full Date')
+            span.text(`(${fieldSpec.datePart})`);
+
         icon && th.prepend($('<img>', {src: icon}));
         return th;
     }
@@ -55,17 +61,6 @@ let dataModelPromise = fetchDataModel();
             return $('<thead>').append(header);
         },
         render: function() {
-            (typeof dataModelPromise === 'undefined'
-              ? Promise.resolve()
-              : dataModelPromise
-            ).then(() => {
-              dataModelPromise = undefined;
-              this._render();
-            });
-
-            return this;
-        },
-        _render: function() {
             var inner = $(template({queryText}));
             this.$el.append(inner);
             var table = this.$('table.query-results');
@@ -94,6 +89,8 @@ let dataModelPromise = fetchDataModel();
                 .on('fetching', this.fetchingMore, this)
                 .on('gotdata', this.gotData, this)
                 .start();
+
+            return this;
         },
         setCount: function(data) {
             this.$('.query-results-count').text(data.count);

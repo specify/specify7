@@ -11,10 +11,6 @@ var QueryFieldSpec    = require('./queryfieldspec.js');
 var QueryFieldInputUI = require('./queryfieldinput.js');
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
-const dataModelStorage = require('./wbplanviewmodel').default;
-const fetchDataModel = require('./wbplanviewmodelfetcher').default;
-
-let dataModelPromise = fetchDataModel();
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -72,18 +68,6 @@ module.exports =  Backbone.View.extend({
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
-            (typeof dataModelPromise === 'undefined'
-              ? Promise.resolve()
-              : dataModelPromise
-            ).then(() => {
-              dataModelPromise = undefined;
-              this._render();
-            });
-            
-            return this;
-        },
-    
-        _render(){
             this.$el.append(template({commonText, queryText, cid: this.cid}));
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
@@ -102,6 +86,8 @@ module.exports =  Backbone.View.extend({
             if (this.forReport) {
                 this.$('.field-controls, .field-expand, .field-delete').remove();
             }
+
+            return this;
         },
 
         // Simple UI event handlers.
@@ -174,21 +160,20 @@ module.exports =  Backbone.View.extend({
                 $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
-                if(this.fieldSpec.treeRank){
-                    const tableName = this.fieldSpec.table.name.toLowerCase();
-                    let treeRank =
-                        dataModelStorage.ranks[tableName][
-                            this.fieldSpec.treeRank
-                        ];
-                    if (typeof treeRank === 'undefined')
-                      if (
-                          dataModelStorage.rootRanks[tableName][0] ===
-                          this.fieldSpec.treeRank
-                      )
-                          treeRank = dataModelStorage.rootRanks[tableName][1];
-                      else throw new Error('Unknown tree rank');
-                    $('<a class="field-label-treerank">').text(treeRank.title).appendTo(fieldLabel);
-                }
+                if(this.fieldSpec.treeRank)
+                    this.getTreeRanks(this.fieldSpec.table.name)
+                        .then(treeRanks=>
+                            treeRanks.find(item=>
+                                item.get('name')===this.fieldSpec.treeRank
+                            )
+                        )
+                        .then(treeRank=>treeRank.get('title'))
+                        .then(title=>
+                            $('<a class="field-label-treerank">')
+                                .text(title)
+                                .appendTo(fieldLabel)
+                        )
+                        .catch(console.error)
                 if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
                     $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
                 }
@@ -228,30 +213,29 @@ module.exports =  Backbone.View.extend({
                         .appendTo(fieldSelect);
                 });
 
-            var fieldGrp = this.$('.field-select-grp');
-            var getTreeDef = domain.getTreeDef(this.fieldSpec.table.name);
-            $.when( getTreeDef && this.addTreeLevelsToFieldSelect(getTreeDef) ).done(function() {
-                fieldGrp.show();
-            });
+            this.getTreeRanks(this.fieldSpec.table.name)
+                .then(treeRanks=>this.addTreeLevelsToFieldSelect(treeRanks))
+                .then(()=>this.$('.field-select-grp').show())
+                .catch(()=>{ /* not a tree table */ });
         },
-        addTreeLevelsToFieldSelect: function(getTreeDef) {
-            var optGroup = $(`<optgroup label="${queryText('treeRanks')}">`).appendTo( this.$('.field-select') );
+        async getTreeRanks(tableName){
+            const getTreeDef = await domain.getTreeDef(tableName);
+            const treeDefItems = await getTreeDef.rget('treedefitems');
+            await treeDefItems.fetch({limit: 0});
+            return treeDefItems.models;
+        },
+        addTreeLevelsToFieldSelect: function(tableRanks) {
+            const optGroup = $(`<optgroup label="${queryText('treeRanks')}">`).appendTo( this.$('.field-select') );
 
-            getTreeDef.pipe(function(treeDef) {
-                return treeDef.rget('treedefitems');
-            }).pipe(function (treeDefItems) {
-                return treeDefItems.fetch({limit: 0}).pipe(function() { return treeDefItems; });
-            }).done(function(treeDefItems) {
-                treeDefItems.each(function(item) {
-                    $('<option>', {value: 'treerank-' + item.get('name')})
-                        .text(item.get('title') ?? item.get('name'))
+            tableRanks.map((item)=>{
+                $('<option>', {value: 'treerank-' + item.get('name')})
+                    .text(item.get('title') ?? item.get('name'))
+                    .appendTo(optGroup);
+                if (item.specifyModel.name === 'TaxonTreeDefItem') {
+                    $('<option>', {value: 'treerank-' + item.get('name') + ' Author'})
+                        .text(queryText('treeRankAuthor')(item.get('title') ?? item.get('name')))
                         .appendTo(optGroup);
-                    if (item.specifyModel.name == 'TaxonTreeDefItem') {
-                        $('<option>', {value: 'treerank-' + item.get('name') + ' Author'})
-                            .text(queryText('treeRankAuthor')(item.get('title') ?? item.get('name')))
-                            .appendTo(optGroup);
-                    }
-                });
+                }
             });
         },
         setupOperationState: function() {
