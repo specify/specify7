@@ -24,11 +24,11 @@ After adding new translatable strings, run the following command from inside the
 `specifyweb` directory to update the `.po` file for all locales:
 
 ```bash
-../ve/bin/python ../manage.py makemessages -l en_US -l ru_RU --ignore js_src --ignore static
+../ve/bin/python ../manage.py makemessages -l en_US -l ru_RU -l ca --ignore js_src --ignore static
 ```
 
 If you have multiple locales, specify the locale name of each. Example:
-`-l en_US -l ru_RU`.
+`-l en_US -l ru_RU -l ca`.
 
 Later, in production, run the following command from inside the
 `specifyweb` directory to compile the strings into an optimized `.mo` binary

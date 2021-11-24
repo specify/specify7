@@ -43,9 +43,9 @@ function ChangeLanguage() {
             onChange={({ target }) => target.closest('form')?.submit()}
           >
             {Object.entries(languages).map(
-              ([code, { name_local, code: short_code }]) => (
+              ([code, { name_local, code: shortCode }]) => (
                 <option key={code} value={code}>
-                  {name_local} ({short_code})
+                  {name_local} ({shortCode})
                 </option>
               )
             )}
