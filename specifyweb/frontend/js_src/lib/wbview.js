@@ -1076,7 +1076,7 @@ const WBView = Backbone.View.extend({
     const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
 
     // Make sure cell has comments
-    if (this.cellMeta[physicalRow]?.[physicalCol]?.issues.length === 0) return;
+    if (this.getCellMeta(physicalRow,physicalCol,'issues').length === 0) return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
     const oneRem = parseFloat(
@@ -2056,10 +2056,11 @@ const WBView = Backbone.View.extend({
     if (typeof inferColumnsCallback === 'function' && columns.length === 0)
       columns = inferColumnsCallback();
     if (columns.length === 0)
-      // Convert to physicalCol and filter out unknown columns
-      return columns
-        .map((column) => this.dataset.columns.indexOf(column))
-        .filter((physicalCol) => physicalCol !== -1);
+      columns = this.dataset.columns;
+    // Convert to physicalCol and filter out unknown columns
+    return columns
+      .map((column) => this.dataset.columns.indexOf(column))
+      .filter((physicalCol) => physicalCol !== -1);
   },
   applyRowValidationResults(physicalRow, result) {
     const rowMeta = this.dataset.columns.map(() => ({
@@ -2442,9 +2443,9 @@ const WBView = Backbone.View.extend({
 
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
-        metaRow.forEach((cellMeta, physicalCol) => {
+        Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
           const visualRow = this.hot.toVisualRow(physicalRow | 0);
-          const visualCol = this.hot.toPhysicalRow(physicalCol);
+          const visualCol = this.hot.toVisualColumn(physicalCol | 0);
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)][
             resolveIndex(visualRow, visualCol, false)

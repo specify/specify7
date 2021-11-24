@@ -86,14 +86,12 @@ module.exports = Backbone.View.extend({
 
     const cellMetaObject = this.wbview.getCellMetaObject();
 
-    const orderIt =
-      direction === 'next'
-        ? (array) => array
-        : (array) => Array.from(array).reverse();
-
-    let matchedCell;
-    let cellIsTypeCount = 0;
-
+    /*
+     * The cellMetaObject is transposed if navigation direction is "Column
+     * first".
+     * In that case, the meaning of visualRow and visualCol is swapped.
+     * resolveIndex exists to resolve the canonical visualRow/visualCol
+     */
     const resolveIndex = (visualRow, visualCol, first) =>
       (this.searchPreferences.navigation.direction === 'rowFirst') === first
         ? visualRow
@@ -120,34 +118,40 @@ module.exports = Backbone.View.extend({
         ? (visualCol) => visualCol <= currentTransposedCol
         : (visualCol) => visualCol < currentTransposedCol;
 
-    /*
-     * The cellMetaObject is transposed if navigation direction is "Column
-     * first".
-     * In that case, the meaning of visualRow and visualCol is swapped.
-     * resolveIndex exists to resolve the canonical visualRow/visualCol
-     */
-    orderIt(cellMetaObject).find((metaRow, visualRowString) =>
-      orderIt(metaRow).find((metaArray, visualColString) => {
-        // This is 10 times faster then Number.parseInt because of a slow
-        // Babel polyfill
-        const visualRow = visualRowString | 0;
-        const visualCol = visualColString | 0;
+    let matchedCell;
+    let cellIsTypeCount = 0;
 
-        const cellTypeMatches = this.cellIsType(metaArray, type);
-        cellIsTypeCount += cellTypeMatches;
+    const orderIt =
+      direction === 'next'
+        ? (array) => array
+        : (array) => Array.from(array).reverse();
 
-        const isWithinBounds =
-          compareRows(visualRow) &&
-          (visualRow !== currentTransposedRow || compareCols(visualCol));
+    orderIt(Object.entries(cellMetaObject)).find(
+      ([visualRowString, metaRow]) =>
+        metaRow &&
+        orderIt(Object.entries(metaRow)).find(
+          ([visualColString, metaArray]) => {
+            // This is 10 times faster then Number.parseInt because of a slow
+            // Babel polyfill
+            const visualRow = visualRowString | 0;
+            const visualCol = visualColString | 0;
 
-        const matches = cellTypeMatches && isWithinBounds;
-        if (matches)
-          matchedCell = {
-            visualRow: resolveIndex(visualRow, visualCol, true),
-            visualCol: resolveIndex(visualRow, visualCol, false),
-          };
-        return matches;
-      })
+            const cellTypeMatches = this.cellIsType(metaArray, type);
+            cellIsTypeCount += cellTypeMatches;
+
+            const isWithinBounds =
+              compareRows(visualRow) &&
+              (visualRow !== currentTransposedRow || compareCols(visualCol));
+
+            const matches = cellTypeMatches && isWithinBounds;
+            if (matches)
+              matchedCell = {
+                visualRow: resolveIndex(visualRow, visualCol, true),
+                visualCol: resolveIndex(visualRow, visualCol, false),
+              };
+            return matches;
+          }
+        )
     );
 
     let cellRelativePosition;
