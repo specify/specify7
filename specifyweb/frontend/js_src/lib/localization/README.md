@@ -95,12 +95,15 @@
 
 1. Paste whole dictionary file content into an HTML <textbox>
 2. Assign the `textbox` variable to the HTML Textbox element
-3. Run this code in the DevTools console:
+3. Modify the following RegEx to suite the task
+   
+   In it's current form, it would copy 'en-us' strings and
+   insert them after 'ru-ru' strings under a name of 'ca'.
 
    ```javascript
    textarea.value = textarea.value.replaceAll(
-     /:\s+{\s+'en-us':(([\s\S]*?),\n)(?:\n|}|  (?!( |]))) /g,
-     ": {\n    'en-us':$1    'ru-ru':$1  "
+     /(?<key>\w+):\s{\s+'en-us':(\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?:[\s\S]*?)['"`)]\s*\)?),\s+'ru-ru':(\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?:[\s\S]*?)['"`)]\s*\)?),/g,
+     "$1: {\n    'en-us':$2,\n    'ru-ru':$3,\n    ca:$2,"
    );
    ```
 
