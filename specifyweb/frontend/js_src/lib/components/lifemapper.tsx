@@ -157,15 +157,13 @@ export function SpecifyNetworkBadge({
     [model]
   );
 
-  if (!guid) return <></>;
-
   return (
     <>
       {hasFailure && (
         <ModalDialog
           properties={{
             title: lifemapperText('failedToOpenPopUpDialogTitle'),
-            close: () => setHasFailure(false),
+            close: (): void => setHasFailure(false),
             buttons: [
               {
                 text: commonText('close'),
@@ -179,7 +177,7 @@ export function SpecifyNetworkBadge({
         </ModalDialog>
       )}
       <a
-        href={formatLifemapperViewPageRequest(guid, occurrenceName)}
+        href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}
         target="_blank"
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}
