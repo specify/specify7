@@ -3,7 +3,7 @@ import React from 'react';
 import type { RA, RR, IR } from '../components/wbplanview';
 import { camelToHuman } from '../wbplanviewhelper';
 
-export const languages = ['en-us', 'ru-ru'] as const;
+export const languages = ['en-us', 'ru-ru', 'ca'] as const;
 export type Language = typeof languages[number];
 export const DEFAULT_LANGUAGE = 'en-us';
 export const LANGUAGE: Language =

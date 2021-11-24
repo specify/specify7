@@ -8,67 +8,83 @@ const formsText = createDictionary({
   filterAttachments: {
     'en-us': 'Filter Attachments',
     'ru-ru': 'Фильтрировать вложений',
+    ca: 'Filter Attachments',
   },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable.',
     'ru-ru': 'Сервер прикрепленных файлов недоступен.',
+    ca: 'Attachment server unavailable.',
   },
   attachmentUploadDialogTitle: {
     'en-us': 'Uploading...',
     'ru-ru': 'Закачивание...',
+    ca: 'Uploading...',
   },
   tables: {
     'en-us': 'Tables',
     'ru-ru': 'Таблицы',
+    ca: 'Tables',
   },
   openDataDialogTitle: {
     'en-us': 'Opening...',
     'ru-ru': 'Открытие...',
+    ca: 'Opening...',
   },
   clone: {
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',
+    ca: 'Clone',
   },
   linkInline: {
     'en-us': 'link',
     'ru-ru': 'ссылка',
+    ca: 'link',
   },
   // BusinessRules
   valueMustBeUniqueToField: {
     'en-us': (fieldName: string) => `Value must be unique to ${fieldName}`,
     'ru-ru': (fieldName: string) =>
       `Значение ${fieldName} должно быть уникальным`,
+    ca: (fieldName: string) => `Value must be unique to ${fieldName}`,
   },
   valuesOfMustBeUniqueToField: {
-    'en-us': (fieldName: string, values: RA<string>, lastValue) =>
-      `Значения ${values.join(', ')} и ${lastValue}
+    'en-us': (fieldName: string, value: string, lastValue: string) =>
+      `Values of ${value} and ${lastValue}
+       в ${fieldName}} должны быть уникальным`,
+    'ru-ru': (fieldName: string, value: RA<string>, lastValue: string) =>
+      `Значения ${value} и ${lastValue}
        must be unique to ${fieldName}}`,
-    'ru-ru': (fieldName: string, values: RA<string>, lastValue) =>
-      `Values of ${values.join(', ')} and ${lastValue}
+    ca: (fieldName: string, value: string, lastValue: string) =>
+      `Values of ${value} and ${lastValue}
        в ${fieldName}} должны быть уникальным`,
   },
   database: {
     'en-us': 'database',
     'ru-ru': 'база данных',
+    ca: 'database',
   },
   // CollectionReLoneToManyPlugin
   collectionObject: {
     'en-us': 'Collection Object',
     'ru-ru': 'Объект коллекции',
+    ca: 'Collection Object',
   },
   collection: {
     'en-us': 'Collection',
     'ru-ru': 'Коллекция',
+    ca: 'Collection',
   },
   // "set" as in "Set Value"
   set: {
     'en-us': 'Set',
     'ru-ru': 'Установить',
+    ca: 'Set',
   },
   // Data Model
   specifySchema: {
     'en-us': 'Specify Schema',
     'ru-ru': 'Схема базы данных Specify',
+    ca: 'Specify Schema',
   },
   // Data View
   emptyRecordSetMessage: {
@@ -89,18 +105,29 @@ const formsText = createDictionary({
       <p>Имейте в виду, что другой пользователь, возможно, готовится добавить
       объекты, поэтому удаляйте этот набор записей только в том случае, если вы
       уверены, что он не будет использованным.</p>`,
+    ca: (recordSetName: string) => `
+      <h2>The Record Set "${recordSetName}" contains no records.</h2>
+      <p>You can <button class="recordset-delete magic-button"
+      type="button">delete</button> the record set or
+      <a class="recordset-add intercept-navigation magic-button">add</a> records
+      to it.</p>
+      <p>Be aware that another user maybe getting ready to add records,
+      so only delete this record set if you are sure it is not to be used.</p>`,
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted.',
     'ru-ru': 'Проверка возможности удаления ресурса.',
+    ca: 'Checking if resource can be deleted.',
   },
   deleteBlockedDialogTitle: {
     'en-us': 'Delete resource',
     'ru-ru': 'Удалить ресурс',
+    ca: 'Delete resource',
   },
   deleteBlockedDialogHeader: {
     'en-us': createHeader('Delete blocked'),
     'ru-ru': createHeader('Удаление заблокировано'),
+    ca: createHeader('Delete blocked'),
   },
   deleteBlockedDialogMessage: {
     'en-us': `
@@ -109,149 +136,188 @@ const formsText = createDictionary({
     'ru-ru': `
       Ресурс не может быть удален, потому что на него есть ссылка через
       следующие поля:`,
+    ca: `
+      The resource cannot be deleted because it is referenced through the
+      following fields:`,
   },
   contract: {
     'en-us': 'Contract',
     'ru-ru': 'Договор',
+    ca: 'Contract',
   },
   // Forms Dialog
   formsDialogTitle: {
     'en-us': 'Forms',
     'ru-ru': 'Формы',
+    ca: 'Forms',
   },
   // Interactions
   addItems: {
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
+    ca: 'Add Items',
   },
   recordReturn: {
     'en-us': (modelName: string) => `${modelName} Return`,
     'ru-ru': (modelName: string) => `Возврат ${modelName}`,
+    ca: (modelName: string) => `${modelName} Return`,
   },
   createRecord: {
     'en-us': (modelName: string) => `Create ${modelName}`,
     'ru-ru': (modelName: string) => `Создать ${modelName}`,
+    ca: (modelName: string) => `Create ${modelName}`,
   },
   invalid: {
     'en-us': 'Invalid:',
     'ru-ru': 'Неверный:',
+    ca: 'Invalid:',
   },
   missing: {
     'en-us': 'Missing:',
     'ru-ru': 'Отсутствует:',
+    ca: 'Missing:',
   },
   preparationsNotFound: {
     'en-us': 'No preparations were found.',
     'ru-ru': 'Никаких препаратов не обнаружено.',
+    ca: 'No preparations were found.',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
+    ca: 'There are problems with the entry:',
   },
   ignoreAndContinue: {
     'en-us': 'Ignore and continue',
     'ru-ru': 'Игнорировать и продолжить',
+    ca: 'Ignore and continue',
   },
   recordSetCaption: {
     'en-us': (count: number) =>
       `By choosing a recordset (${count === 0 ? 'none' : count} available)`,
     'ru-ru': (count: number) => `Выбрав набор записей (доступно ${count})`,
+    ca: (count: number) =>
+      `By choosing a recordset (${count === 0 ? 'none' : count} available)`,
   },
   entryCaption: {
     'en-us': (fieldName: string) => `By entering ${fieldName}s`,
     'ru-ru': (fieldName: string) => `Ввести ${fieldName}`,
+    ca: (fieldName: string) => `By entering ${fieldName}s`,
   },
   noPreparationsCaption: {
     'en-us': 'Without preparations',
     'ru-ru': 'Без подготовки',
+    ca: 'Without preparations',
   },
   noCollectionObjectCaption: {
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',
+    ca: 'Add unassociated item',
   },
   actionNotSupported: {
     'en-us': (actionName: string) => `${actionName} is not supported.`,
     'ru-ru': (actionName: string) => `${actionName} не поддерживается.`,
+    ca: (actionName: string) => `${actionName} is not supported.`,
   },
   // Loan Return
   preparationsDialogTitle: {
     'en-us': 'Preparations',
     'ru-ru': 'Препараты',
+    ca: 'Preparations',
   },
   preparationsCanNotBeReturned: {
     'en-us': `
       Preparations cannot be returned in this context.`,
     'ru-ru': `
       Препараты не могут быть возвращены в этом контексте.`,
+    ca: `
+      Preparations cannot be returned in this context.`,
   },
   noUnresolvedPreparations: {
     'en-us': 'There no unresolved preparations for this loan.',
     'ru-ru': 'Незавершенных приготовлений по этому кредиту нет.',
+    ca: 'There no unresolved preparations for this loan.',
   },
   remarks: {
     'en-us': 'Remarks',
     'ru-ru': 'Замечания',
+    ca: 'Remarks',
   },
   unresolved: {
     'en-us': 'Unresolved',
     'ru-ru': 'Нерешенные',
+    ca: 'Unresolved',
   },
   return: {
     'en-us': 'Return',
     'ru-ru': 'Возвращение',
+    ca: 'Return',
   },
   resolve: {
     'en-us': 'Resolve',
     'ru-ru': 'Разрешить',
+    ca: 'Resolve',
   },
   returnAllPreparations: {
     'en-us': 'Return all preparations',
     'ru-ru': 'Вернуть все препараты',
+    ca: 'Return all preparations',
   },
   returnSelectedPreparations: {
     'en-us': 'Return selected preparations',
     'ru-ru': 'Вернуть выбранные препараты',
+    ca: 'Return selected preparations',
   },
   selectAllAvailablePreparations: {
     'en-us': 'Select all available preparations',
     'ru-ru': 'Выбрать все доступные препараты',
+    ca: 'Select all available preparations',
   },
   selectAll: {
     'en-us': 'Select All',
     'ru-ru': 'Выбрать все',
+    ca: 'Select All',
   },
   selectedAmount: {
     'en-us': 'Selected Amount',
     'ru-ru': 'Выбранная сумма',
+    ca: 'Selected Amount',
   },
   returnedAmount: {
     'en-us': 'Returned Amount',
     'ru-ru': 'Возвращенно',
+    ca: 'Returned Amount',
   },
   resolvedAmount: {
     'en-us': 'Resolved Amount',
     'ru-ru': 'Решенный',
+    ca: 'Resolved Amount',
   },
   receivedBy: {
     'en-us': 'Received by',
     'ru-ru': 'Получено',
+    ca: 'Received by',
   },
   dateResolved: {
     'en-us': 'Date resolved',
     'ru-ru': 'Дата разрешения',
+    ca: 'Date resolved',
   },
   // PaleoLocationPlugin
   paleoMap: {
     'en-us': 'Paleo Map',
     'ru-ru': 'Карта Палео',
+    ca: 'Paleo Map',
   },
   paleoRequiresGeographyDialogTitle: {
     'en-us': 'Paleo Map',
     'ru-ru': 'Карта Палео',
+    ca: 'Paleo Map',
   },
   paleoRequiresGeographyDialogHeader: {
     'en-us': createHeader('Geography Required'),
     'ru-ru': createHeader('Требуется география'),
+    ca: createHeader('Geography Required'),
   },
   paleoRequiresGeographyDialogMessage: {
     'en-us': `
@@ -262,30 +328,41 @@ const formsText = createDictionary({
       Плагин Карта Палео требует, чтобы у населенного пункта были
       координаты и что палеоконтекст имеет географический возраст с
       заполнено как минимум время начала или время окончания.`,
+    ca: `
+      The Paleo Map plugin requires that the locality have geographic
+      coordinates and that the paleo context have a geographic age with at
+      least a start time or and end time populated.`,
   },
   noCoordinatesDialogTitle: {
     'en-us': 'No coordinates',
     'ru-ru': 'Нет координат',
+    ca: 'No coordinates',
   },
   noCoordinatesDialogHeader: {
     'en-us': (modelName: string) =>
       createHeader(`Not enough information to map ${modelName}`),
     'ru-ru': (modelName: string) =>
       createHeader(`Недостаточно информации для отображения ${modelName}`),
+    ca: (modelName: string) =>
+      createHeader(`Not enough information to map ${modelName}`),
   },
   noCoordinatesDialogMessage: {
     'en-us': (modelName: string) => `
     ${modelName} must have coordinates and paleo context to be mapped.`,
     'ru-ru': (modelName: string) => `
     Для отображения ${modelName}, он должен иметь координаты и палеоконтекст.`,
+    ca: (modelName: string) => `
+    ${modelName} must have coordinates and paleo context to be mapped.`,
   },
   unsupportedFormDialogTitle: {
     'en-us': 'Unsupported Plugin',
     'ru-ru': 'Неподдерживаемый плагин',
+    ca: 'Unsupported Plugin',
   },
   unsupportedFormDialogHeader: {
     'en-us': createHeader('Incorrect Form'),
     'ru-ru': createHeader('Неправильная форма'),
+    ca: createHeader('Incorrect Form'),
   },
   unsupportedFormDialogMessage: {
     'en-us': `
@@ -294,16 +371,21 @@ const formsText = createDictionary({
     'ru-ru': `
       Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
       форму местности, события сбора или объекта коллекции.`,
+    ca: `
+      This plugin cannot be used on this form. Try moving it to the locality,
+      collecting event or collection object forms.`,
   },
   // DateParser
   invalidDate: {
     'en-us': 'Invalid Date',
     'ru-ru': 'Недействительная дата',
+    ca: 'Invalid Date',
   },
   // DeleteButton
   deleteConfirmationDialogTitle: {
     'en-us': 'Delete?',
     'ru-ru': 'Удалить?',
+    ca: 'Delete?',
   },
   deleteConfirmationDialogHeader: {
     'en-us': createHeader(
@@ -312,77 +394,97 @@ const formsText = createDictionary({
     'ru-ru': createHeader(
       'Вы уверены, что хотите навсегда удалить этот элемент(ы)?'
     ),
+    ca: createHeader(
+      'Are you sure you want to permanently delete this item(s)?'
+    ),
   },
   deleteConfirmationDialogMessage: {
     'en-us': 'This action can not be undone.',
     'ru-ru': 'Это действие не может быть отменено.',
+    ca: 'This action can not be undone.',
   },
   // PartialDateUi
   datePrecision: {
     'en-us': 'Date Precision',
     'ru-ru': 'Точность даты',
+    ca: 'Date Precision',
   },
   monthYear: {
     'en-us': 'Mon / Year',
     'ru-ru': 'Месяц / Год',
+    ca: 'Mon / Year',
   },
   dayPlaceholder: {
     'en-us': 'DD',
     'ru-ru': 'ДД',
+    ca: 'DD',
   },
   monthPlaceholder: {
     'en-us': 'MM',
     'ru-ru': 'ММ',
+    ca: 'MM',
   },
   yearPlaceholder: {
     'en-us': 'YYYY',
     'ru-ru': 'ГГГГ',
+    ca: 'YYYY',
   },
   today: {
     'en-us': 'Today',
     'ru-ru': 'Сегодня',
+    ca: 'Today',
   },
   todayButtonDescription: {
     'en-us': 'Set to current date',
     'ru-ru': 'Установить на текущую дату',
+    ca: 'Set to current date',
   },
   // PickListBox
   addToPickListConfirmationDialogTitle: {
     'en-us': 'Pick List',
     'ru-ru': 'Список выбора',
+    ca: 'Pick List',
   },
   addToPickListConfirmationDialogHeader: {
     'en-us': createHeader('Add to pick list?'),
     'ru-ru': createHeader('Добавить в список выбора?'),
+    ca: createHeader('Add to pick list?'),
   },
   addToPickListConfirmationDialogMessage: {
     'en-us': (value: string, pickListName: string) =>
       `Add value "${value}" to the pick list named ${pickListName}?`,
     'ru-ru': (value: string, pickListName: string) =>
       `Добавить значение "${value}" в список выбора ${pickListName}?`,
+    ca: (value: string, pickListName: string) =>
+      `Add value "${value}" to the pick list named ${pickListName}?`,
   },
   // ReadOnlyPickListComboBox
   noData: {
     'en-us': 'No Data.',
     'ru-ru': 'Нет данных.',
+    ca: 'No Data.',
   },
   // RecordSelector
   removeRecordDialogHeader: {
     'en-us': createHeader('Remove dependent record'),
     'ru-ru': createHeader('Удалить зависимую запись'),
+    ca: createHeader('Remove dependent record'),
   },
   removeRecordDialogMessage: {
     'en-us': 'Are you sure you want to remove this record?',
     'ru-ru': 'Вы уверены, что хотите удалить эту запись?',
+    ca: 'Are you sure you want to remove this record?',
   },
   // RecordSetsDialog
   recordSetsDialogTitle: {
     'en-us': (count: number) => `Record Sets (${count})`,
     'ru-ru': (count: number) => `Наборы объектов (${count})`,
+    ca: (count: number) => `Record Sets (${count})`,
   },
   createRecordSetButtonDescription: {
     'en-us': 'Create a new record set',
     'ru-ru': 'Создать новый набор объектов',
+    ca: 'Create a new record set',
   },
   recordSetDeletionWarning: {
     'en-us': (recordSetName: string) => `
@@ -391,88 +493,111 @@ const formsText = createDictionary({
     'ru-ru': (recordSetName: string) => `
       Набор объектов "${recordSetName}" будет удален. Связанные записи не будут
       удалены.`,
+    ca: (recordSetName: string) => `
+      The record set "${recordSetName}" will be deleted. The referenced
+      records will NOT be deleted.`,
   },
   // Reports
   reportsCanNotBePrintedDialogMessage: {
     'en-us': 'Reports/Labels cannot be printed in this context.',
     'ru-ru': 'Отчеты / этикетки не могут быть напечатаны в этом контексте.',
+    ca: 'Reports/Labels cannot be printed in this context.',
   },
   noReportsAvailable: {
     'en-us': 'No reports are available for this table.',
     'ru-ru': 'Для этой таблицы нет отчетов.',
+    ca: 'No reports are available for this table.',
   },
   reportProblemsDialogTitle: {
     'en-us': 'Problems with report',
     'ru-ru': 'Проблемы с отчетом',
+    ca: 'Problems with report',
   },
   reportsProblemsDialogMessage: {
     'en-us': 'The selected report has the following problems:',
     'ru-ru': 'В выбранном отчете есть следующие проблемы:',
+    ca: 'The selected report has the following problems:',
   },
   badImageExpressions: {
     'en-us': 'Bad Image Expressions',
     'ru-ru': 'Плохое выражение изображений',
+    ca: 'Bad Image Expressions',
   },
   missingAttachments: {
     'en-us': 'Missing attachments',
     'ru-ru': 'Отсутствующие вложения',
+    ca: 'Missing attachments',
   },
   // A verb
   fix: {
     'en-us': 'Fix',
     'ru-ru': 'Исправить',
+    ca: 'Fix',
   },
   missingAttachmentsFixDialogTitle: {
     'en-us': 'Choose file',
     'ru-ru': 'Выберите файл',
+    ca: 'Choose file',
   },
   reportParameters: {
     'en-us': 'Report Parameters',
     'ru-ru': 'Параметры отчета',
+    ca: 'Report Parameters',
   },
   labelFromRecordSetDialogTitle: {
     'en-us': 'From Record Set',
     'ru-ru': 'Из набора объектов',
+    ca: 'From Record Set',
   },
   runReport: {
     'en-us': 'Run Report',
     'ru-ru': 'Запустить репорт',
+    ca: 'Run Report',
   },
   // ResourceView
   missingFormDefinitionPageHeader: {
     'en-us': 'Missing form definition',
     'ru-ru': 'Отсутствует определение формы',
+    ca: 'Missing form definition',
   },
   missingFormDefinitionPageContent: {
     'en-us': `
       Specify was unable to find the form definition to display this resource`,
     'ru-ru': `
       Specify не удалось найти определение формы для отображения этого ресурса`,
+    ca: `
+      Specify was unable to find the form definition to display this resource`,
   },
   addingToRecordSet: {
     'en-us': 'Adding to Record Set and Database',
     'ru-ru': 'Добавление в набор записей и базу данных',
+    ca: 'Adding to Record Set and Database',
   },
   createRecordButtonDescription: {
     'en-us': 'Create record and add to Record Set',
     'ru-ru': 'Создать запись и добавить в Набор объектов',
+    ca: 'Create record and add to Record Set',
   },
   recordSetAreaDescription: {
     'en-us': (recordSetName: string): string => `Record Set: ${recordSetName}`,
     'ru-ru': (recordSetName: string): string =>
       `Набор объектов: ${recordSetName}`,
+    ca: (recordSetName: string): string => `Record Set: ${recordSetName}`,
   },
   previousRecord: {
     'en-us': 'Previous Record',
     'ru-ru': 'Предыдущий объект',
+    ca: 'Previous Record',
   },
   nextRecord: {
     'en-us': 'Next Record',
     'ru-ru': 'Следующий объект',
+    ca: 'Next Record',
   },
   currentPositionInTheRecordSet: {
     'en-us': 'Current Position in the Record Set',
     'ru-ru': 'Текущая позиция в наборе объектов',
+    ca: 'Current Position in the Record Set',
   },
   // Current index in the record set
   aOutOfB: {
@@ -480,23 +605,29 @@ const formsText = createDictionary({
       `${current} out of ${total}`,
     'ru-ru': (current: number, total: number): string =>
       `${current} из ${total}`,
+    ca: (current: number, total: number): string =>
+      `${current} out of ${total}`,
   },
   // SaveButton
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
     'ru-ru': 'Эта форма не была сохранена.',
+    ca: 'This form has not been saved.',
   },
   saveAndAddAnother: {
     'en-us': 'Save and Add Another',
     'ru-ru': 'Сохранить и добавить еще',
+    ca: 'Save and Add Another',
   },
   saveConflictDialogTitle: {
     'en-us': 'Save record',
     'ru-ru': 'Сохранить запись',
+    ca: 'Save record',
   },
   saveConflictDialogHeader: {
     'en-us': createHeader('Save conflict'),
     'ru-ru': createHeader('Сохранить конфликт'),
+    ca: createHeader('Save conflict'),
   },
   saveConflictDialogMessage: {
     'en-us': `
@@ -507,49 +638,63 @@ const formsText = createDictionary({
       Данные, отображаемые на этой странице, были изменены другим пользователем,
       или другоц вкладке браузера. Страницу необходимо перезагрузить
       чтобы предотвратить сохранение несогласованных данных.`,
+    ca: `
+      The data shown on this page has been changed by another user or in
+      another browser tab and is out of date. The page must be reloaded to
+      prevent inconsistent data from being saved.`,
   },
   saveBlockedDialogTitle: {
     'en-us': 'Save record',
     'ru-ru': 'Сохранить запись',
+    ca: 'Save record',
   },
   saveBlockedDialogHeader: {
     'en-us': createHeader('Save blocked'),
     'ru-ru': createHeader('Сохранение заблокировано'),
+    ca: createHeader('Save blocked'),
   },
   saveBlockedDialogMessage: {
     'en-us': 'Form cannot be saved while the following errors exist:',
     'ru-ru': 'Форма не может быть сохранена, пока существуют следующие ошибки:',
+    ca: 'Form cannot be saved while the following errors exist:',
   },
   // ShowTransCommand
   resolvedLoans: {
     'en-us': 'Resolved Loans',
     'ru-ru': 'Решение Заемы',
+    ca: 'Resolved Loans',
   },
   // Open is a noun
   openLoans: {
     'en-us': 'Open Loans',
     'ru-ru': 'Открытые займы',
+    ca: 'Open Loans',
   },
   gifts: {
     'en-us': 'Gifts',
     'ru-ru': 'Подарки',
+    ca: 'Gifts',
   },
   exchanges: {
     'en-us': 'Exchanges',
     'ru-ru': 'Обмены',
+    ca: 'Exchanges',
   },
   // SpecifyCommands
   unavailableCommandButton: {
     'en-us': 'Command N/A',
     'ru-ru': 'Команда недоступна',
+    ca: 'Command N/A',
   },
   unavailableCommandDialogTitle: {
     'en-us': 'Command Not Available',
     'ru-ru': 'Команда недоступна',
+    ca: 'Command Not Available',
   },
   unavailableCommandDialogHeader: {
     'en-us': createHeader('Command Not Available'),
     'ru-ru': createHeader('Команда недоступна'),
+    ca: createHeader('Command Not Available'),
   },
   unavailableCommandDialogMessage: {
     'en-us': `
@@ -560,23 +705,31 @@ const formsText = createDictionary({
       Эта команда в настоящее время недоступна для <i>Specify&nbsp7</i>
       Вероятно, она была включена на етой форме в <i>Specify&nbsp6</i> м
       может бить поддерживаним в будущем.`,
+    ca: `
+      This command is currently unavailable for <i>Specify&nbsp7</i>
+      It was probably included on this form from <i>Specify&nbsp6</i> and
+      may be supported in the future.`,
   },
   commandName: {
     'en-us': 'Command name:',
     'ru-ru': 'Имя команды:',
+    ca: 'Command name:',
   },
   // SpecifyPlugins
   unavailablePluginButton: {
     'en-us': 'Plugin N/A',
     'ru-ru': 'Плагин недоступен',
+    ca: 'Plugin N/A',
   },
   unavailablePluginDialogTitle: {
     'en-us': 'Plugin Not Available',
     'ru-ru': 'Плагин недоступен',
+    ca: 'Plugin Not Available',
   },
   unavailablePluginDialogHeader: {
     'en-us': createHeader('Plugin Not Available'),
     'ru-ru': createHeader('Плагин недоступен'),
+    ca: createHeader('Plugin Not Available'),
   },
   unavailablePluginDialogMessage: {
     'en-us': `
@@ -587,77 +740,99 @@ const formsText = createDictionary({
       Этот плагин в настоящее время недоступна для <i>Specify&nbsp7</i>
       Вероятно, он был включен на етой форме в <i>Specify&nbsp6</i> м
       может бить поддерживаним в будущем.`,
+    ca: `
+      This plugin is currently unavailable for <i>Specify&nbsp7</i>
+      It was probably included on this form from <i>Specify&nbsp6</i> and
+      may be supported in the future.`,
   },
   pluginName: {
     'en-us': 'Plugin name:',
     'ru-ru': 'Название плагина:',
+    ca: 'Plugin name:',
   },
   // SubViewHeader
   link: {
     'en-us': 'Link',
     'ru-ru': 'Ссылка',
+    ca: 'Link',
   },
   visit: {
     'en-us': 'Visit',
     'ru-ru': 'Открыть',
+    ca: 'Visit',
   },
   // UiParse
   illegalBool: {
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да / Нет',
+    ca: 'Illegal value for a Yes/No field',
   },
   requiredField: {
     'en-us': 'Field is required.',
     'ru-ru': 'Поле обязательно для заполнения.',
+    ca: 'Field is required.',
   },
   requiredFormat: {
     'en-us': (format: string) => `Required Format: ${format}.`,
     'ru-ru': (format: string) => `Обязательный формат: ${format}.`,
+    ca: (format: string) => `Required Format: ${format}.`,
   },
   noParser: {
     'en-us': (type: string) => `No parser for type ${type}`,
     'ru-ru': (type: string) => `Нет парсера для типа ${type}`,
+    ca: (type: string) => `No parser for type ${type}`,
   },
   inputTypeNumber: {
     'en-us': `Value must be a number`,
     'ru-ru': `Значение должно быть числом`,
+    ca: `Value must be a number`,
   },
   minimumLength: {
     'en-us': (number: number) =>
       `Minimum length for this field is ${number} characters`,
     'ru-ru': (number: number) =>
       `Минимальная длина этого поля ${number} символов`,
+    ca: (number: number) =>
+      `Minimum length for this field is ${number} characters`,
   },
   maximumLength: {
     'en-us': (number: number) =>
       `Value can not be longer than ${number} characters`,
     'ru-ru': (number: number) =>
       `Значение не может быть длиннее чем ${number} символов`,
+    ca: (number: number) =>
+      `Value can not be longer than ${number} characters`,
   },
   minimumNumber: {
     'en-us': (number: number) => `Number must be smaller than ${number}`,
     'ru-ru': (number: number) => `Число должно быть меньше ${number}`,
+    ca: (number: number) => `Number must be smaller than ${number}`,
   },
   maximumNumber: {
     'en-us': (number: number) => `Value must be greater than ${number}`,
     'ru-ru': (number: number) => `Число должно быть больше ${number}`,
+    ca: (number: number) => `Value must be greater than ${number}`,
   },
   wrongStep: {
     'en-us': (step: number) => `Value must be a multiple of ${step}`,
     'ru-ru': (step: number) => `Число должно быть кратным ${step}`,
+    ca: (step: number) => `Value must be a multiple of ${step}`,
   },
   // UserAgentsPlugin
   setAgents: {
     'en-us': 'Set Agents',
     'ru-ru': 'Подключить к агенту',
+    ca: 'Set Agents',
   },
   setAgentsDisabledButtonDescription: {
     'en-us': 'Save user before adding agents.',
     'ru-ru': 'Сохраните пользователя перед добавлением агентов.',
+    ca: 'Save user before adding agents.',
   },
   userAgentsPluginDialogTitle: {
     'en-us': 'Set User Agents',
     'ru-ru': 'Настроить пользовательских агентов',
+    ca: 'Set User Agents',
   },
 });
 
