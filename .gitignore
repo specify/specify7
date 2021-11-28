@@ -28,6 +28,7 @@ seed-database
 /specifyweb/frontend/js_src/bower_components
 /specifyweb/frontend/js_src/node_modules
 /specifyweb/frontend/js_src/testBuild
+/specifyweb/frontend/js_src/docs
 /specifyweb/frontend/templates/specify-built.html
 /local_specifyweb_apache.conf
 
