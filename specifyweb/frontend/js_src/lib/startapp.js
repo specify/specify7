@@ -73,9 +73,16 @@ module.exports = function appStart() {
   // start processing the urls to draw the corresponding views
   navigation.start({ pushState: true, root: '/specify/' });
 
-  $('body').delegate('a.intercept-navigation', 'click', function (evt) {
-    evt.preventDefault();
-    var href = $(evt.currentTarget).prop('href');
-    href && navigation.go(href);
+  $('body').delegate('a', 'click', function (event) {
+    if(
+      event.currentTarget.classList.contains('intercept-navigation')
+      || (
+        event.altKey && event.currentTarget.target === '_blank'
+      )
+    ){
+      event.preventDefault();
+      const href = $(event.currentTarget).prop('href');
+      href && navigation.go(href);
+    }
   });
 };

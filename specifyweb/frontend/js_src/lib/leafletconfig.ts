@@ -67,8 +67,8 @@ export const leafletTileServers: RR<
       'https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
       {
         attribution:
-          '<a target="_blank" href="https://www.geoportail.gouv.fr/"' +
-          ' target="_blank">Geoportail France</a>',
+          '<a target="_blank" href="https://www.geoportail.gouv.fr/">' +
+          'Geoportail France</a>',
         bounds: [
           [-75, -180],
           [81, 180],

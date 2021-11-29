@@ -2,15 +2,23 @@
   <h2><%= commonText('specifySeven') %></h2>
   <h3><%= welcomeText('fullAddress') %></h3>
   <address>
-    <p><a href="https://specifysoftware.org" target="_blank" rel="noopener">
+    <p><a href="https://specifysoftware.org" target="_blank">
       www.specifysoftware.org
+      <img
+        src="/static/img/new_tab.svg"
+        alt="${commonText('opensInNewTab')}"
+        class="new-tab-link-icon"
+      >
     </a></p>
     <p>
-      <a
-        href="mailto:support@specifysoftware.org"
-        target="_blank"
-        rel="noopener"
-      >support@specifysoftware.org</a>
+      <a href="mailto:support@specifysoftware.org" target="_blank">
+        support@specifysoftware.org
+        <img
+          src="/static/img/new_tab.svg"
+          alt="${commonText('opensInNewTab')}"
+          class="new-tab-link-icon"
+        >
+      </a>
     </p>
   </address>
   <p style="text-align: justify"><%= welcomeText('disclosure') %></p>
