@@ -185,3 +185,24 @@ input[type='password'],
 textarea {
     border: 1px solid #aaa;
 }
+
+/* Display tooltips as an overlay on touch-screen devices */
+@media (pointer: coarse), (hover: none) {
+  [title] {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  [title]:focus::after {
+    content: attr(title);
+    position: absolute;
+    top: 90%;
+    color: #000;
+    background-color: #fff;
+    border: var(--border-size) solid var(--border-size);
+    width: fit-content;
+    padding: var(--quarter-size);
+    font-size: calc(var(--half-size) * 1.5);
+  }
+}

@@ -142,6 +142,7 @@ module.exports = Backbone.View.extend({
 
             return `<li
                 title="${this.getDialogEntryTooltip(interactionEntry)}"
+                aria-label="${this.getDialogEntryTooltip(interactionEntry)}"
             >
                 <a
                     class="${className} fake-link"
