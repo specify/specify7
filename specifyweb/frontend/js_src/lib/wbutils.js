@@ -10,6 +10,7 @@ const {
   default: WbAdvancedSearch,
   getInitialSearchPreferences,
 } = require('./components/wbadvancedsearch');
+const {default: localityText} = require('./localization/locality');
 const wbText = require('./localization/workbench').default;
 const commonText = require('./localization/common').default;
 
@@ -672,7 +673,8 @@ module.exports = Backbone.View.extend({
             width: 100%;
             height: 100%;
             border: none;"
-        src="${getGeoLocateQueryURL(localityIndex)}"></iframe>`);
+        src="${getGeoLocateQueryURL(localityIndex)}"
+        title="${wbText('geoLocate')}"></iframe>`);
 
     const updateSelectedRow = (localityIndex) =>
       this.wbview.hot.selectRows(parseLocalityIndex(localityIndex).visualRow);

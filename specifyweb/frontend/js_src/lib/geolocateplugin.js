@@ -61,7 +61,11 @@ module.exports =  UIPlugin.extend({
         window.addEventListener('message', listener, false);
 
         this.geoLocateDialog = $('<div id="geolocate-dialog">')
-            .append($('<iframe>', {src: url, style: "width:908px; height:653px;"}))
+            .append($('<iframe>', {
+                src: url,
+                style: "width:908px; height:653px;",
+                title: localityText('geoLocate'),
+            }))
             .dialog({
                 width: 'auto',
                 resizable: false,
