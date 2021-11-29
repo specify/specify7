@@ -47,7 +47,7 @@ module.exports = UIPlugin.extend({
                 }
             });
         } else {
-            $('<div>').append(template(data)).dialog({
+            $('<div>').append(template({...data, title:formsText('paleoMap')})).dialog({
                 width: 800,
                 height: 600,
                 title: form,

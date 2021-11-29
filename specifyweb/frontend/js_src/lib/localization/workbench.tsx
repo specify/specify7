@@ -72,9 +72,9 @@ const wbText = createDictionary({
     ca: 'Revert',
   },
   geoLocate: {
-    'en-us': 'GeoLocate',
-    'ru-ru': 'GeoLocate',
-    ca: 'GeoLocate',
+    'en-us': 'GEoLocate',
+    'ru-ru': 'GEOLocate',
+    ca: 'GEOLocate',
   },
   dataMapper: {
     'en-us': 'Data Mapper',
