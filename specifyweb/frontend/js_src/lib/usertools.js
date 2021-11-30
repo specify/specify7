@@ -19,7 +19,7 @@ module.exports = Backbone.View.extend({
         },
         render: function() {
             this.el.innerHTML = `<ul style="padding: 0">
-                ${this.tools.map(this.makeItem).join('')}
+                ${this.tools.map((toolDef)=>this.makeItem(toolDef)).join('')}
                 ${this.makeItem({
                     task:'/accounts/logout',
                     title: commonText('logOut')
