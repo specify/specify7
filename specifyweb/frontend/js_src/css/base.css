@@ -186,6 +186,14 @@ textarea {
     border: 1px solid #aaa;
 }
 
+/* Hide up/down arrows */
+input[type="number"].no-arrows::-webkit-outer-spin-button,
+input[type="number"].no-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  appearance: none;
+}
+
 /* Display tooltips as an overlay on touch-screen devices */
 @media (pointer: coarse), (hover: none) {
   [title] {
