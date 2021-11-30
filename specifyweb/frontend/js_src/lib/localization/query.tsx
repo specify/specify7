@@ -49,11 +49,6 @@ const queryText = createDictionary({
     'ru-ru': 'Сохранить запрос как...',
     ca: 'Save query as...',
   },
-  savingQueryDialogTitle: {
-    'en-us': 'Save Query',
-    'ru-ru': 'Сохранить запрос',
-    ca: 'Save Query',
-  },
   saveQueryDialogHeader: {
     'en-us': createHeader('Save Query'),
     'ru-ru': createHeader('Сохранить запрос'),

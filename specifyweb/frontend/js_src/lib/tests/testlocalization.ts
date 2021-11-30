@@ -85,6 +85,8 @@ type Dictionary = IR<Key>;
       await Promise.all(
         localizationFiles.map<Promise<undefined | [string, Dictionary]>>(
           async (fileName) => {
+            if (!path.extname(fileName).includes('ts')) return undefined;
+
             const compiledFilePath = path.join(
               compiledLocalizationDirectory,
               fileName
