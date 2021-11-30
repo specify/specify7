@@ -980,6 +980,16 @@ const commonText = createDictionary({
     'ru-ru': 'Изменить язык',
     ca: 'Change Language',
   },
+  schemaConfig: {
+    'en-us': 'Schema Config',
+    'ru-ru': 'Конфигурация схемы',
+    ca: "Configuració d'esquema",
+  },
+  unsavedSchemaUnloadProtect: {
+    'en-us': 'Schema changes have not been saved',
+    'ru-ru': 'Изменения схемы не сохранены',
+    ca: "Els canvis d'esquema no s'han desat",
+  },
 });
 
 export default commonText;
