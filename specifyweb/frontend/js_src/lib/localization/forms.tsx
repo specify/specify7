@@ -584,9 +584,19 @@ const formsText = createDictionary({
       `Набор объектов: ${recordSetName}`,
     ca: (recordSetName: string): string => `Record Set: ${recordSetName}`,
   },
+  firstRecord: {
+    'en-us': 'First Record',
+    'ru-ru': 'Первый объект',
+    ca: 'Primer disc',
+  },
+  lastRecord: {
+    'en-us': 'Last Record',
+    'ru-ru': 'Последний объект',
+    ca: 'Últim disc',
+  },
   previousRecord: {
     'en-us': 'Previous Record',
-    'ru-ru': 'Предыдущий объект',
+    'ru-ru': 'Последняя запись',
     ca: 'Previous Record',
   },
   nextRecord: {
@@ -607,6 +617,11 @@ const formsText = createDictionary({
       `${current} из ${total}`,
     ca: (current: number, total: number): string =>
       `${current} out of ${total}`,
+  },
+  currentRecord: {
+    'en-us': (total: number): string => `Current object (out of ${total})`,
+    'ru-ru': (total: number): string => `Текущий объект (из ${total})`,
+    ca: (total: number): string => `L'objecte actual (de ${total})`,
   },
   // SaveButton
   unsavedFormUnloadProtect: {
@@ -800,8 +815,7 @@ const formsText = createDictionary({
       `Value can not be longer than ${number} characters`,
     'ru-ru': (number: number) =>
       `Значение не может быть длиннее чем ${number} символов`,
-    ca: (number: number) =>
-      `Value can not be longer than ${number} characters`,
+    ca: (number: number) => `Value can not be longer than ${number} characters`,
   },
   minimumNumber: {
     'en-us': (number: number) => `Number must be smaller than ${number}`,

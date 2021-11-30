@@ -1,6 +1,6 @@
 "use strict";
 
-require('../css/range.css');
+require('../css/recordselector.css');
 
 var $        = require('jquery');
 var _        = require('underscore');
@@ -84,40 +84,134 @@ const commonText = require('./localization/common').default;
 
     const Slider = Backbone.View.extend({
         __name__: "RecordSelectorSlider",
-        className: 'recordselector-slider custom',
-        tagName: 'input',
+        className: 'recordselector-slider',
+        tagName: 'div',
         events: {
-            'change': 'change',
+            'change': 'reportChange',
+            'input': 'resize',
+            'click button': 'handleClick',
         },
-        initialize: function({onChange: handleChange}) {
+        initialize({onChange: handleChange}) {
             this.handleChange = handleChange;
         },
-        render: function() {
-            this.el.type = 'range';
-            this.el.min = 1;
+        render() {
+            this.el.innerHTML = `
+                <button
+                    class="magic-button"
+                    data-action="first"
+                    aria-label="${formsText('firstRecord')}"
+                    title="${formsText('firstRecord')}"
+                    type="button"
+                    disabled
+                >≪</button>
+                <button
+                    class="magic-button"
+                    data-action="previous"
+                    aria-label="${formsText('previousRecord')}"
+                    title="${formsText('previousRecord')}"
+                    type="button"
+                    disabled
+                >&lt;</button>
+                <div class="input-panel">
+                    <label class="input-container">
+                        <span class="input-label sr-only"></span>
+                        <input type="number" class="no-arrows" min="1" step="1">
+                    </label>
+                    <span>/</span>
+                    <span class="max-indicator"></span>
+                </div>
+                <button
+                    class="magic-button"
+                    data-action="next"
+                    aria-label="${formsText('nextRecord')}"
+                    title="${formsText('nextRecord')}"
+                    type="button"
+                    disabled
+                >&gt;</button>
+                <button
+                    class="magic-button"
+                    data-action="last"
+                    aria-label="${formsText('lastRecord')}"
+                    title="${formsText('lastRecord')}"
+                    type="button"
+                    disabled
+                >≫</button>
+            `;
+
+            this.buttons = Object.fromEntries(
+                Array.from(
+                    this.el.getElementsByTagName('button'),
+                    (button)=>[button.getAttribute('data-action'), button]
+                )
+            );
+
+            this.inputContainer =
+                this.el.getElementsByClassName('input-container')[0];
+            this.inputLabel =
+              this.el.getElementsByClassName('input-label')[0];
+            this.input = this.el.getElementsByTagName('input')[0];
+            this.maxIndicator =
+                this.el.getElementsByClassName('max-indicator')[0];
             this.hide();
             return this;
         },
-        setMax: function(value) {
-            this.el.max = Math.max(0,value+1);
-            this.el.style.setProperty(
-                '--width',
-                `${Math.round(100/Math.max(1,value+1))}%`
-            );
+        setMax(value) {
+            this.input.max = Math.max(1,value + 1);
+            this.maxIndicator.textContent = this.input.max;
+            this.inputLabel.textContent =
+              formsText('currentRecord')(this.input.max);
         },
-        getOffset: function() {
-            return this.el.value-1;
+        getOffset() {
+            return this.input.value - 1;
         },
-        setOffset: function(value) {
-            this.el.value = value+1;
+        setOffset(value) {
+            this.input.value = value + 1;
+            this.afterValueChange();
         },
-        change: function() {
+        afterValueChange(){
+            this.resize();
+            this.validate();
+            this.updateButtons();
+        },
+        reportChange() {
+            this.afterValueChange();
             this.handleChange(this.getOffset());
         },
-        hide: function() {
+        resize(){
+            // This let's CSS resize the input to fit the value
+            this.inputContainer.setAttribute('data-value', this.input.value);
+        },
+        validate(){
+            const value = Number.parseInt(this.input.value) || 0;
+            if(value > this.input.max)
+                this.input.value = this.input.max;
+            if(value < this.input.min)
+                this.input.value = this.input.min;
+        },
+        updateButtons(){
+            const isFirst = this.input.value === this.input.min;
+            const isLast = this.input.value === this.input.max;
+            this.buttons['first'].disabled = isFirst;
+            this.buttons['previous'].disabled = isFirst;
+            this.buttons['next'].disabled = isLast;
+            this.buttons['last'].disabled = isLast;
+        },
+        handleClick({target}){
+            const action = target.getAttribute('data-action');
+            if(action === 'first')
+                this.input.value = 0;
+            else if(action === 'previous')
+                this.input.value -= 1;
+            else if(action === 'next')
+                this.input.value = Number.parseInt(this.input.value) + 1;
+            else if(action === 'last')
+                this.input.value = this.input.max;
+            this.reportChange();
+        },
+        hide() {
             this.$el.hide();
         },
-        show: function() {
+        show() {
             this.$el.show();
         },
     });
