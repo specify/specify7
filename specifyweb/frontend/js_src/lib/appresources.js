@@ -112,7 +112,13 @@ const ResourceDataView = Backbone.View.extend({
                 if (this.model.specifyModel.name === 'SpAppResource') {
                     $(`<label class="mimetype-input">
                         ${adminText('mimetype')}
-                        <input type="text" spellcheck="false"/>
+                        <input type="text" spellcheck="false" list="mimetypes"/>
+                        <datalist id="mimetypes">
+                            <option>application/json</option>
+                            <option>text/xml</option>
+                            <option>jrxml/label</option>
+                            <option>jrxml/report</option>
+                        </datalist>
                     <label>`).appendTo(this.el);
                     $('.mimetype-input input', this.el).val(this.model.get('mimetype'));
                 }
@@ -171,7 +177,7 @@ const ResourceDataView = Backbone.View.extend({
 
             this.$el.append(buttonsDiv);
             this.$el.append(`<div class="validation-results" style="display:none;">
-                ${adminText('resourceValidationFailed')}
+                <h3>${adminText('resourceValidationFailed')}</h3>
                 <div class="validation-results-content"></div>
             </div>`);
         });
