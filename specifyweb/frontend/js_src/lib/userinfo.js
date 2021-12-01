@@ -7,7 +7,7 @@ const $ = require('jquery');
 
     var userInfo = {};
     initialContext.load('user.json', function(data) {
-        if(typeof data.user === 'undefined'){
+        if(typeof data.agent === 'undefined'){
             const dialog = $(`<div>
                 ${commonText('noAgentDialogHeader')}
                 <p>${commonText('noAgentDialogMessage')}</p>
