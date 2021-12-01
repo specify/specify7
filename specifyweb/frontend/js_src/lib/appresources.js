@@ -241,9 +241,15 @@ const ResourceDataView = Backbone.View.extend({
         const resolvedMimeType = modeForResource(this.model);
         if(resolvedMimeType === 'ace/mode/xml'){
              const parsedXml = new DOMParser().parseFromString(value,'text/xml');
+
+             // Chrome, Safari
              const parseError = parsedXml.documentElement.getElementsByTagName('parsererror')[0];
              if(parseError)
-                 reject(parseError.innerHTML);
+                 reject(parseError.children[1].textContent);
+
+             // Firefox
+             else if (parsedXml.documentElement.tagName === 'parsererror')
+                 reject(parsedXml.documentElement.textContent);
         }
         if(resolvedMimeType === 'ace/mode/json')
             JSON.parse(value);
