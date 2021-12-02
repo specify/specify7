@@ -14,6 +14,12 @@ const commonText = createDictionary({
   collectionAccessDeniedDialogMessage: (collectionName: string) =>
     `The currently logged in account does not have access to the
     ${collectionName} collection.`,
+  noAgentDialogTitle: 'No Agent assigned',
+  noAgentDialogHeader: createHeader(
+    'Current user does not have an agent assigned'
+  ),
+  noAgentDialogMessage:
+    'Please log in as admin and assign an agent to this user',
 
   no: 'No',
   cancel: 'Cancel',
