@@ -34,9 +34,9 @@ module.exports = Backbone.View.extend({
         events: {'click a': 'selected'},
         render: function() {
             var render = this._render.bind(this);
-            if(typeof getFormsPromise === 'undefined')
-              render();
-            else {
+            if(getFormsPromise.isFulfilled()) {
+                this._render();
+            } else {
               const loadingDialog = $(
                   '<div><div class="progress-bar"></div></div>'
               ).dialog({
@@ -46,16 +46,13 @@ module.exports = Backbone.View.extend({
               });
               $('.progress-bar', loadingDialog).progressbar({ value: false });
               getFormsPromise.done(fetchedForms=>{
-                forms=fetchedForms;
-                getFormsPromise = undefined;
                 loadingDialog.dialog('destroy');
-                render();
+                this._render();
               });
             }
             return this;
         },
-        _render: function(forms) {
-            this.forms = forms;
+        _render: function() {
             var entries = _.map(views, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
@@ -78,9 +75,11 @@ module.exports = Backbone.View.extend({
         selected: function(evt) {
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
-            var form = this.forms[index];
-            var model = schema.getModel(form['class'].split('.').pop());
-            this.trigger('selected', model);
+            getFormsPromise.done(forms => {
+                var form = forms[index];
+                var model = schema.getModel(form['class'].split('.').pop());
+                this.trigger('selected', model);
+            });
         }
     });
 
