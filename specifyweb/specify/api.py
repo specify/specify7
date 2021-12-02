@@ -115,21 +115,7 @@ def resource_dispatch(request, model, id):
                             content_type='application/json')
 
     elif request.method == 'DELETE':
-        recordsetid = request.GET.get('recordsetid', None)
-
-        if recordsetid is None:
-            delete_resource(request.specify_user_agent, model, id, version)
-        else:
-            obj = get_object_or_404(model, id=int(id))
-            try:
-                delete_from_record_set(
-                    obj,
-                    version,
-                    recordsetid,
-                )
-            except (FilterError, OrderByError) as e:
-                return HttpResponseBadRequest(e)
-        resp = HttpResponse('', status=204)
+        delete_resource(request.specify_user_agent, model, id, version)
 
     else:
         # Unhandled request type.
@@ -260,11 +246,12 @@ def get_recordset_info(obj, recordsetid):
 
     return {
         'recordsetid': rsi.recordset_id,
+        'recordsetitemid': rsi.id,
         'total_count': rsis.count(),
         'index': prev_rsis.count(),
         'previous': prev,
         'next': next
-        }
+    }
 
 
 @transaction.atomic
@@ -575,31 +562,6 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
 
     for dep in dependents_to_delete:
       delete_obj(agent, dep, parent_obj=obj)
-
-
-@transaction.atomic
-def delete_from_record_set(obj, version, recordsetid):
-    """Remove a single record from the record set
-
-    obj - Object representing the item to remove from the record set
-    version - current version of the obj
-    recordsetid - ID of the record set to be affected
-    agent - Agent doing the action
-    """
-
-    try:
-        recordset = models.Recordset.objects.get(id=recordsetid)
-    except models.Recordset.DoesNotExist as e:
-        raise RecordSetException(e)
-
-    try:
-        record_set_item = recordset.recordsetitems.get(recordid=obj.id)
-    except:
-        raise RecordSetException("the object does not belong to the record set")
-
-    if version is not None:
-        bump_version(obj, version)
-    record_set_item.delete()
 
       
 @transaction.atomic

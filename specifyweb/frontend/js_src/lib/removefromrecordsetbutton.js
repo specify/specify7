@@ -12,9 +12,9 @@ module.exports = Backbone.View.extend({
   events: {
     click: 'click',
   },
-  initialize({ model, recordsetId }) {
+  initialize({ model, recordsetitemId }) {
     this.model = model;
-    this.recordsetId = recordsetId;
+    this.recordsetitemId = recordsetitemId;
 
     this.promptDialog = undefined;
 
@@ -61,7 +61,7 @@ module.exports = Backbone.View.extend({
     const resourceUrl = `${this.model.specifyModel.name.toLowerCase()}/${this.model.get(
       'id'
     )}`;
-    $.ajax(`/api/specify/${resourceUrl}/?recordsetid=${this.recordsetId}`, {
+    $.ajax(`/api/specify/recordsetitem/${this.recordsetitemId}/`, {
       type: 'DELETE',
     })
       .done(() => window.location.replace(`/specify/view/${resourceUrl}/`))

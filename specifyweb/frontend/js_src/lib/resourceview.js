@@ -77,7 +77,7 @@ const ResourceView = Backbone.View.extend({
             if(self.recordsetInfo)
                 self.removeFromRsBtn = new RemoveFromRecordSetButton({
                     model: self.model,
-                    recordsetId: self.recordsetInfo.recordsetid,
+                    recordsetitemId: self.recordsetInfo.recordsetitemid
                 });
         }
 
