@@ -50,6 +50,7 @@ module.exports = function(formNode) {
               setText('');
               return;
             }
+
             var control = $('#' + forId, form);
             var override = control.data('specify-field-label-override');
             if (override !== undefined) {
