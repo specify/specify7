@@ -15,33 +15,20 @@ module.exports =  Backbone.View.extend({
             this.resource = info.resource;
             this.resource.on('change:fieldname change:tablename change:type', this.render, this);
             const divisionQuery = new schema.models.Division.LazyCollection();
-            this.divisionsPromise = new Promise((resolve)=>
-                divisionQuery.fetch().then(()=>resolve(divisionQuery.models))
-            );
-            this.divisions = [];
-        },
-        getPickListFields: function() {
-            return this.divisions;
+            this.picklistItemsPromise = new Promise((resolve)=>
+                divisionQuery.fetch({limit:0}).done(()=>resolve(divisionQuery.models))
+            ).then((divisions) => divisions.map((division)=>({
+                value: division.get('id'),
+                title: division.get('name')
+            })));
         },
         render: function() {
-            if(typeof this.divisionsPromise === 'object'){
-                this.divisionsPromise.then((divisions)=>{
-                    this.divisions = divisions.map((division)=>({
-                        value: division.get('id'),
-                        title: division.get('name')
-                    }));
-                    this.divisionsPromise = undefined;
-                    this.render();
-                });
-                return this;
-            }
-
-            var options = this.getPickListFields().map(function(item) {
-                return $('<option>').attr('value', item.value).text(item.title)[0];
+            this.picklistItemsPromise.then(items => {
+                const options = items.map(item => $('<option>').attr('value', item.value).text(item.title));
+                this.$el.empty().append(options).prop('disabled', options.length < 1);
+                this.$el.val(this.resource.get('fieldname'));
+                this.set();
             });
-            this.$el.empty().append(options).prop('disabled', options.length < 1);
-            this.$el.val(this.resource.get('fieldname'));
-            this.set();
             return this;
         },
         set: function(event) {
