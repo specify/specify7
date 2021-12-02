@@ -72,7 +72,7 @@ module.exports = Backbone.View.extend({
               });
               $('.progress-bar', loadingDialog).progressbar({ value: false });
               getFormsPromise.done(fetchedForms=>{
-                forms=fetchedForms;
+                this.forms = fetchedForms;
                 getFormsPromise = undefined;
                 loadingDialog.dialog('destroy');
                 render();
@@ -80,8 +80,7 @@ module.exports = Backbone.View.extend({
             }
             return this;
         },
-        _render: function(forms) {
-            this.forms = forms;
+        _render: function() {
             var entries = _.map(interaction_entries, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
