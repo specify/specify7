@@ -8,6 +8,7 @@ const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
   __name__: 'RemoveFromRecordSetButton',
+  tagName: 'button',
   events: {
     click: 'click',
   },
@@ -15,7 +16,6 @@ module.exports = Backbone.View.extend({
     this.model = model;
     this.recordsetId = recordsetId;
 
-    this.buttonsDisabled = true;
     this.promptDialog = undefined;
 
     this.setButtonDisabled(false);
@@ -23,22 +23,19 @@ module.exports = Backbone.View.extend({
     this.model.on('saverequired', () => this.setButtonDisabled(true), this);
   },
   setButtonDisabled: function (disabled) {
-    this.buttonsDisabled = disabled;
-    this.buttons && this.buttons.prop('disabled', disabled);
+    this.el.disabled = disabled;
   },
   render() {
     this.el.classList.add('remove-from-data-set-button');
-    this.el.innerHTML = `
-      <a href="#" title="${formsText('removeFromRecordSetButtonDescription')}">
-        <span class="ui-icon ui-icon-trash">
-          ${formsText('removeFromRecordSetButtonDescription')}
-        </span>
-      </a>`;
-
+    this.el.type = 'button';
+    this.el.classList.add('fake-link');
+    this.el.title = formsText('removeFromRecordSetButtonDescription');
+    this.el.innerHTML = `<span class="ui-icon ui-icon-trash">
+      ${formsText('removeFromRecordSetButtonDescription')}
+    </span>`;
     return this;
   },
-  click(event) {
-    event.preventDefault();
+  click() {
     if (this.promptDialog) this.closeDialog();
     else
       this.promptDialog = $(`<div>
@@ -46,6 +43,7 @@ module.exports = Backbone.View.extend({
             <p>${formsText('removeRecordFromRecordSetDialogMessage')}</p>
       </div>`).dialog({
         title: formsText('removeRecordFromRecordSetDialogTitle'),
+        modal: true,
         buttons: [
           { text: commonText('close'), click: this.closeDialog.bind(this) },
           {

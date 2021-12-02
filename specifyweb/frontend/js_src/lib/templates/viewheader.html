@@ -18,7 +18,12 @@
           <span class="recordset-next recordset-navigation">&gt;</span>
       <% } %>
       <% if (newUrl) { %>
-        <a href="<%= newUrl %>" class="intercept-navigation recordset-new">+</a>
+        <a
+          href="<%= newUrl %>"
+          class="intercept-navigation recordset-new"
+          title="<%= formsText('addRecordToRecordSet') %>"
+          aria-label="<%= formsText('addRecordToRecordSet') %>"
+        >+</a>
       <% } %>
     <% } else if (recordsetName != null) { %>
       <span class="recordset-info">

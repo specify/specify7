@@ -69,7 +69,8 @@ div.specify-view-content {
     font-size: 0.8em;
 }
 
-.specify-form-header a {
+.specify-form-header a,
+.specify-form-header button {
     margin: 0 0.7rem;
 }
 
