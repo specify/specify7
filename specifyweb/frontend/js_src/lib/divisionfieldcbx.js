@@ -18,7 +18,7 @@ module.exports =  Backbone.View.extend({
             this.picklistItemsPromise = new Promise((resolve)=>
                 divisionQuery.fetch({limit:0}).done(()=>resolve(divisionQuery.models))
             ).then((divisions) => divisions.map((division)=>({
-                value: division.get('id'),
+                value: division.get('resource_uri'),
                 title: division.get('name')
             })));
         },
@@ -26,13 +26,13 @@ module.exports =  Backbone.View.extend({
             this.picklistItemsPromise.then(items => {
                 const options = items.map(item => $('<option>').attr('value', item.value).text(item.title));
                 this.$el.empty().append(options).prop('disabled', options.length < 1);
-                this.$el.val(this.resource.get('fieldname'));
+                this.$el.val(this.resource.get('division'));
                 this.set();
             });
             return this;
         },
         set: function(event) {
-            this.resource.set('fieldname', this.$el.val());
+            this.resource.set('division', this.$el.val());
         }
     });
 
