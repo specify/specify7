@@ -2,6 +2,7 @@ from uuid import uuid4
 from xml.etree import ElementTree
 from os.path import splitext
 import requests, time, hmac, json
+from urllib.parse import urlsplit, urlunsplit
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
@@ -127,7 +128,7 @@ def delete_attachment_file(attch_loc):
         'coll': get_collection(),
         'token': generate_token(get_timestamp(), attch_loc)
         }
-    r = requests.post(server_urls["delete"], data=data)
+    r = requests.post(resolve_url(server_urls["delete"]), data=data)
     update_time_delta(r)
     if r.status_code not in (200, 404):
         raise AttachmentError("Deletion failed: " + r.text)
@@ -151,6 +152,28 @@ def update_time_delta(response):
         return
     global server_time_delta
     server_time_delta = int(timestamp) - int(time.time())
+
+def resolve_url(url):
+    """Replaces the origin in the URL returned by the web asset server.
+
+    This is needed for dockerized back-end to be able to communicate to
+    the web asset server.
+
+    Params:
+        url: URL returned by the web asset server
+
+    Returns:
+        url, with origin replaced by the one from settings.WEB_ATTACHMENT_URL
+    """
+    back_end_url = urlsplit(settings.WEB_ATTACHMENT_URL)
+    source_url = urlsplit(url)
+    return urlunsplit((
+        back_end_url.scheme,
+        back_end_url.netloc,
+        source_url.path,
+        source_url.query,
+        source_url.fragment,
+    ))
 
 def init():
     global server_urls
@@ -180,7 +203,7 @@ def init():
 def test_key():
     random = str(uuid4())
     token = generate_token(get_timestamp(), random)
-    r = requests.get(server_urls["testkey"],
+    r = requests.get(resolve_url(server_urls["testkey"]),
                      params={'random': random, 'token': token})
 
     if r.status_code == 200:

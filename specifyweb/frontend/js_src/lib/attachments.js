@@ -57,6 +57,7 @@ var initialContext = require('./initialcontext.js');
             if (!_(thumbnailable).contains(mimetype)) {
                 var src = iconForMimeType(mimetype);
                 return $.when( $('<img>', {src: src, style: style}) );
+
             }
 
             var attachmentLocation = attachment.get('attachmentlocation');
