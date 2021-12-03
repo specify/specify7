@@ -47,7 +47,7 @@ schema: Dict = {
                 'toOne': { '$ref': '#/definitions/toOne' },
                 'toMany': {
                     'type': 'object',
-                    'desciption': 'Maps the names of -to-many relationships of the table to an array of upload definitions for each.',
+                    'description': 'Maps the names of -to-many relationships of the table to an array of upload definitions for each.',
                     'additionalProperties': { 'type': 'array', 'items': { '$ref': '#/definitions/toManyRecord' } }
                 }
             },

@@ -20,7 +20,8 @@ from specifyweb.specify.views import apply_access_control, login_maybe_required,
 from specifyweb.specify import models as specify_models
 from ..notifications.models import Message
 from . import models, tasks
-from .upload import upload as uploader, upload_plan_schema
+from .upload import upload as uploader, upload_plan_schema, upload_results_schema
+from specifyweb.context.views import json_schema_to_openapi
 
 logger = logging.getLogger(__name__)
 
@@ -37,80 +38,68 @@ def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
 
 open_api_components = {
     'schemas': {
+        **json_schema_to_openapi(upload_plan_schema.schema['definitions']),
+        **json_schema_to_openapi(upload_results_schema.schema['definitions']),
         'wb_uploadresult': {
-            "oneOf": [
-                {
-                    "type": "string",
-                    "example": "null"
+            "type": "object",
+            "nullable": True,
+            "properties": {
+                "success": {
+                    "type": "boolean",
                 },
-                {
-                    "type": "object",
-                    "properties": {
-                        "success": {
-                            "type": "boolean",
-                        },
-                        "timestamp": {
-                            "type": "string",
-                            "format": "datetime",
-                            "example": "2021-04-28T22:28:20.033117+00:00",
-                        }
-                    }
+                "timestamp": {
+                    "type": "string",
+                    "format": "datetime",
+                    "example": "2021-04-28T22:28:20.033117+00:00",
                 }
-            ]
+            }
         },
         "wb_uploaderstatus": {
-            "oneOf": [
-                {
-                    "type": "string",
-                    "example": "null",
-                    "description": "Nothing to report"
-                }, {
+            "type": "object",
+            "nullable": True,
+            "properties": {
+                "taskinfo": {
                     "type": "object",
                     "properties": {
-                        "taskinfo": {
-                            "type": "object",
-                            "properties": {
-                                "current": {
-                                    "type": "number",
-                                    "example": 4,
-                                },
-                                "total": {
-                                    "type": "number",
-                                    "example": 20,
-                                }
-                            }
+                        "current": {
+                            "type": "number",
+                            "example": 4,
                         },
-                        "taskstatus": {
+                        "total": {
+                            "type": "number",
+                            "example": 20,
+                        }
+                    }
+                },
+                "taskstatus": {
+                    "type": "string",
+                    "enum": [
+                        "PROGRESS",
+                        "PENDING",
+                        "FAILURE",
+                    ]
+                },
+                "uploaderstatus": {
+                    "type": "object",
+                    "properties": {
+                        "operation": {
                             "type": "string",
                             "enum": [
-                                "PROGRESS",
-                                "PENDING",
-                                "FAILURE",
+                                'validating',
+                                'uploading',
+                                'unuploading'
                             ]
                         },
-                        "uploaderstatus": {
-                            "type": "object",
-                            "properties": {
-                                "operation": {
-                                    "type": "string",
-                                    "enum": [
-                                        'validating',
-                                        'uploading',
-                                        'unuploading'
-                                    ]
-                                },
-                                "taskid": {
-                                    "type": "string",
-                                    "maxLength": 36,
-                                    "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
-                                }
-                            }
-                        },
-                    },
-                    "description": "Status of the " +
-                                   "upload / un-upload / validation process",
-                }
-            ]
+                        "taskid": {
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                        }
+                    }
+                },
+            },
+            "description": "Status of the " +
+                           "upload / un-upload / validation process",
         },
         "wb_rows": {
             "type": "array",
@@ -124,39 +113,15 @@ open_api_components = {
             "description": "2D array of values",
         },
         "wb_visualorder": {
-            "oneOf": [
-                {
-                    "type": "string",
-                    "description": "null",
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "type": "number",
-                    },
-                    "description": "The order to show columns in",
-                }
-            ]
-        },
-        "wb_uploadplan": {
-            "type": "object",
-            "properties": {
+            "type": "array",
+            "nullable": True,
+            "items": {
+                "type": "number",
             },
-            "description": "Upload Plan. Schema - " +
-               "https://github.com/specify/specify7/blob/5fb51a7d25d549248505aec141ae7f7cdc83e414/specifyweb/workbench/upload/upload_plan_schema.py#L14"
+            "description": "The order to show columns in",
         },
-        "wb_validation_results": {
-            "type": "object",
-            "properties": {},
-            "description": "Schema: " +
-               "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/validation_schema.py",
-        },
-        "wb_upload_results": {
-            "type": "object",
-            "properties": {},
-            "description": "Schema: " +
-               "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_results_schema.py",
-        }
+        "wb_uploadplan": json_schema_to_openapi(upload_plan_schema.schema),
+        "wb_upload_results": json_schema_to_openapi(upload_results_schema.schema),
     }
 }
 
@@ -366,6 +331,16 @@ def datasets(request) -> http.HttpResponse:
                                 },
                                 "remarks": {
                                     "type": "string",
+                                },
+                                "createdbyagent": {
+                                    "type": "string",
+                                    "nullable": True,
+                                    "example": "/api/specify/agent/1/",
+                                },
+                                "modifiedbyagent": {
+                                    "type": "string",
+                                    "nullable": True,
+                                    "example": "/api/specify/agent/1/",
                                 },
                                 "timestampcreated": {
                                     "type": "string",
@@ -847,8 +822,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
     results = json.loads(ds.rowresults)
 
     if settings.DEBUG:
-        from .upload.upload_results_schema import schema
-        validate(results, schema)
+        validate(results, upload_results_schema.schema)
     return http.JsonResponse(results, safe=False)
 
 @openapi(schema={
@@ -911,14 +885,10 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     'get': {
         "responses": {
             "200": {
-                "description": "Returns the upload plan schema, like defined here: " +
-                    "https://github.com/specify/specify7/blob/19ebde3d86ef4276799feb63acec275ebde9b2f4/specifyweb/workbench/upload/upload_plan_schema.py",
+                "description": "Upload plan schema",
                 "content": {
                     "text/plain": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {},
-                        }
+                        "schema": upload_plan_schema.schema,
                     }
                 }
             },

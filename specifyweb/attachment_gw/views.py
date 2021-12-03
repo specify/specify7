@@ -31,16 +31,33 @@ def get_collection():
             "200": {
                 "description": "Information required for interacting with the asset server.",
                 "content": {"application/json": {"schema": {
-                    'type': 'object',
-                    'nullable': True,
-                    'properties': {
-                        'collection': {'type': 'string', 'description': 'The collection name to use.'},
-                        'token_required_for_get': {'type': 'boolean', 'description': 'Whether a token is required for retrieving assets.'},
-                    },
-                    'additionalProperties': {'type': 'string', 'description': 'URL for accessing the asset server.'},
-                    'required': ['collection', 'token_required_for_get']
-                    }
+                    'oneOf': [
+                        {
+                            'type': 'object',
+                            'description': 'Asset server is not configured',
+                        },
+                        {
+                            'type': 'object',
+                            'properties': {
+                                'collection': {
+                                    'type': 'string',
+                                    'description': 'The collection name to use.'
+                                },
+                                'token_required_for_get': {
+                                    'type': 'boolean',
+                                    'description': 'Whether a token is required for retrieving assets.'
+                                },
+                                'additionalProperties': {
+                                    'type': 'string',
+                                    'description': 'URL for accessing the asset server.'
+                                },
+                            },
+                            'required': ['collection',
+                                         'token_required_for_get']
+                        },
+                    ],
                 }}},
+            },
         }
     }
 })

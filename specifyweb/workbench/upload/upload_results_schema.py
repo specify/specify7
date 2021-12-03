@@ -2,7 +2,7 @@
 
 schema = {
     'title': 'Specify 7 Workbench Upload Results',
-    'descriptions': 'Records results of uploading a data set.',
+    'description': 'Records results of uploading a data set.',
     "$schema": "http://json-schema.org/schema#",
 
     'type': 'array',
@@ -24,7 +24,7 @@ schema = {
                         },
                         'toMany': {
                             'type': 'object',
-                            'desciption': 'Maps the names of -to-many relationships of the table to an array of upload results for each.',
+                            'description': 'Maps the names of -to-many relationships of the table to an array of upload results for each.',
                             'additionalProperties': { 'type': 'array', 'items': { '$ref': '#/definitions/UploadResult' } }
                         }
                     },
@@ -52,7 +52,7 @@ schema = {
 
         'PropagatedFailure': {
             'type': 'object',
-            'desciption': 'Indicates failure due to a failure to upload a related record.',
+            'description': 'Indicates failure due to a failure to upload a related record.',
             'properties': {
                 'PropagatedFailure': {
                     'type': 'object',
@@ -65,7 +65,7 @@ schema = {
 
         'ParseFailures': {
             'type': 'object',
-            'desciption': 'Indicates one or more values were invalid, preventing a record from uploading.',
+            'description': 'Indicates one or more values were invalid, preventing a record from uploading.',
             'properties': {
                 'ParseFailures': {
                     'type': 'object',
@@ -91,7 +91,7 @@ schema = {
 
         'NoMatch': {
             'type': 'object',
-            'desciption': 'Indicates failure due to inability to find an expected existing matching record.',
+            'description': 'Indicates failure due to inability to find an expected existing matching record.',
             'properties': {
                 'NoMatch': {
                     'type': 'object',
@@ -108,7 +108,7 @@ schema = {
 
         'FailedBusinessRule': {
             'type': 'object',
-            'desciption': 'Indicates a record failed to upload due to a business rule violation.',
+            'description': 'Indicates a record failed to upload due to a business rule violation.',
             'properties': {
                 'FailedBusinessRule': {
                     'type': 'object',
@@ -126,7 +126,7 @@ schema = {
 
         'NullRecord': {
             'type': 'object',
-            'desciption': 'Indicates that no record was uploaded because all relevant columns in the data set are empty.',
+            'description': 'Indicates that no record was uploaded because all relevant columns in the data set are empty.',
             'properties': {
                 'NullRecord': {
                     'type': 'object',
@@ -143,7 +143,7 @@ schema = {
 
         'MatchedMultiple': {
             'type': 'object',
-            'desciption': 'Indicates failure due to finding multiple matches to existing records.',
+            'description': 'Indicates failure due to finding multiple matches to existing records.',
             'properties': {
                 'MatchedMultiple': {
                     'type': 'object',
@@ -162,7 +162,7 @@ schema = {
 
         'Matched': {
             'type': 'object',
-            'desciption': 'Indicates that an existing record in the database was matched.',
+            'description': 'Indicates that an existing record in the database was matched.',
             'properties': {
                 'Matched': {
                     'type': 'object',
@@ -180,7 +180,7 @@ schema = {
 
         'Uploaded': {
             'type': 'object',
-            'desciption': 'Indicates that a new row was added to the database.',
+            'description': 'Indicates that a new row was added to the database.',
             'properties': {
                 'Uploaded': {
                     'type': 'object',
@@ -188,7 +188,7 @@ schema = {
                         'id': { 'type': 'integer', 'description': 'The database id of the added row.' },
                         'picklistAdditions': {
                             'type': 'array',
-                            'items': { '$ref': '#definitions/PicklistAddition' }
+                            'items': { '$ref': '#/definitions/PicklistAddition' }
                         },
                         'info': { '$ref': '#/definitions/ReportInfo' },
                     },
@@ -202,7 +202,7 @@ schema = {
 
         'PicklistAddition': {
             'type': 'object',
-            'desciption': 'Indicates that a value had to be added to a picklist in the course of uploading a record.',
+            'description': 'Indicates that a value had to be added to a picklist in the course of uploading a record.',
             'properties': {
                 'id': { 'type': 'integer', 'description': 'The new picklistitem id.' },
                 'name': { 'type': 'string', 'description': 'The name of the picklist receiving the new item.' },
@@ -215,11 +215,11 @@ schema = {
 
         'ReportInfo': {
             'type': 'object',
-            'desciption': 'Records metadata about an UploadResult indicating the tables, data set columns, and any tree information involved.',
+            'description': 'Records metadata about an UploadResult indicating the tables, data set columns, and any tree information involved.',
             'properties': {
                 'tableName': { 'type': 'string', 'description': 'The name of the table a record relates to.' },
                 'columns': { 'type': 'array', 'description': 'The columns from the data set a record relates to.', 'items': { 'type': 'string' } },
-                'treeInfo': { 'oneOf': [ { '$ref': '#definitions/TreeInfo' }, { 'type': 'null' } ] }
+                'treeInfo': { 'oneOf': [ { '$ref': '#/definitions/TreeInfo' }, { 'type': 'null' } ] }
             },
             'required': ['tableName', 'columns', 'treeInfo'],
             'additionalProperties': False
@@ -227,7 +227,7 @@ schema = {
 
         'TreeInfo': {
             'type': 'object',
-            'desciption': 'If an UploadResult involves a tree record, this metadata indicates where in the tree the record resides.',
+            'description': 'If an UploadResult involves a tree record, this metadata indicates where in the tree the record resides.',
             'properties': {
                 'rank': { 'type': 'string', 'description': 'The tree rank a record relates to.' },
                 'name': { 'type': 'string', 'description': 'The name of the tree node a record relates to.' }
