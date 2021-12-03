@@ -22,6 +22,7 @@ var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
 var userInfo          = require('./userinfo.js');
 const queryText = require('./localization/query').default;
+const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
 var dataobjformat = dataobjformatters.format;
@@ -507,8 +508,8 @@ var QueryCbx = Backbone.View.extend({
         if (!related.isNew()) {
             $('<a>', { href: related.viewUrl() })
                 .addClass('intercept-navigation')
-                .append(`<span class="ui-icon ui-icon-link">${commonText('close')}</span>`)
-                .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
+                .append(`<span class="ui-icon ui-icon-link">${formsText('link')}</span>`)
+                .prependTo(this.dialog.closest('.ui-dialog').find('div.ui-dialog-titlebar'));
         }
     },
     dialogIsOpen(){
