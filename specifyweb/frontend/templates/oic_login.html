@@ -1,0 +1,27 @@
+{% load raven %}
+{% load script_manifest %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+{% if use_raven %}
+  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
+{% endif %}
+  <script src="{% script_src 'login.js' %}"></script>
+  <title>Log In | Specify 7</title>
+</head>
+
+<body>
+  <header></header>
+  <div id="content">
+    <form action="{{ app_path }}" method="post" id="login-form">
+      {% csrf_token %}
+      <div class="submit-row">
+        <input type="submit" value="Login With Github" />
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+
