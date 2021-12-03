@@ -1,30 +1,32 @@
 from django.conf.urls import include, url
-from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView
 
-from .specify.views import support_login, images, properties
-from .context.views import choose_collection
-
-from .specify import urls as api_urls
-from .frontend import urls as frontend_urls, doc_urls
-from .workbench import urls as wb_urls
-from .express_search import urls as es_urls
-from .context import urls as context_urls
-from .stored_queries import urls as query_urls
 from .attachment_gw import urls as attachment_urls
 from .barvis import urls as tt_urls
-from .report_runner import urls as report_urls
+from .context import urls as context_urls
+from .context.views import choose_collection
+from .export import urls as export_urls
+from .express_search import urls as es_urls
+from .frontend import urls as frontend_urls, doc_urls
+from .frontend.views import oic_login, oic_callback
 from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
-from .export import urls as export_urls
 from .permissions import urls as permissions_urls
 from .permissions.permissions import skip_collection_access_check
+from .report_runner import urls as report_urls
+from .specify import urls as api_urls
+from .specify.views import support_login, images, properties
+from .stored_queries import urls as query_urls
+from .workbench import urls as wb_urls
 
 urlpatterns = [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
-    url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html')),
+    url(r'^accounts/legacy_login/$', auth_views.LoginView.as_view(template_name='login.html')),
+    url(r'^accounts/login/$', oic_login),
+    url(r'^accounts/oic_callback/$', oic_callback),
     url(r'^accounts/logout/$', skip_collection_access_check(
         auth_views.LogoutView.as_view(next_page='/accounts/login/'))),
     url(r'^accounts/password_change/$', skip_collection_access_check(

@@ -73,3 +73,8 @@ DEPOSITORY_DIR = '/home/specify/specify_depository'
 NOTIFICATION_TTL_DAYS = 7
 
 DISABLE_AUDITING = False
+
+OAUTH_LOGIN_PROVIDERS = {
+    
+}
+

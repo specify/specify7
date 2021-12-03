@@ -135,6 +135,15 @@ class CollectionChoiceField(forms.ChoiceField):
 @never_cache
 def choose_collection(request):
     "The HTML page for choosing which collection to log into. Presented after the main auth page."
+    if 'external_user_id' in request.session:
+        request.specify_user.spuserexternalid_set.create(
+            provider=request.session['external_user_provider'],
+            providerid=request.session['external_user_id'],
+        )
+        del request.session['external_user_provider']
+        del request.session['external_user_id']
+        del request.session['external_user_name']
+
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = HttpResponseRedirect(
         redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
