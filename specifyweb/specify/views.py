@@ -130,39 +130,6 @@ def extract_pattern_from_request(request)->Tuple[str, Dict[str,str]]:
     return '/'+url, parameters
 
 
-def resolve_schema_references(open_api):
-    """Resolve the $ref objects in the OpenAPI schema.
-
-    Warning: this function uses a naїve string substitution approach, which
-    won't work for structures that have a circular reference wth themself.
-
-    Args:
-        open_api: OpenAPI Schema v3.0
-
-    Returns:
-        Resolved OpenAPI schema
-    """
-    open_api_string = json.dumps(open_api)
-    pattern = re.compile(r"{\"\$ref\": \"#\/components\/(\w+)\/(\w+)\"}")
-
-    for (component_group, component_name) in re.findall(pattern, open_api_string):
-        try:
-            component = open_api['components'][component_group][component_name]
-        except KeyError:
-            raise Exception(
-                f"Unable to find the definition for the '{component_group}/"
-                f"{component_name}' OpenAPI component"
-            )
-
-        open_api_string = open_api_string.replace(
-            f'{"{"}"$ref": "#/components/{component_group}/'
-            f'{component_name}"{"}"}',
-            json.dumps(component)
-        )
-
-    return json.loads(open_api_string)
-
-
 def validate_object(schema, components, content, mime_type):
     """Validate a response object or request body object.
 
@@ -178,18 +145,24 @@ def validate_object(schema, components, content, mime_type):
             The mime type of the content to validate
     """
     if mime_type == 'application/json':
-        resolved_schema = resolve_schema_references(dict(
-            schema=schema,
-            components=components
-        ))['schema']
-        json_schema = \
-            to_json_schema(resolved_schema)
 
         # Make sure the response is a valid JSON object
         json_content = json.loads(content)
 
+        # Convert OpenAPI to JSON schema
+        json_schema = to_json_schema({
+            'schema': schema,
+            'definitions': components
+        })
+
+        # Replace the prefix for references
+        resolved_schema = json.loads(
+            json.dumps(json_schema)
+                .replace('#/components/schemas/','#/definitions/')
+        )
+
         # Test the response against JSON schema
-        validate(json_content, json_schema)
+        validate(json_content, resolved_schema)
     else:
         # It doesn't yet validate non JSON responses
         pass
