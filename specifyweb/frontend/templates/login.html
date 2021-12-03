@@ -24,7 +24,14 @@
     </p>
     {% endfor %}
     {% endif %}
-
+    {% if request.session.external_user_provider %}
+    <p>
+      Hello, {{ request.session.external_user_name }}. There is currently
+      no Specify user associated with your Github account. If you have a Specify
+      user name and password, you can enter them below to associate that user
+      with your Github account for future logins.
+    </p>
+    {% endif %}
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
       <div class="form-row">
