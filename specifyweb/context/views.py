@@ -632,6 +632,95 @@ def endpoint_schema_to_json(endpoint_schema):
         for key, value in endpoint_schema.items()
     }
 
+def json_schema_to_openapi(value, path=None):
+    """Convert JSON Schema to OpenAPI 3.0.
+
+    Inspired by https://github.com/wework/json-schema-to-openapi-schema/blob/b33ca9b5e03fca2e960693c97079777ed2e4fe90/index.js
+
+    Params:
+        value: JSON Schema Dict
+        path:
+            List that represents path from the global scope to current key:value
+            pair
+    """
+
+    if not path:
+        path = []
+
+    keys_to_exclude = {'$schema', 'x-scope', 'definitions'}
+
+    type_name_map = {
+        bool: 'boolean',
+        int: 'integer',
+        float: 'number',
+    }
+
+    is_property = len(path) > 2 and path[-2] == 'properties'
+
+    is_type = path and path[-1] == 'type'
+
+    if is_type and type(value) is str:
+        value = [value]
+
+    if path and path[-1] == '$ref':
+        return value.replace('#/definitions/', '#/components/schemas/')
+    elif type(value) in [bool, int, float] and is_property:
+        return {
+            'type': type_name_map[type(value)],
+            # For humans
+            'description': str(value),
+            # For computers
+            'enum': [value],
+        }
+    elif type(value) is list:
+        mapped_list = [
+            json_schema_to_openapi(item, [*path, index])
+            for index,item in enumerate(value)
+            if not is_type or item != 'null'
+        ]
+
+        if path and path[-1] == 'items':
+            return {'oneOf': mapped_list}
+        else:
+            return mapped_list
+    elif type(value) is dict:
+        mapped_dict = {
+            key:json_schema_to_openapi(value, [*path, key])
+            for key,value in value.items()
+            if key not in keys_to_exclude
+        }
+
+        if 'additionalProperties' in mapped_dict and 'required' in mapped_dict:
+            if 'properties' not in mapped_dict:
+                mapped_dict['properties'] = {}
+            for required in mapped_dict['required']:
+                if required not in mapped_dict['properties']:
+                    mapped_dict['properties'][required] = \
+                        mapped_dict['additionalProperties']
+
+        if 'type' in mapped_dict:
+            if len(mapped_dict['type']) == 0:
+                del mapped_dict['type']
+            elif len(mapped_dict['type']) == 1:
+                    mapped_dict['type'] = mapped_dict['type'][0]
+            else:
+                raise Exception('OpenAPI 3.0 can\'t handle multiple types')
+
+            if value['type'] == 'null' or (
+                type(value['type']) is list
+                and 'null' in value['type']
+            ):
+                mapped_dict['nullable'] = True
+
+            if 'examples' in mapped_dict:
+                # Properties can only have a single example
+                mapped_dict['example'] = mapped_dict['examples'][0]
+                del mapped_dict['examples']
+
+        return mapped_dict
+    else:
+        return value
+
 
 def generate_openapi_for_endpoints(use_json_schema=False, all_endpoints=False):
     """Returns a JSON description of endpoints.
