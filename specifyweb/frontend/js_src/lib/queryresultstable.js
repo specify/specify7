@@ -37,7 +37,7 @@ async function getTreeRanks(tableName){
                         item.get('name')===fieldSpec.treeRank
                     )
                 )
-                .then(treeRank=>treeRank.get('title'))
+                .then(treeRank=>treeRank.get('title') ?? fieldSpec.treeRank)
               .then(title=>span.text(title));
 
         else if (fieldSpec.datePart && fieldSpec.datePart !== 'Full Date')
