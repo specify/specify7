@@ -1,0 +1,38 @@
+.schema-config header {
+  display: flex;
+  column-gap: var(--half-size);
+}
+
+.schema-config menu {
+  display: contents;
+  list-style: none;
+}
+
+.schema-config h2,
+.schema-config h3 {
+  margin: 0;
+}
+
+.schema-config {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--size);
+  height: 100%;
+}
+
+.schema-config section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--half-size);
+}
+
+.schema-config select {
+  height: 100%;
+}
+
+.schema-config section > div {
+  flex: 1;
+  display: flex;
+  column-gap: var(--half-size);
+}
