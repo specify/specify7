@@ -990,6 +990,52 @@ const commonText = createDictionary({
     'ru-ru': 'Изменения схемы не сохранены',
     ca: "Els canvis d'esquema no s'han desat",
   },
+  //FIXME: translate these
+  fields: {
+    'en-us': 'Fields',
+    'ru-ru': 'Поля',
+    ca: 'Camps',
+  },
+  caption: {
+    'en-us': 'Caption',
+    'ru-ru': 'Подпись',
+    ca: 'Subtítol',
+  },
+  hideTable: {
+    'en-us': 'Hide Table',
+    'ru-ru': 'Скрыть таблицу',
+    ca: 'Oculta la taula',
+  },
+  tableFormat: {
+    'en-us': 'Table Format',
+    'ru-ru': 'Формат таблицы',
+    ca: 'Format de taula',
+  },
+  tableAggregation: {
+    'en-us': 'Table Aggregation',
+    'ru-ru': '',
+    ca: '',
+  },
+  webLinks: {
+    'en-us': 'Web Links',
+    'ru-ru': 'Веб ссылки',
+    ca: 'Enllaços web',
+  },
+  type: {
+    'en-us': 'Type',
+    'ru-ru': 'Тип',
+    ca: 'Tipus',
+  },
+  length: {
+    'en-us': 'Length',
+    'ru-ru': 'Длина',
+    ca: 'Llargada',
+  },
+  fieldFormat: {
+    'en-us': 'Field Format',
+    'ru-ru': 'Формат поля',
+    ca: 'Format de camp',
+  },
 });
 
 export default commonText;
