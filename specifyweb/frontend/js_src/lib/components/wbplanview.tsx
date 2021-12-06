@@ -85,6 +85,10 @@ export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
 // Immutable Array
 export type RA<V> = readonly V[];
 
+// See: https://stackoverflow.com/a/30741722/8584605
+export const handlePromiseReject = (error: unknown)=>
+  setTimeout(()=>{ throw error; }, 0);
+
 export interface WbPlanViewProps
   extends WbPlanViewWrapperProps,
     PublicWbPlanViewProps {
