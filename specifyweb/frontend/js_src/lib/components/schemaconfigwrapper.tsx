@@ -1,18 +1,48 @@
+import '../../css/schemaconfig.css';
+
 import React from 'react';
 
 import commonText from '../localization/common';
 import navigation from '../navigation';
+import schema from '../schema';
+import { sortObjectsByKey } from '../schemaconfighelper';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
-import csrfToken from '../csrftoken';
+import { handlePromiseReject } from './wbplanview';
 
 type ConstructorProps = IR<never>;
 type Props = {
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
 };
+
+export type CommonTableFields = {
+  readonly timestampcreated: string;
+  readonly timestampmodified?: string;
+  readonly createdbyagent: string;
+  readonly modifiedbyagent?: string;
+  readonly version: string;
+  readonly resource_uri: string;
+};
+
+export type SpLocaleContainer = CommonTableFields & {
+  readonly id: number;
+  readonly aggregator?: string;
+  //readonly defaultui?: string;
+  readonly format?: string;
+  readonly ishidden: boolean;
+  readonly issystem: boolean;
+  // readonly isuiformatter: null;
+  readonly name: string;
+  readonly picklistname?: string;
+  // readonly schematype: 0 | 1;
+  readonly items: string;
+  // readonly descs: string;
+  // readonly names: string;
+};
+
 
 function SchemaConfigWrapper({
   removeUnloadProtect,
@@ -21,64 +51,76 @@ function SchemaConfigWrapper({
   const [languages, setLanguages] = React.useState<RA<string> | undefined>(
     undefined
   );
+  const [tables, setTables] = React.useState<RA<SpLocaleContainer> | undefined>(
+    undefined
+  );
 
   React.useEffect(() => {
-    fetch('http://localhost/stored_query/ephemeral/', {
-      headers: {
-        'x-csrftoken': csrfToken!,
-      },
-      body: JSON.stringify({
-        name: 'Schema Config Languages',
-        contextname: 'SpLocaleItemStr',
-        contexttableid: 500,
-        selectdistinct: true,
-        countonly: false,
-        formatauditrecids: false,
-        specifyuser: '/api/specify/specifyuser/1/',
-        isfavorite: true,
-        ordinal: 32_767,
-        fields: [
-          {
-            sorttype: 0,
-            isdisplay: true,
-            isnot: false,
-            startvalue: '',
-            query: '/api/specify/spquery/',
-            position: 0,
-            tablelist: '505',
-            stringid: '505.splocaleitemstr.language',
-            fieldname: 'language',
-            isrelfld: false,
-            operstart: 1,
-          },
-        ],
-        offset: 0,
-      }),
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'include',
-    })
-      .then<{ readonly results: RA<string> }>((response) => response.json())
-      .catch((error) => {
-        console.error(error);
-        return undefined;
+    const discipline = (
+      schema.domainLevelIds as unknown as { readonly discipline: number }
+    ).discipline;
+    fetch(
+      `/api/specify/splocalecontainer/?name=collectionobject&discipline_id=${discipline}&schematype=0`
+    )
+      .then<{ readonly objects: Readonly<[{ readonly id: number }]> }>(
+        async (response) => response.json()
+      )
+      .then(async ({ objects: [{ id }] }) =>
+        fetch(
+          `http://localhost/api/specify/splocaleitemstr/?containername=${id}&limit=0`
+        )
+      )
+      .then<{
+        readonly objects: RA<{
+          readonly country: string | null;
+          readonly language: string;
+        }>;
+      }>(async (response) => response.json())
+      .then(({ objects }) => {
+        if (destructorCalled) return;
+        const languages = objects.map(
+          ({ country, language }) =>
+            `${language}${country === null ? '' : `_${country}`}`
+        );
+        // Sometimes languages are duplicated. Need to make the list unique
+        setLanguages(Array.from(new Set(languages)));
       })
-      .then((data) => {
-        if (!destructorCalled) setLanguages(data?.results);
-      })
-      .catch(console.error);
+      .catch(handlePromiseReject);
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  });
+  }, []);
 
-  return typeof languages === 'undefined' ? (
+  React.useEffect(() => {
+    const discipline = (
+      schema.domainLevelIds as unknown as { readonly discipline: number }
+    ).discipline;
+
+    fetch(
+      `/api/specify/splocalecontainer/?limit=0&discipline_id=${discipline}&schematype=0`
+    )
+      .then<{ readonly objects: RA<SpLocaleContainer> }>((response) =>
+        response.json()
+      )
+      .then(({ objects }) => {
+        if (!destructorCalled) setTables(sortObjectsByKey(objects,'name'));
+      })
+      .catch(handlePromiseReject);
+
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, []);
+
+  return typeof languages === 'undefined' || typeof tables === 'undefined' ? (
     <LoadingScreen />
   ) : (
     <SchemaConfig
       languages={languages}
+      tables={tables}
       removeUnloadProtect={removeUnloadProtect}
       setUnloadProtect={setUnloadProtect}
     />
@@ -92,9 +134,10 @@ const removeUnloadProtect = (self: Props): void =>
   navigation.removeUnloadProtect(self);
 
 export default createBackboneView<ConstructorProps, Props, Props>({
-  moduleName: 'WbPlanView',
+  moduleName: 'SchemaConfig',
+  tagName: 'section',
   title: commonText('schemaConfig'),
-  className: 'wbplanview content-no-shadow',
+  className: 'schema-config content-no-shadow',
   remove(self) {
     removeUnloadProtect(self);
   },
