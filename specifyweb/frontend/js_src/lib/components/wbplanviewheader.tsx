@@ -37,15 +37,14 @@ export function Layout(props: {
       }
     >
       <header
-        className={`wbplanview-header wbplanview-header-${props.stateType}`}
+        className={`wbplanview-header-${props.stateType}`}
       >
-        <div role="toolbar" className="wbplanview-ds-name-container">
-          <h2 className="wbplanview-ds-name v-center" id={id('name')}>
-            {props.title}
-          </h2>
+        <h2 className="wbplanview-ds-name v-center" id={id('name')}>
+          {props.title}
+        </h2>
+        <div role="toolbar" className="contents">
           {props.buttonsLeft}
-        </div>
-        <div role="toolbar" className="wbplanview-header-controls">
+          <span className="spacer" />
           {props.buttonsRight}
         </div>
       </header>
