@@ -1,5 +1,6 @@
 import type { IR, RA } from './components/wbplanview';
 import initialContext from './initialcontext.js';
+import commonText from './localization/common';
 
 export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 
@@ -24,8 +25,8 @@ export type UserInfo = Readonly<UserInfoWritable>;
 const userInfo: UserInfoWritable = {} as UserInfoWritable;
 
 initialContext.load('user.json', (data: UserInfo) => {
-  if(data.agent == null){
-    const dialog = $(`<div>
+  if(data.agent === null){
+    const dialog: JQuery<HTMLElement> = $(`<div>
       ${commonText('noAgentDialogHeader')}
       <p>${commonText('noAgentDialogMessage')}</p>
     </div>`).dialog({

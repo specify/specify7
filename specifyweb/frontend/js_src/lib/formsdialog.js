@@ -16,7 +16,6 @@ const formsText = require('./localization/forms').default;
 
     // I don't think the non-sidebar items are ever used in Sp6.
     let views;
-    let forms;
     let getFormsPromise;
     initialContext.load(
         'app.resource?name=DataEntryTaskInit',
@@ -34,30 +33,27 @@ module.exports = Backbone.View.extend({
         className: "forms-dialog",
         events: {'click a': 'handleClick'},
         render: function() {
-            var render = this._render.bind(this);
-            if(getFormsPromise.isFulfilled()) {
-                this._render();
-            } else {
-              const loadingDialog = $(
-                  '<div><div class="progress-bar"></div></div>'
-              ).dialog({
-                  title: commonText('loading'),
-                  modal: true,
-                  dialogClass: 'ui-dialog-no-close',
-              });
-              $('.progress-bar', loadingDialog).progressbar({ value: false });
-              getFormsPromise.done(fetchedForms=>{
-                loadingDialog.dialog('destroy');
-                this._render();
-              });
+            let loadingDialog = undefined;
+            if(!getFormsPromise.isFulfilled()){
+                loadingDialog = $(
+                    '<div><div class="progress-bar"></div></div>'
+                ).dialog({
+                    title: commonText('loading'),
+                    modal: true,
+                    dialogClass: 'ui-dialog-no-close',
+                });
+                $('.progress-bar', loadingDialog).progressbar({value: false});
             }
+            getFormsPromise.done(fetchedForms=>{
+                loadingDialog?.dialog('destroy');
+                this._render(fetchedForms);
+            });
             return this;
         },
         _render: function(forms) {
-            this.forms = forms;
             $('<ul>')
                 .css('padding',0)
-                .append(views.map((view,index)=>this.dialogEntry(view, index)))
+                .append(views.map((view,index)=>this.dialogEntry(forms, view, index)))
             .appendTo(this.el);
             this.$el.dialog({
                 title: formsText('formsDialogTitle'),
@@ -69,10 +65,9 @@ module.exports = Backbone.View.extend({
                   click: function() { $(this).dialog('close'); }
                 }]
             });
-            return this;
         },
-        dialogEntry: function(view,index) {
-            const form = this.forms[index];
+        dialogEntry: function(forms, view,index) {
+            const form = forms[index];
             const modelName = form['class'].split('.').pop();
             const model = schema.getModel(modelName);
             return $('<li>').append(

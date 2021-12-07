@@ -44,7 +44,11 @@
   background: var(--accent-pale);
   color: var(--b1);
   padding: var(--quarter-size);
-  font-weight: bold;
+  font-weight: 800;
+}
+
+.query-results-table [role="columnheader"] .v-center {
+  column-gap: var(--quarter-size);
 }
 
 .query-results [role="cell"] {

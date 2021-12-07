@@ -173,7 +173,7 @@ module.exports =  Backbone.View.extend({
                                 item.get('name')===this.fieldSpec.treeRank
                             )
                         )
-                        .then(treeRank=>treeRank.get('title'))
+                        .then(treeRank=>treeRank.get('title') ?? treeRank.get('name'))
                         .then(title=>
                             $('<a class="field-label-treerank">')
                                 .text(title)
