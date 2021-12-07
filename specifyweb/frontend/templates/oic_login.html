@@ -17,8 +17,13 @@
   <div id="content">
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
+      <select name="provider">
+        {% for p in providers %}
+        <option value="{{ p.provider }}">{{ p.title }}</option>
+        {% endfor %}
+      </select>
       <div class="submit-row">
-        <input type="submit" value="Login With Github" />
+        <input type="submit" value="Login" />
       </div>
     </form>
   </div>
