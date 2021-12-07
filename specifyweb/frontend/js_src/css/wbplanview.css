@@ -17,9 +17,8 @@
 }
 
 /* HEADER */
-.wbplanview header {
+.wbplanview .wbplanview-header {
   display: flex;
-  justify-content: space-between;
   column-gap: var(--half-size);
   white-space: nowrap;
 }

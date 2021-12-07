@@ -37,7 +37,7 @@ export function Layout(props: {
       }
     >
       <header
-        className={`wbplanview-header-${props.stateType}`}
+        className={`wbplanview-header wbplanview-header-${props.stateType}`}
       >
         <h2 className="wbplanview-ds-name v-center" id={id('name')}>
           {props.title}

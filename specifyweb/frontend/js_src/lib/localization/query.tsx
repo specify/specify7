@@ -279,17 +279,7 @@ const queryText = createDictionary({
   treeRanks: {
     'en-us': 'Tree Ranks',
     'ru-ru': 'Ранги на дереве',
-    ca: 'Ranks d\'arbres',
-  },
-  month: {
-    'en-us': 'Month',
-    'ru-ru': 'Месяц',
-    ca: 'Mes',
-  },
-  day: {
-    'en-us': 'Day',
-    'ru-ru': 'День',
-    ca: 'Dia',
+    ca: "Ranks d'arbres",
   },
   extract: {
     'en-us': 'Extract...',

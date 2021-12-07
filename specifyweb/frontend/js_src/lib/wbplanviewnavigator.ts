@@ -334,7 +334,7 @@ function callNavigatorInstanceCallbacks<RETURN_STRUCTURE>(
   else callbacks.handleSimpleFields(callbackPayload);
 }
 
-/* Called by navigator if callback.iterate returned true */
+/* Called by navigator if callback.iterate() returned true */
 function navigatorInstance<RETURN_STRUCTURE>({
   tableName,
   parentTableName = '',
@@ -464,15 +464,15 @@ export function getMappingLineData({
   readonly generateLastRelationshipData?: boolean;
   readonly customSelectType?: CustomSelectType;
   readonly showHiddenFields?: boolean;
-  readonly handleChange?: (
-    index: number,
-    close: boolean,
-    newValue: string,
-    isRelationship: boolean,
-    currentTable: string,
-    newTable: string,
-    isDoubleClick: boolean
-  ) => void;
+  readonly handleChange?: (payload: {
+    readonly index: number;
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
   readonly handleOpen?: (index: number) => void;
   readonly handleClose?: () => void;
   readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
@@ -626,7 +626,7 @@ export function getMappingLineData({
         internalState.mappedFields
       );
 
-      for (let index = 1; index <= maxMappedElementNumber; index++) {
+      for (let index = 1; index <= maxMappedElementNumber; index += 1) {
         const mappedObjectName = formatReferenceItem(index);
 
         internalState.resultFields[mappedObjectName] = {
@@ -754,34 +754,35 @@ export function getMappingLineData({
           )
       )),
 
-    getInstanceData: ({ tableName }) => ({
-      customSelectType: internalState.customSelectType,
-      customSelectSubtype: internalState.customSelectSubtype,
-      selectLabel: dataModelStorage.tables[tableName].label,
-      fieldsData: internalState.resultFields,
-      tableName,
-      ...(Boolean(internalState.isOpen)
-        ? {
-            isOpen: true,
-            handleChange: handleChange?.bind(
-              undefined,
-              internalState.mappingPathPosition + 1
-            ),
-            handleClose: handleClose?.bind(
-              undefined,
-              internalState.mappingPathPosition + 1
-            ),
-            automapperSuggestions,
-            handleAutomapperSuggestionSelection,
-          }
-        : {
-            isOpen: false,
-            handleOpen: handleOpen?.bind(
-              undefined,
-              internalState.mappingPathPosition + 1
-            ),
-          }),
-    }),
+    getInstanceData({ tableName }) {
+      const mappingPathPosition = internalState.mappingPathPosition + 1;
+      return {
+        customSelectType: internalState.customSelectType,
+        customSelectSubtype: internalState.customSelectSubtype,
+        selectLabel: dataModelStorage.tables[tableName].label,
+        fieldsData: internalState.resultFields,
+        tableName,
+        ...(Boolean(internalState.isOpen)
+          ? {
+              isOpen: true,
+              handleChange:
+                typeof handleChange === 'function'
+                  ? (payload): void =>
+                      handleChange({
+                        index: mappingPathPosition,
+                        ...payload,
+                      })
+                  : undefined,
+              handleClose: handleClose?.bind(undefined, mappingPathPosition),
+              automapperSuggestions,
+              handleAutomapperSuggestionSelection,
+            }
+          : {
+              isOpen: false,
+              handleOpen: handleOpen?.bind(undefined, mappingPathPosition),
+            }),
+      };
+    },
 
     commitInstanceData({ data }) {
       if (typeof data === 'undefined')

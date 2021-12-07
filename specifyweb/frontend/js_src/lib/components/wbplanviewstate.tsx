@@ -459,24 +459,18 @@ export const stateReducer = generateReducer<
             })
           }
           handleClose={handleClose}
-          handleChange={(
-            line: 'mappingView' | number,
-            index: number,
-            close: boolean,
-            value: string,
-            isRelationship: boolean,
-            currentTableName: string,
-            newTableName: string
-          ): void =>
+          handleChange={(payload: {
+            readonly line: 'mappingView' | number;
+            readonly index: number;
+            readonly close: boolean;
+            readonly newValue: string;
+            readonly isRelationship: boolean;
+            readonly currentTableName: string;
+            readonly newTableName: string;
+          }): void =>
             state.dispatch({
               type: 'ChangeSelectElementValueAction',
-              line,
-              index,
-              value,
-              isRelationship,
-              currentTableName,
-              newTableName,
-              close,
+              ...payload,
             })
           }
           handleClearMapping={(line: number): void =>

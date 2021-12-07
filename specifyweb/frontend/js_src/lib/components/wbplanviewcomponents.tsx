@@ -87,7 +87,7 @@ export function ListOfBaseTables({
   return (
     <MappingElement
       isOpen={true}
-      handleChange={(_close, value): void => handleChange(value)}
+      handleChange={({ newValue }): void => handleChange(newValue)}
       fieldsData={fieldsData}
       customSelectType="BASE_TABLE_SELECTION_LIST"
       customSelectSubtype="simple"
@@ -219,7 +219,10 @@ export function MappingLineComponent({
           ⌦
         </button>
       </div>
-      <div className="v-center wbplanview-mapping-line-header" id={id('header')}>
+      <div
+        className="v-center wbplanview-mapping-line-header"
+        id={id('header')}
+      >
         {headerName}
       </div>
       <div
