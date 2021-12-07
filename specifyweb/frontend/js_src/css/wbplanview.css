@@ -44,6 +44,10 @@
   color: var(--t1);
 }
 
+.wbplanview-ds-name {
+  column-gap: var(--quarter-size);
+}
+
 .wbplanview-header-controls {
   flex-shrink: 0;
 }

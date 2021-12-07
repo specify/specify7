@@ -17,7 +17,7 @@ var reports           = require('./reports.js');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
-    var interaction_entries, views, actions, forms, getFormsPromise;
+    var interaction_entries, views, actions, getFormsPromise;
 
     initialContext.load('app.resource?name=InteractionsTaskInit', function (data) {
         interaction_entries = _.map($('entry', data), $)
@@ -59,34 +59,32 @@ module.exports = Backbone.View.extend({
             'click a.interaction-action': 'interactionActionClick'
         },
         render: function() {
-            if(getFormsPromise.isFulfilled()) {
-                this._render();
-            } else {
-                const loadingDialog = $(
+            let loadingDialog = undefined;
+            if(!getFormsPromise.isFulfilled()){
+                loadingDialog = $(
                     '<div><div class="progress-bar"></div></div>'
                 ).dialog({
                     title: commonText('loading'),
                     modal: true,
                     dialogClass: 'ui-dialog-no-close',
                 });
-                $('.progress-bar', loadingDialog).progressbar({ value: false });
-                getFormsPromise.done(fetchedForms=>{
-                  loadingDialog.dialog('destroy');
-                  this._render();
-              });
+                $('.progress-bar', loadingDialog).progressbar({value: false});
             }
+            getFormsPromise.done(fetchedForms=>{
+                loadingDialog?.dialog('destroy');
+                this._render(fetchedForms);
+            });
             return this;
         },
         _render: function(forms) {
             if(typeof this.options.action === 'undefined'){
-                this.forms = forms;
                 let formIndex = -1;
                 this.el.innerHTML = `<ul style="padding: 0">
                     ${interaction_entries
                         .map((entry)=>{
                             if(!isActionEntry(entry))
                               formIndex+=1;
-                            return this.dialogEntry(entry, formIndex);
+                            return this.dialogEntry(forms, entry, formIndex);
                         })
                         .join('')}
                 </ul>`;
@@ -124,7 +122,7 @@ module.exports = Backbone.View.extend({
                 return s.localizeFrom('resources', ttResourceKey) || '';
             return '';
         },
-        dialogEntry: function(interactionEntry, formIndex) {
+        dialogEntry: function(forms, interactionEntry, formIndex) {
             let className = 'interaction-action';
             let href='';
 
@@ -133,7 +131,7 @@ module.exports = Backbone.View.extend({
                 href = `/specify/task/interactions/${action}`;
             }
             else {
-              const form = this.forms[formIndex];
+              const form = forms[formIndex];
               const model = schema.getModel(form['class'].split('.').pop());
 
               href = new model.Resource().viewUrl();

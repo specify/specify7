@@ -23,13 +23,16 @@ async function getTreeRanks(tableName){
         const icon = field && field.model.getIcon();
         let name = field?.getLocalizedName();
 
-        const th = $(`<div role="columnheader" scope="col">i
-          <div class="v-center"></div>
+        const th = $(`<div role="columnheader" scope="col">
+          <div class="v-center">
+              <span class="v-center"></span>
+          </div>
         </div>`);
         const div = th.find('div');
+        const span = div.find('span');
 
         // If it is a tree rank, display rank name while fetching rank title
-        div.text(name ?? fieldSpec.treeRank);
+        span.text(name ?? fieldSpec.treeRank);
 
         if(fieldSpec.treeRank)
             getTreeRanks(fieldSpec.table.name)
@@ -39,15 +42,15 @@ async function getTreeRanks(tableName){
                     )
                 )
                 .then(treeRank=>treeRank.get('title') ?? fieldSpec.treeRank)
-              .then(title=>div.text(title));
+              .then(title=>span.text(title));
 
         else if (fieldSpec.datePart && fieldSpec.datePart !== 'fullDate')
-            div.text(`${name} (${fieldSpec.datePart})`);
+            span.text(`${name} (${fieldSpec.datePart})`);
 
-        icon && th.prepend($('<img>', {
+        icon && div.prepend($('<img>', {
             src: icon,
             alt: ''
-        }).css('width':'var(--table-icon-size)'));
+        }).css('width','var(--table-icon-size)'));
         return th;
     }
 
@@ -71,11 +74,7 @@ async function getTreeRanks(tableName){
                     ? ''
                     : `<div class="grid-table" role="table">
                           <div role="rowgroup">
-                              <div role="row">
-                                  ${this.fieldSpecs
-                                      .map(renderHeader)
-                                      .join('')}
-                              </div>
+                              <div role="row" id="header-container"></div>
                           </div>
                           <div role="rowgroup" class="query-results"></div>
                     </div>`
@@ -86,6 +85,11 @@ async function getTreeRanks(tableName){
                           alt="${commonText('loading')}"
                       >
                 </div>`;
+
+            this.$('#header-container').append(
+                this.fieldSpecs.map(renderHeader)
+            );
+
             this.el.setAttribute('aria-live','polite');
 
             this.fetchCount && this.fetchCount.done(this.setCount.bind(this));

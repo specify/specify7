@@ -10,6 +10,8 @@ const adminText = createDictionary({
   },
   canNotRemoveYourself: {
     'en-us': 'You can not revoke your own admin status',
+    'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
+    ca: 'No podeu revocar el vostre estat d\'administrador',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -143,6 +145,8 @@ const adminText = createDictionary({
   },
   notAvailableOnAdmins: {
     'en-us': 'This option is unavailable for admin users',
+    'ru-ru': 'Эта опция недоступна для администраторов.',
+    ca: 'Aquesta opció no està disponible per als usuaris administradors',
   },
   userCollectionsPluginDialogTitle: {
     'en-us': 'Select user collection access',

@@ -961,6 +961,16 @@ const wbText = createDictionary({
     ca: (tableName: string): string =>
       `Relationship with the ${tableName} table`,
   },
+  relationshipInline: {
+    'en-us': 'Relationship',
+    'ru-ru': 'Связь',
+    ca: 'Relació',
+  },
+  selected: {
+    'en-us': 'Selected',
+    'ru-ru': 'Выбрано',
+    ca: 'Seleccionat',
+  },
   selectBaseTableDialogTitle: {
     'en-us': 'Select a Base Table',
     'ru-ru': 'Выберите базовую таблицу',

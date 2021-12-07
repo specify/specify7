@@ -38,14 +38,25 @@ const commonText = createDictionary({
   },
   noAgentDialogTitle: {
     'en-us': 'No Agent assigned',
+    'ru-ru': 'Агент не назначен',
+    ca: 'No s\'ha assignat cap agent',
   },
   noAgentDialogHeader: {
     'en-us': createHeader(
       'Current user does not have an agent assigned'
     ),
+    'ru-ru': createHeader(
+      'Текущему пользователю не назначен агент'
+    ),
+    ca: createHeader(
+      'L\'usuari actual no té cap agent assignat'
+    ),
   },
   noAgentDialogMessage: {
     'en-us': 'Please log in as admin and assign an agent to this user',
+    'ru-ru':
+      'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
+    ca: 'Inicieu sessió com a administrador i assigneu un agent a aquest usuari',
   },
   no: {
     'en-us': 'No',
@@ -254,6 +265,8 @@ const commonText = createDictionary({
   },
   query: {
     'en-us': 'Query',
+    'ru-ru': 'Запрос',
+    ca: 'Consulta',
   },
   unmapped: {
     'en-us': 'Unmapped',
@@ -614,11 +627,6 @@ const commonText = createDictionary({
     'en-us': 'Manage Users',
     'ru-ru': 'Управление пользователями',
     ca: 'Manage Users',
-  },
-  query: {
-    'en-us': 'Query',
-    'ru-ru': 'Запрос',
-    ca: 'Query',
   },
   workbench: {
     'en-us': 'WorkBench',

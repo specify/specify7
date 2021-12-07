@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var UIPlugin = require('./uiplugin.js');
 
-const userInfo = require('./userinfo.js');
+const userInfo = require('./userinfo').default;
 const adminText = require('./localization/admin').default;
 
 

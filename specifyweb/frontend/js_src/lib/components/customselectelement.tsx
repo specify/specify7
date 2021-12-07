@@ -229,7 +229,7 @@ function Option({
 
   const fullTitle = [
     title ?? optionLabel,
-    isRelationship ? `(${wbText('relationship')})` : '',
+    isRelationship ? `(${wbText('relationshipInline')})` : '',
     isDefault ? `(${wbText('selected')})` : '',
   ]
     .filter((part) => part)
@@ -243,7 +243,11 @@ function Option({
       title={fullTitle === optionLabel ? tableLabel : fullTitle}
       aria-label={fullTitle}
       tabIndex={-1}
-      onClick={handleClick}
+      onClick={
+        typeof handleClick === 'function'
+          ? (event): void => handleClick(event.detail > 1)
+          : undefined
+      }
       aria-selected={isDefault}
       role="option"
       aria-disabled={!isEnabled}
@@ -400,29 +404,10 @@ export function CustomSelectElement({
       }))
   );
 
-<<<<<<< HEAD
-  const handleClick =
-    optionIsIntractable &&
-    ((
-      newValue: string,
-      isRelationship: boolean,
-      newTable: string,
-      isDoubleClick: boolean
-    ) =>
-      (isDoubleClick || newValue !== defaultOption.optionName) &&
-      handleChange?.(
-        newValue,
-        isRelationship,
-        defaultOption.tableName ?? '',
-        newTable,
-        isDoubleClick
-      ));
-=======
   const defaultOption =
     previewOption ??
     inlineOptions.find(({ isDefault }) => isDefault) ??
     defaultDefaultOption;
->>>>>>> 5ea0873e (Add keyboard navigation to WbPlanView + refactor code)
 
   const showUnmapOption =
     isOpen &&
@@ -437,17 +422,20 @@ export function CustomSelectElement({
         close: boolean,
         newValue: string,
         isRelationship: boolean,
-        newTable: string
+        newTable: string,
+        isDoubleClick: boolean
       ): void =>
-        newValue === defaultOption.optionName && !has('handleKeyboardClick')
-          ? undefined
-          : handleChange?.(
+        isDoubleClick ||
+        (newValue !== defaultOption.optionName && !has('handleKeyboardClick'))
+          ? handleChange?.(
               close,
               newValue,
               isRelationship,
               defaultOption.tableName ?? '',
-              newTable
+              newTable,
+              isDoubleClick
             )
+          : undefined
     : undefined;
 
   let header: JSX.Element | undefined;
@@ -514,7 +502,7 @@ export function CustomSelectElement({
 
     unmapOption = showUnmapOption ? (
       <Option
-        handleClick={(): void => handleClick?.(true, '0', false, '0')}
+        handleClick={(): void => handleClick?.(true, '0', false, '0', false)}
         isDefault={defaultOption.optionLabel === '0'}
         optionLabel="0"
       />
@@ -701,7 +689,8 @@ export function CustomSelectElement({
                     close,
                     newValue,
                     inlineOptions[newIndex]?.isRelationship ?? false,
-                    inlineOptions[newIndex]?.tableName ?? '0'
+                    inlineOptions[newIndex]?.tableName ?? '0',
+                    false
                   );
               }
             }
