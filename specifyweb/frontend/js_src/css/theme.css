@@ -222,3 +222,23 @@ table.grid-table,
 .justify-end {
   justify-content: end;
 }
+
+/*
+ * Add a span with this class as a child of a display:flex.
+ * This element would occupy all free space, pushing elements on either size
+ * to the edge.
+ *
+ * If there isn't any free space, this element shrinks to 0px.
+ */
+.spacer {
+  --gap-eater: var(--half-size);
+
+  flex: 1;
+
+  /* Offsets the space occupied by column-gap */
+  margin-left: calc(-1 * var(--gap-eater));
+}
+
+.contents {
+  display: contents;
+}

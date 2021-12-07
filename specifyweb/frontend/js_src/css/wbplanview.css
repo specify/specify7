@@ -17,39 +17,32 @@
 }
 
 /* HEADER */
-.wbplanview-header {
+.wbplanview header {
   display: flex;
   justify-content: space-between;
   column-gap: var(--half-size);
-}
-
-.wbplanview-header-controls,
-.wbplanview-ds-name-container {
-  display: flex;
-  column-gap: var(--quarter-size);
-  align-items: stretch;
-}
-
-.wbplanview-ds-name-container {
-  overflow-y: auto;
-}
-
-.wbplanview-ds-name-container,
-.wbplanview-ds-name {
   white-space: nowrap;
-  margin: 0;
-  padding: 0;
+}
+
+.wbplanview-ds-name-container {
+  display: contents;
+}
+
+.wbplanview-ds-name {
+  column-gap: var(--quarter-size);
+  overflow-x: auto;
   font-size: calc(var(--size) * 0.8);
   font-weight: 400;
   color: var(--t1);
 }
 
-.wbplanview-ds-name {
-  column-gap: var(--quarter-size);
+/* TODO: Overwrite default browser styles globally */
+h2.wbplanview-ds-name {
+  margin: 0;
 }
 
 .wbplanview-header-controls {
-  flex-shrink: 0;
+  display: contents;
 }
 
 .wbplanview-readonly-badge {
