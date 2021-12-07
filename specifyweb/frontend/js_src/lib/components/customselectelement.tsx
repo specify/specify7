@@ -37,7 +37,7 @@ type Properties =
   | 'tabIndex'
   /*
    * Handle keyboard navigation click locally instead of emitting
-   * handleClick(close: false, value, ...)
+   * handleClick(close: false, value, ...), unless pressed Enter
    */
   | 'handleKeyboardClick';
 const customSelectTypes: IR<RA<Properties>> = {
@@ -112,7 +112,7 @@ interface CustomSelectElementIconProps {
 }
 
 interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
-  readonly handleClick?: (isDoubleClick: boolean) => void;
+  readonly handleClick?: (payload: { readonly isDoubleClick: boolean }) => void;
 }
 
 export type CustomSelectElementDefaultOptionProps =
@@ -134,12 +134,12 @@ interface CustomSelectElementOptionGroupProps {
    * for the data structure
    */
   readonly selectOptionsData: CustomSelectElementOptions;
-  readonly handleClick?: (
-    newValue: string,
-    isRelationship: boolean,
-    newTableName: string,
-    isDoubleClick: boolean
-  ) => void;
+  readonly handleClick?: (payload: {
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
 }
 
 type CustomSelectElementOptionGroups = IR<CustomSelectElementOptionGroupProps>;
@@ -156,14 +156,14 @@ interface CustomSelectElementPropsBase {
 
   readonly handleOpen?: () => void;
 
-  readonly handleChange?: (
-    close: boolean,
-    newValue: string,
-    isRelationship: boolean,
-    currentTable: string,
-    newTable: string,
-    isDoubleClick: boolean
-  ) => void;
+  readonly handleChange?: (payload: {
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
   readonly handleClose?: () => void;
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
   readonly automapperSuggestions?: JSX.Element;
@@ -178,14 +178,14 @@ export interface CustomSelectElementPropsClosed
 export interface CustomSelectElementPropsOpenBase
   extends CustomSelectElementPropsBase {
   readonly isOpen: true;
-  readonly handleChange?: (
-    close: boolean,
-    newValue: string,
-    isRelationship: boolean,
-    currentTable: string,
-    newTable: string,
-    isDoubleCLick: boolean
-  ) => void;
+  readonly handleChange?: (payload: {
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
   readonly handleClose?: () => void;
 }
 
@@ -245,7 +245,7 @@ function Option({
       tabIndex={-1}
       onClick={
         typeof handleClick === 'function'
-          ? (event): void => handleClick(event.detail > 1)
+          ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
           : undefined
       }
       aria-selected={isDefault}
@@ -305,16 +305,16 @@ function OptionGroup({
           return (
             <Option
               key={optionName}
-              handleClick={(isDoubleClick: boolean): void =>
+              handleClick={({ isDoubleClick }): void =>
                 typeof handleClick === 'function' &&
                 (isDoubleClick || selectionOptionData.isEnabled !== false)
-                  ? handleClick(
-                      optionName,
-                      typeof selectionOptionData.isRelationship !==
-                        'undefined' && selectionOptionData.isRelationship,
-                      selectionOptionData.tableName ?? '',
-                      isDoubleClick
-                    )
+                  ? handleClick({
+                      newValue: optionName,
+                      isRelationship:
+                        selectionOptionData.isRelationship ?? false,
+                      newTableName: selectionOptionData.tableName ?? '',
+                      isDoubleClick,
+                    })
                   : undefined
               }
               {...selectionOptionData}
@@ -418,23 +418,25 @@ export function CustomSelectElement({
   if (showUnmapOption) inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
   const handleClick = has('interactive')
-    ? (
-        close: boolean,
-        newValue: string,
-        isRelationship: boolean,
-        newTable: string,
-        isDoubleClick: boolean
-      ): void =>
+    ? ({
+        isDoubleClick,
+        newValue,
+        ...rest
+      }: {
+        readonly close: boolean;
+        readonly newValue: string;
+        readonly isRelationship: boolean;
+        readonly newTableName: string;
+        readonly isDoubleClick: boolean;
+      }): void =>
         isDoubleClick ||
         (newValue !== defaultOption.optionName && !has('handleKeyboardClick'))
-          ? handleChange?.(
-              close,
+          ? handleChange?.({
+              currentTableName: defaultOption.tableName ?? '',
               newValue,
-              isRelationship,
-              defaultOption.tableName ?? '',
-              newTable,
-              isDoubleClick
-            )
+              isDoubleClick,
+              ...rest,
+            })
           : undefined
     : undefined;
 
@@ -502,7 +504,15 @@ export function CustomSelectElement({
 
     unmapOption = showUnmapOption ? (
       <Option
-        handleClick={(): void => handleClick?.(true, '0', false, '0', false)}
+        handleClick={(): void =>
+          handleClick?.({
+            close: true,
+            newValue: '0',
+            isRelationship: false,
+            newTableName: '0',
+            isDoubleClick: false,
+          })
+        }
         isDefault={defaultOption.optionLabel === '0'}
         optionLabel="0"
       />
@@ -533,7 +543,11 @@ export function CustomSelectElement({
         ) => (
           <OptionGroup
             key={index}
-            handleClick={handleClick?.bind(undefined, true) ?? undefined}
+            handleClick={
+              typeof handleClick === 'function'
+                ? (payload): void => handleClick({ close: true, ...payload })
+                : undefined
+            }
             selectGroupName={selectGroupName}
             {...selectGroupData}
             selectGroupLabel={
@@ -685,13 +699,14 @@ export function CustomSelectElement({
                 if (!close && has('handleKeyboardClick'))
                   setSelectedValue(newValue);
                 else
-                  handleClick?.(
+                  handleClick?.({
                     close,
                     newValue,
-                    inlineOptions[newIndex]?.isRelationship ?? false,
-                    inlineOptions[newIndex]?.tableName ?? '0',
-                    false
-                  );
+                    isRelationship:
+                      inlineOptions[newIndex]?.isRelationship ?? false,
+                    newTableName: inlineOptions[newIndex]?.tableName ?? '0',
+                    isDoubleClick: false,
+                  });
               }
             }
           : undefined
@@ -725,7 +740,7 @@ export function SuggestionBox({
         },
       }}
       isOpen={true}
-      handleChange={(_close, value): void => handleSelect(value)}
+      handleChange={({ newValue }): void => handleSelect(newValue)}
       {...props}
     />
   );

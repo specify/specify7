@@ -100,16 +100,16 @@ export default function WbPlanViewMapper(
     readonly readonly: boolean;
     readonly handleOpen: (line: number, index: number) => void;
     readonly handleClose: () => void;
-    readonly handleChange: (
-      line: 'mappingView' | number,
-      index: number,
-      close: boolean,
-      newValue: string,
-      isRelationship: boolean,
-      currentTable: string,
-      newTable: string,
-      isDoubleClick: boolean
-    ) => void;
+    readonly handleChange: (payload: {
+      readonly line: 'mappingView' | number;
+      readonly index: number;
+      readonly close: boolean;
+      readonly newValue: string;
+      readonly isRelationship: boolean;
+      readonly currentTableName: string;
+      readonly newTableName: string;
+      readonly isDoubleClick: boolean;
+    }) => void;
     readonly handleClearMapping: (index: number) => void;
     readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
@@ -294,7 +294,8 @@ export default function WbPlanViewMapper(
               handleMappingViewChange={
                 props.readonly
                   ? undefined
-                  : props.handleChange.bind(undefined, 'mappingView')
+                  : (payload): void =>
+                      props.handleChange({ line: 'mappingView', ...payload })
               }
               getMappedFields={getMappedFieldsBind}
             />
@@ -325,10 +326,10 @@ export default function WbPlanViewMapper(
               generateLastRelationshipData: true,
               iterate: true,
               customSelectType: 'CLOSED_LIST',
-              handleChange:
-                (!props.readonly &&
-                  props.handleChange.bind(undefined, index)) ||
-                undefined,
+              handleChange: props.readonly
+                ? undefined
+                : (payload): void =>
+                    props.handleChange({ line: index, ...payload }),
               handleOpen: props.handleOpen.bind(undefined, index),
               handleClose: props.handleClose,
               handleAutomapperSuggestionSelection:
@@ -427,7 +428,9 @@ export default function WbPlanViewMapper(
                             undefined
                           }
                         />{' '}
-                        <span id={id(`default-value-${index}`)}>{wbText('useDefaultValue')}</span>
+                        <span id={id(`default-value-${index}`)}>
+                          {wbText('useDefaultValue')}
+                        </span>
                         {columnOptions.default !== null && ':'}
                       </label>
                       {typeof columnOptions.default === 'string' && (

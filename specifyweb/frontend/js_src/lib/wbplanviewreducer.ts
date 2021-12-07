@@ -150,7 +150,7 @@ export type ChangeSelectElementValueAction = Action<
     readonly line: number | 'mappingView';
     readonly index: number;
     readonly close: boolean;
-    readonly value: string;
+    readonly newValue: string;
     readonly isRelationship: boolean;
     readonly newTableName: string;
     readonly currentTableName: string;
@@ -449,7 +449,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       mappingView: mappingState(state).mappingView,
       line: action.line,
       index: action.index,
-      value: action.value,
+      newValue: action.newValue,
       isRelationship: action.isRelationship,
       currentTableName: action.currentTableName,
       newTableName: action.newTableName,

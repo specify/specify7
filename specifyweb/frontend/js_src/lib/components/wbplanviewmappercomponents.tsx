@@ -120,15 +120,15 @@ export function MappingView(props: {
   readonly readonly: boolean;
   readonly mustMatchPreferences: IR<boolean>;
   readonly handleMapButtonClick?: () => void;
-  readonly handleMappingViewChange?: (
-    index: number,
-    close: boolean,
-    newValue: string,
-    isRelationship: boolean,
-    currentTable: string,
-    newTable: string,
-    isDoubleClick: boolean
-  ) => void;
+  readonly handleMappingViewChange?: (payload: {
+    readonly index: number;
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
   readonly getMappedFields: GetMappedFieldsBind;
   readonly showHiddenFields?: boolean;
 }): JSX.Element | null {
@@ -138,27 +138,13 @@ export function MappingView(props: {
     generateLastRelationshipData: true,
     iterate: true,
     customSelectType: 'OPENED_LIST',
-    handleChange(...data) {
-      const [
-        index,
-        newValue,
-        isRelationship,
-        currentTable,
-        newTable,
-        isDoubleClick,
-      ] = data;
-      console.log(data);
-      if (isDoubleClick) {
-        props.handleMapButtonClick?.();
-      } else
-        props.handleMappingViewChange?.(
-          index,
-          newValue,
-          isRelationship,
-          currentTable,
-          newTable,
-          isDoubleClick
-        );
+    handleChange({ isDoubleClick, ...rest }) {
+      if (isDoubleClick) props.handleMapButtonClick?.();
+      else
+        props.handleMappingViewChange?.({
+          ...rest,
+          isDoubleClick,
+        });
     },
     getMappedFields: props.getMappedFields,
     showHiddenFields: props.showHiddenFields,

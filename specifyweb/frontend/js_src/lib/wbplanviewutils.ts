@@ -288,7 +288,7 @@ export function mutateMappingPath({
   mappingView,
   line,
   index,
-  value,
+  newValue,
   currentTableName,
   newTableName,
 }: Omit<ChangeSelectElementValueAction, 'type' | 'close'> & {
@@ -311,7 +311,7 @@ export function mutateMappingPath({
     dataModelStorage.tables[currentTableName]?.fields[mappingPath[index] || '']
       ?.type ?? '';
   const newRelationshipType =
-    dataModelStorage.tables[newTableName]?.fields[value]?.type ?? '';
+    dataModelStorage.tables[newTableName]?.fields[newValue]?.type ?? '';
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
@@ -320,23 +320,23 @@ export function mutateMappingPath({
    */
   const preserveMappingPathToRight =
     currentRelationshipType === newRelationshipType &&
-    (valueIsReferenceItem(value) ||
-      valueIsTreeRank(value) ||
+    (valueIsReferenceItem(newValue) ||
+      valueIsTreeRank(newValue) ||
       currentTableName === newTableName);
 
   /*
    * When `Add` is selected in the list of -to-many indexes, replace it by
    * creating a new -to-many index
    */
-  if (value === 'add') {
+  if (newValue === 'add') {
     const mappedFields = Object.keys(
       getMappedFields(lines, mappingPath.slice(0, index))
     );
     const maxToManyValue = getMaxToManyValue(mappedFields);
     mappingPath[index] = formatReferenceItem(maxToManyValue + 1);
-  } else if (preserveMappingPathToRight) mappingPath[index] = value;
+  } else if (preserveMappingPathToRight) mappingPath[index] = newValue;
   // Clear mapping path to the right of current box
-  else mappingPath = [...mappingPath.slice(0, index), value];
+  else mappingPath = [...mappingPath.slice(0, index), newValue];
 
   return mappingPath;
 }
