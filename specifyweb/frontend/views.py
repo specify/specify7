@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+import jwt
 
 from django.shortcuts import render
 from django.contrib.auth import login
@@ -23,49 +24,88 @@ login_maybe_required = (
     (lambda func: func) if settings.ANONYMOUS_USER else login_required
 )
 
-clientid = settings.OAUTH_LOGIN_PROVIDERS['github']['client_id']
-clientsecret = settings.OAUTH_LOGIN_PROVIDERS['github']['client_secret']
 
 def oic_login(request):
     if request.method == 'POST':
-        redirect = request.build_absolute_uri('/accounts/oic_callback/')
+        provider = request.POST['provider']
+        provider_info = settings.OAUTH_LOGIN_PROVIDERS[provider]
+
+        if isinstance(provider_info['config'], str):
+            discovery_url = provider_info['config']
+            if not discovery_url.endswith("/.well-known/openid-configuration"):
+                discovery_url += "/.well-known/openid-configuration"
+            provider_conf = requests.get(discovery_url).json()
+        else:
+            provider_conf = provider_info['config']
+
         state = crypto.get_random_string(length=32)
-        request.session['oauth_state'] = state
+        request.session['oauth_login'] = {
+            'state': state,
+            'provider': provider,
+            'provider_conf': provider_conf,
+        }
+
+        endpoint = provider_conf['authorization_endpoint']
+        scope = provider_info['scope']
+        clientid = provider_info['client_id']
+        redirect = request.build_absolute_uri('/accounts/oic_callback/')
         return HttpResponseRedirect(
-            f'https://github.com/login/oauth/authorize?client_id={clientid}&redirect_uri={redirect}&state={state}'
+            f'{endpoint}?response_type=code&scope={scope}&client_id={clientid}&redirect_uri={redirect}&state={state}'
         )
-    return render(request, "oic_login.html")
+
+    providers = [
+        {'provider': p, 'title': d['title']}
+        for p, d in settings.OAUTH_LOGIN_PROVIDERS.items()
+    ]
+    return render(request, "oic_login.html", context={'providers': providers})
 
 def oic_callback(request):
-    assert crypto.constant_time_compare(request.GET['state'], request.session['oauth_state'])
-    del request.session['oauth_state'] # not really necessary, but might as well clean up.
+    oauth_login = request.session['oauth_login']
+    del request.session['oauth_login'] # not really necessary, but might as well clean up.
+    assert crypto.constant_time_compare(request.GET['state'], oauth_login['state'])
+
+    provider = oauth_login['provider']
+    provider_conf = oauth_login['provider_conf']
+
+    provider_info = settings.OAUTH_LOGIN_PROVIDERS[provider]
+    clientid = provider_info['client_id']
+    clientsecret = provider_info['client_secret']
     code = request.GET['code']
 
     get_token = requests.post(
-        'https://github.com/login/oauth/access_token',
+        provider_conf['token_endpoint'],
         data={
+            'grant_type': "authorization_code",
             'client_id': clientid,
             'client_secret': clientsecret,
             'code': code,
-            'redirect_uri': request.build_absolute_uri('/accounts/oic_callback/token/'),
+            'redirect_uri': request.build_absolute_uri('/accounts/oic_callback/'),
         },
         headers={'Accept': 'application/json'},
     )
-    token = get_token.json()['access_token']
-    get_ext_user = requests.get(
-        'https://api.github.com/user',
-        headers={
-            'Authorization': f"token {token}",
-            'Accept': 'application/json',
-        }
-    )
-    ext_user = get_ext_user.json()
+    print(get_token.json())
+    id_token = get_token.json()['id_token']
+    print(id_token)
+    # token = get_token.json()['access_token']
+    # get_ext_user = requests.get(
+    #     settings.OAUTH_LOGIN_PROVIDERS[provider]['user_endpoint'],
+    #     headers={
+    #         'Authorization': f"token {token}",
+    #         'Accept': 'application/json',
+    #     }
+    # )
+    # ext_user = get_ext_user.json()
+    ext_user = jwt.decode(id_token, options={"verify_signature": False})
+    print(ext_user)
     try:
-        user = Specifyuser.objects.get(spuserexternalid__provider="github", spuserexternalid__providerid=str(ext_user['id']))
+        user = Specifyuser.objects.get(
+            spuserexternalid__provider=provider,
+            spuserexternalid__providerid=str(ext_user['sub'])
+        )
     except Specifyuser.DoesNotExist:
-        request.session['external_user_id'] = str(ext_user['id'])
-        request.session['external_user_provider'] = "github"
-        request.session['external_user_name'] = ext_user['name']
+        request.session['external_user_id'] = str(ext_user['sub'])
+        request.session['external_user_provider'] = provider
+        request.session['external_user_name'] = ext_user['email']
         return HttpResponseRedirect('/accounts/legacy_login/')
 
     login(request, user)
