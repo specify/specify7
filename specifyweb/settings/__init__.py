@@ -186,6 +186,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'specifyweb.specify',
+    'specifyweb.accounts',
     'specifyweb.stored_queries',
     'specifyweb.businessrules',
     'specifyweb.express_search',
