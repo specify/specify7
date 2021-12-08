@@ -1,7 +1,7 @@
 import json
 import os
 import re
-from django import forms
+
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout, views as auth_views
@@ -105,58 +105,6 @@ def user_collection_access(request, userid):
     collections = users_collections(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
                         content_type="application/json")
-
-class CollectionChoiceField(forms.ChoiceField):
-    widget = forms.RadioSelect
-    def label_from_instance(self, obj):
-        return obj.collectionname
-
-@login_maybe_required
-@require_http_methods(['GET', 'POST'])
-@never_cache
-def choose_collection(request):
-    "The HTML page for choosing which collection to log into. Presented after the main auth page."
-    if 'external_user_id' in request.session:
-        request.specify_user.spuserexternalid_set.create(
-            provider=request.session['external_user_provider'],
-            providerid=request.session['external_user_id'],
-        )
-        del request.session['external_user_provider']
-        del request.session['external_user_id']
-        del request.session['external_user_name']
-
-    redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
-    redirect_resp = HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
-        else settings.LOGIN_REDIRECT_URL
-    )
-
-    available_collections = users_collections(connection.cursor(), request.specify_user.id)
-    available_collections.sort(key=lambda x: x[1])
-
-    if len(available_collections) < 1:
-        auth_logout(request)
-        return TemplateResponse(request, 'choose_collection.html', context={'next': redirect_to})
-
-    if len(available_collections) == 1:
-        set_collection_cookie(redirect_resp, available_collections[0][0])
-        return redirect_resp
-
-    class Form(forms.Form):
-        collection = CollectionChoiceField(
-            choices=available_collections,
-            initial=request.COOKIES.get('collection', None))
-
-    if request.method == 'POST':
-        form = Form(data=request.POST)
-        if form.is_valid():
-            set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
-            return redirect_resp
-    else:
-        form = Form()
-
-    context = {'form': form, 'next': redirect_to}
-    return TemplateResponse(request, 'choose_collection.html', context)
 
 @openapi(schema={
     "get": {
