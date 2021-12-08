@@ -17,11 +17,11 @@
   <div id="content">
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
-      <select name="provider">
-        {% for p in providers %}
-        <option value="{{ p.provider }}">{{ p.title }}</option>
-        {% endfor %}
-      </select>
+      <p>Log in with one of the providers below:</p>
+      {% for p in providers %}
+      <label><input type="radio" name="provider" value="{{ p.provider }}"> {{ p.title }}</label>
+      {% endfor %}
+      <p>Or log in with a <a href="/accounts/legacy_login/">legacy</a> Specify user name and password.</p>
       <div class="submit-row">
         <input type="submit" value="Login" />
       </div>

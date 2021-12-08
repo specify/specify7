@@ -1,7 +1,6 @@
 import json
 import os
 import re
-from typing import List, Tuple
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
@@ -22,14 +21,16 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.views.i18n import set_language
 
+from specifyweb.permissions.permissions import PermissionTarget, \
+    PermissionTargetAction, \
+    check_permission_targets, skip_collection_access_check, query_pt, \
+    CollectionAccessPT
 from specifyweb.specify.models import Agent, Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, \
-    check_permission_targets, skip_collection_access_check, query_pt, CollectionAccessPT
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
@@ -124,62 +125,6 @@ def user_collection_access_for_sp6(request, userid):
     collections = users_collections_for_sp6(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
                         content_type="application/json")
-
-class CollectionChoiceField(forms.ChoiceField):
-    widget = forms.RadioSelect
-    def label_from_instance(self, obj):
-        return obj.collectionname
-
-@login_maybe_required
-@require_http_methods(['GET', 'POST'])
-@never_cache
-def choose_collection(request):
-    "The HTML page for choosing which collection to log into. Presented after the main auth page."
-    if 'external_user_id' in request.session:
-        request.specify_user.spuserexternalid_set.create(
-            provider=request.session['external_user_provider'],
-            providerid=request.session['external_user_id'],
-        )
-        del request.session['external_user_provider']
-        del request.session['external_user_id']
-        del request.session['external_user_name']
-
-    redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
-    redirect_resp = HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
-        else settings.LOGIN_REDIRECT_URL
-    )
-
-    available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections.sort(key=lambda x: x[1])
-
-    if len(available_collections) < 1:
-        auth_logout(request)
-        return TemplateResponse(request, 'choose_collection.html', context={'next': redirect_to})
-
-    if len(available_collections) == 1:
-        set_collection_cookie(redirect_resp, available_collections[0][0])
-        return redirect_resp
-
-    class Form(forms.Form):
-        collection = CollectionChoiceField(
-            choices=available_collections,
-            initial=request.COOKIES.get('collection', None)
-        )
-
-    context = {
-        'available_collections': available_collections,
-        'initial_value': request.COOKIES.get('collection', None),
-        'next': redirect_to
-    }
-
-    if request.method == 'POST':
-        form = Form(data=request.POST)
-        if form.is_valid():
-            set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
-            return redirect_resp
-
-    return TemplateResponse(request, 'choose_collection.html', context)
 
 @openapi(schema={
     "get": {
