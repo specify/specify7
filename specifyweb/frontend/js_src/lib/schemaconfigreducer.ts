@@ -1,10 +1,10 @@
 import type { Action } from 'typesafe-reducer';
-import { generateReducer } from 'typesafe-reducer';
-import { SpLocaleItem } from './components/schemaconfig';
-import { mainState } from './components/schemaconfigstate';
+import { ensureState, generateReducer } from 'typesafe-reducer';
 
+import type { SpLocaleItem } from './components/schemaconfig';
 import type { States } from './components/schemaconfigstate';
-import { RA } from './components/wbplanview';
+import { SpLocaleContainer } from './components/schemaconfigwrapper';
+import type { IR } from './components/wbplanview';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -15,17 +15,17 @@ type ChooseLanguageAction = Action<
 
 type ChangeLanguageAction = Action<'ChangeLanguageAction'>;
 
-type ChangeTableAction = Action<
-  'ChangeTableAction',
+type ChooseTableAction = Action<
+  'ChooseTableAction',
   {
-    tableId: number;
+    table: SpLocaleContainer;
   }
 >;
 
 type SetTableItemsAction = Action<
   'SetTableItemsAction',
   {
-    items: RA<SpLocaleItem>;
+    items: IR<SpLocaleItem>;
   }
 >;
 
@@ -39,31 +39,43 @@ type ChangeItemAction = Action<
 export type Actions =
   | ChooseLanguageAction
   | ChangeLanguageAction
-  | ChangeTableAction
+  | ChooseTableAction
   | SetTableItemsAction
   | ChangeItemAction;
 
 export const reducer = generateReducer<States, Actions>({
+  ChangeLanguageAction: () => ({
+    type: 'ChooseLanguageState',
+  }),
   ChooseLanguageAction: ({ action: { language } }) => ({
-    type: 'MainState',
+    type: 'ChooseTableState',
     language,
   }),
-  ChangeLanguageAction: () => ({
-    type: 'DialogState',
-  }),
-  ChangeTableAction: ({ action: { tableId }, state }) => ({
-    ...mainState(state),
-    tableId,
-    items: undefined,
-    item: undefined,
-  }),
-  SetTableItemsAction: ({ action: { items }, state }) => ({
-    ...mainState(state),
-    items,
-    item: items[0]?.id,
-  }),
-  ChangeItemAction: ({ action: { itemId }, state }) => ({
-    ...mainState(state),
-    itemId,
-  }),
+  ChooseTableAction: ensureState(
+    ['ChooseTableState', 'MainState'],
+    ({ action: { table }, state: { language } }) => ({
+      type: 'FetchingTableItemsState',
+      language,
+      table,
+    })
+  ),
+  SetTableItemsAction: ensureState(
+    ['FetchingTableItemsState'],
+    ({ action: { items }, state }) => ({
+      type: 'MainState',
+      table: state.table,
+      language: state.language,
+      items,
+      itemId: Object.values(items)[0].id,
+      tableWasModified: false,
+      modifiedItems: [],
+    })
+  ),
+  ChangeItemAction: ensureState(
+    ['MainState'],
+    ({ action: { itemId }, state }) => ({
+      ...state,
+      itemId,
+    })
+  ),
 });

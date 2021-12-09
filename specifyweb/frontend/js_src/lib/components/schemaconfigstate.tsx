@@ -4,82 +4,151 @@ import { generateReducer } from 'typesafe-reducer';
 
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import { sortObjectsByKey } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
-import { ModalDialog } from './modaldialog';
-import { SpLocaleItem } from './schemaconfig';
+import { TableIcon } from './common';
+import { LoadingScreen, ModalDialog } from './modaldialog';
+import type { SpLocaleItem } from './schemaconfig';
 import type { SpLocaleContainer } from './schemaconfigwrapper';
-import type { RA } from './wbplanview';
-import navigation from '../navigation';
+import type { IR, RA } from './wbplanview';
 
-type DialogState = State<'DialogState'>;
+type ChooseLanguageState = State<'ChooseLanguageState'>;
+
+type ChooseTableState = State<
+  'ChooseTableState',
+  {
+    language: string;
+  }
+>;
+
+type FetchingTableFieldState = State<
+  'FetchingTableItemsState',
+  {
+    language: string;
+    table: SpLocaleContainer;
+  }
+>;
 
 type MainState = State<
   'MainState',
   {
     language: string;
-    tableId?: number;
-    items?: RA<SpLocaleItem>;
-    itemId?: number;
+    table: SpLocaleContainer;
+    items: IR<SpLocaleItem>;
+    itemId: number;
+    tableWasModified: boolean;
+    modifiedItems: RA<number>;
   }
 >;
 
-export type States = DialogState | MainState;
+export type States =
+  | ChooseLanguageState
+  | ChooseTableState
+  | FetchingTableFieldState
+  | MainState;
 
 type StateWithParameters = States & {
   readonly parameters: {
     readonly languages: RA<string>;
-    readonly tables: RA<SpLocaleContainer>;
+    readonly tables: IR<SpLocaleContainer>;
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
+    readonly handleClose: () => void;
   };
 };
 
-export function mainState(state: States): MainState {
-  if (state.type === 'MainState') return state;
-  else
-    throw new Error(
-      'Dispatching this action requires the state ' +
-        'to be of type `MainState`'
-    );
-}
-
 export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
-  DialogState({
+  ChooseLanguageState({
     action: {
-      parameters: { languages, dispatch },
+      parameters: { languages, dispatch, handleClose },
     },
   }) {
     return (
-      <ModalDialog properties={{ title: commonText('schemaConfig') }}>
-        <label>
-          {commonText('language')}
-          <br />
-          <select
-            style={{ width: '100%' }}
-            size={10}
-            onChange={({ target }): void =>
-              dispatch({
-                type: 'ChooseLanguageAction',
-                language: target.value,
-              })
-            }
-          >
-            {languages.map((language) => (
-              <option key={language}>{language}</option>
-            ))}
-          </select>
-        </label>
+      <ModalDialog
+        properties={{
+          title: commonText('schemaConfig'),
+          close: handleClose,
+        }}
+      >
+        {commonText('language')}
+        <ul style={{ padding: 0 }}>
+          {languages.map((language) => (
+            <li key={language}>
+              <button
+                type="button"
+                className="fake-link"
+                onClick={(): void =>
+                  dispatch({
+                    type: 'ChooseLanguageAction',
+                    language,
+                  })
+                }
+              >
+                {language}
+              </button>
+            </li>
+          ))}
+        </ul>
       </ModalDialog>
     );
+  },
+  ChooseTableState({
+    action: {
+      parameters: { dispatch, tables, handleClose },
+    },
+  }) {
+    const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
+    return (
+      <ModalDialog
+        properties={{
+          title: formsText('tables'),
+          close: handleClose,
+          buttons: [
+            {
+              text: commonText('back'),
+              click: (): void =>
+                dispatch({
+                  type: 'ChangeLanguageAction',
+                }),
+            },
+          ],
+        }}
+      >
+        <ul style={{ padding: 0, maxHeight: '40vh' }}>
+          {sortedTables.map((table) => (
+            <li key={table.id}>
+              <button
+                onClick={(): void =>
+                  dispatch({
+                    type: 'ChooseTableAction',
+                    table,
+                  })
+                }
+                type="button"
+                className="fake-link"
+              >
+                <TableIcon tableName={table.name} tableLabel={false} />
+                {table.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </ModalDialog>
+    );
+  },
+  FetchingTableItemsState() {
+    return <LoadingScreen />;
   },
   MainState({
     action: {
       language,
-      tableId,
+      table,
       items,
-      parameters: { id, dispatch, tables },
+      itemId,
+      parameters: { id, dispatch, handleClose },
     },
   }) {
+    const sortedItems = sortObjectsByKey(Object.values(items), 'name');
     return (
       <>
         <header>
@@ -94,11 +163,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 className="magic-button"
                 onClick={(): void =>
                   dispatch({
-                    type: 'ChangeLanguageAction',
+                    type: 'ChooseLanguageAction',
+                    language,
                   })
                 }
               >
-                {commonText('changeLanguage')}
+                {commonText('changeBaseTable')}
               </button>
             </li>
             <li>
@@ -110,39 +180,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <button
                 type="button"
                 className="magic-button"
-                onClick={() => navigation.go('/specify/')}
+                onClick={handleClose}
               >
                 {commonText('cancel')}
               </button>
             </li>
           </menu>
         </header>
-        <section>
-          <h3 id={id('tables-label')}>{formsText('tables')}</h3>
-          <div>
-            <select
-              aria-labelledby={id('tables-label')}
-              size={2}
-              value={tableId}
-              onChange={({ target }): void =>
-                dispatch({
-                  type: 'ChangeTableAction',
-                  tableId: Number.parseInt(target.value),
-                })
-              }
-            >
-              {tables.map(({ name, id }) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            <div/>
-          </div>
-        </section>
-        <section>
-          <h3 id={id('fields-label')}>{commonText('fields')}</h3>
-          <div>
+        <div className="schema-config-content">
+          <section>
+            <h3>{table.name}</h3>
+          </section>
+          <section>
+            <h3 id={id('fields-label')}>{commonText('fields')}</h3>
             <select
               size={2}
               aria-labelledby={id('fields-label')}
@@ -156,16 +206,18 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {typeof items === 'undefined' ? (
                 <option disabled>{commonText('loading')}</option>
               ) : (
-                items.map(({ name, id }) => (
+                sortedItems.map(({ name, id }) => (
                   <option key={id} value={id}>
                     {name}
                   </option>
                 ))
               )}
             </select>
-            <div />
-          </div>
-        </section>
+          </section>
+          <section>
+            <h3>{items[itemId].name}</h3>
+          </section>
+        </div>
       </>
     );
   },

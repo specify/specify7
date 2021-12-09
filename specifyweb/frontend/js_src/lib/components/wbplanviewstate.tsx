@@ -146,10 +146,7 @@ export const stateReducer = generateReducer<
       properties={{
         title: wbText('selectBaseTableDialogTitle'),
         height: 400,
-        close: (event, ui): void =>
-          typeof event !== 'undefined' && typeof ui === 'undefined'
-            ? goBack(state.props)
-            : undefined,
+        close: (): void => goBack(state.props),
         buttons: [
           {
             text: wbText('chooseExistingPlan'),
@@ -282,7 +279,7 @@ export const stateReducer = generateReducer<
                     click: cancel,
                   },
                   {
-                    text: wbText('changeBaseTable'),
+                    text: commonText('changeBaseTable'),
                     click: confirm,
                   },
                 ]}

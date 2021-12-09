@@ -28,6 +28,13 @@ function closeDialogCallback(
   $dialog.remove();
 }
 
+/*
+ * A dummy function
+ *
+ * Set this as a 'click' handler for jQuery's dialog button.
+ * Before initializing the dialog, the click handler would be replaced with
+ * the proper dialog close callback
+ */
 export const closeDialog = (...args: RA<unknown>): void =>
   console.error(...args);
 
@@ -76,7 +83,10 @@ export function ModalDialog({
       closeDialogCallback(
         dialogElement,
         resize.current,
-        properties.close?.bind(undefined, event, ui)
+        // Don't call callback if dialog was closed by destructor
+        typeof event !== 'undefined' && typeof ui === 'undefined'
+          ? (properties.close as () => void)
+          : undefined
       );
 
     const buttons =

@@ -5,7 +5,11 @@ import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { IR } from './wbplanview';
 
-function ChangeLanguage() {
+type ComponentProps = {
+  readonly onClose: () => void;
+};
+
+function ChangeLanguage({ onClose: handleClose }: ComponentProps) {
   const [languages, setLanguages] = React.useState<
     | undefined
     | IR<{
@@ -27,6 +31,7 @@ function ChangeLanguage() {
     <ModalDialog
       properties={{
         title: commonText('changeLanguage'),
+        close: handleClose,
         buttons: {
           [commonText('close')]: closeDialog,
         },
@@ -61,13 +66,12 @@ function ChangeLanguage() {
   );
 }
 
-const View = createBackboneView<IR<never>, IR<never>, IR<never>>({
+const View = createBackboneView<IR<never>, IR<never>, ComponentProps>({
   moduleName: 'ChangeLanguage',
   className: 'change-language',
   Component: ChangeLanguage,
   getComponentProps: (self) => ({
-    dataset: self.dataset,
-    onFinished: self.onFinished,
+    onClose: () => self.remove(),
   }),
 });
 
