@@ -63,7 +63,6 @@ RUN ve/bin/pip install --no-cache-dir gunicorn
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
 COPY --chown=specify:specify specifyweb /opt/specify7/specifyweb
 COPY --chown=specify:specify manage.py /opt/specify7/
-COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
 
@@ -124,8 +123,6 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 ENV DJANGO_SETTINGS_MODULE='settings'
 
-ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
-
 EXPOSE 8000
 
 
@@ -156,6 +153,8 @@ FROM run-common AS run
 
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
-CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
+COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
+ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
+CMD ["sp7start"]
 
 
