@@ -39,18 +39,12 @@ const commonText = createDictionary({
   noAgentDialogTitle: {
     'en-us': 'No Agent assigned',
     'ru-ru': 'Агент не назначен',
-    ca: 'No s\'ha assignat cap agent',
+    ca: "No s'ha assignat cap agent",
   },
   noAgentDialogHeader: {
-    'en-us': createHeader(
-      'Current user does not have an agent assigned'
-    ),
-    'ru-ru': createHeader(
-      'Текущему пользователю не назначен агент'
-    ),
-    ca: createHeader(
-      'L\'usuari actual no té cap agent assignat'
-    ),
+    'en-us': createHeader('Current user does not have an agent assigned'),
+    'ru-ru': createHeader('Текущему пользователю не назначен агент'),
+    ca: createHeader("L'usuari actual no té cap agent assignat"),
   },
   noAgentDialogMessage: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -67,6 +61,11 @@ const commonText = createDictionary({
     'en-us': 'Cancel',
     'ru-ru': 'Отмена',
     ca: 'Cancel',
+  },
+  back: {
+    'en-us': 'Back',
+    'ru-ru': 'Назад',
+    ca: 'Esquena',
   },
   create: {
     'en-us': 'Create',
@@ -665,7 +664,7 @@ const commonText = createDictionary({
         Please reload the page and try again.
         <br />
         If this issue persists, please contact your IT support or if this is a
-        Specify Cloud database, contact
+        Specify Cloud database, contact{' '}
         <a href="mailto:support@specifysoftware.org">
           support@specifysoftware.org
         </a>
@@ -676,7 +675,7 @@ const commonText = createDictionary({
         Пожалуйста, обновите страницу и попробуйте еще раз.
         <br />
         Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
-        свяжитесь с нами:
+        свяжитесь с нами:{' '}
         <a href="mailto:support@specifysoftware.org">
           support@specifysoftware.org
         </a>
@@ -687,7 +686,7 @@ const commonText = createDictionary({
         Please reload the page and try again.
         <br />
         If this issue persists, please contact your IT support or if this is a
-        Specify Cloud database, contact
+        Specify Cloud database, contact{' '}
         <a href="mailto:support@specifysoftware.org">
           support@specifysoftware.org
         </a>
@@ -990,7 +989,13 @@ const commonText = createDictionary({
     'ru-ru': 'Изменения схемы не сохранены',
     ca: "Els canvis d'esquema no s'han desat",
   },
-  //FIXME: translate these
+
+  // Schema Config
+  changeBaseTable: {
+    'en-us': 'Change Base Table',
+    'ru-ru': 'Изменить базовую таблицу',
+    ca: 'Change Base Table',
+  },
   fields: {
     'en-us': 'Fields',
     'ru-ru': 'Поля',

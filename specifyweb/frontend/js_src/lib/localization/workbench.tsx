@@ -338,21 +338,21 @@ const wbText = createDictionary({
       whitespaceSensitive(
         `${value ? `"${value}"` : ''} is not a legal value in this picklist
       field.<br>
-      
+
       Click on the arrow to choose among available options.`
       ),
     'ru-ru': (value: string) =>
       whitespaceSensitive(
         `${value ? `"${value}"` : ''} не является допустимым значением в этом
       списке.<br>
-      
+
       Нажмите на стрелку, чтобы выбрать один из доступных вариантов.`
       ),
     ca: (value: string) =>
       whitespaceSensitive(
         `${value ? `"${value}"` : ''} is not a legal value in this picklist
       field.<br>
-      
+
       Click on the arrow to choose among available options.`
       ),
   },
@@ -364,13 +364,13 @@ const wbText = createDictionary({
   },
   matchedMultipleErrorMessage: {
     'en-us': `
-      This value matches two or more existing database records and the match 
+      This value matches two or more existing database records and the match
       must be disambiguated before uploading.`,
     'ru-ru': `
       Это значение соответствует двум или более существующим записям базы
       данных и совпадению`,
     ca: `
-      This value matches two or more existing database records and the match 
+      This value matches two or more existing database records and the match
       must be disambiguated before uploading.`,
   },
   validationNoErrorsDialogTitle: {
@@ -588,7 +588,7 @@ const wbText = createDictionary({
   uploadUnavailableWhileHasErrors: {
     'en-us': 'Upload is unavailable while some cells have validation errors',
     'ru-ru': whitespaceSensitive(`
-      Загрузка недоступна, в то время как в некоторых ячейках есть ошибки 
+      Загрузка недоступна, в то время как в некоторых ячейках есть ошибки
       проверки
     `),
     ca: 'Upload is unavailable while some cells have validation errors',
@@ -824,19 +824,19 @@ const wbText = createDictionary({
   },
   ignoreWhenBlankDescription: {
     'en-us': whitespaceSensitive(`
-      When set to "Ignore when Blank" blank values in this column will not be 
-      considered for matching purposes. Blank values are ignored when matching 
+      When set to "Ignore when Blank" blank values in this column will not be
+      considered for matching purposes. Blank values are ignored when matching
       even if a default value is provided
     `),
     'ru-ru': whitespaceSensitive(`
-      Если задано значение «Игнорировать, когда пусто», пустые значения в 
+      Если задано значение «Игнорировать, когда пусто», пустые значения в
       этом столбце не будет рассматривается для целей сопоставления.
-      Пустые значения игнорируются при сопоставлении даже если указано 
+      Пустые значения игнорируются при сопоставлении даже если указано
       значение по умолчанию
     `),
     ca: whitespaceSensitive(`
-      When set to "Ignore when Blank" blank values in this column will not be 
-      considered for matching purposes. Blank values are ignored when matching 
+      When set to "Ignore when Blank" blank values in this column will not be
+      considered for matching purposes. Blank values are ignored when matching
       even if a default value is provided
     `),
   },
@@ -851,8 +851,8 @@ const wbText = createDictionary({
       considered for matching purposes, only for uploading.
     `),
     'ru-ru': whitespaceSensitive(`
-      Если задано значение «Всегда игнорировать», значение в этом столбце 
-      никогда не будет рассматривается для целей сопоставления, только для 
+      Если задано значение «Всегда игнорировать», значение в этом столбце
+      никогда не будет рассматривается для целей сопоставления, только для
       загрузки
     `),
     ca: whitespaceSensitive(`
@@ -994,19 +994,19 @@ const wbText = createDictionary({
   dataSetUploadedDescription: {
     'en-us': whitespaceSensitive(`
       You are viewing the mappings for an uploaded dataset.<br>
-      
+
       To edit the mappings, rollback the uploaded data or create a new
       dataset
     `),
     'ru-ru': whitespaceSensitive(`
-      Вы просматриваете сопоставления для загруженного набора данных.<br> 
-      
+      Вы просматриваете сопоставления для загруженного набора данных.<br>
+
       Чтобы изменить сопоставления, откатите загруженные данные или создайте
       новый набор данных
     `),
     ca: whitespaceSensitive(`
       You are viewing the mappings for an uploaded dataset.<br>
-      
+
       To edit the mappings, rollback the uploaded data or create a new
       dataset
     `),
@@ -1051,11 +1051,6 @@ const wbText = createDictionary({
     'en-us': 'Clear Mapping',
     'ru-ru': 'Очистить сопоставление',
     ca: 'Clear Mapping',
-  },
-  changeBaseTable: {
-    'en-us': 'Change Base Table',
-    'ru-ru': 'Изменить базовую таблицу',
-    ca: 'Change Base Table',
   },
   reRunAutoMapper: {
     'en-us': 'Rerun Automapper',

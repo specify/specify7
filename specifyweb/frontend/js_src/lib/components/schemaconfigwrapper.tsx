@@ -5,7 +5,6 @@ import React from 'react';
 import commonText from '../localization/common';
 import navigation from '../navigation';
 import schema from '../schema';
-import { sortObjectsByKey } from '../schemaconfighelper';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { SchemaConfig } from './schemaconfig';
@@ -14,6 +13,7 @@ import { handlePromiseReject } from './wbplanview';
 
 type ConstructorProps = IR<never>;
 type Props = {
+  readonly onClose: () => void;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
 };
@@ -43,18 +43,19 @@ export type SpLocaleContainer = CommonTableFields & {
   // readonly names: string;
 };
 
-
 function SchemaConfigWrapper({
+  onClose: handleClose,
   removeUnloadProtect,
   setUnloadProtect,
 }: Props): JSX.Element {
   const [languages, setLanguages] = React.useState<RA<string> | undefined>(
     undefined
   );
-  const [tables, setTables] = React.useState<RA<SpLocaleContainer> | undefined>(
+  const [tables, setTables] = React.useState<IR<SpLocaleContainer> | undefined>(
     undefined
   );
 
+  // Fetch languages
   React.useEffect(() => {
     const discipline = (
       schema.domainLevelIds as unknown as { readonly discipline: number }
@@ -93,6 +94,7 @@ function SchemaConfigWrapper({
     };
   }, []);
 
+  // Fetch tables
   React.useEffect(() => {
     const discipline = (
       schema.domainLevelIds as unknown as { readonly discipline: number }
@@ -105,7 +107,10 @@ function SchemaConfigWrapper({
         response.json()
       )
       .then(({ objects }) => {
-        if (!destructorCalled) setTables(sortObjectsByKey(objects,'name'));
+        if (!destructorCalled)
+          setTables(
+            Object.fromEntries(objects.map((table) => [table.id, table]))
+          );
       })
       .catch(handlePromiseReject);
 
@@ -121,6 +126,7 @@ function SchemaConfigWrapper({
     <SchemaConfig
       languages={languages}
       tables={tables}
+      onClose={handleClose}
       removeUnloadProtect={removeUnloadProtect}
       setUnloadProtect={setUnloadProtect}
     />
@@ -143,6 +149,7 @@ export default createBackboneView<ConstructorProps, Props, Props>({
   },
   Component: SchemaConfigWrapper,
   getComponentProps: (self) => ({
+    onClose: (): void => navigation.go('/specify/'),
     removeUnloadProtect: (): void => removeUnloadProtect(self),
     setUnloadProtect: (): void => setUnloadProtect(self),
   }),

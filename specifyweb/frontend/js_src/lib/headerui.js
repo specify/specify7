@@ -25,6 +25,7 @@ var toolModules = [
     require('./toolbarattachments.js'),
     require('./toolbarwbs.js'),
     require('./components/toolbarlanguage').default,
+    require('./toolbarschemaconfig').default,
     require('./toolbarmasterkey.js'),
     require('./toolbarusers.js'),
     require('./toolbartreerepair.js'),

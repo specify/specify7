@@ -1,5 +1,4 @@
 import React from 'react';
-import { sortObjectsByKey } from '../schemaconfighelper';
 
 import { reducer } from '../schemaconfigreducer';
 import { useId } from './common';
@@ -8,7 +7,7 @@ import type {
   CommonTableFields,
   SpLocaleContainer,
 } from './schemaconfigwrapper';
-import { handlePromiseReject } from './wbplanview';
+import { handlePromiseReject, IR } from './wbplanview';
 import type { RA } from './wbplanview';
 
 export type SpLocaleItem = CommonTableFields & {
@@ -43,33 +42,30 @@ export type SpLocaleItemStr = CommonTableFields & {
 export function SchemaConfig({
   languages,
   tables,
-  removeUnloadProtect: _,
-  setUnloadProtect: __,
+  onClose: handleClose,
+  removeUnloadProtect,
+  setUnloadProtect,
 }: {
   readonly languages: RA<string>;
-  readonly tables: RA<SpLocaleContainer>;
+  readonly tables: IR<SpLocaleContainer>;
+  readonly onClose: () => void;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, {
-    type: 'DialogState',
+    type: 'ChooseLanguageState',
   });
 
   const id = useId('schema-config');
 
-  // Select first table by default
+  // Fetch table after table is selected
+  const tableId = 'table' in state ? state.table.id : undefined;
   React.useEffect(() => {
-    if (state.type === 'MainState')
-      dispatch({
-        type: 'ChangeTableAction',
-        tableId: tables[0]?.id,
-      });
-  }, [state.type, tables]);
-
-  // Fetch table items on table change
-  const tableId = 'tableId' in state ? state.tableId : undefined;
-  React.useEffect(() => {
-    if (typeof tableId === 'undefined') return undefined;
+    if (
+      state.type !== 'FetchingTableItemsState' ||
+      typeof tableId === 'undefined'
+    )
+      return undefined;
     fetch(`/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`)
       .then<{ readonly objects: RA<SpLocaleItem> }>((response) =>
         response.json()
@@ -78,7 +74,7 @@ export function SchemaConfig({
         if (!destructorCalled)
           dispatch({
             type: 'SetTableItemsAction',
-            items: sortObjectsByKey(objects, 'name'),
+            items: Object.fromEntries(objects.map((item) => [item.id, item])),
           });
       })
       .catch(handlePromiseReject);
@@ -87,7 +83,17 @@ export function SchemaConfig({
     return (): void => {
       destructorCalled = true;
     };
-  }, [tableId]);
+  }, [state.type, tableId]);
+
+  // Set unload protect after changes were made
+  const changesMade =
+    state.type === 'MainState'
+      ? state.tableWasModified || state.modifiedItems.length > 0
+      : false;
+  React.useEffect(() => {
+    if (changesMade) setUnloadProtect();
+    return removeUnloadProtect;
+  }, [changesMade]);
 
   return stateReducer(<i />, {
     ...state,
@@ -96,6 +102,7 @@ export function SchemaConfig({
       tables,
       dispatch,
       id,
+      handleClose,
     },
   });
 }

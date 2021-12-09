@@ -8,6 +8,12 @@
   list-style: none;
 }
 
+.schema-config-content {
+  display: flex;
+  height: 100%;
+  column-gap: var(--size);
+}
+
 .schema-config h2,
 .schema-config h3 {
   margin: 0;
