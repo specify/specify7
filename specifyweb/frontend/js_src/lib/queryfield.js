@@ -218,8 +218,8 @@ export default Backbone.View.extend({
                 .catch(()=>{ /* not a tree table */ });
         },
         async getTreeRanks(tableName){
-            const getTreeDef = await getTreeDef(tableName);
-            const treeDefItems = await getTreeDef.rget('treedefitems');
+            const treeDef = await getTreeDef(tableName);
+            const treeDefItems = await treeDef.rget('treedefitems');
             await treeDefItems.fetch({limit: 0});
             return treeDefItems.models;
         },
@@ -341,18 +341,11 @@ export default Backbone.View.extend({
 
         // External event handlers.
 
-<<<<<<< HEAD
-        valueChanged: function(inputUI, value) {
+        valueChanged: function(_inputUI, value) {
             const nonNullValue = value ?? '';
             this.value = nonNullValue;
             this.spqueryfield.set('startvalue', nonNullValue);
             console.log('updating value to', nonNullValue);
-=======
-        valueChanged: function(_inputUI, value) {
-            this.value = value;
-            this.spqueryfield.set('startvalue', value);
-            console.log('updating value to', value);
->>>>>>> 0c9cc659 (Remove unused variables and imports)
         },
         positionChanged: function() {
             var position = this.$el.parent().find('li').index(this.el);

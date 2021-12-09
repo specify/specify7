@@ -13,6 +13,7 @@ import Q from 'q';
         promises.push(
             promise.tap(() => console.log('initial context:', name))
         );
+        return initialContext;
     }
 
     function lock() {
@@ -22,6 +23,7 @@ import Q from 'q';
             console.log('initial context finished');
             final.resolve();
         });
+        return initialContext;
     }
 
     function promise() {
