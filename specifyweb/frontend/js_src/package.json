@@ -36,7 +36,7 @@
     "q": "~1.4.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "typesafe-reducer": "^1.0.2",
+    "typesafe-reducer": "^1.0.3",
     "underscore": "~1.8.3",
     "xlsx": "~0.16.8"
   },
