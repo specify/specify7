@@ -231,8 +231,8 @@ export default Backbone.View.extend({
                 .catch(()=>{ /* not a tree table */ });
         },
         async getTreeRanks(tableName){
-            const getTreeDef = await getTreeDef(tableName);
-            const treeDefItems = await getTreeDef.rget('treedefitems');
+            const treeDef = await getTreeDef(tableName);
+            const treeDefItems = await treeDef.rget('treedefitems');
             await treeDefItems.fetch({limit: 0});
             return treeDefItems.models;
         },

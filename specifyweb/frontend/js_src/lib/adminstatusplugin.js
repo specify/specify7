@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import UIPlugin from './uiplugin';
-
+import userInfo from './userinfo';
 import adminText from './localization/admin';
 import userInfo from './userinfo';
 

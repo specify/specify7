@@ -5,11 +5,12 @@ import _ from 'underscore';
 import initialContext from './initialcontext';
 
 var iconGroups = {};
-initialContext.loadResource('icons_datamodel.xml', data => iconGroups.datamodel = data);
-initialContext.loadResource('icons_disciplines.xml', data => iconGroups.discipline = data);
-initialContext.loadResource('icons_imgproc.xml', data => iconGroups.imgproc = data);
-initialContext.loadResource('icons_plugins.xml', data => iconGroups.plugin = data);
-initialContext.loadResource('icons.xml', data => iconGroups.default = data);
+initialContext
+  .loadResource('icons_datamodel.xml', data => iconGroups.datamodel = data)
+  .loadResource('icons_disciplines.xml', data => iconGroups.discipline = data)
+  .loadResource('icons_imgproc.xml', data => iconGroups.imgproc = data)
+  .loadResource('icons_plugins.xml', data => iconGroups.plugin = data)
+  .loadResource('icons.xml', data => iconGroups.default = data)
 
     var iconDirs = {
         datamodel: '/images/datamodel/',
