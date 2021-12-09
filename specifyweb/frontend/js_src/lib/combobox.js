@@ -13,6 +13,7 @@ var UserTypeCBX         = require('./usertypecbx.js');
 var PickListTypeCBX     = require('./picklisttypecbx.js');
 var PickListTableCBX    = require('./picklisttablecbx.js');
 var PickListFieldCBX    = require('./picklistfieldcbx.js');
+var DivisionFieldCBX    = require('./divisionfieldcbx.js');
 var TreeLevelCBX        = require('./treelevelcbx.js');
 
     function getCBX(options, resource, field) {
@@ -36,6 +37,10 @@ var TreeLevelCBX        = require('./treelevelcbx.js');
 
         if (resource.specifyModel.name === 'PickList' && options.fieldName === 'fieldsCBX') {
             return new PickListFieldCBX(options);
+        }
+
+        if (resource.specifyModel.name === 'Accession' && options.fieldName === 'divisionCBX') {
+            return new DivisionFieldCBX(options);
         }
 
         if (options.fieldName === 'definitionItem') {

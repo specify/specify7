@@ -49,6 +49,7 @@ const userInfo             = require('./userinfo.js');
                     label.text(cell.attr('label'));
                 var labelfor = cell.attr('labelfor');
                 labelfor && label.prop('for', 'specify-field-' + formNumber + '-' + labelfor);
+                label.attr('data-specify-label-id',cell.attr('id'));
                 return $('<td class="specify-form-label">').append(label);
             },
             separator: function() {
