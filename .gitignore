@@ -19,6 +19,7 @@ seed-database
 
 # Build artifacts:
 /.mypy_cache
+/specifyweb/frontend/locale/**/*.mo
 /specifyweb/settings/build_version.py
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js

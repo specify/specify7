@@ -91,7 +91,7 @@ repos:
           - --skip="./node_modules/,package-lock.json,./.idea/"
 
   - repo: https://github.com/psf/black
-    rev: 21.8b0
+    rev: 21.10b0
     hooks:
       - id: black
         args:
@@ -110,7 +110,7 @@ repos:
           - --extend-ignore=E203,E501
 
   - repo: https://github.com/terrencepreilly/darglint
-    rev: v1.8.0
+    rev: v1.8.1
     hooks:
       - id: darglint
         args:
@@ -122,17 +122,17 @@ repos:
       - id: pydocstyle
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.25.0
+    rev: v2.29.0
     hooks:
       - id: pyupgrade
 
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.17.0
+    rev: v1.19.0
     hooks:
       - id: setup-cfg-fmt
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.2
+    rev: v2.4.1
     hooks:
       - id: prettier
         additional_dependencies:
@@ -148,17 +148,17 @@ repos:
       - id: stylelint
         files: \.(css|scss|sass|js|jsx|ts|tsx)$
         additional_dependencies:
-          - stylelint@^13.13.1
-          - stylelint-config-prettier@^8.0.2
-          - stylelint-config-standard@^22.0.0
+          - stylelint@^14.0.1
+          - stylelint-config-prettier@^9.0.3
+          - stylelint-config-standard@^23.0.0
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.2.1
+    rev: v1.2.2
     hooks:
       - id: python-safety-dependencies-check
 
   - repo: https://github.com/jorisroovers/gitlint
-    rev: v0.15.1
+    rev: v0.16.0
     hooks:
       - id: gitlint
 

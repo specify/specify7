@@ -10,6 +10,7 @@ from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
 
 from django.db import connection, transaction
 from django.db.utils import OperationalError
+from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import Table, datamodel
@@ -129,7 +130,7 @@ def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
-        name=f'WB Upload of {ds.name}',
+        name=_('WB Upload of %(data_set_name)s') %{'data_set_name':ds.name},
         specifyuser=ds.specifyuser,
         type=0,
     )

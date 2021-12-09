@@ -82,6 +82,17 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+LOCALE_PATHS = (
+    os.path.join(
+        os.path.abspath(os.path.dirname(__name__)),
+        'frontend','locale'
+    ),
+)
+
+LANGUAGES = [
+    ('en-us', 'English'),
+]
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -158,8 +169,9 @@ TEMPLATES = [
 MIDDLEWARE = [
 #    'middleware.profilemiddleware.ProfileMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware'

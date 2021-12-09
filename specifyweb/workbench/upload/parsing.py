@@ -8,6 +8,7 @@ from decimal import Decimal
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
@@ -148,7 +149,10 @@ def parse_boolean(fieldname: str, value: str, column: str) -> Union[ParseResult,
     elif value.lower() in ["no", "false"]:
         result = False
     else:
-        return ParseFailure(f"value {value} not resolvable to True or False", column)
+        return ParseFailure(
+            _("value %(value)s not resolvable to True or False") % {'value': value},
+            column
+        )
 
     return filter_and_upload({fieldname: result}, column)
 
@@ -156,7 +160,10 @@ def parse_decimal(fieldname: str, value: str, column) -> Union[ParseResult, Pars
     try:
         result = Decimal(value)
     except Exception as e:
-        return ParseFailure(f"value {value} is not a valid decimal value", column)
+        return ParseFailure(
+            _("value $(value)s is not a valid decimal value") % {'value': value},
+            column
+        )
 
     return filter_and_upload({fieldname: result}, column)
 
@@ -184,10 +191,11 @@ def parse_with_picklist(collection, picklist, fieldname: str, value: str, column
         except ObjectDoesNotExist:
             if picklist.readonly:
                 return ParseFailure(
-                    f"\"{value}\" is not a legal value in this picklist field.\n"
-                    f"Click on the arrow to choose among available "
-                    f"options."
-                , column)
+                    _("\"%(value)s\" is not a legal value in this picklist field.\n"
+                    "Click on the arrow to choose among available "
+                    "options.") % {'value': value},
+                    column
+                )
             else:
                 return filter_and_upload({fieldname: value}, column)._replace(
                     add_to_picklist=PicklistAddition(picklist=picklist, column=column, value=value)
@@ -214,7 +222,7 @@ def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]
     try:
         agenttype = agenttypes.index(value)
     except ValueError:
-        return ParseFailure("bad agent type: {}. Expected one of {}".format(value, agenttypes), column)
+        return ParseFailure(_("bad agent type: %(bad_type)s. Expected one of %(valid_types)s") % {'bad_type': value, 'valid_types': agenttypes}, column)
     return filter_and_upload({'agenttype': agenttype}, column)
 
 def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:

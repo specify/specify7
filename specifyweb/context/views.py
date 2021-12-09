@@ -15,6 +15,7 @@ from django.utils.http import is_safe_url
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
+from django.utils.translation import gettext as _
 
 from specifyweb.specify.models import Agent, Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
@@ -575,12 +576,14 @@ def generate_openapi_for_endpoints(all_endpoints=False):
 
     return {
         **base_schema(
-            "Specify 7 Operations API",
-            description="""<a href="/documentation/api/tables/">
-                Specify 7 APIs for database tables
-            </a><br><a href="/documentation/api/operations/all/">
-                Specify 7 APIs for system operations (all endpoints)
-            </a>"""
+            _("Specify 7 Operations API"),
+            description=(
+                '<a href="/documentation/api/tables/">'
+                f'{_("Specify 7 APIs for database tables")}'
+                '</a><br><a href="/documentation/api/operations/all/">'
+                f'{_("Specify 7 APIs for system operations (all endpoints)")}'
+                '</a>'
+            )
         ),
         **dict(
             tags=tags,

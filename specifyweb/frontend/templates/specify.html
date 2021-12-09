@@ -1,5 +1,6 @@
 {% load raven %}
 {% load script_manifest %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,12 +30,12 @@
               disabled
             ></button>
             <form id="express-search" action="/specify/express_search/">
-              <input type="search" class="express-search-query" name="q" placeholder="Search">
+              <input type="search" class="express-search-query" name="q" placeholder="{% trans 'Search' %}">
             </form>
           </div>
         </div>
       </div>
-      <nav id="site-nav"><ul><li id="header-loading">Specify is loading...</li></ul></nav>
+      <nav id="site-nav"><ul><li id="header-loading">{% trans 'Specify is loading...' %}</li></ul></nav>
     </header>
     <div id="content">
     </div>
