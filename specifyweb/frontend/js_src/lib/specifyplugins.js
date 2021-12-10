@@ -13,7 +13,7 @@ var providers = [
     require('./collectionrelonetomanyplugin.js'),
     require('./collectionrelonetooneplugin.js'),
     require('./geolocateplugin.js'),
-    require('./weblinkbutton.js'),
+    require('./weblinkbutton.js').default,
     require('./attachmentplugin.js'),
     require('./hosttaxonplugin.js'),
     require('./passwordplugin.js'),

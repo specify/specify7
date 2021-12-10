@@ -77,6 +77,7 @@ type StateWithParameters = States & {
     readonly id: (suffix: string) => string;
     readonly handleClose: () => void;
     readonly formatters: RA<Formatter>;
+    readonly webLinks: RA<string>;
   };
 };
 
@@ -170,7 +171,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       itemId,
       tableWasModified,
       modifiedItems,
-      parameters: { id, dispatch, handleClose, formatters },
+      parameters: { id, dispatch, handleClose, formatters, webLinks },
     },
   }) {
     const sortedItems = sortObjectsByKey(Object.values(items), 'name');
@@ -317,9 +318,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </select>
           </section>
           <section>
-            <h3>{items[itemId].name}</h3>
+            <h3>{commonText('field')}: {items[itemId].name}</h3>
             <label>
-              {commonText('field')}: {commonText('caption')}
+              {commonText('caption')}
               <input
                 type="text"
                 value={items[itemId].strings.name.text}
@@ -440,8 +441,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 webLink: {
                   label: commonText('webLink'),
                   value: items[itemId].weblinkname,
-                  // TODO: finish this
-                  values: [],
+                  values: webLinks,
                   disabled: items[itemId].dataModel.isRelationship,
                 },
                 pickList: {

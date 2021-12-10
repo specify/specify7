@@ -14,6 +14,7 @@ import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 import UiFormatters from '../uiformatters';
+import {webLinksDefs} from '../weblinkbutton';
 
 type ConstructorProps = IR<never>;
 type BackboneProps = {
@@ -187,6 +188,7 @@ function SchemaConfigWrapper({
           )?.value() as string,
         })
       ).filter(({ value }) => value)}
+      webLinks={Object.keys(webLinksDefs)}
       onClose={handleClose}
       onSave={handleSave}
       removeUnloadProtect={removeUnloadProtect}
