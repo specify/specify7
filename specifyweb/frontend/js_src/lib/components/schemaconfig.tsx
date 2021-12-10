@@ -49,11 +49,16 @@ export type SpLocaleItemStr = CommonTableFields & {
    */
 };
 
-export type Formatter = {
+export type UiFormatter = {
   readonly name: string;
   readonly isSystem: boolean;
   readonly isDefault: boolean;
   readonly value: string;
+};
+
+export type DataObjFormatter = {
+  readonly title: string;
+  readonly className: string;
 };
 
 export type ItemType = 'none' | 'formatted' | 'webLink' | 'pickList';
@@ -63,8 +68,9 @@ export function SchemaConfig({
   tables,
   defaultLanguage,
   defaultTable,
-  formatters,
   webLinks,
+  uiFormatters,
+  dataObjFormatters,
   onClose: handleClose,
   onSave: handleSave,
   removeUnloadProtect,
@@ -74,8 +80,9 @@ export function SchemaConfig({
   readonly tables: IR<SpLocaleContainer>;
   readonly defaultLanguage: string | undefined;
   readonly defaultTable: SpLocaleContainer | undefined;
-  readonly formatters: RA<Formatter>;
   readonly webLinks: RA<string>;
+  readonly uiFormatters: RA<UiFormatter>;
+  readonly dataObjFormatters: IR<DataObjFormatter>;
   readonly onClose: () => void;
   readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
@@ -249,8 +256,9 @@ export function SchemaConfig({
       dispatch,
       id,
       handleClose,
-      formatters,
       webLinks,
+      uiFormatters,
+      dataObjFormatters,
     },
   });
 }

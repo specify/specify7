@@ -43,10 +43,17 @@ type ChangeItemAction = Action<
   }
 >;
 
-type ChangeAction = Action<
-  'ChangeAction',
+type TableModifiedAction = Action<
+  'TableModifiedAction',
   {
-    isTable: boolean;
+    field: 'name' | 'desc' | 'ishidden' | 'format';
+    value: string | boolean | null;
+  }
+>;
+
+type FieldModifiedAction = Action<
+  'FieldModifiedAction',
+  {
     field: 'name' | 'desc' | 'ishidden' | 'isrequired';
     value: string | boolean;
   }
@@ -68,7 +75,8 @@ export type Actions =
   | ChooseTableAction
   | FetchedTableDataAction
   | ChangeItemAction
-  | ChangeAction
+  | TableModifiedAction
+  | FieldModifiedAction
   | ChangeFieldFormatAction
   | SaveAction;
 
@@ -110,59 +118,56 @@ export const reducer = generateReducer<States, Actions>({
       itemId,
     })
   ),
-  ChangeAction: ensureState(
+  TableModifiedAction: ensureState(
     ['MainState'],
-    ({ action: { isTable, field, value }, state }) => {
-      return {
-        ...state,
-        tableWasModified: state.tableWasModified || isTable,
-        ...(isTable
+    ({ action: { field, value }, state }) => ({
+      ...state,
+      tableWasModified: true,
+      table: {
+        ...state.table,
+        ...(field === 'ishidden' || field === 'format'
           ? {
-              table: {
-                ...state.table,
-                ...(field === 'isrequired'
-                  ? {}
-                  : field === 'ishidden'
-                  ? {
-                      ishidden: value as boolean,
-                    }
-                  : {
-                      strings: {
-                        ...state.table.strings,
-                        [field]: {
-                          ...state.table.strings[field],
-                          text: value,
-                        },
-                      },
-                    }),
-              },
+              [field]: value,
             }
           : {
-              modifiedItems: Array.from(
-                new Set([...state.modifiedItems, state.itemId])
-              ),
-              items: {
-                ...state.items,
-                [state.itemId]: {
-                  ...state.items[state.itemId],
-                  ...(field === 'ishidden' || field === 'isrequired'
-                    ? {
-                        [field]: value as boolean,
-                      }
-                    : {
-                        strings: {
-                          ...state.items[state.itemId].strings,
-                          [field]: {
-                            ...state.items[state.itemId].strings[field],
-                            text: value,
-                          },
-                        },
-                      }),
+              strings: {
+                ...state.table.strings,
+                [field]: {
+                  ...state.table.strings[field],
+                  text: value,
                 },
               },
             }),
-      };
-    }
+      },
+    })
+  ),
+  FieldModifiedAction: ensureState(
+    ['MainState'],
+    ({ action: { field, value }, state }) => ({
+      ...state,
+      modifiedItems: Array.from(
+        new Set([...state.modifiedItems, state.itemId])
+      ),
+      items: {
+        ...state.items,
+        [state.itemId]: {
+          ...state.items[state.itemId],
+          ...(field === 'ishidden' || field === 'isrequired'
+            ? {
+                [field]: value as boolean,
+              }
+            : {
+                strings: {
+                  ...state.items[state.itemId].strings,
+                  [field]: {
+                    ...state.items[state.itemId].strings[field],
+                    text: value,
+                  },
+                },
+              }),
+        },
+      },
+    })
   ),
   ChangeFieldFormatAction: ensureState(
     ['MainState'],

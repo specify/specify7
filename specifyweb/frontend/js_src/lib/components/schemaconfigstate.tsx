@@ -12,7 +12,7 @@ import {
 import type { Actions } from '../schemaconfigreducer';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import { Formatter } from './schemaconfig';
+import { DataObjFormatter, UiFormatter } from './schemaconfig';
 import type { ItemType, SpLocaleItem } from './schemaconfig';
 import type {
   WithTableInfo,
@@ -76,8 +76,9 @@ type StateWithParameters = States & {
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
     readonly handleClose: () => void;
-    readonly formatters: RA<Formatter>;
     readonly webLinks: RA<string>;
+    readonly uiFormatters: RA<UiFormatter>;
+    readonly dataObjFormatters: IR<DataObjFormatter>;
   };
 };
 
@@ -171,7 +172,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       itemId,
       tableWasModified,
       modifiedItems,
-      parameters: { id, dispatch, handleClose, formatters, webLinks },
+      parameters: {
+        id,
+        dispatch,
+        handleClose,
+        webLinks,
+        uiFormatters,
+        dataObjFormatters,
+      },
     },
   }) {
     const sortedItems = sortObjectsByKey(Object.values(items), 'name');
@@ -182,6 +190,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
       ([_id, name]) => name === items[itemId].picklistname
     )?.[0];
+    const filteredDataObjFormatters = Object.fromEntries(
+      Object.entries(dataObjFormatters)
+        .filter(
+          ([_name, { className }]) =>
+            className.split('.').slice(-1)[0].toLowerCase() === table.name
+        )
+        .map(([name, { title }]) => [name, title])
+    );
     return (
       <>
         <header>
@@ -237,8 +253,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 value={table.strings.name.text}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: true,
+                    type: 'TableModifiedAction',
                     field: 'name',
                     value: target.value,
                   })
@@ -251,8 +266,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 value={table.strings.desc.text}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: true,
+                    type: 'TableModifiedAction',
                     field: 'desc',
                     value: target.value,
                   })
@@ -261,7 +275,25 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </label>
             <label>
               {commonText('tableFormat')}
-              <input type="text" readOnly={true} value={table.format ?? ''} />
+              <select
+                value={table.format ?? '0'}
+                onChange={({ target }): void =>
+                  dispatch({
+                    type: 'TableModifiedAction',
+                    field: 'format',
+                    value: target.value === '0' ? null : target.value,
+                  })
+                }
+              >
+                <option value="0">{commonText('none')}</option>
+                {Object.entries(filteredDataObjFormatters).map(
+                  ([name, title]) => (
+                    <option key={name} value={name}>
+                      {title || name}
+                    </option>
+                  )
+                )}
+              </select>
             </label>
             <label>
               {commonText('tableAggregation')}
@@ -277,8 +309,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 checked={table.ishidden}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: true,
+                    type: 'TableModifiedAction',
                     field: 'ishidden',
                     value: target.checked,
                   })
@@ -318,7 +349,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </select>
           </section>
           <section>
-            <h3>{commonText('field')}: {items[itemId].name}</h3>
+            <h3>
+              {commonText('field')}: {items[itemId].name}
+            </h3>
             <label>
               {commonText('caption')}
               <input
@@ -326,8 +359,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 value={items[itemId].strings.name.text}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: false,
+                    type: 'FieldModifiedAction',
                     field: 'name',
                     value: target.value,
                   })
@@ -340,8 +372,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 value={items[itemId].strings.desc.text}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: false,
+                    type: 'FieldModifiedAction',
                     field: 'desc',
                     value: target.value,
                   })
@@ -374,8 +405,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 checked={items[itemId].ishidden}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: false,
+                    type: 'FiieldModifiedAction',
                     field: 'ishidden',
                     value: target.checked,
                   })
@@ -402,8 +432,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 disabled={!items[itemId].dataModel.canChangeIsRequired}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'ChangeAction',
-                    isTable: false,
+                    type: 'FiieldModifiedAction',
                     field: 'isrequired',
                     value: target.checked,
                   })
@@ -423,8 +452,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 formatted: {
                   label: commonText('formatted'),
                   value: items[itemId].format,
-                  values: formatters.map(
-                    ({ name, isSystem, isDefault, value }) =>
+                  values: uiFormatters
+                    .map(({ name, isSystem, isDefault, value }) =>
                       [
                         name,
                         ...[
@@ -435,7 +464,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                           .filter(Boolean)
                           .map((value) => `(${value})`),
                       ].join(' ')
-                  ).sort(),
+                    )
+                    .sort(),
                   disabled: items[itemId].dataModel.isRelationship,
                 },
                 webLink: {
