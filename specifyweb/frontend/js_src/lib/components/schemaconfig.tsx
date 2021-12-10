@@ -1,5 +1,6 @@
 import React from 'react';
 
+import csrfToken from '../csrftoken';
 import type { Schema } from '../legacytypes';
 import schema from '../schema';
 import { fetchStrings } from '../schemaconfighelper';
@@ -49,19 +50,40 @@ export type SpLocaleItemStr = CommonTableFields & {
 export function SchemaConfig({
   languages,
   tables,
+  defaultLanguage,
+  defaultTable,
   onClose: handleClose,
+  onSave: handleSave,
   removeUnloadProtect,
   setUnloadProtect,
 }: {
   readonly languages: RA<string>;
   readonly tables: IR<SpLocaleContainer>;
+  readonly defaultLanguage: string | undefined;
+  readonly defaultTable: SpLocaleContainer | undefined;
   readonly onClose: () => void;
+  readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
 }): JSX.Element {
-  const [state, dispatch] = React.useReducer(reducer, {
-    type: 'ChooseLanguageState',
-  });
+  const [state, dispatch] = React.useReducer(
+    reducer,
+    typeof defaultTable === 'undefined' ||
+      typeof defaultLanguage === 'undefined'
+      ? typeof defaultLanguage === 'undefined'
+        ? {
+            type: 'ChooseLanguageState',
+          }
+        : {
+            type: 'ChooseTableState',
+            language: defaultLanguage,
+          }
+      : {
+          type: 'FetchingTableItemsState',
+          language: defaultLanguage,
+          table: defaultTable,
+        }
+  );
 
   const id = useId('schema-config');
 
@@ -78,7 +100,7 @@ export function SchemaConfig({
 
     const fields = Object.fromEntries(
       Object.values((schema as unknown as Schema).models)
-        .find(({name}) => name.toLowerCase() === state.table.name)
+        .find(({ name }) => name.toLowerCase() === state.table.name)
         ?.fields.map((field) => [
           field.name,
           {
@@ -148,9 +170,38 @@ export function SchemaConfig({
   React.useEffect(() => {
     if (state.type !== 'SavingState') return;
     removeUnloadProtect();
-    // TODO: save changes
-    console.log(state);
-    alert('Saving');
+
+    const saveResource = (resource: CommonTableFields): Promise<Response> =>
+      fetch(resource.resource_uri, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken!,
+        },
+        body: JSON.stringify(resource),
+      });
+
+    const { strings, ...table } = state.table;
+    const requests = [
+      ...(state.tableWasModified
+        ? [
+            saveResource(table),
+            saveResource(strings.name),
+            saveResource(strings.desc),
+          ]
+        : []),
+      ...state.modifiedItems
+        .map((id) => state.items[id])
+        .flatMap(({ strings, dataModel: _, ...item }) => [
+          saveResource(item),
+          saveResource(strings.name),
+          saveResource(strings.desc),
+        ]),
+    ];
+
+    Promise.all(requests)
+      .then(() => handleSave(state.language))
+      .catch(handlePromiseReject);
   }, [state.type]);
 
   return stateReducer(<i />, {
