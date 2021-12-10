@@ -72,5 +72,9 @@ var initialContext = require('./initialcontext.js');
         });
     }
 
-module.exports = { format: dataobjformat, aggregate: aggregate };
+module.exports = {
+    format: dataobjformat,
+    aggregate,
+    getAll: ()=>Array.from(formatters.getElementsByTagName('format')),
+};
 

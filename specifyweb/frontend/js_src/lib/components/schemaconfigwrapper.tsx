@@ -14,7 +14,8 @@ import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 import UiFormatters from '../uiformatters';
-import {webLinksDefs} from '../weblinkbutton';
+import { webLinksDefs } from '../weblinkbutton';
+import DataObjFormatters from '../dataobjformatters';
 
 type ConstructorProps = IR<never>;
 type BackboneProps = {
@@ -177,7 +178,8 @@ function SchemaConfigWrapper({
       defaultTable={Object.values(tables).find(
         ({ name }) => name === defaultTable
       )}
-      formatters={Array.from(
+      webLinks={Object.keys(webLinksDefs)}
+      uiFormatters={Array.from(
         (UiFormatters.getAll() as Document).getElementsByTagName('format'),
         (format) => ({
           name: format.getAttribute('name') ?? '',
@@ -188,7 +190,15 @@ function SchemaConfigWrapper({
           )?.value() as string,
         })
       ).filter(({ value }) => value)}
-      webLinks={Object.keys(webLinksDefs)}
+      dataObjFormatters={Object.fromEntries(
+        (DataObjFormatters.getAll() as RA<Element>).map((formatter) => [
+          formatter.getAttribute('name') ?? '',
+          {
+            title: formatter.getAttribute('title') ?? '',
+            className: formatter.getAttribute('class') ?? '',
+          },
+        ])
+      )}
       onClose={handleClose}
       onSave={handleSave}
       removeUnloadProtect={removeUnloadProtect}
