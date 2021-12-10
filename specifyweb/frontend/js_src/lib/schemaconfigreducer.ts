@@ -1,15 +1,16 @@
 import type { Action } from 'typesafe-reducer';
 import { ensureState, generateReducer } from 'typesafe-reducer';
 
-import type { SpLocaleItem } from './components/schemaconfig';
+import type { ItemType, SpLocaleItem } from './components/schemaconfig';
 import type { States } from './components/schemaconfigstate';
 import {
   SpLocaleContainer,
-  WithDatamodelFields,
+  WithFieldInfo,
   WithFetchedStrings,
+  WithTableInfo,
 } from './components/schemaconfigwrapper';
 import type { IR } from './components/wbplanview';
-import { isRelationship, sortObjectsByKey } from './schemaconfighelper';
+import { sortObjectsByKey } from './schemaconfighelper';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -27,11 +28,11 @@ type ChooseTableAction = Action<
   }
 >;
 
-type FetchedTableStringsAction = Action<
-  'FetchedTableStringsAction',
+type FetchedTableDataAction = Action<
+  'FetchedTableDataAction',
   {
-    table: SpLocaleContainer & WithFetchedStrings;
-    items: IR<SpLocaleItem & WithFetchedStrings & WithDatamodelFields>;
+    table: SpLocaleContainer & WithFetchedStrings & WithTableInfo;
+    items: IR<SpLocaleItem & WithFetchedStrings & WithFieldInfo>;
   }
 >;
 
@@ -51,15 +52,24 @@ type ChangeAction = Action<
   }
 >;
 
+type ChangeFieldFormatAction = Action<
+  'ChangeFieldFormatAction',
+  {
+    format: ItemType;
+    value: string | null;
+  }
+>;
+
 type SaveAction = Action<'SaveAction'>;
 
 export type Actions =
   | ChooseLanguageAction
   | ChangeLanguageAction
   | ChooseTableAction
-  | FetchedTableStringsAction
+  | FetchedTableDataAction
   | ChangeItemAction
   | ChangeAction
+  | ChangeFieldFormatAction
   | SaveAction;
 
 export const reducer = generateReducer<States, Actions>({
@@ -78,7 +88,7 @@ export const reducer = generateReducer<States, Actions>({
       table,
     })
   ),
-  FetchedTableStringsAction: ensureState(
+  FetchedTableDataAction: ensureState(
     ['FetchingTableItemsState'],
     ({ action: { items, table }, state }) => ({
       type: 'MainState',
@@ -87,7 +97,7 @@ export const reducer = generateReducer<States, Actions>({
       items,
       itemId:
         sortObjectsByKey(Object.values(items), 'name').find(
-          (item) => !isRelationship(item)
+          (item) => !item.dataModel.isRelationship
         )?.id ?? Object.values(items)[0].id,
       tableWasModified: false,
       modifiedItems: [],
@@ -110,7 +120,9 @@ export const reducer = generateReducer<States, Actions>({
           ? {
               table: {
                 ...state.table,
-                ...(field === 'ishidden' || field === 'isrequired'
+                ...(field === 'isrequired'
+                  ? {}
+                  : field === 'ishidden'
                   ? {
                       ishidden: value as boolean,
                     }
@@ -135,7 +147,7 @@ export const reducer = generateReducer<States, Actions>({
                   ...state.items[state.itemId],
                   ...(field === 'ishidden' || field === 'isrequired'
                     ? {
-                        ishidden: value as boolean,
+                        [field]: value as boolean,
                       }
                     : {
                         strings: {
@@ -151,6 +163,23 @@ export const reducer = generateReducer<States, Actions>({
             }),
       };
     }
+  ),
+  ChangeFieldFormatAction: ensureState(
+    ['MainState'],
+    ({ action: { format, value }, state }) => ({
+      ...state,
+      modifiedItems: Array.from(
+        new Set([...state.modifiedItems, state.itemId])
+      ),
+      items: {
+        ...state.items,
+        [state.itemId]: {
+          ...state.items[state.itemId],
+          weblinkname: format === 'webLink' ? value : null,
+          picklistname: format === 'pickList' ? value : null,
+        },
+      },
+    })
   ),
   SaveAction: ensureState(['MainState'], ({ state }) => ({
     ...state,

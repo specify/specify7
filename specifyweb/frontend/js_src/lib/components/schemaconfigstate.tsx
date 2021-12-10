@@ -5,18 +5,16 @@ import { generateReducer } from 'typesafe-reducer';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import {
-  isRelationship,
+  getItemType,
   javaTypeToHuman,
   sortObjectsByKey,
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import type { SpLocaleItem } from './schemaconfig';
-import type {
-  WithDatamodelFields,
-  WithFetchedStrings,
-} from './schemaconfigwrapper';
+import type { ItemType, SpLocaleItem } from './schemaconfig';
+import { WithTableInfo } from './schemaconfigwrapper';
+import type { WithFieldInfo, WithFetchedStrings } from './schemaconfigwrapper';
 import type { SpLocaleContainer } from './schemaconfigwrapper';
 import type { IR, RA } from './wbplanview';
 
@@ -41,8 +39,8 @@ type MainState = State<
   'MainState',
   {
     language: string;
-    table: SpLocaleContainer & WithFetchedStrings;
-    items: IR<SpLocaleItem & WithFetchedStrings & WithDatamodelFields>;
+    table: SpLocaleContainer & WithFetchedStrings & WithTableInfo;
+    items: IR<SpLocaleItem & WithFetchedStrings & WithFieldInfo>;
     itemId: number;
     tableWasModified: boolean;
     modifiedItems: RA<number>;
@@ -53,8 +51,8 @@ type SavingState = State<
   'SavingState',
   {
     language: string;
-    table: SpLocaleContainer & WithFetchedStrings;
-    items: IR<SpLocaleItem & WithFetchedStrings & WithDatamodelFields>;
+    table: SpLocaleContainer & WithFetchedStrings & WithTableInfo;
+    items: IR<SpLocaleItem & WithFetchedStrings & WithFieldInfo>;
     tableWasModified: boolean;
     modifiedItems: RA<number>;
   }
@@ -96,7 +94,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             <li key={language}>
               <button
                 type="button"
-                className="fake-link"
+                className="fake-link language-link"
                 onClick={(): void =>
                   dispatch({
                     type: 'ChooseLanguageAction',
@@ -146,10 +144,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
                 type="button"
                 className="fake-link"
-                style={{
-                  fontWeight: 800,
-                  color: 'inherit',
-                }}
               >
                 <TableIcon tableName={table.name} tableLabel={false} />
                 {table.name}
@@ -175,13 +169,13 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     },
   }) {
     const sortedItems = sortObjectsByKey(Object.values(items), 'name');
-    const fields = sortedItems.filter((item) => !isRelationship(item));
-    const relationships = sortedItems.filter((item) => isRelationship(item));
+    const fields = sortedItems.filter((item) => !item.dataModel.isRelationship);
+    const relationships = sortedItems.filter((item) => item.dataModel.isRelationship);
     return (
       <>
         <header>
           <h2>
-            {commonText('schemaConfig')}: {language}
+            {commonText('schemaConfig')} ({language})
           </h2>
           <span className="spacer" />
           <menu>
@@ -252,6 +246,18 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               />
             </label>
+            <label>
+              {commonText('tableFormat')}
+              <input
+                type="text"
+                readOnly={true}
+                value={table.aggregator ?? ''}
+              />
+            </label>
+            <label>
+              {commonText('tableAggregation')}
+              <input type="text" readOnly={true} value={table.format ?? ''} />
+            </label>
             <label className="horizontal">
               <input
                 type="checkbox"
@@ -266,18 +272,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               />
               {commonText('hideTable')}
-            </label>
-            <label>
-              {commonText('tableFormat')}
-              <input
-                type="text"
-                readOnly={true}
-                value={table.aggregator ?? ''}
-              />
-            </label>
-            <label>
-              {commonText('tableAggregation')}
-              <input type="text" readOnly={true} value={table.format ?? ''} />
             </label>
           </section>
           <section>
@@ -341,6 +335,25 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               />
             </label>
+            <label>
+              {commonText('length')}
+              <input
+                type="number"
+                value={items[itemId].dataModel.length ?? ''}
+                readOnly={true}
+              />
+            </label>
+            <label>
+              {commonText('type')}
+              <input
+                type="text"
+                readOnly={true}
+                value={javaTypeToHuman(
+                  items[itemId].dataModel.type,
+                  items[itemId].dataModel.relatedModelName
+                )}
+              />
+            </label>
             <label className="horizontal">
               <input
                 type="checkbox"
@@ -360,7 +373,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <input
                 type="checkbox"
                 checked={items[itemId].dataModel.readOnly ?? false}
-                readOnly={true}
+                disabled={true}
               />
               {commonText('readOnly')}
             </label>
@@ -368,11 +381,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <input
                 type="checkbox"
                 checked={
-                  items[itemId].dataModel.canEditRequired
+                  items[itemId].dataModel.canChangeIsRequired
                     ? items[itemId].dataModel.isRequired
                     : items[itemId].isrequired ?? false
                 }
-                readOnly={items[itemId].dataModel.canEditRequired}
+                disabled={!items[itemId].dataModel.canChangeIsRequired}
                 onChange={({ target }): void =>
                   dispatch({
                     type: 'ChangeAction',
@@ -384,25 +397,85 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               />
               {commonText('required')}
             </label>
-            <label>
-              {commonText('length')}
-              <input
-                type="number"
-                value={items[itemId].dataModel.length ?? ''}
-                readOnly={true}
-              />
-            </label>
-            <label>
-              {commonText('type')}
-              <input
-                type="text"
-                readOnly={true}
-                value={javaTypeToHuman(
-                  items[itemId].type,
-                  items[itemId].dataModel.relatedModelName
-                )}
-              />
-            </label>
+            <fieldset>
+              <legend>{commonText('fieldFormat')}</legend>
+              {Object.entries({
+                none: {
+                  label: commonText('none'),
+                  value: null,
+                  values: undefined,
+                  disabled: false,
+                },
+                formatted: {
+                  label: commonText('formatted'),
+                  // TODO: finish this
+                  value: null,
+                  values: [],
+                  disabled: items[itemId].dataModel.isRelationship,
+                },
+                webLink: {
+                  label: commonText('webLink'),
+                  value: items[itemId].weblinkname,
+                  values: [],
+                  disabled: items[itemId].dataModel.isRelationship,
+                },
+                pickList: {
+                  label: commonText('pickList'),
+                  value: items[itemId].picklistname,
+                  values: table.dataModel.pickLists,
+                  disabled: false,
+                },
+              }).map(([key, { label, value, values, disabled }]) => (
+                <div className="group" key={key}>
+                  <label className="horizontal">
+                    <input
+                      type="radio"
+                      name={id('format')}
+                      value="none"
+                      checked={key === getItemType(items[itemId])}
+                      disabled={disabled}
+                      onChange={(): void =>
+                        dispatch({
+                          type: 'ChangeFieldFormatAction',
+                          format: key as ItemType,
+                          value: values ? values[0] ?? null : null,
+                        })
+                      }
+                    />
+                    {label}
+                  </label>
+                  {values && (
+                    <select
+                      aria-label={label}
+                      value={value ?? '0'}
+                      disabled={disabled}
+                      onChange={({ target }): void =>
+                        dispatch({
+                          type: 'ChangeFieldFormatAction',
+                          format: key as ItemType,
+                          value: target.value === '0' ? null : target.value,
+                        })
+                      }
+                    >
+                      {values.length === 0 ? (
+                        <option value="0" disabled>
+                          {commonText('noneAvailable')}
+                        </option>
+                      ) : (
+                        <>
+                          <option value="0">{commonText('none')}</option>
+                          {values.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                  )}
+                </div>
+              ))}
+            </fieldset>
           </section>
         </div>
       </>

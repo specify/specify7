@@ -1036,11 +1036,6 @@ const commonText = createDictionary({
     'ru-ru': 'Агрегация таблиц',
     ca: 'Agregació de taules',
   },
-  webLinks: {
-    'en-us': 'Web Links',
-    'ru-ru': 'Веб ссылки',
-    ca: 'Enllaços web',
-  },
   type: {
     'en-us': 'Type',
     'ru-ru': 'Тип',
@@ -1071,11 +1066,6 @@ const commonText = createDictionary({
     'ru-ru': 'Длина',
     ca: 'Llargada',
   },
-  fieldFormat: {
-    'en-us': 'Field Format',
-    'ru-ru': 'Формат поля',
-    ca: 'Format de camp',
-  },
   readOnly: {
     'en-us': 'Read-only',
     'ru-ru': 'Только чтение',
@@ -1085,6 +1075,36 @@ const commonText = createDictionary({
     'en-us': 'Required',
     'ru-ru': 'Необходимый',
     ca: 'Obligatori',
+  },
+  fieldFormat: {
+    'en-us': 'Field Format',
+    'ru-ru': 'Формат поля',
+    ca: 'Format de camp',
+  },
+  none: {
+    'en-us': 'None',
+    'ru-ru': 'Нет',
+    ca: 'Cap',
+  },
+  noneAvailable: {
+    'en-us': 'None available',
+    'ru-ru': '',
+    ca: '',
+  },
+  formatted: {
+    'en-us': 'Formatted',
+    'ru-ru': 'Форматирован',
+    ca: 'Formatat',
+  },
+  webLink: {
+    'en-us': 'Web Link',
+    'ru-ru': 'Интернет-ссылка',
+    ca: 'Enllaç web',
+  },
+  pickList: {
+    'en-us': 'Pick List',
+    'ru-ru': 'Список выбора',
+    ca: 'Llista de selecció',
   },
 });
 

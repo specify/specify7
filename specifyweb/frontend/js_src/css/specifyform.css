@@ -8,11 +8,20 @@ main {
     overflow: auto;
 }
 
-.content-shadow, .content-shadow-full-width {
+.content-shadow, .content, .content-shadow-full-width {
     box-shadow: 0 0 var(--shadow-size) calc(var(--shadow-size) / 2) rgba(0, 0, 0, 0.33);
     height: calc(100% - var(--shadow-size) * 2);
     margin-top: var(--shadow-size);
     border: 1px solid #ddd;
+}
+
+.content {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #f1f2f2;
+    padding: var(--size);
+    height: calc(100% - 2 * var(--size) - var(--shadow-size) * 2);
 }
 
 .content-no-shadow {

@@ -7,6 +7,7 @@ import { fetchStrings } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import { useId } from './common';
 import { stateReducer } from './schemaconfigstate';
+import { WithFetchedStrings, WithFieldInfo } from './schemaconfigwrapper';
 import type {
   CommonTableFields,
   SpLocaleContainer,
@@ -22,9 +23,9 @@ export type SpLocaleItem = CommonTableFields & {
   readonly issystem: boolean;
   readonly isuiformatter: boolean;
   readonly name: string;
-  readonly picklistname?: string;
+  readonly picklistname: string | null;
   readonly type: null;
-  readonly weblinkname: null;
+  readonly weblinkname: string | null;
   /*
    * Readonly container: string;
    * readonly spexportschemaitems: string;
@@ -46,6 +47,8 @@ export type SpLocaleItemStr = CommonTableFields & {
    * readonly itemname?: string;
    */
 };
+
+export type ItemType = 'none' | 'formatted' | 'webLink' | 'pickList';
 
 export function SchemaConfig({
   languages,
@@ -109,7 +112,9 @@ export function SchemaConfig({
             relatedModelName:
               'relatedModelName' in field ? field.relatedModelName : undefined,
             isRequired: field.isRequired,
-            canEditRequired: !field.isRequired && !field.isRelationship,
+            isRelationship: field.isRelationship,
+            type: field.type,
+            canChangeIsRequired: !field.isRequired && !field.isRelationship,
           },
         ]) ?? []
     );
@@ -118,6 +123,11 @@ export function SchemaConfig({
       throw new Error('Unable to find table fields');
 
     Promise.all([
+      fetch(`/api/specify/picklist/?domainfilter=true&limit=0`)
+        .then<{
+          readonly objects: RA<{ readonly name: string }>;
+        }>(async (response) => response.json())
+        .then(({ objects }) => objects.map(({ name }) => name)),
       fetch(
         `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`
       )
@@ -127,11 +137,10 @@ export function SchemaConfig({
         .then(({ objects }) =>
           destructorCalled ? [] : fetchStrings(objects, language, country)
         )
-        .then((items) =>
+        .then<RA<SpLocaleItem & WithFetchedStrings & WithFieldInfo>>((items) =>
           items.map((item) => ({
             ...item,
             dataModel: fields[item.name] ?? {
-              // This happened for "deaccession" in my db
               length: undefined,
               readOnly: false,
               relatedModelName: undefined,
@@ -140,12 +149,17 @@ export function SchemaConfig({
         ),
       fetchStrings([state.table], language, country),
     ])
-      .then(([items, [table]]) => {
+      .then(([pickLists, items, [table]]) => {
         if (destructorCalled) return;
         dispatch({
-          type: 'FetchedTableStringsAction',
+          type: 'FetchedTableDataAction',
+          table: {
+            ...table,
+            dataModel: {
+              pickLists,
+            },
+          },
           items: Object.fromEntries(items.map((item) => [item.id, item])),
-          table,
         });
       })
       .catch(handlePromiseReject);
@@ -171,7 +185,9 @@ export function SchemaConfig({
     if (state.type !== 'SavingState') return;
     removeUnloadProtect();
 
-    const saveResource = (resource: CommonTableFields): Promise<Response> =>
+    const saveResource = async (
+      resource: CommonTableFields
+    ): Promise<Response> =>
       fetch(resource.resource_uri, {
         method: 'PUT',
         headers: {
