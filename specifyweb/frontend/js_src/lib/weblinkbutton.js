@@ -9,7 +9,7 @@ var icons          = require('./icons.js');
 var UIField        = require('./uifield.js');
 var initialContext = require('./initialcontext.js');
 
-    var webLinksDefs = {};
+    export const webLinksDefs = {};
     initialContext.load('app.resource?name=WebLinks', function(xml) {
         _.each($('vector > weblinkdef', xml), function(def) {
             def = $(def);
@@ -26,7 +26,8 @@ var initialContext = require('./initialcontext.js');
         }
     };
 
-module.exports =   UIPlugin.extend({
+
+export default UIPlugin.extend({
         __name__: "WebLinkButton",
         render: function() {
             this.inFormTable = this.$el.hasClass('specify-field-in-table');

@@ -64,6 +64,7 @@ export function SchemaConfig({
   defaultLanguage,
   defaultTable,
   formatters,
+  webLinks,
   onClose: handleClose,
   onSave: handleSave,
   removeUnloadProtect,
@@ -74,6 +75,7 @@ export function SchemaConfig({
   readonly defaultLanguage: string | undefined;
   readonly defaultTable: SpLocaleContainer | undefined;
   readonly formatters: RA<Formatter>;
+  readonly webLinks: RA<string>;
   readonly onClose: () => void;
   readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
@@ -248,6 +250,7 @@ export function SchemaConfig({
       id,
       handleClose,
       formatters,
+      webLinks,
     },
   });
 }
