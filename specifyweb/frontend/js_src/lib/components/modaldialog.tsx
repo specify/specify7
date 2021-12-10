@@ -77,16 +77,15 @@ export function ModalDialog({
       void dialogElement.dialog('option', 'position', 'center');
 
     const closeDialogBind = (
-      event: JQueryUI.DialogEvent | Event | undefined = undefined,
-      ui: JQueryUI.DialogUIParams | undefined = undefined
+      event: JQueryUI.DialogEvent | Event | undefined = undefined
     ): void =>
       closeDialogCallback(
         dialogElement,
         resize.current,
         // Don't call callback if dialog was closed by destructor
-        typeof event !== 'undefined' && typeof ui === 'undefined'
-          ? (properties.close as () => void)
-          : undefined
+        typeof event === 'undefined'
+          ? undefined
+          : (properties.close as () => void)
       );
 
     const buttons =

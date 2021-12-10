@@ -125,9 +125,11 @@ export function SchemaConfig({
     Promise.all([
       fetch(`/api/specify/picklist/?domainfilter=true&limit=0`)
         .then<{
-          readonly objects: RA<{ readonly name: string }>;
+          readonly objects: RA<{ readonly id: string; readonly name: string }>;
         }>(async (response) => response.json())
-        .then(({ objects }) => objects.map(({ name }) => name)),
+        .then(({ objects }) =>
+          Object.fromEntries(objects.map(({ id, name }) => [id, name]))
+        ),
       fetch(
         `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`
       )

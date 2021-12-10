@@ -225,7 +225,7 @@ const fetchPickList = async (
       throw error;
     });
 
-const tableHasOverwrite = (
+export const tableHasOverwrite = (
   tableName: string,
   overwriteName: TableConfigOverwrite
 ): boolean =>

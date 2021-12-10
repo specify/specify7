@@ -1,10 +1,12 @@
 import '../../css/schemaconfig.css';
 
 import React from 'react';
+import { Schema } from '../legacytypes';
 
 import commonText from '../localization/common';
 import navigation from '../navigation';
 import schema from '../schema';
+import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { SpLocaleItemStr } from './schemaconfig';
@@ -58,7 +60,7 @@ export type WithFetchedStrings = {
 
 export type WithTableInfo = {
   readonly dataModel: {
-    readonly pickLists: RA<string>;
+    readonly pickLists: IR<string>;
   };
 };
 
@@ -91,11 +93,8 @@ function SchemaConfigWrapper({
 
   // Fetch languages
   React.useEffect(() => {
-    const discipline = (
-      schema.domainLevelIds as unknown as { readonly discipline: number }
-    ).discipline;
     fetch(
-      `/api/specify/splocalecontainer/?name=collectionobject&discipline_id=${discipline}&schematype=0`
+      '/api/specify/splocalecontainer/?name=collectionobject&domainfilter=true&schematype=0'
     )
       .then<{ readonly objects: Readonly<[{ readonly id: number }]> }>(
         async (response) => response.json()
@@ -130,21 +129,31 @@ function SchemaConfigWrapper({
 
   // Fetch tables
   React.useEffect(() => {
-    const discipline = (
-      schema.domainLevelIds as unknown as { readonly discipline: number }
-    ).discipline;
+    const excludedTables = new Set(
+      Object.entries((schema as unknown as Schema).models)
+        .filter(
+          ([tableName, { system }]) =>
+            system || tableHasOverwrite(tableName.toLowerCase(), 'remove')
+        )
+        .map(([tableName]) => tableName.toLowerCase())
+    );
 
     fetch(
-      `/api/specify/splocalecontainer/?limit=0&discipline_id=${discipline}&schematype=0`
+      '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0'
     )
-      .then<{ readonly objects: RA<SpLocaleContainer> }>((response) =>
+      .then<{ readonly objects: RA<SpLocaleContainer> }>(async (response) =>
         response.json()
       )
-      .then(({ objects }) => {
-        if (!destructorCalled)
-          setTables(
-            Object.fromEntries(objects.map((table) => [table.id, table]))
-          );
+      .then(({ objects }) =>
+        // Exclude system tables
+        objects.filter(({ name }) => !excludedTables.has(name))
+      )
+      .then((tables) =>
+        // Index by ID
+        Object.fromEntries(tables.map((table) => [table.id, table]))
+      )
+      .then((tables) => {
+        if (!destructorCalled) setTables(tables);
       })
       .catch(handlePromiseReject);
 
