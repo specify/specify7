@@ -81,10 +81,6 @@
 }
 
 @media (max-width: 768px) {
-  .schema-config {
-    overflow-y: scroll;
-  }
-
   .schema-config-content {
     row-gap: var(--size);
     flex-direction: column;

@@ -132,6 +132,11 @@ const commonText = createDictionary({
     'ru-ru': 'Загрузка...',
     ca: 'Loading...',
   },
+  tableInline: {
+    'en-us': 'Table:',
+    'ru-ru': 'Таблица',
+    ca: 'Taula',
+  },
   tableName: {
     'en-us': 'Table Name',
     'ru-ru': 'Имя таблицы',
@@ -1001,6 +1006,11 @@ const commonText = createDictionary({
     'ru-ru': 'Поля',
     ca: 'Camps',
   },
+  field: {
+    'en-us': 'Field',
+    'ru-ru': 'Поле',
+    ca: 'Camp',
+  },
   relationships: {
     'en-us': 'Relationships',
     'ru-ru': 'Отношения',
@@ -1088,8 +1098,8 @@ const commonText = createDictionary({
   },
   noneAvailable: {
     'en-us': 'None available',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Нет доступных вариантов',
+    ca: 'Cap disponible',
   },
   formatted: {
     'en-us': 'Formatted',

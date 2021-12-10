@@ -13,9 +13,12 @@ import type { Actions } from '../schemaconfigreducer';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import type { ItemType, SpLocaleItem } from './schemaconfig';
-import { WithTableInfo } from './schemaconfigwrapper';
-import type { WithFieldInfo, WithFetchedStrings } from './schemaconfigwrapper';
-import type { SpLocaleContainer } from './schemaconfigwrapper';
+import type {
+  WithTableInfo,
+  SpLocaleContainer,
+  WithFieldInfo,
+  WithFetchedStrings,
+} from './schemaconfigwrapper';
 import type { IR, RA } from './wbplanview';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
@@ -170,7 +173,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   }) {
     const sortedItems = sortObjectsByKey(Object.values(items), 'name');
     const fields = sortedItems.filter((item) => !item.dataModel.isRelationship);
-    const relationships = sortedItems.filter((item) => item.dataModel.isRelationship);
+    const relationships = sortedItems.filter(
+      (item) => item.dataModel.isRelationship
+    );
+    const currentPickListId = Object.entries(table.dataModel.pickLists).find(
+      ([_id, name]) => name === items[itemId].picklistname
+    )?.[0];
     return (
       <>
         <header>
@@ -216,7 +224,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         </header>
         <div className="schema-config-content">
           <section>
-            <h3>{table.name}</h3>
+            <h3>
+              {commonText('tableInline')} {table.name}
+            </h3>
             <label>
               {commonText('caption')}
               <input
@@ -307,7 +317,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           <section>
             <h3>{items[itemId].name}</h3>
             <label>
-              {commonText('caption')}
+              {commonText('field')}: {commonText('caption')}
               <input
                 type="text"
                 value={items[itemId].strings.name.text}
@@ -341,6 +351,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 type="number"
                 value={items[itemId].dataModel.length ?? ''}
                 readOnly={true}
+                className="no-arrows"
               />
             </label>
             <label>
@@ -422,59 +433,87 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 pickList: {
                   label: commonText('pickList'),
                   value: items[itemId].picklistname,
-                  values: table.dataModel.pickLists,
+                  values: Object.values(table.dataModel.pickLists).sort(),
                   disabled: false,
-                },
-              }).map(([key, { label, value, values, disabled }]) => (
-                <div className="group" key={key}>
-                  <label className="horizontal">
-                    <input
-                      type="radio"
-                      name={id('format')}
-                      value="none"
-                      checked={key === getItemType(items[itemId])}
-                      disabled={disabled}
-                      onChange={(): void =>
-                        dispatch({
-                          type: 'ChangeFieldFormatAction',
-                          format: key as ItemType,
-                          value: values ? values[0] ?? null : null,
-                        })
-                      }
-                    />
-                    {label}
-                  </label>
-                  {values && (
-                    <select
-                      aria-label={label}
-                      value={value ?? '0'}
-                      disabled={disabled}
-                      onChange={({ target }): void =>
-                        dispatch({
-                          type: 'ChangeFieldFormatAction',
-                          format: key as ItemType,
-                          value: target.value === '0' ? null : target.value,
-                        })
-                      }
-                    >
-                      {values.length === 0 ? (
-                        <option value="0" disabled>
-                          {commonText('noneAvailable')}
-                        </option>
-                      ) : (
-                        <>
-                          <option value="0">{commonText('none')}</option>
-                          {values.map((value) => (
-                            <option key={value} value={value}>
-                              {value}
-                            </option>
-                          ))}
-                        </>
+                  extraComponents: (
+                    <>
+                      {typeof currentPickListId !== 'undefined' && (
+                        <a
+                          className="fake-link intercept-navigation"
+                          href={`/specify/view/picklist/${currentPickListId}/`}
+                        >
+                          <span className="ui-icon ui-icon-pencil">
+                            {commonText('edit')}
+                          </span>
+                        </a>
                       )}
-                    </select>
-                  )}
-                </div>
-              ))}
+                      <a
+                        className="fake-link intercept-navigation"
+                        href="/specify/view/picklist/new/"
+                      >
+                        <span className="ui-icon ui-icon-plus">
+                          {commonText('add')}
+                        </span>
+                      </a>
+                    </>
+                  ),
+                },
+              }).map(
+                ([
+                  key,
+                  { label, value, values, disabled, extraComponents },
+                ]) => (
+                  <div className="group" key={key}>
+                    <label className="horizontal">
+                      <input
+                        type="radio"
+                        name={id('format')}
+                        value="none"
+                        checked={key === getItemType(items[itemId])}
+                        disabled={disabled}
+                        onChange={(): void =>
+                          dispatch({
+                            type: 'ChangeFieldFormatAction',
+                            format: key as ItemType,
+                            value: values ? values[0] ?? null : null,
+                          })
+                        }
+                      />
+                      {label}
+                    </label>
+                    {values && (
+                      <select
+                        aria-label={label}
+                        value={value ?? '0'}
+                        disabled={disabled}
+                        onChange={({ target }): void =>
+                          dispatch({
+                            type: 'ChangeFieldFormatAction',
+                            format: key as ItemType,
+                            value: target.value === '0' ? null : target.value,
+                          })
+                        }
+                      >
+                        {values.length === 0 ? (
+                          <option value="0" disabled>
+                            {commonText('noneAvailable')}
+                          </option>
+                        ) : (
+                          <>
+                            <option value="0">{commonText('none')}</option>
+                            {values.map((value) => (
+                              <option key={value} value={value}>
+                                {value}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                    )}
+                    {extraComponents}
+                  </div>
+                )
+              )}
             </fieldset>
           </section>
         </div>
