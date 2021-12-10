@@ -33,8 +33,9 @@
   overflow-y: auto;
 }
 
-.schema-config select {
+.schema-config section > select {
   height: 100%;
+  overflow: auto;
 }
 
 .schema-config section > div {
@@ -77,4 +78,24 @@
   padding: 0;
   font-size: var(--size);
   color: var(--t3);
+}
+
+@media (max-width: 768px) {
+  .schema-config {
+    overflow-y: scroll;
+  }
+
+  .schema-config-content {
+    row-gap: var(--size);
+    flex-direction: column;
+    height: unset;
+  }
+
+  .schema-config section {
+    overflow-y: unset;
+  }
+
+  .schema-config section > select {
+    min-height: 30vh;
+  }
 }
