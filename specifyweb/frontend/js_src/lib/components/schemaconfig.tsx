@@ -1,5 +1,8 @@
 import React from 'react';
 
+import type { Schema } from '../legacytypes';
+import schema from '../schema';
+import { fetchStrings } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import { useId } from './common';
 import { stateReducer } from './schemaconfigstate';
@@ -7,8 +10,8 @@ import type {
   CommonTableFields,
   SpLocaleContainer,
 } from './schemaconfigwrapper';
-import { handlePromiseReject, IR } from './wbplanview';
-import type { RA } from './wbplanview';
+import type { IR, RA } from './wbplanview';
+import { handlePromiseReject } from './wbplanview';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;
@@ -21,10 +24,12 @@ export type SpLocaleItem = CommonTableFields & {
   readonly picklistname?: string;
   readonly type: null;
   readonly weblinkname: null;
-  //readonly container: string;
-  //readonly spexportschemaitems: string;
-  //readonly descs: string;
-  //readonly names: string;
+  /*
+   * Readonly container: string;
+   * readonly spexportschemaitems: string;
+   */
+  readonly descs: string;
+  readonly names: string;
 };
 
 export type SpLocaleItemStr = CommonTableFields & {
@@ -32,11 +37,13 @@ export type SpLocaleItemStr = CommonTableFields & {
   readonly country?: string;
   readonly language: string;
   readonly text: string;
-  //readonly variant: null;
-  //readonly containerdesc?: string;
-  //readonly contaninername?: string;
-  //readonly itemdesc?: string;
-  //readonly itemname?: string;
+  /*
+   * Readonly variant: null;
+   * readonly containerdesc?: string;
+   * readonly contaninername?: string;
+   * readonly itemdesc?: string;
+   * readonly itemname?: string;
+   */
 };
 
 export function SchemaConfig({
@@ -58,7 +65,7 @@ export function SchemaConfig({
 
   const id = useId('schema-config');
 
-  // Fetch table after table is selected
+  // Fetch table items after table is selected
   const tableId = 'table' in state ? state.table.id : undefined;
   React.useEffect(() => {
     if (
@@ -66,16 +73,58 @@ export function SchemaConfig({
       typeof tableId === 'undefined'
     )
       return undefined;
-    fetch(`/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`)
-      .then<{ readonly objects: RA<SpLocaleItem> }>((response) =>
-        response.json()
+
+    const [language, country] = state.language.split('_');
+
+    const fields = Object.fromEntries(
+      Object.values((schema as unknown as Schema).models)
+        .find(({name}) => name.toLowerCase() === state.table.name)
+        ?.fields.map((field) => [
+          field.name,
+          {
+            length: field.length,
+            readOnly: field.readOnly,
+            relatedModelName:
+              'relatedModelName' in field ? field.relatedModelName : undefined,
+            isRequired: field.isRequired,
+            canEditRequired: !field.isRequired && !field.isRelationship,
+          },
+        ]) ?? []
+    );
+
+    if (Object.keys(fields).length === 0)
+      throw new Error('Unable to find table fields');
+
+    Promise.all([
+      fetch(
+        `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`
       )
-      .then(({ objects }) => {
-        if (!destructorCalled)
-          dispatch({
-            type: 'SetTableItemsAction',
-            items: Object.fromEntries(objects.map((item) => [item.id, item])),
-          });
+        .then<{ readonly objects: RA<SpLocaleItem> }>(async (response) =>
+          response.json()
+        )
+        .then(({ objects }) =>
+          destructorCalled ? [] : fetchStrings(objects, language, country)
+        )
+        .then((items) =>
+          items.map((item) => ({
+            ...item,
+            dataModel: fields[item.name] ?? {
+              // This happened for "deaccession" in my db
+              length: undefined,
+              readOnly: false,
+              relatedModelName: undefined,
+            },
+          }))
+        ),
+      fetchStrings([state.table], language, country),
+    ])
+      .then(([items, [table]]) => {
+        if (destructorCalled) return;
+        dispatch({
+          type: 'FetchedTableStringsAction',
+          items: Object.fromEntries(items.map((item) => [item.id, item])),
+          table,
+        });
       })
       .catch(handlePromiseReject);
 
@@ -94,6 +143,15 @@ export function SchemaConfig({
     if (changesMade) setUnloadProtect();
     return removeUnloadProtect;
   }, [changesMade]);
+
+  // Save Changes
+  React.useEffect(() => {
+    if (state.type !== 'SavingState') return;
+    removeUnloadProtect();
+    // TODO: save changes
+    console.log(state);
+    alert('Saving');
+  }, [state.type]);
 
   return stateReducer(<i />, {
     ...state,

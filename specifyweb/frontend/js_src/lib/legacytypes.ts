@@ -8,13 +8,14 @@ export interface SchemaModelTableField {
   readonly isRequired: boolean;
   readonly isHidden: () => number;
   readonly isRelationship: boolean;
+  readonly length: number | undefined;
+  readonly readOnly: boolean;
+  readonly type: RelationshipType;
 }
 
 export interface SchemaModelTableRelationship extends SchemaModelTableField {
   readonly otherSideName: string;
-  readonly type: RelationshipType;
   readonly relatedModelName: string;
-  readonly readOnly: boolean;
 }
 
 type SpecifyFetch = (filter: { readonly filters: object }) => {
@@ -25,9 +26,11 @@ type SpecifyFetch = (filter: { readonly filters: object }) => {
 
 interface SchemaModelTableData {
   readonly longName: string;
+  readonly name: string;
   readonly getLocalizedName: () => string;
   readonly system: boolean;
-  readonly fields: RA<SchemaModelTableField>;
+  readonly tableId: number;
+  readonly fields: RA<SchemaModelTableField | SchemaModelTableRelationship>;
   readonly LazyCollection: SpecifyFetch;
   readonly isHidden: ()=>boolean;
 }

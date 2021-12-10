@@ -3,8 +3,13 @@ import { ensureState, generateReducer } from 'typesafe-reducer';
 
 import type { SpLocaleItem } from './components/schemaconfig';
 import type { States } from './components/schemaconfigstate';
-import { SpLocaleContainer } from './components/schemaconfigwrapper';
+import {
+  SpLocaleContainer,
+  WithDatamodelFields,
+  WithFetchedStrings,
+} from './components/schemaconfigwrapper';
 import type { IR } from './components/wbplanview';
+import { isRelationship, sortObjectsByKey } from './schemaconfighelper';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -22,10 +27,11 @@ type ChooseTableAction = Action<
   }
 >;
 
-type SetTableItemsAction = Action<
-  'SetTableItemsAction',
+type FetchedTableStringsAction = Action<
+  'FetchedTableStringsAction',
   {
-    items: IR<SpLocaleItem>;
+    table: SpLocaleContainer & WithFetchedStrings;
+    items: IR<SpLocaleItem & WithFetchedStrings & WithDatamodelFields>;
   }
 >;
 
@@ -36,12 +42,25 @@ type ChangeItemAction = Action<
   }
 >;
 
+type ChangeAction = Action<
+  'ChangeAction',
+  {
+    isTable: boolean;
+    field: 'name' | 'desc' | 'ishidden' | 'isrequired';
+    value: string | boolean;
+  }
+>;
+
+type SaveAction = Action<'SaveAction'>;
+
 export type Actions =
   | ChooseLanguageAction
   | ChangeLanguageAction
   | ChooseTableAction
-  | SetTableItemsAction
-  | ChangeItemAction;
+  | FetchedTableStringsAction
+  | ChangeItemAction
+  | ChangeAction
+  | SaveAction;
 
 export const reducer = generateReducer<States, Actions>({
   ChangeLanguageAction: () => ({
@@ -59,14 +78,17 @@ export const reducer = generateReducer<States, Actions>({
       table,
     })
   ),
-  SetTableItemsAction: ensureState(
+  FetchedTableStringsAction: ensureState(
     ['FetchingTableItemsState'],
-    ({ action: { items }, state }) => ({
+    ({ action: { items, table }, state }) => ({
       type: 'MainState',
-      table: state.table,
+      table: table,
       language: state.language,
       items,
-      itemId: Object.values(items)[0].id,
+      itemId:
+        sortObjectsByKey(Object.values(items), 'name').find(
+          (item) => !isRelationship(item)
+        )?.id ?? Object.values(items)[0].id,
       tableWasModified: false,
       modifiedItems: [],
     })
@@ -78,4 +100,60 @@ export const reducer = generateReducer<States, Actions>({
       itemId,
     })
   ),
+  ChangeAction: ensureState(
+    ['MainState'],
+    ({ action: { isTable, field, value }, state }) => {
+      return {
+        ...state,
+        tableWasModified: state.tableWasModified || isTable,
+        ...(isTable
+          ? {
+              table: {
+                ...state.table,
+                ...(field === 'ishidden' || field === 'isrequired'
+                  ? {
+                      ishidden: value as boolean,
+                    }
+                  : {
+                      strings: {
+                        ...state.table.strings,
+                        [field]: {
+                          ...state.table.strings[field],
+                          text: value,
+                        },
+                      },
+                    }),
+              },
+            }
+          : {
+              modifiedItems: Array.from(
+                new Set([...state.modifiedItems, state.itemId])
+              ),
+              items: {
+                ...state.items,
+                [state.itemId]: {
+                  ...state.items[state.itemId],
+                  ...(field === 'ishidden' || field === 'isrequired'
+                    ? {
+                        ishidden: value as boolean,
+                      }
+                    : {
+                        strings: {
+                          ...state.items[state.itemId].strings,
+                          [field]: {
+                            ...state.items[state.itemId].strings[field],
+                            text: value,
+                          },
+                        },
+                      }),
+                },
+              },
+            }),
+      };
+    }
+  ),
+  SaveAction: ensureState(['MainState'], ({ state }) => ({
+    ...state,
+    type: 'SavingState',
+  })),
 });

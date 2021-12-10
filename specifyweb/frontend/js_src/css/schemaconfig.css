@@ -30,7 +30,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  row-gap: var(--half-size);
+  row-gap: var(--size);
+  overflow-y: auto;
 }
 
 .schema-config select {
@@ -41,4 +42,22 @@
   flex: 1;
   display: flex;
   column-gap: var(--half-size);
+}
+
+.schema-config section label {
+  display: flex;
+  column-gap: var(--quarter-size);
+}
+
+.schema-config section label:not(.horizontal) {
+  flex-direction: column;
+}
+
+.schema-config section label.horizontal {
+  align-items: center;
+}
+
+.schema-config textarea {
+  height: 15vh;
+  resize: vertical;
 }
