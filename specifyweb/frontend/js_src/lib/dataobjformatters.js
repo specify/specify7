@@ -75,6 +75,7 @@ var initialContext = require('./initialcontext.js');
 module.exports = {
     format: dataobjformat,
     aggregate,
-    getAll: ()=>Array.from(formatters.getElementsByTagName('format')),
+    getFormatters: ()=>Array.from(formatters.getElementsByTagName('format')),
+    getAggregators: ()=>Array.from(formatters.getElementsByTagName('aggregator')),
 };
 
