@@ -146,6 +146,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
                 type="button"
                 className="fake-link"
+                style={{
+                  fontWeight: 800,
+                  color: 'inherit',
+                }}
               >
                 <TableIcon tableName={table.name} tableLabel={false} />
                 {table.name}

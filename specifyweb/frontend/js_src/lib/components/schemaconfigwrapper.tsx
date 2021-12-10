@@ -7,13 +7,19 @@ import navigation from '../navigation';
 import schema from '../schema';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { SchemaConfig, SpLocaleItemStr } from './schemaconfig';
+import type { SpLocaleItemStr } from './schemaconfig';
+import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 
 type ConstructorProps = IR<never>;
-type Props = {
+type BackboneProps = {
+  defaultLanguage: string | undefined;
+  defaultTable: string | undefined;
+};
+type Props = Readonly<BackboneProps> & {
   readonly onClose: () => void;
+  readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
 };
@@ -62,8 +68,11 @@ export type WithDatamodelFields = {
 
 function SchemaConfigWrapper({
   onClose: handleClose,
+  onSave: handleSave,
   removeUnloadProtect,
   setUnloadProtect,
+  defaultLanguage,
+  defaultTable,
 }: Props): JSX.Element {
   const [languages, setLanguages] = React.useState<RA<string> | undefined>(
     undefined
@@ -143,31 +152,48 @@ function SchemaConfigWrapper({
     <SchemaConfig
       languages={languages}
       tables={tables}
+      defaultLanguage={
+        languages.includes(defaultLanguage ?? '') ? defaultLanguage : undefined
+      }
+      defaultTable={Object.values(tables).find(
+        ({ name }) => name === defaultTable
+      )}
       onClose={handleClose}
+      onSave={handleSave}
       removeUnloadProtect={removeUnloadProtect}
       setUnloadProtect={setUnloadProtect}
     />
   );
 }
 
-const setUnloadProtect = (self: Props): void =>
+const setUnloadProtect = (self: BackboneProps): void =>
   navigation.addUnloadProtect(self, commonText('unsavedSchemaUnloadProtect'));
 
-const removeUnloadProtect = (self: Props): void =>
+const removeUnloadProtect = (self: BackboneProps): void =>
   navigation.removeUnloadProtect(self);
 
-export default createBackboneView<ConstructorProps, Props, Props>({
+export default createBackboneView<ConstructorProps, BackboneProps, Props>({
   moduleName: 'SchemaConfig',
   tagName: 'section',
   title: commonText('schemaConfig'),
   className: 'schema-config content-no-shadow',
+  initialize(self) {
+    const urlSearchParameters = new URLSearchParams(window.location.search);
+    const parameters = Object.fromEntries(urlSearchParameters.entries());
+    self.defaultLanguage = parameters.language;
+    self.defaultTable = parameters.table;
+  },
   remove(self) {
     removeUnloadProtect(self);
   },
   Component: SchemaConfigWrapper,
   getComponentProps: (self) => ({
     onClose: (): void => navigation.go('/specify/'),
+    onSave: (language): void =>
+      navigation.go(`/specify/task/schema-config/?language=${language}`),
     removeUnloadProtect: (): void => removeUnloadProtect(self),
     setUnloadProtect: (): void => setUnloadProtect(self),
+    defaultLanguage: self.defaultLanguage,
+    defaultTable: self.defaultTable,
   }),
 });
