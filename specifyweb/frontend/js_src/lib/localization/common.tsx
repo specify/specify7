@@ -1001,15 +1001,30 @@ const commonText = createDictionary({
     'ru-ru': 'Поля',
     ca: 'Camps',
   },
+  relationships: {
+    'en-us': 'Relationships',
+    'ru-ru': 'Отношения',
+    ca: 'Relacions',
+  },
   caption: {
     'en-us': 'Caption',
     'ru-ru': 'Подпись',
     ca: 'Subtítol',
   },
+  description: {
+    'en-us': 'Descripion',
+    'ru-ru': 'Описание',
+    ca: 'Descripció',
+  },
   hideTable: {
     'en-us': 'Hide Table',
     'ru-ru': 'Скрыть таблицу',
     ca: 'Oculta la taula',
+  },
+  hideField: {
+    'en-us': 'Hide Field',
+    'ru-ru': 'Скрыть поле',
+    ca: 'Oculta el camp',
   },
   tableFormat: {
     'en-us': 'Table Format',
@@ -1018,8 +1033,8 @@ const commonText = createDictionary({
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Агрегация таблиц',
+    ca: 'Agregació de taules',
   },
   webLinks: {
     'en-us': 'Web Links',
@@ -1031,6 +1046,26 @@ const commonText = createDictionary({
     'ru-ru': 'Тип',
     ca: 'Tipus',
   },
+  oneToOne: {
+    'en-us': 'One-to-one',
+    'ru-ru': 'Один к одному',
+    ca: 'Un a un',
+  },
+  oneToMany: {
+    'en-us': 'One-to-many',
+    'ru-ru': 'Один ко многим',
+    ca: 'Un a molts',
+  },
+  manyToOne: {
+    'en-us': 'Many-to-one',
+    'ru-ru': 'Многие к одному',
+    ca: 'Molts a un',
+  },
+  manyToMany: {
+    'en-us': 'many-to-many',
+    'ru-ru': 'Многие-ко-многим',
+    ca: 'Molts a molts',
+  },
   length: {
     'en-us': 'Length',
     'ru-ru': 'Длина',
@@ -1040,6 +1075,16 @@ const commonText = createDictionary({
     'en-us': 'Field Format',
     'ru-ru': 'Формат поля',
     ca: 'Format de camp',
+  },
+  readOnly: {
+    'en-us': 'Read-only',
+    'ru-ru': 'Только чтение',
+    ca: 'Llegeix només',
+  },
+  required: {
+    'en-us': 'Required',
+    'ru-ru': 'Необходимый',
+    ca: 'Obligatori',
   },
 });
 

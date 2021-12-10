@@ -242,3 +242,7 @@ table.grid-table,
 .contents {
   display: contents;
 }
+
+input:read-only {
+  background-color: var(--b2);
+}

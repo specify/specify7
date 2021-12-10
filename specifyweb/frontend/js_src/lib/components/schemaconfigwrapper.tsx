@@ -7,7 +7,7 @@ import navigation from '../navigation';
 import schema from '../schema';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { SchemaConfig } from './schemaconfig';
+import { SchemaConfig, SpLocaleItemStr } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 
@@ -38,9 +38,26 @@ export type SpLocaleContainer = CommonTableFields & {
   readonly name: string;
   readonly picklistname?: string;
   // readonly schematype: 0 | 1;
-  readonly items: string;
-  // readonly descs: string;
-  // readonly names: string;
+  // readonly items: string;
+  readonly descs: string;
+  readonly names: string;
+};
+
+export type WithFetchedStrings = {
+  readonly strings: {
+    readonly desc: SpLocaleItemStr;
+    readonly name: SpLocaleItemStr;
+  };
+};
+
+export type WithDatamodelFields = {
+  readonly dataModel: {
+    readonly length: number | undefined;
+    readonly readOnly: boolean;
+    readonly relatedModelName: string | undefined;
+    readonly isRequired: boolean;
+    readonly canEditRequired: boolean;
+  };
 };
 
 function SchemaConfigWrapper({
