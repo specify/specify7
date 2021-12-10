@@ -1,9 +1,9 @@
 import '../../css/schemaconfig.css';
 
 import React from 'react';
-import { Schema } from '../legacytypes';
 
 import commonText from '../localization/common';
+import { Schema } from '../legacytypes';
 import navigation from '../navigation';
 import schema from '../schema';
 import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
@@ -13,6 +13,7 @@ import type { SpLocaleItemStr } from './schemaconfig';
 import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
+import UiFormatters from '../uiformatters';
 
 type ConstructorProps = IR<never>;
 type BackboneProps = {
@@ -175,6 +176,17 @@ function SchemaConfigWrapper({
       defaultTable={Object.values(tables).find(
         ({ name }) => name === defaultTable
       )}
+      formatters={Array.from(
+        (UiFormatters.getAll() as Document).getElementsByTagName('format'),
+        (format) => ({
+          name: format.getAttribute('name') ?? '',
+          isSystem: format.getAttribute('system') === 'true',
+          isDefault: format.getAttribute('default') === 'true',
+          value: UiFormatters.getByName(
+            format.getAttribute('name') ?? ''
+          )?.value() as string,
+        })
+      ).filter(({ value }) => value)}
       onClose={handleClose}
       onSave={handleSave}
       removeUnloadProtect={removeUnloadProtect}

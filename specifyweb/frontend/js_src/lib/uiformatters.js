@@ -177,6 +177,7 @@ const {escapeRegExp} = require('./escaperegexp');
 module.exports = {
         getByName: getUIFormatter,
         UIFormatter: UIFormatter,
-        Field: Field
+        Field: Field,
+        getAll: ()=>uiformatters[0],
     };
 

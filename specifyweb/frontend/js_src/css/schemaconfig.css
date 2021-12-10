@@ -66,6 +66,7 @@
 .language-link {
   font-weight: 800;
 }
+
 .language-link:not(:hover) {
   color: inherit;
 }
@@ -78,6 +79,11 @@
   padding: 0;
   font-size: var(--size);
   color: var(--t3);
+}
+
+.schema-config .group select {
+  flex: 1;
+  width: 0;
 }
 
 @media (max-width: 768px) {
