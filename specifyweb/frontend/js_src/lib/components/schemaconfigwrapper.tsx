@@ -6,6 +6,7 @@ import commonText from '../localization/common';
 import { Schema } from '../legacytypes';
 import navigation from '../navigation';
 import schema from '../schema';
+import { formatAggregators } from '../schemaconfighelper';
 import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -31,23 +32,23 @@ type Props = Readonly<BackboneProps> & {
 
 export type CommonTableFields = {
   readonly timestampcreated: string;
-  readonly timestampmodified?: string;
+  readonly timestampmodified: string | null;
   readonly createdbyagent: string;
-  readonly modifiedbyagent?: string;
+  readonly modifiedbyagent: string | null;
   readonly version: string;
   readonly resource_uri: string;
 };
 
 export type SpLocaleContainer = CommonTableFields & {
   readonly id: number;
-  readonly aggregator?: string;
+  readonly aggregator: string | null;
   //readonly defaultui?: string;
-  readonly format?: string;
+  readonly format: string | null;
   readonly ishidden: boolean;
   readonly issystem: boolean;
   // readonly isuiformatter: null;
   readonly name: string;
-  readonly picklistname?: string;
+  readonly picklistname: string | null;
   // readonly schematype: 0 | 1;
   // readonly items: string;
   readonly descs: string;
@@ -190,14 +191,11 @@ function SchemaConfigWrapper({
           )?.value() as string,
         })
       ).filter(({ value }) => value)}
-      dataObjFormatters={Object.fromEntries(
-        (DataObjFormatters.getAll() as RA<Element>).map((formatter) => [
-          formatter.getAttribute('name') ?? '',
-          {
-            title: formatter.getAttribute('title') ?? '',
-            className: formatter.getAttribute('class') ?? '',
-          },
-        ])
+      dataObjFormatters={formatAggregators(
+        DataObjFormatters.getFormatters() as RA<Element>
+      )}
+      dataObjAggregators={formatAggregators(
+        DataObjFormatters.getAggregators() as RA<Element>
       )}
       onClose={handleClose}
       onSave={handleSave}

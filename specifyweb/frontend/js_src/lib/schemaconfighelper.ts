@@ -1,3 +1,4 @@
+import { DataObjFormatter } from './components/schemaconfig';
 import type { ItemType } from './components/schemaconfig';
 import type {
   SpLocaleItem,
@@ -21,7 +22,7 @@ export const sortObjectsByKey = <
 const fetchString = async (
   url: string,
   language: string,
-  country?: string,
+  country?: string
 ): Promise<SpLocaleItemString> =>
   fetch(
     `${url}&language=${language}&country${
@@ -63,6 +64,32 @@ export const fetchStrings = async <
         },
       }))
     )
+  );
+
+export const formatAggregators = (
+  aggregators: RA<Element>
+): IR<DataObjFormatter> =>
+  Object.fromEntries(
+    aggregators.map((formatter) => [
+      formatter.getAttribute('name') ?? '',
+      {
+        title: formatter.getAttribute('title') ?? '',
+        className: formatter.getAttribute('class') ?? '',
+      },
+    ])
+  );
+
+export const filterFormatters = (
+  formatters: IR<DataObjFormatter>,
+  tableName: string
+): IR<string> =>
+  Object.fromEntries(
+    Object.entries(formatters)
+      .filter(
+        ([_name, { className }]) =>
+          className.split('.').slice(-1)[0].toLowerCase() === tableName
+      )
+      .map(([name, { title }]) => [name, title] as const)
   );
 
 export function getItemType(item: SpLocaleItem): ItemType {

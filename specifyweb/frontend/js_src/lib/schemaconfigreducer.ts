@@ -46,7 +46,7 @@ type ChangeItemAction = Action<
 type TableModifiedAction = Action<
   'TableModifiedAction',
   {
-    field: 'name' | 'desc' | 'ishidden' | 'format';
+    field: 'name' | 'desc' | 'ishidden' | 'format' | 'aggregator';
     value: string | boolean | null;
   }
 >;
@@ -125,11 +125,8 @@ export const reducer = generateReducer<States, Actions>({
       tableWasModified: true,
       table: {
         ...state.table,
-        ...(field === 'ishidden' || field === 'format'
+        ...(field === 'name' || field === 'desc'
           ? {
-              [field]: value,
-            }
-          : {
               strings: {
                 ...state.table.strings,
                 [field]: {
@@ -137,6 +134,9 @@ export const reducer = generateReducer<States, Actions>({
                   text: value,
                 },
               },
+            }
+          : {
+              [field]: value,
             }),
       },
     })
@@ -152,11 +152,8 @@ export const reducer = generateReducer<States, Actions>({
         ...state.items,
         [state.itemId]: {
           ...state.items[state.itemId],
-          ...(field === 'ishidden' || field === 'isrequired'
+          ...(field === 'desc' || field === 'name'
             ? {
-                [field]: value as boolean,
-              }
-            : {
                 strings: {
                   ...state.items[state.itemId].strings,
                   [field]: {
@@ -164,6 +161,9 @@ export const reducer = generateReducer<States, Actions>({
                     text: value,
                   },
                 },
+              }
+            : {
+                [field]: value as boolean,
               }),
         },
       },

@@ -5,6 +5,7 @@ import { generateReducer } from 'typesafe-reducer';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import {
+  filterFormatters,
   getItemType,
   javaTypeToHuman,
   sortObjectsByKey,
@@ -14,6 +15,7 @@ import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import { DataObjFormatter, UiFormatter } from './schemaconfig';
 import type { ItemType, SpLocaleItem } from './schemaconfig';
+import { PickList } from './schemaconfigcomponents';
 import type {
   WithTableInfo,
   SpLocaleContainer,
@@ -79,6 +81,7 @@ type StateWithParameters = States & {
     readonly webLinks: RA<string>;
     readonly uiFormatters: RA<UiFormatter>;
     readonly dataObjFormatters: IR<DataObjFormatter>;
+    readonly dataObjAggregators: IR<DataObjFormatter>;
   };
 };
 
@@ -179,6 +182,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         webLinks,
         uiFormatters,
         dataObjFormatters,
+        dataObjAggregators,
       },
     },
   }) {
@@ -190,14 +194,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
       ([_id, name]) => name === items[itemId].picklistname
     )?.[0];
-    const filteredDataObjFormatters = Object.fromEntries(
-      Object.entries(dataObjFormatters)
-        .filter(
-          ([_name, { className }]) =>
-            className.split('.').slice(-1)[0].toLowerCase() === table.name
-        )
-        .map(([name, { title }]) => [name, title])
-    );
     return (
       <>
         <header>
@@ -224,19 +220,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <button
                 type="button"
                 className="magic-button"
-                disabled={!tableWasModified && modifiedItems.length === 0}
-                onClick={(): void => dispatch({ type: 'SaveAction' })}
+                onClick={handleClose}
               >
-                {commonText('save')}
+                {commonText('cancel')}
               </button>
             </li>
             <li>
               <button
                 type="button"
                 className="magic-button"
-                onClick={handleClose}
+                disabled={!tableWasModified && modifiedItems.length === 0}
+                onClick={(): void => dispatch({ type: 'SaveAction' })}
               >
-                {commonText('cancel')}
+                {commonText('save')}
               </button>
             </li>
           </menu>
@@ -275,32 +271,30 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </label>
             <label>
               {commonText('tableFormat')}
-              <select
-                value={table.format ?? '0'}
-                onChange={({ target }): void =>
+              <PickList
+                value={table.format}
+                values={filterFormatters(dataObjFormatters, table.name)}
+                onChange={(value) =>
                   dispatch({
                     type: 'TableModifiedAction',
                     field: 'format',
-                    value: target.value === '0' ? null : target.value,
+                    value,
                   })
                 }
-              >
-                <option value="0">{commonText('none')}</option>
-                {Object.entries(filteredDataObjFormatters).map(
-                  ([name, title]) => (
-                    <option key={name} value={name}>
-                      {title || name}
-                    </option>
-                  )
-                )}
-              </select>
+              />
             </label>
             <label>
               {commonText('tableAggregation')}
-              <input
-                type="text"
-                readOnly={true}
-                value={table.aggregator ?? ''}
+              <PickList
+                value={table.aggregator}
+                values={filterFormatters(dataObjAggregators, table.name)}
+                onChange={(value) =>
+                  dispatch({
+                    type: 'TableModifiedAction',
+                    field: 'aggregator',
+                    value,
+                  })
+                }
               />
             </label>
             <label className="horizontal">
@@ -405,7 +399,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 checked={items[itemId].ishidden}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'FiieldModifiedAction',
+                    type: 'FieldModifiedAction',
                     field: 'ishidden',
                     value: target.checked,
                   })
@@ -432,7 +426,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 disabled={!items[itemId].dataModel.canChangeIsRequired}
                 onChange={({ target }): void =>
                   dispatch({
-                    type: 'FiieldModifiedAction',
+                    type: 'FieldModifiedAction',
                     field: 'isrequired',
                     value: target.checked,
                   })
@@ -526,33 +520,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       {label}
                     </label>
                     {values && (
-                      <select
-                        aria-label={label}
-                        value={value ?? '0'}
+                      <PickList
+                        label={label}
+                        value={value}
+                        values={values}
                         disabled={disabled}
-                        onChange={({ target }): void =>
+                        onChange={(value) =>
                           dispatch({
                             type: 'ChangeFieldFormatAction',
                             format: key as ItemType,
-                            value: target.value === '0' ? null : target.value,
+                            value,
                           })
                         }
-                      >
-                        {values.length === 0 ? (
-                          <option value="0" disabled>
-                            {commonText('noneAvailable')}
-                          </option>
-                        ) : (
-                          <>
-                            <option value="0">{commonText('none')}</option>
-                            {values.map((value) => (
-                              <option key={value} value={value}>
-                                {value}
-                              </option>
-                            ))}
-                          </>
-                        )}
-                      </select>
+                      />
                     )}
                     {extraComponents}
                   </div>

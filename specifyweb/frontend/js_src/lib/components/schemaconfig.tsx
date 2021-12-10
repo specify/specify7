@@ -71,6 +71,7 @@ export function SchemaConfig({
   webLinks,
   uiFormatters,
   dataObjFormatters,
+  dataObjAggregators,
   onClose: handleClose,
   onSave: handleSave,
   removeUnloadProtect,
@@ -83,6 +84,7 @@ export function SchemaConfig({
   readonly webLinks: RA<string>;
   readonly uiFormatters: RA<UiFormatter>;
   readonly dataObjFormatters: IR<DataObjFormatter>;
+  readonly dataObjAggregators: IR<DataObjFormatter>;
   readonly onClose: () => void;
   readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
@@ -259,6 +261,7 @@ export function SchemaConfig({
       webLinks,
       uiFormatters,
       dataObjFormatters,
+      dataObjAggregators,
     },
   });
 }
