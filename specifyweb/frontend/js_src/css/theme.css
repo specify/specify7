@@ -243,6 +243,6 @@ table.grid-table,
   display: contents;
 }
 
-input:read-only {
-  background-color: var(--b2);
+input[readonly] {
+  background-color: var(--b3);
 }

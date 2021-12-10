@@ -56,13 +56,21 @@ export type WithFetchedStrings = {
   };
 };
 
-export type WithDatamodelFields = {
+export type WithTableInfo = {
+  readonly dataModel: {
+    readonly pickLists: RA<string>;
+  };
+};
+
+export type WithFieldInfo = {
   readonly dataModel: {
     readonly length: number | undefined;
     readonly readOnly: boolean;
     readonly relatedModelName: string | undefined;
     readonly isRequired: boolean;
-    readonly canEditRequired: boolean;
+    readonly isRelationship: boolean;
+    readonly type: string;
+    readonly canChangeIsRequired: boolean;
   };
 };
 
@@ -176,7 +184,7 @@ export default createBackboneView<ConstructorProps, BackboneProps, Props>({
   moduleName: 'SchemaConfig',
   tagName: 'section',
   title: commonText('schemaConfig'),
-  className: 'schema-config content-no-shadow',
+  className: 'schema-config content',
   initialize(self) {
     const urlSearchParameters = new URLSearchParams(window.location.search);
     const parameters = Object.fromEntries(urlSearchParameters.entries());

@@ -1,3 +1,4 @@
+import type { ItemType } from './components/schemaconfig';
 import type {
   SpLocaleItem,
   SpLocaleItemStr as SpLocaleItemString,
@@ -17,32 +18,29 @@ export const sortObjectsByKey = <
     keyLeft > keyRight ? 1 : keyLeft === keyRight ? 0 : -1
   );
 
-export const isRelationship = (item: SpLocaleItem): boolean =>
-  item.type === null ? false : item.type! in relationshipTypes;
-
 const fetchString = async (
   url: string,
   language: string,
-  country?: string
+  country?: string,
 ): Promise<SpLocaleItemString> =>
-  // TODO: add country parameter here
-  fetch(`${url}&language=${language}`)
-    .then<{ readonly objects: RA<SpLocaleItemString> }>(async (response) =>
-      response.json()
+  fetch(
+    `${url}&language=${language}&country${
+      typeof country === 'undefined' ? `__isnull=true` : `=${country}&limit=1`
+    }`
+  )
+    .then<{ readonly objects: Readonly<[SpLocaleItemString]> }>(
+      async (response) => response.json()
     )
     .then(({ objects }) => {
-      const targetString = objects.find(
-        (object) => object.language === language && object.country == country
-      );
-      if (typeof targetString === 'undefined')
+      if (typeof objects[0] === 'undefined')
+        /*
+         * TODO: better handle cases when string for that language does not
+         *  exist
+         */
         throw new Error(
           `Unable to find a string for ${language}_${country ?? ''} in ${url}`
         );
-      else return targetString;
-      /*
-       * TODO: better handle cases when string for that language does not
-       *  exist
-       */
+      else return objects[0];
     });
 
 export const fetchStrings = async <
@@ -67,11 +65,18 @@ export const fetchStrings = async <
     )
   );
 
+export function getItemType(item: SpLocaleItem): ItemType {
+  if (item.weblinkname !== null) return 'webLink';
+  else if (item.picklistname !== null) return 'pickList';
+  else if (item.isuiformatter) return 'formatted';
+  else return 'none';
+}
+
 const relationshipTypes: IR<string> = {
-  OneToOne: commonText('oneToOne'),
-  OneToMany: commonText('oneToMany'),
-  ManyToOne: commonText('manyToOne'),
-  ManyToMany: commonText('manyToMany'),
+  'one-to-one': commonText('oneToOne'),
+  'one-to-many': commonText('oneToMany'),
+  'many-to-one': commonText('manyToOne'),
+  'many-to-many': commonText('manyToMany'),
 };
 
 export function javaTypeToHuman(
