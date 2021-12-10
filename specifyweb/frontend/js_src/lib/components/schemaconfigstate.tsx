@@ -12,6 +12,7 @@ import {
 import type { Actions } from '../schemaconfigreducer';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
+import { Formatter } from './schemaconfig';
 import type { ItemType, SpLocaleItem } from './schemaconfig';
 import type {
   WithTableInfo,
@@ -75,6 +76,7 @@ type StateWithParameters = States & {
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
     readonly handleClose: () => void;
+    readonly formatters: RA<Formatter>;
   };
 };
 
@@ -168,7 +170,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       itemId,
       tableWasModified,
       modifiedItems,
-      parameters: { id, dispatch, handleClose },
+      parameters: { id, dispatch, handleClose, formatters },
     },
   }) {
     const sortedItems = sortObjectsByKey(Object.values(items), 'name');
@@ -258,15 +260,15 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </label>
             <label>
               {commonText('tableFormat')}
+              <input type="text" readOnly={true} value={table.format ?? ''} />
+            </label>
+            <label>
+              {commonText('tableAggregation')}
               <input
                 type="text"
                 readOnly={true}
                 value={table.aggregator ?? ''}
               />
-            </label>
-            <label>
-              {commonText('tableAggregation')}
-              <input type="text" readOnly={true} value={table.format ?? ''} />
             </label>
             <label className="horizontal">
               <input
@@ -419,14 +421,26 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 },
                 formatted: {
                   label: commonText('formatted'),
-                  // TODO: finish this
-                  value: null,
-                  values: [],
+                  value: items[itemId].format,
+                  values: formatters.map(
+                    ({ name, isSystem, isDefault, value }) =>
+                      [
+                        name,
+                        ...[
+                          value,
+                          isSystem && commonText('system'),
+                          isDefault && commonText('default'),
+                        ]
+                          .filter(Boolean)
+                          .map((value) => `(${value})`),
+                      ].join(' ')
+                  ).sort(),
                   disabled: items[itemId].dataModel.isRelationship,
                 },
                 webLink: {
                   label: commonText('webLink'),
                   value: items[itemId].weblinkname,
+                  // TODO: finish this
                   values: [],
                   disabled: items[itemId].dataModel.isRelationship,
                 },

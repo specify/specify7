@@ -7,8 +7,9 @@ import { fetchStrings } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import { useId } from './common';
 import { stateReducer } from './schemaconfigstate';
-import { WithFetchedStrings, WithFieldInfo } from './schemaconfigwrapper';
 import type {
+  WithFetchedStrings,
+  WithFieldInfo,
   CommonTableFields,
   SpLocaleContainer,
 } from './schemaconfigwrapper';
@@ -48,6 +49,13 @@ export type SpLocaleItemStr = CommonTableFields & {
    */
 };
 
+export type Formatter = {
+  readonly name: string;
+  readonly isSystem: boolean;
+  readonly isDefault: boolean;
+  readonly value: string;
+};
+
 export type ItemType = 'none' | 'formatted' | 'webLink' | 'pickList';
 
 export function SchemaConfig({
@@ -55,6 +63,7 @@ export function SchemaConfig({
   tables,
   defaultLanguage,
   defaultTable,
+  formatters,
   onClose: handleClose,
   onSave: handleSave,
   removeUnloadProtect,
@@ -64,6 +73,7 @@ export function SchemaConfig({
   readonly tables: IR<SpLocaleContainer>;
   readonly defaultLanguage: string | undefined;
   readonly defaultTable: SpLocaleContainer | undefined;
+  readonly formatters: RA<Formatter>;
   readonly onClose: () => void;
   readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
@@ -123,6 +133,7 @@ export function SchemaConfig({
       throw new Error('Unable to find table fields');
 
     Promise.all([
+      // Fetch all picklists
       fetch(`/api/specify/picklist/?domainfilter=true&limit=0`)
         .then<{
           readonly objects: RA<{ readonly id: string; readonly name: string }>;
@@ -130,6 +141,7 @@ export function SchemaConfig({
         .then(({ objects }) =>
           Object.fromEntries(objects.map(({ id, name }) => [id, name]))
         ),
+      // Fetch table items and their strings
       fetch(
         `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`
       )
@@ -146,9 +158,14 @@ export function SchemaConfig({
               length: undefined,
               readOnly: false,
               relatedModelName: undefined,
+              isRequired: false,
+              isRelationship: false,
+              type: '',
+              canChangeIsRequired: false,
             },
           }))
         ),
+      // Fetch table strings
       fetchStrings([state.table], language, country),
     ])
       .then(([pickLists, items, [table]]) => {
@@ -230,6 +247,7 @@ export function SchemaConfig({
       dispatch,
       id,
       handleClose,
+      formatters,
     },
   });
 }

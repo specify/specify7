@@ -68,7 +68,7 @@ export const fetchStrings = async <
 export function getItemType(item: SpLocaleItem): ItemType {
   if (item.weblinkname !== null) return 'webLink';
   else if (item.picklistname !== null) return 'pickList';
-  else if (item.isuiformatter) return 'formatted';
+  else if (item.format !== null) return 'formatted';
   else return 'none';
 }
 

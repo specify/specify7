@@ -1116,6 +1116,16 @@ const commonText = createDictionary({
     'ru-ru': 'Список выбора',
     ca: 'Llista de selecció',
   },
+  system: {
+    'en-us': 'System',
+    'ru-ru': '',
+    ca: '',
+  },
+  default: {
+    'en-us': 'Default',
+    'ru-ru': '',
+    ca: ''
+  }
 });
 
 export default commonText;
