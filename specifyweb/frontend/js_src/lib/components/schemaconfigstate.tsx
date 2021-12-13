@@ -76,7 +76,7 @@ export type States =
 
 type StateWithParameters = States & {
   readonly parameters: {
-    readonly languages: RA<string>;
+    readonly languages: IR<string>;
     readonly tables: IR<SpLocaleContainer>;
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
@@ -116,19 +116,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       >
         {commonText('language')}
         <ul style={{ padding: 0 }}>
-          {languages.map((language) => (
-            <li key={language}>
+          {Object.entries(languages).map(([code, label]) => (
+            <li key={code}>
               <button
                 type="button"
                 className="fake-link language-link"
                 onClick={(): void =>
                   dispatch({
                     type: 'ChooseLanguageAction',
-                    language,
+                    language: code,
                   })
                 }
               >
-                {language}
+                {label}
               </button>
             </li>
           ))}
@@ -215,6 +215,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       modifiedItems,
       parameters: {
         id,
+        languages,
         dispatch,
         handleClose,
         webLinks,
@@ -236,7 +237,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       <>
         <header>
           <h2>
-            {commonText('schemaConfig')} ({language})
+            {commonText('schemaConfig')} (
+            {languages[language]?.replaceAll(/[()]/g, '') ?? language})
           </h2>
           <span className="spacer" />
           <menu>

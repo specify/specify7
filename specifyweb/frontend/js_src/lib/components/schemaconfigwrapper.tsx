@@ -88,7 +88,7 @@ function SchemaConfigWrapper({
   defaultLanguage,
   defaultTable,
 }: Props): JSX.Element {
-  const [languages, setLanguages] = React.useState<RA<string> | undefined>(
+  const [languages, setLanguages] = React.useState<IR<string> | undefined>(
     undefined
   );
   const [tables, setTables] = React.useState<IR<SpLocaleContainer> | undefined>(
@@ -103,7 +103,8 @@ function SchemaConfigWrapper({
       .then<{ readonly objects: Readonly<[{ readonly id: number }]> }>(
         async (response) => response.json()
       )
-      .then(async ({ objects: [{ id }] }) => fetch(
+      .then(async ({ objects: [{ id }] }) =>
+        fetch(
           `http://localhost/api/specify/splocaleitemstr/?containername=${id}&limit=0`
         )
       )
@@ -113,14 +114,41 @@ function SchemaConfigWrapper({
           readonly language: string;
         }>;
       }>(async (response) => response.json())
-      .then(({ objects }) => {
-        if (destructorCalled) return;
-        const languages = objects.map(
-          ({ country, language }) =>
-            `${language}${country === null ? '' : `_${country}`}`
-        );
+      .then(({ objects }) =>
         // Sometimes languages are duplicated. Need to make the list unique
-        setLanguages(Array.from(new Set(languages)));
+        Array.from(
+          new Set(
+            objects.map(
+              ({ country, language }) =>
+                `${language}${country === null ? '' : `_${country}`}`
+            )
+          )
+        )
+      )
+      .then((languages) =>
+        Promise.all(
+          languages.map(async (language) =>
+            fetch(`/context/languages/${language.replace('_', '-')}/`)
+              .then<{ readonly name_local: string } | undefined>(
+                async (response) =>
+                  response.status === 200 ? response.json() : undefined
+              )
+              .then((response) => [
+                language,
+                typeof response === 'undefined'
+                  ? language
+                  : `${response.name_local}${
+                      language.split('_')[1]
+                        ? ` (${language.split('_')[1]})`
+                        : ''
+                    }`,
+              ])
+          )
+        )
+      )
+      .then((languages) => {
+        if (destructorCalled) return;
+        setLanguages(Object.fromEntries(languages));
       })
       .catch(handlePromiseReject);
 
