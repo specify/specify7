@@ -42,8 +42,8 @@ services:
       - MASTER_NAME=master
       - MASTER_PASSWORD=master
       - SECRET_KEY=change this to some unique random string
-      # - ASSET_SERVER_URL=http://asset-server:8080/web_asset_store.xml
-      # - ASSET_SERVER_KEY=your asset server access key
+      - ASSET_SERVER_URL=http://host.docker.internal/web_asset_store.xml
+      - ASSET_SERVER_KEY=your asset server access key
       - REPORT_RUNNER_HOST=report-runner
       - REPORT_RUNNER_PORT=8080
       - CELERY_BROKER_URL=redis://redis/0
@@ -79,8 +79,8 @@ services:
       - MASTER_NAME=master
       - MASTER_PASSWORD=master
       - SECRET_KEY=change this to some unique random string
-      # - ASSET_SERVER_URL=http://asset-server:8080/web_asset_store.xml
-      # - ASSET_SERVER_KEY=your asset server access key
+      - ASSET_SERVER_URL=http://host.docker.internal/web_asset_store.xml
+      - ASSET_SERVER_KEY=your asset server access key
       - REPORT_RUNNER_HOST=report-runner
       - REPORT_RUNNER_PORT=8080
       - CELERY_BROKER_URL=redis://redis/0
@@ -91,16 +91,16 @@ services:
   redis:
     image: redis
 
-  # asset-server:
-  #   image: specifyconsortium/specify-asset-service
-  #   init: true
-  #   volumes:
-  #     - "attachments:/home/specify/attachments"
-  #   environment:
-  #     - SERVER_NAME=localhost
-  #     - SERVER_PORT=80
-  #     - ATTACHMENT_KEY=your asset server access key
-  #     - DEBUG_MODE=false
+  asset-server:
+    image: specifyconsortium/specify-asset-service
+    init: true
+    volumes:
+      - "attachments:/home/specify/attachments"
+    environment:
+      - SERVER_NAME=host.docker.internal
+      - SERVER_PORT=80
+      - ATTACHMENT_KEY=your asset server access key
+      - DEBUG_MODE=false
 
   specify6:
     image: specifyconsortium/specify6-service:6.8.01
