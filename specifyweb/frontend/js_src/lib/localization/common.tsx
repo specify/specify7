@@ -1118,14 +1118,14 @@ const commonText = createDictionary({
   },
   system: {
     'en-us': 'System',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Системное',
+    ca: 'Sistema',
   },
   default: {
     'en-us': 'Default',
-    'ru-ru': '',
-    ca: ''
-  }
+    'ru-ru': 'Умолчание',
+    ca: 'Per defecte',
+  },
 });
 
 export default commonText;

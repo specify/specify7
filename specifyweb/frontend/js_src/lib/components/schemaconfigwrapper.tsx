@@ -11,7 +11,7 @@ import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { SpLocaleItemStr } from './schemaconfig';
-import { SchemaConfig } from './schemaconfig';
+import { NewSpLocaleItemStr, SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 import UiFormatters from '../uiformatters';
@@ -57,8 +57,8 @@ export type SpLocaleContainer = CommonTableFields & {
 
 export type WithFetchedStrings = {
   readonly strings: {
-    readonly desc: SpLocaleItemStr;
-    readonly name: SpLocaleItemStr;
+    readonly desc: SpLocaleItemStr | NewSpLocaleItemStr;
+    readonly name: SpLocaleItemStr | NewSpLocaleItemStr;
   };
 };
 
