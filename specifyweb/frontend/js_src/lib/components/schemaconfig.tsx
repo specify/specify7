@@ -3,7 +3,7 @@ import React from 'react';
 import csrfToken from '../csrftoken';
 import type { Schema } from '../legacytypes';
 import schema from '../schema';
-import { fetchStrings } from '../schemaconfighelper';
+import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import { useId } from './common';
 import { stateReducer } from './schemaconfigstate';
@@ -21,8 +21,8 @@ export type SpLocaleItem = CommonTableFields & {
   readonly format: null;
   readonly ishidden: boolean;
   readonly isrequired: boolean;
-  readonly issystem: boolean;
-  readonly isuiformatter: boolean;
+  // readonly issystem: boolean;
+  // readonly isuiformatter: boolean;
   readonly name: string;
   readonly picklistname: string | null;
   readonly type: null;
@@ -35,18 +35,25 @@ export type SpLocaleItem = CommonTableFields & {
   readonly names: string;
 };
 
-export type SpLocaleItemStr = CommonTableFields & {
-  readonly id: number;
-  readonly country?: string;
+type SpLocaleItemStrBase = {
+  readonly country: string | null;
   readonly language: string;
   readonly text: string;
-  /*
-   * Readonly variant: null;
-   * readonly containerdesc?: string;
-   * readonly contaninername?: string;
-   * readonly itemdesc?: string;
-   * readonly itemname?: string;
-   */
+  readonly containerdesc?: string;
+  readonly contaninername?: string;
+  readonly itemdesc?: string;
+  readonly itemname?: string;
+  // readonly variant: null;
+};
+
+export type SpLocaleItemStr = CommonTableFields &
+  SpLocaleItemStrBase & {
+    readonly id: number;
+  };
+
+export type NewSpLocaleItemStr = SpLocaleItemStrBase & {
+  readonly id?: number;
+  readonly parent?: string;
 };
 
 export type UiFormatter = {
@@ -120,7 +127,7 @@ export function SchemaConfig({
     )
       return undefined;
 
-    const [language, country] = state.language.split('_');
+    const [language, country = null] = state.language.split('_');
 
     const fields = Object.fromEntries(
       Object.values((schema as unknown as Schema).models)
@@ -215,6 +222,22 @@ export function SchemaConfig({
     if (state.type !== 'SavingState') return;
     removeUnloadProtect();
 
+    const saveString = async (
+      resource: NewSpLocaleItemStr | SpLocaleItemStr
+    ): Promise<Response> =>
+      'resource_uri' in resource && resource.id >= 0
+        ? saveResource(resource as CommonTableFields)
+        : fetch('/api/specify/splocaleitemstr/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken!,
+            },
+            body: JSON.stringify(
+              prepareNewString(resource as NewSpLocaleItemStr)
+            ),
+          });
+
     const saveResource = async (
       resource: CommonTableFields
     ): Promise<Response> =>
@@ -228,20 +251,21 @@ export function SchemaConfig({
       });
 
     const { strings, ...table } = state.table;
+    // TODO: failed requests do not throw error
     const requests = [
       ...(state.tableWasModified
         ? [
             saveResource(table),
-            saveResource(strings.name),
-            saveResource(strings.desc),
+            saveString(strings.name),
+            saveString(strings.desc),
           ]
         : []),
       ...state.modifiedItems
         .map((id) => state.items[id])
         .flatMap(({ strings, dataModel: _, ...item }) => [
           saveResource(item),
-          saveResource(strings.name),
-          saveResource(strings.desc),
+          saveString(strings.name),
+          saveString(strings.desc),
         ]),
     ];
 

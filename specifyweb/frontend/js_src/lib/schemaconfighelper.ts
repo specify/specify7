@@ -1,4 +1,7 @@
-import { DataObjFormatter } from './components/schemaconfig';
+import {
+  DataObjFormatter,
+  NewSpLocaleItemStr,
+} from './components/schemaconfig';
 import type { ItemType } from './components/schemaconfig';
 import type {
   SpLocaleItem,
@@ -19,29 +22,40 @@ export const sortObjectsByKey = <
     keyLeft > keyRight ? 1 : keyLeft === keyRight ? 0 : -1
   );
 
+let newStringId = 1;
+const defaultLanguage = 'en';
+const defaultCountry = null;
+
 const fetchString = async (
   url: string,
   language: string,
-  country?: string
-): Promise<SpLocaleItemString> =>
-  fetch(
-    `${url}&language=${language}&country${
-      typeof country === 'undefined' ? `__isnull=true` : `=${country}&limit=1`
-    }`
-  )
-    .then<{ readonly objects: Readonly<[SpLocaleItemString]> }>(
-      async (response) => response.json()
+  country: string | null
+): Promise<SpLocaleItemString | NewSpLocaleItemStr> =>
+  fetch(url)
+    .then<{ readonly objects: RA<SpLocaleItemString> }>(async (response) =>
+      response.json()
     )
     .then(({ objects }) => {
-      if (typeof objects[0] === 'undefined')
-        /*
-         * TODO: better handle cases when string for that language does not
-         *  exist
-         */
-        throw new Error(
-          `Unable to find a string for ${language}_${country ?? ''} in ${url}`
-        );
-      else return objects[0];
+      const targetString = objects.find(
+        (object) => object.language === language && object.country === country
+      );
+      if (typeof targetString === 'undefined') {
+        const defaultString =
+          objects.find(
+            (object) =>
+              object.language === defaultLanguage &&
+              object.country === defaultCountry
+          )?.text ?? '';
+        newStringId += 1;
+
+        return {
+          id: -newStringId,
+          text: defaultString,
+          language,
+          country,
+          parent: url,
+        };
+      } else return targetString;
     });
 
 export const fetchStrings = async <
@@ -49,7 +63,7 @@ export const fetchStrings = async <
 >(
   objects: RA<T>,
   language: string,
-  country?: string
+  country: string | null
 ): Promise<RA<T & WithFetchedStrings>> =>
   Promise.all(
     objects.map(async (item) =>
@@ -65,6 +79,19 @@ export const fetchStrings = async <
       }))
     )
   );
+
+export function prepareNewString({
+  parent,
+  id: _id,
+  ...object
+}: NewSpLocaleItemStr): NewSpLocaleItemStr {
+  if (typeof parent === 'undefined') throw new Error('String has no parent');
+  const [parentName, parentId] = parent.split('?')[1].split('=');
+  return {
+    ...object,
+    [parentName]: `/api/specify/splocalecontaineritem/${parentId}/`,
+  };
+}
 
 export const formatAggregators = (
   aggregators: RA<Element>
