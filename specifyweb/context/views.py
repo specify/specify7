@@ -612,7 +612,7 @@ def api_endpoints_all(request):
     return JsonResponse(generate_openapi_for_endpoints(True))
 
 @require_http_methods(['GET', 'POST'])
-def language(request):
+def languages(request):
     """Get List of available languages OR set current language."""
     if request.method == 'GET':
         return JsonResponse({
@@ -626,3 +626,8 @@ def language(request):
     elif request.method == 'POST':
         return set_language(request)
 
+@require_GET
+@never_cache
+def languages(request, language):
+    """Get Information for a single language."""
+    return JsonResponse(get_language_info(language))

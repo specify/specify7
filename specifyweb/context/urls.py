@@ -8,7 +8,8 @@ urlpatterns = [
     url(r'^login/$', views.api_login),
     url(r'^collection/$', views.collection),
     url(r'^user_collection_access/(?P<userid>\d+)/$', views.user_collection_access),
-    url(r'^language/$', views.language),
+    url(r'^language/$', views.languages),
+    url(r'^languages/(?P<language>[\w-]+)/$', views.language),
 
     url(r'^api_endpoints.json$', views.api_endpoints),
     url(r'^api_endpoints_all.json$', views.api_endpoints_all),

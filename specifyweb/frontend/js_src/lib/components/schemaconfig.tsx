@@ -84,7 +84,7 @@ export function SchemaConfig({
   removeUnloadProtect,
   setUnloadProtect,
 }: {
-  readonly languages: RA<string>;
+  readonly languages: IR<string>;
   readonly tables: IR<SpLocaleContainer>;
   readonly defaultLanguage: string | undefined;
   readonly defaultTable: SpLocaleContainer | undefined;
