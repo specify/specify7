@@ -19,6 +19,8 @@ type ChooseLanguageAction = Action<
   }
 >;
 
+type AddLanguageAction = Action<'AddLanguageAction'>;
+
 type ChangeLanguageAction = Action<'ChangeLanguageAction'>;
 
 type ChooseTableAction = Action<
@@ -71,6 +73,7 @@ type SaveAction = Action<'SaveAction'>;
 
 export type Actions =
   | ChooseLanguageAction
+  | AddLanguageAction
   | ChangeLanguageAction
   | ChooseTableAction
   | FetchedTableDataAction
@@ -83,6 +86,9 @@ export type Actions =
 export const reducer = generateReducer<States, Actions>({
   ChangeLanguageAction: () => ({
     type: 'ChooseLanguageState',
+  }),
+  AddLanguageAction: () => ({
+    type: 'AddLanguageState',
   }),
   ChooseLanguageAction: ({ action: { language } }) => ({
     type: 'ChooseTableState',

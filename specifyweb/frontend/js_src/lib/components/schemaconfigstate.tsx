@@ -15,7 +15,7 @@ import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import { DataObjFormatter, UiFormatter } from './schemaconfig';
 import type { ItemType, SpLocaleItem } from './schemaconfig';
-import { PickList } from './schemaconfigcomponents';
+import { AddLanguage, PickList } from './schemaconfigcomponents';
 import type {
   WithTableInfo,
   SpLocaleContainer,
@@ -25,6 +25,8 @@ import type {
 import type { IR, RA } from './wbplanview';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
+
+type AddLanguageState = State<'AddLanguageState'>;
 
 type ChooseTableState = State<
   'ChooseTableState',
@@ -66,6 +68,7 @@ type SavingState = State<
 
 export type States =
   | ChooseLanguageState
+  | AddLanguageState
   | ChooseTableState
   | FetchingTableFieldState
   | MainState
@@ -96,6 +99,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         properties={{
           title: commonText('schemaConfig'),
           close: handleClose,
+          buttons: [
+            {
+              text: commonText('addLanguage'),
+              click: (): void =>
+                dispatch({
+                  type: 'AddLanguageAction',
+                }),
+            },
+            {
+              text: commonText('close'),
+              click: handleClose,
+            },
+          ],
         }}
       >
         {commonText('language')}
@@ -118,6 +134,28 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           ))}
         </ul>
       </ModalDialog>
+    );
+  },
+  AddLanguageState({
+    action: {
+      parameters: { handleClose, dispatch },
+    },
+  }) {
+    return (
+      <AddLanguage
+        handleClose={handleClose}
+        handleGoBack={(): void =>
+          dispatch({
+            type: 'ChangeLanguageAction',
+          })
+        }
+        handleAddLanguage={(language): void =>
+          dispatch({
+            type: 'ChooseLanguageAction',
+            language,
+          })
+        }
+      />
     );
   },
   ChooseTableState({

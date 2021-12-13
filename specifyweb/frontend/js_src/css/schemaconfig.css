@@ -44,17 +44,17 @@
   column-gap: var(--half-size);
 }
 
-.schema-config section label,
-.schema-config section .group {
+.schema-config label,
+.schema-config .group {
   display: flex;
   column-gap: var(--quarter-size);
 }
 
-.schema-config section label:not(.horizontal) {
+.schema-config label:not(.horizontal) {
   flex-direction: column;
 }
 
-.schema-config section label.horizontal {
+.schema-config label.horizontal {
   align-items: center;
 }
 

@@ -1126,6 +1126,26 @@ const commonText = createDictionary({
     'ru-ru': 'Умолчание',
     ca: 'Per defecte',
   },
+  addLanguage: {
+    'en-us': 'Add Language',
+    'ru-ru': 'Добавить язык',
+    ca: "Afegeix l'idioma",
+  },
+  addLanguageDialogTitle: {
+    'en-us': 'Add Language',
+    'ru-ru': 'Добавить язык',
+    ca: "Afegeix l'idioma",
+  },
+  addLanguageDialogHeader: {
+    'en-us': createJsxHeader('Add new language'),
+    'ru-ru': createJsxHeader('Добавить новый язык'),
+    ca: createJsxHeader('Afegeix un nou idioma'),
+  },
+  country: {
+    'en-us': 'Country',
+    'ru-ru': 'Страна',
+    ca: 'País',
+  },
 });
 
 export default commonText;
