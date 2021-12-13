@@ -251,7 +251,6 @@ export function SchemaConfig({
       });
 
     const { strings, ...table } = state.table;
-    // TODO: failed requests do not throw error
     const requests = [
       ...(state.tableWasModified
         ? [

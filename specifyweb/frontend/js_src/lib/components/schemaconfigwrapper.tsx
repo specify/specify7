@@ -103,8 +103,7 @@ function SchemaConfigWrapper({
       .then<{ readonly objects: Readonly<[{ readonly id: number }]> }>(
         async (response) => response.json()
       )
-      .then(async ({ objects: [{ id }] }) =>
-        fetch(
+      .then(async ({ objects: [{ id }] }) => fetch(
           `http://localhost/api/specify/splocaleitemstr/?containername=${id}&limit=0`
         )
       )
@@ -173,9 +172,7 @@ function SchemaConfigWrapper({
     <SchemaConfig
       languages={languages}
       tables={tables}
-      defaultLanguage={
-        languages.includes(defaultLanguage ?? '') ? defaultLanguage : undefined
-      }
+      defaultLanguage={defaultLanguage}
       defaultTable={Object.values(tables).find(
         ({ name }) => name === defaultTable
       )}
