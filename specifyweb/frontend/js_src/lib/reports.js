@@ -33,8 +33,8 @@ var ReportListDialog = Backbone.View.extend({
     __name__: "ReportListDialog",
     className: "reports-dialog table-list-dialog",
     events: {
-        'click a.select': 'getReportUI',
-        'click a.edit': 'editReport',
+        'click button.select': 'getReportUI',
+        'click button.edit': 'editReport',
     },
     initialize: function(options) {
         var appResources = this.options.appResources;
@@ -117,7 +117,7 @@ var ReportListDialog = Backbone.View.extend({
             type="button"
             class="select fake-link"
             title="${appResource.get('remarks') || ""}"
-        >${appResource.get('name')}></button>`);
+        >${appResource.get('name')}</button>`);
         var entry = $('<tr>')
                 .data('resource', appResource)
                 .append($('<td>').append(img), $('<td>').append(a));
