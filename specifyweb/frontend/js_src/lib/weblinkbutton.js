@@ -53,10 +53,10 @@ module.exports =   UIPlugin.extend({
                 if (this.fieldName && this.fieldName !== 'this') {
                     placeHolder.prop('type', 'text');
                     var uiField = new UIField({ el: placeHolder, model: this.model });
-                    uiField.render().$el.appendTo(this.el).show();
+                    uiField.render().$el.appendTo(newEl).show();
                 }
 
-                this.el.append($(`<a
+                newEl.append($(`<a
                   title="${title}"
                   class="magic-button"
                 >
@@ -67,6 +67,7 @@ module.exports =   UIPlugin.extend({
                 </a>`)[0]);
             }
 
+            placeHolder.hide();
             this.model.on('change', this.setLink, this);
             this.setLink();
 
