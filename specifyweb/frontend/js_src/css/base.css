@@ -187,6 +187,13 @@ textarea {
 }
 
 /* Hide up/down arrows */
+
+/* Firefox */
+input[type="number"].no-arrows {
+  -moz-appearance: textfield;
+}
+
+/* Webkit */
 input[type="number"].no-arrows::-webkit-outer-spin-button,
 input[type="number"].no-arrows::-webkit-inner-spin-button {
   -webkit-appearance: none;
