@@ -286,7 +286,7 @@ const ResourceList = Backbone.View.extend({
                     ${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}
                 </button>
             </li>`);
-            button.on('click',this.openNameDialog);
+            button.on('click',this.openNameDialog.bind(this));
             this.$el.append(button);
         }
         return this;
