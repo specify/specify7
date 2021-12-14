@@ -155,11 +155,20 @@ function navigate(url, options) {
     const cont = () => {
         clearUnloadProtect();
 
-        var origin = window.location.origin || (
-            window.location.protocol + '//' + window.location.host);
+        let externalUrl = false;
+        try {
+            externalUrl = new URL(url).origin !== window.location.origin;
+        }
+        catch {}
 
-        url = url.replace(RegExp('^' + origin), '');
-        Backbone.history.navigate(url.replace(/^\/specify/, ''), options);
+        if(externalUrl)
+            window.location.href = url;
+        else {
+            var origin = window.location.origin || (
+              window.location.protocol + '//' + window.location.host);
+            url = url.replace(RegExp('^' + origin), '');
+            Backbone.history.navigate(url.replace(/^\/specify/, ''), options);
+        }
     };
 
     unloadBlockers.length > 0 ? confirmNavigation(cont, () => {}) : cont();
