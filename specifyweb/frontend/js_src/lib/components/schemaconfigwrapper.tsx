@@ -105,7 +105,7 @@ function SchemaConfigWrapper({
       )
       .then(async ({ objects: [{ id }] }) =>
         fetch(
-          `http://localhost/api/specify/splocaleitemstr/?containername=${id}&limit=0`
+          `/api/specify/splocaleitemstr/?containername=${id}&limit=0`
         )
       )
       .then<{
