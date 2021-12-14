@@ -263,9 +263,6 @@ const ResourceView = Backbone.View.extend({
 const ResourceList = Backbone.View.extend({
     __name__: "ResourceListView",
     tagName: 'ul',
-    events: {
-        'click .new-resource': 'openNameDialog'
-    },
     initialize({resources, getDirectory, selectedResource, ResourceModel}) {
         this.resources = resources;
         this.getDirectory = getDirectory;
@@ -280,15 +277,18 @@ const ResourceList = Backbone.View.extend({
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (userInfo.isadmin)
-            this.el.innerHTML += `<li role="treeitem">
+        if (userInfo.isadmin){
+            const button = $(`<li role="treeitem">
                 <button
                     type="button"
                     class="fake-link new-resource"
                 >
                     ${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}
                 </button>
-            </li>`;
+            </li>`);
+            button.on('click',this.openNameDialog);
+            this.$el.append(button);
+        }
         return this;
     },
     createResource(name) {
