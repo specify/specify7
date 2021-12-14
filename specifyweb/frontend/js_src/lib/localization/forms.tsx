@@ -49,11 +49,9 @@ const formsText = createDictionary({
   },
   valuesOfMustBeUniqueToField: {
     'en-us': (fieldName: string, value: string, lastValue: string) =>
-      `Values of ${value} and ${lastValue}
-       в ${fieldName}} должны быть уникальным`,
-    'ru-ru': (fieldName: string, value: RA<string>, lastValue: string) =>
-      `Значения ${value} и ${lastValue}
-       must be unique to ${fieldName}}`,
+      `Values of ${value} and ${lastValue} must be unique to ${fieldName}}`,
+    'ru-ru': (fieldName: string, value: string, lastValue: string) =>
+      `Значения ${value} и ${lastValue} в ${fieldName} должны быть уникальным`,
     ca: (fieldName: string, value: string, lastValue: string) =>
       `Values of ${value} and ${lastValue}
        в ${fieldName}} должны быть уникальным`,
