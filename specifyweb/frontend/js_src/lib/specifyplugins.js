@@ -9,7 +9,7 @@ const formsText = require('./localization/forms').default;
 var providers = [
     require('./usercollectionsplugin.js'),
     require('./latlongui.js'),
-    require('./partialdateui.js'),
+    require('./partialdateui.js').default,
     require('./collectionrelonetomanyplugin.js'),
     require('./collectionrelonetooneplugin.js'),
     require('./geolocateplugin.js'),

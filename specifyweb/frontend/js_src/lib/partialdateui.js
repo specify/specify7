@@ -21,7 +21,7 @@ function isInputSupported(type) {
 
     var precisions = ['full', 'month-year', 'year'];
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "PartialDateUI",
         events: {
             'change select': 'updatePrecision',
@@ -213,28 +213,30 @@ module.exports =  UIPlugin.extend({
             this.updateIfValid(dayjs());
         },
         pasteFullDate(event){
-            this.pasteDate(event, this.updateFullDate.bind(this))
+            handleDatePaste(event.originalEvent, this.updateFullDate.bind(this))
         },
         pasteMonth(event){
-            this.pasteDate(event, this.updateMonth.bind(this))
-        },
-        pasteDate(event, updateHandler){
-            const input =
-                event.target.tagName === 'INPUT' ?
-                    event.target :
-                    event.target.getElementsByTagName('input')[0];
-            const initialType = input.type;
-            input.type = 'text';
-            try {
-                input.value = (
-                  event.originalEvent.clipboardData ?? window.clipboardData
-                ).getData('text/plain');
-                updateHandler();
-            } catch {
-                return;
-            }
-
-            event.preventDefault();
-            input.type = initialType;
+            handleDatePaste(event.originalEvent, this.updateMonth.bind(this))
         },
     }, { pluginsProvided: ['PartialDateUI'] });
+
+export function handleDatePaste(event, updateHandler){
+    const input =
+        event.target.tagName === 'INPUT' ?
+            event.target :
+            event.target.getElementsByTagName('input')[0];
+    const initialType = input.type;
+    input.type = 'text';
+    try {
+        input.value = (
+            event.clipboardData ??
+            window.clipboardData
+        ).getData('text/plain');
+        updateHandler();
+    } catch (error) {
+        console.error(error);
+    }
+
+    event.preventDefault();
+    input.type = initialType;
+}
