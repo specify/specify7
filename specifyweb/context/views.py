@@ -628,6 +628,6 @@ def languages(request):
 
 @require_GET
 @never_cache
-def languages(request, language):
+def language(request, language_code):
     """Get Information for a single language."""
-    return JsonResponse(get_language_info(language))
+    return JsonResponse(get_language_info(language_code))
