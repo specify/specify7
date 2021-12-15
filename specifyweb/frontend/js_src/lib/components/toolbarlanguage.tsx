@@ -15,7 +15,7 @@ function ChangeLanguage() {
   >(undefined);
 
   React.useEffect(() => {
-    fetch('/context/languages/')
+    fetch('/context/language/')
       .then((response) => response.json())
       .then(({ data }) => setLanguages(data))
       .catch(console.error);
@@ -32,8 +32,12 @@ function ChangeLanguage() {
         },
       }}
     >
-      <form action="/context/language/setlang/" method="post">
-        <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken ?? ''} />
+      <form action="/context/language/" method="post">
+        <input
+          type="hidden"
+          name="csrfmiddlewaretoken"
+          value={csrfToken ?? ''}
+        />
         <label>
           {commonText('language')}
           <br />
