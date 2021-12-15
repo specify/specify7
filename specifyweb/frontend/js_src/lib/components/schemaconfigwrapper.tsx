@@ -127,7 +127,7 @@ function SchemaConfigWrapper({
       .then((languages) =>
         Promise.all(
           languages.map(async (language) =>
-            fetch(`/context/languages/${language.replace('_', '-')}/`)
+            fetch(`/context/language/${language.replace('_', '-')}/`)
               .then<{ readonly name_local: string } | undefined>(
                 async (response) =>
                   response.status === 200 ? response.json() : undefined
