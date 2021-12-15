@@ -12,6 +12,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
 from django.template.response import TemplateResponse
 from django.urls import URLPattern, URLResolver
 from django.utils.http import is_safe_url
+from django.views.i18n import set_language
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST, \
@@ -610,23 +611,18 @@ def api_endpoints_all(request):
     """Returns a JSON description of all endpoints."""
     return JsonResponse(generate_openapi_for_endpoints(True))
 
-@require_GET
-@never_cache
-def set_language(request, language: str):
-    """Set language for current session."""
-    activate(language)
-    request.session[LANGUAGE_SESSION_KEY] = language
-    return HttpResponse('', status=204)
+@require_http_methods(['GET', 'POST'])
+def language(request):
+    """Get List of available languages OR set current language."""
+    if request.method == 'GET':
+        return JsonResponse({
+            'data': {
+                code:{
+                    **get_language_info(code),
+                    'is_current': code==request.LANGUAGE_CODE
+                } for code, name in settings.LANGUAGES
+            }
+        })
+    elif request.method == 'POST':
+        return set_language(request)
 
-@require_GET
-@never_cache
-def get_languages(request):
-    """Get List of available languages."""
-    return JsonResponse({
-        'data': {
-            code:{
-                **get_language_info(code),
-                'is_current': code==request.LANGUAGE_CODE
-            } for code, name in settings.LANGUAGES
-        }
-    })
