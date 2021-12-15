@@ -20,7 +20,7 @@ module.exports = Base.extend({
   render: function() {
     const wrapper = $('<span class="combobox-wrapper">');
 
-    const listId = 'datalist-${index}';
+    const listId = `datalist-${index}`;
     index+=1;
 
     this.input = $(`<input
