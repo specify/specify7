@@ -8,6 +8,7 @@ var Backbone = require('./backbone.js');
 var dataobjformatters = require('./dataobjformatters.js');
 var fieldformat       = require('./fieldformat.js');
 var { default: uiparse, addValidationAttributes, resolveParser} = require('./uiparse.ts');
+const {handleDatePaste} = require('./partialdateui');
 const formsText = require('./localization/forms').default;
 
 var objformat = dataobjformatters.format;
@@ -83,6 +84,15 @@ module.exports =  Backbone.View.extend({
             this.destructors.push(() =>
                 this.el.removeEventListener(eventName, handleChange)
             );
+
+            // Handle date paste
+            if(isDate){
+                const handlePaste = (event)=>handleDatePaste(event,handleChange);
+                this.el.addEventListener('paste', handlePaste);
+                this.destructors.push(() =>
+                    this.el.removeEventListener('paste', handlePaste)
+                );
+            }
 
             if (resource) {
                 const fillItIn = ()=>{
