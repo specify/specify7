@@ -22,7 +22,7 @@ module.exports = Backbone.View.extend({
         className: "querycbx-dialog-search",
         events: {
             'click .querycbx-search-results a': 'select',
-            'keyup input:text': 'keyUp'
+            'submit form': 'formSubmit',
         },
         initialize: function(options) {
             this.populateForm = options.populateForm;
@@ -59,11 +59,10 @@ module.exports = Backbone.View.extend({
                 close: function() { $(this).remove(); }
             });
         },
-    keyUp(evt) {
-        if (evt.keyCode === 13) {
+        formSubmit(event){
+            event.preventDefault();
             this.search();
-        }
-    },
+        },
         search: function() {
             this.$('.querycbx-search-results').empty();
             api.queryCbxExtendedSearch(this.model, this.forceCollection).done(this.gotResults.bind(this));

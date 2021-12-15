@@ -117,14 +117,14 @@ module.exports =  Backbone.View.extend({
             console.log('parse result:', result);
             const key = `parseError:${this.fieldName}`;
             if(result.isValid){
-              this.model.saveBlockers.remove(key);
+              this.model.saveBlockers?.remove(key);
               const oldValue = this.model.get(this.fieldName) ?? null;
               // Don't trigger unload protect needlessly
               if(oldValue !== result.parsed)
                 this.model.set(this.fieldName, result.parsed);
             }
             else
-              this.model.saveBlockers.add(key, this.fieldName, result.reason);
+              this.model.saveBlockers?.add(key, this.fieldName, result.reason);
         },
     });
 
