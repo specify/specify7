@@ -25,8 +25,8 @@ module.exports =  UIPlugin.extend({
         __name__: "PartialDateUI",
         events: {
             'change select': 'updatePrecision',
-            'change input.partialdateui-full': 'updateFullDate',
-            'change input.partialdateui-month': 'updateMonth',
+            'blur input.partialdateui-full': 'updateFullDate',
+            'blur input.partialdateui-month': 'updateMonth',
             'change input.partialdateui-year': 'updateYear',
             'paste label.partialdateui-full': 'pasteFullDate',
             'paste label.partialdateui-month': 'pasteMonth',

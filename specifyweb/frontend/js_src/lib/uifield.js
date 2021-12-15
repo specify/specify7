@@ -75,9 +75,13 @@ module.exports =  Backbone.View.extend({
                 : uiparse.bind(null, field, parser, this.el);
 
             const handleChange = ()=>this.inputChanged(parserFunction(this.el.value));
-            this.el.addEventListener('change', handleChange);
+            const isDate = this.el.type === 'date';
+            const eventName = isDate
+                ? 'blur'
+                : 'change';
+            this.el.addEventListener(eventName, handleChange);
             this.destructors.push(() =>
-                this.el.removeEventListener('change', handleChange)
+                this.el.removeEventListener(eventName, handleChange)
             );
 
             if (resource) {
