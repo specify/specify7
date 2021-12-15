@@ -157,6 +157,7 @@ function navigate(url, options) {
 
         let externalUrl = false;
         try {
+            // Trying to parse a relative URL would throw an exception
             externalUrl = new URL(url).origin !== window.location.origin;
         }
         catch {}
