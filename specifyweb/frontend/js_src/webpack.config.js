@@ -15,7 +15,7 @@ function writeIfChanged(compiler, fileName, fileContent){
         !fs.existsSync(fullOutPath) ||
         fileContent !== fs.readFileSync(fullOutPath).toString()
     )
-        fs.writeFileSync(fullOutPath, fileContent)
+        fs.writeFileSync(fullOutPath, fileContent);
 }
 
 class EmitInitPyPlugin {
@@ -34,13 +34,17 @@ class SmartWebpackManifestPlugin {
         getCompilerHooks(compiler).afterEmit.tap(
             'SmartWebpackManifestPlugin',
             (manifest)=>
-                writeIfChanged(
+                /*
+                 * Create manifest.py only after the build process
+                 * Otherwise, it gets deleted because of output.clean=true
+                 */
+                setTimeout(()=>writeIfChanged(
                     compiler,
                     'manifest.py',
                     `manifest = ${
                         JSON.stringify(manifest, null, 2)
                     }\n`
-                )
+                ),0)
         );
 }
 
@@ -79,7 +83,10 @@ module.exports = (_env, argv)=>({
                                 '@babel/preset-env',
                                 {
                                     useBuiltIns: 'usage',
-                                    corejs: '3.15',
+                                    corejs: {
+                                        version: '3.19.3',
+                                        proposals: true,
+                                    },
                                     bugfixes: true,
                                     browserslistEnv: argv.mode,
                                 }
@@ -136,6 +143,11 @@ module.exports = (_env, argv)=>({
     },
     watchOptions: {
         ignored: '/node_modules/',
+    },
+    performance: {
+        // Disable bundle size warnings for bundles <2 MB
+        maxEntrypointSize: 2 * 1024 * 1024,
+        maxAssetSize: 2 * 1024 * 1024,
     },
     stats: {
         env: true,
