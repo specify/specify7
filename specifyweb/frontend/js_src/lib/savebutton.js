@@ -18,7 +18,7 @@ module.exports =  Backbone.View.extend({
             this.buttonsDisabled = true;
             this.destructors = [];
 
-            if (this.model.isNew()) this.setButtonsDisabled(false);
+            if (this.model.isNew()) this.setButtonsDisabled(false, false);
 
             this.model.on('saverequired changing', function(resource) {
                 this.setButtonsDisabled(false);
@@ -36,7 +36,7 @@ module.exports =  Backbone.View.extend({
                 if (!blocker.deferred) this.setSaveBlocked(true);
             }, this);
         },
-        setButtonsDisabled: function(disabled) {
+        setButtonsDisabled: function(disabled, updateUnloadProtect=true) {
             this.buttonsDisabled = disabled;
             if(this.buttons){
                 if(disabled){
@@ -46,11 +46,12 @@ module.exports =  Backbone.View.extend({
                 }
                 this.buttons.prop('disabled', disabled);
             }
-            if(!disabled) {
-                navigation.addUnloadProtect(this, formsText('unsavedFormUnloadProtect'));
-            } else {
-                navigation.removeUnloadProtect(this);
-            }
+            if(updateUnloadProtect)
+                if(disabled)
+                    navigation.removeUnloadProtect(this);
+                else
+                    navigation.addUnloadProtect(this, formsText('unsavedFormUnloadProtect'));
+
         },
         setSaveBlocked: function(saveBlocked) {
             this.saveBlocked = saveBlocked;
@@ -87,7 +88,7 @@ module.exports =  Backbone.View.extend({
             this.buttons.appendTo(this.el);
 
             // get buttons to match current state
-            this.setButtonsDisabled(this.buttonsDisabled);
+            this.setButtonsDisabled(this.buttonsDisabled, false);
             this.setSaveBlocked(this.saveBlocked);
 
             return this;
