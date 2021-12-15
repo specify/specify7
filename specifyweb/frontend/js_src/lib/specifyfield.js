@@ -107,7 +107,7 @@ _.extend(schema.Field.prototype, {
             : this.dependent;
     },
 
-    // Retruns true if the field represents a time value.
+    // Returns true if the field represents a time value.
     isTemporal: function() {
         return _(['java.util.Date', 'java.util.Calendar']).contains(this.type);
     }
