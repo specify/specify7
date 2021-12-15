@@ -11,11 +11,14 @@ export default function autocomplete({
   source,
   minLength = 1,
   delay = debounceRate,
+  // Don't reQuery items on input
+  isStatic,
 }: {
   input: HTMLInputElement;
   source: (value: string) => Promise<RA<string> | IR<string>>;
   minLength: number;
   delay: number;
+  isStatic: false,
 }): () => void {
   const id = `autocomplete-data-list=${dataListCount}`;
   dataListCount += 1;
@@ -51,10 +54,13 @@ export default function autocomplete({
       .catch(console.error);
   }
 
+  eventHandler();
   const throttledHandler = _.debounce(eventHandler, delay);
-  input.addEventListener('keydown', throttledHandler);
+  if(!isStatic)
+    input.addEventListener('keydown', throttledHandler);
   return (): void => {
-    input.removeEventListener('keydown', throttledHandler);
+    if(!isStatic)
+      input.removeEventListener('keydown', throttledHandler);
     dataList.remove();
     input.removeAttribute('list');
   };

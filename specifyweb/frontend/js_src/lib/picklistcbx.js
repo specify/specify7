@@ -7,6 +7,7 @@ var Q = require('q');
 var Base = require('./basepicklist.js');
 var schema = require('./schema.js');
 const {addValidationAttributes, resolveParser} = require('./uiparse.ts');
+const autocomplete = require('./autocomplete').default;
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
@@ -20,19 +21,13 @@ module.exports = Base.extend({
   render: function() {
     const wrapper = $('<span class="combobox-wrapper">');
 
-    const listId = `datalist-${index}`;
-    index+=1;
-
     this.input = $(`<input
       type="text"
       id="${this.el.id}"
-      list="${listId}"
       class="${this.$el.attr('class')}"
       ${this.$el.attr('disabled') ? 'disabled tabIndex="-1"' : ''}
       ${this.$el.attr('required') ? 'required' : ''}
     >`).appendTo(wrapper);
-
-    this.dataList = $(`<datalist id="${listId}"></datalist>`).appendTo(wrapper);
 
     this.$el.replaceWith(wrapper);
     this.setElement(wrapper);
@@ -47,11 +42,14 @@ module.exports = Base.extend({
         parser,
     );
 
-    this.dataList[0].innerHTML = this.source().map((label) =>
-      `<option value="${label}">`,
-    ).join('');
-
     this.resetValue();
+
+    this.autocompleteDestructor = autocomplete({
+      input: this.input[0],
+      source: ()=>this.source(),
+      minLength: 0,
+      isStatic: true,
+    });
   },
   getCurrentValue: function() {
     const value = this.info.resource.get(this.info.field.name);
@@ -59,7 +57,7 @@ module.exports = Base.extend({
       item.value === value,
     )?.title || value;
   },
-  source: function() {
+  async source() {
     const labels = this.info.pickListItems.filter(item => item.value != null).map(item => item.title);
     if (labels.length !== new Set(labels).size)
       console.error(
@@ -136,5 +134,9 @@ module.exports = Base.extend({
       this.model.set(this.info.field.name, value);
       this._render();
     });
+  },
+  remove(){
+    this.autocompleteDestructor();
+    Backbone.View.prototype.remove.call(this);
   },
 });
