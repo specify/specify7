@@ -1,10 +1,10 @@
-import $ from 'jquery';
 import _ from 'underscore';
 
 import type { IR, RA } from './components/wbplanview';
 
 let dataListCount = 0;
 const debounceRate = 300;
+const defaultLimit = 100;
 
 export default function autocomplete({
   input,
@@ -12,13 +12,16 @@ export default function autocomplete({
   minLength = 1,
   delay = debounceRate,
   // Don't reQuery items on input
-  isStatic,
+  isStatic = false,
+  // Max number of entries
+  limit = defaultLimit,
 }: {
-  input: HTMLInputElement;
-  source: (value: string) => Promise<RA<string> | IR<string>>;
-  minLength: number;
-  delay: number;
-  isStatic: false,
+  readonly input: HTMLInputElement;
+  readonly source: (value: string) => Promise<RA<string> | IR<string>>;
+  readonly minLength?: number;
+  readonly delay?: number;
+  readonly isStatic?: boolean;
+  readonly limit?: number;
 }): () => void {
   const id = `autocomplete-data-list=${dataListCount}`;
   dataListCount += 1;
@@ -29,9 +32,10 @@ export default function autocomplete({
   const container = input.parentElement;
   if (container === null) throw new Error('Input has no parent element');
   container.append(dataList);
+  let lastValue: string | undefined = undefined;
 
   function eventHandler(): void {
-    if (input.value.length < minLength) return;
+    if (input.value.length < minLength || input.value === lastValue) return;
 
     source(input.value)
       .then((values) => {
@@ -41,26 +45,29 @@ export default function autocomplete({
         // Don't delete previous autocomplete results if no new results returned
         if (dataList.childElementCount !== 0 && entries.length === 0) return;
 
-        $(dataList).empty();
-        entries.forEach(([value, label]) => {
+        if (input.value === lastValue) return;
+        lastValue = input.value;
+
+        dataList.textContent = '';
+        const fragment = document.createDocumentFragment();
+        entries.slice(0, limit).forEach(([value, label]) => {
           const option = document.createElement('option');
           if (useKeys) {
             option.value = value;
             option.textContent = label;
           } else option.value = label;
-          $(dataList).append(option);
+          fragment.append(option);
         });
+        dataList.append(fragment);
       })
       .catch(console.error);
   }
 
   eventHandler();
   const throttledHandler = _.debounce(eventHandler, delay);
-  if(!isStatic)
-    input.addEventListener('keydown', throttledHandler);
+  if (!isStatic) input.addEventListener('keydown', throttledHandler);
   return (): void => {
-    if(!isStatic)
-      input.removeEventListener('keydown', throttledHandler);
+    if (!isStatic) input.removeEventListener('keydown', throttledHandler);
     dataList.remove();
     input.removeAttribute('list');
   };
