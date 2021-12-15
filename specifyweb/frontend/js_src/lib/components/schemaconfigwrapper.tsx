@@ -7,6 +7,7 @@ import { Schema } from '../legacytypes';
 import navigation from '../navigation';
 import schema from '../schema';
 import { formatAggregators } from '../schemaconfighelper';
+import { fetchingParameters } from '../wbplanviewmodelconfig';
 import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -104,9 +105,7 @@ function SchemaConfigWrapper({
         async (response) => response.json()
       )
       .then(async ({ objects: [{ id }] }) =>
-        fetch(
-          `/api/specify/splocaleitemstr/?containername=${id}&limit=0`
-        )
+        fetch(`/api/specify/splocaleitemstr/?containername=${id}&limit=0`)
       )
       .then<{
         readonly objects: RA<{
@@ -164,7 +163,10 @@ function SchemaConfigWrapper({
       Object.entries((schema as unknown as Schema).models)
         .filter(
           ([tableName, { system }]) =>
-            system || tableHasOverwrite(tableName.toLowerCase(), 'remove')
+            system ||
+            tableHasOverwrite(tableName.toLowerCase(), 'remove') ||
+            (fetchingParameters.tableOverwrites[tableName] !== 'hidden' &&
+              tableHasOverwrite(tableName.toLowerCase(), 'hidden'))
         )
         .map(([tableName]) => tableName.toLowerCase())
     );
