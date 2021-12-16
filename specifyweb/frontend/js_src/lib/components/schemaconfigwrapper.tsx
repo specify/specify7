@@ -98,28 +98,20 @@ function SchemaConfigWrapper({
 
   // Fetch languages
   React.useEffect(() => {
-    fetch(
-      '/api/specify/splocalecontainer/?name=collectionobject&domainfilter=true&schematype=0'
-    )
-      .then<{ readonly objects: Readonly<[{ readonly id: number }]> }>(
-        async (response) => response.json()
-      )
-      .then(async ({ objects: [{ id }] }) =>
-        fetch(`/api/specify/splocaleitemstr/?containername=${id}&limit=0`)
-      )
+    fetch('/context/schema/language/')
       .then<{
-        readonly objects: RA<{
+        readonly data: RA<{
           readonly country: string | null;
           readonly language: string;
         }>;
       }>(async (response) => response.json())
-      .then(({ objects }) =>
+      .then(({ data }) =>
         // Sometimes languages are duplicated. Need to make the list unique
         Array.from(
           new Set(
-            objects.map(
+            data.map(
               ({ country, language }) =>
-                `${language}${country === null ? '' : `_${country}`}`
+                `${language}${country === null || country === '' ? '' : `_${country}`}`
             )
           )
         )
@@ -128,15 +120,16 @@ function SchemaConfigWrapper({
         Promise.all(
           languages.map(async (language) =>
             fetch(`/context/language/${language.replace('_', '-')}/`)
-              .then<{ readonly name_local: string } | undefined>(
-                async (response) =>
-                  response.status === 200 ? response.json() : undefined
+              .then<
+                { readonly data: { readonly name_local: string } } | undefined
+              >(async (response) =>
+                response.status === 200 ? response.json() : undefined
               )
               .then((response) => [
                 language,
                 typeof response === 'undefined'
                   ? language
-                  : `${response.name_local}${
+                  : `${response.data.name_local}${
                       language.split('_')[1]
                         ? ` (${language.split('_')[1]})`
                         : ''
