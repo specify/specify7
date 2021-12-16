@@ -7,13 +7,13 @@ import type { IR, RA } from './wbplanview';
 export function PickList({
   label,
   value,
-  values,
+  groups,
   disabled = false,
   onChange: handleChange,
 }: {
   readonly label?: string;
   readonly value: string | null;
-  readonly values: RA<string> | IR<string>;
+  readonly groups: IR<RA<string> | IR<string>>;
   readonly disabled?: boolean;
   readonly onChange: (value: string | null) => void;
 }): JSX.Element {
@@ -26,27 +26,44 @@ export function PickList({
         handleChange(target.value === '0' ? null : target.value)
       }
     >
-      {Object.keys(values).length === 0 ? (
+      {Object.keys(groups).length === 0 ? (
         <option value="0" disabled>
           {commonText('noneAvailable')}
         </option>
       ) : (
         <>
           <option value="0">{commonText('none')}</option>
-          {Array.isArray(values)
-            ? (values as RA<string>).map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))
-            : Object.entries(values).map(([key, value]) => (
-                <option key={key} value={key}>
-                  {value || key}
-                </option>
-              ))}
+          {Object.keys(groups).length === 1 ? (
+            <Values values={Object.values(groups)[0]} />
+          ) : (
+            Object.entries(groups).map(([label, values], index) => (
+              <optgroup key={index} label={label}>
+                <Values values={values} />
+              </optgroup>
+            ))
+          )}
+          {}
         </>
       )}
     </select>
+  );
+}
+
+function Values({ values }: { values: RA<string> | IR<string> }): JSX.Element {
+  return (
+    <>
+      {Array.isArray(values)
+        ? (values as RA<string>).map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))
+        : Object.entries(values).map(([key, value]) => (
+            <option key={key} value={key}>
+              {value || key}
+            </option>
+          ))}
+    </>
   );
 }
 

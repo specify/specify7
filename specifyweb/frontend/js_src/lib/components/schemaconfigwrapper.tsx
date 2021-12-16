@@ -65,7 +65,10 @@ export type WithFetchedStrings = {
 
 export type WithTableInfo = {
   readonly dataModel: {
-    readonly pickLists: IR<string>;
+    readonly pickLists: IR<{
+      readonly name: string;
+      readonly isSystem: boolean;
+    }>;
   };
 };
 
