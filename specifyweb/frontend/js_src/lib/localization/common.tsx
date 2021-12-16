@@ -1121,6 +1121,11 @@ const commonText = createDictionary({
     'ru-ru': 'Системное',
     ca: 'Sistema',
   },
+  userDefined: {
+    'en-us': 'User Defined',
+    'ru-ru': 'Создано пользователем',
+    ca: 'Creat per l\'usuari',
+  },
   default: {
     'en-us': 'Default',
     'ru-ru': 'Умолчание',

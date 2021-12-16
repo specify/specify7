@@ -154,10 +154,22 @@ export function SchemaConfig({
       // Fetch all picklists
       fetch(`/api/specify/picklist/?domainfilter=true&limit=0`)
         .then<{
-          readonly objects: RA<{ readonly id: string; readonly name: string }>;
+          readonly objects: RA<{
+            readonly id: string;
+            readonly name: string;
+            readonly issystem: boolean;
+          }>;
         }>(async (response) => response.json())
         .then(({ objects }) =>
-          Object.fromEntries(objects.map(({ id, name }) => [id, name]))
+          Object.fromEntries(
+            objects.map(({ id, name, issystem }) => [
+              id,
+              {
+                name,
+                isSystem: issystem,
+              },
+            ])
+          )
         ),
       // Fetch table items and their strings
       fetch(

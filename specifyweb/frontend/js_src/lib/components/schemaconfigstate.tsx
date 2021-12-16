@@ -231,8 +231,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     const relationships = sortedItems.filter(
       (item) => item.dataModel.isRelationship
     );
+    const systemPickLists = Object.values(table.dataModel.pickLists)
+      .filter(({ isSystem }) => isSystem)
+      .map(({ name }) => name)
+      .sort();
+    const userPickLists = Object.values(table.dataModel.pickLists)
+      .filter(({ isSystem }) => !isSystem)
+      .map(({ name }) => name)
+      .sort();
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
-      ([_id, name]) => name === items[itemId].picklistname
+      ([_id, { name }]) => name === items[itemId].picklistname
     )?.[0];
     return (
       <>
@@ -314,7 +322,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('tableFormat')}
               <PickList
                 value={table.format}
-                values={filterFormatters(dataObjFormatters, table.name)}
+                groups={{ '': filterFormatters(dataObjFormatters, table.name) }}
                 onChange={(value) =>
                   dispatch({
                     type: 'TableModifiedAction',
@@ -328,7 +336,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('tableAggregation')}
               <PickList
                 value={table.aggregator}
-                values={filterFormatters(dataObjAggregators, table.name)}
+                groups={{
+                  '': filterFormatters(dataObjAggregators, table.name),
+                }}
                 onChange={(value) =>
                   dispatch({
                     type: 'TableModifiedAction',
@@ -477,7 +487,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </label>
             <fieldset>
               <legend>{commonText('fieldFormat')}</legend>
-              {Object.entries({
+              {Object.entries<{
+                label: string;
+                value: string | null;
+                values: IR<RA<string>> | undefined;
+                extraComponents?: JSX.Element;
+              }>({
                 none: {
                   label: commonText('none'),
                   value: null,
@@ -486,30 +501,35 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 formatted: {
                   label: commonText('formatted'),
                   value: items[itemId].format,
-                  values: uiFormatters
-                    .map(({ name, isSystem, isDefault, value }) =>
-                      [
-                        name,
-                        ...[
-                          value,
-                          isSystem && commonText('system'),
-                          isDefault && commonText('default'),
-                        ]
-                          .filter(Boolean)
-                          .map((value) => `(${value})`),
-                      ].join(' ')
-                    )
-                    .sort(),
+                  values: {
+                    '': uiFormatters
+                      .map(({ name, isSystem, isDefault, value }) =>
+                        [
+                          name,
+                          ...[
+                            value,
+                            isSystem && commonText('system'),
+                            isDefault && commonText('default'),
+                          ]
+                            .filter(Boolean)
+                            .map((value) => `(${value})`),
+                        ].join(' ')
+                      )
+                      .sort(),
+                  },
                 },
                 webLink: {
                   label: commonText('webLink'),
                   value: items[itemId].weblinkname,
-                  values: webLinks,
+                  values: { '': webLinks },
                 },
                 pickList: {
                   label: commonText('pickList'),
                   value: items[itemId].picklistname,
-                  values: Object.values(table.dataModel.pickLists).sort(),
+                  values: {
+                    [commonText('userDefined')]: userPickLists,
+                    [commonText('system')]: systemPickLists,
+                  },
                   extraComponents: (
                     <>
                       {typeof currentPickListId !== 'undefined' && (
@@ -541,15 +561,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       name={id('format')}
                       value="none"
                       checked={key === getItemType(items[itemId])}
-                      disabled={!isFormatterAvailable(
-                        items[itemId],
-                        key as ItemType
-                      )}
+                      disabled={
+                        !isFormatterAvailable(items[itemId], key as ItemType)
+                      }
                       onChange={(): void =>
                         dispatch({
                           type: 'ChangeFieldFormatAction',
                           format: key as ItemType,
-                          value: values ? values[0] ?? null : null,
+                          value: values
+                            ? (Object.values(values)[0][0] as string) ?? null
+                            : null,
                         })
                       }
                     />
@@ -559,11 +580,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     <PickList
                       label={label}
                       value={value}
-                      values={values}
-                      disabled={!isFormatterAvailable(
-                        items[itemId],
-                        key as ItemType
-                      )}
+                      groups={values}
+                      disabled={
+                        !isFormatterAvailable(items[itemId], key as ItemType)
+                      }
                       onChange={(value) =>
                         dispatch({
                           type: 'ChangeFieldFormatAction',

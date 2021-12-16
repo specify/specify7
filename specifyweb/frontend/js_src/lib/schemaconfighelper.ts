@@ -138,11 +138,9 @@ export function isFormatterAvailable(
   if (formatter === 'none' || formatter === 'pickList') return true;
   else if (formatter === 'webLink')
     return (
-      !item.dataModel.isRelationship &&
-      webLinkTypes.has(item.dataModel.type)
+      !item.dataModel.isRelationship && webLinkTypes.has(item.dataModel.type)
     );
-  else if (formatter === 'formatted')
-    return !item.dataModel.isRelationship;
+  else if (formatter === 'formatted') return !item.dataModel.isRelationship;
   else return false;
 }
 
