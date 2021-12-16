@@ -623,11 +623,33 @@ def languages(request):
                 } for code, name in settings.LANGUAGES
             }
         })
-    elif request.method == 'POST':
+    else:  # POST
         return set_language(request)
 
 @require_GET
-@never_cache
 def language(request, language_code):
     """Get Information for a single language."""
-    return JsonResponse(get_language_info(language_code))
+    return JsonResponse({'data':get_language_info(language_code)})
+
+def dict_fetch_all(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+            dict(zip([col[0] for col in desc], row))
+            for row in cursor.fetchall()
+    ]
+
+@require_GET
+def schema_language(request):
+    """Get list of schema languages, countries and variants."""
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    SELECT DISTINCT
+        `language`,
+        `country`,
+        `variant`
+    FROM splocaleitemstr;
+    """)
+
+    return JsonResponse({'data':dict_fetch_all(cursor)})
