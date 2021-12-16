@@ -343,8 +343,14 @@ def datamodel(request):
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def schema_localization(request):
-    """Return the schema localization information for the logged in collection."""
-    sl = get_schema_localization(request.specify_collection, 0)
+    """Return the schema localization information for the logged in
+    collection.  If the `lang` parameter is present return the schema
+    localization for that language. The parameter should be of the
+    form ll[_cc] where ll is a language code and cc is an optional
+    country code.
+    """
+    lang = request.GET.get('lang', settings.SCHEMA_LANGUAGE)
+    sl = get_schema_localization(request.specify_collection, 0, lang)
     return HttpResponse(sl, content_type='application/json')
 
 @require_GET
