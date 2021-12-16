@@ -1,4 +1,3 @@
-import json
 import logging
 logger = logging.getLogger(__name__)
 
@@ -133,5 +132,5 @@ def get_schema_localization(collection, schematype, lang):
     for row in cursor.fetchall():
         containers[row[0]]['items'][row[1].lower()] = {field: row[i+2] for i, field in enumerate(ifields)}
 
-    return json.dumps(containers)
+    return containers
 
