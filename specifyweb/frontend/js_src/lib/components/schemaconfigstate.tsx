@@ -7,6 +7,7 @@ import formsText from '../localization/forms';
 import {
   filterFormatters,
   getItemType,
+  isFormatterAvailable,
   javaTypeToHuman,
   sortObjectsByKey,
 } from '../schemaconfighelper';
@@ -481,7 +482,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   label: commonText('none'),
                   value: null,
                   values: undefined,
-                  disabled: false,
                 },
                 formatted: {
                   label: commonText('formatted'),
@@ -500,19 +500,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       ].join(' ')
                     )
                     .sort(),
-                  disabled: items[itemId].dataModel.isRelationship,
                 },
                 webLink: {
                   label: commonText('webLink'),
                   value: items[itemId].weblinkname,
                   values: webLinks,
-                  disabled: items[itemId].dataModel.isRelationship,
                 },
                 pickList: {
                   label: commonText('pickList'),
                   value: items[itemId].picklistname,
                   values: Object.values(table.dataModel.pickLists).sort(),
-                  disabled: false,
                   extraComponents: (
                     <>
                       {typeof currentPickListId !== 'undefined' && (
@@ -536,48 +533,49 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     </>
                   ),
                 },
-              }).map(
-                ([
-                  key,
-                  { label, value, values, disabled, extraComponents },
-                ]) => (
-                  <div className="group" key={key}>
-                    <label className="horizontal">
-                      <input
-                        type="radio"
-                        name={id('format')}
-                        value="none"
-                        checked={key === getItemType(items[itemId])}
-                        disabled={disabled}
-                        onChange={(): void =>
-                          dispatch({
-                            type: 'ChangeFieldFormatAction',
-                            format: key as ItemType,
-                            value: values ? values[0] ?? null : null,
-                          })
-                        }
-                      />
-                      {label}
-                    </label>
-                    {values && (
-                      <PickList
-                        label={label}
-                        value={value}
-                        values={values}
-                        disabled={disabled}
-                        onChange={(value) =>
-                          dispatch({
-                            type: 'ChangeFieldFormatAction',
-                            format: key as ItemType,
-                            value,
-                          })
-                        }
-                      />
-                    )}
-                    {extraComponents}
-                  </div>
-                )
-              )}
+              }).map(([key, { label, value, values, extraComponents }]) => (
+                <div className="group" key={key}>
+                  <label className="horizontal">
+                    <input
+                      type="radio"
+                      name={id('format')}
+                      value="none"
+                      checked={key === getItemType(items[itemId])}
+                      disabled={!isFormatterAvailable(
+                        items[itemId],
+                        key as ItemType
+                      )}
+                      onChange={(): void =>
+                        dispatch({
+                          type: 'ChangeFieldFormatAction',
+                          format: key as ItemType,
+                          value: values ? values[0] ?? null : null,
+                        })
+                      }
+                    />
+                    {label}
+                  </label>
+                  {values && (
+                    <PickList
+                      label={label}
+                      value={value}
+                      values={values}
+                      disabled={!isFormatterAvailable(
+                        items[itemId],
+                        key as ItemType
+                      )}
+                      onChange={(value) =>
+                        dispatch({
+                          type: 'ChangeFieldFormatAction',
+                          format: key as ItemType,
+                          value,
+                        })
+                      }
+                    />
+                  )}
+                  {extraComponents}
+                </div>
+              ))}
             </fieldset>
           </section>
         </div>
