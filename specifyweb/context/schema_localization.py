@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import connection
 
 
-def get_schema_localization(collection, schematype, lang=settings.SCHEMA_LANGUAGE):
+def get_schema_localization(collection, schematype, lang):
     disc = collection.discipline
     language, country = lang.split('_') if '_' in lang else (lang, None)
 
