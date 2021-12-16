@@ -7,7 +7,10 @@ import type {
   SpLocaleItem,
   SpLocaleItemStr as SpLocaleItemString,
 } from './components/schemaconfig';
-import type { WithFetchedStrings } from './components/schemaconfigwrapper';
+import type {
+  WithFetchedStrings,
+  WithFieldInfo,
+} from './components/schemaconfigwrapper';
 import type { IR, RA } from './components/wbplanview';
 import commonText from './localization/common';
 
@@ -124,6 +127,23 @@ export function getItemType(item: SpLocaleItem): ItemType {
   else if (item.picklistname !== null) return 'pickList';
   else if (item.format !== null) return 'formatted';
   else return 'none';
+}
+
+const webLinkTypes = new Set(['text', 'java.lang.String']);
+
+export function isFormatterAvailable(
+  item: WithFieldInfo,
+  formatter: ItemType
+): boolean {
+  if (formatter === 'none' || formatter === 'pickList') return true;
+  else if (formatter === 'webLink')
+    return (
+      !item.dataModel.isRelationship &&
+      webLinkTypes.has(item.dataModel.type)
+    );
+  else if (formatter === 'formatted')
+    return !item.dataModel.isRelationship;
+  else return false;
 }
 
 const relationshipTypes: IR<string> = {
