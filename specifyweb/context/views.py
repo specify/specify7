@@ -30,7 +30,7 @@ from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
-from .schema_localization import get_schema_localization
+from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_view
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
@@ -346,10 +346,10 @@ def schema_localization(request):
     """Return the schema localization information for the logged in
     collection.  If the `lang` parameter is present return the schema
     localization for that language. The parameter should be of the
-    form ll[_cc] where ll is a language code and cc is an optional
+    form ll[-cc] where ll is a language code and cc is an optional
     country code.
     """
-    lang = request.GET.get('lang', request.LANGUAGE_CODE.replace('-', '_'))
+    lang = request.GET.get('lang', request.LANGUAGE_CODE)
     sl = get_schema_localization(request.specify_collection, 0, lang)
     return HttpResponse(sl, content_type='application/json')
 
@@ -637,25 +637,11 @@ def language(request, language_code):
     """Get Information for a single language."""
     return JsonResponse({'data':get_language_info(language_code)})
 
-def dict_fetch_all(cursor):
-    "Returns all rows from a cursor as a dict"
-    desc = cursor.description
-    return [
-            dict(zip([col[0] for col in desc], row))
-            for row in cursor.fetchall()
-    ]
-
 @require_GET
 def schema_language(request):
     """Get list of schema languages, countries and variants."""
-    cursor = connection.cursor()
-
-    cursor.execute("""
-    SELECT DISTINCT
-        `language`,
-        `country`,
-        `variant`
-    FROM splocaleitemstr;
-    """)
-
-    return JsonResponse({'data':dict_fetch_all(cursor)})
+    schema_languages = get_schema_languages()
+    return JsonResponse({ 'data': [
+        dict(zip(('language', 'country', 'variant'), row))
+        for row in schema_languages
+    ]})
