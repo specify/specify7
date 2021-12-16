@@ -1,13 +1,39 @@
-from collections import defaultdict
 import json
+import logging
+logger = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.db import connection
 
 
+def get_schema_languages():
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    SELECT DISTINCT
+        lower(`language`),
+        lower(`country`),
+        lower(`variant`)
+    FROM splocaleitemstr;
+    """)
+
+    return list(cursor.fetchall())
+
 def get_schema_localization(collection, schematype, lang):
     disc = collection.discipline
-    language, country = lang.split('_') if '_' in lang else (lang, None)
+    language_, country_ = lang.lower().split('-') if '-' in lang else (lang, None)
+
+    schema_languages = get_schema_languages()
+
+    possible = [p for p in [
+        (language_, country_, None),
+        (language_, None, None),
+        ('en', None, None),
+    ] if p in schema_languages]
+    assert possible
+
+    language, country, variant = possible[0]
+    logger.info('returning %s for requested %s', (language, country, variant), lang)
 
     cursor = connection.cursor()
 
