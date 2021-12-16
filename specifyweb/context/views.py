@@ -349,7 +349,7 @@ def schema_localization(request):
     form ll[_cc] where ll is a language code and cc is an optional
     country code.
     """
-    lang = request.GET.get('lang', settings.SCHEMA_LANGUAGE)
+    lang = request.GET.get('lang', request.LANGUAGE_CODE.replace('-', '_'))
     sl = get_schema_localization(request.specify_collection, 0, lang)
     return HttpResponse(sl, content_type='application/json')
 
