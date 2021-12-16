@@ -54,7 +54,8 @@ def get_schema_localization(collection, schematype, lang):
     # return cursor.fetchone()[0]
 
     cursor.execute(f"""
-    select name, format, ishidden, isuiformatter, picklistname, type, aggregator, defaultui, n.text, d.text
+    select name, format, ishidden, isuiformatter, picklistname, type, aggregator, defaultui,
+           coalesce(n.text, name), coalesce(d.text, name)
     from splocalecontainer
 
     left outer join splocaleitemstr n on n.splocalecontainernameid = splocalecontainerid
@@ -81,7 +82,8 @@ def get_schema_localization(collection, schematype, lang):
     cursor.execute(f"""
     select container.name, item.name,
            item.format, item.ishidden, item.isuiformatter, item.picklistname,
-           item.type, item.isrequired, item.weblinkname, n.text, d.text
+           item.type, item.isrequired, item.weblinkname,
+           coalesce(n.text, item.name), coalesce(d.text, item.name)
     from splocalecontainer container
     inner join splocalecontaineritem item on item.splocalecontainerid = container.splocalecontainerid
 
