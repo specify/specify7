@@ -350,8 +350,7 @@ def schema_localization(request):
     country code.
     """
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
-    sl = get_schema_localization(request.specify_collection, 0, lang)
-    return HttpResponse(sl, content_type='application/json')
+    return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
 
 @require_GET
 @login_maybe_required
