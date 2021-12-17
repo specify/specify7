@@ -23,7 +23,7 @@ function TableResults({
   readonly recordCount: number;
 }): JSX.Element {
   return (
-    <li>
+    <li className="wb-uploaded-view-line">
       <TableIcon tableName={tableName.toLowerCase()} />
       <span>
         {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}

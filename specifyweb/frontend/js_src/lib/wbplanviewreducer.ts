@@ -7,7 +7,7 @@ import type {
   WbPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
-  AutomapperSuggestion,
+  AutoMapperSuggestion,
   MappingLine,
   MappingPath,
   SelectElementPosition,
@@ -31,7 +31,7 @@ import {
 } from './wbplanviewlinesgetter';
 import {
   deduplicateMappings,
-  getAutomapperSuggestions,
+  getAutoMapperSuggestions,
   getMustMatchTables,
   mappingPathIsComplete,
   mutateMappingPath,
@@ -157,15 +157,15 @@ export type ChangeSelectElementValueAction = Action<
   }
 >;
 
-type AutomapperSuggestionsLoadedAction = Action<
-  'AutomapperSuggestionsLoadedAction',
+type AutoMapperSuggestionsLoadedAction = Action<
+  'AutoMapperSuggestionsLoadedAction',
   {
-    automapperSuggestions: RA<AutomapperSuggestion>;
+    autoMapperSuggestions: RA<AutomapperSuggestion>;
   }
 >;
 
-type AutomapperSuggestionSelectedAction = Action<
-  'AutomapperSuggestionSelectedAction',
+type AutoMapperSuggestionSelectedAction = Action<
+  'AutoMapperSuggestionSelectedAction',
   {
     suggestion: string;
   }
@@ -229,8 +229,8 @@ export type MappingActions =
   | OpenSelectElementAction
   | CloseSelectElementAction
   | ChangeSelectElementValueAction
-  | AutomapperSuggestionsLoadedAction
-  | AutomapperSuggestionSelectedAction
+  | AutoMapperSuggestionsLoadedAction
+  | AutoMapperSuggestionSelectedAction
   | ValidationResultClickAction
   | OpenMatchingLogicDialogAction
   | MustMatchPrefChangeAction
@@ -261,7 +261,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     baseTableName: action.baseTableName,
     lines: getLinesFromHeaders({
       headers: action.headers,
-      runAutomapper: true,
+      runAutoMapper: true,
       baseTableName: action.baseTableName,
     }),
   }),
@@ -422,12 +422,12 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       line: action.line,
       index: action.index,
     },
-    automapperSuggestionsPromise:
+    autoMapperSuggestionsPromise:
       typeof mappingState(state).lines[action.line].mappingPath[
         action.index
       ] === 'undefined'
         ? undefined
-        : getAutomapperSuggestions({
+        : getAutoMapperSuggestions({
             lines: mappingState(state).lines,
             line: action.line,
             index: action.index,
@@ -439,8 +439,8 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       ? {
           ...mappingState(state),
           openSelectElement: undefined,
-          automapperSuggestionsPromise: undefined,
-          automapperSuggestions: undefined,
+          autoMapperSuggestionsPromise: undefined,
+          autoMapperSuggestions: undefined,
         }
       : state,
   ChangeSelectElementValueAction: ({ state, action }) => {
@@ -472,31 +472,31 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       openSelectElement: action.close
         ? undefined
         : mappingState(state).openSelectElement,
-      automapperSuggestionsPromise: undefined,
-      automapperSuggestions: undefined,
+      autoMapperSuggestionsPromise: undefined,
+      autoMapperSuggestions: undefined,
       changesMade: true,
       mappingsAreValidated: false,
     };
   },
-  AutomapperSuggestionsLoadedAction: ({ state, action }) => ({
+  AutoMapperSuggestionsLoadedAction: ({ state, action }) => ({
     ...mappingState(state),
-    automapperSuggestions: action.automapperSuggestions,
-    automapperSuggestionsPromise: undefined,
+    autoMapperSuggestions: action.automapperSuggestions,
+    autoMapperSuggestionsPromise: undefined,
   }),
-  AutomapperSuggestionSelectedAction: ({ state, action: { suggestion } }) => ({
+  AutoMapperSuggestionSelectedAction: ({ state, action: { suggestion } }) => ({
     ...mappingState(state),
     lines: modifyLine(
       mappingState(state),
       mappingState(state).openSelectElement!.line,
       {
         mappingPath:
-          mappingState(state).automapperSuggestions![Number(suggestion) - 1]
+          mappingState(state).autoMapperSuggestions![Number(suggestion) - 1]
             .mappingPath,
       }
     ),
     openSelectElement: undefined,
-    automapperSuggestionsPromise: undefined,
-    automapperSuggestions: undefined,
+    autoMapperSuggestionsPromise: undefined,
+    autoMapperSuggestions: undefined,
     changesMade: true,
     mappingsAreValidated: false,
   }),

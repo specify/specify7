@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom';
 import commonText from '../localization/common';
 import ErrorBoundary from './errorboundary';
 import createBackboneView from './reactbackboneextend';
-import type { IR, RA } from './wbplanview';
+import type { IR, RA } from '../types';
 
 function closeDialogCallback(
   $dialog: JQuery,

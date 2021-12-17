@@ -6,6 +6,7 @@ import _ from 'underscore';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { RA } from '../types';
 import type { MatchBehaviors } from '../uploadplantomappingstree';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
@@ -95,15 +96,6 @@ export const getInitialWbPlanViewState = (
         type: 'OpenBaseTableSelectionAction',
       },
 });
-
-export function mappingState(state: WbPlanViewStates): MappingState {
-  if (state.type === 'MappingState') return state;
-  else
-    throw new Error(
-      'Dispatching this action requires the state ' +
-        'to be of type `MappingState`'
-    );
-}
 
 export const getDefaultMappingState = (): MappingState => ({
   type: 'MappingState',
@@ -245,133 +237,136 @@ export const stateReducer = generateReducer<
       <Layout
         stateName={state.type}
         readonly={state.props.readonly}
-        title={
-          <>
-            <span title={wbText('dataSetName')}>
-              {state.props.dataset.name}
-            </span>
-            <span title={wbText('baseTable')}>
-              {` (${dataModelStorage.tables[state.baseTableName].label})`}
-            </span>
-          </>
-        }
-        stateType={state.type}
-        buttonsLeft={
-          state.props.readonly ? (
-            <span
-              className="v-center wbplanview-readonly-badge"
-              title={wbText('dataSetUploadedDescription')}
-            >
-              {wbText('dataSetUploaded')}
-            </span>
-          ) : (
-            <>
-              <ButtonWithConfirmation
-                dialogTitle={wbText('goToBaseTableDialogTitle')}
-                dialogContent={
-                  <>
-                    {wbText('goToBaseTableDialogHeader')}
-                    {wbText('goToBaseTableDialogMessage')}
-                  </>
-                }
-                buttons={(confirm, cancel) => [
-                  {
-                    text: commonText('cancel'),
-                    click: cancel,
-                  },
-                  {
-                    text: commonText('changeBaseTable'),
-                    click: confirm,
-                  },
-                ]}
-                onConfirm={(): void =>
-                  state.dispatch({
-                    type: 'OpenBaseTableSelectionAction',
-                  })
-                }
-              >
-                {wbText('baseTable')}
-              </ButtonWithConfirmation>
-              <button
-                aria-haspopup="dialog"
-                className="magic-button"
-                type="button"
-                onClick={(): void =>
-                  state.dispatch({
-                    type: 'ResetMappingsAction',
-                  })
-                }
-              >
-                {wbText('clearMappings')}
-              </button>
-              <ButtonWithConfirmation
-                dialogTitle={wbText('reRunAutoMapperDialogTitle')}
-                dialogContent={
-                  <>
-                    {wbText('reRunAutoMapperDialogHeader')}
-                    {wbText('reRunAutoMapperDialogMessage')}
-                  </>
-                }
-                buttons={(confirm, cancel) => [
-                  {
-                    text: commonText('cancel'),
-                    click: cancel,
-                  },
-                  {
-                    text: wbText('reRunAutoMapper'),
-                    click: confirm,
-                  },
-                ]}
-                showConfirmation={() =>
-                  mappingState(state).lines.length > 0 &&
-                  mappingState(state).lines.some(({ mappingPath }) =>
-                    mappingPathIsComplete(mappingPath)
-                  )
-                }
-                onConfirm={(): void =>
-                  state.dispatch({
-                    type: 'SelectTableAction',
-                    headers: state.lines.map(({ headerName }) => headerName),
-                    baseTableName: state.baseTableName,
-                  })
-                }
-              >
-                {wbText('autoMapper')}
-              </ButtonWithConfirmation>
-            </>
-          )
-        }
-        buttonsRight={
-          <>
-            <button
-              type="button"
-              className={`magic-button ${
-                state.showMappingView ? '' : 'active'
-              }`}
-              onClick={(): void =>
-                state.dispatch({
-                  type: 'ToggleMappingViewAction',
-                  isVisible: !state.showMappingView,
-                })
-              }
-              aria-pressed={!state.showMappingView}
-            >
-              {state.showMappingView
-                ? wbText('hideMappingEditor')
-                : wbText('showMappingEditor')}
-            </button>
-            <button
-              aria-haspopup="dialog"
-              type="button"
-              className="magic-button"
-              onClick={(): void =>
-                state.dispatch({
-                  type: 'OpenMatchingLogicDialogAction',
-                })
-              }
-            >
-              {wbText('mustMatch')}
-            </button>
+        header={
+          <WbPlanViewHeader
+            title={
+              <>
+                <span title={wbText('dataSetName')}>
+                  {state.props.dataset.name}
+                </span>
+                <span title={wbText('baseTable')}>
+                  {` (${dataModelStorage.tables[state.baseTableName].label})`}
+                </span>
+              </>
+            }
+            stateType={state.type}
+            buttonsLeft={
+              state.props.readonly ? (
+                <span
+                  className="v-center wbplanview-readonly-badge"
+                  title={wbText('dataSetUploadedDescription')}
+                >
+                  {wbText('dataSetUploaded')}
+                </span>
+              ) : (
+                <>
+                  <ButtonWithConfirmation
+                    dialogTitle={wbText('goToBaseTableDialogTitle')}
+                    dialogContent={
+                      <>
+                        {wbText('goToBaseTableDialogHeader')}
+                        {wbText('goToBaseTableDialogMessage')}
+                      </>
+                    }
+                    buttons={(confirm, cancel) => [
+                      {
+                        text: commonText('cancel'),
+                        click: cancel,
+                      },
+                      {
+                        text: wbText('changeBaseTable'),
+                        click: confirm,
+                      },
+                    ]}
+                    onConfirm={(): void =>
+                      state.dispatch({
+                        type: 'OpenBaseTableSelectionAction',
+                      })
+                    }
+                  >
+                    {wbText('baseTable')}
+                  </ButtonWithConfirmation>
+                  <button
+                    aria-haspopup="dialog"
+                    className="magic-button"
+                    type="button"
+                    onClick={(): void =>
+                      state.dispatch({
+                        type: 'ResetMappingsAction',
+                      })
+                    }
+                  >
+                    {wbText('clearMappings')}
+                  </button>
+                  <ButtonWithConfirmation
+                    dialogTitle={wbText('reRunAutoMapperDialogTitle')}
+                    dialogContent={
+                      <>
+                        {wbText('reRunAutoMapperDialogHeader')}
+                        {wbText('reRunAutoMapperDialogMessage')}
+                      </>
+                    }
+                    buttons={(confirm, cancel) => [
+                      {
+                        text: commonText('cancel'),
+                        click: cancel,
+                      },
+                      {
+                        text: wbText('reRunAutoMapper'),
+                        click: confirm,
+                      },
+                    ]}
+                    showConfirmation={(): boolean =>
+                      state.lines.some(({ mappingPath }) =>
+                        mappingPathIsComplete(mappingPath)
+                      )
+                    }
+                    onConfirm={(): void =>
+                      state.dispatch({
+                        type: 'SelectTableAction',
+                        headers: state.lines.map(
+                          ({ headerName }) => headerName
+                        ),
+                        baseTableName: state.baseTableName,
+                      })
+                    }
+                  >
+                    {wbText('autoMapper')}
+                  </ButtonWithConfirmation>
+                </>
+              )
+            }
+            buttonsRight={
+              <>
+                <button
+                  type="button"
+                  className={`magic-button ${
+                    state.showMappingView ? '' : 'active'
+                  }`}
+                  onClick={(): void =>
+                    state.dispatch({
+                      type: 'ToggleMappingViewAction',
+                      isVisible: !state.showMappingView,
+                    })
+                  }
+                  aria-pressed={!state.showMappingView}
+                >
+                  {state.showMappingView
+                    ? wbText('hideMappingEditor')
+                    : wbText('showMappingEditor')}
+                </button>
+                <button
+                  type="button"
+                  className="magic-button"
+                  aria-haspopup="dialog"
+                  onClick={(): void =>
+                    state.dispatch({
+                      type: 'OpenMatchingLogicDialogAction',
+                    })
+                  }
+                >
+                  {wbText('matchingLogic')}
+                </button>
             {!state.props.readonly && (
               <ValidationButton
                 canValidate={
