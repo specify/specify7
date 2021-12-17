@@ -255,22 +255,22 @@ export default async function (): Promise<void> {
   const cacheVersion = `${dataModelFetcherVersion}_${dataModelStorage.currentCollectionId}`;
 
   {
-    const tables = cache.get('wbplanview-datamodel', 'tables', {
+    const tables = cache.get('wbPlanViewDataModel', 'tables', {
       version: cacheVersion,
     });
     const listOfBaseTables = cache.get(
-      'wbplanview-datamodel',
+      'wbPlanViewDataModel',
       'listOfBaseTables',
       { version: cacheVersion }
     );
-    const ranks = cache.get('wbplanview-datamodel', 'ranks', {
+    const ranks = cache.get('wbPlanViewDataModel', 'ranks', {
       version: cacheVersion,
     });
-    const rootRanks = cache.get('wbplanview-datamodel', 'rootRanks', {
+    const rootRanks = cache.get('wbPlanViewDataModel', 'rootRanks', {
       version: cacheVersion,
     });
     const originalRelationships = cache.get(
-      'wbplanview-datamodel',
+      'wbPlanViewDataModel',
       'originalRelationships',
       { version: cacheVersion }
     );
@@ -485,7 +485,7 @@ export default async function (): Promise<void> {
       );
 
       dataModelStorage.tables = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'tables',
         tables,
         {
@@ -494,7 +494,7 @@ export default async function (): Promise<void> {
         }
       );
       dataModelStorage.listOfBaseTables = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'listOfBaseTables',
         listOfBaseTables,
         {
@@ -503,7 +503,7 @@ export default async function (): Promise<void> {
         }
       );
       dataModelStorage.ranks = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'ranks',
         ranks,
         {
@@ -512,7 +512,7 @@ export default async function (): Promise<void> {
         }
       );
       dataModelStorage.rootRanks = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'rootRanks',
         rootRanks,
         {
@@ -521,7 +521,7 @@ export default async function (): Promise<void> {
         }
       );
       dataModelStorage.originalRelationships = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'originalRelationships',
         originalRelationships,
         {

@@ -245,7 +245,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     !action.referrer || action.referrer === state.type
       ? {
           type: 'BaseTableSelectionState',
-          showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables', {
+          showHiddenTables: cache.get('wbPlanViewUi', 'showHiddenTables', {
             defaultValue: true,
           }),
         }
@@ -265,7 +265,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     ({ state }) => ({
       ...state,
       showHiddenTables: cache.set(
-        'wbplanview-ui',
+        'wbPlanViewUi',
         'showHiddenTables',
         state.showHiddenTables,
         {
@@ -281,7 +281,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   // TemplateSelectionState
   CancelTemplateSelectionAction: () => ({
     type: 'BaseTableSelectionState',
-    showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables', {
+    showHiddenTables: cache.get('wbPlanViewUi', 'showHiddenTables', {
       defaultValue: true,
     }),
   }),
@@ -327,7 +327,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     ({ state, action }) => ({
       ...state,
       showMappingView: cache.set(
-        'wbplanview-ui',
+        'wbPlanViewUi',
         'showMappingView',
         action.isVisible,
         {
@@ -427,7 +427,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   ToggleHiddenFieldsAction: ensureState(['MappingState'], ({ state }) => ({
     ...state,
     showHiddenFields: cache.set(
-      'wbplanview-ui',
+      'wbPlanViewUi',
       'showHiddenFields',
       !state.showHiddenFields,
       {

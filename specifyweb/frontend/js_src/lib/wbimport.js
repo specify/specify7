@@ -11,7 +11,7 @@ const wbText = require('./localization/workbench').default;
 const WBImportView = Backbone.View.extend({
   __name__: 'WBImportView',
   className: 'workbench-import-view',
-  render: function () {
+  render() {
     ReactDOM.render(<WbImport />, this.el);
     return this;
   },
