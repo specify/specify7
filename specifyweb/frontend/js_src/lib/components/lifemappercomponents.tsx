@@ -62,7 +62,7 @@ export function LifemapperMap({
     function destructor(map: L.Map): void {
       map.off();
       map.remove();
-      destructors.map((destructor) => destructor());
+      destructors.forEach((destructor) => destructor());
     }
     let leafletMap: L.Map | undefined;
     Leaflet.showCOMap(mapRef.current, mapInfo.layers, [

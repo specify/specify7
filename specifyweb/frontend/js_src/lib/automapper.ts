@@ -731,7 +731,7 @@ export default class Automapper {
           ),
         ];
 
-        rankSynonyms.map((stripedRankName) => {
+        rankSynonyms.forEach((stripedRankName) => {
           findMappingsInDefinitionsPayload.fieldName = stripedRankName;
 
           this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);

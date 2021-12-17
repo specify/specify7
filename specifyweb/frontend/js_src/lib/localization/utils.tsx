@@ -49,12 +49,14 @@ function assertExhaustive(key: string): never {
      * string
      */
     const defaultValue: any = (): string => value;
-    Object.getOwnPropertyNames(Object.getPrototypeOf(value)).map((proto) => {
-      defaultValue[proto] =
-        typeof value[proto] === 'function'
-          ? value[proto].bind(value)
-          : value[proto];
-    });
+    Object.getOwnPropertyNames(Object.getPrototypeOf(value)).forEach(
+      (proto) => {
+        defaultValue[proto] =
+          typeof value[proto] === 'function'
+            ? value[proto].bind(value)
+            : value[proto];
+      }
+    );
     return defaultValue as never;
   } else throw new Error(errorMessage);
 }

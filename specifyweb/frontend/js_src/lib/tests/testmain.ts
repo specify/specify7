@@ -20,7 +20,7 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   testFunction: (...arguments_: ARGUMENTS_TYPE) => RETURN_TYPE
 ): void {
   QUnit.module(moduleName);
-  inputOutputSet.map(([input, output], index) =>
+  inputOutputSet.forEach(([input, output], index) =>
     QUnit.test(`#${index}`, () =>
       QUnit.assert.deepEqual(output, testFunction(...input))
     )
