@@ -101,27 +101,24 @@ export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
  *  duplicates except for the focused line get unmapped)
  */
 export const findDuplicateMappings = (
-  arrayOfMappings: RA<MappingPath>,
+  mappingPaths: RA<MappingPath>,
   focusedLine: number | false
 ): RA<number> => {
   const duplicateIndexes: number[] = [];
 
-  arrayOfMappings.reduce<string[]>(
-    (dictionaryOfMappings, mappingPath, index) => {
-      const stringMappingPath = mappingPathToString(mappingPath);
+  mappingPaths.reduce<string[]>((dictionaryOfMappings, mappingPath, index) => {
+    const stringMappingPath = mappingPathToString(mappingPath);
 
-      if (dictionaryOfMappings.includes(stringMappingPath))
-        duplicateIndexes.push(
-          typeof focusedLine === 'number' && focusedLine === index
-            ? dictionaryOfMappings.indexOf(stringMappingPath)
-            : index
-        );
-      else dictionaryOfMappings.push(stringMappingPath);
+    if (dictionaryOfMappings.includes(stringMappingPath))
+      duplicateIndexes.push(
+        typeof focusedLine === 'number' && focusedLine === index
+          ? dictionaryOfMappings.indexOf(stringMappingPath)
+          : index
+      );
+    else dictionaryOfMappings.push(stringMappingPath);
 
-      return dictionaryOfMappings;
-    },
-    []
-  );
+    return dictionaryOfMappings;
+  }, []);
 
   return duplicateIndexes;
 };
@@ -140,7 +137,7 @@ export const getCanonicalMappingPath = (
  * Rebases -to-many reference numbers to make sure there are no skipped indexes
  *
  * For example, given this input:
- * arrayOfMappings = [
+ * mappingPaths = [
  *   ['locality','collectingevents','#2','startdate',
  *   ['locality','collectingevents','#3','startdate',
  * ]
@@ -151,12 +148,12 @@ export const getCanonicalMappingPath = (
  *   ['locality','collectingevents','#2','startdate',
  * ]
  */
-export function deflateArrayOfMappings(
-  arrayOfMappings: RA<MappingPath>
+export function deflateMappingPaths(
+  mappingPaths: RA<MappingPath>
 ): RA<MappingPath> {
   const changes: R<string> = {};
-  return arrayOfMappings.reduce<RA<MappingPath>>(
-    (arrayOfMappings, mappingPath, rowIndex) => {
+  return mappingPaths.reduce<RA<MappingPath>>(
+    (mappingPaths, mappingPath, rowIndex) => {
       let resetToManys = false;
       const newMappingPath = Array.from(mappingPath);
       mappingPath.forEach((mappingPathPart, partIndex) => {
@@ -172,7 +169,7 @@ export function deflateArrayOfMappings(
 
         const newIndex =
           getIndexFromReferenceItemName(
-            arrayOfMappings
+            mappingPaths
               .slice(0, rowIndex)
               .reverse()
               .map((mappingPath) => mappingPath.slice(0, partIndex + 1))
@@ -189,7 +186,7 @@ export function deflateArrayOfMappings(
         changes[subPath] = newValue;
         newMappingPath[partIndex] = newValue;
       });
-      return [...arrayOfMappings, newMappingPath];
+      return [...mappingPaths, newMappingPath];
     },
     []
   );

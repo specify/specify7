@@ -148,7 +148,7 @@ export const parseLocalityPinFields = (
   const parsedResult = parsedLocalityPinFields[Number(quickFetch)];
   if (Array.isArray(parsedResult)) return parsedResult;
 
-  const arrayOfMappings = localityPinFields
+  const mappingPaths = localityPinFields
     .flatMap(({ pathsToFields }) => pathsToFields)
     .filter(
       (mappingPath) =>
@@ -157,32 +157,32 @@ export const parseLocalityPinFields = (
     )
     .map((mappingPath) => mappingPath.slice(1));
 
-  const treeRanks = findRanksInMappings(arrayOfMappings);
+  const treeRanks = findRanksInMappings(mappingPaths);
 
-  const filteredArrayOfMappings = arrayOfMappings.reduce<MappingPath[]>(
-    (arrayOfMappings, mappingPath, index) => {
+  const filteredMappingPaths = mappingPaths.reduce<MappingPath[]>(
+    (mappingPaths, mappingPath, index) => {
       const { groupName, treeRankLocation } = treeRanks[index];
       if (treeRankLocation === -1) {
-        arrayOfMappings.push(mappingPath);
+        mappingPaths.push(mappingPath);
       } else if (
-        arrayOfMappings.every(
+        mappingPaths.every(
           (existingGroupName) =>
             !mappingPathToString(existingGroupName).startsWith(groupName)
         )
       )
-        arrayOfMappings.push([
+        mappingPaths.push([
           ...splitJoinedMappingPath(groupName),
           mappingPath[treeRankLocation],
           'fullname',
         ]);
 
-      return arrayOfMappings;
+      return mappingPaths;
     },
     []
   );
 
-  parsedLocalityPinFields[Number(quickFetch)] = filteredArrayOfMappings;
-  return filteredArrayOfMappings;
+  parsedLocalityPinFields[Number(quickFetch)] = filteredMappingPaths;
+  return filteredMappingPaths;
 };
 
 export async function getLocalityDataFromLocalityResource(
@@ -194,10 +194,10 @@ export async function getLocalityDataFromLocalityResource(
   // Needed by generateMappingPathPreview
   await dataModelPromise;
 
-  const filteredArrayOfMappings = parseLocalityPinFields(quickFetch);
+  const filteredMappingPaths = parseLocalityPinFields(quickFetch);
 
   const results = await Promise.all(
-    filteredArrayOfMappings.map(async (mappingPath) =>
+    filteredMappingPaths.map(async (mappingPath) =>
       recursiveResourceResolve(localityResource, mappingPath, filterFunction)
     )
   );

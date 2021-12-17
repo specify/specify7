@@ -33,7 +33,7 @@ import { getMappingLineData } from './wbplanviewnavigator';
 import type { ChangeSelectElementValueAction } from './wbplanviewreducer';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import {
-  arrayOfMappingsToMappingsTree,
+  mappingPathsToMappingsTree,
   traverseTree,
 } from './wbplanviewtreehelper';
 
@@ -132,9 +132,9 @@ export function deduplicateMappings(
   lines: RA<MappingLine>,
   focusedLine: number | false
 ): RA<MappingLine> {
-  const arrayOfMappings = getArrayOfMappings(lines);
+  const mappingPaths = getMappingPaths(lines);
   const duplicateMappingIndexes = findDuplicateMappings(
-    arrayOfMappings,
+    mappingPaths,
     focusedLine
   );
 
@@ -188,7 +188,7 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
     })
   );
 
-  const arrayOfTables = arrayOfMappingLineData
+  const tables = arrayOfMappingLineData
     .map((mappingElementData) => mappingElementData.tableName ?? '')
     .filter(
       (tableName) =>
@@ -198,7 +198,7 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
         // Exclude embedded paleo context
         (schema.embeddedPaleoContext === false || tableName !== 'paleocontext')
     );
-  const distinctListOfTables = Array.from(new Set(arrayOfTables));
+  const distinctListOfTables = Array.from(new Set(tables));
 
   return {
     ...Object.fromEntries(
@@ -212,15 +212,15 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
   };
 }
 
-export function getArrayOfMappings(
+export function getMappingPaths(
   lines: RA<MappingLine>,
   includeHeaders: true
 ): RA<FullMappingPath>;
-export function getArrayOfMappings(
+export function getMappingPaths(
   lines: RA<MappingLine>,
   includeHeaders?: false
 ): RA<MappingPath>;
-export function getArrayOfMappings(
+export function getMappingPaths(
   lines: RA<MappingLine>,
   includeHeaders = false
 ): RA<MappingPath | FullMappingPath> {
@@ -237,11 +237,11 @@ export const getMappingsTree = (
   lines: RA<MappingLine>,
   includeHeaders = false
 ): MappingsTree =>
-  arrayOfMappingsToMappingsTree(
+  mappingPathsToMappingsTree(
     // Overloading does not seem to work nicely with dynamic types
     includeHeaders
-      ? getArrayOfMappings(lines, true)
-      : getArrayOfMappings(lines, false),
+      ? getMappingPaths(lines, true)
+      : getMappingPaths(lines, false),
     includeHeaders
   );
 

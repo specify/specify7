@@ -514,7 +514,7 @@ module.exports = Backbone.View.extend({
     this.localityColumns = this.wbview.mappings
       ? findLocalityColumnsInDataSet(
           this.wbview.mappings.baseTableName,
-          this.wbview.mappings.arrayOfMappings
+          this.wbview.mappings.splitMappingPaths
         )
       : [];
 

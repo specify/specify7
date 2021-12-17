@@ -93,7 +93,7 @@ const WBView = Backbone.View.extend({
         baseTableName: string;
         mappingsTree: MappingsTree;
         mustMatchPreferences: IR<boolean>;
-        arrayOfMappings: RA<SplitMappingsPath>;
+        splitMappingPaths: RA<SplitMappingsPath>;
         tableNames: RA<string>; // tableName of each column
         mappedHeaders: RR<number, string>; // path to an icon for each header
         coordinateColumns: RR<number, 'Lat'|'Long'>;
@@ -216,7 +216,10 @@ const WBView = Backbone.View.extend({
 
     const initDataModelIntegration = () =>
       this.hot.batch(() => {
-        if (!this.isUploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
+        if (
+          !this.isUploaded &&
+          !(this.mappings?.splitMappingPaths.length > 0)
+        ) {
           $(`<div>
               ${wbText('noUploadPlanDialogHeader')}
               <p>${wbText('noUploadPlanDialogMessage')}</p>
@@ -272,11 +275,11 @@ const WBView = Backbone.View.extend({
             this.dataset.columns,
             this.dataset.uploadplan
           );
-          this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
+          this.mappings.splitMappingPaths = mappingsTreeToArrayOfSplitMappings(
             this.mappings.mappingsTree
           );
 
-          this.mappings.tableNames = this.mappings.arrayOfMappings.map(
+          this.mappings.tableNames = this.mappings.splitMappingPaths.map(
             ({ mappingPath }) =>
               getTableFromMappingPath({
                 baseTableName: this.mappings.baseTableName,
@@ -554,10 +557,10 @@ const WBView = Backbone.View.extend({
 
     this.mappings.defaultValues = Object.fromEntries(
       Object.entries(
-        typeof this.mappings.arrayOfMappings === 'undefined'
+        typeof this.mappings.splitMappingPaths === 'undefined'
           ? {}
           : extractDefaultValues(
-              this.mappings.arrayOfMappings,
+              this.mappings.splitMappingPaths,
               wbText('emptyStringInline')
             )
       ).map(([headerName, defaultValue]) => [
@@ -580,8 +583,8 @@ const WBView = Backbone.View.extend({
         .map((tableName, index) => ({
           tableName,
           fieldName:
-            this.mappings.arrayOfMappings[index].mappingPath.slice(-1)[0],
-          headerName: this.mappings.arrayOfMappings[index].headerName,
+            this.mappings.splitMappingPaths[index].mappingPath.slice(-1)[0],
+          headerName: this.mappings.splitMappingPaths[index].headerName,
         }))
         .map(({ tableName, fieldName, headerName }) => ({
           physicalCol: this.dataset.columns.indexOf(headerName),
@@ -609,7 +612,7 @@ const WBView = Backbone.View.extend({
     if (!this.mappings) return;
 
     this.mappings.treeRanks = Object.values(
-      this.mappings.arrayOfMappings
+      this.mappings.splitMappingPaths
         .map((splitMappingPath, index) => ({
           ...splitMappingPath,
           index,
@@ -1076,7 +1079,8 @@ const WBView = Backbone.View.extend({
     const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
 
     // Make sure cell has comments
-    if (this.getCellMeta(physicalRow,physicalCol,'issues').length === 0) return;
+    if (this.getCellMeta(physicalRow, physicalCol, 'issues').length === 0)
+      return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
     const oneRem = parseFloat(
@@ -1177,7 +1181,7 @@ const WBView = Backbone.View.extend({
     const cellValueChanged =
       typeof originalCellValue !== 'undefined' &&
       (originalCellValue?.toString() ?? '') !==
-      (this.data[physicalRow][physicalCol]?.toString() ?? '');
+        (this.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
 
     return this.cellWasDisambiguated(physicalRow, physicalCol);
@@ -1736,7 +1740,7 @@ const WBView = Backbone.View.extend({
   },
   upload(evt) {
     const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
-    if (this.mappings?.arrayOfMappings.length > 0) {
+    if (this.mappings?.splitMappingPaths.length > 0) {
       if (mode === 'upload') {
         const dialog = $(`<div>
           ${wbText('startUploadDialogHeader')}
@@ -1934,7 +1938,7 @@ const WBView = Backbone.View.extend({
   toggleDataCheck(event) {
     this.validationMode = this.validationMode === 'live' ? 'off' : 'live';
 
-    if (!(this.mappings?.arrayOfMappings.length > 0))
+    if (!(this.mappings?.splitMappingPaths.length > 0))
       this.validationMode = 'off';
 
     this.uploadResults = {
@@ -2028,7 +2032,7 @@ const WBView = Backbone.View.extend({
   getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
     if (!persevering)
       // Find all columns with the shared parent mapping path
-      return this.mappings.arrayOfMappings
+      return this.mappings.splitMappingPaths
         .filter(({ mappingPath }) =>
           mappingPathToString(mappingPath).startsWith(
             mappingPathToString(mappingPathFilter)
@@ -2037,7 +2041,7 @@ const WBView = Backbone.View.extend({
         .map(({ headerName }) => headerName);
     let columns;
     mappingPathFilter.some((_, index) => {
-      columns = this.mappings.arrayOfMappings
+      columns = this.mappings.splitMappingPaths
         .filter(({ mappingPath }) =>
           mappingPathToString(mappingPath).startsWith(
             mappingPathToString(
@@ -2055,8 +2059,7 @@ const WBView = Backbone.View.extend({
     let columns = initialColumns.filter((column) => column);
     if (typeof inferColumnsCallback === 'function' && columns.length === 0)
       columns = inferColumnsCallback();
-    if (columns.length === 0)
-      columns = this.dataset.columns;
+    if (columns.length === 0) columns = this.dataset.columns;
     // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
@@ -2204,19 +2207,19 @@ const WBView = Backbone.View.extend({
 
   // Helpers
   /*
-   * mappingCol is the index of the arrayOfMappings' line corresponding to
+   * mappingCol is the index of the splitMappingPaths' line corresponding to
    * a particular physicalCol. Since there can be unmapped columns, these
    * indexes do not line up and need to be converted like this:
    * */
   physicalColToMappingCol(physicalCol) {
-    return this.mappings?.arrayOfMappings.findIndex(
+    return this.mappings?.splitMappingPaths.findIndex(
       ({ headerName }) => headerName === this.dataset.columns[physicalCol]
     );
   },
   mappingColToPhysicalCol(mappingCol) {
     return this.mappings
       ? this.dataset.columns.indexOf(
-          this.mappings.arrayOfMappings[mappingCol].headerName
+          this.mappings.splitMappingPaths[mappingCol].headerName
         )
       : undefined;
   },

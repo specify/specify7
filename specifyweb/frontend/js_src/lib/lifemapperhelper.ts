@@ -3,14 +3,14 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { Field, LocalityData } from './leafletutils';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import {
-  deflateArrayOfMappings,
+  deflateMappingPaths,
   getCanonicalMappingPath,
   mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
 
 export function deflateLocalityData(localityData: LocalityData): LocalityData {
-  const deflatedMappingPaths = deflateArrayOfMappings(
+  const deflatedMappingPaths = deflateMappingPaths(
     Object.keys(localityData).map(splitJoinedMappingPath)
   );
   return Object.fromEntries(

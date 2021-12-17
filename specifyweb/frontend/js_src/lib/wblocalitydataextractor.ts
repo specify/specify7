@@ -19,15 +19,15 @@ import {
 
 const addBaseTableName = (
   baseTableName: string,
-  arrayOfMappings: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>
 ): RA<SplitMappingPath> =>
-  arrayOfMappings.map(({ mappingPath, ...rest }) => ({
+  splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
     mappingPath: [baseTableName, ...mappingPath],
   }));
 
 const matchLocalityPinFields = (
-  arrayOfMappings: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths
 ): RA<
   LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
 > =>
@@ -37,7 +37,7 @@ const matchLocalityPinFields = (
       pathToRelationship,
       matchedPathsToRelationship: Array.from(
         new Set(
-          arrayOfMappings
+          splitMappingPaths
             .map(({ mappingPath, canonicalMappingPath }) => {
               const subArrayPosition = findSubArray(
                 canonicalMappingPath,
@@ -64,17 +64,17 @@ export type SplitMappingPathWithFieldName = SplitMappingPath & {
   readonly canonicalMappingPath: MappingPath;
 };
 
-const filterArrayOfMappings = (
+const filterSplitMappingPaths = (
   matchedLocalityGroups: RA<
     LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
   >,
-  arrayOfMappings: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths
 ): RA<SplitMappingPathWithFieldName> =>
   matchedLocalityGroups
     .flatMap(({ matchedPathsToRelationship, pathsToFields }) =>
       matchedPathsToRelationship.flatMap((mappingPath) =>
         pathsToFields.flatMap((pathToField) =>
-          arrayOfMappings
+          splitMappingPaths
             .filter(
               (splitMappingPath) =>
                 mappingPathToString(splitMappingPath.canonicalMappingPath) ===
@@ -100,11 +100,11 @@ const filterArrayOfMappings = (
     );
 
 function groupLocalityColumns(
-  arrayOfMappings: RA<SplitMappingPathWithFieldName>
+  splitMappingPaths: RA<SplitMappingPathWithFieldName>
 ): RA<IR<string>> {
   const groupedLocalityColumns: R<R<string>> = {};
   const globalLocalityColumns: R<string> = {};
-  arrayOfMappings.forEach(({ mappingPath, fieldName, headerName }) => {
+  splitMappingPaths.forEach(({ mappingPath, fieldName, headerName }) => {
     const indexOfLocality = mappingPath.indexOf('locality');
     if (indexOfLocality === -1) globalLocalityColumns[fieldName] = headerName;
     else {
@@ -131,13 +131,13 @@ const filterInvalidLocalityColumnGroups = (
   );
 
 const findLocalityColumns = (
-  arrayOfMappings: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths
 ): RA<IR<string>> =>
   filterInvalidLocalityColumnGroups(
     groupLocalityColumns(
-      filterArrayOfMappings(
-        matchLocalityPinFields(arrayOfMappings),
-        arrayOfMappings
+      filterSplitMappingPaths(
+        matchLocalityPinFields(splitMappingPaths),
+        splitMappingPaths
       )
     )
   );
@@ -160,9 +160,9 @@ type SplitMappingPaths = RA<
 >;
 
 const addCanonicalMappingPaths = (
-  arrayOfMappings: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>
 ): SplitMappingPaths =>
-  arrayOfMappings.map(({ mappingPath, ...rest }) => ({
+  splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
     mappingPath,
     canonicalMappingPath: getCanonicalMappingPath(mappingPath),
@@ -170,10 +170,10 @@ const addCanonicalMappingPaths = (
 
 export const findLocalityColumnsInDataSet = (
   baseTableName: string,
-  arrayOfMappings: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>
 ): RA<IR<string>> =>
   findLocalityColumns(
-    addCanonicalMappingPaths(addBaseTableName(baseTableName, arrayOfMappings))
+    addCanonicalMappingPaths(addBaseTableName(baseTableName, splitMappingPaths))
   );
 
 export const getLocalitiesDataFromSpreadsheet = (
