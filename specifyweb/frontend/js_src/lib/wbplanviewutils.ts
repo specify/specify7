@@ -1,6 +1,6 @@
-import Automapper from './automapper';
+import AutoMapper from './automapper';
 import type {
-  AutomapperSuggestion,
+  AutoMapperSuggestion,
   FullMappingPath,
   MappingLine,
   MappingPath,
@@ -265,11 +265,11 @@ export function mutateMappingPath({
 const MAX_SUGGESTIONS_COUNT = 3;
 
 /*
- * Show automapper suggestion on top of an opened `CLOSED_LIST`
- * The automapper suggestions are shown only if the current box doesn't have
+ * Show autoMapper suggestion on top of an opened `CLOSED_LIST`
+ * The autoMapper suggestions are shown only if the current box doesn't have
  * a value selected
  */
-export async function getAutomapperSuggestions({
+export async function getAutoMapperSuggestions({
   lines,
   line,
   index,
@@ -277,7 +277,7 @@ export async function getAutomapperSuggestions({
 }: SelectElementPosition & {
   readonly lines: RA<MappingLine>;
   readonly baseTableName: string;
-}): Promise<RA<AutomapperSuggestion>> {
+}): Promise<RA<AutoMapperSuggestion>> {
   const localMappingPath = Array.from(lines[line].mappingPath);
 
   if (
@@ -320,7 +320,7 @@ export async function getAutomapperSuggestions({
     pathOffset = 1;
   }
 
-  const automapperResults = new Automapper({
+  const autoMapperResults = new AutoMapper({
     headers: [lines[line].headerName],
     baseTable: baseTableName,
     startingTable:
@@ -333,15 +333,15 @@ export async function getAutomapperSuggestions({
     pathIsMapped: pathIsMapped.bind(undefined, lines),
   }).map()[lines[line].headerName];
 
-  if (typeof automapperResults === 'undefined') return [];
+  if (typeof autoMapperResults === 'undefined') return [];
 
-  return automapperResults
+  return autoMapperResults
     .slice(0, MAX_SUGGESTIONS_COUNT)
-    .map((automapperResult) => ({
-      mappingPath: automapperResult,
+    .map((autoMapperResult) => ({
+      mappingPath: autoMapperResult,
       mappingLineData: getMappingLineData({
         baseTableName,
-        mappingPath: automapperResult,
+        mappingPath: autoMapperResult,
         iterate: true,
         customSelectType: 'SUGGESTION_LINE_LIST',
         getMappedFields: getMappedFields.bind(undefined, lines),

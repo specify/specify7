@@ -9,12 +9,12 @@
 
 import type { IR, RA, RR } from './types';
 import type {
-  AutomapperScope,
+  AutoMapperScope,
   MappingPath,
 } from './components/wbplanviewmapper';
 
 /*
- *  Automapper does 2 passes though the schema whenever it is asked to map
+ *  AutoMapper does 2 passes though the schema whenever it is asked to map
  *  some headers. This is needed to ensure priority mapping for some mapping
  *  paths. In particular, `shortcuts` and `tableSynonyms` are used on the
  *  first pass. The second path goes over `synonyms` and also does string
@@ -66,7 +66,7 @@ interface AutoMapperDefinitions {
   /*
    * Table Synonyms are to be used when a table has a different
    *   name in a particular context
-   * Also, since automapper runs through each table only once,
+   * Also, since autoMapper runs through each table only once,
    *   table synonyms can be used as a way bypass that limitation
    * Besides that, even though `synonyms` and matches are normally
    *   checked in the second pass, if a table has
@@ -109,7 +109,7 @@ interface AutoMapperDefinitions {
        * FieldName (case-insensitive)
        * Defined in wbplanviewmapper.tsx
        */
-      RA<AutomapperScope>
+      RA<AutoMapperScope>
     >
   >;
 
@@ -123,7 +123,7 @@ interface AutoMapperDefinitions {
   readonly dontMap: Partial<
     RR<
       // Defined in wbplanviewmapper.tsx
-      AutomapperScope,
+      AutoMapperScope,
       // Described earlier in the file
       { headers: Options }
     >
@@ -143,7 +143,7 @@ interface AutoMapperDefinitions {
     Partial<
       RR<
         // Defined in wbplanviewmapper.tsx
-        AutomapperScope,
+        AutoMapperScope,
         {
           /*
            * Mapping path that is to be appended to the current path
@@ -173,7 +173,7 @@ interface AutoMapperDefinitions {
       Partial<
         RR<
           // Defined in wbplanviewmapper.tsx
-          AutomapperScope,
+          AutoMapperScope,
           {
             headers: Options & {
               /*
@@ -325,12 +325,12 @@ const definitions: AutoMapperDefinitions = {
   dontMatch: {
     Address: {
       // Some ranks were mapped to Address instead of Geography
-      country: ['automapper'],
-      state: ['automapper'],
+      country: ['autoMapper'],
+      state: ['autoMapper'],
     },
   },
   dontMap: {
-    automapper: {
+    autoMapper: {
       headers: {
         regex: [/^type[^a-z]*$/, /^remarks/, /^notes/],
       },
@@ -338,7 +338,7 @@ const definitions: AutoMapperDefinitions = {
   },
   shortcuts: {
     CollectionObject: {
-      automapper: [
+      autoMapper: [
         {
           mappingPath: ['cataloger', 'lastname'],
           headers: {
@@ -369,7 +369,7 @@ const definitions: AutoMapperDefinitions = {
   synonyms: {
     DnaSequence: {
       genbankAccessionNumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['genbank'],
           },
@@ -383,7 +383,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['middle'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['middle'],
           },
@@ -395,7 +395,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['first'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['first'],
           },
@@ -407,7 +407,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['last'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['last'],
           },
@@ -423,7 +423,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       startDate: {
-        automapper: {
+        autoMapper: {
           headers: {
             string: ['date'],
           },
@@ -442,7 +442,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       method: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['collection method'],
           },
@@ -454,7 +454,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       stationfieldnumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             regex: [
               /^(?:coll(?:ect(?:ing)?)?\.??(?: ev(?:ent)?)?\.?|field)?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
@@ -465,7 +465,7 @@ const definitions: AutoMapperDefinitions = {
     },
     Accession: {
       accessionnumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             regex: [/^acc(?:ession)?\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/],
             string: ['accession'],
@@ -475,21 +475,21 @@ const definitions: AutoMapperDefinitions = {
     },
     Locality: {
       maxElevation: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['max elev', 'max depth'],
           },
         },
       },
       minElevation: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['elev', 'depth'],
           },
         },
       },
       latitude1: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['latitude 1'],
             string: ['latitude', 'lat', 'lat1', 'lat 1'],
@@ -502,14 +502,14 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       latitude2: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['latitude 2'],
           },
         },
       },
       longitude1: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['longitude 1'],
             string: ['longitude', 'long', 'long1', 'long 1'],
@@ -522,14 +522,14 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       longitude2: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['longitude 2'],
           },
         },
       },
       latlongmethod: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['lat/long method'],
           },
@@ -541,7 +541,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       localityname: {
-        automapper: {
+        autoMapper: {
           headers: {
             string: ['localitynum', 'locality'],
           },
@@ -553,7 +553,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       namedplace: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['named place'],
           },
@@ -571,14 +571,14 @@ const definitions: AutoMapperDefinitions = {
     },
     CollectionObject: {
       fieldNumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['field #', 'field no', 'field num'],
           },
         },
       },
       catalogedDate: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['catalog date', 'cataloged date', 'catalogued date'],
             string: ['cat date'],
@@ -586,7 +586,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       catalogNumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             regex: [
               /^(?:specimen|cat(?:alogu?e?)?)\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
@@ -600,7 +600,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       altcatalognumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             regex: [
               /^alt(?:ernative)?\.? (?:specimen|cat(?:alogu?e?)?)\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
@@ -612,14 +612,14 @@ const definitions: AutoMapperDefinitions = {
     },
     Geography: {
       state: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['state'],
           },
         },
       },
       continent: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['continent'],
           },
@@ -633,7 +633,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['date'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['date'],
           },
@@ -645,7 +645,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['status'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['status'],
           },
@@ -654,7 +654,7 @@ const definitions: AutoMapperDefinitions = {
     },
     PrepType: {
       name: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['preptype', 'prep ', 'preparation'],
           },

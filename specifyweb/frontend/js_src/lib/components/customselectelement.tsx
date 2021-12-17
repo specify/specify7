@@ -149,7 +149,7 @@ interface CustomSelectElementPropsBase {
   ) => void;
   readonly handleClose?: () => void;
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
-  readonly automapperSuggestions?: JSX.Element;
+  readonly autoMapperSuggestions?: JSX.Element;
 }
 
 export interface CustomSelectElementPropsClosed
@@ -175,7 +175,7 @@ export interface CustomSelectElementPropsOpenBase
 interface CustomSelectElementPropsOpen
   extends CustomSelectElementPropsOpenBase {
   readonly customSelectOptionGroups: CustomSelectElementOptionGroups;
-  readonly automapperSuggestions?: JSX.Element;
+  readonly autoMapperSuggestions?: JSX.Element;
 }
 
 export function Icon({
@@ -336,7 +336,7 @@ export function CustomSelectElement({
   handleChange,
   handleOpen,
   handleClose,
-  automapperSuggestions,
+  autoMapperSuggestions,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
 
@@ -544,7 +544,7 @@ export function CustomSelectElement({
           : selectLabel
       }
     >
-      {automapperSuggestions}
+      {autoMapperSuggestions}
       {header}
       {preview}
       {optionsShadow}

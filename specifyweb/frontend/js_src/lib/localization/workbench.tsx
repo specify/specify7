@@ -255,11 +255,11 @@ const wbText = createDictionary({
   goToBaseTableDialogMessage: `
     Choosing a different Base Table for a Data Set Upload will make that
     table the new starting point for column-to-data field mappings and
-    will erase existing mappings. The Automapper will attempt to map
+    will erase existing mappings. The AutoMapper will attempt to map
     columns to the new Base Table fields.`,
   changeBaseTable: 'Change Base Table',
-  reRunAutoMapper: 'Rerun Automapper',
-  autoMapper: 'Automapper',
+  reRunAutoMapper: 'Rerun AutoMapper',
+  autoMapper: 'AutoMapper',
   hideMappingEditor: 'Hide Map Explorer',
   showMappingEditor: 'Show Map Explorer',
   matchingLogic: 'Must Match',
@@ -274,7 +274,7 @@ const wbText = createDictionary({
       add new columns,
     </>
   ),
-  reRunAutoMapperDialogTitle: 'Automapper',
+  reRunAutoMapperDialogTitle: 'AutoMapper',
   reRunAutoMapperDialogHeader: createJsxHeader(
     'Automap to start a new Upload Plan?'
   ),

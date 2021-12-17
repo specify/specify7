@@ -19,7 +19,7 @@ import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR, RA } from '../types';
 import type {
-  AutomapperSuggestion,
+  AutoMapperSuggestion,
   MappingType,
   SelectElementPosition,
 } from './wbplanviewmapper';
@@ -52,10 +52,10 @@ export interface MappingPathProps {
 type HtmlGeneratorFieldsData = IR<HtmlGeneratorFieldData>;
 
 export type MappingElementProps =
-  | (Omit<CustomSelectElementPropsOpenBase, 'automapperSuggestions'> & {
+  | (Omit<CustomSelectElementPropsOpenBase, 'autoMapperSuggestions'> & {
       readonly fieldsData: HtmlGeneratorFieldsData;
-      readonly automapperSuggestions?: RA<AutomapperSuggestion>;
-      readonly handleAutomapperSuggestionSelection?: (
+      readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
+      readonly handleAutoMapperSuggestionSelection?: (
         suggestion: string
       ) => void;
     })
@@ -348,14 +348,14 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
           ])
       )}
       defaultOption={defaultOption}
-      automapperSuggestions={
-        typeof props.automapperSuggestions !== 'undefined' &&
-        props.automapperSuggestions.length > 0 &&
-        typeof props.handleAutomapperSuggestionSelection !== 'undefined' ? (
+      autoMapperSuggestions={
+        typeof props.autoMapperSuggestions !== 'undefined' &&
+        props.autoMapperSuggestions.length > 0 &&
+        typeof props.handleAutoMapperSuggestionSelection !== 'undefined' ? (
           <SuggestionBox
-            onSelect={props.handleAutomapperSuggestionSelection}
+            onSelect={props.handleAutoMapperSuggestionSelection}
             selectOptionsData={Object.fromEntries(
-              props.automapperSuggestions.map((automapperSuggestion, index) => [
+              props.autoMapperSuggestions.map((autoMapperSuggestion, index) => [
                 /*
                  * Since "0" is reserved for `no value`, we need to
                  * start counting from 1
@@ -364,7 +364,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
                 {
                   optionLabel: (
                     <MappingPathComponent
-                      mappingLineData={automapperSuggestion.mappingLineData}
+                      mappingLineData={autoMapperSuggestion.mappingLineData}
                     />
                   ),
                 },

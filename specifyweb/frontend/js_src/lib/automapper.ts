@@ -13,7 +13,7 @@ import type { Options, TableSynonym } from './automapperdefinitions';
 import AutoMapperDefinitions from './automapperdefinitions';
 import type { IR, R, RA } from './types';
 import type {
-  AutomapperScope,
+  AutoMapperScope,
   MappingPath,
   MappingPathWritable,
   RelationshipType,
@@ -61,9 +61,9 @@ interface AutoMapperConstructorBaseParameters {
   readonly pathOffset?: number;
   /*
    * Whether to allow multiple mappings
-   * Scope to use for definitions. More info in automapperdefinitions.ts
+   * Scope to use for definitions. More info in autoMapperdefinitions.ts
    */
-  readonly scope?: AutomapperScope;
+  readonly scope?: AutoMapperScope;
 }
 
 interface AutoMapperConstructorCheckExistingParameters
@@ -139,7 +139,7 @@ type AutoMapperSearchedTablesActions =
   | AutoMapperSearchedTablesAdd
   | AutoMapperSearchedTablesReset;
 
-type AutomapperFindMappingsQueueEnqueue = Action<
+type AutoMapperFindMappingsQueueEnqueue = Action<
   'enqueue',
   {
     value: FindMappingsParameters;
@@ -147,24 +147,24 @@ type AutomapperFindMappingsQueueEnqueue = Action<
   }
 >;
 
-type AutomapperFindMappingsQueueReset = Action<
+type AutoMapperFindMappingsQueueReset = Action<
   'reset',
   {
     initialValue?: FindMappingsParameters;
   }
 >;
 
-type AutomapperFindMappingsQueueInitializeLevel = Action<
+type AutoMapperFindMappingsQueueInitializeLevel = Action<
   'initializeLevel',
   {
     level: number;
   }
 >;
 
-type AutomapperFindMappingsQueueActions =
-  | AutomapperFindMappingsQueueReset
-  | AutomapperFindMappingsQueueInitializeLevel
-  | AutomapperFindMappingsQueueEnqueue;
+type AutoMapperFindMappingsQueueActions =
+  | AutoMapperFindMappingsQueueReset
+  | AutoMapperFindMappingsQueueInitializeLevel
+  | AutoMapperFindMappingsQueueEnqueue;
 
 // Find cases like `Phylum` and remap them to `Phylum > Name`
 const matchBaseRankName = (
@@ -187,7 +187,7 @@ const matchRankAndFieldName = (
 const isFieldInDontMatch = (
   tableName: string,
   lastPathPart: string,
-  scope: AutomapperScope
+  scope: AutoMapperScope
 ): boolean =>
   tableName !== '' &&
   (AutoMapperDefinitions.dontMatch[tableName]?.[lastPathPart]?.indexOf(scope) ??
@@ -229,13 +229,13 @@ const findRankSynonyms = (
     .flatMap(({ synonyms }) => synonyms) ?? [];
 
 function handleOrdinalNumbers(header: string): string {
-  const ordinalNumberMatch = Automapper.regexParseOrdinalNumbers.exec(header);
+  const ordinalNumberMatch = AutoMapper.regexParseOrdinalNumbers.exec(header);
   return ordinalNumberMatch === null
     ? header
     : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
 }
 
-export default class Automapper {
+export default class AutoMapper {
   // Used to replace any white space characters with space
   private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
 
@@ -267,7 +267,7 @@ export default class Automapper {
 
   private readonly results: AutoMapperResults = {};
 
-  private readonly scope: AutomapperScope = 'automapper';
+  private readonly scope: AutoMapperScope = 'autoMapper';
 
   private readonly allowMultipleMappings: boolean = false;
 
@@ -305,14 +305,14 @@ export default class Automapper {
     results: (action: AutoMapperResultsActions) => void;
     headersToMap: (action: AutoMapperHeadersToMapActions) => void;
     searchedTables: (action: AutoMapperSearchedTablesActions) => void;
-    findMappingsQueue: (action: AutomapperFindMappingsQueueActions) => void;
+    findMappingsQueue: (action: AutoMapperFindMappingsQueueActions) => void;
   } = {
     results: generateDispatch<AutoMapperResultsActions>({
       add: ({ headerName, mappingPath }) => {
         this.results[headerName] ??= [];
 
         if (mappingPath.length === 0)
-          throw new Error('Invalid mapping path suggested by automapper');
+          throw new Error('Invalid mapping path suggested by autoMapper');
 
         this.results[headerName].push(mappingPath);
       },
@@ -331,7 +331,7 @@ export default class Automapper {
         this.searchedTables = [];
       },
     }),
-    findMappingsQueue: generateDispatch<AutomapperFindMappingsQueueActions>({
+    findMappingsQueue: generateDispatch<AutoMapperFindMappingsQueueActions>({
       reset: ({ initialValue }) => {
         typeof initialValue === 'undefined'
           ? (this.findMappingsQueue = [])
@@ -352,7 +352,7 @@ export default class Automapper {
     startingTable = baseTable,
     path = [],
     pathOffset = 0,
-    scope = 'automapper',
+    scope = 'autoMapper',
     pathIsMapped,
   }: AutoMapperConstructorParameters) {
     // Strip extra characters to increase mapping success
@@ -362,19 +362,19 @@ export default class Automapper {
           const lowercaseName = handleOrdinalNumbers(
             originalName
               .toLowerCase()
-              .replace(Automapper.regexReplaceWhiteSpace, ' ')
-              .replace(Automapper.regexRemoveDuplicateHeaderIndexes, '')
+              .replace(AutoMapper.regexReplaceWhiteSpace, ' ')
+              .replace(AutoMapper.regexRemoveDuplicateHeaderIndexes, '')
               .trim()
           );
           const strippedName = lowercaseName
-            .replace(Automapper.regexRemoveNonAz, ' ')
-            .replace(Automapper.regexReplaceWhiteSpace, ' ')
+            .replace(AutoMapper.regexRemoveNonAz, ' ')
+            .replace(AutoMapper.regexReplaceWhiteSpace, ' ')
             .trim();
 
           const finalName = lowercaseName
-            .replace(Automapper.regexRemoveParentheses, ' ')
-            .replace(Automapper.regexRemoveNonAz, ' ')
-            .replace(Automapper.regexReplaceWhiteSpace, ' ')
+            .replace(AutoMapper.regexRemoveParentheses, ' ')
+            .replace(AutoMapper.regexRemoveNonAz, ' ')
+            .replace(AutoMapper.regexReplaceWhiteSpace, ' ')
             .trim()
             .split(' ')
             .join('');
@@ -394,7 +394,7 @@ export default class Automapper {
          * AutoMapperDefinitions
          */
         .filter(({ headerData: { lowercaseHeaderName } }) =>
-          Object.entries(Automapper.comparisons)
+          Object.entries(AutoMapper.comparisons)
             .filter(
               (
                 // Loop over defined comparisons only
@@ -514,7 +514,7 @@ export default class Automapper {
     tableName: string
   ) =>
     this.getUnmappedHeaders().forEach(([headerKey, { lowercaseHeaderName }]) =>
-      Object.entries(Automapper.comparisons)
+      Object.entries(AutoMapper.comparisons)
         .filter(
           (
             // Loop over defined comparisons
@@ -543,7 +543,7 @@ export default class Automapper {
     Object.entries(this.headersToMap).filter(([, { isMapped }]) => !isMapped);
 
   /*
-   * Goes over `shortcuts` and `synonyms` in AutomapperDefinitions.tsx and
+   * Goes over `shortcuts` and `synonyms` in AutoMapperDefinitions.tsx and
    * tries to find matches. Calls handleDefinitionComparison to make
    * comparison
    *
@@ -687,7 +687,7 @@ export default class Automapper {
          */
         this.searchedTables.includes(tableName) ||
         // Don't go beyond the depth limit
-        mappingPath.length > Automapper.depth
+        mappingPath.length > AutoMapper.depth
       )
         return;
 
@@ -883,7 +883,7 @@ export default class Automapper {
 
         const newDepthLevel = localPath.length;
 
-        if (newDepthLevel > Automapper.depth) return;
+        if (newDepthLevel > AutoMapper.depth) return;
 
         this.dispatch.findMappingsQueue({
           type: 'initializeLevel',
