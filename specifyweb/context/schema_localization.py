@@ -20,19 +20,7 @@ def get_schema_languages():
 
 def get_schema_localization(collection, schematype, lang):
     disc = collection.discipline
-    language_, country_ = lang.lower().split('-') if '-' in lang else (lang, None)
-
-    schema_languages = get_schema_languages()
-
-    possible = [p for p in [
-        (language_, country_, None),
-        (language_, None, None),
-        ('en', None, None),
-    ] if p in schema_languages]
-    assert possible
-
-    language, country, variant = possible[0]
-    logger.info('returning %s for requested %s', (language, country, variant), lang)
+    language, country = lang.lower().split('-') if '-' in lang else (lang, None)
 
     cursor = connection.cursor()
 
@@ -80,18 +68,43 @@ def get_schema_localization(collection, schematype, lang):
 
     cursor.execute(f"""
     select name, format, ishidden, isuiformatter, picklistname, type, aggregator, defaultui,
-           coalesce(n.text, name), coalesce(d.text, name)
+           coalesce({'n1.text, ' if country is not None else ''} n2.text, n3.text, name),
+           coalesce({'d1.text, ' if country is not None else ''} d2.text, d3.text, name)
     from splocalecontainer
 
-    left outer join splocaleitemstr n on n.splocalecontainernameid = splocalecontainerid
-    and n.language = %(language)s
-    and n.country {'= %(country)s' if country is not None else 'is null'}
-    and n.variant is null
+    {'''
+    left outer join splocaleitemstr n1 on n1.splocalecontainernameid = splocalecontainerid
+    and n1.language = %(language)s
+    and n1.country = %(country)s
+    and n1.variant is null
+    '''  if country is not None else ''}
 
-    left outer join splocaleitemstr d on d.splocalecontainerdescid = splocalecontainerid
-    and d.language = %(language)s
-    and d.country {'= %(country)s' if country is not None else 'is null'}
-    and d.variant is null
+    left outer join splocaleitemstr n2 on n2.splocalecontainernameid = splocalecontainerid
+    and n2.language = %(language)s
+    and n2.country is null
+    and n2.variant is null
+
+    left outer join splocaleitemstr n3 on n3.splocalecontainernameid = splocalecontainerid
+    and n3.language = 'en'
+    and n3.country is null
+    and n3.variant is null
+
+    {'''
+    left outer join splocaleitemstr d1 on d1.splocalecontainerdescid = splocalecontainerid
+    and d1.language = %(language)s
+    and d1.country = %(country)s
+    and d1.variant is null
+    ''' if country is not None else ''}
+
+    left outer join splocaleitemstr d2 on d2.splocalecontainerdescid = splocalecontainerid
+    and d2.language = %(language)s
+    and d2.country is null
+    and d2.variant is null
+
+    left outer join splocaleitemstr d3 on d3.splocalecontainerdescid = splocalecontainerid
+    and d3.language = 'en'
+    and d3.country is null
+    and d3.variant is null
 
     where schematype = %(schematype)s and disciplineid = %(disciplineid)s
     order by name
@@ -108,19 +121,44 @@ def get_schema_localization(collection, schematype, lang):
     select container.name, item.name,
            item.format, item.ishidden, item.isuiformatter, item.picklistname,
            item.type, item.isrequired, item.weblinkname,
-           coalesce(n.text, item.name), coalesce(d.text, item.name)
+           coalesce({'n1.text, ' if country is not None else ''} n2.text, n3.text, item.name),
+           coalesce({'d1.text, ' if country is not None else ''} d2.text, d3.text, item.name)
     from splocalecontainer container
     inner join splocalecontaineritem item on item.splocalecontainerid = container.splocalecontainerid
 
-    left outer join splocaleitemstr n on n.splocalecontaineritemnameid = item.splocalecontaineritemid
-    and n.language = %(language)s
-    and n.country {'= %(country)s' if country is not None else 'is null'}
-    and n.variant is null
+    {'''
+    left outer join splocaleitemstr n1 on n1.splocalecontaineritemnameid = splocalecontaineritemid
+    and n1.language = %(language)s
+    and n1.country = %(country)s
+    and n1.variant is null
+    '''  if country is not None else ''}
 
-    left outer join splocaleitemstr d on d.splocalecontaineritemdescid = item.splocalecontaineritemid
-    and d.language = %(language)s
-    and d.country {'= %(country)s' if country is not None else 'is null'}
-    and d.variant is null
+    left outer join splocaleitemstr n2 on n2.splocalecontaineritemnameid = splocalecontaineritemid
+    and n2.language = %(language)s
+    and n2.country is null
+    and n2.variant is null
+
+    left outer join splocaleitemstr n3 on n3.splocalecontaineritemnameid = splocalecontaineritemid
+    and n3.language = 'en'
+    and n3.country is null
+    and n3.variant is null
+
+    {'''
+    left outer join splocaleitemstr d1 on d1.splocalecontaineritemdescid = splocalecontaineritemid
+    and d1.language = %(language)s
+    and d1.country = %(country)s
+    and d1.variant is null
+    ''' if country is not None else ''}
+
+    left outer join splocaleitemstr d2 on d2.splocalecontaineritemdescid = splocalecontaineritemid
+    and d2.language = %(language)s
+    and d2.country is null
+    and d2.variant is null
+
+    left outer join splocaleitemstr d3 on d3.splocalecontaineritemdescid = splocalecontaineritemid
+    and d3.language = 'en'
+    and d3.country is null
+    and d3.variant is null
 
     where schematype = %(schematype)s and disciplineid = %(disciplineid)s
     order by item.name
