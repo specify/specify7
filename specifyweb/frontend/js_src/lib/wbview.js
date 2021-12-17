@@ -2307,7 +2307,7 @@ const WBView = Backbone.View.extend({
       const navigationType = navigationContainer.getAttribute(
         'data-navigation-type'
       );
-      navigationTotalElement.innerText = cellCounts[navigationType];
+      navigationTotalElement.textContent = cellCounts[navigationType];
 
       if (cellCounts[navigationType] === 0) {
         const currentPositionElement =
@@ -2315,7 +2315,7 @@ const WBView = Backbone.View.extend({
             'wb-navigation-position'
           )?.[0];
         if (currentPositionElement !== 'undefined')
-          currentPositionElement.innerText = 0;
+          currentPositionElement.textContent = '0';
       }
     });
 
