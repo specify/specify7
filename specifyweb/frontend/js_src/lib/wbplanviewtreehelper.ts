@@ -118,14 +118,14 @@ export function arrayToTree(
 
 /*
  * Converts array of arrays of strings into a complete tree
- * The inverse of mappingsTreeToArrayOfMappings
+ * The inverse of mappingsTreeToMappingPaths
  */
-export function arrayOfMappingsToMappingsTree(
+export function mappingPathsToMappingsTree(
   /*
    * Array of strings (branches of the tree) that are going to be merged
    * into a tree
    */
-  arrayOfMappings: RA<MappingPath | FullMappingPath>,
+  mappingPaths: RA<MappingPath | FullMappingPath>,
   includeHeaders: boolean
 ): MappingsTree {
   // Final tree
@@ -146,7 +146,7 @@ export function arrayOfMappingsToMappingsTree(
    */
   const tree = {};
 
-  arrayOfMappings.forEach((mappingPath) =>
+  mappingPaths.forEach((mappingPath) =>
     deepMergeObject(tree, arrayToTree(mappingPath, includeHeaders))
   );
 
@@ -155,9 +155,9 @@ export function arrayOfMappingsToMappingsTree(
 
 /*
  * Converts mappings tree to array of mappings
- * The inverse of arrayOfMappingsToMappingsTree
+ * The inverse of mappingPathsToMappingsTree
  */
-const mappingsTreeToArrayOfMappings = (
+const mappingsTreeToMappingPaths = (
   mappingsTree: MappingsTree,
   // Used in a recursion to store intermediate path
   path: MappingPath = []
@@ -184,7 +184,7 @@ const mappingsTreeToArrayOfMappings = (
         typeof Object.values(treeNode)[0] === 'object'
       )
         result.push(
-          ...mappingsTreeToArrayOfMappings(treeNode as MappingsTree, [
+          ...mappingsTreeToMappingPaths(treeNode as MappingsTree, [
             ...path,
             treeNodeName,
           ])
@@ -205,6 +205,4 @@ const mappingsTreeToArrayOfMappings = (
 export const mappingsTreeToArrayOfSplitMappings = (
   mappingsTree: MappingsTree
 ): RA<SplitMappingPath> =>
-  mappingsTreeToArrayOfMappings(mappingsTree).map(
-    splitFullMappingPathComponents
-  );
+  mappingsTreeToMappingPaths(mappingsTree).map(splitFullMappingPathComponents);

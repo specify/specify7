@@ -69,7 +69,7 @@ export default function (): void {
   );
 
   runTest(
-    'WbPlanViewTreeHelper.arrayOfMappingsToMappingsTree',
+    'WbPlanViewTreeHelper.mappingPathsToMappingsTree',
     [
       [
         [
@@ -99,6 +99,6 @@ export default function (): void {
         },
       ],
     ],
-    WbPlanViewTreeHelper.arrayOfMappingsToMappingsTree
+    WbPlanViewTreeHelper.mappingPathsToMappingsTree
   );
 }

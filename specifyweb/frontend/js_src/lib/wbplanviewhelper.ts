@@ -69,11 +69,11 @@ export function findArrayDivergencePoint<T>(
 }
 
 export const extractDefaultValues = (
-  arrayOfSplitMappings: RA<SplitMappingPath>,
+  splitMappingPaths: RA<SplitMappingPath>,
   emptyStringReplacement = ''
 ): IR<string> =>
   Object.fromEntries(
-    arrayOfSplitMappings
+    splitMappingPaths
       .map(
         ({ headerName, columnOptions }) =>
           [
