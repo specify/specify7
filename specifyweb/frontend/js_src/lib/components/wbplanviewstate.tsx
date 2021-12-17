@@ -8,6 +8,7 @@ import _ from 'underscore';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { RA } from '../types';
 import type { MatchBehaviors } from '../uploadplantomappingstree';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
@@ -95,15 +96,6 @@ export const getInitialWbPlanViewState = (
         type: 'OpenBaseTableSelectionAction',
       },
 });
-
-export function mappingState(state: WbPlanViewStates): MappingState {
-  if (state.type === 'MappingState') return state;
-  else
-    throw new Error(
-      'Dispatching this action requires the state ' +
-        'to be of type `MappingState`'
-    );
-}
 
 export const getDefaultMappingState = (): MappingState => ({
   type: 'MappingState',
@@ -320,9 +312,8 @@ export const stateReducer = generateReducer<
                         click: confirm,
                       },
                     ]}
-                    showConfirmation={() =>
-                      mappingState(state).lines.length > 0 &&
-                      mappingState(state).lines.some(({ mappingPath }) =>
+                    showConfirmation={(): boolean =>
+                      state.lines.some(({ mappingPath }) =>
                         mappingPathIsComplete(mappingPath)
                       )
                     }

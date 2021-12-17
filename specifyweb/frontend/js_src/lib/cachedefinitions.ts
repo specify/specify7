@@ -22,11 +22,10 @@ export type CacheDefinitions = {
   readonly leaflet: {
     readonly // Remembers the selected base layer
     [Property in `currentLayer${LeafletCacheSalt}`]: string;
-  } &
-    {
-      readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
-      [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
-    };
+  } & {
+    readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
+    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
+  };
   readonly 'wbplanview-datamodel': {
     // Data on the fields in the tables that are included in wbplanview
     readonly tables: DataModelTables;

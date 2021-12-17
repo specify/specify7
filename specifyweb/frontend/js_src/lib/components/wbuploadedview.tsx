@@ -26,9 +26,7 @@ function TableResults({
 }): JSX.Element {
   return (
     <div className="wb-uploaded-view-line">
-      <TableIcon
-        tableName={tableName.toLowerCase()}
-      />
+      <TableIcon tableName={tableName.toLowerCase()} />
       <span>
         {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
       </span>
