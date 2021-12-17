@@ -79,7 +79,7 @@ module.exports = Backbone.View.extend({
     const totalCountElement = buttonParent.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const totalCount = parseInt(totalCountElement.innerText);
+    const totalCount = parseInt(totalCountElement.textContent);
 
     const cellMetaObject = this.wbview.getCellMetaObject();
 
@@ -159,14 +159,14 @@ module.exports = Backbone.View.extend({
     const boundaryCell = direction === 'next' ? totalCount : 1;
 
     const initialCellRelativePosition = parseInt(
-      currentPositionElement.innerText || '0'
+      currentPositionElement.textContent || '0'
     );
     if (
       cellRelativePosition !== 0 ||
       initialCellRelativePosition !== boundaryCell ||
       totalCount === 0
     )
-      currentPositionElement.innerText = cellRelativePosition;
+      currentPositionElement.textContent = cellRelativePosition;
 
     if (typeof matchedCell === 'undefined') return false;
 
@@ -251,7 +251,7 @@ module.exports = Backbone.View.extend({
     )[0];
 
     if (typeof this.parseSearchQuery() === 'undefined') {
-      navigationTotalElement.innerText = '0';
+      navigationTotalElement.textContent = '0';
       this.toggleCellTypes('searchResults', 'add');
       return;
     }
@@ -319,7 +319,7 @@ module.exports = Backbone.View.extend({
       }
     }
 
-    navigationTotalElement.innerText = resultsCount;
+    navigationTotalElement.textContent = resultsCount;
 
     if (event.key === 'Enter')
       this.navigateCells(
