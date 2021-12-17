@@ -288,22 +288,22 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   ].join('_');
 
   if (!ignoreCache) {
-    const tables = cache.get('wbplanview-datamodel', 'tables', {
+    const tables = cache.get('wbPlanViewDataModel', 'tables', {
       version: cacheVersion,
     });
     const listOfBaseTables = cache.get(
-      'wbplanview-datamodel',
+      'wbPlanViewDataModel',
       'listOfBaseTables',
       { version: cacheVersion }
     );
-    const ranks = cache.get('wbplanview-datamodel', 'ranks', {
+    const ranks = cache.get('wbPlanViewDataModel', 'ranks', {
       version: cacheVersion,
     });
-    const rootRanks = cache.get('wbplanview-datamodel', 'rootRanks', {
+    const rootRanks = cache.get('wbPlanViewDataModel', 'rootRanks', {
       version: cacheVersion,
     });
     const originalRelationships = cache.get(
-      'wbplanview-datamodel',
+      'wbPlanViewDataModel',
       'originalRelationships',
       { version: cacheVersion }
     );
@@ -518,7 +518,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
       );
 
       dataModelStorage.tables = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'tables',
         tables,
         {
@@ -527,7 +527,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         }
       );
       dataModelStorage.listOfBaseTables = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'listOfBaseTables',
         listOfBaseTables,
         {
@@ -536,7 +536,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         }
       );
       dataModelStorage.ranks = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'ranks',
         ranks,
         {
@@ -545,7 +545,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         }
       );
       dataModelStorage.rootRanks = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'rootRanks',
         rootRanks,
         {
@@ -554,7 +554,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         }
       );
       dataModelStorage.originalRelationships = cache.set(
-        'wbplanview-datamodel',
+        'wbPlanViewDataModel',
         'originalRelationships',
         originalRelationships,
         {

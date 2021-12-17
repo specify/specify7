@@ -642,7 +642,7 @@ const WBView = Backbone.View.extend({
   async fetchSortConfig() {
     const currentCollection = await cache.getCurrentCollectionId();
     const sortConfig = cache.get(
-      'workbench-sort-config',
+      'workBenchSortConfig',
       `${currentCollection}_${this.dataset.id}`
     );
     if (!Array.isArray(sortConfig)) return;
@@ -1024,7 +1024,7 @@ const WBView = Backbone.View.extend({
       })
     );
     cache.set(
-      'workbench-sort-config',
+      'workBenchSortConfig',
       `${currentCollection}_${this.dataset.id}`,
       physicalSortConfig,
       {
@@ -1176,8 +1176,8 @@ const WBView = Backbone.View.extend({
     );
     const cellValueChanged =
       typeof originalCellValue !== 'undefined' &&
-      `${originalCellValue ?? ''}` !==
-        `${this.data[physicalRow][physicalCol] ?? ''}`;
+      (originalCellValue?.toString() ?? '') !==
+      (this.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
 
     return this.cellWasDisambiguated(physicalRow, physicalCol);

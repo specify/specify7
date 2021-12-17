@@ -250,7 +250,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     !action.referrer || action.referrer === state.type
       ? {
           type: 'BaseTableSelectionState',
-          showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables', {
+          showHiddenTables: cache.get('wbPlanViewUi', 'showHiddenTables', {
             defaultValue: true,
           }),
         }
@@ -265,17 +265,20 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       baseTableName: action.baseTableName,
     }),
   }),
-  ToggleHiddenTablesAction: ({ state }) => ({
-    ...state,
-    showHiddenTables: cache.set(
-      'wbplanview-ui',
-      'showHiddenTables',
-      'showHiddenTables' in state ? !state.showHiddenTables : false,
-      {
-        overwrite: true,
-      }
-    ),
-  }),
+  ToggleHiddenTablesAction: ensureState(
+    ['BaseTableSelectionState'],
+    ({ state }) => ({
+      ...state,
+      showHiddenTables: cache.set(
+        'wbPlanViewUi',
+        'showHiddenTables',
+        'showHiddenTables' in state ? !state.showHiddenTables : false,
+        {
+          overwrite: true,
+        }
+      ),
+    })
+  ),
   UseTemplateAction: () => ({
     type: 'TemplateSelectionState',
   }),
@@ -283,7 +286,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   // TemplateSelectionState
   CancelTemplateSelectionAction: () => ({
     type: 'BaseTableSelectionState',
-    showHiddenTables: cache.get('wbplanview-ui', 'showHiddenTables', {
+    showHiddenTables: cache.get('wbPlanViewUi', 'showHiddenTables', {
       defaultValue: true,
     }),
   }),
@@ -324,20 +327,25 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
         },
       };
   }),
-  ToggleMappingViewAction: ({ state, action }) => ({
-    ...mappingState(state),
-    showMappingView: cache.set(
-      'wbplanview-ui',
-      'showMappingView',
-      action.isVisible,
-      {
-        overwrite: true,
-      }
-    ),
-  }),
-  ValidationAction: ({ state }) => validate(mappingState(state)),
-  ClearValidationResultsAction: ({ state }) => ({
-    ...mappingState(state),
+  ToggleMappingViewAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => ({
+      ...state,
+      showMappingView: cache.set(
+        'wbPlanViewUi',
+        'showMappingView',
+        action.isVisible,
+        {
+          overwrite: true,
+        }
+      ),
+    })
+  ),
+  ValidationAction: ensureState(['MappingState'], ({ state }) =>
+    validate(state)
+  ),
+  ClearValidationResultsAction: ensureState(['MappingState'], ({ state }) => ({
+    ...state,
     validationResults: [],
   }),
   ResetMappingsAction: ({ state }) => ({
@@ -422,7 +430,7 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   ToggleHiddenFieldsAction: ({ state }) => ({
     ...mappingState(state),
     showHiddenFields: cache.set(
-      'wbplanview-ui',
+      'wbPlanViewUi',
       'showHiddenFields',
       !mappingState(state).showHiddenFields,
       {

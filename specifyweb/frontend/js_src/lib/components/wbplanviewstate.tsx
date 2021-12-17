@@ -99,10 +99,10 @@ export const getInitialWbPlanViewState = (
 
 export const getDefaultMappingState = (): MappingState => ({
   type: 'MappingState',
-  showHiddenFields: cache.get('wbplanview-ui', 'showHiddenFields', {
+  showHiddenFields: cache.get('wbPlanViewUi', 'showHiddenFields', {
     defaultValue: false,
   }),
-  showMappingView: cache.get('wbplanview-ui', 'showMappingView', {
+  showMappingView: cache.get('wbPlanViewUi', 'showMappingView', {
     defaultValue: true,
   }),
   baseTableName: '',
@@ -205,7 +205,7 @@ export const stateReducer = generateReducer<
 
     if (typeof refObject.current.mappingViewHeight === 'undefined')
       refObject.current.mappingViewHeight = cache.get(
-        'wbplanview-ui',
+        'wbPlanViewUi',
         'mappingViewHeight',
         {
           defaultValue: defaultMappingViewHeight,

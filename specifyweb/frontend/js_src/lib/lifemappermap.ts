@@ -82,7 +82,7 @@ export async function prepareLifemapperProjectionMap(
               stringid: '1,9-determinations,4.taxon.taxonid',
               fieldname: 'taxonid',
               isdisplay: false,
-              startvalue: `${taxon.get('id')}`,
+              startvalue: taxon.get('id').toString(),
               operstart: 1,
               position: 0,
             },

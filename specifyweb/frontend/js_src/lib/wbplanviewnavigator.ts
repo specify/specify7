@@ -408,7 +408,7 @@ export function getTableFromMappingPath({
     baseTableName,
     ...canonicalMappingPath,
   ]);
-  const results = cache.get('wbplanview-navigator-tables', cacheName);
+  const results = cache.get('wbPlanViewNavigatorTables', cacheName);
   if (typeof results === 'string') return results;
 
   const tableName = getMappingLineData({
@@ -419,7 +419,7 @@ export function getTableFromMappingPath({
   if (typeof tableName === 'undefined')
     throw new Error('Unable to extract the table name from mapping path');
 
-  cache.set('wbplanview-navigator-tables', cacheName, tableName);
+  cache.set('wbPlanViewNavigatorTables', cacheName, tableName);
 
   return tableName;
 }

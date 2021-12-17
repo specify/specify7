@@ -13,7 +13,7 @@ import type {
 
 // The types of cached values are defined here
 export type CacheDefinitions = {
-  readonly 'wbplanview-ui': {
+  readonly wbPlanViewUi: {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
     readonly showMappingView: boolean;
@@ -26,7 +26,7 @@ export type CacheDefinitions = {
     readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
     [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
   };
-  readonly 'wbplanview-datamodel': {
+  readonly wbPlanViewDataModel: {
     // Data on the fields in the tables that are included in wbplanview
     readonly tables: DataModelTables;
     // List of base tables to be shown on the base table selection screen
@@ -41,14 +41,14 @@ export type CacheDefinitions = {
      */
     readonly originalRelationships: OriginalRelationships;
   };
-  readonly 'wbplanview-navigator-tables': {
+  readonly wbPlanViewNavigatorTables: {
     readonly // Output of getMappingLineData()
     [key in string]: string;
   };
   readonly workbench: {
     readonly 'search-properties': SearchPreferences;
   };
-  readonly 'workbench-sort-config': {
+  readonly workBenchSortConfig: {
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
   readonly 'sort-config': {
@@ -60,6 +60,6 @@ export type CacheDefinitions = {
 };
 
 export const safeToTrim: RA<keyof CacheDefinitions> = [
-  'wbplanview-datamodel',
-  'wbplanview-navigator-tables',
+  'wbPlanViewDataModel',
+  'wbPlanViewNavigatorTables',
 ];
