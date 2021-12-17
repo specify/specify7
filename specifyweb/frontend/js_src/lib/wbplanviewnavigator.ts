@@ -17,7 +17,7 @@ import type {
   MappingElementProps,
 } from './components/wbplanviewcomponents';
 import type {
-  AutomapperSuggestion,
+  AutoMapperSuggestion,
   MappingPath,
   MappingPathWritable,
   RelationshipType,
@@ -438,9 +438,9 @@ export function getMappingLineData({
   handleChange,
   handleOpen,
   handleClose,
-  handleAutomapperSuggestionSelection,
+  handleAutoMapperSuggestionSelection,
   getMappedFields,
-  automapperSuggestions,
+  autoMapperSuggestions,
   showHiddenFields = false,
   mustMatchPreferences = {},
   columnOptions,
@@ -475,9 +475,9 @@ export function getMappingLineData({
   }) => void;
   readonly handleOpen?: (index: number) => void;
   readonly handleClose?: () => void;
-  readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
+  readonly handleAutoMapperSuggestionSelection?: (suggestion: string) => void;
   readonly getMappedFields?: GetMappedFieldsBind;
-  readonly automapperSuggestions?: RA<AutomapperSuggestion>;
+  readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
   readonly mustMatchPreferences?: IR<boolean>;
   readonly columnOptions?: ColumnOptions;
   readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
@@ -774,8 +774,8 @@ export function getMappingLineData({
                       })
                   : undefined,
               handleClose: handleClose?.bind(undefined, mappingPathPosition),
-              automapperSuggestions,
-              handleAutomapperSuggestionSelection,
+              autoMapperSuggestions,
+              handleAutoMapperSuggestionSelection,
             }
           : {
               isOpen: false,
@@ -815,8 +815,8 @@ export function getMappingLineData({
                       undefined,
                       internalState.mappingLineData.length
                     ),
-                    automapperSuggestions,
-                    handleAutomapperSuggestionSelection,
+                    autoMapperSuggestions,
+                    handleAutoMapperSuggestionSelection,
                   }
                 : {
                     isOpen: false,

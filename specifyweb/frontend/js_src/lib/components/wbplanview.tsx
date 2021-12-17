@@ -169,19 +169,19 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
 
   // Wait for AutoMapper suggestions to fetch
   React.useEffect(() => {
-    if (!('automapperSuggestionsPromise' in state)) return;
+    if (!('autoMapperSuggestionsPromise' in state)) return;
 
-    state.automapperSuggestionsPromise
-      ?.then((automapperSuggestions) =>
+    state.autoMapperSuggestionsPromise
+      ?.then((autoMapperSuggestions) =>
         dispatch({
-          type: 'AutomapperSuggestionsLoadedAction',
-          automapperSuggestions,
+          type: 'AutoMapperSuggestionsLoadedAction',
+          autoMapperSuggestions,
         })
       )
       .catch(console.error);
   }, [
-    'automapperSuggestionsPromise' in state
-      ? state.automapperSuggestionsPromise
+    'autoMapperSuggestionsPromise' in state
+      ? state.autoMapperSuggestionsPromise
       : undefined,
   ]);
 

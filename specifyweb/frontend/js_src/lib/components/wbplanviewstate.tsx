@@ -30,7 +30,7 @@ import {
 } from './wbplanviewcomponents';
 import { Layout } from './wbplanviewheader';
 import type {
-  AutomapperSuggestion,
+  AutoMapperSuggestion,
   MappingPath,
   WbPlanViewMapperBaseProps,
 } from './wbplanviewmapper';
@@ -62,7 +62,7 @@ type TemplateSelectionState = State<'TemplateSelectionState'>;
 export type MappingState = State<
   'MappingState',
   WbPlanViewMapperBaseProps & {
-    automapperSuggestionsPromise?: Promise<RA<AutomapperSuggestion>>;
+    autoMapperSuggestionsPromise?: Promise<RA<AutoMapperSuggestion>>;
     changesMade: boolean;
     mappingsAreValidated: boolean;
     displayMatchingOptionsDialog: boolean;
@@ -421,7 +421,7 @@ export const stateReducer = generateReducer<
           mappingView={state.mappingView}
           validationResults={state.validationResults}
           openSelectElement={state.openSelectElement}
-          automapperSuggestions={state.automapperSuggestions}
+          autoMapperSuggestions={state.autoMapperSuggestions}
           focusedLine={state.focusedLine}
           refObject={refObject}
           readonly={state.props.readonly}
@@ -470,9 +470,9 @@ export const stateReducer = generateReducer<
               line,
             })
           }
-          handleAutomapperSuggestionSelection={(suggestion: string): void =>
+          handleAutoMapperSuggestionSelection={(suggestion: string): void =>
             state.dispatch({
-              type: 'AutomapperSuggestionSelectedAction',
+              type: 'AutoMapperSuggestionSelectedAction',
               suggestion,
             })
           }

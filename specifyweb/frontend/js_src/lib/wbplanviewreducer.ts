@@ -482,6 +482,69 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       return {
         ...mappingState(state),
         mappingView: newMappingPath,
+          state.openSelectElement?.line ?? false
+        ),
+        openSelectElement: undefined,
+        autoMapperSuggestionsPromise: undefined,
+        autoMapperSuggestions: undefined,
+        changesMade: true,
+        mappingsAreValidated: false,
+      };
+    }
+  ),
+  AutoMapperSuggestionsLoadedAction: ({ state, action }) =>
+    state.type === 'MappingState'
+      ? {
+          ...state,
+          autoMapperSuggestions: action.autoMapperSuggestions,
+          autoMapperSuggestionsPromise: undefined,
+        }
+      : state,
+  AutoMapperSuggestionSelectedAction: ensureState(
+    ['MappingState'],
+    ({ state, action: { suggestion } }) => ({
+      ...state,
+      lines: modifyLine(state, state.openSelectElement!.line, {
+        mappingPath:
+          state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath,
+      }),
+      openSelectElement: undefined,
+      autoMapperSuggestionsPromise: undefined,
+      autoMapperSuggestions: undefined,
+      changesMade: true,
+      mappingsAreValidated: false,
+    })
+  ),
+  ValidationResultClickAction: ensureState(
+    ['MappingState'],
+    ({ state, action: { mappingPath } }) => ({
+      ...state,
+      mappingView: mappingPath,
+    })
+  ),
+  OpenMatchingLogicDialogAction: ensureState(['MappingState'], ({ state }) => ({
+    ...state,
+    displayMatchingOptionsDialog: true,
+    mustMatchPreferences: getMustMatchTables(state),
+  })),
+  CloseMatchingLogicDialogAction: ensureState(
+    ['MappingState'],
+    ({ state }) => ({
+      ...state,
+      displayMatchingOptionsDialog: false,
+    })
+  ),
+  MustMatchPrefChangeAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => {
+      const newState = {
+        ...state,
+        changesMade: true,
+        mustMatchPreferences: {
+          ...state.mustMatchPreferences,
+          [action.tableName]: action.mustMatch,
+        },
+>>>>>>> 25c8762c (Make spelling of "AutoMapper" consistent (camel case))
       };
 
     return {

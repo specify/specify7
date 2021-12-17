@@ -19,7 +19,7 @@ import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
 import type { IR, R, RA } from '../types';
 import type {
-  AutomapperSuggestion,
+  AutoMapperSuggestion,
   MappingType,
   SelectElementPosition,
 } from './wbplanviewmapper';
@@ -55,10 +55,10 @@ export type MappingElementProps = {
 } & (
   | (Omit<
       CustomSelectElementPropsOpenBase,
-      'onFocusAutomapper' | 'automapperSuggestions'
+      'onFocusAutoMapper' | 'autoMapperSuggestions'
     > & {
-      readonly automapperSuggestions?: RA<AutomapperSuggestion>;
-      readonly handleAutomapperSuggestionSelection?: (
+      readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
+      readonly handleAutoMapperSuggestionSelection?: (
         suggestion: string
       ) => void;
     })
@@ -306,25 +306,25 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
     <CustomSelectElement
       {...props}
       customSelectOptionGroups={customSelectOptionGroups}
-      automapperSuggestions={
-        typeof props.automapperSuggestions !== 'undefined' &&
-        props.automapperSuggestions.length > 0 &&
+      autoMapperSuggestions={
+        typeof props.autoMapperSuggestions !== 'undefined' &&
+        props.autoMapperSuggestions.length > 0 &&
         typeof props.handleAutomapperSuggestionSelection !== 'undefined' ? (
           <SuggestionBox
             onSelect={(selection): void =>
-              props.handleAutomapperSuggestionSelection?.(selection)
+              props.handleAutoMapperSuggestionSelection?.(selection)
             }
             selectOptionsData={Object.fromEntries(
-              props.automapperSuggestions.map((automapperSuggestion, index) => [
+              props.autoMapperSuggestions.map((autoMapperSuggestion, index) => [
                 /*
-                 * Since "0" is reserved for `no value`, we need to
-                 * start counting from 1
+                 * Start counting from 1 since "0" is reserved for
+                 * `no value`
                  */
                 index + 1,
                 {
                   optionLabel: (
                     <MappingPathComponent
-                      mappingLineData={automapperSuggestion.mappingLineData}
+                      mappingLineData={autoMapperSuggestion.mappingLineData}
                     />
                   ),
                 },

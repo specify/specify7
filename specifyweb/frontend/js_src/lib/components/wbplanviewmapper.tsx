@@ -29,11 +29,11 @@ import {
 
 /*
  * Scope is used to differentiate between mapper definitions that should
- * be used by the automapper and suggestion boxes
+ * be used by the autoMapper and suggestion boxes
  */
-export type AutomapperScope =
+export type AutoMapperScope =
   // Used when selecting a base table
-  | 'automapper'
+  | 'autoMapper'
   // Suggestion boxes - used when opening a picklist
   | 'suggestion';
 export type MappingPath = RA<string>;
@@ -67,7 +67,7 @@ export interface MappingLine {
   readonly isFocused?: boolean;
 }
 
-export interface AutomapperSuggestion extends MappingPathProps {
+export interface AutoMapperSuggestion extends MappingPathProps {
   readonly mappingPath: MappingPath;
 }
 
@@ -85,7 +85,7 @@ export type WbPlanViewMapperBaseProps = {
   readonly lines: RA<MappingLine>;
   readonly openSelectElement?: SelectElementPosition;
   readonly focusedLine: number;
-  readonly automapperSuggestions?: RA<AutomapperSuggestion>;
+  readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
   readonly mustMatchPreferences: IR<boolean>;
 };
 
@@ -111,7 +111,7 @@ export default function WbPlanViewMapper(
       readonly isDoubleClick: boolean;
     }) => void;
     readonly handleClearMapping: (index: number) => void;
-    readonly handleAutomapperSuggestionSelection: (suggestion: string) => void;
+    readonly handleAutoMapperSuggestionSelection: (suggestion: string) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleDismissValidation: () => void;
     readonly handleMappingViewResize: (height: number) => void;
@@ -189,24 +189,24 @@ export default function WbPlanViewMapper(
   // Reposition suggestions box if it doesn't fit
   function repositionSuggestionBox(): void {
     if (
-      typeof props.automapperSuggestions === 'undefined' ||
-      props.automapperSuggestions.length === 0
+      typeof props.autoMapperSuggestions === 'undefined' ||
+      props.autoMapperSuggestions.length === 0
     )
       return;
 
     if (listOfMappings.current === null) return;
 
-    const automapperSuggestions = listOfMappings.current.getElementsByClassName(
+    const autoMapperSuggestions = listOfMappings.current.getElementsByClassName(
       'custom-select-suggestion-list'
     )[0] as HTMLElement | undefined;
 
-    if (!automapperSuggestions) return;
+    if (!autoMapperSuggestions) return;
 
-    const customSelectElement = automapperSuggestions.parentElement;
+    const customSelectElement = autoMapperSuggestions.parentElement;
 
     if (!customSelectElement) return;
 
-    const automapperSuggestionsHeight = automapperSuggestions.clientHeight;
+    const autoMapperSuggestionsHeight = autoMapperSuggestions.clientHeight;
 
     const listOfMappingsPosition = listOfMappings.current.offsetTop;
     const currentScrollTop = listOfMappings.current.scrollTop;
@@ -214,30 +214,30 @@ export default function WbPlanViewMapper(
 
     // Suggestions list fits on the screen. nothing to do
     if (
-      picklistPosition - listOfMappingsPosition - automapperSuggestionsHeight >=
+      picklistPosition - listOfMappingsPosition - autoMapperSuggestionsHeight >=
       0
     )
       return;
 
-    if (!automapperSuggestions.classList.contains('controlled'))
-      automapperSuggestions.classList.add('controlled');
+    if (!autoMapperSuggestions.classList.contains('controlled'))
+      autoMapperSuggestions.classList.add('controlled');
 
     const suggestionsListPosition =
-      picklistPosition - automapperSuggestionsHeight - currentScrollTop;
+      picklistPosition - autoMapperSuggestionsHeight - currentScrollTop;
 
     const scrollPosition =
       picklistPosition - currentScrollTop - listOfMappingsPosition;
 
     // Hide suggestions box once its parent picklist becomes hidden
-    automapperSuggestions.style.visibility =
+    autoMapperSuggestions.style.visibility =
       scrollPosition > 0 ? 'visible' : 'hidden';
 
     if (scrollPosition > 0)
-      automapperSuggestions.style.top = `${suggestionsListPosition}px`;
+      autoMapperSuggestions.style.top = `${suggestionsListPosition}px`;
   }
 
   React.useEffect(repositionSuggestionBox, [
-    props.automapperSuggestions,
+    props.autoMapperSuggestions,
     listOfMappings,
   ]);
 
@@ -332,9 +332,9 @@ export default function WbPlanViewMapper(
                     props.handleChange({ line: index, ...payload }),
               handleOpen: props.handleOpen.bind(undefined, index),
               handleClose: props.handleClose,
-              handleAutomapperSuggestionSelection:
+              handleAutoMapperSuggestionSelection:
                 (!props.readonly &&
-                  props.handleAutomapperSuggestionSelection) ||
+                  props.handleAutoMapperSuggestionSelection) ||
                 undefined,
               getMappedFields: getMappedFieldsBind,
               openSelectElement:
@@ -342,8 +342,8 @@ export default function WbPlanViewMapper(
                   ? props.openSelectElement
                   : undefined,
               showHiddenFields: props.showHiddenFields,
-              automapperSuggestions:
-                (!props.readonly && props.automapperSuggestions) || [],
+              autoMapperSuggestions:
+                (!props.readonly && props.autoMapperSuggestions) || [],
               mustMatchPreferences: props.mustMatchPreferences,
               columnOptions,
               mappingOptionsMenuGenerator: () => ({

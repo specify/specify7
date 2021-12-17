@@ -1,5 +1,5 @@
 import type { AutoMapperResults } from './automapper';
-import Automapper from './automapper';
+import AutoMapper from './automapper';
 import type { IR, RA } from './types';
 import type { MappingLine } from './components/wbplanviewmapper';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
@@ -21,17 +21,17 @@ export const columnOptionsAreDefault = (
 
 export function getLinesFromHeaders({
   headers = [],
-  runAutomapper,
+  runAutoMapper,
   baseTableName = '',
 }: {
   readonly headers?: RA<string>;
 } & (
   | {
-      readonly runAutomapper: true;
+      readonly runAutoMapper: true;
       readonly baseTableName: string;
     }
   | {
-      readonly runAutomapper: false;
+      readonly runAutoMapper: false;
       readonly baseTableName?: string;
     }
 )): RA<MappingLine> {
@@ -44,21 +44,21 @@ export function getLinesFromHeaders({
     })
   );
 
-  if (!runAutomapper || typeof baseTableName === 'undefined') return lines;
+  if (!runAutoMapper || typeof baseTableName === 'undefined') return lines;
 
-  const automapperResults: AutoMapperResults = new Automapper({
+  const autoMapperResults: AutoMapperResults = new AutoMapper({
     headers,
     baseTable: baseTableName,
-    scope: 'automapper',
+    scope: 'autoMapper',
   }).map();
 
   return lines.map((line) => {
     const { headerName } = line;
-    const automapperMappingPaths = automapperResults[headerName];
-    return typeof automapperMappingPaths === 'undefined'
+    const autoMapperMappingPaths = autoMapperResults[headerName];
+    return typeof autoMapperMappingPaths === 'undefined'
       ? line
       : {
-          mappingPath: automapperMappingPaths[0],
+          mappingPath: autoMapperMappingPaths[0],
           mappingType: 'existingHeader',
           headerName,
           columnOptions: defaultColumnOptions,
@@ -97,7 +97,7 @@ export function getLinesFromUploadPlan(
       [
         ...getLinesFromHeaders({
           headers,
-          runAutomapper: false,
+          runAutoMapper: false,
         }),
       ]
     );
