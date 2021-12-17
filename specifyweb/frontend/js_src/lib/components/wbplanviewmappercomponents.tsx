@@ -4,7 +4,7 @@ import wbText from '../localization/workbench';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { IR, RA } from './wbplanview';
+import type { IR, RA } from '../types';
 import { MappingPathComponent } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
 

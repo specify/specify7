@@ -17,7 +17,8 @@ import { DateElement } from '../common';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import type { Dataset, DatasetBrief, RA } from '../wbplanview';
+import type { Dataset, DatasetBrief } from '../wbplanview';
+import type { RA } from '../../types';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>('/api/workbench/dataset/', {

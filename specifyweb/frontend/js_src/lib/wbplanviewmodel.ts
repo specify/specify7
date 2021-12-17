@@ -6,7 +6,7 @@
  *
  */
 
-import type { IR } from './components/wbplanview';
+import type { IR } from './types';
 import type {
   DataModelListOfTables,
   DataModelRanks,

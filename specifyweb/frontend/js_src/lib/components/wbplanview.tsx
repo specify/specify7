@@ -11,6 +11,7 @@ import type Backbone from 'backbone';
 import React from 'react';
 
 import type { JqueryPromise } from '../legacytypes';
+import type { RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import type { OpenMappingScreenAction } from '../wbplanviewreducer';
 import { reducer } from '../wbplanviewreducer';
@@ -79,14 +80,6 @@ export type SpecifyResource = Backbone.Model & {
   readonly Resource: new () => SpecifyResource;
 };
 
-// Record
-export type R<V> = Record<string, V>;
-// Immutable record
-export type IR<V> = Readonly<Record<string, V>>;
-// Immutable record of any type
-export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
-// Immutable Array
-export type RA<V> = readonly V[];
 
 // See: https://stackoverflow.com/a/30741722/8584605
 export const handlePromiseReject = (error: unknown) =>

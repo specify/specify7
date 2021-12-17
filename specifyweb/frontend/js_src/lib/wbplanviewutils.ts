@@ -2,11 +2,10 @@ import ajax from './ajax';
 import Automapper from './automapper';
 import type {
   Dataset,
-  IR,
   PublicWbPlanViewProps,
-  RA,
   WbPlanViewWrapperProps,
 } from './components/wbplanview';
+import type {IR} froom './types';
 import type {
   AutomapperSuggestion,
   FullMappingPath,
@@ -18,6 +17,7 @@ import type { LoadingState, MappingState } from './components/wbplanviewstate';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
 import schema from './schema';
+import type { IR, RA } from './types';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,

@@ -1,6 +1,6 @@
 import type { CacheDefinitions } from './cachedefinitions';
 import { safeToTrim } from './cachedefinitions';
-import type { R, RA } from './components/wbplanview';
+import type { R, RA } from './types';
 
 // Determines how persistent bucket's storage would be
 export type BucketType =

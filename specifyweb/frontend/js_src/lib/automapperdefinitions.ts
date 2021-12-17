@@ -7,7 +7,7 @@
  *
  */
 
-import type { IR, RA, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './types';
 import type {
   AutomapperScope,
   MappingPath,

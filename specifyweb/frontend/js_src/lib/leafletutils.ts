@@ -4,7 +4,7 @@
  *
  */
 
-import type { IR, RA } from './components/wbplanview';
+import type { IR, RA } from './types';
 import { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';

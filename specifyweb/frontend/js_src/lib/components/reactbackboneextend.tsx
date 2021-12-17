@@ -12,7 +12,7 @@ import ReactDOM from 'react-dom';
 
 import Backbone from '../backbone';
 import ErrorBoundary from './errorboundary';
-import type { IR } from './wbplanview';
+import type { IR } from '../types';
 
 type ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS> = {
   readonly el: HTMLElement;

@@ -7,7 +7,7 @@ import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import * as cache from './cache';
-import type { IR, RA, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './types';
 import {
   leafletLayersEndpoint,
   leafletTileServers,

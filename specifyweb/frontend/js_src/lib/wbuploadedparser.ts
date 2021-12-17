@@ -1,6 +1,6 @@
 import type { State } from 'typesafe-reducer';
 
-import type { IR, RA, RR } from './components/wbplanview';
+import type { IR, RA, RR } from './types';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates

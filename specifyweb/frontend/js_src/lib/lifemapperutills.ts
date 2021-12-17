@@ -1,4 +1,4 @@
-import type { RR } from './components/wbplanview';
+import type { RR } from './types';
 import { snFrontendServer, snServer } from './lifemapperconfig';
 import lifemapperText from './localization/lifemapper';
 

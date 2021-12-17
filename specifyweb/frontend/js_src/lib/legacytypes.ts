@@ -1,5 +1,5 @@
-import type { IR, RA, SpecifyResource } from './components/wbplanview';
-import type { RelationshipType } from './components/wbplanviewmapper';
+import type { SpecifyResource } from './components/wbplanview';
+import type { IR, RA } from './types';
 
 export interface SchemaModelTableField {
   readonly name: string;

@@ -17,8 +17,12 @@ import type {
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { IR, R, RA } from './wbplanview';
-import type { AutomapperSuggestion, MappingType } from './wbplanviewmapper';
+import type { IR, R, RA } from '../types';
+import type {
+  AutomapperSuggestion,
+  MappingType,
+  SelectElementPosition,
+} from './wbplanviewmapper';
 
 export interface HtmlGeneratorFieldData {
   readonly optionLabel: string | JSX.Element;

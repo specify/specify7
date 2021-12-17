@@ -1,5 +1,7 @@
 import '../../css/wbimport.css';
 
+import $ from 'jquery';
+
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
@@ -11,7 +13,8 @@ import navigation from '../navigation';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
 import createBackboneView from './reactbackboneextend';
-import type { Dataset, IR } from './wbplanview';
+import type { Dataset } from './wbplanview';
+import type { IR } from '../../types';
 
 const PREVIEW_SIZE = 100;
 

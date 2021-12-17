@@ -7,7 +7,7 @@ import wbText from '../localization/workbench';
 import dataModelStorage from '../wbplanviewmodel';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
-import type { IR } from './wbplanview';
+import type { IR } from '../types';
 
 type Props = {
   readonly recordCounts: IR<number>;

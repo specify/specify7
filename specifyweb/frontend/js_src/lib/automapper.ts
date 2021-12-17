@@ -11,7 +11,7 @@ import { generateDispatch } from 'typesafe-reducer';
 
 import type { Options, TableSynonym } from './automapperdefinitions';
 import AutoMapperDefinitions from './automapperdefinitions';
-import type { IR, R, RA } from './components/wbplanview';
+import type { IR, R, RA } from './types';
 import type {
   AutomapperScope,
   MappingPath,

@@ -1,4 +1,4 @@
-import type { IR, R, RA, RR } from './components/wbplanview';
+import type { IR, R, RA, RR } from './types';
 import csrfToken from './csrftoken';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';

@@ -7,8 +7,11 @@ import dataModelStorage from '../wbplanviewmodel';
 import { R } from './wbplanview';
 
 const MAX_HUE = 360;
+
 const getHue = spanNumber(
+  // eslint-disable-next-line unicorn/prefer-code-point
   'a'.charCodeAt(0) * 2,
+  // eslint-disable-next-line unicorn/prefer-code-point
   'z'.charCodeAt(0) * 2,
   0,
   MAX_HUE
@@ -37,6 +40,7 @@ export function TableIcon({
       />
     );
 
+  // eslint-disable-next-line unicorn/prefer-code-point
   const colorHue = getHue(tableName.charCodeAt(0) + tableName.charCodeAt(0));
   const color = `hsl(${colorHue}, 70%, 50%)`;
   return (
@@ -52,7 +56,7 @@ export function TableIcon({
   );
 }
 
-export const TableIconUndefined = (
+export const tableIconUndefined = (
   <span
     className="table-icon table-icon-undefined"
     aria-label={commonText('unmapped')}
@@ -62,7 +66,7 @@ export const TableIconUndefined = (
   </span>
 );
 
-export const TableIconSelected = (
+export const tableIconSelected = (
   <span
     className="table-icon table-icon-selected"
     aria-label={commonText('mapped')}
@@ -72,7 +76,7 @@ export const TableIconSelected = (
   </span>
 );
 
-export const TableIconEmpty = (
+export const tableIconEmpty = (
   <span className="table-icon table-icon-empty" aria-hidden={true} />
 );
 

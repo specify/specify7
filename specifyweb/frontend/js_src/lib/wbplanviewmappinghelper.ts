@@ -4,8 +4,8 @@
  *
  */
 
-import { R } from './components/wbplanview';
-import type { RA } from './components/wbplanview';
+import type { R } from './types';
+import type { RA } from './types';
 import type {
   FullMappingPath,
   MappingPath,

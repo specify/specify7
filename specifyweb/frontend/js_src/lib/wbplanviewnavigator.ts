@@ -11,7 +11,7 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
-import type { IR, R, RA } from './components/wbplanview';
+import type { IR, R, RA } from './types';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,

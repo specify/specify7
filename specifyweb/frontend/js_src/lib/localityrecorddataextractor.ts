@@ -1,4 +1,4 @@
-import type { RA } from './components/wbplanview';
+import type { RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import dataObjectFormatters from './dataobjformatters';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';

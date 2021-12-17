@@ -15,7 +15,7 @@ import lifemapperText from '../localization/lifemapper';
 import type { MainState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
 import type { Props, ComponentProps } from './lifemapperwrapper';
-import type { IR, RA } from './wbplanview';
+import type { IR, RA } from '../types';
 
 type FullAggregatorResponse = {
   readonly records: RA<{

@@ -20,7 +20,8 @@ import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
 import { TableIcon } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
-import type { RA, WbPlanViewProps } from './wbplanview';
+import type { WbPlanViewProps } from './wbplanview';
+import type { RA } from '../types';
 import {
   ButtonWithConfirmation,
   ListOfBaseTables,
