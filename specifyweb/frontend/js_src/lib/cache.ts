@@ -56,7 +56,7 @@ function commitToStorage(): void {
         bucketData.type === 'localStorage' &&
         Object.keys(bucketData.records).length > 0
     )
-  ).map(([bucketName]) => commitBucketToStorage(bucketName));
+  ).forEach(([bucketName]) => commitBucketToStorage(bucketName));
 }
 
 /* Commits a single cache bucket to localStorage */
