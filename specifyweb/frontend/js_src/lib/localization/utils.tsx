@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IR, RA } from '../components/wbplanview';
+import type { IR, RA } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 
 type Value = string | JSX.Element;

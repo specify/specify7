@@ -1,4 +1,4 @@
-import type { IR, RA } from '../components/wbplanview';
+import type { IR, RA } from '../types';
 import type { MappingLine } from '../components/wbplanviewmapper';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';

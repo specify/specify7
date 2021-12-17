@@ -1,10 +1,4 @@
-import $ from 'jquery';
-
 import Automapper from './automapper';
-import type {
-  PublicWbPlanViewProps,
-  WbPlanViewWrapperProps,
-} from './components/wbplanview';
 import type {
   AutomapperSuggestion,
   FullMappingPath,
@@ -12,12 +6,10 @@ import type {
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import type { LoadingState, MappingState } from './components/wbplanviewstate';
-import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
+import type { MappingState } from './components/wbplanviewstate';
 import navigation from './navigation';
 import schema from './schema';
 import type { IR, RA } from './types';
-import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,
   formatReferenceItem,
@@ -38,79 +30,8 @@ import {
   traverseTree,
 } from './wbplanviewtreehelper';
 
-export const goBack = (props: PublicWbPlanViewProps): void =>
-  navigation.go(`/workbench/${props.dataset.id}/`);
-
-export function savePlan(
-  props: WbPlanViewWrapperProps,
-  state: MappingState,
-  ignoreValidation = false
-): LoadingState | MappingState {
-  const validationResultsState = validate(state);
-  if (!ignoreValidation && validationResultsState.validationResults.length > 0)
-    return validationResultsState;
-
-  const renamedMappedLines = renameNewlyCreatedHeaders(
-    state.baseTableName,
-    props.dataset.columns,
-    state.lines
-  );
-
-  const newlyAddedHeaders = renamedMappedLines
-    .filter(
-      ({ headerName, mappingPath }) =>
-        mappingPath.length > 0 &&
-        mappingPath[0] !== '0' &&
-        !props.dataset.columns.includes(headerName)
-    )
-    .map(({ headerName }) => headerName);
-
-  const uploadPlan = mappingsTreeToUploadPlan(
-    state.baseTableName,
-    getMappingsTree(renamedMappedLines, true),
-    getMustMatchTables(state)
-  );
-
-  const dataSetRequestUrl = `/api/workbench/dataset/${props.dataset.id}/`;
-
-  void $.ajax(dataSetRequestUrl, {
-    type: 'PUT',
-    data: JSON.stringify({
-      uploadplan: uploadPlan,
-    }),
-    dataType: 'json',
-    processData: false,
-  }).done(() => {
-    if (state.changesMade) props.removeUnloadProtect();
-
-    if (newlyAddedHeaders.length > 0)
-      $.ajax(dataSetRequestUrl, {
-        type: 'GET',
-      }).done(({ columns, visualorder }) => {
-        let newVisualOrder;
-        newVisualOrder =
-          visualorder === null
-            ? Object.keys(props.dataset.columns)
-            : visualorder;
-
-        newlyAddedHeaders.forEach((headerName) =>
-          newVisualOrder.push(columns.indexOf(headerName))
-        );
-
-        $.ajax(dataSetRequestUrl, {
-          type: 'PUT',
-          data: JSON.stringify({
-            visualorder: newVisualOrder,
-          }),
-          dataType: 'json',
-          processData: false,
-        }).done(() => goBack(props));
-      });
-    else goBack(props);
-  });
-
-  return state;
-}
+export const goBack = (dataSetId: number): void =>
+  navigation.go(`/workbench/${dataSetId}/`);
 
 /* Validates the current mapping and shows error messages if needed */
 export function validate(state: MappingState): MappingState {
@@ -399,36 +320,31 @@ export async function getAutomapperSuggestions({
     pathOffset = 1;
   }
 
-  const allAutomapperResults = Object.entries(
-    new Automapper({
-      headers: [lines[line].headerName],
-      baseTable: baseTableName,
-      startingTable:
-        mappingLineData.length === 0
-          ? baseTableName
-          : mappingLineData[mappingLineData.length - 1].tableName,
-      path: baseMappingPath,
-      pathOffset,
-      scope: 'suggestion',
-      pathIsMapped: pathIsMapped.bind(undefined, lines),
-    }).map()
-  );
+  const automapperResults = new Automapper({
+    headers: [lines[line].headerName],
+    baseTable: baseTableName,
+    startingTable:
+      mappingLineData.length === 0
+        ? baseTableName
+        : mappingLineData[mappingLineData.length - 1].tableName,
+    path: baseMappingPath,
+    pathOffset,
+    scope: 'suggestion',
+    pathIsMapped: pathIsMapped.bind(undefined, lines),
+  }).map()[lines[line].headerName];
 
-  if (allAutomapperResults.length === 0) return [];
+  if (typeof automapperResults === 'undefined') return [];
 
-  let automapperResults = allAutomapperResults[0][1];
-
-  if (automapperResults.length > MAX_SUGGESTIONS_COUNT)
-    automapperResults = automapperResults.slice(0, 3);
-
-  return automapperResults.map((automapperResult) => ({
-    mappingPath: automapperResult,
-    mappingLineData: getMappingLineData({
-      baseTableName,
+  return automapperResults
+    .slice(0, MAX_SUGGESTIONS_COUNT)
+    .map((automapperResult) => ({
       mappingPath: automapperResult,
-      iterate: true,
-      customSelectType: 'SUGGESTION_LINE_LIST',
-      getMappedFields: getMappedFields.bind(undefined, lines),
-    }).slice(baseMappingPath.length - pathOffset),
-  }));
+      mappingLineData: getMappingLineData({
+        baseTableName,
+        mappingPath: automapperResult,
+        iterate: true,
+        customSelectType: 'SUGGESTION_LINE_LIST',
+        getMappedFields: getMappedFields.bind(undefined, lines),
+      }).slice(baseMappingPath.length - pathOffset),
+    }));
 }

@@ -1,4 +1,4 @@
-import type { RA } from '../components/wbplanview';
+import type { RA } from '../types';
 import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file

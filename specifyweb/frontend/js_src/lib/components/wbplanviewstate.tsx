@@ -139,7 +139,7 @@ export const stateReducer = generateReducer<
         height: 400,
         close: (event, ui): void =>
           typeof event !== 'undefined' && typeof ui === 'undefined'
-            ? goBack(state.props)
+            ? goBack(state.props.dataset.id)
             : undefined,
         buttons: [
           {
@@ -384,7 +384,7 @@ export const stateReducer = generateReducer<
                     state.dispatch({
                       type: 'ClearValidationResultsAction',
                     });
-                    goBack(state.props);
+                    goBack(state.props.dataset.id);
                   }}
                 >
                   {state.props.readonly

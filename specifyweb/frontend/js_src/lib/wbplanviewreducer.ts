@@ -32,7 +32,6 @@ import {
   getMustMatchTables,
   mappingPathIsComplete,
   mutateMappingPath,
-  savePlan,
   validate,
 } from './wbplanviewutils';
 
@@ -306,9 +305,23 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
 
     return newState;
   },
-  SavePlanAction: ensureState(['MappingState'], ({ state, action }) =>
-    savePlan(action, state, action.ignoreValidation)
-  ),
+  SavePlanAction: ensureState(['MappingState'], ({ state, action }) => {
+    const validationResultsState = validate(state);
+    if (
+      !action.ignoreValidation &&
+      validationResultsState.validationResults.length > 0
+    )
+      return validationResultsState;
+    else
+      return {
+        type: 'LoadingState',
+        loadingState: {
+          type: 'SavePlanState',
+          state,
+          props: action,
+        },
+      };
+  }),
   ToggleMappingViewAction: ensureState(
     ['MappingState'],
     ({ state, action }) => ({
