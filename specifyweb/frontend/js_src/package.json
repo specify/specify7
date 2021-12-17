@@ -52,6 +52,7 @@
     "@maxxxxxdlp/prettier-config": "^1.0.3",
     "@maxxxxxdlp/stylelint-config": "^1.0.0",
     "@rushstack/eslint-patch": "^1.1.0",
+    "@stylelint/postcss-css-in-js": "^0.37.2",
     "@types/backbone": "^1.4.11",
     "@types/jquery": "~3.5.4",
     "@types/jqueryui": "~1.11.28",
