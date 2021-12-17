@@ -1,4 +1,4 @@
-import type { IR, R, RA } from './components/wbplanview';
+import type { IR, R, RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';

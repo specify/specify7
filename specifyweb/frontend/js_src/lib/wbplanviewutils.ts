@@ -2,9 +2,7 @@ import $ from 'jquery';
 
 import Automapper from './automapper';
 import type {
-  IR,
   PublicWbPlanViewProps,
-  RA,
   WbPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
@@ -18,6 +16,7 @@ import type { LoadingState, MappingState } from './components/wbplanviewstate';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import navigation from './navigation';
 import schema from './schema';
+import type { IR, RA } from './types';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,

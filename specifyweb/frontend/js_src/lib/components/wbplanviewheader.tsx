@@ -2,7 +2,7 @@ import '../../css/theme.css';
 
 import React from 'react';
 
-import type { IR } from './wbplanview';
+import type { IR } from '../types';
 import type { WbPlanViewStates } from './wbplanviewstate';
 
 export function WbPlanViewHeader({

@@ -12,11 +12,12 @@ import { DataSetMeta } from '../datasetmeta';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import navigation from '../navigation';
+import type { RA } from '../types';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { Dataset, DatasetBrief, RA } from './wbplanview';
+import type { Dataset, DatasetBrief } from './wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
   $.ajax('/api/workbench/dataset/', {

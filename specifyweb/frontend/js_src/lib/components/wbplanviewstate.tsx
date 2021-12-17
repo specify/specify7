@@ -21,7 +21,7 @@ import { getRefMappingState } from '../wbplanviewrefreducer';
 import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
 import { TableIcon } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
-import type { RA, WbPlanViewProps } from './wbplanview';
+import type { WbPlanViewProps } from './wbplanview';
 import {
   ButtonWithConfirmation,
   ListOfBaseTables,

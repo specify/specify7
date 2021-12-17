@@ -4,7 +4,6 @@ import { generateReducer } from 'typesafe-reducer';
 import * as cache from './cache';
 import type {
   PublicWbPlanViewProps,
-  RA,
   WbPlanViewWrapperProps,
 } from './components/wbplanview';
 import type {
@@ -22,6 +21,7 @@ import {
   mappingState,
 } from './components/wbplanviewstate';
 import wbText from './localization/workbench';
+import type { RA } from './types';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import { uniquifyHeaders } from './wbplanviewheaderhelper';
 import {

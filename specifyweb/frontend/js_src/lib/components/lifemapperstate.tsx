@@ -6,7 +6,7 @@ import { SN_SERVICES } from '../lifemapperconfig';
 import type { Actions, MapInfo } from '../lifemapperreducer';
 import { Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
-import type { IR } from './wbplanview';
+import type { IR } from '../types';
 
 export type MainState = State<
   'MainState',

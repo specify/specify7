@@ -6,7 +6,7 @@
  *
  */
 
-import type { IR, R } from './components/wbplanview';
+import type { IR, R } from './types';
 import type {
   ColumnDef,
   TreeRecordVariety,

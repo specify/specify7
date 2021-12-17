@@ -17,7 +17,7 @@ import type {
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { IR, RA } from './wbplanview';
+import type { IR, RA } from '../types';
 import type {
   AutomapperSuggestion,
   MappingType,

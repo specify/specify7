@@ -10,6 +10,7 @@ import '../../css/wbplanview.css';
 import React from 'react';
 
 import type { JqueryPromise } from '../legacytypes';
+import type { RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import type { OpenMappingScreenAction } from '../wbplanviewreducer';
 import { reducer } from '../wbplanviewreducer';
@@ -74,15 +75,6 @@ export interface SpecifyResource {
   readonly set: (query: string, value: any) => void;
   readonly save: () => void;
 }
-
-// Record
-export type R<V> = Record<string, V>;
-// Immutable record
-export type IR<V> = Readonly<Record<string, V>>;
-// Immutable record of any type
-export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
-// Immutable Array
-export type RA<V> = readonly V[];
 
 export interface WbPlanViewProps
   extends WbPlanViewWrapperProps,

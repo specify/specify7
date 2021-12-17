@@ -282,10 +282,7 @@ export default function (): void {
     'WbPlanViewLinesGetter.getLinesFromUploadPlan',
     [
       [
-        [
-          uploadPlan1.headers,
-          (uploadPlan1.uploadPlan as unknown) as UploadPlan,
-        ],
+        [uploadPlan1.headers, uploadPlan1.uploadPlan as unknown as UploadPlan],
         wbPlanViewLines1 as {
           readonly baseTableName: string;
           readonly lines: RA<MappingLine>;

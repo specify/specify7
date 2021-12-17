@@ -17,7 +17,7 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingActions } from '../wbplanviewreducer';
 import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
-import type { IR, RA } from './wbplanview';
+import type { IR, RA } from '../types';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingLineComponent } from './wbplanviewcomponents';
 import {

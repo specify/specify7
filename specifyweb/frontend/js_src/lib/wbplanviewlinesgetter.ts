@@ -1,6 +1,6 @@
 import type { AutoMapperResults } from './automapper';
 import Automapper from './automapper';
-import type { IR, RA } from './components/wbplanview';
+import type { IR, RA } from './types';
 import type { MappingLine } from './components/wbplanviewmapper';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';

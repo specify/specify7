@@ -7,7 +7,7 @@
  */
 
 import * as cache from './cache';
-import type { IR, R, RA } from './components/wbplanview';
+import type { IR, R, RA } from './types';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import domain from './domain';
 import type {

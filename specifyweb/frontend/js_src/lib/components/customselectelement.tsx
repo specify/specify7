@@ -13,11 +13,11 @@ import React from 'react';
 import { upperToKebab } from '../wbplanviewhelper';
 import {
   TableIcon,
-  TableIconEmpty,
-  TableIconSelected,
-  TableIconUndefined,
+  tableIconEmpty,
+  tableIconSelected,
+  tableIconUndefined,
 } from './common';
-import type { IR, R, RA } from './wbplanview';
+import type { IR, R, RA } from '../types';
 
 export type CustomSelectType =
   /*
@@ -185,9 +185,9 @@ export function Icon({
   tableName = '',
   optionLabel = '0',
 }: CustomSelectElementIconProps): JSX.Element {
-  if (optionLabel === '0') return TableIconUndefined;
-  if (!isRelationship && (isPreview || !isEnabled)) return TableIconSelected;
-  else if (!isRelationship || tableName === '') return TableIconEmpty;
+  if (optionLabel === '0') return tableIconUndefined;
+  if (!isRelationship && (isPreview || !isEnabled)) return tableIconSelected;
+  else if (!isRelationship || tableName === '') return tableIconEmpty;
   else return <TableIcon tableName={tableName} />;
 }
 

@@ -12,7 +12,7 @@ import ReactDOM from 'react-dom';
 import Backbone from '../backbone';
 import app from '../specifyapp.js';
 import ErrorBoundary from './errorboundary';
-import type { IR } from './wbplanview';
+import type { IR } from '../types';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
   el: HTMLElement;

@@ -1,7 +1,7 @@
 import type hot from 'handsontable';
 
 import type { SearchPreferences } from './components/wbadvancedsearch';
-import type { R, RA } from './components/wbplanview';
+import type { R, RA } from './types';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type {
   DataModelListOfTables,

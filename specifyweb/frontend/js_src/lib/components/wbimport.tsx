@@ -1,18 +1,17 @@
 import '../../css/theme.css';
 
+import $ from 'jquery';
+
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 import wbText from '../localization/workbench';
 
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
-import { IR } from './wbplanview';
-
-const $ = require('jquery');
-
-const navigation = require('../navigation.js');
-const uniquifyDataSetName = require('../wbuniquifyname.js');
-const encodings = require('../encodings.js');
+import type { IR } from '../types';
+import navigation from '../navigation.js';
+import uniquifyDataSetName from '../wbuniquifyname.js';
+import encodings from '../encodings.js';
 
 const PREVIEW_SIZE = 100;
 

@@ -1,4 +1,4 @@
-import type { IR } from './components/wbplanview';
+import type { IR } from './types';
 import lifemapperText from './localization/lifemapper';
 
 export const snServer = 'https://broker.spcoco.org';

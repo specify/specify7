@@ -4,7 +4,7 @@
  *
  */
 
-import type { IR, R, RA } from './components/wbplanview';
+import type { IR, R, RA } from './types';
 import type {
   FullMappingPath,
   MappingPath,

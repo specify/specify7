@@ -5,7 +5,7 @@
  *
  */
 
-import type { IR, RA } from './components/wbplanview';
+import type { IR, RA } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 
 export const capitalize = (string: string): string =>

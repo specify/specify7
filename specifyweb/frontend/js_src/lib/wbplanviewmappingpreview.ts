@@ -1,5 +1,5 @@
-import type { RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
+import { RA } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import {
   getIndexFromReferenceItemName,

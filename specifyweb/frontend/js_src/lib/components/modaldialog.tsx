@@ -11,7 +11,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
-import { RA } from './wbplanview';
+import type { import { RA } from '../types';
 
 interface ModalDialogBaseProps {
   readonly children: React.ReactNode;
