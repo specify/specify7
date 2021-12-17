@@ -160,7 +160,7 @@ export type ChangeSelectElementValueAction = Action<
 type AutoMapperSuggestionsLoadedAction = Action<
   'AutoMapperSuggestionsLoadedAction',
   {
-    autoMapperSuggestions: RA<AutomapperSuggestion>;
+    autoMapperSuggestions: RA<AutoMapperSuggestion>;
   }
 >;
 
@@ -307,8 +307,23 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
 
     return newState;
   },
-  SavePlanAction: ({ state, action }) =>
-    savePlan(action, mappingState(state), action.ignoreValidation),
+  SavePlanAction: ensureState(['MappingState'], ({ state, action }) => {
+    const validationResultsState = validate(state);
+    if (
+      !action.ignoreValidation &&
+      validationResultsState.validationResults.length > 0
+    )
+      return validationResultsState;
+    else
+      return {
+        type: 'LoadingState',
+        loadingState: {
+          type: 'SavePlanState',
+          state,
+          props: action,
+        },
+      };
+  }),
   ToggleMappingViewAction: ({ state, action }) => ({
     ...mappingState(state),
     showMappingView: cache.set(

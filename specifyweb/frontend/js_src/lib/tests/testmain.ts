@@ -1,6 +1,6 @@
 import QUnit from 'qunit';
 
-import type { RA } from '../components/wbplanview';
+import type { RA } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import dataModel from './fixtures/wbplanviewmodel.json';
 import testAutoMapper from './testautomapper';

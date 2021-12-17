@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { RA, RR, IR } from '../components/wbplanview';
+import type { IR, RR, RA } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 
 export const languages = ['en-us', 'ru-ru', 'ca'] as const;

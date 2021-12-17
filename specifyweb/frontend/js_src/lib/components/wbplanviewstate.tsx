@@ -139,7 +139,7 @@ export const stateReducer = generateReducer<
       properties={{
         title: wbText('selectBaseTableDialogTitle'),
         height: 400,
-        close: (): void => goBack(state.props),
+        close: (): void => goBack(state.props.dataset.id),
         buttons: [
           {
             text: wbText('chooseExistingPlan'),
@@ -391,7 +391,7 @@ export const stateReducer = generateReducer<
                 state.dispatch({
                   type: 'ClearValidationResultsAction',
                 });
-                goBack(state.props);
+                goBack(state.props.dataset.id);
               }}
             >
               {state.props.readonly

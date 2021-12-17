@@ -1,4 +1,4 @@
-import type { RA } from '../components/wbplanview';
+import type { RA } from '../types';
 import type { MappingPath } from '../components/wbplanviewmapper';
 import * as WbPlanViewTreeHelper from '../wbplanviewtreehelper';
 import { loadDataModel, runTest } from './testmain';
