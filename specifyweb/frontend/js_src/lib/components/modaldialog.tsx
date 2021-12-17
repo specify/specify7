@@ -13,9 +13,9 @@ import ReactDOM from 'react-dom';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 
-interface ModalDialogBaseProps {
+type ModalDialogBaseProps = {
   readonly children: React.ReactNode;
-}
+};
 
 function ModalDialogContent({
   children,

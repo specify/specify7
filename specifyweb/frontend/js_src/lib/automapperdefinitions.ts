@@ -21,7 +21,7 @@ import type {
  *  comparison (matching)
  */
 
-export interface Options {
+export type Options = {
   /*
    * A structure for defining matching rules
    * NOTE: All values must use lower case exclusively!
@@ -41,20 +41,20 @@ export interface Options {
    * NOTE: formattedHeaderFieldSynonym is also available as a matching
    * rule, but only for `synonym` rules. See more later in this file
    */
-}
+};
 
 // Main structure
 
-export interface TableSynonym {
+export type TableSynonym = {
   /*
    * Mapping path needed to reach <tableName>. Can include any number
    * of parents, up to base table
    */
   readonly mappingPathFilter: MappingPath;
   readonly synonyms: RA<string>;
-}
+};
 
-interface AutoMapperDefinitions {
+type AutoMapperDefinitions = {
   /*
    * NOTE: all keys and values in the definitions should use lower case
    * (since headers, table names and field names used by the mapper are
@@ -195,7 +195,7 @@ interface AutoMapperDefinitions {
       >
     >
   >;
-}
+};
 
 const definitions: AutoMapperDefinitions = {
   tableSynonyms: {

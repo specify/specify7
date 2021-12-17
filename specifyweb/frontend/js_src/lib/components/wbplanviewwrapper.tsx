@@ -48,11 +48,10 @@ function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
   );
 }
 
-interface WbPlanViewBackboneProps
-  extends WbPlanViewWrapperProps,
-    PublicWbPlanViewProps {
-  header: HTMLElement;
-}
+type WbPlanViewBackboneProps = WbPlanViewWrapperProps &
+  PublicWbPlanViewProps & {
+    header: HTMLElement;
+  };
 
 const setUnloadProtect = (self: WbPlanViewBackboneProps): void =>
   navigation.addUnloadProtect(self, wbText('unloadProtectMessage'));

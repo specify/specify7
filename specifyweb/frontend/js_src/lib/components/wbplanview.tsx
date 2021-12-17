@@ -68,22 +68,21 @@ export type Dataset = DatasetBrief & {
   visualorder: null | RA<number>;
 };
 
-export interface SpecifyResource {
+export type SpecifyResource = {
   readonly id: number;
   readonly get: (query: string) => SpecifyResource | any;
   readonly rget: (query: string) => JqueryPromise<SpecifyResource | any>;
   readonly set: (query: string, value: any) => void;
   readonly save: () => void;
-}
+};
 
-export interface WbPlanViewProps
-  extends WbPlanViewWrapperProps,
-    PublicWbPlanViewProps {
-  readonly uploadPlan: UploadPlan | null;
-  readonly headers: RA<string>;
-  readonly setUnloadProtect: () => void;
-  readonly readonly: boolean;
-}
+export type WbPlanViewProps = WbPlanViewWrapperProps &
+  PublicWbPlanViewProps & {
+    readonly uploadPlan: UploadPlan | null;
+    readonly headers: RA<string>;
+    readonly setUnloadProtect: () => void;
+    readonly readonly: boolean;
+  };
 
 export type PartialWbPlanViewProps = {
   readonly removeUnloadProtect: () => void;

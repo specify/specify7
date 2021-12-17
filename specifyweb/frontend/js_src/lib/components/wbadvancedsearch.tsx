@@ -5,18 +5,18 @@ import wbText from '../localization/workbench';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-interface Props {
+type Props = {
   initialSearchPreferences: SearchPreferences;
   onChange: (newSearchPreferences: SearchPreferences) => void;
   onClose: () => void;
-}
+};
 
 type ComponentProps = Readonly<Props>;
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
-export interface SearchPreferences {
+export type SearchPreferences = {
   readonly navigation: {
     readonly direction: NavigationDirection;
   };
@@ -36,7 +36,7 @@ export interface SearchPreferences {
   readonly replace: {
     readonly replaceMode: ReplaceMode;
   };
-}
+};
 
 const CACHE_VERSION = '1';
 

@@ -1,21 +1,21 @@
-import type { IR, RA } from './types';
 import type { RelationshipType } from './components/wbplanviewmapper';
+import type { IR, RA } from './types';
 
-export interface SchemaModelTableField {
+export type SchemaModelTableField = {
   readonly name: string;
   readonly getLocalizedName: () => string | null;
   readonly getPickList: () => string | null | undefined;
   readonly isRequired: boolean;
   readonly isHidden: () => number;
   readonly isRelationship: boolean;
-}
+};
 
-export interface SchemaModelTableRelationship extends SchemaModelTableField {
+export type SchemaModelTableRelationship = SchemaModelTableField & {
   readonly otherSideName: string;
   readonly type: RelationshipType;
   readonly relatedModelName: string;
   readonly readOnly: boolean;
-}
+};
 
 type SpecifyFetch = (filter: { readonly filters: object }) => {
   fetch: (filter: {
@@ -23,49 +23,49 @@ type SpecifyFetch = (filter: { readonly filters: object }) => {
   }) => JqueryPromise<DomainTreeDefinitionItem>;
 };
 
-interface SchemaModelTableData {
+type SchemaModelTableData = {
   readonly longName: string;
   readonly getLocalizedName: () => string;
   readonly system: boolean;
   readonly fields: RA<SchemaModelTableField>;
   readonly LazyCollection: SpecifyFetch;
   readonly isHidden: () => boolean;
-}
+};
 
 type SchemaModels<T> = IR<T>;
 
-export interface Schema {
+export type Schema = {
   readonly models: SchemaModels<SchemaModelTableData>;
   readonly orgHierarchy: RA<string>;
-}
+};
 
-interface DomainTreeDefinitionItem {
+type DomainTreeDefinitionItem = {
   readonly get: (fieldName: string) => number | string;
   readonly rget: (fieldName: string) => Promise<DomainTreeDefinitionItem>;
   readonly attributes: { name: string; rankid: number; parent: string };
-}
+};
 
 type DomainRequest = IR<unknown>;
 
 type SpecifyRequest = (parameter: DomainRequest) => JqueryPromise<void>;
 
-interface DomainTreeDefinitionItems {
+type DomainTreeDefinitionItems = {
   readonly fetch: SpecifyRequest;
   readonly models: SchemaModels<DomainTreeDefinitionItem>;
-}
+};
 
-interface DomainTreeDefinition {
+type DomainTreeDefinition = {
   readonly rget: (
     fieldName: string
   ) => JqueryPromise<DomainTreeDefinitionItems>;
-}
+};
 
-export interface JqueryPromise<T> {
+export type JqueryPromise<T> = {
   readonly done: (callback: (t: T) => void) => void;
-}
+};
 
-export interface Domain {
+export type Domain = {
   readonly getTreeDef: (
     tableName: string
   ) => JqueryPromise<DomainTreeDefinition>;
-}
+};

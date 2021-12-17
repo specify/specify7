@@ -5,13 +5,13 @@ import ResourceView from '../resourceview';
 import { Lifemapper, SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
 
-export interface Props {
+export type Props = {
   model: any;
-}
+};
 
-export interface ComponentProps extends Props {
+export type ComponentProps = Props & {
   readonly guid: string;
-}
+};
 
 const CollectionObjectBadges = createBackboneView<Props, Props, ComponentProps>(
   {

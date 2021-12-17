@@ -251,14 +251,14 @@ export function WbsDialog({
   );
 }
 
-interface Props {
+type Props = {
   showTemplates: boolean;
-}
+};
 
-interface ComponentProps extends Readonly<Props> {
+type ComponentProps = Readonly<Props> & {
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
-}
+};
 
 export default createBackboneView<Props, Props, ComponentProps>({
   moduleName: 'WbsDialog',

@@ -70,7 +70,7 @@ export type CustomSelectSubtype =
   // For tree ranks
   | 'tree';
 
-interface CustomSelectElementIconProps {
+type CustomSelectElementIconProps = {
   /*
    * Whether the option is a relationship (False for fields, true for
    * relationships, tree ranks and reference items)
@@ -91,24 +91,24 @@ interface CustomSelectElementIconProps {
   readonly isEnabled?: boolean;
   // Whether an icon is used inside of preview_row in CLOSED_LIST
   readonly isPreview?: boolean;
-}
+};
 
-interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
+type CustomSelectElementOptionProps = CustomSelectElementIconProps & {
   readonly handleClick?: (isDoubleClick: boolean) => void;
-}
+};
 
-export interface CustomSelectElementDefaultOptionProps {
+export type CustomSelectElementDefaultOptionProps = {
   readonly optionName: string;
   readonly optionLabel: string | JSX.Element;
   readonly tableName?: string;
   readonly isRelationship?: boolean;
   readonly isRequired?: boolean;
   readonly isHidden?: boolean;
-}
+};
 
 export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
 
-interface CustomSelectElementOptionGroupProps {
+type CustomSelectElementOptionGroupProps = {
   // Group's name (used for styling)
   readonly selectGroupName?: string;
   // Group's label (shown to the user)
@@ -124,11 +124,11 @@ interface CustomSelectElementOptionGroupProps {
     newTableName: string,
     isDoubleClick: boolean
   ) => void;
-}
+};
 
 type CustomSelectElementOptionGroups = IR<CustomSelectElementOptionGroupProps>;
 
-interface CustomSelectElementPropsBase {
+type CustomSelectElementPropsBase = {
   // The label to use for the element
   readonly selectLabel?: string;
   readonly customSelectType: CustomSelectType;
@@ -150,17 +150,15 @@ interface CustomSelectElementPropsBase {
   readonly handleClose?: () => void;
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
   readonly autoMapperSuggestions?: JSX.Element;
-}
+};
 
-export interface CustomSelectElementPropsClosed
-  extends CustomSelectElementPropsBase {
+export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
   readonly isOpen: false;
   readonly handleOpen?: () => void;
   readonly fieldNames: RA<string>;
-}
+};
 
-export interface CustomSelectElementPropsOpenBase
-  extends CustomSelectElementPropsBase {
+export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly isOpen: true;
   readonly handleChange?: (
     newValue: string,
@@ -170,13 +168,12 @@ export interface CustomSelectElementPropsOpenBase
     isDoubleCLick: boolean
   ) => void;
   readonly handleClose?: () => void;
-}
+};
 
-interface CustomSelectElementPropsOpen
-  extends CustomSelectElementPropsOpenBase {
+type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
   readonly customSelectOptionGroups: CustomSelectElementOptionGroups;
   readonly autoMapperSuggestions?: JSX.Element;
-}
+};
 
 export function Icon({
   isRelationship = false,
