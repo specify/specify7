@@ -1,8 +1,10 @@
-/*
+/**
+ * Custom `<select>` Element (picklist)
+ * Used extensively by WbPlanView
+ * Has full screen reader and keyboard navigation support
+ * Supports icons, unlike default `<select>` element
  *
- * Custom Select Element (picklist). Used by workbench mapper
- *
- *
+ * @module
  */
 
 import '../../css/customselectelement.css';
@@ -282,6 +284,10 @@ function OptionGroup({
   );
 }
 
+/**
+ * All picklist options are rendered invisibly for every closed picklist to
+ * ensure picklist maintains the width when opened or closed
+ */
 const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
   fieldNames,
 }: {
@@ -550,6 +556,10 @@ export function CustomSelectElement({
   );
 }
 
+/**
+ * Picklist that renders on top of currently opened picklist and displays
+ * top 3 automapper suggestions (if available)
+ */
 export function SuggestionBox({
   selectOptionsData,
   onSelect: handleSelect,

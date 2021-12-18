@@ -1,9 +1,7 @@
-/*
+/**
+ * A React wrapper for jQuery's dialogs
  *
- * A React wrapper for jQuery's dialog. Also has a jQuery's dialog with
- * a loading bar inside it
- *
- *
+ * @module
  */
 
 import $ from 'jquery';
@@ -52,6 +50,9 @@ const hasHeader = (children: React.ReactNode): boolean =>
     (typeof children?.props?.children?.some === 'function' &&
       children.props.children.some(hasHeader)));
 
+/**
+ * Wrapper for jQuery's dialog
+ */
 export const ModalDialog = React.memo(function ModalDialog({
   properties,
   onLoadCallback,
@@ -151,6 +152,10 @@ export const ModalDialog = React.memo(function ModalDialog({
 const handleOnLoad = (dialog: JQuery) =>
   void $('.progress-bar', dialog).progressbar({ value: false });
 
+/**
+ * Modal jQuery dialog with a loading bar
+ * @module
+ */
 export function LoadingScreen(): JSX.Element {
   return (
     <ModalDialog

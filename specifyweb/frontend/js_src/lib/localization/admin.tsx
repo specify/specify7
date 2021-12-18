@@ -1,3 +1,9 @@
+/**
+ * Localization strings for app resources and user management
+ *
+ * @module
+ */
+
 import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file

@@ -1,3 +1,9 @@
+/**
+ * Localization strings used in Leaflet, GeoLocate and LatLongUI
+ *
+ * @module
+ */
+
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
@@ -25,8 +31,6 @@ const localityText = createDictionary({
   end: 'End',
   northWestCorner: 'NW Corner',
   southEastCorner: 'SE Corner',
-
-  // LatLongUI
   point: 'Point',
   line: 'Line',
   rectangle: 'Rectangle',

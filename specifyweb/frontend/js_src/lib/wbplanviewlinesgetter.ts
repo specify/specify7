@@ -4,7 +4,7 @@ import type { IR, RA } from './types';
 import type { MappingLine } from './components/wbplanviewmapper';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { mappingsTreeToArrayOfSplitMappings } from './wbplanviewtreehelper';
+import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -77,7 +77,7 @@ export function getLinesFromUploadPlan(
   const { baseTableName, mappingsTree, mustMatchPreferences } =
     uploadPlanToMappingsTree(originalHeaders, uploadPlan);
 
-  const mappingLines = mappingsTreeToArrayOfSplitMappings(mappingsTree);
+  const mappingLines = mappingsTreeToSplitMappingPaths(mappingsTree);
 
   let headers = originalHeaders;
   if (headers.length === 0)

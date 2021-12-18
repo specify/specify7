@@ -202,7 +202,7 @@ const mappingsTreeToMappingPaths = (
     []
   );
 
-export const mappingsTreeToArrayOfSplitMappings = (
+export const mappingsTreeToSplitMappingPaths = (
   mappingsTree: MappingsTree
 ): RA<SplitMappingPath> =>
   mappingsTreeToMappingPaths(mappingsTree).map(splitFullMappingPathComponents);

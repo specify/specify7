@@ -1,3 +1,7 @@
+/**
+ * Dummy definition for `
+ * */
+
 declare module 'worker-loader!*' {
   class WebpackWorker extends Worker {
     constructor();

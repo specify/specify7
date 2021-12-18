@@ -1,3 +1,9 @@
+/*
+ * Workbench Upload results side bar with table counts
+ *
+ * @module
+ */
+
 import '../../css/wbuploaded.css';
 
 import React from 'react';

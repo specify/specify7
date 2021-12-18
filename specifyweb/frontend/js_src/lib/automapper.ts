@@ -651,7 +651,7 @@ export default class AutoMapper {
     fieldName: string
   ): RA<string> =>
     AutoMapperDefinitions.synonyms[tableName]?.[fieldName]?.[this.scope]
-      ?.headers.formattedHeaderFieldSynonym || [];
+      ?.headers.formattedHeaderFieldSynonym ?? [];
 
   private readonly tableWasIterated = (
     mode: AutoMapperNode,

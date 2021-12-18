@@ -1,17 +1,22 @@
+/**
+ * Data Set import page
+ *
+ * @module
+ */
+
 import '../../css/theme.css';
 
 import $ from 'jquery';
-
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
-import wbText from '../localization/workbench';
 
-import { uniquifyHeaders } from '../wbplanviewheaderhelper';
-import type { IR } from '../types';
-import navigation from '../navigation.js';
-import uniquifyDataSetName from '../wbuniquifyname.js';
 import encodings from '../encodings.js';
+import wbText from '../localization/workbench';
+import navigation from '../navigation.js';
+import type { IR } from '../types';
+import { uniquifyHeaders } from '../wbplanviewheaderhelper';
+import uniquifyDataSetName from '../wbuniquifyname.js';
 
 const PREVIEW_SIZE = 100;
 
@@ -121,8 +126,9 @@ export default class WbImport extends Component<{}, WbImportState> {
           ? { type: 'GotPreviewAction', preview: data, file, fileType: 'xls' }
           : { type: 'BadImportFileAction', file, fileType: 'xls' }
       );
-    worker.onerror = () =>
-      this.update({ type: 'BadImportFileAction', file, fileType: 'xls' });
+    worker.addEventListener('error', () =>
+      this.update({ type: 'BadImportFileAction', file, fileType: 'xls' })
+    );
   }
 
   doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
@@ -270,11 +276,7 @@ export default class WbImport extends Component<{}, WbImportState> {
     let preview;
     switch (this.state.type) {
       case 'ChooseFileState':
-        rows = (
-          <>
-            <ChooseFile update={update} />
-          </>
-        );
+        rows = <ChooseFile update={update} />;
         break;
 
       case 'PreviewFileState':

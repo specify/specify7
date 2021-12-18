@@ -1,3 +1,9 @@
+/**
+ * Localization strings used by the WorkBench (and WbPlanView)
+ *
+ * @module
+ */
+
 import React from 'react';
 
 import { createDictionary, createHeader, createJsxHeader } from './utils';

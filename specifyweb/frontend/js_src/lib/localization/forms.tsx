@@ -1,3 +1,10 @@
+/**
+ * Localization strings used on Data Entry forms and Interactions
+ * (don't confuse this with schema localization strings)
+ *
+ * @module
+ */
+
 import type { RA } from '../types';
 import { createDictionary, createHeader } from './utils';
 

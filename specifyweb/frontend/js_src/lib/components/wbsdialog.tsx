@@ -1,6 +1,7 @@
-/*
- * The dialog for choosing a data set
+/**
+ * Render a dialog for choosing a data set
  *
+ * @module
  */
 
 import '../../css/wbsdialog.css';
@@ -38,6 +39,9 @@ const createEmptyDataSet = async (): Promise<void> =>
       throw error;
     });
 
+/**
+ * React Wrapper for Data Set Meta Backbone View
+ */
 function DsMeta({
   dsId,
   onClose,
@@ -218,6 +222,9 @@ function Dialog({
   );
 }
 
+/**
+ * Render a dialog for choosing a data set
+ */
 export function WbsDialog({
   onClose: handleClose,
   showTemplates,

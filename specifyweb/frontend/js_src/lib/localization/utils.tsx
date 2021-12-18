@@ -1,3 +1,9 @@
+/**
+ * Localization utilities and localization string resolver
+ *
+ * @module
+ */
+
 import React from 'react';
 
 import type { IR, RA } from '../types';

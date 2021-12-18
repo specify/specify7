@@ -1,9 +1,8 @@
 /*
- *
- * Contains WbPlanView logic for when the application is in the Mapping State
+ * WbPlanView logic for when the application is in the Mapping State
  * (when base table is selected and headers are loaded)
  *
- *
+ * @module
  */
 
 import React from 'react';

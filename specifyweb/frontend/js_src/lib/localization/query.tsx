@@ -1,3 +1,9 @@
+/**
+ * Localization strings from the query builder
+ *
+ * @module
+ */
+
 import type { RA } from '../types';
 import { createDictionary, createHeader } from './utils';
 
