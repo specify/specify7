@@ -18,7 +18,7 @@ import remoteprefs from './remoteprefs';
 import {createCookie, eraseCookie, readCookie} from './cookies';
 import treeText from './localization/tree';
 import commonText from './localization/common';
-import autocomplete from './autocomplete';
+import autocomplete from './components/autocomplete';
 import {className} from './components/basic';
 
 var TreeHeader = Backbone.View.extend({

@@ -41,6 +41,7 @@ type CollectionConstructor = new (props?: {
       readonly domainfilter: boolean;
     } & IR<unknown>
   >;
+  readonly domainfilter?: boolean;
 }) => Collection;
 
 type Resource = new (
@@ -48,7 +49,7 @@ type Resource = new (
 ) => SpecifyResource;
 
 export type Collection = {
-  readonly fetch: (filter: { readonly limit: number }) => JqueryPromise<void>;
+  readonly fetch: (filter?: { readonly limit: number }) => JqueryPromise<void>;
   readonly models: RA<SpecifyResource>;
 };
 

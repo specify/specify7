@@ -30,9 +30,9 @@ export type SpecifyResource = {
   readonly trigger: (eventName: string, ...args: RA<unknown>) => void;
 };
 
-export type JqueryPromise<T> = {
-  readonly done: (callback: (t: T) => void) => void;
-  readonly then: (callback: (t: T) => void) => void;
+export type JqueryPromise<T, V = unknown> = {
+  readonly done: (callback: (t: T) => void) => JqueryPromise<V>;
+  readonly then: (callback: (t: T) => void) => JqueryPromise<V>;
 };
 
 export type GetTreeDefinition = (

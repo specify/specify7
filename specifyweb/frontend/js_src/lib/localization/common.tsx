@@ -305,9 +305,9 @@ const commonText = createDictionary({
     ca: 'View',
   },
   addChild: {
-    'en-us': 'Add child',
-    'ru-ru': 'Добавить ребенка',
-    ca: 'Add child',
+    'en-us': 'Add Child',
+    'ru-ru': 'Добавить Ребенка',
+    ca: 'Add Child',
   },
   move: {
     'en-us': 'Move',

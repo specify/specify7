@@ -1,8 +1,8 @@
-import _ from 'underscore';
 import * as React from 'react';
+import _ from 'underscore';
 
-import { useId } from './common';
-import type { IR, RA } from './types';
+import type { IR, RA } from '../types';
+import { useId } from './hooks';
 
 let dataListCount = 0;
 const debounceRate = 300;
@@ -38,16 +38,17 @@ export function Autocomplete<T>({
   >({});
   const refDataList = React.useRef<HTMLDataListElement | null>(null);
 
-  async function onKeyDown({ target }: React.KeyboardEvent) {
+  function onKeyDown({ target }: React.KeyboardEvent): void {
     const input = target as HTMLInputElement;
     if (input.value.length < minLength) return;
 
-    await source(input.value)
+    void source(input.value)
       .then((values) => {
         const entries = Object.entries(values);
 
         // Don't delete previous autocomplete results if no new results returned
-        if (Object.keys(results).length !== 0 && entries.length === 0) return;
+        if (Object.keys(results).length > 0 && entries.length === 0)
+          return undefined;
 
         setResults(
           Array.isArray(values)
@@ -62,6 +63,8 @@ export function Autocomplete<T>({
               )
             : values
         );
+
+        return undefined;
       })
       .catch(console.error);
   }
@@ -91,6 +94,7 @@ export function Autocomplete<T>({
     </>
   );
 }
+
 export default function autocomplete({
   input,
   source,
@@ -128,9 +132,10 @@ export default function autocomplete({
         const entries = Object.entries(values);
 
         // Don't delete previous autocomplete results if no new results returned
-        if (dataList.childElementCount !== 0 && entries.length === 0) return;
+        if (dataList.childElementCount !== 0 && entries.length === 0)
+          return undefined;
 
-        if (input.value === lastValue) return;
+        if (input.value === lastValue) return undefined;
         lastValue = input.value;
 
         dataList.textContent = '';
@@ -144,6 +149,7 @@ export default function autocomplete({
           fragment.append(option);
         });
         dataList.append(fragment);
+        return undefined;
       })
       .catch(console.error);
   }
