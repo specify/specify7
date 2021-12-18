@@ -1,3 +1,8 @@
+/**
+ * Reports Data Set status using a modal dialog (uploading, validating, rolling
+ * back, failure, success)
+ */
+
 import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
@@ -9,6 +14,7 @@ import { ModalDialog, ProgressBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
 
+// How often to query back-end
 const REFRESH_RATE = 2000;
 
 type MainState = State<

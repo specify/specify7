@@ -1,3 +1,10 @@
+/**
+ * Localization strings used on Data Entry forms and Interactions
+ * (don't confuse this with schema localization strings)
+ *
+ * @module
+ */
+
 import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file

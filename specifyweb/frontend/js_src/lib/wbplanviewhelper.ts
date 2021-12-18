@@ -95,6 +95,9 @@ export const camelToKebab = (value: string): string =>
 export const camelToHuman = (value: string): string =>
   capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
 
+/**
+ * Scale a number from original range into new range
+ */
 export const spanNumber =
   (
     minInput: number,

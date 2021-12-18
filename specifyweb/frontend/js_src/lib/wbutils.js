@@ -1,3 +1,12 @@
+/**
+ * Workbench Utilities:
+ * Search & Replace, GeoMap, GeoLocate, Coordinate Convertor
+ *
+ * @module
+ * */
+
+'use strict';
+
 const $ = require('jquery');
 const _ = require('underscore');
 const Leaflet = require('./leaflet');

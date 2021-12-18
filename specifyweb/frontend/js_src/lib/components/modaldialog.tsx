@@ -1,9 +1,7 @@
-/*
+/**
+ * A React wrapper for jQuery's dialogs
  *
- * A React wrapper for jQuery's dialog. Also has a jQuery's dialog with
- * a loading bar inside it
- *
- *
+ * @module
  */
 
 import $ from 'jquery';
@@ -99,6 +97,9 @@ const serialize = (object: unknown): string =>
     value instanceof HTMLElement ? value.toString() : value
   );
 
+/**
+ * Wrapper for jQuery's dialog
+ */
 export function ModalDialog({
   properties,
   children,
@@ -246,6 +247,10 @@ export function ProgressBar({
   );
 }
 
+/**
+ * Modal jQuery dialog with a loading bar
+ * @module
+ */
 export function LoadingScreen(): JSX.Element {
   return (
     <ModalDialog

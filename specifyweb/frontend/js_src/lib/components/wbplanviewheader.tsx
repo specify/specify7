@@ -1,3 +1,11 @@
+/**
+ * Base layout for WbPlanView
+ *
+ * @module
+ */
+
+import '../../css/theme.css';
+
 import React from 'react';
 
 import { useId } from './common';

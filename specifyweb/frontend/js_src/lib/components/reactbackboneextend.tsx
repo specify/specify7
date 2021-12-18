@@ -1,9 +1,8 @@
-/*
- *
+/**
  * Type-safe React wrapper for Backbone.View.extend
  * It's like a gate between Backbone Views and React components
  *
- *
+ * @module
  */
 
 import type { View } from 'backbone';

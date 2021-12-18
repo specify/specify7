@@ -1,3 +1,9 @@
+/**
+ * Localization strings from the query builder
+ *
+ * @module
+ */
+
 import { createDictionary, createHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file

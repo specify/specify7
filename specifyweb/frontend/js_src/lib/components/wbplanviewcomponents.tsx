@@ -1,8 +1,7 @@
-/*
+/**
+ * Collection of common React components used in the WbPlanView
  *
- * Collection of common React components used in the wbplanview
- *
- *
+ * @module
  */
 
 import React from 'react';

@@ -1,3 +1,9 @@
+/**
+ * Entrypoint for the workbench mapper
+ *
+ * @module
+ */
+
 import React from 'react';
 
 import wbText from '../localization/workbench';
@@ -13,6 +19,13 @@ import type {
 } from './wbplanview';
 import { WbPlanView } from './wbplanview';
 
+/**
+ * Entrypoint react component for the workbench mapper
+ *
+ * @remarks
+ * Makes sure schema is loaded
+ * Reorders headers if needed
+ */
 function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
   const [schemaLoaded, setSchemaLoaded] = React.useState<boolean>(
     typeof dataModelStorage.tables !== 'undefined'
@@ -28,17 +41,17 @@ function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
       });
   }, [schemaLoaded]);
 
+  // Reorder headers if needed
   const headers =
     props.dataset.visualorder === null
       ? props.dataset.columns
       : props.dataset.visualorder.map(
           (physicalCol) => props.dataset.columns[physicalCol]
         );
-  const uploadPlan = props.dataset.uploadplan ? props.dataset.uploadplan : null;
   return schemaLoaded ? (
     <WbPlanView
       {...props}
-      uploadPlan={uploadPlan}
+      uploadPlan={props.dataset.uploadplan}
       headers={headers}
       readonly={props.dataset.uploadresult?.success ?? false}
     />
@@ -53,6 +66,9 @@ const setUnloadProtect = (self: IR<unknown>): void =>
 const removeUnloadProtect = (self: IR<unknown>): void =>
   navigation.removeUnloadProtect(self);
 
+/**
+ * Backbone View wrapper for the entrypoint react component
+ */
 export default createBackboneView<
   PublicWbPlanViewProps,
   WbPlanViewWrapperProps

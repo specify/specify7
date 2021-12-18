@@ -1,3 +1,9 @@
+/**
+ * Search Config options dialog in WB
+ *
+ * @module
+ */
+
 import React from 'react';
 
 import * as cache from '../cache';
@@ -38,6 +44,9 @@ export type SearchPreferences = {
 
 const CACHE_VERSION = '1';
 
+/**
+ * Fetch cached search config or create a new one
+ */
 export const getInitialSearchPreferences = (): SearchPreferences =>
   cache.get('workbench', 'search-properties', {
     defaultValue: {

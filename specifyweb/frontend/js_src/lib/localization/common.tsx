@@ -1,3 +1,10 @@
+/**
+ * Localization strings that are shared across components or that are used
+ * in the Header or UserTools menu
+ *
+ * @module
+ */
+
 import React from 'react';
 
 import { createDictionary, createHeader, createJsxHeader } from './utils';

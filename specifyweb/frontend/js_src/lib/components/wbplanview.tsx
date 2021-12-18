@@ -1,8 +1,7 @@
-/*
+/**
+ * Workbench Plan Mapper root component
  *
- * Workbench plan mapper
- *
- *
+ * @module
  */
 
 import '../../css/wbplanview.css';
@@ -109,6 +108,9 @@ export type PublicWbPlanViewProps = {
   dataset: Dataset;
 };
 
+/**
+ * Workbench Plan Mapper root component
+ */
 export function WbPlanView(props: WbPlanViewProps): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,

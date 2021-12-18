@@ -1,7 +1,13 @@
+/**
+ * Data Set import page
+ *
+ * @module
+ */
+
+import '../../css/theme.css';
 import '../../css/wbimport.css';
 
 import $ from 'jquery';
-
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';

@@ -1,3 +1,11 @@
+/**
+ * Entrypoint for the WorkBench
+ * Handles most user interactions
+ * Initializes the spreadsheet (using Handsontable library)
+ *
+ * @module
+ * */
+
 'use strict';
 
 require('../css/workbench.css');
@@ -29,7 +37,7 @@ const {
   formatTreeRank,
 } = require('./wbplanviewmappinghelper');
 const {
-  mappingsTreeToArrayOfSplitMappings,
+  mappingsTreeToSplitMappingPaths,
 } = require('./wbplanviewtreehelper');
 const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree');
 const { extractDefaultValues } = require('./wbplanviewhelper');
@@ -275,7 +283,7 @@ const WBView = Backbone.View.extend({
             this.dataset.columns,
             this.dataset.uploadplan
           );
-          this.mappings.splitMappingPaths = mappingsTreeToArrayOfSplitMappings(
+          this.mappings.splitMappingPaths = mappingsTreeToSplitMappingPaths(
             this.mappings.mappingsTree
           );
 
