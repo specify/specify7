@@ -1,29 +1,7 @@
 # A config file for pre-commit.com
 #
-# Install pre-commit.com: https://pre-commit.com/#install
-#
-# Then run the following line to set up a pre-commit hook:
-# pre-commit install
-#
-# And this to update hooks to the newest version:
-# pre-commit autoupdate
-#
-# Now, whenever you try to commit, hooks defined in this file would run
-# and check your files.  They would run only only on staged files that
-# had changes.
-#
-# You can manually trigger the hooks like this:
-# pre-commit run
-#
-# You can tell it to check specific files:
-# pre-commit run --files *.ts
-#
-# Or give it all files:
-# pre-commit run --all-files
-#
-# Finally, you can disable some hooks by listing them in the `SKIP`
-# variable. Example:
-# SKIP=flake8,black git commit -m "foo"
+# Documentation
+# https://github.com/specifysystems/code-principles/blob/main/pre-commit-hooks.md
 
 default_language_version:
   python: python3
