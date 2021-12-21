@@ -3,7 +3,8 @@
  * Search & Replace, GeoMap, GeoLocate, Coordinate Convertor
  *
  * @module
- * */
+ *
+ */
 
 'use strict';
 
@@ -56,9 +57,10 @@ module.exports = Backbone.View.extend({
   getSelectedLast() {
     let [currentRow, currentCol] = this.wbview.hot.getSelectedLast() ?? [0, 0];
     /*
-     * this.wbview.getSelectedLast() returns -1 when column's header or row's
+     * This.wbview.getSelectedLast() returns -1 when column's header or row's
      * number cell is selected
-     * */
+     *
+     */
     if (currentRow < 0) currentRow = 0;
     if (currentCol < 0) currentCol = 0;
     return [currentRow, currentCol];
@@ -77,7 +79,17 @@ module.exports = Backbone.View.extend({
         return false;
     }
   },
-  navigateCells(event, matchCurrentCell = false, currentCell = undefined) {
+  navigateCells(
+    event,
+    // If true and current cell is of correct type, don't navigate away
+    matchCurrentCell = false,
+    /*
+     * Overwrite what is considered to be a current cell
+     * Setting to [0,0] and matchCurrentCell=true allows navigation to the first
+     * cell of type (used on hitting "Enter" in the Search Box)
+     */
+    currentCell = undefined
+  ) {
     const button = event.target;
     const direction = button.getAttribute('data-navigation-direction');
     const buttonParent = button.parentElement;
@@ -88,7 +100,7 @@ module.exports = Backbone.View.extend({
     const totalCountElement = buttonParent.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const totalCount = parseInt(totalCountElement.textContent);
+    const totalCount = Number.parseInt(totalCountElement.textContent);
 
     const cellMetaObject = this.wbview.getCellMetaObject();
 
@@ -137,8 +149,10 @@ module.exports = Backbone.View.extend({
         metaRow &&
         orderIt(Object.entries(metaRow)).find(
           ([visualColString, metaArray]) => {
-            // This is 10 times faster then Number.parseInt because of a slow
-            // Babel polyfill
+            /*
+             * This is 10 times faster then Number.parseInt because of a slow
+             * Babel polyfill
+             */
             const visualRow = visualRowString | 0;
             const visualCol = visualColString | 0;
 
@@ -167,7 +181,7 @@ module.exports = Backbone.View.extend({
 
     const boundaryCell = direction === 'next' ? totalCount : 1;
 
-    const initialCellRelativePosition = parseInt(
+    const initialCellRelativePosition = Number.parseInt(
       currentPositionElement.textContent || '0'
     );
     if (
@@ -186,11 +200,11 @@ module.exports = Backbone.View.extend({
 
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
-  toggleCellTypes(e, action = 'toggle') {
+  toggleCellTypes(event, action = 'toggle') {
     let buttonLabel;
-    if (typeof e === 'string') buttonLabel = e;
+    if (typeof event === 'string') buttonLabel = event;
     else {
-      const button = e.target;
+      const button = event.target;
       const buttonContainer = button.closest('.wb-navigation-section');
       buttonLabel = buttonContainer.getAttribute('data-navigation-type');
     }
@@ -221,7 +235,7 @@ module.exports = Backbone.View.extend({
           if (this.searchQuery.slice(-1) !== '$')
             this.searchQuery = `${this.searchQuery}$`;
         }
-        this.searchQuery = RegExp(
+        this.searchQuery = new RegExp(
           this.searchQuery,
           this.searchPreferences.search.caseSensitive ? '' : 'i'
         );
@@ -243,12 +257,17 @@ module.exports = Backbone.View.extend({
     const searchQueryElement =
       this.el.getElementsByClassName('wb-search-query')[0];
 
+    /*
+     * Don't rerun search on live search if search query did not change
+     * (e.x, if Ctrl/Cmd+A is clicked in the search box)
+     */
     if (
       searchQueryElement.value === this.rawSearchQuery &&
       !['SettingsChange', 'Enter'].includes(event.key)
     )
       return;
 
+    // Don't handle onKeyDown event if live search is disabled
     if (event.key !== 'Enter' && !this.searchPreferences.search.liveUpdate)
       return;
 
@@ -302,7 +321,7 @@ module.exports = Backbone.View.extend({
          * bounds.
          * While hot.getCell is supposed to check for this too, doing it this
          * way makes search about 25% faster
-         * */
+         */
         if (
           firstVisibleRow <= visualRow &&
           lastVisibleRow >= visualRow &&
@@ -310,7 +329,7 @@ module.exports = Backbone.View.extend({
           lastVisibleColumn >= visualCol
         ) {
           cell = this.wbview.hot.getCell(visualRow, visualCol);
-          render = !!cell;
+          render = Boolean(cell);
         }
 
         this.wbview[render ? 'updateCellMeta' : 'setCellMeta'](
@@ -330,6 +349,7 @@ module.exports = Backbone.View.extend({
 
     navigationTotalElement.textContent = resultsCount;
 
+    // Navigate to the first search result when hitting Enter
     if (event.key === 'Enter')
       this.navigateCells(
         { target: navigationButton[1] },
@@ -387,14 +407,12 @@ module.exports = Backbone.View.extend({
       const physicalRow = this.wbview.hot.toPhysicalRow(currentRow);
       const physicalCol = this.wbview.hot.toPhysicalColumn(currentCol);
       let nextCell;
-      if (
-        this.cellIsType(
-          this.wbview.cellMeta[physicalRow]?.[physicalCol],
-          'searchResults'
-        )
+      nextCell = this.cellIsType(
+        this.wbview.cellMeta[physicalRow]?.[physicalCol],
+        'searchResults'
       )
-        nextCell = [currentRow, currentCol];
-      else nextCell = nextCellOfType();
+        ? [currentRow, currentCol]
+        : nextCellOfType();
 
       if (!Array.isArray(nextCell)) return;
 
@@ -406,6 +424,7 @@ module.exports = Backbone.View.extend({
       nextCellOfType();
     }
   },
+  // Show search config menu
   showAdvancedSearch() {
     if (typeof this.advancedSearch !== 'undefined') return;
 
@@ -450,10 +469,10 @@ module.exports = Backbone.View.extend({
   },
   toggleToolkit() {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
-    if (toolkit.style.display === 'none') toolkit.style.display = '';
-    else toolkit.style.display = 'none';
+    toolkit.style.display = toolkit.style.display === 'none' ? '' : 'none';
     this.wbview.handleResize();
   },
+  // Fill cells with a value
   fillCells({ startRow, endRow, col, value }) {
     this.wbview.hot.setDataAtCell(
       Array.from({ length: endRow - startRow }, (_, index) => [
@@ -476,9 +495,10 @@ module.exports = Backbone.View.extend({
       value: this.wbview.hot.getDataAtCell(props.endRow, props.col),
     });
   },
+  // Context menu item definitions (common for fillUp and fillDown)
   fillCellsContextMenuItem(name, handlerFunction, isDisabled) {
     return {
-      name: name,
+      name,
       disabled: () =>
         isDisabled() ||
         (this.wbview.hot
@@ -487,9 +507,9 @@ module.exports = Backbone.View.extend({
           false),
       callback: (_, selections) =>
         selections.forEach((selection) =>
-          [
-            ...Array(selection.end.col + 1 - selection.start.col).keys(),
-          ].forEach((index) =>
+          Array.from(
+            new Array(selection.end.col + 1 - selection.start.col).keys()
+          ).forEach((index) =>
             handlerFunction.bind(this)({
               startRow: selection.start.row,
               endRow: selection.end.row,
@@ -513,7 +533,7 @@ module.exports = Backbone.View.extend({
       'wb-convert-coordinates'
     )[0];
 
-    if (this.localityColumns.length !== 0) {
+    if (this.localityColumns.length > 0) {
       leafletButton.disabled = false;
       if (this.wbview.isUploaded) {
         [geoLocaleButton, coordinateConverterButton].map((button) =>
@@ -569,22 +589,23 @@ module.exports = Backbone.View.extend({
         endCol: Math.max(startCol, endCol),
       }));
   },
+  // Generate Locality iterator. Able to handle multiple localities in a row
   getSelectedLocalities(
     // If false, treat single cell selection as entire spreadsheet selection
     allowSingleCell
   ) {
     const selectedRegions = this.getSelectedRegions();
 
-    const selectedHeaders = [
-      ...new Set(
+    const selectedHeaders = Array.from(
+      new Set(
         selectedRegions.flatMap(({ startCol, endCol }) =>
           Array.from(
             { length: endCol - startCol + 1 },
             (_, index) => startCol + index
           )
         )
-      ),
-    ]
+      )
+    )
       .sort()
       .map(
         (visualCol) =>
@@ -593,16 +614,16 @@ module.exports = Backbone.View.extend({
           ]
       );
 
-    const selectedRows = [
-      ...new Set(
+    const selectedRows = Array.from(
+      new Set(
         selectedRegions.flatMap(({ startRow, endRow }) =>
           Array.from(
             { length: endRow - startRow + 1 },
             (_, index) => startRow + index
           )
         )
-      ),
-    ].sort();
+      )
+    ).sort();
 
     const selectAll =
       !allowSingleCell &&
@@ -640,8 +661,8 @@ module.exports = Backbone.View.extend({
   },
 
   showGeoLocate() {
-    // don't allow opening more than one window)
-    if ($('#geolocate-window').length !== 0) return;
+    // Don't allow opening more than one window)
+    if ($('#geolocate-window').length > 0) return;
 
     const selection = this.getSelectedLocalities(true);
 
@@ -654,7 +675,7 @@ module.exports = Backbone.View.extend({
       width: 960,
       height: 740,
       title: wbText('geoLocateDialogTitle'),
-      close: function () {
+      close() {
         $(this).remove();
         window.removeEventListener('message', handleGeolocateResult, false);
       },
@@ -724,7 +745,7 @@ module.exports = Backbone.View.extend({
     window.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap() {
-    if ($('#leaflet-map').length !== 0) return;
+    if ($('#leaflet-map').length > 0) return;
 
     const selection = this.getSelectedLocalities(false);
 
@@ -748,7 +769,7 @@ module.exports = Backbone.View.extend({
           throw new Error('rowNumber must be a number');
         const [_currentRow, currentCol] = this.getSelectedLast();
         this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
-        // select entire row
+        // Select entire row
         this.wbview.hot.selectRows(rowNumber);
       },
       leafletMapContainer: 'leaflet-map',
@@ -961,16 +982,15 @@ module.exports = Backbone.View.extend({
         options[optionValue];
       const includeSymbolsFunction = includeSymbols
         ? (coordinate) => coordinate
-        : (coordinate) => coordinate.replace(/[^\w\s\-.]/gm, '');
+        : (coordinate) => coordinate.replace(/[^\s\w\-.]/g, '');
       const lastChar = (value) => value[value.length - 1];
       const removeLastChar = (value) => value.slice(0, -1);
-      const endsWith = (value, charset) =>
-        charset.indexOf(lastChar(value)) !== -1;
+      const endsWith = (value, charset) => charset.includes(lastChar(value));
       const stripCardinalDirections = (finalValue) =>
         showCardinalDirection
           ? finalValue
           : endsWith(finalValue, 'SW')
-          ? '-' + removeLastChar(finalValue)
+          ? `-${removeLastChar(finalValue)}`
           : endsWith(finalValue, 'NE')
           ? removeLastChar(finalValue)
           : finalValue;
