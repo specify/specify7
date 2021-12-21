@@ -28,6 +28,7 @@ import { PasswordPlugin } from './passwordplugin';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
+import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
 function WrongTable({
   resource,
@@ -258,6 +259,13 @@ const pluginRenderers: {
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
+  UserInviteLinkUI({ resource, id }) {
+    return (
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
+        <UserInviteLinkPlugin user={specifyUser} id={id} />
+      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    );
+  },
   Unsupported({ pluginDefinition: { name }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (

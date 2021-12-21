@@ -57,6 +57,7 @@ export type UiPlugins = {
   readonly AdminStatusUI: State<'AdminStatusUI'>;
   readonly LocalityGoogleEarth: State<'LocalityGoogleEarth'>;
   readonly PaleoMap: State<'PaleoMap'>;
+  readonly UserInviteLinkUI: State<'UserInviteLinkUI'>;
   readonly Unsupported: State<
     'Unsupported',
     {
@@ -112,6 +113,7 @@ const processUiPlugin: {
   AdminStatusUI: () => ({ type: 'AdminStatusUI' }),
   LocalityGoogleEarth: () => ({ type: 'LocalityGoogleEarth' }),
   PaleoMap: () => ({ type: 'PaleoMap' }),
+  UserInviteLinkUI: () => ({ type: 'UserInviteLinkUI' }),
   Unsupported: ({ properties }) => ({
     type: 'Unsupported',
     name: properties.name,

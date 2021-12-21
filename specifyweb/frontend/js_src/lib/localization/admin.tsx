@@ -384,6 +384,39 @@ const adminText = createDictionary({
     ca: 'Super Admin',
     'es-es': 'Super Admin',
   },
+
+  // FIXME: localize
+  // UserInviteLinkPlugin
+  createInviteLink: {
+    'en-us': 'Create Invite Link',
+    'ru-ru': 'Create Invite Link',
+    ca: 'Create Invite Link',
+    'es-es': 'Create Invite Link',
+  },
+  userInviteLinkDialogHeader: {
+    'en-us': 'User Invite Link',
+    'ru-ru': 'User Invite Link',
+    ca: 'User Invite Link',
+    'es-es': 'User Invite Link',
+  },
+  userInviteLinkDialogMessage: {
+    'en-us': (username: string) => `
+      Send the following link to ${username} to allow
+      them to log in for the first time.
+    `,
+    'ru-ru': (username: string) => `
+      Send the following link to ${username} to allow
+      them to log in for the first time.
+    `,
+    ca: (username: string) => `
+      Send the following link to ${username} to allow
+      them to log in for the first time.
+    `,
+    'es-es': (username: string) => `
+      Send the following link to ${username} to allow
+      them to log in for the first time.
+    `,
+  },
 });
 
 export default adminText;
