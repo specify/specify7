@@ -1,7 +1,7 @@
-/*
+/**
+ * MappingTree traversal, merge and convertor utilities
  *
- * Various helper methods for working with trees
- *
+ * @module
  */
 
 import type { IR, R, RA } from './types';
@@ -41,9 +41,9 @@ export function traverseTree(
 
 type FlatTree = NestedRecord<string>;
 
-/*
+/**
  * Merges objects recursively
- *	(by reference only, does not create a copy of the tree)
+ *  (by reference only, does not create a copy of the tree)
  */
 export const deepMergeObject = (base: any, merge: object): IR<unknown> =>
   typeof merge === 'object'
@@ -60,46 +60,53 @@ export const deepMergeObject = (base: any, merge: object): IR<unknown> =>
       }, base)
     : base;
 
-/*
+/**
  * Converts array to tree
  *
- * Example:
- * 	if
- * 		array is ['accession', 'accession agents', '#1, 'agent', 'first name']
- * 		hasHeaders is False
- * 	then result is {
- * 		'accession': {
- * 			'accessionAgents': {
- * 				'#1': {
- * 					'agent': {
- * 						'firstName': {
+ * @example
+ * if
+ *   array is ['accession', 'accession agents', '#1, 'agent', 'first name']
+ *   hasHeaders is False
+ * then result is
+ * ```json
+ *  {
+ *   'accession': {
+ *     'accessionAgents': {
+ *       '#1': {
+ *         'agent': {
+ *           'firstName': {
  *
- * 						},
- * 					}
- * 				}
- * 			}
- * 		}
- * 	}
+ *           },
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ * ```
  *
- * 	if
- * 		array is [
- * 			'accession', 'accession agents', '#1, 'agent', 'first name',
- * 			'existingHeader', 'Agent 1 First Name'
- * 		]
- * 		hasHeaders is True
- * 	then result is {
- * 		'accession': {
- * 			'accessionAgents': {
- * 				'#1': {
- * 					'agent': {
- * 						'firstName': {
- * 							'existingHeader': 'Agent 1 First Name',
- * 						},
- * 					}
- * 				}
- * 			}
- * 		}
- * 	}
+ * @example
+ * if
+ *   array is [
+ *     'accession', 'accession agents', '#1, 'agent', 'first name',
+ *     'existingHeader', 'Agent 1 First Name'
+ *   ]
+ *   hasHeaders is True
+ * then result is
+ * ```json
+ * {
+ *   'accession': {
+ *     'accessionAgents': {
+ *       '#1': {
+ *         'agent': {
+ *           'firstName': {
+ *             'existingHeader': 'Agent 1 First Name',
+ *           },
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ * ```
  */
 export function arrayToTree(
   // Array to be converted
@@ -116,9 +123,25 @@ export function arrayToTree(
   return { [node]: arrayToTree(newArray, hasHeaders) };
 }
 
-/*
+/**
  * Converts array of arrays of strings into a complete tree
+ *
+ * @remarks
  * The inverse of mappingsTreeToMappingPaths
+ *
+ * @example
+ * if array is:
+ *   Accession, Accession Agents, #1, Agent, First Name
+ *   Accession, Accession Agents, #1, Agent, Last Name
+ *   Accession, Accession Agents, #1, Remarks
+ * Resulting tree would be:
+ *  Accession
+ *     Accession Agents
+ *      #1
+ *        Agent
+ *           First Name
+ *           Last Name
+ *        Remarks
  */
 export function mappingPathsToMappingsTree(
   /*
@@ -129,21 +152,6 @@ export function mappingPathsToMappingsTree(
   includeHeaders: boolean
 ): MappingsTree {
   // Final tree
-  /*
-   * For example if array is:
-   * 	Accession, Accession Agents, #1, Agent, First Name
-   * 	Accession, Accession Agents, #1, Agent, Last Name
-   * 	Accession, Accession Agents, #1, Remarks
-   * Resulting tree would be:
-   * 	Accession
-   * 		Accession Agents
-   * 			#1
-   * 				Agent
-   * 					First Name
-   * 					Last Name
-   * 				Remarks
-   *
-   */
   const tree = {};
 
   mappingPaths.forEach((mappingPath) =>
@@ -153,30 +161,29 @@ export function mappingPathsToMappingsTree(
   return tree;
 }
 
-/*
+/**
  * Converts mappings tree to array of mappings
  * The inverse of mappingPathsToMappingsTree
+ *
+ * @example
+ * if mappingsTree is:
+ *   Accession
+ *     Accession Agents
+ *       #1
+ *         Agent
+ *           First Name
+ *           Last Name
+ *         Remarks
+ * Result would be:
+ *   Accession, Accession Agents, #1, Agent, First Name
+ *   Accession, Accession Agents, #1, Agent, Last Name
+ *   Accession, Accession Agents, #1, Remarks
  */
 const mappingsTreeToMappingPaths = (
   mappingsTree: MappingsTree,
   // Used in a recursion to store intermediate path
   path: MappingPath = []
 ): RA<FullMappingPath> =>
-  /*
-   * For example, if mappingsTree is:
-   * 	Accession
-   * 		Accession Agents
-   * 			#1
-   * 				Agent
-   * 					First Name
-   * 					Last Name
-   * 				Remarks
-   * Result would be:
-   * 	Accession, Accession Agents, #1, Agent, First Name
-   * 	Accession, Accession Agents, #1, Agent, Last Name
-   * 	Accession, Accession Agents, #1, Remarks
-   *
-   */
   Object.entries(mappingsTree).reduce<FullMappingPath[]>(
     (result, [treeNodeName, treeNode]) => {
       if (

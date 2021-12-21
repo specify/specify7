@@ -1,9 +1,11 @@
-/*
- *
+/**
  * Stores parsed data model and other useful objects for easy sharing
- * between the components of wbplanview
+ * between the components of WbPlanView
  *
+ * @remarks
+ * The data model is cached in localStorage
  *
+ * @module
  */
 
 import type { IR } from './types';
@@ -33,7 +35,7 @@ const dataModelStorage: {
   // Prefix for tree ranks
   treeSymbol: '$',
   /*
-   * A symbol to used to join multiple mapping path elements together when
+   * A symbol that is used to join multiple mapping path elements together when
    * there is a need to represent a mapping path as a string
    */
   pathJoinSymbol: '.',

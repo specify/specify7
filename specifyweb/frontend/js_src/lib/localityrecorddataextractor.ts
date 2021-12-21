@@ -1,3 +1,10 @@
+/*
+ * Extracts data from localities and related records in a format that can be
+ * shown in pop-up bubbles in Leaflet
+ *
+ * @module
+ */
+
 import type { RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import dataObjectFormatters from './dataobjformatters';

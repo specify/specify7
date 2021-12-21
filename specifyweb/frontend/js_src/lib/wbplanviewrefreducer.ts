@@ -1,3 +1,19 @@
+/**
+ * Like WbPlanView Action's reducer, but does not trigger reRender on change
+ *
+ * @remarks
+ * Instead of using State, it implements a "refState" using React.useRef
+ *
+ * Useful for storing items that update often (e.g., mapping view height while
+ * resizing it)
+ *
+ * This is probably an overkill and a better solution would have been to
+ * store state as close to where it is used as possible, instead of having
+ * a giant Reducer and a refReducer.
+ *
+ * @module
+ */
+
 import type React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';

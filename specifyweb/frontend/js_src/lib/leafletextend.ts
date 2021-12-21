@@ -1,5 +1,7 @@
-/*
+/**
  * Imports Leaflet, adds plugins along with new controls and reexports it
+ *
+ * @module
  */
 
 // eslint-disable-next-line simple-import-sort/imports

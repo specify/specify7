@@ -1,3 +1,9 @@
+/**
+ * High-level WbPlanView helpers
+ *
+ * @module
+ */
+
 import AutoMapper from './automapper';
 import type {
   AutoMapperSuggestion,

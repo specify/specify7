@@ -1,7 +1,8 @@
-/*
+/**
  * Utility functions for getting locality data from locality resource and
  * workbench dataset
  *
+ * @module
  */
 
 import type { IR, RA } from './types';

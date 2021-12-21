@@ -1,3 +1,11 @@
+/**
+ * Action reducer for async actions
+ *
+ * Probably an over kill (React.useEffect may have been better suited for this)
+ *
+ * @module
+ */
+
 import $ from 'jquery';
 import type { State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';

@@ -1,10 +1,12 @@
-/*
- *
+/**
  * This file contains information to help auto-map imported XLSX and CSV files
- * to the Specify 6 data model. Originally Based on
+ * to the Specify 6 data model.
+ *
+ * @remarks
+ * Originally Based on
  * https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
  *
- *
+ * @module
  */
 
 import type { IR, RA, RR } from './types';
@@ -14,19 +16,19 @@ import type {
 } from './components/wbplanviewmapper';
 
 /*
- *  AutoMapper does 2 passes though the schema whenever it is asked to map
- *  some headers. This is needed to ensure priority mapping for some mapping
- *  paths. In particular, `shortcuts` and `tableSynonyms` are used on the
- *  first pass. The second path goes over `synonyms` and also does string
- *  comparison (matching)
+ * AutoMapper does 2 passes though the schema whenever it is asked to map
+ * some headers. This is needed to ensure priority mapping for some mapping
+ * paths. In particular, `shortcuts` and `tableSynonyms` are used on the
+ * first pass. The second path goes over `synonyms` and also does string
+ * comparison (matching)
  */
 
+/**
+ * A structure for defining matching rules
+ * NOTE: All values must use lower case exclusively!
+ *
+ */
 export type Options = {
-  /*
-   * A structure for defining matching rules
-   * NOTE: All values must use lower case exclusively!
-   *
-   */
 
   // Regex match (header.match(regex) !== null)
   readonly regex?: RA<RegExp>;
@@ -34,7 +36,7 @@ export type Options = {
   // Exact string match (header===string)
   readonly string?: RA<string>;
 
-  // Substring match (header.indexOf(string)!==-1)
+  // Substring match (header.includes(string))
   readonly contains?: RA<string>;
 
   /*
@@ -181,7 +183,7 @@ type AutoMapperDefinitions = {
                * only for `synonym` definitions
                * Matches only if header is strictly
                * in one of the following forms:
-               *  - <fieldNameSynonym> <tableName>
+               *   - <fieldNameSynonym> <tableName>
                *   - <tableName> <fieldNameSynonym>
                *   - <tableName> <index> <fieldNameSynonym>
                *   - <tableName> <fieldNameSynonym> <index>
@@ -324,7 +326,7 @@ const definitions: AutoMapperDefinitions = {
   },
   dontMatch: {
     Address: {
-      // Some ranks were mapped to Address instead of Geography
+      // These ranks were getting mapped to Address instead of Geography
       country: ['autoMapper'],
       state: ['autoMapper'],
     },

@@ -1,3 +1,9 @@
+/**
+ * WB Upload results Typings
+ *
+ * @module
+ */
+
 import type { State } from 'typesafe-reducer';
 
 import type { IR, RA, RR } from './types';

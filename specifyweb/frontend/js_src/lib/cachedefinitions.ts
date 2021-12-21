@@ -1,3 +1,9 @@
+/**
+ * Typings for the cache buckets
+ *
+ * @module
+ */
+
 import type hot from 'handsontable';
 
 import type { SearchPreferences } from './components/wbadvancedsearch';
@@ -11,7 +17,7 @@ import type {
   TreeRankData,
 } from './wbplanviewmodelfetcher';
 
-// The types of cached values are defined here
+/** The types of cached values are defined here */
 export type CacheDefinitions = {
   readonly wbPlanViewUi: {
     readonly showHiddenTables: boolean;

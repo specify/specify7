@@ -1,3 +1,9 @@
+/**
+ * Upload Plan to Mappings Tree
+ *
+ * @module
+ * */
+
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { IR, R, RA } from './types';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
@@ -234,10 +240,9 @@ const handleUploadable = (
         mappingPath
       );
 
-/*
+/**
  * Converts upload plan to mappings tree
  * Inverse of mappingsTreeToUploadPlan
- *
  */
 export function uploadPlanToMappingsTree(
   headers: RA<string>,

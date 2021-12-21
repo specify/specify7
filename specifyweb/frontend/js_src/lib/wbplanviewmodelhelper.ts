@@ -1,9 +1,8 @@
-/*
- *
- * Helper methods for working with Specify data model as parsed by wbplanview
+/**
+ * Helper methods for working with Specify data model as parsed by WbPlanView
  * model fetcher
  *
- *
+ * @module
  */
 
 import type { IR, RA } from './types';
@@ -26,7 +25,6 @@ import type {
 } from './wbplanviewmodelfetcher';
 import type { MappingsTree } from './wbplanviewtreehelper';
 
-/* Fetch fields for a table */
 const getTableFields = (
   // The name of the table to fetch the fields for
   tableName: string,
@@ -42,7 +40,6 @@ const getTableFields = (
       (filterIsHidden === -1 || isHidden === filterIsHidden)
   );
 
-/* Fetch fields for a table */
 export const getTableNonRelationshipFields = (
   // The name of the table to fetch the fields for
   tableName: string,
@@ -54,7 +51,6 @@ export const getTableNonRelationshipFields = (
     relationshipData: DataModelNonRelationship
   ][];
 
-/* Fetch relationships for a table */
 export const getTableRelationships = (
   // The name of the table to fetch relationships fields for
   tableName: string,
@@ -66,11 +62,10 @@ export const getTableRelationships = (
     relationshipData: DataModelRelationship
   ][];
 
-/* Returns whether a table has tree ranks */
 export const tableIsTree = (tableName?: string): boolean =>
   typeof dataModelStorage.ranks[tableName ?? ''] !== 'undefined';
 
-/* Returns the max index in the list of reference item values */
+/** Returns the max index in the list of -to-many items */
 export const getMaxToManyValue = (
   // List of reference item values
   values: RA<string>
@@ -86,7 +81,7 @@ export const getMaxToManyValue = (
     return max;
   }, 0);
 
-/* Iterates over the mappingsTree to find required fields that are missing */
+/** Iterates over the mappingsTree to find required fields that are missing */
 export function findRequiredMissingFields(
   // Name of the current base table
   tableName: string,
