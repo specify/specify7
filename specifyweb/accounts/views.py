@@ -1,5 +1,10 @@
 import logging
 import requests
+import json
+import time
+import hmac
+import hashlib
+import base64
 import jwt
 
 from typing import Union
@@ -8,9 +13,10 @@ from typing_extensions import TypedDict
 from django import forms
 from django import http
 from django.db import connection
+from django.db.models import Max
 from django.conf import settings
 from django.utils import crypto
-from django.utils.http import is_safe_url
+from django.utils.http import is_safe_url, urlencode
 from django.shortcuts import render
 from django.contrib.auth import login, logout
 from django.template.response import TemplateResponse
@@ -127,6 +133,21 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     id_token = get_token.json()['id_token']
     ext_user = jwt.decode(id_token, options={"verify_signature": False})
 
+    if 'invite_token' in request.session:
+        token = request.session['invite_token']
+        user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=token['userid'])
+
+        if time.time() > token['expires'] or user.token_seq != token['sequence']:
+            return http.HttpResponseBadRequest("Token expired.", content_type="text/plain")
+
+        user.spuserexternalid_set.create(
+            provider=provider,
+            providerid=str(ext_user['sub']),
+        )
+        del request.session['invite_token']
+        login(request, user)
+        return http.HttpResponseRedirect('/specify')
+
     try:
         user = Specifyuser.objects.get(
             spuserexternalid__provider=provider,
@@ -144,6 +165,41 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
 
     login(request, user)
     return http.HttpResponseRedirect('/specify')
+
+@require_GET
+def invite_link(request, userid:int) -> http.HttpResponse:
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+    user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=userid)
+    token = {
+        'userid': userid,
+        'sequence': user.token_seq,
+        'expires': int(time.time()) + 7 * 24 * 60 * 60,
+    }
+    message = base64.urlsafe_b64encode(json.dumps(token).encode('utf-8'))
+    mac = hmac.new(settings.SECRET_KEY.encode('utf-8'), msg=message, digestmod=hashlib.sha256)
+    params = urlencode({'token': message, 'mac': base64.urlsafe_b64encode(mac.digest())})
+    link = request.build_absolute_uri(f'/accounts/use_invite_link/?{params}')
+    return http.HttpResponse(link, content_type='text/plain')
+
+@require_GET
+def use_invite_link(request) -> http.HttpResponse:
+    message = request.GET['token'].encode('utf-8')
+    mac = base64.urlsafe_b64decode(request.GET['mac'])
+    mac_ = hmac.new(settings.SECRET_KEY.encode('utf-8'), msg=message, digestmod=hashlib.sha256)
+    if not hmac.compare_digest(mac, mac_.digest()):
+        return http.HttpResponseBadRequest("Token invalid.", content_type="text/plain")
+
+    token = json.loads(base64.urlsafe_b64decode(message).decode('utf-8'))
+    user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=token['userid'])
+
+    if time.time() > token['expires'] or user.token_seq != token['sequence']:
+        return http.HttpResponseBadRequest("Token expired.", content_type="text/plain")
+
+    token['username'] = user.name
+    request.session['invite_token'] = token
+    return http.HttpResponseRedirect('/accounts/login/')
+
 
 class CollectionChoiceField(forms.ChoiceField):
     widget = forms.RadioSelect
