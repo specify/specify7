@@ -17,11 +17,19 @@
   <div id="content">
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
+      {% if 'invite_token' in request.session %}
+      <p>Hello, {{ request.session.invite_token.username }}! You've been invited to
+        associate an external login to your Specify user account. This will enable
+        you to log in to Specify with your chosen provider going forward.
+      </p>
+      {% endif %}
       <p>Log in with one of the providers below:</p>
       {% for p in providers %}
       <label><input type="radio" name="provider" value="{{ p.provider }}"> {{ p.title }}</label>
       {% endfor %}
+      {% if 'invite_token' not in request.session %}
       <p>Or log in with a <a href="/accounts/legacy_login/">legacy</a> Specify user name and password.</p>
+      {% endif %}
       <div class="submit-row">
         <input type="submit" value="Login" />
       </div>

@@ -13,5 +13,7 @@ urlpatterns = [
         template_name='password_change.html', success_url='/')),
 
     path('support_login/', views.support_login),
+    path('invite_link/<int:userid>/', views.invite_link),
+    path('use_invite_link/', views.use_invite_link),
     path('choose_collection/', views.choose_collection),
 ]
