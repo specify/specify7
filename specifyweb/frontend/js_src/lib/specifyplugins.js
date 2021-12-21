@@ -19,6 +19,7 @@ var providers = [
     require('./passwordplugin.js'),
     require('./useragentsplugin.js'),
     require('./adminstatusplugin.js'),
+    require('./userinvitelinkplugin.js'),
     require('./leafletplugin.js'),
     require('./paleolocationplugin.js'),
 ];

@@ -89,6 +89,9 @@
                     <cell type="field" id="9" uitype="plugin" name="this" initialize="name=UserCollectionsUI"/>
                 </row>
                 <row>
+                  <cell type="field" id="10" uitype="plugin" name="this" initialize="name=UserInviteLinkUI"/>
+                </row>
+                <row>
                   <cell type="label"
                         label="Note: New users must have password and agents set after saving in order to log in."
                         colspan="4"/>
