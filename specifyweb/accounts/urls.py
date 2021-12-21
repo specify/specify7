@@ -17,4 +17,6 @@ urlpatterns = [
         skip_collection_access_check(views.support_login)),
     path('choose_collection/',
         skip_collection_access_check(views.choose_collection)),
+    path('invite_link/<int:userid>/', views.invite_link),
+    path('use_invite_link/', views.use_invite_link),
 ]
