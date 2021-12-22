@@ -11,8 +11,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
+import ErrorBoundary from './errorboundary';
 import createBackboneView from './reactbackboneextend';
-import type { RA, IR } from './wbplanview';
+import type { IR, RA } from './wbplanview';
 
 function closeDialogCallback(
   $dialog: JQuery,
@@ -120,7 +121,13 @@ export function ModalDialog({
   React.useEffect(() => {
     if (typeof $dialog === 'undefined') return;
 
-    ReactDOM.render(<>{children}</>, $dialog[0], resize.current);
+    ReactDOM.render(
+      <React.StrictMode>
+        <ErrorBoundary silentErrors={false}>{children}</ErrorBoundary>
+      </React.StrictMode>,
+      $dialog[0],
+      resize.current
+    );
   }, [$dialog, children]);
 
   // Update dialog on changes to the "properties" object
