@@ -7,7 +7,7 @@ import hashlib
 import base64
 import jwt
 
-from typing import Union
+from typing import Union, Optional
 from typing_extensions import TypedDict
 
 from django import forms
@@ -64,9 +64,19 @@ class ExternalUser(TypedDict):
     id: str # The user's id in the provider's system.
     name: str # The user's name for UI purposes.
 
+class InviteToken(TypedDict):
+    """Embedded in an invite token."""
+    userid: int  # The Specify user id
+    username: str
+    sequence: Optional[int] # To prevent reuse of token.
+    expires: int # A time.time() value after which the token is expired.
+
 
 @require_http_methods(['GET', 'POST'])
 def oic_login(request: http.HttpRequest) -> http.HttpResponse:
+    """Initiates the OpenId Connect login process by providing the list of
+    available providers, then redirecting to the one chosen.
+    """
     if request.method == 'POST':
         provider = request.POST['provider']
         provider_info: ProviderInfo = settings.OAUTH_LOGIN_PROVIDERS[provider]
@@ -76,7 +86,7 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
             discovery_url = provider_info['config']
             if not discovery_url.endswith("/.well-known/openid-configuration"):
                 discovery_url += "/.well-known/openid-configuration"
-            provider_conf = requests.get(discovery_url).json()
+            provider_conf = requests.get(discovery_url).json() # This could be cached.
         else:
             provider_conf = provider_info['config']
 
@@ -89,12 +99,14 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
         request.session['oauth_login'] = oauth_login
 
         endpoint = provider_conf['authorization_endpoint']
-        scope = provider_info['scope']
-        clientid = provider_info['client_id']
-        redirect = request.build_absolute_uri('/accounts/oic_callback/')
-        return http.HttpResponseRedirect(
-            f'{endpoint}?response_type=code&scope={scope}&client_id={clientid}&redirect_uri={redirect}&state={state}'
-        )
+        params = urlencode({
+            'response_type': 'code',
+            'scope': provider_info['scope'],
+            'client_id': provider_info['client_id'],
+            'redirect_uri': request.build_absolute_uri('/accounts/oic_callback/'),
+            'state': state,
+        })
+        return http.HttpResponseRedirect(f'{endpoint}?{params}')
 
     providers = [
         {'provider': p, 'title': d['title']}
@@ -104,6 +116,7 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
 
 @require_GET
 def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
+    """Handles the return callback from the OIC identity provider. """
     oauth_login: OAuthLogin = request.session['oauth_login']
     del request.session['oauth_login'] # not really necessary, but might as well clean up.
     assert crypto.constant_time_compare(request.GET['state'], oauth_login['state'])
@@ -134,7 +147,8 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     ext_user = jwt.decode(id_token, options={"verify_signature": False})
 
     if 'invite_token' in request.session:
-        token = request.session['invite_token']
+        # We are in the invite link workflow.
+        token: InviteToken = request.session['invite_token']
         user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=token['userid'])
 
         if time.time() > token['expires'] or user.token_seq != token['sequence']:
@@ -146,7 +160,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
         )
         del request.session['invite_token']
         login(request, user)
-        return http.HttpResponseRedirect('/specify')
+        return http.HttpResponseRedirect('/accounts/choose_collection/')
 
     try:
         user = Specifyuser.objects.get(
@@ -154,6 +168,8 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
             spuserexternalid__providerid=str(ext_user['sub'])
         )
     except Specifyuser.DoesNotExist:
+        # Redirect to legacy login to associate the user's
+        # external identity with a Specify account.
         external_user: ExternalUser = {
             'id': str(ext_user['sub']),
             'provider': provider,
@@ -168,11 +184,19 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
 
 @require_GET
 def invite_link(request, userid:int) -> http.HttpResponse:
+    """API endpoint for generating an invite link."""
     if not request.specify_user.is_admin():
-        return HttpResponseForbidden()
+        return http.HttpResponseForbidden()
+    # The id field of the spuserexternalid table is used as a non
+    # repeating number to prevent replay of invite tokens. For this to
+    # work, the external id records shouldn't be deleted as that would
+    # cause the "None" sequence value to be repeated. This prevents
+    # the same invite token from being used to associate multiple
+    # external ids to the same Specify user.
     user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=userid)
-    token = {
+    token: InviteToken = {
         'userid': userid,
+        'username': user.name,
         'sequence': user.token_seq,
         'expires': int(time.time()) + 7 * 24 * 60 * 60,
     }
@@ -184,19 +208,25 @@ def invite_link(request, userid:int) -> http.HttpResponse:
 
 @require_GET
 def use_invite_link(request) -> http.HttpResponse:
+    """Begins the process of using an invite token to associate an
+    external id to a Specify account. We validate the token and store
+    it in a server side session variable, then redirect to the regular
+    OIC login process which will retrieve the token after the user
+    authenticates with their chosen IdP.
+    """
     message = request.GET['token'].encode('utf-8')
     mac = base64.urlsafe_b64decode(request.GET['mac'])
     mac_ = hmac.new(settings.SECRET_KEY.encode('utf-8'), msg=message, digestmod=hashlib.sha256)
     if not hmac.compare_digest(mac, mac_.digest()):
         return http.HttpResponseBadRequest("Token invalid.", content_type="text/plain")
 
-    token = json.loads(base64.urlsafe_b64decode(message).decode('utf-8'))
+    token: InviteToken = json.loads(base64.urlsafe_b64decode(message).decode('utf-8'))
     user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=token['userid'])
 
     if time.time() > token['expires'] or user.token_seq != token['sequence']:
         return http.HttpResponseBadRequest("Token expired.", content_type="text/plain")
 
-    token['username'] = user.name
+    token['username'] = user.name # Just in case it has changed.
     request.session['invite_token'] = token
     return http.HttpResponseRedirect('/accounts/login/')
 
@@ -210,8 +240,15 @@ class CollectionChoiceField(forms.ChoiceField):
 @require_http_methods(['GET', 'POST'])
 @never_cache
 def choose_collection(request) -> http.HttpResponse:
-    "The HTML page for choosing which collection to log into. Presented after the main auth page."
-    if 'external_user' in request.session:
+    """The HTML page for choosing which collection to log into. Presented
+    after the main auth process. Since the legacy login process passes
+    through here, we also use the opportunity to associate an external
+    id to the user if one is provided.
+    """
+    if 'external_user' in request.session and request.user.is_authenticated:
+        # This will be set if the user logged in with an external IdP
+        # that returned an unknown identity. They only get here if
+        # they then completed a legacy authentication.
         external_user: ExternalUser = request.session['external_user']
         del request.session['external_user']
 
