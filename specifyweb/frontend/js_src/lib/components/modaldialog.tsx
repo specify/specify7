@@ -123,7 +123,9 @@ export function ModalDialog({
 
     ReactDOM.render(
       <React.StrictMode>
-        <ErrorBoundary silentErrors={false}>{children}</ErrorBoundary>
+        <ErrorBoundary silentErrors={false}>
+          <>{children}</>
+        </ErrorBoundary>
       </React.StrictMode>,
       $dialog[0],
       resize.current

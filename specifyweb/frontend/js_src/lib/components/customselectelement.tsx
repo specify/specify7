@@ -420,6 +420,7 @@ export function CustomSelectElement({
   const handleClick = has('interactive')
     ? ({
         isDoubleClick,
+        close,
         newValue,
         ...rest
       }: {
@@ -429,12 +430,12 @@ export function CustomSelectElement({
         readonly newTableName: string;
         readonly isDoubleClick: boolean;
       }): void =>
-        isDoubleClick ||
-        (newValue !== defaultOption.optionName && !has('handleKeyboardClick'))
+        isDoubleClick || close || newValue !== defaultOption.optionName
           ? handleChange?.({
               currentTableName: defaultOption.tableName ?? '',
               newValue,
               isDoubleClick,
+              close,
               ...rest,
             })
           : undefined
@@ -684,15 +685,16 @@ export function CustomSelectElement({
               } else if (event.key === 'Enter' || event.key === 'Escape')
                 handleClose?.();
               else if (event.key === 'ArrowUp')
-                if (selectedValueIndex > 0) newIndex = selectedValueIndex - 1;
-                else newIndex = inlineOptions.length - 1;
+                newIndex =
+                  selectedValueIndex > 0
+                    ? selectedValueIndex - 1
+                    : inlineOptions.length - 1;
               else if (event.key === 'ArrowDown')
-                if (
+                newIndex =
                   selectedValueIndex !== -1 &&
                   selectedValueIndex < inlineOptions.length - 1
-                )
-                  newIndex = selectedValueIndex + 1;
-                else newIndex = 0;
+                    ? selectedValueIndex + 1
+                    : 0;
 
               if (typeof newIndex === 'number') {
                 const newValue = inlineOptions[newIndex]?.optionName ?? '0';
