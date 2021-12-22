@@ -1,13 +1,17 @@
-"use strict";
+'use strict';
 
-var router           = require('./router.js');
+const router = require('./router');
+const app = require('./specifyapp');
 
-module.exports = function() {
-    router.route('workbench-import/', 'workbench-import', function() {
-        require.ensure(['./wbimport.js'], function(require) {
-            var wbimport = require('./wbimport.js').default;
-            wbimport();
-        }, 'wbimport');
-    });
+module.exports = function () {
+  router.route('workbench-import/', 'workbench-import', function () {
+    require.ensure(
+      ['./components/wbimport'],
+      function (require) {
+        const WbImport = require('./components/wbimport').default;
+        app.setCurrentView(new WbImport());
+      },
+      'wbimport'
+    );
+  });
 };
-

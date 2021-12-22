@@ -1,10 +1,13 @@
+import '../../css/wbimport.css';
+
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
-import wbText from '../localization/workbench';
 
+import wbText from '../localization/workbench';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
-import { IR } from './wbplanview';
+import createBackboneView from './reactbackboneextend';
+import type { IR, RR } from './wbplanview';
 
 const $ = require('jquery');
 
@@ -86,7 +89,7 @@ type Action =
 
 type HandleAction = (action: Action) => void;
 
-export default class WbImport extends Component<{}, WbImportState> {
+class WbImport extends Component<{}, WbImportState> {
   constructor(props: any) {
     super(props);
     this.state = { type: 'ChooseFileState' };
@@ -120,8 +123,9 @@ export default class WbImport extends Component<{}, WbImportState> {
           ? { type: 'GotPreviewAction', preview: data, file, fileType: 'xls' }
           : { type: 'BadImportFileAction', file, fileType: 'xls' }
       );
-    worker.onerror = () =>
-      this.update({ type: 'BadImportFileAction', file, fileType: 'xls' });
+    worker.addEventListener('error', () =>
+      this.update({ type: 'BadImportFileAction', file, fileType: 'xls' })
+    );
   }
 
   doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
@@ -269,11 +273,7 @@ export default class WbImport extends Component<{}, WbImportState> {
     let preview;
     switch (this.state.type) {
       case 'ChooseFileState':
-        rows = (
-          <>
-            <ChooseFile update={update} />
-          </>
-        );
+        rows = <ChooseFile update={update} />;
         break;
 
       case 'PreviewFileState':
@@ -470,7 +470,11 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
   const data = props.data;
   const { rows, header } = extractHeader(data, hasHeader);
 
-  const headerCells = header.map((cell, index) => <th key={index} scope="col">{cell}</th>);
+  const headerCells = header.map((cell, index) => (
+    <th key={index} scope="col">
+      {cell}
+    </th>
+  ));
   const dataRows = rows.map((row, index) => (
     <tr key={index}>
       {row.map((cell, index) => (
@@ -550,3 +554,15 @@ function extractHeader(
 function assertExhaustive(x: never): never {
   throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
+
+export default createBackboneView<
+  RR<never, unknown>,
+  RR<never, unknown>,
+  RR<never, unknown>
+>({
+  moduleName: 'WBImportView',
+  title: wbText('importDataSet'),
+  className: 'workbench-import-view',
+  Component: () => <WbImport />,
+  getComponentProps: () => ({}),
+});
