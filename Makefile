@@ -17,6 +17,7 @@ pip_requirements:
 django_migrations: python_prep
 	$(PYTHON) manage.py migrate notifications
 	$(PYTHON) manage.py migrate workbench
+	$(PYTHON) manage.py migrate accounts
 
 specifyweb/settings/build_version.py: .FORCE
 	if [ -z "${BUILD_VERSION}" ]; \
