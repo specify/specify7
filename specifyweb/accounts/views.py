@@ -7,7 +7,7 @@ import hashlib
 import base64
 import jwt
 
-from typing import Union, Optional
+from typing import Union, Optional, Dict
 from typing_extensions import TypedDict
 
 from django import forms
@@ -27,9 +27,12 @@ from specifyweb.specify import models as spmodels
 from specifyweb.context.views import set_collection_cookie, users_collections
 from specifyweb.specify.views import login_maybe_required
 
+from .models import Spuserexternalid
+
 logger = logging.getLogger(__name__)
 
 Specifyuser = getattr(spmodels, 'Specifyuser')
+
 
 class ProviderInfo(TypedDict):
     "Elements of settings.OAUTH_LOGIN_PROVIDERS should have this type."
@@ -63,6 +66,7 @@ class ExternalUser(TypedDict):
     provider_title: str # For UI purposes.
     id: str # The user's id in the provider's system.
     name: str # The user's name for UI purposes.
+    idtoken: Dict # The JWT from the provider.
 
 class InviteToken(TypedDict):
     """Embedded in an invite token."""
@@ -157,17 +161,15 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
         user.spuserexternalid_set.create(
             provider=provider,
             providerid=str(ext_user['sub']),
+            idtoken=ext_user,
         )
         del request.session['invite_token']
         login(request, user)
         return http.HttpResponseRedirect('/accounts/choose_collection/')
 
     try:
-        user = Specifyuser.objects.get(
-            spuserexternalid__provider=provider,
-            spuserexternalid__providerid=str(ext_user['sub'])
-        )
-    except Specifyuser.DoesNotExist:
+        spuserexternalid = Spuserexternalid.objects.get(provider=provider, providerid=str(ext_user['sub']))
+    except Spuserexternalid.DoesNotExist:
         # Redirect to legacy login to associate the user's
         # external identity with a Specify account.
         external_user: ExternalUser = {
@@ -175,11 +177,19 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
             'provider': provider,
             'provider_title': provider_info['title'],
             'name': ext_user.get('name', ext_user.get('email', None)),
+            'idtoken': ext_user,
         }
         request.session['external_user'] = external_user
         return http.HttpResponseRedirect('/accounts/legacy_login/')
 
-    login(request, user)
+    if not spuserexternalid.enabled:
+        return http.HttpResponse("Logins with this identity are disabled.", content_type="text/plain")
+
+    # Update our copy of the JWT
+    spuserexternalid.idtoken = ext_user
+    spuserexternalid.save()
+
+    login(request, spuserexternalid.specifyuser)
     return http.HttpResponseRedirect('/specify')
 
 @require_GET
@@ -255,6 +265,7 @@ def choose_collection(request) -> http.HttpResponse:
         request.specify_user.spuserexternalid_set.create(
             provider=external_user['provider'],
             providerid=external_user['id'],
+            idtoken=external_user['idtoken'],
         )
 
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
