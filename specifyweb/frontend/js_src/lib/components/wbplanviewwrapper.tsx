@@ -3,7 +3,7 @@ import React from 'react';
 import wbText from '../localization/workbench';
 import navigation from '../navigation';
 import dataModelStorage from '../wbplanviewmodel';
-import fetchDataModel from '../wbplanviewmodelfetcher';
+import { dataModelPromise } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type {
@@ -11,8 +11,6 @@ import type {
   WbPlanViewWrapperProps,
 } from './wbplanview';
 import { WbPlanView } from './wbplanview';
-
-const schemaFetchedPromise = fetchDataModel();
 
 function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
   const [schemaLoaded, setSchemaLoaded] = React.useState<boolean>(
@@ -22,7 +20,7 @@ function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
   React.useEffect(() => {
     if (schemaLoaded) return;
 
-    schemaFetchedPromise
+    dataModelPromise
       .then(() => setSchemaLoaded(true))
       .catch((error) => {
         throw error;

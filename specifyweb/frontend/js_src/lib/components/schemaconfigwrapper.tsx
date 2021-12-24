@@ -114,7 +114,9 @@ function SchemaConfigWrapper({
           new Set(
             data.map(
               ({ country, language }) =>
-                `${language}${country === null || country === '' ? '' : `_${country}`}`
+                `${language}${
+                  country === null || country === '' ? '' : `_${country}`
+                }`
             )
           )
         )
@@ -251,8 +253,10 @@ export default createBackboneView<ConstructorProps, BackboneProps, Props>({
   Component: SchemaConfigWrapper,
   getComponentProps: (self) => ({
     onClose: (): void => navigation.go('/specify/'),
-    onSave: (language): void =>
-      navigation.go(`/specify/task/schema-config/?language=${language}`),
+    onSave: (language): void => {
+      // Reload the page after schema changes
+      window.location.href = `/specify/task/schema-config/?language=${language}`;
+    },
     removeUnloadProtect: (): void => removeUnloadProtect(self),
     setUnloadProtect: (): void => setUnloadProtect(self),
     defaultLanguage: self.defaultLanguage,

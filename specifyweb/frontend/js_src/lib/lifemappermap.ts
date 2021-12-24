@@ -17,7 +17,7 @@ import {
 } from './localityrecorddataextractor';
 import lifemapperText from './localization/lifemapper';
 import schema from './schema';
-import fetchDataModel from './wbplanviewmodelfetcher';
+import { dataModelPromise } from './wbplanviewmodelfetcher';
 
 export async function prepareLifemapperProjectionMap(
   remoteOccurrence: string,
@@ -34,7 +34,7 @@ export async function prepareLifemapperProjectionMap(
 
   const similarCoMarkersPromise = new Promise<RA<MarkerGroups>>(
     async (resolve) => {
-      await fetchDataModel();
+      await dataModelPromise;
 
       let taxon;
 

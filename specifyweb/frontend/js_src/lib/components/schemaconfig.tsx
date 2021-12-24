@@ -8,10 +8,10 @@ import { reducer } from '../schemaconfigreducer';
 import { useId } from './common';
 import { stateReducer } from './schemaconfigstate';
 import type {
-  WithFetchedStrings,
-  WithFieldInfo,
   CommonTableFields,
   SpLocaleContainer,
+  WithFetchedStrings,
+  WithFieldInfo,
 } from './schemaconfigwrapper';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
