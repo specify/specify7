@@ -231,9 +231,9 @@ const commonText = require('./localization/common').default;
 
         searchDownload: function(evt) {
             this.$('.query-execute, .query-csv, .query-kml').blur();
-            var cls = $(evt.currentTarget).attr('class');
-            var postUrl = '/stored_query/' + (cls == 'query-csv' ? 'exportcsv' : 'exportkml') + '/';
-            var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
+            const isCsv = evt.currentTarget.classList.contains('query-csv');
+            var postUrl = '/stored_query/' + (isCsv ? 'exportcsv' : 'exportkml') + '/';
+            var fileDesc = isCsv ? 'CSV' : 'KML';
             if (fileDesc == 'KML' && !this.hasGeoCoords()) {
                 $(`<div>
                     ${queryText('unableToExportAsKmlDialogHeader')}
@@ -245,8 +245,9 @@ const commonText = require('./localization/common').default;
                   });
                 return;
             }
-            const captions = cls === 'query-kml' ?
-                 _.chain(this.fieldUIs)
+            const captions = isCsv
+                ? undefined
+                : _.chain(this.fieldUIs)
                         .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                         .sortBy(function(f) { return f.spqueryfield.get('position'); })
                         .map(function(f) { return {spec: f.fieldSpec, isdisplay: f.spqueryfield.get('isdisplay')};})
@@ -258,8 +259,7 @@ const commonText = require('./localization/common').default;
                             }
                             //return {caption: name, isdisplay: f.isdisplay};
                             return name;
-                        }).value()
-                : undefined;
+                        }).value();
 
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
