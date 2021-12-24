@@ -30,6 +30,7 @@ const commonText = require('./localization/common').default;
     var ResultsView = Backbone.View.extend({
         __name__: "ResultsView",
         className: "express-search-view",
+        title: commonText('expressSearch'),
         events: {
             'accordionchange': 'panelOpened'
         },
@@ -136,6 +137,5 @@ const commonText = require('./localization/common').default;
 module.exports =  function() {
         router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
-            app.setTitle(commonText('expressSearch'));
         });
     };

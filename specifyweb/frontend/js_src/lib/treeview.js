@@ -86,17 +86,17 @@ const autocomplete = require('./autocomplete').default;
                 remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] : 'name';
 
         },
+        title(){
+            return treeText('treeViewTitle')(
+              schema.getModel(this.table).getLocalizedName()
+            );
+        },
         render: function() {
             this.$el.data('view', this);
             this.$el.contextMenu({
                 selector: ".tree-node .expander",
                 build: contextMenuBuilder(this)
             });
-            app.setTitle(
-                treeText('treeViewTitle')(
-                    schema.getModel(this.table).getLocalizedName()
-                )
-            );
             const controls = $('<header class="tree-controls"></header>');
             controls.appendTo(this.el);
             $('<h2>').text(commonText('trees')).appendTo(controls);

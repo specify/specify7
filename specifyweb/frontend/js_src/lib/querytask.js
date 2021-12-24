@@ -38,6 +38,9 @@ const commonText = require('./localization/common').default;
             this.recordSet = options.recordSet;
             this.model = schema.getModel(this.query.get('contextname'));
         },
+        title(){
+            return queryText('queryTaskTitle')(this.query.get('name'));
+        },
         render: function() {
             const title = this.recordSet ?
                 queryText('queryRecordSetTitle')(
@@ -45,7 +48,6 @@ const commonText = require('./localization/common').default;
                     this.recordSet.get('name')
                 )
                 : queryText('queryTaskTitle')(this.query.get('name'));
-            app.setTitle(queryText('queryTaskTitle')(this.query.get('name')));
             this.$el.append(template({ queryText, commonText, cid: this.cid }));
             this.$('.querybuilder-header h2').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon()).attr('alt',this.model.getLocalizedName());

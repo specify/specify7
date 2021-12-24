@@ -25,7 +25,6 @@ const commonText = require('./localization/common').default;
     router
         .route('*whatever', 'notFound', function() {
             app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('pageNotFound'));
         })
         .route('test_error/', 'testError', function() {
             $.get('/api/test_error/');
@@ -69,6 +68,11 @@ const commonText = require('./localization/common').default;
         currentView.render();
         main.append(currentView.el);
         main[0].focus();
+
+        if (typeof currentView.title === 'string')
+            app.setTitle(currentView.title);
+        else if (typeof currentView.title === 'function')
+            app.setTitle(currentView.title(currentView));
 
         Array.from(
           document.getElementById('site-nav').getElementsByTagName('a'),

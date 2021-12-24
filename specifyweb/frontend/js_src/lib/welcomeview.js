@@ -245,6 +245,7 @@ const commonText = require('./localization/common').default;
     var WelcomeView = Backbone.View.extend({
         __name__: "WelcomeView",
         tagName: "section",
+        title: welcomeText('pageTitle'),
         className: "specify-welcome",
         events: {
             'click #about-specify': 'showAboutDialog'
@@ -277,5 +278,4 @@ const commonText = require('./localization/common').default;
 
 module.exports = function() {
     app.setCurrentView(new WelcomeView());
-    app.setTitle(welcomeText('pageTitle'));
 };

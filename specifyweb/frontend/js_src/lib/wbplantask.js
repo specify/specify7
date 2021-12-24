@@ -12,10 +12,9 @@ module.exports = function () {
       (require) => {
         const PlanView = require('./components/wbplanviewwrapper').default;
         fetch(`/api/workbench/dataset/${id}/`).then((response) => {
-          if (response.status === 404) {
+          if (response.status === 404)
             app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('pageNotFound'));
-          } else
+          else
             response
               .json()
               .then((dataset) =>

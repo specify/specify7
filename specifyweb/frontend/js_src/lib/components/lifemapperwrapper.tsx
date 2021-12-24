@@ -35,7 +35,7 @@ const TaxonBadges = createBackboneView<Props, Props, Props>({
   initialize(self, { model }) {
     self.model = model;
   },
-  renderPre(self) {
+  beforeRender(self) {
     self.el.setAttribute('aria-live', 'polite');
   },
   silentErrors: true,

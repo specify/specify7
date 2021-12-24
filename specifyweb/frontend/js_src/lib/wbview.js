@@ -2421,7 +2421,6 @@ module.exports = function loadDataset(
       if (jqXHR.status === 404) {
         jqXHR.errorHandled = true;
         app.setCurrentView(new NotFoundView());
-        app.setTitle(commonText('pageNotFound'));
         return '(not found)';
       }
       return jqXHR;

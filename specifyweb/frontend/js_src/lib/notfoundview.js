@@ -7,6 +7,7 @@ const commonText = require('./localization/common').default;
 
 module.exports = Backbone.View.extend({
         __name__: "NotFoundView",
+        title: commonText('pageNotFound'),
         render: function() {
             var self = this;
             self.$el.empty();

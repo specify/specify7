@@ -22,6 +22,7 @@ const template = require('./templates/attachmentbrowser.html');
     var AttachmentsView = Backbone.View.extend({
         __name__: "AttachmentsView",
         className: "specify-attachments-view",
+        title: commonText('attachments'),
         events: {
             'click .specify-attachment-thumbnail': 'openOriginal',
             'click .specify-attachment-dataobj-icon': 'openDataObj',
@@ -225,7 +226,6 @@ const template = require('./templates/attachmentbrowser.html');
 module.exports =  function() {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
-            app.setTitle(commonText('attachments'));
         });
     };
 

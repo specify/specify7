@@ -11,7 +11,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Backbone from '../backbone';
-import app from '../specifyapp.js';
 import ErrorBoundary from './errorboundary';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
@@ -29,7 +28,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   className,
   tagName,
   initialize,
-  renderPre,
+  beforeRender,
   remove,
   silentErrors = false,
   Component,
@@ -45,7 +44,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
     viewProps: CONSTRUCTOR_PROPS
   ) => void;
-  readonly renderPre?: (
+  readonly beforeRender?: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => void;
   readonly remove?: (
@@ -61,14 +60,12 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     __name__: moduleName,
     className,
     tagName,
+    title,
     initialize(props: CONSTRUCTOR_PROPS) {
       initialize?.(this, props);
     },
     render() {
-      renderPre?.(this);
-
-      if (typeof title === 'string') app.setTitle(title);
-      else if (typeof title === 'function') app.setTitle(title(this));
+      beforeRender?.(this);
 
       ReactDOM.render(
         <React.StrictMode>
