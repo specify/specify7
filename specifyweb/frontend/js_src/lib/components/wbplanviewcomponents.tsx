@@ -100,7 +100,7 @@ export function ButtonWithConfirmation(props: {
   readonly buttons: (
     confirm: () => void,
     cancel: () => void
-  ) => JQueryUI.DialogOptions['buttons'];
+  ) => JQueryUI.DialogButtonOptions[];
   readonly dialogContent: React.ReactNode;
   readonly onConfirm: () => void;
   readonly dialogTitle: string;

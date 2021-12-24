@@ -47,11 +47,13 @@ const hasHeader = (children: React.ReactNode): boolean =>
       children.props.children.some(hasHeader)));
 
 type DialogProperties = IR<unknown> &
-  JQueryUI.DialogOptions & {
+  Exclude<JQueryUI.DialogOptions, 'buttons'> & {
     readonly close?: (
       event: JQueryUI.DialogEvent | Event | undefined,
       ui: JQueryUI.DialogUIParams | undefined
     ) => void;
+    // Don't allow supplying buttons as a dictionary to simplify code
+    readonly buttons?: RA<JQueryUI.DialogButtonOptions>;
   };
 
 export function ModalDialog({
@@ -90,22 +92,16 @@ export function ModalDialog({
           : (properties.close as () => void)
       );
 
-    const buttons =
-      typeof properties.buttons === 'object' &&
-      !Array.isArray(properties.buttons)
-        ? properties.buttons
-        : (
-            properties.buttons ?? [
-              { text: commonText('close'), click: closeDialog },
-            ]
-          ).map((button) =>
-            button.click === closeDialog
-              ? {
-                  ...button,
-                  click: closeDialogBind,
-                }
-              : button
-          );
+    const buttons = (
+      properties.buttons ?? [{ text: commonText('close'), click: closeDialog }]
+    ).map((button) =>
+      button.click === closeDialog
+        ? {
+            ...button,
+            click: closeDialogBind,
+          }
+        : button
+    );
 
     dialogElement.dialog({
       modal: true,

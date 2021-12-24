@@ -32,9 +32,7 @@ function ChangeLanguage({ onClose: handleClose }: ComponentProps) {
       properties={{
         title: commonText('changeLanguage'),
         close: handleClose,
-        buttons: {
-          [commonText('close')]: closeDialog,
-        },
+        buttons: [{ text: commonText('close'), click: closeDialog }],
       }}
     >
       <form action="/context/language/" method="post">
