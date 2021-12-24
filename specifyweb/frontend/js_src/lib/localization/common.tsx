@@ -446,9 +446,9 @@ const commonText = createDictionary({
     ca: 'Master Key',
   },
   generateMasterKeyDialogHeader: {
-    'en-us': createHeader('Generate Master Key'),
-    'ru-ru': createHeader('Сгенерировать мастер-ключ'),
-    ca: createHeader('Generate Master Key'),
+    'en-us': createJsxHeader('Generate Master Key'),
+    'ru-ru': createJsxHeader('Сгенерировать мастер-ключ'),
+    ca: createJsxHeader('Generate Master Key'),
   },
   userPassword: {
     'en-us': 'User Password:',
@@ -461,9 +461,9 @@ const commonText = createDictionary({
     ca: 'Master Key',
   },
   masterKeyDialogHeader: {
-    'en-us': createHeader('Master key generated'),
-    'ru-ru': createHeader('Мастер-ключ создан'),
-    ca: createHeader('Master key generated'),
+    'en-us': createJsxHeader('Master key generated'),
+    'ru-ru': createJsxHeader('Мастер-ключ создан'),
+    ca: createJsxHeader('Master key generated'),
   },
   masterKeyFieldLabel: {
     'en-us': 'Master Key:',
