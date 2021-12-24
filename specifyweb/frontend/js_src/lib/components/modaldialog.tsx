@@ -74,7 +74,9 @@ export function ModalDialog({
 
     const dialogElement = $(dialogRef.current.children[0] as HTMLElement);
     resize.current = (): void =>
-      void dialogElement.dialog('option', 'position', 'center');
+      dialogElement.is(':ui-dialog')
+        ? void dialogElement.dialog('option', 'position', 'center')
+        : undefined;
 
     const closeDialogBind = (
       event: JQueryUI.DialogEvent | Event | undefined = undefined
