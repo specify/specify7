@@ -19,6 +19,10 @@ type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
   remove: () => void;
 } & BACKBONE_PROPS;
 
+interface Constructable<T> {
+  new (...args: any): T;
+}
+
 export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   moduleName,
   title,
@@ -52,7 +56,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   readonly getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => COMPONENT_PROPS;
-}): View =>
+}): Constructable<View> =>
   Backbone.View.extend({
     __name__: moduleName,
     className,

@@ -77,7 +77,6 @@ export default {
   task: 'change-language',
   title: commonText('changeLanguage'),
   execute: function () {
-    // @ts-expect-error
     new View().render();
   },
 };

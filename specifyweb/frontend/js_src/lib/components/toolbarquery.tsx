@@ -383,7 +383,6 @@ export default {
   icon: '/static/img/query.png',
   execute(): void {
     const element = document.createElement('div');
-    // @ts-expect-error
     const view = new QueryToolbarView({
       el: element,
       onClose: () => view.remove(),
