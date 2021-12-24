@@ -273,7 +273,7 @@ const commonText = require('./localization/common').default;
                     <p>${queryText('queryExportStartedDialogMessage')(fileDesc)}</p>
                 </div>`).dialog({
                     title: queryText('queryExportStartedDialogTitle'),
-                    modal: false,
+                    modal: true,
                     close: function() { $(this).remove(); },
                     buttons: [{
                         text: commonText('close'),

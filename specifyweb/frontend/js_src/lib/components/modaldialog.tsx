@@ -194,7 +194,6 @@ export function LoadingScreen(): JSX.Element {
   return (
     <ModalDialog
       properties={{
-        modal: false,
         dialogClass: 'ui-dialog-no-close',
         title: commonText('loading'),
         buttons: [],

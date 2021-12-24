@@ -1458,7 +1458,7 @@ const WBView = Backbone.View.extend({
         ${wbText('unavailableWhileValidating')}
       </div>`).dialog({
         title: wbText('results'),
-        modal: false,
+        modal: true,
         close: () => dialog.dialog('destroy'),
         buttons: [
           {
