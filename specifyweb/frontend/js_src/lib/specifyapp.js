@@ -13,7 +13,7 @@ var NotFoundView = require('./notfoundview.js');
 var navigation   = require('./navigation.js');
 var ResourceView = require('./resourceview.js');
 var router       = require('./router.js');
-var systemInfo   = require('./systeminfo.js');
+var systemInfo   = require('./systeminfo.ts');
 var reports      = require('./reports.js');
 const commonText = require('./localization/common').default;
 

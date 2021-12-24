@@ -25,7 +25,7 @@ export type UserInfo = Readonly<UserInfoWritable>;
 const userInfo: UserInfoWritable = {} as UserInfoWritable;
 
 initialContext.load('user.json', (data: UserInfo) => {
-  if(data.agent === null){
+  if (data.agent === null) {
     const dialog: JQuery<HTMLElement> = $(`<div>
       ${commonText('noAgentDialogHeader')}
       <p>${commonText('noAgentDialogMessage')}</p>
@@ -33,15 +33,15 @@ initialContext.load('user.json', (data: UserInfo) => {
       modal: true,
       dialogClass: 'ui-dialog-persistent',
       title: commonText('noAgentDialogTitle'),
-      close: ()=>{
+      close: () => {
         window.location.href = '/accounts/logout/';
       },
       buttons: [
         {
           text: commonText('logOut'),
-          click: ()=>dialog.dialog('close'),
-        }
-      ]
+          click: () => dialog.dialog('close'),
+        },
+      ],
     });
     dialog[0].classList.add('ui-dialog-persistent');
   }

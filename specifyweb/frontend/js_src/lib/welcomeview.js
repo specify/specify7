@@ -10,7 +10,7 @@ var app    = require('./specifyapp.js');
 var schema               = require('./schema.js');
 var prefs                = require('./remoteprefs.js');
 var dataobjectformatters = require('./dataobjformatters.js');
-var systemInfo           = require('./systeminfo.js');
+var systemInfo           = require('./systeminfo');
 var template             = require('./templates/welcome.html');
 var aboutspecify         = require('./templates/aboutspecify.html');
 
