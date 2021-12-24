@@ -34,7 +34,7 @@ const {
 const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree');
 const { extractDefaultValues } = require('./wbplanviewhelper');
 const { getTableFromMappingPath } = require('./wbplanviewnavigator');
-const fetchDataModelPromise = require('./wbplanviewmodelfetcher').default;
+const {dataModelPromise} = require('./wbplanviewmodelfetcher');
 const { capitalize } = require('./wbplanviewhelper');
 const { BackboneLoadingScreen } = require('./components/modaldialog');
 const icons = require('./icons.js');
@@ -231,7 +231,7 @@ const WBView = Backbone.View.extend({
 
     this.initHot().then(() => {
       if (this.dataset.uploadplan) {
-        fetchDataModelPromise().then(() => {
+        dataModelPromise.then(() => {
           this.mappings = uploadPlanToMappingsTree(
             this.dataset.columns,
             this.dataset.uploadplan

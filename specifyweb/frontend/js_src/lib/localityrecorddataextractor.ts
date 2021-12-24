@@ -19,8 +19,8 @@ import {
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import dataModelStorage from './wbplanviewmodel';
-import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { dataModelPromise } from './wbplanviewmodelfetcher';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -192,7 +192,7 @@ export async function getLocalityDataFromLocalityResource(
   filterFunction: FilterFunction = defaultRecordFilterFunction
 ): Promise<LocalityData | false> {
   // Needed by generateMappingPathPreview
-  await fetchDataModelPromise();
+  await dataModelPromise;
 
   const filteredArrayOfMappings = parseLocalityPinFields(quickFetch);
 

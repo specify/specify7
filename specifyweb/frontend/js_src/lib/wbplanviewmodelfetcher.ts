@@ -246,15 +246,46 @@ const fieldHasOverwrite = (
     ([key, action]) => fieldName.endsWith(key) && action === overwriteName
   ) !== -1;
 
+const schemaConfigTableIds = Object.values({
+  spLocaleItemContainer: 503,
+  spLocaleItem: 504,
+  spLocaleItemStr: 505,
+});
+
+/**
+ * Schema hash is used for wiping schema cache after schema changes
+ *
+ * @remarks
+ * Hash is calculated by summing the total number of records in the
+ * SpAuditLog table for Schema Config tables
+ */
+const getSchemaHash = async (): Promise<number> =>
+  Promise.all(
+    schemaConfigTableIds.map((tableNum) =>
+      fetch(`/api/specify/spauditlog/?limit=1&tablenum=${tableNum}`)
+        .then<{ readonly meta: { readonly total_count: number } }>((response) =>
+          response.json()
+        )
+        .then(({ meta }) => meta.total_count)
+    )
+  ).then((counts) => counts.reduce((sum, count) => sum + count, 0));
+
 /* Fetches the data model */
-export default async function (): Promise<void> {
-  if (typeof dataModelStorage.tables !== 'undefined') return;
+async function fetchDataModel(ignoreCache = false): Promise<void> {
+  if (!ignoreCache && typeof dataModelStorage.tables !== 'undefined') return;
 
   if (typeof dataModelStorage.currentCollectionId === 'undefined')
     dataModelStorage.currentCollectionId = await cache.getCurrentCollectionId();
-  const cacheVersion = `${dataModelFetcherVersion}_${dataModelStorage.currentCollectionId}`;
 
-  {
+  const schemaHash = await getSchemaHash();
+
+  const cacheVersion = [
+    dataModelFetcherVersion,
+    dataModelStorage.currentCollectionId,
+    schemaHash,
+  ].join('_');
+
+  if (!ignoreCache) {
     const tables = cache.get('wbplanview-datamodel', 'tables', {
       version: cacheVersion,
     });
@@ -534,3 +565,5 @@ export default async function (): Promise<void> {
       throw error;
     });
 }
+
+export const dataModelPromise = fetchDataModel().then(() => dataModelStorage);
