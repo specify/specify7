@@ -29,6 +29,7 @@ import {
   fetchingParameters,
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
+import systemInfo from './systeminfo';
 
 export type DataModelFieldWritable =
   | DataModelNonRelationshipWritable
@@ -282,6 +283,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   const cacheVersion = [
     dataModelFetcherVersion,
     dataModelStorage.currentCollectionId,
+    systemInfo.schema_version,
     schemaHash,
   ].join('_');
 
