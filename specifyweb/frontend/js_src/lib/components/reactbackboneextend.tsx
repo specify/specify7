@@ -6,23 +6,28 @@
  *
  */
 
-import { View } from 'backbone';
+import type { View } from 'backbone';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Backbone from '../backbone';
 import ErrorBoundary from './errorboundary';
+import type { IR } from './wbplanview';
 
 type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
-  el: HTMLElement;
-  remove: () => void;
+  readonly el: HTMLElement;
+  readonly remove: () => void;
 } & BACKBONE_PROPS;
 
-interface Constructable<T> {
-  new (...args: any): T;
-}
+export type Constructable<TYPE, PROPS extends IR<unknown> = IR<never>> = new (
+  props: PROPS
+) => TYPE;
 
-export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
+const createBackboneView = <
+  CONSTRUCTOR_PROPS extends IR<unknown>,
+  BACKBONE_PROPS extends IR<unknown>,
+  COMPONENT_PROPS extends IR<unknown>
+>({
   moduleName,
   title,
   className,
@@ -31,7 +36,7 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
   beforeRender,
   remove,
   silentErrors = false,
-  Component,
+  component: Component,
   getComponentProps,
 }: {
   readonly moduleName: string;
@@ -51,11 +56,11 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => void;
   readonly silentErrors?: boolean;
-  readonly Component: (props: COMPONENT_PROPS) => JSX.Element | null;
+  readonly component: (props: COMPONENT_PROPS) => JSX.Element | null;
   readonly getComponentProps: (
     self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
   ) => COMPONENT_PROPS;
-}): Constructable<View> =>
+}): Constructable<View, CONSTRUCTOR_PROPS> =>
   Backbone.View.extend({
     __name__: moduleName,
     className,
@@ -83,3 +88,5 @@ export default <CONSTRUCTOR_PROPS, BACKBONE_PROPS, COMPONENT_PROPS>({
       Backbone.View.prototype.remove.call(this);
     },
   });
+
+export default createBackboneView;

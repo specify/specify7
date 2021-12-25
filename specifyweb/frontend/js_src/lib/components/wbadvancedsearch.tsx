@@ -184,7 +184,7 @@ export default createBackboneView<Props, Props, ComponentProps>({
     self.onChange = onChange;
     self.onClose = onClose;
   },
-  Component: WbAdvancedSearch,
+  component: WbAdvancedSearch,
   getComponentProps: (self) => ({
     onClose: (): void => {
       self.onClose();

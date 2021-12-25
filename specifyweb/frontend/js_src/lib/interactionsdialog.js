@@ -9,22 +9,25 @@ var Q        = require('q');
 var schema            = require('./schema.js');
 var icons             = require('./icons.js');
 var specifyform       = require('./specifyform.js');
-var initialContext    = require('./initialcontext.js');
 var userInfo          = require('./userinfo').default;
 var InteractionDialog = require('./interactiondialog.js');
 var s                 = require('./stringlocalization.js');
 var reports           = require('./reports.js');
+const ajax = require("./ajax").default;
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
-    var interaction_entries, views, actions, getFormsPromise;
+    var interaction_entries, actions, getFormsPromise;
 
-    initialContext.load('app.resource?name=InteractionsTaskInit', function (data) {
+    ajax(
+        '/context/app.resource?name=InteractionsTaskInit',
+        {headers: {Accept: 'application/xml'}}
+    ).then(({data}) => {
         interaction_entries = _.map($('entry', data), $)
             .filter(entry => entry.attr('isonleft') === 'true'
                     && !['NEW_DISPOSAL', 'NEW_EXCHANGE_OUT', 'LN_NO_PRP', 'Specify Info Request'].includes(entry.attr('action')));
 
-        views = interaction_entries.filter(entry => !isActionEntry(entry));
+        const views = interaction_entries.filter(entry => !isActionEntry(entry));
         actions = interaction_entries.filter(isActionEntry);
 
         actions.forEach(actionEntry => actionEntry.table = getTableForObjToCreate(actionEntry));

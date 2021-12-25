@@ -262,7 +262,7 @@ export default createBackboneView<Props, Props, ComponentProps>({
   initialize(self, { showTemplates }) {
     self.showTemplates = showTemplates;
   },
-  Component: WbsDialog,
+  component: WbsDialog,
   getComponentProps: (self) => ({
     onClose: (): void => self.remove(),
     showTemplates: self.showTemplates,

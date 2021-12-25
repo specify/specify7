@@ -72,7 +72,7 @@ export default createBackboneView<
   remove(self) {
     removeUnloadProtect(self);
   },
-  Component: WbPlanViewWrapper,
+  component: WbPlanViewWrapper,
   getComponentProps: (self) => ({
     dataset: self.dataset,
     removeUnloadProtect: (): void => removeUnloadProtect(self),

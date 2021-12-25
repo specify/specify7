@@ -10,6 +10,7 @@ type UserInfoWritable = {
   isadmin: boolean;
   isReadOnly: boolean;
   usertype: UserType;
+  isauthenticated: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   available_collections: RA<
     Readonly<[collectionId: number, collectionName: string]>
@@ -26,7 +27,7 @@ const userInfo: UserInfoWritable = {} as UserInfoWritable;
 
 initialContext.load('user.json', (data: UserInfo) => {
   if (data.agent === null) {
-    const dialog: JQuery<HTMLElement> = $(`<div>
+    const dialog: JQuery = $(`<div>
       ${commonText('noAgentDialogHeader')}
       <p>${commonText('noAgentDialogMessage')}</p>
     </div>`).dialog({

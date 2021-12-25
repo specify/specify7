@@ -2,22 +2,25 @@ import '../../css/schemaconfig.css';
 
 import React from 'react';
 
+import DataObjectFormatters from '../dataobjformatters';
+import type { Schema } from '../legacytypes';
 import commonText from '../localization/common';
-import { Schema } from '../legacytypes';
 import navigation from '../navigation';
 import schema from '../schema';
 import { formatAggregators } from '../schemaconfighelper';
+import UiFormatters from '../uiformatters';
 import { fetchingParameters } from '../wbplanviewmodelconfig';
 import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
+import { webLinksDefs } from '../weblinkbutton';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { SpLocaleItemStr } from './schemaconfig';
-import { NewSpLocaleItemStr, SchemaConfig } from './schemaconfig';
+import type {
+  NewSpLocaleItemStr as NewSpLocaleItemString,
+  SpLocaleItemStr as SpLocaleItemString,
+} from './schemaconfig';
+import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
-import UiFormatters from '../uiformatters';
-import { webLinksDefs } from '../weblinkbutton';
-import DataObjFormatters from '../dataobjformatters';
 
 type ConstructorProps = IR<never>;
 type BackboneProps = {
@@ -43,23 +46,25 @@ export type CommonTableFields = {
 export type SpLocaleContainer = CommonTableFields & {
   readonly id: number;
   readonly aggregator: string | null;
-  //readonly defaultui?: string;
+  // Readonly defaultui?: string;
   readonly format: string | null;
   readonly ishidden: boolean;
   readonly issystem: boolean;
-  // readonly isuiformatter: null;
+  // Readonly isuiformatter: null;
   readonly name: string;
   readonly picklistname: string | null;
-  // readonly schematype: 0 | 1;
-  // readonly items: string;
+  /*
+   * Readonly schematype: 0 | 1;
+   * readonly items: string;
+   */
   readonly descs: string;
   readonly names: string;
 };
 
 export type WithFetchedStrings = {
   readonly strings: {
-    readonly desc: SpLocaleItemStr | NewSpLocaleItemStr;
-    readonly name: SpLocaleItemStr | NewSpLocaleItemStr;
+    readonly desc: SpLocaleItemString | NewSpLocaleItemString;
+    readonly name: SpLocaleItemString | NewSpLocaleItemString;
   };
 };
 
@@ -121,7 +126,7 @@ function SchemaConfigWrapper({
           )
         )
       )
-      .then((languages) =>
+      .then(async (languages) =>
         Promise.all(
           languages.map(async (language) =>
             fetch(`/context/language/${language.replace('_', '-')}/`)
@@ -217,10 +222,10 @@ function SchemaConfigWrapper({
         })
       ).filter(({ value }) => value)}
       dataObjFormatters={formatAggregators(
-        DataObjFormatters.getFormatters() as RA<Element>
+        DataObjectFormatters.getFormatters() as RA<Element>
       )}
       dataObjAggregators={formatAggregators(
-        DataObjFormatters.getAggregators() as RA<Element>
+        DataObjectFormatters.getAggregators() as RA<Element>
       )}
       onClose={handleClose}
       onSave={handleSave}
@@ -250,7 +255,7 @@ export default createBackboneView<ConstructorProps, BackboneProps, Props>({
   remove(self) {
     removeUnloadProtect(self);
   },
-  Component: SchemaConfigWrapper,
+  component: SchemaConfigWrapper,
   getComponentProps: (self) => ({
     onClose: (): void => navigation.go('/specify/'),
     onSave: (language): void => {

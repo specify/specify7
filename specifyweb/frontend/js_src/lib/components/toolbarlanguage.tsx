@@ -1,15 +1,19 @@
 import * as React from 'react';
+
 import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
+import type { UserTool } from './main';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { IR } from './wbplanview';
+import type { IR } from './wbplanview';
 
-type ComponentProps = {
-  readonly onClose: () => void;
+type Props = {
+  onClose: () => void;
 };
 
-function ChangeLanguage({ onClose: handleClose }: ComponentProps) {
+function ChangeLanguage({
+  onClose: handleClose,
+}: Readonly<Props>): JSX.Element {
   const [languages, setLanguages] = React.useState<
     | undefined
     | IR<{
@@ -20,7 +24,7 @@ function ChangeLanguage({ onClose: handleClose }: ComponentProps) {
 
   React.useEffect(() => {
     fetch('/context/language/')
-      .then((response) => response.json())
+      .then(async (response) => response.json())
       .then(({ data }) => setLanguages(data))
       .catch(console.error);
   }, []);
@@ -47,7 +51,7 @@ function ChangeLanguage({ onClose: handleClose }: ComponentProps) {
           <select
             name="language"
             value={document.documentElement.lang}
-            onChange={({ target }) => target.closest('form')?.submit()}
+            onChange={({ target }): void => target.closest('form')?.submit()}
           >
             {Object.entries(languages).map(
               ([code, { name_local, code: shortCode }]) => (
@@ -64,19 +68,22 @@ function ChangeLanguage({ onClose: handleClose }: ComponentProps) {
   );
 }
 
-const View = createBackboneView<IR<never>, IR<never>, ComponentProps>({
+const View = createBackboneView<Props, Props, Readonly<Props>>({
   moduleName: 'ChangeLanguage',
   className: 'change-language',
-  Component: ChangeLanguage,
+  component: ChangeLanguage,
+  initialize(self, { onClose }) {
+    self.onClose = onClose;
+  },
   getComponentProps: (self) => ({
-    onClose: () => self.remove(),
+    onClose: self.onClose,
   }),
 });
 
-export default {
+const toolBarItem: UserTool = {
   task: 'change-language',
   title: commonText('changeLanguage'),
-  execute: function () {
-    new View().render();
-  },
+  view: ({ onClose }) => new View({ onClose }),
 };
+
+export default toolBarItem;

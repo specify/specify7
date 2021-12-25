@@ -5,8 +5,8 @@ var _ = require('underscore');
 
 var businessRules = require('./businessrules.js');
 var errorview = require('./errorview.js');
-var HeaderUI = require('./headerui.js');
 var navigation = require('./navigation.js');
+const {MainView} = require("./components/main");
 const commonText = require('./localization/common').default;
 
 var tasks = [
@@ -16,7 +16,7 @@ var tasks = [
   require('./treetask.js'),
   require('./expresssearchtask.js'),
   require('./datamodeltask.js'),
-  require('./attachmentstask.js'),
+  require('./attachmentstask.js').default,
   require('./wbtask.js'),
   require('./wbimporttask.js'),
   require('./wbplantask.js'),
@@ -57,18 +57,10 @@ module.exports = function appStart() {
   // addBasicRoutes(router);
   $(document).ajaxError(handleUnexpectedError);
   businessRules.enable(true);
-  new HeaderUI().render();
+  new MainView({el: document.getElementById('root-app-container') }).render();
   _.each(tasks, function (task) {
     task();
   });
-
-  document.getElementById('skip-link').addEventListener('click',()=> {
-    const main= document.getElementsByTagName('main')[0];
-    main.setAttribute('tabindex',-1);
-    main.focus();
-    main.removeAttribute('tabindex');
-  });
-
 
   // start processing the urls to draw the corresponding views
   navigation.start({ pushState: true, root: '/specify/' });

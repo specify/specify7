@@ -1,12 +1,11 @@
 import React from 'react';
 
-import commonText from '../localization/common';
-import createBackboneView from './reactbackboneextend';
-import app from '../specifyapp';
-import navigation from '../navigation';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import ajax, { formData } from '../ajax';
+import commonText from '../localization/common';
 import { useId } from './common';
+import type { UserTool } from './main';
+import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
+import createBackboneView from './reactbackboneextend';
 
 type Props = {
   onClose: () => void;
@@ -39,7 +38,7 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
           {
             text: commonText('generate'),
             click: () => {
-              /* submit the form */
+              /* Submit the form */
             },
             type: 'submit',
             form: id('form'),
@@ -62,10 +61,12 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
             {
               method: 'POST',
               body: formData({ password }),
+              headers: {
+                Accept: 'text/plain',
+              },
             },
             {
               expectedResponseCodes: [403, 200],
-              expectsJson: false,
             }
           )
             .then(({ data, status }) =>
@@ -108,27 +109,23 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
   );
 }
 
-const MasterKeyView = createBackboneView<
-  Record<never, unknown>,
-  Props,
-  Readonly<Props>
->({
+const MasterKeyView = createBackboneView<Props, Props, Readonly<Props>>({
   moduleName: 'MasterKeyView',
   className: 'master-key',
   title: commonText('generateMasterKey'),
-  Component: MasterKey,
-  getComponentProps: () => ({
-    onClose: () => {
-      navigation.go('/specify/');
-    },
+  component: MasterKey,
+  initialize(self, { onClose }) {
+    self.onClose = onClose;
+  },
+  getComponentProps: (self) => ({
+    onClose: self.onClose,
   }),
 });
 
-export default {
+const toolBarItem: UserTool = {
   task: 'master-key',
   title: commonText('generateMasterKey'),
-  icon: null,
-  execute() {
-    app.setCurrentView(new MasterKeyView());
-  },
+  view: ({ onClose }) => new MasterKeyView({ onClose }),
 };
+
+export default toolBarItem;

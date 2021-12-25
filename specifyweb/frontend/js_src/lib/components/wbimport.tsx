@@ -563,6 +563,6 @@ export default createBackboneView<
   moduleName: 'WBImportView',
   title: wbText('importDataSet'),
   className: 'workbench-import-view',
-  Component: () => <WbImport />,
+  component: () => <WbImport />,
   getComponentProps: () => ({}),
 });

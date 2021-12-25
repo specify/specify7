@@ -75,7 +75,7 @@ export default createBackboneView<Props, ConstructorProps, Props>({
     self.onClose = onClose;
     self.isUploaded = isUploaded;
   },
-  Component: WbUploadedView,
+  component: WbUploadedView,
   getComponentProps: (self) => ({
     recordCounts: self.recordCounts,
     onClose: self.onClose,

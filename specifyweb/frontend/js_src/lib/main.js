@@ -37,14 +37,12 @@ $(document).unbind('keydown').bind('keydown', (event) => {
     prevent && event.preventDefault();
 });
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+// These HTTP methods do not require CSRF protection
+const csrfSafeMethod = new Set(['GET','HEAD','OPTIONS','TRACE']);
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        if (!csrfSafeMethod.has(settings.type.toUpperCase()) && !this.crossDomain) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }

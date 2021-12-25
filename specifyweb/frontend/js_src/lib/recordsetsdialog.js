@@ -162,9 +162,7 @@ module.exports = Backbone.View.extend({
             button.setAttribute("value", commonText("query"));
             const queryEventListener = () => {
                 editView.remove();
-                const element = document.createElement("div");
                 const view = new QueryToolbarView({
-                    el: element,
                     onClose: () => view.remove(),
                     getQuerySelectUrl: (query) =>
                          `/specify/query/${query.id}/?recordsetid=${recordSet.id}`,
@@ -186,7 +184,6 @@ module.exports = Backbone.View.extend({
                         }]
                         : [],
                 });
-                document.body.append(element);
                 view.render();
             };
             button.addEventListener("click", queryEventListener);

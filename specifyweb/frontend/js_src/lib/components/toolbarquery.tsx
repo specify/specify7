@@ -4,25 +4,28 @@ import $ from 'jquery';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import ajax from '../ajax';
 import DeleteButton from '../deletebutton';
-import initialContext from '../initialcontext';
 import commonText from '../localization/common';
 import navigation from '../navigation';
 import populateform from '../populateform';
 import SaveButton from '../savebutton';
 import schema from '../schema';
+import app from '../specifyapp';
 import specifyform from '../specifyform';
 import userInfo from '../userinfo';
 import { DateElement, TableIcon } from './common';
+import type { MenuItem } from './main';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import type { IR, RA } from './wbplanview';
 
-const tablesToShowPromise: Promise<RA<string>> = new Promise<Document>(
-  (resolve) => initialContext.loadResource('querybuilder.xml', resolve)
+const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
+  '/static/config/querybuilder.xml',
+  { headers: { Accept: 'application/xml' } }
 )
-  .then((document) =>
+  .then(({data:document}) =>
     Array.from(
       document.querySelectorAll('database > table'),
       (table) => table.getAttribute('name')?.toLowerCase() ?? ''
@@ -348,7 +351,7 @@ export const QueryToolbarView = createBackboneView<
 >({
   moduleName: 'QueryToolbarItem',
   className: 'query-toolbar-item',
-  Component: QueryToolbarItem,
+  component: QueryToolbarItem,
   initialize(
     self,
     {
@@ -377,15 +380,14 @@ export const QueryToolbarView = createBackboneView<
   }),
 });
 
-export default {
+const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
   icon: '/static/img/query.png',
-  execute(): void {
-    const element = document.createElement('div');
-    const view = new QueryToolbarView({
-      el: element,
-      onClose: () => view.remove(),
+  path: '/specify/query',
+  view: ({ onClose }) =>
+    new QueryToolbarView({
+      onClose,
       getQueryCreateUrl: userInfo.isReadOnly
         ? undefined
         : (tableName: string): string => `/specify/query/new/${tableName}/`,
@@ -393,25 +395,23 @@ export default {
       onEdit: userInfo.isReadOnly
         ? undefined
         : (query: Query): void => {
-            view.remove();
             const queryModel = new (
               schema as any
             ).models.SpQuery.LazyCollection({
               filters: { id: query.id },
             });
             queryModel.fetch({ limit: 1 }).then(() => {
-              const dialog = new EditQueryDialog({
-                spquery: queryModel.models[0],
-              });
-              $('body').append(dialog.el);
-              dialog.render();
+              app.setCurrentView(
+                new EditQueryDialog({
+                  spquery: queryModel.models[0],
+                })
+              );
             });
           },
-    });
-    document.body.append(element);
-    view.render();
-  },
+    }),
 };
+
+export default menuItem;
 
 const EditQueryDialog = Backbone.View.extend({
   __name__: 'EditQueryDialog',

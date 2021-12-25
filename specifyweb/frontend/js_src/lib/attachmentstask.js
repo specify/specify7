@@ -223,9 +223,12 @@ const template = require('./templates/attachmentbrowser.html');
         }
     });
 
-module.exports =  function() {
+module.exports = {
+    default() {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
         });
-    };
+    },
+    AttachmentsView
+};
 

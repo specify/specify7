@@ -195,7 +195,7 @@ export default createBackboneView<Props, ConstructorProps, Props>({
     self.dataset = dataset;
     self.onFinished = onFinished;
   },
-  Component: WbStatus,
+  component: WbStatus,
   getComponentProps: (self) => ({
     dataset: self.dataset,
     onFinished: self.onFinished,

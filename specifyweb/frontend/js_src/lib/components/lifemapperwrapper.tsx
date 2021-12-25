@@ -21,7 +21,7 @@ const CollectionObjectBadges = createBackboneView<Props, Props, ComponentProps>(
       self.model = model;
     },
     silentErrors: true,
-    Component: SpecifyNetworkBadge,
+    component: SpecifyNetworkBadge,
     getComponentProps: (self) => ({
       model: self.model,
       guid: self.model.get('guid'),
@@ -39,7 +39,7 @@ const TaxonBadges = createBackboneView<Props, Props, Props>({
     self.el.setAttribute('aria-live', 'polite');
   },
   silentErrors: true,
-  Component: Lifemapper,
+  component: Lifemapper,
   getComponentProps: (self) => ({
     model: self.model,
   }),
@@ -47,10 +47,7 @@ const TaxonBadges = createBackboneView<Props, Props, Props>({
 
 export default function register(): void {
   ResourceView.on('rendered', (resourceView: any) => {
-    const render = (
-      View: any,
-      attach: (element: JQuery<HTMLElement>) => JQuery<HTMLElement>
-    ) =>
+    const render = (View: any, attach: (element: JQuery) => JQuery) =>
       new View({
         model: resourceView.model,
         el: attach($('<span class="lifemapper-info"></span>')),
@@ -62,7 +59,9 @@ export default function register(): void {
     )
       if (resourceView.model.specifyModel.name === 'Taxon') {
         if (resourceView.header)
-          render(TaxonBadges, (el) => el.appendTo(resourceView.header));
+          render(TaxonBadges, (element) =>
+            element.appendTo(resourceView.header)
+          );
         else
           setTimeout(
             () =>

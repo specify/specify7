@@ -334,6 +334,27 @@ const commonText = createDictionary({
   },
 
   // Toolbar
+  skipToContent: {
+    'en-us': 'Skip to Content',
+    'ru-ru': '',
+    ca: '',
+  },
+  goToHomepage: {
+    'en-us': 'Go to homepage',
+    'ru-ru': '',
+    ca: '',
+  },
+  currentUser: {
+    'en-us': 'Current User',
+    'ru-ru': '',
+    ca: '',
+  },
+  currentCollection: {
+    'en-us': 'Current Collection',
+    'ru-ru': '',
+    ca: '',
+  },
+
   notifications: {
     'en-us': (count: number) => `Notifications: ${count}`,
     'ru-ru': (count: number) => `Уведомлений: ${count}`,
@@ -1124,7 +1145,7 @@ const commonText = createDictionary({
   userDefined: {
     'en-us': 'User Defined',
     'ru-ru': 'Создано пользователем',
-    ca: 'Creat per l\'usuari',
+    ca: "Creat per l'usuari",
   },
   default: {
     'en-us': 'Default',

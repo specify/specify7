@@ -10,14 +10,16 @@ var router            = require('./router.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var whenAll           = require('./whenall.js');
 var s                 = require('./stringlocalization.js');
-var initialContext    = require('./initialcontext.js');
 var app               = require('./specifyapp.js');
 var querystring       = require('./querystring.js');
+const ajax = require("./ajax").default;
 const commonText = require('./localization/common').default;
 
 
-    var relatedSearches;
-    initialContext.load('available_related_searches.json', data => relatedSearches = data);
+    const relatedSearchesPromise = ajax(
+      '/context/available_related_searches.json',
+        {headers: {Accept: 'application/json'}}
+    ).then(({data})=>data);
 
     var accordionOptions = {
         autoHeight: false,
@@ -50,7 +52,9 @@ const commonText = require('./localization/common').default;
             $('.express-search-query').val(query);
 
             this.doPrimarySearch(query);
-            this.doRelatedSearches(query);
+            relatedSearchesPromise.then(relatedSearches=>
+              this.doRelatedSearches(relatedSearches, query)
+            );
             return this;
         },
         doPrimarySearch: function(query) {
@@ -86,7 +90,7 @@ const commonText = require('./localization/common').default;
                 }
             }).render().$el.appendTo(this.$('.primary.results'));
         },
-        doRelatedSearches: function(query) {
+        doRelatedSearches: function(relatedSearches, query) {
             var statusEl = this.$('.related.status');
 
             var deferreds = _.map(relatedSearches, function(rs) {

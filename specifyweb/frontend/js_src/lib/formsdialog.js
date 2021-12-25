@@ -9,7 +9,7 @@ var Q        = require('q');
 var schema         = require('./schema.js');
 var icons          = require('./icons.js');
 var specifyform    = require('./specifyform.js');
-var initialContext = require('./initialcontext.js');
+const ajax = require("./ajax").default;
 const commonText = require('./localization/common').default;
 const formsText = require('./localization/forms').default;
 
@@ -17,9 +17,11 @@ const formsText = require('./localization/forms').default;
     // I don't think the non-sidebar items are ever used in Sp6.
     let views;
     let getFormsPromise;
-    initialContext.load(
-        'app.resource?name=DataEntryTaskInit',
-        data => {
+
+    ajax('/context/app.resource?name=DataEntryTaskInit',
+    {headers: {Accept: 'application/xml'}})
+      .then(
+        ({data}) => {
             views = _.map($('view', data), $).filter(view => view.attr('sidebar') === 'true');
             getFormsPromise = Q.all(views.map(
                 view => specifyform.getView(view.attr('view')).pipe(form => form))
@@ -59,7 +61,7 @@ module.exports = Backbone.View.extend({
                 title: formsText('formsDialogTitle'),
                 maxHeight: 400,
                 modal: true,
-                close: function() { $(this).remove(); },
+                close: this.options.onClose,
                 buttons: [{
                   text: commonText('cancel'),
                   click: function() { $(this).dialog('close'); }
