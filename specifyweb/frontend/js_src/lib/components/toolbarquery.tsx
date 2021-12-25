@@ -25,7 +25,7 @@ const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
   { headers: { Accept: 'application/xml' } }
 )
-  .then(({data:document}) =>
+  .then(({ data: document }) =>
     Array.from(
       document.querySelectorAll('database > table'),
       (table) => table.getAttribute('name')?.toLowerCase() ?? ''

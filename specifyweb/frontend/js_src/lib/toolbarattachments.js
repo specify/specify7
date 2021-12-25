@@ -11,6 +11,6 @@ module.exports =  {
         icon: '/static/img/attachment_icon.png',
         path: '/specify/attachments',
         enabled: attachments.systemAvailable,
-        view(){ return new AttachmentsView(); }
+        view: () => new AttachmentsView(),
     };
 

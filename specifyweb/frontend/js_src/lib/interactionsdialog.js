@@ -17,9 +17,9 @@ const ajax = require("./ajax").default;
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 
-    var interaction_entries, actions, getFormsPromise;
+    var interaction_entries, actions, isFulfilled=false;
 
-    ajax(
+    const getFormsPromise = ajax(
         '/context/app.resource?name=InteractionsTaskInit',
         {headers: {Accept: 'application/xml'}}
     ).then(({data}) => {
@@ -32,7 +32,7 @@ const commonText = require('./localization/common').default;
 
         actions.forEach(actionEntry => actionEntry.table = getTableForObjToCreate(actionEntry));
 
-        getFormsPromise = Q.all(views.map(
+        return Q.all(views.map(
           view => Q(specifyform.getView(view.attr('view'))).then(form => form)
         ));
     });
@@ -63,7 +63,7 @@ module.exports = Backbone.View.extend({
         },
         render: function() {
             let loadingDialog = undefined;
-            if(!getFormsPromise.isFulfilled()){
+            if(!isFulfilled){
                 loadingDialog = $(
                     '<div><div class="progress-bar"></div></div>'
                 ).dialog({
@@ -73,14 +73,15 @@ module.exports = Backbone.View.extend({
                 });
                 $('.progress-bar', loadingDialog).progressbar({value: false});
             }
-            getFormsPromise.done(fetchedForms=>{
+            getFormsPromise.then(fetchedForms=>{
+                isFulfilled=true;
                 loadingDialog?.dialog('destroy');
                 this._render(fetchedForms);
             });
             return this;
         },
         _render: function(forms) {
-            if(typeof this.options.action === 'undefined'){
+            if(typeof this.options.urlParameter === 'undefined'){
                 let formIndex = -1;
                 this.el.innerHTML = `<ul style="padding: 0">
                     ${interaction_entries
@@ -96,7 +97,7 @@ module.exports = Backbone.View.extend({
                     title: commonText('interactions'),
                     maxHeight: 400,
                     modal: true,
-                    close: function() { $(this).remove(); },
+                    close: this.options.onClose,
                     buttons: [{
                         text: commonText('close'),
                         click: function() { $(this).dialog('close'); }
@@ -104,7 +105,7 @@ module.exports = Backbone.View.extend({
                 });
             } else {
                 const action = interaction_entries
-                    .find(a=>a[0].getAttribute('action')==='NEW_LOAN');
+                    .find(a=>a[0].getAttribute('action')===this.options.urlParameter);
                 this.handleAction(action);
             }
         },

@@ -23,25 +23,24 @@ module.exports = Backbone.View.extend({
             'click button.edit': 'edit'
         },
         render: function() {
-            this.makeUI();
-            this.$el.dialog({
-                modal: true,
-                close: function() { $(this).remove(); },
-                title: formsText('recordSetsDialogTitle')(
-                    this.options.recordSets._totalCount
-                ),
-                minWidth: 400,
-                maxHeight: 500,
-                buttons: this.buttons()
+            Promise.resolve(this.options.recordSets).then(recordSets=> {
+                this.options.recordSets = recordSets;
+                this.makeTable();
+                this.$el.dialog({
+                    modal: true,
+                    close: (event)=>{
+                        if(typeof event?.originalEvent !== 'undefined')
+                            this.options.onClose();
+                    },
+                    title: formsText('recordSetsDialogTitle')(
+                        this.options.recordSets._totalCount
+                    ),
+                    minWidth: 400,
+                    maxHeight: 500,
+                    buttons: this.buttons()
+                });
             });
-            this.touchUpUI();
             return this;
-        },
-        touchUpUI: function() {
-            //all done
-        },
-        makeUI: function() {
-            this.makeTable();
         },
         makeTable: function() {
             const table = $(`<table
@@ -163,7 +162,10 @@ module.exports = Backbone.View.extend({
             const queryEventListener = () => {
                 editView.remove();
                 const view = new QueryToolbarView({
-                    onClose: () => view.remove(),
+                    onClose: () => {
+                        view.remove();
+                        this.options.onClose();
+                    },
                     getQuerySelectUrl: (query) =>
                          `/specify/query/${query.id}/?recordsetid=${recordSet.id}`,
                     spQueryFilter: {
@@ -199,7 +201,11 @@ module.exports = Backbone.View.extend({
                         buttons.children[0];
                     buttons.insertBefore(button, deleteButton);
                 },
-                onClose: () => window.removeEventListener("click", queryEventListener),
+                onClose: (event) => {
+                    window.removeEventListener("click", queryEventListener);
+                    if(typeof event?.originalEvent !== "undefined")
+                        this.options.onClose();
+                },
             }).render();
         }
     });

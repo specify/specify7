@@ -7,6 +7,7 @@ import { dataModelPromise } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type {
+  IR,
   PublicWbPlanViewProps,
   WbPlanViewWrapperProps,
 } from './wbplanview';

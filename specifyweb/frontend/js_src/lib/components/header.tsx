@@ -23,8 +23,8 @@ export function HeaderItems({
           data-path={path}
           onClick={(event): void => {
             event.preventDefault();
-            view({
-              onClose: (): void => {},
+            const backboneView = view({
+              onClose: (): void => void backboneView.remove(),
             }).render();
           }}
         >
@@ -157,15 +157,15 @@ export function UserTools({
                     className="user-tool fake-link"
                     style={{ fontSize: '0.8rem' }}
                     onClick={(event): void => {
-                      if (typeof View === 'undefined') return;
+                      if (typeof view === 'undefined') return;
                       event.preventDefault();
                       setIsOpen(false);
-                      view({
-                        onClose: (): void => {},
+                      const backboneView = view({
+                        onClose: (): void => void backboneView.remove(),
                       }).render();
                     }}
                   >
-                    ${title}
+                    {title}
                   </a>
                 </li>
               ))}

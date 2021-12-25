@@ -9,6 +9,6 @@ module.exports = {
         title: commonText('dataEntry'),
         icon: '/static/img/data entry.png',
         path: '/specify/view',
-        view: ({ onClose })=>FormsDialog({ onClose }),
+        view: ({ onClose })=>new FormsDialog({ onClose }),
     };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import commonText from '../localization/common';
+import { useId } from './common';
 import { ModalDialog } from './modaldialog';
 import type { IR, RA } from './wbplanview';
 
@@ -76,18 +77,10 @@ export function AddLanguage({
   readonly handleGoBack: () => void;
   readonly handleAddLanguage: (language: string) => void;
 }): JSX.Element {
+  const id = useId('schema-config-add-language');
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [language, setLanguage] = React.useState<string>('');
   const [country, setCountry] = React.useState<string>('');
-  const [addLanguage, setAddLanguage] = React.useState<boolean>(false);
-  React.useEffect(() => {
-    if (addLanguage)
-      handleAddLanguage(
-        `${language.toLowerCase()}${
-          country === '' ? '' : `_${country.toUpperCase()}`
-        }`
-      );
-  }, [language, country, addLanguage]);
   return (
     <ModalDialog
       className="schema-config"
@@ -102,14 +95,26 @@ export function AddLanguage({
           {
             text: commonText('add'),
             click(): void {
-              if (formRef.current?.reportValidity() === true)
-                setAddLanguage(true);
+              /* Submit form */
             },
+            type: 'submit',
+            form: id('form'),
           },
         ],
       }}
     >
-      <form ref={formRef}>
+      <form
+        ref={formRef}
+        id={id('form')}
+        onSubmit={(event): void => {
+          event.preventDefault();
+          handleAddLanguage(
+            `${language.toLowerCase()}${
+              country === '' ? '' : `_${country.toUpperCase()}`
+            }`
+          );
+        }}
+      >
         {commonText('addLanguageDialogHeader')}
         <label>
           {commonText('language')}

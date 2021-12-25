@@ -434,6 +434,7 @@ module.exports = Backbone.View.extend({
         }
       },
       onClose: () => {
+        this.advancedSearch.remove();
         this.advancedSearch = undefined;
         event.target.ariaPressed = false;
       },

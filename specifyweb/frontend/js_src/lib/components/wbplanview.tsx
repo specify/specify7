@@ -74,6 +74,8 @@ export interface SpecifyResource {
   readonly rget: (query: string) => JqueryPromise<SpecifyResource | any>;
   readonly set: (query: string, value: any) => void;
   readonly save: () => void;
+  readonly viewUrl: () => string;
+  readonly Resource: new () => SpecifyResource;
 }
 
 // Record
@@ -86,8 +88,10 @@ export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
 export type RA<V> = readonly V[];
 
 // See: https://stackoverflow.com/a/30741722/8584605
-export const handlePromiseReject = (error: unknown)=>
-  setTimeout(()=>{ throw error; }, 0);
+export const handlePromiseReject = (error: unknown) =>
+  setTimeout(() => {
+    throw error;
+  }, 0);
 
 export interface WbPlanViewProps
   extends WbPlanViewWrapperProps,
@@ -187,7 +191,7 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
       : undefined,
   ]);
 
-  const id=useId('wbplanview');
+  const id = useId('wbplanview');
 
   return stateReducer(<i />, {
     ...state,

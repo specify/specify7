@@ -19,7 +19,7 @@
   margin: 0;
 }
 
-.schema-config {
+.schema-config-container {
   display: flex;
   flex-direction: column;
   row-gap: var(--size);

@@ -437,9 +437,9 @@ const commonText = createDictionary({
     ca: 'DwCA',
   },
   dwcaExportStartedDialogHeader: {
-    'en-us': createHeader('DwCA export started'),
-    'ru-ru': createHeader('DwCA экспорт начат'),
-    ca: createHeader('DwCA export started'),
+    'en-us': createJsxHeader('DwCA export started'),
+    'ru-ru': createJsxHeader('DwCA экспорт начат'),
+    ca: createJsxHeader('DwCA export started'),
   },
   dwcaExportStartedDialogMessage: {
     'en-us': `

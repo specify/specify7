@@ -47,7 +47,7 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
       });
     return;
   }
-  new errorview.UnhandledErrorView({ jqxhr: jqxhr }).render();
+  new errorview.UnhandledErrorView({jqxhr: jqxhr}).render();
 
   console.log(arguments);
 }
@@ -57,21 +57,28 @@ module.exports = function appStart() {
   // addBasicRoutes(router);
   $(document).ajaxError(handleUnexpectedError);
   businessRules.enable(true);
-  new MainView({el: document.getElementById('root-app-container') }).render();
+  new MainView({
+    el: document.getElementById('root-app-container'),
+    onReady() {
+      document.getElementById('loading')?.remove();
+      document.getElementById('root-app-container').style.display = '';
+
+      // Start processing the urls to draw the corresponding views
+      navigation.start();
+    }
+  }).render();
+
   _.each(tasks, function (task) {
     task();
   });
 
-  // start processing the urls to draw the corresponding views
-  navigation.start({ pushState: true, root: '/specify/' });
-
   $('body').delegate('a', 'click', function (event) {
-    if(
+    if (
       event.currentTarget.classList.contains('intercept-navigation')
       || (
         event.altKey && event.currentTarget.target === '_blank'
       )
-    ){
+    ) {
       event.preventDefault();
       const href = $(event.currentTarget).prop('href');
       href && navigation.go(href);

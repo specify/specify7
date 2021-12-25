@@ -7,7 +7,7 @@ import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 import wbText from '../localization/workbench';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import createBackboneView from './reactbackboneextend';
-import type { IR, RR } from './wbplanview';
+import type { IR } from './wbplanview';
 
 const $ = require('jquery');
 

@@ -53,17 +53,28 @@ const commonText = require('./localization/common').default;
         this.uiDialog.find('.ui-dialog-buttonpane')[0]?.setAttribute('role','menu');
     };
 
-    // gets rid of any backbone view currently showing
-    // and replaces it with the rendered view given
-    // also manages other niceties involved in changing views
+    /**
+     * Gets rid of any backbone view currently showing
+     * and replaces it with the rendered view given
+     * also manages other niceties involved in changing views
+     */
+    let isFirstRender = true;
     function setCurrentView(view) {
-        currentView && currentView.remove(); // remove old view
+        // Remove old view
+        currentView && currentView.remove();
         const main = $('main');
         main.empty();
-        $('.ui-autocomplete').remove(); // these are getting left behind sometimes
-        $('.ui-dialog:not(.ui-dialog-no-close)')
-            .find('.ui-dialog-content:not(.ui-dialog-persistent)')
-            .dialog('close'); // close any open dialogs
+
+        /*
+         * Close any open dialogs, unless rendering for the first time
+         * (e.g, UserTools dialog can be opened by the user before first render)
+         * */
+        if(!isFirstRender)
+            $('.ui-dialog:not(.ui-dialog-no-close)')
+                .find('.ui-dialog-content:not(.ui-dialog-persistent)')
+                .dialog('close');
+        isFirstRender = false;
+
         currentView = view;
         currentView.render();
         main.append(currentView.el);

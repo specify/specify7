@@ -7,6 +7,12 @@ export function formData(data: IR<string>): FormData {
   return formData;
 }
 
+export const HTTP = {
+  OK: 200,
+  NOT_FOUND: 404,
+  FORBIDDEN: 403,
+};
+
 /**
  * Wraps native fetch in useful helpers
  * It is intended as a replacement for jQuery's ajax
@@ -25,7 +31,7 @@ export default async function ajax<RESPONSE_TYPE>(
     headers?: IR<string>;
   } = {},
   {
-    expectedResponseCodes = [200],
+    expectedResponseCodes = [HTTP.OK],
   }: {
     // Throw if returned response code is not what expected
     readonly expectedResponseCodes?: RA<number>;

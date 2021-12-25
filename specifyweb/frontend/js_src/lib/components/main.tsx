@@ -24,9 +24,13 @@ export type UserTool = {
 };
 
 export type MenuItem = UserTool & {
+  readonly view: (props: {
+    readonly onClose: () => void;
+    readonly urlParameter?: string;
+  }) => Backbone.View;
   readonly icon: string;
   // This menuItem is considered active if URL begins with this path
-  readonly path: string;
+  readonly path?: string;
 };
 
 const menuItemsPromise: Promise<RA<{ readonly default: MenuItem }>> =
@@ -51,11 +55,15 @@ const userToolsPromise: Promise<RA<{ readonly default: MenuItem }>> =
     import('../toolbarusers'),
     import('../toolbartreerepair'),
     import('../toolbarresources'),
-    import('../toolbardwca'),
+    import('./toolbardwca'),
     import('../toolbarforceupdate'),
   ]);
 
-function Main(): JSX.Element | null {
+type Props = {
+  readonly onReady: () => void;
+};
+
+function Main({ onReady: handleReady }: Props): JSX.Element | null {
   const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
     undefined
   );
@@ -78,16 +86,23 @@ function Main(): JSX.Element | null {
             typeof enabled === 'function' ? enabled() : enabled !== false
           );
         [...enabledMenuItems, ...enabledUserTools].forEach(({ task, view }) =>
-          router.route(`task/${task}/(:options)`, 'startTask', () => {
-            app.setCurrentView(
-              view({ onClose: (): void => navigation.go('/specify') })
-            );
-          })
+          router.route(
+            `task/${task}/(:options)`,
+            'startTask',
+            (urlParameter: string) => {
+              app.setCurrentView(
+                view({
+                  onClose: (): void => navigation.go('/specify'),
+                  urlParameter,
+                })
+              );
+            }
+          )
         );
         setMenuItems(enabledMenuItems);
         setUserTools(enabledUserTools);
-        document.getElementById('loading')?.remove();
-        document.getElementById('root-app-container')!.style.display = '';
+
+        handleReady();
       })
       .catch(console.error);
   }, []);

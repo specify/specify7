@@ -15,15 +15,14 @@ const formsText = require('./localization/forms').default;
 
 
     // I don't think the non-sidebar items are ever used in Sp6.
-    let views;
-    let getFormsPromise;
+    let views, isFulfilled = false;
 
-    ajax('/context/app.resource?name=DataEntryTaskInit',
+    const getFormsPromise = ajax('/context/app.resource?name=DataEntryTaskInit',
     {headers: {Accept: 'application/xml'}})
       .then(
         ({data}) => {
             views = _.map($('view', data), $).filter(view => view.attr('sidebar') === 'true');
-            getFormsPromise = Q.all(views.map(
+            return Q.all(views.map(
                 view => specifyform.getView(view.attr('view')).pipe(form => form))
             );
         }
@@ -36,7 +35,7 @@ module.exports = Backbone.View.extend({
         events: {'click a': 'handleClick'},
         render: function() {
             let loadingDialog = undefined;
-            if(!getFormsPromise.isFulfilled()){
+            if(!isFulfilled){
                 loadingDialog = $(
                     '<div><div class="progress-bar"></div></div>'
                 ).dialog({
@@ -46,7 +45,8 @@ module.exports = Backbone.View.extend({
                 });
                 $('.progress-bar', loadingDialog).progressbar({value: false});
             }
-            getFormsPromise.done(fetchedForms=>{
+            getFormsPromise.then(fetchedForms=>{
+                isFulfilled=true;
                 loadingDialog?.dialog('destroy');
                 this._render(fetchedForms);
             });

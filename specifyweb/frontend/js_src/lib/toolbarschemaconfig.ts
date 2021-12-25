@@ -1,11 +1,11 @@
+import type { UserTool } from './components/main';
 import SchemaConfigWrapperView from './components/schemaconfigwrapper';
 import commonText from './localization/common';
-import {setCurrentView} from './specifyapp';
 
-export default {
+const userTool: UserTool = {
   task: 'schema-config',
   title: commonText('schemaConfig'),
-  execute() {
-    setCurrentView(new SchemaConfigWrapperView());
-  },
+  view: ({ onClose }) => new SchemaConfigWrapperView({ onClose }),
 };
+
+export default userTool;

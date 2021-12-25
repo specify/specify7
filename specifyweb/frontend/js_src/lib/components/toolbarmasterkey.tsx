@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { formData } from '../ajax';
+import ajax, { formData, HTTP } from '../ajax';
 import commonText from '../localization/common';
 import { useId } from './common';
 import type { UserTool } from './main';
@@ -8,28 +8,33 @@ import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 type Props = {
-  onClose: () => void;
+  readonly onClose: () => void;
 };
 
-function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
+function MasterKey({ onClose: handleClose }: Props): JSX.Element {
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
   );
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
   const id = useId('master-key');
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
-  React.useEffect(() => {
-    if (!inputRef.current) return;
-    if (typeof error === 'string') inputRef.current.setCustomValidity(error);
-    else inputRef.current.setCustomValidity('');
-  }, [error, inputRef]);
+
+  // See https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780
+  const inputRef = React.useCallback<(input: HTMLInputElement | null) => void>(
+    (input) => {
+      if (!input) return;
+      if (typeof error === 'string') {
+        input.setCustomValidity(error);
+        input.reportValidity();
+      } else input.setCustomValidity('');
+    },
+    [error]
+  );
 
   return isLoading ? (
     <LoadingScreen />
-  ) : typeof masterKey === 'undefined' || typeof error !== 'undefined' ? (
+  ) : typeof masterKey === 'undefined' ? (
     <ModalDialog
       properties={{
         title: commonText('generateMasterKeyDialogTitle'),
@@ -37,7 +42,7 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
         buttons: [
           {
             text: commonText('generate'),
-            click: () => {
+            click: (): void => {
               /* Submit the form */
             },
             type: 'submit',
@@ -66,11 +71,11 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
               },
             },
             {
-              expectedResponseCodes: [403, 200],
+              expectedResponseCodes: [HTTP.FORBIDDEN, HTTP.OK],
             }
           )
             .then(({ data, status }) =>
-              status === 403
+              status === HTTP.FORBIDDEN
                 ? setError(commonText('incorrectPassword'))
                 : setMasterKey(data)
             )
@@ -86,7 +91,10 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
             ref={inputRef}
             type="password"
             value={password}
-            onChange={({ target }): void => setPassword(target.value)}
+            onChange={({ target }): void => {
+              setPassword(target.value);
+              target.setCustomValidity('');
+            }}
             required
           />
         </label>

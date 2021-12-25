@@ -40,6 +40,7 @@ function startUpdate() {
     });
 }
 
+// TODO: convert this and others to react
 module.exports = {
     task: 'forceupdatefeed',
     title: commonText('updateExportFeed'),
