@@ -56,10 +56,37 @@ type DialogProperties = IR<unknown> &
     readonly buttons?: RA<JQueryUI.DialogButtonOptions>;
   };
 
+/**
+ * Add 'close' button by default if no buttons are defined
+ * Replace "closeDialog" dummy function with a real close callback
+ */
+const formalizeProperties = (
+  properties: DialogProperties,
+  closeDialogBind: (event: JQueryUI.DialogEvent | Event | undefined) => void
+): DialogProperties => ({
+  ...properties,
+  buttons: (
+    properties.buttons ?? [{ text: commonText('close'), click: closeDialog }]
+  ).map((button) =>
+    button.click === closeDialog
+      ? {
+          ...button,
+          click: closeDialogBind,
+        }
+      : button
+  ),
+});
+
+const serialize = (object: unknown): string =>
+  JSON.stringify(object, (_key, value) =>
+    // Fix circular dependency issue
+    value instanceof HTMLElement ? value.toString() : value
+  );
+
 export function ModalDialog({
   properties,
   children,
-  className,
+  className = '',
 }: {
   readonly children: React.ReactNode;
   readonly properties: DialogProperties;
@@ -75,10 +102,19 @@ export function ModalDialog({
     if (dialogRef.current === null) return undefined;
 
     const dialogElement = $(dialogRef.current.children[0] as HTMLElement);
+
+    dialogElement[0].setAttribute('class', className);
+
+    // Reposition dialog on screen resize
     resize.current = (): void =>
       dialogElement.is(':ui-dialog')
-        ? void dialogElement.dialog('option', 'position', 'center')
+        ? void dialogElement.dialog(
+            'option',
+            'position',
+            formalProperties.position ?? 'center'
+          )
         : undefined;
+    window.addEventListener('resize', resize.current);
 
     const closeDialogBind = (
       event: JQueryUI.DialogEvent | Event | undefined = undefined
@@ -87,44 +123,34 @@ export function ModalDialog({
         dialogElement,
         resize.current,
         // Don't call callback if dialog was closed by destructor
-        typeof event === 'undefined'
+        typeof event === 'undefined' || !('originalEvent' in event)
           ? undefined
           : (properties.close as () => void)
       );
 
-    const buttons = (
-      properties.buttons ?? [{ text: commonText('close'), click: closeDialog }]
-    ).map((button) =>
-      button.click === closeDialog
-        ? {
-            ...button,
-            click: closeDialogBind,
-          }
-        : button
-    );
+    const formalProperties = formalizeProperties(properties, closeDialogBind);
 
     dialogElement.dialog({
       modal: true,
       width: 300,
-      ...properties,
+      ...formalProperties,
       close: closeDialogBind,
-      buttons,
       dialogClass: [
-        className,
         'ui-dialog-react',
+        // Dialogs without a header have bold titles
         hasHeader(children) ? 'ui-dialog-with-header' : '',
         properties.dialogClass,
       ]
         .filter((className) => className)
         .join(' '),
     });
-    window.addEventListener('resize', resize.current);
 
     setDialog(dialogElement);
 
     return closeDialogBind;
   }, [dialogRef]);
 
+  // Re-render dialog content on change
   React.useEffect(() => {
     if (typeof $dialog === 'undefined') return;
 
@@ -139,22 +165,36 @@ export function ModalDialog({
     );
   }, [$dialog, children]);
 
-  // Update dialog on changes to the "properties" object
+  // Update dialog settings on changes to the dialog "properties" object
   const previousProperties = React.useRef<DialogProperties | undefined>(
     undefined
   );
+  const serializedProperties = serialize(properties);
   React.useEffect(() => {
     if (typeof $dialog === 'undefined') return;
+
+    const formalizedProperties = formalizeProperties(
+      properties,
+      $dialog.dialog('option', 'close')
+    );
+
     if (typeof previousProperties.current !== 'undefined')
-      Object.entries(properties)
+      Array.from(
+        new Set([
+          ...Object.keys(formalizedProperties),
+          ...Object.keys(previousProperties.current ?? {}),
+        ])
+      )
         .filter(
-          ([key, value]) =>
-            JSON.stringify(previousProperties.current?.[key]) !==
-            JSON.stringify(value)
+          (key) =>
+            serialize(previousProperties.current?.[key]) !==
+            serialize(formalizedProperties?.[key])
         )
-        .forEach(([key, value]) => $dialog.dialog('option', key, value));
-    previousProperties.current = properties;
-  }, [$dialog, JSON.stringify(properties)]);
+        .forEach((key) =>
+          $dialog.dialog('option', key, formalizedProperties?.[key])
+        );
+    previousProperties.current = formalizedProperties;
+  }, [$dialog, serializedProperties]);
 
   return (
     <div style={{ position: 'absolute' }} ref={dialogRef}>
@@ -204,11 +244,7 @@ export function LoadingScreen(): JSX.Element {
   );
 }
 
-export const BackboneLoadingScreen = createBackboneView<
-  IR<never>,
-  IR<never>,
-  IR<never>
->({
+export const BackboneLoadingScreen = createBackboneView({
   moduleName: 'LoadingDialog',
   className: 'loading-dialog',
   component: LoadingScreen,
