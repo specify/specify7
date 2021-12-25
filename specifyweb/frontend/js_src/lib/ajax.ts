@@ -1,4 +1,4 @@
-import { IR, RA } from './components/wbplanview';
+import type { IR, RA } from './components/wbplanview';
 import csrfToken from './csrftoken';
 
 export function formData(data: IR<string>): FormData {
@@ -20,17 +20,15 @@ export function formData(data: IR<string>): FormData {
  */
 export default async function ajax<RESPONSE_TYPE>(
   url: string,
-  options: Omit<RequestInit, 'body'> & {
+  options: Omit<RequestInit, 'body' | 'headers'> & {
     body?: string | IR<unknown> | FormData;
+    headers?: IR<string>;
   } = {},
   {
     expectedResponseCodes = [200],
-    expectsJson = true,
   }: {
     // Throw if returned response code is not what expected
     readonly expectedResponseCodes?: RA<number>;
-    // Parse JSON response
-    readonly expectsJson?: boolean;
   } = {}
 ): Promise<{ readonly data: RESPONSE_TYPE; readonly status: number }> {
   return fetch(url, {
@@ -50,17 +48,27 @@ export default async function ajax<RESPONSE_TYPE>(
       ...options.headers,
     },
   })
-    .then((response) =>
+    .then(async (response) =>
       Promise.all<number, string>([response.status, response.text()])
     )
     .then(([status, text]) => {
       if (expectedResponseCodes.includes(status)) {
-        if (expectsJson) {
+        if (options.headers?.Accept === 'application/json') {
           try {
             return { data: JSON.parse(text), status };
-          } catch (error) {
+          } catch {
             console.error('Invalid response', text);
             throw new Error('Failed parsing JSON response');
+          }
+        } else if (options.headers?.Accept === 'application/xml') {
+          try {
+            return {
+              data: new window.DOMParser().parseFromString(text, 'text/xml'),
+              status,
+            };
+          } catch {
+            console.error('Invalid response', text);
+            throw new Error('Failed parsing XML response');
           }
         } else return { data: text, status };
       } else {
