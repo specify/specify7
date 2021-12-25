@@ -109,17 +109,11 @@ function MasterKey({ onClose: handleClose }: Readonly<Props>): JSX.Element {
   );
 }
 
-const MasterKeyView = createBackboneView<Props, Props, Readonly<Props>>({
+const MasterKeyView = createBackboneView<Props>({
   moduleName: 'MasterKeyView',
   className: 'master-key',
   title: commonText('generateMasterKey'),
   component: MasterKey,
-  initialize(self, { onClose }) {
-    self.onClose = onClose;
-  },
-  getComponentProps: (self) => ({
-    onClose: self.onClose,
-  }),
 });
 
 const toolBarItem: UserTool = {

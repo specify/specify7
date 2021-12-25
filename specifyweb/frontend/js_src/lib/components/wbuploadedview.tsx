@@ -9,12 +9,10 @@ import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
 import type { IR } from './wbplanview';
 
-type Props = Readonly<ConstructorProps>;
-
-type ConstructorProps = {
-  recordCounts: IR<number>;
-  onClose: () => void;
-  isUploaded: boolean;
+type Props = {
+  readonly recordCounts: IR<number>;
+  readonly onClose: () => void;
+  readonly isUploaded: boolean;
 };
 
 function TableResults({
@@ -67,18 +65,8 @@ function WbUploadedView({
   );
 }
 
-export default createBackboneView<Props, ConstructorProps, Props>({
+export default createBackboneView<Props>({
   moduleName: 'WBUploadedView',
   className: 'wb-uploaded-view',
-  initialize(self, { recordCounts, onClose, isUploaded }) {
-    self.recordCounts = recordCounts;
-    self.onClose = onClose;
-    self.isUploaded = isUploaded;
-  },
   component: WbUploadedView,
-  getComponentProps: (self) => ({
-    recordCounts: self.recordCounts,
-    onClose: self.onClose,
-    isUploaded: self.isUploaded,
-  }),
 });

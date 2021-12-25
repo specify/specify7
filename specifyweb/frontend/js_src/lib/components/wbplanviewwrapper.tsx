@@ -46,35 +46,25 @@ function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
   );
 }
 
-interface WbPlanViewBackboneProps
-  extends WbPlanViewWrapperProps,
-    PublicWbPlanViewProps {
-  header: HTMLElement;
-}
-
-const setUnloadProtect = (self: WbPlanViewBackboneProps): void =>
+const setUnloadProtect = (self: IR<unknown>): void =>
   navigation.addUnloadProtect(self, wbText('unloadProtectMessage'));
 
-const removeUnloadProtect = (self: WbPlanViewBackboneProps): void =>
+const removeUnloadProtect = (self: IR<unknown>): void =>
   navigation.removeUnloadProtect(self);
 
 export default createBackboneView<
   PublicWbPlanViewProps,
-  WbPlanViewBackboneProps,
   WbPlanViewWrapperProps
 >({
   moduleName: 'WbPlanView',
-  title: (self) => self.dataset.name,
+  title: (self) => self.options.dataset.name,
   className: 'wbplanview content-no-shadow',
-  initialize(self, { dataset }) {
-    self.dataset = dataset;
-  },
   remove(self) {
     removeUnloadProtect(self);
   },
   component: WbPlanViewWrapper,
   getComponentProps: (self) => ({
-    dataset: self.dataset,
+    dataset: self.options.dataset,
     removeUnloadProtect: (): void => removeUnloadProtect(self),
     setUnloadProtect: (): void => setUnloadProtect(self),
   }),

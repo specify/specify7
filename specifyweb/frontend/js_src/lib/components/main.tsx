@@ -137,9 +137,8 @@ function Main(): JSX.Element | null {
   );
 }
 
-export const MainView = createBackboneView({
+export const MainView = createBackboneView<Props>({
   moduleName: 'MainView',
   className: '',
   component: Main,
-  getComponentProps: () => ({}),
 });

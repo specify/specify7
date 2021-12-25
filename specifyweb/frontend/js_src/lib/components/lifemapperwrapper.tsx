@@ -5,44 +5,30 @@ import ResourceView from '../resourceview';
 import { Lifemapper, SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
 
-export interface Props {
-  model: any;
-}
+export type Props = {
+  readonly model: any;
+};
 
-export interface ComponentProps extends Props {
+export type ComponentProps = Props & {
   readonly guid: string;
-}
+};
 
-const CollectionObjectBadges = createBackboneView<Props, Props, ComponentProps>(
-  {
-    moduleName: 'Lifemapper',
-    className: 'lifemapper-info',
-    initialize(self, { model }) {
-      self.model = model;
-    },
-    silentErrors: true,
-    component: SpecifyNetworkBadge,
-    getComponentProps: (self) => ({
-      model: self.model,
-      guid: self.model.get('guid'),
-    }),
-  }
-);
-
-const TaxonBadges = createBackboneView<Props, Props, Props>({
+const CollectionObjectBadges = createBackboneView<Props, ComponentProps>({
   moduleName: 'Lifemapper',
   className: 'lifemapper-info',
-  initialize(self, { model }) {
-    self.model = model;
-  },
-  beforeRender(self) {
-    self.el.setAttribute('aria-live', 'polite');
-  },
+  silentErrors: true,
+  component: SpecifyNetworkBadge,
+  getComponentProps: (self) => ({
+    model: self.options.model,
+    guid: self.options.model.get('guid'),
+  }),
+});
+
+const TaxonBadges = createBackboneView<Props>({
+  moduleName: 'Lifemapper',
+  className: 'lifemapper-info',
   silentErrors: true,
   component: Lifemapper,
-  getComponentProps: (self) => ({
-    model: self.model,
-  }),
 });
 
 export default function register(): void {

@@ -22,13 +22,13 @@ import { SchemaConfig } from './schemaconfig';
 import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 
-type ConstructorProps = IR<never>;
-type BackboneProps = {
-  defaultLanguage: string | undefined;
-  defaultTable: string | undefined;
-};
-type Props = Readonly<BackboneProps> & {
+type ConstructorProps = {
   readonly onClose: () => void;
+};
+
+type Props = ConstructorProps & {
+  readonly defaultLanguage: string | undefined;
+  readonly defaultTable: string | undefined;
   readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
@@ -235,36 +235,32 @@ function SchemaConfigWrapper({
   );
 }
 
-const setUnloadProtect = (self: BackboneProps): void =>
+const setUnloadProtect = (self: unknown): void =>
   navigation.addUnloadProtect(self, commonText('unsavedSchemaUnloadProtect'));
 
-const removeUnloadProtect = (self: BackboneProps): void =>
+const removeUnloadProtect = (self: unknown): void =>
   navigation.removeUnloadProtect(self);
 
-export default createBackboneView<ConstructorProps, BackboneProps, Props>({
+export default createBackboneView<ConstructorProps, Props>({
   moduleName: 'SchemaConfig',
   tagName: 'section',
   title: commonText('schemaConfig'),
-  className: 'schema-config content',
-  initialize(self) {
+  className: 'schema-config-container schema-config content',
+  component: SchemaConfigWrapper,
+  getComponentProps: (self) => {
     const urlSearchParameters = new URLSearchParams(window.location.search);
     const parameters = Object.fromEntries(urlSearchParameters.entries());
-    self.defaultLanguage = parameters.language;
-    self.defaultTable = parameters.table;
+    return {
+      onClose: self.options.onClose,
+      onSave: (language): void => {
+        removeUnloadProtect(self);
+        // Reload the page after schema changes
+        window.location.href = `/specify/task/schema-config/?language=${language}`;
+      },
+      removeUnloadProtect: (): void => removeUnloadProtect(self),
+      setUnloadProtect: (): void => setUnloadProtect(self),
+      defaultLanguage: parameters.language,
+      defaultTable: parameters.table,
+    };
   },
-  remove(self) {
-    removeUnloadProtect(self);
-  },
-  component: SchemaConfigWrapper,
-  getComponentProps: (self) => ({
-    onClose: (): void => navigation.go('/specify/'),
-    onSave: (language): void => {
-      // Reload the page after schema changes
-      window.location.href = `/specify/task/schema-config/?language=${language}`;
-    },
-    removeUnloadProtect: (): void => removeUnloadProtect(self),
-    setUnloadProtect: (): void => setUnloadProtect(self),
-    defaultLanguage: self.defaultLanguage,
-    defaultTable: self.defaultTable,
-  }),
 });

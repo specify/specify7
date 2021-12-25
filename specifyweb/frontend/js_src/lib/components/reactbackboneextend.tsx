@@ -14,10 +14,11 @@ import Backbone from '../backbone';
 import ErrorBoundary from './errorboundary';
 import type { IR } from './wbplanview';
 
-type ReactBackboneExtendBaseProps<BACKBONE_PROPS> = {
+type ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS> = {
   readonly el: HTMLElement;
   readonly remove: () => void;
-} & BACKBONE_PROPS;
+  readonly options: CONSTRUCTOR_PROPS;
+};
 
 export type Constructable<TYPE, PROPS extends IR<unknown> = IR<never>> = new (
   props: PROPS
@@ -25,15 +26,12 @@ export type Constructable<TYPE, PROPS extends IR<unknown> = IR<never>> = new (
 
 const createBackboneView = <
   CONSTRUCTOR_PROPS extends IR<unknown>,
-  BACKBONE_PROPS extends IR<unknown>,
-  COMPONENT_PROPS extends IR<unknown>
+  COMPONENT_PROPS extends IR<unknown> = CONSTRUCTOR_PROPS
 >({
   moduleName,
   title,
   className,
   tagName,
-  initialize,
-  beforeRender,
   remove,
   silentErrors = false,
   component: Component,
@@ -42,23 +40,16 @@ const createBackboneView = <
   readonly moduleName: string;
   readonly title?:
     | string
-    | ((self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>) => string);
+    | ((self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>) => string);
   readonly className: string;
   readonly tagName?: string;
-  readonly initialize?: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>,
-    viewProps: CONSTRUCTOR_PROPS
-  ) => void;
-  readonly beforeRender?: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
-  ) => void;
   readonly remove?: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
+    self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
   ) => void;
   readonly silentErrors?: boolean;
   readonly component: (props: COMPONENT_PROPS) => JSX.Element | null;
-  readonly getComponentProps: (
-    self: ReactBackboneExtendBaseProps<BACKBONE_PROPS>
+  readonly getComponentProps?: (
+    self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
   ) => COMPONENT_PROPS;
 }): Constructable<View, CONSTRUCTOR_PROPS> =>
   Backbone.View.extend({
@@ -66,16 +57,11 @@ const createBackboneView = <
     className,
     tagName,
     title,
-    initialize(props: CONSTRUCTOR_PROPS) {
-      initialize?.(this, props);
-    },
     render() {
-      beforeRender?.(this);
-
       ReactDOM.render(
         <React.StrictMode>
           <ErrorBoundary silentErrors={silentErrors}>
-            <Component {...getComponentProps(this)} />
+            <Component {...(getComponentProps?.(this) ?? this.options)} />
           </ErrorBoundary>
         </React.StrictMode>,
         this.el

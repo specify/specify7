@@ -64,13 +64,13 @@ module.exports = Backbone.View.extend({
                     commonText('newResourceTitle')(resourceLabel) :
                     resourceLabel,
                 modal: true,
-                close: ()=>this.remove(),
+                close: (event)=>this.remove(event),
             });
 
             this.handleRendered?.();
         },
-        remove: function() {
-            this.handleClose?.();
+        remove(event) {
+            this.handleClose?.(event);
             Backbone.View.prototype.remove.call(this);
         }
     });

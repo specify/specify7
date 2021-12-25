@@ -8,7 +8,7 @@ import createBackboneView from './reactbackboneextend';
 import type { IR } from './wbplanview';
 
 type Props = {
-  onClose: () => void;
+  readonly onClose: () => void;
 };
 
 function ChangeLanguage({
@@ -68,16 +68,10 @@ function ChangeLanguage({
   );
 }
 
-const View = createBackboneView<Props, Props, Readonly<Props>>({
+const View = createBackboneView<Props>({
   moduleName: 'ChangeLanguage',
   className: 'change-language',
   component: ChangeLanguage,
-  initialize(self, { onClose }) {
-    self.onClose = onClose;
-  },
-  getComponentProps: (self) => ({
-    onClose: self.onClose,
-  }),
 });
 
 const toolBarItem: UserTool = {

@@ -182,22 +182,13 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   );
 }
 
-type Props = Readonly<ConstructorProps>;
-type ConstructorProps = {
-  dataset: Dataset;
-  onFinished: (wasAborted: boolean) => void;
+type Props = {
+  readonly dataset: Dataset;
+  readonly onFinished: (wasAborted: boolean) => void;
 };
 
-export default createBackboneView<Props, ConstructorProps, Props>({
+export default createBackboneView<Props>({
   moduleName: 'WbStatus',
   className: 'wb-status',
-  initialize(self, { dataset, onFinished }) {
-    self.dataset = dataset;
-    self.onFinished = onFinished;
-  },
   component: WbStatus,
-  getComponentProps: (self) => ({
-    dataset: self.dataset,
-    onFinished: self.onFinished,
-  }),
 });

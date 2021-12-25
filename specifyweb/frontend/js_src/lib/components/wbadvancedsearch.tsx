@@ -6,12 +6,10 @@ import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 type Props = {
-  initialSearchPreferences: SearchPreferences;
-  onChange: (newSearchPreferences: SearchPreferences) => void;
-  onClose: () => void;
+  readonly initialSearchPreferences: SearchPreferences;
+  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+  readonly onClose: () => void;
 };
-
-type ComponentProps = Readonly<Omit<Props, 'triggerButton'>>;
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -95,7 +93,7 @@ function WbAdvancedSearch({
   onClose: handleClose,
   onChange: handleChange,
   initialSearchPreferences,
-}: ComponentProps): JSX.Element {
+}: Props): JSX.Element {
   const [state, setState] = React.useState<SearchPreferences>(
     initialSearchPreferences
   );
@@ -176,21 +174,8 @@ function WbAdvancedSearch({
   );
 }
 
-export default createBackboneView<Props, Props, ComponentProps>({
+export default createBackboneView<Props>({
   moduleName: 'WbAdvancedSearch',
   className: 'wb-advanced-search',
-  initialize(self, { initialSearchPreferences, onChange, onClose }) {
-    self.initialSearchPreferences = initialSearchPreferences;
-    self.onChange = onChange;
-    self.onClose = onClose;
-  },
   component: WbAdvancedSearch,
-  getComponentProps: (self) => ({
-    onClose: (): void => {
-      self.onClose();
-      self.remove();
-    },
-    initialSearchPreferences: self.initialSearchPreferences,
-    onChange: self.onChange,
-  }),
 });

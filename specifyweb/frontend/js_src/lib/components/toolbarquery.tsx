@@ -218,14 +218,13 @@ type States = ShowQueryListState | CreateQueryState;
 const QUERY_FETCH_LIMIT = 5000;
 
 type Props = {
-  onClose: () => void;
-  getQueryCreateUrl?: (tableName: string) => string;
-  getQuerySelectUrl?: (query: Query) => string;
-  onEdit?: (query: Query) => void;
-  spQueryFilter?: IR<unknown>;
-  buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
+  readonly onClose: () => void;
+  readonly getQueryCreateUrl?: (tableName: string) => string;
+  readonly getQuerySelectUrl?: (query: Query) => string;
+  readonly onEdit?: (query: Query) => void;
+  readonly spQueryFilter?: IR<unknown>;
+  readonly buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
 };
-type ComponentProps = Readonly<Props>;
 
 function QueryToolbarItem({
   onClose: handleClose,
@@ -234,7 +233,7 @@ function QueryToolbarItem({
   onEdit: handleEdit,
   spQueryFilter,
   buttons,
-}: ComponentProps): JSX.Element {
+}: Props): JSX.Element {
   const [tablesToShow] = useCachedState({
     bucketName: 'common',
     cacheName: 'listOfQueryTables',
@@ -344,40 +343,10 @@ function QueryToolbarItem({
   else throw new Error('Invalid ToolbarQuery State type');
 }
 
-export const QueryToolbarView = createBackboneView<
-  Props,
-  Props,
-  ComponentProps
->({
+export const QueryToolbarView = createBackboneView<Props>({
   moduleName: 'QueryToolbarItem',
   className: 'query-toolbar-item',
   component: QueryToolbarItem,
-  initialize(
-    self,
-    {
-      onClose,
-      getQueryCreateUrl = undefined,
-      getQuerySelectUrl,
-      onEdit = undefined,
-      spQueryFilter = undefined,
-      buttons = undefined,
-    }
-  ) {
-    self.onClose = onClose;
-    self.getQueryCreateUrl = getQueryCreateUrl;
-    self.getQuerySelectUrl = getQuerySelectUrl;
-    self.onEdit = onEdit;
-    self.spQueryFilter = spQueryFilter;
-    self.buttons = buttons;
-  },
-  getComponentProps: (self) => ({
-    onClose: self.onClose,
-    getQueryCreateUrl: self.getQueryCreateUrl,
-    getQuerySelectUrl: self.getQuerySelectUrl,
-    onEdit: self.onEdit,
-    spQueryFilter: self.spQueryFilter,
-    buttons: self.buttons,
-  }),
 });
 
 const menuItem: MenuItem = {
