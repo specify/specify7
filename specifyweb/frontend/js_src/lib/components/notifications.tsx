@@ -2,7 +2,7 @@ import '../../css/notifications.css';
 
 import React from 'react';
 
-import ajax from '../ajax';
+import ajax, { formData } from '../ajax';
 import commonText from '../localization/common';
 import { ModalDialog } from './modaldialog';
 import type { IR, RA } from './wbplanview';
@@ -19,9 +19,9 @@ type Notification = {
 };
 
 export default function Notifications(): JSX.Element {
-  const [notifications, setNotifications] = React.useState<RA<Notification>>(
-    []
-  );
+  const [notifications, setNotifications] = React.useState<
+    RA<Notification> | undefined
+  >(undefined);
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
@@ -33,7 +33,6 @@ export default function Notifications(): JSX.Element {
     document.addEventListener('visibilitychange', handler);
 
     let timeout: number | undefined = undefined;
-
     function doFetch(): void {
       /*
        * Poll interval is scaled exponentially to
@@ -69,6 +68,8 @@ export default function Notifications(): JSX.Element {
         });
     }
 
+    doFetch();
+
     let destructorCalled = false;
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
@@ -77,30 +78,31 @@ export default function Notifications(): JSX.Element {
   }, []);
 
   // Close the dialog when all notifications get dismissed
-  const notificationCount = notifications.length;
+  const notificationCount = notifications?.length ?? 0;
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (notificationCount === 0) setIsOpen(false);
   }, [notificationCount]);
 
   // TODO: re-fetch notifications when opening dialog box
-  const hasUnread = notifications.some(({ read }) => !read);
+  const hasUnread = notifications?.some(({ read }) => !read) ?? false;
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   return (
     <>
       <button
         id="site-notifications"
         className={`magic-button ${hasUnread ? 'unread-notifications' : ''}`}
-        disabled={notifications.length === 0}
+        disabled={notificationCount === 0}
         aria-live="polite"
         type="button"
         onClick={(): void => setIsOpen((isOpen) => !isOpen)}
         ref={buttonRef}
       >
-        {commonText('notifications')(notifications.length)}
+        {commonText('notifications')(notifications?.length ?? '...')}
       </button>
-      {isOpen && (
+      {typeof notifications !== 'undefined' && isOpen && (
         <ModalDialog
+          className="notifications-container"
           properties={{
             title: commonText('notificationsDialogTitle'),
             maxHeight: 400,
@@ -109,6 +111,7 @@ export default function Notifications(): JSX.Element {
               at: 'center bottom',
               of: buttonRef.current,
             },
+            buttons: [],
             close: (): void => {
               setIsOpen(false);
               setNotifications(
@@ -120,9 +123,9 @@ export default function Notifications(): JSX.Element {
               if (notifications.length > 0)
                 void ajax('/notifications/mark_read/', {
                   method: 'POST',
-                  body: {
+                  body: formData({
                     last_seen: notifications.slice(-1)[0].timestamp,
-                  },
+                  }),
                 });
             },
           }}
@@ -158,24 +161,28 @@ function NotificationComponent({
   }).format(date);
   return (
     <article className={notification.read ? 'unread-notification' : undefined}>
-      <time dateTime={date.toISOString()}>{formatted}</time>
-      <button
-        className="ui-icon ui-icon-trash fake-link"
-        type="button"
-        onClick={(): void => {
-          void ajax('/notifications/delete/', {
-            method: 'POST',
-            body: { message_id: notification.message_id },
-          });
-          handleDelete();
-        }}
-      >
-        ${commonText('delete')}
-      </button>
-      {(
-        notificationRenderers[notification.type] ??
-        notificationRenderers.default
-      )(notification)}
+      <header>
+        <time dateTime={date.toISOString()}>{formatted}</time>
+        <button
+          className="ui-icon ui-icon-trash fake-link"
+          type="button"
+          onClick={(): void => {
+            void ajax('/notifications/delete/', {
+              method: 'POST',
+              body: formData({ message_id: notification.message_id }),
+            });
+            handleDelete();
+          }}
+        >
+          {commonText('delete')}
+        </button>
+      </header>
+      <p>
+        {(
+          notificationRenderers[notification.type] ??
+          notificationRenderers.default
+        )(notification)}
+      </p>
     </article>
   );
 }
@@ -187,7 +194,7 @@ const notificationRenderers: IR<
     const filename = notification.payload.file;
     return (
       <>
-        {commonText('feedItemUpdated')}
+        {commonText('feedItemUpdated')}{' '}
         <a download href={`/static/depository/export_feed/${filename}`}>
           {filename}
         </a>
@@ -197,7 +204,7 @@ const notificationRenderers: IR<
   'update-feed-failed'(notification) {
     return (
       <>
-        {commonText('updateFeedFailed')}
+        {commonText('updateFeedFailed')}{' '}
         <a
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
@@ -210,7 +217,7 @@ const notificationRenderers: IR<
   'dwca-export-complete'(notification) {
     return (
       <>
-        {commonText('dwcaExportCompleted')}
+        {commonText('dwcaExportCompleted')}{' '}
         <a download href={`/static/depository/${notification.payload.file}`}>
           {commonText('download')}
         </a>
@@ -220,7 +227,7 @@ const notificationRenderers: IR<
   'dwca-export-failed'(notification) {
     return (
       <>
-        {commonText('dwcaExportFailed')}
+        {commonText('dwcaExportFailed')}{' '}
         <a
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
@@ -233,7 +240,7 @@ const notificationRenderers: IR<
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToCsvCompleted')}
+        {commonText('queryExportToCsvCompleted')}{' '}
         <a download href={`/static/depository/${notification.payload.file}`}>
           {commonText('download')}
         </a>
@@ -243,7 +250,7 @@ const notificationRenderers: IR<
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToKmlCompleted')}
+        {commonText('queryExportToKmlCompleted')}{' '}
         <a download href={`/static/depository/${notification.payload.file}`}>
           {commonText('download')}
         </a>
@@ -252,15 +259,15 @@ const notificationRenderers: IR<
   },
   'dataset-ownership-transferred'(notification) {
     return commonText('dataSetOwnershipTransferred')(
-      `<i>${notification.payload['previous-owner-name']}</i>`,
-      `<a href="/specify/workbench/${notification.payload['dataset-id']}/">
-                    <i>"${notification.payload['dataset-name']}"</i>
-                </a>`
+      <i>{notification.payload['previous-owner-name']}</i>,
+      <a href={`/specify/workbench/${notification.payload['dataset-id']}/`}>
+        <i>{notification.payload['dataset-name']}</i>
+      </a>
     );
   },
   default(notification) {
     console.error(`Unknown notification type ${notification.type}`);
     console.warn(notification);
-    return <>{JSON.stringify(notification)}</>;
+    return <pre>{JSON.stringify(notification, null, 4)}</pre>;
   },
 };

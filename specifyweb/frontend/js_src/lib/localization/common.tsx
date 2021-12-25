@@ -356,9 +356,9 @@ const commonText = createDictionary({
   },
 
   notifications: {
-    'en-us': (count: number) => `Notifications: ${count}`,
-    'ru-ru': (count: number) => `Уведомлений: ${count}`,
-    ca: (count: number) => `Notifications: ${count}`,
+    'en-us': (count: number | string) => `Notifications: ${count}`,
+    'ru-ru': (count: number | string) => `Уведомлений: ${count}`,
+    ca: (count: number | string) => `Notifications: ${count}`,
   },
   attachments: {
     'en-us': 'Attachments',
@@ -859,15 +859,24 @@ const commonText = createDictionary({
     ca: 'Query export to KML completed.',
   },
   dataSetOwnershipTransferred: {
-    'en-us': (userName: string, dataSetName: string) => `
-      ${userName} transferred the ownership of the ${dataSetName} dataset
-      to you.`,
-    'ru-ru': (userName: string, dataSetName: string) => `
-      ${userName} передал вам право собственности на набор данных
-      ${dataSetName}.`,
-    ca: (userName: string, dataSetName: string) => `
-      ${userName} transferred the ownership of the ${dataSetName} dataset
-      to you.`,
+    'en-us': (userName: JSX.Element, dataSetName: JSX.Element) => (
+      <>
+        {userName} transferred the ownership of the {dataSetName} dataset to
+        you.
+      </>
+    ),
+    'ru-ru': (userName: JSX.Element, dataSetName: JSX.Element) => (
+      <>
+        {userName} передал вам право собственности на набор данных {dataSetName}
+        .
+      </>
+    ),
+    ca: (userName: JSX.Element, dataSetName: JSX.Element) => (
+      <>
+        {userName} transferred the ownership of the {dataSetName} dataset to
+        you.
+      </>
+    ),
   },
   // OtherCollectionView
   noAccessToResource: {
