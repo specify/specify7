@@ -1,6 +1,4 @@
-{% load raven %}
-{% load script_manifest %}
-{% load i18n %}
+{% load raven %} {% load script_manifest %} {% load i18n %}
 <!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
@@ -16,59 +14,13 @@
   </head>
 
   <body>
-    <button id="skip-link" class="sr-only">{% trans 'Skip to Content' %}</button>
-
-    <div id="root-app-container">
-      <header id="site-header">
-        <div id="site-header-main">
-          <h1 id="site-logo">
-            <a href="/specify/" class="intercept-navigation">
-              <span class="sr-only">{% trans 'Go to homepage' %}</span>
-            </a>
-          </h1>
-          <div id="user-tools">
-            <div>
-              <button
-                class="username magic-button"
-                title="{% trans 'Current User' %}"
-              ></button>
-              <a class="login"></a>
-              <select
-                class="collection-selector"
-                title="{% trans 'Current Collection' %}"
-                aria-label="{% trans 'Current Collection' %}"
-              ></select>
-            </div>
-            <div>
-              <button
-                id="site-notifications"
-                class="magic-button"
-                disabled
-                aria-live="polite"
-              ></button>
-              <form
-                id="express-search"
-                action="/specify/express_search/"
-                role="search"
-              >
-                <input
-                  type="search"
-                  class="express-search-query"
-                  name="q"
-                  placeholder="{% trans 'Search' %}"
-                  aria-label="{% trans 'Search' %}"
-                />
-              </form>
-            </div>
-          </div>
-        </div>
-        <nav id="site-nav" aria-label="primary">
-          <ul>
-            <li id="header-loading">{% trans 'Specify is loading...' %}</li>
-          </ul>
-        </nav>
+    <section id="loading">
+      <header>
+        <img src="/static/img/seven_logo.png" alt="Specify 7" />
+        <h1 class="sr-only">Specify 7</h1>
       </header>
-      <main></main>
-    </div>
+      <h2>Loading...</h2>
+    </section>
+    <div id="root-app-container" style="display: none"></div>
   </body>
 </html>

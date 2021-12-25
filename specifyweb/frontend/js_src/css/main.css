@@ -3,6 +3,7 @@
 
 @import url('./colors.css');
 @import url('./base.css');
+@import url('./loading.css');
 @import url('./header.css');
 @import url('./specifyform.css');
 @import url('./specifyform-print.css');
