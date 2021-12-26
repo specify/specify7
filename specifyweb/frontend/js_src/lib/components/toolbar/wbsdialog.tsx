@@ -6,16 +6,17 @@
 import $ from 'jquery';
 import React from 'react';
 
-import { DataSetMeta } from '../datasetmeta';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
-import navigation from '../navigation';
-import userInfo from '../userinfo';
-import uniquifyDataSetName from '../wbuniquifyname';
-import { DateElement } from './common';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import type { Dataset, DatasetBrief, RA } from './wbplanview';
+import { DataSetMeta } from '../../datasetmeta';
+import commonText from '../../localization/common';
+import wbText from '../../localization/workbench';
+import navigation from '../../navigation';
+import userInfo from '../../userinfo';
+import uniquifyDataSetName from '../../wbuniquifyname';
+import { DateElement } from '../common';
+import type { MenuItem } from '../main';
+import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import createBackboneView from '../reactbackboneextend';
+import type { Dataset, DatasetBrief, RA } from '../wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
   $.ajax('/api/workbench/dataset/', {
@@ -252,8 +253,18 @@ type Props = {
   readonly onClose: () => void;
 };
 
-export default createBackboneView<Props>({
+const View = createBackboneView<Props>({
   moduleName: 'WbsDialog',
   className: 'wbs-dialog',
   component: WbsDialog,
 });
+
+const menuItem: MenuItem = {
+  task: 'workbenches',
+  title: commonText('workbench'),
+  icon: '/static/img/workbench.png',
+  path: '/specify/workbench',
+  view: ({ onClose }) => new View({ onClose, showTemplates: false }),
+};
+
+export default menuItem;
