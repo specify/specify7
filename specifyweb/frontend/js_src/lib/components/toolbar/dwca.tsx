@@ -1,12 +1,12 @@
 import React from 'react';
 
-import ajax, { formData, HTTP } from '../ajax';
-import commonText from '../localization/common';
-import userInfo from '../userinfo';
-import { useId } from './common';
-import type { UserTool } from './main';
-import { closeDialog, ModalDialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import ajax, { formData, HTTP } from '../../ajax';
+import commonText from '../../localization/common';
+import userInfo from '../../userinfo';
+import { useId } from '../common';
+import type { UserTool } from '../main';
+import { closeDialog, ModalDialog } from '../modaldialog';
+import createBackboneView from '../reactbackboneextend';
 
 const liftGetResource = async (
   name: string,

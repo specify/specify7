@@ -4,22 +4,23 @@ import $ from 'jquery';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import ajax from '../ajax';
-import DeleteButton from '../deletebutton';
-import commonText from '../localization/common';
-import navigation from '../navigation';
-import populateform from '../populateform';
-import SaveButton from '../savebutton';
-import schema from '../schema';
-import app from '../specifyapp';
-import specifyform from '../specifyform';
-import userInfo from '../userinfo';
-import { DateElement, TableIcon } from './common';
-import type { MenuItem } from './main';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import { useCachedState } from './stateCache';
-import type { IR, RA } from './wbplanview';
+import ajax from '../../ajax';
+import DeleteButton from '../../deletebutton';
+import type { Schema } from '../../legacytypes';
+import commonText from '../../localization/common';
+import navigation from '../../navigation';
+import populateform from '../../populateform';
+import SaveButton from '../../savebutton';
+import schema from '../../schema';
+import app from '../../specifyapp';
+import specifyform from '../../specifyform';
+import userInfo from '../../userinfo';
+import { DateElement, TableIcon } from '../common';
+import type { MenuItem } from '../main';
+import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import createBackboneView from '../reactbackboneextend';
+import { useCachedState } from '../stateCache';
+import type { IR, RA } from '../wbplanview';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -251,7 +252,9 @@ function QueryToolbarItem({
 
   React.useEffect(() => {
     let destructorCalled = false;
-    const queryModels = new (schema as any).models.SpQuery.LazyCollection({
+    const queryModels = new (
+      schema as unknown as Schema
+    ).models.SpQuery.LazyCollection({
       filters: spQueryFilter ?? { specifyuser: userInfo.id },
     });
     queryModels.fetch({ limit: QUERY_FETCH_LIMIT }).done(() =>
@@ -365,7 +368,7 @@ const menuItem: MenuItem = {
         ? undefined
         : (query: Query): void => {
             const queryModel = new (
-              schema as any
+              schema as unknown as Schema
             ).models.SpQuery.LazyCollection({
               filters: { id: query.id },
             });

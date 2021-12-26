@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import csrfToken from '../csrftoken';
-import commonText from '../localization/common';
-import type { UserTool } from './main';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import type { IR } from './wbplanview';
+import csrfToken from '../../csrftoken';
+import commonText from '../../localization/common';
+import type { UserTool } from '../main';
+import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import createBackboneView from '../reactbackboneextend';
+import type { IR } from '../wbplanview';
 
 type Props = {
   readonly onClose: () => void;

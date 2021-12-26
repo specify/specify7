@@ -1,11 +1,11 @@
 import React from 'react';
 
-import ajax, { formData, HTTP } from '../ajax';
-import commonText from '../localization/common';
-import { useId } from './common';
-import type { UserTool } from './main';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import ajax, { formData, HTTP } from '../../ajax';
+import commonText from '../../localization/common';
+import { useId } from '../common';
+import type { UserTool } from '../main';
+import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import createBackboneView from '../reactbackboneextend';
 
 type Props = {
   readonly onClose: () => void;
@@ -61,7 +61,7 @@ function MasterKey({ onClose: handleClose }: Props): JSX.Element {
         onSubmit={(event): void => {
           event.preventDefault();
           setIsLoading(true);
-          ajax<string>(
+          ajax(
             '/api/master_key/',
             {
               method: 'POST',
