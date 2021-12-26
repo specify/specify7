@@ -41,11 +41,8 @@
     "xlsx": "~0.16.8"
   },
   "devDependencies": {
-    "@babel/core": "~7.14.8",
-    "@babel/plugin-proposal-class-properties": "~7.14.5",
-    "@babel/plugin-proposal-object-rest-spread": "~7.14.7",
-    "@babel/polyfill": "~7.12.1",
-    "@babel/preset-env": "~7.14.8",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "~7.14.5",
     "@rushstack/eslint-patch": "^1.1.0",
@@ -77,18 +74,20 @@
     "underscore-template-loader": "~1.1.0",
     "webpack": "^5.47.1",
     "webpack-cli": "^4.7.2",
-    "webpack-manifest-plugin": "^3.2.0",
+    "webpack-manifest-plugin": "~3.1.1",
     "worker-loader": "^3.0.8"
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/typescript"
+  "browserslist": {
+    "production": [
+      "last 2 years",
+      "> 1% in US",
+      "not ie <= 11",
+      "not dead"
     ],
-    "plugins": [
-      "@babel/proposal-class-properties",
-      "@babel/proposal-object-rest-spread",
-      "babel-plugin-replace-ts-export-assignment"
+    "development": [
+      "last 2 Chrome versions",
+      "last 2 Firefox versions",
+      "last 1 Safari version"
     ]
   },
   "directories": {
