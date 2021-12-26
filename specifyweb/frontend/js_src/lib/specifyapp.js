@@ -33,11 +33,16 @@ const commonText = require('./localization/common').default;
     $.ui.dialog.prototype._focusTabbable = function(){
         let previousFocusedElement = document.activeElement;
         this.uiDialog.focus();
-        // Return focus to the previous focused element
+        // Return focus to the previous focused element on dialog close
         this.uiDialog.on('dialogbeforeclose',()=>
             previousFocusedElement?.focus()
         );
 
+        /*
+         * Make title non-bold by adding 'ui-dialog-with-header' className to
+         * non-React dialogs that have headers (React dialog do this in
+         * modaldialog.tsx)
+         * */
         if(!this.options.dialogClass.split(' ').includes('ui-dialog-react'))
             this.uiDialog.on(
                 'dialogopen',
@@ -46,6 +51,7 @@ const commonText = require('./localization/common').default;
                     this.uiDialog[0].classList.add('ui-dialog-with-header')
             );
 
+        // Set proper aria attributes
         this.uiDialog[0].setAttribute('role','dialog');
         if(this.options.modal)
             this.uiDialog[0].setAttribute('aria-modal','true');
@@ -131,7 +137,7 @@ function viewSaved(resource, recordSet, options) {
     }
 }
 
-    // build and display view for resource
+// build and display view for resource
 function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({

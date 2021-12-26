@@ -71,7 +71,7 @@ function MasterKey({ onClose: handleClose }: Props): JSX.Element {
               },
             },
             {
-              expectedResponseCodes: [HTTP.FORBIDDEN, HTTP.OK],
+              expectedResponseCodes: [HTTP.FORBIDDEN, HTTP.OK]
             }
           )
             .then(({ data, status }) =>

@@ -40,6 +40,7 @@ export default function Notifications(): JSX.Element {
     document.addEventListener('visibilitychange', handler);
 
     let timeout: number | undefined = undefined;
+
     function doFetch(): void {
       /*
        * Poll interval is scaled exponentially to
@@ -121,12 +122,16 @@ export default function Notifications(): JSX.Element {
                 }))
               );
               if (notifications.length > 0)
-                void ajax('/notifications/mark_read/', {
-                  method: 'POST',
-                  body: formData({
-                    last_seen: notifications.slice(-1)[0].timestamp,
-                  }),
-                });
+                void ajax(
+                  '/notifications/mark_read/',
+                  {
+                    method: 'POST',
+                    body: formData({
+                      last_seen: notifications.slice(-1)[0].timestamp,
+                    }),
+                  },
+                  { strict: false }
+                );
             },
           }}
         >
@@ -167,10 +172,14 @@ function NotificationComponent({
           className="ui-icon ui-icon-trash fake-link"
           type="button"
           onClick={(): void => {
-            void ajax('/notifications/delete/', {
-              method: 'POST',
-              body: formData({ message_id: notification.message_id }),
-            });
+            void ajax(
+              '/notifications/delete/',
+              {
+                method: 'POST',
+                body: formData({ message_id: notification.message_id }),
+              },
+              { strict: false }
+            );
             handleDelete();
           }}
         >

@@ -1,7 +1,6 @@
 "use strict";
 
 var $                = require('jquery');
-var _                = require('underscore');
 var Backbone         = require('./backbone.js');
 const navigation = require('./navigation.js');
 const commonText = require('./localization/common').default;
@@ -26,10 +25,9 @@ module.exports = {
                     ${commonText('backEndErrorDialogHeader')}
                     <p>${commonText('backEndErrorDialogMessage')}</p>
                 `);
-                var response = this.options.jqxhr.responseText;
-                if (/^Traceback:/m.test(response)) {
-                    this.$el.append($('<textarea readonly>').val(response).css({'width': '100%', 'min-height': 600}));
-                }
+                this.$el.append($('<textarea readonly>')
+                    .val(this.options.response)
+                    .css({'width': '100%', 'min-height': 600}));
                 this.el.setAttribute('role','alert');
                 this.$el.dialog({
                     modal: true,

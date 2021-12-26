@@ -47,7 +47,7 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
       });
     return;
   }
-  new errorview.UnhandledErrorView({jqxhr: jqxhr}).render();
+  new errorview.UnhandledErrorView({response: jqxhr.responseText}).render();
 
   console.log(arguments);
 }
