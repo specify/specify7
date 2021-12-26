@@ -1,7 +1,7 @@
 import type hot from 'handsontable';
 
 import type { AutoMapperResults } from './automapper';
-import { Query, SortConfig } from './components/toolbarquery';
+import type { Query, SortConfig } from './components/toolbar/query';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { R, RA } from './components/wbplanview';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
@@ -28,11 +28,10 @@ export type CacheDefinitions = {
   readonly leaflet: {
     readonly // Remembers the selected base layer
     [Property in `currentLayer${LeafletCacheSalt}`]: string;
-  } &
-    {
-      readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
-      [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
-    };
+  } & {
+    readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
+    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
+  };
   readonly 'wbplanview-datamodel': {
     // Data on the fields in the tables that are included in wbplanview
     readonly tables: DataModelTables;

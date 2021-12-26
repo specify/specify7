@@ -14,7 +14,7 @@ var navigation   = require('./navigation.js');
 var ResourceView = require('./resourceview.js');
 var router       = require('./router.js');
 var systemInfo   = require('./systeminfo.ts');
-var reports      = require('./reports.js');
+var {reports}      = require('./reports.js');
 const commonText = require('./localization/common').default;
 
     var currentView;
@@ -151,7 +151,7 @@ function showResource(resource, recordSet, pushUrl) {
                     recordToPrintId: resource.id,
                     autoSelectSingle: true,
                     done: viewSaved.bind(this, resource, recordSet, options)
-                });
+                }).then(view=>view.render());
             } else {
                 viewSaved(resource, recordSet, options);
             }

@@ -1,21 +1,21 @@
 "use strict";
 
-const $        = require('jquery');
-const _        = require('underscore');
-const Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-const schema                 = require('./schema.js');
-const QueryFieldUI           = require('./queryfield.js');
-const parsespecifyproperties = require('./parsespecifyproperties.js');
-const AttachmentPlugin       = require('./attachmentplugin.js');
-const attachments            = require('./attachments.js');
-const userInfo               = require('./userinfo').default;
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import QueryFieldUI from './queryfield';
+import parsespecifyproperties from './parsespecifyproperties';
+import AttachmentPlugin from './attachmentplugin';
+import * as attachments from './attachments';
+import userInfo from './userinfo';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
-const csrftoken = require('./csrftoken.js');
-const populateForm = require('./populateform.js');
-const navigation = require('./navigation.js');
+import csrftoken from './csrftoken';
+import populateForm from './populateform';
+import * as navigation from './navigation';
 
 var title = commonText('reports');
 
@@ -36,7 +36,8 @@ var ReportListDialog = Backbone.View.extend({
         'click button.select': 'getReportUI',
         'click button.edit': 'editReport',
     },
-    initialize: function(options) {
+    initialize: function() {
+        this.options.readOnly ||= !userInfo.isadmin;
         var appResources = this.options.appResources;
         if (this.options.metaDataFilter) {
             var mdFilter = this.options.metaDataFilter;
@@ -95,6 +96,7 @@ var ReportListDialog = Backbone.View.extend({
             if(!this.options.appResources.isComplete())
                 this.$el.append(`<p>${commonText('listTruncated')}</p>`);
 
+            const that = this;
             makeDialog(this.$el, {
                 title: title,
                 maxHeight: 400,
@@ -102,6 +104,7 @@ var ReportListDialog = Backbone.View.extend({
                     text: commonText('close'),
                     click: function() {
                         $(this).dialog('close');
+                        that.options.onClose?.();
                     }
                 }],
                 done: this.options.done
@@ -572,20 +575,38 @@ function fixupImages(reportXML) {
     });
 }
 
-module.exports =  function(options) {
-    options || (options = {});
-    options.readOnly = options.readOnly || !userInfo.isadmin;
-
+function getAppResources(options){
     const appRs = new schema.models.SpAppResource.LazyCollection();
 
-    if (_(options).has('tblId')) {
+    if (_(options).has('tblId'))
         appRs.url = () => `/report_runner/get_reports_by_tbl/${options.tblId}/`;
-    } else {
+    else
         appRs.url = () => "/report_runner/get_reports/";
-    }
 
-    appRs.fetch().done(
-        () => new ReportListDialog(_.extend(options, { appResources: appRs })).render()
-    );
-};
+    return new Promise((resolve) =>
+        appRs
+            .fetch()
+            .done(() =>
+                resolve(appRs)
+            )
+    )
+}
+
+export function reports(options = {}) {
+    return getAppResources(options).then((appResources) =>
+        new ReportListDialog(_.extend(options, {appResources}))
+    )
+}
+
+export const ReportsView = Backbone.View.extend({
+    __name__: 'ReportsWrapper',
+    render(){
+        reports(this.options).then(view=>{this.view = view; view.render()})
+        return this;
+    },
+    remove(){
+        this.view.remove();
+        Backbone.View.prototype.remove.call(this);
+    }
+});
 

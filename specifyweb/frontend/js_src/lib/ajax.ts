@@ -13,6 +13,7 @@ export const HTTP = {
   FORBIDDEN: 403,
 };
 
+// TODO: add a "strictness" option (ignore, log, block)
 /**
  * Wraps native fetch in useful helpers
  * It is intended as a replacement for jQuery's ajax
@@ -24,7 +25,7 @@ export const HTTP = {
  * Logs error messages to the console
  * If object is passed to body, it is stringified and proper HTTP header is set
  */
-export default async function ajax<RESPONSE_TYPE>(
+export default async function ajax<RESPONSE_TYPE = string>(
   url: string,
   options: Omit<RequestInit, 'body' | 'headers'> & {
     body?: string | IR<unknown> | FormData;

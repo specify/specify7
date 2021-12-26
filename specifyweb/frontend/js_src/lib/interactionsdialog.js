@@ -12,7 +12,7 @@ var specifyform       = require('./specifyform.js');
 var userInfo          = require('./userinfo').default;
 var InteractionDialog = require('./interactiondialog.js');
 var s                 = require('./stringlocalization.js');
-var reports           = require('./reports.js');
+var {reports}           = require('./reports.js');
 const ajax = require("./ajax").default;
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
@@ -187,7 +187,7 @@ module.exports = Backbone.View.extend({
                     tblId: 52,
                     //metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
                     autoSelectSingle: true
-                });
+                }).then(view=>view.render());
             } else {
                 alert(formsText('actionNotSupported')(action.attr('action')));
             }

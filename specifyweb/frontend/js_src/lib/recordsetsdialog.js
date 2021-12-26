@@ -10,7 +10,7 @@ var EditResourceDialog = require('./editresourcedialog.js');
 var navigation         = require('./navigation.js');
 var querystring        = require('./querystring.js');
 const userInfo = require('./userinfo.ts').default;
-const {QueryToolbarView} = require('./components/toolbarquery');
+const {QueryToolbarView} = require('./components/toolbar/query');
 const formsText = require('./localization/forms').default;
 const commonText = require('./localization/common').default;
 

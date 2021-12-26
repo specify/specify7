@@ -4,7 +4,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var UICmd = require('./uicommand.js');
-var reports = require('./reports.js');
+var {reports} = require('./reports.js');
 const formsText = require('./localization/forms').default;
 
 module.exports =  UICmd.extend({
@@ -31,6 +31,6 @@ module.exports =  UICmd.extend({
             tblId: this.model.specifyModel.tableId,
             recordToPrintId: this.model.get('id'),
             autoSelectSingle: true
-        });
+        }).then(view=>view.render());
     }
 });

@@ -7,6 +7,7 @@
 
 import '../../css/wbplanview.css';
 
+import type Backbone from 'backbone';
 import React from 'react';
 
 import type { JqueryPromise } from '../legacytypes';
@@ -68,7 +69,7 @@ export type Dataset = DatasetBrief & {
   visualorder: null | RA<number>;
 };
 
-export interface SpecifyResource {
+export type SpecifyResource = Backbone.Model & {
   readonly id: number;
   readonly get: (query: string) => SpecifyResource | any;
   readonly rget: (query: string) => JqueryPromise<SpecifyResource | any>;
@@ -76,7 +77,7 @@ export interface SpecifyResource {
   readonly save: () => void;
   readonly viewUrl: () => string;
   readonly Resource: new () => SpecifyResource;
-}
+};
 
 // Record
 export type R<V> = Record<string, V>;

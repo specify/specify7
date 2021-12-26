@@ -1,4 +1,4 @@
-import type { IR, RA } from './components/wbplanview';
+import type { IR, RA, SpecifyResource } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 
 export interface SchemaModelTableField {
@@ -18,21 +18,31 @@ export interface SchemaModelTableRelationship extends SchemaModelTableField {
   readonly relatedModelName: string;
 }
 
-type SpecifyFetch = (filter: { readonly filters: object }) => {
-  fetch: (filter: {
+type SpecifyFetch = {
+  readonly fetch: (filter: {
     readonly limit: number;
   }) => JqueryPromise<DomainTreeDefinitionItem>;
+  readonly models: RA<SpecifyResource>;
 };
 
-interface SchemaModelTableData {
+export interface SchemaModelTableData {
   readonly longName: string;
   readonly name: string;
   readonly getLocalizedName: () => string;
   readonly system: boolean;
   readonly tableId: number;
   readonly fields: RA<SchemaModelTableField | SchemaModelTableRelationship>;
-  readonly LazyCollection: SpecifyFetch;
-  readonly isHidden: ()=>boolean;
+  readonly LazyCollection: new (props: {
+    readonly filters?: Partial<
+      {
+        readonly orderby: string;
+        readonly id: number;
+        readonly specifyuser: number;
+        readonly domainfilter: boolean;
+      } & IR<unknown>
+    >;
+  }) => SpecifyFetch;
+  readonly isHidden: () => boolean;
 }
 
 type SchemaModels<T> = IR<T>;
@@ -65,6 +75,7 @@ interface DomainTreeDefinition {
 
 export interface JqueryPromise<T> {
   readonly done: (callback: (t: T) => void) => void;
+  readonly then: (callback: (t: T) => void) => void;
 }
 
 export interface Domain {

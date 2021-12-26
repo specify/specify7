@@ -402,9 +402,9 @@ const commonText = createDictionary({
     ca: 'Export Feed',
   },
   updateExportFeedDialogHeader: {
-    'en-us': createHeader('Update all export feed items now?'),
-    'ru-ru': createHeader('Обновить все элементы фида экспорта сейчас?'),
-    ca: createHeader('Update all export feed items now?'),
+    'en-us': createJsxHeader('Update all export feed items now?'),
+    'ru-ru': createJsxHeader('Обновить все элементы фида экспорта сейчас?'),
+    ca: createJsxHeader('Update all export feed items now?'),
   },
   updateExportFeedDialogMessage: {
     'en-us': 'Update all export feed items now?',
@@ -417,9 +417,9 @@ const commonText = createDictionary({
     ca: 'Export Feed',
   },
   feedExportStartedDialogHeader: {
-    'en-us': createHeader('Export feed update started'),
-    'ru-ru': createHeader('Начато обновление экспортного фида'),
-    ca: createHeader('Export feed update started'),
+    'en-us': createJsxHeader('Export feed update started'),
+    'ru-ru': createJsxHeader('Начато обновление экспортного фида'),
+    ca: createJsxHeader('Export feed update started'),
   },
   feedExportStartedDialogMessage: {
     'en-us': `
@@ -607,11 +607,11 @@ const commonText = createDictionary({
     ca: 'Resources',
   },
   resourcesDialogHeader: {
-    'en-us': createHeader('Choose the resource type you wish to edit:'),
-    'ru-ru': createHeader(
+    'en-us': createJsxHeader('Choose the resource type you wish to edit:'),
+    'ru-ru': createJsxHeader(
       'Выберите тип ресурса, который хотите отредактировать:'
     ),
-    ca: createHeader('Choose the resource type you wish to edit:'),
+    ca: createJsxHeader('Choose the resource type you wish to edit:'),
   },
   repairTree: {
     'en-us': 'Repair Tree',

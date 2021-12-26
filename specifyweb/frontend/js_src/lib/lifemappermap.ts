@@ -2,6 +2,7 @@ import type { IR, R, RA, RR } from './components/wbplanview';
 import csrfToken from './csrftoken';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
+import type { Schema } from './legacytypes';
 import type { MessageTypes } from './lifemapperconfig';
 import type { MapInfo } from './lifemapperreducer';
 import type { LifemapperLayerTypes } from './lifemapperutills';
@@ -164,7 +165,7 @@ export async function prepareLifemapperProjectionMap(
                 fetchLocalityResource: async () =>
                   new Promise<any>((resolve) => {
                     const locality = new (
-                      schema as any
+                      schema as unknown as Schema
                     ).models.Locality.LazyCollection({
                       filters: { id: localityId },
                     });

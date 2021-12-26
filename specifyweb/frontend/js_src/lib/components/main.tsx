@@ -19,7 +19,10 @@ import type { RA } from './wbplanview';
 export type UserTool = {
   readonly task: string;
   readonly title: string;
-  readonly view: (props: { readonly onClose: () => void }) => Backbone.View;
+  readonly view: (props: {
+    readonly onClose: () => void;
+    readonly urlParameter?: string;
+  }) => Backbone.View;
   readonly enabled?: boolean | (() => boolean);
 };
 
@@ -37,26 +40,26 @@ const menuItemsPromise: Promise<RA<{ readonly default: MenuItem }>> =
   Promise.all([
     import('../toolbardataentry'),
     import('../toolbarinteractions'),
-    import('../toolbartrees'),
+    import('./toolbar/trees'),
     import('../toolbarrecordsets'),
-    import('./toolbarquery'),
+    import('./toolbar/query'),
     import('../toolbarreport').then(async ({ default: menuItem }) => ({
       default: await menuItem,
     })),
     import('../toolbarattachments'),
   ]);
 
-const userToolsPromise: Promise<RA<{ readonly default: MenuItem }>> =
+const userToolsPromise: Promise<RA<{ readonly default: UserTool }>> =
   Promise.all([
-    import('../toolbarwbs'),
-    import('./toolbarlanguage'),
+    import('./toolbar/wbsdialog'),
+    import('./toolbar/language'),
     import('../toolbarschemaconfig'),
-    import('./toolbarmasterkey'),
-    import('../toolbarusers'),
-    import('../toolbartreerepair'),
-    import('../toolbarresources'),
-    import('./toolbardwca'),
-    import('../toolbarforceupdate'),
+    import('./toolbar/masterkey'),
+    import('./toolbar/users'),
+    import('./toolbar/treerepair'),
+    import('./toolbar/resources'),
+    import('./toolbar/dwca'),
+    import('./toolbar/forceupdate'),
   ]);
 
 type Props = {

@@ -19,6 +19,7 @@ import { getRefMappingState } from '../wbplanviewrefreducer';
 import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
 import { TableIcon } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
+import { WbsDialog } from './toolbar/wbsdialog';
 import type { RA, WbPlanViewProps } from './wbplanview';
 import {
   ButtonWithConfirmation,
@@ -36,7 +37,6 @@ import {
   defaultMappingViewHeight,
   EmptyDataSetDialog,
 } from './wbplanviewmappercomponents';
-import { WbsDialog } from './wbsdialog';
 
 // States
 
@@ -372,22 +372,20 @@ export const stateReducer = generateReducer<
               {wbText('mustMatch')}
             </button>
             {!state.props.readonly && (
-              <>
-                <ValidationButton
-                  canValidate={
-                    state.lines.length > 0 &&
-                    state.lines.some(({ mappingPath }) =>
-                      mappingPathIsComplete(mappingPath)
-                    )
-                  }
-                  isValidated={state.mappingsAreValidated}
-                  onClick={(): void =>
-                    state.dispatch({
-                      type: 'ValidationAction',
-                    })
-                  }
-                />
-              </>
+              <ValidationButton
+                canValidate={
+                  state.lines.length > 0 &&
+                  state.lines.some(({ mappingPath }) =>
+                    mappingPathIsComplete(mappingPath)
+                  )
+                }
+                isValidated={state.mappingsAreValidated}
+                onClick={(): void =>
+                  state.dispatch({
+                    type: 'ValidationAction',
+                  })
+                }
+              />
             )}
             <button
               type="button"

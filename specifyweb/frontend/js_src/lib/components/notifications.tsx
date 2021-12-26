@@ -23,6 +23,13 @@ export default function Notifications(): JSX.Element {
     RA<Notification> | undefined
   >(undefined);
 
+  // Close the dialog when all notifications get dismissed
+  const notificationCount = notifications?.length ?? 0;
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    if (notificationCount === 0) setIsOpen(false);
+  }, [notificationCount]);
+
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     const handler = (): void => {
@@ -74,17 +81,10 @@ export default function Notifications(): JSX.Element {
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
       destructorCalled = true;
+      window.clearTimeout(timeout);
     };
-  }, []);
+  }, [isOpen]);
 
-  // Close the dialog when all notifications get dismissed
-  const notificationCount = notifications?.length ?? 0;
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  React.useEffect(() => {
-    if (notificationCount === 0) setIsOpen(false);
-  }, [notificationCount]);
-
-  // TODO: re-fetch notifications when opening dialog box
   const hasUnread = notifications?.some(({ read }) => !read) ?? false;
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   return (
