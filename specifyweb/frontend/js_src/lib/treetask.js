@@ -1,13 +1,9 @@
-"use strict";
+'use strict';
 
 var router = require('./router.js');
 
-module.exports =  function() {
-    router.route('tree/:table/', 'tree', function(table) {
-        require.ensure(['./treeview.js'], function(require) {
-            var treeview = require('./treeview.js');
-            treeview(table);
-        }, 'treeview');
-    });
+module.exports = function () {
+  router.route('tree/:table/', 'tree', (table) =>
+    import('./treeview'.then((treeView) => treeView(table)))
+  );
 };
-
