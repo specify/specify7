@@ -68,18 +68,18 @@ type FindNextNavigationDirection<RETURN_STRUCTURE> = {
     }
 );
 
-interface NavigationCallbackPayload<RETURN_TYPE> {
+type NavigationCallbackPayload<RETURN_TYPE> = {
   readonly tableName: string;
   data?: RETURN_TYPE;
   parentRelationshipType?: RelationshipType;
   parentTableName?: string;
-}
+};
 
 type NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_TYPE> = (
   callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>
 ) => RETURN_TYPE;
 
-interface NavigationCallbacks<RETURN_STRUCTURE> {
+type NavigationCallbacks<RETURN_STRUCTURE> = {
   /*
    * Should return {boolean} specifying whether to run
    * dataModel.navigatorInstance() for a particular mapping path part
@@ -150,7 +150,7 @@ interface NavigationCallbacks<RETURN_STRUCTURE> {
     RETURN_STRUCTURE,
     void
   >;
-}
+};
 
 function findNextNavigationDirection<RETURN_STRUCTURE>(
   callbacks: Readonly<NavigationCallbacks<RETURN_STRUCTURE>>,

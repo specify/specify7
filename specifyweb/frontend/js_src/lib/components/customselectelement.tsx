@@ -1,5 +1,10 @@
-/*
- * Custom Select Element (picklist). Used by workbench mapper
+/**
+ * Custom `<select>` Element (picklist)
+ * Used extensively by WbPlanView
+ * Has full screen reader and keyboard navigation support
+ * Supports icons, unlike default `<select>` element
+ *
+ * @module
  */
 
 import '../../css/customselectelement.css';
@@ -88,7 +93,7 @@ export type CustomSelectSubtype =
   // For tree ranks
   | 'tree';
 
-interface CustomSelectElementIconProps {
+type CustomSelectElementIconProps = {
   /*
    * Whether the option is a relationship (False for fields, true for
    * relationships, tree ranks and reference items)
@@ -109,11 +114,11 @@ interface CustomSelectElementIconProps {
   readonly isEnabled?: boolean;
   // Whether an icon is used inside of preview_row in CLOSED_LIST
   readonly isPreview?: boolean;
-}
+};
 
-interface CustomSelectElementOptionProps extends CustomSelectElementIconProps {
+type CustomSelectElementOptionProps = CustomSelectElementIconProps & {
   readonly handleClick?: (payload: { readonly isDoubleClick: boolean }) => void;
-}
+};
 
 export type CustomSelectElementDefaultOptionProps =
   CustomSelectElementIconProps & {
@@ -124,7 +129,7 @@ export type CustomSelectElementDefaultOptionProps =
 
 export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
 
-interface CustomSelectElementOptionGroupProps {
+type CustomSelectElementOptionGroupProps = {
   // Group's name (used for styling)
   readonly selectGroupName?: string;
   // Group's label (shown to the user)
@@ -140,11 +145,11 @@ interface CustomSelectElementOptionGroupProps {
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
   }) => void;
-}
+};
 
 type CustomSelectElementOptionGroups = IR<CustomSelectElementOptionGroupProps>;
 
-interface CustomSelectElementPropsBase {
+type CustomSelectElementPropsBase = {
   // The label to use for the element
   readonly selectLabel?: string;
   readonly customSelectType: CustomSelectType;
@@ -167,16 +172,16 @@ interface CustomSelectElementPropsBase {
   readonly handleClose?: () => void;
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
   readonly autoMapperSuggestions?: JSX.Element;
-}
+};
 
-export interface CustomSelectElementPropsClosed
-  extends CustomSelectElementPropsBase {
+export type CustomSelectElementPropsClosed =
+  CustomSelectElementPropsBase & {
   readonly isOpen: false;
   readonly handleOpen?: () => void;
-}
+}:
 
-export interface CustomSelectElementPropsOpenBase
-  extends CustomSelectElementPropsBase {
+export type CustomSelectElementPropsOpenBase =
+  CustomSelectElementPropsBase & {
   readonly isOpen: true;
   readonly handleChange?: (payload: {
     readonly close: boolean;
@@ -187,13 +192,13 @@ export interface CustomSelectElementPropsOpenBase
     readonly isDoubleClick: boolean;
   }) => void;
   readonly handleClose?: () => void;
-}
+}:
 
-interface CustomSelectElementPropsOpen
-  extends CustomSelectElementPropsOpenBase {
+type CustomSelectElementPropsOpen =
+  CustomSelectElementPropsOpenBase & {
   readonly customSelectOptionGroups: CustomSelectElementOptionGroups;
   readonly autoMapperSuggestions?: JSX.Element;
-}
+};
 
 export function Icon({
   isRelationship = false,
@@ -326,6 +331,10 @@ function OptionGroup({
   );
 }
 
+/**
+ * All picklist options are rendered invisibly for every closed picklist to
+ * ensure picklist maintains the width when opened or closed
+ */
 const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
   fieldNames,
 }: {
@@ -723,6 +732,10 @@ export function CustomSelectElement({
   );
 }
 
+/**
+ * Picklist that renders on top of currently opened picklist and displays
+ * top 3 automapper suggestions (if available)
+ */
 export function SuggestionBox({
   selectOptionsData,
   onSelect: handleSelect,

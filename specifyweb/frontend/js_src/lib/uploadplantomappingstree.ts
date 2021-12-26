@@ -1,5 +1,5 @@
-import type { IR, R, RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { IR, R, RA } from './types';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import { formatReferenceItem, formatTreeRank } from './wbplanviewmappinghelper';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
@@ -34,9 +34,9 @@ interface UploadTable {
   readonly toMany: ToMany;
 }
 
-interface TreeRecord {
+type TreeRecord = {
   readonly ranks: IR<string | { treeNodeCols: IR<ColumnDef> }>;
-}
+};
 
 type UploadTableVariety =
   | { readonly uploadTable: UploadTable }
@@ -49,10 +49,10 @@ export type TreeRecordVariety =
 
 export type Uploadable = UploadTableVariety | TreeRecordVariety;
 
-export interface UploadPlan {
+export type UploadPlan = {
   readonly baseTableName: string;
   readonly uploadable: Uploadable;
-}
+};
 
 const excludeUnknownMatchingOptions = (matchingOptions: ColumnOptions) =>
   Object.fromEntries(

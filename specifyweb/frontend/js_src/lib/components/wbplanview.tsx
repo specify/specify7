@@ -86,15 +86,15 @@ export const handlePromiseReject = (error: unknown) =>
   setTimeout(() => {
     throw error;
   }, 0);
+};
 
-export interface WbPlanViewProps
-  extends WbPlanViewWrapperProps,
-    PublicWbPlanViewProps {
-  readonly uploadPlan: UploadPlan | null;
-  readonly headers: RA<string>;
-  readonly setUnloadProtect: () => void;
-  readonly readonly: boolean;
-}
+export type WbPlanViewProps = WbPlanViewWrapperProps &
+  PublicWbPlanViewProps & {
+    readonly uploadPlan: UploadPlan | null;
+    readonly headers: RA<string>;
+    readonly setUnloadProtect: () => void;
+    readonly readonly: boolean;
+  };
 
 export type PartialWbPlanViewProps = {
   readonly removeUnloadProtect: () => void;

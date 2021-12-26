@@ -41,7 +41,7 @@ import {
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
-interface AutoMapperConstructorBaseParameters {
+type AutoMapperConstructorBaseParameters = {
   // Array of strings that represent headers
   readonly headers: RA<string>;
   // Base table name
@@ -64,25 +64,25 @@ interface AutoMapperConstructorBaseParameters {
    * Scope to use for definitions. More info in autoMapperdefinitions.ts
    */
   readonly scope?: AutoMapperScope;
-}
+};
 
-interface AutoMapperConstructorCheckExistingParameters
-  extends AutoMapperConstructorBaseParameters {
-  /*
-   * Whether to check if the field is already mapped (outside AutoMapper,
-   * in the mapping tree)
-   */
-  readonly pathIsMapped: PathIsMappedBind;
-}
+type AutoMapperConstructorCheckExistingParameters =
+  AutoMapperConstructorBaseParameters & {
+    /*
+     * Whether to check if the field is already mapped (outside AutoMapper,
+     * in the mapping tree)
+     */
+    readonly pathIsMapped: PathIsMappedBind;
+  };
 
-interface AutoMapperConstructorDontCheckExistingParameters
-  extends AutoMapperConstructorBaseParameters {
-  /*
-   * Whether to check if the field is already mapped (outside AutoMapper,
-   * in the mapping tree)
-   */
-  readonly pathIsMapped?: PathIsMappedBind;
-}
+type AutoMapperConstructorDontCheckExistingParameters =
+  AutoMapperConstructorBaseParameters & {
+    /*
+     * Whether to check if the field is already mapped (outside AutoMapper,
+     * in the mapping tree)
+     */
+    readonly pathIsMapped?: PathIsMappedBind;
+  };
 
 export type AutoMapperConstructorParameters =
   | AutoMapperConstructorCheckExistingParameters
@@ -90,7 +90,7 @@ export type AutoMapperConstructorParameters =
 
 export type AutoMapperResults = R<MappingPath[]>;
 
-interface FindMappingsParameters {
+type FindMappingsParameters = {
   readonly tableName: string;
   readonly mappingPath: MappingPath;
   /*
@@ -105,7 +105,7 @@ interface FindMappingsParameters {
    * relationships)
    */
   readonly parentRelationshipType?: undefined | RelationshipType;
-}
+};
 
 type AutoMapperResultsAddAction = Action<
   'add',

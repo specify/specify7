@@ -59,17 +59,17 @@ export type SelectElementPosition = {
   readonly index: number;
 };
 
-export interface MappingLine {
+export type MappingLine = {
   readonly mappingType: MappingType;
   readonly headerName: string;
   readonly mappingPath: MappingPath;
   readonly columnOptions: ColumnOptions;
   readonly isFocused?: boolean;
-}
+};
 
-export interface AutoMapperSuggestion extends MappingPathProps {
+export type AutoMapperSuggestion = MappingPathProps & {
   readonly mappingPath: MappingPath;
-}
+};
 
 export type WbPlanViewMapperBaseProps = {
   readonly showHiddenFields: boolean;

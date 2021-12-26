@@ -6,30 +6,30 @@ import type { IR, RA, RR } from './types';
  * If an UploadResult involves a tree record, this metadata indicates
  * where in the tree the record resides
  */
-interface TreeInfo {
+type TreeInfo = {
   // The tree rank a record relates to
   readonly rank: string;
   // The name of the tree node a record relates to
   readonly name: string;
-}
+};
 
 /*
  * Records metadata about an UploadResult indicating the tables, data set
  * columns, and any tree information involved
  */
-interface ReportInfo {
+type ReportInfo = {
   // The name of the table a record relates to
   readonly tableName: string;
   // The columns from the data set a record relates to
   readonly columns: RA<string>;
   readonly treeInfo: TreeInfo | null;
-}
+};
 
 /*
  * Indicates that a value had to be added to a picklist during uploading
  * a record
  */
-interface PicklistAddition {
+type PicklistAddition = {
   // The new picklistitem id
   readonly id: number;
   // The name of the picklist receiving the new item
@@ -38,7 +38,7 @@ interface PicklistAddition {
   readonly value: string;
   // The data set column that produced the new item
   readonly caption: string;
-}
+};
 
 // Indicates that a new row was added to the database
 type Uploaded = State<
@@ -135,7 +135,7 @@ type RecordResult = {
   >;
 };
 
-export interface UploadResult {
+export type UploadResult = {
   readonly UploadResult: {
     readonly record_result: RecordResult;
     /*
@@ -150,4 +150,4 @@ export interface UploadResult {
      */
     readonly toMany: IR<RA<UploadResult>>;
   };
-}
+};

@@ -24,7 +24,7 @@ import type {
   SelectElementPosition,
 } from './wbplanviewmapper';
 
-export interface HtmlGeneratorFieldData {
+export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
   readonly title?: string;
   readonly isEnabled?: boolean;
@@ -33,9 +33,9 @@ export interface HtmlGeneratorFieldData {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: string;
-}
+};
 
-interface MappingLineBaseProps {
+type MappingLineBaseProps = {
   readonly lineData: RA<MappingElementProps>;
   readonly mappingType: MappingType;
   readonly headerName: string;
@@ -44,11 +44,11 @@ interface MappingLineBaseProps {
   readonly onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   readonly onClearMapping: () => void;
   readonly readonly: boolean;
-}
+};
 
-export interface MappingPathProps {
+export type MappingPathProps = {
   readonly mappingLineData: RA<MappingElementProps>;
-}
+};
 
 export type MappingElementProps = {
   readonly fieldsData: IR<HtmlGeneratorFieldData>;

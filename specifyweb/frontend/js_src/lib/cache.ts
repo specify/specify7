@@ -9,7 +9,7 @@ export type BucketType =
   // Persistent only during a single session
   | 'sessionStorage';
 
-interface BucketData {
+type BucketData = {
   // A dictionary of cache records
   records: R<{
     // The amount times a particular cache value was used
@@ -24,7 +24,7 @@ interface BucketData {
     version?: string;
   }>;
   type: BucketType;
-}
+};
 
 // The data structure that would store all the buckets
 const buckets: R<BucketData> = {};
@@ -218,7 +218,7 @@ export function genericGet<T>(
   return buckets[bucketName].records[cacheName].value as T;
 }
 
-interface SetOptions {
+type SetOptions = {
   /*
    * Which storage type to use. If localStorage - use persistent storage
    * If sessionStorage - data does not persist beyond the page reload
@@ -228,7 +228,7 @@ interface SetOptions {
   readonly overwrite?: boolean;
   // Version of this record (used for invalidating older cache)
   readonly version?: string;
-}
+};
 
 export const set = <
   BUCKET_NAME extends string & keyof CacheDefinitions,

@@ -12,11 +12,11 @@ export type AutoScrollTypes =
   // Scroll down to the last line in the list of mappings
   'listOfMappings';
 
-export interface RefMappingState extends State<'RefMappingState'> {
+export type RefMappingState = State<'RefMappingState'> & {
   unloadProtectIsSet: boolean;
   mappingViewHeight: number;
   autoScroll: Record<AutoScrollTypes, boolean>;
-}
+};
 
 type RefStatesBase = RefUndefinedState | RefMappingState;
 // Make all properties optional, except for `type`

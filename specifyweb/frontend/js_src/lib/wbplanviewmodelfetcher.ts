@@ -36,7 +36,7 @@ export type DataModelFieldWritable =
   | DataModelRelationshipWritable;
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
-interface DataModelFieldWritablePrimer {
+type DataModelFieldWritablePrimer = {
   label: string;
   isHidden: boolean;
   isRequired: boolean;
@@ -44,24 +44,23 @@ interface DataModelFieldWritablePrimer {
   type?: RelationshipType;
   foreignName?: string;
   pickList?: DataModelFieldPickList;
-}
+};
 
-interface DataModelFieldPickList {
+type DataModelFieldPickList = {
   readonly readOnly: boolean;
   readonly items: RA<string>;
-}
+};
 
-interface DataModelNonRelationshipWritable
-  extends DataModelFieldWritablePrimer {
+type DataModelNonRelationshipWritable = DataModelFieldWritablePrimer & {
   isRelationship: false;
-}
+};
 
-interface DataModelRelationshipWritable extends DataModelFieldWritablePrimer {
+type DataModelRelationshipWritable = DataModelFieldWritablePrimer & {
   isRelationship: true;
   tableName: string;
   type: RelationshipType;
   foreignName?: string;
-}
+};
 
 export type DataModelNonRelationship =
   Readonly<DataModelNonRelationshipWritable>;
@@ -70,10 +69,10 @@ export type DataModelRelationship = Readonly<DataModelRelationshipWritable>;
 
 type DataModelFieldsWritable = R<DataModelFieldWritable>;
 
-interface DataModelTableWritable {
+type DataModelTableWritable = {
   label: string;
   fields: DataModelFieldsWritable;
-}
+};
 
 type DataModelTable = Readonly<DataModelTableWritable>;
 

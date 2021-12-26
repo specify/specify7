@@ -14,7 +14,7 @@ type Props = {
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
-export interface SearchPreferences {
+export type SearchPreferences = {
   readonly navigation: {
     readonly direction: NavigationDirection;
   };
@@ -34,7 +34,7 @@ export interface SearchPreferences {
   readonly replace: {
     readonly replaceMode: ReplaceMode;
   };
-}
+};
 
 const CACHE_VERSION = '1';
 
