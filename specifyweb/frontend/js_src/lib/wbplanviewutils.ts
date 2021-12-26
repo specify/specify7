@@ -1,7 +1,7 @@
-import $ from 'jquery';
-
+import ajax from './ajax';
 import Automapper from './automapper';
 import type {
+  Dataset,
   IR,
   PublicWbPlanViewProps,
   RA,
@@ -74,20 +74,20 @@ export function savePlan(
 
   const dataSetRequestUrl = `/api/workbench/dataset/${props.dataset.id}/`;
 
-  void $.ajax(dataSetRequestUrl, {
-    type: 'PUT',
-    data: JSON.stringify({
+  void ajax(dataSetRequestUrl, {
+    method: 'PUT',
+    body: {
       uploadplan: uploadPlan,
-    }),
-    dataType: 'json',
-    processData: false,
-  }).done(() => {
+    },
+  }).then(() => {
     if (state.changesMade) props.removeUnloadProtect();
 
     if (newlyAddedHeaders.length > 0)
-      $.ajax(dataSetRequestUrl, {
-        type: 'GET',
-      }).done(({ columns, visualorder }) => {
+      void ajax<Dataset>(dataSetRequestUrl, {
+        headers: {
+          Accept: 'application/json',
+        },
+      }).then(({ data: { columns, visualorder } }) => {
         let newVisualOrder;
         newVisualOrder =
           visualorder === null
@@ -98,14 +98,12 @@ export function savePlan(
           newVisualOrder.push(columns.indexOf(headerName))
         );
 
-        $.ajax(dataSetRequestUrl, {
-          type: 'PUT',
-          data: JSON.stringify({
+        void ajax(dataSetRequestUrl, {
+          method: 'PUT',
+          body: {
             visualorder: newVisualOrder,
-          }),
-          dataType: 'json',
-          processData: false,
-        }).done(() => goBack(props));
+          },
+        }).then(() => goBack(props));
       });
     else goBack(props);
   });
@@ -299,9 +297,9 @@ export function mutateMappingPath({
   readonly newTableName: string;
 }): MappingPath {
   // Get mapping path from selected line or mapping view
-  let mappingPath = [
-    ...(line === 'mappingView' ? mappingView : lines[line].mappingPath),
-  ];
+  let mappingPath = Array.from(
+    line === 'mappingView' ? mappingView : lines[line].mappingPath
+  );
 
   /*
    * Get relationship type from current picklist to the next one both for

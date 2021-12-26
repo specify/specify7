@@ -2,7 +2,7 @@ import $ from 'jquery';
 import uniquifyName from './wbuniquifyname';
 import Backbone from './backbone';
 import app from './specifyapp';
-import { format } from './dataobjformatters';
+import {format} from './dataobjformatters';
 import schema from './schema';
 import resourceApi from './resourceapi';
 import navigation from './navigation';

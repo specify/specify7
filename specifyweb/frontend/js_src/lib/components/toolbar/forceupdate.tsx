@@ -37,12 +37,9 @@ function ForceUpdateFeed({ onClose: handleClose }: Props): JSX.Element {
             text: commonText('update'),
             click(): void {
               setIsLoading(true);
-              ajax(
-                '/export/force_update/',
-                {
-                  method: 'POST',
-                }
-              )
+              ajax('/export/force_update/', {
+                method: 'POST',
+              })
                 .then(() => setIsActivated(true))
                 .catch(() => setIsActivated(false))
                 .finally(() => setIsLoading(false));

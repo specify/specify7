@@ -47,11 +47,11 @@ const menuItemsPromise: Promise<RA<{ readonly default: MenuItem }>> =
       default: await menuItem,
     })),
     import('../toolbarattachments'),
+    import('./toolbar/wbsdialog'),
   ]);
 
 const userToolsPromise: Promise<RA<{ readonly default: UserTool }>> =
   Promise.all([
-    import('./toolbar/wbsdialog'),
     import('./toolbar/language'),
     import('../toolbarschemaconfig'),
     import('./toolbar/masterkey'),

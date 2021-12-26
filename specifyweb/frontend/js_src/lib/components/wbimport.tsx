@@ -4,16 +4,14 @@ import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
+import ajax from '../ajax';
+import encodings from '../encodings';
 import wbText from '../localization/workbench';
+import navigation from '../navigation';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
+import uniquifyDataSetName from '../wbuniquifyname';
 import createBackboneView from './reactbackboneextend';
-import type { IR } from './wbplanview';
-
-const $ = require('jquery');
-
-const navigation = require('../navigation.js');
-const uniquifyDataSetName = require('../wbuniquifyname.js');
-const encodings = require('../encodings.js');
+import type { Dataset, IR } from './wbplanview';
 
 const PREVIEW_SIZE = 100;
 
@@ -158,20 +156,21 @@ class WbImport extends Component<{}, WbImportState> {
     filename: string
   ) {
     uniquifyDataSetName(name)
-      .then((name: string) =>
-        $.ajax('/api/workbench/dataset/', {
-          type: 'POST',
-          data: JSON.stringify({
+      .then(async (name) =>
+        ajax<Dataset>('/api/workbench/dataset/', {
+          method: 'POST',
+          headers: {
+            Accepts: 'application/json',
+          },
+          body: {
             name,
             importedfilename: filename,
             columns: header,
             rows: data,
-          }),
-          contentType: 'application/json',
-          processData: false,
+          },
         })
       )
-      .done(({ id }: { readonly id: number }) => {
+      .then(({ data: { id } }) => {
         navigation.go(`/workbench/${id}/`);
       });
   }
@@ -345,7 +344,7 @@ function ChooseEncoding(props: {
     props.update({ type: 'EncodingAction', encoding: value });
   }
 
-  const options = encodings.allLabels.map((encoding: string) => (
+  const options = encodings.map((encoding: string) => (
     <option key={encoding}>{encoding}</option>
   ));
 

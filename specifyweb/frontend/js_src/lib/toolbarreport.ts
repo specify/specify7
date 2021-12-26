@@ -8,7 +8,7 @@ export default ajax<{ readonly available: boolean }>(
   {
     headers: { Accept: 'application/json' },
   },
-  {strict: false}
+  { strict: false }
 )
   .catch(() => ({ data: { available: false } }))
   .then<MenuItem>(async ({ data: { available } }) => ({

@@ -6,6 +6,7 @@
 import $ from 'jquery';
 import React from 'react';
 
+import ajax from '../../ajax';
 import { DataSetMeta } from '../../datasetmeta';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
@@ -19,23 +20,20 @@ import createBackboneView from '../reactbackboneextend';
 import type { Dataset, DatasetBrief, RA } from '../wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
-  $.ajax('/api/workbench/dataset/', {
-    type: 'POST',
-    data: JSON.stringify({
+  ajax<Dataset>('/api/workbench/dataset/', {
+    method: 'POST',
+    body: {
       name: await uniquifyDataSetName(
         wbText('newDataSetName')(new Date().toDateString())
       ),
       importedfilename: '',
       columns: [],
       rows: [],
-    }),
-    contentType: 'application/json',
-    processData: false,
-  })
-    .done(({ id }) => navigation.go(`/workbench-plan/${id}/`))
-    .fail((error) => {
-      throw error;
-    });
+    },
+    headers: {
+      Accepts: 'text/plain',
+    },
+  }).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
 
 function DsMeta({
   dsId,

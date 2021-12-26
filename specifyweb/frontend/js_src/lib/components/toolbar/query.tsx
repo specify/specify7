@@ -472,36 +472,42 @@ const EditQueryDialog = Backbone.View.extend({
       'create-label'
     );
     const nameInput = $(`<input
-                type="text"
-                placeholder="${
-                  isLabel ? commonText('labelName') : commonText('reportName')
-                }"
-                size="40"
-            >`);
+        type="text"
+        placeholder="${
+          isLabel ? commonText('labelName') : commonText('reportName')
+        }"
+        size="40"
+    >`);
 
-    const createReport = () =>
-      $.post('/report_runner/create/', {
-        queryid: this.spquery.id,
-        mimetype: isLabel ? 'jrxml/label' : 'jrxml/report',
-        name: nameInput.val(),
+    const createReport = (): void =>
+      void ajax<IR<unknown>>('/report_runner/create/', {
+        method: 'POST',
+        body: {
+          queryid: this.spquery.id,
+          mimetype: isLabel ? 'jrxml/label' : 'jrxml/report',
+          name: nameInput.val(),
+        },
+        headers: {
+          Accept: 'application/json',
+        },
       })
-        .then((reportJSON) => {
+        .then(({ data: reportJson }) => {
           const report = new (schema as any).models.SpReport.Resource(
-            reportJSON
+            reportJson
           );
           return report.rget('appresource');
         })
-        .done((appresource) =>
+        .then((appresource) =>
           navigation.go(`/specify/appresources/${appresource.id}/`)
         );
 
     $(`<div>
-                ${
-                  isLabel
-                    ? commonText('createLabelDialogHeader')
-                    : commonText('createReportDialogHeader')
-                }
-            </div>`)
+        ${
+          isLabel
+            ? commonText('createLabelDialogHeader')
+            : commonText('createReportDialogHeader')
+        }
+    </div>`)
       .append(nameInput)
       .dialog({
         modal: true,
@@ -526,10 +532,11 @@ const EditQueryDialog = Backbone.View.extend({
       });
   },
   exportQuery() {
-    $.get({
-      url: `/export/extract_query/${this.spquery.id}/`,
-      dataType: 'text',
-    }).done((xml) => {
+    void ajax(`/export/extract_query/${this.spquery.id}/`, {
+      headers: {
+        Accepts: 'text/plain',
+      },
+    }).then(({ data: xml }) => {
       const dialog = $(`<div>
                     ${commonText('exportQueryForDwcaDialogHeader')}
                     <textarea cols="120" rows="40" readonly></textarea>

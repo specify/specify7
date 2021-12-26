@@ -12,6 +12,7 @@ export const HTTP = {
   OK: 200,
   NOT_FOUND: 404,
   FORBIDDEN: 403,
+  UNAVAILABLE: 503,
 };
 
 /**
@@ -106,8 +107,7 @@ export default async function ajax<RESPONSE_TYPE = string>(
     .catch((error) => {
       const errorMessage = `Error occurred fetching from ${url}:\n${error.toString()}`;
       console.error(errorMessage);
-      if (strict)
-        new UnhandledErrorView({ response: errorMessage }).render();
+      if (strict) new UnhandledErrorView({ response: errorMessage }).render();
       throw error;
     });
 }

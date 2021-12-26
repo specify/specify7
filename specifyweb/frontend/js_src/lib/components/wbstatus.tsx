@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import ajax, { HTTP } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { ModalDialog, ProgressBar } from './modaldialog';
@@ -54,19 +54,17 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = (): void =>
-      void $.get(`/api/workbench/status/${dataset.id}/`).done(
-        (status: Status | null) => {
-          if (destructorCalled) return;
-          if (status === null)
-            handleFinished(
-              state.aborted === 'pending' || state.aborted === true
-            );
-          else {
-            dispatch({ type: 'RefreshStatusAction', status });
-            setTimeout(fetchStatus, REFRESH_RATE);
-          }
+      void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
+        headers: { Accept: 'application/json' },
+      }).then(({ data: status }) => {
+        if (destructorCalled) return;
+        if (status === null)
+          handleFinished(state.aborted === 'pending' || state.aborted === true);
+        else {
+          dispatch({ type: 'RefreshStatusAction', status });
+          setTimeout(fetchStatus, REFRESH_RATE);
         }
-      );
+      });
     fetchStatus();
     return (): void => {
       destructorCalled = true;
@@ -150,17 +148,21 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
                       type: 'AbortAction',
                       aborted: 'pending',
                     });
-                    $.post(`/api/workbench/abort/${dataset.id}/`)
-                      .done(() =>
+                    ajax(
+                      `/api/workbench/abort/${dataset.id}/`,
+                      { method: 'POST' },
+                      {
+                        expectedResponseCodes: [HTTP.UNAVAILABLE],
+                        strict: false,
+                      }
+                    )
+                      .then(() =>
                         dispatch({
                           type: 'AbortAction',
                           aborted: true,
                         })
                       )
-                      .fail((jqXHR) => {
-                        if (jqXHR.status !== 503) return;
-                        // @ts-expect-error
-                        jqXHR.errorHandled = true;
+                      .catch(() => {
                         dispatch({
                           type: 'AbortAction',
                           aborted: 'failed',
