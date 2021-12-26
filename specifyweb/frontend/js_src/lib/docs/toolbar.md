@@ -1,7 +1,7 @@
 # Toolbar
 
-Menu items and user tools are defined in `./headerui.js`
-(the `toolModules` array).
+Menu items and user tools are defined in `./headerui.js` (the `toolModules`
+array).
 
 Each module exports an object like this:
 
@@ -11,11 +11,11 @@ type HeaderItem = {
   readonly task: string;
   readonly title: string;
   readonly icon?: string;
-  readonly disabled?: ()=>boolean;
+  readonly disabled?: () => boolean;
   // Runs the task
-  readonly execute: ()=>void;
+  readonly execute: () => void;
 };
 ```
 
-If `icon` is missing, menu item is moved to the `User Tools` menu, instead
-of the main menu bar.
+If `icon` is missing, menu item is moved to the `User Tools` menu, instead of
+the main menu bar.

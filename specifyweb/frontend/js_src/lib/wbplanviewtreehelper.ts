@@ -1,5 +1,5 @@
 /**
- * MappingTree traversal, merge and convertor utilities
+ * MappingsTree traversal, merge and convertor utilities
  *
  * @module
  */

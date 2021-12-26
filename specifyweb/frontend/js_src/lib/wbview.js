@@ -3,8 +3,12 @@
  * Handles most user interactions
  * Initializes the spreadsheet (using Handsontable library)
  *
+ * @remarks
+ * hot refers to Handsontable
+ *
  * @module
- * */
+ *
+ */
 
 'use strict';
 
@@ -36,9 +40,7 @@ const {
   formatReferenceItem,
   formatTreeRank,
 } = require('./wbplanviewmappinghelper');
-const {
-  mappingsTreeToSplitMappingPaths,
-} = require('./wbplanviewtreehelper');
+const { mappingsTreeToSplitMappingPaths } = require('./wbplanviewtreehelper');
 const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree');
 const { extractDefaultValues } = require('./wbplanviewhelper');
 const { getTableFromMappingPath } = require('./wbplanviewnavigator');
@@ -46,7 +48,7 @@ const {dataModelPromise} = require('./wbplanviewmodelfetcher');
 const { capitalize } = require('./wbplanviewhelper');
 const { BackboneLoadingScreen } = require('./components/modaldialog');
 const icons = require('./icons.js');
-const formatObj = require('./dataobjformatters.js').format;
+const formatObject = require('./dataobjformatters.js').format;
 const template = require('./templates/wbview.html');
 const cache = require('./cache');
 const wbText = require('./localization/workbench').default;
@@ -91,11 +93,11 @@ const WBView = Backbone.View.extend({
   initialize({ dataset, refreshInitiatedBy, refreshInitiatorAborted }) {
     this.dataset = dataset;
     this.data = dataset.rows;
-    if (this.data.length < 1) {
-      this.data.push(Array(this.dataset.columns.length).fill(null));
+    if (this.data.length === 0) {
+      this.data.push(new Array(this.dataset.columns.length).fill(null));
     }
 
-    this.mappings /*:
+    this.mappings /* :
       | undefined
       | {
         baseTableName: string;
@@ -112,9 +114,8 @@ const WBView = Backbone.View.extend({
         }>
       }
     */ = undefined;
+    this.stopLiveValidation();
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
-    this.liveValidationStack = [];
-    this.liveValidationActive = false;
     this.hasUnSavedChanges = false;
     this.sortConfigIsSet = false;
     this.undoRedoIsHandled = false;
@@ -151,7 +152,8 @@ const WBView = Backbone.View.extend({
      * Disable adding/removing rows
      * Still allow column sort
      * Still allow column move
-     * */
+     *
+     */
     this.isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
     // Disallow all editing and some tools while this dialog is open
@@ -190,7 +192,8 @@ const WBView = Backbone.View.extend({
      * Even if throttling may not be needed for small Data Sets, wrapping the
      * function in _.throttle allows to not worry about calling it several
      * time in a very short amount of time.
-     * */
+     *
+     */
     const throttleRate = Math.ceil(
       Math.min(2000, Math.max(10, this.data.length / 10))
     );
@@ -211,6 +214,13 @@ const WBView = Backbone.View.extend({
     );
     this.$el.attr('aria-label', commonText('workbench'));
 
+    /*
+     * HOT Comments for last column overflow outside the viewport for a moment
+     * before getting repositioned by the afterOnCellMouseOver event handler.
+     *
+     * Hiding overflow prevents scroll bar from flickering on cell mouse over
+     *
+     */
     document.body.classList.add('overflow-x-hidden');
 
     this.datasetmeta.render();
@@ -235,7 +245,7 @@ const WBView = Backbone.View.extend({
             title: wbText('noUploadPlanDialogTitle'),
             modal: true,
             buttons: {
-              [commonText('close')]: function () {
+              [commonText('close')]() {
                 $(this).dialog('close');
               },
               [commonText('create')]: this.openPlan.bind(this),
@@ -251,8 +261,10 @@ const WBView = Backbone.View.extend({
             .prop('title', undefined);
         }
 
-        // These methods update HOT's cells settings, which resets meta data
-        // Thus, need to run them first
+        /*
+         * These methods update HOT's cells settings, which resets meta data
+         * Thus, need to run them first
+         */
         this.identifyDefaultValues();
         this.identifyPickLists();
 
@@ -291,6 +303,7 @@ const WBView = Backbone.View.extend({
             ({ mappingPath }) =>
               getTableFromMappingPath({
                 baseTableName: this.mappings.baseTableName,
+                // Remove field name from mapping path
                 mappingPath: mappingPath.slice(0, -1),
               })
           );
@@ -309,14 +322,21 @@ const WBView = Backbone.View.extend({
 
     return this;
   },
-  initHot() {
+  // Initialize Handsontable
+  async initHot() {
     return new Promise((resolve) =>
+      /*
+       * HOT and Backbone appear to conflict, unless HOT init is wrapped in
+       * setTimeout(...,0)
+       */
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
           columns: Array.from(
+            // Last column is invisible and contains disambiguation metadata
             { length: this.dataset.columns.length + 1 },
             (_, physicalCol) => ({
+              // Get data from nth column for nth column
               data: physicalCol,
             })
           ),
@@ -344,7 +364,7 @@ const WBView = Backbone.View.extend({
                     >`
               }
               <span class="wb-header-name columnSorting">
-                  ${this.dataset.columns[physicalCol]}
+                ${this.dataset.columns[physicalCol]}
               </span>
             </div>`;
           },
@@ -359,11 +379,23 @@ const WBView = Backbone.View.extend({
             indicators: false,
             copyPasteEnabled: false,
           },
+          /*
+           * Force one empty row at the end of the spreadsheet
+           * (allows to add new rows easily)
+           */
           minSpareRows: 1,
           comments: {
             displayDelay: 100,
           },
+          /*
+           * Need htCommentCell to apply default HOT comment box styles
+           *
+           * Since comments are only used for invalid cells, comment boxes
+           * contain 'wb-invalid-cell' class
+           *
+           */
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
+          // Disable default styles
           invalidCellClassName: '-',
           rowHeaders: true,
           autoWrapCol: false,
@@ -376,6 +408,7 @@ const WBView = Backbone.View.extend({
           contextMenu: {
             items: this.isUploaded
               ? {
+                  // Display uploaded record
                   upload_results: {
                     disableSelection: true,
                     isCommand: false,
@@ -454,7 +487,7 @@ const WBView = Backbone.View.extend({
                       // If readonly
                       if (this.uploadedView || this.coordinateConverterView)
                         return true;
-                      // or if called on the last row
+                      // Or if called on the last row
                       const selectedRegions = this.wbutils.getSelectedRegions();
                       return (
                         selectedRegions.length === 1 &&
@@ -471,7 +504,7 @@ const WBView = Backbone.View.extend({
                       this.coordinateConverterView ||
                       !this.isAmbiguousCell(),
                     callback: (__, selection) =>
-                      this.disambiguateCell(selection),
+                      this.openDisambiguationDialog(selection),
                   },
                   separator_1: '---------',
                   fill_down: this.wbutils.fillCellsContextMenuItem(
@@ -520,15 +553,19 @@ const WBView = Backbone.View.extend({
       }, 0)
     );
   },
-  remove() {
-    this.hot.destroy();
+  stopLiveValidation() {
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';
+  },
+  remove() {
+    this.hot.destroy();
+    this.stopLiveValidation();
     window.removeEventListener('resize', this.handleResize);
     document.body.classList.remove('overflow-x-hidden');
     Backbone.View.prototype.remove.call(this);
   },
+  // Match columns to respective table icons
   identifyMappedHeaders() {
     if (!this.mappings) return;
 
@@ -603,7 +640,7 @@ const WBView = Backbone.View.extend({
         .map(Object.values)
     );
     this.hot.updateSettings({
-      cells: (_physicalRow, physicalCol, _prop) =>
+      cells: (_physicalRow, physicalCol, _property) =>
         physicalCol in pickLists
           ? {
               type: 'autocomplete',
@@ -665,14 +702,16 @@ const WBView = Backbone.View.extend({
   },
 
   // Hooks
-  afterRenderer(td, visualRow, visualCol, prop, _value) {
+  afterRenderer(td, visualRow, visualCol, property, _value) {
     if (typeof this.hot === 'undefined') {
       td.classList.add('wb-cell-unmapped');
       return;
     }
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol =
-      typeof prop === 'number' ? prop : this.hot.toPhysicalColumn(visualCol);
+      typeof property === 'number'
+        ? property
+        : this.hot.toPhysicalColumn(visualCol);
     if (physicalCol >= this.dataset.columns.length) return;
     const metaArray = this.cellMeta[physicalRow]?.[physicalCol];
     if (this.getCellMetaFromArray(metaArray, 'isModified'))
@@ -693,30 +732,36 @@ const WBView = Backbone.View.extend({
       td.classList.add('wb-coordinate-cell');
   },
   // Make HOT use defaultValues for validation if cell is empty
-  beforeValidate(value, _visualRow, prop) {
+  beforeValidate(value, _visualRow, property) {
     if (value) return value;
 
-    const visualCol = this.hot.propToCol(prop);
+    const visualCol = this.hot.propToCol(property);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
     return typeof this.mappings?.defaultValues[physicalCol] === 'undefined'
       ? value
       : this.mappings.defaultValues[physicalCol];
   },
-  afterValidate(isValid, value, visualRow, prop) {
-    const visualCol = this.hot.propToCol(prop);
+  afterValidate(isValid, value, visualRow, property) {
+    const visualCol = this.hot.propToCol(property);
 
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const issues = this.getCellMeta(physicalRow, physicalCol, 'issues');
-    const newIssues = [
-      ...new Set([
+    /*
+     * Don't duplicate picklistValidationFailed message if both front-end and
+     * back-end identified the same issue.
+     *
+     * This is the only type of validation that is done on the front-end
+     */
+    const newIssues = Array.from(
+      new Set([
         ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
         ...issues.filter(
           (issue) => !issue.endsWith(wbText('picklistValidationFailed')(''))
         ),
-      ]),
-    ];
+      ])
+    );
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
       this.updateCellMeta(physicalRow, physicalCol, 'issues', newIssues);
   },
@@ -726,6 +771,13 @@ const WBView = Backbone.View.extend({
   afterRedo(data) {
     this.afterUndoRedo('redo', data);
   },
+  /*
+   * Any change to a row clears disambiguation results
+   * Clearing disambiguation creates a separate point in the undo/redo stack
+   * This runs undo twice when undoing a change that caused disambiguation
+   * clear and similarly redoes the change twice
+   *
+   */
   afterUndoRedo(type, data) {
     if (
       this.undoRedoIsHandled ||
@@ -747,10 +799,10 @@ const WBView = Backbone.View.extend({
      * That change creates a separate point in the undo stack.
      * Thus, if HOT tries to undo disambiguation clearing, we need to
      * also need to undo the change that caused disambiguation clearing
-     * */
+     */
     if (
       type === 'undo' &&
-      Object.keys(newValue ?? {}).length !== 0 &&
+      Object.keys(newValue ?? {}).length > 0 &&
       Object.keys(oldValue ?? {}).length === 0
     )
       // HOT doesn't seem to like calling undo from inside of afterUndo
@@ -765,21 +817,26 @@ const WBView = Backbone.View.extend({
   beforePaste() {
     return !this.uploadedView && !this.isUploaded;
   },
+  /*
+   * If copying values from a 1x3 area and pasting into the last cell, HOT
+   * would create 2 invisible columns)
+   *
+   * This intercepts Paste to prevent creation of these columns
+   *
+   * This logic wasn't be put into beforePaste because it receives
+   * arguments that are inconvenient to work with
+   * */
   beforeChange(unfilteredChanges, source) {
     if (source !== 'CopyPaste.paste') return true;
-    /*
-     * This logic shouldn't be put into beforePaste because it receives
-     * arguments that are inconvenient to work with
-     * */
 
     const filteredChanges = unfilteredChanges.filter(
-      ([, prop]) => prop < this.dataset.columns.length
+      ([, property]) => property < this.dataset.columns.length
     );
     if (filteredChanges.length === unfilteredChanges.length) return true;
     this.hot.setDataAtCell(
-      filteredChanges.map(([visualRow, prop, _oldValue, newValue]) => [
+      filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
         visualRow,
-        this.hot.propToCol(prop),
+        this.hot.propToCol(property),
         newValue,
       ]),
       'CopyPaste.paste'
@@ -800,24 +857,27 @@ const WBView = Backbone.View.extend({
       return;
 
     const changes = unfilteredChanges
-      .map(([visualRow, prop, oldValue, newValue]) => ({
+      .map(([visualRow, property, oldValue, newValue]) => ({
         visualRow,
-        visualCol: this.hot.propToCol(prop),
+        visualCol: this.hot.propToCol(property),
         physicalRow: this.hot.toPhysicalRow(visualRow),
         physicalCol:
-          typeof prop === 'number'
-            ? prop
-            : this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
+          typeof property === 'number'
+            ? property
+            : this.hot.toPhysicalColumn(this.hot.propToCol(property)),
         oldValue,
         newValue,
       }))
       .filter(
         ({ oldValue, newValue, visualCol }) =>
-          // Ignore cases where value didn't change
+          /*
+           * Ignore cases where value didn't change
+           * (happens when double click a cell and then click on another cell)
+           * */
           oldValue !== newValue &&
-          // or where value changed from null to empty
+          // Or where value changed from null to empty
           (oldValue !== null || newValue !== '') &&
-          // or the column does not exist (that can happen on paste)
+          // Or the column does not exist (that can happen on paste)
           visualCol < this.dataset.columns.length
       );
 
@@ -836,8 +896,10 @@ const WBView = Backbone.View.extend({
         .map(({ physicalRow }) => physicalRow)
     );
 
-    // Don't clear disambiguation when afterChange is triggered by
-    // this.hot.undo() from inside of this.afterUndoRedo()
+    /*
+     * Don't clear disambiguation when afterChange is triggered by
+     * this.hot.undo() from inside of this.afterUndoRedo()
+     */
     if (!this.undoRedoIsHandled)
       changedRows.forEach((physicalRow) =>
         this.clearDisambiguation(physicalRow)
@@ -881,21 +943,20 @@ const WBView = Backbone.View.extend({
     if (this.dataset.uploadplan)
       changedRows.forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
+  /*
+   * This may be called before full initialization of the workbench because
+   * of the minSpareRows setting in HOT. Thus, be sure to check if
+   * this.hotIsReady is true
+   *
+   * Also, I don't think this is ever called with amount > 1.
+   * Even if multiple new rows where created at once (e.x on paste), HOT calls
+   * this hook one row at a time
+   *
+   * Also, this function needs to be called before afterValidate, thus I used
+   * beforeCreateRow, instead of afterCreateRow
+   *
+   */
   beforeCreateRow(visualRowStart, amount, source) {
-    /*
-     * This may be called before full initialization of the workbench because
-     * of the minSpareRows setting in HOT. Thus, be sure to check if
-     * this.hotIsReady is true
-     *
-     * Also, I don't think this is ever called with amount > 1.
-     * Even if multiple new rows where created at once (e.x on paste), HOT calls
-     * this hook one row at a time
-     *
-     * Also, this function needs to be called before afterValidate, thus I used
-     * beforeCreateRow, instead of afterCreateRow
-     *
-     * */
-
     const addedRows = Array.from(
       { length: amount },
       (_, index) =>
@@ -916,6 +977,7 @@ const WBView = Backbone.View.extend({
     return true;
   },
   beforeRemoveRow(visualRowStart, amount, source) {
+    // Get indexes of removed rows in reverse order
     const removedRows = Array.from({ length: amount }, (_, index) =>
       this.hot.toPhysicalRow(visualRowStart + index)
     )
@@ -937,14 +999,13 @@ const WBView = Backbone.View.extend({
 
     return true;
   },
+  /*
+   * If a tree column is about to be sorted, overwrite the sort config by
+   * finding all lower level ranks of that tree (within the same -to-many)
+   * and sorting them in the same direction
+   */
   beforeColumnSort(currentSortConfig, newSortConfig) {
     this.flushIndexedCellData = true;
-
-    /*
-     * If a tree column is about to be sorted, overwrite the sort config by
-     * finding all lower level ranks of that tree (within the same -to-many)
-     * and sorting them in the same direction
-     * */
 
     if (this.coordinateConverterView) return false;
 
@@ -966,15 +1027,16 @@ const WBView = Backbone.View.extend({
               )?.rankId,
               groupIndex,
             }))
-            .filter(({ rankId }) => typeof rankId !== 'undefined')?.[0],
+            .find(({ rankId }) => typeof rankId !== 'undefined'),
         }))
         // Filter out columns that aren't tree ranks
         .filter(({ rankGroup }) => typeof rankGroup !== 'undefined')
         /*
          * Filter out columns that didn't change
          * In the end, there should only be 0 or 1 columns
-         * */
-        .filter(({ sortOrder, visualCol }) => {
+         *
+         */
+        .find(({ sortOrder, visualCol }) => {
           const deltaColumnState = deltaSearchConfig.find(
             ({ column }) => column === visualCol
           );
@@ -982,7 +1044,7 @@ const WBView = Backbone.View.extend({
             typeof deltaColumnState === 'undefined' ||
             deltaColumnState.sortOrder !== sortOrder
           );
-        })[0];
+        });
 
     let changedTreeColumn = findTreeColumns(newSortConfig, currentSortConfig);
     let newSortOrderIsUnset = false;
@@ -997,7 +1059,8 @@ const WBView = Backbone.View.extend({
     /*
      * Filter out columns with higher rank than the changed column
      * (lower rankId corresponds to a higher tree rank)
-     * */
+     *
+     */
     const columnsToSort = this.mappings.treeRanks[
       changedTreeColumn.rankGroup.groupIndex
     ]
@@ -1054,6 +1117,7 @@ const WBView = Backbone.View.extend({
   },
   // Save new visualOrder on the back end
   afterColumnMove(_columnIndexes, _finalIndex, dropIndex) {
+    // An ugly fix for jQuery's dialogs conflicting with HOT
     if (typeof dropIndex === 'undefined' || !this.hotIsReady) return;
 
     this.flushIndexedCellData = true;
@@ -1064,7 +1128,7 @@ const WBView = Backbone.View.extend({
 
     if (
       this.dataset.visualorder == null ||
-      columnOrder.some((i, j) => i !== this.dataset.visualorder[j])
+      columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
       $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
@@ -1075,10 +1139,10 @@ const WBView = Backbone.View.extend({
       }).fail(this.checkDeletedFail.bind(this));
     }
   },
+  // Do not scroll the viewport to the last column after inserting a row
   afterPaste(data, coords) {
     const lastCoords = coords.slice(-1)[0];
     if (data.some((row) => row.length === this.dataset.columns.length))
-      // Do not scroll the viewport to the last column after inserting a row
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
   // Reposition the comment box if it is overflowing
@@ -1091,7 +1155,7 @@ const WBView = Backbone.View.extend({
       return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = parseFloat(
+    const oneRem = Number.parseFloat(
       getComputedStyle(document.documentElement).fontSize
     );
 
@@ -1112,7 +1176,7 @@ const WBView = Backbone.View.extend({
    * Revert comment box's position to original state if needed.
    * The 10ms delay helps prevent visual artifacts when the mouse pointer
    * moves between cells.
-   * */
+   */
   afterOnCellMouseOut() {
     if (this.hotCommentsContainerRepositionCallback)
       clearTimeout(this.hotCommentsContainerRepositionCallback);
@@ -1137,7 +1201,7 @@ const WBView = Backbone.View.extend({
     return metaCell?.[index] ?? defaultMetaValues[index];
   },
   /*
-   * This does not run side effects
+   * This does not run visual side effects
    * For changing meta with side effects, use this.updateCellMeta
    */
   setCellMeta(physicalRow, physicalCol, key, value) {
@@ -1192,6 +1256,10 @@ const WBView = Backbone.View.extend({
         (this.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
 
+    /*
+     * If cell was disambiguated, it should show up as changed, even if value
+     * is unchanged
+     */
     return this.cellWasDisambiguated(physicalRow, physicalCol);
   },
   // Updates cell's isModified meta state
@@ -1348,7 +1416,7 @@ const WBView = Backbone.View.extend({
       'Disambiguation.Set'
     );
   },
-  disambiguateCell([
+  openDisambiguationDialog([
     {
       start: { col: visualCol, row: visualRow },
     },
@@ -1374,12 +1442,12 @@ const WBView = Backbone.View.extend({
       this.setDisambiguation(
         physicalRow,
         matches.mappingPath,
-        parseInt(selected, 10)
+        Number.parseInt(selected, 10)
       );
       this.startValidateRow(physicalRow);
     };
     const doAll = (selected) => {
-      // loop backwards so the live validation will go from top to bottom
+      // Loop backwards so the live validation will go from top to bottom
       for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
         const physicalRow = this.hot.toPhysicalRow(visualRow);
         if (
@@ -1395,7 +1463,7 @@ const WBView = Backbone.View.extend({
         this.setDisambiguation(
           physicalRow,
           matches.mappingPath,
-          parseInt(selected, 10)
+          Number.parseInt(selected, 10)
         );
         this.startValidateRow(physicalRow);
       }
@@ -1403,7 +1471,7 @@ const WBView = Backbone.View.extend({
 
     const content = $('<div class="da-container">');
     resources.fetch({ limit: 0 }).done(() => {
-      if (resources.length < 1) {
+      if (resources.length === 0) {
         $(`<div>
             ${wbText('noDisambiguationResultsDialogHeader')}
             <p>${wbText('noDisambiguationResultsDialogMessage')}</p>
@@ -1458,7 +1526,7 @@ const WBView = Backbone.View.extend({
                 .text(`${resource.get('fullname')} (in ${parentName})`)
             );
         } else {
-          formatObj(resource).done((formatted) =>
+          formatObject(resource).done((formatted) =>
             row.find('.label').text(formatted)
           );
         }
@@ -1534,7 +1602,7 @@ const WBView = Backbone.View.extend({
       return;
     }
 
-    if (this.liveValidationStack.length !== 0) {
+    if (this.liveValidationStack.length > 0) {
       const dialog = $(`<div>
         ${wbText('unavailableWhileValidating')}
       </div>`).dialog({
@@ -1687,6 +1755,7 @@ const WBView = Backbone.View.extend({
   openPlan() {
     navigation.go(`/workbench-plan/${this.dataset.id}/`);
   },
+  // For debugging only
   showPlan() {
     const dataset = this.dataset;
     const $this = this;
@@ -1723,6 +1792,7 @@ const WBView = Backbone.View.extend({
   },
 
   // Actions
+  // aka Rollback
   unupload() {
     const dialog = $(`<div>
       ${wbText('rollbackDialogHeader')}
@@ -1746,8 +1816,10 @@ const WBView = Backbone.View.extend({
       },
     });
   },
-  upload(evt) {
-    const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
+  upload(event) {
+    const mode = $(event.currentTarget).is('.wb-upload')
+      ? 'upload'
+      : 'validate';
     if (this.mappings?.splitMappingPaths.length > 0) {
       if (mode === 'upload') {
         const dialog = $(`<div>
@@ -1778,7 +1850,7 @@ const WBView = Backbone.View.extend({
         title: wbText('noUploadPlanDialogTitle'),
         modal: true,
         buttons: {
-          [commonText('close')]: function () {
+          [commonText('close')]() {
             $(this).dialog('close');
           },
           [commonText('create')]: () => this.openPlan(),
@@ -1787,9 +1859,7 @@ const WBView = Backbone.View.extend({
     }
   },
   startUpload(mode) {
-    this.liveValidationStack = [];
-    this.liveValidationActive = false;
-    this.validationMode = 'off';
+    this.stopLiveValidation();
     this.updateValidationButton();
     $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
       .fail((jqxhr) => {
@@ -1831,7 +1901,7 @@ const WBView = Backbone.View.extend({
       },
     }).render();
   },
-  delete: function () {
+  delete() {
     const dialog = $(`<div>
       ${wbText('deleteDataSetDialogHeader')}
       <p>${wbText('deleteDataSetDialogMessage')}</p>
@@ -1856,7 +1926,7 @@ const WBView = Backbone.View.extend({
                 modal: true,
                 close: () => navigation.go('/'),
                 buttons: {
-                  [commonText('close')]: function () {
+                  [commonText('close')]() {
                     $(this).dialog('close');
                   },
                 },
@@ -1877,7 +1947,7 @@ const WBView = Backbone.View.extend({
       data: this.dataset.rows,
     });
     const wbName = this.dataset.name;
-    const filename = wbName.match(/\.csv$/) ? wbName : wbName + '.csv';
+    const filename = wbName.endsWith('.csv') ? wbName : `${wbName}.csv`;
     const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = window.URL.createObjectURL(blob);
@@ -1905,13 +1975,13 @@ const WBView = Backbone.View.extend({
       },
     });
   },
-  saveClicked: function () {
+  saveClicked() {
     this.save().done();
   },
-  save: function () {
+  save() {
     // Clear validation
     this.dataset.rowresults = null;
-    this.validationMode = 'off';
+    this.stopLiveValidation();
     this.updateValidationButton();
 
     // Show saving progress bar
@@ -1925,7 +1995,7 @@ const WBView = Backbone.View.extend({
     });
     $('.progress-bar', dialog).progressbar({ value: false });
 
-    //send data
+    // Send data
     return Q(
       $.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
         data: JSON.stringify(this.data),
@@ -2058,7 +2128,7 @@ const WBView = Backbone.View.extend({
           )
         )
         .map(({ headerName }) => headerName);
-      return columns.length !== 0;
+      return columns.length > 0;
     });
     return columns;
   },
@@ -2215,10 +2285,10 @@ const WBView = Backbone.View.extend({
 
   // Helpers
   /*
-   * mappingCol is the index of the splitMappingPaths' line corresponding to
+   * MappingCol is the index of the splitMappingPaths' line corresponding to
    * a particular physicalCol. Since there can be unmapped columns, these
    * indexes do not line up and need to be converted like this:
-   * */
+   */
   physicalColToMappingCol(physicalCol) {
     return this.mappings?.splitMappingPaths.findIndex(
       ({ headerName }) => headerName === this.dataset.columns[physicalCol]
@@ -2252,23 +2322,26 @@ const WBView = Backbone.View.extend({
       .prop('title', wbText('wbUploadedUnavailable'));
     navigation.addUnloadProtect(this, wbText('onExitDialogMessage'));
   },
+  // Check if AJAX failed because Data Set was deleted
   checkDeletedFail(jqxhr) {
     if (!jqxhr.errorHandled && jqxhr.status === 404) {
       this.$el.empty().append(wbText('dataSetDeletedOrNotFound'));
       jqxhr.errorHandled = true;
     }
   },
+  // Check if AJAX failed because Data Set was modified by other session
   checkConflictFail(jqxhr) {
     if (!jqxhr.errorHandled && jqxhr.status === 409) {
       /*
        * Upload/Validation/Un-Upload has been initialized by another session
        * Need to reload the page to display the new state
-       * */
+       *
+       */
       this.trigger('reload');
       jqxhr.errorHandled = true;
     }
   },
-  spreadSheetUpToDate: function () {
+  spreadSheetUpToDate() {
     if (!this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = false;
     this.$(
@@ -2293,7 +2366,8 @@ const WBView = Backbone.View.extend({
       ),
       invalidCells: cellMeta.reduce(
         (count, info) =>
-          count + (this.getCellMetaFromArray(info, 'issues').length ? 1 : 0),
+          count +
+          (this.getCellMetaFromArray(info, 'issues').length > 0 ? 1 : 0),
         0
       ),
       searchResults: cellMeta.reduce(
@@ -2435,16 +2509,19 @@ const WBView = Backbone.View.extend({
     this.refreshInitiatedBy = undefined;
     this.refreshInitiatorAborted = false;
   },
+  /*
+   * Returns this.cellMeta, but instead of indexing by physical row/col,
+   * indexes by visual row/col
+   *
+   * This is used for navigation among cells.
+   *
+   * Also, if navigation direction is set to ColByCol, the resulting array
+   * is transposed.
+   *
+   * this.flushIndexedCellData is set to true whenever visual indexes change
+   *
+   */
   getCellMetaObject() {
-    /*
-     * Returns this.cellMeta, but instead of indexing by physical row/col,
-     * indexes by visual row/col
-     *
-     * This is used for navigation among cells.
-     *
-     * Also, if navigation direction is set to ColByCol, the resulting array
-     * is transposed.
-     * */
     if (this.flushIndexedCellData) {
       const resolveIndex = (visualRow, visualCol, first) =>
         (this.wbutils.searchPreferences.navigation.direction === 'rowFirst') ===

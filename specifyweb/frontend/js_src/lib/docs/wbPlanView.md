@@ -74,7 +74,7 @@ Example:
 }
 ```
 
-#### MappingTree
+#### MappingsTree
 
 Serves similar purpose as `UploadPlan`, but it's structure is optimized for
 easier mutation, rather than expression of relationship types and field types.
@@ -83,6 +83,7 @@ It is used by `WbPlanView` as an intermediate step between `UploadPlan` and
 `MappingPaths`.
 
 Example:
+
 ```json5
 {
   // Field name
@@ -210,7 +211,7 @@ Example:
 
 #### MappingPaths
 
-Branches of `MappingsTree` separated into an array of tupples:
+Branches of `MappingsTree` separated into an array of tuples:
 
 ```json
 [
@@ -342,9 +343,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
 ```json
 [
   {
-    "mappingPath": [
-      "enddate"
-    ],
+    "mappingPath": ["enddate"],
     "mappingType": "existingHeader",
     "headerName": "Field Number",
     "columnOptions": {
@@ -354,9 +353,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "method"
-    ],
+    "mappingPath": ["method"],
     "mappingType": "existingHeader",
     "headerName": "Collecting Event Gear",
     "columnOptions": {
@@ -366,10 +363,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "localityname"
-    ],
+    "mappingPath": ["locality", "localityname"],
     "mappingType": "existingHeader",
     "headerName": "Locality",
     "columnOptions": {
@@ -379,10 +373,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "latitude1"
-    ],
+    "mappingPath": ["locality", "latitude1"],
     "mappingType": "existingHeader",
     "headerName": "Latitude1",
     "columnOptions": {
@@ -392,10 +383,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "longitude1"
-    ],
+    "mappingPath": ["locality", "longitude1"],
     "mappingType": "existingHeader",
     "headerName": "Longitude1",
     "columnOptions": {
@@ -405,12 +393,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "geography",
-      "$Continent",
-      "name"
-    ],
+    "mappingPath": ["locality", "geography", "$Continent", "name"],
     "mappingType": "existingHeader",
     "headerName": "Continent",
     "columnOptions": {
@@ -420,12 +403,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "geography",
-      "$Country",
-      "name"
-    ],
+    "mappingPath": ["locality", "geography", "$Country", "name"],
     "mappingType": "existingHeader",
     "headerName": "Country",
     "columnOptions": {
@@ -435,12 +413,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "geography",
-      "$State",
-      "name"
-    ],
+    "mappingPath": ["locality", "geography", "$State", "name"],
     "mappingType": "existingHeader",
     "headerName": "State",
     "columnOptions": {
@@ -450,12 +423,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "locality",
-      "geography",
-      "$County",
-      "name"
-    ],
+    "mappingPath": ["locality", "geography", "$County", "name"],
     "mappingType": "existingHeader",
     "headerName": "County",
     "columnOptions": {
@@ -465,12 +433,7 @@ Array of tuples (`MappingPaths`) converted into array of objects:
     }
   },
   {
-    "mappingPath": [
-      "collectors",
-      "#1",
-      "agent",
-      "email"
-    ],
+    "mappingPath": ["collectors", "#1", "agent", "email"],
     "mappingType": "existingHeader",
     "headerName": "Collectors Email",
     "columnOptions": {
