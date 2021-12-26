@@ -92,6 +92,7 @@ module.exports = (_env, argv)=>({
     },
     resolve: {
         extensions: ['.ts','.tsx','.js', '.jsx']
+        symlinks: false,
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
