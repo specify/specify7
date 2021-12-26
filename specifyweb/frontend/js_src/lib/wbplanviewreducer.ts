@@ -1,3 +1,9 @@
+/**
+ * WbPlanView Action's Reducer
+ *
+ * @module
+ */
+
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 

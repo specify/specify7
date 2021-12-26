@@ -1,3 +1,10 @@
+/**
+ * Extract data from locality and related columns in a Data Set in a format
+ * that can be displayed in the pop-up bubbles in Leaflet
+ *
+ * @module
+ */
+
 import type { IR, R, RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { LocalityPinFields } from './leafletconfig';
@@ -197,7 +204,7 @@ export const getLocalitiesDataFromSpreadsheet = (
       )
   );
 
-// Aggregate tree ranks into a single full name
+/** Aggregate tree ranks into a single full name */
 function reshapeLocalityData(localityData: LocalityData): LocalityData {
   const localityDataEntries = Object.entries(localityData)
     .map(([mappingPathString, field]) => ({

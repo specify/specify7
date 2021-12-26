@@ -1,3 +1,9 @@
+/**
+ * Web-Worker for parsed XLSX files
+ *
+ * @module
+ */
+
 import * as XLSX from 'xlsx';
 
 const ctx: Worker = self as any;

@@ -1,9 +1,8 @@
-/*
- *
+/**
  * Auto mapper than takes data model and header names and returns possible
  * mappings
  *
- *
+ * @module
  */
 
 import type { Action } from 'typesafe-reducer';
@@ -190,10 +189,9 @@ const isFieldInDontMatch = (
   scope: AutoMapperScope
 ): boolean =>
   tableName !== '' &&
-  (AutoMapperDefinitions.dontMatch[tableName]?.[lastPathPart]?.indexOf(scope) ??
-    -1) !== -1;
+  AutoMapperDefinitions.dontMatch[tableName]?.[lastPathPart]?.includes(scope);
 
-const mappingPathIsInProposedMappings = (
+const isMappingPathIsInProposedMappings = (
   allowMultipleMappings: boolean,
   results: AutoMapperResults,
   localPath: MappingPath,
@@ -211,7 +209,7 @@ const mappingPathIsInProposedMappings = (
       )
     ));
 
-const mappingPathIsTheMappingsTree = (
+const isMappingPathInMappingsTree = (
   checkForExistingMappings: boolean,
   localPath: MappingPath,
   pathIsMapped?: PathIsMappedBind
@@ -246,7 +244,7 @@ export default class AutoMapper {
   private static readonly regexRemoveNonAz: RegExp = /[^\sa-z]+/g;
 
   private static readonly regexRemoveParentheses: RegExp =
-    /\([^)]*\)|\[[^\]]*]|{[^}]*}|<[^>]*>/g;
+    /\([^)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>/g;
 
   public static readonly regexParseOrdinalNumbers: RegExp =
     /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/g;
@@ -1036,14 +1034,14 @@ export default class AutoMapper {
        * Go over mapped headers to see if this path was already mapped.
        * Go over mappings proposed by AutoMapper:
        */
-      mappingPathIsInProposedMappings(
+      isMappingPathIsInProposedMappings(
         this.allowMultipleMappings,
         this.results,
         localPath,
         headerName
       ) ||
       // Go over mappings that are already in the mappings tree:
-      mappingPathIsTheMappingsTree(
+      isMappingPathInMappingsTree(
         this.checkForExistingMappings,
         localPath,
         this.pathIsMapped

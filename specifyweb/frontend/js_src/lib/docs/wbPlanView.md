@@ -2,6 +2,9 @@
 
 ### Concepts
 
+Tree rank names are prefixed with `$` (`$Kingdom`) and -to-many indexes with `#`
+(`#1`) everywhere, except for Upload Plan
+
 #### UploadPlan
 
 JSON object that explains how Data Set columns should be corresponded to Data

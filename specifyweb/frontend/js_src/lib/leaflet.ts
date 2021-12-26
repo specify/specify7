@@ -1,6 +1,7 @@
-/*
+/**
  * Utility functions for rendering a Leaflet map
  *
+ * @module
  */
 
 import $ from 'jquery';

@@ -1,9 +1,8 @@
-/*
+/**
+ * Fetches Specify data model with tree ranks and pick lists, parses it and
+ * caches the results for easier usage across WbPlanView
  *
- * Fetches Specify data model with tree ranks, parses it and saves it to
- * an object for easier usage across wbplanview
- *
- *
+ * @module
  */
 
 import * as cache from './cache';

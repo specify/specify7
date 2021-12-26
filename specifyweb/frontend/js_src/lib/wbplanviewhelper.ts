@@ -1,8 +1,7 @@
-/*
- *
+/**
  * Collection of various helper methods used during the mapping process
  *
- *
+ * @module
  */
 
 import type { IR, RA } from './types';
@@ -11,10 +10,11 @@ import type { SplitMappingPath } from './wbplanviewmappinghelper';
 export const capitalize = (string: string): string =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
-/*
+/**
  * Finds the point at which the source array begins to have values
  * different from the ones in the search array
  *
+ * @example
  * Returns 0 if search array is empty
  * Returns -1 if source array is empty / is shorter than the search array
  * Examples:

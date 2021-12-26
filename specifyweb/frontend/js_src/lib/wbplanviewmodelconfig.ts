@@ -1,3 +1,12 @@
+/**
+ * Configuration for what schema tables and fields are accessible in the WB
+ *
+ * @remarks
+ * Replaces the need for Sp6 Workbench Schema
+ *
+ * @module
+ */
+
 import type { IR } from './types';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
@@ -53,7 +62,10 @@ export const fetchingParameters: {
   readonly endsWithFieldOverwrites: IR<FieldConfigOverwrite>;
 } = Object.freeze({
   tableOverwrites: {
-    // All system tables are removed
+    /*
+     * In addition to tables listed below, all tables marked as `system` are
+     * removed
+     */
     accession: 'commonBaseTable',
     agent: 'commonBaseTable',
     borrow: 'commonBaseTable',
@@ -102,9 +114,9 @@ export const fetchingParameters: {
 
   /*
    * All required fields are unhidden, unless they are overwritten to "hidden".
-   * readOnly relationships are removed.
-   * Make sure that front-end only fields (defined in schemaextras.js) are
-   *  removed too
+   *   readOnly relationships are removed.
+   * Makes sure that front-end only fields (defined in schemaextras.js) are
+   *   removed too
    */
   fieldOverwrites: {
     // _common overwrites apply to all tables

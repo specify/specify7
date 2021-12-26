@@ -1,9 +1,8 @@
-/*
- *
+/**
  * Helpful methods for navigating though schema across a certain mapping path.
- * Helps define information needed to display wbplanview components
+ * Helps define information needed to display WbPlanView components
  *
- *
+ * @module
  */
 
 import * as cache from './cache';
@@ -197,9 +196,14 @@ function findNextNavigationDirection<RETURN_STRUCTURE>(
   };
 }
 
-/*
+/**
  * Navigates though the schema according to a specified mapping path and
  * calls certain callbacks while doing that
+ *
+ * @remarks
+ * Unlike the navigator implemented in the AutoMapper, this navigator navigates
+ * with only one instance at a time (you can't fork the mapping path to visit
+ * fields from multiple relationships at once)
  */
 export function navigator<RETURN_STRUCTURE>({
   callbacks,
@@ -208,10 +212,7 @@ export function navigator<RETURN_STRUCTURE>({
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>;
-  /*
-   * {object|undefined} used internally to make navigator call itself
-   * multiple times
-   */
+  // Used internally to make navigator call itselfmultiple times
   readonly recursivePayload?: {
     readonly tableName: string;
     readonly parentTableName: string;
@@ -334,7 +335,7 @@ function callNavigatorInstanceCallbacks<RETURN_STRUCTURE>(
   else callbacks.handleSimpleFields(callbackPayload);
 }
 
-/* Called by navigator if callback.iterate() returned true */
+/** Called by navigator if callback.iterate() returned true */
 function navigatorInstance<RETURN_STRUCTURE>({
   tableName,
   parentTableName = '',
@@ -424,7 +425,7 @@ export function getTableFromMappingPath({
   return tableName;
 }
 
-/*
+/**
  * Get data required to build a mapping line from a source mapping path
  * and other options
  */

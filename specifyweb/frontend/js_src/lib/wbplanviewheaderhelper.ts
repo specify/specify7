@@ -1,3 +1,9 @@
+/**
+ * Makes WB headers unique
+ *
+ * @module
+ */
+
 import type { RA } from './types';
 import type { MappingLine } from './components/wbplanviewmapper';
 import wbText from './localization/workbench';

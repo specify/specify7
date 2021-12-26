@@ -1,3 +1,10 @@
+/**
+ * Helps create initial WbPlanView state based on Upload Plan or Data Set
+ * headers
+ *
+ * @module
+ * */
+
 import type { AutoMapperResults } from './automapper';
 import AutoMapper from './automapper';
 import type { IR, RA } from './types';

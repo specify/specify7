@@ -1,3 +1,9 @@
+/**
+ * TypeScript types for some JS files
+ *
+ * @module
+ * */
+
 import type { SpecifyResource } from './components/wbplanview';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import type { IR, RA } from './types';

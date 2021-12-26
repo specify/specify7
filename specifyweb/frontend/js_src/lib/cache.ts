@@ -1,8 +1,18 @@
+/**
+ * LocalStorage and SessionStorage front-end cache
+ *
+ * Used for saving results of computationally expensive actions (getting a table
+ * name from a mapping path) as well as remembering user preferences (last used
+ * leaflet map or WB Column sort order)
+ *
+ * @module
+ */
+
 import type { CacheDefinitions } from './cachedefinitions';
 import { safeToTrim } from './cachedefinitions';
 import type { R, RA } from './types';
 
-// Determines how persistent bucket's storage would be
+/** Determines how persistent bucket's storage would be */
 export type BucketType =
   // Persistent across sessions
   | 'localStorage'
@@ -26,27 +36,32 @@ type BucketData = {
   type: BucketType;
 };
 
-// The data structure that would store all the buckets
+/** The data structure that would store all the buckets */
 const buckets: R<BucketData> = {};
-/*
+
+/**
  * The prefix that would be given to all bucketNames when they are committed
- * to localStorage. It is used to avoid collisions
+ * to localStorage.
+ *
+ * It is used to avoid collisions with other applications when running Specify 7
+ * in development on localhost
  */
 const cachePrefix = 'specify7-';
-/*
+
+/**
  * Indicates whether initialize() was run. If not, runs it on the next call
  * to get() or set()
  */
 let eventListenerIsInitialized = false;
 
-/* Set's an event listener that runs commitToStorage before a page unload */
+/** Set's an event listener that runs commitToStorage before a page unload */
 function initialize(): void {
   if (typeof addEventListener !== 'undefined')
     addEventListener('beforeunload', commitToStorage);
   eventListenerIsInitialized = true;
 }
 
-/* Commits persistent cache buckets to localStorage */
+/** Commits persistent cache buckets to localStorage */
 function commitToStorage(): void {
   if (typeof localStorage === 'undefined') return;
 
@@ -59,7 +74,7 @@ function commitToStorage(): void {
   ).forEach(([bucketName]) => commitBucketToStorage(bucketName));
 }
 
-/* Commits a single cache bucket to localStorage */
+/** Commits a single cache bucket to localStorage */
 function commitBucketToStorage(bucketName: string): void {
   localStorage.setItem(
     `${cachePrefix}${bucketName}`,
@@ -67,7 +82,7 @@ function commitBucketToStorage(bucketName: string): void {
   );
 }
 
-/* Tries to fetch a bucket from localStorage */
+/** Tries to fetch a bucket from localStorage */
 function fetchBucket(
   // The name of the bucket to fetch
   bucketName: string
@@ -94,7 +109,7 @@ function fetchBucket(
   return buckets[bucketName];
 }
 
-/*
+/**
  * Get value of cacheName in the bucketName
  * Bucket names and cache names are defined in CacheDefinitions
  */
@@ -142,7 +157,7 @@ export const get: {
     props
   );
 
-/* Get value of cacheName in the bucketName */
+/** Get value of cacheName in the bucketName */
 // Overload with defaultValue
 export function genericGet<T>(
   // The name of the bucket
@@ -246,7 +261,7 @@ export const set = <
     setOptions
   );
 
-// Set's cacheValue as cache value under cacheName in `bucketName`
+/** Set's cacheValue as cache value under cacheName in `bucketName` */
 export function genericSet<T>(
   // The name of the bucket
   bucketName: string,

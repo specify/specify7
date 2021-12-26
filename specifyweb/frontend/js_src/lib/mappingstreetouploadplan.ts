@@ -1,9 +1,8 @@
-/*
+/**
+ * Helper function for converting from mapping tree
+ * (internal structure used in WbPlanView) to upload plan
  *
- * Helper class for converting from upload plan to mapping tree
- * (internal structure used in wbplanview) and vice versa
- *
- *
+ * @module
  */
 
 import type { IR, R } from './types';
@@ -223,10 +222,9 @@ const mappingsTreeToUploadTable = (
         isRoot
       ) as Uploadable);
 
-/*
+/**
  * Converts mappings tree to upload plan
  * Inverse of uploadPlanToMappingsTree
- *
  */
 export const mappingsTreeToUploadPlan = (
   baseTableName: string,

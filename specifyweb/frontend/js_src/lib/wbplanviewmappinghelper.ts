@@ -1,11 +1,10 @@
-/*
- * Returns whether relationship is a -to-many
- *	(e.x. one-to-many or many-to-many)
+/**
+ * WbPlanView helpers for dealing with the Data Model
  *
+ * @module
  */
 
-import type { R } from './types';
-import type { RA } from './types';
+import type { R, RA } from './types';
 import type {
   FullMappingPath,
   MappingPath,
@@ -15,20 +14,25 @@ import type {
 import type { ColumnOptions } from './uploadplantomappingstree';
 import dataModelStorage from './wbplanviewmodel';
 
+/**
+ * Returns whether relationship is a -to-many
+ *	(e.x. one-to-many or many-to-many)
+ *
+ */
 export const relationshipIsToMany = (
   relationshipType?: RelationshipType | ''
 ): boolean => (relationshipType ?? '').includes('-to-many');
 
-/* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
+/** Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
 export const valueIsReferenceItem = (value?: string): boolean =>
   value?.slice(0, dataModelStorage.referenceSymbol.length) ===
     dataModelStorage.referenceSymbol || false;
 
-/* Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
+/** Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
 export const valueIsTreeRank = (value: string): boolean =>
   value?.startsWith(dataModelStorage.treeSymbol) || false;
 
-/*
+/**
  * Returns index from a complete reference item value (e.x #1 => 1)
  * Opposite of formatReferenceItem
  *
@@ -36,7 +40,7 @@ export const valueIsTreeRank = (value: string): boolean =>
 export const getIndexFromReferenceItemName = (value: string): number =>
   Number(value.slice(dataModelStorage.referenceSymbol.length));
 
-/*
+/**
  * Returns tree rank name from a complete tree rank name
  * (e.x $Kingdom => Kingdom)
  * Opposite of formatTreeRank
@@ -45,7 +49,7 @@ export const getIndexFromReferenceItemName = (value: string): number =>
 export const getNameFromTreeRankName = (value: string): string =>
   value.slice(dataModelStorage.treeSymbol.length);
 
-/*
+/**
  * Returns a complete reference item from an index (e.x 1 => #1)
  * Opposite of getIndexFromReferenceItemName
  *
@@ -53,7 +57,7 @@ export const getNameFromTreeRankName = (value: string): string =>
 export const formatReferenceItem = (index: number): string =>
   `${dataModelStorage.referenceSymbol}${index}`;
 
-/*
+/**
  * Returns a complete tree rank name from a tree rank name
  * (e.x Kingdom => $Kingdom)
  * Opposite of getNameFromTreeRankName
@@ -84,7 +88,7 @@ export const splitFullMappingPathComponents = (
   columnOptions: fullMappingPath[fullMappingPath.length - 1] as ColumnOptions,
 });
 
-// Find the index of a subArray in array. On failure returns -1
+/** Find the index of a subArray in array. On failure returns -1 */
 export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
   array.findIndex((_, index) =>
     mappingPathToString(array.slice(index)).startsWith(
@@ -92,7 +96,7 @@ export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
     )
   );
 
-/*
+/**
  * Takes array of mappings and returns the indexes of duplicate mappings
  * Example:
  * if three lines have the same mapping, the indexes of the second and
@@ -133,10 +137,11 @@ export const getCanonicalMappingPath = (
       : mappingPathPart
   );
 
-/*
+/**
  * Rebases -to-many reference numbers to make sure there are no skipped indexes
  *
- * For example, given this input:
+ * @example
+ * Given this input:
  * mappingPaths = [
  *   ['locality','collectingevents','#2','startdate',
  *   ['locality','collectingevents','#3','startdate',

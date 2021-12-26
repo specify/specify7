@@ -1,5 +1,8 @@
-/*
- * TileServers and WMS servers that Leaflet should use
+/**
+ * TileServers and WMS servers that Leaflet should use as well as configuration
+ * for which fields to display in the pop-up bubbles
+ *
+ * @module
  *
  */
 
@@ -10,7 +13,7 @@ import L from './leafletextend';
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json';
 
-/*
+/**
  *
  * These layers are only used when:
  *  * Leaflet failed to fetch layers from:
@@ -126,7 +129,7 @@ export const leafletTileServers: RR<
 export const preferredBaseLayer = 'Satellite Map (ESRI)';
 export const preferredOverlay = 'Labels and boundaries';
 
-// These fields should be present for locality to be mappable
+/* These fields should be present for locality to be mappable */
 export const requiredLocalityColumns: RA<string> = [
   'locality.latitude1',
   'locality.longitude1',
@@ -140,7 +143,7 @@ export const mappingLocalityColumns: RA<string> = [
   'locality.latlongaccuracy',
 ];
 
-/*
+/**
  * The fields to display in a Leaflet pin's pop-up box
  * `pathToRelationship` is a mappingPath that shows how to get from
  * the table that contains the field to the locality table and vice versa.
@@ -151,13 +154,12 @@ export const mappingLocalityColumns: RA<string> = [
  * The order of fields in this array would determine the order in the pop-up
  * window
  */
-
 export type LocalityPinFields = {
   readonly pathToRelationship: MappingPath;
   readonly pathsToFields: RA<MappingPath>;
 };
 
-/*
+/**
  * Applies only to the Leaflet map on the Locality form and the CO
  *  Lifemapper badge.
  * Defined the maximum number of -to-many records to fetch at any point of the
@@ -166,7 +168,7 @@ export type LocalityPinFields = {
  */
 export const MAX_TO_MANY_INDEX = 10;
 
-/*
+/**
  * NOTE:
  * Leaflet map on the Locality form and the CO Lifemapper badge is going
  * to display `$rank > fullname` for a single rank that is attached to a given

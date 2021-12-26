@@ -1,4 +1,9 @@
-<<<<<<< HEAD
+/**
+ * High-level WbPlanView helpers
+ *
+ * @module
+ */
+
 import ajax from './ajax';
 import AutoMapper from './automapper';
 import type {
