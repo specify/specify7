@@ -5,7 +5,7 @@
  */
 
 import type { Action } from 'typesafe-reducer';
-import { generateReducer } from 'typesafe-reducer';
+import { ensureState, generateReducer } from 'typesafe-reducer';
 
 import * as cache from './cache';
 import type {
@@ -22,10 +22,7 @@ import type {
   MappingState,
   WbPlanViewStates,
 } from './components/wbplanviewstate';
-import {
-  getDefaultMappingState,
-  mappingState,
-} from './components/wbplanviewstate';
+import { getDefaultMappingState } from './components/wbplanviewstate';
 import wbText from './localization/workbench';
 import type { RA } from './types';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
@@ -41,7 +38,6 @@ import {
   getMustMatchTables,
   mappingPathIsComplete,
   mutateMappingPath,
-  savePlan,
   validate,
 } from './wbplanviewutils';
 
@@ -318,20 +314,17 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   },
   SavePlanAction: ensureState(['MappingState'], ({ state, action }) => {
     const validationResultsState = validate(state);
-    if (
-      !action.ignoreValidation &&
+    return !action.ignoreValidation &&
       validationResultsState.validationResults.length > 0
-    )
-      return validationResultsState;
-    else
-      return {
-        type: 'LoadingState',
-        loadingState: {
-          type: 'SavePlanState',
-          state,
-          props: action,
-        },
-      };
+      ? validationResultsState
+      : {
+          type: 'LoadingState',
+          loadingState: {
+            type: 'SavePlanState',
+            state,
+            props: action,
+          },
+        };
   }),
   ToggleMappingViewAction: ensureState(
     ['MappingState'],
@@ -353,10 +346,10 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
   ClearValidationResultsAction: ensureState(['MappingState'], ({ state }) => ({
     ...state,
     validationResults: [],
-  }),
-  ResetMappingsAction: ({ state }) => ({
-    ...mappingState(state),
-    lines: mappingState(state).lines.map((line) => ({
+  })),
+  ResetMappingsAction: ensureState(['MappingState'], ({ state }) => ({
+    ...state,
+    lines: state.lines.map((line) => ({
       ...line,
       mappingPath: ['0'],
       columnOptions: defaultColumnOptions,
@@ -364,133 +357,147 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     changesMade: true,
     mappingsAreValidated: false,
     validationResults: [],
-  }),
-  ClearMappingLineAction: ({ state, action }) => ({
-    ...mappingState(state),
-    lines: modifyLine(mappingState(state), action.line, {
-      mappingPath: ['0'],
-      columnOptions: defaultColumnOptions,
-    }),
-    changesMade: true,
-    mappingsAreValidated: false,
-  }),
-  FocusLineAction: ({ state, action }) => {
-    if (action.line >= mappingState(state).lines.length)
+  })),
+  ClearMappingLineAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => ({
+      ...state,
+      lines: modifyLine(state, action.line, {
+        mappingPath: ['0'],
+        columnOptions: defaultColumnOptions,
+      }),
+      changesMade: true,
+      mappingsAreValidated: false,
+    })
+  ),
+  FocusLineAction: ensureState(['MappingState'], ({ state, action }) => {
+    if (action.line >= state.lines.length)
       throw new Error(`Tried to focus a line that doesn't exist`);
 
-    const focusedLineMappingPath =
-      mappingState(state).lines[action.line].mappingPath;
+    const focusedLineMappingPath = state.lines[action.line].mappingPath;
     return {
-      ...mappingState(state),
+      ...state,
       focusedLine: action.line,
       mappingView: mappingPathIsComplete(focusedLineMappingPath)
         ? focusedLineMappingPath
-        : mappingState(state).mappingView,
+        : state.mappingView,
     };
-  },
-  MappingViewMapAction: ({ state }) => {
-    const mappingViewMappingPath = mappingState(state).mappingView;
-    const focusedLine = mappingState(state).focusedLine;
+  }),
+  MappingViewMapAction: ensureState(['MappingState'], ({ state }) => {
+    const mappingViewMappingPath = state.mappingView;
+    const focusedLine = state.focusedLine;
     if (
       !mappingPathIsComplete(mappingViewMappingPath) ||
       typeof focusedLine === 'undefined' ||
-      focusedLine >= mappingState(state).lines.length
+      focusedLine >= state.lines.length
     )
       return state;
 
     return {
-      ...mappingState(state),
+      ...state,
       lines: [
-        ...mappingState(state).lines.slice(0, focusedLine),
+        ...state.lines.slice(0, focusedLine),
         {
-          ...mappingState(state).lines[focusedLine],
+          ...state.lines[focusedLine],
           mappingPath: mappingViewMappingPath,
         },
-        ...mappingState(state).lines.slice(focusedLine + 1),
+        ...state.lines.slice(focusedLine + 1),
       ],
       changesMade: true,
       mappingsAreValidated: false,
     };
-  },
-  AddNewHeaderAction: ({ state }) => ({
-    ...mappingState(state),
-    newHeaderId: mappingState(state).newHeaderId + 1,
+  }),
+  AddNewHeaderAction: ensureState(['MappingState'], ({ state }) => ({
+    ...state,
+    newHeaderId: state.newHeaderId + 1,
     lines: [
-      ...mappingState(state).lines,
+      ...state.lines,
       {
         headerName: uniquifyHeaders(
           [
-            ...mappingState(state).lines.map(({ headerName }) => headerName),
-            wbText('newHeaderName')(mappingState(state).newHeaderId),
+            ...state.lines.map(({ headerName }) => headerName),
+            wbText('newHeaderName')(state.newHeaderId),
           ],
-          [mappingState(state).lines.length]
+          [state.lines.length]
         ).slice(-1)[0],
         mappingType: 'existingHeader',
         mappingPath: ['0'],
         columnOptions: defaultColumnOptions,
       },
     ],
-    focusedLine: mappingState(state).lines.length,
+    focusedLine: state.lines.length,
     mappingsAreValidated: false,
-  }),
-  ToggleHiddenFieldsAction: ({ state }) => ({
-    ...mappingState(state),
+  })),
+  ToggleHiddenFieldsAction: ensureState(['MappingState'], ({ state }) => ({
+    ...state,
     showHiddenFields: cache.set(
       'wbPlanViewUi',
       'showHiddenFields',
-      !mappingState(state).showHiddenFields,
+      !state.showHiddenFields,
       {
         overwrite: true,
       }
     ),
     revealHiddenFieldsClicked: true,
-  }),
-  OpenSelectElementAction: ({ state, action }) => ({
-    ...mappingState(state),
-    openSelectElement: {
-      line: action.line,
-      index: action.index,
-    },
-    autoMapperSuggestionsPromise:
-      typeof mappingState(state).lines[action.line].mappingPath[
-        action.index
-      ] === 'undefined'
-        ? undefined
-        : getAutoMapperSuggestions({
-            lines: mappingState(state).lines,
-            line: action.line,
-            index: action.index,
-            baseTableName: mappingState(state).baseTableName,
-          }),
-  }),
+  })),
+  OpenSelectElementAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => ({
+      ...state,
+      openSelectElement: {
+        line: action.line,
+        index: action.index,
+      },
+      autoMapperSuggestionsPromise:
+        typeof state.lines[action.line].mappingPath[action.index] ===
+        'undefined'
+          ? undefined
+          : getAutoMapperSuggestions({
+              lines: state.lines,
+              line: action.line,
+              index: action.index,
+              baseTableName: state.baseTableName,
+            }),
+    })
+  ),
   CloseSelectElementAction: ({ state }) =>
     state.type === 'MappingState'
       ? {
-          ...mappingState(state),
+          ...state,
           openSelectElement: undefined,
           autoMapperSuggestionsPromise: undefined,
           autoMapperSuggestions: undefined,
         }
       : state,
-  ChangeSelectElementValueAction: ({ state, action }) => {
-    const newMappingPath = mutateMappingPath({
-      lines: mappingState(state).lines,
-      mappingView: mappingState(state).mappingView,
-      line: action.line,
-      index: action.index,
-      newValue: action.newValue,
-      isRelationship: action.isRelationship,
-      currentTableName: action.currentTableName,
-      newTableName: action.newTableName,
-    });
+  ChangeSelectElementValueAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => {
+      const newMappingPath = mutateMappingPath({
+        lines: state.lines,
+        mappingView: state.mappingView,
+        line: action.line,
+        index: action.index,
+        newValue: action.newValue,
+        isRelationship: action.isRelationship,
+        currentTableName: action.currentTableName,
+        newTableName: action.newTableName,
+      });
 
-    if (action.line === 'mappingView')
+      if (action.line === 'mappingView')
+        return {
+          ...state,
+          mappingView: newMappingPath,
+        };
+
       return {
-        ...mappingState(state),
-        mappingView: newMappingPath,
+        ...state,
+        lines: deduplicateMappings(
+          modifyLine(state, action.line, {
+            mappingPath: newMappingPath,
+          }),
           state.openSelectElement?.line ?? false
         ),
-        openSelectElement: undefined,
+        openSelectElement: action.close ? undefined : state.openSelectElement,
         autoMapperSuggestionsPromise: undefined,
         autoMapperSuggestions: undefined,
         changesMade: true,
@@ -498,14 +505,14 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       };
     }
   ),
-  AutoMapperSuggestionsLoadedAction: ({ state, action }) =>
-    state.type === 'MappingState'
-      ? {
-          ...state,
-          autoMapperSuggestions: action.autoMapperSuggestions,
-          autoMapperSuggestionsPromise: undefined,
-        }
-      : state,
+  AutoMapperSuggestionsLoadedAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => ({
+      ...state,
+      autoMapperSuggestions: action.autoMapperSuggestions,
+      autoMapperSuggestionsPromise: undefined,
+    })
+  ),
   AutoMapperSuggestionSelectedAction: ensureState(
     ['MappingState'],
     ({ state, action: { suggestion } }) => ({
@@ -550,115 +557,58 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
           ...state.mustMatchPreferences,
           [action.tableName]: action.mustMatch,
         },
->>>>>>> 25c8762c (Make spelling of "AutoMapper" consistent (camel case))
       };
 
-    return {
-      ...mappingState(state),
-      lines: deduplicateMappings(
-        modifyLine(mappingState(state), action.line, {
-          mappingPath: newMappingPath,
-        }),
-        mappingState(state).openSelectElement?.line ?? false
-      ),
-      openSelectElement: action.close
-        ? undefined
-        : mappingState(state).openSelectElement,
-      autoMapperSuggestionsPromise: undefined,
-      autoMapperSuggestions: undefined,
-      changesMade: true,
-      mappingsAreValidated: false,
-    };
-  },
-  AutoMapperSuggestionsLoadedAction: ({ state, action }) => ({
-    ...mappingState(state),
-    autoMapperSuggestions: action.automapperSuggestions,
-    autoMapperSuggestionsPromise: undefined,
-  }),
-  AutoMapperSuggestionSelectedAction: ({ state, action: { suggestion } }) => ({
-    ...mappingState(state),
-    lines: modifyLine(
-      mappingState(state),
-      mappingState(state).openSelectElement!.line,
-      {
-        mappingPath:
-          mappingState(state).autoMapperSuggestions![Number(suggestion) - 1]
-            .mappingPath,
-      }
-    ),
-    openSelectElement: undefined,
-    autoMapperSuggestionsPromise: undefined,
-    autoMapperSuggestions: undefined,
-    changesMade: true,
-    mappingsAreValidated: false,
-  }),
-  ValidationResultClickAction: ({ state, action: { mappingPath } }) => ({
-    ...mappingState(state),
-    mappingView: mappingPath,
-  }),
-  OpenMatchingLogicDialogAction: ({ state: originalState }) => ({
-    ...mappingState(originalState),
-    displayMatchingOptionsDialog: true,
-    mustMatchPreferences: getMustMatchTables(mappingState(originalState)),
-  }),
-  CloseMatchingLogicDialogAction: ({ state }) => ({
-    ...mappingState(state),
-    displayMatchingOptionsDialog: false,
-  }),
-  MustMatchPrefChangeAction: ({ state: initialState, action }) => {
-    const state = mappingState(initialState);
-    const newState = {
+      /*
+       * Since setting table as must match causes all of it's fields to be
+       * optional, we may have to rerun validation on mustMatchPreferences changes
+       */
+      return newState.validationResults.length > 0 &&
+        newState.lines.length > 0 &&
+        newState.lines.some(({ mappingPath }) =>
+          mappingPathIsComplete(mappingPath)
+        )
+        ? validate(newState)
+        : newState;
+    }
+  ),
+  ChangeMatchBehaviorAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => ({
       ...state,
+      lines: modifyLine(state, action.line, {
+        ...state.lines[action.line],
+        columnOptions: {
+          ...state.lines[action.line].columnOptions,
+          matchBehavior: action.matchBehavior,
+        },
+      }),
       changesMade: true,
-      mustMatchPreferences: {
-        ...state.mustMatchPreferences,
-        [action.tableName]: action.mustMatch,
-      },
-    };
-
-    /*
-     * Since setting table as must match causes all of it's fields to be
-     * optional, we may have to rerun validation on mustMatchPreferences changes
-     */
-    return newState.validationResults.length > 0 &&
-      newState.lines.length > 0 &&
-      newState.lines.some(({ mappingPath }) =>
-        mappingPathIsComplete(mappingPath)
-      )
-      ? validate(newState)
-      : newState;
-  },
-  ChangeMatchBehaviorAction: ({ state, action }) => ({
-    ...mappingState(state),
-    lines: modifyLine(mappingState(state), action.line, {
-      ...mappingState(state).lines[action.line],
+    })
+  ),
+  ToggleAllowNullsAction: ensureState(
+    ['MappingState'],
+    ({ state, action }) => ({
+      ...state,
+      lines: modifyLine(state, action.line, {
+        ...state.lines[action.line],
+        columnOptions: {
+          ...state.lines[action.line].columnOptions,
+          nullAllowed: action.allowNull,
+        },
+      }),
+      changesMade: true,
+    })
+  ),
+  ChangeDefaultValue: ensureState(['MappingState'], ({ state, action }) => ({
+    ...state,
+    lines: modifyLine(state, action.line, {
+      ...state.lines[action.line],
       columnOptions: {
-        ...mappingState(state).lines[action.line].columnOptions,
-        matchBehavior: action.matchBehavior,
-      },
-    }),
-    changesMade: true,
-  }),
-  ToggleAllowNullsAction: ({ state, action }) => ({
-    ...mappingState(state),
-    lines: modifyLine(mappingState(state), action.line, {
-      ...mappingState(state).lines[action.line],
-      columnOptions: {
-        ...mappingState(state).lines[action.line].columnOptions,
-        nullAllowed: action.allowNull,
-      },
-    }),
-    changesMade: true,
-  }),
-  ChangeDefaultValue: ({ state, action }) => ({
-    ...mappingState(state),
-    lines: modifyLine(mappingState(state), action.line, {
-      ...mappingState(state).lines[action.line],
-      columnOptions: {
-        ...mappingState(state).lines[action.line].columnOptions,
+        ...state.lines[action.line].columnOptions,
         default: action.defaultValue,
       },
     }),
     changesMade: true,
-  }),
+  })),
 });

@@ -40,22 +40,19 @@ import {
   formatReferenceItem,
   formatTreeRank,
 } from './wbplanviewmappinghelper';
-import {
-  mappingsTreeToArrayOfSplitMappings,
-} from './wbplanviewtreehelper';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { extractDefaultValues } from './wbplanviewhelper';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
-import fetchDataModelPromise from './wbplanviewmodelfetcher';
 import { capitalize } from './wbplanviewhelper';
 import { getIcon } from './icons';
-import dataobjformatters from './dataobjformatters';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
 import { BackboneLoadingScreen } from './components/modaldialog';
-import formatObject from './dataobjformatters.js';
+import {format} from './dataobjformatters.js';
+import {dataModelPromise} from "./wbplanviewmodelfetcher";
+import {mappingsTreeToSplitMappingPaths} from "./wbplanviewtreehelper";
 
 const metaKeys = [
   'isNew',
@@ -1529,7 +1526,7 @@ const WBView = Backbone.View.extend({
                 .text(`${resource.get('fullname')} (in ${parentName})`)
             );
         } else {
-          formatObject(resource).done((formatted) =>
+          format(resource).done((formatted) =>
             row.find('.label').text(formatted)
           );
         }

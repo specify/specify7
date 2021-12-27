@@ -6,11 +6,7 @@
 
 import ajax from './ajax';
 import AutoMapper from './automapper';
-import type {
-  Dataset,
-  PublicWbPlanViewProps,
-  WbPlanViewWrapperProps,
-} from './components/wbplanview';
+import type { Dataset, WbPlanViewWrapperProps } from './components/wbplanview';
 import type {
   AutoMapperSuggestion,
   FullMappingPath,
@@ -41,6 +37,8 @@ import {
   mappingPathsToMappingsTree,
   traverseTree,
 } from './wbplanviewtreehelper';
+import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
+import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 
 export function savePlan(
   props: WbPlanViewWrapperProps,
@@ -103,9 +101,9 @@ export function savePlan(
           body: {
             visualorder: newVisualOrder,
           },
-        }).then(() => goBack(props));
+        }).then(() => goBack(props.dataset.id));
       });
-    else goBack(props);
+    else goBack(props.dataset.id);
   });
 
   return state;

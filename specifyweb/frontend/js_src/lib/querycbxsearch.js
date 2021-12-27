@@ -6,15 +6,13 @@ import Backbone from './backbone';
 
 import specifyform from './specifyform';
 import api from './specifyapi';
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import whenAll from './whenall';
 import initialContext from './initialcontext';
 import commonText from './localization/common';
 
     var dialogdefs;
     initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
-
-    function format(obj) { return dataobjformatters.format(obj); }
 
 export default Backbone.View.extend({
         __name__: "QueryCbxSearch",

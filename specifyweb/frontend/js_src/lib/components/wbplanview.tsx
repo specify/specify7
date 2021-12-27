@@ -85,7 +85,6 @@ export const handlePromiseReject = (error: unknown) =>
   setTimeout(() => {
     throw error;
   }, 0);
-};
 
 export type WbPlanViewProps = WbPlanViewWrapperProps &
   PublicWbPlanViewProps & {

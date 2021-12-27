@@ -3,14 +3,14 @@ import { ensureState, generateReducer } from 'typesafe-reducer';
 
 import type { ItemType, SpLocaleItem } from './components/schemaconfig';
 import type { States } from './components/schemaconfigstate';
-import {
+import type {
   SpLocaleContainer,
-  WithFieldInfo,
   WithFetchedStrings,
+  WithFieldInfo,
   WithTableInfo,
 } from './components/schemaconfigwrapper';
-import type { IR } from './components/wbplanview';
 import { sortObjectsByKey } from './schemaconfighelper';
+import type { IR } from './types';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -106,7 +106,7 @@ export const reducer = generateReducer<States, Actions>({
     ['FetchingTableItemsState'],
     ({ action: { items, table }, state }) => ({
       type: 'MainState',
-      table: table,
+      table,
       language: state.language,
       items,
       itemId:

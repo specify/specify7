@@ -1,11 +1,11 @@
 import $ from 'jquery';
-import { uniquifyDataSetName } from './wbuniquifyname';
+import uniquifyDataSetName from './wbuniquifyname';
 import Backbone from './backbone';
-import app from './specifyapp';
+import {setTitle} from './specifyapp';
 import {format} from './dataobjformatters';
 import schema from './schema';
 import resourceApi from './resourceapi';
-import navigation from './navigation';
+import * as navigation from './navigation';
 import userInfo from './userinfo';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
@@ -294,7 +294,7 @@ export default Backbone.View.extend({
           class="wb-metadata magic-button"
       >${commonText('metadata')}</button>
     `);
-    app.setTitle(this.dataset.name);
+    setTitle(this.dataset.name);
   },
   render() {
     this.dataSetMeta.render();

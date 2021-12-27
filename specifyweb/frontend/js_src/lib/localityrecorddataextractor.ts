@@ -5,9 +5,8 @@
  * @module
  */
 
-import type { RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
-import dataObjectFormatters from './dataobjformatters';
+import { format } from './dataobjformatters';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
 import {
@@ -16,6 +15,7 @@ import {
   getLocalityData,
 } from './leafletutils';
 import { deflateLocalityData } from './lifemapperhelper';
+import type { RA } from './types';
 import {
   formatReferenceItem,
   formatTreeRank,
@@ -26,8 +26,8 @@ import {
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import dataModelStorage from './wbplanviewmodel';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -123,7 +123,7 @@ async function recursiveResourceResolve(
     const overwriteAgent =
       currentPart[0] === 'agent' && currentPart[1] === 'lastname';
     const nextResource = overwriteAgent
-      ? await dataObjectFormatters.format(resource)
+      ? await format(resource)
       : await resource.rget(mappingPathToString(currentPart));
 
     return recursiveResourceResolve(nextResource, nextPart, filterFunction, [

@@ -2,7 +2,7 @@ import type { MenuItem } from './components/main';
 import type { SpecifyResource } from './components/wbplanview';
 import InteractionsDialog from './interactionsdialog';
 import commonText from './localization/common';
-import navigation from './navigation';
+import * as navigation from './navigation';
 
 const menuItem: MenuItem = {
   task: 'interactions',

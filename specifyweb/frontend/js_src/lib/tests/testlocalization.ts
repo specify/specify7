@@ -9,13 +9,14 @@
 
 import fs from 'fs';
 import path from 'path';
-import type { IR, R } from '../components/wbplanview';
-import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
+
 import type {
-  Value,
-  Language,
   Dictionary as LanguageDictionary,
+  Language,
+  Value,
 } from '../localization/utils';
+import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
+import type { IR, R } from '../types';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');

@@ -2,17 +2,14 @@
 
 
 import $ from 'jquery';
-import _ from 'underscore';
 
 import UIPlugin from './uiplugin';
 import template from './templates/partialdateui.html';
 import dateFormatStr from './dateformat';
-import ToolTipMgr from './tooltipmgr';
-import saveblockers from './saveblockers';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import { addValidationAttributes, resolveParser } from './uiparse';
-import {default: dayjs, getDateInputValue} from './dayjs';
+import {addValidationAttributes, resolveParser} from './uiparse';
+import dayjs, {getDateInputValue} from './dayjs';
 
 function isInputSupported(type) {
     var input = document.createElement('input');

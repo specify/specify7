@@ -5,7 +5,7 @@
  * @module
  */
 
-import { createDictionary, createHeader } from './utils';
+import { createDictionary, header } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -129,9 +129,9 @@ const formsText = createDictionary({
     ca: 'Delete resource',
   },
   deleteBlockedDialogHeader: {
-    'en-us': createHeader('Delete blocked'),
-    'ru-ru': createHeader('Удаление заблокировано'),
-    ca: createHeader('Delete blocked'),
+    'en-us': header('Delete blocked'),
+    'ru-ru': header('Удаление заблокировано'),
+    ca: header('Delete blocked'),
   },
   deleteBlockedDialogMessage: {
     'en-us': `
@@ -319,9 +319,9 @@ const formsText = createDictionary({
     ca: 'Paleo Map',
   },
   paleoRequiresGeographyDialogHeader: {
-    'en-us': createHeader('Geography Required'),
-    'ru-ru': createHeader('Требуется география'),
-    ca: createHeader('Geography Required'),
+    'en-us': header('Geography Required'),
+    'ru-ru': header('Требуется география'),
+    ca: header('Geography Required'),
   },
   paleoRequiresGeographyDialogMessage: {
     'en-us': `
@@ -344,11 +344,11 @@ const formsText = createDictionary({
   },
   noCoordinatesDialogHeader: {
     'en-us': (modelName: string) =>
-      createHeader(`Not enough information to map ${modelName}`),
+      header(`Not enough information to map ${modelName}`),
     'ru-ru': (modelName: string) =>
-      createHeader(`Недостаточно информации для отображения ${modelName}`),
+      header(`Недостаточно информации для отображения ${modelName}`),
     ca: (modelName: string) =>
-      createHeader(`Not enough information to map ${modelName}`),
+      header(`Not enough information to map ${modelName}`),
   },
   noCoordinatesDialogMessage: {
     'en-us': (modelName: string) => `
@@ -364,9 +364,9 @@ const formsText = createDictionary({
     ca: 'Unsupported Plugin',
   },
   unsupportedFormDialogHeader: {
-    'en-us': createHeader('Incorrect Form'),
-    'ru-ru': createHeader('Неправильная форма'),
-    ca: createHeader('Incorrect Form'),
+    'en-us': header('Incorrect Form'),
+    'ru-ru': header('Неправильная форма'),
+    ca: header('Incorrect Form'),
   },
   unsupportedFormDialogMessage: {
     'en-us': `
@@ -392,15 +392,11 @@ const formsText = createDictionary({
     ca: 'Delete?',
   },
   deleteConfirmationDialogHeader: {
-    'en-us': createHeader(
+    'en-us': header(
       'Are you sure you want to permanently delete this item(s)?'
     ),
-    'ru-ru': createHeader(
-      'Вы уверены, что хотите навсегда удалить этот элемент(ы)?'
-    ),
-    ca: createHeader(
-      'Are you sure you want to permanently delete this item(s)?'
-    ),
+    'ru-ru': header('Вы уверены, что хотите навсегда удалить этот элемент(ы)?'),
+    ca: header('Are you sure you want to permanently delete this item(s)?'),
   },
   deleteConfirmationDialogMessage: {
     'en-us': 'This action can not be undone.',
@@ -450,9 +446,9 @@ const formsText = createDictionary({
     ca: 'Pick List',
   },
   addToPickListConfirmationDialogHeader: {
-    'en-us': createHeader('Add to pick list?'),
-    'ru-ru': createHeader('Добавить в список выбора?'),
-    ca: createHeader('Add to pick list?'),
+    'en-us': header('Add to pick list?'),
+    'ru-ru': header('Добавить в список выбора?'),
+    ca: header('Add to pick list?'),
   },
   addToPickListConfirmationDialogMessage: {
     'en-us': (value: string, pickListName: string) =>
@@ -470,9 +466,9 @@ const formsText = createDictionary({
   },
   // RecordSelector
   removeRecordDialogHeader: {
-    'en-us': createHeader('Remove dependent record'),
-    'ru-ru': createHeader('Удалить зависимую запись'),
-    ca: createHeader('Remove dependent record'),
+    'en-us': header('Remove dependent record'),
+    'ru-ru': header('Удалить зависимую запись'),
+    ca: header('Remove dependent record'),
   },
   removeRecordDialogMessage: {
     'en-us': 'Are you sure you want to remove this record?',
@@ -644,9 +640,9 @@ const formsText = createDictionary({
     ca: 'Save record',
   },
   saveConflictDialogHeader: {
-    'en-us': createHeader('Save conflict'),
-    'ru-ru': createHeader('Сохранить конфликт'),
-    ca: createHeader('Save conflict'),
+    'en-us': header('Save conflict'),
+    'ru-ru': header('Сохранить конфликт'),
+    ca: header('Save conflict'),
   },
   saveConflictDialogMessage: {
     'en-us': `
@@ -668,9 +664,9 @@ const formsText = createDictionary({
     ca: 'Save record',
   },
   saveBlockedDialogHeader: {
-    'en-us': createHeader('Save blocked'),
-    'ru-ru': createHeader('Сохранение заблокировано'),
-    ca: createHeader('Save blocked'),
+    'en-us': header('Save blocked'),
+    'ru-ru': header('Сохранение заблокировано'),
+    ca: header('Save blocked'),
   },
   saveBlockedDialogMessage: {
     'en-us': 'Form cannot be saved while the following errors exist:',
@@ -711,9 +707,9 @@ const formsText = createDictionary({
     ca: 'Command Not Available',
   },
   unavailableCommandDialogHeader: {
-    'en-us': createHeader('Command Not Available'),
-    'ru-ru': createHeader('Команда недоступна'),
-    ca: createHeader('Command Not Available'),
+    'en-us': header('Command Not Available'),
+    'ru-ru': header('Команда недоступна'),
+    ca: header('Command Not Available'),
   },
   unavailableCommandDialogMessage: {
     'en-us': `
@@ -746,9 +742,9 @@ const formsText = createDictionary({
     ca: 'Plugin Not Available',
   },
   unavailablePluginDialogHeader: {
-    'en-us': createHeader('Plugin Not Available'),
-    'ru-ru': createHeader('Плагин недоступен'),
-    ca: createHeader('Plugin Not Available'),
+    'en-us': header('Plugin Not Available'),
+    'ru-ru': header('Плагин недоступен'),
+    ca: header('Plugin Not Available'),
   },
   unavailablePluginDialogMessage: {
     'en-us': `

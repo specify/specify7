@@ -11,7 +11,7 @@ import initialContext from './initialcontext';
     var formatters;
     initialContext.load('app.resource?name=DataObjFormatters', data => formatters = data);
 
-    function dataobjformat(resource, formatter) {
+    export function format(resource, formatter) {
         if (!resource) return $.when(null);
         return resource.fetchIfNotPopulated().pipe(function() {
             formatter = formatter || resource.specifyModel.getFormat();
@@ -32,7 +32,7 @@ import initialContext from './initialcontext';
                 var formatter = fieldNode.attr('formatter'); // hope it's not circular!
                 var fieldName = fieldNode.text();
                 return resource.rget(fieldName).pipe(function(value) {
-                    return formatter ? dataobjformat(value, formatter) :
+                    return formatter ? format(value, formatter) :
                         fieldformat(resource.specifyModel.getField(fieldName), value);
                 });
             });
@@ -53,7 +53,7 @@ import initialContext from './initialcontext';
         });
     }
 
-    function aggregate(collection) {
+    export function aggregate(collection) {
         var aggregatorName = collection.model.specifyModel.getAggregator();
         var aggregator = aggregatorName ? $('aggregator[name="' + aggregatorName + '"]', formatters) :
                 $('aggregator[class="' + collection.model.specifyModel.longName + '"]', formatters);
@@ -64,7 +64,7 @@ import initialContext from './initialcontext';
         assert(collection.isComplete());
 
         var formatting = collection.map(function(resource) {
-            return dataobjformat(resource, format);
+            return format(resource, format);
         });
 
         return whenAll(formatting).pipe(function(formatted) {
@@ -72,10 +72,7 @@ import initialContext from './initialcontext';
         });
     }
 
-export default {
-    format: dataobjformat,
-    aggregate,
-    getFormatters: ()=>Array.from(formatters.getElementsByTagName('format')),
-    getAggregators: ()=>Array.from(formatters.getElementsByTagName('aggregator')),
-};
+
+export const getFormatters = ()=>Array.from(formatters.getElementsByTagName('format'));
+export const getAggregators = ()=>Array.from(formatters.getElementsByTagName('aggregator'));
 

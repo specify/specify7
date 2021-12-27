@@ -1,6 +1,6 @@
-import type { IR, RA } from './components/wbplanview';
 import csrfToken from './csrftoken';
 import { UnhandledErrorView } from './errorview';
+import type { IR, RA } from './types';
 
 export function formData(data: IR<string>): FormData {
   const formData = new FormData();
@@ -72,10 +72,8 @@ export default async function ajax<RESPONSE_TYPE = string>(
       ...options.headers,
     },
   })
-    .then(async (response) =>
-      Promise.all<number, string>([response.status, response.text()])
-    )
-    .then(([status, text]) => {
+    .then(async (response) => Promise.all([response.status, response.text()]))
+    .then(([status, text]: [number, string]) => {
       if (expectedResponseCodes.includes(status)) {
         if (options.headers?.Accept === 'application/json') {
           try {

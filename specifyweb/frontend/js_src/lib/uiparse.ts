@@ -1,8 +1,8 @@
-import type { IR, RA } from './components/wbplanview';
 import dateFormatString from './dateformat.js';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
-import {hasNativeErrors} from './validationmessages';
+import type { IR, RA } from './types';
+import { hasNativeErrors } from './validationmessages';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) => {
@@ -300,9 +300,12 @@ export function addValidationAttributes(
     );
 }
 
-function validateAttributes(parser: Parser, value: string, input: HTMLInputElement | undefined): undefined | string {
-
-  if(typeof input !== 'undefined' && hasNativeErrors(input))
+function validateAttributes(
+  parser: Parser,
+  value: string,
+  input: HTMLInputElement | undefined
+): undefined | string {
+  if (typeof input !== 'undefined' && hasNativeErrors(input))
     return input.validationMessage;
 
   if (typeof parser.minLength === 'number' && value.length < parser.minLength)
@@ -382,9 +385,9 @@ export default function parse(
   let formattedValue: unknown;
 
   if (typeof errorMessage === 'undefined') {
-    formattedValue = (parser.formatters ?? []).reduce(
+    formattedValue = (parser.formatters ?? []).reduce<unknown>(
       (value, formatter) => formatter(value),
-      value.trim() as unknown
+      value.trim()
     );
 
     (parser.validators ?? []).some(

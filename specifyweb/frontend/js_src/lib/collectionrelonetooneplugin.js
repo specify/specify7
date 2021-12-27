@@ -2,11 +2,8 @@
 
 import $ from 'jquery';
 
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import OneToMany from './collectionrelonetomanyplugin';
-
-var format = dataobjformatters.format;
-
 import formsText from './localization/forms';
 
 export default OneToMany.extend({

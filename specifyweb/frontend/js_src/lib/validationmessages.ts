@@ -1,11 +1,10 @@
-import type { RA } from './components/wbplanview';
 import formsText from './localization/forms';
+import type { RA } from './types';
 
 export function validationMessages(
   field: HTMLInputElement,
   validationMessages: RA<string>
 ): void {
-
   field.setCustomValidity('');
   if (!hasNativeErrors(field)) updateCustomValidity(field, validationMessages);
 

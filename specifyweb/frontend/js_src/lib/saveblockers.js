@@ -3,7 +3,7 @@
 import _ from 'underscore';
 import {validationMessages} from './validationmessages';
 
-    //TODO: only propagate for dependent resources
+//TODO: only propagate for dependent resources
 
     function triggerOnParent(resource) {
         return resource.parent ? resource.parent.trigger.bind(resource.parent) :
@@ -16,7 +16,7 @@ import {validationMessages} from './validationmessages';
             function () {};
     }
 
-    function SaveBlockers(resource) {
+    export function SaveBlockers(resource) {
         this.resource = resource;
         this.blockers = {};
         this.inputs = {};
@@ -124,9 +124,3 @@ import {validationMessages} from './validationmessages';
             return _.all(this.blockers, function(blocker) { return blocker.deferred; });
         }
     });
-
-
-export default {
-    SaveBlockers,
-    FieldViewEnhancer;
-};

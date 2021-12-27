@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 import schema from './schema';
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import fieldformat from './fieldformat';
 
 function auditedObjFormatter(fieldSpecs, model, localize) {
@@ -106,7 +106,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             } else {
                 var fko = new afkModel.LazyCollection({filters: {id: value}});   
                 fko.fetch({limit: 1}).done(function(){
-                    dataobjformatters.format(fko.models[0]).done(function(str){
+                    format(fko.models[0]).done(function(str){
                         cell.text(str == null || str == '' ? afkModel.name + ':{' + value + '}' : str);
                     });
                 });

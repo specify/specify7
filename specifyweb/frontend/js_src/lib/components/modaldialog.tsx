@@ -13,22 +13,6 @@ import ErrorBoundary from './errorboundary';
 import createBackboneView from './reactbackboneextend';
 import type { IR, RA } from '../types';
 
-type ModalDialogBaseProps = {
-  readonly children: React.ReactNode;
-};
-
-function ModalDialogContent({
-  children,
-  onLoadCallback,
-}: ModalDialogBaseProps & {
-  readonly onLoadCallback?: () => void | (() => void);
-}): JSX.Element {
-  React.useEffect(onLoadCallback ?? ((): void => {}), []);
-
-  return <>{children}</>;
-}
->>>>>>> 959361e0 (Use TypeScript types instead of interfaces)
-
 function closeDialogCallback(
   $dialog: JQuery,
   resize: () => void,

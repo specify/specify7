@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import * as navigation from './navigation';
 import UIPlugin from './uiplugin';
 import whenAll from './whenall';
@@ -11,7 +11,6 @@ import schema from './schema';
 import userInfo from './userinfo';
 import QueryCbxSearch from './querycbxsearch';
 
-const format = dataobjformatters.format;
 import formsText from './localization/forms';
 import commonText from './localization/common';
 

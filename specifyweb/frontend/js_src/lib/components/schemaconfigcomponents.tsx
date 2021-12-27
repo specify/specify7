@@ -1,9 +1,9 @@
 import React from 'react';
 
 import commonText from '../localization/common';
+import type { IR, RA } from '../types';
 import { useId } from './common';
 import { ModalDialog } from './modaldialog';
-import type { IR, RA } from './wbplanview';
 
 export function PickList({
   label,

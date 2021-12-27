@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, createHeader } from './utils';
+import { createDictionary, header } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -56,9 +56,9 @@ const queryText = createDictionary({
     ca: 'Save query as...',
   },
   saveQueryDialogHeader: {
-    'en-us': createHeader('Save Query'),
-    'ru-ru': createHeader('Сохранить запрос'),
-    ca: createHeader('Save Query'),
+    'en-us': header('Save Query'),
+    'ru-ru': header('Сохранить запрос'),
+    ca: header('Save Query'),
   },
   saveQueryDialogMessage: {
     'en-us': 'Enter a name for the new query.',
@@ -66,9 +66,9 @@ const queryText = createDictionary({
     ca: 'Enter a name for the new query.',
   },
   saveClonedQueryDialogHeader: {
-    'en-us': createHeader('Clone Query'),
-    'ru-ru': createHeader('Клонировать запрос'),
-    ca: createHeader('Clone Query'),
+    'en-us': header('Clone Query'),
+    'ru-ru': header('Клонировать запрос'),
+    ca: header('Clone Query'),
   },
   saveClonedQueryDialogMessage: {
     'en-us': `
@@ -92,9 +92,9 @@ const queryText = createDictionary({
     ca: 'Incomplete fields',
   },
   queryDeleteIncompleteDialogHeader: {
-    'en-us': createHeader('Query definition contains incomplete fields'),
-    'ru-ru': createHeader('Определение запроса содержит неполные поля'),
-    ca: createHeader('Query definition contains incomplete fields'),
+    'en-us': header('Query definition contains incomplete fields'),
+    'ru-ru': header('Определение запроса содержит неполные поля'),
+    ca: header('Query definition contains incomplete fields'),
   },
   queryDeleteIncompleteDialogMessage: {
     'en-us': `
@@ -117,9 +117,9 @@ const queryText = createDictionary({
     ca: 'Record Set',
   },
   recordSetToQueryDialogHeader: {
-    'en-us': createHeader('Creating a Record Set from Query'),
-    'ru-ru': createHeader('Создание набор объектов из запроса'),
-    ca: createHeader('Creating a Record Set from Query'),
+    'en-us': header('Creating a Record Set from Query'),
+    'ru-ru': header('Создание набор объектов из запроса'),
+    ca: header('Creating a Record Set from Query'),
   },
   recordSetToQueryDialogMessage: {
     'en-us': 'Generating Record Set...',
@@ -132,9 +132,9 @@ const queryText = createDictionary({
     ca: 'Record Set Created',
   },
   recordSetCreatedDialogHeader: {
-    'en-us': createHeader('Open newly created record set now?'),
-    'ru-ru': createHeader('Открыть только что созданный набор объектов?'),
-    ca: createHeader('Open newly created record set now?'),
+    'en-us': header('Open newly created record set now?'),
+    'ru-ru': header('Открыть только что созданный набор объектов?'),
+    ca: header('Open newly created record set now?'),
   },
   recordSetCreatedDialogMessage: {
     'en-us': 'Open newly created record set now?',
@@ -147,9 +147,9 @@ const queryText = createDictionary({
     ca: 'KML Export',
   },
   unableToExportAsKmlDialogHeader: {
-    'en-us': createHeader('Unable to export to KML'),
-    'ru-ru': createHeader('Невозможно экспортировать в KML'),
-    ca: createHeader('Unable to export to KML'),
+    'en-us': header('Unable to export to KML'),
+    'ru-ru': header('Невозможно экспортировать в KML'),
+    ca: header('Unable to export to KML'),
   },
   unableToExportAsKmlDialogMessage: {
     'en-us': 'Please add latitude and longitude fields to the query.',
@@ -162,9 +162,9 @@ const queryText = createDictionary({
     ca: 'Export Query',
   },
   queryExportStartedDialogHeader: {
-    'en-us': createHeader('Query Export started'),
-    'ru-ru': createHeader('Экспорт запроса запущен'),
-    ca: createHeader('Query Export started'),
+    'en-us': header('Query Export started'),
+    'ru-ru': header('Экспорт запроса запущен'),
+    ca: header('Query Export started'),
   },
   queryExportStartedDialogMessage: {
     'en-us': (exportFileType: string) => `

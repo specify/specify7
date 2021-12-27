@@ -1,6 +1,6 @@
-import type { IR, RA } from './components/wbplanview';
 import initialContext from './initialcontext.js';
 import commonText from './localization/common';
+import type { IR, RA } from './types';
 
 export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 

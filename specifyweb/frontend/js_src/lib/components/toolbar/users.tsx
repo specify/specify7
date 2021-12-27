@@ -2,13 +2,13 @@ import React from 'react';
 
 import type { Schema } from '../../legacytypes';
 import commonText from '../../localization/common';
-import navigation from '../../navigation';
+import * as navigation from '../../navigation';
 import schema from '../../schema';
+import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import type { IR } from '../wbplanview';
 
 type Props = {
   readonly onClose: () => void;

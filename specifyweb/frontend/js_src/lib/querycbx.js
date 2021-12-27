@@ -9,7 +9,7 @@ import schema from './schema';
 import specifyform from './specifyform';
 import template from './templates/querycbx.html';
 import ResourceView from './resourceview';
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import whenAll from './whenall';
 import parseselect from './parseselect';
 import * as navigation from './navigation';
@@ -23,8 +23,6 @@ import queryText from './localization/query';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import autocomplete from './autocomplete';
-
-var dataobjformat = dataobjformatters.format;
 
 var typesearches;
 var treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "taxon"];
@@ -377,7 +375,7 @@ export default Backbone.View.extend({
         },0);
     },
     renderItem: function (resource) {
-        return dataobjformat(resource, this.typesearch.attr('dataobjformatter')).pipe(function(formatted) {
+        return format(resource, this.typesearch.attr('dataobjformatter')).pipe(function(formatted) {
             return { label: formatted, value: formatted, resource: resource };
         });
     },

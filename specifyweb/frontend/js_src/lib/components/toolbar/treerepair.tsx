@@ -1,16 +1,16 @@
 import React from 'react';
 
 import ajax from '../../ajax';
-import domain from '../../domain';
-import type { SchemaModelTableData } from '../../legacytypes';
+import { getDomainResource } from '../../domain';
+import type { SchemaModelTableField } from '../../legacytypes';
 import commonText from '../../localization/common';
 import schema from '../../schema';
+import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import { TableIcon } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import type { IR } from '../wbplanview';
 
 const treesForAll = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
@@ -31,12 +31,12 @@ export function TreeSelectDialog({
   readonly getLink: (tree: string) => string;
 }): JSX.Element {
   const [trees, setTrees] = React.useState<
-    IR<SchemaModelTableData> | undefined
+    IR<SchemaModelTableField> | undefined
   >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    Promise.resolve(domain.getDomainResource('discipline').rget('type'))
+    Promise.resolve(getDomainResource('discipline').rget('type'))
       .then((type) => [
         ...treesForAll,
         ...(paleoDiscs.has(type) ? treesForPaleo : []),

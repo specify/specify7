@@ -8,8 +8,8 @@ import React from 'react';
 
 import {
   createDictionary,
-  createHeader,
-  createJsxHeader,
+  header,
+  jsxHeader,
   whitespaceSensitive,
 } from './utils';
 
@@ -169,9 +169,9 @@ const wbText = createDictionary({
     ca: 'Upload Plan Status',
   },
   noUploadPlanDialogHeader: {
-    'en-us': createHeader('No Upload Plan is Defined'),
-    'ru-ru': createHeader('План загрузки не определен'),
-    ca: createHeader('No Upload Plan is Defined'),
+    'en-us': header('No Upload Plan is Defined'),
+    'ru-ru': header('План загрузки не определен'),
+    ca: header('No Upload Plan is Defined'),
   },
   noUploadPlanDialogMessage: {
     'en-us':
@@ -186,9 +186,9 @@ const wbText = createDictionary({
     ca: 'Disambiguate',
   },
   noDisambiguationResultsDialogHeader: {
-    'en-us': createHeader('Unable to disambiguate'),
-    'ru-ru': createHeader('Невозможно устранить неуверенность'),
-    ca: createHeader('Unable to disambiguate'),
+    'en-us': header('Unable to disambiguate'),
+    'ru-ru': header('Невозможно устранить неуверенность'),
+    ca: header('Unable to disambiguate'),
   },
   noDisambiguationResultsDialogMessage: {
     'en-us': `
@@ -229,9 +229,9 @@ const wbText = createDictionary({
     ca: 'Data Set Roll Back',
   },
   rollbackDialogHeader: {
-    'en-us': createHeader('Begin Data Set Roll Back?'),
-    'ru-ru': createHeader('Начать откат набора данных?'),
-    ca: createHeader('Begin Data Set Roll Back?'),
+    'en-us': header('Begin Data Set Roll Back?'),
+    'ru-ru': header('Начать откат набора данных?'),
+    ca: header('Begin Data Set Roll Back?'),
   },
   rollbackDialogMessage: {
     'en-us': `
@@ -255,9 +255,9 @@ const wbText = createDictionary({
     ca: 'Data Set Upload',
   },
   startUploadDialogHeader: {
-    'en-us': createHeader('Begin Data Set Upload?'),
-    'ru-ru': createHeader('Начать загрузку набора данных?'),
-    ca: createHeader('Begin Data Set Upload?'),
+    'en-us': header('Begin Data Set Upload?'),
+    'ru-ru': header('Начать загрузку набора данных?'),
+    ca: header('Begin Data Set Upload?'),
   },
   startUploadDialogMessage: {
     'en-us': `
@@ -273,9 +273,9 @@ const wbText = createDictionary({
     ca: 'Delete Data Set',
   },
   deleteDataSetDialogHeader: {
-    'en-us': createHeader('Delete this Data Set?'),
-    'ru-ru': createHeader('Удалить этот набор данных?'),
-    ca: createHeader('Delete this Data Set?'),
+    'en-us': header('Delete this Data Set?'),
+    'ru-ru': header('Удалить этот набор данных?'),
+    ca: header('Delete this Data Set?'),
   },
   deleteDataSetDialogMessage: {
     'en-us': `
@@ -298,9 +298,9 @@ const wbText = createDictionary({
     ca: 'Delete Data Set',
   },
   dataSetDeletedDialogHeader: {
-    'en-us': createHeader('Data Set successfully deleted'),
-    'ru-ru': createHeader('Набор данных успешно удален'),
-    ca: createHeader('Data Set successfully deleted'),
+    'en-us': header('Data Set successfully deleted'),
+    'ru-ru': header('Набор данных успешно удален'),
+    ca: header('Data Set successfully deleted'),
   },
   dataSetDeletedDialogMessage: {
     'en-us': 'Data Set successfully deleted.',
@@ -313,9 +313,9 @@ const wbText = createDictionary({
     ca: 'Revert Changes',
   },
   revertChangesDialogHeader: {
-    'en-us': createHeader('Revert Unsaved Changes?'),
-    'ru-ru': createHeader('Отменить несохраненные изменения?'),
-    ca: createHeader('Revert Unsaved Changes?'),
+    'en-us': header('Revert Unsaved Changes?'),
+    'ru-ru': header('Отменить несохраненные изменения?'),
+    ca: header('Revert Unsaved Changes?'),
   },
   revertChangesDialogMessage: {
     'en-us': `
@@ -386,9 +386,9 @@ const wbText = createDictionary({
     ca: 'Data Set Validation',
   },
   validationNoErrorsDialogHeader: {
-    'en-us': createHeader('Validate Completed with No Errors'),
-    'ru-ru': createHeader('Проверка завершена без ошибок'),
-    ca: createHeader('Validate Completed with No Errors'),
+    'en-us': header('Validate Completed with No Errors'),
+    'ru-ru': header('Проверка завершена без ошибок'),
+    ca: header('Validate Completed with No Errors'),
   },
   validationNoErrorsDialogMessage: {
     'en-us': `
@@ -418,9 +418,9 @@ const wbText = createDictionary({
     ca: 'Data Set Validation',
   },
   validationErrorsDialogHeader: {
-    'en-us': createHeader('Validate Completed with Errors'),
-    'ru-ru': createHeader('Проверка завершена с ошибками'),
-    ca: createHeader('Validate Completed with Errors'),
+    'en-us': header('Validate Completed with Errors'),
+    'ru-ru': header('Проверка завершена с ошибками'),
+    ca: header('Validate Completed with Errors'),
   },
   validationErrorsDialogMessage: {
     'en-us': `
@@ -447,9 +447,9 @@ const wbText = createDictionary({
     ca: 'Data Set Upload',
   },
   uploadNoErrorsDialogHeader: {
-    'en-us': createHeader('Upload Completed with No Errors'),
-    'ru-ru': createHeader('Загрузка завершена без ошибок'),
-    ca: createHeader('Upload Completed with No Errors'),
+    'en-us': header('Upload Completed with No Errors'),
+    'ru-ru': header('Загрузка завершена без ошибок'),
+    ca: header('Upload Completed with No Errors'),
   },
   uploadNoErrorsDialogMessage: {
     'en-us': `
@@ -468,9 +468,9 @@ const wbText = createDictionary({
     ca: 'Data Set Upload',
   },
   uploadErrorsDialogHeader: {
-    'en-us': createHeader('Upload Failed due to Error Cells'),
-    'ru-ru': createHeader('Ошибка загрузки из-за ошибок'),
-    ca: createHeader('Upload Failed due to Error Cells'),
+    'en-us': header('Upload Failed due to Error Cells'),
+    'ru-ru': header('Ошибка загрузки из-за ошибок'),
+    ca: header('Upload Failed due to Error Cells'),
   },
   uploadErrorsDialogMessage: {
     'en-us': `
@@ -501,9 +501,9 @@ const wbText = createDictionary({
     ca: 'Data Set Rollback',
   },
   dataSetRollbackDialogHeader: {
-    'en-us': createHeader('Data Set was rolled back successfully'),
-    'ru-ru': createHeader('Набор данных был успешно откат'),
-    ca: createHeader('Data Set was rolled back successfully'),
+    'en-us': header('Data Set was rolled back successfully'),
+    'ru-ru': header('Набор данных был успешно откат'),
+    ca: header('Data Set was rolled back successfully'),
   },
   dataSetRollbackDialogMessage: {
     'en-us':
@@ -518,9 +518,9 @@ const wbText = createDictionary({
     ca: 'Data Set Validation',
   },
   validationCanceledDialogHeader: {
-    'en-us': createHeader('Validation Canceled'),
-    'ru-ru': createHeader('Проверка отменена'),
-    ca: createHeader('Validation Canceled'),
+    'en-us': header('Validation Canceled'),
+    'ru-ru': header('Проверка отменена'),
+    ca: header('Validation Canceled'),
   },
   validationCanceledDialogMessage: {
     'en-us': 'Data Set Validation cancelled.',
@@ -533,9 +533,9 @@ const wbText = createDictionary({
     ca: 'Data Set Rollback',
   },
   rollbackCanceledDialogHeader: {
-    'en-us': createHeader('Rollback Canceled'),
-    'ru-ru': createHeader('Откат отменен'),
-    ca: createHeader('Rollback Canceled'),
+    'en-us': header('Rollback Canceled'),
+    'ru-ru': header('Откат отменен'),
+    ca: header('Rollback Canceled'),
   },
   rollbackCanceledDialogMessage: {
     'en-us': 'Data Set Rollback cancelled.',
@@ -548,9 +548,9 @@ const wbText = createDictionary({
     ca: 'Data Set Upload',
   },
   uploadCanceledDialogHeader: {
-    'en-us': createHeader('Upload Canceled'),
-    'ru-ru': createHeader('Загрузка отменена'),
-    ca: createHeader('Upload Canceled'),
+    'en-us': header('Upload Canceled'),
+    'ru-ru': header('Загрузка отменена'),
+    ca: header('Upload Canceled'),
   },
   uploadCanceledDialogMessage: {
     'en-us': 'Data Set Upload cancelled.',
@@ -568,9 +568,9 @@ const wbText = createDictionary({
     ca: 'Geocoordinate Format',
   },
   coordinateConverterDialogHeader: {
-    'en-us': createHeader('Choose a preferred Geocoordinate format'),
-    'ru-ru': createHeader('Выберите предпочтительный формат геокоординат'),
-    ca: createHeader('Choose a preferred Geocoordinate format'),
+    'en-us': header('Choose a preferred Geocoordinate format'),
+    'ru-ru': header('Выберите предпочтительный формат геокоординат'),
+    ca: header('Choose a preferred Geocoordinate format'),
   },
   // Misc
   unmappedColumn: {
@@ -932,9 +932,9 @@ const wbText = createDictionary({
     ca: 'Upload Plan Validation',
   },
   validationFailedDialogHeader: {
-    'en-us': createJsxHeader('Validation found missing mappings:'),
-    'ru-ru': createJsxHeader('Проверка обнаружила недостающие сопоставления:'),
-    ca: createJsxHeader('Validation found missing mappings:'),
+    'en-us': jsxHeader('Validation found missing mappings:'),
+    'ru-ru': jsxHeader('Проверка обнаружила недостающие сопоставления:'),
+    ca: jsxHeader('Validation found missing mappings:'),
   },
   validationFailedDialogMessage: {
     'en-us': `
@@ -1039,13 +1039,11 @@ const wbText = createDictionary({
     ca: 'Change Base Table',
   },
   goToBaseTableDialogHeader: {
-    'en-us': createJsxHeader(
-      'Change the Base Table for Mapping Data Set Columns?'
-    ),
-    'ru-ru': createJsxHeader(
+    'en-us': jsxHeader('Change the Base Table for Mapping Data Set Columns?'),
+    'ru-ru': jsxHeader(
       'Изменить базовую таблицу для сопоставления столбцов набора данных?'
     ),
-    ca: createJsxHeader('Change the Base Table for Mapping Data Set Columns?'),
+    ca: jsxHeader('Change the Base Table for Mapping Data Set Columns?'),
   },
   goToBaseTableDialogMessage: {
     'en-us': `
@@ -1123,9 +1121,9 @@ const wbText = createDictionary({
     ca: 'Empty Data Set',
   },
   emptyDataSetDialogHeader: {
-    'en-us': createJsxHeader('Empty Data Set'),
-    'ru-ru': createJsxHeader('Пустой набор данных'),
-    ca: createJsxHeader('Empty Data Set'),
+    'en-us': jsxHeader('Empty Data Set'),
+    'ru-ru': jsxHeader('Пустой набор данных'),
+    ca: jsxHeader('Empty Data Set'),
   },
   emptyDataSetDialogMessage: {
     'en-us': (
@@ -1159,9 +1157,9 @@ const wbText = createDictionary({
     ca: 'AutoMapper',
   },
   reRunAutoMapperDialogHeader: {
-    'en-us': createJsxHeader('Automap to start a new Upload Plan?'),
-    'ru-ru': createJsxHeader('Автоматически сопоставить?'),
-    ca: createJsxHeader('Automap to start a new Upload Plan?'),
+    'en-us': jsxHeader('Automap to start a new Upload Plan?'),
+    'ru-ru': jsxHeader('Автоматически сопоставить?'),
+    ca: jsxHeader('Automap to start a new Upload Plan?'),
   },
   reRunAutoMapperDialogMessage: {
     'en-us': 'This will erase existing data field mappings.',
@@ -1174,9 +1172,9 @@ const wbText = createDictionary({
     ca: 'Nothing to validate',
   },
   nothingToValidateDialogHeader: {
-    'en-us': createJsxHeader('There are no mappings to validate'),
-    'ru-ru': createJsxHeader('Нет сопоставлений для проверки'),
-    ca: createJsxHeader('There are no mappings to validate'),
+    'en-us': jsxHeader('There are no mappings to validate'),
+    'ru-ru': jsxHeader('Нет сопоставлений для проверки'),
+    ca: jsxHeader('There are no mappings to validate'),
   },
   nothingToValidateDialogMessage: {
     'en-us': 'Please map some headers before running the validation.',
@@ -1316,9 +1314,9 @@ const wbText = createDictionary({
     ca: 'Data Set Properties',
   },
   changeDataSetOwnerDialogHeader: {
-    'en-us': createHeader('Change Data Set Owner'),
-    'ru-ru': createHeader('Изменить владельца набора данных'),
-    ca: createHeader('Change Data Set Owner'),
+    'en-us': header('Change Data Set Owner'),
+    'ru-ru': header('Изменить владельца набора данных'),
+    ca: header('Change Data Set Owner'),
   },
   changeDataSetOwnerDialogMessage: {
     'en-us': 'Select New Owner:',
@@ -1331,9 +1329,9 @@ const wbText = createDictionary({
     ca: 'Data Set Properties',
   },
   dataSetOwnerChangedDialogHeader: {
-    'en-us': createHeader('Data Set owner changed'),
-    'ru-ru': createHeader('Владелец набора данных изменен'),
-    ca: createHeader('Data Set owner changed'),
+    'en-us': header('Data Set owner changed'),
+    'ru-ru': header('Владелец набора данных изменен'),
+    ca: header('Data Set owner changed'),
   },
   dataSetOwnerChangedDialogMessage: {
     'en-us': 'Data Set owner changed.',

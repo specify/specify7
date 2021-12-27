@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { createDictionary, createHeader, createJsxHeader } from './utils';
+import { createDictionary, header, jsxHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -28,9 +28,9 @@ const commonText = createDictionary({
     ca: 'Access denied',
   },
   collectionAccessDeniedDialogHeader: {
-    'en-us': createHeader('You do not have access to this collection'),
-    'ru-ru': createHeader('У вас нет доступа к этой коллекции'),
-    ca: createHeader('You do not have access to this collection'),
+    'en-us': header('You do not have access to this collection'),
+    'ru-ru': header('У вас нет доступа к этой коллекции'),
+    ca: header('You do not have access to this collection'),
   },
   collectionAccessDeniedDialogMessage: {
     'en-us': (collectionName: string) =>
@@ -49,9 +49,9 @@ const commonText = createDictionary({
     ca: "No s'ha assignat cap agent",
   },
   noAgentDialogHeader: {
-    'en-us': createHeader('Current user does not have an agent assigned'),
-    'ru-ru': createHeader('Текущему пользователю не назначен агент'),
-    ca: createHeader("L'usuari actual no té cap agent assignat"),
+    'en-us': header('Current user does not have an agent assigned'),
+    'ru-ru': header('Текущему пользователю не назначен агент'),
+    ca: header("L'usuari actual no té cap agent assignat"),
   },
   noAgentDialogMessage: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -409,9 +409,9 @@ const commonText = createDictionary({
     ca: 'Export Feed',
   },
   updateExportFeedDialogHeader: {
-    'en-us': createJsxHeader('Update all export feed items now?'),
-    'ru-ru': createJsxHeader('Обновить все элементы фида экспорта сейчас?'),
-    ca: createJsxHeader('Update all export feed items now?'),
+    'en-us': jsxHeader('Update all export feed items now?'),
+    'ru-ru': jsxHeader('Обновить все элементы фида экспорта сейчас?'),
+    ca: jsxHeader('Update all export feed items now?'),
   },
   updateExportFeedDialogMessage: {
     'en-us': 'Update all export feed items now?',
@@ -424,9 +424,9 @@ const commonText = createDictionary({
     ca: 'Export Feed',
   },
   feedExportStartedDialogHeader: {
-    'en-us': createJsxHeader('Export feed update started'),
-    'ru-ru': createJsxHeader('Начато обновление экспортного фида'),
-    ca: createJsxHeader('Export feed update started'),
+    'en-us': jsxHeader('Export feed update started'),
+    'ru-ru': jsxHeader('Начато обновление экспортного фида'),
+    ca: jsxHeader('Export feed update started'),
   },
   feedExportStartedDialogMessage: {
     'en-us': `
@@ -444,9 +444,9 @@ const commonText = createDictionary({
     ca: 'DwCA',
   },
   dwcaExportStartedDialogHeader: {
-    'en-us': createJsxHeader('DwCA export started'),
-    'ru-ru': createJsxHeader('DwCA экспорт начат'),
-    ca: createJsxHeader('DwCA export started'),
+    'en-us': jsxHeader('DwCA export started'),
+    'ru-ru': jsxHeader('DwCA экспорт начат'),
+    ca: jsxHeader('DwCA export started'),
   },
   dwcaExportStartedDialogMessage: {
     'en-us': `
@@ -474,9 +474,9 @@ const commonText = createDictionary({
     ca: 'Master Key',
   },
   generateMasterKeyDialogHeader: {
-    'en-us': createJsxHeader('Generate Master Key'),
-    'ru-ru': createJsxHeader('Сгенерировать мастер-ключ'),
-    ca: createJsxHeader('Generate Master Key'),
+    'en-us': jsxHeader('Generate Master Key'),
+    'ru-ru': jsxHeader('Сгенерировать мастер-ключ'),
+    ca: jsxHeader('Generate Master Key'),
   },
   userPassword: {
     'en-us': 'User Password:',
@@ -489,9 +489,9 @@ const commonText = createDictionary({
     ca: 'Master Key',
   },
   masterKeyDialogHeader: {
-    'en-us': createJsxHeader('Master key generated'),
-    'ru-ru': createJsxHeader('Мастер-ключ создан'),
-    ca: createJsxHeader('Master key generated'),
+    'en-us': jsxHeader('Master key generated'),
+    'ru-ru': jsxHeader('Мастер-ключ создан'),
+    ca: jsxHeader('Master key generated'),
   },
   masterKeyFieldLabel: {
     'en-us': 'Master Key:',
@@ -539,9 +539,9 @@ const commonText = createDictionary({
     ca: 'Query XML for DwCA definition',
   },
   exportQueryForDwcaDialogHeader: {
-    'en-us': createHeader('Query XML for DwCA definition'),
-    'ru-ru': createHeader('XML Запроса для определения DwCA'),
-    ca: createHeader('Query XML for DwCA definition'),
+    'en-us': header('Query XML for DwCA definition'),
+    'ru-ru': header('XML Запроса для определения DwCA'),
+    ca: header('Query XML for DwCA definition'),
   },
   exportQueryAsReport: {
     'en-us': 'Define report based on query.',
@@ -574,9 +574,9 @@ const commonText = createDictionary({
     ca: 'Labels',
   },
   createLabelDialogHeader: {
-    'en-us': createHeader('Create new label'),
-    'ru-ru': createHeader('Создать новую этикетку'),
-    ca: createHeader('Create new label'),
+    'en-us': header('Create new label'),
+    'ru-ru': header('Создать новую этикетку'),
+    ca: header('Create new label'),
   },
   createReportDialogTitle: {
     'en-us': 'Reports',
@@ -584,9 +584,9 @@ const commonText = createDictionary({
     ca: 'Reports',
   },
   createReportDialogHeader: {
-    'en-us': createHeader('Create new report'),
-    'ru-ru': createHeader('Создать новый отчет'),
-    ca: createHeader('Create new report'),
+    'en-us': header('Create new report'),
+    'ru-ru': header('Создать новый отчет'),
+    ca: header('Create new report'),
   },
   recordSets: {
     'en-us': 'Record Sets',
@@ -614,11 +614,9 @@ const commonText = createDictionary({
     ca: 'Resources',
   },
   resourcesDialogHeader: {
-    'en-us': createJsxHeader('Choose the resource type you wish to edit:'),
-    'ru-ru': createJsxHeader(
-      'Выберите тип ресурса, который хотите отредактировать:'
-    ),
-    ca: createJsxHeader('Choose the resource type you wish to edit:'),
+    'en-us': jsxHeader('Choose the resource type you wish to edit:'),
+    'ru-ru': jsxHeader('Выберите тип ресурса, который хотите отредактировать:'),
+    ca: jsxHeader('Choose the resource type you wish to edit:'),
   },
   repairTree: {
     'en-us': 'Repair Tree',
@@ -687,9 +685,9 @@ const commonText = createDictionary({
     ca: 'Unexpected Error',
   },
   errorBoundaryDialogHeader: {
-    'en-us': createJsxHeader('An unexpected error has occurred'),
-    'ru-ru': createJsxHeader('Произошла неожиданная ошибка'),
-    ca: createJsxHeader('An unexpected error has occurred'),
+    'en-us': jsxHeader('An unexpected error has occurred'),
+    'ru-ru': jsxHeader('Произошла неожиданная ошибка'),
+    ca: jsxHeader('An unexpected error has occurred'),
   },
   errorBoundaryDialogMessage: {
     'en-us': (
@@ -732,13 +730,11 @@ const commonText = createDictionary({
     ca: 'Server Error',
   },
   backEndErrorDialogHeader: {
-    'en-us': createHeader(
+    'en-us': header(
       'An error occurred communicating with the Specify 7 server.'
     ),
-    'ru-ru': createHeader('Произошла ошибка связи с сервером Specify 7.'),
-    ca: createHeader(
-      'An error occurred communicating with the Specify 7 server.'
-    ),
+    'ru-ru': header('Произошла ошибка связи с сервером Specify 7.'),
+    ca: header('An error occurred communicating with the Specify 7 server.'),
   },
   backEndErrorDialogMessage: {
     'en-us': `
@@ -810,9 +806,9 @@ const commonText = createDictionary({
     ca: 'Unsaved changes detected',
   },
   leavePageDialogHeader: {
-    'en-us': createHeader('Are you sure you want to leave this page?'),
-    'ru-ru': createHeader('Вы уверены, что хотите покинуть эту страницу?'),
-    ca: createHeader('Are you sure you want to leave this page?'),
+    'en-us': header('Are you sure you want to leave this page?'),
+    'ru-ru': header('Вы уверены, что хотите покинуть эту страницу?'),
+    ca: header('Are you sure you want to leave this page?'),
   },
   leave: {
     'en-us': 'Leave',
@@ -932,9 +928,9 @@ const commonText = createDictionary({
     ca: 'Version Mismatch',
   },
   versionMismatchDialogHeader: {
-    'en-us': createHeader('Specify version does not match database version'),
-    'ru-ru': createHeader('Specify версия не соответствует версии базы данных'),
-    ca: createHeader('Specify version does not match database version'),
+    'en-us': header('Specify version does not match database version'),
+    'ru-ru': header('Specify версия не соответствует версии базы данных'),
+    ca: header('Specify version does not match database version'),
   },
   versionMismatchDialogMessage: {
     'en-us': (specifySixVersion: string, databaseVersion: string) => `
@@ -959,9 +955,9 @@ const commonText = createDictionary({
     ca: 'Deleted',
   },
   resourceDeletedDialogHeader: {
-    'en-us': createHeader('Item deleted'),
-    'ru-ru': createHeader('Удалено'),
-    ca: createHeader('Item deleted'),
+    'en-us': header('Item deleted'),
+    'ru-ru': header('Удалено'),
+    ca: header('Item deleted'),
   },
   resourceDeletedDialogMessage: {
     'en-us': 'Item was deleted successfully.',
@@ -980,9 +976,9 @@ const commonText = createDictionary({
     ca: 'Access denied',
   },
   sessionTimeOutDialogHeader: {
-    'en-us': createHeader('Insufficient Privileges'),
-    'ru-ru': createHeader('Insufficient Privileges'),
-    ca: createHeader('Insufficient Privileges'),
+    'en-us': header('Insufficient Privileges'),
+    'ru-ru': header('Insufficient Privileges'),
+    ca: header('Insufficient Privileges'),
   },
   sessionTimeOutDialogMessage: {
     'en-us': `
@@ -1179,9 +1175,9 @@ const commonText = createDictionary({
     ca: "Afegeix l'idioma",
   },
   addLanguageDialogHeader: {
-    'en-us': createJsxHeader('Add new language'),
-    'ru-ru': createJsxHeader('Добавить новый язык'),
-    ca: createJsxHeader('Afegeix un nou idioma'),
+    'en-us': jsxHeader('Add new language'),
+    'ru-ru': jsxHeader('Добавить новый язык'),
+    ca: jsxHeader('Afegeix un nou idioma'),
   },
   country: {
     'en-us': 'Country',

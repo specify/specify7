@@ -1,5 +1,6 @@
 import ajax from './ajax';
-import type { DatasetBrief, RA } from './components/wbplanview';
+import type { DatasetBrief } from './components/wbplanview';
+import type { RA } from './types';
 
 const MAX_NAME_LENGTH = 64;
 

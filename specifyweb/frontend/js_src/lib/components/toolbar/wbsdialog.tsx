@@ -11,7 +11,8 @@ import ajax from '../../ajax';
 import { DataSetMeta } from '../../datasetmeta';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
-import navigation from '../../navigation';
+import * as navigation from '../../navigation';
+import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
 import { DateElement } from '../common';
@@ -19,7 +20,6 @@ import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import type { Dataset, DatasetBrief } from '../wbplanview';
-import type { RA } from '../../types';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>('/api/workbench/dataset/', {

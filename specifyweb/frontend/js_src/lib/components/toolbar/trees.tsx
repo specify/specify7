@@ -1,7 +1,7 @@
 import React from 'react';
 
 import commonText from '../../localization/common';
-import navigation from '../../navigation';
+import * as navigation from '../../navigation';
 import type { MenuItem } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';

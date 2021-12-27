@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, createHeader } from './utils';
+import { createDictionary, header } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -17,7 +17,7 @@ const adminText = createDictionary({
   canNotRemoveYourself: {
     'en-us': 'You can not revoke your own admin status',
     'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
-    ca: 'No podeu revocar el vostre estat d\'administrador',
+    ca: "No podeu revocar el vostre estat d'administrador",
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -63,9 +63,9 @@ const adminText = createDictionary({
     ca: 'Load file',
   },
   resourceLoadDialogHeader: {
-    'en-us': createHeader('Load resource file'),
-    'ru-ru': createHeader('Загрузить файл ресурсов'),
-    ca: createHeader('Load resource file'),
+    'en-us': header('Load resource file'),
+    'ru-ru': header('Загрузить файл ресурсов'),
+    ca: header('Load resource file'),
   },
   resourceLoadDialogMessage: {
     'en-us': 'Select the file to be loaded into the editor.',
@@ -103,9 +103,9 @@ const adminText = createDictionary({
     ca: 'Create Resource',
   },
   createResourceDialogHeader: {
-    'en-us': createHeader('Create New Resource File'),
-    'ru-ru': createHeader('Создать новый файл ресурсов'),
-    ca: createHeader('Create New Resource File'),
+    'en-us': header('Create New Resource File'),
+    'ru-ru': header('Создать новый файл ресурсов'),
+    ca: header('Create New Resource File'),
   },
   newResourceName: {
     'en-us': 'New Resource Name:',

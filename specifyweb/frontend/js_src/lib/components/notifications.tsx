@@ -4,8 +4,8 @@ import React from 'react';
 
 import ajax, { formData } from '../ajax';
 import commonText from '../localization/common';
+import type { IR, RA } from '../types';
 import { ModalDialog } from './modaldialog';
-import type { IR, RA } from './wbplanview';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;

@@ -2,9 +2,10 @@ import type Backbone from 'backbone';
 import React from 'react';
 
 import commonText from '../localization/common';
-import navigation from '../navigation';
+import * as navigation from '../navigation';
 import router from '../router';
-import app from '../specifyapp';
+import { setCurrentView } from '../specifyapp';
+import type { RA } from '../types';
 import userInfo from '../userinfo';
 import {
   CollectionSelector,
@@ -14,7 +15,6 @@ import {
 } from './header';
 import Notifications from './notifications';
 import createBackboneView from './reactbackboneextend';
-import type { RA } from './wbplanview';
 
 export type UserTool = {
   readonly task: string;
@@ -93,7 +93,7 @@ function Main({ onReady: handleReady }: Props): JSX.Element | null {
             `task/${task}/(:options)`,
             'startTask',
             (urlParameter: string) => {
-              app.setCurrentView(
+              setCurrentView(
                 view({
                   onClose: (): void => navigation.go('/specify'),
                   urlParameter,

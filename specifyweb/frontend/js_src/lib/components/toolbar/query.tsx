@@ -8,19 +8,19 @@ import ajax from '../../ajax';
 import DeleteButton from '../../deletebutton';
 import type { Schema } from '../../legacytypes';
 import commonText from '../../localization/common';
-import navigation from '../../navigation';
+import * as navigation from '../../navigation';
 import populateform from '../../populateform';
 import SaveButton from '../../savebutton';
 import schema from '../../schema';
-import app from '../../specifyapp';
+import { setCurrentView } from '../../specifyapp';
 import specifyform from '../../specifyform';
+import type { IR, RA } from '../../types';
 import userInfo from '../../userinfo';
 import { DateElement, TableIcon } from '../common';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
-import type { IR, RA } from '../wbplanview';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -373,7 +373,7 @@ const menuItem: MenuItem = {
               filters: { id: query.id },
             });
             queryModel.fetch({ limit: 1 }).then(() => {
-              app.setCurrentView(
+              setCurrentView(
                 new EditQueryDialog({
                   spquery: queryModel.models[0],
                 })

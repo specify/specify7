@@ -10,7 +10,7 @@ import ComboBox from './combobox';
 import UIField from './uifield';
 import QueryCbx from './querycbx';
 import uiplugins from './specifyplugins';
-import uicommands from './specifycommands';
+import * as uicommands from './specifycommands';
 import RecordSelector from './recordselector';
 import * as SubViewButton from './subviewbutton';
 import FormTable from './formtable';

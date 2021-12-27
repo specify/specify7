@@ -5,9 +5,8 @@ import dayjs from './dayjs';
 
 import dateFormatStr from './dateformat';
 import AgentTypeCBX from './agenttypecbx';
->>>>>>> e8165550 (Use ES Modules instead of Common JS import/export)
 
-    function formatDate(value) {
+function formatDate(value) {
         if (value == null) return value;
         var m = dayjs(value);
         return m.isValid() ? m.format(dateFormatStr()) : (value || '');

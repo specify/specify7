@@ -2,13 +2,14 @@ import '../../css/schemaconfig.css';
 
 import React from 'react';
 
-import DataObjectFormatters from '../dataobjformatters';
+import { getAggregators, getFormatters } from '../dataobjformatters';
 import type { Schema } from '../legacytypes';
 import commonText from '../localization/common';
-import navigation from '../navigation';
+import * as navigation from '../navigation';
 import schema from '../schema';
 import { formatAggregators } from '../schemaconfighelper';
-import UiFormatters from '../uiformatters';
+import type { IR, RA } from '../types';
+import * as UiFormatters from '../uiformatters';
 import { fetchingParameters } from '../wbplanviewmodelconfig';
 import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
 import { webLinksDefs } from '../weblinkbutton';
@@ -19,7 +20,6 @@ import type {
   SpLocaleItemStr as SpLocaleItemString,
 } from './schemaconfig';
 import { SchemaConfig } from './schemaconfig';
-import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 
 type ConstructorProps = {
@@ -221,12 +221,8 @@ function SchemaConfigWrapper({
           )?.value() as string,
         })
       ).filter(({ value }) => value)}
-      dataObjFormatters={formatAggregators(
-        DataObjectFormatters.getFormatters() as RA<Element>
-      )}
-      dataObjAggregators={formatAggregators(
-        DataObjectFormatters.getAggregators() as RA<Element>
-      )}
+      dataObjFormatters={formatAggregators(getFormatters() as RA<Element>)}
+      dataObjAggregators={formatAggregators(getAggregators() as RA<Element>)}
       onClose={handleClose}
       onSave={handleSave}
       removeUnloadProtect={removeUnloadProtect}

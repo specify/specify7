@@ -12,18 +12,21 @@ import {
   sortObjectsByKey,
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
+import type { IR, RA } from '../types';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import { DataObjFormatter, UiFormatter } from './schemaconfig';
 import type { ItemType, SpLocaleItem } from './schemaconfig';
+import type {
+  DataObjFormatter as DataObjectFormatter,
+  UiFormatter,
+} from './schemaconfig';
 import { AddLanguage, PickList } from './schemaconfigcomponents';
 import type {
-  WithTableInfo,
   SpLocaleContainer,
-  WithFieldInfo,
   WithFetchedStrings,
+  WithFieldInfo,
+  WithTableInfo,
 } from './schemaconfigwrapper';
-import type { IR, RA } from './wbplanview';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
 
@@ -84,8 +87,8 @@ type StateWithParameters = States & {
     readonly handleClose: () => void;
     readonly webLinks: RA<string>;
     readonly uiFormatters: RA<UiFormatter>;
-    readonly dataObjFormatters: IR<DataObjFormatter>;
-    readonly dataObjAggregators: IR<DataObjFormatter>;
+    readonly dataObjFormatters: IR<DataObjectFormatter>;
+    readonly dataObjAggregators: IR<DataObjectFormatter>;
   };
 };
 
@@ -569,7 +572,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                           type: 'ChangeFieldFormatAction',
                           format: key as ItemType,
                           value: values
-                            ? (Object.values(values)[0][0] as string) ?? null
+                            ? Object.values(values)[0][0]! ?? null
                             : null,
                         })
                       }

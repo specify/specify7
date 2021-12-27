@@ -7,7 +7,7 @@ import Q from 'q';
 import PickListCBX from './picklistcbx';
 import ReadOnlyPickListCBX from './readonlypicklistcbx';
 import getPickListByName from './getpicklistbyname';
-import mixins from './picklistmixins';
+import * as mixins from './picklistmixins';
 import AgentTypeCBX from './agenttypecbx';
 import UserTypeCBX from './usertypecbx';
 import PickListTypeCBX from './picklisttypecbx';

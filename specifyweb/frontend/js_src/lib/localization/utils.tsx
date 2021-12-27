@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import type { IR, RR, RA } from '../types';
+import type { IR, RA, RR } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 
 export const languages = ['en-us', 'ru-ru', 'ca'] as const;
@@ -19,15 +19,15 @@ export const LANGUAGE: Language =
     : undefined) ?? DEFAULT_LANGUAGE;
 
 type Line = string | JSX.Element;
-// Wrap this in a Partial<> to allow skipping languages in the dictionary
 export type Value =
-  | (RR<Language, Line>
-  | RR<Language, (...args: RA<never>) => Line>);
-type GetValueType<VALUE extends Value> = VALUE extends (
-  ...args: RA<never>
-) => Line
-  ? ReturnType<VALUE>[Language]
-  : VALUE[Language];
+  | RR<Language, Line>
+  | RR<Language, (...args: RA<never>) => Line>;
+type GetValueType<VALUE extends Value> = VALUE extends RR<
+  Language,
+  infer ValueType
+>
+  ? ValueType
+  : never;
 export type Dictionary = IR<Value>;
 
 function assertExhaustive(key: string): never {
@@ -72,16 +72,18 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
     key: KEY
   ): GetValueType<typeof dictionary[typeof key]> =>
     key in dictionary
-      ? dictionary[key][LANGUAGE] ?? assertExhaustive(key)
+      ? (dictionary[key][LANGUAGE] as GetValueType<
+          typeof dictionary[typeof key]
+        >) ?? assertExhaustive(key)
       : assertExhaustive(key);
   resolver.dictionary = dictionary;
   return resolver;
 }
 
-export const createHeader = (header: string): string =>
+export const header = (header: string): string =>
   header === '' ? '' : `<h2>${header}</h2>`;
 
-export const createJsxHeader = (header: string): string | JSX.Element =>
+export const jsxHeader = (header: string): string | JSX.Element =>
   header === '' ? '' : <h2>{header}</h2>;
 
 export const whitespaceSensitive = (string: string): string =>

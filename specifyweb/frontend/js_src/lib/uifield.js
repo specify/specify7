@@ -5,17 +5,10 @@ import Q from 'q';
 import Backbone from './backbone';
 
 
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import fieldformat from './fieldformat';
-import { default: uiparse, addValidationAttributes, resolveParser} from './uiparse';
-import UIFieldInput from './uiinputfield';
-import saveblockers from './saveblockers';
-import ToolTipMgr from './tooltipmgr';
-import dateFormatStr from './dateformat';
+import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
 import {handleDatePaste} from './partialdateui';
-import formsText from './localization/forms';
-
-var objformat = dataobjformatters.format;
 
 export default Backbone.View.extend({
         __name__: "UIField",
@@ -100,9 +93,9 @@ export default Backbone.View.extend({
 
             if (resource) {
                 const fillItIn = ()=>{
-                    const format = field.isRelationship ? objformat : _.bind(fieldformat, null, field);
+                    const objFormat = field.isRelationship ? format : _.bind(fieldformat, null, field);
 
-                    resource.rget(fieldName).pipe(format).done((value)=>{
+                    resource.rget(fieldName).pipe(objFormat).done((value)=>{
                         this.el.value = value ?? '';
                     });
                 };

@@ -12,6 +12,7 @@ import '../../css/customselectelement.css';
 import React from 'react';
 
 import wbText from '../localization/workbench';
+import type { IR, R, RA } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 import {
@@ -20,7 +21,6 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from './common';
-import type { IR, R, RA } from '../types';
 
 type Properties =
   /*
@@ -174,14 +174,12 @@ type CustomSelectElementPropsBase = {
   readonly autoMapperSuggestions?: JSX.Element;
 };
 
-export type CustomSelectElementPropsClosed =
-  CustomSelectElementPropsBase & {
+export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
   readonly isOpen: false;
   readonly handleOpen?: () => void;
-}:
+};
 
-export type CustomSelectElementPropsOpenBase =
-  CustomSelectElementPropsBase & {
+export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly isOpen: true;
   readonly handleChange?: (payload: {
     readonly close: boolean;
@@ -192,10 +190,9 @@ export type CustomSelectElementPropsOpenBase =
     readonly isDoubleClick: boolean;
   }) => void;
   readonly handleClose?: () => void;
-}:
+};
 
-type CustomSelectElementPropsOpen =
-  CustomSelectElementPropsOpenBase & {
+type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
   readonly customSelectOptionGroups: CustomSelectElementOptionGroups;
   readonly autoMapperSuggestions?: JSX.Element;
 };
@@ -691,19 +688,31 @@ export function CustomSelectElement({
               ) {
                 close = true;
                 newIndex = selectedValueIndex;
-              } else if (event.key === 'Enter' || event.key === 'Escape')
-                handleClose?.();
-              else if (event.key === 'ArrowUp')
-                newIndex =
-                  selectedValueIndex > 0
-                    ? selectedValueIndex - 1
-                    : inlineOptions.length - 1;
-              else if (event.key === 'ArrowDown')
-                newIndex =
-                  selectedValueIndex !== -1 &&
-                  selectedValueIndex < inlineOptions.length - 1
-                    ? selectedValueIndex + 1
-                    : 0;
+              } else
+                switch (event.key) {
+                  case 'Enter':
+                  case 'Escape': {
+                    handleClose?.();
+                    break;
+                  }
+                  case 'ArrowUp': {
+                    newIndex =
+                      selectedValueIndex > 0
+                        ? selectedValueIndex - 1
+                        : inlineOptions.length - 1;
+                    break;
+                  }
+                  case 'ArrowDown':
+                    {
+                      newIndex =
+                        selectedValueIndex !== -1 &&
+                        selectedValueIndex < inlineOptions.length - 1
+                          ? selectedValueIndex + 1
+                          : 0;
+                      // No default
+                    }
+                    break;
+                }
 
               if (typeof newIndex === 'number') {
                 const newValue = inlineOptions[newIndex]?.optionName ?? '0';
@@ -734,7 +743,7 @@ export function CustomSelectElement({
 
 /**
  * Picklist that renders on top of currently opened picklist and displays
- * top 3 automapper suggestions (if available)
+ * top 3 autoMapper suggestions (if available)
  */
 export function SuggestionBox({
   selectOptionsData,

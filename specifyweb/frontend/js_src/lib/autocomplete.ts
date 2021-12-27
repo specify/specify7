@@ -1,6 +1,6 @@
 import _ from 'underscore';
 
-import type { IR, RA } from './components/wbplanview';
+import type { IR, RA } from './types';
 
 let dataListCount = 0;
 const debounceRate = 300;

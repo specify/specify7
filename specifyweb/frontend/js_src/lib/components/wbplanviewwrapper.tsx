@@ -8,12 +8,12 @@ import React from 'react';
 
 import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
+import type { IR } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import { dataModelPromise } from '../wbplanviewmodelfetcher';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type {
-  IR,
   PublicWbPlanViewProps,
   WbPlanViewWrapperProps,
 } from './wbplanview';

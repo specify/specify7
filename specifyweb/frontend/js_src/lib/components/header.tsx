@@ -2,12 +2,12 @@ import React from 'react';
 
 import ajax from '../ajax';
 import commonText from '../localization/common';
-import navigation from '../navigation';
-import querystring from '../querystring';
+import * as navigation from '../navigation';
+import * as querystring from '../querystring';
+import type { RA } from '../types';
 import userInfo from '../userinfo';
 import type { MenuItem, UserTool } from './main';
 import { ModalDialog } from './modaldialog';
-import type { RA } from './wbplanview';
 
 export function HeaderItems({
   menuItems,

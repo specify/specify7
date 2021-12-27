@@ -9,7 +9,6 @@ import '../../css/theme.css';
 import React from 'react';
 
 import { useId } from './common';
-import type { IR } from '../types';
 import type { WbPlanViewStates } from './wbplanviewstate';
 
 export function Layout(props: {

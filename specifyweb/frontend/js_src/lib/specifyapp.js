@@ -16,7 +16,6 @@ import router from './router';
 import systemInfo from './systeminfo';
 import { reports } from './reports';
 import commonText from './localization/common';
-import app from './specifyApp';
 
     var currentView;
     var versionMismatchWarned = false;
@@ -25,7 +24,7 @@ import app from './specifyApp';
     // setup basic routes.
     router
         .route('*whatever', 'notFound', function() {
-            app.setCurrentView(new NotFoundView());
+            setCurrentView(new NotFoundView());
         })
         .route('test_error/', 'testError', function() {
             $.get('/api/test_error/');

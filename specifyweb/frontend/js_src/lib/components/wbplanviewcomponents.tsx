@@ -7,6 +7,7 @@
 import React from 'react';
 
 import wbText from '../localization/workbench';
+import type { IR, R, RA } from '../types';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import { useId } from './common';
 import type {
@@ -16,12 +17,7 @@ import type {
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { IR, R, RA } from '../types';
-import type {
-  AutoMapperSuggestion,
-  MappingType,
-  SelectElementPosition,
-} from './wbplanviewmapper';
+import type { AutoMapperSuggestion, MappingType } from './wbplanviewmapper';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -61,7 +57,7 @@ export type MappingElementProps = {
         suggestion: string
       ) => void;
     })
-  | Omit<CustomSelectElementPropsClosed, 'onFocusAutomapper' | 'fieldNames'>
+  | Omit<CustomSelectElementPropsClosed, 'onFocusAutoMapper' | 'fieldNames'>
 );
 
 export function ListOfBaseTables({
@@ -308,7 +304,7 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
       autoMapperSuggestions={
         typeof props.autoMapperSuggestions !== 'undefined' &&
         props.autoMapperSuggestions.length > 0 &&
-        typeof props.handleAutomapperSuggestionSelection !== 'undefined' ? (
+        typeof props.handleAutoMapperSuggestionSelection !== 'undefined' ? (
           <SuggestionBox
             onSelect={(selection): void =>
               props.handleAutoMapperSuggestionSelection?.(selection)

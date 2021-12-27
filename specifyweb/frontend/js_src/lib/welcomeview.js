@@ -10,7 +10,6 @@ import Backbone from './backbone';
 import * as app from './specifyapp';
 import schema from './schema';
 import remotePrefs from './remoteprefs';
-import dataobjectformatters from './dataobjformatters';
 import systemInfo from './systeminfo';
 import aboutspecify from './templates/aboutspecify.html';
 import welcomeText from './localization/welcome';
@@ -240,7 +239,7 @@ const WelcomeView = Backbone.View.extend({
       </p>
     `).appendTo(this.$el);
 
-    _.defer(doTaxonTiles ? makeTreeMap : drawWelcomeScreen);
+    _.defer(DO_TAXON_TILES ? makeTreeMap : drawWelcomeScreen);
 
     return this;
   },

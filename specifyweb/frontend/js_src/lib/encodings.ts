@@ -1,4 +1,4 @@
-import type { RA } from './components/wbplanview';
+import type { RA } from './types';
 
 // From https://encoding.spec.whatwg.org/
 const table: RA<{

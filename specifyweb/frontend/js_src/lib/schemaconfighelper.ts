@@ -1,18 +1,18 @@
-import {
-  DataObjFormatter,
-  NewSpLocaleItemStr,
-} from './components/schemaconfig';
-import type { ItemType } from './components/schemaconfig';
 import type {
+  ItemType,
   SpLocaleItem,
   SpLocaleItemStr as SpLocaleItemString,
+} from './components/schemaconfig';
+import type {
+  DataObjFormatter as DataObjectFormatter,
+  NewSpLocaleItemStr as NewSpLocaleItemString,
 } from './components/schemaconfig';
 import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './components/schemaconfigwrapper';
-import type { IR, RA } from './components/wbplanview';
 import commonText from './localization/common';
+import type { IR, RA } from './types';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -33,7 +33,7 @@ const fetchString = async (
   url: string,
   language: string,
   country: string | null
-): Promise<SpLocaleItemString | NewSpLocaleItemStr> =>
+): Promise<SpLocaleItemString | NewSpLocaleItemString> =>
   fetch(url)
     .then<{ readonly objects: RA<SpLocaleItemString> }>(async (response) =>
       response.json()
@@ -87,7 +87,7 @@ export function prepareNewString({
   parent,
   id: _id,
   ...object
-}: NewSpLocaleItemStr): NewSpLocaleItemStr {
+}: NewSpLocaleItemString): NewSpLocaleItemString {
   if (typeof parent === 'undefined') throw new Error('String has no parent');
   const [parentName, parentId] = parent.split('?')[1].split('=');
   return {
@@ -98,7 +98,7 @@ export function prepareNewString({
 
 export const formatAggregators = (
   aggregators: RA<Element>
-): IR<DataObjFormatter> =>
+): IR<DataObjectFormatter> =>
   Object.fromEntries(
     aggregators.map((formatter) => [
       formatter.getAttribute('name') ?? '',
@@ -110,7 +110,7 @@ export const formatAggregators = (
   );
 
 export const filterFormatters = (
-  formatters: IR<DataObjFormatter>,
+  formatters: IR<DataObjectFormatter>,
   tableName: string
 ): IR<string> =>
   Object.fromEntries(
@@ -135,13 +135,19 @@ export function isFormatterAvailable(
   item: WithFieldInfo,
   formatter: ItemType
 ): boolean {
-  if (formatter === 'none' || formatter === 'pickList') return true;
-  else if (formatter === 'webLink')
-    return (
-      !item.dataModel.isRelationship && webLinkTypes.has(item.dataModel.type)
-    );
-  else if (formatter === 'formatted') return !item.dataModel.isRelationship;
-  else return false;
+  switch (formatter) {
+    case 'none':
+    case 'pickList':
+      return true;
+    case 'webLink':
+      return (
+        !item.dataModel.isRelationship && webLinkTypes.has(item.dataModel.type)
+      );
+    case 'formatted':
+      return !item.dataModel.isRelationship;
+    default:
+      return false;
+  }
 }
 
 const relationshipTypes: IR<string> = {

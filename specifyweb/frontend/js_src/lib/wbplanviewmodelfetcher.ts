@@ -8,13 +8,12 @@
 import * as cache from './cache';
 import type { IR, R, RA } from './types';
 import type { RelationshipType } from './components/wbplanviewmapper';
-import { getTreeDef } from './domain';
 import type {
+  Domain as DomainType,
   Schema as SchemaType,
   SchemaModelTableField,
   SchemaModelTableRelationship,
 } from './legacytypes';
-import type { GetTreeDef } from './legacytypes';
 import schema from './schema';
 import { camelToHuman, capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -29,6 +28,7 @@ import {
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
 import systemInfo from './systeminfo';
+import { getTreeDef } from './domain';
 
 export type DataModelFieldWritable =
   | DataModelNonRelationshipWritable
@@ -105,7 +105,7 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 /* Fetches ranks for a particular table */
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
-    (getTreeDef as GetTreeDef)(tableName).done((treeDefinition) =>
+    (getTreeDef as DomainType['getTreeDef'])(tableName).done((treeDefinition) =>
       treeDefinition.rget('treedefitems').done((treeDefItems) =>
         treeDefItems.fetch({ limit: 0 }).done(() =>
           resolve([

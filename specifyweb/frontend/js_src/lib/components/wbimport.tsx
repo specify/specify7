@@ -7,7 +7,6 @@
 import '../../css/theme.css';
 import '../../css/wbimport.css';
 
-import $ from 'jquery';
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
@@ -15,12 +14,12 @@ import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 import ajax from '../ajax';
 import encodings from '../encodings';
 import wbText from '../localization/workbench';
-import navigation from '../navigation';
+import * as navigation from '../navigation';
+import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import type { IR } from '../../types';
 
 const PREVIEW_SIZE = 100;
 

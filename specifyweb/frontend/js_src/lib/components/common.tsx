@@ -2,17 +2,18 @@
  * Generic React Components
  *
  * @module
- * */
+ *
+ */
 
 import '../../css/theme.css';
 
 import React from 'react';
 
-import commonText from '../localization/common';
 import { getIcon } from '../icons';
+import commonText from '../localization/common';
+import type { R } from '../types';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
-import { R } from './wbplanview';
 
 const MAX_HUE = 360;
 
@@ -41,7 +42,7 @@ export function TableIcon({
   readonly tableName: string;
   readonly tableLabel?: string | false;
 }): JSX.Element {
-  const tableIconSource = .getIcon(tableName);
+  const tableIconSource = getIcon(tableName);
   const resolvedTableLabel =
     tableLabel === false
       ? ''

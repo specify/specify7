@@ -4,7 +4,7 @@ import Q from 'q';
 
 import schema from './schema';
 import api from './specifyapi';
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 
     // User defined picklist.
     //
@@ -36,9 +36,8 @@ import dataobjformatters from './dataobjformatters';
     }
 
     function formatItem(info, item) {
-        var objformat = dataobjformatters.format;
 
-        return Q(objformat(item, info.pickList.get('formatter')))
+        return Q(format(item, info.pickList.get('formatter')))
             .then(function(title) { return {value: item.url(), title: title}; });
     }
 

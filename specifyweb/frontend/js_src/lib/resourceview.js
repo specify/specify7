@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import specifyform from './specifyform';
-import dataobjformatters from './dataobjformatters';
+import {format} from './dataobjformatters';
 import viewheader from './templates/viewheader.html';
 import SaveButton from './savebutton';
 import DeleteButton from './deletebutton';
@@ -133,7 +133,7 @@ const ResourceView = Backbone.View.extend({
         self.setFormTitle(title);
         self.trigger('changetitle', self, title);
 
-        dataobjformatters.format(self.model).done(function(str) {
+        format(self.model).done(function(str) {
             if (_(str).isString()) {
                 $('.view-title', self.header).attr('title', str);
                 self.trigger('changetitle', self, title + ': ' + str);

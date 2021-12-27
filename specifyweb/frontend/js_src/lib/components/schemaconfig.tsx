@@ -5,6 +5,7 @@ import type { Schema } from '../legacytypes';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
+import type { IR, RA } from '../types';
 import { useId } from './common';
 import { stateReducer } from './schemaconfigstate';
 import type {
@@ -13,7 +14,6 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './schemaconfigwrapper';
-import type { IR, RA } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';
 
 export type SpLocaleItem = CommonTableFields & {
@@ -21,8 +21,10 @@ export type SpLocaleItem = CommonTableFields & {
   readonly format: null;
   readonly ishidden: boolean;
   readonly isrequired: boolean;
-  // readonly issystem: boolean;
-  // readonly isuiformatter: boolean;
+  /*
+   * Readonly issystem: boolean;
+   * readonly isuiformatter: boolean;
+   */
   readonly name: string;
   readonly picklistname: string | null;
   readonly type: null;
@@ -35,7 +37,7 @@ export type SpLocaleItem = CommonTableFields & {
   readonly names: string;
 };
 
-type SpLocaleItemStrBase = {
+type SpLocaleItemStringBase = {
   readonly country: string | null;
   readonly language: string;
   readonly text: string;
@@ -43,15 +45,15 @@ type SpLocaleItemStrBase = {
   readonly contaninername?: string;
   readonly itemdesc?: string;
   readonly itemname?: string;
-  // readonly variant: null;
+  // Readonly variant: null;
 };
 
 export type SpLocaleItemStr = CommonTableFields &
-  SpLocaleItemStrBase & {
+  SpLocaleItemStringBase & {
     readonly id: number;
   };
 
-export type NewSpLocaleItemStr = SpLocaleItemStrBase & {
+export type NewSpLocaleItemStr = SpLocaleItemStringBase & {
   readonly id?: number;
   readonly parent?: string;
 };

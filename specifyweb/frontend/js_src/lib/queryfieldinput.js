@@ -1,17 +1,16 @@
 "use strict";
 
-import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
 
 import fieldformat from './fieldformat';
-import {default: uiparse, addValidationAttributes, resolveParser} from './uiparse';
+import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
 import SaveBlockers from './saveblockers';
 import queryText from './localization/query';
 import commonText from './localization/common';
 
-    var FieldInputUI = Backbone.View.extend({
+var FieldInputUI = Backbone.View.extend({
         __name__: "FieldInputUI",
         opName: 'NA',
         format: false,

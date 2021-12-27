@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, createHeader } from './utils';
+import { createDictionary, header } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -62,16 +62,15 @@ const localityText = createDictionary({
     ca: 'Geography Required',
   },
   geographyRequiredDialogHeader: {
-    'en-us': createHeader('Geography must be mapped'),
-    'ru-ru': createHeader('География должна быть связана'),
-    ca: createHeader('Geography must be mapped'),
+    'en-us': header('Geography must be mapped'),
+    'ru-ru': header('География должна быть связана'),
+    ca: header('Geography must be mapped'),
   },
   geographyRequiredDialogMessage: {
     'en-us':
       'The GeoLocate plugin requires the geography field to be populated.',
     'ru-ru': 'Плагин GeoLocate требует, чтобы поле географии было заполнено.',
-    ca:
-      'The GeoLocate plugin requires the geography field to be populated.',
+    ca: 'The GeoLocate plugin requires the geography field to be populated.',
   },
   // LatLongUI
   coordinates: {
@@ -149,7 +148,7 @@ const localityText = createDictionary({
     'en-us': 'N/A',
     'ru-ru': 'Н/П',
     ca: 'N/A',
-  }
+  },
 });
 
 export default localityText;
