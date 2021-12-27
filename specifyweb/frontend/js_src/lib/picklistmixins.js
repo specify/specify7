@@ -1,6 +1,5 @@
 "use strict";
 
-import _ from 'underscore';
 import Q from 'q';
 
 import schema from './schema';

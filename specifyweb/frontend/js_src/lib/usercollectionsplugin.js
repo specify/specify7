@@ -57,7 +57,7 @@ const SetCollectionsView = Backbone.View.extend({
 export default UIPlugin.extend({
     __name__: "UserCollectionsPlugin",
     events: {
-        'click': 'clicked'
+        'click': 'click'
     },
     initialize: function(options) {
         this.user = options.model;
@@ -78,7 +78,7 @@ export default UIPlugin.extend({
         });
         return this;
     },
-    clicked: function(event) {
+    click: function() {
         $.get(`/context/user_collection_access/${this.user.id}/`).done(permitted => {
             new SetCollectionsView({
                 user: this.user,

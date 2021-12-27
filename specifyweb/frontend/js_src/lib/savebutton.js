@@ -12,7 +12,7 @@ let formId = 0;
 
 export default Backbone.View.extend({
         __name__: "SaveButton",
-        initialize: function(options) {
+        initialize: function() {
             this.blockingResources = {};
             this.saveBlocked = false;
             this.buttonsDisabled = true;
@@ -20,7 +20,7 @@ export default Backbone.View.extend({
 
             if (this.model.isNew()) this.setButtonsDisabled(false, false);
 
-            this.model.on('saverequired changing', function(resource) {
+            this.model.on('saverequired changing', function(_iresource) {
                 this.setButtonsDisabled(false);
             }, this);
 

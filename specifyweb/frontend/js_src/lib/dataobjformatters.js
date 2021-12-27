@@ -6,7 +6,7 @@ import _ from 'underscore';
 import whenAll from './whenall';
 import fieldformat from './fieldformat';
 import assert from './assert';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
     var formatters;
     initialContext.load('app.resource?name=DataObjFormatters', data => formatters = data);

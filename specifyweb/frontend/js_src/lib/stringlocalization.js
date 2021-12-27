@@ -2,7 +2,7 @@
 
 import _ from 'underscore';
 
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import { getProperty } from './props';
 
 

@@ -3,7 +3,7 @@ import '../css/main.css';
 
 import $ from 'jquery';
 
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import startApp from './startapp';
 import csrftoken from './csrftoken';
 

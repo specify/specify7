@@ -35,7 +35,7 @@ export default Backbone.View.extend({
         events: {
             change: 'changed'
         },
-        initialize: function(options) {
+        initialize: function() {
             this.model.on('change:parent', this.render, this);
             this.lastFetch = null;
             this.field = this.model.specifyModel.getField(this.$el.attr('name'));

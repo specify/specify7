@@ -98,7 +98,7 @@ import commonText from './localization/common';
             this.model.isNew() && this.$el.attr('title', formsText('setAgentsDisabledButtonDescription')).prop('disabled', true);
             return this;
         },
-        click: function(event) {
+        click: function() {
             var collections = new schema.models.Collection.LazyCollection();
             collections.fetch({limit: 0}).done(this.gotCollections.bind(this, collections));
         },

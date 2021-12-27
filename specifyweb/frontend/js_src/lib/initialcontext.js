@@ -8,14 +8,14 @@ import Q from 'q';
     var locked = false;
 
 
-    export function register(name, promise) {
+    function register(name, promise) {
         if (locked) throw new Error('initial context is locked');
         promises.push(
             promise.tap(() => console.log('initial context:', name))
         );
     }
 
-    export function lock() {
+    function lock() {
         if (locked) throw new Error('initial context already locked');
         locked = true;
         Q.all(promises).done(function() {
@@ -24,20 +24,27 @@ import Q from 'q';
         });
     }
 
-    export function promise() {
+    function promise() {
         return final.promise;
     }
 
-    function loadHandler(type, file, callback) {
+    function load(type, file, callback) {
         return register(
             file,
             Q($.get('/' + type + '/' + file))
                 .then(callback));
     }
 
-    export const load = loadHandler.bind(null, 'context');
-    export const loadProperties = loadHandler.bind(null, 'properties');
-    export const loadResource = loadHandler.bind(null, 'static/config');
+    const initialContext = {
+        register,
+        lock,
+        promise,
+        load: load.bind(null, 'context'),
+        loadProperties: load.bind(null, 'properties'),
+        loadResource: load.bind(null, 'static/config'),
+    };
+
+    export default initialContext;
 
 
 

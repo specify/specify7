@@ -11,7 +11,7 @@ import router from './router';
 import QueryFieldSpec from './queryfieldspec';
 import whenAll from './whenall';
 import * as s from './stringlocalization';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import * as app from './specifyapp';
 import * as querystring from './querystring';
 import commonText from './localization/common';

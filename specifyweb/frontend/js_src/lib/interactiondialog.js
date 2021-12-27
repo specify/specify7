@@ -76,11 +76,11 @@ export default RecordSetsDialog.extend({
 
         //eventhandlers and stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-        toggleRs: function(evt, duration) {
+        toggleRs: function(_evt, duration) {
             this.toggleIt('table.rs-dlg-tbl', 'div.action-entry', '.i-action-rs span', '.i-action-enter span', duration);
         },
 
-        toggleCats: function(evt, duration) {
+        toggleCats: function(_evt, duration) {
             this.toggleIt('div.action-entry', 'table.rs-dlg-tbl', '.i-action-enter span', '.i-action-rs span', duration);
         },
 
@@ -254,15 +254,13 @@ export default RecordSetsDialog.extend({
                 });
         },
 
-        processEntry: function(evt){
+        processEntry: function(){
             this.$('div.i-action-entry-snag').remove();
 
             var numsCtrl = this.$('textarea.i-action-entry');
             var numEntry = numsCtrl.val();
             var formatter = this.getSrchFld().getUIFormatter();
             var nums = this.parseEntry(numEntry, formatter);
-
-            var model = this.options.close ? 'loan' : 'collectionobject';
 
             var validEntries = _.filter(nums, function(item) {
                 return formatter ? formatter.parse(item) != null : true;

@@ -64,7 +64,6 @@
     "@types/react-dom": "^17.0.0",
     "@types/underscore": "^1.10.24",
     "babel-loader": "~8.2.2",
-    "babel-plugin-replace-ts-export-assignment": "~0.0.2",
     "css-loader": "~0.28.11",
     "eslint": "^7.32.0",
     "prettier": "^2.5.0",

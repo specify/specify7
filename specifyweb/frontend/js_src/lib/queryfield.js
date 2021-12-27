@@ -361,7 +361,7 @@ export default Backbone.View.extend({
 
         // External event handlers.
 
-        valueChanged: function(inputUI, value) {
+        valueChanged: function(_inputUI, value) {
             const nonNullValue = value ?? '';
             this.value = nonNullValue;
             this.spqueryfield.set('startvalue', nonNullValue);

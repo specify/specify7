@@ -11,7 +11,7 @@
 // schema, but it's here for now.
 
 import _ from 'underscore';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
 const schemaBase = {
 

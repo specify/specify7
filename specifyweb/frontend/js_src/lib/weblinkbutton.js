@@ -7,7 +7,7 @@ import api from './specifyapi';
 import UIPlugin from './uiplugin';
 import { getIcon } from './icons';
 import UIField from './uifield';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
     export const webLinksDefs = {};
     initialContext.load('app.resource?name=WebLinks', function(xml) {

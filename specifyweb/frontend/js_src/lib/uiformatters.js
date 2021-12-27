@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import { escapeRegExp } from './escaperegexp';
 
     var uiformatters;

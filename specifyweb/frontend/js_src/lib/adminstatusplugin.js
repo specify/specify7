@@ -44,7 +44,7 @@ export default UIPlugin.extend({
                     .attr('title',adminText('canNotRemoveYourself'))
                     .prop('disabled',true);
         },
-        clicked: function(event) {
+        clicked: function() {
             var _this = this;
             $.post('/api/set_admin_status/' + this.user.id + '/', {admin_status: !this.isAdmin}).done(function(resp) {
                 _this.isAdmin = resp == 'true';

@@ -43,7 +43,7 @@ import commonText from './localization/common';
 
     var Header = Controls.extend({
         __name__: "RecordSelectorHeader",
-        initialize: function(options) {
+        initialize: function() {
             Controls.prototype.initialize.apply(this, arguments);
             this.recordSelector.collection.on('sync add remove', this.updateCount, this);
         },

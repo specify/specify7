@@ -500,7 +500,7 @@ var QueryParamsDialog = Backbone.View.extend({
     }
 });
 
-function runReport(reportResources, recordSetId, fieldUIs) {
+function runReport(reportResources, recordSetId, _fieldUIs) {
     dialog && dialog.dialog('close');
     var query = reportResources.query;
     if (_.isFunction(query.set)) {

@@ -46,7 +46,7 @@ export function removeUnloadProtect(remKey) {
     unloadBlockers = unloadBlockers.filter(([key]) => key !== remKey);
     changeOnBeforeUnloadHandler( unloadBlockers.length === 0 ? undefined :
         () => {
-            const [key, message] = unloadBlockers[unloadBlockers.length - 1];
+            const [_key, message] = unloadBlockers[unloadBlockers.length - 1];
             return message;
         }
     );
@@ -121,7 +121,7 @@ Backbone.history.checkUrl = function(e) {
 // invoked accordingly. The unloadProtect variable will be cleared if
 // proceeding.
 function defaultConfirmNavigationHandler(proceed, cancel){
-    const [key, message] = unloadBlockers[unloadBlockers.length - 1];
+    const [_key, message] = unloadBlockers[unloadBlockers.length - 1];
 
     $(`<div role="alert">
         ${commonText('leavePageDialogHeader')}
@@ -147,7 +147,7 @@ function defaultConfirmNavigationHandler(proceed, cancel){
 }
 
 function confirmNavigation(proceed, cancel){
-    const [key, message, confirmNavigationHandler] = unloadBlockers[unloadBlockers.length - 1];
+    const [_key, _message, confirmNavigationHandler] = unloadBlockers[unloadBlockers.length - 1];
     confirmNavigationHandler(proceed, cancel);
 }
 

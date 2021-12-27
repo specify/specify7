@@ -16,6 +16,7 @@ import router from './router';
 import systemInfo from './systeminfo';
 import { reports } from './reports';
 import commonText from './localization/common';
+import app from './specifyApp';
 
     var currentView;
     var versionMismatchWarned = false;
@@ -149,7 +150,6 @@ export function showResource(resource, recordSet, pushUrl) {
         });
 
         view.on('saved', function(resource, options) {
-            var todoNext;
             if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
                 console.log('generating label or invoice');
                 reports( {
@@ -184,7 +184,7 @@ export function showResource(resource, recordSet, pushUrl) {
                     ]
                 });
             }
-        }).on('changetitle', function(resource, title) {
+        }).on('changetitle', function(_resource, title) {
             setTitle(title);
         });
     pushUrl && navigation.push(resource.viewUrl());

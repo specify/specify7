@@ -5,8 +5,8 @@ import _ from 'underscore';
 
 import { getIcon } from './icons';
 import schema from './schema';
-import * as initialContext from './initialcontext';
 import commonText from './localization/common';
+import initialContext from './initialcontext';
 
     var settings;
     initialContext.load('attachment_settings.json', data => settings = data);
@@ -22,9 +22,8 @@ import commonText from './localization/common';
         var parts = mimetype.split('/');
         var type = parts[0], subtype = parts[1];
 
-        if (_("audio video image text".split()).contains(type)) {
+        if (_("audio video image text".split(' ')).contains(type))
             return [type,getIcon(type)];
-        }
 
         if (type === 'application') {
             iconName = {
@@ -86,14 +85,13 @@ import commonText from './localization/common';
             var origFilename = attachment.get('origfilename').replace(/^.*[\\\/]/, '');
 
             getToken(attachmentLocation).done(function(token) {
-                var src = attachments.originalURL(attachmentLocation, token, attachment.get('origfilename'));
+                var src = originalURL(attachmentLocation, token, attachment.get('origfilename'));
                 window.open(src);
             });
         }
         export function uploadFile(file, progressCB) {
             var formData = new FormData();
             var attachmentLocation;
-            var attachment;
 
             return $.get('/attachment_gw/get_upload_params/', {filename: file.name})
                 .pipe(function(uploadParams) {

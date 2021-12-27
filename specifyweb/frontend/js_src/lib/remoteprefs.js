@@ -1,6 +1,6 @@
 "use strict";
 
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 
     var prefs = {};
 

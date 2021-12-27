@@ -8,7 +8,7 @@ import specifyform from './specifyform';
 import api from './specifyapi';
 import dataobjformatters from './dataobjformatters';
 import whenAll from './whenall';
-import * as initialContext from './initialcontext';
+import initialContext from './initialcontext';
 import commonText from './localization/common';
 
     var dialogdefs;

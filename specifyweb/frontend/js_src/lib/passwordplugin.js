@@ -59,7 +59,7 @@ export default UIPlugin.extend({
                 ).prop('disabled', true);
             return this;
         },
-        click: function(event) {
+        click: function() {
             new Dialog({model: this.model}).render();
         }
     }, { pluginsProvided: ['PasswordUI'] });
