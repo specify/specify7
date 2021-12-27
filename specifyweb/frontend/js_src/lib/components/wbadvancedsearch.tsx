@@ -11,12 +11,6 @@ import wbText from '../localization/workbench';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-type Props = {
-  readonly initialSearchPreferences: SearchPreferences;
-  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
-  readonly onClose: () => void;
-};
-
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
@@ -102,7 +96,11 @@ function WbAdvancedSearch({
   onClose: handleClose,
   onChange: handleChange,
   initialSearchPreferences,
-}: Props): JSX.Element {
+}: {
+  readonly initialSearchPreferences: SearchPreferences;
+  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+  readonly onClose: () => void;
+}): JSX.Element {
   const [state, setState] = React.useState<SearchPreferences>(
     initialSearchPreferences
   );
@@ -183,8 +181,7 @@ function WbAdvancedSearch({
   );
 }
 
-export default createBackboneView<Props>({
+export default createBackboneView({
   moduleName: 'WbAdvancedSearch',
-  className: 'wb-advanced-search',
   component: WbAdvancedSearch,
 });

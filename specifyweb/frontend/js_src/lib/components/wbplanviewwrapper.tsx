@@ -70,8 +70,8 @@ const removeUnloadProtect = (self: IR<unknown>): void =>
  * Backbone View wrapper for the entrypoint react component
  */
 export default createBackboneView<
-  PublicWbPlanViewProps,
-  WbPlanViewWrapperProps
+  WbPlanViewWrapperProps,
+  PublicWbPlanViewProps
 >({
   moduleName: 'WbPlanView',
   title: (self) => self.options.dataset.name,

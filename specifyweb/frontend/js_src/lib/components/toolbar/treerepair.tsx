@@ -16,10 +16,6 @@ const treesForAll = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 
-type Props = {
-  readonly onClose: () => void;
-};
-
 export function TreeSelectDialog({
   onClose: handleClose,
   onClick: handleClick,
@@ -100,7 +96,11 @@ const handleClick = async (tree: string): Promise<void> =>
     method: 'POST',
   }).then(() => undefined);
 
-function RepairTree({ onClose: handleClose }: Props): JSX.Element {
+function RepairTree({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   React.useEffect(() => {
     const urlSearchParameters = new URLSearchParams(window.location.search);
@@ -121,9 +121,8 @@ function RepairTree({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'RepairTree',
-  className: 'repair-tree',
   component: RepairTree,
 });
 

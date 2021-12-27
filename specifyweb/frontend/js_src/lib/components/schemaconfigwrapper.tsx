@@ -234,7 +234,7 @@ const setUnloadProtect = (self: unknown): void =>
 const removeUnloadProtect = (self: unknown): void =>
   navigation.removeUnloadProtect(self);
 
-export default createBackboneView<ConstructorProps, Props>({
+export default createBackboneView<Props, ConstructorProps>({
   moduleName: 'SchemaConfig',
   tagName: 'section',
   title: commonText('schemaConfig'),

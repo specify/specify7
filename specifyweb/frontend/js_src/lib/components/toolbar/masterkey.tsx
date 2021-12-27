@@ -7,11 +7,11 @@ import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
-type Props = {
+function MasterKey({
+  onClose: handleClose,
+}: {
   readonly onClose: () => void;
-};
-
-function MasterKey({ onClose: handleClose }: Props): JSX.Element {
+}): JSX.Element {
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
@@ -117,9 +117,8 @@ function MasterKey({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const MasterKeyView = createBackboneView<Props>({
+const MasterKeyView = createBackboneView({
   moduleName: 'MasterKeyView',
-  className: 'master-key',
   title: commonText('generateMasterKey'),
   component: MasterKey,
 });

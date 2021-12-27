@@ -6,11 +6,11 @@ import type { MenuItem } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';
 
-type Props = {
+function RepairTree({
+  onClose: handleClose,
+}: {
   readonly onClose: () => void;
-};
-
-function RepairTree({ onClose: handleClose }: Props): JSX.Element {
+}): JSX.Element {
   return (
     <TreeSelectDialog
       onClose={handleClose}
@@ -23,9 +23,8 @@ function RepairTree({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'RepairTree',
-  className: 'repair-tree',
   component: RepairTree,
 });
 

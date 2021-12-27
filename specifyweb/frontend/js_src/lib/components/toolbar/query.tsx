@@ -221,15 +221,6 @@ type States = ShowQueryListState | CreateQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
-type Props = {
-  readonly onClose: () => void;
-  readonly getQueryCreateUrl?: (tableName: string) => string;
-  readonly getQuerySelectUrl?: (query: Query) => string;
-  readonly onEdit?: (query: Query) => void;
-  readonly spQueryFilter?: IR<unknown>;
-  readonly buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
-};
-
 function QueryToolbarItem({
   onClose: handleClose,
   getQueryCreateUrl,
@@ -237,7 +228,14 @@ function QueryToolbarItem({
   onEdit: handleEdit,
   spQueryFilter,
   buttons,
-}: Props): JSX.Element {
+}: {
+  readonly onClose: () => void;
+  readonly getQueryCreateUrl?: (tableName: string) => string;
+  readonly getQuerySelectUrl?: (query: Query) => string;
+  readonly onEdit?: (query: Query) => void;
+  readonly spQueryFilter?: IR<unknown>;
+  readonly buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
+}): JSX.Element {
   const [tablesToShow] = useCachedState({
     bucketName: 'common',
     cacheName: 'listOfQueryTables',
@@ -349,9 +347,8 @@ function QueryToolbarItem({
   else throw new Error('Invalid ToolbarQuery State type');
 }
 
-export const QueryToolbarView = createBackboneView<Props>({
+export const QueryToolbarView = createBackboneView({
   moduleName: 'QueryToolbarItem',
-  className: 'query-toolbar-item',
   component: QueryToolbarItem,
 });
 

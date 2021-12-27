@@ -13,7 +13,7 @@ export type ComponentProps = Props & {
   readonly guid: string;
 };
 
-const CollectionObjectBadges = createBackboneView<Props, ComponentProps>({
+const CollectionObjectBadges = createBackboneView<ComponentProps, Props>({
   moduleName: 'Lifemapper',
   className: 'lifemapper-info',
   silentErrors: true,
@@ -24,7 +24,7 @@ const CollectionObjectBadges = createBackboneView<Props, ComponentProps>({
   }),
 });
 
-const TaxonBadges = createBackboneView<Props>({
+const TaxonBadges = createBackboneView({
   moduleName: 'Lifemapper',
   className: 'lifemapper-info',
   silentErrors: true,

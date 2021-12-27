@@ -10,11 +10,11 @@ import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
-type Props = {
+function Users({
+  onClose: handleClose,
+}: {
   readonly onClose: () => void;
-};
-
-function Users({ onClose: handleClose }: Props): JSX.Element {
+}): JSX.Element {
   const [users, setUsers] = React.useState<IR<string> | undefined>(undefined);
 
   React.useEffect(() => {
@@ -80,9 +80,8 @@ function Users({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'UsersView',
-  className: 'users-view',
   component: Users,
 });
 

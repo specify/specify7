@@ -6,11 +6,11 @@ import type { UserTool } from '../main';
 import { closeDialog, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
-type Props = {
+function AppResourceDialog({
+  onClose: handleClose,
+}: {
   readonly onClose: () => void;
-};
-
-function AppResourceDialog({ onClose: handleClose }: Props): JSX.Element {
+}): JSX.Element {
   return (
     <ModalDialog
       properties={{
@@ -38,9 +38,8 @@ function AppResourceDialog({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'AppResourceDialog',
-  className: 'app-resource-dialog',
   component: AppResourceDialog,
 });
 

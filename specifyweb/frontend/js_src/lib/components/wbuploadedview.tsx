@@ -15,12 +15,6 @@ import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
 import type { IR } from '../types';
 
-type Props = {
-  readonly recordCounts: IR<number>;
-  readonly onClose: () => void;
-  readonly isUploaded: boolean;
-};
-
 function TableResults({
   tableName,
   recordCount,
@@ -42,7 +36,11 @@ function WbUploadedView({
   recordCounts,
   onClose: handleClose,
   isUploaded,
-}: Props): JSX.Element {
+}: {
+  readonly recordCounts: IR<number>;
+  readonly onClose: () => void;
+  readonly isUploaded: boolean;
+}): JSX.Element {
   return (
     <>
       <h2>
@@ -71,7 +69,7 @@ function WbUploadedView({
   );
 }
 
-export default createBackboneView<Props>({
+export default createBackboneView({
   moduleName: 'WBUploadedView',
   className: 'wb-uploaded-view',
   component: WbUploadedView,

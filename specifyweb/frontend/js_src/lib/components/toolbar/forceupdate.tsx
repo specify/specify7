@@ -7,11 +7,11 @@ import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
-type Props = {
+function ForceUpdateFeed({
+  onClose: handleClose,
+}: {
   readonly onClose: () => void;
-};
-
-function ForceUpdateFeed({ onClose: handleClose }: Props): JSX.Element {
+}): JSX.Element {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isActivated, setIsActivated] = React.useState<boolean>(false);
 
@@ -58,9 +58,8 @@ function ForceUpdateFeed({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'ForceUpdateFeed',
-  className: 'force-update-feed',
   component: ForceUpdateFeed,
 });
 

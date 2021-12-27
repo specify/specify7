@@ -8,13 +8,11 @@ import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import ajax from '../../ajax';
 
-type Props = {
-  readonly onClose: () => void;
-};
-
 function ChangeLanguage({
   onClose: handleClose,
-}: Readonly<Props>): JSX.Element {
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
   const [languages, setLanguages] = React.useState<
     | undefined
     | IR<{
@@ -73,9 +71,8 @@ function ChangeLanguage({
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'ChangeLanguage',
-  className: 'change-language',
   component: ChangeLanguage,
 });
 

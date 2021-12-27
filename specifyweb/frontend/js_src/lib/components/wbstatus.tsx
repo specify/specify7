@@ -47,7 +47,13 @@ const reducer = generateReducer<States, Actions>({
   }),
 });
 
-function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
+function WbStatus({
+  dataset,
+  onFinished: handleFinished,
+}: {
+  readonly dataset: Dataset;
+  readonly onFinished: (wasAborted: boolean) => void;
+}): JSX.Element {
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
 
@@ -190,13 +196,7 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   );
 }
 
-type Props = {
-  readonly dataset: Dataset;
-  readonly onFinished: (wasAborted: boolean) => void;
-};
-
-export default createBackboneView<Props>({
+export default createBackboneView({
   moduleName: 'WbStatus',
-  className: 'wb-status',
   component: WbStatus,
 });

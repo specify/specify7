@@ -24,8 +24,8 @@ export type Constructable<TYPE, PROPS extends IR<unknown> = IR<never>> = new (
 ) => TYPE;
 
 const createBackboneView = <
-  CONSTRUCTOR_PROPS extends IR<unknown>,
-  COMPONENT_PROPS extends IR<unknown> = CONSTRUCTOR_PROPS
+  COMPONENT_PROPS extends IR<unknown>,
+  CONSTRUCTOR_PROPS extends IR<unknown> = COMPONENT_PROPS
 >({
   moduleName,
   title,
@@ -40,7 +40,7 @@ const createBackboneView = <
   readonly title?:
     | string
     | ((self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>) => string);
-  readonly className: string;
+  readonly className?: string;
   readonly tagName?: string;
   readonly remove?: (
     self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>

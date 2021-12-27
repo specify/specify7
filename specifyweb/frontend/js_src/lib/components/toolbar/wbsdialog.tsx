@@ -223,7 +223,11 @@ export function WbsDialog({
   onClose: handleClose,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
-}: Props & { readonly onDataSetSelect?: (id: number) => void }) {
+}: {
+  readonly showTemplates: boolean;
+  readonly onClose: () => void;
+  readonly onDataSetSelect?: (id: number) => void;
+}) {
   const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(
     undefined
   );
@@ -248,14 +252,8 @@ export function WbsDialog({
   );
 }
 
-type Props = {
-  readonly showTemplates: boolean;
-  readonly onClose: () => void;
-};
-
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'WbsDialog',
-  className: 'wbs-dialog',
   component: WbsDialog,
 });
 

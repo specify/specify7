@@ -39,11 +39,11 @@ const startExport = async (
     }),
   }).then(() => undefined);
 
-type Props = {
+function MakeDwca({
+  onClose: handleClose,
+}: {
   readonly onClose: () => void;
-};
-
-function MakeDwca({ onClose: handleClose }: Props): JSX.Element {
+}): JSX.Element {
   const id = useId('make-dwca');
 
   const [definition, setDefinition] = React.useState<string>('');
@@ -150,9 +150,8 @@ function MakeDwca({ onClose: handleClose }: Props): JSX.Element {
   );
 }
 
-const View = createBackboneView<Props>({
+const View = createBackboneView({
   moduleName: 'makeDwca',
-  className: 'make-dwca',
   component: MakeDwca,
 });
 

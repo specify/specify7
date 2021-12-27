@@ -62,11 +62,11 @@ const userToolsPromise: Promise<RA<{ readonly default: UserTool }>> =
     import('./toolbar/forceupdate'),
   ]);
 
-type Props = {
+function Main({
+  onReady: handleReady,
+}: {
   readonly onReady: () => void;
-};
-
-function Main({ onReady: handleReady }: Props): JSX.Element | null {
+}): JSX.Element | null {
   const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
     undefined
   );
@@ -155,8 +155,7 @@ function Main({ onReady: handleReady }: Props): JSX.Element | null {
   );
 }
 
-export const MainView = createBackboneView<Props>({
+export const MainView = createBackboneView({
   moduleName: 'MainView',
-  className: '',
   component: Main,
 });
