@@ -1,14 +1,14 @@
 'use strict';
 
-const $ = require('jquery');
+import $ from 'jquery';
 
-const LocalityRecordDataExtractor = require('./localityrecorddataextractor');
-const Leaflet = require('./leaflet');
-const UIPlugin = require('./uiplugin.js');
-const localityText = require('./localization/locality').default;
-const commonText = require('./localization/common').default;
+import { getLocalityDataFromLocalityResource } from './localityrecorddataextractor';
+import { showLeafletMap, formatLocalityData } from './leaflet';
+import UIPlugin from './uiplugin';
+import localityText from './localization/locality';
+import commonText from './localization/common';
 
-module.exports = UIPlugin.extend(
+export default UIPlugin.extend(
   {
     __name__: 'GoogleMapsPlugin',
     events: {
@@ -51,16 +51,16 @@ module.exports = UIPlugin.extend(
       let fullLocalityData = undefined;
       const dialog = document.createElement('div');
 
-      LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
+      getLocalityDataFromLocalityResource(
         this.model,
         true
       ).then((localityData) =>
-        Leaflet.showLeafletMap({
+        showLeafletMap({
           localityPoints: [localityData],
           leafletMapContainer: dialog,
           markerClickCallback: (_, { target: marker }) =>
             (typeof fullLocalityData === 'undefined'
-              ? LocalityRecordDataExtractor.getLocalityDataFromLocalityResource(
+              ? getLocalityDataFromLocalityResource(
                   this.model
                 )
               : Promise.resolve(fullLocalityData)
@@ -69,7 +69,7 @@ module.exports = UIPlugin.extend(
               marker
                 .getPopup()
                 .setContent(
-                  Leaflet.formatLocalityData(localityData, undefined, true)
+                  formatLocalityData(localityData, undefined, true)
                 );
             }),
         })

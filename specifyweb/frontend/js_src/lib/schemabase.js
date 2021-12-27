@@ -10,8 +10,8 @@
 // belongs in a separate module because it's not really related to the
 // schema, but it's here for now.
 
-const _ = require('underscore');
-const initialContext = require('./initialcontext.js');
+import _ from 'underscore';
+import * as initialContext from './initialcontext';
 
 const schemaBase = {
 
@@ -59,4 +59,4 @@ initialContext.load('domain.json', data => {
     schemaBase.catalogNumFormatName = data.catalogNumFormatName;
 });
 
-module.exports = schemaBase;
+export default schemaBase;

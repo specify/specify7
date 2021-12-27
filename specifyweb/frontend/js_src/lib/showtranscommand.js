@@ -1,13 +1,13 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var UICmd = require('./uicommand.js');
-var schema = require('./schema.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import UICmd from './uicommand';
+import schema from './schema';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
 var title =  "Transactions";
 
@@ -85,7 +85,7 @@ var TransListDialog = Backbone.View.extend({
 
 });
 
-module.exports =  UICmd.extend({
+export default UICmd.extend({
     __name__: "ShowTransCommand",
     events: {
         'click': 'click'

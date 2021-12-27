@@ -1,16 +1,14 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
 
 
-var api         = require('./specifyapi.js');
-var UIPlugin    = require('./uiplugin.js');
-var attachments = require('./attachments.js');
+import UIPlugin from './uiplugin';
+import * as attachments from './attachments';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "AttachmentsPlugin",
         events: {
             'change :file': 'fileSelected',

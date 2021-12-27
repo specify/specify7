@@ -1,16 +1,15 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var schema           = require('./schema.js');
-var api              = require('./specifyapi.js');
-var RecordSetsDialog = require('./recordsetsdialog.js');
-var PrepSelectDialog = require('./prepselectdialog.js');
-var navigation       = require('./navigation.js');
-var s                = require('./stringlocalization.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import api from './specifyapi';
+import RecordSetsDialog from './recordsetsdialog';
+import PrepSelectDialog from './prepselectdialog';
+import * as navigation from './navigation';
+import * as s from './stringlocalization';
+import formsText from './localization/forms';
 
     var dialog;
     function makeDialog(el, options) {
@@ -22,7 +21,7 @@ const commonText = require('./localization/common').default;
         }, options));
     }
 
-module.exports = RecordSetsDialog.extend({
+export default RecordSetsDialog.extend({
         __name__: "InteractionDialog",
         className: "interactiondialog recordsetsdialog",
         openIcon: "ui-icon ui-icon-radio-off",

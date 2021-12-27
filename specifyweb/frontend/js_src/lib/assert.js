@@ -1,4 +1,4 @@
-module.exports = function(value, message) {
+export default function(value, message) {
         if (!value) {
             throw new Error(message);
         }

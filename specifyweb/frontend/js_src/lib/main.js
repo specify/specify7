@@ -1,11 +1,11 @@
 "use strict";
-require('../css/main.css');
+import '../css/main.css';
 
-const $ = require('jquery');
+import $ from 'jquery';
 
-const initialContext = require('./initialcontext.js');
-const startApp = require('./startapp.js');
-const csrftoken = require('./csrftoken.js');
+import * as initialContext from './initialcontext';
+import startApp from './startapp';
+import csrftoken from './csrftoken';
 
 // Stop bckspc from navigating back.
 // Based on:
@@ -47,5 +47,6 @@ $.ajaxSetup({
     }
 });
 
-initialContext.lock().promise().done(startApp);
+initialContext.lock();
+initialContext.promise().done(startApp);
 

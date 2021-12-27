@@ -1,14 +1,13 @@
 "use strict";
 
-const $         = require('jquery');
-const _         = require('underscore');
-const Immutable = require('immutable');
+import _ from 'underscore';
+import Immutable from 'immutable';
 
-const icons          = require('./icons.js');
-const schema         = require('./schemabase.js');
-const ResourceBase   = require('./resourceapi.js');
-const collectionapi  = require('./collectionapi.js');
-const initialContext = require('./initialcontext.js');
+import { getIcon } from './icons';
+import schema from './schemabase';
+import ResourceBase from './resourceapi';
+import collectionapi from './collectionapi';
+import * as initialContext from './initialcontext';
 
 
 // The schema config / localization information is loaded dynamically.
@@ -100,7 +99,7 @@ _.extend(schema.Model.prototype, {
     },
 
     getIcon() {
-        return icons.getIcon(this.name.toLowerCase());
+        return getIcon(this.name.toLowerCase());
     },
 
     // Perhaps should be renamed to getScopingRelationship.
@@ -134,5 +133,5 @@ _.extend(schema.Model.prototype, {
     }
 });
 
-module.exports = schema;
+export default schema;
 

@@ -6,7 +6,7 @@
  */
 
 import type { IR, RA } from './types';
-import { MappingPath } from './components/wbplanviewmapper';
+import type { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
 import {
@@ -32,7 +32,7 @@ export const getField = (
 export function formatCoordinate(coordinate: string): number {
   if (coordinate === '' || coordinate === '0') return 0;
 
-  const parsedCoordinate = latlongutils.parse(coordinate).toDegs() as {
+  const parsedCoordinate = latlongutils(coordinate).toDegs() as {
     _components: [number];
     _sign: 1 | -1;
   };

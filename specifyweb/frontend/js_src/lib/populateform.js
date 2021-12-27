@@ -1,25 +1,25 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var localizeForm         = require('./localizeform.js');
-var specifyform          = require('./specifyform.js');
-var ComboBox             = require('./combobox.js');
-var UIField              = require('./uifield.js');
-var QueryCbx             = require('./querycbx.js');
-var uiplugins            = require('./specifyplugins.js');
-var uicommands           = require('./specifycommands.js');
-var RecordSelector       = require('./recordselector.js');
-var SubViewButton        = require('./subviewbutton.js');
-var FormTable            = require('./formtable.js');
-var IActionItemFormTable = require('./formtableinteractionitem.js');
-var SubView              = require('./subview.js');
-var CheckBox             = require('./checkbox.js');
-var SpinnerUI            = require('./spinnerui').default;
-var cookies              = require('./cookies.js');
-var userInfo             = require('./userinfo').default;
+import localizeForm from './localizeform';
+import specifyform from './specifyform';
+import ComboBox from './combobox';
+import UIField from './uifield';
+import QueryCbx from './querycbx';
+import uiplugins from './specifyplugins';
+import uicommands from './specifycommands';
+import RecordSelector from './recordselector';
+import * as SubViewButton from './subviewbutton';
+import FormTable from './formtable';
+import IActionItemFormTable from './formtableinteractionitem';
+import SubView from './subview';
+import CheckBox from './checkbox';
+import SpinnerUI from './spinnerui';
+import { readCookie } from './cookies';
+import userInfo from './userinfo';
 
     var MultiView = Backbone.View.extend({
         __name__: "MultiView",
@@ -94,10 +94,10 @@ var userInfo             = require('./userinfo').default;
     var populateReportOnSaver = function (resource, control) {
         var chookie =  userInfo.id + '.sp-print-on-save.' + resource.specifyModel.name + '.' + control.attr('name');
         control.attr('check-cookie', chookie);
-        control.prop('checked', cookies.readCookie(chookie) === 'true' ? true : false); 
+        control.prop('checked', readCookie(chookie) === 'true' ? true : false);
     };
 
-    var populateForm = function(form, resource) {
+    export default function populateForm(form, resource) {
         localizeForm(form);
         _.each(form.find('.specify-field'), function(node) {
             populateField(resource, $(node));
@@ -114,5 +114,4 @@ var userInfo             = require('./userinfo').default;
         return form;
     };
 
-module.exports = populateForm;
 

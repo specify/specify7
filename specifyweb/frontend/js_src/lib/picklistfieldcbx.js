@@ -1,12 +1,12 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema = require('./schema.js');
+import schema from './schema';
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "PickListFieldCBX",
         events: {
             change: 'set'

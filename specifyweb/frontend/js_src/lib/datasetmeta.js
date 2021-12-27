@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import uniquifyName from './wbuniquifyname';
+import { uniquifyDataSetName } from './wbuniquifyname';
 import Backbone from './backbone';
 import app from './specifyapp';
 import {format} from './dataobjformatters';
@@ -170,7 +170,7 @@ export const DataSetMeta = Backbone.View.extend({
     )
       callback();
     else {
-      uniquifyName(newName, this.dataset.id).done((uniqueName) => {
+      uniquifyDataSetName(newName, this.dataset.id).done((uniqueName) => {
         $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
           type: 'PUT',
           data: JSON.stringify({ name: uniqueName, remarks: newRemarks }),

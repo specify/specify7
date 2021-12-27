@@ -1,18 +1,16 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
-var deparam = require('jquery-deparam');
+import $ from 'jquery';
+import _ from 'underscore';
+import jqueryDeparam from 'jquery-deparam';
 
-module.exports = {
-    param: function(url, params) {
+    export function param(url, params) {
         var split = url.split('?');
-        var currentParams = split[1] == null ? {} : deparam(split[1]);
+        var currentParams = split[1] == null ? {} : jqueryDeparam(split[1]);
         return [split[0], $.param(_.extend(currentParams, params))].join('?');
-    },
-    deparam: function(url) {
+    }
+    export function deparam(url) {
         url == null && (url = window.location.href);
         var qs = url.split('?')[1];
-        return qs == null ? {} : deparam(qs);
+        return qs == null ? {} : jqueryDeparam(qs);
     }
-};

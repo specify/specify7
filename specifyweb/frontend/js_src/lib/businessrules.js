@@ -1,14 +1,14 @@
 "use strict";
 
-var $                 = require('jquery');
-var _                 = require('underscore');
-var Q                 = require('q');
-var api               = require('./specifyapi.js');
-var SaveBlockers      = require('./saveblockers.js');
-var treeBusinessRules = require('./treebusinessrules.js');
-var rules             = require('./businessruledefs.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
+import api from './specifyapi';
+import saveblockers from './saveblockers';
+import treeBusinessRules from './treebusinessrules';
+import rules from './businessruledefs';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
 
     var enabled = true;
 
@@ -286,12 +286,10 @@ const formsText = require('./localization/forms').default;
     };
 
 
-module.exports = {
-        enable: function(e) {
-            return enabled = e;
-        },
-        areEnabled: function() {
-            return enabled;
-        }
-    };
+export function enable(e) {
+    return enabled = e;
+}
+export function areEnabled() {
+    return enabled;
+}
 

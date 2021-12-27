@@ -1,13 +1,12 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var icons          = require('./icons.js');
-var schema         = require('./schema.js');
-var assert         = require('./assert.js');
-var initialContext = require('./initialcontext.js');
-const commonText = require('./localization/common').default;
+import { getIcon } from './icons';
+import schema from './schema';
+import * as initialContext from './initialcontext';
+import commonText from './localization/common';
 
     var settings;
     initialContext.load('attachment_settings.json', data => settings = data);
@@ -17,14 +16,14 @@ const commonText = require('./localization/common').default;
     function iconForMimeType(mimetype) {
         var iconName;
 
-        if (mimetype === 'text/plain') return ['text',icons.getIcon('text')];
-        if (mimetype === 'text/html') return ['html',icons.getIcon('html')];
+        if (mimetype === 'text/plain') return ['text',getIcon('text')];
+        if (mimetype === 'text/html') return ['html',getIcon('html')];
 
         var parts = mimetype.split('/');
         var type = parts[0], subtype = parts[1];
 
         if (_("audio video image text".split()).contains(type)) {
-            return [type,icons.getIcon(type)];
+            return [type,getIcon(type)];
         }
 
         if (type === 'application') {
@@ -38,7 +37,7 @@ const commonText = require('./localization/common').default;
             if (iconName) return [iconName,icons.getIcon(iconName)];
         }
 
-        return [commonText('unknown'), icons.getIcon('unknown')];
+        return [commonText('unknown'), getIcon('unknown')];
     }
 
     function getToken(filename) {
@@ -47,10 +46,9 @@ const commonText = require('./localization/common').default;
                     : $.when(null);
     }
 
-    var attachments = {
-        systemAvailable: function() { return !_.isEmpty(settings); },
+        export function systemAvailable() { return !_.isEmpty(settings); }
 
-        getThumbnail: function(attachment, scale) {
+        export function getThumbnail(attachment, scale) {
             scale || (scale = 256);
             var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";
 
@@ -73,8 +71,8 @@ const commonText = require('./localization/common').default;
 
                 return $('<img>', {src: src, style: style});
             });
-        },
-        originalURL: function(attachmentLocation, token, downLoadName) {
+        }
+        export function originalURL(attachmentLocation, token, downLoadName) {
             return settings.read + "?" + $.param({
                 coll: settings.collection,
                 type: "O",
@@ -82,8 +80,8 @@ const commonText = require('./localization/common').default;
                 downloadname: downLoadName,
                 token: token
             });
-        },
-        openOriginal: function(attachment) {
+        }
+        export function openOriginal(attachment) {
             var attachmentLocation = attachment.get('attachmentlocation');
             var origFilename = attachment.get('origfilename').replace(/^.*[\\\/]/, '');
 
@@ -91,8 +89,8 @@ const commonText = require('./localization/common').default;
                 var src = attachments.originalURL(attachmentLocation, token, attachment.get('origfilename'));
                 window.open(src);
             });
-        },
-        uploadFile: function(file, progressCB) {
+        }
+        export function uploadFile(file, progressCB) {
             var formData = new FormData();
             var attachmentLocation;
             var attachment;
@@ -127,7 +125,3 @@ const commonText = require('./localization/common').default;
                     });
                 });
         }
-    };
-
-module.exports = attachments;
-

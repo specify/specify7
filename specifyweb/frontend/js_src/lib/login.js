@@ -1,5 +1,6 @@
 "use strict";
-require ('../css/base.css');
-require('../css/theme.css');
-require ('../css/login.css');
+
+import '../css/base.css';
+import '../css/theme.css';
+import '../css/login.css';
 

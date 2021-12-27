@@ -1,15 +1,15 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var UIPlugin = require('./uiplugin.js');
-var schema   = require('./schema.js');
-var QueryCbx = require('./querycbx.js');
-var whenall  = require('./whenall.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import UIPlugin from './uiplugin';
+import schema from './schema';
+import QueryCbx from './querycbx';
+import whenall from './whenall';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
     var AgentForDiv = Backbone.View.extend({
         __name__: "AgentForDivisionSelector",
@@ -88,7 +88,7 @@ const commonText = require('./localization/common').default;
         }
     });
 
-module.exports = UIPlugin.extend({
+    export default UIPlugin.extend({
         __name__: "UserAgentsUIPlugin",
         events: {
             'click': 'click'

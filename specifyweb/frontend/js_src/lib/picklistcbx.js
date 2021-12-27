@@ -1,26 +1,25 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
-var Q = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
 
-var Base = require('./basepicklist.js');
-var schema = require('./schema.js');
-const {addValidationAttributes, resolveParser} = require('./uiparse.ts');
-const autocomplete = require('./autocomplete').default;
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import Base from './basepicklist';
+import schema from './schema';
+import formsText from './localization/forms';
+import commonText from './localization/common';
+import autocomplete from './autocomplete';
+import {addValidationAttributes, resolveParser} from './uiparse';
 
 let index = 0;
 
-module.exports = Base.extend({
-  __name__: 'PickListCBXView',
+export default Base.extend({
+  __name__: "PickListCBXView",
   events: {
-    'change': 'handleChange',
+      'change': 'handleChange',
   },
   render: function() {
     const wrapper = $('<span class="combobox-wrapper">');
-
     this.input = $(`<input
       type="text"
       id="${this.el.id}"

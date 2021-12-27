@@ -1,18 +1,17 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
 
-var UIPlugin = require('./uiplugin.js');
-var schema   = require('./schema.js');
-var QueryCbx = require('./querycbx.js');
+import UIPlugin from './uiplugin';
+import schema from './schema';
+import QueryCbx from './querycbx';
 
 
     var hostTaxonTypesearch = $.parseXML(
         '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>'
     );
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "HostTaxonPlugin",
         render: function() {
             var input = $('<input type="text" name="hosttaxon">');

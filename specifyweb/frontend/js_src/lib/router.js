@@ -1,9 +1,9 @@
 "use strict";
 
-var Backbone = require('./backbone.js');
+import Backbone from './backbone';
 
 var Router = Backbone.Router.extend({
     __name__: "SpecifyRouter"
 });
 
-module.exports = new Router();
+export default new Router();

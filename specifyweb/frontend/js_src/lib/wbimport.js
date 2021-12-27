@@ -1,12 +1,12 @@
-require('../css/wbimport.css');
+import '../css/wbimport.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import WbImport from './components/wbimport';
 
-const app = require('./specifyapp.js');
-const Backbone = require('./backbone.js');
-const wbText = require('./localization/workbench').default;
+import * as app from './specifyapp';
+import Backbone from './backbone';
+import wbText from './localization/workbench';
 
 const WBImportView = Backbone.View.extend({
   __name__: 'WBImportView',

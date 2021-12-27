@@ -1,12 +1,12 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
-const queryText = require('./localization/query').default;
+import $ from 'jquery';
+import _ from 'underscore';
+import queryText from './localization/query';
 
-var Base = require('./basepicklist.js');
+import Base from './basepicklist';
 
-module.exports =  Base.extend({
+export default Base.extend({
         __name__: "ReadOnlyPickListView",
         events: {
             change: 'setValueIntoModel'

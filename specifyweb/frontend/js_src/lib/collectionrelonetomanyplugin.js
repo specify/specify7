@@ -1,21 +1,21 @@
 "use strict";
 
-const $ = require('jquery');
-const _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-const dataobjformatters = require('./dataobjformatters.js');
-const navigation        = require('./navigation.js');
-const UIPlugin          = require('./uiplugin.js');
-const whenAll           = require('./whenall.js');
-const schema            = require('./schema.js');
-const userInfo          = require('./userinfo').default;
-const QueryCbxSearch    = require('./querycbxsearch.js');
+import dataobjformatters from './dataobjformatters';
+import * as navigation from './navigation';
+import UIPlugin from './uiplugin';
+import whenAll from './whenall';
+import schema from './schema';
+import userInfo from './userinfo';
+import QueryCbxSearch from './querycbxsearch';
 
 const format = dataobjformatters.format;
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",
     events: {
         'click a.sp-rel-plugin-other-side': 'go',

@@ -1,16 +1,16 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var specifyform       = require('./specifyform.js');
-var dataobjformatters = require('./dataobjformatters.js');
-var viewheader        = require('./templates/viewheader.html');
-var SaveButton        = require('./savebutton.js');
-var DeleteButton      = require('./deletebutton.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import specifyform from './specifyform';
+import dataobjformatters from './dataobjformatters';
+import viewheader from './templates/viewheader.html';
+import SaveButton from './savebutton';
+import DeleteButton from './deletebutton';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -153,4 +153,4 @@ const ResourceView = Backbone.View.extend({
 
 _.extend(ResourceView, Backbone.Events);
 
-module.exports = ResourceView;
+export default ResourceView;

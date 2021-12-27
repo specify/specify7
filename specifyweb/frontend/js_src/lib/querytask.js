@@ -1,22 +1,22 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema             = require('./schema.js');
-var QueryFieldUI       = require('./queryfield.js');
-var template           = require('./templates/querybuilder.html');
-var userInfo           = require('./userinfo').default;
-var app                = require('./specifyapp.js');
-var queryFromTree      = require('./queryfromtree.js');
-var navigation         = require('./navigation.js');
-var QueryResultsTable  = require('./queryresultstable.js');
-var EditResourceDialog = require('./editresourcedialog.js');
-var QuerySaveDialog    = require('./querysavedialog.js');
-var router             = require('./router.js');
-const queryText = require('./localization/query').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import QueryFieldUI from './queryfield';
+import template from './templates/querybuilder.html';
+import userInfo from './userinfo';
+import * as app from './specifyapp';
+import queryFromTree from './queryfromtree';
+import * as navigation from './navigation';
+import QueryResultsTable from './queryresultstable';
+import EditResourceDialog from './editresourcedialog';
+import QuerySaveDialog from './querysavedialog';
+import router from './router';
+import queryText from './localization/query';
+import commonText from './localization/common';
 
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
@@ -351,7 +351,7 @@ async function fetchRecordSet() {
     return recordSet.models[0];
 }
 
-module.exports =  function() {
+export default function() {
         router.route('query/:id/', 'storedQuery', function(id) {
             (async function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });

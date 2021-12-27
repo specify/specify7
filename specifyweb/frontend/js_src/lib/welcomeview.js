@@ -1,23 +1,23 @@
 "use strict";
-require('../css/welcome.css');
+import '../css/welcome.css';
 
-var $        = require('jquery');
-var _        = require('underscore');
-var d3       = require('d3');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import d3 from 'd3';
 
-var app    = require('./specifyapp.js');
-var schema               = require('./schema.js');
-var prefs                = require('./remoteprefs.js');
-var dataobjectformatters = require('./dataobjformatters.js');
-var systemInfo           = require('./systeminfo');
-var template             = require('./templates/welcome.html');
-var aboutspecify         = require('./templates/aboutspecify.html');
+import Backbone from './backbone';
+import * as app from './specifyapp';
+import schema from './schema';
+import remotePrefs from './remoteprefs';
+import dataobjectformatters from './dataobjformatters';
+import systemInfo from './systeminfo';
+import template from './templates/welcome.html';
+import aboutspecify from './templates/aboutspecify.html';
 
-const welcomeText = require('./localization/welcome').default;
-const commonText = require('./localization/common').default;
+import welcomeText from './localization/welcome';
+import commonText from './localization/common';
 
-    var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
+    var DO_TAXON_TILES = remotePrefs['sp7.doTaxonTiles'] == "true";
 
     var ACTION = ['Added', 'Modified', 'Deleted'];
 
@@ -276,6 +276,6 @@ const commonText = require('./localization/common').default;
     });
 
 
-module.exports = function() {
+export default function() {
     app.setCurrentView(new WelcomeView());
 };

@@ -1,9 +1,9 @@
 "use strict";
 
-const $        = require('jquery');
-const _        = require('underscore');
-const Backbone = require('./backbone.js');
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import commonText from './localization/common';
 
 // We introduce a sequence variable that is incremented and passed in
 // the state argument of each history.pushState invocation. When a
@@ -25,7 +25,7 @@ let sequence = sequenceFromState(window.history.state);
 let unloadBlockers = [];
 let onBeforeUnloadHandler = undefined;
 
-function addUnloadProtect(
+export function addUnloadProtect(
   key,
   message,
   confirmNavigationHandler=defaultConfirmNavigationHandler
@@ -42,7 +42,7 @@ function changeOnBeforeUnloadHandler(handler){
         window.addEventListener('onbeforeunload',onBeforeUnloadHandler);
 }
 
-function removeUnloadProtect(remKey) {
+export function removeUnloadProtect(remKey) {
     unloadBlockers = unloadBlockers.filter(([key]) => key !== remKey);
     changeOnBeforeUnloadHandler( unloadBlockers.length === 0 ? undefined :
         () => {
@@ -52,7 +52,7 @@ function removeUnloadProtect(remKey) {
     );
 }
 
-function clearUnloadProtect() {
+export function clearUnloadProtect() {
     unloadBlockers = [];
     changeOnBeforeUnloadHandler(undefined);
 }
@@ -151,7 +151,7 @@ function confirmNavigation(proceed, cancel){
     confirmNavigationHandler(proceed, cancel);
 }
 
-function navigate(url, options) {
+export function navigate(url, options) {
     const cont = () => {
         clearUnloadProtect();
 
@@ -175,35 +175,28 @@ function navigate(url, options) {
     unloadBlockers.length > 0 ? confirmNavigation(cont, () => {}) : cont();
 }
 
-module.exports = {
-    start: function() {
-        Backbone.history.start({pushState: true, root: '/specify/'});
-    },
-    navigate: navigate,
-    addUnloadProtect: addUnloadProtect,
-    removeUnloadProtect: removeUnloadProtect,
-    clearUnloadProtect: clearUnloadProtect,
-    go: function(url) {
-        navigate(url, true);
-    },
-    push: function(url) {
-        navigate(url, {trigger: false, replace: true});
-    },
-    switchCollection: function(collection, nextUrl, cancelCallback) {
-        const cont = () => $.ajax({
-            url: '/context/collection/',
-            type: 'POST',
-            data: _.isNumber(collection) ? collection : collection.id,
-            processData: false
-        }).done(function() {
-            if (nextUrl) {
-                window.location = nextUrl;
-            } else {
-                window.location.reload();
-            }
-        });
-        if(unloadBlockers.length) confirmNavigation(cont, cancelCallback);
-        else cont();
-
-    }
-};
+export function start(){
+    Backbone.history.start({pushState: true, root: '/specify/'});
+}
+export function go(url){
+    navigate(url, true);
+}
+export function push(url) {
+    navigate(url, {trigger: false, replace: true});
+}
+export function switchCollection(collection, nextUrl, cancelCallback) {
+    const cont = () => $.ajax({
+        url: '/context/collection/',
+        type: 'POST',
+        data: _.isNumber(collection) ? collection : collection.id,
+        processData: false
+    }).done(function() {
+        if (nextUrl) {
+            window.location = nextUrl;
+        } else {
+            window.location.reload();
+        }
+    });
+    if(unloadBlockers.length) confirmNavigation(cont, cancelCallback);
+    else cont();
+}

@@ -1,9 +1,9 @@
 'use strict';
 
-const router = require('./router');
-const app = require('./specifyapp');
+import router from './router';
+import app from './specifyapp';
 
-module.exports = function () {
+export default function () {
   router.route('workbench-import/', 'workbench-import', () =>
     import('./components/wbimport').then((WbImport) =>
         app.setCurrentView(new WbImport());

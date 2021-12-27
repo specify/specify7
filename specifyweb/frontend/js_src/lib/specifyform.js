@@ -1,16 +1,16 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var specifyformcells       = require('./specifyformcells.js');
-var parseSpecifyProperties = require('./parsespecifyproperties.js');
-var processColumnDef       = require('./processcolumndef.js');
+import specifyformcells from './specifyformcells';
+import parseSpecifyProperties from './parsespecifyproperties';
+import processColumnDef from './processcolumndef';
 
-var formtable = require('./templates/formtabletemplate.html');
-var formtemplate = require('./templates/formtemplate.html');
-var viewwrapper = require('./templates/viewwrappertemplate.html');
-var attachmentview = require('./templates/attachmentview.html');
+import formtable from './templates/formtabletemplate.html';
+import formtemplate from './templates/formtemplate.html';
+import viewwrapper from './templates/viewwrappertemplate.html';
+import attachmentview from './templates/attachmentview.html';
 
 
     var formCounter = 0;
@@ -150,5 +150,5 @@ var attachmentview = require('./templates/attachmentview.html');
         }
     };
 
-module.exports = specifyform;
+export default specifyform;
 

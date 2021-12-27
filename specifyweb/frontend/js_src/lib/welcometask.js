@@ -1,9 +1,9 @@
 'use strict';
 
-var router = require('./router.js');
+import router from './router';
 
-module.exports = function () {
+export default function () {
   router.route('', 'welcome', function () {
-    import('./welcomeview').then((WelcomeView) => WelcomeView());
+    import('./welcomeview').then(({default: WelcomeView}) => WelcomeView());
   });
 };

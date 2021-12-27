@@ -1,16 +1,16 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-const navigation = require('./navigation.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import * as navigation from './navigation';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
 let formId = 0;
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "SaveButton",
         initialize: function(options) {
             this.blockingResources = {};

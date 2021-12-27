@@ -1,9 +1,9 @@
 "use strict";
 
-var _ = require('underscore');
+import _ from 'underscore';
 
-var schema = require('./schema.js');
-const {capitalize} = require('./wbplanviewhelper');
+import schema from './schema';
+import {capitalize} from './wbplanviewhelper';
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
 
@@ -145,5 +145,5 @@ const {capitalize} = require('./wbplanviewhelper');
         }
     });
 
-module.exports =  QueryFieldSpec;
+    export default QueryFieldSpec;
 

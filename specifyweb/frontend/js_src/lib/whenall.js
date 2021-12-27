@@ -1,8 +1,8 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-module.exports = function(deferreds) {
+export default function(deferreds) {
         return $.when.apply($, _(deferreds).toArray()).pipe(function() { return _(arguments).toArray(); });
     };

@@ -1,20 +1,17 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
-var schema       = require('./schema.js');
-var navigation   = require('./navigation.js');
-var populateform = require('./populateform.js');
-var SaveButton   = require('./savebutton.js');
-var DeleteButton = require('./deletebutton.js');
-var specifyform  = require('./specifyform.js');
+import populateform from './populateform';
+import SaveButton from './savebutton';
+import DeleteButton from './deletebutton';
+import specifyform from './specifyform';
 
-const commonText = require('./localization/common').default;
+import commonText from './localization/common';
 
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "EditResourceDialog",
         className: "resource-edit-dialog",
     initialize: function({

@@ -1,8 +1,8 @@
 "use strict";
 
-var Backbone = require('./backbone.js');
+import Backbone from './backbone';
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "BasePickListView",
         initialize: function(options) {
             this.infoPromise = this.getItems(options);

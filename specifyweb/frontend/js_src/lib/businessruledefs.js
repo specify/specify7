@@ -1,8 +1,8 @@
 "use strict";
-var schema = require('./schema.js');
-var interactionBusinessRules = require('./interactionbusinessrules.js');
+import schema from './schema';
+import interactionBusinessRules from './interactionbusinessrules';
 
-module.exports = {
+export default Object.freeze({
         Accession: {
             uniqueIn: {
                 accessionnumber: 'division'
@@ -281,4 +281,4 @@ module.exports = {
                 agent: {field: 'borrow', otherfields: ['role']}
             }
         }
-    };
+    });

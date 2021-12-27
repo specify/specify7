@@ -1,12 +1,11 @@
 "use strict";
 
-var $      = require('jquery');
-var _      = require('underscore');
-var schema = require('./schemabase.js');
+import _ from 'underscore';
+import schema from './schemabase';
 
     function alwaysTrue() { return true; }
 
-module.exports = {
+export default {
         Agent: function(model) {
             var fields = model.getAllFields();
             var catalogerOf = _(new schema.Field(model)).extend({

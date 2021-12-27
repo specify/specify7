@@ -8,23 +8,26 @@
 
 'use strict';
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Leaflet = require('./leaflet');
-const WbLocalityDataExtractor = require('./wblocalitydataextractor');
-const Backbone = require('./backbone.js');
-const latlongutils = require('./latlongutils.js');
-const WbPlanViewHelper = require('./wbplanviewhelper');
-const { findLocalityColumnsInDataSet } = require('./wblocalitydataextractor');
-const {
-  default: WbAdvancedSearch,
+import $ from 'jquery';
+import _ from 'underscore';
+import { showLeafletMap } from './leaflet';
+import {
+  getLocalityCoordinate,
+  getLocalityColumnsFromSelectedCells,
+  getLocalitiesDataFromSpreadsheet,
+} from './wblocalitydataextractor';
+import Backbone from './backbone';
+import * as latlongutils from './latlongutils';
+import { camelToKebab } from './wbplanviewhelper';
+import { findLocalityColumnsInDataSet } from './wblocalitydataextractor';
+import WbAdvancedSearch, {
   getInitialSearchPreferences,
-} = require('./components/wbadvancedsearch');
-const {default: localityText} = require('./localization/locality');
-const wbText = require('./localization/workbench').default;
-const commonText = require('./localization/common').default;
+} from './components/wbadvancedsearch';
+import wbText from './localization/workbench';
+import commonText from './localization/common';
+import localityText from './localization/locality';
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
   __name__: 'WbUtils',
   className: 'wbs-utils',
   events: {
@@ -216,7 +219,7 @@ module.exports = Backbone.View.extend({
       buttonContainer = button.closest('.wb-navigation-section');
       navigationType = buttonContainer.getAttribute('data-navigation-type');
     }
-    const groupName = WbPlanViewHelper.camelToKebab(navigationType);
+    const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
     const newState = this.el.classList.contains(cssClassName);
@@ -576,7 +579,7 @@ module.exports = Backbone.View.extend({
     const visualHeaders = this.getVisualHeaders();
 
     const localityData =
-      WbLocalityDataExtractor.getLocalityCoordinate(
+      getLocalityCoordinate(
         this.wbview.hot.getDataAtRow(visualRow),
         visualHeaders,
         localityColumns
@@ -653,7 +656,7 @@ module.exports = Backbone.View.extend({
 
     const localityColumnGroups = selectAll
       ? this.localityColumns
-      : WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
+      : getLocalityColumnsFromSelectedCells(
           this.localityColumns,
           selectedHeaders
         );
@@ -787,7 +790,7 @@ module.exports = Backbone.View.extend({
     if (typeof selection === 'undefined') return;
 
     const localityPoints =
-      WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
+      getLocalitiesDataFromSpreadsheet(
         this.localityColumns,
         selection.visualRows.map((visualRow) =>
           this.wbview.hot.getDataAtRow(visualRow)
@@ -797,7 +800,7 @@ module.exports = Backbone.View.extend({
       );
 
     const dialog = document.createElement('div');
-    Leaflet.showLeafletMap({
+    showLeafletMap({
       localityPoints,
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;

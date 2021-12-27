@@ -1,17 +1,15 @@
 "use strict";
 
-var $              = require('jquery');
-var _              = require('underscore');
-var initialContext = require('./initialcontext.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import * as initialContext from './initialcontext';
 
-    var iconGroups = {};
-    initialContext
-        .loadResource('icons_datamodel.xml'      , data => iconGroups.datamodel    = data)
-        .loadResource('icons_disciplines.xml'    , data => iconGroups.discipline   = data)
-        .loadResource('icons_imgproc.xml'        , data => iconGroups.imgproc      = data)
-        .loadResource('icons_plugins.xml'        , data => iconGroups.plugin       = data)
-        .loadResource('icons.xml'                , data => iconGroups.default      = data)
-    ;
+var iconGroups = {};
+initialContext.loadResource('icons_datamodel.xml', data => iconGroups.datamodel = data);
+initialContext.loadResource('icons_disciplines.xml', data => iconGroups.discipline = data);
+initialContext.loadResource('icons_imgproc.xml', data => iconGroups.imgproc = data);
+initialContext.loadResource('icons_plugins.xml', data => iconGroups.plugin = data);
+initialContext.loadResource('icons.xml', data => iconGroups.default = data);
 
     var iconDirs = {
         datamodel: '/images/datamodel/',
@@ -32,8 +30,7 @@ var initialContext = require('./initialcontext.js');
         return iconNode;
     }
 
-module.exports = {
-        getIcon: function (icon) {
+        export function getIcon(icon) {
             var group, iconFile;
             _.find(iconGroups, function(xml, name) {
                 var iconNode = findIconInXML(icon, xml);
@@ -52,5 +49,4 @@ module.exports = {
                 return '/images/unknown.png';
             }
         }
-    };
 

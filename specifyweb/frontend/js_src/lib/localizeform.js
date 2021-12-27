@@ -1,10 +1,9 @@
 "use strict";
 
-var $ = require('jquery');
+import $ from 'jquery';
 
-var props              = require('./props.js');
-var schema             = require('./schema.js');
-var stringLocalization = require('./stringlocalization.js');
+import schema from './schema';
+import * as stringLocalization from './stringlocalization';
 
 
     function localize(s) {
@@ -16,7 +15,7 @@ var stringLocalization = require('./stringlocalization.js');
             control.closest('[data-specify-field-name]').data('specify-field-name');
     }
 
-module.exports = function(formNode) {
+export default function(formNode) {
         var form = $(formNode);
         var model = schema.getModel(form.data('specify-model'));
         if (!model) return;

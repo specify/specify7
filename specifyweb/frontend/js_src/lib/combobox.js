@@ -1,20 +1,20 @@
 "use strict";
 
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
 
-var PickListCBX         = require('./picklistcbx.js');
-var ReadOnlyPickListCBX = require('./readonlypicklistcbx.js');
-var getPickListByName   = require('./getpicklistbyname.js');
-var mixins              = require('./picklistmixins.js');
-var AgentTypeCBX        = require('./agenttypecbx.js');
-var UserTypeCBX         = require('./usertypecbx.js');
-var PickListTypeCBX     = require('./picklisttypecbx.js');
-var PickListTableCBX    = require('./picklisttablecbx.js');
-var PickListFieldCBX    = require('./picklistfieldcbx.js');
-var DivisionFieldCBX    = require('./divisionfieldcbx.js');
-var TreeLevelCBX        = require('./treelevelcbx.js');
+import PickListCBX from './picklistcbx';
+import ReadOnlyPickListCBX from './readonlypicklistcbx';
+import getPickListByName from './getpicklistbyname';
+import mixins from './picklistmixins';
+import AgentTypeCBX from './agenttypecbx';
+import UserTypeCBX from './usertypecbx';
+import PickListTypeCBX from './picklisttypecbx';
+import PickListTableCBX from './picklisttablecbx';
+import PickListFieldCBX from './picklistfieldcbx';
+import DivisionFieldCBX from './divisionfieldcbx.js';
+import TreeLevelCBX from './treelevelcbx';
 
     function getCBX(options, resource, field) {
         _.extend(options, {
@@ -84,7 +84,7 @@ var TreeLevelCBX        = require('./treelevelcbx.js');
             });
     }
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "ComboBoxView",
         initialize: function() {
             var options = {

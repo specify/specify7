@@ -1,12 +1,12 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var querystring = require('./querystring.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import * as querystring from './querystring';
 
 
-    var api =  _.extend({}, Backbone.Events, {
+    export default _.extend({}, Backbone.Events, {
         getRows: function(table, options) {
             table = _.isString(table) ? table : table.name;
             var url = '/api/specify_rows/' + table.toLowerCase() + '/';
@@ -65,5 +65,3 @@ var querystring = require('./querystring.js');
             return $.get(uri);
         }
     });
-
-    module.exports = api;

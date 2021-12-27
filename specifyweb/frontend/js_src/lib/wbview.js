@@ -12,47 +12,50 @@
 
 'use strict';
 
-require('../css/workbench.css');
+import '../css/workbench.css';
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Backbone = require('./backbone.js');
-const Q = require('q');
-const Handsontable = require('handsontable').default;
-const Papa = require('papaparse');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
+import Handsontable from 'handsontable';
+import Papa from 'papaparse';
 
-require('handsontable/dist/handsontable.full.css');
+import 'handsontable/dist/handsontable.full.css';
 
-const schema = require('./schema.js');
-const app = require('./specifyapp.js');
-const userInfo = require('./userinfo').default;
-const DataSetMeta = require('./datasetmeta.js').default;
-const navigation = require('./navigation.js');
-const NotFoundView = require('./notfoundview.js');
-const WBUploadedView = require('./components/wbuploadedview').default;
-const dataModelStorage = require('./wbplanviewmodel').default;
-const WBStatus = require('./components/wbstatus').default;
-const WBUtils = require('./wbutils.js');
-const {
+import schema from './schema';
+import * as app from './specifyapp';
+import userInfo from './userinfo';
+import DataSetMeta from './datasetmeta';
+import * as navigation from './navigation';
+import NotFoundView from './notfoundview';
+import WBUploadedView from './components/wbuploadedview';
+import dataModelStorage from './wbplanviewmodel';
+import WBStatus from './components/wbstatus';
+import WBUtils from './wbutils';
+import {
   valueIsTreeRank,
   mappingPathToString,
   getNameFromTreeRankName,
   formatReferenceItem,
   formatTreeRank,
-} = require('./wbplanviewmappinghelper');
-const { mappingsTreeToSplitMappingPaths } = require('./wbplanviewtreehelper');
-const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree');
-const { extractDefaultValues } = require('./wbplanviewhelper');
-const { getTableFromMappingPath } = require('./wbplanviewnavigator');
-const {dataModelPromise} = require('./wbplanviewmodelfetcher');
-const { capitalize } = require('./wbplanviewhelper');
-const { BackboneLoadingScreen } = require('./components/modaldialog');
-const icons = require('./icons.js');
-const formatObject = require('./dataobjformatters.js').format;
-const template = require('./templates/wbview.html');
-const cache = require('./cache');
-const wbText = require('./localization/workbench').default;
-const commonText = require('./localization/common').default;
+} from './wbplanviewmappinghelper';
+import {
+  mappingsTreeToArrayOfSplitMappings,
+} from './wbplanviewtreehelper';
+import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
+import { extractDefaultValues } from './wbplanviewhelper';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
+import fetchDataModelPromise from './wbplanviewmodelfetcher';
+import { capitalize } from './wbplanviewhelper';
+import { getIcon } from './icons';
+import dataobjformatters from './dataobjformatters';
+import template from './templates/wbview.html';
+import * as cache from './cache';
+import wbText from './localization/workbench';
+import commonText from './localization/common';
+import { BackboneLoadingScreen } from './components/modaldialog';
+import formatObject from './dataobjformatters.js';
 
 const metaKeys = [
   'isNew',
@@ -444,7 +447,7 @@ const WBView = Backbone.View.extend({
                             label === ''
                               ? dataModelStorage.tables[tableName].label
                               : label;
-                          const tableIcon = icons.getIcon(tableName);
+                          const tableIcon = getIcon(tableName);
 
                           return `<a
                             href="/specify/view/${tableName}/${recordId}/"
@@ -572,7 +575,7 @@ const WBView = Backbone.View.extend({
     this.mappings.mappedHeaders = Object.fromEntries(
       this.mappings.tableNames.map((tableName, mappingCol) => [
         this.mappingColToPhysicalCol(mappingCol),
-        icons.getIcon(tableName),
+        getIcon(tableName),
       ])
     );
   },
@@ -2547,7 +2550,7 @@ const WBView = Backbone.View.extend({
   },
 });
 
-module.exports = function loadDataset(
+export default function loadDataset(
   id,
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false

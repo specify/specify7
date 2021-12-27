@@ -1,13 +1,10 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
-var cookies  = require('./cookies.js');
-var schema = require('./schema.js');
+import Backbone from './backbone';
+import Q from 'q';
+import { createCookie } from './cookies';
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "CheckBox",
     events: {
         'change': 'change'
@@ -48,7 +45,7 @@ module.exports =  Backbone.View.extend({
             this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
         } else {
             if (this.$el.hasClass('specify-print-on-save')) {
-                this.$el.attr('check-cookie') && cookies.createCookie(this.$el.attr('check-cookie'), this.el.checked);
+                this.$el.attr('check-cookie') && createCookie(this.$el.attr('check-cookie'), this.el.checked);
             }
         }
     }

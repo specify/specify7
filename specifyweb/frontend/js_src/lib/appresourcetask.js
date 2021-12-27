@@ -1,6 +1,6 @@
 'use strict';
 
-const router = require('./router.js');
+import router from './router';
 
 function appResources(type, id) {
   import('./appresources').then((appResourcesModule) => {
@@ -9,7 +9,7 @@ function appResources(type, id) {
   });
 }
 
-module.exports = function () {
+export default function () {
   router.route('appresources/', 'appresources', () =>
     appResources('appResources')
   );

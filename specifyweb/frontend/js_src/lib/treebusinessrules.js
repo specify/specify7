@@ -1,8 +1,8 @@
 "use strict";
-var $ = require('jquery');
-var Q = require('q');
-var _ = require('underscore');
-const treeText = require('./localization/tree').default;
+import $ from 'jquery';
+import Q from 'q';
+import _ from 'underscore';
+import treeText from './localization/tree';
 
 function predictFullName(resource, options) {
     const treeName = resource.specifyModel.name.toLowerCase();
@@ -70,5 +70,5 @@ function predictFullName(resource, options) {
         }
     };
 
-module.exports = treeBusinessRules;
+export default treeBusinessRules;
 

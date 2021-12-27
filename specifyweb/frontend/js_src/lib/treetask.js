@@ -1,9 +1,9 @@
 'use strict';
 
-var router = require('./router.js');
+import router from './router';
 
-module.exports = function () {
+export default function () {
   router.route('tree/:table/', 'tree', (table) =>
-    import('./treeview').then((treeView) => treeView(table))
+    import('./treeview').then(({default: treeView}) => treeView(table))
   );
 };

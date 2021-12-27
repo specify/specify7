@@ -1,18 +1,18 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Q        = require('q');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Q from 'q';
+import Backbone from './backbone';
 
 
-var specifyform  = require('./specifyform.js');
-var SaveButton   = require('./savebutton.js');
-var DeleteButton = require('./deletebutton.js');
-var assert       = require('./assert.js');
-var subviewheader = require('./templates/subviewheader.html');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import specifyform from './specifyform';
+import SaveButton from './savebutton';
+import DeleteButton from './deletebutton';
+import assert from './assert';
+import subviewheader from './templates/subviewheader.html';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
     const CONTRACT = `<td class="contract">
         <button
@@ -99,7 +99,7 @@ const commonText = require('./localization/common').default;
         }
     });
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "FormTableView",
         events: {
             'click .specify-subview-header button.specify-add-related': 'add'

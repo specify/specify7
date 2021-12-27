@@ -18,8 +18,8 @@ import type {
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import type { MappingState } from './components/wbplanviewstate';
-import navigation from './navigation';
+import type { LoadingState, MappingState } from './components/wbplanviewstate';
+import * as navigation from './navigation';
 import schema from './schema';
 import type { IR, RA } from './types';
 import {

@@ -1,17 +1,18 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
 
 
-var schema         = require('./schema.js');
-var icons          = require('./icons.js');
-var specifyform    = require('./specifyform.js');
-const ajax = require("./ajax").default;
-const commonText = require('./localization/common').default;
-const formsText = require('./localization/forms').default;
+import ajax from './ajax';
+import schema from './schema';
+import { getIcon } from './icons';
+import specifyform from './specifyform';
+import * as initialContext from './initialcontext';
+import commonText from './localization/common';
+import formsText from './localization/forms';
 
 
     // I don't think the non-sidebar items are ever used in Sp6.
@@ -28,7 +29,7 @@ const formsText = require('./localization/forms').default;
         }
     );
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "FormsDialog",
         tagName: 'nav',
         className: "forms-dialog",
@@ -89,7 +90,7 @@ module.exports = Backbone.View.extend({
                             '<img>',
                             {
                                 alt: view.attr('iconname'),
-                                src: icons.getIcon(view.attr('iconname')),
+                                src: getIcon(view.attr('iconname')),
                                 width: 'var(--table-icon-size)',
                                 'aria-hidden': true,
                             }

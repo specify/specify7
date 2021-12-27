@@ -1,12 +1,12 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var whenAll        = require('./whenall.js');
-var fieldformat    = require('./fieldformat.js');
-var assert         = require('./assert.js');
-var initialContext = require('./initialcontext.js');
+import whenAll from './whenall';
+import fieldformat from './fieldformat';
+import assert from './assert';
+import * as initialContext from './initialcontext';
 
     var formatters;
     initialContext.load('app.resource?name=DataObjFormatters', data => formatters = data);
@@ -72,7 +72,7 @@ var initialContext = require('./initialcontext.js');
         });
     }
 
-module.exports = {
+export default {
     format: dataobjformat,
     aggregate,
     getFormatters: ()=>Array.from(formatters.getElementsByTagName('format')),

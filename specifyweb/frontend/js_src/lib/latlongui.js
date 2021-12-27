@@ -1,18 +1,18 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
 
-var api = require('./specifyapi.js');
-var latlongutils = require('./latlongutils.js');
-var UIPlugin = require('./uiplugin.js');
-var template = require('./templates/latlonui.html');
-const localityText = require('./localization/locality').default;
-const commonText = require('./localization/common').default;
+import api from './api';
+import * as latlongutils from './latlongutils';
+import UIPlugin from './uiplugin';
+import template from './templates/latlonui.html';
+import localityText from './localization/locality';
+import commonText from './locality/common';
 
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "LatLongUI",
         initialize: function() {
             UIPlugin.prototype.initialize.apply(this, arguments);

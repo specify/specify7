@@ -1,26 +1,26 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var UIPlugin = require('./uiplugin.js');
-const formsText = require('./localization/forms').default;
+import UIPlugin from './uiplugin';
+import formsText from './localization/forms';
 
 var providers = [
-    require('./usercollectionsplugin.js'),
-    require('./latlongui.js'),
-    require('./partialdateui.js').default,
-    require('./collectionrelonetomanyplugin.js'),
-    require('./collectionrelonetooneplugin.js'),
-    require('./geolocateplugin.js'),
-    require('./weblinkbutton.js').default,
-    require('./attachmentplugin.js'),
-    require('./hosttaxonplugin.js'),
-    require('./passwordplugin.js'),
-    require('./useragentsplugin.js'),
-    require('./adminstatusplugin.js'),
-    require('./leafletplugin.js'),
-    require('./paleolocationplugin.js'),
+    require('./usercollectionsplugin').default,
+    require('./latlongui').default,
+    require('./partialdateui').default,
+    require('./collectionrelonetomanyplugin').default,
+    require('./collectionrelonetooneplugin').default,
+    require('./geolocateplugin').default,
+    require('./weblinkbutton').default,
+    require('./attachmentplugin').default,
+    require('./hosttaxonplugin').default,
+    require('./passwordplugin').default,
+    require('./useragentsplugin').default,
+    require('./adminstatusplugin').default,
+    require('./leafletplugin').default,
+    require('./paleolocationplugin').default,
 ];
 
 
@@ -58,4 +58,4 @@ var providers = [
         });
     });
 
-module.exports =  plugins;
+export default plugins;

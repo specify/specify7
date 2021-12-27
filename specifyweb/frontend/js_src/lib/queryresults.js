@@ -1,11 +1,11 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
-var schema    = require('./schema.js');
-var dataobjformatters = require('./dataobjformatters.js');
-var fieldformat = require('./fieldformat.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import schema from './schema';
+import dataobjformatters from './dataobjformatters';
+import fieldformat from './fieldformat';
 
 function auditedObjFormatter(fieldSpecs, model, localize) {
     this.fieldSpecs = fieldSpecs;
@@ -176,7 +176,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
 
 }
 
-    var QueryResultsView = Backbone.View.extend({
+    export default Backbone.View.extend({
         __name__: "QueryResultsView",
         initialize: function(options) {
             this.fieldSpecs = options.fieldSpecs;
@@ -237,6 +237,4 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             return results.results.length;
         },
     });
-
-module.exports = QueryResultsView;
 

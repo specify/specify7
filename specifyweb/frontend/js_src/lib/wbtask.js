@@ -1,9 +1,9 @@
 'use strict';
 
-var router = require('./router.js');
+import router from './router';
 
-module.exports = function () {
+export default function () {
   router.route('workbench/:id/', 'workbench', function (id) {
-    import('./wbview').then((WbView) => WbView(id));
+    import('./wbview').then(({default: WbView}) => WbView(id));
   });
 };

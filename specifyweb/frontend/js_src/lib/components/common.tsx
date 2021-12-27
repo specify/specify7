@@ -8,8 +8,8 @@ import '../../css/theme.css';
 
 import React from 'react';
 
-import icons from '../icons';
 import commonText from '../localization/common';
+import { getIcon } from '../icons';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 import { R } from './wbplanview';
@@ -41,7 +41,7 @@ export function TableIcon({
   readonly tableName: string;
   readonly tableLabel?: string | false;
 }): JSX.Element {
-  const tableIconSource = icons.getIcon(tableName);
+  const tableIconSource = .getIcon(tableName);
   const resolvedTableLabel =
     tableLabel === false
       ? ''

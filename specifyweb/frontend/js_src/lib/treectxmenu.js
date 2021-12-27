@@ -1,20 +1,20 @@
 "use strict";
 
-const $ = require('jquery');
-const Backbone = require('./backbone.js');
-const Q = require('q');
+import $ from 'jquery';
+import Backbone from './backbone';
+import Q from 'q';
 
-const ResourceView = require('./resourceview.js');
-const populateForm = require('./populateform.js');
-const schema = require('./schema.js');
-const api = require('./specifyapi.js');
-const userInfo = require('./userinfo').default;
-const treeText = require('./localization/tree').default;
-const commonText = require('./localization/common').default;
+import ResourceView from './resourceview';
+import populateForm from './populateform';
+import schema from './schema';
+import api from './specifyapi.js';
+import userInfo from './userinfo';
+import treeText from './localization/tree';
+import commonText from './localization/common';
 
 const ro = userInfo.isReadOnly;
 
-function contextMenuBuilder(treeView) {
+export default function contextMenuBuilder(treeView) {
     return function ($target, evt) {
         var view = $target.closest('.tree-node').data('view');
         var items = {};
@@ -370,5 +370,3 @@ const AddChildDialog = Backbone.View.extend({
         this.dialogIsOpen() && this.$el.dialog('option', 'title', title);
     }
 });
-
-module.exports = contextMenuBuilder;

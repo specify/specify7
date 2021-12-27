@@ -1,13 +1,13 @@
-const _ = require('underscore');
+import _ from 'underscore';
 
-const QUnit = require('qunit');
+import QUnit from 'qunit';
 const assert = QUnit.assert;
 
-const latlongutils = require('../latlongutils.js');
+import * as latlongutils from '../latlongutils';
 
-module.exports =  function() {
+export default function() {
     QUnit.module('latlongutils.parse');
-    var parse = latlongutils.parse;
+    var parse = latlongutils.Coord.parse;
 
     _.each({
         '34.123 N': [1, 34.123, latlongutils.Lat],
@@ -39,7 +39,7 @@ module.exports =  function() {
     }, function(value, key) {
         var type = value && value.pop();
         QUnit.test(key + ' is ' + (type && type.name), function() {
-            var result = latlongutils.parse(key);
+            var result = parse(key);
             if (_.isNull(value)) {
                 assert.equal(result, null);
                 return;
@@ -58,7 +58,7 @@ module.exports =  function() {
         '0': [1, 0],
     }, function(value, key) {
         QUnit.test(key, function() {
-            var result = latlongutils.parse(key).toDegs();
+            var result = parse(key).toDegs();
             assert.equal(result._components.length, value.length - 1);
             assert.equal(result._sign, value[0]);
             assert.equal(Math.round(result._components.pop() * 1e9), Math.round(value.pop() * 1e9));
@@ -191,7 +191,7 @@ module.exports =  function() {
     }, function(value, key) {
         _([null, 'Coord', 'Lat', 'Long']).each(function(type) {
             QUnit.test(key + ' as ' + type, function() {
-                var result = type ? latlongutils[type].parse(key) : latlongutils.parse(key);
+                var result = type ? latlongutils[type].parse(key) : parse(key);
                 if (_.isNull(value) || type === 'Lat') {
                     assert.equal(result, null);
                     return;

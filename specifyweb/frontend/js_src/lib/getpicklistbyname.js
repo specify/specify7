@@ -1,7 +1,7 @@
 "use strict";
-var schema = require('./schema.js');
+import schema from './schema';
 
-module.exports =  function getPickListByName(pickListName) {
+export default function getPickListByName(pickListName) {
         var collection = new schema.models.PickList.LazyCollection({
             filters: { name: pickListName },
             domainfilter: true

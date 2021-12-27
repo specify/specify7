@@ -1,13 +1,13 @@
 "use strict";
 
-const $ = require('jquery');
+import $ from 'jquery';
 
-const UIPlugin = require('./uiplugin.js');
-const template = require('./templates/pmapplugin.html');
-const Q = require('q');
-const formsText = require('./localization/forms').default;
+import UIPlugin from './uiplugin';
+import template from './templates/pmapplugin.html';
+import Q from 'q';
+import formsText from './localization/forms';
 
-module.exports = UIPlugin.extend({
+export default UIPlugin.extend({
     __name__: "PaleolocationMapPlugin",
     events: {
         'click': 'click'

@@ -1,5 +1,5 @@
 "use strict";
-const $ = require('jquery');
+import $ from 'jquery';
 
 // From https://docs.djangoproject.com/en/1.10/ref/csrf/
 
@@ -19,4 +19,4 @@ function getCookie(name) {
     return cookieValue;
 }
 
-module.exports = getCookie('csrftoken');
+export default getCookie('csrftoken');

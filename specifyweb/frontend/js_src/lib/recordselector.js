@@ -1,20 +1,19 @@
 "use strict";
 
-require('../css/recordselector.css');
+import '../css/recordselector.css';
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var specifyform    = require('./specifyform.js');
-var QueryCbxSearch = require('./querycbxsearch.js');
-var navigation     = require('./navigation.js');
-var subviewheader = require('./templates/subviewheader.html');
-var collectionapi  = require('./collectionapi.js');
-var assert         = require('./assert.js');
-var querystring    = require('./querystring.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import specifyform from './specifyform';
+import QueryCbxSearch from './querycbxsearch';
+import * as navigation from './navigation';
+import subviewheader from './templates/subviewheader.html';
+import collectionapi from './collectionapi';
+import * as querystring from './querystring';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
     var emptyTemplate = `<p>${formsText('noData')}</p>`;
 
@@ -216,7 +215,7 @@ const commonText = require('./localization/common').default;
         },
     });
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "RecordSelector",
         className: "recordselector",
         events: {

@@ -4,12 +4,12 @@
 // reifies it into the objects defined in specifymodel.js and
 // specifyfield.js.
 
-const schema         = require('./schemabase.js');
-const extras         = require('./schemaextras.js');
-const initialContext = require('./initialcontext.js');
+import schema from './schemabase';
+import extras from './schemaextras';
+import * as initialContext from './initialcontext';
 
-require('./specifymodel.js');
-require('./specifyfield.js');
+import './specifymodel';
+import './specifyfield';
 
 schema.models = {};
 initialContext.load('datamodel.json', tables => tables.forEach(tableDef => {
@@ -20,4 +20,4 @@ initialContext.load('datamodel.json', tables => tables.forEach(tableDef => {
 }));
 
 
-module.exports = schema;
+export default schema;

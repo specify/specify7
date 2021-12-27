@@ -1,13 +1,13 @@
 "use strict";
 
-const $ = require('jquery');
-const Q = require('q');
-const Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Q from 'q';
+import Backbone from './backbone';
 
-const UIPlugin = require('./uiplugin.js');
-const schema = require('./schema.js');
-const adminText = require('./localization/admin').default;
-const commonText = require('./localization/common').default;
+import UIPlugin from './uiplugin';
+import schema from './schema';
+import adminText from './localization/admin';
+import commonText from './localization/common';
 
 const SetCollectionsView = Backbone.View.extend({
     __name__: "UserCollectionsUI",
@@ -54,7 +54,7 @@ const SetCollectionsView = Backbone.View.extend({
 });
 
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
     __name__: "UserCollectionsPlugin",
     events: {
         'click': 'clicked'

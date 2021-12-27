@@ -1,15 +1,18 @@
 "use strict";
 
-var $      = require('jquery');
-var _      = require('underscore');
 
-var UIPlugin      = require('./uiplugin.js');
-var template = require('./templates/partialdateui.html');
-var dateFormatStr = require('./dateformat.js');
-var { addValidationAttributes, resolveParser } = require('./uiparse.ts');
-const {default: dayjs, getDateInputValue} = require('./dayjs');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import $ from 'jquery';
+import _ from 'underscore';
+
+import UIPlugin from './uiplugin';
+import template from './templates/partialdateui.html';
+import dateFormatStr from './dateformat';
+import ToolTipMgr from './tooltipmgr';
+import saveblockers from './saveblockers';
+import formsText from './localization/forms';
+import commonText from './localization/common';
+import { addValidationAttributes, resolveParser } from './uiparse';
+import {default: dayjs, getDateInputValue} from './dayjs';
 
 function isInputSupported(type) {
     var input = document.createElement('input');
@@ -18,7 +21,6 @@ function isInputSupported(type) {
     input.setAttribute('value', value);
     return (input.value !== value);
 }
-
     var precisions = ['full', 'month-year', 'year'];
 
 export default UIPlugin.extend({

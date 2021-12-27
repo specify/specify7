@@ -106,7 +106,8 @@ function Dialog({
   }, [showMeta]);
 
   const canImport =
-    !showTemplates && !(userInfo as { isReadOnly: boolean }).isReadOnly;
+    !showTemplates &&
+    !(userInfo as unknown as { isReadOnly: boolean }).isReadOnly;
 
   return (
     <>

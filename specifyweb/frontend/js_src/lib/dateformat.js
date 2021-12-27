@@ -1,10 +1,10 @@
 "use strict";
 
-const remoteprefs = require('./remoteprefs.js');
+import remoteprefs from './remoteprefs';
 
 var dateFormat;
 
-module.exports = function() {
+export default function() {
     if (dateFormat == null) {
         dateFormat = typeof remoteprefs['ui.formatting.scrdateformat'] === 'string' ?
             remoteprefs['ui.formatting.scrdateformat'].toUpperCase() : 'YYYY-MM-DD';

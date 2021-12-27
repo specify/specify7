@@ -1,8 +1,8 @@
 "use strict";
 
-var $ = require('jquery');
+import $ from 'jquery';
 
-module.exports = function(props) {
+export default function(props) {
         props = props || '';
         var result = {};
         $(props.split(';')).each(function () {

@@ -1,13 +1,13 @@
 "use strict";
 
-var $ = require('jquery');
-var UIPlugin = require('./uiplugin.js');
+import $ from 'jquery';
+import UIPlugin from './uiplugin';
 
-const userInfo = require('./userinfo').default;
-const adminText = require('./localization/admin').default;
+import adminText from './localization/admin';
+import userInfo from './userinfo';
 
 
-module.exports =  UIPlugin.extend({
+export default UIPlugin.extend({
         __name__: "AdminStatusPlugin",
         events: {
             'click': 'clicked'

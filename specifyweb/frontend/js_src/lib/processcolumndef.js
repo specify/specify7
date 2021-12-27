@@ -1,13 +1,13 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
 
-var template = require('./templates/formdeftemplate.html');
+import template from './templates/formdeftemplate.html';
 
     // Return a table DOM node with <col> defined based
     // on the columnDef attr of a viewdef.
-module.exports = function(columnDef) {
+export default function(columnDef) {
         return $(template({
             widths: _(columnDef.split(',')).chain()
                 .filter(function(def, ind) { return ind%2 === 0; })

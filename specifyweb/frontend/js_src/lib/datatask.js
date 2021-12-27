@@ -1,22 +1,23 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema              = require('./schema.js');
-var api                 = require('./specifyapi.js');
-var navigation          = require('./navigation.js');
-var domain              = require('./domain.js');
-var OtherCollectionView = require('./othercollectionview.js');
-var NotFoundView        = require('./notfoundview.js');
-var userInfo            = require('./userinfo').default;
-var router              = require('./router.js');
-var app                 = require('./specifyapp.js');
-var querystring         = require('./querystring.js');
+import schema from './schema';
+import api from './specifyapi';
+import * as navigation from './navigation';
+import { collectionsForResource } from './domain';
+import OtherCollectionView from './othercollectionview';
+import NotFoundView from './notfoundview';
+import userInfo from './userinfo';
+import router from './router';
+import * as app from './specifyapp';
+import * as querystring from './querystring';
+>>>>>>> e8165550 (Use ES Modules instead of Common JS import/export)
 
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
     var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
@@ -182,7 +183,7 @@ const commonText = require('./localization/common').default;
 
     // check that it makes sense to view this resource when logged into current collection
     function checkLoggedInCollection(resource, recordSet, then) {
-        domain.collectionsForResource(resource).done(function(collections) {
+        collectionsForResource(resource).done(function(collections) {
             if (collections && !resource.isNew() && !_.any(collections, loggedInCollectionP)) {
                 // the resource is not "native" to this collection. ask user to change collections.
                 app.setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
@@ -192,7 +193,7 @@ const commonText = require('./localization/common').default;
         });
     }
 
-module.exports =  function() {
+export default function() {
         router.route('recordset/:id/', 'recordSetView', recordSetView);
         router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
         router.route('view/:model/:id/', 'resourceView', resourceView);

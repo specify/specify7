@@ -1,19 +1,20 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema            = require('./schema.js');
-var QueryResultsTable = require('./queryresultstable.js');
-var router            = require('./router.js');
-var QueryFieldSpec    = require('./queryfieldspec.js');
-var whenAll           = require('./whenall.js');
-var s                 = require('./stringlocalization.js');
-var app               = require('./specifyapp.js');
-var querystring       = require('./querystring.js');
-const ajax = require("./ajax").default;
-const commonText = require('./localization/common').default;
+import ajax from './ajax';
+import schema from './schema';
+import QueryResultsTable from './queryresultstable';
+import router from './router';
+import QueryFieldSpec from './queryfieldspec';
+import whenAll from './whenall';
+import * as s from './stringlocalization';
+import * as initialContext from './initialcontext';
+import * as app from './specifyapp';
+import * as querystring from './querystring';
+import commonText from './localization/common';
 
 
     const relatedSearchesPromise = ajax(
@@ -138,7 +139,7 @@ const commonText = require('./localization/common').default;
         }
     });
 
-module.exports =  function() {
+export default function() {
         router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
         });

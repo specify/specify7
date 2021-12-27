@@ -1,21 +1,22 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Q from 'q';
 
 
-var schema            = require('./schema.js');
-var icons             = require('./icons.js');
-var specifyform       = require('./specifyform.js');
-var userInfo          = require('./userinfo').default;
-var InteractionDialog = require('./interactiondialog.js');
-var s                 = require('./stringlocalization.js');
-var {reports}           = require('./reports.js');
-const ajax = require("./ajax").default;
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import ajax from './ajax';
+import schema from './schema';
+import { getIcon } from './icons';
+import specifyform from './specifyform';
+import * as initialContext from './initialcontext';
+import userInfo from './userinfo';
+import InteractionDialog from './interactiondialog';
+import * as s from './stringlocalization';
+import reports from './reports';
+import formsText from './localization/forms';
+import commonText from './localization/common';
 
     var interaction_entries, actions, isFulfilled=false;
 
@@ -54,7 +55,7 @@ const commonText = require('./localization/common').default;
     }
 
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "InteractionsDialog",
         tagName: 'nav',
         className: "interactions-dialog",
@@ -153,10 +154,10 @@ module.exports = Backbone.View.extend({
                 >
                     <img
                         alt="${interactionEntry.attr('icon')}"
-                        src="${icons.getIcon(interactionEntry.attr('icon'))}"
+                        src="${getIcon(interactionEntry.attr('icon'))}"
                         style="width: var(--table-icon-size)"
                         aria-hidden="true"
-                    > 
+                    >
                     ${this.getDialogEntryText(interactionEntry)}
                 </a>
             </li>`;

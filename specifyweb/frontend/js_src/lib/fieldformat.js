@@ -1,11 +1,11 @@
 "use strict";
 
-var $      = require('jquery');
-var _      = require('underscore');
+import _ from 'underscore';
+import dayjs from './dayjs';
 
-var dateFormatStr = require('./dateformat.js');
-var AgentTypeCBX  = require('./agenttypecbx.js');
-const dayjs = require('./dayjs').default;
+import dateFormatStr from './dateformat';
+import AgentTypeCBX from './agenttypecbx';
+>>>>>>> e8165550 (Use ES Modules instead of Common JS import/export)
 
     function formatDate(value) {
         if (value == null) return value;
@@ -28,7 +28,7 @@ const dayjs = require('./dayjs').default;
         "java.util.Date": formatDate
     };
 
-module.exports = function(field, value) {
+export default function(field, value) {
         var asInt = parseInt(value, 10);
         if (field.getFormat() === 'CatalogNumberNumeric') {
             return _.isNaN(asInt) ? value : asInt;

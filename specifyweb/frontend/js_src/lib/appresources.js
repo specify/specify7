@@ -1,23 +1,23 @@
 "use strict";
-require('../css/appresources.css');
+import '../css/appresources.css';
 
-const $ = require('jquery');
-const Q = require('q');
-const Backbone = require('./backbone.js');
-const _ = require('underscore');
-const ace = require('brace');
-require('brace/mode/xml');
-require('brace/mode/json');
-require('brace/mode/properties');
+import $ from 'jquery';
+import Q from 'q';
+import Backbone from './backbone';
+import _ from 'underscore';
+import ace from 'brace';
+import 'brace/mode/xml';
+import 'brace/mode/json';
+import 'brace/mode/properties';
 
-const app = require('./specifyapp.js');
-const schema = require('./schema.js');
-const SaveButton = require('./savebutton.js');
-const DeleteButton = require('./deletebutton.js');
-const userInfo = require('./userinfo').default;
-const navigation = require('./navigation.js');
-const adminText = require('./localization/admin').default;
-const commonText = require('./localization/common').default;
+import * as app from './specifyapp';
+import schema from './schema';
+import SaveButton from './savebutton';
+import DeleteButton from './deletebutton';
+import userInfo from './userinfo';
+import * as navigation from './navigation';
+import adminText from './localization/admin';
+import commonText from './localization/common';
 
 function makeUrl(resource) {
     return {
@@ -792,7 +792,5 @@ function appResourcesTask(ResourceModel, id) {
     });
  }
 
-module.exports = {
-    appResources: id => appResourcesTask(schema.models.SpAppResource, id),
-    viewSets: id => appResourcesTask(schema.models.SpViewSetObj, id)
-};
+export const appResources = id => appResourcesTask(schema.models.SpAppResource, id);
+export const viewSets = id => appResourcesTask(schema.models.SpViewSetObj, id);

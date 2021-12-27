@@ -7,7 +7,7 @@
  * @module
  */
 
-import type { IR } from './types';
+import type { IR, RA } from './types';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 
@@ -93,7 +93,7 @@ export const fetchingParameters: {
     latlonpolygonpnt: 'remove',
     // Remove hierarchy tables
     ...Object.fromEntries(
-      schema.orgHierarchy
+      (schema.orgHierarchy as RA<string>)
         .filter((tableName) => tableName !== 'collectionobject')
         .map((tableName) => [tableName, 'remove'])
     ),

@@ -1,13 +1,12 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
 
-var UICmd = require('./uicommand.js');
-var {reports} = require('./reports.js');
-const formsText = require('./localization/forms').default;
+import UICmd from './uicommand';
+import { reports } from './reports';
+import formsText from './localization/forms';
 
-module.exports =  UICmd.extend({
+export default UICmd.extend({
     __name__: "ReportCommand",
     events: {
         'click': 'click'

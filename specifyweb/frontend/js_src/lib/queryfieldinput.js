@@ -1,15 +1,15 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
 
-var fieldformat  = require('./fieldformat.js');
-var { default: uiparse, addValidationAttributes, resolveParser } = require('./uiparse.ts');
-var SaveBlockers = require('./saveblockers.js');
-const queryText = require('./localization/query').default;
-const commonText = require('./localization/common').default;
+import fieldformat from './fieldformat';
+import {default: uiparse, addValidationAttributes, resolveParser} from './uiparse';
+import SaveBlockers from './saveblockers';
+import queryText from './localization/query';
+import commonText from './localization/common';
 
     var FieldInputUI = Backbone.View.extend({
         __name__: "FieldInputUI",
@@ -245,7 +245,7 @@ var Like = {
         {opName: 'False or Null', negation: 'True', types: ['bools'], input: null}
     ];
 
-module.exports =  _.map(opInfo, function(extras, i) {
+export default _.map(opInfo, function(extras, i) {
         var options = _.extend({ __name__: "OpFieldInputUI", index: i }, extras);
         return FieldInputUI.extend(options);
     });

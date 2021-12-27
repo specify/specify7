@@ -1,7 +1,7 @@
 "use strict";
 
-var _ = require('underscore');
-const {validationMessages} = require('./validationmessages');
+import _ from 'underscore';
+import {validationMessages} from './validationmessages';
 
     //TODO: only propagate for dependent resources
 
@@ -126,4 +126,7 @@ const {validationMessages} = require('./validationmessages');
     });
 
 
-module.exports = SaveBlockers;
+export default {
+    SaveBlockers,
+    FieldViewEnhancer;
+};

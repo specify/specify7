@@ -1,6 +1,6 @@
 "use strict";
-var $ = require('jquery');
-var Q = require('q');
+import $ from 'jquery';
+import Q from 'q';
 
 
     var promises = [];
@@ -8,43 +8,36 @@ var Q = require('q');
     var locked = false;
 
 
-    function register(name, promise) {
+    export function register(name, promise) {
         if (locked) throw new Error('initial context is locked');
         promises.push(
             promise.tap(() => console.log('initial context:', name))
         );
-        return initialContext;
     }
 
-    function lock() {
+    export function lock() {
         if (locked) throw new Error('initial context already locked');
         locked = true;
         Q.all(promises).done(function() {
             console.log('initial context finished');
             final.resolve();
         });
-        return initialContext;
     }
 
-    function promise() {
+    export function promise() {
         return final.promise;
     }
 
-    function load(type, file, callback) {
+    function loadHandler(type, file, callback) {
         return register(
             file,
             Q($.get('/' + type + '/' + file))
                 .then(callback));
     }
 
-    var initialContext = {
-        register: register,
-        promise: promise,
-        lock: lock,
-        load: load.bind(null, 'context'),
-        loadProperties: load.bind(null, 'properties'),
-        loadResource: load.bind(null, 'static/config')
-    };
+    export const load = loadHandler.bind(null, 'context');
+    export const loadProperties = loadHandler.bind(null, 'properties');
+    export const loadResource = loadHandler.bind(null, 'static/config');
 
-    module.exports = initialContext;
+
 

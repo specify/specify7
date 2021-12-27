@@ -1,21 +1,20 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import Backbone from './backbone';
 
-var schema             = require('./schema.js');
-var FormsDialog        = require('./formsdialog.js');
-var EditResourceDialog = require('./editresourcedialog.js');
-var navigation         = require('./navigation.js');
-var querystring        = require('./querystring.js');
-const userInfo = require('./userinfo.ts').default;
-const {QueryToolbarView} = require('./components/toolbar/query');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import schema from './schema';
+import FormsDialog from './formsdialog';
+import EditResourceDialog from './editresourcedialog';
+import * as navigation from './navigation';
+import * as querystring from './querystring';
+import formsText from './localization/forms';
+import commonText from './localization/common';
+import userInfo from './userinfo.ts';
+import {QueryToolbarView} from './components/toolbar/query';
 
 
-module.exports = Backbone.View.extend({
+export default Backbone.View.extend({
         __name__: "RecordSetsDialog",
         tagName: 'nav',
         className: "recordsets-dialog table-list-dialog",

@@ -1,28 +1,28 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
 
-var schema            = require('./schema.js');
-var specifyform       = require('./specifyform.js');
-var template          = require('./templates/querycbx.html');
-var ResourceView      = require('./resourceview.js');
-var dataobjformatters = require('./dataobjformatters.js');
-var whenAll           = require('./whenall.js');
-var parseselect       = require('./parseselect.js');
-var navigation        = require('./navigation.js');
-var QueryCbxSearch    = require('./querycbxsearch.js');
-var QueryFieldSpec    = require('./queryfieldspec.js');
-var initialContext    = require('./initialcontext.js');
-var domain            = require('./domain.js');
-var resourceapi       = require('./resourceapi.js');
-var userInfo          = require('./userinfo').default;
-const queryText = require('./localization/query').default;
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
-const autocomplete = require('./autocomplete').default;
+import schema from './schema';
+import specifyform from './specifyform';
+import template from './templates/querycbx.html';
+import ResourceView from './resourceview';
+import dataobjformatters from './dataobjformatters';
+import whenAll from './whenall';
+import parseselect from './parseselect';
+import * as navigation from './navigation';
+import QueryCbxSearch from './querycbxsearch';
+import QueryFieldSpec from './queryfieldspec';
+import * as initialContext from './initialcontext';
+import { getTreeDef } from './domain';
+import resourceapi from './resourceapi';
+import userInfo from './userinfo';
+import queryText from './localization/query';
+import commonText from './localization/common';
+import formsText from './localization/forms';
+import autocomplete from './autocomplete';
 
 var dataobjformat = dataobjformatters.format;
 
@@ -89,7 +89,7 @@ function lookupTypesearch(name) {
     return $('[name="'+name+'"]', typesearches);
 }
 
-var QueryCbx = Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "QueryCbx",
 
     events: {
@@ -165,7 +165,7 @@ var QueryCbx = Backbone.View.extend({
     },
     getTreeDefinition: function(model) {
         if (model.isNew()) {
-            return domain.getTreeDef(model.specifyModel.name);
+            return getTreeDef(model.specifyModel.name);
         } else {
             return model.rget('definition', true);
         }
@@ -543,5 +543,3 @@ var QueryCbx = Backbone.View.extend({
         }
     }
 });
-
-module.exports =  QueryCbx;
