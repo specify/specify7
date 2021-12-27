@@ -520,7 +520,7 @@ export default Backbone.View.extend({
             $('<a>', { href: related.viewUrl() })
                 .addClass('intercept-navigation')
                 .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
-                .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
+                .prependTo(this.dialog.closest('.ui-dialog').find('div.ui-dialog-titlebar'));
         }
     },
     dialogIsOpen(){

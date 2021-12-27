@@ -25,24 +25,12 @@ export default function register(): void {
       }).render();
     if (
       remotePrefs['s2n.badges.disable'] !== 'true' &&
-      !resourceView.model.isNew()
+      resourceView.header &&
+      !resourceView.model.isNew() &&
+      ['Taxon', 'CollectionObject'].includes(
+        resourceView.model.specifyModel.name
+      )
     )
-      if (resourceView.model.specifyModel.name === 'Taxon') {
-        if (resourceView.header)
-          render((element) => element.appendTo(resourceView.header));
-        else
-          setTimeout(
-            () =>
-              render((container) =>
-                container.insertBefore(
-                  resourceView.el
-                    .closest('.ui-dialog')
-                    .getElementsByClassName('ui-dialog-title')[0]
-                )
-              ),
-            0
-          );
-      } else if (resourceView.model.specifyModel.name === 'CollectionObject')
-        render((container) => container.appendTo(resourceView.header));
+      render((element) => element.appendTo(resourceView.header));
   });
 }
