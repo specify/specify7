@@ -6,6 +6,7 @@ import $ from 'jquery';
 import initialContext from './initialcontext';
 import startApp from './startapp';
 import csrftoken from './csrftoken';
+import {csrfSafeMethod} from "./ajax";
 
 // Stop bckspc from navigating back.
 // Based on:
@@ -35,9 +36,6 @@ $(document).unbind('keydown').bind('keydown', (event) => {
 
     prevent && event.preventDefault();
 });
-
-// These HTTP methods do not require CSRF protection
-const csrfSafeMethod = new Set(['GET','HEAD','OPTIONS','TRACE']);
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {

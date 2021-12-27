@@ -14,8 +14,9 @@ import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import type { MainState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
-import type { Props, ComponentProps } from './lifemapperwrapper';
+import type { ComponentProps, Props } from './lifemapperwrapper';
 import type { IR, RA } from '../types';
+import ajax from '../ajax';
 
 type FullAggregatorResponse = {
   readonly records: RA<{
@@ -64,12 +65,12 @@ async function fetchOccurrenceName({
   model,
   guid,
 }: ComponentProps): Promise<string> {
-  return fetch(formatOccurrenceDataRequest(guid), {
+  return ajax<FullAggregatorResponse>(formatOccurrenceDataRequest(guid), {
     mode: 'cors',
+    headers: { Accept: 'application/json' },
   })
-    .then(async (response) => response.json())
-    .then((response: FullAggregatorResponse) =>
-      response.records
+    .then(({ data: { records } }) =>
+      records
         .filter(({ count }) => count > 0)
         .map(({ records }) => records[0]['dwc:scientificName'])
         .find((occurrenceName) => occurrenceName)

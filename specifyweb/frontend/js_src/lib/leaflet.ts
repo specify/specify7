@@ -8,7 +8,7 @@ import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import * as cache from './cache';
-import type { IR, RA, RR } from './types';
+import type { IR, R, RA, RR } from './types';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
@@ -22,13 +22,14 @@ import commonText from './localization/common';
 import localityText from './localization/locality';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
+import ajax, { error, HTTP } from './ajax';
 
 const DEFAULT_ZOOM = 5;
 
 // Try to fetch up-to-date tile servers. If fails, use the default tile servers
 let leafletMaps: typeof leafletTileServers | undefined;
 
-const parseLayersFromJson = (json: Record<string, any>) =>
+const parseLayersFromJson = (json: R<any>) =>
   Object.fromEntries(
     Object.entries(json).map(([layerGroup, layers]) => [
       layerGroup,
@@ -56,13 +57,23 @@ const parseLayersFromJson = (json: Record<string, any>) =>
 export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
   typeof leafletMaps === 'undefined'
     ? new Promise(async (resolve) =>
-        fetch('/context/app.resource?name=leaflet-layers')
-          .then(async (response) => response.json())
-          .then((data) => resolve((leafletMaps = parseLayersFromJson(data))))
+        ajax<R<any>>(
+          '/context/app.resource?name=leaflet-layers',
+          { headers: { Accept: 'application/json' } },
+          { strict: false, expectedResponseCodes: [HTTP.OK, HTTP.NOT_FOUND] }
+        )
+          .then(({ data, status }) =>
+            status === HTTP.NOT_FOUND
+              ? error('')
+              : resolve((leafletMaps = parseLayersFromJson(data)))
+          )
           .catch(async () =>
-            fetch(leafletLayersEndpoint)
-              .then(async (response) => response.json())
-              .then((data) =>
+            ajax<R<any>>(
+              leafletLayersEndpoint,
+              { headers: { Accept: 'application/json' } },
+              { strict: false }
+            )
+              .then(({ data }) =>
                 resolve((leafletMaps = parseLayersFromJson(data)))
               )
               .catch((error) => {

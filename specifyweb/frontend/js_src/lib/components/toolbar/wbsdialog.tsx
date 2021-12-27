@@ -231,14 +231,10 @@ export function WbsDialog({
     undefined
   );
 
-  const fetchDatasets = () => {
-    fetch(`/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`)
-      .then(async (response) => response.json())
-      .then(setDatasets)
-      .catch((error) => {
-        throw error;
-      });
-  };
+  const fetchDatasets = () =>
+    ajax<RA<DatasetBrief>>(
+      `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`
+    ).then(({ data }) => setDatasets(data));
 
   React.useEffect(fetchDatasets, []);
 

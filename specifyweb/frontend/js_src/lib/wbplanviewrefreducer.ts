@@ -22,6 +22,7 @@ import * as cache from './cache';
 import type { Dataset, WbPlanViewProps } from './components/wbplanview';
 import type { WbPlanViewStates } from './components/wbplanviewstate';
 import type { WbPlanViewActions } from './wbplanviewreducer';
+import ajax from './ajax';
 
 type RefUndefinedState = State<'RefUndefinedState'>;
 export type AutoScrollTypes =
@@ -146,20 +147,17 @@ export const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
     id,
     payload: { props, stateDispatch },
   }) =>
-    fetch(`/api/workbench/dataset/${id}`)
-      .then(async (response) => response.json())
-      .then(({ uploadplan, columns, visualorder }: Dataset) =>
-        stateDispatch({
-          type: 'OpenMappingScreenAction',
-          uploadPlan: uploadplan,
-          headers:
-            props.headers.length === 0 && Array.isArray(visualorder)
-              ? visualorder.map((visualCol) => columns[visualCol])
-              : props.headers,
-          changesMade: true,
-        })
-      )
-      .catch((error) => {
-        throw error;
-      }),
+    ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+      headers: { Accept: 'application/json' },
+    }).then(({ data: { uploadplan, columns, visualorder } }) =>
+      stateDispatch({
+        type: 'OpenMappingScreenAction',
+        uploadPlan: uploadplan,
+        headers:
+          props.headers.length === 0 && Array.isArray(visualorder)
+            ? visualorder.map((visualCol) => columns[visualCol])
+            : props.headers,
+        changesMade: true,
+      })
+    ),
 });

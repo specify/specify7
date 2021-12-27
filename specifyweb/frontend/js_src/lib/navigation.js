@@ -4,6 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 import commonText from './localization/common';
+import {isExternalUrl} from "./ajax";
 
 // We introduce a sequence variable that is incremented and passed in
 // the state argument of each history.pushState invocation. When a
@@ -155,14 +156,7 @@ export function navigate(url, options) {
     const cont = () => {
         clearUnloadProtect();
 
-        let externalUrl = false;
-        try {
-            // Trying to parse a relative URL would throw an exception
-            externalUrl = new URL(url).origin !== window.location.origin;
-        }
-        catch {}
-
-        if(externalUrl)
+        if(isExternalUrl(url))
             window.location.href = url;
         else {
             var origin = window.location.origin || (

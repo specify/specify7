@@ -48,32 +48,29 @@ export default function Notifications(): JSX.Element {
        */
       pullInterval *= INTERVAL_MULTIPLIER;
 
-      fetch(`/notifications/messages/`)
-        .then<RA<Omit<Notification, 'payload'>>>(async (response) =>
-          response.json()
-        )
-        .then((notifications) => {
-          if (destructorCalled) return;
-          setNotifications(
-            notifications.map(
-              ({ message_id, read, timestamp, type, ...rest }) => ({
-                message_id,
-                read,
-                timestamp,
-                type,
-                payload: rest as IR<string>,
-              })
-            )
-          );
-          // Stop updating if tab is hidden
-          timeout =
-            document.visibilityState === 'hidden'
-              ? undefined
-              : window.setTimeout(doFetch, pullInterval);
-        })
-        .catch(() => {
-          /* Ignore */
-        });
+      void ajax<RA<Omit<Notification, 'payload'>>>(
+        `/notifications/messages/`,
+        { headers: { 'Content-Type': 'application/json' } },
+        { strict: false }
+      ).then(({ data: notifications }) => {
+        if (destructorCalled) return;
+        setNotifications(
+          notifications.map(
+            ({ message_id, read, timestamp, type, ...rest }) => ({
+              message_id,
+              read,
+              timestamp,
+              type,
+              payload: rest as IR<string>,
+            })
+          )
+        );
+        // Stop updating if tab is hidden
+        timeout =
+          document.visibilityState === 'hidden'
+            ? undefined
+            : window.setTimeout(doFetch, pullInterval);
+      });
     }
 
     doFetch();

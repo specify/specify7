@@ -29,6 +29,7 @@ import {
 } from './wbplanviewmodelconfig';
 import systemInfo from './systeminfo';
 import { getTreeDef } from './domain';
+import ajax from './ajax';
 
 export type DataModelFieldWritable =
   | DataModelNonRelationshipWritable
@@ -196,30 +197,25 @@ const fetchPickList = async (
   pickList: string,
   fieldData: DataModelNonRelationshipWritable
 ): Promise<void> =>
-  fetch(`/api/specify/picklist/?name=${pickList}&limit=1&domainfilter=true`)
-    .then(async (response) => response.json())
-    .then(
-      (response: {
-        readonly objects: [
-          {
-            readonly readonly: boolean;
-            readonly picklistitems: { readonly title: string }[];
-          }
-        ];
-      }) => {
-        if (typeof response?.objects?.[0] === 'undefined') return;
-
-        const readOnly = response.objects[0].readonly;
-        const items = response.objects[0].picklistitems.map(
-          (item) => item.title
-        );
-
-        fieldData.pickList = {
-          readOnly,
-          items,
-        };
+  ajax<{
+    readonly objects: [
+      {
+        readonly readonly: boolean;
+        readonly picklistitems: { readonly title: string }[];
       }
-    )
+    ];
+  }>(`/api/specify/picklist/?name=${pickList}&limit=1&domainfilter=true`)
+    .then(({ data: { objects } }) => {
+      if (typeof objects?.[0] === 'undefined') return;
+
+      const readOnly = objects[0].readonly;
+      const items = objects[0].picklistitems.map((item) => item.title);
+
+      fieldData.pickList = {
+        readOnly,
+        items,
+      };
+    })
     .catch((error) => {
       throw error;
     });
@@ -261,11 +257,10 @@ const schemaConfigTableIds = Object.values({
 const getSchemaHash = async (): Promise<number> =>
   Promise.all(
     schemaConfigTableIds.map((tableNum) =>
-      fetch(`/api/specify/spauditlog/?limit=1&tablenum=${tableNum}`)
-        .then<{ readonly meta: { readonly total_count: number } }>((response) =>
-          response.json()
-        )
-        .then(({ meta }) => meta.total_count)
+      ajax<{ readonly meta: { readonly total_count: number } }>(
+        `/api/specify/spauditlog/?limit=1&tablenum=${tableNum}`,
+        { headers: { Accept: 'application/json' } }
+      ).then(({ data: { meta } }) => meta.total_count)
     )
   ).then((counts) => counts.reduce((sum, count) => sum + count, 0));
 

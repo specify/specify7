@@ -1,5 +1,4 @@
 import type { IR, R, RA, RR } from './types';
-import csrfToken from './csrftoken';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
 import type { Schema } from './legacytypes';
@@ -19,6 +18,7 @@ import {
 import lifemapperText from './localization/lifemapper';
 import schema from './schema';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
+import ajax from './ajax';
 
 export async function prepareLifemapperProjectionMap(
   remoteOccurrence: string,
@@ -61,10 +61,16 @@ export async function prepareLifemapperProjectionMap(
         isnot: false,
       };
 
-      const request = await fetch('/stored_query/ephemeral/', {
-        headers: { 'X-CSRFToken': csrfToken! },
+      const {
+        data: { results },
+      } = await ajax<{
+        readonly results: RA<[number, number, number, ...RA<string>]>;
+      }>('/stored_query/ephemeral/', {
         method: 'POST',
-        body: JSON.stringify({
+        headers: {
+          Accept: 'application/json',
+        },
+        body: {
           name: 'Lifemapper Local Occurrence query',
           contextname: 'CollectionObject',
           contexttableid: 1,
@@ -130,20 +136,16 @@ export async function prepareLifemapperProjectionMap(
             })),
           ],
           offset: 0,
-        }),
+        },
       });
 
-      const results: {
-        readonly results: RA<[number, number, number, ...RA<string>]>;
-      } = await request.json();
-
-      if (results.results.length > LIMIT)
+      if (results.length > LIMIT)
         messages.errorDetails.overLimitMessage = `<b style="color:#f00">
           ${lifemapperText('overLimitMessage')(LIMIT)}
         </b>`;
 
       const localities = await Promise.all(
-        results.results
+        results
           .slice(0, LIMIT)
           .map(
             ([
@@ -245,7 +247,7 @@ export async function prepareLifemapperProjectionMap(
     return [];
   });
 
-  const projectionMapResponse: {
+  const { data: projectionMapResponse } = await ajax<{
     readonly errors: IR<IR<string> | string>;
     readonly records: [
       {
@@ -260,12 +262,14 @@ export async function prepareLifemapperProjectionMap(
         }[];
       }
     ];
-  } = await fetch(formatOccurrenceMapRequest(remoteOccurrence))
-    .then(async (response) => response.json())
-    .catch((error: Error) => {
-      console.error(error);
-      return { errors: [error?.message ?? error] };
-    });
+  }>(
+    formatOccurrenceMapRequest(remoteOccurrence),
+    { headers: { Accept: 'application/json' } },
+    { strict: false }
+  ).catch((error: Error) => {
+    console.error(error);
+    return { errors: [error?.message ?? error] };
+  });
 
   const filteredResponse: typeof projectionMapResponse = {
     ...projectionMapResponse,

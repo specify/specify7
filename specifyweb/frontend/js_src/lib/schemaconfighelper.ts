@@ -1,11 +1,9 @@
 import type {
+  DataObjFormatter as DataObjectFormatter,
   ItemType,
+  NewSpLocaleItemStr as NewSpLocaleItemString,
   SpLocaleItem,
   SpLocaleItemStr as SpLocaleItemString,
-} from './components/schemaconfig';
-import type {
-  DataObjFormatter as DataObjectFormatter,
-  NewSpLocaleItemStr as NewSpLocaleItemString,
 } from './components/schemaconfig';
 import type {
   WithFetchedStrings,
@@ -13,6 +11,7 @@ import type {
 } from './components/schemaconfigwrapper';
 import commonText from './localization/common';
 import type { IR, RA } from './types';
+import ajax from './ajax';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -34,32 +33,30 @@ const fetchString = async (
   language: string,
   country: string | null
 ): Promise<SpLocaleItemString | NewSpLocaleItemString> =>
-  fetch(url)
-    .then<{ readonly objects: RA<SpLocaleItemString> }>(async (response) =>
-      response.json()
-    )
-    .then(({ objects }) => {
-      const targetString = objects.find(
-        (object) => object.language === language && object.country === country
-      );
-      if (typeof targetString === 'undefined') {
-        const defaultString =
-          objects.find(
-            (object) =>
-              object.language === defaultLanguage &&
-              object.country === defaultCountry
-          )?.text ?? '';
-        newStringId += 1;
+  ajax<{ readonly objects: RA<SpLocaleItemString> }>(url, {
+    headers: { Accept: 'application/json' },
+  }).then(({ data: { objects } }) => {
+    const targetString = objects.find(
+      (object) => object.language === language && object.country === country
+    );
+    if (typeof targetString === 'undefined') {
+      const defaultString =
+        objects.find(
+          (object) =>
+            object.language === defaultLanguage &&
+            object.country === defaultCountry
+        )?.text ?? '';
+      newStringId += 1;
 
-        return {
-          id: -newStringId,
-          text: defaultString,
-          language,
-          country,
-          parent: url,
-        };
-      } else return targetString;
-    });
+      return {
+        id: -newStringId,
+        text: defaultString,
+        language,
+        country,
+        parent: url,
+      };
+    } else return targetString;
+  });
 
 export const fetchStrings = async <
   T extends { readonly names: string; readonly descs: string }

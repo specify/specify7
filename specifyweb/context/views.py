@@ -5,6 +5,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout, views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.db import connection, transaction
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
@@ -12,15 +13,14 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
 from django.template.response import TemplateResponse
 from django.urls import URLPattern, URLResolver
 from django.utils.http import is_safe_url
-from django.views.i18n import set_language
+from django.utils.translation import activate, LANGUAGE_SESSION_KEY, \
+    get_language_info
+from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST, \
     require_http_methods
-from django.utils.translation import gettext as _
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import activate, LANGUAGE_SESSION_KEY, \
-    get_language_info
+from django.views.i18n import set_language
 
 from specifyweb.specify.models import Agent, Collection, Institution, \
     Specifyuser, Spprincipal, Spversion

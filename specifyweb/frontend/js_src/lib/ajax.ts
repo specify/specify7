@@ -2,10 +2,22 @@ import csrfToken from './csrftoken';
 import { UnhandledErrorView } from './errorview';
 import type { IR, RA } from './types';
 
+// These HTTP methods do not require CSRF protection
+export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
+
 export function formData(data: IR<string>): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) => formData.append(key, value));
   return formData;
+}
+
+export function isExternalUrl(url: string): boolean {
+  try {
+    // Trying to parse a relative URL would throw an exception
+    return new URL(url).origin !== window.location.origin;
+  } catch {
+    return false;
+  }
 }
 
 export const HTTP = {
@@ -14,6 +26,13 @@ export const HTTP = {
   FORBIDDEN: 403,
   UNAVAILABLE: 503,
 };
+
+/**
+ * Allows throwing errors from expressions, rather than statements
+ */
+export function error(message: string): never {
+  throw new Error(message);
+}
 
 /**
  * Wraps native fetch in useful helpers
@@ -68,21 +87,23 @@ export default async function ajax<RESPONSE_TYPE = string>(
             'Content-Type': 'application/json',
           }
         : {}),
-      ...(options.method === 'GET' ? {} : { 'X-CSRFToken': csrfToken! }),
+      ...(csrfSafeMethod.has(options.method ?? 'GET') || isExternalUrl(url)
+        ? {}
+        : { 'X-CSRFToken': csrfToken! }),
       ...options.headers,
     },
   })
-    .then(async (response) => Promise.all([response.status, response.text()]))
-    .then(([status, text]: [number, string]) => {
+    .then(async (response) => Promise.all([response, response.text()]))
+    .then(([{ status, ok }, text]: [Response, string]) => {
       if (expectedResponseCodes.includes(status)) {
-        if (options.headers?.Accept === 'application/json') {
+        if (ok && options.headers?.Accept === 'application/json') {
           try {
             return { data: JSON.parse(text), status };
           } catch {
             console.error('Invalid response', text);
             throw new TypeError(`Failed parsing JSON response:\n${text}`);
           }
-        } else if (options.headers?.Accept === 'application/xml') {
+        } else if (ok && options.headers?.Accept === 'application/xml') {
           try {
             return {
               data: new window.DOMParser().parseFromString(text, 'text/xml'),

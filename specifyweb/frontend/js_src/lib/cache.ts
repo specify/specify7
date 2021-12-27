@@ -11,6 +11,7 @@
 import type { CacheDefinitions } from './cachedefinitions';
 import { safeToTrim } from './cachedefinitions';
 import type { R, RA } from './types';
+import ajax from './ajax';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -335,10 +336,13 @@ function trimUnusedCache(
 }
 
 let collectionId: number | undefined = undefined;
+
 export async function getCurrentCollectionId(): Promise<number> {
   if (typeof collectionId !== 'undefined') return collectionId;
-  const request = await fetch('/context/collection/');
-  const data = (await request.json()) as { readonly current: number };
+  const { data } = await ajax<{ readonly current: number }>(
+    '/context/collection/',
+    { headers: { Accept: 'application/json' } }
+  );
   collectionId = data.current;
   return collectionId;
 }

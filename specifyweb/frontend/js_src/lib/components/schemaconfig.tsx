@@ -1,6 +1,6 @@
 import React from 'react';
+import ajax from '../ajax';
 
-import csrfToken from '../csrftoken';
 import type { Schema } from '../legacytypes';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
@@ -154,15 +154,14 @@ export function SchemaConfig({
 
     Promise.all([
       // Fetch all picklists
-      fetch(`/api/specify/picklist/?domainfilter=true&limit=0`)
-        .then<{
-          readonly objects: RA<{
-            readonly id: string;
-            readonly name: string;
-            readonly issystem: boolean;
-          }>;
-        }>(async (response) => response.json())
-        .then(({ objects }) =>
+      ajax<{
+        readonly objects: RA<{
+          readonly id: string;
+          readonly name: string;
+          readonly issystem: boolean;
+        }>;
+      }>(`/api/specify/picklist/?domainfilter=true&limit=0`).then(
+        ({ data: { objects } }) =>
           Object.fromEntries(
             objects.map(({ id, name, issystem }) => [
               id,
@@ -172,7 +171,7 @@ export function SchemaConfig({
               },
             ])
           )
-        ),
+      ),
       // Fetch table items and their strings
       fetch(
         `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`
@@ -238,30 +237,20 @@ export function SchemaConfig({
 
     const saveString = async (
       resource: NewSpLocaleItemStr | SpLocaleItemStr
-    ): Promise<Response> =>
+    ): Promise<unknown> =>
       'resource_uri' in resource && resource.id >= 0
         ? saveResource(resource as CommonTableFields)
-        : fetch('/api/specify/splocaleitemstr/', {
+        : ajax('/api/specify/splocaleitemstr/', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrfToken!,
-            },
-            body: JSON.stringify(
-              prepareNewString(resource as NewSpLocaleItemStr)
-            ),
+            body: prepareNewString(resource as NewSpLocaleItemStr),
           });
 
     const saveResource = async (
       resource: CommonTableFields
-    ): Promise<Response> =>
-      fetch(resource.resource_uri, {
+    ): Promise<unknown> =>
+      ajax(resource.resource_uri, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken!,
-        },
-        body: JSON.stringify(resource),
+        body: resource,
       });
 
     const { strings, ...table } = state.table;

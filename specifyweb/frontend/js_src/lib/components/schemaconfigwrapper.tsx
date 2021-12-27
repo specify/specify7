@@ -127,23 +127,21 @@ function SchemaConfigWrapper({
         )
       )
       .then(async (languages) =>
+        // Get translated language names
         Promise.all(
           languages.map(async (language) =>
-            fetch(`/context/language/${language.replace('_', '-')}/`)
-              .then<{ readonly name_local: string } | undefined>(
-                async (response) =>
-                  response.status === 200 ? response.json() : undefined
-              )
-              .then((response) => [
+            ajax<{ readonly name_local: string }>(
+              `/context/language/${language.replace('_', '-')}/`,
+              { headers: { Accept: 'application/json' } },
+              { strict: false }
+            )
+              .then(({ data }) => [
                 language,
-                typeof response === 'undefined'
-                  ? language
-                  : `${response.name_local}${
-                      language.split('_')[1]
-                        ? ` (${language.split('_')[1]})`
-                        : ''
-                    }`,
+                `${data.name_local}${
+                  language.split('_')[1] ? ` (${language.split('_')[1]})` : ''
+                }`,
               ])
+              .catch(() => [language, language])
           )
         )
       )
