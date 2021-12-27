@@ -196,7 +196,7 @@ export function SpecifyNetworkBadge({
           window.addEventListener('message', messageHandler);
         }}
       >
-        <img src="/static/img/specify_network_box_only.svg" alt="" />
+        <img src="/static/img/specify_network_logo_long.svg" alt="" />
       </a>
     </>
   );
