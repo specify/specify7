@@ -27,6 +27,7 @@ import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 
 const DEFAULT_ZOOM = 5;
 
+// Try to fetch up-to-date tile servers. If fails, use the default tile servers
 const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
   Object.fromEntries(
     Object.entries(json).map(([layerGroup, layers]) => [

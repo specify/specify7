@@ -3,38 +3,23 @@ import $ from 'jquery';
 import type { SpecifyResource } from '../legacytypes';
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
-import { Lifemapper, SpecifyNetworkBadge } from './lifemapper';
+import { SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
+import type { SpecifyResource } from './wbplanview';
 
-export type Props = {
-  readonly model: SpecifyResource;
-};
-
-export type ComponentProps = Props & {
-  readonly guid: string;
-};
-
-const CollectionObjectBadges = createBackboneView<ComponentProps, Props>(
-  SpecifyNetworkBadge,
-  {
-    className: 'flex-1 flex justify-end',
-    silentErrors: true,
-    getComponentProps: (self) => ({
-      model: self.options.model,
-      guid: self.options.model.get('guid') as string,
-    }),
-  }
-);
-
-const TaxonBadges = createBackboneView(Lifemapper, {
-  className: 'lifemapper-info',
+const Badges = createBackboneView(SpecifyNetworkBadge, {
+  className: 'flex-1 flex justify-end',
   silentErrors: true,
+  getComponentProps: (self) => ({
+    model: self.options.model,
+    guid: self.options.model.get('guid'),
+  }),
 });
 
 export default function register(): void {
   ResourceView.on('rendered', (resourceView: any) => {
-    const render = (View: any, attach: (element: JQuery) => JQuery) =>
-      new View({
+    const render = (attach: (element: JQuery) => JQuery) =>
+      new Badges({
         model: resourceView.model,
         el: attach($('<span>')),
       }).render();
@@ -44,13 +29,11 @@ export default function register(): void {
     )
       if (resourceView.model.specifyModel.name === 'Taxon') {
         if (resourceView.header)
-          render(TaxonBadges, (element) =>
-            element.appendTo(resourceView.header)
-          );
+          render((element) => element.appendTo(resourceView.header));
         else
           setTimeout(
             () =>
-              render(TaxonBadges, (container) =>
+              render((container) =>
                 container.insertBefore(
                   resourceView.el
                     .closest('.ui-dialog')
@@ -60,8 +43,6 @@ export default function register(): void {
             0
           );
       } else if (resourceView.model.specifyModel.name === 'CollectionObject')
-        render(CollectionObjectBadges, (container) =>
-          container.appendTo(resourceView.header)
-        );
+        render((container) => container.appendTo(resourceView.header));
   });
 }
