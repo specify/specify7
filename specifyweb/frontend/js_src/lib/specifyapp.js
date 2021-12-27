@@ -1,23 +1,23 @@
 "use strict";
 
 import $ from 'jquery';
-
-global.jQuery = $;
 import 'jquery-contextmenu';
 import 'jquery-ui';
 
 import userInfo from './userinfo';
 import populateForm from './populateform';
-import { ErrorView } from './errorview';
+import {ErrorView} from './errorview';
 import NotFoundView from './notfoundview';
 import * as navigation from './navigation';
 import ResourceView from './resourceview';
 import router from './router';
 import systemInfo from './systeminfo';
-import { reports } from './reports';
+import reports from './reports';
 import commonText from './localization/common';
 
-    var currentView;
+global.jQuery = $;
+
+var currentView;
     var versionMismatchWarned = false;
 
 
@@ -40,7 +40,7 @@ import commonText from './localization/common';
 
         /*
          * Make title non-bold by adding 'ui-dialog-with-header' className to
-         * non-React dialogs that have headers (React dialog do this in
+         * non-React dialogs that have headers (React dialogs do the same in
          * modaldialog.tsx)
          * */
         if(!this.options.dialogClass.split(' ').includes('ui-dialog-react'))
@@ -87,9 +87,9 @@ import commonText from './localization/common';
         main[0].focus();
 
         if (typeof currentView.title === 'string')
-            app.setTitle(currentView.title);
+            setTitle(currentView.title);
         else if (typeof currentView.title === 'function')
-            app.setTitle(currentView.title(currentView));
+            setTitle(currentView.title(currentView));
 
         Array.from(
           document.getElementById('site-nav').getElementsByTagName('a'),

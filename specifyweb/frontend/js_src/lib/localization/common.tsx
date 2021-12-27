@@ -343,23 +343,23 @@ const commonText = createDictionary({
   // Toolbar
   skipToContent: {
     'en-us': 'Skip to Content',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Перейти к содержанию',
+    ca: 'Saltar al contingut',
   },
   goToHomepage: {
     'en-us': 'Go to homepage',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Вернуться на домашнюю страницу',
+    ca: "Vés a la pàgina d'inici",
   },
   currentUser: {
     'en-us': 'Current User',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Текущий пользователь',
+    ca: 'Usuari actual',
   },
   currentCollection: {
     'en-us': 'Current Collection',
-    'ru-ru': '',
-    ca: '',
+    'ru-ru': 'Текущая коллекция',
+    ca: 'Col·lecció actual',
   },
 
   notifications: {

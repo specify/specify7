@@ -271,7 +271,7 @@ export const stateReducer = generateReducer<
                     click: cancel,
                   },
                   {
-                    text: wbText('changeBaseTable'),
+                    text: commonText('changeBaseTable'),
                     click: confirm,
                   },
                 ]}

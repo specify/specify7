@@ -5,11 +5,11 @@ import _ from 'underscore';
 
 import api from './specifyapi';
 import UIPlugin from './uiplugin';
-import { getIcon } from './icons';
+import {getIcon} from './icons';
 import UIField from './uifield';
 import initialContext from './initialcontext';
 
-    export const webLinksDefs = {};
+export const webLinksDefs = {};
     initialContext.load('app.resource?name=WebLinks', function(xml) {
         _.each($('vector > weblinkdef', xml), function(def) {
             def = $(def);
@@ -62,7 +62,7 @@ export default UIPlugin.extend({
                   class="magic-button"
                 >
                   <img
-                    src="${icons.getIcon(this.init.icon || "WebLink") }"
+                    src="${getIcon(this.init.icon || "WebLink") }"
                     alt="${title}"
                   >
                 </a>`)[0]);

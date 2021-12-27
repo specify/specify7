@@ -592,7 +592,7 @@ function getAppResources(options){
     )
 }
 
-export function reports(options = {}) {
+export default function reports(options = {}) {
     return getAppResources(options).then((appResources) =>
         new ReportListDialog(_.extend(options, {appResources}))
     )

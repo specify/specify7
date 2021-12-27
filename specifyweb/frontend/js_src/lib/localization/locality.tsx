@@ -134,21 +134,6 @@ const localityText = createDictionary({
     'ru-ru': 'Координаты',
     ca: 'Coords',
   },
-  start: {
-    'en-us': 'Start',
-    'ru-ru': 'Начало',
-    ca: 'Començament',
-  },
-  end: {
-    'en-us': 'End',
-    'ru-ru': 'Конец',
-    ca: 'Final',
-  },
-  notApplicable: {
-    'en-us': 'N/A',
-    'ru-ru': 'Н/П',
-    ca: 'N/A',
-  },
 });
 
 export default localityText;

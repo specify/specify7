@@ -1067,11 +1067,6 @@ const wbText = createDictionary({
     'ru-ru': 'Очистить сопоставление',
     ca: 'Clear Mapping',
   },
-  changeBaseTable: {
-    'en-us': 'Change Base Table',
-    'ru-ru': 'Изменить базовую таблицу',
-    ca: 'Change Base Table',
-  },
   reRunAutoMapper: {
     'en-us': 'Rerun AutoMapper',
     'ru-ru': 'Перезапустить AutoMapper',

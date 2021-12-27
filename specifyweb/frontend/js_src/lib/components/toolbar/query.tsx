@@ -156,7 +156,7 @@ function QueryList({
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
                 }
-                className="fake-link"
+                className="fake-link intercept-navigation"
                 style={{ overflowX: 'auto' }}
               >
                 <TableIcon tableName={query.tableName} tableLabel={false} />
@@ -195,7 +195,10 @@ function ListOfTables({
     <ul className="list-of-tables" style={{ padding: 0 }}>
       {tables.map((tableName, index) => (
         <li key={index}>
-          <a href={getQueryCreateUrl(tableName)} className="fake-link">
+          <a
+            href={getQueryCreateUrl(tableName)}
+            className="fake-link intercept-navigation"
+          >
             <TableIcon tableName={tableName} tableLabel={false} />
             {schema.getModel(tableName).getLocalizedName()}
           </a>

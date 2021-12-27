@@ -269,7 +269,10 @@ const notificationRenderers: IR<
   'dataset-ownership-transferred'(notification) {
     return commonText('dataSetOwnershipTransferred')(
       <i>{notification.payload['previous-owner-name']}</i>,
-      <a href={`/specify/workbench/${notification.payload['dataset-id']}/`}>
+      <a
+        href={`/specify/workbench/${notification.payload['dataset-id']}/`}
+        className="intercept-navigation"
+      >
         <i>{notification.payload['dataset-name']}</i>
       </a>
     );

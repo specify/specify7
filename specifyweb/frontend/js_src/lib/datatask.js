@@ -7,19 +7,18 @@ import Backbone from './backbone';
 import schema from './schema';
 import api from './specifyapi';
 import * as navigation from './navigation';
-import { collectionsForResource } from './domain';
+import {collectionsForResource} from './domain';
 import OtherCollectionView from './othercollectionview';
 import NotFoundView from './notfoundview';
 import userInfo from './userinfo';
 import router from './router';
 import * as app from './specifyapp';
 import * as querystring from './querystring';
->>>>>>> e8165550 (Use ES Modules instead of Common JS import/export)
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-    var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
     function getRecordSetItem(recordSet, index) {
         return $.when(recordSet.fetchIfNotPopulated(), $.get('/api/specify/recordsetitem/', {

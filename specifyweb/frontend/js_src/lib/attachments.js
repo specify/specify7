@@ -3,12 +3,12 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import { getIcon } from './icons';
+import {getIcon} from './icons';
 import schema from './schema';
 import commonText from './localization/common';
 import initialContext from './initialcontext';
 
-    var settings;
+var settings;
     initialContext.load('attachment_settings.json', data => settings = data);
 
     var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
@@ -33,7 +33,7 @@ import initialContext from './initialcontext';
                 'vnd.ms-powerpoint': 'MSPowerPoint'
             }[subtype];
 
-            if (iconName) return [iconName,icons.getIcon(iconName)];
+            if (iconName) return [iconName,getIcon(iconName)];
         }
 
         return [commonText('unknown'), getIcon('unknown')];

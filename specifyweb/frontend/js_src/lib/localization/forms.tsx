@@ -73,11 +73,6 @@ const formsText = createDictionary({
     'ru-ru': 'Объект коллекции',
     ca: 'Collection Object',
   },
-  collection: {
-    'en-us': 'Collection',
-    'ru-ru': 'Коллекция',
-    ca: 'Collection',
-  },
   // "set" as in "Set Value"
   set: {
     'en-us': 'Set',

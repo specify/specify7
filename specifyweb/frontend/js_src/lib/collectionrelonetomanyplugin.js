@@ -70,7 +70,7 @@ export default UIPlugin.extend({
         this.setElement(table);
         table.append(`<tr>
             <th>${formsText('collectionObject')}</th>
-            <th>${formsText('collection')}</th>
+            <th>${commonText('collection')}</th>
         </tr>`);
         var footer = $('<tfoot>').appendTo(table);
         $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<button>', {class: "fake-link sp-rel-plugin-add", type:'button'}).appendTo(footer));

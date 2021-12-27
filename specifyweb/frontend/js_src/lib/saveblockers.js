@@ -16,7 +16,7 @@ import {validationMessages} from './validationmessages';
             function () {};
     }
 
-    export function SaveBlockers(resource) {
+    export default function SaveBlockers(resource) {
         this.resource = resource;
         this.blockers = {};
         this.inputs = {};

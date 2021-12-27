@@ -8,9 +8,8 @@ import Q from 'q';
 
 import ajax from './ajax';
 import schema from './schema';
-import { getIcon } from './icons';
+import {getIcon} from './icons';
 import specifyform from './specifyform';
-import initialContext from './initialcontext';
 import userInfo from './userinfo';
 import InteractionDialog from './interactiondialog';
 import * as s from './stringlocalization';
@@ -18,7 +17,7 @@ import reports from './reports';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-    var interaction_entries, actions, isFulfilled=false;
+var interaction_entries, actions, isFulfilled=false;
 
     const getFormsPromise = ajax(
         '/context/app.resource?name=InteractionsTaskInit',

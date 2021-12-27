@@ -52,10 +52,8 @@ type SchemaModelTableData = {
   readonly isHidden: () => boolean;
 };
 
-type SchemaModels<T> = IR<T>;
-
 export type Schema = {
-  readonly models: SchemaModels<SchemaModelTableData>;
+  readonly models: IR<SchemaModelTableData>;
   readonly orgHierarchy: RA<string>;
 };
 
@@ -65,13 +63,11 @@ type DomainTreeDefinitionItem = {
   readonly attributes: { name: string; rankid: number; parent: string };
 };
 
-type DomainRequest = IR<unknown>;
-
-type SpecifyRequest = (parameter: DomainRequest) => JqueryPromise<void>;
+type SpecifyRequest = (parameter: IR<unknown>) => JqueryPromise<void>;
 
 type DomainTreeDefinitionItems = {
   readonly fetch: SpecifyRequest;
-  readonly models: SchemaModels<DomainTreeDefinitionItem>;
+  readonly models: IR<DomainTreeDefinitionItem>;
 };
 
 type DomainTreeDefinition = {

@@ -14,12 +14,7 @@ const welcomeText = createDictionary({
     'ru-ru': 'Добро пожаловать',
     ca: 'Welcome',
   },
-  mainPage: {
-    'en-us': 'Main Page',
-    'ru-ru': 'Главная',
-    ca: 'Main Page',
-  },
-  aboutSpecifyButtonDescription: {
+  aboutSpecify: {
     'en-us': 'About Specify',
     'ru-ru': 'О Specify',
     ca: 'About Specify',

@@ -4,13 +4,13 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Q from 'q';
 import api from './specifyapi';
-import saveblockers from './saveblockers';
+import SaveBlockers from './saveblockers';
 import treeBusinessRules from './treebusinessrules';
 import rules from './businessruledefs';
 
 import formsText from './localization/forms';
 
-    var enabled = true;
+var enabled = true;
 
     api.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);

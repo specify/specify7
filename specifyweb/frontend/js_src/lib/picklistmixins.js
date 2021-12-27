@@ -6,9 +6,9 @@ import schema from './schema';
 import api from './specifyapi';
 import {format} from './dataobjformatters';
 
-    // User defined picklist.
+// User defined picklist.
     //
-    function userDefined(info) {
+    function getUserDefined(info) {
         return Q(info.pickList.rget('picklistitems'))
             .then(function(plItemCollection) {
                 // picklistitems is a dependent field
@@ -19,7 +19,7 @@ import {format} from './dataobjformatters';
 
     // From table picklist;
     //
-    function fromTable(info) {
+    function getFromTable(info) {
         var plModel = schema.getModel(info.pickList.get('tablename'));
         var plItemCollection = new plModel.LazyCollection({domainfilter: true});
         return Q(plItemCollection.fetch({ limit: info.limit }))
@@ -43,7 +43,7 @@ import {format} from './dataobjformatters';
 
     // From field picklist.
     //
-    function fromField(info) {
+    function getFromField(info) {
         var plModel = schema.getModel(info.pickList.get('tablename'));
         var plFieldName = info.pickList.get('fieldname');
         return Q(api.getRows(plModel, {
@@ -66,9 +66,7 @@ function makeMixin(source, name) {
     return {getItems: source, __name__: name};
 }
 
-export default {
-    userDefined   : makeMixin(userDefined, 'UserDefinedPL'),
-    fromTable     : makeMixin(fromTable, 'FromTablePL'),
-    fromField     : makeMixin(fromField, 'FromFieldPL')
-};
+export const userDefined = makeMixin(getUserDefined, 'UserDefinedPL');
+export const fromTable = makeMixin(getFromTable, 'FromTablePL');
+export const fromField = makeMixin(getFromField, 'FromFieldPL');
 

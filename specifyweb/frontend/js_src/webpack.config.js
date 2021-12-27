@@ -100,7 +100,7 @@ module.exports = (_env, argv)=>({
         ]
     },
     resolve: {
-        extensions: ['.ts','.tsx','.js', '.jsx']
+        extensions: ['.ts','.tsx','.js', '.jsx'],
         symlinks: false,
     },
     plugins: [

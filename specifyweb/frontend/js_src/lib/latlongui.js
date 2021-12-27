@@ -4,12 +4,11 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 
-import api from './api';
 import * as latlongutils from './latlongutils';
 import UIPlugin from './uiplugin';
 import template from './templates/latlonui.html';
 import localityText from './localization/locality';
-import commonText from './locality/common';
+import commonText from './localization/common';
 
 
 export default UIPlugin.extend({

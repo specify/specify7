@@ -222,6 +222,7 @@ function buildTree(data) {
 const WelcomeView = Backbone.View.extend({
   __name__: 'WelcomeView',
   className: 'specify-welcome',
+  title: welcomeText('pageTitle'),
   events: {
     'click #about-specify': 'showAboutDialog',
   },
@@ -261,6 +262,6 @@ const WelcomeView = Backbone.View.extend({
   },
 });
 
-exprot default function (){
+export default function (){
   app.setCurrentView(new WelcomeView());
 }

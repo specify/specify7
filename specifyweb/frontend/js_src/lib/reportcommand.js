@@ -3,7 +3,7 @@
 import $ from 'jquery';
 
 import UICmd from './uicommand';
-import { reports } from './reports';
+import reports from './reports';
 import formsText from './localization/forms';
 
 export default UICmd.extend({
