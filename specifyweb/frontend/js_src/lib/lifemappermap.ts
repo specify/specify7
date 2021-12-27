@@ -165,7 +165,7 @@ export async function prepareLifemapperProjectionMap(
                   ])
                 ),
                 fetchLocalityResource: async () =>
-                  new Promise<any>((resolve) => {
+                  new Promise((resolve) => {
                     const locality = new (
                       schema as unknown as Schema
                     ).models.Locality.LazyCollection({
@@ -247,7 +247,7 @@ export async function prepareLifemapperProjectionMap(
     return [];
   });
 
-  const { data: projectionMapResponse } = await ajax<{
+  const projectionMapResponse = await ajax<{
     readonly errors: IR<IR<string> | string>;
     readonly records: [
       {
@@ -266,42 +266,42 @@ export async function prepareLifemapperProjectionMap(
     formatOccurrenceMapRequest(remoteOccurrence),
     { headers: { Accept: 'application/json' } },
     { strict: false }
-  ).catch((error: Error) => {
-    console.error(error);
-    return { errors: [error?.message ?? error] };
-  });
-
-  const filteredResponse: typeof projectionMapResponse = {
-    ...projectionMapResponse,
-    records: [
-      {
-        records: projectionMapResponse.records[0]?.records.filter(
-          (record) =>
-            typeof record['s2n:sdm_projection_scenario_code'] !== 'string' ||
-            record['s2n:sdm_projection_scenario_code'] === 'worldclim-curr'
-        ),
-      },
-    ],
-  };
+  )
+    .then(({ data }) => ({
+      ...data,
+      records: [
+        {
+          records: data.records?.[0]?.records.filter(
+            (record) =>
+              typeof record['s2n:sdm_projection_scenario_code'] !== 'string' ||
+              record['s2n:sdm_projection_scenario_code'] === 'worldclim-curr'
+          ),
+        },
+      ],
+    }))
+    .catch((error: Error) => {
+      console.error(error);
+      return { errors: [error?.message ?? error], records: [] };
+    });
 
   let layers: RA<LayerConfig> = [];
 
-  if (Object.keys(filteredResponse.errors).length > 0)
-    Object.values(filteredResponse.errors)
+  if (Object.keys(projectionMapResponse.errors).length > 0)
+    Object.values(projectionMapResponse.errors)
       .flatMap((errors) => Object.entries(errors))
       .forEach(([key, value]) => {
         messages.errorDetails[key] = value;
       });
   else if (
-    !Array.isArray(filteredResponse.records[0]?.records) ||
-    filteredResponse.records[0].records.length === 0
+    !Array.isArray(projectionMapResponse.records[0]?.records) ||
+    projectionMapResponse.records[0].records.length === 0
   )
     messages.errorDetails.projectionNotFound =
       lifemapperText('projectionNotFound');
   else {
     const layerCount: R<number> = {};
     const layerCountLimit = 10;
-    layers = filteredResponse.records[0].records
+    layers = projectionMapResponse.records[0].records
       .sort(
         (
           { 's2n:layer_type': layerTypeLeft },
@@ -321,7 +321,7 @@ export async function prepareLifemapperProjectionMap(
         if (layerCount[layerType] > layerCountLimit) return undefined;
 
         const showLayerIndex =
-          filteredResponse.records[0].records.filter(
+          projectionMapResponse.records[0].records.filter(
             (record) => record['s2n:layer_type'] === layerType
           ).length > 1;
 
@@ -351,7 +351,7 @@ export async function prepareLifemapperProjectionMap(
       .filter((record): record is LayerConfig => typeof record !== 'undefined');
 
     const modificationTime =
-      filteredResponse.records[0].records[0]['s2n:modtime'];
+      projectionMapResponse.records[0].records[0]['s2n:modtime'];
     messages.infoSection.dateCreated = Number.isNaN(new Date(modificationTime))
       ? modificationTime
       : new Date(modificationTime).toLocaleDateString();

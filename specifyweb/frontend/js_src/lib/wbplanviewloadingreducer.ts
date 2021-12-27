@@ -6,11 +6,11 @@
  * @module
  */
 
-import $ from 'jquery';
 import type { State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import type {
+  Dataset,
   SpecifyResource,
   WbPlanViewWrapperProps,
 } from './components/wbplanview';
@@ -18,6 +18,7 @@ import type { MappingState } from './components/wbplanviewstate';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import { getMappingsTree, getMustMatchTables, goBack } from './wbplanviewutils';
+import ajax from './ajax';
 
 type NavigateBackState = State<
   'NavigateBackState',
@@ -64,39 +65,33 @@ export const loadingStateDispatch = generateDispatch<LoadingStates>({
 
     const dataSetRequestUrl = `/api/workbench/dataset/${props.dataset.id}/`;
 
-    void $.ajax(dataSetRequestUrl, {
-      type: 'PUT',
-      data: JSON.stringify({
+    void ajax(dataSetRequestUrl, {
+      method: 'PUT',
+      body: {
         uploadplan: uploadPlan,
-      }),
-      dataType: 'json',
-      processData: false,
-    }).done(() => {
+      },
+    }).then(() => {
       if (state.changesMade) props.removeUnloadProtect();
 
-      if (newlyAddedHeaders.length > 0)
-        $.ajax(dataSetRequestUrl, {
-          type: 'GET',
-        }).done(({ columns, visualorder }) => {
-          const newVisualOrder =
-            visualorder === null
-              ? Object.keys(props.dataset.columns)
-              : visualorder;
-
-          newlyAddedHeaders.forEach((headerName) =>
-            newVisualOrder.push(columns.indexOf(headerName))
-          );
-
-          $.ajax(dataSetRequestUrl, {
-            type: 'PUT',
-            data: JSON.stringify({
-              visualorder: newVisualOrder,
-            }),
-            dataType: 'json',
-            processData: false,
-          }).done(() => goBack(props.dataset.id));
-        });
-      else goBack(props.dataset.id);
+      return newlyAddedHeaders.length > 0
+        ? ajax<Dataset>(dataSetRequestUrl).then(
+            async ({ data: { columns, visualorder } }) =>
+              ajax(dataSetRequestUrl, {
+                method: 'PUT',
+                body: {
+                  visualorder: [
+                    ...(visualorder ??
+                      Object.keys(props.dataset.columns).map((index) =>
+                        Number.parseInt(index)
+                      )),
+                    ...newlyAddedHeaders.map((headerName) =>
+                      columns.indexOf(headerName)
+                    ),
+                  ],
+                },
+              }).then(() => goBack(props.dataset.id))
+          )
+        : goBack(props.dataset.id);
     });
   },
 });

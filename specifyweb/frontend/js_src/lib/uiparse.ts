@@ -3,12 +3,13 @@ import dayjs from './dayjs';
 import formsText from './localization/forms';
 import type { IR, RA } from './types';
 import { hasNativeErrors } from './validationmessages';
+import { error } from './ajax';
 
 const stringGuard =
-  (formatter: (value: string) => unknown) => (value: unknown) => {
-    if (typeof value === 'string') return formatter(value);
-    else throw new Error('Value is not a string');
-  };
+  (formatter: (value: string) => unknown) => (value: unknown) =>
+    typeof value === 'string'
+      ? formatter(value)
+      : error('Value is not a string');
 
 const formatter: IR<(value: unknown) => unknown> = {
   trim: stringGuard((value) => value.trim()),

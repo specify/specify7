@@ -324,16 +324,14 @@ export function isValidAccuracy(
   latlongaccuracy: string | undefined
 ): latlongaccuracy is string {
   try {
-    if (
-      typeof latlongaccuracy === 'undefined' ||
-      Number.isNaN(Number.parseFloat(latlongaccuracy)) ||
-      Number.parseFloat(latlongaccuracy) < 1
-    )
-      return false;
+    return (
+      typeof latlongaccuracy !== 'undefined' &&
+      !Number.isNaN(Number.parseFloat(latlongaccuracy)) &&
+      Number.parseFloat(latlongaccuracy) >= 1
+    );
   } catch {
     return false;
   }
-  return true;
 }
 
 export type MarkerGroups = {

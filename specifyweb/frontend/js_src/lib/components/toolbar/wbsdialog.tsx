@@ -4,7 +4,6 @@
  * @module
  */
 
-import $ from 'jquery';
 import React from 'react';
 
 import ajax from '../../ajax';
@@ -51,14 +50,12 @@ function DsMeta({
   const dialog = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    let datasetPromise: undefined | Promise<Dataset> = new Promise((resolve) =>
-      $.ajax(`/api/workbench/dataset/${dsId}/`).done(resolve)
+    ajax<Dataset>(`/api/workbench/dataset/${dsId}/`).then(({ data }) =>
+      destructorCalled ? undefined : setDataset(data)
     );
-    datasetPromise.then((dataset) => {
-      if (typeof datasetPromise !== 'undefined') setDataset(dataset);
-    });
+    let destructorCalled = false;
     return () => {
-      datasetPromise = undefined;
+      destructorCalled = true;
     };
   }, [dsId]);
 
@@ -232,7 +229,7 @@ export function WbsDialog({
   );
 
   const fetchDatasets = () =>
-    ajax<RA<DatasetBrief>>(
+    void ajax<RA<DatasetBrief>>(
       `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`
     ).then(({ data }) => setDatasets(data));
 

@@ -107,18 +107,16 @@ async function recursiveResourceResolve(
       await resource.rget(nextPart[0]),
     ];
   } else if (valueIsReferenceItem(currentPart[0])) {
-    return new Promise(async (resolve) =>
-      Promise.all<RA<string>>(
-        Object.values(resource.models)
-          .slice(0, MAX_TO_MANY_INDEX)
-          .map(async (model: any, index) =>
-            recursiveResourceResolve(model, nextPart, filterFunction, [
-              ...pastParts,
-              formatReferenceItem(index + 1),
-            ])
-          )
-      ).then((result) => resolve(result.flat()))
-    );
+    return Promise.all<RA<string>>(
+      Object.values(resource.models)
+        .slice(0, MAX_TO_MANY_INDEX)
+        .map(async (model: any, index) =>
+          recursiveResourceResolve(model, nextPart, filterFunction, [
+            ...pastParts,
+            formatReferenceItem(index + 1),
+          ])
+        )
+    ).then((result) => result.flat());
   } else {
     const overwriteAgent =
       currentPart[0] === 'agent' && currentPart[1] === 'lastname';

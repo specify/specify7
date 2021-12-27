@@ -5,7 +5,7 @@ import $ from 'jquery';
 
 function getCookie(name) {
     let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
+    if (typeof document !== 'undefined' && document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = $.trim(cookies[i]);
