@@ -7,10 +7,10 @@ import commonText from './localization/common';
 
 export default function () {
   router.route('workbench-plan/:id/', 'workbench-plan', (id) => {
-    Promise.allSettled(
-      import('./components/wbplanview'),
+    Promise.all([
+      import('./components/wbplanviewwrapper'),
       fetch(`/api/workbench/dataset/${id}/`)
-    ).then(([{ default: WbPlanView }, response]) => {
+    ]).then(([{default: WbPlanView}, response]) => {
       if (response.status === 404) {
         app.setCurrentView(new NotFoundView());
       } else

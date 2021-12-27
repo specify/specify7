@@ -60,12 +60,12 @@ import * as querystring from './querystring';
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
 
-        constructor: function(_attributes, options) {
+        constructor: function() {
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
         },
-        initialize: function(attributes) {
+        initialize: function(attributes, options) {
             this.noBusinessRules = options && options.noBusinessRules;
             this.noValidation = options && options.noValidation;
 
