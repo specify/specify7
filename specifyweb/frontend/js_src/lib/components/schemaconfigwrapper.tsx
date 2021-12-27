@@ -21,6 +21,7 @@ import type {
 } from './schemaconfig';
 import { SchemaConfig } from './schemaconfig';
 import { handlePromiseReject } from './wbplanview';
+import ajax from '../ajax';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -106,13 +107,12 @@ function SchemaConfigWrapper({
 
   // Fetch languages
   React.useEffect(() => {
-    fetch('/context/schema/language/')
-      .then<{
-        readonly data: RA<{
-          readonly country: string | null;
-          readonly language: string;
-        }>;
-      }>(async (response) => response.json())
+    ajax<
+      RA<{
+        readonly country: string | null;
+        readonly language: string;
+      }>
+    >('/context/schema/language/', { headers: { Accept: 'application/json' } })
       .then(({ data }) =>
         // Sometimes languages are duplicated. Need to make the list unique
         Array.from(
@@ -130,16 +130,15 @@ function SchemaConfigWrapper({
         Promise.all(
           languages.map(async (language) =>
             fetch(`/context/language/${language.replace('_', '-')}/`)
-              .then<
-                { readonly data: { readonly name_local: string } } | undefined
-              >(async (response) =>
-                response.status === 200 ? response.json() : undefined
+              .then<{ readonly name_local: string } | undefined>(
+                async (response) =>
+                  response.status === 200 ? response.json() : undefined
               )
               .then((response) => [
                 language,
                 typeof response === 'undefined'
                   ? language
-                  : `${response.data.name_local}${
+                  : `${response.name_local}${
                       language.split('_')[1]
                         ? ` (${language.split('_')[1]})`
                         : ''

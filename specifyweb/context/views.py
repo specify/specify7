@@ -621,12 +621,10 @@ def languages(request):
     """Get List of available languages OR set current language."""
     if request.method == 'GET':
         return JsonResponse({
-            'data': {
-                code:{
-                    **get_language_info(code),
-                    'is_current': code==request.LANGUAGE_CODE
-                } for code, name in settings.LANGUAGES
-            }
+            code:{
+                **get_language_info(code),
+                'is_current': code==request.LANGUAGE_CODE
+            } for code, name in settings.LANGUAGES
         })
     else:  # POST
         return set_language(request)
@@ -634,13 +632,13 @@ def languages(request):
 @require_GET
 def language(request, language_code):
     """Get Information for a single language."""
-    return JsonResponse({'data':get_language_info(language_code)})
+    return JsonResponse(get_language_info(language_code))
 
 @require_GET
 def schema_language(request):
     """Get list of schema languages, countries and variants."""
     schema_languages = get_schema_languages()
-    return JsonResponse({ 'data': [
+    return JsonResponse([
         dict(zip(('language', 'country', 'variant'), row))
         for row in schema_languages
-    ]})
+    ])

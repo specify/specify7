@@ -6,6 +6,7 @@ import type { IR } from '../../types';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import ajax from '../../ajax';
 
 type Props = {
   readonly onClose: () => void;
@@ -23,8 +24,12 @@ function ChangeLanguage({
   >(undefined);
 
   React.useEffect(() => {
-    fetch('/context/language/')
-      .then(async (response) => response.json())
+    ajax<
+      IR<{
+        readonly name_local: string;
+        readonly code: string;
+      }>
+    >('/context/language/', { headers: { Accept: 'application/json' } })
       .then(({ data }) => setLanguages(data))
       .catch(console.error);
   }, []);
