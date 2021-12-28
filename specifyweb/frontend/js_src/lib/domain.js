@@ -4,11 +4,11 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import api from './specifyapi';
-import schema from './schema';
+import schema, {getModel} from './schema';
 import remoteprefs from './remoteprefs';
 
 
-    function takeBetween(items, startElem, endElem) {
+function takeBetween(items, startElem, endElem) {
         var start = 1 + _.indexOf(items, startElem);
         var end = 1 + _.indexOf(items, endElem);
         return _.rest(_.first(items, end), start);
@@ -16,7 +16,7 @@ import remoteprefs from './remoteprefs';
 
 
     api.on('newresource', function(resource) {
-        const domainField = resource.specifyModel.orgRelationship();
+        const domainField = resource.specifyModel.getScopingRelationship();
         const parentResource = domainField && getDomainResource(domainField.name);
         if (parentResource && !resource.get(domainField.name)) {
             resource.set(domainField.name, parentResource.url());
@@ -54,7 +54,7 @@ import remoteprefs from './remoteprefs';
 
         export function getDomainResource(level) {
             const id = schema.domainLevelIds[level];
-            return id == null ? null : new (schema.getModel(level).Resource)({ id: id });
+            return id == null ? null : new (getModel(level).Resource)({ id: id });
         }
         export function getTreeDef(treeName) {
             treeName = treeName.toLowerCase();
@@ -90,7 +90,7 @@ import remoteprefs from './remoteprefs';
                 var collection = new schema.models.Collection.Resource({ id: collectionmemberid });
                 return collection.fetchIfNotPopulated().pipe(function() { return [collection]; });
             }
-            var domainField = resource.specifyModel.orgRelationship();
+            var domainField = resource.specifyModel.getScopingRelationship();
             if (domainField) {
                 return resource.rget(domainField.name).pipe(collectionsInDomain);
             } else {

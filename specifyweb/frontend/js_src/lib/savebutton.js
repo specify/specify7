@@ -20,7 +20,7 @@ export default Backbone.View.extend({
 
             if (this.model.isNew()) this.setButtonsDisabled(false, false);
 
-            this.model.on('saverequired changing', function(_iresource) {
+            this.model.on('saverequired changing', function(_resource) {
                 this.setButtonsDisabled(false);
             }, this);
 

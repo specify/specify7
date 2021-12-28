@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-import schema from './schema';
+import schema, { getModelById } from './schema';
 import {format} from './dataobjformatters';
 import fieldformat from './fieldformat';
 
@@ -146,7 +146,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         }
         if (auditedFldName) {
             var tableNum = resource.get('tablenum');
-            var model = isNaN(tableNum) ? schema.models[this.getDeIdeedTableName(tableNum)] : schema.getModelById(tableNum);
+            var model = isNaN(tableNum) ? schema.models[this.getDeIdeedTableName(tableNum)] : getModelById(tableNum);
             return model.getField(auditedFldName);
         } else {
             return null;
@@ -163,7 +163,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         var fldName = field.name.toLowerCase();
         if (fldNames.indexOf(fldName) >= 0) {
             var tableNum = fldName.startsWith('parent') ? resource.get('parenttablenum') : resource.get('tablenum');
-            return isNaN(tableNum) ? schema.models[this.getDeIdeedTableName(tableNum)] : schema.getModelById(tableNum);
+            return isNaN(tableNum) ? schema.models[this.getDeIdeedTableName(tableNum)] : getModelById(tableNum);
         }
         if (['newvalue','oldvalue'].indexOf(field.name.toLowerCase()) >= 0) {
             var auditedFld = this.getAuditedField(field, result, resource);

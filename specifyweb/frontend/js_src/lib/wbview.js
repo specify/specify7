@@ -23,7 +23,7 @@ import Papa from 'papaparse';
 
 import 'handsontable/dist/handsontable.full.css';
 
-import schema from './schema';
+import { getModel } from './schema';
 import * as app from './specifyapp';
 import userInfo from './userinfo';
 import DataSetMeta from './datasetmeta';
@@ -1432,7 +1432,7 @@ const WBView = Backbone.View.extend({
       baseTableName: this.mappings.baseTableName,
       mappingPath: matches.mappingPath,
     });
-    const model = schema.getModel(tableName);
+    const model = getModel(tableName);
     const resources = new model.LazyCollection({
       filters: { id__in: matches.ids.join(',') },
     });

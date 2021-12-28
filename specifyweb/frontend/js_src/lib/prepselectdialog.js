@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import schema from './schema';
+import { getModel } from './schema';
 import * as navigation from './navigation';
 import populateForm from './populateform';
 import api from './specifyapi';
@@ -27,7 +27,7 @@ export default PrepDialog.extend({
         processInteractionsPreps: function() {
             if (!this.availabilityDblChk) {
                 if (this.options.interactionresource) {
-                    var pmod = schema.getModel('preparation');
+                    var pmod = getModel('preparation');
                     var idxpreps = _.groupBy(this.options.preps, function(prep) {
                         return (new pmod.Resource({id: prep.preparationid})).url();
                     });
@@ -249,7 +249,7 @@ export default PrepDialog.extend({
         makeInteractionPrep: function(baseTbl, itemModel, iprep, amt) {
             var result = new itemModel.Resource();
             result.initialize();
-            var pmod = schema.getModel('preparation');
+            var pmod = getModel('preparation');
             var purl = (new pmod.Resource({id: iprep.preparationid})).url();
             result.set('preparation', purl);
             result.set('quantity', Number(amt));
@@ -281,12 +281,12 @@ export default PrepDialog.extend({
             if (this.options.interactionresource) {
                 interaction = this.options.interactionresource;
             } else {
-                var baseModel = schema.getModel(baseTbl);
+                var baseModel = getModel(baseTbl);
                 interaction = new baseModel.Resource();
                 interaction.initialize();
             }
             var itemModelName = baseTbl + 'preparation';
-            var itemModel = schema.getModel(itemModelName);
+            var itemModel = getModel(itemModelName);
             var items = [];
             var amounts = this.$(':input.prepselect-amt');
 

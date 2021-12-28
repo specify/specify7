@@ -2,15 +2,15 @@ import React from 'react';
 
 import ajax from '../../ajax';
 import { getDomainResource } from '../../domain';
-import type { SchemaModelTableField } from '../../legacytypes';
 import commonText from '../../localization/common';
-import schema from '../../schema';
+import { getModel } from '../../schema';
 import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import { TableIcon } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import SpecifyModel from "../../specifymodel";
 
 const treesForAll = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
@@ -28,7 +28,7 @@ export function TreeSelectDialog({
   readonly getLink: (tree: string) => string;
 }): JSX.Element {
   const [trees, setTrees] = React.useState<
-    IR<SchemaModelTableField> | undefined
+    IR<SpecifyModel> | undefined
   >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -39,7 +39,7 @@ export function TreeSelectDialog({
         ...(paleoDiscs.has(type) ? treesForPaleo : []),
       ])
       .then((trees) =>
-        Object.fromEntries(trees.map((tree) => [tree, schema.getModel(tree)]))
+        Object.fromEntries(trees.map((tree) => [tree, getModel(tree)]))
       )
       .then((trees) => (destructorCalled ? undefined : setTrees(trees)))
       .catch(console.error);
@@ -82,7 +82,7 @@ export function TreeSelectDialog({
                 }}
               >
                 <TableIcon tableName={tree} tableLabel="false" />
-                {(model as SchemaModelTableField).getLocalizedName()}
+                {model.getLocalizedName()}
               </a>
             </li>
           ))}

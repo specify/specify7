@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema from './schema';
+import { getModel } from './schema';
 
 export default Backbone.View.extend({
         __name__: "PickListFieldCBX",
@@ -17,8 +17,8 @@ export default Backbone.View.extend({
         },
         getPickListFields: function() {
             if (this.resource.get('type') !== 2) return [];
-            var model = schema.getModel(this.resource.get('tablename'));
-            return _.map(model.getAllFields(), function(field) {
+            var model = getModel(this.resource.get('tablename'));
+            return _.map(model.fields, function(field) {
                 return { value: field.name, title: field.getLocalizedName() };
             });
         },

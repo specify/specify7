@@ -12,3 +12,8 @@ export type IR<V> = Readonly<Record<string, V>>;
 export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
 // Immutable Array
 export type RA<V> = readonly V[];
+
+export function defined<T>(value: T | undefined): T {
+  if (typeof value === 'undefined') throw new Error('Value is not defined');
+  else return value;
+}

@@ -2,7 +2,7 @@
 
 import Q from 'q';
 
-import schema from './schema';
+import schema, {getModel} from './schema';
 import { getDomainResource } from './domain';
 import QueryFieldSpec from './queryfieldspec';
 
@@ -284,7 +284,7 @@ var fieldsFor = {
 };
 
 export default function(user, table, nodeId) {
-    const tree = schema.getModel(table);
+    const tree = getModel(table);
     const node = new tree.Resource({id: nodeId});
     return Q([
         paleoPathP(),

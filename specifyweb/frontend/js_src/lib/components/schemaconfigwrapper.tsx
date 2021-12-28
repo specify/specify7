@@ -3,7 +3,6 @@ import '../../css/schemaconfig.css';
 import React from 'react';
 
 import { getAggregators, getFormatters } from '../dataobjformatters';
-import type { Schema } from '../legacytypes';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import schema from '../schema';
@@ -160,7 +159,7 @@ function SchemaConfigWrapper({
   // Fetch tables
   React.useEffect(() => {
     const excludedTables = new Set(
-      Object.entries((schema as unknown as Schema).models)
+      Object.entries(schema.models)
         .filter(
           ([tableName, { system }]) =>
             system ||

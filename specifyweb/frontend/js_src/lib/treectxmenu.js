@@ -6,7 +6,7 @@ import Q from 'q';
 
 import ResourceView from './resourceview';
 import populateForm from './populateform';
-import schema from './schema';
+import { getModel } from './schema';
 import userInfo from './userinfo';
 import treeText from './localization/tree';
 import commonText from './localization/common';
@@ -59,7 +59,7 @@ export default function contextMenuBuilder(treeView) {
 function contextMenuCallback(key, options) {
     var treeView = this.closest('.tree-view').data('view');
     var treeNodeView = this.closest('.tree-node').data('view');
-    var specifyModel = schema.getModel(treeView.table);
+    var specifyModel = getModel(treeView.table);
     switch (key) {
     case 'open':
         new EditNodeDialog({treeNodeView: treeNodeView}).render();

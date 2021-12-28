@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 
-import schema from './schema';
+import schema, {getModel} from './schema';
 import router from './router';
 import * as app from './specifyapp';
 
@@ -36,10 +36,10 @@ function relatedLink(field) {
 const DataModelView = Backbone.View.extend({
     __name__: "DataModelView",
     render: function() {
-        const model = schema.getModel(this.options.model);
+        const model = getModel(this.options.model);
         this.$el.append($('<h2>').text(model.name));
 
-        const rows = model.getAllFields().map(
+        const rows = model.fields.map(
             field => $('<tr>')
                 .append('<td>' + field.name + '</td>')
                 .append('<td>' + field.type + '</td>')

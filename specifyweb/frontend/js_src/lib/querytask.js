@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema from './schema';
+import schema, { getModel } from './schema';
 import QueryFieldUI from './queryfield';
 import template from './templates/querybuilder.html';
 import userInfo from './userinfo';
@@ -36,7 +36,7 @@ var QueryBuilder = Backbone.View.extend({
             this.query = options.query;
             this.readOnly = options.readOnly;
             this.recordSet = options.recordSet;
-            this.model = schema.getModel(this.query.get('contextname'));
+            this.model = getModel(this.query.get('contextname'));
         },
         title(){
             return queryText('queryTaskTitle')(this.query.get('name'));
@@ -376,7 +376,7 @@ export default function() {
 
         router.route('query/new/:table/', 'ephemeralQuery', async function(table) {
             var query = new schema.models.SpQuery.Resource();
-            var model = schema.getModel(table);
+            var model = getModel(table);
             query.set({
                 'name': "New Query",
                 'contextname': model.name,

@@ -7,7 +7,7 @@ import Backbone from './backbone';
 import * as attachments from './attachments';
 import router from './router';
 import * as app from './specifyapp';
-import schema from './schema';
+import schema, {getModel, getModelById} from './schema';
 import populateform from './populateform';
 import specifyform from './specifyform';
 import * as navigation from './navigation';
@@ -44,7 +44,7 @@ import template from './templates/attachmentbrowser.html';
                 ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
                  "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
                  "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
-            ).map(function(table) { return schema.getModel(table); });
+            ).map(function(table) { return getModel(table); });
 
             _.each(tablesWithAttachments, function(table) {
                 collections[table.tableId] = new schema.models.Attachment.LazyCollection({
@@ -71,9 +71,9 @@ import template from './templates/attachmentbrowser.html';
             var tableId = attachment.get('tableid');
             var title = attachment.get('title');
 
-            var model = tableId != null && schema.getModelById(tableId);
+            var model = tableId != null && getModelById(tableId);
             var icon = model ? (model.system ? "/images/system.png" : model.getIcon()) :
-                schema.getModel('attachment').getIcon();
+                getModel('attachment').getIcon();
 
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",
@@ -139,7 +139,7 @@ import template from './templates/attachmentbrowser.html';
                 _.each(self.attachmentCollections, function(collection, key) {
                     var count = counts[i++];
                     var name = key === 'all' ? "All" : key === 'unused' ? "Unused" :
-                            schema.getModelById(parseInt(key)).getLocalizedName();
+                            getModelById(parseInt(key)).getLocalizedName();
 
                     var parent = _(['all', 'unused']).contains(key) ? self.$('select') : tables;
 
@@ -177,7 +177,7 @@ import template from './templates/attachmentbrowser.html';
                 return;
             }
 
-            var model = schema.getModelById(tableId);
+            var model = getModelById(tableId);
             attachment.rget(model.name.toLowerCase() + 'attachments', true).pipe(function(dataObjs) {
                 return dataObjs && dataObjs.length > 0 ? dataObjs.at(0).rget(model.name.toLowerCase()) : null;
             }).done(function(dataObj) {

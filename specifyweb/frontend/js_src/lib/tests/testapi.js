@@ -59,7 +59,7 @@ define([
 
         module('resourceapi');
         test('specifyModel.Resource', function() {
-            var Resource = schema.getModel('collectionobject').Resource;
+            var Resource = getModel('collectionobject').Resource;
             equal(Resource.specifyModel.name, 'CollectionObject');
             var resource = new Resource();
             equal(resource.specifyModel.name, 'CollectionObject');

@@ -8,12 +8,6 @@
 import * as cache from './cache';
 import type { IR, R, RA } from './types';
 import type { RelationshipType } from './components/wbplanviewmapper';
-import type {
-  Domain as DomainType,
-  Schema as SchemaType,
-  SchemaModelTableField,
-  SchemaModelTableRelationship,
-} from './legacytypes';
 import schema from './schema';
 import { camelToHuman, capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -147,7 +141,7 @@ function handleRelationshipType(
 }
 
 function handleRelationshipField(
-  field: SchemaModelTableField,
+  field: Field | Relationship,
   fieldData: DataModelFieldWritable,
   fieldName: string,
   currentTableName: string,
@@ -156,7 +150,7 @@ function handleRelationshipField(
   hasRelationshipWithDefinition: () => void,
   hasRelationshipWithDefinitionItem: () => void
 ): boolean {
-  const relationship: SchemaModelTableRelationship =
+  const relationship: Relationship =
     field as SchemaModelTableRelationship;
 
   let foreignName = relationship.otherSideName;

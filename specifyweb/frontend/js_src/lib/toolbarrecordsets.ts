@@ -1,5 +1,4 @@
 import type { MenuItem } from './components/main';
-import type { Schema } from './legacytypes';
 import commonText from './localization/common';
 import RecordSetsDialog from './recordsetsdialog';
 import schema from './schema';
@@ -10,9 +9,7 @@ const menuItem: MenuItem = {
   title: commonText('recordSets'),
   icon: '/static/img/record sets.png',
   view({ onClose }) {
-    const recordSets = new (
-      schema as unknown as Schema
-    ).models.RecordSet.LazyCollection({
+    const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {
         specifyuser: userInfo.id,
         type: 0,

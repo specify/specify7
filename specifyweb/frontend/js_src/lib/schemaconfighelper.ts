@@ -12,7 +12,8 @@ import type {
 import commonText from './localization/common';
 import type { IR, RA } from './types';
 import ajax from './ajax';
-import * as querystring from 'querystring';
+import * as querystring from './querystring';
+import type { JavaType } from './specifymodel';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -127,7 +128,7 @@ export function getItemType(item: SpLocaleItem): ItemType {
   else return 'none';
 }
 
-const webLinkTypes = new Set(['text', 'java.lang.String']);
+const webLinkTypes = new Set<JavaType>(['text', 'java.lang.String']);
 
 export function isFormatterAvailable(
   item: WithFieldInfo,

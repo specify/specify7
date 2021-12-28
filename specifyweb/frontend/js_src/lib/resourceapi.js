@@ -513,7 +513,7 @@ function eventHandlerForToOne(related, field) {
             case 'create':
                 // use the special recordSetId field to add the resource to a record set
                 if (!_.isUndefined(resource.recordSetId)) {
-                    options.url = querystring.param(
+                    options.url = querystring.format(
                         options.url || resource.url(),
                         {recordsetid: resource.recordSetId});
                 }
@@ -535,8 +535,8 @@ function eventHandlerForToOne(related, field) {
         },
         placeInSameHierarchy: function(other) {
             var self = this;
-            var myPath = self.specifyModel.orgPath();
-            var otherPath = other.specifyModel.orgPath();
+            var myPath = self.specifyModel.getScopingPath();
+            var otherPath = other.specifyModel.getScopingPath();
             if (!myPath || !otherPath) return null;
             if (myPath.length > otherPath.length) return null;
             var diff = _(otherPath).rest(myPath.length - 1).reverse();

@@ -1,7 +1,7 @@
 import type { IR } from './types';
 
 const toAbsoluteUrl = (url: string): string =>
-  url.startsWith('/') ? `${window.location.origin}/${url}` : url;
+  url.startsWith('/') ? `${window.location.origin}${url}` : url;
 
 export function format(url: string, parameters: IR<string>): string {
   const urlObject = new URL(toAbsoluteUrl(url));

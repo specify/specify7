@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from 'underscore';
-import schema from './schema';
+import { getModel } from './schema';
 import api from './specifyapi';
 
     export default {
@@ -27,7 +27,7 @@ import api from './specifyapi';
             if (interactionprep && interactionprep.get('preparation')) {
                 //return interactionprep.get('preparation').get('CountAmt');
                 var prepuri = interactionprep.get('preparation');
-                var pmod = schema.getModel('preparation');
+                var pmod = getModel('preparation');
                 var prepId = pmod.Resource.fromUri(prepuri).id;
                 var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
                 var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;

@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import Backbone from './backbone';
 
-import schema from './schema';
+import schema, {getModelById} from './schema';
 import FormsDialog from './formsdialog';
 import EditResourceDialog from './editresourcedialog';
 import * as navigation from './navigation';
@@ -80,7 +80,7 @@ export default Backbone.View.extend({
             this.$el.append(table);
         },
         dialogEntry: function(recordSet) {
-            const model = schema.getModelById(recordSet.get('dbtableid'));
+            const model = getModelById(recordSet.get('dbtableid'));
             const entry = $(`<tr>
                 <td>
                     <a
@@ -177,8 +177,7 @@ export default Backbone.View.extend({
                             click: () => {
                                 view.remove();
                                 navigation.go(
-                                      `/specify/query/new/${schema
-                                    .getModelById(recordSet.get("dbTableId"))
+                                      `/specify/query/new/${getModelById(recordSet.get("dbTableId"))
                                     .name.toLowerCase()}/?recordsetid=${recordSet.id}`
                                 );
                             },

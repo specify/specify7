@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { Schema } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import schema from '../../schema';
@@ -18,9 +17,7 @@ function Users({
   const [users, setUsers] = React.useState<IR<string> | undefined>(undefined);
 
   React.useEffect(() => {
-    const users = new (
-      schema as unknown as Schema
-    ).models.SpecifyUser.LazyCollection({
+    const users = new schema.models.SpecifyUser.LazyCollection({
       filters: { orderby: 'name' },
     });
     users

@@ -2,8 +2,9 @@ import { error } from './assert';
 import dateFormat from './dateformat';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
-import type { IR, RA } from './types';
+import type { IR, RA, RR } from './types';
 import { hasNativeErrors } from './validationmessages';
+import type { JavaType } from './specifyfield';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -47,7 +48,12 @@ type Parser = Partial<{
   readonly required: boolean;
 }>;
 
-export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
+type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
+
+export const parsers: RR<
+  ExtendedJavaType,
+  ExtendedJavaType | Parser | ((field: Field) => Parser)
+> = {
   'java.lang.Boolean': {
     type: 'text',
     pattern: /\s+(?:true|false|yes|no)\s+/i,
@@ -167,7 +173,7 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
 
 type Field = {
   readonly length?: number;
-  readonly type: string;
+  readonly type: JavaType;
   readonly isRequired?: boolean;
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };

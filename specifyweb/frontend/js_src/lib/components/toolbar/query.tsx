@@ -6,12 +6,11 @@ import type { State } from 'typesafe-reducer';
 
 import ajax from '../../ajax';
 import DeleteButton from '../../deletebutton';
-import type { Schema } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import populateform from '../../populateform';
 import SaveButton from '../../savebutton';
-import schema from '../../schema';
+import schema, { getModel, getModelById } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
 import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
@@ -200,7 +199,7 @@ function ListOfTables({
             className="fake-link intercept-navigation"
           >
             <TableIcon tableName={tableName} tableLabel={false} />
-            {schema.getModel(tableName).getLocalizedName()}
+            {getModel(tableName).getLocalizedName()}
           </a>
         </li>
       ))}
@@ -253,9 +252,7 @@ function QueryToolbarItem({
 
   React.useEffect(() => {
     let destructorCalled = false;
-    const queryModels = new (
-      schema as unknown as Schema
-    ).models.SpQuery.LazyCollection({
+    const queryModels = new schema.models.SpQuery.LazyCollection({
       filters: spQueryFilter ?? { specifyuser: userInfo.id },
     });
     queryModels.fetch({ limit: QUERY_FETCH_LIMIT }).done(() =>
@@ -265,9 +262,9 @@ function QueryToolbarItem({
             (queryModels.models as RA<Model>).map((query) => ({
               id: query.get('id'),
               name: query.get('name'),
-              tableName: schema
-                .getModelById(query.get('contexttableid'))
-                .name.toLowerCase(),
+              tableName: getModelById(
+                query.get('contexttableid')
+              ).name.toLowerCase(),
               dateCreated: query.get('timestampcreated'),
             }))
           )
@@ -394,7 +391,7 @@ const EditQueryDialog = Backbone.View.extend({
   },
   initialize(options: { readonly spquery: Model }) {
     this.spquery = options.spquery;
-    this.model = schema.getModelById(this.spquery.get('contexttableid'));
+    this.model = getModelById(this.spquery.get('contexttableid'));
   },
   render() {
     specifyform.buildViewByName('Query').done(this._render.bind(this));

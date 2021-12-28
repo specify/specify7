@@ -2,7 +2,7 @@
 
 import _ from 'underscore';
 
-import schema from './schema';
+import { getModel, getModelById } from './schema';
 import {capitalize} from './wbplanviewhelper';
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
@@ -53,7 +53,7 @@ import {capitalize} from './wbplanviewhelper';
 
     QueryFieldSpec.fromPath = function(pathIn) {
         var path = pathIn.slice();
-        var rootTable = schema.getModel(path.shift());
+        var rootTable = getModel(path.shift());
 
         var joinPath = [];
         var node = rootTable;
@@ -85,13 +85,13 @@ import {capitalize} from './wbplanviewhelper';
         var fieldName = match[3];
 
         isRelationship && path.pop();
-        var rootTable = schema.getModelById(parseInt(path.shift(), 10));
+        var rootTable = getModelById(parseInt(path.shift(), 10));
 
         var joinPath = [];
         var node = rootTable;
         _.each(path, function(elem) {
             var tableId_fieldName = elem.split('-');
-            var table = schema.getModelById(parseInt(tableId_fieldName[0], 10));
+            var table = getModelById(parseInt(tableId_fieldName[0], 10));
             var fieldName = tableId_fieldName[1];
             var field = _.isUndefined(fieldName) ? node.getField(table.name) : node.getField(fieldName);
             joinPath.push(field);

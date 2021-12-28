@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import schema from './schema';
+import { getModel } from './schema';
 import api from './specifyapi';
 import RecordSetsDialog from './recordsetsdialog';
 import PrepSelectDialog from './prepselectdialog';
@@ -44,14 +44,14 @@ export default RecordSetsDialog.extend({
         getSrchFld: function() {
             var model = this.options.close ? 'loan' : 'collectionobject';
             var fld = this.options.srchFld ? this.options.srchFld : (model == 'collectionobject' ? 'catalognumber' : 'loannumber');
-            return schema.getModel(model).getField(fld);
+            return getModel(model).getField(fld);
         },
 
         //l10n-able stuff>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         dlgTitle: function() {
             var tblName = this.options.close ? 'loan' : this.options.action.table;
-            var tblTitle = schema.getModel(tblName).getLocalizedName();
+            var tblTitle = getModel(tblName).getLocalizedName();
             if (this.options.interactionresource) {
                 return formsText('addItems');
             } else {
@@ -306,7 +306,7 @@ export default RecordSetsDialog.extend({
                 if ("unassociated item" == action && this.options.interactionresource) {
                     console.info("adding uncataloged co");
                     var itemModelName = this.options.interactionresource.specifyModel.name + "preparation";
-                    var itemModel = schema.getModel(itemModelName);
+                    var itemModel = getModel(itemModelName);
                     var item = new itemModel.Resource();
                     item.initialize();
                     if (this.options.interactionresource.specifyModel.name == "Loan") {
@@ -359,7 +359,7 @@ export default RecordSetsDialog.extend({
 
         zeroPrepLoan: function() {
             this.$el.dialog('close');
-            var model = schema.getModel('loan');
+            var model = getModel('loan');
             navigation.go(new model.Resource().viewUrl());
         },
 

@@ -25,7 +25,7 @@
           ok(div.find('.querycbx-clone').is(':hidden'), 'clone button is hidden');
           control = div.find('input');
           ok(!(control.prop('readonly')), 'input is not readonly');
-          expectedSearchField = schema.getModel('Agent').getField('lastname').getLocalizedName();
+          expectedSearchField = getModel('Agent').getField('lastname').getLocalizedName();
           return equal(control.attr('title'), "Searches: " + expectedSearchField, 'tooltip is correct');
         });
       };

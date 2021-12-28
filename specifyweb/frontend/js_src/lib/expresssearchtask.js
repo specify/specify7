@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import ajax from './ajax';
-import schema from './schema';
+import { getModel } from './schema';
 import QueryResultsTable from './queryresultstable';
 import router from './router';
 import QueryFieldSpec from './queryfieldspec';
@@ -74,7 +74,7 @@ const relatedSearchesPromise = ajax(
         },
         makePrimaryResultView: function(ajaxUrl, results, tableName) {
             if (results.totalCount < 1) return;
-            var model = schema.getModel(tableName);
+            var model = getModel(tableName);
             var heading = model.getLocalizedName() + ' - ' + results.totalCount;
             this.$('.primary.results').append($('<h4>').append($('<button>',{type:'button',class:'fake-link'}).text(heading)));
 
@@ -85,7 +85,7 @@ const relatedSearchesPromise = ajax(
                 format: true,
                 initialData: results,
                 fetchResults: function(offset) {
-                    var url = querystring.param(ajaxUrl, {name: model.name, offset: offset});
+                    var url = querystring.format(ajaxUrl, {name: model.name, offset: offset});
                     return $.get(url).pipe(function(data) { return data[model.name]; });
                 }
             }).render().$el.appendTo(this.$('.primary.results'));
@@ -94,7 +94,7 @@ const relatedSearchesPromise = ajax(
             var statusEl = this.$('.related.status');
 
             var deferreds = _.map(relatedSearches, function(rs) {
-                var ajaxUrl = querystring.param('/express_search/related/', {q: query, name: rs});
+                var ajaxUrl = querystring.format('/express_search/related/', {q: query, name: rs});
                 var showResults = _.bind(this.showRelatedResults, this, ajaxUrl);
                 return $.get(ajaxUrl).pipe(showResults);
             }, this);
@@ -107,7 +107,7 @@ const relatedSearchesPromise = ajax(
         showRelatedResults: function(ajaxUrl, data) {
             if (data.totalCount < 1) return 0;
             var fieldSpecs = _.map(data.definition.fieldSpecs, makeFS);
-            var model = schema.getModel(data.definition.root);
+            var model = getModel(data.definition.root);
             var linkField = 0;
             if (data.definition.link) {
                 var linkFieldSpec = fieldSpecs.pop();

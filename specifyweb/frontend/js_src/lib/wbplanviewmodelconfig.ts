@@ -115,7 +115,7 @@ export const fetchingParameters: {
   /*
    * All required fields are unhidden, unless they are overwritten to "hidden".
    *   readOnly relationships are removed.
-   * Makes sure that front-end only fields (defined in schemaextras.js) are
+   * Makes sure that front-end only fields (defined in schemaextras.ts) are
    *   removed too
    */
   fieldOverwrites: {

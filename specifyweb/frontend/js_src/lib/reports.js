@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema from './schema';
+import schema, {getModel, getModelById} from './schema';
 import QueryFieldUI from './queryfield';
 import parsespecifyproperties from './parsespecifyproperties';
 import AttachmentPlugin from './attachmentplugin';
@@ -415,7 +415,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         return this;
     },
     dialogEntry: function(recordSet) {
-        const model = schema.getModelById(recordSet.get('dbtableid'));
+        const model = getModelById(recordSet.get('dbtableid'));
         const icon = model.getIcon();
         const img = $('<img>', {src: icon, alt: model.getLocalizedName()});
         var link = $(`<button class="fake-link">${recordSet.get('name')}</button>`);
@@ -459,7 +459,7 @@ var QueryParamsDialog = Backbone.View.extend({
         this.reportResources = options.reportResources;
         this.query = this.reportResources.query;
         this.recordSetId = options.recordSetId;
-        this.model = schema.getModel(this.query.get('contextname'));
+        this.model = getModel(this.query.get('contextname'));
 
         var makeFieldUI = (function(spqueryfield) {
             return new QueryFieldUI({

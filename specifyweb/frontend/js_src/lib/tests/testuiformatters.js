@@ -51,7 +51,7 @@ define(['underscore', 'uiformatters', 'schema'], function(_, uiformatters, schem
         });
 
         test('getUIFormatter', function() {
-            var uiformatter = schema.getModel('collectionobject').getField('catalogNumber').getUIFormatter();
+            var uiformatter = getModel('collectionobject').getField('catalogNumber').getUIFormatter();
             equal(uiformatter.name, 'CatalogNumberNumeric');
         });
     };

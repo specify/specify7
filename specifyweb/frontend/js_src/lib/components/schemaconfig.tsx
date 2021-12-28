@@ -1,7 +1,6 @@
 import React from 'react';
 import ajax from '../ajax';
 
-import type { Schema } from '../legacytypes';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
@@ -132,7 +131,7 @@ export function SchemaConfig({
     const [language, country = null] = state.language.split('_');
 
     const fields = Object.fromEntries(
-      Object.values((schema as unknown as Schema).models)
+      Object.values(schema.models)
         .find(({ name }) => name.toLowerCase() === state.table.name)
         ?.fields.map((field) => [
           field.name,

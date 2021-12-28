@@ -216,7 +216,7 @@ export default Backbone.View.extend({
                 fieldSelect.append('<option value="format record">(' + formatOrAggregate + ')</option>');
             }
 
-            _.chain(this.fieldSpec.table.getAllFields())
+            _.chain(this.fieldSpec.table.fields)
                 .reject(function(field) { return field.isHidden(); })
                 .sortBy(function(field) { return field.getLocalizedName(); })
                 .each(function(field) {

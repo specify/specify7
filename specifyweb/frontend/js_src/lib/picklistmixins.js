@@ -2,7 +2,7 @@
 
 import Q from 'q';
 
-import schema from './schema';
+import { getModel } from './schema';
 import api from './specifyapi';
 import {format} from './dataobjformatters';
 
@@ -20,7 +20,7 @@ import {format} from './dataobjformatters';
     // From table picklist;
     //
     function getFromTable(info) {
-        var plModel = schema.getModel(info.pickList.get('tablename'));
+        var plModel = getModel(info.pickList.get('tablename'));
         var plItemCollection = new plModel.LazyCollection({domainfilter: true});
         return Q(plItemCollection.fetch({ limit: info.limit }))
             .then(function() { return formatItems(info, plItemCollection); });
@@ -44,7 +44,7 @@ import {format} from './dataobjformatters';
     // From field picklist.
     //
     function getFromField(info) {
-        var plModel = schema.getModel(info.pickList.get('tablename'));
+        var plModel = getModel(info.pickList.get('tablename'));
         var plFieldName = info.pickList.get('fieldname');
         return Q(api.getRows(plModel, {
             limit: info.limit,

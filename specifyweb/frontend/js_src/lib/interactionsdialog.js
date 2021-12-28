@@ -7,7 +7,7 @@ import Q from 'q';
 
 
 import ajax from './ajax';
-import schema from './schema';
+import schema, {getModel} from './schema';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
 import userInfo from './userinfo';
@@ -113,7 +113,7 @@ export default Backbone.View.extend({
             if (entry.attr('label')) {
                 return s.localizeFrom('resources', entry.attr('label'));
             } else if (entry.attr('table')) {
-                return schema.getModel(entry.attr('table')).getLocalizedName();
+                return getModel(entry.attr('table')).getLocalizedName();
             } else if (isActionEntry(entry)) {
                 return entry.attr('action');
             } else {
@@ -136,7 +136,7 @@ export default Backbone.View.extend({
             }
             else {
               const form = forms[formIndex];
-              const model = schema.getModel(form['class'].split('.').pop());
+              const model = getModel(form['class'].split('.').pop());
 
               href = new model.Resource().viewUrl();
               className = 'intercept-navigation';

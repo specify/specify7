@@ -1,7 +1,6 @@
 import type { IR, R, RA, RR } from './types';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
-import type { Schema } from './legacytypes';
 import type { MessageTypes } from './lifemapperconfig';
 import type { MapInfo } from './lifemapperreducer';
 import type { LifemapperLayerTypes } from './lifemapperutills';
@@ -166,9 +165,7 @@ export async function prepareLifemapperProjectionMap(
                 ),
                 fetchLocalityResource: async () =>
                   new Promise((resolve) => {
-                    const locality = new (
-                      schema as unknown as Schema
-                    ).models.Locality.LazyCollection({
+                    const locality = new schema.models.Locality.LazyCollection({
                       filters: { id: localityId },
                     });
                     locality

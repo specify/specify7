@@ -3,7 +3,7 @@ import uniquifyDataSetName from './wbuniquifyname';
 import Backbone from './backbone';
 import {setTitle} from './specifyapp';
 import {format} from './dataobjformatters';
-import schema from './schema';
+import { getModel } from './schema';
 import resourceApi from './resourceapi';
 import * as navigation from './navigation';
 import userInfo from './userinfo';
@@ -28,7 +28,7 @@ export const DataSetMeta = Backbone.View.extend({
   initialize({ dataset, getRowCount, onClose, isOpen = true }) {
     this.dataset = dataset;
     this.dialog = null;
-    this.model = schema.getModel('agent');
+    this.model = getModel('agent');
     this.createdByAgent = null;
     this.modifiedByAgent = null;
     this.changeOwnerDialog = null;

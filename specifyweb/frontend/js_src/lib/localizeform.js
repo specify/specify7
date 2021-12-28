@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 
-import schema from './schema';
+import { getModel} from './schema';
 import * as stringLocalization from './stringlocalization';
 
 
@@ -17,7 +17,7 @@ import * as stringLocalization from './stringlocalization';
 
 export default function(formNode) {
         var form = $(formNode);
-        var model = schema.getModel(form.data('specify-model'));
+        var model = getModel(form.data('specify-model'));
         if (!model) return;
 
         $('.specify-form-header', form).prepend(

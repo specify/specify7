@@ -5,7 +5,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema from './schema';
+import { getModel } from './schema';
 import {getTreeDef} from './domain';
 import NotFoundView from './notfoundview';
 import * as navigation from './navigation';
@@ -88,7 +88,7 @@ var TreeHeader = Backbone.View.extend({
         },
         title(){
             return treeText('treeViewTitle')(
-              schema.getModel(this.table).getLocalizedName()
+              getModel(this.table).getLocalizedName()
             );
         },
         render: function() {
@@ -198,7 +198,7 @@ var TreeHeader = Backbone.View.extend({
             >`);
         },
         configureAutocomplete(searchBox){
-            const tree = schema.getModel(this.table);
+            const tree = getModel(this.table);
             this.autocomplete = autocomplete({
                 input: searchBox[0],
                 source: (request)=>new Promise(resolve=>{
@@ -262,7 +262,7 @@ var TreeHeader = Backbone.View.extend({
             // precede every open bracket that is not itself preceded
             // by an open bracket by nature of the construction.
             var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
-            navigation.push(querystring.param(window.location.href, {conformation: encoded}));
+            navigation.push(querystring.format(window.location.href, {conformation: encoded}));
         },
         reOpenTree: function() {
             this.roots.forEach(root => root.remove());

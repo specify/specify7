@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema from './schema';
+import schema, {getModel, getModelById} from './schema';
 import api from './specifyapi';
 import * as navigation from './navigation';
 import {collectionsForResource} from './domain';
@@ -29,7 +29,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
             var itemData = data[0].objects[0];
             if (!itemData) return null;
 
-            var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
+            var specifyModel = getModelById(recordSet.get('dbtableid'));
             return new specifyModel.Resource({ id: itemData.recordid });
         });
     }
@@ -40,7 +40,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
             'click .recordset-delete': 'delete'
         },
         render: function() {
-            var specifyModel = schema.getModelById(this.model.get('dbtableid'));
+            var specifyModel = getModelById(this.model.get('dbtableid'));
             this.el.setAttribute('role','alert');
             this.$el.empty().append(formsText('emptyRecordSetMessage')(this.model.get('name')));
 
@@ -88,7 +88,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
     // this function shows users individual resources which
     // can optionally be in the context of some recordset
     function resourceView(modelName, id) {
-        var model = schema.getModel(modelName);
+        var model = getModel(modelName);
 
         if(typeof model === "undefined"){
             app.setCurrentView(new NotFoundView());
@@ -101,7 +101,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
             return;
         }
         // look to see if we are in the context of a recordset
-        var params = querystring.deparam();
+        var params = querystring.parse();
         var recordSet = params.recordsetid &&
                 new schema.models.RecordSet.Resource({ id: params.recordsetid });
 

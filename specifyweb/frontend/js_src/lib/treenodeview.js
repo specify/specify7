@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 import Q from 'q';
 
-import schema from './schema';
+import { getModel } from './schema';
 import remoteprefs from './remoteprefs';
 import treeText from './localization/tree';
 import commonText from './localization/common';
@@ -26,7 +26,7 @@ var TreeNodeView = Backbone.View.extend({
         this.path = path || [];
         this.baseUrl = baseUrl;
         this.treeView = treeView;
-        this.specifyModel = schema.getModel(this.table);
+        this.specifyModel = getModel(this.table);
         this.childNodes = null;
         this.expanded = false;
         this.opened = false;

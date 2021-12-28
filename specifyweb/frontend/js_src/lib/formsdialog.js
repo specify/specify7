@@ -7,7 +7,7 @@ import Q from 'q';
 
 
 import ajax from './ajax';
-import schema from './schema';
+import { getModel } from './schema';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
 import commonText from './localization/common';
@@ -71,7 +71,7 @@ export default Backbone.View.extend({
         dialogEntry: function(forms, view,index) {
             const form = forms[index];
             const modelName = form['class'].split('.').pop();
-            const model = schema.getModel(modelName);
+            const model = getModel(modelName);
             return $('<li>').append(
                 $('<a>')
                     .addClass(
@@ -103,7 +103,7 @@ export default Backbone.View.extend({
                 return;
             event.preventDefault();
             const modelName = event.target.getAttribute('data-model-name');
-            const model = schema.getModel(modelName);
+            const model = getModel(modelName);
             this.options.onSelected(model);
         },
     });

@@ -7,7 +7,7 @@ import {format} from './dataobjformatters';
 import * as navigation from './navigation';
 import UIPlugin from './uiplugin';
 import whenAll from './whenall';
-import schema from './schema';
+import schema, {getModel} from './schema';
 import userInfo from './userinfo';
 import QueryCbxSearch from './querycbxsearch';
 
@@ -104,7 +104,7 @@ export default UIPlugin.extend({
             throw new Error("related collection plugin used with relation that doesn't match current collection");
         }
         
-        var relModel = schema.getModel('CollectionRelationship');
+        var relModel = getModel('CollectionRelationship');
         var filters = this.side == 'left' ? {leftside_id: this.model.id, collectionreltype_id: this.relType.id}
             : {rightside_id: this.model.id, collectionreltype_id: this.relType.id};
         this.items = new relModel.LazyCollection({filters: filters});
