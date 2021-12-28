@@ -6,10 +6,15 @@ import _ from 'underscore';
 import {getIcon} from './icons';
 import schema from './schema';
 import commonText from './localization/common';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 
-var settings;
-    initialContext.load('attachment_settings.json', data => settings = data);
+let settings;
+export const fetchContext = load(
+  '/context/attachment_settings.json',
+  'application/json'
+).then((data) => {
+  settings = data;
+});
 
     var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
 

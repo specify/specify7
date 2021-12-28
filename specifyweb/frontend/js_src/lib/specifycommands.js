@@ -15,7 +15,7 @@ export const CommandNotAvailable = UICmd.extend({
             'click': 'click'
         },
         render: function() {
-            this.el.innerText = formsText('unavailableCommandButton');
+            this.el.textContent = formsText('unavailableCommandButton');
             this.el.disabled = false;
             return this;
         },

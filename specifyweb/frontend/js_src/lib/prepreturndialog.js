@@ -12,7 +12,6 @@ import userInfo from './userinfo';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import QueryCbx from './querycbx.js';
 import {getDateInputValue} from './dayjs';
 
 function formatCatNo(catNo) {

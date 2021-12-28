@@ -34,23 +34,22 @@ import dataModelStorage from './wbplanviewmodel';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
 import {
-  valueIsTreeRank,
-  mappingPathToString,
-  getNameFromTreeRankName,
   formatReferenceItem,
   formatTreeRank,
+  getNameFromTreeRankName,
+  mappingPathToString,
+  valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { extractDefaultValues } from './wbplanviewhelper';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { capitalize } from './wbplanviewhelper';
-import { getIcon } from './icons';
+import {uploadPlanToMappingsTree} from './uploadplantomappingstree';
+import {capitalize, extractDefaultValues} from './wbplanviewhelper';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon} from './icons';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import { BackboneLoadingScreen } from './components/modaldialog';
-import {format} from './dataobjformatters.js';
+import {BackboneLoadingScreen} from './components/modaldialog';
+import {format} from './dataobjformatters';
 import {dataModelPromise} from "./wbplanviewmodelfetcher";
 import {mappingsTreeToSplitMappingPaths} from "./wbplanviewtreehelper";
 

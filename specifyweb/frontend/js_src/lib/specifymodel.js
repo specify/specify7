@@ -3,16 +3,16 @@
 import _ from 'underscore';
 import Immutable from 'immutable';
 
-import { getIcon } from './icons';
+import {getIcon} from './icons';
 import schema from './schemabase';
 import ResourceBase from './resourceapi';
 import collectionapi from './collectionapi';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 
 
 // The schema config / localization information is loaded dynamically.
-var localization;
-initialContext.load('schema_localization.json', data => localization = Immutable.fromJS(data));
+let localization;
+export const fetchContext = load('/context/schema_localization.json', 'application/json').then(data => {localization = Immutable.fromJS(data)});
 
 // Define a JS object constructor to represent Specify data objects.
 schema.Model = function(tableDef) {

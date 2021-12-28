@@ -7,7 +7,6 @@ import Q from 'q';
 import ResourceView from './resourceview';
 import populateForm from './populateform';
 import schema from './schema';
-import api from './specifyapi.js';
 import userInfo from './userinfo';
 import treeText from './localization/tree';
 import commonText from './localization/common';

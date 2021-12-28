@@ -12,7 +12,7 @@ import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-    const CONTRACT = `<td class="contract">
+const CONTRACT = `<td class="contract">
         <button
           type="button" 
           class="fake-link"

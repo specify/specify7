@@ -16,7 +16,7 @@ var providers = [
     require('./weblinkbutton').default,
     require('./attachmentplugin').default,
     require('./hosttaxonplugin').default,
-    require('./passwordplugin').default,
+    require('./components/passwordplugin').default,
     require('./useragentsplugin').default,
     require('./adminstatusplugin').default,
     require('./leafletplugin').default,
@@ -31,7 +31,7 @@ var providers = [
                 'click': 'click'
             },
             render: function() {
-                this.el.innerText = formsText('unavailablePluginButton');
+                this.el.textContent = formsText('unavailablePluginButton');
                 this.el.disabled = false;
                 return this;
             },

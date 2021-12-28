@@ -730,11 +730,11 @@ const commonText = createDictionary({
     ca: 'Server Error',
   },
   backEndErrorDialogHeader: {
-    'en-us': header(
+    'en-us': jsxHeader(
       'An error occurred communicating with the Specify 7 server.'
     ),
-    'ru-ru': header('Произошла ошибка связи с сервером Specify 7.'),
-    ca: header('An error occurred communicating with the Specify 7 server.'),
+    'ru-ru': jsxHeader('Произошла ошибка связи с сервером Specify 7.'),
+    ca: jsxHeader('An error occurred communicating with the Specify 7 server.'),
   },
   backEndErrorDialogMessage: {
     'en-us': `

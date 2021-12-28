@@ -71,14 +71,15 @@ export type Dataset = DatasetBrief & {
 
 export type SpecifyResource = Backbone.Model & {
   readonly id: number;
-  readonly get: (query: string) => SpecifyResource | any;
-  readonly rget: (query: string) => JqueryPromise<SpecifyResource | any>;
-  readonly set: (query: string, value: any) => void;
-  readonly save: () => void;
+  readonly get: (fieldName: string) => SpecifyResource | any;
+  readonly rget: (fieldName: string) => JqueryPromise<SpecifyResource | any>;
+  readonly set: (fieldName: string, value: any) => void;
+  readonly save: () => JqueryPromise<void>;
   readonly viewUrl: () => string;
   readonly Resource: new () => SpecifyResource;
+  readonly isNew: () => boolean;
+  readonly clone: () => SpecifyResource;
 };
-
 
 // See: https://stackoverflow.com/a/30741722/8584605
 export const handlePromiseReject = (error: unknown) =>

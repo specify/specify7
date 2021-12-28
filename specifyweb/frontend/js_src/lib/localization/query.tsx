@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, header } from './utils';
+import { createDictionary, header, jsxHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -56,9 +56,9 @@ const queryText = createDictionary({
     ca: 'Save query as...',
   },
   saveQueryDialogHeader: {
-    'en-us': header('Save Query'),
-    'ru-ru': header('Сохранить запрос'),
-    ca: header('Save Query'),
+    'en-us': jsxHeader('Save Query'),
+    'ru-ru': jsxHeader('Сохранить запрос'),
+    ca: jsxHeader('Save Query'),
   },
   saveQueryDialogMessage: {
     'en-us': 'Enter a name for the new query.',
@@ -66,9 +66,9 @@ const queryText = createDictionary({
     ca: 'Enter a name for the new query.',
   },
   saveClonedQueryDialogHeader: {
-    'en-us': header('Clone Query'),
-    'ru-ru': header('Клонировать запрос'),
-    ca: header('Clone Query'),
+    'en-us': jsxHeader('Clone Query'),
+    'ru-ru': jsxHeader('Клонировать запрос'),
+    ca: jsxHeader('Clone Query'),
   },
   saveClonedQueryDialogMessage: {
     'en-us': `

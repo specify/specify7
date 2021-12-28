@@ -15,8 +15,8 @@ import parseselect from './parseselect';
 import * as navigation from './navigation';
 import QueryCbxSearch from './querycbxsearch';
 import QueryFieldSpec from './queryfieldspec';
-import initialContext from './initialcontext';
-import { getTreeDef } from './domain';
+import {load} from './initialcontext';
+import {getTreeDef} from './domain';
 import resourceapi from './resourceapi';
 import userInfo from './userinfo';
 import queryText from './localization/query';
@@ -24,10 +24,15 @@ import commonText from './localization/common';
 import formsText from './localization/forms';
 import autocomplete from './autocomplete';
 
-var typesearches;
-var treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "taxon"];
+let typesearches;
+const treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "taxon"];
 
-initialContext.load('app.resource?name=TypeSearches', data => typesearches = data);
+export const fetchContext = load(
+  '/context/app.resource?name=TypeSearches',
+  'application/xml'
+).then((data) => {
+  typesearches = data;
+});
 
 function isTreeModel(model) {
     return treemodels.indexOf(model.specifyModel.name.toLowerCase()) != -1;

@@ -6,10 +6,15 @@ import _ from 'underscore';
 import whenAll from './whenall';
 import fieldformat from './fieldformat';
 import assert from './assert';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 
-    var formatters;
-    initialContext.load('app.resource?name=DataObjFormatters', data => formatters = data);
+let formatters;
+export const fetchContext = load(
+  '/context/app.resource?name=DataObjFormatters',
+  'application/xml'
+).then((data) => {
+  formatters = data;
+});
 
     export function format(resource, formatter) {
         if (!resource) return $.when(null);

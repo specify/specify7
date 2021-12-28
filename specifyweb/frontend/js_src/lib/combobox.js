@@ -13,10 +13,10 @@ import UserTypeCBX from './usertypecbx';
 import PickListTypeCBX from './picklisttypecbx';
 import PickListTableCBX from './picklisttablecbx';
 import PickListFieldCBX from './picklistfieldcbx';
-import DivisionFieldCBX from './divisionfieldcbx.js';
+import DivisionFieldCBX from './divisionfieldcbx';
 import TreeLevelCBX from './treelevelcbx';
 
-    function getCBX(options, resource, field) {
+function getCBX(options, resource, field) {
         _.extend(options, {
             resource: resource,
             field: field,

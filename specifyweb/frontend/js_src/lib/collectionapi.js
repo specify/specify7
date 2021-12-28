@@ -6,7 +6,7 @@ import Backbone from './backbone';
 import assert from './assert';
 
 
-    var Base =  Backbone.Collection.extend({
+var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
         getTotalCount: function() { return $.when(this.length); }
     });

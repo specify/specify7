@@ -11,13 +11,12 @@ import router from './router';
 import QueryFieldSpec from './queryfieldspec';
 import whenAll from './whenall';
 import * as s from './stringlocalization';
-import initialContext from './initialcontext';
 import * as app from './specifyapp';
 import * as querystring from './querystring';
 import commonText from './localization/common';
 
 
-    const relatedSearchesPromise = ajax(
+const relatedSearchesPromise = ajax(
       '/context/available_related_searches.json',
         {headers: {Accept: 'application/json'}}
     ).then(({data})=>data);

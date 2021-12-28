@@ -45,6 +45,5 @@ $.ajaxSetup({
     }
 });
 
-initialContext.lock();
-initialContext.promise().done(startApp);
+initialContext.then(startApp);
 

@@ -137,7 +137,7 @@ export default UIPlugin.extend({
         evt.preventDefault();
         const collections = userInfo.available_collections.map(c => c[0]);
         if (collections.includes(this.otherCollection.id)) {
-            navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
+            navigation.switchCollection(this.otherCollection.id, $(evt.currentTarget).prop('href'));
         } else {
             $(`<div aria-live="assertive">
                 ${commonText('collectionAccessDeniedDialogHeader')}

@@ -3,7 +3,6 @@
 import * as app from './specifyapp';
 import router from './router';
 import NotFoundView from './notfoundview';
-import commonText from './localization/common';
 
 export default function () {
   router.route('workbench-plan/:id/', 'workbench-plan', (id) => {

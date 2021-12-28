@@ -6,7 +6,7 @@ import assert from './assert';
 import api from './specifyapi';
 import * as querystring from './querystring';
 
-    function eventHandlerForToOne(related, field) {
+function eventHandlerForToOne(related, field) {
         return function(event) {
             var args = _.toArray(arguments);
 

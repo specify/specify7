@@ -7,14 +7,14 @@ import api from './specifyapi';
 import UIPlugin from './uiplugin';
 import {getIcon} from './icons';
 import UIField from './uifield';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 
 export const webLinksDefs = {};
-    initialContext.load('app.resource?name=WebLinks', function(xml) {
+    export const fetchContext = load('/context/app.resource?name=WebLinks', 'application/xml').then((xml)=>{
         _.each($('vector > weblinkdef', xml), function(def) {
             def = $(def);
             webLinksDefs[def.find('> name').text()] = def;
-        });
+        })
     });
 
     var specialResourcesFields = {

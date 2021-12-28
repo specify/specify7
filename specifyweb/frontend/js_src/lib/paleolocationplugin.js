@@ -13,7 +13,7 @@ export default UIPlugin.extend({
         'click': 'click'
     },
     render: function () {
-        this.el.innerText = formsText('paleoMap');
+        this.el.textContent = formsText('paleoMap');
         this.el.disabled = false;
         return this;
     },

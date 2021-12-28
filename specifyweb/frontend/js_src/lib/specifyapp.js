@@ -6,7 +6,7 @@ import 'jquery-ui';
 
 import userInfo from './userinfo';
 import populateForm from './populateform';
-import {ErrorView} from './errorview';
+import {ErrorView} from './components/errorview';
 import NotFoundView from './notfoundview';
 import * as navigation from './navigation';
 import ResourceView from './resourceview';
@@ -121,7 +121,10 @@ var currentView;
     }
 
     export function handleError(jqxhr) {
-        setCurrentView(new ErrorView({ request: jqxhr }));
+        setCurrentView(new ErrorView({
+            header: jqxhr.status,
+            message: jqxhr.statusText
+        }));
         jqxhr.errorHandled = true;
     }
 

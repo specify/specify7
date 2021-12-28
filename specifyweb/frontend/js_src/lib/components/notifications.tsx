@@ -50,7 +50,7 @@ export default function Notifications(): JSX.Element {
 
       void ajax<RA<Omit<Notification, 'payload'>>>(
         `/notifications/messages/`,
-        { headers: { 'Content-Type': 'application/json' } },
+        { headers: { Accept: 'application/json' } },
         { strict: false }
       ).then(({ data: notifications }) => {
         if (destructorCalled) return;

@@ -1,9 +1,9 @@
 "use strict";
 
 import $ from 'jquery';
-import Backbone from './backbone.js';
+import Backbone from './backbone';
 
-import schema from './schema.js';
+import schema from './schema';
 
 export default Backbone.View.extend({
         __name__: "DivisionPicklistCBX",

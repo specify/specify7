@@ -6,10 +6,8 @@ import _ from 'underscore';
 import processField from './specifyformfields';
 import parseSpecifyProperties from './parsespecifyproperties';
 import processColumnDef from './processcolumndef';
-import cookies from './cookies.js';
-import userInfo from './userinfo';
 
-    function processCell(formNumber, doingFormTable, mode, cellNode) {
+function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
         var id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined;
         var byType = {

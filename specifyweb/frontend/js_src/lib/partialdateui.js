@@ -5,7 +5,7 @@ import $ from 'jquery';
 
 import UIPlugin from './uiplugin';
 import template from './templates/partialdateui.html';
-import dateFormatStr from './dateformat';
+import dateFormat from './dateformat';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {addValidationAttributes, resolveParser} from './uiparse';
@@ -105,7 +105,7 @@ export default UIPlugin.extend({
             // present the date in a more human readable format
             const inputFullFormat = this.inputTypeDateSupported ?
                   'YYYY-MM-DD' :
-                  dateFormatStr();
+                  dateFormat();
             const inputMonthFormat = this.inputTypeMonthSupported ?
                   'YYYY-MM' :
                   'MM/YYYY';
@@ -115,9 +115,9 @@ export default UIPlugin.extend({
 
             if(!this.inputTypeDateSupported)
                 this.inputFull.attr({
-                    minlength: dateFormatStr().length,
-                    maxlength: dateFormatStr().length,
-                    placeholder: dateFormatStr(),
+                    minlength: dateFormat().length,
+                    maxlength: dateFormat().length,
+                    placeholder: dateFormat(),
                 });
 
             if(!this.inputTypeMonthSupported)
@@ -175,7 +175,7 @@ export default UIPlugin.extend({
                 console.log('setting date to', value);
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
 
-                this.inputFull.title = m.format(dateFormatStr());
+                this.inputFull.title = m.format(dateFormat());
             } else
                 this.model.saveBlockers.add('invaliddate:' + this.init.df, this.init.df,
                                             invalidMessage || formsText('invalidDate'));
@@ -188,8 +188,8 @@ export default UIPlugin.extend({
             // As a fallback, and on manual paste, default to preferred
             // date format
             if(m && !m.isValid())
-                m = dayjs(val, dateFormatStr(), true);
-            this.updateIfValid(m, formsText('requiredFormat')(dateFormatStr()));
+                m = dayjs(val, dateFormat(), true);
+            this.updateIfValid(m, formsText('requiredFormat')(dateFormat()));
         },
         updateMonth: function() {
             let val = this.inputMonth.val().trim() || null;

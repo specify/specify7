@@ -13,12 +13,12 @@ import queryFromTree from './queryfromtree';
 import * as navigation from './navigation';
 import QueryResultsTable from './queryresultstable';
 import EditResourceDialog from './editresourcedialog';
-import QuerySaveDialog from './querysavedialog';
+import QuerySaveDialog from './components/querysavedialog';
 import router from './router';
 import queryText from './localization/query';
 import commonText from './localization/common';
 
-    var QueryBuilder = Backbone.View.extend({
+var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
         className: "query-view content-shadow-full-width",
         events: {
@@ -140,18 +140,26 @@ import commonText from './localization/common';
             this.trigger('redisplay');
         },
         save() {
-            this.save_({clone: false});
+            this.save_({isSaveAs: false});
         },
         saveAs() {
-            this.save_({clone: true});
+            this.save_({isSaveAs: true});
         },
-        save_: function({clone}) {
+        save_: function({isSaveAs}) {
             if (this.readOnly) return;
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
-                new QuerySaveDialog({
-                    queryBuilder: this,
-                    clone: clone
+                const dialog = new QuerySaveDialog({
+                    query: this.query,
+                    isSaveAs,
+                    onClose: (queryId)=>{
+                        dialog.remove();
+                        navigation.removeUnloadProtect(this);
+                        if(isSaveAs)
+                            navigation.go(`/specify/query/${queryId}/`);
+                        else
+                            this.trigger('redisplay');
+                    }
                 }).render();
             });
         },

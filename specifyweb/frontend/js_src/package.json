@@ -10,7 +10,7 @@
   },
   "author": "KU Biodiversity Institute",
   "homepage": "https://specifysoftware.org",
-  "main": "lib/main.js",
+  "main": "lib/main.ts",
   "scripts": {
     "buildTests": "tsc --build tsconfig.tests.json",
     "runLocalizationTests": "node testBuild/tests/testlocalization.js",

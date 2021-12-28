@@ -3,11 +3,11 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-import initialContext from './initialcontext';
-import { escapeRegExp } from './escaperegexp';
+import {load} from './initialcontext';
+import {escapeRegExp} from './escaperegexp';
 
-    var uiformatters;
-    initialContext.load('app.resource?name=UIFormatters', data => uiformatters = $(data));
+let uiformatters;
+    export const fetchContext = load('/context/app.resource?name=UIFormatters', 'application/xml').then(data => {uiformatters = $(data)});
 
     export function UIFormatter(fields) {
         this.fields = fields;

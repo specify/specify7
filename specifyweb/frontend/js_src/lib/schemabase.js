@@ -11,7 +11,7 @@
 // schema, but it's here for now.
 
 import _ from 'underscore';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 
 const schemaBase = {
 
@@ -48,8 +48,8 @@ const schemaBase = {
     orgHierarchy: ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 };
 
-// Scoping information is loaded and poplated here.
-initialContext.load('domain.json', data => {
+// Scoping information is loaded and populated here.
+export const fetchContext = load('/context/domain.json', 'application/json').then(data => {
     schemaBase.domainLevelIds =  _.object(['collection', 'discipline', 'division', 'institution'].map(
         level => [level, data[level]]
     ));

@@ -73,7 +73,7 @@ export default UIPlugin.extend({
         }
 
         Q.all([this.user.fetch(), this.allCollections.fetch({limit:0})]).then(() => {
-            this.el.innerText = adminText('collections');
+            this.el.textContent = adminText('collections');
             this.user.isNew() && this.$el.attr('title', adminText('saveUserFirst')).prop('disabled', true);
         });
         return this;

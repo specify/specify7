@@ -8,14 +8,13 @@ import Q from 'q';
 
 import ajax from './ajax';
 import schema from './schema';
-import { getIcon } from './icons';
+import {getIcon} from './icons';
 import specifyform from './specifyform';
-import initialContext from './initialcontext';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 
 
-    // I don't think the non-sidebar items are ever used in Sp6.
+// I don't think the non-sidebar items are ever used in Sp6.
     let views, isFulfilled = false;
 
     const getFormsPromise = ajax('/context/app.resource?name=DataEntryTaskInit',

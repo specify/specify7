@@ -8,11 +8,16 @@ import specifyform from './specifyform';
 import api from './specifyapi';
 import {format} from './dataobjformatters';
 import whenAll from './whenall';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 import commonText from './localization/common';
 
-    var dialogdefs;
-    initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
+let dialogdefs;
+export const fetchContext = load(
+  '/context/app.resource?name=DialogDefs',
+  'application/xml'
+).then((data) => {
+  dialogdefs = data;
+});
 
 export default Backbone.View.extend({
         __name__: "QueryCbxSearch",

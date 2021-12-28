@@ -1,5 +1,5 @@
 import csrfToken from './csrftoken';
-import { UnhandledErrorView } from './errorview';
+import { UnhandledErrorView } from './components/errorview';
 import type { IR, RA } from './types';
 
 // These HTTP methods do not require CSRF protection
@@ -27,12 +27,7 @@ export const HTTP = {
   UNAVAILABLE: 503,
 };
 
-/**
- * Allows throwing errors from expressions, rather than statements
- */
-export function error(message: string): never {
-  throw new Error(message);
-}
+export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 
 /**
  * Wraps native fetch in useful helpers
@@ -49,7 +44,7 @@ export default async function ajax<RESPONSE_TYPE = string>(
   url: string,
   options: Omit<RequestInit, 'body' | 'headers'> & {
     body?: string | IR<unknown> | FormData;
-    headers?: IR<string>;
+    headers?: { Accept: MimeType } & IR<string>;
   } = {},
   {
     expectedResponseCodes = [HTTP.OK],

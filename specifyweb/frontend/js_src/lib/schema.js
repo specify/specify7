@@ -6,13 +6,13 @@
 
 import schema from './schemabase';
 import extras from './schemaextras';
-import initialContext from './initialcontext';
+import {load} from './initialcontext';
 
 import './specifymodel';
 import './specifyfield';
 
 schema.models = {};
-initialContext.load('datamodel.json', tables => tables.forEach(tableDef => {
+export const fetchContext = load('/context/datamodel.json', 'application/json').then(tables => tables.forEach(tableDef => {
     const model = new schema.Model(tableDef);
     const extra = extras[model.name];
     extra && extra(model);

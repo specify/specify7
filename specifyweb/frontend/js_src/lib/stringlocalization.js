@@ -2,15 +2,15 @@
 
 import _ from 'underscore';
 
-import initialContext from './initialcontext';
-import { getProperty } from './props';
+import {load} from './initialcontext';
+import {getProperty} from './props';
 
 
-    var locale = 'en';
-    var bundles = {};
-    ['resources', 'views', 'global_views', 'expresssearch'].map(function(bundle) {
-        initialContext.loadProperties(bundle + '_' + locale + '.properties', data => bundles[bundle] = data);
-    });
+const locale = 'en';
+    const bundles = {};
+    export const fetchContext = Promise.all(['resources', 'views', 'global_views', 'expresssearch'].map((bundle)=>
+        load(`/properties/${bundle}_${locale}.properties`, 'text/plain').then(data => {bundles[bundle] = data})
+    ));
 
     export function localize(s, fallback) {
         var keys = Object.keys(bundles);

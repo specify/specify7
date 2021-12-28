@@ -1,4 +1,4 @@
-import initialContext from './initialcontext';
+import { load } from './initialcontext';
 
 const systemInfo = {
   user_agent: window.navigator.userAgent,
@@ -19,7 +19,10 @@ type SystemInfo = {
   stats_url: string | null;
 };
 
-initialContext.load('system_info.json', function (data: SystemInfo) {
+export const fetchContext = load<SystemInfo>(
+  '/context/system_info.json',
+  'application/json'
+).then((data) => {
   Object.entries(data).forEach(([key, value]) => {
     // @ts-expect-error
     systemInfo[key as keyof SystemInfo] = value;

@@ -2,8 +2,10 @@
 
 import $ from 'jquery';
 
-import { getLocalityDataFromLocalityResource } from './localityrecorddataextractor';
-import { showLeafletMap, formatLocalityData } from './leaflet';
+import {
+  getLocalityDataFromLocalityResource
+} from './localityrecorddataextractor';
+import {formatLocalityData, showLeafletMap} from './leaflet';
 import UIPlugin from './uiplugin';
 import localityText from './localization/locality';
 import commonText from './localization/common';
@@ -15,7 +17,7 @@ export default UIPlugin.extend(
       click: 'click',
     },
     render() {
-      this.el.innerText = localityText('showMap');
+      this.el.textContent = localityText('showMap');
       this.geoMapDialog = undefined;
       return this;
     },

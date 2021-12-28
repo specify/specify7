@@ -4,6 +4,7 @@ const webpack = require("webpack");
 const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
 
 
+// Don't write if file was unchanged to avoid triggering needles Django reload
 function writeIfChanged(compiler, fileName, fileContent){
     if(!fs.existsSync(compiler.options.output.path))
         fs.mkdirSync(compiler.options.output.path);
@@ -29,6 +30,14 @@ class EmitInitPyPlugin {
         );
 }
 
+/**
+ * After manifest is generated outside of the build directory (to avoid
+ * triggering a rebuild), the manifest inside the build directory is updated,
+ * only if changed.
+ *
+ * The manifest outside the build directory is not used, but can't be disabled
+ * since WebpackManifestPlugin does not support conditional update
+ */
 class SmartWebpackManifestPlugin {
     apply = (compiler)=>
         getCompilerHooks(compiler).afterEmit.tap(
@@ -88,6 +97,7 @@ module.exports = (_env, argv)=>({
                                         proposals: true,
                                     },
                                     bugfixes: true,
+                                    // See "browserslist" section of package.json
                                     browserslistEnv: argv.mode,
                                 }
                             ],
@@ -100,26 +110,34 @@ module.exports = (_env, argv)=>({
         ]
     },
     resolve: {
-        extensions: ['.ts','.tsx','.js', '.jsx'],
+        /**
+         * Resolve TypeScript files first. This way, when a .js file is
+         * rewritten to .ts, but the old .js still remains in a docker volume,
+         * it gets ignored in favor of the new .ts file
+         */
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
         symlinks: false,
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
         new SmartWebpackManifestPlugin(),
         new WebpackManifestPlugin({
-            // Create the file outside of the dist dir to avoid
-            // triggering the watcher
+            /*
+             * Create the file outside of the dist dir to avoid
+             * triggering the watcher
+             */
             fileName: '../manifest.json',
         }),
         new EmitInitPyPlugin()
     ],
+    // User recommended source map types appropriate for each mode
     devtool: argv.mode === 'development'
         ? 'eval-source-map'
         : 'source-map',
     entry: {
         main: "./lib/main.js",
-        login: "./lib/login.js",
-        passwordchange: "./lib/passwordchange.js",
+        login: "./lib/login.ts",
+        passwordchange: "./lib/passwordchange.ts",
         choosecollection: "./lib/choosecollection.js",
     },
     output: {

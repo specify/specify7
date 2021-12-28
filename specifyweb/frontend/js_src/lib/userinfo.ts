@@ -1,4 +1,4 @@
-import initialContext from './initialcontext.js';
+import { load } from './initialcontext';
 import commonText from './localization/common';
 import type { IR, RA } from './types';
 
@@ -25,7 +25,10 @@ export type UserInfo = Readonly<UserInfoWritable>;
 
 const userInfo: UserInfoWritable = {} as UserInfoWritable;
 
-initialContext.load('user.json', (data: UserInfo) => {
+export const fetchContext = load<UserInfo>(
+  '/context/user.json',
+  'application/json'
+).then((data) => {
   if (data.agent === null) {
     const dialog: JQuery = $(`<div>
       ${commonText('noAgentDialogHeader')}

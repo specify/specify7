@@ -11,7 +11,7 @@ import whenall from './whenall';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-    var AgentForDiv = Backbone.View.extend({
+var AgentForDiv = Backbone.View.extend({
         __name__: "AgentForDivisionSelector",
         tagName: 'li',
         initialize: function(options) {
@@ -94,7 +94,7 @@ import commonText from './localization/common';
             'click': 'click'
         },
         render: function() {
-            this.el.innerText = formsText('setAgents');
+            this.el.textContent = formsText('setAgents');
             this.model.isNew() && this.$el.attr('title', formsText('setAgentsDisabledButtonDescription')).prop('disabled', true);
             return this;
         },

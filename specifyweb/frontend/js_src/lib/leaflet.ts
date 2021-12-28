@@ -22,7 +22,8 @@ import commonText from './localization/common';
 import localityText from './localization/locality';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
-import ajax, { error, HTTP } from './ajax';
+import ajax, { HTTP } from './ajax';
+import { error } from './assert';
 
 const DEFAULT_ZOOM = 5;
 

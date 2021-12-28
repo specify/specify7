@@ -1,9 +1,9 @@
-import dateFormatString from './dateformat.js';
+import { error } from './assert';
+import dateFormat from './dateformat';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
 import type { IR, RA } from './types';
 import { hasNativeErrors } from './validationmessages';
-import { error } from './ajax';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -109,25 +109,25 @@ export const parsers: IR<string | Parser | ((field: Field) => Parser)> = {
 
   'java.math.BigDecimal': 'java.lang.Double',
 
-  'java.sql.Timestamp': {
+  'java.sql.Timestamp': () => ({
     type: 'date',
-    minLength: dateFormatString().length,
-    maxLength: dateFormatString().length,
+    minLength: dateFormat().length,
+    maxLength: dateFormat().length,
     formatters: [
       formatter.toLowerCase,
       stringGuard((value) =>
-        value === 'today' ? dayjs() : dayjs(value, dateFormatString(), true)
+        value === 'today' ? dayjs() : dayjs(value, dateFormat(), true)
       ),
     ],
     validators: [
       (value) =>
         (value as any).isValid()
           ? undefined
-          : formsText('requiredFormat')(dateFormatString()),
+          : formsText('requiredFormat')(dateFormat()),
     ],
-    title: formsText('requiredFormat')(dateFormatString()),
+    title: formsText('requiredFormat')(dateFormat()),
     parser: (value) => (value as any).format('YYYY-MM-DD'),
-  },
+  }),
 
   'java.util.Calendar': 'java.sql.Timestamp',
 
