@@ -737,13 +737,17 @@ const commonText = createDictionary({
     ca: jsxHeader('An error occurred communicating with the Specify 7 server.'),
   },
   backEndErrorDialogMessage: {
-    'en-us': `
-      Please reload the page and try again.<br>
-      If the issue persists, please contact your IT support, or if this is
-      a Specify Cloud database, contact
-      <a href="mailto:support@specifysoftware.org">
-        support@specifysoftware.org
-      </a>.`,
+    'en-us': (
+      <>
+        Please reload the page and try again.
+        <br />
+        If the issue persists, please contact your IT support, or if this is a
+        Specify Cloud database, contact
+        <a href="mailto:support@specifysoftware.org">
+          support@specifysoftware.org
+        </a>
+      </>
+    ),
     'ru-ru': (
       <>
         Пожалуйста, обновите страницу и попробуйте еще раз.
@@ -755,13 +759,17 @@ const commonText = createDictionary({
         </a>
       </>
     ),
-    ca: `
-      Please reload the page and try again.<br>
-      If the issue persists, please contact your IT support, or if this is
-      a Specify Cloud database, contact
-      <a href="mailto:support@specifysoftware.org">
-        support@specifysoftware.org
-      </a>.`,
+    ca: (
+      <>
+        Please reload the page and try again.
+        <br />
+        If the issue persists, please contact your IT support, or if this is a
+        Specify Cloud database, contact
+        <a href="mailto:support@specifysoftware.org">
+          support@specifysoftware.org
+        </a>
+      </>
+    ),
   },
   // Search
   expressSearch: {

@@ -1,4 +1,5 @@
 import { load } from './initialcontext';
+import * as querystring from './querystring';
 
 const systemInfo = {
   user_agent: window.navigator.userAgent,
@@ -38,10 +39,9 @@ export const fetchContext = load<SystemInfo>(
       collectionGUID: systemInfo.collection_guid,
       isaNumber: systemInfo.isa_number,
     };
-    const queryString = Object.entries(payload)
-      .map(([key, value]) => `${key}=${value}`)
-      .join('?');
-    fetch(`${systemInfo.stats_url}${queryString}`).catch(console.error);
+    fetch(querystring.format(systemInfo.stats_url, payload)).catch(
+      console.error
+    );
   }
 });
 

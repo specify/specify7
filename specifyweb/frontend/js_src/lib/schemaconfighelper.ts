@@ -12,6 +12,7 @@ import type {
 import commonText from './localization/common';
 import type { IR, RA } from './types';
 import ajax from './ajax';
+import * as querystring from 'querystring';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -86,10 +87,10 @@ export function prepareNewString({
   ...object
 }: NewSpLocaleItemString): NewSpLocaleItemString {
   if (typeof parent === 'undefined') throw new Error('String has no parent');
-  const [parentName, parentId] = parent.split('?')[1].split('=');
+  const [parentName, parentId] = Object.entries(querystring.parse(parent))[0];
   return {
     ...object,
-    [parentName]: `/api/specify/splocalecontaineritem/${parentId}/`,
+    [parentName]: `/api/specify/splocalecontaineritem/${parentId as string}/`,
   };
 }
 

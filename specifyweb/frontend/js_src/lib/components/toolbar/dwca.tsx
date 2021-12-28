@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { formData, HTTP } from '../../ajax';
+import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { useId } from '../common';
@@ -16,10 +16,10 @@ const liftGetResource = async (
   ajax(
     `/context/app.resource?name=${name}`,
     {},
-    { expectedResponseCodes: [HTTP.OK, HTTP.NOT_FOUND] }
+    { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
   )
     .then(({ status }) => {
-      if (status === HTTP.NOT_FOUND) throw new Error(errorMessage);
+      if (status === Http.NOT_FOUND) throw new Error(errorMessage);
       errorField?.setCustomValidity('');
     })
     .catch((error) => {
@@ -90,6 +90,7 @@ function MakeDwca({
       }}
     >
       <form
+        className="grid"
         id={id('form')}
         ref={formRef}
         onSubmit={(event): void => {

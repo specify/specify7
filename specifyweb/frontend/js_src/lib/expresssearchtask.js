@@ -48,7 +48,7 @@ const relatedSearchesPromise = ajax(
                 <div class="results related" aria-live="polite"></div>
             `);
             this.$('.results').accordion(accordionOptions);
-            var query = querystring.deparam().q;
+            var query = querystring.parse().q;
             $('.express-search-query').val(query);
 
             this.doPrimarySearch(query);
@@ -58,7 +58,7 @@ const relatedSearchesPromise = ajax(
             return this;
         },
         doPrimarySearch: function(query) {
-            var ajaxUrl = querystring.param('/express_search/', {q: query});
+            var ajaxUrl = querystring.format('/express_search/', {q: query});
             $.get(ajaxUrl, _.bind(this.showPrimaryResults, this, ajaxUrl));
         },
         showPrimaryResults: function(ajaxUrl, allTablesResults) {

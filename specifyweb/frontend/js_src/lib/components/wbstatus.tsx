@@ -7,7 +7,7 @@ import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import ajax, { HTTP } from '../ajax';
+import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { ModalDialog, ProgressBar } from './modaldialog';
@@ -164,7 +164,7 @@ function WbStatus({
                       `/api/workbench/abort/${dataset.id}/`,
                       { method: 'POST' },
                       {
-                        expectedResponseCodes: [HTTP.UNAVAILABLE],
+                        expectedResponseCodes: [Http.UNAVAILABLE],
                         strict: false,
                       }
                     )

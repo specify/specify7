@@ -32,7 +32,7 @@ const createEmptyDataSet = async (): Promise<void> =>
       rows: [],
     },
     headers: {
-      Accepts: 'text/plain',
+      Accept: 'application/json',
     },
   }).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
 

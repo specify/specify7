@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { formData, HTTP } from '../../ajax';
+import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import { useId } from '../common';
 import type { UserTool } from '../main';
@@ -57,6 +57,7 @@ function MasterKey({
     >
       {commonText('generateMasterKeyDialogHeader')}
       <form
+        className="grid"
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
@@ -71,11 +72,11 @@ function MasterKey({
               },
             },
             {
-              expectedResponseCodes: [HTTP.FORBIDDEN, HTTP.OK],
+              expectedResponseCodes: [Http.FORBIDDEN, Http.OK],
             }
           )
             .then(({ data, status }) =>
-              status === HTTP.FORBIDDEN
+              status === Http.FORBIDDEN
                 ? setError(commonText('incorrectPassword'))
                 : setMasterKey(data)
             )

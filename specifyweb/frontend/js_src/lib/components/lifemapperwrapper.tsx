@@ -39,7 +39,6 @@ export default function register(): void {
         el: attach($('<span class="lifemapper-info"></span>')),
       }).render();
     if (
-      // @ts-expect-error
       remotePrefs['s2n.badges.disable'] !== 'true' &&
       !resourceView.model.isNew()
     )

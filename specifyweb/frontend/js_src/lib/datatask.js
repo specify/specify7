@@ -66,7 +66,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
 
                 // go to the actual resource
                 var url = resource.viewUrl();
-                navigation.navigate(querystring.param(url, { recordsetid: id }),
+                navigation.navigate(querystring.format(url, { recordsetid: id }),
                                     {replace: true, trigger: true});
             });
         }

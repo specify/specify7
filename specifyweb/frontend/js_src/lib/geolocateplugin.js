@@ -50,7 +50,7 @@ export default UIPlugin.extend({
         if(document.getElementById('geolocate-dialog') !== null)
             return;
 
-        const url = querystring.param("//www.geo-locate.org/web/webgeoreflight.aspx", data)
+        const url = querystring.format("https://www.geo-locate.org/web/webgeoreflight.aspx", data)
                   .replace(/%7c/gi, '|'); // GEOLocate doesn't like '|' to be uri escaped.
 
         const listener = evt => {

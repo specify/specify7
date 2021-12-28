@@ -6,7 +6,7 @@ import Backbone from './backbone';
 import * as querystring from './querystring';
 
 
-    export default _.extend({}, Backbone.Events, {
+export default _.extend({}, Backbone.Events, {
         getRows: function(table, options) {
             table = _.isString(table) ? table : table.name;
             var url = '/api/specify_rows/' + table.toLowerCase() + '/';
@@ -43,7 +43,7 @@ import * as querystring from './querystring';
         },
         makeResourceViewUrl: function(specifyModel, resourceId, recordSetId) {
             var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
-            return recordSetId == null ? url : querystring.param(url, {recordsetid: recordSetId});
+            return recordSetId == null ? url : querystring.format(url, {recordsetid: recordSetId});
         },
         getPrepsAvailableForLoanRs: function(recordSetId) {
             return $.get('/interactions/preparations_available_rs/' + recordSetId + '/');

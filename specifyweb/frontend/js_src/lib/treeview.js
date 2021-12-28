@@ -6,7 +6,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import schema from './schema';
-import { getTreeDef } from './domain';
+import {getTreeDef} from './domain';
 import NotFoundView from './notfoundview';
 import * as navigation from './navigation';
 import * as app from './specifyapp';
@@ -16,12 +16,12 @@ import TreeNodeView from './treenodeview';
 import contextMenuBuilder from './treectxmenu';
 import userInfo from './userinfo';
 import remoteprefs from './remoteprefs';
-import { readCookie, createCookie, eraseCookie } from './cookies';
+import {createCookie, eraseCookie, readCookie} from './cookies';
 import treeText from './localization/tree';
 import commonText from './localization/common';
 import autocomplete from './autocomplete';
 
-    var TreeHeader = Backbone.View.extend({
+var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
         className: "tree-header",
         tagName: "thead",
@@ -138,7 +138,7 @@ import autocomplete from './autocomplete';
             }));
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
-            var params = querystring.deparam();
+            var params = querystring.parse();
             if (!params.conformation) {
                 var conformation  = typeof remoteprefs[this.getDefaultConformPrefName()] === 'string' ?
                         remoteprefs[this.getDefaultConformPrefName()] : params.conformation;

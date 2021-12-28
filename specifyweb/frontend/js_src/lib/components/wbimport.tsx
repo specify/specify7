@@ -168,7 +168,7 @@ class WbImport extends Component<{}, WbImportState> {
         ajax<Dataset>('/api/workbench/dataset/', {
           method: 'POST',
           headers: {
-            Accepts: 'application/json',
+            Accept: 'application/json',
           },
           body: {
             name,

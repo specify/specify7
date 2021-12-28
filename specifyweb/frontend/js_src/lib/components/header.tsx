@@ -88,7 +88,9 @@ export function ExpressSearch(): JSX.Element {
         event.preventDefault();
         const query = searchQuery.trim();
         if (query.length === 0) return;
-        const url = querystring.param('/specify/express_search/', { q: query });
+        const url = querystring.format('/specify/express_search/', {
+          q: query,
+        });
         navigation.go(url);
       }}
       id="express-search"

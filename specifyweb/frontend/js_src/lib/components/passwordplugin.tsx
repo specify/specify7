@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax from '../ajax';
+import ajax, { formData, Http } from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
@@ -50,6 +50,7 @@ function PasswordResetDialog({
       }}
     >
       <form
+        className="grid"
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
@@ -63,12 +64,17 @@ function PasswordResetDialog({
             );
           else {
             setIsLoading(true);
-            void ajax(`/api/set_password/${modelId}/`, { body: password }).then(
-              () => {
-                setIsLoading(false);
-                handleClose();
-              }
-            );
+            void ajax(
+              `/api/set_password/${modelId}/`,
+              {
+                method: 'POST',
+                body: formData({ password }),
+              },
+              { expectedResponseCodes: [Http.NO_CONTENT] }
+            ).then(() => {
+              setIsLoading(false);
+              handleClose();
+            });
           }
         }}
       >

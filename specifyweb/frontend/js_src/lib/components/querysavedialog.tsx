@@ -68,6 +68,7 @@ function QuerySaveDialog({
           : queryText('saveQueryDialogMessage')}
       </p>
       <form
+        className="grid"
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();

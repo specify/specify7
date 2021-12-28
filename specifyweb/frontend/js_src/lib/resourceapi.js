@@ -124,7 +124,7 @@ function eventHandlerForToOne(related, field) {
             var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
             return this.recordsetid == null ? url :
-                querystring.param(url, {recordsetid: this.recordsetid});
+                querystring.format(url, {recordsetid: this.recordsetid});
         },
         viewUrl: function() {
             // returns the url for viewing this resource in the UI

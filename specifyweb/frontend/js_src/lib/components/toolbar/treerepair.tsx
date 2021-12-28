@@ -21,7 +21,8 @@ export function TreeSelectDialog({
   onClick: handleClick,
   title,
   getLink,
-}: Props & {
+}: {
+  readonly onClose: () => void;
   readonly onClick: (tree: string) => Promise<void>;
   readonly title: string;
   readonly getLink: (tree: string) => string;
@@ -81,7 +82,7 @@ export function TreeSelectDialog({
                 }}
               >
                 <TableIcon tableName={tree} tableLabel="false" />
-                {model.getLocalizedName()}
+                {(model as SchemaModelTableField).getLocalizedName()}
               </a>
             </li>
           ))}

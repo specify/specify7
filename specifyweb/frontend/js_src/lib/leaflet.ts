@@ -22,7 +22,7 @@ import commonText from './localization/common';
 import localityText from './localization/locality';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
-import ajax, { HTTP } from './ajax';
+import ajax, { Http } from './ajax';
 import { error } from './assert';
 
 const DEFAULT_ZOOM = 5;
@@ -61,10 +61,10 @@ export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
         ajax<R<any>>(
           '/context/app.resource?name=leaflet-layers',
           { headers: { Accept: 'application/json' } },
-          { strict: false, expectedResponseCodes: [HTTP.OK, HTTP.NOT_FOUND] }
+          { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
         )
           .then(({ data, status }) =>
-            status === HTTP.NOT_FOUND
+            status === Http.NOT_FOUND
               ? error('')
               : resolve((leafletMaps = parseLayersFromJson(data)))
           )

@@ -246,3 +246,14 @@ table.grid-table,
 input[readonly] {
   background-color: var(--b3);
 }
+
+form.grid label {
+  display: flex;
+  flex-direction: column;
+}
+
+form.grid {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--half-size);
+}

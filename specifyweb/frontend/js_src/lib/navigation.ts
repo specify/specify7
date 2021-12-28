@@ -22,7 +22,7 @@ const sequenceFromState = (state?: State): number =>
 let sequence = sequenceFromState(window.history.state);
 
 type Blocker = {
-  readonly key: string;
+  readonly key: unknown;
   readonly message: string;
   readonly confirmNavigationHandler: typeof defaultConfirmNavigationHandler;
 };
@@ -31,7 +31,7 @@ let unloadBlockers: Blocker[] = [];
 let onBeforeUnloadHandler: (() => string) | undefined = undefined;
 
 export function addUnloadProtect(
-  key: string,
+  key: unknown,
   message: string,
   confirmNavigationHandler = defaultConfirmNavigationHandler
 ): void {
@@ -47,7 +47,7 @@ function changeOnBeforeUnloadHandler(handler?: () => string): void {
     window.addEventListener('onbeforeunload', handler);
 }
 
-export function removeUnloadProtect(removalKey: string): void {
+export function removeUnloadProtect(removalKey: unknown): void {
   unloadBlockers = unloadBlockers.filter(({ key }) => key !== removalKey);
   changeOnBeforeUnloadHandler(
     unloadBlockers.length === 0
@@ -103,7 +103,7 @@ Backbone.history.history = Object.setPrototypeOf(
  * this gets rid of all that *splat cruft in the routes.
  */
 const loadUrl = Backbone.history.loadUrl;
-Backbone.history.loadUrl = function (url) {
+Backbone.history.loadUrl = function (url: string | undefined) {
   const stripped = url && url.replace(/\?.*$/, '');
   return loadUrl.call(this, stripped);
 };
@@ -114,8 +114,8 @@ Backbone.history.loadUrl = function (url) {
  * set and optionally backs out the popstate in that case.
  */
 const checkUrl = Backbone.history.checkUrl;
-Backbone.history.checkUrl = function (e) {
-  const poppedSequence = sequenceFromState(e.originalEvent.state);
+Backbone.history.checkUrl = function (event: any) {
+  const poppedSequence = sequenceFromState(event.originalEvent.state);
   /*
    * If a popstate is canceled, we use window.history.go to return
    * to previous point in the history, which results another
@@ -135,7 +135,7 @@ Backbone.history.checkUrl = function (e) {
    */
   const proceed = (): void => {
     sequence = poppedSequence;
-    checkUrl(e);
+    checkUrl(event);
   };
 
   /*

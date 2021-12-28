@@ -5,13 +5,13 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import template from './templates/queryfield.html';
-import { getTreeDef } from './domain';
+import {getTreeDef} from './domain';
 import QueryFieldSpec from './queryfieldspec';
 import QueryFieldInputUI from './queryfieldinput';
 import queryText from './localization/query';
 import commonText from './localization/common';
 
-    var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
+var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
     var types = {
         strings: ['text', 'java.lang.String'],
@@ -227,14 +227,14 @@ export default Backbone.View.extend({
 
             this.getTreeRanks(this.fieldSpec.table.name)
                 .then(treeRanks=>this.addTreeLevelsToFieldSelect(treeRanks))
-                .then(()=>this.$('.field-select-grp').show())
-                .catch(()=>{ /* not a tree table */ });
+                .catch(()=>{ /* Not a tree table */ })
+                .finally(()=>this.$('.field-select-grp').show())
         },
         async getTreeRanks(tableName){
             const treeDef = await getTreeDef(tableName);
             const treeDefItems = await treeDef.rget('treedefitems');
             await treeDefItems.fetch({limit: 0});
-            return treeDefItems.models;
+            return treeDefItems.models ?? [];
         },
         addTreeLevelsToFieldSelect: function(tableRanks) {
             const optGroup = $(`<optgroup label="${queryText('treeRanks')}">`).appendTo( this.$('.field-select') );

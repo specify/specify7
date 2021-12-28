@@ -15,7 +15,7 @@ import * as querystring from './querystring';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-    var emptyTemplate = `<p>${formsText('noData')}</p>`;
+var emptyTemplate = `<p>${formsText('noData')}</p>`;
 
     var Controls = Backbone.View.extend({
         __name__: "RecordSelectorControls",
@@ -318,7 +318,7 @@ export default Backbone.View.extend({
                 new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(section);
             }
 
-            var params = querystring.deparam();
+            var params = querystring.parse();
             var index = params[this.urlParam] || 0;
             index === 'end' && (index = this.collection.length - 1);
 
@@ -356,7 +356,7 @@ export default Backbone.View.extend({
             if (this.urlParam) {
                 var params = {};
                 params[this.urlParam] = offset;
-                navigation.push(querystring.param(window.location.pathname, params));
+                navigation.push(querystring.format(window.location.url, params));
             }
         },
         showHide: function() {

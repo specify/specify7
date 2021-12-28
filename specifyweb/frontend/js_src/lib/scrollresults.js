@@ -6,7 +6,7 @@ import Backbone from './backbone';
 import * as querystring from './querystring';
 
 
-    var win = $(window);
+var win = $(window);
 
 export default Backbone.View.extend({
         __name__: "ScrollResults",
@@ -49,7 +49,7 @@ export default Backbone.View.extend({
             return this.fetch = this.doFetch(this.offset).done(this.gotData.bind(this));
         },
         doFetchSimple: function(offset) {
-            var url = querystring.param(this.ajaxUrl, {offset: offset});
+            var url = querystring.format(this.ajaxUrl, {offset: offset});
             return $.get(url);
         },
         gotData: function(data) {

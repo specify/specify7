@@ -104,6 +104,7 @@ export function AddLanguage({
       }}
     >
       <form
+        className="grid"
         ref={formRef}
         id={id('form')}
         onSubmit={(event): void => {

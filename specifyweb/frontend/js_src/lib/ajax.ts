@@ -20,12 +20,13 @@ export function isExternalUrl(url: string): boolean {
   }
 }
 
-export const HTTP = {
-  OK: 200,
-  NOT_FOUND: 404,
-  FORBIDDEN: 403,
-  UNAVAILABLE: 503,
-};
+export const enum Http {
+  OK = 200,
+  NO_CONTENT = 204,
+  NOT_FOUND = 404,
+  FORBIDDEN = 403,
+  UNAVAILABLE = 503,
+}
 
 export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 
@@ -47,7 +48,7 @@ export default async function ajax<RESPONSE_TYPE = string>(
     headers?: { Accept: MimeType } & IR<string>;
   } = {},
   {
-    expectedResponseCodes = [HTTP.OK],
+    expectedResponseCodes = [Http.OK],
     strict = true,
   }: {
     /*

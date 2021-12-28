@@ -143,7 +143,7 @@ export default Backbone.View.extend({
         },
         gotoForm: function(model, recordset) {
             // TODO: got to be a better way to get the url
-            var url = querystring.param(new model.Resource().viewUrl(),
+            var url = querystring.format(new model.Resource().viewUrl(),
                                         {recordsetid: recordset.id});
             navigation.go(url);
         },

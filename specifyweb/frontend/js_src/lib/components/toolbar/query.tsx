@@ -532,29 +532,27 @@ const EditQueryDialog = Backbone.View.extend({
       });
   },
   exportQuery() {
-    void ajax(`/export/extract_query/${this.spquery.id}/`, {
-      headers: {
-        Accepts: 'text/plain',
-      },
-    }).then(({ data: xml }) => {
-      const dialog = $(`<div>
+    void ajax(`/export/extract_query/${this.spquery.id}/`).then(
+      ({ data: xml }) => {
+        const dialog = $(`<div>
                     ${commonText('exportQueryForDwcaDialogHeader')}
                     <textarea cols="120" rows="40" readonly></textarea>
                 </div>`);
-      $('textarea', dialog).text(xml);
-      dialog.dialog({
-        modal: true,
-        width: 'auto',
-        title: commonText('exportQueryForDwcaDialogTitle'),
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          [commonText('close')]() {
-            $(this).dialog('close');
+        $('textarea', dialog).text(xml);
+        dialog.dialog({
+          modal: true,
+          width: 'auto',
+          title: commonText('exportQueryForDwcaDialogTitle'),
+          close() {
+            $(this).remove();
           },
-        },
-      });
-    });
+          buttons: {
+            [commonText('close')]() {
+              $(this).dialog('close');
+            },
+          },
+        });
+      }
+    );
   },
 });

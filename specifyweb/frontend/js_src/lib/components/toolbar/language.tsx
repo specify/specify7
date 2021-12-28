@@ -42,7 +42,7 @@ function ChangeLanguage({
         buttons: [{ text: commonText('close'), click: closeDialog }],
       }}
     >
-      <form action="/context/language/" method="post">
+      <form className="grid" action="/context/language/" method="post">
         <input
           type="hidden"
           name="csrfmiddlewaretoken"
