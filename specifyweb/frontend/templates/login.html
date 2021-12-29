@@ -11,7 +11,7 @@
   <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
-  <script src="{% script_src 'login.ts' %}"></script>
+  <script src="{% script_src 'login.js' %}"></script>
   <title>{% blocktrans with title=title %}{{ title }} | Specify 7{% endblocktrans %}</title>
 </head>
 

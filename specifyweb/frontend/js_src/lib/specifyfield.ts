@@ -123,13 +123,17 @@ export class Field {
   // Returns the user friendly name of the field from the schema config.
   public getLocalizedName(): string | undefined {
     const name = this.localization.name;
-    return name === null ? undefined : unescape(name);
+    return name === null || typeof name === 'undefined'
+      ? undefined
+      : unescape(name);
   }
 
   // Returns the description of the field from the schema config.
   public getLocalizedDesc(): string | undefined {
     const description = this.localization.desc;
-    return description === null ? undefined : unescape(description);
+    return description === null || typeof description === 'undefined'
+      ? undefined
+      : unescape(description);
   }
 
   // Returns the name of the UIFormatter for the field from the schema config.

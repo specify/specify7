@@ -1,5 +1,5 @@
 import csrfToken from './csrftoken';
-import { UnhandledErrorView } from './components/errorview';
+import { UnhandledErrorView } from './errorview';
 import type { IR, RA } from './types';
 
 // These HTTP methods do not require CSRF protection
@@ -20,13 +20,13 @@ export function isExternalUrl(url: string): boolean {
   }
 }
 
-export const enum Http {
-  OK = 200,
-  NO_CONTENT = 204,
-  NOT_FOUND = 404,
-  FORBIDDEN = 403,
-  UNAVAILABLE = 503,
-}
+export const Http = {
+  OK: 200,
+  NO_CONTENT: 204,
+  NOT_FOUND: 404,
+  FORBIDDEN: 403,
+  UNAVAILABLE: 503,
+};
 
 export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 

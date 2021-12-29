@@ -6,7 +6,7 @@ import 'jquery-ui';
 
 import userInfo from './userinfo';
 import populateForm from './populateform';
-import {ErrorView} from './components/errorview';
+import {ErrorView} from './errorview';
 import NotFoundView from './notfoundview';
 import * as navigation from './navigation';
 import ResourceView from './resourceview';

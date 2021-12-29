@@ -138,7 +138,7 @@ module.exports = (_env, argv)=>({
         main: "./lib/main.js",
         login: "./lib/login.ts",
         passwordchange: "./lib/passwordchange.ts",
-        choosecollection: "./lib/choosecollection.js",
+        choosecollection: "./lib/choosecollection.ts",
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

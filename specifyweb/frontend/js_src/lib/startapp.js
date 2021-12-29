@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import * as businessRules from './businessrules';
-import { UnhandledErrorView } from './components/errorview';
+import {UnhandledErrorView} from './errorview';
 import * as navigation from './navigation';
 import {MainView} from "./components/main";
 import commonText from './localization/common';

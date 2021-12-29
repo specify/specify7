@@ -1,52 +1,45 @@
-{% load raven %}
-{% load script_manifest %}
-{% load i18n %}
+{% load raven %} {% load script_manifest %} {% load i18n %}
 {% trans 'Choose Collection' as title %}
 <!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
-<head>
-  <meta charset="utf-8">
-{% if use_raven %}
-  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
-  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
-{% endif %}
-  <script src="{% script_src 'choosecollection.js' %}"></script>
-  <title>{% blocktrans with title=title %}{{ title }} | Specify 7{% endblocktrans %}</title>
-</head>
-
-<body>
-  <header id="site-header"></header>
-  <main>
-    {% if form.non_field_errors %}
-    {% for error in form.non_field_errors %}
-    <p class="errornote" role="alert">
-      {{ error }}
-    </p>
-    {% endfor %}
+  <head>
+    <meta charset="utf-8" />
+    {% if use_raven %}
+    <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+    <script>
+      Raven.config("{% sentry_public_dsn %}").install();
+    </script>
     {% endif %}
+    <script src="{% script_src 'choosecollection.js' %}"></script>
+    <title>
+      {% blocktrans with title=title %} {{ title }} | Specify 7 {% endblocktrans %}
+    </title>
+  </head>
 
-    {% if form %}
-    <h2>{% trans 'Collection' %}</h2>
-    <form action="." method="post" id="choose-collection-form">
-      {% csrf_token %}
-      {{ form.collection.errors }}
-      {{ form.collection }}
-      <input type="hidden" name="next" value="{{ next }}" />
-      <div class="submit-row">
-        <input type="submit" value="{% trans 'Select' %}" />
-      </div>
-    </form>
-    {% else %}
-    <p>
-      {% blocktrans trimmed with next=next|urlencode %}
-      The logged in user has not been given access to any collections
-      in this database. You must
-      <a href="/accounts/login/?next={{ next }}">login</a> as another user.
-      {% endblocktrans %}
-    </p>
-    {% endif %}
-  </main>
-</body>
+  <body>
+    <header id="site-header"></header>
+    <main>
+      {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+      <p class="errornote" role="alert">{{ error }}</p>
+      {% endfor %} {% endif %} {% if form %}
+      <h2>{% trans 'Collection' %}</h2>
+      <form action="." method="post" id="choose-collection-form">
+        {% csrf_token %} {{ form.collection.errors }} {{ form.collection }}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <div class="submit-row">
+          <input type="submit" value="{% trans 'Select' %}" />
+        </div>
+      </form>
+      {% else %}
+      <p>
+        {% blocktrans trimmed with next=next|urlencode %}
+        The logged in user has
+        not been given access to any collections in this database. You must
+        <a href="/accounts/login/?next={{ next }}">login</a> as another user.
+        {% endblocktrans %}
+      </p>
+      {% endif %}
+    </main>
+  </body>
 </html>
-

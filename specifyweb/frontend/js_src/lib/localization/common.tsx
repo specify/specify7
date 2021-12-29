@@ -730,46 +730,37 @@ const commonText = createDictionary({
     ca: 'Server Error',
   },
   backEndErrorDialogHeader: {
-    'en-us': jsxHeader(
+    'en-us': header(
       'An error occurred communicating with the Specify 7 server.'
     ),
-    'ru-ru': jsxHeader('Произошла ошибка связи с сервером Specify 7.'),
-    ca: jsxHeader('An error occurred communicating with the Specify 7 server.'),
+    'ru-ru': header('Произошла ошибка связи с сервером Specify 7.'),
+    ca: header('An error occurred communicating with the Specify 7 server.'),
   },
   backEndErrorDialogMessage: {
-    'en-us': (
-      <>
-        Please reload the page and try again.
-        <br />
-        If the issue persists, please contact your IT support, or if this is a
-        Specify Cloud database, contact
-        <a href="mailto:support@specifysoftware.org">
-          support@specifysoftware.org
-        </a>
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Пожалуйста, обновите страницу и попробуйте еще раз.
-        <br />
-        Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
-        свяжитесь с нами:
-        <a href="mailto:support@specifysoftware.org">
-          support@specifysoftware.org
-        </a>
-      </>
-    ),
-    ca: (
-      <>
-        Please reload the page and try again.
-        <br />
-        If the issue persists, please contact your IT support, or if this is a
-        Specify Cloud database, contact
-        <a href="mailto:support@specifysoftware.org">
-          support@specifysoftware.org
-        </a>
-      </>
-    ),
+    'en-us': `
+      Please reload the page and try again.<br>
+      If the issue persists, please contact your IT support, or if this is a
+      Specify Cloud database, contact
+      <a href="mailto:support@specifysoftware.org">
+        support@specifysoftware.org
+      </a>
+    `,
+    'ru-ru': `
+      Пожалуйста, обновите страницу и попробуйте еще раз.<br>
+      Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
+      свяжитесь с нами:
+      <a href="mailto:support@specifysoftware.org">
+        support@specifysoftware.org
+      </a>
+    `,
+    ca: `
+      Please reload the page and try again.<br>
+      If the issue persists, please contact your IT support, or if this is a
+      Specify Cloud database, contact
+      <a href="mailto:support@specifysoftware.org">
+        support@specifysoftware.org
+      </a>
+    `,
   },
   // Search
   expressSearch: {

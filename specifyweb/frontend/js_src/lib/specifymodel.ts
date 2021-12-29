@@ -179,7 +179,9 @@ export default class SpecifyModel {
    */
   public getLocalizedName(): string {
     const name = this.localization.name;
-    return name === null ? this.name : unescape(name);
+    return name === null || typeof name === 'undefined'
+      ? this.name
+      : unescape(name);
   }
 
   public getFormat(): string | undefined {
