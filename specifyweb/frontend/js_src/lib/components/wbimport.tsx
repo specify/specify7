@@ -4,7 +4,6 @@
  * @module
  */
 
-import '../../css/theme.css';
 import '../../css/wbimport.css';
 
 import Papa from 'papaparse';
@@ -20,6 +19,7 @@ import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
+import { useTitle } from './common';
 
 const PREVIEW_SIZE = 100;
 
@@ -562,9 +562,12 @@ function assertExhaustive(x: never): never {
   throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
 
-export default createBackboneView<IR<never>>({
-  moduleName: 'WBImportView',
-  title: wbText('importDataSet'),
-  className: 'workbench-import-view',
-  component: () => <WbImport />,
-});
+export default createBackboneView<IR<never>>(
+  function WbImportView() {
+    useTitle(wbText('importDataSet'));
+    return <WbImport />;
+  },
+  {
+    className: 'workbench-import-view',
+  }
+);

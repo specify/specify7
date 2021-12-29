@@ -688,31 +688,19 @@ export function CustomSelectElement({
               ) {
                 close = true;
                 newIndex = selectedValueIndex;
-              } else
-                switch (event.key) {
-                  case 'Enter':
-                  case 'Escape': {
-                    handleClose?.();
-                    break;
-                  }
-                  case 'ArrowUp': {
-                    newIndex =
-                      selectedValueIndex > 0
-                        ? selectedValueIndex - 1
-                        : inlineOptions.length - 1;
-                    break;
-                  }
-                  case 'ArrowDown':
-                    {
-                      newIndex =
-                        selectedValueIndex !== -1 &&
-                        selectedValueIndex < inlineOptions.length - 1
-                          ? selectedValueIndex + 1
-                          : 0;
-                      // No default
-                    }
-                    break;
-                }
+              } else if (event.key === 'Enter' || event.key === 'Escape')
+                handleClose?.();
+              else if (event.key === 'ArrowUp')
+                newIndex =
+                  selectedValueIndex > 0
+                    ? selectedValueIndex - 1
+                    : inlineOptions.length - 1;
+              else if (event.key === 'ArrowDown')
+                newIndex =
+                  selectedValueIndex !== -1 &&
+                  selectedValueIndex < inlineOptions.length - 1
+                    ? selectedValueIndex + 1
+                    : 0;
 
               if (typeof newIndex === 'number') {
                 const newValue = inlineOptions[newIndex]?.optionName ?? '0';

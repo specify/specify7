@@ -92,9 +92,6 @@ function QuerySaveDialog({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'QuerySaveDialog',
-  component: QuerySaveDialog,
-});
+const View = createBackboneView(QuerySaveDialog);
 
 export default View;

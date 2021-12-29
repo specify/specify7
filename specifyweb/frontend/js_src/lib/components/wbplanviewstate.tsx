@@ -1,13 +1,13 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
-import _ from 'underscore';
 
+import ajax from '../ajax';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { RA } from '../types';
-import type { MatchBehaviors } from '../uploadplantomappingstree';
+import type { MatchBehaviors, UploadPlan } from '../uploadplantomappingstree';
 import type { LoadingStates } from '../wbplanviewloadingreducer';
 import { loadingStateDispatch } from '../wbplanviewloadingreducer';
 import dataModelStorage from '../wbplanviewmodel';
@@ -15,13 +15,11 @@ import type {
   OpenMappingScreenAction,
   WbPlanViewActions,
 } from '../wbplanviewreducer';
-import type { RefActions, RefStates } from '../wbplanviewrefreducer';
-import { getRefMappingState } from '../wbplanviewrefreducer';
 import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
 import { TableIcon } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
-import type { WbPlanViewProps } from './wbplanview';
+import type { Dataset, WbPlanViewProps } from './wbplanview';
 import {
   ButtonWithConfirmation,
   ListOfBaseTables,
@@ -29,15 +27,11 @@ import {
 } from './wbplanviewcomponents';
 import { Layout } from './wbplanviewheader';
 import type {
-  AutoMapperSuggestion,
   MappingPath,
   WbPlanViewMapperBaseProps,
 } from './wbplanviewmapper';
 import WbPlanViewMapper from './wbplanviewmapper';
-import {
-  defaultMappingViewHeight,
-  EmptyDataSetDialog,
-} from './wbplanviewmappercomponents';
+import { EmptyDataSetDialog } from './wbplanviewmappercomponents';
 
 // States
 
@@ -61,7 +55,6 @@ type TemplateSelectionState = State<'TemplateSelectionState'>;
 export type MappingState = State<
   'MappingState',
   WbPlanViewMapperBaseProps & {
-    autoMapperSuggestionsPromise?: Promise<RA<AutoMapperSuggestion>>;
     changesMade: boolean;
     mappingsAreValidated: boolean;
     displayMatchingOptionsDialog: boolean;
@@ -77,8 +70,6 @@ export type WbPlanViewStates =
 type WbPlanViewStatesWithParameters = WbPlanViewStates & {
   readonly dispatch: (action: WbPlanViewActions) => void;
   readonly props: WbPlanViewProps;
-  readonly refObject: React.MutableRefObject<RefStates>;
-  readonly refObjectDispatch: (action: RefActions) => void;
   readonly id: (suffix: string) => string;
 };
 
@@ -105,7 +96,6 @@ export const getDefaultMappingState = (): MappingState => ({
     defaultValue: true,
   }),
   baseTableName: '',
-  newHeaderId: 1,
   mappingView: ['0'],
   mappingsAreValidated: false,
   validationResults: [],
@@ -116,7 +106,42 @@ export const getDefaultMappingState = (): MappingState => ({
   mustMatchPreferences: {},
 });
 
-const MAPPING_VIEW_RESIZE_THROTTLE = 150;
+function TemplateSelection({
+  headers,
+  onClose: handleClose,
+  onSelect: handleSelect,
+}: {
+  readonly headers: RA<string>;
+  readonly onClose: () => void;
+  readonly onSelect: (
+    uploadPlan: UploadPlan | null,
+    headers: RA<string>
+  ) => void;
+}) {
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  return isLoading ? (
+    <LoadingScreen />
+  ) : (
+    <WbsDialog
+      showTemplates={true}
+      onClose={handleClose}
+      onDataSetSelect={(id: number): void => {
+        setIsLoading(true);
+        ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+          headers: { Accept: 'application/json' },
+        }).then(({ data: { uploadplan, columns, visualorder } }) =>
+          handleSelect(
+            uploadplan,
+            headers.length === 0 && Array.isArray(visualorder)
+              ? visualorder.map((visualCol) => columns[visualCol])
+              : headers
+          )
+        );
+      }}
+    />
+  );
+}
 
 export const stateReducer = generateReducer<
   JSX.Element,
@@ -183,34 +208,25 @@ export const stateReducer = generateReducer<
     </ModalDialog>
   ),
   TemplateSelectionState: ({ action: state }) => (
-    <WbsDialog
-      showTemplates={true}
+    <TemplateSelection
+      headers={state.props.headers}
       onClose={(): void =>
         state.dispatch({
           type: 'OpenBaseTableSelectionAction',
           referrer: state.type,
         })
       }
-      onDataSetSelect={(id: number): void =>
-        state.refObjectDispatch({
-          type: 'RefTemplateSelectedAction',
-          id,
+      onSelect={(uploadPlan, headers): void =>
+        state.dispatch({
+          type: 'OpenMappingScreenAction',
+          uploadPlan,
+          headers,
+          changesMade: true,
         })
       }
     />
   ),
   MappingState: ({ action: state }) => {
-    const refObject = getRefMappingState(state.refObject, state);
-
-    if (typeof refObject.current.mappingViewHeight === 'undefined')
-      refObject.current.mappingViewHeight = cache.get(
-        'wbPlanViewUi',
-        'mappingViewHeight',
-        {
-          defaultValue: defaultMappingViewHeight,
-        }
-      );
-
     const handleSave = (ignoreValidation: boolean): void => {
       state.dispatch({
         type: 'ClearValidationResultsAction',
@@ -408,14 +424,12 @@ export const stateReducer = generateReducer<
           showHiddenFields={state.showHiddenFields}
           showMappingView={state.showMappingView}
           baseTableName={state.baseTableName}
-          newHeaderId={state.newHeaderId}
           lines={state.lines}
           mappingView={state.mappingView}
           validationResults={state.validationResults}
           openSelectElement={state.openSelectElement}
           autoMapperSuggestions={state.autoMapperSuggestions}
           focusedLine={state.focusedLine}
-          refObject={refObject}
           readonly={state.props.readonly}
           mustMatchPreferences={state.mustMatchPreferences}
           handleSave={(): void => handleSave(true)}
@@ -431,8 +445,8 @@ export const stateReducer = generateReducer<
           handleMappingViewMap={(): void =>
             state.dispatch({ type: 'MappingViewMapAction' })
           }
-          handleAddNewHeader={(): void =>
-            state.dispatch({ type: 'AddNewHeaderAction' })
+          handleAddNewHeader={(newHeaderName): void =>
+            state.dispatch({ type: 'AddNewHeaderAction', newHeaderName })
           }
           handleOpen={(line: number, index: number): void =>
             state.dispatch({
@@ -479,21 +493,6 @@ export const stateReducer = generateReducer<
               type: 'ClearValidationResultsAction',
             })
           }
-          handleMappingViewResize={_.throttle(
-            (height): void =>
-              state.refObjectDispatch({
-                type: 'RefMappingViewResizeAction',
-                height,
-              }),
-            MAPPING_VIEW_RESIZE_THROTTLE
-          )}
-          handleAutoScrollStatusChange={(autoScrollType, status): void =>
-            state.refObjectDispatch({
-              type: 'RefAutoScrollStatusChangeAction',
-              autoScrollType,
-              status,
-            })
-          }
           handleChangeMatchBehaviorAction={(
             line: number,
             matchBehavior: MatchBehaviors
@@ -522,6 +521,12 @@ export const stateReducer = generateReducer<
               type: 'ChangeDefaultValue',
               line,
               defaultValue,
+            })
+          }
+          handleAutoMapperSuggestionLoaded={(autoMapperSuggestions): void =>
+            state.dispatch({
+              type: 'AutoMapperSuggestionsLoadedAction',
+              autoMapperSuggestions,
             })
           }
         />

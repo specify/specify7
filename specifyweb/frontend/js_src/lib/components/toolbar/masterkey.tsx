@@ -2,7 +2,7 @@ import React from 'react';
 
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
-import { useId } from '../common';
+import { useId, useTitle } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -12,6 +12,8 @@ function MasterKey({
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('generateMasterKey'));
+
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
@@ -118,11 +120,7 @@ function MasterKey({
   );
 }
 
-const MasterKeyView = createBackboneView({
-  moduleName: 'MasterKeyView',
-  title: commonText('generateMasterKey'),
-  component: MasterKey,
-});
+const MasterKeyView = createBackboneView(MasterKey, {});
 
 const toolBarItem: UserTool = {
   task: 'master-key',

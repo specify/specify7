@@ -7,12 +7,15 @@ import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import ajax from '../../ajax';
+import { useTitle } from '../common';
 
 function ChangeLanguage({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('changeLanguage'));
+
   const [languages, setLanguages] = React.useState<
     | undefined
     | IR<{
@@ -71,10 +74,7 @@ function ChangeLanguage({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'ChangeLanguage',
-  component: ChangeLanguage,
-});
+const View = createBackboneView(ChangeLanguage);
 
 const toolBarItem: UserTool = {
   task: 'change-language',

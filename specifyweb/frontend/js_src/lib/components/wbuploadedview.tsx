@@ -69,8 +69,6 @@ function WbUploadedView({
   );
 }
 
-export default createBackboneView({
-  moduleName: 'WBUploadedView',
+export default createBackboneView(WbUploadedView, {
   className: 'wb-uploaded-view',
-  component: WbUploadedView,
 });

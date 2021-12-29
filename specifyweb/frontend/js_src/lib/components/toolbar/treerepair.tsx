@@ -8,7 +8,7 @@ import type SpecifyModel from '../../specifymodel';
 import type { IR } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
-import { TableIcon } from '../common';
+import { TableIcon, useTitle } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -103,6 +103,8 @@ function RepairTree({
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('repairTree'));
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   React.useEffect(() => {
     const urlSearchParameters = new URLSearchParams(window.location.search);
@@ -123,10 +125,7 @@ function RepairTree({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'RepairTree',
-  component: RepairTree,
-});
+const View = createBackboneView(RepairTree);
 
 const userTool: UserTool = {
   task: 'repair-tree',

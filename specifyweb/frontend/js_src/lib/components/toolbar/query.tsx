@@ -15,7 +15,7 @@ import { setCurrentView } from '../../specifyapp';
 import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
 import userInfo from '../../userinfo';
-import { DateElement, TableIcon } from '../common';
+import { DateElement, TableIcon, useTitle } from '../common';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -235,6 +235,8 @@ function QueryToolbarItem({
   readonly spQueryFilter?: IR<unknown>;
   readonly buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
 }): JSX.Element {
+  useTitle(commonText('queries'));
+
   const [tablesToShow] = useCachedState({
     bucketName: 'common',
     cacheName: 'listOfQueryTables',
@@ -344,10 +346,7 @@ function QueryToolbarItem({
   else throw new Error('Invalid ToolbarQuery State type');
 }
 
-export const QueryToolbarView = createBackboneView({
-  moduleName: 'QueryToolbarItem',
-  component: QueryToolbarItem,
-});
+export const QueryToolbarView = createBackboneView(QueryToolbarItem);
 
 const menuItem: MenuItem = {
   task: 'query',

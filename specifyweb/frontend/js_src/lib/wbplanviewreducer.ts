@@ -23,7 +23,6 @@ import type {
   WbPlanViewStates,
 } from './components/wbplanviewstate';
 import { getDefaultMappingState } from './components/wbplanviewstate';
-import wbText from './localization/workbench';
 import type { RA } from './types';
 import type { MatchBehaviors, UploadPlan } from './uploadplantomappingstree';
 import { uniquifyHeaders } from './wbplanviewheaderhelper';
@@ -34,7 +33,6 @@ import {
 } from './wbplanviewlinesgetter';
 import {
   deduplicateMappings,
-  getAutoMapperSuggestions,
   getMustMatchTables,
   mappingPathIsComplete,
   mutateMappingPath,
@@ -137,7 +135,10 @@ type FocusLineAction = Action<
 
 type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
-type AddNewHeaderAction = Action<'AddNewHeaderAction'>;
+type AddNewHeaderAction = Action<
+  'AddNewHeaderAction',
+  { newHeaderName: string }
+>;
 
 type OpenSelectElementAction = Action<
   'OpenSelectElementAction',
@@ -407,27 +408,26 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       mappingsAreValidated: false,
     };
   }),
-  AddNewHeaderAction: ensureState(['MappingState'], ({ state }) => ({
-    ...state,
-    newHeaderId: state.newHeaderId + 1,
-    lines: [
-      ...state.lines,
-      {
-        headerName: uniquifyHeaders(
-          [
-            ...state.lines.map(({ headerName }) => headerName),
-            wbText('newHeaderName')(state.newHeaderId),
-          ],
-          [state.lines.length]
-        ).slice(-1)[0],
-        mappingType: 'existingHeader',
-        mappingPath: ['0'],
-        columnOptions: defaultColumnOptions,
-      },
-    ],
-    focusedLine: state.lines.length,
-    mappingsAreValidated: false,
-  })),
+  AddNewHeaderAction: ensureState(
+    ['MappingState'],
+    ({ action: { newHeaderName }, state }) => ({
+      ...state,
+      lines: [
+        ...state.lines,
+        {
+          headerName: uniquifyHeaders(
+            [...state.lines.map(({ headerName }) => headerName), newHeaderName],
+            [state.lines.length]
+          ).slice(-1)[0],
+          mappingType: 'existingHeader',
+          mappingPath: ['0'],
+          columnOptions: defaultColumnOptions,
+        },
+      ],
+      focusedLine: state.lines.length,
+      mappingsAreValidated: false,
+    })
+  ),
   ToggleHiddenFieldsAction: ensureState(['MappingState'], ({ state }) => ({
     ...state,
     showHiddenFields: cache.set(
@@ -448,16 +448,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
         line: action.line,
         index: action.index,
       },
-      autoMapperSuggestionsPromise:
-        typeof state.lines[action.line].mappingPath[action.index] ===
-        'undefined'
-          ? undefined
-          : getAutoMapperSuggestions({
-              lines: state.lines,
-              line: action.line,
-              index: action.index,
-              baseTableName: state.baseTableName,
-            }),
     })
   ),
   CloseSelectElementAction: ({ state }) =>
@@ -465,7 +455,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
       ? {
           ...state,
           openSelectElement: undefined,
-          autoMapperSuggestionsPromise: undefined,
           autoMapperSuggestions: undefined,
         }
       : state,
@@ -498,7 +487,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
           state.openSelectElement?.line ?? false
         ),
         openSelectElement: action.close ? undefined : state.openSelectElement,
-        autoMapperSuggestionsPromise: undefined,
         autoMapperSuggestions: undefined,
         changesMade: true,
         mappingsAreValidated: false,
@@ -510,7 +498,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
     ({ state, action }) => ({
       ...state,
       autoMapperSuggestions: action.autoMapperSuggestions,
-      autoMapperSuggestionsPromise: undefined,
     })
   ),
   AutoMapperSuggestionSelectedAction: ensureState(
@@ -522,7 +509,6 @@ export const reducer = generateReducer<WbPlanViewStates, WbPlanViewActions>({
           state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath,
       }),
       openSelectElement: undefined,
-      autoMapperSuggestionsPromise: undefined,
       autoMapperSuggestions: undefined,
       changesMade: true,
       mappingsAreValidated: false,

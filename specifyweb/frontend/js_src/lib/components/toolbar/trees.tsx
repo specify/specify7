@@ -5,12 +5,15 @@ import * as navigation from '../../navigation';
 import type { MenuItem } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';
+import { useTitle } from '../common';
 
 function RepairTree({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('trees'));
+
   return (
     <TreeSelectDialog
       onClose={handleClose}
@@ -23,10 +26,7 @@ function RepairTree({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'RepairTree',
-  component: RepairTree,
-});
+const View = createBackboneView(RepairTree);
 
 const menuItem: MenuItem = {
   task: 'tree',

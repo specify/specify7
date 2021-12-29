@@ -5,12 +5,15 @@ import userInfo from '../../userinfo';
 import type { UserTool } from '../main';
 import { closeDialog, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { useTitle } from '../common';
 
 function AppResourceDialog({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('resources'));
+
   return (
     <ModalDialog
       properties={{
@@ -38,10 +41,7 @@ function AppResourceDialog({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'AppResourceDialog',
-  component: AppResourceDialog,
-});
+const View = createBackboneView(AppResourceDialog);
 
 const userTool: UserTool = {
   task: 'resources',

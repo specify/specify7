@@ -13,22 +13,21 @@ export type ComponentProps = Props & {
   readonly guid: string;
 };
 
-const CollectionObjectBadges = createBackboneView<ComponentProps, Props>({
-  moduleName: 'Lifemapper',
-  className: 'lifemapper-info',
-  silentErrors: true,
-  component: SpecifyNetworkBadge,
-  getComponentProps: (self) => ({
-    model: self.options.model,
-    guid: self.options.model.get('guid'),
-  }),
-});
+const CollectionObjectBadges = createBackboneView<ComponentProps, Props>(
+  SpecifyNetworkBadge,
+  {
+    className: 'lifemapper-info',
+    silentErrors: true,
+    getComponentProps: (self) => ({
+      model: self.options.model,
+      guid: self.options.model.get('guid'),
+    }),
+  }
+);
 
-const TaxonBadges = createBackboneView({
-  moduleName: 'Lifemapper',
+const TaxonBadges = createBackboneView(Lifemapper, {
   className: 'lifemapper-info',
   silentErrors: true,
-  component: Lifemapper,
 });
 
 export default function register(): void {

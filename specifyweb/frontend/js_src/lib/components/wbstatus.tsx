@@ -13,6 +13,7 @@ import wbText from '../localization/workbench';
 import { ModalDialog, ProgressBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
+import { useTitle } from './common';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -88,6 +89,8 @@ function WbStatus({
     uploading: wbText('wbStatusUploadDialogTitle'),
     unuploading: wbText('wbStatusUnuploadDialogTitle'),
   }[state.status.uploaderstatus.operation];
+
+  useTitle(title);
 
   const mappedOperation = {
     validating: wbText('validation'),
@@ -196,7 +199,4 @@ function WbStatus({
   );
 }
 
-export default createBackboneView({
-  moduleName: 'WbStatus',
-  component: WbStatus,
-});
+export default createBackboneView(WbStatus);

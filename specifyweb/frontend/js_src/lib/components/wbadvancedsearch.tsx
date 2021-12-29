@@ -181,7 +181,4 @@ function WbAdvancedSearch({
   );
 }
 
-export default createBackboneView({
-  moduleName: 'WbAdvancedSearch',
-  component: WbAdvancedSearch,
-});
+export default createBackboneView(WbAdvancedSearch);

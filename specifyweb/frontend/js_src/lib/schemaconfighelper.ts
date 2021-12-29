@@ -1,3 +1,4 @@
+import ajax from './ajax';
 import type {
   DataObjFormatter as DataObjectFormatter,
   ItemType,
@@ -10,10 +11,9 @@ import type {
   WithFieldInfo,
 } from './components/schemaconfigwrapper';
 import commonText from './localization/common';
-import type { IR, RA } from './types';
-import ajax from './ajax';
 import * as querystring from './querystring';
-import { JavaType } from './specifyfield';
+import type { JavaType } from './specifyfield';
+import type { IR, RA } from './types';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -91,7 +91,7 @@ export function prepareNewString({
   const [parentName, parentId] = Object.entries(querystring.parse(parent))[0];
   return {
     ...object,
-    [parentName]: `/api/specify/splocalecontaineritem/${parentId as string}/`,
+    [parentName]: `/api/specify/splocalecontaineritem/${parentId}/`,
   };
 }
 
@@ -134,20 +134,14 @@ export function isFormatterAvailable(
   item: WithFieldInfo,
   formatter: ItemType
 ): boolean {
-  switch (formatter) {
-    case 'none':
-    case 'pickList':
-      return true;
-    case 'webLink':
-      return (
-        !item.dataModel.isRelationship &&
-        webLinkTypes.has(item.dataModel.type as JavaType)
-      );
-    case 'formatted':
-      return !item.dataModel.isRelationship;
-    default:
-      return false;
-  }
+  if (formatter === 'none' || formatter === 'pickList') return true;
+  else if (formatter === 'webLink')
+    return (
+      !item.dataModel.isRelationship &&
+      webLinkTypes.has(item.dataModel.type as JavaType)
+    );
+  else if (formatter === 'formatted') return !item.dataModel.isRelationship;
+  else return false;
 }
 
 const relationshipTypes: IR<string> = {

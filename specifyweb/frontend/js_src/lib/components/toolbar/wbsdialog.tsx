@@ -14,7 +14,7 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
-import { DateElement } from '../common';
+import { DateElement, useTitle } from '../common';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -228,6 +228,8 @@ export function WbsDialog({
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
 }) {
+  useTitle(commonText('workbench'));
+
   const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(
     undefined
   );
@@ -253,10 +255,7 @@ export function WbsDialog({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'WbsDialog',
-  component: WbsDialog,
-});
+const View = createBackboneView(WbsDialog);
 
 const menuItem: MenuItem = {
   task: 'workbenches',

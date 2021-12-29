@@ -249,8 +249,4 @@ export function LoadingScreen(): JSX.Element {
   );
 }
 
-export const BackboneLoadingScreen = createBackboneView({
-  moduleName: 'LoadingDialog',
-  component: LoadingScreen,
-  getComponentProps: () => ({}),
-});
+export const BackboneLoadingScreen = createBackboneView(LoadingScreen);

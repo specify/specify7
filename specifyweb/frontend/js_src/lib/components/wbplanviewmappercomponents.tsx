@@ -22,20 +22,23 @@ export function MappingsControlPanel({
   showHiddenFields,
   onToggleHiddenFields: handleToggleHiddenFields,
   onAddNewHeader: handleAddNewHeader,
-  readonly,
 }: {
   readonly showHiddenFields: boolean;
   readonly onToggleHiddenFields?: () => void;
-  readonly onAddNewHeader?: () => void;
-  readonly readonly: boolean;
+  readonly onAddNewHeader?: (newHeaderName: string) => void;
 }): JSX.Element {
+  const newHeaderIdRef = React.useRef(1);
+
   return (
     <div role="toolbar" className="wbplanview-control-panel">
-      {!readonly && (
+      {typeof handleAddNewHeader === 'function' && (
         <button
           type="button"
           className="magic-button"
-          onClick={handleAddNewHeader}
+          onClick={(): void => {
+            handleAddNewHeader(wbText('newHeaderName')(newHeaderIdRef.current));
+            newHeaderIdRef.current += 1;
+          }}
         >
           {wbText('addNewColumn')}
         </button>

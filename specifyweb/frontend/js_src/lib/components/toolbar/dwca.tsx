@@ -3,7 +3,7 @@ import React from 'react';
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
-import { useId } from '../common';
+import { useId, useTitle } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -44,6 +44,7 @@ function MakeDwca({
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('makeDwca'));
   const id = useId('make-dwca');
 
   const [definition, setDefinition] = React.useState<string>('');
@@ -151,10 +152,7 @@ function MakeDwca({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'makeDwca',
-  component: MakeDwca,
-});
+const View = createBackboneView(MakeDwca);
 
 const userTool: UserTool = {
   task: 'makedwca',

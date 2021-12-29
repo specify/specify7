@@ -155,7 +155,4 @@ function Main({
   );
 }
 
-export const MainView = createBackboneView({
-  moduleName: 'MainView',
-  component: Main,
-});
+export const MainView = createBackboneView(Main);

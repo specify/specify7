@@ -5,18 +5,13 @@
  */
 
 import '../../css/wbplanview.css';
+
 import React from 'react';
 
 import type { RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import type { OpenMappingScreenAction } from '../wbplanviewreducer';
 import { reducer } from '../wbplanviewreducer';
-import type { RefActions, RefStates } from '../wbplanviewrefreducer';
-import {
-  refInitialState,
-  refObjectDispatch,
-  refStatesMapper,
-} from '../wbplanviewrefreducer';
 import type { UploadResult } from '../wbuploadedparser';
 import { useId } from './common';
 import { getInitialWbPlanViewState, stateReducer } from './wbplanviewstate';
@@ -107,70 +102,12 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
     getInitialWbPlanViewState
   );
 
-  /*
-   * `refObject` is like `state`, but does not cause re-render on change
-   * Useful for animations, transitions and triggering async actions
-   * from inside of an action reducer
-   */
-  const refObject = React.useRef<RefStates>(refInitialState);
-  const refObjectDispatchCurried = (action: RefActions): void =>
-    refObjectDispatch({
-      ...action,
-      payload: {
-        refObject,
-        state,
-        props,
-        stateDispatch: dispatch,
-      },
-    });
-
-  // Reset refObject on state change
-  if (
-    refObject.current.type !==
-    // @ts-expect-error
-    (refStatesMapper[state.type] ?? 'RefUndefinedState')
-  )
-    refObjectDispatchCurried({
-      type: 'RefChangeStateAction',
-    });
-
   // Set/unset unload protect
+  const changesMade = 'changesMade' in state ? state.changesMade : false;
   React.useEffect(() => {
-    const changesMade = 'changesMade' in state ? state.changesMade : false;
-
-    if (
-      state.type === 'LoadingState' ||
-      refObject.current.type !== 'RefMappingState'
-    )
-      return;
-
-    if (refObject.current.unloadProtectIsSet && !changesMade)
-      refObjectDispatchCurried({
-        type: 'RefUnsetUnloadProtectAction',
-      });
-    else if (!refObject.current.unloadProtectIsSet && changesMade)
-      refObjectDispatchCurried({
-        type: 'RefSetUnloadProtectAction',
-      });
-  }, ['changesMade' in state ? state.changesMade : false]);
-
-  // Wait for AutoMapper suggestions to fetch
-  React.useEffect(() => {
-    if (!('autoMapperSuggestionsPromise' in state)) return;
-
-    state.autoMapperSuggestionsPromise
-      ?.then((autoMapperSuggestions) =>
-        dispatch({
-          type: 'AutoMapperSuggestionsLoadedAction',
-          autoMapperSuggestions,
-        })
-      )
-      .catch(console.error);
-  }, [
-    'autoMapperSuggestionsPromise' in state
-      ? state.autoMapperSuggestionsPromise
-      : undefined,
-  ]);
+    if (!changesMade) props.removeUnloadProtect();
+    else props.setUnloadProtect();
+  }, [changesMade]);
 
   const id = useId('wbplanview');
 
@@ -178,8 +115,6 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
     ...state,
     props,
     dispatch,
-    refObject,
-    refObjectDispatch: refObjectDispatchCurried,
     id,
   });
 }

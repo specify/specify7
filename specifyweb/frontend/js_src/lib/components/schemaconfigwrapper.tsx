@@ -22,6 +22,7 @@ import { SchemaConfig } from './schemaconfig';
 import { handlePromiseReject } from './wbplanview';
 import ajax from '../ajax';
 import { JavaType, RelationshipType } from '../specifyfield';
+import { useTitle } from './common';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -98,6 +99,8 @@ function SchemaConfigWrapper({
   defaultLanguage,
   defaultTable,
 }: Props): JSX.Element {
+  useTitle(commonText('schemaConfig'));
+
   const [languages, setLanguages] = React.useState<IR<string> | undefined>(
     undefined
   );
@@ -234,26 +237,26 @@ const setUnloadProtect = (self: unknown): void =>
 const removeUnloadProtect = (self: unknown): void =>
   navigation.removeUnloadProtect(self);
 
-export default createBackboneView<Props, ConstructorProps>({
-  moduleName: 'SchemaConfig',
-  tagName: 'section',
-  title: commonText('schemaConfig'),
-  className: 'schema-config-container schema-config content',
-  component: SchemaConfigWrapper,
-  getComponentProps: (self) => {
-    const urlSearchParameters = new URLSearchParams(window.location.search);
-    const parameters = Object.fromEntries(urlSearchParameters.entries());
-    return {
-      onClose: self.options.onClose,
-      onSave: (language): void => {
-        removeUnloadProtect(self);
-        // Reload the page after schema changes
-        window.location.href = `/specify/task/schema-config/?language=${language}`;
-      },
-      removeUnloadProtect: (): void => removeUnloadProtect(self),
-      setUnloadProtect: (): void => setUnloadProtect(self),
-      defaultLanguage: parameters.language,
-      defaultTable: parameters.table,
-    };
-  },
-});
+export default createBackboneView<Props, ConstructorProps>(
+  SchemaConfigWrapper,
+  {
+    tagName: 'section',
+    className: 'schema-config-container schema-config content',
+    getComponentProps: (self) => {
+      const urlSearchParameters = new URLSearchParams(window.location.search);
+      const parameters = Object.fromEntries(urlSearchParameters.entries());
+      return {
+        onClose: self.options.onClose,
+        onSave: (language): void => {
+          removeUnloadProtect(self);
+          // Reload the page after schema changes
+          window.location.href = `/specify/task/schema-config/?language=${language}`;
+        },
+        removeUnloadProtect: (): void => removeUnloadProtect(self),
+        setUnloadProtect: (): void => setUnloadProtect(self),
+        defaultLanguage: parameters.language,
+        defaultTable: parameters.table,
+      };
+    },
+  }
+);

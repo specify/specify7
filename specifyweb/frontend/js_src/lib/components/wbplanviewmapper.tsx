@@ -6,20 +6,26 @@
  */
 
 import React from 'react';
+import _ from 'underscore';
 
+import * as cache from '../cache';
 import wbText from '../localization/workbench';
+import type { IR, RA } from '../types';
 import type {
   ColumnOptions,
   MatchBehaviors,
 } from '../uploadplantomappingstree';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import type { AutoScrollTypes, RefMappingState } from '../wbplanviewrefreducer';
-import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
+import {
+  getAutoMapperSuggestions,
+  getMappedFields,
+  mappingPathIsComplete,
+} from '../wbplanviewutils';
 import { useId } from './common';
-import type { IR, RA } from '../types';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingLineComponent } from './wbplanviewcomponents';
 import {
+  defaultMappingViewHeight,
   MappingsControlPanel,
   MappingView,
   minMappingViewHeight,
@@ -74,11 +80,6 @@ export type WbPlanViewMapperBaseProps = {
   readonly showHiddenFields: boolean;
   readonly showMappingView: boolean;
   readonly baseTableName: string;
-  /*
-   * The index that would be shown in the header name the next time the user
-   * presses `New Column`
-   */
-  readonly newHeaderId: number;
   readonly mappingView: MappingPath;
   readonly validationResults: MappingPath[];
   readonly lines: RA<MappingLine>;
@@ -88,13 +89,14 @@ export type WbPlanViewMapperBaseProps = {
   readonly mustMatchPreferences: IR<boolean>;
 };
 
+const MAPPING_VIEW_RESIZE_THROTTLE = 150;
+
 export default function WbPlanViewMapper(
   props: WbPlanViewMapperBaseProps & {
-    readonly refObject: React.MutableRefObject<Partial<RefMappingState>>;
     readonly handleSave: () => void;
     readonly handleFocus: (lineIndex: number) => void;
     readonly handleMappingViewMap: () => void;
-    readonly handleAddNewHeader: () => void;
+    readonly handleAddNewHeader: (newHeaderName: string) => void;
     readonly handleToggleHiddenFields: () => void;
     readonly readonly: boolean;
     readonly handleOpen: (line: number, index: number) => void;
@@ -111,13 +113,11 @@ export default function WbPlanViewMapper(
     }) => void;
     readonly handleClearMapping: (index: number) => void;
     readonly handleAutoMapperSuggestionSelection: (suggestion: string) => void;
+    readonly handleAutoMapperSuggestionLoaded: (
+      suggestions: RA<AutoMapperSuggestion>
+    ) => void;
     readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
     readonly handleDismissValidation: () => void;
-    readonly handleMappingViewResize: (height: number) => void;
-    readonly handleAutoScrollStatusChange: (
-      autoScrollType: AutoScrollTypes,
-      status: boolean
-    ) => void;
     readonly handleChangeMatchBehaviorAction: (
       line: number,
       matchBehavior: MatchBehaviors
@@ -135,55 +135,28 @@ export default function WbPlanViewMapper(
   const getMappedFieldsBind = getMappedFields.bind(undefined, props.lines);
   const listOfMappings = React.useRef<HTMLUListElement>(null);
 
-  const mappingViewParentRef = React.useRef<HTMLDivElement | null>(null);
-
-  // Scroll listOfMappings to the bottom when new header is added
-  React.useEffect(() => {
-    if (
-      typeof props.refObject.current.autoScroll === 'undefined' ||
-      !listOfMappings.current ||
-      !mappingViewParentRef.current
-    )
-      return;
-
-    (
-      Object.entries(props.refObject.current.autoScroll) as [
-        AutoScrollTypes,
-        boolean
-      ][]
-    )
-      .filter(([, autoScroll]) => autoScroll)
-      .forEach(([autoScrollType]) => {
-        if (autoScrollType === 'listOfMappings') {
-          if (!listOfMappings.current) return;
-
-          listOfMappings.current.scrollTop =
-            listOfMappings.current.scrollHeight;
-        }
-
-        props.handleAutoScrollStatusChange(autoScrollType, false);
-      });
-  });
-
   // `resize` event listener for the mapping view
-  React.useEffect(() => {
-    if (
-      typeof ResizeObserver === 'undefined' ||
-      mappingViewParentRef === null ||
-      !mappingViewParentRef.current
-    )
+  const mappingViewHeightRef = React.useRef<number>(defaultMappingViewHeight);
+  const mappingViewParentRef = React.useCallback<
+    (mappingViewParent: HTMLElement | null) => void
+  >((mappingViewParent) => {
+    if (typeof ResizeObserver === 'undefined' || mappingViewParent === null)
       return undefined;
 
     const resizeObserver = new ResizeObserver(
-      () =>
-        mappingViewParentRef.current &&
-        props.handleMappingViewResize(mappingViewParentRef.current.offsetHeight)
+      _.throttle(() => {
+        const height = mappingViewParent.offsetHeight;
+        mappingViewHeightRef.current = height;
+        cache.set('wbPlanViewUi', 'mappingViewHeight', height, {
+          overwrite: true,
+        });
+      }, MAPPING_VIEW_RESIZE_THROTTLE)
     );
 
-    resizeObserver.observe(mappingViewParentRef.current);
+    resizeObserver.observe(mappingViewParent);
 
     return (): void => resizeObserver.disconnect();
-  }, [mappingViewParentRef.current]);
+  }, []);
 
   // Reposition suggestions box if it doesn't fit
   function repositionSuggestionBox(): void {
@@ -246,6 +219,35 @@ export default function WbPlanViewMapper(
       window.removeEventListener('resize', repositionSuggestionBox);
   }, []);
 
+  // Wait for AutoMapper suggestions to fetch
+  React.useEffect(() => {
+    if (
+      typeof props.openSelectElement === 'undefined' ||
+      typeof props.lines[props.openSelectElement.line].mappingPath[
+        props.openSelectElement.index
+      ] === 'undefined'
+    )
+      return;
+
+    getAutoMapperSuggestions({
+      lines: props.lines,
+      line: props.openSelectElement.line,
+      index: props.openSelectElement.index,
+      baseTableName: props.baseTableName,
+    })
+      .then((autoMapperSuggestions) =>
+        destructorCalled
+          ? undefined
+          : props.handleAutoMapperSuggestionLoaded(autoMapperSuggestions)
+      )
+      .catch(console.error);
+
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [props.openSelectElement]);
+
   const id = useId('wbplanviewmapper');
 
   return (
@@ -268,7 +270,7 @@ export default function WbPlanViewMapper(
             {
               '--mapping-view-min-height': `${minMappingViewHeight}px`,
               '--mapping-view-height': `${
-                props.refObject.current.mappingViewHeight ?? ''
+                mappingViewHeightRef.current ?? ''
               }px`,
             } as React.CSSProperties
           }
@@ -511,12 +513,14 @@ export default function WbPlanViewMapper(
         onAddNewHeader={
           props.readonly
             ? undefined
-            : (): void => {
-                props.handleAddNewHeader();
-                props.handleAutoScrollStatusChange('listOfMappings', true);
+            : (newHeaderName): void => {
+                props.handleAddNewHeader(newHeaderName);
+                // Scroll listOfMappings to the bottom
+                if (listOfMappings.current)
+                  listOfMappings.current.scrollTop =
+                    listOfMappings.current.scrollHeight;
               }
         }
-        readonly={props.readonly}
       />
     </>
   );

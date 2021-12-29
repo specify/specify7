@@ -4,6 +4,7 @@ import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { useTitle } from './common';
 
 function ErrorComponent({
   header,
@@ -12,6 +13,8 @@ function ErrorComponent({
   readonly header: string;
   readonly message: string;
 }): JSX.Element {
+  useTitle(header);
+
   return (
     <>
       <h2>{header}</h2>
@@ -20,10 +23,7 @@ function ErrorComponent({
   );
 }
 
-export const ErrorView = createBackboneView({
-  moduleName: 'ErrorView',
-  component: ErrorComponent,
-});
+export const ErrorView = createBackboneView(ErrorComponent);
 
 function UnhandledErrorComponent({
   response,
@@ -31,6 +31,7 @@ function UnhandledErrorComponent({
   readonly response: string;
 }): JSX.Element {
   React.useEffect(clearUnloadProtect, []);
+  useTitle(commonText('backEndErrorDialogTitle'));
 
   return (
     <ModalDialog
@@ -62,8 +63,4 @@ function UnhandledErrorComponent({
   );
 }
 
-export const UnhandledErrorView = createBackboneView({
-  moduleName: 'UnhandledErrorView',
-  title: commonText('backEndErrorDialogTitle'),
-  component: UnhandledErrorComponent,
-});
+export const UnhandledErrorView = createBackboneView(UnhandledErrorComponent);

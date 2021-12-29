@@ -4,7 +4,7 @@ import ajax, { formData, Http } from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
-import { useId } from './common';
+import { useId, useTitle } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
@@ -17,6 +17,8 @@ function PasswordResetDialog({
   readonly modelId: number;
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(adminText('setPassword'));
+
   const id = useId('password-reset-dialog');
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -117,10 +119,7 @@ function PasswordResetDialog({
   );
 }
 
-const Dialog = createBackboneView({
-  moduleName: 'PasswordResetDialog',
-  component: PasswordResetDialog,
-});
+const Dialog = createBackboneView(PasswordResetDialog);
 
 export default UIPlugin.extend(
   {

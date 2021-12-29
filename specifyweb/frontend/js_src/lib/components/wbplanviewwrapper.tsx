@@ -18,6 +18,7 @@ import type {
   WbPlanViewWrapperProps,
 } from './wbplanview';
 import { WbPlanView } from './wbplanview';
+import { useTitle } from './common';
 
 /**
  * Entrypoint react component for the workbench mapper
@@ -27,6 +28,8 @@ import { WbPlanView } from './wbplanview';
  * Reorders headers if needed
  */
 function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
+  useTitle(props.dataset.name);
+
   const [schemaLoaded, setSchemaLoaded] = React.useState<boolean>(
     typeof dataModelStorage.tables !== 'undefined'
   );
@@ -72,14 +75,8 @@ const removeUnloadProtect = (self: IR<unknown>): void =>
 export default createBackboneView<
   WbPlanViewWrapperProps,
   PublicWbPlanViewProps
->({
-  moduleName: 'WbPlanView',
-  title: (self) => self.options.dataset.name,
+>(WbPlanViewWrapper, {
   className: 'wbplanview content-no-shadow',
-  remove(self) {
-    removeUnloadProtect(self);
-  },
-  component: WbPlanViewWrapper,
   getComponentProps: (self) => ({
     dataset: self.options.dataset,
     removeUnloadProtect: (): void => removeUnloadProtect(self),

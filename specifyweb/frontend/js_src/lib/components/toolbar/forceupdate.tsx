@@ -6,12 +6,14 @@ import userInfo from '../../userinfo';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { useTitle } from '../common';
 
 function ForceUpdateFeed({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('updateExportFeed'));
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isActivated, setIsActivated] = React.useState<boolean>(false);
 
@@ -58,10 +60,7 @@ function ForceUpdateFeed({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'ForceUpdateFeed',
-  component: ForceUpdateFeed,
-});
+const View = createBackboneView(ForceUpdateFeed);
 
 const userTool: UserTool = {
   task: 'force-update-feed',

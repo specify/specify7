@@ -8,12 +8,14 @@ import userInfo from '../../userinfo';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { useTitle } from '../common';
 
 function Users({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  useTitle(commonText('manageUsers'));
   const [users, setUsers] = React.useState<IR<string> | undefined>(undefined);
 
   React.useEffect(() => {
@@ -77,10 +79,7 @@ function Users({
   );
 }
 
-const View = createBackboneView({
-  moduleName: 'UsersView',
-  component: Users,
-});
+const View = createBackboneView(Users);
 
 const userTool: UserTool = {
   task: 'users',

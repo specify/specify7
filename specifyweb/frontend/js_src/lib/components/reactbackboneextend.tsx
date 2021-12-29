@@ -19,43 +19,29 @@ type ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS> = {
   readonly options: CONSTRUCTOR_PROPS;
 };
 
-export type Constructable<TYPE, PROPS extends IR<unknown> = IR<never>> = new (
-  props: PROPS
-) => TYPE;
-
 const createBackboneView = <
   COMPONENT_PROPS extends IR<unknown>,
   CONSTRUCTOR_PROPS extends IR<unknown> = COMPONENT_PROPS
->({
-  moduleName,
-  title,
-  className,
-  tagName,
-  remove,
-  silentErrors = false,
-  component: Component,
-  getComponentProps,
-}: {
-  readonly moduleName: string;
-  readonly title?:
-    | string
-    | ((self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>) => string);
-  readonly className?: string;
-  readonly tagName?: string;
-  readonly remove?: (
-    self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
-  ) => void;
-  readonly silentErrors?: boolean;
-  readonly component: (props: COMPONENT_PROPS) => JSX.Element | null;
-  readonly getComponentProps?: (
-    self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
-  ) => COMPONENT_PROPS;
-}): Constructable<View, CONSTRUCTOR_PROPS> =>
-  Backbone.View.extend({
-    __name__: moduleName,
+>(
+  Component: (props: COMPONENT_PROPS) => JSX.Element | null,
+  {
     className,
     tagName,
-    title,
+    silentErrors = false,
+    getComponentProps,
+  }: {
+    readonly className?: string;
+    readonly tagName?: string;
+    readonly silentErrors?: boolean;
+    readonly getComponentProps?: (
+      self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
+    ) => COMPONENT_PROPS;
+  } = {}
+): new (props: CONSTRUCTOR_PROPS) => View =>
+  Backbone.View.extend({
+    __name__: Component.name,
+    className,
+    tagName,
     render() {
       ReactDOM.render(
         <React.StrictMode>
@@ -68,7 +54,6 @@ const createBackboneView = <
       return this;
     },
     remove() {
-      remove?.(this);
       ReactDOM.unmountComponentAtNode(this.el);
       Backbone.View.prototype.remove.call(this);
     },
