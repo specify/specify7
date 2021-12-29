@@ -364,9 +364,7 @@ const menuItem: MenuItem = {
       onEdit: userInfo.isReadOnly
         ? undefined
         : (query: Query): void => {
-            const queryModel = new (
-              schema as unknown as Schema
-            ).models.SpQuery.LazyCollection({
+            const queryModel = new schema.models.SpQuery.LazyCollection({
               filters: { id: query.id },
             });
             queryModel.fetch({ limit: 1 }).then(() => {

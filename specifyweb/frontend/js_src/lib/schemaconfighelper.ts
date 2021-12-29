@@ -13,7 +13,7 @@ import commonText from './localization/common';
 import type { IR, RA } from './types';
 import ajax from './ajax';
 import * as querystring from './querystring';
-import type { JavaType } from './specifymodel';
+import { JavaType } from './specifyfield';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -140,7 +140,8 @@ export function isFormatterAvailable(
       return true;
     case 'webLink':
       return (
-        !item.dataModel.isRelationship && webLinkTypes.has(item.dataModel.type)
+        !item.dataModel.isRelationship &&
+        webLinkTypes.has(item.dataModel.type as JavaType)
       );
     case 'formatted':
       return !item.dataModel.isRelationship;

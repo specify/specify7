@@ -10,21 +10,45 @@ import extras from './schemaextras';
 import type { Field, Relationship } from './specifyfield';
 import SpecifyModel, { type TableDefinition } from './specifymodel';
 import type { R, RA } from './types';
+import { IR } from './types';
 import { error } from './assert';
 
+// The schema config / localization information is loaded dynamically.
+export type SchemaLocalization = {
+  readonly name: string | null;
+  readonly desc: string | null;
+  readonly format: string | null;
+  readonly aggregator: string | null;
+  readonly ishidden: 0 | 1;
+  readonly items: IR<{
+    readonly name: string | null;
+    readonly desc: string | null;
+    readonly format: string | null;
+    readonly picklistname: string | null;
+    readonly weblinkname: string | null;
+    readonly isrequired: boolean;
+    readonly ishidden: boolean;
+  }>;
+};
+export let localization: IR<SchemaLocalization> = undefined!;
+
 const models = schema.models as R<SpecifyModel>;
-export const fetchContext = load<RA<TableDefinition>>(
-  '/context/datamodel.json',
-  'application/json'
-).then((tables) =>
+export const fetchContext = Promise.all([
+  load<RA<TableDefinition>>('/context/datamodel.json', 'application/json'),
+  load<IR<SchemaLocalization>>(
+    '/context/schema_localization.json',
+    'application/json'
+  ),
+] as const).then(([tables, data]) => {
+  localization = data;
   tables.forEach((tableDefinition) => {
     const model = new SpecifyModel(tableDefinition);
     const modelFields = model.fields as (Field | Relationship)[];
     const extra = extras[model.name];
     if (typeof extra !== 'undefined') modelFields.concat(extra(model));
     models[model.name] = model;
-  })
-);
+  });
+});
 
 export { default } from './schemabase';
 

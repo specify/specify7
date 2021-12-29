@@ -1,9 +1,8 @@
-import schema, { unescape } from './schemabase';
+import schema, { getModel, SchemaLocalization } from './schema';
+import { unescape } from './schemabase';
 import type SpecifyModel from './specifymodel';
-import { SchemaLocalization } from './specifymodel';
 import type { UIFormatter } from './uiformatters';
 import * as uiformatters from './uiformatters';
-import schema, { getModel } from './schema';
 
 export type JavaType =
   // Strings
@@ -24,12 +23,15 @@ export type JavaType =
   | 'java.util.Calendar'
   | 'java.util.Date';
 
-type RelationshipType =
-  | 'one-to-one'
-  | 'one-to-many'
-  | 'many-to-one'
-  | 'many-to-many'
-  | 'zero-to-one';
+const relationshipTypes = [
+  'one-to-one',
+  'one-to-many',
+  'many-to-one',
+  'many-to-many',
+  'zero-to-one',
+] as const;
+
+export type RelationshipType = typeof relationshipTypes[number];
 
 export type FieldDefinition = {
   readonly column?: string;
@@ -46,7 +48,7 @@ export type RelationshipDefinition = {
   readonly column?: string;
   readonly dependent: boolean;
   readonly name: string;
-  readonly otherSideName: string;
+  readonly otherSideName?: string;
   readonly relatedModelName: string;
   readonly required: boolean;
   readonly type: RelationshipType;
@@ -96,7 +98,9 @@ export class Field {
     }
   ) {
     this.model = model;
-    this.isRelationship = 'otherSideName' in (fieldDefinition ?? {});
+    this.isRelationship = relationshipTypes.includes(
+      fieldDefinition.type as RelationshipType
+    );
 
     this.name = fieldDefinition.name;
     this.dottedName = `${model.name}.${this.name}`;
@@ -182,7 +186,7 @@ export class Field {
  * Extends the Field object.
  */
 export class Relationship extends Field {
-  public otherSideName: string;
+  public otherSideName?: string;
 
   public relatedModelName: string;
 

@@ -6,7 +6,7 @@ import userInfo from '../userinfo';
 import { useId } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type { SpecifyResource } from './wbplanview';
+import { SpecifyResource } from '../legacytypes';
 
 async function doSave(
   query: SpecifyResource,

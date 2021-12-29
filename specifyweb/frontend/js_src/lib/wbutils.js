@@ -10,22 +10,21 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import { showLeafletMap } from './leaflet';
+import {showLeafletMap} from './leaflet';
 import {
-  getLocalityCoordinate,
-  getLocalityColumnsFromSelectedCells,
+  findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
+  getLocalityColumnsFromSelectedCells,
+  getLocalityCoordinate,
 } from './wblocalitydataextractor';
 import Backbone from './backbone';
 import * as latlongutils from './latlongutils';
-import { camelToKebab } from './wbplanviewhelper';
-import { findLocalityColumnsInDataSet } from './wblocalitydataextractor';
+import {camelToKebab} from './wbplanviewhelper';
 import WbAdvancedSearch, {
   getInitialSearchPreferences,
 } from './components/wbadvancedsearch';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import localityText from './localization/locality';
 
 export default Backbone.View.extend({
   __name__: 'WbUtils',

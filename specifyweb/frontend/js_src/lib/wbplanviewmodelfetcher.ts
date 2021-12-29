@@ -7,7 +7,6 @@
 
 import * as cache from './cache';
 import type { IR, R, RA } from './types';
-import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 import { camelToHuman, capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -24,6 +23,10 @@ import {
 import systemInfo from './systeminfo';
 import { getTreeDef } from './domain';
 import ajax from './ajax';
+import { Field, Relationship } from './specifyfield';
+import { RelationshipType } from './components/wbplanviewmapper';
+import { GetTreeDef } from './legacytypes';
+import SpecifyModel from './specifymodel';
 
 export type DataModelFieldWritable =
   | DataModelNonRelationshipWritable
@@ -100,7 +103,7 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 /* Fetches ranks for a particular table */
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
-    (getTreeDef as DomainType['getTreeDef'])(tableName).done((treeDefinition) =>
+    (getTreeDef as GetTreeDef)(tableName).done((treeDefinition) =>
       treeDefinition.rget('treedefitems').done((treeDefItems) =>
         treeDefItems.fetch({ limit: 0 }).done(() =>
           resolve([
@@ -150,8 +153,7 @@ function handleRelationshipField(
   hasRelationshipWithDefinition: () => void,
   hasRelationshipWithDefinitionItem: () => void
 ): boolean {
-  const relationship: Relationship =
-    field as SchemaModelTableRelationship;
+  const relationship = field as Relationship;
 
   let foreignName = relationship.otherSideName;
   if (typeof foreignName !== 'undefined')
@@ -159,7 +161,7 @@ function handleRelationshipField(
 
   const tableName = relationship.relatedModelName.toLowerCase();
   const relationshipType = handleRelationshipType(
-    relationship.type,
+    relationship.type as RelationshipType,
     currentTableName,
     fieldName,
     originalRelationships
@@ -316,142 +318,145 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   const fetchPickListsQueue: Promise<void>[] = [];
   const originalRelationships: OriginalRelationshipsWritable = {};
 
-  const getTableName = (tableData: SchemaType['models'][string]): string =>
-    tableData.longName.split('.').slice(-1)[0].toLowerCase();
+  const getTableName = (tableData: SpecifyModel): string =>
+    tableData.name.toLowerCase();
   const hiddenTables = new Set(
-    Object.values((schema as unknown as SchemaType).models)
-      .map<Readonly<[string, boolean]>>((tableData) => [
-        getTableName(tableData),
-        tableData.isHidden(),
-      ])
+    Object.values(schema.models)
+      .map(
+        (tableData) => [getTableName(tableData), tableData.isHidden()] as const
+      )
       .filter(([_tableName, isHidden]) => isHidden)
       .map(([tableName]) => tableName)
   );
 
-  const tables = Object.values(
-    (schema as unknown as SchemaType).models
-  ).reduce<DataModelTablesWritable>((tables, tableData) => {
-    const tableName = getTableName(tableData);
-    const label = tableData.getLocalizedName();
+  const tables = Object.values(schema.models).reduce<DataModelTablesWritable>(
+    (tables, tableData) => {
+      const tableName = getTableName(tableData);
+      const label = tableData.getLocalizedName();
 
-    const fields: DataModelFieldsWritable = {};
-    let hasRelationshipWithDefinition = false;
-    let hasRelationshipWithDefinitionItem = false;
+      const fields: DataModelFieldsWritable = {};
+      let hasRelationshipWithDefinition = false;
+      let hasRelationshipWithDefinitionItem = false;
 
-    if (tableData.system || tableHasOverwrite(tableName, 'remove'))
-      return tables;
+      if (tableData.system || tableHasOverwrite(tableName, 'remove'))
+        return tables;
 
-    tableData.fields.forEach((field) => {
-      let fieldName = field.name;
-      const label = field.getLocalizedName() ?? camelToHuman(fieldName);
+      tableData.fields.forEach((field) => {
+        let fieldName = field.name;
+        const label = field.getLocalizedName() ?? camelToHuman(fieldName);
 
-      fieldName = fieldName.toLowerCase();
+        fieldName = fieldName.toLowerCase();
 
-      if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
+        if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
 
-      let isRequired = field.isRequired;
-      let isHidden = field.isHidden() === 1;
+        let isRequired = field.isRequired;
+        let isHidden = field.isHidden();
 
-      /*
-       * Required fields should not be hidden, unless they are present in
-       * this list
-       */
-      if (fieldHasOverwrite(tableName, fieldName, 'hidden')) {
-        isRequired = false;
-        isHidden = true;
-      }
-      // Un-hide required fields
-      else if (isHidden && isRequired) isHidden = false;
+        /*
+         * Required fields should not be hidden, unless they are present in
+         * this list
+         */
+        if (fieldHasOverwrite(tableName, fieldName, 'hidden')) {
+          isRequired = false;
+          isHidden = true;
+        }
+        // Un-hide required fields
+        else if (isHidden && isRequired) isHidden = false;
 
-      if (fieldHasOverwrite(tableName, fieldName, 'optional'))
-        isRequired = false;
+        if (fieldHasOverwrite(tableName, fieldName, 'optional'))
+          isRequired = false;
 
-      // @ts-expect-error
-      const fieldData: DataModelFieldWritable = {
-        label,
-        isHidden,
-        isRequired,
-        isRelationship: field.isRelationship,
-      };
+        // @ts-expect-error
+        const fieldData: DataModelFieldWritable = {
+          label,
+          isHidden,
+          isRequired,
+          isRelationship: field.isRelationship,
+        };
 
-      if (!fieldData.isRelationship) {
-        const pickListName = field.getPickList();
-        if (pickListName !== null && typeof pickListName !== 'undefined')
-          fetchPickListsQueue.push(fetchPickList(pickListName, fieldData));
-      } else if (
-        !handleRelationshipField(
-          field,
-          fieldData,
-          fieldName,
-          tableName,
-          hiddenTables,
-          originalRelationships,
-          () => {
-            hasRelationshipWithDefinition = true;
-          },
-          () => {
-            hasRelationshipWithDefinitionItem = true;
-          }
+        if (!fieldData.isRelationship) {
+          const pickListName = field.getPickList();
+          if (pickListName !== null && typeof pickListName !== 'undefined')
+            fetchPickListsQueue.push(fetchPickList(pickListName, fieldData));
+        } else if (
+          !handleRelationshipField(
+            field,
+            fieldData,
+            fieldName,
+            tableName,
+            hiddenTables,
+            originalRelationships,
+            () => {
+              hasRelationshipWithDefinition = true;
+            },
+            () => {
+              hasRelationshipWithDefinitionItem = true;
+            }
+          )
         )
+          return;
+
+        if (tableName === 'preptype' && fieldName === 'name')
+          fetchPickListsQueue.push(
+            fetch('/api/specify/preptype/?domainfilter=true&limit=100')
+              .then(async (response) => response.json())
+              .then(
+                (data: { readonly objects: RA<{ readonly name: string }> }) => {
+                  fieldData.pickList = {
+                    readOnly: false,
+                    items: data.objects.map(({ name }) => name),
+                  };
+                }
+              )
+              .catch(console.error)
+          );
+
+        fields[fieldName] = fieldData;
+      });
+
+      const orderedFields = Object.fromEntries(
+        Object.entries(fields)
+          .sort(
+            (
+              [, { isRelationship, label }],
+              [
+                ,
+                {
+                  isRelationship: secondIsRelationship,
+                  label: secondFriendlyName,
+                },
+              ]
+            ) =>
+              isRelationship === secondIsRelationship
+                ? label.localeCompare(secondFriendlyName)
+                : isRelationship
+                ? 1
+                : -1
+          )
+          .map(([fieldName]) => [fieldName, fields[fieldName]])
+      );
+
+      if (
+        !tableHasOverwrite(tableName, 'hidden') &&
+        !hiddenTables.has(tableName)
       )
-        return;
+        listOfBaseTables[tableName] = {
+          label,
+          isHidden: !tableHasOverwrite(tableName, 'commonBaseTable'),
+        };
 
-      if (tableName === 'preptype' && fieldName === 'name')
-        fetchPickListsQueue.push(
-          fetch('/api/specify/preptype/?domainfilter=true&limit=100')
-            .then(async (response) => response.json())
-            .then(
-              (data: { readonly objects: RA<{ readonly name: string }> }) => {
-                fieldData.pickList = {
-                  readOnly: false,
-                  items: data.objects.map(({ name }) => name),
-                };
-              }
-            )
-            .catch(console.error)
-        );
-
-      fields[fieldName] = fieldData;
-    });
-
-    const orderedFields = Object.fromEntries(
-      Object.entries(fields)
-        .sort(
-          (
-            [, { isRelationship, label }],
-            [
-              ,
-              {
-                isRelationship: secondIsRelationship,
-                label: secondFriendlyName,
-              },
-            ]
-          ) =>
-            isRelationship === secondIsRelationship
-              ? label.localeCompare(secondFriendlyName)
-              : isRelationship
-              ? 1
-              : -1
-        )
-        .map(([fieldName]) => [fieldName, fields[fieldName]])
-    );
-
-    if (!tableHasOverwrite(tableName, 'hidden') && !hiddenTables.has(tableName))
-      listOfBaseTables[tableName] = {
+      tables[tableName] = {
         label,
-        isHidden: !tableHasOverwrite(tableName, 'commonBaseTable'),
+        fields: orderedFields,
       };
 
-    tables[tableName] = {
-      label,
-      fields: orderedFields,
-    };
+      if (hasRelationshipWithDefinition && hasRelationshipWithDefinitionItem)
+        fetchRanksQueue.push(fetchRanks(tableName));
 
-    if (hasRelationshipWithDefinition && hasRelationshipWithDefinitionItem)
-      fetchRanksQueue.push(fetchRanks(tableName));
-
-    return tables;
-  }, {});
+      return tables;
+    },
+    {}
+  );
 
   // Remove relationships to system tables
   Object.entries(tables).forEach(([tableName, tableData]) => {

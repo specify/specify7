@@ -9,10 +9,10 @@ import testMappingsTreeToUploadPlan from './testmappingstreetouploadplan';
 import testUploadPlanToMappingsTree from './testuploadplantomappingstree';
 import testWbPlanViewHelper from './testwbplanviewhelper';
 import testWbPlanViewLinesGetter from './testwbplanviewlinesgetter';
+import testWbPlanViewTreePreview from './testwbplanviewmappingpreview';
 import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
 import testWbPlanViewTreeHelper from './testwbplanviewtreehelper';
-import testWbPlanViewTreePreview from './testwbplanviewmappingpreview';
 
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,

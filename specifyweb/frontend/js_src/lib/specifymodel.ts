@@ -1,7 +1,7 @@
 import type Backbone from './backbone';
 import collectionapi from './collectionapi';
 import { getIcon } from './icons';
-import { load } from './initialcontext';
+import type { JqueryPromise, SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
 import schema, { unescape } from './schemabase';
 import {
@@ -11,31 +11,8 @@ import {
   type RelationshipDefinition,
 } from './specifyfield';
 import type { IR, RA } from './types';
-
-// The schema config / localization information is loaded dynamically.
-export type SchemaLocalization = {
-  readonly name: string | null;
-  readonly desc: string | null;
-  readonly format: string | null;
-  readonly aggregator: string | null;
-  readonly ishidden: 0 | 1;
-  readonly items: IR<{
-    readonly name: string | null;
-    readonly desc: string | null;
-    readonly format: string | null;
-    readonly picklistname: string | null;
-    readonly weblinkname: string | null;
-    readonly isrequired: boolean;
-    readonly ishidden: boolean;
-  }>;
-};
-let localization: IR<SchemaLocalization> = undefined!;
-export const fetchContext = load<IR<SchemaLocalization>>(
-  '/context/schema_localization.json',
-  'application/json'
-).then((data) => {
-  localization = data;
-});
+import { defined } from './types';
+import { localization, SchemaLocalization } from './schema';
 
 type FieldAlias = {
   readonly vname: string;
@@ -55,21 +32,20 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
+type Collection = new (props: {
+  readonly filters?: Partial<
+    {
+      readonly orderby: string;
+      readonly id: number;
+      readonly specifyuser: number;
+      readonly domainfilter: boolean;
+    } & IR<unknown>
+  >;
+}) => SpecifyFetch;
 
-// TODO: SpecifyResource referecnes fix
-
-type SchemaModelWritable = {
-  LazyCollection: new (props: {
-    readonly filters?: Partial<
-      {
-        readonly orderby: string;
-        readonly id: number;
-        readonly specifyuser: number;
-        readonly domainfilter: boolean;
-      } & IR<unknown>
-    >;
-  }) => SpecifyFetch;
-  isHidden: () => boolean;
+type SpecifyFetch = {
+  readonly fetch: (filter: { readonly limit: number }) => JqueryPromise<void>;
+  readonly models: RA<SpecifyResource>;
 };
 
 export default class SpecifyModel {
@@ -92,13 +68,13 @@ export default class SpecifyModel {
 
   public readonly Resource: Backbone.View;
 
-  public readonly LazyCollection: Backbone.View;
+  public readonly LazyCollection: Collection;
 
-  public readonly StaticCollection: Backbone.View;
+  public readonly StaticCollection: Collection;
 
-  public readonly DependentCollection: Backbone.View;
+  public readonly DependentCollection: Collection;
 
-  public readonly ToOneCollection: Backbone.View;
+  public readonly ToOneCollection: Collection;
 
   public readonly fields: RA<Field | Relationship>;
 
@@ -150,6 +126,8 @@ export default class SpecifyModel {
       model: this.Resource,
     });
 
+    this.localization = localization[this.name.toLowerCase()] ?? { items: [] };
+
     this.fields = [
       ...tableDefinition.fields.map(
         (fieldDefinition) => new Field(this, fieldDefinition)
@@ -159,8 +137,6 @@ export default class SpecifyModel {
           new Relationship(this, relationshipDefinition)
       ),
     ];
-
-    this.localization = localization[this.name.toLowerCase()] ?? {};
   }
 
   /**
@@ -243,7 +219,8 @@ export default class SpecifyModel {
   public getScopingPath(): RA<string> | undefined {
     if (this.name.toLowerCase() === schema.orgHierarchy.slice(-1)[0]) return [];
     const up = this.getScopingRelationship();
-    if (typeof up === 'undefined') return undefined;
-    else return [...up.getRelatedModel().getScopingPath(), up.name];
+    return typeof up === 'undefined'
+      ? undefined
+      : [...defined(up.getRelatedModel().getScopingPath()), up.name];
   }
 }

@@ -5,8 +5,6 @@
  */
 
 import '../../css/wbplanview.css';
-
-import type Backbone from 'backbone';
 import React from 'react';
 
 import type { RA } from '../types';

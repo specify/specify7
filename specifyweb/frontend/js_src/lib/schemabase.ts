@@ -12,60 +12,9 @@
  * schema, but it's here for now.
  */
 
-import type { SpecifyResource } from './components/wbplanview';
 import { load } from './initialcontext';
 import type SpecifyModel from './specifymodel';
 import type { IR, RA, RR } from './types';
-import Backbone from "backbone";
-
-type SpecifyFetch = {
-  readonly fetch: (filter: {
-    readonly limit: number;
-  }) => JqueryPromise<DomainTreeDefinitionItem>;
-  readonly models: RA<SpecifyResource>;
-};
-
-type DomainTreeDefinitionItem = {
-  readonly get: (fieldName: string) => number | string;
-  readonly rget: (fieldName: string) => Promise<DomainTreeDefinitionItem>;
-  readonly attributes: { name: string; rankid: number; parent: string };
-};
-
-type SpecifyRequest = (parameter: IR<unknown>) => JqueryPromise<void>;
-
-type DomainTreeDefinitionItems = {
-  readonly fetch: SpecifyRequest;
-  readonly models: IR<DomainTreeDefinitionItem>;
-};
-
-type DomainTreeDefinition = {
-  readonly rget: (
-    fieldName: string
-  ) => JqueryPromise<DomainTreeDefinitionItems>;
-};
-
-export type SpecifyResource = Backbone.Model & {
-  readonly id: number;
-  readonly get: (fieldName: string) => SpecifyResource | any;
-  readonly rget: (fieldName: string) => JqueryPromise<SpecifyResource | any>;
-  readonly set: (fieldName: string, value: any) => void;
-  readonly save: () => JqueryPromise<void>;
-  readonly viewUrl: () => string;
-  readonly Resource: new () => SpecifyResource;
-  readonly isNew: () => boolean;
-  readonly clone: () => SpecifyResource;
-};
-
-export type JqueryPromise<T> = {
-  readonly done: (callback: (t: T) => void) => void;
-  readonly then: (callback: (t: T) => void) => void;
-};
-
-export type Domain = {
-  readonly getTreeDef: (
-    tableName: string
-  ) => JqueryPromise<DomainTreeDefinition>;
-};
 
 type SchemaWritable = {
   domainLevelIds: RR<typeof domainLevels[number], number>;

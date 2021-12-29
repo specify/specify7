@@ -562,7 +562,7 @@ function assertExhaustive(x: never): never {
   throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
 
-export default createBackboneView({
+export default createBackboneView<IR<never>>({
   moduleName: 'WBImportView',
   title: wbText('importDataSet'),
   className: 'workbench-import-view',

@@ -197,7 +197,3 @@ export function showResource(resource, recordSet, pushUrl) {
     export function setTitle(title) {
         window.document.title = commonText('appTitle')(title);
     }
-
-    // the exported interface
-    export function getCurrentView() { return currentView; }  // a reference to the current view
-

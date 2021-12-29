@@ -9,16 +9,13 @@
 import type { State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
-import type {
-  Dataset,
-  SpecifyResource,
-  WbPlanViewWrapperProps,
-} from './components/wbplanview';
+import ajax from './ajax';
+import type { Dataset, WbPlanViewWrapperProps } from './components/wbplanview';
 import type { MappingState } from './components/wbplanviewstate';
+import type { SpecifyResource } from './legacytypes';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import { getMappingsTree, getMustMatchTables, goBack } from './wbplanviewutils';
-import ajax from './ajax';
 
 type NavigateBackState = State<
   'NavigateBackState',
@@ -91,7 +88,7 @@ export const loadingStateDispatch = generateDispatch<LoadingStates>({
                 },
               }).then(() => goBack(props.dataset.id))
           )
-        : goBack(props.dataset.id);
+        : void goBack(props.dataset.id);
     });
   },
 });

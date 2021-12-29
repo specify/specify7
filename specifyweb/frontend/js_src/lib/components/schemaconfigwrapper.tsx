@@ -21,6 +21,7 @@ import type {
 import { SchemaConfig } from './schemaconfig';
 import { handlePromiseReject } from './wbplanview';
 import ajax from '../ajax';
+import { JavaType, RelationshipType } from '../specifyfield';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -84,7 +85,7 @@ export type WithFieldInfo = {
     readonly relatedModelName: string | undefined;
     readonly isRequired: boolean;
     readonly isRelationship: boolean;
-    readonly type: string;
+    readonly type: JavaType | RelationshipType;
     readonly canChangeIsRequired: boolean;
   };
 };

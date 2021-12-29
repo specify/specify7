@@ -18,7 +18,6 @@ export default Promise.all([
   import('./remoteprefs'),
   import('./schema'),
   import('./schemabase'),
-  import('./specifymodel'),
   import('./stringlocalization'),
   import('./systeminfo'),
   import('./uiformatters'),
