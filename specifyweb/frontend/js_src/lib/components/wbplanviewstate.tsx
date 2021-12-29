@@ -3,45 +3,23 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import ajax from '../ajax';
-import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import type { RA } from '../types';
-import type { MatchBehaviors, UploadPlan } from '../uploadplantomappingstree';
-import type { LoadingStates } from '../wbplanviewloadingreducer';
-import { loadingStateDispatch } from '../wbplanviewloadingreducer';
+import type { IR, RA } from '../types';
+import type { UploadPlan } from '../uploadplantomappingstree';
 import dataModelStorage from '../wbplanviewmodel';
-import type {
-  OpenMappingScreenAction,
-  WbPlanViewActions,
-} from '../wbplanviewreducer';
-import { goBack, mappingPathIsComplete } from '../wbplanviewutils';
-import { TableIcon } from './common';
+import type { WbPlanViewActions } from '../wbplanviewreducer';
+import { goBack, savePlan } from '../wbplanviewutils';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
-import {
-  ButtonWithConfirmation,
-  ListOfBaseTables,
-  ValidationButton,
-} from './wbplanviewcomponents';
-import { Layout } from './wbplanviewheader';
-import type {
-  MappingPath,
-  WbPlanViewMapperBaseProps,
-} from './wbplanviewmapper';
+import { ListOfBaseTables } from './wbplanviewcomponents';
+import type { MappingLine } from './wbplanviewmapper';
 import WbPlanViewMapper from './wbplanviewmapper';
-import { EmptyDataSetDialog } from './wbplanviewmappercomponents';
 
 // States
 
-export type LoadingState = State<
-  'LoadingState',
-  {
-    loadingState?: LoadingStates;
-    dispatchAction?: WbPlanViewActions;
-  }
->;
+type LoadingState = State<'LoadingState'>;
 
 type BaseTableSelectionState = State<
   'BaseTableSelectionState',
@@ -50,61 +28,28 @@ type BaseTableSelectionState = State<
   }
 >;
 
-type TemplateSelectionState = State<'TemplateSelectionState'>;
-
 export type MappingState = State<
   'MappingState',
-  WbPlanViewMapperBaseProps & {
+  {
     changesMade: boolean;
-    mappingsAreValidated: boolean;
-    displayMatchingOptionsDialog: boolean;
+    baseTableName: string;
+    lines: RA<MappingLine>;
+    mustMatchPreferences: IR<boolean>;
   }
 >;
 
+type TemplateSelectionState = State<'TemplateSelectionState'>;
+
 export type WbPlanViewStates =
-  | BaseTableSelectionState
   | LoadingState
+  | BaseTableSelectionState
   | TemplateSelectionState
   | MappingState;
 
 type WbPlanViewStatesWithParameters = WbPlanViewStates & {
   readonly dispatch: (action: WbPlanViewActions) => void;
   readonly props: WbPlanViewProps;
-  readonly id: (suffix: string) => string;
 };
-
-export const getInitialWbPlanViewState = (
-  props: OpenMappingScreenAction
-): WbPlanViewStates => ({
-  type: 'LoadingState',
-  dispatchAction: props.uploadPlan
-    ? {
-        ...props,
-        type: 'OpenMappingScreenAction',
-      }
-    : {
-        type: 'OpenBaseTableSelectionAction',
-      },
-});
-
-export const getDefaultMappingState = (): MappingState => ({
-  type: 'MappingState',
-  showHiddenFields: cache.get('wbPlanViewUi', 'showHiddenFields', {
-    defaultValue: false,
-  }),
-  showMappingView: cache.get('wbPlanViewUi', 'showMappingView', {
-    defaultValue: true,
-  }),
-  baseTableName: '',
-  mappingView: ['0'],
-  mappingsAreValidated: false,
-  validationResults: [],
-  lines: [],
-  focusedLine: 0,
-  changesMade: false,
-  displayMatchingOptionsDialog: false,
-  mustMatchPreferences: {},
-});
 
 function TemplateSelection({
   headers,
@@ -117,7 +62,7 @@ function TemplateSelection({
     uploadPlan: UploadPlan | null,
     headers: RA<string>
   ) => void;
-}) {
+}): JSX.Element {
   const [isLoading, setIsLoading] = React.useState(false);
 
   return isLoading ? (
@@ -128,7 +73,7 @@ function TemplateSelection({
       onClose={handleClose}
       onDataSetSelect={(id: number): void => {
         setIsLoading(true);
-        ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+        void ajax<Dataset>(`/api/workbench/dataset/${id}`, {
           headers: { Accept: 'application/json' },
         }).then(({ data: { uploadplan, columns, visualorder } }) =>
           handleSelect(
@@ -147,17 +92,7 @@ export const stateReducer = generateReducer<
   JSX.Element,
   WbPlanViewStatesWithParameters
 >({
-  LoadingState: ({ action: state }) => {
-    if (typeof state.loadingState !== 'undefined')
-      Promise.resolve('')
-        .then(() => loadingStateDispatch(state.loadingState!))
-        .catch((error) => {
-          throw error;
-        });
-    if (typeof state.dispatchAction !== 'undefined')
-      state.dispatch(state.dispatchAction);
-    return <LoadingScreen />;
-  },
+  LoadingState: () => <LoadingScreen />,
   BaseTableSelectionState: ({ action: state }) => (
     <ModalDialog
       properties={{
@@ -227,390 +162,38 @@ export const stateReducer = generateReducer<
     />
   ),
   MappingState: ({ action: state }) => {
-    const handleSave = (ignoreValidation: boolean): void => {
-      state.dispatch({
-        type: 'ClearValidationResultsAction',
-      });
-      state.dispatch({
-        type: 'SavePlanAction',
-        dataset: state.props.dataset,
-        removeUnloadProtect: state.props.removeUnloadProtect,
-        setUnloadProtect: state.props.setUnloadProtect,
-        ignoreValidation,
-      });
-    };
-    const handleClose = (): void =>
-      state.dispatch({
-        type: 'CloseSelectElementAction',
-      });
-    const handleMappingOptionsDialogClose = (): void =>
-      state.dispatch({
-        type: 'CloseMatchingLogicDialogAction',
-      });
-
     return (
-      <Layout
-        stateName={state.type}
+      <WbPlanViewMapper
         readonly={state.props.readonly}
-        title={
-          <>
-            <span title={wbText('dataSetName')}>
-              {state.props.dataset.name}
-            </span>
-            <span title={wbText('baseTable')}>
-              {` (${dataModelStorage.tables[state.baseTableName].label})`}
-            </span>
-          </>
+        setUnloadProtect={state.props.setUnloadProtect}
+        removeUnloadProtect={state.props.removeUnloadProtect}
+        changesMade={state.changesMade}
+        baseTableName={state.baseTableName}
+        lines={state.lines}
+        mustMatchPreferences={state.mustMatchPreferences}
+        dataset={state.props.dataset}
+        onChangeBaseTable={(): void =>
+          state.dispatch({
+            type: 'OpenBaseTableSelectionAction',
+          })
         }
-        stateType={state.type}
-        buttonsLeft={
-          state.props.readonly ? (
-            <span
-              className="v-center wbplanview-readonly-badge"
-              title={wbText('dataSetUploadedDescription')}
-            >
-              {wbText('dataSetUploaded')}
-            </span>
-          ) : (
-            <>
-              <ButtonWithConfirmation
-                dialogTitle={wbText('goToBaseTableDialogTitle')}
-                dialogContent={
-                  <>
-                    {wbText('goToBaseTableDialogHeader')}
-                    {wbText('goToBaseTableDialogMessage')}
-                  </>
-                }
-                buttons={(confirm, cancel) => [
-                  {
-                    text: commonText('cancel'),
-                    click: cancel,
-                  },
-                  {
-                    text: commonText('changeBaseTable'),
-                    click: confirm,
-                  },
-                ]}
-                onConfirm={(): void =>
-                  state.dispatch({
-                    type: 'OpenBaseTableSelectionAction',
-                  })
-                }
-              >
-                {wbText('baseTable')}
-              </ButtonWithConfirmation>
-              <button
-                aria-haspopup="dialog"
-                className="magic-button"
-                type="button"
-                onClick={(): void =>
-                  state.dispatch({
-                    type: 'ResetMappingsAction',
-                  })
-                }
-              >
-                {wbText('clearMappings')}
-              </button>
-              <ButtonWithConfirmation
-                dialogTitle={wbText('reRunAutoMapperDialogTitle')}
-                dialogContent={
-                  <>
-                    {wbText('reRunAutoMapperDialogHeader')}
-                    {wbText('reRunAutoMapperDialogMessage')}
-                  </>
-                }
-                buttons={(confirm, cancel) => [
-                  {
-                    text: commonText('cancel'),
-                    click: cancel,
-                  },
-                  {
-                    text: wbText('reRunAutoMapper'),
-                    click: confirm,
-                  },
-                ]}
-                showConfirmation={(): boolean =>
-                  state.lines.some(({ mappingPath }) =>
-                    mappingPathIsComplete(mappingPath)
-                  )
-                }
-                onConfirm={(): void =>
-                  state.dispatch({
-                    type: 'SelectTableAction',
-                    headers: state.lines.map(({ headerName }) => headerName),
-                    baseTableName: state.baseTableName,
-                  })
-                }
-              >
-                {wbText('autoMapper')}
-              </ButtonWithConfirmation>
-            </>
-          )
+        onReRunAutoMapper={(): void =>
+          state.dispatch({
+            type: 'SelectTableAction',
+            headers: state.lines.map(({ headerName }) => headerName),
+            baseTableName: state.baseTableName,
+          })
         }
-        buttonsRight={
-          <>
-            <button
-              type="button"
-              className={`magic-button ${
-                state.showMappingView ? '' : 'active'
-              }`}
-              onClick={(): void =>
-                state.dispatch({
-                  type: 'ToggleMappingViewAction',
-                  isVisible: !state.showMappingView,
-                })
-              }
-              aria-pressed={!state.showMappingView}
-            >
-              {state.showMappingView
-                ? wbText('hideMappingEditor')
-                : wbText('showMappingEditor')}
-            </button>
-            <button
-              type="button"
-              className="magic-button"
-              aria-haspopup="dialog"
-              onClick={(): void =>
-                state.dispatch({
-                  type: 'OpenMatchingLogicDialogAction',
-                })
-              }
-            >
-              {wbText('mustMatch')}
-            </button>
-            {!state.props.readonly && (
-              <ValidationButton
-                canValidate={state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
-                )}
-                isValidated={state.mappingsAreValidated}
-                onClick={(): void =>
-                  state.dispatch({
-                    type: 'ValidationAction',
-                  })
-                }
-              />
-            )}
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              className="magic-button"
-              onClick={(): void => {
-                state.dispatch({
-                  type: 'ClearValidationResultsAction',
-                });
-                goBack(state.props.dataset.id);
-              }}
-            >
-              {state.props.readonly
-                ? wbText('dataEditor')
-                : commonText('cancel')}
-            </button>
-            {!state.props.readonly && (
-              <button
-                type="button"
-                className="magic-button"
-                disabled={!state.changesMade}
-                onClick={(): void => handleSave(false)}
-              >
-                {commonText('save')}
-              </button>
-            )}
-          </>
-        }
-        handleClick={handleClose}
-      >
-        <WbPlanViewMapper
-          showHiddenFields={state.showHiddenFields}
-          showMappingView={state.showMappingView}
-          baseTableName={state.baseTableName}
-          lines={state.lines}
-          mappingView={state.mappingView}
-          validationResults={state.validationResults}
-          openSelectElement={state.openSelectElement}
-          autoMapperSuggestions={state.autoMapperSuggestions}
-          focusedLine={state.focusedLine}
-          readonly={state.props.readonly}
-          mustMatchPreferences={state.mustMatchPreferences}
-          handleSave={(): void => handleSave(true)}
-          handleToggleHiddenFields={(): void =>
-            state.dispatch({ type: 'ToggleHiddenFieldsAction' })
-          }
-          handleFocus={(line: number): void =>
-            state.dispatch({
-              type: 'FocusLineAction',
-              line,
-            })
-          }
-          handleMappingViewMap={(): void =>
-            state.dispatch({ type: 'MappingViewMapAction' })
-          }
-          handleAddNewHeader={(newHeaderName): void =>
-            state.dispatch({ type: 'AddNewHeaderAction', newHeaderName })
-          }
-          handleOpen={(line: number, index: number): void =>
-            state.dispatch({
-              type: 'OpenSelectElementAction',
-              line,
-              index,
-            })
-          }
-          handleClose={handleClose}
-          handleChange={(payload: {
-            readonly line: 'mappingView' | number;
-            readonly index: number;
-            readonly close: boolean;
-            readonly newValue: string;
-            readonly isRelationship: boolean;
-            readonly currentTableName: string;
-            readonly newTableName: string;
-          }): void =>
-            state.dispatch({
-              type: 'ChangeSelectElementValueAction',
-              ...payload,
-            })
-          }
-          handleClearMapping={(line: number): void =>
-            state.dispatch({
-              type: 'ClearMappingLineAction',
-              line,
-            })
-          }
-          handleAutoMapperSuggestionSelection={(suggestion: string): void =>
-            state.dispatch({
-              type: 'AutoMapperSuggestionSelectedAction',
-              suggestion,
-            })
-          }
-          handleValidationResultClick={(mappingPath: MappingPath): void =>
-            state.dispatch({
-              type: 'ValidationResultClickAction',
-              mappingPath,
-            })
-          }
-          handleDismissValidation={(): void =>
-            state.dispatch({
-              type: 'ClearValidationResultsAction',
-            })
-          }
-          handleChangeMatchBehaviorAction={(
-            line: number,
-            matchBehavior: MatchBehaviors
-          ): void =>
-            state.dispatch({
-              type: 'ChangeMatchBehaviorAction',
-              line,
-              matchBehavior,
-            })
-          }
-          handleToggleAllowNullsAction={(
-            line: number,
-            allowNull: boolean
-          ): void =>
-            state.dispatch({
-              type: 'ToggleAllowNullsAction',
-              line,
-              allowNull,
-            })
-          }
-          handleChangeDefaultValue={(
-            line: number,
-            defaultValue: string | null
-          ): void =>
-            state.dispatch({
-              type: 'ChangeDefaultValue',
-              line,
-              defaultValue,
-            })
-          }
-          handleAutoMapperSuggestionLoaded={(autoMapperSuggestions): void =>
-            state.dispatch({
-              type: 'AutoMapperSuggestionsLoadedAction',
-              autoMapperSuggestions,
-            })
-          }
-        />
-        <EmptyDataSetDialog lineCount={state.lines.length} />
-        {state.displayMatchingOptionsDialog && (
-          <ModalDialog
-            properties={{
-              title: wbText('matchingLogicDialogTitle'),
-              close: handleMappingOptionsDialogClose,
-              width: 350,
-              buttons: [
-                {
-                  text:
-                    Object.keys(state.mustMatchPreferences).length === 0
-                      ? commonText('close')
-                      : commonText('apply'),
-                  click: closeDialog,
-                },
-              ],
-            }}
-          >
-            {Object.keys(state.mustMatchPreferences).length === 0 ? (
-              wbText('matchingLogicUnavailableDialogMessage')
-            ) : (
-              <>
-                <p id={state.id('must-match-description')}>
-                  {wbText('matchingLogicDialogMessage')}
-                </p>
-                <table
-                  className="grid-table matching-logic-dialog"
-                  aria-describedby={state.id('must-match-description')}
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col">{commonText('tableName')}</th>
-                      <th scope="col">{wbText('mustMatch')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(state.mustMatchPreferences).map(
-                      ([tableName, mustMatch]) => (
-                        <tr key={tableName}>
-                          <td className="v-center">
-                            <label
-                              htmlFor={state.id(`must-match-${tableName}`)}
-                              className="v-center"
-                              style={{ columnGap: 'var(--quarter-size)' }}
-                            >
-                              <TableIcon
-                                tableName={tableName}
-                                tableLabel={false}
-                              />
-                              {dataModelStorage.tables[tableName].label}
-                            </label>
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            <input
-                              type="checkbox"
-                              checked={mustMatch}
-                              id={state.id(`must-match-${tableName}`)}
-                              {...(state.props.readonly
-                                ? {
-                                    disabled: true,
-                                  }
-                                : {
-                                    onChange: (): void =>
-                                      state.dispatch({
-                                        type: 'MustMatchPrefChangeAction',
-                                        tableName,
-                                        mustMatch: !mustMatch,
-                                      }),
-                                  })}
-                            />
-                          </td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
-              </>
-            )}
-          </ModalDialog>
-        )}
-      </Layout>
+        onSave={async (lines, mustMatchPreferences): Promise<void> => {
+          state.props.removeUnloadProtect();
+          return savePlan({
+            dataset: state.props.dataset,
+            baseTableName: state.baseTableName,
+            lines,
+            mustMatchPreferences,
+          });
+        }}
+      />
     );
   },
 });

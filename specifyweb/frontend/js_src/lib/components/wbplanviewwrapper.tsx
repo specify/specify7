@@ -8,17 +8,13 @@ import React from 'react';
 
 import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
-import type { IR } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import { dataModelPromise } from '../wbplanviewmodelfetcher';
+import { useId, useTitle } from './common';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type {
-  PublicWbPlanViewProps,
-  WbPlanViewWrapperProps,
-} from './wbplanview';
+import type { WbPlanViewConstructorProps } from './wbplanview';
 import { WbPlanView } from './wbplanview';
-import { useTitle } from './common';
 
 /**
  * Entrypoint react component for the workbench mapper
@@ -27,8 +23,11 @@ import { useTitle } from './common';
  * Makes sure schema is loaded
  * Reorders headers if needed
  */
-function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
-  useTitle(props.dataset.name);
+function WbPlanViewWrapper({
+  dataset,
+}: WbPlanViewConstructorProps): JSX.Element {
+  const id = useId('wbplanview-wrapper');
+  useTitle(dataset.name);
 
   const [schemaLoaded, setSchemaLoaded] = React.useState<boolean>(
     typeof dataModelStorage.tables !== 'undefined'
@@ -46,40 +45,26 @@ function WbPlanViewWrapper(props: WbPlanViewWrapperProps): JSX.Element {
 
   // Reorder headers if needed
   const headers =
-    props.dataset.visualorder === null
-      ? props.dataset.columns
-      : props.dataset.visualorder.map(
-          (physicalCol) => props.dataset.columns[physicalCol]
-        );
+    dataset.visualorder === null
+      ? dataset.columns
+      : dataset.visualorder.map((physicalCol) => dataset.columns[physicalCol]);
   return schemaLoaded ? (
     <WbPlanView
-      {...props}
-      uploadPlan={props.dataset.uploadplan}
+      dataset={dataset}
+      uploadPlan={dataset.uploadplan}
       headers={headers}
-      readonly={props.dataset.uploadresult?.success ?? false}
+      readonly={dataset.uploadresult?.success ?? false}
+      removeUnloadProtect={(): void => navigation.removeUnloadProtect(id(''))}
+      setUnloadProtect={(): void =>
+        navigation.addUnloadProtect(id(''), wbText('unloadProtectMessage'))
+      }
     />
   ) : (
     <LoadingScreen />
   );
 }
 
-const setUnloadProtect = (self: IR<unknown>): void =>
-  navigation.addUnloadProtect(self, wbText('unloadProtectMessage'));
-
-const removeUnloadProtect = (self: IR<unknown>): void =>
-  navigation.removeUnloadProtect(self);
-
-/**
- * Backbone View wrapper for the entrypoint react component
- */
-export default createBackboneView<
-  WbPlanViewWrapperProps,
-  PublicWbPlanViewProps
->(WbPlanViewWrapper, {
+/** Backbone View wrapper for the entrypoint react component */
+export default createBackboneView(WbPlanViewWrapper, {
   className: 'wbplanview content-no-shadow',
-  getComponentProps: (self) => ({
-    dataset: self.options.dataset,
-    removeUnloadProtect: (): void => removeUnloadProtect(self),
-    setUnloadProtect: (): void => setUnloadProtect(self),
-  }),
 });

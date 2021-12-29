@@ -6,7 +6,7 @@
 
 import ajax from './ajax';
 import AutoMapper from './automapper';
-import type { Dataset, WbPlanViewWrapperProps } from './components/wbplanview';
+import type { Dataset } from './components/wbplanview';
 import type {
   AutoMapperSuggestion,
   FullMappingPath,
@@ -14,10 +14,11 @@ import type {
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import type { LoadingState, MappingState } from './components/wbplanviewstate';
+import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import * as navigation from './navigation';
 import schema from './schema';
 import type { IR, RA } from './types';
+import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,
   formatReferenceItem,
@@ -25,34 +26,29 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
-import {
-  findRequiredMissingFields,
-  getMaxToManyValue,
-  tableIsTree,
-} from './wbplanviewmodelhelper';
+import { getMaxToManyValue, tableIsTree } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
-import type { ChangeSelectElementValueAction } from './wbplanviewreducer';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import {
   mappingPathsToMappingsTree,
   traverseTree,
 } from './wbplanviewtreehelper';
-import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
-import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 
-export function savePlan(
-  props: WbPlanViewWrapperProps,
-  state: MappingState,
-  ignoreValidation = false
-): LoadingState | MappingState {
-  const validationResultsState = validate(state);
-  if (!ignoreValidation && validationResultsState.validationResults.length > 0)
-    return validationResultsState;
-
+export async function savePlan({
+  dataset,
+  baseTableName,
+  lines,
+  mustMatchPreferences,
+}: {
+  readonly dataset: Dataset;
+  readonly baseTableName: string;
+  readonly lines: RA<MappingLine>;
+  readonly mustMatchPreferences: IR<boolean>;
+}): Promise<void> {
   const renamedMappedLines = renameNewlyCreatedHeaders(
-    state.baseTableName,
-    props.dataset.columns,
-    state.lines
+    baseTableName,
+    dataset.columns,
+    lines
   );
 
   const newlyAddedHeaders = renamedMappedLines
@@ -60,75 +56,49 @@ export function savePlan(
       ({ headerName, mappingPath }) =>
         mappingPath.length > 0 &&
         mappingPath[0] !== '0' &&
-        !props.dataset.columns.includes(headerName)
+        !dataset.columns.includes(headerName)
     )
     .map(({ headerName }) => headerName);
 
   const uploadPlan = mappingsTreeToUploadPlan(
-    state.baseTableName,
+    baseTableName,
     getMappingsTree(renamedMappedLines, true),
-    getMustMatchTables(state)
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
   );
 
-  const dataSetRequestUrl = `/api/workbench/dataset/${props.dataset.id}/`;
+  const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
 
-  void ajax(dataSetRequestUrl, {
+  return ajax(dataSetRequestUrl, {
     method: 'PUT',
     body: {
       uploadplan: uploadPlan,
     },
-  }).then(() => {
-    if (state.changesMade) props.removeUnloadProtect();
-
-    if (newlyAddedHeaders.length > 0)
-      void ajax<Dataset>(dataSetRequestUrl, {
-        headers: {
-          Accept: 'application/json',
-        },
-      }).then(({ data: { columns, visualorder } }) => {
-        let newVisualOrder;
-        newVisualOrder =
-          visualorder === null
-            ? Object.keys(props.dataset.columns)
-            : visualorder;
-
-        newlyAddedHeaders.forEach((headerName) =>
-          newVisualOrder.push(columns.indexOf(headerName))
-        );
-
-        void ajax(dataSetRequestUrl, {
-          method: 'PUT',
-          body: {
-            visualorder: newVisualOrder,
-          },
-        }).then(() => goBack(props.dataset.id));
-      });
-    else goBack(props.dataset.id);
-  });
-
-  return state;
+  }).then(async () =>
+    (newlyAddedHeaders.length === 0
+      ? Promise.resolve()
+      : ajax<Dataset>(dataSetRequestUrl).then(
+          async ({ data: { columns, visualorder } }) =>
+            ajax(dataSetRequestUrl, {
+              method: 'PUT',
+              body: {
+                visualorder: [
+                  ...(visualorder ??
+                    Object.keys(dataset.columns).map((index) =>
+                      Number.parseInt(index)
+                    )),
+                  ...newlyAddedHeaders.map((headerName) =>
+                    columns.indexOf(headerName)
+                  ),
+                ],
+              },
+            })
+        )
+    ).then(() => goBack(dataset.id))
+  );
 }
+
 export const goBack = (dataSetId: number): void =>
   navigation.go(`/workbench/${dataSetId}/`);
-
-/* Validates the current mapping and shows error messages if needed */
-export function validate(state: MappingState): MappingState {
-  const validationResults = findRequiredMissingFields(
-    state.baseTableName,
-    getMappingsTree(state.lines, true),
-    state.mustMatchPreferences
-  );
-
-  return {
-    ...state,
-    type: 'MappingState',
-    // Show mapping view panel if there were validation errors
-    showMappingView:
-      state.showMappingView || Object.values(validationResults).length > 0,
-    mappingsAreValidated: Object.values(validationResults).length === 0,
-    validationResults,
-  };
-}
 
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicateMappings(
@@ -151,13 +121,29 @@ export function deduplicateMappings(
   );
 }
 
-export function getMustMatchTables(state: MappingState): IR<boolean> {
-  const baseTableIsTree = tableIsTree(state.baseTableName);
-  const arrayOfMappingPaths = state.lines.map((line) => line.mappingPath);
+/**
+ * Get list of tables available for must match given current Mapping Paths
+ * and merge that list with the current must match config
+ *
+ * @remarks
+ * This is an expensive operation since it runs "getMappingLineData"
+ * (with iterate:true) for each line
+ */
+export function getMustMatchTables({
+  baseTableName,
+  lines,
+  mustMatchPreferences,
+}: {
+  readonly baseTableName: string;
+  readonly lines: RA<MappingLine>;
+  readonly mustMatchPreferences: IR<boolean>;
+}): IR<boolean> {
+  const baseTableIsTree = tableIsTree(baseTableName);
+  const arrayOfMappingPaths = lines.map((line) => line.mappingPath);
   const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
     getMappingLineData({
       mappingPath,
-      baseTableName: state.baseTableName,
+      baseTableName,
       iterate: true,
     }).filter((mappingElementData, index, list) => {
       if (
@@ -170,7 +156,7 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
 
       if (typeof list[index - 1] === 'undefined') {
         if (
-          state.baseTableName === 'collectionobject' &&
+          baseTableName === 'collectionobject' &&
           list[index].tableName === 'collectingevent'
         )
           return false;
@@ -180,7 +166,7 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
 
         // Exclude embedded collecting event
         if (
-          schema.embeddedCollectingEvent === true &&
+          schema.embeddedCollectingEvent &&
           list[index - 1].tableName === 'collectionobject' &&
           list[index].tableName === 'collectingevent'
         )
@@ -199,7 +185,7 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
         typeof dataModelStorage.tables[tableName] !== 'undefined' &&
         !tableName.endsWith('attribute') &&
         // Exclude embedded paleo context
-        (schema.embeddedPaleoContext === false || tableName !== 'paleocontext')
+        (!schema.embeddedPaleoContext || tableName !== 'paleocontext')
     );
   const distinctListOfTables = Array.from(new Set(tables));
 
@@ -208,10 +194,10 @@ export function getMustMatchTables(state: MappingState): IR<boolean> {
       distinctListOfTables.map((tableName) => [
         tableName,
         // Whether to check it by default
-        tableName === 'preptype' && !('preptype' in state.mustMatchPreferences),
+        tableName === 'preptype' && !('preptype' in mustMatchPreferences),
       ])
     ),
-    ...state.mustMatchPreferences,
+    ...mustMatchPreferences,
   };
 }
 
@@ -289,9 +275,12 @@ export function mutateMappingPath({
   newValue,
   currentTableName,
   newTableName,
-}: Omit<ChangeSelectElementValueAction, 'type' | 'close'> & {
+}: {
   readonly lines: RA<MappingLine>;
   readonly mappingView: MappingPath;
+  readonly line: number | 'mappingView';
+  readonly index: number;
+  readonly newValue: string;
   readonly isRelationship: boolean;
   readonly currentTableName: string;
   readonly newTableName: string;
@@ -313,8 +302,8 @@ export function mutateMappingPath({
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
-   * type is the same (or non-existent in both cases) and the new box is a
-   * -to-many index, a tree rank or a different relationship to the same table
+   * types are the same (or non-existent in both cases) and the new box is a
+   * -to-many, a tree rank or a different relationship to the same table
    */
   const preserveMappingPathToRight =
     currentRelationshipType === newRelationshipType &&
@@ -339,7 +328,7 @@ export function mutateMappingPath({
   return mappingPath;
 }
 
-// The maximum count of suggestions to show in the suggestions box
+// The maximum number of suggestions to show in the suggestions box
 const MAX_SUGGESTIONS_COUNT = 3;
 
 /*

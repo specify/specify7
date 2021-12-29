@@ -6,29 +6,40 @@
  */
 
 import React from 'react';
-import _ from 'underscore';
+import type { State } from 'typesafe-reducer';
 
 import * as cache from '../cache';
+import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
-import type {
-  ColumnOptions,
-  MatchBehaviors,
-} from '../uploadplantomappingstree';
+import type { ColumnOptions } from '../uploadplantomappingstree';
+import { reducer } from '../wbplanviewmappingreducer';
+import dataModelStorage from '../wbplanviewmodel';
+import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import {
   getAutoMapperSuggestions,
   getMappedFields,
+  getMappingsTree,
+  getMustMatchTables,
+  goBack,
   mappingPathIsComplete,
 } from '../wbplanviewutils';
 import { useId } from './common';
+import { LoadingScreen } from './modaldialog';
+import type { Dataset } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
-import { MappingLineComponent } from './wbplanviewcomponents';
+import { MappingLineComponent, ValidationButton } from './wbplanviewcomponents';
+import { Layout } from './wbplanviewheader';
 import {
-  defaultMappingViewHeight,
+  ChangeBaseTable,
+  EmptyDataSetDialog,
+  mappingOptionsMenu,
   MappingsControlPanel,
   MappingView,
-  minMappingViewHeight,
+  MustMatch,
+  ReRunAutoMapper,
+  ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
 
@@ -76,93 +87,89 @@ export type AutoMapperSuggestion = MappingPathProps & {
   readonly mappingPath: MappingPath;
 };
 
-export type WbPlanViewMapperBaseProps = {
-  readonly showHiddenFields: boolean;
-  readonly showMappingView: boolean;
-  readonly baseTableName: string;
-  readonly mappingView: MappingPath;
-  readonly validationResults: MappingPath[];
-  readonly lines: RA<MappingLine>;
-  readonly openSelectElement?: SelectElementPosition;
-  readonly focusedLine: number;
-  readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
-  readonly mustMatchPreferences: IR<boolean>;
-};
-
-const MAPPING_VIEW_RESIZE_THROTTLE = 150;
-
-export default function WbPlanViewMapper(
-  props: WbPlanViewMapperBaseProps & {
-    readonly handleSave: () => void;
-    readonly handleFocus: (lineIndex: number) => void;
-    readonly handleMappingViewMap: () => void;
-    readonly handleAddNewHeader: (newHeaderName: string) => void;
-    readonly handleToggleHiddenFields: () => void;
-    readonly readonly: boolean;
-    readonly handleOpen: (line: number, index: number) => void;
-    readonly handleClose: () => void;
-    readonly handleChange: (payload: {
-      readonly line: 'mappingView' | number;
-      readonly index: number;
-      readonly close: boolean;
-      readonly newValue: string;
-      readonly isRelationship: boolean;
-      readonly currentTableName: string;
-      readonly newTableName: string;
-      readonly isDoubleClick: boolean;
-    }) => void;
-    readonly handleClearMapping: (index: number) => void;
-    readonly handleAutoMapperSuggestionSelection: (suggestion: string) => void;
-    readonly handleAutoMapperSuggestionLoaded: (
-      suggestions: RA<AutoMapperSuggestion>
-    ) => void;
-    readonly handleValidationResultClick: (mappingPath: MappingPath) => void;
-    readonly handleDismissValidation: () => void;
-    readonly handleChangeMatchBehaviorAction: (
-      line: number,
-      matchBehavior: MatchBehaviors
-    ) => void;
-    readonly handleToggleAllowNullsAction: (
-      line: number,
-      allowNull: boolean
-    ) => void;
-    readonly handleChangeDefaultValue: (
-      line: number,
-      defaultValue: string | null
-    ) => void;
+export type MappingState = State<
+  'MappingState',
+  {
+    showMappingView: boolean;
+    showHiddenFields: boolean;
+    mappingView: MappingPath;
+    mappingsAreValidated: boolean;
+    lines: RA<MappingLine>;
+    focusedLine: number;
+    changesMade: boolean;
+    mustMatchPreferences: IR<boolean>;
+    autoMapperSuggestions?: RA<AutoMapperSuggestion>;
+    openSelectElement?: SelectElementPosition;
+    validationResults: RA<MappingPath>;
   }
-): JSX.Element {
-  const getMappedFieldsBind = getMappedFields.bind(undefined, props.lines);
+>;
+
+export const getDefaultMappingState = ({
+  changesMade,
+  lines,
+  mustMatchPreferences,
+}: {
+  readonly changesMade: boolean;
+  readonly lines: RA<MappingLine>;
+  readonly mustMatchPreferences: IR<boolean>;
+}): MappingState => ({
+  type: 'MappingState',
+  showHiddenFields: cache.get('wbPlanViewUi', 'showHiddenFields', {
+    defaultValue: false,
+  }),
+  showMappingView: cache.get('wbPlanViewUi', 'showMappingView', {
+    defaultValue: true,
+  }),
+  mappingView: ['0'],
+  mappingsAreValidated: false,
+  validationResults: [],
+  lines,
+  focusedLine: 0,
+  changesMade,
+  mustMatchPreferences,
+});
+
+export default function WbPlanViewMapper(props: {
+  readonly readonly: boolean;
+  readonly dataset: Dataset;
+  readonly removeUnloadProtect: () => void;
+  readonly setUnloadProtect: () => void;
+  readonly baseTableName: string;
+  readonly onChangeBaseTable: () => void;
+  readonly onSave: (
+    lines: RA<MappingLine>,
+    mustMatchPreferences: IR<boolean>
+  ) => Promise<void>;
+  readonly onReRunAutoMapper: () => void;
+  // Initial values for the state:
+  readonly changesMade: boolean;
+  readonly lines: RA<MappingLine>;
+  readonly mustMatchPreferences: IR<boolean>;
+}): JSX.Element {
+  const [state, dispatch] = React.useReducer(
+    reducer,
+    {
+      changesMade: props.changesMade,
+      lines: props.lines,
+      mustMatchPreferences: props.mustMatchPreferences,
+    },
+    getDefaultMappingState
+  );
+
+  // Set/unset unload protect
+  React.useEffect(() => {
+    if (state.changesMade) props.setUnloadProtect();
+    else props.removeUnloadProtect();
+  }, [state.changesMade]);
+
+  const getMappedFieldsBind = getMappedFields.bind(undefined, state.lines);
   const listOfMappings = React.useRef<HTMLUListElement>(null);
-
-  // `resize` event listener for the mapping view
-  const mappingViewHeightRef = React.useRef<number>(defaultMappingViewHeight);
-  const mappingViewParentRef = React.useCallback<
-    (mappingViewParent: HTMLElement | null) => void
-  >((mappingViewParent) => {
-    if (typeof ResizeObserver === 'undefined' || mappingViewParent === null)
-      return undefined;
-
-    const resizeObserver = new ResizeObserver(
-      _.throttle(() => {
-        const height = mappingViewParent.offsetHeight;
-        mappingViewHeightRef.current = height;
-        cache.set('wbPlanViewUi', 'mappingViewHeight', height, {
-          overwrite: true,
-        });
-      }, MAPPING_VIEW_RESIZE_THROTTLE)
-    );
-
-    resizeObserver.observe(mappingViewParent);
-
-    return (): void => resizeObserver.disconnect();
-  }, []);
 
   // Reposition suggestions box if it doesn't fit
   function repositionSuggestionBox(): void {
     if (
-      typeof props.autoMapperSuggestions === 'undefined' ||
-      props.autoMapperSuggestions.length === 0
+      typeof state.autoMapperSuggestions === 'undefined' ||
+      state.autoMapperSuggestions.length === 0
     )
       return;
 
@@ -209,7 +216,7 @@ export default function WbPlanViewMapper(
   }
 
   React.useEffect(repositionSuggestionBox, [
-    props.autoMapperSuggestions,
+    state.autoMapperSuggestions,
     listOfMappings,
   ]);
 
@@ -219,26 +226,29 @@ export default function WbPlanViewMapper(
       window.removeEventListener('resize', repositionSuggestionBox);
   }, []);
 
-  // Wait for AutoMapper suggestions to fetch
+  // Fetch automapper suggestions when opening a custom select element
   React.useEffect(() => {
     if (
-      typeof props.openSelectElement === 'undefined' ||
-      typeof props.lines[props.openSelectElement.line].mappingPath[
-        props.openSelectElement.index
+      typeof state.openSelectElement === 'undefined' ||
+      typeof state.lines[state.openSelectElement.line].mappingPath[
+        state.openSelectElement.index
       ] === 'undefined'
     )
-      return;
+      return undefined;
 
     getAutoMapperSuggestions({
-      lines: props.lines,
-      line: props.openSelectElement.line,
-      index: props.openSelectElement.index,
+      lines: state.lines,
+      line: state.openSelectElement.line,
+      index: state.openSelectElement.index,
       baseTableName: props.baseTableName,
     })
       .then((autoMapperSuggestions) =>
         destructorCalled
           ? undefined
-          : props.handleAutoMapperSuggestionLoaded(autoMapperSuggestions)
+          : dispatch({
+              type: 'AutoMapperSuggestionsLoadedAction',
+              autoMapperSuggestions,
+            })
       )
       .catch(console.error);
 
@@ -246,69 +256,224 @@ export default function WbPlanViewMapper(
     return (): void => {
       destructorCalled = true;
     };
-  }, [props.openSelectElement]);
+  }, [state.openSelectElement]);
 
   const id = useId('wbplanviewmapper');
 
-  return (
-    <>
-      {!props.readonly && props.validationResults.length > 0 && (
+  const validate = (): RA<MappingPath> =>
+    findRequiredMissingFields(
+      props.baseTableName,
+      getMappingsTree(state.lines, true),
+      state.mustMatchPreferences
+    );
+
+  function handleSave(ignoreValidation: boolean): void {
+    const validationResults = ignoreValidation ? [] : validate();
+    if (validationResults.length === 0) {
+      setIsLoading(true);
+      props
+        .onSave(state.lines, state.mustMatchPreferences)
+        .then(() => setIsLoading(false));
+    } else
+      dispatch({
+        type: 'ValidationAction',
+        validationResults,
+      });
+  }
+
+  const handleChange = (payload: {
+    readonly line: 'mappingView' | number;
+    readonly index: number;
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+  }): void =>
+    dispatch({
+      type: 'ChangeSelectElementValueAction',
+      ...payload,
+    });
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  return isLoading ? (
+    <LoadingScreen />
+  ) : (
+    <Layout
+      readonly={props.readonly}
+      title={
+        <>
+          <span title={wbText('dataSetName')}>{props.dataset.name}</span>
+          <span title={wbText('baseTable')}>
+            {` (${dataModelStorage.tables[props.baseTableName].label})`}
+          </span>
+        </>
+      }
+      buttonsLeft={
+        props.readonly ? (
+          <span
+            className="v-center wbplanview-readonly-badge"
+            title={wbText('dataSetUploadedDescription')}
+          >
+            {wbText('dataSetUploaded')}
+          </span>
+        ) : (
+          <>
+            <ChangeBaseTable onClick={props.onChangeBaseTable} />
+            <button
+              aria-haspopup="dialog"
+              className="magic-button"
+              type="button"
+              onClick={(): void =>
+                dispatch({
+                  type: 'ResetMappingsAction',
+                })
+              }
+            >
+              {wbText('clearMappings')}
+            </button>
+            <ReRunAutoMapper
+              showConfirmation={(): boolean =>
+                state.lines.some(({ mappingPath }) =>
+                  mappingPathIsComplete(mappingPath)
+                )
+              }
+              onClick={props.onReRunAutoMapper}
+            />
+          </>
+        )
+      }
+      buttonsRight={
+        <>
+          <ToggleMappingPath
+            showMappingView={state.showMappingView}
+            onClick={(): void =>
+              dispatch({
+                type: 'ToggleMappingViewAction',
+                isVisible: !state.showMappingView,
+              })
+            }
+          />
+          <MustMatch
+            readonly={props.readonly}
+            getMustMatchPreferences={(): IR<boolean> =>
+              getMustMatchTables({
+                baseTableName: props.baseTableName,
+                lines: state.lines,
+                mustMatchPreferences: state.mustMatchPreferences,
+              })
+            }
+            onChange={(mustMatchPreferences): void =>
+              dispatch({
+                type: 'MustMatchPrefChangeAction',
+                mustMatchPreferences,
+              })
+            }
+            onClose={(): void => {
+              /*
+               * Since setting table as must match causes all of it's fields to
+               * be optional, we may have to rerun validation on
+               * mustMatchPreferences changes
+               */
+              if (
+                state.validationResults.length > 0 &&
+                state.lines.some(({ mappingPath }) =>
+                  mappingPathIsComplete(mappingPath)
+                )
+              )
+                dispatch({
+                  type: 'ValidationAction',
+                  validationResults: validate(),
+                });
+            }}
+          />
+          {!props.readonly && (
+            <ValidationButton
+              canValidate={state.lines.some(({ mappingPath }) =>
+                mappingPathIsComplete(mappingPath)
+              )}
+              isValidated={state.mappingsAreValidated}
+              onClick={(): void =>
+                dispatch({
+                  type: 'ValidationAction',
+                  validationResults: validate(),
+                })
+              }
+            />
+          )}
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            className="magic-button"
+            onClick={(): void => goBack(props.dataset.id)}
+          >
+            {props.readonly ? wbText('dataEditor') : commonText('cancel')}
+          </button>
+          {!props.readonly && (
+            <button
+              type="button"
+              className="magic-button"
+              disabled={!state.changesMade}
+              onClick={(): void => handleSave(false)}
+            >
+              {commonText('save')}
+            </button>
+          )}
+        </>
+      }
+      handleClick={(): void =>
+        dispatch({
+          type: 'CloseSelectElementAction',
+        })
+      }
+    >
+      {!props.readonly && state.validationResults.length > 0 && (
         <ValidationResults
           baseTableName={props.baseTableName}
-          validationResults={props.validationResults}
-          onSave={props.handleSave}
-          onDismissValidation={props.handleDismissValidation}
+          validationResults={state.validationResults}
+          onSave={(): void => handleSave(true)}
+          onDismissValidation={(): void =>
+            dispatch({
+              type: 'ValidationAction',
+              validationResults: [],
+            })
+          }
           getMappedFields={getMappedFieldsBind}
-          onValidationResultClick={props.handleValidationResultClick}
-          mustMatchPreferences={props.mustMatchPreferences}
+          onValidationResultClick={(mappingPath: MappingPath): void =>
+            dispatch({
+              type: 'ValidationResultClickAction',
+              mappingPath,
+            })
+          }
+          mustMatchPreferences={state.mustMatchPreferences}
         />
       )}
-      {props.showMappingView && (
-        <section
-          className="mapping-view-parent"
-          style={
-            {
-              '--mapping-view-min-height': `${minMappingViewHeight}px`,
-              '--mapping-view-height': `${
-                mappingViewHeightRef.current ?? ''
-              }px`,
-            } as React.CSSProperties
+      {state.showMappingView && (
+        <MappingView
+          baseTableName={props.baseTableName}
+          focusedLineExists={state.lines.length > 0}
+          mappingPath={state.mappingView}
+          showHiddenFields={state.showHiddenFields}
+          mapButtonIsEnabled={
+            typeof state.focusedLine !== 'undefined' &&
+            mappingPathIsComplete(state.mappingView)
           }
-          aria-label={wbText('mappingEditor')}
-          ref={mappingViewParentRef}
-        >
-          <div className="mapping-view-container">
-            <MappingView
-              baseTableName={props.baseTableName}
-              focusedLineExists={props.lines.length > 0}
-              mappingPath={props.mappingView}
-              showHiddenFields={props.showHiddenFields}
-              mapButtonIsEnabled={
-                typeof props.focusedLine !== 'undefined' &&
-                mappingPathIsComplete(props.mappingView)
-              }
-              readonly={props.readonly}
-              mustMatchPreferences={props.mustMatchPreferences}
-              handleMapButtonClick={
-                props.readonly ? undefined : props.handleMappingViewMap
-              }
-              handleMappingViewChange={
-                props.readonly
-                  ? undefined
-                  : (payload): void =>
-                      props.handleChange({ line: 'mappingView', ...payload })
-              }
-              getMappedFields={getMappedFieldsBind}
-            />
-          </div>
-          <span
-            className="mapping-view-resizer"
-            title={wbText('resizeMappingEditorButtonDescription')}
-            aria-hidden={true}
-          >
-            ⇲
-          </span>
-        </section>
+          readonly={props.readonly}
+          mustMatchPreferences={state.mustMatchPreferences}
+          handleMapButtonClick={
+            props.readonly
+              ? undefined
+              : (): void => dispatch({ type: 'MappingViewMapAction' })
+          }
+          handleMappingViewChange={
+            props.readonly
+              ? undefined
+              : (payload): void =>
+                  handleChange({ line: 'mappingView', ...payload })
+          }
+          getMappedFields={getMappedFieldsBind}
+        />
       )}
 
       <ul
@@ -319,8 +484,15 @@ export default function WbPlanViewMapper(
         aria-label={wbText('mappings')}
         aria-orientation="vertical"
       >
-        {props.lines.map(
-          ({ mappingPath, headerName, mappingType, columnOptions }, index) => {
+        {state.lines.map(
+          ({ mappingPath, headerName, mappingType, columnOptions }, line) => {
+            const handleOpen = (index: number): void =>
+              dispatch({
+                type: 'OpenSelectElementAction',
+                line,
+                index,
+              });
+
             const lineData = getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
@@ -329,177 +501,116 @@ export default function WbPlanViewMapper(
               customSelectType: 'CLOSED_LIST',
               handleChange: props.readonly
                 ? undefined
-                : (payload): void =>
-                    props.handleChange({ line: index, ...payload }),
-              handleOpen: props.handleOpen.bind(undefined, index),
-              handleClose: props.handleClose,
-              handleAutoMapperSuggestionSelection:
-                (!props.readonly &&
-                  props.handleAutoMapperSuggestionSelection) ||
-                undefined,
+                : (payload): void => handleChange({ line, ...payload }),
+              handleOpen,
+              handleClose: (): void =>
+                dispatch({
+                  type: 'CloseSelectElementAction',
+                }),
+              handleAutoMapperSuggestionSelection: props.readonly
+                ? undefined
+                : (suggestion: string): void =>
+                    dispatch({
+                      type: 'AutoMapperSuggestionSelectedAction',
+                      suggestion,
+                    }),
               getMappedFields: getMappedFieldsBind,
               openSelectElement:
-                props.openSelectElement?.line === index
-                  ? props.openSelectElement
+                state.openSelectElement?.line === line
+                  ? state.openSelectElement
                   : undefined,
-              showHiddenFields: props.showHiddenFields,
+              showHiddenFields: state.showHiddenFields,
               autoMapperSuggestions:
-                (!props.readonly && props.autoMapperSuggestions) || [],
-              mustMatchPreferences: props.mustMatchPreferences,
+                (!props.readonly && state.autoMapperSuggestions) || [],
+              mustMatchPreferences: state.mustMatchPreferences,
               columnOptions,
-              mappingOptionsMenuGenerator: () => ({
-                matchBehavior: {
-                  optionLabel: (
-                    <>
-                      {wbText('matchBehavior')}
-                      <ul style={{ padding: 0, margin: 0 }}>
-                        {Object.entries({
-                          ignoreWhenBlank: {
-                            title: wbText('ignoreWhenBlank'),
-                            description: wbText('ignoreWhenBlankDescription'),
-                          },
-                          ignoreAlways: {
-                            title: wbText('ignoreAlways'),
-                            description: wbText('ignoreAlwaysDescription'),
-                          },
-                          ignoreNever: {
-                            title: wbText('ignoreNever'),
-                            description: wbText('ignoreNeverDescription'),
-                          },
-                        }).map(([id, { title, description }]) => (
-                          <li key={id}>
-                            <label title={description}>
-                              <input
-                                type="radio"
-                                name="match-behavior"
-                                value={id}
-                                checked={columnOptions.matchBehavior === id}
-                                readOnly={props.readonly}
-                                onChange={({ target }): void =>
-                                  props.handleChangeMatchBehaviorAction(
-                                    index,
-                                    target.value as MatchBehaviors
-                                  )
-                                }
-                              />
-                              {` ${title}`}
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ),
-                },
-                nullAllowed: {
-                  optionLabel: (
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={columnOptions.nullAllowed}
-                        disabled={props.readonly}
-                        onChange={
-                          (!props.readonly &&
-                            ((event): void =>
-                              props.handleToggleAllowNullsAction(
-                                index,
-                                event.target.checked
-                              ))) ||
-                          undefined
-                        }
-                      />{' '}
-                      {wbText('allowNullValues')}
-                    </label>
-                  ),
-                },
-                default: {
-                  optionLabel: (
-                    <>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={columnOptions.default !== null}
-                          disabled={props.readonly}
-                          onChange={
-                            (!props.readonly &&
-                              ((): void =>
-                                props.handleChangeDefaultValue(
-                                  index,
-                                  columnOptions.default === null ? '' : null
-                                ))) ||
-                            undefined
-                          }
-                        />{' '}
-                        <span id={id(`default-value-${index}`)}>
-                          {wbText('useDefaultValue')}
-                        </span>
-                        {columnOptions.default !== null && ':'}
-                      </label>
-                      {typeof columnOptions.default === 'string' && (
-                        <>
-                          <br />
-                          <textarea
-                            value={columnOptions.default || ''}
-                            title={wbText('defaultValue')}
-                            aria-labelledby={id(`default-value-${index}`)}
-                            onChange={
-                              (!props.readonly &&
-                                ((event): void =>
-                                  props.handleChangeDefaultValue(
-                                    index,
-                                    event.target.value
-                                  ))) ||
-                              undefined
-                            }
-                            disabled={props.readonly}
-                          />
-                        </>
-                      )}
-                    </>
-                  ),
-                  title: wbText('useDefaultValueDescription'),
-                },
-              }),
+              mappingOptionsMenuGenerator: () =>
+                mappingOptionsMenu({
+                  id: (suffix) => id(`column-options-${line}-${suffix}`),
+                  readonly: props.readonly,
+                  columnOptions,
+                  onChangeMatchBehaviour: (matchBehavior) =>
+                    dispatch({
+                      type: 'ChangeMatchBehaviorAction',
+                      line,
+                      matchBehavior,
+                    }),
+                  onToggleAllowNulls: (allowNull) =>
+                    dispatch({
+                      type: 'ToggleAllowNullsAction',
+                      line,
+                      allowNull,
+                    }),
+                  onChangeDefaultValue: (defaultValue) =>
+                    dispatch({
+                      type: 'ChangeDefaultValue',
+                      line,
+                      defaultValue,
+                    }),
+                }),
             });
             return (
               <MappingLineComponent
-                key={index}
+                key={line}
                 headerName={headerName}
                 mappingType={mappingType}
                 readonly={props.readonly}
-                isFocused={index === props.focusedLine}
-                onFocus={props.handleFocus.bind(undefined, index)}
+                isFocused={line === state.focusedLine}
+                onFocus={(): void =>
+                  dispatch({
+                    type: 'FocusLineAction',
+                    line,
+                  })
+                }
                 onKeyDown={(event): void => {
                   const openSelectElement =
-                    props.openSelectElement?.line === index
-                      ? props.openSelectElement.index
+                    state.openSelectElement?.line === line
+                      ? state.openSelectElement.index
                       : undefined;
 
                   if (typeof openSelectElement === 'number') {
                     if (event.key === 'ArrowLeft')
                       if (openSelectElement > 0)
-                        props.handleOpen(index, openSelectElement - 1);
-                      else props.handleClose();
+                        handleOpen(openSelectElement - 1);
+                      else
+                        dispatch({
+                          type: 'CloseSelectElementAction',
+                        });
                     else if (event.key === 'ArrowRight')
                       if (openSelectElement + 1 < lineData.length)
-                        props.handleOpen(index, openSelectElement + 1);
-                      else props.handleClose();
+                        handleOpen(openSelectElement + 1);
+                      else
+                        dispatch({
+                          type: 'CloseSelectElementAction',
+                        });
 
                     return;
                   }
 
                   if (event.key === 'ArrowLeft')
-                    props.handleOpen(index, lineData.length - 1);
+                    handleOpen(lineData.length - 1);
                   else if (event.key === 'ArrowRight' || event.key === 'Enter')
-                    props.handleOpen(index, 0);
-                  else if (event.key === 'ArrowUp' && index > 0)
-                    props.handleFocus(index - 1);
+                    handleOpen(0);
+                  else if (event.key === 'ArrowUp' && line > 0)
+                    dispatch({
+                      type: 'FocusLineAction',
+                      line: line - 1,
+                    });
                   else if (
                     event.key === 'ArrowDown' &&
-                    index + 1 < props.lines.length
+                    line + 1 < state.lines.length
                   )
-                    props.handleFocus(index + 1);
+                    dispatch({
+                      type: 'FocusLineAction',
+                      line: line + 1,
+                    });
                 }}
-                onClearMapping={props.handleClearMapping.bind(undefined, index)}
+                onClearMapping={(): void =>
+                  dispatch({
+                    type: 'ClearMappingLineAction',
+                    line,
+                  })
+                }
                 lineData={lineData}
               />
             );
@@ -508,13 +619,15 @@ export default function WbPlanViewMapper(
       </ul>
 
       <MappingsControlPanel
-        showHiddenFields={props.showHiddenFields}
-        onToggleHiddenFields={props.handleToggleHiddenFields}
+        showHiddenFields={state.showHiddenFields}
+        onToggleHiddenFields={(): void =>
+          dispatch({ type: 'ToggleHiddenFieldsAction' })
+        }
         onAddNewHeader={
           props.readonly
             ? undefined
             : (newHeaderName): void => {
-                props.handleAddNewHeader(newHeaderName);
+                dispatch({ type: 'AddNewHeaderAction', newHeaderName });
                 // Scroll listOfMappings to the bottom
                 if (listOfMappings.current)
                   listOfMappings.current.scrollTop =
@@ -522,6 +635,7 @@ export default function WbPlanViewMapper(
               }
         }
       />
-    </>
+      <EmptyDataSetDialog lineCount={state.lines.length} />
+    </Layout>
   );
 }

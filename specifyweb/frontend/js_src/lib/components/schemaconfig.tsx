@@ -151,7 +151,7 @@ export function SchemaConfig({
     if (Object.keys(fields).length === 0)
       throw new Error('Unable to find table fields');
 
-    Promise.all([
+    void Promise.all([
       // Fetch all picklists
       ajax<{
         readonly objects: RA<{
@@ -159,26 +159,25 @@ export function SchemaConfig({
           readonly name: string;
           readonly issystem: boolean;
         }>;
-      }>(`/api/specify/picklist/?domainfilter=true&limit=0`).then(
-        ({ data: { objects } }) =>
-          Object.fromEntries(
-            objects.map(({ id, name, issystem }) => [
-              id,
-              {
-                name,
-                isSystem: issystem,
-              },
-            ])
-          )
+      }>(`/api/specify/picklist/?domainfilter=true&limit=0`, {
+        headers: { Accept: 'application/json' },
+      }).then(({ data: { objects } }) =>
+        Object.fromEntries(
+          objects.map(({ id, name, issystem }) => [
+            id,
+            {
+              name,
+              isSystem: issystem,
+            },
+          ])
+        )
       ),
       // Fetch table items and their strings
-      fetch(
-        `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`
+      ajax<{ readonly objects: RA<SpLocaleItem> }>(
+        `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`,
+        { headers: { Accept: 'application/json' } }
       )
-        .then<{ readonly objects: RA<SpLocaleItem> }>(async (response) =>
-          response.json()
-        )
-        .then(({ objects }) =>
+        .then(({ data: { objects } }) =>
           destructorCalled ? [] : fetchStrings(objects, language, country)
         )
         .then<RA<SpLocaleItem & WithFetchedStrings & WithFieldInfo>>((items) =>
@@ -197,21 +196,19 @@ export function SchemaConfig({
         ),
       // Fetch table strings
       fetchStrings([state.table], language, country),
-    ])
-      .then(([pickLists, items, [table]]) => {
-        if (destructorCalled) return;
-        dispatch({
-          type: 'FetchedTableDataAction',
-          table: {
-            ...table,
-            dataModel: {
-              pickLists,
-            },
+    ]).then(([pickLists, items, [table]]) => {
+      if (destructorCalled) return;
+      dispatch({
+        type: 'FetchedTableDataAction',
+        table: {
+          ...table,
+          dataModel: {
+            pickLists,
           },
-          items: Object.fromEntries(items.map((item) => [item.id, item])),
-        });
-      })
-      .catch(handlePromiseReject);
+        },
+        items: Object.fromEntries(items.map((item) => [item.id, item])),
+      });
+    });
 
     let destructorCalled = false;
     return (): void => {

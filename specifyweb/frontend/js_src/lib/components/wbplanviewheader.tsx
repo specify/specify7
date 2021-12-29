@@ -7,16 +7,13 @@
 import React from 'react';
 
 import { useId } from './common';
-import type { WbPlanViewStates } from './wbplanviewstate';
 
 export function Layout(props: {
   readonly children: React.ReactNode;
   readonly readonly: boolean;
   readonly footer?: JSX.Element;
-  readonly stateName: WbPlanViewStates['type'];
   readonly handleClick?: () => void;
 
-  readonly stateType: WbPlanViewStates['type'];
   readonly title: string | JSX.Element;
   readonly buttonsLeft: React.ReactNode;
   readonly buttonsRight: React.ReactNode;
@@ -42,9 +39,7 @@ export function Layout(props: {
                 : undefined
       }
     >
-      <header
-        className={`wbplanview-header wbplanview-header-${props.stateType}`}
-      >
+      <header className="wbplanview-header">
         <h2 className="wbplanview-ds-name v-center" id={id('name')}>
           {props.title}
         </h2>
@@ -55,7 +50,7 @@ export function Layout(props: {
         </div>
       </header>
       <div
-        className={`wbplanview-container wbplanview-container-${props.stateName}`}
+        className="wbplanview-container wbplanview-mapping-container"
         aria-labelledby={id('name')}
       >
         {props.children}

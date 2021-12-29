@@ -81,7 +81,7 @@ h2.wbplanview-ds-name {
 }
 
 /* MAPPING STATE */
-.wbplanview-container-MappingState {
+.wbplanview-mapping-container {
   display: flex;
   flex-direction: column;
   row-gap: var(--size);
