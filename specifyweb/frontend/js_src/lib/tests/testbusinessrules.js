@@ -378,7 +378,7 @@
           whenAll([requireEvent(newagent, 'saveblocked newagent'), requireEvent(newagent, 'saverequired newagent')]).done(function() {
             return _.defer(function() {
               var blockers;
-              blockers = newagent.saveBlockers.getAll();
+              blockers = newagent.saveBlockers.blockers;
               equal(_.keys(blockers).length, 1, "one blocker");
               _(blockers).each(function(blocker) {
                 equal(blocker.field, 'role', "blocker field is 'role'");

@@ -409,16 +409,6 @@ const formsText = createDictionary({
     'ru-ru': 'Месяц / Год',
     ca: 'Mon / Year',
   },
-  dayPlaceholder: {
-    'en-us': 'DD',
-    'ru-ru': 'ДД',
-    ca: 'DD',
-  },
-  monthPlaceholder: {
-    'en-us': 'MM',
-    'ru-ru': 'ММ',
-    ca: 'MM',
-  },
   yearPlaceholder: {
     'en-us': 'YYYY',
     'ru-ru': 'ГГГГ',

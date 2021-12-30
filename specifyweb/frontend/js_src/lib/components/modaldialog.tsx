@@ -9,9 +9,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
-import ErrorBoundary from './errorboundary';
-import createBackboneView from './reactbackboneextend';
 import type { IR, RA } from '../types';
+import ErrorBoundary from './errorboundary';
 
 function closeDialogCallback(
   $dialog: JQuery,
@@ -248,5 +247,3 @@ export function LoadingScreen(): JSX.Element {
     </ModalDialog>
   );
 }
-
-export const BackboneLoadingScreen = createBackboneView(LoadingScreen);

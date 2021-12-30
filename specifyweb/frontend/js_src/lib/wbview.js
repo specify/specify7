@@ -23,7 +23,7 @@ import Papa from 'papaparse';
 
 import 'handsontable/dist/handsontable.full.css';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import * as app from './specifyapp';
 import userInfo from './userinfo';
 import DataSetMeta from './datasetmeta';
@@ -48,10 +48,11 @@ import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import {BackboneLoadingScreen} from './components/modaldialog';
+import {LoadingScreen} from './components/modaldialog';
 import {format} from './dataobjformatters';
 import {dataModelPromise} from "./wbplanviewmodelfetcher";
 import {mappingsTreeToSplitMappingPaths} from "./wbplanviewtreehelper";
+import createBackboneView from "./components/reactbackboneextend";
 
 const metaKeys = [
   'isNew',
@@ -2545,6 +2546,8 @@ const WBView = Backbone.View.extend({
     return this.indexedCellMeta;
   },
 });
+
+const BackboneLoadingScreen = createBackboneView(LoadingScreen);
 
 export default function loadDataset(
   id,

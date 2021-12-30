@@ -173,7 +173,7 @@ export const parsers: RR<
 
 type Field = {
   readonly length?: number;
-  readonly type: JavaType;
+  readonly type: ExtendedJavaType;
   readonly isRequired?: boolean;
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };
@@ -271,41 +271,52 @@ export function resolveParser(
   );
 }
 
-export function addValidationAttributes(
+export function getValidationAttributes(
+  field: Field,
+  parser: Parser
+): IR<string> {
+  if (typeof parser === 'undefined') {
+    console.error(formsText('noParser')(field.type));
+    return {};
+  } else
+    return {
+      ...(parser.required === true ? { required: '' } : {}),
+      ...(typeof parser.pattern === 'object'
+        ? {
+            pattern: parser.pattern.toString().replaceAll(/^\/\^?|\$?\/$/g, ''),
+          }
+        : {}),
+      ...Object.fromEntries(
+        [
+          'minLength',
+          'maxLength',
+          'min',
+          'max',
+          'step',
+          'title',
+          'placeholder',
+          'type',
+        ]
+          .filter(
+            (attribute) =>
+              typeof parser[attribute as keyof Parser] !== 'undefined'
+          )
+          .map((attribute) => [
+            attribute,
+            `${parser[attribute as keyof Parser] as string}`,
+          ])
+      ),
+    };
+}
+
+export const addValidationAttributes = (
   input: HTMLInputElement,
   field: Field,
   parser: Parser
-): void {
-  if (typeof parser === 'undefined') {
-    console.error(formsText('noParser')(field.type));
-    return;
-  }
-
-  if (parser.required === true) input.required = true;
-
-  if (typeof parser.pattern === 'object')
-    input.pattern = parser.pattern.toString().replaceAll(/^\/\^?|\$?\/$/g, '');
-
-  [
-    'minLength',
-    'maxLength',
-    'min',
-    'max',
-    'step',
-    'title',
-    'placeholder',
-    'type',
-  ]
-    .filter(
-      (attribute) => typeof parser[attribute as keyof Parser] !== 'undefined'
-    )
-    .forEach((attribute) =>
-      input.setAttribute(
-        attribute,
-        `${parser[attribute as keyof Parser] as string}`
-      )
-    );
-}
+): void =>
+  Object.entries(getValidationAttributes(field, parser)).forEach(
+    ([key, value]) => input.setAttribute(key, value)
+  );
 
 function validateAttributes(
   parser: Parser,

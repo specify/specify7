@@ -214,7 +214,7 @@ export default Backbone.View.extend({
                     var li = $('<li>').appendTo(list);
                     li.append($('<h3>').text(resource.specifyModel.getLocalizedName()));
                     var dl = $('<dl>').appendTo(li);
-                    _.each(resource.saveBlockers.getAll(), function(blocker) {
+                    _.each(resource.saveBlockers.blockers, function(blocker) {
                         var field = blocker.field && resource.specifyModel.getField(blocker.field);
                         $('<dt>').text(field ? field.getLocalizedName() : '').appendTo(dl);
                         $('<dd>').text(blocker.reason).appendTo(dl);

@@ -174,4 +174,4 @@ let uiformatters;
         }
     }
 
-    export const getAll = ()=>uiiformatters[0];
+    export const getAll = ()=>uiformatters[0];

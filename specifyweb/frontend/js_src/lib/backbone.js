@@ -4,11 +4,11 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from 'backbone';
 
-    // https://stackoverflow.com/questions/14866014/debugging-javascript-backbone-and-marionette
+// https://stackoverflow.com/questions/14866014/debugging-javascript-backbone-and-marionette
 
     function createNamedConstructor(name, constructor) {
         var fn = new Function('constructor', 'return function ' + name + ' () {\n'
-                              + '    // wrapper function created dynamically for "' + name
+                              + '    // wrapper function created dynamically for "' + name + '"\n'
                               + '    // constructor to allow instances to be identified in the debugger\n'
                               + '    constructor.apply(this, arguments);\n'
                               + '};');

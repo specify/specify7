@@ -641,4 +641,4 @@ def schema_language(request):
     return JsonResponse([
         dict(zip(('language', 'country', 'variant'), row))
         for row in schema_languages
-    ])
+    ], safe=False)

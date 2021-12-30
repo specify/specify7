@@ -9,7 +9,7 @@ import formsText from './localization/forms';
 var providers = [
     require('./usercollectionsplugin').default,
     require('./latlongui').default,
-    require('./partialdateui').default,
+    require('./components/partialdateui').default,
     require('./collectionrelonetomanyplugin').default,
     require('./collectionrelonetooneplugin').default,
     require('./geolocateplugin').default,

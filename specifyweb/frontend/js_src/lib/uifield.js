@@ -8,7 +8,7 @@ import Backbone from './backbone';
 import {format} from './dataobjformatters';
 import fieldformat from './fieldformat';
 import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
-import {handleDatePaste} from './partialdateui';
+import {handleDatePaste} from './components/partialdateui';
 
 export default Backbone.View.extend({
         __name__: "UIField",

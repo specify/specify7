@@ -1,8 +1,9 @@
 import formsText from './localization/forms';
+import type { Input } from './saveblockers';
 import type { RA } from './types';
 
 export function validationMessages(
-  field: HTMLInputElement,
+  field: Input,
   validationMessages: RA<string>
 ): void {
   field.setCustomValidity('');
@@ -26,10 +27,7 @@ export function validationMessages(
   if (!isUntouchedRequired) field.reportValidity();
 }
 
-function updateCustomValidity(
-  field: HTMLInputElement,
-  messages: RA<string>
-): void {
+function updateCustomValidity(field: Input, messages: RA<string>): void {
   /*
    * Don't report "Required" errors until field is interacted with or
    * form is being submitted
@@ -48,13 +46,13 @@ function updateCustomValidity(
  * been set, which is why it can't be used here
  */
 export const hasNativeErrors = (
-  field: HTMLInputElement,
+  field: Input,
   exceptions = ['customError', 'valid']
 ): boolean =>
   Object.keys(Object.getPrototypeOf(field.validity))
     .filter((type) => !exceptions.includes(type))
     .some((type) => field.validity[type as keyof ValidityState]);
 
-const isInputTouched = (field: HTMLInputElement): boolean =>
+const isInputTouched = (field: Input): boolean =>
   field.classList.contains('touched') ||
   field.closest('form')?.classList.contains('submitted') === true;

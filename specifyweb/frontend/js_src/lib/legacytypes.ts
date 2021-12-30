@@ -1,6 +1,7 @@
 import { IR } from './types';
 import Backbone from 'backbone';
 import SpecifyModel from './specifymodel';
+import type SaveBlockers from './saveblockers';
 
 type DomainTreeDefinitionItem = {
   readonly get: (fieldName: string) => number | string;
@@ -32,6 +33,11 @@ export type SpecifyResource = Backbone.Model & {
   readonly isNew: () => boolean;
   readonly clone: () => SpecifyResource;
   readonly specifyModel: SpecifyModel;
+  readonly saveBlockers: SaveBlockers;
+  readonly parent?: SpecifyResource;
+  readonly collection: Backbone.Model['collection'] & {
+    readonly related: SpecifyResource;
+  };
 };
 
 export type JqueryPromise<T> = {
