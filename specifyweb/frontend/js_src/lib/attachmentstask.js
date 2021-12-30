@@ -19,7 +19,7 @@ import commonText from './localization/common';
 import template from './templates/attachmentbrowser.html';
 
 
-    export const AttachmentsView = Backbone.View.extend({
+export const AttachmentsView = Backbone.View.extend({
         __name__: "AttachmentsView",
         className: "specify-attachments-view",
         title: commonText('attachments'),
@@ -73,7 +73,7 @@ import template from './templates/attachmentbrowser.html';
 
             var model = tableId != null && getModelById(tableId);
             var icon = model ? (model.system ? "/images/system.png" : model.getIcon()) :
-                getModel('attachment').getIcon();
+                schema.models.Attachment.getIcon();
 
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",

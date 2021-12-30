@@ -1,10 +1,10 @@
 "use strict";
 
 import _ from 'underscore';
-import { getModel } from './schema';
+import schema from './schema';
 import api from './specifyapi';
 
-    export default {
+export default {
         previousReturned: [],
         previousResolved: [],
         getTotalLoaned: function(loanreturnprep) {
@@ -27,7 +27,7 @@ import api from './specifyapi';
             if (interactionprep && interactionprep.get('preparation')) {
                 //return interactionprep.get('preparation').get('CountAmt');
                 var prepuri = interactionprep.get('preparation');
-                var pmod = getModel('preparation');
+                var pmod = schema.models.Preparation;
                 var prepId = pmod.Resource.fromUri(prepuri).id;
                 var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
                 var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;

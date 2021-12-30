@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import { getModel } from './schema';
+import schema from './schema';
 import * as navigation from './navigation';
 import populateForm from './populateform';
 import api from './specifyapi';
@@ -27,7 +27,7 @@ export default PrepDialog.extend({
         processInteractionsPreps: function() {
             if (!this.availabilityDblChk) {
                 if (this.options.interactionresource) {
-                    var pmod = getModel('preparation');
+                    var pmod = schema.models.Preparation;
                     var idxpreps = _.groupBy(this.options.preps, function(prep) {
                         return (new pmod.Resource({id: prep.preparationid})).url();
                     });
@@ -249,7 +249,7 @@ export default PrepDialog.extend({
         makeInteractionPrep: function(baseTbl, itemModel, iprep, amt) {
             var result = new itemModel.Resource();
             result.initialize();
-            var pmod = getModel('preparation');
+            var pmod = schema.models.Preparation;
             var purl = (new pmod.Resource({id: iprep.preparationid})).url();
             result.set('preparation', purl);
             result.set('quantity', Number(amt));

@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import { getModel } from './schema';
+import schema from './schema';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 
@@ -14,12 +14,12 @@ export default Backbone.View.extend({
     className: "prepdialog table-list-dialog",
     initialize() {
         Object.assign(this, {
-            colobjModel: getModel("collectionobject"),
-            detModel: getModel("determination"),
-            prepModel: getModel("preparation"),
-            loanModel: getModel("loan"),
-            giftModel: getModel("gift"),
-            exchModel: getModel("exchangeout")
+            colobjModel: schema.models.CollectionObject,
+            detModel: schema.models.Determination,
+            prepModel: schema.models.Preparation,
+            loanModel: schema.models.Loan,
+            giftModel: schema.models.Gift,
+            exchModel: schema.models.ExchangeOut
         });
     },
 

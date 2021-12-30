@@ -428,7 +428,8 @@ export default Backbone.View.extend({
             }
         },
         visit: function() {
-            navigation.go(this.currentResource().viewUrl());
+            if(typeof this.current !== 'undefined')
+                navigation.go(this.current.viewUrl());
         }
     });
 

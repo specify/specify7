@@ -4,14 +4,13 @@
  * specifyfield.ts.
  */
 
+import { error } from './assert';
 import { load } from './initialcontext';
 import schema from './schemabase';
 import extras from './schemaextras';
 import type { Field, Relationship } from './specifyfield';
 import SpecifyModel, { type TableDefinition } from './specifymodel';
-import type { R, RA } from './types';
-import { IR } from './types';
-import { error } from './assert';
+import type { IR, R, RA } from './types';
 
 // The schema config / localization information is loaded dynamically.
 export type SchemaLocalization = {
@@ -53,14 +52,11 @@ export const fetchContext = Promise.all([
 export { default } from './schemabase';
 
 // Returns a schema model object describing the named Specify model.
-export function getModel(name: string): SpecifyModel {
+export function getModel(name: string): SpecifyModel | undefined {
   const lowerCase = name.toLowerCase();
-  const model = Object.values(schema.models).find(
+  return Object.values(schema.models).find(
     (model) => model.name.toLowerCase() === lowerCase
   );
-  if (typeof model === 'undefined')
-    throw new Error(`Model ${name} does not exist`);
-  return model;
 }
 
 /*

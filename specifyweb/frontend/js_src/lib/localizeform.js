@@ -2,11 +2,11 @@
 
 import $ from 'jquery';
 
-import { getModel} from './schema';
+import {getModel} from './schema';
 import * as stringLocalization from './stringlocalization';
 
 
-    function localize(s) {
+function localize(s) {
         return stringLocalization.localizeFrom(['views', 'global_views'], s);
     }
 
@@ -17,8 +17,8 @@ import * as stringLocalization from './stringlocalization';
 
 export default function(formNode) {
         var form = $(formNode);
-        var model = getModel(form.data('specify-model'));
-        if (!model) return;
+        const model = getModel(form.data('specify-model'));
+        if (typeof model === 'undefined') return;
 
         $('.specify-form-header', form).prepend(
             $('<h2>').text(model.getLocalizedName())
