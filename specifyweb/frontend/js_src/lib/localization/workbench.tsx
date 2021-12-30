@@ -966,6 +966,11 @@ const wbText = createDictionary({
     'ru-ru': 'Сопоставить',
     ca: 'Map',
   },
+  unmap: {
+    'en-us': 'Unmap',
+    'ru-ru': 'Отменить сопоставления',
+    ca: 'Anulla el mapa',
+  },
   mapButtonDescription: {
     'en-us': 'Map selected field to selected header',
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',

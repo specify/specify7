@@ -23,10 +23,6 @@
   white-space: nowrap;
 }
 
-.wbplanview-ds-name-container {
-  display: contents;
-}
-
 .wbplanview-ds-name {
   column-gap: var(--quarter-size);
   overflow-x: auto;
@@ -38,10 +34,6 @@
 /* TODO: Overwrite default browser styles globally */
 h2.wbplanview-ds-name {
   margin: 0;
-}
-
-.wbplanview-header-controls {
-  display: contents;
 }
 
 .wbplanview-readonly-badge {

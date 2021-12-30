@@ -13,7 +13,7 @@
   <label class="partialdateui-full">
     <span class="sr-only"><%= commonText('year') %></span>
     <input
-      type="date"
+      type="<%= dateType =%>"
       class="partialdateui-full"
       placeholder="<%= formsText('monthPlaceholder') %>/<%= formsText('dayPlaceholder') %>/<%= formsText('yearPlaceholder') %>"
     />
@@ -21,7 +21,7 @@
   <label class="partialdateui-month-year">
     <span class="sr-only"><%= formsText('monthYear') %></span>
     <input
-      type="month"
+      type="<%= monthType =%>"
       class="partialdateui-month"
       placeholder="<%= formsText('monthPlaceholder') %>/<%= formsText('yearPlaceholder') %>"
     />

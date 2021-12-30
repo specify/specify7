@@ -5,7 +5,11 @@ import $ from 'jquery';
 
 import UIPlugin from './uiplugin';
 import template from './templates/partialdateui.html';
-import dateFormat from './dateformat';
+import dateFormat, {
+    monthFormat,
+    useAccessibleDatePicker,
+    useAccessibleMonthPicker
+} from './dateformat';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {addValidationAttributes, resolveParser} from './uiparse';
@@ -34,7 +38,12 @@ export default UIPlugin.extend({
         render: function() {
             var init = this.init;
             var disabled = this.$el.prop('disabled');
-            var ui = $(template({formsText, commonText}));
+            var ui = $(template({
+                formsText,
+                commonText,
+                dateType: useAccessibleDatePicker() ? 'date' : 'text',
+                monthType: useAccessibleMonthPicker() ? 'month' : 'text',
+            }));
             var select = ui.find('select');
             this.id = this.$el.prop('id');
 
@@ -51,8 +60,8 @@ export default UIPlugin.extend({
             this.inputFull = this.$('input.partialdateui-full');
             this.inputMonth = this.$('input.partialdateui-month');
             this.inputYear = this.$('input.partialdateui-year');
-            this.inputTypeDateSupported = isInputSupported('date');
-            this.inputTypeMonthSupported = isInputSupported('month');
+            this.inputTypeDateSupported = isInputSupported('date') && useAccessibleDatePicker();
+            this.inputTypeMonthSupported = isInputSupported('month') && useAccessibleMonthPicker();
 
             const field = {type: 'year'};
             const parser = resolveParser(field);
@@ -108,7 +117,7 @@ export default UIPlugin.extend({
                   dateFormat();
             const inputMonthFormat = this.inputTypeMonthSupported ?
                   'YYYY-MM' :
-                  'MM/YYYY';
+                  monthFormat();
             this.inputFull.val(value ? m.format(inputFullFormat) : '');
             this.inputMonth.val(value ? m.format(inputMonthFormat) : '');
             this.inputYear.val(value ? m.format('YYYY') : '');
@@ -122,8 +131,9 @@ export default UIPlugin.extend({
 
             if(!this.inputTypeMonthSupported)
                 this.inputMonth.attr({
-                    pattern: '/(?:0\d|1[012])-\d{4}/',
-                    placeholder: 'MM/YYYY',
+                    minlength: monthFormat().length,
+                    maxlength: monthFormat().length,
+                    placeholder: monthFormat(),
                     title: formsText('invalidDate'),
                 });
         },

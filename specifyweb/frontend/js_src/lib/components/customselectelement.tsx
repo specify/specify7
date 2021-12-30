@@ -267,7 +267,7 @@ function Option({
           optionLabel === '0' ? 'custom-select--label-unmapped' : ''
         }`}
       >
-        {optionLabel === '0' ? 'UNMAP' : optionLabel}
+        {optionLabel === '0' ? wbText('unmap') : optionLabel}
       </span>
       {isRelationship && (
         <span
