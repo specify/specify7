@@ -29,8 +29,8 @@ export default Backbone.View.extend({
             }, this);
 
             this.model.on('saveblocked', function(blocker) {
-                if (!this.blockingResources[blocker.resource.cid]) {
-                    this.blockingResources[blocker.resource.cid] = blocker.resource.on('destroy', this.removeBlocker, this);
+                if (!this.blockingResources[this.model.cid]) {
+                    this.blockingResources[this.model.cid] = this.model.on('destroy', this.removeBlocker, this);
                 }
                 if (!blocker.deferred) this.setButtonsDisabled(true);
                 if (!blocker.deferred) this.setSaveBlocked(true);

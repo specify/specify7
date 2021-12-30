@@ -1,19 +1,16 @@
-import remoteprefs from './remoteprefs';
+import { getBoolPref, getPref } from './remoteprefs';
 
 const DEFAULT_FORMAT = 'YYYY-MM-DD';
 const fullDateFormat = (): string =>
-  remoteprefs['ui.formatting.scrdateformat']?.toUpperCase() ?? DEFAULT_FORMAT;
+  getPref('ui.formatting.scrdateformat', DEFAULT_FORMAT).toUpperCase();
 export default fullDateFormat;
 
 const DEFAULT_MONTH_FORMAT = 'MM/YYYY';
 export const monthFormat = (): string =>
-  remoteprefs['ui.formatting.scrmonthformat']?.toUpperCase() ??
-  DEFAULT_MONTH_FORMAT;
+  getPref('ui.formatting.scrmonthformat', DEFAULT_MONTH_FORMAT).toUpperCase();
 
 export const accessibleDatePickerEnabled = (): boolean =>
-  typeof remoteprefs['ui.formatting.accessible_date_input'] !== 'string' ||
-  remoteprefs['ui.formatting.accessible_date_input'].toLowerCase() !== 'false';
+  getBoolPref('ui.formatting.accessible_date_input', true);
 
 export const accessibleMonthPickerEnabled = (): boolean =>
-  typeof remoteprefs['ui.formatting.accessible_month_input'] !== 'string' ||
-  remoteprefs['ui.formatting.accessible_month_input'].toLowerCase() !== 'false';
+  getBoolPref('ui.formatting.accessible_month_input', true);

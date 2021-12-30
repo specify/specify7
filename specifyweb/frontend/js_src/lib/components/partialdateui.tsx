@@ -40,11 +40,13 @@ const reversePrecision: RR<number, Precision> = {
 };
 type Precision = keyof typeof precisions;
 
+const databaseFormat = 'YYYY-MM-DD';
+// These may be reassigned after remotePrefs are loaded:
 let dateType = 'date';
 let monthType = 'month';
 let dateSupported = isInputSupported('date');
 let monthSupported = isInputSupported('month');
-let inputFullFormat = 'YYYY-MM-DD';
+let inputFullFormat = databaseFormat;
 let inputMonthFormat = 'YYYY-MM';
 
 function PartialDateUi({
@@ -67,16 +69,23 @@ function PartialDateUi({
       reversePrecision[model.get(precisionField) as number] ?? defaultPrecision
   );
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+  // Parsed date object
   const [moment, setMoment] = React.useState<
     ReturnType<typeof dayjs> | undefined
   >(undefined);
+  const validDate = moment?.isValid() ? moment : undefined;
+  // Unparsed raw input
+  const [inputValue, setInputValue] = React.useState('');
 
   React.useEffect(() => {
+    let destructorCalled = false;
+
     function setInput() {
       if (destructorCalled) return;
 
       const value = model.get(dateField);
-      setMoment(dayjs(value));
+      setMoment(dayjs(value, databaseFormat, true));
     }
 
     function setPrecision() {
@@ -89,20 +98,29 @@ function PartialDateUi({
     setInput();
     setPrecision();
 
-    let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
   }, []);
 
+  const refIsFirstRender = React.useRef(true);
   React.useEffect(() => {
+    /*
+     * Don't update the value in the model on the initial useEffect execution
+     * since "moment" is still undefined
+     */
+    if (refIsFirstRender.current)
+      return () => {
+        refIsFirstRender.current = false;
+      };
+
     if (typeof moment === 'undefined') {
       model.set(dateField, null);
       model.set(precisionField, null);
       model.saveBlockers.remove(`invaliddate:${dateField}`);
       console.log('setting date to null');
     } else if (moment.isValid()) {
-      const value = moment.format('YYYY-MM-DD');
+      const value = moment.format(databaseFormat);
       model.set(dateField, value);
       model.set(precisionField, precisions[precision]);
       console.log('setting date to', value);
@@ -120,13 +138,14 @@ function PartialDateUi({
         validationMessage
       );
     }
+    return undefined;
   }, [moment]);
 
   function handleChange() {
     const input = inputRef.current;
     if (input === null || precision === 'year') return;
 
-    const value = input.value.trim();
+    const value = inputValue.trim();
     /*
      * The date would be in this format if browser supports
      * input[type="date"] or input[type="month"]
@@ -197,8 +216,10 @@ function PartialDateUi({
             ? {
                 ...inputTypeYearAttributes,
                 placeholder: formsText('yearPlaceholder'),
-                value: moment?.format('YYYY'),
+                // Format parsed date if valid. Else, use raw input
+                value: validDate?.format('YYYY') ?? inputValue,
                 onChange: ({ target }): void => {
+                  setInputValue(target.value);
                   const year = Number.parseInt(target.value);
                   if (!Number.isNaN(year))
                     setMoment(
@@ -211,6 +232,10 @@ function PartialDateUi({
               }
             : {
                 onBlur: handleChange,
+                onChange({ target }): void {
+                  setInputValue(target.value);
+                  setMoment(undefined);
+                },
                 onPaste(event): void {
                   handleDatePaste(event, handleChange);
                 },
@@ -218,7 +243,8 @@ function PartialDateUi({
                   ? {
                       type: monthType,
                       placeholder: monthFormat(),
-                      value: moment?.format(inputMonthFormat),
+                      // Format parsed date if valid. Else, use raw input
+                      value: validDate?.format(inputMonthFormat) ?? inputValue,
                       title: moment?.format(monthFormat()),
                       ...(monthSupported
                         ? {}
@@ -230,7 +256,8 @@ function PartialDateUi({
                   : {
                       type: dateType,
                       placeholder: dateFormat(),
-                      value: moment?.format(inputFullFormat),
+                      // Format parsed date if valid. Else, use raw input
+                      value: validDate?.format(inputFullFormat) ?? inputValue,
                       title: moment?.format(dateFormat()),
                       ...(dateSupported
                         ? {}
@@ -247,7 +274,6 @@ function PartialDateUi({
         (precision === 'month-year' && !monthSupported)) ? (
         <button
           type="button"
-          className="partialdateui-current-date"
           title={formsText('todayButtonDescription')}
           onClick={(): void => setMoment(dayjs())}
         >
@@ -258,12 +284,11 @@ function PartialDateUi({
   );
 }
 
-const View = createBackboneView(PartialDateUi);
+const View = createBackboneView(PartialDateUi, { className: 'partialdateui' });
 
 export default UIPlugin.extend(
   {
     __name__: 'PartialDateUI',
-    className: 'partialdateui',
     render() {
       if (!accessibleDatePickerEnabled()) {
         dateType = 'text';
@@ -294,7 +319,7 @@ export default UIPlugin.extend(
       this.view = new View({
         model: this.model,
         dateField: this.init.df,
-        precisionField: this.init.tf,
+        precisionField: this.init.tp,
         defaultPrecision: ['year', 'month-year'].includes(
           this.init.defaultprecision
         )

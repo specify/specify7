@@ -16,4 +16,16 @@ export const fetchContext = load<string>(
     })
 );
 
+export function getPref(key: string, defaultValue: string): string {
+  return prefs[key] ?? defaultValue;
+}
+
+export function getBoolPref(key: string, defaultValue: boolean): boolean {
+  const value = prefs[key] as string | undefined;
+  if (typeof value === 'string')
+    if (value.toLowerCase() === 'true') return true;
+    else if (value.toLowerCase() === 'false') return false;
+  return defaultValue;
+}
+
 export default prefs as IR<string>;

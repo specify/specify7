@@ -33,9 +33,9 @@ export default function Notifications(): JSX.Element {
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     const handler = (): void => {
-      pullInterval = INITIAL_INTERVAL;
       window.clearTimeout(timeout);
-      doFetch();
+      pullInterval = INITIAL_INTERVAL;
+      if (document.visibilityState === 'visible') doFetch();
     };
     document.addEventListener('visibilitychange', handler);
 

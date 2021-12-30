@@ -283,10 +283,6 @@ hr.separator {
     margin: 0;
 }
 
-.partialdateui-month-year {
-    white-space: nowrap;
-}
-
 ul.ui-autocomplete li.ui-menu-item {
     list-style-type: none;
 }
