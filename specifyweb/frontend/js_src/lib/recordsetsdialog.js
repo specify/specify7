@@ -29,7 +29,7 @@ export default Backbone.View.extend({
                     modal: true,
                     close: (event)=>{
                         if(typeof event?.originalEvent !== 'undefined')
-                            this.options.onClose();
+                            this.options?.onClose();
                     },
                     title: formsText('recordSetsDialogTitle')(
                         this.options.recordSets._totalCount
@@ -99,7 +99,7 @@ export default Backbone.View.extend({
                         ${recordSet.get('name')} 
                     </a>
                 </td>
-                <td class="item-count" style="display:none"></td>
+                <td class="item-count" style="visibility:hidden"></td>
                 <td>
                     ${this.options.readOnly
                         ? ''
@@ -116,7 +116,7 @@ export default Backbone.View.extend({
                     .text(`(${count})`)
                     .attr('title',commonText('recordCount'))
                     .attr('aria-label',count)
-                    .show()
+                    .css('visibility', 'visible')
             );
 
 
@@ -163,7 +163,7 @@ export default Backbone.View.extend({
                 const view = new QueryToolbarView({
                     onClose: () => {
                         view.remove();
-                        this.options.onClose();
+                        this.options?.onClose();
                     },
                     getQuerySelectUrl: (query) =>
                          `/specify/query/${query.id}/?recordsetid=${recordSet.id}`,
@@ -202,7 +202,7 @@ export default Backbone.View.extend({
                 onClose: (event) => {
                     window.removeEventListener("click", queryEventListener);
                     if(typeof event?.originalEvent !== "undefined")
-                        this.options.onClose();
+                        this.options?.onClose();
                 },
             }).render();
         }
