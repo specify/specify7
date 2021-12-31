@@ -32,7 +32,7 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
-type Collection = new (props: {
+type Collection = new (props?: {
   readonly filters?: Partial<
     {
       readonly orderby: string;

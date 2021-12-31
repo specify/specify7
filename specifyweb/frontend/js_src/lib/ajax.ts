@@ -44,7 +44,7 @@ export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 export default async function ajax<RESPONSE_TYPE = string>(
   url: string,
   options: Omit<RequestInit, 'body' | 'headers'> & {
-    body?: string | IR<unknown> | FormData;
+    body?: string | RA<unknown> | IR<unknown> | FormData;
     headers?: { Accept: MimeType } & IR<string>;
   } = {},
   {

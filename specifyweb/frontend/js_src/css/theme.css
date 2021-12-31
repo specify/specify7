@@ -39,6 +39,7 @@
 .v-center {
   display: flex;
   align-items: center;
+  column-gap: var(--quarter-size);
 }
 
 .new-tab-link-icon {

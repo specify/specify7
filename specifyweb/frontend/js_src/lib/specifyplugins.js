@@ -7,7 +7,7 @@ import UIPlugin from './uiplugin';
 import formsText from './localization/forms';
 
 var providers = [
-    require('./usercollectionsplugin').default,
+    require('./components/usercollectionsplugin').default,
     require('./latlongui').default,
     require('./components/partialdateui').default,
     require('./collectionrelonetomanyplugin').default,
