@@ -15,11 +15,13 @@
 
   <body>
     <section id="loading">
-      <header>
-        <img src="/static/img/seven_logo.png" alt="Specify 7" />
-        <h1 class="sr-only">Specify 7</h1>
-      </header>
-      <h2>Loading...</h2>
+      <div class="loading-wrapper">
+        <header>
+          <img src="/static/img/seven_logo.png" alt="Specify 7" />
+          <h1 class="sr-only">Specify 7</h1>
+        </header>
+        <h2>{% trans 'Loading...' %}</h2>
+      </div>
     </section>
     <div id="root-app-container" style="display: none"></div>
   </body>
