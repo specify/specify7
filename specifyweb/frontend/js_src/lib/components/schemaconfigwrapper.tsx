@@ -132,12 +132,15 @@ function SchemaConfigWrapper({
       )
       .then(async (languages) =>
         // Get translated language names
-        languages.map(async (language) => [
-          language,
-          new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-            language.replace('_', '-')
-          ),
-        ])
+        languages.map(
+          (language) =>
+            [
+              language,
+              new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                language.replace('_', '-')
+              ),
+            ] as const
+        )
       )
       .then((languages) => {
         if (destructorCalled) return;

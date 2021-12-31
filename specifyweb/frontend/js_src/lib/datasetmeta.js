@@ -14,7 +14,6 @@ import {formatNumber, getRelativeDate} from "./components/internationalization";
 import {LANGUAGE} from "./localization/utils";
 
 // TODO: rewrite this to react
-// TODO: add sorting to WbsDialog
 function dateElement(date, fallback = '') {
   if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
     return fallback;

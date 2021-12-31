@@ -6,8 +6,9 @@
 
 import type hot from 'handsontable';
 
-import type { Query, SortConfig } from './components/toolbar/query';
+import type { Query } from './components/toolbar/query';
 import type { SearchPreferences } from './components/wbadvancedsearch';
+import type { DatasetBrief } from './components/wbplanview';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { R, RA } from './types';
 import type {
@@ -17,6 +18,7 @@ import type {
   OriginalRelationships,
   TreeRankData,
 } from './wbplanviewmodelfetcher';
+import {SortConfig} from "./components/common";
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -60,6 +62,9 @@ export type CacheDefinitions = {
   };
   readonly 'sort-config': {
     readonly listOfQueries: SortConfig<keyof Query & ('name' | 'dateCreated')>;
+    readonly listOfDataSets: SortConfig<
+      keyof DatasetBrief & ('name' | 'dateCreated' | 'dateUploaded')
+    >;
   };
   readonly common: {
     readonly listOfQueryTables: RA<string>;

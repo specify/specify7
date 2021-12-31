@@ -6,6 +6,10 @@ import type { CacheDefinitions } from '../cachedefinitions';
 
 type DefaultValue<T> = T | (() => T) | (() => Promise<T>);
 
+/**
+ * Like React.useState, but initial value is read from localStorage
+ * and all changes are written back to localStorage
+ */
 export function useCachedState<
   BUCKET_NAME extends string & keyof CacheDefinitions,
   CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]

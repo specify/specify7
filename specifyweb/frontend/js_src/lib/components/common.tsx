@@ -129,3 +129,40 @@ export function useTitle(title: string) {
     setTitle(title);
   }, [title]);
 }
+
+/** Internationalized bi-directional string comparison function */
+export const compareValues = (
+  ascending: boolean,
+  valueLeft: string | undefined,
+  valueRight: string | undefined
+): number =>
+  (valueLeft ?? '').localeCompare(valueRight ?? '') * (ascending ? -1 : 1);
+
+export type SortConfig<FIELD_NAMES extends string> = {
+  readonly sortField: FIELD_NAMES;
+  readonly ascending: boolean;
+};
+
+export function SortIndicator({
+  fieldName,
+  sortConfig,
+}: {
+  readonly fieldName: string;
+  readonly sortConfig: SortConfig<string>;
+}): JSX.Element {
+  const isSorted = sortConfig.sortField === fieldName;
+  return (
+    <span
+      className="sort-indicator"
+      aria-label={
+        isSorted
+          ? sortConfig.ascending
+            ? commonText('ascending')
+            : commonText('descending')
+          : undefined
+      }
+    >
+      {isSorted ? (sortConfig.ascending ? '▲' : '▼') : undefined}
+    </span>
+  );
+}

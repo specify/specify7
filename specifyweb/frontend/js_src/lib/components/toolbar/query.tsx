@@ -16,12 +16,12 @@ import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
-import { TableIcon, useTitle } from '../common';
+import { compareValues, SortIndicator, TableIcon, useTitle } from '../common';
+import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
-import { DateElement } from '../internationalization';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -43,42 +43,6 @@ const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
     console.error(error);
     return [];
   });
-
-const compareValues = (
-  ascending: boolean,
-  valueLeft: string | undefined,
-  valueRight: string | undefined
-): number =>
-  (valueLeft ?? '').localeCompare(valueRight ?? '') * (ascending ? -1 : 1);
-
-export type SortConfig<FIELD_NAMES extends string> = {
-  readonly sortField: FIELD_NAMES;
-  readonly ascending: boolean;
-};
-
-function SortIndicator({
-  fieldName,
-  sortConfig,
-}: {
-  readonly fieldName: string;
-  readonly sortConfig: SortConfig<string>;
-}): JSX.Element {
-  const isSorted = sortConfig.sortField === fieldName;
-  return (
-    <span
-      className="sort-indicator"
-      aria-label={
-        isSorted
-          ? sortConfig.ascending
-            ? commonText('ascending')
-            : commonText('descending')
-          : undefined
-      }
-    >
-      {isSorted ? (sortConfig.ascending ? '▲' : '▼') : undefined}
-    </span>
-  );
-}
 
 function QueryList({
   queries: unsortedQueries,
@@ -118,7 +82,7 @@ function QueryList({
           <th scope="col" className="pl-table-icon">
             <button
               type="button"
-              className="fake-link list-of-queries-name"
+              className="fake-link"
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'name',
@@ -133,7 +97,7 @@ function QueryList({
           <th scope="col">
             <button
               type="button"
-              className="fake-link list-of-queries-date-created"
+              className="fake-link"
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'dateCreated',

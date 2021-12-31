@@ -14,11 +14,12 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
-import { useTitle } from '../common';
+import { compareValues, SortIndicator, useTitle } from '../common';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
@@ -37,6 +38,7 @@ const createEmptyDataSet = async (): Promise<void> =>
     },
   }).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
 
+// TODO: get rid of this
 /**
  * React Wrapper for Data Set Meta Backbone View
  */
@@ -82,7 +84,7 @@ function DsMeta({
 }
 
 function Dialog({
-  datasets,
+  datasets: unsortedDatasets,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
   onClose: handleClose,
@@ -93,8 +95,8 @@ function Dialog({
   readonly onDataSetSelect?: (id: number) => void;
   readonly onClose: () => void;
   readonly onChange: () => void;
-}): JSX.Element {
-  // Whether to show DS meta dialog. Either false or DS ID
+}): JSX.Element | null {
+  // Whether to show DS meta dialog. Either false or Data Set ID
   const [showMeta, setShowMeta] = React.useState<false | number>(false);
 
   const isFirstRender = React.useRef<boolean>(true);
@@ -106,6 +108,42 @@ function Dialog({
   const canImport =
     !showTemplates &&
     !(userInfo as unknown as { isReadOnly: boolean }).isReadOnly;
+
+  const [sortConfig, setSortConfig] = useCachedState({
+    bucketName: 'sort-config',
+    cacheName: 'listOfDataSets',
+    bucketType: 'localStorage',
+    defaultValue: {
+      sortField: 'dateCreated',
+      ascending: false,
+    },
+  });
+
+  if (typeof sortConfig === 'undefined') return null;
+
+  const datasets = Array.from(unsortedDatasets).sort(
+    (
+      {
+        name: nameLeft,
+        timestampcreated: dateCreatedLeft,
+        uploadresult: uploadResultLeft,
+      },
+      {
+        name: nameRight,
+        timestampcreated: dateCreatedRight,
+        uploadresult: uploadResultRight,
+      }
+    ) =>
+      sortConfig.sortField === 'name'
+        ? compareValues(sortConfig.ascending, nameLeft, nameRight)
+        : sortConfig.sortField === 'dateCreated'
+        ? compareValues(sortConfig.ascending, dateCreatedLeft, dateCreatedRight)
+        : compareValues(
+            sortConfig.ascending,
+            uploadResultLeft?.timestamp ?? '',
+            uploadResultRight?.timestamp ?? ''
+          )
+  );
 
   return (
     <>
@@ -135,7 +173,6 @@ function Dialog({
           ],
         }}
       >
-        <br />
         {datasets.length === 0 ? (
           <p>
             {showTemplates
@@ -153,10 +190,56 @@ function Dialog({
               <thead>
                 <tr>
                   <th scope="col" className="pl-table-icon">
-                    {commonText('name')}
+                    <button
+                      type="button"
+                      className="fake-link"
+                      onClick={(): void =>
+                        setSortConfig({
+                          sortField: 'name',
+                          ascending: !sortConfig.ascending,
+                        })
+                      }
+                    >
+                      {commonText('name')}
+                      <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                    </button>
                   </th>
-                  <th scope="col">{commonText('created')}</th>
-                  <th scope="col">{commonText('uploaded')}</th>
+                  <th scope="col">
+                    <button
+                      type="button"
+                      className="fake-link"
+                      onClick={(): void =>
+                        setSortConfig({
+                          sortField: 'dateCreated',
+                          ascending: !sortConfig.ascending,
+                        })
+                      }
+                    >
+                      {commonText('created')}
+                      <SortIndicator
+                        fieldName="dateCreated"
+                        sortConfig={sortConfig}
+                      />
+                    </button>
+                  </th>
+                  <th scope="col">
+                    <button
+                      type="button"
+                      className="fake-link"
+                      onClick={(): void =>
+                        setSortConfig({
+                          sortField: 'dateUploaded',
+                          ascending: !sortConfig.ascending,
+                        })
+                      }
+                    >
+                      {commonText('uploaded')}
+                      <SortIndicator
+                        fieldName="dateUploaded"
+                        sortConfig={sortConfig}
+                      />
+                    </button>
+                  </th>
                   <td />
                 </tr>
               </thead>
