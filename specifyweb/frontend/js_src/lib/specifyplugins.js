@@ -8,7 +8,7 @@ import formsText from './localization/forms';
 
 var providers = [
     require('./components/usercollectionsplugin').default,
-    require('./latlongui').default,
+    require('./components/latlongui').default,
     require('./components/partialdateui').default,
     require('./collectionrelonetomanyplugin').default,
     require('./collectionrelonetooneplugin').default,

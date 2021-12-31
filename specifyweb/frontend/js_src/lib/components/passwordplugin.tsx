@@ -136,11 +136,18 @@ export default UIPlugin.extend(
       return this;
     },
     click() {
-      const onClose = () => dialog.remove();
-      const dialog = new Dialog({
+      const onClose = () => {
+        this.dialog?.remove();
+        this.dialog = undefined;
+      };
+      this.dialog = new Dialog({
         modelId: this.model.id,
         onClose,
       }).render();
+    },
+    remove() {
+      this.dialog?.remove();
+      UIPlugin.prototype.remove.call(this);
     },
   },
   { pluginsProvided: ['PasswordUI'] }

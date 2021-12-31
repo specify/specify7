@@ -129,11 +129,6 @@ const localityText = createDictionary({
     'ru-ru': 'Долгота',
     ca: 'Longitude',
   },
-  coords: {
-    'en-us': 'Coords',
-    'ru-ru': 'Координаты',
-    ca: 'Coords',
-  },
 });
 
 export default localityText;
