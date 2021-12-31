@@ -396,6 +396,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         )
           return;
 
+        // Turn PrepType->name into a fake picklist
         if (tableName === 'preptype' && fieldName === 'name')
           fetchPickListsQueue.push(
             fetch('/api/specify/preptype/?domainfilter=true&limit=100')

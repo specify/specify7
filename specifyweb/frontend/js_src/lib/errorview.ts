@@ -23,7 +23,7 @@ export const UnhandledErrorView = Backbone.View.extend({
         readonly
         style="
           width: 100%;
-          minHeight: 600px;
+          min-height: 600px;
         "
       >${this.options.response}</textarea>
     `;

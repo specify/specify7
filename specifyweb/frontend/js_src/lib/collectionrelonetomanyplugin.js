@@ -18,11 +18,11 @@ export default UIPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",
     events: {
         'click a.sp-rel-plugin-other-side': 'go',
-        'click a.sp-rel-plugin-remove': 'remove',
-        'click a.sp-rel-plugin-add': 'add'
+        'click button.sp-rel-plugin-remove': 'remove',
+        'click button.sp-rel-plugin-add': 'add'
     },
     remove: function(evt) {
-        var idx = this.$('a').filter(".sp-rel-plugin-remove").index(evt.currentTarget);
+        var idx = this.$('button').filter(".sp-rel-plugin-remove").index(evt.currentTarget);
         var toRemove = this.items.models[idx];
         this.model.dependentResources[this.side + 'siderels'].remove(toRemove);
         this.items.remove(toRemove);

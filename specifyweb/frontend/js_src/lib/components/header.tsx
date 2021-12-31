@@ -74,7 +74,9 @@ export function CollectionSelector(): JSX.Element {
       }
     >
       {collections?.available.map(([id, name]) => (
-        <option key={id}>{name}</option>
+        <option key={id} value={id}>
+          {name}
+        </option>
       ))}
     </select>
   );

@@ -234,8 +234,10 @@ export const push = (url: string): void =>
 
 export function switchCollection(
   collection: number,
-  nextUrl: string,
-  cancelCallback: () => void
+  nextUrl: string | undefined = undefined,
+  cancelCallback: () => void = (): void => {
+    /* Nothing */
+  }
 ): void {
   const cont = (): void =>
     void ajax('/context/collection/', {
