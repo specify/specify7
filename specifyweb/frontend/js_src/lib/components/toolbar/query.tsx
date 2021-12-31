@@ -14,6 +14,7 @@ import schema, { getModel, getModelById } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
 import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
+import { defined } from '../../types';
 import userInfo from '../../userinfo';
 import { DateElement, TableIcon, useTitle } from '../common';
 import type { MenuItem } from '../main';
@@ -97,7 +98,6 @@ function QueryList({
     },
   });
 
-  // eslint-disable-next-line unicorn/no-null
   if (typeof sortConfig === 'undefined') return null;
 
   const queries = Array.from(unsortedQueries).sort(
@@ -199,7 +199,7 @@ function ListOfTables({
             className="fake-link intercept-navigation"
           >
             <TableIcon tableName={tableName} tableLabel={false} />
-            {getModel(tableName).getLocalizedName()}
+            {defined(getModel(tableName)).getLocalizedName()}
           </a>
         </li>
       ))}

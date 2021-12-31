@@ -223,17 +223,17 @@ export class Relationship extends Field {
   }
 
   // Returns the related model for relationship fields.
-  public getRelatedModel() {
+  public getRelatedModel(): SpecifyModel | undefined {
     if (!this.isRelationship)
       throw new Error(`${this.dottedName} is not a relationship field`);
     return getModel(this.relatedModelName);
   }
 
   // Returns the field of the related model that is the reverse of this field.
-  public getReverse() {
+  public getReverse(): Relationship | undefined {
     const relModel = this.getRelatedModel();
-    return (
-      this.otherSideName && relModel && relModel.getField(this.otherSideName)
-    );
+    return this.otherSideName
+      ? relModel?.getRelationship(this.otherSideName)
+      : undefined;
   }
 }

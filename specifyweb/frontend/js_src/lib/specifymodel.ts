@@ -162,7 +162,9 @@ export default class SpecifyModel {
 
     if (splitName.length === 1 || typeof field === 'undefined') return field;
     else if (field instanceof Relationship)
-      return field.getRelatedModel().getField(splitName.slice(1).join('.'));
+      return defined(field.getRelatedModel()).getField(
+        splitName.slice(1).join('.')
+      );
     else throw new Error('Field is not a relationship');
   }
 
@@ -223,6 +225,6 @@ export default class SpecifyModel {
     const up = this.getScopingRelationship();
     return typeof up === 'undefined'
       ? undefined
-      : [...defined(up.getRelatedModel().getScopingPath()), up.name];
+      : [...defined(up.getRelatedModel()?.getScopingPath()), up.name];
   }
 }

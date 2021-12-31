@@ -40,7 +40,7 @@ export function TreeSelectDialog({
         ...(paleoDiscs.has(type) ? treesForPaleo : []),
       ])
       .then((trees) =>
-        Object.fromEntries(trees.map((tree) => [tree, getModel(tree)]))
+        Object.fromEntries(trees.map((tree) => [tree, defined(getModel(tree))]))
       )
       .then((trees) => (destructorCalled ? undefined : setTrees(trees)))
       .catch(console.error);

@@ -23,7 +23,7 @@ export default Backbone.View.extend({
         __name__: "QueryCbxSearch",
         className: "querycbx-dialog-search",
         events: {
-            'click .querycbx-search-results a': 'select',
+            'click .querycbx-search-results button': 'select',
             'submit form': 'formSubmit',
         },
         initialize: function(options) {
@@ -110,7 +110,11 @@ export default Backbone.View.extend({
         },
     displayResults: function(formattedResults) {
         const items = _.sortBy( formattedResults.map((formatted, i) => ({
-            dom: $('<li>').append($('<a>').text(formatted).data('result-index', i)[0]),
+            dom: $('<li>').append(
+                $('<button>', {type:'button',class:'fake-link'})
+                    .text(formatted)
+                    .data('result-index', i)
+                [0]),
             formatted: formatted
         })), 'formatted');
 
