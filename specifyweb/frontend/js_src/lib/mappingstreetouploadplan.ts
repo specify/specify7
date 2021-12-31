@@ -23,8 +23,6 @@ import type { DataModelFieldWritable } from './wbplanviewmodelfetcher';
 import { tableIsTree } from './wbplanviewmodelhelper';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 
-// TODO: make these functions type safe
-
 interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode | ColumnDef> {}
 

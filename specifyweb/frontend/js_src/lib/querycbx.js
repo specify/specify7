@@ -23,6 +23,7 @@ import queryText from './localization/query';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import autocomplete from './autocomplete';
+import {formatList} from "./components/internationalization";
 
 let typesearches;
 const treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "taxon"];
@@ -320,7 +321,7 @@ export default Backbone.View.extend({
         var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
         var fieldTitles = searchFields.map(
             f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
-        control.attr('title', queryText('queryBoxDescription')(fieldTitles.join(', ')));
+        control.attr('title', queryText('queryBoxDescription')(formatList(fieldTitles)));
 
         if (!this.readOnly) {
             this.autocomplete = autocomplete({

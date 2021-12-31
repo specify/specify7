@@ -9,6 +9,7 @@ import treeBusinessRules from './treebusinessrules';
 import rules from './businessruledefs';
 
 import formsText from './localization/forms';
+import {formatList} from "./components/internationalization";
 
 var enabled = true;
 
@@ -166,7 +167,12 @@ var enabled = true;
     var combineUniquenessResults = function(deferredResults) {
         return Q.all(deferredResults).then(function(results) {
             var invalids = _.filter(results, function(result) { return !result.valid; });
-            return (invalids.length < 1) ? {valid: true} : {valid: false, reason: _(invalids).pluck('reason').join(', ')};
+            return invalids.length < 1
+                ? {valid: true}
+                : {
+                    valid: false,
+                    reason: formatList(_(invalids).pluck('reason'))
+                };
         });
     };
 
@@ -177,8 +183,7 @@ var enabled = true;
         return fldInfo.length > 1 ?
             formsText('valuesOfMustBeUniqueToField')(
               fieldName,
-              fldInfo.slice(0,-1).map(fld=>fld.getLocalizedName()).join(', '),
-              fldInfo.slice(-1)[0].getLocalizedName(),
+              formatList(fldInfo.map(fld=>fld.getLocalizedName())),
             ) :
             formsText('valueMustBeUniqueToField')(fieldName);
     };

@@ -240,7 +240,6 @@ function LatLongUi({
   );
 }
 
-// TODO: move tagName and className attributes into react component
 const View = createBackboneView(LatLongUi, {
   tagName: 'fieldset',
   className: 'specifyplugin-latlonui',

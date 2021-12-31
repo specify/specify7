@@ -8,6 +8,7 @@ import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import ajax from '../../ajax';
 import { useTitle } from '../common';
+import { LANGUAGE } from '../../localization/utils';
 
 function ChangeLanguage({
   onClose: handleClose,
@@ -56,7 +57,7 @@ function ChangeLanguage({
           <br />
           <select
             name="language"
-            value={document.documentElement.lang}
+            value={LANGUAGE}
             onChange={({ target }): void => target.closest('form')?.submit()}
           >
             {Object.entries(languages).map(

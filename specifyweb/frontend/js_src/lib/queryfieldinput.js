@@ -9,6 +9,7 @@ import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
 import SaveBlockers from './saveblockers';
 import queryText from './localization/query';
 import commonText from './localization/common';
+import {formatList} from "./components/internationalization";
 
 var FieldInputUI = Backbone.View.extend({
         __name__: "FieldInputUI",
@@ -176,7 +177,7 @@ var FieldInputUI = Backbone.View.extend({
             this.updateValues(this.values);
         },
         renderValues: function() {
-            var text = this.values.length ? this.values.join(', ') : queryText('addValuesHint');
+            var text = this.values.length ? formatList(this.values) : queryText('addValuesHint');
             this.$('.in-values').text(text);
         },
         keydown: function(event) {

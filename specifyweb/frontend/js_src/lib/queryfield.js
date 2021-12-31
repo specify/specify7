@@ -10,6 +10,8 @@ import QueryFieldSpec from './queryfieldspec';
 import QueryFieldInputUI from './queryfieldinput';
 import queryText from './localization/query';
 import commonText from './localization/common';
+import {LANGUAGE} from "./localization/utils";
+import {dateParts} from "./components/internationalization";
 
 var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -180,13 +182,9 @@ export default Backbone.View.extend({
                         )
                         .catch(console.error)
                 if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
-                    const localized = {
-                        year: commonText('year'),
-                        month: commonText('month'),
-                        day: commonText('day'),
-                    }[this.fieldSpec.datePart];
+                    const localized = new Intl.DisplayNames(LANGUAGE, {type: 'dateTimeField'})
                     $('<a class="field-label-datepart">')
-                        .text(`(${localized})`)
+                        .text(`(${dateParts[this.fieldSpec.datePart]})`)
                         .appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {
@@ -267,9 +265,9 @@ export default Backbone.View.extend({
             this.$('.datepart-select')[0].innerHTML = Object.entries({
                 extract: queryText('extract'),
                 fullDate: commonText('fullDate'),
-                year: commonText('year'),
-                month: commonText('month'),
-                day: commonText('day'),
+                year: dateParts.year,
+                month: dateParts.month,
+                day: dateParts.day,
             }).map(([value, label])=>`
                 <option value="${value}">${label}</option>
             `).join('');

@@ -97,26 +97,6 @@ export const tableIconEmpty = (
   <span className="table-icon table-icon-empty" aria-hidden={true} />
 );
 
-export function DateElement({
-  date,
-  fallback = undefined,
-}: {
-  readonly date: string | undefined;
-  readonly fallback?: React.ReactNode;
-}): JSX.Element {
-  if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
-    return <>{fallback}</>;
-  const dateObject = new Date(date);
-  return (
-    <time
-      dateTime={dateObject.toISOString()}
-      title={dateObject.toLocaleString()}
-    >
-      {dateObject.toDateString()}
-    </time>
-  );
-}
-
 const idStore: R<number> = {};
 
 export function useId(prefix: string): (suffix: string) => string {

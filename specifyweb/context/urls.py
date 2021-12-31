@@ -1,15 +1,14 @@
 from django.conf.urls import include, url
 
+from . import views
 from ..attachment_gw.views import get_settings as attachment_settings
 from ..report_runner.views import get_status as report_runner_status
-from . import views
 
 urlpatterns = [
     url(r'^login/$', views.api_login),
     url(r'^collection/$', views.collection),
     url(r'^user_collection_access/(?P<userid>\d+)/$', views.user_collection_access),
     url(r'^language/$', views.languages),
-    url(r'^language/(?P<language_code>[\w-]+)/$', views.language),
     url(r'^schema/language/$', views.schema_language),
 
     url(r'^api_endpoints.json$', views.api_endpoints),

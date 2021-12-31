@@ -630,11 +630,6 @@ def languages(request):
         return set_language(request)
 
 @require_GET
-def language(request, language_code):
-    """Get Information for a single language."""
-    return JsonResponse(get_language_info(language_code))
-
-@require_GET
 def schema_language(request):
     """Get list of schema languages, countries and variants."""
     schema_languages = get_schema_languages()

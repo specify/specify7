@@ -6,6 +6,7 @@ import ajax, { formData } from '../ajax';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { ModalDialog } from './modaldialog';
+import { formatNumber } from './internationalization';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -96,7 +97,11 @@ export default function Notifications(): JSX.Element {
         onClick={(): void => setIsOpen((isOpen) => !isOpen)}
         ref={buttonRef}
       >
-        {commonText('notifications')(notifications?.length ?? '...')}
+        {commonText('notifications')(
+          typeof notifications?.length === 'number'
+            ? formatNumber(notifications.length)
+            : '...'
+        )}
       </button>
       {typeof notifications !== 'undefined' && isOpen && (
         <ModalDialog

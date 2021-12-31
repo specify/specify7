@@ -23,6 +23,7 @@ import { handlePromiseReject } from './wbplanview';
 import ajax from '../ajax';
 import { JavaType, RelationshipType } from '../specifyfield';
 import { useTitle } from './common';
+import { LANGUAGE } from '../localization/utils';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -131,22 +132,12 @@ function SchemaConfigWrapper({
       )
       .then(async (languages) =>
         // Get translated language names
-        Promise.all(
-          languages.map(async (language) =>
-            ajax<{ readonly name_local: string }>(
-              `/context/language/${language.replace('_', '-')}/`,
-              { headers: { Accept: 'application/json' } },
-              { strict: false }
-            )
-              .then(({ data }) => [
-                language,
-                `${data.name_local}${
-                  language.split('_')[1] ? ` (${language.split('_')[1]})` : ''
-                }`,
-              ])
-              .catch(() => [language, language])
-          )
-        )
+        languages.map(async (language) => [
+          language,
+          new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+            language.replace('_', '-')
+          ),
+        ])
       )
       .then((languages) => {
         if (destructorCalled) return;

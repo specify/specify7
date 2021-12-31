@@ -10,16 +10,20 @@ import userInfo from './userinfo';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
 import React from 'react';
+import {formatNumber, getRelativeDate} from "./components/internationalization";
+import {LANGUAGE} from "./localization/utils";
 
+// TODO: rewrite this to react
+// TODO: add sorting to WbsDialog
 function dateElement(date, fallback = '') {
   if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
     return fallback;
   const dateObject = new Date(date);
   return `<time
     datetime="${dateObject.toISOString()}"
-    title="${dateObject.toLocaleString()}"
+    title="${dateObject.toLocaleString(LANGUAGE)}"
   >
-    ${dateObject.toDateString()}
+    ${getRelativeDate(dateObject)}
   </time>`;
 }
 
@@ -115,8 +119,8 @@ export const DataSetMeta = Backbone.View.extend({
         >${this.dataset.remarks ?? ''}</textarea>
       </label><br><br>
       <b>${commonText('metadataInline')}</b><br>
-      ${wbText('numberOfRows')} <i>${this.getRowCount()}</i><br>
-      ${wbText('numberOfColumns')} <i>${this.dataset.columns.length}</i><br>
+      ${wbText('numberOfRows')} <i>${formatNumber(this.getRowCount())}</i><br>
+      ${wbText('numberOfColumns')} <i>${formatNumber(this.dataset.columns.length)}</i><br>
       ${wbText('created')} <i>${dateElement(
       this.dataset.timestampcreated
     )}</i><br>

@@ -12,6 +12,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import userInfo from './userinfo.ts';
 import {QueryToolbarView} from './components/toolbar/query';
+import {formatNumber} from "./components/internationalization";
 
 
 export default Backbone.View.extend({
@@ -113,7 +114,7 @@ export default Backbone.View.extend({
 
             recordSet.getRelatedObjectCount('recordsetitems').done((count)=>
                 $('.item-count', entry)
-                    .text(`(${count})`)
+                    .text(`(${formatNumber(count)})`)
                     .attr('title',commonText('recordCount'))
                     .attr('aria-label',count)
                     .css('visibility', 'visible')

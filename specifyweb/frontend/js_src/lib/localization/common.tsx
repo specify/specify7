@@ -304,21 +304,6 @@ const commonText = createDictionary({
     'ru-ru': 'Полная дата',
     ca: 'Full Date',
   },
-  year: {
-    'en-us': 'Year',
-    'ru-ru': 'Год',
-    ca: 'Year',
-  },
-  month: {
-    'en-us': 'Month',
-    'ru-ru': 'Месяц',
-    ca: 'Month',
-  },
-  day: {
-    'en-us': 'Day',
-    'ru-ru': 'День',
-    ca: 'Day',
-  },
   view: {
     'en-us': 'View',
     'ru-ru': 'Смотреть',

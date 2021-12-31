@@ -712,7 +712,6 @@ export function getMappingLineData({
                 })) &&
               /*
                * Skip -to-many inside -to-many
-               * TODO: remove this once upload plan is ready
                */
               !isTooManyInsideOfTooMany(
                 relationshipType,

@@ -5,10 +5,11 @@ import _ from 'underscore';
 import Backbone from './backbone';
 import Q from 'q';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import remoteprefs from './remoteprefs';
 import treeText from './localization/tree';
 import commonText from './localization/common';
+import {formatNumber} from "./components/internationalization";
 
 var TreeNodeView = Backbone.View.extend({
     __name__: "TreeNodeView",
@@ -164,7 +165,7 @@ var TreeNodeView = Backbone.View.extend({
         renderStats: function() {
             if (this.stats != null && this.acceptedId == null) {
                 const childCOs = this.stats.all - this.stats.direct;
-                this.$('.tree-node-cell .stats').text(` (${this.stats.direct + (childCOs > 0 ? ', ' + childCOs : '')})`);
+                this.$('.tree-node-cell .stats').text(` (${formatNumber(this.stats.direct)}${childCOs > 0 ? ', ' + formatNumber(childCOs) : ''})`);
             }
         },
         openPath: function(path) {

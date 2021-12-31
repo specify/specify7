@@ -16,11 +16,12 @@ import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
-import { DateElement, TableIcon, useTitle } from '../common';
+import { TableIcon, useTitle } from '../common';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
+import { DateElement } from '../internationalization';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',

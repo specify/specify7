@@ -13,6 +13,7 @@ import { getValidationAttributes, resolveParser } from '../uiparse';
 import UIPlugin from '../uiplugin';
 import createBackboneView from './reactbackboneextend';
 import { defined, RR } from '../types';
+import { dateParts } from './internationalization';
 
 function isInputSupported(type: string) {
   const input = document.createElement('input');
@@ -193,14 +194,14 @@ function PartialDateUi({
           >
             <option value="full">{commonText('fullDate')}</option>
             <option value="month-year">{formsText('monthYear')}</option>
-            <option value="year">{commonText('year')}</option>
+            <option value="year">{dateParts.year}</option>
           </select>
         </label>
       )}
       <label>
         <span className="sr-only">
           {precision === 'year'
-            ? commonText('year')
+            ? dateParts.year
             : precision === 'month-year'
             ? formsText('monthYear')
             : commonText('fullDate')}
