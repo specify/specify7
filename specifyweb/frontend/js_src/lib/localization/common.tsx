@@ -13,9 +13,9 @@ import { createDictionary, header, jsxHeader } from './utils';
 
 const commonText = createDictionary({
   specifySeven: {
-    'en-us': 'Specify&nbsp7',
-    'ru-ru': 'Specify&nbsp7',
-    ca: 'Specify&nbsp7',
+    'en-us': 'Specify 7',
+    'ru-ru': 'Specify 7',
+    ca: 'Specify 7',
   },
   pageNotFound: {
     'en-us': 'Page Not Found',

@@ -1,37 +1,20 @@
 "use strict";
 
-import '../css/welcome.css';
-
 import $ from 'jquery';
 import _ from 'underscore';
 import d3 from 'd3';
 
-import Backbone from './backbone';
-import * as app from './specifyapp';
 import schema from './schema';
-import remotePrefs from './remoteprefs';
-import systemInfo from './systeminfo';
-import aboutspecify from './templates/aboutspecify.html';
 import welcomeText from './localization/welcome';
-import commonText from './localization/common';
 
-const DO_TAXON_TILES = remotePrefs['sp7.doTaxonTiles'] == "true";
-const defaultWelcomeScreenImage = '/static/img/icons_as_background_small.png';
-const welcomeScreenUrl =
-  remotePrefs['sp7.welcomeScreenUrl'] || defaultWelcomeScreenImage;
-
-function makeTreeMap() {
-  const treeContainer = $('#welcome-screen-content');
-  treeContainer[0].classList.add('taxon-treemap');
-
-  const width = treeContainer.width();
-  const height = treeContainer.height();
+export default function makeTreeMap(container) {
+  container.classList.add('taxon-treemap');
 
   const color = d3.scale.category20c();
 
   const treemap = d3.layout
     .treemap()
-    .size([width, height])
+    .size([container.clientWidth, container.clientHeight])
     .sort(function (a, b) {
       return b.id - a.id;
     })
@@ -39,13 +22,12 @@ function makeTreeMap() {
       return d.count;
     });
 
-  const div = d3
-    .select('#welcome-screen-content')
+  const div = d3.select(container)
     .append('div')
     .attr('class', 'treemap')
     .style('position', 'relative')
-    .style('width', width + 'px')
-    .style('height', height + 'px');
+    .style('width', `${container.clientWidth}px`)
+    .style('height', `${container.clientHeight}px`)
 
   const genusTreeDefItem = new schema.models.TaxonTreeDefItem.LazyCollection({
     filters: { name: 'Genus' },
@@ -118,23 +100,6 @@ function makeTreeMap() {
   });
 }
 
-function drawWelcomeScreen() {
-  const welcomeScreen = document.getElementById('welcome-screen-content');
-  fetch(welcomeScreenUrl, { method: 'HEAD' })
-    .then(({ headers }) =>
-      draw(headers.get('Content-Type')?.startsWith('image'), welcomeScreenUrl)
-    )
-    .catch(() => draw(true, defaultWelcomeScreenImage));
-
-  function draw(isImage, url) {
-    welcomeScreen.classList.add(
-      isImage ? 'welcome-screen-image' : 'welcome-screen-iframe'
-    );
-    welcomeScreen.innerHTML = isImage
-      ? `<img src="${url}" alt="">`
-      : `<iframe src="${url}"></iframe>`;
-  }
-}
 
 function position() {
   this.style('left', function (d) {
@@ -217,51 +182,4 @@ function buildTree(data) {
   const root = roots[0];
   pullUp(root);
   return [root, thres];
-}
-
-const WelcomeView = Backbone.View.extend({
-  __name__: 'WelcomeView',
-  className: 'specify-welcome',
-  title: welcomeText('pageTitle'),
-  events: {
-    'click #about-specify': 'showAboutDialog',
-  },
-  render: function () {
-    $(`
-      <div id="welcome-screen-content"></div>
-
-      <p class="welcome-footer">
-        <a href="#" id="about-specify" title="${welcomeText('aboutSpecify')}">
-          <img
-            src="/static/img/specify_7_small.png"
-            alt="${welcomeText('aboutSpecify')}"
-          >
-        </a>
-      </p>
-    `).appendTo(this.$el);
-
-    _.defer(DO_TAXON_TILES ? makeTreeMap : drawWelcomeScreen);
-
-    return this;
-  },
-  showAboutDialog: function (evt) {
-    evt.preventDefault();
-    $(
-      aboutspecify({
-        ...systemInfo,
-        welcomeText,
-        commonText,
-      })
-    ).dialog({
-      title: welcomeText('aboutSpecifyDialogTitle'),
-      width: 480,
-      close: function () {
-        $(this).remove();
-      },
-    });
-  },
-});
-
-export default function (){
-  app.setCurrentView(new WelcomeView());
 }

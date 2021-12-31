@@ -25,8 +25,8 @@ const createBackboneView = <
 >(
   Component: (props: COMPONENT_PROPS) => JSX.Element | null,
   {
-    className = '',
-    tagName = 'div',
+    className,
+    tagName,
     silentErrors = false,
     getComponentProps,
   }: {

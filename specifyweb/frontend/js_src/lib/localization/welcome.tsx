@@ -4,6 +4,7 @@
  * @module
  */
 
+import React from 'react';
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
@@ -38,24 +39,45 @@ const welcomeText = createDictionary({
     ca: 'About Specify',
   },
   fullAddress: {
-    'en-us': `
-      Specify Collections Consortium<br>
-      Biodiversity Institute<br>
-      University of Kansas<br>
-      1345 Jayhawk Blvd.<br>
-      Lawrence, KS 66045 USA`,
-    'ru-ru': `
-      Specify Collections Consortium<br>
-      Biodiversity Institute<br>
-      University of Kansas<br>
-      1345 Jayhawk Blvd.<br>
-      Lawrence, KS 66045 USA`,
-    ca: `
-      Specify Collections Consortium<br>
-      Biodiversity Institute<br>
-      University of Kansas<br>
-      1345 Jayhawk Blvd.<br>
-      Lawrence, KS 66045 USA`,
+    'en-us': (
+      <>
+        Specify Collections Consortium
+        <br />
+        Biodiversity Institute
+        <br />
+        University of Kansas
+        <br />
+        1345 Jayhawk Blvd.
+        <br />
+        Lawrence, KS 66045 USA
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Specify Collections Consortium
+        <br />
+        Biodiversity Institute
+        <br />
+        University of Kansas
+        <br />
+        1345 Jayhawk Blvd.
+        <br />
+        Lawrence, KS 66045 USA
+      </>
+    ),
+    ca: (
+      <>
+        Specify Collections Consortium
+        <br />
+        Biodiversity Institute
+        <br />
+        University of Kansas
+        <br />
+        1345 Jayhawk Blvd.
+        <br />
+        Lawrence, KS 66045 USA
+      </>
+    ),
   },
   disclosure: {
     'en-us': `

@@ -1,9 +1,7 @@
 import { load } from './initialcontext';
 import * as querystring from './querystring';
 
-const systemInfo = {
-  user_agent: window.navigator.userAgent,
-} as unknown as SystemInfo;
+const systemInfo = {} as SystemInfo;
 
 type SystemInfo = {
   version: string;
