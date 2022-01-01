@@ -4,4 +4,4 @@ const Router = Backbone.Router.extend({
   __name__: 'SpecifyRouter',
 });
 
-export default new Router();
+export default new Router() as Backbone.Router;

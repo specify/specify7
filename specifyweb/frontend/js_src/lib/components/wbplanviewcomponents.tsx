@@ -11,13 +11,13 @@ import type { IR, R, RA } from '../types';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
 import { useId } from './common';
 import type {
-  CustomSelectElementOptions,
+  CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { AutoMapperSuggestion, MappingType } from './wbplanviewmapper';
+import type { AutoMapperSuggestion } from './wbplanviewmapper';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -32,11 +32,10 @@ export type HtmlGeneratorFieldData = {
 
 type MappingLineBaseProps = {
   readonly lineData: RA<MappingElementProps>;
-  readonly mappingType: MappingType;
   readonly headerName: string;
   readonly isFocused: boolean;
   readonly onFocus: () => void;
-  readonly onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  readonly onKeyDown: (key: string) => void;
   readonly onClearMapping: () => void;
   readonly readonly: boolean;
 };
@@ -191,7 +190,7 @@ export function MappingLineComponent({
   const lineRef = React.useRef<HTMLDivElement>(null);
 
   React.useLayoutEffect(() => {
-    if (isFocused && !lineRef.current?.contains(document.activeElement))
+    if (isFocused && lineRef.current?.contains(document.activeElement) !== true)
       lineRef.current?.focus();
   }, [isFocused]);
 
@@ -224,12 +223,14 @@ export function MappingLineComponent({
       >
         {headerName}
       </div>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         className="v-center wbplanview-mapping-line-elements"
         role="list"
+        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
         onClick={handleFocus}
-        onKeyDown={handleKeyDown}
+        onKeyDown={({ key }): void => handleKeyDown(key)}
         ref={lineRef}
         title={wbText('columnMapping')}
         aria-labelledby={id('header')}
@@ -276,7 +277,7 @@ const getFieldGroupName = (isHidden: boolean, isRequired: boolean): string =>
 
 export function MappingElement(props: MappingElementProps): JSX.Element {
   const fieldGroups = Object.entries(props.fieldsData).reduce<
-    R<CustomSelectElementOptions>
+    R<R<CustomSelectElementOptionProps>>
   >((fieldGroups, [fieldName, { isRequired, isHidden, ...rest }]) => {
     const groupName = getFieldGroupName(isHidden ?? false, isRequired ?? false);
     fieldGroups[groupName] ??= {};

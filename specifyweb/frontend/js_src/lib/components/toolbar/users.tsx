@@ -5,10 +5,10 @@ import * as navigation from '../../navigation';
 import schema from '../../schema';
 import type { IR } from '../../types';
 import userInfo from '../../userinfo';
+import { useTitle } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { useTitle } from '../common';
 
 function Users({
   onClose: handleClose,
@@ -29,7 +29,10 @@ function Users({
           ? undefined
           : setUsers(
               Object.fromEntries(
-                users.models.map((user) => [user.get('name'), user.viewUrl()])
+                users.models.map((user) => [
+                  user.get('name') as string,
+                  user.viewUrl(),
+                ])
               )
             )
       );
@@ -50,7 +53,7 @@ function Users({
         buttons: [
           {
             text: commonText('new'),
-            click: () => {
+            click: (): void => {
               handleClose();
               navigation.go('view/specifyuser/new/');
             },

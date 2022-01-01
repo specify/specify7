@@ -10,11 +10,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Backbone from '../backbone';
-import ErrorBoundary from './errorboundary';
 import type { IR } from '../types';
+import ErrorBoundary from './errorboundary';
 
 type ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS> = {
-  readonly el: HTMLElement;
+  readonly el: Readonly<HTMLElement>;
   readonly remove: () => void;
   readonly options: CONSTRUCTOR_PROPS;
 };

@@ -1,12 +1,12 @@
 import React from 'react';
 
+import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import userInfo from '../userinfo';
 import { useId } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { SpecifyResource } from '../legacytypes';
 
 async function doSave(
   query: SpecifyResource,
@@ -18,7 +18,7 @@ async function doSave(
 
   if (isSaveAs) clonedQuery.set('specifyuser', userInfo.resource_uri);
   return new Promise((resolve) => {
-    clonedQuery.save().done(() => resolve(clonedQuery.id as number));
+    clonedQuery.save().done(() => resolve(clonedQuery.id));
   });
 }
 
@@ -32,13 +32,14 @@ function QuerySaveDialog({
   readonly onClose: (queryId: number) => void;
 }): JSX.Element {
   const id = useId('id');
-  const [name, setName] = React.useState<string>(query.get('name'));
+  const [name, setName] = React.useState<string>(query.get('name') as string);
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (query.isNew() || isSaveAs) return;
     setIsLoading(true);
     doSave(query, name, isSaveAs).then(handleClose).catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return isLoading ? (

@@ -1,14 +1,14 @@
 import * as React from 'react';
 
+import ajax from '../../ajax';
 import csrfToken from '../../csrftoken';
 import commonText from '../../localization/common';
-import type { IR } from '../../types';
+import { LANGUAGE } from '../../localization/utils';
+import type { RA } from '../../types';
+import { useTitle } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import ajax from '../../ajax';
-import { useTitle } from '../common';
-import { LANGUAGE } from '../../localization/utils';
 
 function ChangeLanguage({
   onClose: handleClose,
@@ -19,20 +19,29 @@ function ChangeLanguage({
 
   const [languages, setLanguages] = React.useState<
     | undefined
-    | IR<{
-        readonly name_local: string;
+    | RA<{
+        readonly nameLocal: string;
         readonly code: string;
       }>
   >(undefined);
 
   React.useEffect(() => {
     ajax<
-      IR<{
+      RA<{
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         readonly name_local: string;
         readonly code: string;
       }>
     >('/context/language/', { headers: { Accept: 'application/json' } })
-      .then(({ data }) => setLanguages(data))
+      .then(({ data }) =>
+        setLanguages(
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          Object.entries(data).map(([code, { name_local }]) => ({
+            nameLocal: name_local,
+            code,
+          }))
+        )
+      )
       .catch(console.error);
   }, []);
 
@@ -60,13 +69,11 @@ function ChangeLanguage({
             value={LANGUAGE}
             onChange={({ target }): void => target.closest('form')?.submit()}
           >
-            {Object.entries(languages).map(
-              ([code, { name_local, code: shortCode }]) => (
-                <option key={code} value={code}>
-                  {name_local} ({shortCode})
-                </option>
-              )
-            )}
+            {languages.map(({ nameLocal, code }) => (
+              <option key={code} value={code}>
+                {nameLocal} ({code})
+              </option>
+            ))}
           </select>
         </label>
         <input type="submit" className="sr-only" />

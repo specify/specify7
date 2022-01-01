@@ -1,4 +1,4 @@
-/*
+/**
  * Workbench Upload results side bar with table counts
  *
  * @module
@@ -10,10 +10,10 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import type { IR } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
-import type { IR } from '../types';
 
 function TableResults({
   tableName,

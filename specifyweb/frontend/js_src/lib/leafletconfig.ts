@@ -6,9 +6,9 @@
  *
  */
 
-import type { IR, RA, RR } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import L from './leafletextend';
+import type { IR, RA, RR } from './types';
 
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json';

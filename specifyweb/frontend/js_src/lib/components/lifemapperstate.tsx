@@ -4,9 +4,9 @@ import { generateReducer } from 'typesafe-reducer';
 
 import { SN_SERVICES } from '../lifemapperconfig';
 import type { Actions, MapInfo } from '../lifemapperreducer';
+import type { IR } from '../types';
 import { Badge, LifemapperMap } from './lifemappercomponents';
 import { ModalDialog } from './modaldialog';
-import type { IR } from '../types';
 
 export type MainState = State<
   'MainState',

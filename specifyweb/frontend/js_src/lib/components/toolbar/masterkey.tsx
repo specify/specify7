@@ -82,7 +82,8 @@ function MasterKey({
                 ? setError(commonText('incorrectPassword'))
                 : setMasterKey(data)
             )
-            .catch((error) => setError(error.toString()))
+            // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+            .catch((error: Error) => setError(error.message))
             .finally(() => {
               setIsLoading(false);
             });
@@ -104,6 +105,18 @@ function MasterKey({
       </form>
     </ModalDialog>
   ) : (
+    <ShowKey masterKey={masterKey} onClose={handleClose} />
+  );
+}
+
+function ShowKey({
+  onClose: handleClose,
+  masterKey,
+}: {
+  readonly onClose: () => void;
+  readonly masterKey: string;
+}): JSX.Element {
+  return (
     <ModalDialog
       properties={{
         close: handleClose,

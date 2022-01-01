@@ -5,7 +5,6 @@
  * @module
  */
 
-import type { IR, R, RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
@@ -16,6 +15,7 @@ import {
   getField,
   getLocalityData,
 } from './leafletutils';
+import type { IR, R, RA } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
   findSubArray,

@@ -8,10 +8,10 @@
  * @module
  */
 
+import ajax from './ajax';
 import type { CacheDefinitions } from './cachedefinitions';
 import { safeToTrim } from './cachedefinitions';
 import type { R, RA } from './types';
-import ajax from './ajax';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =

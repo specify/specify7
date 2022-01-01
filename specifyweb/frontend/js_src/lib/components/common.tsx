@@ -9,10 +9,10 @@ import React from 'react';
 
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
+import { setTitle } from '../specifyapp';
 import type { R } from '../types';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
-import { setTitle } from '../specifyapp';
 
 const MAX_HUE = 360;
 
@@ -111,11 +111,11 @@ export function useId(prefix: string): (suffix: string) => string {
     idStore[resolvedPrefix] += 1;
   }
 
-  return (suffix = '') =>
+  return (suffix = ''): string =>
     `${resolvedPrefix}${id.current}${suffix ? `-${suffix}` : ''}`;
 }
 
-export function useTitle(title: string) {
+export function useTitle(title: string): void {
   // Reset title after component is destroyed
   React.useEffect(() => {
     const initialTitle = document.body.title;

@@ -2,28 +2,25 @@ import '../../css/schemaconfig.css';
 
 import React from 'react';
 
+import ajax from '../ajax';
 import { getAggregators, getFormatters } from '../dataobjformatters';
 import commonText from '../localization/common';
+import { LANGUAGE } from '../localization/utils';
 import * as navigation from '../navigation';
 import schema from '../schema';
 import { formatAggregators } from '../schemaconfighelper';
+import type { JavaType, RelationshipType } from '../specifyfield';
 import type { IR, RA } from '../types';
 import * as UiFormatters from '../uiformatters';
 import { fetchingParameters } from '../wbplanviewmodelconfig';
 import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
 import { webLinksDefs } from '../weblinkbutton';
+import { useTitle } from './common';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import type {
-  NewSpLocaleItemStr as NewSpLocaleItemString,
-  SpLocaleItemStr as SpLocaleItemString,
-} from './schemaconfig';
+import type { NewSpLocaleItemString, SpLocaleItemString } from './schemaconfig';
 import { SchemaConfig } from './schemaconfig';
 import { handlePromiseReject } from './wbplanview';
-import ajax from '../ajax';
-import { JavaType, RelationshipType } from '../specifyfield';
-import { useTitle } from './common';
-import { LANGUAGE } from '../localization/utils';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -43,6 +40,7 @@ export type CommonTableFields = {
   readonly createdbyagent: string;
   readonly modifiedbyagent: string | null;
   readonly version: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly resource_uri: string;
 };
 
@@ -130,7 +128,7 @@ function SchemaConfigWrapper({
           )
         )
       )
-      .then(async (languages) =>
+      .then((languages) =>
         // Get translated language names
         languages.map(
           (language) =>
@@ -143,8 +141,9 @@ function SchemaConfigWrapper({
         )
       )
       .then((languages) => {
-        if (destructorCalled) return;
+        if (destructorCalled) return undefined;
         setLanguages(Object.fromEntries(languages));
+        return undefined;
       })
       .catch(handlePromiseReject);
 
@@ -168,13 +167,11 @@ function SchemaConfigWrapper({
         .map(([tableName]) => tableName.toLowerCase())
     );
 
-    fetch(
-      '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0'
+    ajax<{ readonly objects: RA<SpLocaleContainer> }>(
+      '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0',
+      { headers: { Accept: 'application/json' } }
     )
-      .then<{ readonly objects: RA<SpLocaleContainer> }>(async (response) =>
-        response.json()
-      )
-      .then(({ objects }) =>
+      .then(({ data: { objects } }) =>
         // Exclude system tables
         objects.filter(({ name }) => !excludedTables.has(name))
       )
@@ -184,6 +181,7 @@ function SchemaConfigWrapper({
       )
       .then((tables) => {
         if (!destructorCalled) setTables(tables);
+        return undefined;
       })
       .catch(handlePromiseReject);
 

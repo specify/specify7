@@ -79,7 +79,9 @@ function TemplateSelection({
           handleSelect(
             uploadplan,
             headers.length === 0 && Array.isArray(visualorder)
-              ? visualorder.map((visualCol) => columns[visualCol])
+              ? (visualorder as RA<number>).map(
+                  (visualCol) => columns[visualCol]
+                )
               : headers
           )
         );

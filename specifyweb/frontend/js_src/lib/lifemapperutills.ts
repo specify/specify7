@@ -1,6 +1,6 @@
-import type { RR } from './types';
 import { snFrontendServer, snServer } from './lifemapperconfig';
 import lifemapperText from './localization/lifemapper';
+import type { RR } from './types';
 
 export const fetchLocalScientificName = async (
   model: any,

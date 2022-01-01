@@ -8,7 +8,7 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
-import { RA } from './types';
+import type { RA } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import {
   getIndexFromReferenceItemName,

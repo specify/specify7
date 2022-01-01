@@ -5,7 +5,6 @@
  * @module
  */
 
-import type { IR, RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
@@ -13,12 +12,16 @@ import {
   mappingLocalityColumns,
   requiredLocalityColumns,
 } from './leafletconfig';
+import type { IR, RA } from './types';
 import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 
-export type Field<T> = { readonly headerName: string; readonly value: T };
+export type Field<T extends Readonly<unknown>> = {
+  readonly headerName: string;
+  readonly value: T;
+};
 
 export type LocalityData = IR<Field<string | number>>;
 
@@ -70,8 +73,7 @@ export const getLocalityData = (
         ...Object.fromEntries(
           Object.keys(localityColumns)
             .filter(
-              (columnName) =>
-                !(mappingLocalityColumns as RA<string>).includes(columnName)
+              (columnName) => !mappingLocalityColumns.includes(columnName)
             )
             .map((columnName) => [columnName, getField(columnName)])
         ),

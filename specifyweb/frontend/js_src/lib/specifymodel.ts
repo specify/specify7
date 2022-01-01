@@ -2,16 +2,17 @@ import collectionapi from './collectionapi';
 import { getIcon } from './icons';
 import type { JqueryPromise, SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
+import type { SchemaLocalization } from './schema';
+import { localization } from './schema';
 import schema, { unescape } from './schemabase';
 import {
-  Field,
   type FieldDefinition,
-  Relationship,
   type RelationshipDefinition,
+  Field,
+  Relationship,
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';
-import { localization, SchemaLocalization } from './schema';
 
 type FieldAlias = {
   readonly vname: string;

@@ -13,6 +13,7 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
+import type { SortConfig } from '../common';
 import { compareValues, SortIndicator, useTitle } from '../common';
 import { DataSetMeta } from '../datasetmeta';
 import { DateElement } from '../internationalization';
@@ -65,6 +66,69 @@ function DsMeta({
       onClose={handleClose}
       onChange={handleClose}
     />
+  );
+}
+
+function TableHeader({
+  sortConfig,
+  onChange: handleChange,
+}: {
+  readonly sortConfig: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>;
+  readonly onChange: (
+    newSortConfig: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>
+  ) => void;
+}): JSX.Element {
+  return (
+    <thead>
+      <tr>
+        <th scope="col" className="pl-table-icon">
+          <button
+            type="button"
+            className="fake-link"
+            onClick={(): void =>
+              handleChange({
+                sortField: 'name',
+                ascending: !sortConfig.ascending,
+              })
+            }
+          >
+            {commonText('name')}
+            <SortIndicator fieldName="name" sortConfig={sortConfig} />
+          </button>
+        </th>
+        <th scope="col">
+          <button
+            type="button"
+            className="fake-link"
+            onClick={(): void =>
+              handleChange({
+                sortField: 'dateCreated',
+                ascending: !sortConfig.ascending,
+              })
+            }
+          >
+            {commonText('created')}
+            <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
+          </button>
+        </th>
+        <th scope="col">
+          <button
+            type="button"
+            className="fake-link"
+            onClick={(): void =>
+              handleChange({
+                sortField: 'dateUploaded',
+                ascending: !sortConfig.ascending,
+              })
+            }
+          >
+            {commonText('uploaded')}
+            <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
+          </button>
+        </th>
+        <td />
+      </tr>
+    </thead>
   );
 }
 
@@ -172,62 +236,10 @@ function Dialog({
               className="grid-table"
               style={{ gridTemplateColumns: '1fr auto auto auto' }}
             >
-              <thead>
-                <tr>
-                  <th scope="col" className="pl-table-icon">
-                    <button
-                      type="button"
-                      className="fake-link"
-                      onClick={(): void =>
-                        setSortConfig({
-                          sortField: 'name',
-                          ascending: !sortConfig.ascending,
-                        })
-                      }
-                    >
-                      {commonText('name')}
-                      <SortIndicator fieldName="name" sortConfig={sortConfig} />
-                    </button>
-                  </th>
-                  <th scope="col">
-                    <button
-                      type="button"
-                      className="fake-link"
-                      onClick={(): void =>
-                        setSortConfig({
-                          sortField: 'dateCreated',
-                          ascending: !sortConfig.ascending,
-                        })
-                      }
-                    >
-                      {commonText('created')}
-                      <SortIndicator
-                        fieldName="dateCreated"
-                        sortConfig={sortConfig}
-                      />
-                    </button>
-                  </th>
-                  <th scope="col">
-                    <button
-                      type="button"
-                      className="fake-link"
-                      onClick={(): void =>
-                        setSortConfig({
-                          sortField: 'dateUploaded',
-                          ascending: !sortConfig.ascending,
-                        })
-                      }
-                    >
-                      {commonText('uploaded')}
-                      <SortIndicator
-                        fieldName="dateUploaded"
-                        sortConfig={sortConfig}
-                      />
-                    </button>
-                  </th>
-                  <td />
-                </tr>
-              </thead>
+              <TableHeader
+                sortConfig={sortConfig}
+                onChange={(newSortConfig): void => setSortConfig(newSortConfig)}
+              />
               <tbody>
                 {datasets.map((dataset, index) => {
                   return (

@@ -4,6 +4,7 @@ import { LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
+// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {
   class ListFormat {
     public constructor(
@@ -64,7 +65,7 @@ declare namespace Intl {
       }
     );
 
-    public format(value: Date): string;
+    public format(value: Readonly<Date>): string;
   }
 }
 
@@ -113,6 +114,7 @@ const numberFormatter = new Intl.NumberFormat(LANGUAGE);
 export const formatNumber = (number: number): string =>
   numberFormatter.format(number);
 
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 const MILLISECONDS = 1000;
 const SECOND = 1;
 const MINUTE = 60 * SECOND;
@@ -121,12 +123,13 @@ const DAY = 24 * HOUR;
 const WEEK = 7 * DAY;
 const MONTH = 4 * WEEK;
 const YEAR = 12 * MONTH;
+/* eslint-enable @typescript-eslint/no-magic-numbers */
 const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
   numeric: 'auto',
   style: 'long',
 });
 
-export function getRelativeDate(date: Date): string {
+export function getRelativeDate(date: Readonly<Date>): string {
   const timePassed = Math.round((Date.now() - date.getTime()) / MILLISECONDS);
   if (timePassed < 0) {
     /*

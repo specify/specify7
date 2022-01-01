@@ -31,7 +31,10 @@ function Coordinate({
   readonly onChange: (parsed: string) => void;
 }): JSX.Element {
   const [coordinate, setCoordinate] = React.useState<string>(
-    () => (model.get(coordinateTextField) || model.get(coordinateField)) ?? ''
+    () =>
+      ((model.get(coordinateTextField) as string) ||
+        (model.get(coordinateField) as string)) ??
+      ''
   );
 
   const onChange = (raw: string, formatted: string | undefined) =>
@@ -48,10 +51,10 @@ function Coordinate({
             )?.format()
           );
     model.on(`change: ${coordinateTextField}`, () =>
-      handleChange(model.get(coordinateTextField))
+      handleChange(model.get(coordinateTextField) as string)
     );
     model.on(`change: ${coordinateField}`, () =>
-      handleChange(model.get(coordinateField))
+      handleChange(model.get(coordinateField) as string)
     );
 
     let destructorCalled = false;
@@ -79,12 +82,10 @@ function Coordinate({
                 : undefined;
               onChange(target.value.trim(), parsed?.format());
 
-              model.set({
-                [coordinateTextField]: target.value,
-                [coordinateField]: parsed?.asFloat() ?? null,
-                srclatlongunit: parsed?.soCalledUnit() ?? null,
-                originallatlongunit: parsed?.soCalledUnit() ?? null,
-              });
+              model.set(coordinateTextField, target.value);
+              model.set(coordinateField, parsed?.asFloat() ?? null);
+              model.set('srclatlongunit', parsed?.soCalledUnit() ?? null);
+              model.set('originallatlongunit', parsed?.soCalledUnit() ?? null);
             }
       }
     />
@@ -158,14 +159,16 @@ function LatLongUi({
   readonly readOnly: boolean;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => model.get('latlongtype') ?? 'point'
+    () => (model.get('latlongtype') as CoordinateType) ?? 'point'
   );
 
   React.useEffect(() => {
     model.on('change: latlongtype', () =>
       destructorCalled
         ? undefined
-        : setCoordinateType(model.get('latlongtype') ?? 'point')
+        : setCoordinateType(
+            (model.get('latlongtype') as CoordinateType) ?? 'point'
+          )
     );
 
     let destructorCalled = false;
@@ -175,68 +178,64 @@ function LatLongUi({
   }, []);
 
   return (
-    <>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">
-              <label>
-                <span className="sr-only">
-                  {localityText('coordinateType')}
-                </span>
-                <select
-                  name="type"
-                  title={localityText('coordinateType')}
-                  value={coordinateType}
-                  disabled={readOnly}
-                  onChange={
-                    readOnly
-                      ? undefined
-                      : ({ target }): void => {
-                          setCoordinateType(target.value as CoordinateType);
-                          model.set('latlongtype', target.value);
-                        }
-                  }
-                >
-                  <option value="point">{localityText('point')}</option>
-                  <option value="line">{localityText('line')}</option>
-                  <option value="rectangle">{localityText('rectangle')}</option>
-                </select>
-              </label>
-            </th>
-            <th scope="col">{localityText('latitude')}</th>
-            <th scope="col">{localityText('longitude')}</th>
-            <th scope="col">{localityText('parsed')}</th>
-          </tr>
-        </thead>
-        <tbody>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">
+            <label>
+              <span className="sr-only">{localityText('coordinateType')}</span>
+              <select
+                name="type"
+                title={localityText('coordinateType')}
+                value={coordinateType}
+                disabled={readOnly}
+                onChange={
+                  readOnly
+                    ? undefined
+                    : ({ target }): void => {
+                        setCoordinateType(target.value as CoordinateType);
+                        model.set('latlongtype', target.value);
+                      }
+                }
+              >
+                <option value="point">{localityText('point')}</option>
+                <option value="line">{localityText('line')}</option>
+                <option value="rectangle">{localityText('rectangle')}</option>
+              </select>
+            </label>
+          </th>
+          <th scope="col">{localityText('latitude')}</th>
+          <th scope="col">{localityText('longitude')}</th>
+          <th scope="col">{localityText('parsed')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <CoordinatePoint
+          model={model}
+          label={
+            coordinateType === 'point'
+              ? localityText('coordinates')
+              : coordinateType === 'line'
+              ? commonText('start')
+              : localityText('northWestCorner')
+          }
+          index={1}
+          readOnly={readOnly}
+        />
+        {coordinateType === 'point' ? undefined : (
           <CoordinatePoint
             model={model}
             label={
-              coordinateType === 'point'
-                ? localityText('coordinates')
-                : coordinateType === 'line'
-                ? commonText('start')
-                : localityText('northWestCorner')
+              coordinateType === 'line'
+                ? commonText('end')
+                : localityText('southEastCorner')
             }
-            index={1}
+            index={2}
             readOnly={readOnly}
           />
-          {coordinateType === 'point' ? undefined : (
-            <CoordinatePoint
-              model={model}
-              label={
-                coordinateType === 'line'
-                  ? commonText('end')
-                  : localityText('southEastCorner')
-              }
-              index={2}
-              readOnly={readOnly}
-            />
-          )}
-        </tbody>
-      </table>
-    </>
+        )}
+      </tbody>
+    </table>
   );
 }
 

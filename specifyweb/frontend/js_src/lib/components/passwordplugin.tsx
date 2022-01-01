@@ -60,11 +60,7 @@ function PasswordResetDialog({
             passwordRef.current?.setCustomValidity(
               adminText('passwordLengthError')
             );
-          else if (password !== repeatPassword)
-            repeatPasswordRef.current?.setCustomValidity(
-              adminText('passwordsDoNotMatchError')
-            );
-          else {
+          else if (password === repeatPassword) {
             setIsLoading(true);
             void ajax(
               `/api/set_password/${modelId}/`,
@@ -76,8 +72,12 @@ function PasswordResetDialog({
             ).then(() => {
               setIsLoading(false);
               handleClose();
+              return undefined;
             });
-          }
+          } else
+            repeatPasswordRef.current?.setCustomValidity(
+              adminText('passwordsDoNotMatchError')
+            );
         }}
       >
         <label>

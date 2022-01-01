@@ -2,9 +2,9 @@ import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { States } from './components/lifemapperstate';
-import type { IR, RA, RR } from './types';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
+import type { IR, RA, RR } from './types';
 
 type ToggleBadgeAction = Action<
   'ToggleBadgeAction',

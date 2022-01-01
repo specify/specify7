@@ -51,6 +51,7 @@ export function CollectionSelector(): JSX.Element {
       headers: { Accept: 'application/json' },
     }).then(({ data: collections }) => {
       if (!destructorCalled) setCollections(collections);
+      return undefined;
     });
 
     let destructorCalled = false;
@@ -66,11 +67,9 @@ export function CollectionSelector(): JSX.Element {
       aria-label={commonText('currentCollection')}
       value={collections?.current ?? undefined}
       onChange={({ target }): void =>
-        navigation.switchCollection(
-          Number.parseInt(target.value),
-          '/',
-          () => {}
-        )
+        navigation.switchCollection(Number.parseInt(target.value), '/', () => {
+          /* Nothing */
+        })
       }
     >
       {collections?.available.map(([id, name]) => (
@@ -91,6 +90,7 @@ export function ExpressSearch(): JSX.Element {
         const query = searchQuery.trim();
         if (query.length === 0) return;
         const url = querystring.format('/specify/express_search/', {
+          // eslint-disable-next-line id-length
           q: query,
         });
         navigation.go(url);

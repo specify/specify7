@@ -117,4 +117,4 @@ L.Control.Details = L.Control.extend({
   },
 });
 
-export default L;
+export { default } from 'leaflet';

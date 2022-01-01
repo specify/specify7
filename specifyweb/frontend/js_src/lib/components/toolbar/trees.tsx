@@ -2,10 +2,10 @@ import React from 'react';
 
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
+import { useTitle } from '../common';
 import type { MenuItem } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';
-import { useTitle } from '../common';
 
 function RepairTree({
   onClose: handleClose,

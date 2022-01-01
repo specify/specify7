@@ -6,19 +6,19 @@
 
 import * as XLSX from 'xlsx';
 
-const ctx: Worker = self as any;
+const context: Worker = self as any;
 
-ctx.onmessage = function (e) {
+context.onmessage = function (e) {
   const previewSize: number | null = e.data.previewSize;
 
   const reader = new FileReader();
   reader.readAsArrayBuffer(e.data.file);
-  reader.onload = function (loaded) {
+  reader.addEventListener('load', function (loaded) {
     if (
       loaded.target == null ||
       !(loaded.target.result instanceof ArrayBuffer)
     ) {
-      ctx.postMessage([]);
+      context.postMessage([]);
       return;
     }
     const fileData = new Uint8Array(loaded.target.result);
@@ -50,6 +50,6 @@ ctx.onmessage = function (e) {
       return unSparseRow;
     });
 
-    ctx.postMessage(data);
-  };
+    context.postMessage(data);
+  });
 };

@@ -7,7 +7,7 @@
 
 import type { IR, R } from './types';
 import type {
-  ColumnDef,
+  ColumnDefinition,
   TreeRecordVariety,
   Uploadable,
   UploadPlan,
@@ -24,7 +24,7 @@ import { tableIsTree } from './wbplanviewmodelhelper';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 
 interface UploadPlanNode
-  extends R<string | boolean | UploadPlanNode | ColumnDef> {}
+  extends R<string | boolean | UploadPlanNode | ColumnDefinition> {}
 
 function mappingsTreeToUploadPlanTable(
   tableData: object,
@@ -160,7 +160,7 @@ function handleRelationshipField(
 
 export const extractHeaderNameFromHeaderStructure = (
   headerStructure: MappingsTreeNode
-): ColumnDef =>
+): ColumnDefinition =>
   Object.entries(Object.values(headerStructure)[0]).map(
     ([headerName, headerOptions]) =>
       JSON.stringify(headerOptions) === JSON.stringify(defaultColumnOptions)
@@ -174,7 +174,7 @@ export const extractHeaderNameFromHeaderStructure = (
 
 const rankMappedFieldsToTreeRecordRanks = (
   rankMappedFields: IR<MappingsTreeNode>
-): IR<ColumnDef> =>
+): IR<ColumnDefinition> =>
   Object.fromEntries(
     Object.entries(rankMappedFields).map(
       ([fieldName, headerMappingStructure]) => [
@@ -186,7 +186,7 @@ const rankMappedFieldsToTreeRecordRanks = (
 
 const mappingsTreeToUploadPlanTree = (
   mappingsTree: MappingsTree
-): IR<string | { treeNodeCols: IR<ColumnDef> }> =>
+): IR<string | { treeNodeCols: IR<ColumnDefinition> }> =>
   Object.fromEntries(
     Object.entries(mappingsTree).map(([fullRankName, rankMappedFields]) => [
       getNameFromTreeRankName(fullRankName),

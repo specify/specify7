@@ -3,12 +3,13 @@
  * headers
  *
  * @module
- * */
+ *
+ */
 
 import type { AutoMapperResults } from './automapper';
 import AutoMapper from './automapper';
-import type { IR, RA } from './types';
 import type { MappingLine } from './components/wbplanviewmapper';
+import type { IR, RA } from './types';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
@@ -101,12 +102,12 @@ export function getLinesFromUploadPlan(
         lines[headerIndex] = splitMappingPath;
         return lines;
       },
-      [
-        ...getLinesFromHeaders({
+      Array.from(
+        getLinesFromHeaders({
           headers,
           runAutoMapper: false,
-        }),
-      ]
+        })
+      )
     );
 
   return {

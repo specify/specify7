@@ -5,9 +5,16 @@
  * @module
  */
 
+import ajax from './ajax';
 import * as cache from './cache';
-import type { IR, R, RA } from './types';
+import type { RelationshipType } from './components/wbplanviewmapper';
+import { getTreeDef } from './domain';
+import type { GetTreeDefinition } from './legacytypes';
 import schema from './schema';
+import type { Field, Relationship } from './specifyfield';
+import type SpecifyModel from './specifymodel';
+import systemInfo from './systeminfo';
+import type { IR, R, RA } from './types';
 import { camelToHuman, capitalize } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
@@ -20,13 +27,6 @@ import {
   fetchingParameters,
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
-import systemInfo from './systeminfo';
-import { getTreeDef } from './domain';
-import ajax from './ajax';
-import { Field, Relationship } from './specifyfield';
-import { RelationshipType } from './components/wbplanviewmapper';
-import { GetTreeDef } from './legacytypes';
-import SpecifyModel from './specifymodel';
 
 export type DataModelFieldWritable =
   | DataModelNonRelationshipWritable
@@ -103,7 +103,7 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 /* Fetches ranks for a particular table */
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
-    (getTreeDef as GetTreeDef)(tableName).done((treeDefinition) =>
+    (getTreeDef as GetTreeDefinition)(tableName).done((treeDefinition) =>
       treeDefinition.rget('treedefitems').done((treeDefItems) =>
         treeDefItems.fetch({ limit: 0 }).done(() =>
           resolve([
@@ -252,9 +252,9 @@ const schemaConfigTableIds = Object.values({
  */
 const getSchemaHash = async (): Promise<number> =>
   Promise.all(
-    schemaConfigTableIds.map((tableNum) =>
+    schemaConfigTableIds.map(async (tableNumber) =>
       ajax<{ readonly meta: { readonly total_count: number } }>(
-        `/api/specify/spauditlog/?limit=1&tablenum=${tableNum}`,
+        `/api/specify/spauditlog/?limit=1&tablenum=${tableNumber}`,
         { headers: { Accept: 'application/json' } }
       ).then(({ data: { meta } }) => meta.total_count)
     )

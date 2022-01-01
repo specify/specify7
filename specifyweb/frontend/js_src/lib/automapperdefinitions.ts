@@ -9,11 +9,11 @@
  * @module
  */
 
-import type { IR, RA, RR } from './types';
 import type {
   AutoMapperScope,
   MappingPath,
 } from './components/wbplanviewmapper';
+import type { IR, RA, RR } from './types';
 
 /*
  * AutoMapper does 2 passes though the schema whenever it is asked to map
@@ -29,7 +29,6 @@ import type {
  *
  */
 export type Options = {
-
   // Regex match (header.match(regex) !== null)
   readonly regex?: RA<RegExp>;
 

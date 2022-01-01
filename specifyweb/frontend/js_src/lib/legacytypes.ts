@@ -1,7 +1,6 @@
-import { IR } from './types';
-import Backbone from 'backbone';
-import SpecifyModel from './specifymodel';
 import type SaveBlockers from './saveblockers';
+import type SpecifyModel from './specifymodel';
+import type { IR, RA } from './types';
 
 type DomainTreeDefinitionItem = {
   readonly get: (fieldName: string) => number | string;
@@ -22,23 +21,32 @@ type DomainTreeDefinition = {
   ) => JqueryPromise<DomainTreeDefinitionItems>;
 };
 
-export type SpecifyResource = Backbone.Model & {
+export type SpecifyResource = {
   readonly id: number;
-  readonly get: (fieldName: string) => SpecifyResource | any;
-  readonly rget: (fieldName: string) => JqueryPromise<SpecifyResource | any>;
-  readonly set: (fieldName: string, value: any) => void;
+  readonly get: (fieldName: string) => unknown;
+  readonly rget: (fieldName: string) => JqueryPromise<unknown>;
+  readonly set: (fieldName: string, value: unknown) => void;
   readonly save: () => JqueryPromise<void>;
   readonly viewUrl: () => string;
   readonly Resource: new () => SpecifyResource;
   readonly isNew: () => boolean;
   readonly clone: () => SpecifyResource;
   readonly specifyModel: SpecifyModel;
-  readonly saveBlockers: SaveBlockers;
+  readonly saveBlockers: Readonly<SaveBlockers>;
   readonly parent?: SpecifyResource;
   readonly format: () => JqueryPromise<string>;
-  readonly collection: Backbone.Model['collection'] & {
+  readonly collection: {
     readonly related: SpecifyResource;
   };
+  readonly on: (
+    eventName: string,
+    callback: (...args: RA<never>) => void
+  ) => void;
+  readonly off: (
+    eventName?: string,
+    callback?: (...args: RA<never>) => void
+  ) => void;
+  readonly trigger: (eventName: string, ...args: RA<unknown>) => void;
 };
 
 export type JqueryPromise<T> = {
@@ -46,6 +54,6 @@ export type JqueryPromise<T> = {
   readonly then: (callback: (t: T) => void) => void;
 };
 
-export type GetTreeDef = (
+export type GetTreeDefinition = (
   tableName: string
 ) => JqueryPromise<DomainTreeDefinition>;

@@ -4,12 +4,12 @@
  * @module
  */
 
-import type { IR, R, RA } from './types';
 import type {
   FullMappingPath,
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
+import type { IR, R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import { splitFullMappingPathComponents } from './wbplanviewmappinghelper';

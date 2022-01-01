@@ -5,11 +5,11 @@
  * @module
  */
 
-import type { IR, RA } from './types';
 import type {
   MappingPath,
   RelationshipType,
 } from './components/wbplanviewmapper';
+import type { IR, RA } from './types';
 import {
   formatTreeRank,
   getIndexFromReferenceItemName,

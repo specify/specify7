@@ -2,7 +2,8 @@
  * Upload Plan to Mappings Tree
  *
  * @module
- * */
+ *
+ */
 
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { IR, R, RA } from './types';
@@ -19,14 +20,14 @@ export type ColumnOptions = {
   readonly default: string | null;
 };
 
-export type ColumnDef = string | ({ column: string } & ColumnOptions);
+export type ColumnDefinition = string | ({ column: string } & ColumnOptions);
 
 type ToMany = Omit<UploadTable, 'toMany'>;
 
 type FieldGroupType = 'wbcols' | 'static' | 'toOne' | 'toMany';
 
 type FieldGroup<GROUP_NAME extends FieldGroupType> = GROUP_NAME extends 'wbcols'
-  ? IR<ColumnDef>
+  ? IR<ColumnDefinition>
   : GROUP_NAME extends 'static'
   ? IR<string | boolean | number>
   : GROUP_NAME extends 'toOne'
@@ -34,14 +35,14 @@ type FieldGroup<GROUP_NAME extends FieldGroupType> = GROUP_NAME extends 'wbcols'
   : ToMany;
 
 interface UploadTable {
-  readonly wbcols: IR<ColumnDef>;
+  readonly wbcols: IR<ColumnDefinition>;
   readonly static: IR<string | boolean | number>;
   readonly toOne: Uploadable;
   readonly toMany: ToMany;
 }
 
 type TreeRecord = {
-  readonly ranks: IR<string | { treeNodeCols: IR<ColumnDef> }>;
+  readonly ranks: IR<string | { treeNodeCols: IR<ColumnDefinition> }>;
 };
 
 type UploadTableVariety =
@@ -77,7 +78,7 @@ const uploadPlanProcessingFunctions = (
   mappingPath: MappingPath
 ): IR<([key, value]: [string, any]) => [key: string, value: unknown]> =>
   ({
-    wbcols: ([key, value]: [string, string | ColumnDef]): [
+    wbcols: ([key, value]: [string, string | ColumnDefinition]): [
       key: string,
       value: object
     ] => [
@@ -125,7 +126,7 @@ const uploadPlanProcessingFunctions = (
   } as const);
 
 const handleTreeRankFields = (
-  treeRankFields: IR<ColumnDef>,
+  treeRankFields: IR<ColumnDefinition>,
   headers: RA<string>
 ) =>
   Object.fromEntries(

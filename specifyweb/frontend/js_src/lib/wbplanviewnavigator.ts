@@ -10,7 +10,6 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
-import type { IR, R, RA } from './types';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -25,6 +24,7 @@ import type {
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import commonText from './localization/common';
 import wbText from './localization/workbench';
+import type { IR, R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {

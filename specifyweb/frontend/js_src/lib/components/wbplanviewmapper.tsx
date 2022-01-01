@@ -28,6 +28,7 @@ import {
 import { useId } from './common';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
+import { handlePromiseReject } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingLineComponent, ValidationButton } from './wbplanviewcomponents';
 import { Layout } from './wbplanviewheader';
@@ -160,6 +161,7 @@ export default function WbPlanViewMapper(props: {
   React.useEffect(() => {
     if (state.changesMade) props.setUnloadProtect();
     else props.removeUnloadProtect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.changesMade]);
 
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.lines);
@@ -256,7 +258,7 @@ export default function WbPlanViewMapper(props: {
     return (): void => {
       destructorCalled = true;
     };
-  }, [state.openSelectElement]);
+  }, [state.openSelectElement, props.baseTableName]);
 
   const id = useId('wbplanviewmapper');
 
@@ -273,7 +275,8 @@ export default function WbPlanViewMapper(props: {
       setIsLoading(true);
       props
         .onSave(state.lines, state.mustMatchPreferences)
-        .then(() => setIsLoading(false));
+        .then(() => setIsLoading(false))
+        .catch(handlePromiseReject);
     } else
       dispatch({
         type: 'ValidationAction',
@@ -293,6 +296,11 @@ export default function WbPlanViewMapper(props: {
     dispatch({
       type: 'ChangeSelectElementValueAction',
       ...payload,
+    });
+
+  const handleClose = (): void =>
+    dispatch({
+      type: 'CloseSelectElementAction',
     });
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -422,11 +430,7 @@ export default function WbPlanViewMapper(props: {
           )}
         </>
       }
-      handleClick={(): void =>
-        dispatch({
-          type: 'CloseSelectElementAction',
-        })
-      }
+      handleClick={handleClose}
     >
       {!props.readonly && state.validationResults.length > 0 && (
         <ValidationResults
@@ -482,140 +486,128 @@ export default function WbPlanViewMapper(props: {
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}
         aria-label={wbText('mappings')}
-        aria-orientation="vertical"
       >
-        {state.lines.map(
-          ({ mappingPath, headerName, mappingType, columnOptions }, line) => {
-            const handleOpen = (index: number): void =>
-              dispatch({
-                type: 'OpenSelectElementAction',
-                line,
-                index,
-              });
-
-            const lineData = getMappingLineData({
-              baseTableName: props.baseTableName,
-              mappingPath,
-              generateLastRelationshipData: true,
-              iterate: true,
-              customSelectType: 'CLOSED_LIST',
-              handleChange: props.readonly
-                ? undefined
-                : (payload): void => handleChange({ line, ...payload }),
-              handleOpen,
-              handleClose: (): void =>
-                dispatch({
-                  type: 'CloseSelectElementAction',
-                }),
-              handleAutoMapperSuggestionSelection: props.readonly
-                ? undefined
-                : (suggestion: string): void =>
-                    dispatch({
-                      type: 'AutoMapperSuggestionSelectedAction',
-                      suggestion,
-                    }),
-              getMappedFields: getMappedFieldsBind,
-              openSelectElement:
-                state.openSelectElement?.line === line
-                  ? state.openSelectElement
-                  : undefined,
-              showHiddenFields: state.showHiddenFields,
-              autoMapperSuggestions:
-                (!props.readonly && state.autoMapperSuggestions) || [],
-              mustMatchPreferences: state.mustMatchPreferences,
-              columnOptions,
-              mappingOptionsMenuGenerator: () =>
-                mappingOptionsMenu({
-                  id: (suffix) => id(`column-options-${line}-${suffix}`),
-                  readonly: props.readonly,
-                  columnOptions,
-                  onChangeMatchBehaviour: (matchBehavior) =>
-                    dispatch({
-                      type: 'ChangeMatchBehaviorAction',
-                      line,
-                      matchBehavior,
-                    }),
-                  onToggleAllowNulls: (allowNull) =>
-                    dispatch({
-                      type: 'ToggleAllowNullsAction',
-                      line,
-                      allowNull,
-                    }),
-                  onChangeDefaultValue: (defaultValue) =>
-                    dispatch({
-                      type: 'ChangeDefaultValue',
-                      line,
-                      defaultValue,
-                    }),
-                }),
+        {state.lines.map(({ mappingPath, headerName, columnOptions }, line) => {
+          const handleOpen = (index: number): void =>
+            dispatch({
+              type: 'OpenSelectElementAction',
+              line,
+              index,
             });
-            return (
-              <MappingLineComponent
-                key={line}
-                headerName={headerName}
-                mappingType={mappingType}
-                readonly={props.readonly}
-                isFocused={line === state.focusedLine}
-                onFocus={(): void =>
+
+          const lineData = getMappingLineData({
+            baseTableName: props.baseTableName,
+            mappingPath,
+            generateLastRelationshipData: true,
+            iterate: true,
+            customSelectType: 'CLOSED_LIST',
+            handleChange: props.readonly
+              ? undefined
+              : (payload): void => handleChange({ line, ...payload }),
+            handleOpen,
+            handleClose,
+            handleAutoMapperSuggestionSelection: props.readonly
+              ? undefined
+              : (suggestion: string): void =>
+                  dispatch({
+                    type: 'AutoMapperSuggestionSelectedAction',
+                    suggestion,
+                  }),
+            getMappedFields: getMappedFieldsBind,
+            openSelectElement:
+              state.openSelectElement?.line === line
+                ? state.openSelectElement
+                : undefined,
+            showHiddenFields: state.showHiddenFields,
+            autoMapperSuggestions:
+              (!props.readonly && state.autoMapperSuggestions) || [],
+            mustMatchPreferences: state.mustMatchPreferences,
+            columnOptions,
+            mappingOptionsMenuGenerator: () =>
+              mappingOptionsMenu({
+                id: (suffix) => id(`column-options-${line}-${suffix}`),
+                readonly: props.readonly,
+                columnOptions,
+                onChangeMatchBehaviour: (matchBehavior) =>
+                  dispatch({
+                    type: 'ChangeMatchBehaviorAction',
+                    line,
+                    matchBehavior,
+                  }),
+                onToggleAllowNulls: (allowNull) =>
+                  dispatch({
+                    type: 'ToggleAllowNullsAction',
+                    line,
+                    allowNull,
+                  }),
+                onChangeDefaultValue: (defaultValue) =>
+                  dispatch({
+                    type: 'ChangeDefaultValue',
+                    line,
+                    defaultValue,
+                  }),
+              }),
+          });
+          return (
+            <MappingLineComponent
+              key={line}
+              headerName={headerName}
+              readonly={props.readonly}
+              isFocused={line === state.focusedLine}
+              onFocus={(): void =>
+                dispatch({
+                  type: 'FocusLineAction',
+                  line,
+                })
+              }
+              onKeyDown={(key): void => {
+                const openSelectElement =
+                  state.openSelectElement?.line === line
+                    ? state.openSelectElement.index
+                    : undefined;
+
+                if (typeof openSelectElement === 'number') {
+                  if (key === 'ArrowLeft')
+                    if (openSelectElement > 0)
+                      handleOpen(openSelectElement - 1);
+                    else
+                      dispatch({
+                        type: 'CloseSelectElementAction',
+                      });
+                  else if (key === 'ArrowRight')
+                    if (openSelectElement + 1 < lineData.length)
+                      handleOpen(openSelectElement + 1);
+                    else
+                      dispatch({
+                        type: 'CloseSelectElementAction',
+                      });
+
+                  return;
+                }
+
+                if (key === 'ArrowLeft') handleOpen(lineData.length - 1);
+                else if (key === 'ArrowRight' || key === 'Enter') handleOpen(0);
+                else if (key === 'ArrowUp' && line > 0)
                   dispatch({
                     type: 'FocusLineAction',
-                    line,
-                  })
-                }
-                onKeyDown={(event): void => {
-                  const openSelectElement =
-                    state.openSelectElement?.line === line
-                      ? state.openSelectElement.index
-                      : undefined;
-
-                  if (typeof openSelectElement === 'number') {
-                    if (event.key === 'ArrowLeft')
-                      if (openSelectElement > 0)
-                        handleOpen(openSelectElement - 1);
-                      else
-                        dispatch({
-                          type: 'CloseSelectElementAction',
-                        });
-                    else if (event.key === 'ArrowRight')
-                      if (openSelectElement + 1 < lineData.length)
-                        handleOpen(openSelectElement + 1);
-                      else
-                        dispatch({
-                          type: 'CloseSelectElementAction',
-                        });
-
-                    return;
-                  }
-
-                  if (event.key === 'ArrowLeft')
-                    handleOpen(lineData.length - 1);
-                  else if (event.key === 'ArrowRight' || event.key === 'Enter')
-                    handleOpen(0);
-                  else if (event.key === 'ArrowUp' && line > 0)
-                    dispatch({
-                      type: 'FocusLineAction',
-                      line: line - 1,
-                    });
-                  else if (
-                    event.key === 'ArrowDown' &&
-                    line + 1 < state.lines.length
-                  )
-                    dispatch({
-                      type: 'FocusLineAction',
-                      line: line + 1,
-                    });
-                }}
-                onClearMapping={(): void =>
+                    line: line - 1,
+                  });
+                else if (key === 'ArrowDown' && line + 1 < state.lines.length)
                   dispatch({
-                    type: 'ClearMappingLineAction',
-                    line,
-                  })
-                }
-                lineData={lineData}
-              />
-            );
-          }
-        )}
+                    type: 'FocusLineAction',
+                    line: line + 1,
+                  });
+              }}
+              onClearMapping={(): void =>
+                dispatch({
+                  type: 'ClearMappingLineAction',
+                  line,
+                })
+              }
+              lineData={lineData}
+            />
+          );
+        })}
       </ul>
 
       <MappingsControlPanel

@@ -15,9 +15,10 @@ import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
-import type { ItemType, SpLocaleItem } from './schemaconfig';
 import type {
-  DataObjFormatter as DataObjectFormatter,
+  DataObjectFormatter,
+  ItemType,
+  SpLocaleItem,
   UiFormatter,
 } from './schemaconfig';
 import { AddLanguage, PickList } from './schemaconfigcomponents';
@@ -176,6 +177,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           buttons: [
             {
               text: commonText('back'),
+              // eslint-disable-next-line sonarjs/no-identical-functions
               click: (): void =>
                 dispatch({
                   type: 'ChangeLanguageAction',
@@ -258,6 +260,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <button
                 type="button"
                 className="magic-button"
+                /* eslint-disable-next-line sonarjs/no-identical-functions */
                 onClick={(): void =>
                   dispatch({
                     type: 'ChooseLanguageAction',
@@ -326,7 +329,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <PickList
                 value={table.format}
                 groups={{ '': filterFormatters(dataObjFormatters, table.name) }}
-                onChange={(value) =>
+                onChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
                     field: 'format',
@@ -342,7 +345,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 groups={{
                   '': filterFormatters(dataObjAggregators, table.name),
                 }}
-                onChange={(value) =>
+                onChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
                     field: 'aggregator',
@@ -511,8 +514,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                           name,
                           ...[
                             value,
-                            isSystem && commonText('system'),
-                            isDefault && commonText('default'),
+                            isSystem ? commonText('system') : '',
+                            isDefault ? commonText('default') : '',
                           ]
                             .filter(Boolean)
                             .map((value) => `(${value})`),
@@ -587,7 +590,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       disabled={
                         !isFormatterAvailable(items[itemId], key as ItemType)
                       }
-                      onChange={(value) =>
+                      onChange={(value): void =>
                         dispatch({
                           type: 'ChangeFieldFormatAction',
                           format: key as ItemType,

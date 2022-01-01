@@ -12,7 +12,7 @@ import '../../css/customselectelement.css';
 import React from 'react';
 
 import wbText from '../localization/workbench';
-import type { IR, R, RA } from '../types';
+import type { IR, RA } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 import {
@@ -100,12 +100,14 @@ type CustomSelectElementIconProps = {
    */
   readonly isRelationship?: boolean;
   // Whether the option is now selected
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly isDefault?: boolean;
   // The name of the table this option represents
   readonly tableName?: string;
   // The name of the option. Would be used as a label (visible to the user)
   readonly optionLabel?: string | JSX.Element;
   // The value of the title HTML attribute
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly title?: string;
   /*
    * True if option can be selected. False if option cannot be selected because
@@ -113,10 +115,11 @@ type CustomSelectElementIconProps = {
    */
   readonly isEnabled?: boolean;
   // Whether an icon is used inside of preview_row in CLOSED_LIST
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly isPreview?: boolean;
 };
 
-type CustomSelectElementOptionProps = CustomSelectElementIconProps & {
+export type CustomSelectElementOptionProps = CustomSelectElementIconProps & {
   readonly handleClick?: (payload: { readonly isDoubleClick: boolean }) => void;
 };
 
@@ -127,8 +130,6 @@ export type CustomSelectElementDefaultOptionProps =
     readonly isHidden?: boolean;
   };
 
-export type CustomSelectElementOptions = R<CustomSelectElementOptionProps>;
-
 type CustomSelectElementOptionGroupProps = {
   // Group's name (used for styling)
   readonly selectGroupName?: string;
@@ -138,7 +139,7 @@ type CustomSelectElementOptionGroupProps = {
    * List of options data. See customSelectElement.getSelectOptionHtml()
    * for the data structure
    */
-  readonly selectOptionsData: CustomSelectElementOptions;
+  readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
   readonly handleClick?: (payload: {
     readonly newValue: string;
     readonly isRelationship: boolean;
@@ -240,6 +241,8 @@ function Option({
   const tableLabel = dataModelStorage.tables?.[tableName]?.label;
 
   return (
+    // Keyboard events are handled by the parent
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <span
       className={classes.join(' ')}
       title={fullTitle === optionLabel ? tableLabel : fullTitle}
@@ -369,8 +372,11 @@ export function CustomSelectElement({
   autoMapperSuggestions,
   role,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
-  const has = (property: Properties): boolean =>
-    customSelectTypes[customSelectType].includes(property);
+  const has = React.useCallback(
+    (property: Properties): boolean =>
+      customSelectTypes[customSelectType].includes(property),
+    [customSelectType]
+  );
 
   // Used to store internal state if handleKeyboardClick is set
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
@@ -465,6 +471,8 @@ export function CustomSelectElement({
     );
   else if (has('preview')) {
     preview = (
+      // Not tabbable because keyboard events are handled separately
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
         className={`custom-select-input ${
           defaultOption?.isRequired === true
@@ -632,14 +640,14 @@ export function CustomSelectElement({
       Object.values(previousDefaultOption.current ?? {}).join('')
     )
       previousDefaultOption.current = defaultOption;
-  }, [listOfOptionsRef.current, defaultOption.optionName]);
+  }, [defaultOption, has]);
 
   const customSelectElementRef = React.useRef<HTMLElement>(null);
   const interactive = has('interactive');
   React.useEffect(() => {
     if (isOpen && has('interactive') && !has('tabIndex'))
       customSelectElementRef.current?.focus();
-  }, [isOpen, interactive]);
+  }, [isOpen, interactive, has]);
 
   return (
     <article
@@ -670,7 +678,8 @@ export function CustomSelectElement({
         typeof customSelectOptions === 'object'
           ? (event): void => {
               if (
-                document.activeElement?.classList.contains('custom-select') &&
+                document.activeElement?.classList.contains('custom-select') ===
+                  true &&
                 document.activeElement !== customSelectElementRef.current
               )
                 return;
@@ -738,7 +747,7 @@ export function SuggestionBox({
   onSelect: handleSelect,
   ...props
 }: Partial<CustomSelectElementPropsOpen> & {
-  readonly selectOptionsData: CustomSelectElementOptions;
+  readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
   readonly onSelect: (selection: string) => void;
 }): JSX.Element {
   return (

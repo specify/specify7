@@ -74,7 +74,7 @@ export type WbPlanViewProps = WbPlanViewConstructorProps & {
 };
 
 export type WbPlanViewConstructorProps = {
-  dataset: Dataset;
+  readonly dataset: Dataset;
 };
 
 /**
@@ -95,6 +95,7 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
       dispatch({
         type: 'OpenBaseTableSelectionAction',
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return stateReducer(<i />, {

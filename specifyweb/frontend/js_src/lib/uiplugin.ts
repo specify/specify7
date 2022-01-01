@@ -4,7 +4,7 @@ import type { RA } from './types';
 
 export default Backbone.View.extend({
   __name__: 'UIPlugin',
-  initialize: function (options: {
+  initialize(options: {
     readonly populateForm: (...args: RA<never>) => unknown;
   }) {
     this.init = specifyform.parseSpecifyProperties(

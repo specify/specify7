@@ -398,6 +398,7 @@ export function ChangeBaseTable({
           {wbText('goToBaseTableDialogMessage')}
         </>
       }
+      /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
       buttons={(confirm, cancel) => [
         {
           text: commonText('cancel'),
@@ -431,6 +432,7 @@ export function ReRunAutoMapper({
           {wbText('reRunAutoMapperDialogMessage')}
         </>
       }
+      /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
       buttons={(confirm, cancel) => [
         {
           text: commonText('cancel'),

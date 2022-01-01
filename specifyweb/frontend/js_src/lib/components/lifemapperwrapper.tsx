@@ -1,12 +1,13 @@
 import $ from 'jquery';
 
+import type { SpecifyResource } from '../legacytypes';
 import remotePrefs from '../remoteprefs';
 import ResourceView from '../resourceview';
 import { Lifemapper, SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
 
 export type Props = {
-  readonly model: any;
+  readonly model: SpecifyResource;
 };
 
 export type ComponentProps = Props & {
@@ -20,7 +21,7 @@ const CollectionObjectBadges = createBackboneView<ComponentProps, Props>(
     silentErrors: true,
     getComponentProps: (self) => ({
       model: self.options.model,
-      guid: self.options.model.get('guid'),
+      guid: self.options.model.get('guid') as string,
     }),
   }
 );

@@ -23,6 +23,7 @@ const liftGetResource = async (
       errorField?.setCustomValidity('');
       return undefined;
     })
+    // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
     .catch((error: Error) => {
       errorField?.setCustomValidity(error.message);
       throw error;
@@ -58,17 +59,7 @@ function MakeDwca({
   const [isExporting, setIsExporting] = React.useState<boolean>(false);
 
   return isExporting ? (
-    <ModalDialog
-      properties={{
-        title: commonText('dwcaExportStartedDialogTitle'),
-        close: handleClose,
-      }}
-    >
-      <div>
-        {commonText('dwcaExportStartedDialogHeader')}
-        <p>{commonText('dwcaExportStartedDialogMessage')}</p>
-      </div>
-    </ModalDialog>
+    <ExportStarted onClose={handleClose} />
   ) : (
     <ModalDialog
       properties={{
@@ -80,7 +71,7 @@ function MakeDwca({
             type: 'submit',
             form: id('form'),
             disabled: isLoading,
-            click() {
+            click(): void {
               /* Submit form */
             },
           },
@@ -153,10 +144,30 @@ function MakeDwca({
   );
 }
 
+function ExportStarted({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <ModalDialog
+      properties={{
+        title: commonText('dwcaExportStartedDialogTitle'),
+        close: handleClose,
+      }}
+    >
+      <div>
+        {commonText('dwcaExportStartedDialogHeader')}
+        <p>{commonText('dwcaExportStartedDialogMessage')}</p>
+      </div>
+    </ModalDialog>
+  );
+}
+
 const View = createBackboneView(MakeDwca);
 
 const userTool: UserTool = {
-  task: 'makedwca',
+  task: 'make-dwca',
   title: commonText('makeDwca'),
   enabled: () => userInfo.isadmin,
   view: ({ onClose }) => new View({ onClose }),

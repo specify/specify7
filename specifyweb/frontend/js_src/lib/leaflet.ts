@@ -7,8 +7,9 @@
 import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
+import ajax, { Http } from './ajax';
+import { error } from './assert';
 import * as cache from './cache';
-import type { IR, R, RA, RR } from './types';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
@@ -20,17 +21,13 @@ import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
 import commonText from './localization/common';
 import localityText from './localization/locality';
+import type { IR, RA, RR } from './types';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
-import ajax, { Http } from './ajax';
-import { error } from './assert';
 
 const DEFAULT_ZOOM = 5;
 
-// Try to fetch up-to-date tile servers. If fails, use the default tile servers
-let leafletMaps: typeof leafletTileServers | undefined;
-
-const parseLayersFromJson = (json: R<any>) =>
+const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
   Object.fromEntries(
     Object.entries(json).map(([layerGroup, layers]) => [
       layerGroup,
@@ -55,35 +52,27 @@ const parseLayersFromJson = (json: R<any>) =>
     ])
   ) as typeof leafletTileServers;
 
-export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
-  typeof leafletMaps === 'undefined'
-    ? new Promise(async (resolve) =>
-        ajax<R<any>>(
-          '/context/app.resource?name=leaflet-layers',
-          { headers: { Accept: 'application/json' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-        )
-          .then(({ data, status }) =>
-            status === Http.NOT_FOUND
-              ? error('')
-              : resolve((leafletMaps = parseLayersFromJson(data)))
-          )
-          .catch(async () =>
-            ajax<R<any>>(
-              leafletLayersEndpoint,
-              { headers: { Accept: 'application/json' } },
-              { strict: false }
-            )
-              .then(({ data }) =>
-                resolve((leafletMaps = parseLayersFromJson(data)))
-              )
-              .catch((error) => {
-                console.error(error);
-                resolve(leafletTileServers);
-              })
-          )
-      )
-    : Promise.resolve(leafletMaps);
+const leafletTileServersPromise: Promise<typeof leafletTileServers> = ajax<
+  IR<unknown>
+>(
+  '/context/app.resource?name=leaflet-layers',
+  { headers: { Accept: 'application/json' } },
+  { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+)
+  .then(({ data, status }) =>
+    status === Http.NOT_FOUND ? error('') : parseLayersFromJson(data)
+  )
+  .catch(async () =>
+    ajax<IR<unknown>>(
+      leafletLayersEndpoint,
+      { headers: { Accept: 'application/json' } },
+      { strict: false }
+    ).then(({ data }) => parseLayersFromJson(data))
+  )
+  .catch((error) => {
+    console.error(error);
+    return leafletTileServers;
+  });
 
 export async function showLeafletMap({
   localityPoints = [],
@@ -92,9 +81,9 @@ export async function showLeafletMap({
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
-  readonly leafletMapContainer: HTMLDivElement;
+  readonly leafletMapContainer: Readonly<HTMLDivElement>;
 }): Promise<L.Map | undefined> {
-  const tileLayers = await getLeafletLayers();
+  const tileLayers = await leafletTileServersPromise;
 
   $(leafletMapContainer).dialog({
     width: 900,
@@ -336,6 +325,12 @@ export function isValidAccuracy(
 }
 
 export type MarkerGroups = {
+  readonly marker: RA<L.Marker>;
+  readonly polygon: RA<L.Polygon | L.Polyline>;
+  readonly polygonBoundary: RA<L.Marker>;
+  readonly errorRadius: RA<L.Circle>;
+};
+export type MarkerGroupsWritable = {
   readonly marker: L.Marker[];
   readonly polygon: (L.Polygon | L.Polyline)[];
   readonly polygonBoundary: L.Marker[];
@@ -402,7 +397,7 @@ export function getMarkersFromLocalityData({
   readonly markerClickCallback?: string | L.LeafletEventHandlerFn;
   readonly iconClass?: string;
 }): MarkerGroups {
-  const markers: MarkerGroups = {
+  const markers: MarkerGroupsWritable = {
     marker: [],
     polygon: [],
     polygonBoundary: [],
@@ -507,7 +502,7 @@ export async function showCOMap(
   listOfLayersRaw: RA<LayerConfig>,
   details: [string, string] | undefined = undefined
 ): Promise<[L.Map, L.Control.Layers, HTMLDivElement | undefined]> {
-  const tileLayers = await getLeafletLayers();
+  const tileLayers = await leafletTileServersPromise;
 
   const listOfLayers: {
     readonly transparent: boolean;

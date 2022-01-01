@@ -2,6 +2,7 @@ import '../../css/lifemapper.css';
 
 import React from 'react';
 
+import ajax from '../ajax';
 import { SN_SERVICES } from '../lifemapperconfig';
 import { prepareLifemapperProjectionMap } from '../lifemappermap';
 import { reducer } from '../lifemapperreducer';
@@ -12,11 +13,10 @@ import {
 } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
+import type { IR, RA } from '../types';
 import type { MainState } from './lifemapperstate';
 import { stateReducer } from './lifemapperstate';
 import type { ComponentProps, Props } from './lifemapperwrapper';
-import type { IR, RA } from '../types';
-import ajax from '../ajax';
 
 type FullAggregatorResponse = {
   readonly records: RA<{
@@ -34,7 +34,7 @@ type FullAggregatorResponse = {
 export function SpecifyNetworkBadge({
   guid,
   model,
-}: ComponentProps): JSX.Element {
+}: ComponentProps): JSX.Element | null {
   const [occurrenceName, setOccurrenceName] = React.useState('');
 
   React.useEffect(() => {
@@ -46,7 +46,7 @@ export function SpecifyNetworkBadge({
       .catch(console.error);
   }, [guid, model]);
 
-  if (!guid) return <></>;
+  if (!guid) return null;
 
   return (
     <a
@@ -55,6 +55,7 @@ export function SpecifyNetworkBadge({
       title={lifemapperText('specifyNetwork')}
       aria-label={lifemapperText('specifyNetwork')}
       className="lifemapper-source-icon"
+      rel="noreferrer"
     >
       <img src="/static/img/specify_network_logo_long.svg" alt="" />
     </a>
@@ -101,9 +102,7 @@ export function Lifemapper({ model }: Props): JSX.Element | null {
 
   // Fetch occurrence data
   React.useEffect(() => {
-    new Promise<string | undefined>((resolve) =>
-      model.rget('fullName').then(resolve)
-    )
+    Promise.resolve(model.get('fullName') as string)
       .then((occurrenceName) =>
         dispatch({
           type: 'SetOccurrenceNameAction',

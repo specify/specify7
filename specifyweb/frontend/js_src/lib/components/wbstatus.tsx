@@ -10,10 +10,10 @@ import { generateReducer } from 'typesafe-reducer';
 import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { useTitle } from './common';
 import { ModalDialog, ProgressBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
-import { useTitle } from './common';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -70,13 +70,14 @@ function WbStatus({
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
         headers: { Accept: 'application/json' },
       }).then(({ data: status }) => {
-        if (destructorCalled) return;
+        if (destructorCalled) return undefined;
         if (status === null)
           handleFinished(state.aborted === 'pending' || state.aborted === true);
         else {
           dispatch({ type: 'RefreshStatusAction', status });
           setTimeout(fetchStatus, REFRESH_RATE);
         }
+        return undefined;
       });
     fetchStatus();
     return (): void => {
@@ -120,7 +121,7 @@ function WbStatus({
   const current =
     typeof state.status?.taskinfo === 'object'
       ? state.status.taskinfo.current
-      : false;
+      : 0;
   const total =
     typeof state.status?.taskinfo === 'object'
       ? state.status.taskinfo?.total
@@ -138,7 +139,7 @@ function WbStatus({
     else
       message = wbText('wbStatusOperationProgress')(
         standartalizedOperation,
-        current || 0,
+        current,
         total
       );
   } else

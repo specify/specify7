@@ -17,9 +17,9 @@ import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
+import { useTitle } from './common';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { useTitle } from './common';
 
 const PREVIEW_SIZE = 100;
 

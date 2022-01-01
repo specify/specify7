@@ -5,14 +5,14 @@ import React from 'react';
 import ajax, { formData } from '../ajax';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
-import { ModalDialog } from './modaldialog';
 import { formatNumber } from './internationalization';
+import { ModalDialog } from './modaldialog';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
 type Notification = {
-  readonly message_id: string;
+  readonly messageId: string;
   readonly read: boolean;
   readonly timestamp: string;
   readonly type: string;
@@ -49,16 +49,24 @@ export default function Notifications(): JSX.Element {
        */
       pullInterval *= INTERVAL_MULTIPLIER;
 
-      void ajax<RA<Omit<Notification, 'payload'>>>(
+      void ajax<
+        RA<
+          Omit<Notification, 'payload' | 'messageId'> & {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            readonly message_id: string;
+          }
+        >
+      >(
         `/notifications/messages/`,
         { headers: { Accept: 'application/json' } },
         { strict: false }
       ).then(({ data: notifications }) => {
-        if (destructorCalled) return;
+        if (destructorCalled) return undefined;
         setNotifications(
           notifications.map(
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ({ message_id, read, timestamp, type, ...rest }) => ({
-              message_id,
+              messageId: message_id,
               read,
               timestamp,
               type,
@@ -71,6 +79,7 @@ export default function Notifications(): JSX.Element {
           document.visibilityState === 'hidden'
             ? undefined
             : window.setTimeout(doFetch, pullInterval);
+        return undefined;
       });
     }
 
@@ -129,6 +138,7 @@ export default function Notifications(): JSX.Element {
                   {
                     method: 'POST',
                     body: formData({
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       last_seen: notifications.slice(-1)[0].timestamp,
                     }),
                   },
@@ -178,7 +188,8 @@ function NotificationComponent({
               '/notifications/delete/',
               {
                 method: 'POST',
-                body: formData({ message_id: notification.message_id }),
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                body: formData({ message_id: notification.messageId }),
               },
               { strict: false }
             );
@@ -282,6 +293,6 @@ const notificationRenderers: IR<
   default(notification) {
     console.error(`Unknown notification type ${notification.type}`);
     console.warn(notification);
-    return <pre>{JSON.stringify(notification, null, 4)}</pre>;
+    return <pre>{JSON.stringify(notification, null, 2)}</pre>;
   },
 };

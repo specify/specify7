@@ -6,16 +6,17 @@ import dateFormat, {
   monthFormat,
 } from '../dateformat';
 import dayjs, { getDateInputValue } from '../dayjs';
-import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import type { RR } from '../types';
+import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
 import UIPlugin from '../uiplugin';
-import createBackboneView from './reactbackboneextend';
-import { defined, RR } from '../types';
 import { dateParts } from './internationalization';
+import createBackboneView from './reactbackboneextend';
+import SpecifyModel from '../specifymodel';
 
-function isInputSupported(type: string) {
+function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
   const value = 'a';
   input.setAttribute('type', type);
@@ -58,13 +59,13 @@ function PartialDateUi({
   readOnly,
   inputId,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyModel;
   readonly dateField: string;
   readonly precisionField: string;
   readonly defaultPrecision: Precision;
   readonly readOnly: boolean;
   readonly inputId: string;
-}) {
+}): JSX.Element {
   const [precision, setPrecision] = React.useState<Precision>(
     () =>
       reversePrecision[model.get(precisionField) as number] ?? defaultPrecision
@@ -85,7 +86,7 @@ function PartialDateUi({
     function setInput() {
       if (destructorCalled) return;
 
-      const value = model.get(dateField);
+      const value = model.get(dateField) as string;
       setMoment(dayjs(value, databaseFormat, true));
     }
 

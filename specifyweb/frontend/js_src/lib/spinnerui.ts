@@ -21,8 +21,7 @@ export default Backbone.View.extend({
      * Disable text-align: right in non chromium browsers
      * as they don't support spinner's arrow customization
      */
-    if(navigator.userAgent.includes('chrome'))
-      this.el.classList.add('chrome');
+    if (navigator.userAgent.includes('chrome')) this.el.classList.add('chrome');
 
     return this;
   },

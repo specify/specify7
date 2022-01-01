@@ -2,9 +2,9 @@ import { error } from './assert';
 import dateFormat from './dateformat';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
+import type { JavaType } from './specifyfield';
 import type { IR, RA, RR } from './types';
 import { hasNativeErrors } from './validationmessages';
-import type { JavaType } from './specifyfield';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>

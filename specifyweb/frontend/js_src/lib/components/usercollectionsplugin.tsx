@@ -8,9 +8,9 @@ import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
+import { useId } from './common';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { useId } from './common';
 
 function UserCollectionsUi({
   userId,

@@ -1,6 +1,6 @@
 import React from 'react';
-import ajax from '../ajax';
 
+import ajax from '../ajax';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
@@ -47,12 +47,12 @@ type SpLocaleItemStringBase = {
   // Readonly variant: null;
 };
 
-export type SpLocaleItemStr = CommonTableFields &
+export type SpLocaleItemString = CommonTableFields &
   SpLocaleItemStringBase & {
     readonly id: number;
   };
 
-export type NewSpLocaleItemStr = SpLocaleItemStringBase & {
+export type NewSpLocaleItemString = SpLocaleItemStringBase & {
   readonly id?: number;
   readonly parent?: string;
 };
@@ -64,7 +64,7 @@ export type UiFormatter = {
   readonly value: string;
 };
 
-export type DataObjFormatter = {
+export type DataObjectFormatter = {
   readonly title: string;
   readonly className: string;
 };
@@ -91,8 +91,8 @@ export function SchemaConfig({
   readonly defaultTable: SpLocaleContainer | undefined;
   readonly webLinks: RA<string>;
   readonly uiFormatters: RA<UiFormatter>;
-  readonly dataObjFormatters: IR<DataObjFormatter>;
-  readonly dataObjAggregators: IR<DataObjFormatter>;
+  readonly dataObjFormatters: IR<DataObjectFormatter>;
+  readonly dataObjAggregators: IR<DataObjectFormatter>;
   readonly onClose: () => void;
   readonly onSave: (language: string) => void;
   readonly removeUnloadProtect: () => void;
@@ -121,18 +121,22 @@ export function SchemaConfig({
 
   // Fetch table items after table is selected
   const tableId = 'table' in state ? state.table.id : undefined;
+  const stateLanguage = 'language' in state ? state.language : undefined;
+  const stateTable = 'table' in state ? state.table : undefined;
   React.useEffect(() => {
     if (
       state.type !== 'FetchingTableItemsState' ||
+      typeof stateLanguage === 'undefined' ||
+      typeof stateTable === 'undefined' ||
       typeof tableId === 'undefined'
     )
       return undefined;
 
-    const [language, country = null] = state.language.split('_');
+    const [language, country = null] = stateLanguage.split('_');
 
     const fields = Object.fromEntries(
       Object.values(schema.models)
-        .find(({ name }) => name.toLowerCase() === state.table.name)
+        .find(({ name }) => name.toLowerCase() === stateTable.name)
         ?.fields.map((field) => [
           field.name,
           {
@@ -195,9 +199,9 @@ export function SchemaConfig({
           }))
         ),
       // Fetch table strings
-      fetchStrings([state.table], language, country),
+      fetchStrings([stateTable], language, country),
     ]).then(([pickLists, items, [table]]) => {
-      if (destructorCalled) return;
+      if (destructorCalled) return undefined;
       dispatch({
         type: 'FetchedTableDataAction',
         table: {
@@ -208,13 +212,14 @@ export function SchemaConfig({
         },
         items: Object.fromEntries(items.map((item) => [item.id, item])),
       });
+      return undefined;
     });
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  }, [state.type, tableId]);
+  }, [state.type, stateLanguage, stateTable, tableId]);
 
   // Set unload protect after changes were made
   const changesMade =
@@ -224,6 +229,7 @@ export function SchemaConfig({
   React.useEffect(() => {
     if (changesMade) setUnloadProtect();
     return removeUnloadProtect;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changesMade]);
 
   // Save Changes
@@ -232,13 +238,13 @@ export function SchemaConfig({
     removeUnloadProtect();
 
     const saveString = async (
-      resource: NewSpLocaleItemStr | SpLocaleItemStr
+      resource: NewSpLocaleItemString | SpLocaleItemString
     ): Promise<unknown> =>
       'resource_uri' in resource && resource.id >= 0
         ? saveResource(resource as CommonTableFields)
         : ajax('/api/specify/splocaleitemstr/', {
             method: 'POST',
-            body: prepareNewString(resource as NewSpLocaleItemStr),
+            body: prepareNewString(resource as NewSpLocaleItemString),
           });
 
     const saveResource = async (
@@ -270,6 +276,7 @@ export function SchemaConfig({
     Promise.all(requests)
       .then(() => handleSave(state.language))
       .catch(handlePromiseReject);
+    // eslint-ignore-next-line react-hooks/exhaustive-deps
   }, [state.type]);
 
   return stateReducer(<i />, {

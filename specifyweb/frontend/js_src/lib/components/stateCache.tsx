@@ -50,6 +50,7 @@ export function useCachedState<
     [bucketName, cacheName, bucketType]
   );
 
+  /* eslint-disable no-inline-comments */
   if (typeof state === 'undefined')
     (typeof defaultValue === 'function'
       ? // @ts-expect-error
@@ -58,6 +59,7 @@ export function useCachedState<
     )
       .then(setCachedState)
       .catch(console.error);
+  /* eslint-enable no-inline-comments */
 
   return [state, setCachedState];
 }

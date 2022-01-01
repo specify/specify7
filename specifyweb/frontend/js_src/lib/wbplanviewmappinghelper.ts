@@ -4,13 +4,13 @@
  * @module
  */
 
-import type { R, RA } from './types';
 import type {
   FullMappingPath,
   MappingPath,
   MappingType,
   RelationshipType,
 } from './components/wbplanviewmapper';
+import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import dataModelStorage from './wbplanviewmodel';
 

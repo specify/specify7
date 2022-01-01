@@ -316,7 +316,7 @@ function ChangeOwner({
           >
             {users.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.get('name')}
+                {user.get('name') as string}
               </option>
             ))}
           </select>

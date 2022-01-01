@@ -1,4 +1,4 @@
-import type { IR, R, RA, RR } from './types';
+import ajax from './ajax';
 import type { LayerConfig, MarkerGroups } from './leaflet';
 import * as Leaflet from './leaflet';
 import type { MessageTypes } from './lifemapperconfig';
@@ -16,8 +16,8 @@ import {
 } from './localityrecorddataextractor';
 import lifemapperText from './localization/lifemapper';
 import schema from './schema';
+import type { IR, R, RA, RR } from './types';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
-import ajax from './ajax';
 
 export async function prepareLifemapperProjectionMap(
   remoteOccurrence: string,

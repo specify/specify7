@@ -1,4 +1,3 @@
-import type { Model } from 'backbone';
 import Backbone from 'backbone';
 import $ from 'jquery';
 import React from 'react';
@@ -226,13 +225,13 @@ function QueryToolbarItem({
       destructorCalled
         ? undefined
         : setQueries(
-            (queryModels.models as RA<Model>).map((query) => ({
-              id: query.get('id'),
-              name: query.get('name'),
+            queryModels.models.map((query) => ({
+              id: query.get('id') as number,
+              name: query.get('name') as string,
               tableName: getModelById(
-                query.get('contexttableid')
+                query.get('contexttableid') as number
               ).name.toLowerCase(),
-              dateCreated: query.get('timestampcreated'),
+              dateCreated: query.get('timestampcreated') as string,
             }))
           )
     );

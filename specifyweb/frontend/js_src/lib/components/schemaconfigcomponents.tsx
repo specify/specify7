@@ -50,7 +50,11 @@ export function PickList({
   );
 }
 
-function Values({ values }: { values: RA<string> | IR<string> }): JSX.Element {
+function Values({
+  values,
+}: {
+  readonly values: RA<string> | IR<string>;
+}): JSX.Element {
   return (
     <>
       {Array.isArray(values)

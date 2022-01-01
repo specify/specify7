@@ -106,9 +106,10 @@ function Main({
         setUserTools(enabledUserTools);
 
         handleReady();
+        return undefined;
       })
       .catch(console.error);
-  }, []);
+  }, [handleReady]);
 
   return typeof menuItems === 'undefined' ||
     typeof userTools === 'undefined' ? null : (

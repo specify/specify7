@@ -1,8 +1,8 @@
-import * as app from './specifyapp';
-import router from './router';
-import NotFoundView from './notfoundview';
 import ajax, { Http } from './ajax';
-import { Dataset } from './components/wbplanview';
+import type { Dataset } from './components/wbplanview';
+import NotFoundView from './notfoundview';
+import router from './router';
+import * as app from './specifyapp';
 
 export default function () {
   router.route('workbench-plan/:id/', 'workbench-plan', (id: string) => {

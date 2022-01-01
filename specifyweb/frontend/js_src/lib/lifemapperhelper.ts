@@ -1,6 +1,6 @@
-import type { R, RA } from './types';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Field, LocalityData } from './leafletutils';
+import type { R, RA } from './types';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import {
   deflateMappingPaths,

@@ -2,10 +2,10 @@ import React from 'react';
 
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
+import { useTitle } from '../common';
 import type { UserTool } from '../main';
 import { closeDialog, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { useTitle } from '../common';
 
 function AppResourceDialog({
   onClose: handleClose,

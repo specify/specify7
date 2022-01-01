@@ -1,10 +1,10 @@
 import ajax from './ajax';
 import type {
-  DataObjFormatter as DataObjectFormatter,
+  DataObjectFormatter,
   ItemType,
-  NewSpLocaleItemStr as NewSpLocaleItemString,
+  NewSpLocaleItemString,
   SpLocaleItem,
-  SpLocaleItemStr as SpLocaleItemString,
+  SpLocaleItemString,
 } from './components/schemaconfig';
 import type {
   WithFetchedStrings,
