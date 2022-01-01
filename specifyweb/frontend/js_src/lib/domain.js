@@ -54,7 +54,7 @@ function takeBetween(items, startElem, endElem) {
 
         export function getDomainResource(level) {
             const id = schema.domainLevelIds[level];
-            return id == null ? null : new (getModel(level).Resource)({ id: id });
+            return id == null ? undefined : new (getModel(level).Resource)({ id: id });
         }
         export function getTreeDef(treeName) {
             treeName = treeName.toLowerCase();

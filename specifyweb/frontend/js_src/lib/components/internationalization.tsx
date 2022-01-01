@@ -51,15 +51,7 @@ declare namespace Intl {
 
     public format(
       count: number,
-      type:
-        | 'second'
-        | 'minute'
-        | 'milisecond'
-        | 'hour'
-        | 'day'
-        | 'week'
-        | 'month'
-        | 'year'
+      type: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
     ): string;
   }
 
@@ -80,6 +72,7 @@ const longDate = new Intl.DateTimeFormat(LANGUAGE, {
   dateStyle: 'full',
   timeStyle: 'long',
 });
+
 export function DateElement({
   date,
   fallback = undefined,
@@ -120,7 +113,7 @@ const numberFormatter = new Intl.NumberFormat(LANGUAGE);
 export const formatNumber = (number: number): string =>
   numberFormatter.format(number);
 
-const MILISECONDS = 1000;
+const MILLISECONDS = 1000;
 const SECOND = 1;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
@@ -134,11 +127,16 @@ const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
 });
 
 export function getRelativeDate(date: Date): string {
-  const timePassed = Math.round(
-    (new Date().getTime() - date.getTime()) / MILISECONDS
-  );
-  if (timePassed < 0) throw new Error('Future dates are not supported');
-  else if (timePassed <= MINUTE)
+  const timePassed = Math.round((Date.now() - date.getTime()) / MILLISECONDS);
+  if (timePassed < 0) {
+    /*
+     * This happens due to time zone conversion issues.
+     * Need to fix that issue on the front-end first.
+     */
+    // Throw new Error('Future dates are not supported');
+    console.error('Future dates are not supported');
+    return relativeDate.format(0, 'second');
+  } else if (timePassed <= MINUTE)
     return relativeDate.format(-Math.round(timePassed / SECOND), 'second');
   else if (timePassed <= HOUR)
     return relativeDate.format(-Math.round(timePassed / MINUTE), 'minute');

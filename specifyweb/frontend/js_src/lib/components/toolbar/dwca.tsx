@@ -21,9 +21,10 @@ const liftGetResource = async (
     .then(({ status }) => {
       if (status === Http.NOT_FOUND) throw new Error(errorMessage);
       errorField?.setCustomValidity('');
+      return undefined;
     })
-    .catch((error) => {
-      errorField?.setCustomValidity(error.toString());
+    .catch((error: Error) => {
+      errorField?.setCustomValidity(error.message);
       throw error;
     });
 

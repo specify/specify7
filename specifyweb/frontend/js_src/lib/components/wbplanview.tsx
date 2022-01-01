@@ -51,7 +51,7 @@ export type Dataset = DatasetBrief & {
   readonly columns: RA<string>;
   readonly createdbyagent: string;
   readonly importedfilename: string;
-  readonly modifiedbyagent: string;
+  readonly modifiedbyagent: string | null;
   readonly remarks: string | null;
   readonly rowresults: RA<UploadResult> | null;
   readonly rows: RA<RA<string>>;

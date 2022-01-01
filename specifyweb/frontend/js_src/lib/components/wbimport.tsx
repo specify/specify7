@@ -10,7 +10,7 @@ import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
-import ajax from '../ajax';
+import ajax, { Http } from '../ajax';
 import encodings from '../encodings';
 import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
@@ -165,18 +165,22 @@ class WbImport extends Component<{}, WbImportState> {
   ) {
     uniquifyDataSetName(name)
       .then(async (name) =>
-        ajax<Dataset>('/api/workbench/dataset/', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
+        ajax<Dataset>(
+          '/api/workbench/dataset/',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+            },
+            body: {
+              name,
+              importedfilename: filename,
+              columns: header,
+              rows: data,
+            },
           },
-          body: {
-            name,
-            importedfilename: filename,
-            columns: header,
-            rows: data,
-          },
-        })
+          { expectedResponseCodes: [Http.CREATED] }
+        )
       )
       .then(({ data: { id } }) => {
         navigation.go(`/workbench/${id}/`);

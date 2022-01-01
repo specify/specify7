@@ -37,7 +37,7 @@ const createBackboneView = <
       self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
     ) => COMPONENT_PROPS;
   } = {}
-): new (props: CONSTRUCTOR_PROPS) => View =>
+): new (props: CONSTRUCTOR_PROPS & { readonly el?: HTMLElement }) => View =>
   Backbone.View.extend({
     __name__: Component.name,
     className,

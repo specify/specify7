@@ -1257,7 +1257,7 @@ const wbText = createDictionary({
     'ru-ru': 'Создайте новый',
     ca: 'Create New',
   },
-  // DataSetMeta
+  // Datasetmeta
   dataSetMetaDialogTitle: {
     'en-us': 'Data Set Properties',
     'ru-ru': 'Свойства набора данных',
@@ -1314,9 +1314,9 @@ const wbText = createDictionary({
     ca: 'Data Set Properties',
   },
   changeDataSetOwnerDialogHeader: {
-    'en-us': header('Change Data Set Owner'),
-    'ru-ru': header('Изменить владельца набора данных'),
-    ca: header('Change Data Set Owner'),
+    'en-us': jsxHeader('Change Data Set Owner'),
+    'ru-ru': jsxHeader('Изменить владельца набора данных'),
+    ca: jsxHeader('Change Data Set Owner'),
   },
   changeDataSetOwnerDialogMessage: {
     'en-us': 'Select New Owner:',
@@ -1329,9 +1329,9 @@ const wbText = createDictionary({
     ca: 'Data Set Properties',
   },
   dataSetOwnerChangedDialogHeader: {
-    'en-us': header('Data Set owner changed'),
-    'ru-ru': header('Владелец набора данных изменен'),
-    ca: header('Data Set owner changed'),
+    'en-us': jsxHeader('Data Set owner changed'),
+    'ru-ru': jsxHeader('Владелец набора данных изменен'),
+    ca: jsxHeader('Data Set owner changed'),
   },
   dataSetOwnerChangedDialogMessage: {
     'en-us': 'Data Set owner changed.',

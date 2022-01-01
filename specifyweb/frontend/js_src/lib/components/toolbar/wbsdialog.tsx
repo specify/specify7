@@ -7,7 +7,6 @@
 import React from 'react';
 
 import ajax from '../../ajax';
-import { DataSetMeta } from '../../datasetmeta';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
@@ -15,6 +14,7 @@ import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
 import { compareValues, SortIndicator, useTitle } from '../common';
+import { DataSetMeta } from '../datasetmeta';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
@@ -38,48 +38,33 @@ const createEmptyDataSet = async (): Promise<void> =>
     },
   }).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
 
-// TODO: get rid of this
 /**
- * React Wrapper for Data Set Meta Backbone View
+ * Wrapper for Data Set Meta
  */
 function DsMeta({
   dsId,
-  onClose,
+  onClose: handleClose,
 }: {
   readonly dsId: number;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [dataset, setDataset] = React.useState<Dataset | undefined>(undefined);
-  const dialog = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    ajax<Dataset>(`/api/workbench/dataset/${dsId}/`).then(({ data }) =>
+    void ajax<Dataset>(`/api/workbench/dataset/${dsId}/`).then(({ data }) =>
       destructorCalled ? undefined : setDataset(data)
     );
     let destructorCalled = false;
-    return () => {
+    return (): void => {
       destructorCalled = true;
     };
   }, [dsId]);
-
-  React.useEffect(() => {
-    if (typeof dataset === 'undefined' || dialog === null) return;
-
-    const dataSetMeta = new DataSetMeta({
-      dataset,
-      el: dialog,
-      onClose,
-    });
-
-    dataSetMeta.render();
-
-    return () => dataSetMeta.remove();
-  }, [dataset, dialog]);
-
-  return (
-    <div>
-      <div ref={dialog} />
-    </div>
+  return typeof dataset === 'undefined' ? null : (
+    <DataSetMeta
+      dataset={dataset}
+      onClose={handleClose}
+      onChange={handleClose}
+    />
   );
 }
 
@@ -110,7 +95,7 @@ function Dialog({
     !(userInfo as unknown as { isReadOnly: boolean }).isReadOnly;
 
   const [sortConfig, setSortConfig] = useCachedState({
-    bucketName: 'sort-config',
+    bucketName: 'sortConfig',
     cacheName: 'listOfDataSets',
     bucketType: 'localStorage',
     defaultValue: {
@@ -300,9 +285,7 @@ function Dialog({
   );
 }
 
-/**
- * Render a dialog for choosing a data set
- */
+/** Render a dialog for choosing a data set */
 export function WbsDialog({
   onClose: handleClose,
   showTemplates,
@@ -311,7 +294,7 @@ export function WbsDialog({
   readonly showTemplates: boolean;
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
-}) {
+}): JSX.Element {
   useTitle(commonText('workbench'));
 
   const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(

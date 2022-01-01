@@ -23,10 +23,10 @@ import Papa from 'papaparse';
 
 import 'handsontable/dist/handsontable.full.css';
 
-import {getModel} from './schema';
+import { getModel } from './schema';
 import * as app from './specifyapp';
 import userInfo from './userinfo';
-import DataSetMeta from './datasetmeta';
+import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
 import NotFoundView from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
@@ -40,19 +40,19 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import {uploadPlanToMappingsTree} from './uploadplantomappingstree';
-import {capitalize, extractDefaultValues} from './wbplanviewhelper';
-import {getTableFromMappingPath} from './wbplanviewnavigator';
-import {getIcon} from './icons';
+import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
+import { capitalize, extractDefaultValues } from './wbplanviewhelper';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { getIcon } from './icons';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import {LoadingScreen} from './components/modaldialog';
-import {format} from './dataobjformatters';
-import {dataModelPromise} from "./wbplanviewmodelfetcher";
-import {mappingsTreeToSplitMappingPaths} from "./wbplanviewtreehelper";
-import createBackboneView from "./components/reactbackboneextend";
+import { LoadingScreen } from './components/modaldialog';
+import { format } from './dataobjformatters';
+import { dataModelPromise } from './wbplanviewmodelfetcher';
+import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
+import createBackboneView from './components/reactbackboneextend';
 
 const metaKeys = [
   'isNew',
@@ -1786,9 +1786,7 @@ const WBView = Backbone.View.extend({
       });
   },
   changeOwner() {
-    this.datasetmeta.dataSetMeta.changeOwnerWindow.call(
-      this.datasetmeta.dataSetMeta
-    );
+    this.datasetmeta.changeOwner();
   },
 
   // Actions
@@ -2575,4 +2573,4 @@ export default function loadDataset(
       }
       return jqXHR;
     });
-};
+}

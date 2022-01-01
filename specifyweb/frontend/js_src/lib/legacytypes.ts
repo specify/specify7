@@ -35,6 +35,7 @@ export type SpecifyResource = Backbone.Model & {
   readonly specifyModel: SpecifyModel;
   readonly saveBlockers: SaveBlockers;
   readonly parent?: SpecifyResource;
+  readonly format: () => JqueryPromise<string>;
   readonly collection: Backbone.Model['collection'] & {
     readonly related: SpecifyResource;
   };

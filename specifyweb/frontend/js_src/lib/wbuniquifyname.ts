@@ -21,12 +21,12 @@ export default async function uniquifyDataSetName(
 ): Promise<string> {
   const trimmedName = name.trim().slice(0, MAX_NAME_LENGTH);
 
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`).then(
-    ({ data: datasets }) => {
-      const usedNames = datasets
-        .filter(({ id }) => id !== currentDataSetId)
-        .map(({ name }) => name);
-      return addSuffix(trimmedName, usedNames);
-    }
-  );
+  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+    headers: { Accept: 'application/json' },
+  }).then(({ data: datasets }) => {
+    const usedNames = datasets
+      .filter(({ id }) => id !== currentDataSetId)
+      .map(({ name }) => name);
+    return addSuffix(trimmedName, usedNames);
+  });
 }

@@ -54,7 +54,7 @@ function QueryList({
   readonly getQuerySelectUrl?: (query: Query) => string;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
-    bucketName: 'sort-config',
+    bucketName: 'sortConfig',
     cacheName: 'listOfQueries',
     bucketType: 'localStorage',
     defaultValue: {

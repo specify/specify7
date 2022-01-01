@@ -1,4 +1,3 @@
-import type Backbone from './backbone';
 import collectionapi from './collectionapi';
 import { getIcon } from './icons';
 import type { JqueryPromise, SpecifyResource } from './legacytypes';
@@ -43,6 +42,8 @@ type Collection = new (props?: {
   >;
 }) => SpecifyFetch;
 
+type Resource = new (props?: { readonly id: number }) => SpecifyResource;
+
 type SpecifyFetch = {
   readonly fetch: (filter: { readonly limit: number }) => JqueryPromise<void>;
   readonly models: RA<SpecifyResource>;
@@ -66,7 +67,7 @@ export default class SpecifyModel {
 
   private readonly fieldAliases: RA<FieldAlias>;
 
-  public readonly Resource: Backbone.View;
+  public readonly Resource: Resource;
 
   public readonly LazyCollection: Collection;
 
