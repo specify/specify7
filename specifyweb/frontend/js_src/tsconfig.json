@@ -1,7 +1,7 @@
 {
   /* File Inclusion */
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "bower_components", "testBuild"],
+  "exclude": ["node_modules", "testBuild"],
   "compilerOptions": {
     /* Basic Options */
     "isolatedModules": true,
@@ -22,7 +22,7 @@
     "module": "CommonJS",
     "noEmit": true,
     "sourceMap": true,
-    "target": "es2015",
+    "target": "esnext",
     "allowJs": true,
     "checkJs": false,
     /**/

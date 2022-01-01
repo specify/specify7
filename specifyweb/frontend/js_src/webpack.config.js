@@ -83,7 +83,7 @@ module.exports = (_env, argv)=>({
             },
             {
                 test: /\.[tj]sx?$/,
-                exclude: /(node_modules)|(bower_components)/,
+                exclude: /(node_modules)/,
                 use: [{
                     loader: "babel-loader?+cacheDirectory",
                     options: {
@@ -115,7 +115,7 @@ module.exports = (_env, argv)=>({
          * rewritten to .ts, but the old .js still remains in a docker volume,
          * it gets ignored in favor of the new .ts file
          */
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        extensions: ['.ts', '.tsx', '.js'],
         symlinks: false,
     },
     plugins: [
