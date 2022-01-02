@@ -9,8 +9,6 @@ import React from 'react';
 
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
-import { setTitle } from '../specifyapp';
-import type { R } from '../types';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 
@@ -96,39 +94,6 @@ export const tableIconSelected = (
 export const tableIconEmpty = (
   <span className="table-icon table-icon-empty" aria-hidden={true} />
 );
-
-const idStore: R<number> = {};
-
-export function useId(prefix: string): (suffix: string) => string {
-  const id = React.useRef(-1);
-
-  const resolvedPrefix = `${prefix}-`;
-
-  if (!(resolvedPrefix in idStore)) idStore[resolvedPrefix] = 0;
-
-  if (id.current === -1) {
-    id.current = idStore[resolvedPrefix];
-    idStore[resolvedPrefix] += 1;
-  }
-
-  return (suffix = ''): string =>
-    `${resolvedPrefix}${id.current}${suffix ? `-${suffix}` : ''}`;
-}
-
-export function useTitle(title: string): void {
-  // Reset title after component is destroyed
-  React.useEffect(() => {
-    const initialTitle = document.body.title;
-    return (): void => {
-      document.body.title = initialTitle;
-    };
-  }, []);
-
-  // Change page's title
-  React.useEffect(() => {
-    setTitle(title);
-  }, [title]);
-}
 
 /** Internationalized bi-directional string comparison function */
 export const compareValues = (
