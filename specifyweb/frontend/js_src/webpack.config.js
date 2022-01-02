@@ -138,10 +138,10 @@ module.exports = (_env, argv)=>({
         ? 'eval-source-map'
         : 'source-map',
     entry: {
-        main: "./lib/main.js",
-        login: "./lib/login.ts",
-        passwordchange: "./lib/passwordchange.ts",
-        choosecollection: "./lib/choosecollection.ts",
+        main: "./lib/components/entrypoint.tsx",
+        login: "./lib/components/login.tsx",
+        passwordchange: "./lib/components/passwordchange.tsx",
+        choosecollection: "./lib/components/choosecollection.tsx",
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

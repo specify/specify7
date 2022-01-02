@@ -6,7 +6,6 @@ module.exports = {
     './lib/components/**/*.tsx',
     './lib/templates/*.html',
     './lib/*.{ts,js}',
-    './../../templates/*.html',
     // Don't search for classes in node-modules, tests or localization
   ],
   corePlugins: {
@@ -22,7 +21,7 @@ module.exports = {
       colors: {
         shadow: '#0009',
         brand: {
-          100: 'fdb',
+          100: '#fdb',
           200: '#f94',
           300: '#f73',
         }
@@ -32,4 +31,10 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
   ],
+  // Disable purge in development for convenience
+  ...(process.env.NODE_ENV === 'production' ? {} : {
+    safelist: [
+      {pattern: /./},
+    ],
+  }),
 }
