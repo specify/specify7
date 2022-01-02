@@ -2,7 +2,7 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
-import { useId } from './common';
+import { useId } from './hooks';
 import { ModalDialog } from './modaldialog';
 
 export function PickList({

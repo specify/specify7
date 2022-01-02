@@ -1,26 +1,30 @@
-import '../../css/schemaconfig.css';
+import '../../../css/schemaconfig.css';
 
 import React from 'react';
 
-import ajax from '../ajax';
-import { getAggregators, getFormatters } from '../dataobjformatters';
-import commonText from '../localization/common';
-import { LANGUAGE } from '../localization/utils';
-import * as navigation from '../navigation';
-import schema from '../schema';
-import { formatAggregators } from '../schemaconfighelper';
-import type { JavaType, RelationshipType } from '../specifyfield';
-import type { IR, RA } from '../types';
-import * as UiFormatters from '../uiformatters';
-import { fetchingParameters } from '../wbplanviewmodelconfig';
-import { tableHasOverwrite } from '../wbplanviewmodelfetcher';
-import { webLinksDefs } from '../weblinkbutton';
-import { useTitle } from './common';
-import { LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import type { NewSpLocaleItemString, SpLocaleItemString } from './schemaconfig';
-import { SchemaConfig } from './schemaconfig';
-import { handlePromiseReject } from './wbplanview';
+import ajax from '../../ajax';
+import { getAggregators, getFormatters } from '../../dataobjformatters';
+import commonText from '../../localization/common';
+import { LANGUAGE } from '../../localization/utils';
+import * as navigation from '../../navigation';
+import schema from '../../schema';
+import { formatAggregators } from '../../schemaconfighelper';
+import type { JavaType, RelationshipType } from '../../specifyfield';
+import type { IR, RA } from '../../types';
+import * as UiFormatters from '../../uiformatters';
+import { fetchingParameters } from '../../wbplanviewmodelconfig';
+import { tableHasOverwrite } from '../../wbplanviewmodelfetcher';
+import { webLinksDefs } from '../../weblinkbutton';
+import { useTitle } from '../hooks';
+import type { UserTool } from '../main';
+import { LoadingScreen } from '../modaldialog';
+import createBackboneView from '../reactbackboneextend';
+import type {
+  NewSpLocaleItemString,
+  SpLocaleItemString,
+} from '../schemaconfig';
+import { SchemaConfig } from '../schemaconfig';
+import { handlePromiseReject } from '../wbplanview';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -114,6 +118,7 @@ function SchemaConfigWrapper({
         readonly country: string | null;
         readonly language: string;
       }>
+      // eslint-disable-next-line @typescript-eslint/naming-convention
     >('/context/schema/language/', { headers: { Accept: 'application/json' } })
       .then(({ data }) =>
         // Sometimes languages are duplicated. Need to make the list unique
@@ -169,6 +174,7 @@ function SchemaConfigWrapper({
 
     ajax<{ readonly objects: RA<SpLocaleContainer> }>(
       '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       { headers: { Accept: 'application/json' } }
     )
       .then(({ data: { objects } }) =>
@@ -229,26 +235,31 @@ const setUnloadProtect = (self: unknown): void =>
 const removeUnloadProtect = (self: unknown): void =>
   navigation.removeUnloadProtect(self);
 
-export default createBackboneView<Props, ConstructorProps>(
-  SchemaConfigWrapper,
-  {
-    tagName: 'section',
-    className: 'schema-config-container schema-config content',
-    getComponentProps: (self) => {
-      const urlSearchParameters = new URLSearchParams(window.location.search);
-      const parameters = Object.fromEntries(urlSearchParameters.entries());
-      return {
-        onClose: self.options.onClose,
-        onSave: (language): void => {
-          removeUnloadProtect(self);
-          // Reload the page after schema changes
-          window.location.href = `/specify/task/schema-config/?language=${language}`;
-        },
-        removeUnloadProtect: (): void => removeUnloadProtect(self),
-        setUnloadProtect: (): void => setUnloadProtect(self),
-        defaultLanguage: parameters.language,
-        defaultTable: parameters.table,
-      };
-    },
-  }
-);
+const View = createBackboneView<Props, ConstructorProps>(SchemaConfigWrapper, {
+  tagName: 'section',
+  className: 'schema-config-container schema-config content',
+  getComponentProps: (self) => {
+    const urlSearchParameters = new URLSearchParams(window.location.search);
+    const parameters = Object.fromEntries(urlSearchParameters.entries());
+    return {
+      onClose: self.options.onClose,
+      onSave: (language): void => {
+        removeUnloadProtect(self);
+        // Reload the page after schema changes
+        window.location.href = `/specify/task/schema-config/?language=${language}`;
+      },
+      removeUnloadProtect: (): void => removeUnloadProtect(self),
+      setUnloadProtect: (): void => setUnloadProtect(self),
+      defaultLanguage: parameters.language,
+      defaultTable: parameters.table,
+    };
+  },
+});
+
+const userTool: UserTool = {
+  task: 'schema-config',
+  title: commonText('schemaConfig'),
+  view: ({ onClose }) => new View({ onClose }),
+};
+
+export default userTool;

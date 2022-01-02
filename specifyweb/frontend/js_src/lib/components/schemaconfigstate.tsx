@@ -27,7 +27,7 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
   WithTableInfo,
-} from './schemaconfigwrapper';
+} from './toolbar/schemaconfig';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
 

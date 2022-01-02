@@ -8,7 +8,7 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
   WithTableInfo,
-} from './components/schemaconfigwrapper';
+} from './components/toolbar/schemaconfig';
 import { sortObjectsByKey } from './schemaconfighelper';
 import type { IR } from './types';
 

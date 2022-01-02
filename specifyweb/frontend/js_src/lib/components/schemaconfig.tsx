@@ -5,14 +5,14 @@ import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
-import { useId } from './common';
+import { useId } from './hooks';
 import { stateReducer } from './schemaconfigstate';
 import type {
   CommonTableFields,
   SpLocaleContainer,
   WithFetchedStrings,
   WithFieldInfo,
-} from './schemaconfigwrapper';
+} from './toolbar/schemaconfig';
 import { handlePromiseReject } from './wbplanview';
 
 export type SpLocaleItem = CommonTableFields & {

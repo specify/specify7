@@ -9,7 +9,7 @@ import type {
 import type {
   WithFetchedStrings,
   WithFieldInfo,
-} from './components/schemaconfigwrapper';
+} from './components/toolbar/schemaconfig';
 import commonText from './localization/common';
 import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
