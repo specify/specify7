@@ -2,7 +2,21 @@
 
 module.exports = {
   extends: '@maxxxxxdlp/stylelint-config',
-  rules: {},
+  rules: {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "extends",
+          "apply",
+          "tailwind",
+          "components",
+          "utilities",
+          "screen"
+        ]
+      }
+    ]
+  },
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],

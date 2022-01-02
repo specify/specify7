@@ -9,7 +9,7 @@
 
 import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
-import type { IR, RA } from './types';
+import type { IR } from './types';
 
 export const dataModelFetcherVersion = '4';
 

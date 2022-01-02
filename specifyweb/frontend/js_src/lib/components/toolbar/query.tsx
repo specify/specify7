@@ -21,6 +21,7 @@ import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
+import { SpecifyResource } from '../../legacytypes';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -350,7 +351,7 @@ const EditQueryDialog = Backbone.View.extend({
     'click .query-export': 'exportQuery',
     'click .create-report, .create-label': 'createReport',
   },
-  initialize(options: { readonly spquery: Model }) {
+  initialize(options: { readonly spquery: SpecifyResource }) {
     this.spquery = options.spquery;
     this.model = getModelById(this.spquery.get('contexttableid'));
   },

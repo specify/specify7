@@ -14,7 +14,7 @@ import { getValidationAttributes, resolveParser } from '../uiparse';
 import UIPlugin from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
-import SpecifyModel from '../specifymodel';
+import { SpecifyResource } from '../legacytypes';
 
 function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -59,7 +59,7 @@ function PartialDateUi({
   readOnly,
   inputId,
 }: {
-  readonly model: SpecifyModel;
+  readonly model: SpecifyResource;
   readonly dateField: string;
   readonly precisionField: string;
   readonly defaultPrecision: Precision;

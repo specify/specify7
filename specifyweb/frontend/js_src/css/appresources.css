@@ -4,7 +4,7 @@
     display: flex;
     width: 100%;
     justify-content: left;
-    align-items: start;
+    align-items: flex-start;
 }
 
 #appresources-view {

@@ -4,5 +4,7 @@ import '../css/choosecollection.css';
 
 window.addEventListener('load', () => {
   if (document.querySelector('input[name="collection"]:checked'))
-    document.querySelector('input[type="submit"]')?.focus();
+    (
+      document.querySelector('input[type="submit"]') as HTMLElement | null
+    )?.focus();
 });

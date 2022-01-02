@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import { load } from './initialcontext';
 import commonText from './localization/common';
 import type { IR, RA } from './types';

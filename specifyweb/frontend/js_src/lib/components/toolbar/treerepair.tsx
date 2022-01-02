@@ -34,8 +34,10 @@ export function TreeSelectDialog({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    Promise.resolve(defined(getDomainResource('discipline')).rget('type'))
-      .then((type: string) => [
+    Promise.resolve(
+      defined(getDomainResource('discipline')).get('type') as string
+    )
+      .then((type) => [
         ...treesForAll,
         ...(paleoDiscs.has(type) ? treesForPaleo : []),
       ])

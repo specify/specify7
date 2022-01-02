@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const fs = require('fs');
 const webpack = require("webpack");
@@ -69,7 +71,8 @@ module.exports = (_env, argv)=>({
                 test: /\.css$/,
                 use: [
                     "style-loader",
-                    "css-loader"
+                    "css-loader",
+                    "postcss-loader",
                 ]
             },
             {

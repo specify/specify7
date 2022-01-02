@@ -1,7 +1,12 @@
 import router from './router';
 
-export default function () {
-  router.route('workbench/:id/', 'workbench', function (id: number) {
-    import('./wbview').then(({ default: WbView }) => WbView(id));
-  });
+export default function (): void {
+  router.route(
+    'workbench/:id/',
+    'workbench',
+    (id: string): void =>
+      void import('./wbview').then(({ default: wbView }) =>
+        wbView(Number.parseInt(id))
+      )
+  );
 }
