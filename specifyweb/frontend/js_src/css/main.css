@@ -3,7 +3,6 @@
 
 @import url('./colors.css');
 @import url('./base.css');
-@import url('./loading.css');
 @import url('./header.css');
 @import url('./specifyform.css');
 @import url('./specifyform-print.css');
@@ -22,6 +21,53 @@
 @tailwind base;
 
 @layer base {
+  [type='text'],
+  [type='email'],
+  [type='url'],
+  [type='password'],
+  [type='number'],
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='search'],
+  [type='tel'],
+  [type='time'],
+  [type='week'],
+  [multiple],
+  textarea,
+  select {
+    @apply p-1 bg-gray-200 rounded;
+  }
+
+  select {
+    @apply pr-5 bg-right;
+  }
+
+  form:not(.not-submitted) input:invalid,
+  input:not(.not-touched):invalid,
+  form:not(.not-submitted) select:invalid,
+  select:not(.not-touched):invalid,
+  form:not(.not-submitted) textarea:invalid,
+  textarea:not(.not-touched):invalid {
+    @apply bg-red-400;
+  }
+
+  [type='submit'],
+  [type='button'],
+  button {
+    @apply border rounded cursor-pointer;
+  }
+
+  [type='submit']:disabled,
+  [type='button']:disabled,
+  button:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  [type='radio']:focus,
+  [type='checkbox']:focus {
+    @apply ring-2 ring-offset-1 !important;
+  }
 }
 
 /**
