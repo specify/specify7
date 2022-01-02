@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-28 23:27+0000\n"
+"POT-Creation-Date: 2022-01-02 22:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr "Не удалось выполнить проверку ключа пр�
 msgid "AccessionAgent -> Agent relationship is required."
 msgstr "Требуется присоединение к отношениям с агентом по присоединению"
 
-#: context/views.py:581 frontend/views.py:54
+#: context/views.py:593 frontend/views.py:54
 #, fuzzy
 #| msgid "Specify 7 Operations API (all)"
 msgid "Specify 7 Operations API"
@@ -60,99 +60,6 @@ msgstr "Определение не включает поле идентифик
 #: export/dwca.py:75
 msgid "Definition includes multiple id fields."
 msgstr "Определение включает несколько полей идентификатора"
-
-#: frontend/templates/choose_collection.html:4
-msgid "Choose Collection"
-msgstr "Выбрать коллекцию"
-
-#: frontend/templates/choose_collection.html:15
-#: frontend/templates/login.html:15 frontend/templates/password_change.html:15
-#, python-format
-msgid "%(title)s | Specify 7"
-msgstr "%(title)s | Specify 7"
-
-#: frontend/templates/choose_collection.html:30
-msgid "Collection"
-msgstr "Коллекция"
-
-#: frontend/templates/choose_collection.html:37
-msgid "Select"
-msgstr "Выбрать"
-
-#: frontend/templates/choose_collection.html:42
-#, python-format
-msgid ""
-"The logged in user has not been given access to any collections in this "
-"database. You must <a href=\"/accounts/login/?next=%(next)s\">login</a> as "
-"another user."
-msgstr ""
-"Авторизованному пользователю не был предоставлен доступ ни к одной коллекции "
-"в этой база данных. Вы должны <a href=\"/accounts/login/?next=%(next)s"
-"\">войти</a> как другой пользователь."
-
-#: frontend/templates/login.html:4
-msgid "Log In"
-msgstr "Вход"
-
-#: frontend/templates/login.html:33
-msgid "Language:"
-msgstr "Язык:"
-
-#: frontend/templates/login.html:60
-msgid "Username"
-msgstr "Имя пользователя"
-
-#: frontend/templates/login.html:65
-msgid "Password"
-msgstr "Пароль"
-
-#: frontend/templates/login.html:72
-msgid "Login"
-msgstr "Войти"
-
-#: frontend/templates/password_change.html:4
-msgid "Change Password"
-msgstr "Изменить пароль"
-
-#: frontend/templates/password_change.html:32
-msgid "Old password"
-msgstr "Прежний пароль"
-
-#: frontend/templates/password_change.html:37
-msgid "New password"
-msgstr "Новый пароль"
-
-#: frontend/templates/password_change.html:42
-msgid "Retype new password"
-msgstr "Введите повторно новый пароль"
-
-#: frontend/templates/password_change.html:47
-msgid "Change"
-msgstr "Изменить"
-
-#: frontend/templates/specify.html:19
-msgid "Skip to Content"
-msgstr "Перейти к содержанию"
-
-#: frontend/templates/specify.html:26
-msgid "Go to homepage"
-msgstr "Вернуться на домашнюю страницу"
-
-#: frontend/templates/specify.html:33
-msgid "Current User"
-msgstr "Текущий пользователь"
-
-#: frontend/templates/specify.html:38 frontend/templates/specify.html:39
-msgid "Current Collection"
-msgstr "Текущая коллекция"
-
-#: frontend/templates/specify.html:58 frontend/templates/specify.html:59
-msgid "Search"
-msgstr "Поиск"
-
-#: frontend/templates/specify.html:67
-msgid "Specify is loading..."
-msgstr "Загрузка Specify..."
 
 #: frontend/views.py:42 specify/schema.py:104 specify/schema.py:106
 msgid "Specify 7 Tables API"
@@ -183,6 +90,26 @@ msgstr ""
 "%(app_schema_version)s\n"
 "Пожалуйста, обновите и / или запустите установку толстого клиента хоста по "
 "адресу %(thich_client_location)s для обновления базы данных."
+
+#: specify/load_datamodel.py:45
+#, python-format
+msgid "No table with name: %(table_name)r"
+msgstr ""
+
+#: specify/load_datamodel.py:54
+#, python-brace-format
+msgid "No table with id: %{table_id}d"
+msgstr ""
+
+#: specify/load_datamodel.py:104
+#, python-format
+msgid "Field %(field_name)s not in table %(table_name)s. "
+msgstr ""
+
+#: specify/load_datamodel.py:105
+#, python-format
+msgid "Fields: %(fields)s"
+msgstr ""
 
 #: stored_queries/format.py:93
 msgid "<Formatter not defined.>"
@@ -232,3 +159,72 @@ msgstr ""
 #, python-format
 msgid "WB Upload of %(data_set_name)s"
 msgstr "Загрузка WB %(data_set_name)s"
+
+#~ msgid "Choose Collection"
+#~ msgstr "Выбрать коллекцию"
+
+#~ msgid "%(title)s | Specify 7"
+#~ msgstr "%(title)s | Specify 7"
+
+#~ msgid "Collection"
+#~ msgstr "Коллекция"
+
+#~ msgid "Select"
+#~ msgstr "Выбрать"
+
+#~ msgid ""
+#~ "The logged in user has not been given access to any collections in this "
+#~ "database. You must <a href=\"/accounts/login/?next=%(next)s\">login</a> "
+#~ "as another user."
+#~ msgstr ""
+#~ "Авторизованному пользователю не был предоставлен доступ ни к одной "
+#~ "коллекции в этой база данных. Вы должны <a href=\"/accounts/login/?next="
+#~ "%(next)s\">войти</a> как другой пользователь."
+
+#~ msgid "Log In"
+#~ msgstr "Вход"
+
+#~ msgid "Language:"
+#~ msgstr "Язык:"
+
+#~ msgid "Username"
+#~ msgstr "Имя пользователя"
+
+#~ msgid "Password"
+#~ msgstr "Пароль"
+
+#~ msgid "Login"
+#~ msgstr "Войти"
+
+#~ msgid "Change Password"
+#~ msgstr "Изменить пароль"
+
+#~ msgid "Old password"
+#~ msgstr "Прежний пароль"
+
+#~ msgid "New password"
+#~ msgstr "Новый пароль"
+
+#~ msgid "Retype new password"
+#~ msgstr "Введите повторно новый пароль"
+
+#~ msgid "Change"
+#~ msgstr "Изменить"
+
+#~ msgid "Skip to Content"
+#~ msgstr "Перейти к содержанию"
+
+#~ msgid "Go to homepage"
+#~ msgstr "Вернуться на домашнюю страницу"
+
+#~ msgid "Current User"
+#~ msgstr "Текущий пользователь"
+
+#~ msgid "Current Collection"
+#~ msgstr "Текущая коллекция"
+
+#~ msgid "Search"
+#~ msgstr "Поиск"
+
+#~ msgid "Specify is loading..."
+#~ msgstr "Загрузка Specify..."

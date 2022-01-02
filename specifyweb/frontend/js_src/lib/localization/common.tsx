@@ -347,6 +347,74 @@ const commonText = createDictionary({
     ca: 'Col·lecció actual',
   },
 
+  // Login screen
+  username: {
+    'en-us': 'Username',
+    'ru-ru': 'Имя пользователя',
+    ca: "Nom d'usuari",
+  },
+  password: {
+    'en-us': 'Password',
+    'ru-ru': 'Пароль',
+    ca: 'Contrasenya',
+  },
+  login: {
+    'en-us': 'Login',
+    'ru-ru': 'Вход',
+    ca: 'Iniciar Sessió',
+  },
+
+  // Choose Collection
+  chooseCollection: {
+    'en-us': 'Choose Collection',
+    'ru-ru': 'Выбрать коллекцию',
+    ca: 'Trieu Col·lecció',
+  },
+  noAccessToCollections: {
+    'en-us': (loginLink: (label: string) => JSX.Element) => (
+      <>
+        The logged in user has not been given access to any collections in this
+        database. You must ${loginLink('login')} as another user.
+      </>
+    ),
+    'ru-ru': (loginLink: (label: string) => JSX.Element) => (
+      <>
+        Пользователь, вошедший в систему, не получил доступа ни к каким
+        коллекциям в этой базе данных. Вы должны ${loginLink('войти')} в систему
+        как другой пользователь.
+      </>
+    ),
+    ca: (loginLink: (label: string) => JSX.Element) => (
+      <>
+        L'usuari que ha iniciat sessió no té accés a cap col·lecció d'aquesta
+        base de dades. Heu ${loginLink("d'iniciar sessió")} com un altre usuari.
+      </>
+    ),
+  },
+
+  // Change Password
+  changePassword: {
+    'en-us': 'Change Password',
+    'ru-ru': 'Изменить пароль',
+    ca: 'Canvia la contrasenya',
+  },
+  oldPassword: {
+    'en-us': 'Old password',
+    'ru-ru': 'Предыдущий пароль',
+    ca: 'Contrasenya anterior',
+  },
+  newPassword: {
+    'en-us': 'New password',
+    'ru-ru': 'iНовый пароль',
+    ca: 'Nova contrasenya',
+  },
+  repeatPassword: {
+    'en-us': 'Repeat new password',
+    'ru-ru': 'Повторите новый пароль',
+    ca: 'Repetiu la contrasenya nova',
+  },
+
+  // Menu Bar & User Tools
   notifications: {
     'en-us': (count: number | string) => `Notifications: ${count}`,
     'ru-ru': (count: number | string) => `Уведомлений: ${count}`,
@@ -997,9 +1065,9 @@ const commonText = createDictionary({
     ca: 'Language:',
   },
   changeLanguage: {
-    'en-us': 'Change Language',
+    'en-us': 'Change language',
     'ru-ru': 'Изменить язык',
-    ca: 'Change Language',
+    ca: 'Change language',
   },
   schemaConfig: {
     'en-us': 'Schema Config',

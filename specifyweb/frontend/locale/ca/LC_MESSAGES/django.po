@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-28 23:27+0000\n"
+"POT-Creation-Date: 2022-01-02 22:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr ""
 msgid "AccessionAgent -> Agent relationship is required."
 msgstr ""
 
-#: context/views.py:581 frontend/views.py:54
+#: context/views.py:593 frontend/views.py:54
 msgid "Specify 7 Operations API"
 msgstr ""
 
@@ -56,96 +56,6 @@ msgstr ""
 
 #: export/dwca.py:75
 msgid "Definition includes multiple id fields."
-msgstr ""
-
-#: frontend/templates/choose_collection.html:4
-msgid "Choose Collection"
-msgstr ""
-
-#: frontend/templates/choose_collection.html:15
-#: frontend/templates/login.html:15 frontend/templates/password_change.html:15
-#, python-format
-msgid "%(title)s | Specify 7"
-msgstr ""
-
-#: frontend/templates/choose_collection.html:30
-msgid "Collection"
-msgstr ""
-
-#: frontend/templates/choose_collection.html:37
-msgid "Select"
-msgstr ""
-
-#: frontend/templates/choose_collection.html:42
-#, python-format
-msgid ""
-"The logged in user has not been given access to any collections in this "
-"database. You must <a href=\"/accounts/login/?next=%(next)s\">login</a> as "
-"another user."
-msgstr ""
-
-#: frontend/templates/login.html:4
-msgid "Log In"
-msgstr ""
-
-#: frontend/templates/login.html:33
-msgid "Language:"
-msgstr ""
-
-#: frontend/templates/login.html:60
-msgid "Username"
-msgstr ""
-
-#: frontend/templates/login.html:65
-msgid "Password"
-msgstr ""
-
-#: frontend/templates/login.html:72
-msgid "Login"
-msgstr ""
-
-#: frontend/templates/password_change.html:4
-msgid "Change Password"
-msgstr ""
-
-#: frontend/templates/password_change.html:32
-msgid "Old password"
-msgstr ""
-
-#: frontend/templates/password_change.html:37
-msgid "New password"
-msgstr ""
-
-#: frontend/templates/password_change.html:42
-msgid "Retype new password"
-msgstr ""
-
-#: frontend/templates/password_change.html:47
-msgid "Change"
-msgstr ""
-
-#: frontend/templates/specify.html:19
-msgid "Skip to Content"
-msgstr ""
-
-#: frontend/templates/specify.html:26
-msgid "Go to homepage"
-msgstr ""
-
-#: frontend/templates/specify.html:33
-msgid "Current User"
-msgstr ""
-
-#: frontend/templates/specify.html:38 frontend/templates/specify.html:39
-msgid "Current Collection"
-msgstr ""
-
-#: frontend/templates/specify.html:58 frontend/templates/specify.html:59
-msgid "Search"
-msgstr ""
-
-#: frontend/templates/specify.html:67
-msgid "Specify is loading..."
 msgstr ""
 
 #: frontend/views.py:42 specify/schema.py:104 specify/schema.py:106
@@ -171,6 +81,26 @@ msgid ""
 "not match database values: %(app_specify_version)s, %(app_schema_version)s\n"
 "Please update and/or run the host thickclient installation at "
 "%(thich_client_location)s to update the database."
+msgstr ""
+
+#: specify/load_datamodel.py:45
+#, python-format
+msgid "No table with name: %(table_name)r"
+msgstr ""
+
+#: specify/load_datamodel.py:54
+#, python-brace-format
+msgid "No table with id: %{table_id}d"
+msgstr ""
+
+#: specify/load_datamodel.py:104
+#, python-format
+msgid "Field %(field_name)s not in table %(table_name)s. "
+msgstr ""
+
+#: specify/load_datamodel.py:105
+#, python-format
+msgid "Fields: %(fields)s"
 msgstr ""
 
 #: stored_queries/format.py:93
