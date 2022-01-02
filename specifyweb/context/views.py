@@ -116,17 +116,21 @@ def choose_collection(request):
     class Form(forms.Form):
         collection = CollectionChoiceField(
             choices=available_collections,
-            initial=request.COOKIES.get('collection', None))
+            initial=request.COOKIES.get('collection', None)
+        )
+
+    context = {
+        'available_collections': available_collections,
+        'initial_value': request.COOKIES.get('collection', None),
+        'next': redirect_to
+    }
 
     if request.method == 'POST':
         form = Form(data=request.POST)
         if form.is_valid():
             set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
             return redirect_resp
-    else:
-        form = Form()
 
-    context = {'form': form, 'next': redirect_to}
     return TemplateResponse(request, 'choose_collection.html', context)
 
 @openapi(schema={
