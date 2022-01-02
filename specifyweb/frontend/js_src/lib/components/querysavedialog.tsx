@@ -4,7 +4,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import userInfo from '../userinfo';
-import { useId } from './common';
+import { useId } from './hooks';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 

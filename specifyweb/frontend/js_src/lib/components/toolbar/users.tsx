@@ -5,7 +5,7 @@ import * as navigation from '../../navigation';
 import schema from '../../schema';
 import type { IR } from '../../types';
 import userInfo from '../../userinfo';
-import { useTitle } from '../common';
+import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';

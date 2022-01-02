@@ -7,10 +7,9 @@ import schema from './schema';
 import * as navigation from './navigation';
 import populateForm from './populateform';
 import api from './specifyapi';
-import ResourceView from './resourceview';
+import ResourceView, {showResource} from './resourceview';
 import FieldFormat from './fieldformat';
 import PrepDialog from './prepdialog';
-import * as app from './specifyapp';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
@@ -303,7 +302,7 @@ export default PrepDialog.extend({
             } else {
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
-                app.showResource(interaction, null, true);
+                showResource(interaction, null, true);
             }
         }
     });

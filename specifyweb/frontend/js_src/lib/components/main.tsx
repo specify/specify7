@@ -14,7 +14,6 @@ import {
   UserTools,
 } from './header';
 import Notifications from './notifications';
-import createBackboneView from './reactbackboneextend';
 
 export type UserTool = {
   readonly task: string;
@@ -36,83 +35,68 @@ export type MenuItem = UserTool & {
   readonly path?: string;
 };
 
-const menuItemsPromise: Promise<RA<{ readonly default: MenuItem }>> =
-  Promise.all([
-    import('../toolbardataentry'),
-    import('../toolbarinteractions'),
-    import('./toolbar/trees'),
-    import('../toolbarrecordsets'),
-    import('./toolbar/query'),
-    import('../toolbarreport').then(async ({ default: menuItem }) => ({
-      default: await menuItem,
-    })),
-    import('../toolbarattachments'),
-    import('./toolbar/wbsdialog'),
-  ]);
+const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([
+  import('../toolbardataentry'),
+  import('../toolbarinteractions'),
+  import('./toolbar/trees'),
+  import('../toolbarrecordsets'),
+  import('./toolbar/query'),
+  import('../toolbarreport').then(async ({ default: menuItem }) => ({
+    default: await menuItem,
+  })),
+  import('../toolbarattachments'),
+  import('./toolbar/wbsdialog'),
+]).then(processMenuItems);
 
-const userToolsPromise: Promise<RA<{ readonly default: UserTool }>> =
-  Promise.all([
-    import('./toolbar/language'),
-    import('../toolbarschemaconfig'),
-    import('./toolbar/masterkey'),
-    import('./toolbar/users'),
-    import('./toolbar/treerepair'),
-    import('./toolbar/resources'),
-    import('./toolbar/dwca'),
-    import('./toolbar/forceupdate'),
-  ]);
+function processMenuItems<T extends UserTool | MenuItem>(
+  items: RA<{ readonly default: T }>
+): RA<T> {
+  const filtered = items
+    .map(({ default: item }) => item)
+    .filter(({ enabled }) =>
+      typeof enabled === 'function' ? enabled() : enabled !== false
+    );
 
-function Main({
-  onReady: handleReady,
-}: {
-  readonly onReady: () => void;
-}): JSX.Element | null {
-  const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
-    undefined
+  filtered.forEach(({ task, view }) =>
+    router.route(
+      `task/${task}/(:options)`,
+      'startTask',
+      (urlParameter: string) => {
+        setCurrentView(
+          view({
+            onClose: (): void => navigation.go('/specify'),
+            urlParameter,
+          })
+        );
+      }
+    )
   );
-  const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
+
+  return filtered;
+}
+
+const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
+  import('./toolbar/language'),
+  import('./toolbar/schemaconfig'),
+  import('./toolbar/masterkey'),
+  import('./toolbar/users'),
+  import('./toolbar/treerepair'),
+  import('./toolbar/resources'),
+  import('./toolbar/dwca'),
+  import('./toolbar/forceupdate'),
+]).then(processMenuItems);
+
+export default function Main(): JSX.Element | null {
+  const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
     undefined
   );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
-    Promise.all([menuItemsPromise, userToolsPromise])
-      .then(([menuItems, userTools]) => {
-        const enabledMenuItems = menuItems
-          .map(({ default: item }) => item)
-          .filter(({ enabled }) =>
-            typeof enabled === 'function' ? enabled() : enabled !== false
-          );
-        const enabledUserTools = userTools
-          .map(({ default: item }) => item)
-          .filter(({ enabled }) =>
-            typeof enabled === 'function' ? enabled() : enabled !== false
-          );
-        [...enabledMenuItems, ...enabledUserTools].forEach(({ task, view }) =>
-          router.route(
-            `task/${task}/(:options)`,
-            'startTask',
-            (urlParameter: string) => {
-              setCurrentView(
-                view({
-                  onClose: (): void => navigation.go('/specify'),
-                  urlParameter,
-                })
-              );
-            }
-          )
-        );
-        setMenuItems(enabledMenuItems);
-        setUserTools(enabledUserTools);
+    menuItemsPromise.then(setMenuItems).catch(console.error);
+  }, []);
 
-        handleReady();
-        return undefined;
-      })
-      .catch(console.error);
-  }, [handleReady]);
-
-  return typeof menuItems === 'undefined' ||
-    typeof userTools === 'undefined' ? null : (
+  return typeof menuItems === 'undefined' ? null : (
     <>
       <button
         className="sr-only"
@@ -137,7 +121,7 @@ function Main({
           <div id="user-tools">
             <div>
               {userInfo.isauthenticated ? (
-                <UserTools userTools={userTools} />
+                <UserTools userToolsPromise={userToolsPromise} />
               ) : (
                 <a href="/accounts/login/">{commonText('logIn')}</a>
               )}
@@ -155,5 +139,3 @@ function Main({
     </>
   );
 }
-
-export const MainView = createBackboneView(Main);

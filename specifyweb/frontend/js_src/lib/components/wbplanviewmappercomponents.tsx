@@ -12,7 +12,8 @@ import type {
 import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import { TableIcon, useId } from './common';
+import { TableIcon } from './common';
+import { useId } from './hooks';
 import { closeDialog, ModalDialog } from './modaldialog';
 import type { HtmlGeneratorFieldData } from './wbplanviewcomponents';
 import {

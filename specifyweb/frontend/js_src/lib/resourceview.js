@@ -11,6 +11,12 @@ import SaveButton from './savebutton';
 import DeleteButton from './deletebutton';
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import userInfo from "./userinfo";
+import populateForm from "./populateform";
+import reports from "./reports";
+import * as navigation from "./navigation";
+import {setCurrentView} from "./specifyapp";
+import {setTitle} from "./components/hooks";
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -152,5 +158,71 @@ const ResourceView = Backbone.View.extend({
 });
 
 _.extend(ResourceView, Backbone.Events);
+
+function viewSaved(resource, recordSet, options) {
+    if (options.addAnother) {
+        showResource(options.newResource, recordSet);
+    } else if (options.wasNew) {
+        navigation.go(resource.viewUrl());
+    } else {
+        const reloadResource = new resource.constructor({ id: resource.id });
+        reloadResource.recordsetid = resource.recordsetid;
+        reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
+    }
+}
+
+// build and display view for resource
+export function showResource(resource, recordSet, pushUrl) {
+        var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
+        var view = new ResourceView({
+            className: "specify-root-form content-shadow",
+            populateForm: populateForm,
+            model: resource,
+            recordSet: recordSet,
+            mode: viewMode
+        });
+
+        view.on('saved', function(resource, options) {
+            if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
+                console.log('generating label or invoice');
+                reports( {
+                    tblId: resource.specifyModel.tableId,
+                    recordToPrintId: resource.id,
+                    autoSelectSingle: true,
+                    done: viewSaved.bind(this, resource, recordSet, options)
+                }).then(view=>view.render());
+            } else {
+                viewSaved(resource, recordSet, options);
+            }
+        }).on('deleted', function() {
+            if (view.next) {
+                navigation.go(view.next.viewUrl());
+            } else if (view.prev) {
+                navigation.go(view.prev.viewUrl());
+            } else {
+                view.$el.empty();
+                const dialog = $(`<div>
+                    ${commonText('resourceDeletedDialogHeader')}
+                    <p>${commonText('resourceDeletedDialogMessage')}</p>
+                </div>`).dialog({
+                    title: commonText('resourceDeletedDialogTitle'),
+                    buttons: [
+                        {
+                            text: commonText('close'),
+                            click: ()=>{
+                                navigation.go('/');
+                                dialog.dialog('destroy');
+                            }
+                        }
+                    ]
+                });
+            }
+        }).on('changetitle', function(_resource, title) {
+            setTitle(title);
+        });
+    pushUrl && navigation.push(resource.viewUrl());
+    setCurrentView(view);
+    }
+
 
 export default ResourceView;

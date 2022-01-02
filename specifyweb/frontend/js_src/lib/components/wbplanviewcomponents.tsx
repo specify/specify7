@@ -9,7 +9,7 @@ import React from 'react';
 import wbText from '../localization/workbench';
 import type { IR, R, RA } from '../types';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
-import { useId } from './common';
+import { useId } from './hooks';
 import type {
   CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,

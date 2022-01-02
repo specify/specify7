@@ -25,7 +25,7 @@ import {
   goBack,
   mappingPathIsComplete,
 } from '../wbplanviewutils';
-import { useId } from './common';
+import { useId } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
 import { handlePromiseReject } from './wbplanview';

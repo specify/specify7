@@ -17,6 +17,8 @@ import * as querystring from './querystring';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {showResource} from "./resourceview";
+import {setTitle} from "./components/hooks";
 
 var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
@@ -79,7 +81,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
     function newResourceView(model) {
         if (userInfo.isReadOnly) {
             app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('pageNotFound'));
+            setTitle(commonText('pageNotFound'));
         } else {
             resourceView(model, null);
         }
@@ -92,7 +94,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
 
         if(typeof model === "undefined"){
             app.setCurrentView(new NotFoundView());
-            app.setTitle(commonText('pageNotFound'));
+            setTitle(commonText('pageNotFound'));
             return;
         }
 
@@ -120,7 +122,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
         byGUID.fetch({ limit: 1 }).done(function() {
             if (byGUID.length < 1) {
                 app.setCurrentView(new NotFoundView());
-                app.setTitle(commonText('pageNotFound'));
+                setTitle(commonText('pageNotFound'));
                 return;
             }
             // should we update the url state to the row id version?
@@ -164,13 +166,13 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
                 .pipe(function(collectionobject) {
                     if (!collectionobject) return true;
                     // should we update the url state to the row id version?
-                    app.showResource(collectionobject);
+                    showResource(collectionobject);
                     return false;
                 });
         }).done(function(notFound) {
             if (notFound) {
                 app.setCurrentView(new NotFoundView());
-                app.setTitle(commonText('pageNotFound'));
+                setTitle(commonText('pageNotFound'));
             }
         });
     }
@@ -187,7 +189,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
                 // the resource is not "native" to this collection. ask user to change collections.
                 app.setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
             } else {
-                (then || app.showResource)(resource, recordSet);
+                (then || showResource)(resource, recordSet);
             }
         });
     }

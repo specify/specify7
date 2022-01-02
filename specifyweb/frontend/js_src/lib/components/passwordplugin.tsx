@@ -4,11 +4,12 @@ import ajax, { formData, Http } from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
-import { useId, useTitle } from './common';
+import { useId, useTitle } from './hooks';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { Input, Label } from './basic';
 
-const MIN_PASSWORD_LENGTH = 6;
+export const MIN_PASSWORD_LENGTH = 6;
 
 function PasswordResetDialog({
   modelId,
@@ -80,9 +81,9 @@ function PasswordResetDialog({
             );
         }}
       >
-        <label>
+        <Label>
           {adminText('password')}
-          <input
+          <Input
             type="password"
             required
             autoComplete="new-password"
@@ -94,10 +95,10 @@ function PasswordResetDialog({
               target.setCustomValidity('');
             }}
           />
-        </label>
-        <label htmlFor="pass2">
+        </Label>
+        <Label htmlFor="pass2">
           {adminText('confirmPassword')}
-          <input
+          <Input
             type="password"
             required
             autoComplete="new-password"
@@ -113,7 +114,7 @@ function PasswordResetDialog({
                 target.setCustomValidity(adminText('passwordsDoNotMatchError'));
             }}
           />
-        </label>
+        </Label>
       </form>
     </ModalDialog>
   );

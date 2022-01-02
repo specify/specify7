@@ -2,7 +2,7 @@ import React from 'react';
 
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
-import { useTitle } from '../common';
+import { useTitle } from '../hooks';
 import type { MenuItem } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';

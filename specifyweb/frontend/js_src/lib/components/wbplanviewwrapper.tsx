@@ -10,7 +10,7 @@ import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
 import dataModelStorage from '../wbplanviewmodel';
 import { dataModelPromise } from '../wbplanviewmodelfetcher';
-import { useId, useTitle } from './common';
+import { useId, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { WbPlanViewConstructorProps } from './wbplanview';

@@ -7,7 +7,7 @@ import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
 import systemInfo from '../systeminfo';
 import taxonTiles from '../taxontiles';
-import { useTitle } from './common';
+import { useTitle } from './hooks';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 

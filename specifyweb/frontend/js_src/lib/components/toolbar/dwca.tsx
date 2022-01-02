@@ -3,7 +3,7 @@ import React from 'react';
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
-import { useId, useTitle } from '../common';
+import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';

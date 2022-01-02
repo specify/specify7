@@ -294,7 +294,4 @@ var enabled = true;
 export function enable(e) {
     return enabled = e;
 }
-export function areEnabled() {
-    return enabled;
-}
 

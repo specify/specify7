@@ -18,6 +18,7 @@ import userInfo from './userinfo';
 import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
+import {setTitle} from "./components/hooks";
 
 function makeUrl(resource) {
     return {
@@ -771,7 +772,7 @@ const UserResourcesView = Backbone.View.extend({
 });
 
 function appResourcesTask(ResourceModel, id) {
-    app.setTitle(ResourceModel.getLocalizedName());
+    setTitle(ResourceModel.getLocalizedName());
 
     const resourceDirs = new schema.models.SpAppResourceDir.LazyCollection();
     const disciplines = new schema.models.Discipline.LazyCollection();

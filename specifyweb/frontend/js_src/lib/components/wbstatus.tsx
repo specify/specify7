@@ -10,7 +10,7 @@ import { generateReducer } from 'typesafe-reducer';
 import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { useTitle } from './common';
+import { useTitle } from './hooks';
 import { ModalDialog, ProgressBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';

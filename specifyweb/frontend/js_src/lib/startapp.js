@@ -1,28 +1,24 @@
 'use strict';
 
 import $ from 'jquery';
-import _ from 'underscore';
+import React from "react";
 
 import * as businessRules from './businessrules';
 import {UnhandledErrorView} from './errorview';
-import * as navigation from './navigation';
-import {MainView} from "./components/main";
 import commonText from './localization/common';
+import csrftoken from "./csrftoken";
+import {csrfSafeMethod} from "./ajax";
+import {handlePromiseReject} from "./components/wbplanview";
+import * as navigation from './navigation';
 
-var tasks = [
-  require('./welcometask').default,
-  require('./datatask').default,
-  require('./querytask').default,
-  require('./treetask').default,
-  require('./expresssearchtask').default,
-  require('./datamodeltask').default,
-  require('./attachmentstask').default,
-  require('./wbtask').default,
-  require('./wbimporttask').default,
-  require('./wbplantask').default,
-  require('./appresourcetask').default,
-  require('./components/lifemapperwrapper').default,
-];
+$.ajaxSetup({
+  beforeSend: function (xhr, settings) {
+    if (!csrfSafeMethod.has(settings.type.toUpperCase()) && !this.crossDomain) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+  }
+});
+$(document).ajaxError(handleUnexpectedError);
 
 function handleUnexpectedError(event, jqxhr, settings, exception) {
   if (jqxhr.errorHandled) return; // Not unexpected.
@@ -49,39 +45,29 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
   }
   new UnhandledErrorView({response: jqxhr.responseText}).render();
 
-  console.log(arguments);
+  console.log({event, jqxhr, settings, exception});
 }
+
+
+const tasksPromise = Promise.all([
+  import('./welcometask'),
+  import('./datatask'),
+  import('./querytask'),
+  import('./treetask'),
+  import('./expresssearchtask'),
+  import('./datamodeltask'),
+  import('./attachmentstask'),
+  import('./wbtask'),
+  import('./wbimporttask'),
+  import('./wbplantask'),
+  import('./appresourcetask'),
+  import('./components/lifemapperwrapper'),
+]).then((tasks) => tasks.forEach(({ default: task }) => task()));
+
 
 export default function appStart() {
   console.info('specify app starting');
-  // addBasicRoutes(router);
-  $(document).ajaxError(handleUnexpectedError);
   businessRules.enable(true);
-  new MainView({
-    el: document.getElementById('root-app-container'),
-    onReady() {
-      document.getElementById('loading')?.remove();
-      document.getElementById('root-app-container').style.display = '';
-
-      // Start processing the urls to draw the corresponding views
-      navigation.start();
-    }
-  }).render();
-
-  _.each(tasks, function (task) {
-    task();
-  });
-
-  $('body').delegate('a', 'click', function (event) {
-    if (
-      event.currentTarget.classList.contains('intercept-navigation')
-      || (
-        event.altKey && event.currentTarget.target === '_blank'
-      )
-    ) {
-      event.preventDefault();
-      const href = $(event.currentTarget).prop('href');
-      href && navigation.go(href);
-    }
-  });
+  navigation.start();
+  tasksPromise.catch(handlePromiseReject);
 };

@@ -9,11 +9,10 @@ import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
 import resourceApi from '../resourceapi';
 import schema from '../schema';
-import { setTitle } from '../specifyapp';
 import type { RA } from '../types';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
-import { useId } from './common';
+import { useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -184,6 +183,8 @@ function DataSetName({
   const [showMeta, setShowMeta] = React.useState(false);
   const [name, setName] = React.useState(dataset.name);
 
+  useTitle(name);
+
   return (
     <>
       {' '}
@@ -213,7 +214,6 @@ function DataSetName({
           getRowCount={getRowCount}
           onChange={(name): void => {
             setShowMeta(false);
-            setTitle(name);
             setName(name);
           }}
         />
@@ -332,7 +332,6 @@ const ChangeOwnerView = createBackboneView(ChangeOwner);
 export default Backbone.View.extend({
   __name__: 'DataSetNameView',
   render() {
-    setTitle(this.options.dataset.name);
     this.dataSetMeta = new DataSetNameView({
       el: this.el.getElementsByClassName('wb-name-container')[0],
       dataset: this.options.dataset,

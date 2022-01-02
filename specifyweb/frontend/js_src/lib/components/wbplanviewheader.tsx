@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { useId } from './common';
+import { useId } from './hooks';
 
 export function Layout(props: {
   readonly children: React.ReactNode;

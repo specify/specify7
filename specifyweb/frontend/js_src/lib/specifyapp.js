@@ -3,17 +3,12 @@
 import $ from 'jquery';
 import 'jquery-contextmenu';
 import 'jquery-ui';
-
-import userInfo from './userinfo';
-import populateForm from './populateform';
 import {ErrorView} from './errorview';
 import NotFoundView from './notfoundview';
-import * as navigation from './navigation';
-import ResourceView from './resourceview';
 import router from './router';
 import systemInfo from './systeminfo';
-import reports from './reports';
 import commonText from './localization/common';
+import {setTitle} from "./components/hooks";
 
 global.jQuery = $;
 
@@ -126,74 +121,4 @@ var currentView;
             message: jqxhr.statusText
         }));
         jqxhr.errorHandled = true;
-    }
-
-function viewSaved(resource, recordSet, options) {
-    if (options.addAnother) {
-        showResource(options.newResource, recordSet);
-    } else if (options.wasNew) {
-        navigation.go(resource.viewUrl());
-    } else {
-        const reloadResource = new resource.constructor({ id: resource.id });
-        reloadResource.recordsetid = resource.recordsetid;
-        reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
-    }
-}
-
-// build and display view for resource
-export function showResource(resource, recordSet, pushUrl) {
-        var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
-        var view = new ResourceView({
-            className: "specify-root-form content-shadow",
-            populateForm: populateForm,
-            model: resource,
-            recordSet: recordSet,
-            mode: viewMode
-        });
-
-        view.on('saved', function(resource, options) {
-            if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
-                console.log('generating label or invoice');
-                reports( {
-                    tblId: resource.specifyModel.tableId,
-                    recordToPrintId: resource.id,
-                    autoSelectSingle: true,
-                    done: viewSaved.bind(this, resource, recordSet, options)
-                }).then(view=>view.render());
-            } else {
-                viewSaved(resource, recordSet, options);
-            }
-        }).on('deleted', function() {
-            if (view.next) {
-                navigation.go(view.next.viewUrl());
-            } else if (view.prev) {
-                navigation.go(view.prev.viewUrl());
-            } else {
-                view.$el.empty();
-                const dialog = $(`<div>
-                    ${commonText('resourceDeletedDialogHeader')}
-                    <p>${commonText('resourceDeletedDialogMessage')}</p>
-                </div>`).dialog({
-                    title: commonText('resourceDeletedDialogTitle'),
-                    buttons: [
-                        {
-                            text: commonText('close'),
-                            click: ()=>{
-                                navigation.go('/');
-                                dialog.dialog('destroy');
-                            }
-                        }
-                    ]
-                });
-            }
-        }).on('changetitle', function(_resource, title) {
-            setTitle(title);
-        });
-    pushUrl && navigation.push(resource.viewUrl());
-    setCurrentView(view);
-    }
-
-    //set title of browser tab
-    export function setTitle(title) {
-        window.document.title = commonText('appTitle')(title);
     }

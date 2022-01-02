@@ -8,6 +8,7 @@ import type { RA } from '../types';
 import userInfo from '../userinfo';
 import type { MenuItem, UserTool } from './main';
 import { ModalDialog } from './modaldialog';
+import { handlePromiseReject } from './wbplanview';
 
 export function HeaderItems({
   menuItems,
@@ -48,6 +49,7 @@ export function CollectionSelector(): JSX.Element {
 
   React.useEffect(() => {
     void ajax<Collections>('/context/collection/', {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
     }).then(({ data: collections }) => {
       if (!destructorCalled) setCollections(collections);
@@ -112,11 +114,19 @@ export function ExpressSearch(): JSX.Element {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function UserTools({
-  userTools,
+  userToolsPromise,
 }: {
-  readonly userTools: RA<UserTool>;
+  readonly userToolsPromise: Promise<RA<UserTool>>;
 }): JSX.Element {
+  const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    userToolsPromise.then(setUserTools).catch(handlePromiseReject);
+  }, [userToolsPromise]);
+
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   return (
     <>
@@ -128,7 +138,7 @@ export function UserTools({
       >
         {userInfo.name}
       </button>
-      {isOpen && (
+      {isOpen && userTools ? (
         <ModalDialog
           properties={{
             title: commonText('userToolsDialogTitle'),
@@ -176,7 +186,7 @@ export function UserTools({
             </ul>
           </nav>
         </ModalDialog>
-      )}
+      ) : undefined}
     </>
   );
 }
