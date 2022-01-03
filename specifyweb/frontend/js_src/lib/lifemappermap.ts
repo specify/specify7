@@ -1,26 +1,15 @@
 import ajax from './ajax';
-import type { IR, R, RA, RR } from './types';
-import type { LayerConfig, MarkerGroups } from './leaflet';
-import * as Leaflet from './leaflet';
-import type { MessageTypes } from './lifemapperconfig';
-import type { MapInfo } from './lifemapperreducer';
-import type { LifemapperLayerTypes } from './lifemapperutills';
-import {
-  formatOccurrenceMapRequest,
-  lifemapperLayerVariations,
-} from './lifemapperutills';
-import type { SpecifyResource } from './components/wbplanview';
-import csrfToken from './csrftoken';
-import { LocalityData } from './leafletutils';
+import type { LocalityData } from './leafletutils';
+import type { SpecifyResource } from './legacytypes';
 import {
   defaultRecordFilterFunction,
   formatLocalityDataObject,
   getLocalityDataFromLocalityResource,
   parseLocalityPinFields,
 } from './localityrecorddataextractor';
-import lifemapperText from './localization/lifemapper';
 import schema from './schema';
-import type { IR, R, RA, RR } from './types';
+import type { Collection } from './specifymodel';
+import type { RA } from './types';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
 
 export type OccurrenceData = {
@@ -34,23 +23,21 @@ export type OccurrenceData = {
 export const fetchLocalOccurrences = async (
   model: SpecifyResource
 ): Promise<RA<OccurrenceData>> => {
-  await fetchDataModel();
+  await dataModelPromise;
 
   const LIMIT = 10_000;
 
   let taxon;
-  // @ts-expect-error
   if (model.specifyModel.name === 'CollectionObject') {
-    const determination = await model.rget('determinations');
+    const determination = (await model.rget('determinations')) as Collection;
 
-    // @ts-expect-error
-    const currentDetermination = determination.models.find((model: any) =>
-      model.get('isCurrent')
+    const currentDetermination = determination.models.find(
+      (model) => model.get('isCurrent') as boolean
     );
 
     if (typeof currentDetermination === 'undefined') return [];
 
-    taxon = await currentDetermination.rget('taxon');
+    taxon = (await currentDetermination.rget('taxon')) as SpecifyResource;
   } else taxon = model;
 
   const parsedLocalityFields = parseLocalityPinFields(true);
@@ -70,6 +57,7 @@ export const fetchLocalOccurrences = async (
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     },
     body: {
@@ -90,7 +78,7 @@ export const fetchLocalOccurrences = async (
           stringid: '1,9-determinations,4.taxon.taxonid',
           fieldname: 'taxonid',
           isdisplay: false,
-          startvalue: `${taxon.get('id')}`,
+          startvalue: `${taxon.get('id') as number}`,
           operstart: 1,
           position: 0,
         },
@@ -141,7 +129,7 @@ export const fetchLocalOccurrences = async (
     },
   });
 
-  return results.results
+  return results
     .slice(0, LIMIT)
     .map(
       ([
@@ -162,12 +150,12 @@ export const fetchLocalOccurrences = async (
           ),
           fetchMoreData: async (): Promise<LocalityData | false> =>
             getLocalityDataFromLocalityResource(
-              await new Promise<any>((resolve) => {
+              await new Promise<SpecifyResource>((resolve) => {
                 const locality = new (
                   schema as any
                 ).models.Locality.LazyCollection({
                   filters: { id: localityId },
-                });
+                }) as Collection;
                 locality
                   .fetch({ limit: 1 })
                   .then(() => resolve(locality.models[0]));

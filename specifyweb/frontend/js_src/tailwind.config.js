@@ -6,7 +6,6 @@ module.exports = {
     './lib/components/**/*.tsx',
     './lib/templates/*.html',
     './lib/*.{ts,js}',
-    // Don't search for classes in node-modules, tests or localization
   ],
   corePlugins: {
     float: false,

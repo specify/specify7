@@ -6,10 +6,10 @@ import type { SchemaLocalization } from './schema';
 import { localization } from './schema';
 import schema, { unescape } from './schemabase';
 import {
-  type FieldDefinition,
-  type RelationshipDefinition,
   Field,
+  type FieldDefinition,
   Relationship,
+  type RelationshipDefinition,
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';
@@ -32,7 +32,7 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
-type Collection = new (props?: {
+type CollectionConstructor = new (props?: {
   readonly filters?: Partial<
     {
       readonly orderby: string;
@@ -41,11 +41,11 @@ type Collection = new (props?: {
       readonly domainfilter: boolean;
     } & IR<unknown>
   >;
-}) => SpecifyFetch;
+}) => Collection;
 
 type Resource = new (props?: { readonly id: number }) => SpecifyResource;
 
-type SpecifyFetch = {
+export type Collection = {
   readonly fetch: (filter: { readonly limit: number }) => JqueryPromise<void>;
   readonly models: RA<SpecifyResource>;
 };
@@ -70,13 +70,13 @@ export default class SpecifyModel {
 
   public readonly Resource: Resource;
 
-  public readonly LazyCollection: Collection;
+  public readonly LazyCollection: CollectionConstructor;
 
-  public readonly StaticCollection: Collection;
+  public readonly StaticCollection: CollectionConstructor;
 
-  public readonly DependentCollection: Collection;
+  public readonly DependentCollection: CollectionConstructor;
 
-  public readonly ToOneCollection: Collection;
+  public readonly ToOneCollection: CollectionConstructor;
 
   public readonly fields: RA<Field | Relationship>;
 

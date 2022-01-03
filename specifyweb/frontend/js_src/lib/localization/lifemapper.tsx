@@ -1,4 +1,4 @@
-import { createDictionary, createJsxHeader } from './utils';
+import { createDictionary, jsxHeader } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -80,16 +80,16 @@ const lifemapperText = createDictionary({
   },
   failedToOpenPopUpDialogTitle: {
     'en-us': 'Failed to open the page',
-    'ru-ru: 'Не удалось открыть страницу',
+    'ru-ru': 'Не удалось открыть страницу',
     ca: "No s'ha pogut obrir la pàgina",
   },
   failedToOpenPopUpDialogHeader: {
-    'en-us': createJsxHeader('Failed to open Specify Network Page'),
-    'ru-ru': createJsxHeader('Не удалось открыть страницу Specify Network');,
-    ca: createJsxheader("No s'ha pogut obrir la pàgina de Specify Network"),
+    'en-us': jsxHeader('Failed to open Specify Network Page'),
+    'ru-ru': jsxHeader('Не удалось открыть страницу Specify Network'),
+    ca: jsxHeader("No s'ha pogut obrir la pàgina de Specify Network"),
   },
   failedToOpenPopUpDialogMessage: {
-    'en-us':`
+    'en-us': `
       Please make sure your browser is not blocking pop-up windows and
       try again
     `,
@@ -101,7 +101,7 @@ const lifemapperText = createDictionary({
       Assegureu-vos que el vostre navegador no bloqueja les finestres
       emergents i torneu-ho a provar
     `,
-  }
+  },
 });
 
 export default lifemapperText;

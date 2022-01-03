@@ -53,27 +53,26 @@ const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
     ])
   ) as typeof leafletTileServers;
 
-const leafletTileServersPromise: Promise<typeof leafletTileServers> = ajax<
-  IR<unknown>
->(
-  '/context/app.resource?name=leaflet-layers',
-  { headers: { Accept: 'application/json' } },
-  { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-)
-  .then(({ data, status }) =>
-    status === Http.NOT_FOUND ? error('') : parseLayersFromJson(data)
+export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
+  ajax<IR<unknown>>(
+    '/context/app.resource?name=leaflet-layers',
+    { headers: { Accept: 'application/json' } },
+    { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
   )
-  .catch(async () =>
-    ajax<IR<unknown>>(
-      leafletLayersEndpoint,
-      { headers: { Accept: 'application/json' } },
-      { strict: false }
-    ).then(({ data }) => parseLayersFromJson(data))
-  )
-  .catch((error) => {
-    console.error(error);
-    return leafletTileServers;
-  });
+    .then(({ data, status }) =>
+      status === Http.NOT_FOUND ? error('') : parseLayersFromJson(data)
+    )
+    .catch(async () =>
+      ajax<IR<unknown>>(
+        leafletLayersEndpoint,
+        { headers: { Accept: 'application/json' } },
+        { strict: false }
+      ).then(({ data }) => parseLayersFromJson(data))
+    )
+    .catch((error) => {
+      console.error(error);
+      return leafletTileServers;
+    });
 
 export async function showLeafletMap({
   localityPoints = [],

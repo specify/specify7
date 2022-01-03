@@ -1,25 +1,6 @@
 import type SaveBlockers from './saveblockers';
 import type SpecifyModel from './specifymodel';
-import type { IR, RA } from './types';
-
-type DomainTreeDefinitionItem = {
-  readonly get: (fieldName: string) => number | string;
-  readonly rget: (fieldName: string) => Promise<DomainTreeDefinitionItem>;
-  readonly attributes: { name: string; rankid: number; parent: string };
-};
-
-type SpecifyRequest = (parameter: IR<unknown>) => JqueryPromise<void>;
-
-type DomainTreeDefinitionItems = {
-  readonly fetch: SpecifyRequest;
-  readonly models: IR<DomainTreeDefinitionItem>;
-};
-
-type DomainTreeDefinition = {
-  readonly rget: (
-    fieldName: string
-  ) => JqueryPromise<DomainTreeDefinitionItems>;
-};
+import type { RA } from './types';
 
 export type SpecifyResource = {
   readonly id: number;
@@ -56,4 +37,4 @@ export type JqueryPromise<T> = {
 
 export type GetTreeDefinition = (
   tableName: string
-) => JqueryPromise<DomainTreeDefinition>;
+) => JqueryPromise<SpecifyResource>;

@@ -1,44 +1,43 @@
-import type { RR, IR } from './types';
-import { ComponentProps } from './components/lifemapperwrapper';
+import type { JqueryPromise, SpecifyResource } from './legacytypes';
 import { snServer } from './lifemapperconfig';
+import type { Collection } from './specifymodel';
+import type { IR, RA } from './types';
 
 export const fetchLocalScientificName = async (
-  model: any,
+  model: SpecifyResource,
   defaultValue = ''
 ): Promise<string> =>
   new Promise((resolve) => {
-    model
-      .rget('determinations')
-      .done(({ models: determinations }: any) =>
+    (model.rget('determinations') as JqueryPromise<Collection>).then(
+      ({ models: determinations }) =>
         determinations.length === 0
           ? resolve(defaultValue)
-          : determinations[0]
-              .rget('preferredTaxon.fullname')
-              .done((scientificName: string) =>
-                resolve(scientificName === null ? defaultValue : scientificName)
-              )
-      );
+          : (
+              determinations[0].rget(
+                'preferredTaxon.fullname'
+              ) as JqueryPromise<string>
+            ).then((scientificName) =>
+              resolve(scientificName === null ? defaultValue : scientificName)
+            )
+    );
   });
 
 export const formatLifemapperViewPageRequest = (
   occurrenceGuid: string,
-  speciesName: string,
+  speciesName: string
 ): string =>
   `${snServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}&origin=${window.location.origin}`;
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
-export const formatIconRequest = (
-  providerName: string,
-  icon_status: 'active' | 'inactive' | 'hover'
-): string =>
-  `${snServer}/api/v1/badge?provider=${providerName}&icon_status=${icon_status}`;
-
 export async function fetchOccurrenceName({
-  model,
   guid,
-}: ComponentProps): Promise<string> {
+  model,
+}: {
+  readonly guid: string;
+  readonly model: SpecifyResource;
+}): Promise<string> {
   return fetch(formatOccurrenceDataRequest(guid), {
     mode: 'cors',
   })

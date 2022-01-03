@@ -1,12 +1,10 @@
-import '../../css/lifemapper.css';
-
 import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
-import ajax from '../ajax';
-import { getLeafletLayers } from '../leaflet';
+import { leafletTileServersPromise } from '../leaflet';
 import type { LocalityData } from '../leafletutils';
+import type { SpecifyResource } from '../legacytypes';
 import { snServer } from '../lifemapperconfig';
 import type { OccurrenceData } from '../lifemappermap';
 import { fetchLocalOccurrences } from '../lifemappermap';
@@ -14,13 +12,12 @@ import {
   fetchOccurrenceName,
   formatLifemapperViewPageRequest,
 } from '../lifemapperutills';
+import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
-import { Link } from './basic';
-import type { IR, RA, RR } from '../types';
 import systemInfo from '../systeminfo';
-import type { ComponentProps } from './lifemapperwrapper';
+import type { IR, RA, RR } from '../types';
 import { closeDialog, ModalDialog } from './modaldialog';
-import type { SpecifyResource } from './wbplanview';
+import { Link } from './basic';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -40,7 +37,7 @@ type IncomingMessageExtended = IncomingMessage & {
 
 const dispatch = generateDispatch<IncomingMessageExtended>({
   LoadedAction: ({ state: { sendMessage, model, occurrences } }) =>
-    void getLeafletLayers()
+    void leafletTileServersPromise
       .then((leafletLayers) =>
         sendMessage({
           type: 'BasicInformationAction',
@@ -123,12 +120,15 @@ type OutgoingMessage =
   | PointDataAction;
 
 export function SpecifyNetworkBadge({
-  guid,
   model,
-}: ComponentProps): JSX.Element | null {
+}: {
+  readonly model: SpecifyResource;
+}): JSX.Element | null {
   const [occurrenceName, setOccurrenceName] = React.useState('');
   const [hasFailure, setHasFailure] = React.useState(false);
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
+
+  const guid = model.get('guid') as string;
 
   React.useEffect(() => {
     fetchOccurrenceName({
@@ -176,13 +176,13 @@ export function SpecifyNetworkBadge({
           <p>{lifemapperText('failedToOpenPopUpDialogMessage')}</p>
         </ModalDialog>
       )}
-      <a
+      <Link
         href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}
         target="_blank"
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}
         rel="opener noreferrer"
-        className="lifemapper-source-icon"
+        className="h-7 rounded-full"
         onClick={(event): void => {
           event.preventDefault();
           const link = (event.target as HTMLElement).closest('a')?.href;
@@ -197,7 +197,7 @@ export function SpecifyNetworkBadge({
         }}
       >
         <img src="/static/img/specify_network_logo_long.svg" alt="" />
-      </a>
+      </Link>
     </>
   );
 }

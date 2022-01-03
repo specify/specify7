@@ -127,7 +127,7 @@ export default Backbone.View.extend({
                 } else {
                     var children = new this.model.specifyModel.LazyCollection({filters: {parent_id: this.model.id}, orderby: 'rankID'});
                     this.lowestChildRankPromise = children.fetch().pipe(function() {
-                        return children.models[0].get('rankid');
+                        return children.models[0]?.get('rankid') ?? null;
                     });
                 }
                 this.treeRanksPromise = this.getTreeDefinition(this.model)

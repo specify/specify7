@@ -1,25 +1,3 @@
-.lifemapper-info {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.ui-dialog .lifemapper-info {
-  float: left;
-  margin-top: -3px;
-  margin-bottom: -3px;
-}
-
-.lifemapper-source-icon {
-  height: 28px;
-  min-width: 28px;
-  position: relative;
-  background: none;
-  border: none;
-  border-radius: var(--round);
-  cursor: pointer;
-}
-
 a.lifemapper-source-icon:hover {
   background: var(--b1);
 }

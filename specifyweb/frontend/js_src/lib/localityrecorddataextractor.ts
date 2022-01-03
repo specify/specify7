@@ -14,6 +14,7 @@ import {
   formatCoordinate,
   getLocalityData,
 } from './leafletutils';
+import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
 import type { RA } from './types';
 import {
@@ -191,7 +192,7 @@ export const parseLocalityPinFields = (
 };
 
 export async function getLocalityDataFromLocalityResource(
-  localityResource: any,
+  localityResource: SpecifyResource,
   // Don't fetch related tables. Only return data from the locality resource
   quickFetch = false,
   filterFunction: FilterFunction = defaultRecordFilterFunction
