@@ -2,7 +2,6 @@
 @import url('~jquery-contextmenu/dist/jquery.contextMenu.css');
 
 @import url('./colors.css');
-@import url('./header.css');
 @import url('./specifyform.css');
 @import url('./specifyform-print.css');
 @import url('./query.css');
@@ -35,7 +34,7 @@
   [multiple],
   textarea,
   select {
-    @apply p-1 bg-gray-200 rounded;
+    @apply p-1 bg-gray-200 rounded cursor-pointer;
   }
 
   select {
@@ -51,15 +50,24 @@
     @apply bg-red-400;
   }
 
-  [type='submit'],
-  [type='button'],
-  button {
-    @apply border rounded cursor-pointer;
+  .button {
+    @apply border rounded cursor-pointer active:bg-brand-300 bg-gray-300
+           border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
+           disabled:text-gray-500 gap-2 hover:bg-brand-200 inline-flex
+           items-center p-1 text-black;
   }
 
-  [type='submit']:disabled,
-  [type='button']:disabled,
-  button:disabled {
+  .link {
+    @apply text-black gap-2 inline-flex items-center hover:text-brand-300
+           active:text-brand-100;
+  }
+
+  [type='submit'].link,
+  [type='button'].link {
+    @apply border-none text-left;
+  }
+
+  :disabled {
     @apply cursor-not-allowed;
   }
 
@@ -100,6 +108,10 @@
       content: attr(title);
       top: 90%;
     }
+  }
+
+  a.menu-item[aria-current]::after {
+    @apply bg-gray-200;
   }
 }
 

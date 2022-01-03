@@ -1,12 +1,14 @@
 import type Backbone from 'backbone';
 import React from 'react';
 
+import { crash } from './errorboundary';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import router from '../router';
 import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';
 import userInfo from '../userinfo';
+import { Link } from './basic';
 import {
   CollectionSelector,
   ExpressSearch,
@@ -14,7 +16,6 @@ import {
   UserTools,
 } from './header';
 import Notifications from './notifications';
-import { crash } from '../errorview';
 
 export type UserTool = {
   readonly task: string;
@@ -112,23 +113,34 @@ export default function Main(): JSX.Element | null {
         {commonText('skipToContent')}
       </button>
 
-      <header id="site-header">
-        <div id="site-header-main">
-          <h1 id="site-logo">
-            <a href="/specify/" className="intercept-navigation">
+      <header
+        className={`bg-gray-200 border-b-4 border-b-[5px]
+        border-b-brand-200 flex flex-col 2xl:flex-row
+        shadow-gray-400 shadow-[0_3px_5px_-1px]`}
+      >
+        <div className="2xl:contents flex justify-between w-full">
+          <h1 className="contents">
+            <a
+              href="/specify/"
+              className="intercept-navigation order-1 h-16 m-2"
+            >
+              <img src="/static/img/seven_logo.png" alt="" className="h-full" />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>
           </h1>
-          <div id="user-tools">
-            <div>
+          <div
+            className={`flex flex-col gap-2 m-2 order-3 min-w-[275px]
+              2xl:w-max-[350px]`}
+          >
+            <div className="gap-x-2 flex items-center justify-end">
               {userInfo.isauthenticated ? (
                 <UserTools userToolsPromise={userToolsPromise} />
               ) : (
-                <a href="/accounts/login/">{commonText('logIn')}</a>
+                <Link href="/accounts/login/">{commonText('logIn')}</Link>
               )}
               <CollectionSelector />
             </div>
-            <div>
+            <div className="gap-x-2 flex items-center justify-end">
               <Notifications />
               <ExpressSearch />
             </div>

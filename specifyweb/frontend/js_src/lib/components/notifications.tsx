@@ -1,10 +1,9 @@
-import '../../css/notifications.css';
-
 import React from 'react';
 
 import ajax, { formData } from '../ajax';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
+import { Button, ButtonLikeLink, Link } from './basic';
 import { formatNumber } from './internationalization';
 import { ModalDialog } from './modaldialog';
 
@@ -98,12 +97,11 @@ export default function Notifications(): JSX.Element {
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   return (
     <>
-      <button
+      <Button
         id="site-notifications"
-        className={`magic-button ${hasUnread ? 'unread-notifications' : ''}`}
+        className={`${hasUnread ? 'bg-brand-300' : ''}`}
         disabled={notificationCount === 0}
         aria-live="polite"
-        type="button"
         onClick={(): void => setIsOpen((isOpen) => !isOpen)}
         ref={buttonRef}
       >
@@ -112,10 +110,10 @@ export default function Notifications(): JSX.Element {
             ? formatNumber(notifications.length)
             : '...'
         )}
-      </button>
+      </Button>
       {typeof notifications !== 'undefined' && isOpen && (
         <ModalDialog
-          className="notifications-container"
+          className="gap-y-2 flex flex-col -mt-1 divide-y divide-gray-400"
           properties={{
             title: commonText('notificationsDialogTitle'),
             maxHeight: 400,
@@ -178,12 +176,13 @@ function NotificationComponent({
     timeStyle: 'short',
   }).format(date);
   return (
-    <article className={notification.read ? 'unread-notification' : undefined}>
-      <header>
-        <time dateTime={date.toISOString()}>{formatted}</time>
-        <button
-          className="ui-icon ui-icon-trash fake-link"
-          type="button"
+    <article className="flex flex-col pt-1">
+      <header className="flex justify-between">
+        <span className={notification.read ? undefined : 'bg-amber-100'}>
+          <time dateTime={date.toISOString()}>{formatted}</time>
+        </span>
+        <ButtonLikeLink
+          className="ui-icon ui-icon-trash"
           onClick={(): void => {
             void ajax(
               '/notifications/delete/',
@@ -198,7 +197,7 @@ function NotificationComponent({
           }}
         >
           {commonText('delete')}
-        </button>
+        </ButtonLikeLink>
       </header>
       <p>
         {(
@@ -218,9 +217,9 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('feedItemUpdated')}{' '}
-        <a download href={`/static/depository/export_feed/${filename}`}>
+        <Link download href={`/static/depository/export_feed/${filename}`}>
           {filename}
-        </a>
+        </Link>
       </>
     );
   },
@@ -228,12 +227,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('updateFeedFailed')}{' '}
-        <a
+        <Link
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {commonText('exception')}
-        </a>
+        </Link>
       </>
     );
   },
@@ -241,9 +240,9 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('dwcaExportCompleted')}{' '}
-        <a download href={`/static/depository/${notification.payload.file}`}>
+        <Link download href={`/static/depository/${notification.payload.file}`}>
           {commonText('download')}
-        </a>
+        </Link>
       </>
     );
   },
@@ -251,12 +250,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('dwcaExportFailed')}{' '}
-        <a
+        <Link
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {commonText('exception')}
-        </a>
+        </Link>
       </>
     );
   },
@@ -264,9 +263,9 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('queryExportToCsvCompleted')}{' '}
-        <a download href={`/static/depository/${notification.payload.file}`}>
+        <Link download href={`/static/depository/${notification.payload.file}`}>
           {commonText('download')}
-        </a>
+        </Link>
       </>
     );
   },
@@ -274,21 +273,21 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('queryExportToKmlCompleted')}{' '}
-        <a download href={`/static/depository/${notification.payload.file}`}>
+        <Link download href={`/static/depository/${notification.payload.file}`}>
           {commonText('download')}
-        </a>
+        </Link>
       </>
     );
   },
   'dataset-ownership-transferred'(notification) {
     return commonText('dataSetOwnershipTransferred')(
       <i>{notification.payload['previous-owner-name']}</i>,
-      <a
+      <Link
         href={`/specify/workbench/${notification.payload['dataset-id']}/`}
         className="intercept-navigation"
       >
         <i>{notification.payload['dataset-name']}</i>
-      </a>
+      </Link>
     );
   },
   default(notification) {

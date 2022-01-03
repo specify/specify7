@@ -38,12 +38,16 @@ export const UnhandledErrorView = Backbone.View.extend({
             window.location.href = '/';
           },
         },
+        ...(process.env.NODE_ENV === 'production'
+          ? []
+          : [
+              {
+                text: '[development] dismiss',
+                click: () => this.remove(),
+              },
+            ]),
       ],
     });
     clearUnloadProtect();
   },
 });
-
-export function crash(error: Error): void {
-  new UnhandledErrorView({ response: error }).render();
-}

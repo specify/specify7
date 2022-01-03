@@ -17,7 +17,7 @@ export type ComponentProps = Props & {
 const CollectionObjectBadges = createBackboneView<ComponentProps, Props>(
   SpecifyNetworkBadge,
   {
-    className: 'lifemapper-info',
+    className: 'flex-1 flex justify-end',
     silentErrors: true,
     getComponentProps: (self) => ({
       model: self.options.model,
@@ -36,7 +36,7 @@ export default function register(): void {
     const render = (View: any, attach: (element: JQuery) => JQuery) =>
       new View({
         model: resourceView.model,
-        el: attach($('<span class="lifemapper-info"></span>')),
+        el: attach($('<span>')),
       }).render();
     if (
       remotePrefs['s2n.badges.disable'] !== 'true' &&

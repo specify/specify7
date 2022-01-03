@@ -8,7 +8,8 @@ import type { RA } from '../types';
 import userInfo from '../userinfo';
 import type { MenuItem, UserTool } from './main';
 import { ModalDialog } from './modaldialog';
-import { crash } from '../errorview';
+import { crash } from './errorboundary';
+import { Button, Link } from './basic';
 
 export function HeaderItems({
   menuItems,
@@ -16,9 +17,36 @@ export function HeaderItems({
   readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
   return (
-    <nav id="site-nav" aria-label="primary">
+    <nav
+      id="site-nav"
+      className={`xl:m-0 lg:justify-center flex flex-row flex-wrap flex-1
+        order-2 -mt-2`}
+      aria-label="primary"
+    >
       {menuItems.map(({ task, title, path, icon, view }) => (
-        <a
+        <Link
+          className={`
+            menu-item
+            p-2
+            md:py-3
+            font-bold
+            text-md
+            text-gray-700
+            hover:text-black
+            relative
+            inline-flex
+            items-center
+            gap-x-2
+            active:bg-white
+            lg:after:absolute
+            lg:after:-bottom-1
+            lg:after:w-full
+            lg:after:left-0
+            lg:after:right-0
+            lg:after:h-2
+            lg:after:bg-transparent
+            lg:hover:after:bg-gray-200
+          `}
           key={task}
           href={`/specify/task/${task}/`}
           data-path={path}
@@ -29,9 +57,9 @@ export function HeaderItems({
             }).render();
           }}
         >
-          <img src={icon} alt="" />
+          <img src={icon} alt="" className="h-4" />
           {title}
-        </a>
+        </Link>
       ))}
     </nav>
   );
@@ -64,7 +92,7 @@ export function CollectionSelector(): JSX.Element {
 
   return (
     <select
-      className="collection-selector"
+      className="flex-1"
       title={commonText('currentCollection')}
       aria-label={commonText('currentCollection')}
       value={collections?.current ?? undefined}
@@ -97,13 +125,13 @@ export function ExpressSearch(): JSX.Element {
         });
         navigation.go(url);
       }}
-      id="express-search"
+      className="contents"
       action="/specify/express_search/"
       role="search"
     >
       <input
         type="search"
-        className="express-search-query"
+        className="express-search-query flex-1"
         name="q"
         placeholder={commonText('search')}
         aria-label={commonText('search')}
@@ -130,14 +158,13 @@ export function UserTools({
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   return (
     <>
-      <button
-        className="magic-button username"
+      <Button
+        className="max-w-[100px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
         title={commonText('currentUser')}
-        type="button"
         onClick={(): void => setIsOpen(true)}
       >
         {userInfo.name}
-      </button>
+      </Button>
       {isOpen && userTools ? (
         <ModalDialog
           properties={{
@@ -146,7 +173,8 @@ export function UserTools({
           }}
         >
           <nav>
-            <ul style={{ padding: 0 }}>
+            {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+            <ul role="list">
               {[
                 {
                   task: '/accounts/logout',
@@ -166,9 +194,8 @@ export function UserTools({
                 })),
               ].map(({ task, title, basePath, view }) => (
                 <li key={task}>
-                  <a
+                  <Link
                     href={`${basePath}${task}/`}
-                    className="user-tool fake-link"
                     style={{ fontSize: '0.8rem' }}
                     onClick={(event): void => {
                       if (typeof view === 'undefined') return;
@@ -180,7 +207,7 @@ export function UserTools({
                     }}
                   >
                     {title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

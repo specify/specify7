@@ -30,10 +30,10 @@ function Root(): JSX.Element | null {
 
   React.useEffect(() => {
     initialContext
-      .then(startApp)
       // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
       .catch((error: Error) => {
         console.error(error);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         new UnhandledErrorView({ response: error }).render();
       })
       .finally(() => setIsLoading(false));
@@ -42,6 +42,7 @@ function Root(): JSX.Element | null {
   React.useEffect(() => {
     if (isLoading) return undefined;
     document.body.addEventListener('click', handleClick);
+    startApp();
     return (): void => document.body.removeEventListener('click', handleClick);
   }, [isLoading]);
 

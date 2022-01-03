@@ -48,7 +48,6 @@ function wrap<TAG extends keyof ReactHTML>(
 }
 
 // For usage by non-react components
-const baseLink = 'text-black gap-2 inline-flex items-center';
 export const className = {
   root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
   label: 'flex flex-col cursor-pointer',
@@ -60,11 +59,10 @@ export const className = {
   notSubmittedForm: 'not-submitted',
   notTouchedInput: 'not-touched',
   form: 'flex flex-col gap-4',
-  link: `${baseLink} hover:text-brand-300 active:text-brand-100`,
-  buttonLikeLink: `${baseLink} border-none text-left`,
-  button: `active:bg-brand-300 bg-gray-300 gap-2 hover:bg-brand-200 inline-flex
-    items-center p-2 text-black`,
-  linkLikeButton: `${baseLink}`,
+  button: 'button',
+  link: 'link',
+  fancyButton: `active:bg-brand-300 bg-gray-300 gap-2 hover:bg-brand-200 inline-flex
+    justify-center items-center p-2 text-black`,
 };
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -152,16 +150,21 @@ export const NewTabLink = wrap('a', className.link, {}, (props) => ({
       <img
         src="/static/img/new_tab.svg"
         alt={commonText('opensInNewTab')}
+        aria-label={commonText('opensInNewTab')}
+        title={commonText('opensInNewTab')}
         className="h-2"
       />
     </>
   ),
 }));
-export const LinkLikeButton = wrap('a', className.linkLikeButton);
-export const ButtonLikeLink = wrap('button', className.buttonLikeLink, {
+export const LinkLikeButton = wrap('a', className.button);
+export const ButtonLikeLink = wrap('button', className.link, {
   type: 'button',
 });
 export const Submit = wrap('input', className.button, {
+  type: 'submit',
+});
+export const FancySubmit = wrap('input', className.fancyButton, {
   type: 'submit',
 });
 export const Button = wrap('button', className.button, {

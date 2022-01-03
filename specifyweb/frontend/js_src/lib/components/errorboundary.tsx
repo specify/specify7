@@ -10,6 +10,7 @@ import React from 'react';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import { ModalDialog } from './modaldialog';
+import createBackboneView from './reactbackboneextend';
 
 type ErrorBoundaryState =
   | {
@@ -20,6 +21,44 @@ type ErrorBoundaryState =
       readonly error: { toString: () => string };
       readonly errorInfo: { componentStack: string };
     };
+
+function ErrorDialog({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}): JSX.Element {
+  return (
+    <ModalDialog
+      properties={{
+        title: commonText('errorBoundaryDialogTitle'),
+        width: 500,
+        dialogClass: 'ui-dialog-no-close',
+        buttons: [
+          {
+            text: commonText('close'),
+            click(): void {
+              window.location.href = '/';
+            },
+          },
+        ],
+      }}
+    >
+      <div role="alert">
+        {commonText('errorBoundaryDialogHeader')}
+        <p>{commonText('errorBoundaryDialogMessage')}</p>
+        <details style={{ whiteSpace: 'pre-wrap' }}>{children}</details>
+      </div>
+    </ModalDialog>
+  );
+}
+
+const View = createBackboneView(ErrorDialog);
+
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+export function crash(error: Error): void {
+  console.error(error);
+  new View({ children: error }).render();
+}
 
 export default class ErrorBoundary extends React.Component<
   { readonly children: JSX.Element | null; readonly silentErrors?: boolean },
@@ -45,31 +84,11 @@ export default class ErrorBoundary extends React.Component<
     return this.state.hasError ? (
       this.props.silentErrors === true &&
       process.env.NODE_ENV === 'production' ? null : (
-        <ModalDialog
-          properties={{
-            title: commonText('errorBoundaryDialogTitle'),
-            width: 500,
-            dialogClass: 'ui-dialog-no-close',
-            buttons: [
-              {
-                text: commonText('close'),
-                click(): void {
-                  window.location.href = '/';
-                },
-              },
-            ],
-          }}
-        >
-          <div role="alert">
-            {commonText('errorBoundaryDialogHeader')}
-            <p>{commonText('errorBoundaryDialogMessage')}</p>
-            <details style={{ whiteSpace: 'pre-wrap' }}>
-              {this.state.error?.toString()}
-              <br />
-              {this.state.errorInfo.componentStack}
-            </details>
-          </div>
-        </ModalDialog>
+        <ErrorDialog>
+          {this.state.error?.toString()}
+          <br />
+          {this.state.errorInfo.componentStack}
+        </ErrorDialog>
       )
     ) : (
       this.props.children

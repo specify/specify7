@@ -4,7 +4,7 @@ import $ from 'jquery';
 import React from "react";
 
 import * as businessRules from './businessrules';
-import {crash, UnhandledErrorView} from './errorview';
+import {UnhandledErrorView} from './errorview';
 import commonText from './localization/common';
 import csrftoken from "./csrftoken";
 import ajax, {csrfSafeMethod} from "./ajax";
@@ -12,6 +12,7 @@ import * as navigation from './navigation';
 import router from "./router";
 import NotFoundView from "./notfoundview";
 import {setCurrentView} from "./specifyapp";
+import {crash} from "./components/errorboundary";
 
 $.ajaxSetup({
   beforeSend: function (xhr, settings) {

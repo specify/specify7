@@ -7,7 +7,14 @@ import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
 import type { Language } from '../localization/utils';
 import type { RA } from '../types';
-import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
+import {
+  className,
+  ErrorMessage,
+  FancySubmit,
+  Form,
+  Input,
+  Label,
+} from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { LanguageSelection } from './toolbar/language';
@@ -63,7 +70,7 @@ function Login({
         </Label>
         <input type="hidden" name="next" value={nextUrl} />
         <input type="hidden" name="this_is_the_login_form" value="1" />
-        <Submit value={commonText('login')} />
+        <FancySubmit value={commonText('login')} />
       </Form>
     </SplashScreen>
   );
@@ -71,12 +78,13 @@ function Login({
 
 // TODO: test nextUrl parameter here and on the choosecollection page
 const nextDestination = '/accounts/choose_collection/?next=';
-const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
 
 window.addEventListener('load', () => {
   const root = document.getElementById('root');
   if (root === null) throw new Error('Unable to find root element');
   root.setAttribute('class', className.root);
+
+  const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
   ReactDOM.render(
     <React.StrictMode>
       <ErrorBoundary>

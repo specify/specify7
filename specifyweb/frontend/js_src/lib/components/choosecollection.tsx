@@ -10,10 +10,10 @@ import {
   CheckboxGroup,
   className,
   ErrorMessage,
+  FancySubmit,
   Form,
   LabelForCheckbox,
   Radio,
-  Submit,
 } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle } from './hooks';
@@ -72,7 +72,7 @@ function ChooseCollection({
           value={csrfToken ?? ''}
         />
         <input type="hidden" name="next" value={nextUrl} />
-        <Submit value={commonText('open')} />
+        <FancySubmit value={commonText('open')} />
       </Form>
     </SplashScreen>
   );

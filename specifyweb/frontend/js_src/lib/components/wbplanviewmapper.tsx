@@ -42,7 +42,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { crash } from '../errorview';
+import { crash } from './errorboundary';
 
 /*
  * Scope is used to differentiate between mapper definitions that should

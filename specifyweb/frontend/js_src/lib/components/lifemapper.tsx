@@ -3,20 +3,15 @@ import '../../css/lifemapper.css';
 import React from 'react';
 
 import ajax from '../ajax';
-import { SN_SERVICES } from '../lifemapperconfig';
-import { prepareLifemapperProjectionMap } from '../lifemappermap';
-import { reducer } from '../lifemapperreducer';
 import {
   fetchLocalScientificName,
   formatLifemapperViewPageRequest,
   formatOccurrenceDataRequest,
 } from '../lifemapperutills';
-import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import type { IR, RA } from '../types';
-import type { MainState } from './lifemapperstate';
-import { stateReducer } from './lifemapperstate';
-import type { ComponentProps, Props } from './lifemapperwrapper';
+import type { ComponentProps } from './lifemapperwrapper';
+import { Link } from './basic';
 
 type FullAggregatorResponse = {
   readonly records: RA<{
@@ -49,16 +44,16 @@ export function SpecifyNetworkBadge({
   if (!guid) return null;
 
   return (
-    <a
+    <Link
       href={formatLifemapperViewPageRequest(guid, occurrenceName)}
       target="_blank"
       title={lifemapperText('specifyNetwork')}
       aria-label={lifemapperText('specifyNetwork')}
-      className="lifemapper-source-icon"
+      className="h-7 relative"
       rel="noreferrer"
     >
       <img src="/static/img/specify_network_logo_long.svg" alt="" />
-    </a>
+    </Link>
   );
 }
 
@@ -82,87 +77,4 @@ async function fetchOccurrenceName({
     )
     .catch(console.error)
     .then((occurrenceName) => occurrenceName ?? '');
-}
-
-export function Lifemapper({ model }: Props): JSX.Element | null {
-  const [state, dispatch] = React.useReducer(reducer, {
-    type: 'MainState',
-    badges: Object.fromEntries(
-      Object.entries(SN_SERVICES).map(([name, label]) => [
-        name,
-        {
-          label,
-          isOpen: false,
-          isActive: true,
-        },
-      ])
-    ),
-    mapInfo: commonText('loading'),
-  } as MainState);
-
-  // Fetch occurrence data
-  React.useEffect(() => {
-    Promise.resolve(model.get('fullName') as string)
-      .then((occurrenceName) =>
-        dispatch({
-          type: 'SetOccurrenceNameAction',
-          occurrenceName: occurrenceName ?? '',
-        })
-      )
-      .catch(console.error);
-  }, [model]);
-
-  /*
-   * Fetch related CO records
-   * Fetch projection map
-   */
-  const occurrenceName =
-    state.type === 'MainState' ? state.occurrenceName : undefined;
-  const isOpen =
-    state.type === 'MainState' ? state.badges.lm.isOpen : undefined;
-  const mapInfo = state.type === 'MainState' ? state.mapInfo : undefined;
-  React.useEffect(() => {
-    if (
-      !Boolean(isOpen) ||
-      typeof occurrenceName === 'undefined' ||
-      typeof mapInfo === 'object'
-    )
-      return;
-
-    if (!occurrenceName) {
-      dispatch({ type: 'DisableBadgeAction', badgeName: 'lm' });
-      dispatch({
-        type: 'MapLoadedAction',
-        mapInfo: `
-          ${lifemapperText('errorsOccurred')}\n
-          ${lifemapperText('noMap')}`,
-      });
-      return;
-    }
-
-    prepareLifemapperProjectionMap(occurrenceName, model)
-      .then((mapInfo) =>
-        dispatch({
-          type: 'MapLoadedAction',
-          mapInfo:
-            mapInfo.layers.length === 0 && mapInfo.markers.length === 0
-              ? `${lifemapperText('errorsOccurred')}\n\n
-                ${
-                  Object.keys(mapInfo.messages.errorDetails).length === 0
-                    ? Object.values(mapInfo.messages.errorDetails).join('\n')
-                    : lifemapperText('noMap')
-                }`
-              : mapInfo,
-        })
-      )
-      .catch(() => dispatch({ type: 'DisableBadgeAction', badgeName: 'lm' }));
-  }, [occurrenceName, mapInfo, isOpen, model]);
-
-  // eslint-disable-next-line unicorn/no-null
-  return stateReducer(null, {
-    ...state,
-    params: {
-      dispatch,
-    },
-  });
 }
