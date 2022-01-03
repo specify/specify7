@@ -2,7 +2,6 @@
 @import url('~jquery-contextmenu/dist/jquery.contextMenu.css');
 
 @import url('./colors.css');
-@import url('./base.css');
 @import url('./header.css');
 @import url('./specifyform.css');
 @import url('./specifyform-print.css');
@@ -67,6 +66,40 @@
   [type='radio']:focus,
   [type='checkbox']:focus {
     @apply ring-2 ring-offset-1 !important;
+  }
+
+  /* Hide up/down arrows */
+
+  /* Firefox */
+  input[type='number'].no-arrows {
+    -moz-appearance: textfield;
+  }
+
+  /* Webkit */
+  input[type='number'].no-arrows::-webkit-outer-spin-button,
+  input[type='number'].no-arrows::-webkit-inner-spin-button {
+    @apply m-0 appearance-none;
+  }
+
+  a {
+    @apply no-underline cursor-pointer;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  /* Display tooltips as an overlay on touch-screen devices */
+  @media (pointer: coarse), (hover: none) {
+    [title] {
+      @apply relative inline-flex justify-center;
+    }
+
+    [title]:focus::after {
+      @apply w-fit absolute p-1 text-black bg-white border border-black;
+      content: attr(title);
+      top: 90%;
+    }
   }
 }
 

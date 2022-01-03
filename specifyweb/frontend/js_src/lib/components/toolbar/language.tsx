@@ -5,11 +5,11 @@ import csrfToken from '../../csrftoken';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../types';
+import { Form, Label, Select } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Form, Label, Select } from '../basic';
 
 export function LanguageSelection({
   languages,

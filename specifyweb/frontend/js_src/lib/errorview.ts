@@ -43,3 +43,7 @@ export const UnhandledErrorView = Backbone.View.extend({
     clearUnloadProtect();
   },
 });
+
+export function crash(error: Error): void {
+  new UnhandledErrorView({ response: error }).render();
+}

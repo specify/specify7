@@ -6,10 +6,10 @@ import ReactDOM from 'react-dom';
 import initialContext from '../initialcontext';
 import * as navigation from '../navigation';
 import startApp from '../startapp';
-import { className, ErrorMessage } from './basic';
+import { className } from './basic';
 import ErrorBoundary from './errorboundary';
 import Main from './main';
-import { SplashScreen } from './splashscreen';
+import { UnhandledErrorView } from '../errorview';
 
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');
@@ -27,13 +27,15 @@ function handleClick(event: Readonly<MouseEvent>): void {
 
 function Root(): JSX.Element | null {
   const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | undefined>(undefined);
 
   React.useEffect(() => {
     initialContext
       .then(startApp)
       // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-      .catch((error: Error) => setError(error.message))
+      .catch((error: Error) => {
+        console.error(error);
+        new UnhandledErrorView({ response: error }).render();
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -43,13 +45,7 @@ function Root(): JSX.Element | null {
     return (): void => document.body.removeEventListener('click', handleClick);
   }, [isLoading]);
 
-  return isLoading ? null : typeof error === 'undefined' ? (
-    <Main />
-  ) : (
-    <SplashScreen>
-      <ErrorMessage>{error}</ErrorMessage>
-    </SplashScreen>
-  );
+  return isLoading ? null : <Main />;
 }
 
 window.addEventListener('load', () => {

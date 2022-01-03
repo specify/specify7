@@ -13,7 +13,7 @@ import {
   Form,
   LabelForCheckbox,
   Radio,
-  SubmitWide,
+  Submit,
 } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle } from './hooks';
@@ -72,7 +72,7 @@ function ChooseCollection({
           value={csrfToken ?? ''}
         />
         <input type="hidden" name="next" value={nextUrl} />
-        <SubmitWide value={commonText('open')} />
+        <Submit value={commonText('open')} />
       </Form>
     </SplashScreen>
   );

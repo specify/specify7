@@ -59,12 +59,6 @@ export type Dataset = DatasetBrief & {
   readonly visualorder: null | RA<number>;
 };
 
-// See: https://stackoverflow.com/a/30741722/8584605
-export const handlePromiseReject = (error: unknown): void =>
-  void setTimeout(() => {
-    throw error;
-  }, 0);
-
 export type WbPlanViewProps = WbPlanViewConstructorProps & {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;

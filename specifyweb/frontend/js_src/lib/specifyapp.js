@@ -4,8 +4,6 @@ import $ from 'jquery';
 import 'jquery-contextmenu';
 import 'jquery-ui';
 import {ErrorView} from './errorview';
-import NotFoundView from './notfoundview';
-import router from './router';
 import systemInfo from './systeminfo';
 import commonText from './localization/common';
 import {setTitle} from "./components/hooks";
@@ -15,15 +13,6 @@ global.jQuery = $;
 var currentView;
     var versionMismatchWarned = false;
 
-
-    // setup basic routes.
-    router
-        .route('*whatever', 'notFound', function() {
-            setCurrentView(new NotFoundView());
-        })
-        .route('test_error/', 'testError', function() {
-            $.get('/api/test_error/');
-        });
 
     $.ui.dialog.prototype._focusTabbable = function(){
         let previousFocusedElement = document.activeElement;

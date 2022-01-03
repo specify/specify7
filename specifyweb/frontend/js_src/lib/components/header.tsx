@@ -8,7 +8,7 @@ import type { RA } from '../types';
 import userInfo from '../userinfo';
 import type { MenuItem, UserTool } from './main';
 import { ModalDialog } from './modaldialog';
-import { handlePromiseReject } from './wbplanview';
+import { crash } from '../errorview';
 
 export function HeaderItems({
   menuItems,
@@ -124,7 +124,7 @@ export function UserTools({
     undefined
   );
   React.useEffect(() => {
-    userToolsPromise.then(setUserTools).catch(handlePromiseReject);
+    userToolsPromise.then(setUserTools).catch(crash);
   }, [userToolsPromise]);
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);

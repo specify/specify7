@@ -28,7 +28,6 @@ import {
 import { useId } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
-import { handlePromiseReject } from './wbplanview';
 import type { MappingPathProps } from './wbplanviewcomponents';
 import { MappingLineComponent, ValidationButton } from './wbplanviewcomponents';
 import { Layout } from './wbplanviewheader';
@@ -43,6 +42,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { crash } from '../errorview';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -276,7 +276,7 @@ export default function WbPlanViewMapper(props: {
       props
         .onSave(state.lines, state.mustMatchPreferences)
         .then(() => setIsLoading(false))
-        .catch(handlePromiseReject);
+        .catch(crash);
     } else
       dispatch({
         type: 'ValidationAction',

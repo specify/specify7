@@ -24,7 +24,6 @@ import type {
   SpLocaleItemString,
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
-import { handlePromiseReject } from '../wbplanview';
 
 type ConstructorProps = {
   readonly onClose: () => void;
@@ -150,7 +149,7 @@ function SchemaConfigWrapper({
         setLanguages(Object.fromEntries(languages));
         return undefined;
       })
-      .catch(handlePromiseReject);
+      .catch(console.error);
 
     let destructorCalled = false;
     return (): void => {
@@ -189,7 +188,7 @@ function SchemaConfigWrapper({
         if (!destructorCalled) setTables(tables);
         return undefined;
       })
-      .catch(handlePromiseReject);
+      .catch(console.error);
 
     let destructorCalled = false;
     return (): void => {

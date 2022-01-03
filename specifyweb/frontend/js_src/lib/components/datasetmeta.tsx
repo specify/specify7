@@ -17,7 +17,6 @@ import { DateElement, formatNumber } from './internationalization';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { handlePromiseReject } from './wbplanview';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -65,7 +64,7 @@ export function DataSetMeta({
         setCreatedBy(createdByAgent);
         setModifiedBy(sameAgent ? createdByAgent : modifiedByAgent);
       })
-      .catch(handlePromiseReject);
+      .catch(console.error);
   }, []);
 
   return (

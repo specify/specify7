@@ -14,6 +14,7 @@ import {
   UserTools,
 } from './header';
 import Notifications from './notifications';
+import { crash } from '../errorview';
 
 export type UserTool = {
   readonly task: string;
@@ -93,7 +94,7 @@ export default function Main(): JSX.Element | null {
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
-    menuItemsPromise.then(setMenuItems).catch(console.error);
+    menuItemsPromise.then(setMenuItems).catch(crash);
   }, []);
 
   return typeof menuItems === 'undefined' ? null : (
@@ -135,7 +136,7 @@ export default function Main(): JSX.Element | null {
         </div>
         <HeaderItems menuItems={menuItems} />
       </header>
-      <main ref={mainRef} />
+      <main className="flex-1" ref={mainRef} />
     </>
   );
 }

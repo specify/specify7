@@ -13,7 +13,6 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './toolbar/schemaconfig';
-import { handlePromiseReject } from './wbplanview';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;
@@ -275,7 +274,7 @@ export function SchemaConfig({
 
     Promise.all(requests)
       .then(() => handleSave(state.language))
-      .catch(handlePromiseReject);
+      .catch(console.error);
     // eslint-ignore-next-line react-hooks/exhaustive-deps
   }, [state.type]);
 

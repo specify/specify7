@@ -1,5 +1,3 @@
-import '../../css/welcome.css';
-
 import React from 'react';
 
 import commonText from '../localization/common';
@@ -7,11 +5,12 @@ import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
 import systemInfo from '../systeminfo';
 import taxonTiles from '../taxontiles';
+import { ButtonLikeLink, NewTabLink } from './basic';
 import { useTitle } from './hooks';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
+const DO_TAXON_TILES = true ?? getBoolPref('sp7.doTaxonTiles', false);
 const defaultWelcomeScreenImage = '/static/img/icons_as_background_small.png';
 const welcomeScreenUrl = getPref(
   'sp7.welcomeScreenUrl',
@@ -32,7 +31,11 @@ function WelcomeScreenContent(): JSX.Element {
   }, []);
 
   return isValidUrl ? (
-    <iframe title={welcomeText('pageTitle')} src={welcomeScreenUrl} />
+    <iframe
+      className="h-5/6 border-0"
+      title={welcomeText('pageTitle')}
+      src={welcomeScreenUrl}
+    />
   ) : (
     <img src={welcomeScreenUrl} alt="" />
   );
@@ -41,18 +44,16 @@ function WelcomeScreenContent(): JSX.Element {
 function AboutSpecify(): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <div className="welcome-footer">
-      <button
-        type="button"
+    <div className="text-right">
+      <ButtonLikeLink
         title={welcomeText('aboutSpecify')}
-        className="fake-link"
         onClick={(): void => setIsOpen(true)}
       >
         <img
           src="/static/img/specify_7_small.png"
           alt={welcomeText('aboutSpecify')}
         />
-      </button>
+      </ButtonLikeLink>
       {isOpen && (
         <ModalDialog
           properties={{
@@ -61,36 +62,21 @@ function AboutSpecify(): JSX.Element {
             close: (): void => setIsOpen(false),
           }}
         >
-          <h2>{commonText('specifySeven')}</h2>
-          <h3>{welcomeText('fullAddress')}</h3>
+          <h2 className="text-3xl">{commonText('specifySeven')}</h2>
+          <p>{welcomeText('fullAddress')}</p>
           <address>
             <p>
-              <a
-                href="https://specifysoftware.org"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <NewTabLink href="https://specifysoftware.org" rel="noreferrer">
                 www.specifysoftware.org
-                <img
-                  src="/static/img/new_tab.svg"
-                  alt={commonText('opensInNewTab')}
-                  className="new-tab-link-icon"
-                />
-              </a>
+              </NewTabLink>
             </p>
             <p>
-              <a
+              <NewTabLink
                 href="mailto:support@specifysoftware.org"
-                target="_blank"
                 rel="noreferrer"
               >
                 support@specifysoftware.org
-                <img
-                  src="/static/img/new_tab.svg"
-                  alt={commonText('opensInNewTab')}
-                  className="new-tab-link-icon"
-                />
-              </a>
+              </NewTabLink>
             </p>
           </address>
           <p style={{ textAlign: 'justify' }}>{welcomeText('disclosure')}</p>
@@ -100,48 +86,31 @@ function AboutSpecify(): JSX.Element {
             <h3>{welcomeText('systemInformation')}</h3>
             <table>
               <tbody>
-                <tr>
-                  <th scope="row">{welcomeText('version')}</th>
-                  <td>{systemInfo.version}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('specifySixVersion')}</th>
-                  <td>{systemInfo.specify6_version}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('databaseVersion')}</th>
-                  <td>{systemInfo.database_version}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('schemaVersion')}</th>
-                  <td>{systemInfo.schema_version}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('databaseName')}</th>
-                  <td>{systemInfo.database}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('institution')}</th>
-                  <td>{systemInfo.institution}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('discipline')}</th>
-                  <td>{systemInfo.discipline}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('collection')}</th>
-                  <td>{systemInfo.collection}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('isaNumber')}</th>
-                  <td>
-                    {systemInfo.isa_number ?? commonText('notApplicable')}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">{welcomeText('browser')}</th>
-                  <td>{window.navigator.userAgent}</td>
-                </tr>
+                {[
+                  [welcomeText('version'), systemInfo.version],
+                  [
+                    welcomeText('specifySixVersion'),
+                    systemInfo.specify6_version,
+                  ],
+                  [welcomeText('databaseVersion'), systemInfo.database_version],
+                  [welcomeText('schemaVersion'), systemInfo.schema_version],
+                  [welcomeText('databaseName'), systemInfo.database],
+                  [welcomeText('institution'), systemInfo.institution],
+                  [welcomeText('discipline'), systemInfo.discipline],
+                  [welcomeText('collection'), systemInfo.collection],
+                  [
+                    welcomeText('isaNumber'),
+                    systemInfo.isa_number ?? commonText('notApplicable'),
+                  ],
+                  [welcomeText('browser'), window.navigator.userAgent],
+                ].map(([label, value], index) => (
+                  <tr key={index}>
+                    <th scope="row" className="whitespace-nowrap text-right">
+                      {label}
+                    </th>
+                    <td>{value}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </section>
@@ -171,5 +140,6 @@ function WelcomeView(): JSX.Element {
 }
 
 export default createBackboneView(WelcomeView, {
-  className: 'specify-welcome',
+  className: `flex flex-col gap-y-4 h-full justify-center my-0 max-w-[950px]
+    mx-auto`,
 });

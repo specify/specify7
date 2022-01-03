@@ -8,7 +8,7 @@ import schema from './schema';
 import welcomeText from './localization/welcome';
 
 export default function makeTreeMap(container) {
-  container.classList.add('taxon-treemap');
+  container.classList.add('h-[473px]');
 
   const color = d3.scale.category20c();
 
@@ -30,10 +30,10 @@ export default function makeTreeMap(container) {
     .style('height', `${container.clientHeight}px`)
 
   const genusTreeDefItem = new schema.models.TaxonTreeDefItem.LazyCollection({
-    filters: { name: 'Genus' },
+    filters: {name: 'Genus'},
   });
 
-  const getGenusRankID = genusTreeDefItem.fetch({ limit: 1 }).pipe(function () {
+  const getGenusRankID = genusTreeDefItem.fetch({limit: 1}).pipe(function () {
     return genusTreeDefItem.length > 0
       ? genusTreeDefItem.at(0).get('rankid')
       : null;
@@ -63,13 +63,13 @@ export default function makeTreeMap(container) {
           d.rankId <= genusRankID
             ? d.name
             : (function recur(d) {
-                return d.parent && d.rankId >= genusRankID
-                  ? recur(d.parent) + ' ' + d.name
-                  : '';
-              })(d.parent);
+              return d.parent && d.rankId >= genusRankID
+                ? recur(d.parent) + ' ' + d.name
+                : '';
+            })(d.parent);
 
         name === '' &&
-          console.error('empty name for', d, 'with rankId', d.rankId);
+        console.error('empty name for', d, 'with rankId', d.rankId);
         return name + ' ' + d.count;
       };
 
@@ -84,19 +84,23 @@ export default function makeTreeMap(container) {
       .append('div')
       .attr('class', 'node')
       .call(position)
+      .attr('class', 'node border absolute opacity-80')
       .attr('title', makeName)
       .style('background', function (d) {
         return d.children ? null : color(d.name);
       });
 
     _.defer(function addToolTips() {
-      $('.treemap .node').tooltip({ track: true, show: false, hide: false });
+      $('.treemap .node').tooltip({track: true, show: false, hide: false});
     });
 
-    $('<p>', { title: welcomeText('taxonTilesDescription')(thres) })
+    $('<p>', {
+      title: welcomeText('taxonTilesDescription')(thres),
+      class: 'absolute b-0 right-3 bg-white py-0 px-2 opacity-80 border',
+    })
       .text(welcomeText('taxonTiles'))
       .appendTo(div[0])
-      .tooltip({ track: true, show: false, hide: false });
+      .tooltip({track: true, show: false, hide: false});
   });
 }
 
