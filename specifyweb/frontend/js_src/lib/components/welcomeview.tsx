@@ -11,7 +11,7 @@ import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
-const defaultWelcomeScreenImage = '/static/img/icons_as_background_small.png';
+const defaultWelcomeScreenImage = '/static/img/icons_as_background_splash.png';
 const welcomeScreenUrl = getPref(
   'sp7.welcomeScreenUrl',
   defaultWelcomeScreenImage

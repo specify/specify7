@@ -7,7 +7,7 @@ import userInfo from './userinfo';
 const menuItem: MenuItem = {
   task: 'recordsets',
   title: commonText('recordSets'),
-  icon: '/static/img/record sets.png',
+  icon: '/static/img/record_sets.png',
   view({ onClose }) {
     const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {

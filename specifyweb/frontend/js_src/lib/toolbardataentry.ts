@@ -5,7 +5,7 @@ import commonText from './localization/common';
 const menuItem: MenuItem = {
   task: 'data',
   title: commonText('dataEntry'),
-  icon: '/static/img/data entry.png',
+  icon: '/static/img/data_entry.png',
   path: '/specify/view',
   view: ({ onClose }) => new FormsDialog({ onClose }),
 };
