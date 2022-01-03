@@ -75,17 +75,6 @@ var currentView;
         else if (typeof currentView.title === 'function')
             setTitle(currentView.title(currentView));
 
-        Array.from(
-          document.getElementById('site-nav').getElementsByTagName('a'),
-          (link)=>{
-              const path = link.getAttribute('data-path');
-              if(window.location.pathname.startsWith(path))
-                  link.setAttribute('aria-current','page');
-              else
-                  link.removeAttribute('aria-current');
-          }
-       );
-
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
             $(`<div role="alert">
                 ${commonText('versionMismatchDialogHeader')}

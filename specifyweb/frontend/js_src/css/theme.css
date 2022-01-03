@@ -109,6 +109,8 @@
   background-color: var(--b1);
 }
 
+/* TODO: make skip link focusable */
+/*
 .sr-only {
   position: absolute;
   top: auto;
@@ -139,6 +141,7 @@
   top: 0;
   left: 0;
 }
+ */
 
 menu {
   margin: 0;
@@ -246,15 +249,4 @@ table.grid-table,
 
 input[readonly] {
   background-color: var(--b3);
-}
-
-form.grid label {
-  display: flex;
-  flex-direction: column;
-}
-
-form.grid {
-  display: flex;
-  flex-direction: column;
-  row-gap: var(--half-size);
 }

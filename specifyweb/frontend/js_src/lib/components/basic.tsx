@@ -50,7 +50,7 @@ function wrap<TAG extends keyof ReactHTML>(
 // For usage by non-react components
 export const className = {
   root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
-  label: 'flex flex-col cursor-pointer',
+  label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer flex gap-x-1 items-center',
   checkboxGroup: 'flex flex-col gap-2 max-h-56 overflow-y-auto pl-1 -ml-1',
   radio: 'h-3 w-3',

@@ -20,6 +20,7 @@ export function PickList({
 }): JSX.Element {
   return (
     <select
+      className="flex-1 w-0"
       aria-label={label}
       value={value ?? '0'}
       disabled={disabled}

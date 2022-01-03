@@ -13,6 +13,15 @@ import {
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
+import {
+  Button,
+  ButtonLikeLink,
+  Checkbox,
+  className,
+  Label,
+  LabelForCheckbox,
+  Link,
+} from './basic';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
 import type {
@@ -120,12 +129,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         }}
       >
         {commonText('language')}
-        <ul style={{ padding: 0 }}>
+        <ul>
           {Object.entries(languages).map(([code, label]) => (
             <li key={code}>
-              <button
-                type="button"
-                className="fake-link language-link"
+              <ButtonLikeLink
+                className="font-bold"
                 onClick={(): void =>
                   dispatch({
                     type: 'ChooseLanguageAction',
@@ -134,7 +142,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               >
                 {label}
-              </button>
+              </ButtonLikeLink>
             </li>
           ))}
         </ul>
@@ -165,6 +173,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   },
   ChooseTableState({
     action: {
+      language,
       parameters: { dispatch, tables, handleClose },
     },
   }) {
@@ -186,22 +195,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           ],
         }}
       >
-        <ul style={{ padding: 0, maxHeight: '40vh' }}>
+        <ul className="max-h-80">
           {sortedTables.map((table) => (
             <li key={table.id}>
-              <button
-                onClick={(): void =>
-                  dispatch({
-                    type: 'ChooseTableAction',
-                    table,
-                  })
-                }
-                type="button"
-                className="fake-link"
+              <Link
+                href={`/task/schema-config/?language=${language}&table=${table.name}`}
+                className="intercept-navigation"
               >
                 <TableIcon tableName={table.name} tableLabel={false} />
                 {table.name}
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
@@ -249,17 +252,15 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     )?.[0];
     return (
       <>
-        <header>
-          <h2>
+        <header className="gap-x-2 flex">
+          <h2 className="font-semibold text-black">
             {commonText('schemaConfig')} (
             {languages[language]?.replaceAll(/[()]/g, '') ?? language})
           </h2>
           <span className="spacer" />
-          <menu>
+          <menu className="contents">
             <li>
-              <button
-                type="button"
-                className="magic-button"
+              <Button
                 /* eslint-disable-next-line sonarjs/no-identical-functions */
                 onClick={(): void =>
                   dispatch({
@@ -269,35 +270,27 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               >
                 {commonText('changeBaseTable')}
-              </button>
+              </Button>
             </li>
             <li>
-              <button
-                type="button"
-                className="magic-button"
-                onClick={handleClose}
-              >
-                {commonText('cancel')}
-              </button>
+              <Button onClick={handleClose}>{commonText('cancel')}</Button>
             </li>
             <li>
-              <button
-                type="button"
-                className="magic-button"
+              <Button
                 disabled={!tableWasModified && modifiedItems.length === 0}
                 onClick={(): void => dispatch({ type: 'SaveAction' })}
               >
                 {commonText('save')}
-              </button>
+              </Button>
             </li>
           </menu>
         </header>
-        <div className="schema-config-content">
-          <section>
+        <div className="xs:flex-row xs:h-full flex flex-col gap-4">
+          <section className="xs:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3>
               {commonText('tableInline')} {table.name}
             </h3>
-            <label>
+            <Label>
               {commonText('caption')}
               <input
                 type="text"
@@ -310,10 +303,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </label>
-            <label>
+            </Label>
+            <Label>
               {commonText('description')}
               <textarea
+                className="resize-y h-[15vh]"
                 value={table.strings.desc.text}
                 onChange={({ target }): void =>
                   dispatch({
@@ -323,8 +317,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </label>
-            <label>
+            </Label>
+            <Label>
               {commonText('tableFormat')}
               <PickList
                 value={table.format}
@@ -337,8 +331,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </label>
-            <label>
+            </Label>
+            <Label>
               {commonText('tableAggregation')}
               <PickList
                 value={table.aggregator}
@@ -353,10 +347,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </label>
-            <label className="horizontal">
-              <input
-                type="checkbox"
+            </Label>
+            <LabelForCheckbox>
+              <Checkbox
                 checked={table.ishidden}
                 onChange={({ target }): void =>
                   dispatch({
@@ -367,11 +360,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               />
               {commonText('hideTable')}
-            </label>
+            </LabelForCheckbox>
           </section>
-          <section>
+          <section className="xs:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3 id={id('fields-label')}>{commonText('fields')}</h3>
             <select
+              className="min-h-[30vh] h-full xs:min-h-0 overflow-y-auto"
               size={2}
               aria-labelledby={id('fields-label')}
               onChange={({ target }): void =>
@@ -399,11 +393,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               )}
             </select>
           </section>
-          <section>
+          <section className="xs:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3>
               {commonText('field')}: {items[itemId].name}
             </h3>
-            <label>
+            <Label>
               {commonText('caption')}
               <input
                 type="text"
@@ -416,10 +410,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </label>
-            <label>
+            </Label>
+            <Label>
               {commonText('description')}
               <textarea
+                className="resize-y h-[15vh]"
                 value={items[itemId].strings.desc.text}
                 onChange={({ target }): void =>
                   dispatch({
@@ -429,8 +424,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </label>
-            <label>
+            </Label>
+            <Label>
               {commonText('length')}
               <input
                 type="number"
@@ -438,8 +433,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 readOnly={true}
                 className="no-arrows"
               />
-            </label>
-            <label>
+            </Label>
+            <Label>
               {commonText('type')}
               <input
                 type="text"
@@ -449,10 +444,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   items[itemId].dataModel.relatedModelName
                 )}
               />
-            </label>
-            <label className="horizontal">
-              <input
-                type="checkbox"
+            </Label>
+            <LabelForCheckbox>
+              <Checkbox
                 checked={items[itemId].ishidden}
                 onChange={({ target }): void =>
                   dispatch({
@@ -463,18 +457,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               />
               {commonText('hideField')}
-            </label>
-            <label className="horizontal">
-              <input
-                type="checkbox"
+            </LabelForCheckbox>
+            <LabelForCheckbox>
+              <Checkbox
                 checked={items[itemId].dataModel.readOnly ?? false}
                 disabled={true}
               />
               {commonText('readOnly')}
-            </label>
-            <label className="horizontal">
-              <input
-                type="checkbox"
+            </LabelForCheckbox>
+            <LabelForCheckbox>
+              <Checkbox
                 checked={
                   items[itemId].dataModel.canChangeIsRequired
                     ? items[itemId].dataModel.isRequired
@@ -490,7 +482,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               />
               {commonText('required')}
-            </label>
+            </LabelForCheckbox>
             <fieldset>
               <legend>{commonText('fieldFormat')}</legend>
               {Object.entries<{
@@ -539,29 +531,29 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   extraComponents: (
                     <>
                       {typeof currentPickListId !== 'undefined' && (
-                        <a
-                          className="fake-link intercept-navigation"
+                        <Link
+                          className="intercept-navigation"
                           href={`/specify/view/picklist/${currentPickListId}/`}
                         >
                           <span className="ui-icon ui-icon-pencil">
                             {commonText('edit')}
                           </span>
-                        </a>
+                        </Link>
                       )}
-                      <a
-                        className="fake-link intercept-navigation"
+                      <Link
+                        className="intercept-navigation"
                         href="/specify/view/picklist/new/"
                       >
                         <span className="ui-icon ui-icon-plus">
                           {commonText('add')}
                         </span>
-                      </a>
+                      </Link>
                     </>
                   ),
                 },
               }).map(([key, { label, value, values, extraComponents }]) => (
-                <div className="group" key={key}>
-                  <label className="horizontal">
+                <div className={className.labelForCheckbox} key={key}>
+                  <LabelForCheckbox>
                     <input
                       type="radio"
                       name={id('format')}
@@ -581,7 +573,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       }
                     />
                     {label}
-                  </label>
+                  </LabelForCheckbox>
                   {values && (
                     <PickList
                       label={label}

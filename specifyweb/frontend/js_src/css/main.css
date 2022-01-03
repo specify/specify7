@@ -34,11 +34,17 @@
   [multiple],
   textarea,
   select {
-    @apply p-1 bg-gray-200 rounded cursor-pointer;
+    @apply p-1 bg-gray-200 rounded;
   }
 
   select {
     @apply pr-5 bg-right;
+  }
+
+  [type='checkbox'],
+  [type='radio'],
+  label {
+    @apply cursor-pointer;
   }
 
   form:not(.not-submitted) input:invalid,
@@ -59,7 +65,7 @@
 
   .link {
     @apply text-black gap-2 inline-flex items-center hover:text-brand-300
-           active:text-brand-100;
+           active:text-brand-100 cursor-pointer;
   }
 
   [type='submit'].link,
@@ -89,14 +95,6 @@
     @apply m-0 appearance-none;
   }
 
-  a {
-    @apply no-underline cursor-pointer;
-  }
-
-  button {
-    @apply cursor-pointer;
-  }
-
   /* Display tooltips as an overlay on touch-screen devices */
   @media (pointer: coarse), (hover: none) {
     [title] {
@@ -110,9 +108,6 @@
     }
   }
 
-  a.menu-item[aria-current]::after {
-    @apply bg-gray-200;
-  }
 }
 
 /**

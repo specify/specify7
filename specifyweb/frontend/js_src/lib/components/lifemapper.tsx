@@ -16,8 +16,8 @@ import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import systemInfo from '../systeminfo';
 import type { IR, RA, RR } from '../types';
-import { closeDialog, ModalDialog } from './modaldialog';
 import { Link } from './basic';
+import { closeDialog, ModalDialog } from './modaldialog';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 

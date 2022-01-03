@@ -1,5 +1,3 @@
-import '../../../css/schemaconfig.css';
-
 import React from 'react';
 
 import ajax from '../../ajax';

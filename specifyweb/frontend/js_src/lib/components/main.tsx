@@ -1,7 +1,6 @@
 import type Backbone from 'backbone';
 import React from 'react';
 
-import { crash } from './errorboundary';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import router from '../router';
@@ -9,6 +8,7 @@ import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';
 import userInfo from '../userinfo';
 import { Link } from './basic';
+import { crash } from './errorboundary';
 import {
   CollectionSelector,
   ExpressSearch,
@@ -88,17 +88,31 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   import('./toolbar/forceupdate'),
 ]).then(processMenuItems);
 
-export default function Main(): JSX.Element | null {
+export default function Main({
+  onLoaded: handleLoaded,
+}: {
+  readonly onLoaded: () => void;
+}): JSX.Element | null {
   const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
+    undefined
+  );
+  const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
     undefined
   );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
-    menuItemsPromise.then(setMenuItems).catch(crash);
+    Promise.all([
+      menuItemsPromise.then(setMenuItems),
+      userToolsPromise.then(setUserTools),
+    ])
+      .then(handleLoaded)
+      .catch(crash);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return typeof menuItems === 'undefined' ? null : (
+  return typeof menuItems === 'undefined' ||
+    typeof userTools === 'undefined' ? null : (
     <>
       <button
         className="sr-only"
@@ -134,7 +148,7 @@ export default function Main(): JSX.Element | null {
           >
             <div className="gap-x-2 flex items-center justify-end">
               {userInfo.isauthenticated ? (
-                <UserTools userToolsPromise={userToolsPromise} />
+                <UserTools userTools={userTools} />
               ) : (
                 <Link href="/accounts/login/">{commonText('logIn')}</Link>
               )}

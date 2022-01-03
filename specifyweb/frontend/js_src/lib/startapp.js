@@ -24,8 +24,10 @@ $.ajaxSetup({
 $(document).ajaxError(handleUnexpectedError);
 
 function handleUnexpectedError(event, jqxhr, settings, exception) {
-  if (jqxhr.errorHandled) return; // Not unexpected.
-  if (jqxhr.status === 403) {
+  if (jqxhr.errorHandled)
+    return; // Not unexpected.
+
+  if (jqxhr.status === 403)
     $(`<div role="alert">
         ${commonText('sessionTimeOutDialogHeader')}
         <p>${commonText('sessionTimeOutDialogMessage')}</p>
@@ -41,27 +43,26 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
           },
         },],
       });
-    return;
+  else {
+    new UnhandledErrorView({response: jqxhr.responseText}).render();
+    console.log({event, jqxhr, settings, exception});
   }
-  new UnhandledErrorView({response: jqxhr.responseText}).render();
-
-  console.log({event, jqxhr, settings, exception});
 }
 
 
 const tasksPromise = Promise.all([import('./welcometask'), import('./datatask'), import('./querytask'), import('./treetask'), import('./expresssearchtask'), import('./datamodeltask'), import('./attachmentstask'), import('./wbtask'), import('./wbimporttask'), import('./wbplantask'), import('./appresourcetask'), import('./components/lifemapperwrapper'),]).then((tasks) => () => tasks.forEach(({default: task}) => task()));
 
+router
+  .route('*whatever', 'notFound', function () {
+    setCurrentView(new NotFoundView());
+  })
+  .route('test_error/', 'testError', function () {
+    void ajax('/api/test_error/');
+  })
 
 export default function appStart() {
   console.info('specify app starting');
   businessRules.enable(true);
-  router
-    .route('*whatever', 'notFound', function () {
-      setCurrentView(new NotFoundView());
-    })
-    .route('test_error/', 'testError', function () {
-      void ajax('/api/test_error/');
-    });
   tasksPromise.then(execute => execute())
     .then(() => navigation.start())
     .catch(crash);

@@ -4,21 +4,42 @@ import ajax from '../ajax';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
-import type { RA } from '../types';
+import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
+import { Button, Link } from './basic';
 import type { MenuItem, UserTool } from './main';
 import { ModalDialog } from './modaldialog';
-import { crash } from './errorboundary';
-import { Button, Link } from './basic';
+import router from '../router';
+
+const routeMappings: IR<string> = {
+  recordSetView: 'data',
+  resourceView: 'data',
+  newResourceView: 'data',
+  byCatNo: 'data',
+  storedQuery: 'query',
+  ephemeralQuery: 'query',
+  queryFromTable: 'query',
+  'workbench-import': 'workbenches',
+  'workbench-plan': 'workbenches',
+};
 
 export function HeaderItems({
   menuItems,
 }: {
   readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
+  const [activeTask, setActiveTask] = React.useState<string | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    router.on('route', (route: string) => {
+      if (menuItems.some(({ task }) => task === route)) setActiveTask(route);
+      else setActiveTask(routeMappings[route] ?? undefined);
+    });
+  }, []);
+
   return (
     <nav
-      id="site-nav"
       className={`xl:m-0 lg:justify-center flex flex-row flex-wrap flex-1
         order-2 -mt-2`}
       aria-label="primary"
@@ -27,8 +48,7 @@ export function HeaderItems({
         <Link
           className={`
             menu-item
-            p-2
-            md:py-3
+            p-3
             font-bold
             text-md
             text-gray-700
@@ -38,6 +58,7 @@ export function HeaderItems({
             items-center
             gap-x-2
             active:bg-white
+            ${task === activeTask ? 'bg-white lg:bg-transparent' : ''}
             lg:after:absolute
             lg:after:-bottom-1
             lg:after:w-full
@@ -46,10 +67,12 @@ export function HeaderItems({
             lg:after:h-2
             lg:after:bg-transparent
             lg:hover:after:bg-gray-200
+            ${task === activeTask ? 'lg:after:bg-gray-200' : ''}
           `}
           key={task}
           href={`/specify/task/${task}/`}
           data-path={path}
+          aria-current={task === activeTask ? 'page' : undefined}
           onClick={(event): void => {
             event.preventDefault();
             const backboneView = view({
@@ -142,19 +165,11 @@ export function ExpressSearch(): JSX.Element {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function UserTools({
-  userToolsPromise,
+  userTools,
 }: {
-  readonly userToolsPromise: Promise<RA<UserTool>>;
+  readonly userTools: RA<UserTool>;
 }): JSX.Element {
-  const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
-    undefined
-  );
-  React.useEffect(() => {
-    userToolsPromise.then(setUserTools).catch(crash);
-  }, [userToolsPromise]);
-
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   return (
     <>
@@ -165,7 +180,7 @@ export function UserTools({
       >
         {userInfo.name}
       </Button>
-      {isOpen && userTools ? (
+      {isOpen ? (
         <ModalDialog
           properties={{
             title: commonText('userToolsDialogTitle'),

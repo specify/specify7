@@ -7,9 +7,8 @@ import initialContext from '../initialcontext';
 import * as navigation from '../navigation';
 import startApp from '../startapp';
 import { className } from './basic';
-import ErrorBoundary from './errorboundary';
+import ErrorBoundary, { crash } from './errorboundary';
 import Main from './main';
-import { UnhandledErrorView } from '../errorview';
 
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');
@@ -26,27 +25,23 @@ function handleClick(event: Readonly<MouseEvent>): void {
 }
 
 function Root(): JSX.Element | null {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isContextLoading, setIsContextLoading] = React.useState(true);
+  const [isHeaderLoading, setIsHeaderLoading] = React.useState(true);
 
   React.useEffect(() => {
-    initialContext
-      // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-      .catch((error: Error) => {
-        console.error(error);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        new UnhandledErrorView({ response: error }).render();
-      })
-      .finally(() => setIsLoading(false));
+    initialContext.catch(crash).finally(() => setIsContextLoading(false));
   }, []);
 
   React.useEffect(() => {
-    if (isLoading) return undefined;
+    if (isHeaderLoading) return undefined;
     document.body.addEventListener('click', handleClick);
     startApp();
     return (): void => document.body.removeEventListener('click', handleClick);
-  }, [isLoading]);
+  }, [isHeaderLoading]);
 
-  return isLoading ? null : <Main />;
+  return isContextLoading ? null : (
+    <Main onLoaded={(): void => setIsHeaderLoading(false)} />
+  );
 }
 
 window.addEventListener('load', () => {
