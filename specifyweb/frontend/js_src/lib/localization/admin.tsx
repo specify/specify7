@@ -42,10 +42,10 @@ const adminText = createDictionary({
   notAvailableOnAdmins: 'This option is unavailable for admin users',
   userCollectionsPluginDialogTitle: 'Select user collection access',
 
-    // UserInviteLinkPlugin
-    userInviteLinkDialogTitle: 'User Invite Link',
-    createInviteLink: 'Create Invite Link',
-    userInviteLinkDialogText: (username: string) => `
+  // UserInviteLinkPlugin
+  userInviteLinkDialogTitle: 'User Invite Link',
+  createInviteLink: 'Create Invite Link',
+  userInviteLinkDialogText: (username: string) => `
       Send the following link to ${username} to allow
       them to log in for the first time.
       `
