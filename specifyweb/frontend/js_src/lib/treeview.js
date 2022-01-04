@@ -36,7 +36,7 @@ var TreeHeader = Backbone.View.extend({
         render: function() {
             var headings = this.treeDefItems.map(
                 (tdi, i) => $('<th>', {scope: 'col'}).append(
-                    $('<button>', {class:'fake-link'})
+                    $('<button>', {class:'link'})
                     .append($('<span></span>')
                         .addClass(this.collapsedRanks[i] ? 'tree-header-collapsed' : '')
                         .text(tdi.get('title') || tdi.get('name'))

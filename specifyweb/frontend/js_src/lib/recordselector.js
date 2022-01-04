@@ -96,7 +96,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
         render() {
             this.el.innerHTML = `
                 <button
-                    class="magic-button"
+                    class="button"
                     data-action="first"
                     aria-label="${formsText('firstRecord')}"
                     title="${formsText('firstRecord')}"
@@ -104,7 +104,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
                     disabled
                 >≪</button>
                 <button
-                    class="magic-button"
+                    class="button"
                     data-action="previous"
                     aria-label="${formsText('previousRecord')}"
                     title="${formsText('previousRecord')}"
@@ -120,7 +120,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
                     <span class="max-indicator"></span>
                 </div>
                 <button
-                    class="magic-button"
+                    class="button"
                     data-action="next"
                     aria-label="${formsText('nextRecord')}"
                     title="${formsText('nextRecord')}"
@@ -128,7 +128,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
                     disabled
                 >&gt;</button>
                 <button
-                    class="magic-button"
+                    class="button"
                     data-action="last"
                     aria-label="${formsText('lastRecord')}"
                     title="${formsText('lastRecord')}"

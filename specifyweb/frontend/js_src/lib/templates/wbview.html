@@ -6,7 +6,7 @@
         type="button"
         aria-pressed="false"
         aria-haspopup="grid"
-        class="magic-button wb-show-toolkit"
+        class="button wb-show-toolkit"
       >
         <%= commonText('tools') %>
       </button>
@@ -14,27 +14,19 @@
     <div class="wb-controls-right">
       <button
         type="button"
-        class="magic-button wb-show-plan"
+        class="button wb-show-plan"
         style="display: none"
       >
         Show Plan
       </button>
-      <button type="button" class="magic-button wb-plan">
+      <button type="button" class="button wb-plan">
         <%= wbText('dataMapper') %>
       </button>
       <% if(!isUploaded) { %>
-      <!--<button
-        type="button"
-        aria-pressed="false"
-        class="magic-button wb-data-check"
-        disabled="disabled"
-      >
-        <%= wbText('dataCheck') %>
-      </button>-->
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-validate"
+        class="button wb-validate"
         disabled="disabled"
       >
         <%= wbText('validate') %>
@@ -43,7 +35,7 @@
       <button
         type="button"
         aria-haspopup="tree"
-        class="magic-button wb-show-upload-view"
+        class="button wb-show-upload-view"
         disabled="disabled"
         title="<%= wbText('wbUploadedUnavailable') %>"
       >
@@ -53,7 +45,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-unupload"
+        class="button wb-unupload"
       >
         <%= wbText('rollback') %>
       </button>
@@ -61,7 +53,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-upload"
+        class="button wb-upload"
       >
         <%= wbText('upload') %>
       </button>
@@ -69,7 +61,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-revert"
+        class="button wb-revert"
         disabled="disabled"
       >
         <%= wbText('revert') %>
@@ -77,7 +69,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-save"
+        class="button wb-save"
         disabled="disabled"
       >
         <%= commonText('save') %>
@@ -95,17 +87,17 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-change-data-set-owner"
+        class="button wb-change-data-set-owner"
       >
         <%= wbText('changeOwner') %>
       </button>
-      <button type="button" class="magic-button wb-export-data-set">
+      <button type="button" class="button wb-export-data-set">
         <%= wbText('export') %>
       </button>
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-delete-data-set"
+        class="button wb-delete-data-set"
       >
         <%= commonText('delete') %>
       </button>
@@ -114,7 +106,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-convert-coordinates"
+        class="button wb-convert-coordinates"
         title="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
@@ -123,7 +115,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-geolocate"
+        class="button wb-geolocate"
         title="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
@@ -132,7 +124,7 @@
       <button
         type="button"
         aria-haspopup="dialog"
-        class="magic-button wb-leafletmap"
+        class="button wb-leafletmap"
         title="<%= wbText('unavailableWithoutLocality') %>"
         disabled
       >
@@ -178,7 +170,7 @@
       type="button"
       aria-haspopup="dialog"
       aria-pressed="false"
-      class="magic-button wb-advanced-search"
+      class="button wb-advanced-search"
       title="<%= wbText('configureSearchReplace') %>"
       aria-label="<%= wbText('configureSearchReplace') %>"
     >

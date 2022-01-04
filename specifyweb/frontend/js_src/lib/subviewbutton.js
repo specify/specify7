@@ -35,7 +35,7 @@ import commonText from './localization/common';
 
             this.button = $('<button>', {
                 type: 'button',
-                class: 'magic-button',
+                class: 'button',
                 title: self.field.getLocalizedName()
             }).appendTo(self.el)[0];
 

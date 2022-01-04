@@ -151,7 +151,7 @@ export default Backbone.View.extend({
             
             var fieldLabel = this.$('.field-label').empty();
             _.each(this.fieldSpec.joinPath, function(field) {
-                $('<button class="field-label-field fake-link">')
+                $('<button class="field-label-field link">')
                     .text(field.getLocalizedName() || field.name)
                     .prepend($(
                         '<img>',
@@ -188,7 +188,7 @@ export default Backbone.View.extend({
                         .appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {
-                    $('<button class="field-operation fake-link">').text(queryText('anyInline')).appendTo(fieldLabel);
+                    $('<button class="field-operation link">').text(queryText('anyInline')).appendTo(fieldLabel);
                     this.$('.op-negate').hide();
                 }
             }

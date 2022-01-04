@@ -24,7 +24,7 @@
     color: var(--t3);
 }
 
-#appresources-view menu :not(li) > .fake-link {
+#appresources-view menu :not(li) > .link {
     color: inherit;
     font-weight: inherit;
     font-size: inherit;

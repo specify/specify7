@@ -15,7 +15,7 @@ import commonText from './localization/common';
 const CONTRACT = `<td class="contract">
         <button
           type="button" 
-          class="fake-link"
+          class="link"
           title="${formsText('contract')}"
           aria-label="${formsText('contract')}"
         >
@@ -27,7 +27,7 @@ const CONTRACT = `<td class="contract">
     const EXPAND = `<td class="expand">
         <button
           type="button"
-          class="fake-link"
+          class="link"
           title="${commonText('expand')}"
           aria-label="${commonText('expand')}"
         >
@@ -39,7 +39,7 @@ const CONTRACT = `<td class="contract">
     const REMOVE = `<td class="remove">
         <button
           type="button"
-          class="fake-link"
+          class="link"
           title="${commonText('remove')}"
           aria-label="${commonText('remove')}"
         >

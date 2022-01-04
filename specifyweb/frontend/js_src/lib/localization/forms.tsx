@@ -85,32 +85,39 @@ const formsText = createDictionary({
     ca: 'Specify Schema',
   },
   // Data View
-  emptyRecordSetMessage: {
+  emptyRecordSetHeader: {
     'en-us': (recordSetName: string) => `
-      <h2>The Record Set "${recordSetName}" contains no records.</h2>
-      <p>You can <button class="recordset-delete magic-button"
-      type="button">delete</button> the record set or
-      <a class="recordset-add intercept-navigation magic-button">add</a> records
-      to it.</p>
-      <p>Be aware that another user maybe getting ready to add records,
-      so only delete this record set if you are sure it is not to be used.</p>`,
+      The Record Set "${recordSetName}" contains no records.`,
     'ru-ru': (recordSetName: string) => `
-      <h2>Набор объектов "${recordSetName}" является пустым.</h2>
-      <p>Вы можете <button class="recordset-delete magic-button"
-      type="button">удалить</button> набор записей или
-      <a class="recordset-add intercept-navigation magic-button">добавить</a>
-      к нему.</p>
-      <p>Имейте в виду, что другой пользователь, возможно, готовится добавить
-      объекты, поэтому удаляйте этот набор записей только в том случае, если вы
-      уверены, что он не будет использованным.</p>`,
+      Набор объектов "${recordSetName}" является пустым.`,
     ca: (recordSetName: string) => `
-      <h2>The Record Set "${recordSetName}" contains no records.</h2>
-      <p>You can <button class="recordset-delete magic-button"
-      type="button">delete</button> the record set or
-      <a class="recordset-add intercept-navigation magic-button">add</a> records
-      to it.</p>
-      <p>Be aware that another user maybe getting ready to add records,
-      so only delete this record set if you are sure it is not to be used.</p>`,
+      The Record Set "${recordSetName}" contains no records.`,
+  },
+  emptyRecordSetMessage: {
+    'en-us': (
+      remove: (label: string) => string,
+      add: (label: string) => string
+    ) => `
+      You can ${remove('delete')} the record set or ${add('add')} records
+      to it.`,
+    'ru-ru': (
+      remove: (label: string) => string,
+      add: (label: string) => string
+    ) => `
+      Вы можете ${remove('удалить')} набор записей или
+      ${add('добавить')} к нему.`,
+    ca: (remove: (label: string) => string, add: (label: string) => string) => `
+      You can ${remove('delete')} the record set or ${add('add')} records
+      to it.`,
+  },
+  emptyRecordSetSecondMessage: {
+    'en-us': `Be aware that another user maybe getting ready to add records,
+      so only delete this record set if you are sure it is not to be used.`,
+    'ru-ru': `Имейте в виду, что другой пользователь, возможно, готовится
+      добавить объекты, поэтому удаляйте этот набор записей только в том случае,
+      если вы уверены, что он не будет использованным.`,
+    ca: `Be aware that another user maybe getting ready to add records,
+      so only delete this record set if you are sure it is not to be used.`,
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted.',

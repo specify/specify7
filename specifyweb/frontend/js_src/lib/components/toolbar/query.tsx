@@ -23,6 +23,7 @@ import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import { SpecifyResource } from '../../legacytypes';
+import { Button, ButtonLikeLink, Link } from '../basic';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -81,9 +82,7 @@ function QueryList({
       <thead>
         <tr>
           <th scope="col" className="pl-table-icon">
-            <button
-              type="button"
-              className="fake-link"
+            <Button
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'name',
@@ -93,12 +92,10 @@ function QueryList({
             >
               {commonText('name')}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
-            </button>
+            </Button>
           </th>
           <th scope="col">
-            <button
-              type="button"
-              className="fake-link"
+            <Button
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'dateCreated',
@@ -108,7 +105,7 @@ function QueryList({
             >
               {commonText('created')}
               <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-            </button>
+            </Button>
           </th>
           <td />
         </tr>
@@ -117,25 +114,24 @@ function QueryList({
         {queries.map((query) => (
           <tr key={query.id}>
             <td>
-              <a
+              <Link
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
                 }
-                className="fake-link intercept-navigation"
+                className="intercept-navigation"
                 style={{ overflowX: 'auto' }}
               >
                 <TableIcon tableName={query.tableName} tableLabel={false} />
                 {query.name}
-              </a>
+              </Link>
             </td>
             <td style={{ color: 'var(--t3)' }}>
               <DateElement date={query.dateCreated} />
             </td>
             <td className="justify-end">
               {typeof handleEdit === 'function' && (
-                <button
-                  type="button"
-                  className="fake-link ui-icon ui-icon-pencil"
+                <ButtonLikeLink
+                  className="ui-icon ui-icon-pencil"
                   onClick={(): void => handleEdit(query)}
                   aria-label={commonText('edit')}
                   title={commonText('edit')}
@@ -160,13 +156,13 @@ function ListOfTables({
     <ul className="list-of-tables" style={{ padding: 0 }}>
       {tables.map((tableName, index) => (
         <li key={index}>
-          <a
+          <Link
             href={getQueryCreateUrl(tableName)}
-            className="fake-link intercept-navigation"
+            className="intercept-navigation"
           >
             <TableIcon tableName={tableName} tableLabel={false} />
             {defined(getModel(tableName)).getLocalizedName()}
-          </a>
+          </Link>
         </li>
       ))}
     </ul>
@@ -368,19 +364,19 @@ const EditQueryDialog = Backbone.View.extend({
         <ul style="padding: 0">
            <li style="display:flex;margin:5px">
                <span class="ui-icon ui-icon-circle-plus"/>
-               <button type="button" class="query-export fake-link">${commonText(
+               <button type="button" class="query-export link">${commonText(
                  'exportQueryForDwca'
                )}</button>
            </li>
            <li style="display:flex;margin:5px">
                <span class="ui-icon ui-icon-circle-plus"/>
-               <button type="button" class="create-report fake-link">${commonText(
+               <button type="button" class="create-report link">${commonText(
                  'exportQueryAsReport'
                )}</button>
            </li>
            <li style="display:flex;margin:5px">
                <span class="ui-icon ui-icon-circle-plus"/>
-               <button type="button" class="create-label fake-link">${commonText(
+               <button type="button" class="create-label link">${commonText(
                  'exportQueryAsLabel'
                )}</button>
            </li>

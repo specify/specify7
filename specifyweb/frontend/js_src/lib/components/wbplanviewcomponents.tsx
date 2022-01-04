@@ -18,6 +18,7 @@ import type {
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { closeDialog, ModalDialog } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
+import { Button } from './basic';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -109,11 +110,9 @@ export function ButtonWithConfirmation(props: {
 
   return (
     <>
-      <button
-        className="magic-button"
+      <Button
         role={props.role}
         aria-haspopup="dialog"
-        type="button"
         onClick={(): void =>
           typeof props.showConfirmation === 'undefined' ||
           props.showConfirmation()
@@ -122,7 +121,7 @@ export function ButtonWithConfirmation(props: {
         }
       >
         {props.children}
-      </button>
+      </Button>
       {displayPrompt ? (
         <ModalDialog
           properties={{
@@ -151,18 +150,17 @@ export function ValidationButton(props: {
 
   return (
     <>
-      <button
-        className={`magic-button validation-indicator ${
+      <Button
+        className={`validation-indicator ${
           props.isValidated ? 'validation-indicator-success' : ''
         }`}
         role="menuitem"
-        type="button"
         onClick={
           props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
         }
       >
         {wbText('validate')}
-      </button>
+      </Button>
       {displayPrompt ? (
         <ModalDialog
           properties={{
@@ -207,15 +205,14 @@ export function MappingLineComponent({
       aria-current={isFocused}
     >
       <div className="wbplanview-mapping-line-controls">
-        <button
-          type="button"
+        <Button
           title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
           onClick={handleClearMapping}
           disabled={readonly}
         >
           ⌦
-        </button>
+        </Button>
       </div>
       <div
         className="v-center wbplanview-mapping-line-header"

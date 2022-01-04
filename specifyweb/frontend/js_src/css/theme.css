@@ -1,39 +1,14 @@
-.magic-button {
-  background: #eee;
-  border: 1px solid #ccc;
-  padding: 0.2rem;
-  border-radius: 2px;
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: #555;
-  transition: background var(--animation-duration) ease,
-    border var(--animation-duration) ease;
-  cursor: pointer;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  column-gap: var(--quarter-size);
-}
-
-.magic-button:hover,
-.magic-button[aria-pressed='true'] {
+.button[aria-pressed='true'] {
   background: var(--b1);
 }
 
-.magic-button:active,
-.magic-button[aria-pressed='true']:hover {
+.button[aria-pressed='true']:hover {
   background: #ccc;
 }
 
-.magic-button[aria-pressed='true']:active,
-.magic-button[disabled] {
+.button[aria-pressed='true']:active {
   background: #ccc;
   color: #888;
-}
-
-.magic-button[disabled] {
-  cursor: no-drop;
 }
 
 .v-center {
@@ -80,32 +55,7 @@
   margin-top: -0.1rem;
 }
 
-.fake-link {
-  border: none;
-  background-color: transparent;
-  text-align: left;
-  margin: 0;
-  padding: 0;
-  display: inline-flex;
-  column-gap: var(--quarter-size);
-  align-items: center;
-}
-
-.fake-link:not([disabled]) {
-  cursor: pointer;
-  color: var(--t1);
-}
-
-.fake-link:not([disabled]):hover {
-  color: var(--accent);
-}
-
-.fake-link:hover {
-  color: var(--accent);
-  cursor: pointer;
-}
-
-.fake-link[aria-pressed='true'] .ui-icon {
+.link[aria-pressed='true'] .ui-icon {
   background-color: var(--b1);
 }
 

@@ -20,7 +20,7 @@ export default Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $(`<button class="delete-button magic-button">
+            this.button = $(`<button class="delete-button button">
               ${commonText('delete')} 
             </button>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +

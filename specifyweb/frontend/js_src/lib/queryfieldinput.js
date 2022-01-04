@@ -55,7 +55,7 @@ var FieldInputUI = Backbone.View.extend({
             });
         },
         render: function() {
-            this.el.innerHTML = `<button class="field-operation fake-link">
+            this.el.innerHTML = `<button class="field-operation link">
                 ${this.opName}
             </button>
             ${this.input}`;

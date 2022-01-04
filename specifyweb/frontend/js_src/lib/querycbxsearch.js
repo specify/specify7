@@ -111,7 +111,7 @@ export default Backbone.View.extend({
     displayResults: function(formattedResults) {
         const items = _.sortBy( formattedResults.map((formatted, i) => ({
             dom: $('<li>').append(
-                $('<button>', {type:'button',class:'fake-link'})
+                $('<button>', {type:'button',class:'link'})
                     .text(formatted)
                     .data('result-index', i)
                 [0]),

@@ -90,7 +90,7 @@ function processCell(formNumber, doingFormTable, mode, cellNode) {
                 return $('<td>').append($(`<button
                     type="button"
                     name="${cell.attr('name')}"
-                    class="magic-button specify-uicommand"
+                    class="button specify-uicommand"
                     action="${cell.attr('action')}"
                     data-specify-initialize="${cell.attr('initialize')}"
                     ${doingFormTable || mode === 'view' ? 'disabled': ''}

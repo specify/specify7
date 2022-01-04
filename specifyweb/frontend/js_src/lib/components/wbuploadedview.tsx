@@ -14,6 +14,7 @@ import type { IR } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
+import { Button } from './basic';
 
 function TableResults({
   tableName,
@@ -62,9 +63,7 @@ function WbUploadedView({
           />
         ))}
       </ul>
-      <button type="button" className="magic-button" onClick={handleClose}>
-        {commonText('close')}
-      </button>
+      <Button onClick={handleClose}>{commonText('close')}</Button>
     </div>
   );
 }

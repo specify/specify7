@@ -147,7 +147,7 @@ export default Backbone.View.extend({
                 aria-label="${this.getDialogEntryTooltip(interactionEntry)}"
             >
                 <a
-                    class="${className} fake-link"
+                    class="${className} link"
                     style="font-size: 0.8rem"
                     href="${href}"
                 >

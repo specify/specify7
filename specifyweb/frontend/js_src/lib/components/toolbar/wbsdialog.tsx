@@ -23,6 +23,7 @@ import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
+import { Button, ButtonLikeLink, Link } from '../basic';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>('/api/workbench/dataset/', {
@@ -83,9 +84,7 @@ function TableHeader({
     <thead>
       <tr>
         <th scope="col" className="pl-table-icon">
-          <button
-            type="button"
-            className="fake-link"
+          <Button
             onClick={(): void =>
               handleChange({
                 sortField: 'name',
@@ -95,12 +94,10 @@ function TableHeader({
           >
             {commonText('name')}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
-          </button>
+          </Button>
         </th>
         <th scope="col">
-          <button
-            type="button"
-            className="fake-link"
+          <Button
             onClick={(): void =>
               handleChange({
                 sortField: 'dateCreated',
@@ -110,12 +107,10 @@ function TableHeader({
           >
             {commonText('created')}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-          </button>
+          </Button>
         </th>
         <th scope="col">
-          <button
-            type="button"
-            className="fake-link"
+          <Button
             onClick={(): void =>
               handleChange({
                 sortField: 'dateUploaded',
@@ -125,7 +120,7 @@ function TableHeader({
           >
             {commonText('uploaded')}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
-          </button>
+          </Button>
         </th>
         <td />
       </tr>
@@ -246,12 +241,12 @@ function Dialog({
                   return (
                     <tr key={index}>
                       <td style={{ overflowX: 'auto' }}>
-                        <a
+                        <Link
                           style={{ fontWeight: 800 }}
                           href={`/specify/workbench/${dataset.id}/`}
                           {...(typeof handleDataSetSelect === 'undefined'
                             ? {
-                                className: 'intercept-navigation fake-link',
+                                className: 'intercept-navigation',
                               }
                             : {
                                 onClick: (event): void => {
@@ -266,7 +261,7 @@ function Dialog({
                             style={{ width: 'var(--table-icon-size)' }}
                           />
                           {dataset.name}
-                        </a>
+                        </Link>
                       </td>
                       <td>
                         <DateElement date={dataset.timestampcreated} />
@@ -276,9 +271,8 @@ function Dialog({
                       </td>
                       <td>
                         {canImport && (
-                          <button
-                            type="button"
-                            className="fake-link ui-icon ui-icon-pencil"
+                          <ButtonLikeLink
+                            className="ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
                           />
                         )}

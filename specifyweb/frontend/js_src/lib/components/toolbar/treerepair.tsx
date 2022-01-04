@@ -14,6 +14,7 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { Link } from '../basic';
 
 const treesForAll = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
@@ -74,9 +75,8 @@ export function TreeSelectDialog({
         <ul style={{ padding: 0 }}>
           {Object.entries(trees).map(([tree, model]) => (
             <li key={tree}>
-              <a
+              <Link
                 href={getLink(tree)}
-                className="fake-link"
                 style={{ fontSize: '0.8rem' }}
                 onClick={(event): void => {
                   event.preventDefault();
@@ -88,7 +88,7 @@ export function TreeSelectDialog({
               >
                 <TableIcon tableName={tree} tableLabel="false" />
                 {model.getLocalizedName()}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

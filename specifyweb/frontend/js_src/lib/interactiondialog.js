@@ -133,7 +133,7 @@ export default RecordSetsDialog.extend({
         makeUI: function() {
             var breaker = '';
             if (this.options.recordSets._totalCount > 0) {
-                this.$el.append($(`<button class="i-action-rs fake-link" type="button">
+                this.$el.append($(`<button class="i-action-rs link" type="button">
                     <span class="${this.openIcon}"/>
                     ${formsText('recordSetCaption')(this.options.recordSets._totalCount)}
                 </button>`));
@@ -141,7 +141,7 @@ export default RecordSetsDialog.extend({
                 breaker = '<br><br>';
             }
             this.$el.append(breaker);
-            this.$el.append($(`<button class="i-action-enter fake-link" type="button">
+            this.$el.append($(`<button class="i-action-enter link" type="button">
                 <span class="${this.openIcon}"/>
                 ${formsText('entryCaption')(this.getSrchFld().getLocalizedName())}
             </button>`));
@@ -152,7 +152,7 @@ export default RecordSetsDialog.extend({
                     <br>
                     <button
                         type="button"
-                        class="magic-button i-action-noprep"
+                        class="button i-action-noprep"
                     >
                         ${noPrepCap}
                     </button>
@@ -163,7 +163,7 @@ export default RecordSetsDialog.extend({
                   <br>
                   <button
                       type="button"
-                      class="magic-button i-action-noco"
+                      class="button i-action-noco"
                   >
                       ${this.getNoCOCaption()}
                   </button>

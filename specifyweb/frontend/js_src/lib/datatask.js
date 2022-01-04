@@ -44,7 +44,14 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
         render: function() {
             var specifyModel = getModelById(this.model.get('dbtableid'));
             this.el.setAttribute('role','alert');
-            this.$el.empty().append(formsText('emptyRecordSetMessage')(this.model.get('name')));
+            this.el.innerHTML = `
+                <h2>${formsText('emptyRecordSetHeader')(this.model.get('name'))}</h2>
+                <p>${formsText('emptyRecordSetMessage')(
+                  (label)=>`<button type="button" class="recordset-delete button">${label}</button>`,
+                  (label)=>`<a class="recordset-add intercept-navigation button">${label}</button>`,
+                )}</p>
+                <p>${formsText('emptyRecordSetSecondMessage')}</p>
+            `;
 
             var url = api.makeResourceViewUrl(specifyModel, null, this.model.id);
             this.$('.recordset-add').attr('href', url);

@@ -9,6 +9,7 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { Link } from '../basic';
 
 function Users({
   onClose: handleClose,
@@ -68,13 +69,13 @@ function Users({
       <ul style={{ padding: 0 }}>
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
-            <a
-              className="fake-link intercept-navigation"
+            <Link
+              className="intercept-navigation"
               href={viewUrl}
               style={{ fontSize: '0.8rem' }}
             >
               {userName}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

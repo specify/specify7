@@ -76,7 +76,7 @@ const relatedSearchesPromise = ajax(
             if (results.totalCount < 1) return;
             var model = getModel(tableName);
             var heading = model.getLocalizedName() + ' - ' + results.totalCount;
-            this.$('.primary.results').append($('<h4>').append($('<button>',{type:'button',class:'fake-link'}).text(heading)));
+            this.$('.primary.results').append($('<h4>').append($('<button>',{type:'button',class:'link'}).text(heading)));
 
             new QueryResultsTable({
                 noHeader: true,
@@ -125,7 +125,7 @@ const relatedSearchesPromise = ajax(
             });
             var rsName = data.definition.name;
             var heading = $('<h4>')
-                    .append($('<button>',{type:'button', class:'fake-link'}).text(s.localizeFrom('expresssearch', rsName) + ' - ' + data.totalCount))
+                    .append($('<button>',{type:'button', class:'link'}).text(s.localizeFrom('expresssearch', rsName) + ' - ' + data.totalCount))
                     .attr('title', s.localizeFrom('expresssearch', rsName + "_desc"));
             this.$('.related.results').append(heading);
             results.render().$el.appendTo(this.$('.related.results'));

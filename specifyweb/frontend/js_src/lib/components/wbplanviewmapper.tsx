@@ -43,6 +43,7 @@ import {
   ValidationResults,
 } from './wbplanviewmappercomponents';
 import { crash } from './errorboundary';
+import { Button } from './basic';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -329,10 +330,8 @@ export default function WbPlanViewMapper(props: {
         ) : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
-            <button
+            <Button
               aria-haspopup="dialog"
-              className="magic-button"
-              type="button"
               onClick={(): void =>
                 dispatch({
                   type: 'ResetMappingsAction',
@@ -340,7 +339,7 @@ export default function WbPlanViewMapper(props: {
               }
             >
               {wbText('clearMappings')}
-            </button>
+            </Button>
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
@@ -410,23 +409,19 @@ export default function WbPlanViewMapper(props: {
               }
             />
           )}
-          <button
-            type="button"
+          <Button
             aria-haspopup="dialog"
-            className="magic-button"
             onClick={(): void => goBack(props.dataset.id)}
           >
             {props.readonly ? wbText('dataEditor') : commonText('cancel')}
-          </button>
+          </Button>
           {!props.readonly && (
-            <button
-              type="button"
-              className="magic-button"
+            <Button
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
             >
               {commonText('save')}
-            </button>
+            </Button>
           )}
         </>
       }

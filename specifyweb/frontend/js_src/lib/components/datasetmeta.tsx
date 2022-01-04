@@ -17,6 +17,7 @@ import { DateElement, formatNumber } from './internationalization';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
+import { Button } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -197,13 +198,9 @@ function DataSetName({
           ''
         )}
       </h2>
-      <button
-        type="button"
-        className="magic-button"
-        onClick={(): void => setShowMeta(true)}
-      >
+      <Button onClick={(): void => setShowMeta(true)}>
         {commonText('metadata')}
-      </button>
+      </Button>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}

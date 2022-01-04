@@ -68,7 +68,7 @@ export default PrepDialog.extend({
             var unavailableCnt = iprep.countamt - iprep.available;
             //if unavailable items, link to related interactions
             if (unavailableCnt != 0) {
-                unavailable.append($('<button>',{type: 'button', class: 'fake-link'}).text(unavailableCnt).addClass('prepselect-unavailable'));
+                unavailable.append($('<button>',{type: 'button', class: 'link'}).text(unavailableCnt).addClass('prepselect-unavailable'));
             } else {
                 unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
             }

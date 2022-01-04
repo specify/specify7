@@ -86,7 +86,7 @@ export default Backbone.View.extend({
                 <td>
                     <a
                         href="/specify/recordset/${recordSet.id}/"
-                        class="fake-link ${
+                        class="link ${
                             this.options.readOnly
                                 ? 'rs-select'
                                 : 'intercept-navigation'
@@ -106,7 +106,7 @@ export default Backbone.View.extend({
                         ? ''
                         : `<button
                               type="button"
-                              class="edit ui-icon ui-icon-pencil fake-link"
+                              class="edit ui-icon ui-icon-pencil link"
                           >${commonText('edit')}</button>`
                     }
                 </td>

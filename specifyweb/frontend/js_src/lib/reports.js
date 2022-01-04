@@ -118,7 +118,7 @@ var ReportListDialog = Backbone.View.extend({
         const img = $('<img>', {src: icon});
         const a = $(`<button
             type="button"
-            class="select fake-link"
+            class="select link"
             title="${appResource.get('remarks') || ""}"
         >${appResource.get('name')}</button>`);
         var entry = $('<tr>')
@@ -128,7 +128,7 @@ var ReportListDialog = Backbone.View.extend({
         if(!this.options.readOnly)
             entry.append(`<button
                 type="button"
-                class="edit ui-icon ui-icon-pencil fake-link"
+                class="edit ui-icon ui-icon-pencil link"
             >${commonText('edit')}</button>`);
         return entry;
     },
@@ -212,7 +212,7 @@ var FixImagesDialog = Backbone.View.extend({
                 _.map(missingAttachments, function(f) {
                     return $('<li>').append(
                         $(`<button
-                            class="fake-link"
+                            class="link"
                             title="${formsText('fix')}"
                             aria-label="${formsText('fix')}"
                         >`).text(f))[0];
@@ -418,7 +418,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         const model = getModelById(recordSet.get('dbtableid'));
         const icon = model.getIcon();
         const img = $('<img>', {src: icon, alt: model.getLocalizedName()});
-        var link = $(`<button class="fake-link">${recordSet.get('name')}</button>`);
+        var link = $(`<button class="link">${recordSet.get('name')}</button>`);
         var entry = $('<tr>').append(
             $('<td>').append(img),
             $('<td>').append(link),

@@ -21,6 +21,7 @@ import {
   MappingPathComponent,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
+import { Button } from './basic';
 
 export type GetMappedFieldsBind = (
   // A mapping path that would be used as a filter
@@ -46,16 +47,14 @@ export function MappingsControlPanel({
   return (
     <div role="toolbar" className="wbplanview-control-panel">
       {typeof handleAddNewHeader === 'function' && (
-        <button
-          type="button"
-          className="magic-button"
+        <Button
           onClick={(): void => {
             handleAddNewHeader(wbText('newHeaderName')(newHeaderIdRef.current));
             newHeaderIdRef.current += 1;
           }}
         >
           {wbText('addNewColumn')}
-        </button>
+        </Button>
       )}
       <label>
         {' '}
@@ -105,8 +104,7 @@ export function ValidationResults(props: {
       <p>{wbText('validationFailedDialogMessage')}</p>
       <section className="validation-results">
         {props.validationResults.map((fieldPath, index) => (
-          <button
-            type="button"
+          <Button
             className="v-center wbplanview-mapping-line-elements"
             key={index}
             onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
@@ -122,7 +120,7 @@ export function ValidationResults(props: {
                 mustMatchPreferences: props.mustMatchPreferences,
               })}
             />
-          </button>
+          </Button>
         ))}
       </section>
     </ModalDialog>
@@ -218,9 +216,8 @@ export function MappingView(props: {
         <div className="v-center mapping-view" role="list">
           <MappingPathComponent mappingLineData={mappingLineData} />
         </div>
-        <button
-          type="button"
-          className="v-center magic-button wbplanview-mapping-view-map-button"
+        <Button
+          className="v-center wbplanview-mapping-view-map-button"
           disabled={!mapButtonIsEnabled || !props.focusedLineExists}
           onClick={
             mapButtonIsEnabled && props.focusedLineExists
@@ -236,7 +233,7 @@ export function MappingView(props: {
           >
             &#8594;
           </span>
-        </button>
+        </Button>
       </div>
       <span
         className="mapping-view-resizer"
@@ -460,16 +457,15 @@ export function ToggleMappingPath({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    <button
-      type="button"
-      className={`magic-button ${showMappingView ? '' : 'active'}`}
+    <Button
+      className={showMappingView ? '' : 'active'}
       onClick={handleClick}
       aria-pressed={!showMappingView}
     >
       {showMappingView
         ? wbText('hideMappingEditor')
         : wbText('showMappingEditor')}
-    </button>
+    </Button>
   );
 }
 
@@ -495,14 +491,12 @@ export function MustMatch({
 
   return (
     <>
-      <button
-        type="button"
-        className="magic-button"
+      <Button
         aria-haspopup="dialog"
         onClick={(): void => setLocalPreferences(getMustMatchPreferences())}
       >
         {wbText('mustMatch')}
-      </button>
+      </Button>
       {typeof localPreferences !== 'undefined' && (
         <ModalDialog
           properties={{

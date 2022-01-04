@@ -44,7 +44,7 @@ export default UIPlugin.extend({
 
             const title = this.def?.find('> desc').text() ?? '';
             if (this.inFormTable) {
-                newEl = $('<div class="specify-plugin-weblink-in-table">').append($('<a>',{class:'magic-button', title,}));
+                newEl = $('<div class="specify-plugin-weblink-in-table">').append($('<a>',{class:'button', title,}));
                 placeHolder.replaceWith(newEl);
                 this.setElement(newEl);
             } else {
@@ -59,7 +59,7 @@ export default UIPlugin.extend({
 
                 newEl.append($(`<a
                   title="${title}"
-                  class="magic-button"
+                  class="button"
                 >
                   <img
                     src="${getIcon(this.init.icon || "WebLink") }"

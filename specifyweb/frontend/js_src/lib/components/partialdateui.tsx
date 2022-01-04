@@ -15,6 +15,7 @@ import UIPlugin from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
 import { SpecifyResource } from '../legacytypes';
+import { Button } from './basic';
 
 function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -274,13 +275,12 @@ function PartialDateUi({
       {!readOnly &&
       ((precision === 'full' && !dateSupported) ||
         (precision === 'month-year' && !monthSupported)) ? (
-        <button
-          type="button"
+        <Button
           title={formsText('todayButtonDescription')}
           onClick={(): void => setMoment(dayjs())}
         >
           <span className="ui-icon ui-icon-calendar">{formsText('today')}</span>
-        </button>
+        </Button>
       ) : undefined}
     </div>
   );

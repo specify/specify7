@@ -74,7 +74,7 @@ const PrepReturnRow = Backbone.View.extend({
                     aria-label="${formsText('resolvedAmount')}"
                 >
             </td>
-            <td><button type="button" class="return-remark fake-link" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
+            <td><button type="button" class="return-remark link" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
         `);
 
         $.when(

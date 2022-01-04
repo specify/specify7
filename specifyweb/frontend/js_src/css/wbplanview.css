@@ -36,7 +36,7 @@ h2.wbplanview-ds-name {
   color: var(--error);
 }
 
-.magic-button.validation-indicator-success {
+.button.validation-indicator-success {
   background: var(--success);
 }
 

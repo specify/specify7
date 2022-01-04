@@ -75,7 +75,7 @@ export default Backbone.View.extend({
             return $('<li>').append(
                 $('<a>')
                     .addClass(
-                        `fake-link ${
+                        `link ${
                             typeof this.options.onSelected === 'undefined'
                                 ? 'intercept-navigation'
                                 : ''

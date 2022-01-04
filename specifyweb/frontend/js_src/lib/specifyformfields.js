@@ -78,7 +78,7 @@ export default function(doingFormTable, mode, cell, id) {
             plugin: function() {
                 return $(`<input
                     type="button"
-                    class="magic-button specify-uiplugin specify-field"
+                    class="button specify-uiplugin specify-field"
                     data-specify-default="${cell.attr('default')}"
                     ${isReadOnly ? 'disabled' : ''}
                     value="Uninitialized Plugin"
