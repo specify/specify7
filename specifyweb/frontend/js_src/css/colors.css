@@ -13,6 +13,7 @@
 
   --success: #2c0;
   --error: #f24;
+  /* color.yellow.250 */
   --modified: #ffa;
 
   --accent-hover: #fdb;
@@ -31,14 +32,6 @@
   --round: 99999px;
 
   --table-icon-size: calc(var(--size) * 1.25);
-
-  /* Workbench */
-  --default-cell: #66f;
-  --highlighted-row: #07f6;
-  --new-cell: #aaf;
-  --invalid-cell: #faa;
-  --modified-cell: var(--modified);
-  --search-result: #afa;
 
   /* Custom Select Element */
   --custom-select-normal-b1: var(--b1);

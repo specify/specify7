@@ -13,17 +13,17 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
+import { ButtonLikeLink, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
-import { useTitle } from '../hooks';
 import { DataSetMeta } from '../datasetmeta';
+import { useTitle } from '../hooks';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
-import { Button, ButtonLikeLink, Link } from '../basic';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>('/api/workbench/dataset/', {
@@ -37,6 +37,7 @@ const createEmptyDataSet = async (): Promise<void> =>
       rows: [],
     },
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     },
   }).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
@@ -84,7 +85,7 @@ function TableHeader({
     <thead>
       <tr>
         <th scope="col" className="pl-table-icon">
-          <Button
+          <ButtonLikeLink
             onClick={(): void =>
               handleChange({
                 sortField: 'name',
@@ -94,10 +95,10 @@ function TableHeader({
           >
             {commonText('name')}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
-          </Button>
+          </ButtonLikeLink>
         </th>
         <th scope="col">
-          <Button
+          <ButtonLikeLink
             onClick={(): void =>
               handleChange({
                 sortField: 'dateCreated',
@@ -107,10 +108,10 @@ function TableHeader({
           >
             {commonText('created')}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-          </Button>
+          </ButtonLikeLink>
         </th>
         <th scope="col">
-          <Button
+          <ButtonLikeLink
             onClick={(): void =>
               handleChange({
                 sortField: 'dateUploaded',
@@ -120,7 +121,7 @@ function TableHeader({
           >
             {commonText('uploaded')}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
-          </Button>
+          </ButtonLikeLink>
         </th>
         <td />
       </tr>
@@ -311,6 +312,7 @@ export function WbsDialog({
   const fetchDatasets = () =>
     void ajax<RA<DatasetBrief>>(
       `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       { headers: { Accept: 'application/json' } }
     ).then(({ data }) => setDatasets(data));
 

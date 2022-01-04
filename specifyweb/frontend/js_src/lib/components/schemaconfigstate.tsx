@@ -258,7 +258,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             {commonText('schemaConfig')} (
             {languages[language]?.replaceAll(/[()]/g, '') ?? language})
           </h2>
-          <span className="spacer" />
+          <span className="flex-1 -ml-2" />
           <menu className="contents">
             <li>
               <Button

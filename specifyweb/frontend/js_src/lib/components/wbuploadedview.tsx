@@ -4,8 +4,6 @@
  * @module
  */
 
-import '../../css/wbuploaded.css';
-
 import React from 'react';
 
 import commonText from '../localization/common';
@@ -24,7 +22,7 @@ function TableResults({
   readonly recordCount: number;
 }): JSX.Element {
   return (
-    <li className="wb-uploaded-view-line">
+    <li className="gap-x-1 flex items-center">
       <TableIcon tableName={tableName.toLowerCase()} />
       <span>
         {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
@@ -43,18 +41,20 @@ function WbUploadedView({
   readonly isUploaded: boolean;
 }): JSX.Element {
   return (
-    <div className="wb-uploaded-view">
-      <h2>
-        {isUploaded
-          ? wbText('uploadResults')
-          : wbText('potentialUploadResults')}
-      </h2>
-      <p>
-        {isUploaded
-          ? wbText('wbUploadedDescription')
-          : wbText('wbUploadedPotentialDescription')}
-      </p>
-      <ul>
+    <div className="gap-y-4 w-60 flex flex-col h-full">
+      <div>
+        <h2 className="text-xl">
+          {isUploaded
+            ? wbText('uploadResults')
+            : wbText('potentialUploadResults')}
+        </h2>
+        <p>
+          {isUploaded
+            ? wbText('wbUploadedDescription')
+            : wbText('wbUploadedPotentialDescription')}
+        </p>
+      </div>
+      <ul className="gap-y-2 flex flex-col flex-1">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults
             key={index}

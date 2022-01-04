@@ -56,6 +56,7 @@
     @apply bg-red-400;
   }
 
+  /* TODO: add support for changing accent color (and apply that in wb-meta) */
   .button {
     @apply border rounded cursor-pointer active:bg-brand-300 bg-gray-300
            border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
@@ -117,6 +118,13 @@
 @tailwind components;
 
 @layer components {
+  .wbs-form {
+  --highlighted-row: hsl(212deg 100% 50% / .4);
+  --new-cell: theme('colors.indigo.350');
+  --invalid-cell: theme('colors.red.300');
+  --modified-cell: theme('colors.yellow.250');
+  --search-result: theme('colors.green.300');
+  }
 }
 
 /**
@@ -124,6 +132,14 @@
  * by plugins.
  */
 @tailwind utilities;
+
+@layer utilities {
+
+  .m-00 {
+    @apply m-0 !important;
+  }
+
+};
 
 /**
  * Use this directive to control where Tailwind injects the hover, focus,

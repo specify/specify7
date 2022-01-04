@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+ * This config partially overwrites and extends the default Tailwind config:
+ * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
+ */
+
 // eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   content: [
@@ -18,12 +23,26 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        shadow: '#0009',
+        // Specify 7 orange colors:
         brand: {
-          100: '#fdb',
-          200: '#f94',
-          300: '#f73',
-        }
+          100: 'hsl(27deg 100% 77%)',
+          200: 'hsl(27deg 100% 63%)',
+          300: 'hsl(27deg 100% 55%)',
+        },
+        // Some in-between shades:
+        yellow: {
+          250: 'hsl(53deg 98% 72%)',
+        },
+        indigo: {
+          350: 'hsl(232deg 92% 79%)',
+        },
+      },
+      spacing: {
+        'table-icon': '1.25rem',
+      },
+      brightness: {
+        70: '.7',
+        80: '.8',
       },
     },
   },

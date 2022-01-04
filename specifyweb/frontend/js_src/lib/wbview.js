@@ -21,8 +21,6 @@ import Q from 'q';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import 'handsontable/dist/handsontable.full.css';
-
 import {getModel} from './schema';
 import * as app from './specifyapp';
 import userInfo from './userinfo';
@@ -91,7 +89,7 @@ const WBView = Backbone.View.extend({
   },
 
   // Constructors & Renderers
-  initialize({ dataset, refreshInitiatedBy, refreshInitiatorAborted }) {
+  initialize({dataset, refreshInitiatedBy, refreshInitiatorAborted}) {
     this.dataset = dataset;
     this.data = dataset.rows;
     if (this.data.length === 0) {
@@ -281,6 +279,7 @@ const WBView = Backbone.View.extend({
         this.wbutils.findLocalityColumns();
         this.identifyCoordinateColumns();
         this.identifyTreeRanks();
+        this.wbutils.render();
 
         this.trigger('loaded');
         this.hotIsReady = true;
@@ -301,7 +300,7 @@ const WBView = Backbone.View.extend({
           );
 
           this.mappings.tableNames = this.mappings.splitMappingPaths.map(
-            ({ mappingPath }) =>
+            ({mappingPath}) =>
               getTableFromMappingPath({
                 baseTableName: this.mappings.baseTableName,
                 // Remove field name from mapping path
@@ -335,7 +334,7 @@ const WBView = Backbone.View.extend({
           data: this.data,
           columns: Array.from(
             // Last column is invisible and contains disambiguation metadata
-            { length: this.dataset.columns.length + 1 },
+            {length: this.dataset.columns.length + 1},
             (_, physicalCol) => ({
               // Get data from nth column for nth column
               data: physicalCol,
@@ -350,20 +349,12 @@ const WBView = Backbone.View.extend({
               tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
             const tableLabel =
               dataModelStorage?.tables?.[tableName]?.label ?? tableName ?? '';
-            return `<div class="wb-col-header">
-              ${
-                isMapped
-                  ? `<img
-                      class="wb-header-icon"
-                      alt="${tableLabel}"
-                      src="${tableIcon}"
-                    >`
-                  : `<img
-                      class="wb-header-icon"
-                      alt="${wbText('unmappedColumn')}"
-                      src="/static/img/stop_sign.svg"
-                    >`
-              }
+            return `<div class="flex gap-x-1 items-center pl-4">
+              <img
+                class="bg-contains w-table-icon h-table-icon"
+                alt="${isMapped ? tableLabel : wbText('unmappedColumn')}"
+                src="${isMapped ? tableIcon : '/static/img/stop_sign.svg'}"
+              >
               <span class="wb-header-name columnSorting">
                 ${this.dataset.columns[physicalCol]}
               </span>
@@ -396,6 +387,7 @@ const WBView = Backbone.View.extend({
            *
            */
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
+          placeholderCellClassName: 'htPlaceholder text-blue-500',
           // Disable default styles
           invalidCellClassName: '-',
           rowHeaders: true,
@@ -409,45 +401,50 @@ const WBView = Backbone.View.extend({
           contextMenu: {
             items: this.isUploaded
               ? {
-                  // Display uploaded record
-                  upload_results: {
-                    disableSelection: true,
-                    isCommand: false,
-                    renderer: (_hot, wrapper) => {
-                      const { endRow: visualRow, endCol: visualCol } =
-                        this.wbutils.getSelectedRegions().slice(-1)[0];
-                      const physicalRow = this.hot.toPhysicalRow(visualRow);
-                      const physicalCol = this.hot.toPhysicalColumn(visualCol);
+                // Display uploaded record
+                upload_results: {
+                  disableSelection: true,
+                  isCommand: false,
+                  renderer: (_hot, wrapper) => {
+                    const {endRow: visualRow, endCol: visualCol} =
+                      this.wbutils.getSelectedRegions().slice(-1)[0];
+                    const physicalRow = this.hot.toPhysicalRow(visualRow);
+                    const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
-                      const createdRecords =
-                        this.uploadResults.newRecords[physicalRow]?.[
-                          physicalCol
+                    const createdRecords =
+                      this.uploadResults.newRecords[physicalRow]?.[
+                        physicalCol
                         ];
 
-                      if (
-                        typeof createdRecords === 'undefined' ||
-                        !this.getCellMeta(physicalRow, physicalCol, 'isNew')
-                      ) {
-                        wrapper.textContent = wbText(
-                          'noUploadResultsAvailable'
-                        );
-                        wrapper.style.whiteSpace = 'white-space';
-                        wrapper.parentElement.classList.add('htDisabled');
-                        const span = document.createElement('span');
-                        span.style.display = 'none';
-                        return span;
-                      }
+                    if (
+                      typeof createdRecords === 'undefined' ||
+                      !this.getCellMeta(physicalRow, physicalCol, 'isNew')
+                    ) {
+                      wrapper.textContent = wbText(
+                        'noUploadResultsAvailable'
+                      );
+                      wrapper.style.whiteSpace = 'white-space';
+                      wrapper.parentElement.classList.add('htDisabled');
+                      const span = document.createElement('span');
+                      span.style.display = 'none';
+                      return span;
+                    }
 
-                      wrapper.classList.add('wb-uploaded-view-context-menu');
-                      wrapper.innerHTML = createdRecords
-                        .map(([tableName, recordId, label]) => {
-                          const tableLabel =
-                            label === ''
-                              ? dataModelStorage.tables[tableName].label
-                              : label;
-                          const tableIcon = getIcon(tableName);
+                    wrapper.setAttribute(
+                      'class',
+                      `${wrapper.getAttribute('class')} flex flex-col m-00
+                        pb-1 wb-uploaded-view-context-menu`
+                    );
+                    wrapper.innerHTML = createdRecords
+                      .map(([tableName, recordId, label]) => {
+                        const tableLabel =
+                          label === ''
+                            ? dataModelStorage.tables[tableName].label
+                            : label;
+                        const tableIcon = getIcon(tableName);
 
-                          return `<a
+                        return `<a
+                            class="link"
                             href="/specify/view/${tableName}/${recordId}/"
                             target="_blank"
                           >
@@ -462,72 +459,72 @@ const WBView = Backbone.View.extend({
                             <img
                               src="/static/img/new_tab.svg"
                               alt="${commonText('opensInNewTab')}"
-                              class="new-tab-link-icon"
+                              class="h-2"
                             >
                           </a>`;
-                        })
-                        .join('');
+                      })
+                      .join('');
 
-                      const div = document.createElement('div');
-                      div.style.display = 'none';
-                      return div;
-                    },
-                  },
-                }
-              : {
-                  row_above: {
-                    disabled: () =>
-                      this.uploadedView || this.coordinateConverterView,
-                  },
-                  row_below: {
-                    disabled: () =>
-                      this.uploadedView || this.coordinateConverterView,
-                  },
-                  remove_row: {
-                    disabled: () => {
-                      // If readonly
-                      if (this.uploadedView || this.coordinateConverterView)
-                        return true;
-                      // Or if called on the last row
-                      const selectedRegions = this.wbutils.getSelectedRegions();
-                      return (
-                        selectedRegions.length === 1 &&
-                        selectedRegions[0].startRow === this.data.length - 1 &&
-                        selectedRegions[0].startRow ===
-                          selectedRegions[0].endRow
-                      );
-                    },
-                  },
-                  disambiguate: {
-                    name: wbText('disambiguate'),
-                    disabled: () =>
-                      this.uploadedView ||
-                      this.coordinateConverterView ||
-                      !this.isAmbiguousCell(),
-                    callback: (__, selection) =>
-                      this.openDisambiguationDialog(selection),
-                  },
-                  separator_1: '---------',
-                  fill_down: this.wbutils.fillCellsContextMenuItem(
-                    wbText('fillDown'),
-                    this.wbutils.fillDown,
-                    () => this.uploadedView || this.coordinateConverterView
-                  ),
-                  fill_up: this.wbutils.fillCellsContextMenuItem(
-                    wbText('fillUp'),
-                    this.wbutils.fillUp,
-                    () => this.uploadedView || this.coordinateConverterView
-                  ),
-                  separator_2: '---------',
-                  undo: {
-                    disabled: () =>
-                      this.uploadedView || !this.hot.isUndoAvailable(),
-                  },
-                  redo: {
-                    disabled: () =>
-                      this.uploadedView || !this.hot.isRedoAvailable(),
+                    const div = document.createElement('div');
+                    div.style.display = 'none';
+                    return div;
                   },
                 },
+              }
+              : {
+                row_above: {
+                  disabled: () =>
+                    this.uploadedView || this.coordinateConverterView,
+                },
+                row_below: {
+                  disabled: () =>
+                    this.uploadedView || this.coordinateConverterView,
+                },
+                remove_row: {
+                  disabled: () => {
+                    // If readonly
+                    if (this.uploadedView || this.coordinateConverterView)
+                      return true;
+                    // Or if called on the last row
+                    const selectedRegions = this.wbutils.getSelectedRegions();
+                    return (
+                      selectedRegions.length === 1 &&
+                      selectedRegions[0].startRow === this.data.length - 1 &&
+                      selectedRegions[0].startRow ===
+                      selectedRegions[0].endRow
+                    );
+                  },
+                },
+                disambiguate: {
+                  name: wbText('disambiguate'),
+                  disabled: () =>
+                    this.uploadedView ||
+                    this.coordinateConverterView ||
+                    !this.isAmbiguousCell(),
+                  callback: (__, selection) =>
+                    this.openDisambiguationDialog(selection),
+                },
+                separator_1: '---------',
+                fill_down: this.wbutils.fillCellsContextMenuItem(
+                  wbText('fillDown'),
+                  this.wbutils.fillDown,
+                  () => this.uploadedView || this.coordinateConverterView
+                ),
+                fill_up: this.wbutils.fillCellsContextMenuItem(
+                  wbText('fillUp'),
+                  this.wbutils.fillUp,
+                  () => this.uploadedView || this.coordinateConverterView
+                ),
+                separator_2: '---------',
+                undo: {
+                  disabled: () =>
+                    this.uploadedView || !this.hot.isUndoAvailable(),
+                },
+                redo: {
+                  disabled: () =>
+                    this.uploadedView || !this.hot.isRedoAvailable(),
+                },
+              },
           },
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
@@ -561,6 +558,7 @@ const WBView = Backbone.View.extend({
   },
   remove() {
     this.hot.destroy();
+    this.wbutils.remove();
     this.stopLiveValidation();
     window.removeEventListener('resize', this.handleResize);
     document.body.classList.remove('overflow-x-hidden');
@@ -606,9 +604,9 @@ const WBView = Backbone.View.extend({
         typeof this.mappings.splitMappingPaths === 'undefined'
           ? {}
           : extractDefaultValues(
-              this.mappings.splitMappingPaths,
-              wbText('emptyStringInline')
-            )
+            this.mappings.splitMappingPaths,
+            wbText('emptyStringInline')
+          )
       ).map(([headerName, defaultValue]) => [
         this.dataset.columns.indexOf(headerName),
         defaultValue,
@@ -619,7 +617,7 @@ const WBView = Backbone.View.extend({
       columns: (index) =>
         typeof this.mappings.defaultValues[index] === 'undefined'
           ? {}
-          : { placeholder: this.mappings.defaultValues[index] },
+          : {placeholder: this.mappings.defaultValues[index]},
     });
   },
   identifyPickLists() {
@@ -632,26 +630,26 @@ const WBView = Backbone.View.extend({
             this.mappings.splitMappingPaths[index].mappingPath.slice(-1)[0],
           headerName: this.mappings.splitMappingPaths[index].headerName,
         }))
-        .map(({ tableName, fieldName, headerName }) => ({
+        .map(({tableName, fieldName, headerName}) => ({
           physicalCol: this.dataset.columns.indexOf(headerName),
           pickList:
-            dataModelStorage.tables[tableName].fields[fieldName].pickList,
+          dataModelStorage.tables[tableName].fields[fieldName].pickList,
         }))
-        .filter(({ pickList }) => typeof pickList !== 'undefined')
+        .filter(({pickList}) => typeof pickList !== 'undefined')
         .map(Object.values)
     );
     this.hot.updateSettings({
       cells: (_physicalRow, physicalCol, _property) =>
         physicalCol in pickLists
           ? {
-              type: 'autocomplete',
-              source: pickLists[physicalCol].items,
-              strict: pickLists[physicalCol].readOnly,
-              allowInvalid: true,
-              filter: false,
-              trimDropdown: false,
-            }
-          : { type: 'text' },
+            type: 'autocomplete',
+            source: pickLists[physicalCol].items,
+            strict: pickLists[physicalCol].readOnly,
+            allowInvalid: true,
+            filter: false,
+            trimDropdown: false,
+          }
+          : {type: 'text'},
     });
   },
   identifyTreeRanks() {
@@ -664,24 +662,24 @@ const WBView = Backbone.View.extend({
           index,
         }))
         .filter(
-          ({ mappingPath }) =>
+          ({mappingPath}) =>
             valueIsTreeRank(mappingPath.slice(-2)[0]) &&
             mappingPath.slice(-1)[0] === 'name'
         )
-        .map(({ mappingPath, headerName, index }) => ({
+        .map(({mappingPath, headerName, index}) => ({
           mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
           tableName: this.mappings.tableNames[index],
           rankName: getNameFromTreeRankName(mappingPath.slice(-2)[0]),
           physicalCol: this.dataset.columns.indexOf(headerName),
         }))
-        .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
+        .map(({mappingGroup, tableName, rankName, physicalCol}) => ({
           mappingGroup,
           physicalCol,
           rankId: Object.keys(dataModelStorage.ranks[tableName]).indexOf(
             rankName
           ),
         }))
-        .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
+        .reduce((groupedRanks, {mappingGroup, ...rankMapping}) => {
           groupedRanks[mappingGroup] ??= [];
           groupedRanks[mappingGroup].push(rankMapping);
           return groupedRanks;
@@ -695,7 +693,7 @@ const WBView = Backbone.View.extend({
       `${currentCollection}_${this.dataset.id}`
     );
     if (!Array.isArray(sortConfig)) return;
-    const visualSortConfig = sortConfig.map(({ physicalCol, ...rest }) => ({
+    const visualSortConfig = sortConfig.map(({physicalCol, ...rest}) => ({
       ...rest,
       column: this.hot.toVisualColumn(physicalCol),
     }));
@@ -705,7 +703,7 @@ const WBView = Backbone.View.extend({
   // Hooks
   afterRenderer(td, visualRow, visualCol, property, _value) {
     if (typeof this.hot === 'undefined') {
-      td.classList.add('wb-cell-unmapped');
+      td.classList.add('text-gray-500');
       return;
     }
     const physicalRow = this.hot.toPhysicalRow(visualRow);
@@ -728,7 +726,7 @@ const WBView = Backbone.View.extend({
         visualCol
       );
     if (typeof this.mappings?.mappedHeaders?.[physicalCol] === 'undefined')
-      td.classList.add('wb-cell-unmapped');
+      td.classList.add('text-gray-500');
     if (typeof this.mappings?.coordinateColumns?.[physicalCol] !== 'undefined')
       td.classList.add('wb-coordinate-cell');
   },
@@ -870,7 +868,7 @@ const WBView = Backbone.View.extend({
         newValue,
       }))
       .filter(
-        ({ oldValue, newValue, visualCol }) =>
+        ({oldValue, newValue, visualCol}) =>
           /*
            * Ignore cases where value didn't change
            * (happens when double click a cell and then click on another cell)
@@ -888,13 +886,13 @@ const WBView = Backbone.View.extend({
       changes
         // Ignore changes to unmapped columns
         .filter(
-          ({ physicalCol }) => this.physicalColToMappingCol(physicalCol) !== -1
+          ({physicalCol}) => this.physicalColToMappingCol(physicalCol) !== -1
         )
         .sort(
-          ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
+          ({visualRow: visualRowLeft}, {visualRow: visualRowRight}) =>
             visualRowLeft > visualRowRight
         )
-        .map(({ physicalRow }) => physicalRow)
+        .map(({physicalRow}) => physicalRow)
     );
 
     /*
@@ -908,13 +906,13 @@ const WBView = Backbone.View.extend({
 
     changes.forEach(
       ({
-        visualRow,
-        visualCol,
-        physicalRow,
-        physicalCol,
-        oldValue,
-        newValue,
-      }) => {
+         visualRow,
+         visualCol,
+         physicalRow,
+         physicalCol,
+         oldValue,
+         newValue,
+       }) => {
         if (
           typeof this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
           'undefined'
@@ -933,7 +931,7 @@ const WBView = Backbone.View.extend({
             physicalCol,
             'isSearchResult',
             this.wbutils.searchFunction(newValue),
-            { visualRow, visualCol }
+            {visualRow, visualCol}
           );
       }
     );
@@ -959,7 +957,7 @@ const WBView = Backbone.View.extend({
    */
   beforeCreateRow(visualRowStart, amount, source) {
     const addedRows = Array.from(
-      { length: amount },
+      {length: amount},
       (_, index) =>
         /*
          * If HOT is not yet fully initialized, we can assume that physical row
@@ -979,7 +977,7 @@ const WBView = Backbone.View.extend({
   },
   beforeRemoveRow(visualRowStart, amount, source) {
     // Get indexes of removed rows in reverse order
-    const removedRows = Array.from({ length: amount }, (_, index) =>
+    const removedRows = Array.from({length: amount}, (_, index) =>
       this.hot.toPhysicalRow(visualRowStart + index)
     )
       .filter((physicalRow) => physicalRow < this.cellMeta.length)
@@ -1014,12 +1012,12 @@ const WBView = Backbone.View.extend({
 
     const findTreeColumns = (sortConfig, deltaSearchConfig) =>
       sortConfig
-        .map(({ column: visualCol, sortOrder }) => ({
+        .map(({column: visualCol, sortOrder}) => ({
           sortOrder,
           visualCol,
           physicalCol: this.hot.toPhysicalColumn(visualCol),
         }))
-        .map(({ physicalCol, ...rest }) => ({
+        .map(({physicalCol, ...rest}) => ({
           ...rest,
           rankGroup: this.mappings.treeRanks
             ?.map((rankGroup, groupIndex) => ({
@@ -1028,18 +1026,18 @@ const WBView = Backbone.View.extend({
               )?.rankId,
               groupIndex,
             }))
-            .find(({ rankId }) => typeof rankId !== 'undefined'),
+            .find(({rankId}) => typeof rankId !== 'undefined'),
         }))
         // Filter out columns that aren't tree ranks
-        .filter(({ rankGroup }) => typeof rankGroup !== 'undefined')
+        .filter(({rankGroup}) => typeof rankGroup !== 'undefined')
         /*
          * Filter out columns that didn't change
          * In the end, there should only be 0 or 1 columns
          *
          */
-        .find(({ sortOrder, visualCol }) => {
+        .find(({sortOrder, visualCol}) => {
           const deltaColumnState = deltaSearchConfig.find(
-            ({ column }) => column === visualCol
+            ({column}) => column === visualCol
           );
           return (
             typeof deltaColumnState === 'undefined' ||
@@ -1064,13 +1062,13 @@ const WBView = Backbone.View.extend({
      */
     const columnsToSort = this.mappings.treeRanks[
       changedTreeColumn.rankGroup.groupIndex
-    ]
-      .filter(({ rankId }) => rankId >= changedTreeColumn.rankGroup.rankId)
-      .map(({ physicalCol }) => this.hot.toVisualColumn(physicalCol));
+      ]
+      .filter(({rankId}) => rankId >= changedTreeColumn.rankGroup.rankId)
+      .map(({physicalCol}) => this.hot.toVisualColumn(physicalCol));
 
     // Filter out columns that are about to be sorted
     const partialSortConfig = newSortConfig.filter(
-      ({ column }) => !columnsToSort.includes(column)
+      ({column}) => !columnsToSort.includes(column)
     );
 
     const fullSortConfig = [
@@ -1078,9 +1076,9 @@ const WBView = Backbone.View.extend({
       ...(newSortOrderIsUnset
         ? []
         : columnsToSort.map((visualCol) => ({
-            column: visualCol,
-            sortOrder: changedTreeColumn.sortOrder,
-          }))),
+          column: visualCol,
+          sortOrder: changedTreeColumn.sortOrder,
+        }))),
     ];
 
     this.sortConfigIsSet = true;
@@ -1093,7 +1091,7 @@ const WBView = Backbone.View.extend({
   async afterColumnSort(_previousSortConfig, sortConfig) {
     const currentCollection = await cache.getCurrentCollectionId();
     const physicalSortConfig = sortConfig.map(
-      ({ column: visualCol, ...rest }) => ({
+      ({column: visualCol, ...rest}) => ({
         ...rest,
         physicalCol: this.hot.toPhysicalColumn(visualCol),
       })
@@ -1134,7 +1132,7 @@ const WBView = Backbone.View.extend({
       this.dataset.visualorder = columnOrder;
       $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
         type: 'PUT',
-        data: JSON.stringify({ visualorder: columnOrder }),
+        data: JSON.stringify({visualorder: columnOrder}),
         dataType: 'json',
         processData: false,
       }).fail(this.checkDeletedFail.bind(this));
@@ -1254,7 +1252,7 @@ const WBView = Backbone.View.extend({
     const cellValueChanged =
       typeof originalCellValue !== 'undefined' &&
       (originalCellValue?.toString() ?? '') !==
-        (this.data[physicalRow][physicalCol]?.toString() ?? '');
+      (this.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
 
     /*
@@ -1366,7 +1364,7 @@ const WBView = Backbone.View.extend({
     const da = this.getDisambiguation(physicalRow);
 
     return (this.uploadResults.ambiguousMatches[physicalRow] ?? []).some(
-      ({ physicalCols, mappingPath }) =>
+      ({physicalCols, mappingPath}) =>
         physicalCols.includes(physicalCol) &&
         typeof da[mappingPathToString(mappingPath)] !== 'number'
     );
@@ -1375,7 +1373,7 @@ const WBView = Backbone.View.extend({
     const da = this.getDisambiguation(physicalRow);
     return Boolean(
       this.uploadResults.ambiguousMatches[physicalRow]?.find(
-        ({ physicalCols, mappingPath }) =>
+        ({physicalCols, mappingPath}) =>
           physicalCols.includes(physicalCol) &&
           typeof da[mappingPathToString(mappingPath)] === 'number'
       )
@@ -1394,7 +1392,7 @@ const WBView = Backbone.View.extend({
   },
   afterChangeDisambiguation(physicalRow) {
     (this.uploadResults.ambiguousMatches[physicalRow] ?? [])
-      .flatMap(({ physicalCols }) => physicalCols)
+      .flatMap(({physicalCols}) => physicalCols)
       .forEach((physicalCol) =>
         this.recalculateIsModifiedState(physicalRow, physicalCol)
       );
@@ -1418,17 +1416,17 @@ const WBView = Backbone.View.extend({
     );
   },
   openDisambiguationDialog([
-    {
-      start: { col: visualCol, row: visualRow },
-    },
-  ]) {
+                             {
+                               start: {col: visualCol, row: visualRow},
+                             },
+                           ]) {
     if (!this.mappings) return;
 
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
     const matches = this.uploadResults.ambiguousMatches[physicalRow].find(
-      ({ physicalCols }) => physicalCols.includes(physicalCol)
+      ({physicalCols}) => physicalCols.includes(physicalCol)
     );
     const tableName = getTableFromMappingPath({
       baseTableName: this.mappings.baseTableName,
@@ -1436,7 +1434,7 @@ const WBView = Backbone.View.extend({
     });
     const model = getModel(tableName);
     const resources = new model.LazyCollection({
-      filters: { id__in: matches.ids.join(',') },
+      filters: {id__in: matches.ids.join(',')},
     });
 
     const doDA = (selected) => {
@@ -1453,11 +1451,11 @@ const WBView = Backbone.View.extend({
         const physicalRow = this.hot.toPhysicalRow(visualRow);
         if (
           !this.uploadResults.ambiguousMatches[physicalRow]?.find(
-            ({ key, mappingPath }) =>
+            ({key, mappingPath}) =>
               key === matches.key &&
               typeof this.getDisambiguation(physicalRow)[
                 mappingPathToString(mappingPath)
-              ] !== 'number'
+                ] !== 'number'
           )
         )
           continue;
@@ -1470,8 +1468,8 @@ const WBView = Backbone.View.extend({
       }
     };
 
-    const content = $('<div class="da-container">');
-    resources.fetch({ limit: 0 }).done(() => {
+    const content = $('<div class="flex flex-col">');
+    resources.fetch({limit: 0}).done(() => {
       if (resources.length === 0) {
         $(`<div>
             ${wbText('noDisambiguationResultsDialogHeader')}
@@ -1496,7 +1494,7 @@ const WBView = Backbone.View.extend({
 
       resources.forEach((resource) => {
         const row = $(
-          `<label class="da-row">
+          `<label class="py-1">
             <input
               type="radio"
               class="da-option"
@@ -1599,7 +1597,7 @@ const WBView = Backbone.View.extend({
     if (!this.dataset.rowresults) return;
 
     if (typeof this.uploadedView !== 'undefined') {
-      this.uploadedView.onClose();
+      this.uploadedView.handleClose();
       return;
     }
 
@@ -1657,9 +1655,9 @@ const WBView = Backbone.View.extend({
     );
 
     const isReadOnly = this.hot.getSettings().readOnly;
-    effects.push(() => this.hot.updateSettings({ readOnly: true }));
+    effects.push(() => this.hot.updateSettings({readOnly: true}));
     effectsCleanup.push(() =>
-      this.hot.updateSettings({ readOnly: isReadOnly })
+      this.hot.updateSettings({readOnly: isReadOnly})
     );
 
     const initialHiddenRows = this.getHotPlugin('hiddenRows').getHiddenRows();
@@ -1724,6 +1722,18 @@ const WBView = Backbone.View.extend({
       this.el.classList.remove('wb-show-upload-results')
     );
 
+    const uploadedViewWrapper = this.el.getElementsByClassName(
+      'wb-uploaded-view-wrapper'
+    )[0];
+    effects.push(() => {
+      uploadedViewWrapper.classList.remove('hidden');
+      uploadedViewWrapper.classList.add('contents');
+    });
+    effectsCleanup.push(() => {
+      uploadedViewWrapper.classList.remove('contents');
+      uploadedViewWrapper.classList.add('hidden');
+    });
+
     const runEffects = () =>
       [...effects, this.hot.render.bind(this.hot)].forEach((effect) =>
         effect()
@@ -1733,23 +1743,19 @@ const WBView = Backbone.View.extend({
         (effectCleanup) => effectCleanup()
       );
 
-    const uploadedViewWrapper = this.el.getElementsByClassName(
-      'wb-uploaded-view-wrapper'
-    )[0];
-    uploadedViewWrapper.style.display = '';
-
+    const handleClose = () => {
+      this.uploadedView.remove();
+      this.uploadedView = undefined;
+      runCleanup();
+    };
     this.uploadedView = new WBUploadedView({
       recordCounts: this.uploadResults.recordCounts,
       isUploaded: this.isUploaded,
-      onClose: () => {
-        this.uploadedView.remove();
-        this.uploadedView = undefined;
-        uploadedViewWrapper.style.display = 'none';
-        runCleanup();
-      },
+      onClose: handleClose,
     }).render();
 
     uploadedViewWrapper.append(this.uploadedView.el);
+    this.uploadedView.handleClose = handleClose;
 
     runEffects();
   },
@@ -1775,7 +1781,7 @@ const WBView = Backbone.View.extend({
             dataset.uploadplan = JSON.parse($('textarea', dialog).val());
             $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
               type: 'PUT',
-              data: JSON.stringify({ uploadplan: dataset.uploadplan }),
+              data: JSON.stringify({uploadplan: dataset.uploadplan}),
               dataType: 'json',
               processData: false,
             }).fail(this.checkDeletedFail.bind(this));
@@ -1878,13 +1884,13 @@ const WBView = Backbone.View.extend({
           uploaderstatus:
             this.dataset.uploaderstatus === null
               ? {
-                  operation: {
-                    validate: 'validating',
-                    upload: 'uploading',
-                    unupload: 'unuploading',
-                  }[mode],
-                  taskid: '',
-                }
+                operation: {
+                  validate: 'validating',
+                  upload: 'uploading',
+                  unupload: 'unuploading',
+                }[mode],
+                taskid: '',
+              }
               : this.dataset.uploaderstatus,
           taskstatus: 'PENDING',
           taskinfo: {
@@ -1947,7 +1953,7 @@ const WBView = Backbone.View.extend({
     });
     const wbName = this.dataset.name;
     const filename = wbName.endsWith('.csv') ? wbName : `${wbName}.csv`;
-    const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([data], {type: 'text/csv;charset=utf-8;'});
     const a = document.createElement('a');
     a.href = window.URL.createObjectURL(blob);
     a.setAttribute('download', filename);
@@ -1992,7 +1998,7 @@ const WBView = Backbone.View.extend({
         $(this).remove();
       },
     });
-    $('.progress-bar', dialog).progressbar({ value: false });
+    $('.progress-bar', dialog).progressbar({value: false});
 
     // Send data
     return Q(
@@ -2005,7 +2011,7 @@ const WBView = Backbone.View.extend({
       .then(() => {
         this.spreadSheetUpToDate();
         this.cellMeta = [];
-        this.wbutils.searchCells({ key: 'SettingsChange' });
+        this.wbutils.searchCells({key: 'SettingsChange'});
         this.hot.render();
       })
       .finally(() => dialog.dialog('close'));
@@ -2028,7 +2034,7 @@ const WBView = Backbone.View.extend({
     switch (this.validationMode) {
       case 'live':
         this.liveValidationStack = Array.from(
-          { length: this.hot.countRows() },
+          {length: this.hot.countRows()},
           (_, visualRow) => this.hot.toPhysicalRow(visualRow)
         ).reverse();
         this.triggerLiveValidation();
@@ -2110,23 +2116,23 @@ const WBView = Backbone.View.extend({
     if (!persevering)
       // Find all columns with the shared parent mapping path
       return this.mappings.splitMappingPaths
-        .filter(({ mappingPath }) =>
+        .filter(({mappingPath}) =>
           mappingPathToString(mappingPath).startsWith(
             mappingPathToString(mappingPathFilter)
           )
         )
-        .map(({ headerName }) => headerName);
+        .map(({headerName}) => headerName);
     let columns;
     mappingPathFilter.some((_, index) => {
       columns = this.mappings.splitMappingPaths
-        .filter(({ mappingPath }) =>
+        .filter(({mappingPath}) =>
           mappingPathToString(mappingPath).startsWith(
             mappingPathToString(
               mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
             )
           )
         )
-        .map(({ headerName }) => headerName);
+        .map(({headerName}) => headerName);
       return columns.length > 0;
     });
     return columns;
@@ -2290,14 +2296,14 @@ const WBView = Backbone.View.extend({
    */
   physicalColToMappingCol(physicalCol) {
     return this.mappings?.splitMappingPaths.findIndex(
-      ({ headerName }) => headerName === this.dataset.columns[physicalCol]
+      ({headerName}) => headerName === this.dataset.columns[physicalCol]
     );
   },
   mappingColToPhysicalCol(mappingCol) {
     return this.mappings
       ? this.dataset.columns.indexOf(
-          this.mappings.splitMappingPaths[mappingCol].headerName
-        )
+        this.mappings.splitMappingPaths[mappingCol].headerName
+      )
       : undefined;
   },
   getHotPlugin(pluginName) {
@@ -2425,27 +2431,27 @@ const WBView = Backbone.View.extend({
       validate:
         cellCounts.invalidCells === 0
           ? {
-              title: wbText('validationNoErrorsDialogTitle'),
-              header: wbText('validationNoErrorsDialogHeader'),
-              message: wbText('validationNoErrorsDialogMessage'),
-            }
+            title: wbText('validationNoErrorsDialogTitle'),
+            header: wbText('validationNoErrorsDialogHeader'),
+            message: wbText('validationNoErrorsDialogMessage'),
+          }
           : {
-              title: wbText('validationErrorsDialogTitle'),
-              header: wbText('validationErrorsDialogHeader'),
-              message: wbText('validationErrorsDialogMessage'),
-            },
+            title: wbText('validationErrorsDialogTitle'),
+            header: wbText('validationErrorsDialogHeader'),
+            message: wbText('validationErrorsDialogMessage'),
+          },
       upload:
         cellCounts.invalidCells === 0
           ? {
-              title: wbText('uploadNoErrorsDialogTitle'),
-              header: wbText('uploadNoErrorsDialogHeader'),
-              message: wbText('uploadNoErrorsDialogMessage'),
-            }
+            title: wbText('uploadNoErrorsDialogTitle'),
+            header: wbText('uploadNoErrorsDialogHeader'),
+            message: wbText('uploadNoErrorsDialogMessage'),
+          }
           : {
-              title: wbText('uploadErrorsDialogTitle'),
-              header: wbText('uploadErrorsDialogHeader'),
-              message: wbText('uploadErrorsDialogMessage'),
-            },
+            title: wbText('uploadErrorsDialogTitle'),
+            header: wbText('uploadErrorsDialogHeader'),
+            message: wbText('uploadErrorsDialogMessage'),
+          },
       unupload: {
         title: wbText('dataSetRollbackDialogTitle'),
         header: wbText('dataSetRollbackDialogHeader'),
@@ -2478,20 +2484,20 @@ const WBView = Backbone.View.extend({
       this.refreshInitiatedBy === 'validate'
         ? wbText('validationCanceledDialogTitle')
         : this.refreshInitiatedBy === 'unupload'
-        ? wbText('rollbackCanceledDialogTitle')
-        : wbText('uploadCanceledDialogTitle');
+          ? wbText('rollbackCanceledDialogTitle')
+          : wbText('uploadCanceledDialogTitle');
     const header =
       this.refreshInitiatedBy === 'validate'
         ? wbText('validationCanceledDialogHeader')
         : this.refreshInitiatedBy === 'unupload'
-        ? wbText('rollbackCanceledDialogHeader')
-        : wbText('uploadCanceledDialogHeader');
+          ? wbText('rollbackCanceledDialogHeader')
+          : wbText('uploadCanceledDialogHeader');
     const message =
       this.refreshInitiatedBy === 'validate'
         ? wbText('validationCanceledDialogMessage')
         : this.refreshInitiatedBy === 'unupload'
-        ? wbText('rollbackCanceledDialogMessage')
-        : wbText('uploadCanceledDialogMessage');
+          ? wbText('rollbackCanceledDialogMessage')
+          : wbText('uploadCanceledDialogMessage');
 
     const dialog = $(`<div>
       ${header}
@@ -2536,7 +2542,7 @@ const WBView = Backbone.View.extend({
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)][
             resolveIndex(visualRow, visualCol, false)
-          ] = cellMeta;
+            ] = cellMeta;
         })
       );
       this.indexedCellMeta = indexedCellMeta;

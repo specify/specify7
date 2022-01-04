@@ -1,152 +1,143 @@
-<div class="wb-header">
-  <div role="toolbar" class="wb-primary-row">
-    <div class="wb-controls-left v-center">
-      <div class="wb-name-container"></div>
-      <button
-        type="button"
-        aria-pressed="false"
-        aria-haspopup="grid"
-        class="button wb-show-toolkit"
-      >
-        <%= commonText('tools') %>
-      </button>
-    </div>
-    <div class="wb-controls-right">
-      <button
-        type="button"
-        class="button wb-show-plan"
-        style="display: none"
-      >
-        Show Plan
-      </button>
-      <button type="button" class="button wb-plan">
-        <%= wbText('dataMapper') %>
-      </button>
-      <% if(!isUploaded) { %>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-validate"
-        disabled="disabled"
-      >
-        <%= wbText('validate') %>
-      </button>
-      <% } %>
-      <button
-        type="button"
-        aria-haspopup="tree"
-        class="button wb-show-upload-view"
-        disabled="disabled"
-        title="<%= wbText('wbUploadedUnavailable') %>"
-      >
-        <%= wbText('results') %>
-      </button>
-      <% if(isUploaded && isManager){ %>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-unupload"
-      >
-        <%= wbText('rollback') %>
-      </button>
-      <% } else { %> <% if(isManager){ %>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-upload"
-      >
-        <%= wbText('upload') %>
-      </button>
-      <% } %>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-revert"
-        disabled="disabled"
-      >
-        <%= wbText('revert') %>
-      </button>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-save"
-        disabled="disabled"
-      >
-        <%= commonText('save') %>
-      </button>
-      <% } %>
-    </div>
-  </div>
-  <div
-    class="wb-toolkit"
-    role="toolbar"
-    style="display: none"
-    aria-label="<%= commonText('tools') %>"
+<div role="toolbar" class="flex justify-between whitespace-nowrap gap-x-1 gap-y-2">
+  <div class="wb-name-container contents"></div>
+  <button
+    type="button"
+    aria-pressed="false"
+    aria-haspopup="grid"
+    class="button wb-show-toolkit"
   >
-    <div class="wb-toolkit-left">
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-change-data-set-owner"
-      >
-        <%= wbText('changeOwner') %>
-      </button>
-      <button type="button" class="button wb-export-data-set">
-        <%= wbText('export') %>
-      </button>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-delete-data-set"
-      >
-        <%= commonText('delete') %>
-      </button>
-    </div>
-    <div class="wb-toolkit-right">
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-convert-coordinates"
-        title="<%= wbText('unavailableWithoutLocality') %>"
-        disabled
-      >
-        <%= wbText('convertCoordinates') %>
-      </button>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-geolocate"
-        title="<%= wbText('unavailableWithoutLocality') %>"
-        disabled
-      >
-        <%= wbText('geoLocate') %>
-      </button>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        class="button wb-leafletmap"
-        title="<%= wbText('unavailableWithoutLocality') %>"
-        disabled
-      >
-        <%= commonText('geoMap') %>
-      </button>
-    </div>
-  </div>
-</div>
-<div class="wb-main-content">
-  <section class="wb-spreadsheet"></section>
-  <aside
-    class="wb-uploaded-view-wrapper"
+    <%= commonText('tools') %>
+  </button>
+  <span class="flex-1 -ml-1"></span>
+  <button
+    type="button"
+    class="button wb-show-plan"
     style="display: none"
+  >
+    Show Plan
+  </button>
+  <button type="button" class="button wb-plan">
+    <%= wbText('dataMapper') %>
+  </button>
+  <% if(!isUploaded) { %>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-validate"
+    disabled="disabled"
+  >
+    <%= wbText('validate') %>
+  </button>
+  <% } %>
+  <button
+    type="button"
+    aria-haspopup="tree"
+    class="button wb-show-upload-view"
+    disabled="disabled"
+    title="<%= wbText('wbUploadedUnavailable') %>"
+  >
+    <%= wbText('results') %>
+  </button>
+  <% if(isUploaded && isManager){ %>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-unupload"
+  >
+    <%= wbText('rollback') %>
+  </button>
+  <% } else { %> <% if(isManager){ %>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-upload"
+  >
+    <%= wbText('upload') %>
+  </button>
+  <% } %>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-revert"
+    disabled="disabled"
+  >
+    <%= wbText('revert') %>
+  </button>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-save"
+    disabled="disabled"
+  >
+    <%= commonText('save') %>
+  </button>
+  <% } %>
+</div>
+<div
+  class="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
+  role="toolbar"
+  style="display: none"
+  aria-label="<%= commonText('tools') %>"
+>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-change-data-set-owner"
+  >
+    <%= wbText('changeOwner') %>
+  </button>
+  <button type="button" class="button wb-export-data-set">
+    <%= wbText('export') %>
+  </button>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-delete-data-set"
+  >
+    <%= commonText('delete') %>
+  </button>
+  <span class="flex-1 -ml-1"></span>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-convert-coordinates"
+    title="<%= wbText('unavailableWithoutLocality') %>"
+    disabled
+  >
+    <%= wbText('convertCoordinates') %>
+  </button>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-geolocate"
+    title="<%= wbText('unavailableWithoutLocality') %>"
+    disabled
+  >
+    <%= wbText('geoLocate') %>
+  </button>
+  <button
+    type="button"
+    aria-haspopup="dialog"
+    class="button wb-leafletmap"
+    title="<%= wbText('unavailableWithoutLocality') %>"
+    disabled
+  >
+    <%= commonText('geoMap') %>
+  </button>
+</div>
+<div class="flex flex-1 gap-x-4 overflow-hidden">
+  <section class="wb-spreadsheet flex-1 overflow-hidden"></section>
+  <aside
+    class="wb-uploaded-view-wrapper hidden"
     aria-live="polite"
   ></aside>
 </div>
 <div
   role="toolbar"
-  class="wb-navigation"
+  class="flex flex-wrap gap-x-1 gap-y-2 justify-end"
   aria-label="<%= wbText('navigation') %>"
 >
-  <span class="wb-search-replace" role="search">
+  <span class="contents" role="search">
     <input
       type="search"
       class="wb-search-query"
@@ -166,39 +157,30 @@
       autocomplete="on"
     />
     <% } %>
-    <button
-      type="button"
-      aria-haspopup="dialog"
-      aria-pressed="false"
-      class="button wb-advanced-search"
-      title="<%= wbText('configureSearchReplace') %>"
-      aria-label="<%= wbText('configureSearchReplace') %>"
-    >
-      ⚙
-    </button>
+    <span class="wb-advanced-search-wrapper"></span>
   </span>
   <span
-    class="wb-navigation-section"
+    class="wb-navigation-section flex rounded"
     data-navigation-type="searchResults"
     aria-atomic="true"
   >
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text" title="<%= wbText('clickToToggle') %>">
+    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
       <%= wbText('searchResults') %> (
-      <span class="wb-navigation-position">0</span>
+      <span class="wb-navigation-position text-center">0</span>
       /
       <span class="wb-navigation-total">0</span>
       )
     </button>
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="next"
     >
       &gt;
@@ -206,24 +188,24 @@
   </span>
 
   <% if(!isUploaded){ %>
-  <span class="wb-navigation-section" data-navigation-type="modifiedCells" aria-atomic="true">
+  <span class="wb-navigation-section flex rounded" data-navigation-type="modifiedCells" aria-atomic="true">
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text" title="<%= wbText('clickToToggle') %>">
+    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
       <%= wbText('modifiedCells') %> (
-      <span class="wb-navigation-position">0</span>
+      <span class="wb-navigation-position text-center">0</span>
       /
       <span class="wb-navigation-total">0</span>
       )
     </button>
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="next"
     >
       &gt;
@@ -231,24 +213,24 @@
   </span>
   <% } %>
 
-  <span class="wb-navigation-section" data-navigation-type="newCells" aria-atomic="true">
+  <span class="wb-navigation-section flex rounded" data-navigation-type="newCells" aria-atomic="true">
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text" title="<%= wbText('clickToToggle') %>">
+    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
       <%= wbText('newCells') %> (
-      <span class="wb-navigation-position">0</span>
+      <span class="wb-navigation-position text-center">0</span>
       /
       <span class="wb-navigation-total">0</span>
       )
     </button>
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="next"
     >
       &gt;
@@ -256,24 +238,24 @@
   </span>
 
   <% if(!isUploaded){ %>
-  <span class="wb-navigation-section" data-navigation-type="invalidCells" aria-atomic="true">
+  <span class="wb-navigation-section flex rounded" data-navigation-type="invalidCells" aria-atomic="true">
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text" title="<%= wbText('clickToToggle') %>">
+    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
       <%= wbText('errorCells') %> (
-      <span class="wb-navigation-position">0</span>
+      <span class="wb-navigation-position text-center">0</span>
       /
       <span class="wb-navigation-total">0</span>
       )
     </button>
     <button
       type="button"
-      class="wb-cell-navigation"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
       data-navigation-direction="next"
     >
       &gt;

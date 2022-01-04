@@ -8,6 +8,7 @@ import React from 'react';
 
 import * as cache from '../cache';
 import wbText from '../localization/workbench';
+import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
@@ -60,7 +61,7 @@ export const getInitialSearchPreferences = (): SearchPreferences =>
     version: CACHE_VERSION,
   });
 
-function Checkbox({
+function CheckboxLine({
   children: label,
   property,
   state,
@@ -72,9 +73,8 @@ function Checkbox({
   readonly setState: (state: SearchPreferences) => void;
 }): JSX.Element {
   return (
-    <label>
-      <input
-        type="checkbox"
+    <LabelForCheckbox>
+      <Checkbox
         checked={state.search[property]}
         onChange={(): void =>
           setState({
@@ -87,31 +87,19 @@ function Checkbox({
         }
       />
       {` ${label}`}
-      <br />
-    </label>
+    </LabelForCheckbox>
   );
 }
 
-function WbAdvancedSearch({
+function Dialog({
+  searchPreferences,
   onClose: handleClose,
   onChange: handleChange,
-  initialSearchPreferences,
 }: {
-  readonly initialSearchPreferences: SearchPreferences;
+  readonly searchPreferences: SearchPreferences;
   readonly onChange: (newSearchPreferences: SearchPreferences) => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [state, setState] = React.useState<SearchPreferences>(
-    initialSearchPreferences
-  );
-
-  handleChange(state);
-
-  cache.set('workbench', 'search-properties', state, {
-    overwrite: true,
-    version: CACHE_VERSION,
-  });
-
   return (
     <ModalDialog
       properties={{
@@ -119,65 +107,128 @@ function WbAdvancedSearch({
         close: handleClose,
         modal: false,
       }}
+      className="gap-y-2 flex flex-col"
     >
-      <h3>{wbText('navigationOptions')}</h3>
-      <label>
-        {wbText('cursorPriority')}
-        <br />
-        <select
-          onChange={({ target }): void =>
-            setState({
-              ...state,
-              navigation: {
-                ...state.navigation,
-                direction: target.value as NavigationDirection,
-              },
-            })
-          }
-          value={state.navigation.direction}
-        >
-          <option value="columnFirst">{wbText('columnFirst')}</option>
-          <option value="rowFirst">{wbText('rowFirst')}</option>
-        </select>
-      </label>
-      <br />
+      <div>
+        <h2 className="font-black">{wbText('navigationOptions')}</h2>
+        <Label>
+          {wbText('cursorPriority')}
+          <select
+            onChange={({ target }): void =>
+              handleChange({
+                ...searchPreferences,
+                navigation: {
+                  ...searchPreferences.navigation,
+                  direction: target.value as NavigationDirection,
+                },
+              })
+            }
+            value={searchPreferences.navigation.direction}
+          >
+            <option value="columnFirst">{wbText('columnFirst')}</option>
+            <option value="rowFirst">{wbText('rowFirst')}</option>
+          </select>
+        </Label>
+      </div>
 
-      <h3>{wbText('searchOptions')}</h3>
-      <Checkbox property="fullMatch" state={state} setState={setState}>
-        {wbText('findEntireCellsOnly')}
-      </Checkbox>
-      <Checkbox property="caseSensitive" state={state} setState={setState}>
-        {wbText('matchCase')}
-      </Checkbox>
-      <Checkbox property="useRegex" state={state} setState={setState}>
-        {wbText('useRegularExpression')}
-      </Checkbox>
-      <Checkbox property="liveUpdate" state={state} setState={setState}>
-        {wbText('liveUpdate')}
-      </Checkbox>
-      <br />
-
-      <h3>{wbText('replaceOptions')}</h3>
-      <label>
-        {wbText('replaceMode')}
-        <br />
-        <select
-          onChange={({ target }): void =>
-            setState({
-              ...state,
-              replace: {
-                ...state.replace,
-                replaceMode: target.value as ReplaceMode,
-              },
-            })
-          }
-          value={state.replace.replaceMode}
+      <div>
+        <h2 className="font-black">{wbText('searchOptions')}</h2>
+        <CheckboxLine
+          property="fullMatch"
+          state={searchPreferences}
+          setState={handleChange}
         >
-          <option value="replaceAll">{wbText('replaceAll')}</option>
-          <option value="replaceNext">{wbText('replaceNext')}</option>
-        </select>
-      </label>
+          {wbText('findEntireCellsOnly')}
+        </CheckboxLine>
+        <CheckboxLine
+          property="caseSensitive"
+          state={searchPreferences}
+          setState={handleChange}
+        >
+          {wbText('matchCase')}
+        </CheckboxLine>
+        <CheckboxLine
+          property="useRegex"
+          state={searchPreferences}
+          setState={handleChange}
+        >
+          {wbText('useRegularExpression')}
+        </CheckboxLine>
+        <CheckboxLine
+          property="liveUpdate"
+          state={searchPreferences}
+          setState={handleChange}
+        >
+          {wbText('liveUpdate')}
+        </CheckboxLine>
+      </div>
+
+      <div>
+        <h2 className="font-black">{wbText('replaceOptions')}</h2>
+        <Label>
+          {wbText('replaceMode')}
+          <select
+            onChange={({ target }): void =>
+              handleChange({
+                ...searchPreferences,
+                replace: {
+                  ...searchPreferences.replace,
+                  replaceMode: target.value as ReplaceMode,
+                },
+              })
+            }
+            value={searchPreferences.replace.replaceMode}
+          >
+            <option value="replaceAll">{wbText('replaceAll')}</option>
+            <option value="replaceNext">{wbText('replaceNext')}</option>
+          </select>
+        </Label>
+      </div>
     </ModalDialog>
+  );
+}
+
+function WbAdvancedSearch({
+  onChange: handleChange,
+  initialSearchPreferences,
+}: {
+  readonly initialSearchPreferences: SearchPreferences;
+  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+}): JSX.Element {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [searchPreferences, setSearchPreferences] =
+    React.useState<SearchPreferences>(initialSearchPreferences);
+
+  React.useEffect(() => {
+    handleChange(searchPreferences);
+    cache.set('workbench', 'search-properties', searchPreferences, {
+      overwrite: true,
+      version: CACHE_VERSION,
+    });
+  }, [searchPreferences]);
+
+  return (
+    <>
+      <Button
+        aria-haspopup="dialog"
+        aria-pressed={isOpen}
+        title={wbText('configureSearchReplace')}
+        onClick={(): void => setIsOpen(!isOpen)}
+      >
+        <img
+          src="/static/img/gear.svg"
+          className="h-3"
+          alt={wbText('configureSearchReplace')}
+        />
+      </Button>
+      {isOpen && (
+        <Dialog
+          searchPreferences={searchPreferences}
+          onClose={(): void => setIsOpen(false)}
+          onChange={setSearchPreferences}
+        />
+      )}
+    </>
   );
 }
 

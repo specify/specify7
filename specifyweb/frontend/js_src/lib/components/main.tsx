@@ -162,7 +162,7 @@ export default function Main({
         </div>
         <HeaderItems menuItems={menuItems} />
       </header>
-      <main className="flex-1 p-4" ref={mainRef} />
+      <main className="flex-1 p-4 overflow-auto" ref={mainRef} />
     </>
   );
 }

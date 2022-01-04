@@ -34,7 +34,6 @@ export default Backbone.View.extend({
     'click .wb-navigation-text': 'toggleCellTypes',
     'keydown .wb-search-query': 'searchCells',
     'keydown .wb-replace-value': 'replaceCells',
-    'click .wb-advanced-search': 'showAdvancedSearch',
     'click .wb-show-toolkit': 'toggleToolkit',
     'click .wb-geolocate': 'showGeoLocate',
     'click .wb-leafletmap': 'showLeafletMap',
@@ -47,7 +46,6 @@ export default Backbone.View.extend({
     this.searchQuery = undefined;
     this.rawSearchQuery = undefined;
     this.searchPreferences = getInitialSearchPreferences();
-    this.advancedSearch = undefined;
     this.geoLocateDialog = undefined;
     this.geoMapDialog = undefined;
     this.searchCells = _.debounce(
@@ -57,7 +55,34 @@ export default Backbone.View.extend({
     );
   },
   render() {
+
+    let initialNavigationDirection =
+      this.searchPreferences.navigation.direction;
+    this.advancedSearch = new WbAdvancedSearch({
+      el: this.el.getElementsByClassName('wb-advanced-search-wrapper')[0],
+      initialSearchPreferences: this.searchPreferences,
+      onChange: (newSearchPreferences) => {
+        this.searchPreferences = newSearchPreferences;
+        if (
+          this.searchPreferences.navigation.direction !==
+          initialNavigationDirection
+        ) {
+          this.wbview.flushIndexedCellData = true;
+          initialNavigationDirection =
+            this.searchPreferences.navigation.direction;
+        }
+        if (this.searchPreferences.search.liveUpdate)
+          this.searchCells({
+            key: 'SettingsChange',
+          });
+      },
+    }).render();
+
     return this;
+  },
+  remove(){
+    this.advancedSearch.remove();
+    Backbone.View.prototype.remove.call(this);
   },
   getSelectedLast() {
     let [currentRow, currentCol] = this.wbview.hot.getSelectedLast() ?? [0, 0];
@@ -222,9 +247,11 @@ export default Backbone.View.extend({
     const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
     const newState = this.el.classList.contains(cssClassName);
-    buttonContainer.getElementsByClassName(
+    const indicator = buttonContainer.getElementsByClassName(
       'wb-navigation-text'
-    )[0].ariaPressed = newState;
+    )[0];
+    indicator.ariaPressed = newState;
+    indicator.classList[newState ? 'add': 'remove']('brightness-50');
     return newState;
   },
   parseSearchQuery() {
@@ -255,16 +282,15 @@ export default Backbone.View.extend({
           this.searchPreferences.search.caseSensitive ? '' : 'i'
         );
       } catch (error) {
-        searchQueryElement.classList.add('wb-search-query-invalid');
-        searchQueryElement.setAttribute('title', error.toString());
+        searchQueryElement.setCustomValidity(error.message);
+        searchQueryElement.reportValidity();
         this.searchQuery = undefined;
         return;
       }
     else if (!this.searchPreferences.search.caseSensitive)
       this.searchQuery = this.searchQuery.toLowerCase();
 
-    searchQueryElement.classList.remove('wb-search-query-invalid');
-    searchQueryElement.removeAttribute('title');
+    searchQueryElement.setCustomValidity('');
 
     return this.searchQuery;
   },
@@ -324,7 +350,7 @@ export default Backbone.View.extend({
         const physicalCol = this.wbview.hot.toPhysicalColumn(visualCol);
         const isSearchResult = this.searchFunction(
           (data[physicalRow][physicalCol] ||
-            this.wbview.mappings.defaultValues[physicalCol]) ??
+            this.wbview.mappings?.defaultValues[physicalCol]) ??
             ''
         );
 
@@ -438,41 +464,6 @@ export default Backbone.View.extend({
 
       nextCellOfType();
     }
-  },
-  // Show search config menu
-  showAdvancedSearch(event) {
-    if (typeof this.advancedSearch !== 'undefined') {
-      this.advancedSearch.remove();
-      return;
-    }
-
-    event.target.ariaPressed = true;
-
-    let initialNavigationDirection =
-      this.searchPreferences.navigation.direction;
-    this.advancedSearch = new WbAdvancedSearch({
-      initialSearchPreferences: this.searchPreferences,
-      onChange: (newSearchPreferences) => {
-        this.searchPreferences = newSearchPreferences;
-        if (
-          this.searchPreferences.navigation.direction !==
-          initialNavigationDirection
-        ) {
-          this.wbview.flushIndexedCellData = true;
-          initialNavigationDirection =
-            this.searchPreferences.navigation.direction;
-        }
-        if (this.searchPreferences.search.liveUpdate)
-          this.searchCells({
-            key: 'SettingsChange',
-          });
-      },
-      onClose: () => {
-        this.advancedSearch.remove();
-        this.advancedSearch = undefined;
-        event.target.ariaPressed = false;
-      },
-    }).render();
   },
   searchFunction(initialCellValue) {
     let cellValue = initialCellValue ?? '';
@@ -962,7 +953,7 @@ export default Backbone.View.extend({
 
     this.wbview.coordinateConverterView = $(`<div>
       ${wbText('coordinateConverterDialogHeader')}
-      <ul class="lat-long-format-options">
+      <ul role="list">
         ${Object.values(options)
           .map(
             ({ optionName }, optionIndex) =>

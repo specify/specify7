@@ -1,145 +1,37 @@
 @import url('../node_modules/handsontable/dist/handsontable.full.css');
 
-/* LAYOUT */
-.wbs-form {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  row-gap: var(--size);
-}
-
-/* Header */
-.wbs-form .wb-header,
-.wb-name-container {
-  display: contents;
-}
-
-.wbs-form .wb-primary-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.wb-controls-left,
-.wb-controls-right,
-.wb-toolkit,
-.wb-toolkit-left,
-.wb-toolkit-right,
-.wb-navigation {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: var(--quarter-size);
-  row-gap: var(--half-size);
-}
-
-.wb-controls-right,
-.wb-navigation {
-  justify-content: flex-end;
-}
-
-.wb-toolkit-left {
-  justify-content: flex-start;
-}
-
-.wb-toolkit {
-  justify-content: space-between;
-}
-
-.wbs-form .wb-controls-left {
-  flex: 1;
-  font-size: var(--size);
-  overflow-y: auto;
-  white-space: nowrap;
-  flex-wrap: nowrap;
-}
-
-.wbs-form .wb-name {
-  overflow-y: auto;
-  margin: 0;
-  padding: 0;
-  font-size: calc(var(--size) * 0.8);
-  font-weight: 400;
-  color: var(--t1);
-}
-
-.wbs-form .wb-controls-left span.ui-icon {
-  display: inline-block;
-  vertical-align: bottom;
-  margin-right: var(--half-size);
-}
-
-.wb-search-replace {
-  display: contents;
-}
-
-.wb-search-replace input {
-  margin: 0;
-}
-
-.wb-search-query-invalid {
-  background-color: var(--error);
-}
-
-/* Content */
-.wb-main-content {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  column-gap: var(--size);
-}
-
-.wb-spreadsheet {
-  flex: 1;
-  width: 100%;
-  overflow: hidden;
-}
-
-.wb-upload-view {
-  position: absolute;
-}
-
 /* HANDSONTABLE overwrites */
-.wbs-form .ht_clone_top {
+
+/* Put column headers behind jQuery dialog windows */
+.ht_clone_top {
   z-index: 97;
 }
 
-.wbs-form .ht_clone_left {
+.ht_clone_left {
   z-index: 98;
 }
 
-.wbs-form .ht_clone_top_left_corner,
-.wbs-form .ht_clone_bottom_left_corner {
+.ht_clone_top_left_corner,
+.ht_clone_bottom_left_corner {
   z-index: 99;
 }
 
-.htCore th > .relative {
+/* Show table icons in column headers */
+.htCore thead th > .relative {
   display: flex;
   align-content: center;
   justify-content: center;
-  padding: 0;
 }
 
 .htCore .colHeader {
   display: contents !important;
 }
 
-.htCore .colHeader .wb-col-header {
-  display: flex;
-  column-gap: var(--quarter-size);
-  align-items: center;
-  padding-left: var(--size);
-}
-
-.htCore .colHeader .wb-header-icon {
-  width: var(--table-icon-size);
-  height: var(--table-icon-size);
-  background-size: contain;
-}
-
 .handsontable .columnSorting {
   line-height: 20px;
 }
 
+/* Picklists */
 .handsontable td .htAutocompleteArrow {
   color: var(--t1);
 }
@@ -148,6 +40,7 @@
   color: var(--b4);
 }
 
+/* See https://github.com/specify/specify7/issues/932 */
 .htComments.repositioned {
   --offset-right: 50vw;
   right: var(--offset-right);
@@ -171,18 +64,27 @@
   margin-left: -10px;
 }
 
+/* Current row/col table header */
+.handsontable tbody th.ht__highlight,
+.handsontable thead th.ht__highlight {
+  background-color: var(--highlighted-row);
+  color: var(--t1);
+}
+
 /* CONTENT styles */
-.handsontable .htPlaceholder {
-  color: var(--default-cell);
-}
-
-.wbs-form .wb-cell-unmapped {
-  color: var(--b4);
-}
-
 .wbs-form.wb-focus-coordinates .wb-coordinate-cell {
   color: var(--t1);
 }
+
+.wbs-form.wb-show-upload-results .htCore td:not(.wb-no-match-cell) {
+  background: unset;
+}
+
+.wbs-form.wb-show-upload-results .wb-no-match-cell {
+  color: var(--t1);
+}
+
+/* Cell navigation */
 
 .wbs-form .wb-no-match-cell,
 .wbs-form .wb-modified-cell,
@@ -190,12 +92,6 @@
 .wbs-form .wb-search-match-cell,
 .wb-navigation-section {
   background-color: var(--accent-color);
-}
-
-.handsontable tbody th.ht__highlight,
-.handsontable thead th.ht__highlight {
-  background-color: var(--highlighted-row);
-  color: var(--t1);
 }
 
 /* The order here determines the priority of the states
@@ -218,70 +114,4 @@
 .wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
 .wb-navigation-section[data-navigation-type='searchResults'] {
   --accent-color: var(--search-result);
-}
-
-.wb-navigation-section {
-  display: flex;
-}
-
-.wb-cell-navigation,
-.wb-navigation-text {
-  transition: var(--animation-duration);
-  cursor: pointer;
-}
-
-.wb-cell-navigation {
-  border: 0;
-  padding: var(--half-size);
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.wb-cell-navigation:not([disabled]):hover,
-.wb-navigation-text[aria-pressed="true"] {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.wb-cell-navigation[disabled] {
-  cursor: not-allowed;
-}
-
-.wbs-form.wb-show-upload-results .htCore td:not(.wb-no-match-cell) {
-  background: unset;
-}
-
-.wbs-form.wb-show-upload-results .wb-no-match-cell {
-  color: var(--t1);
-}
-
-.wb-navigation-text {
-  display: grid;
-  grid-template-columns: auto 1fr auto 1fr auto;
-  align-items: center;
-  padding: 0 var(--quarter-size);
-  background: transparent;
-  border: 0;
-}
-
-.wb-navigation-position {
-  text-align: center;
-}
-
-.wb-advanced-search {
-  font-size: var(--size);
-  padding-top: var(--quarter-size);
-}
-
-/* Disambiguation */
-.da-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.da-row {
-  padding: var(--quarter-size) 0;
-}
-
-/* Coordinate Converter */
-.lat-long-format-options {
-  padding: 0;
 }
