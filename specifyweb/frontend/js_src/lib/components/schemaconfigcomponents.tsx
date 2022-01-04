@@ -11,16 +11,18 @@ export function PickList({
   groups,
   disabled = false,
   onChange: handleChange,
+  className,
 }: {
   readonly label?: string;
   readonly value: string | null;
   readonly groups: IR<RA<string> | IR<string>>;
   readonly disabled?: boolean;
   readonly onChange: (value: string | null) => void;
+  readonly className?: string;
 }): JSX.Element {
   return (
     <select
-      className="flex-1 w-0"
+      className={className}
       aria-label={label}
       value={value ?? '0'}
       disabled={disabled}

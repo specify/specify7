@@ -17,6 +17,7 @@ import reports from "./reports";
 import * as navigation from "./navigation";
 import {setCurrentView} from "./specifyapp";
 import {setTitle} from "./components/hooks";
+import {className} from './components/basic';
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -175,7 +176,7 @@ function viewSaved(resource, recordSet, options) {
 export function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
-            className: "specify-root-form content-shadow",
+            className: `specify-root-form ${className.container}`,
             populateForm: populateForm,
             model: resource,
             recordSet: recordSet,

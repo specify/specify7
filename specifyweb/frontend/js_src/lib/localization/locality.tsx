@@ -109,11 +109,6 @@ const localityText = createDictionary({
     'ru-ru': 'Прямоугольник',
     ca: 'Rectangle',
   },
-  source: {
-    'en-us': 'Source',
-    'ru-ru': 'Источник',
-    ca: 'Source',
-  },
   parsed: {
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',

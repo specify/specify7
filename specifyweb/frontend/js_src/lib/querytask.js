@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema, { getModel } from './schema';
+import schema, {getModel} from './schema';
 import QueryFieldUI from './queryfield';
 import template from './templates/querybuilder.html';
 import userInfo from './userinfo';
@@ -17,10 +17,13 @@ import QuerySaveDialog from './components/querysavedialog';
 import router from './router';
 import queryText from './localization/query';
 import commonText from './localization/common';
+import * as querystring from "./querystring";
+import {className} from './components/basic';
 
 var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
-        className: "query-view content-shadow-full-width",
+        className: `query-view ${className.container} max-w-none`,
+        tagName: 'section',
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
@@ -347,9 +350,7 @@ var QueryBuilder = Backbone.View.extend({
     });
     
 async function fetchRecordSet() {
-    const recordSetId = Object.fromEntries(
-        new URLSearchParams(window.location.search
-    ).entries()).recordsetid ?? undefined;
+    const recordSetId = querystring.parse().recordsetid;
     if (typeof recordSetId === 'undefined')
         return Promise.resolve(undefined);
     const recordSet = new schema.models.RecordSet.LazyCollection({

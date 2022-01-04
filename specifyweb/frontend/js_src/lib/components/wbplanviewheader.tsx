@@ -6,6 +6,7 @@
 
 import React from 'react';
 
+import { ContainerFull } from './basic';
 import { useId } from './hooks';
 
 export function Layout(props: {
@@ -20,11 +21,8 @@ export function Layout(props: {
 }): JSX.Element {
   const id = useId('wbplanview-header');
   return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
-    <div
-      className={`wbplanview content-no-shadow ${
-        props.readonly ? 'wbplanview-readonly' : ''
-      }`}
+    <ContainerFull
+      className={`wbplanview ${props.readonly ? 'wbplanview-readonly' : ''}`}
       onClick={
         typeof props.handleClick === 'undefined'
           ? undefined
@@ -57,6 +55,6 @@ export function Layout(props: {
         {props.children}
       </div>
       {props.footer}
-    </div>
+    </ContainerFull>
   );
 }

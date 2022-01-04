@@ -63,6 +63,9 @@ export const className = {
   link: 'link',
   fancyButton: `active:bg-brand-300 bg-gray-300 gap-2 hover:bg-brand-200 inline-flex
     justify-center items-center p-2 text-black`,
+  containerFull: 'flex flex-col gap-4 h-full sm:h-full',
+  container: `bg-gray-200 flex flex-col gap-y-2 max-w-[1000px] mx-auto p-4
+    shadow-[0_3px_5px_-1px]`,
 };
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -170,4 +173,5 @@ export const FancySubmit = wrap('input', className.fancyButton, {
 export const Button = wrap('button', className.button, {
   type: 'button',
 });
+export const ContainerFull = wrap('section', className.containerFull);
 /* eslint-enable @typescript-eslint/naming-convention */

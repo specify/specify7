@@ -19,6 +19,7 @@ import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import {setTitle} from "./components/hooks";
+import {className} from './components/basic';
 
 function makeUrl(resource) {
     return {
@@ -59,6 +60,8 @@ function setCommandEnabled(editor, name, enabled) {
 const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
     id: "appresource-page",
+    tagName: 'section',
+    className: className.containerFull,
     initialize({resources, selectedId}) {
         this.selectedId = selectedId;
         this.resources = resources;

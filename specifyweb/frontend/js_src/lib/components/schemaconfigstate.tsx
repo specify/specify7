@@ -18,6 +18,7 @@ import {
   ButtonLikeLink,
   Checkbox,
   className,
+  ContainerFull,
   Label,
   LabelForCheckbox,
   Link,
@@ -251,7 +252,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       ([_id, { name }]) => name === items[itemId].picklistname
     )?.[0];
     return (
-      <section className="content">
+      <ContainerFull>
         <header className="gap-x-2 flex">
           <h2 className="font-semibold text-black">
             {commonText('schemaConfig')} (
@@ -285,8 +286,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
           </menu>
         </header>
-        <div className="xs:flex-row xs:h-full flex flex-col gap-4">
-          <section className="xs:overflow-y-auto gap-y-4 flex flex-col flex-1">
+        <div className="sm:flex-row sm:h-full flex flex-col gap-4">
+          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3>
               {commonText('tableInline')} {table.name}
             </h3>
@@ -362,10 +363,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('hideTable')}
             </LabelForCheckbox>
           </section>
-          <section className="xs:overflow-y-auto gap-y-4 flex flex-col flex-1">
+          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3 id={id('fields-label')}>{commonText('fields')}</h3>
             <select
-              className="min-h-[30vh] h-full xs:min-h-0 overflow-y-auto"
+              className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto"
               size={2}
               aria-labelledby={id('fields-label')}
               onChange={({ target }): void =>
@@ -393,7 +394,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               )}
             </select>
           </section>
-          <section className="xs:overflow-y-auto gap-y-4 flex flex-col flex-1">
+          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3>
               {commonText('field')}: {items[itemId].name}
             </h3>
@@ -576,6 +577,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   </LabelForCheckbox>
                   {values && (
                     <PickList
+                      className="flex-1 w-0"
                       label={label}
                       value={value}
                       groups={values}
@@ -597,7 +599,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </fieldset>
           </section>
         </div>
-      </section>
+      </ContainerFull>
     );
   },
   SavingState() {

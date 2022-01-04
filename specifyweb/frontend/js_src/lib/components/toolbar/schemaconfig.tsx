@@ -5,6 +5,7 @@ import { getAggregators, getFormatters } from '../../dataobjformatters';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import * as navigation from '../../navigation';
+import * as querystring from '../../querystring';
 import schema from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
@@ -84,10 +85,8 @@ export type WithFieldInfo = {
 };
 
 function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
-  const urlSearchParameters = new URLSearchParams(window.location.search);
-  const { defaultLanguage, defaultTable } = Object.fromEntries(
-    urlSearchParameters.entries()
-  );
+  const { language: defaultLanguage, table: defaultTable } =
+    querystring.parse();
 
   useTitle(commonText('schemaConfig'));
 

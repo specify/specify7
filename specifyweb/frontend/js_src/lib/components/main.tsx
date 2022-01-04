@@ -136,14 +136,14 @@ export default function Main({
           <h1 className="contents">
             <a
               href="/specify/"
-              className="intercept-navigation order-1 h-16 m-2"
+              className="intercept-navigation order-1 h-16 m-4"
             >
               <img src="/static/img/seven_logo.png" alt="" className="h-full" />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>
           </h1>
           <div
-            className={`flex flex-col gap-2 m-2 order-3 min-w-[275px]
+            className={`flex flex-col gap-2 m-4 order-3 min-w-[275px]
               2xl:w-max-[350px]`}
           >
             <div className="gap-x-2 flex items-center justify-end">
@@ -162,7 +162,7 @@ export default function Main({
         </div>
         <HeaderItems menuItems={menuItems} />
       </header>
-      <main className="flex-1" ref={mainRef} />
+      <main className="flex-1 p-4" ref={mainRef} />
     </>
   );
 }

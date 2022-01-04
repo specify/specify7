@@ -5,7 +5,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import {getTreeDef} from './domain';
 import NotFoundView from './notfoundview';
 import * as navigation from './navigation';
@@ -20,6 +20,7 @@ import {createCookie, eraseCookie, readCookie} from './cookies';
 import treeText from './localization/tree';
 import commonText from './localization/common';
 import autocomplete from './autocomplete';
+import {className} from './components/basic';
 
 var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
@@ -58,7 +59,7 @@ var TreeHeader = Backbone.View.extend({
     var TreeView = Backbone.View.extend({
         tagName: 'section',
         __name__: "TreeView",
-        className: "tree-view content-no-shadow",
+        className: `tree-view ${className.containerFull}`,
         events: {
             'change input': 'search',
             'click .tree-conform-save': 'setDefaultConformation',

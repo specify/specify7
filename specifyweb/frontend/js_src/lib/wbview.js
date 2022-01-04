@@ -23,7 +23,7 @@ import Papa from 'papaparse';
 
 import 'handsontable/dist/handsontable.full.css';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import * as app from './specifyapp';
 import userInfo from './userinfo';
 import DataSetMeta from './components/datasetmeta';
@@ -40,19 +40,20 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { capitalize, extractDefaultValues } from './wbplanviewhelper';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { getIcon } from './icons';
+import {uploadPlanToMappingsTree} from './uploadplantomappingstree';
+import {capitalize, extractDefaultValues} from './wbplanviewhelper';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon} from './icons';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import { LoadingScreen } from './components/modaldialog';
-import { format } from './dataobjformatters';
-import { dataModelPromise } from './wbplanviewmodelfetcher';
-import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
+import {LoadingScreen} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {dataModelPromise} from './wbplanviewmodelfetcher';
+import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
 import createBackboneView from './components/reactbackboneextend';
+import {className} from './components/basic';
 
 const metaKeys = [
   'isNew',
@@ -72,7 +73,7 @@ const defaultMetaValues = Object.freeze([
 const WBView = Backbone.View.extend({
   __name__: 'WbForm',
   tagName: 'section',
-  className: 'wbs-form content-no-shadow',
+  className: `wbs-form ${className.containerFull}`,
   events: {
     'click .wb-upload': 'upload',
     'click .wb-validate': 'upload',

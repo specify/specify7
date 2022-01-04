@@ -41,7 +41,7 @@ export function HeaderItems({
   return (
     <nav
       className={`xl:m-0 lg:justify-center flex flex-row flex-wrap flex-1
-        order-2 -mt-2`}
+        order-2 -mt-2 px-2`}
       aria-label="primary"
     >
       {menuItems.map(({ task, title, path, icon, view }) => (

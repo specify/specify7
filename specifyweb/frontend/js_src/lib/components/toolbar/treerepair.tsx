@@ -3,6 +3,7 @@ import React from 'react';
 import ajax from '../../ajax';
 import { getDomainResource } from '../../domain';
 import commonText from '../../localization/common';
+import * as querystring from '../../querystring';
 import { getModel } from '../../schema';
 import type SpecifyModel from '../../specifymodel';
 import type { IR } from '../../types';
@@ -110,11 +111,10 @@ function RepairTree({
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   React.useEffect(() => {
-    const urlSearchParameters = new URLSearchParams(window.location.search);
-    const parameters = Object.fromEntries(urlSearchParameters.entries());
-    if (typeof parameters.tree === 'undefined') return;
+    const { tree } = querystring.parse();
+    if (typeof tree === 'undefined') return;
     setIsLoading(true);
-    handleClick(parameters.tree).then(handleClose).catch(console.error);
+    handleClick(tree).then(handleClose).catch(console.error);
   }, []);
   return isLoading ? (
     <LoadingScreen />

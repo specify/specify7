@@ -4,8 +4,6 @@
  * @module
  */
 
-import '../../css/wbimport.css';
-
 import Papa from 'papaparse';
 import React, { Component } from 'react';
 import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
@@ -17,6 +15,7 @@ import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
+import { Button, ContainerFull } from './basic';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
@@ -302,7 +301,6 @@ class WbImport extends Component<{}, WbImportState> {
           <>
             <br />
             <DoImportButton update={update} />
-            <h3>{wbText('previewDataSet')}</h3>
           </>
         );
         preview = (
@@ -330,7 +328,7 @@ class WbImport extends Component<{}, WbImportState> {
     }
 
     return (
-      <div className="workbench-import-view">
+      <ContainerFull>
         <div>
           <h2
             style={{
@@ -339,11 +337,16 @@ class WbImport extends Component<{}, WbImportState> {
           >
             {wbText('wbImportHeader')}
           </h2>
-          <div className="wb-import-table">{rows}</div>
+          <div
+            className={`gap-2 grid grid-cols-2 items-center min-w-[275px]
+            w-2/5 wb-import-table`}
+          >
+            {rows}
+          </div>
           {ui}
         </div>
         {preview}
-      </div>
+      </ContainerFull>
     );
   }
 }
@@ -361,7 +364,7 @@ function ChooseEncoding(props: {
   ));
 
   return (
-    <label>
+    <label className="contents">
       {wbText('characterEncoding')}
       <select
         onChange={(event) => selected(event.target.value)}
@@ -436,16 +439,17 @@ function ChooseFile(props: { update: HandleAction }) {
   }
 
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   return (
     <label
-      className={`custom-file-picker ${
-        isDragging ? 'custom-file-picker-dragging' : ''
-      }`}
+      className="contents custom-file-picker"
       onDrop={handleFileDropped}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={preventPropagation}
+      onFocus={(): void => setIsFocused(true)}
+      onBlur={(): void => setIsFocused(false)}
     >
       <input
         type="file"
@@ -459,7 +463,9 @@ function ChooseFile(props: { update: HandleAction }) {
         style={{
           gridColumn: '1 / span 2',
         }}
-        className="magic-button v-center"
+        className={`align-center button h-44 flex justify-center text-center
+          ${isDragging ? 'bg-white ring ring-brand-200' : ''}
+          ${isFocused ? 'ring' : ''}`}
       >
         <span>
           {wbText('filePickerMessage')}
@@ -482,33 +488,38 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
   const { rows, header } = extractHeader(data, hasHeader);
 
   const headerCells = header.map((cell, index) => (
-    <th key={index} scope="col">
+    <th key={index} scope="col" className="p-1 border border-gray-700">
       {cell}
     </th>
   ));
   const dataRows = rows.map((row, index) => (
     <tr key={index}>
       {row.map((cell, index) => (
-        <td key={index}>{cell}</td>
+        <td key={index} className="border border-gray-400">
+          {cell}
+        </td>
       ))}
     </tr>
   ));
 
   return (
-    <div className="preview-table-wrapper">
-      <table>
-        <thead>
-          <tr className="header">{headerCells}</tr>
-        </thead>
-        <tbody>{dataRows}</tbody>
-      </table>
+    <div>
+      <h3>{wbText('previewDataSet')}</h3>
+      <div className="overflow-auto">
+        <table>
+          <thead>
+            <tr className="text-center bg-gray-300">{headerCells}</tr>
+          </thead>
+          <tbody>{dataRows}</tbody>
+        </table>
+      </div>
     </div>
   );
 }
 
 function ChooseName(props: { name: string; update: HandleAction }) {
   return (
-    <label>
+    <label className="contents">
       {wbText('chooseDataSetName')}
       <input
         type="text"
@@ -527,7 +538,7 @@ function ChooseName(props: { name: string; update: HandleAction }) {
 
 function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
   return (
-    <label>
+    <label className="contents">
       {wbText('firstRowIsHeader')}
       <span>
         <input
@@ -542,12 +553,9 @@ function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
 
 function DoImportButton(props: { update: HandleAction }) {
   return (
-    <button
-      className="magic-button"
-      onClick={() => props.update({ type: 'DoImportAction' })}
-    >
+    <Button onClick={(): void => props.update({ type: 'DoImportAction' })}>
       {wbText('importFile')}
-    </button>
+    </Button>
   );
 }
 
