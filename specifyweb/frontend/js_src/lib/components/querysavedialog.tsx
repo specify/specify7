@@ -32,7 +32,7 @@ function QuerySaveDialog({
   readonly onClose: (queryId: number) => void;
 }): JSX.Element {
   const id = useId('id');
-  const [name, setName] = React.useState<string>(query.get('name') as string);
+  const [name, setName] = React.useState<string>(query.get<string>('name'));
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {

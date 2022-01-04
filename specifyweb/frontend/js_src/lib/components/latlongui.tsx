@@ -32,8 +32,8 @@ function Coordinate({
 }): JSX.Element {
   const [coordinate, setCoordinate] = React.useState<string>(
     () =>
-      ((model.get(coordinateTextField) as string) ||
-        (model.get(coordinateField) as string)) ??
+      (model.get<string>(coordinateTextField) ||
+        model.get<string>(coordinateField)) ??
       ''
   );
 
@@ -51,10 +51,10 @@ function Coordinate({
             )?.format()
           );
     model.on(`change: ${coordinateTextField}`, () =>
-      handleChange(model.get(coordinateTextField) as string)
+      handleChange(model.get<string>(coordinateTextField))
     );
     model.on(`change: ${coordinateField}`, () =>
-      handleChange(model.get(coordinateField) as string)
+      handleChange(model.get<string>(coordinateField))
     );
 
     let destructorCalled = false;
@@ -159,7 +159,7 @@ function LatLongUi({
   readonly readOnly: boolean;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => (model.get('latlongtype') as CoordinateType) ?? 'point'
+    () => model.get<CoordinateType | null>('latlongtype') ?? 'point'
   );
 
   React.useEffect(() => {
@@ -167,7 +167,7 @@ function LatLongUi({
       destructorCalled
         ? undefined
         : setCoordinateType(
-            (model.get('latlongtype') as CoordinateType) ?? 'point'
+            model.get<CoordinateType | null>('latlongtype') ?? 'point'
           )
     );
 

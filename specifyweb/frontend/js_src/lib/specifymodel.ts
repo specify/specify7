@@ -43,7 +43,9 @@ type CollectionConstructor = new (props?: {
   >;
 }) => Collection;
 
-type Resource = new (props?: { readonly id: number }) => SpecifyResource;
+type Resource = new (
+  props?: { readonly id?: number } & IR<unknown>
+) => SpecifyResource;
 
 export type Collection = {
   readonly fetch: (filter: { readonly limit: number }) => JqueryPromise<void>;

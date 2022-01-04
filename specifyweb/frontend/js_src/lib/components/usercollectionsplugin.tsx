@@ -83,7 +83,7 @@ function UserCollectionsUi({
                 )
               }
             />
-            {collection.get('collectionname')}
+            {collection.get<string>('collectionname')}
           </label>
         ))}
       </form>

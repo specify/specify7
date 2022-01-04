@@ -30,7 +30,7 @@ function Users({
           : setUsers(
               Object.fromEntries(
                 users.models.map((user) => [
-                  user.get('name') as string,
+                  user.get<string>('name'),
                   user.viewUrl(),
                 ])
               )

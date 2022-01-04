@@ -4,8 +4,8 @@ import type { RA } from './types';
 
 export type SpecifyResource = {
   readonly id: number;
-  readonly get: (fieldName: string) => unknown;
-  readonly rget: (fieldName: string) => JqueryPromise<unknown>;
+  readonly get: <TYPE = unknown>(fieldName: string) => TYPE;
+  readonly rget: <TYPE = unknown>(fieldName: string) => JqueryPromise<TYPE>;
   readonly set: (fieldName: string, value: unknown) => void;
   readonly save: () => JqueryPromise<void>;
   readonly viewUrl: () => string;

@@ -29,15 +29,15 @@ export const fetchLocalOccurrences = async (
 
   let taxon;
   if (model.specifyModel.name === 'CollectionObject') {
-    const determination = (await model.rget('determinations')) as Collection;
+    const determination = await model.rget<Collection>('determinations');
 
-    const currentDetermination = determination.models.find(
-      (model) => model.get('isCurrent') as boolean
+    const currentDetermination = determination.models.find((model) =>
+      model.get<boolean>('isCurrent')
     );
 
     if (typeof currentDetermination === 'undefined') return [];
 
-    taxon = (await currentDetermination.rget('taxon')) as SpecifyResource;
+    taxon = await currentDetermination.rget<SpecifyResource>('taxon');
   } else taxon = model;
 
   const parsedLocalityFields = parseLocalityPinFields(true);
@@ -78,7 +78,7 @@ export const fetchLocalOccurrences = async (
           stringid: '1,9-determinations,4.taxon.taxonid',
           fieldname: 'taxonid',
           isdisplay: false,
-          startvalue: `${taxon.get('id') as number}`,
+          startvalue: `${taxon.get<number>('id')}`,
           operstart: 1,
           position: 0,
         },
@@ -151,9 +151,7 @@ export const fetchLocalOccurrences = async (
           fetchMoreData: async (): Promise<LocalityData | false> =>
             getLocalityDataFromLocalityResource(
               await new Promise<SpecifyResource>((resolve) => {
-                const locality = new (
-                  schema as any
-                ).models.Locality.LazyCollection({
+                const locality = new schema.models.Locality.LazyCollection({
                   filters: { id: localityId },
                 }) as Collection;
                 locality
@@ -164,9 +162,9 @@ export const fetchLocalOccurrences = async (
               (mappingPathParts, resource) =>
                 (typeof resource?.specifyModel?.name !== 'string' ||
                   ((resource.specifyModel.name !== 'CollectionObject' ||
-                    resource.get('id') === collectionObjectId) &&
+                    resource.get<number>('id') === collectionObjectId) &&
                     (resource.specifyModel.name !== 'CollectingEvent' ||
-                      resource.get('id') === collectingEventId))) &&
+                      resource.get<number>('id') === collectingEventId))) &&
                 defaultRecordFilterFunction(mappingPathParts, resource)
             ),
         };

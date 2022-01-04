@@ -12,7 +12,7 @@ import { getTreeDef } from './domain';
 import type { GetTreeDefinition } from './legacytypes';
 import schema from './schema';
 import type { Field, Relationship } from './specifyfield';
-import type SpecifyModel from './specifymodel';
+import type { Collection, default as SpecifyModel } from './specifymodel';
 import systemInfo from './systeminfo';
 import type { IR, R, RA } from './types';
 import { camelToHuman, capitalize } from './wbplanviewhelper';
@@ -104,18 +104,18 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
     (getTreeDef as GetTreeDefinition)(tableName).done((treeDefinition) =>
-      treeDefinition.rget('treedefitems').done((treeDefItems) =>
+      treeDefinition.rget<Collection>('treedefitems').done((treeDefItems) =>
         treeDefItems.fetch({ limit: 0 }).done(() =>
           resolve([
             tableName,
             Object.values(treeDefItems.models).map((rank) => [
-              rank.get('name') as string,
+              rank.get<string>('name'),
               {
                 isRequired: false,
                 title: capitalize(
-                  (rank.get('title') ?? rank.get('name')) as string
+                  rank.get<string>('title') ?? rank.get<string>('name')
                 ),
-                rankId: rank.get('rankId') as number,
+                rankId: rank.get<number>('rankId'),
               },
             ]),
           ])

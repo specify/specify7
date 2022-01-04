@@ -36,7 +36,7 @@ export function TreeSelectDialog({
 
   React.useEffect(() => {
     Promise.resolve(
-      defined(getDomainResource('discipline')).get('type') as string
+      defined(getDomainResource('discipline')).get<string>('type')
     )
       .then((type) => [
         ...treesForAll,

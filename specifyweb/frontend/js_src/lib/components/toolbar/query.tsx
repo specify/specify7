@@ -228,12 +228,12 @@ function QueryToolbarItem({
         ? undefined
         : setQueries(
             queryModels.models.map((query) => ({
-              id: query.get('id') as number,
-              name: query.get('name') as string,
+              id: query.get<number>('id'),
+              name: query.get<string>('name'),
               tableName: getModelById(
-                query.get('contexttableid') as number
+                query.get<number>('contexttableid')
               ).name.toLowerCase(),
-              dateCreated: query.get('timestampcreated') as string,
+              dateCreated: query.get<string>('timestampcreated'),
             }))
           )
     );
@@ -448,14 +448,15 @@ const EditQueryDialog = Backbone.View.extend({
           name: nameInput.val(),
         },
         headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           Accept: 'application/json',
         },
       })
         .then(({ data: reportJson }) => {
-          const report = new (schema as any).models.SpReport.Resource(
-            reportJson
+          const report = new schema.models.SpReport.Resource(reportJson);
+          return new Promise<SpecifyResource>((resolve) =>
+            report.rget<SpecifyResource>('appresource').then(resolve)
           );
-          return report.rget('appresource');
         })
         .then((appresource) =>
           navigation.go(`/specify/appresources/${appresource.id}/`)

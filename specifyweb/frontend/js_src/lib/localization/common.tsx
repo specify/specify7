@@ -1049,11 +1049,6 @@ const commonText = createDictionary({
     'ru-ru': 'Выйти',
     ca: 'Log out',
   },
-  changePassword: {
-    'en-us': 'Change password',
-    'ru-ru': 'Изменить пароль',
-    ca: 'Change password',
-  },
   userToolsDialogTitle: {
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',

@@ -68,7 +68,7 @@ function PartialDateUi({
 }): JSX.Element {
   const [precision, setPrecision] = React.useState<Precision>(
     () =>
-      reversePrecision[model.get(precisionField) as number] ?? defaultPrecision
+      reversePrecision[model.get<number>(precisionField)] ?? defaultPrecision
   );
   const inputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -86,7 +86,7 @@ function PartialDateUi({
     function setInput() {
       if (destructorCalled) return;
 
-      const value = model.get(dateField) as string;
+      const value = model.get<string>(dateField);
       setMoment(dayjs(value, databaseFormat, true));
     }
 

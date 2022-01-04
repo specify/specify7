@@ -133,7 +133,7 @@ function ShowKey({
   );
 }
 
-const MasterKeyView = createBackboneView(MasterKey, {});
+const MasterKeyView = createBackboneView(MasterKey);
 
 const toolBarItem: UserTool = {
   task: 'master-key',

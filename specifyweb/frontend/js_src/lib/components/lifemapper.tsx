@@ -128,7 +128,7 @@ export function SpecifyNetworkBadge({
   const [hasFailure, setHasFailure] = React.useState(false);
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
-  const guid = model.get('guid') as string;
+  const guid = model.get<string>('guid');
 
   React.useEffect(() => {
     fetchOccurrenceName({

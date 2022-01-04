@@ -1,4 +1,4 @@
-import type { JqueryPromise, SpecifyResource } from './legacytypes';
+import type { SpecifyResource } from './legacytypes';
 import { snServer } from './lifemapperconfig';
 import type { Collection } from './specifymodel';
 import type { IR, RA } from './types';
@@ -8,18 +8,17 @@ export const fetchLocalScientificName = async (
   defaultValue = ''
 ): Promise<string> =>
   new Promise((resolve) => {
-    (model.rget('determinations') as JqueryPromise<Collection>).then(
-      ({ models: determinations }) =>
+    model
+      .rget<Collection>('determinations')
+      .then(({ models: determinations }) =>
         determinations.length === 0
           ? resolve(defaultValue)
-          : (
-              determinations[0].rget(
-                'preferredTaxon.fullname'
-              ) as JqueryPromise<string>
-            ).then((scientificName) =>
-              resolve(scientificName === null ? defaultValue : scientificName)
-            )
-    );
+          : determinations[0]
+              .rget<string>('preferredTaxon.fullname')
+              .then((scientificName) =>
+                resolve(scientificName === null ? defaultValue : scientificName)
+              )
+      );
   });
 
 export const formatLifemapperViewPageRequest = (

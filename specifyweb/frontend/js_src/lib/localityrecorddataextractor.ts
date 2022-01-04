@@ -56,7 +56,7 @@ type FilterFunction = (
     currentPart: MappingPath,
     nextParts: MappingPath
   ],
-  resource: any
+  resource: SpecifyResource
 ) => boolean;
 
 export const defaultRecordFilterFunction: FilterFunction = (
@@ -65,7 +65,7 @@ export const defaultRecordFilterFunction: FilterFunction = (
 ) =>
   typeof resource?.specifyModel?.name !== 'string' ||
   resource.specifyModel.name !== 'Determination' ||
-  resource.get('isCurrent') === true;
+  resource.get<boolean>('isCurrent');
 
 async function recursiveResourceResolve(
   resource: any,
@@ -111,7 +111,7 @@ async function recursiveResourceResolve(
     return Promise.all<RA<string>>(
       Object.values(resource.models)
         .slice(0, MAX_TO_MANY_INDEX)
-        .map(async (model: any, index) =>
+        .map(async (model, index) =>
           recursiveResourceResolve(model, nextPart, filterFunction, [
             ...pastParts,
             formatReferenceItem(index + 1),
