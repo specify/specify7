@@ -330,7 +330,7 @@ class WbImport extends Component<{}, WbImportState> {
     }
 
     return (
-      <>
+      <div className="workbench-import-view">
         <div>
           <h2
             style={{
@@ -343,7 +343,7 @@ class WbImport extends Component<{}, WbImportState> {
           {ui}
         </div>
         {preview}
-      </>
+      </div>
     );
   }
 }
@@ -566,12 +566,7 @@ function assertExhaustive(x: never): never {
   throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
 
-export default createBackboneView<IR<never>>(
-  function WbImportView() {
-    useTitle(wbText('importDataSet'));
-    return <WbImport />;
-  },
-  {
-    className: 'workbench-import-view',
-  }
-);
+export default createBackboneView(function WbImportView() {
+  useTitle(wbText('importDataSet'));
+  return <WbImport />;
+});

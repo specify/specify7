@@ -88,7 +88,6 @@ export function AddLanguage({
   const [country, setCountry] = React.useState<string>('');
   return (
     <ModalDialog
-      className="schema-config"
       properties={{
         title: commonText('addLanguageDialogTitle'),
         close: handleClose,

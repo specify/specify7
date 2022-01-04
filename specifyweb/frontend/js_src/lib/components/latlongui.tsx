@@ -178,71 +178,72 @@ function LatLongUi({
   }, []);
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">
-            <label>
-              <span className="sr-only">{localityText('coordinateType')}</span>
-              <select
-                name="type"
-                title={localityText('coordinateType')}
-                value={coordinateType}
-                disabled={readOnly}
-                onChange={
-                  readOnly
-                    ? undefined
-                    : ({ target }): void => {
-                        setCoordinateType(target.value as CoordinateType);
-                        model.set('latlongtype', target.value);
-                      }
-                }
-              >
-                <option value="point">{localityText('point')}</option>
-                <option value="line">{localityText('line')}</option>
-                <option value="rectangle">{localityText('rectangle')}</option>
-              </select>
-            </label>
-          </th>
-          <th scope="col">{localityText('latitude')}</th>
-          <th scope="col">{localityText('longitude')}</th>
-          <th scope="col">{localityText('parsed')}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <CoordinatePoint
-          model={model}
-          label={
-            coordinateType === 'point'
-              ? localityText('coordinates')
-              : coordinateType === 'line'
-              ? commonText('start')
-              : localityText('northWestCorner')
-          }
-          index={1}
-          readOnly={readOnly}
-        />
-        {coordinateType === 'point' ? undefined : (
+    <fieldset className="specifyplugin-latlonui">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">
+              <label>
+                <span className="sr-only">
+                  {localityText('coordinateType')}
+                </span>
+                <select
+                  name="type"
+                  title={localityText('coordinateType')}
+                  value={coordinateType}
+                  disabled={readOnly}
+                  onChange={
+                    readOnly
+                      ? undefined
+                      : ({ target }): void => {
+                          setCoordinateType(target.value as CoordinateType);
+                          model.set('latlongtype', target.value);
+                        }
+                  }
+                >
+                  <option value="point">{localityText('point')}</option>
+                  <option value="line">{localityText('line')}</option>
+                  <option value="rectangle">{localityText('rectangle')}</option>
+                </select>
+              </label>
+            </th>
+            <th scope="col">{localityText('latitude')}</th>
+            <th scope="col">{localityText('longitude')}</th>
+            <th scope="col">{localityText('parsed')}</th>
+          </tr>
+        </thead>
+        <tbody>
           <CoordinatePoint
             model={model}
             label={
-              coordinateType === 'line'
-                ? commonText('end')
-                : localityText('southEastCorner')
+              coordinateType === 'point'
+                ? localityText('coordinates')
+                : coordinateType === 'line'
+                ? commonText('start')
+                : localityText('northWestCorner')
             }
-            index={2}
+            index={1}
             readOnly={readOnly}
           />
-        )}
-      </tbody>
-    </table>
+          {coordinateType === 'point' ? undefined : (
+            <CoordinatePoint
+              model={model}
+              label={
+                coordinateType === 'line'
+                  ? commonText('end')
+                  : localityText('southEastCorner')
+              }
+              index={2}
+              readOnly={readOnly}
+            />
+          )}
+        </tbody>
+      </table>
+    </fieldset>
   );
 }
 
-const View = createBackboneView(LatLongUi, {
-  tagName: 'fieldset',
-  className: 'specifyplugin-latlonui',
-});
+const View = createBackboneView(LatLongUi);
 
 export default UIPlugin.extend(
   {

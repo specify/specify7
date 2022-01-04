@@ -131,15 +131,15 @@ function WelcomeView(): JSX.Element {
   }, []);
 
   return (
-    <>
+    <div
+      className="flex flex-col gap-y-4 h-full justify-center my-0 max-w-[950px]
+    mx-auto"
+    >
       <div ref={refTaxonTilesContainer} />
       {DO_TAXON_TILES ? undefined : <WelcomeScreenContent />}
       <AboutSpecify />
-    </>
+    </div>
   );
 }
 
-export default createBackboneView(WelcomeView, {
-  className: `flex flex-col gap-y-4 h-full justify-center my-0 max-w-[950px]
-    mx-auto`,
-});
+export default createBackboneView(WelcomeView);

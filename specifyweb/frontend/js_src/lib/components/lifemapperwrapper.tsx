@@ -4,10 +4,9 @@ import { getBoolPref } from '../remoteprefs';
 import ResourceView from '../resourceview';
 import { SpecifyNetworkBadge } from './lifemapper';
 import createBackboneView from './reactbackboneextend';
+import { silenceErrors } from './errorboundary';
 
-const View = createBackboneView(SpecifyNetworkBadge, {
-  silentErrors: true,
-});
+const View = createBackboneView(silenceErrors(SpecifyNetworkBadge));
 
 export default function register(): void {
   ResourceView.on('rendered', (resourceView: any) => {

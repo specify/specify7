@@ -23,16 +23,8 @@ import type {
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
 
-type ConstructorProps = {
+type Props = {
   readonly onClose: () => void;
-};
-
-type Props = ConstructorProps & {
-  readonly defaultLanguage: string | undefined;
-  readonly defaultTable: string | undefined;
-  readonly onSave: (language: string) => void;
-  readonly removeUnloadProtect: () => void;
-  readonly setUnloadProtect: () => void;
 };
 
 export type CommonTableFields = {
@@ -91,14 +83,12 @@ export type WithFieldInfo = {
   };
 };
 
-function SchemaConfigWrapper({
-  onClose: handleClose,
-  onSave: handleSave,
-  removeUnloadProtect,
-  setUnloadProtect,
-  defaultLanguage,
-  defaultTable,
-}: Props): JSX.Element {
+function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
+  const urlSearchParameters = new URLSearchParams(window.location.search);
+  const { defaultLanguage, defaultTable } = Object.fromEntries(
+    urlSearchParameters.entries()
+  );
+
   useTitle(commonText('schemaConfig'));
 
   const [languages, setLanguages] = React.useState<IR<string> | undefined>(
@@ -219,9 +209,13 @@ function SchemaConfigWrapper({
       dataObjFormatters={formatAggregators(getFormatters() as RA<Element>)}
       dataObjAggregators={formatAggregators(getAggregators() as RA<Element>)}
       onClose={handleClose}
-      onSave={handleSave}
-      removeUnloadProtect={removeUnloadProtect}
-      setUnloadProtect={setUnloadProtect}
+      onSave={(language): void => {
+        removeUnloadProtect(self);
+        // Reload the page after schema changes
+        window.location.href = `/specify/task/schema-config/?language=${language}`;
+      }}
+      removeUnloadProtect={(): void => removeUnloadProtect(self)}
+      setUnloadProtect={(): void => setUnloadProtect(self)}
     />
   );
 }
@@ -232,26 +226,7 @@ const setUnloadProtect = (self: unknown): void =>
 const removeUnloadProtect = (self: unknown): void =>
   navigation.removeUnloadProtect(self);
 
-const View = createBackboneView<Props, ConstructorProps>(SchemaConfigWrapper, {
-  tagName: 'section',
-  className: 'schema-config-container schema-config content',
-  getComponentProps: (self) => {
-    const urlSearchParameters = new URLSearchParams(window.location.search);
-    const parameters = Object.fromEntries(urlSearchParameters.entries());
-    return {
-      onClose: self.options.onClose,
-      onSave: (language): void => {
-        removeUnloadProtect(self);
-        // Reload the page after schema changes
-        window.location.href = `/specify/task/schema-config/?language=${language}`;
-      },
-      removeUnloadProtect: (): void => removeUnloadProtect(self),
-      setUnloadProtect: (): void => setUnloadProtect(self),
-      defaultLanguage: parameters.language,
-      defaultTable: parameters.table,
-    };
-  },
-});
+const View = createBackboneView(SchemaConfigWrapper);
 
 const userTool: UserTool = {
   task: 'schema-config',

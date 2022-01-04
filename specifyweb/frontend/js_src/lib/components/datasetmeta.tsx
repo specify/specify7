@@ -185,7 +185,7 @@ function DataSetName({
   useTitle(name);
 
   return (
-    <>
+    <div>
       {' '}
       <h2 className="wb-name">
         {`${wbText('dataSet')} ${name}`}
@@ -217,7 +217,7 @@ function DataSetName({
           }}
         />
       )}
-    </>
+    </div>
   );
 }
 

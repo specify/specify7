@@ -42,7 +42,7 @@ function WbUploadedView({
   readonly isUploaded: boolean;
 }): JSX.Element {
   return (
-    <>
+    <div className="wb-uploaded-view">
       <h2>
         {isUploaded
           ? wbText('uploadResults')
@@ -65,10 +65,8 @@ function WbUploadedView({
       <button type="button" className="magic-button" onClick={handleClose}>
         {commonText('close')}
       </button>
-    </>
+    </div>
   );
 }
 
-export default createBackboneView(WbUploadedView, {
-  className: 'wb-uploaded-view',
-});
+export default createBackboneView(WbUploadedView);

@@ -251,7 +251,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       ([_id, { name }]) => name === items[itemId].picklistname
     )?.[0];
     return (
-      <>
+      <section className="content">
         <header className="gap-x-2 flex">
           <h2 className="font-semibold text-black">
             {commonText('schemaConfig')} (
@@ -597,7 +597,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </fieldset>
           </section>
         </div>
-      </>
+      </section>
     );
   },
   SavingState() {

@@ -12,10 +12,6 @@
   row-gap: var(--size);
 }
 
-.wbplanview-event-listener {
-  display: contents;
-}
-
 /* HEADER */
 .wbplanview .wbplanview-header {
   display: flex;

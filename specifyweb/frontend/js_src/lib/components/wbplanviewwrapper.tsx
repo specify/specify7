@@ -64,7 +64,4 @@ function WbPlanViewWrapper({
   );
 }
 
-/** Backbone View wrapper for the entrypoint react component */
-export default createBackboneView(WbPlanViewWrapper, {
-  className: 'wbplanview content-no-shadow',
-});
+export default createBackboneView(WbPlanViewWrapper);

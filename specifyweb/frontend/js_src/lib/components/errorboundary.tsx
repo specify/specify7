@@ -11,6 +11,7 @@ import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { IR } from '../types';
 
 type ErrorBoundaryState =
   | {
@@ -95,3 +96,14 @@ export default class ErrorBoundary extends React.Component<
     );
   }
 }
+
+export const silenceErrors = <PROPS extends IR<unknown>>(
+  Component: (props: PROPS) => JSX.Element | null
+): typeof Component =>
+  function SilenceErrors(props: PROPS): JSX.Element {
+    return (
+      <ErrorBoundary silentErrors={true}>
+        <Component {...props} />
+      </ErrorBoundary>
+    );
+  };

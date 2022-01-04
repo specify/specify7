@@ -13,40 +13,17 @@ import Backbone from '../backbone';
 import type { IR } from '../types';
 import ErrorBoundary from './errorboundary';
 
-type ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS> = {
-  readonly el: Readonly<HTMLElement>;
-  readonly remove: () => void;
-  readonly options: CONSTRUCTOR_PROPS;
-};
-
-const createBackboneView = <
-  COMPONENT_PROPS extends IR<unknown>,
-  CONSTRUCTOR_PROPS extends IR<unknown> = COMPONENT_PROPS
->(
-  Component: (props: COMPONENT_PROPS) => JSX.Element | null,
-  {
-    className,
-    tagName = 'div',
-    silentErrors = false,
-    getComponentProps,
-  }: {
-    readonly className?: string;
-    readonly tagName?: string;
-    readonly silentErrors?: boolean;
-    readonly getComponentProps?: (
-      self: ReactBackboneExtendBaseProps<CONSTRUCTOR_PROPS>
-    ) => COMPONENT_PROPS;
-  } = {}
-): new (props: CONSTRUCTOR_PROPS & { readonly el?: HTMLElement }) => View =>
+const createBackboneView = <PROPS extends IR<unknown>>(
+  Component: (props: PROPS) => JSX.Element | null
+): new (props: PROPS & { readonly el?: HTMLElement }) => View =>
   Backbone.View.extend({
     __name__: Component.name,
-    className,
-    tagName,
     render() {
+      this.el.classList.add('contents');
       ReactDOM.render(
         <React.StrictMode>
-          <ErrorBoundary silentErrors={silentErrors}>
-            <Component {...(getComponentProps?.(this) ?? this.options)} />
+          <ErrorBoundary>
+            <Component {...this.options} />
           </ErrorBoundary>
         </React.StrictMode>,
         this.el

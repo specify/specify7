@@ -169,7 +169,7 @@ function PartialDateUi({
   }
 
   return (
-    <>
+    <div className="partialdateui">
       {!readOnly && (
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>
@@ -282,11 +282,11 @@ function PartialDateUi({
           <span className="ui-icon ui-icon-calendar">{formsText('today')}</span>
         </button>
       ) : undefined}
-    </>
+    </div>
   );
 }
 
-const View = createBackboneView(PartialDateUi, { className: 'partialdateui' });
+const View = createBackboneView(PartialDateUi);
 
 export default UIPlugin.extend(
   {
@@ -330,6 +330,7 @@ export default UIPlugin.extend(
         readOnly: Boolean(this.$el.prop('disabled')),
         inputId: this.id,
       }).render();
+      this.view.el.classList.remove('contents');
 
       this.$el.replaceWith(this.view.el);
       this.setElement(this.view.el);
