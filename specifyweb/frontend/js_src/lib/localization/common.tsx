@@ -199,11 +199,6 @@ const commonText = createDictionary({
     'ru-ru': 'Н/Д',
     ca: 'N/A',
   },
-  notFound: {
-    'en-us': 'Not found',
-    'ru-ru': 'Не найден',
-    ca: 'Not found',
-  },
   new: {
     'en-us': 'New',
     'ru-ru': 'Новый',
