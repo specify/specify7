@@ -45,18 +45,38 @@ class SmartWebpackManifestPlugin {
         getCompilerHooks(compiler).afterEmit.tap(
             'SmartWebpackManifestPlugin',
             (manifest)=>
-                /*
-                 * Create manifest.py only after the build process
-                 * Otherwise, it gets deleted because of output.clean=true
-                 */
-                setTimeout(()=>writeIfChanged(
+                writeIfChanged(
                     compiler,
                     'manifest.py',
                     `manifest = ${
                         JSON.stringify(manifest, null, 2)
                     }\n`
-                ),0)
+                )
         );
+}
+
+/**
+ * Clean-up build artifacts.
+ * Especially useful in production since each rebuild produces files with
+ * different file names.
+ * Unlike Webpack's output.clean=true, this does not delete manifest.py
+ */
+const excludes = new Set(['__init__.py','manifest.py']);
+class CleanupPlugin {
+    apply = (compiler) =>
+      fs.readdir(compiler.options.output.path, (error,files)=>{
+          if(error) throw error;
+          files
+            .filter(fileName=>!excludes.has(fileName))
+            .map(fileName=>
+                fs.unlinkSync(
+                    path.join(
+                        compiler.options.output.path,
+                        fileName
+                    )
+                )
+            );
+      });
 }
 
 
@@ -131,7 +151,13 @@ module.exports = (_env, argv)=>({
              */
             fileName: '../manifest.json',
         }),
-        new EmitInitPyPlugin()
+        new EmitInitPyPlugin(),
+        // Don't split every async import into a separate bundle
+        new webpack.optimize.LimitChunkCountPlugin({
+            maxChunks: 10,
+        }),
+        // Clean up build artifacts when in production
+        ...(argv.mode === 'development' ? [] : [new CleanupPlugin(),]),
     ],
     // User recommended source map types appropriate for each mode
     devtool: argv.mode === 'development'
@@ -149,7 +175,6 @@ module.exports = (_env, argv)=>({
         filename: argv.mode === 'development'
             ? "[name].bundle.js"
             : "[name].[contenthash].bundle.js",
-        clean: true,
         environment: {
             arrowFunction: true,
             const: true,
