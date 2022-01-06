@@ -35,10 +35,10 @@ var TreeHeader = Backbone.View.extend({
         },
         render: function() {
             var headings = this.treeDefItems.map(
-                (tdi, i) => $('<th>', {scope: 'col'}).append(
+                (tdi, i) => $('<th class="pt-4 border border-transparent whitespace-nowrap bg-gradient-to-r from-[hsl(26deg_92%_62%_/_0)] via-[hsl(26deg_92%_62%_/_10%)] to-[hsl(26deg_92%_62%_/_0)]">', {scope: 'col'}).append(
                     $('<button>', {class:'link'})
                     .append($('<span></span>')
-                        .addClass(this.collapsedRanks[i] ? 'tree-header-collapsed' : '')
+                        .addClass(this.collapsedRanks[i] ? 'max-h-32 truncate' : '')
                         .text(tdi.get('title') || tdi.get('name'))
                     )
                 )[0]
@@ -98,19 +98,19 @@ var TreeHeader = Backbone.View.extend({
                 selector: ".tree-node .expander",
                 build: contextMenuBuilder(this)
             });
-            const controls = $('<header class="tree-controls"></header>');
+            const controls = $('<header class="flex gap-x-2 iitems-center"></header>');
             controls.appendTo(this.el);
             $('<h2>').text(commonText('trees')).appendTo(controls);
             const searchBox = this.makeSearchBox();
             controls.append(searchBox);
             this.configureAutocomplete(searchBox);
             controls.append(this.makeBtns());
-            $(`<div class="tree-table"></div>`).append(
-                $('<table>')
+            $(`<div class="flex-1 overflow-y-auto"></div>`).append(
+                $('<table class="[border-spacing:_0] bg-gray-200 border-separate px-4 shadow-[0_3px_5px_-1px] shadow-gray-500 w-full">')
                     .prop('aria-live','polite')
                     .append(
                         this.header.render().el,
-                        $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
+                        $('<tfoot>').append(_.map(this.ranks, function() { return $('<th class="h-8">')[0]; })),
                         `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
                     )
             ).appendTo(this.el);
@@ -229,17 +229,17 @@ var TreeHeader = Backbone.View.extend({
             return $(`
                 <button
                     type="button"
-                    class="tree-conform-save"
+                    class="button tree-conform-save"
                     title="${treeText('rememberButtonDescription')}"
                 >${treeText('remember')}</button>
                 <button
                     type="button"
-                    class="tree-conform-restore"
+                    class="button tree-conform-restore"
                     title="${treeText('restoreButtonDescription')}"
                 >${treeText('restore')}</button>
                 <button
                     type="button"
-                    class="tree-conform-forget"
+                    class="button tree-conform-forget"
                     title="${treeText('forgetButtonDescription')}"
                 >${treeText('forget')}</button>`);
         },

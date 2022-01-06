@@ -59,17 +59,17 @@ var TreeNodeView = Backbone.View.extend({
             var cells = _.map(this.ranks, function(rank) {
                 if (parent && rank == parent.rankId) foundParentRank = true;
                 if (rank == this.rankId) foundThisRank = true;
-                var td = $('<td>');
+                var td = $('<td class="border border-transparent whitespace-nowrap bg-gradient-to-r from-[hsl(26deg_92%_62%_/_0)] via-[hsl(26deg_92%_62%_/_10%)] to-[hsl(26deg_92%_62%_/_0)]">');
                 var ancestor = _.find(this.path, function(node) { return node.rankId == rank; });
                 var ancestorPlus1 = this.path[1 + _.indexOf(this.path, ancestor)];
                 if (ancestor && !(ancestorPlus1 && ancestorPlus1.isLastChild())) {
-                    td.addClass('tree-vertical-edge');
+                    td.addClass('border-l-gray-500');
                 }
                 if (rank == this.rankId) {
                     td.addClass('tree-node-cell').append('<button>');
                 }
                 if (foundParentRank && !foundThisRank) {
-                    td.addClass('tree-horizontal-edge');
+                    td.addClass('border-b-gray-500');
                 }
                 return td[0];
             }, this);
@@ -78,14 +78,14 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.tree-node-cell button')
                 .attr('role','none')
                 .attr('aria-pressed',false)
-                .attr('class','link')
+                .attr('class','link -mb-[12px] -ml-[5px] flex pt-2')
                 .append(`
                     <span class="ui-icon expander"></span>
-                    <span class="expander tree-node-name"></span>
+                    <span class="expander tree-node-name focus:bg-lime-300"></span>
                     <span class="stats"></span>
                 `);
             this.$('.tree-node-name').text(this.name)
-                .addClass(this.acceptedId != null ? 'tree-synonym-node' : '')
+                .addClass(this.acceptedId != null ? 'text-red-500' : '')
                 .attr('title', this.acceptedId != null ? `${treeText('acceptedName')} ${this.acceptedName}` : '');
 
             this.setupExpander();

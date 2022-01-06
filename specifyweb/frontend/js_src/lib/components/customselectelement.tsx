@@ -846,11 +846,3 @@ export function SuggestionBox({
     />
   );
 }
-
-export const gear = (
-  <img
-    src="/static/img/gear.svg"
-    className="h-3"
-    alt={wbText('mappingOptions')}
-  />
-);

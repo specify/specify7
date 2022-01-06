@@ -14,7 +14,7 @@
   "scripts": {
     "buildTests": "tsc --build tsconfig.tests.json",
     "runLocalizationTests": "node testBuild/tests/testlocalization.js",
-    "runUnitTests": "qunit testBuild/tests/testmain.js",
+    "runUnitTests": "NODE_ENV=test qunit testBuild/tests/testmain.js",
     "test": "npm run buildTests && npm run runUnitTests && npm run runLocalizationTests"
   },
   "dependencies": {

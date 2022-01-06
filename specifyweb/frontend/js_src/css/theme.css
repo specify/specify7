@@ -55,9 +55,12 @@
   margin-top: -0.1rem;
 }
 
+/*
+// TODO: Find where this is used (tree viewer and other places)
 .link[aria-pressed='true'] .ui-icon {
   background-color: var(--b1);
 }
+*/
 
 /* TODO: make skip link focusable */
 /*

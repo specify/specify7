@@ -6,7 +6,7 @@ import Q from 'q';
 
 import ResourceView from './resourceview';
 import populateForm from './populateform';
-import { getModel } from './schema';
+import {getModel} from './schema';
 import userInfo from './userinfo';
 import treeText from './localization/tree';
 import commonText from './localization/common';
@@ -165,7 +165,7 @@ class Action {
 
 const TreeActionHint = Backbone.View.extend({
     __name__: 'TreeActionHint',
-    className: 'tree-action-hint',
+    className: 'bottom-7 fixed text-center w-full',
     events: {
         'click button': 'cancel'
     },
@@ -174,9 +174,9 @@ const TreeActionHint = Backbone.View.extend({
     },
     render() {
         this.$el.append(`
-<div class="ui-dialog-titlebar ui-widget-header ui-corner-all">
+<div class="ui-dialog-titlebar ui-widget-header ui-corner-all inline-block p-1 shadow-[0_3px_5px_-1px] shadow-gray-500">
     <span class="ui-dialog-title">${this.action.hintMessage()}</span>
-    <button>${commonText('cancel')}</button>
+    <button class="ml-2">${commonText('cancel')}</button>
 </div>
 `).appendTo('body');
 

@@ -10,7 +10,6 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
-import { gear } from './components/customselectelement';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -49,6 +48,7 @@ import {
   isTooManyInsideOfTooMany,
   tableIsTree,
 } from './wbplanviewmodelhelper';
+import React from 'react';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {
   readonly finished: boolean;
@@ -838,3 +838,9 @@ export function getMappingLineData({
     },
   });
 }
+
+const gear = React.createElement('img', {
+  src: '/static/img/gear.svg',
+  className: 'h-3',
+  alt: wbText('mappingOptions'),
+});

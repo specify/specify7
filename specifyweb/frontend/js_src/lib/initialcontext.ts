@@ -4,6 +4,7 @@ import type { RA } from './types';
 export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
   // eslint-disable-next-line no-console
   console.log('initial context:', path);
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   return ajax<T>(path, { headers: { Accept: mimeType } }).then(
     ({ data }) => data
   );

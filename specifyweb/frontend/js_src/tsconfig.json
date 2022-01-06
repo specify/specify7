@@ -1,6 +1,6 @@
 {
   /* File Inclusion */
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.html"],
   "exclude": ["node_modules", "testBuild"],
   "compilerOptions": {
     /* Basic Options */

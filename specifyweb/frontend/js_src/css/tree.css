@@ -1,100 +1,6 @@
 /* tree.css */
 
-.tree-view {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--size);
-    height: 100%;
-}
-
-.tree-controls {
-    display: flex;
-    align-items: center;
-    column-gap: var(--half-size);
-}
-
-.tree-view h2 {
-    margin: 0;
-}
-
-.tree-view .tree-search {
-    width: 180px;
-    background: #f1f2f2;
-    border: 1px solid #aaa;
-}
-
-.tree-table {
-    flex: 1;
-    overflow-y: scroll;
-}
-
-.tree-view table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0px;
-    padding: 0 20px;
-    background: #f1f2f2;
-    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
-    border: 1px solid #ddd;
-}
-
-.tree-view thead th {
-    padding-top: 15px;
-    text-align: center;
-    font-size: 13px;
-    cursor: pointer;
-    vertical-align: top;
-}
-
-.tree-view thead .tree-header-collapsed {
-    writing-mode: vertical-rl;
-    width: 1.2em;
-    max-height: 8em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.tree-view tfoot th {
-    height: 20px;
-}
-
-.tree-view th, .tree-view td {
-    border: 1px none;
-    background: linear-gradient(
-                        to right,
-                        rgba(247, 146, 68, 0) 10px,
-                        rgba(247, 146, 68, 0.1) 90%,
-                        rgba(247, 146, 68, 0) 100%
-                    );
-    white-space: nowrap;
-}
-
-.tree-view td.tree-vertical-edge {
-    border-left: 1px solid #555;
-}
-
-.tree-view td.tree-horizontal-edge {
-    border-bottom: 1px solid #555;
-}
-
-.tree-node .expander {
-    display: inline-block;
-    vertical-align: bottom;
-}
-
-.tree-node-cell button {
-    padding-top: 10px;
-    margin: 0 0 -12px -5px;
-    display: flex;
-}
-
-.tree-node .tree-synonym-node {
-    color: #f00;
-}
-
-.tree-node-cell button .ui-icon {
-    background-color: unset !important;
-}
+/* TODO: replace the icons library */
 
 .tree-node-cell button.open .ui-icon {
     /* .ui-icon-triangle-1-e */
@@ -115,11 +21,6 @@
     /* .ui-icon-radio-off */
     background-position: -112px -144px;
 }
-
-.tree-node-name:focus {
-    background: #cfc;
-}
-
 
 .context-menu-item:before {
     content: "";
@@ -166,21 +67,4 @@
 
 .context-menu-item.icon-cancel:before {
     background-position: 0 -128px;
-}
-
-.tree-action-hint {
-    position: fixed;
-    bottom: 30px;
-    text-align: center;
-    width: 100%;
-}
-
-.tree-action-hint div {
-    display: inline-block;
-    padding: 8px 8px 8px 16px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.8), 5px 5px 5px rgba(0,0,0,0.42);
-}
-
-.tree-action-hint button {
-    margin-left: 10px;
 }
