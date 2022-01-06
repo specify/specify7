@@ -8,7 +8,6 @@
 import $ from 'jquery';
 import L from 'leaflet';
 
-import '../css/leaflet.css';
 import 'leaflet/dist/leaflet.css';
 // Marker Clustering
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -16,6 +15,8 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
+
+import localityText from './localization/locality';
 
 /* This code is needed to properly load the images in the Leaflet's CSS */
 // @ts-expect-error
@@ -30,25 +31,33 @@ L.Icon.Default.mergeOptions({
 // @ts-expect-error
 L.Control.FullScreen = L.Control.extend({
   onAdd(map: Readonly<L.Map>) {
-    const img = L.DomUtil.create('img') as HTMLImageElement;
-    img.classList.add('leaflet-full-screen-toggle');
-    img.src = '/static/img/full_screen.svg';
+    const button = L.DomUtil.create('button') as HTMLImageElement;
+    button.title = localityText('toggleFullScreen');
+    button.classList.add('button', 'bg-black', 'p-2', '!cursor-pointer');
+    button.innerHTML = `<img class="w-6" src="/static/img/full_screen.svg" alt="${localityText(
+      'toggleFullScreen'
+    )}">`;
 
-    L.DomEvent.on(img, 'click', (event) => {
+    let isFullScreen = false;
+    L.DomEvent.on(button, 'click', (event) => {
       L.DomEvent.stopPropagation(event);
       L.DomEvent.preventDefault(event);
       toggleFullScreen(map);
+      isFullScreen = !isFullScreen;
+      button.parentElement
+        ?.getElementsByClassName('leaflet-print-map')[0]
+        ?.classList[isFullScreen ? 'remove' : 'add']('hidden');
     });
 
     // @ts-expect-error
-    this.img = img;
+    this.button = button;
 
-    return img;
+    return button;
   },
 
   onRemove() {
     // @ts-expect-error Somebody did a really poor job of typing Leaflet
-    L.DomEvent.off(this.img);
+    L.DomEvent.off(this.button);
   },
 });
 
@@ -56,8 +65,17 @@ L.Control.FullScreen = L.Control.extend({
 // @ts-expect-error
 L.Control.PrintMap = L.Control.extend({
   onAdd() {
-    const button = L.DomUtil.create('span') as HTMLSpanElement;
-    button.classList.add('leaflet-print-map');
+    const button = L.DomUtil.create('button') as HTMLSpanElement;
+    button.classList.add(
+      'button',
+      'leaflet-print-map',
+      // Conflicts with jQuery's styles
+      '!text-2xl',
+      'px-2',
+      'bg-black',
+      // Hidden by default, until map enters the full-screen mode
+      'hidden'
+    );
     button.textContent = '🖨️';
 
     L.DomEvent.on(button, 'click', (event) => {
@@ -101,20 +119,5 @@ function toggleFullScreen(
   if (newState) container.classList.add('leaflet-map-full-screen');
   else container.classList.remove('leaflet-map-full-screen');
 }
-
-// @ts-expect-error
-L.Control.Details = L.Control.extend({
-  onAdd: () => {
-    const details = L.DomUtil.create('details');
-    details.classList.add('leaflet-details-container');
-    details.setAttribute('open', 'open');
-    details.innerHTML = `
-      <summary style="font-size:1rem"></summary>
-      <span></span>
-    `;
-
-    return details;
-  },
-});
 
 export { default } from 'leaflet';

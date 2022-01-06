@@ -17,7 +17,7 @@ export default UIPlugin.extend(
       click: 'click',
     },
     render() {
-      this.el.textContent = localityText('showMap');
+      this.el.value = localityText('showMap');
       this.geoMapDialog = undefined;
       return this;
     },

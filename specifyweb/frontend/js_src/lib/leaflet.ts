@@ -117,6 +117,11 @@ export async function showLeafletMap({
   );
   controlLayers.addTo(map);
 
+  // Hide controls when print map
+  leafletMapContainer
+    .getElementsByClassName('leaflet-control-container')[0]
+    ?.classList.add('print:hidden');
+
   addMarkersToMap(
     map,
     controlLayers,
@@ -197,23 +202,6 @@ function addFullScreenButton(map: L.Map): void {
 function addPrintMapButton(map: L.Map): void {
   // @ts-expect-error
   new L.Control.PrintMap({ position: 'topleft' }).addTo(map);
-}
-
-function addDetailsButton(
-  container: HTMLDivElement,
-  map: L.Map,
-  [header, details]: [string, string]
-): Element {
-  // @ts-expect-error
-  L.control.details = (options) => new L.Control.Details(options);
-  // @ts-expect-error
-  L.control.details({ position: 'topleft' }).addTo(map);
-  const detailsContainer = container.getElementsByClassName(
-    'leaflet-details-container'
-  )[0];
-  detailsContainer.getElementsByTagName('summary')[0].textContent = header;
-  detailsContainer.getElementsByTagName('span')[0].innerHTML = details;
-  return detailsContainer;
 }
 
 const markerLayerName = [
@@ -501,83 +489,3 @@ export type LayerConfig = {
     readonly options: IR<unknown>;
   };
 };
-
-export async function showCOMap(
-  mapContainer: Readonly<HTMLDivElement>,
-  listOfLayersRaw: RA<LayerConfig>,
-  details: [string, string] | undefined = undefined
-): Promise<[L.Map, L.Control.Layers, HTMLDivElement | undefined]> {
-  const tileLayers = await leafletTileServersPromise;
-
-  const listOfLayers: {
-    readonly transparent: boolean;
-    readonly layerLabel: string;
-    readonly tileLayer: L.TileLayer.WMS | L.TileLayer;
-  }[] = [
-    ...Object.entries(tileLayers.baseMaps).map(([layerLabel, tileLayer]) => ({
-      transparent: false,
-      layerLabel,
-      tileLayer,
-    })),
-    ...listOfLayersRaw.map(
-      ({ transparent, layerLabel, tileLayer: { mapUrl, options } }) => ({
-        transparent,
-        layerLabel,
-        tileLayer: L.tileLayer.wms(mapUrl, options),
-      })
-    ),
-    ...Object.entries(tileLayers.overlays).map(([layerLabel, tileLayer]) => ({
-      transparent: true,
-      layerLabel,
-      tileLayer,
-    })),
-  ];
-
-  const formatLayersDict = (
-    listOfLayers: {
-      transparent: boolean;
-      layerLabel: string;
-      tileLayer: L.TileLayer.WMS | L.TileLayer;
-    }[]
-  ) =>
-    Object.fromEntries(
-      listOfLayers.map(({ layerLabel, tileLayer }) => [layerLabel, tileLayer])
-    );
-
-  const overlayLayers = formatLayersDict(
-    listOfLayers.filter(({ transparent }) => transparent)
-  );
-  const baseLayers = formatLayersDict(
-    listOfLayers.filter(({ transparent }) => !transparent)
-  );
-
-  const map = L.map(mapContainer).setView([0, 0], 1);
-
-  const layerGroup = L.control.layers(baseLayers, overlayLayers);
-  layerGroup.addTo(map);
-
-  addFullScreenButton(map);
-  addPrintMapButton(map);
-  rememberSelectedBaseLayers(map, baseLayers, 'CoMap');
-  rememberSelectedOverlays(map, overlayLayers, {
-    [preferredOverlay]: true,
-    ...Object.fromEntries(
-      Object.keys(tileLayers.overlays).map((label) => [label, true])
-    ),
-  });
-
-  listOfLayersRaw
-    .filter(({ transparent, isDefault }) => transparent && isDefault)
-    .forEach(({ layerLabel }) => {
-      overlayLayers[layerLabel].addTo(map);
-    });
-
-  if (typeof details !== 'undefined')
-    return [
-      map,
-      layerGroup,
-      addDetailsButton(mapContainer, map, details) as HTMLDivElement,
-    ];
-
-  return [map, layerGroup, undefined];
-}
