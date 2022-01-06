@@ -129,8 +129,8 @@ export default function Main({
 
       <header
         className={`bg-gray-200 border-b-4 border-b-[5px]
-        border-b-brand-200 flex flex-col 2xl:flex-row
-        shadow-gray-400 shadow-[0_3px_5px_-1px]`}
+        border-b-brand-200 flex flex-col 2xl:flex-row z-index-[1]
+        shadow-gray-400 shadow-[0_3px_5px_-1px] print:hidden`}
       >
         <div className="2xl:contents flex justify-between w-full">
           <h1 className="contents">

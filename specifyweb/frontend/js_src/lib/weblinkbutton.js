@@ -48,7 +48,7 @@ export default UIPlugin.extend({
                 placeHolder.replaceWith(newEl);
                 this.setElement(newEl);
             } else {
-                newEl = placeHolder.wrap('<div class="specify-plugin-weblink">').hide().parent();
+                newEl = placeHolder.wrap('<div class="print:hidden flex gap-x-2">').hide().parent();
                 this.setElement(newEl);
 
                 if (this.fieldName && this.fieldName !== 'this') {
@@ -63,6 +63,7 @@ export default UIPlugin.extend({
                 >
                   <img
                     src="${getIcon(this.init.icon || "WebLink") }"
+                    class="max-w-[40px] max-h-[20px]"
                     alt="${title}"
                   >
                 </a>`)[0]);

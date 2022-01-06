@@ -124,6 +124,11 @@ const localityText = createDictionary({
     'ru-ru': 'Долгота',
     ca: 'Longitude',
   },
+  toggleFullScreen: {
+    'en-us': 'Toggle Full Screen',
+    'ru-ru': 'Включить полноэкранный режим',
+    ca: 'Commuta la pantalla completa',
+  },
 });
 
 export default localityText;

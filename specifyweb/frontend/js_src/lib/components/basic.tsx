@@ -66,6 +66,12 @@ export const className = {
   containerFull: 'flex flex-col gap-4 h-full',
   container: `bg-gray-200 flex flex-col gap-y-2 max-w-[1000px] mx-auto p-4
     shadow-[0_3px_5px_-1px]`,
+  formHeader: `specify-form-header border-b-2 border-brand-300 flex items-center
+    pb-2 gap-x-4`,
+  formTitle: 'view-title flex-1 text-lg',
+  formLabel: 'specify-form-label text-right',
+  formFooter:
+    'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
 };
 
 /* eslint-disable @typescript-eslint/naming-convention */

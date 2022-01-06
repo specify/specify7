@@ -9,6 +9,7 @@ import DeleteButton from './deletebutton';
 import specifyform from './specifyform';
 
 import commonText from './localization/common';
+import {className} from "./components/basic";
 
 
 export default Backbone.View.extend({
@@ -32,7 +33,7 @@ export default Backbone.View.extend({
         },
         _render: function(form) {
             form.find('.specify-form-header:first').remove();
-            var buttons = $('<div class="specify-form-buttons">').appendTo(form);
+            var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(form);
 
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.resource });

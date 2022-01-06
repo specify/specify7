@@ -116,13 +116,13 @@ const ResourceDataView = Backbone.View.extend({
         }
 
         this.model.rget('spappresourcedatas', true).done(sards => {
-            const buttonsDiv = $('<div class="specify-form-buttons">');
+            const buttonsDiv = $(`<div class="${className.formFooter}" role="toolbar">`);
             this.appresourceData = sards.first();
 
             if (this.appresourceData) {
                 this.$el.attr('aria-label',this.model.get('name'));
-                $('<header class="specify-form-header">').append(
-                    $('<h2 class="view-title">').text(this.model.get('name'))
+                $(`<header class="${className.formHeader}">`).append(
+                    $('<h2 class="${className.formTitle}">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
                 const toolbar = $('<div class="flex gap-x-2 items-center flex-wrap" role="toollbar"></div>').appendTo(this.el);

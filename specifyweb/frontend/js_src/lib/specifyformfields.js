@@ -24,7 +24,7 @@ export default function(doingFormTable, mode, cell, id) {
                 if (doingFormTable) {
                     return control.attr('data-specify-field-label-override', cell.attr('label'));
                 }
-                var label = $('<label class="specify-checkbox-label">');
+                var label = $('<label class="align-middle pl-1">');
                 label.prop('for', id);
                 label.text(cell.attr('label'));
                 return control.add(label);

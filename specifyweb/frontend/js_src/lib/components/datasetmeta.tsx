@@ -123,7 +123,6 @@ export function DataSetMeta({
             required
           />
         </Label>
-        <br />
         <Label>
           <b>{wbText('remarks')}</b>
           <TextArea
@@ -131,39 +130,48 @@ export function DataSetMeta({
             onChange={({ target }): void => setRemarks(target.value)}
           />
         </Label>
-        <br />
-        <br />
-        <b>{commonText('metadataInline')}</b>
-        <br />
-        {wbText('numberOfRows')} <i>{formatNumber(getRowCount())}</i>
-        <br />
-        {wbText('numberOfColumns')}{' '}
-        <i>{formatNumber(dataset.columns.length)}</i>
-        <br />
-        {wbText('created')}{' '}
-        <i>
-          <DateElement date={dataset.timestampcreated} />
-        </i>
-        <br />
-        {wbText('modified')}{' '}
-        <i>
-          <DateElement date={dataset.timestampmodified} />
-        </i>
-        <br />
-        {wbText('uploaded')}{' '}
-        <i>
-          <DateElement
-            date={dataset.uploadresult?.timestamp}
-            fallback={commonText('no')}
-          />
-        </i>
-        <br />
-        {commonText('createdBy')} <i>{createdBy}</i>
-        <br />
-        {commonText('modifiedBy')} <i>{modifiedBy}</i>
-        <br />
-        {wbText('importedFileName')}{' '}
-        <i>{dataset.importedfilename || wbText('noFileName')}</i>
+        <div className="flex flex-col">
+          <b>{commonText('metadataInline')}</b>
+          <span>
+            {wbText('numberOfRows')}
+            <i>{formatNumber(getRowCount())}</i>
+          </span>
+          <span>
+            {wbText('numberOfColumns')}{' '}
+            <i>{formatNumber(dataset.columns.length)}</i>
+          </span>
+          <span>
+            {wbText('created')}{' '}
+            <i>
+              <DateElement date={dataset.timestampcreated} />
+            </i>
+          </span>
+          <span>
+            {wbText('modified')}{' '}
+            <i>
+              <DateElement date={dataset.timestampmodified} />
+            </i>
+          </span>
+          <span>
+            {wbText('uploaded')}{' '}
+            <i>
+              <DateElement
+                date={dataset.uploadresult?.timestamp}
+                fallback={commonText('no')}
+              />
+            </i>
+          </span>
+          <span>
+            {commonText('createdBy')} <i>{createdBy}</i>
+          </span>
+          <span>
+            {commonText('modifiedBy')} <i>{modifiedBy}</i>
+          </span>
+          <span>
+            {wbText('importedFileName')}{' '}
+            <i>{dataset.importedfilename || wbText('noFileName')}</i>
+          </span>
+        </div>
       </Form>
     </ModalDialog>
   );

@@ -129,7 +129,7 @@ export default UIPlugin.extend(
       click: 'click',
     },
     render() {
-      this.el.textContent = adminText('setPassword');
+      this.el.value = adminText('setPassword');
       if (this.model.isNew())
         this.$el
           .attr('title', adminText('saveUserBeforeSettingPasswordError'))

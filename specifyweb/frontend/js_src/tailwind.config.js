@@ -30,6 +30,9 @@ module.exports = {
           300: 'hsl(27deg 100% 55%)',
         },
         // Some in-between shades:
+        gray: {
+          350: 'hsl(218deg 12% 79%)',
+        },
         yellow: {
           250: 'hsl(53deg 98% 72%)',
         },

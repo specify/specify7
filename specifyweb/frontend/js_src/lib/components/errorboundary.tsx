@@ -58,7 +58,8 @@ const View = createBackboneView(ErrorDialog);
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
   console.error(error);
-  new View({ children: error }).render();
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+  new View({ children: error.message ?? error.toString() }).render();
 }
 
 export default class ErrorBoundary extends React.Component<

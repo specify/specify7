@@ -170,12 +170,12 @@ function PartialDateUi({
   }
 
   return (
-    <div className="partialdateui">
+    <div className="gap-x-1 flex">
       {!readOnly && (
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>
           <select
-            className="partialdateui-precision"
+            className="print:hidden"
             title={formsText('datePrecision')}
             value={precision}
             onChange={({ target }): void => {

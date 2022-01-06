@@ -146,13 +146,13 @@ export default Backbone.View.extend({
                 formsText,
                 commonText,
                 title: this.title,
-                dependent: this.field.isDependent()
+                dependent: this.field.isDependent(),
             }));
 
             header.find('.specify-delete-related, .specify-visit-related').remove();
             this.readOnly && header.find('.specify-add-related').remove();
 
-            this.el.innerHTML = '<fieldset></fieldset>';
+            this.el.innerHTML = '<fieldset class="py-3"></fieldset>';
             const section = $(this.el.children[0]);
             section.append(header);
 

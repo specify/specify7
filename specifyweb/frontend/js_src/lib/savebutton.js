@@ -55,7 +55,7 @@ export default Backbone.View.extend({
         },
         setSaveBlocked: function(saveBlocked) {
             this.saveBlocked = saveBlocked;
-            this.buttons && this.buttons[saveBlocked ? 'addClass' : 'removeClass']('saveblocked');
+            this.buttons && this.buttons[saveBlocked ? 'addClass' : 'removeClass']('!bg-red-500 cursor-not-allowed');
             /*
              * Don't disable the save button on validation errors
              * to allow for browser's native form validation
@@ -70,18 +70,20 @@ export default Backbone.View.extend({
             if (onlyDeferreds) this.setSaveBlocked(false);
         },
         render: function() {
-            this.$el.addClass('savebutton');
-            this.el.setAttribute('role','toolbar');
+            this.$el.addClass('contents');
             if (this.options.addAnother) {
                 this.$el.append($('<input>', {
                     type: "button",
-                    class: "save-and-add-button",
+                    class: `save-and-add-button button bg-brand-200
+                      border-brand-300 hover:bg-brand-300 hover:border-brand:200
+                      disabled:bg-gray-300 text-white`,
                     value: formsText('saveAndAddAnother')
                 }));
             }
             this.$el.append($('<input>', {
                 type: "submit",
-                class: "save-button",
+                class: `button bg-brand-200 border-brand-300 hover:bg-brand-300
+                    hover:border-brand:200 disabled:bg-gray-300 text-white`,
                 value: commonText('save')
             }));
             this.buttons = this.$('input');
@@ -127,7 +129,7 @@ export default Backbone.View.extend({
                  * Can't do this inside of onsubmit handler, because
                  * onsubmit is only called on valid forms
                  * */
-                this.form.classList.add('submitted');
+                this.form.classList.remove('not-submitted');
             };
             Array.from(this.buttons).forEach(button=> {
                 button.addEventListener('click', handleClick);
@@ -149,7 +151,7 @@ export default Backbone.View.extend({
                  * Don't display "This is a required field" error or pattern
                  * mismatch message until input was interacted with
                  */
-                event.target.classList.add('touched');
+                event.target.classList.remove('not-touched');
         },
         submit: function(event) {
             event.preventDefault();

@@ -30,13 +30,13 @@ export default Backbone.View.extend({
         },
         render: function() {
             var self = this;
-            self.el.innerHTML = '<fieldset></fieldset>';
+            self.el.innerHTML = '<fieldset class="py-3"></fieldset>';
             const section = $(self.el.children[0]);
             var header = $(subviewheader({
                 formsText,
                 commonText,
                 title: self.title,
-                dependent: self.field.isDependent()
+                dependent: self.field.isDependent(),
             }));
             $('.specify-visit-related', header).remove();
 

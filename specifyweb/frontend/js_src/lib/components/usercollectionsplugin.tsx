@@ -104,7 +104,7 @@ export default UIPlugin.extend(
       this.allCollections = new schema.models.Collection.LazyCollection();
     },
     render() {
-      this.el.setAttribute('value', adminText('collections'));
+      this.el.value = adminText('collections');
 
       if (this.user.get('isadmin')) {
         this.el.disabled = true;

@@ -6,6 +6,7 @@ import _ from 'underscore';
 import processField from './specifyformfields';
 import parseSpecifyProperties from './parsespecifyproperties';
 import processColumnDef from './processcolumndef';
+import {className} from './components/basic';
 
 function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
@@ -50,12 +51,12 @@ function processCell(formNumber, doingFormTable, mode, cellNode) {
                 var labelfor = cell.attr('labelfor');
                 labelfor && label.prop('for', 'specify-field-' + formNumber + '-' + labelfor);
                 label.attr('data-specify-label-id',cell.attr('id'));
-                return $('<td class="specify-form-label">').append(label);
+                return $(`<td class="${className.formLabel}">`).append(label);
             },
             separator: function() {
                 var label = cell.attr('label');
-                var elem = label ? $('<h3>').text(label) : $('<hr>');
-                return $('<td>').append(elem.addClass('separator'));
+                var elem = label ? $('<h3>').text(label) : $('<hr class="border-gray-500 w-full">');
+                return $('<td>').append(elem.addClass('border-b border-gray-500'));
             },
             subview: function() {
                 var td = $('<td class="specify-subview">').attr({

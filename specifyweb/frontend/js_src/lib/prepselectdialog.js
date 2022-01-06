@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import schema from './schema';
+import schema, {getModel} from './schema';
 import * as navigation from './navigation';
 import populateForm from './populateform';
 import api from './specifyapi';

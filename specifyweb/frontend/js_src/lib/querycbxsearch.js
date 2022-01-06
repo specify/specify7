@@ -39,9 +39,9 @@ export default Backbone.View.extend({
         makeDialog: function(form) {
             $('.specify-field', form).addClass('for-search-form');
             this.populateForm(form, this.model);
-            form.find('.specify-form-header, .delete-button, :submit').remove();
+            form.find('.specify-form-header, .specify-form-footer button').remove();
             form.find('.specify-field[required]').prop('required',false);
-            this.$el.append(form).append('<ul class="querycbx-search-results">');
+            this.$el.append(form).append('<ul class="querycbx-search-results bg-white h-40 min-w-[275px] overflow-auto p-2">');
             this.$el.dialog({
                 title: commonText('search'),
                 width: 'auto',

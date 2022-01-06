@@ -1,5 +1,4 @@
 "use strict";
-import '../css/tree.css';
 
 import $ from 'jquery';
 import _ from 'underscore';

@@ -1,16 +1,13 @@
 @import url('./custom-theme/jquery-ui-1.10.2.custom.css');
 @import url('~jquery-contextmenu/dist/jquery.contextMenu.css');
 
-@import url('./colors.css');
-@import url('./specifyform.css');
-@import url('./specifyform-print.css');
+/* TODO: make save buttons be on the right side in dialogs */
 @import url('./query.css');
-@import url('./queryresults.css');
 @import url('./dialogs.css');
 @import url('./attachments.css');
-@import url('./querycbx.css');
-@import url('./combobox.css');
 @import url('./theme.css');
+@import url('./icons.css');
+@import url('./colors.css');
 
 /**
  * This injects Tailwind's base styles and any base styles registered by
@@ -18,7 +15,9 @@
  */
 @tailwind base;
 
+/* TODO: get rid of global styles once everything is using React components */
 @layer base {
+
   [type='text'],
   [type='email'],
   [type='url'],
@@ -34,7 +33,7 @@
   [multiple],
   textarea,
   select {
-    @apply p-1 bg-gray-200 rounded;
+    @apply w-full p-1 bg-gray-200 rounded accent-brand-200;
   }
 
   select {
@@ -42,7 +41,10 @@
   }
 
   [type='checkbox'],
-  [type='radio'],
+  [type='radio'] {
+    @apply cursor-pointer text-brand-200;
+  }
+
   label {
     @apply cursor-pointer;
   }
@@ -56,26 +58,20 @@
     @apply bg-red-400;
   }
 
-  /* TODO: add support for changing accent color (and apply that in wb-meta) */
-  .button {
-    @apply border rounded cursor-pointer active:bg-brand-300 bg-gray-300
-           border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
-           disabled:text-gray-500 gap-2 hover:bg-brand-200 inline-flex
-           items-center p-1 text-black;
+  textarea {
+    @apply w-full;
   }
 
-  .link {
-    @apply text-black gap-2 inline-flex items-center hover:text-brand-300
-           active:text-brand-100 cursor-pointer;
+  :disabled:not(.icon), [readonly] {
+    @apply cursor-not-allowed bg-gray-400 text-gray-700;
   }
 
-  [type='submit'].link,
-  [type='button'].link {
-    @apply border-none text-left;
-  }
-
-  :disabled {
+  .icon:disabled {
     @apply cursor-not-allowed;
+  }
+
+  :required {
+    @apply bg-blue-200;
   }
 
   [type='radio']:focus,
@@ -84,17 +80,63 @@
   }
 
   /* Hide up/down arrows */
-
   /* Firefox */
-  input[type='number'].no-arrows {
+  [type='number'].no-arrows {
     -moz-appearance: textfield;
   }
-
   /* Webkit */
-  input[type='number'].no-arrows::-webkit-outer-spin-button,
-  input[type='number'].no-arrows::-webkit-inner-spin-button {
+  [type='number'].no-arrows::-webkit-outer-spin-button,
+  [type='number'].no-arrows::-webkit-inner-spin-button {
     @apply m-0 appearance-none;
   }
+
+
+  [type='number']:not([readonly]):not(.no-arrows)::-webkit-inner-spin-button,
+  [type='number']:not([readonly]):not(.no-arrows)::-webkit-outer-spin-button {
+    /* Always show spinner buttons */
+    @apply opacity-100;
+  }
+
+  [type='number']:not([readonly]):not(.no-arrows)::-webkit-outer-spin-button,
+  [type='number']:not([readonly]):not(.no-arrows)::-webkit-inner-spin-button {
+    /* Make spinner buttons larger */
+    -webkit-appearance: inner-spin-button !important;
+
+    width: var(--half-size);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+  }
+
+  [type='number'].webkit:not([readonly]):not(.no-arrows) {
+    @apply text-right relative pr-1.5
+  }
+
+  .button {
+    @apply border rounded cursor-pointer active:brightness-80 bg-gray-300
+    border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
+    disabled:text-gray-500 gap-2 hover:bg-brand-200
+    inline-flex items-center p-1 text-black;
+  }
+
+  .link, .icon {
+    @apply text-black gap-2 inline-flex items-center hover:text-brand-300
+    active:text-brand-100 cursor-pointer;
+  }
+
+  [type='submit'].link,
+  [type='button'].link {
+    @apply border-none text-left;
+  }
+
+  @media print {
+    /* Hide arrows, calendar icon and other symbols */
+    input, select, textarea {
+      @apply bg-none m-0 appearance-none;
+    }
+  }
+
 
   /* Display tooltips as an overlay on touch-screen devices */
   @media (pointer: coarse), (hover: none) {

@@ -9,11 +9,11 @@ import processColumnDef from './processcolumndef';
 
 import formtable from './templates/formtabletemplate.html';
 import formtemplate from './templates/formtemplate.html';
-import viewwrapper from './templates/viewwrappertemplate.html';
 import attachmentview from './templates/attachmentview.html';
+import {className} from './components/basic';
 
 
-    var formCounter = 0;
+var formCounter = 0;
 
     function getModelFromViewdef(viewdef) {
         return viewdef.attr('class').split('.').pop();
@@ -90,10 +90,14 @@ import attachmentview from './templates/attachmentview.html';
         var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable,
                                  mode === 'search' ? 'search' : altview.mode);
 
-        var wrapper = $(viewwrapper({ viewModel: getModelFromViewdef(actual_viewdef) }));
+        //className.formHeader
+        const wrapper = $(`<div data-specify-model="${getModelFromViewdef(actual_viewdef)}">
+          <h2 class="${className.formHeader}"></h2>
+          <!-- view goes here -->
+        </div>`);
 
         (doingFormTable ? buildFormTable : buildForm)(formNumber, actual_viewdef, processCell, isSubView).appendTo(wrapper);
-        wrapper.addClass('specify-form-type-' + viewdef.attr('type'));
+        wrapper.addClass(`flex flex-col gap-y-2 specify-form-type-${viewdef.attr('type')}`);
         wrapper.attr('data-specify-altview-mode', altview.mode);
         wrapper.attr('data-specify-form-mode', mode === 'view' ? 'view' : altview.mode);
         return wrapper;
@@ -109,7 +113,7 @@ import attachmentview from './templates/attachmentview.html';
 
         buildViewByName: function (viewName, defaultType, mode, isSubView=false) {
             if (viewName === "ObjectAttachment") {
-                return $.when($(attachmentview()));
+                return $.when($(attachmentview({className})));
             }
             return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode, isSubView); });
         },
@@ -121,7 +125,7 @@ import attachmentview from './templates/attachmentview.html';
             var buildView = specifyform.buildViewByName(viewName, defaultType, mode, true);
 
             return buildView.pipe(function(form) {
-                form.find('.specify-form-header:first, :submit, .delete-button').remove();
+                form.find('.specify-form-header:first, .specify-form-footer button').remove();
                 return form;
             }).fail(jqxhr => {
                 if (jqxhr.status === 404) {

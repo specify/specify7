@@ -1,7 +1,5 @@
 "use strict";
 
-import '../css/prepreturndialog.css';
-
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
@@ -13,6 +11,7 @@ import * as s from './stringlocalization';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {getDateInputValue} from './dayjs';
+import {className} from './components/basic';
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');
@@ -50,15 +49,15 @@ const PrepReturnRow = Backbone.View.extend({
             </td>
             <td class="return-catnum">
             <td class="return-taxon">
-            <td class="return-prep-type">
-            <td class="unresolved-count">${unresolved}</td>
+            <td class="return-prep-type text-center">
+            <td class="text-center">${unresolved}</td>
             <td>
                 <input
                     type="number"
                     value="0"
                     min="0"
                     max="${unresolved}"
-                    class="return-amt"
+                    class="return-amt w-12"
                     title="${formsText('returnedAmount')}"
                     aria-label="${formsText('returnedAmount')}"
                 >
@@ -69,12 +68,12 @@ const PrepReturnRow = Backbone.View.extend({
                     value="0"
                     min="0"
                     max="${unresolved}"
-                    class="resolve-amt"
+                    class="resolve-amt w-12"
                     title="${formsText('resolvedAmount')}"
                     aria-label="${formsText('resolvedAmount')}"
                 >
             </td>
-            <td><button type="button" class="return-remark link" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
+            <td><button type="button" class="return-remark link w-full" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
         `);
 
         $.when(
@@ -178,7 +177,7 @@ const PrepReturnRow = Backbone.View.extend({
 const METADATAFORM = `
 <table data-specify-model="LoanReturnPreparation">
   <tr>
-    <td class="specify-form-label"><label for="lrp-receivedby"></label></td>
+    <td class="${className.formLabel}"><label for="lrp-receivedby"></label></td>
     <td>
       <input
         type="text"
@@ -190,7 +189,7 @@ const METADATAFORM = `
         aria-label="${formsText('receivedBy')}"  
       >
     </td>
-    <td class="specify-form-label"><label for="lrp-date"></label></td>
+    <td class="${className.formLabel}"><label for="lrp-date"></label></td>
     <td>
       <input
         type="text"
@@ -230,7 +229,7 @@ export default Backbone.View.extend({
     },
     render: function() {
         const form = $(METADATAFORM);
-        this.$el.append(form, '<hr>');
+        this.$el.append(form, '<hr class="border-gray-500 w-full">');
 
         // this is used to capture the receiving agent and date
         this.dummyLRP = new schema.models.LoanReturnPreparation.Resource({
@@ -241,20 +240,20 @@ export default Backbone.View.extend({
 
         this.prepReturnRows = this.loanpreparations.map(lp => new PrepReturnRow({ loanpreparation: lp }));
 
-        this.el.append(
+        this.$el.append(
             $('<table>').append(`
                 <tr>
                     <td></td>
-                    <th scope="col">${schema.models.CollectionObject.getField('catalognumber').getLocalizedName()}</th>
-                    <th scope="col">${schema.models.Determination.getField('taxon').getLocalizedName()}</th>
-                    <th scope="col">${schema.models.Preparation.getField('preptype').getLocalizedName()}</th>
-                    <th scope="col">${formsText('unresolved')}</th>
-                    <th scope="col">${formsText('return')}</th>
-                    <th scope="col" colspan="2">${formsText('resolve')}</th>
+                    <th scope="col" class="text-center">${schema.models.CollectionObject.getField('catalognumber').getLocalizedName()}</th>
+                    <th scope="col" class="text-center">${schema.models.Determination.getField('taxon').getLocalizedName()}</th>
+                    <th scope="col" class="text-center">${schema.models.Preparation.getField('preptype').getLocalizedName()}</th>
+                    <th scope="col" class="text-center">${formsText('unresolved')}</th>
+                    <th scope="col" class="text-center">${formsText('return')}</th>
+                    <th scope="col" class="text-center" colspan="2">${formsText('resolve')}</th>
                 </tr>`
-            ).append(
-                [].concat(...this.prepReturnRows.map(row => [row.render().$el, REMARKSROW]))
             )
+        ).append(
+            this.prepReturnRows.flatMap(row => [row.render().$el, REMARKSROW])
         );
 
         const buttons = (this.options.readOnly ? [] : [

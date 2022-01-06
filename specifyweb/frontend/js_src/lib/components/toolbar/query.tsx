@@ -23,7 +23,7 @@ import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import { SpecifyResource } from '../../legacytypes';
-import { Button, ButtonLikeLink, Link } from '../basic';
+import { ButtonLikeLink, className, Link } from '../basic';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -82,7 +82,7 @@ function QueryList({
       <thead>
         <tr>
           <th scope="col" className="pl-table-icon">
-            <Button
+            <ButtonLikeLink
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'name',
@@ -92,10 +92,10 @@ function QueryList({
             >
               {commonText('name')}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
-            </Button>
+            </ButtonLikeLink>
           </th>
           <th scope="col">
-            <Button
+            <ButtonLikeLink
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'dateCreated',
@@ -105,7 +105,7 @@ function QueryList({
             >
               {commonText('created')}
               <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-            </Button>
+            </ButtonLikeLink>
           </th>
           <td />
         </tr>
@@ -384,7 +384,9 @@ const EditQueryDialog = Backbone.View.extend({
       `);
     }
 
-    const buttons = $('<div class="specify-form-buttons">').appendTo(form);
+    const buttons = $(
+      `<div class="${className.formFooter}" role="toolbar">`
+    ).appendTo(form);
 
     if (!this.readOnly) {
       const saveButton = new SaveButton({ model: this.spquery });

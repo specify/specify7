@@ -1,7 +1,6 @@
 'use strict';
 
 import $ from 'jquery';
-import _ from 'underscore';
 import Q from 'q';
 
 import Base from './basepicklist';
@@ -10,8 +9,6 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import autocomplete from './autocomplete';
 import {addValidationAttributes, resolveParser} from './uiparse';
-
-let index = 0;
 
 export default Base.extend({
   __name__: "PickListCBXView",

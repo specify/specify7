@@ -65,7 +65,7 @@ export default UIPlugin.extend({
         
     }, 
     render: function() {
-        var table = $('<table>').addClass('collectionrelonetomanyplugin');
+        var table = $('<table>');
         this.$el.replaceWith(table);
         this.setElement(table);
         table.append(`<tr>

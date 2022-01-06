@@ -1,22 +1,22 @@
-<header class="specify-form-header">
-  <h2 class="view-title check"><%- viewTitle %></h2>
-  <% if (recordsetName) { %>
+<header class="<%= className.formHeader %>">
+  <h2 class="<%= className.formTitle %>"><%- viewTitle %></h2>
+  <% if (recordsetInfo || recordsetName != null) { %>
     <nav
-      class="recordset-header"
+      class="recordset-header border border-gray-500 flex rounded"
       title="<%= formsText('recordSetAreaDescription')(recordsetName) %>"
       aria-label="<%= formsText('recordSetAreaDescription')(recordsetName) %>"
     >
       <% if (recordsetInfo) { %>
         <% if (prevUrl) { %>
             <a
-              class="intercept-navigation recordset-navigation"
+              class="intercept-navigation link pl-2 pr-3 py-0.5"
               href="<%= prevUrl %>"
               rel="prev"
               title="<%= formsText('previousRecord') %>"
               aria-label="<%= formsText('previousRecord') %>"
             >&lt;</a>
         <% } else { %>
-            <span class="recordset-prev recordset-navigation" aria-hidden="true">&lt;</span>
+            <span class="pl-2 pr-3 py-0.5 text-gray-400" aria-hidden="true">&lt;</span>
         <% } %>
         <label class="sr-only">
           <%= formsText('currentPositionInTheRecordSet') %>
@@ -27,34 +27,34 @@
           ><%= formsText('aOutOfB')(recordsetInfo.index + 1, recordsetInfo.total_count) %></meter>
         </label>
         <span
-          class="recordset-navigation-text"
+          class="grid grid-cols-[1fr_auto_1fr] py-0.5"
           aria-hidden="true"
         >
-          <span class="recordset-navigation-current"><%= recordsetInfo.index + 1 %></span>
+          <span class="text-center"><%= recordsetInfo.index + 1 %></span>
           /
           <span class="recordset-navigation-total"><%= recordsetInfo.total_count %></span>
         </span>
         <% if (nextUrl) { %>
             <a
-              class="intercept-navigation recordset-navigation"
+              class="intercept-navigation link pl-3 pr-2 py-0.5"
               href="<%= nextUrl %>"
               rel="next"
               title="<%= formsText('nextRecord') %>"
               aria-label="<%= formsText('nextRecord') %>"
             >&gt;</a>
         <% } else { %>
-            <span class="recordset-next recordset-navigation" aria-hidden="true">&gt;</span>
+            <span class="pl-3 pr-2 py-0.5 text-gray-400" aria-hidden="true">&gt;</span>
         <% } %>
         <% if (newUrl) { %>
           <a
             href="<%= newUrl %>"
-            class="intercept-navigation recordset-new"
+            class="intercept-navigation px-2 py-0.5 recordset-new"
             title="<%= formsText('createRecordButtonDescription') %>"
             aria-label="<%= formsText('createRecordButtonDescription') %>"
           >+</a>
         <% } %>
       <% } else if (recordsetName != null) { %>
-        <span class="recordset-info">
+        <span class="px-1 py-0.5 text-gray-500">
           <%= formsText('addingToRecordSet') %>
         </span>
       <% } %>

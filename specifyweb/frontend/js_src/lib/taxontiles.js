@@ -100,7 +100,6 @@ export default function makeTreeMap(container) {
     })
       .text(welcomeText('taxonTiles'))
       .appendTo(div[0])
-      .tooltip({track: true, show: false, hide: false});
   });
 }
 

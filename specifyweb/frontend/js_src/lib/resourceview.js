@@ -97,7 +97,8 @@ const ResourceView = Backbone.View.extend({
             recordsetName: self.recordSet && self.recordSet.get('name'),
             prevUrl: self.prev && self.prev.viewUrl(),
             nextUrl: self.next && self.next.viewUrl(),
-            newUrl: self.newUrl
+            newUrl: self.newUrl,
+            className
         }));
 
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
@@ -107,7 +108,7 @@ const ResourceView = Backbone.View.extend({
             self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                 form.find('.specify-form-header').remove();
 
-            var buttons = $('<div class="specify-form-buttons">').appendTo(form);
+            var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(form);
             self.$el.append(form);
             if(self.saveBtn){
                 self.saveBtn.render().$el.prependTo(buttons);
@@ -176,7 +177,7 @@ function viewSaved(resource, recordSet, options) {
 export function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
-            className: `specify-root-form ${className.container}`,
+            className: `${className.container} w-fit overflow-y-auto`,
             populateForm: populateForm,
             model: resource,
             recordSet: recordSet,

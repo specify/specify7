@@ -178,8 +178,8 @@ function LatLongUi({
   }, []);
 
   return (
-    <fieldset className="specifyplugin-latlonui">
-      <table>
+    <fieldset>
+      <table className="w-full text-center">
         <thead>
           <tr>
             <th scope="col">

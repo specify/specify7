@@ -10,7 +10,7 @@ import formsText from './localization/forms';
 export default Backbone.View.extend({
         __name__: "DeleteButton",
         events: {
-            'click .delete-button': 'openDialog'
+            'click button': 'openDialog'
         },
         initialize: function({model, warning}) {
             this.model = model;
@@ -19,8 +19,8 @@ export default Backbone.View.extend({
             this.waitDialog = null;
         },
         render: function() {
-            this.$el.addClass('deletebutton');
-            this.button = $(`<button class="delete-button button">
+            this.$el.addClass('contents');
+            this.button = $(`<button class="button">
               ${commonText('delete')} 
             </button>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +

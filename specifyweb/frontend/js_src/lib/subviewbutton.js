@@ -3,15 +3,16 @@
 import $ from 'jquery';
 import Backbone from './backbone';
 
-import { getIcon } from './icons';
+import {getIcon} from './icons';
 import specifyform from './specifyform';
 import * as navigation from './navigation';
 import RecordSelector from './recordselector';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {className} from "./components/basic";
 
-    export const Base =  Backbone.View.extend({
+export const Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
         events: {
             'click button': 'clicked'
@@ -43,12 +44,12 @@ import commonText from './localization/common';
                 this.button.classList.add('specify-subview-link');
             else
                 this.button.innerHTML = `<img
-                    class="specify-subviewbutton-icon"
+                    class="max-w-[40px] max-h-[20px]"
                     src="${self.icon}"
                     alt=""
                 >
                 <span class="sr-only">${self.field.getLocalizedName()}</span>
-                <span class="specify-subview-button-count"></span>`;
+                <span class="specify-subview-button-count bg-white border-gray-500 font-bold p-1 rounded"></span>`;
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count, .specify-subview-link').text(c);
@@ -130,7 +131,7 @@ import commonText from './localization/common';
             var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
 
             dialogForm.find('.specify-form-header:first').remove();
-            var buttons = $('<div class="specify-form-buttons">').appendTo(dialogForm);
+            var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(dialogForm);
 
             if (!self.related) {
                 if (formReadOnly) return;
