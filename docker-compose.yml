@@ -53,7 +53,7 @@ services:
     build:
       context: ./.
       target: build-frontend
-    command: npx webpack -w --mode development --node-env development --color
+    command: npx webpack -w --mode development --color
     restart: unless-stopped
     volumes:
       - "webpack-output:/home/node/dist"

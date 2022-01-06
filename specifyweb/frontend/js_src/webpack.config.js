@@ -159,6 +159,8 @@ module.exports = (_env, argv)=>({
         // Clean up build artifacts when in production
         ...(argv.mode === 'development' ? [] : [new CleanupPlugin(),]),
     ],
+    // Set appropriate process.env.NODE_ENV
+    mode: argv.mode,
     // User recommended source map types appropriate for each mode
     devtool: argv.mode === 'development'
         ? 'eval-source-map'
