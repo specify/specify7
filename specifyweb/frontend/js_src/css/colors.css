@@ -9,18 +9,15 @@
   --t4: #666;
   --border: #555;
   --darken: #000c;
-  --lighten: #bbb8;
 
   --success: #2c0;
   --error: #f24;
-  /* color.yellow.250 */
-  --modified: #ffa;
 
   --accent-hover: #fdb;
   --accent: #f73;
   --accent-pale: #f94;
 
-  --animation-duration: 2s;
+  --animation-duration: 0.5s;
 
   --quarter-size: 0.25rem;
   --half-size: 0.5rem;
@@ -29,26 +26,9 @@
 
   --border-size: 1px;
   --border-radius: 3px;
-  --round: 99999px;
 
   --table-icon-size: calc(var(--size) * 1.25);
 
-  /* Custom Select Element */
-  --custom-select-normal-b1: var(--b1);
-  --custom-select-normal-b2: var(--accent-hover);
-  --custom-select-normal-accent: var(--accent-hover);
-
-  --custom-select-required-b1: #dff;
-  --custom-select-required-b2: #cff;
-  --custom-select-required-accent: #3ef;
-
-  --custom-select-hidden-b1: #ccc;
-  --custom-select-hidden-b2: #aaa;
-  --custom-select-hidden-accent: #666;
-
-  --custom-select-suggested-b1: #dfd;
-  --custom-select-suggested-b2: #bfc;
-  --custom-select-suggested-accent: #9f9;
 }
 
 @media (prefers-reduced-motion) {

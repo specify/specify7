@@ -10,6 +10,7 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { parseDjangoDump } from '../splashscreen';
 
 export function LanguageSelection({
   languages,
@@ -18,7 +19,11 @@ export function LanguageSelection({
 }): JSX.Element {
   return (
     <Form action="/context/language/" method="post">
-      <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken ?? ''} />
+      <input
+        type="hidden"
+        name="csrfmiddlewaretoken"
+        value={csrfToken ?? parseDjangoDump<string>('csrf-token')}
+      />
       <Label>
         {commonText('language')}
         <br />

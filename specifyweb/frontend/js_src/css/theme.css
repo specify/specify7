@@ -93,43 +93,12 @@
 }
  */
 
-menu {
-  margin: 0;
-  padding: 0;
-}
-
 .sort-indicator {
   color: var(--accent);
 }
 
-/* Reset user-agent table styles
- * Copied from:
- * https://stackoverflow.com/questions/13076227/css-reset-table-to-default-equivalent/27851231
- */
-table.grid-table,
-.grid-table thead,
-.grid-table tbody,
-.grid-table tfoot,
-.grid-table tr,
-.grid-table th,
-.grid-table td {
-  display: block;
-  width: auto;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  border: none;
-  text-align: left;
-  -webkit-border-horizontal-spacing: 0;
-  -webkit-border-vertical-spacing: 0;
-}
-
-table.grid-table,
-.grid-table[role='table'] {
-  /*--cols: 2;*/
-
+.grid-table {
   display: grid;
-  /*grid-template-columns: repeat(calc(var(--cols) + 1), minmax(0, 1fr));*/
   grid-template-columns: auto auto min-content;
   grid-gap: var(--quarter-size);
 }
@@ -151,50 +120,18 @@ table.grid-table,
   align-items: center;
 }
 
+.grid-table td {
+  padding: 0;
+}
+
 .grid-table th,
 .grit-table [role='columnheader'],
 .grit-table [role='rowheader'] {
   padding-bottom: var(--half-size);
 }
 
-.grid-table td,
-.grid-table th,
-.grid-table td a,
-.grid-table [role='cell'],
-.grid-table [role='cell'] a {
-  font-size: 0.8rem;
-}
-
 .grid-table .pl-table-icon {
   padding-left: calc(var(--table-icon-size) + var(--quarter-size));
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.justify-end {
-  justify-content: end;
-}
-
-/*
- * Add a span with this class as a child of a display:flex.
- * This element would occupy all free space, pushing elements on either size
- * to the edge.
- *
- * If there isn't any free space, this element shrinks to 0px.
- */
-.spacer {
-  --gap-eater: var(--half-size);
-
-  flex: 1;
-
-  /* Offsets the space occupied by column-gap */
-  margin-left: calc(-1 * var(--gap-eater));
-}
-
-.contents {
-  display: contents;
 }
 
 input[readonly] {

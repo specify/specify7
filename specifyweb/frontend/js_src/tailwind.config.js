@@ -25,7 +25,7 @@ module.exports = {
       colors: {
         // Specify 7 orange colors:
         brand: {
-          100: 'hsl(27deg 100% 77%)',
+          100: 'hsl(27deg 100% 82%)',
           200: 'hsl(27deg 100% 63%)',
           300: 'hsl(27deg 100% 55%)',
         },

@@ -97,6 +97,7 @@ export const stateReducer = generateReducer<
   LoadingState: () => <LoadingScreen />,
   BaseTableSelectionState: ({ action: state }) => (
     <ModalDialog
+      className="gap-y-2 flex flex-col"
       properties={{
         title: wbText('selectBaseTableDialogTitle'),
         height: 400,
@@ -117,31 +118,29 @@ export const stateReducer = generateReducer<
         ],
       }}
     >
-      <div className="wbplanview-base-table-selection">
-        <ListOfBaseTables
-          listOfTables={dataModelStorage.listOfBaseTables}
-          showHiddenTables={state.showHiddenTables}
-          handleChange={(baseTableName: string): void =>
+      <ListOfBaseTables
+        listOfTables={dataModelStorage.listOfBaseTables}
+        showHiddenTables={state.showHiddenTables}
+        handleChange={(baseTableName: string): void =>
+          state.dispatch({
+            type: 'SelectTableAction',
+            baseTableName,
+            headers: state.props.headers,
+          })
+        }
+      />
+      <label>
+        <input
+          type="checkbox"
+          checked={state.showHiddenTables}
+          onChange={(): void =>
             state.dispatch({
-              type: 'SelectTableAction',
-              baseTableName,
-              headers: state.props.headers,
+              type: 'ToggleHiddenTablesAction',
             })
           }
-        />
-        <label>
-          <input
-            type="checkbox"
-            checked={state.showHiddenTables}
-            onChange={(): void =>
-              state.dispatch({
-                type: 'ToggleHiddenTablesAction',
-              })
-            }
-          />{' '}
-          {wbText('showAdvancedTables')}
-        </label>
-      </div>
+        />{' '}
+        {wbText('showAdvancedTables')}
+      </label>
     </ModalDialog>
   ),
   TemplateSelectionState: ({ action: state }) => (

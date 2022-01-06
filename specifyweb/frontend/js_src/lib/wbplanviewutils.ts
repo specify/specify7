@@ -4,7 +4,7 @@
  * @module
  */
 
-import ajax from './ajax';
+import ajax, { Http } from './ajax';
 import AutoMapper from './automapper';
 import type { Dataset } from './components/wbplanview';
 import type {
@@ -68,12 +68,18 @@ export async function savePlan({
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
 
-  return ajax(dataSetRequestUrl, {
-    method: 'PUT',
-    body: {
-      uploadplan: uploadPlan,
+  return ajax(
+    dataSetRequestUrl,
+    {
+      method: 'PUT',
+      body: {
+        uploadplan: uploadPlan,
+      },
     },
-  }).then(async () =>
+    {
+      expectedResponseCodes: [Http.NO_CONTENT],
+    }
+  ).then(async () =>
     (newlyAddedHeaders.length === 0
       ? Promise.resolve()
       : ajax<Dataset>(dataSetRequestUrl).then(

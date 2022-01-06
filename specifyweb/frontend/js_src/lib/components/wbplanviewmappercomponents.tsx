@@ -12,6 +12,7 @@ import type {
 import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
+import { Button, Checkbox, LabelForCheckbox, Radio } from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { closeDialog, ModalDialog } from './modaldialog';
@@ -21,7 +22,6 @@ import {
   MappingPathComponent,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
-import { Button } from './basic';
 
 export type GetMappedFieldsBind = (
   // A mapping path that would be used as a filter
@@ -45,7 +45,7 @@ export function MappingsControlPanel({
   const newHeaderIdRef = React.useRef(1);
 
   return (
-    <div role="toolbar" className="wbplanview-control-panel">
+    <div role="toolbar" className="gap-x-2 print:hidden flex items-center">
       {typeof handleAddNewHeader === 'function' && (
         <Button
           onClick={(): void => {
@@ -56,15 +56,13 @@ export function MappingsControlPanel({
           {wbText('addNewColumn')}
         </Button>
       )}
-      <label>
-        {' '}
-        <input
-          type="checkbox"
+      <LabelForCheckbox>
+        <Checkbox
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
-        />{' '}
+        />
         {wbText('revealHiddenFormFields')}
-      </label>
+      </LabelForCheckbox>
     </div>
   );
 }
@@ -102,10 +100,10 @@ export function ValidationResults(props: {
     >
       {wbText('validationFailedDialogHeader')}
       <p>{wbText('validationFailedDialogMessage')}</p>
-      <section className="validation-results">
+      <section className="validation-results gap-x-2 flex flex-col">
         {props.validationResults.map((fieldPath, index) => (
           <Button
-            className="v-center wbplanview-mapping-line-elements"
+            className="hover:bg-gray-300 border-x-0 bg-transparent border-b-0 rounded-none"
             key={index}
             onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
           >
@@ -129,7 +127,6 @@ export function ValidationResults(props: {
 
 const mappingViewResizeThrottle = 150;
 const defaultMappingViewHeight = 300;
-const minMappingViewHeight = 250;
 
 export function MappingView(props: {
   readonly baseTableName: string;
@@ -200,25 +197,27 @@ export function MappingView(props: {
     return (): void => resizeObserver.disconnect();
   }, []);
 
+  const isMappable = mapButtonIsEnabled && props.focusedLineExists;
+
   return (
     <section
-      className="mapping-view-parent"
+      className={`mapping-view overflow-x-auto relative resize-vertical
+        max-h-[50vh] min-h-[250px] h-[var(--mapping-view-height)]`}
       style={
         {
-          '--mapping-view-min-height': `${minMappingViewHeight}px`,
           '--mapping-view-height': `${mappingViewHeightRef.current ?? ''}px`,
         } as React.CSSProperties
       }
       aria-label={wbText('mappingEditor')}
       ref={mappingViewParentRef}
     >
-      <div className="mapping-view-container">
-        <div className="v-center mapping-view" role="list">
+      <div className="flex-nowrap gap-x-8 w-max flex h-full">
+        <div className="gap-x-1 flex-nowrap flex" role="list">
           <MappingPathComponent mappingLineData={mappingLineData} />
         </div>
         <Button
-          className="v-center wbplanview-mapping-view-map-button"
-          disabled={!mapButtonIsEnabled || !props.focusedLineExists}
+          className="button flex-col justify-center p-2"
+          disabled={!isMappable}
           onClick={
             mapButtonIsEnabled && props.focusedLineExists
               ? props.handleMapButtonClick
@@ -228,7 +227,7 @@ export function MappingView(props: {
         >
           {wbText('map')}
           <span
-            className="wbplanview-mapping-view-map-button-arrow"
+            className={`bg-green-400 ${isMappable ? '' : 'invisible'}`}
             aria-hidden="true"
           >
             &#8594;
@@ -236,7 +235,7 @@ export function MappingView(props: {
         </Button>
       </div>
       <span
-        className="mapping-view-resizer"
+        className="absolute bottom-0 right-0 cursor-pointer pointer-events-none"
         title={wbText('resizeMappingEditorButtonDescription')}
         aria-hidden={true}
       >
@@ -302,9 +301,8 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <label title={description}>
-                  <input
-                    type="radio"
+                <LabelForCheckbox title={description}>
+                  <Radio
                     name="match-behavior"
                     value={id}
                     checked={columnOptions.matchBehavior === id}
@@ -314,7 +312,7 @@ export function mappingOptionsMenu({
                     }
                   />
                   {` ${title}`}
-                </label>
+                </LabelForCheckbox>
               </li>
             ))}
           </ul>
@@ -323,9 +321,8 @@ export function mappingOptionsMenu({
     },
     nullAllowed: {
       optionLabel: (
-        <label>
-          <input
-            type="checkbox"
+        <LabelForCheckbox>
+          <Checkbox
             checked={columnOptions.nullAllowed}
             disabled={readonly}
             onChange={
@@ -335,15 +332,14 @@ export function mappingOptionsMenu({
             }
           />{' '}
           {wbText('allowNullValues')}
-        </label>
+        </LabelForCheckbox>
       ),
     },
     default: {
       optionLabel: (
         <>
-          <label>
-            <input
-              type="checkbox"
+          <LabelForCheckbox>
+            <Checkbox
               checked={columnOptions.default !== null}
               disabled={readonly}
               onChange={
@@ -357,7 +353,7 @@ export function mappingOptionsMenu({
             />{' '}
             <span id={id('default-value')}>{wbText('useDefaultValue')}</span>
             {columnOptions.default !== null && ':'}
-          </label>
+          </LabelForCheckbox>
           {typeof columnOptions.default === 'string' && (
             <>
               <br />
@@ -525,7 +521,7 @@ export function MustMatch({
                 {wbText('matchingLogicDialogMessage')}
               </p>
               <table
-                className="grid-table matching-logic-dialog"
+                className="grid-table grid-cols-[auto-auto]"
                 aria-describedby={id('description')}
               >
                 <thead>

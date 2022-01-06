@@ -4,8 +4,6 @@
  * @module
  */
 
-import '../../css/wbplanview.css';
-
 import React from 'react';
 
 import type { RA } from '../types';

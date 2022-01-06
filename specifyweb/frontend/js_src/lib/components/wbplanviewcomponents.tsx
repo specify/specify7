@@ -152,7 +152,7 @@ export function ValidationButton(props: {
     <>
       <Button
         className={`validation-indicator ${
-          props.isValidated ? 'validation-indicator-success' : ''
+          props.isValidated ? 'bg-green-400' : ''
         }`}
         role="menuitem"
         onClick={
@@ -194,18 +194,17 @@ export function MappingLineComponent({
 
   const id = useId('mapping-line');
 
+  const isMapped =
+    lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST';
   return (
     <li
-      className={`wbplanview-mapping-line ${
-        lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST'
-          ? ''
-          : 'wbplanview-mapping-line-header-unmapped'
-      }`}
+      className="wbplanview-mapping-line contents"
       aria-label={headerName}
       aria-current={isFocused}
     >
-      <div className="wbplanview-mapping-line-controls">
+      <div className="print:hidden border-t-gray-500 py-2 border-t">
         <Button
+          className="w-full h-full p-2"
           title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
           onClick={handleClearMapping}
@@ -215,14 +214,18 @@ export function MappingLineComponent({
         </Button>
       </div>
       <div
-        className="v-center wbplanview-mapping-line-header"
+        className={`flex items-center justify-end max-w-[25vw] p-2 border-t
+          border-t-gray-500 ${isMapped ? '' : 'font-extrabold text-red-600'}`}
         id={id('header')}
       >
         {headerName}
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        className="v-center wbplanview-mapping-line-elements"
+        className={`print:gap-1 flex flex-wrap items-center gap-2 border-t
+          border-t-gray-500 py-2 ${isFocused ? 'bg-gray-300' : ''}
+          ${isMapped ? '' : 'wbplanview-mapping-line-unmapped'}
+        `}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
@@ -264,7 +267,7 @@ const fieldGroupLabels = {
 } as const;
 
 const MappingElementDivider = (
-  <span className="wbplanview-mapping-line-divider" aria-label=",">
+  <span className="print:px-1 flex items-center px-2" aria-label=",">
     {'→'}
   </span>
 );
@@ -316,9 +319,11 @@ export function MappingElement(props: MappingElementProps): JSX.Element {
                 index + 1,
                 {
                   optionLabel: (
-                    <MappingPathComponent
-                      mappingLineData={autoMapperSuggestion.mappingLineData}
-                    />
+                    <span className="gap-y-2 flex flex-wrap">
+                      <MappingPathComponent
+                        mappingLineData={autoMapperSuggestion.mappingLineData}
+                      />
+                    </span>
                   ),
                 },
               ])

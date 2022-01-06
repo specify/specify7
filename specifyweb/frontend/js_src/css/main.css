@@ -119,11 +119,35 @@
 
 @layer components {
   .wbs-form {
-  --highlighted-row: hsl(212deg 100% 50% / .4);
-  --new-cell: theme('colors.indigo.350');
-  --invalid-cell: theme('colors.red.300');
-  --modified-cell: theme('colors.yellow.250');
-  --search-result: theme('colors.green.300');
+    --highlighted-row: theme('colors.blue.400');
+    --new-cell: theme('colors.indigo.350');
+    --invalid-cell: theme('colors.red.300');
+    --modified-cell: theme('colors.yellow.250');
+    --search-result: theme('colors.green.300');
+  }
+
+  .custom-select {
+    --custom-select-b1: theme('colors.white');
+    --custom-select-b2: theme('colors.brand.100');
+    --custom-select-accent: theme('colors.brand.100');
+  }
+
+  .custom-select-group-required-fields {
+    --custom-select-b1: theme('colors.cyan.100');
+    --custom-select-b2: theme('colors.cyan.200');
+    --custom-select-accent: theme('colors.cyan.300');
+  }
+
+  .custom-select-group-hidden-fields {
+    --custom-select-b1: theme('colors.gray.300');
+    --custom-select-b2: theme('colors.gray.400');
+    --custom-select-accent: theme('colors.gray.500');
+  }
+
+  .custom-select-group-suggested-mappings {
+    --custom-select-b1: theme('colors.green.200');
+    --custom-select-b2: theme('colors.green.300');
+    --custom-select-accent: theme('colors.green.400');
   }
 }
 
@@ -135,11 +159,7 @@
 
 @layer utilities {
 
-  .m-00 {
-    @apply m-0 !important;
-  }
-
-};
+}
 
 /**
  * Use this directive to control where Tailwind injects the hover, focus,

@@ -17,7 +17,7 @@ import { DateElement, formatNumber } from './internationalization';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { Button } from './basic';
+import { Button, Form, Input, Label, TextArea } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -89,7 +89,7 @@ export function DataSetMeta({
         ],
       }}
     >
-      <form
+      <Form
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
@@ -113,28 +113,24 @@ export function DataSetMeta({
           ).then((name) => handleChange(name));
         }}
       >
-        <label>
+        <Label>
           <b>{wbText('dataSetName')}</b>
-          <input
+          <Input
             type="text"
-            style={{
-              display: 'block',
-              width: '100%',
-            }}
             spellCheck="true"
             value={name}
             onChange={({ target }): void => setName(target.value)}
+            required
           />
-        </label>
+        </Label>
         <br />
-        <label>
+        <Label>
           <b>{wbText('remarks')}</b>
-          <textarea
-            style={{ width: '100%' }}
+          <TextArea
             value={remarks}
             onChange={({ target }): void => setRemarks(target.value)}
           />
-        </label>
+        </Label>
         <br />
         <br />
         <b>{commonText('metadataInline')}</b>
@@ -168,7 +164,7 @@ export function DataSetMeta({
         <br />
         {wbText('importedFileName')}{' '}
         <i>{dataset.importedfilename || wbText('noFileName')}</i>
-      </form>
+      </Form>
     </ModalDialog>
   );
 }
@@ -337,7 +333,7 @@ export default Backbone.View.extend({
   },
   changeOwner() {
     const handleClose = (): void => void this.changeOwner.remove();
-    this.changeOwner = new ChangeOwnerView({
+    this.changeOwnerView = new ChangeOwnerView({
       dataset: this.options.dataset,
       onClose: handleClose,
       onChanged: (): void => navigation.go('/specify/'),
@@ -345,7 +341,7 @@ export default Backbone.View.extend({
   },
   remove() {
     this.dataSetMeta.remove();
-    this.changeOwner?.remove();
+    this.changeOwnerView?.remove();
     Backbone.View.prototype.remove.call(this);
   },
 });

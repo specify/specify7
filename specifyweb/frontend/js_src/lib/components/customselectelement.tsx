@@ -7,12 +7,10 @@
  * @module
  */
 
-import '../../css/customselectelement.css';
-
 import React from 'react';
 
 import wbText from '../localization/workbench';
-import type { IR, RA } from '../types';
+import type { IR, RA, RR } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
 import {
@@ -44,9 +42,25 @@ type Properties =
    * Handle keyboard navigation click locally instead of emitting
    * handleClick(close: false, value, ...), unless pressed Enter
    */
-  | 'handleKeyboardClick';
-const customSelectTypes: IR<RA<Properties>> = {
-  /* eslint-disable @typescript-eslint/naming-convention */
+  | 'handleKeyboardClick'
+  // Has a persistent scroll bar. Otherwise, scroll bar appears as needed
+  | 'scroll'
+  // Has a shadow when open
+  | 'shadow'
+  // Has table icon, relationship sign, unmap icon or selected field checkmark
+  | 'icon'
+  // Has down arrow (closed picklist preview) or left arrow (relationship)
+  | 'arrow';
+export type CustomSelectType =
+  | 'OPENED_LIST'
+  | 'CLOSED_LIST'
+  | 'PREVIEW_LIST'
+  | 'SUGGESTION_LIST'
+  | 'SUGGESTION_LINE_LIST'
+  | 'BASE_TABLE_SELECTION_LIST'
+  | 'MAPPING_OPTIONS_LIST';
+/* eslint-disable @typescript-eslint/naming-convention */
+const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
   // Used in the mapping view
   OPENED_LIST: [
     'interactive',
@@ -54,6 +68,8 @@ const customSelectTypes: IR<RA<Properties>> = {
     'autoScroll',
     'groupLabels',
     'tabIndex',
+    'icon',
+    'arrow',
   ],
   // Used in mapping lines
   CLOSED_LIST: [
@@ -62,28 +78,47 @@ const customSelectTypes: IR<RA<Properties>> = {
     'unmapOption',
     'autoScroll',
     'groupLabels',
+    /*
+     * Scroll bar must be always present to be able to predict the width of
+     * the picklist when it is closed
+     */
+    'scroll',
+    'shadow',
+    'icon',
+    'arrow',
   ],
-  // Used inside of mapping validation results dialog and suggestion list
-  PREVIEW_LIST: ['preview'],
+  // Used inside of mapping validation results dialog
+  PREVIEW_LIST: ['preview', 'icon'],
   // Used to display a list of AutoMapper suggestions
   SUGGESTION_LIST: [
     'interactive',
     'groupLabels',
     'tabIndex',
     'handleKeyboardClick',
+    'shadow',
   ],
+  // Used inside a suggestion line
+  SUGGESTION_LINE_LIST: ['preview', 'icon'],
   // Used for base table selection
   BASE_TABLE_SELECTION_LIST: [
     'interactive',
     'autoScroll',
     'tabIndex',
     'handleKeyboardClick',
+    'icon',
   ],
   // Used for configuring mapping options for a mapping line
   MAPPING_OPTIONS_LIST: ['interactive', 'preview'],
-  /* eslint-enable @typescript-eslint/naming-convention */
 } as const;
-export type CustomSelectType = keyof typeof customSelectTypes;
+
+const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
+  OPENED_LIST: '!h-full',
+  BASE_TABLE_SELECTION_LIST: 'flex-1',
+  MAPPING_OPTIONS_LIST: 'grid pl-2',
+  CLOSED_LIST: 'grid',
+  SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
+};
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type CustomSelectSubtype =
   // For fields and relationships
@@ -115,12 +150,13 @@ type CustomSelectElementIconProps = {
    */
   readonly isEnabled?: boolean;
   // Whether an icon is used inside of preview_row in CLOSED_LIST
-  // eslint-disable-next-line react/no-unused-prop-types
   readonly isPreview?: boolean;
 };
 
 export type CustomSelectElementOptionProps = CustomSelectElementIconProps & {
   readonly handleClick?: (payload: { readonly isDoubleClick: boolean }) => void;
+  readonly hasIcon?: boolean;
+  readonly hasArrow?: boolean;
 };
 
 export type CustomSelectElementDefaultOptionProps =
@@ -135,10 +171,6 @@ type CustomSelectElementOptionGroupProps = {
   readonly selectGroupName?: string;
   // Group's label (shown to the user)
   readonly selectGroupLabel?: string;
-  /*
-   * List of options data. See customSelectElement.getSelectOptionHtml()
-   * for the data structure
-   */
   readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
   readonly handleClick?: (payload: {
     readonly newValue: string;
@@ -146,6 +178,8 @@ type CustomSelectElementOptionGroupProps = {
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
   }) => void;
+  readonly hasIcon?: boolean;
+  readonly hasArrow?: boolean;
 };
 
 type CustomSelectElementOptionGroups = IR<CustomSelectElementOptionGroupProps>;
@@ -219,26 +253,35 @@ function Option({
   isDefault = false,
   tableName = '',
   handleClick,
+  hasIcon = true,
+  hasArrow = true,
 }: CustomSelectElementOptionProps): JSX.Element {
-  const classes = ['custom-select-option'];
+  const classes = ['p-1 flex items-center gap-x-1'];
 
   if (!isEnabled && !isRelationship)
-    // Don't disable relationships
-    classes.push('custom-select-option-disabled');
+    classes.push(
+      'cursor-not-allowed text-gray-500 bg-[color:var(--custom-select-b1)]'
+    );
+  else
+    classes.push(
+      'hover:bg-[color:var(--custom-select-b2)]',
+      'focus:bg-[color:var(--custom-select-b2)]'
+    );
 
-  if (isRelationship) classes.push('custom-select-option-relationship');
+  if (isDefault)
+    classes.push(
+      'custom-select-option-selected cursor-auto bg-[color:var(--custom-select-accent)]'
+    );
 
-  if (isDefault) classes.push('custom-select-option-selected');
+  const tableLabel = dataModelStorage.tables?.[tableName]?.label;
 
   const fullTitle = [
-    title ?? optionLabel,
+    title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
     isRelationship ? `(${wbText('relationshipInline')})` : '',
     isDefault ? `(${wbText('selected')})` : '',
   ]
     .filter((part) => part)
     .join(' ');
-
-  const tableLabel = dataModelStorage.tables?.[tableName]?.label;
 
   return (
     // Keyboard events are handled by the parent
@@ -259,28 +302,28 @@ function Option({
       aria-current={!isEnabled}
       aria-atomic="true"
     >
-      <Icon
-        optionLabel={optionLabel}
-        isRelationship={isRelationship}
-        isEnabled={isEnabled}
-        tableName={tableName}
-      />
-      <span
-        className={`v-center custom-select-option-label ${
-          optionLabel === '0' ? 'custom-select--label-unmapped' : ''
-        }`}
-      >
+      {hasIcon && (
+        <Icon
+          optionLabel={optionLabel}
+          isRelationship={isRelationship}
+          isEnabled={isEnabled}
+          tableName={tableName}
+        />
+      )}
+      <span className="flex-1">
         {optionLabel === '0' ? wbText('unmap') : optionLabel}
       </span>
-      {isRelationship && (
+      {hasArrow && isRelationship ? (
         <span
-          className="custom-select-option-relationship-icon"
+          className="custom-select-option-relationship-icon print:hidden w-3"
           title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
           aria-label={wbText('relationship')(tableLabel ?? '')}
           role="img"
         >
           ▶
         </span>
+      ) : (
+        <span className="print:hidden w-3" />
       )}
     </span>
   );
@@ -291,17 +334,21 @@ function OptionGroup({
   selectGroupLabel,
   selectOptionsData,
   handleClick,
+  hasIcon,
+  hasArrow,
 }: CustomSelectElementOptionGroupProps): JSX.Element {
   return (
     <section
-      className={`custom-select-group custom-select-group-${camelToKebab(
-        selectGroupName ?? ''
-      )}`}
+      className={`bg-[color:var(--custom-select-b1)] flex flex-col
+        custom-select-group-${camelToKebab(selectGroupName ?? '')}`}
       role="group"
       aria-label={selectGroupLabel}
     >
       {typeof selectGroupLabel !== 'undefined' && (
-        <header aria-hidden={true} className="custom-select-group-label">
+        <header
+          aria-hidden={true}
+          className="bg-[color:var(--custom-select-b2)] px-1 cursor-auto"
+        >
           {selectGroupLabel}
         </header>
       )}
@@ -323,6 +370,8 @@ function OptionGroup({
                   : undefined
               }
               {...selectionOptionData}
+              hasIcon={hasIcon}
+              hasArrow={hasArrow}
             />
           );
         }
@@ -333,15 +382,25 @@ function OptionGroup({
 
 /**
  * All picklist options are rendered invisibly for every closed picklist to
- * ensure picklist maintains the width when opened or closed
+ * ensure picklist doesn't grow in size when opened and shift all elements
+ * to the right of it.
+ *
+ * If whitespace in <Option> is changed, the change would have to be reflected
+ * here (replace pr-12 with another value).
+ * I don't like this solution, but am not what is a better one. Rendering
+ * a bunch of <Option> with visibility:hidden for each pick list is too expensive
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
   fieldNames,
 }: {
   readonly fieldNames: RA<string>;
 }) {
   return (
-    <span className="custom-select-element-shadow-list" aria-hidden="true">
+    <span
+      className="print:hidden flex flex-col invisible pr-12 overflow-y-scroll border"
+      aria-hidden="true"
+    >
       {fieldNames.map((fieldName, index) => (
         <span key={index}>{fieldName}</span>
       ))}
@@ -459,13 +518,18 @@ export function CustomSelectElement({
   let optionsShadow: JSX.Element | undefined;
   if (has('header') && selectLabel)
     header = (
-      <header className="custom-select-header">
-        <Icon
-          isDefault={true}
-          isRelationship={true}
-          tableName={tableName}
-          optionLabel={tableName}
-        />
+      <header
+        className={`border border-brand-300 p-2 flex gap-y-2 gap-x-1
+          items-center bg-brand-100`}
+      >
+        {has('icon') && (
+          <Icon
+            isDefault={true}
+            isRelationship={true}
+            tableName={tableName}
+            optionLabel={tableName}
+          />
+        )}
         <span>{selectLabel}</span>
       </header>
     );
@@ -474,18 +538,18 @@ export function CustomSelectElement({
       // Not tabbable because keyboard events are handled separately
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
-        className={`custom-select-input ${
-          defaultOption?.isRequired === true
-            ? 'custom-select-input-required'
-            : ''
-        } ${
-          defaultOption?.isHidden === true ? 'custom-select-input-hidden' : ''
-        } ${
-          customSelectType === 'MAPPING_OPTIONS_LIST' &&
-          defaultOption?.isRelationship === true
-            ? 'custom-select-label-modified'
-            : ''
-        }`}
+        className={`cursor-pointer min-h-[theme(spacing.8)]
+          flex items-center gap-x-1 px-1 border border-gray-600 ${
+            defaultOption?.isRequired === true
+              ? 'bg-[color:var(--custom-select-required-b2)]'
+              : defaultOption?.isHidden === true
+              ? 'bg-[color:var(--custom-select-hidden-b2)]'
+              : customSelectType === 'MAPPING_OPTIONS_LIST' &&
+                defaultOption?.isRelationship === true
+              ? 'bg-yellow-250'
+              : 'bg-white'
+          }
+        ${isOpen ? '[z-index:3]' : ''}`}
         role="button"
         onClick={
           has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
@@ -493,17 +557,19 @@ export function CustomSelectElement({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <Icon
-          isDefault={true}
-          isRelationship={defaultOption.isRelationship}
-          tableName={defaultOption.tableName}
-          optionLabel={defaultOption.optionLabel}
-          isPreview={true}
-        />
+        {has('icon') && (
+          <Icon
+            isDefault={true}
+            isRelationship={defaultOption.isRelationship}
+            tableName={defaultOption.tableName}
+            optionLabel={defaultOption.optionLabel}
+            isPreview={true}
+          />
+        )}
         <span
-          className={`custom-select-input-label ${
+          className={`flex-1 ${
             defaultOption.optionLabel === '0'
-              ? 'custom-select-label-unmapped'
+              ? 'font-extrabold text-red-600'
               : ''
           }`}
         >
@@ -511,9 +577,7 @@ export function CustomSelectElement({
             ? 'NOT MAPPED'
             : defaultOption.optionLabel}
         </span>
-        {has('interactive') && customSelectType !== 'MAPPING_OPTIONS_LIST' && (
-          <span>▼</span>
-        )}
+        {has('arrow') && <span className="print:hidden">▼</span>}
       </header>
     );
 
@@ -530,6 +594,8 @@ export function CustomSelectElement({
         }
         isDefault={defaultOption.optionLabel === '0'}
         optionLabel="0"
+        hasIcon={true}
+        hasArrow={true}
       />
     ) : undefined;
 
@@ -539,7 +605,7 @@ export function CustomSelectElement({
         (optionLabel): optionLabel is string => typeof optionLabel === 'string'
       );
     optionsShadow =
-      !isOpen && has('interactive') && fieldNames.length > 0 ? (
+      !isOpen && has('scroll') && fieldNames.length > 0 ? (
         <ShadowListOfOptions fieldNames={fieldNames} />
       ) : undefined;
   }
@@ -570,6 +636,8 @@ export function CustomSelectElement({
                 ? selectGroupLabel
                 : undefined
             }
+            hasIcon={has('icon')}
+            hasArrow={has('arrow')}
           />
         )
       );
@@ -577,7 +645,16 @@ export function CustomSelectElement({
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
-      className="custom-select-options"
+      className={`[z-index:2] cursor-pointer h-fit
+        bg-[color:var(--custom-select-b1)] border border-brand-300 flex-1
+        ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
+        ${
+          has('shadow')
+            ? 'shadow-[0_3px_5px_-1px] max-h-[theme(spacing.64)]'
+            : ''
+        }
+        ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
+      `}
       ref={listOfOptionsRef}
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       role="listbox"
@@ -651,9 +728,10 @@ export function CustomSelectElement({
 
   return (
     <article
-      className={`custom-select custom-select-${upperToKebab(
-        customSelectType
-      )} ${isOpen ? 'custom-select-active' : ''}`}
+      className={`h-8 relative flex flex-col
+        custom-select custom-select-${upperToKebab(customSelectType)}
+        ${customSelectClassNames[customSelectType] ?? ''}
+      `}
       title={selectLabel}
       role={role}
       ref={customSelectElementRef}
@@ -758,6 +836,8 @@ export function SuggestionBox({
         suggestedMappings: {
           selectGroupLabel: wbText('suggestedMappings'),
           selectOptionsData,
+          hasIcon: false,
+          hasArrow: false,
         },
       }}
       isOpen={true}
@@ -766,3 +846,11 @@ export function SuggestionBox({
     />
   );
 }
+
+export const gear = (
+  <img
+    src="/static/img/gear.svg"
+    className="h-3"
+    alt={wbText('mappingOptions')}
+  />
+);

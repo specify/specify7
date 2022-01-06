@@ -22,7 +22,7 @@ export function Layout(props: {
   const id = useId('wbplanview-header');
   return (
     <ContainerFull
-      className={`wbplanview ${props.readonly ? 'wbplanview-readonly' : ''}`}
+      className={props.readonly ? 'wbplanview-readonly' : ''}
       onClick={
         typeof props.handleClick === 'undefined'
           ? undefined
@@ -38,18 +38,21 @@ export function Layout(props: {
                 : undefined
       }
     >
-      <header className="wbplanview-header">
-        <h2 className="wbplanview-ds-name v-center" id={id('name')}>
+      <header className="gap-x-2 whitespace-nowrap flex">
+        <h2
+          className="gap-x-1 flex items-center overflow-x-auto"
+          id={id('name')}
+        >
           {props.title}
         </h2>
         <div role="toolbar" className="contents">
           {props.buttonsLeft}
-          <span className="spacer" />
+          <span className="flex-1 -ml-2" />
           {props.buttonsRight}
         </div>
       </header>
       <div
-        className="wbplanview-container wbplanview-mapping-container"
+        className="gap-y-4 flex flex-col flex-1 overflow-hidden"
         aria-labelledby={id('name')}
       >
         {props.children}

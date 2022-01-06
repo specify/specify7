@@ -22,6 +22,7 @@
   {{ form.username.errors|json_script:'username-errors' }}
   {{ form.password.errors|json_script:'password-errors' }}
   {{ next|json_script:'next-url' }}
+  <script id="csrf-token">"{{ csrf_token }}"</script>
 </body>
 </html>
 

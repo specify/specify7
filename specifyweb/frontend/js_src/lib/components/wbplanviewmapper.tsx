@@ -42,7 +42,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { crash } from './errorboundary';
 import { Button } from './basic';
 
 /*
@@ -188,27 +187,15 @@ export default function WbPlanViewMapper(props: {
 
     if (!customSelectElement) return;
 
-    const autoMapperSuggestionsHeight = autoMapperSuggestions.clientHeight;
-
     const listOfMappingsPosition = listOfMappings.current.offsetTop;
     const currentScrollTop = listOfMappings.current.scrollTop;
     const picklistPosition = customSelectElement.offsetTop;
 
-    // Suggestions list fits on the screen. nothing to do
-    if (
-      picklistPosition - listOfMappingsPosition - autoMapperSuggestionsHeight >=
-      0
-    )
-      return;
-
-    if (!autoMapperSuggestions.classList.contains('controlled'))
-      autoMapperSuggestions.classList.add('controlled');
-
-    const suggestionsListPosition =
-      picklistPosition - autoMapperSuggestionsHeight - currentScrollTop;
-
     const scrollPosition =
       picklistPosition - currentScrollTop - listOfMappingsPosition;
+
+    const suggestionsListPosition =
+      picklistPosition - autoMapperSuggestions.clientHeight - currentScrollTop;
 
     // Hide suggestions box once its parent picklist becomes hidden
     autoMapperSuggestions.style.visibility =
@@ -274,10 +261,9 @@ export default function WbPlanViewMapper(props: {
     const validationResults = ignoreValidation ? [] : validate();
     if (validationResults.length === 0) {
       setIsLoading(true);
-      props
+      void props
         .onSave(state.lines, state.mustMatchPreferences)
-        .then(() => setIsLoading(false))
-        .catch(crash);
+        .then(() => setIsLoading(false));
     } else
       dispatch({
         type: 'ValidationAction',
@@ -322,7 +308,7 @@ export default function WbPlanViewMapper(props: {
       buttonsLeft={
         props.readonly ? (
           <span
-            className="v-center wbplanview-readonly-badge"
+            className="flex items-center text-red-600"
             title={wbText('dataSetUploadedDescription')}
           >
             {wbText('dataSetUploaded')}
@@ -425,7 +411,10 @@ export default function WbPlanViewMapper(props: {
           )}
         </>
       }
-      handleClick={handleClose}
+      // Don't close picklists on outside click in development. Useful for debugging
+      handleClick={
+        process.env.NODE_ENV === 'development' ? undefined : handleClose
+      }
     >
       {!props.readonly && state.validationResults.length > 0 && (
         <ValidationResults
@@ -476,7 +465,9 @@ export default function WbPlanViewMapper(props: {
       )}
 
       <ul
-        className="mapping-line-list"
+        className={`auto-rows-max flex-1 overflow-x-hidden grid
+          grid-cols-[theme(spacing.8)_max-content_auto]
+          print:grid-cols-[min-content_auto]`}
         tabIndex={-1}
         ref={listOfMappings}
         onScroll={repositionSuggestionBox}

@@ -157,7 +157,7 @@ USER specify
 
 COPY requirements-testing.txt /home/specify/
 
-RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+#RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
 
 COPY mypy.ini ./
 

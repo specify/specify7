@@ -10,6 +10,7 @@ import type {
   CustomSelectSubtype,
   CustomSelectType,
 } from './components/customselectelement';
+import { gear } from './components/customselectelement';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -801,7 +802,7 @@ export function getMappingLineData({
               fieldsData: mappingOptionsMenuGenerator!(),
               previewOption: {
                 optionName: 'mappingOptions',
-                optionLabel: '⚙',
+                optionLabel: gear,
                 tableName: '',
                 isRelationship: !columnOptionsAreDefault(columnOptions!),
               },

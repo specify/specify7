@@ -3,7 +3,6 @@ import '../../css/main.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
 import type { Language } from '../localization/utils';
 import type { RA } from '../types';
@@ -29,6 +28,7 @@ function Login({
     readonly inputErrors: RA<string>;
     readonly passwordErrors: RA<string>;
     readonly languages: RA<Readonly<[coode: Language, name: string]>>;
+    readonly csrfToken: string;
   };
   readonly nextUrl: string;
 }): JSX.Element {
@@ -45,7 +45,7 @@ function Login({
         <input
           type="hidden"
           name="csrfmiddlewaretoken"
-          value={csrfToken ?? ''}
+          value={data.csrfToken}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label>
@@ -94,6 +94,7 @@ window.addEventListener('load', () => {
             inputErrors: parseDjangoDump('input-errors'),
             passwordErrors: parseDjangoDump('password-errors'),
             languages: parseDjangoDump('languages'),
+            csrfToken: parseDjangoDump('csrf-token'),
           }}
           nextUrl={
             nextUrl.startsWith(nextDestination)

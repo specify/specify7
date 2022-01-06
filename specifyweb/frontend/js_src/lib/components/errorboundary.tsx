@@ -9,9 +9,9 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
+import type { IR } from '../types';
 import { ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { IR } from '../types';
 
 type ErrorBoundaryState =
   | {

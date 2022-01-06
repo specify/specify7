@@ -93,7 +93,7 @@ const WBView = Backbone.View.extend({
     this.dataset = dataset;
     this.data = dataset.rows;
     if (this.data.length === 0) {
-      this.data.push(new Array(this.dataset.columns.length).fill(null));
+      this.data.push(Array.from(this.dataset.columns).fill(null));
     }
 
     this.mappings /* :
@@ -432,7 +432,7 @@ const WBView = Backbone.View.extend({
 
                     wrapper.setAttribute(
                       'class',
-                      `${wrapper.getAttribute('class')} flex flex-col m-00
+                      `${wrapper.getAttribute('class')} flex flex-col !m-0
                         pb-1 wb-uploaded-view-context-menu`
                     );
                     wrapper.innerHTML = createdRecords
@@ -559,6 +559,9 @@ const WBView = Backbone.View.extend({
   remove() {
     this.hot.destroy();
     this.wbutils.remove();
+    this.datasetmeta.remove();
+    this.uploadedView?.handleClose();
+    this.wbstatus?.();
     this.stopLiveValidation();
     window.removeEventListener('resize', this.handleResize);
     document.body.classList.remove('overflow-x-hidden');
