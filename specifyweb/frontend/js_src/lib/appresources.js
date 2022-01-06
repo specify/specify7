@@ -1,5 +1,4 @@
 "use strict";
-import '../css/appresources.css';
 
 import $ from 'jquery';
 import Q from 'q';
@@ -59,9 +58,8 @@ function setCommandEnabled(editor, name, enabled) {
 
 const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
-    id: "appresource-page",
     tagName: 'section',
-    className: className.containerFull,
+    className: `${className.containerFull} !flex-row`,
     initialize({resources, selectedId}) {
         this.selectedId = selectedId;
         this.resources = resources;
@@ -106,7 +104,7 @@ function modeForResource(appResource) {
 const ResourceDataView = Backbone.View.extend({
     __name__: "AppResourceDataView",
     tagName: 'form',
-    className: "appresource-data",
+    className: "bg-gray-200 flex-1 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 flex flex-col gap-y-2 rounded",
     events: {
         'click .load-file': 'loadFile',
         'change input': 'metadataChanged',
@@ -127,38 +125,38 @@ const ResourceDataView = Backbone.View.extend({
                     $('<h2 class="view-title">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
-                const toolbar = $('<div class="appresource-toolbar" role="toollbar"></div>').appendTo(this.el);
+                const toolbar = $('<div class="flex gap-x-2 items-center flex-wrap" role="toollbar"></div>').appendTo(this.el);
 
-                $(`<label class="metadata-input">
+                $(`<label class="metadata-input flex-1 flex items-center gap-x-1">
                     ${commonText('metadataInline')}
-                    <input type="text" spellcheck="false" autocomplete="on" />
+                    <input class="flex-1" type="text" spellcheck="false" autocomplete="on" />
                 <label>`).appendTo(toolbar);
                 $('.metadata-input input', toolbar).val(this.model.get('metadata'));
 
                 if (this.model.specifyModel.name === 'SpAppResource') {
-                    $(`<label class="mimetype-input">
+                    $(`<label class="mimetype-input flex items-center gap-x-1">
                         ${adminText('mimetype')}
-                        <input type="text" spellcheck="false" autocomplete="on" />
+                        <input class="flex-1" type="text" spellcheck="false" autocomplete="on" />
                     <label>`).appendTo(toolbar);
                     $('.mimetype-input input', toolbar).val(this.model.get('mimetype'));
                 }
 
                 if (userInfo.isadmin) {
                     toolbar.append(
-                      `<button type="button" class="load-file link">${adminText('loadFile')}</button>`
+                      `<button type="button" class="load-file button">${adminText('loadFile')}</button>`
                     );
                 }
 
                 const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
                 const url = (window.URL || window.webkitURL).createObjectURL(blob);
-                $(`<a class="download-resource link">
+                $(`<a class="download-resource button">
                     ${commonText('download')}
                 </a>`).attr({
                     href: url,
                     download: this.model.get('name') + fileExtFor(this.model)
                 }).appendTo(toolbar);
 
-                const editArea = $('<div class="resource-editor">').appendTo(this.el);
+                const editArea = $('<div class="border border-brand-200 flex-1">').appendTo(this.el);
                 var editor = ace.edit(editArea[0], {
                     readOnly: !userInfo.isadmin,
                 });
@@ -256,7 +254,7 @@ const ResourceView = Backbone.View.extend({
             $('<a>', {
                 href: makeUrl(this.model),
                 text: this.model.get('name'),
-                'class': 'intercept-navigation',
+                'class': `intercept-navigation ${this.isSelected ? 'text-brand-300' : ''}`,
                 'aria-current': this.isSelected ? 'page' : 'false',
             })
         );
@@ -267,6 +265,7 @@ const ResourceView = Backbone.View.extend({
 const ResourceList = Backbone.View.extend({
     __name__: "ResourceListView",
     tagName: 'ul',
+    className: 'ml-4',
     initialize({resources, getDirectory, selectedResource, ResourceModel}) {
         this.resources = resources;
         this.getDirectory = getDirectory;
@@ -285,7 +284,7 @@ const ResourceList = Backbone.View.extend({
             const button = $(`<li role="treeitem">
                 <button
                     type="button"
-                    class="link new-resource"
+                    class="link"
                 >
                     ${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}
                 </button>
@@ -325,7 +324,7 @@ const ResourceList = Backbone.View.extend({
         const dialog = $(`<div>
             ${adminText('createResourceDialogHeader')}
             <form id="app-resources-new-resource-form">
-                <label style="white-space: nowrap;">
+                <label class="${className.label}">
                     ${adminText('newResourceName')}
                     <input type="text" spellcheck="on" required>
                 </label>
@@ -351,14 +350,14 @@ const ResourceList = Backbone.View.extend({
 const AppResourcesView = Backbone.View.extend({
     __name__: "AppResourcesView",
     tagName: 'aside',
-    id: 'appresources-view',
+    className: 'bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded',
     events: {
         'click .toggle-content': 'toggle'
     },
     render() {
         this.$el.append(
             $('<h2>').text(this.options.ResourceModel.getLocalizedName()),
-            $('<ul role="tree">')
+            $('<ul role="tree" class="ml-4">')
                 .append(new GlobalResourcesView(this.options).render().el)
                 .append(new DisciplinesView(this.options).render().el)
         );
@@ -454,7 +453,7 @@ const DisciplinesView = Backbone.View.extend({
            `<button type="button" class="toggle-content link" data-appdir="disciplines">
                 ${adminText('disciplineResourcesTitle')(this.count)}
             </button>`,
-            $('<ul role="group">').append(this.views.map(v => v.render().el))
+            $('<ul role="group" class="ml-4">').append(this.views.map(v => v.render().el))
                 .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'disciplines'))
         );
         return this;
@@ -505,7 +504,7 @@ const DisciplineResourcesView = Backbone.View.extend({
                 ${this.discipline.get('name')}
                 <small>(${this.count})</small>
             </button>`).data('appdir', this.discipline.get('resource_uri')),
-            $('<ul role="group">').append(
+            $('<ul role="group" class="ml-4">').append(
                 this.resourceList.render().el.children,
                 this.collectionViews.map(v => v.render().el)
             ).toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.discipline.get('resource_uri')))
@@ -576,7 +575,7 @@ const CollectionResourcesView = Backbone.View.extend({
                 ${this.collection.get('collectionname')}
                 <small>(${this.count})</small>
             </button>`).data('appdir', this.discipline.get('resource_uri')),
-            $('<ul role="group">').append(
+            $('<ul role="group" class="ml-4">').append(
                 this.resourceList.render().el.children,
                 $(`<li role="treeitem">
                     <button type="button" class="toggle-content link" data-appdir="usertypes">
@@ -615,6 +614,7 @@ const CollectionResourcesView = Backbone.View.extend({
 const UserTypeView = Backbone.View.extend({
     __name__: "UserTypeView",
     tagName: 'ul',
+    className: 'ml-4',
     initialize({discipline, collection, directories, resources, selectedResource, ResourceModel}) {
 
         this.views = ["Manager", "FullAccess", "LimitedAccess", "Guest"].map(
@@ -695,6 +695,7 @@ const UserTypeResourcesView = Backbone.View.extend({
 const UserView = Backbone.View.extend({
     __name__: "UserView",
     tagName: 'ul',
+    className: 'ml-4',
     initialize({discipline, collection, users, directories, resources, selectedResource, ResourceModel}) {
 
         this.views = users.map(
