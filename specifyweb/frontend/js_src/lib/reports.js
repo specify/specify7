@@ -363,7 +363,6 @@ function clearQueryFilters(reportResources) {
     
 var ReportParametersDialog = Backbone.View.extend({
     __name__: "ReportParametersDialog",
-    className: "report-parameters-dialog",
     initialize: function(options) {
         this.reportResources = options.reportResources;
         this.parameters = options.parameters;

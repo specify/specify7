@@ -151,9 +151,7 @@ export function ValidationButton(props: {
   return (
     <>
       <Button
-        className={`validation-indicator ${
-          props.isValidated ? 'bg-green-400' : ''
-        }`}
+        className={props.isValidated ? 'bg-green-400' : undefined}
         role="menuitem"
         onClick={
           props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
@@ -197,11 +195,7 @@ export function MappingLineComponent({
   const isMapped =
     lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST';
   return (
-    <li
-      className="wbplanview-mapping-line contents"
-      aria-label={headerName}
-      aria-current={isFocused}
-    >
+    <li className="contents" aria-label={headerName} aria-current={isFocused}>
       <div className="print:hidden border-t-gray-500 py-2 border-t">
         <Button
           className="w-full h-full p-2"
@@ -224,7 +218,6 @@ export function MappingLineComponent({
       <div
         className={`print:gap-1 flex flex-wrap items-center gap-2 border-t
           border-t-gray-500 py-2 ${isFocused ? 'bg-gray-300' : ''}
-          ${isMapped ? '' : 'wbplanview-mapping-line-unmapped'}
         `}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */

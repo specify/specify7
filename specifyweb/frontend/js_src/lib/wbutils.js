@@ -28,7 +28,6 @@ import commonText from './localization/common';
 
 export default Backbone.View.extend({
   __name__: 'WbUtils',
-  className: 'wbs-utils',
   events: {
     'click .wb-cell-navigation': 'navigateCells',
     'click .wb-navigation-text': 'toggleCellTypes',

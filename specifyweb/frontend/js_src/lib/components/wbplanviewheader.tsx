@@ -22,7 +22,6 @@ export function Layout(props: {
   const id = useId('wbplanview-header');
   return (
     <ContainerFull
-      className={props.readonly ? 'wbplanview-readonly' : ''}
       onClick={
         typeof props.handleClick === 'undefined'
           ? undefined

@@ -57,7 +57,6 @@ var interaction_entries, actions, isFulfilled=false;
 export default Backbone.View.extend({
         __name__: "InteractionsDialog",
         tagName: 'nav',
-        className: "interactions-dialog",
         events: {
             'click a.interaction-action': 'interactionActionClick'
         },

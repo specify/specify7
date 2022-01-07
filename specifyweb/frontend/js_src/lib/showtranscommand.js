@@ -22,7 +22,6 @@ function makeDialog(el, options) {
 
 var TransListDialog = Backbone.View.extend({
     __name__: "TransListDialog",
-    className: "trans-dialog",
     events: {
         'click a': 'displayTrans'
     },

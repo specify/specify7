@@ -16,7 +16,7 @@ export default Base.extend({
       'change': 'handleChange',
   },
   render: function() {
-    const wrapper = $('<span class="combobox-wrapper">');
+    const wrapper = $('<span>');
     this.input = $(`<input
       type="text"
       id="${this.el.id}"

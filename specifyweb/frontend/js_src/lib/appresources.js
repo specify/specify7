@@ -149,7 +149,7 @@ const ResourceDataView = Backbone.View.extend({
 
                 const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
                 const url = (window.URL || window.webkitURL).createObjectURL(blob);
-                $(`<a class="download-resource button">
+                $(`<a class="button">
                     ${commonText('download')}
                 </a>`).attr({
                     href: url,
@@ -242,7 +242,6 @@ const ResourceDataView = Backbone.View.extend({
 
 const ResourceView = Backbone.View.extend({
     __name__: "AppResourceView",
-    className: 'appresource-name',
     tagName: 'li',
     initialize({selectedResource}) {
         this.isSelected = this.model === selectedResource;

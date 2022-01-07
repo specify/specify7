@@ -100,7 +100,7 @@ export function ValidationResults(props: {
     >
       {wbText('validationFailedDialogHeader')}
       <p>{wbText('validationFailedDialogMessage')}</p>
-      <section className="validation-results gap-x-2 flex flex-col">
+      <section className="gap-x-2 flex flex-col">
         {props.validationResults.map((fieldPath, index) => (
           <Button
             className="hover:bg-gray-300 border-x-0 bg-transparent border-b-0 rounded-none"
@@ -201,7 +201,7 @@ export function MappingView(props: {
 
   return (
     <section
-      className={`mapping-view overflow-x-auto relative resize-vertical
+      className={`overflow-x-auto relative resize-vertical
         max-h-[50vh] min-h-[250px] h-[var(--mapping-view-height)]`}
       style={
         {

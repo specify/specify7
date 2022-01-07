@@ -47,7 +47,7 @@ export default UIPlugin.extend({
         startUpload: function(file) {
             var self = this;
 
-            self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
+            self.progressBar = $('<div>').progressbar();
 
             self.progressDialog = $(
                 '<div>',

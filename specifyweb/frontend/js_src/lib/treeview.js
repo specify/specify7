@@ -23,7 +23,6 @@ import {className} from './components/basic';
 
 var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
-        className: "tree-header",
         tagName: "thead",
         events: {
             'click th': 'collapseExpand'

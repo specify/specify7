@@ -155,7 +155,7 @@ function ListOfTables({
   readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
-    <ul className="list-of-tables">
+    <ul>
       {tables.map((tableName, index) => (
         <li key={index}>
           <Link
@@ -344,7 +344,6 @@ export default menuItem;
 
 const EditQueryDialog = Backbone.View.extend({
   __name__: 'EditQueryDialog',
-  className: 'query-edit-dialog',
   events: {
     'click .query-export': 'exportQuery',
     'click .create-report, .create-label': 'createReport',

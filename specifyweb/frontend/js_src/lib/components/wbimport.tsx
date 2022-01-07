@@ -436,7 +436,7 @@ function ChooseFile(props: { update: HandleAction }) {
 
   return (
     <label
-      className="contents custom-file-picker"
+      className="contents"
       onDrop={handleFileDropped}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}

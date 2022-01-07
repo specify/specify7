@@ -14,7 +14,6 @@ import {className} from "./components/basic";
 
 export default Backbone.View.extend({
         __name__: "EditResourceDialog",
-        className: "resource-edit-dialog",
     initialize: function({
         resource,
         deleteWarning,

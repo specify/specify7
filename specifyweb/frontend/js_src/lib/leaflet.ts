@@ -374,7 +374,7 @@ export const formatLocalityData = (
             <img
               src="/static/img/new_tab.svg"
               alt="${commonText('opensInNewTab')}"
-              class="new-tab-link-icon"
+              class="h-2"
             >
           </a>`,
         ]

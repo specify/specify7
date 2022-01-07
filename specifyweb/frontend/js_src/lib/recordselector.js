@@ -222,7 +222,6 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
 
 export default Backbone.View.extend({
         __name__: "RecordSelector",
-        className: "recordselector",
         events: {
             'remove': function (evt) {
                 (evt.target === this.el) && this.collection.off(null, null, this);

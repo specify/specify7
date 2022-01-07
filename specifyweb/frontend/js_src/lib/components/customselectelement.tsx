@@ -315,7 +315,7 @@ function Option({
       </span>
       {hasArrow && isRelationship ? (
         <span
-          className="custom-select-option-relationship-icon print:hidden w-3"
+          className="print:hidden w-3"
           title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
           aria-label={wbText('relationship')(tableLabel ?? '')}
           role="img"

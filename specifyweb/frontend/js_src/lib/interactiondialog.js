@@ -23,7 +23,6 @@ var dialog;
 
 export default RecordSetsDialog.extend({
         __name__: "InteractionDialog",
-        className: "interactiondialog recordsetsdialog",
         openIcon: "ui-icon ui-icon-radio-off",
         closeIcon: "ui-icon ui-icon-radio-on",
         events: {

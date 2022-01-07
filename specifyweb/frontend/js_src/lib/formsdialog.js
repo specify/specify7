@@ -31,7 +31,6 @@ import formsText from './localization/forms';
 export default Backbone.View.extend({
         __name__: "FormsDialog",
         tagName: 'nav',
-        className: "forms-dialog",
         events: {'click a': 'handleClick'},
         render: function() {
             let loadingDialog = undefined;

@@ -47,7 +47,6 @@ export function HeaderItems({
       {menuItems.map(({ task, title, icon, view }) => (
         <Link
           className={`
-            menu-item
             p-3
             font-bold
             text-md
