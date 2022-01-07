@@ -423,7 +423,6 @@ const WBView = Backbone.View.extend({
                       wrapper.textContent = wbText(
                         'noUploadResultsAvailable'
                       );
-                      wrapper.style.whiteSpace = 'white-space';
                       wrapper.parentElement.classList.add('htDisabled');
                       const span = document.createElement('span');
                       span.style.display = 'none';

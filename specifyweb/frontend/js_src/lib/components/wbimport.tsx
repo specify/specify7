@@ -449,16 +449,12 @@ function ChooseFile(props: { update: HandleAction }) {
         accept=".csv,.tsv,.txt,.xls,.xlsx"
         onChange={handleFileSelected}
         className="sr-only"
-        style={{ opacity: 0 }}
       />
       <span
         ref={filePickerButton}
-        style={{
-          gridColumn: '1 / span 2',
-        }}
         className={`align-center button h-44 flex justify-center text-center
           ${isDragging ? 'bg-white ring ring-brand-200' : ''}
-          ${isFocused ? 'ring' : ''}`}
+          ${isFocused ? 'ring' : ''} col-span-2`}
       >
         <span>
           {wbText('filePickerMessage')}

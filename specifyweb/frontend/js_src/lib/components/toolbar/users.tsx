@@ -68,11 +68,7 @@ function Users({
       <ul>
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
-            <Link
-              className="intercept-navigation"
-              href={viewUrl}
-              style={{ fontSize: '0.8rem' }}
-            >
+            <Link className="intercept-navigation" href={viewUrl}>
               {userName}
             </Link>
           </li>

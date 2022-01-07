@@ -17,7 +17,7 @@ import { DateElement, formatNumber } from './internationalization';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { Button, Form, Input, Label, TextArea } from './basic';
+import { Button, Form, Input, Label, Select, TextArea } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -302,11 +302,10 @@ function ChangeOwner({
         }}
       >
         {wbText('changeDataSetOwnerDialogHeader')}
-        <label>
+        <Label>
           <p>{wbText('changeDataSetOwnerDialogMessage')}</p>
-          <select
+          <Select
             size={10}
-            style={{ width: '100%' }}
             value={newOwner}
             onChange={({ target }): void =>
               setNewOwner(Number.parseInt(target.value))
@@ -317,8 +316,8 @@ function ChangeOwner({
                 {user.get<string>('name')}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
       </form>
     </ModalDialog>
   );

@@ -341,6 +341,11 @@ const commonText = createDictionary({
     'ru-ru': 'Текущая коллекция',
     ca: 'Col·lecció actual',
   },
+  actions: {
+    'en-us': 'Actions:',
+    'ru-ru': 'Действия:',
+    ca: 'Accions:',
+  },
 
   // Login screen
   username: {

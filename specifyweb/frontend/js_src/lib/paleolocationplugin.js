@@ -47,14 +47,14 @@ export default UIPlugin.extend({
                 }
             });
         } else {
-            $('<div>').append(template({...data, title:formsText('paleoMap')})).dialog({
+            $('<div class="overflow-hidden">').append(template({...data, title:formsText('paleoMap')})).dialog({
                 width: 800,
                 height: 600,
                 title: form,
                 close: function () {
                     $(this).remove();
                 }
-            }).css({overflow: 'hidden'});
+            });
         }
     },
     paleoRefData: function () {

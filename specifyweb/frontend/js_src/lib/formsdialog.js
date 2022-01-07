@@ -54,7 +54,6 @@ export default Backbone.View.extend({
         },
         _render: function(forms) {
             $('<ul>')
-                .css('padding',0)
                 .append(views.map((view,index)=>this.dialogEntry(forms, view, index)))
             .appendTo(this.el);
             this.$el.dialog({
@@ -82,7 +81,6 @@ export default Backbone.View.extend({
                         }`
                     )
                     .attr('href', new model.Resource().viewUrl())
-                    .css({fontSize: '0.8rem'})
                     .attr('data-model-name', modelName)
                     .append(
                         $(

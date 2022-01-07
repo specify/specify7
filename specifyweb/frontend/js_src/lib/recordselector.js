@@ -75,7 +75,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
                     type="button"
                     class="button specify-add-related"
                 >${commonText('new')}</button>
-        `).css('margin-top','5px');
+            `);
             this.showHide();
             return this;
         }
@@ -295,7 +295,6 @@ export default Backbone.View.extend({
             this.el.innerHTML = this.noHeader ? '<div></div>' : '<fieldset></fieldset>';
             const section = $(this.el.children[0]);
             const sliderContainer = document.createElement('div');
-            sliderContainer.style.padding = '0 25px';
             this.slider = new Slider({ onChange: this.redraw.bind(this) }).render();
             this.slider.setMax(this.collection.length - 1);
             sliderContainer.append(this.slider.el);

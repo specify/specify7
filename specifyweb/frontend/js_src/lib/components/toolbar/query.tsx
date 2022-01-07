@@ -121,8 +121,7 @@ function QueryList({
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
                 }
-                className="intercept-navigation"
-                style={{ overflowX: 'auto' }}
+                className="intercept-navigation overflow-x-auto"
               >
                 <TableIcon tableName={query.tableName} tableLabel={false} />
                 {query.name}
@@ -156,7 +155,7 @@ function ListOfTables({
   readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
-    <ul className="list-of-tables" style={{ padding: 0 }}>
+    <ul className="list-of-tables">
       {tables.map((tableName, index) => (
         <li key={index}>
           <Link
@@ -363,26 +362,18 @@ const EditQueryDialog = Backbone.View.extend({
 
     if (!this.spquery.isNew()) {
       form.append(`
-        <ul style="padding: 0">
-           <li style="display:flex;margin:5px">
-               <span class="ui-icon ui-icon-circle-plus"/>
-               <button type="button" class="query-export link">${commonText(
-                 'exportQueryForDwca'
-               )}</button>
-           </li>
-           <li style="display:flex;margin:5px">
-               <span class="ui-icon ui-icon-circle-plus"/>
-               <button type="button" class="create-report link">${commonText(
-                 'exportQueryAsReport'
-               )}</button>
-           </li>
-           <li style="display:flex;margin:5px">
-               <span class="ui-icon ui-icon-circle-plus"/>
-               <button type="button" class="create-label link">${commonText(
-                 'exportQueryAsLabel'
-               )}</button>
-           </li>
-        </ul>
+        <p class="pt-2">${commonText('actions')}</p>
+        <div>
+          <button type="button" class="query-export link">${commonText(
+            'exportQueryForDwca'
+          )}</button>
+          <button type="button" class="create-report link">${commonText(
+            'exportQueryAsReport'
+          )}</button>
+          <button type="button" class="create-label link">${commonText(
+            'exportQueryAsLabel'
+          )}</button>
+        </div>
       `);
     }
 

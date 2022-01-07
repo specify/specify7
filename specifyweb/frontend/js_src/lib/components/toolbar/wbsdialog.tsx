@@ -241,15 +241,15 @@ function Dialog({
                 {datasets.map((dataset, index) => {
                   return (
                     <tr key={index}>
-                      <td style={{ overflowX: 'auto' }}>
+                      <td className="overflow-x-auto">
                         <Link
-                          style={{ fontWeight: 800 }}
                           href={`/specify/workbench/${dataset.id}/`}
                           {...(typeof handleDataSetSelect === 'undefined'
                             ? {
-                                className: 'intercept-navigation',
+                                className: 'intercept-navigation font-bold',
                               }
                             : {
+                                className: 'font-bold',
                                 onClick: (event): void => {
                                   event.preventDefault();
                                   handleDataSetSelect(dataset.id);

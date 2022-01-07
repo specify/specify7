@@ -72,12 +72,11 @@ export function TreeSelectDialog({
       }}
     >
       <nav>
-        <ul style={{ padding: 0 }}>
+        <ul>
           {Object.entries(trees).map(([tree, model]) => (
             <li key={tree}>
               <Link
                 href={getLink(tree)}
-                style={{ fontSize: '0.8rem' }}
                 onClick={(event): void => {
                   event.preventDefault();
                   setIsLoading(true);
