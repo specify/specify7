@@ -4,12 +4,12 @@ import ajax from '../ajax';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
+import router from '../router';
 import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import type { MenuItem, UserTool } from './main';
 import { ModalDialog } from './modaldialog';
-import router from '../router';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -135,7 +135,9 @@ export function CollectionSelector(): JSX.Element {
 }
 
 export function ExpressSearch(): JSX.Element {
-  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [searchQuery, setSearchQuery] = React.useState<string>(
+    () => querystring.parse().q ?? ''
+  );
   return (
     <form
       onSubmit={(event): void => {
@@ -154,7 +156,7 @@ export function ExpressSearch(): JSX.Element {
     >
       <input
         type="search"
-        className="express-search-query flex-1"
+        className="flex-1"
         name="q"
         placeholder={commonText('search')}
         aria-label={commonText('search')}

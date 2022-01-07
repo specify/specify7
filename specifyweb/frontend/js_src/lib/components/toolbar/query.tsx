@@ -78,10 +78,13 @@ function QueryList({
   );
 
   return (
-    <table className="grid-table list-of-queries">
+    <table className="grid-table grid-cols-[auto_auto_min-content] gap-2">
       <thead>
         <tr>
-          <th scope="col" className="pl-table-icon">
+          <th
+            scope="col"
+            className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+          >
             <ButtonLikeLink
               onClick={(): void =>
                 setSortConfig({

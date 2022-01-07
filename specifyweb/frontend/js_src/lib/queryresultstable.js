@@ -7,7 +7,7 @@ import Backbone from './backbone';
 
 import ScrollResults from './scrollresults';
 import QueryResults from './queryresults';
-import { getTreeDef } from './domain';
+import {getTreeDef} from './domain';
 import queryText from './localization/query';
 import commonText from './localization/common';
 
@@ -23,7 +23,9 @@ async function getTreeRanks(tableName){
         const icon = field && field.model.getIcon();
         let name = field?.getLocalizedName();
 
-        const th = $(`<div role="columnheader" scope="col">
+        const th = $(`<div role="columnheader"
+            class="bg-brand-100 border-b border-gray-500 p-1"
+        >
           <div class="v-center">
               <span class="v-center"></span>
           </div>
@@ -49,14 +51,15 @@ async function getTreeRanks(tableName){
 
         icon && div.prepend($('<img>', {
             src: icon,
-            alt: ''
-        }).css('width','var(--table-icon-size)'));
+            alt: '',
+            class: 'w-table-icon',
+        }));
         return th;
     }
 
     export default Backbone.View.extend({
         __name__: "QueryResultsTable",
-        className: "query-results-table",
+        className: "bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded",
         initialize: function(options) {
             var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollElement format";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
@@ -66,27 +69,34 @@ async function getTreeRanks(tableName){
             this.el.innerHTML = `
                 ${this.noHeader
                     ? ''
-                    : `<h3 class="query-results-count">
+                    : `<h3 class="query-results-count pl-4">
                         ${queryText('results')(commonText('loadingInline'))}
                     </h3>`
                 }
                 ${this.countOnly
                     ? ''
-                    : `<div class="grid-table" role="table">
-                          <div role="rowgroup">
-                              <div role="row" id="header-container"></div>
-                          </div>
-                          <div role="rowgroup" class="query-results"></div>
+                    : `<div
+                        role="table"
+                        class="grid-table"
+                        style="
+                            grid-template-columns: repeat(${this.fieldSpecs.length}, auto);
+                        "
+                    >
+                        <div role="rowgroup">
+                            <div role="row" class="header-container"></div>
+                        </div>
+                        <div role="rowgroup" class="query-results"></div>
                     </div>`
                 }
                 <div class="fetching-more" style="display: none;">
-                      <img
-                          src="/static/img/specify128spinner.gif"
-                          alt="${commonText('loading')}"
-                      >
+                    <img
+                        src="/static/img/specify128spinner.gif"
+                        alt="${commonText('loading')}"
+                        class="w-10"
+                    >
                 </div>`;
 
-            this.$('#header-container').append(
+            this.$('.header-container').append(
                 this.fieldSpecs.map(renderHeader)
             );
 

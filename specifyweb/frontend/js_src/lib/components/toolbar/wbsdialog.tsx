@@ -84,7 +84,10 @@ function TableHeader({
   return (
     <thead>
       <tr>
-        <th scope="col" className="pl-table-icon">
+        <th
+          scope="col"
+          className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+        >
           <ButtonLikeLink
             onClick={(): void =>
               handleChange({
@@ -229,10 +232,7 @@ function Dialog({
           </p>
         ) : (
           <nav>
-            <table
-              className="grid-table"
-              style={{ gridTemplateColumns: '1fr auto auto auto' }}
-            >
+            <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
               <TableHeader
                 sortConfig={sortConfig}
                 onChange={(newSortConfig): void => setSortConfig(newSortConfig)}

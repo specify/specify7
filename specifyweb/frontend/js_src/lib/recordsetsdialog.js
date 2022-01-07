@@ -18,7 +18,6 @@ import {formatNumber} from "./components/internationalization";
 export default Backbone.View.extend({
         __name__: "RecordSetsDialog",
         tagName: 'nav',
-        className: "recordsets-dialog table-list-dialog",
         events: {
             'click button.edit': 'edit'
         },
@@ -44,14 +43,13 @@ export default Backbone.View.extend({
         },
         makeTable: function() {
             const table = $(`<table
-                class="grid-table"
-                style="grid-template-columns: 1fr min-content min-content;"
+                class="grid-table grid-cols-[1fr_min-content_min-content] gap-2"
             >
                 <thead>
                     <tr>
                         <th
                             scope="col"
-                            class="pl-table-icon"
+                            class="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
                         >
                             <span class="sr-only">
                                 ${commonText('recordSet')}
@@ -96,6 +94,7 @@ export default Backbone.View.extend({
                         <img
                             src="${model.getIcon()}"
                             alt="${model.getLocalizedName()}"
+                            class="w-table-icon"
                         >
                         ${recordSet.get('name')} 
                     </a>

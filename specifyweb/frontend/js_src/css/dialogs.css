@@ -30,16 +30,7 @@
   height: 16px;
 }
 
-.forms-dialog td:first-of-type + td,
-.reports-dialog td:first-of-type + td,
-.recordset-for-report-dialog td:first-of-type + td,
-.trees-dialog td:first-of-type + td,
-.recordsets-dialog td:first-of-type + td {
+/* TODO: don't use a table in the reports dialog */
+.reports-dialog td:first-of-type + td {
   width: 100%;
-}
-
-.interactiondialog .ui-icon {
-  display: inline-block;
-  vertical-align: sub; /*this centers (in chrome)*/
-  margin-right: 3px;
 }

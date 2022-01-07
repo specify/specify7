@@ -101,12 +101,7 @@
   [type='number']:not([readonly]):not(.no-arrows)::-webkit-inner-spin-button {
     /* Make spinner buttons larger */
     -webkit-appearance: inner-spin-button !important;
-
-    width: var(--half-size);
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
+    @apply w-[2] absolute top-0 right-0 h-full;
   }
 
   [type='number'].webkit:not([readonly]):not(.no-arrows) {
@@ -145,10 +140,37 @@
     }
 
     [title]:focus::after {
-      @apply w-fit absolute p-1 text-black bg-white border border-black;
-      content: attr(title);
-      top: 90%;
+      @apply w-fit absolute p-1 text-black bg-white border border-black
+             content-[attr(title)] top-[90%]
     }
+  }
+
+  /*
+   * Grid-based table implementation for increased flexibility
+   * Does not sacrifice accessibility thanks to [role] attributes
+   * Allows for things like sticky headers and having entire row be a link
+   * You can set column sizes by adding a className like this:
+   *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content_minmax(30px,_1fr)]
+   */
+  table.grid-table,
+  .grid-table[role="table"] {
+    @apply grid
+  }
+
+  .grid-table thead,
+  .grid-table tbody,
+  .grid-table tr,
+  .grid-table [role="rowgroup"],
+  .grid-table [role="row"] {
+    @apply contents
+  }
+
+  .grid-table th,
+  .grid-table td,
+  .grid-table [role="columnheader"],
+  .grid-table [role="rowheader"],
+  .grid-table [role="cell"] {
+    @apply flex items-center gap-x-1;
   }
 
 }
@@ -193,6 +215,7 @@
   }
 }
 
+
 /**
  * This injects Tailwind's utility classes and any utility classes registered
  * by plugins.
@@ -202,12 +225,3 @@
 @layer utilities {
 
 }
-
-/**
- * Use this directive to control where Tailwind injects the hover, focus,
- * responsive, dark mode, and other variants of each class.
- *
- * If omitted, Tailwind will append these classes to the very end of
- * your stylesheet by default.
- */
-@tailwind variants;

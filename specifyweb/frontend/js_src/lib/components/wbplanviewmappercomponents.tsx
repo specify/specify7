@@ -521,7 +521,7 @@ export function MustMatch({
                 {wbText('matchingLogicDialogMessage')}
               </p>
               <table
-                className="grid-table grid-cols-[auto-auto]"
+                className="grid-table grid-cols-[auto-auto] gap-2"
                 aria-describedby={id('description')}
               >
                 <thead>

@@ -46,7 +46,7 @@ export default Backbone.View.extend({
             if (this.fetch) return this.fetch;
             console.log('fetching');
             this.trigger('fetching', this);
-            return this.fetch = this.doFetch(this.offset).done(this.gotData.bind(this));
+            return this.fetch = this.doFetch(this.offset).then(this.gotData.bind(this));
         },
         doFetchSimple: function(offset) {
             var url = querystring.format(this.ajaxUrl, {offset: offset});
@@ -68,13 +68,13 @@ export default Backbone.View.extend({
             var _this = this;
             function recur() {
                 console.log('fetchMoreWhileAppropriate');
-                _this.shouldFetchMore() && _this.fetchMore().done(recur);
+                _this.shouldFetchMore() && _this.fetchMore().then(recur);
             }
             recur();
         },
         start: function() {
             var recur = this.fetchMoreWhileAppropriate.bind(this);
-            this.fetchMore().done(recur);
+            this.fetchMore().then(recur);
         },
         render: function() {
             this.$el.data('view', this);
