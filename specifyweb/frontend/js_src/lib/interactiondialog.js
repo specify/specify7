@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import api from './specifyapi';
 import RecordSetsDialog from './recordsetsdialog';
 import PrepSelectDialog from './prepselectdialog';
@@ -11,7 +11,7 @@ import * as navigation from './navigation';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 
-    var dialog;
+var dialog;
     function makeDialog(el, options) {
         dialog && dialog.dialog('close');
         dialog = el.dialog(_.extend({
@@ -179,7 +179,7 @@ export default RecordSetsDialog.extend({
             this.$el.append(`<div class="action-entry"
                 ${this.options.recordSets._totalCount > 0 ? ' style="display:none"' : ''}
             >
-                <textarea class="i-action-entry" style="width:100%" rows=5 spellcheck="false"></textarea>
+                <textarea class="i-action-entry w-full" rows=5 spellcheck="false"></textarea>
                 <button
                     class="action-entry"
                     type="button"

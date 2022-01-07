@@ -8,6 +8,7 @@ import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
+import { Checkbox, LabelForCheckbox } from './basic';
 import { useId } from './hooks';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -52,12 +53,8 @@ function UserCollectionsUi({
       }}
     >
       <form
+        className="gap-y-2 flex flex-col"
         id={id('form')}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 'var(--half-size)',
-        }}
         onSubmit={(event) => {
           event.preventDefault();
           setIsLoading(true);
@@ -71,9 +68,8 @@ function UserCollectionsUi({
         }}
       >
         {allCollections.map((collection) => (
-          <label key={collection.id} className="v-center">
-            <input
-              type="checkbox"
+          <LabelForCheckbox key={collection.id}>
+            <Checkbox
               checked={selected.includes(collection.id)}
               onChange={(): void =>
                 setSelected(
@@ -84,7 +80,7 @@ function UserCollectionsUi({
               }
             />
             {collection.get<string>('collectionname')}
-          </label>
+          </LabelForCheckbox>
         ))}
       </form>
     </ModalDialog>

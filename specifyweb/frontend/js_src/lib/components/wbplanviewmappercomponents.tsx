@@ -285,7 +285,7 @@ export function mappingOptionsMenu({
       optionLabel: (
         <>
           {wbText('matchBehavior')}
-          <ul style={{ padding: 0, margin: 0 }}>
+          <ul>
             {Object.entries({
               ignoreWhenBlank: {
                 title: wbText('ignoreWhenBlank'),
@@ -521,24 +521,27 @@ export function MustMatch({
                 {wbText('matchingLogicDialogMessage')}
               </p>
               <table
-                className="grid-table grid-cols-[auto-auto] gap-2"
+                className="grid-table grid-cols-[auto_auto] gap-2"
                 aria-describedby={id('description')}
               >
                 <thead>
                   <tr>
-                    <th scope="col">{commonText('tableName')}</th>
-                    <th scope="col">{wbText('mustMatch')}</th>
+                    <th scope="col" className="justify-center">
+                      {commonText('tableName')}
+                    </th>
+                    <th scope="col" className="justify-center">
+                      {wbText('mustMatch')}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {Object.entries(localPreferences).map(
                     ([tableName, mustMatch]) => (
                       <tr key={tableName}>
-                        <td className="v-center">
+                        <td>
                           <label
                             htmlFor={id(`table-${tableName}`)}
-                            className="v-center"
-                            style={{ columnGap: 'var(--quarter-size)' }}
+                            className="contents"
                           >
                             <TableIcon
                               tableName={tableName}
@@ -547,9 +550,8 @@ export function MustMatch({
                             {dataModelStorage.tables[tableName].label}
                           </label>
                         </td>
-                        <td style={{ textAlign: 'center' }}>
-                          <input
-                            type="checkbox"
+                        <td className="justify-center">
+                          <Checkbox
                             checked={mustMatch}
                             id={id(`table-${tableName}`)}
                             {...(readonly

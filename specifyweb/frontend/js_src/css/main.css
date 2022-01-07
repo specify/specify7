@@ -2,11 +2,8 @@
 @import url('~jquery-contextmenu/dist/jquery.contextMenu.css');
 
 /* TODO: make save buttons be on the right side in dialogs */
-@import url('./dialogs.css');
-@import url('./attachments.css');
-@import url('./theme.css');
+/* TODO: revisit reports ui */
 @import url('./icons.css');
-@import url('./colors.css');
 
 /**
  * This injects Tailwind's base styles and any base styles registered by
@@ -16,6 +13,15 @@
 
 /* TODO: get rid of global styles once everything is using React components */
 @layer base {
+
+  @media not (prefers-reduced-motion) {
+    * {
+      transition-property: background, color, border;
+      transition-duration: 0.2s;
+      transition-timing-function: ease-in-out;
+    }
+  }
+
 
   [type='text'],
   [type='email'],
@@ -114,6 +120,10 @@
     inline-flex items-center p-1 text-black;
   }
 
+  button[aria-pressed='true'] {
+    @apply bg-white;
+  }
+
   .link, .icon {
     @apply text-black gap-2 inline-flex items-center hover:text-brand-300
     active:text-brand-100 cursor-pointer;
@@ -182,7 +192,6 @@
 
 @layer components {
   .wbs-form {
-    --highlighted-row: theme('colors.blue.400');
     --new-cell: theme('colors.indigo.350');
     --invalid-cell: theme('colors.red.300');
     --modified-cell: theme('colors.yellow.250');

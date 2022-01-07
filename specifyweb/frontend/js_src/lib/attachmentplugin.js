@@ -22,7 +22,7 @@ export default UIPlugin.extend({
                 </div>`);
                 return this;
             }
-            var control = $('<div class="specify-attachment-container">');
+            var control = $('<div class="specify-attachment-container w-72 h-72">');
             self.$el.replaceWith(control);
             self.setElement(control);
 
@@ -83,7 +83,8 @@ export default UIPlugin.extend({
         },
         displayAttachment: function(attachment) {
             var self = this;
-            self.$el.empty().append('<div class="specify-attachment-display">');
+            self.$el.empty().append(`<div class="specify-attachment-display
+                h-full flex items-center justify-center bg-black">`);
 
             attachments.getThumbnail(attachment).done(function(img) {
                 $('<button>', {type: 'button'})

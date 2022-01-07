@@ -26,8 +26,8 @@ async function getTreeRanks(tableName){
         const th = $(`<div role="columnheader"
             class="bg-brand-100 border-b border-gray-500 p-1"
         >
-          <div class="v-center">
-              <span class="v-center"></span>
+          <div class="contents">
+              <span class="contents"></span>
           </div>
         </div>`);
         const div = th.find('div');

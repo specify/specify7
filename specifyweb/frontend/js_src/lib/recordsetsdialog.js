@@ -47,10 +47,7 @@ export default Backbone.View.extend({
             >
                 <thead>
                     <tr>
-                        <th
-                            scope="col"
-                            class="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
-                        >
+                        <th scope="col">
                             <span class="sr-only">
                                 ${commonText('recordSet')}
                             </span>
@@ -99,7 +96,7 @@ export default Backbone.View.extend({
                         ${recordSet.get('name')} 
                     </a>
                 </td>
-                <td class="item-count" style="visibility:hidden"></td>
+                <td class="item-count invisible"></td>
                 <td>
                     ${this.options.readOnly
                         ? ''
@@ -116,7 +113,7 @@ export default Backbone.View.extend({
                     .text(`(${formatNumber(count)})`)
                     .attr('title',commonText('recordCount'))
                     .attr('aria-label',count)
-                    .css('visibility', 'visible')
+                    .removeClass('invisible')
             );
 
 

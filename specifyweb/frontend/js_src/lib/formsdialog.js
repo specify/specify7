@@ -7,7 +7,7 @@ import Q from 'q';
 
 
 import ajax from './ajax';
-import { getModel } from './schema';
+import {getModel} from './schema';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
 import commonText from './localization/common';
@@ -90,7 +90,7 @@ export default Backbone.View.extend({
                             {
                                 alt: view.attr('iconname'),
                                 src: getIcon(view.attr('iconname')),
-                                width: 'var(--table-icon-size)',
+                                class: 'w-table-icon',
                                 'aria-hidden': true,
                             }
                         ),

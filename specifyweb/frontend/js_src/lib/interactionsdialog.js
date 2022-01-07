@@ -83,7 +83,7 @@ export default Backbone.View.extend({
         _render: function(forms) {
             if(typeof this.options.urlParameter === 'undefined'){
                 let formIndex = -1;
-                this.el.innerHTML = `<ul style="padding: 0">
+                this.el.innerHTML = `<ul>
                     ${interaction_entries
                         .map((entry)=>{
                             if(!isActionEntry(entry))
@@ -148,14 +148,13 @@ export default Backbone.View.extend({
             >
                 <a
                     class="${className} link"
-                    style="font-size: 0.8rem"
                     href="${href}"
                 >
                     <img
                         alt="${interactionEntry.attr('icon')}"
                         src="${getIcon(interactionEntry.attr('icon'))}"
-                        style="width: var(--table-icon-size)"
                         aria-hidden="true"
+                        class="w-table-icon"
                     >
                     ${this.getDialogEntryText(interactionEntry)}
                 </a>

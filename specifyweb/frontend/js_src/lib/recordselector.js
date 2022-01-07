@@ -69,11 +69,11 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
             this.$el.append(`
                 <button
                     type="button"
-                    class="specify-delete-related"
+                    class="button specify-delete-related"
                 >${commonText('delete')}</button>
                 <button
                     type="button"
-                    class="specify-add-related"
+                    class="button specify-add-related"
                 >${commonText('new')}</button>
         `).css('margin-top','5px');
             this.showHide();

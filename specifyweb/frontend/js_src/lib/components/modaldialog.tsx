@@ -197,7 +197,7 @@ export function ModalDialog({
   }, [$dialog, serializedProperties]);
 
   return (
-    <div style={{ position: 'absolute' }} ref={dialogRef}>
+    <div className="absolute" ref={dialogRef}>
       <div />
     </div>
   );

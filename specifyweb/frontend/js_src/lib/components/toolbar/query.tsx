@@ -128,7 +128,7 @@ function QueryList({
                 {query.name}
               </Link>
             </td>
-            <td style={{ color: 'var(--t3)' }}>
+            <td>
               <DateElement date={query.dateCreated} />
             </td>
             <td className="justify-end">
@@ -317,7 +317,6 @@ const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
   icon: '/static/img/query.png',
-  path: '/specify/query',
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,

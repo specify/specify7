@@ -1,14 +1,15 @@
-<header class="attachments-header">
+<header class="flex gap-x-2 items-center">
   <h2><%= commonText('attachments') %></h2>
   <label>
     <span class="sr-only"><%= formsText('filterAttachments') %></span>
     <select
-      class="specify-attachment-type"
       title="<%= formsText('filterAttachments') %>"
       aria-label="<%= formsText('filterAttachments') %>"
     ></select>
   </label>
 </header>
-<div class="specify-attachment-browser">
-  <div class="specify-attachment-cells"></div>
-</div>
+<div
+  class="specify-attachment-browser flex-1 overflow-y-auto gap-4 rounded p-4
+    shadow-[0_3px_5px_-1px] shadow-gray-500 bg-gray-200 grid items-center"
+  style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))"
+></div>

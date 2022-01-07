@@ -47,7 +47,7 @@ function ErrorDialog({
       <div role="alert">
         {commonText('errorBoundaryDialogHeader')}
         <p>{commonText('errorBoundaryDialogMessage')}</p>
-        <details style={{ whiteSpace: 'pre-wrap' }}>{children}</details>
+        <details className="whitespace-pre-wrap">{children}</details>
       </div>
     </ModalDialog>
   );

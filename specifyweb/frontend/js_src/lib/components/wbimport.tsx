@@ -298,10 +298,9 @@ class WbImport extends Component<{}, WbImportState> {
           </>
         );
         ui = (
-          <>
-            <br />
+          <div>
             <DoImportButton update={update} />
-          </>
+          </div>
         );
         preview = (
           <Preview data={this.state.preview} hasHeader={this.state.hasHeader} />
@@ -329,14 +328,8 @@ class WbImport extends Component<{}, WbImportState> {
 
     return (
       <ContainerFull>
-        <div>
-          <h2
-            style={{
-              paddingBottom: '0.5rem',
-            }}
-          >
-            {wbText('wbImportHeader')}
-          </h2>
+        <div className="gap-y-2 flex flex-col">
+          <h2>{wbText('wbImportHeader')}</h2>
           <div
             className={`gap-2 grid grid-cols-2 items-center min-w-[275px]
             w-2/5 wb-import-table`}

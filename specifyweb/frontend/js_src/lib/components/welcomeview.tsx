@@ -79,8 +79,8 @@ function AboutSpecify(): JSX.Element {
               </NewTabLink>
             </p>
           </address>
-          <p style={{ textAlign: 'justify' }}>{welcomeText('disclosure')}</p>
-          <p style={{ textAlign: 'justify' }}>{welcomeText('licence')}</p>
+          <p className="text-justify">{welcomeText('disclosure')}</p>
+          <p className="text-justify">{welcomeText('licence')}</p>
 
           <section id="specify-system-info">
             <h3>{welcomeText('systemInformation')}</h3>

@@ -72,7 +72,7 @@ const AppResourcePage = Backbone.View.extend({
             if (selected != null) {
                 new ResourceDataView({model: selected}).render().$el.appendTo(this.el);
             } else {
-                $(`<p style="margin:auto">${this.options.ResourceModel.getLocalizedName()} not found.</p>`).appendTo(this.el);
+                $(`<p class="m-auto">${this.options.ResourceModel.getLocalizedName()} not found.</p>`).appendTo(this.el);
             }
         }
         return this;

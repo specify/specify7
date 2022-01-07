@@ -33,10 +33,7 @@ export default Backbone.View.extend({
             this.blockers = blockers;
             if(blockers.length !== 0)
               this.button[0].innerHTML = `
-                <span
-                  class="ui-icon ui-icon-alert"
-                  style="display: inline-block;"
-                ></span>
+                <spanclass="ui-icon ui-icon-alert"></span>
                 ${commonText('delete')}
               `;
         },

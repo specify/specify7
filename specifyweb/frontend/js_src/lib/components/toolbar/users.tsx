@@ -48,7 +48,6 @@ function Users({
   ) : (
     <ModalDialog
       properties={{
-        className: 'table-list-dialog',
         title: commonText('manageUsersDialogTitle'),
         close: handleClose,
         buttons: [
@@ -66,7 +65,7 @@ function Users({
         ],
       }}
     >
-      <ul style={{ padding: 0 }}>
+      <ul>
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
             <Link

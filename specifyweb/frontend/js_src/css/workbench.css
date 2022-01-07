@@ -18,70 +18,51 @@
 
 /* Show table icons in column headers */
 .htCore thead th > .relative {
-  display: flex;
-  align-content: center;
-  justify-content: center;
+  @apply flex justify-center items-center;
 }
 
 .htCore .colHeader {
-  display: contents !important;
+  @apply !contents;
 }
 
 .handsontable .columnSorting {
   line-height: 20px;
 }
 
-/* Picklists */
-.handsontable td .htAutocompleteArrow {
-  color: var(--t1);
-}
-
-.handsontable td .htAutocompleteArrow:hover {
-  color: var(--b4);
-}
-
-/* See https://github.com/specify/specify7/issues/932 */
-.htComments.repositioned {
-  --offset-right: 50vw;
-  right: var(--offset-right);
-  left: unset !important;
-}
-
 /* Sorting direction */
 .handsontable .columnSorting::before {
-  position: static !important;
-  order: 2;
-  margin-top: 5px !important;
-  padding-right: 2px;
-  background-position-x: center !important;
+  @apply order-2 !static pr-1 !mt-1 !bg-center;
 }
 
 /* Sorting priority index */
 .handsontable .columnSorting::after {
-  position: static !important;
-  order: 2;
-  margin-top: 8px !important;
-  margin-left: -10px;
+  @apply order-2 !static !mt-2 -ml-2;
 }
 
-/* Current row/col table header */
+/* Highlighted cells' headers */
 .handsontable tbody th.ht__highlight,
 .handsontable thead th.ht__highlight {
-  background-color: var(--highlighted-row);
-  color: var(--t1);
+  @apply text-black;
+  background: theme('colors.blue.400');
+}
+
+/* Picklists */
+.handsontable td .htAutocompleteArrow {
+  @apply text-black;
+}
+
+.handsontable td .htAutocompleteArrow:hover {
+  @apply text-gray-500;
 }
 
 /* CONTENT styles */
-.wbs-form.wb-focus-coordinates .wb-coordinate-cell {
-  color: var(--t1);
-}
-
 .wbs-form.wb-show-upload-results .htCore td:not(.wb-no-match-cell) {
   background: unset;
 }
 
-.wbs-form.wb-show-upload-results .wb-no-match-cell {
-  color: var(--t1);
+.wbs-form.wb-show-upload-results .wb-no-match-cell,
+.wbs-form.wb-focus-coordinates .wb-coordinate-cell {
+  @apply text-black;
 }
 
 /* Cell navigation */
@@ -91,7 +72,7 @@
 .wbs-form .wb-invalid-cell,
 .wbs-form .wb-search-match-cell,
 .wb-navigation-section {
-  background-color: var(--accent-color);
+  @apply bg-[color:var(--accent-color)];
 }
 
 /* The order here determines the priority of the states

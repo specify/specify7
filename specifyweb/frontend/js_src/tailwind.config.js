@@ -52,7 +52,10 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
   ],
-  // Disable purge in development for convenience
+  /*
+   * Disable purge in development for convenience
+   * NOTE: this increases build times
+   */
   ...(process.env.NODE_ENV === 'production' ? {} : {
     safelist: [
       {pattern: /./},

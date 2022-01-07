@@ -1,15 +1,21 @@
 import { systemAvailable } from './attachments';
-import { AttachmentsView } from './attachmentstask';
+import Backbone from './backbone';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
+import * as navigation from './navigation';
+
+const View = Backbone.View.extend({
+  render() {
+    navigation.go('attachments/');
+  },
+});
 
 const menuItem: MenuItem = {
   task: 'attachments',
   title: commonText('attachments'),
   icon: '/static/img/attachment_icon.png',
-  path: '/specify/attachments',
   enabled: systemAvailable,
-  view: () => new AttachmentsView(),
+  view: () => new View(),
 };
 
 export default menuItem;

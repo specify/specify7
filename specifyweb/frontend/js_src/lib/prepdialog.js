@@ -11,7 +11,6 @@ import formsText from './localization/forms';
 
 export default Backbone.View.extend({
     __name__: "PrepDialog",
-    className: "prepdialog table-list-dialog",
     initialize() {
         Object.assign(this, {
             colobjModel: schema.models.CollectionObject,
@@ -26,7 +25,7 @@ export default Backbone.View.extend({
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         render: function() {
-            var table = $('<table>');
+            var table = $('<table class="w-full">');
             table.append(this.getTblHdr());
             const tbody = $('<tbody>').appendTo(table);
             var makeEntry = this.dialogEntry.bind(this);

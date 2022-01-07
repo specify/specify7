@@ -19,13 +19,9 @@ export const UnhandledErrorView = Backbone.View.extend({
     this.el.innerHTML = `
       ${commonText('backEndErrorDialogHeader')} 
       <p>${commonText('backEndErrorDialogMessage')}</p>
-      <textarea
-        readonly
-        style="
-          width: 100%;
-          min-height: 600px;
-        "
-      >${this.options.response}</textarea>
+      <textarea readonly class="w-full min-h-[600px]">
+        ${this.options.response}
+      </textarea>
     `;
     this.$el.dialog({
       modal: true,

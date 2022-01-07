@@ -44,7 +44,7 @@ export function HeaderItems({
         order-2 -mt-2 px-2`}
       aria-label="primary"
     >
-      {menuItems.map(({ task, title, path, icon, view }) => (
+      {menuItems.map(({ task, title, icon, view }) => (
         <Link
           className={`
             menu-item
@@ -71,7 +71,6 @@ export function HeaderItems({
           `}
           key={task}
           href={`/specify/task/${task}/`}
-          data-path={path}
           aria-current={task === activeTask ? 'page' : undefined}
           onClick={(event): void => {
             event.preventDefault();
@@ -213,7 +212,6 @@ export function UserTools({
                 <li key={task}>
                   <Link
                     href={`${basePath}${task}/`}
-                    style={{ fontSize: '0.8rem' }}
                     onClick={(event): void => {
                       if (typeof view === 'undefined') return;
                       event.preventDefault();

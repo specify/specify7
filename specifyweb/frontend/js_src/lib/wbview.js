@@ -1147,7 +1147,10 @@ const WBView = Backbone.View.extend({
     if (data.some((row) => row.length === this.dataset.columns.length))
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
-  // Reposition the comment box if it is overflowing
+  /*
+   * Reposition the comment box if it is overflowing
+   * See https://github.com/specify/specify7/issues/932
+   * */
   afterOnCellMouseOver(_event, coordinates, cell) {
     const physicalRow = this.hot.toPhysicalRow(coordinates.row);
     const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
@@ -1168,7 +1171,7 @@ const WBView = Backbone.View.extend({
       '--offset-right',
       `${Math.round(window.innerWidth - cellContainerBoundingBox.x)}px`
     );
-    this.hotCommentsContainer.classList.add('repositioned');
+    this.hotCommentsContainer.classList.add('right-[var(--offset-right)] !left-[unset]');
     if (this.hotCommentsContainerRepositionCallback) {
       clearTimeout(this.hotCommentsContainerRepositionCallback);
       this.hotCommentsContainerRepositionCallback = undefined;
@@ -1186,7 +1189,7 @@ const WBView = Backbone.View.extend({
       this.hotCommentsContainer.style.getPropertyValue('--offset-right') !== ''
     )
       this.hotCommentsContainerRepositionCallback = setTimeout(
-        () => this.hotCommentsContainer.classList.remove('repositioned'),
+        () => this.hotCommentsContainer.classList.remove('right-[var(--offset-right)] !left-[unset]'),
         10
       );
   },

@@ -93,7 +93,11 @@ export default Backbone.View.extend({
 
             if (resource) {
                 const fillItIn = ()=>{
-                    const objFormat = field.isRelationship ? format : _.bind(fieldformat, null, field);
+                    const objFormat = field.isRelationship
+                      ? format
+                      : field.isTemporal()
+                      ? (value) => value
+                      : _.bind(fieldformat, null, field);
 
                     resource.rget(fieldName).pipe(objFormat).done((value)=>{
                         this.el.value = value ?? '';

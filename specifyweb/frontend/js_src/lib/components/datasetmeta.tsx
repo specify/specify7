@@ -195,9 +195,7 @@ function DataSetName({
       <h2 className="overflow-y-auto">
         {`${wbText('dataSet')} ${name}`}
         {dataset.uploadresult?.success === true ? (
-          <span style={{ color: '#f24' }}>
-            {wbText('dataSetUploadedLabel')}
-          </span>
+          <span className="text-red-500">{wbText('dataSetUploadedLabel')}</span>
         ) : (
           ''
         )}

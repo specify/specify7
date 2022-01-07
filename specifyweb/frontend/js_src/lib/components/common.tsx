@@ -47,7 +47,7 @@ export function TableIcon({
   if (tableIconSource !== '/images/unknown.png')
     return (
       <span
-        className="table-icon table-icon-image"
+        className="w-table-icon h-table-icon bg-center bg-no-repeat bg-contain"
         role="img"
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={resolvedTableLabel}
@@ -62,7 +62,7 @@ export function TableIcon({
     <span
       style={{ backgroundColor: color }}
       role="img"
-      className="table-icon table-icon-generated"
+      className="w-table-icon h-table-icon flex items-center justify-center text-white rounded"
       title={resolvedTableLabel}
       aria-label={resolvedTableLabel}
     >
@@ -73,7 +73,7 @@ export function TableIcon({
 
 export const tableIconUndefined = (
   <span
-    className="table-icon table-icon-undefined"
+    className="w-table-icon h-table-icon flex items-center justify-center font-bold text-red-500"
     aria-label={commonText('unmapped')}
     role="img"
   >
@@ -83,7 +83,7 @@ export const tableIconUndefined = (
 
 export const tableIconSelected = (
   <span
-    className="table-icon table-icon-selected"
+    className="w-table-icon h-table-icon flex items-center justify-center font-bold text-green-500"
     aria-label={commonText('mapped')}
     role="img"
   >
@@ -92,7 +92,7 @@ export const tableIconSelected = (
 );
 
 export const tableIconEmpty = (
-  <span className="table-icon table-icon-empty" aria-hidden={true} />
+  <span className="w-table-icon h-table-icon" aria-hidden={true} />
 );
 
 /** Internationalized bi-directional string comparison function */
@@ -118,7 +118,7 @@ export function SortIndicator({
   const isSorted = sortConfig.sortField === fieldName;
   return (
     <span
-      className="sort-indicator"
+      className="text-brand-300"
       aria-label={
         isSorted
           ? sortConfig.ascending

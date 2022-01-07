@@ -97,9 +97,9 @@ var TreeHeader = Backbone.View.extend({
                 selector: ".tree-node .expander",
                 build: contextMenuBuilder(this)
             });
-            const controls = $('<header class="flex gap-x-2 iitems-center"></header>');
+            const controls = $('<header class="flex gap-x-2 items-center"></header>');
             controls.appendTo(this.el);
-            $('<h2>').text(commonText('trees')).appendTo(controls);
+            $('<h2>').text(getModel(this.table).getLocalizedName()).appendTo(controls);
             const searchBox = this.makeSearchBox();
             controls.append(searchBox);
             this.configureAutocomplete(searchBox);
@@ -109,7 +109,11 @@ var TreeHeader = Backbone.View.extend({
                     .prop('aria-live','polite')
                     .append(
                         this.header.render().el,
-                        $('<tfoot>').append(_.map(this.ranks, function() { return $('<th class="h-8">')[0]; })),
+                        $('<tfoot>').append(_.map(this.ranks, () =>$(`<th class="
+                            h-8 border border-transparent bg-gradient-to-r
+                            from-[hsl(26deg_92%_62%_/_0)] via-[hsl(26deg_92%_62%_/_10%)]
+                            to-[hsl(26deg_92%_62%_/_0)]">`)[0]
+                        )),
                         `<tbody><tr class="loading"><td>${commonText('loadingInline')}</td></tr></tbody>`
                     )
             ).appendTo(this.el);

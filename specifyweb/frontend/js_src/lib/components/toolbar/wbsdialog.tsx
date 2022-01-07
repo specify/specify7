@@ -259,7 +259,7 @@ function Dialog({
                           <img
                             src="/images/Workbench32x32.png"
                             alt=""
-                            style={{ width: 'var(--table-icon-size)' }}
+                            className="w-table-icon"
                           />
                           {dataset.name}
                         </Link>
@@ -337,7 +337,6 @@ const menuItem: MenuItem = {
   task: 'workbenches',
   title: commonText('workbench'),
   icon: '/static/img/workbench.png',
-  path: '/specify/workbench',
   view: ({ onClose }) => new View({ onClose, showTemplates: false }),
 };
 

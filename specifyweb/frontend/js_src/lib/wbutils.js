@@ -703,11 +703,7 @@ export default Backbone.View.extend({
     });
 
     const updateGeolocate = (localityIndex) =>
-      this.geoLocateDialog.html(`<iframe
-        style="
-          width: 100%;
-          height: 100%;
-          border: none;"
+      this.geoLocateDialog.html(`<iframe class="w-full h-full"
         title="${wbText('geoLocate')}"
         src="${getGeoLocateQueryURL(localityIndex)}"
       ></iframe>`);

@@ -30,7 +30,6 @@ const View = createBackboneView(RepairTree);
 
 const menuItem: MenuItem = {
   task: 'tree',
-  path: '/specify/tree',
   title: commonText('trees'),
   icon: '/static/img/trees.png',
   view: ({ onClose }) => new View({ onClose }),

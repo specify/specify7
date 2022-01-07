@@ -73,7 +73,7 @@ const PrepReturnRow = Backbone.View.extend({
                     aria-label="${formsText('resolvedAmount')}"
                 >
             </td>
-            <td><button type="button" class="return-remark link w-full" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
+            <td><button type="button" class="return-remark link w-full hidden" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
         `);
 
         $.when(
@@ -219,7 +219,6 @@ const REMARKSROW = `<tr class="return-remark" style="display:none">
 
 export default Backbone.View.extend({
     __name__: "PrepReturnDialog",
-    className: "prepreturndialog table-list-dialog",
     initialize({populateForm, loanpreparations}) {
         this.populateForm = populateForm;
         this.loanpreparations = loanpreparations;

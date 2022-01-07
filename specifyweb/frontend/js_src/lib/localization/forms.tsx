@@ -36,6 +36,11 @@ const formsText = createDictionary({
     'ru-ru': 'Открытие...',
     ca: 'Opening...',
   },
+  noAttachments: {
+    'en-us': 'There are no attachments',
+    'ru-ru': 'В вашей коллекции нет вложений',
+    ca: 'No hi ha fitxers adjunts',
+  },
   clone: {
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',

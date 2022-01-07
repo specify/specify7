@@ -94,7 +94,7 @@ var AgentForDiv = Backbone.View.extend({
             'click': 'click'
         },
         render: function() {
-            this.el.textContent = formsText('setAgents');
+            this.el.value = formsText('setAgents');
             this.model.isNew() && this.$el.attr('title', formsText('setAgentsDisabledButtonDescription')).prop('disabled', true);
             return this;
         },

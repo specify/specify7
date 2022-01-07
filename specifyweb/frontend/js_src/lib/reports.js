@@ -32,7 +32,6 @@ function makeDialog(el, options) {
 
 var ReportListDialog = Backbone.View.extend({
     __name__: "ReportListDialog",
-    className: "reports-dialog table-list-dialog",
     events: {
         'click button.select': 'getReportUI',
         'click button.edit': 'editReport',
@@ -394,7 +393,6 @@ var ReportParametersDialog = Backbone.View.extend({
 
 var ChooseRecordSetDialog = Backbone.View.extend({
     __name__: "ChooseRecordSetForReport",
-    className: "recordset-for-report-dialog table-list-dialog",
     events: {
         'click a': 'selected'
     },

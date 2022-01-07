@@ -22,24 +22,28 @@ var currentView;
             previousFocusedElement?.focus()
         );
 
-        /*
-         * Make title non-bold by adding 'ui-dialog-with-header' className to
-         * non-React dialogs that have headers (React dialogs do the same in
-         * modaldialog.tsx)
-         * */
-        if(!this.options.dialogClass.split(' ').includes('ui-dialog-react'))
-            this.uiDialog.on(
-                'dialogopen',
-                () =>
-                    this.uiDialog[0].getElementsByTagName('h2').length &&
-                    this.uiDialog[0].classList.add('ui-dialog-with-header')
-            );
+        // Make title non-bol if dialog has header
+        this.uiDialog.on(
+            'dialogopen',
+            () =>{
+                if (
+                    this.uiDialog[0].getElementsByTagName('h2').length ||
+                    this.uiDialog[0].classList.contains('ui-dialog-with-header')
+                )
+                    this.uiDialog
+                       .find('.ui-dialog-title')[0]
+                       .classList.add('font-normal');
+            }
+        );
 
         // Set proper aria attributes
+        if(this.uiDialog[0].classList.contains('ui-dialog-no-close'))
+            this.uiDialog.find('.ui-dialog-titlebar-close')[0].classList.add('hidden');
         this.uiDialog[0].setAttribute('role','dialog');
         if(this.options.modal)
             this.uiDialog[0].setAttribute('aria-modal','true');
         this.uiDialog.find('.ui-dialog-titlebar')[0]?.setAttribute('role','header');
+        this.uiDialog.find('.ui-dialog-titlebar')[0]?.classList.add('flex');
         this.uiDialog.find('.ui-dialog-buttonpane')[0]?.setAttribute('role','menu');
     };
 

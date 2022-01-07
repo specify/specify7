@@ -33,8 +33,6 @@ export type MenuItem = UserTool & {
     readonly urlParameter?: string;
   }) => Backbone.View;
   readonly icon: string;
-  // This menuItem is considered active if URL begins with this path
-  readonly path?: string;
 };
 
 const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([
@@ -115,7 +113,7 @@ export default function Main({
     typeof userTools === 'undefined' ? null : (
     <>
       <button
-        className="sr-only"
+        className="focus:not-sr-only button !absolute top-0 left-0 !p-2 sr-only"
         type="button"
         onClick={(): void => {
           if (!mainRef.current) return;

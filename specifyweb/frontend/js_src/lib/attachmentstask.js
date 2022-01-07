@@ -15,13 +15,13 @@ import whenAll from './whenall';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
-
+import {className} from './components/basic';
 import template from './templates/attachmentbrowser.html';
 
 
 export const AttachmentsView = Backbone.View.extend({
         __name__: "AttachmentsView",
-        className: "specify-attachments-view",
+        className: className.containerFull,
         title: commonText('attachments'),
         events: {
             'click .specify-attachment-thumbnail': 'openOriginal',
@@ -60,14 +60,12 @@ export const AttachmentsView = Backbone.View.extend({
             this.attachments = collections.all;
         },
         index: function() {
-            return this.$('.specify-attachment-cell').length;
+            return this.$('.specify-attachment-browser')[0].childElementCount;
         },
         makeThumbnail: function() {
-            var wrapper = $('<div>');
-            var cell = $('<div class="specify-attachment-cell">').append(wrapper);
+            var cell = $('<div class="relative min-w-[10] min-h-[10]">');
 
             var attachment = this.attachments.at(this.index());
-            var filename = attachment.get('attachmentlocation');
             var tableId = attachment.get('tableid');
             var title = attachment.get('title');
 
@@ -75,40 +73,38 @@ export const AttachmentsView = Backbone.View.extend({
             var icon = model ? (model.system ? "/images/system.png" : model.getIcon()) :
                 schema.models.Attachment.getIcon();
 
-            var dataObjIcon = $('<img>', {
-                'class': "specify-attachment-dataobj-icon",
+            $('<button>', {
+                class: 'specify-attachment-dataobj-icon absolute left-0 top-0',
+                title: model.getLocalizedName(),
+            }).append($('<img>', {
+                'class': "w-table-icon",
                 src: icon,
                 alt: model.getLocalizedName()
-            }).appendTo(wrapper);
+            })).appendTo(cell);
 
-            attachments.getThumbnail(attachment, 123).done(function(img) {
-                img.addClass('specify-attachment-thumbnail')
-                    .attr('title', title)
-                    .appendTo(wrapper);
-            });
+            attachments.getThumbnail(attachment, 123).done((img)=>
+                $('<button>',{
+                    class: 'bg-white rounded shadow-lg shadow-gary-600 specify-attachment-thumbnail flex justify-center items-center',
+                    title,
+                }).append(
+                    img.addClass('max-w-full max-h-full object-contain').attr('alt', title)
+                ).appendTo(cell)
+            );
 
             return cell;
         },
         fillPage: function() {
             var browser = this.$('.specify-attachment-browser');
-            var cells = this.$('.specify-attachment-cells');
 
-            if (browser.scrollTop() + browser.height() + 200 > cells.height()) {
-                while (this.index() < this.attachments.length) {
-                    this.$('.specify-attachment-cells').append(
-                        this.makeThumbnail());
-                }
+            // Fetch more attachments when within 200px of the bottom
+            if (Math.max(browser[0].scrollTop, browser[0].clientHeight) + 200 > browser[0].scrollHeight) {
+                while (this.index() < this.attachments.length)
+                    browser.append(this.makeThumbnail());
 
-                var _this = this;
-                this.attachments.isComplete() || this.attachments._fetch || this.attachments.fetch().done(function() {
-                    _this.fillPage();
-                });
+                // Fetch more if not all are fetched are not already fetching
+                if(!this.attachments.isComplete() && !this.attachments._fetch)
+                    this.attachments.fetch().done(()=>this.fillPage());
             }
-        },
-        setSize: function() {
-            var winHeight = $(window).height();
-            var offset = this.$('.specify-attachment-browser').offset().top;
-            this.$('.specify-attachment-browser').height(winHeight - offset - 50);
         },
         getCounts: function() {
             return whenAll(_.map(this.attachmentCollections, function(collection) {
@@ -119,14 +115,6 @@ export const AttachmentsView = Backbone.View.extend({
             var self = this;
             self.$el.html(template({formsText, commonText}));
 
-            var resize = function() {
-                self.setSize();
-                self.fillPage();
-            };
-
-            $(window).resize(resize);
-            self.$el.on("remove", function() { $(window).off('resize', resize); });
-            _.defer(function() { self.setSize(); });
             self.$('.specify-attachment-browser').scroll(function() { self.fillPage(); });
 
             self.getCounts().done(function(counts) {
@@ -135,7 +123,8 @@ export const AttachmentsView = Backbone.View.extend({
                     label="${formsText('tables')}
                 "></optgroup>`);
 
-                var i = 0;
+                let hasAttachments = false;
+                let i = 0;
                 _.each(self.attachmentCollections, function(collection, key) {
                     var count = counts[i++];
                     var name = key === 'all' ? "All" : key === 'unused' ? "Unused" :
@@ -143,11 +132,16 @@ export const AttachmentsView = Backbone.View.extend({
 
                     var parent = _(['all', 'unused']).contains(key) ? self.$('select') : tables;
 
-                    (count > 0) && parent.append('<option value="' + key + '">' + name + ' - ' + count + '</option>');
+                    if(count > 0){
+                        parent.append('<option value="' + key + '">' + name + ' - ' + count + '</option>');
+                        hasAttachments=true;
+                    }
                 });
 
-                self.$('select').append(tables);
+                if(!hasAttachments)
+                    tables.append(`<option disabled selected>${formsText('noAttachments')}</option>`);
 
+                self.$('select').append(tables);
                 self.fillPage();
             });
 
@@ -216,9 +210,9 @@ export const AttachmentsView = Backbone.View.extend({
                 }
             });
         },
-        selectChanged: function(evt) {
+        selectChanged: function() {
             this.attachments = this.attachmentCollections[this.$('select').val()];
-            this.$('.specify-attachment-cells').empty();
+            this.$('.specify-attachment-browser').empty();
             this.fillPage();
         }
     });
