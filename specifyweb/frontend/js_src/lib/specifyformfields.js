@@ -38,12 +38,12 @@ export default function(doingFormTable, mode, cell, id) {
             },
             textareabrief: function() {
                 if (isReadOnly)
-                    return $('<input type="text" class="specify-field" readonly>');
+                    return $('<input type="text" class="specify-field w-full" readonly>');
                 return $('<textarea class="specify-field"></textarea>').attr('rows', cell.attr('rows') || 1);
             },
             combobox: function() {
                 const control= $(`<select
-                    class="specify-combobox specify-field"
+                    class="specify-combobox specify-field w-full"
                 ></select>`);
                 control.attr({'disabled': isReadOnly,
                               'data-specify-picklist': cell.attr('picklist'),
@@ -59,16 +59,16 @@ export default function(doingFormTable, mode, cell, id) {
                     .prop('readonly',isReadOnly);
             },
             text: function() {
-                return $('<input type="text" class="specify-field">')
+                return $('<input type="text" class="specify-field w-full">')
                     .attr('value', cell.attr('default'))
                     .prop('readonly', isReadOnly);
             },
             dsptextfield: function() {
-                return $('<input type="text" class="specify-field" readonly>')
+                return $('<input type="text" class="specify-field w-full" readonly>')
                     .attr('value', cell.attr('default'));
             },
             formattedtext: function() {
-                return $('<input type="text" class="specify-formattedtext specify-field">')
+                return $('<input type="text" class="specify-formattedtext specify-field w-full">')
                     .attr('value', cell.attr('default'))
                     .prop('readonly', isReadOnly);
             },

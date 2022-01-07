@@ -29,8 +29,8 @@ export default Backbone.View.extend({
         events: {
             'click .field-expand': 'expandToggle',
             'click .field-delete': 'deleteClicked',
-            'change input.op-negate': 'opNegateChanged',
-            'change .field-show': 'fieldShowChanged',
+            'click .op-negate': 'opNegateChanged',
+            'click .field-show': 'fieldShowChanged',
             'click .field-sort': 'fieldSortClicked',
             'click .field-move-up, .field-move-down': 'changePosition',
 
@@ -66,17 +66,21 @@ export default Backbone.View.extend({
                 });
             }
 
+            this.isIncomplete = true;
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
             this.$el.append(template({commonText, queryText, cid: this.cid}));
-            this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
-            this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
-
-            _(this.$('button')).each(function(button) {
-                button = $(button);
-                button.button({icons: { primary: 'ui-icon-' + button.data('icon') }, text: false});
-            });
+            this.$('.field-show')[0].ariaPressed = this.spqueryfield.get('isdisplay');
+            this.$('.field-show')[0].classList[this.spqueryfield.get('isdisplay')
+              ? 'add'
+              : 'remove'
+            ]('!bg-green-300');
+            this.$('.op-negate')[0].ariaPressed = this.spqueryfield.get('isnot');
+            this.$('.op-negate')[0].classList[this.spqueryfield.get('isnot')
+              ? 'add'
+              : 'remove'
+            ]('!bg-red-400');
 
             this.spqueryfield.on('change:sorttype', this.sortTypeChanged, this);
             this.sortTypeChanged();
@@ -98,15 +102,21 @@ export default Backbone.View.extend({
             this.options.parentView.moveField(this, dir);
         },
         fieldShowChanged: function() {
-            var val = this.$('.field-show').prop('checked');
-            this.spqueryfield.set('isdisplay', val);
+            this.$('.field-show')[0].ariaPressed = this.$('.field-show')[0].ariaPressed === 'true' ? 'false' : 'true';
+            this.$('.field-show')[0].classList[this.$('.field-show')[0].ariaPressed==='true'? 'add': 'remove']('!bg-green-300');
+            this.spqueryfield.set('isdisplay', this.$('.field-show')[0].ariaPressed === 'true');
         },
         fieldSortClicked: function() {
             var val = (this.spqueryfield.get('sorttype') + 1) % SORT_ICONS.length;
             this.spqueryfield.set('sorttype', val);
         },
         opNegateChanged: function() {
-            this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
+            this.$('.op-negate')[0].ariaPressed = this.$('.op-negate')[0].ariaPressed === 'true' ? 'false' : 'true';
+            this.spqueryfield.set('isnot', this.$('.op-negate')[0].ariaPressed === 'true');
+            this.$('.op-negate')[0].classList[this.spqueryfield.get('isnot')
+              ? 'add'
+              : 'remove'
+            ]('!bg-red-400');
         },
         deleteClicked: function() {
             this.remove();
@@ -140,7 +150,8 @@ export default Backbone.View.extend({
 
         update: function() {
             this.updateLabel();
-            this.$el.addClass('field-incomplete');
+            this.isIncomplete = true;
+            this.$el.find('.field-expand, .field-controls').addClass('hidden');
             var state = this.whatState();
             var $$ = this.$.bind(this);
             _.each(['hide', 'show'], function(action) { $$('.' + state.toLowerCase() + '-state-' + action)[action](); });
@@ -158,6 +169,7 @@ export default Backbone.View.extend({
                         {
                             src: field.model.getIcon(),
                             alt: field.model.getLocalizedName(),
+                            class: 'w-table-icon',
                         }
                     ))
                     .appendTo(fieldLabel);
@@ -204,7 +216,8 @@ export default Backbone.View.extend({
                 this.fieldSpec.table = field.getRelatedModel();
             }
 
-            this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon()).attr('alt',this.fieldSpec.table.getLocalizedName());
+            this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon());
+            this.$('.field-select-grp .sr-only').attr('alt',this.fieldSpec.table.getLocalizedName());
             var fieldSelect = this.$('.field-select').empty().append(
                 `<option>${queryText('selectFields')}</option>`
             );
@@ -273,7 +286,8 @@ export default Backbone.View.extend({
             `).join('');
         },
         setupCompleteState: function() {
-            this.$el.removeClass('field-incomplete');
+            this.isIncomplete = false;
+            this.$el.find('.field-expand, .field-controls').removeClass('hidden');
             if (!this.formattedRecord && this.operation != 'anything') {
                 var field = this.getField();
                 this.inputUI = new (QueryFieldInputUI[this.operation])({
@@ -315,8 +329,7 @@ export default Backbone.View.extend({
         opSelected: function() {
             this.operation = this.$('.op-type').val();
             if (this.operation == 'anything') {
-                this.$('input.op-negate').prop('checked', false);
-                this.$('input.op-negate').button('refresh');                
+                this.$('.op-negate')[0].ariaPressed = false;
                 this.opNegateChanged();
                 this.valueChanged(null, "");
             }
@@ -371,19 +384,20 @@ export default Backbone.View.extend({
             console.log('set position to', position);
         },
         sortTypeChanged: function() {
-            this.$('.field-sort').button('option', 'icons', {
-                primary: SORT_ICONS[this.spqueryfield.get('sorttype')]
-            });
+            const span = this.$('.field-sort span')[0];
+            SORT_ICONS.forEach((iconClassName, index)=>
+              span.classList[index === this.spqueryfield.get('sorttype')
+                ? 'add'
+                : 'remove'
+              ](iconClassName)
+            );
         },
         deleteIfIncomplete: function() {
-            this.isIncomplete() && this.deleteClicked();
+            this.isIncomplete && this.deleteClicked();
         },
 
         // Utility methods.
 
-    isIncomplete() {
-        return this.$el.hasClass('field-incomplete');
-    },
         updateSpQueryField: function() {
             var attrs = this.fieldSpec.toSpQueryAttrs();
             attrs.operstart = (this.operation == 'anything') ? 1 : parseInt(this.operation);

@@ -1,39 +1,39 @@
-<form class="querybuilder">
-  <header class="querybuilder-header">
-    <img alt="" />
+<form class="bg-gray-200 flex flex-col p-4 rounded shadow-[0_3px_5px_-1px] shadow-gray-500 gap-y-2">
+  <header class="querybuilder-header flex items-center gap-x-2">
+    <img alt="" class="w-table-icon" />
     <h2></h2>
   </header>
   <ul class="spqueryfields"></ul>
-  <div role="toolbar" class="querybuilder-controls">
+  <div role="toolbar" class="flex gap-2 flex-wrap">
     <button
       type="button"
-      class="field-add"
+      class="field-add button"
       title="<%= queryText('newButtonDescription') %>"
     >
-      <%= commonText('new') %>
+      <span class="ui-icon ui-icon-plus"><%= commonText('new') %></span>
     </button>
-    <input
-      type="checkbox"
-      name="countOnly"
-      id="querybuilder-count-only-<%= cid %>"
-    />
-    <label for="querybuilder-count-only-<%= cid %>"
-      ><%= queryText('countOnly') %></label
-    >
-    <input
-      type="checkbox"
-      name="selectDistinct"
-      id="querybuilder-select-distinct-<%= cid %>"
-    />
-    <label for="querybuilder-select-distinct-<%= cid %>"
-      ><%= queryText('distinct') %></label
-    >
-    <input
-      type="checkbox"
-      name="formatAudits"
-      id="querybuilder-format-audits-<%= cid %>"
-    />
-    <label class="formatAuditsLabel" for="querybuilder-format-audits-<%= cid %>">
+    <label class="<%= className.labelForCheckbox %>">
+      <input
+        type="checkbox"
+        name="countOnly"
+        class="<%= className.checkbox %>"
+      />
+      <%= queryText('countOnly') %>
+    </label>
+    <label class="<%= className.labelForCheckbox %>">
+      <input
+        type="checkbox"
+        name="selectDistinct"
+        class="<%= className.checkbox %>"
+      />
+      <%= queryText('distinct') %>
+    </label>
+    <label class="formatAuditsLabel <%= className.labelForCheckbox %>">
+      <input
+        type="checkbox"
+        name="formatAudits"
+        class="<%= className.checkbox %>"
+      />
       <%= queryText('format') %>
     </label>
     <input

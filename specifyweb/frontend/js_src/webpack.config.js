@@ -69,12 +69,12 @@ class CleanupPlugin {
           files
             .filter(fileName=>!excludes.has(fileName))
             .map(fileName=>
-                fs.unlinkSync(
+                fs.promises.unlink(
                     path.join(
                         compiler.options.output.path,
                         fileName
                     )
-                )
+                ).catch(console.error)
             );
       });
 }

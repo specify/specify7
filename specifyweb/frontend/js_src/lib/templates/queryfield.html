@@ -1,73 +1,74 @@
 <button
-  class="field-expand"
+  class="field-expand button"
   type="button"
   title="<%= queryText('expandButtonDescription') %>"
-  data-icon="check"
 >
-  <%= commonText('expand') %>
+  <span class="ui-icon ui-icon-check"><%= commonText('expand') %></span>
 </button>
-<button type="button" class="field-delete" data-icon="trash">
-  <%= commonText('remove') %>
+<button type="button" class="field-delete button" title="<%= commonText('remove') %>">
+  <span class="ui-icon ui-icon-trash"><%= commonText('remove') %></span>
 </button>
-<span class="field-label"></span>
-<span
-  class="
+<div class="flex-1 flex gap-2 flex-wrap">
+  <div class="field-label contents"></div>
+  <label class="
     field-select-grp
     operation-state-hide
     datepart-state-hide
     complete-state-hide
-  "
-  >
-  <img />
-  <select class="field-select"></select
-></span>
-<select
-  class="
+    flex gap-1 items-center
+  ">
+    <span class="sr-only"></span>
+    <img alt="" class="h-table-icon" />
+    <select class="field-select"></select>
+  </label>
+  <select class="
     datepart-select
     field-state-hide
     operation-state-hide
     datepart-state-show
     complete-state-hide
-  "
-></select>
-<input type="checkbox" class="op-negate" id="<%= cid %>-negate" />
-<label
-  title="<%= queryText('negate') %>"
-  aria-label="<%= queryText('negate') %>"
-  for="<%= cid %>-negate"
-  class="
-    op-negate
-    field-state-hide
-    operation-state-show
-    datepart-state-hide
-    ui-icon ui-icon-cancel
-  "
-></label>
-<select
-  class="
-    op-select op-type
-    field-state-hide
-    operation-state-show
-    datepart-state-hide
-    complete-state-hide
-  "
-></select>
-<span class="field-input"></span>
-<span class="field-controls">
-  <input type="checkbox" class="field-show" id="<%= cid %>-show" />
-  <label
+  "></select>
+  <button
+    type="button"
+    title="<%= queryText('negate') %>"
+    class="
+      button
+      op-negate
+      field-state-hide
+      operation-state-show
+      datepart-state-hide
+    "
+    aria-pressed="false"
+  >
+    <span class="ui-icon ui-icon-cancel"><%= queryText('negate') %></span>
+  </button>
+  <select
+    class="
+      op-select op-type
+      field-state-hide
+      operation-state-show
+      datepart-state-hide
+      complete-state-hide
+    "
+  ></select>
+  <span class="field-input"></span>
+</div>
+<span class="field-controls contents">
+  <button
+    type="button"
     title="<%= queryText('showButtonDescription') %>"
-    aria-label="<%= queryText('showButtonDescription') %>"
-    for="<%= cid %>-show"
-    class="ui-icon ui-icon-lightbulb"
-  ></label>
-  <button type="button" class="field-sort" data-icon="bullet">
-    <%= queryText('sort') %>
+    aria-pressed="false"
+    class="field-show button"
+  >
+    <span class="ui-icon ui-icon-check"><%= queryText('showButtonDescription') %></span>
   </button>
-  <button type="button" class="field-move-up" data-icon="arrowthick-1-n">
-    <%= queryText('moveUp') %>
+  <button type="button" class="field-sort button" title="<%= queryText('sort') %>">
+    <span class="ui-icon ui-icon-bullet"><%= queryText('sort') %></span>
   </button>
-  <button type="button" class="field-move-down" data-icon="arrowthick-1-s">
-    <%= queryText('moveDown') %>
+  <button type="button" class="field-move-up button" title="<%= queryText('moveUp') %>">
+    <span class="ui-icon ui-icon-arrowthick-1-n"><%= queryText('moveUp') %></span>
+  </button>
+  <button type="button" class="field-move-down button" title="<%= queryText('moveDown') %>">
+    <span class="ui-icon ui-icon-arrowthick-1-s"><%= queryText('moveDown') %></span>
   </button>
 </span>

@@ -26,7 +26,6 @@ export function LanguageSelection({
       />
       <Label>
         {commonText('language')}
-        <br />
         <Select
           name="language"
           value={LANGUAGE}

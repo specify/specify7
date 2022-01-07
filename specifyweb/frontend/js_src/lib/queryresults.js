@@ -195,7 +195,8 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         renderResult: function(row, fieldSpec, result, idx, resource) {
             const value = result[idx];
             const cell = $(`<span role="cell" class="border-gray-500 border-r
-                bg-[color:var(--bg)] first:border-l p-1">${value ?? ''}</span>`);
+                bg-[color:var(--bg)] first:border-l p-1 min-h-[theme(spacing.8)]"
+            >${value ?? ''}</span>`);
             const field = fieldSpec.getField();
             if (field && this.format) {
                 if (value && this.auditObjFormatter.active) {
@@ -211,11 +212,10 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             const href = resource.viewUrl();
 
             const row = $(`<a
-                role="row"
                 href="${href}"
                 target="_blank"
                 role="row"
-                class="query-result sticky min-h-[theme(spacing.4)] even:[--bg:transparent]
+                class="query-result sticky link even:[--bg:transparent]
                     odd:[--bg:theme(colors.gray.100)]"
             >`)
                 .appendTo(table).data('resource', resource);

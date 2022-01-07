@@ -2,7 +2,6 @@
 @import url('~jquery-contextmenu/dist/jquery.contextMenu.css');
 
 /* TODO: make save buttons be on the right side in dialogs */
-@import url('./query.css');
 @import url('./dialogs.css');
 @import url('./attachments.css');
 @import url('./theme.css');
@@ -33,7 +32,7 @@
   [multiple],
   textarea,
   select {
-    @apply w-full p-1 bg-gray-200 rounded accent-brand-200;
+    @apply p-1 bg-gray-200 rounded accent-brand-200;
   }
 
   select {

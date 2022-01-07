@@ -69,7 +69,7 @@ async function getTreeRanks(tableName){
             this.el.innerHTML = `
                 ${this.noHeader
                     ? ''
-                    : `<h3 class="query-results-count pl-4">
+                    : `<h3 class="query-results-count">
                         ${queryText('results')(commonText('loadingInline'))}
                     </h3>`
                 }

@@ -22,7 +22,7 @@ import {className} from './components/basic';
 
 var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
-        className: `query-view ${className.container} max-w-none`,
+        className: className.containerFull,
         tagName: 'section',
         events: {
             'change :checkbox': 'optionChanged',
@@ -51,17 +51,13 @@ var QueryBuilder = Backbone.View.extend({
                     this.recordSet.get('name')
                 )
                 : queryText('queryTaskTitle')(this.query.get('name'));
-            this.$el.append(template({ queryText, commonText, cid: this.cid }));
+            this.$el.append(template({ queryText, commonText, className, cid: this.cid }));
             this.$('.querybuilder-header h2').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon()).attr('alt',this.model.getLocalizedName());
             this.query.isNew() && this.$('.abandon-changes').remove();
             this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
             this.query.id == null && this.$('.query-save-as').remove();
             this.query.get('specifyuser') === userInfo.resource_uri || this.$('.query-save').remove();
-
-            this.$('button.field-add').button({
-                icons: { primary: 'ui-icon-plus' }, text: false
-            });
 
             this.query.on('saverequired', this.saveRequired, this);
 
@@ -71,7 +67,6 @@ var QueryBuilder = Backbone.View.extend({
             this.$('input[name="countOnly"]').prop('checked', this.query.get('countonly'));
             this.$('input[name="formatAudits"]').prop('checked', this.query.get('formatauditrecids'));
             //only visible for spauditlog queries
-            this.$('input[name="formatAudits"]').prop('hidden', this.query.get('contexttableid') != 530);
             this.$('label.formatAuditsLabel').prop('hidden', this.query.get('contexttableid') != 530);
 
 
@@ -90,7 +85,7 @@ var QueryBuilder = Backbone.View.extend({
                 parentView: this,
                 model: this.model,
                 spqueryfield: spqueryfield,
-                el: $('<li class="spqueryfield">')
+                el: $(`<li class="${className.queryField}">`)
             }).render();
         },
         removeFieldUI: function(ui, spqueryfield) {
@@ -106,7 +101,7 @@ var QueryBuilder = Backbone.View.extend({
             _.each(this.fieldUIs, function(field) { field.expandToggle('hide'); });
         },
         deleteIncompleteFields: function(continuation) {
-            const incomplete = this.fieldUIs.filter(f => f.isIncomplete());
+            const incomplete = this.fieldUIs.filter(f => f.isIncomplete);
             if (incomplete.length < 1) {
                 continuation();
                 return;

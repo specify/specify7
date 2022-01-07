@@ -51,7 +51,7 @@ function wrap<TAG extends keyof ReactHTML>(
 export const className = {
   root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
   label: 'flex flex-col',
-  labelForCheckbox: 'cursor-pointer flex gap-x-1 items-center',
+  labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
   checkboxGroup: 'flex flex-col gap-2 max-h-56 overflow-y-auto pl-1 -ml-1',
   radio: 'h-3 w-3',
   checkbox: 'h-3 w-3',
@@ -72,6 +72,7 @@ export const className = {
   formLabel: 'specify-form-label text-right',
   formFooter:
     'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
+  queryField: 'bg-white border border-gray-300 p-2 shadow flex gap-x-2 rounded',
 };
 
 /* eslint-disable @typescript-eslint/naming-convention */

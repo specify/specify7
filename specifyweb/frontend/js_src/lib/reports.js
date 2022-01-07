@@ -16,6 +16,7 @@ import commonText from './localization/common';
 import csrftoken from './csrftoken';
 import populateForm from './populateform';
 import * as navigation from './navigation';
+import {className} from './components/basic';
 
 var title = commonText('reports');
 
@@ -467,7 +468,7 @@ var QueryParamsDialog = Backbone.View.extend({
                 parentView: this,
                 model: this.model,
                 spqueryfield: spqueryfield,
-                el: $('<li class="spqueryfield for-report">')
+                el: $(`<li class="${className.queryField}">`)
             });
         }).bind(this);
 
@@ -477,7 +478,7 @@ var QueryParamsDialog = Backbone.View.extend({
         });
     },
     render: function() {
-        this.$el.append('<ul class="query-params-list">');
+        this.$el.append('<ul>');
         makeDialog(this.$el, {
             title: this.query.get('name'),
             width: 800,

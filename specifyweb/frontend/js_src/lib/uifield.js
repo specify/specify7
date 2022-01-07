@@ -45,7 +45,7 @@ export default Backbone.View.extend({
 
             var formatter = field.getUIFormatter();
 
-            field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
+            field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted w-full');
 
             const parser = resolveParser(field, formatter ?? undefined);
 

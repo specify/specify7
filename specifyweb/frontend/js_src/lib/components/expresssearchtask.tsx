@@ -209,7 +209,7 @@ function Results(): JSX.Element {
   }, []);
 
   return (
-    <>
+    <div className="gap-y-4 flex flex-col">
       <section>
         <h3>{commonText('primarySearch')}</h3>
         {typeof primaryResults === 'undefined' ? (
@@ -235,7 +235,7 @@ function Results(): JSX.Element {
           ))
         )}
       </section>
-    </>
+    </div>
   );
 }
 
