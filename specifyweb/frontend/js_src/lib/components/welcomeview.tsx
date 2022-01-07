@@ -82,7 +82,7 @@ function AboutSpecify(): JSX.Element {
           <p className="text-justify">{welcomeText('disclosure')}</p>
           <p className="text-justify">{welcomeText('licence')}</p>
 
-          <section id="specify-system-info">
+          <section>
             <h3>{welcomeText('systemInformation')}</h3>
             <table>
               <tbody>

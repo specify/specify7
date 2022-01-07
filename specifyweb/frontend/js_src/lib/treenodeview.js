@@ -78,7 +78,7 @@ var TreeNodeView = Backbone.View.extend({
             this.$('.tree-node-cell button')
                 .attr('role','none')
                 .attr('aria-pressed',false)
-                .attr('class','link -mb-[12px] -ml-[5px] flex pt-2')
+                .attr('class','link aria-handled -mb-[12px] -ml-[5px] flex pt-2')
                 .append(`
                     <span class="ui-icon expander"></span>
                     <span class="expander tree-node-name focus:bg-lime-300"></span>

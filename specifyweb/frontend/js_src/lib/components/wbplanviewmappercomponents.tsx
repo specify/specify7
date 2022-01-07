@@ -227,7 +227,7 @@ export function MappingView(props: {
         >
           {wbText('map')}
           <span
-            className={`bg-green-400 ${isMappable ? '' : 'invisible'}`}
+            className={`text-green-500 ${isMappable ? '' : 'invisible'}`}
             aria-hidden="true"
           >
             &#8594;

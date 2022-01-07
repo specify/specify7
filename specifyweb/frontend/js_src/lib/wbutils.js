@@ -689,7 +689,7 @@ export default Backbone.View.extend({
     const getGeoLocateQueryURL = (localityIndex) =>
       this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
 
-    this.geoLocateDialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
+    this.geoLocateDialog = $(`<div />`).dialog({
       width: 960,
       height: 740,
       title: wbText('geoLocateDialogTitle'),

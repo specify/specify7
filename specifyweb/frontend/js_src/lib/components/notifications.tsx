@@ -98,7 +98,6 @@ export default function Notifications(): JSX.Element {
   return (
     <>
       <Button
-        id="site-notifications"
         className={`${hasUnread ? 'bg-brand-300' : ''}`}
         disabled={notificationCount === 0}
         aria-live="polite"
