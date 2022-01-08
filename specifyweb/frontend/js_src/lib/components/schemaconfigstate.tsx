@@ -22,6 +22,7 @@ import {
   Label,
   LabelForCheckbox,
   Link,
+  Radio,
 } from './basic';
 import { TableIcon } from './common';
 import { LoadingScreen, ModalDialog } from './modaldialog';
@@ -555,8 +556,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               }).map(([key, { label, value, values, extraComponents }]) => (
                 <div className={className.labelForCheckbox} key={key}>
                   <LabelForCheckbox>
-                    <input
-                      type="radio"
+                    <Radio
                       name={id('format')}
                       value="none"
                       checked={key === getItemType(items[itemId])}

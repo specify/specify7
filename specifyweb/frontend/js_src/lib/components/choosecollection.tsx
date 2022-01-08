@@ -7,12 +7,12 @@ import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import {
-  CheckboxGroup,
   className,
   ErrorMessage,
   FancySubmit,
   Form,
   LabelForCheckbox,
+  Link,
   Radio,
 } from './basic';
 import ErrorBoundary from './errorboundary';
@@ -48,11 +48,13 @@ function ChooseCollection({
         {data.availableCollections.length === 0 ? (
           <ErrorMessage>
             {commonText('noAccessToCollections')((label: string) => (
-              <a href={`/accounts/login/?next=${data.nextUrl}`}>{label}</a>
+              <Link href={`/accounts/login/?next=${data.nextUrl}`}>
+                {label}
+              </Link>
             ))}
           </ErrorMessage>
         ) : (
-          <CheckboxGroup>
+          <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
             {data.availableCollections.map(([id, label]) => (
               <LabelForCheckbox key={id}>
                 <Radio
@@ -64,7 +66,7 @@ function ChooseCollection({
                 {label}
               </LabelForCheckbox>
             ))}
-          </CheckboxGroup>
+          </div>
         )}
         <input
           type="hidden"

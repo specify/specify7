@@ -126,7 +126,11 @@
 
   .link, .icon {
     @apply text-black gap-2 inline-flex items-center hover:text-brand-300
-    active:text-brand-100 cursor-pointer;
+    active:underline cursor-pointer;
+  }
+
+  .icon {
+    @apply active:bg-brand-100;
   }
 
   [type='submit'].link,

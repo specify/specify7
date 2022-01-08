@@ -7,7 +7,7 @@ import router from '../router';
 import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';
 import userInfo from '../userinfo';
-import { Link } from './basic';
+import { Button, Link } from './basic';
 import { crash } from './errorboundary';
 import {
   CollectionSelector,
@@ -112,9 +112,8 @@ export default function Main({
   return typeof menuItems === 'undefined' ||
     typeof userTools === 'undefined' ? null : (
     <>
-      <button
-        className="focus:not-sr-only button !absolute top-0 left-0 !p-2 sr-only"
-        type="button"
+      <Button
+        className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only"
         onClick={(): void => {
           if (!mainRef.current) return;
           mainRef.current.setAttribute('tabindex', '-1');
@@ -123,7 +122,7 @@ export default function Main({
         }}
       >
         {commonText('skipToContent')}
-      </button>
+      </Button>
 
       <header
         className={`bg-gray-200 border-b-4 border-b-[5px]

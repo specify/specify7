@@ -17,7 +17,7 @@ import { DateElement, formatNumber } from './internationalization';
 import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { Button, Form, Input, Label, Select, TextArea } from './basic';
+import { Button, Form, Input, Label, Link, Select, TextArea } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -25,9 +25,12 @@ async function fetchAgent(url: string): Promise<JSX.Element> {
     id: agentId,
   });
   return format(createdByAgentResource).then((formattedAgent: string) => (
-    <a className="intercept-navigation" href={createdByAgentResource.viewUrl()}>
+    <Link
+      className="intercept-navigation"
+      href={createdByAgentResource.viewUrl()}
+    >
       {formattedAgent}
-    </a>
+    </Link>
   ));
 }
 

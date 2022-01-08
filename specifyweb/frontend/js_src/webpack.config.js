@@ -65,7 +65,10 @@ const excludes = new Set(['__init__.py','manifest.py']);
 class CleanupPlugin {
     apply = (compiler) =>
       fs.readdir(compiler.options.output.path, (error,files)=>{
-          if(error) throw error;
+          if(error){
+            console.log(error);
+            return;
+          }
           files
             .filter(fileName=>!excludes.has(fileName))
             .map(fileName=>

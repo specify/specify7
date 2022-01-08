@@ -8,6 +8,7 @@
 import React from 'react';
 
 import { createDictionary, header, jsxHeader } from './utils';
+import { Link } from '../components/basic';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -749,9 +750,9 @@ const commonText = createDictionary({
         <br />
         If this issue persists, please contact your IT support or if this is a
         Specify Cloud database, contact{' '}
-        <a href="mailto:support@specifysoftware.org">
+        <Link href="mailto:support@specifysoftware.org">
           support@specifysoftware.org
-        </a>
+        </Link>
       </>
     ),
     'ru-ru': (
@@ -760,9 +761,9 @@ const commonText = createDictionary({
         <br />
         Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
         свяжитесь с нами:{' '}
-        <a href="mailto:support@specifysoftware.org">
+        <Link href="mailto:support@specifysoftware.org">
           support@specifysoftware.org
-        </a>
+        </Link>
       </>
     ),
     ca: (
@@ -771,9 +772,9 @@ const commonText = createDictionary({
         <br />
         If this issue persists, please contact your IT support or if this is a
         Specify Cloud database, contact{' '}
-        <a href="mailto:support@specifysoftware.org">
+        <Link href="mailto:support@specifysoftware.org">
           support@specifysoftware.org
-        </a>
+        </Link>
       </>
     ),
   },

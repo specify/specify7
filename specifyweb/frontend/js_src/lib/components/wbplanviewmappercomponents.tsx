@@ -216,7 +216,7 @@ export function MappingView(props: {
           <MappingPathComponent mappingLineData={mappingLineData} />
         </div>
         <Button
-          className="button flex-col justify-center p-2"
+          className="flex-col justify-center p-2"
           disabled={!isMappable}
           onClick={
             mapButtonIsEnabled && props.focusedLineExists

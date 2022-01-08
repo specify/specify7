@@ -2,6 +2,7 @@ import React from 'react';
 
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
+import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { closeDialog, ModalDialog } from '../modaldialog';
@@ -29,13 +30,13 @@ function AppResourceDialog({
     >
       {commonText('resourcesDialogHeader')}
       <nav>
-        <a href="/specify/appresources/" className="intercept-navigation">
+        <Link href="/specify/appresources/" className="intercept-navigation">
           {commonText('appResources')}
-        </a>
+        </Link>
         <br />
-        <a href="/specify/viewsets/" className="intercept-navigation">
+        <Link href="/specify/viewsets/" className="intercept-navigation">
           {commonText('viewSets')}
-        </a>
+        </Link>
       </nav>
     </ModalDialog>
   );

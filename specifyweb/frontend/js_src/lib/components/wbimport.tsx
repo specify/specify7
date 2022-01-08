@@ -15,7 +15,7 @@ import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
-import { Button, ContainerFull } from './basic';
+import { Button, Checkbox, ContainerFull } from './basic';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
@@ -530,9 +530,8 @@ function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
     <label className="contents">
       {wbText('firstRowIsHeader')}
       <span>
-        <input
-          type="checkbox"
-          onChange={() => props.update({ type: 'ToggleHeaderAction' })}
+        <Checkbox
+          onChange={(): void => props.update({ type: 'ToggleHeaderAction' })}
           checked={props.hasHeader}
         />
       </span>

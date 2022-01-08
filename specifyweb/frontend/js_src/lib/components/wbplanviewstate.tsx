@@ -16,6 +16,7 @@ import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
 import WbPlanViewMapper from './wbplanviewmapper';
+import { Checkbox, LabelForCheckbox } from './basic';
 
 // States
 
@@ -129,18 +130,17 @@ export const stateReducer = generateReducer<
           })
         }
       />
-      <label>
-        <input
-          type="checkbox"
+      <LabelForCheckbox>
+        <Checkbox
           checked={state.showHiddenTables}
           onChange={(): void =>
             state.dispatch({
               type: 'ToggleHiddenTablesAction',
             })
           }
-        />{' '}
+        />
         {wbText('showAdvancedTables')}
-      </label>
+      </LabelForCheckbox>
     </ModalDialog>
   ),
   TemplateSelectionState: ({ action: state }) => (

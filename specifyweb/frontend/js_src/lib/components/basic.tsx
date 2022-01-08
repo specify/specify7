@@ -52,7 +52,6 @@ export const className = {
   root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
-  checkboxGroup: 'flex flex-col gap-2 max-h-56 overflow-y-auto pl-1 -ml-1',
   radio: 'h-3 w-3',
   checkbox: 'h-3 w-3',
   errorMessage: 'flex gap-2 p-2 text-white bg-red-500 rounded',
@@ -78,7 +77,6 @@ export const className = {
 /* eslint-disable @typescript-eslint/naming-convention */
 export const Label = wrap('label', className.label);
 export const LabelForCheckbox = wrap('label', className.labelForCheckbox);
-export const CheckboxGroup = wrap('div', className.checkboxGroup);
 export const Radio = wrap('input', className.radio, { type: 'radio' });
 export const Checkbox = wrap('input', className.checkbox, { type: 'checkbox' });
 export const ErrorMessage = wrap('div', className.errorMessage, {
