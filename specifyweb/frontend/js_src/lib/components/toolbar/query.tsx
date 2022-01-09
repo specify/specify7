@@ -19,7 +19,7 @@ import { compareValues, SortIndicator, TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
-import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import { SpecifyResource } from '../../legacytypes';
@@ -133,6 +133,7 @@ function QueryList({
             <td className="justify-end">
               {typeof handleEdit === 'function' && (
                 <ButtonLikeLink
+                  role="link"
                   className="ui-icon ui-icon-pencil"
                   onClick={(): void => handleEdit(query)}
                   aria-label={commonText('edit')}
@@ -244,7 +245,7 @@ function QueryToolbarItem({
     return typeof queries === 'undefined' ? (
       <LoadingScreen />
     ) : (
-      <ModalDialog
+      <JqueryDialog
         properties={{
           close: handleClose,
           modal: true,
@@ -276,7 +277,7 @@ function QueryToolbarItem({
           onEdit={handleEdit}
           getQuerySelectUrl={getQuerySelectUrl}
         />
-      </ModalDialog>
+      </JqueryDialog>
     );
   } else if (
     state.type === 'CreateQueryState' &&
@@ -285,7 +286,7 @@ function QueryToolbarItem({
     return typeof tablesToShow === 'undefined' ? (
       <LoadingScreen />
     ) : (
-      <ModalDialog
+      <JqueryDialog
         properties={{
           close: handleClose,
           modal: true,
@@ -305,7 +306,7 @@ function QueryToolbarItem({
           tables={tablesToShow}
           getQueryCreateUrl={getQueryCreateUrl}
         />
-      </ModalDialog>
+      </JqueryDialog>
     );
   else throw new Error('Invalid ToolbarQuery State type');
 }

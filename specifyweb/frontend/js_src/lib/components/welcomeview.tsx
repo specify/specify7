@@ -7,7 +7,7 @@ import systemInfo from '../systeminfo';
 import taxonTiles from '../taxontiles';
 import { ButtonLikeLink, NewTabLink } from './basic';
 import { useTitle } from './hooks';
-import { ModalDialog } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
@@ -55,7 +55,7 @@ function AboutSpecify(): JSX.Element {
         />
       </ButtonLikeLink>
       {isOpen && (
-        <ModalDialog
+        <JqueryDialog
           properties={{
             title: welcomeText('aboutSpecifyDialogTitle'),
             width: 400,
@@ -114,7 +114,7 @@ function AboutSpecify(): JSX.Element {
               </tbody>
             </table>
           </section>
-        </ModalDialog>
+        </JqueryDialog>
       )}
     </div>
   );

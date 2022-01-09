@@ -4,14 +4,9 @@ import $ from 'jquery';
 import 'jquery-contextmenu';
 import 'jquery-ui';
 import {ErrorView} from './errorview';
-import systemInfo from './systeminfo';
-import commonText from './localization/common';
 import {setTitle} from "./components/hooks";
 
 global.jQuery = $;
-
-var currentView;
-    var versionMismatchWarned = false;
 
 
     $.ui.dialog.prototype._focusTabbable = function(){
@@ -22,7 +17,7 @@ var currentView;
             previousFocusedElement?.focus()
         );
 
-        // Make title non-bol if dialog has header
+        // Make title non-bold if dialog has header
         this.uiDialog.on(
             'dialogopen',
             () =>{
@@ -52,12 +47,16 @@ var currentView;
      * and replaces it with the rendered view given
      * also manages other niceties involved in changing views
      */
+    let currentView;
     let isFirstRender = true;
     export function setCurrentView(view) {
         // Remove old view
         currentView && currentView.remove();
         const main = $('main');
         main.empty();
+
+        currentOverlay?.remove();
+        currentOverlay = undefined;
 
         /*
          * Close any open dialogs, unless rendering for the first time
@@ -79,22 +78,13 @@ var currentView;
         else if (typeof currentView.title === 'function')
             setTitle(currentView.title(currentView));
 
-        if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
-            $(`<div role="alert">
-                ${commonText('versionMismatchDialogHeader')}
-                <p>
-                    ${commonText('versionMismatchDialogMessage')(
-                        systemInfo.specify6_version,
-                        systemInfo.database_version
-                    )}
-                </p>
-                <p>${commonText('versionMismatchSecondDialogMessage')}</p>
-            </div>`).dialog({
-                title: commonText('versionMismatchDialogTitle'),
-                modal: true,
-            });
-            versionMismatchWarned = true;
-        }
+    }
+
+    let currentOverlay;
+    export function setCurrentOverlay(view){
+        currentOverlay?.remove();
+        view.render();
+        currentOverlay=view;
     }
 
     export function handleError(jqxhr) {

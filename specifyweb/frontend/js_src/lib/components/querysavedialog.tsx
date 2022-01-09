@@ -5,7 +5,7 @@ import commonText from '../localization/common';
 import queryText from '../localization/query';
 import userInfo from '../userinfo';
 import { useId } from './hooks';
-import { LoadingScreen, ModalDialog } from './modaldialog';
+import { LoadingScreen, JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 async function doSave(
@@ -45,7 +45,7 @@ function QuerySaveDialog({
   return isLoading ? (
     <LoadingScreen />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: queryText('saveQueryDialogTitle'),
         buttons: [
@@ -89,7 +89,7 @@ function QuerySaveDialog({
           />
         </label>
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

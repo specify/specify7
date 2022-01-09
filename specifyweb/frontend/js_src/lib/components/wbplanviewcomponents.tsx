@@ -16,7 +16,7 @@ import type {
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import { closeDialog, ModalDialog } from './modaldialog';
+import { closeDialog, JqueryDialog } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
 import { Button } from './basic';
 
@@ -123,7 +123,7 @@ export function ButtonWithConfirmation(props: {
         {props.children}
       </Button>
       {displayPrompt ? (
-        <ModalDialog
+        <JqueryDialog
           properties={{
             title: props.dialogTitle,
             close: (): void => setDisplayPrompt(false),
@@ -135,7 +135,7 @@ export function ButtonWithConfirmation(props: {
           }}
         >
           {props.dialogContent}
-        </ModalDialog>
+        </JqueryDialog>
       ) : undefined}
     </>
   );
@@ -160,7 +160,7 @@ export function ValidationButton(props: {
         {wbText('validate')}
       </Button>
       {displayPrompt ? (
-        <ModalDialog
+        <JqueryDialog
           properties={{
             title: wbText('nothingToValidateDialogTitle'),
             close: (): void => setDisplayPrompt(false),
@@ -168,7 +168,7 @@ export function ValidationButton(props: {
         >
           {wbText('nothingToValidateDialogHeader')}
           <p>{wbText('nothingToValidateDialogMessage')}</p>
-        </ModalDialog>
+        </JqueryDialog>
       ) : undefined}
     </>
   );

@@ -12,7 +12,7 @@ import userInfo from '../../userinfo';
 import { TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { Link } from '../basic';
 
@@ -59,7 +59,7 @@ export function TreeSelectDialog({
   return typeof trees === 'undefined' || isLoading ? (
     <LoadingScreen />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title,
         close: handleClose,
@@ -92,7 +92,7 @@ export function TreeSelectDialog({
           ))}
         </ul>
       </nav>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

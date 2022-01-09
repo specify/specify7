@@ -25,7 +25,7 @@ import {
   Radio,
 } from './basic';
 import { TableIcon } from './common';
-import { LoadingScreen, ModalDialog } from './modaldialog';
+import { LoadingScreen, JqueryDialog } from './modaldialog';
 import type {
   DataObjectFormatter,
   ItemType,
@@ -111,7 +111,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     },
   }) {
     return (
-      <ModalDialog
+      <JqueryDialog
         properties={{
           title: commonText('schemaConfig'),
           close: handleClose,
@@ -135,6 +135,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           {Object.entries(languages).map(([code, label]) => (
             <li key={code}>
               <ButtonLikeLink
+                role="link"
                 className="font-bold"
                 onClick={(): void =>
                   dispatch({
@@ -148,7 +149,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
           ))}
         </ul>
-      </ModalDialog>
+      </JqueryDialog>
     );
   },
   AddLanguageState({
@@ -181,7 +182,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   }) {
     const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
     return (
-      <ModalDialog
+      <JqueryDialog
         properties={{
           title: formsText('tables'),
           close: handleClose,
@@ -210,7 +211,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
           ))}
         </ul>
-      </ModalDialog>
+      </JqueryDialog>
     );
   },
   FetchingTableItemsState() {

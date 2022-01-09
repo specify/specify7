@@ -10,7 +10,7 @@ import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
 import { Checkbox, LabelForCheckbox } from './basic';
 import { useId } from './hooks';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 function UserCollectionsUi({
@@ -32,7 +32,7 @@ function UserCollectionsUi({
   return isLoading ? (
     <LoadingScreen />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: adminText('userCollectionsPluginDialogTitle'),
         close: handleClose,
@@ -83,7 +83,7 @@ function UserCollectionsUi({
           </LabelForCheckbox>
         ))}
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

@@ -17,7 +17,7 @@ import lifemapperText from '../localization/lifemapper';
 import systemInfo from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
-import { closeDialog, ModalDialog } from './modaldialog';
+import { closeDialog, JqueryDialog } from './modaldialog';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -160,7 +160,7 @@ export function SpecifyNetworkBadge({
   return (
     <>
       {hasFailure && (
-        <ModalDialog
+        <JqueryDialog
           properties={{
             title: lifemapperText('failedToOpenPopUpDialogTitle'),
             close: (): void => setHasFailure(false),
@@ -174,7 +174,7 @@ export function SpecifyNetworkBadge({
         >
           {lifemapperText('failedToOpenPopUpDialogHeader')}
           <p>{lifemapperText('failedToOpenPopUpDialogMessage')}</p>
-        </ModalDialog>
+        </JqueryDialog>
       )}
       <Link
         href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}

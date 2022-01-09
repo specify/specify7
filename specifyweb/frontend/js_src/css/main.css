@@ -11,17 +11,17 @@
  */
 @tailwind base;
 
-/* TODO: get rid of global styles once everything is using React components */
+/* TODO: get rid of most global styles once everything is using React components */
 @layer base {
 
-  @media not (prefers-reduced-motion) {
-    * {
-      transition-property: background, color, border;
-      transition-duration: 0.2s;
-      transition-timing-function: ease-in-out;
-    }
+  * {
+    /*
+     * If changing "duration-100", don't forget to change "transitionDuration"
+     * in "./components/basic.tsx"
+     */
+    @apply transition duration-100 ease-in-out motion-reduce:!transition-none
+           motion-reduce:!transform-none;
   }
-
 
   [type='text'],
   [type='email'],
@@ -143,6 +143,16 @@
     input, select, textarea {
       @apply bg-none m-0 appearance-none;
     }
+  }
+
+  progress::-webkit-progress-bar {
+    @apply bg-gray-200 rounded;
+  }
+  progress::-webkit-progress-value {
+    @apply bg-brand-200 rounded;
+  }
+  progress::-moz-progress-bar {
+    @apply bg-brand-200 rounded;
   }
 
 

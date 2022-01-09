@@ -5,7 +5,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
 import { useId, useTitle } from './hooks';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { Input, Label } from './basic';
 
@@ -32,7 +32,7 @@ function PasswordResetDialog({
   return isLoading ? (
     <LoadingScreen />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: adminText('setPassword'),
         close: closeDialog,
@@ -116,7 +116,7 @@ function PasswordResetDialog({
           />
         </Label>
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

@@ -15,7 +15,7 @@ import type { MappingsTree } from '../wbplanviewtreehelper';
 import { Button, Checkbox, LabelForCheckbox, Radio } from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
-import { closeDialog, ModalDialog } from './modaldialog';
+import { closeDialog, JqueryDialog } from './modaldialog';
 import type { HtmlGeneratorFieldData } from './wbplanviewcomponents';
 import {
   ButtonWithConfirmation,
@@ -79,7 +79,7 @@ export function ValidationResults(props: {
   if (props.validationResults.length === 0) return null;
 
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: wbText('validationFailedDialogTitle'),
         modal: false,
@@ -121,7 +121,7 @@ export function ValidationResults(props: {
           </Button>
         ))}
       </section>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 
@@ -253,7 +253,7 @@ export function EmptyDataSetDialog({
   const [showDialog, setShowDialog] = React.useState<boolean>(lineCount === 0);
 
   return showDialog ? (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: wbText('emptyDataSetDialogTitle'),
         close: (): void => setShowDialog(false),
@@ -261,7 +261,7 @@ export function EmptyDataSetDialog({
     >
       {wbText('emptyDataSetDialogHeader')}
       <p>{wbText('emptyDataSetDialogMessage')}</p>
-    </ModalDialog>
+    </JqueryDialog>
   ) : null;
 }
 
@@ -494,7 +494,7 @@ export function MustMatch({
         {wbText('mustMatch')}
       </Button>
       {typeof localPreferences !== 'undefined' && (
-        <ModalDialog
+        <JqueryDialog
           properties={{
             title: wbText('matchingLogicDialogTitle'),
             close: (): void => {
@@ -577,7 +577,7 @@ export function MustMatch({
               </table>
             </>
           )}
-        </ModalDialog>
+        </JqueryDialog>
       )}
     </>
   );

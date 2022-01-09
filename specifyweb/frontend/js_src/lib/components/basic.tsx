@@ -47,6 +47,11 @@ function wrap<TAG extends keyof ReactHTML>(
   return wrapped;
 }
 
+const reduceMotion = window.matchMedia(
+  '(prefers-reduced-motion: reduce)'
+).matches;
+export const transitionDuration = reduceMotion ? 0 : 100;
+
 // For usage by non-react components
 export const className = {
   root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
@@ -57,6 +62,8 @@ export const className = {
   errorMessage: 'flex gap-2 p-2 text-white bg-red-500 rounded',
   notSubmittedForm: 'not-submitted',
   notTouchedInput: 'not-touched',
+  // Ensures textarea can't grow past max dialog width
+  textarea: 'resize max-w-full',
   form: 'flex flex-col gap-4',
   button: 'button',
   link: 'link',
@@ -113,9 +120,9 @@ export const Input = wrap('input', className.notTouchedInput, {}, (props) => ({
     props?.onBlur?.(event);
   },
 }));
-export const TextArea = wrap(
+export const Textarea = wrap(
   'textarea',
-  className.notTouchedInput,
+  `${className.notTouchedInput} ${className.textarea}`,
   {},
   (props) => ({
     ...props,
@@ -166,6 +173,8 @@ export const NewTabLink = wrap('a', className.link, {}, (props) => ({
   ),
 }));
 export const LinkLikeButton = wrap('a', className.button);
+
+// Consider adding [role="link"] if the element should be announced as a link
 export const ButtonLikeLink = wrap('button', className.link, {
   type: 'button',
 });
@@ -179,4 +188,7 @@ export const Button = wrap('button', className.button, {
   type: 'button',
 });
 export const ContainerFull = wrap('section', className.containerFull);
+export const Progress = wrap('progress', 'w-full h-3 bg-gray-200 rounded', {
+  max: 100,
+});
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -11,9 +11,10 @@ import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { useTitle } from './hooks';
-import { ModalDialog, ProgressBar } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
+import { Progress } from './basic';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -107,14 +108,14 @@ function WbStatus({
 
   if (state.aborted === 'failed')
     return (
-      <ModalDialog
+      <JqueryDialog
         properties={{
           title,
           close: (): void => dispatch({ type: 'AbortAction', aborted: false }),
         }}
       >
         {wbText('wbStatusAbortFailed')(mappedOperation)}
-      </ModalDialog>
+      </JqueryDialog>
     );
 
   let message;
@@ -150,7 +151,7 @@ function WbStatus({
     );
 
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title,
         dialogClass: 'ui-dialog-no-close',
@@ -190,13 +191,13 @@ function WbStatus({
             : [],
       }}
     >
-      <div aria-live="polite">
+      <label aria-live="polite" aria-atomic={true}>
         {message}
         {state.status.taskstatus === 'PROGRESS' && (
-          <ProgressBar current={current} total={total} />
+          <Progress value={current} max={total} />
         )}
-      </div>
-    </ModalDialog>
+      </label>
+    </JqueryDialog>
   );
 }
 

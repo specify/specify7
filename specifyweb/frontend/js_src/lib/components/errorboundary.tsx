@@ -10,7 +10,7 @@ import React from 'react';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import type { IR } from '../types';
-import { ModalDialog } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 type ErrorBoundaryState =
@@ -29,7 +29,7 @@ function ErrorDialog({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('errorBoundaryDialogTitle'),
         width: 500,
@@ -49,7 +49,7 @@ function ErrorDialog({
         <p>{commonText('errorBoundaryDialogMessage')}</p>
         <details className="whitespace-pre-wrap">{children}</details>
       </div>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

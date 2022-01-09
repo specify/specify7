@@ -9,7 +9,7 @@ import React from 'react';
 import * as cache from '../cache';
 import wbText from '../localization/workbench';
 import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
-import { ModalDialog } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
@@ -101,7 +101,7 @@ function Dialog({
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: wbText('wbAdvancedSearchDialogTitle'),
         close: handleClose,
@@ -184,7 +184,7 @@ function Dialog({
           </select>
         </Label>
       </div>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

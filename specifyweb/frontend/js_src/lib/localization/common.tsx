@@ -981,9 +981,9 @@ const commonText = createDictionary({
     ca: 'Version Mismatch',
   },
   versionMismatchDialogHeader: {
-    'en-us': header('Specify version does not match database version'),
-    'ru-ru': header('Specify версия не соответствует версии базы данных'),
-    ca: header('Specify version does not match database version'),
+    'en-us': 'Specify version does not match database version',
+    'ru-ru': 'Specify версия не соответствует версии базы данных',
+    ca: 'Specify version does not match database version',
   },
   versionMismatchDialogMessage: {
     'en-us': (specifySixVersion: string, databaseVersion: string) => `

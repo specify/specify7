@@ -77,10 +77,8 @@ async function getTreeRanks(tableName){
                     ? ''
                     : `<div
                         role="table"
-                        class="grid-table"
-                        style="
-                            grid-template-columns: repeat(${this.fieldSpecs.length}, auto);
-                        "
+                        class="grid-table grid-cols-[repeat(var(--cols),auto)]"
+                        style="--cols:${this.fieldSpecs.length}"
                     >
                         <div role="rowgroup">
                             <div role="row" class="header-container"></div>

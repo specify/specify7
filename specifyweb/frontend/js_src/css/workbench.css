@@ -1,21 +1,5 @@
 @import url('../node_modules/handsontable/dist/handsontable.full.css');
 
-/* HANDSONTABLE overwrites */
-
-/* Put column headers behind jQuery dialog windows */
-.ht_clone_top {
-  z-index: 97;
-}
-
-.ht_clone_left {
-  z-index: 98;
-}
-
-.ht_clone_top_left_corner,
-.ht_clone_bottom_left_corner {
-  z-index: 99;
-}
-
 /* Show table icons in column headers */
 .htCore thead th > .relative {
   @apply flex justify-center items-center;

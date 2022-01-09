@@ -7,7 +7,7 @@ import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { Link } from '../basic';
 
@@ -46,7 +46,7 @@ function Users({
   return typeof users === 'undefined' ? (
     <LoadingScreen />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('manageUsersDialogTitle'),
         close: handleClose,
@@ -74,7 +74,7 @@ function Users({
           </li>
         ))}
       </ul>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

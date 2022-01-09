@@ -13,14 +13,14 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
-import { ButtonLikeLink, Link } from '../basic';
+import { Button, ButtonLikeLink, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
 import { useTitle } from '../hooks';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
-import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
@@ -132,7 +132,7 @@ function TableHeader({
   );
 }
 
-function Dialog({
+function MetadataDialog({
   datasets: unsortedDatasets,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
@@ -196,31 +196,33 @@ function Dialog({
 
   return (
     <>
-      <ModalDialog
-        properties={{
-          title: showTemplates
+      <Dialog
+        header={
+          showTemplates
             ? wbText('wbsDialogTemplatesDialogTitle')
-            : wbText('wbsDialogDefaultDialogTitle')(datasets.length),
-          width: 600,
-          minHeight: 300,
-          maxHeight: 800,
-          close: handleClose,
-          buttons: [
-            ...(canImport
-              ? [
-                  {
-                    text: wbText('importFile'),
-                    click: (): void => navigation.go('/workbench-import/'),
-                  },
-                  {
-                    text: wbText('createNew'),
-                    click: createEmptyDataSet,
-                  },
-                ]
-              : []),
-            { text: commonText('close'), click: closeDialog },
-          ],
+            : wbText('wbsDialogDefaultDialogTitle')(datasets.length)
+        }
+        className={{
+          container: dialogClassNames.normalContainer,
         }}
+        onClose={handleClose}
+        buttons={
+          <>
+            {canImport && (
+              <>
+                <Button
+                  onClick={(): void => navigation.go('/workbench-import/')}
+                >
+                  {wbText('importFile')}
+                </Button>
+                <Button onClick={createEmptyDataSet}>
+                  {wbText('createNew')}
+                </Button>
+              </>
+            )}
+            <Button onClick={handleClose}>{commonText('close')}</Button>
+          </>
+        }
       >
         {datasets.length === 0 ? (
           <p>
@@ -275,6 +277,8 @@ function Dialog({
                           <ButtonLikeLink
                             className="ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
+                            aria-label={commonText('edit')}
+                            title={commonText('edit')}
                           />
                         )}
                       </td>
@@ -285,7 +289,7 @@ function Dialog({
             </table>
           </nav>
         )}
-      </ModalDialog>
+      </Dialog>
       {showMeta !== false && (
         <DsMeta dsId={showMeta} onClose={(): void => setShowMeta(false)} />
       )}
@@ -321,7 +325,7 @@ export function WbsDialog({
   return typeof datasets === 'undefined' ? (
     <LoadingScreen />
   ) : (
-    <Dialog
+    <MetadataDialog
       datasets={datasets}
       onClose={handleClose}
       showTemplates={showTemplates}

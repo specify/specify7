@@ -5,7 +5,7 @@ import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, ButtonLikeLink, Link } from './basic';
 import { formatNumber } from './internationalization';
-import { ModalDialog } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -111,7 +111,7 @@ export default function Notifications(): JSX.Element {
         )}
       </Button>
       {typeof notifications !== 'undefined' && isOpen && (
-        <ModalDialog
+        <JqueryDialog
           className="gap-y-2 flex flex-col -mt-1 divide-y divide-gray-400"
           properties={{
             title: commonText('notificationsDialogTitle'),
@@ -156,7 +156,7 @@ export default function Notifications(): JSX.Element {
               }
             />
           ))}
-        </ModalDialog>
+        </JqueryDialog>
       )}
     </>
   );

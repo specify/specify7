@@ -5,7 +5,7 @@ import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, ModalDialog } from '../modaldialog';
+import { closeDialog, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 const liftGetResource = async (
@@ -61,7 +61,7 @@ function MakeDwca({
   return isExporting ? (
     <ExportStarted onClose={handleClose} />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         close: handleClose,
         title: commonText('chooseDwcaDialogTitle'),
@@ -140,7 +140,7 @@ function MakeDwca({
           />
         </label>
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 
@@ -150,7 +150,7 @@ function ExportStarted({
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('dwcaExportStartedDialogTitle'),
         close: handleClose,
@@ -160,7 +160,7 @@ function ExportStarted({
         {commonText('dwcaExportStartedDialogHeader')}
         <p>{commonText('dwcaExportStartedDialogMessage')}</p>
       </div>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

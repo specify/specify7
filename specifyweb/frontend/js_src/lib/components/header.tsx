@@ -9,7 +9,8 @@ import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import type { MenuItem, UserTool } from './main';
-import { ModalDialog } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
+import { setCurrentOverlay } from '../specifyapp';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -75,7 +76,8 @@ export function HeaderItems({
             event.preventDefault();
             const backboneView = view({
               onClose: (): void => void backboneView.remove(),
-            }).render();
+            });
+            setCurrentOverlay(backboneView);
           }}
         >
           <img src={icon} alt="" className="h-4" />
@@ -181,7 +183,7 @@ export function UserTools({
         {userInfo.name}
       </Button>
       {isOpen ? (
-        <ModalDialog
+        <JqueryDialog
           properties={{
             title: commonText('userToolsDialogTitle'),
             close: (): void => setIsOpen(false),
@@ -217,7 +219,8 @@ export function UserTools({
                       setIsOpen(false);
                       const backboneView = view({
                         onClose: (): void => void backboneView.remove(),
-                      }).render();
+                      });
+                      setCurrentOverlay(backboneView);
                     }}
                   >
                     {title}
@@ -226,7 +229,7 @@ export function UserTools({
               ))}
             </ul>
           </nav>
-        </ModalDialog>
+        </JqueryDialog>
       ) : undefined}
     </>
   );

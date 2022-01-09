@@ -14,10 +14,10 @@ import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
 import { useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { Button, Form, Input, Label, Link, Select, TextArea } from './basic';
+import { Button, Form, Input, Label, Link, Select, Textarea } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -72,7 +72,7 @@ export function DataSetMeta({
   }, []);
 
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: wbText('dataSetMetaDialogTitle'),
         close: handleClose,
@@ -128,7 +128,7 @@ export function DataSetMeta({
         </Label>
         <Label>
           <b>{wbText('remarks')}</b>
-          <TextArea
+          <Textarea
             value={remarks}
             onChange={({ target }): void => setRemarks(target.value)}
           />
@@ -176,7 +176,7 @@ export function DataSetMeta({
           </span>
         </div>
       </Form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 
@@ -263,7 +263,7 @@ function ChangeOwner({
   return typeof users === 'undefined' ? (
     <LoadingScreen />
   ) : isChanged ? (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: wbText('dataSetOwnerChangedDialogTitle'),
         close: handleChanged,
@@ -271,9 +271,9 @@ function ChangeOwner({
     >
       ${wbText('dataSetOwnerChangedDialogHeader')}
       <p>${wbText('dataSetOwnerChangedDialogMessage')}</p>
-    </ModalDialog>
+    </JqueryDialog>
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: wbText('changeDataSetOwnerDialogTitle'),
         close: handleClose,
@@ -322,7 +322,7 @@ function ChangeOwner({
           </Select>
         </Label>
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

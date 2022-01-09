@@ -10,7 +10,7 @@ import type { UploadPlan } from '../uploadplantomappingstree';
 import dataModelStorage from '../wbplanviewmodel';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
-import { closeDialog, LoadingScreen, ModalDialog } from './modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
@@ -97,7 +97,7 @@ export const stateReducer = generateReducer<
 >({
   LoadingState: () => <LoadingScreen />,
   BaseTableSelectionState: ({ action: state }) => (
-    <ModalDialog
+    <JqueryDialog
       className="gap-y-2 flex flex-col"
       properties={{
         title: wbText('selectBaseTableDialogTitle'),
@@ -141,7 +141,7 @@ export const stateReducer = generateReducer<
         />
         {wbText('showAdvancedTables')}
       </LabelForCheckbox>
-    </ModalDialog>
+    </JqueryDialog>
   ),
   TemplateSelectionState: ({ action: state }) => (
     <TemplateSelection

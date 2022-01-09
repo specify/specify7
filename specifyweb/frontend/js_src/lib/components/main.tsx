@@ -16,6 +16,8 @@ import {
   UserTools,
 } from './header';
 import Notifications from './notifications';
+import systemInfo from '../systeminfo';
+import { Dialog } from './modaldialog';
 
 export type UserTool = {
   readonly task: string;
@@ -97,6 +99,9 @@ export default function Main({
   const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
     undefined
   );
+  const [showVersionMismatch, setShowVersionMismatch] = React.useState(
+    systemInfo.specify6_version !== systemInfo.database_version
+  );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
@@ -123,6 +128,27 @@ export default function Main({
       >
         {commonText('skipToContent')}
       </Button>
+
+      {showVersionMismatch && (
+        <Dialog
+          title={commonText('versionMismatchDialogTitle')}
+          header={commonText('versionMismatchDialogHeader')}
+          onClose={(): void => setShowVersionMismatch(false)}
+          buttons={
+            <Button onClick={(): void => setShowVersionMismatch(false)}>
+              {commonText('close')}
+            </Button>
+          }
+        >
+          <p>
+            {commonText('versionMismatchDialogMessage')(
+              systemInfo.specify6_version,
+              systemInfo.database_version
+            )}
+          </p>
+          <p>{commonText('versionMismatchSecondDialogMessage')}</p>
+        </Dialog>
+      )}
 
       <header
         className={`bg-gray-200 border-b-4 border-b-[5px]

@@ -5,7 +5,7 @@ import userInfo from '../../userinfo';
 import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, ModalDialog } from '../modaldialog';
+import { closeDialog, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 function AppResourceDialog({
@@ -16,7 +16,7 @@ function AppResourceDialog({
   useTitle(commonText('resources'));
 
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('resourcesDialogTitle'),
         close: handleClose,
@@ -38,7 +38,7 @@ function AppResourceDialog({
           {commonText('viewSets')}
         </Link>
       </nav>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

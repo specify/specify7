@@ -5,7 +5,7 @@ import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 function ForceUpdateFeed({
@@ -18,7 +18,7 @@ function ForceUpdateFeed({
   const [isActivated, setIsActivated] = React.useState<boolean>(false);
 
   return isActivated ? (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('feedExportStartedDialogTitle'),
         close: handleClose,
@@ -26,11 +26,11 @@ function ForceUpdateFeed({
     >
       {commonText('feedExportStartedDialogHeader')}
       <p>{commonText('feedExportStartedDialogMessage')}</p>
-    </ModalDialog>
+    </JqueryDialog>
   ) : isLoading ? (
     <LoadingScreen />
   ) : (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('updateExportFeedDialogTitle'),
         close: handleClose,
@@ -56,7 +56,7 @@ function ForceUpdateFeed({
     >
       {commonText('updateExportFeedDialogHeader')}
       <p>{commonText('updateExportFeedDialogMessage')}</p>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 

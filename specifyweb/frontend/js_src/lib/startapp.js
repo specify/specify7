@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import React from 'react';
+import Modal from 'react-modal';
 
 import * as businessRules from './businessrules';
 import {UnhandledErrorView} from './errorview';
@@ -82,5 +83,5 @@ export default function appStart() {
     .then(() => navigation.start())
     .catch(crash);
 
-  // setup basic routes.
+  Modal.setAppElement('#root');
 }

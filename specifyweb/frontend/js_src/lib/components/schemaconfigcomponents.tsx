@@ -3,7 +3,7 @@ import React from 'react';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { useId } from './hooks';
-import { ModalDialog } from './modaldialog';
+import { JqueryDialog } from './modaldialog';
 
 export function PickList({
   label,
@@ -89,7 +89,7 @@ export function AddLanguage({
   const [language, setLanguage] = React.useState<string>('');
   const [country, setCountry] = React.useState<string>('');
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('addLanguageDialogTitle'),
         close: handleClose,
@@ -147,6 +147,6 @@ export function AddLanguage({
           />
         </label>
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }

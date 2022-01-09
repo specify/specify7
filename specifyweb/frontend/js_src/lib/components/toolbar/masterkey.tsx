@@ -4,7 +4,7 @@ import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, ModalDialog } from '../modaldialog';
+import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 function MasterKey({
@@ -37,7 +37,7 @@ function MasterKey({
   return isLoading ? (
     <LoadingScreen />
   ) : typeof masterKey === 'undefined' ? (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         title: commonText('generateMasterKeyDialogTitle'),
         close: handleClose,
@@ -103,7 +103,7 @@ function MasterKey({
           />
         </label>
       </form>
-    </ModalDialog>
+    </JqueryDialog>
   ) : (
     <ShowKey masterKey={masterKey} onClose={handleClose} />
   );
@@ -117,7 +117,7 @@ function ShowKey({
   readonly masterKey: string;
 }): JSX.Element {
   return (
-    <ModalDialog
+    <JqueryDialog
       properties={{
         close: handleClose,
         title: commonText('masterKeyDialogTitle'),
@@ -129,7 +129,7 @@ function ShowKey({
         {commonText('masterKeyFieldLabel')}
         <input type="text" readOnly value={masterKey} />
       </label>
-    </ModalDialog>
+    </JqueryDialog>
   );
 }
 
