@@ -5,9 +5,9 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
 import { useId, useTitle } from './hooks';
-import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
+import { LoadingScreen, Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Input, Label } from './basic';
+import { BlueSubmit, Input, Label } from './basic';
 
 export const MIN_PASSWORD_LENGTH = 6;
 
@@ -32,25 +32,15 @@ function PasswordResetDialog({
   return isLoading ? (
     <LoadingScreen />
   ) : (
-    <JqueryDialog
-      properties={{
-        title: adminText('setPassword'),
-        close: closeDialog,
-        buttons: [
-          {
-            text: commonText('apply'),
-            click(): void {
-              /* Submit form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      header={adminText('setPassword')}
+      onClose={handleClose}
+      buttons={[
+        'cancel',
+        <BlueSubmit key="button" form={id('form')}>
+          {commonText('apply')}
+        </BlueSubmit>,
+      ]}
     >
       <form
         className="grid"
@@ -96,7 +86,7 @@ function PasswordResetDialog({
             }}
           />
         </Label>
-        <Label htmlFor="pass2">
+        <Label>
           {adminText('confirmPassword')}
           <Input
             type="password"
@@ -116,11 +106,11 @@ function PasswordResetDialog({
           />
         </Label>
       </form>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 
-const Dialog = createBackboneView(PasswordResetDialog);
+const DialogView = createBackboneView(PasswordResetDialog);
 
 export default UIPlugin.extend(
   {
@@ -141,7 +131,7 @@ export default UIPlugin.extend(
         this.dialog?.remove();
         this.dialog = undefined;
       };
-      this.dialog = new Dialog({
+      this.dialog = new DialogView({
         modelId: this.model.id,
         onClose,
       }).render();

@@ -11,10 +11,10 @@ import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { useTitle } from './hooks';
-import { JqueryDialog } from './modaldialog';
+import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
-import { Progress } from './basic';
+import { Progress, RedButton } from './basic';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -108,14 +108,12 @@ function WbStatus({
 
   if (state.aborted === 'failed')
     return (
-      <JqueryDialog
-        properties={{
-          title,
-          close: (): void => dispatch({ type: 'AbortAction', aborted: false }),
-        }}
+      <Dialog
+        header={title}
+        onClose={(): void => dispatch({ type: 'AbortAction', aborted: false })}
       >
         {wbText('wbStatusAbortFailed')(mappedOperation)}
-      </JqueryDialog>
+      </Dialog>
     );
 
   let message;
@@ -151,45 +149,42 @@ function WbStatus({
     );
 
   return (
-    <JqueryDialog
-      properties={{
-        title,
-        dialogClass: 'ui-dialog-no-close',
-        buttons:
-          state.aborted === false
-            ? [
+    <Dialog
+      header={title}
+      buttons={
+        state.aborted === false ? (
+          <RedButton
+            onClick={(): void => {
+              dispatch({
+                type: 'AbortAction',
+                aborted: 'pending',
+              });
+              ajax(
+                `/api/workbench/abort/${dataset.id}/`,
+                { method: 'POST' },
                 {
-                  text: commonText('stop'),
-                  click: (): void => {
-                    dispatch({
-                      type: 'AbortAction',
-                      aborted: 'pending',
-                    });
-                    ajax(
-                      `/api/workbench/abort/${dataset.id}/`,
-                      { method: 'POST' },
-                      {
-                        expectedResponseCodes: [Http.UNAVAILABLE],
-                        strict: false,
-                      }
-                    )
-                      .then(() =>
-                        dispatch({
-                          type: 'AbortAction',
-                          aborted: true,
-                        })
-                      )
-                      .catch(() => {
-                        dispatch({
-                          type: 'AbortAction',
-                          aborted: 'failed',
-                        });
-                      });
-                  },
-                },
-              ]
-            : [],
-      }}
+                  expectedResponseCodes: [Http.UNAVAILABLE],
+                  strict: false,
+                }
+              )
+                .then(() =>
+                  dispatch({
+                    type: 'AbortAction',
+                    aborted: true,
+                  })
+                )
+                .catch(() => {
+                  dispatch({
+                    type: 'AbortAction',
+                    aborted: 'failed',
+                  });
+                });
+            }}
+          >
+            {commonText('stop')}
+          </RedButton>
+        ) : undefined
+      }
     >
       <label aria-live="polite" aria-atomic={true}>
         {message}
@@ -197,7 +192,7 @@ function WbStatus({
           <Progress value={current} max={total} />
         )}
       </label>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

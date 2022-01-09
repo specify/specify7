@@ -3,9 +3,10 @@ import React from 'react';
 import ajax from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
+import { BlueButton } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
+import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 function ForceUpdateFeed({
@@ -18,45 +19,40 @@ function ForceUpdateFeed({
   const [isActivated, setIsActivated] = React.useState<boolean>(false);
 
   return isActivated ? (
-    <JqueryDialog
-      properties={{
-        title: commonText('feedExportStartedDialogTitle'),
-        close: handleClose,
-      }}
+    <Dialog
+      title={commonText('feedExportStartedDialogTitle')}
+      header={commonText('feedExportStartedDialogHeader')}
+      onClose={handleClose}
     >
-      {commonText('feedExportStartedDialogHeader')}
-      <p>{commonText('feedExportStartedDialogMessage')}</p>
-    </JqueryDialog>
+      {commonText('feedExportStartedDialogMessage')}
+    </Dialog>
   ) : isLoading ? (
     <LoadingScreen />
   ) : (
-    <JqueryDialog
-      properties={{
-        title: commonText('updateExportFeedDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('update'),
-            click(): void {
-              setIsLoading(true);
-              ajax('/export/force_update/', {
-                method: 'POST',
-              })
-                .then(() => setIsActivated(true))
-                .catch(() => setIsActivated(false))
-                .finally(() => setIsLoading(false));
-            },
-          },
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      title={commonText('updateExportFeedDialogTitle')}
+      header={commonText('updateExportFeedDialogHeader')}
+      onClose={handleClose}
+      buttons={[
+        'cancel',
+        <BlueButton
+          key="button"
+          onClick={(): void => {
+            setIsLoading(true);
+            ajax('/export/force_update/', {
+              method: 'POST',
+            })
+              .then(() => setIsActivated(true))
+              .catch(() => setIsActivated(false))
+              .finally(() => setIsLoading(false));
+          }}
+        >
+          {commonText('update')}
+        </BlueButton>,
+      ]}
     >
-      {commonText('updateExportFeedDialogHeader')}
-      <p>{commonText('updateExportFeedDialogMessage')}</p>
-    </JqueryDialog>
+      {commonText('updateExportFeedDialogMessage')}
+    </Dialog>
   );
 }
 

@@ -3,7 +3,8 @@ import React from 'react';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { useId } from './hooks';
-import { JqueryDialog } from './modaldialog';
+import { Dialog } from './modaldialog';
+import { BlueSubmit, TransparentButton } from './basic';
 
 export function PickList({
   label,
@@ -89,25 +90,20 @@ export function AddLanguage({
   const [language, setLanguage] = React.useState<string>('');
   const [country, setCountry] = React.useState<string>('');
   return (
-    <JqueryDialog
-      properties={{
-        title: commonText('addLanguageDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('back'),
-            click: handleGoBack,
-          },
-          {
-            text: commonText('add'),
-            click(): void {
-              /* Submit form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-        ],
-      }}
+    <Dialog
+      title={commonText('addLanguageDialogTitle')}
+      header={commonText('addLanguageDialogHeader')}
+      onClose={handleClose}
+      buttons={
+        <>
+          <TransparentButton onClick={handleGoBack}>
+            {commonText('back')}
+          </TransparentButton>
+          <BlueSubmit key="button" form={id('form')}>
+            {commonText('add')}
+          </BlueSubmit>
+        </>
+      }
     >
       <form
         className="grid"
@@ -122,7 +118,6 @@ export function AddLanguage({
           );
         }}
       >
-        {commonText('addLanguageDialogHeader')}
         <label>
           {commonText('language')}
           <input
@@ -147,6 +142,6 @@ export function AddLanguage({
           />
         </label>
       </form>
-    </JqueryDialog>
+    </Dialog>
   );
 }

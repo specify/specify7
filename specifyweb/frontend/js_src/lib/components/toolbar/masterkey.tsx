@@ -4,8 +4,9 @@ import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
+import { LoadingScreen, Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { BlueSubmit } from '../basic';
 
 function MasterKey({
   onClose: handleClose,
@@ -37,27 +38,17 @@ function MasterKey({
   return isLoading ? (
     <LoadingScreen />
   ) : typeof masterKey === 'undefined' ? (
-    <JqueryDialog
-      properties={{
-        title: commonText('generateMasterKeyDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('generate'),
-            click: (): void => {
-              /* Submit the form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      title={commonText('generateMasterKeyDialogTitle')}
+      header={commonText('generateMasterKeyDialogHeader')}
+      onClose={handleClose}
+      buttons={[
+        'cancel',
+        <BlueSubmit key="button" form={id('form')}>
+          {commonText('generate')}
+        </BlueSubmit>,
+      ]}
     >
-      {commonText('generateMasterKeyDialogHeader')}
       <form
         className="grid"
         id={id('form')}
@@ -70,6 +61,7 @@ function MasterKey({
               method: 'POST',
               body: formData({ password }),
               headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 Accept: 'text/plain',
               },
             },
@@ -103,7 +95,7 @@ function MasterKey({
           />
         </label>
       </form>
-    </JqueryDialog>
+    </Dialog>
   ) : (
     <ShowKey masterKey={masterKey} onClose={handleClose} />
   );
@@ -117,19 +109,16 @@ function ShowKey({
   readonly masterKey: string;
 }): JSX.Element {
   return (
-    <JqueryDialog
-      properties={{
-        close: handleClose,
-        title: commonText('masterKeyDialogTitle'),
-        width: 'auto',
-      }}
+    <Dialog
+      title={commonText('masterKeyDialogTitle')}
+      header={commonText('masterKeyDialogHeader')}
+      onClose={handleClose}
     >
-      {commonText('masterKeyDialogHeader')}
       <label>
         {commonText('masterKeyFieldLabel')}
         <input type="text" readOnly value={masterKey} />
       </label>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

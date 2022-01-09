@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { createDictionary, header, jsxHeader } from './utils';
+import { createDictionary, header } from './utils';
 import { Link } from '../components/basic';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
@@ -463,9 +463,9 @@ const commonText = createDictionary({
     ca: 'Export Feed',
   },
   updateExportFeedDialogHeader: {
-    'en-us': jsxHeader('Update all export feed items now?'),
-    'ru-ru': jsxHeader('Обновить все элементы фида экспорта сейчас?'),
-    ca: jsxHeader('Update all export feed items now?'),
+    'en-us': 'Update all export feed items now?',
+    'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
+    ca: 'Update all export feed items now?',
   },
   updateExportFeedDialogMessage: {
     'en-us': 'Update all export feed items now?',
@@ -478,9 +478,9 @@ const commonText = createDictionary({
     ca: 'Export Feed',
   },
   feedExportStartedDialogHeader: {
-    'en-us': jsxHeader('Export feed update started'),
-    'ru-ru': jsxHeader('Начато обновление экспортного фида'),
-    ca: jsxHeader('Export feed update started'),
+    'en-us': 'Export feed update started',
+    'ru-ru': 'Начато обновление экспортного фида',
+    ca: 'Export feed update started',
   },
   feedExportStartedDialogMessage: {
     'en-us': `
@@ -498,9 +498,9 @@ const commonText = createDictionary({
     ca: 'DwCA',
   },
   dwcaExportStartedDialogHeader: {
-    'en-us': jsxHeader('DwCA export started'),
-    'ru-ru': jsxHeader('DwCA экспорт начат'),
-    ca: jsxHeader('DwCA export started'),
+    'en-us': 'DwCA export started',
+    'ru-ru': 'DwCA экспорт начат',
+    ca: 'DwCA export started',
   },
   dwcaExportStartedDialogMessage: {
     'en-us': `
@@ -528,9 +528,9 @@ const commonText = createDictionary({
     ca: 'Master Key',
   },
   generateMasterKeyDialogHeader: {
-    'en-us': jsxHeader('Generate Master Key'),
-    'ru-ru': jsxHeader('Сгенерировать мастер-ключ'),
-    ca: jsxHeader('Generate Master Key'),
+    'en-us': 'Generate Master Key',
+    'ru-ru': 'Сгенерировать мастер-ключ',
+    ca: 'Generate Master Key',
   },
   userPassword: {
     'en-us': 'User Password:',
@@ -543,9 +543,9 @@ const commonText = createDictionary({
     ca: 'Master Key',
   },
   masterKeyDialogHeader: {
-    'en-us': jsxHeader('Master key generated'),
-    'ru-ru': jsxHeader('Мастер-ключ создан'),
-    ca: jsxHeader('Master key generated'),
+    'en-us': 'Master key generated',
+    'ru-ru': 'Мастер-ключ создан',
+    ca: 'Master key generated',
   },
   masterKeyFieldLabel: {
     'en-us': 'Master Key:',
@@ -668,9 +668,9 @@ const commonText = createDictionary({
     ca: 'Resources',
   },
   resourcesDialogHeader: {
-    'en-us': jsxHeader('Choose the resource type you wish to edit:'),
-    'ru-ru': jsxHeader('Выберите тип ресурса, который хотите отредактировать:'),
-    ca: jsxHeader('Choose the resource type you wish to edit:'),
+    'en-us': 'Choose the resource type you wish to edit:',
+    'ru-ru': 'Выберите тип ресурса, который хотите отредактировать:',
+    ca: 'Choose the resource type you wish to edit:',
   },
   repairTree: {
     'en-us': 'Repair Tree',
@@ -739,9 +739,9 @@ const commonText = createDictionary({
     ca: 'Unexpected Error',
   },
   errorBoundaryDialogHeader: {
-    'en-us': jsxHeader('An unexpected error has occurred'),
-    'ru-ru': jsxHeader('Произошла неожиданная ошибка'),
-    ca: jsxHeader('An unexpected error has occurred'),
+    'en-us': 'An unexpected error has occurred',
+    'ru-ru': 'Произошла неожиданная ошибка',
+    ca: 'An unexpected error has occurred',
   },
   errorBoundaryDialogMessage: {
     'en-us': (
@@ -1223,9 +1223,9 @@ const commonText = createDictionary({
     ca: "Afegeix l'idioma",
   },
   addLanguageDialogHeader: {
-    'en-us': jsxHeader('Add new language'),
-    'ru-ru': jsxHeader('Добавить новый язык'),
-    ca: jsxHeader('Afegeix un nou idioma'),
+    'en-us': 'Add new language',
+    'ru-ru': 'Добавить новый язык',
+    ca: 'Afegeix un nou idioma',
   },
   country: {
     'en-us': 'Country',

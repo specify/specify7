@@ -14,6 +14,7 @@ import {
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
 import {
+  BlueButton,
   Button,
   ButtonLikeLink,
   Checkbox,
@@ -23,9 +24,10 @@ import {
   LabelForCheckbox,
   Link,
   Radio,
+  TransparentButton,
 } from './basic';
 import { TableIcon } from './common';
-import { LoadingScreen, JqueryDialog } from './modaldialog';
+import { LoadingScreen, Dialog } from './modaldialog';
 import type {
   DataObjectFormatter,
   ItemType,
@@ -111,24 +113,22 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     },
   }) {
     return (
-      <JqueryDialog
-        properties={{
-          title: commonText('schemaConfig'),
-          close: handleClose,
-          buttons: [
-            {
-              text: commonText('addLanguage'),
-              click: (): void =>
-                dispatch({
-                  type: 'AddLanguageAction',
-                }),
-            },
-            {
-              text: commonText('close'),
-              click: handleClose,
-            },
-          ],
-        }}
+      <Dialog
+        header={commonText('schemaConfig')}
+        onClose={handleClose}
+        buttons={[
+          'close',
+          <BlueButton
+            key="button"
+            onClick={(): void =>
+              dispatch({
+                type: 'AddLanguageAction',
+              })
+            }
+          >
+            {commonText('addLanguage')}
+          </BlueButton>,
+        ]}
       >
         {commonText('language')}
         <ul>
@@ -149,7 +149,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
           ))}
         </ul>
-      </JqueryDialog>
+      </Dialog>
     );
   },
   AddLanguageState({
@@ -182,21 +182,20 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   }) {
     const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
     return (
-      <JqueryDialog
-        properties={{
-          title: formsText('tables'),
-          close: handleClose,
-          buttons: [
-            {
-              text: commonText('back'),
-              // eslint-disable-next-line sonarjs/no-identical-functions
-              click: (): void =>
-                dispatch({
-                  type: 'ChangeLanguageAction',
-                }),
-            },
-          ],
-        }}
+      <Dialog
+        header={formsText('tables')}
+        onClose={handleClose}
+        buttons={
+          <TransparentButton
+            onClick={(): void =>
+              dispatch({
+                type: 'ChangeLanguageAction',
+              })
+            }
+          >
+            {commonText('back')}
+          </TransparentButton>
+        }
       >
         <ul className="max-h-80">
           {sortedTables.map((table) => (
@@ -211,7 +210,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
           ))}
         </ul>
-      </JqueryDialog>
+      </Dialog>
     );
   },
   FetchingTableItemsState() {

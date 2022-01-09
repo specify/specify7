@@ -14,10 +14,19 @@ import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
 import { useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
-import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { Button, Form, Input, Label, Link, Select, Textarea } from './basic';
+import {
+  BlueSubmit,
+  Button,
+  Form,
+  Input,
+  Label,
+  Link,
+  Select,
+  Textarea,
+} from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -72,25 +81,15 @@ export function DataSetMeta({
   }, []);
 
   return (
-    <JqueryDialog
-      properties={{
-        title: wbText('dataSetMetaDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('close'),
-            click: closeDialog,
-          },
-          {
-            text: commonText('save'),
-            click(): void {
-              /* Submit form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-        ],
-      }}
+    <Dialog
+      header={wbText('dataSetMetaDialogTitle')}
+      onClose={handleClose}
+      buttons={[
+        'close',
+        <BlueSubmit key="button" form={id('form')}>
+          {commonText('save')}
+        </BlueSubmit>,
+      ]}
     >
       <Form
         id={id('form')}
@@ -176,7 +175,7 @@ export function DataSetMeta({
           </span>
         </div>
       </Form>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 
@@ -263,35 +262,25 @@ function ChangeOwner({
   return typeof users === 'undefined' ? (
     <LoadingScreen />
   ) : isChanged ? (
-    <JqueryDialog
-      properties={{
-        title: wbText('dataSetOwnerChangedDialogTitle'),
-        close: handleChanged,
-      }}
+    <Dialog
+      title={wbText('dataSetOwnerChangedDialogTitle')}
+      header={wbText('dataSetOwnerChangedDialogHeader')}
+      onClose={handleChanged}
+      buttons={['close']}
     >
-      ${wbText('dataSetOwnerChangedDialogHeader')}
       <p>${wbText('dataSetOwnerChangedDialogMessage')}</p>
-    </JqueryDialog>
+    </Dialog>
   ) : (
-    <JqueryDialog
-      properties={{
-        title: wbText('changeDataSetOwnerDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-          {
-            text: wbText('changeOwner'),
-            click(): void {
-              /* Submit form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-        ],
-      }}
+    <Dialog
+      title={wbText('changeDataSetOwnerDialogTitle')}
+      header={wbText('changeDataSetOwnerDialogHeader')}
+      onClose={handleClose}
+      buttons={[
+        'cancel',
+        <BlueSubmit key="button" form={id('form')}>
+          {wbText('changeOwner')}
+        </BlueSubmit>,
+      ]}
     >
       <form
         onSubmit={(event): void => {
@@ -304,7 +293,6 @@ function ChangeOwner({
           }).then(() => setIsChanged(true));
         }}
       >
-        {wbText('changeDataSetOwnerDialogHeader')}
         <Label>
           <p>{wbText('changeDataSetOwnerDialogMessage')}</p>
           <Select
@@ -322,7 +310,7 @@ function ChangeOwner({
           </Select>
         </Label>
       </form>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

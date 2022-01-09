@@ -6,12 +6,7 @@
 
 import React from 'react';
 
-import {
-  createDictionary,
-  header,
-  jsxHeader,
-  whitespaceSensitive,
-} from './utils';
+import { createDictionary, header, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -932,9 +927,9 @@ const wbText = createDictionary({
     ca: 'Upload Plan Validation',
   },
   validationFailedDialogHeader: {
-    'en-us': jsxHeader('Validation found missing mappings:'),
-    'ru-ru': jsxHeader('Проверка обнаружила недостающие сопоставления:'),
-    ca: jsxHeader('Validation found missing mappings:'),
+    'en-us': 'Validation found missing mappings:',
+    'ru-ru': 'Проверка обнаружила недостающие сопоставления:',
+    ca: 'Validation found missing mappings:',
   },
   validationFailedDialogMessage: {
     'en-us': `
@@ -1044,11 +1039,10 @@ const wbText = createDictionary({
     ca: 'Change Base Table',
   },
   goToBaseTableDialogHeader: {
-    'en-us': jsxHeader('Change the Base Table for Mapping Data Set Columns?'),
-    'ru-ru': jsxHeader(
-      'Изменить базовую таблицу для сопоставления столбцов набора данных?'
-    ),
-    ca: jsxHeader('Change the Base Table for Mapping Data Set Columns?'),
+    'en-us': 'Change the Base Table for Mapping Data Set Columns?',
+    'ru-ru':
+      'Изменить базовую таблицу для сопоставления столбцов набора данных?',
+    ca: 'Change the Base Table for Mapping Data Set Columns?',
   },
   goToBaseTableDialogMessage: {
     'en-us': `
@@ -1121,9 +1115,9 @@ const wbText = createDictionary({
     ca: 'Empty Data Set',
   },
   emptyDataSetDialogHeader: {
-    'en-us': jsxHeader('Empty Data Set'),
-    'ru-ru': jsxHeader('Пустой набор данных'),
-    ca: jsxHeader('Empty Data Set'),
+    'en-us': 'Empty Data Set',
+    'ru-ru': 'Пустой набор данных',
+    ca: 'Empty Data Set',
   },
   emptyDataSetDialogMessage: {
     'en-us': (
@@ -1157,9 +1151,9 @@ const wbText = createDictionary({
     ca: 'AutoMapper',
   },
   reRunAutoMapperDialogHeader: {
-    'en-us': jsxHeader('Automap to start a new Upload Plan?'),
-    'ru-ru': jsxHeader('Автоматически сопоставить?'),
-    ca: jsxHeader('Automap to start a new Upload Plan?'),
+    'en-us': 'Automap to start a new Upload Plan?',
+    'ru-ru': 'Автоматически сопоставить?',
+    ca: 'Automap to start a new Upload Plan?',
   },
   reRunAutoMapperDialogMessage: {
     'en-us': 'This will erase existing data field mappings.',
@@ -1172,9 +1166,9 @@ const wbText = createDictionary({
     ca: 'Nothing to validate',
   },
   nothingToValidateDialogHeader: {
-    'en-us': jsxHeader('There are no mappings to validate'),
-    'ru-ru': jsxHeader('Нет сопоставлений для проверки'),
-    ca: jsxHeader('There are no mappings to validate'),
+    'en-us': 'There are no mappings to validate',
+    'ru-ru': 'Нет сопоставлений для проверки',
+    ca: 'There are no mappings to validate',
   },
   nothingToValidateDialogMessage: {
     'en-us': 'Please map some headers before running the validation.',
@@ -1314,9 +1308,9 @@ const wbText = createDictionary({
     ca: 'Data Set Properties',
   },
   changeDataSetOwnerDialogHeader: {
-    'en-us': jsxHeader('Change Data Set Owner'),
-    'ru-ru': jsxHeader('Изменить владельца набора данных'),
-    ca: jsxHeader('Change Data Set Owner'),
+    'en-us': 'Change Data Set Owner',
+    'ru-ru': 'Изменить владельца набора данных',
+    ca: 'Change Data Set Owner',
   },
   changeDataSetOwnerDialogMessage: {
     'en-us': 'Select New Owner:',
@@ -1329,9 +1323,9 @@ const wbText = createDictionary({
     ca: 'Data Set Properties',
   },
   dataSetOwnerChangedDialogHeader: {
-    'en-us': jsxHeader('Data Set owner changed'),
-    'ru-ru': jsxHeader('Владелец набора данных изменен'),
-    ca: jsxHeader('Data Set owner changed'),
+    'en-us': 'Data Set owner changed',
+    'ru-ru': 'Владелец набора данных изменен',
+    ca: 'Data Set owner changed',
   },
   dataSetOwnerChangedDialogMessage: {
     'en-us': 'Data Set owner changed.',

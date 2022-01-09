@@ -5,7 +5,7 @@ import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, ButtonLikeLink, Link } from './basic';
 import { formatNumber } from './internationalization';
-import { JqueryDialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -111,38 +111,33 @@ export default function Notifications(): JSX.Element {
         )}
       </Button>
       {typeof notifications !== 'undefined' && isOpen && (
-        <JqueryDialog
-          className="gap-y-2 flex flex-col -mt-1 divide-y divide-gray-400"
-          properties={{
-            title: commonText('notificationsDialogTitle'),
-            maxHeight: 400,
-            position: {
-              my: 'center top',
-              at: 'center bottom',
-              of: buttonRef.current,
-            },
-            buttons: [],
-            close: (): void => {
-              setIsOpen(false);
-              setNotifications(
-                notifications.map((notification) => ({
-                  ...notification,
-                  read: true,
-                }))
+        <Dialog
+          header={commonText('notificationsDialogTitle')}
+          onClose={(): void => {
+            setIsOpen(false);
+            setNotifications(
+              notifications.map((notification) => ({
+                ...notification,
+                read: true,
+              }))
+            );
+            if (notifications.length > 0)
+              void ajax(
+                '/notifications/mark_read/',
+                {
+                  method: 'POST',
+                  body: formData({
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    last_seen: notifications.slice(-1)[0].timestamp,
+                  }),
+                },
+                { strict: false }
               );
-              if (notifications.length > 0)
-                void ajax(
-                  '/notifications/mark_read/',
-                  {
-                    method: 'POST',
-                    body: formData({
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      last_seen: notifications.slice(-1)[0].timestamp,
-                    }),
-                  },
-                  { strict: false }
-                );
-            },
+          }}
+          buttons={['close']}
+          className={{
+            container: dialogClassNames.narrowContainer,
+            content: `${dialogClassNames.flexContent} -mt-1 divide-y divide-gray-400`,
           }}
         >
           {notifications.map((notification, index) => (
@@ -156,7 +151,7 @@ export default function Notifications(): JSX.Element {
               }
             />
           ))}
-        </JqueryDialog>
+        </Dialog>
       )}
     </>
   );

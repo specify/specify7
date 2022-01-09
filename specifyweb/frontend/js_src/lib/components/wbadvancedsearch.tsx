@@ -9,7 +9,7 @@ import React from 'react';
 import * as cache from '../cache';
 import wbText from '../localization/workbench';
 import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
-import { JqueryDialog } from './modaldialog';
+import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
@@ -91,7 +91,7 @@ function CheckboxLine({
   );
 }
 
-function Dialog({
+function PreferencesDialog({
   searchPreferences,
   onClose: handleClose,
   onChange: handleChange,
@@ -101,13 +101,10 @@ function Dialog({
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <JqueryDialog
-      properties={{
-        title: wbText('wbAdvancedSearchDialogTitle'),
-        close: handleClose,
-        modal: false,
-      }}
-      className="gap-y-2 flex flex-col"
+    <Dialog
+      header={wbText('wbAdvancedSearchDialogTitle')}
+      onClose={handleClose}
+      buttons={['close']}
     >
       <div>
         <h2 className="font-black">{wbText('navigationOptions')}</h2>
@@ -184,7 +181,7 @@ function Dialog({
           </select>
         </Label>
       </div>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 
@@ -222,7 +219,7 @@ function WbAdvancedSearch({
         />
       </Button>
       {isOpen && (
-        <Dialog
+        <PreferencesDialog
           searchPreferences={searchPreferences}
           onClose={(): void => setIsOpen(false)}
           onChange={setSearchPreferences}

@@ -11,3 +11,10 @@ declare module 'worker-loader!*' {
 
   export default WebpackWorker;
 }
+
+declare global {
+  // Fix Array.isArray() narrowing RA<T> to any[]
+  interface ArrayConstructor {
+    isArray(argument: ReadonlyArray<any> | any): argument is ReadonlyArray<any>;
+  }
+}

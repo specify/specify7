@@ -9,16 +9,16 @@ import React from 'react';
 import wbText from '../localization/workbench';
 import type { IR, R, RA } from '../types';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
-import { useId } from './hooks';
+import { Button } from './basic';
 import type {
   CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
-import { closeDialog, JqueryDialog } from './modaldialog';
+import { useId } from './hooks';
+import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
-import { Button } from './basic';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -97,12 +97,12 @@ export function ListOfBaseTables({
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
   readonly buttons: (
-    confirm: () => void,
-    cancel: () => void
-  ) => JQueryUI.DialogButtonOptions[];
+    confirm: () => void
+  ) => Parameters<typeof Dialog>[0]['buttons'];
   readonly dialogContent: React.ReactNode;
   readonly onConfirm: () => void;
   readonly dialogTitle: string;
+  readonly dialogHeader: string;
   readonly showConfirmation?: () => boolean;
   readonly role?: string;
 }): JSX.Element {
@@ -123,19 +123,20 @@ export function ButtonWithConfirmation(props: {
         {props.children}
       </Button>
       {displayPrompt ? (
-        <JqueryDialog
-          properties={{
-            title: props.dialogTitle,
-            close: (): void => setDisplayPrompt(false),
-            width: '400',
-            buttons: props.buttons(() => {
-              setDisplayPrompt(false);
-              props.onConfirm();
-            }, closeDialog),
+        <Dialog
+          title={props.dialogTitle}
+          header={props.dialogHeader}
+          onClose={(): void => setDisplayPrompt(false)}
+          className={{
+            container: dialogClassNames.narrowContainer,
           }}
+          buttons={props.buttons(() => {
+            setDisplayPrompt(false);
+            props.onConfirm();
+          })}
         >
           {props.dialogContent}
-        </JqueryDialog>
+        </Dialog>
       ) : undefined}
     </>
   );
@@ -160,15 +161,14 @@ export function ValidationButton(props: {
         {wbText('validate')}
       </Button>
       {displayPrompt ? (
-        <JqueryDialog
-          properties={{
-            title: wbText('nothingToValidateDialogTitle'),
-            close: (): void => setDisplayPrompt(false),
-          }}
+        <Dialog
+          title={wbText('nothingToValidateDialogTitle')}
+          header={wbText('nothingToValidateDialogHeader')}
+          onClose={(): void => setDisplayPrompt(false)}
+          buttons={['close']}
         >
-          {wbText('nothingToValidateDialogHeader')}
-          <p>{wbText('nothingToValidateDialogMessage')}</p>
-        </JqueryDialog>
+          {wbText('nothingToValidateDialogMessage')}
+        </Dialog>
       ) : undefined}
     </>
   );
@@ -245,7 +245,7 @@ export function MappingPathComponent({
           {index + 1 !== mappingLineData.length &&
             mappingLineData[index + 1]?.customSelectType !==
               'MAPPING_OPTIONS_LIST' &&
-            MappingElementDivider}
+            mappingElementDivider}
         </React.Fragment>
       ))}
     </>
@@ -259,7 +259,7 @@ const fieldGroupLabels = {
   hiddenFields: wbText('hiddenFields'),
 } as const;
 
-const MappingElementDivider = (
+const mappingElementDivider = (
   <span className="print:px-1 flex items-center px-2" aria-label=",">
     {'→'}
   </span>

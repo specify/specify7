@@ -21,6 +21,17 @@ module.exports = {
   },
   darkMode: 'media',
   theme: {
+    borderRadius: {
+      none: '0px',
+      xs: '0.125rem',
+      sm: '0.25rem',
+      DEFAULT: '0.375rem',
+      md: '0.5rem',
+      lg: '0.75rem',
+      xl: '1rem',
+      '2xl': '1.5rem',
+      full: '9999px',
+    },
     extend: {
       colors: {
         // Specify 7 orange colors:
@@ -53,8 +64,8 @@ module.exports = {
     require('@tailwindcss/forms'),
   ],
   /*
-   * Disable purge in development for convenience
-   * NOTE: this increases build times
+   * Disable class name purge in development for convenience
+   * NOTE: this significantly increases build times
    */
   ...(process.env.NODE_ENV === 'production' ? {} : {
     safelist: [

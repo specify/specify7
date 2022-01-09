@@ -168,18 +168,14 @@ export default Backbone.View.extend({
                         specifyuser: userInfo.id,
                         contexttableid: recordSet.get("dbTableId"),
                     },
-                    buttons: ({ type }) => type === "ShowQueryListState" ?
-                        [{
-                            text: commonText("new"),
-                            click: () => {
-                                view.remove();
-                                navigation.go(
-                                      `/specify/query/new/${getModelById(recordSet.get("dbTableId"))
-                                    .name.toLowerCase()}/?recordsetid=${recordSet.id}`
-                                );
-                            },
-                        }]
-                        : [],
+                    newQueryButtonGenerator: ({ type }) =>
+                        () => {
+                              view.remove();
+                              navigation.go(
+                                    `/specify/query/new/${getModelById(recordSet.get("dbTableId"))
+                                  .name.toLowerCase()}/?recordsetid=${recordSet.id}`
+                              );
+                          }
                 });
                 view.render();
             };

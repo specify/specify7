@@ -9,7 +9,7 @@ import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import type { MenuItem, UserTool } from './main';
-import { JqueryDialog } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { setCurrentOverlay } from '../specifyapp';
 
 const routeMappings: IR<string> = {
@@ -183,11 +183,10 @@ export function UserTools({
         {userInfo.name}
       </Button>
       {isOpen ? (
-        <JqueryDialog
-          properties={{
-            title: commonText('userToolsDialogTitle'),
-            close: (): void => setIsOpen(false),
-          }}
+        <Dialog
+          header={commonText('userToolsDialogTitle')}
+          onClose={(): void => setIsOpen(false)}
+          buttons={['close']}
         >
           <nav>
             {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
@@ -229,7 +228,7 @@ export function UserTools({
               ))}
             </ul>
           </nav>
-        </JqueryDialog>
+        </Dialog>
       ) : undefined}
     </>
   );

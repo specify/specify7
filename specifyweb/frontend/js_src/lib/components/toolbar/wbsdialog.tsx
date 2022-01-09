@@ -13,7 +13,7 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
-import { Button, ButtonLikeLink, Link } from '../basic';
+import { BlueButton, ButtonLikeLink, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
@@ -203,26 +203,26 @@ function MetadataDialog({
             : wbText('wbsDialogDefaultDialogTitle')(datasets.length)
         }
         className={{
-          container: dialogClassNames.normalContainer,
+          container: dialogClassNames.wideContainer,
         }}
         onClose={handleClose}
-        buttons={
+        buttons={[
+          'close',
           <>
             {canImport && (
               <>
-                <Button
+                <BlueButton
                   onClick={(): void => navigation.go('/workbench-import/')}
                 >
                   {wbText('importFile')}
-                </Button>
-                <Button onClick={createEmptyDataSet}>
+                </BlueButton>
+                <BlueButton onClick={createEmptyDataSet}>
                   {wbText('createNew')}
-                </Button>
+                </BlueButton>
               </>
             )}
-            <Button onClick={handleClose}>{commonText('close')}</Button>
-          </>
-        }
+          </>,
+        ]}
       >
         {datasets.length === 0 ? (
           <p>

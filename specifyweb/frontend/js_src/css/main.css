@@ -117,7 +117,7 @@
     @apply border rounded cursor-pointer active:brightness-80 bg-gray-300
     border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
     disabled:text-gray-500 gap-2 hover:bg-brand-200
-    inline-flex items-center p-1 text-black;
+    inline-flex items-center px-2 py-1 text-black;
   }
 
   button[aria-pressed='true']:not(.aria-handled) {

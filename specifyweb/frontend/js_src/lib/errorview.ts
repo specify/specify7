@@ -23,6 +23,7 @@ export const UnhandledErrorView = Backbone.View.extend({
         ${this.options.response}
       </textarea>
     `;
+    // TODO: when transitioning to react <Dialog>, add "forceToTop={true}" prop
     this.$el.dialog({
       modal: true,
       width: '800',

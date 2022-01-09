@@ -4,8 +4,6 @@
  * @module
  */
 
-import React from 'react';
-
 import type { IR, RA, RR } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 
@@ -82,9 +80,6 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
 
 export const header = (header: string): string =>
   header === '' ? '' : `<h2 class="text-black font-semibold">${header}</h2>`;
-
-export const jsxHeader = (header: string): string | JSX.Element =>
-  header === '' ? '' : <h2 className="font-semibold text-black">{header}</h2>;
 
 export const whitespaceSensitive = (string: string): string =>
   string

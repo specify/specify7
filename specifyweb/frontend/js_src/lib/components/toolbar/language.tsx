@@ -8,7 +8,7 @@ import type { IR, RA } from '../../types';
 import { Form, Label, Select } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
+import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { parseDjangoDump } from '../splashscreen';
 
@@ -80,15 +80,13 @@ function ChangeLanguage({
   return typeof languages === 'undefined' ? (
     <LoadingScreen />
   ) : (
-    <JqueryDialog
-      properties={{
-        title: commonText('changeLanguage'),
-        close: handleClose,
-        buttons: [{ text: commonText('close'), click: closeDialog }],
-      }}
+    <Dialog
+      header={commonText('changeLanguage')}
+      onClose={handleClose}
+      buttons={['close']}
     >
       <LanguageSelection languages={languages} />
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

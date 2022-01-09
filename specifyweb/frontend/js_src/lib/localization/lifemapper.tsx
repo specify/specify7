@@ -1,4 +1,4 @@
-import { createDictionary, jsxHeader } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -14,9 +14,9 @@ const lifemapperText = createDictionary({
     ca: "No s'ha pogut obrir la pàgina",
   },
   failedToOpenPopUpDialogHeader: {
-    'en-us': jsxHeader('Failed to open Specify Network Page'),
-    'ru-ru': jsxHeader('Не удалось открыть страницу Specify Network'),
-    ca: jsxHeader("No s'ha pogut obrir la pàgina de Specify Network"),
+    'en-us': 'Failed to open Specify Network Page',
+    'ru-ru': 'Не удалось открыть страницу Specify Network',
+    ca: "No s'ha pogut obrir la pàgina de Specify Network",
   },
   failedToOpenPopUpDialogMessage: {
     'en-us': `

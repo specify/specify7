@@ -3,30 +3,14 @@
  *
  * @module
  */
-import $ from 'jquery';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 
 import { error } from '../assert';
 import commonText from '../localization/common';
-import type { IR, RA } from '../types';
-import { transitionDuration } from './basic';
-import ErrorBoundary from './errorboundary';
+import type { RA } from '../types';
+import { transitionDuration, TransparentButton } from './basic';
 import { useId } from './hooks';
-
-function closeDialogCallback(
-  $dialog: JQuery,
-  resize: () => void,
-  onCloseCallback?: () => void
-): void {
-  if (!$dialog.is(':ui-dialog')) return;
-  ReactDOM.unmountComponentAtNode($dialog[0]);
-  window.removeEventListener('resize', resize);
-  onCloseCallback?.();
-  // Unset event listeners
-  $dialog.remove();
-}
 
 /*
  * A dummy function
@@ -37,175 +21,6 @@ function closeDialogCallback(
  */
 export const closeDialog = (...args: RA<unknown>): void =>
   console.error(...args);
-
-const hasHeader = (children: React.ReactNode): boolean =>
-  typeof children === 'object' &&
-  children !== null &&
-  'type' in children &&
-  (children?.type === 'h2' ||
-    (typeof children?.props?.children?.some === 'function' &&
-      children.props.children.some(hasHeader)));
-
-type DialogProperties = IR<unknown> &
-  Exclude<JQueryUI.DialogOptions, 'buttons'> & {
-    readonly close?: (
-      event: JQueryUI.DialogEvent | Event | undefined,
-      ui: JQueryUI.DialogUIParams | undefined
-    ) => void;
-    // Don't allow supplying buttons as a dictionary to simplify code
-    readonly buttons?: RA<JQueryUI.DialogButtonOptions>;
-  };
-
-/**
- * Add 'close' button by default if no buttons are defined
- * Replace "closeDialog" dummy function with a real close callback
- */
-const formalizeProperties = (
-  properties: DialogProperties,
-  closeDialogBind: (event: JQueryUI.DialogEvent | Event | undefined) => void
-): DialogProperties => ({
-  ...properties,
-  buttons: (
-    properties.buttons ?? [{ text: commonText('close'), click: closeDialog }]
-  ).map((button) =>
-    button.click === closeDialog
-      ? {
-          ...button,
-          click: closeDialogBind,
-        }
-      : button
-  ),
-});
-
-const serialize = (object: unknown): string =>
-  JSON.stringify(object, (_key, value) =>
-    // Fix circular dependency issue
-    value instanceof HTMLElement ? value.toString() : value
-  );
-
-// TODO: make this look similar to <ModalDialog> until we fully transition
-/**
- * Wrapper for jQuery's dialog
- */
-export function JqueryDialog({
-  properties,
-  children,
-  className = '',
-}: {
-  readonly children: React.ReactNode;
-  readonly properties: DialogProperties;
-  readonly className?: string;
-}): JSX.Element {
-  const dialogRef = React.useRef<HTMLDivElement>(null);
-  const [$dialog, setDialog] = React.useState<JQuery | undefined>();
-  const resize = React.useRef<() => void>(() => {
-    throw new Error('Function not defined');
-  });
-
-  React.useEffect(() => {
-    if (dialogRef.current === null) return undefined;
-
-    const dialogElement = $(dialogRef.current.children[0] as HTMLElement);
-
-    dialogElement[0].setAttribute('class', className);
-
-    // Reposition dialog on screen resize
-    resize.current = (): void =>
-      dialogElement.is(':ui-dialog')
-        ? void dialogElement.dialog(
-            'option',
-            'position',
-            formalProperties.position ?? 'center'
-          )
-        : undefined;
-    window.addEventListener('resize', resize.current);
-
-    const closeDialogBind = (
-      event: JQueryUI.DialogEvent | Event | undefined = undefined
-    ): void =>
-      closeDialogCallback(
-        dialogElement,
-        resize.current,
-        // Don't call callback if dialog was closed by destructor
-        typeof event === 'undefined' || !('originalEvent' in event)
-          ? undefined
-          : (properties.close as () => void)
-      );
-
-    const formalProperties = formalizeProperties(properties, closeDialogBind);
-
-    dialogElement.dialog({
-      modal: true,
-      width: 300,
-      ...formalProperties,
-      close: closeDialogBind,
-      dialogClass: [
-        'ui-dialog-react',
-        // Dialogs without a header have bold titles
-        hasHeader(children) ? 'ui-dialog-with-header' : '',
-        properties.dialogClass,
-      ]
-        .filter((className) => className)
-        .join(' '),
-    });
-
-    setDialog(dialogElement);
-
-    return closeDialogBind;
-  }, [dialogRef]);
-
-  // Re-render dialog content on change
-  React.useEffect(() => {
-    if (typeof $dialog === 'undefined') return;
-
-    ReactDOM.render(
-      <React.StrictMode>
-        <ErrorBoundary silentErrors={false}>
-          <>{children}</>
-        </ErrorBoundary>
-      </React.StrictMode>,
-      $dialog[0],
-      resize.current
-    );
-  }, [$dialog, children]);
-
-  // Update dialog settings on changes to the dialog "properties" object
-  const previousProperties = React.useRef<DialogProperties | undefined>(
-    undefined
-  );
-  const serializedProperties = serialize(properties);
-  React.useEffect(() => {
-    if (typeof $dialog === 'undefined') return;
-
-    const formalizedProperties = formalizeProperties(
-      properties,
-      $dialog.dialog('option', 'close')
-    );
-
-    if (typeof previousProperties.current !== 'undefined')
-      Array.from(
-        new Set([
-          ...Object.keys(formalizedProperties),
-          ...Object.keys(previousProperties.current ?? {}),
-        ])
-      )
-        .filter(
-          (key) =>
-            serialize(previousProperties.current?.[key]) !==
-            serialize(formalizedProperties?.[key])
-        )
-        .forEach((key) =>
-          $dialog.dialog('option', key, formalizedProperties?.[key])
-        );
-    previousProperties.current = formalizedProperties;
-  }, [$dialog, serializedProperties]);
-
-  return (
-    <div className="absolute" ref={dialogRef}>
-      <div />
-    </div>
-  );
-}
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -221,24 +36,30 @@ export const loadingBar = (
  * @module
  */
 export function LoadingScreen(): JSX.Element {
-  return <Dialog header={commonText('loading')}>{loadingBar}</Dialog>;
+  return (
+    <Dialog
+      header={commonText('loading')}
+      className={{ container: dialogClassNames.narrowContainer }}
+    >
+      {loadingBar}
+    </Dialog>
+  );
 }
 
 const commonContainer = `rounded resize overflow-y-hidden max-w-[90%]
-  max-h-[90%] shadow-lg shadow-gray-500`;
+  shadow-lg shadow-gray-500`;
 export const dialogClassNames = {
   fullScreen: 'w-full h-full',
-  freeContainer: commonContainer,
-  narrowContainer: `${commonContainer} min-w-[min(20rem,90%)]`,
-  normalContainer: `${commonContainer} min-w-[min(30rem,90%)]`,
-  wideContainer: `${commonContainer} min-w-[min(40rem,90%)]`,
+  freeContainer: `${commonContainer} max-h-[90%]`,
+  narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]`,
+  normalContainer: `${commonContainer} max-h-[90%] min-w-[min(30rem,90%)]`,
+  wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
+  flexContent: 'flex flex-col gap-y-2',
 } as const;
 
 /*
+ * TODO: make jquery dialogs look similar to <ModalDialog> until we fully transition
  * TODO: make modal draggable
- * TODO: replace all JqueryDialog with ModalDialog
- * TODO: use forceToTop for exception dialogs
- * TODO: test navigation.go (and setCurrentView) when modal is open
  */
 
 /*
@@ -250,6 +71,12 @@ const topIndex = 10_000;
 const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
+
+const buttonTypes = {
+  apply: commonText('apply'),
+  close: commonText('close'),
+  cancel: commonText('cancel'),
+} as const;
 
 export function Dialog({
   /*
@@ -270,11 +97,12 @@ export function Dialog({
   onClose: handleClose,
   className: {
     // Dialog's content is a flexbox
-    content = 'flex flex-col gap-y-2',
+    content = dialogClassNames.flexContent,
     // Dialog has optimal width
     container = dialogClassNames.normalContainer,
     // Buttons are right-aligned by default
     buttonContainer = 'justify-end',
+    header: headerClassName = 'text-2xl font-semibold',
   } = {},
   /* Force dialog to stay on top of all other. Useful for exception messages */
   forceToTop = false,
@@ -283,12 +111,8 @@ export function Dialog({
   readonly title?: string;
   readonly header: React.ReactNode;
   readonly buttons?:
-    | React.ReactNode
-    /*
-     * "handleClose" is the "onClose" prop passed to <Dialog>
-     * This allows deduplicating declaration of the onClose handler
-     */
-    | ((props: { readonly handleClose: () => void }) => React.ReactNode);
+    | JSX.Element
+    | RA<JSX.Element | keyof typeof buttonTypes | undefined>;
   readonly children: React.ReactNode;
   readonly modal?: boolean;
   readonly onClose?: () => void;
@@ -296,6 +120,7 @@ export function Dialog({
     readonly content?: string;
     readonly container?: string;
     readonly buttonContainer?: string;
+    readonly header?: string;
   };
   readonly forceToTop?: boolean;
 }): JSX.Element {
@@ -390,7 +215,7 @@ export function Dialog({
           {title}
         </p>
       )}
-      <h2 className="text-2xl font-semibold" id={id('header')}>
+      <h2 className={headerClassName} id={id('header')}>
         {header}
       </h2>
       {/*
@@ -400,13 +225,20 @@ export function Dialog({
       <div className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 ${content}`}>
         {children}
       </div>
-      {/* TODO: provide styled button components */}
       {typeof buttons !== 'undefined' && (
         <div className={`gap-x-2 flex ${buttonContainer}`}>
-          {typeof buttons === 'function'
+          {Array.isArray(buttons)
             ? typeof handleClose === 'undefined'
               ? error("handleClose wasn't provided")
-              : buttons({ handleClose })
+              : buttons.map((button) =>
+                  typeof button === 'string' && button in buttonTypes ? (
+                    <TransparentButton onClick={handleClose}>
+                      {buttonTypes[button]}
+                    </TransparentButton>
+                  ) : (
+                    button
+                  )
+                )
             : buttons}
         </div>
       )}

@@ -150,7 +150,8 @@ var QueryBuilder = Backbone.View.extend({
                 const dialog = new QuerySaveDialog({
                     query: this.query,
                     isSaveAs,
-                    onClose: (queryId)=>{
+                    onClose: ()=>dialog.remove(),
+                    onSave: (queryId)=>{
                         dialog.remove();
                         navigation.removeUnloadProtect(this);
                         if(isSaveAs)

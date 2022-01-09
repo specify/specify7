@@ -19,11 +19,17 @@ import { compareValues, SortIndicator, TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
-import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
+import { LoadingScreen, Dialog, dialogClassNames } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import { SpecifyResource } from '../../legacytypes';
-import { ButtonLikeLink, className, Link } from '../basic';
+import {
+  BlueButton,
+  ButtonLikeLink,
+  className,
+  Link,
+  TransparentButton,
+} from '../basic';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -191,14 +197,14 @@ function QueryToolbarItem({
   getQuerySelectUrl,
   onEdit: handleEdit,
   spQueryFilter,
-  buttons,
+  newQueryButtonGenerator,
 }: {
   readonly onClose: () => void;
   readonly getQueryCreateUrl?: (tableName: string) => string;
   readonly getQuerySelectUrl?: (query: Query) => string;
   readonly onEdit?: (query: Query) => void;
   readonly spQueryFilter?: IR<unknown>;
-  readonly buttons?: (state: States) => RA<JQueryUI.DialogButtonOptions>;
+  readonly newQueryButtonGenerator?: (state: States) => () => void;
 }): JSX.Element {
   useTitle(commonText('queries'));
 
@@ -245,39 +251,35 @@ function QueryToolbarItem({
     return typeof queries === 'undefined' ? (
       <LoadingScreen />
     ) : (
-      <JqueryDialog
-        properties={{
-          close: handleClose,
-          modal: true,
-          maxHeight: 500,
-          width: 400,
-          title: commonText('queriesDialogTitle')(queries.length),
-          buttons: [
-            ...(buttons?.(state) ?? []),
-            ...(typeof getQueryCreateUrl === 'undefined'
-              ? []
-              : [
-                  {
-                    text: commonText('new'),
-                    click: (): void =>
-                      setState({
-                        type: 'CreateQueryState',
-                      }),
-                  },
-                ]),
-            {
-              text: commonText('cancel'),
-              click: closeDialog,
-            },
-          ],
+      <Dialog
+        header={commonText('queriesDialogTitle')(queries.length)}
+        onClose={handleClose}
+        className={{
+          container: dialogClassNames.narrowContainer,
         }}
+        buttons={[
+          'cancel',
+          // TODO: make this less ugly, once RecordSetsDialog is rewritten to React
+          <BlueButton
+            key="new"
+            onClick={
+              newQueryButtonGenerator?.(state) ??
+              ((): void =>
+                setState({
+                  type: 'CreateQueryState',
+                }))
+            }
+          >
+            {commonText('new')}
+          </BlueButton>,
+        ]}
       >
         <QueryList
           queries={queries}
           onEdit={handleEdit}
           getQuerySelectUrl={getQuerySelectUrl}
         />
-      </JqueryDialog>
+      </Dialog>
     );
   } else if (
     state.type === 'CreateQueryState' &&
@@ -286,27 +288,25 @@ function QueryToolbarItem({
     return typeof tablesToShow === 'undefined' ? (
       <LoadingScreen />
     ) : (
-      <JqueryDialog
-        properties={{
-          close: handleClose,
-          modal: true,
-          maxHeight: 500,
-          width: 300,
-          title: commonText('newQueryDialogTitle'),
-          buttons: [
-            ...(buttons?.(state) ?? []),
-            {
-              text: commonText('cancel'),
-              click: (): void => setState({ type: 'ShowQueryListState' }),
-            },
-          ],
+      <Dialog
+        onClose={handleClose}
+        className={{
+          container: dialogClassNames.narrowContainer,
         }}
+        header={commonText('newQueryDialogTitle')}
+        buttons={
+          <TransparentButton
+            onClick={(): void => setState({ type: 'ShowQueryListState' })}
+          >
+            {commonText('cancel')}
+          </TransparentButton>
+        }
       >
         <ListOfTables
           tables={tablesToShow}
           getQueryCreateUrl={getQueryCreateUrl}
         />
-      </JqueryDialog>
+      </Dialog>
     );
   else throw new Error('Invalid ToolbarQuery State type');
 }

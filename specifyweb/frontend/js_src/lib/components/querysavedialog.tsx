@@ -5,8 +5,9 @@ import commonText from '../localization/common';
 import queryText from '../localization/query';
 import userInfo from '../userinfo';
 import { useId } from './hooks';
-import { LoadingScreen, JqueryDialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { BlueSubmit } from './basic';
 
 async function doSave(
   query: SpecifyResource,
@@ -26,10 +27,12 @@ function QuerySaveDialog({
   isSaveAs,
   query,
   onClose: handleClose,
+  onSave: handleSave,
 }: {
   readonly isSaveAs: boolean;
   readonly query: SpecifyResource;
-  readonly onClose: (queryId: number) => void;
+  readonly onClose: () => void;
+  readonly onSave: (queryId: number) => void;
 }): JSX.Element {
   const id = useId('id');
   const [name, setName] = React.useState<string>(query.get<string>('name'));
@@ -45,24 +48,21 @@ function QuerySaveDialog({
   return isLoading ? (
     <LoadingScreen />
   ) : (
-    <JqueryDialog
-      properties={{
-        title: queryText('saveQueryDialogTitle'),
-        buttons: [
-          {
-            text: commonText('save'),
-            click(): void {
-              /* Submit form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-        ],
-      }}
+    <Dialog
+      title={queryText('saveQueryDialogTitle')}
+      header={
+        isSaveAs
+          ? queryText('saveClonedQueryDialogHeader')
+          : queryText('saveQueryDialogHeader')
+      }
+      onClose={handleClose}
+      buttons={[
+        'close',
+        <BlueSubmit key="button" form={id('form')}>
+          {commonText('save')}
+        </BlueSubmit>,
+      ]}
     >
-      {isSaveAs
-        ? queryText('saveClonedQueryDialogHeader')
-        : queryText('saveQueryDialogHeader')}
       <p>
         {isSaveAs
           ? queryText('saveClonedQueryDialogMessage')
@@ -74,7 +74,7 @@ function QuerySaveDialog({
         onSubmit={(event): void => {
           event.preventDefault();
           setIsLoading(true);
-          doSave(query, name, isSaveAs).then(handleClose).catch(console.error);
+          doSave(query, name, isSaveAs).then(handleSave).catch(console.error);
         }}
       >
         <label>
@@ -89,7 +89,7 @@ function QuerySaveDialog({
           />
         </label>
       </form>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

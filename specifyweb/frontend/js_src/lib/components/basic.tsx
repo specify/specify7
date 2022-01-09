@@ -67,6 +67,9 @@ export const className = {
   form: 'flex flex-col gap-4',
   button: 'button',
   link: 'link',
+  niceButton: `rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-500 gap-2
+    inline-flex items-center`,
   fancyButton: `active:bg-brand-300 bg-gray-300 gap-2 hover:bg-brand-200 inline-flex
     justify-center items-center p-2 text-black`,
   containerFull: 'flex flex-col gap-4 h-full',
@@ -187,6 +190,90 @@ export const FancySubmit = wrap('input', className.fancyButton, {
 export const Button = wrap('button', className.button, {
   type: 'button',
 });
+export const TransparentButton = wrap(
+  'button',
+  `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
+  {
+    type: 'button',
+  }
+);
+export const GrayButton = wrap(
+  'button',
+  `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
+  {
+    type: 'button',
+  }
+);
+export const RedButton = wrap(
+  'button',
+  `${className.niceButton} hover:bg-red-800 bg-red-700 text-white`,
+  {
+    type: 'button',
+  }
+);
+export const BlueButton = wrap(
+  'button',
+  `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
+  {
+    type: 'button',
+  }
+);
+export const OrangeButton = wrap(
+  'button',
+  `${className.niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
+  {
+    type: 'button',
+  }
+);
+export const GreenButton = wrap(
+  'button',
+  `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
+  {
+    type: 'button',
+  }
+);
+export const TransparentSubmit = wrap(
+  'input',
+  `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
+  {
+    type: 'submit',
+  }
+);
+export const GraySubmit = wrap(
+  'input',
+  `${className.niceButton} hover:bg-gray-400 bg-gray-300 text-gray-800`,
+  {
+    type: 'submit',
+  }
+);
+export const RedSubmit = wrap(
+  'input',
+  `${className.niceButton} hover:bg-red-800 bg-red-700 text-white`,
+  {
+    type: 'submit',
+  }
+);
+export const BlueSubmit = wrap(
+  'input',
+  `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
+  {
+    type: 'submit',
+  }
+);
+export const OrangeSubmit = wrap(
+  'input',
+  `${className.niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
+  {
+    type: 'submit',
+  }
+);
+export const GreenSubmit = wrap(
+  'input',
+  `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
+  {
+    type: 'submit',
+  }
+);
 export const ContainerFull = wrap('section', className.containerFull);
 export const Progress = wrap('progress', 'w-full h-3 bg-gray-200 rounded', {
   max: 100,

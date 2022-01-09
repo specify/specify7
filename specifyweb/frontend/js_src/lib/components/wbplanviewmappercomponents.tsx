@@ -12,10 +12,17 @@ import type {
 import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import { Button, Checkbox, LabelForCheckbox, Radio } from './basic';
+import {
+  BlueButton,
+  Button,
+  Checkbox,
+  LabelForCheckbox,
+  Radio,
+  TransparentButton,
+} from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
-import { closeDialog, JqueryDialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import type { HtmlGeneratorFieldData } from './wbplanviewcomponents';
 import {
   ButtonWithConfirmation,
@@ -79,26 +86,25 @@ export function ValidationResults(props: {
   if (props.validationResults.length === 0) return null;
 
   return (
-    <JqueryDialog
-      properties={{
-        title: wbText('validationFailedDialogTitle'),
-        modal: false,
-        width: '40vw',
-        height: 'auto',
-        close: props.onDismissValidation,
-        buttons: [
-          {
-            text: wbText('continueEditing'),
-            click: closeDialog,
-          },
-          {
-            text: wbText('saveUnfinished'),
-            click: props.onSave,
-          },
-        ],
+    <Dialog
+      title={wbText('validationFailedDialogTitle')}
+      header={wbText('validationFailedDialogHeader')}
+      modal={false}
+      className={{
+        container: dialogClassNames.narrowContainer,
       }}
+      onClose={props.onDismissValidation}
+      buttons={
+        <>
+          <TransparentButton onClick={props.onDismissValidation}>
+            {wbText('continueEditing')}
+          </TransparentButton>
+          <BlueButton onClick={props.onSave}>
+            {wbText('saveUnfinished')}
+          </BlueButton>
+        </>
+      }
     >
-      {wbText('validationFailedDialogHeader')}
       <p>{wbText('validationFailedDialogMessage')}</p>
       <section className="gap-x-2 flex flex-col">
         {props.validationResults.map((fieldPath, index) => (
@@ -121,7 +127,7 @@ export function ValidationResults(props: {
           </Button>
         ))}
       </section>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 
@@ -253,15 +259,13 @@ export function EmptyDataSetDialog({
   const [showDialog, setShowDialog] = React.useState<boolean>(lineCount === 0);
 
   return showDialog ? (
-    <JqueryDialog
-      properties={{
-        title: wbText('emptyDataSetDialogTitle'),
-        close: (): void => setShowDialog(false),
-      }}
+    <Dialog
+      title={wbText('emptyDataSetDialogTitle')}
+      header={wbText('emptyDataSetDialogHeader')}
+      onClose={(): void => setShowDialog(false)}
     >
-      {wbText('emptyDataSetDialogHeader')}
-      <p>{wbText('emptyDataSetDialogMessage')}</p>
-    </JqueryDialog>
+      {wbText('emptyDataSetDialogMessage')}
+    </Dialog>
   ) : null;
 }
 
@@ -386,22 +390,13 @@ export function ChangeBaseTable({
   return (
     <ButtonWithConfirmation
       dialogTitle={wbText('goToBaseTableDialogTitle')}
-      dialogContent={
-        <>
-          {wbText('goToBaseTableDialogHeader')}
-          {wbText('goToBaseTableDialogMessage')}
-        </>
-      }
-      /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
-      buttons={(confirm, cancel) => [
-        {
-          text: commonText('cancel'),
-          click: cancel,
-        },
-        {
-          text: commonText('changeBaseTable'),
-          click: confirm,
-        },
+      dialogHeader={wbText('goToBaseTableDialogHeader')}
+      dialogContent={wbText('goToBaseTableDialogMessage')}
+      buttons={(confirm) => [
+        'cancel',
+        <BlueButton key="button" onClick={confirm}>
+          {commonText('changeBaseTable')}
+        </BlueButton>,
       ]}
       onConfirm={handleClick}
     >
@@ -420,22 +415,13 @@ export function ReRunAutoMapper({
   return (
     <ButtonWithConfirmation
       dialogTitle={wbText('reRunAutoMapperDialogTitle')}
-      dialogContent={
-        <>
-          {wbText('reRunAutoMapperDialogHeader')}
-          {wbText('reRunAutoMapperDialogMessage')}
-        </>
-      }
-      /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
-      buttons={(confirm, cancel) => [
-        {
-          text: commonText('cancel'),
-          click: cancel,
-        },
-        {
-          text: wbText('reRunAutoMapper'),
-          click: confirm,
-        },
+      dialogHeader={wbText('reRunAutoMapperDialogHeader')}
+      dialogContent={wbText('reRunAutoMapperDialogMessage')}
+      buttons={(confirm) => [
+        'cancel',
+        <BlueButton key="button" onClick={confirm}>
+          {wbText('reRunAutoMapper')}
+        </BlueButton>,
       ]}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
@@ -494,24 +480,18 @@ export function MustMatch({
         {wbText('mustMatch')}
       </Button>
       {typeof localPreferences !== 'undefined' && (
-        <JqueryDialog
-          properties={{
-            title: wbText('matchingLogicDialogTitle'),
-            close: (): void => {
-              setLocalPreferences(undefined);
-              handleClose();
-            },
-            width: 350,
-            buttons: [
-              {
-                text:
-                  Object.keys(localPreferences).length === 0
-                    ? commonText('close')
-                    : commonText('apply'),
-                click: closeDialog,
-              },
-            ],
+        <Dialog
+          header={wbText('matchingLogicDialogTitle')}
+          onClose={(): void => {
+            setLocalPreferences(undefined);
+            handleClose();
           }}
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+          buttons={[
+            Object.keys(localPreferences).length === 0 ? 'close' : 'apply',
+          ]}
         >
           {Object.keys(localPreferences).length === 0 ? (
             wbText('matchingLogicUnavailableDialogMessage')
@@ -577,7 +557,7 @@ export function MustMatch({
               </table>
             </>
           )}
-        </JqueryDialog>
+        </Dialog>
       )}
     </>
   );

@@ -10,8 +10,9 @@ import React from 'react';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import type { IR } from '../types';
-import { JqueryDialog } from './modaldialog';
+import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { RedButton } from './basic';
 
 type ErrorBoundaryState =
   | {
@@ -29,27 +30,23 @@ function ErrorDialog({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <JqueryDialog
-      properties={{
-        title: commonText('errorBoundaryDialogTitle'),
-        width: 500,
-        dialogClass: 'ui-dialog-no-close',
-        buttons: [
-          {
-            text: commonText('close'),
-            click(): void {
-              window.location.href = '/';
-            },
-          },
-        ],
-      }}
+    <Dialog
+      title={commonText('errorBoundaryDialogTitle')}
+      header={commonText('errorBoundaryDialogHeader')}
+      buttons={
+        <RedButton
+          onClick={(): void => {
+            window.location.href = '/';
+          }}
+        >
+          {commonText('close')}
+        </RedButton>
+      }
+      forceToTop={true}
     >
-      <div role="alert">
-        {commonText('errorBoundaryDialogHeader')}
-        <p>{commonText('errorBoundaryDialogMessage')}</p>
-        <details className="whitespace-pre-wrap">{children}</details>
-      </div>
-    </JqueryDialog>
+      <p>{commonText('errorBoundaryDialogMessage')}</p>
+      <details className="whitespace-pre-wrap">{children}</details>
+    </Dialog>
   );
 }
 

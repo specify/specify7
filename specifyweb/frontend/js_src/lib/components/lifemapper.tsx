@@ -12,12 +12,11 @@ import {
   fetchOccurrenceName,
   formatLifemapperViewPageRequest,
 } from '../lifemapperutills';
-import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import systemInfo from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
-import { closeDialog, JqueryDialog } from './modaldialog';
+import { Dialog } from './modaldialog';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -160,21 +159,14 @@ export function SpecifyNetworkBadge({
   return (
     <>
       {hasFailure && (
-        <JqueryDialog
-          properties={{
-            title: lifemapperText('failedToOpenPopUpDialogTitle'),
-            close: (): void => setHasFailure(false),
-            buttons: [
-              {
-                text: commonText('close'),
-                click: closeDialog,
-              },
-            ],
-          }}
+        <Dialog
+          title={lifemapperText('failedToOpenPopUpDialogTitle')}
+          header={lifemapperText('failedToOpenPopUpDialogHeader')}
+          onClose={(): void => setHasFailure(false)}
+          buttons={['close']}
         >
-          {lifemapperText('failedToOpenPopUpDialogHeader')}
-          <p>{lifemapperText('failedToOpenPopUpDialogMessage')}</p>
-        </JqueryDialog>
+          {lifemapperText('failedToOpenPopUpDialogMessage')}
+        </Dialog>
       )}
       <Link
         href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}

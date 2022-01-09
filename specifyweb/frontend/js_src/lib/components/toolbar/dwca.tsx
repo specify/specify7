@@ -3,9 +3,10 @@ import React from 'react';
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
+import { BlueSubmit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, JqueryDialog } from '../modaldialog';
+import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 const liftGetResource = async (
@@ -61,26 +62,15 @@ function MakeDwca({
   return isExporting ? (
     <ExportStarted onClose={handleClose} />
   ) : (
-    <JqueryDialog
-      properties={{
-        close: handleClose,
-        title: commonText('chooseDwcaDialogTitle'),
-        buttons: [
-          {
-            text: isLoading ? commonText('loading') : commonText('start'),
-            type: 'submit',
-            form: id('form'),
-            disabled: isLoading,
-            click(): void {
-              /* Submit form */
-            },
-          },
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      onClose={handleClose}
+      header={commonText('chooseDwcaDialogTitle')}
+      buttons={[
+        'cancel',
+        <BlueSubmit key="button" form={id('form')} disabled={isLoading}>
+          {isLoading ? commonText('loading') : commonText('start')}
+        </BlueSubmit>,
+      ]}
     >
       <form
         className="grid"
@@ -140,7 +130,7 @@ function MakeDwca({
           />
         </label>
       </form>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 
@@ -150,17 +140,13 @@ function ExportStarted({
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <JqueryDialog
-      properties={{
-        title: commonText('dwcaExportStartedDialogTitle'),
-        close: handleClose,
-      }}
+    <Dialog
+      title={commonText('dwcaExportStartedDialogTitle')}
+      header={commonText('dwcaExportStartedDialogHeader')}
+      onClose={handleClose}
     >
-      <div>
-        {commonText('dwcaExportStartedDialogHeader')}
-        <p>{commonText('dwcaExportStartedDialogMessage')}</p>
-      </div>
-    </JqueryDialog>
+      {commonText('dwcaExportStartedDialogMessage')}
+    </Dialog>
   );
 }
 

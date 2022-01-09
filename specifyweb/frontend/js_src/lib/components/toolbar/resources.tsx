@@ -5,7 +5,7 @@ import userInfo from '../../userinfo';
 import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, JqueryDialog } from '../modaldialog';
+import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 function AppResourceDialog({
@@ -16,19 +16,12 @@ function AppResourceDialog({
   useTitle(commonText('resources'));
 
   return (
-    <JqueryDialog
-      properties={{
-        title: commonText('resourcesDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      title={commonText('resourcesDialogTitle')}
+      header={commonText('resourcesDialogHeader')}
+      onClose={handleClose}
+      buttons={['cancel']}
     >
-      {commonText('resourcesDialogHeader')}
       <nav>
         <Link href="/specify/appresources/" className="intercept-navigation">
           {commonText('appResources')}
@@ -38,7 +31,7 @@ function AppResourceDialog({
           {commonText('viewSets')}
         </Link>
       </nav>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

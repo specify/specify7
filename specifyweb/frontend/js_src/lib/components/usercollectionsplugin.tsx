@@ -8,9 +8,9 @@ import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
-import { Checkbox, LabelForCheckbox } from './basic';
+import { BlueSubmit, Checkbox, LabelForCheckbox } from './basic';
 import { useId } from './hooks';
-import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
+import { LoadingScreen, Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 function UserCollectionsUi({
@@ -32,25 +32,15 @@ function UserCollectionsUi({
   return isLoading ? (
     <LoadingScreen />
   ) : (
-    <JqueryDialog
-      properties={{
-        title: adminText('userCollectionsPluginDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('save'),
-            click(): void {
-              /* Submit a form */
-            },
-            type: 'submit',
-            form: id('form'),
-          },
-          {
-            text: commonText('close'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      header={adminText('userCollectionsPluginDialogTitle')}
+      onClose={handleClose}
+      buttons={[
+        'close',
+        <BlueSubmit key="button" form={id('form')}>
+          {commonText('close')}
+        </BlueSubmit>,
+      ]}
     >
       <form
         className="gap-y-2 flex flex-col"
@@ -83,7 +73,7 @@ function UserCollectionsUi({
           </LabelForCheckbox>
         ))}
       </form>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 

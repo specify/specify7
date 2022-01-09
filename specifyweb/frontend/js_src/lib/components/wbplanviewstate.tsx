@@ -3,20 +3,19 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import ajax from '../ajax';
-import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
 import dataModelStorage from '../wbplanviewmodel';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
-import { closeDialog, LoadingScreen, JqueryDialog } from './modaldialog';
+import { BlueButton, Checkbox, LabelForCheckbox } from './basic';
+import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
 import WbPlanViewMapper from './wbplanviewmapper';
-import { Checkbox, LabelForCheckbox } from './basic';
 
 // States
 
@@ -75,14 +74,13 @@ function TemplateSelection({
       onDataSetSelect={(id: number): void => {
         setIsLoading(true);
         void ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data: { uploadplan, columns, visualorder } }) =>
           handleSelect(
             uploadplan,
             headers.length === 0 && Array.isArray(visualorder)
-              ? (visualorder as RA<number>).map(
-                  (visualCol) => columns[visualCol]
-                )
+              ? visualorder.map((visualCol) => columns[visualCol])
               : headers
           )
         );
@@ -97,27 +95,26 @@ export const stateReducer = generateReducer<
 >({
   LoadingState: () => <LoadingScreen />,
   BaseTableSelectionState: ({ action: state }) => (
-    <JqueryDialog
-      className="gap-y-2 flex flex-col"
-      properties={{
-        title: wbText('selectBaseTableDialogTitle'),
-        height: 400,
-        close: (): void => goBack(state.props.dataset.id),
-        buttons: [
-          {
-            text: wbText('chooseExistingPlan'),
-            click: (): void =>
-              state.dispatch({
-                type: 'UseTemplateAction',
-                dispatch: state.dispatch,
-              }),
-          },
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
+    <Dialog
+      header={wbText('selectBaseTableDialogTitle')}
+      onClose={(): void => goBack(state.props.dataset.id)}
+      className={{
+        container: dialogClassNames.narrowContainer,
       }}
+      buttons={[
+        'cancel',
+        <BlueButton
+          key="button"
+          onClick={(): void =>
+            state.dispatch({
+              type: 'UseTemplateAction',
+              dispatch: state.dispatch,
+            })
+          }
+        >
+          {wbText('chooseExistingPlan')}
+        </BlueButton>,
+      ]}
     >
       <ListOfBaseTables
         listOfTables={dataModelStorage.listOfBaseTables}
@@ -141,7 +138,7 @@ export const stateReducer = generateReducer<
         />
         {wbText('showAdvancedTables')}
       </LabelForCheckbox>
-    </JqueryDialog>
+    </Dialog>
   ),
   TemplateSelectionState: ({ action: state }) => (
     <TemplateSelection

@@ -7,9 +7,9 @@ import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { closeDialog, LoadingScreen, JqueryDialog } from '../modaldialog';
+import { LoadingScreen, Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Link } from '../basic';
+import { BlueButton, Link } from '../basic';
 
 function Users({
   onClose: handleClose,
@@ -46,24 +46,20 @@ function Users({
   return typeof users === 'undefined' ? (
     <LoadingScreen />
   ) : (
-    <JqueryDialog
-      properties={{
-        title: commonText('manageUsersDialogTitle'),
-        close: handleClose,
-        buttons: [
-          {
-            text: commonText('new'),
-            click: (): void => {
-              handleClose();
-              navigation.go('view/specifyuser/new/');
-            },
-          },
-          {
-            text: commonText('cancel'),
-            click: closeDialog,
-          },
-        ],
-      }}
+    <Dialog
+      header={commonText('manageUsersDialogTitle')}
+      onClose={handleClose}
+      buttons={[
+        'cancel',
+        <BlueButton
+          onClick={(): void => {
+            handleClose();
+            navigation.go('view/specifyuser/new/');
+          }}
+        >
+          {commonText('new')}
+        </BlueButton>,
+      ]}
     >
       <ul>
         {Object.entries(users).map(([userName, viewUrl]) => (
@@ -74,7 +70,7 @@ function Users({
           </li>
         ))}
       </ul>
-    </JqueryDialog>
+    </Dialog>
   );
 }
 
