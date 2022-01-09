@@ -14,9 +14,7 @@ import {
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
 import {
-  BlueButton,
   Button,
-  ButtonLikeLink,
   Checkbox,
   className,
   ContainerFull,
@@ -24,10 +22,9 @@ import {
   LabelForCheckbox,
   Link,
   Radio,
-  TransparentButton,
 } from './basic';
 import { TableIcon } from './common';
-import { LoadingScreen, Dialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
 import type {
   DataObjectFormatter,
   ItemType,
@@ -118,7 +115,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         onClose={handleClose}
         buttons={[
           'close',
-          <BlueButton
+          <Button.Blue
             key="button"
             onClick={(): void =>
               dispatch({
@@ -127,14 +124,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             }
           >
             {commonText('addLanguage')}
-          </BlueButton>,
+          </Button.Blue>,
         ]}
       >
         {commonText('language')}
         <ul>
           {Object.entries(languages).map(([code, label]) => (
             <li key={code}>
-              <ButtonLikeLink
+              <Button.LikeLink
                 role="link"
                 className="font-bold"
                 onClick={(): void =>
@@ -145,7 +142,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               >
                 {label}
-              </ButtonLikeLink>
+              </Button.LikeLink>
             </li>
           ))}
         </ul>
@@ -186,7 +183,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         header={formsText('tables')}
         onClose={handleClose}
         buttons={
-          <TransparentButton
+          <Button.Transparent
             onClick={(): void =>
               dispatch({
                 type: 'ChangeLanguageAction',
@@ -194,19 +191,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             }
           >
             {commonText('back')}
-          </TransparentButton>
+          </Button.Transparent>
         }
       >
         <ul className="max-h-80">
           {sortedTables.map((table) => (
             <li key={table.id}>
-              <Link
+              <Link.Default
                 href={`/task/schema-config/?language=${language}&table=${table.name}`}
                 className="intercept-navigation"
               >
                 <TableIcon tableName={table.name} tableLabel={false} />
                 {table.name}
-              </Link>
+              </Link.Default>
             </li>
           ))}
         </ul>
@@ -262,7 +259,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           <span className="flex-1 -ml-2" />
           <menu className="contents">
             <li>
-              <Button
+              <Button.Simple
                 /* eslint-disable-next-line sonarjs/no-identical-functions */
                 onClick={(): void =>
                   dispatch({
@@ -272,18 +269,20 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               >
                 {commonText('changeBaseTable')}
-              </Button>
+              </Button.Simple>
             </li>
             <li>
-              <Button onClick={handleClose}>{commonText('cancel')}</Button>
+              <Button.Simple onClick={handleClose}>
+                {commonText('cancel')}
+              </Button.Simple>
             </li>
             <li>
-              <Button
+              <Button.Simple
                 disabled={!tableWasModified && modifiedItems.length === 0}
                 onClick={(): void => dispatch({ type: 'SaveAction' })}
               >
                 {commonText('save')}
-              </Button>
+              </Button.Simple>
             </li>
           </menu>
         </header>
@@ -533,23 +532,23 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   extraComponents: (
                     <>
                       {typeof currentPickListId !== 'undefined' && (
-                        <Link
+                        <Link.Default
                           className="intercept-navigation"
                           href={`/specify/view/picklist/${currentPickListId}/`}
                         >
                           <span className="ui-icon ui-icon-pencil">
                             {commonText('edit')}
                           </span>
-                        </Link>
+                        </Link.Default>
                       )}
-                      <Link
+                      <Link.Default
                         className="intercept-navigation"
                         href="/specify/view/picklist/new/"
                       >
                         <span className="ui-icon ui-icon-plus">
                           {commonText('add')}
                         </span>
-                      </Link>
+                      </Link.Default>
                     </>
                   ),
                 },

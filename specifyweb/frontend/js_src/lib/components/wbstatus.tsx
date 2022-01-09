@@ -10,11 +10,11 @@ import { generateReducer } from 'typesafe-reducer';
 import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { Button, Progress } from './basic';
 import { useTitle } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
-import { Progress, RedButton } from './basic';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -69,6 +69,7 @@ function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       }).then(({ data: status }) => {
         if (destructorCalled) return undefined;
@@ -142,10 +143,14 @@ function WbStatus({
         total
       );
   } else
-    message = wbText('wbStatusErrorDialogMessage')(
-      // FAILED
-      mappedOperation,
-      JSON.stringify(state.status)
+    message = (
+      <>
+        {wbText('wbStatusErrorDialogMessage')(
+          // FAILED
+          mappedOperation
+        )}
+        <pre>{JSON.stringify(state.status, null, 2)}</pre>
+      </>
     );
 
   return (
@@ -153,7 +158,7 @@ function WbStatus({
       header={title}
       buttons={
         state.aborted === false ? (
-          <RedButton
+          <Button.Red
             onClick={(): void => {
               dispatch({
                 type: 'AbortAction',
@@ -182,7 +187,7 @@ function WbStatus({
             }}
           >
             {commonText('stop')}
-          </RedButton>
+          </Button.Red>
         ) : undefined
       }
     >

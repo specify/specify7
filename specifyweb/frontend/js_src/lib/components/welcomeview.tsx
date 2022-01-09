@@ -5,7 +5,7 @@ import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
 import systemInfo from '../systeminfo';
 import taxonTiles from '../taxontiles';
-import { ButtonLikeLink, NewTabLink } from './basic';
+import { Button, Link } from './basic';
 import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -45,7 +45,7 @@ function AboutSpecify(): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="text-right">
-      <ButtonLikeLink
+      <Button.LikeLink
         title={welcomeText('aboutSpecify')}
         onClick={(): void => setIsOpen(true)}
       >
@@ -53,7 +53,7 @@ function AboutSpecify(): JSX.Element {
           src="/static/img/specify_7_small.png"
           alt={welcomeText('aboutSpecify')}
         />
-      </ButtonLikeLink>
+      </Button.LikeLink>
       {isOpen && (
         <Dialog
           title={welcomeText('aboutSpecifyDialogTitle')}
@@ -67,17 +67,17 @@ function AboutSpecify(): JSX.Element {
           <p>{welcomeText('fullAddress')}</p>
           <address>
             <p>
-              <NewTabLink href="https://specifysoftware.org" rel="noreferrer">
+              <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
                 www.specifysoftware.org
-              </NewTabLink>
+              </Link.NewTab>
             </p>
             <p>
-              <NewTabLink
+              <Link.NewTab
                 href="mailto:support@specifysoftware.org"
                 rel="noreferrer"
               >
                 support@specifysoftware.org
-              </NewTabLink>
+              </Link.NewTab>
             </p>
           </address>
           <p className="text-justify">{welcomeText('disclosure')}</p>

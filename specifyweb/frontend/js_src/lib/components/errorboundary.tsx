@@ -12,7 +12,7 @@ import { clearUnloadProtect } from '../navigation';
 import type { IR } from '../types';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { RedButton } from './basic';
+import { Button, Link } from './basic';
 
 type ErrorBoundaryState =
   | {
@@ -34,17 +34,24 @@ function ErrorDialog({
       title={commonText('errorBoundaryDialogTitle')}
       header={commonText('errorBoundaryDialogHeader')}
       buttons={
-        <RedButton
+        <Button.Red
           onClick={(): void => {
             window.location.href = '/';
           }}
         >
           {commonText('close')}
-        </RedButton>
+        </Button.Red>
       }
       forceToTop={true}
     >
-      <p>{commonText('errorBoundaryDialogMessage')}</p>
+      <p>
+        {commonText('errorBoundaryDialogMessage')}
+        {commonText('errorBoundaryDialogSecondMessage')(
+          <Link.Default href="mailto:support@specifysoftware.org">
+            support@specifysoftware.org
+          </Link.Default>
+        )}
+      </p>
       <details className="whitespace-pre-wrap">{children}</details>
     </Dialog>
   );

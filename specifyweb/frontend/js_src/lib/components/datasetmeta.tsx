@@ -18,7 +18,6 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import {
-  BlueSubmit,
   Button,
   Form,
   Input,
@@ -26,6 +25,7 @@ import {
   Link,
   Select,
   Textarea,
+  Submit,
 } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
@@ -34,12 +34,12 @@ async function fetchAgent(url: string): Promise<JSX.Element> {
     id: agentId,
   });
   return format(createdByAgentResource).then((formattedAgent: string) => (
-    <Link
+    <Link.Default
       className="intercept-navigation"
       href={createdByAgentResource.viewUrl()}
     >
       {formattedAgent}
-    </Link>
+    </Link.Default>
   ));
 }
 
@@ -86,9 +86,9 @@ export function DataSetMeta({
       onClose={handleClose}
       buttons={[
         'close',
-        <BlueSubmit key="button" form={id('form')}>
+        <Submit.Blue key="button" form={id('form')}>
           {commonText('save')}
-        </BlueSubmit>,
+        </Submit.Blue>,
       ]}
     >
       <Form
@@ -202,9 +202,9 @@ function DataSetName({
           ''
         )}
       </h2>
-      <Button onClick={(): void => setShowMeta(true)}>
+      <Button.Simple onClick={(): void => setShowMeta(true)}>
         {commonText('metadata')}
-      </Button>
+      </Button.Simple>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
@@ -277,9 +277,9 @@ function ChangeOwner({
       onClose={handleClose}
       buttons={[
         'cancel',
-        <BlueSubmit key="button" form={id('form')}>
+        <Submit.Blue key="button" form={id('form')}>
           {wbText('changeOwner')}
-        </BlueSubmit>,
+        </Submit.Blue>,
       ]}
     >
       <form

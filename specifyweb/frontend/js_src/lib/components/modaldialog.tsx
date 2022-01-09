@@ -9,7 +9,7 @@ import Modal from 'react-modal';
 import { error } from '../assert';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import { transitionDuration, TransparentButton } from './basic';
+import { transitionDuration, Button } from './basic';
 import { useId } from './hooks';
 
 /*
@@ -232,9 +232,9 @@ export function Dialog({
               ? error("handleClose wasn't provided")
               : buttons.map((button) =>
                   typeof button === 'string' && button in buttonTypes ? (
-                    <TransparentButton onClick={handleClose}>
+                    <Button.Transparent onClick={handleClose}>
                       {buttonTypes[button]}
-                    </TransparentButton>
+                    </Button.Transparent>
                   ) : (
                     button
                   )

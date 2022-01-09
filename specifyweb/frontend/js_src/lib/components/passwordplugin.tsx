@@ -7,7 +7,7 @@ import UIPlugin from '../uiplugin';
 import { useId, useTitle } from './hooks';
 import { LoadingScreen, Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { BlueSubmit, Input, Label } from './basic';
+import { Submit, Input, Label } from './basic';
 
 export const MIN_PASSWORD_LENGTH = 6;
 
@@ -37,9 +37,9 @@ function PasswordResetDialog({
       onClose={handleClose}
       buttons={[
         'cancel',
-        <BlueSubmit key="button" form={id('form')}>
+        <Submit.Blue key="button" form={id('form')}>
           {commonText('apply')}
-        </BlueSubmit>,
+        </Submit.Blue>,
       ]}
     >
       <form

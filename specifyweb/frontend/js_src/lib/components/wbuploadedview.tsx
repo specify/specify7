@@ -63,7 +63,7 @@ function WbUploadedView({
           />
         ))}
       </ul>
-      <Button onClick={handleClose}>{commonText('close')}</Button>
+      <Button.Simple onClick={handleClose}>{commonText('close')}</Button.Simple>
     </div>
   );
 }

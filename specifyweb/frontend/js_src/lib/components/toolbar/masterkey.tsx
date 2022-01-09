@@ -6,7 +6,7 @@ import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen, Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { BlueSubmit } from '../basic';
+import { Submit } from '../basic';
 
 function MasterKey({
   onClose: handleClose,
@@ -44,9 +44,9 @@ function MasterKey({
       onClose={handleClose}
       buttons={[
         'cancel',
-        <BlueSubmit key="button" form={id('form')}>
+        <Submit.Blue key="button" form={id('form')}>
           {commonText('generate')}
-        </BlueSubmit>,
+        </Submit.Blue>,
       ]}
     >
       <form

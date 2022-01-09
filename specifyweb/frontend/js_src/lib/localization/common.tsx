@@ -8,7 +8,6 @@
 import React from 'react';
 
 import { createDictionary, header } from './utils';
-import { Link } from '../components/basic';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -375,20 +374,20 @@ const commonText = createDictionary({
     'en-us': (loginLink: (label: string) => JSX.Element) => (
       <>
         The logged in user has not been given access to any collections in this
-        database. You must ${loginLink('login')} as another user.
+        database. You must {loginLink('login')} as another user.
       </>
     ),
     'ru-ru': (loginLink: (label: string) => JSX.Element) => (
       <>
         Пользователь, вошедший в систему, не получил доступа ни к каким
-        коллекциям в этой базе данных. Вы должны ${loginLink('войти')} в систему
+        коллекциям в этой базе данных. Вы должны {loginLink('войти')} в систему
         как другой пользователь.
       </>
     ),
     ca: (loginLink: (label: string) => JSX.Element) => (
       <>
         L'usuari que ha iniciat sessió no té accés a cap col·lecció d'aquesta
-        base de dades. Heu ${loginLink("d'iniciar sessió")} com un altre usuari.
+        base de dades. Heu {loginLink("d'iniciar sessió")} com un altre usuari.
       </>
     ),
   },
@@ -744,37 +743,27 @@ const commonText = createDictionary({
     ca: 'An unexpected error has occurred',
   },
   errorBoundaryDialogMessage: {
-    'en-us': (
+    'en-us': 'Please reload the page and try again.',
+    'ru-ru': 'Пожалуйста, обновите страницу и попробуйте еще раз.',
+    ca: 'Please reload the page and try again.',
+  },
+  errorBoundaryDialogSecondMessage: {
+    'en-us': (email: JSX.Element) => (
       <>
-        Please reload the page and try again.
-        <br />
         If this issue persists, please contact your IT support or if this is a
-        Specify Cloud database, contact{' '}
-        <Link href="mailto:support@specifysoftware.org">
-          support@specifysoftware.org
-        </Link>
+        Specify Cloud database, contact {email}
       </>
     ),
-    'ru-ru': (
+    'ru-ru': (email: JSX.Element) => (
       <>
-        Пожалуйста, обновите страницу и попробуйте еще раз.
-        <br />
         Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
-        свяжитесь с нами:{' '}
-        <Link href="mailto:support@specifysoftware.org">
-          support@specifysoftware.org
-        </Link>
+        свяжитесь с нами: {email}
       </>
     ),
-    ca: (
+    ca: (email: JSX.Element) => (
       <>
-        Please reload the page and try again.
-        <br />
         If this issue persists, please contact your IT support or if this is a
-        Specify Cloud database, contact{' '}
-        <Link href="mailto:support@specifysoftware.org">
-          support@specifysoftware.org
-        </Link>
+        Specify Cloud database, contact {email}
       </>
     ),
   },

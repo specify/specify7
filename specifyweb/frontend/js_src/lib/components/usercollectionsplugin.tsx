@@ -8,7 +8,7 @@ import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
-import { BlueSubmit, Checkbox, LabelForCheckbox } from './basic';
+import { Submit, Checkbox, LabelForCheckbox } from './basic';
 import { useId } from './hooks';
 import { LoadingScreen, Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -37,9 +37,9 @@ function UserCollectionsUi({
       onClose={handleClose}
       buttons={[
         'close',
-        <BlueSubmit key="button" form={id('form')}>
+        <Submit.Blue key="button" form={id('form')}>
           {commonText('close')}
-        </BlueSubmit>,
+        </Submit.Blue>,
       ]}
     >
       <form

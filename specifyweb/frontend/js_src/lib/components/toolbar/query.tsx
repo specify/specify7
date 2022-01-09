@@ -19,17 +19,11 @@ import { compareValues, SortIndicator, TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
-import { LoadingScreen, Dialog, dialogClassNames } from '../modaldialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import { SpecifyResource } from '../../legacytypes';
-import {
-  BlueButton,
-  ButtonLikeLink,
-  className,
-  Link,
-  TransparentButton,
-} from '../basic';
+import { Button, className, Link } from '../basic';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -91,7 +85,7 @@ function QueryList({
             scope="col"
             className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
           >
-            <ButtonLikeLink
+            <Button.LikeLink
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'name',
@@ -101,10 +95,10 @@ function QueryList({
             >
               {commonText('name')}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
-            </ButtonLikeLink>
+            </Button.LikeLink>
           </th>
           <th scope="col">
-            <ButtonLikeLink
+            <Button.LikeLink
               onClick={(): void =>
                 setSortConfig({
                   sortField: 'dateCreated',
@@ -114,7 +108,7 @@ function QueryList({
             >
               {commonText('created')}
               <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-            </ButtonLikeLink>
+            </Button.LikeLink>
           </th>
           <td />
         </tr>
@@ -123,7 +117,7 @@ function QueryList({
         {queries.map((query) => (
           <tr key={query.id}>
             <td>
-              <Link
+              <Link.Default
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
                 }
@@ -131,14 +125,14 @@ function QueryList({
               >
                 <TableIcon tableName={query.tableName} tableLabel={false} />
                 {query.name}
-              </Link>
+              </Link.Default>
             </td>
             <td>
               <DateElement date={query.dateCreated} />
             </td>
             <td className="justify-end">
               {typeof handleEdit === 'function' && (
-                <ButtonLikeLink
+                <Button.LikeLink
                   role="link"
                   className="ui-icon ui-icon-pencil"
                   onClick={(): void => handleEdit(query)}
@@ -165,13 +159,13 @@ function ListOfTables({
     <ul>
       {tables.map((tableName, index) => (
         <li key={index}>
-          <Link
+          <Link.Default
             href={getQueryCreateUrl(tableName)}
             className="intercept-navigation"
           >
             <TableIcon tableName={tableName} tableLabel={false} />
             {defined(getModel(tableName)).getLocalizedName()}
-          </Link>
+          </Link.Default>
         </li>
       ))}
     </ul>
@@ -260,7 +254,7 @@ function QueryToolbarItem({
         buttons={[
           'cancel',
           // TODO: make this less ugly, once RecordSetsDialog is rewritten to React
-          <BlueButton
+          <Button.Blue
             key="new"
             onClick={
               newQueryButtonGenerator?.(state) ??
@@ -271,7 +265,7 @@ function QueryToolbarItem({
             }
           >
             {commonText('new')}
-          </BlueButton>,
+          </Button.Blue>,
         ]}
       >
         <QueryList
@@ -295,11 +289,11 @@ function QueryToolbarItem({
         }}
         header={commonText('newQueryDialogTitle')}
         buttons={
-          <TransparentButton
+          <Button.Transparent
             onClick={(): void => setState({ type: 'ShowQueryListState' })}
           >
             {commonText('cancel')}
-          </TransparentButton>
+          </Button.Transparent>
         }
       >
         <ListOfTables

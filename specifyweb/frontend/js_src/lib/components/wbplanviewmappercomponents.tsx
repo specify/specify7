@@ -12,14 +12,7 @@ import type {
 import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import {
-  BlueButton,
-  Button,
-  Checkbox,
-  LabelForCheckbox,
-  Radio,
-  TransparentButton,
-} from './basic';
+import { Button, Checkbox, LabelForCheckbox, Radio } from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -54,14 +47,14 @@ export function MappingsControlPanel({
   return (
     <div role="toolbar" className="gap-x-2 print:hidden flex items-center">
       {typeof handleAddNewHeader === 'function' && (
-        <Button
+        <Button.Simple
           onClick={(): void => {
             handleAddNewHeader(wbText('newHeaderName')(newHeaderIdRef.current));
             newHeaderIdRef.current += 1;
           }}
         >
           {wbText('addNewColumn')}
-        </Button>
+        </Button.Simple>
       )}
       <LabelForCheckbox>
         <Checkbox
@@ -96,19 +89,19 @@ export function ValidationResults(props: {
       onClose={props.onDismissValidation}
       buttons={
         <>
-          <TransparentButton onClick={props.onDismissValidation}>
+          <Button.Transparent onClick={props.onDismissValidation}>
             {wbText('continueEditing')}
-          </TransparentButton>
-          <BlueButton onClick={props.onSave}>
+          </Button.Transparent>
+          <Button.Blue onClick={props.onSave}>
             {wbText('saveUnfinished')}
-          </BlueButton>
+          </Button.Blue>
         </>
       }
     >
       <p>{wbText('validationFailedDialogMessage')}</p>
       <section className="gap-x-2 flex flex-col">
         {props.validationResults.map((fieldPath, index) => (
-          <Button
+          <Button.Simple
             className="hover:bg-gray-300 border-x-0 bg-transparent border-b-0 rounded-none"
             key={index}
             onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
@@ -124,7 +117,7 @@ export function ValidationResults(props: {
                 mustMatchPreferences: props.mustMatchPreferences,
               })}
             />
-          </Button>
+          </Button.Simple>
         ))}
       </section>
     </Dialog>
@@ -221,7 +214,7 @@ export function MappingView(props: {
         <div className="gap-x-1 flex-nowrap flex" role="list">
           <MappingPathComponent mappingLineData={mappingLineData} />
         </div>
-        <Button
+        <Button.Simple
           className="flex-col justify-center p-2"
           disabled={!isMappable}
           onClick={
@@ -238,7 +231,7 @@ export function MappingView(props: {
           >
             &#8594;
           </span>
-        </Button>
+        </Button.Simple>
       </div>
       <span
         className="absolute bottom-0 right-0 cursor-pointer pointer-events-none"
@@ -394,9 +387,9 @@ export function ChangeBaseTable({
       dialogContent={wbText('goToBaseTableDialogMessage')}
       buttons={(confirm) => [
         'cancel',
-        <BlueButton key="button" onClick={confirm}>
+        <Button.Blue key="button" onClick={confirm}>
           {commonText('changeBaseTable')}
-        </BlueButton>,
+        </Button.Blue>,
       ]}
       onConfirm={handleClick}
     >
@@ -419,9 +412,9 @@ export function ReRunAutoMapper({
       dialogContent={wbText('reRunAutoMapperDialogMessage')}
       buttons={(confirm) => [
         'cancel',
-        <BlueButton key="button" onClick={confirm}>
+        <Button.Blue key="button" onClick={confirm}>
           {wbText('reRunAutoMapper')}
-        </BlueButton>,
+        </Button.Blue>,
       ]}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
@@ -439,7 +432,7 @@ export function ToggleMappingPath({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    <Button
+    <Button.Simple
       className={showMappingView ? '' : 'active'}
       onClick={handleClick}
       aria-pressed={!showMappingView}
@@ -447,7 +440,7 @@ export function ToggleMappingPath({
       {showMappingView
         ? wbText('hideMappingEditor')
         : wbText('showMappingEditor')}
-    </Button>
+    </Button.Simple>
   );
 }
 
@@ -473,12 +466,12 @@ export function MustMatch({
 
   return (
     <>
-      <Button
+      <Button.Simple
         aria-haspopup="dialog"
         onClick={(): void => setLocalPreferences(getMustMatchPreferences())}
       >
         {wbText('mustMatch')}
-      </Button>
+      </Button.Simple>
       {typeof localPreferences !== 'undefined' && (
         <Dialog
           header={wbText('matchingLogicDialogTitle')}

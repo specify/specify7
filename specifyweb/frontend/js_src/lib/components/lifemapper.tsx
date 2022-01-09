@@ -168,7 +168,7 @@ export function SpecifyNetworkBadge({
           {lifemapperText('failedToOpenPopUpDialogMessage')}
         </Dialog>
       )}
-      <Link
+      <Link.Default
         href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}
         target="_blank"
         title={lifemapperText('specifyNetwork')}
@@ -189,7 +189,7 @@ export function SpecifyNetworkBadge({
         }}
       >
         <img src="/static/img/specify_network_logo_long.svg" alt="" />
-      </Link>
+      </Link.Default>
     </>
   );
 }

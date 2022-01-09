@@ -3,7 +3,7 @@ import React from 'react';
 import ajax, { formData } from '../ajax';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
-import { Button, ButtonLikeLink, Link } from './basic';
+import { Button, Link } from './basic';
 import { formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
 
@@ -97,7 +97,7 @@ export default function Notifications(): JSX.Element {
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   return (
     <>
-      <Button
+      <Button.Simple
         className={`${hasUnread ? 'bg-brand-300' : ''}`}
         disabled={notificationCount === 0}
         aria-live="polite"
@@ -109,7 +109,7 @@ export default function Notifications(): JSX.Element {
             ? formatNumber(notifications.length)
             : '...'
         )}
-      </Button>
+      </Button.Simple>
       {typeof notifications !== 'undefined' && isOpen && (
         <Dialog
           header={commonText('notificationsDialogTitle')}
@@ -175,7 +175,7 @@ function NotificationComponent({
         <span className={notification.read ? undefined : 'bg-amber-100'}>
           <time dateTime={date.toISOString()}>{formatted}</time>
         </span>
-        <ButtonLikeLink
+        <Button.LikeLink
           className="ui-icon ui-icon-trash"
           onClick={(): void => {
             void ajax(
@@ -191,7 +191,7 @@ function NotificationComponent({
           }}
         >
           {commonText('delete')}
-        </ButtonLikeLink>
+        </Button.LikeLink>
       </header>
       <p>
         {(
@@ -211,9 +211,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('feedItemUpdated')}{' '}
-        <Link download href={`/static/depository/export_feed/${filename}`}>
+        <Link.Default
+          download
+          href={`/static/depository/export_feed/${filename}`}
+        >
           {filename}
-        </Link>
+        </Link.Default>
       </>
     );
   },
@@ -221,12 +224,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('updateFeedFailed')}{' '}
-        <Link
+        <Link.Default
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {commonText('exception')}
-        </Link>
+        </Link.Default>
       </>
     );
   },
@@ -234,9 +237,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('dwcaExportCompleted')}{' '}
-        <Link download href={`/static/depository/${notification.payload.file}`}>
+        <Link.Default
+          download
+          href={`/static/depository/${notification.payload.file}`}
+        >
           {commonText('download')}
-        </Link>
+        </Link.Default>
       </>
     );
   },
@@ -244,12 +250,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('dwcaExportFailed')}{' '}
-        <Link
+        <Link.Default
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {commonText('exception')}
-        </Link>
+        </Link.Default>
       </>
     );
   },
@@ -257,9 +263,12 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('queryExportToCsvCompleted')}{' '}
-        <Link download href={`/static/depository/${notification.payload.file}`}>
+        <Link.Default
+          download
+          href={`/static/depository/${notification.payload.file}`}
+        >
           {commonText('download')}
-        </Link>
+        </Link.Default>
       </>
     );
   },
@@ -267,21 +276,24 @@ const notificationRenderers: IR<
     return (
       <>
         {commonText('queryExportToKmlCompleted')}{' '}
-        <Link download href={`/static/depository/${notification.payload.file}`}>
+        <Link.Default
+          download
+          href={`/static/depository/${notification.payload.file}`}
+        >
           {commonText('download')}
-        </Link>
+        </Link.Default>
       </>
     );
   },
   'dataset-ownership-transferred'(notification) {
     return commonText('dataSetOwnershipTransferred')(
       <i>{notification.payload['previous-owner-name']}</i>,
-      <Link
+      <Link.Default
         href={`/specify/workbench/${notification.payload['dataset-id']}/`}
         className="intercept-navigation"
       >
         <i>{notification.payload['dataset-name']}</i>
-      </Link>
+      </Link.Default>
     );
   },
   default(notification) {

@@ -6,14 +6,7 @@ import ReactDOM from 'react-dom';
 import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import {
-  className,
-  ErrorMessage,
-  FancySubmit,
-  Form,
-  Input,
-  Label,
-} from './basic';
+import { className, ErrorMessage, Submit, Form, Input, Label } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
@@ -79,7 +72,7 @@ function ChangePassword({
             ref={repeatPasswordRef}
           />
         </Label>
-        <FancySubmit value={commonText('changePassword')} />
+        <Submit.Fancy value={commonText('changePassword')} />
       </Form>
     </SplashScreen>
   );

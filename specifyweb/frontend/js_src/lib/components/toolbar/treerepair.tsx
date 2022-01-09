@@ -64,7 +64,7 @@ export function TreeSelectDialog({
         <ul>
           {Object.entries(trees).map(([tree, model]) => (
             <li key={tree}>
-              <Link
+              <Link.Default
                 href={getLink(tree)}
                 onClick={(event): void => {
                   event.preventDefault();
@@ -76,7 +76,7 @@ export function TreeSelectDialog({
               >
                 <TableIcon tableName={tree} tableLabel="false" />
                 {model.getLocalizedName()}
-              </Link>
+              </Link.Default>
             </li>
           ))}
         </ul>

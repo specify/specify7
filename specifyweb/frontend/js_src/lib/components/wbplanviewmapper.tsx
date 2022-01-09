@@ -316,7 +316,7 @@ export default function WbPlanViewMapper(props: {
         ) : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
-            <Button
+            <Button.Simple
               aria-haspopup="dialog"
               onClick={(): void =>
                 dispatch({
@@ -325,7 +325,7 @@ export default function WbPlanViewMapper(props: {
               }
             >
               {wbText('clearMappings')}
-            </Button>
+            </Button.Simple>
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
@@ -395,19 +395,19 @@ export default function WbPlanViewMapper(props: {
               }
             />
           )}
-          <Button
+          <Button.Simple
             aria-haspopup="dialog"
             onClick={(): void => goBack(props.dataset.id)}
           >
             {props.readonly ? wbText('dataEditor') : commonText('cancel')}
-          </Button>
+          </Button.Simple>
           {!props.readonly && (
-            <Button
+            <Button.Simple
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
             >
               {commonText('save')}
-            </Button>
+            </Button.Simple>
           )}
         </>
       }

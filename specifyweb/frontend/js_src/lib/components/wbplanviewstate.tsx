@@ -9,7 +9,7 @@ import type { UploadPlan } from '../uploadplantomappingstree';
 import dataModelStorage from '../wbplanviewmodel';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
-import { BlueButton, Checkbox, LabelForCheckbox } from './basic';
+import { Button, Checkbox, LabelForCheckbox } from './basic';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
@@ -103,7 +103,7 @@ export const stateReducer = generateReducer<
       }}
       buttons={[
         'cancel',
-        <BlueButton
+        <Button.Blue
           key="button"
           onClick={(): void =>
             state.dispatch({
@@ -113,7 +113,7 @@ export const stateReducer = generateReducer<
           }
         >
           {wbText('chooseExistingPlan')}
-        </BlueButton>,
+        </Button.Blue>,
       ]}
     >
       <ListOfBaseTables

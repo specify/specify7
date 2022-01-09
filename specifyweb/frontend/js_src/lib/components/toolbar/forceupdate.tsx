@@ -3,7 +3,7 @@ import React from 'react';
 import ajax from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
-import { BlueButton } from '../basic';
+import { Button } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
@@ -35,7 +35,7 @@ function ForceUpdateFeed({
       onClose={handleClose}
       buttons={[
         'cancel',
-        <BlueButton
+        <Button.Blue
           key="button"
           onClick={(): void => {
             setIsLoading(true);
@@ -48,7 +48,7 @@ function ForceUpdateFeed({
           }}
         >
           {commonText('update')}
-        </BlueButton>,
+        </Button.Blue>,
       ]}
     >
       {commonText('updateExportFeedDialogMessage')}

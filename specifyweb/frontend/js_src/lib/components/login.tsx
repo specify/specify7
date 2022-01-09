@@ -6,14 +6,7 @@ import ReactDOM from 'react-dom';
 import commonText from '../localization/common';
 import type { Language } from '../localization/utils';
 import type { RA } from '../types';
-import {
-  className,
-  ErrorMessage,
-  FancySubmit,
-  Form,
-  Input,
-  Label,
-} from './basic';
+import { className, ErrorMessage, Submit, Form, Input, Label } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { LanguageSelection } from './toolbar/language';
@@ -70,7 +63,7 @@ function Login({
         </Label>
         <input type="hidden" name="next" value={nextUrl} />
         <input type="hidden" name="this_is_the_login_form" value="1" />
-        <FancySubmit value={commonText('login')} />
+        <Submit.Fancy value={commonText('login')} />
       </Form>
     </SplashScreen>
   );

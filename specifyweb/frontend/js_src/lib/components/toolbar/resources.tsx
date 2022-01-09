@@ -23,13 +23,19 @@ function AppResourceDialog({
       buttons={['cancel']}
     >
       <nav>
-        <Link href="/specify/appresources/" className="intercept-navigation">
+        <Link.Default
+          href="/specify/appresources/"
+          className="intercept-navigation"
+        >
           {commonText('appResources')}
-        </Link>
+        </Link.Default>
         <br />
-        <Link href="/specify/viewsets/" className="intercept-navigation">
+        <Link.Default
+          href="/specify/viewsets/"
+          className="intercept-navigation"
+        >
           {commonText('viewSets')}
-        </Link>
+        </Link.Default>
       </nav>
     </Dialog>
   );

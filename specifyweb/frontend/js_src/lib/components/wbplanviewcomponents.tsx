@@ -110,7 +110,7 @@ export function ButtonWithConfirmation(props: {
 
   return (
     <>
-      <Button
+      <Button.Simple
         role={props.role}
         aria-haspopup="dialog"
         onClick={(): void =>
@@ -121,7 +121,7 @@ export function ButtonWithConfirmation(props: {
         }
       >
         {props.children}
-      </Button>
+      </Button.Simple>
       {displayPrompt ? (
         <Dialog
           title={props.dialogTitle}
@@ -151,7 +151,7 @@ export function ValidationButton(props: {
 
   return (
     <>
-      <Button
+      <Button.Simple
         className={props.isValidated ? 'bg-green-400' : undefined}
         role="menuitem"
         onClick={
@@ -159,7 +159,7 @@ export function ValidationButton(props: {
         }
       >
         {wbText('validate')}
-      </Button>
+      </Button.Simple>
       {displayPrompt ? (
         <Dialog
           title={wbText('nothingToValidateDialogTitle')}
@@ -197,7 +197,7 @@ export function MappingLineComponent({
   return (
     <li className="contents" aria-label={headerName} aria-current={isFocused}>
       <div className="print:hidden border-t-gray-500 py-2 border-t">
-        <Button
+        <Button.Simple
           className="w-full h-full p-2"
           title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
@@ -205,7 +205,7 @@ export function MappingLineComponent({
           disabled={readonly}
         >
           ⌦
-        </Button>
+        </Button.Simple>
       </div>
       <div
         className={`flex items-center justify-end max-w-[25vw] p-2 border-t

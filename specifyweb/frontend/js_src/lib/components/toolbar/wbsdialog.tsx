@@ -13,7 +13,7 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import userInfo from '../../userinfo';
 import uniquifyDataSetName from '../../wbuniquifyname';
-import { BlueButton, ButtonLikeLink, Link } from '../basic';
+import { Button, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
@@ -88,7 +88,7 @@ function TableHeader({
           scope="col"
           className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
         >
-          <ButtonLikeLink
+          <Button.LikeLink
             onClick={(): void =>
               handleChange({
                 sortField: 'name',
@@ -98,10 +98,10 @@ function TableHeader({
           >
             {commonText('name')}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
-          </ButtonLikeLink>
+          </Button.LikeLink>
         </th>
         <th scope="col">
-          <ButtonLikeLink
+          <Button.LikeLink
             onClick={(): void =>
               handleChange({
                 sortField: 'dateCreated',
@@ -111,10 +111,10 @@ function TableHeader({
           >
             {commonText('created')}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
-          </ButtonLikeLink>
+          </Button.LikeLink>
         </th>
         <th scope="col">
-          <ButtonLikeLink
+          <Button.LikeLink
             onClick={(): void =>
               handleChange({
                 sortField: 'dateUploaded',
@@ -124,7 +124,7 @@ function TableHeader({
           >
             {commonText('uploaded')}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
-          </ButtonLikeLink>
+          </Button.LikeLink>
         </th>
         <td />
       </tr>
@@ -208,20 +208,20 @@ function MetadataDialog({
         onClose={handleClose}
         buttons={[
           'close',
-          <>
+          <React.Fragment key="buttons">
             {canImport && (
               <>
-                <BlueButton
+                <Button.Blue
                   onClick={(): void => navigation.go('/workbench-import/')}
                 >
                   {wbText('importFile')}
-                </BlueButton>
-                <BlueButton onClick={createEmptyDataSet}>
+                </Button.Blue>
+                <Button.Blue onClick={createEmptyDataSet}>
                   {wbText('createNew')}
-                </BlueButton>
+                </Button.Blue>
               </>
             )}
-          </>,
+          </React.Fragment>,
         ]}
       >
         {datasets.length === 0 ? (
@@ -244,7 +244,7 @@ function MetadataDialog({
                   return (
                     <tr key={index}>
                       <td className="overflow-x-auto">
-                        <Link
+                        <Link.Default
                           href={`/specify/workbench/${dataset.id}/`}
                           {...(typeof handleDataSetSelect === 'undefined'
                             ? {
@@ -264,7 +264,7 @@ function MetadataDialog({
                             className="w-table-icon"
                           />
                           {dataset.name}
-                        </Link>
+                        </Link.Default>
                       </td>
                       <td>
                         <DateElement date={dataset.timestampcreated} />
@@ -274,7 +274,7 @@ function MetadataDialog({
                       </td>
                       <td>
                         {canImport && (
-                          <ButtonLikeLink
+                          <Button.LikeLink
                             className="ui-icon ui-icon-pencil"
                             onClick={(): void => setShowMeta(dataset.id)}
                             aria-label={commonText('edit')}

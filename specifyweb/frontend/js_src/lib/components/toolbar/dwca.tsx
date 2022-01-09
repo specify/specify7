@@ -3,7 +3,7 @@ import React from 'react';
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
-import { BlueSubmit } from '../basic';
+import { Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
@@ -67,9 +67,9 @@ function MakeDwca({
       header={commonText('chooseDwcaDialogTitle')}
       buttons={[
         'cancel',
-        <BlueSubmit key="button" form={id('form')} disabled={isLoading}>
+        <Submit.Blue key="button" form={id('form')} disabled={isLoading}>
           {isLoading ? commonText('loading') : commonText('start')}
-        </BlueSubmit>,
+        </Submit.Blue>,
       ]}
     >
       <form

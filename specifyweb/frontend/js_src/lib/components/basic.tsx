@@ -159,121 +159,116 @@ export const Select = wrap(
     },
   })
 );
-export const Link = wrap('a', className.link);
-export const NewTabLink = wrap('a', className.link, {}, (props) => ({
-  target: '_blank',
-  children: (
-    <>
-      {props.children}
-      <img
-        src="/static/img/new_tab.svg"
-        alt={commonText('opensInNewTab')}
-        aria-label={commonText('opensInNewTab')}
-        title={commonText('opensInNewTab')}
-        className="h-2"
-      />
-    </>
-  ),
-}));
-export const LinkLikeButton = wrap('a', className.button);
 
-// Consider adding [role="link"] if the element should be announced as a link
-export const ButtonLikeLink = wrap('button', className.link, {
-  type: 'button',
-});
-export const Submit = wrap('input', className.button, {
-  type: 'submit',
-});
-export const FancySubmit = wrap('input', className.fancyButton, {
-  type: 'submit',
-});
-export const Button = wrap('button', className.button, {
-  type: 'button',
-});
-export const TransparentButton = wrap(
-  'button',
-  `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
-  {
+export const Link = {
+  Default: wrap('a', className.link),
+  NewTab: wrap('a', className.link, {}, (props) => ({
+    target: '_blank',
+    children: (
+      <>
+        {props.children}
+        <img
+          src="/static/img/new_tab.svg"
+          alt={commonText('opensInNewTab')}
+          aria-label={commonText('opensInNewTab')}
+          title={commonText('opensInNewTab')}
+          className="h-2"
+        />
+      </>
+    ),
+  })),
+  LikeButton: wrap('a', className.button),
+} as const;
+
+export const Button = {
+  Simple: wrap('button', className.button, {
     type: 'button',
-  }
-);
-export const GrayButton = wrap(
-  'button',
-  `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
-  {
+  }),
+  // Consider adding [role="link"] if the element should be announced as a link
+  LikeLink: wrap('button', className.link, {
     type: 'button',
-  }
-);
-export const RedButton = wrap(
-  'button',
-  `${className.niceButton} hover:bg-red-800 bg-red-700 text-white`,
-  {
-    type: 'button',
-  }
-);
-export const BlueButton = wrap(
-  'button',
-  `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
-  {
-    type: 'button',
-  }
-);
-export const OrangeButton = wrap(
-  'button',
-  `${className.niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
-  {
-    type: 'button',
-  }
-);
-export const GreenButton = wrap(
-  'button',
-  `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
-  {
-    type: 'button',
-  }
-);
-export const TransparentSubmit = wrap(
-  'input',
-  `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
-  {
+  }),
+  Transparent: wrap(
+    'button',
+    `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
+    {
+      type: 'button',
+    }
+  ),
+  Gray: wrap(
+    'button',
+    `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
+    {
+      type: 'button',
+    }
+  ),
+  Red: wrap(
+    'button',
+    `${className.niceButton} hover:bg-red-800 bg-red-700 text-white`,
+    {
+      type: 'button',
+    }
+  ),
+  Blue: wrap(
+    'button',
+    `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
+    {
+      type: 'button',
+    }
+  ),
+  Orange: wrap(
+    'button',
+    `${className.niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
+    {
+      type: 'button',
+    }
+  ),
+  Green: wrap(
+    'button',
+    `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
+    {
+      type: 'button',
+    }
+  ),
+} as const;
+
+export const Submit = {
+  Simple: wrap('button', className.button, {
     type: 'submit',
-  }
-);
-export const GraySubmit = wrap(
-  'input',
-  `${className.niceButton} hover:bg-gray-400 bg-gray-300 text-gray-800`,
-  {
+  }),
+  Fancy: wrap('input', className.fancyButton, {
     type: 'submit',
-  }
-);
-export const RedSubmit = wrap(
-  'input',
-  `${className.niceButton} hover:bg-red-800 bg-red-700 text-white`,
-  {
-    type: 'submit',
-  }
-);
-export const BlueSubmit = wrap(
-  'input',
-  `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
-  {
-    type: 'submit',
-  }
-);
-export const OrangeSubmit = wrap(
-  'input',
-  `${className.niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
-  {
-    type: 'submit',
-  }
-);
-export const GreenSubmit = wrap(
-  'input',
-  `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
-  {
-    type: 'submit',
-  }
-);
+  }),
+  Transparent: wrap(
+    'input',
+    `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
+    {
+      type: 'submit',
+    }
+  ),
+  Gray: wrap(
+    'input',
+    `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
+    {
+      type: 'submit',
+    }
+  ),
+  Blue: wrap(
+    'input',
+    `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
+    {
+      type: 'submit',
+    }
+  ),
+  Green: wrap(
+    'input',
+    `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
+    {
+      type: 'submit',
+    }
+  ),
+} as const;
+
 export const ContainerFull = wrap('section', className.containerFull);
 export const Progress = wrap('progress', 'w-full h-3 bg-gray-200 rounded', {
   max: 100,

@@ -9,7 +9,7 @@ import type { RA } from '../types';
 import {
   className,
   ErrorMessage,
-  FancySubmit,
+  Submit,
   Form,
   LabelForCheckbox,
   Link,
@@ -48,9 +48,9 @@ function ChooseCollection({
         {data.availableCollections.length === 0 ? (
           <ErrorMessage>
             {commonText('noAccessToCollections')((label: string) => (
-              <Link href={`/accounts/login/?next=${data.nextUrl}`}>
+              <Link.Default href={`/accounts/login/?next=${data.nextUrl}`}>
                 {label}
-              </Link>
+              </Link.Default>
             ))}
           </ErrorMessage>
         ) : (
@@ -74,7 +74,7 @@ function ChooseCollection({
           value={csrfToken ?? ''}
         />
         <input type="hidden" name="next" value={nextUrl} />
-        <FancySubmit value={commonText('open')} />
+        <Submit.Fancy value={commonText('open')} />
       </Form>
     </SplashScreen>
   );

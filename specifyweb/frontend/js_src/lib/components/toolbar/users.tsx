@@ -7,9 +7,9 @@ import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { LoadingScreen, Dialog } from '../modaldialog';
+import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { BlueButton, Link } from '../basic';
+import { Button, Link } from '../basic';
 
 function Users({
   onClose: handleClose,
@@ -51,22 +51,22 @@ function Users({
       onClose={handleClose}
       buttons={[
         'cancel',
-        <BlueButton
+        <Button.Blue
           onClick={(): void => {
             handleClose();
             navigation.go('view/specifyuser/new/');
           }}
         >
           {commonText('new')}
-        </BlueButton>,
+        </Button.Blue>,
       ]}
     >
       <ul>
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
-            <Link className="intercept-navigation" href={viewUrl}>
+            <Link.Default className="intercept-navigation" href={viewUrl}>
               {userName}
-            </Link>
+            </Link.Default>
           </li>
         ))}
       </ul>

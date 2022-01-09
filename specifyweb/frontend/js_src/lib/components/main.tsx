@@ -117,7 +117,7 @@ export default function Main({
   return typeof menuItems === 'undefined' ||
     typeof userTools === 'undefined' ? null : (
     <>
-      <Button
+      <Button.Simple
         className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only"
         onClick={(): void => {
           if (!mainRef.current) return;
@@ -127,7 +127,7 @@ export default function Main({
         }}
       >
         {commonText('skipToContent')}
-      </Button>
+      </Button.Simple>
 
       {showVersionMismatch && (
         <Dialog
@@ -135,9 +135,9 @@ export default function Main({
           header={commonText('versionMismatchDialogHeader')}
           onClose={(): void => setShowVersionMismatch(false)}
           buttons={
-            <Button onClick={(): void => setShowVersionMismatch(false)}>
+            <Button.Simple onClick={(): void => setShowVersionMismatch(false)}>
               {commonText('close')}
-            </Button>
+            </Button.Simple>
           }
         >
           <p>
@@ -173,7 +173,9 @@ export default function Main({
               {userInfo.isauthenticated ? (
                 <UserTools userTools={userTools} />
               ) : (
-                <Link href="/accounts/login/">{commonText('logIn')}</Link>
+                <Link.Default href="/accounts/login/">
+                  {commonText('logIn')}
+                </Link.Default>
               )}
               <CollectionSelector />
             </div>

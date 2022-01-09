@@ -541,9 +541,11 @@ function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
 
 function DoImportButton(props: { update: HandleAction }) {
   return (
-    <Button onClick={(): void => props.update({ type: 'DoImportAction' })}>
+    <Button.Simple
+      onClick={(): void => props.update({ type: 'DoImportAction' })}
+    >
       {wbText('importFile')}
-    </Button>
+    </Button.Simple>
   );
 }
 

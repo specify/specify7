@@ -4,7 +4,7 @@ import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
-import { BlueSubmit, TransparentButton } from './basic';
+import { Submit, Button } from './basic';
 
 export function PickList({
   label,
@@ -96,12 +96,12 @@ export function AddLanguage({
       onClose={handleClose}
       buttons={
         <>
-          <TransparentButton onClick={handleGoBack}>
+          <Button.Transparent onClick={handleGoBack}>
             {commonText('back')}
-          </TransparentButton>
-          <BlueSubmit key="button" form={id('form')}>
+          </Button.Transparent>
+          <Submit.Blue key="button" form={id('form')}>
             {commonText('add')}
-          </BlueSubmit>
+          </Submit.Blue>
         </>
       }
     >

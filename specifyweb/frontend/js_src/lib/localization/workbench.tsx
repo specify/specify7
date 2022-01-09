@@ -1421,30 +1421,11 @@ const wbText = createDictionary({
     ),
   },
   wbStatusErrorDialogMessage: {
-    'en-us': (operationName: string, errorMessage: string) => (
-      <>
-        Error occurred during {operationName}:
-        <br />
-        <br />
-        {errorMessage}
-      </>
-    ),
-    'ru-ru': (operationName: string, errorMessage: string) => (
-      <>
-        Произошла ошибка во время {operationName}:
-        <br />
-        <br />
-        {errorMessage}
-      </>
-    ),
-    ca: (operationName: string, errorMessage: string) => (
-      <>
-        Error occurred during {operationName}:
-        <br />
-        <br />
-        {errorMessage}
-      </>
-    ),
+    'en-us': (operationName: string) =>
+      `Error occurred during ${operationName}`,
+    'ru-ru': (operationName: string) =>
+      `Произошла ошибка во время ${operationName}`,
+    ca: (operationName: string) => `Error occurred during ${operationName}`,
   },
   updatingTrees: {
     'en-us': 'Updating trees...',

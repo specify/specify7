@@ -46,7 +46,7 @@ export function HeaderItems({
       aria-label="primary"
     >
       {menuItems.map(({ task, title, icon, view }) => (
-        <Link
+        <Link.Default
           className={`
             p-3
             font-bold
@@ -82,7 +82,7 @@ export function HeaderItems({
         >
           <img src={icon} alt="" className="h-4" />
           {title}
-        </Link>
+        </Link.Default>
       ))}
     </nav>
   );
@@ -175,13 +175,13 @@ export function UserTools({
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   return (
     <>
-      <Button
+      <Button.Simple
         className="max-w-[100px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
         title={commonText('currentUser')}
         onClick={(): void => setIsOpen(true)}
       >
         {userInfo.name}
-      </Button>
+      </Button.Simple>
       {isOpen ? (
         <Dialog
           header={commonText('userToolsDialogTitle')}
@@ -210,7 +210,7 @@ export function UserTools({
                 })),
               ].map(({ task, title, basePath, view }) => (
                 <li key={task}>
-                  <Link
+                  <Link.Default
                     href={`${basePath}${task}/`}
                     onClick={(event): void => {
                       if (typeof view === 'undefined') return;
@@ -223,7 +223,7 @@ export function UserTools({
                     }}
                   >
                     {title}
-                  </Link>
+                  </Link.Default>
                 </li>
               ))}
             </ul>

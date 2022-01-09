@@ -206,7 +206,7 @@ function WbAdvancedSearch({
 
   return (
     <>
-      <Button
+      <Button.Simple
         aria-haspopup="dialog"
         aria-pressed={isOpen}
         title={wbText('configureSearchReplace')}
@@ -217,7 +217,7 @@ function WbAdvancedSearch({
           className="h-3"
           alt={wbText('configureSearchReplace')}
         />
-      </Button>
+      </Button.Simple>
       {isOpen && (
         <PreferencesDialog
           searchPreferences={searchPreferences}
