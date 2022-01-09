@@ -14,7 +14,7 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen, Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Link } from '../basic';
+import { Button, Link } from '../basic';
 
 const treesForAll = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
@@ -59,7 +59,11 @@ export function TreeSelectDialog({
   return typeof trees === 'undefined' || isLoading ? (
     <LoadingScreen />
   ) : (
-    <Dialog header={title} onClose={handleClose} buttons={['close']}>
+    <Dialog
+      header={title}
+      onClose={handleClose}
+      buttons={<Button.DialogClose>{commonText('cancel')}</Button.DialogClose>}
+    >
       <nav>
         <ul>
           {Object.entries(trees).map(([tree, model]) => (

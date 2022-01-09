@@ -17,6 +17,7 @@ import systemInfo from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { Dialog } from './modaldialog';
+import commonText from '../localization/common';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -158,16 +159,15 @@ export function SpecifyNetworkBadge({
 
   return (
     <>
-      {hasFailure && (
-        <Dialog
-          title={lifemapperText('failedToOpenPopUpDialogTitle')}
-          header={lifemapperText('failedToOpenPopUpDialogHeader')}
-          onClose={(): void => setHasFailure(false)}
-          buttons={['close']}
-        >
-          {lifemapperText('failedToOpenPopUpDialogMessage')}
-        </Dialog>
-      )}
+      <Dialog
+        isOpen={hasFailure}
+        title={lifemapperText('failedToOpenPopUpDialogTitle')}
+        header={lifemapperText('failedToOpenPopUpDialogHeader')}
+        onClose={(): void => setHasFailure(false)}
+        buttons={commonText('close')}
+      >
+        {lifemapperText('failedToOpenPopUpDialogMessage')}
+      </Dialog>
       <Link.Default
         href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}
         target="_blank"

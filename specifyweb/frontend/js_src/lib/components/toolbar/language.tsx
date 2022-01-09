@@ -83,7 +83,7 @@ function ChangeLanguage({
     <Dialog
       header={commonText('changeLanguage')}
       onClose={handleClose}
-      buttons={['close']}
+      buttons={commonText('close')}
     >
       <LanguageSelection languages={languages} />
     </Dialog>

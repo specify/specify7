@@ -248,22 +248,23 @@ function QueryToolbarItem({
       <Dialog
         header={commonText('queriesDialogTitle')(queries.length)}
         onClose={handleClose}
-        buttons={[
-          'cancel',
-          // TODO: simplify this once RecordSetsDialog is rewritten to React
-          <Button.Blue
-            key="new"
-            onClick={
-              newQueryButtonGenerator?.(state) ??
-              ((): void =>
-                setState({
-                  type: 'CreateQueryState',
-                }))
-            }
-          >
-            {commonText('new')}
-          </Button.Blue>,
-        ]}
+        buttons={
+          <>
+            <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+            <Button.Blue
+              onClick={
+                // TODO: simplify this once RecordSetsDialog is rewritten to React
+                newQueryButtonGenerator?.(state) ??
+                ((): void =>
+                  setState({
+                    type: 'CreateQueryState',
+                  }))
+              }
+            >
+              {commonText('new')}
+            </Button.Blue>
+          </>
+        }
       >
         <QueryList
           queries={queries}

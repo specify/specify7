@@ -112,6 +112,7 @@ function WbStatus({
       <Dialog
         header={title}
         onClose={(): void => dispatch({ type: 'AbortAction', aborted: false })}
+        buttons={commonText('close')}
       >
         {wbText('wbStatusAbortFailed')(mappedOperation)}
       </Dialog>

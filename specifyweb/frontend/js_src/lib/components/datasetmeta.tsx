@@ -84,12 +84,12 @@ export function DataSetMeta({
     <Dialog
       header={wbText('dataSetMetaDialogTitle')}
       onClose={handleClose}
-      buttons={[
-        'close',
-        <Submit.Blue key="button" form={id('form')}>
-          {commonText('save')}
-        </Submit.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>,
+        </>
+      }
     >
       <Form
         id={id('form')}
@@ -266,7 +266,7 @@ function ChangeOwner({
       title={wbText('dataSetOwnerChangedDialogTitle')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
       onClose={handleChanged}
-      buttons={['close']}
+      buttons={commonText('close')}
     >
       <p>${wbText('dataSetOwnerChangedDialogMessage')}</p>
     </Dialog>
@@ -275,12 +275,12 @@ function ChangeOwner({
       title={wbText('changeDataSetOwnerDialogTitle')}
       header={wbText('changeDataSetOwnerDialogHeader')}
       onClose={handleClose}
-      buttons={[
-        'cancel',
-        <Submit.Blue key="button" form={id('form')}>
-          {wbText('changeOwner')}
-        </Submit.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{wbText('changeOwner')}</Submit.Blue>
+        </>
+      }
     >
       <form
         onSubmit={(event): void => {

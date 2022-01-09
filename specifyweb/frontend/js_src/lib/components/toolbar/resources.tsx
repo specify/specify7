@@ -20,7 +20,7 @@ function AppResourceDialog({
       title={commonText('resourcesDialogTitle')}
       header={commonText('resourcesDialogHeader')}
       onClose={handleClose}
-      buttons={['cancel']}
+      buttons={commonText('cancel')}
     >
       <nav>
         <Link.Default

@@ -8,7 +8,7 @@ import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
-import { Submit, Checkbox, LabelForCheckbox } from './basic';
+import { Submit, Checkbox, LabelForCheckbox, Button } from './basic';
 import { useId } from './hooks';
 import { LoadingScreen, Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -35,12 +35,12 @@ function UserCollectionsUi({
     <Dialog
       header={adminText('userCollectionsPluginDialogTitle')}
       onClose={handleClose}
-      buttons={[
-        'close',
-        <Submit.Blue key="button" form={id('form')}>
-          {commonText('close')}
-        </Submit.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
+        </>
+      }
     >
       <form
         className="gap-y-2 flex flex-col"

@@ -23,6 +23,7 @@ function ForceUpdateFeed({
       title={commonText('feedExportStartedDialogTitle')}
       header={commonText('feedExportStartedDialogHeader')}
       onClose={handleClose}
+      buttons={commonText('close')}
     >
       {commonText('feedExportStartedDialogMessage')}
     </Dialog>
@@ -33,23 +34,24 @@ function ForceUpdateFeed({
       title={commonText('updateExportFeedDialogTitle')}
       header={commonText('updateExportFeedDialogHeader')}
       onClose={handleClose}
-      buttons={[
-        'cancel',
-        <Button.Blue
-          key="button"
-          onClick={(): void => {
-            setIsLoading(true);
-            ajax('/export/force_update/', {
-              method: 'POST',
-            })
-              .then(() => setIsActivated(true))
-              .catch(() => setIsActivated(false))
-              .finally(() => setIsLoading(false));
-          }}
-        >
-          {commonText('update')}
-        </Button.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue
+            onClick={(): void => {
+              setIsLoading(true);
+              ajax('/export/force_update/', {
+                method: 'POST',
+              })
+                .then(() => setIsActivated(true))
+                .catch(() => setIsActivated(false))
+                .finally(() => setIsLoading(false));
+            }}
+          >
+            {commonText('update')}
+          </Button.Blue>
+        </>
+      }
     >
       {commonText('updateExportFeedDialogMessage')}
     </Dialog>

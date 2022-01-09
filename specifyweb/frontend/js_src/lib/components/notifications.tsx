@@ -110,8 +110,9 @@ export default function Notifications(): JSX.Element {
             : '...'
         )}
       </Button.Simple>
-      {typeof notifications !== 'undefined' && isOpen && (
+      {typeof notifications !== 'undefined' && (
         <Dialog
+          isOpen={isOpen}
           header={commonText('notificationsDialogTitle')}
           onClose={(): void => {
             setIsOpen(false);
@@ -134,7 +135,9 @@ export default function Notifications(): JSX.Element {
                 { strict: false }
               );
           }}
-          buttons={['close']}
+          buttons={
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          }
           className={{
             container: dialogClassNames.narrowContainer,
             content: `${dialogClassNames.flexContent} -mt-1 divide-y divide-gray-400`,

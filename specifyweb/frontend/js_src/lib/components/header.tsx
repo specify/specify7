@@ -182,54 +182,53 @@ export function UserTools({
       >
         {userInfo.name}
       </Button.Simple>
-      {isOpen ? (
-        <Dialog
-          header={commonText('userToolsDialogTitle')}
-          onClose={(): void => setIsOpen(false)}
-          buttons={['close']}
-        >
-          <nav>
-            {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-            <ul role="list">
-              {[
-                {
-                  task: '/accounts/logout',
-                  title: commonText('logOut'),
-                  basePath: '',
-                  view: undefined,
-                },
-                {
-                  task: '/accounts/password_change',
-                  title: commonText('changePassword'),
-                  basePath: '',
-                  view: undefined,
-                },
-                ...userTools.map((userTool) => ({
-                  ...userTool,
-                  basePath: '/specify/task/',
-                })),
-              ].map(({ task, title, basePath, view }) => (
-                <li key={task}>
-                  <Link.Default
-                    href={`${basePath}${task}/`}
-                    onClick={(event): void => {
-                      if (typeof view === 'undefined') return;
-                      event.preventDefault();
-                      setIsOpen(false);
-                      const backboneView = view({
-                        onClose: (): void => void backboneView.remove(),
-                      });
-                      setCurrentOverlay(backboneView);
-                    }}
-                  >
-                    {title}
-                  </Link.Default>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </Dialog>
-      ) : undefined}
+      <Dialog
+        isOpen={isOpen}
+        header={commonText('userToolsDialogTitle')}
+        onClose={(): void => setIsOpen(false)}
+        buttons={commonText('close')}
+      >
+        <nav>
+          {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+          <ul role="list">
+            {[
+              {
+                task: '/accounts/logout',
+                title: commonText('logOut'),
+                basePath: '',
+                view: undefined,
+              },
+              {
+                task: '/accounts/password_change',
+                title: commonText('changePassword'),
+                basePath: '',
+                view: undefined,
+              },
+              ...userTools.map((userTool) => ({
+                ...userTool,
+                basePath: '/specify/task/',
+              })),
+            ].map(({ task, title, basePath, view }) => (
+              <li key={task}>
+                <Link.Default
+                  href={`${basePath}${task}/`}
+                  onClick={(event): void => {
+                    if (typeof view === 'undefined') return;
+                    event.preventDefault();
+                    setIsOpen(false);
+                    const backboneView = view({
+                      onClose: (): void => void backboneView.remove(),
+                    });
+                    setCurrentOverlay(backboneView);
+                  }}
+                >
+                  {title}
+                </Link.Default>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </Dialog>
     </>
   );
 }

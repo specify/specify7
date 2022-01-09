@@ -6,6 +6,7 @@ import type { IR, RR } from '../types';
 import { capitalize } from '../wbplanviewhelper';
 import type { IconProps } from './icons';
 import icons from './icons';
+import { DialogContext } from './modaldialog';
 
 type TagProps<TAG extends keyof ReactHTML> = Exclude<
   Parameters<ReactHTML[TAG]>[0],
@@ -196,6 +197,15 @@ export const Link = {
   })),
 } as const;
 
+function DialogCloseButton(
+  props: Omit<Parameters<typeof Button.Transparent>[0], 'onClick'>
+): JSX.Element {
+  const handleClose = React.useContext(DialogContext);
+  if (typeof handleClose === 'undefined')
+    throw new Error("Dialog's handleClose prop is undefined");
+  return <Button.Transparent {...props} onClick={handleClose} />;
+}
+
 export const Button = {
   Simple: wrap('button', className.button, {
     type: 'button',
@@ -251,6 +261,7 @@ export const Button = {
       type: 'button',
     }
   ),
+  DialogClose: DialogCloseButton,
 } as const;
 
 export const Submit = {

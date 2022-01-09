@@ -252,15 +252,17 @@ export function EmptyDataSetDialog({
 }): JSX.Element | null {
   const [showDialog, setShowDialog] = React.useState<boolean>(lineCount === 0);
 
-  return showDialog ? (
+  return (
     <Dialog
+      isOpen={showDialog}
       title={wbText('emptyDataSetDialogTitle')}
       header={wbText('emptyDataSetDialogHeader')}
       onClose={(): void => setShowDialog(false)}
+      buttons={commonText('close')}
     >
       {wbText('emptyDataSetDialogMessage')}
     </Dialog>
-  ) : null;
+  );
 }
 
 export function mappingOptionsMenu({
@@ -386,12 +388,15 @@ export function ChangeBaseTable({
       dialogTitle={wbText('goToBaseTableDialogTitle')}
       dialogHeader={wbText('goToBaseTableDialogHeader')}
       dialogContent={wbText('goToBaseTableDialogMessage')}
-      buttons={(confirm) => [
-        'cancel',
-        <Button.Blue key="button" onClick={confirm}>
-          {commonText('changeBaseTable')}
-        </Button.Blue>,
-      ]}
+      buttons={(confirm) => (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue onClick={confirm}>
+            {commonText('changeBaseTable')}
+          </Button.Blue>
+          ,
+        </>
+      )}
       onConfirm={handleClick}
     >
       {wbText('baseTable')}
@@ -411,12 +416,15 @@ export function ReRunAutoMapper({
       dialogTitle={wbText('reRunAutoMapperDialogTitle')}
       dialogHeader={wbText('reRunAutoMapperDialogHeader')}
       dialogContent={wbText('reRunAutoMapperDialogMessage')}
-      buttons={(confirm) => [
-        'cancel',
-        <Button.Blue key="button" onClick={confirm}>
-          {wbText('reRunAutoMapper')}
-        </Button.Blue>,
-      ]}
+      buttons={(confirm) => (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue onClick={confirm}>
+            {wbText('reRunAutoMapper')}
+          </Button.Blue>
+          ,
+        </>
+      )}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
     >
@@ -483,9 +491,11 @@ export function MustMatch({
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          buttons={[
-            Object.keys(localPreferences).length === 0 ? 'close' : 'apply',
-          ]}
+          buttons={
+            Object.keys(localPreferences).length === 0
+              ? commonText('close')
+              : commonText('apply')
+          }
         >
           {Object.keys(localPreferences).length === 0 ? (
             wbText('matchingLogicUnavailableDialogMessage')

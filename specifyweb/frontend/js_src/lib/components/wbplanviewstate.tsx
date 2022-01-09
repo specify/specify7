@@ -16,6 +16,7 @@ import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
 import WbPlanViewMapper from './wbplanviewmapper';
+import commonText from '../localization/common';
 
 // States
 
@@ -101,20 +102,21 @@ export const stateReducer = generateReducer<
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      buttons={[
-        'cancel',
-        <Button.Blue
-          key="button"
-          onClick={(): void =>
-            state.dispatch({
-              type: 'UseTemplateAction',
-              dispatch: state.dispatch,
-            })
-          }
-        >
-          {wbText('chooseExistingPlan')}
-        </Button.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue
+            onClick={(): void =>
+              state.dispatch({
+                type: 'UseTemplateAction',
+                dispatch: state.dispatch,
+              })
+            }
+          >
+            {wbText('chooseExistingPlan')}
+          </Button.Blue>
+        </>
+      }
     >
       <ListOfBaseTables
         listOfTables={dataModelStorage.listOfBaseTables}

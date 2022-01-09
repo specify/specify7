@@ -3,7 +3,7 @@ import React from 'react';
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
-import { Submit } from '../basic';
+import { Button, Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
@@ -65,12 +65,14 @@ function MakeDwca({
     <Dialog
       onClose={handleClose}
       header={commonText('chooseDwcaDialogTitle')}
-      buttons={[
-        'cancel',
-        <Submit.Blue key="button" form={id('form')} disabled={isLoading}>
-          {isLoading ? commonText('loading') : commonText('start')}
-        </Submit.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Submit.Blue form={id('form')} disabled={isLoading}>
+            {isLoading ? commonText('loading') : commonText('start')}
+          </Submit.Blue>
+        </>
+      }
     >
       <form
         className="grid"
@@ -144,6 +146,7 @@ function ExportStarted({
       title={commonText('dwcaExportStartedDialogTitle')}
       header={commonText('dwcaExportStartedDialogHeader')}
       onClose={handleClose}
+      buttons={commonText('close')}
     >
       {commonText('dwcaExportStartedDialogMessage')}
     </Dialog>

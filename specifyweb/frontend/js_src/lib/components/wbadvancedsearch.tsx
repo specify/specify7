@@ -12,6 +12,7 @@ import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import icons from './icons';
+import commonText from '../localization/common';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -105,7 +106,7 @@ function PreferencesDialog({
     <Dialog
       header={wbText('wbAdvancedSearchDialogTitle')}
       onClose={handleClose}
-      buttons={['close']}
+      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
       modal={false}
       className={{
         container: dialogClassNames.narrowContainer,

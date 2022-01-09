@@ -113,19 +113,20 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       <Dialog
         header={commonText('schemaConfig')}
         onClose={handleClose}
-        buttons={[
-          'close',
-          <Button.Blue
-            key="button"
-            onClick={(): void =>
-              dispatch({
-                type: 'AddLanguageAction',
-              })
-            }
-          >
-            {commonText('addLanguage')}
-          </Button.Blue>,
-        ]}
+        buttons={
+          <>
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+            <Button.Blue
+              onClick={(): void =>
+                dispatch({
+                  type: 'AddLanguageAction',
+                })
+              }
+            >
+              {commonText('addLanguage')}
+            </Button.Blue>
+          </>
+        }
       >
         {commonText('language')}
         <ul>

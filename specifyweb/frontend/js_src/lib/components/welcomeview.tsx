@@ -54,69 +54,66 @@ function AboutSpecify(): JSX.Element {
           alt={welcomeText('aboutSpecify')}
         />
       </Button.LikeLink>
-      {isOpen && (
-        <Dialog
-          title={welcomeText('aboutSpecifyDialogTitle')}
-          header={commonText('specifySeven')}
-          className={{
-            container: dialogClassNames.narrowContainer,
-            header: 'text-3xl',
-          }}
-          onClose={(): void => setIsOpen(false)}
-        >
-          <p>{welcomeText('fullAddress')}</p>
-          <address>
-            <p>
-              <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
-                www.specifysoftware.org
-              </Link.NewTab>
-            </p>
-            <p>
-              <Link.NewTab
-                href="mailto:support@specifysoftware.org"
-                rel="noreferrer"
-              >
-                support@specifysoftware.org
-              </Link.NewTab>
-            </p>
-          </address>
-          <p className="text-justify">{welcomeText('disclosure')}</p>
-          <p className="text-justify">{welcomeText('licence')}</p>
+      <Dialog
+        isOpen={isOpen}
+        title={welcomeText('aboutSpecifyDialogTitle')}
+        header={commonText('specifySeven')}
+        className={{
+          container: dialogClassNames.narrowContainer,
+          header: 'text-3xl',
+        }}
+        onClose={(): void => setIsOpen(false)}
+        buttons={commonText('close')}
+      >
+        <p>{welcomeText('fullAddress')}</p>
+        <address>
+          <p>
+            <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
+              www.specifysoftware.org
+            </Link.NewTab>
+          </p>
+          <p>
+            <Link.NewTab
+              href="mailto:support@specifysoftware.org"
+              rel="noreferrer"
+            >
+              support@specifysoftware.org
+            </Link.NewTab>
+          </p>
+        </address>
+        <p className="text-justify">{welcomeText('disclosure')}</p>
+        <p className="text-justify">{welcomeText('licence')}</p>
 
-          <section>
-            <h3>{welcomeText('systemInformation')}</h3>
-            <table>
-              <tbody>
-                {[
-                  [welcomeText('version'), systemInfo.version],
-                  [
-                    welcomeText('specifySixVersion'),
-                    systemInfo.specify6_version,
-                  ],
-                  [welcomeText('databaseVersion'), systemInfo.database_version],
-                  [welcomeText('schemaVersion'), systemInfo.schema_version],
-                  [welcomeText('databaseName'), systemInfo.database],
-                  [welcomeText('institution'), systemInfo.institution],
-                  [welcomeText('discipline'), systemInfo.discipline],
-                  [welcomeText('collection'), systemInfo.collection],
-                  [
-                    welcomeText('isaNumber'),
-                    systemInfo.isa_number ?? commonText('notApplicable'),
-                  ],
-                  [welcomeText('browser'), window.navigator.userAgent],
-                ].map(([label, value], index) => (
-                  <tr key={index}>
-                    <th scope="row" className="whitespace-nowrap text-right">
-                      {label}
-                    </th>
-                    <td>{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-        </Dialog>
-      )}
+        <section>
+          <h3>{welcomeText('systemInformation')}</h3>
+          <table>
+            <tbody>
+              {[
+                [welcomeText('version'), systemInfo.version],
+                [welcomeText('specifySixVersion'), systemInfo.specify6_version],
+                [welcomeText('databaseVersion'), systemInfo.database_version],
+                [welcomeText('schemaVersion'), systemInfo.schema_version],
+                [welcomeText('databaseName'), systemInfo.database],
+                [welcomeText('institution'), systemInfo.institution],
+                [welcomeText('discipline'), systemInfo.discipline],
+                [welcomeText('collection'), systemInfo.collection],
+                [
+                  welcomeText('isaNumber'),
+                  systemInfo.isa_number ?? commonText('notApplicable'),
+                ],
+                [welcomeText('browser'), window.navigator.userAgent],
+              ].map(([label, value], index) => (
+                <tr key={index}>
+                  <th scope="row" className="whitespace-nowrap text-right">
+                    {label}
+                  </th>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </Dialog>
     </div>
   );
 }

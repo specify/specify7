@@ -4,9 +4,9 @@ import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { LoadingScreen, Dialog } from '../modaldialog';
+import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Submit } from '../basic';
+import { Button, Submit } from '../basic';
 
 function MasterKey({
   onClose: handleClose,
@@ -42,12 +42,12 @@ function MasterKey({
       title={commonText('generateMasterKeyDialogTitle')}
       header={commonText('generateMasterKeyDialogHeader')}
       onClose={handleClose}
-      buttons={[
-        'cancel',
-        <Submit.Blue key="button" form={id('form')}>
-          {commonText('generate')}
-        </Submit.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
+        </>
+      }
     >
       <form
         className="grid"
@@ -113,6 +113,7 @@ function ShowKey({
       title={commonText('masterKeyDialogTitle')}
       header={commonText('masterKeyDialogHeader')}
       onClose={handleClose}
+      buttons={commonText('close')}
     >
       <label>
         {commonText('masterKeyFieldLabel')}

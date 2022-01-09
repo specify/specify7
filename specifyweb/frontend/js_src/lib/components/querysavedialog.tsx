@@ -7,7 +7,7 @@ import userInfo from '../userinfo';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Submit } from './basic';
+import { Button, Submit } from './basic';
 
 async function doSave(
   query: SpecifyResource,
@@ -56,12 +56,12 @@ function QuerySaveDialog({
           : queryText('saveQueryDialogHeader')
       }
       onClose={handleClose}
-      buttons={[
-        'close',
-        <Submit.Blue key="button" form={id('form')}>
-          {commonText('save')}
-        </Submit.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+        </>
+      }
     >
       <p>
         {isSaveAs

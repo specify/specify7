@@ -49,17 +49,19 @@ function Users({
     <Dialog
       header={commonText('manageUsersDialogTitle')}
       onClose={handleClose}
-      buttons={[
-        'cancel',
-        <Button.Blue
-          onClick={(): void => {
-            handleClose();
-            navigation.go('view/specifyuser/new/');
-          }}
-        >
-          {commonText('new')}
-        </Button.Blue>,
-      ]}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue
+            onClick={(): void => {
+              handleClose();
+              navigation.go('view/specifyuser/new/');
+            }}
+          >
+            {commonText('new')}
+          </Button.Blue>
+        </>
+      }
     >
       <ul>
         {Object.entries(users).map(([userName, viewUrl]) => (

@@ -206,9 +206,9 @@ function MetadataDialog({
           container: dialogClassNames.wideContainer,
         }}
         onClose={handleClose}
-        buttons={[
-          'close',
-          <React.Fragment key="buttons">
+        buttons={
+          <>
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
             {canImport && (
               <>
                 <Button.Blue
@@ -221,8 +221,8 @@ function MetadataDialog({
                 </Button.Blue>
               </>
             )}
-          </React.Fragment>,
-        ]}
+          </>
+        }
       >
         {datasets.length === 0 ? (
           <p>

@@ -20,6 +20,7 @@ import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
 import icons from './icons';
+import commonText from '../localization/common';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -123,22 +124,21 @@ export function ButtonWithConfirmation(props: {
       >
         {props.children}
       </Button.Simple>
-      {displayPrompt ? (
-        <Dialog
-          title={props.dialogTitle}
-          header={props.dialogHeader}
-          onClose={(): void => setDisplayPrompt(false)}
-          className={{
-            container: dialogClassNames.narrowContainer,
-          }}
-          buttons={props.buttons(() => {
-            setDisplayPrompt(false);
-            props.onConfirm();
-          })}
-        >
-          {props.dialogContent}
-        </Dialog>
-      ) : undefined}
+      <Dialog
+        isOpen={displayPrompt}
+        title={props.dialogTitle}
+        header={props.dialogHeader}
+        onClose={(): void => setDisplayPrompt(false)}
+        className={{
+          container: dialogClassNames.narrowContainer,
+        }}
+        buttons={props.buttons(() => {
+          setDisplayPrompt(false);
+          props.onConfirm();
+        })}
+      >
+        {props.dialogContent}
+      </Dialog>
     </>
   );
 }
@@ -161,16 +161,15 @@ export function ValidationButton(props: {
       >
         {wbText('validate')}
       </Button.Simple>
-      {displayPrompt ? (
-        <Dialog
-          title={wbText('nothingToValidateDialogTitle')}
-          header={wbText('nothingToValidateDialogHeader')}
-          onClose={(): void => setDisplayPrompt(false)}
-          buttons={['close']}
-        >
-          {wbText('nothingToValidateDialogMessage')}
-        </Dialog>
-      ) : undefined}
+      <Dialog
+        isOpen={displayPrompt}
+        title={wbText('nothingToValidateDialogTitle')}
+        header={wbText('nothingToValidateDialogHeader')}
+        onClose={(): void => setDisplayPrompt(false)}
+        buttons={commonText('close')}
+      >
+        {wbText('nothingToValidateDialogMessage')}
+      </Dialog>
     </>
   );
 }

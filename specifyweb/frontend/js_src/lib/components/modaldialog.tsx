@@ -40,6 +40,7 @@ export function LoadingScreen(): JSX.Element {
     <Dialog
       header={commonText('loading')}
       className={{ container: dialogClassNames.narrowContainer }}
+      buttons={undefined}
     >
       {loadingBar}
     </Dialog>
@@ -67,18 +68,12 @@ const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-const buttonTypes = {
-  apply: commonText('apply'),
-  close: commonText('close'),
-  cancel: commonText('cancel'),
-} as const;
+export const DialogContext = React.createContext<(() => void) | undefined>(() =>
+  error('DialogContext can only be used by <Dialog> buttons')
+);
+DialogContext.displayName = 'DialogContext';
 
-/*
- * TODO: make jquery dialogs look similar to <ModalDialog> until we fully transition
- * TODO: make modal draggable
- * TODO: make all the places use "isOpen" prop
- * TODO: use context for onClose button prop
- */
+// TODO: make modal draggable
 export function Dialog({
   /*
    * Using isOpen prop instead of conditional rendering is optional, but it
@@ -111,9 +106,8 @@ export function Dialog({
   readonly isOpen?: boolean;
   readonly title?: string;
   readonly header: React.ReactNode;
-  readonly buttons?:
-    | JSX.Element
-    | RA<JSX.Element | keyof typeof buttonTypes | undefined>;
+  // Have to explicitly pass undefined if you don't want buttons
+  readonly buttons: undefined | string | JSX.Element;
   readonly children: React.ReactNode;
   readonly modal?: boolean;
   readonly onClose?: () => void;
@@ -228,19 +222,13 @@ export function Dialog({
       </div>
       {typeof buttons !== 'undefined' && (
         <div className={`gap-x-2 flex ${buttonContainer}`}>
-          {Array.isArray(buttons)
-            ? typeof handleClose === 'undefined'
-              ? error("handleClose wasn't provided")
-              : buttons.map((button) =>
-                  typeof button === 'string' && button in buttonTypes ? (
-                    <Button.Transparent key="closeButton" onClick={handleClose}>
-                      {buttonTypes[button]}
-                    </Button.Transparent>
-                  ) : (
-                    button
-                  )
-                )
-            : buttons}
+          <DialogContext.Provider value={handleClose}>
+            {typeof buttons === 'string' ? (
+              <Button.DialogClose>{buttons}</Button.DialogClose>
+            ) : (
+              { buttons }
+            )}
+          </DialogContext.Provider>
         </div>
       )}
     </Modal>
