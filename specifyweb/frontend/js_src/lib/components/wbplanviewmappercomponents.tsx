@@ -200,7 +200,7 @@ export function MappingView(props: {
 
   return (
     <section
-      className={`overflow-x-auto relative resize-vertical
+      className={`overflow-x-auto relative resize-y
         max-h-[50vh] min-h-[250px] h-[var(--mapping-view-height)]`}
       style={
         {
@@ -233,6 +233,7 @@ export function MappingView(props: {
           </span>
         </Button.Simple>
       </div>
+      {/* No hero icon alternative for this one: */}
       <span
         className="absolute bottom-0 right-0 cursor-pointer pointer-events-none"
         title={wbText('resizeMappingEditorButtonDescription')}

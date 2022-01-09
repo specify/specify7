@@ -19,6 +19,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from './common';
+import icons from './icons';
 
 type Properties =
   /*
@@ -320,7 +321,7 @@ function Option({
           aria-label={wbText('relationship')(tableLabel ?? '')}
           role="img"
         >
-          ▶
+          {icons.chevronRight}
         </span>
       ) : (
         <span className="print:hidden w-3" />
@@ -577,7 +578,9 @@ export function CustomSelectElement({
             ? 'NOT MAPPED'
             : defaultOption.optionLabel}
         </span>
-        {has('arrow') && <span className="print:hidden">▼</span>}
+        {has('arrow') && (
+          <span className="print:hidden">{icons.chevronDown}</span>
+        )}
       </header>
     );
 

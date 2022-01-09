@@ -12,8 +12,9 @@ import queryText from './localization/query';
 import commonText from './localization/common';
 import {LANGUAGE} from "./localization/utils";
 import {dateParts} from "./components/internationalization";
+import {legacyNonJsxIcons} from './components/icons';
 
-var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
+var SORT_ICONS = [legacyNonJsxIcons.stop, legacyNonJsxIcons.chevronUp, legacyNonJsxIcons.chevronDown];
 
     var types = {
         strings: ['text', 'java.lang.String'],
@@ -70,7 +71,7 @@ export default Backbone.View.extend({
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
-            this.$el.append(template({commonText, queryText, cid: this.cid}));
+            this.$el.append(template({commonText, queryText, legacyNonJsxIcons, cid: this.cid}));
             this.$('.field-show')[0].ariaPressed = this.spqueryfield.get('isdisplay');
             this.$('.field-show')[0].classList[this.spqueryfield.get('isdisplay')
               ? 'add'
@@ -384,13 +385,8 @@ export default Backbone.View.extend({
             console.log('set position to', position);
         },
         sortTypeChanged: function() {
-            const span = this.$('.field-sort span')[0];
-            SORT_ICONS.forEach((iconClassName, index)=>
-              span.classList[index === this.spqueryfield.get('sorttype')
-                ? 'add'
-                : 'remove'
-              ](iconClassName)
-            );
+            const button = this.$('.field-sort')[0];
+            button.innerHTML = SORT_ICONS[this.spqueryfield.get('sorttype')];
         },
         deleteIfIncomplete: function() {
             this.isIncomplete && this.deleteClicked();

@@ -9,6 +9,7 @@ import QueryCbxSearch from './querycbxsearch';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {legacyNonJsxIcons} from "./components/icons";
 
 export default Backbone.View.extend({
         __name__: "Subview",
@@ -37,6 +38,7 @@ export default Backbone.View.extend({
                 commonText,
                 title: self.title,
                 dependent: self.field.isDependent(),
+                legacyNonJsxIcons,
             }));
             $('.specify-visit-related', header).remove();
 

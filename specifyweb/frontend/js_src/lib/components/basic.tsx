@@ -2,7 +2,10 @@ import type { ReactHTML } from 'react';
 import React from 'react';
 
 import commonText from '../localization/common';
+import type { IR, RR } from '../types';
 import { capitalize } from '../wbplanviewhelper';
+import type { IconProps } from './icons';
+import icons from './icons';
 
 type TagProps<TAG extends keyof ReactHTML> = Exclude<
   Parameters<ReactHTML[TAG]>[0],
@@ -11,13 +14,21 @@ type TagProps<TAG extends keyof ReactHTML> = Exclude<
 
 // Add default className and props to common HTML elements in a type-safe way
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,max-params
-function wrap<TAG extends keyof ReactHTML>(
+function wrap<
+  TAG extends keyof ReactHTML,
+  /*
+   * Allows to define extra props that should be passed to the wrapped component
+   * For example, can make some optional props be required, forbid passing
+   * children, or mutate extra props using mergeProps callback
+   */
+  EXTRA_PROPS extends IR<unknown> = RR<never, never>
+>(
   // eslint-disable-next-line @typescript-eslint/naming-convention
   TagName: TAG,
   className: string,
   initialProps?: TagProps<TAG>,
   // Define props merge behaviour
-  mergeProps: (props: TagProps<TAG>) => TagProps<TAG> = (
+  mergeProps: (props: TagProps<TAG> & EXTRA_PROPS) => TagProps<TAG> = (
     props
   ): TagProps<TAG> => ({
     ...initialProps,
@@ -28,20 +39,22 @@ function wrap<TAG extends keyof ReactHTML>(
    * The component is wrapped in React.forwardRef to allow forwarding ref
    * See: https://reactjs.org/docs/forwarding-refs.html
    */
-  const wrapped = React.forwardRef((props: TagProps<TAG>, ref): JSX.Element => {
-    // Merge classNames
-    const fullClassName =
-      typeof props?.className === 'string'
-        ? `${className} ${props.className}`
-        : className;
-    const { children, ...mergedProps } = mergeProps(props);
-    return (
-      // @ts-expect-error
-      <TagName {...mergedProps} ref={ref} className={fullClassName}>
-        {children}
-      </TagName>
-    );
-  });
+  const wrapped = React.forwardRef(
+    (props: TagProps<TAG> & EXTRA_PROPS, ref): JSX.Element => {
+      // Merge classNames
+      const fullClassName =
+        typeof props?.className === 'string'
+          ? `${className} ${props.className}`
+          : className;
+      const { children, ...mergedProps } = mergeProps(props);
+      return (
+        // @ts-expect-error
+        <TagName {...mergedProps} ref={ref} className={fullClassName}>
+          {children}
+        </TagName>
+      );
+    }
+  );
   // Use capitalized tagName as a devTool's component name
   wrapped.displayName = capitalize(TagName);
   return wrapped;
@@ -167,17 +180,20 @@ export const Link = {
     children: (
       <>
         {props.children}
-        <img
-          src="/static/img/new_tab.svg"
-          alt={commonText('opensInNewTab')}
-          aria-label={commonText('opensInNewTab')}
+        <span
           title={commonText('opensInNewTab')}
-          className="h-2"
-        />
+          aria-label={commonText('opensInNewTab')}
+        >
+          ${icons.link}
+        </span>
       </>
     ),
   })),
   LikeButton: wrap('a', className.button),
+  Icon: wrap<'a', IconProps>('a', className.link, {}, (props) => ({
+    ...props,
+    children: icons[props.icon],
+  })),
 } as const;
 
 export const Button = {
@@ -188,6 +204,11 @@ export const Button = {
   LikeLink: wrap('button', className.link, {
     type: 'button',
   }),
+  Icon: wrap<'button', IconProps>('button', className.link, {}, (props) => ({
+    ...props,
+    type: 'button',
+    children: icons[props.icon],
+  })),
   Transparent: wrap(
     'button',
     `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,

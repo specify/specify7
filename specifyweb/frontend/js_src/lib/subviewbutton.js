@@ -11,6 +11,7 @@ import RecordSelector from './recordselector';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {className} from "./components/basic";
+import {legacyNonJsxIcons} from "./components/icons";
 
 export const Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
@@ -167,10 +168,8 @@ export const Base =  Backbone.View.extend({
 
             // TODO: this was copied from querycbx. should factor out somehow.
             if (!self.related.isNew() && !self.field.isDependent()) {
-                const link = `<a href="${self.related.viewUrl()}">
-                    <span class="ui-icon ui-icon-link">
-                        ${formsText('link')}
-                    </span>
+                const link = `<a href="${self.related.viewUrl()}" title="${formsText('link')}" aria-label=${formsText('link')}>
+                    ${legacyNonJsxIcons.link}
                 </a>`;
                 self.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(link);
 

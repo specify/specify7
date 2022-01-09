@@ -49,6 +49,7 @@ import {
   tableIsTree,
 } from './wbplanviewmodelhelper';
 import React from 'react';
+import icons from './components/icons';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {
   readonly finished: boolean;
@@ -839,8 +840,11 @@ export function getMappingLineData({
   });
 }
 
-const gear = React.createElement('img', {
-  src: '/static/img/gear.svg',
-  className: 'h-3',
-  alt: wbText('mappingOptions'),
-});
+const gear = React.createElement(
+  'span',
+  {
+    'aria-label': wbText('mappingOptions'),
+    title: wbText('mappingOptions'),
+  },
+  icons.cog
+);

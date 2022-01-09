@@ -532,23 +532,21 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   extraComponents: (
                     <>
                       {typeof currentPickListId !== 'undefined' && (
-                        <Link.Default
+                        <Link.Icon
+                          icon="pencil"
+                          title={commonText('edit')}
+                          aria-label={commonText('edit')}
                           className="intercept-navigation"
                           href={`/specify/view/picklist/${currentPickListId}/`}
-                        >
-                          <span className="ui-icon ui-icon-pencil">
-                            {commonText('edit')}
-                          </span>
-                        </Link.Default>
+                        />
                       )}
-                      <Link.Default
+                      <Link.Icon
+                        icon="plus"
                         className="intercept-navigation"
                         href="/specify/view/picklist/new/"
-                      >
-                        <span className="ui-icon ui-icon-plus">
-                          {commonText('add')}
-                        </span>
-                      </Link.Default>
+                        title={commonText('add')}
+                        aria-label={commonText('add')}
+                      />
                     </>
                   ),
                 },

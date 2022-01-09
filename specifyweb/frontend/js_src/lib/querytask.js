@@ -19,6 +19,7 @@ import queryText from './localization/query';
 import commonText from './localization/common';
 import * as querystring from "./querystring";
 import {className} from './components/basic';
+import {legacyNonJsxIcons} from './components/icons';
 
 var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
@@ -51,7 +52,7 @@ var QueryBuilder = Backbone.View.extend({
                     this.recordSet.get('name')
                 )
                 : queryText('queryTaskTitle')(this.query.get('name'));
-            this.$el.append(template({ queryText, commonText, className, cid: this.cid }));
+            this.$el.append(template({ queryText, commonText, className, legacyNonJsxIcons, cid: this.cid }));
             this.$('.querybuilder-header h2').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon()).attr('alt',this.model.getLocalizedName());
             this.query.isNew() && this.$('.abandon-changes').remove();

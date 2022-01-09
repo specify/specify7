@@ -6,40 +6,48 @@
       class="querycbx-edit icon disabled:opacity-50"
       disabled
       aria-pressed="false"
+      title="<%= commonText('edit') %>"
+      aria-label="<%= commonText('edit') %>"
     >
-      <span class="ui-icon ui-icon-pencil"><%= commonText('edit') %></span>
+      <%= legacyNonJsxIcons.pencil %>
     </button>
     <button
       type="button"
       class="querycbx-display icon disabled:opacity-50"
       disabled
       aria-pressed="false"
+      title="<%= commonText('view') %>"
+      aria-label="<%= commonText('view') %>"
     >
-      <span class="ui-icon ui-icon-triangle-1-e"
-        ><%= commonText('view') %></span
-      >
+      <%= legacyNonJsxIcons.chevronRight %>
     </button>
     <button
       type="button"
       class="querycbx-add icon disabled:opacity-50"
       aria-pressed="false"
+      title="<%= commonText('add') %>"
+      aria-label="<%= commonText('add') %>"
     >
-      <span class="ui-icon ui-icon-plus"><%= commonText('add') %></span>
+      <%= legacyNonJsxIcons.plus %>
     </button>
     <button
       type="button"
       class="querycbx-clone icon disabled:opacity-50"
       disabled
       aria-pressed="false"
+      title="<%= formsText('clone') %>"
+      aria-label="<%= formsText('clone') %>"
     >
-      <span class="ui-icon ui-icon-copy"><%= formsText('clone') %></span>
+      <%= legacyNonJsxIcons.clipboard %>
     </button>
     <button
       type="button"
       class="querycbx-search icon disabled:opacity-50"
       aria-pressed="false"
+      title="<%= commonText('search') %>"
+      aria-label="<%= commonText('search') %>"
     >
-      <span class="ui-icon ui-icon-search"><%= commonText('search') %></span>
+      <%= legacyNonJsxIcons.search %>
     </button>
   </span>
 </div>

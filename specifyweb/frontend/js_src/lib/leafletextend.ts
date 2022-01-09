@@ -17,6 +17,7 @@ import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.featuregroup.subgroup';
 
 import localityText from './localization/locality';
+import { legacyNonJsxIcons } from './components/icons';
 
 /* This code is needed to properly load the images in the Leaflet's CSS */
 // @ts-expect-error
@@ -69,14 +70,12 @@ L.Control.PrintMap = L.Control.extend({
     button.classList.add(
       'button',
       'leaflet-print-map',
-      // Conflicts with jQuery's styles
-      '!text-2xl',
       'px-2',
       'bg-black',
       // Hidden by default, until map enters the full-screen mode
       'hidden'
     );
-    button.textContent = '🖨️';
+    button.innerHTML = legacyNonJsxIcons.printer;
 
     L.DomEvent.on(button, 'click', (event) => {
       L.DomEvent.stopPropagation(event);

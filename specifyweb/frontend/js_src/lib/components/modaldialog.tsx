@@ -9,7 +9,7 @@ import Modal from 'react-modal';
 import { error } from '../assert';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import { transitionDuration, Button } from './basic';
+import { Button, transitionDuration } from './basic';
 import { useId } from './hooks';
 
 /*
@@ -58,15 +58,10 @@ export const dialogClassNames = {
 } as const;
 
 /*
- * TODO: make jquery dialogs look similar to <ModalDialog> until we fully transition
- * TODO: make modal draggable
+ * Starting at 180 puts dialogs over Handsontable column headers (which have
+ * z-index of 180)
  */
-
-/*
- * Starting at 100 puts dialogs over Handsontable column headers (which have
- * z-index of 99)
- */
-const initialIndex = 100;
+const initialIndex = 180;
 const topIndex = 10_000;
 const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
@@ -78,6 +73,12 @@ const buttonTypes = {
   cancel: commonText('cancel'),
 } as const;
 
+/*
+ * TODO: make jquery dialogs look similar to <ModalDialog> until we fully transition
+ * TODO: make modal draggable
+ * TODO: make all the places use "isOpen" prop
+ * TODO: use context for onClose button prop
+ */
 export function Dialog({
   /*
    * Using isOpen prop instead of conditional rendering is optional, but it
@@ -232,7 +233,7 @@ export function Dialog({
               ? error("handleClose wasn't provided")
               : buttons.map((button) =>
                   typeof button === 'string' && button in buttonTypes ? (
-                    <Button.Transparent onClick={handleClose}>
+                    <Button.Transparent key="closeButton" onClick={handleClose}>
                       {buttonTypes[button]}
                     </Button.Transparent>
                   ) : (

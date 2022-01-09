@@ -24,6 +24,7 @@ import commonText from './localization/common';
 import formsText from './localization/forms';
 import autocomplete from './autocomplete';
 import {formatList} from "./components/internationalization";
+import {legacyNonJsxIcons} from "./components/icons";
 
 let typesearches;
 const treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "taxon"];
@@ -286,7 +287,7 @@ export default Backbone.View.extend({
     },
     render: function () {
         var control = this.$el;
-        var querycbx = $(template({commonText, formsText}));
+        var querycbx = $(template({commonText, formsText, legacyNonJsxIcons}));
         control.replaceWith(querycbx);
         this.setElement(querycbx);
         this.$('input').replaceWith(control);
@@ -517,10 +518,10 @@ export default Backbone.View.extend({
         });
 
         if (!related.isNew()) {
-            $('<a>', { href: related.viewUrl() })
-                .addClass('intercept-navigation')
-                .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
-                .prependTo(this.dialog.closest('.ui-dialog').find('div.ui-dialog-titlebar'));
+            $('<a>', { href: related.viewUrl(), title: formsText('linkInline'), ariaLabel: formsText('linkInline'), })
+                 .addClass('intercept-navigation')
+                 .append(legacyNonJsxIcons.link)
+              .prependTo(this.dialog.closest('.ui-dialog').find('div.ui-dialog-titlebar'));
         }
     },
     dialogIsOpen(){

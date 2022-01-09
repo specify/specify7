@@ -13,6 +13,7 @@ import commonText from './localization/common';
 import userInfo from './userinfo.ts';
 import {QueryToolbarView} from './components/toolbar/query';
 import {formatNumber} from "./components/internationalization";
+import {legacyNonJsxIcons} from "./components/icons";
 
 
 export default Backbone.View.extend({
@@ -102,8 +103,10 @@ export default Backbone.View.extend({
                         ? ''
                         : `<button
                               type="button"
-                              class="edit ui-icon ui-icon-pencil link"
-                          >${commonText('edit')}</button>`
+                              class="edit icon"
+                              title="${commonText('edit')}"
+                              aria-label="${commonText('edit')}"
+                          >${legacyNonJsxIcons.pencil}</button>`
                     }
                 </td>
             </tr>`);

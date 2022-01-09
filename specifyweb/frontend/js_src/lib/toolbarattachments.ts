@@ -5,6 +5,7 @@ import commonText from './localization/common';
 import * as navigation from './navigation';
 
 const View = Backbone.View.extend({
+  __name__: 'ToolbarAttachments',
   render() {
     navigation.go('attachments/');
   },

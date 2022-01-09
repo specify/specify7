@@ -24,6 +24,7 @@ import localityText from './localization/locality';
 import type { IR, RA, RR } from './types';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
+import { legacyNonJsxIcons } from './components/icons';
 
 const DEFAULT_ZOOM = 5;
 
@@ -371,11 +372,10 @@ export const formatLocalityData = (
             title="${commonText('opensInNewTab')}"
           >
             ${localityText('viewRecord')}
-            <img
-              src="/static/img/new_tab.svg"
-              alt="${commonText('opensInNewTab')}"
-              class="h-2"
-            >
+            <span
+              title="${commonText('opensInNewTab')}"
+              aria-label="${commonText('opensInNewTab')}"
+            >${legacyNonJsxIcons.link}</span>
           </a>`,
         ]
       : []),

@@ -13,33 +13,32 @@ import commonText from './localization/common';
 
 const ro = userInfo.isReadOnly;
 
+
 export default function contextMenuBuilder(treeView) {
     return function ($target, evt) {
         var view = $target.closest('.tree-node').data('view');
         var items = {};
         if (treeView.currentAction != null) {
             items.receive = treeView.currentAction.receiveMenuItem(view);
-            items.cancelAction = {name: treeText('cancelAction'), icon: "cancel", accesskey: 'c'};
+            items.cancelAction = {name: treeText('cancelAction'), accesskey: 'c'};
         } else {
             items = {
-                'query': {name: commonText('query'), icon: "query", accesskey: "q"},
-                'open': {name: ro ? commonText('view') : commonText('edit'), icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
+                'query': {name: commonText('query'), accesskey: "q"},
+                'open': {name: ro ? commonText('view') : commonText('edit'), accesskey: ro ? "v" : "e"}
             };
             if (!ro) Object.assign(items, {
                 'add-child': {
                     name: commonText('addChild'),
-                    icon: "add-child",
                     accesskey: "a",
                     disabled:
                         view.acceptedId != null
                         // Forbid adding children to the lowest rank
                         || view.ranks.slice(-1)[0] === view.rankId
                 },
-                'move': {name: commonText('move'), icon: "move", accesskey: "m"},
-                'merge': {name: treeText('merge'), icon: "merge", accesskey: "g"},
+                'move': {name: commonText('move'), accesskey: "m"},
+                'merge': {name: treeText('merge'), accesskey: "g"},
                 'synonymize': {
                     name: view.acceptedId != null ? treeText('undoSynonymy') : treeText('synonymize'),
-                    icon: "synonymize",
                     accesskey: "s",
                     disabled: view.acceptedId == null && view.children > 0
                 }
@@ -176,14 +175,11 @@ const TreeActionHint = Backbone.View.extend({
         this.$el.append(`
 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all inline-block p-1 shadow-[0_3px_5px_-1px] shadow-gray-500">
     <span class="ui-dialog-title">${this.action.hintMessage()}</span>
-    <button class="ml-2">${commonText('cancel')}</button>
+    <button class="ml-2" aria-label="${commonText('cancel')}" title="${commonText('cancel')}">
+        ${legacyNonJsxIcons.x}
+    </button>
 </div>
 `).appendTo('body');
-
-        this.$('button').button({
-            icons: {primary: 'ui-icon-closethick'},
-            text: false
-        });
 
         return this;
     },
@@ -210,7 +206,6 @@ class MoveNodeAction extends Action {
     receiveMenuItem(node) {
         return {
             name: treeText('moveNodeHere')(this.node.name),
-            icon: "receive-move",
             accesskey: 'm',
             disabled: node.rankId >= this.node.rankId ||
                 node.acceptedId != null
@@ -240,7 +235,6 @@ class MergeNodeAction extends Action {
     receiveMenuItem(node) {
         return {
             name: treeText('mergeNodeHere')(this.node.name),
-            icon: "receive-merge",
             accesskey: 'g',
             disabled: node.nodeId === this.node.nodeId ||
                 node.rankId > this.node.rankId ||
@@ -271,7 +265,6 @@ class SynonymizeNodeAction extends Action {
     receiveMenuItem(node) {
         return {
             name: treeText('makeSynonym')(this.node.name,node.name),
-            icon: "receive-synonym",
             accesskey: 's',
             disabled: node.nodeId === this.node.nodeId ||
                 node.acceptedId != null

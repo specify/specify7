@@ -10,6 +10,7 @@ import remoteprefs from './remoteprefs';
 import treeText from './localization/tree';
 import commonText from './localization/common';
 import {formatNumber} from "./components/internationalization";
+import {legacyNonJsxIcons} from "./components/icons";
 
 var TreeNodeView = Backbone.View.extend({
     __name__: "TreeNodeView",
@@ -80,7 +81,7 @@ var TreeNodeView = Backbone.View.extend({
                 .attr('aria-pressed',false)
                 .attr('class','link aria-handled -mb-[12px] -ml-[5px] flex pt-2')
                 .append(`
-                    <span class="ui-icon expander"></span>
+                    <span class="expander icon"></span>
                     <span class="expander tree-node-name focus:bg-lime-300"></span>
                     <span class="stats"></span>
                 `);
@@ -111,7 +112,7 @@ var TreeNodeView = Backbone.View.extend({
                     this.children > 0 ?
                         treeText('closed') :
                         treeText('leafNode')
-                );
+                ).find('.icon')[0].innerHTML = this.children > 0 ? legacyNonJsxIcons.chevronRight : legacyNonJsxIcons.blank;
         },
     adjustCollapsed: function() {
         const collapsed = this.collapsedRanks[this.ranks.indexOf(this.rankId)];
@@ -204,7 +205,8 @@ var TreeNodeView = Backbone.View.extend({
                 .removeClass('open')
                 .addClass('wait')
                 .attr('aria-pressed','mixed')
-                .attr('aria-label',commonText('loading'));
+                .attr('aria-label',commonText('loading'))
+                .find('.icon')[0].innerHTML = legacyNonJsxIcons.clock;
             return $.getJSON(this.baseUrl + this.nodeId + '/' + this.sortField + '/').pipe(this.gotChildren.bind(this));
         },
         gotChildren: function(childRows) {
@@ -239,7 +241,8 @@ var TreeNodeView = Backbone.View.extend({
                 .removeClass('open wait')
                 .addClass('close')
                 .attr('aria-pressed','true')
-                .attr('aria-label', treeText('opened'));
+                .attr('aria-label', treeText('opened'))
+                .find('.icon')[0].innerHTML = legacyNonJsxIcons.chevronDown;
 
             var nodes = this.childNodes.slice();
             // Have to add the nodes in reverse since they are being
@@ -268,7 +271,8 @@ var TreeNodeView = Backbone.View.extend({
                 .removeClass('close')
                 .addClass('open')
                 .attr('aria-pressed','false')
-                .attr('aria-label', treeText('closed'));
+                .attr('aria-label', treeText('closed'))
+                .find('.icon')[0].innerHTML = legacyNonJsxIcons.chevronRight;
             _.invoke(this.childNodes, 'remove');
             this.treeView.updateConformation();
         },

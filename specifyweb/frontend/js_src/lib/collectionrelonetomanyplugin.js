@@ -13,6 +13,7 @@ import QueryCbxSearch from './querycbxsearch';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {legacyNonJsxIcons} from "./components/icons";
 
 export default UIPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",
@@ -73,7 +74,9 @@ export default UIPlugin.extend({
             <th>${commonText('collection')}</th>
         </tr>`);
         var footer = $('<tfoot>').appendTo(table);
-        $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<button>', {class: "link sp-rel-plugin-add", type:'button'}).appendTo(footer));
+        $('<button>', {class: "link sp-rel-plugin-add", type:'button', title: commonText('add'), ariaLabel: commonText('add')})
+            .append(legacyNonJsxIcons.plus)
+            .appendTo(footer);
         this.model.isNew() || this.fillIn();
         return this;
     },
@@ -124,7 +127,11 @@ export default UIPlugin.extend({
         format(co).done(function(text) { label.text(text); });
         var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
         otherColFormatted.done(function(text) { collection.text(text); });
-        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<button>', {class: "sp-rel-plugin-remove button", type:'button', title: commonText('remove')}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
+        $('<button>', {class: "sp-rel-plugin-remove button", type:'button', title: commonText('remove'), ariaLabel: commonText('remove')})
+          .append(legacyNonJsxIcons.trash)
+          .appendTo(
+            $('<td>', { class: "remove"}).appendTo(tr)
+          );
     },
     gotRelatedObjects: function(collectionObjects) {
         var otherCollectionFormatted = format(this.otherCollection);

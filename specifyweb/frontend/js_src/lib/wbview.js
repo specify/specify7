@@ -52,6 +52,7 @@ import {dataModelPromise} from './wbplanviewmodelfetcher';
 import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
 import createBackboneView from './components/reactbackboneextend';
 import {className} from './components/basic';
+import {legacyNonJsxIcons} from "./components/icons";
 
 const metaKeys = [
   'isNew',
@@ -455,11 +456,10 @@ const WBView = Backbone.View.extend({
                               aria-label="${tableLabel}"
                             ></div>
                             ${tableLabel}
-                            <img
-                              src="/static/img/new_tab.svg"
-                              alt="${commonText('opensInNewTab')}"
-                              class="h-2"
-                            >
+                            <span
+                              title="${commonText('opensInNewTab')}"
+                              aria-label="${commonText('opensInNewTab')}"
+                            >${legacyNonJsxIcons.link}</span>
                           </a>`;
                       })
                       .join('');
@@ -1512,12 +1512,11 @@ const WBView = Backbone.View.extend({
               title="${commonText('view')}"
               aria-label="${commonText('view')}"
             >
-              ℹ️
-              <img
-                src="/static/img/new_tab.svg"
-                alt="${commonText('opensInNewTab')}"
-                class="h-2"
-              >
+              ${legacyNonJsxIcons.informationCircle}
+              <span
+                title="${commonText('opensInNewTab')}"
+                aria-label="${commonText('opensInNewTab')}"
+              >${legacyNonJsxIcons.link}</span>
             </a>
           <label/>`
         ).appendTo(content);

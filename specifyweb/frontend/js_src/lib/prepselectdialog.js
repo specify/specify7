@@ -12,6 +12,7 @@ import fieldFormat from './fieldformat';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {legacyNonJsxIcons} from "./components/icons";
 
 export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
@@ -237,9 +238,9 @@ export default PrepDialog.extend({
                     _this.dialog.dialog('close');
                 });
 
-                $('<a>', { href: resourceModel.viewUrl() })
+                $('<a>', { href: resourceModel.viewUrl(), title: formsText('linkInline'), ariaLabel: formsText('linkInline'), })
                     .addClass('intercept-navigation')
-                    .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
+                    .append(legacyNonJsxIcons.link)
                     .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             });
         },

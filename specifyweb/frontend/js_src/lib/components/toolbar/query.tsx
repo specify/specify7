@@ -132,12 +132,12 @@ function QueryList({
             </td>
             <td className="justify-end">
               {typeof handleEdit === 'function' && (
-                <Button.LikeLink
+                <Button.Icon
+                  icon="pencil"
                   role="link"
-                  className="ui-icon ui-icon-pencil"
-                  onClick={(): void => handleEdit(query)}
                   aria-label={commonText('edit')}
                   title={commonText('edit')}
+                  onClick={(): void => handleEdit(query)}
                 />
               )}
             </td>
@@ -248,12 +248,9 @@ function QueryToolbarItem({
       <Dialog
         header={commonText('queriesDialogTitle')(queries.length)}
         onClose={handleClose}
-        className={{
-          container: dialogClassNames.narrowContainer,
-        }}
         buttons={[
           'cancel',
-          // TODO: make this less ugly, once RecordSetsDialog is rewritten to React
+          // TODO: simplify this once RecordSetsDialog is rewritten to React
           <Button.Blue
             key="new"
             onClick={

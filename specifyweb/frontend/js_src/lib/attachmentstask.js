@@ -17,6 +17,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {className} from './components/basic';
 import template from './templates/attachmentbrowser.html';
+import {legacyNonJsxIcons} from "./components/icons";
 
 
 export const AttachmentsView = Backbone.View.extend({
@@ -195,10 +196,8 @@ export const AttachmentsView = Backbone.View.extend({
 
                 if (!resource.isNew()) {
                     dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                        `<a href="${resource.viewUrl()}">
-                            <span class="ui-icon ui-icon-link">
-                                ${formsText('linkInline')}
-                            </span>
+                        `<a href="${resource.viewUrl()}" title="${formsText('linkInline')}" aria-label="${formsText('linkInline')}">
+                            ${legacyNonJsxIcons.link}
                         </a>`
                     );
 

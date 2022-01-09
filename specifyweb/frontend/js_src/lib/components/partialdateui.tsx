@@ -275,12 +275,12 @@ function PartialDateUi({
       {!readOnly &&
       ((precision === 'full' && !dateSupported) ||
         (precision === 'month-year' && !monthSupported)) ? (
-        <Button.Simple
+        <Button.Icon
+          icon="calendar"
           title={formsText('todayButtonDescription')}
+          aria-label={formsText('today')}
           onClick={(): void => setMoment(dayjs())}
-        >
-          <span className="ui-icon ui-icon-calendar">{formsText('today')}</span>
-        </Button.Simple>
+        />
       ) : undefined}
     </div>
   );

@@ -9,8 +9,9 @@
       type="button"
       class="field-add button"
       title="<%= queryText('newButtonDescription') %>"
+      aria-label="<%= commonText('new') %>"
     >
-      <span class="ui-icon ui-icon-plus"><%= commonText('new') %></span>
+      <%= legacyNonJsxIcons.plus %>
     </button>
     <label class="<%= className.labelForCheckbox %>">
       <input

@@ -2,11 +2,17 @@
   class="field-expand button"
   type="button"
   title="<%= queryText('expandButtonDescription') %>"
+  aria-label="<%= commonText('expand') %>"
 >
-  <span class="ui-icon ui-icon-check"><%= commonText('expand') %></span>
+  <%= legacyNonJsxIcons.check %>
 </button>
-<button type="button" class="field-delete button" title="<%= commonText('remove') %>">
-  <span class="ui-icon ui-icon-trash"><%= commonText('remove') %></span>
+<button
+  type="button"
+  class="field-delete button"
+  title="<%= commonText('remove') %>"
+  aria-label="<%= commonText('remove') %>"
+>
+  <%= legacyNonJsxIcons.trash %>
 </button>
 <div class="flex-1 flex gap-2 flex-wrap">
   <div class="field-label contents"></div>
@@ -31,6 +37,7 @@
   <button
     type="button"
     title="<%= queryText('negate') %>"
+    aria-label="<%= queryText('negate') %>"
     class="
       button
       op-negate
@@ -40,7 +47,7 @@
     "
     aria-pressed="false"
   >
-    <span class="ui-icon ui-icon-cancel"><%= queryText('negate') %></span>
+    <%= legacyNonJsxIcons.ban %>
   </button>
   <select
     class="
@@ -57,18 +64,34 @@
   <button
     type="button"
     title="<%= queryText('showButtonDescription') %>"
+    aria-label="<%= queryText('showButtonDescription') %>"
     aria-pressed="false"
     class="field-show button"
   >
-    <span class="ui-icon ui-icon-check"><%= queryText('showButtonDescription') %></span>
+    <%= legacyNonJsxIcons.check %>
   </button>
-  <button type="button" class="field-sort button" title="<%= queryText('sort') %>">
-    <span class="ui-icon ui-icon-bullet"><%= queryText('sort') %></span>
+  <button
+    type="button"
+    class="field-sort button"
+    title="<%= queryText('sort') %>"
+    aria-label="<%= queryText('sort') %>"
+  >
+    <%= legacyNonJsxIcons.stop %>
   </button>
-  <button type="button" class="field-move-up button" title="<%= queryText('moveUp') %>">
-    <span class="ui-icon ui-icon-arrowthick-1-n"><%= queryText('moveUp') %></span>
+  <button
+    type="button"
+    class="field-move-up button"
+    title="<%= queryText('moveUp') %>"
+    aria-label="<%= queryText('moveUp') %>"
+  >
+    <%= legacyNonJsxIcons.chevronUp %>
   </button>
-  <button type="button" class="field-move-down button" title="<%= queryText('moveDown') %>">
-    <span class="ui-icon ui-icon-arrowthick-1-s"><%= queryText('moveDown') %></span>
+  <button
+    type="button"
+    class="field-move-down button"
+    title="<%= queryText('moveDown') %>"
+    aria-label="<%= queryText('moveDown') %>"
+  >
+    <%= legacyNonJsxIcons.chevronDown %>
   </button>
 </span>

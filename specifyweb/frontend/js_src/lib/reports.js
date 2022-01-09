@@ -127,9 +127,11 @@ var ReportListDialog = Backbone.View.extend({
 
         if(!this.options.readOnly)
             entry.append(`<button
-                type="button"
-                class="edit ui-icon ui-icon-pencil link"
-            >${commonText('edit')}</button>`);
+              type="button"
+              class="edit icon"
+              title="${commonText('edit')}"
+              aria-label="${commonText('edit')}"
+          >${legacyNonJsxIcons.pencil}</button>`);
         return entry;
     },
     getReportUI: function(evt) {

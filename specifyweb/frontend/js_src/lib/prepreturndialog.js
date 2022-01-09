@@ -12,6 +12,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {getDateInputValue} from './dayjs';
 import {className} from './components/basic';
+import {legacyNonJsxIcons} from "./components/icons";
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');
@@ -73,7 +74,17 @@ const PrepReturnRow = Backbone.View.extend({
                     aria-label="${formsText('resolvedAmount')}"
                 >
             </td>
-            <td><button type="button" class="return-remark link w-full hidden" style="display:none"><span class="ui-icon ui-icon-comment">${formsText('remarks')}</span></button></td>
+            <td>
+                <button
+                    type="button"
+                    class="return-remark icon w-full"
+                    style="display:none"
+                    title="${formsText('remarks')}"
+                    aria-label=${formsText('remarks')}
+                >
+                    ${legacyNonJsxIcons.annotation}
+                </button>
+            </td>
         `);
 
         $.when(

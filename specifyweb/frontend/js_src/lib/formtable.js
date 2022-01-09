@@ -11,6 +11,7 @@ import assert from './assert';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {legacyNonJsxIcons} from "./components/icons";
 
 const CONTRACT = `<td class="contract">
         <button
@@ -19,9 +20,7 @@ const CONTRACT = `<td class="contract">
           title="${formsText('contract')}"
           aria-label="${formsText('contract')}"
         >
-            <span class="ui-icon ui-icon-triangle-1-s">
-                ${formsText('contract')}
-            </span>
+            ${legacyNonJsxIcons.chevronDown}
         </button>
     </td>`;
     const EXPAND = `<td class="expand">
@@ -31,9 +30,7 @@ const CONTRACT = `<td class="contract">
           title="${commonText('expand')}"
           aria-label="${commonText('expand')}"
         >
-            <span class="ui-icon ui-icon-triangle-1-e">
-                ${commonText('expand')}
-            </span>
+            ${legacyNonJsxIcons.chevronRight}
         </button>
     </td>`;
     const REMOVE = `<td class="remove">
@@ -43,9 +40,7 @@ const CONTRACT = `<td class="contract">
           title="${commonText('remove')}"
           aria-label="${commonText('remove')}"
         >
-            <span class="ui-icon ui-icon-trash">
-                ${commonText('remove')}
-            </span>
+            ${legacyNonJsxIcons.trash}
         </button>
     </td>`;
 
@@ -147,6 +142,7 @@ export default Backbone.View.extend({
                 commonText,
                 title: this.title,
                 dependent: this.field.isDependent(),
+                legacyNonJsxIcons,
             }));
 
             header.find('.specify-delete-related, .specify-visit-related').remove();

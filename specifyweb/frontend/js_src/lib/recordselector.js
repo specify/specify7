@@ -13,6 +13,7 @@ import * as querystring from './querystring';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {className} from "./components/basic";
+import {legacyNonJsxIcons} from "./components/icons";
 
 var emptyTemplate = `<p>${formsText('noData')}</p>`;
 
@@ -304,6 +305,7 @@ export default Backbone.View.extend({
                     commonText,
                     title: this.title,
                     dependent: this.dependent,
+                    legacyNonJsxIcons
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly

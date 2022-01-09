@@ -274,11 +274,11 @@ function MetadataDialog({
                       </td>
                       <td>
                         {canImport && (
-                          <Button.LikeLink
-                            className="ui-icon ui-icon-pencil"
-                            onClick={(): void => setShowMeta(dataset.id)}
+                          <Button.Icon
+                            icon="pencil"
                             aria-label={commonText('edit')}
                             title={commonText('edit')}
+                            onClick={(): void => setShowMeta(dataset.id)}
                           />
                         )}
                       </td>

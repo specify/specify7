@@ -6,6 +6,7 @@ import Backbone from './backbone';
 
 import commonText from './localization/common';
 import formsText from './localization/forms';
+import {legacyNonJsxIcons} from "./components/icons";
 
 export default Backbone.View.extend({
         __name__: "DeleteButton",
@@ -33,7 +34,7 @@ export default Backbone.View.extend({
             this.blockers = blockers;
             if(blockers.length !== 0)
               this.button[0].innerHTML = `
-                <spanclass="ui-icon ui-icon-alert"></span>
+                ${legacyNonJsxIcons.exclamation}
                 ${commonText('delete')}
               `;
         },

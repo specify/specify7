@@ -19,6 +19,7 @@ import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
+import icons from './icons';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -204,7 +205,7 @@ export function MappingLineComponent({
           onClick={handleClearMapping}
           disabled={readonly}
         >
-          ⌦
+          {icons.backspace}
         </Button.Simple>
       </div>
       <div
@@ -261,7 +262,7 @@ const fieldGroupLabels = {
 
 const mappingElementDivider = (
   <span className="print:px-1 flex items-center px-2" aria-label=",">
-    {'→'}
+    {icons.arrowRight}
   </span>
 );
 

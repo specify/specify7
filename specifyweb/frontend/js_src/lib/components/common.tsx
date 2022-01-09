@@ -11,6 +11,7 @@ import { getIcon } from '../icons';
 import commonText from '../localization/common';
 import { spanNumber } from '../wbplanviewhelper';
 import dataModelStorage from '../wbplanviewmodel';
+import icons from './icons';
 
 const MAX_HUE = 360;
 
@@ -77,7 +78,7 @@ export const tableIconUndefined = (
     aria-label={commonText('unmapped')}
     role="img"
   >
-    ⃠
+    {icons.ban}
   </span>
 );
 
@@ -87,7 +88,7 @@ export const tableIconSelected = (
     aria-label={commonText('mapped')}
     role="img"
   >
-    ✓
+    {icons.check}
   </span>
 );
 
@@ -127,7 +128,11 @@ export function SortIndicator({
           : undefined
       }
     >
-      {isSorted ? (sortConfig.ascending ? '▲' : '▼') : undefined}
+      {isSorted
+        ? sortConfig.ascending
+          ? icons.chevronUp
+          : icons.chevronDown
+        : undefined}
     </span>
   );
 }

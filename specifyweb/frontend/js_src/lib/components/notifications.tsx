@@ -175,8 +175,10 @@ function NotificationComponent({
         <span className={notification.read ? undefined : 'bg-amber-100'}>
           <time dateTime={date.toISOString()}>{formatted}</time>
         </span>
-        <Button.LikeLink
-          className="ui-icon ui-icon-trash"
+        <Button.Icon
+          icon="trash"
+          title={commonText('delete')}
+          aria-label={commonText('delete')}
           onClick={(): void => {
             void ajax(
               '/notifications/delete/',
@@ -189,9 +191,7 @@ function NotificationComponent({
             );
             handleDelete();
           }}
-        >
-          {commonText('delete')}
-        </Button.LikeLink>
+        />
       </header>
       <p>
         {(

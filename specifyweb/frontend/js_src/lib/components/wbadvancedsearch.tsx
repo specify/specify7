@@ -9,8 +9,9 @@ import React from 'react';
 import * as cache from '../cache';
 import wbText from '../localization/workbench';
 import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
-import { Dialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import icons from './icons';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -105,6 +106,10 @@ function PreferencesDialog({
       header={wbText('wbAdvancedSearchDialogTitle')}
       onClose={handleClose}
       buttons={['close']}
+      modal={false}
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
     >
       <div>
         <h2 className="font-black">{wbText('navigationOptions')}</h2>
@@ -128,7 +133,7 @@ function PreferencesDialog({
         </Label>
       </div>
 
-      <div>
+      <div className="flex flex-col">
         <h2 className="font-black">{wbText('searchOptions')}</h2>
         <CheckboxLine
           property="fullMatch"
@@ -210,13 +215,10 @@ function WbAdvancedSearch({
         aria-haspopup="dialog"
         aria-pressed={isOpen}
         title={wbText('configureSearchReplace')}
+        aria-label={wbText('configureSearchReplace')}
         onClick={(): void => setIsOpen(!isOpen)}
       >
-        <img
-          src="/static/img/gear.svg"
-          className="h-3"
-          alt={wbText('configureSearchReplace')}
-        />
+        {icons.cog}
       </Button.Simple>
       {isOpen && (
         <PreferencesDialog

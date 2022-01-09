@@ -1,7 +1,13 @@
 <div class="specify-subview-header border-b border-gray-500 flex font-bold gap-x-2 text-gray-700">
   <legend>
     <% if (!dependent) { %>
-      <span class="ui-icon ui-icon-arrowthick-1-e inline-block"><%= formsText('link') %></span>
+      <span
+        class="inline-block"
+        title="<%= formsText('link') %>"
+        aria-label="<%= formsText('link') %>"
+      >
+        <%= legacyNonJsxIcons.chevronRight %>
+      </span>
     <% } %>
     <span class="specify-subview-title"><%- title %></span>
     <span class="specify-subview-count" style="display: none"></span>

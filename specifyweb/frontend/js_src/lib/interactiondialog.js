@@ -10,6 +10,7 @@ import PrepSelectDialog from './prepselectdialog';
 import * as navigation from './navigation';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
+import {legacyNonJsxIcons} from "./components/icons";
 
 var dialog;
     function makeDialog(el, options) {
@@ -23,8 +24,6 @@ var dialog;
 
 export default RecordSetsDialog.extend({
         __name__: "InteractionDialog",
-        openIcon: "ui-icon ui-icon-radio-off",
-        closeIcon: "ui-icon ui-icon-radio-on",
         events: {
             'click a.rs-select': 'rsSelect',
             'click button.action-entry': 'processEntry',
@@ -86,12 +85,16 @@ export default RecordSetsDialog.extend({
         toggleIcon: function(icon_selector) {
             var icon = this.$(icon_selector);
             var iconname = icon.attr('class');
-            if (iconname == this.openIcon) {
-                iconname = this.closeIcon;
-            } else {
-                iconname = this.openIcon;
+            if(icon[0].classList.contains('icon-open')){
+              icon[0].classList.remove('icon-open');
+              icon[0].classList.add('icon-closed');
+              icon[0].innerHTML = legacyNonJsxIcons.minusCircle;
             }
-            icon.attr('class', iconname);
+            else {
+              icon[0].classList.remove('icon-open');
+              icon[0].classList.add('icon-closed');
+              icon[0].innerHTML = legacyNonJsxIcons.plusCircle;
+            }
         },
 
         toggleIt: function(sel, otherSel, iconSel, otherIconSel, duration) {
@@ -133,7 +136,7 @@ export default RecordSetsDialog.extend({
             var breaker = '';
             if (this.options.recordSets._totalCount > 0) {
                 this.$el.append($(`<button class="i-action-rs link" type="button">
-                    <span class="${this.openIcon}"/>
+                    <span class="icon icon-open">${legacyNonJsxIcons.minusCircle}</span>
                     ${formsText('recordSetCaption')(this.options.recordSets._totalCount)}
                 </button>`));
                 this.makeTable();
@@ -141,7 +144,7 @@ export default RecordSetsDialog.extend({
             }
             this.$el.append(breaker);
             this.$el.append($(`<button class="i-action-enter link" type="button">
-                <span class="${this.openIcon}"/>
+                <span class="icon icon-open">${legacyNonJsxIcons.minusCircle}</span>
                 ${formsText('entryCaption')(this.getSrchFld().getLocalizedName())}
             </button>`));
             this.makeEntryUI();
@@ -168,11 +171,6 @@ export default RecordSetsDialog.extend({
                   </button>
                   <br>
               `);
-        },
-        touchUpUI: function() {
-           if (this.options.recordSets._totalCount > 0) {
-               this.toggleIcon('.i-action-rs span');
-           }
         },
         makeEntryUI: function() {
             this.$el.append(`<div class="action-entry"

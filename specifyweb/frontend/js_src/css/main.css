@@ -1,9 +1,8 @@
 @import url('./custom-theme/jquery-ui-1.10.2.custom.css');
 @import url('~jquery-contextmenu/dist/jquery.contextMenu.css');
 
-/* TODO: make save buttons be on the right side in dialogs */
+/* TODO: make save buttons be on the correct side in forms and subforms */
 /* TODO: revisit reports ui */
-@import url('./icons.css');
 
 /**
  * This injects Tailwind's base styles and any base styles registered by
@@ -125,8 +124,11 @@
   }
 
   .link, .icon {
-    @apply text-black gap-2 inline-flex items-center hover:text-brand-300
-    active:underline cursor-pointer;
+    @apply text-black hover:text-brand-300 cursor-pointer;
+  }
+
+  .link {
+    @apply gap-2 inline-flex items-center active:underline;
   }
 
   .icon {
