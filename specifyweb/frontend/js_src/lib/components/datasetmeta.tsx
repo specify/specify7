@@ -24,8 +24,8 @@ import {
   Label,
   Link,
   Select,
-  Textarea,
   Submit,
+  Textarea,
 } from './basic';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
@@ -87,7 +87,7 @@ export function DataSetMeta({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>,
+          <Submit.Blue form={id('form')} value="commonText('save')" />,
         </>
       }
     >
@@ -278,11 +278,11 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{wbText('changeOwner')}</Submit.Blue>
+          <Submit.Blue form={id('form')} value={wbText('changeOwner')} />
         </>
       }
     >
-      <form
+      <Form
         onSubmit={(event): void => {
           event.preventDefault();
           void ajax(`/api/workbench/transfer/${dataset.id}/`, {
@@ -309,7 +309,7 @@ function ChangeOwner({
             ))}
           </Select>
         </Label>
-      </form>
+      </Form>
     </Dialog>
   );
 }

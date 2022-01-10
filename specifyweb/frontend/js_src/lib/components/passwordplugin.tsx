@@ -5,9 +5,9 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
 import { useId, useTitle } from './hooks';
-import { LoadingScreen, Dialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Submit, Input, Label, Button } from './basic';
+import { Button, Form, Input, Label, Submit } from './basic';
 
 export const MIN_PASSWORD_LENGTH = 6;
 
@@ -38,12 +38,12 @@ function PasswordResetDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
+          <Submit.Blue form={id('form')} value={commonText('apply')} />
         </>
       }
     >
-      <form
-        className="grid"
+      <Form
+        className="contents"
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
@@ -105,7 +105,7 @@ function PasswordResetDialog({
             }}
           />
         </Label>
-      </form>
+      </Form>
     </Dialog>
   );
 }

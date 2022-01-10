@@ -10,7 +10,7 @@ import { generateReducer } from 'typesafe-reducer';
 import ajax, { Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { Button, Progress } from './basic';
+import { Button, Label, Progress } from './basic';
 import { useTitle } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -192,12 +192,12 @@ function WbStatus({
         ) : undefined
       }
     >
-      <label aria-live="polite" aria-atomic={true}>
+      <Label aria-live="polite" aria-atomic={true}>
         {message}
         {state.status.taskstatus === 'PROGRESS' && (
           <Progress value={current} max={total} />
         )}
-      </label>
+      </Label>
     </Dialog>
   );
 }

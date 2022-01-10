@@ -15,7 +15,7 @@ import UIPlugin from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
 import { SpecifyResource } from '../legacytypes';
-import { Button } from './basic';
+import { Button, Input } from './basic';
 
 function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -208,7 +208,7 @@ function PartialDateUi({
             ? formsText('monthYear')
             : commonText('fullDate')}
         </span>
-        <input
+        <Input
           id={inputId}
           readOnly={readOnly}
           ref={inputRef}

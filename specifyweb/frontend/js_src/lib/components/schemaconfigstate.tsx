@@ -18,10 +18,12 @@ import {
   Checkbox,
   className,
   ContainerFull,
+  Input,
   Label,
   LabelForCheckbox,
   Link,
   Radio,
+  Textarea,
 } from './basic';
 import { TableIcon } from './common';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -294,7 +296,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </h3>
             <Label>
               {commonText('caption')}
-              <input
+              <Input
                 type="text"
                 value={table.strings.name.text}
                 onChange={({ target }): void =>
@@ -308,7 +310,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label>
             <Label>
               {commonText('description')}
-              <textarea
+              <Textarea
                 className="resize-y h-[15vh]"
                 value={table.strings.desc.text}
                 onChange={({ target }): void =>
@@ -401,7 +403,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </h3>
             <Label>
               {commonText('caption')}
-              <input
+              <Input
                 type="text"
                 value={items[itemId].strings.name.text}
                 onChange={({ target }): void =>
@@ -415,7 +417,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label>
             <Label>
               {commonText('description')}
-              <textarea
+              <Textarea
                 className="resize-y h-[15vh]"
                 value={items[itemId].strings.desc.text}
                 onChange={({ target }): void =>
@@ -429,7 +431,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label>
             <Label>
               {commonText('length')}
-              <input
+              <Input
                 type="number"
                 value={items[itemId].dataModel.length ?? ''}
                 readOnly={true}
@@ -438,7 +440,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label>
             <Label>
               {commonText('type')}
-              <input
+              <Input
                 type="text"
                 readOnly={true}
                 value={javaTypeToHuman(

@@ -79,6 +79,7 @@ export default class ErrorBoundary extends React.Component<
     errorInfo: { readonly componentStack: string }
   ): void {
     clearUnloadProtect();
+    console.error(error.toString());
     this.setState({
       hasError: true,
       error,

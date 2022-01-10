@@ -12,7 +12,7 @@ import type {
 import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import { Button, Checkbox, LabelForCheckbox, Radio } from './basic';
+import { Button, Checkbox, LabelForCheckbox, Radio, Textarea } from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -357,7 +357,7 @@ export function mappingOptionsMenu({
           {typeof columnOptions.default === 'string' && (
             <>
               <br />
-              <textarea
+              <Textarea
                 value={columnOptions.default || ''}
                 title={wbText('defaultValue')}
                 aria-labelledby={id('default-value')}

@@ -7,7 +7,7 @@ import * as querystring from '../querystring';
 import router from '../router';
 import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
-import { Button, Link } from './basic';
+import { Button, Form, Input, Link } from './basic';
 import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
 import { setCurrentOverlay } from '../specifyapp';
@@ -139,7 +139,7 @@ export function ExpressSearch(): JSX.Element {
     () => querystring.parse().q ?? ''
   );
   return (
-    <form
+    <Form
       onSubmit={(event): void => {
         event.preventDefault();
         const query = searchQuery.trim();
@@ -154,7 +154,7 @@ export function ExpressSearch(): JSX.Element {
       action="/specify/express_search/"
       role="search"
     >
-      <input
+      <Input
         type="search"
         className="flex-1"
         name="q"
@@ -163,7 +163,7 @@ export function ExpressSearch(): JSX.Element {
         value={searchQuery}
         onChange={({ target }): void => setSearchQuery(target.value)}
       />
-    </form>
+    </Form>
   );
 }
 

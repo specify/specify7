@@ -8,9 +8,9 @@ import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
 import UIPlugin from '../uiplugin';
-import { Submit, Checkbox, LabelForCheckbox, Button } from './basic';
+import { Button, Checkbox, Form, LabelForCheckbox, Submit } from './basic';
 import { useId } from './hooks';
-import { LoadingScreen, Dialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 function UserCollectionsUi({
@@ -38,12 +38,12 @@ function UserCollectionsUi({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
+          <Submit.Blue form={id('form')} value={commonText('close')} />
         </>
       }
     >
-      <form
-        className="gap-y-2 flex flex-col"
+      <Form
+        className="contents"
         id={id('form')}
         onSubmit={(event) => {
           event.preventDefault();
@@ -72,7 +72,7 @@ function UserCollectionsUi({
             {collection.get<string>('collectionname')}
           </LabelForCheckbox>
         ))}
-      </form>
+      </Form>
     </Dialog>
   );
 }

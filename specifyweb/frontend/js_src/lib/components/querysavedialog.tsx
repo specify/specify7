@@ -7,7 +7,7 @@ import userInfo from '../userinfo';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Button, Submit } from './basic';
+import { Button, Form, Input, Label, Submit } from './basic';
 
 async function doSave(
   query: SpecifyResource,
@@ -59,7 +59,7 @@ function QuerySaveDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          <Submit.Blue form={id('form')} value={commonText('save')} />
         </>
       }
     >
@@ -68,8 +68,8 @@ function QuerySaveDialog({
           ? queryText('saveClonedQueryDialogMessage')
           : queryText('saveQueryDialogMessage')}
       </p>
-      <form
-        className="grid"
+      <Form
+        className="contents"
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
@@ -77,9 +77,9 @@ function QuerySaveDialog({
           doSave(query, name, isSaveAs).then(handleSave).catch(console.error);
         }}
       >
-        <label>
+        <Label>
           {queryText('queryName')}
-          <input
+          <Input
             type="text"
             autoComplete="on"
             spellCheck="true"
@@ -87,8 +87,8 @@ function QuerySaveDialog({
             value={name}
             onChange={({ target }): void => setName(target.value)}
           />
-        </label>
-      </form>
+        </Label>
+      </Form>
     </Dialog>
   );
 }

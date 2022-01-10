@@ -6,7 +6,7 @@ import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Button, Submit } from '../basic';
+import { Button, Form, Input, Label, Submit } from '../basic';
 
 function MasterKey({
   onClose: handleClose,
@@ -45,12 +45,12 @@ function MasterKey({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
+          <Submit.Blue form={id('form')} value={commonText('generate')} />
         </>
       }
     >
-      <form
-        className="grid"
+      <Form
+        className="contents"
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
@@ -81,9 +81,9 @@ function MasterKey({
             });
         }}
       >
-        <label>
+        <Label>
           {commonText('userPassword')}
-          <input
+          <Input
             ref={inputRef}
             type="password"
             value={password}
@@ -93,8 +93,8 @@ function MasterKey({
             }}
             required
           />
-        </label>
-      </form>
+        </Label>
+      </Form>
     </Dialog>
   ) : (
     <ShowKey masterKey={masterKey} onClose={handleClose} />
@@ -115,10 +115,10 @@ function ShowKey({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      <label>
+      <Label>
         {commonText('masterKeyFieldLabel')}
-        <input type="text" readOnly value={masterKey} />
-      </label>
+        <Input type="text" readOnly value={masterKey} />
+      </Label>
     </Dialog>
   );
 }

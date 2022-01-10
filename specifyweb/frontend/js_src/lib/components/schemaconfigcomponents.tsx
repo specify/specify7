@@ -4,7 +4,7 @@ import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
-import { Submit, Button } from './basic';
+import { Button, Form, Input, Label, Submit } from './basic';
 
 export function PickList({
   label,
@@ -99,12 +99,12 @@ export function AddLanguage({
           <Button.Transparent onClick={handleGoBack}>
             {commonText('back')}
           </Button.Transparent>
-          <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
+          <Submit.Blue form={id('form')} value={commonText('add')} />
         </>
       }
     >
-      <form
-        className="grid"
+      <Form
+        className="contents"
         ref={formRef}
         id={id('form')}
         onSubmit={(event): void => {
@@ -116,9 +116,9 @@ export function AddLanguage({
           );
         }}
       >
-        <label>
+        <Label>
           {commonText('language')}
-          <input
+          <Input
             type="text"
             required
             minLength={2}
@@ -127,10 +127,10 @@ export function AddLanguage({
             value={language}
             onChange={({ target }): void => setLanguage(target.value)}
           />
-        </label>
-        <label>
+        </Label>
+        <Label>
           {commonText('country')}
-          <input
+          <Input
             type="text"
             minLength={2}
             maxLength={2}
@@ -138,8 +138,8 @@ export function AddLanguage({
             value={country}
             onChange={({ target }): void => setCountry(target.value)}
           />
-        </label>
-      </form>
+        </Label>
+      </Form>
     </Dialog>
   );
 }

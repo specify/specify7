@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import commonText from '../localization/common';
 import type { Language } from '../localization/utils';
 import type { RA } from '../types';
-import { className, ErrorMessage, Submit, Form, Input, Label } from './basic';
+import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { LanguageSelection } from './toolbar/language';

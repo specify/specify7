@@ -3,7 +3,7 @@ import React from 'react';
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
-import { Button, Submit } from '../basic';
+import { Button, Form, Input, Label, Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
@@ -68,14 +68,16 @@ function MakeDwca({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} disabled={isLoading}>
-            {isLoading ? commonText('loading') : commonText('start')}
-          </Submit.Blue>
+          <Submit.Blue
+            form={id('form')}
+            disabled={isLoading}
+            value={isLoading ? commonText('loading') : commonText('start')}
+          />
         </>
       }
     >
-      <form
-        className="grid"
+      <Form
+        className="contents"
         id={id('form')}
         ref={formRef}
         onSubmit={(event): void => {
@@ -106,9 +108,9 @@ function MakeDwca({
             });
         }}
       >
-        <label>
+        <Label>
           {commonText('dwcaDefinition')}
-          <input
+          <Input
             type="text"
             value={definition}
             onChange={({ target }): void => {
@@ -118,10 +120,10 @@ function MakeDwca({
             required
             ref={definitionRef}
           />
-        </label>
-        <label>
+        </Label>
+        <Label>
           {commonText('metadataResource')}
-          <input
+          <Input
             type="text"
             value={metadata}
             onChange={({ target }): void => {
@@ -130,8 +132,8 @@ function MakeDwca({
             }}
             ref={metadataRef}
           />
-        </label>
-      </form>
+        </Label>
+      </Form>
     </Dialog>
   );
 }

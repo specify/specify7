@@ -6,6 +6,7 @@ import commonText from '../localization/common';
 import localityText from '../localization/locality';
 import UIPlugin from '../uiplugin';
 import createBackboneView from './reactbackboneextend';
+import { Input } from './basic';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -66,7 +67,7 @@ function Coordinate({
   }, []);
 
   return (
-    <input
+    <Input
       type="text"
       value={coordinate}
       readOnly={readOnly}

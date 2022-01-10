@@ -12,12 +12,13 @@
 
 /* TODO: get rid of most global styles once everything is using React components */
 @layer base {
+
   * {
     /*
      * If changing "duration-100", don't forget to change "transitionDuration"
      * in "./components/basic.tsx"
      */
-    @apply motion-reduce: transition duration-100 ease-in-out!transition-none
+    @apply transition duration-100 ease-in-out motion-reduce:!transition-none
            motion-reduce:!duration-0;
   }
 
@@ -36,7 +37,7 @@
   [multiple],
   textarea,
   select {
-    @apply accent-brand-200 p-1 bg-gray-200 rounded;
+    @apply p-1 bg-gray-200 rounded accent-brand-200;
   }
 
   select {
@@ -45,7 +46,7 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply text-brand-200 cursor-pointer;
+    @apply cursor-pointer text-brand-200;
   }
 
   label {
@@ -58,16 +59,15 @@
   select:not(.not-touched):invalid,
   form:not(.not-submitted) textarea:invalid,
   textarea:not(.not-touched):invalid {
-    @apply bg-red-400;
+    @apply bg-red-400 placeholder-red-900;
   }
 
   textarea {
     @apply w-full;
   }
 
-  :disabled:not(.icon),
-  [readonly] {
-    @apply text-gray-700 bg-gray-400 cursor-not-allowed;
+  :disabled:not(.icon), [readonly] {
+    @apply cursor-not-allowed bg-gray-400 text-gray-700;
   }
 
   .icon:disabled {
@@ -94,6 +94,7 @@
     @apply m-0 appearance-none;
   }
 
+
   [type='number']:not([readonly]):not(.no-arrows)::-webkit-inner-spin-button,
   [type='number']:not([readonly]):not(.no-arrows)::-webkit-outer-spin-button {
     /* Always show spinner buttons */
@@ -108,38 +109,44 @@
   }
 
   [type='number'].webkit:not([readonly]):not(.no-arrows) {
-    @apply relative pr-1 text-right.5;
+    @apply text-right relative pr-1.5
   }
 
   .button {
-    @apply active:brightness-80 border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-500 hover:bg-brand-200 inline-flex items-center gap-2 px-2 py-1 text-black bg-gray-300 border rounded cursor-pointer;
+    @apply border rounded cursor-pointer active:brightness-80 bg-gray-300
+    border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
+    disabled:text-gray-500 gap-2 hover:bg-brand-200
+    inline-flex items-center px-2 py-1 text-black;
   }
+
   button[aria-pressed='true']:not(.aria-handled) {
     @apply bg-white;
   }
-  .link,
-  .icon {
-    @apply hover:text-brand-300 text-black cursor-pointer;
+
+  .link, .icon {
+    @apply text-black hover:text-brand-300 cursor-pointer;
   }
+
   .link {
-    @apply active:underline inline-flex items-center gap-2;
+    @apply gap-2 inline-flex items-center active:underline;
   }
+
   .icon {
     @apply active:bg-brand-100;
   }
+
   [type='submit'].link,
   [type='button'].link {
-    @apply text-left border-none;
+    @apply border-none text-left;
   }
+
   @media print {
-    print {
-    /* Hide arrows, calendar icon and othe
-    input,
-    select,
-    textarea {
+    /* Hide arrows, calendar icon and other symbols */
+    input, select, textarea {
       @apply bg-none m-0 appearance-none;
     }
   }
+
   progress::-webkit-progress-bar {
     @apply bg-gray-200 rounded;
   }
@@ -148,19 +155,18 @@
   }
   progress::-moz-progress-bar {
     @apply bg-brand-200 rounded;
-  } ed;
   }
 
 
-  /* Display tooltips as an overlay on touch-scree
+  /* Display tooltips as an overlay on touch-screen devices */
   @media (pointer: coarse), (hover: none) {
     [title] {
       @apply relative inline-flex justify-center;
     }
+
     [title]:focus::after {
-      @apply w-fit content- absolute p-1 text-black bg-white border border-black[attr(title)] top-[90%];
-    }
-  } ] top-[90%]
+      @apply w-fit absolute p-1 text-black bg-white border border-black
+             content-[attr(title)] top-[90%]
     }
   }
 
@@ -169,34 +175,37 @@
    * Does not sacrifice accessibility thanks to [role] attributes
    * Allows for things like sticky headers and having entire row be a link
    * You can set column sizes by adding a className like this:
-   *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content
+   *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content_minmax(30px,_1fr)]
+   */
   table.grid-table,
-  .grid-table[role='table'] {
-    @apply grid;
+  .grid-table[role="table"] {
+    @apply grid
   }
+
   .grid-table thead,
   .grid-table tbody,
   .grid-table tr,
-  .grid-table [role='rowgroup'],
-  .grid-table [role='row'] {
-    @apply contents;
+  .grid-table [role="rowgroup"],
+  .grid-table [role="row"] {
+    @apply contents
   }
+
   .grid-table th,
   .grid-table td,
-  .grid-table [role='columnheader'],
-  .grid-table [role='rowheader'],
-  .grid-table [role='cell'] {
-    @apply gap-x-1 flex items-center;
-  }
-} tems-center gap-x-1;
+  .grid-table [role="columnheader"],
+  .grid-table [role="rowheader"],
+  .grid-table [role="cell"] {
+    @apply flex items-center gap-x-1;
   }
 
 }
 
 /**
  * This injects Tailwind's component classes and any component classes
-
+ * registered by plugins.
+ */
 @tailwind components;
+
 @layer components {
   .wbs-form {
     --new-cell: theme('colors.indigo.350');
@@ -204,33 +213,39 @@
     --modified-cell: theme('colors.yellow.250');
     --search-result: theme('colors.green.300');
   }
+
   .custom-select {
     --custom-select-b1: theme('colors.white');
     --custom-select-b2: theme('colors.brand.100');
     --custom-select-accent: theme('colors.brand.100');
   }
+
   .custom-select-group-required-fields {
     --custom-select-b1: theme('colors.cyan.100');
     --custom-select-b2: theme('colors.cyan.200');
     --custom-select-accent: theme('colors.cyan.300');
   }
+
   .custom-select-group-hidden-fields {
     --custom-select-b1: theme('colors.gray.300');
     --custom-select-b2: theme('colors.gray.400');
     --custom-select-accent: theme('colors.gray.500');
   }
+
   .custom-select-group-suggested-mappings {
     --custom-select-b1: theme('colors.green.200');
     --custom-select-b2: theme('colors.green.300');
     --custom-select-accent: theme('colors.green.400');
   }
-} 'colors.green.400');
-  }
 }
 
 
 /**
- * This injects Tailwind's utility classes and any utility classes
+ * This injects Tailwind's utility classes and any utility classes registered
+ * by plugins.
+ */
 @tailwind utilities;
+
 @layer utilities {
+
 }

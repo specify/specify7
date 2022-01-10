@@ -24,8 +24,7 @@ function wrap<
    */
   EXTRA_PROPS extends IR<unknown> = RR<never, never>
 >(
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  TagName: TAG,
+  tagName: TAG,
   className: string,
   initialProps?: TagProps<TAG>,
   // Define props merge behaviour
@@ -47,17 +46,15 @@ function wrap<
         typeof props?.className === 'string'
           ? `${className} ${props.className}`
           : className;
-      const { children, ...mergedProps } = mergeProps(props);
-      return (
-        // @ts-expect-error
-        <TagName {...mergedProps} ref={ref} className={fullClassName}>
-          {children}
-        </TagName>
-      );
+      return React.createElement(tagName, {
+        ...mergeProps(props),
+        ref,
+        className: fullClassName,
+      });
     }
   );
   // Use capitalized tagName as a devTool's component name
-  wrapped.displayName = capitalize(TagName);
+  wrapped.displayName = capitalize(tagName);
   return wrapped;
 }
 
@@ -137,7 +134,7 @@ export const Input = wrap('input', className.notTouchedInput, {}, (props) => ({
     props?.onBlur?.(event);
   },
 }));
-export const Textarea = wrap(
+export const Textarea = wrap<'textarea', { readonly children?: undefined }>(
   'textarea',
   `${className.notTouchedInput} ${className.textarea}`,
   {},
@@ -268,34 +265,43 @@ export const Button = {
 } as const;
 
 export const Submit = {
-  Simple: wrap('button', className.button, {
-    type: 'submit',
-  }),
-  Fancy: wrap('input', className.fancyButton, {
-    type: 'submit',
-  }),
-  Transparent: wrap(
+  // Don't allow accidentally passing "children" prop
+  Simple: wrap<'input', { readonly children?: undefined }>(
+    'input',
+    className.button,
+    {
+      type: 'submit',
+    }
+  ),
+  Fancy: wrap<'input', { readonly children?: undefined }>(
+    'input',
+    className.fancyButton,
+    {
+      type: 'submit',
+    }
+  ),
+  Transparent: wrap<'input', { readonly children?: undefined }>(
     'input',
     `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
     {
       type: 'submit',
     }
   ),
-  Gray: wrap(
+  Gray: wrap<'input', { readonly children?: undefined }>(
     'input',
     `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
     {
       type: 'submit',
     }
   ),
-  Blue: wrap(
+  Blue: wrap<'input', { readonly children?: undefined }>(
     'input',
     `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
     {
       type: 'submit',
     }
   ),
-  Green: wrap(
+  Green: wrap<'input', { readonly children?: undefined }>(
     'input',
     `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
     {

@@ -15,7 +15,7 @@ import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
-import { Button, Checkbox, ContainerFull } from './basic';
+import { Button, Checkbox, ContainerFull, Input } from './basic';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
@@ -510,10 +510,11 @@ function ChooseName(props: { name: string; update: HandleAction }) {
   return (
     <label className="contents">
       {wbText('chooseDataSetName')}
-      <input
+      <Input
         type="text"
         spellCheck={true}
         value={props.name}
+        required
         onChange={(event) =>
           props.update({
             type: 'SetDataSetNameAction',
