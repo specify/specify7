@@ -89,12 +89,12 @@ export function ValidationResults(props: {
       onClose={props.onDismissValidation}
       buttons={
         <>
-          <Button.Transparent onClick={props.onDismissValidation}>
+          <Button.Blue onClick={props.onDismissValidation}>
             {wbText('continueEditing')}
-          </Button.Transparent>
-          <Button.Blue onClick={props.onSave}>
-            {wbText('saveUnfinished')}
           </Button.Blue>
+          <Button.Orange onClick={props.onSave}>
+            {wbText('saveUnfinished')}
+          </Button.Orange>
         </>
       }
     >
@@ -391,9 +391,9 @@ export function ChangeBaseTable({
       buttons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={confirm}>
+          <Button.Orange onClick={confirm}>
             {commonText('changeBaseTable')}
-          </Button.Blue>
+          </Button.Orange>
           ,
         </>
       )}
@@ -419,9 +419,9 @@ export function ReRunAutoMapper({
       buttons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={confirm}>
+          <Button.Orange onClick={confirm}>
             {wbText('reRunAutoMapper')}
-          </Button.Blue>
+          </Button.Orange>
           ,
         </>
       )}
@@ -473,6 +473,11 @@ export function MustMatch({
     IR<boolean> | undefined
   >(undefined);
 
+  const handleDialogClose = (): void => {
+    setLocalPreferences(undefined);
+    handleClose();
+  };
+
   return (
     <>
       <Button.Simple
@@ -484,17 +489,16 @@ export function MustMatch({
       {typeof localPreferences !== 'undefined' && (
         <Dialog
           header={wbText('matchingLogicDialogTitle')}
-          onClose={(): void => {
-            setLocalPreferences(undefined);
-            handleClose();
-          }}
+          onClose={handleDialogClose}
           className={{
             container: dialogClassNames.narrowContainer,
           }}
           buttons={
-            Object.keys(localPreferences).length === 0
-              ? commonText('close')
-              : commonText('apply')
+            <Button.Blue onClick={handleDialogClose}>
+              {Object.keys(localPreferences).length === 0
+                ? commonText('close')
+                : commonText('apply')}
+            </Button.Blue>
           }
         >
           {Object.keys(localPreferences).length === 0 ? (

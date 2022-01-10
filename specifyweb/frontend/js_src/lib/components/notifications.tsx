@@ -135,9 +135,7 @@ export default function Notifications(): JSX.Element {
                 { strict: false }
               );
           }}
-          buttons={
-            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          }
+          buttons={commonText('close')}
           className={{
             container: dialogClassNames.narrowContainer,
             content: `${dialogClassNames.flexContent} -mt-1 divide-y divide-gray-400`,

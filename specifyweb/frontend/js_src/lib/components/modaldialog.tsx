@@ -246,7 +246,9 @@ export function Dialog({
         <div className={`gap-x-2 flex ${buttonContainer}`}>
           <DialogContext.Provider value={handleClose}>
             {typeof buttons === 'string' ? (
-              <Button.DialogClose>{buttons}</Button.DialogClose>
+              <Button.DialogClose component={Button.Blue}>
+                {buttons}
+              </Button.DialogClose>
             ) : (
               buttons
             )}

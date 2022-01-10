@@ -22,14 +22,13 @@ function AppResourceDialog({
       onClose={handleClose}
       buttons={commonText('cancel')}
     >
-      <nav>
+      <nav className="contents">
         <Link.Default
           href="/specify/appresources/"
           className="intercept-navigation"
         >
           {commonText('appResources')}
         </Link.Default>
-        <br />
         <Link.Default
           href="/specify/viewsets/"
           className="intercept-navigation"

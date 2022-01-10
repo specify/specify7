@@ -136,10 +136,11 @@ export default function Main({
           header={commonText('versionMismatchDialogHeader')}
           onClose={(): void => setShowVersionMismatch(false)}
           buttons={
-            <Button.Simple onClick={(): void => setShowVersionMismatch(false)}>
+            <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
               {commonText('close')}
-            </Button.Simple>
+            </Button.Orange>
           }
+          forceToTop={true}
         >
           <p>
             {commonText('versionMismatchDialogMessage')(

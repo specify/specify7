@@ -194,13 +194,16 @@ export const Link = {
   })),
 } as const;
 
-function DialogCloseButton(
-  props: Omit<Parameters<typeof Button.Transparent>[0], 'onClick'>
-): JSX.Element {
+function DialogCloseButton({
+  component: ButtonComponent = Button.Transparent,
+  ...props
+}: Omit<Parameters<typeof Button.Transparent>[0], 'onClick'> & {
+  readonly component?: typeof Button.Transparent;
+}): JSX.Element {
   const handleClose = React.useContext(DialogContext);
   if (typeof handleClose === 'undefined')
     throw new Error("Dialog's handleClose prop is undefined");
-  return <Button.Transparent {...props} onClick={handleClose} />;
+  return <ButtonComponent {...props} onClick={handleClose} />;
 }
 
 export const Button = {

@@ -521,7 +521,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`border border-brand-300 p-2 flex gap-y-2 gap-x-1
-          items-center bg-brand-100`}
+          items-center bg-brand-100 rounded rounded-b-none`}
       >
         {has('icon') && (
           <Icon
@@ -540,7 +540,7 @@ export function CustomSelectElement({
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
         className={`cursor-pointer min-h-[theme(spacing.8)]
-          flex items-center gap-x-1 px-1 border border-gray-600 ${
+          flex items-center gap-x-1 px-1 border border-gray-600 rounded ${
             defaultOption?.isRequired === true
               ? 'bg-[color:var(--custom-select-required-b2)]'
               : defaultOption?.isHidden === true
@@ -550,7 +550,7 @@ export function CustomSelectElement({
               ? 'bg-yellow-250'
               : 'bg-white'
           }
-        ${isOpen ? '[z-index:3]' : ''}`}
+        ${isOpen ? '[z-index:3] rounded-b-none' : ''}`}
         role="button"
         onClick={
           has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
@@ -648,8 +648,9 @@ export function CustomSelectElement({
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
-      className={`[z-index:2] cursor-pointer h-fit
+      className={`[z-index:2] cursor-pointer h-fit rounded rounded-t-none
         bg-[color:var(--custom-select-b1)] border border-brand-300 flex-1
+        overflow-x-hidden
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${
           has('shadow')

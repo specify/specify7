@@ -62,7 +62,11 @@ export function TreeSelectDialog({
     <Dialog
       header={title}
       onClose={handleClose}
-      buttons={<Button.DialogClose>{commonText('cancel')}</Button.DialogClose>}
+      buttons={
+        <Button.Transparent onClick={handleClose}>
+          {commonText('cancel')}
+        </Button.Transparent>
+      }
     >
       <nav>
         <ul role="list">
