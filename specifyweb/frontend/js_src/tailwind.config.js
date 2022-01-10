@@ -58,18 +58,19 @@ module.exports = {
         70: '.7',
         80: '.8',
       },
+      transitionDuration: {
+        0: '0ms',
+      },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require('@tailwindcss/forms')],
   /*
    * Disable class name purge in development for convenience
    * NOTE: this significantly increases build times
    */
-  ...(process.env.NODE_ENV === 'production' ? {} : {
-    safelist: [
-      {pattern: /./},
-    ],
-  }),
-}
+  ...(process.env.NODE_ENV === 'production'
+    ? {}
+    : {
+        safelist: [{ pattern: /./ }],
+      }),
+};

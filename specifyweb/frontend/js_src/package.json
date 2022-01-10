@@ -34,6 +34,7 @@
     "q": "~1.4.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-draggable": "^4.4.4",
     "react-modal": "^3.14.4",
     "typesafe-reducer": "^1.0.3",
     "underscore": "~1.8.3",

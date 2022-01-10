@@ -210,7 +210,10 @@ export const Button = {
   Simple: wrap('button', className.button, {
     type: 'button',
   }),
-  // Consider adding [role="link"] if the element should be announced as a link
+  /*
+   * When using Button.LikeLink component, consider adding [role="link"] if the
+   * element should be announced as a link
+   */
   LikeLink: wrap('button', className.link, {
     type: 'button',
   }),
@@ -221,7 +224,7 @@ export const Button = {
   })),
   Transparent: wrap(
     'button',
-    `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
+    `${className.niceButton} hover:bg-gray-300 text-gray-800`,
     {
       type: 'button',
     }

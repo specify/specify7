@@ -1,4 +1,7 @@
-<div role="toolbar" class="flex items-center justify-between whitespace-nowrap gap-x-1 gap-y-2">
+<div
+  role="toolbar"
+  class="whitespace-nowrap gap-x-1 gap-y-2 flex items-center justify-between"
+>
   <div class="wb-name-container contents"></div>
   <button
     type="button"
@@ -9,11 +12,7 @@
     <%= commonText('tools') %>
   </button>
   <span class="flex-1 -ml-1"></span>
-  <button
-    type="button"
-    class="button wb-show-plan"
-    style="display: none"
-  >
+  <button type="button" class="button wb-show-plan" style="display: none">
     Show Plan
   </button>
   <button type="button" class="button wb-plan">
@@ -39,19 +38,11 @@
     <%= wbText('results') %>
   </button>
   <% if(isUploaded && isManager){ %>
-  <button
-    type="button"
-    aria-haspopup="dialog"
-    class="button wb-unupload"
-  >
+  <button type="button" aria-haspopup="dialog" class="button wb-unupload">
     <%= wbText('rollback') %>
   </button>
   <% } else { %> <% if(isManager){ %>
-  <button
-    type="button"
-    aria-haspopup="dialog"
-    class="button wb-upload"
-  >
+  <button type="button" aria-haspopup="dialog" class="button wb-upload">
     <%= wbText('upload') %>
   </button>
   <% } %>
@@ -74,7 +65,7 @@
   <% } %>
 </div>
 <div
-  class="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
+  class="wb-toolkit gap-x-1 gap-y-2 flex flex-wrap"
   role="toolbar"
   style="display: none"
   aria-label="<%= commonText('tools') %>"
@@ -125,16 +116,13 @@
     <%= commonText('geoMap') %>
   </button>
 </div>
-<div class="flex flex-1 gap-x-4 overflow-hidden">
+<div class="gap-x-4 flex flex-1 overflow-hidden">
   <section class="wb-spreadsheet flex-1 overflow-hidden"></section>
-  <aside
-    class="wb-uploaded-view-wrapper hidden"
-    aria-live="polite"
-  ></aside>
+  <aside class="wb-uploaded-view-wrapper hidden" aria-live="polite"></aside>
 </div>
 <div
   role="toolbar"
-  class="flex flex-wrap gap-x-1 gap-y-2 justify-end"
+  class="gap-x-1 gap-y-2 flex flex-wrap justify-end"
   aria-label="<%= wbText('navigation') %>"
 >
   <span class="contents" role="search">
@@ -166,12 +154,15 @@
   >
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
+    <button
+      class="wb-navigation-text aria-handled bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]"
+      title="<%= wbText('clickToToggle') %>"
+    >
       <%= wbText('searchResults') %> (
       <span class="wb-navigation-position text-center">0</span>
       /
@@ -180,7 +171,7 @@
     </button>
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="next"
     >
       &gt;
@@ -188,15 +179,22 @@
   </span>
 
   <% if(!isUploaded){ %>
-  <span class="wb-navigation-section flex rounded" data-navigation-type="modifiedCells" aria-atomic="true">
+  <span
+    class="wb-navigation-section flex rounded"
+    data-navigation-type="modifiedCells"
+    aria-atomic="true"
+  >
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
+    <button
+      class="wb-navigation-text aria-handled bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]"
+      title="<%= wbText('clickToToggle') %>"
+    >
       <%= wbText('modifiedCells') %> (
       <span class="wb-navigation-position text-center">0</span>
       /
@@ -205,7 +203,7 @@
     </button>
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="next"
     >
       &gt;
@@ -213,15 +211,22 @@
   </span>
   <% } %>
 
-  <span class="wb-navigation-section flex rounded" data-navigation-type="newCells" aria-atomic="true">
+  <span
+    class="wb-navigation-section flex rounded"
+    data-navigation-type="newCells"
+    aria-atomic="true"
+  >
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
+    <button
+      class="wb-navigation-text aria-handled bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]"
+      title="<%= wbText('clickToToggle') %>"
+    >
       <%= wbText('newCells') %> (
       <span class="wb-navigation-position text-center">0</span>
       /
@@ -230,7 +235,7 @@
     </button>
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="next"
     >
       &gt;
@@ -238,15 +243,22 @@
   </span>
 
   <% if(!isUploaded){ %>
-  <span class="wb-navigation-section flex rounded" data-navigation-type="invalidCells" aria-atomic="true">
+  <span
+    class="wb-navigation-section flex rounded"
+    data-navigation-type="invalidCells"
+    aria-atomic="true"
+  >
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="previous"
     >
       &lt;
     </button>
-    <button class="wb-navigation-text bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]" title="<%= wbText('clickToToggle') %>">
+    <button
+      class="wb-navigation-text aria-handled bg-inherit hover:bg-inherit border-none button grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]"
+      title="<%= wbText('clickToToggle') %>"
+    >
       <%= wbText('errorCells') %> (
       <span class="wb-navigation-position text-center">0</span>
       /
@@ -255,7 +267,7 @@
     </button>
     <button
       type="button"
-      class="wb-cell-navigation bg-inherit hover:bg-inherit border-none brightness-80 button hover:brightness-70 p-2"
+      class="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 button hover:brightness-70 p-2 border-none"
       data-navigation-direction="next"
     >
       &gt;

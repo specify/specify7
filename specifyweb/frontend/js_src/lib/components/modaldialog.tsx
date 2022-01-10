@@ -4,6 +4,8 @@
  * @module
  */
 import React from 'react';
+import Draggable from 'react-draggable';
+import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
 import { error } from '../assert';
@@ -73,7 +75,6 @@ export const DialogContext = React.createContext<(() => void) | undefined>(() =>
 );
 DialogContext.displayName = 'DialogContext';
 
-// TODO: make modal draggable
 export function Dialog({
   /*
    * Using isOpen prop instead of conditional rendering is optional, but it
@@ -150,16 +151,14 @@ export function Dialog({
   }, [forceToTop, modal, isOpen, zIndex]);
 
   // Facilitate moving non-modal dialog to top on click
-  const [contentRef, setContentRef] = React.useState<HTMLDivElement | null>(
-    null
-  );
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
     if (
       forceToTop ||
       modal ||
       !isOpen ||
       typeof zIndex === 'undefined' ||
-      contentRef === null
+      contentRef.current === null
     )
       return undefined;
     const handleClick = (): void =>
@@ -168,9 +167,27 @@ export function Dialog({
         ? undefined
         : setZindex(getNextIndex);
 
-    contentRef.addEventListener('click', handleClick);
-    return (): void => contentRef.removeEventListener('click', handleClick);
-  }, [forceToTop, modal, isOpen, zIndex, contentRef]);
+    const content = contentRef.current;
+    content.addEventListener('click', handleClick);
+    return (): void => content?.removeEventListener('click', handleClick);
+  }, [forceToTop, modal, isOpen, zIndex]);
+
+  const draggableContainer: Props['contentElement'] = React.useCallback(
+    (props, children) => (
+      <Draggable
+        // Don't allow moving the dialog past the window bounds
+        bounds="parent"
+        handle=".handle"
+        defaultClassName=""
+        defaultClassNameDragging=""
+        defaultClassNameDragged=""
+        nodeRef={contentRef}
+      >
+        <div {...props}>{children}</div>
+      </Draggable>
+    ),
+    []
+  );
 
   return (
     <Modal
@@ -189,30 +206,35 @@ export function Dialog({
       }}
       portalClassName=""
       className={`bg-gradient-to-bl from-gray-200 via-white to-white
-          outline-none p-4 flex flex-col gap-y-2 ${container}
+          outline-none flex flex-col p-4 gap-y-2 ${container}
           ${modal ? '' : 'pointer-events-auto'}`}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}
       shouldCloseOnOverlayClick={modal && typeof handleClose === 'function'}
       contentLabel={title}
       aria={{
-        [typeof title === 'undefined' ? 'describedby' : 'labelledby']:
+        [typeof title === 'undefined' ? 'labelledby' : 'describedby']:
           id('header'),
       }}
       onRequestClose={handleClose}
       bodyOpenClassName={null}
       htmlOpenClassName={null}
       ariaHideApp={modal}
-      contentRef={setContentRef}
+      contentRef={(content): void => {
+        contentRef.current = content ?? null;
+      }}
+      contentElement={draggableContainer}
     >
-      {/* Title would be proved to screen readers via aria-label */}
-      {typeof title !== 'undefined' && (
-        <p aria-hidden={true} className="text-gray-600">
-          {title}
-        </p>
-      )}
-      <h2 className={headerClassName} id={id('header')}>
-        {header}
-      </h2>
+      <span className="handle p-4 -m-4 cursor-move">
+        {/* Title would be provided to screen readers via aria-label */}
+        {typeof title !== 'undefined' && (
+          <p aria-hidden={true} className="text-gray-600">
+            {title}
+          </p>
+        )}
+        <h2 className={headerClassName} id={id('header')}>
+          {header}
+        </h2>
+      </span>
       {/*
        * "px-1 -mx-1" ensures that focus outline for checkboxes
        * and other inputs is not cut-off
@@ -226,7 +248,7 @@ export function Dialog({
             {typeof buttons === 'string' ? (
               <Button.DialogClose>{buttons}</Button.DialogClose>
             ) : (
-              { buttons }
+              buttons
             )}
           </DialogContext.Provider>
         </div>
