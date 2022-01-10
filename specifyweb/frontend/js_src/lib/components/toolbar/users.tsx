@@ -63,7 +63,7 @@ function Users({
         </>
       }
     >
-      <ul>
+      <ul role="list">
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
             <Link.Default className="intercept-navigation" href={viewUrl}>

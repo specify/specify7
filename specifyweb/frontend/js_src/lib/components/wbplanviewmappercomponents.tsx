@@ -285,7 +285,7 @@ export function mappingOptionsMenu({
       optionLabel: (
         <>
           {wbText('matchBehavior')}
-          <ul>
+          <ul role="list">
             {Object.entries({
               ignoreWhenBlank: {
                 title: wbText('ignoreWhenBlank'),

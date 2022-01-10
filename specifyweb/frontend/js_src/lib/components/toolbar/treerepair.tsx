@@ -12,7 +12,7 @@ import userInfo from '../../userinfo';
 import { TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { LoadingScreen, Dialog } from '../modaldialog';
+import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { Button, Link } from '../basic';
 
@@ -65,7 +65,7 @@ export function TreeSelectDialog({
       buttons={<Button.DialogClose>{commonText('cancel')}</Button.DialogClose>}
     >
       <nav>
-        <ul>
+        <ul role="list">
           {Object.entries(trees).map(([tree, model]) => (
             <li key={tree}>
               <Link.Default

@@ -54,7 +54,7 @@ function WbUploadedView({
             : wbText('wbUploadedPotentialDescription')}
         </p>
       </div>
-      <ul className="gap-y-2 flex flex-col flex-1">
+      <ul role="list" className="gap-y-2 flex flex-col flex-1">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults
             key={index}

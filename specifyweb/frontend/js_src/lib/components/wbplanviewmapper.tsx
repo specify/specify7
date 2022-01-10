@@ -465,6 +465,7 @@ export default function WbPlanViewMapper(props: {
       )}
 
       <ul
+        role="list"
         className={`auto-rows-max flex-1 overflow-x-hidden grid
           grid-cols-[theme(spacing.8)_max-content_auto]
           print:grid-cols-[min-content_auto]`}

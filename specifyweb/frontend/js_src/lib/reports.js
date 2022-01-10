@@ -205,12 +205,12 @@ var FixImagesDialog = Backbone.View.extend({
         var missingAttachments = this.imageFixResult.missingAttachments;
         if (badImageExprs.length) {
             this.$el.append(`<b>${formsText('badImageExpressions')}<b>`);
-            $('<ul>').appendTo(this.el).append(
+            $('<ul role="list">').appendTo(this.el).append(
                 _.map(badImageExprs, function(e) {return $('<li>').text(e)[0];}));
         }
         if (missingAttachments.length) {
             this.$el.append(`<b>${formsText('missingAttachments')}</b>`);
-            $('<ul class="missing-attachments">').appendTo(this.el).append(
+            $('<ul role="list" class="missing-attachments">').appendTo(this.el).append(
                 _.map(missingAttachments, function(f) {
                     return $('<li>').append(
                         $(`<button
@@ -477,7 +477,7 @@ var QueryParamsDialog = Backbone.View.extend({
         });
     },
     render: function() {
-        this.$el.append('<ul>');
+        this.$el.append('<ul role="list">');
         makeDialog(this.$el, {
             title: this.query.get('name'),
             width: 800,

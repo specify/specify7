@@ -202,7 +202,7 @@ export default Backbone.View.extend({
                 var dialog = $(`<div>
                     ${formsText('saveBlockedDialogHeader')}
                     <p>${formsText('saveBlockedDialogMessage')}</p>
-                    <ul class="saveblockers"></ul>
+                    <ul role="list" class="saveblockers"></ul>
                 </div>`).appendTo(this.el).dialog({
                     title: formsText('saveBlockedDialogTitle'),
                     resizable: false,

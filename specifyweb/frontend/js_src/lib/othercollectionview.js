@@ -27,7 +27,7 @@ export default Backbone.View.extend({
                 this.$el.html(`
                     <p>${commonText('resourceInaccessible')}</p>
                     <p>${commonText('selectCollection')}</p>
-                    <ul>
+                    <ul role="list">
                         <li><a>${commonText('collection')}</a></li>
                     </ul>
                 `);

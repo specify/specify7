@@ -82,7 +82,7 @@ export default Backbone.View.extend({
         _render: function(forms) {
             if(typeof this.options.urlParameter === 'undefined'){
                 let formIndex = -1;
-                this.el.innerHTML = `<ul>
+                this.el.innerHTML = `<ul role="list">
                     ${interaction_entries
                         .map((entry)=>{
                             if(!isActionEntry(entry))

@@ -131,7 +131,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         }
       >
         {commonText('language')}
-        <ul>
+        <ul role="list">
           {Object.entries(languages).map(([code, label]) => (
             <li key={code}>
               <Button.LikeLink
@@ -197,7 +197,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           </Button.Transparent>
         }
       >
-        <ul className="max-h-80">
+        <ul role="list" className="max-h-80">
           {sortedTables.map((table) => (
             <li key={table.id}>
               <Link.Default

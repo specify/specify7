@@ -52,7 +52,7 @@ export default Backbone.View.extend({
             return this;
         },
         _render: function(forms) {
-            $('<ul>')
+            $('<ul>',{role:'list'})
                 .append(views.map((view,index)=>this.dialogEntry(forms, view, index)))
             .appendTo(this.el);
             this.$el.dialog({

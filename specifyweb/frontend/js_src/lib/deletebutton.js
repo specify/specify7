@@ -90,7 +90,7 @@ export default Backbone.View.extend({
             var dialog = $(`<div>
                ${formsText('deleteBlockedDialogHeader')}
                <p>${formsText('deleteBlockedDialogMessage')}</p>
-               <ul></ul>
+               <ul role="list"></ul>
             </div>`).dialog({
                title: formsText('deleteBlockedDialogTitle'),
                close: function() { $(this).remove(); },

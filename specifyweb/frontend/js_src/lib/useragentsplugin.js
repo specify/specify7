@@ -70,7 +70,7 @@ var AgentForDiv = Backbone.View.extend({
         render: function() {
             var controls = _.map(this.divInfos, function(divInfo) { return new AgentForDiv(divInfo); });
             _.invoke(controls, 'render');
-            $('<ul>').append(_.pluck(controls, 'el')).appendTo(this.el);
+            $('<ul role="list">').append(_.pluck(controls, 'el')).appendTo(this.el);
 
             var user = this.user;
             this.$el.dialog({

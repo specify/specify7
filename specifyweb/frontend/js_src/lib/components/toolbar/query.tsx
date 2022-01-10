@@ -156,7 +156,7 @@ function ListOfTables({
   readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
-    <ul>
+    <ul role="list">
       {tables.map((tableName, index) => (
         <li key={index}>
           <Link.Default
