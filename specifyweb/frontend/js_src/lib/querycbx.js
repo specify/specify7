@@ -291,6 +291,7 @@ export default Backbone.View.extend({
         control.replaceWith(querycbx);
         this.setElement(querycbx);
         this.$('input').replaceWith(control);
+        control[0].classList.add('w-full');
         this.fieldName = control.attr('name');
         var field = this.model.specifyModel.getField(this.fieldName);
         this.fieldName = field.name; // the name from the form might be an alias.

@@ -9,11 +9,11 @@ import type { RA } from '../types';
 import {
   className,
   ErrorMessage,
-  Submit,
   Form,
   LabelForCheckbox,
   Link,
   Radio,
+  Submit,
 } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle } from './hooks';
@@ -39,6 +39,12 @@ function ChooseCollection({
       ? Number.parseInt(data.initialValue)
       : undefined
   );
+
+  // Focus submit button if some collection is selected by default
+  const submitRef = React.useRef<HTMLInputElement | null>(null);
+  React.useEffect(() => {
+    if (typeof data.initialValue === 'string') submitRef.current?.focus();
+  }, []);
 
   return (
     <SplashScreen>
@@ -74,7 +80,7 @@ function ChooseCollection({
           value={csrfToken ?? ''}
         />
         <input type="hidden" name="next" value={nextUrl} />
-        <Submit.Fancy value={commonText('open')} />
+        <Submit.Fancy ref={submitRef} value={commonText('open')} />
       </Form>
     </SplashScreen>
   );

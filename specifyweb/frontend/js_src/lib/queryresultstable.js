@@ -24,7 +24,7 @@ async function getTreeRanks(tableName){
         let name = field?.getLocalizedName();
 
         const th = $(`<div role="columnheader"
-            class="bg-brand-100 border-b border-gray-500 p-1"
+            class="w-full min-w-max bg-brand-100 border-b border-gray-500 p-1 [inset-block-start:_0] sticky"
         >
           <div class="contents">
               <span class="contents"></span>
@@ -77,7 +77,7 @@ async function getTreeRanks(tableName){
                     ? ''
                     : `<div
                         role="table"
-                        class="grid-table grid-cols-[repeat(var(--cols),auto)]"
+                        class="grid-table grid-cols-[repeat(var(--cols),auto)] overflow-auto max-h-[75vh]"
                         style="--cols:${this.fieldSpecs.length}"
                     >
                         <div role="rowgroup">

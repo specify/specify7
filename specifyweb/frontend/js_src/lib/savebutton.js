@@ -7,6 +7,7 @@ import Backbone from './backbone';
 import * as navigation from './navigation';
 import formsText from './localization/forms';
 import commonText from './localization/common';
+import {className} from './components/basic';
 
 let formId = 0;
 
@@ -74,16 +75,14 @@ export default Backbone.View.extend({
             if (this.options.addAnother) {
                 this.$el.append($('<input>', {
                     type: "button",
-                    class: `save-and-add-button button bg-brand-200
-                      border-brand-300 hover:bg-brand-300 hover:border-brand:200
-                      disabled:bg-gray-300 text-white`,
+                    class: `save-and-add-button ${className.orangeButton}
+                        disabled:bg-gray-350`,
                     value: formsText('saveAndAddAnother')
                 }));
             }
             this.$el.append($('<input>', {
                 type: "submit",
-                class: `button bg-brand-200 border-brand-300 hover:bg-brand-300
-                    hover:border-brand:200 disabled:bg-gray-300 text-white`,
+                class: `${className.orangeButton} disabled:bg-gray-350`,
                 value: commonText('save')
             }));
             this.buttons = this.$('input');
@@ -96,15 +95,21 @@ export default Backbone.View.extend({
             return this;
         },
         bindToForm(form){
-            if(form.id === ''){
-                form.id = `form-${formId}`;
+            this.form = form;
+
+            if(this.form.id === ''){
+                this.form.id = `form-${formId}`;
                 formId+=1;
             }
             Array.from(this.buttons).forEach(button=>
-                button.setAttribute('form',form.id)
+                button.setAttribute('form',this.form.id)
             );
 
-            this.form = form;
+            Array.from(
+              this.form.querySelectorAll('input, textarea, select'),
+              (element)=>element.classList.add('not-touched')
+            );
+            this.form.classList.add('not-submitted');
 
             const submit = this.submit.bind(this);
             this.form.addEventListener('submit',submit);
@@ -113,9 +118,9 @@ export default Backbone.View.extend({
             );
 
             const handleFocus = this.handleFocus.bind(this);
-            this.form.addEventListener('focusin', handleFocus);
+            this.form.addEventListener('focusout', handleFocus);
             this.destructors.push(()=>
-                this.form.removeEventListener('focusin',handleFocus)
+                this.form.removeEventListener('focusout',handleFocus)
             );
 
             const handleClick = (event)=>{
@@ -143,15 +148,11 @@ export default Backbone.View.extend({
             Backbone.View.prototype.remove.call(this);
         },
         handleFocus(event){
-            if(
-                event.target?.required === true
-                || event.target?.hasAttribute('pattern')
-            )
-                /*
-                 * Don't display "This is a required field" error or pattern
-                 * mismatch message until input was interacted with
-                 */
-                event.target.classList.remove('not-touched');
+            /*
+             * Don't display "This is a required field" error or pattern
+             * mismatch message until input was interacted with
+             */
+            event.target.classList.remove('not-touched');
         },
         submit: function(event) {
             event.preventDefault();

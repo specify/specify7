@@ -87,7 +87,7 @@ export function DataSetMeta({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={commonText('save')} />,
+          <Submit.Blue form={id('form')} value={commonText('save')} />
         </>
       }
     >
@@ -104,6 +104,7 @@ export function DataSetMeta({
                     ajax(`/api/workbench/dataset/${dataset.id}/`, {
                       method: 'PUT',
                       body: { name: uniqueName, remarks: remarks.trim() },
+                      header: { Accept: undefined },
                     }).then(() => {
                       // @ts-expect-error Modifying readonly value
                       dataset.name = uniqueName;
@@ -145,13 +146,13 @@ export function DataSetMeta({
           <span>
             {wbText('created')}{' '}
             <i>
-              <DateElement date={dataset.timestampcreated} />
+              <DateElement date={dataset.timestampcreated} flipDates />
             </i>
           </span>
           <span>
             {wbText('modified')}{' '}
             <i>
-              <DateElement date={dataset.timestampmodified} />
+              <DateElement date={dataset.timestampmodified} flipDates />
             </i>
           </span>
           <span>
@@ -160,6 +161,7 @@ export function DataSetMeta({
               <DateElement
                 date={dataset.uploadresult?.timestamp}
                 fallback={commonText('no')}
+                flipDates
               />
             </i>
           </span>

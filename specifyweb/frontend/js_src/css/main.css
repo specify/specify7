@@ -41,7 +41,7 @@
   }
 
   select {
-    @apply pr-5 bg-right;
+    @apply pr-5 bg-right cursor-pointer;
   }
 
   [type='checkbox'],
@@ -63,15 +63,11 @@
   }
 
   textarea {
-    @apply w-full;
+    @apply w-full resize;
   }
 
   :disabled:not(.icon), [readonly] {
-    @apply cursor-not-allowed bg-gray-400 text-gray-700;
-  }
-
-  .icon:disabled {
-    @apply cursor-not-allowed;
+    @apply cursor-not-allowed bg-gray-350 text-gray-700;
   }
 
   :required {
@@ -132,7 +128,7 @@
   }
 
   .icon {
-    @apply active:bg-brand-100;
+    @apply active:bg-brand-100 disabled:cursor-not-allowed disabled:text-gray-500;
   }
 
   [type='submit'].link,

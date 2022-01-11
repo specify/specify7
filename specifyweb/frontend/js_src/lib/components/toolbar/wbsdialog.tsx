@@ -55,15 +55,17 @@ function DsMeta({
   const [dataset, setDataset] = React.useState<Dataset | undefined>(undefined);
 
   React.useEffect(() => {
-    void ajax<Dataset>(`/api/workbench/dataset/${dsId}/`).then(({ data }) =>
-      destructorCalled ? undefined : setDataset(data)
-    );
+    void ajax<Dataset>(`/api/workbench/dataset/${dsId}/`, {
+      headers: { Accept: 'application/json' },
+    }).then(({ data }) => (destructorCalled ? undefined : setDataset(data)));
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
   }, [dsId]);
-  return typeof dataset === 'undefined' ? null : (
+  return typeof dataset === 'undefined' ? (
+    <LoadingScreen />
+  ) : (
     <DataSetMeta
       dataset={dataset}
       onClose={handleClose}

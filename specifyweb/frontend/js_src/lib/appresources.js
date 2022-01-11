@@ -125,7 +125,7 @@ const ResourceDataView = Backbone.View.extend({
                     $('<h2 class="${className.formTitle}">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
-                const toolbar = $('<div class="flex gap-x-2 items-center flex-wrap" role="toollbar"></div>').appendTo(this.el);
+                const toolbar = $('<div class="flex gap-2 items-center flex-wrap" role="toollbar"></div>').appendTo(this.el);
 
                 $(`<label class="metadata-input flex-1 flex items-center gap-x-1">
                     ${commonText('metadataInline')}
@@ -195,6 +195,7 @@ const ResourceDataView = Backbone.View.extend({
                         .on('savecomplete', () => this.model.save())
                         .render();
                     saveButton.bindToForm(this.el);
+                    buttonsDiv.append(`<span class="flex-1 -ml-2"></span>`);
                     buttonsDiv.append(saveButton.el);
                 }
             } else {
@@ -322,7 +323,7 @@ const ResourceList = Backbone.View.extend({
 
         const dialog = $(`<div>
             ${adminText('createResourceDialogHeader')}
-            <form id="app-resources-new-resource-form">
+            <form id="app-resources-new-resource-form" class="not-submitted">
                 <label class="${className.label}">
                     ${adminText('newResourceName')}
                     <input type="text" spellcheck="on" required>
@@ -349,7 +350,7 @@ const ResourceList = Backbone.View.extend({
 const AppResourcesView = Backbone.View.extend({
     __name__: "AppResourcesView",
     tagName: 'aside',
-    className: 'bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded',
+    className: 'bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded overflow-y-auto',
     events: {
         'click .toggle-content': 'toggle'
     },

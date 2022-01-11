@@ -7,6 +7,7 @@ import Backbone from './backbone';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import {legacyNonJsxIcons} from "./components/icons";
+import {className} from './components/basic';
 
 export default Backbone.View.extend({
         __name__: "DeleteButton",
@@ -21,7 +22,7 @@ export default Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('contents');
-            this.button = $(`<button class="button">
+            this.button = $(`<button class="${className.grayButton}">
               ${commonText('delete')} 
             </button>`).appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +

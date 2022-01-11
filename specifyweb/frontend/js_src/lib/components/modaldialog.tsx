@@ -207,7 +207,7 @@ export function Dialog({
       portalClassName=""
       className={`bg-gradient-to-bl from-gray-200 via-white to-white
           outline-none flex flex-col p-4 gap-y-2 ${container}
-          ${modal ? '' : 'pointer-events-auto'}`}
+          ${modal ? '' : 'pointer-events-auto border border-gray-500'}`}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}
       shouldCloseOnOverlayClick={modal && typeof handleClose === 'function'}
       contentLabel={title}
@@ -239,7 +239,9 @@ export function Dialog({
        * "px-1 -mx-1" ensures that focus outline for checkboxes
        * and other inputs is not cut-off
        */}
-      <div className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 ${content}`}>
+      <div
+        className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700 ${content}`}
+      >
         {children}
       </div>
       {typeof buttons !== 'undefined' && (

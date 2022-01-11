@@ -7,12 +7,12 @@
 import React from 'react';
 
 import * as cache from '../cache';
+import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
+import icons from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import icons from './icons';
-import commonText from '../localization/common';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -106,7 +106,7 @@ function PreferencesDialog({
     <Dialog
       header={wbText('wbAdvancedSearchDialogTitle')}
       onClose={handleClose}
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      buttons={commonText('close')}
       modal={false}
       className={{
         container: dialogClassNames.narrowContainer,

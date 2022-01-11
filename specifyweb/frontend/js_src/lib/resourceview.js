@@ -110,11 +110,12 @@ const ResourceView = Backbone.View.extend({
 
             var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(form);
             self.$el.append(form);
+            self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
             if(self.saveBtn){
-                self.saveBtn.render().$el.prependTo(buttons);
+                buttons.append(`<span class="flex-1 -ml-2"></div>`)
+                self.saveBtn.render().$el.appendTo(buttons);
                 self.saveBtn.bindToForm(self.el.querySelector('form'));
             }
-            self.deleteBtn && self.deleteBtn.render().$el.prependTo(buttons);
             self.reporterOnSave = self.$el.find(".specify-print-on-save");
             self.setTitle();
         }).fail(function(jqXHR) {

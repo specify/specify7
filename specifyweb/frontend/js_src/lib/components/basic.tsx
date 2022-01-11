@@ -64,6 +64,9 @@ const reduceMotion = window.matchMedia(
 export const transitionDuration = reduceMotion ? 0 : 100;
 
 // For usage by non-react components
+const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-500 gap-2
+    inline-flex items-center`;
 export const className = {
   root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
   label: 'flex flex-col',
@@ -78,11 +81,14 @@ export const className = {
   form: 'flex flex-col gap-4',
   button: 'button',
   link: 'link',
-  niceButton: `rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-500 gap-2
-    inline-flex items-center`,
+  transparentButton: `${niceButton} hover:bg-gray-300 text-gray-800`,
+  grayButton: `${niceButton} hover:bg-gray-400 bg-gray-300 text-gray-800`,
+  redButton: `${niceButton} hover:bg-red-800 bg-red-700 text-white`,
+  blueButton: `${niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
+  orangeButton: `${niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
+  greenButton: `${niceButton} hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `active:bg-brand-300 bg-gray-300 gap-2 hover:bg-brand-200 inline-flex
-    justify-center items-center p-2 text-black`,
+    justify-center items-center p-2 text-black cursor-pointer`,
   containerFull: 'flex flex-col gap-4 h-full',
   container: `bg-gray-200 flex flex-col gap-y-2 max-w-[1000px] mx-auto p-4
     shadow-[0_3px_5px_-1px]`,
@@ -93,7 +99,7 @@ export const className = {
   formFooter:
     'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
   queryField: 'bg-white border border-gray-300 p-2 shadow flex gap-x-2 rounded',
-};
+} as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const Label = wrap('label', className.label);
@@ -182,7 +188,7 @@ export const Link = {
           title={commonText('opensInNewTab')}
           aria-label={commonText('opensInNewTab')}
         >
-          ${icons.link}
+          {icons.link}
         </span>
       </>
     ),
@@ -222,48 +228,24 @@ export const Button = {
     type: 'button',
     children: icons[props.icon],
   })),
-  Transparent: wrap(
-    'button',
-    `${className.niceButton} hover:bg-gray-300 text-gray-800`,
-    {
-      type: 'button',
-    }
-  ),
-  Gray: wrap(
-    'button',
-    `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
-    {
-      type: 'button',
-    }
-  ),
-  Red: wrap(
-    'button',
-    `${className.niceButton} hover:bg-red-800 bg-red-700 text-white`,
-    {
-      type: 'button',
-    }
-  ),
-  Blue: wrap(
-    'button',
-    `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
-    {
-      type: 'button',
-    }
-  ),
-  Orange: wrap(
-    'button',
-    `${className.niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
-    {
-      type: 'button',
-    }
-  ),
-  Green: wrap(
-    'button',
-    `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
-    {
-      type: 'button',
-    }
-  ),
+  Transparent: wrap('button', className.transparentButton, {
+    type: 'button',
+  }),
+  Gray: wrap('button', className.grayButton, {
+    type: 'button',
+  }),
+  Red: wrap('button', className.redButton, {
+    type: 'button',
+  }),
+  Blue: wrap('button', className.blueButton, {
+    type: 'button',
+  }),
+  Orange: wrap('button', className.orangeButton, {
+    type: 'button',
+  }),
+  Green: wrap('button', className.greenButton, {
+    type: 'button',
+  }),
   DialogClose: DialogCloseButton,
 } as const;
 
@@ -285,28 +267,28 @@ export const Submit = {
   ),
   Transparent: wrap<'input', { readonly children?: undefined }>(
     'input',
-    `${className.niceButton} hover:bg-gray-400 bg-transparent text-gray-800`,
+    className.transparentButton,
     {
       type: 'submit',
     }
   ),
   Gray: wrap<'input', { readonly children?: undefined }>(
     'input',
-    `${className.niceButton} hover:bg-gray-400 bg-red-300 text-gray-800`,
+    className.grayButton,
     {
       type: 'submit',
     }
   ),
   Blue: wrap<'input', { readonly children?: undefined }>(
     'input',
-    `${className.niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
+    className.blueButton,
     {
       type: 'submit',
     }
   ),
   Green: wrap<'input', { readonly children?: undefined }>(
     'input',
-    `${className.niceButton} hover:bg-green-800 bg-green-700 text-white`,
+    className.greenButton,
     {
       type: 'submit',
     }

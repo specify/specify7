@@ -59,7 +59,7 @@ function AboutSpecify(): JSX.Element {
         title={welcomeText('aboutSpecifyDialogTitle')}
         header={commonText('specifySeven')}
         className={{
-          container: dialogClassNames.narrowContainer,
+          container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
           header: 'text-3xl',
         }}
         onClose={(): void => setIsOpen(false)}
@@ -86,7 +86,7 @@ function AboutSpecify(): JSX.Element {
 
         <section>
           <h3>{welcomeText('systemInformation')}</h3>
-          <table>
+          <table className="grid-table gap-1 grid-cols-[auto,auto]">
             <tbody>
               {[
                 [welcomeText('version'), systemInfo.version],
@@ -104,7 +104,7 @@ function AboutSpecify(): JSX.Element {
                 [welcomeText('browser'), window.navigator.userAgent],
               ].map(([label, value], index) => (
                 <tr key={index}>
-                  <th scope="row" className="whitespace-nowrap text-right">
+                  <th scope="row" className="whitespace-nowrap justify-end">
                     {label}
                   </th>
                   <td>{value}</td>

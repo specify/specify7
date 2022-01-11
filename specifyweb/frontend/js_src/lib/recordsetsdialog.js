@@ -74,7 +74,7 @@ export default Backbone.View.extend({
                 tbody.append(`<tr>
                     <td>${commonText('listTruncated')}</td>
                 </tr>`);
-            this.$el.append(table);
+            this.$el.html(table);
         },
         dialogEntry: function(recordSet) {
             const model = getModelById(recordSet.get('dbtableid'));

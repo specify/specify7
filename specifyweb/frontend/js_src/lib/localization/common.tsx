@@ -1050,9 +1050,9 @@ const commonText = createDictionary({
     ca: 'Language:',
   },
   changeLanguage: {
-    'en-us': 'Change language',
-    'ru-ru': 'Изменить язык',
-    ca: 'Change language',
+    'en-us': 'Change Language',
+    'ru-ru': 'Изменить Язык',
+    ca: 'Change Language',
   },
   schemaConfig: {
     'en-us': 'Schema Config',

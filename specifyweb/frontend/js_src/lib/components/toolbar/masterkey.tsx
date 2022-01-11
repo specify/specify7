@@ -2,11 +2,11 @@ import React from 'react';
 
 import ajax, { formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
-import { useId, useTitle } from '../hooks';
+import { Button, Form, Input, Label, Submit } from '../basic';
+import { useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Button, Form, Input, Label, Submit } from '../basic';
 
 function MasterKey({
   onClose: handleClose,
@@ -19,21 +19,10 @@ function MasterKey({
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
   );
-  const [error, setError] = React.useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const id = useId('master-key');
 
-  // See https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780
-  const inputRef = React.useCallback<(input: HTMLInputElement | null) => void>(
-    (input) => {
-      if (!input) return;
-      if (typeof error === 'string') {
-        input.setCustomValidity(error);
-        input.reportValidity();
-      } else input.setCustomValidity('');
-    },
-    [error]
-  );
+  const { inputRef, setValidation } = useValidation();
 
   return isLoading ? (
     <LoadingScreen />
@@ -71,11 +60,11 @@ function MasterKey({
           )
             .then(({ data, status }) =>
               status === Http.FORBIDDEN
-                ? setError(commonText('incorrectPassword'))
+                ? setValidation(commonText('incorrectPassword'))
                 : setMasterKey(data)
             )
             // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-            .catch((error: Error) => setError(error.message))
+            .catch((error: Error) => setValidation(error.message))
             .finally(() => {
               setIsLoading(false);
             });

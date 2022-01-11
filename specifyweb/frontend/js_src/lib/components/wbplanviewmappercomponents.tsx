@@ -422,7 +422,6 @@ export function ReRunAutoMapper({
           <Button.Orange onClick={confirm}>
             {wbText('reRunAutoMapper')}
           </Button.Orange>
-          ,
         </>
       )}
       showConfirmation={showConfirmation}

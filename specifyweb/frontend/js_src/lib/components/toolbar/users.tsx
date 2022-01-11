@@ -7,7 +7,7 @@ import type { IR } from '../../types';
 import userInfo from '../../userinfo';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { Dialog, LoadingScreen } from '../modaldialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { Button, Link } from '../basic';
 
@@ -49,6 +49,9 @@ function Users({
     <Dialog
       header={commonText('manageUsersDialogTitle')}
       onClose={handleClose}
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>

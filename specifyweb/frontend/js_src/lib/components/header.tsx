@@ -9,7 +9,7 @@ import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
 import { Button, Form, Input, Link } from './basic';
 import type { MenuItem, UserTool } from './main';
-import { Dialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import { setCurrentOverlay } from '../specifyapp';
 
 const routeMappings: IR<string> = {
@@ -49,8 +49,6 @@ export function HeaderItems({
         <Link.Default
           className={`
             p-3
-            font-bold
-            text-md
             text-gray-700
             hover:text-black
             relative
@@ -176,7 +174,7 @@ export function UserTools({
   return (
     <>
       <Button.Simple
-        className="max-w-[100px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
+        className="max-w-[110px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
         title={commonText('currentUser')}
         onClick={(): void => setIsOpen(true)}
       >
@@ -185,6 +183,9 @@ export function UserTools({
       <Dialog
         isOpen={isOpen}
         header={commonText('userToolsDialogTitle')}
+        className={{
+          container: dialogClassNames.narrowContainer,
+        }}
         onClose={(): void => setIsOpen(false)}
         buttons={commonText('close')}
       >

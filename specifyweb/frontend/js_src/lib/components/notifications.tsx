@@ -138,7 +138,7 @@ export default function Notifications(): JSX.Element {
           buttons={commonText('close')}
           className={{
             container: dialogClassNames.narrowContainer,
-            content: `${dialogClassNames.flexContent} -mt-1 divide-y divide-gray-400`,
+            content: `${dialogClassNames.flexContent} gap-y-3 -mt-1 divide-y divide-gray-400`,
           }}
         >
           {notifications.map((notification, index) => (
@@ -171,7 +171,7 @@ function NotificationComponent({
     timeStyle: 'short',
   }).format(date);
   return (
-    <article className="flex flex-col pt-1">
+    <article className="flex flex-col pt-2">
       <header className="flex justify-between">
         <span className={notification.read ? undefined : 'bg-amber-100'}>
           <time dateTime={date.toISOString()}>{formatted}</time>

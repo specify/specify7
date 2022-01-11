@@ -177,7 +177,7 @@ export default Backbone.View.extend({
             });
             if (this.formattedRecord) {
                 var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
-                $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
+                $('<a class="field-label-field link field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
                 this.$('.op-negate').hide();
             } else {
                 if(this.fieldSpec.treeRank)

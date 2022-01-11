@@ -46,6 +46,7 @@ function ErrorDialog({
     >
       <p>
         {commonText('errorBoundaryDialogMessage')}
+        <br />
         {commonText('errorBoundaryDialogSecondMessage')(
           <Link.Default href="mailto:support@specifysoftware.org">
             support@specifysoftware.org

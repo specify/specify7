@@ -17,6 +17,7 @@ import csrftoken from './csrftoken';
 import populateForm from './populateform';
 import * as navigation from './navigation';
 import {className} from './components/basic';
+import {legacyNonJsxIcons} from './components/icons';
 
 var title = commonText('reports');
 
