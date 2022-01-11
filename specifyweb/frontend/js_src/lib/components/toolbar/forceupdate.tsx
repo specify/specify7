@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ping} from '../../ajax';
+import { ping } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { Button } from '../basic';

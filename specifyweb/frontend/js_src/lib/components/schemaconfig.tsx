@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, {ping} from '../ajax';
+import ajax, { ping } from '../ajax';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';

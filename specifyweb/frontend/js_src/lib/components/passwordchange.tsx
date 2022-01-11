@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import csrfToken from '../csrftoken';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import { className, ErrorMessage, Submit, Form, Input, Label } from './basic';
+import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import ErrorBoundary from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
@@ -25,9 +25,13 @@ function ChangePassword({
   useTitle(commonText('changePassword'));
   const [formErrors] = React.useState(data.formErrors);
 
-  const { inputRef: oldPasswordRef } = useValidation(data.oldPasswordErrors);
-  const { inputRef: newPasswordRef } = useValidation(data.newPasswordErrors);
-  const { inputRef: repeatPasswordRef } = useValidation(
+  const { validationRef: oldPasswordRef } = useValidation(
+    data.oldPasswordErrors
+  );
+  const { validationRef: newPasswordRef } = useValidation(
+    data.newPasswordErrors
+  );
+  const { validationRef: repeatPasswordRef } = useValidation(
     data.repeatPasswordErrors
   );
 

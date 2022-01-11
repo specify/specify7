@@ -28,8 +28,8 @@ function Login({
   useTitle(commonText('login'));
   const [formErrors] = React.useState(data.formErrors);
 
-  const { inputRef } = useValidation(data.inputErrors);
-  const { inputRef: passwordRef } = useValidation(data.passwordErrors);
+  const { validationRef } = useValidation(data.inputErrors);
+  const { validationRef: passwordRef } = useValidation(data.passwordErrors);
 
   return (
     <SplashScreen>
@@ -48,7 +48,7 @@ function Login({
             required={true}
             name="username"
             defaultValue={''}
-            ref={inputRef}
+            ref={validationRef}
           />
         </Label>
         <Label>

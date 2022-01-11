@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import ajax, {isExternalUrl, ping} from './ajax';
+import { isExternalUrl, ping } from './ajax';
 import Backbone from './backbone';
 import commonText from './localization/common';
 

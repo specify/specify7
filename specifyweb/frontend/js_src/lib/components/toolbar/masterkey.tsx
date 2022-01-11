@@ -22,7 +22,7 @@ function MasterKey({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const id = useId('master-key');
 
-  const { inputRef, setValidation } = useValidation();
+  const { validationRef, setValidation } = useValidation();
 
   return isLoading ? (
     <LoadingScreen />
@@ -73,7 +73,7 @@ function MasterKey({
         <Label>
           {commonText('userPassword')}
           <Input
-            ref={inputRef}
+            ref={validationRef}
             type="password"
             value={password}
             onChange={({ target }): void => {

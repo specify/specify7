@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, {formData, Http, ping} from '../ajax';
+import { formData, Http, ping } from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';

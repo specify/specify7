@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import React from 'react';
 
-import ajax, {ping} from '../ajax';
+import { ping } from '../ajax';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ping} from '../../ajax';
+import { ping } from '../../ajax';
 import { getDomainResource } from '../../domain';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
@@ -9,12 +9,12 @@ import type SpecifyModel from '../../specifymodel';
 import type { IR } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
+import { Button, Link } from '../basic';
 import { TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Button, Link } from '../basic';
 
 const treesForAll = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);

@@ -1,7 +1,6 @@
 import csrfToken from './csrftoken';
 import { UnhandledErrorView } from './errorview';
-import type { IR, RA } from './types';
-import type { PartialBy } from './types';
+import type { IR, PartialBy, RA } from './types';
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);

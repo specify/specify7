@@ -7,7 +7,7 @@ import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import ajax, {Http, ping} from '../ajax';
+import ajax, { Http, ping } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, Label, Progress } from './basic';

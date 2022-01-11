@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, {ping} from '../ajax';
+import ajax, { ping } from '../ajax';
 import Backbone from '../backbone';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, {formData, Http, ping} from '../../ajax';
+import { formData, Http, ping } from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { Button, Form, Input, Label, Submit } from '../basic';
