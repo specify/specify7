@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import ajax, { isExternalUrl } from './ajax';
+import ajax, {isExternalUrl, ping} from './ajax';
 import Backbone from './backbone';
 import commonText from './localization/common';
 
@@ -240,11 +240,11 @@ export function switchCollection(
   }
 ): void {
   const cont = (): void =>
-    void ajax('/context/collection/', {
+    void ping('/context/collection/', {
       method: 'POST',
       body: collection.toString(),
     }).then(() => {
-      if (nextUrl) window.location.href = nextUrl;
+      if (typeof nextUrl === 'string') window.location.href = nextUrl;
       else window.location.reload();
     });
   if (unloadBlockers.length > 0) confirmNavigation(cont, cancelCallback);

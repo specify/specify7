@@ -1,6 +1,7 @@
 import csrfToken from './csrftoken';
 import { UnhandledErrorView } from './errorview';
 import type { IR, RA } from './types';
+import type { PartialBy } from './types';
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
@@ -44,10 +45,13 @@ export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
  */
 export default async function ajax<RESPONSE_TYPE = string>(
   url: string,
-  options: Omit<RequestInit, 'body' | 'headers'> & {
+  {
+    headers: { Accept: accept, ...headers },
+    ...options
+  }: Omit<RequestInit, 'body' | 'headers'> & {
     body?: string | RA<unknown> | IR<unknown> | FormData;
-    headers?: { Accept: MimeType } & IR<string>;
-  } = {},
+    headers: IR<string> & { Accept?: MimeType };
+  },
   {
     expectedResponseCodes = [Http.OK],
     strict = true,
@@ -87,20 +91,21 @@ export default async function ajax<RESPONSE_TYPE = string>(
       ...(csrfSafeMethod.has(options.method ?? 'GET') || isExternalUrl(url)
         ? {}
         : { 'X-CSRFToken': csrfToken! }),
-      ...options.headers,
+      ...headers,
+      ...(typeof accept === 'undefined' ? {} : { Accept: accept }),
     },
   })
     .then(async (response) => Promise.all([response, response.text()]))
     .then(([{ status, ok }, text]: [Response, string]) => {
       if (expectedResponseCodes.includes(status)) {
-        if (ok && options.headers?.Accept === 'application/json') {
+        if (ok && accept === 'application/json') {
           try {
             return { data: JSON.parse(text), status };
           } catch {
             console.error('Invalid response', text);
             throw new TypeError(`Failed parsing JSON response:\n${text}`);
           }
-        } else if (ok && options.headers?.Accept === 'application/xml') {
+        } else if (ok && accept === 'application/xml') {
           try {
             return {
               data: new window.DOMParser().parseFromString(text, 'text/xml'),
@@ -127,3 +132,24 @@ export default async function ajax<RESPONSE_TYPE = string>(
       throw error;
     });
 }
+
+/**
+ * A wrapper for "ajax" for when response data is not needed
+ *
+ * @returns Response code
+ * @throws Rejects promise on errors
+ */
+export const ping = async (
+  url: string,
+  options?: PartialBy<Parameters<typeof ajax>[1], 'headers'>,
+  additionalOptions?: Parameters<typeof ajax>[2]
+): Promise<number> => {
+  return ajax<never>(
+    url,
+    {
+      ...options,
+      headers: options?.headers ?? {},
+    },
+    additionalOptions
+  ).then(({ status }) => status);
+};

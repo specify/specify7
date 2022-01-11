@@ -4,7 +4,7 @@
  * @module
  */
 
-import ajax, { Http } from './ajax';
+import ajax, { Http, ping } from './ajax';
 import AutoMapper from './automapper';
 import type { Dataset } from './components/wbplanview';
 import type {
@@ -68,7 +68,7 @@ export async function savePlan({
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
 
-  return ajax(
+  return ping(
     dataSetRequestUrl,
     {
       method: 'PUT',
@@ -82,22 +82,23 @@ export async function savePlan({
   ).then(async () =>
     (newlyAddedHeaders.length === 0
       ? Promise.resolve()
-      : ajax<Dataset>(dataSetRequestUrl).then(
-          async ({ data: { columns, visualorder } }) =>
-            ajax(dataSetRequestUrl, {
-              method: 'PUT',
-              body: {
-                visualorder: [
-                  ...(visualorder ??
-                    Object.keys(dataset.columns).map((index) =>
-                      Number.parseInt(index)
-                    )),
-                  ...newlyAddedHeaders.map((headerName) =>
-                    columns.indexOf(headerName)
-                  ),
-                ],
-              },
-            })
+      : ajax<Dataset>(dataSetRequestUrl, {
+          headers: { Accept: 'application/json' },
+        }).then(async ({ data: { columns, visualorder } }) =>
+          ping(dataSetRequestUrl, {
+            method: 'PUT',
+            body: {
+              visualorder: [
+                ...(visualorder ??
+                  Object.keys(dataset.columns).map((index) =>
+                    Number.parseInt(index)
+                  )),
+                ...newlyAddedHeaders.map((headerName) =>
+                  columns.indexOf(headerName)
+                ),
+              ],
+            },
+          })
         )
     ).then(() => goBack(dataset.id))
   );

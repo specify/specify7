@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax from '../ajax';
+import ajax, {ping} from '../ajax';
 import Backbone from '../backbone';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
@@ -101,10 +101,9 @@ export function DataSetMeta({
               ? Promise.resolve(dataset.name)
               : uniquifyDataSetName(name.trim(), dataset.id).then(
                   async (uniqueName) =>
-                    ajax(`/api/workbench/dataset/${dataset.id}/`, {
+                    ping(`/api/workbench/dataset/${dataset.id}/`, {
                       method: 'PUT',
                       body: { name: uniqueName, remarks: remarks.trim() },
-                      header: { Accept: undefined },
                     }).then(() => {
                       // @ts-expect-error Modifying readonly value
                       dataset.name = uniqueName;
@@ -287,7 +286,7 @@ function ChangeOwner({
       <Form
         onSubmit={(event): void => {
           event.preventDefault();
-          void ajax(`/api/workbench/transfer/${dataset.id}/`, {
+          void ping(`/api/workbench/transfer/${dataset.id}/`, {
             method: 'POST',
             body: {
               specifyuserid: newOwner,

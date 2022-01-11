@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax from '../ajax';
+import ajax, {ping} from '../ajax';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
@@ -241,7 +241,7 @@ export function SchemaConfig({
     ): Promise<unknown> =>
       'resource_uri' in resource && resource.id >= 0
         ? saveResource(resource as CommonTableFields)
-        : ajax('/api/specify/splocaleitemstr/', {
+        : ping('/api/specify/splocaleitemstr/', {
             method: 'POST',
             body: prepareNewString(resource as NewSpLocaleItemString),
           });
@@ -249,7 +249,7 @@ export function SchemaConfig({
     const saveResource = async (
       resource: CommonTableFields
     ): Promise<unknown> =>
-      ajax(resource.resource_uri, {
+      ping(resource.resource_uri, {
         method: 'PUT',
         body: resource,
       });

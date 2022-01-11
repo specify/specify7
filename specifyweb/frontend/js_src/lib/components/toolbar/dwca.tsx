@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { formData, Http } from '../../ajax';
+import ajax, {formData, Http, ping} from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { Button, Form, Input, Label, Submit } from '../basic';
@@ -14,12 +14,12 @@ const liftGetResource = async (
   errorMessage: string,
   errorField: HTMLInputElement | null
 ): Promise<void> =>
-  ajax(
+  ping(
     `/context/app.resource?name=${name}`,
     {},
     { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
   )
-    .then(({ status }) => {
+    .then((status) => {
       if (status === Http.NOT_FOUND) throw new Error(errorMessage);
       errorField?.setCustomValidity('');
       return undefined;
@@ -34,7 +34,7 @@ const startExport = async (
   definition: string,
   metadata: string | undefined
 ): Promise<void> =>
-  ajax('/export/make_dwca/', {
+  ping('/export/make_dwca/', {
     method: 'POST',
     body: formData({
       definition,

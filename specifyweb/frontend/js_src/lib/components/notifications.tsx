@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { formData } from '../ajax';
+import ajax, {formData, ping} from '../ajax';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Link } from './basic';
@@ -123,7 +123,7 @@ export default function Notifications(): JSX.Element {
               }))
             );
             if (notifications.length > 0)
-              void ajax(
+              void ping(
                 '/notifications/mark_read/',
                 {
                   method: 'POST',
@@ -181,7 +181,7 @@ function NotificationComponent({
           title={commonText('delete')}
           aria-label={commonText('delete')}
           onClick={(): void => {
-            void ajax(
+            void ping(
               '/notifications/delete/',
               {
                 method: 'POST',

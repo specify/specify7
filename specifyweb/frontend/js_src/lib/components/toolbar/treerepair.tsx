@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax from '../../ajax';
+import {ping} from '../../ajax';
 import { getDomainResource } from '../../domain';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
@@ -94,7 +94,7 @@ export function TreeSelectDialog({
 }
 
 const handleClick = async (tree: string): Promise<void> =>
-  ajax(`/api/specify_tree/${tree}/repair/`, {
+  ping(`/api/specify_tree/${tree}/repair/`, {
     method: 'POST',
   }).then(() => undefined);
 

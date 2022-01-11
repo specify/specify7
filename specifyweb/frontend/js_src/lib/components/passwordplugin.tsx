@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { formData, Http } from '../ajax';
+import ajax, {formData, Http, ping} from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import UIPlugin from '../uiplugin';
@@ -53,7 +53,7 @@ function PasswordResetDialog({
             );
           else if (password === repeatPassword) {
             setIsLoading(true);
-            void ajax(
+            void ping(
               `/api/set_password/${modelId}/`,
               {
                 method: 'POST',

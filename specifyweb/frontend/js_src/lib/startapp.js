@@ -8,7 +8,7 @@ import * as businessRules from './businessrules';
 import {UnhandledErrorView} from './errorview';
 import commonText from './localization/common';
 import csrftoken from './csrftoken';
-import ajax, {csrfSafeMethod} from './ajax';
+import {csrfSafeMethod, ping} from './ajax';
 import * as navigation from './navigation';
 import router from './router';
 import NotFoundView from './notfoundview';
@@ -72,7 +72,7 @@ router
     setCurrentView(new NotFoundView());
   })
   .route('test_error/', 'testError', function () {
-    void ajax('/api/test_error/');
+    void ping('/api/test_error/');
   });
 
 export default function appStart() {

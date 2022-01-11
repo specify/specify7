@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax from '../../ajax';
+import {ping} from '../../ajax';
 import commonText from '../../localization/common';
 import userInfo from '../../userinfo';
 import { Button } from '../basic';
@@ -40,7 +40,7 @@ function ForceUpdateFeed({
           <Button.Blue
             onClick={(): void => {
               setIsLoading(true);
-              ajax('/export/force_update/', {
+              ping('/export/force_update/', {
                 method: 'POST',
               })
                 .then(() => setIsActivated(true))

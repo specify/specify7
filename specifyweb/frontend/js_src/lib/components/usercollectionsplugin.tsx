@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import React from 'react';
 
-import ajax from '../ajax';
+import ajax, {ping} from '../ajax';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
@@ -48,7 +48,7 @@ function UserCollectionsUi({
         onSubmit={(event) => {
           event.preventDefault();
           setIsLoading(true);
-          void ajax(`/context/user_collection_access/${userId}/`, {
+          void ping(`/context/user_collection_access/${userId}/`, {
             method: 'PUT',
             body: selected,
           }).then(() => {
