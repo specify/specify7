@@ -15,63 +15,8 @@ import ajax from '../ajax';
 import { LoadingScreen } from './modaldialog';
 import icons from './icons';
 import { formatNumber } from './internationalization';
-
-`
-<style>
-#list {
-  display: inline-grid;
-  grid-template-columns: auto auto auto;
-}
-
-#list ul,
-#list li {
-  display: contents;
-}
-
-#list button {
-  border: none;
-  background: none;
-  text-align: left;
-}
-
-.border-left {
-  border-left: 1px solid #fcf;
-}
-
-.border-bottom {
-  border-bottom: 1px solid #fcf;
-}
-</style>
-<section id="list"><ul role="tree"><button id="earth">Earth</button><button id="continent">Continent</button><button id="country">Country</button>
-  
-  <li>
-    <button role="treeitem" aria-describedby="earth">Earth</button>
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span><ul role="group">
-      <li>
-        <span aria-hidden="true" class="border-left border-bottom"></span>
-        <button role="treeitem" aria-describedby="continent">Africa</button>
-        <span aria-hidden="true"></span></li>
-      <li>
-        <span aria-hidden="true" class="border-left border-bottom"></span>
-        <button role="treeitem" aria-describedby="continent">Antartica</button>
-        <span aria-hidden="true"></span><ul role="group">
-          <li>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true" class="border-left border-bottom"></span>
-            <button role="treeitem" aria-describedby="country">Antarctica</button></li>
-          <li>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true" class="border-left border-bottom"></span>
-            <button role="treeitem" aria-describedby="country">France</button></li>
-        </ul></li></ul>
-</li></ul></section>`;
-
-/*
- * TODO: tree rank collapse
- * TODO: tree rank header row position sticky
- * TODO: "conformation" stuff
- */
+import { capitalize } from '../wbplanviewhelper';
+import { useCachedState } from './stateCache';
 
 const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -94,17 +39,21 @@ const fetchRows = async (fetchUrl: string) =>
     headers: { Accept: 'application/json' },
   }).then(({ data: rows }) =>
     rows.map(
-      ([
-        nodeId,
-        name,
-        fullName,
-        nodeNumber,
-        highestNodeNumber,
-        rankId,
-        acceptedId,
-        acceptedName,
-        children,
-      ]) => ({
+      (
+        [
+          nodeId,
+          name,
+          fullName,
+          nodeNumber,
+          highestNodeNumber,
+          rankId,
+          acceptedId,
+          acceptedName,
+          children,
+        ],
+        index,
+        { length }
+      ) => ({
         nodeId,
         name,
         fullName,
@@ -114,6 +63,7 @@ const fetchRows = async (fetchUrl: string) =>
         acceptedId: acceptedId ?? undefined,
         acceptedName: acceptedName ?? undefined,
         children,
+        isLastChild: index + 1 === length,
       })
     )
   );
@@ -143,6 +93,20 @@ const fetchStats = async (url: string): Promise<Stats> =>
 
 type Row = Awaited<ReturnType<typeof fetchRows>>[number];
 
+/**
+ * Conditional Pipe. Like Ramda's lenses
+ */
+const pipe = <T, V>(
+  value: T,
+  condition: boolean,
+  mapper: (value: T) => V
+): T | V => (condition ? mapper(value) : value);
+
+/*
+ * TODO: "conformation" stuff
+ * TODO: hide root rank if it is the only one
+ */
+
 function TreeView({
   tableName,
   treeDefinition,
@@ -154,11 +118,17 @@ function TreeView({
 }): JSX.Element {
   const table = defined(getModel(tableName));
   const rankIds = treeDefinitionItems.map((rank) => rank.get<number>('rankid'));
+  const [collapsedRanks, setCollapsedRanks] = useCachedState({
+    bucketName: 'tree',
+    cacheName: `collapsedRanks${capitalize(tableName)}`,
+    bucketType: 'localStorage',
+    defaultValue: [],
+  });
 
   useTitle(treeText('treeViewTitle')(table.getLocalizedName()));
 
   // Node sort order
-  const sortOrderFieldName = `${tableName}.treeview_sort_field`;
+  const sortOrderFieldName = `${capitalize(tableName)}.treeview_sort_field`;
   const sortField = getPref(sortOrderFieldName, 'name');
   const baseUrl = `/api/specify_tree/${tableName}/${treeDefinition.id}`;
   const getRows = React.useCallback(
@@ -167,7 +137,9 @@ function TreeView({
     [baseUrl, sortField]
   );
 
-  const statsThreshold = getIntPref(`TreeEditor.Rank.Threshold.${tableName}`);
+  const statsThreshold = getIntPref(
+    `TreeEditor.Rank.Threshold.${capitalize(tableName)}`
+  );
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       typeof statsThreshold === 'undefined' || statsThreshold > rankId
@@ -270,11 +242,33 @@ function TreeView({
                 role="columnheader"
                 key={index}
                 className={`border whitespace-nowrap border-transparent top-0
-                  sticky bg-gray-100/60 p-2 ${index === 0 ? '-ml-2 pl-4' : ''}
-                  ${index + 1 === length ? 'pr-4 -mr-2' : ''}`}
+                  sticky bg-gray-100/60 p-2 backdrop-blur-sm
+                  ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
+                  ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}`}
               >
-                <Button.LikeLink id={id(rank.id.toString())}>
-                  {rank.get<string | null>('title') ?? rank.get<string>('name')}
+                <Button.LikeLink
+                  id={id(rank.get<number>('rankId').toString())}
+                  onClick={
+                    typeof collapsedRanks === 'undefined'
+                      ? undefined
+                      : (): void =>
+                          setCollapsedRanks(
+                            collapsedRanks.includes(rank.get<number>('rankId'))
+                              ? collapsedRanks.filter(
+                                  (rankId) =>
+                                    rankId !== rank.get<number>('rankId')
+                                )
+                              : [...collapsedRanks, rank.get<number>('rankId')]
+                          )
+                  }
+                >
+                  {pipe(
+                    rank.get<string | null>('title') ??
+                      rank.get<string>('name'),
+                    collapsedRanks?.includes(rank.get<number>('rankId')) ??
+                      false,
+                    (name) => name[0]
+                  )}
                 </Button.LikeLink>
               </div>
             ))}
@@ -292,6 +286,7 @@ function TreeView({
               ranks={rankIds}
               expanded={false}
               rankNameId={id}
+              collapsedRanks={collapsedRanks ?? []}
             />
           ))}
         </ul>
@@ -309,6 +304,7 @@ function TreeRow({
   ranks,
   expanded,
   rankNameId,
+  collapsedRanks,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -321,6 +317,7 @@ function TreeRow({
   readonly ranks: RA<number>;
   readonly expanded: boolean;
   readonly rankNameId: (suffix: string) => string;
+  readonly collapsedRanks: RA<number>;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [isExpanded, setIsExpanded] = React.useState(expanded);
@@ -336,7 +333,17 @@ function TreeRow({
       destructorCalled ? undefined : setRows(rows)
     );
 
-    getStats(row.nodeId, row.rankId).then((stats) =>
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [isLoading, getRows, row]);
+
+  const isLoadingStats = isExpanded && typeof childStats === 'undefined';
+  React.useEffect(() => {
+    if (!isLoadingStats) return undefined;
+
+    void getStats(row.nodeId, row.rankId).then((stats) =>
       destructorCalled || typeof stats === 'undefined'
         ? undefined
         : setChildStats(stats)
@@ -346,7 +353,7 @@ function TreeRow({
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, getStats, row]);
+  }, [isLoadingStats, getStats, row]);
 
   const parentRankId = path.slice(-1)[0]?.rankId;
   const id = useId('tree-node');
@@ -362,7 +369,7 @@ function TreeRow({
                * with borders of <span> cells
                */
               className={`border whitespace-nowrap border-transparent aria-handled
-              -mb-[12px] -ml-[5px] mt-2 gap-0
+              -mb-[12px] -ml-[5px] mt-2
               ${typeof row.acceptedId === 'undefined' ? '' : 'text-red-500'}`}
               aria-pressed={isLoading ? 'mixed' : isExpanded}
               title={
@@ -377,6 +384,7 @@ function TreeRow({
               aria-describedby={rankNameId(rankId.toString())}
             >
               <span
+                className="-mr-2"
                 aria-label={
                   isLoading
                     ? commonText('loading')
@@ -395,25 +403,29 @@ function TreeRow({
                   ? icons.chevronDown
                   : icons.chevronRight}
               </span>
-              {row.name}
-              {typeof nodeStats === 'object' && (
-                <span
-                  title={`${treeText('directCollectionObjectCount')}: ${
-                    nodeStats.directCount
-                  }\n${treeText('indirectCollectionObjectCount')}: ${
-                    nodeStats.childCount
-                  }`}
-                  aria-label={`${treeText('directCollectionObjectCount')}: ${
-                    nodeStats.directCount
-                  }. ${treeText('indirectCollectionObjectCount')}: ${
-                    nodeStats.childCount
-                  }`}
-                >
-                  {`(${formatNumber(nodeStats.directCount)}, ${formatNumber(
-                    nodeStats.childCount
-                  )})`}
-                </span>
-              )}
+              <span
+                className={collapsedRanks.includes(rankId) ? 'sr-only' : ''}
+              >
+                {row.name}
+                {typeof nodeStats === 'object' && (
+                  <span
+                    title={`${treeText('directCollectionObjectCount')}: ${
+                      nodeStats.directCount
+                    }\n${treeText('indirectCollectionObjectCount')}: ${
+                      nodeStats.childCount
+                    }`}
+                    aria-label={`${treeText('directCollectionObjectCount')}: ${
+                      nodeStats.directCount
+                    }. ${treeText('indirectCollectionObjectCount')}: ${
+                      nodeStats.childCount
+                    }`}
+                  >
+                    {`(${formatNumber(nodeStats.directCount)}, ${formatNumber(
+                      nodeStats.childCount
+                    )})`}
+                  </span>
+                )}
+              </span>
             </Button.LikeLink>
           );
         else {
@@ -425,11 +437,12 @@ function TreeRow({
             <span
               key={rankId}
               aria-hidden="true"
-              className={`border whitespace-nowrap border-transparent
-              pointer-events-none
+              className={`border border-dotted border-transparent
+              pointer-events-none whitespace-nowrap
               ${
                 // Add left border for empty cell before tree node
-                indexOfAncestor !== -1 && typeof currentNode === 'undefined'
+                indexOfAncestor !== -1 &&
+                !(typeof currentNode !== 'undefined' && currentNode.isLastChild)
                   ? 'border-l-gray-500'
                   : ''
               }
@@ -456,6 +469,7 @@ function TreeRow({
               ranks={ranks}
               expanded={false}
               rankNameId={rankNameId}
+              collapsedRanks={collapsedRanks}
             />
           ))}
         </ul>

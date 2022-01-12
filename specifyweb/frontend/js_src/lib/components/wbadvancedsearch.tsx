@@ -45,7 +45,7 @@ const CACHE_VERSION = '1';
  * Fetch cached search config or create a new one
  */
 export const getInitialSearchPreferences = (): SearchPreferences =>
-  cache.get('workbench', 'search-properties', {
+  cache.get('workbench', 'searchProperties', {
     defaultValue: {
       navigation: {
         direction: 'columnFirst',
@@ -204,7 +204,7 @@ function WbAdvancedSearch({
 
   React.useEffect(() => {
     handleChange(searchPreferences);
-    cache.set('workbench', 'search-properties', searchPreferences, {
+    cache.set('workbench', 'searchProperties', searchPreferences, {
       overwrite: true,
       version: CACHE_VERSION,
     });

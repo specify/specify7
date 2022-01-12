@@ -139,8 +139,7 @@ export function Dialog({
     setZindex(zIndex);
     dialogIndexes.add(zIndex);
     return (): void => setZindex(undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, forceToTop]);
 
   React.useEffect(() => {
     if (forceToTop || modal || !isOpen || typeof zIndex === 'undefined')

@@ -227,7 +227,8 @@ const DataSetNameView = createBackboneView(DataSetName);
 
 const fetchListOfUsers = async (): Promise<RA<SpecifyResource>> =>
   ajax<{ readonly objects: RA<SpecifyResource> }>(
-    '/api/specify/specifyuser/?limit=500'
+    '/api/specify/specifyuser/?limit=500',
+    { headers: { Accept: 'application/json' } }
   ).then(({ data: { objects: users } }) =>
     users.filter(({ id }) => id !== userInfo.id)
   );

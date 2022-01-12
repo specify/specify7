@@ -54,7 +54,10 @@ export type CacheDefinitions = {
     [key in string]: string;
   };
   readonly workbench: {
-    readonly 'search-properties': SearchPreferences;
+    readonly searchProperties: SearchPreferences;
+  };
+  readonly tree: {
+    readonly [key in `collapsedRanks${string}`]: RA<number>;
   };
   readonly workBenchSortConfig: {
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
