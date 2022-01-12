@@ -16,13 +16,11 @@ export default function () {
         setCurrentView(new NotFoundView());
         return;
       }
-      treePromise.done((treeDefinition) =>
+      treePromise.then((treeDefinition) =>
         treeDefinition
           .rget<Collection>('treedefitems')
           .then((treeDefinitionItems) =>
-            treeDefinitionItems
-              .fetch({ limit: 0 })
-              .then(() => treeDefinitionItems)
+            treeDefinitionItems.fetch({ limit: 0 })
           )
           .then((treeDefinitionItems) =>
             setCurrentView(

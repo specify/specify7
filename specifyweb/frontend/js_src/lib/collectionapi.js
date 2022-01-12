@@ -136,7 +136,7 @@ var Base =  Backbone.Collection.extend({
 
             _(options).has('limit') && ( options.data.limit = options.limit );
             self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
-            return self._fetch.then(function() { self._fetch = null; });
+            return self._fetch.then(function() { self._fetch = null; return self; });
         },
         fetchIfNotPopulated: function() {
             var _this = this;

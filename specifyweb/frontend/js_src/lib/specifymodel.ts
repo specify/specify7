@@ -1,6 +1,6 @@
 import collectionapi from './collectionapi';
 import { getIcon } from './icons';
-import type { JqueryPromise, SpecifyResource } from './legacytypes';
+import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { localization } from './schema';
@@ -49,7 +49,7 @@ type Resource = new (
 ) => SpecifyResource;
 
 export type Collection = {
-  readonly fetch: (filter?: { readonly limit: number }) => JqueryPromise<void>;
+  readonly fetch: (filter?: { readonly limit: number }) => Promise<Collection>;
   readonly models: RA<SpecifyResource>;
 };
 

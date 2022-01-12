@@ -5,9 +5,9 @@ import type { RA } from './types';
 export type SpecifyResource = {
   readonly id: number;
   readonly get: <TYPE = unknown>(fieldName: string) => TYPE;
-  readonly rget: <TYPE = unknown>(fieldName: string) => JqueryPromise<TYPE>;
+  readonly rget: <TYPE = unknown>(fieldName: string) => Promise<TYPE>;
   readonly set: (fieldName: string, value: unknown) => void;
-  readonly save: () => JqueryPromise<void>;
+  readonly save: () => Promise<void>;
   readonly viewUrl: () => string;
   readonly Resource: new () => SpecifyResource;
   readonly isNew: () => boolean;
@@ -15,7 +15,7 @@ export type SpecifyResource = {
   readonly specifyModel: SpecifyModel;
   readonly saveBlockers: Readonly<SaveBlockers>;
   readonly parent?: SpecifyResource;
-  readonly format: () => JqueryPromise<string>;
+  readonly format: () => Promise<string>;
   readonly collection: {
     readonly related: SpecifyResource;
   };
@@ -30,11 +30,4 @@ export type SpecifyResource = {
   readonly trigger: (eventName: string, ...args: RA<unknown>) => void;
 };
 
-export type JqueryPromise<T, V = unknown> = {
-  readonly done: (callback: (t: T) => void) => JqueryPromise<V>;
-  readonly then: (callback: (t: T) => void) => JqueryPromise<V>;
-};
-
-export type GetTreeDefinition = (
-  tableName: string
-) => JqueryPromise<SpecifyResource>;
+export type GetTreeDefinition = (tableName: string) => Promise<SpecifyResource>;

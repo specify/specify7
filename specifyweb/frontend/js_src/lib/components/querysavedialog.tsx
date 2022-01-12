@@ -19,7 +19,7 @@ async function doSave(
 
   if (isSaveAs) clonedQuery.set('specifyuser', userInfo.resource_uri);
   return new Promise((resolve) => {
-    clonedQuery.save().done(() => resolve(clonedQuery.id));
+    clonedQuery.save().then(() => resolve(clonedQuery.id));
   });
 }
 

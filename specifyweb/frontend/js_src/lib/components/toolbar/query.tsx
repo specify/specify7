@@ -222,11 +222,11 @@ function QueryToolbarItem({
     const queryModels = new schema.models.SpQuery.LazyCollection({
       filters: spQueryFilter ?? { specifyuser: userInfo.id },
     });
-    queryModels.fetch({ limit: QUERY_FETCH_LIMIT }).done(() =>
+    queryModels.fetch({ limit: QUERY_FETCH_LIMIT }).then(({ models }) =>
       destructorCalled
         ? undefined
         : setQueries(
-            queryModels.models.map((query) => ({
+            models.map((query) => ({
               id: query.get<number>('id'),
               name: query.get<string>('name'),
               tableName: getModelById(
@@ -346,7 +346,7 @@ const EditQueryDialog = Backbone.View.extend({
     this.model = getModelById(this.spquery.get('contexttableid'));
   },
   render() {
-    specifyform.buildViewByName('Query').done(this._render.bind(this));
+    specifyform.buildViewByName('Query').then(this._render.bind(this));
     return this;
   },
   _render(form: JQuery) {

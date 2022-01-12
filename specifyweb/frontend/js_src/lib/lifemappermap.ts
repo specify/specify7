@@ -156,7 +156,7 @@ export const fetchLocalOccurrences = async (
                 }) as Collection;
                 locality
                   .fetch({ limit: 1 })
-                  .then(() => resolve(locality.models[0]));
+                  .then(({ models }) => resolve(models[0]));
               }),
               false,
               (mappingPathParts, resource) =>

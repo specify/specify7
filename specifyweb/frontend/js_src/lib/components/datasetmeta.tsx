@@ -291,6 +291,9 @@ function ChangeOwner({
             body: {
               specifyuserid: newOwner,
             },
+            headers: {
+              Accept: 'application/json',
+            },
           }).then(() => setIsChanged(true));
         }}
       >

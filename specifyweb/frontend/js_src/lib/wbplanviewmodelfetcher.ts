@@ -103,25 +103,24 @@ export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 /* Fetches ranks for a particular table */
 const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
   new Promise((resolve) =>
-    (getTreeDef as GetTreeDefinition)(tableName).done((treeDefinition) =>
-      treeDefinition.rget<Collection>('treedefitems').done((treeDefItems) =>
-        treeDefItems.fetch({ limit: 0 }).done(() =>
-          resolve([
-            tableName,
-            Object.values(treeDefItems.models).map((rank) => [
-              rank.get<string>('name'),
-              {
-                isRequired: false,
-                title: capitalize(
-                  rank.get<string>('title') ?? rank.get<string>('name')
-                ),
-                rankId: rank.get<number>('rankId'),
-              },
-            ]),
-          ])
-        )
+    (getTreeDef as GetTreeDefinition)(tableName)
+      .then((treeDefinition) => treeDefinition.rget<Collection>('treedefitems'))
+      .then((treeDefItems) => treeDefItems.fetch({ limit: 0 }))
+      .then(({ models }) =>
+        resolve([
+          tableName,
+          Object.values(models).map((rank) => [
+            rank.get<string>('name'),
+            {
+              isRequired: false,
+              title: capitalize(
+                rank.get<string>('title') ?? rank.get<string>('name')
+              ),
+              rankId: rank.get<number>('rankId'),
+            },
+          ]),
+        ])
       )
-    )
   );
 
 function handleRelationshipType(
@@ -200,7 +199,11 @@ const fetchPickList = async (
         readonly picklistitems: { readonly title: string }[];
       }
     ];
-  }>(`/api/specify/picklist/?name=${pickList}&limit=1&domainfilter=true`)
+  }>(`/api/specify/picklist/?name=${pickList}&limit=1&domainfilter=true`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  })
     .then(({ data: { objects } }) => {
       if (typeof objects?.[0] === 'undefined') return;
 

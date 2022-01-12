@@ -17,11 +17,8 @@ const menuItem: MenuItem = {
         orderby: '-timestampcreated',
       },
     });
-    const promise = new Promise((resolve) =>
-      recordSets.fetch({ limit: 5000 }).done(() => resolve(recordSets))
-    );
     return new RecordSetsDialog({
-      recordSets: promise,
+      recordSets: recordSets.fetch({ limit: 5000 }),
       readOnly: userInfo.isReadOnly,
       onClose,
     }).render();

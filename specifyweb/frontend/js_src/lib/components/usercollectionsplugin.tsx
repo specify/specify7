@@ -111,7 +111,7 @@ export default UIPlugin.extend(
       return this;
     },
     click() {
-      $.get(`/context/user_collection_access/${this.user.id}/`).done(
+      $.get(`/context/user_collection_access/${this.user.id}/`).then(
         (permitted) => {
           const handleClose = (): void => void view.remove();
           const view = new SetCollectionsView({

@@ -25,15 +25,12 @@ function Users({
     });
     users
       .fetch({ limit: 0 })
-      .done(() =>
+      .then(({ models }) =>
         destructorCalled
           ? undefined
           : setUsers(
               Object.fromEntries(
-                users.models.map((user) => [
-                  user.get<string>('name'),
-                  user.viewUrl(),
-                ])
+                models.map((user) => [user.get<string>('name'), user.viewUrl()])
               )
             )
       );

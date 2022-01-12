@@ -314,7 +314,7 @@ export default UIPlugin.extend(
         );
       }
 
-      this.model.fetchIfNotPopulated().done(this._render());
+      this.model.fetchIfNotPopulated().then(this._render());
     },
     _render() {
       this.id = this.$el.prop('id');
