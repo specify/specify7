@@ -53,7 +53,10 @@ function ErrorDialog({
           </Link.Default>
         )}
       </p>
-      <details className="whitespace-pre-wrap">{children}</details>
+      <details className="whitespace-pre-wrap">
+        <summary>{commonText('errorMessage')}</summary>
+        {children}
+      </details>
     </Dialog>
   );
 }

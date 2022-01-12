@@ -27,7 +27,7 @@ export default function () {
           .then((treeDefinitionItems) =>
             setCurrentView(
               new TreeView({
-                table,
+                tableName: table.toLowerCase(),
                 treeDefinition,
                 treeDefinitionItems: treeDefinitionItems.models,
               })

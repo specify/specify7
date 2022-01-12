@@ -233,6 +233,16 @@ const treeText = createDictionary({
     'ru-ru': 'Угловой узел',
     ca: 'Leaf Node',
   },
+  directCollectionObjectCount: {
+    'en-us': 'Direct Collection Object Count',
+    'ru-ru': 'Количество прямых объектов коллекции',
+    ca: "Recompte d'objectes de col·lecció directa",
+  },
+  indirectCollectionObjectCount: {
+    'en-us': 'Indirect Collection Object Count',
+    'ru-ru': 'Количество непрямых объектов коллекции',
+    ca: "Recompte d'objectes de col·lecció indirecta",
+  },
 });
 
 export default treeText;

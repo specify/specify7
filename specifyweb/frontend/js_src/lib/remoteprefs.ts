@@ -28,4 +28,10 @@ export function getBoolPref(key: string, defaultValue: boolean): boolean {
   return defaultValue;
 }
 
+export function getIntPref(key: string): number | undefined {
+  const value = prefs[key] as string | undefined;
+  const parsed = Number.parseInt(value ?? '');
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
 export default prefs as IR<string>;

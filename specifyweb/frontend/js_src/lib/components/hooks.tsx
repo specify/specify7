@@ -18,8 +18,11 @@ export function useId(prefix: string): (suffix: string) => string {
     idStore[resolvedPrefix] += 1;
   }
 
-  return (suffix = ''): string =>
-    `${resolvedPrefix}${id.current}${suffix ? `-${suffix}` : ''}`;
+  return React.useCallback(
+    (suffix = ''): string =>
+      `${resolvedPrefix}${id.current}${suffix ? `-${suffix}` : ''}`,
+    [resolvedPrefix]
+  );
 }
 
 export function setTitle(title: string): void {

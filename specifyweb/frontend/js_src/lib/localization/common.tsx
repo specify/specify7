@@ -767,6 +767,11 @@ const commonText = createDictionary({
       </>
     ),
   },
+  errorMessage: {
+    'en-us': 'Error Message',
+    'ru-ru': 'Описание ошибки',
+    ca: "Missatge d'error",
+  },
   backEndErrorDialogTitle: {
     'en-us': 'Server Error',
     'ru-ru': 'Ошибка на сервере',

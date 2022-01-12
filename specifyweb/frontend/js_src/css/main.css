@@ -49,7 +49,7 @@
     @apply cursor-pointer text-brand-200;
   }
 
-  label {
+  label, summary {
     @apply cursor-pointer;
   }
 
@@ -174,23 +174,23 @@
    *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content_minmax(30px,_1fr)]
    */
   table.grid-table,
-  .grid-table[role="table"] {
+  .grid-table[role~="table"] {
     @apply grid
   }
 
   .grid-table thead,
   .grid-table tbody,
   .grid-table tr,
-  .grid-table [role="rowgroup"],
-  .grid-table [role="row"] {
+  .grid-table [role~="rowgroup"],
+  .grid-table [role~="row"] {
     @apply contents
   }
 
   .grid-table th,
   .grid-table td,
-  .grid-table [role="columnheader"],
-  .grid-table [role="rowheader"],
-  .grid-table [role="cell"] {
+  .grid-table [role~="columnheader"],
+  .grid-table [role~="rowheader"],
+  .grid-table [role~="cell"] {
     @apply flex items-center gap-x-1;
   }
 
