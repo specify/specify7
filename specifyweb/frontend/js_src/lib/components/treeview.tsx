@@ -1,21 +1,23 @@
 import * as React from 'react';
 
+import ajax from '../ajax';
 import type { SpecifyResource } from '../legacytypes';
+import commonText from '../localization/common';
 import treeText from '../localization/tree';
+import * as navigation from '../navigation';
+import * as querystring from '../querystring';
 import { getIntPref, getPref } from '../remoteprefs';
 import { getModel } from '../schema';
 import type { RA, RR } from '../types';
 import { defined } from '../types';
+import { capitalize } from '../wbplanviewhelper';
 import { Autocomplete } from './autocomplete';
 import { Button, className } from './basic';
-import createBackboneView from './reactbackboneextend';
-import commonText from '../localization/common';
 import { useId, useTitle } from './hooks';
-import ajax from '../ajax';
-import { LoadingScreen } from './modaldialog';
 import icons from './icons';
 import { formatNumber } from './internationalization';
-import { capitalize } from '../wbplanviewhelper';
+import { LoadingScreen } from './modaldialog';
+import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 
 const fetchRows = async (fetchUrl: string) =>
@@ -36,6 +38,7 @@ const fetchRows = async (fetchUrl: string) =>
       >
     >
   >(fetchUrl, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
   }).then(({ data: rows }) =>
     rows.map(
@@ -78,6 +81,7 @@ type Stats = RR<
 
 const fetchStats = async (url: string): Promise<Stats> =>
   ajax<RA<Readonly<[number, number, number]>>>(url, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
   }).then(({ data }) =>
     Object.fromEntries(
@@ -103,9 +107,43 @@ const pipe = <T, V>(
 ): T | V => (condition ? mapper(value) : value);
 
 /*
- * TODO: "conformation" stuff
  * TODO: hide root rank if it is the only one
+ * TODO: replace context menu with an accessible solution
  */
+
+type Conformations = RA<Conformation>;
+
+interface Conformation extends Readonly<[number, ...Conformations]> {}
+
+function deserializeConformation(
+  conformation: string | undefined
+): Conformations | undefined {
+  if (typeof conformation === 'undefined') return undefined;
+  const serialized = conformation
+    .replace(/([^~])~/g, '$1,~')
+    .replaceAll('~', '[')
+    .replaceAll('-', ']');
+  try {
+    return JSON.parse(serialized) as Conformations;
+  } catch {
+    console.error('bad tree conformation:', serialized);
+    return undefined;
+  }
+}
+
+/**
+ * Replace reserved url characters to avoid percent
+ * escaping.  Also, commas are superfluous since they
+ * precede every open bracket that is not itself preceded
+ * by an open bracket by nature of the construction.
+ */
+const serializeConformation = (
+  conformation: Conformations | undefined
+): string =>
+  JSON.stringify(conformation)
+    .replaceAll('[', '~')
+    .replaceAll(']', '-')
+    .replaceAll(',', '');
 
 function TreeView({
   tableName,
@@ -124,6 +162,31 @@ function TreeView({
     bucketType: 'localStorage',
     defaultValue: [],
   });
+
+  const [rawConformation, setConformation] = useCachedState({
+    bucketName: 'tree',
+    cacheName: `conformation${capitalize(tableName)}`,
+    bucketType: 'localStorage',
+    defaultValue: undefined,
+  });
+  const conformation = deserializeConformation(rawConformation);
+
+  function updateConformation(value: Conformations | undefined): void {
+    if (typeof value === 'undefined') setConformation('');
+    else {
+      const encoded = serializeConformation(value);
+      navigation.push(
+        querystring.format(window.location.href, { conformation: encoded })
+      );
+      setConformation(encoded);
+    }
+  }
+
+  React.useEffect(() => {
+    const { conformation } = querystring.parse();
+    if (typeof conformation === 'string' && conformation.length > 0)
+      updateConformation(deserializeConformation(conformation));
+  }, []);
 
   useTitle(treeText('treeViewTitle')(table.getLocalizedName()));
 
@@ -193,7 +256,7 @@ function TreeView({
               })
             );
           }}
-          onChange={(_value, { data }) => {
+          onChange={(_value, { data }): void => {
             // TODO: listen to "onChange"
             console.log(data);
           }}
@@ -284,9 +347,21 @@ function TreeView({
               nodeStats={undefined}
               path={[]}
               ranks={rankIds}
-              expanded={false}
               rankNameId={id}
               collapsedRanks={collapsedRanks ?? []}
+              conformation={
+                conformation
+                  ?.find(([id]) => id === row.nodeId)
+                  ?.slice(1) as Conformations
+              }
+              onChangeConformation={(newConformation): void =>
+                updateConformation([
+                  ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
+                  ...(typeof newConformation === 'undefined'
+                    ? []
+                    : ([[row.nodeId, ...newConformation]] as const)),
+                ])
+              }
             />
           ))}
         </ul>
@@ -302,9 +377,10 @@ function TreeRow({
   nodeStats,
   path,
   ranks,
-  expanded,
   rankNameId,
   collapsedRanks,
+  conformation,
+  onChangeConformation: handleChangeConformation,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -315,16 +391,22 @@ function TreeRow({
   readonly nodeStats: Stats[number] | undefined;
   readonly path: RA<Row>;
   readonly ranks: RA<number>;
-  readonly expanded: boolean;
   readonly rankNameId: (suffix: string) => string;
   readonly collapsedRanks: RA<number>;
+  readonly conformation: Conformations | undefined;
+  readonly onChangeConformation: (
+    conformation: Conformations | undefined
+  ) => void;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
-  const [isExpanded, setIsExpanded] = React.useState(expanded);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
     undefined
   );
+  const previousConformation = React.useRef<Conformations | undefined>(
+    undefined
+  );
 
+  const isExpanded = typeof conformation !== 'undefined';
   const isLoading = isExpanded && typeof rows === 'undefined';
   React.useEffect(() => {
     if (!isLoading) return undefined;
@@ -380,7 +462,16 @@ function TreeRow({
                     }`
               }
               aria-controls={id('children')}
-              onClick={(): void => setIsExpanded((state) => !state)}
+              onClick={(): void => {
+                if (typeof conformation === 'undefined')
+                  if (typeof previousConformation.current === 'undefined')
+                    handleChangeConformation([]);
+                  else handleChangeConformation(previousConformation.current);
+                else {
+                  previousConformation.current = conformation;
+                  handleChangeConformation(undefined);
+                }
+              }}
               aria-describedby={rankNameId(rankId.toString())}
             >
               <span
@@ -467,9 +558,21 @@ function TreeRow({
               nodeStats={childStats?.[childRow.nodeId]}
               path={[...path, row]}
               ranks={ranks}
-              expanded={false}
               rankNameId={rankNameId}
               collapsedRanks={collapsedRanks}
+              conformation={
+                conformation
+                  ?.find(([id]) => id === childRow.nodeId)
+                  ?.slice(1) as Conformations
+              }
+              onChangeConformation={(newConformation): void =>
+                handleChangeConformation([
+                  ...conformation.filter(([id]) => id !== childRow.nodeId),
+                  ...(typeof newConformation === 'undefined'
+                    ? []
+                    : ([[childRow.nodeId, ...newConformation]] as const)),
+                ])
+              }
             />
           ))}
         </ul>

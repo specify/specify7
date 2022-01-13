@@ -58,6 +58,8 @@ export type CacheDefinitions = {
   };
   readonly tree: {
     readonly [key in `collapsedRanks${string}`]: RA<number>;
+  } & {
+    readonly [key in `conformation${string}`]: string;
   };
   readonly workBenchSortConfig: {
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;

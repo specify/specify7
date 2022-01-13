@@ -22,7 +22,7 @@ export function useCachedState<
   readonly bucketName: BUCKET_NAME;
   readonly cacheName: CACHE_NAME;
   readonly bucketType: BucketType;
-  readonly defaultValue: DefaultValue<
+  readonly defaultValue?: DefaultValue<
     CacheDefinitions[BUCKET_NAME][CACHE_NAME]
   >;
 }): [
@@ -57,7 +57,9 @@ export function useCachedState<
         Promise.resolve(defaultValue())
       : Promise.resolve(defaultValue)
     )
-      .then(setCachedState)
+      .then((value) =>
+        typeof value === 'undefined' ? undefined : setCachedState(value)
+      )
       .catch(console.error);
   /* eslint-enable no-inline-comments */
 
