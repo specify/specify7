@@ -80,7 +80,7 @@ function ChooseCollection({
           value={csrfToken ?? ''}
         />
         <input type="hidden" name="next" value={nextUrl} />
-        <Submit.Fancy ref={submitRef} value={commonText('open')} />
+        <Submit.Fancy forwardRef={submitRef} value={commonText('open')} />
       </Form>
     </SplashScreen>
   );

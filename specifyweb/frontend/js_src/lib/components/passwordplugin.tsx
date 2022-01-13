@@ -79,7 +79,7 @@ function PasswordResetDialog({
             autoComplete="new-password"
             value={password}
             minLength={6}
-            ref={passwordRef}
+            forwardRef={passwordRef}
             onChange={({ target }): void => {
               setPassword(target.value);
               target.setCustomValidity('');
@@ -94,7 +94,7 @@ function PasswordResetDialog({
             autoComplete="new-password"
             value={repeatPassword}
             minLength={6}
-            ref={repeatPasswordRef}
+            forwardRef={repeatPasswordRef}
             onChange={({ target }): void => {
               setRepeatPassword(target.value);
               target.setCustomValidity('');

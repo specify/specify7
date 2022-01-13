@@ -48,7 +48,7 @@ function Login({
             required={true}
             name="username"
             defaultValue={''}
-            ref={validationRef}
+            forwardRef={validationRef}
           />
         </Label>
         <Label>
@@ -58,7 +58,7 @@ function Login({
             required={true}
             name="password"
             defaultValue={''}
-            ref={passwordRef}
+            forwardRef={passwordRef}
           />
         </Label>
         <input type="hidden" name="next" value={nextUrl} />

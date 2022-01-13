@@ -211,7 +211,7 @@ function PartialDateUi({
         <Input
           id={inputId}
           readOnly={readOnly}
-          ref={inputRef}
+          forwardRef={inputRef}
           onFocus={({ target }): void =>
             model.saveBlockers.handleFocus(target, dateField)
           }

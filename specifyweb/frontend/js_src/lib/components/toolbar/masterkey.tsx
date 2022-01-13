@@ -73,7 +73,7 @@ function MasterKey({
         <Label>
           {commonText('userPassword')}
           <Input
-            ref={validationRef}
+            forwardRef={validationRef}
             type="password"
             value={password}
             onChange={({ target }): void => {

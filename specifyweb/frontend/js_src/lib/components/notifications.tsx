@@ -102,7 +102,7 @@ export default function Notifications(): JSX.Element {
         disabled={notificationCount === 0}
         aria-live="polite"
         onClick={(): void => setIsOpen((isOpen) => !isOpen)}
-        ref={buttonRef}
+        forwardRef={buttonRef}
       >
         {commonText('notifications')(
           typeof notifications?.length === 'number'

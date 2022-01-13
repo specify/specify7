@@ -1,4 +1,3 @@
-import type { ReactHTML } from 'react';
 import React from 'react';
 
 import commonText from '../localization/common';
@@ -8,15 +7,38 @@ import type { IconProps } from './icons';
 import icons from './icons';
 import { DialogContext } from './modaldialog';
 
-type TagProps<TAG extends keyof ReactHTML> = Exclude<
-  Parameters<ReactHTML[TAG]>[0],
+type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
+  Parameters<React.ReactHTML[TAG]>[0],
   undefined | null
 >;
+
+/*
+ * Forbid using regular "ref" since it needs to be forwarded
+ * React.forwardRef has some typing issues when used with generics:
+ * https://stackoverflow.com/questions/58469229/react-with-typescript-generics-while-using-react-forwardref/58473012
+ * Instead, provide ref as a forwardRef. This does not change the runtime
+ * behaviour
+ */
+export type TagProps<TAG extends keyof React.ReactHTML> = Omit<
+  RawTagProps<TAG>,
+  'ref'
+> & {
+  readonly ref?: 'Use "forwardRef" instead or "ref"';
+  readonly forwardRef?: RawTagProps<TAG>['ref'];
+};
+
+export type HtmlElementFromTagName<TAG extends keyof React.ReactHTML> =
+  React.ReactHTML[TAG] extends React.DetailedHTMLFactory<
+    React.AnchorHTMLAttributes<infer X>,
+    infer X
+  >
+    ? X
+    : never;
 
 // Add default className and props to common HTML elements in a type-safe way
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,max-params
 function wrap<
-  TAG extends keyof ReactHTML,
+  TAG extends keyof React.ReactHTML,
   /*
    * Allows to define extra props that should be passed to the wrapped component
    * For example, can make some optional props be required, forbid passing
@@ -35,24 +57,18 @@ function wrap<
     ...props,
   })
 ) {
-  /*
-   * The component is wrapped in React.forwardRef to allow forwarding ref
-   * See: https://reactjs.org/docs/forwarding-refs.html
-   */
-  const wrapped = React.forwardRef(
-    (props: TagProps<TAG> & EXTRA_PROPS, ref): JSX.Element => {
-      // Merge classNames
-      const fullClassName =
-        typeof props?.className === 'string'
-          ? `${className} ${props.className}`
-          : className;
-      return React.createElement(tagName, {
-        ...mergeProps(props),
-        ref,
-        className: fullClassName,
-      });
-    }
-  );
+  const wrapped = (props: TagProps<TAG> & EXTRA_PROPS): JSX.Element => {
+    // Merge classNames
+    const fullClassName =
+      typeof props?.className === 'string'
+        ? `${className} ${props.className}`
+        : className;
+    return React.createElement(tagName, {
+      ...mergeProps(props),
+      ref: props.forwardRef,
+      className: fullClassName,
+    });
+  };
   // Use capitalized tagName as a devTool's component name
   wrapped.displayName = capitalize(tagName);
   return wrapped;

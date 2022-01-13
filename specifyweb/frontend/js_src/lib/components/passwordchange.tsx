@@ -51,7 +51,7 @@ function ChangePassword({
             required={true}
             name="old_password"
             defaultValue={''}
-            ref={oldPasswordRef}
+            forwardRef={oldPasswordRef}
           />
         </Label>
         <Label>
@@ -62,7 +62,7 @@ function ChangePassword({
             name="new_password1"
             minLength={MIN_PASSWORD_LENGTH}
             defaultValue={''}
-            ref={newPasswordRef}
+            forwardRef={newPasswordRef}
           />
         </Label>
         <Label>
@@ -73,7 +73,7 @@ function ChangePassword({
             name="new_password2"
             defaultValue={''}
             minLength={MIN_PASSWORD_LENGTH}
-            ref={repeatPasswordRef}
+            forwardRef={repeatPasswordRef}
           />
         </Label>
         <Submit.Fancy value={commonText('changePassword')} />
