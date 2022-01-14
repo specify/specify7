@@ -63,9 +63,10 @@ function wrap<
       typeof props?.className === 'string'
         ? `${className} ${props.className}`
         : className;
+    const { forwardRef, ref: _, ...mergedProps } = mergeProps(props);
     return React.createElement(tagName, {
-      ...mergeProps(props),
-      ref: props.forwardRef,
+      ...mergedProps,
+      ref: forwardRef,
       className: fullClassName,
     });
   };

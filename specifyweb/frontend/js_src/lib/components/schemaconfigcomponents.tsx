@@ -105,7 +105,7 @@ export function AddLanguage({
     >
       <Form
         className="contents"
-        ref={formRef}
+        forwardRef={formRef}
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();

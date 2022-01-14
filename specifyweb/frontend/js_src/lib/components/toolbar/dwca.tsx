@@ -79,7 +79,7 @@ function MakeDwca({
       <Form
         className="contents"
         id={id('form')}
-        ref={formRef}
+        forwardRef={formRef}
         onSubmit={(event): void => {
           setIsLoading(true);
           event.preventDefault();
@@ -118,7 +118,7 @@ function MakeDwca({
               target.setCustomValidity('');
             }}
             required
-            ref={definitionRef}
+            forwardRef={definitionRef}
           />
         </Label>
         <Label>
@@ -130,7 +130,7 @@ function MakeDwca({
               setMetadata(target.value);
               target.setCustomValidity('');
             }}
-            ref={metadataRef}
+            forwardRef={metadataRef}
           />
         </Label>
       </Form>

@@ -3,6 +3,7 @@ import _ from 'underscore';
 
 import type { IR, RA } from '../types';
 import { useId } from './hooks';
+import { TagProps } from './basic';
 
 let dataListCount = 0;
 const debounceRate = 300;
@@ -13,7 +14,7 @@ export function Autocomplete<T>({
   minLength = 1,
   delay = debounceRate,
   onChange: handleChange,
-  inputProps,
+  renderSearchBox,
 }: {
   readonly source: (
     value: string
@@ -27,10 +28,7 @@ export function Autocomplete<T>({
       readonly data: T;
     }
   ) => void;
-  readonly inputProps: React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >;
+  readonly renderSearchBox: (props: TagProps<'input'>) => JSX.Element;
 }): JSX.Element {
   const id = useId('autocomplete-data-list');
   const [results, setResults] = React.useState<
@@ -73,17 +71,16 @@ export function Autocomplete<T>({
 
   return (
     <>
-      <input
-        type="search"
-        autoComplete="on"
-        list={id('')}
-        onKeyDown={handleKeyDown}
-        onChange={({ target }): void => {
+      {renderSearchBox({
+        type: 'search',
+        autoComplete: 'on',
+        list: id(''),
+        onKeyDown: handleKeyDown,
+        onChange: ({ target }): void => {
           const data = results[target.value];
           if (typeof data !== 'undefined') handleChange(target.value, data);
-        }}
-        {...inputProps}
-      />
+        },
+      })}
       <datalist id={id('')} ref={refDataList}>
         {Object.entries(results).map(([value, { label }]) => (
           <option key={value} value={value}>
