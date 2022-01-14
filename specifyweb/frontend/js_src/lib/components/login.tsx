@@ -69,7 +69,6 @@ function Login({
   );
 }
 
-// TODO: test nextUrl parameter here and on the choosecollection page
 const nextDestination = '/accounts/choose_collection/?next=';
 
 window.addEventListener('load', () => {

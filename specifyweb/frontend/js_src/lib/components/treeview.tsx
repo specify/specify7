@@ -27,11 +27,6 @@ import { useCachedState } from './stateCache';
 import { TreeRow } from './treeviewrow';
 import { TreeViewActions } from './treeviewactions';
 
-// TODO: fix key repeat not working
-// TODO: query builder reEnable shouldFetchMore
-// TODO: rewrite savebutton deletebutton and navigation to use react dialogs
-//    or put jquery dialogs at zIndex >= 180
-
 function TreeView({
   tableName,
   treeDefinition,

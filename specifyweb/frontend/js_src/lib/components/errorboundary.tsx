@@ -43,6 +43,7 @@ function ErrorDialog({
         </Button.Red>
       }
       forceToTop={true}
+      onClose={undefined}
     >
       <p>
         {commonText('errorBoundaryDialogMessage')}

@@ -65,8 +65,6 @@ export default Backbone.View.extend({
             }
         },
         fetchMoreWhileAppropriate: function() {
-          // FIXME: remove this line
-            return;
             var _this = this;
             function recur() {
                 console.log('fetchMoreWhileAppropriate');

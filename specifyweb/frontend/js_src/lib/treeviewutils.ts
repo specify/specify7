@@ -99,12 +99,6 @@ export const pipe = <T, V>(
   mapper: (value: T) => V
 ): T | V => (condition ? mapper(value) : value);
 
-/*
- * TODO: hide root rank if it is the only one
- * TODO: replace context menu with an accessible solution
- * TODO: keyboard navigation & focus management
- */
-
 export type Conformations = RA<Conformation>;
 
 export interface Conformation extends Readonly<[number, ...Conformations]> {}

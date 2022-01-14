@@ -75,9 +75,10 @@ function wrap<
   return wrapped;
 }
 
-const reduceMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const reduceMotion =
+  typeof window === 'object'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
 export const transitionDuration = reduceMotion ? 0 : 100;
 
 // For usage by non-react components

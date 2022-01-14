@@ -61,7 +61,7 @@ async function getTreeRanks(tableName){
         __name__: "QueryResultsTable",
         className: "bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded",
         initialize: function(options) {
-            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollElement format";
+            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl format";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
             this.gotDataBefore = false;
         },
@@ -106,7 +106,7 @@ async function getTreeRanks(tableName){
 
             this.results = new ScrollResults({
                 el: this.el,
-                scrollElement: this.scrollElement,
+                scrollElement: this.$('.grid-table'),
                 view: new QueryResults({model: this.model,
                                         el: this.el,
                                         fieldSpecs: this.fieldSpecs,

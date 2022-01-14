@@ -299,7 +299,6 @@ var QueryBuilder = Backbone.View.extend({
 
             this.results = new QueryResultsTable({
                 model: this.model,
-                scrollElement: this.$el.parent('main'),
                 countOnly: this.query.get('countonly'),
                 format: this.query.get('formatauditrecids'),
                 fetchResults: this.fetchResults(),
