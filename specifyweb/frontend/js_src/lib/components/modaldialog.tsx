@@ -43,6 +43,7 @@ export function LoadingScreen(): JSX.Element {
       header={commonText('loading')}
       className={{ container: dialogClassNames.narrowContainer }}
       buttons={undefined}
+      onClose={undefined}
     >
       {loadingBar}
     </Dialog>
@@ -111,7 +112,8 @@ export function Dialog({
   readonly buttons: undefined | string | JSX.Element;
   readonly children: React.ReactNode;
   readonly modal?: boolean;
-  readonly onClose?: () => void;
+  // Have to explicitly pass undefined if dialog should not be closable
+  readonly onClose: (() => void) | undefined;
   readonly className?: {
     readonly content?: string;
     readonly container?: string;

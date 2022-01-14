@@ -16,6 +16,7 @@ export type SpecifyResource = {
   readonly saveBlockers: Readonly<SaveBlockers>;
   readonly parent?: SpecifyResource;
   readonly format: () => Promise<string>;
+  readonly url: () => string;
   readonly collection: {
     readonly related: SpecifyResource;
   };

@@ -24,6 +24,7 @@ export function TreeRow({
   focusPath,
   onFocusNode: handleFocusNode,
   onAction: handleAction,
+  setFocusedRow,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -43,6 +44,7 @@ export function TreeRow({
   readonly focusPath: RA<number> | undefined;
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'toggle' | 'child'>) => void;
+  readonly setFocusedRow: (row: Row) => void;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -51,6 +53,11 @@ export function TreeRow({
   const previousConformation = React.useRef<Conformations | undefined>(
     undefined
   );
+
+  React.useEffect(() => {
+    if (typeof focusPath !== 'undefined' && focusPath.length === 0)
+      setFocusedRow(row);
+  }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
   const isExpanded = typeof conformation !== 'undefined';
@@ -95,9 +102,12 @@ export function TreeRow({
       handleChangeConformation([[focusPath[0]]]);
   }, [conformation, focusPath, handleChangeConformation]);
 
-  function handleToggle(): void {
-    if (row.children === 0) return;
-    if (typeof conformation === 'object') {
+  function handleToggle(focusChild: boolean): void {
+    if (row.children === 0) {
+      handleFocusNode([]);
+      // If children are later added, the node would expand because of this line
+      handleChangeConformation([]);
+    } else if (typeof conformation === 'object') {
       previousConformation.current = conformation;
       handleChangeConformation(undefined);
       handleFocusNode([]);
@@ -107,11 +117,7 @@ export function TreeRow({
       else handleChangeConformation(previousConformation.current);
       handleFocusNode(
         // "0" is a placeholder for id of first child node
-        typeof rows === 'object'
-          ? rows.length === 0
-            ? []
-            : [rows[0].nodeId]
-          : [0]
+        focusChild ? [rows?.[0].nodeId ?? 0] : []
       );
     }
   }
@@ -144,38 +150,33 @@ export function TreeRow({
                   : undefined
               }
               aria-pressed={isLoading ? 'mixed' : displayChildren}
-              title={
-                typeof row.acceptedId === 'undefined'
-                  ? undefined
-                  : `${treeText('acceptedName')} ${
-                      row.acceptedName ?? row.acceptedId
-                    }`
-              }
               aria-controls={id('children')}
               onKeyDown={(event): void => {
                 const action = mapKey(event);
                 if (typeof action === 'undefined') return undefined;
-                else if (action === 'toggle') handleToggle();
+                else if (action === 'toggle') handleToggle(true);
                 else if (action === 'child')
                   if (row.children === 0 || isLoading) return undefined;
-                  else if (typeof rows?.[0] === 'undefined') handleToggle();
+                  else if (typeof rows?.[0] === 'undefined') handleToggle(true);
                   else handleFocusNode([rows[0].nodeId]);
                 else handleAction(action);
                 return undefined;
               }}
-              onClick={handleToggle}
+              onClick={(): void => handleToggle(false)}
               aria-describedby={rankNameId(rankId.toString())}
             >
               <span
                 className="-mr-2"
                 aria-label={
-                  isLoading
-                    ? commonText('loading')
-                    : row.children === 0
-                    ? treeText('leafNode')
-                    : displayChildren
-                    ? treeText('opened')
-                    : treeText('closed')
+                  isFocused
+                    ? isLoading
+                      ? commonText('loading')
+                      : row.children === 0
+                      ? treeText('leafNode')
+                      : displayChildren
+                      ? treeText('opened')
+                      : treeText('closed')
+                    : undefined
                 }
               >
                 {isLoading
@@ -191,7 +192,24 @@ export function TreeRow({
                   collapsedRanks.includes(rankId) ? 'sr-only' : 'contents'
                 }
               >
-                {row.name}
+                <span
+                  title={
+                    typeof row.acceptedId === 'undefined'
+                      ? undefined
+                      : `${treeText('acceptedName')} ${
+                          row.acceptedName ?? row.acceptedId
+                        }`
+                  }
+                  aria-label={
+                    typeof row.acceptedId === 'undefined'
+                      ? undefined
+                      : `${treeText('acceptedName')} ${
+                          row.acceptedName ?? row.acceptedId
+                        }`
+                  }
+                >
+                  {row.name}
+                </span>
                 {typeof nodeStats === 'object' && (
                   <span
                     className="text-gray-500"
@@ -288,6 +306,7 @@ export function TreeRow({
                 else handleAction(action);
                 return undefined;
               }}
+              setFocusedRow={setFocusedRow}
             />
           ))}
         </ul>

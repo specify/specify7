@@ -5,7 +5,7 @@ import type { IR, PartialBy, RA } from './types';
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
-export function formData(data: IR<string>): FormData {
+export function formData(data: IR<string | Blob>): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) => formData.append(key, value));
   return formData;

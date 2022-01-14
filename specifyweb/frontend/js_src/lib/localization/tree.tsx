@@ -15,11 +15,6 @@ const treeText = createDictionary({
     ca: 'Bad tree structure.',
   },
   // TreeContextMenu
-  cancelAction: {
-    'en-us': 'Cancel action',
-    'ru-ru': 'Отменить действие',
-    ca: 'Cancel action',
-  },
   merge: {
     'en-us': 'Merge',
     'ru-ru': 'Объединить',
@@ -57,30 +52,29 @@ const treeText = createDictionary({
     ca: 'Move node',
   },
   moveNodeHere: {
-    'en-us': (nodeName: string) => `Move ${nodeName} here`,
-    'ru-ru': (nodeName: string) => `Переместите ${nodeName} сюда`,
-    ca: (nodeName: string) => `Move ${nodeName} here`,
+    'en-us': (nodeName: string) => `Move "${nodeName}" here`,
+    'ru-ru': (nodeName: string) => `Переместите «${nodeName}» сюда`,
+    ca: (nodeName: string) => `Move "${nodeName}" here`,
   },
   nodeMoveMessage: {
     'en-us': (treeName: string, nodeName: string, parentName: string) => `
-      The ${treeName} node <em>${nodeName}</em> will be placed, along with
-      all of its descendants, under the new parent <em>${parentName}</em>.`,
+      The ${treeName} node "${nodeName}" will be placed, along with
+      all of its descendants, under the new parent "${parentName}".`,
     'ru-ru': (treeName: string, nodeName: string, parentName: string) => `
-      <em>${nodeName}</em> (${treeName}) будет размещен вместе со всеми его
+      «${nodeName}» (${treeName}) будет размещен вместе со всеми его
       дочерними элементами, под новым родительским элементом
-      <em>${parentName}</em>.`,
+      ${parentName}.`,
     ca: (treeName: string, nodeName: string, parentName: string) => `
-      The ${treeName} node <em>${nodeName}</em> will be placed, along with
-      all of its descendants, under the new parent <em>${parentName}</em>.`,
+      The ${treeName} node "${nodeName}" will be placed, along with
+      all of its descendants, under the new parent "${parentName}".`,
   },
   nodeMoveHintMessage: {
     'en-us': (nodeName: string) =>
-      `Right-click to select a new parent for <em>${nodeName}</em>.`,
+      `Select a new parent for "${nodeName}" and press the button.`,
     'ru-ru': (nodeName: string) =>
-      `Щелкните правой кнопкой мыши, чтобы выбрать нового родителя для
-      <em>${nodeName}</em>.`,
+      `Выберите нового родителя для «${nodeName}» и нажмите на кнопку.`,
     ca: (nodeName: string) =>
-      `Right-click to select a new parent for <em>${nodeName}</em>.`,
+      `Select a new parent for "${nodeName}" and press the button.`,
   },
   mergeNode: {
     'en-us': 'Merge node',
@@ -88,36 +82,33 @@ const treeText = createDictionary({
     ca: 'Merge node',
   },
   mergeNodeHere: {
-    'en-us': (nodeName: string) => `Merge ${nodeName} here`,
-    'ru-ru': (nodeName: string) => `Объедините ${nodeName} здесь`,
-    ca: (nodeName: string) => `Merge ${nodeName} here`,
+    'en-us': (nodeName: string) => `Merge "${nodeName}" here`,
+    'ru-ru': (nodeName: string) => `Объедините «${nodeName}» здесь`,
+    ca: (nodeName: string) => `Merge "${nodeName}" here`,
   },
   mergeNodeHintMessage: {
     'en-us': (nodeName: string) =>
-      `Right-click to select a target for <em>${nodeName}</em> to be merged
-    into.`,
+      `Select a new target for "${nodeName}" to be merged into and press the button`,
     'ru-ru': (nodeName: string) =>
-      `Щелкните правой кнопкой мыши, чтобы выбрать цель для объединения
-      <em>${nodeName}</em>`,
+      `Выберите новый пункт назначения для слияния «${nodeName}А» и нажмите на кнопку`,
     ca: (nodeName: string) =>
-      `Right-click to select a target for <em>${nodeName}</em> to be merged
-    into.`,
+      `Select a new target for "${nodeName}" to be merged into and press the button`,
   },
   mergeNodeMessage: {
     'en-us': (treeName: string, nodeName: string, parentName: string) => `
-      All references to ${treeName} node <em>${nodeName}</em> will be replaced
-      with <em>${parentName}</em>, and all descendants of <em>${nodeName}</em>
-      will be moved to <em>${parentName}</em> with any descendants matching
+      All references to ${treeName} node "${nodeName}" will be replaced
+      with "${parentName}", and all descendants of "${nodeName}"
+      will be moved to "${parentName}" with any descendants matching
       in name and rank being themselves merged recursively.`,
     'ru-ru': (treeName: string, nodeName: string, parentName: string) => `
-      Все ссылки на <em>${nodeName}</em> (${treeName}) будут заменены
-      с <em>${parentName}</em>, и все потомки <em>${nodeName}</em>
-      будет перемещен в <em>${parentName}</em> с соответствующими потомками
+      Все ссылки на "${nodeName}" (${treeName}) будут заменены
+      с "${parentName}", и все потомки "${nodeName}"
+      будет перемещен в "${parentName}" с соответствующими потомками
       по названию и рангу подвергнется рекурсивному слиянию.`,
     ca: (treeName: string, nodeName: string, parentName: string) => `
-      All references to ${treeName} node <em>${nodeName}</em> will be replaced
-      with <em>${parentName}</em>, and all descendants of <em>${nodeName}</em>
-      will be moved to <em>${parentName}</em> with any descendants matching
+      All references to ${treeName} node "${nodeName}" will be replaced
+      with "${parentName}", and all descendants of "${nodeName}"
+      will be moved to "${parentName}" with any descendants matching
       in name and rank being themselves merged recursively.`,
   },
   synonymizeNode: {
@@ -135,25 +126,22 @@ const treeText = createDictionary({
   },
   synonymizeNodeHintMessage: {
     'en-us': (nodeName: string) =>
-      `Right-click to select a target for <em>${nodeName}</em> to be
-      synonymized to.`,
+      `Select a target for "${nodeName}" to be synonymized to and press the button`,
     'ru-ru': (nodeName: string) =>
-      `Щелкните правой кнопкой мыши, чтобы выбрать цель для синонимизирования
-      <em>${nodeName}</em>.`,
+      `Выберите цель, синонимом которой будет «${nodeName}», и нажмите кнопку`,
     ca: (nodeName: string) =>
-      `Right-click to select a target for <em>${nodeName}</em> to be
-      synonymized to.`,
+      `Select a target for "${nodeName}" to be synonymized to and press the button`,
   },
   synonymizeMessage: {
     'en-us': (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node <em>${nodeName}</em> will be made a synonym
-      of <em>${synonymName}</em>.`,
+      `The ${treeName} node "${nodeName}" will be made a synonym
+      of "${synonymName}".`,
     'ru-ru': (treeName: string, nodeName: string, synonymName: string) =>
-      `Узел <em>${nodeName}</em> (${treeName}) станет синонимом
-      <em>${synonymName}</em>.`,
+      `Узел «${nodeName}» (${treeName}) станет синонимом
+      «${synonymName}».`,
     ca: (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node <em>${nodeName}</em> will be made a synonym
-      of <em>${synonymName}</em>.`,
+      `The ${treeName} node "${nodeName}" will be made a synonym
+      of "${synonymName}".`,
   },
   unsynonymizeNode: {
     'en-us': 'Unsynonymize node',
@@ -162,14 +150,13 @@ const treeText = createDictionary({
   },
   unsynonymizeNodeMessage: {
     'en-us': (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node <em>${nodeName}</em> will no longer be a
-      synonym of <em>${synonymName}</em>.`,
+      `The ${treeName} node "${nodeName}" will no longer be a
+      synonym of "${synonymName}".`,
     'ru-ru': (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node <em>${nodeName}</em> will no longer be a
-      synonym of <em>${synonymName}</em>.`,
+      `Узел «${nodeName}» (${treeName}) больше не будет синонимом «${synonymName}».`,
     ca: (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node <em>${nodeName}</em> will no longer be a
-      synonym of <em>${synonymName}</em>.`,
+      `The ${treeName} node "${nodeName}" will no longer be a
+      synonym of "${synonymName}".`,
   },
   // TreeNodeView
   acceptedName: {
@@ -187,36 +174,6 @@ const treeText = createDictionary({
     'en-us': 'Search Tree',
     'ru-ru': 'Поиск',
     ca: 'Search Tree',
-  },
-  remember: {
-    'en-us': 'Remember',
-    'ru-ru': 'Запомнить',
-    ca: 'Remember',
-  },
-  rememberButtonDescription: {
-    'en-us': 'Save Tree Layout',
-    'ru-ru': 'Сохранить макет дерева',
-    ca: 'Save Tree Layout',
-  },
-  restore: {
-    'en-us': 'Restore',
-    'ru-ru': 'Восстановить',
-    ca: 'Restore',
-  },
-  restoreButtonDescription: {
-    'en-us': 'Display Saved Tree Layout',
-    'ru-ru': 'Показать сохраненный макет дерева',
-    ca: 'Display Saved Tree Layout',
-  },
-  forget: {
-    'en-us': 'Forget',
-    'ru-ru': 'Забыть',
-    ca: 'Forget',
-  },
-  forgetButtonDescription: {
-    'en-us': 'Forget Saved Tree Layout',
-    'ru-ru': 'Забыть о сохраненном макете дерева',
-    ca: 'Forget Saved Tree Layout',
   },
   opened: {
     'en-us': 'Opened',

@@ -157,7 +157,7 @@ export default Backbone.View.extend({
         submit: function(event) {
             event.preventDefault();
             if(!this.buttonsDisabled && !this.saveBlocked){
-                const addAnother = $(event.submitter).is('.save-and-add-button');
+                const addAnother = event.target.classList.contains('save-and-add-button');
                 this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
             }
 

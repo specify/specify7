@@ -2,6 +2,7 @@ import Backbone from './backbone';
 import commonText from './localization/common';
 import { clearUnloadProtect } from './navigation';
 
+// TODO: rewrite this to react
 export const ErrorView = Backbone.View.extend({
   __name__: 'ErrorView',
   render() {

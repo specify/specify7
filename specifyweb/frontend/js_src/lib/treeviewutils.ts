@@ -65,20 +65,28 @@ export type Stats = RR<
 >;
 
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<Readonly<[number, number, number]>>>(url, {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { Accept: 'application/json' },
-  }).then(({ data }) =>
-    Object.fromEntries(
-      data.map(([childId, directCount, allCount]) => [
-        childId,
-        {
-          directCount,
-          childCount: allCount - directCount,
-        },
-      ])
+  ajax<RA<Readonly<[number, number, number]>>>(
+    url,
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Accept: 'application/json' },
+    },
+    { strict: false }
+  )
+    .then(({ data }) =>
+      Object.fromEntries(
+        data.map(([childId, directCount, allCount]) => [
+          childId,
+          {
+            directCount,
+            childCount: allCount - directCount,
+          },
+        ])
+      )
     )
-  );
+    .catch(() => {
+      return {};
+    });
 
 export type Row = Awaited<ReturnType<typeof fetchRows>>[number];
 

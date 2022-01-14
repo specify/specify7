@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import ajax from '../ajax';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
@@ -18,15 +17,20 @@ import {
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import userInfo from '../userinfo';
 import { capitalize } from '../wbplanviewhelper';
 import { Autocomplete } from './autocomplete';
-import { Button, className, Input, Link } from './basic';
+import { Button, className, Input } from './basic';
 import { useId, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeRow } from './treeviewrow';
+import { TreeViewActions } from './treeviewactions';
+
+// TODO: fix key repeat not working
+// TODO: query builder reEnable shouldFetchMore
+// TODO: rewrite savebutton deletebutton and navigation to use react dialogs
+//    or put jquery dialogs at zIndex >= 180
 
 function TreeView({
   tableName,
@@ -110,6 +114,9 @@ function TreeView({
   const id = useId('tree-view');
 
   const [focusPath, setFocusPath] = React.useState<RA<number>>([]);
+  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
+    undefined
+  );
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
   const toolbarButtonRef = React.useRef<HTMLButtonElement | null>(null);
@@ -180,51 +187,17 @@ function TreeView({
           )}
         />
         <span className="flex-1 -ml-2" />
-        <menu className="contents" tabIndex={-1}>
-          {/* TODO: don't forget forwardRef when changing active toolbar */}
-          <li className="contents">
-            {focusPath.length === 0 ? (
-              <Button.Simple disabled>{commonText('query')}</Button.Simple>
-            ) : (
-              <Link.LikeButton
-                href={`/specify/query/fromtree/${tableName}/${
-                  focusPath.slice(-1)[0]
-                }`}
-                target="_blank"
-              >
-                {commonText('query')}
-              </Link.LikeButton>
-            )}
-          </li>
-          <li className="contents">
-            <Button.Simple disabled={focusPath.length === 0}>
-              {userInfo.isReadOnly ? commonText('view') : commonText('edit')}
-            </Button.Simple>
-          </li>
-          <li className="contents">
-            <Button.Simple disabled={focusPath.length === 0}>
-              {commonText('addChild')}
-            </Button.Simple>
-          </li>
-          <li className="contents">
-            <Button.Simple disabled={focusPath.length === 0}>
-              {commonText('move')}
-            </Button.Simple>
-          </li>
-          <li className="contents">
-            <Button.Simple disabled={focusPath.length === 0}>
-              {treeText('merge')}
-            </Button.Simple>
-          </li>
-          <li className="contents">
-            <Button.Simple
-              disabled={focusPath.length === 0}
-              forwardRef={toolbarButtonRef}
-            >
-              {treeText('synonymize')}
-            </Button.Simple>
-          </li>
-        </menu>
+        <TreeViewActions
+          tableName={tableName}
+          focusRef={toolbarButtonRef}
+          onRefresh={(): void => {
+            // Force re-load
+            setRows(undefined);
+            setTimeout(() => setRows(rows), 0);
+          }}
+          focusedRow={focusedRow}
+          ranks={rankIds}
+        />
       </header>
       <div
         className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
@@ -240,7 +213,7 @@ function TreeView({
           // Don't handle bubbled events
           if (event.currentTarget !== event.target) return;
           event.preventDefault();
-          // Unset and set focus to trigger a useEffect hook in <TreeNode>
+          // Unset and set focus path to trigger a useEffect hook in <TreeNode>
           setFocusPath([-1]);
           setTimeout(
             () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
@@ -334,6 +307,7 @@ function TreeView({
                 else if (action === 'focusNext') searchBoxRef.current?.focus();
                 return undefined;
               }}
+              setFocusedRow={setFocusedRow}
             />
           ))}
         </ul>
