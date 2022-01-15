@@ -104,7 +104,7 @@ function PartialDateUi({
     return (): void => {
       destructorCalled = true;
     };
-  }, []);
+  }, [dateField, precisionField]);
 
   const refIsFirstRender = React.useRef(true);
   React.useEffect(() => {
@@ -142,7 +142,7 @@ function PartialDateUi({
       );
     }
     return undefined;
-  }, [moment]);
+  }, [moment, dateField, precisionField]);
 
   function handleChange() {
     const input = inputRef.current;

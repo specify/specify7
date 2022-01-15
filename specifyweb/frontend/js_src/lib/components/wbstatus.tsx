@@ -85,7 +85,7 @@ function WbStatus({
     return (): void => {
       destructorCalled = true;
     };
-  }, [state.aborted, dataset.id, handleFinished]);
+  }, [state.aborted, dataset.id]);
 
   const title = {
     validating: wbText('wbStatusValidationDialogTitle'),

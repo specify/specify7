@@ -154,7 +154,7 @@ function MetadataDialog({
   React.useEffect(() => {
     if (isFirstRender.current) isFirstRender.current = false;
     else handleChange();
-  }, [showMeta]);
+  }, [showMeta, handleChange]);
 
   const canImport =
     !showTemplates &&
@@ -315,14 +315,17 @@ export function WbsDialog({
     undefined
   );
 
-  const fetchDatasets = () =>
-    void ajax<RA<DatasetBrief>>(
-      `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      { headers: { Accept: 'application/json' } }
-    ).then(({ data }) => setDatasets(data));
+  const fetchDatasets = React.useCallback(
+    () =>
+      void ajax<RA<DatasetBrief>>(
+        `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { headers: { Accept: 'application/json' } }
+      ).then(({ data }) => setDatasets(data)),
+    [showTemplates]
+  );
 
-  React.useEffect(fetchDatasets, []);
+  React.useEffect(fetchDatasets, [fetchDatasets]);
 
   return typeof datasets === 'undefined' ? (
     <LoadingScreen />

@@ -44,7 +44,7 @@ function ChooseCollection({
   const submitRef = React.useRef<HTMLInputElement | null>(null);
   React.useEffect(() => {
     if (typeof data.initialValue === 'string') submitRef.current?.focus();
-  }, []);
+  }, [data.initialValue]);
 
   return (
     <SplashScreen>

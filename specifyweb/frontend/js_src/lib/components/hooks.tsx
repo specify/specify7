@@ -32,9 +32,9 @@ export function setTitle(title: string): void {
 export function useTitle(title: string): void {
   // Reset title after component is destroyed
   React.useEffect(() => {
-    const initialTitle = document.body.title;
+    const initialTitle = document.title;
     return (): void => {
-      document.body.title = initialTitle;
+      document.title = initialTitle;
     };
   }, []);
 

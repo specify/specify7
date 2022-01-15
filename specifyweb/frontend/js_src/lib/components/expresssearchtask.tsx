@@ -46,7 +46,6 @@ type RelatedTableResult = {
   readonly totalCount: number;
 };
 
-// TODO: translate QueryResultsTable to React
 type View = {
   readonly results: {
     readonly fetchMoreWhileAppropriate: () => void;
@@ -55,6 +54,7 @@ type View = {
   readonly remove: () => void;
 };
 
+// TODO: translate QueryResultsTable to React
 function TableResults({
   summary,
   view,

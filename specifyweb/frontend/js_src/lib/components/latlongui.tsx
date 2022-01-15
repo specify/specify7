@@ -64,7 +64,7 @@ function Coordinate({
     return (): void => {
       destructorCalled = true;
     };
-  }, []);
+  }, [coordinateField, coordinateTextField, fieldType]);
 
   return (
     <Input

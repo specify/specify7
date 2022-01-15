@@ -78,7 +78,7 @@ export function DataSetMeta({
         setModifiedBy(sameAgent ? createdByAgent : modifiedByAgent);
       })
       .catch(console.error);
-  }, []);
+  }, [dataset.createdbyagent, dataset.modifiedbyagent]);
 
   return (
     <Dialog

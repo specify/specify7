@@ -36,11 +36,7 @@ function WbPlanViewWrapper({
   React.useEffect(() => {
     if (schemaLoaded) return;
 
-    dataModelPromise
-      .then(() => setSchemaLoaded(true))
-      .catch((error) => {
-        throw error;
-      });
+    dataModelPromise.then(() => setSchemaLoaded(true)).catch(console.error);
   }, [schemaLoaded]);
 
   // Reorder headers if needed

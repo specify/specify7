@@ -724,11 +724,10 @@ export function CustomSelectElement({
   }, [defaultOption, has]);
 
   const customSelectElementRef = React.useRef<HTMLElement>(null);
-  const interactive = has('interactive');
   React.useEffect(() => {
     if (isOpen && has('interactive') && !has('tabIndex'))
       customSelectElementRef.current?.focus();
-  }, [isOpen, interactive, has]);
+  }, [isOpen, has]);
 
   return (
     <article
