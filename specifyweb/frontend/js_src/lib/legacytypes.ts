@@ -4,6 +4,7 @@ import type { RA } from './types';
 
 export type SpecifyResource = {
   readonly id: number;
+  readonly cid: string;
   readonly get: <TYPE = unknown>(fieldName: string) => TYPE;
   readonly rget: <TYPE = unknown>(fieldName: string) => Promise<TYPE>;
   readonly set: (fieldName: string, value: unknown) => void;
@@ -29,6 +30,9 @@ export type SpecifyResource = {
     callback?: (...args: RA<never>) => void
   ) => void;
   readonly trigger: (eventName: string, ...args: RA<unknown>) => void;
+  readonly businessRuleMgr: {
+    readonly pending: Promise<void>;
+  };
 };
 
 export type GetTreeDefinition = (tableName: string) => Promise<SpecifyResource>;

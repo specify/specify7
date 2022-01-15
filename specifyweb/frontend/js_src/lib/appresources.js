@@ -11,7 +11,7 @@ import 'brace/mode/properties';
 
 import * as app from './specifyapp';
 import schema from './schema';
-import SaveButton from './savebutton';
+import SaveButton from './components/savebutton';
 import DeleteButton from './deletebutton';
 import userInfo from './userinfo';
 import * as navigation from './navigation';
@@ -191,10 +191,11 @@ const ResourceDataView = Backbone.View.extend({
                 });
 
                 if(userInfo.isadmin){
-                    const saveButton = new SaveButton({model: this.appresourceData})
-                        .on('savecomplete', () => this.model.save())
-                        .render();
-                    saveButton.bindToForm(this.el);
+                    const saveButton = new SaveButton({
+                        model: this.appresourceData,
+                        form: this.el,
+                        onSaved: ()=>this.model.save(),
+                    }).render();
                     buttonsDiv.append(`<span class="flex-1 -ml-2"></span>`);
                     buttonsDiv.append(saveButton.el);
                 }

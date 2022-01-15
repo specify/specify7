@@ -630,15 +630,20 @@ const formsText = createDictionary({
     'ru-ru': 'Сохранить и добавить еще',
     ca: 'Save and Add Another',
   },
+  addAnother: {
+    'en-us': 'Add Another',
+    'ru-ru': 'добавить еще',
+    ca: 'Add Another',
+  },
   saveConflictDialogTitle: {
     'en-us': 'Save record',
     'ru-ru': 'Сохранить запись',
     ca: 'Save record',
   },
   saveConflictDialogHeader: {
-    'en-us': header('Save conflict'),
-    'ru-ru': header('Сохранить конфликт'),
-    ca: header('Save conflict'),
+    'en-us': 'Save conflict',
+    'ru-ru': 'Сохранить конфликт',
+    ca: 'Save conflict',
   },
   saveConflictDialogMessage: {
     'en-us': `
@@ -660,9 +665,9 @@ const formsText = createDictionary({
     ca: 'Save record',
   },
   saveBlockedDialogHeader: {
-    'en-us': header('Save blocked'),
-    'ru-ru': header('Сохранение заблокировано'),
-    ca: header('Save blocked'),
+    'en-us': 'Save blocked',
+    'ru-ru': 'Сохранение заблокировано',
+    ca: 'Save blocked',
   },
   saveBlockedDialogMessage: {
     'en-us': 'Form cannot be saved while the following errors exist:',

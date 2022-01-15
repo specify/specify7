@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Backbone from './backbone';
 
 import populateform from './populateform';
-import SaveButton from './savebutton';
+import SaveButton from './components/savebutton';
 import DeleteButton from './deletebutton';
 import specifyform from './specifyform';
 
@@ -35,14 +35,16 @@ export default Backbone.View.extend({
             var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(form);
 
             if (!this.readOnly) {
-                var saveButton = new SaveButton({ model: this.resource });
+                var saveButton = new SaveButton({
+                    model: this.resource,
+                    form: form[0].querySelector('form'),
+                    onSaving: this.trigger.bind(this, 'saving'),
+                    onSaved: ()=>{
+                        this.remove();
+                        this.trigger('savecomplete', this, this.resource);
+                    },
+                });
                 saveButton.render().$el.prependTo(buttons);
-                saveButton.bindToForm(form[0].querySelector('form'));
-                saveButton.on('saving', this.trigger.bind(this, 'saving'));
-                saveButton.on('savecomplete', function() {
-                    this.remove();
-                    this.trigger('savecomplete', this, this.resource);
-                }, this);
             }
 
             if (!this.resource.isNew() && !this.readOnly) {

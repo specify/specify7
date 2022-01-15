@@ -7,7 +7,7 @@ import Backbone from './backbone';
 import specifyform from './specifyform';
 import {format} from './dataobjformatters';
 import viewheader from './templates/viewheader.html';
-import SaveButton from './savebutton';
+import SaveButton from './components/savebutton';
 import DeleteButton from './deletebutton';
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -71,17 +71,6 @@ const ResourceView = Backbone.View.extend({
             }
         }
 
-        if (!self.readOnly) {
-            self.saveBtn = new SaveButton({
-                model: self.model,
-                addAnother: self.model.isNew() &&
-                    !self.options.noAddAnother &&
-                    !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name)
-            });
-
-            self.saveBtn.on('savecomplete', self.saved, self);
-        }
-
         if (!self.readOnly && !self.model.isNew()) {
             self.deleteBtn = new DeleteButton({ model: self.model });
             self.deleteBtn.on('deleted', self.deleted, self);
@@ -111,10 +100,18 @@ const ResourceView = Backbone.View.extend({
             var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(form);
             self.$el.append(form);
             self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
-            if(self.saveBtn){
+            if (!self.readOnly) {
+                self.saveBtn = new SaveButton({
+                    model: self.model,
+                    form: self.el.querySelector('form'),
+                    canAddAnother: !self.options.noAddAnother &&
+                        !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name),
+                    onSaved: (options)=>self.trigger('saved', self.model, options),
+                });
                 buttons.append(`<span class="flex-1 -ml-2"></div>`)
                 self.saveBtn.render().$el.appendTo(buttons);
-                self.saveBtn.bindToForm(self.el.querySelector('form'));
+            }
+            if(self.saveBtn){
             }
             self.reporterOnSave = self.$el.find(".specify-print-on-save");
             self.setTitle();
@@ -152,9 +149,6 @@ const ResourceView = Backbone.View.extend({
     setFormTitle: function(title) {
         this.$el.is(':ui-dialog') && this.$el.dialog('option','title',title);
     },
-    saved: function(options) {
-        this.trigger('saved', this.model, options);
-    },
     deleted: function() {
         this.trigger('deleted');
     }
@@ -164,7 +158,7 @@ _.extend(ResourceView, Backbone.Events);
 
 function viewSaved(resource, recordSet, options) {
     if (options.addAnother) {
-        showResource(options.newResource, recordSet);
+        showResource(options.newResource, recordSet, true);
     } else if (options.wasNew) {
         navigation.go(resource.viewUrl());
     } else {

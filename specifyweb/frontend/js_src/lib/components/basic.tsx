@@ -297,9 +297,23 @@ export const Submit = {
       type: 'submit',
     }
   ),
+  Red: wrap<'input', { readonly children?: undefined }>(
+    'input',
+    className.redButton,
+    {
+      type: 'submit',
+    }
+  ),
   Blue: wrap<'input', { readonly children?: undefined }>(
     'input',
     className.blueButton,
+    {
+      type: 'submit',
+    }
+  ),
+  Orange: wrap<'input', { readonly children?: undefined }>(
+    'input',
+    className.orangeButton,
     {
       type: 'submit',
     }

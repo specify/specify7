@@ -26,6 +26,7 @@ export const Http = {
   NO_CONTENT: 204,
   NOT_FOUND: 404,
   FORBIDDEN: 403,
+  CONFLICT: 409,
   UNAVAILABLE: 503,
 };
 

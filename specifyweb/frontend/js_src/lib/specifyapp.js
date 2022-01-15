@@ -50,11 +50,8 @@ global.jQuery = $;
     let currentView;
     let isFirstRender = true;
     export function setCurrentView(view) {
-        // Remove old view
-        currentView && currentView.remove();
-        const main = $('main');
-        main.empty();
-
+        // Remove old view or overlay
+        currentView?.remove();
         currentOverlay?.remove();
         currentOverlay = undefined;
 
@@ -70,7 +67,9 @@ global.jQuery = $;
 
         currentView = view;
         currentView.render();
-        main.append(currentView.el);
+        const main = $('main');
+        main.empty();
+        main[0].append(currentView.el);
         main[0].focus();
 
         if (typeof currentView.title === 'string')

@@ -14,9 +14,10 @@ function triggerOnCollectionRelated(resource: SpecifyResource) {
   );
 }
 
-type Blocker = {
+export type Blocker = {
   readonly fieldName?: string;
   readonly reason: string;
+  // Deferred blockers fire only when trying to save
   readonly deferred: boolean;
 };
 
@@ -145,9 +146,7 @@ export default class SaveBlockers {
   public fireDeferredBlockers(): void {
     this.blockers = Object.fromEntries(
       Object.entries(this.blockers).map(([key, blocker]) => {
-        if (blocker.deferred) {
-          this.triggerSaveBlocked(blocker);
-        }
+        if (blocker.deferred) this.triggerSaveBlocked(blocker);
         return [key, { ...blocker, deferred: false }];
       })
     );

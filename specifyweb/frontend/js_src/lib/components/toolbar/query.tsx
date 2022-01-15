@@ -8,7 +8,7 @@ import DeleteButton from '../../deletebutton';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import populateform from '../../populateform';
-import SaveButton from '../../savebutton';
+import SaveButton from '../savebutton';
 import schema, { getModel, getModelById } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
 import specifyform from '../../specifyform';
@@ -374,17 +374,15 @@ const EditQueryDialog = Backbone.View.extend({
     ).appendTo(form);
 
     if (!this.readOnly) {
-      const saveButton = new SaveButton({ model: this.spquery });
-      saveButton.render().$el.appendTo(buttons);
-      saveButton.bindToForm(form[0].querySelector('form'));
-      saveButton.on(
-        'savecomplete',
-        () => {
+      const saveButton = new SaveButton({
+        model: this.spquery,
+        form: form[0].querySelector('form') as HTMLFormElement,
+        onSaved: () => {
           this.remove();
           navigation.go(`/query/${this.spquery.id}/`);
         },
-        this
-      );
+      });
+      saveButton.render().$el.appendTo(buttons);
     }
 
     const label = this.spquery.specifyModel.getLocalizedName();
