@@ -58,7 +58,7 @@ const tasksPromise = Promise.all([
   import('./querytask'),
   import('./treetask'),
   import('./components/expresssearchtask'),
-  import('./datamodeltask'),
+  import('./components/datamodeltask'),
   import('./attachmentstask'),
   import('./wbtask'),
   import('./wbimporttask'),
