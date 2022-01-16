@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Backbone from './backbone';
 
 import schema, {getModelById} from './schema';
-import FormsDialog from './formsdialog';
+import FormsDialog from './components/formsdialog';
 import EditResourceDialog from './editresourcedialog';
 import * as navigation from './navigation';
 import * as querystring from './querystring';
@@ -131,14 +131,16 @@ export default Backbone.View.extend({
             return buttons;
         },
         openFormsDialog: function() {
-            new FormsDialog({
+            const dialog = new FormsDialog({
                 onSelected: (model)=>{
+                    dialog.remove();
                     const recordset = new schema.models.RecordSet.Resource();
                     recordset.set('dbtableid', model.tableId);
                     recordset.set('type', 0);
                     new EditResourceDialog({ resource: recordset }).render()
                         .on('savecomplete', this.gotoForm.bind(this, model, recordset));
-                }
+                },
+                onClose: () => dialog.remove(),
             }).render();
         },
         gotoForm: function(model, recordset) {

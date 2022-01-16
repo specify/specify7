@@ -1,5 +1,5 @@
+import FormsDialog from './components/formsdialog';
 import type { MenuItem } from './components/main';
-import FormsDialog from './formsdialog';
 import commonText from './localization/common';
 
 const menuItem: MenuItem = {
