@@ -59,7 +59,7 @@ function getCBX(options, resource, field) {
         if (!options.pickListName)
             throw new Error(`can't determine picklist for field ${resource.specifyModel.name}.${field.name}`);
 
-        return Q(getPickListByName(options.pickListName))
+        return getPickListByName(options.pickListName)
             .then(function(picklist) {
                 options.pickList = picklist;
 

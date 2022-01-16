@@ -299,11 +299,11 @@ function eventHandlerForToOne(related, field) {
             }
             return value;
         },
+        // get the value of the named field where the name may traverse related objects
+        // using dot notation. if the named field represents a resource or collection,
+        // then prePop indicates whether to return the named object or the contents of
+        // the field that represents it
         rget: function(fieldName, prePop) {
-            // get the value of the named field where the name may traverse related objects
-            // using dot notation. if the named field represents a resource or collection,
-            // then prePop indicates whether to return the named object or the contents of
-            // the field that represents it
             return this.getRelated(fieldName, {prePop: prePop});
         },
         getRelated: function(fieldName, options) {

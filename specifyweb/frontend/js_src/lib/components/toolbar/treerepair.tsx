@@ -16,8 +16,9 @@ import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
-const treesForAll = new Set(['geography', 'storage', 'taxon']);
+const commonTrees = new Set(['geography', 'storage', 'taxon']);
 const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
+export const allTrees = new Set([...commonTrees, ...commonTrees]);
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 
 export function TreeSelectDialog({
@@ -41,7 +42,7 @@ export function TreeSelectDialog({
       defined(getDomainResource('discipline')).get<string>('type')
     )
       .then((type) => [
-        ...treesForAll,
+        ...commonTrees,
         ...(paleoDiscs.has(type) ? treesForPaleo : []),
       ])
       .then((trees) =>

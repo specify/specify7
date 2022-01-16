@@ -6,7 +6,10 @@ export type SpecifyResource = {
   readonly id: number;
   readonly cid: string;
   readonly get: <TYPE = unknown>(fieldName: string) => TYPE;
-  readonly rget: <TYPE = unknown>(fieldName: string) => Promise<TYPE>;
+  readonly rget: <TYPE = unknown>(
+    fieldName: string,
+    prePopulate?: boolean
+  ) => Promise<TYPE>;
   readonly set: (fieldName: string, value: unknown) => void;
   readonly save: () => Promise<void>;
   readonly destroy: () => Promise<void>;

@@ -79,10 +79,12 @@ export async function showLeafletMap({
   localityPoints = [],
   markerClickCallback,
   leafletMapContainer,
+  onClose: handleClose,
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
   readonly leafletMapContainer: Readonly<HTMLDivElement>;
+  readonly onClose?: () => void;
 }): Promise<L.Map | undefined> {
   const tileLayers = await leafletTileServersPromise;
 
@@ -93,6 +95,7 @@ export async function showLeafletMap({
     close() {
       map.remove();
       $(this).remove();
+      handleClose?.();
     },
   });
 

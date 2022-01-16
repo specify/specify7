@@ -25,9 +25,9 @@ import formsText from './localization/forms';
 import autocomplete from './components/autocomplete';
 import {formatList} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
+import {allTrees} from "./components/toolbar/treerepair";
 
 let typesearches;
-const treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "taxon"];
 
 export const fetchContext = load(
   '/context/app.resource?name=TypeSearches',
@@ -37,7 +37,7 @@ export const fetchContext = load(
 });
 
 function isTreeModel(model) {
-    return treemodels.indexOf(model.specifyModel.name.toLowerCase()) != -1;
+    return allTrees.has(model.specifyModel.name.toLowerCase());
 }
 
 function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, rightSideRels, qcbx) {
@@ -90,7 +90,7 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
     return query;
 }
 
-function lookupTypesearch(name) {
+function lookupTypeSearch(name) {
     return $('[name="'+name+'"]', typesearches);
 }
 
@@ -315,7 +315,7 @@ export default Backbone.View.extend({
         if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
         this.relatedModel || (this.relatedModel = field.getRelatedModel());
-        this.typesearch || (this.typesearch = lookupTypesearch(init.name));
+        this.typesearch || (this.typesearch = lookupTypeSearch(init.name));
 
         var selectStmt = this.typesearch.text();
         var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;

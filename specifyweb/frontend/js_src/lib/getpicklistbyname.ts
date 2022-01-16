@@ -1,0 +1,12 @@
+import type { SpecifyResource } from './legacytypes';
+import schema from './schema';
+
+export default async function getPickListByName(
+  pickListName: string
+): Promise<SpecifyResource> {
+  const collection = new schema.models.PickList.LazyCollection({
+    filters: { name: pickListName },
+    domainfilter: true,
+  });
+  return collection.fetch({ limit: 1 }).then(({ models }) => models[0]);
+}
