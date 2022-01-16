@@ -12,7 +12,7 @@ import 'brace/mode/properties';
 import * as app from './specifyapp';
 import schema from './schema';
 import SaveButton from './components/savebutton';
-import DeleteButton from './deletebutton';
+import DeleteButton from './components/deletebutton';
 import userInfo from './userinfo';
 import * as navigation from './navigation';
 import adminText from './localization/admin';
@@ -203,10 +203,11 @@ const ResourceDataView = Backbone.View.extend({
                 $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
-            userInfo.isadmin &&  buttonsDiv.prepend(
-                new DeleteButton({model: this.model}).render()
-                    .on('deleted', () => navigation.go('/specify/appresources/'))
-                    .el
+            userInfo.isadmin && buttonsDiv.prepend(
+                new DeleteButton({
+                    model: this.model,
+                    onDeleted: () => navigation.go('/specify/appresources/')
+                }).render().el
             );
 
             this.$el.append(buttonsDiv);

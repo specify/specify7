@@ -125,9 +125,9 @@ const formsText = createDictionary({
       so only delete this record set if you are sure it is not to be used.`,
   },
   checkingIfResourceCanBeDeleted: {
-    'en-us': 'Checking if resource can be deleted.',
-    'ru-ru': 'Проверка возможности удаления ресурса.',
-    ca: 'Checking if resource can be deleted.',
+    'en-us': 'Checking if resource can be deleted...',
+    'ru-ru': 'Проверка возможности удаления ресурса...',
+    ca: 'Checking if resource can be deleted...',
   },
   deleteBlockedDialogTitle: {
     'en-us': 'Delete resource',
@@ -135,9 +135,9 @@ const formsText = createDictionary({
     ca: 'Delete resource',
   },
   deleteBlockedDialogHeader: {
-    'en-us': header('Delete blocked'),
-    'ru-ru': header('Удаление заблокировано'),
-    ca: header('Delete blocked'),
+    'en-us': 'Delete blocked',
+    'ru-ru': 'Удаление заблокировано',
+    ca: 'Delete blocked',
   },
   deleteBlockedDialogMessage: {
     'en-us': `
@@ -398,11 +398,9 @@ const formsText = createDictionary({
     ca: 'Delete?',
   },
   deleteConfirmationDialogHeader: {
-    'en-us': header(
-      'Are you sure you want to permanently delete this item(s)?'
-    ),
-    'ru-ru': header('Вы уверены, что хотите навсегда удалить этот элемент(ы)?'),
-    ca: header('Are you sure you want to permanently delete this item(s)?'),
+    'en-us': 'Are you sure you want to permanently delete this item(s)?',
+    'ru-ru': 'Вы уверены, что хотите навсегда удалить этот элемент(ы)?',
+    ca: 'Are you sure you want to permanently delete this item(s)?',
   },
   deleteConfirmationDialogMessage: {
     'en-us': 'This action can not be undone.',

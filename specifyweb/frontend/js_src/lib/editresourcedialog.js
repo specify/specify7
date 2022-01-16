@@ -5,7 +5,7 @@ import Backbone from './backbone';
 
 import populateform from './populateform';
 import SaveButton from './components/savebutton';
-import DeleteButton from './deletebutton';
+import DeleteButton from './components/deletebutton';
 import specifyform from './specifyform';
 
 import commonText from './localization/common';
@@ -48,9 +48,11 @@ export default Backbone.View.extend({
             }
 
             if (!this.resource.isNew() && !this.readOnly) {
-                var deleteButton = new DeleteButton({ model: this.resource, warning: this.deleteWarning });
+                const deleteButton = new DeleteButton({
+                    model: this.resource,
+                    deleteMessage: this.deleteWarning
+                });
                 deleteButton.render().$el.prependTo(buttons);
-                deleteButton.on('deleting', this.trigger, this);
             }
 
             populateform(form, this.resource);

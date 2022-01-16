@@ -8,7 +8,7 @@ import specifyform from './specifyform';
 import {format} from './dataobjformatters';
 import viewheader from './templates/viewheader.html';
 import SaveButton from './components/savebutton';
-import DeleteButton from './deletebutton';
+import DeleteButton from './components/deletebutton';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import userInfo from "./userinfo";
@@ -71,10 +71,11 @@ const ResourceView = Backbone.View.extend({
             }
         }
 
-        if (!self.readOnly && !self.model.isNew()) {
-            self.deleteBtn = new DeleteButton({ model: self.model });
-            self.deleteBtn.on('deleted', self.deleted, self);
-        }
+        if (!self.readOnly && !self.model.isNew())
+            self.deleteBtn = new DeleteButton({
+                model: self.model,
+                onDeleted: ()=>self.deleted(),
+            });
     },
     render: function() {
         var self = this;

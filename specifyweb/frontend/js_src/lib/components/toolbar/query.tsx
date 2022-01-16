@@ -4,7 +4,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import ajax from '../../ajax';
-import DeleteButton from '../../deletebutton';
+import DeleteButton from '../deletebutton';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import populateform from '../../populateform';
@@ -391,9 +391,11 @@ const EditQueryDialog = Backbone.View.extend({
       : label;
 
     if (!this.spquery.isNew() && !this.readOnly) {
-      const deleteButton = new DeleteButton({ model: this.spquery });
+      const deleteButton = new DeleteButton({
+        model: this.spquery,
+        onDeleted: () => this.remove(),
+      });
       deleteButton.render().$el.appendTo(buttons);
-      deleteButton.on('deleted', () => this.remove());
     }
 
     populateform(form, this.spquery);
