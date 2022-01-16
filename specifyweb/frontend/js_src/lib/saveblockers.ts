@@ -4,17 +4,17 @@ import { validationMessages } from './validationmessages';
 
 // TODO: only propagate for dependent resources
 function triggerOnParent(resource: SpecifyResource) {
-  return resource.parent?.trigger.bind(resource.parent) ?? (() => {});
+  return resource.parent?.trigger.bind(resource.parent);
 }
 
 function triggerOnCollectionRelated(resource: SpecifyResource) {
-  return (
-    resource.collection?.related?.trigger.bind(resource.collection.related) ??
-    (() => {})
+  return resource.collection?.related?.trigger.bind(
+    resource.collection.related
   );
 }
 
 export type Blocker = {
+  readonly resource: SpecifyResource;
   readonly fieldName?: string;
   readonly reason: string;
   // Deferred blockers fire only when trying to save
@@ -35,18 +35,29 @@ export default class SaveBlockers {
 
   private inputs: R<LinkedField[]> = {};
 
+  public readonly blockingResources: Set<SpecifyResource> = new Set();
+
   public constructor(resource: SpecifyResource) {
     this.resource = resource;
-    this.resource.on('saveblocked', function (blocker) {
-      triggerOnParent(resource)('saveblocked', blocker);
-      triggerOnCollectionRelated(resource)('saveblocked', blocker);
+    this.resource.on('saveblocked', (blocker: Blocker) => {
+      triggerOnParent(resource)?.('saveblocked', blocker);
+      triggerOnCollectionRelated(resource)?.('saveblocked', blocker);
+      if (!this.blockingResources.has(resource))
+        resource.once('destroy', () => {
+          this.blockingResources.delete(resource);
+          resource.trigger('blockerschanged');
+        });
+      this.blockingResources.add(blocker.resource);
+      resource.trigger('blockerschanged');
     });
-    this.resource.on('oktosave destory', function (source) {
-      triggerOnParent(resource)('oktosave', source);
-      triggerOnCollectionRelated(resource)('oktosave', source);
+    this.resource.on('oktosave destory', (source: SpecifyResource) => {
+      triggerOnParent(resource)?.('oktosave', source);
+      triggerOnCollectionRelated(resource)?.('oktosave', source);
+      this.blockingResources.delete(source);
+      resource.trigger('blockerschanged');
     });
-    this.resource.on('remove', function (source) {
-      triggerOnCollectionRelated(resource)('oktosave', source);
+    this.resource.on('remove', (source: SpecifyResource) => {
+      triggerOnCollectionRelated(resource)?.('oktosave', source);
     });
   }
 
@@ -57,6 +68,7 @@ export default class SaveBlockers {
     deferred = false
   ): void {
     this.blockers[key] = {
+      resource: this.resource,
       fieldName: fieldName?.toLowerCase(),
       reason,
       deferred,
@@ -91,6 +103,7 @@ export default class SaveBlockers {
     this.refreshValidation(blocker);
   }
 
+  // Don't use this in React components. Prefer getFieldErrors with useValidation
   public linkInput(input: Input, fieldName: string): void {
     this.inputs[fieldName] ??= [];
     const update = this.handleFocus.bind(this, input, fieldName);
@@ -102,13 +115,14 @@ export default class SaveBlockers {
     update();
   }
 
-  public handleFocus(input: Input, fieldName: string): void {
-    validationMessages(
-      input,
-      Object.values(this.blockers)
-        .filter((blocker) => blocker.fieldName === fieldName)
-        .map((blocker) => blocker.reason)
-    );
+  private handleFocus(input: Input, fieldName: string): void {
+    validationMessages(input, this.getFieldErrors(fieldName));
+  }
+
+  public getFieldErrors(fieldName: string): RA<string> {
+    return Object.values(this.blockers)
+      .filter((blocker) => blocker.fieldName === fieldName)
+      .map((blocker) => blocker.reason);
   }
 
   public unlinkInput(targetInput: Input): void {

@@ -1,8 +1,10 @@
 import React from 'react';
 
+import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
+import { ignoreValidationErrors } from '../validationmessages';
 
 const idStore: R<number> = {};
 
@@ -88,14 +90,12 @@ export function useValidation<T extends Input = HTMLInputElement>(
 
     const input = inputRef.current;
     if (!input) return;
-    // Show the error message, if present
     input.setCustomValidity(joined);
-    if (joined !== '') input.reportValidity();
+
+    if (joined !== '' && !ignoreValidationErrors(input)) input.reportValidity();
   }
 
-  React.useEffect(() => {
-    setValidation(message);
-  }, [message]);
+  React.useEffect(() => setValidation(message), [message]);
 
   return {
     inputRef,
@@ -105,4 +105,20 @@ export function useValidation<T extends Input = HTMLInputElement>(
     },
     setValidation,
   };
+}
+
+export function useSaveBlockers({
+  model,
+  fieldName,
+}: {
+  readonly model: SpecifyResource;
+  readonly fieldName: string;
+}): string {
+  const [errors, setErrors] = React.useState<string>('');
+  React.useEffect(() => {
+    model.on('blockerschanged', () =>
+      setErrors(model.saveBlockers.getFieldErrors(fieldName).join('\n'))
+    );
+  }, [model, fieldName]);
+  return errors;
 }

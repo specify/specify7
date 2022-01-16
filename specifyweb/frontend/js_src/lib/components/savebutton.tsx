@@ -5,8 +5,6 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import * as navigation from '../navigation';
-import type { Blocker } from '../saveblockers';
-import type { IR } from '../types';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 import { Button, className, Submit } from './basic';
@@ -51,45 +49,20 @@ function SaveButton({
     return (): void => navigation.removeUnloadProtect(id('unload-protect'));
   }, [id, saveRequired]);
 
-  const [blockingResources, setBlockingResources] = React.useState<
-    IR<SpecifyResource>
-  >({});
+  const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {
     model.on('saverequired changing', () => {
       setSaveRequired(true);
     });
-
-    const removeBlocker = (resource: SpecifyResource): void =>
-      setBlockingResources((blockingResources) =>
-        Object.fromEntries(
-          Object.entries(blockingResources).filter(
-            ([cid]) => cid !== resource.cid
-          )
-        )
-      );
-
-    model.on('oktosave', removeBlocker);
-    model.on('saveblocked', (blocker: Blocker) => {
-      setBlockingResources((blockingResources) => {
-        if (typeof blockingResources[model.cid] === 'undefined')
-          model.on('destroy', () => removeBlocker(model));
-        return {
-          ...blockingResources,
-          [model.cid]: model,
-        };
-      });
-      if (!blocker.deferred) setSaveBlocked(true);
-    });
+    function handleChanged(): void {
+      const onlyDeferredBlockers = Array.from(
+        model.saveBlockers.blockingResources
+      ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
+      setSaveBlocked(!onlyDeferredBlockers);
+    }
+    handleChanged();
+    model.on('blockerschanged', handleChanged);
   }, [model]);
-
-  const [saveBlocked, setSaveBlocked] = React.useState(false);
-
-  React.useEffect(() => {
-    const onlyDeferredBlockers = Object.values(blockingResources).every(
-      (resource) => resource.saveBlockers.hasOnlyDeferredBlockers()
-    );
-    setSaveBlocked(!onlyDeferredBlockers);
-  }, [blockingResources]);
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
@@ -100,6 +73,7 @@ function SaveButton({
     if (form.id === '') form.id = id('form');
     setFormId(form.id);
 
+    // TODO: remove this once everything is using controlled components
     Array.from(form.querySelectorAll('input, textarea, select'), (element) =>
       element.classList.add(className.notTouchedInput)
     );
@@ -119,10 +93,11 @@ function SaveButton({
 
     await model.businessRuleMgr.pending;
 
-    Object.values(blockingResources).forEach((resource) =>
+    const blockingResources = Array.from(model.saveBlockers.blockingResources);
+    blockingResources.forEach((resource) =>
       resource.saveBlockers.fireDeferredBlockers()
     );
-    if (Object.keys(blockingResources).length > 0) {
+    if (blockingResources.length > 0) {
       setShowBlockedDialog(true);
       return;
     }
@@ -215,7 +190,7 @@ function SaveButton({
         >
           <p>{formsText('saveBlockedDialogMessage')}</p>
           <ul>
-            {Object.values(blockingResources).map((resource) => (
+            {Array.from(model.saveBlockers.blockingResources, (resource) => (
               <li key={resource.cid}>
                 <h3>{resource.specifyModel.getLocalizedName()}</h3>
                 <dl>

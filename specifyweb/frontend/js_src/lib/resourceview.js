@@ -108,11 +108,9 @@ const ResourceView = Backbone.View.extend({
                     canAddAnother: !self.options.noAddAnother &&
                         !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name),
                     onSaved: (options)=>self.trigger('saved', self.model, options),
-                });
+                }).render();
                 buttons.append(`<span class="flex-1 -ml-2"></div>`)
-                self.saveBtn.render().$el.appendTo(buttons);
-            }
-            if(self.saveBtn){
+                self.saveBtn.$el.appendTo(buttons);
             }
             self.reporterOnSave = self.$el.find(".specify-print-on-save");
             self.setTitle();

@@ -9,6 +9,7 @@ import {format} from './dataobjformatters';
 import fieldformat from './fieldformat';
 import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
 import {handleDatePaste} from './components/partialdateui';
+import dayjs from "./dayjs";
 
 export default Backbone.View.extend({
         __name__: "UIField",
@@ -96,7 +97,7 @@ export default Backbone.View.extend({
                     const objFormat = field.isRelationship
                       ? format
                       : field.isTemporal()
-                      ? (value) => value
+                      ? (value) => dayjs(value).format('YYYY-MM-DD')
                       : _.bind(fieldformat, null, field);
 
                     resource.rget(fieldName).pipe(objFormat).done((value)=>{

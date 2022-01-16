@@ -9,11 +9,12 @@ export type SpecifyResource = {
   readonly rget: <TYPE = unknown>(fieldName: string) => Promise<TYPE>;
   readonly set: (fieldName: string, value: unknown) => void;
   readonly save: () => Promise<void>;
+  readonly destroy: () => Promise<void>;
   readonly viewUrl: () => string;
   readonly Resource: new () => SpecifyResource;
   readonly isNew: () => boolean;
   readonly clone: () => SpecifyResource;
-  readonly specifyModel: SpecifyModel;
+  readonly specifyModel: Readonly<SpecifyModel>;
   readonly saveBlockers: Readonly<SaveBlockers>;
   readonly parent?: SpecifyResource;
   readonly format: () => Promise<string>;
@@ -22,6 +23,10 @@ export type SpecifyResource = {
     readonly related: SpecifyResource;
   };
   readonly on: (
+    eventName: string,
+    callback: (...args: RA<never>) => void
+  ) => void;
+  readonly once: (
     eventName: string,
     callback: (...args: RA<never>) => void
   ) => void;

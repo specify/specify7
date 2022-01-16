@@ -178,7 +178,11 @@ export class Field {
 
   // Returns true if the field represents a time value.
   public isTemporal(): boolean {
-    return ['java.util.Date', 'java.util.Calendar'].includes(this.type);
+    return [
+      'java.util.Date',
+      'java.util.Calendar',
+      'java.sql.Timestamp',
+    ].includes(this.type);
   }
 
   public isDependent(): boolean {

@@ -51,7 +51,8 @@ var formCounter = 0;
 
         return $(formtemplate({
             formNumber: formNumber,
-            tagName: isSubView ? 'div' : 'form'
+            tagName: isSubView ? 'div' : 'form',
+            className
         })).find('.specify-view-content').append(table).end();
     }
 

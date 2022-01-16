@@ -15,7 +15,8 @@ import UIPlugin from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
 import { SpecifyResource } from '../legacytypes';
-import { Button, Input } from './basic';
+import { Button, Input, Select } from './basic';
+import { useSaveBlockers, useValidation } from './hooks';
 
 function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -71,40 +72,47 @@ function PartialDateUi({
     () =>
       reversePrecision[model.get<number>(precisionField)] ?? defaultPrecision
   );
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const errors = useSaveBlockers({ model, fieldName: dateField });
+  const { inputRef, validationRef } = useValidation(errors);
 
   // Parsed date object
   const [moment, setMoment] = React.useState<
     ReturnType<typeof dayjs> | undefined
   >(undefined);
-  const validDate = moment?.isValid() ? moment : undefined;
+  const validDate = moment?.isValid() === true ? moment : undefined;
   // Unparsed raw input
   const [inputValue, setInputValue] = React.useState('');
 
   React.useEffect(() => {
     let destructorCalled = false;
 
-    function setInput() {
+    function setInput(): void {
       if (destructorCalled) return;
 
-      const value = model.get<string>(dateField);
-      setMoment(dayjs(value, databaseFormat, true));
+      const value = model.get<string | null>(dateField);
+      setMoment(
+        value === null ? undefined : dayjs(value, databaseFormat, true)
+      );
     }
 
-    function setPrecision() {
+    function changePrecision(): void {
       if (destructorCalled) return;
+      setPrecision(
+        reversePrecision[model.get<number>(precisionField)] ?? defaultPrecision
+      );
     }
 
-    model.on(`change:${dateField.toLowerCase()}`, setInput);
-    model.on(`change:${precisionField.toLowerCase()}`, setPrecision);
+    model.on(`change:${dateField}`, setInput);
+    model.on(`change:${precisionField}`, changePrecision);
 
     setInput();
-    setPrecision();
+    changePrecision();
 
     return (): void => {
       destructorCalled = true;
     };
-  }, [dateField, precisionField]);
+  }, [model, dateField, precisionField, defaultPrecision]);
 
   const refIsFirstRender = React.useRef(true);
   React.useEffect(() => {
@@ -142,31 +150,36 @@ function PartialDateUi({
       );
     }
     return undefined;
-  }, [moment, dateField, precisionField]);
+  }, [model, moment, precision, dateField, precisionField]);
 
   function handleChange() {
     const input = inputRef.current;
     if (input === null || precision === 'year') return;
 
     const value = inputValue.trim();
+
+    if (value === '') {
+      setMoment(undefined);
+      return;
+    }
     /*
      * The date would be in this format if browser supports
      * input[type="date"] or input[type="month"]
      */
-    let newMoment = value
-      ? dayjs(value, precision === 'full' ? 'YYYY-MM-DD' : 'YYYY-MM', true)
-      : undefined;
+    let newMoment = dayjs(
+      value,
+      precision === 'full' ? 'YYYY-MM-DD' : 'YYYY-MM',
+      true
+    );
     /*
      * As a fallback, and on manual paste, default to preferred
      * date format
      */
-    if (newMoment?.isValid() !== true)
-      newMoment = dayjs(
-        value,
-        precision === 'full' ? dateFormat() : monthFormat(),
-        true
+    if (newMoment.isValid()) setMoment(newMoment);
+    else
+      setMoment(
+        dayjs(value, precision === 'full' ? dateFormat() : monthFormat(), true)
       );
-    setMoment(newMoment);
   }
 
   return (
@@ -174,7 +187,7 @@ function PartialDateUi({
       {!readOnly && (
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>
-          <select
+          <Select
             className="print:hidden"
             title={formsText('datePrecision')}
             value={precision}
@@ -197,7 +210,7 @@ function PartialDateUi({
             <option value="full">{commonText('fullDate')}</option>
             <option value="month-year">{formsText('monthYear')}</option>
             <option value="year">{dateParts.year}</option>
-          </select>
+          </Select>
         </label>
       )}
       <label>
@@ -211,10 +224,7 @@ function PartialDateUi({
         <Input
           id={inputId}
           readOnly={readOnly}
-          forwardRef={inputRef}
-          onFocus={({ target }): void =>
-            model.saveBlockers.handleFocus(target, dateField)
-          }
+          forwardRef={validationRef}
           {...(precision === 'year'
             ? {
                 ...inputTypeYearAttributes,
@@ -224,13 +234,7 @@ function PartialDateUi({
                 onChange: ({ target }): void => {
                   setInputValue(target.value);
                   const year = Number.parseInt(target.value);
-                  if (!Number.isNaN(year))
-                    setMoment(
-                      (typeof moment === 'undefined'
-                        ? dayjs()
-                        : dayjs(moment)
-                      ).year(year)
-                    );
+                  if (!Number.isNaN(year)) setMoment(dayjs(moment).year(year));
                 },
               }
             : {
@@ -308,10 +312,7 @@ export default UIPlugin.extend(
         this.model.isNew() &&
         `${this.$el.data('specify-default')}`.toLowerCase() === 'today'
       ) {
-        this.model.set(
-          this.init.df.toLowerCase(),
-          getDateInputValue(new Date())
-        );
+        this.model.set(this.init.df, getDateInputValue(new Date()));
       }
 
       this.model.fetchIfNotPopulated().then(this._render());
@@ -320,8 +321,8 @@ export default UIPlugin.extend(
       this.id = this.$el.prop('id');
       this.view = new View({
         model: this.model,
-        dateField: this.init.df,
-        precisionField: this.init.tp,
+        dateField: this.init.df.toLowerCase(),
+        precisionField: this.init.tp.toLowerCase(),
         defaultPrecision: ['year', 'month-year'].includes(
           this.init.defaultprecision
         )
