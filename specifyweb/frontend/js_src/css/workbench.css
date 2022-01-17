@@ -26,13 +26,12 @@
 /* Highlighted cells' headers */
 .handsontable tbody th.ht__highlight,
 .handsontable thead th.ht__highlight {
-  @apply text-black;
-  background: theme('colors.blue.400');
+  @apply bg-blue-400;
 }
 
 /* Picklists */
 .handsontable td .htAutocompleteArrow {
-  @apply text-black;
+  @apply text-black dark:text-white cursor-pointer;
 }
 
 .handsontable td .htAutocompleteArrow:hover {
@@ -40,13 +39,13 @@
 }
 
 /* CONTENT styles */
-.wbs-form.wb-show-upload-results .htCore td:not(.wb-no-match-cell) {
-  background: unset;
-}
-
 .wbs-form.wb-show-upload-results .wb-no-match-cell,
 .wbs-form.wb-focus-coordinates .wb-coordinate-cell {
-  @apply text-black;
+  @apply text-black dark:text-white;
+}
+
+.handsontable .htDimmed {
+  @apply bg-gray-200 dark:bg-neutral-800;
 }
 
 /* Cell navigation */
@@ -79,4 +78,54 @@
 .wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
 .wb-navigation-section[data-navigation-type='searchResults'] {
   --accent-color: var(--search-result);
+}
+
+/* Handsontable dark mode */
+.handsontable td,
+.htContextMenu table tbody tr td {
+  @apply dark:bg-neutral-800 dark:border-neutral-500;
+}
+
+.htContextMenu table tbody tr td {
+  @apply dark:text-white
+}
+
+.htContextMenu td.highlight,
+.handsontable.listbox tr td.current,
+.handsontable.listbox tr:hover td {
+  @apply dark:!bg-neutral-600;
+}
+
+.handsontable td.htCustomMenuRenderer,
+.htContextMenu td.htDisabled:hover {
+  @apply dark:!bg-neutral-800;
+}
+
+.handsontable th {
+  @apply dark:bg-neutral-900 dark:text-white dark:!border-neutral-800;
+}
+
+.handsontable tr:first-child td {
+  @apply dark:!border-t-neutral-600;
+}
+
+.handsontable td:first-of-type {
+  @apply dark:!border-l-neutral-600;
+}
+
+.htContextMenu table.htCore,
+.htContextMenu td.htSeparator {
+  @apply dark:!border-neutral-500;
+}
+
+.htCommentTextArea {
+  @apply dark:text-white cursor-auto dark:border-none dark:bg-neutral-800;
+}
+
+.htCommentCell:after {
+  @apply dark:!border-t-white;
+}
+
+.handsontableInput {
+  @apply bg-neutral-600 text-white;
 }

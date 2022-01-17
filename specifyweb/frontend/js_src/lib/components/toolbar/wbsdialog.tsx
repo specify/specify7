@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import ajax from '../../ajax';
+import ajax, { Http } from '../../ajax';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
@@ -26,21 +26,27 @@ import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
 
 const createEmptyDataSet = async (): Promise<void> =>
-  ajax<Dataset>('/api/workbench/dataset/', {
-    method: 'POST',
-    body: {
-      name: await uniquifyDataSetName(
-        wbText('newDataSetName')(new Date().toDateString())
-      ),
-      importedfilename: '',
-      columns: [],
-      rows: [],
+  ajax<Dataset>(
+    '/api/workbench/dataset/',
+    {
+      method: 'POST',
+      body: {
+        name: await uniquifyDataSetName(
+          wbText('newDataSetName')(new Date().toDateString())
+        ),
+        importedfilename: '',
+        columns: [],
+        rows: [],
+      },
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
+      },
     },
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'application/json',
-    },
-  }).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
+    {
+      expectedResponseCodes: [Http.CREATED],
+    }
+  ).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
 
 /**
  * Wrapper for Data Set Meta

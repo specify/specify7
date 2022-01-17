@@ -8,6 +8,7 @@ import ace from 'brace';
 import 'brace/mode/xml';
 import 'brace/mode/json';
 import 'brace/mode/properties';
+import 'brace/theme/monokai';
 
 import * as app from './specifyapp';
 import schema from './schema';
@@ -18,7 +19,7 @@ import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import {setTitle} from "./components/hooks";
-import {className} from './components/basic';
+import {className, darkMode} from './components/basic';
 
 function makeUrl(resource) {
     return {
@@ -104,7 +105,7 @@ function modeForResource(appResource) {
 const ResourceDataView = Backbone.View.extend({
     __name__: "AppResourceDataView",
     tagName: 'form',
-    className: "bg-gray-200 flex-1 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 flex flex-col gap-y-2 rounded",
+    className: `${className.containerBase} flex-1`,
     events: {
         'click .load-file': 'loadFile',
         'change input': 'metadataChanged',
@@ -122,7 +123,7 @@ const ResourceDataView = Backbone.View.extend({
             if (this.appresourceData) {
                 this.$el.attr('aria-label',this.model.get('name'));
                 $(`<header class="${className.formHeader}">`).append(
-                    $('<h2 class="${className.formTitle}">').text(this.model.get('name'))
+                    $(`<h2 class="${className.formTitle}">`).text(this.model.get('name'))
                 ).appendTo(this.el);
 
                 const toolbar = $('<div class="flex gap-2 items-center flex-wrap" role="toollbar"></div>').appendTo(this.el);
@@ -156,7 +157,7 @@ const ResourceDataView = Backbone.View.extend({
                     download: this.model.get('name') + fileExtFor(this.model)
                 }).appendTo(toolbar);
 
-                const editArea = $('<div class="border border-brand-200 flex-1">').appendTo(this.el);
+                const editArea = $('<div class="border border-brand-300 flex-1">').appendTo(this.el);
                 var editor = ace.edit(editArea[0], {
                     readOnly: !userInfo.isadmin,
                 });
@@ -164,6 +165,8 @@ const ResourceDataView = Backbone.View.extend({
                 editor.setValue(this.appresourceData.get('data'));
                 editor.setPrintMarginColumn(null);
                 editor.clearSelection();
+                if(darkMode)
+                    editor.setTheme('ace/theme/monokai');
 
                 editor.on('focus', ()=>{
                     setCommandEnabled(editor, "indent", true);
@@ -352,13 +355,13 @@ const ResourceList = Backbone.View.extend({
 const AppResourcesView = Backbone.View.extend({
     __name__: "AppResourcesView",
     tagName: 'aside',
-    className: 'bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded overflow-y-auto',
+    className: `${className.containerBase} overflow-y-auto`,
     events: {
         'click .toggle-content': 'toggle'
     },
     render() {
         this.$el.append(
-            $('<h2>').text(this.options.ResourceModel.getLocalizedName()),
+            $(`<h2 class="${className.h2}">`).text(this.options.ResourceModel.getLocalizedName()),
             $('<ul role="tree" class="ml-4">')
                 .append(new GlobalResourcesView(this.options).render().el)
                 .append(new DisciplinesView(this.options).render().el)

@@ -80,7 +80,10 @@ function TableResults({
           : undefined
       }
     >
-      <summary className="link list-item bg-brand-200 p-1.5 rounded hover:text-white">
+      <summary
+        className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
+        rounded hover:text-white hover:dark:bg-brand-400`}
+      >
         {summary}
       </summary>
       <div ref={containerRef} />
@@ -210,7 +213,7 @@ function Results(): JSX.Element {
 
   return (
     <div className="gap-y-4 flex flex-col">
-      <section>
+      <section className="flex flex-col gap-1">
         <h3>{commonText('primarySearch')}</h3>
         {typeof primaryResults === 'undefined' ? (
           <p aria-live="polite">{commonText('running')}</p>
@@ -223,7 +226,7 @@ function Results(): JSX.Element {
         )}
       </section>
 
-      <section>
+      <section className="flex flex-col gap-1">
         <h3>{commonText('secondarySearch')}</h3>
         {typeof secondaryResults === 'undefined' ? (
           <p aria-live="polite">{commonText('running')}</p>

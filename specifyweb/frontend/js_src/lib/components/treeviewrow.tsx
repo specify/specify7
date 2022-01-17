@@ -139,7 +139,7 @@ export function TreeRow({
               className={`border whitespace-nowrap border-transparent aria-handled
               -mb-[12px] -ml-[5px] mt-2 rounded
               ${isFocused ? 'outline outline-blue-500' : ''}
-              ${typeof row.acceptedId === 'undefined' ? '' : 'text-red-500'}`}
+              ${typeof row.acceptedId === 'undefined' ? '' : 'text-red-600'}`}
               forwardRef={
                 isFocused
                   ? (element: HTMLButtonElement | null): void => {

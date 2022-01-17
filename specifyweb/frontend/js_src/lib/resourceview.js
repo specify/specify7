@@ -119,7 +119,7 @@ const ResourceView = Backbone.View.extend({
             jqXHR.errorHandled = true;
             self.el.setAttribute('role','alert');
             self.$el.append(`
-                <h2>${formsText('missingFormDefinitionPageHeader')}</h2
+                <h2 class="${className.h2}">${formsText('missingFormDefinitionPageHeader')}</h2>
                 <p>${formsText('missingFormDefinitionPageContent')}</p>
             `);
         });

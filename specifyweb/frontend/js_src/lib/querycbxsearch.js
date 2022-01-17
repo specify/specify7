@@ -41,7 +41,7 @@ export default Backbone.View.extend({
             this.populateForm(form, this.model);
             form.find('.specify-form-header, .specify-form-footer button').remove();
             form.find('.specify-field[required]').prop('required',false);
-            this.$el.append(form).append('<ul role="list" class="querycbx-search-results bg-white h-40 min-w-[275px] overflow-auto p-2">');
+            this.$el.append(form).append('<ul role="list" class="querycbx-search-results bg-white dark:bg-neutral-700 h-40 min-w-[275px] overflow-auto p-2">');
             this.$el.dialog({
                 title: commonText('search'),
                 width: 'auto',

@@ -247,7 +247,7 @@ function EditRecordDialog({
       node.set('parent', parentNode.url());
     }
 
-    // TODO: redo this to react
+    // TODO: convert to React
     let view: Backbone.View | undefined = new ResourceView({
       populateForm,
       el: content,

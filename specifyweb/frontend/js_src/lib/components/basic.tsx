@@ -75,18 +75,29 @@ function wrap<
   return wrapped;
 }
 
+// TODO: make a react hook that listens for updates
 const reduceMotion =
   typeof window === 'object'
     ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
     : false;
 export const transitionDuration = reduceMotion ? 0 : 100;
 
-// For usage by non-react components
+// TODO: make a react hook that listens for updates
+// TODO: allow overwriting this in the UI
+export const darkMode =
+  typeof window === 'object'
+    ? window.matchMedia('(prefers-color-scheme: dark)').matches
+    : false;
+
+// ClassNames are primarily for usage by non-react components
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-500 gap-2
-    inline-flex items-center`;
+  disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:bg-neutral-700 gap-2
+  inline-flex items-center`;
+const baseContainer = `bg-gray-200 dark:bg-neutral-800 flex flex-col gap-2
+    p-4 shadow-md shadow-gray-500 rounded`;
 export const className = {
-  root: 'flex flex-col h-screen overflow-hidden text-neutral-900',
+  root: `flex flex-col h-screen overflow-hidden bg-white dark:bg-neutral-900
+    text-neutral-900 dark:text-neutral-200`,
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
   radio: 'h-3 w-3',
@@ -99,24 +110,29 @@ export const className = {
   form: 'flex flex-col gap-4',
   button: 'button',
   link: 'link',
-  transparentButton: `${niceButton} hover:bg-gray-300 text-gray-800`,
-  grayButton: `${niceButton} hover:bg-gray-400 bg-gray-300 text-gray-800`,
+  transparentButton: `${niceButton} hover:bg-gray-300 hover:dark:bg-neutral-500
+    text-gray-800 dark:text-neutral-200`,
+  grayButton: `${niceButton} hover:bg-gray-400 bg-gray-300 text-gray-800
+    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`,
   redButton: `${niceButton} hover:bg-red-800 bg-red-700 text-white`,
   blueButton: `${niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
   greenButton: `${niceButton} hover:bg-green-800 bg-green-700 text-white`,
-  fancyButton: `active:bg-brand-300 bg-gray-300 gap-2 hover:bg-brand-200 inline-flex
-    justify-center items-center p-2 text-black cursor-pointer`,
+  fancyButton: `active:bg-brand-300 active:dark:bg-brand-400 bg-gray-300 gap-2
+    hover:bg-brand-200 hover:dark:bg-brand:400 inline-flex dark:bg-neutral-500
+    dark:text-white justify-center items-center p-2 text-black cursor-pointer`,
   containerFull: 'flex flex-col gap-4 h-full',
-  container: `bg-gray-200 flex flex-col gap-y-2 max-w-[1000px] mx-auto p-4
-    shadow-[0_3px_5px_-1px]`,
+  containerBase: `${baseContainer}`,
+  container: `${baseContainer} max-w-[1000px] mx-auto`,
   formHeader: `specify-form-header border-b-2 border-brand-300 flex items-center
     pb-2 gap-x-4`,
   formTitle: 'view-title flex-1 text-lg',
   formLabel: 'specify-form-label text-right',
   formFooter:
     'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
-  queryField: 'bg-white border border-gray-300 p-2 shadow flex gap-x-2 rounded',
+  queryField: `bg-white dark:bg-neutral-700 border border-gray-300 p-2 shadow
+    flex gap-x-2 rounded dark:border-none`,
+  h2: 'font-semibold text-black dark:text-white',
 } as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -328,7 +344,13 @@ export const Submit = {
 } as const;
 
 export const ContainerFull = wrap('section', className.containerFull);
-export const Progress = wrap('progress', 'w-full h-3 bg-gray-200 rounded', {
-  max: 100,
-});
+export const Progress = wrap(
+  'progress',
+  'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',
+  {
+    max: 100,
+  }
+);
+
+export const H2 = wrap('h2', className.h2);
 /* eslint-enable @typescript-eslint/naming-convention */

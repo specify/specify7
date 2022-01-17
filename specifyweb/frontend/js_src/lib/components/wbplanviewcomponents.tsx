@@ -6,6 +6,7 @@
 
 import React from 'react';
 
+import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR, R, RA } from '../types';
 import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
@@ -17,10 +18,9 @@ import type {
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { useId } from './hooks';
+import icons from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
-import icons from './icons';
-import commonText from '../localization/common';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -153,7 +153,9 @@ export function ValidationButton(props: {
   return (
     <>
       <Button.Simple
-        className={props.isValidated ? 'bg-green-400' : undefined}
+        className={
+          props.isValidated ? 'bg-green-400 dark:bg-green-700' : undefined
+        }
         role="menuitem"
         onClick={
           props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
@@ -217,7 +219,9 @@ export function MappingLineComponent({
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         className={`print:gap-1 flex flex-wrap items-center gap-2 border-t
-          border-t-gray-500 py-2 ${isFocused ? 'bg-gray-300' : ''}
+          border-t-gray-500 py-2 ${
+            isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''
+          }
         `}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
@@ -268,13 +272,19 @@ const mappingElementDivider = (
 const getFieldGroupName = (isHidden: boolean, isRequired: boolean): string =>
   isHidden ? 'hiddenFields' : isRequired ? 'requiredFields' : 'optionalFields';
 
-export function MappingElement(props: MappingElementProps): JSX.Element {
-  const fieldGroups = Object.entries(props.fieldsData).reduce<
+export function MappingElement({
+  fieldsData,
+  ...props
+}: MappingElementProps): JSX.Element {
+  const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
-  >((fieldGroups, [fieldName, { isRequired, isHidden, ...rest }]) => {
-    const groupName = getFieldGroupName(isHidden ?? false, isRequired ?? false);
+  >((fieldGroups, [fieldName, fieldData]) => {
+    const groupName = getFieldGroupName(
+      fieldData.isHidden ?? false,
+      fieldData.isRequired ?? false
+    );
     fieldGroups[groupName] ??= {};
-    fieldGroups[groupName][fieldName] = rest;
+    fieldGroups[groupName][fieldName] = fieldData;
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
 

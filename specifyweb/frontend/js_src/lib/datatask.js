@@ -22,6 +22,7 @@ import {setTitle} from "./components/hooks";
 
 var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
+// TODO: convert to React
     function getRecordSetItem(recordSet, index) {
         return $.when(recordSet.fetchIfNotPopulated(), $.get('/api/specify/recordsetitem/', {
             recordset: recordSet.id,
@@ -45,7 +46,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
             var specifyModel = getModelById(this.model.get('dbtableid'));
             this.el.setAttribute('role','alert');
             this.el.innerHTML = `
-                <h2>${formsText('emptyRecordSetHeader')(this.model.get('name'))}</h2>
+                <h2 class="${className.h2}">${formsText('emptyRecordSetHeader')(this.model.get('name'))}</h2>
                 <p>${formsText('emptyRecordSetMessage')(
                   (label)=>`<button type="button" class="recordset-delete button">${label}</button>`,
                   (label)=>`<a class="recordset-add intercept-navigation button">${label}</button>`,

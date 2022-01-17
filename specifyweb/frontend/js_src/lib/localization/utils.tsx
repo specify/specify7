@@ -78,8 +78,11 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
   return resolver;
 }
 
+// TODO: remove this once everything is using react
 export const header = (header: string): string =>
-  header === '' ? '' : `<h2 class="text-black font-semibold">${header}</h2>`;
+  header === ''
+    ? ''
+    : `<h2 class="font-semibold text-black dark:text-white">${header}</h2>`;
 
 export const whitespaceSensitive = (string: string): string =>
   string

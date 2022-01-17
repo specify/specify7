@@ -25,9 +25,10 @@
   ">
     <span class="sr-only"></span>
     <img alt="" class="h-table-icon" />
-    <select class="field-select"></select>
+    <select class="field-select bg-neutral-600"></select>
   </label>
   <select class="
+    bg-neutral-600
     datepart-select
     field-state-hide
     operation-state-hide
@@ -40,6 +41,7 @@
     aria-label="<%= queryText('negate') %>"
     class="
       button
+      aria-handled
       op-negate
       field-state-hide
       operation-state-show
@@ -51,6 +53,7 @@
   </button>
   <select
     class="
+      bg-neutral-600
       op-select op-type
       field-state-hide
       operation-state-show
@@ -66,7 +69,7 @@
     title="<%= queryText('showButtonDescription') %>"
     aria-label="<%= queryText('showButtonDescription') %>"
     aria-pressed="false"
-    class="field-show button"
+    class="field-show button aria-handled"
   >
     <%= legacyNonJsxIcons.check %>
   </button>

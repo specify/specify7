@@ -8,8 +8,14 @@ export function SplashScreen({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="flex items-center justify-center h-full overflow-y-auto bg-gray-400">
-      <div className="sm:max-w-md flex flex-col w-full gap-4 p-16 bg-gray-100 rounded shadow-2xl">
+    <div
+      className={`flex items-center justify-center h-full overflow-y-auto
+      bg-gray-400 dark:bg-neutral-900`}
+    >
+      <div
+        className={`sm:max-w-md flex flex-col w-full gap-4 p-16 bg-gray-100
+        dark:bg-neutral-800 rounded shadow-2xl`}
+      >
         <header>
           <h1 className="sr-only">{commonText('specifySeven')}</h1>
           <img src="/static/img/seven_logo.png" alt="" className="max-w-xs" />

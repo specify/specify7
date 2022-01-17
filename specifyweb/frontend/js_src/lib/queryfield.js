@@ -76,12 +76,12 @@ export default Backbone.View.extend({
             this.$('.field-show')[0].classList[this.spqueryfield.get('isdisplay')
               ? 'add'
               : 'remove'
-            ]('!bg-green-300');
+            ]('bg-green-400', 'dark:text-green-400', 'dark:bg-green-900');
             this.$('.op-negate')[0].ariaPressed = this.spqueryfield.get('isnot');
             this.$('.op-negate')[0].classList[this.spqueryfield.get('isnot')
               ? 'add'
               : 'remove'
-            ]('!bg-red-400');
+            ]('bg-red-400', 'dark:bg-red-900', 'dark:text-red-200');
 
             this.spqueryfield.on('change:sorttype', this.sortTypeChanged, this);
             this.sortTypeChanged();
@@ -117,7 +117,7 @@ export default Backbone.View.extend({
             this.$('.op-negate')[0].classList[this.spqueryfield.get('isnot')
               ? 'add'
               : 'remove'
-            ]('!bg-red-400');
+            ]('bg-red-400', 'dark:bg-red-900', 'dark:text-red-200');
         },
         deleteClicked: function() {
             this.remove();

@@ -39,6 +39,8 @@ module.exports = {
           100: 'hsl(27deg 100% 82%)',
           200: 'hsl(27deg 100% 63%)',
           300: 'hsl(27deg 100% 55%)',
+          400: 'hsl(27deg 100% 41%)',
+          500: 'hsl(27deg 100% 22%)',
         },
         // Some in-between shades:
         gray: {
@@ -49,6 +51,9 @@ module.exports = {
         },
         indigo: {
           350: 'hsl(232deg 92% 79%)',
+        },
+        neutral: {
+          350: 'hsl(0deg 0% 73%)',
         },
       },
       spacing: {

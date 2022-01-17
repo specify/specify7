@@ -18,6 +18,7 @@ import {
   Checkbox,
   className,
   ContainerFull,
+  H2,
   Input,
   Label,
   LabelForCheckbox,
@@ -255,10 +256,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     return (
       <ContainerFull>
         <header className="gap-x-2 flex">
-          <h2 className="font-semibold text-black">
+          <H2>
             {commonText('schemaConfig')} (
             {languages[language]?.replaceAll(/[()]/g, '') ?? language})
-          </h2>
+          </H2>
           <span className="flex-1 -ml-2" />
           <menu className="contents">
             <li>

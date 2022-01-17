@@ -85,20 +85,26 @@ export async function savePlan({
       : ajax<Dataset>(dataSetRequestUrl, {
           headers: { Accept: 'application/json' },
         }).then(async ({ data: { columns, visualorder } }) =>
-          ping(dataSetRequestUrl, {
-            method: 'PUT',
-            body: {
-              visualorder: [
-                ...(visualorder ??
-                  Object.keys(dataset.columns).map((index) =>
-                    Number.parseInt(index)
-                  )),
-                ...newlyAddedHeaders.map((headerName) =>
-                  columns.indexOf(headerName)
-                ),
-              ],
+          ping(
+            dataSetRequestUrl,
+            {
+              method: 'PUT',
+              body: {
+                visualorder: [
+                  ...(visualorder ??
+                    Object.keys(dataset.columns).map((index) =>
+                      Number.parseInt(index)
+                    )),
+                  ...newlyAddedHeaders.map((headerName) =>
+                    columns.indexOf(headerName)
+                  ),
+                ],
+              },
             },
-          })
+            {
+              expectedResponseCodes: [Http.NO_CONTENT],
+            }
+          )
         )
     ).then(() => goBack(dataset.id))
   );

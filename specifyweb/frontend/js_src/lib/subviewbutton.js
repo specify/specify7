@@ -50,7 +50,7 @@ export const Base =  Backbone.View.extend({
                     alt=""
                 >
                 <span class="sr-only">${self.field.getLocalizedName()}</span>
-                <span class="specify-subview-button-count bg-white border-gray-500 font-bold p-1 rounded"></span>`;
+                <span class="specify-subview-button-count bg-white bg-neutral-800 border-gray-500 font-bold p-1 rounded"></span>`;
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count, .specify-subview-link').text(c);

@@ -196,7 +196,7 @@ function TreeView({
       </header>
       <div
         className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
-          overflow-auto bg-gray-200 shadow-md shadow-gray-500 content-start
+          overflow-auto shadow-md shadow-gray-500 content-start
           bg-gradient-to-bl from-[hsl(26deg_92%_62%_/_0)] rounded p-2 pt-0
           via-[hsl(26deg_92%_62%_/_20%)] to-[hsl(26deg_92%_62%_/_0)] outline-none`}
         style={{ '--cols': treeDefinitionItems.length } as React.CSSProperties}
@@ -223,8 +223,8 @@ function TreeView({
                 role="columnheader"
                 key={index}
                 className={`border whitespace-nowrap border-transparent top-0
-                  sticky bg-gray-100/60 p-2 backdrop-blur-sm
-                  ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
+                  sticky bg-gray-100/60 dark:bg-neutral-900/60 p-2
+                  backdrop-blur-sm ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
                   ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}`}
               >
                 <Button.LikeLink

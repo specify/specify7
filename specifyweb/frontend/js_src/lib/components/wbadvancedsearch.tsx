@@ -9,7 +9,7 @@ import React from 'react';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { Button, Checkbox, Label, LabelForCheckbox } from './basic';
+import { Button, Checkbox, H2, Label, LabelForCheckbox } from './basic';
 import icons from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -113,7 +113,7 @@ function PreferencesDialog({
       }}
     >
       <div>
-        <h2 className="font-black">{wbText('navigationOptions')}</h2>
+        <H2>{wbText('navigationOptions')}</H2>
         <Label>
           {wbText('cursorPriority')}
           <select
@@ -135,7 +135,7 @@ function PreferencesDialog({
       </div>
 
       <div className="flex flex-col">
-        <h2 className="font-black">{wbText('searchOptions')}</h2>
+        <H2>{wbText('searchOptions')}</H2>
         <CheckboxLine
           property="fullMatch"
           state={searchPreferences}
@@ -167,7 +167,7 @@ function PreferencesDialog({
       </div>
 
       <div>
-        <h2 className="font-black">{wbText('replaceOptions')}</h2>
+        <H2>{wbText('replaceOptions')}</H2>
         <Label>
           {wbText('replaceMode')}
           <select

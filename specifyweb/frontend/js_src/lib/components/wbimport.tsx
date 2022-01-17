@@ -15,7 +15,7 @@ import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import uniquifyDataSetName from '../wbuniquifyname';
-import { Button, Checkbox, ContainerFull, Input } from './basic';
+import { Button, Checkbox, ContainerFull, H2, Input } from './basic';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
@@ -329,7 +329,7 @@ class WbImport extends Component<{}, WbImportState> {
     return (
       <ContainerFull>
         <div className="gap-y-2 flex flex-col">
-          <h2>{wbText('wbImportHeader')}</h2>
+          <H2>{wbText('wbImportHeader')}</H2>
           <div
             className={`gap-2 grid grid-cols-2 items-center min-w-[275px]
             w-2/5 wb-import-table`}
@@ -453,7 +453,11 @@ function ChooseFile(props: { update: HandleAction }) {
       <span
         ref={filePickerButton}
         className={`align-center button h-44 flex justify-center text-center
-          ${isDragging ? 'bg-white ring ring-brand-200' : ''}
+          ${
+            isDragging
+              ? 'bg-white dark:bg-neutral-700 ring ring-brand-200 dark:ring-brand-400'
+              : ''
+          }
           ${isFocused ? 'ring' : ''} col-span-2`}
       >
         <span>
@@ -471,25 +475,14 @@ function ChooseFile(props: { update: HandleAction }) {
   );
 }
 
-function Preview(props: { data: string[][]; hasHeader: boolean }) {
-  const hasHeader = props.hasHeader;
-  const data = props.data;
+function Preview({
+  data,
+  hasHeader,
+}: {
+  data: string[][];
+  hasHeader: boolean;
+}) {
   const { rows, header } = extractHeader(data, hasHeader);
-
-  const headerCells = header.map((cell, index) => (
-    <th key={index} scope="col" className="p-1 border border-gray-700">
-      {cell}
-    </th>
-  ));
-  const dataRows = rows.map((row, index) => (
-    <tr key={index}>
-      {row.map((cell, index) => (
-        <td key={index} className="border border-gray-400">
-          {cell}
-        </td>
-      ))}
-    </tr>
-  ));
 
   return (
     <div>
@@ -497,9 +490,29 @@ function Preview(props: { data: string[][]; hasHeader: boolean }) {
       <div className="overflow-auto">
         <table>
           <thead>
-            <tr className="text-center bg-gray-300">{headerCells}</tr>
+            <tr className="dark:bg-neutral-700 text-center bg-gray-500">
+              {header.map((cell, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className="dark:border-gray-500 p-1 border border-gray-700"
+                >
+                  {cell}
+                </th>
+              ))}
+            </tr>
           </thead>
-          <tbody>{dataRows}</tbody>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={index}>
+                {row.map((cell, index) => (
+                  <td key={index} className={`border border-gray-500`}>
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

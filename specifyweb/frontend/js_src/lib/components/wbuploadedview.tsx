@@ -12,7 +12,7 @@ import type { IR } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
-import { Button } from './basic';
+import { Button, H2 } from './basic';
 
 function TableResults({
   tableName,
@@ -43,11 +43,11 @@ function WbUploadedView({
   return (
     <div className="gap-y-4 w-60 flex flex-col h-full">
       <div>
-        <h2 className="text-xl">
+        <H2>
           {isUploaded
             ? wbText('uploadResults')
             : wbText('potentialUploadResults')}
-        </h2>
+        </H2>
         <p>
           {isUploaded
             ? wbText('wbUploadedDescription')

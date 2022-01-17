@@ -11,7 +11,7 @@ import Modal from 'react-modal';
 import { error } from '../assert';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import { Button, transitionDuration } from './basic';
+import { Button, className, transitionDuration } from './basic';
 import { useId } from './hooks';
 
 /*
@@ -100,7 +100,7 @@ export function Dialog({
     container = dialogClassNames.normalContainer,
     // Buttons are right-aligned by default
     buttonContainer = 'justify-end',
-    header: headerClassName = 'text-2xl font-semibold',
+    header: headerClassName = className.h2,
   } = {},
   /* Force dialog to stay on top of all other. Useful for exception messages */
   forceToTop = false,
@@ -196,7 +196,11 @@ export function Dialog({
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
       overlayClassName={{
         base: `w-screen h-screen absolute inset-0 flex items-center
-            justify-center ${modal ? 'bg-gray-500/70' : 'pointer-events-none'}`,
+          justify-center ${
+            modal
+              ? 'bg-gray-500/70 dark:bg-neutral-900/70'
+              : 'pointer-events-none'
+          }`,
         afterOpen: `opacity-1`,
         beforeClose: 'opacity-0',
       }}
@@ -206,16 +210,22 @@ export function Dialog({
         },
       }}
       portalClassName=""
-      className={`bg-gradient-to-bl from-gray-200 via-white to-white
-          outline-none flex flex-col p-4 gap-y-2 ${container}
-          ${modal ? '' : 'pointer-events-auto border border-gray-500'}`}
+      className={`bg-gradient-to-bl from-gray-200 dark:from-neutral-800
+        via-white dark:via-neutral-900 to-white dark:to-neutral-900
+        outline-none flex flex-col p-4 gap-y-2 ${container} text-neutral-900
+        dark:text-neutral-200 dark:border dark:border-neutral-700
+        ${modal ? '' : 'pointer-events-auto border border-gray-500'}`}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}
       shouldCloseOnOverlayClick={modal && typeof handleClose === 'function'}
       contentLabel={title}
-      aria={{
-        [typeof title === 'undefined' ? 'labelledby' : 'describedby']:
-          id('header'),
-      }}
+      aria={
+        typeof title === 'string'
+          ? {
+              labelledby: id('title'),
+              describedby: id('header'),
+            }
+          : { labelledby: id('header') }
+      }
       onRequestClose={handleClose}
       bodyOpenClassName={null}
       htmlOpenClassName={null}
@@ -225,10 +235,10 @@ export function Dialog({
       }}
       contentElement={draggableContainer}
     >
+      {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <span className="handle p-4 -m-4 cursor-move">
-        {/* Title would be provided to screen readers via aria-label */}
         {typeof title !== 'undefined' && (
-          <p aria-hidden={true} className="text-gray-600">
+          <p id={id('title')} className="dark:text-neutral-400 text-gray-600">
             {title}
           </p>
         )}
@@ -241,7 +251,8 @@ export function Dialog({
        * and other inputs is not cut-off
        */}
       <div
-        className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700 ${content}`}
+        className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
+          dark:text-neutral-350 ${content}`}
       >
         {children}
       </div>

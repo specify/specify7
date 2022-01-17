@@ -76,7 +76,7 @@ export function TableIcon({
 
 export const tableIconUndefined = (
   <span
-    className="w-table-icon h-table-icon flex items-center justify-center font-bold text-red-500"
+    className="w-table-icon h-table-icon flex items-center justify-center font-bold text-red-600"
     aria-label={commonText('unmapped')}
     role="img"
   >

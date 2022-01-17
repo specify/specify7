@@ -15,6 +15,7 @@ import commonText from './localization/common';
 import {className} from "./components/basic";
 import {legacyNonJsxIcons} from "./components/icons";
 
+// TODO: convert to React
 var emptyTemplate = `<p>${formsText('noData')}</p>`;
 
     var Controls = Backbone.View.extend({
@@ -97,7 +98,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
         render() {
             this.el.innerHTML = `
                 <button
-                    class="button disabled:!bg-gray-100 disabled:!text-gray-400"
+                    class="button"
                     data-action="first"
                     aria-label="${formsText('firstRecord')}"
                     title="${formsText('firstRecord')}"
@@ -105,28 +106,26 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
                     disabled
                 >≪</button>
                 <button
-                    class="button disabled:!bg-gray-100 disabled:!text-gray-400
-                        bg-white px-4"
+                    class="button bg-white dark:bg-neutral-500 px-4"
                     data-action="previous"
                     aria-label="${formsText('previousRecord')}"
                     title="${formsText('previousRecord')}"
                     type="button"
                     disabled
                 >&lt;</button>
-                <div class="grid disabled:!bg-gray-100 font-bold items-center
-                    disabled:!text-gray-400 grid-cols-[1fr_auto_1fr]">
+                <div class="grid font-bold items-center grid-cols-[1fr_auto_1fr]">
                     <label class="input-container h-full relative
                         after:invisible after:p-2 after:content-[attr(data-value)]">
                         <span class="input-label sr-only"></span>
                         <input type="number" class="absolute bg-white border-0
-                            font-bold h-full w-full left-0 no-arrows top-0" min="1" step="1">
+                            font-bold h-full w-full left-0 no-arrows top-0
+                            dark:bg-neutral-600" min="1" step="1">
                     </label>
                     <span>/</span>
                     <span class="max-indicator"></span>
                 </div>
                 <button
-                    class="button disabled:!bg-gray-100 disabled:!text-gray-400
-                        bg-white px-4"
+                    class="button bg-white dark:bg-neutral-500 px-4"
                     data-action="next"
                     aria-label="${formsText('nextRecord')}"
                     title="${formsText('nextRecord')}"
@@ -134,7 +133,7 @@ var emptyTemplate = `<p>${formsText('noData')}</p>`;
                     disabled
                 >&gt;</button>
                 <button
-                    class="button disabled:!bg-gray-100 disabled:!text-gray-400"
+                    class="button"
                     data-action="last"
                     aria-label="${formsText('lastRecord')}"
                     title="${formsText('lastRecord')}"

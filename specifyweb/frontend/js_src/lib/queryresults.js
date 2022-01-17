@@ -216,7 +216,8 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
                 target="_blank"
                 role="row"
                 class="query-result sticky link even:[--bg:transparent]
-                    odd:[--bg:theme(colors.gray.100)]"
+                  odd:[--bg:theme(colors.gray.100)]
+                  odd:dark:[--bg:theme(colors.neutral.700)]"
             >`)
                 .appendTo(table).data('resource', resource);
             _.each(this.fieldSpecs, function(f, i) {

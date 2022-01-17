@@ -573,6 +573,11 @@ const wbText = createDictionary({
     'ru-ru': 'Несопоставленный столбец',
     ca: 'Columna sense mapes',
   },
+  notMapped: {
+    'en-us': 'NOT MAPPED',
+    'ru-ru': 'НЕСОПОСТАВЛЕННЫЙ',
+    ca: 'NOT MAPPED',
+  },
   emptyStringInline: {
     'en-us': '(empty string)',
     'ru-ru': '(пуста строка)',

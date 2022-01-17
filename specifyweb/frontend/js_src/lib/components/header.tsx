@@ -50,13 +50,19 @@ export function HeaderItems({
           className={`
             p-3
             text-gray-700
-            hover:text-black
+            dark:text-neutral-300
+            rounded
             relative
             inline-flex
             items-center
             gap-x-2
             active:bg-white
-            ${task === activeTask ? 'bg-white lg:bg-transparent' : ''}
+            active:dark:bg-neutral-600
+            ${
+              task === activeTask
+                ? 'bg-white dark:bg-neutral-600 lg:bg-transparent'
+                : ''
+            }
             lg:after:absolute
             lg:after:-bottom-1
             lg:after:w-full
@@ -65,7 +71,9 @@ export function HeaderItems({
             lg:after:h-2
             lg:after:bg-transparent
             lg:hover:after:bg-gray-200
+            lg:hover:after:dark:bg-neutral-800
             ${task === activeTask ? 'lg:after:bg-gray-200' : ''}
+            ${task === activeTask ? 'lg:after:dark:bg-neutral-800' : ''}
           `}
           key={task}
           href={`/specify/task/${task}/`}
@@ -78,6 +86,7 @@ export function HeaderItems({
             setCurrentOverlay(backboneView);
           }}
         >
+          {/* TODO CSS: rewrite toolbar icons to SVG and fix dark mode color issue */}
           <img src={icon} alt="" className="h-4" />
           {title}
         </Link.Default>

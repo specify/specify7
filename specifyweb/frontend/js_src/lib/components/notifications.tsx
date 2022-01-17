@@ -98,7 +98,7 @@ export default function Notifications(): JSX.Element {
   return (
     <>
       <Button.Simple
-        className={`${hasUnread ? 'bg-brand-300' : ''}`}
+        className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
         disabled={notificationCount === 0}
         aria-live="polite"
         onClick={(): void => setIsOpen((isOpen) => !isOpen)}
@@ -173,7 +173,13 @@ function NotificationComponent({
   return (
     <article className="flex flex-col pt-2">
       <header className="flex justify-between">
-        <span className={notification.read ? undefined : 'bg-amber-100'}>
+        <span
+          className={
+            notification.read
+              ? undefined
+              : 'bg-amber-100 dark:bg-amber-900 rounded'
+          }
+        >
           <time dateTime={date.toISOString()}>{formatted}</time>
         </span>
         <Button.Icon

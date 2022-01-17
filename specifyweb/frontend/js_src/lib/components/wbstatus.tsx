@@ -12,7 +12,7 @@ import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, Label, Progress } from './basic';
 import { useTitle } from './hooks';
-import { Dialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
 
@@ -191,6 +191,9 @@ function WbStatus({
           </Button.Red>
         ) : undefined
       }
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
       onClose={undefined}
     >
       <Label aria-live="polite" aria-atomic={true}>

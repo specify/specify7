@@ -6,7 +6,7 @@ import schema, { getModel } from '../schema';
 import * as app from '../specifyapp';
 import type { Relationship } from '../specifyfield';
 import type SpecifyModel from '../specifymodel';
-import { Link } from './basic';
+import { H2, Link } from './basic';
 import createBackboneView from './reactbackboneextend';
 
 function RelationshipLink({
@@ -34,7 +34,7 @@ function DataModelView({
 
   return typeof model === 'undefined' ? (
     <>
-      <h2 className="text-2xl text-gray-700">{formsText('specifySchema')}</h2>
+      <H2 className="text-2xl">{formsText('specifySchema')}</H2>
       <ul>
         {Object.entries(schema.models).map(([key, model]) => (
           <li key={key}>
@@ -50,7 +50,7 @@ function DataModelView({
     </>
   ) : (
     <>
-      <h2 className="text-2xl text-gray-700">{model.name}</h2>
+      <H2 className="text-2xl">{model.name}</H2>
       <table>
         <tbody>
           {model.fields.map((field) => (

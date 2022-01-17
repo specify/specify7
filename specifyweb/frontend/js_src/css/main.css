@@ -1,10 +1,11 @@
 @import url('./custom-theme/jquery-ui-1.10.2.custom.css');
 
-/* TODO: make save buttons be on the correct side in forms and subforms */
+/* TODO: make save buttons be on the correct side in forms and subForms */
 /* TODO: revisit reports ui */
+/* TODO: do global css light/dark mode testing */
 /*
- * TODO: rewrite savebutton deletebutton and navigation to use react dialogs
- *    or put jquery dialogs at zIndex >= 180
+ * TODO: rewrite navigation.ts to use react dialogs (or use React Router!)
+ * TODO: backbone wrapper for react dialogs
  */
 
 /**
@@ -22,7 +23,7 @@
      * in "./components/basic.tsx"
      */
     @apply transition duration-100 ease-in-out motion-reduce:!transition-none
-           motion-reduce:!duration-0;
+      motion-reduce:!duration-0 dark:!shadow-none placeholder-gray-400;
   }
 
   [type='text'],
@@ -40,7 +41,8 @@
   [multiple],
   textarea,
   select {
-    @apply p-1 bg-gray-200 rounded accent-brand-200;
+    @apply p-1 bg-gray-200 dark:bg-neutral-700 rounded accent-brand-200
+      dark:accent-brand-400 dark:border-none;
   }
 
   select {
@@ -49,7 +51,7 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply cursor-pointer text-brand-200;
+    @apply cursor-pointer text-brand-200 dark:text-brand-400;
   }
 
   label, summary {
@@ -62,7 +64,8 @@
   select:not(.not-touched):invalid,
   form:not(.not-submitted) textarea:invalid,
   textarea:not(.not-touched):invalid {
-    @apply bg-red-400 placeholder-red-900;
+    @apply bg-red-400 dark:bg-red-800 placeholder-red-900
+      dark:placeholder-red-400;
   }
 
   textarea {
@@ -70,11 +73,12 @@
   }
 
   :disabled:not(.icon), [readonly] {
-    @apply cursor-not-allowed bg-gray-350 text-gray-700;
+    @apply cursor-not-allowed bg-gray-350 dark:bg-neutral-900 text-gray-700
+      dark:text-neutral-500;
   }
 
   :required {
-    @apply bg-blue-200;
+    @apply bg-blue-200 dark:bg-blue-900;
   }
 
   [type='radio']:focus,
@@ -87,6 +91,7 @@
   [type='number'].no-arrows {
     -moz-appearance: textfield;
   }
+
   /* Webkit */
   [type='number'].no-arrows::-webkit-outer-spin-button,
   [type='number'].no-arrows::-webkit-inner-spin-button {
@@ -112,18 +117,20 @@
   }
 
   .button {
-    @apply border rounded cursor-pointer active:brightness-80 bg-gray-300
-    border-zinc-400 disabled:bg-gray-200 disabled:border-gray-300
-    disabled:text-gray-500 gap-2 hover:bg-brand-200
-    inline-flex items-center px-2 py-1 text-black;
+    @apply border dark:border-none rounded cursor-pointer active:brightness-80
+      bg-gray-300 text-black dark:text-gray-100 gap-2 inline-flex items-center
+      border-zinc-400 disabled:bg-gray-200 dark:bg-neutral-600 px-2 py-1
+      disabled:border-gray-300 disabled:dark:bg-neutral-800 text-black
+      disabled:text-gray-500 disabled:dark:text-neutral-400 hover:bg-brand-200
+      dark:hover:bg-brand-400;
   }
 
   button[aria-pressed='true']:not(.aria-handled) {
-    @apply bg-white;
+    @apply bg-white dark:bg-neutral-400;
   }
 
   .link, .icon {
-    @apply text-black hover:text-brand-300 cursor-pointer;
+    @apply text-black hover:text-brand-300 dark:text-gray-200 cursor-pointer;
   }
 
   .link {
@@ -131,7 +138,10 @@
   }
 
   .icon {
-    @apply active:bg-brand-100 disabled:cursor-not-allowed disabled:text-gray-500;
+    @apply active:bg-brand-100 dark:active:bg-brand-500
+      disabled:cursor-not-allowed disabled:text-gray-400
+      disabled:hover:text-gray-400 disabled:dark:text-neutral-600
+      disabled:hover:dark:text-neutral-600;
   }
 
   [type='submit'].link,
@@ -147,13 +157,15 @@
   }
 
   progress::-webkit-progress-bar {
-    @apply bg-gray-200 rounded;
+    @apply bg-gray-200 dark:bg-neutral-700 rounded;
   }
+
   progress::-webkit-progress-value {
-    @apply bg-brand-200 rounded;
+    @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
+
   progress::-moz-progress-bar {
-    @apply bg-brand-200 rounded;
+    @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
 
 
@@ -165,7 +177,7 @@
 
     [title]:focus::after {
       @apply w-fit absolute p-1 text-black bg-white border border-black
-             content-[attr(title)] top-[90%]
+        content-[attr(title)] top-[90%]
     }
   }
 
@@ -211,33 +223,48 @@
     --invalid-cell: theme('colors.red.300');
     --modified-cell: theme('colors.yellow.250');
     --search-result: theme('colors.green.300');
+    @apply dark:[--new-cell:theme('colors.indigo.900')]
+      dark:[--invalid-cell:theme('colors.red.900')]
+      dark:[--modified-cell:theme('colors.yellow.900')]
+      dark:[--search-result:theme('colors.green.900')];
   }
 
   .custom-select {
     --custom-select-b1: theme('colors.white');
     --custom-select-b2: theme('colors.brand.100');
     --custom-select-accent: theme('colors.brand.100');
+    @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
+      dark:[--custom-select-b2:theme('colors.brand.500')]
+      dark:[--custom-select-accent:theme('colors.brand.500')];
   }
 
-  .custom-select-group-required-fields {
+  .custom-select-group-required-fields, .custom-select-input-required {
     --custom-select-b1: theme('colors.cyan.100');
     --custom-select-b2: theme('colors.cyan.200');
     --custom-select-accent: theme('colors.cyan.300');
+    @apply dark:[--custom-select-b1:theme('colors.cyan.900')]
+      dark:[--custom-select-b2:theme('colors.cyan.800')]
+      dark:[--custom-select-accent:theme('colors.cyan.700')];
   }
 
-  .custom-select-group-hidden-fields {
+  .custom-select-group-hidden-fields, .custom-select-input-hidden {
     --custom-select-b1: theme('colors.gray.300');
     --custom-select-b2: theme('colors.gray.400');
     --custom-select-accent: theme('colors.gray.500');
+    @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
+      dark:[--custom-select-b2:theme('colors.neutral.700')]
+      dark:[--custom-select-accent:theme('colors.neutral.600')];
   }
 
   .custom-select-group-suggested-mappings {
     --custom-select-b1: theme('colors.green.200');
     --custom-select-b2: theme('colors.green.300');
     --custom-select-accent: theme('colors.green.400');
+    @apply dark:[--custom-select-b1:theme('colors.green.700')]
+      dark:[--custom-select-b2:theme('colors.green.600')]
+      dark:[--custom-select-accent:theme('colors.green.500')];
   }
 }
-
 
 /**
  * This injects Tailwind's utility classes and any utility classes registered
@@ -246,5 +273,28 @@
 @tailwind utilities;
 
 @layer utilities {
+  /*
+   * Smartly inverts leaflet layer's color scheme. Source:
+   * https://gist.github.com/BrendonKoz/b1df234fe3ee388b402cd8e98f7eedbd
+   */
+  .invert-leaflet-layer {
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7)
+  }
+}
 
+/* Leaflet dark mode */
+.leaflet-bar a {
+  @apply dark:!bg-black dark:!border-b-neutral-600 dark:!text-white
+    hover:dark:!bg-brand-400;
+}
+
+.leaflet-control-layers,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+.leaflet-control-attribution {
+  @apply dark:!bg-black dark:!text-neutral-300
+}
+
+.leaflet-control-layers-separator {
+  @apply dark:!border-t-neutral-600;
 }

@@ -11,7 +11,7 @@ import L from './leafletextend';
 import type { IR, RA, RR } from './types';
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.6.1/leaflet-layers.json';
+  'https://files.specifysoftware.org/specify7/7.6.2/leaflet-layers.json';
 
 /**
  *
@@ -26,7 +26,8 @@ export const leafletLayersEndpoint =
  * Documentation:
  * https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers
  *
- *
+ * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
+ * dark mode
  */
 export const leafletTileServers: RR<
   'baseMaps' | 'overlays',
@@ -40,6 +41,7 @@ export const leafletTileServers: RR<
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright"' +
           ' target="_blank">OpenStreetMap</a> contributors',
+        className: 'dark:invert-leaflet-layer',
       }
     ),
     'Street Map (ESRI)': L.tileLayer(
@@ -48,6 +50,7 @@ export const leafletTileServers: RR<
         maxZoom: 23,
         attribution:
           'Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community',
+        className: 'dark:invert-leaflet-layer',
       }
     ),
     'Topographic Map (ESRI)': L.tileLayer(
@@ -56,6 +59,7 @@ export const leafletTileServers: RR<
         maxZoom: 23,
         attribution:
           'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community',
+        className: 'dark:invert-leaflet-layer',
       }
     ),
     'Satellite Map (ESRI)': L.tileLayer(

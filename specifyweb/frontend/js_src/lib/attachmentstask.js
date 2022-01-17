@@ -85,7 +85,7 @@ export const AttachmentsView = Backbone.View.extend({
 
             attachments.getThumbnail(attachment, 123).done((img)=>
                 $('<button>',{
-                    class: 'bg-white rounded shadow-lg shadow-gary-600 specify-attachment-thumbnail flex justify-center items-center',
+                    class: 'bg-white dark:bg-black rounded shadow-lg shadow-gray-500 specify-attachment-thumbnail flex justify-center items-center',
                     title,
                 }).append(
                     img.addClass('max-w-full max-h-full object-contain').attr('alt', title)
@@ -114,7 +114,7 @@ export const AttachmentsView = Backbone.View.extend({
         },
         render: function() {
             var self = this;
-            self.$el.html(template({formsText, commonText}));
+            self.$el.html(template({formsText, commonText, className}));
 
             self.$('.specify-attachment-browser').scroll(function() { self.fillPage(); });
 

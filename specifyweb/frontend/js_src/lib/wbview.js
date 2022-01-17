@@ -53,6 +53,7 @@ import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
 import createBackboneView from './components/reactbackboneextend';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from "./localization/utils";
 
 const metaKeys = [
   'isNew',
@@ -399,6 +400,7 @@ const WBView = Backbone.View.extend({
           outsideClickDeselects: false,
           multiColumnSorting: true,
           sortIndicator: true,
+          language: LANGUAGE,
           contextMenu: {
             items: this.isUploaded
               ? {
@@ -448,13 +450,7 @@ const WBView = Backbone.View.extend({
                             href="/specify/view/${tableName}/${recordId}/"
                             target="_blank"
                           >
-                            <div
-                              class="table-icon table-icon-image"
-                              role="img"
-                              style="background-image: url('${tableIcon}')"
-                              title="${tableLabel}"
-                              aria-label="${tableLabel}"
-                            ></div>
+                            <img class="w-6 h-6" src="${tableIcon}" alt="">
                             ${tableLabel}
                             <span
                               title="${commonText('opensInNewTab')}"

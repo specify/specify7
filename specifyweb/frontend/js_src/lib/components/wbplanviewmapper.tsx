@@ -25,6 +25,7 @@ import {
   goBack,
   mappingPathIsComplete,
 } from '../wbplanviewutils';
+import { Button } from './basic';
 import { useId } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
@@ -42,7 +43,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { Button } from './basic';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -303,17 +303,16 @@ export default function WbPlanViewMapper(props: {
           <span title={wbText('baseTable')}>
             {` (${dataModelStorage.tables[props.baseTableName].label})`}
           </span>
-        </>
-      }
-      buttonsLeft={
-        props.readonly ? (
           <span
             className="flex items-center text-red-600"
             title={wbText('dataSetUploadedDescription')}
           >
-            {wbText('dataSetUploaded')}
+            {` ${wbText('dataSetUploaded')}`}
           </span>
-        ) : (
+        </>
+      }
+      buttonsLeft={
+        props.readonly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
             <Button.Simple

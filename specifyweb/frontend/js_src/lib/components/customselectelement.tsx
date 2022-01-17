@@ -316,7 +316,7 @@ function Option({
       </span>
       {hasArrow && isRelationship ? (
         <span
-          className="print:hidden w-3"
+          className="print:hidden"
           title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
           aria-label={wbText('relationship')(tableLabel ?? '')}
           role="img"
@@ -324,7 +324,7 @@ function Option({
           {icons.chevronRight}
         </span>
       ) : (
-        <span className="print:hidden w-3" />
+        <span className="print:hidden w-6" />
       )}
     </span>
   );
@@ -521,7 +521,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`border border-brand-300 p-2 flex gap-y-2 gap-x-1
-          items-center bg-brand-100 rounded rounded-b-none`}
+          items-center bg-brand-100 dark:bg-brand-500 rounded rounded-b-none`}
       >
         {has('icon') && (
           <Icon
@@ -540,15 +540,17 @@ export function CustomSelectElement({
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
         className={`cursor-pointer min-h-[theme(spacing.8)]
-          flex items-center gap-x-1 px-1 border border-gray-600 rounded ${
+          flex items-center gap-x-1 px-1 border border-gray-500 dark:border-none
+          rounded ${
             defaultOption?.isRequired === true
-              ? 'bg-[color:var(--custom-select-required-b2)]'
+              ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
-              ? 'bg-[color:var(--custom-select-hidden-b2)]'
+              ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
+                 dark:!border-solid`
               : customSelectType === 'MAPPING_OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
-              ? 'bg-yellow-250'
-              : 'bg-white'
+              ? 'bg-yellow-250 dark:bg-yellow-900'
+              : 'bg-white dark:bg-neutral-600'
           }
         ${isOpen ? '[z-index:3] rounded-b-none' : ''}`}
         role="button"
@@ -575,7 +577,7 @@ export function CustomSelectElement({
           }`}
         >
           {defaultOption.optionLabel === '0'
-            ? 'NOT MAPPED'
+            ? wbText('notMapped')
             : defaultOption.optionLabel}
         </span>
         {has('arrow') && (
@@ -648,16 +650,16 @@ export function CustomSelectElement({
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
-      className={`[z-index:2] cursor-pointer h-fit rounded rounded-t-none
+      className={`[z-index:2] cursor-pointer h-fit rounded
         bg-[color:var(--custom-select-b1)] border border-brand-300 flex-1
         overflow-x-hidden
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
+        ${has('shadow') ? 'shadow-md max-h-[theme(spacing.64)]' : ''}
         ${
-          has('shadow')
-            ? 'shadow-[0_3px_5px_-1px] max-h-[theme(spacing.64)]'
-            : ''
+          customSelectType === 'SUGGESTION_LIST'
+            ? ''
+            : 'min-w-max rounded-t-none'
         }
-        ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
       ref={listOfOptionsRef}
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}

@@ -1,5 +1,5 @@
 <header class="flex gap-x-2 items-center">
-  <h2><%= commonText('attachments') %></h2>
+  <h2 class="<%= className.h2 %>"><%= commonText('attachments') %></h2>
   <label>
     <span class="sr-only"><%= formsText('filterAttachments') %></span>
     <select
@@ -9,7 +9,7 @@
   </label>
 </header>
 <div
-  class="specify-attachment-browser flex-1 overflow-y-auto gap-4 rounded p-4
-    shadow-[0_3px_5px_-1px] shadow-gray-500 bg-gray-200 grid items-center
+  class="specify-attachment-browser <%= className.container %> flex-1 !w-max-none
+    overflow-y-auto gap-4 grid items-center
     grid-cols-[repeat(auto-fit,minmax(150px,1fr))]"
 ></div>

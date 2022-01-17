@@ -153,9 +153,9 @@ export default function Main({
       )}
 
       <header
-        className={`bg-gray-200 border-b-4 border-b-[5px]
-        border-b-brand-200 flex flex-col 2xl:flex-row z-index-[1]
-        shadow-gray-400 shadow-[0_3px_5px_-1px] print:hidden`}
+        className={`bg-gray-200 dark:bg-neutral-800 border-b-4 border-b-[5px]
+        border-b-brand-200 dark:border-b-brand-400 flex flex-col 2xl:flex-row 
+        shadow-md shadow-gray-400 print:hidden [z-index:1]`}
       >
         <div className="2xl:contents flex justify-between w-full">
           <h1 className="contents">

@@ -10,6 +10,7 @@ import QueryResults from './queryresults';
 import {getTreeDef} from './domain';
 import queryText from './localization/query';
 import commonText from './localization/common';
+import {className} from './components/basic';
 
 async function getTreeRanks(tableName){
     const treeDef = await getTreeDef(tableName);
@@ -24,7 +25,8 @@ async function getTreeRanks(tableName){
         let name = field?.getLocalizedName();
 
         const th = $(`<div role="columnheader"
-            class="w-full min-w-max bg-brand-100 border-b border-gray-500 p-1 [inset-block-start:_0] sticky"
+            class="w-full min-w-max bg-brand-100 dark:bg-brand-500 border-b
+            border-gray-500 p-1 [inset-block-start:_0] sticky"
         >
           <div class="contents">
               <span class="contents"></span>
@@ -59,7 +61,7 @@ async function getTreeRanks(tableName){
 
     export default Backbone.View.extend({
         __name__: "QueryResultsTable",
-        className: "bg-gray-200 p-4 shadow-[0_3px_5px_-1px] shadow-gray-500 rounded",
+        className: className.container,
         initialize: function(options) {
             var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl format";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);

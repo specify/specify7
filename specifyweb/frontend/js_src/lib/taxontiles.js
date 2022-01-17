@@ -84,7 +84,7 @@ export default function makeTreeMap(container) {
       .append('div')
       .attr('class', 'node')
       .call(position)
-      .attr('class', 'node border absolute opacity-80')
+      .attr('class', 'node border dark:border-neutral-700 absolute opacity-80')
       .attr('title', makeName)
       .style('background', function (d) {
         return d.children ? null : color(d.name);
@@ -96,7 +96,7 @@ export default function makeTreeMap(container) {
 
     $('<p>', {
       title: welcomeText('taxonTilesDescription')(thres),
-      class: 'absolute b-0 right-3 bg-white py-0 px-2 opacity-80 border',
+      class: 'absolute b-0 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
     })
       .text(welcomeText('taxonTiles'))
       .appendTo(div[0])
