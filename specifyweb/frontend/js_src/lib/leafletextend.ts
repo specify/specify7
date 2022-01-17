@@ -34,10 +34,9 @@ L.Control.FullScreen = L.Control.extend({
   onAdd(map: Readonly<L.Map>) {
     const button = L.DomUtil.create('button') as HTMLImageElement;
     button.title = localityText('toggleFullScreen');
+    button.ariaLabel = localityText('toggleFullScreen');
     button.classList.add('button', 'bg-black', 'p-2', '!cursor-pointer');
-    button.innerHTML = `<img class="w-6" src="/static/img/full_screen.svg" alt="${localityText(
-      'toggleFullScreen'
-    )}">`;
+    button.innerHTML = legacyNonJsxIcons.arrowsExpand;
 
     let isFullScreen = false;
     L.DomEvent.on(button, 'click', (event) => {

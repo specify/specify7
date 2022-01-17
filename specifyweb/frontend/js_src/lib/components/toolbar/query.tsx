@@ -4,26 +4,27 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import ajax from '../../ajax';
-import DeleteButton from '../deletebutton';
+import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import populateform from '../../populateform';
-import SaveButton from '../savebutton';
 import schema, { getModel, getModelById } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
 import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
+import { Button, className, Link } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
+import DeleteButton from '../deletebutton';
 import { useTitle } from '../hooks';
+import icons from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import SaveButton from '../savebutton';
 import { useCachedState } from '../stateCache';
-import { SpecifyResource } from '../../legacytypes';
-import { Button, className, Link } from '../basic';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -308,7 +309,7 @@ export const QueryToolbarView = createBackboneView(QueryToolbarItem);
 const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
-  icon: '/static/img/query.png',
+  icon: icons.documentSearch,
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,
@@ -376,7 +377,7 @@ const EditQueryDialog = Backbone.View.extend({
     if (!this.readOnly) {
       const saveButton = new SaveButton({
         model: this.spquery,
-        form: form[0].querySelector('form') as HTMLFormElement,
+        form: form[0].querySelector('form')!,
         onSaved: () => {
           this.remove();
           navigation.go(`/query/${this.spquery.id}/`);
@@ -435,9 +436,9 @@ const EditQueryDialog = Backbone.View.extend({
           Accept: 'application/json',
         },
       })
-        .then(({ data: reportJson }) => {
+        .then(async ({ data: reportJson }) => {
           const report = new schema.models.SpReport.Resource(reportJson);
-          return new Promise<SpecifyResource>((resolve) =>
+          return new Promise<SpecifyResource>(async (resolve) =>
             report.rget<SpecifyResource>('appresource').then(resolve)
           );
         })
@@ -476,7 +477,7 @@ const EditQueryDialog = Backbone.View.extend({
       });
   },
   exportQuery() {
-    void ajax<string>(`/export/extract_query/${this.spquery.id}/`, {
+    void ajax(`/export/extract_query/${this.spquery.id}/`, {
       headers: { Accept: 'text/plain' },
     }).then(({ data: xml }) => {
       const dialog = $(`<div>

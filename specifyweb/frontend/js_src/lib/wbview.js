@@ -352,11 +352,15 @@ const WBView = Backbone.View.extend({
             const tableLabel =
               dataModelStorage?.tables?.[tableName]?.label ?? tableName ?? '';
             return `<div class="flex gap-x-1 items-center pl-4">
-              <img
+              ${isMapped ? `<img
                 class="w-table-icon h-table-icon"
-                alt="${isMapped ? tableLabel : wbText('unmappedColumn')}"
-                src="${isMapped ? tableIcon : '/static/img/stop_sign.svg'}"
-              >
+                alt="${tableLabel}"
+                src="${tableIcon}"
+              >` : `<span
+                class="text-red-600"
+                aria-label="wbText('unmappedColumn')"
+                title="wbText('unmappedColumn')"
+              >${legacyNonJsxIcons.ban}</span>`}
               <span class="wb-header-name columnSorting">
                 ${this.dataset.columns[physicalCol]}
               </span>

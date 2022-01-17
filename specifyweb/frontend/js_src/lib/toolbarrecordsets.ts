@@ -1,3 +1,4 @@
+import icons from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import RecordSetsDialog from './recordsetsdialog';
@@ -7,7 +8,7 @@ import userInfo from './userinfo';
 const menuItem: MenuItem = {
   task: 'recordsets',
   title: commonText('recordSets'),
-  icon: '/static/img/record_sets.png',
+  icon: icons.collection,
   view({ onClose }) {
     const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {

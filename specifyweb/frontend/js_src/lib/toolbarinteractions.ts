@@ -1,3 +1,4 @@
+import icons from './components/icons';
 import type { MenuItem } from './components/main';
 import InteractionsDialog from './interactionsdialog';
 import type { SpecifyResource } from './legacytypes';
@@ -7,7 +8,7 @@ import * as navigation from './navigation';
 const menuItem: MenuItem = {
   task: 'interactions',
   title: commonText('interactions'),
-  icon: '/static/img/interactions.png',
+  icon: icons.chat,
   view: (props) =>
     new InteractionsDialog(props)
       .render()

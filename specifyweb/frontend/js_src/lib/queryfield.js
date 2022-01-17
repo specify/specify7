@@ -197,7 +197,7 @@ export default Backbone.View.extend({
                 if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
                     const localized = new Intl.DisplayNames(LANGUAGE, {type: 'dateTimeField'})
                     $('<a class="field-label-datepart">')
-                        .text(`(${dateParts[this.fieldSpec.datePart]})`)
+                        .text(`(${dateParts[this.fieldSpec.datePart.toLowerCase()]})`)
                         .appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {

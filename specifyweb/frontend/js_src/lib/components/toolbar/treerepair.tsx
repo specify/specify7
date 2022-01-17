@@ -28,7 +28,7 @@ export function TreeSelectDialog({
   getLink,
 }: {
   readonly onClose: () => void;
-  readonly onClick: (tree: string) => Promise<void>;
+  readonly onClick: (tree: string) => Promise<void> | void;
   readonly title: string;
   readonly getLink: (tree: string) => string;
 }): JSX.Element {

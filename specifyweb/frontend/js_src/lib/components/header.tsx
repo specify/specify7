@@ -86,8 +86,7 @@ export function HeaderItems({
             setCurrentOverlay(backboneView);
           }}
         >
-          {/* TODO CSS: rewrite toolbar icons to SVG and fix dark mode color issue */}
-          <img src={icon} alt="" className="h-4" />
+          {icon}
           {title}
         </Link.Default>
       ))}

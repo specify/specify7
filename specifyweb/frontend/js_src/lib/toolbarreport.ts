@@ -1,4 +1,5 @@
 import ajax from './ajax';
+import icons from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import { ReportsView } from './reports';
@@ -14,7 +15,7 @@ export default ajax<{ readonly available: boolean }>(
   .then<MenuItem>(async ({ data: { available } }) => ({
     task: 'report',
     title: commonText('reports'),
-    icon: '/static/img/report_icon.png',
+    icon: icons.documentReport,
     enabled: available,
     view: ({ onClose }) => new ReportsView({ onClose }),
   }));

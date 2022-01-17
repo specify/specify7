@@ -1,8 +1,5 @@
 @import url('./custom-theme/jquery-ui-1.10.2.custom.css');
 
-/* TODO: make save buttons be on the correct side in forms and subForms */
-/* TODO: revisit reports ui */
-/* TODO: do global css light/dark mode testing */
 /*
  * TODO: rewrite navigation.ts to use react dialogs (or use React Router!)
  * TODO: backbone wrapper for react dialogs

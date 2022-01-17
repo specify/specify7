@@ -18,6 +18,7 @@ import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
 import { useTitle } from '../hooks';
+import icons from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
@@ -351,7 +352,7 @@ const View = createBackboneView(WbsDialog);
 const menuItem: MenuItem = {
   task: 'workbenches',
   title: commonText('workbench'),
-  icon: '/static/img/workbench.png',
+  icon: icons.table,
   view: ({ onClose }) => new View({ onClose, showTemplates: false }),
 };
 

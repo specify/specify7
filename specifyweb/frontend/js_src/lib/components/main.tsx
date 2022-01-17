@@ -5,6 +5,7 @@ import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import router from '../router';
 import { setCurrentView } from '../specifyapp';
+import systemInfo from '../systeminfo';
 import type { RA } from '../types';
 import userInfo from '../userinfo';
 import { Button, Link } from './basic';
@@ -15,9 +16,8 @@ import {
   HeaderItems,
   UserTools,
 } from './header';
-import Notifications from './notifications';
-import systemInfo from '../systeminfo';
 import { Dialog } from './modaldialog';
+import Notifications from './notifications';
 
 export type UserTool = {
   readonly task: string;
@@ -34,7 +34,7 @@ export type MenuItem = UserTool & {
     readonly onClose: () => void;
     readonly urlParameter?: string;
   }) => Backbone.View;
-  readonly icon: string;
+  readonly icon: JSX.Element;
 };
 
 const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([

@@ -222,7 +222,7 @@ export const Link = {
           title={commonText('opensInNewTab')}
           aria-label={commonText('opensInNewTab')}
         >
-          {icons.link}
+          {icons.externalLink}
         </span>
       </>
     ),
