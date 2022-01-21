@@ -1,24 +1,27 @@
 import type { SpecifyResource } from './legacytypes';
 import { snServer } from './lifemapperconfig';
-import type { Collection } from './specifymodel';
 import type { IR, RA } from './types';
+import { CollectionObject } from './datamodel';
 
 export const fetchLocalScientificName = async (
-  model: SpecifyResource,
+  model: SpecifyResource<CollectionObject>,
   defaultValue = ''
 ): Promise<string> =>
   new Promise((resolve) => {
-    model
-      .rget<Collection>('determinations')
-      .then(({ models: determinations }) =>
-        determinations.length === 0
-          ? resolve(defaultValue)
-          : determinations[0]
-              .rget<string>('preferredTaxon.fullname')
-              .then((scientificName) =>
-                resolve(scientificName === null ? defaultValue : scientificName)
+    model.rgetCollection('determinations').then(({ models: determinations }) =>
+      determinations.length === 0
+        ? resolve(defaultValue)
+        : determinations[0]
+            .rget('preferredTaxon')
+            .then((preferredTaxon) => preferredTaxon?.get('fullname'))
+            .then((scientificName) =>
+              resolve(
+                typeof scientificName === 'string'
+                  ? scientificName
+                  : defaultValue
               )
-      );
+            )
+    );
   });
 
 export const formatLifemapperViewPageRequest = (
@@ -30,14 +33,10 @@ export const formatLifemapperViewPageRequest = (
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
-export async function fetchOccurrenceName({
-  guid,
-  model,
-}: {
-  readonly guid: string;
-  readonly model: SpecifyResource;
-}): Promise<string> {
-  return fetch(formatOccurrenceDataRequest(guid), {
+export async function fetchOccurrenceName(
+  model: SpecifyResource<CollectionObject>
+): Promise<string> {
+  return fetch(formatOccurrenceDataRequest(model.get('guid')), {
     mode: 'cors',
   })
     .then(async (response) => response.json())

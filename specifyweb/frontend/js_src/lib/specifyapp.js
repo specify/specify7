@@ -1,7 +1,6 @@
 "use strict";
 
 import $ from 'jquery';
-import 'jquery-contextmenu';
 import 'jquery-ui';
 import {ErrorView} from './errorview';
 import {setTitle} from "./components/hooks";

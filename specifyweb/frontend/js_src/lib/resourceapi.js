@@ -306,6 +306,10 @@ function eventHandlerForToOne(related, field) {
         rget: function(fieldName, prePop) {
             return this.getRelated(fieldName, {prePop: prePop});
         },
+        // Duplicate definition for purposes of better typing:
+        rgetCollection: function(fieldName, prePop) {
+            return this.getRelated(fieldName, {prePop: prePop});
+        },
         getRelated: function(fieldName, options) {
             options || (options = {
                 prePop: false,

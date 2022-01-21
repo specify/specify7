@@ -30,7 +30,7 @@ function Users({
           ? undefined
           : setUsers(
               Object.fromEntries(
-                models.map((user) => [user.get<string>('name'), user.viewUrl()])
+                models.map((user) => [user.get('name'), user.viewUrl()])
               )
             )
       );

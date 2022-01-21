@@ -1,9 +1,8 @@
 import React from 'react';
 
-import ajax, { ping } from '../ajax';
+import { ping } from '../ajax';
 import Backbone from '../backbone';
 import { format } from '../dataobjformatters';
-import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
@@ -27,6 +26,8 @@ import {
   Submit,
   Textarea,
 } from './basic';
+import { SpecifyUser } from '../datamodel';
+import { SerializedModel, serializeModel } from '../datamodelutils';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -225,13 +226,16 @@ function DataSetName({
 
 const DataSetNameView = createBackboneView(DataSetName);
 
-const fetchListOfUsers = async (): Promise<RA<SpecifyResource>> =>
-  ajax<{ readonly objects: RA<SpecifyResource> }>(
-    '/api/specify/specifyuser/?limit=500',
-    { headers: { Accept: 'application/json' } }
-  ).then(({ data: { objects: users } }) =>
-    users.filter(({ id }) => id !== userInfo.id)
-  );
+async function fetchListOfUsers(): Promise<RA<SerializedModel<SpecifyUser>>> {
+  const users = new schema.models.SpecifyUser.LazyCollection();
+  return users
+    .fetch({
+      limit: 500,
+    })
+    .then(({ models }) =>
+      models.filter(({ id }) => id !== userInfo.id).map(serializeModel)
+    );
+}
 
 function ChangeOwner({
   dataset,
@@ -242,9 +246,9 @@ function ChangeOwner({
   readonly onClose: () => void;
   readonly onChanged: () => void;
 }): JSX.Element {
-  const [users, setUsers] = React.useState<RA<SpecifyResource> | undefined>(
-    undefined
-  );
+  const [users, setUsers] = React.useState<
+    RA<SerializedModel<SpecifyUser>> | undefined
+  >(undefined);
 
   React.useEffect(() => {
     void fetchListOfUsers().then((users) =>
@@ -309,7 +313,7 @@ function ChangeOwner({
           >
             {users.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.get<string>('name')}
+                {user.name}
               </option>
             ))}
           </Select>

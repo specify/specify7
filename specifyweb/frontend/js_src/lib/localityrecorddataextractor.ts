@@ -29,6 +29,8 @@ import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import dataModelStorage from './wbplanviewmodel';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { Locality } from './datamodel';
+import { AnySchema } from './datamodelutils';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -56,7 +58,7 @@ type FilterFunction = (
     currentPart: MappingPath,
     nextParts: MappingPath
   ],
-  resource: SpecifyResource
+  resource: SpecifyResource<AnySchema>
 ) => boolean;
 
 export const defaultRecordFilterFunction: FilterFunction = (
@@ -65,7 +67,7 @@ export const defaultRecordFilterFunction: FilterFunction = (
 ) =>
   typeof resource?.specifyModel?.name !== 'string' ||
   resource.specifyModel.name !== 'Determination' ||
-  resource.get<boolean>('isCurrent');
+  resource.get('isCurrent');
 
 async function recursiveResourceResolve(
   resource: any,
@@ -192,7 +194,7 @@ export const parseLocalityPinFields = (
 };
 
 export async function getLocalityDataFromLocalityResource(
-  localityResource: SpecifyResource,
+  localityResource: SpecifyResource<Locality>,
   // Don't fetch related tables. Only return data from the locality resource
   quickFetch = false,
   filterFunction: FilterFunction = defaultRecordFilterFunction

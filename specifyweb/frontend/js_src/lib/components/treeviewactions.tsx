@@ -14,17 +14,19 @@ import { defined } from '../types';
 import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
+import { AnyTree, TableName } from '../datamodelutils';
+import SpecifyModel from '../specifymodel';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
-export function TreeViewActions({
+export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
   focusRef,
   onRefresh: handleRefresh,
   focusedRow,
   ranks,
 }: {
-  readonly tableName: string;
+  readonly tableName: TableName<SCHEMA>;
   readonly focusRef: React.MutableRefObject<HTMLButtonElement | null>;
   readonly onRefresh: () => void;
   readonly focusedRow: Row | undefined;
@@ -61,7 +63,7 @@ export function TreeViewActions({
         )}
       </li>
       <li className="contents">
-        <EditRecord
+        <EditRecord<SCHEMA>
           nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
@@ -69,7 +71,7 @@ export function TreeViewActions({
         />
       </li>
       <li className="contents">
-        <AddChild
+        <AddChild<SCHEMA>
           nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
@@ -125,7 +127,7 @@ export function TreeViewActions({
       </li>
     </menu>
   ) : (
-    <ActiveAction
+    <ActiveAction<SCHEMA>
       tableName={tableName}
       actionRow={actionRow}
       type={currentAction}
@@ -140,14 +142,14 @@ export function TreeViewActions({
   );
 }
 
-function EditRecord({
+function EditRecord<SCHEMA extends AnyTree>({
   nodeId,
   tableName,
   onRefresh: handleRefresh,
   disabled,
 }: {
   readonly nodeId: number | undefined;
-  readonly tableName: string;
+  readonly tableName: TableName<SCHEMA>;
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
@@ -163,7 +165,7 @@ function EditRecord({
         {userInfo.isReadOnly ? commonText('view') : commonText('edit')}
       </Button.Simple>
       {isOpen && typeof nodeId !== 'undefined' && (
-        <EditRecordDialog
+        <EditRecordDialog<SCHEMA>
           id={nodeId}
           addNew={false}
           tableName={tableName}
@@ -175,14 +177,14 @@ function EditRecord({
   );
 }
 
-function AddChild({
+function AddChild<SCHEMA extends AnyTree>({
   nodeId,
   tableName,
   onRefresh: handleRefresh,
   disabled,
 }: {
   readonly nodeId: number | undefined;
-  readonly tableName: string;
+  readonly tableName: TableName<SCHEMA>;
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
@@ -199,7 +201,7 @@ function AddChild({
         {commonText('addChild')}
       </Button.Simple>
       {isOpen && typeof nodeId === 'number' && (
-        <EditRecordDialog
+        <EditRecordDialog<SCHEMA>
           id={nodeId}
           addNew={true}
           tableName={tableName}
@@ -220,7 +222,7 @@ function AddChild({
   );
 }
 
-function EditRecordDialog({
+function EditRecordDialog<SCHEMA extends AnyTree>({
   id,
   addNew,
   tableName,
@@ -229,7 +231,7 @@ function EditRecordDialog({
 }: {
   readonly id: number;
   readonly addNew: boolean;
-  readonly tableName: string;
+  readonly tableName: TableName<SCHEMA>;
   readonly onClose: () => void;
   readonly onSaved: (addAnother: boolean) => void;
 }): JSX.Element {
@@ -239,7 +241,10 @@ function EditRecordDialog({
   React.useEffect(() => {
     if (content === null) return undefined;
 
-    const model = defined(getModel(tableName));
+    const model = defined(
+      getModel(tableName)
+    ) as unknown as SpecifyModel<SCHEMA>;
+    // @ts-expect-error
     const parentNode = new model.Resource({ id });
     let node = parentNode;
     if (addNew) {
@@ -259,7 +264,7 @@ function EditRecordDialog({
       .on(
         'saved',
         (
-          _model: SpecifyResource,
+          _model: SpecifyResource<SCHEMA>,
           { addAnother }: { readonly addAnother: boolean }
         ) => {
           handleClose();
@@ -273,7 +278,7 @@ function EditRecordDialog({
         view?.remove();
         view = undefined;
       })
-      .on('changetitle', (_resource: SpecifyResource, title: string) =>
+      .on('changetitle', (_resource: SpecifyResource<SCHEMA>, title: string) =>
         setTitle(title)
       );
 
@@ -295,7 +300,7 @@ function EditRecordDialog({
   );
 }
 
-function ActiveAction({
+function ActiveAction<SCHEMA extends AnyTree>({
   tableName,
   actionRow,
   type,
@@ -304,7 +309,7 @@ function ActiveAction({
   onCancelAction: handleCancelAction,
   onCompleteAction: handleCompleteAction,
 }: {
-  readonly tableName: string;
+  readonly tableName: TableName<SCHEMA>;
   readonly actionRow: Row;
   readonly type: Exclude<Action, 'add' | 'edit'>;
   readonly focusRef: React.MutableRefObject<HTMLButtonElement | null>;

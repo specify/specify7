@@ -24,3 +24,8 @@ export type PartialBy<
   RECORD extends IR<unknown>,
   OPTIONAL_KEYS extends keyof RECORD
 > = Omit<RECORD, OPTIONAL_KEYS> & Partial<Pick<RECORD, OPTIONAL_KEYS>>;
+
+// FIXME: use this type
+export type Writable<T> = {
+  -readonly [K in keyof T]: T[K];
+};

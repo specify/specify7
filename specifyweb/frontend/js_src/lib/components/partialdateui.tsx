@@ -17,6 +17,7 @@ import createBackboneView from './reactbackboneextend';
 import { SpecifyResource } from '../legacytypes';
 import { Button, Input, Select } from './basic';
 import { useSaveBlockers, useValidation } from './hooks';
+import { AnySchema } from '../datamodelutils';
 
 function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -53,7 +54,7 @@ let monthSupported = isInputSupported('month');
 let inputFullFormat = databaseFormat;
 let inputMonthFormat = 'YYYY-MM';
 
-function PartialDateUi({
+function PartialDateUi<SCHEMA extends AnySchema>({
   model,
   dateField,
   precisionField,
@@ -61,19 +62,20 @@ function PartialDateUi({
   readOnly,
   inputId,
 }: {
-  readonly model: SpecifyResource;
-  readonly dateField: string;
-  readonly precisionField: string;
+  readonly model: SpecifyResource<SCHEMA>;
+  readonly dateField: keyof SCHEMA['fields'] & string;
+  readonly precisionField: keyof SCHEMA['fields'] & string;
   readonly defaultPrecision: Precision;
   readonly readOnly: boolean;
   readonly inputId: string;
 }): JSX.Element {
   const [precision, setPrecision] = React.useState<Precision>(
     () =>
-      reversePrecision[model.get<number>(precisionField)] ?? defaultPrecision
+      reversePrecision[model.get(precisionField) as 1 | 2 | 3] ??
+      defaultPrecision
   );
 
-  const errors = useSaveBlockers({ model, fieldName: dateField });
+  const errors = useSaveBlockers({ model, fieldName: dateField as string });
   const { inputRef, validationRef } = useValidation(errors);
 
   // Parsed date object
@@ -90,7 +92,7 @@ function PartialDateUi({
     function setInput(): void {
       if (destructorCalled) return;
 
-      const value = model.get<string | null>(dateField);
+      const value = model.get(dateField);
       setMoment(
         value === null ? undefined : dayjs(value, databaseFormat, true)
       );
@@ -99,7 +101,8 @@ function PartialDateUi({
     function changePrecision(): void {
       if (destructorCalled) return;
       setPrecision(
-        reversePrecision[model.get<number>(precisionField)] ?? defaultPrecision
+        reversePrecision[model.get(precisionField) as 1 | 2 | 3] ??
+          defaultPrecision
       );
     }
 
@@ -126,13 +129,17 @@ function PartialDateUi({
       };
 
     if (typeof moment === 'undefined') {
+      // @ts-expect-error
       model.set(dateField, null);
+      // @ts-expect-error
       model.set(precisionField, null);
       model.saveBlockers.remove(`invaliddate:${dateField}`);
       console.log('setting date to null');
     } else if (moment.isValid()) {
       const value = moment.format(databaseFormat);
+      // @ts-expect-error
       model.set(dateField, value);
+      // @ts-expect-error
       model.set(precisionField, precisions[precision]);
       console.log('setting date to', value);
       model.saveBlockers.remove(`invaliddate:${dateField}`);
@@ -166,7 +173,7 @@ function PartialDateUi({
      * The date would be in this format if browser supports
      * input[type="date"] or input[type="month"]
      */
-    let newMoment = dayjs(
+    const newMoment = dayjs(
       value,
       precision === 'full' ? 'YYYY-MM-DD' : 'YYYY-MM',
       true
@@ -319,7 +326,7 @@ export default UIPlugin.extend(
     },
     _render() {
       this.id = this.$el.prop('id');
-      this.view = new View({
+      this.view = new View<AnySchema>({
         model: this.model,
         dateField: this.init.df.toLowerCase(),
         precisionField: this.init.tp.toLowerCase(),

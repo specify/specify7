@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ajax from '../ajax';
+import { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -10,12 +11,12 @@ import icons from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-function DeleteButton({
+function DeleteButton<SCHEMA extends AnySchema>({
   model,
   deleteMessage = formsText('deleteConfirmationDialogMessage'),
   onDeleted: handleDeleted,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyResource<SCHEMA>;
   readonly deleteMessage?: React.ReactNode;
   readonly onDeleted?: () => void;
 }): JSX.Element {

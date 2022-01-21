@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Http } from '../ajax';
+import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -21,20 +22,20 @@ function handleFocus(event: FocusEvent): void {
   target.classList.remove('not-touched');
 }
 
-function SaveButton({
+function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   model,
   canAddAnother = true,
   form,
   onSaving: handleSaving,
   onSaved: handleSaved,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyResource<SCHEMA>;
   readonly canAddAnother?: boolean;
   readonly form: HTMLFormElement;
   readonly onSaving?: () => void;
   readonly onSaved?: (payload: {
     readonly addAnother: boolean;
-    readonly newResource: SpecifyResource | undefined;
+    readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
 }): JSX.Element {
@@ -85,7 +86,7 @@ function SaveButton({
 
   async function handleSubmit(
     event: SubmitEvent | React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    addAnother: boolean = false
+    addAnother = false
   ): Promise<void> {
     event.preventDefault();
 
@@ -121,9 +122,9 @@ function SaveButton({
       )
       .then(
         () => setIsSaving(false),
-        (jqXHR: { readonly status: number; errorHandled: boolean }) => {
-          if (jqXHR.status !== Http.CONFLICT) return;
-          jqXHR.errorHandled = true;
+        (error: { readonly status: number; errorHandled: boolean }) => {
+          if (error.status !== Http.CONFLICT) return;
+          error.errorHandled = true;
           setIsSaveConflict(true);
         }
       );

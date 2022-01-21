@@ -1,6 +1,14 @@
 import * as React from 'react';
 
 import ajax from '../ajax';
+import type { TaxonTreeDefItem } from '../datamodel';
+import {
+  Geography,
+  GeologicTimePeriod,
+  LithoStrat,
+  Storage,
+  Taxon,
+} from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
@@ -24,20 +32,24 @@ import { useId, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
-import { TreeRow } from './treeviewrow';
 import { TreeViewActions } from './treeviewactions';
+import { TreeRow } from './treeviewrow';
+import { AnyTreeDef, TableName } from '../datamodelutils';
 
-function TreeView({
+function TreeView<
+  SCHEMA extends Geography | Storage | Taxon | GeologicTimePeriod | LithoStrat,
+  TREE_SCHEMA extends AnyTreeDef
+>({
   tableName,
   treeDefinition,
   treeDefinitionItems,
 }: {
-  readonly tableName: string;
-  readonly treeDefinition: SpecifyResource;
-  readonly treeDefinitionItems: RA<SpecifyResource>;
+  readonly tableName: TableName<SCHEMA>;
+  readonly treeDefinition: SpecifyResource<TREE_SCHEMA>;
+  readonly treeDefinitionItems: RA<SpecifyResource<TaxonTreeDefItem>>;
 }): JSX.Element {
   const table = defined(getModel(tableName));
-  const rankIds = treeDefinitionItems.map((rank) => rank.get<number>('rankid'));
+  const rankIds = treeDefinitionItems.map((rank) => rank.get('rankid'));
   const [collapsedRanks, setCollapsedRanks] = useCachedState({
     bucketName: 'tree',
     cacheName: `collapsedRanks${capitalize(tableName)}`,
@@ -123,28 +135,28 @@ function TreeView({
       <header className="flex flex-wrap items-center gap-2">
         <h2>{table.getLocalizedName()}</h2>
         {/* A react component that is also a TypeScript generic */}
-        <Autocomplete<SpecifyResource>
+        <Autocomplete<SpecifyResource<SCHEMA>>
           source={async (value) => {
             const collection = new table.LazyCollection({
               filters: { name__istartswith: value, orderby: 'name' },
               domainfilter: true,
             });
-            await collection.fetch();
-            return Object.fromEntries(
-              collection.models.map((node) => {
-                const rankDefinition = treeDefinitionItems.find(
-                  (rank) =>
-                    rank.get<number>('rankid') === node.get<number>('rankid')
-                );
-                const rankName =
-                  rankDefinition?.get<string | null>('title') ??
-                  rankDefinition?.get<string>('name') ??
-                  node.get<string>('name');
-                return [
-                  node.get<string>('fullname'),
-                  { label: rankName, data: node },
-                ];
-              })
+            return collection.fetch().then(({ models }) =>
+              Object.fromEntries(
+                models.map((node) => {
+                  const rankDefinition = treeDefinitionItems.find(
+                    (rank) => rank.get('rankid') === node.get('rankid')
+                  );
+                  const rankName =
+                    rankDefinition?.get('title') ??
+                    rankDefinition?.get('name') ??
+                    node.get('name');
+                  return [
+                    node.get('fullname'),
+                    { label: rankName, data: node as SpecifyResource<SCHEMA> },
+                  ] as const;
+                })
+              )
             );
           }}
           onChange={(_value, { data }): void => {
@@ -182,7 +194,7 @@ function TreeView({
           )}
         />
         <span className="flex-1 -ml-2" />
-        <TreeViewActions
+        <TreeViewActions<SCHEMA>
           tableName={tableName}
           focusRef={toolbarButtonRef}
           onRefresh={(): void => {
@@ -228,26 +240,23 @@ function TreeView({
                   ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}`}
               >
                 <Button.LikeLink
-                  id={id(rank.get<number>('rankId').toString())}
+                  id={id(rank.get('rankId').toString())}
                   onClick={
                     typeof collapsedRanks === 'undefined'
                       ? undefined
                       : (): void =>
                           setCollapsedRanks(
-                            collapsedRanks.includes(rank.get<number>('rankId'))
+                            collapsedRanks.includes(rank.get('rankId'))
                               ? collapsedRanks.filter(
-                                  (rankId) =>
-                                    rankId !== rank.get<number>('rankId')
+                                  (rankId) => rankId !== rank.get('rankId')
                                 )
-                              : [...collapsedRanks, rank.get<number>('rankId')]
+                              : [...collapsedRanks, rank.get('rankId')]
                           )
                   }
                 >
                   {pipe(
-                    rank.get<string | null>('title') ??
-                      rank.get<string>('name'),
-                    collapsedRanks?.includes(rank.get<number>('rankId')) ??
-                      false,
+                    rank.get('title') ?? rank.get('name'),
+                    collapsedRanks?.includes(rank.get('rankId')) ?? false,
                     (name) => name[0]
                   )}
                 </Button.LikeLink>

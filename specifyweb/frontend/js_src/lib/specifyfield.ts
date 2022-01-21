@@ -1,3 +1,4 @@
+import type { Tables } from './datamodel';
 import type { SchemaLocalization } from './schema';
 import schema, { getModel } from './schema';
 import { unescape } from './schemabase';
@@ -50,7 +51,7 @@ export type RelationshipDefinition = {
   readonly dependent: boolean;
   readonly name: string;
   readonly otherSideName?: string;
-  readonly relatedModelName: string;
+  readonly relatedModelName: keyof Tables;
   readonly required: boolean;
   readonly type: RelationshipType;
   readonly readOnly?: boolean;
@@ -70,8 +71,7 @@ export type SchemaModelTableField = {
 
 // Define a JS object constructor to represent fields of Specify data objects.
 export class Field {
-  // The data object model this field belongs to.
-  public readonly model: SpecifyModel;
+  public readonly modelName: keyof Tables;
 
   // Whether the field represents a relationship.
   public readonly isRelationship: boolean;
@@ -93,24 +93,25 @@ export class Field {
   public readonly localization: SchemaLocalization['items'][string];
 
   public constructor(
-    model: SpecifyModel,
+    modelName: keyof Tables,
+    localization: SchemaLocalization['items'][string],
     fieldDefinition: Omit<FieldDefinition, 'type'> & {
       readonly type: JavaType | RelationshipType;
     }
   ) {
-    this.model = model;
+    this.modelName = modelName;
     this.isRelationship = relationshipTypes.includes(
       fieldDefinition.type as RelationshipType
     );
 
     this.name = fieldDefinition.name;
-    this.dottedName = `${model.name}.${this.name}`;
+    this.dottedName = `${modelName}.${this.name}`;
 
     this.readOnly =
       fieldDefinition.readOnly === true ||
       (this.name === 'guid' &&
-        model.name !== 'Taxon' &&
-        model.name !== 'Geography') ||
+        modelName !== 'Taxon' &&
+        modelName !== 'Geography') ||
       this.name === 'timestampcreated';
 
     this.isRequired = fieldDefinition.required;
@@ -118,7 +119,7 @@ export class Field {
     this.length = fieldDefinition.length;
     this.dbColumn = fieldDefinition.column;
 
-    this.localization = model.localization.items[this.name.toLowerCase()] ?? {};
+    this.localization = localization;
   }
 
   // Returns the user friendly name of the field from the schema config.
@@ -197,15 +198,20 @@ export class Field {
 export class Relationship extends Field {
   public otherSideName?: string;
 
-  public relatedModelName: string;
+  public relatedModelName: keyof Tables;
 
   public dependent: boolean;
 
   public constructor(
-    model: SpecifyModel,
+    modelName: keyof Tables,
+    localization: SchemaLocalization['items'][string],
     relationshipDefinition: RelationshipDefinition
   ) {
-    super(model, { ...relationshipDefinition, indexed: false, unique: false });
+    super(modelName, localization, {
+      ...relationshipDefinition,
+      indexed: false,
+      unique: false,
+    });
 
     this.otherSideName = relationshipDefinition.otherSideName;
     this.relatedModelName = relationshipDefinition.relatedModelName;
@@ -218,20 +224,22 @@ export class Relationship extends Field {
    * eg CollectionObject.determinations.
    */
   public isDependent(): boolean {
-    return this.model.name == 'CollectionObject' &&
+    return this.modelName == 'CollectionObject' &&
       this.name == 'collectingEvent'
       ? schema.embeddedCollectingEvent
-      : this.model.name.toLowerCase() == schema.paleoContextChildTable &&
+      : this.modelName.toLowerCase() == schema.paleoContextChildTable &&
         this.name == 'paleoContext'
       ? schema.embeddedPaleoContext
       : this.dependent;
   }
 
   // Returns the related model for relationship fields.
-  public getRelatedModel(): SpecifyModel | undefined {
+  public getRelatedModel<TABLE_NAME extends keyof Tables>():
+    | SpecifyModel<Tables[TABLE_NAME]>
+    | undefined {
     if (!this.isRelationship)
       throw new Error(`${this.dottedName} is not a relationship field`);
-    return getModel(this.relatedModelName);
+    return getModel(this.relatedModelName as TABLE_NAME);
   }
 
   // Returns the field of the related model that is the reverse of this field.

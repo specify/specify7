@@ -8,6 +8,7 @@ import type { Relationship } from '../specifyfield';
 import type SpecifyModel from '../specifymodel';
 import { H2, Link } from './basic';
 import createBackboneView from './reactbackboneextend';
+import { Tables } from '../datamodel';
 
 function RelationshipLink({
   relationship,
@@ -77,7 +78,10 @@ const View = createBackboneView(DataModelView);
 
 function view(model: string | undefined): void {
   app.setCurrentView(
-    new View({ model: typeof model === 'string' ? getModel(model) : undefined })
+    new View({
+      model:
+        typeof model === 'string' ? getModel(model as keyof Tables) : undefined,
+    })
   );
 }
 

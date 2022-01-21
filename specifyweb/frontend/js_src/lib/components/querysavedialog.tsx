@@ -1,16 +1,17 @@
 import React from 'react';
 
+import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import userInfo from '../userinfo';
+import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Button, Form, Input, Label, Submit } from './basic';
 
 async function doSave(
-  query: SpecifyResource,
+  query: SpecifyResource<SpQuery>,
   name: string,
   isSaveAs: boolean
 ): Promise<number> {
@@ -30,12 +31,12 @@ function QuerySaveDialog({
   onSave: handleSave,
 }: {
   readonly isSaveAs: boolean;
-  readonly query: SpecifyResource;
+  readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly onSave: (queryId: number) => void;
 }): JSX.Element {
   const id = useId('id');
-  const [name, setName] = React.useState<string>(query.get<string>('name'));
+  const [name, setName] = React.useState<string>(query.get('name'));
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {

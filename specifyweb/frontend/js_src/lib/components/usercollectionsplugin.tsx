@@ -2,6 +2,7 @@ import $ from 'jquery';
 import React from 'react';
 
 import { ping } from '../ajax';
+import type { Collection, SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
@@ -21,7 +22,7 @@ function UserCollectionsUi({
 }: {
   readonly userId: number;
   readonly selectedCollections: RA<number>;
-  readonly allCollections: RA<SpecifyResource>;
+  readonly allCollections: RA<SpecifyResource<Collection>>;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selected, setSelected] =
@@ -69,7 +70,7 @@ function UserCollectionsUi({
                 )
               }
             />
-            {collection.get<string>('collectionname')}
+            {collection.get('collectionname')}
           </LabelForCheckbox>
         ))}
       </Form>
@@ -85,7 +86,7 @@ export default UIPlugin.extend(
     events: {
       click: 'click',
     },
-    initialize(options: { readonly model: SpecifyResource }) {
+    initialize(options: { readonly model: SpecifyResource<SpecifyUser> }) {
       this.user = options.model;
       this.allCollections = new schema.models.Collection.LazyCollection();
     },

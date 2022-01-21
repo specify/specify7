@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ping } from '../../ajax';
+import type { AnyTree } from '../../datamodelutils';
 import { getDomainResource } from '../../domain';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
@@ -32,21 +33,24 @@ export function TreeSelectDialog({
   readonly title: string;
   readonly getLink: (tree: string) => string;
 }): JSX.Element {
-  const [trees, setTrees] = React.useState<IR<SpecifyModel> | undefined>(
-    undefined
-  );
+  const [trees, setTrees] = React.useState<
+    IR<SpecifyModel<AnyTree>> | undefined
+  >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    Promise.resolve(
-      defined(getDomainResource('discipline')).get<string>('type')
-    )
+    Promise.resolve(defined(getDomainResource('discipline')).get('type'))
       .then((type) => [
         ...commonTrees,
         ...(paleoDiscs.has(type) ? treesForPaleo : []),
       ])
       .then((trees) =>
-        Object.fromEntries(trees.map((tree) => [tree, defined(getModel(tree))]))
+        Object.fromEntries(
+          trees.map((tree) => [
+            tree,
+            defined(getModel(tree)) as unknown as SpecifyModel<AnyTree>,
+          ])
+        )
       )
       .then((trees) => (destructorCalled ? undefined : setTrees(trees)))
       .catch(console.error);

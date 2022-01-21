@@ -1,4 +1,5 @@
 import collectionapi from './collectionapi';
+import type { AnySchema, SerializedModel, TableName } from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
@@ -32,7 +33,7 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
-type CollectionConstructor = new (props?: {
+type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
   readonly filters?: Partial<
     {
       readonly orderby: string;
@@ -42,22 +43,32 @@ type CollectionConstructor = new (props?: {
     } & IR<unknown>
   >;
   readonly domainfilter?: boolean;
-}) => Collection;
+}) => UnFetchedCollection<SpecifyResource<SCHEMA>>;
 
-type Resource = new (
-  props?: { readonly id?: number } & IR<unknown>
-) => SpecifyResource;
-
-export type Collection = {
-  readonly fetch: (filter?: { readonly limit: number }) => Promise<Collection>;
-  readonly models: RA<SpecifyResource>;
+export type UnFetchedCollection<RESOURCE extends SpecifyResource<AnySchema>> = {
+  readonly fetch: (filter?: {
+    readonly limit: number;
+  }) => Promise<Collection<RESOURCE>>;
+  readonly fetchIfNotPopulated: (filter?: {
+    readonly limit: number;
+  }) => Promise<Collection<RESOURCE>>;
 };
 
-export default class SpecifyModel {
+export type Collection<RESOURCE extends SpecifyResource<AnySchema>> = {
+  readonly getTotalCount: () => Promise<number>;
+  readonly toJSON: <V extends IR<unknown>>() => RA<V>;
+  readonly models: RESOURCE extends null ? [] : RA<RESOURCE>;
+  readonly add: (resource: RESOURCE) => void;
+  readonly remove: (resource: RESOURCE) => void;
+};
+
+export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   // Java classname of the Specify 6 ORM object.
   public readonly longName: string;
 
-  public readonly name: string;
+  public readonly name: TableName<SCHEMA>;
+
+  public readonly url: string;
 
   public readonly idFieldName: string;
 
@@ -71,15 +82,17 @@ export default class SpecifyModel {
 
   private readonly fieldAliases: RA<FieldAlias>;
 
-  public readonly Resource: Resource;
+  public readonly Resource: new (
+    props?: Partial<SerializedModel<SCHEMA>>
+  ) => SpecifyResource<SCHEMA>;
 
-  public readonly LazyCollection: CollectionConstructor;
+  public readonly LazyCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly StaticCollection: CollectionConstructor;
+  public readonly StaticCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly DependentCollection: CollectionConstructor;
+  public readonly DependentCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly ToOneCollection: CollectionConstructor;
+  public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
   public readonly fields: RA<Field | Relationship>;
 
@@ -87,7 +100,8 @@ export default class SpecifyModel {
 
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
-    this.name = this.longName.split('.').slice(-1)[0];
+    this.name = this.longName.split('.').slice(-1)[0] as TableName<SCHEMA>;
+    this.url = `/api/specify/${this.name.toLowerCase()}/`;
     this.idFieldName = tableDefinition.idFieldName;
     this.view = tableDefinition.view ?? undefined;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
@@ -135,11 +149,22 @@ export default class SpecifyModel {
 
     this.fields = [
       ...tableDefinition.fields.map(
-        (fieldDefinition) => new Field(this, fieldDefinition)
+        (fieldDefinition) =>
+          new Field(
+            this.name,
+            this.localization.items[fieldDefinition.name.toLowerCase()] ?? {},
+            fieldDefinition
+          )
       ),
       ...tableDefinition.relationships.map(
         (relationshipDefinition) =>
-          new Relationship(this, relationshipDefinition)
+          new Relationship(
+            this.name,
+            this.localization.items[
+              relationshipDefinition.name.toLowerCase()
+            ] ?? {},
+            relationshipDefinition
+          )
       ),
     ];
   }

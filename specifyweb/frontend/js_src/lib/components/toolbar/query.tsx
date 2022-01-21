@@ -25,6 +25,8 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import SaveButton from '../savebutton';
 import { useCachedState } from '../stateCache';
+import { SpQuery, SpReport } from '../../datamodel';
+import { SerializedModel } from '../../datamodelutils';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -228,12 +230,12 @@ function QueryToolbarItem({
         ? undefined
         : setQueries(
             models.map((query) => ({
-              id: query.get<number>('id'),
-              name: query.get<string>('name'),
+              id: query.get('id'),
+              name: query.get('name'),
               tableName: getModelById(
-                query.get<number>('contexttableid')
+                query.get('contexttableid')
               ).name.toLowerCase(),
-              dateCreated: query.get<string>('timestampcreated'),
+              dateCreated: query.get('timestampcreated'),
             }))
           )
     );
@@ -323,10 +325,10 @@ const menuItem: MenuItem = {
             const queryModel = new schema.models.SpQuery.LazyCollection({
               filters: { id: query.id },
             });
-            queryModel.fetch({ limit: 1 }).then(() => {
+            queryModel.fetch({ limit: 1 }).then(({ models }) => {
               setCurrentView(
                 new EditQueryDialog({
-                  spquery: queryModel.models[0],
+                  spquery: models[0],
                 })
               );
             });
@@ -342,7 +344,7 @@ const EditQueryDialog = Backbone.View.extend({
     'click .query-export': 'exportQuery',
     'click .create-report, .create-label': 'createReport',
   },
-  initialize(options: { readonly spquery: SpecifyResource }) {
+  initialize(options: { readonly spquery: SpecifyResource<SpQuery> }) {
     this.spquery = options.spquery;
     this.model = getModelById(this.spquery.get('contexttableid'));
   },
@@ -424,7 +426,7 @@ const EditQueryDialog = Backbone.View.extend({
     >`);
 
     const createReport = (): void =>
-      void ajax<IR<unknown>>('/report_runner/create/', {
+      void ajax<SerializedModel<SpReport>>('/report_runner/create/', {
         method: 'POST',
         body: {
           queryid: this.spquery.id,
@@ -438,9 +440,7 @@ const EditQueryDialog = Backbone.View.extend({
       })
         .then(async ({ data: reportJson }) => {
           const report = new schema.models.SpReport.Resource(reportJson);
-          return new Promise<SpecifyResource>(async (resolve) =>
-            report.rget<SpecifyResource>('appresource').then(resolve)
-          );
+          return report.rget('appResource');
         })
         .then((appresource) =>
           navigation.go(`/specify/appresources/${appresource.id}/`)

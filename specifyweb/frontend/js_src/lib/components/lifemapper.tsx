@@ -18,6 +18,7 @@ import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { Dialog } from './modaldialog';
 import commonText from '../localization/common';
+import { CollectionObject, Taxon } from '../datamodel';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -28,7 +29,7 @@ type IncomingMessage = LoadedAction | GetPinInfoAction;
 type IncomingMessageExtended = IncomingMessage & {
   state: {
     readonly sendMessage: (message: OutgoingMessage) => void;
-    readonly model: SpecifyResource;
+    readonly model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
     readonly occurrences: React.MutableRefObject<
       RA<OccurrenceData> | undefined
     >;
@@ -122,22 +123,18 @@ type OutgoingMessage =
 export function SpecifyNetworkBadge({
   model,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
 }): JSX.Element | null {
   const [occurrenceName, setOccurrenceName] = React.useState('');
   const [hasFailure, setHasFailure] = React.useState(false);
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
-  const guid = model.get<string>('guid');
-
   React.useEffect(() => {
-    fetchOccurrenceName({
-      guid,
-      model,
-    })
-      .then(setOccurrenceName)
-      .catch(console.error);
-  }, [guid, model]);
+    if (model.specifyModel.name === 'CollectionObject')
+      fetchOccurrenceName(model as SpecifyResource<CollectionObject>)
+        .then(setOccurrenceName)
+        .catch(console.error);
+  }, [model]);
 
   const messageHandler = React.useCallback(
     (event: MessageEvent<IncomingMessage>): void => {
@@ -169,7 +166,10 @@ export function SpecifyNetworkBadge({
         {lifemapperText('failedToOpenPopUpDialogMessage')}
       </Dialog>
       <Link.Default
-        href={formatLifemapperViewPageRequest(guid ?? '', occurrenceName)}
+        href={formatLifemapperViewPageRequest(
+          (model as SpecifyResource<CollectionObject>).get('guid') ?? '',
+          occurrenceName
+        )}
         target="_blank"
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}

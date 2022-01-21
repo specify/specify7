@@ -8,11 +8,12 @@
 import ajax from './ajax';
 import * as cache from './cache';
 import type { RelationshipType } from './components/wbplanviewmapper';
+import { Tables } from './datamodel';
+import type { AnyTree, AnyTreeDef, TableName } from './datamodelutils';
 import { getTreeDef } from './domain';
 import type { GetTreeDefinition } from './legacytypes';
 import schema from './schema';
 import type { Field, Relationship } from './specifyfield';
-import type { Collection, default as SpecifyModel } from './specifymodel';
 import systemInfo from './systeminfo';
 import type { IR, R, RA } from './types';
 import { camelToHuman, capitalize } from './wbplanviewhelper';
@@ -101,27 +102,22 @@ type DataModelListOfTablesWritable = R<{
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 
 /* Fetches ranks for a particular table */
-const fetchRanks = async (tableName: string): Promise<TableRanksInline> =>
-  new Promise((resolve) =>
-    (getTreeDef as GetTreeDefinition)(tableName)
-      .then((treeDefinition) => treeDefinition.rget<Collection>('treedefitems'))
-      .then((treeDefItems) => treeDefItems.fetch({ limit: 0 }))
-      .then(({ models }) =>
-        resolve([
-          tableName,
-          Object.values(models).map((rank) => [
-            rank.get<string>('name'),
-            {
-              isRequired: false,
-              title: capitalize(
-                rank.get<string>('title') ?? rank.get<string>('name')
-              ),
-              rankId: rank.get<number>('rankId'),
-            },
-          ]),
-        ])
-      )
-  );
+const fetchRanks = async (tableName: keyof Tables): Promise<TableRanksInline> =>
+  (getTreeDef as GetTreeDefinition<AnyTreeDef>)(tableName as TableName<AnyTree>)
+    .then(async (treeDefinition) =>
+      treeDefinition.rgetCollection('treeDefItems')
+    )
+    .then(({ models }) => [
+      tableName,
+      models.map((rank) => [
+        rank.get('name'),
+        {
+          isRequired: false,
+          title: capitalize(rank.get('title') ?? rank.get('name')),
+          rankId: rank.get('rankId'),
+        },
+      ]),
+    ]);
 
 function handleRelationshipType(
   relationshipType: RelationshipType,
@@ -321,12 +317,11 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   const fetchPickListsQueue: Promise<void>[] = [];
   const originalRelationships: OriginalRelationshipsWritable = {};
 
-  const getTableName = (tableData: SpecifyModel): string =>
-    tableData.name.toLowerCase();
   const hiddenTables = new Set(
     Object.values(schema.models)
       .map(
-        (tableData) => [getTableName(tableData), tableData.isHidden()] as const
+        (tableData) =>
+          [tableData.name.toLowerCase(), tableData.isHidden()] as const
       )
       .filter(([_tableName, isHidden]) => isHidden)
       .map(([tableName]) => tableName)
@@ -334,7 +329,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
 
   const tables = Object.values(schema.models).reduce<DataModelTablesWritable>(
     (tables, tableData) => {
-      const tableName = getTableName(tableData);
+      const tableName = tableData.name.toLowerCase();
       const label = tableData.getLocalizedName();
 
       const fields: DataModelFieldsWritable = {};
@@ -455,7 +450,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
       };
 
       if (hasRelationshipWithDefinition && hasRelationshipWithDefinitionItem)
-        fetchRanksQueue.push(fetchRanks(tableName));
+        fetchRanksQueue.push(fetchRanks(tableName as keyof Tables));
 
       return tables;
     },

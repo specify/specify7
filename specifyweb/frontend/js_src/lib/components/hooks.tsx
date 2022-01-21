@@ -1,5 +1,7 @@
 import React from 'react';
 
+import type { AnySchema, SerializedModel } from '../datamodelutils';
+import { serializeModel } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { Input } from '../saveblockers';
@@ -107,11 +109,12 @@ export function useValidation<T extends Input = HTMLInputElement>(
   };
 }
 
-export function useSaveBlockers({
+/** Hook for getting save blockers for a model's field */
+export function useSaveBlockers<SCHEMA extends AnySchema>({
   model,
   fieldName,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyResource<SCHEMA>;
   readonly fieldName: string;
 }): string {
   const [errors, setErrors] = React.useState<string>('');
@@ -121,4 +124,29 @@ export function useSaveBlockers({
     );
   }, [model, fieldName]);
   return errors;
+}
+
+/**
+ * A wrapper for Backbone.Resource that integrates with React.useState for
+ * easier state tracking
+ */
+export function useResource<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA>
+): readonly [
+  SerializedModel<SCHEMA>,
+  (changedResource: SerializedModel<SCHEMA>) => void
+] {
+  const [object, setObject] = React.useState(() => serializeModel(resource));
+
+  const previousObjectRef = React.useRef<SerializedModel<SCHEMA>>(object);
+  React.useEffect(() => {
+    Object.entries(object)
+      .filter(([key, newValue]) => newValue !== previousObjectRef.current[key])
+      .forEach(([key, newValue]) =>
+        resource.set<'resource_uri', string>(key, newValue)
+      );
+    previousObjectRef.current = object;
+  }, [resource, object]);
+
+  return [object, setObject];
 }

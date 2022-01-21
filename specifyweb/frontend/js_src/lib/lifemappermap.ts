@@ -8,9 +8,9 @@ import {
   parseLocalityPinFields,
 } from './localityrecorddataextractor';
 import schema from './schema';
-import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
+import { CollectionObject, Locality, Taxon } from './datamodel';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -21,24 +21,28 @@ export type OccurrenceData = {
 };
 
 export const fetchLocalOccurrences = async (
-  model: SpecifyResource
+  model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
 ): Promise<RA<OccurrenceData>> => {
   await dataModelPromise;
 
   const LIMIT = 10_000;
 
-  let taxon;
+  let taxon: SpecifyResource<Taxon>;
   if (model.specifyModel.name === 'CollectionObject') {
-    const determination = await model.rget<Collection>('determinations');
+    const determination = await (
+      model as SpecifyResource<CollectionObject>
+    ).rgetCollection('determinations');
 
     const currentDetermination = determination.models.find((model) =>
-      model.get<boolean>('isCurrent')
+      model.get('isCurrent')
     );
 
     if (typeof currentDetermination === 'undefined') return [];
 
-    taxon = await currentDetermination.rget<SpecifyResource>('taxon');
-  } else taxon = model;
+    const taxonResource = await currentDetermination.rget('taxon');
+    if (taxonResource === null) return [];
+    else taxon = taxonResource;
+  } else taxon = model as SpecifyResource<Taxon>;
 
   const parsedLocalityFields = parseLocalityPinFields(true);
 
@@ -78,7 +82,7 @@ export const fetchLocalOccurrences = async (
           stringid: '1,9-determinations,4.taxon.taxonid',
           fieldname: 'taxonid',
           isdisplay: false,
-          startvalue: `${taxon.get<number>('id')}`,
+          startvalue: `${taxon.get('id')}`,
           operstart: 1,
           position: 0,
         },
@@ -150,21 +154,21 @@ export const fetchLocalOccurrences = async (
           ),
           fetchMoreData: async (): Promise<LocalityData | false> =>
             getLocalityDataFromLocalityResource(
-              await new Promise<SpecifyResource>((resolve) => {
+              await new Promise<SpecifyResource<Locality>>((resolve) => {
                 const locality = new schema.models.Locality.LazyCollection({
                   filters: { id: localityId },
-                }) as Collection;
+                });
                 locality
                   .fetch({ limit: 1 })
-                  .then(({ models }) => resolve(models[0]));
+                  .then(({ models }) => resolve(models[0]), console.error);
               }),
               false,
               (mappingPathParts, resource) =>
                 (typeof resource?.specifyModel?.name !== 'string' ||
                   ((resource.specifyModel.name !== 'CollectionObject' ||
-                    resource.get<number>('id') === collectionObjectId) &&
+                    resource.id === collectionObjectId) &&
                     (resource.specifyModel.name !== 'CollectingEvent' ||
-                      resource.get<number>('id') === collectingEventId))) &&
+                      resource.id === collectingEventId))) &&
                 defaultRecordFilterFunction(mappingPathParts, resource)
             ),
         };

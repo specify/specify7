@@ -7,6 +7,7 @@ import localityText from '../localization/locality';
 import UIPlugin from '../uiplugin';
 import createBackboneView from './reactbackboneextend';
 import { Input } from './basic';
+import { Locality } from '../datamodel';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -24,18 +25,23 @@ function Coordinate({
   readOnly,
   onChange: handleChange,
 }: {
-  readonly model: SpecifyResource;
-  readonly coordinateField: string;
-  readonly coordinateTextField: string;
+  readonly model: SpecifyResource<Locality>;
+  readonly coordinateField:
+    | 'Latitude1'
+    | 'Latitude2'
+    | 'Longitude1'
+    | 'Longitude2';
+  readonly coordinateTextField:
+    | 'Lat1Text'
+    | 'Lat2Text'
+    | 'Long1Text'
+    | 'Long2Text';
   readonly fieldType: 'Lat' | 'Long';
   readonly readOnly: boolean;
   readonly onChange: (parsed: string) => void;
 }): JSX.Element {
   const [coordinate, setCoordinate] = React.useState<string>(
-    () =>
-      (model.get<string>(coordinateTextField) ||
-        model.get<string>(coordinateField)) ??
-      ''
+    () => (model.get(coordinateTextField) || model.get(coordinateField)) ?? ''
   );
 
   const onChange = (raw: string, formatted: string | undefined) =>
@@ -52,10 +58,10 @@ function Coordinate({
             )?.format()
           );
     model.on(`change: ${coordinateTextField}`, () =>
-      handleChange(model.get<string>(coordinateTextField))
+      handleChange(model.get(coordinateTextField))
     );
     model.on(`change: ${coordinateField}`, () =>
-      handleChange(model.get<string>(coordinateField))
+      handleChange(model.get(coordinateField))
     );
 
     let destructorCalled = false;
@@ -99,7 +105,7 @@ function CoordinatePoint({
   index,
   readOnly,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyResource<Locality>;
   readonly label: string;
   readonly index: 1 | 2;
   readonly readOnly: boolean;
@@ -156,20 +162,18 @@ function LatLongUi({
   model,
   readOnly,
 }: {
-  readonly model: SpecifyResource;
+  readonly model: SpecifyResource<Locality>;
   readonly readOnly: boolean;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => model.get<CoordinateType | null>('latlongtype') ?? 'point'
+    () => model.get('latlongtype') ?? 'point'
   );
 
   React.useEffect(() => {
     model.on('change: latlongtype', () =>
       destructorCalled
         ? undefined
-        : setCoordinateType(
-            model.get<CoordinateType | null>('latlongtype') ?? 'point'
-          )
+        : setCoordinateType(model.get('latlongtype') ?? 'point')
     );
 
     let destructorCalled = false;

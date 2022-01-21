@@ -12,9 +12,10 @@
  * schema, but it's here for now.
  */
 
-import { load } from './initialcontext';
+import {load} from './initialcontext';
 import type SpecifyModel from './specifymodel';
-import type { IR, RA, RR } from './types';
+import type {RA, RR} from './types';
+import {Tables} from './datamodel';
 
 type SchemaWritable = {
   domainLevelIds: RR<typeof domainLevels[number], number>;
@@ -23,7 +24,9 @@ type SchemaWritable = {
   paleoContextChildTable: string;
   catalogNumFormatName: string;
   orgHierarchy: RA<string>;
-  models: IR<SpecifyModel>;
+  models: {
+    readonly [tableName in keyof Tables]: SpecifyModel<Tables[tableName]>;
+  };
 };
 
 export type Schema = Readonly<SchemaWritable>;
@@ -50,7 +53,7 @@ const schemaBase: SchemaWritable = {
 
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
-  models: {},
+  models: {} as Schema['models'],
 
   // The scoping hierarchy of Specify objects.
   orgHierarchy: [

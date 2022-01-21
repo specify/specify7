@@ -10,9 +10,9 @@ import schema from './schemabase';
 import extras from './schemaextras';
 import type { Field, Relationship } from './specifyfield';
 import SpecifyModel, { type TableDefinition } from './specifymodel';
-import type { IR, R, RA } from './types';
+import type { IR, RA } from './types';
+import { AnySchema } from './datamodelutils';
 
-// The schema config / localization information is loaded dynamically.
 export type SchemaLocalization = {
   readonly name: string | null;
   readonly desc: string | null;
@@ -29,9 +29,9 @@ export type SchemaLocalization = {
     readonly ishidden: boolean;
   }>;
 };
+// The schema config / localization information is loaded dynamically.
 export let localization: IR<SchemaLocalization> = undefined!;
 
-const models = schema.models as R<SpecifyModel>;
 export const fetchContext = Promise.all([
   load<RA<TableDefinition>>('/context/datamodel.json', 'application/json'),
   load<IR<SchemaLocalization>>(
@@ -40,13 +40,16 @@ export const fetchContext = Promise.all([
   ),
 ] as const).then(([tables, data]) => {
   localization = data;
-  tables.forEach((tableDefinition) => {
-    const model = new SpecifyModel(tableDefinition);
-    const modelFields = model.fields as (Field | Relationship)[];
-    const extra = extras[model.name];
-    if (typeof extra !== 'undefined') modelFields.concat(extra(model));
-    models[model.name] = model;
-  });
+  // @ts-expect-error Assigning to read-only value
+  schema.models = Object.fromEntries(
+    tables.map((tableDefinition) => {
+      const model = new SpecifyModel(tableDefinition);
+      const modelFields = model.fields as (Field | Relationship)[];
+      const extra = extras[model.name];
+      if (typeof extra !== 'undefined') modelFields.concat(extra(model));
+      return [model.name, model] as const;
+    })
+  );
 });
 
 export { default } from './schemabase';
@@ -54,7 +57,7 @@ export { default } from './schemabase';
 // Returns a schema model object describing the named Specify model.
 export function getModel(name: string): SpecifyModel | undefined {
   const lowerCase = name.toLowerCase();
-  return Object.values(schema.models).find(
+  return Object.values(schema.models as unknown as IR<SpecifyModel>).find(
     (model) => model.name.toLowerCase() === lowerCase
   );
 }
@@ -63,6 +66,9 @@ export function getModel(name: string): SpecifyModel | undefined {
  * Looks up a schema model object describing Specify model using the Specify
  * tableId integer.
  */
-export const getModelById = (tableId: number): SpecifyModel =>
-  Object.values(schema.models).find((model) => model.tableId === tableId) ??
-  error(`Model with id ${tableId} does not exist`);
+export const getModelById = <SCHEMA extends AnySchema>(
+  tableId: number
+): SpecifyModel<SCHEMA> =>
+  (Object.values(schema.models).find((model) => model.tableId === tableId) as
+    | SpecifyModel<SCHEMA>
+    | undefined) ?? error(`Model with id ${tableId} does not exist`);
