@@ -9,6 +9,11 @@ import { createDictionary, header } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 const queryText = createDictionary({
+  newQueryName: {
+    'en-us': 'New Query',
+    'ru-ru': 'Новый запрос',
+    ca: 'New Query',
+  },
   queryBoxDescription: {
     'en-us': (fieldNames: string) => `Searches: ${fieldNames}`,
     'ru-ru': (fieldNames: string) => `Поисковые запросы: ${fieldNames}`,

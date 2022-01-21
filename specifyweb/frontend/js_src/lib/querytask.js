@@ -375,7 +375,7 @@ export default function() {
             var query = new schema.models.SpQuery.Resource();
             var model = getModel(table);
             query.set({
-                'name': "New Query",
+                'name': queryText('newQueryName'),
                 'contextname': model.name,
                 'contexttableid': model.tableId,
                 'selectdistinct': false,
