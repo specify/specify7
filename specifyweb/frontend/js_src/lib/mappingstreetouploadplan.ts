@@ -5,7 +5,7 @@
  * @module
  */
 
-import type { IR, R } from './types';
+import type { IR, R, Writable } from './types';
 import type {
   ColumnDefinition,
   TreeRecordVariety,
@@ -19,7 +19,7 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
-import type { DataModelFieldWritable } from './wbplanviewmodelfetcher';
+import type { DataModelField } from './wbplanviewmodelfetcher';
 import { tableIsTree } from './wbplanviewmodelhelper';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
 
@@ -125,7 +125,7 @@ function mappingsTreeToUploadPlanTable(
 
 function handleRelationshipField(
   fieldData: object,
-  field: DataModelFieldWritable,
+  field: Writable<DataModelField>,
   fieldName: string,
   tablePlan: {
     wbcols: UploadPlanNode;

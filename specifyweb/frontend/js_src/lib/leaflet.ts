@@ -327,12 +327,6 @@ export type MarkerGroups = {
   readonly polygonBoundary: RA<L.Marker>;
   readonly errorRadius: RA<L.Circle>;
 };
-export type MarkerGroupsWritable = {
-  readonly marker: L.Marker[];
-  readonly polygon: (L.Polygon | L.Polyline)[];
-  readonly polygonBoundary: L.Marker[];
-  readonly errorRadius: L.Circle[];
-};
 type Marker = L.Marker | L.Polygon | L.Polyline | L.Circle;
 
 const createLine = (
@@ -393,7 +387,9 @@ export function getMarkersFromLocalityData({
   readonly markerClickCallback?: string | L.LeafletEventHandlerFn;
   readonly iconClass?: string;
 }): MarkerGroups {
-  const markers: MarkerGroupsWritable = {
+  const markers: {
+    -readonly [KEY in keyof MarkerGroups]: MarkerGroups[KEY];
+  } = {
     marker: [],
     polygon: [],
     polygonBoundary: [],

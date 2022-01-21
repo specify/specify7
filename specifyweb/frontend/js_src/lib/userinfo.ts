@@ -2,30 +2,28 @@ import $ from 'jquery';
 
 import { load } from './initialcontext';
 import commonText from './localization/common';
-import type { IR, RA } from './types';
+import type { IR, RA, Writable } from './types';
 
 export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 
-type UserInfoWritable = {
+export type UserInfo = {
   // NOTE: some userInfo properties are not listed here
-  id: number;
-  isadmin: boolean;
-  isReadOnly: boolean;
-  usertype: UserType;
-  isauthenticated: boolean;
+  readonly id: number;
+  readonly isadmin: boolean;
+  readonly isReadOnly: boolean;
+  readonly usertype: UserType;
+  readonly isauthenticated: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  available_collections: RA<
+  readonly available_collections: RA<
     Readonly<[collectionId: number, collectionName: string]>
   >;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  resource_uri: string;
-  agent: IR<unknown>;
-  name: string;
+  readonly resource_uri: string;
+  readonly agent: IR<unknown>;
+  readonly name: string;
 };
 
-export type UserInfo = Readonly<UserInfoWritable>;
-
-const userInfo: UserInfoWritable = {} as UserInfoWritable;
+const userInfo: Writable<UserInfo> = {} as Writable<UserInfo>;
 
 export const fetchContext = load<UserInfo>(
   '/context/user.json',

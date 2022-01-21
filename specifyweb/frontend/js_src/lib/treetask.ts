@@ -3,7 +3,7 @@ import type { GetTreeDefinition } from './legacytypes';
 import NotFoundView from './notfoundview';
 import router from './router';
 import { setCurrentView } from './specifyapp';
-import {AnyTreeDef} from './datamodelutils';
+import { AnyTreeDef } from './datamodelutils';
 
 export default function Routes(): void {
   router.route('tree/:table/', 'tree', async (table: string) =>
@@ -14,20 +14,15 @@ export default function Routes(): void {
         return;
       }
       treePromise.then((treeDefinition) =>
-        treeDefinition
-          .rgetCollection('treeDefItems')
-          .then((treeDefinitionItems) =>
-            treeDefinitionItems.fetch({ limit: 0 })
+        treeDefinition.rgetCollection('treeDefItems').then(({ models }) =>
+          setCurrentView(
+            new TreeView({
+              tableName: table.toLowerCase(),
+              treeDefinition,
+              treeDefinitionItems: models,
+            })
           )
-          .then(({models}) =>
-            setCurrentView(
-              new TreeView({
-                tableName: table.toLowerCase(),
-                treeDefinition,
-                treeDefinitionItems: models,
-              })
-            )
-          )
+        )
       );
     })
   );

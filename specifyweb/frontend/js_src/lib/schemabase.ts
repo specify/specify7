@@ -12,26 +12,24 @@
  * schema, but it's here for now.
  */
 
-import {load} from './initialcontext';
+import type { Tables } from './datamodel';
+import { load } from './initialcontext';
 import type SpecifyModel from './specifymodel';
-import type {RA, RR} from './types';
-import {Tables} from './datamodel';
+import type { RA, RR, Writable } from './types';
 
-type SchemaWritable = {
-  domainLevelIds: RR<typeof domainLevels[number], number>;
-  embeddedCollectingEvent: boolean;
-  embeddedPaleoContext: boolean;
-  paleoContextChildTable: string;
-  catalogNumFormatName: string;
-  orgHierarchy: RA<string>;
-  models: {
+export type Schema = {
+  readonly domainLevelIds: RR<typeof domainLevels[number], number>;
+  readonly embeddedCollectingEvent: boolean;
+  readonly embeddedPaleoContext: boolean;
+  readonly paleoContextChildTable: string;
+  readonly catalogNumFormatName: string;
+  readonly orgHierarchy: RA<string>;
+  readonly models: {
     readonly [tableName in keyof Tables]: SpecifyModel<Tables[tableName]>;
   };
 };
 
-export type Schema = Readonly<SchemaWritable>;
-
-const schemaBase: SchemaWritable = {
+const schemaBase: Writable<Schema> = {
   /*
    * Maps levels in the Specify scoping hierarchy to
    * The database ids of those records for the currently
@@ -74,11 +72,11 @@ const domainLevels = [
 
 // Scoping information is loaded and populated here.
 export const fetchContext = load<
-  Omit<Schema, 'domainLevelIds'> & SchemaWritable['domainLevelIds']
+  Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']
 >('/context/domain.json', 'application/json').then((data) => {
   schemaBase.domainLevelIds = Object.fromEntries(
     domainLevels.map((level) => [level, data[level]])
-  ) as SchemaWritable['domainLevelIds'];
+  ) as Schema['domainLevelIds'];
   schemaBase.embeddedCollectingEvent = data.embeddedCollectingEvent;
   schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
   schemaBase.paleoContextChildTable = data.paleoContextChildTable;

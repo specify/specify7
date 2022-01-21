@@ -13,11 +13,10 @@ import AutoMapperDefinitions from './automapperdefinitions';
 import type {
   AutoMapperScope,
   MappingPath,
-  MappingPathWritable,
   RelationshipType,
 } from './components/wbplanviewmapper';
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
-import type { IR, R, RA } from './types';
+import type { IR, R, RA, Writable } from './types';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import {
   formatReferenceItem,
@@ -611,7 +610,7 @@ export default class AutoMapper {
       return [];
 
     // Filter out -to-many references from the path for matching
-    const filteredPath = mappingPath.reduce<MappingPathWritable>(
+    const filteredPath = mappingPath.reduce<Writable<MappingPath>>(
       (filteredPath, pathPart) => {
         if (!valueIsReferenceItem(pathPart)) filteredPath.push(pathPart);
 
@@ -993,7 +992,10 @@ export default class AutoMapper {
       );
     }
 
-    let localPath: MappingPathWritable = [...mappingPath, ...fixedNewPathParts];
+    let localPath: Writable<MappingPath> = [
+      ...mappingPath,
+      ...fixedNewPathParts,
+    ];
     const lastPathPart = localPath[localPath.length - 1];
 
     // Don't map if:

@@ -54,7 +54,6 @@ export type AutoMapperScope =
   // Suggestion boxes - used when opening a picklist
   | 'suggestion';
 export type MappingPath = RA<string>;
-export type MappingPathWritable = string[];
 export type FullMappingPath = Readonly<
   [...MappingPath, MappingType, string, ColumnOptions]
 >;

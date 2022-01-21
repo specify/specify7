@@ -17,14 +17,13 @@ import type {
 import type {
   AutoMapperSuggestion,
   MappingPath,
-  MappingPathWritable,
   RelationshipType,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import commonText from './localization/common';
 import wbText from './localization/workbench';
-import type { IR, R, RA } from './types';
+import type { IR, R, RA, Writable } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {
@@ -507,7 +506,7 @@ export function getMappingLineData({
     generateMappingOptionsMenu: false,
   };
 
-  const mappingPath: MappingPathWritable = Array.from(readonlyMappingPath);
+  const mappingPath: Writable<MappingPath> = Array.from(readonlyMappingPath);
 
   const firstIterationRequirement = (): boolean =>
     iterate ||
